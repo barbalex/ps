@@ -4,5 +4,6 @@ public/wa-sqlite-async.wasm
 public/wa-sqlite-async.mjs
 src/generated
 .env*
+.npmrc
 dropbox_uploader.conf
 .vercel
