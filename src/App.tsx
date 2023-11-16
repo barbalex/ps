@@ -13,5 +13,5 @@ export default function App() {
         <Example />
       </header>
     </div>
-  );
+  )
 }
