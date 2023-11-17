@@ -22,7 +22,13 @@
     "node": ">=16.11.0"
   },
   "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.11.0",
+    "@typescript-eslint/parser": "^6.11.0",
     "electric-sql": "latest",
+    "eslint": "^8.53.0",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "wa-sqlite": "rhashimoto/wa-sqlite"
