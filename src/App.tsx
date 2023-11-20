@@ -3,7 +3,7 @@ import React from 'react'
 import logo from './logo.svg'
 import './App.css'
 import './style.css'
-import ElectricProvider from './ElectricProvider'
+import { ElectricWrapper as ElectricProvider } from './ElectricProvider'
 
 import { Example } from './Example'
 

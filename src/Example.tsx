@@ -1,17 +1,21 @@
 import React, { useEffect } from 'react'
-import { makeElectricContext, useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from 'electric-sql/react'
 import { observer } from '@legendapp/state/react'
 import { genUUID } from 'electric-sql/util'
 
-import { Electric, Items as Item } from './generated/client'
+import { Items as Item } from './generated/client'
 
 import './Example.css'
 
 import { useElectric } from './ElectricProvider'
+// import fromElectricProvider from './ElectricProvider'
 
 export const Example = () => {
+  console.log('Example, useElectric', useElectric)
   const { db } = useElectric()!
   const { results } = useLiveQuery(db.items.liveMany())
+
+  console.log('Example, useElectric.db', db)
 
   useEffect(() => {
     const syncItems = async () => {

@@ -6,10 +6,9 @@ import { ElectricDatabase, electrify } from 'electric-sql/wa-sqlite'
 import { authToken } from './auth'
 import { DEBUG_MODE, ELECTRIC_URL } from './config'
 import { Electric, schema } from './generated/client'
-const { ElectricProvider } = makeElectricContext<Electric>()
+export const { ElectricProvider, useElectric } = makeElectricContext<Electric>()
 
-
-export default function ElectricWrapper({children}) {
+export function ElectricWrapper({ children }) {
   const [electric, setElectric] = useState<Electric>()
 
   useEffect(() => {
@@ -44,13 +43,11 @@ export default function ElectricWrapper({children}) {
     }
   }, [])
 
+  console.log('ElectricWrapper, electric', electric)
+
   if (electric === undefined) {
     return null
   }
 
-  return (
-    <ElectricProvider db={electric}>
-      {children}
-    </ElectricProvider>
-  )
+  return <ElectricProvider db={electric}>{children}</ElectricProvider>
 }
