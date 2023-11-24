@@ -192,7 +192,7 @@ DROP TABLE IF EXISTS project_users CASCADE;
 CREATE TABLE project_users(
   project_user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  user_email text DEFAULT NULL,
+  email text DEFAULT NULL,
   role text DEFAULT NULL,
   deleted boolean DEFAULT FALSE
 );
@@ -201,11 +201,11 @@ CREATE INDEX ON project_users USING btree(project_user_id);
 
 CREATE INDEX ON project_users USING btree(project_id);
 
-CREATE INDEX ON project_users USING btree(user_email);
+CREATE INDEX ON project_users USING btree(email);
 
 CREATE INDEX ON project_users USING btree(deleted);
 
-COMMENT ON COLUMN project_users.user_email IS 'not user_id as must be able to be set before user has opened an account';
+COMMENT ON COLUMN project_users.email IS 'not user_id as must be able to be set before user has opened an account';
 
 COMMENT ON COLUMN project_users.role IS 'TODO: One of: "manager", "editor", "reader". Preset: "reader"';
 
@@ -217,7 +217,7 @@ DROP TABLE IF EXISTS subproject_users CASCADE;
 CREATE TABLE subproject_users(
   subproject_user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  user_email text DEFAULT NULL,
+  email text DEFAULT NULL,
   role text DEFAULT NULL,
   deleted boolean DEFAULT FALSE
 );
@@ -226,11 +226,11 @@ CREATE INDEX ON subproject_users USING btree(subproject_user_id);
 
 CREATE INDEX ON subproject_users USING btree(subproject_id);
 
-CREATE INDEX ON subproject_users USING btree(user_email);
+CREATE INDEX ON subproject_users USING btree(email);
 
 CREATE INDEX ON subproject_users USING btree(deleted);
 
-COMMENT ON COLUMN subproject_users.user_email IS 'not user_id as must be able to be set before user has opened an account';
+COMMENT ON COLUMN subproject_users.email IS 'not user_id as must be able to be set before user has opened an account';
 
 COMMENT ON COLUMN subproject_users.role IS 'TODO: One of: "manager", "editor", "reader". Preset: "reader"';
 
