@@ -63,6 +63,7 @@ CREATE TABLE projects(
   values_on_multiple_levels text DEFAULT NULL,
   multiple_action_values_on_same_level text DEFAULT NULL,
   multiple_check_values_on_same_level text DEFAULT NULL,
+  data jsonb DEFAULT NULL,
   deleted boolean DEFAULT FALSE
 );
 
@@ -85,6 +86,8 @@ COMMENT ON COLUMN projects.values_on_multiple_levels IS 'One of: "use first", "u
 COMMENT ON COLUMN projects.multiple_action_values_on_same_level IS 'One of: "use all", "use last". Preset: "use all"';
 
 COMMENT ON COLUMN projects.multiple_check_values_on_same_level IS 'One of: "use all", "use last". Preset: "use last"';
+
+COMMENT ON COLUMN projects.data IS 'Room for project specific data, defined in "fields" table';
 
 ---------------------------------------------
 -- place_levels
@@ -148,4 +151,36 @@ COMMENT ON COLUMN place_levels.check_values IS 'Are check values used? Preset: f
 COMMENT ON COLUMN place_levels.check_taxons IS 'Are check taxons used? Preset: false';
 
 COMMENT ON COLUMN place_levels.observation_references IS 'Are observation references used? Preset: false';
+
+---------------------------------------------
+-- subprojects
+--
+DROP TABLE IF EXISTS subprojects CASCADE;
+
+CREATE TABLE subprojects(
+  subproject_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  name text DEFAULT NULL,
+  since_year integer DEFAULT NULL,
+  data jsonb DEFAULT NULL,
+  deleted boolean DEFAULT FALSE
+);
+
+CREATE INDEX ON subprojects USING btree(subproject_id);
+
+CREATE INDEX ON subprojects USING btree(project_id);
+
+CREATE INDEX ON subprojects USING btree(name);
+
+CREATE INDEX ON subprojects USING btree(since_year);
+
+CREATE INDEX ON subprojects USING gin(data);
+
+CREATE INDEX ON subprojects USING btree(deleted);
+
+COMMENT ON COLUMN subprojects.name IS 'Example: a species name like "Pulsatilla vulgaris"';
+
+COMMENT ON COLUMN subprojects.since_year IS 'Enables analyzing a development since a certain year, like the begin of the project';
+
+COMMENT ON COLUMN subprojects.data IS 'Room for subproject specific data, defined in "fields" table';
 
