@@ -234,3 +234,95 @@ COMMENT ON COLUMN subproject_users.user_email IS 'not user_id as must be able to
 
 COMMENT ON COLUMN subproject_users.role IS 'TODO: One of: "manager", "editor", "reader". Preset: "reader"';
 
+---------------------------------------------
+-- taxonomies
+--
+DROP TABLE IF EXISTS taxonomies CASCADE;
+
+CREATE TABLE taxonomies(
+  taxonomy_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  type text DEFAULT NULL,
+  name text DEFAULT NULL,
+  url text DEFAULT NULL,
+  obsolete boolean DEFAULT FALSE,
+  data jsonb DEFAULT NULL,
+  deleted boolean DEFAULT FALSE
+);
+
+CREATE INDEX ON taxonomies USING btree(taxonomy_id);
+
+CREATE INDEX ON taxonomies USING btree(project_id);
+
+CREATE INDEX ON taxonomies USING btree(type);
+
+CREATE INDEX ON taxonomies USING btree(name);
+
+CREATE INDEX ON taxonomies USING btree(obsolete);
+
+CREATE INDEX ON taxonomies USING btree(deleted);
+
+COMMENT ON COLUMN taxonomies.type IS 'One of: "species", "biotope". Preset: "species"';
+
+COMMENT ON COLUMN taxonomies.name IS 'Shortish name of taxonomy, like "Flora der Schweiz, 1995"';
+
+COMMENT ON COLUMN taxonomies.url IS 'URL of taxonomy, like "https://www.infoflora.ch/de/flora"';
+
+COMMENT ON COLUMN taxonomies.obsolete IS 'Is taxonomy obsolete? Preset: false';
+
+COMMENT ON COLUMN taxonomies.data IS 'Room for taxonomy specific data, defined in "fields" table';
+
+---------------------------------------------
+-- taxa
+--
+DROP TABLE IF EXISTS taxa CASCADE;
+
+CREATE TABLE taxa(
+  taxon_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  taxonomy_id uuid DEFAULT NULL REFERENCES taxonomies(taxonomy_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  name text DEFAULT NULL,
+  id_in_source text DEFAULT NULL,
+  url text DEFAULT NULL,
+  obsolete boolean DEFAULT FALSE,
+  deleted boolean DEFAULT FALSE
+);
+
+CREATE INDEX ON taxa USING btree(taxon_id);
+
+CREATE INDEX ON taxa USING btree(taxonomy_id);
+
+CREATE INDEX ON taxa USING btree(name);
+
+CREATE INDEX ON taxa USING btree(obsolete);
+
+CREATE INDEX ON taxa USING btree(deleted);
+
+COMMENT ON COLUMN taxa.name IS 'Name of taxon, like "Pulsatilla vulgaris"';
+
+COMMENT ON COLUMN taxa.id_in_source IS 'ID of taxon as used in the source taxonomy';
+
+COMMENT ON COLUMN taxa.url IS 'URL of taxon, like "https://www.infoflora.ch/de/flora/pulsatilla-vulgaris.html"';
+
+COMMENT ON COLUMN taxa.obsolete IS 'Is taxon obsolete? Preset: false';
+
+---------------------------------------------
+-- subproject_taxa
+--
+DROP TABLE IF EXISTS subproject_taxa CASCADE;
+
+CREATE TABLE subproject_taxa(
+  subproject_taxon_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  taxon_id uuid DEFAULT NULL REFERENCES taxa(taxon_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  deleted boolean DEFAULT FALSE
+);
+
+CREATE INDEX ON subproject_taxa USING btree(subproject_taxon_id);
+
+CREATE INDEX ON subproject_taxa USING btree(subproject_id);
+
+CREATE INDEX ON subproject_taxa USING btree(taxon_id);
+
+CREATE INDEX ON subproject_taxa USING btree(deleted);
+
+---------------------------------------------
