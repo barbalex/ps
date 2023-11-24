@@ -184,3 +184,27 @@ COMMENT ON COLUMN subprojects.since_year IS 'Enables analyzing a development sin
 
 COMMENT ON COLUMN subprojects.data IS 'Room for subproject specific data, defined in "fields" table';
 
+---------------------------------------------
+-- project_users
+--
+DROP TABLE IF EXISTS project_users CASCADE;
+
+CREATE TABLE project_users(
+  project_user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  user_email text DEFAULT NULL,
+  role text DEFAULT NULL,
+  data jsonb DEFAULT NULL,
+  deleted boolean DEFAULT FALSE
+);
+
+CREATE INDEX ON project_users USING btree(project_user_id);
+
+CREATE INDEX ON project_users USING btree(project_id);
+
+CREATE INDEX ON project_users USING btree(user_email);
+
+CREATE INDEX ON project_users USING btree(deleted);
+
+COMMENT ON COLUMN project_users.user_email IS 'not user_id as must be able to be set before user has opened an account';
+
