@@ -111,3 +111,41 @@ CREATE TABLE place_levels(
   deleted boolean DEFAULT FALSE
 );
 
+CREATE INDEX ON place_levels USING btree(place_level_id);
+
+CREATE INDEX ON place_levels USING btree(project_id);
+
+CREATE INDEX ON place_levels USING btree(level);
+
+CREATE INDEX ON place_levels USING btree(name_singular);
+
+CREATE INDEX ON place_levels USING btree(deleted);
+
+COMMENT ON COLUMN place_levels.level IS 'level of place: 1, 2';
+
+COMMENT ON COLUMN place_levels.name_singular IS 'Preset: "Population"';
+
+COMMENT ON COLUMN place_levels.name_plural IS 'Preset: "Populationen"';
+
+COMMENT ON COLUMN place_levels.name_short IS 'Preset: "Pop"';
+
+COMMENT ON COLUMN place_levels.order_by IS 'Name of column to order by. Preset: "name_singular". Alternatives: data.nr';
+
+COMMENT ON COLUMN place_levels.reports IS 'Are reports used? Preset: false';
+
+COMMENT ON COLUMN place_levels.report_values IS 'Are report values used? Preset: false';
+
+COMMENT ON COLUMN place_levels.actions IS 'Are actions used? Preset: false';
+
+COMMENT ON COLUMN place_levels.action_values IS 'Are action values used? Preset: false';
+
+COMMENT ON COLUMN place_levels.action_reports IS 'Are action reports used? Preset: false';
+
+COMMENT ON COLUMN place_levels.checks IS 'Are checks used? Preset: false';
+
+COMMENT ON COLUMN place_levels.check_values IS 'Are check values used? Preset: false';
+
+COMMENT ON COLUMN place_levels.check_taxons IS 'Are check taxons used? Preset: false';
+
+COMMENT ON COLUMN place_levels.observation_references IS 'Are observation references used? Preset: false';
+
