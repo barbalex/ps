@@ -2,6 +2,7 @@
 -- Based off IETF draft, https://datatracker.ietf.org/doc/draft-peabody-dispatch-new-uuid-format/
 -- example usage:
 -- uuid_statement uuid DEFAULT public.uuid_generate_v7() PRIMARY KEY
+-- hopefully this will be in core postgresql in version 17: https://commitfest.postgresql.org/43/4388/
 --
 CREATE OR REPLACE FUNCTION uuid_generate_v7()
   RETURNS uuid
