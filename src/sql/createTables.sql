@@ -463,5 +463,5 @@ COMMENT ON COLUMN units.use_for_check_taxa IS 'Whether to use this unit for chec
 
 COMMENT ON COLUMN units.name IS 'Name of unit, like "Anzahl"';
 
-COMMENT ON COLUMN units.summable IS 'Whether values of this unit can be summed. Preset: false';
+COMMENT ON COLUMN units.summable IS 'Whether values of this unit can be summed. Else: distribution of count per value. Preset: false';
 
