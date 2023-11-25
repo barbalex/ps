@@ -836,3 +836,26 @@ CREATE INDEX ON observation_sources((1))
 WHERE
   deleted;
 
+COMMENT ON COLUMN observation_sources.name IS 'Name of observation source, like "GBIF, 1995"';
+
+COMMENT ON COLUMN observation_sources.url IS 'URL of observation source, like "https://www.gbif.org/"';
+
+COMMENT ON COLUMN observation_sources.data IS 'Room for observation source specific data, defined in "fields" table';
+
+---------------------------------------------
+-- observations
+--
+DROP TABLE IF EXISTS observations CASCADE;
+
+CREATE TABLE observations(
+  observation_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  observation_source_id uuid DEFAULT NULL REFERENCES observation_sources(observation_source_id) ON DELETE NO action ON UPDATE CASCADE,
+  id_in_source text DEFAULT NULL,
+  url text DEFAULT NULL,
+  observation_data jsonb DEFAULT NULL,
+  geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
+  data jsonb DEFAULT NULL,
+  deleted boolean DEFAULT FALSE
+);
+
