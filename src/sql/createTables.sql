@@ -43,7 +43,9 @@ CREATE INDEX ON users USING btree(person_id);
 
 CREATE INDEX ON users USING btree(account_id);
 
-CREATE INDEX ON users USING btree(deleted);
+CREATE INDEX ON users((1))
+WHERE
+  deleted;
 
 COMMENT ON COLUMN users.email IS 'email needs to be unique. project manager can list project user by email before this user creates an own login (thus has no user_id yet)';
 
@@ -73,7 +75,9 @@ CREATE INDEX ON projects USING btree(account_id);
 
 CREATE INDEX ON projects USING btree(name);
 
-CREATE INDEX ON projects USING btree(deleted);
+CREATE INDEX ON projects((1))
+WHERE
+  deleted;
 
 COMMENT ON COLUMN projects.type IS '"species" or "biotope", preset: "species"';
 
@@ -122,7 +126,9 @@ CREATE INDEX ON place_levels USING btree(level);
 
 CREATE INDEX ON place_levels USING btree(name_singular);
 
-CREATE INDEX ON place_levels USING btree(deleted);
+CREATE INDEX ON place_levels((1))
+WHERE
+  deleted;
 
 COMMENT ON COLUMN place_levels.level IS 'level of place: 1, 2';
 
@@ -176,7 +182,9 @@ CREATE INDEX ON subprojects USING btree(since_year);
 
 CREATE INDEX ON subprojects USING gin(data);
 
-CREATE INDEX ON subprojects USING btree(deleted);
+CREATE INDEX ON subprojects((1))
+WHERE
+  deleted;
 
 COMMENT ON COLUMN subprojects.name IS 'Example: a species name like "Pulsatilla vulgaris"';
 
@@ -203,7 +211,9 @@ CREATE INDEX ON project_users USING btree(project_id);
 
 CREATE INDEX ON project_users USING btree(email);
 
-CREATE INDEX ON project_users USING btree(deleted);
+CREATE INDEX ON project_users((1))
+WHERE
+  deleted;
 
 COMMENT ON COLUMN project_users.email IS 'not user_id as must be able to be set before user has opened an account';
 
@@ -228,7 +238,9 @@ CREATE INDEX ON subproject_users USING btree(subproject_id);
 
 CREATE INDEX ON subproject_users USING btree(email);
 
-CREATE INDEX ON subproject_users USING btree(deleted);
+CREATE INDEX ON subproject_users((1))
+WHERE
+  deleted;
 
 COMMENT ON COLUMN subproject_users.email IS 'not user_id as must be able to be set before user has opened an account';
 
@@ -258,9 +270,13 @@ CREATE INDEX ON taxonomies USING btree(type);
 
 CREATE INDEX ON taxonomies USING btree(name);
 
-CREATE INDEX ON taxonomies USING btree(obsolete);
+CREATE INDEX ON taxonomies((1))
+WHERE
+  obsolete;
 
-CREATE INDEX ON taxonomies USING btree(deleted);
+CREATE INDEX ON taxonomies((1))
+WHERE
+  deleted;
 
 COMMENT ON COLUMN taxonomies.type IS 'One of: "species", "biotope". Preset: "species"';
 
@@ -293,9 +309,13 @@ CREATE INDEX ON taxa USING btree(taxonomy_id);
 
 CREATE INDEX ON taxa USING btree(name);
 
-CREATE INDEX ON taxa USING btree(obsolete);
+CREATE INDEX ON taxa((1))
+WHERE
+  obsolete;
 
-CREATE INDEX ON taxa USING btree(deleted);
+CREATE INDEX ON taxa((1))
+WHERE
+  deleted;
 
 COMMENT ON COLUMN taxa.name IS 'Name of taxon, like "Pulsatilla vulgaris"';
 
@@ -323,6 +343,107 @@ CREATE INDEX ON subproject_taxa USING btree(subproject_id);
 
 CREATE INDEX ON subproject_taxa USING btree(taxon_id);
 
-CREATE INDEX ON subproject_taxa USING btree(deleted);
+CREATE INDEX ON subproject_taxa((1))
+WHERE
+  deleted;
+
+COMMENT ON COLUMN subproject_taxa.taxon_id IS 'taxons that are meant in this subproject. Can be multiple, for instance synonyms of a single taxonomy or of different taxonomies. A taxon should be used in only one subproject.';
 
 ---------------------------------------------
+-- lists
+--
+DROP TABLE IF EXISTS lists CASCADE;
+
+CREATE TABLE lists(
+  list_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  name text DEFAULT NULL,
+  data jsonb DEFAULT NULL,
+  obsolete boolean DEFAULT FALSE,
+  deleted boolean DEFAULT FALSE
+);
+
+CREATE INDEX ON lists USING btree(list_id);
+
+CREATE INDEX ON lists USING btree(project_id);
+
+CREATE INDEX ON lists USING btree(name);
+
+CREATE INDEX ON lists((1))
+WHERE
+  obsolete;
+
+CREATE INDEX ON lists((1))
+WHERE
+  deleted;
+
+COMMENT ON COLUMN lists.name IS 'Name of list, like "Gefährdung"';
+
+COMMENT ON COLUMN lists.obsolete IS 'Is list obsolete? If so, show set values but dont let user pick one. Preset: false';
+
+---------------------------------------------
+-- list_values
+--
+DROP TABLE IF EXISTS list_values CASCADE;
+
+CREATE TABLE list_values(
+  list_value_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  value text DEFAULT NULL,
+  obsolete boolean DEFAULT FALSE,
+  deleted boolean DEFAULT FALSE
+);
+
+CREATE INDEX ON list_values USING btree(list_value_id);
+
+CREATE INDEX ON list_values USING btree(list_id);
+
+CREATE INDEX ON list_values USING btree(value);
+
+CREATE INDEX ON list_values((1))
+WHERE
+  obsolete;
+
+CREATE INDEX ON list_values((1))
+WHERE
+  deleted;
+
+COMMENT ON COLUMN list_values.value IS 'Value of list, like "Gefährdet", "5". If is a number, will have to be coercet to number when used.';
+
+---------------------------------------------
+-- units
+--
+DROP TABLE IF EXISTS units CASCADE;
+
+CREATE TABLE units(
+  unit_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  use_for_action_values boolean DEFAULT FALSE,
+  use_for_action_report_values boolean DEFAULT FALSE,
+  use_for_check_values boolean DEFAULT FALSE,
+  use_for_place_report_values boolean DEFAULT FALSE,
+  use_for_goal_report_values boolean DEFAULT FALSE,
+  use_for_subproject_taxa boolean DEFAULT FALSE,
+  use_for_check_taxa boolean DEFAULT FALSE,
+  name text DEFAULT NULL,
+  summable boolean DEFAULT FALSE,
+  sort integer DEFAULT NULL,
+  type text DEFAULT NULL,
+  list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE NO action ON UPDATE CASCADE,
+  deleted boolean DEFAULT FALSE
+);
+
+CREATE INDEX ON units USING btree(unit_id);
+
+CREATE INDEX ON units USING btree(project_id);
+
+CREATE INDEX ON units USING btree(name);
+
+CREATE INDEX ON units USING btree(sort);
+
+CREATE INDEX ON units USING btree(list_id);
+
+CREATE INDEX ON units((1))
+WHERE
+  deleted;
+
