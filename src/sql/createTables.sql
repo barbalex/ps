@@ -180,8 +180,6 @@ CREATE INDEX ON subprojects USING btree(name);
 
 CREATE INDEX ON subprojects USING btree(since_year);
 
-CREATE INDEX ON subprojects USING gin(data);
-
 CREATE INDEX ON subprojects((1))
 WHERE
   deleted;
@@ -599,8 +597,6 @@ CREATE INDEX ON action_reports USING btree(action_id);
 
 CREATE INDEX ON action_reports USING btree(year);
 
-CREATE INDEX ON action_reports USING gin(data);
-
 CREATE INDEX ON action_reports((1))
 WHERE
   deleted;
@@ -749,6 +745,94 @@ CREATE INDEX ON check_taxa USING btree(value_numeric);
 CREATE INDEX ON check_taxa USING btree(value_text);
 
 CREATE INDEX ON check_taxa((1))
+WHERE
+  deleted;
+
+---------------------------------------------
+-- place_reports
+--
+DROP TABLE IF EXISTS place_reports CASCADE;
+
+CREATE TABLE place_reports(
+  place_report_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  year integer DEFAULT DATE_PART('year', now()::date),
+  data jsonb DEFAULT NULL,
+  deleted boolean DEFAULT FALSE
+);
+
+CREATE INDEX ON place_reports USING btree(place_report_id);
+
+CREATE INDEX ON place_reports USING btree(place_id);
+
+CREATE INDEX ON place_reports USING btree(year);
+
+CREATE INDEX ON place_reports((1))
+WHERE
+  deleted;
+
+COMMENT ON COLUMN place_reports.year IS 'Year of report. Preset: current year';
+
+COMMENT ON COLUMN place_reports.data IS 'Room for place report specific data, defined in "fields" table';
+
+---------------------------------------------
+-- place_report_values
+--
+DROP TABLE IF EXISTS place_report_values CASCADE;
+
+CREATE TABLE place_report_values(
+  place_report_value_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  place_report_id uuid DEFAULT NULL REFERENCES place_reports(place_report_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE CASCADE,
+  value_integer integer DEFAULT NULL,
+  value_numeric numeric DEFAULT NULL,
+  value_text text DEFAULT NULL,
+  deleted boolean DEFAULT FALSE
+);
+
+CREATE INDEX ON place_report_values USING btree(place_report_value_id);
+
+CREATE INDEX ON place_report_values USING btree(place_report_id);
+
+CREATE INDEX ON place_report_values USING btree(unit_id);
+
+CREATE INDEX ON place_report_values USING btree(value_integer);
+
+CREATE INDEX ON place_report_values USING btree(value_numeric);
+
+CREATE INDEX ON place_report_values USING btree(value_text);
+
+CREATE INDEX ON place_report_values((1))
+WHERE
+  deleted;
+
+COMMENT ON COLUMN place_report_values.value_integer IS 'Used for integer values';
+
+COMMENT ON COLUMN place_report_values.value_numeric IS 'Used for numeric values';
+
+COMMENT ON COLUMN place_report_values.value_text IS 'Used for text values';
+
+---------------------------------------------
+-- observation_sources
+--
+DROP TABLE IF EXISTS observation_sources CASCADE;
+
+CREATE TABLE observation_sources(
+  observation_source_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  name text DEFAULT NULL,
+  url text DEFAULT NULL,
+  data jsonb DEFAULT NULL,
+  deleted boolean DEFAULT FALSE
+);
+
+CREATE INDEX ON observation_sources USING btree(observation_source_id);
+
+CREATE INDEX ON observation_sources USING btree(project_id);
+
+CREATE INDEX ON observation_sources USING btree(name);
+
+CREATE INDEX ON observation_sources((1))
 WHERE
   deleted;
 
