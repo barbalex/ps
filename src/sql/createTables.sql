@@ -408,7 +408,7 @@ CREATE INDEX ON list_values((1))
 WHERE
   deleted;
 
-COMMENT ON COLUMN list_values.value IS 'Value of list, like "Gefährdet", "5". If is a number, will have to be coercet to number when used.';
+COMMENT ON COLUMN list_values.value IS 'Value of list, like "Gefährdet", "5". If is a number, will have to be coerced to number when used.';
 
 ---------------------------------------------
 -- units
@@ -544,4 +544,31 @@ COMMENT ON COLUMN actions.data IS 'Room for action specific data, defined in "fi
 COMMENT ON COLUMN actions.geometry IS 'geometry of action';
 
 COMMENT ON COLUMN actions.relevant_for_reports IS 'Whether action is relevant for reports. Preset: true';
+
+---------------------------------------------
+-- action_values
+--
+DROP TABLE IF EXISTS action_values CASCADE;
+
+CREATE TABLE action_values(
+  action_value_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  action_id uuid DEFAULT NULL REFERENCES actions(action_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE CASCADE,
+  value text DEFAULT NULL,
+  deleted boolean DEFAULT FALSE
+);
+
+CREATE INDEX ON action_values USING btree(action_value_id);
+
+CREATE INDEX ON action_values USING btree(action_id);
+
+CREATE INDEX ON action_values USING btree(unit_id);
+
+CREATE INDEX ON action_values USING btree(value);
+
+CREATE INDEX ON action_values((1))
+WHERE
+  deleted;
+
+COMMENT ON COLUMN action_values.value IS 'Value of action, like "5". If is a number, will have to be coerced to number when used.';
 
