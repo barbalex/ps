@@ -506,3 +506,42 @@ COMMENT ON COLUMN places.data IS 'Room for place specific data, defined in "fiel
 
 COMMENT ON COLUMN places.geometry IS 'geometry of place';
 
+---------------------------------------------
+-- actions
+--
+DROP TABLE IF EXISTS actions CASCADE;
+
+CREATE TABLE actions(
+  action_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  date date DEFAULT CURRENT_DATE,
+  data jsonb DEFAULT NULL,
+  geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
+  relevant_for_reports boolean DEFAULT TRUE,
+  deleted boolean DEFAULT FALSE
+);
+
+CREATE INDEX ON actions USING btree(action_id);
+
+CREATE INDEX ON actions USING btree(place_id);
+
+CREATE INDEX ON actions USING btree(date);
+
+CREATE INDEX ON actions USING gin(data);
+
+CREATE INDEX ON actions USING gist(geometry);
+
+CREATE INDEX ON actions((1))
+WHERE
+  relevant_for_reports;
+
+CREATE INDEX ON actions((1))
+WHERE
+  deleted;
+
+COMMENT ON COLUMN actions.data IS 'Room for action specific data, defined in "fields" table';
+
+COMMENT ON COLUMN actions.geometry IS 'geometry of action';
+
+COMMENT ON COLUMN actions.relevant_for_reports IS 'Whether action is relevant for reports. Preset: true';
+
