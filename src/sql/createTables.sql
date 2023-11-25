@@ -646,3 +646,38 @@ COMMENT ON COLUMN action_report_values.value_numeric IS 'Used for numeric values
 
 COMMENT ON COLUMN action_report_values.value_text IS 'Used for text values';
 
+---------------------------------------------
+-- checks
+--
+DROP TABLE IF EXISTS checks CASCADE;
+
+CREATE TABLE checks(
+  check_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  date date DEFAULT CURRENT_DATE,
+  data jsonb DEFAULT NULL,
+  geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
+  relevant_for_reports boolean DEFAULT TRUE,
+  deleted boolean DEFAULT FALSE
+);
+
+CREATE INDEX ON checks USING btree(check_id);
+
+CREATE INDEX ON checks USING btree(place_id);
+
+CREATE INDEX ON checks USING btree(date);
+
+CREATE INDEX ON checks USING gin(data);
+
+CREATE INDEX ON checks USING gist(geometry);
+
+CREATE INDEX ON checks((1))
+WHERE
+  relevant_for_reports;
+
+CREATE INDEX ON checks((1))
+WHERE
+  deleted;
+
+COMMENT ON COLUMN checks.data IS 'Room for check specific data, defined in "fields" table';
+
