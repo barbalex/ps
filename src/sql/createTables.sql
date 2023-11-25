@@ -681,3 +681,74 @@ WHERE
 
 COMMENT ON COLUMN checks.data IS 'Room for check specific data, defined in "fields" table';
 
+---------------------------------------------
+-- check_values
+--
+DROP TABLE IF EXISTS check_values CASCADE;
+
+CREATE TABLE check_values(
+  check_value_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  check_id uuid DEFAULT NULL REFERENCES checks(check_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE CASCADE,
+  value_integer integer DEFAULT NULL,
+  value_numeric numeric DEFAULT NULL,
+  value_text text DEFAULT NULL,
+  deleted boolean DEFAULT FALSE
+);
+
+CREATE INDEX ON check_values USING btree(check_value_id);
+
+CREATE INDEX ON check_values USING btree(check_id);
+
+CREATE INDEX ON check_values USING btree(unit_id);
+
+CREATE INDEX ON check_values USING btree(value_integer);
+
+CREATE INDEX ON check_values USING btree(value_numeric);
+
+CREATE INDEX ON check_values USING btree(value_text);
+
+CREATE INDEX ON check_values((1))
+WHERE
+  deleted;
+
+COMMENT ON COLUMN check_values.value_integer IS 'Used for integer values';
+
+COMMENT ON COLUMN check_values.value_numeric IS 'Used for numeric values';
+
+COMMENT ON COLUMN check_values.value_text IS 'Used for text values';
+
+---------------------------------------------
+-- check_taxa
+--
+DROP TABLE IF EXISTS check_taxa CASCADE;
+
+CREATE TABLE check_taxa(
+  check_taxon_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  check_id uuid DEFAULT NULL REFERENCES checks(check_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  taxon_id uuid DEFAULT NULL REFERENCES taxa(taxon_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE CASCADE,
+  value_integer integer DEFAULT NULL,
+  value_numeric numeric DEFAULT NULL,
+  value_text text DEFAULT NULL,
+  deleted boolean DEFAULT FALSE
+);
+
+CREATE INDEX ON check_taxa USING btree(check_taxon_id);
+
+CREATE INDEX ON check_taxa USING btree(check_id);
+
+CREATE INDEX ON check_taxa USING btree(taxon_id);
+
+CREATE INDEX ON check_taxa USING btree(unit_id);
+
+CREATE INDEX ON check_taxa USING btree(value_integer);
+
+CREATE INDEX ON check_taxa USING btree(value_numeric);
+
+CREATE INDEX ON check_taxa USING btree(value_text);
+
+CREATE INDEX ON check_taxa((1))
+WHERE
+  deleted;
+
