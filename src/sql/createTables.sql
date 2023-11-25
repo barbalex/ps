@@ -447,3 +447,21 @@ CREATE INDEX ON units((1))
 WHERE
   deleted;
 
+COMMENT ON COLUMN units.use_for_action_values IS 'Whether to use this unit for action values. Preset: false';
+
+COMMENT ON COLUMN units.use_for_action_report_values IS 'Whether to use this unit for action report values. Preset: false';
+
+COMMENT ON COLUMN units.use_for_check_values IS 'Whether to use this unit for check values. Preset: false';
+
+COMMENT ON COLUMN units.use_for_place_report_values IS 'Whether to use this unit for place report values. Preset: false';
+
+COMMENT ON COLUMN units.use_for_goal_report_values IS 'Whether to use this unit for goal report values. Preset: false';
+
+COMMENT ON COLUMN units.use_for_subproject_taxa IS 'Whether to use this unit for subproject taxa. Preset: false';
+
+COMMENT ON COLUMN units.use_for_check_taxa IS 'Whether to use this unit for check taxa. Preset: false';
+
+COMMENT ON COLUMN units.name IS 'Name of unit, like "Anzahl"';
+
+COMMENT ON COLUMN units.summable IS 'Whether values of this unit can be summed. Preset: false';
+
