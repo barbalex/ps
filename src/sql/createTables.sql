@@ -21,6 +21,8 @@ COMMENT ON COLUMN accounts.type IS 'type of account: "free", "basic", "premium"?
 
 COMMENT ON COLUMN accounts.period IS 'period of account: free: 1 month, basic: 1 year, premium: 1 year (TODO: needs to be defined)';
 
+COMMENT ON TABLE accounts IS 'Goal: earn money';
+
 ---------------------------------------------
 -- users
 --
@@ -48,6 +50,8 @@ WHERE
   deleted;
 
 COMMENT ON COLUMN users.email IS 'email needs to be unique. project manager can list project user by email before this user creates an own login (thus has no user_id yet)';
+
+COMMENT ON TABLE users IS 'Goal: manage users and authorize them';
 
 ---------------------------------------------
 -- projects
@@ -92,6 +96,8 @@ COMMENT ON COLUMN projects.multiple_action_values_on_same_level IS 'One of: "use
 COMMENT ON COLUMN projects.multiple_check_values_on_same_level IS 'One of: "use all", "use last". Preset: "use last"';
 
 COMMENT ON COLUMN projects.data IS 'Room for project specific data, defined in "fields" table';
+
+COMMENT ON TABLE projects IS 'Goal: manage projects';
 
 ---------------------------------------------
 -- place_levels
@@ -158,6 +164,8 @@ COMMENT ON COLUMN place_levels.check_taxons IS 'Are check taxons used? Preset: f
 
 COMMENT ON COLUMN place_levels.observation_references IS 'Are observation references used? Preset: false';
 
+COMMENT ON TABLE place_levels IS 'Goal: manage place levels. Enable working with one or two levels. Organize what features are used on which level.';
+
 ---------------------------------------------
 -- subprojects
 --
@@ -190,6 +198,8 @@ COMMENT ON COLUMN subprojects.since_year IS 'Enables analyzing a development sin
 
 COMMENT ON COLUMN subprojects.data IS 'Room for subproject specific data, defined in "fields" table';
 
+COMMENT ON TABLE subprojects IS 'Goal: manage subprojects. Will most often be a species that is promoted. Can also be a (class of) biotope(s).';
+
 ---------------------------------------------
 -- project_users
 --
@@ -217,6 +227,8 @@ COMMENT ON COLUMN project_users.email IS 'not user_id as must be able to be set 
 
 COMMENT ON COLUMN project_users.role IS 'TODO: One of: "manager", "editor", "reader". Preset: "reader"';
 
+COMMENT ON TABLE project_users IS 'A way to give users access to projects (without giving them access to the whole account).';
+
 ---------------------------------------------
 -- subproject_users
 --
@@ -243,6 +255,8 @@ WHERE
 COMMENT ON COLUMN subproject_users.email IS 'not user_id as must be able to be set before user has opened an account';
 
 COMMENT ON COLUMN subproject_users.role IS 'TODO: One of: "manager", "editor", "reader". Preset: "reader"';
+
+COMMENT ON TABLE subproject_users IS 'A way to give users access to subprojects (without giving them access to the whole project). TODO: define what data from the project the user can see.';
 
 ---------------------------------------------
 -- taxonomies
@@ -275,6 +289,8 @@ WHERE
 CREATE INDEX ON taxonomies((1))
 WHERE
   deleted;
+
+COMMENT ON TABLE taxonomies IS 'A taxonomy is a list of taxa (species or biotopes).';
 
 COMMENT ON COLUMN taxonomies.type IS 'One of: "species", "biotope". Preset: "species"';
 
@@ -345,6 +361,8 @@ CREATE INDEX ON subproject_taxa((1))
 WHERE
   deleted;
 
+COMMENT ON TABLE subproject_taxa IS 'list wor what taxa data is managed in the subproject.';
+
 COMMENT ON COLUMN subproject_taxa.taxon_id IS 'taxons that are meant in this subproject. Can be multiple, for instance synonyms of a single taxonomy or of different taxonomies. A taxon should be used in only one subproject.';
 
 ---------------------------------------------
@@ -374,6 +392,8 @@ WHERE
 CREATE INDEX ON lists((1))
 WHERE
   deleted;
+
+COMMENT ON TABLE lists IS 'Manage lists of values. These lists can then be used on option-lists or dropdown-lists';
 
 COMMENT ON COLUMN lists.name IS 'Name of list, like "Gefährdung"';
 
@@ -445,6 +465,8 @@ CREATE INDEX ON units((1))
 WHERE
   deleted;
 
+COMMENT ON TABLE units IS 'Manage units of values. These units can then be used for values of actions, checks, reports, goals, taxa';
+
 COMMENT ON COLUMN units.use_for_action_values IS 'Whether to use this unit for action values. Preset: false';
 
 COMMENT ON COLUMN units.use_for_action_report_values IS 'Whether to use this unit for action report values. Preset: false';
@@ -496,6 +518,8 @@ CREATE INDEX ON places((1))
 WHERE
   deleted;
 
+COMMENT ON TABLE places IS 'Places are where actions and checks are done. They can be organized in a hierarchy of one or two levels.';
+
 COMMENT ON COLUMN places.subproject_id IS 'always set to optimize queries';
 
 COMMENT ON COLUMN places.parent_id IS 'parent place. null for places of level 1';
@@ -539,6 +563,8 @@ CREATE INDEX ON actions((1))
 WHERE
   deleted;
 
+COMMENT ON TABLE actions IS 'Actions are what is done to improve the situation of (promote) the subproject in this place.';
+
 COMMENT ON COLUMN actions.data IS 'Room for action specific data, defined in "fields" table';
 
 COMMENT ON COLUMN actions.geometry IS 'geometry of action';
@@ -572,6 +598,8 @@ CREATE INDEX ON action_values((1))
 WHERE
   deleted;
 
+COMMENT ON TABLE action_values IS 'value-ing actions. Measuring or assessing';
+
 COMMENT ON COLUMN action_values.value_integer IS 'Used for integer values';
 
 COMMENT ON COLUMN action_values.value_numeric IS 'Used for numeric values';
@@ -600,6 +628,8 @@ CREATE INDEX ON action_reports USING btree(year);
 CREATE INDEX ON action_reports((1))
 WHERE
   deleted;
+
+COMMENT ON TABLE action_reports IS 'Reporting on the success of actions.';
 
 COMMENT ON COLUMN action_reports.year IS 'Year of report. Preset: current year';
 
@@ -635,6 +665,8 @@ CREATE INDEX ON action_report_values USING btree(value_text);
 CREATE INDEX ON action_report_values((1))
 WHERE
   deleted;
+
+COMMENT ON TABLE action_report_values IS 'value-ing the success of actions';
 
 COMMENT ON COLUMN action_report_values.value_integer IS 'Used for integer values';
 
@@ -675,6 +707,8 @@ CREATE INDEX ON checks((1))
 WHERE
   deleted;
 
+COMMENT ON TABLE checks IS 'Checks describe the situation of the subproject in this place.';
+
 COMMENT ON COLUMN checks.data IS 'Room for check specific data, defined in "fields" table';
 
 ---------------------------------------------
@@ -707,6 +741,8 @@ CREATE INDEX ON check_values USING btree(value_text);
 CREATE INDEX ON check_values((1))
 WHERE
   deleted;
+
+COMMENT ON TABLE check_values IS 'value-ing checks i.e. the situation of the subproject in this place';
 
 COMMENT ON COLUMN check_values.value_integer IS 'Used for integer values';
 
@@ -930,5 +966,32 @@ CREATE INDEX ON user_messages USING btree(user_id);
 
 CREATE INDEX ON user_messages USING btree(message_id);
 
+---------------------------------------------
+-- place_users
+--
+DROP TABLE IF EXISTS place_users CASCADE;
 
+CREATE TABLE place_users(
+  place_user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  email text DEFAULT NULL,
+  role text DEFAULT NULL,
+  deleted boolean DEFAULT FALSE
+);
+
+CREATE INDEX ON place_users USING btree(place_user_id);
+
+CREATE INDEX ON place_users USING btree(place_id);
+
+CREATE INDEX ON place_users USING btree(email);
+
+CREATE INDEX ON place_users((1))
+WHERE
+  deleted;
+
+COMMENT ON TABLE place_users IS 'A way to give users access to places without giving them access to the whole project or subproject.';
+
+COMMENT ON COLUMN place_users.email IS 'not user_id as must be able to be set before user has opened an account';
+
+COMMENT ON COLUMN place_users.role IS 'TODO: One of: "manager", "editor", "reader". Preset: "reader"';
 
