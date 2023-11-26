@@ -849,13 +849,80 @@ DROP TABLE IF EXISTS observations CASCADE;
 
 CREATE TABLE observations(
   observation_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   observation_source_id uuid DEFAULT NULL REFERENCES observation_sources(observation_source_id) ON DELETE NO action ON UPDATE CASCADE,
+  place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   id_in_source text DEFAULT NULL,
   url text DEFAULT NULL,
   observation_data jsonb DEFAULT NULL,
+  date date DEFAULT NULL,
+  author text DEFAULT NULL,
   geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
   data jsonb DEFAULT NULL,
   deleted boolean DEFAULT FALSE
 );
+
+CREATE INDEX ON observations USING btree(observation_id);
+
+CREATE INDEX ON observations USING btree(observation_source_id);
+
+CREATE INDEX ON observations USING btree(place_id);
+
+CREATE INDEX ON observations USING btree(date);
+
+CREATE INDEX ON observations USING btree(author);
+
+CREATE INDEX ON observations USING gist(geometry);
+
+CREATE INDEX ON observations((1))
+WHERE
+  deleted;
+
+COMMENT ON COLUMN observations.observation_source_id IS 'observation source of observation';
+
+COMMENT ON COLUMN observations.place_id IS 'place observation was assigned to';
+
+COMMENT ON COLUMN observations.id_in_source IS 'ID of observation as used in the source. Needed to update its data';
+
+COMMENT ON COLUMN observations.url IS 'URL of observation, like "https://www.gbif.org/occurrence/1234567890"';
+
+COMMENT ON COLUMN observations.observation_data IS 'data as received from observation source';
+
+COMMENT ON COLUMN observations.date IS 'date of observation. Extracted from observation_data to list the observation';
+
+COMMENT ON COLUMN observations.author IS 'author of observation. Extracted from observation_data to list the observation';
+
+COMMENT ON COLUMN observations.geometry IS 'geometry of observation. Extracted from observation_data to show the observation on a map';
+
+COMMENT ON COLUMN observations.data IS 'Room for observation specific data, defined in "fields" table';
+
+---------------------------------------------
+-- message
+--
+DROP TABLE IF EXISTS message;
+
+CREATE TABLE message(
+  message_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  date timestamp DEFAULT now(),
+  message text DEFAULT NULL,
+);
+
+CREATE INDEX ON message USING btree(message_id);
+
+CREATE INDEX ON message USING btree(date);
+
+COMMENT ON TABLE messages IS 'messages for the user. Mostly informing about updates of';
+
+---------------------------------------------
+-- user_messages
+--
+DROP TABLE IF EXISTS user_messages CASCADE;
+
+CREATE TABLE user_messages(
+  user_message_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  message_id uuid DEFAULT NULL REFERENCES message(message_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  read boolean DEFAULT FALSE,
+  deleted boolean DEFAULT FALSE
+);
+
 
