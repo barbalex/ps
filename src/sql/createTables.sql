@@ -592,7 +592,11 @@ CREATE INDEX ON action_values USING btree(action_id);
 
 CREATE INDEX ON action_values USING btree(unit_id);
 
-CREATE INDEX ON action_values USING btree(value);
+CREATE INDEX ON action_values USING btree(value_integer);
+
+CREATE INDEX ON action_values USING btree(value_numeric);
+
+CREATE INDEX ON action_values USING btree(value_text);
 
 CREATE INDEX ON action_values((1))
 WHERE
@@ -939,7 +943,7 @@ DROP TABLE IF EXISTS message;
 CREATE TABLE message(
   message_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   date timestamp DEFAULT now(),
-  message text DEFAULT NULL,
+  message text DEFAULT NULL
 );
 
 CREATE INDEX ON message USING btree(message_id);
