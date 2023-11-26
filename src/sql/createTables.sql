@@ -70,6 +70,7 @@ CREATE TABLE projects(
   multiple_action_values_on_same_level text DEFAULT NULL,
   multiple_check_values_on_same_level text DEFAULT NULL,
   data jsonb DEFAULT NULL,
+  files boolean DEFAULT TRUE,
   deleted boolean DEFAULT FALSE
 );
 
@@ -97,6 +98,8 @@ COMMENT ON COLUMN projects.multiple_check_values_on_same_level IS 'One of: "use 
 
 COMMENT ON COLUMN projects.data IS 'Room for project specific data, defined in "fields" table';
 
+COMMENT ON COLUMN projects.files IS 'Whether files are used. Preset: true';
+
 COMMENT ON TABLE projects IS 'Goal: manage projects';
 
 ---------------------------------------------
@@ -121,6 +124,7 @@ CREATE TABLE place_levels(
   check_values boolean DEFAULT FALSE,
   check_taxons boolean DEFAULT FALSE,
   observation_references boolean DEFAULT FALSE,
+  files boolean DEFAULT TRUE,
   deleted boolean DEFAULT FALSE
 );
 
@@ -164,6 +168,8 @@ COMMENT ON COLUMN place_levels.check_taxons IS 'Are check taxons used? Preset: f
 
 COMMENT ON COLUMN place_levels.observation_references IS 'Are observation references used? Preset: false';
 
+COMMENT ON COLUMN place_levels.files IS 'Whether files are used. Preset: true';
+
 COMMENT ON TABLE place_levels IS 'Goal: manage place levels. Enable working with one or two levels. Organize what features are used on which level.';
 
 ---------------------------------------------
@@ -177,6 +183,7 @@ CREATE TABLE subprojects(
   name text DEFAULT NULL,
   since_year integer DEFAULT NULL,
   data jsonb DEFAULT NULL,
+  files boolean DEFAULT TRUE,
   deleted boolean DEFAULT FALSE
 );
 
@@ -197,6 +204,8 @@ COMMENT ON COLUMN subprojects.name IS 'Example: a species name like "Pulsatilla 
 COMMENT ON COLUMN subprojects.since_year IS 'Enables analyzing a development since a certain year, like the begin of the project';
 
 COMMENT ON COLUMN subprojects.data IS 'Room for subproject specific data, defined in "fields" table';
+
+COMMENT ON COLUMN subprojects.files IS 'Whether files are used. Preset: true';
 
 COMMENT ON TABLE subprojects IS 'Goal: manage subprojects. Will most often be a species that is promoted. Can also be a (class of) biotope(s).';
 
@@ -542,6 +551,7 @@ CREATE TABLE actions(
   data jsonb DEFAULT NULL,
   geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
   relevant_for_reports boolean DEFAULT TRUE,
+  files boolean DEFAULT TRUE,
   deleted boolean DEFAULT FALSE
 );
 
@@ -570,6 +580,8 @@ COMMENT ON COLUMN actions.data IS 'Room for action specific data, defined in "fi
 COMMENT ON COLUMN actions.geometry IS 'geometry of action';
 
 COMMENT ON COLUMN actions.relevant_for_reports IS 'Whether action is relevant for reports. Preset: true';
+
+COMMENT ON COLUMN actions.files IS 'Whether files are used. Preset: true';
 
 ---------------------------------------------
 -- action_values
@@ -690,6 +702,7 @@ CREATE TABLE checks(
   data jsonb DEFAULT NULL,
   geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
   relevant_for_reports boolean DEFAULT TRUE,
+  files boolean DEFAULT TRUE,
   deleted boolean DEFAULT FALSE
 );
 
@@ -714,6 +727,8 @@ WHERE
 COMMENT ON TABLE checks IS 'Checks describe the situation of the subproject in this place.';
 
 COMMENT ON COLUMN checks.data IS 'Room for check specific data, defined in "fields" table';
+
+COMMENT ON COLUMN checks.files IS 'Whether files are used. Preset: true';
 
 ---------------------------------------------
 -- check_values
@@ -798,6 +813,7 @@ CREATE TABLE place_reports(
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
+  files boolean DEFAULT TRUE,
   deleted boolean DEFAULT FALSE
 );
 
@@ -814,6 +830,8 @@ WHERE
 COMMENT ON COLUMN place_reports.year IS 'Year of report. Preset: current year';
 
 COMMENT ON COLUMN place_reports.data IS 'Room for place report specific data, defined in "fields" table';
+
+COMMENT ON COLUMN place_reports.files IS 'Whether files are used. Preset: true';
 
 ---------------------------------------------
 -- place_report_values
@@ -998,4 +1016,137 @@ COMMENT ON TABLE place_users IS 'A way to give users access to places without gi
 COMMENT ON COLUMN place_users.email IS 'not user_id as must be able to be set before user has opened an account';
 
 COMMENT ON COLUMN place_users.role IS 'TODO: One of: "manager", "editor", "reader". Preset: "reader"';
+
+---------------------------------------------
+-- goals
+--
+DROP TABLE IF EXISTS goals CASCADE;
+
+CREATE TABLE goals(
+  goal_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  year integer DEFAULT DATE_PART('year', now()::date),
+  name text DEFAULT NULL,
+  data jsonb DEFAULT NULL,
+  deleted boolean DEFAULT FALSE
+);
+
+CREATE INDEX ON goals USING btree(goal_id);
+
+CREATE INDEX ON goals USING btree(subproject_id);
+
+CREATE INDEX ON goals USING btree(year);
+
+CREATE INDEX ON goals((1))
+WHERE
+  deleted;
+
+COMMENT ON TABLE goals IS 'What is to be achieved in the subproject in this year.';
+
+---------------------------------------------
+-- goal_reports
+--
+DROP TABLE IF EXISTS goal_reports CASCADE;
+
+CREATE TABLE goal_reports(
+  goal_report_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  goal_id uuid DEFAULT NULL REFERENCES goals(goal_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  data jsonb DEFAULT NULL,
+  deleted boolean DEFAULT FALSE
+);
+
+CREATE INDEX ON goal_reports USING btree(goal_report_id);
+
+CREATE INDEX ON goal_reports USING btree(goal_id);
+
+CREATE INDEX ON goal_reports((1))
+WHERE
+  deleted;
+
+COMMENT ON TABLE goal_reports IS 'Reporting on the success of goals.';
+
+---------------------------------------------
+-- goal_report_values
+--
+DROP TABLE IF EXISTS goal_report_values CASCADE;
+
+CREATE TABLE goal_report_values(
+  goal_report_value_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  goal_report_id uuid DEFAULT NULL REFERENCES goal_reports(goal_report_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE CASCADE,
+  value_integer integer DEFAULT NULL,
+  value_numeric numeric DEFAULT NULL,
+  value_text text DEFAULT NULL,
+  deleted boolean DEFAULT FALSE
+);
+
+CREATE INDEX ON goal_report_values USING btree(goal_report_value_id);
+
+CREATE INDEX ON goal_report_values USING btree(goal_report_id);
+
+CREATE INDEX ON goal_report_values USING btree(unit_id);
+
+CREATE INDEX ON goal_report_values USING btree(value_integer);
+
+CREATE INDEX ON goal_report_values USING btree(value_numeric);
+
+CREATE INDEX ON goal_report_values USING btree(value_text);
+
+CREATE INDEX ON goal_report_values((1))
+WHERE
+  deleted;
+
+COMMENT ON TABLE goal_report_values IS 'value-ing the success of goals';
+
+---------------------------------------------
+-- subproject_reports
+--
+DROP TABLE IF EXISTS subproject_reports CASCADE;
+
+CREATE TABLE subproject_reports(
+  subproject_report_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  year integer DEFAULT DATE_PART('year', now()::date),
+  data jsonb DEFAULT NULL,
+  files boolean DEFAULT TRUE,
+  deleted boolean DEFAULT FALSE
+);
+
+CREATE INDEX ON subproject_reports USING btree(subproject_report_id);
+
+CREATE INDEX ON subproject_reports USING btree(subproject_id);
+
+CREATE INDEX ON subproject_reports USING btree(year);
+
+CREATE INDEX ON subproject_reports((1))
+WHERE
+  deleted;
+
+COMMENT ON TABLE subproject_reports IS 'Reporting on the success of subprojects.';
+
+---------------------------------------------
+-- project_reports
+--
+DROP TABLE IF EXISTS project_reports CASCADE;
+
+CREATE TABLE project_reports(
+  project_report_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  year integer DEFAULT DATE_PART('year', now()::date),
+  data jsonb DEFAULT NULL,
+  files boolean DEFAULT TRUE,
+  deleted boolean DEFAULT FALSE
+);
+
+CREATE INDEX ON project_reports USING btree(project_report_id);
+
+CREATE INDEX ON project_reports USING btree(project_id);
+
+CREATE INDEX ON project_reports USING btree(year);
+
+CREATE INDEX ON project_reports((1))
+WHERE
+  deleted;
+
+COMMENT ON TABLE project_reports IS 'Reporting on the success of projects.';
 
