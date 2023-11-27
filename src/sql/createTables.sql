@@ -1150,3 +1150,27 @@ WHERE
 
 COMMENT ON TABLE project_reports IS 'Reporting on the success of projects.';
 
+---------------------------------------------
+-- files
+--
+DROP TABLE IF EXISTS files CASCADE;
+
+-- TODO:
+-- - where is table/reference_id used?
+-- - is below version of referencing per foreign key better?
+CREATE TABLE files(
+  file_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  action_id uuid DEFAULT NULL REFERENCES actions(action_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  check_id uuid DEFAULT NULL REFERENCES checks(check_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  observation_id uuid DEFAULT NULL REFERENCES observations(observation_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  name text DEFAULT NULL,
+  data jsonb DEFAULT NULL,
+  mimetype text DEFAULT NULL,
+  file_data bytea DEFAULT NULL,
+  file_url text DEFAULT NULL,
+  deleted boolean DEFAULT FALSE
+);
+
