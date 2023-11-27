@@ -162,7 +162,7 @@ COMMENT ON COLUMN place_levels.name_plural IS 'Preset: "Populationen"';
 
 COMMENT ON COLUMN place_levels.name_short IS 'Preset: "Pop"';
 
-COMMENT ON COLUMN place_levels.order_by IS 'Name of column to order by. Preset: "name_singular". Alternatives: data.nr';
+COMMENT ON COLUMN place_levels.order_by IS 'Used to order places. Contains a field included in the data. Can be a comma separated list of fields. TODO: One or multiple comma separated virtual fields will be added and indexed in sqlite and postgresql. Preset: "name_singular". Alternatives: data.[field]';
 
 COMMENT ON COLUMN place_levels.reports IS 'Are reports used? Preset: false';
 
@@ -1392,6 +1392,7 @@ CREATE TABLE persons(
   person_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   data jsonb DEFAULT NULL,
+  label text DEFAULT NULL,
   order_by text DEFAULT NULL,
   deleted boolean DEFAULT FALSE
 );
@@ -1410,5 +1411,170 @@ COMMENT ON COLUMN persons.account_id IS 'redundant account_id enhances data safe
 
 COMMENT ON COLUMN persons.data IS 'Room for person specific data, defined in "fields" table';
 
+COMMENT ON COLUMN persons.label IS 'Used to label persons in lists. Contains a field included in the data. Can be a comma separated list of fields. TODO: One or multiple comma separated virtual fields will be added in sqlite and postgresql.';
+
 COMMENT ON COLUMN persons.order_by IS 'Used to order persons in lists. Contains a field included in the data. Can be a comma separated list of fields. TODO: One or multiple comma separated virtual fields will be added and indexed in sqlite and postgresql.';
+
+---------------------------------------------
+-- field_types
+--
+DROP TABLE IF EXISTS field_types CASCADE;
+
+CREATE TABLE field_types(
+  field_type text PRIMARY KEY DEFAULT NULL,
+  -- no account_id as field_types are predefined for all projects
+  sort smallint DEFAULT NULL,
+  comment text,
+  deleted integer DEFAULT 0
+);
+
+INSERT INTO field_types(field_type, sort, comment)
+  VALUES ('text', 1, 'Example: text'),
+('boolean', 2, 'true or false'),
+('integer', 3, 'Example: 1'),
+('decimal', 4, 'Example: 1.1'),
+('date', 5, 'Example: 2021-03-08'),
+('date-time', 6, 'Timestamp with time zone. Example: 2021-03-08 10:23:54+01'),
+('time', 7, 'Time of day. Example: 10:23'),
+('file-reference', 8, 'the id of the file')
+ON CONFLICT ON CONSTRAINT field_types_pkey
+  DO UPDATE SET
+    comment = excluded.comment;
+
+---------------------------------------------
+-- widget_types
+--
+DROP TABLE IF EXISTS widget_types CASCADE;
+
+CREATE TABLE widget_types(
+  widget_type text PRIMARY KEY DEFAULT NULL,
+  -- no account_id as field_types are predefined for all projects
+  needs_list integer DEFAULT 0,
+  sort smallint DEFAULT NULL,
+  comment text,
+  deleted integer DEFAULT 0
+);
+
+INSERT INTO widget_types(widget_type, needs_list, sort, comment)
+  VALUES ('text', 0, 1, 'Short field accepting text'),
+('textarea', 0, 2, 'Field accepting text, lines can break'),
+('markdown', 0, 3, 'Field accepting text, expressing markdown'),
+('options-2', 0, 4, 'single boolean field showing one option for true (active) and false (not active)'),
+('options-3', 0, 5, 'single boolean field showing true, false and null'),
+('options-few', 1, 7, 'short list, showing every entry'),
+('options-many', 1, 8, 'long dropdown-list'),
+('datepicker', 0, 9, 'enables choosing a date'),
+('filepicker', 0, 10, 'enables choosing a file'),
+('jes-no', 0, 6, 'boolean field presenting one option for true and false each'),
+('datetimepicker', 0, 10, 'enables choosing a date-time'),
+('timepicker', 0, 11, 'enables choosing time of day'),
+('rich-text', 0, 12, 'enables rich formatting of text')
+ON CONFLICT ON CONSTRAINT widget_types_value_key
+  DO UPDATE SET
+    comment = excluded.comment, sort = excluded.sort, needs_list = excluded.needs_list;
+
+---------------------------------------------
+-- widgets_for_fields
+--
+DROP TABLE IF EXISTS widgets_for_fields CASCADE;
+
+CREATE TABLE widgets_for_fields(
+  -- no account_id as field_types are predefined for all projects
+  field_type uuid DEFAULT NULL REFERENCES field_types(field_type) ON DELETE CASCADE ON UPDATE CASCADE,
+  widget_type uuid DEFAULT NULL REFERENCES widget_types(widget_type) ON DELETE CASCADE ON UPDATE CASCADE,
+  deleted boolean DEFAULT FALSE
+);
+
+INSERT INTO widgets_for_fields(field_value, widget_value)
+  VALUES ('text', 'text'),
+('text', 'markdown'),
+('boolean', 'options-2'),
+('boolean', 'options-3'),
+('integer', 'text'),
+('decimal', 'text'),
+('decimal', 'options-few'),
+('decimal', 'options-many'),
+('text', 'options-many'),
+('integer', 'options-many'),
+('text', 'options-few'),
+('integer', 'options-few'),
+('date', 'datepicker'),
+('text', 'textarea'),
+('file-reference', 'filepicker'),
+('boolean', 'jes-no'),
+('date-time', 'datetimepicker'),
+('time', 'timepicker'),
+('text', 'rich-text')
+ON CONFLICT ON CONSTRAINT widgets_for_fields_field_value_widget_value_key
+  DO NOTHING;
+
+---------------------------------------------
+-- fields
+--
+DROP TABLE IF EXISTS fields CASCADE;
+
+CREATE TABLE fields(
+  field_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  project_report_id uuid DEFAULT NULL REFERENCES project_reports(project_report_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  subproject_report_id uuid DEFAULT NULL REFERENCES subproject_reports(subproject_report_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  place_report_id uuid DEFAULT NULL REFERENCES place_reports(place_report_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  action_id uuid DEFAULT NULL REFERENCES actions(action_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  action_report_id uuid DEFAULT NULL REFERENCES action_reports(action_report_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  check_id uuid DEFAULT NULL REFERENCES checks(check_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  person_id uuid DEFAULT NULL REFERENCES persons(person_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  goal_id uuid DEFAULT NULL REFERENCES goals(goal_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  goal_report_id uuid DEFAULT NULL REFERENCES goal_reports(goal_report_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  taxonomy_id uuid DEFAULT NULL REFERENCES taxonomies(taxonomy_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE NO action ON UPDATE CASCADE,
+  file_id uuid DEFAULT NULL REFERENCES files(file_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  observation_source_id uuid DEFAULT NULL REFERENCES observation_sources(observation_source_id) ON DELETE NO action ON UPDATE CASCADE,
+  observation_id uuid DEFAULT NULL REFERENCES observations(observation_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  type uuid DEFAULT NULL REFERENCES field_types(field_type) ON DELETE CASCADE ON UPDATE CASCADE,
+  widget uuid DEFAULT NULL REFERENCES widget_types(widget_type) ON DELETE CASCADE ON UPDATE CASCADE,
+  label text DEFAULT NULL,
+  list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE NO action ON UPDATE CASCADE, -- TODO: double...
+  preset text DEFAULT NULL,
+  obsolete boolean DEFAULT FALSE,
+  deleted boolean DEFAULT FALSE
+);
+
+CREATE INDEX ON fields USING btree(field_id);
+
+CREATE INDEX ON fields USING btree(account_id);
+
+CREATE INDEX ON fields USING btree(project_id);
+
+CREATE INDEX ON fields USING btree(project_report_id);
+
+CREATE INDEX ON fields USING btree(subproject_id);
+
+CREATE INDEX ON fields USING btree(subproject_report_id);
+
+CREATE INDEX ON fields USING btree(place_id);
+
+CREATE INDEX ON fields USING btree(place_report_id);
+
+CREATE INDEX ON fields USING btree(action_id);
+
+CREATE INDEX ON fields USING btree(action_report_id);
+
+CREATE INDEX ON fields USING btree(check_id);
+
+CREATE INDEX ON fields USING btree(person_id);
+
+CREATE INDEX ON fields USING btree(goal_id);
+
+CREATE INDEX ON fields USING btree(goal_report_id);
+
+CREATE INDEX ON fields USING btree(taxonomy_id);
+
+CREATE INDEX ON fields USING btree(list_id);
+
+CREATE INDEX ON fields USING btree(file_id);
+
+CREATE INDEX ON fields USING btree(observation_source_id);
 
