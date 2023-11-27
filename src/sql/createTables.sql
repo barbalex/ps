@@ -1,38 +1,15 @@
 CREATE EXTENSION IF NOT EXISTS postgis;
 
 ---------------------------------------------
--- accounts
---
-DROP TABLE IF EXISTS accounts CASCADE;
-
-CREATE TABLE accounts(
-  account_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  type text DEFAULT NULL,
-  period daterange DEFAULT NULL
-);
-
--- how to query if date is in range:
--- where period @> '2023-11-01'::date
-CREATE INDEX ON accounts USING btree(account_id);
-
-CREATE INDEX ON accounts USING gist(period);
-
-COMMENT ON COLUMN accounts.type IS 'type of account: "free", "basic", "premium"? (TODO: needs to be defined)';
-
-COMMENT ON COLUMN accounts.period IS 'period of account: free: 1 month, basic: 1 year, premium: 1 year (TODO: needs to be defined)';
-
-COMMENT ON TABLE accounts IS 'Goal: earn money';
-
----------------------------------------------
 -- users
 --
 DROP TABLE IF EXISTS users CASCADE;
 
 CREATE TABLE users(
   user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  email text UNIQUE DEFAULT NULL, -- TODO: email needs to be unique
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  email text UNIQUE DEFAULT NULL, -- TODO: email needs to be unique per account
   person_id uuid DEFAULT NULL,
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE NO action ON UPDATE NO action,
   auth_id uuid DEFAULT NULL,
   deleted boolean DEFAULT FALSE
 );
@@ -49,9 +26,39 @@ CREATE INDEX ON users((1))
 WHERE
   deleted;
 
+COMMENT ON COLUMN users.account_id IS 'redundant account_id enhances data safety';
+
 COMMENT ON COLUMN users.email IS 'email needs to be unique. project manager can list project user by email before this user creates an own login (thus has no user_id yet)';
 
 COMMENT ON TABLE users IS 'Goal: manage users and authorize them';
+
+---------------------------------------------
+-- accounts
+--
+DROP TABLE IF EXISTS accounts CASCADE;
+
+CREATE TABLE accounts(
+  account_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  owning_user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE NO action ON UPDATE NO action,
+  type text DEFAULT NULL,
+  period daterange DEFAULT NULL
+);
+
+-- how to query if date is in range:
+-- where period @> '2023-11-01'::date
+CREATE INDEX ON accounts USING btree(account_id);
+
+CREATE INDEX ON accounts USING btree(owning_user_id);
+
+CREATE INDEX ON accounts USING gist(period);
+
+COMMENT ON TABLE accounts IS 'Goal: earn money';
+
+COMMENT ON COLUMN accounts.owning_user_id IS 'user that owns the account. null for accounts that are not owned by a user';
+
+COMMENT ON COLUMN accounts.type IS 'type of account: "free", "basic", "premium"? (TODO: needs to be defined)';
+
+COMMENT ON COLUMN accounts.period IS 'period of account: free: 1 month, basic: 1 year, premium: 1 year (TODO: needs to be defined)';
 
 ---------------------------------------------
 -- projects
@@ -60,7 +67,7 @@ DROP TABLE IF EXISTS projects CASCADE;
 
 CREATE TABLE projects(
   project_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE NO action ON UPDATE NO action,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
   type text DEFAULT NULL,
   subproject_name_singular text DEFAULT NULL,
@@ -83,6 +90,8 @@ CREATE INDEX ON projects USING btree(name);
 CREATE INDEX ON projects((1))
 WHERE
   deleted;
+
+COMMENT ON COLUMN projects.account_id IS 'redundant account_id enhances data safety';
 
 COMMENT ON COLUMN projects.type IS '"species" or "biotope", preset: "species"';
 
@@ -109,6 +118,7 @@ DROP TABLE IF EXISTS place_levels CASCADE;
 
 CREATE TABLE place_levels(
   place_level_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   level integer DEFAULT NULL,
   name_singular text DEFAULT NULL,
@@ -130,6 +140,8 @@ CREATE TABLE place_levels(
 
 CREATE INDEX ON place_levels USING btree(place_level_id);
 
+CREATE INDEX ON place_levels USING btree(account_id);
+
 CREATE INDEX ON place_levels USING btree(project_id);
 
 CREATE INDEX ON place_levels USING btree(level);
@@ -139,6 +151,8 @@ CREATE INDEX ON place_levels USING btree(name_singular);
 CREATE INDEX ON place_levels((1))
 WHERE
   deleted;
+
+COMMENT ON COLUMN place_levels.account_id IS 'redundant account_id enhances data safety';
 
 COMMENT ON COLUMN place_levels.level IS 'level of place: 1, 2';
 
@@ -179,6 +193,7 @@ DROP TABLE IF EXISTS subprojects CASCADE;
 
 CREATE TABLE subprojects(
   subproject_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
   since_year integer DEFAULT NULL,
@@ -189,6 +204,8 @@ CREATE TABLE subprojects(
 
 CREATE INDEX ON subprojects USING btree(subproject_id);
 
+CREATE INDEX ON subprojects USING btree(account_id);
+
 CREATE INDEX ON subprojects USING btree(project_id);
 
 CREATE INDEX ON subprojects USING btree(name);
@@ -198,6 +215,8 @@ CREATE INDEX ON subprojects USING btree(since_year);
 CREATE INDEX ON subprojects((1))
 WHERE
   deleted;
+
+COMMENT ON COLUMN subprojects.account_id IS 'redundant account_id enhances data safety';
 
 COMMENT ON COLUMN subprojects.name IS 'Example: a species name like "Pulsatilla vulgaris"';
 
@@ -216,6 +235,7 @@ DROP TABLE IF EXISTS project_users CASCADE;
 
 CREATE TABLE project_users(
   project_user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   email text DEFAULT NULL,
   role text DEFAULT NULL,
@@ -224,6 +244,8 @@ CREATE TABLE project_users(
 
 CREATE INDEX ON project_users USING btree(project_user_id);
 
+CREATE INDEX ON project_users USING btree(account_id);
+
 CREATE INDEX ON project_users USING btree(project_id);
 
 CREATE INDEX ON project_users USING btree(email);
@@ -231,6 +253,8 @@ CREATE INDEX ON project_users USING btree(email);
 CREATE INDEX ON project_users((1))
 WHERE
   deleted;
+
+COMMENT ON COLUMN project_users.account_id IS 'redundant account_id enhances data safety';
 
 COMMENT ON COLUMN project_users.email IS 'not user_id as must be able to be set before user has opened an account';
 
@@ -245,6 +269,7 @@ DROP TABLE IF EXISTS subproject_users CASCADE;
 
 CREATE TABLE subproject_users(
   subproject_user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   email text DEFAULT NULL,
   role text DEFAULT NULL,
@@ -253,6 +278,8 @@ CREATE TABLE subproject_users(
 
 CREATE INDEX ON subproject_users USING btree(subproject_user_id);
 
+CREATE INDEX ON subproject_users USING btree(account_id);
+
 CREATE INDEX ON subproject_users USING btree(subproject_id);
 
 CREATE INDEX ON subproject_users USING btree(email);
@@ -260,6 +287,8 @@ CREATE INDEX ON subproject_users USING btree(email);
 CREATE INDEX ON subproject_users((1))
 WHERE
   deleted;
+
+COMMENT ON COLUMN subproject_users.account_id IS 'redundant account_id enhances data safety';
 
 COMMENT ON COLUMN subproject_users.email IS 'not user_id as must be able to be set before user has opened an account';
 
@@ -274,6 +303,7 @@ DROP TABLE IF EXISTS taxonomies CASCADE;
 
 CREATE TABLE taxonomies(
   taxonomy_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   type text DEFAULT NULL,
   name text DEFAULT NULL,
@@ -284,6 +314,8 @@ CREATE TABLE taxonomies(
 );
 
 CREATE INDEX ON taxonomies USING btree(taxonomy_id);
+
+CREATE INDEX ON taxonomies USING btree(account_id);
 
 CREATE INDEX ON taxonomies USING btree(project_id);
 
@@ -300,6 +332,8 @@ WHERE
   deleted;
 
 COMMENT ON TABLE taxonomies IS 'A taxonomy is a list of taxa (species or biotopes).';
+
+COMMENT ON COLUMN taxonomies.account_id IS 'redundant account_id enhances data safety';
 
 COMMENT ON COLUMN taxonomies.type IS 'One of: "species", "biotope". Preset: "species"';
 
@@ -318,6 +352,7 @@ DROP TABLE IF EXISTS taxa CASCADE;
 
 CREATE TABLE taxa(
   taxon_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   taxonomy_id uuid DEFAULT NULL REFERENCES taxonomies(taxonomy_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
   id_in_source text DEFAULT NULL,
@@ -327,6 +362,8 @@ CREATE TABLE taxa(
 );
 
 CREATE INDEX ON taxa USING btree(taxon_id);
+
+CREATE INDEX ON taxa USING btree(account_id);
 
 CREATE INDEX ON taxa USING btree(taxonomy_id);
 
@@ -342,6 +379,8 @@ WHERE
 
 COMMENT ON COLUMN taxa.name IS 'Name of taxon, like "Pulsatilla vulgaris"';
 
+COMMENT ON COLUMN taxa.account_id IS 'redundant account_id enhances data safety';
+
 COMMENT ON COLUMN taxa.id_in_source IS 'ID of taxon as used in the source taxonomy';
 
 COMMENT ON COLUMN taxa.url IS 'URL of taxon, like "https://www.infoflora.ch/de/flora/pulsatilla-vulgaris.html"';
@@ -355,12 +394,15 @@ DROP TABLE IF EXISTS subproject_taxa CASCADE;
 
 CREATE TABLE subproject_taxa(
   subproject_taxon_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   taxon_id uuid DEFAULT NULL REFERENCES taxa(taxon_id) ON DELETE CASCADE ON UPDATE CASCADE,
   deleted boolean DEFAULT FALSE
 );
 
 CREATE INDEX ON subproject_taxa USING btree(subproject_taxon_id);
+
+CREATE INDEX ON subproject_taxa USING btree(account_id);
 
 CREATE INDEX ON subproject_taxa USING btree(subproject_id);
 
@@ -372,6 +414,8 @@ WHERE
 
 COMMENT ON TABLE subproject_taxa IS 'list wor what taxa data is managed in the subproject.';
 
+COMMENT ON COLUMN subproject_taxa.account_id IS 'redundant account_id enhances data safety';
+
 COMMENT ON COLUMN subproject_taxa.taxon_id IS 'taxons that are meant in this subproject. Can be multiple, for instance synonyms of a single taxonomy or of different taxonomies. A taxon should be used in only one subproject.';
 
 ---------------------------------------------
@@ -381,6 +425,7 @@ DROP TABLE IF EXISTS lists CASCADE;
 
 CREATE TABLE lists(
   list_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
   data jsonb DEFAULT NULL,
@@ -389,6 +434,8 @@ CREATE TABLE lists(
 );
 
 CREATE INDEX ON lists USING btree(list_id);
+
+CREATE INDEX ON lists USING btree(account_id);
 
 CREATE INDEX ON lists USING btree(project_id);
 
@@ -404,6 +451,8 @@ WHERE
 
 COMMENT ON TABLE lists IS 'Manage lists of values. These lists can then be used on option-lists or dropdown-lists';
 
+COMMENT ON COLUMN lists.account_id IS 'redundant account_id enhances data safety';
+
 COMMENT ON COLUMN lists.name IS 'Name of list, like "Gefährdung"';
 
 COMMENT ON COLUMN lists.obsolete IS 'Is list obsolete? If so, show set values but dont let user pick one. Preset: false';
@@ -415,6 +464,7 @@ DROP TABLE IF EXISTS list_values CASCADE;
 
 CREATE TABLE list_values(
   list_value_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE CASCADE ON UPDATE CASCADE,
   value text DEFAULT NULL,
   obsolete boolean DEFAULT FALSE,
@@ -422,6 +472,8 @@ CREATE TABLE list_values(
 );
 
 CREATE INDEX ON list_values USING btree(list_value_id);
+
+CREATE INDEX ON list_values USING btree(account_id);
 
 CREATE INDEX ON list_values USING btree(list_id);
 
@@ -437,6 +489,8 @@ WHERE
 
 COMMENT ON COLUMN list_values.value IS 'Value of list, like "Gefährdet", "5". If is a number, will have to be coerced to number when used.';
 
+COMMENT ON COLUMN list_values.account_id IS 'redundant account_id enhances data safety';
+
 ---------------------------------------------
 -- units
 --
@@ -444,6 +498,7 @@ DROP TABLE IF EXISTS units CASCADE;
 
 CREATE TABLE units(
   unit_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   use_for_action_values boolean DEFAULT FALSE,
   use_for_action_report_values boolean DEFAULT FALSE,
@@ -462,6 +517,8 @@ CREATE TABLE units(
 
 CREATE INDEX ON units USING btree(unit_id);
 
+CREATE INDEX ON units USING btree(account_id);
+
 CREATE INDEX ON units USING btree(project_id);
 
 CREATE INDEX ON units USING btree(name);
@@ -475,6 +532,8 @@ WHERE
   deleted;
 
 COMMENT ON TABLE units IS 'Manage units of values. These units can then be used for values of actions, checks, reports, goals, taxa';
+
+COMMENT ON COLUMN units.account_id IS 'redundant account_id enhances data safety';
 
 COMMENT ON COLUMN units.use_for_action_values IS 'Whether to use this unit for action values. Preset: false';
 
@@ -503,6 +562,7 @@ DROP TABLE IF EXISTS places CASCADE;
 
 CREATE TABLE places(
   place_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   parent_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE NO action ON UPDATE CASCADE,
   level integer DEFAULT 1,
@@ -512,6 +572,8 @@ CREATE TABLE places(
 );
 
 CREATE INDEX ON places USING btree(place_id);
+
+CREATE INDEX ON places USING btree(account_id);
 
 CREATE INDEX ON places USING btree(subproject_id);
 
@@ -528,6 +590,8 @@ WHERE
   deleted;
 
 COMMENT ON TABLE places IS 'Places are where actions and checks are done. They can be organized in a hierarchy of one or two levels.';
+
+COMMENT ON COLUMN places.account_id IS 'redundant account_id enhances data safety';
 
 COMMENT ON COLUMN places.subproject_id IS 'always set to optimize queries';
 
@@ -546,6 +610,7 @@ DROP TABLE IF EXISTS actions CASCADE;
 
 CREATE TABLE actions(
   action_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   date date DEFAULT CURRENT_DATE,
   data jsonb DEFAULT NULL,
@@ -556,6 +621,8 @@ CREATE TABLE actions(
 );
 
 CREATE INDEX ON actions USING btree(action_id);
+
+CREATE INDEX ON actions USING btree(account_id);
 
 CREATE INDEX ON actions USING btree(place_id);
 
@@ -575,6 +642,8 @@ WHERE
 
 COMMENT ON TABLE actions IS 'Actions are what is done to improve the situation of (promote) the subproject in this place.';
 
+COMMENT ON COLUMN actions.account_id IS 'redundant account_id enhances data safety';
+
 COMMENT ON COLUMN actions.data IS 'Room for action specific data, defined in "fields" table';
 
 COMMENT ON COLUMN actions.geometry IS 'geometry of action';
@@ -590,6 +659,7 @@ DROP TABLE IF EXISTS action_values CASCADE;
 
 CREATE TABLE action_values(
   action_value_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   action_id uuid DEFAULT NULL REFERENCES actions(action_id) ON DELETE CASCADE ON UPDATE CASCADE,
   unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE CASCADE,
   value_integer integer DEFAULT NULL,
@@ -599,6 +669,8 @@ CREATE TABLE action_values(
 );
 
 CREATE INDEX ON action_values USING btree(action_value_id);
+
+CREATE INDEX ON action_values USING btree(account_id);
 
 CREATE INDEX ON action_values USING btree(action_id);
 
@@ -616,6 +688,8 @@ WHERE
 
 COMMENT ON TABLE action_values IS 'value-ing actions. Measuring or assessing';
 
+COMMENT ON COLUMN action_values.account_id IS 'redundant account_id enhances data safety';
+
 COMMENT ON COLUMN action_values.value_integer IS 'Used for integer values';
 
 COMMENT ON COLUMN action_values.value_numeric IS 'Used for numeric values';
@@ -629,6 +703,7 @@ DROP TABLE IF EXISTS action_reports CASCADE;
 
 CREATE TABLE action_reports(
   action_report_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   action_id uuid DEFAULT NULL REFERENCES actions(action_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
@@ -636,6 +711,8 @@ CREATE TABLE action_reports(
 );
 
 CREATE INDEX ON action_reports USING btree(action_report_id);
+
+CREATE INDEX ON action_reports USING btree(account_id);
 
 CREATE INDEX ON action_reports USING btree(action_id);
 
@@ -646,6 +723,8 @@ WHERE
   deleted;
 
 COMMENT ON TABLE action_reports IS 'Reporting on the success of actions.';
+
+COMMENT ON COLUMN action_reports.account_id IS 'redundant account_id enhances data safety';
 
 COMMENT ON COLUMN action_reports.year IS 'Year of report. Preset: current year';
 
@@ -658,6 +737,7 @@ DROP TABLE IF EXISTS action_report_values CASCADE;
 
 CREATE TABLE action_report_values(
   action_report_value_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   action_report_id uuid DEFAULT NULL REFERENCES action_reports(action_report_id) ON DELETE CASCADE ON UPDATE CASCADE,
   unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE CASCADE,
   value_integer integer DEFAULT NULL,
@@ -667,6 +747,8 @@ CREATE TABLE action_report_values(
 );
 
 CREATE INDEX ON action_report_values USING btree(action_report_value_id);
+
+CREATE INDEX ON action_report_values USING btree(account_id);
 
 CREATE INDEX ON action_report_values USING btree(action_report_id);
 
@@ -684,6 +766,8 @@ WHERE
 
 COMMENT ON TABLE action_report_values IS 'value-ing the success of actions';
 
+COMMENT ON COLUMN action_report_values.account_id IS 'redundant account_id enhances data safety';
+
 COMMENT ON COLUMN action_report_values.value_integer IS 'Used for integer values';
 
 COMMENT ON COLUMN action_report_values.value_numeric IS 'Used for numeric values';
@@ -697,6 +781,7 @@ DROP TABLE IF EXISTS checks CASCADE;
 
 CREATE TABLE checks(
   check_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   date date DEFAULT CURRENT_DATE,
   data jsonb DEFAULT NULL,
@@ -707,6 +792,8 @@ CREATE TABLE checks(
 );
 
 CREATE INDEX ON checks USING btree(check_id);
+
+CREATE INDEX ON checks USING btree(account_id);
 
 CREATE INDEX ON checks USING btree(place_id);
 
@@ -726,6 +813,8 @@ WHERE
 
 COMMENT ON TABLE checks IS 'Checks describe the situation of the subproject in this place.';
 
+COMMENT ON COLUMN checks.account_id IS 'redundant account_id enhances data safety';
+
 COMMENT ON COLUMN checks.data IS 'Room for check specific data, defined in "fields" table';
 
 COMMENT ON COLUMN checks.files IS 'Whether files are used. Preset: true';
@@ -737,6 +826,7 @@ DROP TABLE IF EXISTS check_values CASCADE;
 
 CREATE TABLE check_values(
   check_value_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   check_id uuid DEFAULT NULL REFERENCES checks(check_id) ON DELETE CASCADE ON UPDATE CASCADE,
   unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE CASCADE,
   value_integer integer DEFAULT NULL,
@@ -746,6 +836,8 @@ CREATE TABLE check_values(
 );
 
 CREATE INDEX ON check_values USING btree(check_value_id);
+
+CREATE INDEX ON check_values USING btree(account_id);
 
 CREATE INDEX ON check_values USING btree(check_id);
 
@@ -763,6 +855,8 @@ WHERE
 
 COMMENT ON TABLE check_values IS 'value-ing checks i.e. the situation of the subproject in this place';
 
+COMMENT ON COLUMN check_values.account_id IS 'redundant account_id enhances data safety';
+
 COMMENT ON COLUMN check_values.value_integer IS 'Used for integer values';
 
 COMMENT ON COLUMN check_values.value_numeric IS 'Used for numeric values';
@@ -776,6 +870,7 @@ DROP TABLE IF EXISTS check_taxa CASCADE;
 
 CREATE TABLE check_taxa(
   check_taxon_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   check_id uuid DEFAULT NULL REFERENCES checks(check_id) ON DELETE CASCADE ON UPDATE CASCADE,
   taxon_id uuid DEFAULT NULL REFERENCES taxa(taxon_id) ON DELETE CASCADE ON UPDATE CASCADE,
   unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE CASCADE,
@@ -786,6 +881,8 @@ CREATE TABLE check_taxa(
 );
 
 CREATE INDEX ON check_taxa USING btree(check_taxon_id);
+
+CREATE INDEX ON check_taxa USING btree(account_id);
 
 CREATE INDEX ON check_taxa USING btree(check_id);
 
@@ -803,6 +900,8 @@ CREATE INDEX ON check_taxa((1))
 WHERE
   deleted;
 
+COMMENT ON COLUMN check_taxa.account_id IS 'redundant account_id enhances data safety';
+
 ---------------------------------------------
 -- place_reports
 --
@@ -810,6 +909,7 @@ DROP TABLE IF EXISTS place_reports CASCADE;
 
 CREATE TABLE place_reports(
   place_report_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
@@ -819,6 +919,8 @@ CREATE TABLE place_reports(
 
 CREATE INDEX ON place_reports USING btree(place_report_id);
 
+CREATE INDEX ON place_reports USING btree(account_id);
+
 CREATE INDEX ON place_reports USING btree(place_id);
 
 CREATE INDEX ON place_reports USING btree(year);
@@ -826,6 +928,10 @@ CREATE INDEX ON place_reports USING btree(year);
 CREATE INDEX ON place_reports((1))
 WHERE
   deleted;
+
+COMMENT ON TABLE place_reports IS 'Reporting on the situation of the subproject in this place.';
+
+COMMENT ON COLUMN place_reports.account_id IS 'redundant account_id enhances data safety';
 
 COMMENT ON COLUMN place_reports.year IS 'Year of report. Preset: current year';
 
@@ -840,6 +946,7 @@ DROP TABLE IF EXISTS place_report_values CASCADE;
 
 CREATE TABLE place_report_values(
   place_report_value_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   place_report_id uuid DEFAULT NULL REFERENCES place_reports(place_report_id) ON DELETE CASCADE ON UPDATE CASCADE,
   unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE CASCADE,
   value_integer integer DEFAULT NULL,
@@ -849,6 +956,8 @@ CREATE TABLE place_report_values(
 );
 
 CREATE INDEX ON place_report_values USING btree(place_report_value_id);
+
+CREATE INDEX ON place_report_values USING btree(account_id);
 
 CREATE INDEX ON place_report_values USING btree(place_report_id);
 
@@ -864,6 +973,10 @@ CREATE INDEX ON place_report_values((1))
 WHERE
   deleted;
 
+COMMENT ON TABLE place_report_values IS 'value-ing the situation of the subproject in this place';
+
+COMMENT ON COLUMN place_report_values.account_id IS 'redundant account_id enhances data safety';
+
 COMMENT ON COLUMN place_report_values.value_integer IS 'Used for integer values';
 
 COMMENT ON COLUMN place_report_values.value_numeric IS 'Used for numeric values';
@@ -877,6 +990,7 @@ DROP TABLE IF EXISTS observation_sources CASCADE;
 
 CREATE TABLE observation_sources(
   observation_source_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
   url text DEFAULT NULL,
@@ -886,6 +1000,8 @@ CREATE TABLE observation_sources(
 
 CREATE INDEX ON observation_sources USING btree(observation_source_id);
 
+CREATE INDEX ON observation_sources USING btree(account_id);
+
 CREATE INDEX ON observation_sources USING btree(project_id);
 
 CREATE INDEX ON observation_sources USING btree(name);
@@ -893,6 +1009,10 @@ CREATE INDEX ON observation_sources USING btree(name);
 CREATE INDEX ON observation_sources((1))
 WHERE
   deleted;
+
+COMMENT ON TABLE observation_sources IS 'Observation sources are where observations _outside of this project_ come from.';
+
+COMMENT ON COLUMN observation_sources.account_id IS 'redundant account_id enhances data safety';
 
 COMMENT ON COLUMN observation_sources.name IS 'Name of observation source, like "GBIF, 1995"';
 
@@ -907,6 +1027,7 @@ DROP TABLE IF EXISTS observations CASCADE;
 
 CREATE TABLE observations(
   observation_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   observation_source_id uuid DEFAULT NULL REFERENCES observation_sources(observation_source_id) ON DELETE NO action ON UPDATE CASCADE,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   id_in_source text DEFAULT NULL,
@@ -921,6 +1042,8 @@ CREATE TABLE observations(
 
 CREATE INDEX ON observations USING btree(observation_id);
 
+CREATE INDEX ON observations USING btree(account_id);
+
 CREATE INDEX ON observations USING btree(observation_source_id);
 
 CREATE INDEX ON observations USING btree(place_id);
@@ -934,6 +1057,10 @@ CREATE INDEX ON observations USING gist(geometry);
 CREATE INDEX ON observations((1))
 WHERE
   deleted;
+
+COMMENT ON TABLE observations IS 'Observations are what was observed _outside of this project_ in this place.';
+
+COMMENT ON COLUMN observations.account_id IS 'redundant account_id enhances data safety';
 
 COMMENT ON COLUMN observations.observation_source_id IS 'observation source of observation';
 
@@ -995,6 +1122,7 @@ DROP TABLE IF EXISTS place_users CASCADE;
 
 CREATE TABLE place_users(
   place_user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   email text DEFAULT NULL,
   role text DEFAULT NULL,
@@ -1002,6 +1130,8 @@ CREATE TABLE place_users(
 );
 
 CREATE INDEX ON place_users USING btree(place_user_id);
+
+CREATE INDEX ON place_users USING btree(account_id);
 
 CREATE INDEX ON place_users USING btree(place_id);
 
@@ -1012,6 +1142,8 @@ WHERE
   deleted;
 
 COMMENT ON TABLE place_users IS 'A way to give users access to places without giving them access to the whole project or subproject.';
+
+COMMENT ON COLUMN place_users.account_id IS 'redundant account_id enhances data safety';
 
 COMMENT ON COLUMN place_users.email IS 'not user_id as must be able to be set before user has opened an account';
 
@@ -1024,6 +1156,7 @@ DROP TABLE IF EXISTS goals CASCADE;
 
 CREATE TABLE goals(
   goal_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT DATE_PART('year', now()::date),
   name text DEFAULT NULL,
@@ -1032,6 +1165,8 @@ CREATE TABLE goals(
 );
 
 CREATE INDEX ON goals USING btree(goal_id);
+
+CREATE INDEX ON goals USING btree(account_id);
 
 CREATE INDEX ON goals USING btree(subproject_id);
 
@@ -1043,6 +1178,8 @@ WHERE
 
 COMMENT ON TABLE goals IS 'What is to be achieved in the subproject in this year.';
 
+COMMENT ON COLUMN goals.account_id IS 'redundant account_id enhances data safety';
+
 ---------------------------------------------
 -- goal_reports
 --
@@ -1050,12 +1187,15 @@ DROP TABLE IF EXISTS goal_reports CASCADE;
 
 CREATE TABLE goal_reports(
   goal_report_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   goal_id uuid DEFAULT NULL REFERENCES goals(goal_id) ON DELETE CASCADE ON UPDATE CASCADE,
   data jsonb DEFAULT NULL,
   deleted boolean DEFAULT FALSE
 );
 
 CREATE INDEX ON goal_reports USING btree(goal_report_id);
+
+CREATE INDEX ON goal_reports USING btree(account_id);
 
 CREATE INDEX ON goal_reports USING btree(goal_id);
 
@@ -1065,6 +1205,10 @@ WHERE
 
 COMMENT ON TABLE goal_reports IS 'Reporting on the success of goals.';
 
+COMMENT ON COLUMN goal_reports.account_id IS 'redundant account_id enhances data safety';
+
+COMMENT ON COLUMN goal_reports.data IS 'Room for goal report specific data, defined in "fields" table';
+
 ---------------------------------------------
 -- goal_report_values
 --
@@ -1072,6 +1216,7 @@ DROP TABLE IF EXISTS goal_report_values CASCADE;
 
 CREATE TABLE goal_report_values(
   goal_report_value_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   goal_report_id uuid DEFAULT NULL REFERENCES goal_reports(goal_report_id) ON DELETE CASCADE ON UPDATE CASCADE,
   unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE CASCADE,
   value_integer integer DEFAULT NULL,
@@ -1081,6 +1226,8 @@ CREATE TABLE goal_report_values(
 );
 
 CREATE INDEX ON goal_report_values USING btree(goal_report_value_id);
+
+CREATE INDEX ON goal_report_values USING btree(account_id);
 
 CREATE INDEX ON goal_report_values USING btree(goal_report_id);
 
@@ -1098,6 +1245,14 @@ WHERE
 
 COMMENT ON TABLE goal_report_values IS 'value-ing the success of goals';
 
+COMMENT ON COLUMN goal_report_values.account_id IS 'redundant account_id enhances data safety';
+
+COMMENT ON COLUMN goal_report_values.value_integer IS 'Used for integer values';
+
+COMMENT ON COLUMN goal_report_values.value_numeric IS 'Used for numeric values';
+
+COMMENT ON COLUMN goal_report_values.value_text IS 'Used for text values';
+
 ---------------------------------------------
 -- subproject_reports
 --
@@ -1105,6 +1260,7 @@ DROP TABLE IF EXISTS subproject_reports CASCADE;
 
 CREATE TABLE subproject_reports(
   subproject_report_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
@@ -1113,6 +1269,8 @@ CREATE TABLE subproject_reports(
 );
 
 CREATE INDEX ON subproject_reports USING btree(subproject_report_id);
+
+CREATE INDEX ON subproject_reports USING btree(account_id);
 
 CREATE INDEX ON subproject_reports USING btree(subproject_id);
 
@@ -1124,6 +1282,14 @@ WHERE
 
 COMMENT ON TABLE subproject_reports IS 'Reporting on the success of subprojects.';
 
+COMMENT ON COLUMN subproject_reports.account_id IS 'redundant account_id enhances data safety';
+
+COMMENT ON COLUMN subproject_reports.year IS 'Year of report. Preset: current year';
+
+COMMENT ON COLUMN subproject_reports.data IS 'Room for subproject report specific data, defined in "fields" table';
+
+COMMENT ON COLUMN subproject_reports.files IS 'Whether files are used. Preset: true';
+
 ---------------------------------------------
 -- project_reports
 --
@@ -1131,6 +1297,7 @@ DROP TABLE IF EXISTS project_reports CASCADE;
 
 CREATE TABLE project_reports(
   project_report_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
@@ -1139,6 +1306,8 @@ CREATE TABLE project_reports(
 );
 
 CREATE INDEX ON project_reports USING btree(project_report_id);
+
+CREATE INDEX ON project_reports USING btree(account_id);
 
 CREATE INDEX ON project_reports USING btree(project_id);
 
@@ -1150,6 +1319,14 @@ WHERE
 
 COMMENT ON TABLE project_reports IS 'Reporting on the success of projects.';
 
+COMMENT ON COLUMN project_reports.account_id IS 'redundant account_id enhances data safety';
+
+COMMENT ON COLUMN project_reports.year IS 'Year of report. Preset: current year';
+
+COMMENT ON COLUMN project_reports.data IS 'Room for project report specific data, defined in "fields" table';
+
+COMMENT ON COLUMN project_reports.files IS 'Whether files are used. Preset: true';
+
 ---------------------------------------------
 -- files
 --
@@ -1160,17 +1337,49 @@ DROP TABLE IF EXISTS files CASCADE;
 -- - is below version of referencing per foreign key better?
 CREATE TABLE files(
   file_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   action_id uuid DEFAULT NULL REFERENCES actions(action_id) ON DELETE CASCADE ON UPDATE CASCADE,
   check_id uuid DEFAULT NULL REFERENCES checks(check_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  observation_id uuid DEFAULT NULL REFERENCES observations(observation_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
   data jsonb DEFAULT NULL,
   mimetype text DEFAULT NULL,
-  file_data bytea DEFAULT NULL,
-  file_url text DEFAULT NULL,
+  file bytea DEFAULT NULL,
+  url text DEFAULT NULL,
   deleted boolean DEFAULT FALSE
 );
+
+CREATE INDEX ON files USING btree(file_id);
+
+CREATE INDEX ON files USING btree(account_id);
+
+CREATE INDEX ON files USING btree(project_id);
+
+CREATE INDEX ON files USING btree(subproject_id);
+
+CREATE INDEX ON files USING btree(place_id);
+
+CREATE INDEX ON files USING btree(action_id);
+
+CREATE INDEX ON files USING btree(check_id);
+
+CREATE INDEX ON files USING btree(name);
+
+CREATE INDEX ON files((1))
+WHERE
+  deleted;
+
+COMMENT ON TABLE files IS 'used to store files.';
+
+COMMENT ON COLUMN files.account_id IS 'redundant account_id enhances data safety';
+
+COMMENT ON COLUMN files.data IS 'Room for file specific data, defined in "fields" table';
+
+COMMENT ON COLUMN files.mimetype IS 'mimetype of file, used to know how to open or preview it';
+
+COMMENT ON COLUMN files.file IS 'file content';
+
+COMMENT ON COLUMN files.url IS 'URL of file, if it is saved on a web service';
 
