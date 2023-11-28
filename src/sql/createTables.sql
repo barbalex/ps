@@ -7,9 +7,8 @@ DROP TABLE IF EXISTS users CASCADE;
 
 CREATE TABLE users(
   user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  -- no accout_id as users are app level
   email text UNIQUE DEFAULT NULL, -- TODO: email needs to be unique per account
-  person_id uuid DEFAULT NULL,
   auth_id uuid DEFAULT NULL,
   deleted boolean DEFAULT FALSE
 );
@@ -18,15 +17,9 @@ CREATE INDEX ON users USING btree(user_id);
 
 CREATE INDEX ON users USING btree(email);
 
-CREATE INDEX ON users USING btree(person_id);
-
-CREATE INDEX ON users USING btree(account_id);
-
 CREATE INDEX ON users((1))
 WHERE
   deleted;
-
-COMMENT ON COLUMN users.account_id IS 'redundant account_id enhances data safety';
 
 COMMENT ON COLUMN users.email IS 'email needs to be unique. project manager can list project user by email before this user creates an own login (thus has no user_id yet)';
 
@@ -1390,7 +1383,9 @@ DROP TABLE IF EXISTS persons CASCADE;
 
 CREATE TABLE persons(
   person_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  email text DEFAULT NULL,
   data jsonb DEFAULT NULL,
   label text DEFAULT NULL,
   order_by text DEFAULT NULL,
@@ -1400,6 +1395,10 @@ CREATE TABLE persons(
 CREATE INDEX ON persons USING btree(person_id);
 
 CREATE INDEX ON persons USING btree(account_id);
+
+CREATE INDEX ON persons USING btree(project_id);
+
+CREATE INDEX ON persons USING btree(email);
 
 CREATE INDEX ON persons((1))
 WHERE
@@ -1515,6 +1514,7 @@ DROP TABLE IF EXISTS fields CASCADE;
 
 CREATE TABLE fields(
   field_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   table text DEFAULT NULL,
   type uuid DEFAULT NULL REFERENCES field_types(field_type) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1527,6 +1527,8 @@ CREATE TABLE fields(
 );
 
 CREATE INDEX ON fields USING btree(field_id);
+
+CREATE INDEX ON fields USING btree(project_id);
 
 CREATE INDEX ON fields USING btree(account_id);
 
