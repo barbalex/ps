@@ -1516,23 +1516,7 @@ DROP TABLE IF EXISTS fields CASCADE;
 CREATE TABLE fields(
   field_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  project_report_id uuid DEFAULT NULL REFERENCES project_reports(project_report_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  subproject_report_id uuid DEFAULT NULL REFERENCES subproject_reports(subproject_report_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  place_report_id uuid DEFAULT NULL REFERENCES place_reports(place_report_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  action_id uuid DEFAULT NULL REFERENCES actions(action_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  action_report_id uuid DEFAULT NULL REFERENCES action_reports(action_report_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  check_id uuid DEFAULT NULL REFERENCES checks(check_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  person_id uuid DEFAULT NULL REFERENCES persons(person_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  goal_id uuid DEFAULT NULL REFERENCES goals(goal_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  goal_report_id uuid DEFAULT NULL REFERENCES goal_reports(goal_report_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  taxonomy_id uuid DEFAULT NULL REFERENCES taxonomies(taxonomy_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE NO action ON UPDATE CASCADE,
-  file_id uuid DEFAULT NULL REFERENCES files(file_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  observation_source_id uuid DEFAULT NULL REFERENCES observation_sources(observation_source_id) ON DELETE NO action ON UPDATE CASCADE,
-  observation_id uuid DEFAULT NULL REFERENCES observations(observation_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  table text DEFAULT NULL,
   type uuid DEFAULT NULL REFERENCES field_types(field_type) ON DELETE CASCADE ON UPDATE CASCADE,
   widget uuid DEFAULT NULL REFERENCES widget_types(widget_type) ON DELETE CASCADE ON UPDATE CASCADE,
   label text DEFAULT NULL,
@@ -1546,35 +1530,27 @@ CREATE INDEX ON fields USING btree(field_id);
 
 CREATE INDEX ON fields USING btree(account_id);
 
-CREATE INDEX ON fields USING btree(project_id);
+CREATE INDEX ON fields USING btree("table");
 
-CREATE INDEX ON fields USING btree(project_report_id);
+CREATE INDEX ON fields USING btree(type);
 
-CREATE INDEX ON fields USING btree(subproject_id);
+CREATE INDEX ON fields USING btree(widget);
 
-CREATE INDEX ON fields USING btree(subproject_report_id);
-
-CREATE INDEX ON fields USING btree(place_id);
-
-CREATE INDEX ON fields USING btree(place_report_id);
-
-CREATE INDEX ON fields USING btree(action_id);
-
-CREATE INDEX ON fields USING btree(action_report_id);
-
-CREATE INDEX ON fields USING btree(check_id);
-
-CREATE INDEX ON fields USING btree(person_id);
-
-CREATE INDEX ON fields USING btree(goal_id);
-
-CREATE INDEX ON fields USING btree(goal_report_id);
-
-CREATE INDEX ON fields USING btree(taxonomy_id);
+CREATE INDEX ON fields USING btree(label);
 
 CREATE INDEX ON fields USING btree(list_id);
 
-CREATE INDEX ON fields USING btree(file_id);
+CREATE INDEX ON fields USING btree((1))
+WHERE
+  obsolete;
 
-CREATE INDEX ON fields USING btree(observation_source_id);
+CREATE INDEX ON fields USING btree((1))
+WHERE
+  deleted;
+
+COMMENT ON TABLE fields IS 'Fields are used to define the data structure of data jsonb fields in other tables.';
+
+COMMENT ON COLUMN fields.account_id IS 'redundant account_id enhances data safety';
+
+COMMENT ON COLUMN fields.table IS 'table, on which this field is used inside the jsob field "data"';
 
