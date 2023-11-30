@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE users(
   user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   -- no accout_id as users are app level
-  email text UNIQUE DEFAULT NULL, -- TODO: email needs to be unique per account
+  email text DEFAULT NULL, -- TODO: email needs to be unique per account. But: not possible in electric-sql
   auth_id uuid DEFAULT NULL,
   deleted boolean DEFAULT FALSE
 );
