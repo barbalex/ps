@@ -6,6 +6,7 @@ import './style.css'
 import { ElectricWrapper as ElectricProvider } from './ElectricProvider'
 
 import { Example } from './Example'
+import { User } from './User'
 
 export default function App() {
   return (
@@ -13,7 +14,7 @@ export default function App() {
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <Example />
+          <User />
         </header>
       </div>
     </ElectricProvider>

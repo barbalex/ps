@@ -9,8 +9,9 @@ import './Example.css'
 import { useElectric } from './ElectricProvider'
 // import fromElectricProvider from './ElectricProvider'
 
-export const Example = () => {
+export const User = () => {
   const { db } = useElectric()!
+  console.log('User db:', db)
   const { results } = useLiveQuery(db.users.liveMany())
 
   useEffect(() => {
