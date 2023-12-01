@@ -122,3 +122,7 @@ CREATE INDEX ON place_users((1))
 WHERE
   deleted;
 
+CREATE INDEX ON goals((1))
+WHERE
+  deleted;
+
