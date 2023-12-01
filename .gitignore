@@ -7,3 +7,4 @@ src/generated
 .npmrc
 dropbox_uploader.conf
 .vercel
+.electric_migrations_tmp*
