@@ -65,3 +65,12 @@ WHERE
 CREATE INDEX ON places((1))
 WHERE
   deleted;
+
+CREATE INDEX ON actions((1))
+WHERE
+  relevant_for_reports;
+
+CREATE INDEX ON actions((1))
+WHERE
+  deleted;
+
