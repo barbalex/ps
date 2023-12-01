@@ -50,3 +50,10 @@ CREATE INDEX ON lists((1))
 WHERE
   deleted;
 
+CREATE INDEX ON list_values((1))
+WHERE
+  obsolete;
+
+CREATE INDEX ON list_values((1))
+WHERE
+  deleted;
