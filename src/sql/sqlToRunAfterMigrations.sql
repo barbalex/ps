@@ -98,3 +98,7 @@ CREATE INDEX ON check_values((1))
 WHERE
   deleted;
 
+CREATE INDEX ON check_taxa((1))
+WHERE
+  deleted;
+
