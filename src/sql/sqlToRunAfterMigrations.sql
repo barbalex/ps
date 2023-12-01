@@ -126,3 +126,7 @@ CREATE INDEX ON goals((1))
 WHERE
   deleted;
 
+CREATE INDEX ON goal_reports((1))
+WHERE
+  deleted;
+
