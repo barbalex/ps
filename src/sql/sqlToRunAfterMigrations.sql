@@ -82,3 +82,7 @@ CREATE INDEX ON action_reports((1))
 WHERE
   deleted;
 
+CREATE INDEX ON action_report_values((1))
+WHERE
+  deleted;
+
