@@ -22,3 +22,19 @@ CREATE INDEX ON subproject_users((1))
 WHERE
   deleted;
 
+CREATE INDEX ON taxonomies((1))
+WHERE
+  obsolete;
+
+CREATE INDEX ON taxonomies((1))
+WHERE
+  deleted;
+
+CREATE INDEX ON taxa((1))
+WHERE
+  obsolete;
+
+CREATE INDEX ON taxa((1))
+WHERE
+  deleted;
+

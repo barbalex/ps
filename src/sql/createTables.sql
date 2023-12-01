@@ -350,14 +350,14 @@ COMMENT ON COLUMN taxonomies.data IS 'Room for taxonomy specific data, defined i
 DROP TABLE IF EXISTS taxa CASCADE;
 
 CREATE TABLE taxa(
-  taxon_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  taxon_id uuid PRIMARY KEY DEFAULT null, -- public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   taxonomy_id uuid DEFAULT NULL REFERENCES taxonomies(taxonomy_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
   id_in_source text DEFAULT NULL,
   url text DEFAULT NULL,
-  obsolete boolean DEFAULT FALSE,
-  deleted boolean DEFAULT FALSE
+  obsolete boolean DEFAULT null, -- FALSE,
+  deleted boolean DEFAULT null -- FALSE
 );
 
 CREATE INDEX ON taxa USING btree(taxon_id);
