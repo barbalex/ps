@@ -41,3 +41,12 @@ WHERE
 CREATE INDEX ON subproject_taxa((1))
 WHERE
   deleted;
+
+CREATE INDEX ON lists((1))
+WHERE
+  obsolete;
+
+CREATE INDEX ON lists((1))
+WHERE
+  deleted;
+
