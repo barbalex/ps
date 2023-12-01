@@ -94,3 +94,7 @@ CREATE INDEX ON checks((1))
 WHERE
   deleted;
 
+CREATE INDEX ON check_values((1))
+WHERE
+  deleted;
+
