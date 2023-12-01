@@ -28,7 +28,7 @@ export const Example = () => {
   const addItem = async () => {
     await db.users.create({
       data: {
-        value: uuidv7(),
+        id: uuidv7(),
       },
     })
   }
