@@ -45,3 +45,4 @@ COMMENT ON COLUMN files.url IS 'URL of file, if it is saved on a web service';
 
 ALTER TABLE files ENABLE electric;
 
+-- TODO: this table causes a prisma error, see: https://github.com/electric-sql/electric/issues/716
