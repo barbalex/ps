@@ -62,3 +62,6 @@ CREATE INDEX ON units((1))
 WHERE
   deleted;
 
+CREATE INDEX ON places((1))
+WHERE
+  deleted;
