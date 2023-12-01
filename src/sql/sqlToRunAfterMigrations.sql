@@ -134,3 +134,7 @@ CREATE INDEX ON goal_report_values((1))
 WHERE
   deleted;
 
+CREATE INDEX ON subproject_reports((1))
+WHERE
+  deleted;
+
