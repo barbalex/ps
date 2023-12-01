@@ -110,3 +110,6 @@ CREATE INDEX ON place_report_values((1))
 WHERE
   deleted;
 
+CREATE INDEX ON observation_sources((1))
+WHERE
+  deleted;
