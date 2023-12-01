@@ -301,15 +301,15 @@ COMMENT ON TABLE subproject_users IS 'A way to give users access to subprojects 
 DROP TABLE IF EXISTS taxonomies CASCADE;
 
 CREATE TABLE taxonomies(
-  taxonomy_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  taxonomy_id uuid PRIMARY KEY DEFAULT null, -- public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   type text DEFAULT NULL,
   name text DEFAULT NULL,
   url text DEFAULT NULL,
-  obsolete boolean DEFAULT FALSE,
+  obsolete boolean DEFAULT null, -- FALSE,
   data jsonb DEFAULT NULL,
-  deleted boolean DEFAULT FALSE
+  deleted boolean DEFAULT null -- FALSE
 );
 
 CREATE INDEX ON taxonomies USING btree(taxonomy_id);
