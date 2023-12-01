@@ -1084,15 +1084,15 @@ COMMENT ON COLUMN observations.data IS 'Room for observation specific data, defi
 --
 DROP TABLE IF EXISTS message;
 
-CREATE TABLE message(
+CREATE TABLE messages(
   message_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   date timestamp DEFAULT now(),
   message text DEFAULT NULL
 );
 
-CREATE INDEX ON message USING btree(message_id);
+CREATE INDEX ON messages USING btree(message_id);
 
-CREATE INDEX ON message USING btree(date);
+CREATE INDEX ON messages USING btree(date);
 
 COMMENT ON TABLE messages IS 'messages for the user. Mostly informing about updates of';
 
