@@ -118,3 +118,7 @@ CREATE INDEX ON observations((1))
 WHERE
   deleted;
 
+CREATE INDEX ON place_users((1))
+WHERE
+  deleted;
+
