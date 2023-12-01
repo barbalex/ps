@@ -5,7 +5,6 @@ import './App.css'
 import './style.css'
 import { ElectricWrapper as ElectricProvider } from './ElectricProvider'
 
-import { Example } from './Example'
 import { User } from './User'
 
 export default function App() {

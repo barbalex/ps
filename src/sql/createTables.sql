@@ -6,11 +6,13 @@ CREATE EXTENSION IF NOT EXISTS postgis;
 DROP TABLE IF EXISTS users CASCADE;
 
 CREATE TABLE users(
-  user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  -- user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(), -- not possible in electric-sql
+  user_id uuid PRIMARY KEY DEFAULT NULL,
   -- no accout_id as users are app level
   email text DEFAULT NULL, -- TODO: email needs to be unique per account. But: not possible in electric-sql
   auth_id uuid DEFAULT NULL,
-  deleted boolean DEFAULT FALSE
+  -- deleted boolean DEFAULT FALSE -- default false is not supported yet by electric-sql
+  deleted boolean DEFAULT NULL
 );
 
 CREATE INDEX ON users USING btree(user_id);
