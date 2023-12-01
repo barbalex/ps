@@ -13,15 +13,33 @@ const dbUser = 'postgres'
 const proxyPassword = 'proxy_password'
 
 // URL to use when connecting to the proxy from the host OS
-const DATABASE_URL = buildDatabaseURL(dbUser, proxyPassword, 'localhost', proxyPort, appName)
+const DATABASE_URL = buildDatabaseURL(
+  dbUser,
+  proxyPassword,
+  'localhost',
+  proxyPort,
+  appName,
+)
 
 // URL to use when connecting to the proxy from a Docker container. This is used when `psql` is exec'd inside the
 // `postgres` service's container to connect to the poxy running in the `electric` service's container.
-const CONTAINER_DATABASE_URL = buildDatabaseURL(dbUser, proxyPassword, 'electric', 65432, appName)
+const CONTAINER_DATABASE_URL = buildDatabaseURL(
+  dbUser,
+  proxyPassword,
+  'electric',
+  65432,
+  appName,
+)
 
 // URL to display in the terminal for informational purposes. It omits the password but is still a valid URL that can be
 // passed to `psql` running on the host OS.
-const PUBLIC_DATABASE_URL = buildDatabaseURL(dbUser, null, 'localhost', proxyPort, appName)
+const PUBLIC_DATABASE_URL = buildDatabaseURL(
+  dbUser,
+  null,
+  'localhost',
+  proxyPort,
+  appName,
+)
 
 function buildDatabaseURL(user, password, host, port, dbName) {
   let url = 'postgresql://' + user
@@ -31,6 +49,8 @@ function buildDatabaseURL(user, password, host, port, dbName) {
   url += '@' + host + ':' + port + '/' + dbName
   return url
 }
+
+console.log('DATABASE_URL:', DATABASE_URL)
 
 function error(err) {
   console.error('\x1b[31m', err, '\x1b[0m')
@@ -48,10 +68,14 @@ function fetchHostProxyPortElectric() {
 // Returns the host port to which the `containerPort` of the `container` is bound.
 // Returns undefined if the port is not bound or container does not exist.
 function fetchHostPort(container, containerPort, service) {
-  const output = shell.exec(`docker inspect --format='{{(index (index .NetworkSettings.Ports "${containerPort}/tcp") 0).HostPort}}' ${container}`)
+  const output = shell.exec(
+    `docker inspect --format='{{(index (index .NetworkSettings.Ports "${containerPort}/tcp") 0).HostPort}}' ${container}`,
+  )
   if (output.code !== 0) {
     // Electric is not running for this app
-    error(`${service} appears not to be running for this app.\nDocker container ${container} not running.`)
+    error(
+      `${service} appears not to be running for this app.\nDocker container ${container} not running.`,
+    )
   }
   const port = parseInt(output)
   if (!isNaN(port)) {
@@ -67,16 +91,16 @@ function fetchAppName() {
   let appName = undefined
 
   envrc
-  .split(/\r?\n/) // split lines
-  .reverse() // in case the app name would be defined several times
-  .find(line => {
-    const match = line.match(/^(export APP_NAME=)(.*)/)
-    if (match) {
-      appName = match[2]
-      return true
-    }
-    return false
-  })
+    .split(/\r?\n/) // split lines
+    .reverse() // in case the app name would be defined several times
+    .find((line) => {
+      const match = line.match(/^(export APP_NAME=)(.*)/)
+      if (match) {
+        appName = match[2]
+        return true
+      }
+      return false
+    })
 
   return appName
 }
