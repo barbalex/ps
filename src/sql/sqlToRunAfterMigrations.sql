@@ -113,3 +113,8 @@ WHERE
 CREATE INDEX ON observation_sources((1))
 WHERE
   deleted;
+
+CREATE INDEX ON observations((1))
+WHERE
+  deleted;
+
