@@ -36,7 +36,9 @@ CREATE TABLE accounts(
   account_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   owning_user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE NO action ON UPDATE NO action,
   type text DEFAULT NULL,
-  period daterange DEFAULT NULL
+  -- period daterange DEFAULT NULL -- not supported by electric-sql
+  period_start date DEFAULT NULL,
+  period_end date DEFAULT NULL
 );
 
 -- how to query if date is in range:
@@ -45,7 +47,10 @@ CREATE INDEX ON accounts USING btree(account_id);
 
 CREATE INDEX ON accounts USING btree(owning_user_id);
 
-CREATE INDEX ON accounts USING gist(period);
+-- CREATE INDEX ON accounts USING gist(period);
+CREATE INDEX ON accounts USING btree(period_start);
+
+CREATE INDEX ON accounts USING btree(period_end);
 
 COMMENT ON TABLE accounts IS 'Goal: earn money';
 
@@ -53,15 +58,14 @@ COMMENT ON COLUMN accounts.owning_user_id IS 'user that owns the account. null f
 
 COMMENT ON COLUMN accounts.type IS 'type of account: "free", "basic", "premium"? (TODO: needs to be defined)';
 
-COMMENT ON COLUMN accounts.period IS 'period of account: free: 1 month, basic: 1 year, premium: 1 year (TODO: needs to be defined)';
-
+-- COMMENT ON COLUMN accounts.period IS 'period of account: free: 1 month, basic: 1 year, premium: 1 year (TODO: needs to be defined)';
 ---------------------------------------------
 -- projects
 --
 DROP TABLE IF EXISTS projects CASCADE;
 
 CREATE TABLE projects(
-  project_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  project_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
   type text DEFAULT NULL,
@@ -71,9 +75,9 @@ CREATE TABLE projects(
   values_on_multiple_levels text DEFAULT NULL,
   multiple_action_values_on_same_level text DEFAULT NULL,
   multiple_check_values_on_same_level text DEFAULT NULL,
-  data jsonb DEFAULT NULL,
-  files boolean DEFAULT TRUE,
-  deleted boolean DEFAULT FALSE
+  data jsonb DEFAULT NULL, -- not supported by electric-sql yet
+  files boolean DEFAULT NULL, -- TRUE,
+  deleted boolean DEFAULT NULL -- FALSE
 );
 
 CREATE INDEX ON projects USING btree(project_id);
