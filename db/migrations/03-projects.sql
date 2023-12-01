@@ -42,5 +42,5 @@ COMMENT ON COLUMN projects.files IS 'Whether files are used. Preset: true';
 
 COMMENT ON TABLE projects IS 'Goal: manage projects';
 
-ALTER TABLE users ENABLE electric;
+ALTER TABLE projects ENABLE electric;
 

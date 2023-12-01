@@ -24,5 +24,5 @@ COMMENT ON COLUMN accounts.owning_user_id IS 'user that owns the account. null f
 
 COMMENT ON COLUMN accounts.type IS 'type of account: "free", "basic", "premium"? (TODO: needs to be defined)';
 
-ALTER TABLE users ENABLE electric;
+ALTER TABLE accounts ENABLE electric;
 
