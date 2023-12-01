@@ -38,3 +38,6 @@ CREATE INDEX ON taxa((1))
 WHERE
   deleted;
 
+CREATE INDEX ON subproject_taxa((1))
+WHERE
+  deleted;
