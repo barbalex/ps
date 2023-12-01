@@ -102,3 +102,11 @@ CREATE INDEX ON check_taxa((1))
 WHERE
   deleted;
 
+CREATE INDEX ON place_reports((1))
+WHERE
+  deleted;
+
+CREATE INDEX ON place_report_values((1))
+WHERE
+  deleted;
+
