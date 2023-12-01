@@ -116,7 +116,7 @@ COMMENT ON TABLE projects IS 'Goal: manage projects';
 DROP TABLE IF EXISTS place_levels CASCADE;
 
 CREATE TABLE place_levels(
-  place_level_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  place_level_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   level integer DEFAULT NULL,
@@ -124,17 +124,17 @@ CREATE TABLE place_levels(
   name_plural text DEFAULT NULL,
   name_short text DEFAULT NULL,
   order_by text DEFAULT NULL,
-  reports boolean DEFAULT FALSE,
-  report_values boolean DEFAULT FALSE,
-  actions boolean DEFAULT FALSE,
-  action_values boolean DEFAULT FALSE,
-  action_reports boolean DEFAULT FALSE,
-  checks boolean DEFAULT FALSE,
-  check_values boolean DEFAULT FALSE,
-  check_taxons boolean DEFAULT FALSE,
-  observation_references boolean DEFAULT FALSE,
-  files boolean DEFAULT TRUE,
-  deleted boolean DEFAULT FALSE
+  reports boolean DEFAULT NULL, -- FALSE,
+  report_values boolean DEFAULT NULL, -- FALSE,
+  actions boolean DEFAULT NULL, -- FALSE,
+  action_values boolean DEFAULT NULL, -- FALSE,
+  action_reports boolean DEFAULT NULL, -- FALSE,
+  checks boolean DEFAULT NULL, -- FALSE,
+  check_values boolean DEFAULT NULL, -- FALSE,
+  check_taxons boolean DEFAULT NULL, -- FALSE,
+  observation_references boolean DEFAULT NULL, -- FALSE,
+  files boolean DEFAULT NULL, -- TRUE,
+  deleted boolean DEFAULT NULL -- FALSE
 );
 
 CREATE INDEX ON place_levels USING btree(place_level_id);
