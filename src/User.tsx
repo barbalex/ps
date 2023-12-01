@@ -29,7 +29,7 @@ export const User = () => {
   const addItem = async () => {
     await db.users.create({
       data: {
-        id: uuidv7(),
+        user_id: uuidv7(),
       },
     })
   }
@@ -52,7 +52,7 @@ export const User = () => {
       </div>
       {users.map((user: User, index: number) => (
         <p key={index} className="item">
-          <code>{user.id}</code>
+          <code>{user.user_id}</code>
         </p>
       ))}
     </div>

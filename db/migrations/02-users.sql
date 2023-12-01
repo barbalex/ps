@@ -10,10 +10,11 @@ CREATE INDEX ON users USING btree(user_id);
 
 CREATE INDEX ON users USING btree(email);
 
-CREATE INDEX ON users((1))
-WHERE
-  deleted;
-
+-- The following index provokes an error in prisma and was thus uncommented
+-- see: https://github.com/electric-sql/electric/issues/714
+-- CREATE INDEX ON users((1))
+-- WHERE
+--   deleted;
 COMMENT ON COLUMN users.email IS 'email needs to be unique. project manager can list project user by email before this user creates an own login (thus has no user_id yet)';
 
 COMMENT ON TABLE users IS 'Goal: manage users and authorize them';
