@@ -30,9 +30,6 @@ CREATE INDEX ON place_levels USING btree(level);
 
 CREATE INDEX ON place_levels USING btree(name_singular);
 
--- CREATE INDEX ON place_levels((1))
--- WHERE
---   deleted;
 COMMENT ON COLUMN place_levels.account_id IS 'redundant account_id enhances data safety';
 
 COMMENT ON COLUMN place_levels.level IS 'level of place: 1, 2';

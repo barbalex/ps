@@ -191,14 +191,14 @@ COMMENT ON TABLE place_levels IS 'Goal: manage place levels. Enable working with
 DROP TABLE IF EXISTS subprojects CASCADE;
 
 CREATE TABLE subprojects(
-  subproject_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  subproject_id uuid PRIMARY KEY DEFAULT null, -- public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
   since_year integer DEFAULT NULL,
-  data jsonb DEFAULT NULL,
-  files boolean DEFAULT TRUE,
-  deleted boolean DEFAULT FALSE
+  -- data jsonb DEFAULT NULL,
+  files boolean DEFAULT null, -- TRUE,
+  deleted boolean DEFAULT null -- FALSE
 );
 
 CREATE INDEX ON subprojects USING btree(subproject_id);
@@ -221,7 +221,7 @@ COMMENT ON COLUMN subprojects.name IS 'Example: a species name like "Pulsatilla 
 
 COMMENT ON COLUMN subprojects.since_year IS 'Enables analyzing a development since a certain year, like the begin of the project';
 
-COMMENT ON COLUMN subprojects.data IS 'Room for subproject specific data, defined in "fields" table';
+-- COMMENT ON COLUMN subprojects.data IS 'Room for subproject specific data, defined in "fields" table';
 
 COMMENT ON COLUMN subprojects.files IS 'Whether files are used. Preset: true';
 
@@ -233,12 +233,12 @@ COMMENT ON TABLE subprojects IS 'Goal: manage subprojects. Will most often be a 
 DROP TABLE IF EXISTS project_users CASCADE;
 
 CREATE TABLE project_users(
-  project_user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  project_user_id uuid PRIMARY KEY DEFAULT null, -- public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   email text DEFAULT NULL,
   role text DEFAULT NULL,
-  deleted boolean DEFAULT FALSE
+  deleted boolean DEFAULT null -- FALSE
 );
 
 CREATE INDEX ON project_users USING btree(project_user_id);
@@ -267,12 +267,12 @@ COMMENT ON TABLE project_users IS 'A way to give users access to projects (witho
 DROP TABLE IF EXISTS subproject_users CASCADE;
 
 CREATE TABLE subproject_users(
-  subproject_user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  subproject_user_id uuid PRIMARY KEY DEFAULT null, -- public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   email text DEFAULT NULL,
   role text DEFAULT NULL,
-  deleted boolean DEFAULT FALSE
+  deleted boolean DEFAULT null -- FALSE
 );
 
 CREATE INDEX ON subproject_users USING btree(subproject_user_id);
