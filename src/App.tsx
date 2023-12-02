@@ -1,11 +1,12 @@
 import React from 'react'
+import { RouterProvider } from 'react-router-dom'
 
 import logo from './logo.svg'
 import './App.css'
 import './style.css'
 import { ElectricWrapper as ElectricProvider } from './ElectricProvider'
 
-import { User } from './User'
+import { router } from './router'
 
 export default function App() {
   return (
@@ -13,7 +14,7 @@ export default function App() {
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <User />
+          <RouterProvider router={router} />
         </header>
       </div>
     </ElectricProvider>
