@@ -162,3 +162,11 @@ CREATE INDEX ON widgets_for_fields((1))
 WHERE
   deleted;
 
+CREATE INDEX ON fields USING btree((1))
+WHERE
+  obsolete;
+
+CREATE INDEX ON fields USING btree((1))
+WHERE
+  deleted;
+

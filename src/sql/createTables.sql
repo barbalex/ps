@@ -1545,11 +1545,11 @@ CREATE TABLE fields(
   field_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  table text DEFAULT NULL,
-  type uuid DEFAULT NULL REFERENCES field_types(field_type) ON DELETE CASCADE ON UPDATE CASCADE,
-  widget uuid DEFAULT NULL REFERENCES widget_types(widget_type) ON DELETE CASCADE ON UPDATE CASCADE,
+  tble text DEFAULT NULL,
+  type text DEFAULT NULL REFERENCES field_types(field_type) ON DELETE CASCADE ON UPDATE CASCADE,
+  widget text DEFAULT NULL REFERENCES widget_types(widget_type) ON DELETE CASCADE ON UPDATE CASCADE,
   label text DEFAULT NULL,
-  list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE NO action ON UPDATE CASCADE, -- TODO: double...
+  list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE NO action ON UPDATE CASCADE,
   preset text DEFAULT NULL,
   obsolete boolean DEFAULT FALSE,
   deleted boolean DEFAULT FALSE
@@ -1561,7 +1561,7 @@ CREATE INDEX ON fields USING btree(project_id);
 
 CREATE INDEX ON fields USING btree(account_id);
 
-CREATE INDEX ON fields USING btree("table");
+CREATE INDEX ON fields USING btree(tble);
 
 CREATE INDEX ON fields USING btree(type);
 
@@ -1583,5 +1583,5 @@ COMMENT ON TABLE fields IS 'Fields are used to define the data structure of data
 
 COMMENT ON COLUMN fields.account_id IS 'redundant account_id enhances data safety';
 
-COMMENT ON COLUMN fields.table IS 'table, on which this field is used inside the jsob field "data"';
+COMMENT ON COLUMN fields.tble IS 'table, on which this field is used inside the jsob field "data"';
 
