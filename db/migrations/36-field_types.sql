@@ -3,7 +3,7 @@ CREATE TABLE field_types(
   -- no account_id as field_types are predefined for all projects
   sort smallint DEFAULT NULL,
   comment text,
-  deleted integer DEFAULT NULL
+  deleted boolean DEFAULT NULL
 );
 
 CREATE INDEX ON field_types(field_type);

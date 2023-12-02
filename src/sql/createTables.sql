@@ -1429,7 +1429,7 @@ CREATE TABLE field_types(
   -- no account_id as field_types are predefined for all projects
   sort smallint DEFAULT NULL,
   comment text,
-  deleted integer DEFAULT FALSE
+  deleted boolean DEFAULT FALSE
 );
 
 CREATE INDEX ON field_types(field_type);
@@ -1461,11 +1461,19 @@ DROP TABLE IF EXISTS widget_types CASCADE;
 CREATE TABLE widget_types(
   widget_type text PRIMARY KEY DEFAULT NULL,
   -- no account_id as field_types are predefined for all projects
-  needs_list integer DEFAULT 0,
+  needs_list boolean DEFAULT FALSE,
   sort smallint DEFAULT NULL,
   comment text,
-  deleted integer DEFAULT 0
+  deleted boolean DEFAULT FALSE
 );
+
+CREATE INDEX ON widget_types(widget_type);
+
+CREATE INDEX ON widget_types(sort);
+
+CREATE INDEX ON widget_types((1))
+WHERE
+  deleted;
 
 INSERT INTO widget_types(widget_type, needs_list, sort, comment)
   VALUES ('text', 0, 1, 'Short field accepting text'),
