@@ -1505,6 +1505,14 @@ CREATE TABLE widgets_for_fields(
   deleted boolean DEFAULT FALSE
 );
 
+CREATE INDEX ON widgets_for_fields(field_type);
+
+CREATE INDEX ON widgets_for_fields(widget_type);
+
+CREATE INDEX ON widgets_for_fields((1))
+WHERE
+  deleted;
+
 INSERT INTO widgets_for_fields(field_value, widget_value)
   VALUES ('text', 'text'),
 ('text', 'markdown'),

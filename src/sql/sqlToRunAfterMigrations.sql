@@ -158,3 +158,7 @@ CREATE INDEX ON widget_types((1))
 WHERE
   deleted;
 
+CREATE INDEX ON widgets_for_fields((1))
+WHERE
+  deleted;
+
