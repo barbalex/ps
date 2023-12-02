@@ -146,9 +146,9 @@ CREATE INDEX ON project_reports((1))
 WHERE
   deleted;
 
-CREATE INDEX ON files((1))
-WHERE
-  deleted;
+-- CREATE INDEX ON files((1))
+-- WHERE
+--   deleted;
 
 CREATE INDEX ON field_types((1))
 WHERE
