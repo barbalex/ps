@@ -235,7 +235,7 @@ CREATE TABLE project_users(
   project_user_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  email text DEFAULT NULL,
+  user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
   role text DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
 );
@@ -246,15 +246,13 @@ CREATE INDEX ON project_users USING btree(account_id);
 
 CREATE INDEX ON project_users USING btree(project_id);
 
-CREATE INDEX ON project_users USING btree(email);
+CREATE INDEX ON project_users USING btree(user_id);
 
 CREATE INDEX ON project_users((1))
 WHERE
   deleted;
 
 COMMENT ON COLUMN project_users.account_id IS 'redundant account_id enhances data safety';
-
-COMMENT ON COLUMN project_users.email IS 'not user_id as must be able to be set before user has opened an account';
 
 COMMENT ON COLUMN project_users.role IS 'TODO: One of: "manager", "editor", "reader". Preset: "reader"';
 
