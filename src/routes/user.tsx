@@ -2,11 +2,11 @@ import React, { useEffect } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { uuidv7 } from '@kripod/uuidv7'
 
-import { Users as User } from './generated/client'
+import { Users as User } from '../generated/client'
 
-import './Example.css'
+import '../User.css'
 
-import { useElectric } from './ElectricProvider'
+import { useElectric } from '../ElectricProvider'
 // import fromElectricProvider from './ElectricProvider'
 
 export const User = () => {
