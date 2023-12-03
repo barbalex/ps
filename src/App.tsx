@@ -1,7 +1,6 @@
 import React from 'react'
 import { RouterProvider } from 'react-router-dom'
 
-import './App.css'
 import './style.css'
 import { ElectricWrapper as ElectricProvider } from './ElectricProvider'
 
@@ -10,7 +9,7 @@ import { router } from './router'
 export default function App() {
   return (
     <ElectricProvider>
-        <RouterProvider router={router} />
+      <RouterProvider router={router} />
     </ElectricProvider>
   )
 }

@@ -7,5 +7,14 @@ body {
 }
 
 .header {
-  background-color: aquamarine;
+  background-color: rgb(129, 255, 127);
+  display: flex;
+}
+
+.header nav ul {
+  display: flex;
+  list-style: none;
+}
+.header nav ul li {
+  padding: 10px;
 }
