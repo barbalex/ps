@@ -2,4 +2,10 @@ body {
   margin: 0;
   font-family: 'Helvetica Neue', Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
+  display: flex ;
+  flex-direction: column;
+}
+
+.top {
+
 }
