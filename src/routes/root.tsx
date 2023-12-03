@@ -1,10 +1,28 @@
+import { useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
 
 import { Header } from '../components/Header'
+import { useElectric } from '../ElectricProvider'
 
-export const Root = () => (
-  <>
-    <Header />
-    <Outlet />
-  </>
-)
+export const Root = () => {
+  const { db } = useElectric()!
+  useEffect(() => {
+    const syncItems = async () => {
+      // Resolves when the shape subscription has been established.
+      const usersSync = await db.users.sync()
+      // const accountsSync = await db.accounts.sync()
+
+      // Resolves when the data has been synced into the local database.
+      await usersSync.synced
+    }
+
+    syncItems()
+  }, [])
+
+  return (
+    <>
+      <Header />
+      <Outlet />
+    </>
+  )
+}
