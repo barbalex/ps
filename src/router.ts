@@ -24,14 +24,48 @@ export const router = createBrowserRouter([
         element: <User />,
         handle: { crumb: () => <Link to="/users">Users</Link> },
       },
-      { path: 'accounts', element: <Accounts /> },
-      { path: 'projects', element: <Projects /> },
-      { path: 'field-types', element: <FieldTypes /> },
-      { path: 'widget-types', element: <WidgetTypes /> },
-      { path: 'widgets-for-fields', element: <WidgetsForFields /> },
-      { path: 'files', element: <Files /> },
-      { path: 'messages', element: <Messages /> },
-      { path: 'docs', element: <Docs /> },
+      {
+        path: 'accounts',
+        element: <Accounts />,
+        handle: { crumb: () => <Link to="/accounts">Accounts</Link> },
+      },
+      {
+        path: 'projects',
+        element: <Projects />,
+        handle: { crumb: () => <Link to="/projects">Projects</Link> },
+      },
+      {
+        path: 'field-types',
+        element: <FieldTypes />,
+        handle: { crumb: () => <Link to="/field-types">Field Types</Link> },
+      },
+      {
+        path: 'widget-types',
+        element: <WidgetTypes />,
+        handle: { crumb: () => <Link to="/widget-types">Widget Types</Link> },
+      },
+      {
+        path: 'widgets-for-fields',
+        element: <WidgetsForFields />,
+        handle: {
+          crumb: () => <Link to="/widgets-for-fields">Widgets For Fields</Link>,
+        },
+      },
+      {
+        path: 'files',
+        element: <Files />,
+        handle: { crumb: () => <Link to="/files">Files</Link> },
+      },
+      {
+        path: 'messages',
+        element: <Messages />,
+        handle: { crumb: () => <Link to="/messages">Messages</Link> },
+      },
+      {
+        path: 'docs',
+        element: <Docs />,
+        handle: { crumb: () => <Link to="/docs">Docs</Link> },
+      },
     ],
   },
 ])

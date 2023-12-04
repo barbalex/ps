@@ -1,4 +1,8 @@
-import { useLocation, useParams, useMatches,  } from 'react-router-dom'
+import { useLocation, useParams, useMatches } from 'react-router-dom'
+
+function isOdd(num) {
+  return num % 2
+}
 
 export const Path = () => {
   const location = useLocation()
@@ -13,12 +17,15 @@ export const Path = () => {
     .map((match) => match.handle.crumb(match.data))
 
   return (
-    <div className="path">
-      <ol>
+    <nav className="path">
+      <ul>
         {crumbs.map((crumb, index) => (
-          <li key={index}>{crumb}</li>
+          <>
+            {isOdd(index) ? <li>&rArr;</li> : null}
+            <li key={index}>{crumb}</li>
+          </>
         ))}
-      </ol>
-    </div>
+      </ul>
+    </nav>
   )
 }
