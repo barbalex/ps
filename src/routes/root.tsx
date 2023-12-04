@@ -2,7 +2,8 @@ import { useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
 
 import { Header } from '../components/Header'
-import { Path } from '../components/Path'
+import { Breadcrumbs } from '../components/Breadcrumbs'
+import { Navs } from '../components/Navs'
 import { useElectric } from '../ElectricProvider'
 
 export const Root = () => {
@@ -25,7 +26,8 @@ export const Root = () => {
   return (
     <>
       <Header />
-      <Path />
+      <Breadcrumbs />
+      <Navs />
       <div className="content">
         <Outlet />
       </div>

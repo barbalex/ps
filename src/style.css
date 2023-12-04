@@ -28,24 +28,32 @@ body {
   flex-grow: 1;
 }
 
-.header nav ul {
-  display: flex;
-  column-gap: 10px;
-  flex-wrap: wrap;
-  list-style: none;
-}
-
-.path {
+.breadcrumbs {
   padding: 10px;
   background-color: rgba(103, 216, 101, 0.1);
 }
 
-.path ul {
+.breadcrumbs ul {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
   flex-wrap: wrap;
   column-gap: 5px;
+  row-gap: 5px;
+}
+
+.navs {
+  padding: 10px;
+  background-color: rgba(103, 216, 101, 0.052);
+}
+
+.navs ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 10px;
   row-gap: 5px;
 }
