@@ -24,7 +24,9 @@ export const Root = () => {
   return (
     <>
       <Header />
-      <Outlet />
+      <div className="content">
+        <Outlet />
+      </div>
     </>
   )
 }

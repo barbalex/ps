@@ -22,6 +22,9 @@ export const Header = () => (
           <a href={`/widgets-for-fields`}>widgets for fields</a>
         </li>
         <li>
+          <a href={`/files`}>files</a>
+        </li>
+        <li>
           <a href={`/messages`}>messages</a>
         </li>
         <li>
