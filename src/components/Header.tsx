@@ -15,6 +15,9 @@ export const Header = () => (
         <li>
           <a href={`/field-types`}>field types</a>
         </li>
+        <li>
+          <a href={`/widget-types`}>widget types</a>
+        </li>
       </ul>
     </nav>
   </div>
