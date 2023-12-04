@@ -7,13 +7,16 @@ body {
 }
 
 .header {
-  background-color: rgb(129, 255, 127);
+  background-color: rgba(103, 216, 101, 0.222);
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  padding: 0 10px 0 10px;
 }
 
 .header nav ul {
   display: flex;
   column-gap: 10px;
+  flex-wrap: wrap;
   list-style: none;
 }

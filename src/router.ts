@@ -8,6 +8,7 @@ import { FieldTypes } from './routes/fieldTypes'
 import { WidgetTypes } from './routes/widgetTypes'
 import { WidgetsForFields } from './routes/widgetsForFields'
 import { Messages } from './routes/messages'
+import { Docs } from './routes/docs'
 import { ErrorPage } from './routes/error'
 
 export const router = createBrowserRouter([
@@ -23,6 +24,7 @@ export const router = createBrowserRouter([
       { path: 'widget-types', element: <WidgetTypes /> },
       { path: 'widgets-for-fields', element: <WidgetsForFields /> },
       { path: 'messages', element: <Messages /> },
+      { path: 'docs', element: <Docs /> },
     ],
   },
 ])

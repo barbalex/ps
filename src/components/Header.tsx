@@ -24,6 +24,9 @@ export const Header = () => (
         <li>
           <a href={`/messages`}>messages</a>
         </li>
+        <li>
+          <a href={`/docs`}>docs</a>
+        </li>
       </ul>
     </nav>
   </div>
