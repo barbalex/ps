@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
 
 import { Header } from '../components/Header'
+import { Path } from '../components/Path'
 import { useElectric } from '../ElectricProvider'
 
 export const Root = () => {
@@ -24,6 +25,7 @@ export const Root = () => {
   return (
     <>
       <Header />
+      <Path />
       <div className="content">
         <Outlet />
       </div>

@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom'
+import { createBrowserRouter, Link } from 'react-router-dom'
 
 import { Root } from './routes/root'
 import { User } from './routes/user'
@@ -17,8 +17,13 @@ export const router = createBrowserRouter([
     path: '/',
     element: <Root />,
     errorElement: <ErrorPage />,
+    handle: { crumb: () => <Link to="/">Home</Link> },
     children: [
-      { path: 'users', element: <User /> },
+      {
+        path: 'users',
+        element: <User />,
+        handle: { crumb: () => <Link to="/users">Users</Link> },
+      },
       { path: 'accounts', element: <Accounts /> },
       { path: 'projects', element: <Projects /> },
       { path: 'field-types', element: <FieldTypes /> },

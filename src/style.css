@@ -34,3 +34,8 @@ body {
   flex-wrap: wrap;
   list-style: none;
 }
+
+.path {
+  padding: 5px 10px;
+  background-color: rgba(103, 216, 101, 0.1);
+}
