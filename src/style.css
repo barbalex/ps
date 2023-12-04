@@ -9,12 +9,11 @@ body {
 .header {
   background-color: rgb(129, 255, 127);
   display: flex;
+  justify-content: space-between;
 }
 
 .header nav ul {
   display: flex;
+  column-gap: 10px;
   list-style: none;
-}
-.header nav ul li {
-  padding: 10px;
 }

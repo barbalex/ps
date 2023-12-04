@@ -1,6 +1,6 @@
 export const Header = () => (
   <div className="header">
-    <h1>Header</h1>
+    <h1>Promoting Species</h1>
     <nav>
       <ul>
         <li>
@@ -20,6 +20,9 @@ export const Header = () => (
         </li>
         <li>
           <a href={`/widgets-for-fields`}>widgets for fields</a>
+        </li>
+        <li>
+          <a href={`/messages`}>messages</a>
         </li>
       </ul>
     </nav>
