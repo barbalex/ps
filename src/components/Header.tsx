@@ -12,6 +12,9 @@ export const Header = () => (
         <li>
           <a href={`/projects`}>projects</a>
         </li>
+        <li>
+          <a href={`/field-types`}>field types</a>
+        </li>
       </ul>
     </nav>
   </div>
