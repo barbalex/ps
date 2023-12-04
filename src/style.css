@@ -14,10 +14,11 @@ body {
 
 .header {
   background-color: rgba(103, 216, 101, 0.222);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 10px 0 10px;
+  padding: 0 10px;
+}
+
+.header h1 {
+  font-size: large;
 }
 
 .content {
