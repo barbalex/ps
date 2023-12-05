@@ -40,11 +40,7 @@ export const User = () => {
           Clear
         </button>
       </div>
-      {users.map((user: User, index: number) => (
-        <p key={index} className="item">
-          <code>{user.user_id}</code>
-        </p>
-      ))}
+      <div>User</div>
     </div>
   )
 }
