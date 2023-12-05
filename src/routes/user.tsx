@@ -12,7 +12,7 @@ import { useElectric } from '../ElectricProvider'
 export const User = () => {
   const { db } = useElectric()!
   const { user_id } = useParams()
-  const { results } = useLiveQuery(db.users.liveMany({ where: { user_id } }))
+  const { results } = useLiveQuery(db.users.liveUnique({ where: { user_id } }))
 
   console.log('User', { user_id, results })
 
@@ -28,7 +28,7 @@ export const User = () => {
     await db.users.deleteMany()
   }
 
-  const users: User[] = results ?? []
+  const user: User = results
 
   return (
     <div>
@@ -40,7 +40,7 @@ export const User = () => {
           Clear
         </button>
       </div>
-      <div>{`User with id ${users[0]?.user_id ?? ''}`}</div>
+      <div>{`User with id ${user?.user_id ?? ''}`}</div>
     </div>
   )
 }
