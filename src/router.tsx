@@ -41,13 +41,6 @@ const rootChildren = [
     path: 'users',
     element: <Users />,
     handle: { crumb: () => <Link to="/users">Users</Link> },
-    // children: [
-    //   {
-    //     path: 'users/:user_id',
-    //     element: <User />,
-    //     handle: { crumb: () => <Link to="/users/:user_id">User</Link> },
-    //   },
-    // ],
   },
   {
     path: 'users/:user_id',
