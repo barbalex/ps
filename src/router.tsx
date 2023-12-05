@@ -2,6 +2,7 @@ import { createBrowserRouter, Link } from 'react-router-dom'
 
 import { Root } from './routes/root'
 import { Users } from './routes/user'
+import { User } from './routes/user'
 import { Accounts } from './routes/accounts'
 import { Projects } from './routes/projects'
 import { Project } from './routes/project'
@@ -13,6 +14,7 @@ import { Files } from './routes/files'
 import { Messages } from './routes/messages'
 import { Docs } from './routes/docs'
 import { ErrorPage } from './routes/error'
+import { useElectric } from '../ElectricProvider'
 
 const subprojectsChildren = [
   {
@@ -39,7 +41,16 @@ const rootChildren = [
   {
     path: 'users',
     element: <Users />,
+    loader: () => {},
     handle: { crumb: () => <Link to="/users">Users</Link> },
+    children: [
+      {
+        path: 'users/:user_id',
+        element: <User />,
+        handle: { crumb: () => <Link to="/users:user_id">User</Link> },
+        loader: ({ params }) => {},
+      },
+    ],
   },
   {
     path: 'accounts',

@@ -14,18 +14,6 @@ export const Users = () => {
   console.log('User db:', db)
   const { results } = useLiveQuery(db.users.liveMany())
 
-  useEffect(() => {
-    const syncItems = async () => {
-      // Resolves when the shape subscription has been established.
-      const shape = await db.users.sync()
-
-      // Resolves when the data has been synced into the local database.
-      await shape.synced
-    }
-
-    syncItems()
-  }, [])
-
   const addItem = async () => {
     await db.users.create({
       data: {

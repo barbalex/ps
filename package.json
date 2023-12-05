@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@kripod/uuidv7": "0.3.4",
+    "@preact/signals": "^1.2.2",
     "@typescript-eslint/eslint-plugin": "6.13.2",
     "@typescript-eslint/parser": "6.13.2",
     "electric-sql": "0.8.0",
