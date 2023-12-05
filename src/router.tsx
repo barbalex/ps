@@ -1,9 +1,10 @@
 import { createBrowserRouter, Link } from 'react-router-dom'
 
 import { Root } from './routes/root'
-import { User } from './routes/user'
+import { Users } from './routes/user'
 import { Accounts } from './routes/accounts'
 import { Projects } from './routes/projects'
+import { Project } from './routes/project'
 import { FieldTypes } from './routes/fieldTypes'
 import { WidgetTypes } from './routes/widgetTypes'
 import { WidgetsForFields } from './routes/widgetsForFields'
@@ -12,12 +13,18 @@ import { Messages } from './routes/messages'
 import { Docs } from './routes/docs'
 import { ErrorPage } from './routes/error'
 
-const projectChildren = []
+const projectChildren = [
+  {
+    path: 'projects:project_id',
+    element: <Project />,
+    // handle: { crumb: () => <Link to="/projects/:project_id">Project</Link> },
+  },
+]
 
 const rootChildren = [
   {
     path: 'users',
-    element: <User />,
+    element: <Users />,
     handle: { crumb: () => <Link to="/users">Users</Link> },
   },
   {
@@ -29,7 +36,7 @@ const rootChildren = [
     path: 'projects',
     element: <Projects />,
     handle: { crumb: () => <Link to="/projects">Projects</Link> },
-    children: projectChildren
+    children: projectChildren,
   },
   {
     path: 'field-types',
@@ -77,6 +84,6 @@ export const router = createBrowserRouter([
           <li key={index}>{child.handle.crumb()}</li>
         )),
     },
-    rootChildren,
+    children: rootChildren,
   },
 ])
