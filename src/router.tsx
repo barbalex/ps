@@ -14,7 +14,6 @@ import { Files } from './routes/files'
 import { Messages } from './routes/messages'
 import { Docs } from './routes/docs'
 import { ErrorPage } from './routes/error'
-import { useElectric } from '../ElectricProvider'
 
 const subprojectsChildren = [
   {
@@ -97,18 +96,22 @@ const rootChildren = [
   },
 ]
 
-export const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <Root />,
-    errorElement: <ErrorPage />,
-    handle: {
-      crumb: () => <Link to="/">Home</Link>,
-      to: () =>
-        rootChildren.map((child, index) => (
-          <li key={index}>{child.handle.crumb()}</li>
-        )),
+export const router = (db) => {
+  console.log('router db:', db)
+  return
+  createBrowserRouter([
+    {
+      path: '/',
+      element: <Root />,
+      errorElement: <ErrorPage />,
+      handle: {
+        crumb: () => <Link to="/">Home</Link>,
+        to: () =>
+          rootChildren.map((child, index) => (
+            <li key={index}>{child.handle.crumb()}</li>
+          )),
+      },
+      children: rootChildren,
     },
-    children: rootChildren,
-  },
-])
+  ])
+}

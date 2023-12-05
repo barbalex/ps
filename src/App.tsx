@@ -9,7 +9,12 @@ import { router } from './router'
 export default function App() {
   return (
     <ElectricProvider>
-      <RouterProvider router={router} />
+      {(db) => (
+        <RouterProvider
+          router={router(db)}
+          future={{ v7_startTransition: true }}
+        />
+      )}
     </ElectricProvider>
   )
 }
