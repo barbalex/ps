@@ -5,6 +5,7 @@ import { Users } from './routes/user'
 import { Accounts } from './routes/accounts'
 import { Projects } from './routes/projects'
 import { Project } from './routes/project'
+import { Subprojects } from './routes/subprojects'
 import { FieldTypes } from './routes/fieldTypes'
 import { WidgetTypes } from './routes/widgetTypes'
 import { WidgetsForFields } from './routes/widgetsForFields'
@@ -13,11 +14,24 @@ import { Messages } from './routes/messages'
 import { Docs } from './routes/docs'
 import { ErrorPage } from './routes/error'
 
-const projectChildren = [
+const subprojectsChildren = [
+  {
+    path: 'projects:project_id/subprojects',
+    element: <Subprojects />,
+    handle: {
+      crumb: () => (
+        <Link to="/projects:project_id/subprojects">Subprojects</Link>
+      ),
+    },
+  },
+]
+
+const projectsChildren = [
   {
     path: 'projects:project_id',
     element: <Project />,
     // handle: { crumb: () => <Link to="/projects/:project_id">Project</Link> },
+    children: subprojectsChildren,
   },
 ]
 
@@ -36,7 +50,7 @@ const rootChildren = [
     path: 'projects',
     element: <Projects />,
     handle: { crumb: () => <Link to="/projects">Projects</Link> },
-    children: projectChildren,
+    children: projectsChildren,
   },
   {
     path: 'field-types',
