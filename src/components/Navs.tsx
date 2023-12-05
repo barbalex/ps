@@ -10,9 +10,5 @@ export const Navs = () => {
   // hide this area of there are no tos
   if (!tos.filter((to) => Boolean(to)).length) return null
 
-  return (
-    <nav className="navs">
-      <ul>{tos}</ul>
-    </nav>
-  )
+  return <nav className="navs">{tos}</nav>
 }

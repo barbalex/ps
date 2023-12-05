@@ -48,14 +48,13 @@ body {
 .navs {
   padding: 10px;
   background-color: rgba(103, 216, 101, 0.052);
-}
-
-.navs ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
   display: flex;
   flex-wrap: wrap;
   column-gap: 10px;
   row-gap: 5px;
+}
+
+.navs a {
+  margin: 0;
+  padding: 0;
 }

@@ -41,12 +41,46 @@ const rootChildren = [
   {
     path: 'users',
     element: <Users />,
-    handle: { crumb: () => <Link to="/users">Users</Link> },
+    handle: {
+      crumb: () => (
+        <div className="crumb">
+          <div>
+            <Link to="/">Home</Link>
+          </div>
+          <div>&rArr;</div>
+          <div>
+            <Link to="/users">Users</Link>
+          </div>
+        </div>
+      ),
+    },
+    to: () => (
+      <>
+        <Link to="/">Home</Link>
+        <Link to="/users">Users</Link>
+      </>
+    ),
   },
   {
     path: 'users/:user_id',
     element: <User />,
-    handle: { crumb: () => <Link to="/users/:user_id">User</Link> },
+    handle: {
+      crumb: () => (
+        <div className="crumb">
+          <div>
+            <Link to="/">Home</Link>
+          </div>
+          <div>&rArr;</div>
+          <div>
+            <Link to="/users">Users</Link>
+          </div>
+          <div>&rArr;</div>
+          <div>
+            <Link to="/users/:user_id">User</Link>
+          </div>
+        </div>
+      ),
+    },
   },
   {
     path: 'accounts',
@@ -103,14 +137,22 @@ export const router = createBrowserRouter([
         errorElement: <ErrorPage />,
         handle: {
           crumb: () => <Link to="/">Home</Link>,
-          to: () =>
-            rootChildren.map((child, index) => (
-              <li key={index}>{child.handle.crumb()}</li>
-            )),
+          to: () => (
+            <>
+              <Link to="/users">Users</Link>
+              <Link to="/accounts">Accounts</Link>
+              <Link to="/projects">Projects</Link>
+              <Link to="/field-types">Field Types</Link>
+              <Link to="/widget-types">Widget Types</Link>
+              <Link to="/widgets-for-fields">Widgets For Fields</Link>
+              <Link to="/files">Files</Link>
+              <Link to="/messages">Messages</Link>
+              <Link to="/docs">Docs</Link>
+            </>
+          ),
         },
-        children: rootChildren,
       },
-      [...rootChildren],
+      ...rootChildren,
     ],
   },
 ])

@@ -14,6 +14,8 @@ export const Breadcrumbs = () => {
     // data to each one
     .map((match) => match.handle.crumb(match.data))
 
+  console.log('Breadcrumbs', { matches, crumbs })
+
   return (
     <nav className="breadcrumbs">
       {crumbs.map((crumb, index) => (
