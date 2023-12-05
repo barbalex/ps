@@ -2,11 +2,11 @@ import { useLiveQuery } from 'electric-sql/react'
 import { uuidv7 } from '@kripod/uuidv7'
 import { Link } from 'react-router-dom'
 
-import { Users as User } from '../generated/client'
+import { Users as User } from '../../../generated/client'
 
-import '../User.css'
+import '../../User.css'
 
-import { useElectric } from '../ElectricProvider'
+import { useElectric } from '../../../ElectricProvider'
 
 export const Users = () => {
   const { db } = useElectric()!
