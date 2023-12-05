@@ -7,7 +7,7 @@ import '../User.css'
 
 import { useElectric } from '../ElectricProvider'
 
-export const User = () => {
+export const Users = () => {
   const { db } = useElectric()!
   const { results } = useLiveQuery(db.users.liveMany())
 

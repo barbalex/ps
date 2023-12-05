@@ -1,7 +1,7 @@
 import { createBrowserRouter, Link } from 'react-router-dom'
 
 import { Root } from './routes/root'
-import { Users } from './routes/user'
+import { Users } from './routes/users'
 import { User } from './routes/user'
 import { Accounts } from './routes/accounts'
 import { Projects } from './routes/projects'

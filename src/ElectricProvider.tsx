@@ -43,11 +43,20 @@ export function ElectricWrapper({ children }) {
     }
   }, [])
 
-  console.log('ElectricWrapper, electric', electric)
+  // console.log('ElectricWrapper, electric', electric)
 
   if (electric === undefined) {
     return null
   }
 
-  return <ElectricProvider db={electric}>{children}</ElectricProvider>
+  const childrenWithProps = React.Children.map(children, (child) => {
+    // Checking isValidElement is the safe way and avoids a
+    // typescript error too.
+    if (React.isValidElement(child)) {
+      return React.cloneElement(child, { db: electric })
+    }
+    return child
+  })
+
+  return <ElectricProvider db={electric}>{childrenWithProps}</ElectricProvider>
 }
