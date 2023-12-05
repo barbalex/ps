@@ -1,13 +1,11 @@
-import { useMatches } from 'react-router-dom'
-
-function isOdd(num) {
-  return num % 2
-}
+import { useMatches, useLocation } from 'react-router-dom'
 
 export const Breadcrumbs = () => {
+  const location = useLocation()
   const matches = useMatches()
   // console.log('Breadcrumbs, matches:', matches)
   const crumbs = matches
+    .filter((match) => match.pathname === location.pathname)
     // first get rid of any matches that don't have handle and crumb
     .filter((match) => Boolean(match.handle?.crumb))
     // now map them into an array of elements, passing the loader
@@ -16,14 +14,5 @@ export const Breadcrumbs = () => {
 
   console.log('Breadcrumbs', { matches, crumbs })
 
-  return (
-    <nav className="breadcrumbs">
-      {crumbs.map((crumb, index) => (
-        <div className="crumb" key={index}>
-          {isOdd(index) ? <span>&rArr;</span> : null}
-          <span>{crumb}</span>
-        </div>
-      ))}
-    </nav>
-  )
+  return <nav className="breadcrumbs">{crumbs[0]}</nav>
 }

@@ -37,96 +37,6 @@ const projectsChildren = [
   },
 ]
 
-const rootChildren = [
-  {
-    path: 'users',
-    element: <Users />,
-    handle: {
-      crumb: () => (
-        <div className="crumb">
-          <div>
-            <Link to="/">Home</Link>
-          </div>
-          <div>&rArr;</div>
-          <div>
-            <Link to="/users">Users</Link>
-          </div>
-        </div>
-      ),
-    },
-    to: () => (
-      <>
-        <Link to="/">Home</Link>
-        <Link to="/users">Users</Link>
-      </>
-    ),
-  },
-  {
-    path: 'users/:user_id',
-    element: <User />,
-    handle: {
-      crumb: () => (
-        <div className="crumb">
-          <div>
-            <Link to="/">Home</Link>
-          </div>
-          <div>&rArr;</div>
-          <div>
-            <Link to="/users">Users</Link>
-          </div>
-          <div>&rArr;</div>
-          <div>
-            <Link to="/users/:user_id">User</Link>
-          </div>
-        </div>
-      ),
-    },
-  },
-  {
-    path: 'accounts',
-    element: <Accounts />,
-    handle: { crumb: () => <Link to="/accounts">Accounts</Link> },
-  },
-  {
-    path: 'projects',
-    element: <Projects />,
-    handle: { crumb: () => <Link to="/projects">Projects</Link> },
-    children: projectsChildren,
-  },
-  {
-    path: 'field-types',
-    element: <FieldTypes />,
-    handle: { crumb: () => <Link to="/field-types">Field Types</Link> },
-  },
-  {
-    path: 'widget-types',
-    element: <WidgetTypes />,
-    handle: { crumb: () => <Link to="/widget-types">Widget Types</Link> },
-  },
-  {
-    path: 'widgets-for-fields',
-    element: <WidgetsForFields />,
-    handle: {
-      crumb: () => <Link to="/widgets-for-fields">Widgets For Fields</Link>,
-    },
-  },
-  {
-    path: 'files',
-    element: <Files />,
-    handle: { crumb: () => <Link to="/files">Files</Link> },
-  },
-  {
-    path: 'messages',
-    element: <Messages />,
-    handle: { crumb: () => <Link to="/messages">Messages</Link> },
-  },
-  {
-    path: 'docs',
-    element: <Docs />,
-    handle: { crumb: () => <Link to="/docs">Docs</Link> },
-  },
-]
-
 export const router = createBrowserRouter([
   {
     element: <Header />,
@@ -152,7 +62,146 @@ export const router = createBrowserRouter([
           ),
         },
       },
-      ...rootChildren,
+
+      {
+        path: 'users',
+        element: <Users />,
+        handle: {
+          crumb: () => (
+            <>
+              <Link to="/">Home</Link>
+              <div>&rArr;</div>
+              <Link to="/users">Users</Link>
+            </>
+          ),
+        },
+        to: () => (
+          <>
+            <Link to="/">Home</Link>
+            <Link to="/users">Users</Link>
+          </>
+        ),
+      },
+      {
+        path: 'users/:user_id',
+        element: <User />,
+        handle: {
+          crumb: () => (
+            <>
+              <Link to="/">Home</Link>
+              <div>&rArr;</div>
+              <Link to="/users">Users</Link>
+              <div>&rArr;</div>
+              <Link to="/users/:user_id">User</Link>
+            </>
+          ),
+        },
+      },
+      {
+        path: 'accounts',
+        element: <Accounts />,
+        handle: {
+          crumb: () => (
+            <>
+              <Link to="/">Home</Link>
+              <div>&rArr;</div>
+              <Link to="/accounts">Accounts</Link>
+            </>
+          ),
+        },
+      },
+      {
+        path: 'projects',
+        element: <Projects />,
+        handle: {
+          crumb: () => (
+            <>
+              <Link to="/">Home</Link>
+              <div>&rArr;</div>
+              <Link to="/projects">Projects</Link>
+            </>
+          ),
+        },
+        children: projectsChildren,
+      },
+      {
+        path: 'field-types',
+        element: <FieldTypes />,
+        handle: {
+          crumb: () => (
+            <>
+              <Link to="/">Home</Link>
+              <div>&rArr;</div>
+              <Link to="/field-types">Field Types</Link>
+            </>
+          ),
+        },
+      },
+      {
+        path: 'widget-types',
+        element: <WidgetTypes />,
+        handle: {
+          crumb: () => (
+            <>
+              <Link to="/">Home</Link>
+              <div>&rArr;</div>
+              <Link to="/widget-types">Widget Types</Link>
+            </>
+          ),
+        },
+      },
+      {
+        path: 'widgets-for-fields',
+        element: <WidgetsForFields />,
+        handle: {
+          crumb: () => (
+            <>
+              <Link to="/">Home</Link>
+              <div>&rArr;</div>
+              <Link to="/widgets-for-fields">Widgets For Fields</Link>
+            </>
+          ),
+        },
+      },
+      {
+        path: 'files',
+        element: <Files />,
+        handle: {
+          crumb: () => (
+            <>
+              <Link to="/">Home</Link>
+              <div>&rArr;</div>
+              <Link to="/files">Files</Link>{' '}
+            </>
+          ),
+        },
+      },
+      {
+        path: 'messages',
+        element: <Messages />,
+        handle: {
+          crumb: () => (
+            <>
+              <Link to="/">Home</Link>
+              <div>&rArr;</div>
+              <Link to="/messages">Messages</Link>
+            </>
+          ),
+        },
+      },
+      {
+        path: 'docs',
+        element: <Docs />,
+        handle: {
+          crumb: () => (
+            <>
+              <Link to="/">Home</Link>
+              <div>&rArr;</div>
+              <Link to="/docs">Docs</Link>
+            </>
+          ),
+        },
+      },
     ],
   },
 ])

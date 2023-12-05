@@ -38,11 +38,9 @@ body {
   row-gap: 5px;
 }
 
-.breadcrumbs .crumb {
-  display: flex;
-  flex-wrap: wrap;
-  column-gap: 5px;
-  align-items: center;
+.breadcrumbs a {
+  margin: 0;
+  padding: 0;
 }
 
 .navs {

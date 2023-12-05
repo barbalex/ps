@@ -6,9 +6,11 @@ export const Navs = () => {
   const tos = matches
     .filter((match) => match.pathname === location.pathname)
     .map((match) => match?.handle?.to?.(match?.data))
+    .filter((to) => Boolean(to))
 
+  console.log('Navs', { matches, tos })
   // hide this area of there are no tos
-  if (!tos.filter((to) => Boolean(to)).length) return null
+  if (!tos?.length) return null
 
-  return <nav className="navs">{tos}</nav>
+  return <nav className="navs">{tos[0]}</nav>
 }
