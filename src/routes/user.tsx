@@ -14,7 +14,7 @@ export const User = () => {
   const { user_id } = useParams()
   const { results } = useLiveQuery(db.users.liveUnique({ user_id }))
 
-  console.log('user_id', user_id)
+  console.log('User, user_id', user_id)
 
   const addItem = async () => {
     await db.users.create({
