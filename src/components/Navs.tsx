@@ -7,6 +7,9 @@ export const Navs = () => {
     .filter((match) => match.pathname === location.pathname)
     .map((match) => match?.handle?.to?.(match?.data))
 
+  // hide this area of there are no tos
+  if (!tos.filter((to) => Boolean(to)).length) return null
+
   return (
     <nav className="navs">
       <ul>{tos}</ul>
