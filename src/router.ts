@@ -12,7 +12,9 @@ import { Messages } from './routes/messages'
 import { Docs } from './routes/docs'
 import { ErrorPage } from './routes/error'
 
-const children = [
+const projectChildren = []
+
+const rootChildren = [
   {
     path: 'users',
     element: <User />,
@@ -27,6 +29,7 @@ const children = [
     path: 'projects',
     element: <Projects />,
     handle: { crumb: () => <Link to="/projects">Projects</Link> },
+    children: projectChildren
   },
   {
     path: 'field-types',
@@ -70,10 +73,10 @@ export const router = createBrowserRouter([
     handle: {
       crumb: () => <Link to="/">Home</Link>,
       to: () =>
-        children.map((child, index) => (
+        rootChildren.map((child, index) => (
           <li key={index}>{child.handle.crumb()}</li>
         )),
     },
-    children,
+    rootChildren,
   },
 ])
