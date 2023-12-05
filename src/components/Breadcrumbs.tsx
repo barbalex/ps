@@ -16,14 +16,12 @@ export const Breadcrumbs = () => {
 
   return (
     <nav className="breadcrumbs">
-      <ul>
-        {crumbs.map((crumb, index) => (
-          <>
-            {isOdd(index) ? <li key={`${index}arrow`}>&rArr;</li> : null}
-            <li key={`${index}link`}>{crumb}</li>
-          </>
-        ))}
-      </ul>
+      {crumbs.map((crumb, index) => (
+        <div className="crumb" key={index}>
+          {isOdd(index) ? <span>&rArr;</span> : null}
+          <span>{crumb}</span>
+        </div>
+      ))}
     </nav>
   )
 }
