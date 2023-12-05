@@ -8,7 +8,6 @@ export const Navs = () => {
     .map((match) => match?.handle?.to?.(match?.data))
     .filter((to) => Boolean(to))
 
-  console.log('Navs', { matches, tos })
   // hide this area of there are no tos
   if (!tos?.length) return null
 
