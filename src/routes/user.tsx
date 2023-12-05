@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { uuidv7 } from '@kripod/uuidv7'
+import { useParams } from 'react-router-dom'
 
 import { Users as User } from '../generated/client'
 
@@ -11,8 +11,10 @@ import { useElectric } from '../ElectricProvider'
 
 export const User = () => {
   const { db } = useElectric()!
-  console.log('User db:', db)
-  const { results } = useLiveQuery(db.users.liveMany())
+  const { user_id } = useParams()
+  const { results } = useLiveQuery(db.users.liveUnique({ user_id }))
+
+  console.log('user_id', user_id)
 
   const addItem = async () => {
     await db.users.create({

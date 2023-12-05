@@ -1,5 +1,6 @@
 import { useLiveQuery } from 'electric-sql/react'
 import { uuidv7 } from '@kripod/uuidv7'
+import { Link } from 'react-router-dom'
 
 import { Users as User } from '../generated/client'
 
@@ -37,7 +38,7 @@ export const Users = () => {
       </div>
       {users.map((user: User, index: number) => (
         <p key={index} className="item">
-          <code>{user.user_id}</code>
+          <Link to={`/users/${user.user_id}`}>{user.user_id}</Link>
         </p>
       ))}
     </div>
