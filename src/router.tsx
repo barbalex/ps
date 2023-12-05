@@ -1,6 +1,7 @@
 import { createBrowserRouter, Link } from 'react-router-dom'
 
-import { Root } from './routes/root'
+import { Header } from './components/Header'
+import { Home } from './routes/home'
 import { Users } from './routes/users'
 import { User } from './routes/users/user'
 import { Accounts } from './routes/accounts'
@@ -94,16 +95,22 @@ const rootChildren = [
 
 export const router = createBrowserRouter([
   {
-    path: '/',
-    element: <Root />,
-    errorElement: <ErrorPage />,
-    handle: {
-      crumb: () => <Link to="/">Home</Link>,
-      to: () =>
-        rootChildren.map((child, index) => (
-          <li key={index}>{child.handle.crumb()}</li>
-        )),
-    },
-    children: rootChildren,
+    element: <Header />,
+    children: [
+      {
+        path: '/',
+        element: <Home />,
+        errorElement: <ErrorPage />,
+        handle: {
+          crumb: () => <Link to="/">Home</Link>,
+          to: () =>
+            rootChildren.map((child, index) => (
+              <li key={index}>{child.handle.crumb()}</li>
+            )),
+        },
+        children: rootChildren,
+      },
+      [...rootChildren],
+    ],
   },
 ])

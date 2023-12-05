@@ -6,7 +6,7 @@ import { Users as User } from '../../../generated/client'
 
 import '../../User.css'
 
-import { useElectric } from '../../../ElectricProvider'
+import { useElectric } from '../../ElectricProvider'
 // import fromElectricProvider from './ElectricProvider'
 
 export const User = () => {
