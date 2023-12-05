@@ -12,9 +12,9 @@ import { useElectric } from '../ElectricProvider'
 export const User = () => {
   const { db } = useElectric()!
   const { user_id } = useParams()
-  const { results } = useLiveQuery(db.users.liveUnique({ user_id }))
+  const { results } = useLiveQuery(db.users.liveMany({ where: { user_id } }))
 
-  console.log('User, user_id', user_id)
+  console.log('User', { user_id, results })
 
   const addItem = async () => {
     await db.users.create({
@@ -40,7 +40,7 @@ export const User = () => {
           Clear
         </button>
       </div>
-      <div>User</div>
+      <div>{`User with id ${users[0]?.user_id ?? ''}`}</div>
     </div>
   )
 }
