@@ -124,9 +124,9 @@ export const router = createBrowserRouter([
                   ),
                 },
                 children: [
-                  { index: true, lazy: () => import('./routes/subprojects') },
+                  { index: true, lazy: () => import('./routes/project') },
                   {
-                    path: 'projects/:project_id/subprojects',
+                    path: 'subprojects',
                     lazy: () => import('./routes/subprojects'),
                     handle: {
                       crumb: (match) => (
@@ -149,7 +149,7 @@ export const router = createBrowserRouter([
                     },
                   },
                   {
-                    path: 'projects/:project_id/place-levels',
+                    path: 'place-levels',
                     lazy: () => import('./routes/placeLevels'),
                     handle: {
                       crumb: (match) => (
