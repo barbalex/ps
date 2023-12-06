@@ -240,6 +240,54 @@ export const router = createBrowserRouter([
                       ),
                     },
                   },
+                  {
+                    path: 'reports',
+                    lazy: () => import('./routes/projectReports'),
+                    handle: {
+                      crumb: (match) => (
+                        <>
+                          <div>&rArr;</div>
+                          <Link
+                            to={`/projects/${match.params.project_id}/reports`}
+                          >
+                            Reports
+                          </Link>
+                        </>
+                      ),
+                    },
+                  },
+                  {
+                    path: 'fields',
+                    lazy: () => import('./routes/fields'),
+                    handle: {
+                      crumb: (match) => (
+                        <>
+                          <div>&rArr;</div>
+                          <Link
+                            to={`/projects/${match.params.project_id}/fields`}
+                          >
+                            Fields
+                          </Link>
+                        </>
+                      ),
+                    },
+                  },
+                  {
+                    path: 'observation-sources',
+                    lazy: () => import('./routes/observationSources'),
+                    handle: {
+                      crumb: (match) => (
+                        <>
+                          <div>&rArr;</div>
+                          <Link
+                            to={`/projects/${match.params.project_id}/observation-sources`}
+                          >
+                            Observation Sources
+                          </Link>
+                        </>
+                      ),
+                    },
+                  },
                 ],
               },
             ],
