@@ -28,7 +28,6 @@ export const router = createBrowserRouter([
           ),
         },
       },
-
       {
         path: 'users',
         lazy: () => import('./routes/users'),
