@@ -31,7 +31,7 @@ export const router = createBrowserRouter([
 
       {
         path: 'users',
-        lazy: () => import('./routes/Users'),
+        lazy: () => import('./routes/users'),
         handle: {
           crumb: () => (
             <>
@@ -93,15 +93,34 @@ export const router = createBrowserRouter([
         path: 'projects/:project_id',
         lazy: () => import('./routes/project'),
         handle: {
-          crumb: () => (
-            <>
-              <Link to="/">Home</Link>
-              <div>&rArr;</div>
-              <Link to="/projects">Projects</Link>
-              <div>&rArr;</div>
-              <Link to="/projects/:project_id">Project</Link>
-            </>
-          ),
+          crumb: (data) => {
+            console.log('project route, crumb, data:', data)
+            return (
+              <>
+                <Link to="/">Home</Link>
+                <div>&rArr;</div>
+                <Link to="/projects">Projects</Link>
+                <div>&rArr;</div>
+                <Link to="/projects/:project_id">Project</Link>
+              </>
+            )
+          },
+          to: (data) => {
+            console.log('project route, to, data:', data)
+            return (
+              <>
+                <Link to="/users">Users</Link>
+                <Link to="/accounts">Accounts</Link>
+                <Link to="/projects">Projects</Link>
+                <Link to="/field-types">Field Types</Link>
+                <Link to="/widget-types">Widget Types</Link>
+                <Link to="/widgets-for-fields">Widgets For Fields</Link>
+                <Link to="/files">Files</Link>
+                <Link to="/messages">Messages</Link>
+                <Link to="/docs">Docs</Link>
+              </>
+            )
+          },
         },
       },
       {

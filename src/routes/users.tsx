@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 
 import { Users as User } from '../../../generated/client'
 
-import '../../User.css'
+import '../User.css'
 
 import { useElectric } from '../ElectricProvider'
 

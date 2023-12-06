@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 
 import { Projects as Project } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import '../../User.css'
+import '../User.css'
 
 export const Component = () => {
   const { db } = useElectric()!

@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 
 import { Projects as Project } from '../../../generated/client'
 
-import '../../User.css'
+import '../User.css'
 
 import { useElectric } from '../ElectricProvider'
 
