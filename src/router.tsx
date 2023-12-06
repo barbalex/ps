@@ -105,7 +105,17 @@ export const router = createBrowserRouter([
       {
         path: 'projects/:project_id',
         element: <Project />,
-        // handle: { crumb: () => <Link to="/projects/:project_id">Project</Link> },
+        handle: {
+          crumb: () => (
+            <>
+              <Link to="/">Home</Link>
+              <div>&rArr;</div>
+              <Link to="/projects">Projects</Link>
+              <div>&rArr;</div>
+              <Link to="/projects/:project_id">Project</Link>
+            </>
+          ),
+        },
       },
       {
         path: 'projects/:project_id/subprojects',

@@ -7,14 +7,11 @@ import { Users as User } from '../../../generated/client'
 import '../../User.css'
 
 import { useElectric } from '../../ElectricProvider'
-// import fromElectricProvider from './ElectricProvider'
 
 export const User = () => {
   const { db } = useElectric()!
   const { user_id } = useParams()
   const { results } = useLiveQuery(db.users.liveUnique({ where: { user_id } }))
-
-  console.log('User', { user_id, results })
 
   const addItem = async () => {
     await db.users.create({
