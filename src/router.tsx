@@ -288,6 +288,22 @@ export const router = createBrowserRouter([
                       ),
                     },
                   },
+                  {
+                    path: 'persons',
+                    lazy: () => import('./routes/persons'),
+                    handle: {
+                      crumb: (match) => (
+                        <>
+                          <div>&rArr;</div>
+                          <Link
+                            to={`/projects/${match.params.project_id}/persons`}
+                          >
+                            Persons
+                          </Link>
+                        </>
+                      ),
+                    },
+                  },
                 ],
               },
             ],
