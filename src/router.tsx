@@ -16,27 +16,6 @@ import { Messages } from './routes/messages'
 import { Docs } from './routes/docs'
 import { ErrorPage } from './routes/error'
 
-const subprojectsChildren = [
-  {
-    path: 'projects:project_id/subprojects',
-    element: <Subprojects />,
-    handle: {
-      crumb: () => (
-        <Link to="/projects:project_id/subprojects">Subprojects</Link>
-      ),
-    },
-  },
-]
-
-const projectsChildren = [
-  {
-    path: 'projects:project_id',
-    element: <Project />,
-    // handle: { crumb: () => <Link to="/projects/:project_id">Project</Link> },
-    children: subprojectsChildren,
-  },
-]
-
 export const router = createBrowserRouter([
   {
     element: <Header />,
@@ -122,7 +101,20 @@ export const router = createBrowserRouter([
             </>
           ),
         },
-        children: projectsChildren,
+      },
+      {
+        path: 'projects/:project_id',
+        element: <Project />,
+        // handle: { crumb: () => <Link to="/projects/:project_id">Project</Link> },
+      },
+      {
+        path: 'projects/:project_id/subprojects',
+        element: <Subprojects />,
+        handle: {
+          crumb: () => (
+            <Link to="/projects/:project_id/subprojects">Subprojects</Link>
+          ),
+        },
       },
       {
         path: 'field-types',
