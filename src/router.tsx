@@ -1,19 +1,6 @@
 import { createBrowserRouter, Link } from 'react-router-dom'
 
 import { Header } from './components/Header'
-import { Home } from './routes/home'
-import { Users } from './routes/users'
-import { User } from './routes/users/user'
-import { Accounts } from './routes/accounts'
-import { Projects } from './routes/projects'
-import { Project } from './routes/projects/project'
-import { Subprojects } from './routes/subprojects'
-import { FieldTypes } from './routes/fieldTypes'
-import { WidgetTypes } from './routes/widgetTypes'
-import { WidgetsForFields } from './routes/widgetsForFields'
-import { Files } from './routes/files'
-import { Messages } from './routes/messages'
-import { Docs } from './routes/docs'
 import { ErrorPage } from './routes/error'
 
 export const router = createBrowserRouter([
@@ -22,7 +9,7 @@ export const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <Home />,
+        lazy: () => import('./routes/home'),
         errorElement: <ErrorPage />,
         handle: {
           crumb: () => <Link to="/">Home</Link>,
@@ -44,7 +31,7 @@ export const router = createBrowserRouter([
 
       {
         path: 'users',
-        element: <Users />,
+        lazy: () => import('./routes/Users'),
         handle: {
           crumb: () => (
             <>
@@ -63,7 +50,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'users/:user_id',
-        element: <User />,
+        lazy: () => import('./routes/user'),
         handle: {
           crumb: () => (
             <>
@@ -78,7 +65,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'accounts',
-        element: <Accounts />,
+        lazy: () => import('./routes/accounts'),
         handle: {
           crumb: () => (
             <>
@@ -91,7 +78,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'projects',
-        element: <Projects />,
+        lazy: () => import('./routes/Projects'),
         handle: {
           crumb: () => (
             <>
@@ -104,7 +91,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'projects/:project_id',
-        element: <Project />,
+        lazy: () => import('./routes/project'),
         handle: {
           crumb: () => (
             <>
@@ -119,7 +106,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'projects/:project_id/subprojects',
-        element: <Subprojects />,
+        lazy: () => import('./routes/subprojects'),
         handle: {
           crumb: () => (
             <Link to="/projects/:project_id/subprojects">Subprojects</Link>
@@ -128,7 +115,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'field-types',
-        element: <FieldTypes />,
+        lazy: () => import('./routes/fieldTypes'),
         handle: {
           crumb: () => (
             <>
@@ -141,7 +128,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'widget-types',
-        element: <WidgetTypes />,
+        lazy: () => import('./routes/widgetTypes'),
         handle: {
           crumb: () => (
             <>
@@ -154,7 +141,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'widgets-for-fields',
-        element: <WidgetsForFields />,
+        lazy: () => import('./routes/widgetsForFields'),
         handle: {
           crumb: () => (
             <>
@@ -167,7 +154,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'files',
-        element: <Files />,
+        lazy: () => import('./routes/files'),
         handle: {
           crumb: () => (
             <>
@@ -180,7 +167,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'messages',
-        element: <Messages />,
+        lazy: () => import('./routes/messages'),
         handle: {
           crumb: () => (
             <>
@@ -193,7 +180,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'docs',
-        element: <Docs />,
+        lazy: () => import('./routes/docs'),
         handle: {
           crumb: () => (
             <>

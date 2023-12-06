@@ -1,1 +1,1 @@
-export const WidgetsForFields = () => <div>Widgets For Fields</div>
+export const Component = () => <div>Widgets For Fields</div>

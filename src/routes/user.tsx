@@ -6,9 +6,9 @@ import { Users as User } from '../../../generated/client'
 
 import '../../User.css'
 
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../ElectricProvider'
 
-export const User = () => {
+export const Component = () => {
   const { db } = useElectric()!
   const { user_id } = useParams()
   const { results } = useLiveQuery(db.users.liveUnique({ where: { user_id } }))

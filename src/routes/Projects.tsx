@@ -3,10 +3,10 @@ import { uuidv7 } from '@kripod/uuidv7'
 import { Link } from 'react-router-dom'
 
 import { Projects as Project } from '../../../generated/client'
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../ElectricProvider'
 import '../../User.css'
 
-export const Projects = () => {
+export const Component = () => {
   const { db } = useElectric()!
   const { results } = useLiveQuery(db.projects.liveMany())
 

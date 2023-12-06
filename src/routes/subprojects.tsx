@@ -1,1 +1,1 @@
-export const Subprojects = () => <div>Subprojects</div>
+export const Component = () => <div>Subprojects</div>

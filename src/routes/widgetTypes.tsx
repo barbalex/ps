@@ -1,1 +1,1 @@
-export const WidgetTypes = () => <div>Widget Types</div>
+export const Component = () => <div>Widget Types</div>

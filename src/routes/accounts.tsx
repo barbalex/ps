@@ -1,1 +1,1 @@
-export const Accounts = () => <div>Accounts</div>
+export const Component = () => <div>Accounts</div>

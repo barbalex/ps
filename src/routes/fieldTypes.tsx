@@ -1,1 +1,1 @@
-export const FieldTypes = () => <div>Field Types</div>
+export const Component = () => <div>Field Types</div>

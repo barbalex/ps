@@ -6,9 +6,9 @@ import { Projects as Project } from '../../../generated/client'
 
 import '../../User.css'
 
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../ElectricProvider'
 
-export const Project = () => {
+export const Component = () => {
   const { db } = useElectric()!
   const { project_id } = useParams()
   const { results } = useLiveQuery(
