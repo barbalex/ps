@@ -9,7 +9,7 @@ export const Breadcrumbs = () => {
     // now map them into an array of elements
     .map((match) => match.handle.crumb(match))
 
-  console.log('Breadcrumbs', { matches, crumbs })
+  // console.log('Breadcrumbs', { matches, crumbs })
 
   return (
     <nav className="breadcrumbs">
