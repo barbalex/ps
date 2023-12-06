@@ -43,6 +43,12 @@ body {
   padding: 0;
 }
 
+.breadcrumbs .crumb {
+  display: flex;
+  align-items: center;
+  column-gap: 5px;
+}
+
 .navs {
   padding: 10px;
   background-color: rgba(103, 216, 101, 0.052);

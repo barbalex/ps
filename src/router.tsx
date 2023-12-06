@@ -38,7 +38,6 @@ export const router = createBrowserRouter([
             handle: {
               crumb: () => (
                 <>
-                  <Link to="/">Home</Link>
                   <div>&rArr;</div>
                   <Link to="/users">Users</Link>
                 </>
@@ -55,9 +54,6 @@ export const router = createBrowserRouter([
                 handle: {
                   crumb: () => (
                     <>
-                      <Link to="/">Home</Link>
-                      <div>&rArr;</div>
-                      <Link to="/users">Users</Link>
                       <div>&rArr;</div>
                       <Link to="/users/:user_id">User</Link>
                     </>
@@ -72,7 +68,6 @@ export const router = createBrowserRouter([
             handle: {
               crumb: () => (
                 <>
-                  <Link to="/">Home</Link>
                   <div>&rArr;</div>
                   <Link to="/accounts">Accounts</Link>
                 </>
@@ -85,7 +80,6 @@ export const router = createBrowserRouter([
             handle: {
               crumb: () => (
                 <>
-                  <Link to="/">Home</Link>
                   <div>&rArr;</div>
                   <Link to="/projects">Projects</Link>
                 </>
@@ -99,9 +93,6 @@ export const router = createBrowserRouter([
                 handle: {
                   crumb: (match) => (
                     <>
-                      <Link to="/">Home</Link>
-                      <div>&rArr;</div>
-                      <Link to="/projects">Projects</Link>
                       <div>&rArr;</div>
                       <Link to={`/projects/${match.params.project_id}`}>
                         Project
@@ -120,6 +111,9 @@ export const router = createBrowserRouter([
                       >
                         Place Levels
                       </Link>
+                      <Link to={`/projects/${match.params.project_id}/units`}>
+                        Units
+                      </Link>
                     </>
                   ),
                 },
@@ -131,13 +125,6 @@ export const router = createBrowserRouter([
                     handle: {
                       crumb: (match) => (
                         <>
-                          <Link to="/">Home</Link>
-                          <div>&rArr;</div>
-                          <Link to="/projects">Projects</Link>
-                          <div>&rArr;</div>
-                          <Link to={`/projects/${match.params.project_id}`}>
-                            Project
-                          </Link>
                           <div>&rArr;</div>
                           <Link
                             to={`/projects/${match.params.project_id}/subprojects`}
@@ -154,18 +141,27 @@ export const router = createBrowserRouter([
                     handle: {
                       crumb: (match) => (
                         <>
-                          <Link to="/">Home</Link>
-                          <div>&rArr;</div>
-                          <Link to="/projects">Projects</Link>
-                          <div>&rArr;</div>
-                          <Link to={`/projects/${match.params.project_id}`}>
-                            Project
-                          </Link>
                           <div>&rArr;</div>
                           <Link
                             to={`/projects/${match.params.project_id}/place-levels`}
                           >
                             Place Levels
+                          </Link>
+                        </>
+                      ),
+                    },
+                  },
+                  {
+                    path: 'units',
+                    lazy: () => import('./routes/units'),
+                    handle: {
+                      crumb: (match) => (
+                        <>
+                          <div>&rArr;</div>
+                          <Link
+                            to={`/projects/${match.params.project_id}/units`}
+                          >
+                            Units
                           </Link>
                         </>
                       ),
@@ -181,7 +177,6 @@ export const router = createBrowserRouter([
             handle: {
               crumb: () => (
                 <>
-                  <Link to="/">Home</Link>
                   <div>&rArr;</div>
                   <Link to="/field-types">Field Types</Link>
                 </>
@@ -194,7 +189,6 @@ export const router = createBrowserRouter([
             handle: {
               crumb: () => (
                 <>
-                  <Link to="/">Home</Link>
                   <div>&rArr;</div>
                   <Link to="/widget-types">Widget Types</Link>
                 </>
@@ -207,7 +201,6 @@ export const router = createBrowserRouter([
             handle: {
               crumb: () => (
                 <>
-                  <Link to="/">Home</Link>
                   <div>&rArr;</div>
                   <Link to="/widgets-for-fields">Widgets For Fields</Link>
                 </>
@@ -220,7 +213,6 @@ export const router = createBrowserRouter([
             handle: {
               crumb: () => (
                 <>
-                  <Link to="/">Home</Link>
                   <div>&rArr;</div>
                   <Link to="/files">Files</Link>{' '}
                 </>
@@ -233,7 +225,6 @@ export const router = createBrowserRouter([
             handle: {
               crumb: () => (
                 <>
-                  <Link to="/">Home</Link>
                   <div>&rArr;</div>
                   <Link to="/messages">Messages</Link>
                 </>
@@ -246,7 +237,6 @@ export const router = createBrowserRouter([
             handle: {
               crumb: () => (
                 <>
-                  <Link to="/">Home</Link>
                   <div>&rArr;</div>
                   <Link to="/docs">Docs</Link>
                 </>
