@@ -324,6 +324,18 @@ export const router = createBrowserRouter([
                           {
                             path: 'observations',
                             lazy: () => import('./routes/observations'),
+                            handle: {
+                              crumb: (match) => (
+                                <>
+                                  <div>&rArr;</div>
+                                  <Link
+                                    to={`/projects/${match.params.project_id}/observation-sources/${match.params.observation_source_id}/observations`}
+                                  >
+                                    Observations
+                                  </Link>
+                                </>
+                              ),
+                            },
                             children: [
                               {
                                 index: true,
