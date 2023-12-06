@@ -1,12 +1,14 @@
 import { useLiveQuery } from 'electric-sql/react'
 import { uuidv7 } from '@kripod/uuidv7'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 
 import { ObservationSources as ObservationSource } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import '../User.css'
 
 export const Component = () => {
+  const { project_id } = useParams()
+
   const { db } = useElectric()!
   const { results } = useLiveQuery(db.observation_sources.liveMany())
 
@@ -14,6 +16,8 @@ export const Component = () => {
     await db.observation_sources.create({
       data: {
         observation_source_id: uuidv7(),
+        project_id,
+        // TODO: set account_id
       },
     })
   }

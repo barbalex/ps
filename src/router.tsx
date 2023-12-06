@@ -95,7 +95,7 @@ export const router = createBrowserRouter([
                     <>
                       <div>&rArr;</div>
                       <Link to={`/projects/${match.params.project_id}`}>
-                        Project
+                        {match.params.project_id}
                       </Link>
                     </>
                   ),
@@ -295,26 +295,57 @@ export const router = createBrowserRouter([
                       {
                         path: ':observation_source_id',
                         element: null,
+                        handle: {
+                          crumb: (match) => (
+                            <>
+                              <div>&rArr;</div>
+                              <Link
+                                to={`/projects/${match.params.project_id}/observation-sources/${match.params.observation_source_id}`}
+                              >
+                                {match.params.observation_source_id}
+                              </Link>
+                            </>
+                          ),
+                          to: (match) => (
+                            <>
+                              <Link
+                                to={`/projects/${match.params.project_id}/observation-sources/${match.params.observation_source_id}/observations`}
+                              >
+                                Observations
+                              </Link>
+                            </>
+                          ),
+                        },
                         children: [
                           {
                             index: true,
                             lazy: () => import('./routes/observationSource'),
                           },
                           {
-                            path: 'ovservations',
+                            path: 'observations',
                             lazy: () => import('./routes/observations'),
-                            handle: {
-                              crumb: (match) => (
-                                <>
-                                  <div>&rArr;</div>
-                                  <Link
-                                    to={`/projects/${match.params.project_id}/observation-sources/${match.params.observation_source_id}/observations`}
-                                  >
-                                    Observations
-                                  </Link>
-                                </>
-                              ),
-                            },
+                            children: [
+                              {
+                                index: true,
+                                lazy: () => import('./routes/observations'),
+                              },
+                              {
+                                path: ':observation_id',
+                                lazy: () => import('./routes/observation'),
+                                handle: {
+                                  crumb: (match) => (
+                                    <>
+                                      <div>&rArr;</div>
+                                      <Link
+                                        to={`/projects/${match.params.project_id}/observation-sources/${match.params.observation_source_id}/observations/${match.params.observation_id}`}
+                                      >
+                                        {match.params.observation_id}
+                                      </Link>
+                                    </>
+                                  ),
+                                },
+                              },
+                            ],
                           },
                         ],
                       },
