@@ -115,6 +115,11 @@ export const router = createBrowserRouter([
                       >
                         Subprojects
                       </Link>
+                      <Link
+                        to={`/projects/${match.params.project_id}/place-levels`}
+                      >
+                        Place Levels
+                      </Link>
                     </>
                   ),
                 },
@@ -138,6 +143,29 @@ export const router = createBrowserRouter([
                             to={`/projects/${match.params.project_id}/subprojects`}
                           >
                             Subprojects
+                          </Link>
+                        </>
+                      ),
+                    },
+                  },
+                  {
+                    path: 'projects/:project_id/place-levels',
+                    lazy: () => import('./routes/placeLevels'),
+                    handle: {
+                      crumb: (match) => (
+                        <>
+                          <Link to="/">Home</Link>
+                          <div>&rArr;</div>
+                          <Link to="/projects">Projects</Link>
+                          <div>&rArr;</div>
+                          <Link to={`/projects/${match.params.project_id}`}>
+                            Project
+                          </Link>
+                          <div>&rArr;</div>
+                          <Link
+                            to={`/projects/${match.params.project_id}/place-levels`}
+                          >
+                            Place Levels
                           </Link>
                         </>
                       ),
