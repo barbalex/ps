@@ -200,7 +200,7 @@ export const router = createBrowserRouter([
                           },
                           {
                             path: 'places',
-                            lazy: () => import('./routes/places'),
+                            element: null,
                             handle: {
                               crumb: (match) => (
                                 <>
@@ -213,6 +213,28 @@ export const router = createBrowserRouter([
                                 </>
                               ),
                             },
+                            children: [
+                              {
+                                index: true,
+                                lazy: () => import('./routes/places'),
+                              },
+                              {
+                                path: ':place_id',
+                                lazy: () => import('./routes/place'),
+                                handle: {
+                                  crumb: (match) => (
+                                    <>
+                                      <div>&rArr;</div>
+                                      <Link
+                                        to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}`}
+                                      >
+                                        {match.params.place_id}
+                                      </Link>
+                                    </>
+                                  ),
+                                },
+                              },
+                            ],
                           },
                           {
                             path: 'users',
