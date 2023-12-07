@@ -235,7 +235,7 @@ export const router = createBrowserRouter([
                               },
                               {
                                 path: ':place_id',
-                                lazy: () => import('./routes/place'),
+                                element: null,
                                 handle: {
                                   crumb: (match) => (
                                     <>
@@ -247,7 +247,37 @@ export const router = createBrowserRouter([
                                       </Link>
                                     </>
                                   ),
+                                  to: (match) => (
+                                    <>
+                                      <Link
+                                        to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/checks`}
+                                      >
+                                        Checks
+                                      </Link>
+                                      <Link
+                                        to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/actions`}
+                                      >
+                                        Actions
+                                      </Link>
+                                      <Link
+                                        to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/reports`}
+                                      >
+                                        Reports
+                                      </Link>
+                                      <Link
+                                        to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/users`}
+                                      >
+                                        Users
+                                      </Link>
+                                    </>
+                                  ),
                                 },
+                                children: [
+                                  {
+                                    index: true,
+                                    lazy: () => import('./routes/place'),
+                                  },
+                                ],
                               },
                             ],
                           },
