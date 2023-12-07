@@ -277,6 +277,44 @@ export const router = createBrowserRouter([
                                     index: true,
                                     lazy: () => import('./routes/place'),
                                   },
+                                  {
+                                    path: 'checks',
+                                    element: null,
+                                    handle: {
+                                      crumb: (match) => (
+                                        <>
+                                          <div>&rArr;</div>
+                                          <Link
+                                            to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/checks`}
+                                          >
+                                            Checks
+                                          </Link>
+                                        </>
+                                      ),
+                                    },
+                                    children: [
+                                      {
+                                        index: true,
+                                        lazy: () => import('./routes/checks'),
+                                      },
+                                      {
+                                        path: ':check_id',
+                                        lazy: () => import('./routes/check'),
+                                        handle: {
+                                          crumb: (match) => (
+                                            <>
+                                              <div>&rArr;</div>
+                                              <Link
+                                                to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/checks/${match.params.check_id}`}
+                                              >
+                                                {match.params.check_id}
+                                              </Link>
+                                            </>
+                                          ),
+                                        },
+                                      },
+                                    ],
+                                  },
                                 ],
                               },
                             ],
