@@ -440,7 +440,7 @@ export const router = createBrowserRouter([
                   },
                   {
                     path: 'lists',
-                    lazy: () => import('./routes/lists'),
+                    element: null,
                     handle: {
                       crumb: (match) => (
                         <>
@@ -453,6 +453,78 @@ export const router = createBrowserRouter([
                         </>
                       ),
                     },
+                    children: [
+                      { index: true, lazy: () => import('./routes/lists') },
+                      {
+                        path: ':list_id',
+                        element: null,
+                        handle: {
+                          crumb: (match) => (
+                            <>
+                              <div>&rArr;</div>
+                              <Link
+                                to={`/projects/${match.params.project_id}/lists/${match.params.list_id}`}
+                              >
+                                {match.params.list_id}
+                              </Link>
+                            </>
+                          ),
+                          to: (match) => (
+                            <>
+                              <Link
+                                to={`/projects/${match.params.project_id}/lists/${match.params.list_id}/values`}
+                              >
+                                Values
+                              </Link>
+                            </>
+                          ),
+                        },
+                        children: [
+                          {
+                            index: true,
+                            lazy: () => import('./routes/list'),
+                          },
+                          {
+                            path: 'values',
+                            element: null,
+                            handle: {
+                              crumb: (match) => (
+                                <>
+                                  <div>&rArr;</div>
+                                  <Link
+                                    to={`/projects/${match.params.project_id}/lists/${match.params.list_id}/values`}
+                                  >
+                                    Values
+                                  </Link>
+                                </>
+                              ),
+                            },
+                            children: [
+                              {
+                                index: true,
+                                lazy: () => import('./routes/listValues'),
+                              },
+                              {
+                                path: ':list_value_id',
+                                lazy: () => import('./routes/listValue'),
+                                handle: {
+                                  crumb: (match) => (
+                                    <>
+                                      <div>&rArr;</div>
+                                      <Link
+                                        to={`/projects/${match.params.project_id}/lists/${match.params.list_id}/values/${match.params.list_value_id}`}
+                                      >
+                                        {match.params.list_value_id}
+                                      </Link>
+                                    </>
+                                  ),
+                                },
+                              },
+                            ],
+                          },
+                        ],
+                      },
+                    ],
                   },
                   {
                     path: 'taxonomies',
