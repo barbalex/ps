@@ -166,7 +166,7 @@ export const router = createBrowserRouter([
                       },
                       {
                         path: ':subproject_id',
-                        lazy: () => import('./routes/subproject'),
+                        element: null,
                         handle: {
                           crumb: (match) => (
                             <>
@@ -188,6 +188,28 @@ export const router = createBrowserRouter([
                             </>
                           ),
                         },
+                        children: [
+                          {
+                            index: true,
+                            lazy: () => import('./routes/subproject'),
+                          },
+                          {
+                            path: 'places',
+                            lazy: () => import('./routes/places'),
+                            handle: {
+                              crumb: (match) => (
+                                <>
+                                  <div>&rArr;</div>
+                                  <Link
+                                    to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places`}
+                                  >
+                                    Places
+                                  </Link>
+                                </>
+                              ),
+                            },
+                          },
+                        ],
                       },
                     ],
                   },
