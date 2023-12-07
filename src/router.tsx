@@ -393,6 +393,46 @@ export const router = createBrowserRouter([
                                       },
                                     ],
                                   },
+                                  {
+                                    path: 'users',
+                                    element: null,
+                                    handle: {
+                                      crumb: (match) => (
+                                        <>
+                                          <div>&rArr;</div>
+                                          <Link
+                                            to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/users`}
+                                          >
+                                            Users
+                                          </Link>
+                                        </>
+                                      ),
+                                    },
+                                    children: [
+                                      {
+                                        index: true,
+                                        lazy: () =>
+                                          import('./routes/placeUsers'),
+                                      },
+                                      {
+                                        path: ':place_user_id',
+                                        lazy: () =>
+                                          import('./routes/placeUser'),
+                                        handle: {
+                                          crumb: (match) => (
+                                            <>
+                                              <div>&rArr;</div>
+                                              <Link
+                                                to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/users/${match.params.place_user_id}`}
+                                              >
+                                                {match.params.place_user_id}
+                                              </Link>
+                                            </>
+                                          ),
+                                        },
+                                      },
+                                    ],
+                                  },
                                 ],
                               },
                             ],
