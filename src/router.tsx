@@ -438,8 +438,7 @@ export const router = createBrowserRouter([
                                       },
                                       {
                                         path: ':goal_report_id',
-                                        lazy: () =>
-                                          import('./routes/goalReport'),
+                                        element: null,
                                         handle: {
                                           crumb: (match) => (
                                             <>
@@ -451,7 +450,70 @@ export const router = createBrowserRouter([
                                               </Link>
                                             </>
                                           ),
+                                          to: (match) => (
+                                            <>
+                                              <Link
+                                                to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/goals/${match.params.goal_id}/reports/${match.params.goal_report_id}/values`}
+                                              >
+                                                Values
+                                              </Link>
+                                            </>
+                                          ),
                                         },
+                                        children: [
+                                          {
+                                            index: true,
+                                            lazy: () =>
+                                              import('./routes/goalReport'),
+                                          },
+                                          {
+                                            path: 'values',
+                                            element: null,
+                                            handle: {
+                                              crumb: (match) => (
+                                                <>
+                                                  <div>&rArr;</div>
+                                                  <Link
+                                                    to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/goals/${match.params.goal_id}/reports/${match.params.goal_report_id}/values`}
+                                                  >
+                                                    Values
+                                                  </Link>
+                                                </>
+                                              ),
+                                            },
+                                            children: [
+                                              {
+                                                index: true,
+                                                lazy: () =>
+                                                  import(
+                                                    './routes/goalReportValues'
+                                                  ),
+                                              },
+                                              {
+                                                path: ':goal_report_value_id',
+                                                lazy: () =>
+                                                  import(
+                                                    './routes/goalReportValue'
+                                                  ),
+                                                handle: {
+                                                  crumb: (match) => (
+                                                    <>
+                                                      <div>&rArr;</div>
+                                                      <Link
+                                                        to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/goals/${match.params.goal_id}/reports/${match.params.goal_report_id}/values/${match.params.goal_report_value_id}`}
+                                                      >
+                                                        {
+                                                          match.params
+                                                            .goal_report_value_id
+                                                        }
+                                                      </Link>
+                                                    </>
+                                                  ),
+                                                },
+                                              },
+                                            ],
+                                          },
+                                        ],
                                       },
                                     ],
                                   },
