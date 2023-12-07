@@ -353,6 +353,46 @@ export const router = createBrowserRouter([
                                       },
                                     ],
                                   },
+                                  {
+                                    path: 'reports',
+                                    element: null,
+                                    handle: {
+                                      crumb: (match) => (
+                                        <>
+                                          <div>&rArr;</div>
+                                          <Link
+                                            to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/reports`}
+                                          >
+                                            Reports
+                                          </Link>
+                                        </>
+                                      ),
+                                    },
+                                    children: [
+                                      {
+                                        index: true,
+                                        lazy: () =>
+                                          import('./routes/placeReports'),
+                                      },
+                                      {
+                                        path: ':report_id',
+                                        lazy: () =>
+                                          import('./routes/placeReport'),
+                                        handle: {
+                                          crumb: (match) => (
+                                            <>
+                                              <div>&rArr;</div>
+                                              <Link
+                                                to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/reports/${match.params.report_id}`}
+                                              >
+                                                {match.params.report_id}
+                                              </Link>
+                                            </>
+                                          ),
+                                        },
+                                      },
+                                    ],
+                                  },
                                 ],
                               },
                             ],
