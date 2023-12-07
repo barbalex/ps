@@ -315,6 +315,44 @@ export const router = createBrowserRouter([
                                       },
                                     ],
                                   },
+                                  {
+                                    path: 'actions',
+                                    element: null,
+                                    handle: {
+                                      crumb: (match) => (
+                                        <>
+                                          <div>&rArr;</div>
+                                          <Link
+                                            to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/actions`}
+                                          >
+                                            Actions
+                                          </Link>
+                                        </>
+                                      ),
+                                    },
+                                    children: [
+                                      {
+                                        index: true,
+                                        lazy: () => import('./routes/actions'),
+                                      },
+                                      {
+                                        path: ':action_id',
+                                        lazy: () => import('./routes/action'),
+                                        handle: {
+                                          crumb: (match) => (
+                                            <>
+                                              <div>&rArr;</div>
+                                              <Link
+                                                to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/actions/${match.params.action_id}`}
+                                              >
+                                                {match.params.action_id}
+                                              </Link>
+                                            </>
+                                          ),
+                                        },
+                                      },
+                                    ],
+                                  },
                                 ],
                               },
                             ],
