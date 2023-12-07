@@ -367,7 +367,7 @@ export const router = createBrowserRouter([
                   },
                   {
                     path: 'place-levels',
-                    lazy: () => import('./routes/placeLevels'),
+                    element: null,
                     handle: {
                       crumb: (match) => (
                         <>
@@ -380,10 +380,32 @@ export const router = createBrowserRouter([
                         </>
                       ),
                     },
+                    children: [
+                      {
+                        index: true,
+                        lazy: () => import('./routes/placeLevels'),
+                      },
+                      {
+                        path: ':place_level_id',
+                        lazy: () => import('./routes/placeLevel'),
+                        handle: {
+                          crumb: (match) => (
+                            <>
+                              <div>&rArr;</div>
+                              <Link
+                                to={`/projects/${match.params.project_id}/place-levels/${match.params.place_level_id}`}
+                              >
+                                {match.params.place_level_id}
+                              </Link>
+                            </>
+                          ),
+                        },
+                      },
+                    ],
                   },
                   {
                     path: 'units',
-                    lazy: () => import('./routes/units'),
+                    element: null,
                     handle: {
                       crumb: (match) => (
                         <>
@@ -396,6 +418,25 @@ export const router = createBrowserRouter([
                         </>
                       ),
                     },
+                    children: [
+                      { index: true, lazy: () => import('./routes/units') },
+                      {
+                        path: ':unit_id',
+                        lazy: () => import('./routes/unit'),
+                        handle: {
+                          crumb: (match) => (
+                            <>
+                              <div>&rArr;</div>
+                              <Link
+                                to={`/projects/${match.params.project_id}/units/${match.params.unit_id}`}
+                              >
+                                {match.params.unit_id}
+                              </Link>
+                            </>
+                          ),
+                        },
+                      },
+                    ],
                   },
                   {
                     path: 'lists',
