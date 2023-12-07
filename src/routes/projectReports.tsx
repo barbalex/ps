@@ -25,7 +25,7 @@ export const Component = () => {
     await db.project_reports.deleteMany()
   }
 
-  const projectUsers: ProjectReport[] = results ?? []
+  const projectReports: ProjectReport[] = results ?? []
 
   return (
     <div>
@@ -37,12 +37,12 @@ export const Component = () => {
           Clear
         </button>
       </div>
-      {projectUsers.map((projectUser: ProjectReport, index: number) => (
+      {projectReports.map((projectReport: ProjectReport, index: number) => (
         <p key={index} className="item">
           <Link
-            to={`/projects/${project_id}/reports/${projectUser.project_report_id}`}
+            to={`/projects/${project_id}/reports/${projectReport.project_report_id}`}
           >
-            {projectUser.project_report_id}
+            {projectReport.project_report_id}
           </Link>
         </p>
       ))}
