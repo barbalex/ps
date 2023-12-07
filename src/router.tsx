@@ -281,7 +281,7 @@ export const router = createBrowserRouter([
                           },
                           {
                             path: 'taxa',
-                            lazy: () => import('./routes/subprojectTaxa'),
+                            element: null,
                             handle: {
                               crumb: (match) => (
                                 <>
@@ -294,6 +294,28 @@ export const router = createBrowserRouter([
                                 </>
                               ),
                             },
+                            children: [
+                              {
+                                index: true,
+                                lazy: () => import('./routes/subprojectTaxa'),
+                              },
+                              {
+                                path: ':subproject_taxon_id',
+                                lazy: () => import('./routes/subprojectTaxon'),
+                                handle: {
+                                  crumb: (match) => (
+                                    <>
+                                      <div>&rArr;</div>
+                                      <Link
+                                        to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/taxa/${match.params.subproject_taxon_id}`}
+                                      >
+                                        {match.params.subproject_taxon_id}
+                                      </Link>
+                                    </>
+                                  ),
+                                },
+                              },
+                            ],
                           },
                         ],
                       },
