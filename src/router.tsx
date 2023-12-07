@@ -528,7 +528,7 @@ export const router = createBrowserRouter([
                   },
                   {
                     path: 'taxonomies',
-                    lazy: () => import('./routes/taxonomies'),
+                    element: null,
                     handle: {
                       crumb: (match) => (
                         <>
@@ -541,6 +541,81 @@ export const router = createBrowserRouter([
                         </>
                       ),
                     },
+                    children: [
+                      {
+                        index: true,
+                        lazy: () => import('./routes/taxonomies'),
+                      },
+                      {
+                        path: ':taxonomy_id',
+                        element: null,
+                        handle: {
+                          crumb: (match) => (
+                            <>
+                              <div>&rArr;</div>
+                              <Link
+                                to={`/projects/${match.params.project_id}/taxonomies/${match.params.taxonomy_id}`}
+                              >
+                                {match.params.taxonomy_id}
+                              </Link>
+                            </>
+                          ),
+                          to: (match) => (
+                            <>
+                              <Link
+                                to={`/projects/${match.params.project_id}/taxonomies/${match.params.taxonomy_id}/taxa`}
+                              >
+                                Taxa
+                              </Link>
+                            </>
+                          ),
+                        },
+                        children: [
+                          {
+                            index: true,
+                            lazy: () => import('./routes/taxonomy'),
+                          },
+                          {
+                            path: 'taxa',
+                            element: null,
+                            handle: {
+                              crumb: (match) => (
+                                <>
+                                  <div>&rArr;</div>
+                                  <Link
+                                    to={`/projects/${match.params.project_id}/taxonomies/${match.params.taxonomy_id}/taxa`}
+                                  >
+                                    Taxa
+                                  </Link>
+                                </>
+                              ),
+                            },
+                            children: [
+                              {
+                                index: true,
+                                lazy: () => import('./routes/taxa'),
+                              },
+                              {
+                                path: ':taxon_id',
+                                lazy: () => import('./routes/taxon'),
+                                handle: {
+                                  crumb: (match) => (
+                                    <>
+                                      <div>&rArr;</div>
+                                      <Link
+                                        to={`/projects/${match.params.project_id}/taxonomies/${match.params.taxonomy_id}/taxa/${match.params.taxon_id}`}
+                                      >
+                                        {match.params.taxon_id}
+                                      </Link>
+                                    </>
+                                  ),
+                                },
+                              },
+                            ],
+                          },
+                        ],
+                      },
+                    ],
                   },
                   {
                     path: 'users',

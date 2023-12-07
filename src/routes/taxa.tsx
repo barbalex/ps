@@ -2,30 +2,30 @@ import { useLiveQuery } from 'electric-sql/react'
 import { uuidv7 } from '@kripod/uuidv7'
 import { Link, useParams } from 'react-router-dom'
 
-import { Taxonomies as Taxonomy } from '../../../generated/client'
+import { Taxa as Taxon } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import '../User.css'
 
 export const Component = () => {
-  const { project_id } = useParams<{ project_id: string }>()
+  const { project_id, taxonomy_id } = useParams<{ project_id: string }>()
   const { db } = useElectric()!
-  const { results } = useLiveQuery(db.taxonomies.liveMany())
+  const { results } = useLiveQuery(db.taxa.liveMany())
 
   const add = async () => {
-    await db.taxonomies.create({
+    await db.taxa.create({
       data: {
-        taxonomy_id: uuidv7(),
-        project_id,
+        taxon_id: uuidv7(),
+        taxonomy_id,
         // TODO: add account_id
       },
     })
   }
 
   const clear = async () => {
-    await db.taxonomies.deleteMany()
+    await db.taxa.deleteMany()
   }
 
-  const taxonomies: Taxonomy[] = results ?? []
+  const taxa: Taxon[] = results ?? []
 
   return (
     <div>
@@ -37,12 +37,12 @@ export const Component = () => {
           Clear
         </button>
       </div>
-      {taxonomies.map((taxonomy: Taxonomy, index: number) => (
+      {taxa.map((taxon: Taxon, index: number) => (
         <p key={index} className="item">
           <Link
-            to={`/projects/${project_id}/taxonomies/${taxonomy.taxonomy_id}`}
+            to={`/projects/${project_id}/taxonomies/${taxonomy_id}/taxa/${taxon.taxon_id}}`}
           >
-            {taxonomy.taxonomy_id}
+            {taxon.taxon_id}
           </Link>
         </p>
       ))}
