@@ -463,7 +463,7 @@ export const router = createBrowserRouter([
                   },
                   {
                     path: 'fields',
-                    lazy: () => import('./routes/fields'),
+                    element: null,
                     handle: {
                       crumb: (match) => (
                         <>
@@ -476,6 +476,25 @@ export const router = createBrowserRouter([
                         </>
                       ),
                     },
+                    children: [
+                      { index: true, lazy: () => import('./routes/fields') },
+                      {
+                        path: ':field_id',
+                        lazy: () => import('./routes/field'),
+                        handle: {
+                          crumb: (match) => (
+                            <>
+                              <div>&rArr;</div>
+                              <Link
+                                to={`/projects/${match.params.project_id}/fields/${match.params.field_id}`}
+                              >
+                                {match.params.field_id}
+                              </Link>
+                            </>
+                          ),
+                        },
+                      },
+                    ],
                   },
                   {
                     path: 'observation-sources',
