@@ -388,7 +388,7 @@ export const router = createBrowserRouter([
                               },
                               {
                                 path: ':goal_id',
-                                lazy: () => import('./routes/goal'),
+                                element: null,
                                 handle: {
                                   crumb: (match) => (
                                     <>
@@ -400,7 +400,62 @@ export const router = createBrowserRouter([
                                       </Link>
                                     </>
                                   ),
+                                  to: (match) => (
+                                    <>
+                                      <Link
+                                        to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/goals/${match.params.goal_id}/reports`}
+                                      >
+                                        Reports
+                                      </Link>
+                                    </>
+                                  ),
                                 },
+                                children: [
+                                  {
+                                    index: true,
+                                    lazy: () => import('./routes/goal'),
+                                  },
+                                  {
+                                    path: 'reports',
+                                    element: null,
+                                    handle: {
+                                      crumb: (match) => (
+                                        <>
+                                          <div>&rArr;</div>
+                                          <Link
+                                            to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/goals/${match.params.goal_id}/reports`}
+                                          >
+                                            Reports
+                                          </Link>
+                                        </>
+                                      ),
+                                    },
+                                    children: [
+                                      {
+                                        index: true,
+                                        lazy: () =>
+                                          import('./routes/goalReports'),
+                                      },
+                                      {
+                                        path: ':goal_report_id',
+                                        lazy: () =>
+                                          import('./routes/goalReport'),
+                                        handle: {
+                                          crumb: (match) => (
+                                            <>
+                                              <div>&rArr;</div>
+                                              <Link
+                                                to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/goals/${match.params.goal_id}/reports/${match.params.goal_report_id}`}
+                                              >
+                                                {match.params.goal_report_id}
+                                              </Link>
+                                            </>
+                                          ),
+                                        },
+                                      },
+                                    ],
+                                  },
+                                ],
                               },
                             ],
                           },
