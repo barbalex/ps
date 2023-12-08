@@ -1687,7 +1687,7 @@ export const router = createBrowserRouter([
           },
           {
             path: 'messages',
-            lazy: () => import('./routes/messages'),
+            element: null,
             handle: {
               crumb: () => (
                 <>
@@ -1696,6 +1696,23 @@ export const router = createBrowserRouter([
                 </>
               ),
             },
+            children: [
+              { index: true, lazy: () => import('./routes/messages') },
+              {
+                path: ':message_id',
+                lazy: () => import('./routes/message'),
+                handle: {
+                  crumb: (match) => (
+                    <>
+                      <div>&rArr;</div>
+                      <Link to={`/messages/${match.params.message_id}`}>
+                        {match.params.message_id}
+                      </Link>
+                    </>
+                  ),
+                },
+              },
+            ],
           },
           {
             path: 'docs',
