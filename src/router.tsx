@@ -318,6 +318,11 @@ export const router = createBrowserRouter([
                                               >
                                                 Values
                                               </Link>
+                                              <Link
+                                                to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/checks/${match.params.check_id}/taxa`}
+                                              >
+                                                Taxa
+                                              </Link>
                                             </>
                                           ),
                                         },
@@ -364,6 +369,49 @@ export const router = createBrowserRouter([
                                                         {
                                                           match.params
                                                             .check_value_id
+                                                        }
+                                                      </Link>
+                                                    </>
+                                                  ),
+                                                },
+                                              },
+                                            ],
+                                          },
+                                          {
+                                            path: 'taxa',
+                                            element: null,
+                                            handle: {
+                                              crumb: (match) => (
+                                                <>
+                                                  <div>&rArr;</div>
+                                                  <Link
+                                                    to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/checks/${match.params.check_id}/taxa`}
+                                                  >
+                                                    Taxa
+                                                  </Link>
+                                                </>
+                                              ),
+                                            },
+                                            children: [
+                                              {
+                                                index: true,
+                                                lazy: () =>
+                                                  import('./routes/checkTaxa'),
+                                              },
+                                              {
+                                                path: ':check_taxon_id',
+                                                lazy: () =>
+                                                  import('./routes/checkTaxon'),
+                                                handle: {
+                                                  crumb: (match) => (
+                                                    <>
+                                                      <div>&rArr;</div>
+                                                      <Link
+                                                        to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/checks/${match.params.check_id}/taxa/${match.params.check_taxon_id}`}
+                                                      >
+                                                        {
+                                                          match.params
+                                                            .check_taxon_id
                                                         }
                                                       </Link>
                                                     </>
