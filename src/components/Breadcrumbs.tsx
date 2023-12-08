@@ -1,8 +1,8 @@
-import { useMatches, Link, useLocation } from 'react-router-dom'
+import { useMatches, useNavigate } from 'react-router-dom'
 
 export const Breadcrumbs = () => {
   const matches = useMatches()
-  const location = useLocation()
+  const navigate = useNavigate()
 
   const crumbs = matches
     // first get rid of any matches that don't have handle and crumb
@@ -16,14 +16,15 @@ export const Breadcrumbs = () => {
 
   return (
     <nav className="breadcrumbs">
-      {crumbs.map(({ text, url }, index) => (
-        <div className="crumb-container" key={index}>
-          {index > 0 ? <div className="crumb">&gt;</div> : ''}
-          <div className="crumb">
-            {location.pathname === url ? text : <Link to={url}>{text}</Link>}
+      {crumbs.map(({ text, url }, index) => {
+        const className = location.pathname === url ? 'crumb' : 'crumb link'
+
+        return (
+          <div className={className} key={index} onClick={() => navigate(url)}>
+            {text}
           </div>
-        </div>
-      ))}
+        )
+      })}
     </nav>
   )
 }

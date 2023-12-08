@@ -30,29 +30,63 @@ body {
 }
 
 .breadcrumbs {
-  padding: 10px;
-  background-color: rgba(103, 216, 101, 0.1);
+  background-color: rgb(248, 150, 22);
   display: flex;
   flex-wrap: wrap;
-  column-gap: 5px;
-  row-gap: 5px;
-}
-
-.breadcrumbs a {
-  margin: 0;
-  padding: 0;
-}
-
-.breadcrumbs .crumb-container {
-  display: flex;
-  align-items: center;
-  column-gap: 5px;
+  flex-basis: 40px;
 }
 
 .breadcrumbs .crumb {
   display: flex;
   align-items: center;
-  column-gap: 5px;
+  align-items: stretch;
+  padding: 10px;
+  margin-right: 20px;
+  position: relative;
+}
+
+.breadcrumbs .crumb.link {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.breadcrumbs .crumb::after {
+  content: ' ';
+  display: block;
+  width: 0;
+  height: 0;
+  border-top: 20px solid transparent; /* Go big on the size, and let overflow hide */
+  border-bottom: 20px solid transparent;
+  border-left: 20px solid rgb(248, 150, 22);
+  position: absolute;
+  top: 50%;
+  margin-top: -20px;
+  left: 100%;
+  z-index: 2;
+}
+
+.breadcrumbs .crumb::before {
+  content: ' ';
+  display: block;
+  width: 0;
+  height: 0;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  border-left: 20px solid white;
+  position: absolute;
+  top: 50%;
+  margin-top: -20px;
+  margin-left: 1px;
+  left: 100%;
+  z-index: 1;
+}
+
+.breadcrumbs .crumb:hover {
+  background: rgb(218, 132, 19);
+}
+
+.breadcrumbs .crumb:hover:after {
+  border-left-color: rgb(218, 132, 19) !important;
 }
 
 .navs {
