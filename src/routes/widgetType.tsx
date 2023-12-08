@@ -1,6 +1,6 @@
 import { useLiveQuery } from 'electric-sql/react'
 import { uuidv7 } from '@kripod/uuidv7'
-import { Link } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
 import { WidgetTypes as WidgetType } from '../../../generated/client'
 
@@ -10,9 +10,12 @@ import { useElectric } from '../ElectricProvider'
 
 export const Component = () => {
   const { db } = useElectric()!
-  const { results } = useLiveQuery(db.widget_types.liveMany())
+  const { widget_type } = useParams()
+  const { results } = useLiveQuery(
+    db.widget_types.liveUnique({ where: { widget_type } }),
+  )
 
-  const add = async () => {
+  const addItem = async () => {
     await db.widget_types.create({
       data: {
         widget_type: uuidv7(),
@@ -20,29 +23,23 @@ export const Component = () => {
     })
   }
 
-  const clear = async () => {
+  const clearItems = async () => {
     await db.widget_types.deleteMany()
   }
 
-  const widgetTypes: WidgetType[] = results ?? []
+  const widgetType: WidgetType = results
 
   return (
     <div>
       <div className="controls">
-        <button className="button" onClick={add}>
+        <button className="button" onClick={addItem}>
           Add
         </button>
-        <button className="button" onClick={clear}>
+        <button className="button" onClick={clearItems}>
           Clear
         </button>
       </div>
-      {widgetTypes.map((widgetType: WidgetType, index: number) => (
-        <p key={index} className="item">
-          <Link to={`/widget-types/${widgetType.widget_type}`}>
-            {widgetType.widget_type}
-          </Link>
-        </p>
-      ))}
+      <div>{`Widget Type  ${widgetType?.widget_type ?? ''}`}</div>
     </div>
   )
 }

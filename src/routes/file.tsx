@@ -1,6 +1,6 @@
 import { useLiveQuery } from 'electric-sql/react'
 import { uuidv7 } from '@kripod/uuidv7'
-import { Link } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
 import { Files as File } from '../../../generated/client'
 
@@ -10,9 +10,10 @@ import { useElectric } from '../ElectricProvider'
 
 export const Component = () => {
   const { db } = useElectric()!
-  const { results } = useLiveQuery(db.files.liveMany())
+  const { file_id } = useParams()
+  const { results } = useLiveQuery(db.files.liveUnique({ where: { file_id } }))
 
-  const add = async () => {
+  const addItem = async () => {
     await db.files.create({
       data: {
         file_id: uuidv7(),
@@ -20,27 +21,23 @@ export const Component = () => {
     })
   }
 
-  const clear = async () => {
+  const clearItems = async () => {
     await db.files.deleteMany()
   }
 
-  const files: File[] = results ?? []
+  const file: File = results
 
   return (
     <div>
       <div className="controls">
-        <button className="button" onClick={add}>
+        <button className="button" onClick={addItem}>
           Add
         </button>
-        <button className="button" onClick={clear}>
+        <button className="button" onClick={clearItems}>
           Clear
         </button>
       </div>
-      {files.map((file: File, index: number) => (
-        <p key={index} className="item">
-          <Link to={`/files/${file.file_id}`}>{file.file_id}</Link>
-        </p>
-      ))}
+      <div>{`File with id ${file?.file_id ?? ''}`}</div>
     </div>
   )
 }

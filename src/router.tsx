@@ -1598,7 +1598,7 @@ export const router = createBrowserRouter([
           },
           {
             path: 'widget-types',
-            lazy: () => import('./routes/widgetTypes'),
+            element: null,
             handle: {
               crumb: () => (
                 <>
@@ -1607,6 +1607,23 @@ export const router = createBrowserRouter([
                 </>
               ),
             },
+            children: [
+              { index: true, lazy: () => import('./routes/widgetTypes') },
+              {
+                path: ':widget_type',
+                lazy: () => import('./routes/widgetType'),
+                handle: {
+                  crumb: (match) => (
+                    <>
+                      <div>&rArr;</div>
+                      <Link to={`/widget-types/${match.params.widget_type}`}>
+                        {match.params.widget_type}
+                      </Link>
+                    </>
+                  ),
+                },
+              },
+            ],
           },
           {
             path: 'widgets-for-fields',
@@ -1622,7 +1639,7 @@ export const router = createBrowserRouter([
           },
           {
             path: 'files',
-            lazy: () => import('./routes/files'),
+            element: null,
             handle: {
               crumb: () => (
                 <>
@@ -1631,6 +1648,23 @@ export const router = createBrowserRouter([
                 </>
               ),
             },
+            children: [
+              { index: true, lazy: () => import('./routes/files') },
+              {
+                path: ':file_id',
+                lazy: () => import('./routes/file'),
+                handle: {
+                  crumb: (match) => (
+                    <>
+                      <div>&rArr;</div>
+                      <Link to={`/files/${match.params.file_id}`}>
+                        {match.params.file_id}
+                      </Link>
+                    </>
+                  ),
+                },
+              },
+            ],
           },
           {
             path: 'messages',
