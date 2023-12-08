@@ -1627,7 +1627,7 @@ export const router = createBrowserRouter([
           },
           {
             path: 'widgets-for-fields',
-            lazy: () => import('./routes/widgetsForFields'),
+            element: null,
             handle: {
               crumb: () => (
                 <>
@@ -1636,6 +1636,25 @@ export const router = createBrowserRouter([
                 </>
               ),
             },
+            children: [
+              { index: true, lazy: () => import('./routes/widgetsForFields') },
+              {
+                path: ':widget_for_field_id',
+                lazy: () => import('./routes/widgetForField'),
+                handle: {
+                  crumb: (match) => (
+                    <>
+                      <div>&rArr;</div>
+                      <Link
+                        to={`/widgets-for-fields/${match.params.widget_for_field_id}`}
+                      >
+                        {match.params.widget_for_field_id}
+                      </Link>
+                    </>
+                  ),
+                },
+              },
+            ],
           },
           {
             path: 'files',

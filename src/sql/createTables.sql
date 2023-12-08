@@ -1493,11 +1493,14 @@ ON CONFLICT ON CONSTRAINT widget_types_value_key
 DROP TABLE IF EXISTS widgets_for_fields CASCADE;
 
 CREATE TABLE widgets_for_fields(
+  widget_for_field_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   -- no account_id as field_types are predefined for all projects
   field_type uuid DEFAULT NULL REFERENCES field_types(field_type) ON DELETE CASCADE ON UPDATE CASCADE,
   widget_type uuid DEFAULT NULL REFERENCES widget_types(widget_type) ON DELETE CASCADE ON UPDATE CASCADE,
   deleted boolean DEFAULT FALSE
 );
+
+CREATE INDEX ON widgets_for_fields(widget_for_field_id);
 
 CREATE INDEX ON widgets_for_fields(field_type);
 
@@ -1585,7 +1588,7 @@ COMMENT ON COLUMN fields.tble IS 'table, on which this field is used inside the 
 DROP TABLE IF EXISTS ui CASCADE;
 
 CREATE TABLE ui(
-  user_id uuid PRIMARY KEY DEFAULT null REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  user_id uuid PRIMARY KEY DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
   designing boolean DEFAULT FALSE,
 );
 
