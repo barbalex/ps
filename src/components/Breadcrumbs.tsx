@@ -18,7 +18,7 @@ export const Breadcrumbs = () => {
     <nav className="breadcrumbs">
       {crumbs.map(({ text, url }, index) => (
         <div className="crumb-container" key={index}>
-          {index > 0 ? <div className="crumb">&rArr;</div> : ''}
+          {index > 0 ? <div className="crumb">&gt;</div> : ''}
           <div className="crumb">
             {location.pathname === url ? text : <Link to={url}>{text}</Link>}
           </div>
