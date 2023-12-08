@@ -299,7 +299,7 @@ export const router = createBrowserRouter([
                                       },
                                       {
                                         path: ':check_id',
-                                        lazy: () => import('./routes/check'),
+                                        element: null,
                                         handle: {
                                           crumb: (match) => (
                                             <>
@@ -311,7 +311,68 @@ export const router = createBrowserRouter([
                                               </Link>
                                             </>
                                           ),
+                                          to: (match) => (
+                                            <>
+                                              <Link
+                                                to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/checks/${match.params.check_id}/values`}
+                                              >
+                                                Values
+                                              </Link>
+                                            </>
+                                          ),
                                         },
+                                        children: [
+                                          {
+                                            index: true,
+                                            lazy: () =>
+                                              import('./routes/check'),
+                                          },
+                                          {
+                                            path: 'values',
+                                            element: null,
+                                            handle: {
+                                              crumb: (match) => (
+                                                <>
+                                                  <div>&rArr;</div>
+                                                  <Link
+                                                    to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/checks/${match.params.check_id}/values`}
+                                                  >
+                                                    Values
+                                                  </Link>
+                                                </>
+                                              ),
+                                            },
+                                            children: [
+                                              {
+                                                index: true,
+                                                lazy: () =>
+                                                  import(
+                                                    './routes/checkValues'
+                                                  ),
+                                              },
+                                              {
+                                                path: ':check_value_id',
+                                                lazy: () =>
+                                                  import('./routes/checkValue'),
+                                                handle: {
+                                                  crumb: (match) => (
+                                                    <>
+                                                      <div>&rArr;</div>
+                                                      <Link
+                                                        to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/checks/${match.params.check_id}/values/${match.params.check_value_id}`}
+                                                      >
+                                                        {
+                                                          match.params
+                                                            .check_value_id
+                                                        }
+                                                      </Link>
+                                                    </>
+                                                  ),
+                                                },
+                                              },
+                                            ],
+                                          },
+                                        ],
                                       },
                                     ],
                                   },
