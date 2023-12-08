@@ -17,7 +17,8 @@ export const Breadcrumbs = () => {
   return (
     <nav className="breadcrumbs">
       {crumbs.map(({ text, url }, index) => {
-        const className = location.pathname === url ? 'crumb' : 'crumb link'
+        const className =
+          location.pathname === url ? 'crumb is-active' : 'crumb link'
 
         return (
           <div className={className} key={index} onClick={() => navigate(url)}>

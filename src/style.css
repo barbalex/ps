@@ -30,54 +30,64 @@ body {
 }
 
 .breadcrumbs {
-  background-color: rgb(248, 150, 22);
+  border: 1px solid #cbd2d9;
   display: flex;
   flex-wrap: wrap;
-  flex-basis: 40px;
+  overflow: hidden;
 }
 
 .breadcrumbs .crumb {
-  display: flex;
-  align-items: center;
-  align-items: stretch;
-  padding: 10px;
-  margin-right: 20px;
+  background: #fff;
+  color: #333;
+  outline: none;
+  padding: 0.75em 0.75em 0.75em 1.25em;
   position: relative;
+  text-decoration: none;
+  transition: background 0.2s linear;
 }
 
 .breadcrumbs .crumb.link {
   cursor: pointer;
 }
 
-.breadcrumbs .crumb::after {
-  content: ' ';
-  display: block;
-  width: 0;
-  height: 0;
-  border-top: 20px solid transparent; /* Go big on the size, and let overflow hide */
-  border-bottom: 20px solid transparent;
-  border-left: 20px solid rgb(248, 150, 22);
-  position: absolute;
-  top: 50%;
-  margin-top: -20px;
+.breadcrumbs .crumb:hover:after,
+.breadcrumbs .crumb:hover {
+  background: #edf1f5;
+}
+
+.breadcrumbs .crumb:focus:after,
+.breadcrubreadcrumbs .crumbmbs__item:focus,
+.breadcrumbs .crumb.is-active:focus {
+  background: #323f4a;
+  color: #fff;
+}
+
+.breadcrumbs .crumb::after,
+.breadcrumbs .crumb::before {
+  background: white;
+  bottom: 0;
+  clip-path: polygon(50% 50%, -50% -50%, 0 100%);
+  content: '';
   left: 100%;
-  z-index: 2;
+  position: absolute;
+  top: 0;
+  transition: background 0.2s linear;
+  width: 1em;
+  z-index: 1;
 }
 
 .breadcrumbs .crumb::before {
-  content: ' ';
-  display: block;
-  width: 0;
-  height: 0;
-  border-top: 20px solid transparent;
-  border-bottom: 20px solid transparent;
-  border-left: 20px solid white;
-  position: absolute;
-  top: 50%;
-  margin-top: -20px;
+  background: #cbd2d9;
   margin-left: 1px;
-  left: 100%;
-  z-index: 1;
+}
+
+.breadcrumbs .crumb:last-child {
+  border-right: none;
+}
+
+.breadcrumbs .crumb.is-active,
+.breadcrumbs .crumb.is-active:after {
+  background: #edf1f5;
 }
 
 .navs {
