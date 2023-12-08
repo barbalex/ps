@@ -47,7 +47,6 @@ body {
 
 .breadcrumbs .crumb.link {
   cursor: pointer;
-  text-decoration: underline;
 }
 
 .breadcrumbs .crumb::after {
@@ -79,14 +78,6 @@ body {
   margin-left: 1px;
   left: 100%;
   z-index: 1;
-}
-
-.breadcrumbs .crumb:hover {
-  background: rgb(218, 132, 19);
-}
-
-.breadcrumbs .crumb:hover:after {
-  border-left-color: rgb(218, 132, 19) !important;
 }
 
 .navs {
