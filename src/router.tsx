@@ -12,7 +12,8 @@ export const router = createBrowserRouter([
         element: null,
         errorElement: <ErrorPage />,
         handle: {
-          crumb: () => <Link to="/">Home</Link>,
+          crumb: () => ({ url: '/', text: 'Home' }),
+          crumbData: { url: '/', text: 'Home' },
           to: () => (
             <>
               <Link to="/users">Users</Link>
@@ -36,12 +37,7 @@ export const router = createBrowserRouter([
             path: 'users',
             element: null,
             handle: {
-              crumb: () => (
-                <>
-                  <div>&rArr;</div>
-                  <Link to="/users">Users</Link>
-                </>
-              ),
+              crumb: () => ({ url: '/users', text: 'Users' }),
             },
             children: [
               {
@@ -52,12 +48,7 @@ export const router = createBrowserRouter([
                 path: ':user_id',
                 lazy: () => import('./routes/user'),
                 handle: {
-                  crumb: () => (
-                    <>
-                      <div>&rArr;</div>
-                      <Link to="/users/:user_id">User</Link>
-                    </>
-                  ),
+                  crumb: () => ({ url: '/users/:user_id', text: 'User' }),
                 },
               },
             ],
@@ -66,12 +57,7 @@ export const router = createBrowserRouter([
             path: 'accounts',
             element: null,
             handle: {
-              crumb: () => (
-                <>
-                  <div>&rArr;</div>
-                  <Link to="/accounts">Accounts</Link>
-                </>
-              ),
+              crumb: () => ({ url: '/accounts', text: 'Accounts' }),
             },
             children: [
               { index: true, lazy: () => import('./routes/accounts') },
@@ -79,12 +65,10 @@ export const router = createBrowserRouter([
                 path: ':account_id',
                 lazy: () => import('./routes/account'),
                 handle: {
-                  crumb: () => (
-                    <>
-                      <div>&rArr;</div>
-                      <Link to="/accounts/:account_id">Account</Link>
-                    </>
-                  ),
+                  crumb: (match) => ({
+                    url: `/accounts/${match.params.account_id}`,
+                    text: 'Account',
+                  }),
                 },
               },
             ],
@@ -93,12 +77,7 @@ export const router = createBrowserRouter([
             path: 'projects',
             element: null,
             handle: {
-              crumb: () => (
-                <>
-                  <div>&rArr;</div>
-                  <Link to="/projects">Projects</Link>
-                </>
-              ),
+              crumb: () => ({ url: '/projects', text: 'Projects' }),
             },
             children: [
               { index: true, lazy: () => import('./routes/projects') },
@@ -106,14 +85,10 @@ export const router = createBrowserRouter([
                 path: ':project_id',
                 element: null,
                 handle: {
-                  crumb: (match) => (
-                    <>
-                      <div>&rArr;</div>
-                      <Link to={`/projects/${match.params.project_id}`}>
-                        {match.params.project_id}
-                      </Link>
-                    </>
-                  ),
+                  crumb: (match) => ({
+                    url: `/projects/${match.params.project_id}`,
+                    text: match.params.project_id,
+                  }),
                   to: (match) => (
                     <>
                       <Link

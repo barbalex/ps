@@ -43,6 +43,12 @@ body {
   padding: 0;
 }
 
+.breadcrumbs .crumb-container {
+  display: flex;
+  align-items: center;
+  column-gap: 5px;
+}
+
 .breadcrumbs .crumb {
   display: flex;
   align-items: center;
