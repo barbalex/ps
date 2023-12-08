@@ -33,37 +33,39 @@ body {
   border: 1px solid #cbd2d9;
   display: flex;
   flex-wrap: wrap;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
-.breadcrumbs .crumb {
+.breadcrumbs__crumb {
   background: #fff;
   color: #333;
   outline: none;
+  border-top: 1px solid #cbd2d9;
+  border-bottom: 1px solid #cbd2d9;
   padding: 0.75em 0.75em 0.75em 1.25em;
   position: relative;
   text-decoration: none;
   transition: background 0.2s linear;
 }
 
-.breadcrumbs .crumb.link {
+.breadcrumbs__crumb.link {
   cursor: pointer;
 }
 
-.breadcrumbs .crumb:hover:after,
-.breadcrumbs .crumb:hover {
+.breadcrumbs__crumb:hover:after,
+.breadcrumbs__crumb:hover {
   background: #edf1f5;
 }
 
-.breadcrumbs .crumb:focus:after,
+.breadcrumbs__crumb:focus:after,
 .breadcrubreadcrumbs .crumbmbs__item:focus,
-.breadcrumbs .crumb.is-active:focus {
+.breadcrumbs__crumb.is-active:focus {
   background: #323f4a;
   color: #fff;
 }
 
-.breadcrumbs .crumb::after,
-.breadcrumbs .crumb::before {
+.breadcrumbs__crumb::after,
+.breadcrumbs__crumb::before {
   background: white;
   bottom: 0;
   clip-path: polygon(50% 50%, -50% -50%, 0 100%);
@@ -76,17 +78,17 @@ body {
   z-index: 1;
 }
 
-.breadcrumbs .crumb::before {
+.breadcrumbs__crumb::before {
   background: #cbd2d9;
   margin-left: 1px;
 }
 
-.breadcrumbs .crumb:last-child {
+.breadcrumbs__crumb:last-child {
   border-right: none;
 }
 
-.breadcrumbs .crumb.is-active,
-.breadcrumbs .crumb.is-active:after {
+.breadcrumbs__crumb.is-active,
+.breadcrumbs__crumb.is-active:after {
   background: #edf1f5;
 }
 
