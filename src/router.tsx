@@ -138,16 +138,10 @@ export const router = createBrowserRouter([
                     path: 'subprojects',
                     element: null,
                     handle: {
-                      crumb: (match) => (
-                        <>
-                          <div>&rArr;</div>
-                          <Link
-                            to={`/projects/${match.params.project_id}/subprojects`}
-                          >
-                            Subprojects
-                          </Link>
-                        </>
-                      ),
+                      crumb: () => ({
+                        url: '/subprojects',
+                        text: 'Subprojects',
+                      }),
                     },
                     children: [
                       {
