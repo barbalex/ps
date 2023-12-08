@@ -661,21 +661,83 @@ export const router = createBrowserRouter([
                                           import('./routes/placeReports'),
                                       },
                                       {
-                                        path: ':report_id',
-                                        lazy: () =>
-                                          import('./routes/placeReport'),
+                                        path: ':place_report_id',
+                                        element: null,
                                         handle: {
                                           crumb: (match) => (
                                             <>
                                               <div>&rArr;</div>
                                               <Link
-                                                to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/reports/${match.params.report_id}`}
+                                                to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/reports/${match.params.place_report_id}`}
                                               >
-                                                {match.params.report_id}
+                                                {match.params.place_report_id}
+                                              </Link>
+                                            </>
+                                          ),
+                                          to: (match) => (
+                                            <>
+                                              <Link
+                                                to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/reports/${match.params.place_report_id}/values`}
+                                              >
+                                                Values
                                               </Link>
                                             </>
                                           ),
                                         },
+                                        children: [
+                                          {
+                                            index: true,
+                                            lazy: () =>
+                                              import('./routes/placeReport'),
+                                          },
+                                          {
+                                            path: 'values',
+                                            element: null,
+                                            handle: {
+                                              crumb: (match) => (
+                                                <>
+                                                  <div>&rArr;</div>
+                                                  <Link
+                                                    to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/reports/${match.params.place_report_id}/values`}
+                                                  >
+                                                    Values
+                                                  </Link>
+                                                </>
+                                              ),
+                                            },
+                                            children: [
+                                              {
+                                                index: true,
+                                                lazy: () =>
+                                                  import(
+                                                    './routes/placeReportValues'
+                                                  ),
+                                              },
+                                              {
+                                                path: ':place_report_value_id',
+                                                lazy: () =>
+                                                  import(
+                                                    './routes/placeReportValue'
+                                                  ),
+                                                handle: {
+                                                  crumb: (match) => (
+                                                    <>
+                                                      <div>&rArr;</div>
+                                                      <Link
+                                                        to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/reports/${match.params.place_report_id}/values/${match.params.place_report_value_id}`}
+                                                      >
+                                                        {
+                                                          match.params
+                                                            .place_report_value_id
+                                                        }
+                                                      </Link>
+                                                    </>
+                                                  ),
+                                                },
+                                              },
+                                            ],
+                                          },
+                                        ],
                                       },
                                     ],
                                   },
