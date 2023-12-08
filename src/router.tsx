@@ -446,7 +446,7 @@ export const router = createBrowserRouter([
                                       },
                                       {
                                         path: ':action_id',
-                                        lazy: () => import('./routes/action'),
+                                        element: null,
                                         handle: {
                                           crumb: (match) => (
                                             <>
@@ -458,7 +458,70 @@ export const router = createBrowserRouter([
                                               </Link>
                                             </>
                                           ),
+                                          to: (match) => (
+                                            <>
+                                              <Link
+                                                to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/actions/${match.params.action_id}/values`}
+                                              >
+                                                Values
+                                              </Link>
+                                            </>
+                                          ),
                                         },
+                                        children: [
+                                          {
+                                            index: true,
+                                            lazy: () =>
+                                              import('./routes/action'),
+                                          },
+                                          {
+                                            path: 'values',
+                                            element: null,
+                                            handle: {
+                                              crumb: (match) => (
+                                                <>
+                                                  <div>&rArr;</div>
+                                                  <Link
+                                                    to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/actions/${match.params.action_id}/values`}
+                                                  >
+                                                    Values
+                                                  </Link>
+                                                </>
+                                              ),
+                                            },
+                                            children: [
+                                              {
+                                                index: true,
+                                                lazy: () =>
+                                                  import(
+                                                    './routes/actionValues'
+                                                  ),
+                                              },
+                                              {
+                                                path: ':action_value_id',
+                                                lazy: () =>
+                                                  import(
+                                                    './routes/actionValue'
+                                                  ),
+                                                handle: {
+                                                  crumb: (match) => (
+                                                    <>
+                                                      <div>&rArr;</div>
+                                                      <Link
+                                                        to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/actions/${match.params.action_id}/values/${match.params.action_value_id}`}
+                                                      >
+                                                        {
+                                                          match.params
+                                                            .action_value_id
+                                                        }
+                                                      </Link>
+                                                    </>
+                                                  ),
+                                                },
+                                              },
+                                            ],
+                                          },
+                                        ],
                                       },
                                     ],
                                   },
