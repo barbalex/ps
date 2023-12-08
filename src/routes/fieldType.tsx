@@ -1,6 +1,6 @@
 import { useLiveQuery } from 'electric-sql/react'
 import { uuidv7 } from '@kripod/uuidv7'
-import { Link } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
 import { FieldTypes as FieldType } from '../../../generated/client'
 
@@ -10,9 +10,12 @@ import { useElectric } from '../ElectricProvider'
 
 export const Component = () => {
   const { db } = useElectric()!
-  const { results } = useLiveQuery(db.field_types.liveMany())
+  const { field_type } = useParams()
+  const { results } = useLiveQuery(
+    db.field_types.liveUnique({ where: { field_type } }),
+  )
 
-  const add = async () => {
+  const addItem = async () => {
     await db.field_types.create({
       data: {
         field_type: uuidv7(),
@@ -20,29 +23,23 @@ export const Component = () => {
     })
   }
 
-  const clear = async () => {
+  const clearItems = async () => {
     await db.field_types.deleteMany()
   }
 
-  const fieldTypes: FieldType[] = results ?? []
+  const fieldType: FieldType = results
 
   return (
     <div>
       <div className="controls">
-        <button className="button" onClick={add}>
+        <button className="button" onClick={addItem}>
           Add
         </button>
-        <button className="button" onClick={clear}>
+        <button className="button" onClick={clearItems}>
           Clear
         </button>
       </div>
-      {fieldTypes.map((fieldType: FieldType, index: number) => (
-        <p key={index} className="item">
-          <Link to={`/field-types/${fieldType.field_type}`}>
-            {fieldType.field_type}
-          </Link>
-        </p>
-      ))}
+      <div>{`Field Type ${fieldType?.field_type ?? ''}`}</div>
     </div>
   )
 }

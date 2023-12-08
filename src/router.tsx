@@ -1569,7 +1569,7 @@ export const router = createBrowserRouter([
           },
           {
             path: 'field-types',
-            lazy: () => import('./routes/fieldTypes'),
+            element: null,
             handle: {
               crumb: () => (
                 <>
@@ -1578,6 +1578,23 @@ export const router = createBrowserRouter([
                 </>
               ),
             },
+            children: [
+              { index: true, lazy: () => import('./routes/fieldTypes') },
+              {
+                path: ':field_type',
+                lazy: () => import('./routes/fieldType'),
+                handle: {
+                  crumb: (match) => (
+                    <>
+                      <div>&rArr;</div>
+                      <Link to={`/field-types/${match.params.field_type}`}>
+                        {match.params.field_type}
+                      </Link>
+                    </>
+                  ),
+                },
+              },
+            ],
           },
           {
             path: 'widget-types',
