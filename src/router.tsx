@@ -13,7 +13,6 @@ export const router = createBrowserRouter([
         errorElement: <ErrorPage />,
         handle: {
           crumb: () => ({ url: '/', text: 'Home' }),
-          crumbData: { url: '/', text: 'Home' },
           to: () => (
             <>
               <Link to="/users">Users</Link>
@@ -141,8 +140,8 @@ export const router = createBrowserRouter([
                     path: 'subprojects',
                     element: null,
                     handle: {
-                      crumb: () => ({
-                        url: '/subprojects',
+                      crumb: (match) => ({
+                        url: `/projects/${match.params.project_id}/subprojects`,
                         text: 'Subprojects',
                       }),
                     },

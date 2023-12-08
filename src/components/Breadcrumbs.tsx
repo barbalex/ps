@@ -10,8 +10,6 @@ export const Breadcrumbs = () => {
     // now map them into an array of elements
     .map((match) => match.handle.crumb?.(match))
 
-  console.log('Breadcrumbs', { matches, crumbs, pathname: location.pathname })
-
   // New Idea: active (last) crumb should _not_ be a link
   // Pass Objects with { text, link } to crumb
   // Add arrows between crumbs
@@ -22,11 +20,7 @@ export const Breadcrumbs = () => {
         <div className="crumb-container" key={index}>
           {index > 0 ? <div className="crumb">&rArr;</div> : ''}
           <div className="crumb">
-            {location.pathname.endsWith(url) ? (
-              text
-            ) : (
-              <Link to={url}>{text}</Link>
-            )}
+            {location.pathname === url ? text : <Link to={url}>{text}</Link>}
           </div>
         </div>
       ))}
