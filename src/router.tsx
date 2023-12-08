@@ -465,6 +465,11 @@ export const router = createBrowserRouter([
                                               >
                                                 Values
                                               </Link>
+                                              <Link
+                                                to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/actions/${match.params.action_id}/reports`}
+                                              >
+                                                Reports
+                                              </Link>
                                             </>
                                           ),
                                         },
@@ -513,6 +518,53 @@ export const router = createBrowserRouter([
                                                         {
                                                           match.params
                                                             .action_value_id
+                                                        }
+                                                      </Link>
+                                                    </>
+                                                  ),
+                                                },
+                                              },
+                                            ],
+                                          },
+                                          {
+                                            path: 'reports',
+                                            element: null,
+                                            handle: {
+                                              crumb: (match) => (
+                                                <>
+                                                  <div>&rArr;</div>
+                                                  <Link
+                                                    to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/actions/${match.params.action_id}/reports`}
+                                                  >
+                                                    Reports
+                                                  </Link>
+                                                </>
+                                              ),
+                                            },
+                                            children: [
+                                              {
+                                                index: true,
+                                                lazy: () =>
+                                                  import(
+                                                    './routes/actionReports'
+                                                  ),
+                                              },
+                                              {
+                                                path: ':action_report_id',
+                                                lazy: () =>
+                                                  import(
+                                                    './routes/actionReport'
+                                                  ),
+                                                handle: {
+                                                  crumb: (match) => (
+                                                    <>
+                                                      <div>&rArr;</div>
+                                                      <Link
+                                                        to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/actions/${match.params.action_id}/reports/${match.params.action_report_id}`}
+                                                      >
+                                                        {
+                                                          match.params
+                                                            .action_report_id
                                                         }
                                                       </Link>
                                                     </>
