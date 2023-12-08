@@ -11,6 +11,10 @@ export const Breadcrumbs = () => {
 
   // console.log('Breadcrumbs', { matches, crumbs })
 
+  // New Idea: active (last) crumb should _not_ be a link
+  // Pass Objects with { text, link } to crumb
+  // Add arrows between crumbs
+
   return (
     <nav className="breadcrumbs">
       {crumbs.map((crumb, index) => (
