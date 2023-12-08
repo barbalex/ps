@@ -1,6 +1,6 @@
 import { useLiveQuery } from 'electric-sql/react'
 import { uuidv7 } from '@kripod/uuidv7'
-import { Link } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
 import { Accounts as Account } from '../../../generated/client'
 
@@ -10,9 +10,12 @@ import { useElectric } from '../ElectricProvider'
 
 export const Component = () => {
   const { db } = useElectric()!
-  const { results } = useLiveQuery(db.accounts.liveMany())
+  const { account_id } = useParams()
+  const { results } = useLiveQuery(
+    db.accounts.liveUnique({ where: { account_id } }),
+  )
 
-  const add = async () => {
+  const addItem = async () => {
     await db.accounts.create({
       data: {
         account_id: uuidv7(),
@@ -20,27 +23,23 @@ export const Component = () => {
     })
   }
 
-  const clear = async () => {
+  const clearItems = async () => {
     await db.accounts.deleteMany()
   }
 
-  const accounts: Account[] = results ?? []
+  const account: Account = results
 
   return (
     <div>
       <div className="controls">
-        <button className="button" onClick={add}>
+        <button className="button" onClick={addItem}>
           Add
         </button>
-        <button className="button" onClick={clear}>
+        <button className="button" onClick={clearItems}>
           Clear
         </button>
       </div>
-      {accounts.map((account: Account, index: number) => (
-        <p key={index} className="item">
-          <Link to={`/accounts/${account.account_id}`}>{account.account_id}</Link>
-        </p>
-      ))}
+      <div>{`Account with id ${account?.account_id ?? ''}`}</div>
     </div>
   )
 }

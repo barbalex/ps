@@ -64,7 +64,7 @@ export const router = createBrowserRouter([
           },
           {
             path: 'accounts',
-            lazy: () => import('./routes/accounts'),
+            element: null,
             handle: {
               crumb: () => (
                 <>
@@ -73,6 +73,21 @@ export const router = createBrowserRouter([
                 </>
               ),
             },
+            children: [
+              { index: true, lazy: () => import('./routes/accounts') },
+              {
+                path: ':account_id',
+                lazy: () => import('./routes/account'),
+                handle: {
+                  crumb: () => (
+                    <>
+                      <div>&rArr;</div>
+                      <Link to="/accounts/:account_id">Account</Link>
+                    </>
+                  ),
+                },
+              },
+            ],
           },
           {
             path: 'projects',
