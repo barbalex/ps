@@ -13,48 +13,60 @@ const shouldServe = process.env.SERVE === 'true'
 const liveServer = (buildOpts) => {
   const clients = []
 
-  build(
-    {
-      ...buildOpts,
-      banner: { js: ' (() => new EventSource("/esbuild").onmessage = () => location.reload())();' },
-      watch: {
-        onRebuild(error, result) {
-          clients.forEach((res) => res.write('data: update\n\n'))
-          clients.length = 0
-          console.log(error ? error : '...')
-        },
-      }
-    }
-  ).catch(() => process.exit(1))
+  build({
+    ...buildOpts,
+    banner: {
+      js: ' (() => new EventSource("/esbuild").onmessage = () => location.reload())();',
+    },
+    watch: {
+      onRebuild(error, result) {
+        clients.forEach((res) => res.write('data: update\n\n'))
+        clients.length = 0
+        console.log(error ? error : '...')
+      },
+    },
+  }).catch(() => process.exit(1))
 
-  serve({servedir: 'dist' }, {})
-    .then((serveResult) => {
-      createServer((req, res) => {
-        const { url, method, headers } = req
+  serve({ servedir: 'dist' }, {}).then((serveResult) => {
+    createServer((req, res) => {
+      const { url, method, headers } = req
 
-        if (url === '/esbuild')
-          return clients.push(
-            res.writeHead(200, {
-              'Content-Type': 'text/event-stream',
-              'Cache-Control': 'no-cache',
-              Connection: 'keep-alive',
-            })
-          )
+      if (url === '/esbuild')
+        return clients.push(
+          res.writeHead(200, {
+            'Content-Type': 'text/event-stream',
+            'Cache-Control': 'no-cache',
+            Connection: 'keep-alive',
+          }),
+        )
 
-        const path = ~url.split('/').pop().indexOf('.') ? url : `/index.html` //for PWA with router
-        req.pipe(
-          request({ hostname: '0.0.0.0', port: serveResult.port, path, method, headers }, (prxRes) => {
+      const path = ~url.split('/').pop().indexOf('.') ? url : `/index.html` //for PWA with router
+      req.pipe(
+        request(
+          {
+            hostname: '0.0.0.0',
+            port: serveResult.port,
+            path,
+            method,
+            headers,
+          },
+          (prxRes) => {
             res.writeHead(prxRes.statusCode, prxRes.headers)
             prxRes.pipe(res, { end: true })
-          }),
-          { end: true }
-        )
-      }).listen(3001)
+          },
+        ),
+        { end: true },
+      )
+    }).listen(3001)
 
     setTimeout(() => {
-      const op = { darwin: ['open'], linux: ['xdg-open'], win32: ['cmd', '/c', 'start'] }
+      const op = {
+        darwin: ['open'],
+        linux: ['xdg-open'],
+        win32: ['cmd', '/c', 'start'],
+      }
       const ptf = process.platform
-      const url = "http://localhost:3001"
+      const url = 'http://localhost:3001'
       if (clients.length === 0) spawn(op[ptf][0], [...[op[ptf].slice(1)], url])
       console.info(`Your app is running at ${url}`)
     }, 500) // open the default browser only if it is not opened yet
@@ -67,33 +79,34 @@ const liveServer = (buildOpts) => {
  */
 let buildParams = {
   color: true,
-  entryPoints: ["src/index.tsx"],
-  loader: { ".ts": "tsx" },
-  outdir: "dist",
+  entryPoints: ['src/index.tsx'],
+  loader: { '.ts': 'tsx', '.woff': 'file', '.woff2': 'file' },
+  outdir: 'dist',
   minify: shouldMinify,
-  format: "cjs",
+  format: 'cjs',
   bundle: true,
   sourcemap: true,
-  logLevel: "error",
+  logLevel: 'error',
   incremental: true,
   define: {
     __DEBUG_MODE__: JSON.stringify(process.env.DEBUG_MODE === 'true'),
-    __ELECTRIC_URL__: JSON.stringify(process.env.ELECTRIC_URL ?? 'ws://localhost:5133'),
+    __ELECTRIC_URL__: JSON.stringify(
+      process.env.ELECTRIC_URL ?? 'ws://localhost:5133',
+    ),
   },
-  external: ["fs", "path"],
+  external: ['fs', 'path'],
   plugins: [inlineImage()],
-};
+}
 
-(async () => {
-  fs.removeSync("dist");
-  fs.copySync("public", "dist");
+;(async () => {
+  fs.removeSync('dist')
+  fs.copySync('public', 'dist')
 
   if (shouldServe) {
     liveServer(buildParams)
-  }
-  else {
+  } else {
     await build(buildParams)
 
     process.exit(0)
   }
-})();
+})()

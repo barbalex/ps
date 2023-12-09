@@ -22,7 +22,11 @@
     "node": ">=16.11.0"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@fontsource/roboto": "^5.0.8",
     "@kripod/uuidv7": "0.3.4",
+    "@mui/material": "^5.14.20",
     "@preact/signals": "1.2.2",
     "@typescript-eslint/eslint-plugin": "6.13.2",
     "@typescript-eslint/parser": "6.13.2",
