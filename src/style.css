@@ -50,6 +50,7 @@ body {
 
 .breadcrumbs__crumb.link {
   cursor: pointer;
+  text-decoration: underline;
 }
 
 .breadcrumbs__crumb:hover:after,
@@ -107,7 +108,8 @@ body {
 }
 
 .navs a::before {
-  content: '>';
-  margin-right: 5px;
-  text-decoration: none !important;
+  content: url(./images/navigate-next.svg);
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: -5px;
 }
