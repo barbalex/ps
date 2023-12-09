@@ -30,7 +30,7 @@ export const router = createBrowserRouter([
         children: [
           {
             index: true,
-            lazy: () => import('./routes/home_2'),
+            lazy: () => import('./routes/home'),
           },
           {
             path: 'users',
