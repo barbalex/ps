@@ -56,22 +56,22 @@ const CardContainer = styled.div`
     margin-top: 10px !important;
   }
 `
-const StyledCard = styled(Card)`
-  padding: 20px;
-  background-color: rgba(255, 255, 255, 0.711) !important;
-  font-weight: 700;
-  color: black !important;
-  text-shadow: 0 0 1px white;
-  & ul {
-    margin-bottom: 0;
-  }
-  & li:last-of-type {
-    margin-bottom: 0;
-  }
-  & li {
-    font-weight: 500;
-  }
-`
+// const StyledCard = styled(Card)`
+//   padding: 20px;
+//   background-color: rgba(255, 255, 255, 0.711) !important;
+//   font-weight: 700;
+//   color: black !important;
+//   text-shadow: 0 0 1px white;
+//   & ul {
+//     margin-bottom: 0;
+//   }
+//   & li:last-of-type {
+//     margin-bottom: 0;
+//   }
+//   & li {
+//     font-weight: 500;
+//   }
+// `
 // const PageTitle = styled(Typography)`
 //   font-size: 2em !important;
 //   padding-top: 15px;
