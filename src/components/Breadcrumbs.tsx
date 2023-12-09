@@ -1,5 +1,7 @@
 import { useMatches, useNavigate } from 'react-router-dom'
 
+import './breadcrumbs.css'
+
 export const Breadcrumbs = () => {
   const matches = useMatches()
   const navigate = useNavigate()
@@ -18,7 +20,9 @@ export const Breadcrumbs = () => {
     <nav className="breadcrumbs">
       {crumbs.map(({ text, url }, index) => {
         const className =
-          location.pathname === url ? 'breadcrumbs__crumb is-active' : 'breadcrumbs__crumb link'
+          location.pathname === url
+            ? 'breadcrumbs__crumb is-active'
+            : 'breadcrumbs__crumb link'
 
         return (
           <div className={className} key={index} onClick={() => navigate(url)}>
