@@ -40,7 +40,7 @@ export const Component = () => {
       {taxa.map((taxon: Taxon, index: number) => (
         <p key={index} className="item">
           <Link
-            to={`/projects/${project_id}/taxonomies/${taxonomy_id}/taxa/${taxon.taxon_id}}`}
+            to={`/projects/${project_id}/taxonomies/${taxonomy_id}/taxa/${taxon.taxon_id}`}
           >
             {taxon.taxon_id}
           </Link>
