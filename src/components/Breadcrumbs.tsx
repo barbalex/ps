@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { useMatches, useNavigate } from 'react-router-dom'
 import { BsCaretDown } from 'react-icons/bs'
 import IconButton from '@mui/material/IconButton'
@@ -17,6 +18,11 @@ export const Breadcrumbs = () => {
   // New Idea: active (last) crumb should _not_ be a link
   // Pass Objects with { text, link } to crumb
   // Add arrows between crumbs
+  const onClick = useCallback((e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    console.log('clicked')
+  }, [])
 
   return (
     <nav className="breadcrumbs">
@@ -29,7 +35,7 @@ export const Breadcrumbs = () => {
         return (
           <div className={className} key={index} onClick={() => navigate(url)}>
             {text}
-            <IconButton className="icon">
+            <IconButton onClick={onClick} className="icon">
               <BsCaretDown />
             </IconButton>
           </div>
