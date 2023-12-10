@@ -322,6 +322,8 @@ export const router = createBrowserRouter([
                       crumb: (match) => ({
                         path: `/projects/${match.params.project_id}/subprojects`,
                         text: 'Subprojects',
+                        table: 'subprojects',
+                        folder: true,
                       }),
                     },
                     children: [
@@ -336,6 +338,8 @@ export const router = createBrowserRouter([
                           crumb: (match) => ({
                             path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}`,
                             text: match.params.subproject_id,
+                            table: 'subprojects',
+                            folder: false,
                           }),
                           to: (match) => navs({ path: `subproject_id`, match }),
                         },
@@ -351,6 +355,8 @@ export const router = createBrowserRouter([
                               crumb: (match) => ({
                                 path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places`,
                                 text: 'Places',
+                                table: 'places',
+                                folder: true,
                               }),
                             },
                             children: [
@@ -365,6 +371,8 @@ export const router = createBrowserRouter([
                                   crumb: (match) => ({
                                     path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}`,
                                     text: match.params.place_id,
+                                    table: 'places',
+                                    folder: false,
                                   }),
                                   to: (match) =>
                                     navs({ path: `place_id`, match }),
@@ -381,6 +389,8 @@ export const router = createBrowserRouter([
                                       crumb: (match) => ({
                                         path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/checks`,
                                         text: 'Checks',
+                                        table: 'checks',
+                                        folder: true,
                                       }),
                                     },
                                     children: [
@@ -395,6 +405,8 @@ export const router = createBrowserRouter([
                                           crumb: (match) => ({
                                             path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/checks/${match.params.check_id}`,
                                             text: match.params.check_id,
+                                            table: 'checks',
+                                            folder: false,
                                           }),
                                           to: (match) =>
                                             navs({ path: `check_id`, match }),
@@ -412,6 +424,8 @@ export const router = createBrowserRouter([
                                               crumb: (match) => ({
                                                 path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/checks/${match.params.check_id}/values`,
                                                 text: 'Values',
+                                                table: 'check_values',
+                                                folder: true,
                                               }),
                                             },
                                             children: [
@@ -431,6 +445,8 @@ export const router = createBrowserRouter([
                                                     path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/checks/${match.params.check_id}/values/${match.params.check_value_id}`,
                                                     text: match.params
                                                       .check_value_id,
+                                                    table: 'check_values',
+                                                    folder: false,
                                                   }),
                                                 },
                                               },
@@ -443,6 +459,8 @@ export const router = createBrowserRouter([
                                               crumb: (match) => ({
                                                 path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/checks/${match.params.check_id}/taxa`,
                                                 text: 'Taxa',
+                                                table: 'check_taxa',
+                                                folder: true,
                                               }),
                                             },
                                             children: [
@@ -460,6 +478,8 @@ export const router = createBrowserRouter([
                                                     path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/checks/${match.params.check_id}/taxa/${match.params.check_taxon_id}`,
                                                     text: match.params
                                                       .check_taxon_id,
+                                                    table: 'check_taxa',
+                                                    folder: false,
                                                   }),
                                                 },
                                               },
@@ -476,6 +496,8 @@ export const router = createBrowserRouter([
                                       crumb: (match) => ({
                                         path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/actions`,
                                         text: 'Actions',
+                                        table: 'actions',
+                                        folder: true,
                                       }),
                                     },
                                     children: [
@@ -490,6 +512,8 @@ export const router = createBrowserRouter([
                                           crumb: (match) => ({
                                             path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/actions/${match.params.action_id}`,
                                             text: match.params.action_id,
+                                            table: 'actions',
+                                            folder: false,
                                           }),
                                           to: (match) =>
                                             navs({ path: `action_id`, match }),
@@ -507,6 +531,8 @@ export const router = createBrowserRouter([
                                               crumb: (match) => ({
                                                 path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/actions/${match.params.action_id}/values`,
                                                 text: 'Values',
+                                                table: 'action_values',
+                                                folder: true,
                                               }),
                                             },
                                             children: [
@@ -528,6 +554,8 @@ export const router = createBrowserRouter([
                                                     path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/actions/${match.params.action_id}/values/${match.params.action_value_id}`,
                                                     text: match.params
                                                       .action_value_id,
+                                                    table: 'action_values',
+                                                    folder: false,
                                                   }),
                                                 },
                                               },
@@ -540,6 +568,8 @@ export const router = createBrowserRouter([
                                               crumb: (match) => ({
                                                 path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/actions/${match.params.action_id}/reports`,
                                                 text: 'Reports',
+                                                table: 'action_reports',
+                                                folder: true,
                                               }),
                                             },
                                             children: [
@@ -558,6 +588,8 @@ export const router = createBrowserRouter([
                                                     path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/actions/${match.params.action_id}/reports/${match.params.action_report_id}`,
                                                     text: match.params
                                                       .action_report_id,
+                                                    table: 'action_reports',
+                                                    folder: false,
                                                   }),
                                                   to: (match) =>
                                                     navs({
@@ -580,6 +612,9 @@ export const router = createBrowserRouter([
                                                       crumb: (match) => ({
                                                         path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/actions/${match.params.action_id}/reports/${match.params.action_report_id}/values`,
                                                         text: 'Values',
+                                                        table:
+                                                          'action_report_values',
+                                                        folder: true,
                                                       }),
                                                     },
                                                     children: [
@@ -601,6 +636,9 @@ export const router = createBrowserRouter([
                                                             path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/actions/${match.params.action_id}/reports/${match.params.action_report_id}/values/${match.params.action_report_value_id}`,
                                                             text: match.params
                                                               .action_report_value_id,
+                                                            table:
+                                                              'action_report_values',
+                                                            folder: false,
                                                           }),
                                                         },
                                                       },
@@ -621,6 +659,8 @@ export const router = createBrowserRouter([
                                       crumb: (match) => ({
                                         path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/reports`,
                                         text: 'Reports',
+                                        table: 'place_reports',
+                                        folder: true,
                                       }),
                                     },
                                     children: [
@@ -636,6 +676,8 @@ export const router = createBrowserRouter([
                                           crumb: (match) => ({
                                             path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/reports/${match.params.place_report_id}`,
                                             text: match.params.place_report_id,
+                                            table: 'place_reports',
+                                            folder: false,
                                           }),
                                           to: (match) =>
                                             navs({
@@ -656,6 +698,8 @@ export const router = createBrowserRouter([
                                               crumb: (match) => ({
                                                 path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/reports/${match.params.place_report_id}/values`,
                                                 text: 'Values',
+                                                table: 'place_report_values',
+                                                folder: true,
                                               }),
                                             },
                                             children: [
@@ -677,6 +721,9 @@ export const router = createBrowserRouter([
                                                     path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/reports/${match.params.place_report_id}/values/${match.params.place_report_value_id}`,
                                                     text: match.params
                                                       .place_report_value_id,
+                                                    table:
+                                                      'place_report_values',
+                                                    folder: false,
                                                   }),
                                                 },
                                               },
@@ -693,6 +740,8 @@ export const router = createBrowserRouter([
                                       crumb: (match) => ({
                                         path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/users`,
                                         text: 'Users',
+                                        table: 'place_users',
+                                        folder: true,
                                       }),
                                     },
                                     children: [
@@ -709,6 +758,8 @@ export const router = createBrowserRouter([
                                           crumb: (match) => ({
                                             path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/users/${match.params.place_user_id}`,
                                             text: match.params.place_user_id,
+                                            table: 'place_users',
+                                            folder: false,
                                           }),
                                         },
                                       },
@@ -725,6 +776,8 @@ export const router = createBrowserRouter([
                               crumb: (match) => ({
                                 path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/users`,
                                 text: 'Users',
+                                table: 'subproject_users',
+                                folder: true,
                               }),
                             },
                             children: [
@@ -739,6 +792,8 @@ export const router = createBrowserRouter([
                                   crumb: (match) => ({
                                     path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/users/${match.params.subproject_user_id}`,
                                     text: match.params.subproject_user_id,
+                                    table: 'subproject_users',
+                                    folder: false,
                                   }),
                                 },
                               },
@@ -751,6 +806,8 @@ export const router = createBrowserRouter([
                               crumb: (match) => ({
                                 path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/taxa`,
                                 text: 'Taxa',
+                                table: 'subproject_taxa',
+                                folder: true,
                               }),
                             },
                             children: [
@@ -765,6 +822,8 @@ export const router = createBrowserRouter([
                                   crumb: (match) => ({
                                     path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/taxa/${match.params.subproject_taxon_id}`,
                                     text: match.params.subproject_taxon_id,
+                                    table: 'subproject_taxa',
+                                    folder: false,
                                   }),
                                 },
                               },
@@ -777,6 +836,8 @@ export const router = createBrowserRouter([
                               crumb: (match) => ({
                                 path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/reports`,
                                 text: 'Reports',
+                                table: 'subproject_reports',
+                                folder: true,
                               }),
                             },
                             children: [
@@ -792,6 +853,8 @@ export const router = createBrowserRouter([
                                   crumb: (match) => ({
                                     path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/reports/${match.params.subproject_report_id}`,
                                     text: match.params.subproject_report_id,
+                                    table: 'subproject_reports',
+                                    folder: false,
                                   }),
                                 },
                               },
@@ -804,6 +867,8 @@ export const router = createBrowserRouter([
                               crumb: (match) => ({
                                 path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/goals`,
                                 text: 'Goals',
+                                table: 'goals',
+                                folder: true,
                               }),
                             },
                             children: [
@@ -818,6 +883,8 @@ export const router = createBrowserRouter([
                                   crumb: (match) => ({
                                     path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/goals/${match.params.goal_id}`,
                                     text: match.params.goal_id,
+                                    table: 'goals',
+                                    folder: false,
                                   }),
                                   to: (match) =>
                                     navs({ path: `goal_id`, match }),
@@ -834,6 +901,8 @@ export const router = createBrowserRouter([
                                       crumb: (match) => ({
                                         path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/goals/${match.params.goal_id}/reports`,
                                         text: 'Reports',
+                                        table: 'goal_reports',
+                                        folder: true,
                                       }),
                                     },
                                     children: [
@@ -849,6 +918,8 @@ export const router = createBrowserRouter([
                                           crumb: (match) => ({
                                             path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/goals/${match.params.goal_id}/reports/${match.params.goal_report_id}`,
                                             text: match.params.goal_report_id,
+                                            table: 'goal_reports',
+                                            folder: false,
                                           }),
                                           to: (match) =>
                                             navs({
@@ -869,6 +940,8 @@ export const router = createBrowserRouter([
                                               crumb: (match) => ({
                                                 path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/goals/${match.params.goal_id}/reports/${match.params.goal_report_id}/values`,
                                                 text: 'Values',
+                                                table: 'goal_report_values',
+                                                folder: true,
                                               }),
                                             },
                                             children: [
@@ -890,6 +963,8 @@ export const router = createBrowserRouter([
                                                     path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/goals/${match.params.goal_id}/reports/${match.params.goal_report_id}/values/${match.params.goal_report_value_id}`,
                                                     text: match.params
                                                       .goal_report_value_id,
+                                                    table: 'goal_report_values',
+                                                    folder: false,
                                                   }),
                                                 },
                                               },
@@ -914,6 +989,8 @@ export const router = createBrowserRouter([
                       crumb: (match) => ({
                         path: `/projects/${match.params.project_id}/place-levels`,
                         text: 'Place Levels',
+                        table: 'place_levels',
+                        folder: true,
                       }),
                     },
                     children: [
@@ -928,6 +1005,8 @@ export const router = createBrowserRouter([
                           crumb: (match) => ({
                             path: `/projects/${match.params.project_id}/place-levels/${match.params.place_level_id}`,
                             text: match.params.place_level_id,
+                            table: 'place_levels',
+                            folder: false,
                           }),
                         },
                       },
@@ -940,6 +1019,8 @@ export const router = createBrowserRouter([
                       crumb: (match) => ({
                         path: `/projects/${match.params.project_id}/units`,
                         text: 'Units',
+                        table: 'units',
+                        folder: true,
                       }),
                     },
                     children: [
@@ -951,6 +1032,8 @@ export const router = createBrowserRouter([
                           crumb: (match) => ({
                             path: `/projects/${match.params.project_id}/units/${match.params.unit_id}`,
                             text: match.params.unit_id,
+                            table: 'units',
+                            folder: false,
                           }),
                         },
                       },
@@ -963,6 +1046,8 @@ export const router = createBrowserRouter([
                       crumb: (match) => ({
                         path: `/projects/${match.params.project_id}/lists`,
                         text: 'Lists',
+                        table: 'lists',
+                        folder: true,
                       }),
                     },
                     children: [
@@ -974,6 +1059,8 @@ export const router = createBrowserRouter([
                           crumb: (match) => ({
                             path: `/projects/${match.params.project_id}/lists/${match.params.list_id}`,
                             text: match.params.list_id,
+                            table: 'lists',
+                            folder: false,
                           }),
                           to: (match) => navs({ path: `list_id`, match }),
                         },
@@ -989,6 +1076,8 @@ export const router = createBrowserRouter([
                               crumb: (match) => ({
                                 path: `/projects/${match.params.project_id}/lists/${match.params.list_id}/values`,
                                 text: 'Values',
+                                table: 'list_values',
+                                folder: true,
                               }),
                             },
                             children: [
@@ -1003,6 +1092,8 @@ export const router = createBrowserRouter([
                                   crumb: (match) => ({
                                     path: `/projects/${match.params.project_id}/lists/${match.params.list_id}/values/${match.params.list_value_id}`,
                                     text: match.params.list_value_id,
+                                    table: 'list_values',
+                                    folder: false,
                                   }),
                                 },
                               },
@@ -1019,6 +1110,8 @@ export const router = createBrowserRouter([
                       crumb: (match) => ({
                         path: `/projects/${match.params.project_id}/taxonomies`,
                         text: 'Taxonomies',
+                        table: 'taxonomies',
+                        folder: true,
                       }),
                     },
                     children: [
@@ -1033,6 +1126,8 @@ export const router = createBrowserRouter([
                           crumb: (match) => ({
                             path: `/projects/${match.params.project_id}/taxonomies/${match.params.taxonomy_id}`,
                             text: match.params.taxonomy_id,
+                            table: 'taxonomies',
+                            folder: false,
                           }),
                           to: (match) => navs({ path: `taxonomy_id`, match }),
                         },
@@ -1048,6 +1143,8 @@ export const router = createBrowserRouter([
                               crumb: (match) => ({
                                 path: `/projects/${match.params.project_id}/taxonomies/${match.params.taxonomy_id}/taxa`,
                                 text: 'Taxa',
+                                table: 'taxa',
+                                folder: true,
                               }),
                             },
                             children: [
@@ -1062,6 +1159,8 @@ export const router = createBrowserRouter([
                                   crumb: (match) => ({
                                     path: `/projects/${match.params.project_id}/taxonomies/${match.params.taxonomy_id}/taxa/${match.params.taxon_id}`,
                                     text: match.params.taxon_id,
+                                    table: 'taxa',
+                                    folder: false,
                                   }),
                                 },
                               },
@@ -1078,6 +1177,8 @@ export const router = createBrowserRouter([
                       crumb: (match) => ({
                         path: `/projects/${match.params.project_id}/users`,
                         text: 'Users',
+                        table: 'project_users',
+                        folder: true,
                       }),
                     },
                     children: [
@@ -1092,6 +1193,8 @@ export const router = createBrowserRouter([
                           crumb: (match) => ({
                             path: `/projects/${match.params.project_id}/users/${match.params.project_user_id}`,
                             text: match.params.project_user_id,
+                            table: 'project_users',
+                            folder: false,
                           }),
                         },
                       },
@@ -1104,6 +1207,8 @@ export const router = createBrowserRouter([
                       crumb: (match) => ({
                         path: `/projects/${match.params.project_id}/reports`,
                         text: 'Reports',
+                        table: 'project_reports',
+                        folder: true,
                       }),
                     },
                     children: [
@@ -1118,6 +1223,8 @@ export const router = createBrowserRouter([
                           crumb: (match) => ({
                             path: `/projects/${match.params.project_id}/reports/${match.params.project_report_id}`,
                             text: match.params.project_report_id,
+                            table: 'project_reports',
+                            folder: false,
                           }),
                         },
                       },
@@ -1130,6 +1237,8 @@ export const router = createBrowserRouter([
                       crumb: (match) => ({
                         path: `/projects/${match.params.project_id}/fields`,
                         text: 'Fields',
+                        table: 'fields',
+                        folder: true,
                       }),
                     },
                     children: [
@@ -1141,6 +1250,8 @@ export const router = createBrowserRouter([
                           crumb: (match) => ({
                             path: `/projects/${match.params.project_id}/fields/${match.params.field_id}`,
                             text: match.params.field_id,
+                            table: 'fields',
+                            folder: false,
                           }),
                         },
                       },
@@ -1153,6 +1264,8 @@ export const router = createBrowserRouter([
                       crumb: (match) => ({
                         path: `/projects/${match.params.project_id}/observation-sources`,
                         text: 'Observation Sources',
+                        table: 'observation_sources',
+                        folder: true,
                       }),
                     },
                     children: [
@@ -1167,6 +1280,8 @@ export const router = createBrowserRouter([
                           crumb: (match) => ({
                             path: `/projects/${match.params.project_id}/observation-sources/${match.params.observation_source_id}`,
                             text: match.params.observation_source_id,
+                            table: 'observation_sources',
+                            folder: false,
                           }),
                           to: (match) =>
                             navs({ path: `observation_source_id`, match }),
@@ -1183,6 +1298,8 @@ export const router = createBrowserRouter([
                               crumb: (match) => ({
                                 path: `/projects/${match.params.project_id}/observation-sources/${match.params.observation_source_id}/observations`,
                                 text: 'Observations',
+                                table: 'observations',
+                                folder: true,
                               }),
                             },
                             children: [
@@ -1197,6 +1314,8 @@ export const router = createBrowserRouter([
                                   crumb: (match) => ({
                                     path: `/projects/${match.params.project_id}/observation-sources/${match.params.observation_source_id}/observations/${match.params.observation_id}`,
                                     text: match.params.observation_id,
+                                    table: 'observations',
+                                    folder: false,
                                   }),
                                 },
                               },
@@ -1213,6 +1332,8 @@ export const router = createBrowserRouter([
                       crumb: (match) => ({
                         path: `/projects/${match.params.project_id}/persons`,
                         text: 'Persons',
+                        table: 'persons',
+                        folder: true,
                       }),
                     },
                     children: [
@@ -1224,6 +1345,8 @@ export const router = createBrowserRouter([
                           crumb: (match) => ({
                             path: `/projects/${match.params.project_id}/persons/${match.params.person_id}`,
                             text: match.params.person_id,
+                            table: 'persons',
+                            folder: false,
                           }),
                         },
                       },
@@ -1237,7 +1360,12 @@ export const router = createBrowserRouter([
             path: 'field-types',
             element: null,
             handle: {
-              crumb: () => ({ path: '/field-types', text: 'Field Types' }),
+              crumb: () => ({
+                path: '/field-types',
+                text: 'Field Types',
+                table: 'field_types',
+                folder: true,
+              }),
             },
             children: [
               { index: true, lazy: () => import('./routes/fieldTypes') },
@@ -1248,6 +1376,8 @@ export const router = createBrowserRouter([
                   crumb: (match) => ({
                     path: `/field-types/${match.params.field_type}`,
                     text: match.params.field_type,
+                    table: 'field_types',
+                    folder: false,
                   }),
                 },
               },
@@ -1257,7 +1387,12 @@ export const router = createBrowserRouter([
             path: 'widget-types',
             element: null,
             handle: {
-              crumb: () => ({ path: '/widget-types', text: 'Widget Types' }),
+              crumb: () => ({
+                path: '/widget-types',
+                text: 'Widget Types',
+                table: 'widget_types',
+                folder: true,
+              }),
             },
             children: [
               { index: true, lazy: () => import('./routes/widgetTypes') },
@@ -1268,6 +1403,8 @@ export const router = createBrowserRouter([
                   crumb: (match) => ({
                     path: `/widget-types/${match.params.widget_type}`,
                     text: match.params.widget_type,
+                    table: 'widget_types',
+                    folder: false,
                   }),
                 },
               },
@@ -1280,6 +1417,8 @@ export const router = createBrowserRouter([
               crumb: () => ({
                 path: '/widgets-for-fields',
                 text: 'Widgets For Fields',
+                table: 'widgets_for_fields',
+                folder: true,
               }),
             },
             children: [
@@ -1291,6 +1430,8 @@ export const router = createBrowserRouter([
                   crumb: (match) => ({
                     path: `/widgets-for-fields/${match.params.widget_for_field_id}`,
                     text: match.params.widget_for_field_id,
+                    table: 'widgets_for_fields',
+                    folder: false,
                   }),
                 },
               },
@@ -1300,7 +1441,12 @@ export const router = createBrowserRouter([
             path: 'files',
             element: null,
             handle: {
-              crumb: () => ({ path: '/files', text: 'Files' }),
+              crumb: () => ({
+                path: '/files',
+                text: 'Files',
+                table: 'files',
+                folder: true,
+              }),
             },
             children: [
               { index: true, lazy: () => import('./routes/files') },
@@ -1311,6 +1457,8 @@ export const router = createBrowserRouter([
                   crumb: (match) => ({
                     path: `/files/${match.params.file_id}`,
                     text: match.params.file_id,
+                    table: 'files',
+                    folder: false,
                   }),
                 },
               },
@@ -1320,7 +1468,12 @@ export const router = createBrowserRouter([
             path: 'messages',
             element: null,
             handle: {
-              crumb: () => ({ path: '/messages', text: 'Messages' }),
+              crumb: () => ({
+                path: '/messages',
+                text: 'Messages',
+                table: 'messages',
+                folder: true,
+              }),
             },
             children: [
               { index: true, lazy: () => import('./routes/messages') },
@@ -1331,6 +1484,8 @@ export const router = createBrowserRouter([
                   crumb: (match) => ({
                     path: `/messages/${match.params.message_id}`,
                     text: match.params.message_id,
+                    table: 'messages',
+                    folder: false,
                   }),
                 },
               },
@@ -1340,7 +1495,12 @@ export const router = createBrowserRouter([
             path: 'docs',
             lazy: () => import('./routes/docs'),
             handle: {
-              crumb: () => ({ path: '/docs', text: 'Docs' }),
+              crumb: () => ({
+                path: '/docs',
+                text: 'Docs',
+                table: 'docs',
+                folder: true,
+              }),
             },
           },
         ],
