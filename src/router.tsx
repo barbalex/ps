@@ -19,7 +19,7 @@ export const navs = ({ path, match }) => {
         { path: '/docs', text: 'Docs' },
       ]
       break
-    case `project_id`:
+    case `project`:
       return [
         {
           path: `/projects/${match.params.project_id}/subprojects`,
@@ -264,7 +264,7 @@ export const router = createBrowserRouter([
                     table: 'projects',
                     folder: false,
                   }),
-                  to: (match) => navs({ path: `project_id`, match }),
+                  to: (match) => navs({ path: `project`, match }),
                 },
                 children: [
                   { index: true, lazy: () => import('./routes/project') },

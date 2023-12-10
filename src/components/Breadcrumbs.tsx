@@ -14,8 +14,9 @@ export const Breadcrumbs = () => {
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const openMenu = Boolean(anchorEl)
-
   const closeMenu = useCallback(() => setAnchorEl(null), [])
+
+  const [myNavs, setMyNavs] = useState([])
 
   const filteredMatches = matches.filter((match) => match.handle?.crumb)
 
@@ -26,15 +27,21 @@ export const Breadcrumbs = () => {
     e.stopPropagation()
     console.log('clicked', { match, table, folder })
     setAnchorEl(e.currentTarget)
-    if (folder) {
+    if (table === 'home' || folder === false) {
       // TODO:
       switch (table) {
+        case 'home':
+          setMyNavs(navs({ path: '/', match }))
+          break
         case 'projects':
+          setMyNavs(navs({ path: 'project', match }))
           break
         default:
+          setMyNavs([])
           break
       }
-      
+    } else {
+      console.log('should fetch data for table', table)
     }
   }, [])
 
@@ -74,9 +81,17 @@ export const Breadcrumbs = () => {
           'aria-labelledby': 'basic-button',
         }}
       >
-        <MenuItem onClick={closeMenu}>Profile</MenuItem>
-        <MenuItem onClick={closeMenu}>My account</MenuItem>
-        <MenuItem onClick={closeMenu}>Logout</MenuItem>
+        {myNavs.map(({ path, text }, index) => (
+          <MenuItem
+            key={index}
+            onClick={() => {
+              navigate(path)
+              setAnchorEl(null)
+            }}
+          >
+            {text}
+          </MenuItem>
+        ))}
       </Menu>
     </>
   )
