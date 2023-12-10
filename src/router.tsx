@@ -3,6 +3,22 @@ import { createBrowserRouter, Link } from 'react-router-dom'
 import { Header } from './components/Header'
 import { ErrorPage } from './routes/error'
 
+export const navs = {
+  '/': (
+    <>
+      <Link to="/users">Users</Link>
+      <Link to="/accounts">Accounts</Link>
+      <Link to="/projects">Projects</Link>
+      <Link to="/field-types">Field Types</Link>
+      <Link to="/widget-types">Widget Types</Link>
+      <Link to="/widgets-for-fields">Widgets For Fields</Link>
+      <Link to="/files">Files</Link>
+      <Link to="/messages">Messages</Link>
+      <Link to="/docs">Docs</Link>
+    </>
+  ),
+}
+
 export const router = createBrowserRouter([
   {
     element: <Header />,
@@ -13,19 +29,7 @@ export const router = createBrowserRouter([
         errorElement: <ErrorPage />,
         handle: {
           crumb: () => ({ url: '/', text: 'Home' }),
-          to: () => (
-            <>
-              <Link to="/users">Users</Link>
-              <Link to="/accounts">Accounts</Link>
-              <Link to="/projects">Projects</Link>
-              <Link to="/field-types">Field Types</Link>
-              <Link to="/widget-types">Widget Types</Link>
-              <Link to="/widgets-for-fields">Widgets For Fields</Link>
-              <Link to="/files">Files</Link>
-              <Link to="/messages">Messages</Link>
-              <Link to="/docs">Docs</Link>
-            </>
-          ),
+          to: () => navs['/'],
         },
         children: [
           {
