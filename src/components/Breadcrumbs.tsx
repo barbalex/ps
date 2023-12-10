@@ -1,4 +1,6 @@
 import { useMatches, useNavigate } from 'react-router-dom'
+import { BsCaretDown } from 'react-icons/bs'
+import IconButton from '@mui/material/IconButton'
 
 import './breadcrumbs.css'
 
@@ -27,6 +29,9 @@ export const Breadcrumbs = () => {
         return (
           <div className={className} key={index} onClick={() => navigate(url)}>
             {text}
+            <IconButton className="icon">
+              <BsCaretDown />
+            </IconButton>
           </div>
         )
       })}

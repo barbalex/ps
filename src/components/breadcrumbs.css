@@ -48,6 +48,17 @@
   width: 2em;
   z-index: 1;
 }
+/* .breadcrumbs__crumb2::after {
+  background: white;
+  bottom: 0;
+  content: url(../images/caret-down.svg);
+  left: 100%;
+  position: absolute;
+  top: 15px;
+  transition: background 0.2s linear;
+  width: 2em;
+  z-index: 2;
+} */
 
 .breadcrumbs__crumb::before {
   background: #cbd2d9;
@@ -61,4 +72,10 @@
 .breadcrumbs__crumb.is-active,
 .breadcrumbs__crumb.is-active:after {
   background: #edf1f5;
+}
+
+.breadcrumbs__crumb .icon {
+  position: relative;
+  right: -0.4em;
+  z-index: 3;
 }
