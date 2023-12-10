@@ -152,8 +152,26 @@ export const navs = ({ path, match }) => {
           </Link>
         </>
       )
-      case ':goal_id':
-        return ()
+    case 'goal_id':
+      return (
+        <>
+          <Link
+            to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/goals/${match.params.goal_id}/reports`}
+          >
+            Reports
+          </Link>
+        </>
+      )
+    case 'goal_report_id':
+      return (
+        <>
+          <Link
+            to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/goals/${match.params.goal_id}/reports/${match.params.goal_report_id}/values`}
+          >
+            Values
+          </Link>
+        </>
+      )
     default: {
       return null
     }
@@ -262,8 +280,7 @@ export const router = createBrowserRouter([
                             url: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}`,
                             text: match.params.subproject_id,
                           }),
-                          to: (match) =>
-                            navs({ path: `subproject_id`, match }),
+                          to: (match) => navs({ path: `subproject_id`, match }),
                         },
                         children: [
                           {
@@ -745,15 +762,8 @@ export const router = createBrowserRouter([
                                     url: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/goals/${match.params.goal_id}`,
                                     text: match.params.goal_id,
                                   }),
-                                  to: (match) => (
-                                    <>
-                                      <Link
-                                        to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/goals/${match.params.goal_id}/reports`}
-                                      >
-                                        Reports
-                                      </Link>
-                                    </>
-                                  ),
+                                  to: (match) =>
+                                    navs({ path: `goal_id`, match }),
                                 },
                                 children: [
                                   {
@@ -783,15 +793,11 @@ export const router = createBrowserRouter([
                                             url: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/goals/${match.params.goal_id}/reports/${match.params.goal_report_id}`,
                                             text: match.params.goal_report_id,
                                           }),
-                                          to: (match) => (
-                                            <>
-                                              <Link
-                                                to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/goals/${match.params.goal_id}/reports/${match.params.goal_report_id}/values`}
-                                              >
-                                                Values
-                                              </Link>
-                                            </>
-                                          ),
+                                          to: (match) =>
+                                            navs({
+                                              path: `goal_report_id`,
+                                              match,
+                                            }),
                                         },
                                         children: [
                                           {
