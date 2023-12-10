@@ -20,7 +20,7 @@ export const navs = ({ path, match }) => {
         </>
       )
       break
-    case `:project_id`:
+    case `project_id`:
       return (
         <>
           <Link to={`/projects/${match.params.project_id}/subprojects`}>
@@ -47,7 +47,7 @@ export const navs = ({ path, match }) => {
           </Link>
         </>
       )
-    case ':subproject_id':
+    case 'subproject_id':
       return (
         <>
           <Link
@@ -77,7 +77,7 @@ export const navs = ({ path, match }) => {
           </Link>
         </>
       )
-    case ':place_id':
+    case 'place_id':
       return (
         <>
           <Link
@@ -102,7 +102,7 @@ export const navs = ({ path, match }) => {
           </Link>
         </>
       )
-    case ':check_id':
+    case 'check_id':
       return (
         <>
           <Link
@@ -117,7 +117,7 @@ export const navs = ({ path, match }) => {
           </Link>
         </>
       )
-    case ':action_id':
+    case 'action_id':
       return (
         <>
           <Link
@@ -132,7 +132,7 @@ export const navs = ({ path, match }) => {
           </Link>
         </>
       )
-    case ':action_report_id':
+    case 'action_report_id':
       return (
         <>
           <Link
@@ -142,7 +142,7 @@ export const navs = ({ path, match }) => {
           </Link>
         </>
       )
-    case ':place_report_id':
+    case 'place_report_id':
       return (
         <>
           <Link
@@ -236,7 +236,7 @@ export const router = createBrowserRouter([
                     url: `/projects/${match.params.project_id}`,
                     text: match.params.project_id,
                   }),
-                  to: (match) => navs({ path: `:project_id`, match }),
+                  to: (match) => navs({ path: `project_id`, match }),
                 },
                 children: [
                   { index: true, lazy: () => import('./routes/project') },
@@ -263,7 +263,7 @@ export const router = createBrowserRouter([
                             text: match.params.subproject_id,
                           }),
                           to: (match) =>
-                            navs({ path: `:subproject_id`, match }),
+                            navs({ path: `subproject_id`, match }),
                         },
                         children: [
                           {
@@ -293,7 +293,7 @@ export const router = createBrowserRouter([
                                     text: match.params.place_id,
                                   }),
                                   to: (match) =>
-                                    navs({ path: `:place_id`, match }),
+                                    navs({ path: `place_id`, match }),
                                 },
                                 children: [
                                   {
@@ -323,7 +323,7 @@ export const router = createBrowserRouter([
                                             text: match.params.check_id,
                                           }),
                                           to: (match) =>
-                                            navs({ path: `:check_id`, match }),
+                                            navs({ path: `check_id`, match }),
                                         },
                                         children: [
                                           {
@@ -418,7 +418,7 @@ export const router = createBrowserRouter([
                                             text: match.params.action_id,
                                           }),
                                           to: (match) =>
-                                            navs({ path: `:action_id`, match }),
+                                            navs({ path: `action_id`, match }),
                                         },
                                         children: [
                                           {
@@ -487,7 +487,7 @@ export const router = createBrowserRouter([
                                                   }),
                                                   to: (match) =>
                                                     navs({
-                                                      path: `:action_report_id`,
+                                                      path: `action_report_id`,
                                                       match,
                                                     }),
                                                 },
@@ -565,7 +565,7 @@ export const router = createBrowserRouter([
                                           }),
                                           to: (match) =>
                                             navs({
-                                              path: `:place_report_id`,
+                                              path: `place_report_id`,
                                               match,
                                             }),
                                         },
