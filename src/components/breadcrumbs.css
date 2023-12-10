@@ -12,7 +12,7 @@
   outline: none;
   border-top: 1px solid #cbd2d9;
   border-bottom: 1px solid #cbd2d9;
-  padding: 0.75em 0.75em 0.75em 1.5em;
+  padding: 0.4em 0 0.4em 1.5em;
   position: relative;
   text-decoration: none;
   transition: background 0.2s linear;
@@ -76,6 +76,8 @@
 
 .breadcrumbs__crumb .icon {
   position: relative;
-  right: -0.4em;
+  font-size: large;
+  right: -0.6em;
+  margin-left: -10px;
   z-index: 3;
 }
