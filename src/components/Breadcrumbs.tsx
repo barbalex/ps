@@ -14,25 +14,26 @@ export const Breadcrumbs = () => {
   // New Idea: active (last) crumb should _not_ be a link
   // Pass Objects with { text, link } to crumb
   // Add arrows between crumbs
-  const onClick = useCallback(({ e, url, match }) => {
+  const onClick = useCallback(({ e, path, match }) => {
     e.stopPropagation()
-    console.log('clicked url:', { url, match })
+    const pathArray = path.split('/')
+    console.log('clicked path:', { path, match, pathArray })
   }, [])
 
   return (
     <nav className="breadcrumbs">
       {filteredMatches.map((match, index) => {
-        const { text, url } = match?.handle?.crumb?.(match) ?? {}
+        const { text, path } = match?.handle?.crumb?.(match) ?? {}
         const className =
-          location.pathname === url
+          location.pathname === path
             ? 'breadcrumbs__crumb is-active'
             : 'breadcrumbs__crumb link'
 
         return (
-          <div className={className} key={index} onClick={() => navigate(url)}>
+          <div className={className} key={index} onClick={() => navigate(path)}>
             {text}
             <IconButton
-              onClick={(e) => onClick({ e, url, match })}
+              onClick={(e) => onClick({ e, path, match })}
               className="icon"
             >
               <BsCaretDown />
