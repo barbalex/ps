@@ -6,6 +6,7 @@ import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 
 import './breadcrumbs.css'
+import { navs } from '../router'
 
 export const Breadcrumbs = () => {
   const matches = useMatches()
@@ -25,6 +26,16 @@ export const Breadcrumbs = () => {
     e.stopPropagation()
     console.log('clicked', { match, table, folder })
     setAnchorEl(e.currentTarget)
+    if (folder) {
+      // TODO:
+      switch (table) {
+        case 'projects':
+          break
+        default:
+          break
+      }
+      
+    }
   }, [])
 
   return (

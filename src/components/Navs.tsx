@@ -1,4 +1,4 @@
-import { useMatches, useLocation } from 'react-router-dom'
+import { useMatches, useLocation, Link } from 'react-router-dom'
 
 // new idea
 // get all matches for next level down
@@ -21,5 +21,13 @@ export const Navs = () => {
   // hide this area of there are no tos
   if (!tos?.length) return null
 
-  return <nav className="navs">{tos[0]}</nav>
+  return (
+    <nav className="navs">
+      {(tos[0] ?? []).map(({ path, text }, index) => (
+        <Link key={index} to={path}>
+          {text}
+        </Link>
+      ))}
+    </nav>
+  )
 }
