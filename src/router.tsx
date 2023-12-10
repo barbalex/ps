@@ -172,6 +172,36 @@ export const navs = ({ path, match }) => {
           </Link>
         </>
       )
+    case 'list_id':
+      return (
+        <>
+          <Link
+            to={`/projects/${match.params.project_id}/lists/${match.params.list_id}/values`}
+          >
+            Values
+          </Link>
+        </>
+      )
+    case 'taxonomy_id':
+      return (
+        <>
+          <Link
+            to={`/projects/${match.params.project_id}/taxonomies/${match.params.taxonomy_id}/taxa`}
+          >
+            Taxa
+          </Link>
+        </>
+      )
+    case 'observation_source_id':
+      return (
+        <>
+          <Link
+            to={`/projects/${match.params.project_id}/observation-sources/${match.params.observation_source_id}/observations`}
+          >
+            Observations
+          </Link>
+        </>
+      )
     default: {
       return null
     }
@@ -918,15 +948,7 @@ export const router = createBrowserRouter([
                             url: `/projects/${match.params.project_id}/lists/${match.params.list_id}`,
                             text: match.params.list_id,
                           }),
-                          to: (match) => (
-                            <>
-                              <Link
-                                to={`/projects/${match.params.project_id}/lists/${match.params.list_id}/values`}
-                              >
-                                Values
-                              </Link>
-                            </>
-                          ),
+                          to: (match) => navs({ path: `list_id`, match }),
                         },
                         children: [
                           {
@@ -985,15 +1007,7 @@ export const router = createBrowserRouter([
                             url: `/projects/${match.params.project_id}/taxonomies/${match.params.taxonomy_id}`,
                             text: match.params.taxonomy_id,
                           }),
-                          to: (match) => (
-                            <>
-                              <Link
-                                to={`/projects/${match.params.project_id}/taxonomies/${match.params.taxonomy_id}/taxa`}
-                              >
-                                Taxa
-                              </Link>
-                            </>
-                          ),
+                          to: (match) => navs({ path: `taxonomy_id`, match }),
                         },
                         children: [
                           {
@@ -1127,15 +1141,8 @@ export const router = createBrowserRouter([
                             url: `/projects/${match.params.project_id}/observation-sources/${match.params.observation_source_id}`,
                             text: match.params.observation_source_id,
                           }),
-                          to: (match) => (
-                            <>
-                              <Link
-                                to={`/projects/${match.params.project_id}/observation-sources/${match.params.observation_source_id}/observations`}
-                              >
-                                Observations
-                              </Link>
-                            </>
-                          ),
+                          to: (match) =>
+                            navs({ path: `observation_source_id`, match }),
                         },
                         children: [
                           {
