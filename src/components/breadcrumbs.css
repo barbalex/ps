@@ -21,6 +21,7 @@
 .breadcrumbs__crumb.link {
   cursor: pointer;
   text-decoration: underline;
+  text-decoration-color: rgba(0, 0, 0, 0.3);
 }
 
 .breadcrumbs__crumb:hover:after,
