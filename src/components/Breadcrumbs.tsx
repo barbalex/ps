@@ -9,23 +9,20 @@ export const Breadcrumbs = () => {
   const matches = useMatches()
   const navigate = useNavigate()
 
-  const crumbs = matches
-    // first get rid of any matches that don't have handle and crumb
-    .filter((match) => Boolean(match.handle?.crumb))
-    // now map them into an array of elements
-    .map((match) => match.handle.crumb?.(match))
+  const filteredMatches = matches.filter((match) => match.handle?.crumb)
 
   // New Idea: active (last) crumb should _not_ be a link
   // Pass Objects with { text, link } to crumb
   // Add arrows between crumbs
-  const onClick = useCallback((e, url) => {
+  const onClick = useCallback(({ e, url, match }) => {
     e.stopPropagation()
-    console.log('clicked url:', url)
+    console.log('clicked url:', { url, match })
   }, [])
 
   return (
     <nav className="breadcrumbs">
-      {crumbs.map(({ text, url }, index) => {
+      {filteredMatches.map((match, index) => {
+        const { text, url } = match?.handle?.crumb?.(match) ?? {}
         const className =
           location.pathname === url
             ? 'breadcrumbs__crumb is-active'
@@ -34,7 +31,10 @@ export const Breadcrumbs = () => {
         return (
           <div className={className} key={index} onClick={() => navigate(url)}>
             {text}
-            <IconButton onClick={(e) => onClick(e, url)} className="icon">
+            <IconButton
+              onClick={(e) => onClick({ e, url, match })}
+              className="icon"
+            >
               <BsCaretDown />
             </IconButton>
           </div>

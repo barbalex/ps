@@ -3,7 +3,7 @@ import { createBrowserRouter, Link } from 'react-router-dom'
 import { Header } from './components/Header'
 import { ErrorPage } from './routes/error'
 
-export const navs = (path) => {
+export const navs = ({ path, match }) => {
   switch (path) {
     case '/':
       return (
@@ -20,8 +20,63 @@ export const navs = (path) => {
         </>
       )
       break
-      case `/projects/${match.params.project_id}`:
-        return ()
+    case `:project_id`:
+      return (
+        <>
+          <Link to={`/projects/${match.params.project_id}/subprojects`}>
+            Subprojects
+          </Link>
+          <Link to={`/projects/${match.params.project_id}/place-levels`}>
+            Place Levels
+          </Link>
+          <Link to={`/projects/${match.params.project_id}/units`}>Units</Link>
+          <Link to={`/projects/${match.params.project_id}/lists`}>Lists</Link>
+          <Link to={`/projects/${match.params.project_id}/taxonomies`}>
+            Taxonomies
+          </Link>
+          <Link to={`/projects/${match.params.project_id}/users`}>Users</Link>
+          <Link to={`/projects/${match.params.project_id}/reports`}>
+            Reports
+          </Link>
+          <Link to={`/projects/${match.params.project_id}/fields`}>Fields</Link>
+          <Link to={`/projects/${match.params.project_id}/observation-sources`}>
+            Observation Sources
+          </Link>
+          <Link to={`/projects/${match.params.project_id}/persons`}>
+            Persons
+          </Link>
+        </>
+      )
+    case ':subproject_id':
+      return (
+        <>
+          <Link
+            to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places`}
+          >
+            Places
+          </Link>
+          <Link
+            to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/users`}
+          >
+            Users
+          </Link>
+          <Link
+            to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/taxa`}
+          >
+            Taxa
+          </Link>
+          <Link
+            to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/reports`}
+          >
+            Reports
+          </Link>
+          <Link
+            to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/goals`}
+          >
+            Goals
+          </Link>
+        </>
+      )
     default: {
       return null
     }
@@ -38,7 +93,7 @@ export const router = createBrowserRouter([
         errorElement: <ErrorPage />,
         handle: {
           crumb: () => ({ url: '/', text: 'Home' }),
-          to: () => navs('/'),
+          to: (match) => navs({ path: '/', match }),
         },
         children: [
           {
@@ -104,48 +159,7 @@ export const router = createBrowserRouter([
                     url: `/projects/${match.params.project_id}`,
                     text: match.params.project_id,
                   }),
-                  to: (match) => (
-                    <>
-                      <Link
-                        to={`/projects/${match.params.project_id}/subprojects`}
-                      >
-                        Subprojects
-                      </Link>
-                      <Link
-                        to={`/projects/${match.params.project_id}/place-levels`}
-                      >
-                        Place Levels
-                      </Link>
-                      <Link to={`/projects/${match.params.project_id}/units`}>
-                        Units
-                      </Link>
-                      <Link to={`/projects/${match.params.project_id}/lists`}>
-                        Lists
-                      </Link>
-                      <Link
-                        to={`/projects/${match.params.project_id}/taxonomies`}
-                      >
-                        Taxonomies
-                      </Link>
-                      <Link to={`/projects/${match.params.project_id}/users`}>
-                        Users
-                      </Link>
-                      <Link to={`/projects/${match.params.project_id}/reports`}>
-                        Reports
-                      </Link>
-                      <Link to={`/projects/${match.params.project_id}/fields`}>
-                        Fields
-                      </Link>
-                      <Link
-                        to={`/projects/${match.params.project_id}/observation-sources`}
-                      >
-                        Observation Sources
-                      </Link>
-                      <Link to={`/projects/${match.params.project_id}/persons`}>
-                        Persons
-                      </Link>
-                    </>
-                  ),
+                  to: (match) => navs({ path: `:project_id`, match }),
                 },
                 children: [
                   { index: true, lazy: () => import('./routes/project') },
@@ -171,35 +185,8 @@ export const router = createBrowserRouter([
                             url: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}`,
                             text: match.params.subproject_id,
                           }),
-                          to: (match) => (
-                            <>
-                              <Link
-                                to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places`}
-                              >
-                                Places
-                              </Link>
-                              <Link
-                                to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/users`}
-                              >
-                                Users
-                              </Link>
-                              <Link
-                                to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/taxa`}
-                              >
-                                Taxa
-                              </Link>
-                              <Link
-                                to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/reports`}
-                              >
-                                Reports
-                              </Link>
-                              <Link
-                                to={`/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/goals`}
-                              >
-                                Goals
-                              </Link>
-                            </>
-                          ),
+                          to: (match) =>
+                            navs({ path: `:subproject_id`, match }),
                         },
                         children: [
                           {
