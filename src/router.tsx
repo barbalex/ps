@@ -19,6 +19,12 @@ export const navs = (path) => {
           <Link to="/docs">Docs</Link>
         </>
       )
+      break
+      case `/projects/${match.params.project_id}`:
+        return ()
+    default: {
+      return null
+    }
   }
 }
 
