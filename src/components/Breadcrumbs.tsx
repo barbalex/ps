@@ -18,10 +18,9 @@ export const Breadcrumbs = () => {
   // New Idea: active (last) crumb should _not_ be a link
   // Pass Objects with { text, link } to crumb
   // Add arrows between crumbs
-  const onClick = useCallback((e) => {
-    e.preventDefault()
+  const onClick = useCallback((e, url) => {
     e.stopPropagation()
-    console.log('clicked')
+    console.log('clicked url:', url)
   }, [])
 
   return (
@@ -35,7 +34,7 @@ export const Breadcrumbs = () => {
         return (
           <div className={className} key={index} onClick={() => navigate(url)}>
             {text}
-            <IconButton onClick={onClick} className="icon">
+            <IconButton onClick={(e) => onClick(e, url)} className="icon">
               <BsCaretDown />
             </IconButton>
           </div>
