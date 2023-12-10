@@ -218,7 +218,12 @@ export const router = createBrowserRouter([
         element: null,
         errorElement: <ErrorPage />,
         handle: {
-          crumb: () => ({ path: '/', text: 'Home' }),
+          crumb: () => ({
+            path: '/',
+            text: 'Home',
+            table: 'home',
+            folder: true,
+          }),
           to: (match) => navs({ path: '/', match }),
         },
         children: [
@@ -230,7 +235,12 @@ export const router = createBrowserRouter([
             path: 'users',
             element: null,
             handle: {
-              crumb: () => ({ path: '/users', text: 'Users' }),
+              crumb: () => ({
+                path: '/users',
+                text: 'Users',
+                table: 'users',
+                folder: true,
+              }),
             },
             children: [
               {
@@ -244,6 +254,8 @@ export const router = createBrowserRouter([
                   crumb: (match) => ({
                     path: `/users/${match.params.user_id}`,
                     text: match.params.user_id,
+                    table: 'users',
+                    folder: false,
                   }),
                 },
               },
@@ -253,7 +265,12 @@ export const router = createBrowserRouter([
             path: 'accounts',
             element: null,
             handle: {
-              crumb: () => ({ path: '/accounts', text: 'Accounts' }),
+              crumb: () => ({
+                path: '/accounts',
+                text: 'Accounts',
+                table: 'accounts',
+                folder: true,
+              }),
             },
             children: [
               { index: true, lazy: () => import('./routes/accounts') },
@@ -264,6 +281,8 @@ export const router = createBrowserRouter([
                   crumb: (match) => ({
                     path: `/accounts/${match.params.account_id}`,
                     text: match.params.account_id,
+                    table: 'accounts',
+                    folder: false,
                   }),
                 },
               },
@@ -273,7 +292,12 @@ export const router = createBrowserRouter([
             path: 'projects',
             element: null,
             handle: {
-              crumb: () => ({ path: '/projects', text: 'Projects' }),
+              crumb: () => ({
+                path: '/projects',
+                text: 'Projects',
+                table: 'projects',
+                folder: true,
+              }),
             },
             children: [
               { index: true, lazy: () => import('./routes/projects') },
@@ -284,6 +308,8 @@ export const router = createBrowserRouter([
                   crumb: (match) => ({
                     path: `/projects/${match.params.project_id}`,
                     text: match.params.project_id,
+                    table: 'projects',
+                    folder: false,
                   }),
                   to: (match) => navs({ path: `project_id`, match }),
                 },
