@@ -7,7 +7,7 @@ import { useElectric } from '../ElectricProvider'
 import '../User.css'
 
 export const Component = () => {
-  const { db } = useElectric()!
+  const { db } = useElectric()
   const { results } = useLiveQuery(db.projects.liveMany())
 
   const add = async () => {

@@ -4,9 +4,11 @@ import { BsCaretDown } from 'react-icons/bs'
 import IconButton from '@mui/material/IconButton'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
+import { useLiveQuery } from 'electric-sql/react'
 
 import './breadcrumb.css'
 import { navs } from '../../router'
+import { useElectric } from '../../ElectricProvider'
 
 export const Breadcrumb = ({ match }) => {
   const navigate = useNavigate()
@@ -16,6 +18,11 @@ export const Breadcrumb = ({ match }) => {
     location.pathname === match.pathname
       ? 'breadcrumbs__crumb is-active'
       : 'breadcrumbs__crumb link'
+
+  const { db } = useElectric()
+  const queryTable = table === 'home' ? 'projects' : table
+  const { results, error } = useLiveQuery(db[queryTable]?.liveMany())
+  console.log('Breadcrumb', { table, results, error, match })
 
   const myNavs = useMemo(() => {
     if (table === 'home' || folder === false) {
@@ -76,9 +83,8 @@ export const Breadcrumb = ({ match }) => {
   // New Idea: active (last) crumb should _not_ be a link
   // Pass Objects with { text, link } to crumb
   // Add arrows between crumbs
-  const onClick = useCallback(({ e, table, folder, match }) => {
+  const onClick = useCallback((e) => {
     e.stopPropagation()
-    console.log('clicked', { match, table, folder })
     setAnchorEl(e.currentTarget)
   }, [])
 
@@ -89,10 +95,7 @@ export const Breadcrumb = ({ match }) => {
       <div className={className} onClick={() => navigate(match.pathname)}>
         <div className="text">{text}</div>
         {myNavs?.length > 0 && (
-          <IconButton
-            onClick={(e) => onClick({ e, table, folder, match })}
-            className="icon"
-          >
+          <IconButton onClick={onClick} className="icon">
             <BsCaretDown />
           </IconButton>
         )}

@@ -9,7 +9,7 @@ import '../User.css'
 import { useElectric } from '../ElectricProvider'
 
 export const Component = () => {
-  const { db } = useElectric()!
+  const { db } = useElectric()
   const { project_id } = useParams()
   const { results } = useLiveQuery(
     db.projects.liveUnique({ where: { project_id } }),
