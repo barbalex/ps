@@ -19,9 +19,13 @@ export const Breadcrumb = ({ match }) => {
       ? 'breadcrumbs__crumb is-active'
       : 'breadcrumbs__crumb link'
 
+  // TODO:
+  // to only query when needed,
+  // create two different breadcrumb components
+  // one that queries data and one that only uses navs
   const { db } = useElectric()
   const queryTable = table === 'home' ? 'projects' : table
-  const { results, error } = useLiveQuery(db[queryTable]?.liveMany())
+  const { results } = useLiveQuery(db[queryTable]?.liveMany())
 
   const myNavs = useMemo(() => {
     if (table === 'home' || folder === false) {
@@ -71,12 +75,12 @@ export const Breadcrumb = ({ match }) => {
           break
       }
     } else {
-      console.log('Breadcrumb, should set myNavs with results', {
-        table,
-        results,
-        error,
-        match,
-      })
+      // console.log('Breadcrumb, should set myNavs with results', {
+      //   table,
+      //   results,
+      //   error,
+      //   match,
+      // })
       return results?.map((result) => {
         const idField = `${table.slice(0, -1)}_id` // TODO: catch taxa/taxon, TODO: build label
         const path = `${match.pathname}/${result[idField]}`
@@ -87,7 +91,7 @@ export const Breadcrumb = ({ match }) => {
         }
       })
     }
-  }, [error, folder, match, results, table])
+  }, [folder, match, results, table])
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const openMenu = Boolean(anchorEl)
