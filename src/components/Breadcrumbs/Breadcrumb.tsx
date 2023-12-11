@@ -92,7 +92,7 @@ export const Breadcrumb = ({ match }) => {
           ? 'widget_type'
           : table === 'widgets_for_fields'
           ? 'widget_for_field_id'
-          : `${table.slice(0, -1)}_id` // TODO: catch taxa/taxon, TODO: build label
+          : `${table.slice(0, -1)}_id` // TODO: build label
         const path = `${match.pathname}/${result[idField]}`
 
         return {
