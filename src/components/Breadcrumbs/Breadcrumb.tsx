@@ -82,7 +82,17 @@ export const Breadcrumb = ({ match }) => {
       //   match,
       // })
       return results?.map((result) => {
-        const idField = `${table.slice(0, -1)}_id` // TODO: catch taxa/taxon, TODO: build label
+        const idField = table.endsWith('taxa')
+          ? `${table.slice(0, -1)}on_id`
+          : table === 'taxonomies'
+          ? 'taxonomy'
+          : table === 'field_types'
+          ? 'field_type'
+          : table === 'widget_types'
+          ? 'widget_type'
+          : table === 'widgets_for_fields'
+          ? 'widget_for_field_id'
+          : `${table.slice(0, -1)}_id` // TODO: catch taxa/taxon, TODO: build label
         const path = `${match.pathname}/${result[idField]}`
 
         return {
