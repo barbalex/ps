@@ -20,7 +20,7 @@ export const Header = () => {
     }
 
     syncItems()
-  }, [])
+  }, [db.users])
 
   return (
     <>
