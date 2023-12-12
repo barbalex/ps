@@ -2,11 +2,11 @@ import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { uuidv7 } from '@kripod/uuidv7'
 import { useParams } from 'react-router-dom'
-import { Form, Button } from 'antd'
+import { Form, Button, Input } from 'antd'
 
 import { Projects as Project } from '../../../generated/client'
 // import { TextField } from '../components/shared/TextFieldMui'
-import { TextField } from '../components/shared/TextFieldAnt'
+// import { TextField } from '../components/shared/TextFieldAnt'
 
 import '../User.css'
 
@@ -37,18 +37,6 @@ export const Component = () => {
 
   const row: Project = results
 
-  const onBlur = useCallback(
-    (event) => {
-      console.log('project, onBlur', { event, target: event.target })
-
-      db.projects.update({
-        where: { project_id },
-        data: { [event.target.name]: event.target.value },
-      })
-    },
-    [db.projects, project_id],
-  )
-
   const onFinish = (values: any) => {
     console.log('onFinish', { values, project_id })
     db.projects.update({
@@ -60,6 +48,11 @@ export const Component = () => {
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo)
   }
+
+  const onBlur = useCallback(() => {
+    console.log('onBlur submitting')
+    document.getElementById('projectForm').submit()
+  }, [])
 
   console.log('project, row:', row)
 
@@ -79,16 +72,18 @@ export const Component = () => {
       </div>
       <div>{`Project with id ${row?.project_id ?? ''}`}</div>
       <Form
-        name="basic"
+        name="projectForm"
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
-        style={{ maxWidth: 600 }}
+        // style={{ maxWidth: 600 }}
         initialValues={row}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
-        <TextField name="name" label="Name" value={row.name} onBlur={onBlur} />
+        <Form.Item label="Name" name="name">
+          <Input value={row.name} onBlur={onBlur} />
+        </Form.Item>
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
           <Button type="primary" htmlType="submit">
             Submit

@@ -45,24 +45,7 @@ export const TextField = ({
   // schrinkLabel = true,
   hideLabel = false,
 }: Props) => {
-  // const [stateValue, setStateValue] = useState<string | number>(
-  //   value || value === 0 ? value : '',
-  // )
-  // useEffect(() => {
-  //   setStateValue(value || value === 0 ? value : '')
-  // }, [value])
-  // const onChange = useCallback((event) => setStateValue(event.target.value), [])
 
-  const onKeyPress = useCallback(
-    (event: React.KeyboardEvent) => {
-      if (event.key === 'Enter') {
-        onBlur(event)
-      }
-    },
-    [onBlur],
-  )
-
-  // console.log('TextField', { label, multiLine })
 
   return (
     <Form.Item label={!hideLabel && label} name={name}>
@@ -70,11 +53,8 @@ export const TextField = ({
         value={value}
         disabled={disabled}
         type={type}
-        // multiline={multiLine}
         status={error ? 'error' : helperText ? 'warning' : undefined}
         help={error}
-        // onChange={onChange}
-        // onBlur={onBlur}
         onKeyPress={onKeyPress}
         placeholder={hintText}
       />
