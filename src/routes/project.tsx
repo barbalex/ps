@@ -37,22 +37,29 @@ export const Component = () => {
 
   const row: Project = results
 
-  const onFinish = (values: any) => {
-    console.log('onFinish', { values, project_id })
-    db.projects.update({
-      where: { project_id },
-      data: values,
-    })
-  }
+  const onFieldsChange = useCallback(
+    (changedFields: any, allFields: any) => {
+      console.log('onFieldsChange', { changedFields, allFields })
+      const changedField = changedFields[0]
+      const name = changedField.name[0]
+      const value = changedField.value
+      db.projects.update({
+        where: { project_id },
+        data: { [name]: value },
+      })
+    },
+    [db.projects, project_id],
+  )
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo)
-  }
-
-  const onBlur = useCallback(() => {
-    console.log('onBlur submitting')
-    document.getElementById('projectForm').submit()
-  }, [])
+  const onValuesChange = useCallback(
+    (changedValues: any) => {
+      db.projects.update({
+        where: { project_id },
+        data: changedValues,
+      })
+    },
+    [db.projects, project_id],
+  )
 
   console.log('project, row:', row)
 
@@ -75,19 +82,13 @@ export const Component = () => {
         name="projectForm"
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
-        // style={{ maxWidth: 600 }}
         initialValues={row}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
+        // onFieldsChange={onFieldsChange}
+        onValuesChange={onValuesChange}
         autoComplete="off"
       >
         <Form.Item label="Name" name="name">
-          <Input value={row.name} onBlur={onBlur} />
-        </Form.Item>
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
+          <Input value={row.name} />
         </Form.Item>
       </Form>
     </div>
