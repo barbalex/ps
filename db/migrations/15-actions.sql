@@ -6,7 +6,7 @@ CREATE TABLE actions(
   -- data jsonb DEFAULT NULL,
   -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
   relevant_for_reports boolean DEFAULT NULL, -- TRUE,
-  files boolean DEFAULT NULL, -- TRUE,
+  files_active boolean DEFAULT NULL, -- TRUE,
   deleted boolean DEFAULT NULL -- FALSE
 );
 
@@ -34,7 +34,7 @@ COMMENT ON COLUMN actions.account_id IS 'redundant account_id enhances data safe
 -- COMMENT ON COLUMN actions.geometry IS 'geometry of action';
 COMMENT ON COLUMN actions.relevant_for_reports IS 'Whether action is relevant for reports. Preset: true';
 
-COMMENT ON COLUMN actions.files IS 'Whether files are used. Preset: true';
+COMMENT ON COLUMN actions.files_active IS 'Whether files are used. Preset: true';
 
 ALTER TABLE actions ENABLE electric;
 

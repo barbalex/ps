@@ -16,7 +16,7 @@ CREATE TABLE place_levels(
   check_values boolean DEFAULT NULL, -- FALSE,
   check_taxons boolean DEFAULT NULL, -- FALSE,
   observation_references boolean DEFAULT NULL, -- FALSE,
-  files boolean DEFAULT NULL, -- TRUE,
+  files_active boolean DEFAULT NULL, -- TRUE,
   deleted boolean DEFAULT NULL -- FALSE
 );
 
@@ -60,7 +60,7 @@ COMMENT ON COLUMN place_levels.check_taxons IS 'Are check taxons used? Preset: f
 
 COMMENT ON COLUMN place_levels.observation_references IS 'Are observation references used? Preset: false';
 
-COMMENT ON COLUMN place_levels.files IS 'Whether files are used. Preset: true';
+COMMENT ON COLUMN place_levels.files_active IS 'Whether files are used. Preset: true';
 
 COMMENT ON TABLE place_levels IS 'Goal: manage place levels. Enable working with one or two levels. Organize what features are used on which level.';
 
