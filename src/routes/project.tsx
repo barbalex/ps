@@ -61,8 +61,6 @@ export const Component = () => {
     [db.projects, project_id],
   )
 
-  console.log('project, row:', row)
-
   if (!row) {
     return <div>Loading...</div>
   }
