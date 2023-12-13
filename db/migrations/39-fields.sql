@@ -3,8 +3,8 @@ CREATE TABLE fields(
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   tble text DEFAULT NULL,
-  type text DEFAULT NULL REFERENCES field_types(field_type) ON DELETE CASCADE ON UPDATE CASCADE,
-  widget text DEFAULT NULL REFERENCES widget_types(widget_type) ON DELETE CASCADE ON UPDATE CASCADE,
+  field_type text DEFAULT NULL REFERENCES field_types(field_type) ON DELETE CASCADE ON UPDATE CASCADE,
+  widget_type text DEFAULT NULL REFERENCES widget_types(widget_type) ON DELETE CASCADE ON UPDATE CASCADE,
   label text DEFAULT NULL,
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE NO action ON UPDATE CASCADE,
   preset text DEFAULT NULL,
@@ -20,9 +20,9 @@ CREATE INDEX ON fields USING btree(account_id);
 
 CREATE INDEX ON fields USING btree(tble);
 
-CREATE INDEX ON fields USING btree(type);
+CREATE INDEX ON fields USING btree(field_type);
 
-CREATE INDEX ON fields USING btree(widget);
+CREATE INDEX ON fields USING btree(widget_type);
 
 CREATE INDEX ON fields USING btree(label);
 
