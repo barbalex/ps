@@ -3,6 +3,7 @@
 -- example usage:
 -- uuid_statement uuid DEFAULT public.uuid_generate_v7() PRIMARY KEY
 -- hopefully this will be in core postgresql in version 17: https://commitfest.postgresql.org/43/4388/
+-- Not running now as electric-sql does not support it
 --
 CREATE OR REPLACE FUNCTION uuid_generate_v7()
   RETURNS uuid
