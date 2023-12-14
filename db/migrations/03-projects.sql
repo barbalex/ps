@@ -9,7 +9,7 @@ CREATE TABLE projects(
   values_on_multiple_levels text DEFAULT NULL,
   multiple_action_values_on_same_level text DEFAULT NULL,
   multiple_check_values_on_same_level text DEFAULT NULL,
-  -- data jsonb DEFAULT NULL, -- not supported by electric-sql yet
+  data jsonb DEFAULT NULL, -- not supported by electric-sql yet
   files_active boolean DEFAULT NULL, -- TRUE,
   deleted boolean DEFAULT NULL -- FALSE
 );
@@ -37,7 +37,8 @@ COMMENT ON COLUMN projects.multiple_action_values_on_same_level IS 'One of: "use
 
 COMMENT ON COLUMN projects.multiple_check_values_on_same_level IS 'One of: "use all", "use last". Preset: "use last"';
 
--- COMMENT ON COLUMN projects.data IS 'Room for project specific data, defined in "fields" table';
+COMMENT ON COLUMN projects.data IS 'Room for project specific data, defined in "fields" table';
+
 COMMENT ON COLUMN projects.files_active IS 'Whether files are used. Preset: true';
 
 COMMENT ON TABLE projects IS 'Goal: manage projects';
