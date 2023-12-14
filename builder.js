@@ -60,14 +60,15 @@ const liveServer = (buildOpts) => {
     }).listen(3001)
 
     setTimeout(() => {
-      const op = {
-        darwin: ['open'],
-        linux: ['xdg-open'],
-        win32: ['cmd', '/c', 'start'],
-      }
-      const ptf = process.platform
+      // prevent opening browser tab on every build
+      // const op = {
+      //   darwin: ['open'],
+      //   linux: ['xdg-open'],
+      //   win32: ['cmd', '/c', 'start'],
+      // }
+      // const ptf = process.platform
       const url = 'http://localhost:3001'
-      if (clients.length === 0) spawn(op[ptf][0], [...[op[ptf].slice(1)], url])
+      // if (clients.length === 0) spawn(op[ptf][0], [...[op[ptf].slice(1)], url])
       console.info(`Your app is running at ${url}`)
     }, 500) // open the default browser only if it is not opened yet
   })
