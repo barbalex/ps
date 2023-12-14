@@ -5,11 +5,11 @@ CREATE TABLE observations(
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   id_in_source text DEFAULT NULL,
   url text DEFAULT NULL,
-  -- observation_data jsonb DEFAULT NULL,
+  observation_data jsonb DEFAULT NULL,
   date date DEFAULT NULL,
   author text DEFAULT NULL,
   -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
-  -- data jsonb DEFAULT NULL,
+  data jsonb DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
 );
 
@@ -41,12 +41,14 @@ COMMENT ON COLUMN observations.id_in_source IS 'ID of observation as used in the
 
 COMMENT ON COLUMN observations.url IS 'URL of observation, like "https://www.gbif.org/occurrence/1234567890"';
 
--- COMMENT ON COLUMN observations.observation_data IS 'data as received from observation source';
+COMMENT ON COLUMN observations.observation_data IS 'data as received from observation source';
+
 COMMENT ON COLUMN observations.date IS 'date of observation. Extracted from observation_data to list the observation';
 
 COMMENT ON COLUMN observations.author IS 'author of observation. Extracted from observation_data to list the observation';
 
 -- COMMENT ON COLUMN observations.geometry IS 'geometry of observation. Extracted from observation_data to show the observation on a map';
--- COMMENT ON COLUMN observations.data IS 'Room for observation specific data, defined in "fields" table';
+COMMENT ON COLUMN observations.data IS 'Room for observation specific data, defined in "fields" table';
+
 ALTER TABLE observations ENABLE electric;
 

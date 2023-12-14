@@ -3,7 +3,7 @@ CREATE TABLE checks(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   date date DEFAULT NULL, -- CURRENT_DATE,
-  -- data jsonb DEFAULT NULL,
+  data jsonb DEFAULT NULL,
   -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
   relevant_for_reports boolean DEFAULT NULL, -- TRUE,
   files_active boolean DEFAULT NULL, -- TRUE,
@@ -18,7 +18,7 @@ CREATE INDEX ON checks USING btree(place_id);
 
 CREATE INDEX ON checks USING btree(date);
 
--- CREATE INDEX ON checks USING gin(data);
+-- CREATE INDEX ON checks USING gin(data); -- seems not to work with electric-sql
 -- CREATE INDEX ON checks USING gist(geometry);
 -- CREATE INDEX ON checks((1))
 -- WHERE
@@ -30,7 +30,8 @@ COMMENT ON TABLE checks IS 'Checks describe the situation of the subproject in t
 
 COMMENT ON COLUMN checks.account_id IS 'redundant account_id enhances data safety';
 
--- COMMENT ON COLUMN checks.data IS 'Room for check specific data, defined in "fields" table';
+COMMENT ON COLUMN checks.data IS 'Room for check specific data, defined in "fields" table';
+
 COMMENT ON COLUMN checks.files_active IS 'Whether files are used. Preset: true';
 
 ALTER TABLE checks ENABLE electric;
