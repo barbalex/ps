@@ -3,7 +3,7 @@ CREATE TABLE lists(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
-  --data jsonb DEFAULT NULL,
+  data jsonb DEFAULT NULL,
   obsolete boolean DEFAULT NULL, -- FALSE,
   deleted boolean DEFAULT NULL -- FALSE
 );
@@ -24,7 +24,8 @@ CREATE INDEX ON lists USING btree(name);
 --   deleted;
 COMMENT ON TABLE lists IS 'Manage lists of values. These lists can then be used on option-lists or dropdown-lists';
 
---COMMENT ON COLUMN lists.account_id IS 'redundant account_id enhances data safety';
+COMMENT ON COLUMN lists.account_id IS 'redundant account_id enhances data safety';
+
 COMMENT ON COLUMN lists.name IS 'Name of list, like "Gefährdung"';
 
 COMMENT ON COLUMN lists.obsolete IS 'Is list obsolete? If so, show set values but dont let user pick one. Preset: false';
