@@ -32,7 +32,7 @@ export const Component = () => {
   const checks: Check[] = results ?? []
 
   return (
-    <div>
+    <div className="form-container">
       <div className="controls">
         <button className="button" onClick={add}>
           Add

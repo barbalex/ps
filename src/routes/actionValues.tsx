@@ -33,7 +33,7 @@ export const Component = () => {
   const actionValues: ActionValue[] = results ?? []
 
   return (
-    <div>
+    <div className="form-container">
       <div className="controls">
         <button className="button" onClick={add}>
           Add
