@@ -37,21 +37,8 @@ export const Component = () => {
 
   const row: Project = results
 
-  const onFieldsChange = useCallback(
-    (changedFields: any, allFields: any) => {
-      console.log('onFieldsChange', { changedFields, allFields })
-      const changedField = changedFields[0]
-      const name = changedField.name[0]
-      const value = changedField.value
-      db.projects.update({
-        where: { project_id },
-        data: { [name]: value },
-      })
-    },
-    [db.projects, project_id],
-  )
-
   const onValuesChange = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (changedValues: any) => {
       db.projects.update({
         where: { project_id },
@@ -81,7 +68,6 @@ export const Component = () => {
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
         initialValues={row}
-        // onFieldsChange={onFieldsChange}
         onValuesChange={onValuesChange}
         autoComplete="off"
       >
