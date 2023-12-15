@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { uuidv7 } from '@kripod/uuidv7'
 import { useParams } from 'react-router-dom'
-import { Form, Button, Input } from 'antd'
+import { Form, Input } from 'antd'
 
 import { Projects as Project } from '../../../generated/client'
 // import { TextField } from '../components/shared/TextFieldMui'
