@@ -32,7 +32,7 @@ export const Component = () => {
   const listValue: ListValue = results
 
   return (
-    <div>
+    <div className="form-container">
       <div className="controls">
         <button className="button" onClick={addItem}>
           Add
