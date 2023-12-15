@@ -30,7 +30,7 @@ export const Component = () => {
   const unit: Unit = results
 
   return (
-    <div>
+    <div className="form-container">
       <div className="controls">
         <button className="button" onClick={addItem}>
           Add
