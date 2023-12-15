@@ -25,11 +25,12 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 10px;
   flex-grow: 1;
 }
 
-
+.form-container {
+  padding: 10px;
+}
 
 .navs {
   background-color: rgba(103, 216, 101, 0.052);

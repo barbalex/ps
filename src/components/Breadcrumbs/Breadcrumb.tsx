@@ -7,7 +7,7 @@ import MenuItem from '@mui/material/MenuItem'
 import { useLiveQuery } from 'electric-sql/react'
 
 import './breadcrumb.css'
-import { navs } from '../../router'
+import { navs } from '../../navs'
 import { useElectric } from '../../ElectricProvider'
 
 export const Breadcrumb = ({ match }) => {
