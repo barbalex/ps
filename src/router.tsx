@@ -271,7 +271,7 @@ export const router = createBrowserRouter([
                                     path: 'actions',
                                     element: null,
                                     handle: {
-                                      crumb: (match) => ({
+                                      crumb: () => ({
                                         text: 'Actions',
                                         table: 'actions',
                                         folder: true,
