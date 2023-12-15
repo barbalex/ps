@@ -5,7 +5,7 @@ export function ErrorPage() {
   console.error(error)
 
   return (
-    <div id="error-page">
+    <div id="error-page" className="form-container">
       <h1>Oops!</h1>
       <p>Sorry, an unexpected error has occurred.</p>
       <p>
