@@ -53,7 +53,7 @@ export const Component = () => {
   }
 
   return (
-    <div>
+    <div className="form-container">
       <div className="controls">
         <button className="button" onClick={addRow}>
           Add
