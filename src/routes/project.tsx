@@ -62,7 +62,6 @@ export const Component = () => {
           Delete
         </button>
       </div>
-      <div>{`Project with id ${row?.project_id ?? ''}`}</div>
       <Form
         name="projectForm"
         labelCol={{ span: 8 }}
@@ -71,6 +70,9 @@ export const Component = () => {
         onValuesChange={onValuesChange}
         autoComplete="off"
       >
+        <Form.Item label="ID" name="project_id">
+          <span>{row.project_id}</span>
+        </Form.Item>
         <Form.Item label="Name" name="name">
           <Input value={row.name} />
         </Form.Item>
