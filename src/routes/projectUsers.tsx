@@ -28,7 +28,7 @@ export const Component = () => {
   const projectUsers: ProjectUser[] = results ?? []
 
   return (
-    <div>
+    <div className="form-container">
       <div className="controls">
         <button className="button" onClick={add}>
           Add
