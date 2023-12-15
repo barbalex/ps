@@ -28,7 +28,7 @@ export const Component = () => {
   const user: User = results
 
   return (
-    <div>
+    <div className="form-container">
       <div className="controls">
         <button className="button" onClick={addItem}>
           Add

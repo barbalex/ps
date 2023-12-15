@@ -27,7 +27,7 @@ export const Component = () => {
   const widgetsForFields: WidgetForField[] = results ?? []
 
   return (
-    <div>
+    <div className="form-container">
       <div className="controls">
         <button className="button" onClick={add}>
           Add

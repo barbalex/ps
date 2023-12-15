@@ -30,7 +30,7 @@ export const Component = () => {
   const widgetForField: WidgetsForField = results
 
   return (
-    <div>
+    <div className="form-container">
       <div className="controls">
         <button className="button" onClick={addItem}>
           Add
