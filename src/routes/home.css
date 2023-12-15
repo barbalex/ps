@@ -61,20 +61,21 @@
   font-weight: 700;
   color: black !important;
   text-shadow: 0 0 1px white;
-  ul {
-    margin-bottom: 0;
-  }
-  li:last-of-type {
-    margin-bottom: 0;
-  }
-  li {
-    font-weight: 500;
-  }
+  transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  border-radius: 4px;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 1px -1px,
+    rgba(0, 0, 0, 0.14) 0px 1px 1px 0px, rgba(0, 0, 0, 0.12) 0px 1px 3px 0px;
+}
+
+.card-title {
+  font-weight: 700;
+  margin-top: 4px;
 }
 
 .page-title {
   text-align: center;
   font-size: 2em !important;
+  margin: 0;
   padding-top: 15px;
   padding-bottom: 0;
   font-weight: 700 !important;
@@ -92,9 +93,4 @@
     padding-top: 30px;
     padding-bottom: 15px;
   }
-}
-
-.card-title {
-  font-weight: 700;
-  margin-top: 4px;
 }
