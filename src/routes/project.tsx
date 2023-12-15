@@ -64,8 +64,9 @@ export const Component = () => {
       </div>
       <Form
         name="projectForm"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
+        labelCol={{ span: 5 }}
+        wrapperCol={{ span: 19 }}
+        layout="horizontal"
         initialValues={row}
         onValuesChange={onValuesChange}
         autoComplete="off"
