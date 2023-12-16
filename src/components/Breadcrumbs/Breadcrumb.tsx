@@ -126,8 +126,13 @@ export const Breadcrumb = ({ match }) => {
           </IconButton>
         )}
       </div>
-      {myNavs?.length > 0 && (
-        <MenuComponent anchorEl={anchorEl} openMenu={openMenu} closeMenu={closeMenu} navs={myNavs} />
+      {myNavs?.length > 0 && openMenu && (
+        <MenuComponent
+          anchorEl={anchorEl}
+          closeMenu={closeMenu}
+          navs={myNavs}
+          setAnchorEl={setAnchorEl}
+        />
       )}
     </>
   )
