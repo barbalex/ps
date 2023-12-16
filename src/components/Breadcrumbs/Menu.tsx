@@ -7,10 +7,10 @@ export const MenuComponent = ({ anchorEl, setAnchorEl, closeMenu, navs }) => {
   const navigate = useNavigate()
   const [selectedKeys, setSelectedKeys] = useState([])
 
-  const onClick: MenuProps['onClick'] = (e) => {
-    console.log('click ', e)
-    setSelectedKeys([e.key])
-    navigate(e.path)
+  const onClick: MenuProps['onClick'] = ({ item, key, keyPath, domEvent }) => {
+    console.log('click ', { item, key, keyPath, domEvent })
+    setSelectedKeys([key])
+    navigate(item.path)
     setAnchorEl(null)
   }
 
