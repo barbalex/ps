@@ -1,15 +1,14 @@
-.img {
-  display: block;
-  height: 100%;
-  width: 100%;
-  object-fit: cover;
-}
-
 .outer-container {
-  height: 100%;
-  width: 100%;
+  flex-grow: 1;
+  display: flex;
   position: relative;
   overflow: hidden;
+}
+
+img {
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
 }
 
 .scroll-container {
