@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.2.6",
+    "@fluentui/react": "^8.113.1",
     "@fontsource/roboto": "5.0.8",
     "@kripod/uuidv7": "0.3.4",
     "@preact/signals": "1.2.2",

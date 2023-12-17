@@ -1,6 +1,5 @@
 body {
   margin: 0;
-  font-family: Roboto, 'Helvetica Neue', Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   display: flex;
   flex-direction: column;

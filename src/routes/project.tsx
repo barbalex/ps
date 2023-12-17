@@ -4,6 +4,7 @@ import { uuidv7 } from '@kripod/uuidv7'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Form, Input, Radio, Switch, Button } from 'antd'
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons'
+import { TextField } from '@fluentui/react'
 
 import { Projects as Project } from '../../../generated/client'
 
@@ -90,6 +91,17 @@ export const Component = () => {
     [form],
   )
 
+  const onChangeFluent = useCallback(
+    (e) => {
+      console.log('onChangeFluent', { [e.target.name]: e.target.value })
+      db.projects.update({
+        where: { project_id },
+        data: { [e.target.name]: e.target.value },
+      })
+    },
+    [db.projects, project_id],
+  )
+
   if (!row) {
     return <div>Loading...</div>
   }
@@ -112,7 +124,12 @@ export const Component = () => {
           title="Delete project"
         />
       </div>
-
+      <TextField
+        label="Name from fluent ui"
+        name="name"
+        value={row.name ?? ''}
+        onChange={onChangeFluent}
+      />
       <Form
         // key needed to force the form to update when the route changes
         key={JSON.stringify(row)}
