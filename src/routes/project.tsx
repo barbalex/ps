@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { uuidv7 } from '@kripod/uuidv7'
 import { useParams } from 'react-router-dom'
-import { Form, Input, Radio } from 'antd'
+import { Form, Input, Radio, Switch } from 'antd'
 
 import { Projects as Project } from '../../../generated/client'
 
@@ -14,7 +14,8 @@ export const Component = () => {
   const { db } = useElectric()
   const { project_id } = useParams()
   const { results } = useLiveQuery(
-    db.projects.liveUnique({ where: { project_id } }),
+    () => db.projects.liveUnique({ where: { project_id } }),
+    [project_id],
   )
 
   const addRow = async () => {
@@ -27,6 +28,7 @@ export const Component = () => {
         values_on_multiple_levels: 'first',
         multiple_action_values_on_same_level: 'all',
         multiple_check_values_on_same_level: 'last',
+        files_active: true,
       },
     })
   }
@@ -40,6 +42,8 @@ export const Component = () => {
   }
 
   const row: Project = results
+
+  console.log('project, row:', { project_id, row })
 
   const onValuesChange = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -66,8 +70,11 @@ export const Component = () => {
           Delete
         </button>
       </div>
+
       <Form
-        name="projectForm"
+        // key needed to force the form to update when the route changes
+        key={JSON.stringify(row)}
+        name={`project-${project_id}`}
         colon={false}
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
@@ -136,6 +143,13 @@ export const Component = () => {
             <Radio.Button value="last">last</Radio.Button>
             <Radio.Button value="all">all</Radio.Button>
           </Radio.Group>
+        </Form.Item>
+        <Form.Item
+          name="files_active"
+          label="activate files"
+          valuePropName="checked"
+        >
+          <Switch />
         </Form.Item>
       </Form>
     </div>

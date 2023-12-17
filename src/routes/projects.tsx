@@ -20,6 +20,7 @@ export const Component = () => {
         values_on_multiple_levels: 'first',
         multiple_action_values_on_same_level: 'all',
         multiple_check_values_on_same_level: 'last',
+        files_active: true,
       },
     })
   }
