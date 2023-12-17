@@ -13,12 +13,10 @@ export const Breadcrumbs = () => {
   const filteredMatches = matches.filter((match) => match.handle?.crumb)
 
   return (
-    <>
-      <nav className="breadcrumbs">
-        {filteredMatches.map((match, index) => (
-          <Breadcrumb key={index} match={match} />
-        ))}
-      </nav>
-    </>
+    <nav className="breadcrumbs">
+      {filteredMatches.map((match, index) => (
+        <Breadcrumb key={index} match={match} />
+      ))}
+    </nav>
   )
 }
