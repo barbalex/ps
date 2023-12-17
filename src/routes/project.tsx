@@ -1,8 +1,9 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { uuidv7 } from '@kripod/uuidv7'
-import { useParams } from 'react-router-dom'
-import { Form, Input, Radio, Switch } from 'antd'
+import { useParams, useNavigate } from 'react-router-dom'
+import { Form, Input, Radio, Switch, Button } from 'antd'
+import { PlusOutlined, MinusOutlined } from '@ant-design/icons'
 
 import { Projects as Project } from '../../../generated/client'
 
@@ -11,17 +12,19 @@ import '../User.css'
 import { useElectric } from '../ElectricProvider'
 
 export const Component = () => {
-  const { db } = useElectric()
   const { project_id } = useParams()
+  const navigate = useNavigate()
+  const { db } = useElectric()
   const { results } = useLiveQuery(
     () => db.projects.liveUnique({ where: { project_id } }),
     [project_id],
   )
 
   const addRow = async () => {
+    const project_id = uuidv7()
     await db.projects.create({
       data: {
-        project_id: uuidv7(),
+        project_id,
         type: 'species',
         subproject_name_singular: 'Art',
         subproject_name_plural: 'Arten',
@@ -31,6 +34,7 @@ export const Component = () => {
         files_active: true,
       },
     })
+    navigate(`/projects/${project_id}`)
   }
 
   const deleteRow = async () => {
@@ -43,17 +47,47 @@ export const Component = () => {
 
   const row: Project = results
 
-  console.log('project, row:', { project_id, row })
+  const [form] = Form.useForm()
 
   const onValuesChange = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (changedValues: any) => {
+      console.log('changedValues', changedValues)
       db.projects.update({
         where: { project_id },
         data: changedValues,
       })
     },
     [db.projects, project_id],
+  )
+
+  const onFieldsChange = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (changedFields: any) => {
+      console.log('changedFields', changedFields)
+    },
+    [],
+  )
+
+  const onFinish = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (values: any) => {
+      console.log('Finish:', values)
+      db.projects.update({
+        where: { project_id },
+        data: values,
+      })
+    },
+    [db.projects, project_id],
+  )
+
+  const onBlur = useCallback(
+    (e) => {
+      console.log('onBlur', e)
+      form.submit()
+      e.preventDefault()
+    },
+    [form],
   )
 
   if (!row) {
@@ -63,18 +97,27 @@ export const Component = () => {
   return (
     <div className="form-container">
       <div className="controls">
-        <button className="button" onClick={addRow}>
-          Add
-        </button>
-        <button className="button" onClick={deleteRow}>
-          Delete
-        </button>
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          size="large"
+          onClick={addRow}
+          title="Add new project"
+        />
+        <Button
+          type="primary"
+          icon={<MinusOutlined />}
+          size="large"
+          onClick={deleteRow}
+          title="Delete project"
+        />
       </div>
 
       <Form
         // key needed to force the form to update when the route changes
         key={JSON.stringify(row)}
         name={`project-${project_id}`}
+        form={form}
         colon={false}
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
@@ -82,6 +125,8 @@ export const Component = () => {
         layout="horizontal"
         initialValues={row}
         onValuesChange={onValuesChange}
+        onFieldsChange={onFieldsChange}
+        onFinish={onFinish}
         autoComplete="off"
       >
         <Form.Item label="ID" name="project_id">
@@ -112,7 +157,7 @@ export const Component = () => {
           label="Order subproject by (field name)"
           name="subproject_order_by"
         >
-          <Input value={row.subproject_order_by} />
+          <Input value={row.subproject_order_by} onBlur={onBlur} />
         </Form.Item>
         <Form.Item
           label="Value(s) to use when Values exist on multiple place levels"

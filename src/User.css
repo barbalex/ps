@@ -1,4 +1,7 @@
 .controls {
+  display: flex;
+  justify-content: center;
+  column-gap: 10px;
   margin-bottom: 1.5rem;
 }
 
@@ -38,4 +41,10 @@
   color: black;
   font-size: 13px;
   padding: 10px 18px;
+}
+
+.ant-btn-icon svg {
+  font-size: var(--ant-button-only-icon-size-lg);
+  width: var(--ant-button-only-icon-size-lg);
+  height: var(--ant-button-only-icon-size-lg);
 }
