@@ -14,6 +14,12 @@ export const Component = () => {
     await db.projects.create({
       data: {
         project_id: uuidv7(),
+        type: 'species',
+        subproject_name_singular: 'Art',
+        subproject_name_plural: 'Arten',
+        values_on_multiple_levels: 'first',
+        multiple_action_values_on_same_level: 'all',
+        multiple_check_values_on_same_level: 'last',
       },
     })
   }

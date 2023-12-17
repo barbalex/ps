@@ -2,11 +2,9 @@ import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { uuidv7 } from '@kripod/uuidv7'
 import { useParams } from 'react-router-dom'
-import { Form, Input } from 'antd'
+import { Form, Input, Radio } from 'antd'
 
 import { Projects as Project } from '../../../generated/client'
-// import { TextField } from '../components/shared/TextFieldMui'
-// import { TextField } from '../components/shared/TextFieldAnt'
 
 import '../User.css'
 
@@ -23,6 +21,12 @@ export const Component = () => {
     await db.projects.create({
       data: {
         project_id: uuidv7(),
+        type: 'species',
+        subproject_name_singular: 'Art',
+        subproject_name_plural: 'Arten',
+        values_on_multiple_levels: 'first',
+        multiple_action_values_on_same_level: 'all',
+        multiple_check_values_on_same_level: 'last',
       },
     })
   }
@@ -64,8 +68,10 @@ export const Component = () => {
       </div>
       <Form
         name="projectForm"
-        labelCol={{ span: 5 }}
-        wrapperCol={{ span: 19 }}
+        colon={false}
+        labelCol={{ span: 8 }}
+        wrapperCol={{ span: 16 }}
+        labelWrap={true}
         layout="horizontal"
         initialValues={row}
         onValuesChange={onValuesChange}
@@ -76,6 +82,60 @@ export const Component = () => {
         </Form.Item>
         <Form.Item label="Name" name="name">
           <Input value={row.name} />
+        </Form.Item>
+        <Form.Item label="Type" name="type">
+          <Radio.Group value="horizontal">
+            <Radio.Button value="species">Species</Radio.Button>
+            <Radio.Button value="biotope">Biotope</Radio.Button>
+          </Radio.Group>
+        </Form.Item>
+        <Form.Item
+          label="Name of subproject (singular)"
+          name="subproject_name_singular"
+        >
+          <Input value={row.subproject_name_singular} />
+        </Form.Item>
+        <Form.Item
+          label="Name of subproject (plural)"
+          name="subproject_name_plural"
+        >
+          <Input value={row.subproject_name_plural} />
+        </Form.Item>
+        <Form.Item
+          label="Order subproject by (field name)"
+          name="subproject_order_by"
+        >
+          <Input value={row.subproject_order_by} />
+        </Form.Item>
+        <Form.Item
+          label="Value(s) to use when Values exist on multiple place levels"
+          name="values_on_multiple_levels"
+        >
+          <Radio.Group value="horizontal">
+            <Radio.Button value="first">first level</Radio.Button>
+            <Radio.Button value="second">second level</Radio.Button>
+            <Radio.Button value="all">all levels</Radio.Button>
+          </Radio.Group>
+        </Form.Item>
+        <Form.Item
+          label="Value(s) to use when multiple action Values exist on the same place level"
+          name="multiple_action_values_on_same_level"
+        >
+          <Radio.Group value="horizontal">
+            <Radio.Button value="first">first</Radio.Button>
+            <Radio.Button value="last">last</Radio.Button>
+            <Radio.Button value="all">all</Radio.Button>
+          </Radio.Group>
+        </Form.Item>
+        <Form.Item
+          label="Value(s) to use when multiple check Values exist on the same place level"
+          name="multiple_check_values_on_same_level"
+        >
+          <Radio.Group value="horizontal">
+            <Radio.Button value="first">first</Radio.Button>
+            <Radio.Button value="last">last</Radio.Button>
+            <Radio.Button value="all">all</Radio.Button>
+          </Radio.Group>
         </Form.Item>
       </Form>
     </div>
