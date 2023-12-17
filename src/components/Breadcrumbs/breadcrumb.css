@@ -75,7 +75,6 @@
   top: 4px;
 }
 
-.breadcrumbs__crumb svg {
+.breadcrumbs__crumb > ul > li > div > span > svg {
   font-size: large;
-  z-index: 3;
 }
