@@ -2,12 +2,11 @@ import { useCallback, useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { BsCaretDown } from 'react-icons/bs'
 import IconButton from '@mui/material/IconButton'
-import Menu from '@mui/material/Menu'
-import MenuItem from '@mui/material/MenuItem'
 import { useLiveQuery } from 'electric-sql/react'
 
 import './breadcrumb.css'
 import { navs } from '../../navs'
+import { MenuComponent } from './Menu'
 import { useElectric } from '../../ElectricProvider'
 
 export const Breadcrumb = ({ match }) => {
@@ -127,28 +126,13 @@ export const Breadcrumb = ({ match }) => {
           </IconButton>
         )}
       </div>
-      {myNavs?.length > 0 && (
-        <Menu
-          id="breadcrumb-menu"
+      {myNavs?.length > 0 && openMenu && (
+        <MenuComponent
           anchorEl={anchorEl}
-          open={openMenu}
-          onClose={closeMenu}
-          MenuListProps={{
-            'aria-labelledby': 'basic-button',
-          }}
-        >
-          {myNavs.map(({ path, text }, index) => (
-            <MenuItem
-              key={index}
-              onClick={() => {
-                navigate(path)
-                setAnchorEl(null)
-              }}
-            >
-              {text}
-            </MenuItem>
-          ))}
-        </Menu>
+          closeMenu={closeMenu}
+          navs={myNavs}
+          setAnchorEl={setAnchorEl}
+        />
       )}
     </>
   )
