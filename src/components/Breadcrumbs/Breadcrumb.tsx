@@ -1,7 +1,5 @@
-import { useCallback, useState, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { BsCaretDown } from 'react-icons/bs'
-import IconButton from '@mui/material/IconButton'
 import { useLiveQuery } from 'electric-sql/react'
 
 import './breadcrumb.css'
@@ -77,7 +75,6 @@ export const Breadcrumb = ({ match }) => {
       // console.log('Breadcrumb, should set myNavs with results', {
       //   table,
       //   results,
-      //   error,
       //   match,
       // })
       return results?.map((result) => {
@@ -101,18 +98,6 @@ export const Breadcrumb = ({ match }) => {
       })
     }
   }, [folder, match, results, table])
-
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const openMenu = Boolean(anchorEl)
-  const closeMenu = useCallback(() => setAnchorEl(null), [])
-
-  // New Idea: active (last) crumb should _not_ be a link
-  // Pass Objects with { text, link } to crumb
-  // Add arrows between crumbs
-  const onClick = useCallback((e) => {
-    e.stopPropagation()
-    setAnchorEl(e.currentTarget)
-  }, [])
 
   // console.log('Breadcrumb, myNavs', myNavs)
 
