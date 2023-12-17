@@ -21,11 +21,11 @@ export const Breadcrumb = ({ match }) => {
   // create two different breadcrumb components
   // one that queries data and one that only uses navs
   const { db } = useElectric()
-  const queryTable = table === 'home' ? 'projects' : table
+  const queryTable = table === 'home' || table === 'docs' ? 'projects' : table
   const { results } = useLiveQuery(db[queryTable]?.liveMany())
 
   const myNavs = useMemo(() => {
-    if (table === 'home' || folder === false) {
+    if (table === 'home' || table === 'docs' || folder === false) {
       // TODO:
       switch (table) {
         case 'home':
@@ -67,16 +67,19 @@ export const Breadcrumb = ({ match }) => {
         case 'observation_sources':
           return navs({ path: 'observation_source_id', match })
           break
+        case 'docs':
+          return []
+          break
         default:
           return []
           break
       }
     } else {
-      // console.log('Breadcrumb, should set myNavs with results', {
-      //   table,
-      //   results,
-      //   match,
-      // })
+      console.log('Breadcrumb, should set navs with results', {
+        table,
+        results,
+        match,
+      })
       return results?.map((result) => {
         const idField = table.endsWith('taxa')
           ? `${table.slice(0, -1)}on_id`
