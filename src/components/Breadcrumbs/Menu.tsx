@@ -2,8 +2,9 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { MenuProps } from 'antd'
 import { Menu } from 'antd'
+import { BsCaretDown } from 'react-icons/bs'
 
-export const MenuComponent = ({ anchorEl, setAnchorEl, closeMenu, navs }) => {
+export const MenuComponent = ({ navs }) => {
   const navigate = useNavigate()
   const [selectedKeys, setSelectedKeys] = useState([])
 
@@ -11,20 +12,27 @@ export const MenuComponent = ({ anchorEl, setAnchorEl, closeMenu, navs }) => {
     console.log('click ', { item, key, keyPath, domEvent })
     setSelectedKeys([key])
     navigate(item.path)
-    setAnchorEl(null)
   }
 
-  const items: MenuProps['items'] = navs.map(({ path, text }, index) => ({
+  const subItems: MenuProps['items'] = navs.map(({ path, text }, index) => ({
     label: text,
     path,
     key: index,
   }))
 
+  const items = [
+    {
+      label: <BsCaretDown />,
+      key: 'menu',
+      children: subItems,
+    },
+  ]
+
   return (
     <Menu
       onClick={onClick}
       selectedKeys={selectedKeys}
-      mode="vertical"
+      mode="horizontal"
       items={items}
     />
   )

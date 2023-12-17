@@ -43,17 +43,6 @@
   width: 2em;
   z-index: 1;
 }
-/* .breadcrumbs__crumb2::after {
-  background: white;
-  bottom: 0;
-  content: url(../images/caret-down.svg);
-  left: 100%;
-  position: absolute;
-  top: 15px;
-  transition: background 0.2s linear;
-  width: 2em;
-  z-index: 2;
-} */
 
 .breadcrumbs__crumb::before {
   background: #cbd2d9;
@@ -69,10 +58,24 @@
   background: #edf1f5;
 }
 
-.breadcrumbs__crumb .icon {
+.breadcrumbs__crumb > ul {
+  --ant-menu-item-bg: transparent !important;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+}
+
+.breadcrumbs__crumb > ul > li {
+  padding-inline-start: 10px !important;
+  padding-inline-end: 5px !important;
+}
+
+.breadcrumbs__crumb > ul > li > div > span {
   position: relative;
+  top: 4px;
+}
+
+.breadcrumbs__crumb svg {
   font-size: large;
-  right: -0.6em;
-  margin-left: -10px;
   z-index: 3;
 }

@@ -120,20 +120,8 @@ export const Breadcrumb = ({ match }) => {
     <>
       <div className={className} onClick={() => navigate(match.pathname)}>
         <div className="text">{text}</div>
-        {myNavs?.length > 0 && (
-          <IconButton onClick={onClick} className="icon">
-            <BsCaretDown />
-          </IconButton>
-        )}
+        {myNavs?.length > 0 && <MenuComponent navs={myNavs} />}
       </div>
-      {myNavs?.length > 0 && openMenu && (
-        <MenuComponent
-          anchorEl={anchorEl}
-          closeMenu={closeMenu}
-          navs={myNavs}
-          setAnchorEl={setAnchorEl}
-        />
-      )}
     </>
   )
 }
