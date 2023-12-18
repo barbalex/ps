@@ -22,6 +22,7 @@
     "node": ">=16.11.0"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.2.6",
     "@fluentui/react-components": "^9.43.0",
     "@fluentui/react-icons": "^2.0.224",
     "@fontsource/roboto": "5.0.8",
@@ -29,6 +30,7 @@
     "@preact/signals": "1.2.2",
     "@typescript-eslint/eslint-plugin": "6.14.0",
     "@typescript-eslint/parser": "6.14.0",
+    "antd": "5.12.2",
     "electric-sql": "0.8.2",
     "eslint": "8.55.0",
     "eslint-plugin-import": "2.29.0",
