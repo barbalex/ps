@@ -12,6 +12,12 @@ body {
   overflow: hidden;
 }
 
+.fui-FluentProvider {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
 .header {
   background-color: rgba(103, 216, 101, 0.222);
   padding: 0 10px;
