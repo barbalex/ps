@@ -1,11 +1,33 @@
 import { createLightTheme, createDarkTheme } from '@fluentui/react-components'
-import { brandRampHex } from './brandRamps'
 
-export const customLightTheme = {
-  ...createLightTheme(brandRampHex),
+const brandRamp: BrandVariants = {
+  10: '#020400',
+  20: '#111C07',
+  30: '#172F0C',
+  40: '#1A3D0C',
+  50: '#1D4B0A',
+  60: '#205A06',
+  70: '#216900',
+  80: '#37761C',
+  90: '#4C8333',
+  100: '#609049',
+  110: '#739E5E',
+  120: '#86AB73',
+  130: '#9AB889',
+  140: '#ADC69F',
+  150: '#C0D3B5',
+  160: '#D4E1CC',
+}
+
+export const lightTheme: Theme = {
+  ...createLightTheme(brandRamp),
   fontFamilyBase: 'Roboto, Helvetica Neue, Helvetica, sans-serif',
 }
-export const customDarkTheme = {
-  ...createDarkTheme(brandRampHex),
+
+export const darkTheme: Theme = {
+  ...createDarkTheme(brandRamp),
   fontFamilyBase: 'Roboto, Helvetica Neue, Helvetica, sans-serif',
 }
+
+darkTheme.colorBrandForeground1 = brandRamp[110]
+darkTheme.colorBrandForeground2 = brandRamp[120]

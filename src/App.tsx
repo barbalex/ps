@@ -6,7 +6,7 @@ import { FluentProvider } from '@fluentui/react-components'
 
 import './style.css'
 import { ElectricWrapper as ElectricProvider } from './ElectricProvider'
-import { customLightTheme } from './modules/theme'
+import { lightTheme } from './modules/theme'
 import { router } from './router'
 
 import '@fontsource/roboto/300.css'
@@ -20,7 +20,7 @@ export default function App() {
   return (
     <ElectricProvider>
       <ConfigProvider locale={deDe} theme={{ cssVar: true }}>
-        <FluentProvider theme={customLightTheme}>
+        <FluentProvider theme={lightTheme}>
           <RouterProvider
             router={router}
             future={{ v7_startTransition: true }}
