@@ -4,6 +4,8 @@ import { uuidv7 } from '@kripod/uuidv7'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Form, Input, Radio, Switch, Button } from 'antd'
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons'
+import { makeStyles, Button, Tooltip } from '@fluentui/react-components'
+import { CalendarMonthRegular } from '@fluentui/react-icons'
 
 import { Projects as Project } from '../../../generated/client'
 
@@ -44,6 +46,7 @@ export const Component = () => {
         project_id,
       },
     })
+    navigate(`/projects`)
   }
 
   const row: Project = results
@@ -110,16 +113,14 @@ export const Component = () => {
     <div className="form-container">
       <div className="controls">
         <Button
-          type="primary"
-          icon={<PlusOutlined />}
           size="large"
+          icon={<PlusOutlined />}
           onClick={addRow}
           title="Add new project"
         />
         <Button
-          type="primary"
-          icon={<MinusOutlined />}
           size="large"
+          icon={<MinusOutlined />}
           onClick={deleteRow}
           title="Delete project"
         />
