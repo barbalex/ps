@@ -57,55 +57,12 @@ export const Component = () => {
 
   const row: Project = results
 
-  const [form] = Form.useForm()
-
-  const onValuesChange = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (changedValues: any) => {
-      console.log('changedValues', changedValues)
-      db.projects.update({
-        where: { project_id },
-        data: changedValues,
-      })
-    },
-    [db.projects, project_id],
-  )
-
-  const onFieldsChange = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (changedFields: any) => {
-      console.log('changedFields', changedFields)
-    },
-    [],
-  )
-
-  const onFinish = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (values: any) => {
-      console.log('Finish:', values)
-      db.projects.update({
-        where: { project_id },
-        data: values,
-      })
-    },
-    [db.projects, project_id],
-  )
-
-  const onBlur = useCallback(
-    (e) => {
-      console.log('onBlur', e)
-      form.submit()
-      e.preventDefault()
-    },
-    [form],
-  )
-
   const onChangeFluent = useCallback(
-    (e) => {
-      console.log('onChangeFluent', { [e.target.name]: e.target.value })
+    (e, data) => {
+      // console.log('onChangeFluent', { [e.target.name]: e.target.value, data })
       db.projects.update({
         where: { project_id },
-        data: { [e.target.name]: e.target.value },
+        data: { [e.target.name]: data.value },
       })
     },
     [db.projects, project_id],
@@ -161,49 +118,38 @@ export const Component = () => {
         value={row.subproject_name_plural ?? ''}
         onChange={onChangeFluent}
       />
-      <Form
-        // key needed to force the form to update when the route changes
-        key={JSON.stringify(row)}
-        name={`project-${project_id}`}
-        form={form}
-        colon={false}
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
-        labelWrap={true}
-        layout="horizontal"
-        initialValues={row}
-        onValuesChange={onValuesChange}
-        onFieldsChange={onFieldsChange}
-        onFinish={onFinish}
-        autoComplete="off"
-      >
-        {/* 
-        <Form.Item
-          label="Order subproject by (field name)"
-          name="subproject_order_by"
-        >
-          <Input value={row.subproject_order_by} onBlur={onBlur} />
-        </Form.Item>
-        <Form.Item
-          label="Value(s) to use when Values exist on multiple place levels"
+      <TextField
+        label="Order subproject by (field name)"
+        name="subproject_order_by"
+        value={row.subproject_order_by ?? ''}
+        onChange={onChangeFluent}
+      />
+      <Field label="Value(s) to use when Values exist on multiple place levels">
+        <RadioGroup
+          layout="horizontal"
+          value={row.values_on_multiple_levels ?? ''}
           name="values_on_multiple_levels"
+          onChange={onChangeFluent}
         >
-          <Radio.Group value="horizontal">
-            <Radio.Button value="first">first level</Radio.Button>
-            <Radio.Button value="second">second level</Radio.Button>
-            <Radio.Button value="all">all levels</Radio.Button>
-          </Radio.Group>
-        </Form.Item>
-        <Form.Item
-          label="Value(s) to use when multiple action Values exist on the same place level"
+          <Radio label="first level" value="first" />
+          <Radio label="second level" value="second" />
+          <Radio label="all levels" value="all" />
+        </RadioGroup>
+      </Field>
+      <Field label="Value(s) to use when multiple action Values exist on the same place level">
+        <RadioGroup
+          layout="horizontal"
+          value={row.multiple_action_values_on_same_level ?? ''}
           name="multiple_action_values_on_same_level"
+          onChange={onChangeFluent}
         >
-          <Radio.Group value="horizontal">
-            <Radio.Button value="first">first</Radio.Button>
-            <Radio.Button value="last">last</Radio.Button>
-            <Radio.Button value="all">all</Radio.Button>
-          </Radio.Group>
-        </Form.Item>
+          <Radio label="first" value="first" />
+          <Radio label="last" value="last" />
+          <Radio label="all" value="all" />
+        </RadioGroup>
+      </Field>
+
+      {/* 
         <Form.Item
           label="Value(s) to use when multiple check Values exist on the same place level"
           name="multiple_check_values_on_same_level"
@@ -221,7 +167,6 @@ export const Component = () => {
         >
           <Switch />
         </Form.Item> */}
-      </Form>
     </div>
   )
 }
