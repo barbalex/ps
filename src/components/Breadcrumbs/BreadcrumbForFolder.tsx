@@ -74,7 +74,7 @@ export const Breadcrumb = ({ match }) => {
   const { results } = useLiveQuery(
     () =>
       db[queryTable]?.liveMany({ where: { [idField]: match.params[idField] } }),
-    [db, queryTable],
+    [db, queryTable, match],
   )
 
   const label = useMemo(
