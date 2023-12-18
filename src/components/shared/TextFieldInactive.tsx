@@ -50,6 +50,9 @@ export const TextFieldInactive = (props: InputProps) => {
             setChanged(true)
           }
         }}
+        onBlur={() => {
+          changed && setChanged(false)
+        }}
       />
       {changed && (
         <Body1
