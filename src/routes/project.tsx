@@ -60,12 +60,12 @@ export const Component = () => {
     (e, data) => {
       const value = 'checked' in data ? data.checked : data.value ?? undefined
       const name = e.target.name
-      console.log('onChangeFluent', {
-        name,
-        targetValue: e.target.value,
-        data,
-        value,
-      })
+      // console.log('onChangeFluent', {
+      //   name,
+      //   targetValue: e.target.value,
+      //   data,
+      //   value,
+      // })
       db.projects.update({
         where: { project_id },
         data: { [name]: value },
