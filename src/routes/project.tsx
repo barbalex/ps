@@ -2,14 +2,13 @@ import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { uuidv7 } from '@kripod/uuidv7'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Form } from 'antd'
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons'
 import {
   Button,
   Field,
-  Input,
   RadioGroup,
   Radio,
+  Switch,
 } from '@fluentui/react-components'
 
 import { Projects as Project } from '../../../generated/client'
@@ -59,10 +58,17 @@ export const Component = () => {
 
   const onChangeFluent = useCallback(
     (e, data) => {
-      // console.log('onChangeFluent', { [e.target.name]: e.target.value, data })
+      const value = 'checked' in data ? data.checked : data.value ?? undefined
+      const name = e.target.name
+      console.log('onChangeFluent', {
+        name,
+        targetValue: e.target.value,
+        data,
+        value,
+      })
       db.projects.update({
         where: { project_id },
-        data: { [e.target.name]: data.value },
+        data: { [name]: value },
       })
     },
     [db.projects, project_id],
@@ -148,25 +154,24 @@ export const Component = () => {
           <Radio label="all" value="all" />
         </RadioGroup>
       </Field>
-
-      {/* 
-        <Form.Item
-          label="Value(s) to use when multiple check Values exist on the same place level"
+      <Field label="Value(s) to use when multiple check Values exist on the same place level">
+        <RadioGroup
+          layout="horizontal"
+          value={row.multiple_check_values_on_same_level ?? ''}
           name="multiple_check_values_on_same_level"
+          onChange={onChangeFluent}
         >
-          <Radio.Group value="horizontal">
-            <Radio.Button value="first">first</Radio.Button>
-            <Radio.Button value="last">last</Radio.Button>
-            <Radio.Button value="all">all</Radio.Button>
-          </Radio.Group>
-        </Form.Item>
-        <Form.Item
-          name="files_active"
-          label="activate files"
-          valuePropName="checked"
-        >
-          <Switch />
-        </Form.Item> */}
+          <Radio label="first" value="first" />
+          <Radio label="last" value="last" />
+          <Radio label="all" value="all" />
+        </RadioGroup>
+      </Field>
+      <Switch
+        label="Enable uploading files to projects"
+        name="files_active"
+        checked={row.files_active ?? false}
+        onChange={onChangeFluent}
+      />
     </div>
   )
 }
