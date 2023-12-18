@@ -4,12 +4,16 @@ import { Link } from 'react-router-dom'
 import { Projects as Project } from '../../../generated/client'
 import { project as projectPreset } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
+import { labelFromData } from '../modules/labelFromData'
 import '../form.css'
 
 export const Component = () => {
   const { db } = useElectric()
   const { results } = useLiveQuery(
-    db.projects.liveMany({ where: { deleted: false } }),
+    db.projects.liveMany({
+      where: { deleted: false },
+      orderBy: [{ name: 'asc' }, { project_id: 'asc' }],
+    }),
   )
 
   const add = async () => {
@@ -37,7 +41,7 @@ export const Component = () => {
       {projects.map((project: Project, index: number) => (
         <p key={index} className="item">
           <Link to={`/projects/${project.project_id}`}>
-            {project.project_id}
+            {labelFromData({ data: project, table: 'projects' })}
           </Link>
         </p>
       ))}
