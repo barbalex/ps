@@ -4,13 +4,13 @@ import { uuidv7 } from '@kripod/uuidv7'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Form, Input, Radio, Switch, Button } from 'antd'
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons'
-import { TextField } from '@fluentui/react'
 
 import { Projects as Project } from '../../../generated/client'
 
 import '../User.css'
 
 import { useElectric } from '../ElectricProvider'
+import { TextField } from '../components/shared/TextField'
 
 export const Component = () => {
   const { project_id } = useParams()

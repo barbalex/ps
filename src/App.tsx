@@ -2,12 +2,11 @@ import React from 'react'
 import { RouterProvider } from 'react-router-dom'
 import { ConfigProvider } from 'antd'
 import deDe from 'antd/locale/de_DE'
-import { ThemeProvider } from '@fluentui/react'
+import { FluentProvider } from '@fluentui/react-components'
 
 import './style.css'
 import { ElectricWrapper as ElectricProvider } from './ElectricProvider'
-import { theme } from './modules/theme'
-
+import { customLightTheme } from './modules/theme'
 import { router } from './router'
 
 import '@fontsource/roboto/300.css'
@@ -16,15 +15,16 @@ import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
 
 export default function App() {
+  console.log('App, theme:', customLightTheme)
   return (
     <ElectricProvider>
       <ConfigProvider locale={deDe} theme={{ cssVar: true }}>
-        <ThemeProvider theme={theme}>
+        <FluentProvider theme={customLightTheme}>
           <RouterProvider
             router={router}
             future={{ v7_startTransition: true }}
           />
-        </ThemeProvider>
+        </FluentProvider>
       </ConfigProvider>
     </ElectricProvider>
   )
