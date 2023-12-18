@@ -4,7 +4,7 @@ import { Link, useParams } from 'react-router-dom'
 
 import { Lists as List } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import '../User.css'
+import '../form.css'
 
 export const Component = () => {
   const { project_id } = useParams<{ project_id: string }>()

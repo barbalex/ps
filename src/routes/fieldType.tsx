@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 
 import { FieldTypes as FieldType } from '../../../generated/client'
 
-import '../User.css'
+import '../form.css'
 
 import { useElectric } from '../ElectricProvider'
 

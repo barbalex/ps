@@ -4,7 +4,7 @@ import { Link, useParams } from 'react-router-dom'
 
 import { CheckTaxa as CheckTaxon } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import '../User.css'
+import '../form.css'
 
 export const Component = () => {
   const { subproject_id, project_id, place_id, check_id } = useParams<{

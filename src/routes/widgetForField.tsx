@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 
 import { WidgetsForFields as WidgetsForField } from '../../../generated/client'
 
-import '../User.css'
+import '../form.css'
 
 import { useElectric } from '../ElectricProvider'
 

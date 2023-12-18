@@ -4,7 +4,7 @@ import { Link, useParams } from 'react-router-dom'
 
 import { GoalReportValues as GoalReportValue } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import '../User.css'
+import '../form.css'
 
 export const Component = () => {
   const { project_id, subproject_id, goal_id, goal_report_id } = useParams<{

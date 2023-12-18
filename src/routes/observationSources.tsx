@@ -4,7 +4,7 @@ import { Link, useParams } from 'react-router-dom'
 
 import { ObservationSources as ObservationSource } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import '../User.css'
+import '../form.css'
 
 export const Component = () => {
   const { project_id } = useParams()

@@ -12,8 +12,9 @@ import {
 } from '@fluentui/react-components'
 
 import { Projects as Project } from '../../../generated/client'
+import { project as projectPreset } from '../modules/dataPresets'
 
-import '../User.css'
+import '../form.css'
 
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
@@ -31,16 +32,7 @@ export const Component = () => {
   const addRow = async () => {
     const project_id = uuidv7()
     await db.projects.create({
-      data: {
-        project_id,
-        type: 'species',
-        subproject_name_singular: 'Art',
-        subproject_name_plural: 'Arten',
-        values_on_multiple_levels: 'first',
-        multiple_action_values_on_same_level: 'all',
-        multiple_check_values_on_same_level: 'last',
-        files_active: true,
-      },
+      data: projectPreset,
     })
     navigate(`/projects/${project_id}`)
   }

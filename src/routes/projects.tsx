@@ -1,27 +1,20 @@
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
 import { Link } from 'react-router-dom'
 
 import { Projects as Project } from '../../../generated/client'
+import { project as projectPreset } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
-import '../User.css'
+import '../form.css'
 
 export const Component = () => {
   const { db } = useElectric()
-  const { results } = useLiveQuery(db.projects.liveMany())
+  const { results } = useLiveQuery(
+    db.projects.liveMany({ where: { deleted: false } }),
+  )
 
   const add = async () => {
     await db.projects.create({
-      data: {
-        project_id: uuidv7(),
-        type: 'species',
-        subproject_name_singular: 'Art',
-        subproject_name_plural: 'Arten',
-        values_on_multiple_levels: 'first',
-        multiple_action_values_on_same_level: 'all',
-        multiple_check_values_on_same_level: 'last',
-        files_active: true,
-      },
+      data: projectPreset,
     })
   }
 

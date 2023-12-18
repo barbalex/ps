@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 
 import { Lists as List } from '../../../generated/client'
 
-import '../User.css'
+import '../form.css'
 
 import { useElectric } from '../ElectricProvider'
 
