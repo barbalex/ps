@@ -2,9 +2,15 @@ import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { uuidv7 } from '@kripod/uuidv7'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Form, Input, Radio, Switch } from 'antd'
+import { Form } from 'antd'
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons'
-import { Button } from '@fluentui/react-components'
+import {
+  Button,
+  Field,
+  Input,
+  RadioGroup,
+  Radio,
+} from '@fluentui/react-components'
 
 import { Projects as Project } from '../../../generated/client'
 
@@ -132,6 +138,29 @@ export const Component = () => {
         value={row.name ?? ''}
         onChange={onChangeFluent}
       />
+      <Field label="Type">
+        <RadioGroup
+          layout="horizontal"
+          value={row.type ?? ''}
+          name="type"
+          onChange={onChangeFluent}
+        >
+          <Radio label="Species" value="species" />
+          <Radio label="Biotope" value="biotope" />
+        </RadioGroup>
+      </Field>
+      <TextField
+        label="Name of subproject (singular)"
+        name="subproject_name_singular"
+        value={row.subproject_name_singular ?? ''}
+        onChange={onChangeFluent}
+      />
+      <TextField
+        label="Name of subproject (plural)"
+        name="subproject_name_plural"
+        value={row.subproject_name_plural ?? ''}
+        onChange={onChangeFluent}
+      />
       <Form
         // key needed to force the form to update when the route changes
         key={JSON.stringify(row)}
@@ -148,27 +177,7 @@ export const Component = () => {
         onFinish={onFinish}
         autoComplete="off"
       >
-        <Form.Item label="Name" name="name">
-          <Input value={row.name} />
-        </Form.Item>
-        <Form.Item label="Type" name="type">
-          <Radio.Group value="horizontal">
-            <Radio.Button value="species">Species</Radio.Button>
-            <Radio.Button value="biotope">Biotope</Radio.Button>
-          </Radio.Group>
-        </Form.Item>
-        <Form.Item
-          label="Name of subproject (singular)"
-          name="subproject_name_singular"
-        >
-          <Input value={row.subproject_name_singular} />
-        </Form.Item>
-        <Form.Item
-          label="Name of subproject (plural)"
-          name="subproject_name_plural"
-        >
-          <Input value={row.subproject_name_plural} />
-        </Form.Item>
+        {/* 
         <Form.Item
           label="Order subproject by (field name)"
           name="subproject_order_by"
@@ -211,7 +220,7 @@ export const Component = () => {
           valuePropName="checked"
         >
           <Switch />
-        </Form.Item>
+        </Form.Item> */}
       </Form>
     </div>
   )
