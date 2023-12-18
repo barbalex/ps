@@ -24,7 +24,7 @@
   color: #f9fdff;
   font-size: 16px;
   font-weight: 500;
-  padding: 10px 18px;
+  padding: 10px 0;
 }
 
 .item {
@@ -40,7 +40,7 @@
   box-shadow: rgba(0, 0, 0, 0.3) 1px 2px 8px 0px;
   color: black;
   font-size: 13px;
-  padding: 10px 18px;
+  padding: 10px 0;
 }
 
 .ant-btn-icon svg {
