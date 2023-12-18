@@ -12,6 +12,7 @@ import '../User.css'
 
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
+import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 
 export const Component = () => {
   const { project_id } = useParams()
@@ -124,8 +125,9 @@ export const Component = () => {
           title="Delete project"
         />
       </div>
+      <TextFieldInactive label="ID" name="project_id" value={row.project_id} />
       <TextField
-        label="Name from fluent ui"
+        label="Name"
         name="name"
         value={row.name ?? ''}
         onChange={onChangeFluent}
@@ -146,9 +148,6 @@ export const Component = () => {
         onFinish={onFinish}
         autoComplete="off"
       >
-        <Form.Item label="ID" name="project_id">
-          <span>{row.project_id}</span>
-        </Form.Item>
         <Form.Item label="Name" name="name">
           <Input value={row.name} />
         </Form.Item>
