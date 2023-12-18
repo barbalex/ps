@@ -15,7 +15,8 @@ import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
 
 export default function App() {
-  console.log('App, theme:', customLightTheme)
+  // console.log('App, theme:', customLightTheme)
+
   return (
     <ElectricProvider>
       <ConfigProvider locale={deDe} theme={{ cssVar: true }}>
