@@ -5,6 +5,8 @@ import { useLiveQuery } from 'electric-sql/react'
 import './breadcrumb.css'
 import { MenuComponent } from './Menu'
 import { useElectric } from '../../ElectricProvider'
+import { labelFromData } from '../../modules/labelFromData'
+import { idFieldFromTable } from '../../modules/idFieldFromTable'
 
 export const Breadcrumb = ({ match }) => {
   const navigate = useNavigate()
@@ -26,32 +28,23 @@ export const Breadcrumb = ({ match }) => {
     [db, queryTable],
   )
 
+  const idField = idFieldFromTable(table)
+
   const myNavs = useMemo(
     () =>
       (results ?? []).map((result) => {
-        const idField = table.endsWith('taxa')
-          ? `${table.slice(0, -1)}on_id`
-          : table === 'taxonomies'
-          ? 'taxonomy'
-          : table === 'field_types'
-          ? 'field_type'
-          : table === 'widget_types'
-          ? 'widget_type'
-          : table === 'widgets_for_fields'
-          ? 'widget_for_field_id'
-          : `${table.slice(0, -1)}_id` // TODO: build label
         const path = `${match.pathname}/${result[idField]}`
         // console.log('Breadcrumb, path', { path, idField, result, table })
 
         return {
           path,
-          text: result[idField],
+          text: labelFromData({ data: result, table }) ?? result[idField],
         }
       }),
-    [match.pathname, results, table],
+    [idField, match.pathname, results, table],
   )
 
-  // console.log('Breadcrumb, myNavs', myNavs)
+  // console.log('Breadcrumb', { myNavs, match, table, text })
 
   return (
     <>

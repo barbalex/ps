@@ -1,9 +1,13 @@
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useElectric } from '../../ElectricProvider'
+import { useLiveQuery } from 'electric-sql/react'
 
 import './breadcrumb.css'
 import { navs } from '../../navs'
 import { MenuComponent } from './Menu'
+import { labelFromData } from '../../modules/labelFromData'
+import { idFieldFromTable } from '../../modules/idFieldFromTable'
 
 export const Breadcrumb = ({ match }) => {
   const navigate = useNavigate()
@@ -64,12 +68,32 @@ export const Breadcrumb = ({ match }) => {
     }
   }, [match, table])
 
-  // console.log('Breadcrumb, myNavs', myNavs)
+  const idField = idFieldFromTable(table)
+  const queryTable = table === 'home' || table === 'docs' ? 'projects' : table
+  const { db } = useElectric()
+  const { results } = useLiveQuery(
+    () =>
+      db[queryTable]?.liveMany({ where: { [idField]: match.params[idField] } }),
+    [db, queryTable],
+  )
+
+  const label = useMemo(
+    () =>
+      table === 'home' || table === 'docs'
+        ? text
+        : labelFromData({
+            data: (results ?? [])?.[0] ?? {},
+            table: queryTable,
+          }),
+    [queryTable, results, table, text],
+  )
+
+  // console.log('Breadcrumb', { results, label })
 
   return (
     <>
       <div className={className} onClick={() => navigate(match.pathname)}>
-        <div className="text">{text}</div>
+        <div className="text">{label}</div>
         {myNavs?.length > 0 && <MenuComponent navs={myNavs} />}
       </div>
     </>
