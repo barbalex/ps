@@ -2,10 +2,9 @@ import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { uuidv7 } from '@kripod/uuidv7'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Form, Input, Radio, Switch, Button } from 'antd'
+import { Form, Input, Radio, Switch } from 'antd'
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons'
-import { makeStyles, Button, Tooltip } from '@fluentui/react-components'
-import { CalendarMonthRegular } from '@fluentui/react-icons'
+import { Button } from '@fluentui/react-components'
 
 import { Projects as Project } from '../../../generated/client'
 
