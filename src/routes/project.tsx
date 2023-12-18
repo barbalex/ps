@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { uuidv7 } from '@kripod/uuidv7'
 import { useParams, useNavigate } from 'react-router-dom'
-import { PlusOutlined, MinusOutlined } from '@ant-design/icons'
+import { FaPlus, FaMinus } from 'react-icons/fa'
 import {
   Button,
   Field,
@@ -75,13 +75,13 @@ export const Component = () => {
       <div className="controls">
         <Button
           size="large"
-          icon={<PlusOutlined />}
+          icon={<FaPlus />}
           onClick={addRow}
           title="Add new project"
         />
         <Button
           size="large"
-          icon={<MinusOutlined />}
+          icon={<FaMinus />}
           onClick={deleteRow}
           title="Delete project"
         />

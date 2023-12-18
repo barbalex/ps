@@ -1,7 +1,5 @@
 import React from 'react'
 import { RouterProvider } from 'react-router-dom'
-import { ConfigProvider } from 'antd'
-import deDe from 'antd/locale/de_DE'
 import { FluentProvider } from '@fluentui/react-components'
 
 import './style.css'
@@ -19,14 +17,9 @@ export default function App() {
 
   return (
     <ElectricProvider>
-      <ConfigProvider locale={deDe} theme={{ cssVar: true }}>
-        <FluentProvider theme={lightTheme}>
-          <RouterProvider
-            router={router}
-            future={{ v7_startTransition: true }}
-          />
-        </FluentProvider>
-      </ConfigProvider>
+      <FluentProvider theme={lightTheme}>
+        <RouterProvider router={router} future={{ v7_startTransition: true }} />
+      </FluentProvider>
     </ElectricProvider>
   )
 }

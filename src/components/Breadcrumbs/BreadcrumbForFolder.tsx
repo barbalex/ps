@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo,  } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useElectric } from '../../ElectricProvider'
 import { useLiveQuery } from 'electric-sql/react'
@@ -94,7 +94,7 @@ export const Breadcrumb = ({ match }) => {
     <>
       <div className={className} onClick={() => navigate(match.pathname)}>
         <div className="text">{label}</div>
-        {myNavs?.length > 0 && <MenuComponent navs={myNavs} />}
+        {myNavs?.length > 0 && <MenuComponent navs={myNavs}  />}
       </div>
     </>
   )
