@@ -1,6 +1,7 @@
 import { uuidv7 } from '@kripod/uuidv7'
 
-export const project = {
+// TODO: add account_id
+export const project = () => ({
   project_id: uuidv7(),
   type: 'species',
   subproject_name_singular: 'Art',
@@ -10,4 +11,10 @@ export const project = {
   multiple_check_values_on_same_level: 'last',
   files_active: true,
   deleted: false,
-}
+})
+
+export const subproject = () => ({
+  subproject_id: uuidv7(),
+  files_active: true,
+  deleted: false,
+})
