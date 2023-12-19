@@ -1,24 +1,27 @@
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { Files as File } from '../../../generated/client'
 import { labelFromData } from '../modules/labelFromData'
+import { file as createFilePreset } from '../modules/dataPresets'
 
 import '../form.css'
 
 import { useElectric } from '../ElectricProvider'
 
 export const Component = () => {
-  const { db } = useElectric()!
+  const navigate = useNavigate()
+
+  const { db } = useElectric()
   const { results } = useLiveQuery(db.files.liveMany())
 
   const add = async () => {
+    const newFile = createFilePreset()
+    console.log('files, add, newFile:', newFile)
     await db.files.create({
-      data: {
-        file_id: uuidv7(),
-      },
+      data: newFile,
     })
+    navigate(`/files/${newFile.file_id}`)
   }
 
   const clear = async () => {
