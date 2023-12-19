@@ -23,7 +23,7 @@ export const Breadcrumb = ({ match }) => {
   // one that queries data and one that only uses navs
   const { db } = useElectric()
   const queryTable = table === 'home' || table === 'docs' ? 'projects' : table
-  console.log('Breadcrumb', { queryTable, table })
+  // console.log('Breadcrumb', { queryTable, table })
   const { results } = useLiveQuery(
     () => db[queryTable]?.liveMany(),
     [db, queryTable],
