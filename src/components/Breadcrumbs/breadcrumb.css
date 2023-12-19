@@ -10,6 +10,7 @@
   transition: background 0.2s linear;
   display: flex;
   align-items: center;
+  min-height: 46px;
 }
 
 .breadcrumbs__crumb.link {
