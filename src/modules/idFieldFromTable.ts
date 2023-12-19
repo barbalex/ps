@@ -2,7 +2,7 @@ export const idFieldFromTable = (table: string): string =>
   table.endsWith('taxa')
     ? `${table.slice(0, -1)}on_id`
     : table === 'taxonomies'
-    ? 'taxonomy'
+    ? 'taxonomy_id'
     : table === 'field_types'
     ? 'field_type'
     : table === 'widget_types'

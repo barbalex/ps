@@ -30,6 +30,7 @@ export const Component = () => {
   }
 
   const taxonomy: Taxonomy = results
+  // console.log('Taxonomy', { taxonomy, project_id, taxonomy_id })
 
   return (
     <div className="form-container">
