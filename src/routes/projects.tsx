@@ -1,5 +1,5 @@
 import { useLiveQuery } from 'electric-sql/react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { Projects as Project } from '../../../generated/client'
 import { project as createProjectPreset } from '../modules/dataPresets'
@@ -8,6 +8,8 @@ import { labelFromData } from '../modules/labelFromData'
 import '../form.css'
 
 export const Component = () => {
+  const navigate = useNavigate()
+
   const { db } = useElectric()
   const { results } = useLiveQuery(
     db.projects.liveMany({
@@ -21,6 +23,7 @@ export const Component = () => {
     await db.projects.create({
       data: newProject,
     })
+    navigate(`/projects/${newProject.project_id}`)
   }
 
   const clear = async () => {
