@@ -17,20 +17,8 @@ export const Component = () => {
 
   const add = async () => {
     const newFile = createFilePreset()
-    console.log('files, add, newFile:', newFile)
-    // await db.files.create({
-    //   data: newFile,
-    // })
-    const values = Object.values(newFile).join(',')
-    const keys = Object.keys(newFile).join(',')
-    console.log('files, add', {
-      newFile,
-      values,
-      keys,
-    })
-    await db.raw({
-      sql: 'insert into files (file_id) values(?)',
-      bindParams: [keys, values],
+    await db.files.create({
+      data: newFile,
     })
     navigate(`/files/${newFile.file_id}`)
   }
