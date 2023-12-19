@@ -3,6 +3,7 @@ import { uuidv7 } from '@kripod/uuidv7'
 import { Link } from 'react-router-dom'
 
 import { Files as File } from '../../../generated/client'
+import { labelFromData } from '../modules/labelFromData'
 
 import '../form.css'
 
@@ -38,7 +39,9 @@ export const Component = () => {
       </div>
       {files.map((file: File, index: number) => (
         <p key={index} className="item">
-          <Link to={`/files/${file.file_id}`}>{file.file_id}</Link>
+          <Link to={`/files/${file.file_id}`}>
+            {labelFromData({ data: file, table: 'files' })}
+          </Link>
         </p>
       ))}
     </div>
