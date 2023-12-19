@@ -18,3 +18,8 @@ export const subproject = () => ({
   files_active: true,
   deleted: false,
 })
+
+export const file = () => ({
+  file_id: uuidv7(),
+  deleted: false,
+})
