@@ -161,7 +161,7 @@ COMMENT ON COLUMN place_levels.name_plural IS 'Preset: "Populationen"';
 
 COMMENT ON COLUMN place_levels.name_short IS 'Preset: "Pop"';
 
-COMMENT ON COLUMN place_levels.order_by IS 'Used to order places. Contains a field included in the data. Can be a comma separated list of fields. TODO: One or multiple comma separated virtual fields will be added and indexed in sqlite and postgresql. Preset: "name_singular". Alternatives: data.[field]';
+COMMENT ON COLUMN place_levels.order_by IS 'Used to order places. Contains an array of names of fields included in the data field (first priority) or table itself. TODO: One or multiple comma separated virtual fields will be added and indexed in sqlite and postgresql. Preset: "name_singular". Alternatives: data.[field]';
 
 COMMENT ON COLUMN place_levels.reports IS 'Are reports used? Preset: false';
 
@@ -222,6 +222,7 @@ COMMENT ON COLUMN subprojects.name IS 'Example: a species name like "Pulsatilla 
 COMMENT ON COLUMN subprojects.since_year IS 'Enables analyzing a development since a certain year, like the begin of the project';
 
 COMMENT ON COLUMN subprojects.data IS 'Room for subproject specific data, defined in "fields" table';
+
 COMMENT ON COLUMN subprojects.files_active IS 'Whether files are used. Preset: true';
 
 COMMENT ON TABLE subprojects IS 'Goal: manage subprojects. Will most often be a species that is promoted. Can also be a (class of) biotope(s).';
@@ -561,6 +562,8 @@ CREATE TABLE places(
   parent_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE NO action ON UPDATE CASCADE,
   level integer DEFAULT 1,
   data jsonb DEFAULT NULL,
+  label jsonb DEFAULT NULL,
+  order_by jsonb DEFAULT NULL,
   geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
   deleted boolean DEFAULT FALSE
 );
@@ -594,6 +597,10 @@ COMMENT ON COLUMN places.parent_id IS 'parent place. null for places of level 1'
 COMMENT ON COLUMN places.level IS 'level of place: 1, 2';
 
 COMMENT ON COLUMN places.data IS 'Room for place specific data, defined in "fields" table';
+
+COMMENT ON COLUMN places.label IS 'Used to label places in lists. Contains an array of names of fields included in the data field (first priority) or table itself. TODO: One or multiple comma separated virtual fields will be added in sqlite and postgresql.';
+
+COMMENT ON COLUMN places.order_by IS 'Used to order places in lists. Contains an array of names of fields included in the data field (first priority) or table itself. TODO: One or multiple comma separated virtual fields will be added and indexed in sqlite and postgresql. ';
 
 COMMENT ON COLUMN places.geometry IS 'geometry of place';
 
@@ -1386,8 +1393,8 @@ CREATE TABLE persons(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   email text DEFAULT NULL,
   data jsonb DEFAULT NULL,
-  label text DEFAULT NULL,
-  order_by text DEFAULT NULL,
+  label jsonb DEFAULT NULL,
+  order_by jsonb DEFAULT NULL,
   deleted boolean DEFAULT FALSE
 );
 
@@ -1409,9 +1416,9 @@ COMMENT ON COLUMN persons.account_id IS 'redundant account_id enhances data safe
 
 COMMENT ON COLUMN persons.data IS 'Room for person specific data, defined in "fields" table';
 
-COMMENT ON COLUMN persons.label IS 'Used to label persons in lists. Contains a field included in the data. Can be a comma separated list of fields. TODO: One or multiple comma separated virtual fields will be added in sqlite and postgresql.';
+COMMENT ON COLUMN persons.label IS 'Used to label persons in lists. Contains an array of names of fields included in the data field (first priority) or table itself. TODO: One or multiple comma separated virtual fields will be added in sqlite and postgresql.';
 
-COMMENT ON COLUMN persons.order_by IS 'Used to order persons in lists. Contains a field included in the data. Can be a comma separated list of fields. TODO: One or multiple comma separated virtual fields will be added and indexed in sqlite and postgresql.';
+COMMENT ON COLUMN persons.order_by IS 'Used to order persons in lists. Contains an array of names of fields included in the data field (first priority) or table itself. TODO: One or multiple comma separated virtual fields will be added and indexed in sqlite and postgresql. ';
 
 ---------------------------------------------
 -- field_types
