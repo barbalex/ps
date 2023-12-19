@@ -21,15 +21,5 @@ export const subproject = () => ({
 
 export const file = () => ({
   file_id: uuidv7(),
-  account_id: null,
-  project_id: null,
-  subproject_id: null,
-  place_id: null,
-  action_id: null,
-  check_id: null,
-  name: null,
-  data: null,
-  mimetype: null,
-  url: null,
   deleted: false,
 })
