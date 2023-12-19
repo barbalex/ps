@@ -45,6 +45,21 @@ export const labelFromData = ({ data, table }) => {
     case 'taxa':
       return data.name ?? data.taxon_id
       break
+    case 'project_users':
+      return data.project_user_id
+      break
+    case 'project_reports':
+      return data.year ?? data.project_report_id
+      break
+    case 'fields':
+      return data.field_id
+      break
+    case 'observation_sources':
+      return data.name ?? data.observation_source_id
+      break
+    case 'observations':
+      return data.observation_id
+      break
     default:
       return undefined
   }
