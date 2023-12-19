@@ -12,7 +12,7 @@ import {
 } from '@fluentui/react-components'
 
 import { Projects as Project } from '../../../generated/client'
-import { project as projectPreset } from '../modules/dataPresets'
+import { project as createProjectPreset } from '../modules/dataPresets'
 
 import '../form.css'
 
@@ -23,6 +23,7 @@ import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 export const Component = () => {
   const { project_id } = useParams()
   const navigate = useNavigate()
+
   const { db } = useElectric()
   const { results } = useLiveQuery(
     () => db.projects.liveUnique({ where: { project_id } }),
@@ -30,11 +31,11 @@ export const Component = () => {
   )
 
   const addRow = async () => {
-    const project_id = uuidv7()
+    const newProject = createProjectPreset()
     await db.projects.create({
-      data: projectPreset,
+      data: newProject,
     })
-    navigate(`/projects/${project_id}`)
+    navigate(`/projects/${newProject.project_id}`)
   }
 
   const deleteRow = async () => {
@@ -48,14 +49,19 @@ export const Component = () => {
 
   const row: Project = results
 
-  const onChangeFluent = useCallback(
+  const onChange = useCallback(
     (e, data) => {
-      const value = 'checked' in data ? data.checked : data.value ?? undefined
+      const targetType = e.target.type
+      const value =
+        targetType === 'checkbox'
+          ? data.checked
+          : targetType === 'number'
+          ? e.target.valueAsNumber ?? null
+          : e.target.value ?? null
       const name = e.target.name
-      // console.log('onChangeFluent', {
+      // console.log('onChange', {
       //   name,
-      //   targetValue: e.target.value,
-      //   data,
+      //   targetType,
       //   value,
       // })
       db.projects.update({
@@ -91,14 +97,14 @@ export const Component = () => {
         label="Name"
         name="name"
         value={row.name ?? ''}
-        onChange={onChangeFluent}
+        onChange={onChange}
       />
       <Field label="Type">
         <RadioGroup
           layout="horizontal"
           value={row.type ?? ''}
           name="type"
-          onChange={onChangeFluent}
+          onChange={onChange}
         >
           <Radio label="Species" value="species" />
           <Radio label="Biotope" value="biotope" />
@@ -108,26 +114,26 @@ export const Component = () => {
         label="Name of subproject (singular)"
         name="subproject_name_singular"
         value={row.subproject_name_singular ?? ''}
-        onChange={onChangeFluent}
+        onChange={onChange}
       />
       <TextField
         label="Name of subproject (plural)"
         name="subproject_name_plural"
         value={row.subproject_name_plural ?? ''}
-        onChange={onChangeFluent}
+        onChange={onChange}
       />
       <TextField
         label="Order subproject by (field name)"
         name="subproject_order_by"
         value={row.subproject_order_by ?? ''}
-        onChange={onChangeFluent}
+        onChange={onChange}
       />
       <Field label="Value(s) to use when Values exist on multiple place levels">
         <RadioGroup
           layout="horizontal"
           value={row.values_on_multiple_levels ?? ''}
           name="values_on_multiple_levels"
-          onChange={onChangeFluent}
+          onChange={onChange}
         >
           <Radio label="first level" value="first" />
           <Radio label="second level" value="second" />
@@ -139,7 +145,7 @@ export const Component = () => {
           layout="horizontal"
           value={row.multiple_action_values_on_same_level ?? ''}
           name="multiple_action_values_on_same_level"
-          onChange={onChangeFluent}
+          onChange={onChange}
         >
           <Radio label="first" value="first" />
           <Radio label="last" value="last" />
@@ -151,7 +157,7 @@ export const Component = () => {
           layout="horizontal"
           value={row.multiple_check_values_on_same_level ?? ''}
           name="multiple_check_values_on_same_level"
-          onChange={onChangeFluent}
+          onChange={onChange}
         >
           <Radio label="first" value="first" />
           <Radio label="last" value="last" />
@@ -162,7 +168,7 @@ export const Component = () => {
         label="Enable uploading files to projects"
         name="files_active"
         checked={row.files_active ?? false}
-        onChange={onChangeFluent}
+        onChange={onChange}
       />
     </div>
   )
