@@ -2,7 +2,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { Link } from 'react-router-dom'
 
 import { Projects as Project } from '../../../generated/client'
-import { project as projectPreset } from '../modules/dataPresets'
+import { project as createProjectPreset } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { labelFromData } from '../modules/labelFromData'
 import '../form.css'
@@ -17,8 +17,9 @@ export const Component = () => {
   )
 
   const add = async () => {
+    const newProject = createProjectPreset()
     await db.projects.create({
-      data: projectPreset,
+      data: newProject,
     })
   }
 
