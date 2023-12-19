@@ -3,7 +3,7 @@ CREATE TABLE lists(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
-  data jsonb DEFAULT NULL,
+  dat jsonb DEFAULT NULL, -- data provokes errer in electric-sql
   obsolete boolean DEFAULT NULL, -- FALSE,
   deleted boolean DEFAULT NULL -- FALSE
 );

@@ -4,7 +4,7 @@ CREATE TABLE goals(
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT NULL, -- DATE_PART('year', now()::date),
   name text DEFAULT NULL,
-  data jsonb DEFAULT NULL,
+  dat jsonb DEFAULT NULL, -- data provokes errer in electric-sql
   deleted boolean DEFAULT NULL -- FALSE
 );
 

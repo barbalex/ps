@@ -9,7 +9,7 @@ CREATE TABLE observations(
   date date DEFAULT NULL,
   author text DEFAULT NULL,
   -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
-  data jsonb DEFAULT NULL,
+  dat jsonb DEFAULT NULL, -- data provokes errer in electric-sql
   deleted boolean DEFAULT NULL -- FALSE
 );
 
@@ -48,7 +48,7 @@ COMMENT ON COLUMN observations.date IS 'date of observation. Extracted from obse
 COMMENT ON COLUMN observations.author IS 'author of observation. Extracted from observation_data to list the observation';
 
 -- COMMENT ON COLUMN observations.geometry IS 'geometry of observation. Extracted from observation_data to show the observation on a map';
-COMMENT ON COLUMN observations.data IS 'Room for observation specific data, defined in "fields" table';
+COMMENT ON COLUMN observations.dat IS 'Room for observation specific data, defined in "fields" table';
 
 ALTER TABLE observations ENABLE electric;
 

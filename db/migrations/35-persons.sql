@@ -3,7 +3,7 @@ CREATE TABLE persons(
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   email text DEFAULT NULL,
-  data jsonb DEFAULT NULL,
+  dat jsonb DEFAULT NULL, -- data provokes errer in electric-sql
   label jsonb DEFAULT NULL,
   order_by jsonb DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
@@ -24,7 +24,7 @@ COMMENT ON TABLE persons IS 'Persons are used to assign actions and checks to';
 
 COMMENT ON COLUMN persons.account_id IS 'redundant account_id enhances data safety';
 
-COMMENT ON COLUMN persons.data IS 'Room for person specific data, defined in "fields" table';
+COMMENT ON COLUMN persons.dat IS 'Room for person specific data, defined in "fields" table';
 
 COMMENT ON COLUMN persons.label IS 'Used to label persons in lists. Contains an array of names of fields included in the data field (first priority) or table itself. TODO: One or multiple comma separated virtual fields will be added in sqlite and postgresql.';
 

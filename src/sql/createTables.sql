@@ -75,7 +75,7 @@ CREATE TABLE projects(
   values_on_multiple_levels text DEFAULT NULL,
   multiple_action_values_on_same_level text DEFAULT NULL,
   multiple_check_values_on_same_level text DEFAULT NULL,
-  data jsonb DEFAULT NULL, -- not supported by electric-sql yet
+  dat jsonb DEFAULT NULL, -- data provokes errer in electric-sql
   files_active boolean DEFAULT NULL, -- TRUE,
   deleted boolean DEFAULT NULL -- FALSE
 );
@@ -104,7 +104,7 @@ COMMENT ON COLUMN projects.multiple_action_values_on_same_level IS 'One of: "use
 
 COMMENT ON COLUMN projects.multiple_check_values_on_same_level IS 'One of: "use all", "use last". Preset: "use last"';
 
-COMMENT ON COLUMN projects.data IS 'Room for project specific data, defined in "fields" table';
+COMMENT ON COLUMN projects.dat IS 'Room for project specific data, defined in "fields" table';
 
 COMMENT ON COLUMN projects.files_active IS 'Whether files are used. Preset: true';
 
@@ -196,7 +196,7 @@ CREATE TABLE subprojects(
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
   since_year integer DEFAULT NULL,
-  data jsonb DEFAULT NULL,
+  dat jsonb DEFAULT NULL, -- data provokes errer in electric-sql
   files_active boolean DEFAULT NULL, -- TRUE,
   deleted boolean DEFAULT NULL -- FALSE
 );
@@ -221,7 +221,7 @@ COMMENT ON COLUMN subprojects.name IS 'Example: a species name like "Pulsatilla 
 
 COMMENT ON COLUMN subprojects.since_year IS 'Enables analyzing a development since a certain year, like the begin of the project';
 
-COMMENT ON COLUMN subprojects.data IS 'Room for subproject specific data, defined in "fields" table';
+COMMENT ON COLUMN subprojects.dat IS 'Room for subproject specific data, defined in "fields" table';
 
 COMMENT ON COLUMN subprojects.files_active IS 'Whether files are used. Preset: true';
 
@@ -304,7 +304,7 @@ CREATE TABLE taxonomies(
   name text DEFAULT NULL,
   url text DEFAULT NULL,
   obsolete boolean DEFAULT NULL, -- FALSE,
-  data jsonb DEFAULT NULL,
+  dat jsonb DEFAULT NULL, -- data provokes errer in electric-sql
   deleted boolean DEFAULT NULL -- FALSE
 );
 
@@ -338,7 +338,7 @@ COMMENT ON COLUMN taxonomies.url IS 'URL of taxonomy, like "https://www.infoflor
 
 COMMENT ON COLUMN taxonomies.obsolete IS 'Is taxonomy obsolete? Preset: false';
 
-COMMENT ON COLUMN taxonomies.data IS 'Room for taxonomy specific data, defined in "fields" table';
+COMMENT ON COLUMN taxonomies.dat IS 'Room for taxonomy specific data, defined in "fields" table';
 
 ---------------------------------------------
 -- taxa
@@ -423,7 +423,7 @@ CREATE TABLE lists(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
-  data jsonb DEFAULT NULL,
+  dat jsonb DEFAULT NULL, -- data provokes errer in electric-sql
   obsolete boolean DEFAULT FALSE,
   deleted boolean DEFAULT FALSE
 );
@@ -561,7 +561,7 @@ CREATE TABLE places(
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   parent_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE NO action ON UPDATE CASCADE,
   level integer DEFAULT 1,
-  data jsonb DEFAULT NULL,
+  dat jsonb DEFAULT NULL, -- data provokes errer in electric-sql
   label jsonb DEFAULT NULL,
   order_by jsonb DEFAULT NULL,
   geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
@@ -596,7 +596,7 @@ COMMENT ON COLUMN places.parent_id IS 'parent place. null for places of level 1'
 
 COMMENT ON COLUMN places.level IS 'level of place: 1, 2';
 
-COMMENT ON COLUMN places.data IS 'Room for place specific data, defined in "fields" table';
+COMMENT ON COLUMN places.dat IS 'Room for place specific data, defined in "fields" table';
 
 COMMENT ON COLUMN places.label IS 'Used to label places in lists. Contains an array of names of fields included in the data field (first priority) or table itself. TODO: One or multiple comma separated virtual fields will be added in sqlite and postgresql.';
 
@@ -614,7 +614,7 @@ CREATE TABLE actions(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   date date DEFAULT CURRENT_DATE,
-  data jsonb DEFAULT NULL,
+  dat jsonb DEFAULT NULL, -- data provokes errer in electric-sql
   geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
   relevant_for_reports boolean DEFAULT TRUE,
   files_active boolean DEFAULT TRUE,
@@ -645,7 +645,7 @@ COMMENT ON TABLE actions IS 'Actions are what is done to improve the situation o
 
 COMMENT ON COLUMN actions.account_id IS 'redundant account_id enhances data safety';
 
-COMMENT ON COLUMN actions.data IS 'Room for action specific data, defined in "fields" table';
+COMMENT ON COLUMN actions.dat IS 'Room for action specific data, defined in "fields" table';
 
 COMMENT ON COLUMN actions.geometry IS 'geometry of action';
 
@@ -707,7 +707,7 @@ CREATE TABLE action_reports(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   action_id uuid DEFAULT NULL REFERENCES actions(action_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT DATE_PART('year', now()::date),
-  data jsonb DEFAULT NULL,
+  dat jsonb DEFAULT NULL, -- data provokes errer in electric-sql
   deleted boolean DEFAULT FALSE
 );
 
@@ -729,7 +729,7 @@ COMMENT ON COLUMN action_reports.account_id IS 'redundant account_id enhances da
 
 COMMENT ON COLUMN action_reports.year IS 'Year of report. Preset: current year';
 
-COMMENT ON COLUMN action_reports.data IS 'Room for action report specific data, defined in "fields" table';
+COMMENT ON COLUMN action_reports.dat IS 'Room for action report specific data, defined in "fields" table';
 
 ---------------------------------------------
 -- action_report_values
@@ -785,7 +785,7 @@ CREATE TABLE checks(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   date date DEFAULT CURRENT_DATE,
-  data jsonb DEFAULT NULL,
+  dat jsonb DEFAULT NULL, -- data provokes errer in electric-sql
   geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
   relevant_for_reports boolean DEFAULT TRUE,
   files_active boolean DEFAULT TRUE,
@@ -816,7 +816,7 @@ COMMENT ON TABLE checks IS 'Checks describe the situation of the subproject in t
 
 COMMENT ON COLUMN checks.account_id IS 'redundant account_id enhances data safety';
 
-COMMENT ON COLUMN checks.data IS 'Room for check specific data, defined in "fields" table';
+COMMENT ON COLUMN checks.dat IS 'Room for check specific data, defined in "fields" table';
 
 COMMENT ON COLUMN checks.files_active IS 'Whether files are used. Preset: true';
 
@@ -913,7 +913,7 @@ CREATE TABLE place_reports(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT DATE_PART('year', now()::date),
-  data jsonb DEFAULT NULL,
+  dat jsonb DEFAULT NULL, -- data provokes errer in electric-sql
   files_active boolean DEFAULT TRUE,
   deleted boolean DEFAULT FALSE
 );
@@ -936,7 +936,7 @@ COMMENT ON COLUMN place_reports.account_id IS 'redundant account_id enhances dat
 
 COMMENT ON COLUMN place_reports.year IS 'Year of report. Preset: current year';
 
-COMMENT ON COLUMN place_reports.data IS 'Room for place report specific data, defined in "fields" table';
+COMMENT ON COLUMN place_reports.dat IS 'Room for place report specific data, defined in "fields" table';
 
 COMMENT ON COLUMN place_reports.files_active IS 'Whether files are used. Preset: true';
 
@@ -995,7 +995,7 @@ CREATE TABLE observation_sources(
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
   url text DEFAULT NULL,
-  data jsonb DEFAULT NULL,
+  dat jsonb DEFAULT NULL, -- data provokes errer in electric-sql
   deleted boolean DEFAULT FALSE
 );
 
@@ -1019,7 +1019,7 @@ COMMENT ON COLUMN observation_sources.name IS 'Name of observation source, like 
 
 COMMENT ON COLUMN observation_sources.url IS 'URL of observation source, like "https://www.gbif.org/"';
 
-COMMENT ON COLUMN observation_sources.data IS 'Room for observation source specific data, defined in "fields" table';
+COMMENT ON COLUMN observation_sources.dat IS 'Room for observation source specific data, defined in "fields" table';
 
 ---------------------------------------------
 -- observations
@@ -1037,7 +1037,7 @@ CREATE TABLE observations(
   date date DEFAULT NULL,
   author text DEFAULT NULL,
   geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
-  data jsonb DEFAULT NULL,
+  dat jsonb DEFAULT NULL, -- data provokes errer in electric-sql
   deleted boolean DEFAULT FALSE
 );
 
@@ -1079,7 +1079,7 @@ COMMENT ON COLUMN observations.author IS 'author of observation. Extracted from 
 
 COMMENT ON COLUMN observations.geometry IS 'geometry of observation. Extracted from observation_data to show the observation on a map';
 
-COMMENT ON COLUMN observations.data IS 'Room for observation specific data, defined in "fields" table';
+COMMENT ON COLUMN observations.dat IS 'Room for observation specific data, defined in "fields" table';
 
 ---------------------------------------------
 -- message
@@ -1159,7 +1159,7 @@ CREATE TABLE goals(
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT DATE_PART('year', now()::date),
   name text DEFAULT NULL,
-  data jsonb DEFAULT NULL,
+  dat jsonb DEFAULT NULL, -- data provokes errer in electric-sql
   deleted boolean DEFAULT FALSE
 );
 
@@ -1188,7 +1188,7 @@ CREATE TABLE goal_reports(
   goal_report_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   goal_id uuid DEFAULT NULL REFERENCES goals(goal_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  data jsonb DEFAULT NULL,
+  dat jsonb DEFAULT NULL, -- data provokes errer in electric-sql
   deleted boolean DEFAULT FALSE
 );
 
@@ -1206,7 +1206,7 @@ COMMENT ON TABLE goal_reports IS 'Reporting on the success of goals.';
 
 COMMENT ON COLUMN goal_reports.account_id IS 'redundant account_id enhances data safety';
 
-COMMENT ON COLUMN goal_reports.data IS 'Room for goal report specific data, defined in "fields" table';
+COMMENT ON COLUMN goal_reports.dat IS 'Room for goal report specific data, defined in "fields" table';
 
 ---------------------------------------------
 -- goal_report_values
@@ -1262,7 +1262,7 @@ CREATE TABLE subproject_reports(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT DATE_PART('year', now()::date),
-  data jsonb DEFAULT NULL,
+  dat jsonb DEFAULT NULL, -- data provokes errer in electric-sql
   files_active boolean DEFAULT TRUE,
   deleted boolean DEFAULT FALSE
 );
@@ -1285,7 +1285,7 @@ COMMENT ON COLUMN subproject_reports.account_id IS 'redundant account_id enhance
 
 COMMENT ON COLUMN subproject_reports.year IS 'Year of report. Preset: current year';
 
-COMMENT ON COLUMN subproject_reports.data IS 'Room for subproject report specific data, defined in "fields" table';
+COMMENT ON COLUMN subproject_reports.dat IS 'Room for subproject report specific data, defined in "fields" table';
 
 COMMENT ON COLUMN subproject_reports.files_active IS 'Whether files are used. Preset: true';
 
@@ -1299,7 +1299,7 @@ CREATE TABLE project_reports(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT DATE_PART('year', now()::date),
-  data jsonb DEFAULT NULL,
+  dat jsonb DEFAULT NULL, -- data provokes errer in electric-sql
   files_active boolean DEFAULT TRUE,
   deleted boolean DEFAULT FALSE
 );
@@ -1322,7 +1322,7 @@ COMMENT ON COLUMN project_reports.account_id IS 'redundant account_id enhances d
 
 COMMENT ON COLUMN project_reports.year IS 'Year of report. Preset: current year';
 
-COMMENT ON COLUMN project_reports.data IS 'Room for project report specific data, defined in "fields" table';
+COMMENT ON COLUMN project_reports.dat IS 'Room for project report specific data, defined in "fields" table';
 
 COMMENT ON COLUMN project_reports.files_active IS 'Whether files are used. Preset: true';
 
@@ -1343,7 +1343,7 @@ CREATE TABLE files(
   action_id uuid DEFAULT NULL REFERENCES actions(action_id) ON DELETE CASCADE ON UPDATE CASCADE,
   check_id uuid DEFAULT NULL REFERENCES checks(check_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
-  data jsonb DEFAULT NULL,
+  dat jsonb DEFAULT NULL, -- data provokes errer in electric-sql
   mimetype text DEFAULT NULL,
   file bytea DEFAULT NULL,
   url text DEFAULT NULL,
@@ -1374,7 +1374,7 @@ COMMENT ON TABLE files IS 'used to store files.';
 
 COMMENT ON COLUMN files.account_id IS 'redundant account_id enhances data safety';
 
-COMMENT ON COLUMN files.data IS 'Room for file specific data, defined in "fields" table';
+COMMENT ON COLUMN files.dat IS 'Room for file specific data, defined in "fields" table';
 
 COMMENT ON COLUMN files.mimetype IS 'mimetype of file, used to know how to open or preview it';
 
@@ -1392,7 +1392,7 @@ CREATE TABLE persons(
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   email text DEFAULT NULL,
-  data jsonb DEFAULT NULL,
+  dat jsonb DEFAULT NULL, -- data provokes errer in electric-sql
   label jsonb DEFAULT NULL,
   order_by jsonb DEFAULT NULL,
   deleted boolean DEFAULT FALSE
@@ -1414,7 +1414,7 @@ COMMENT ON TABLE persons IS 'Persons are used to assign actions and checks to';
 
 COMMENT ON COLUMN persons.account_id IS 'redundant account_id enhances data safety';
 
-COMMENT ON COLUMN persons.data IS 'Room for person specific data, defined in "fields" table';
+COMMENT ON COLUMN persons.dat IS 'Room for person specific data, defined in "fields" table';
 
 COMMENT ON COLUMN persons.label IS 'Used to label persons in lists. Contains an array of names of fields included in the data field (first priority) or table itself. TODO: One or multiple comma separated virtual fields will be added in sqlite and postgresql.';
 

@@ -4,7 +4,7 @@ CREATE TABLE observation_sources(
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
   url text DEFAULT NULL,
-  data jsonb DEFAULT NULL,
+  dat jsonb DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
 );
 
@@ -27,7 +27,7 @@ COMMENT ON COLUMN observation_sources.name IS 'Name of observation source, like 
 
 COMMENT ON COLUMN observation_sources.url IS 'URL of observation source, like "https://www.gbif.org/"';
 
-COMMENT ON COLUMN observation_sources.data IS 'Room for observation source specific data, defined in "fields" table';
+COMMENT ON COLUMN observation_sources.dat IS 'Room for observation source specific data, defined in "fields" table';
 
 ALTER TABLE observation_sources ENABLE electric;
 

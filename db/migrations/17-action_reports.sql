@@ -3,7 +3,7 @@ CREATE TABLE action_reports(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   action_id uuid DEFAULT NULL REFERENCES actions(action_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT NULL, -- DATE_PART('year', now()::date),
-  data jsonb DEFAULT NULL,
+  dat jsonb DEFAULT NULL, -- data provokes errer in electric-sql
   deleted boolean DEFAULT NULL -- FALSE
 );
 
@@ -24,7 +24,7 @@ COMMENT ON COLUMN action_reports.account_id IS 'redundant account_id enhances da
 
 COMMENT ON COLUMN action_reports.year IS 'Year of report. Preset: current year';
 
-COMMENT ON COLUMN action_reports.data IS 'Room for action report specific data, defined in "fields" table';
+COMMENT ON COLUMN action_reports.dat IS 'Room for action report specific data, defined in "fields" table';
 
 ALTER TABLE action_reports ENABLE electric;
 
