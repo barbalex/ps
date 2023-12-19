@@ -3,7 +3,7 @@ CREATE TABLE subproject_reports(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT NULL, -- DATE_PART('year', now()::date),
-  dat jsonb DEFAULT NULL, -- data provokes errer in electric-sql
+  data jsonb DEFAULT NULL, -- data provokes errer in electric-sql
   files_active boolean DEFAULT NULL, -- TRUE,
   deleted boolean DEFAULT NULL -- FALSE
 );
@@ -25,7 +25,7 @@ COMMENT ON COLUMN subproject_reports.account_id IS 'redundant account_id enhance
 
 COMMENT ON COLUMN subproject_reports.year IS 'Year of report. Preset: current year';
 
-COMMENT ON COLUMN subproject_reports.dat IS 'Room for subproject report specific data, defined in "fields" table';
+COMMENT ON COLUMN subproject_reports.data IS 'Room for subproject report specific data, defined in "fields" table';
 
 COMMENT ON COLUMN subproject_reports.files_active IS 'Whether files are used. Preset: true';
 

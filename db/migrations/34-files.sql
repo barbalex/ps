@@ -7,7 +7,7 @@ CREATE TABLE files(
   action_id uuid DEFAULT NULL REFERENCES actions(action_id) ON DELETE CASCADE ON UPDATE CASCADE,
   check_id uuid DEFAULT NULL REFERENCES checks(check_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
-  dat jsonb DEFAULT NULL, -- data provokes errer in electric-sql
+  data jsonb DEFAULT NULL, -- data provokes errer in electric-sql
   mimetype text DEFAULT NULL,
   -- file bytea DEFAULT NULL, -- not supported by electric-sql
   url text DEFAULT NULL,
@@ -37,7 +37,7 @@ COMMENT ON TABLE files IS 'used to store files.';
 
 COMMENT ON COLUMN files.account_id IS 'redundant account_id enhances data safety';
 
-COMMENT ON COLUMN files.dat IS 'Room for file specific data, defined in "fields" table';
+COMMENT ON COLUMN files.data IS 'Room for file specific data, defined in "fields" table';
 
 COMMENT ON COLUMN files.mimetype IS 'mimetype of file, used to know how to open or preview it';
 

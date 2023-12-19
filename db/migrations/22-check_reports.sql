@@ -3,7 +3,7 @@ CREATE TABLE place_reports(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT NULL, -- DATE_PART('year', now()::date),
-  dat jsonb DEFAULT NULL, -- data provokes errer in electric-sql
+  data jsonb DEFAULT NULL, -- data provokes errer in electric-sql
   files_active boolean DEFAULT NULL, -- TRUE,
   deleted boolean DEFAULT NULL -- FALSE
 );
@@ -25,7 +25,7 @@ COMMENT ON COLUMN place_reports.account_id IS 'redundant account_id enhances dat
 
 COMMENT ON COLUMN place_reports.year IS 'Year of report. Preset: current year';
 
-COMMENT ON COLUMN place_reports.dat IS 'Room for place report specific data, defined in "fields" table';
+COMMENT ON COLUMN place_reports.data IS 'Room for place report specific data, defined in "fields" table';
 
 COMMENT ON COLUMN place_reports.files_active IS 'Whether files are used. Preset: true';
 

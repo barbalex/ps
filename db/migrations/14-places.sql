@@ -4,7 +4,7 @@ CREATE TABLE places(
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   parent_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE NO action ON UPDATE CASCADE,
   level integer DEFAULT NULL, -- 1,
-  dat jsonb DEFAULT NULL, -- data provokes errer in electric-sql
+  data jsonb DEFAULT NULL, -- data provokes errer in electric-sql
   label jsonb DEFAULT NULL,
   order_by jsonb DEFAULT NULL,
   --geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
@@ -21,7 +21,7 @@ CREATE INDEX ON places USING btree(parent_id);
 
 CREATE INDEX ON places USING btree(level);
 
--- CREATE INDEX ON places USING gin(dat); -- seems not to work with electric-sql
+-- CREATE INDEX ON places USING gin(data); -- seems not to work with electric-sql
 -- CREATE INDEX ON places USING gist(geometry);
 -- CREATE INDEX ON places((1))
 -- WHERE
@@ -36,7 +36,7 @@ COMMENT ON COLUMN places.parent_id IS 'parent place. null for places of level 1'
 
 COMMENT ON COLUMN places.level IS 'level of place: 1, 2';
 
-COMMENT ON COLUMN places.dat IS 'Room for place specific data, defined in "fields" table';
+COMMENT ON COLUMN places.data IS 'Room for place specific data, defined in "fields" table';
 
 COMMENT ON COLUMN places.label IS 'Used to label places in lists. Contains an array of names of fields included in the data field (first priority) or table itself. TODO: One or multiple comma separated virtual fields will be added in sqlite and postgresql.';
 

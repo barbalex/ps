@@ -6,7 +6,7 @@ CREATE TABLE taxonomies(
   name text DEFAULT NULL,
   url text DEFAULT NULL,
   obsolete boolean DEFAULT NULL, -- FALSE,
-  dat jsonb DEFAULT NULL, -- data provokes errer in electric-sql
+  data jsonb DEFAULT NULL, -- data provokes errer in electric-sql
   deleted boolean DEFAULT NULL -- FALSE
 );
 
@@ -38,7 +38,7 @@ COMMENT ON COLUMN taxonomies.url IS 'URL of taxonomy, like "https://www.infoflor
 
 COMMENT ON COLUMN taxonomies.obsolete IS 'Is taxonomy obsolete? Preset: false';
 
-COMMENT ON COLUMN taxonomies.dat IS 'Room for taxonomy specific data, defined in "fields" table';
+COMMENT ON COLUMN taxonomies.data IS 'Room for taxonomy specific data, defined in "fields" table';
 
 ALTER TABLE taxonomies ENABLE electric;
 
