@@ -23,3 +23,9 @@ export const file = () => ({
   file_id: uuidv7(),
   deleted: false,
 })
+
+export const place = () => ({
+  place_id: uuidv7(),
+  level: 1,
+  deleted: false,
+})
