@@ -60,6 +60,9 @@ export const labelFromData = ({ data, table }) => {
     case 'observations':
       return data.observation_id
       break
+    case 'persons':
+      return data.email ?? data.person_id
+      break
     default:
       return undefined
   }
