@@ -6,7 +6,7 @@ CREATE TABLE taxonomies(
   name text DEFAULT NULL,
   url text DEFAULT NULL,
   obsolete boolean DEFAULT NULL, -- FALSE,
-  data jsonb DEFAULT NULL, -- data provokes errer in electric-sql
+  data jsonb DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
 );
 

@@ -3,7 +3,7 @@ CREATE TABLE persons(
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   email text DEFAULT NULL,
-  data jsonb DEFAULT NULL, -- data provokes errer in electric-sql
+  data jsonb DEFAULT NULL,
   label jsonb DEFAULT NULL,
   order_by jsonb DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE

@@ -9,7 +9,7 @@ CREATE TABLE observations(
   date date DEFAULT NULL,
   author text DEFAULT NULL,
   -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
-  data jsonb DEFAULT NULL, -- data provokes errer in electric-sql
+  data jsonb DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
 );
 

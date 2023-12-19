@@ -3,7 +3,7 @@ CREATE TABLE checks(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   date date DEFAULT NULL, -- CURRENT_DATE,
-  data jsonb DEFAULT NULL, -- data provokes errer in electric-sql
+  data jsonb DEFAULT NULL,
   -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
   relevant_for_reports boolean DEFAULT NULL, -- TRUE,
   files_active boolean DEFAULT NULL, -- TRUE,

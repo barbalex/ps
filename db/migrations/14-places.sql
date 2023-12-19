@@ -4,7 +4,7 @@ CREATE TABLE places(
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   parent_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE NO action ON UPDATE CASCADE,
   level integer DEFAULT NULL, -- 1,
-  data jsonb DEFAULT NULL, -- data provokes errer in electric-sql
+  data jsonb DEFAULT NULL,
   label jsonb DEFAULT NULL,
   order_by jsonb DEFAULT NULL,
   --geometry geometry(GeometryCollection, 4326) DEFAULT NULL,

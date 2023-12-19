@@ -75,7 +75,7 @@ CREATE TABLE projects(
   values_on_multiple_levels text DEFAULT NULL,
   multiple_action_values_on_same_level text DEFAULT NULL,
   multiple_check_values_on_same_level text DEFAULT NULL,
-  data jsonb DEFAULT NULL, -- data provokes errer in electric-sql
+  data jsonb DEFAULT NULL,
   files_active boolean DEFAULT NULL, -- TRUE,
   deleted boolean DEFAULT NULL -- FALSE
 );
@@ -196,7 +196,7 @@ CREATE TABLE subprojects(
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
   since_year integer DEFAULT NULL,
-  data jsonb DEFAULT NULL, -- data provokes errer in electric-sql
+  data jsonb DEFAULT NULL,
   files_active boolean DEFAULT NULL, -- TRUE,
   deleted boolean DEFAULT NULL -- FALSE
 );
@@ -304,7 +304,7 @@ CREATE TABLE taxonomies(
   name text DEFAULT NULL,
   url text DEFAULT NULL,
   obsolete boolean DEFAULT NULL, -- FALSE,
-  data jsonb DEFAULT NULL, -- data provokes errer in electric-sql
+  data jsonb DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
 );
 
@@ -423,7 +423,7 @@ CREATE TABLE lists(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
-  data jsonb DEFAULT NULL, -- data provokes errer in electric-sql
+  data jsonb DEFAULT NULL,
   obsolete boolean DEFAULT FALSE,
   deleted boolean DEFAULT FALSE
 );
@@ -561,7 +561,7 @@ CREATE TABLE places(
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   parent_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE NO action ON UPDATE CASCADE,
   level integer DEFAULT 1,
-  data jsonb DEFAULT NULL, -- data provokes errer in electric-sql
+  data jsonb DEFAULT NULL,
   label jsonb DEFAULT NULL,
   order_by jsonb DEFAULT NULL,
   geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
@@ -614,7 +614,7 @@ CREATE TABLE actions(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   date date DEFAULT CURRENT_DATE,
-  data jsonb DEFAULT NULL, -- data provokes errer in electric-sql
+  data jsonb DEFAULT NULL,
   geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
   relevant_for_reports boolean DEFAULT TRUE,
   files_active boolean DEFAULT TRUE,
@@ -707,7 +707,7 @@ CREATE TABLE action_reports(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   action_id uuid DEFAULT NULL REFERENCES actions(action_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT DATE_PART('year', now()::date),
-  data jsonb DEFAULT NULL, -- data provokes errer in electric-sql
+  data jsonb DEFAULT NULL,
   deleted boolean DEFAULT FALSE
 );
 
@@ -785,7 +785,7 @@ CREATE TABLE checks(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   date date DEFAULT CURRENT_DATE,
-  data jsonb DEFAULT NULL, -- data provokes errer in electric-sql
+  data jsonb DEFAULT NULL,
   geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
   relevant_for_reports boolean DEFAULT TRUE,
   files_active boolean DEFAULT TRUE,
@@ -913,7 +913,7 @@ CREATE TABLE place_reports(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT DATE_PART('year', now()::date),
-  data jsonb DEFAULT NULL, -- data provokes errer in electric-sql
+  data jsonb DEFAULT NULL,
   files_active boolean DEFAULT TRUE,
   deleted boolean DEFAULT FALSE
 );
@@ -995,7 +995,7 @@ CREATE TABLE observation_sources(
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
   url text DEFAULT NULL,
-  data jsonb DEFAULT NULL, -- data provokes errer in electric-sql
+  data jsonb DEFAULT NULL,
   deleted boolean DEFAULT FALSE
 );
 
@@ -1037,7 +1037,7 @@ CREATE TABLE observations(
   date date DEFAULT NULL,
   author text DEFAULT NULL,
   geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
-  data jsonb DEFAULT NULL, -- data provokes errer in electric-sql
+  data jsonb DEFAULT NULL,
   deleted boolean DEFAULT FALSE
 );
 
@@ -1159,7 +1159,7 @@ CREATE TABLE goals(
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT DATE_PART('year', now()::date),
   name text DEFAULT NULL,
-  data jsonb DEFAULT NULL, -- data provokes errer in electric-sql
+  data jsonb DEFAULT NULL,
   deleted boolean DEFAULT FALSE
 );
 
@@ -1188,7 +1188,7 @@ CREATE TABLE goal_reports(
   goal_report_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   goal_id uuid DEFAULT NULL REFERENCES goals(goal_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  data jsonb DEFAULT NULL, -- data provokes errer in electric-sql
+  data jsonb DEFAULT NULL,
   deleted boolean DEFAULT FALSE
 );
 
@@ -1262,7 +1262,7 @@ CREATE TABLE subproject_reports(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT DATE_PART('year', now()::date),
-  data jsonb DEFAULT NULL, -- data provokes errer in electric-sql
+  data jsonb DEFAULT NULL,
   files_active boolean DEFAULT TRUE,
   deleted boolean DEFAULT FALSE
 );
@@ -1299,7 +1299,7 @@ CREATE TABLE project_reports(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT DATE_PART('year', now()::date),
-  data jsonb DEFAULT NULL, -- data provokes errer in electric-sql
+  data jsonb DEFAULT NULL,
   files_active boolean DEFAULT TRUE,
   deleted boolean DEFAULT FALSE
 );
@@ -1343,7 +1343,7 @@ CREATE TABLE files(
   action_id uuid DEFAULT NULL REFERENCES actions(action_id) ON DELETE CASCADE ON UPDATE CASCADE,
   check_id uuid DEFAULT NULL REFERENCES checks(check_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
-  data jsonb DEFAULT NULL, -- data provokes errer in electric-sql
+  data jsonb DEFAULT NULL,
   mimetype text DEFAULT NULL,
   file bytea DEFAULT NULL,
   url text DEFAULT NULL,
@@ -1392,7 +1392,7 @@ CREATE TABLE persons(
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   email text DEFAULT NULL,
-  data jsonb DEFAULT NULL, -- data provokes errer in electric-sql
+  data jsonb DEFAULT NULL,
   label jsonb DEFAULT NULL,
   order_by jsonb DEFAULT NULL,
   deleted boolean DEFAULT FALSE

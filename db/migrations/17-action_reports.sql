@@ -3,7 +3,7 @@ CREATE TABLE action_reports(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   action_id uuid DEFAULT NULL REFERENCES actions(action_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT NULL, -- DATE_PART('year', now()::date),
-  data jsonb DEFAULT NULL, -- data provokes errer in electric-sql
+  data jsonb DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
 );
 
