@@ -4,7 +4,7 @@ import { useElectric } from '../../ElectricProvider'
 import { generateProjectLabel } from './projects'
 import { generateSubprojectLabel } from './subprojects'
 import { generateAccountLabel } from './accounts'
-import { genarateUserLabel } from './users'
+import { generateUserLabel } from './users'
 
 // how to get work:
 // 1. Add label in LabelGenerator.tsx, inside useEffect that only runs once if label column is not found
@@ -20,7 +20,7 @@ export const LabelGenerator = () => {
     generateProjectLabel(db)
     generateSubprojectLabel(db)
     generateAccountLabel(db)
-    genarateUserLabel(db)
+    generateUserLabel(db)
   }, [db])
 
   return null
