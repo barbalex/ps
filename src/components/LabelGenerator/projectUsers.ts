@@ -5,7 +5,7 @@ export const generateProjectUserLabel = async (db) => {
   const hasLabel = columns.some((column) => column.name === 'label')
   if (!hasLabel) {
     await db.raw({
-      sql: 'ALTER TABLE project_users ADD COLUMN label text GENERATED ALWAYS AS (roject_user_id)',
+      sql: 'ALTER TABLE project_users ADD COLUMN label text GENERATED ALWAYS AS (project_user_id)',
     })
     await db.raw({
       sql: 'CREATE INDEX IF NOT EXISTS project_users_label_idx ON project_users(label)',
