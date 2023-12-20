@@ -29,6 +29,7 @@ import { generateGoalLabel } from './goals'
 import { generateGoalReportLabel } from './goalReports'
 import { generateGoalReportValueLabel } from './goalReportValues'
 import { generateSubprojectUserLabel } from './subprojectUers'
+// TODO: place: checks, actions, reports, users
 
 // how to get work:
 // 1. Add label in LabelGenerator.tsx, inside useEffect that only runs once if label column is not found
