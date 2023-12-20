@@ -49,6 +49,8 @@ export const Component = () => {
 
   const row: Project = results
 
+  console.log('project, row:', row)
+
   const onChange = useCallback(
     (e, data) => {
       const targetType = e.target.type

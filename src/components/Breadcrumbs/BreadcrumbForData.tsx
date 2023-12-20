@@ -39,7 +39,10 @@ export const Breadcrumb = ({ match }) => {
 
         return {
           path,
-          text: labelFromData({ data: result, table }) ?? result[idField],
+          text:
+            result.label ??
+            labelFromData({ data: result, table }) ??
+            result[idField],
         }
       }),
     [idField, match.pathname, results, table],
