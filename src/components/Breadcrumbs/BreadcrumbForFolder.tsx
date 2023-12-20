@@ -4,7 +4,7 @@ import { useElectric } from '../../ElectricProvider'
 import { useLiveQuery } from 'electric-sql/react'
 
 import './breadcrumb.css'
-import { navs } from '../../navs'
+import { navs } from '../../modules/navs'
 import { MenuComponent } from './Menu'
 import { idFieldFromTable } from '../../modules/idFieldFromTable'
 

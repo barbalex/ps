@@ -2,7 +2,7 @@ import { createBrowserRouter } from 'react-router-dom'
 
 import { Header } from './components/Header'
 import { ErrorPage } from './routes/error'
-import { navs } from './navs'
+import { navs } from './modules/navs'
 
 export const router = createBrowserRouter([
   {
