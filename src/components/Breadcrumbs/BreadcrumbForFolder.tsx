@@ -39,16 +39,16 @@ export const Breadcrumb = ({ match }) => {
     [idField, row, table, text],
   )
 
-  console.log('BreadcrumbForFolder', {
-    results,
-    label,
-    idField,
-    row,
-    table,
-    text,
-    params: match.params,
-    navs,
-  })
+  // console.log('BreadcrumbForFolder', {
+  //   results,
+  //   label,
+  //   idField,
+  //   row,
+  //   table,
+  //   text,
+  //   params: match.params,
+  //   navs,
+  // })
 
   return (
     <>
