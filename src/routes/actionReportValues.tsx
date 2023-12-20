@@ -48,7 +48,7 @@ export const Component = () => {
         (actionReportValue: ActionReportValue, index: number) => (
           <p key={index} className="item">
             <Link
-              to={`/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/actions/${action_id}/reports/${actionReportValue.action_report_value_id}/values/${actionReportValue.action_report_value_id}`}
+              to={`/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/actions/${action_id}/reports/${action_report_id}/values/${actionReportValue.action_report_value_id}`}
             >
               {actionReportValue.action_report_value_id}
             </Link>
