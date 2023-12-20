@@ -8,6 +8,7 @@ import './style.css'
 import { ElectricWrapper as ElectricProvider } from './ElectricProvider'
 import { lightTheme } from './modules/theme'
 import { router } from './router'
+import { LabelGenerator } from './components/LabelGenerator'
 
 import '@fontsource/roboto/300.css'
 import '@fontsource/roboto/400.css'
@@ -19,6 +20,7 @@ export default function App() {
 
   return (
     <ElectricProvider>
+      <LabelGenerator />
       <ConfigProvider locale={deDe} theme={{ cssVar: true }}>
         <FluentProvider theme={lightTheme}>
           <RouterProvider
