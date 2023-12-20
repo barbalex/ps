@@ -8,6 +8,7 @@ CREATE TABLE places(
   label jsonb DEFAULT NULL,
   order_by jsonb DEFAULT NULL,
   --geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
+  files_active boolean DEFAULT NULL -- TRUE,
   deleted boolean DEFAULT NULL -- FALSE
 );
 
@@ -41,6 +42,8 @@ COMMENT ON COLUMN places.data IS 'Room for place specific data, defined in "fiel
 COMMENT ON COLUMN places.label IS 'Used to label places in lists. Contains an array of names of fields included in the data field (first priority) or table itself. TODO: One or multiple comma separated virtual fields will be added in sqlite and postgresql.';
 
 COMMENT ON COLUMN places.order_by IS 'Used to order places in lists. Contains an array of names of fields included in the data field (first priority) or table itself. TODO: One or multiple comma separated virtual fields will be added and indexed in sqlite and postgresql. ';
+
+COMMENT ON COLUMN places.files_active IS 'Whether files are used. Preset: true';
 
 -- COMMENT ON COLUMN places.geometry IS 'geometry of place';
 ALTER TABLE places ENABLE electric;
