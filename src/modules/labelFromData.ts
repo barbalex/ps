@@ -1,8 +1,5 @@
 export const labelFromData = ({ data, table }) => {
   switch (table) {
-    case 'persons':
-      return data.email ?? data.person_id
-      break
     case 'places':
       // TODO: build virtual field from data.label, return that here
       return data.place_id
