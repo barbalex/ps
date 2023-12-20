@@ -8,7 +8,7 @@ CREATE TABLE places(
   label jsonb DEFAULT NULL,
   order_by jsonb DEFAULT NULL,
   --geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
-  files_active boolean DEFAULT NULL -- TRUE,
+  files_active boolean DEFAULT NULL, -- TRUE,
   deleted boolean DEFAULT NULL -- FALSE
 );
 
