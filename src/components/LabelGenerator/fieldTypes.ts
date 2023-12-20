@@ -1,4 +1,4 @@
-export const generateFieldtypeLabel = async (db) => {
+export const generateFieldTypeLabel = async (db) => {
   const columns = await db.raw({
     sql: 'PRAGMA table_xinfo(field_types)',
   })
