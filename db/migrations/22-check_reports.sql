@@ -8,8 +8,7 @@ CREATE TABLE place_reports(
   deleted boolean DEFAULT NULL -- FALSE
 );
 
-CREATE INDEX ON place_reports USING btree(place_report_id);
-
+-- CREATE INDEX ON place_reports USING btree(place_report_id);
 CREATE INDEX ON place_reports USING btree(account_id);
 
 CREATE INDEX ON place_reports USING btree(place_id);

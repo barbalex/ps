@@ -7,8 +7,7 @@ CREATE TABLE widget_types(
   deleted boolean DEFAULT NULL -- FALSE
 );
 
-CREATE INDEX ON widget_types(widget_type);
-
+-- CREATE INDEX ON widget_types(widget_type);
 CREATE INDEX ON widget_types(sort);
 
 -- CREATE INDEX ON widget_types((1))

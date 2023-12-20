@@ -12,8 +12,7 @@ CREATE TABLE places(
   deleted boolean DEFAULT NULL -- FALSE
 );
 
-CREATE INDEX ON places USING btree(place_id);
-
+-- CREATE INDEX ON places USING btree(place_id);
 CREATE INDEX ON places USING btree(account_id);
 
 CREATE INDEX ON places USING btree(subproject_id);

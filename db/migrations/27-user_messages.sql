@@ -5,8 +5,7 @@ CREATE TABLE user_messages(
   read boolean DEFAULT NULL -- FALSE
 );
 
-CREATE INDEX ON user_messages USING btree(user_message_id);
-
+-- CREATE INDEX ON user_messages USING btree(user_message_id);
 CREATE INDEX ON user_messages USING btree(user_id);
 
 CREATE INDEX ON user_messages USING btree(message_id);

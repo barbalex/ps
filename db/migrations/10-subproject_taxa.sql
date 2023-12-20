@@ -6,8 +6,7 @@ CREATE TABLE subproject_taxa(
   deleted boolean DEFAULT NULL -- FALSE
 );
 
-CREATE INDEX ON subproject_taxa USING btree(subproject_taxon_id);
-
+-- CREATE INDEX ON subproject_taxa USING btree(subproject_taxon_id);
 CREATE INDEX ON subproject_taxa USING btree(account_id);
 
 CREATE INDEX ON subproject_taxa USING btree(subproject_id);

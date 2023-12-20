@@ -9,8 +9,7 @@ CREATE TABLE action_values(
   deleted boolean DEFAULT NULL -- FALSE
 );
 
-CREATE INDEX ON action_values USING btree(action_value_id);
-
+-- CREATE INDEX ON action_values USING btree(action_value_id);
 CREATE INDEX ON action_values USING btree(account_id);
 
 CREATE INDEX ON action_values USING btree(action_id);

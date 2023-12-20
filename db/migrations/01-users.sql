@@ -5,8 +5,7 @@ CREATE TABLE users(
   deleted boolean DEFAULT NULL
 );
 
-CREATE INDEX ON users USING btree(user_id);
-
+-- CREATE INDEX ON users USING btree(user_id);
 CREATE INDEX ON users USING btree(email);
 
 -- The following index provokes an error in prisma and was thus uncommented

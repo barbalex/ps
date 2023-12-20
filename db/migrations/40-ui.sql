@@ -3,8 +3,7 @@ CREATE TABLE ui(
   designing boolean DEFAULT NULL -- FALSE,
 );
 
-CREATE INDEX ON ui USING btree(user_id);
-
+-- CREATE INDEX ON ui USING btree(user_id);
 COMMENT ON TABLE ui IS 'User interface settings (state saved in db)';
 
 COMMENT ON COLUMN ui.designing IS 'Whether user is currently designing projects. Preset: false';

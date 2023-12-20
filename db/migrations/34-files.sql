@@ -14,8 +14,7 @@ CREATE TABLE files(
   deleted boolean DEFAULT NULL -- FALSE
 );
 
-CREATE INDEX ON files USING btree(file_id);
-
+-- CREATE INDEX ON files USING btree(file_id);
 CREATE INDEX ON files USING btree(account_id);
 
 CREATE INDEX ON files USING btree(project_id);

@@ -5,8 +5,7 @@ CREATE TABLE widgets_for_fields(
   deleted boolean DEFAULT NULL -- FALSE
 );
 
-CREATE INDEX ON widgets_for_fields(widget_for_field_id);
-
+-- CREATE INDEX ON widgets_for_fields(widget_for_field_id);
 CREATE INDEX ON widgets_for_fields(field_type);
 
 CREATE INDEX ON widgets_for_fields(widget_type);

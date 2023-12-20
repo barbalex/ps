@@ -6,8 +6,7 @@ CREATE TABLE field_types(
   deleted boolean DEFAULT NULL
 );
 
-CREATE INDEX ON field_types(field_type);
-
+-- CREATE INDEX ON field_types(field_type);
 CREATE INDEX ON field_types(sort);
 
 -- CREATE INDEX ON field_types((1))

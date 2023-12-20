@@ -20,8 +20,7 @@ CREATE TABLE place_levels(
   deleted boolean DEFAULT NULL -- FALSE
 );
 
-CREATE INDEX ON place_levels USING btree(place_level_id);
-
+-- CREATE INDEX ON place_levels USING btree(place_level_id);
 CREATE INDEX ON place_levels USING btree(account_id);
 
 CREATE INDEX ON place_levels USING btree(project_id);

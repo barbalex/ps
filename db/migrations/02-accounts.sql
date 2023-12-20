@@ -10,8 +10,7 @@ CREATE TABLE accounts(
 
 -- how to query if date is in range:
 -- where period @> '2023-11-01'::date
-CREATE INDEX ON accounts USING btree(account_id);
-
+-- CREATE INDEX ON accounts USING btree(account_id);
 CREATE INDEX ON accounts USING btree(user_id);
 
 CREATE INDEX ON accounts USING btree(period_start);

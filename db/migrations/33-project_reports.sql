@@ -8,8 +8,7 @@ CREATE TABLE project_reports(
   deleted boolean DEFAULT NULL -- FALSE
 );
 
-CREATE INDEX ON project_reports USING btree(project_report_id);
-
+-- CREATE INDEX ON project_reports USING btree(project_report_id);
 CREATE INDEX ON project_reports USING btree(account_id);
 
 CREATE INDEX ON project_reports USING btree(project_id);

@@ -9,8 +9,7 @@ CREATE TABLE taxa(
   deleted boolean DEFAULT NULL -- FALSE
 );
 
-CREATE INDEX ON taxa USING btree(taxon_id);
-
+-- CREATE INDEX ON taxa USING btree(taxon_id);
 CREATE INDEX ON taxa USING btree(account_id);
 
 CREATE INDEX ON taxa USING btree(taxonomy_id);

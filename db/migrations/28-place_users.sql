@@ -7,8 +7,7 @@ CREATE TABLE place_users(
   deleted boolean DEFAULT NULL -- FALSE
 );
 
-CREATE INDEX ON place_users USING btree(place_user_id);
-
+-- CREATE INDEX ON place_users USING btree(place_user_id);
 CREATE INDEX ON place_users USING btree(account_id);
 
 CREATE INDEX ON place_users USING btree(place_id);

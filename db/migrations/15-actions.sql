@@ -10,8 +10,7 @@ CREATE TABLE actions(
   deleted boolean DEFAULT NULL -- FALSE
 );
 
-CREATE INDEX ON actions USING btree(action_id);
-
+-- CREATE INDEX ON actions USING btree(action_id);
 CREATE INDEX ON actions USING btree(account_id);
 
 CREATE INDEX ON actions USING btree(place_id);

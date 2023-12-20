@@ -12,8 +12,7 @@ CREATE TABLE fields(
   deleted boolean DEFAULT NULL -- FALSE
 );
 
-CREATE INDEX ON fields USING btree(field_id);
-
+-- CREATE INDEX ON fields USING btree(field_id);
 CREATE INDEX ON fields USING btree(project_id);
 
 CREATE INDEX ON fields USING btree(account_id);

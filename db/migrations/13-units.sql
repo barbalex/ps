@@ -17,8 +17,7 @@ CREATE TABLE units(
   deleted boolean DEFAULT NULL -- FALSE
 );
 
-CREATE INDEX ON units USING btree(unit_id);
-
+-- CREATE INDEX ON units USING btree(unit_id);
 CREATE INDEX ON units USING btree(account_id);
 
 CREATE INDEX ON units USING btree(project_id);

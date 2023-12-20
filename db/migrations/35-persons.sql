@@ -9,8 +9,7 @@ CREATE TABLE persons(
   deleted boolean DEFAULT NULL -- FALSE
 );
 
-CREATE INDEX ON persons USING btree(person_id);
-
+-- CREATE INDEX ON persons USING btree(person_id);
 CREATE INDEX ON persons USING btree(account_id);
 
 CREATE INDEX ON persons USING btree(project_id);

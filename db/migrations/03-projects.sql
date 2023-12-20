@@ -14,8 +14,7 @@ CREATE TABLE projects(
   deleted boolean DEFAULT NULL -- FALSE
 );
 
-CREATE INDEX ON projects USING btree(project_id);
-
+-- CREATE INDEX ON projects USING btree(project_id);
 CREATE INDEX ON projects USING btree(account_id);
 
 CREATE INDEX ON projects USING btree(name);

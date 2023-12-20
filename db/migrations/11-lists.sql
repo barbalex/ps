@@ -8,8 +8,7 @@ CREATE TABLE lists(
   deleted boolean DEFAULT NULL -- FALSE
 );
 
-CREATE INDEX ON lists USING btree(list_id);
-
+-- CREATE INDEX ON lists USING btree(list_id);
 CREATE INDEX ON lists USING btree(account_id);
 
 CREATE INDEX ON lists USING btree(project_id);

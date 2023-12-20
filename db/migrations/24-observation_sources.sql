@@ -8,8 +8,7 @@ CREATE TABLE observation_sources(
   deleted boolean DEFAULT NULL -- FALSE
 );
 
-CREATE INDEX ON observation_sources USING btree(observation_source_id);
-
+-- CREATE INDEX ON observation_sources USING btree(observation_source_id);
 CREATE INDEX ON observation_sources USING btree(account_id);
 
 CREATE INDEX ON observation_sources USING btree(project_id);

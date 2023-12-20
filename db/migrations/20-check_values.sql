@@ -9,8 +9,7 @@ CREATE TABLE check_values(
   deleted boolean DEFAULT NULL -- FALSE
 );
 
-CREATE INDEX ON check_values USING btree(check_value_id);
-
+-- CREATE INDEX ON check_values USING btree(check_value_id);
 CREATE INDEX ON check_values USING btree(account_id);
 
 CREATE INDEX ON check_values USING btree(check_id);
@@ -26,7 +25,6 @@ CREATE INDEX ON check_values USING btree(value_text);
 -- CREATE INDEX ON check_values((1))
 -- WHERE
 --   deleted;
-
 COMMENT ON TABLE check_values IS 'value-ing checks i.e. the situation of the subproject in this place';
 
 COMMENT ON COLUMN check_values.account_id IS 'redundant account_id enhances data safety';

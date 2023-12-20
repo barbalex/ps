@@ -8,8 +8,7 @@ CREATE TABLE goals(
   deleted boolean DEFAULT NULL -- FALSE
 );
 
-CREATE INDEX ON goals USING btree(goal_id);
-
+-- CREATE INDEX ON goals USING btree(goal_id);
 CREATE INDEX ON goals USING btree(account_id);
 
 CREATE INDEX ON goals USING btree(subproject_id);

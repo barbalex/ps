@@ -10,8 +10,7 @@ CREATE TABLE taxonomies(
   deleted boolean DEFAULT NULL -- FALSE
 );
 
-CREATE INDEX ON taxonomies USING btree(taxonomy_id);
-
+-- CREATE INDEX ON taxonomies USING btree(taxonomy_id);
 CREATE INDEX ON taxonomies USING btree(account_id);
 
 CREATE INDEX ON taxonomies USING btree(project_id);

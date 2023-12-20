@@ -13,8 +13,7 @@ CREATE TABLE observations(
   deleted boolean DEFAULT NULL -- FALSE
 );
 
-CREATE INDEX ON observations USING btree(observation_id);
-
+-- CREATE INDEX ON observations USING btree(observation_id);
 CREATE INDEX ON observations USING btree(account_id);
 
 CREATE INDEX ON observations USING btree(observation_source_id);

@@ -9,8 +9,7 @@ CREATE TABLE subprojects(
   deleted boolean DEFAULT NULL -- FALSE
 );
 
-CREATE INDEX ON subprojects USING btree(subproject_id);
-
+-- CREATE INDEX ON subprojects USING btree(subproject_id);
 CREATE INDEX ON subprojects USING btree(account_id);
 
 CREATE INDEX ON subprojects USING btree(project_id);

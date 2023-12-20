@@ -6,8 +6,7 @@ CREATE TABLE goal_reports(
   deleted boolean DEFAULT NULL -- FALSE
 );
 
-CREATE INDEX ON goal_reports USING btree(goal_report_id);
-
+-- CREATE INDEX ON goal_reports USING btree(goal_report_id);
 CREATE INDEX ON goal_reports USING btree(account_id);
 
 CREATE INDEX ON goal_reports USING btree(goal_id);

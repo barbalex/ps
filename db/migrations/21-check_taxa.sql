@@ -10,8 +10,7 @@ CREATE TABLE check_taxa(
   deleted boolean DEFAULT NULL -- FALSE
 );
 
-CREATE INDEX ON check_taxa USING btree(check_taxon_id);
-
+-- CREATE INDEX ON check_taxa USING btree(check_taxon_id);
 CREATE INDEX ON check_taxa USING btree(account_id);
 
 CREATE INDEX ON check_taxa USING btree(check_id);
