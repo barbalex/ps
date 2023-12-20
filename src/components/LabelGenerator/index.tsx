@@ -35,8 +35,8 @@ import { generateCheckTaxonLabel } from './checkTaxa'
 import { generateActionLabel } from './actions'
 import { generateActionValueLabel } from './actionValues'
 import { generateActionReportLabel } from './actionReports'
+import { generateActionReportValueLabel } from './actionReportValues'
 // TODO:
-// action_report_values
 // place_users
 // place_reports
 // place_report_values
@@ -86,6 +86,7 @@ export const LabelGenerator = () => {
     generateActionLabel(db)
     generateActionValueLabel(db)
     generateActionReportLabel(db)
+    generateActionReportValueLabel(db)
   }, [db])
 
   return null
