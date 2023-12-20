@@ -1,11 +1,5 @@
 export const labelFromData = ({ data, table }) => {
   switch (table) {
-    case 'accounts':
-      return data.account_id
-      break
-    case 'users':
-      return data.email ?? data.user_id
-      break
     case 'field_types':
       return data.field_type
       break
