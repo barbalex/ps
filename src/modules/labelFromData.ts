@@ -1,8 +1,5 @@
 export const labelFromData = ({ data, table }) => {
   switch (table) {
-    case 'subproject_reports':
-      return data.year ?? data.subproject_report_id
-      break
     case 'goals':
       return data.goal_id
       break
