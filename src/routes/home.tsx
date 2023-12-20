@@ -16,51 +16,54 @@ const Home = () => (
       />
     </picture>
     <div className="scroll-container">
-      <h6 className="page-title">Bedrohte Pflanzenarten fördern</h6>
+      <h6 className="page-title">Bedrohte Arten und Biotope fördern</h6>
       <div className="card-container">
         <div className="card">
-          <h3 className="card-title">Arten</h3>
-          Sehr seltene und gefährdete Pflanzenarten, für welche der Kanton
-          Zürich eine besondere Verantwortung hat. Für jede wurde ein
-          Aktionsplan erstellt.
+          <h3 className="card-title">Arten / Biotope</h3>
+          Seltene und gefährdete Arten oder Biotope, die überwacht und mit
+          Massnahmen gefördert werden.
         </div>
         <div className="card">
-          <h3 className="card-title">Artverantwortliche</h3>
-          Für jede Aktionsplanart ist ein Experte oder eine Expertin
-          verantwortlich.
+          <h3 className="card-title">Verantwortliche</h3>
+          Für jede Art / jedes Biotop ist ein Experte oder eine Expertin
+          verant&shy;wortlich.
         </div>
         <div className="card">
-          <h3 className="card-title">Populationen</h3>
-          Die Pflanzen einer Art bilden kleine oder grosse Populationen, je
-          nachdem wie günstig die Bedingungen sind.
+          <h3 className="card-title">Räume</h3>
+          Biotope / Populationen, für die Massnahmen und Kontrollen
+          durch&shy;geführt werden.
+        </div>
+        <div className="card">
+          <h3 className="card-title">Zweistufige Räume</h3>
+          Es kann nützlich sein, Räume in zwei Stufen zu glie&shy;dern.
+          Beispiele: Populationen und Teil&shy;populationen, Biotope und deren
+          Teilflächen.
         </div>
         <div className="card">
           <h3 className="card-title">Ziele</h3>
-          beschreiben, wie sich die Populationen künftig entwickeln sollen,
-          damit die Art langfristig erhalten bleibt.
+          beschreiben, wie sich die Populationen / Biotope künftig entwickeln
+          sollen, damit die Art bzw. das Biotop langfristig erhalten bleibt.
         </div>
         <div className="card">
           <h3 className="card-title">Massnahmen</h3>
-          Primär werden die Lebensräume der ursprünglichen Vorkommen der
-          Aktionsplanarten gemäss ihrer Ansprüche aufgewertet. Sekundär werden
-          Aktionsplanarten vermehrt, um bestehende Populationen durch
-          Ansiedlungen zu verstärken oder um neue Populationen zu gründen.
+          Was gemacht wird, um den Zustand der Art / des Biotops an diesem Ort
+          zu verbessern.
         </div>
         <div className="card">
           <h3 className="card-title">Kontrollen</h3>
-          Artverantwortliche und Freiwillige besuchen Populationen, erfassen die
-          Grösse des Bestandes und überprüfen die Wirkung der Massnahmen.
+          Die aktuelle Situation wird erfasst (Arten, Populationsgrössen,
+          Mass&shy;nahmen-Wirkung).
         </div>
         <div className="card">
           <h3 className="card-title">Berichte</h3>
           Jährlich verfassen die Artverantwortlichen einen Bericht über die
-          Entwicklung der Populationen, den Erfolg der Massnahmen und die
-          Erreichung der Ziele.
+          Entwick&shy;lung der Populationen / Biotope, den Erfolg der Massnahmen
+          und die Errei&shy;chung der Ziele.
         </div>
         <div className="card">
           <h3 className="card-title">Beobachtungen</h3>
-          Die Artverantwortlichen prüfen von Dritten gemeldete Beobachtungen und
-          ordnen diese den Populationen der Aktionsplanarten zu.
+          Artverantwortliche prüfen von Dritten gemeldete Beobachtungen und
+          ordnen diese den Popula&shy;tionen / Biotopen zu.
         </div>
       </div>
     </div>
