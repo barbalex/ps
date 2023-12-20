@@ -10,6 +10,7 @@ import { generateWidgetTypeLabel } from './widgetTypes'
 import { generateWidgetForFieldLabel } from './widgetForField'
 import { generateFileLabel } from './files'
 import { generatePlaceLevelLabel } from './placeLevels'
+import { generateUnitLabel } from './units'
 
 // how to get work:
 // 1. Add label in LabelGenerator.tsx, inside useEffect that only runs once if label column is not found
@@ -31,6 +32,7 @@ export const LabelGenerator = () => {
     generateWidgetForFieldLabel(db)
     generateFileLabel(db)
     generatePlaceLevelLabel(db)
+    generateUnitLabel(db)
   }, [db])
 
   return null
