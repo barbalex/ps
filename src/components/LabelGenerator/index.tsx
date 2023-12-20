@@ -17,6 +17,7 @@ import { generateTaxonomyLabel } from './taxonomies'
 import { generateTaxonLabel } from './taxa'
 import { generateProjectUserLabel } from './projectUsers'
 import { generateProjectReportLabel } from './projectReports'
+import { generateFieldLabel } from './fields'
 
 // how to get work:
 // 1. Add label in LabelGenerator.tsx, inside useEffect that only runs once if label column is not found
@@ -45,6 +46,7 @@ export const LabelGenerator = () => {
     generateTaxonLabel(db)
     generateProjectUserLabel(db)
     generateProjectReportLabel(db)
+    generateFieldLabel(db)
   }, [db])
 
   return null
