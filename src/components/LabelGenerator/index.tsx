@@ -37,8 +37,7 @@ import { generateActionValueLabel } from './actionValues'
 import { generateActionReportLabel } from './actionReports'
 import { generateActionReportValueLabel } from './actionReportValues'
 import { generatePlaceReportLabel } from './placeReports'
-// TODO:
-// place_report_values
+import { generatePlaceReportValueLabel } from './placeReportValues'
 
 // how to get work:
 // 1. Add label in LabelGenerator.tsx, inside useEffect that only runs once if label column is not found
@@ -87,6 +86,7 @@ export const LabelGenerator = () => {
     generateActionReportLabel(db)
     generateActionReportValueLabel(db)
     generatePlaceReportLabel(db)
+    generatePlaceReportValueLabel(db)
   }, [db])
 
   return null
