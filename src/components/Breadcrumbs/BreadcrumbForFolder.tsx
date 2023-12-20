@@ -72,19 +72,30 @@ export const Breadcrumb = ({ match }) => {
   const { db } = useElectric()
   const { results } = useLiveQuery(
     () =>
-      db[queryTable]?.liveMany({ where: { [idField]: match.params[idField] } }),
+      db[queryTable]?.liveMany({
+        where: { [idField]: match.params[idField] },
+      }),
     [db, queryTable, match],
   )
+  const row = results?.[0]
 
   const label = useMemo(
     () =>
       table === 'home' || table === 'docs'
         ? text
-        : (results ?? [])?.[0]?.label ?? (results ?? [])?.[0]?.[idField],
-    [idField, results, table, text],
+        : row?.label ?? row?.[idField],
+    [idField, row, table, text],
   )
 
-  // console.log('Breadcrumb', { results, label })
+  // console.log('BreadcrumbForFolder', {
+  //   results,
+  //   label,
+  //   idField,
+  //   row,
+  //   table,
+  //   text,
+  //   params: match.params,
+  // })
 
   return (
     <>
