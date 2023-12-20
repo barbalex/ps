@@ -13,6 +13,7 @@ import { generatePlaceLevelLabel } from './placeLevels'
 import { generateUnitLabel } from './units'
 import { generateListLabel } from './lists'
 import { generateListValueLabel } from './listValues'
+import { generateTaxonomyLabel } from './taxonomies'
 
 // how to get work:
 // 1. Add label in LabelGenerator.tsx, inside useEffect that only runs once if label column is not found
@@ -37,6 +38,7 @@ export const LabelGenerator = () => {
     generateUnitLabel(db)
     generateListLabel(db)
     generateListValueLabel(db)
+    generateTaxonomyLabel(db)
   }, [db])
 
   return null
