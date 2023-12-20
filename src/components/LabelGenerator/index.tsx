@@ -29,8 +29,8 @@ import { generateGoalLabel } from './goals'
 import { generateGoalReportLabel } from './goalReports'
 import { generateGoalReportValueLabel } from './goalReportValues'
 import { generateSubprojectUserLabel } from './subprojectUers'
+import { generateCheckLabel } from './checks'
 // TODO:
-// checks
 // check_values
 // check_taxa
 // actions
@@ -80,6 +80,7 @@ export const LabelGenerator = () => {
     generateGoalReportLabel(db)
     generateGoalReportValueLabel(db)
     generateSubprojectUserLabel(db)
+    generateCheckLabel(db)
   }, [db])
 
   return null
