@@ -16,19 +16,22 @@ export const Breadcrumb = ({ match }) => {
       ? 'breadcrumbs__crumb is-active'
       : 'breadcrumbs__crumb link'
 
-  // TODO:
-  // to only query when needed,
-  // create two different breadcrumb components
-  // one that queries data and one that only uses navs
+  const idField = idFieldFromTable(table)
+  // filter by parents
+  const filterParams = { deleted: false }
+  const parentFilterParamsArray = Object.entries(match.params).filter(
+    ([key, value]) => key !== idField, // eslint-disable-line @typescript-eslint/no-unused-vars
+  )
+  parentFilterParamsArray.forEach(([key, value]) => {
+    filterParams[key] = value
+  })
+
   const { db } = useElectric()
   const queryTable = table === 'home' || table === 'docs' ? 'projects' : table
-  // console.log('Breadcrumb', { queryTable, table })
   const { results } = useLiveQuery(
-    () => db[queryTable]?.liveMany(),
-    [db, queryTable],
+    () => db[queryTable]?.liveMany({ where: filterParams }),
+    [db, table],
   )
-
-  const idField = idFieldFromTable(table)
 
   const myNavs = useMemo(
     () =>
@@ -43,8 +46,6 @@ export const Breadcrumb = ({ match }) => {
       }),
     [idField, match.pathname, results],
   )
-
-  // console.log('Breadcrumb', { myNavs, match, table, text })
 
   return (
     <>
