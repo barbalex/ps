@@ -16,6 +16,7 @@ export const Component = () => {
     await db.users.create({
       data: {
         user_id: uuidv7(),
+        deleted: false,
       },
     })
   }

@@ -17,6 +17,7 @@ export const Component = () => {
       data: {
         observation_id: uuidv7(),
         observation_source_id,
+        deleted: false,
         // TODO: set account_id
       },
     })

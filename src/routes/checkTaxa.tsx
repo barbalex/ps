@@ -21,6 +21,7 @@ export const Component = () => {
       data: {
         check_taxon_id: uuidv7(),
         check_id,
+        deleted: false,
         // TODO: add account_id
       },
     })

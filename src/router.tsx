@@ -2,7 +2,7 @@ import { createBrowserRouter } from 'react-router-dom'
 
 import { Header } from './components/Header'
 import { ErrorPage } from './routes/error'
-import { navs } from './modules/navs'
+import { buildNavs } from './modules/navs'
 
 export const router = createBrowserRouter([
   {
@@ -18,7 +18,7 @@ export const router = createBrowserRouter([
             table: 'root',
             folder: true,
           }),
-          to: (match) => navs({ table: 'root', match }),
+          to: (match) => buildNavs({ table: 'root', params: match.params }),
         },
         children: [
           {
@@ -99,7 +99,7 @@ export const router = createBrowserRouter([
                     table: 'projects',
                     folder: false,
                   }),
-                  to: (match) => navs({ table: `projects`, match }),
+                  to: (match) => buildNavs({ table: `projects`, params: match.params }),
                 },
                 children: [
                   { index: true, lazy: () => import('./routes/project') },
@@ -127,7 +127,7 @@ export const router = createBrowserRouter([
                             table: 'subprojects',
                             folder: false,
                           }),
-                          to: (match) => navs({ table: `subprojects`, match }),
+                          to: (match) => buildNavs({ table: `subprojects`, params: match.params }),
                         },
                         children: [
                           {
@@ -159,7 +159,7 @@ export const router = createBrowserRouter([
                                     folder: false,
                                   }),
                                   to: (match) =>
-                                    navs({ table: `places`, match }),
+                                    buildNavs({ table: `places`, params: match.params }),
                                 },
                                 children: [
                                   {
@@ -191,7 +191,7 @@ export const router = createBrowserRouter([
                                             folder: false,
                                           }),
                                           to: (match) =>
-                                            navs({ table: `checks`, match }),
+                                            buildNavs({ table: `checks`, params: match.params }),
                                         },
                                         children: [
                                           {
@@ -292,7 +292,7 @@ export const router = createBrowserRouter([
                                             folder: false,
                                           }),
                                           to: (match) =>
-                                            navs({ table: `actions`, match }),
+                                            buildNavs({ table: `actions`, params: match.params }),
                                         },
                                         children: [
                                           {
@@ -364,9 +364,9 @@ export const router = createBrowserRouter([
                                                     folder: false,
                                                   }),
                                                   to: (match) =>
-                                                    navs({
+                                                    buildNavs({
                                                       table: `action_reports`,
-                                                      match,
+                                                      params: match.params,
                                                     }),
                                                 },
                                                 children: [
@@ -448,9 +448,9 @@ export const router = createBrowserRouter([
                                             folder: false,
                                           }),
                                           to: (match) =>
-                                            navs({
+                                            buildNavs({
                                               table: `place_reports`,
-                                              match,
+                                              params: match.params,
                                             }),
                                         },
                                         children: [
@@ -643,7 +643,7 @@ export const router = createBrowserRouter([
                                     folder: false,
                                   }),
                                   to: (match) =>
-                                    navs({ table: `goals`, match }),
+                                    buildNavs({ table: `goals`, params: match.params }),
                                 },
                                 children: [
                                   {
@@ -676,9 +676,9 @@ export const router = createBrowserRouter([
                                             folder: false,
                                           }),
                                           to: (match) =>
-                                            navs({
+                                            buildNavs({
                                               table: `goal_reports`,
-                                              match,
+                                              params: match.params,
                                             }),
                                         },
                                         children: [
@@ -808,7 +808,7 @@ export const router = createBrowserRouter([
                             table: 'lists',
                             folder: false,
                           }),
-                          to: (match) => navs({ table: `lists`, match }),
+                          to: (match) => buildNavs({ table: `lists`, params: match.params }),
                         },
                         children: [
                           {
@@ -871,7 +871,7 @@ export const router = createBrowserRouter([
                             table: 'taxonomies',
                             folder: false,
                           }),
-                          to: (match) => navs({ table: `taxonomies`, match }),
+                          to: (match) => buildNavs({ table: `taxonomies`, params: match.params }),
                         },
                         children: [
                           {
@@ -1016,7 +1016,7 @@ export const router = createBrowserRouter([
                             folder: false,
                           }),
                           to: (match) =>
-                            navs({ table: `observation_sources`, match }),
+                            buildNavs({ table: `observation_sources`, params: match.params }),
                         },
                         children: [
                           {

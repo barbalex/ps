@@ -20,6 +20,7 @@ export const Component = () => {
       data: {
         goal_report_value_id: uuidv7(),
         goal_report_id,
+        deleted: false,
         // TODO: add account_id
       },
     })

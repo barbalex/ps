@@ -16,6 +16,7 @@ export const Component = () => {
     await db.widget_types.create({
       data: {
         widget_type: uuidv7(),
+        deleted: false,
       },
     })
   }

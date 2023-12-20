@@ -19,6 +19,7 @@ export const Component = () => {
       data: {
         subproject_report_id: uuidv7(),
         subproject_id,
+        deleted: false,
         // TODO: add account_id
       },
     })

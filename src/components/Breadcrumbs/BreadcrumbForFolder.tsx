@@ -4,7 +4,7 @@ import { useElectric } from '../../ElectricProvider'
 import { useLiveQuery } from 'electric-sql/react'
 
 import './breadcrumb.css'
-import { navs as buildNavs } from '../../modules/navs'
+import { buildNavs } from '../../modules/navs'
 import { MenuComponent } from './Menu'
 import { idFieldFromTable } from '../../modules/idFieldFromTable'
 
@@ -17,7 +17,7 @@ export const Breadcrumb = ({ match }) => {
       ? 'breadcrumbs__crumb is-active'
       : 'breadcrumbs__crumb link'
 
-  const navs = buildNavs({ table, match }) ?? []
+  const navs = buildNavs({ table, params: match.params }) ?? []
 
   const idField = idFieldFromTable(table)
   const queryTable = table === 'root' || table === 'docs' ? 'projects' : table
@@ -39,15 +39,16 @@ export const Breadcrumb = ({ match }) => {
     [idField, row, table, text],
   )
 
-  // console.log('BreadcrumbForFolder', {
-  //   results,
-  //   label,
-  //   idField,
-  //   row,
-  //   table,
-  //   text,
-  //   params: match.params,
-  // })
+  console.log('BreadcrumbForFolder', {
+    results,
+    label,
+    idField,
+    row,
+    table,
+    text,
+    params: match.params,
+    navs,
+  })
 
   return (
     <>

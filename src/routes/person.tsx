@@ -20,6 +20,7 @@ export const Component = () => {
       data: {
         person_id: uuidv7(),
         project_id,
+        deleted: false,
         // TODO: add account_id
       },
     })

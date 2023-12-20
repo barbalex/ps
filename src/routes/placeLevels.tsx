@@ -18,6 +18,7 @@ export const Component = () => {
       data: {
         place_level_id: uuidv7(),
         project_id,
+        deleted: false,
         // TODO: add account_id
       },
     })

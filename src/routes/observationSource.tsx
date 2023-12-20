@@ -20,6 +20,7 @@ export const Component = () => {
       data: {
         observation_source_id: uuidv7(),
         project_id,
+        deleted: false,
         // TODO: set account_id
       },
     })

@@ -21,6 +21,7 @@ export const Component = () => {
       data: {
         action_value_id: uuidv7(),
         action_id,
+        deleted: false,
         // TODO: add account_id
       },
     })

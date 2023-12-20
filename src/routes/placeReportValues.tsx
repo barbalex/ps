@@ -21,6 +21,7 @@ export const Component = () => {
       data: {
         place_report_value_id: uuidv7(),
         place_report_id,
+        deleted: false,
         // TODO: add account_id
       },
     })

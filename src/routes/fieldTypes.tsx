@@ -16,6 +16,7 @@ export const Component = () => {
     await db.field_types.create({
       data: {
         field_type: uuidv7(),
+        deleted: false,
       },
     })
   }

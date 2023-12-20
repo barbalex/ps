@@ -9,4 +9,6 @@ export const idFieldFromTable = (table: string): string =>
     ? 'widget_type'
     : table === 'widgets_for_fields'
     ? 'widget_for_field_id'
-    : `${table.slice(0, -1)}_id`
+    : // : table === 'root'
+      // ? 'project_id'
+      `${table.slice(0, -1)}_id`

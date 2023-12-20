@@ -16,6 +16,7 @@ export const Component = () => {
     await db.widgets_for_fields.create({
       data: {
         widget_for_field_id: uuidv7(),
+        deleted: false,
       },
     })
   }
