@@ -19,6 +19,7 @@ import { generateProjectUserLabel } from './projectUsers'
 import { generateProjectReportLabel } from './projectReports'
 import { generateFieldLabel } from './fields'
 import { generateObservationSourceLabel } from './observationSources'
+import { generateObservationLabel } from './observations'
 
 // how to get work:
 // 1. Add label in LabelGenerator.tsx, inside useEffect that only runs once if label column is not found
@@ -49,6 +50,7 @@ export const LabelGenerator = () => {
     generateProjectReportLabel(db)
     generateFieldLabel(db)
     generateObservationSourceLabel(db)
+    generateObservationLabel(db)
   }, [db])
 
   return null
