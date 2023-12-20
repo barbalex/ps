@@ -36,9 +36,8 @@ import { generateActionLabel } from './actions'
 import { generateActionValueLabel } from './actionValues'
 import { generateActionReportLabel } from './actionReports'
 import { generateActionReportValueLabel } from './actionReportValues'
+import { generatePlaceReportLabel } from './placeReports'
 // TODO:
-// place_users
-// place_reports
 // place_report_values
 
 // how to get work:
@@ -87,6 +86,7 @@ export const LabelGenerator = () => {
     generateActionValueLabel(db)
     generateActionReportLabel(db)
     generateActionReportValueLabel(db)
+    generatePlaceReportLabel(db)
   }, [db])
 
   return null
