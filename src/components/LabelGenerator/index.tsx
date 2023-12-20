@@ -28,6 +28,7 @@ import { generateSubprojectReportLabel } from './subprojectReports'
 import { generateGoalLabel } from './goals'
 import { generateGoalReportLabel } from './goalReports'
 import { generateGoalReportValueLabel } from './goalReportValues'
+import { generateSubprojectUserLabel } from './subprojectUers'
 
 // how to get work:
 // 1. Add label in LabelGenerator.tsx, inside useEffect that only runs once if label column is not found
@@ -67,6 +68,7 @@ export const LabelGenerator = () => {
     generateGoalLabel(db)
     generateGoalReportLabel(db)
     generateGoalReportValueLabel(db)
+    generateSubprojectUserLabel(db)
   }, [db])
 
   return null
