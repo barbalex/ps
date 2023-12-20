@@ -3,6 +3,7 @@ CREATE TABLE field_types(
   -- no account_id as field_types are predefined for all projects
   sort smallint DEFAULT NULL,
   comment text,
+  label_replace_by_generated_column text DEFAULT NULL,
   deleted boolean DEFAULT NULL
 );
 

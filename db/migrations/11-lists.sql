@@ -5,6 +5,7 @@ CREATE TABLE lists(
   name text DEFAULT NULL,
   data jsonb DEFAULT NULL,
   obsolete boolean DEFAULT NULL, -- FALSE,
+  label_replace_by_generated_column text DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
 );
 

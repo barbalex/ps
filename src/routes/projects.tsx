@@ -4,7 +4,6 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Projects as Project } from '../../../generated/client'
 import { project as createProjectPreset } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
-import { labelFromData } from '../modules/labelFromData'
 import '../form.css'
 
 export const Component = () => {
@@ -44,9 +43,7 @@ export const Component = () => {
       </div>
       {projects.map((project: Project, index: number) => (
         <p key={index} className="item">
-          <Link to={`/projects/${project.project_id}`}>
-            {labelFromData({ data: project, table: 'projects' })}
-          </Link>
+          <Link to={`/projects/${project.project_id}`}>{project.label}</Link>
         </p>
       ))}
     </div>

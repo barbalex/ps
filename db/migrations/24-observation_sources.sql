@@ -5,6 +5,7 @@ CREATE TABLE observation_sources(
   name text DEFAULT NULL,
   url text DEFAULT NULL,
   data jsonb DEFAULT NULL,
+  label_replace_by_generated_column text DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
 );
 

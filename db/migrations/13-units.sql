@@ -14,6 +14,7 @@ CREATE TABLE units(
   sort integer DEFAULT NULL,
   type text DEFAULT NULL,
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE NO action ON UPDATE CASCADE,
+  label_replace_by_generated_column text DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
 );
 

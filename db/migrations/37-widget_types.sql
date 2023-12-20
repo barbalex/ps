@@ -4,6 +4,7 @@ CREATE TABLE widget_types(
   needs_list boolean DEFAULT NULL, -- FALSE,
   sort smallint DEFAULT NULL,
   comment text,
+  label_replace_by_generated_column text DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
 );
 

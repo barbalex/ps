@@ -562,7 +562,7 @@ CREATE TABLE places(
   parent_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE NO action ON UPDATE CASCADE,
   level integer DEFAULT 1,
   data jsonb DEFAULT NULL,
-  label jsonb DEFAULT NULL,
+  label_by jsonb DEFAULT NULL,
   order_by jsonb DEFAULT NULL,
   geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
   files_active boolean DEFAULT TRUE,
@@ -599,7 +599,7 @@ COMMENT ON COLUMN places.level IS 'level of place: 1, 2';
 
 COMMENT ON COLUMN places.data IS 'Room for place specific data, defined in "fields" table';
 
-COMMENT ON COLUMN places.label IS 'Used to label places in lists. Contains an array of names of fields included in the data field (first priority) or table itself. TODO: One or multiple comma separated virtual fields will be added in sqlite and postgresql.';
+COMMENT ON COLUMN places.label_by IS 'Used to label places in lists. Contains an array of names of fields included in the data field (first priority) or table itself. TODO: One or multiple comma separated virtual fields will be added in sqlite and postgresql.';
 
 COMMENT ON COLUMN places.order_by IS 'Used to order places in lists. Contains an array of names of fields included in the data field (first priority) or table itself. TODO: One or multiple comma separated virtual fields will be added and indexed in sqlite and postgresql. ';
 
@@ -1396,7 +1396,7 @@ CREATE TABLE persons(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   email text DEFAULT NULL,
   data jsonb DEFAULT NULL,
-  label jsonb DEFAULT NULL,
+  label_by jsonb DEFAULT NULL,
   order_by jsonb DEFAULT NULL,
   deleted boolean DEFAULT FALSE
 );
@@ -1419,7 +1419,7 @@ COMMENT ON COLUMN persons.account_id IS 'redundant account_id enhances data safe
 
 COMMENT ON COLUMN persons.data IS 'Room for person specific data, defined in "fields" table';
 
-COMMENT ON COLUMN persons.label IS 'Used to label persons in lists. Contains an array of names of fields included in the data field (first priority) or table itself. TODO: One or multiple comma separated virtual fields will be added in sqlite and postgresql.';
+COMMENT ON COLUMN persons.label_by IS 'Used to label persons in lists. Contains an array of names of fields included in the data field (first priority) or table itself. TODO: One or multiple comma separated virtual fields will be added in sqlite and postgresql.';
 
 COMMENT ON COLUMN persons.order_by IS 'Used to order persons in lists. Contains an array of names of fields included in the data field (first priority) or table itself. TODO: One or multiple comma separated virtual fields will be added and indexed in sqlite and postgresql. ';
 

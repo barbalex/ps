@@ -48,6 +48,8 @@ export const Component = () => {
 
   const row: Subproject = results
 
+  console.log('subproject, row:', row)
+
   const onChange = useCallback(
     (e, data) => {
       const targetType = e.target.type

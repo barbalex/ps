@@ -12,7 +12,6 @@ import {
 
 import { Places as Place } from '../../../generated/client'
 import { place as createPlacePreset } from '../modules/dataPresets'
-import { labelFromData } from '../modules/labelFromData'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'

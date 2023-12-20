@@ -2,6 +2,7 @@ CREATE TABLE user_messages(
   user_message_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
   message_id uuid DEFAULT NULL REFERENCES messages(message_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  label_replace_by_generated_column text DEFAULT NULL,
   read boolean DEFAULT NULL -- FALSE
 );
 

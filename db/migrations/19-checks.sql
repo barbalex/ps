@@ -7,6 +7,7 @@ CREATE TABLE checks(
   -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
   relevant_for_reports boolean DEFAULT NULL, -- TRUE,
   files_active boolean DEFAULT NULL, -- TRUE,
+  label_replace_by_generated_column text DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
 );
 

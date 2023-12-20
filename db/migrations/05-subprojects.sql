@@ -3,6 +3,7 @@ CREATE TABLE subprojects(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
+  label_replace_by_generated_column text DEFAULT NULL,
   since_year integer DEFAULT NULL,
   data jsonb DEFAULT NULL,
   files_active boolean DEFAULT NULL, -- TRUE,

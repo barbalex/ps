@@ -4,7 +4,6 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 import { Places as Place } from '../../../generated/client'
 import { place as createPlacePreset } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
-import { labelFromData } from '../modules/labelFromData'
 import '../form.css'
 
 export const Component = () => {
@@ -48,7 +47,7 @@ export const Component = () => {
           <Link
             to={`/projects/${project_id}/subprojects/${subproject_id}/places/${place.place_id}`}
           >
-            {labelFromData({ data: place, table: 'places' })}
+            {place.label ?? place.place_id}
           </Link>
         </p>
       ))}

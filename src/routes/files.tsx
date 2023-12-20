@@ -2,7 +2,6 @@ import { useLiveQuery } from 'electric-sql/react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { Files as File } from '../../../generated/client'
-import { labelFromData } from '../modules/labelFromData'
 import { file as createFilePreset } from '../modules/dataPresets'
 
 import '../form.css'
@@ -42,7 +41,7 @@ export const Component = () => {
       {files.map((file: File, index: number) => (
         <p key={index} className="item">
           <Link to={`/files/${file.file_id}`}>
-            {labelFromData({ data: file, table: 'files' })}
+            {file.label ?? file.file_id}
           </Link>
         </p>
       ))}

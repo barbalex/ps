@@ -5,7 +5,8 @@ CREATE TABLE accounts(
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE NO action ON UPDATE NO action,
   type text DEFAULT NULL,
   period_start date DEFAULT NULL,
-  period_end date DEFAULT NULL
+  period_end date DEFAULT NULL,
+  label_replace_by_generated_column text DEFAULT NULL
 );
 
 -- how to query if date is in range:

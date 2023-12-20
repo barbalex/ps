@@ -7,6 +7,7 @@ CREATE TABLE taxonomies(
   url text DEFAULT NULL,
   obsolete boolean DEFAULT NULL, -- FALSE,
   data jsonb DEFAULT NULL,
+  label_replace_by_generated_column text DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
 );
 

@@ -6,7 +6,6 @@ import { useLiveQuery } from 'electric-sql/react'
 import './breadcrumb.css'
 import { navs } from '../../navs'
 import { MenuComponent } from './Menu'
-import { labelFromData } from '../../modules/labelFromData'
 import { idFieldFromTable } from '../../modules/idFieldFromTable'
 
 export const Breadcrumb = ({ match }) => {
@@ -81,11 +80,8 @@ export const Breadcrumb = ({ match }) => {
     () =>
       table === 'home' || table === 'docs'
         ? text
-        : labelFromData({
-            data: (results ?? [])?.[0] ?? {},
-            table: queryTable,
-          }),
-    [queryTable, results, table, text],
+        : (results ?? [])?.[0]?.label ?? (results ?? [])?.[0]?.[idField],
+    [idField, results, table, text],
   )
 
   // console.log('Breadcrumb', { results, label })

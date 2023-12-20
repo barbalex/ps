@@ -17,6 +17,7 @@ CREATE TABLE place_levels(
   check_taxons boolean DEFAULT NULL, -- FALSE,
   observation_references boolean DEFAULT NULL, -- FALSE,
   files_active boolean DEFAULT NULL, -- TRUE,
+  label_replace_by_generated_column text DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
 );
 

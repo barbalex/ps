@@ -10,6 +10,7 @@ CREATE TABLE observations(
   author text DEFAULT NULL,
   -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
   data jsonb DEFAULT NULL,
+  label_replace_by_generated_column text DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
 );
 

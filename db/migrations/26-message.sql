@@ -1,5 +1,6 @@
 CREATE TABLE messages(
   message_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  label_replace_by_generated_column text DEFAULT NULL,
   date timestamp DEFAULT NULL, -- now(),
   message text DEFAULT NULL
 );

@@ -5,6 +5,7 @@ CREATE TABLE place_reports(
   year integer DEFAULT NULL, -- DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
   files_active boolean DEFAULT NULL, -- TRUE,
+  label_replace_by_generated_column text DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
 );
 
