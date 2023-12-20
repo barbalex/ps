@@ -1,6 +1,5 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
 import { useParams, useNavigate } from 'react-router-dom'
 import { FaPlus, FaMinus } from 'react-icons/fa'
 import { Button, Switch } from '@fluentui/react-components'
