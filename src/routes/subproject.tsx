@@ -93,11 +93,6 @@ export const Component = () => {
         />
       </div>
       <TextFieldInactive
-        label="Account"
-        name="account_id"
-        value={row.account_id ?? ''}
-      />
-      <TextFieldInactive
         label="Project"
         name="project_id"
         value={row.project_id ?? ''}
