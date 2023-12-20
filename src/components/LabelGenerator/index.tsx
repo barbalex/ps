@@ -32,8 +32,8 @@ import { generateSubprojectUserLabel } from './subprojectUers'
 import { generateCheckLabel } from './checks'
 import { generateCheckValueLabel } from './checkValues'
 import { generateCheckTaxonLabel } from './checkTaxa'
+import { generateActionLabel } from './actions'
 // TODO:
-// actions
 // action_values
 // action_reports
 // action_report_values
@@ -83,6 +83,7 @@ export const LabelGenerator = () => {
     generateCheckLabel(db)
     generateCheckValueLabel(db)
     generateCheckTaxonLabel(db)
+    generateActionLabel(db)
   }, [db])
 
   return null
