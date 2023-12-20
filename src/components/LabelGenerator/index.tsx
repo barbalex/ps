@@ -5,6 +5,7 @@ import { generateProjectLabel } from './projects'
 import { generateSubprojectLabel } from './subprojects'
 import { generateAccountLabel } from './accounts'
 import { generateUserLabel } from './users'
+import { generateFieldtypeLabel } from './fieldTypes'
 
 // how to get work:
 // 1. Add label in LabelGenerator.tsx, inside useEffect that only runs once if label column is not found
@@ -21,6 +22,7 @@ export const LabelGenerator = () => {
     generateSubprojectLabel(db)
     generateAccountLabel(db)
     generateUserLabel(db)
+    generateFieldtypeLabel(db)
   }, [db])
 
   return null
