@@ -42,7 +42,7 @@ export const Component = () => {
           <Link
             to={`/projects/${subproject.project_id}/subprojects/${subproject.subproject_id}`}
           >
-            {subproject.label}
+            {subproject.label ?? subproject.subproject_id}
           </Link>
         </p>
       ))}
