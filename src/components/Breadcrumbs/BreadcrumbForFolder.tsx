@@ -17,58 +17,59 @@ export const Breadcrumb = ({ match }) => {
       ? 'breadcrumbs__crumb is-active'
       : 'breadcrumbs__crumb link'
 
-  const myNavs = useMemo(() => {
-    switch (table) {
-      case 'home':
-        return navs({ table: 'root', match })
-        break
-      case 'projects':
-        return navs({ table: 'projects', match })
-        break
-      case 'subprojects':
-        return navs({ table: 'subprojects', match })
-        break
-      case 'places':
-        return navs({ table: 'places', match })
-        break
-      case 'checks':
-        return navs({ table: 'checks', match })
-        break
-      case 'actions':
-        return navs({ table: 'actions', match })
-        break
-      case 'action_reports':
-        return navs({ table: 'action_reports', match })
-        break
-      case 'place_reports':
-        return navs({ table: 'place_reports', match })
-        break
-      case 'goals':
-        return navs({ table: 'goals', match })
-        break
-      case 'goal_reports':
-        return navs({ table: 'goal_reports', match })
-        break
-      case 'lists':
-        return navs({ table: 'lists', match })
-        break
-      case 'taxonomies':
-        return navs({ table: 'taxonomies', match })
-        break
-      case 'observation_sources':
-        return navs({ table: 'observation_sources', match })
-        break
-      case 'docs':
-        return []
-        break
-      default:
-        return []
-        break
-    }
-  }, [match, table])
+  const myNavs = navs({ table, match }) ?? []
+  // const myNavs = useMemo(() => {
+  //   switch (table) {
+  //     case 'root':
+  //       return navs({ table: 'root', match })
+  //       break
+  //     case 'projects':
+  //       return navs({ table: 'projects', match })
+  //       break
+  //     case 'subprojects':
+  //       return navs({ table: 'subprojects', match })
+  //       break
+  //     case 'places':
+  //       return navs({ table: 'places', match })
+  //       break
+  //     case 'checks':
+  //       return navs({ table: 'checks', match })
+  //       break
+  //     case 'actions':
+  //       return navs({ table: 'actions', match })
+  //       break
+  //     case 'action_reports':
+  //       return navs({ table: 'action_reports', match })
+  //       break
+  //     case 'place_reports':
+  //       return navs({ table: 'place_reports', match })
+  //       break
+  //     case 'goals':
+  //       return navs({ table: 'goals', match })
+  //       break
+  //     case 'goal_reports':
+  //       return navs({ table: 'goal_reports', match })
+  //       break
+  //     case 'lists':
+  //       return navs({ table: 'lists', match })
+  //       break
+  //     case 'taxonomies':
+  //       return navs({ table: 'taxonomies', match })
+  //       break
+  //     case 'observation_sources':
+  //       return navs({ table: 'observation_sources', match })
+  //       break
+  //     case 'docs':
+  //       return []
+  //       break
+  //     default:
+  //       return []
+  //       break
+  //   }
+  // }, [match, table])
 
   const idField = idFieldFromTable(table)
-  const queryTable = table === 'home' || table === 'docs' ? 'projects' : table
+  const queryTable = table === 'root' || table === 'docs' ? 'projects' : table
   const { db } = useElectric()
   const { results } = useLiveQuery(
     () =>
@@ -81,7 +82,7 @@ export const Breadcrumb = ({ match }) => {
 
   const label = useMemo(
     () =>
-      table === 'home' || table === 'docs'
+      table === 'root' || table === 'docs'
         ? text
         : row?.label ?? row?.[idField],
     [idField, row, table, text],

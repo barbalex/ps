@@ -27,7 +27,7 @@ export const Breadcrumb = ({ match }) => {
   })
 
   const { db } = useElectric()
-  const queryTable = table === 'home' || table === 'docs' ? 'projects' : table
+  const queryTable = table === 'root' || table === 'docs' ? 'projects' : table
   const { results } = useLiveQuery(
     () => db[queryTable]?.liveMany({ where: filterParams }),
     [db, table],
@@ -46,6 +46,8 @@ export const Breadcrumb = ({ match }) => {
       }),
     [idField, match.pathname, results],
   )
+
+  // console.log('BreadcrumbForData', { myNavs, match })
 
   return (
     <>

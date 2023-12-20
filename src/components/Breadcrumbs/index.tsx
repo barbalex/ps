@@ -17,7 +17,7 @@ export const Breadcrumbs = () => {
       {filteredMatches.map((match, index) => {
         const { table, folder } = match?.handle?.crumb?.(match) ?? {}
 
-        if (table === 'home' || folder === false) {
+        if (table === 'root' || folder === false) {
           return <FolderBreadcrumb key={index} match={match} />
         }
 

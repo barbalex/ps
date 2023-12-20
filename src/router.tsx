@@ -15,7 +15,7 @@ export const router = createBrowserRouter([
         handle: {
           crumb: () => ({
             text: 'Home',
-            table: 'home',
+            table: 'root',
             folder: true,
           }),
           to: (match) => navs({ table: 'root', match }),
