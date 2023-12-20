@@ -21,7 +21,7 @@ const items: MenuItem[] = [
     key: 'root',
     children: buildNavs({ table: 'root', params: {} }).map(
       ({ path, text }, index) => ({
-        label: text,
+        label: text, // TODO: style menu with text and BsCaretRight
         path,
         key: index,
         children: [],
