@@ -1,7 +1,7 @@
-import type { MenuProps } from 'antd';
+import type { MenuProps } from 'antd'
 import { BsCaretDown, BsCaretRight } from 'react-icons/bs'
 
-import { buildNavs as buildNavs } from '../../modules/navs';
+import { buildNavs as buildNavs } from '../../modules/navs'
 
 function getItem(
   label: React.ReactNode,
@@ -12,18 +12,20 @@ function getItem(
     key,
     children,
     label,
-  } as MenuItem;
+  } as MenuItem
 }
 
-const items :MenuItem[] = [
+const items: MenuItem[] = [
   {
     label: <BsCaretDown />,
     key: 'root',
-    children: buildNavs({table: 'root', 'params'}).map(({ path, text }, index) => ({
-      label: text,
-      path,
-      key: index,
-    })),
+    children: buildNavs({ table: 'root', params: {} }).map(
+      ({ path, text }, index) => ({
+        label: text,
+        path,
+        key: index,
+        children: [],
+      }),
+    ),
   },
 ]
-
