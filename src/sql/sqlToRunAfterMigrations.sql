@@ -1,3 +1,5 @@
+-- actually, this is for postgresql
+-- TODO: make it work for sqlite
 CREATE INDEX ON users((1))
 WHERE
   deleted;
@@ -149,7 +151,6 @@ WHERE
 -- CREATE INDEX ON files((1))
 -- WHERE
 --   deleted;
-
 CREATE INDEX ON field_types((1))
 WHERE
   deleted;
