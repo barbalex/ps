@@ -11,8 +11,8 @@ export const generateSubprojectLabel = async (db) => {
       sql: 'CREATE INDEX IF NOT EXISTS subprojects_label_idx ON subprojects(label)',
     })
   }
-  console.log('LabelGenerator, subprojects:', {
-    columns,
-    hasLabel,
-  })
+  // console.log('LabelGenerator, subprojects:', {
+  //   columns,
+  //   hasLabel,
+  // })
 }
