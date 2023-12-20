@@ -43,7 +43,9 @@ export const Component = () => {
       </div>
       {projects.map((project: Project, index: number) => (
         <p key={index} className="item">
-          <Link to={`/projects/${project.project_id}`}>{project.label}</Link>
+          <Link to={`/projects/${project.project_id}`}>
+            {project.label ?? project.project_id}
+          </Link>
         </p>
       ))}
     </div>
