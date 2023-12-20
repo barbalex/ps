@@ -12,6 +12,7 @@ import { generateFileLabel } from './files'
 import { generatePlaceLevelLabel } from './placeLevels'
 import { generateUnitLabel } from './units'
 import { generateListLabel } from './lists'
+import { generateListValueLabel } from './listValues'
 
 // how to get work:
 // 1. Add label in LabelGenerator.tsx, inside useEffect that only runs once if label column is not found
@@ -35,6 +36,7 @@ export const LabelGenerator = () => {
     generatePlaceLevelLabel(db)
     generateUnitLabel(db)
     generateListLabel(db)
+    generateListValueLabel(db)
   }, [db])
 
   return null
