@@ -20,43 +20,43 @@ export const Breadcrumb = ({ match }) => {
   const myNavs = useMemo(() => {
     switch (table) {
       case 'home':
-        return navs({ path: '/', match })
+        return navs({ table: 'root', match })
         break
       case 'projects':
-        return navs({ path: 'project_id', match })
+        return navs({ table: 'projects', match })
         break
       case 'subprojects':
-        return navs({ path: 'subproject_id', match })
+        return navs({ table: 'subprojects', match })
         break
       case 'places':
-        return navs({ path: 'place_id', match })
+        return navs({ table: 'places', match })
         break
       case 'checks':
-        return navs({ path: 'check_id', match })
+        return navs({ table: 'checks', match })
         break
       case 'actions':
-        return navs({ path: 'action_id', match })
+        return navs({ table: 'actions', match })
         break
       case 'action_reports':
-        return navs({ path: 'action_report_id', match })
+        return navs({ table: 'action_reports', match })
         break
       case 'place_reports':
-        return navs({ path: 'place_report_id', match })
+        return navs({ table: 'place_reports', match })
         break
       case 'goals':
-        return navs({ path: 'goal_id', match })
+        return navs({ table: 'goals', match })
         break
       case 'goal_reports':
-        return navs({ path: 'goal_report_id', match })
+        return navs({ table: 'goal_reports', match })
         break
       case 'lists':
-        return navs({ path: 'list_id', match })
+        return navs({ table: 'lists', match })
         break
       case 'taxonomies':
-        return navs({ path: 'taxonomy_id', match })
+        return navs({ table: 'taxonomies', match })
         break
       case 'observation_sources':
-        return navs({ path: 'observation_source_id', match })
+        return navs({ table: 'observation_sources', match })
         break
       case 'docs':
         return []

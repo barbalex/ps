@@ -1,7 +1,7 @@
-export const navs = ({ path, match }) => {
+export const navs = ({ table, match }) => {
   // console.log('navs:', { path, match })
-  switch (path) {
-    case '/':
+  switch (table) {
+    case 'root':
       return [
         { path: '/users', text: 'Users' },
         { path: '/accounts', text: 'Accounts' },
@@ -14,7 +14,7 @@ export const navs = ({ path, match }) => {
         { path: '/docs', text: 'Docs' },
       ]
       break
-    case `project_id`:
+    case `projects`:
       return [
         {
           path: `/projects/${match.params.project_id}/subprojects`,
@@ -45,7 +45,7 @@ export const navs = ({ path, match }) => {
           text: 'Persons',
         },
       ]
-    case 'subproject_id':
+    case 'subprojects':
       return [
         {
           path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places`,
@@ -68,7 +68,7 @@ export const navs = ({ path, match }) => {
           text: 'Goals',
         },
       ]
-    case 'place_id':
+    case 'places':
       return [
         {
           path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/checks`,
@@ -87,7 +87,7 @@ export const navs = ({ path, match }) => {
           text: 'Users',
         },
       ]
-    case 'check_id':
+    case 'checks':
       return [
         {
           path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/checks/${match.params.check_id}/values`,
@@ -98,7 +98,7 @@ export const navs = ({ path, match }) => {
           text: 'Taxa',
         },
       ]
-    case 'action_id':
+    case 'actions':
       return [
         {
           path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/actions/${match.params.action_id}/values`,
@@ -109,49 +109,49 @@ export const navs = ({ path, match }) => {
           text: 'Reports',
         },
       ]
-    case 'action_report_id':
+    case 'action_reports':
       return [
         {
           path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/actions/${match.params.action_id}/reports/${match.params.action_report_id}/values`,
           text: 'Values',
         },
       ]
-    case 'place_report_id':
+    case 'place_reports':
       return [
         {
           path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/places/${match.params.place_id}/reports/${match.params.place_report_id}/values`,
           text: 'Values',
         },
       ]
-    case 'goal_id':
+    case 'goals':
       return [
         {
           path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/goals/${match.params.goal_id}/reports`,
           text: 'Reports',
         },
       ]
-    case 'goal_report_id':
+    case 'goal_reports':
       return [
         {
           path: `/projects/${match.params.project_id}/subprojects/${match.params.subproject_id}/goals/${match.params.goal_id}/reports/${match.params.goal_report_id}/values`,
           text: 'Values',
         },
       ]
-    case 'list_id':
+    case 'lists':
       return [
         {
           path: `/projects/${match.params.project_id}/lists/${match.params.list_id}/values`,
           text: 'Values',
         },
       ]
-    case 'taxonomy_id':
+    case 'taxonomies':
       return [
         {
           path: `/projects/${match.params.project_id}/taxonomies/${match.params.taxonomy_id}/taxa`,
           text: 'Taxa',
         },
       ]
-    case 'observation_source_id':
+    case 'observation_sources':
       return [
         {
           path: `/projects/${match.params.project_id}/observation-sources/${match.params.observation_source_id}/observations`,
