@@ -1,24 +1,31 @@
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { WidgetsForFields as WidgetForField } from '../../../generated/client'
+import { widgetForField as createwidgetForFieldPreset } from '../modules/dataPresets'
+import { useElectric } from '../ElectricProvider'
 
 import '../form.css'
 
 import { useElectric } from '../ElectricProvider'
 
 export const Component = () => {
-  const { db } = useElectric()!
-  const { results } = useLiveQuery(db.widgets_for_fields.liveMany())
+  const navigate = useNavigate()
+
+  const { db } = useElectric()
+  const { results } = useLiveQuery(
+    db.widgets_for_fields.liveMany({
+      where: { deleted: false },
+      orderBy: [{ widget_for_field_id: 'asc' }],
+    }),
+  )
 
   const add = async () => {
+    const newWidgetForField = createwidgetForFieldPreset()
     await db.widgets_for_fields.create({
-      data: {
-        widget_for_field_id: uuidv7(),
-        deleted: false,
-      },
+      data: newWidgetForField,
     })
+    navigate(`/widgets-for-fields/${newWidgetForField.widget_for_field_id}`)
   }
 
   const clear = async () => {
@@ -42,7 +49,7 @@ export const Component = () => {
           <Link
             to={`/widgets-for-fields/${widgetForField.widget_for_field_id}`}
           >
-            {widgetForField.widget_for_field_id}
+            {widgetForField.label ?? widgetForField.widget_for_field_id}
           </Link>
         </p>
       ))}

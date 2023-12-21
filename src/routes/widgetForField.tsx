@@ -1,48 +1,106 @@
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
+import { FaPlus, FaMinus } from 'react-icons/fa'
+import { Button } from '@fluentui/react-components'
 
 import { WidgetsForFields as WidgetsForField } from '../../../generated/client'
+import { widgetForField as createwidgetForFieldPreset } from '../modules/dataPresets'
+import { useElectric } from '../ElectricProvider'
+import { TextField } from '../components/shared/TextField'
+import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 
 import '../form.css'
 
-import { useElectric } from '../ElectricProvider'
-
 export const Component = () => {
-  const { db } = useElectric()!
-  const { widget_for_field_id } = useParams()
+  const { widget_for_field_id } = useParams<{ widget_for_field_id: string }>()
+  const navigate = useNavigate()
+
+  const { db } = useElectric()
   const { results } = useLiveQuery(
-    db.widgets_for_fields.liveUnique({ where: { widget_for_field_id } }),
+    () => db.widgets_for_fields.liveUnique({ where: { widget_for_field_id } }),
+    [widget_for_field_id],
   )
 
-  const addItem = async () => {
+  const addRow = async () => {
+    const newWidgetForField = createwidgetForFieldPreset()
     await db.widgets_for_fields.create({
-      data: {
-        widget_for_field_id: uuidv7(),
-        deleted: false,
+      data: newWidgetForField,
+    })
+    navigate(`/widgets_for_fields/${newWidgetForField.widget_for_field_id}`)
+  }
+
+  const deleteRow = async () => {
+    await db.widgets_for_fields.delete({
+      where: {
+        widget_for_field_id,
       },
     })
+    navigate(`/widgets_for_fields`)
   }
 
-  const clearItems = async () => {
-    await db.widgets_for_fields.deleteMany()
-  }
+  const row: WidgetsForField = results
 
-  const widgetForField: WidgetsForField = results
+  const onChange = useCallback(
+    (e, data) => {
+      const targetType = e.target.type
+      const value =
+        targetType === 'checkbox'
+          ? data.checked
+          : targetType === 'number'
+          ? e.target.valueAsNumber ?? null
+          : e.target.value ?? null
+      const name = e.target.name
+      // console.log('onChange', {
+      //   name,
+      //   targetType,
+      //   value,
+      // })
+      db.widgets_for_fields.update({
+        where: { widget_for_field_id },
+        data: { [name]: value },
+      })
+    },
+    [db.widgets_for_fields, widget_for_field_id],
+  )
+
+  if (!row) {
+    return <div>Loading...</div>
+  }
 
   return (
     <div className="form-container">
       <div className="controls">
-        <button className="button" onClick={addItem}>
-          Add
-        </button>
-        <button className="button" onClick={clearItems}>
-          Clear
-        </button>
+        <Button
+          size="large"
+          icon={<FaPlus />}
+          onClick={addRow}
+          title="Add new project"
+        />
+        <Button
+          size="large"
+          icon={<FaMinus />}
+          onClick={deleteRow}
+          title="Delete project"
+        />
       </div>
-      <div>{`Widget For Field with id ${
-        widgetForField?.widget_for_field_id ?? ''
-      }`}</div>
+      <TextFieldInactive
+        label="ID"
+        name="widget_for_field_id"
+        value={row.widget_for_field_id}
+      />
+      <TextField
+        label="Field type"
+        name="field_type"
+        value={row.field_type ?? ''}
+        onChange={onChange}
+      />
+      <TextField
+        label="Widget type"
+        name="widget_type"
+        value={row.widget_type ?? ''}
+        onChange={onChange}
+      />
     </div>
   )
 }

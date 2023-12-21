@@ -29,3 +29,8 @@ export const place = () => ({
   level: 1,
   deleted: false,
 })
+
+export const widgetForField = () => ({
+  widget_for_field_id: uuidv7(),
+  deleted: false,
+})
