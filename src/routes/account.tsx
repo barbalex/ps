@@ -1,45 +1,111 @@
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
+import { FaPlus, FaMinus } from 'react-icons/fa'
+import { Button, Field, RadioGroup, Radio } from '@fluentui/react-components'
+import { DatePicker } from '@fluentui/react-datepicker-compat'
 
 import { Accounts as Account } from '../../../generated/client'
+import { useElectric } from '../ElectricProvider'
+import { account as createAccountPreset } from '../modules/dataPresets'
+import { TextField } from '../components/shared/TextField'
+import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { DateField } from '../components/shared/DateField'
+import { getValueFromChange } from '../modules/getValueFromChange'
 
 import '../form.css'
 
-import { useElectric } from '../ElectricProvider'
-
 export const Component = () => {
-  const { db } = useElectric()!
   const { account_id } = useParams()
+  const navigate = useNavigate()
+
+  const { db } = useElectric()
   const { results } = useLiveQuery(
-    db.accounts.liveUnique({ where: { account_id } }),
+    () => db.accounts.liveUnique({ where: { account_id } }),
+    [account_id],
   )
 
-  const addItem = async () => {
+  const addRow = async () => {
+    const newAccount = createAccountPreset()
     await db.accounts.create({
-      data: {
-        account_id: uuidv7(),
+      data: newAccount,
+    })
+    navigate(`/accounts/${newAccount.account_id}`)
+  }
+
+  const deleteRow = async () => {
+    await db.accounts.delete({
+      where: {
+        account_id,
       },
     })
+    navigate(`/accounts`)
   }
 
-  const clearItems = async () => {
-    await db.accounts.deleteMany()
-  }
+  const row: Account = results
 
-  const account: Account = results
+  const onChange = useCallback(
+    (e, data) => {
+      const { name, value } = getValueFromChange(e, data)
+      db.accounts.update({
+        where: { account_id },
+        data: { [name]: value },
+      })
+    },
+    [db.accounts, account_id],
+  )
+
+  if (!row) {
+    return <div>Loading...</div>
+  }
 
   return (
     <div className="form-container">
       <div className="controls">
-        <button className="button" onClick={addItem}>
-          Add
-        </button>
-        <button className="button" onClick={clearItems}>
-          Clear
-        </button>
+        <Button
+          size="large"
+          icon={<FaPlus />}
+          onClick={addRow}
+          title="Add new account"
+        />
+        <Button
+          size="large"
+          icon={<FaMinus />}
+          onClick={deleteRow}
+          title="Delete account"
+        />
       </div>
-      <div>{`Account with id ${account?.account_id ?? ''}`}</div>
+      <TextFieldInactive label="ID" name="account_id" value={row.account_id} />
+      <TextField
+        label="User"
+        name="user_id"
+        value={row.user_id ?? ''}
+        onChange={onChange}
+      />
+      <Field label="Type">
+        <RadioGroup
+          layout="horizontal"
+          value={row.type ?? ''}
+          name="type"
+          onChange={onChange}
+        >
+          <Radio label="free" value="free" />
+          <Radio label="basic" value="basic" />
+          <Radio label="premium" value="premium" />
+        </RadioGroup>
+      </Field>
+      <DateField
+        label="Starts"
+        name="period_start"
+        value={row.period_start}
+        onChange={onChange}
+      />
+      <DateField
+        label="Ends"
+        name="period_end"
+        value={row.period_end}
+        onChange={onChange}
+      />
     </div>
   )
 }

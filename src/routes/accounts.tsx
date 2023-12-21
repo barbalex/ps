@@ -1,23 +1,24 @@
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { Accounts as Account } from '../../../generated/client'
+import { account as createAccountPreset } from '../modules/dataPresets'
+import { useElectric } from '../ElectricProvider'
 
 import '../form.css'
 
-import { useElectric } from '../ElectricProvider'
-
 export const Component = () => {
-  const { db } = useElectric()!
+  const navigate = useNavigate()
+
+  const { db } = useElectric()
   const { results } = useLiveQuery(db.accounts.liveMany())
 
   const add = async () => {
+    const newAccount = createAccountPreset()
     await db.accounts.create({
-      data: {
-        account_id: uuidv7(),
-      },
+      data: newAccount,
     })
+    navigate(`/accounts/${newAccount.account_id}`)
   }
 
   const clear = async () => {
@@ -38,7 +39,9 @@ export const Component = () => {
       </div>
       {accounts.map((account: Account, index: number) => (
         <p key={index} className="item">
-          <Link to={`/accounts/${account.account_id}`}>{account.account_id}</Link>
+          <Link to={`/accounts/${account.account_id}`}>
+            {account.label ?? account.account_id}
+          </Link>
         </p>
       ))}
     </div>

@@ -47,3 +47,8 @@ export const fieldType = () => ({
   sort: 0,
   deleted: false,
 })
+
+export const account = () => ({
+  account_id: uuidv7(),
+  type: 'free',
+})

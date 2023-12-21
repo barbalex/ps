@@ -2,13 +2,7 @@ import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { FaPlus, FaMinus } from 'react-icons/fa'
-import {
-  Button,
-  Field,
-  RadioGroup,
-  Radio,
-  Switch,
-} from '@fluentui/react-components'
+import { Button, Switch } from '@fluentui/react-components'
 
 import { Places as Place } from '../../../generated/client'
 import { place as createPlacePreset } from '../modules/dataPresets'
@@ -59,6 +53,8 @@ export const Component = () => {
       const value =
         targetType === 'checkbox'
           ? data.checked
+          : targetType === 'change'
+          ? data.value
           : targetType === 'number'
           ? e.target.valueAsNumber ?? null
           : e.target.value ?? null

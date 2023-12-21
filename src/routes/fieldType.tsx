@@ -2,9 +2,7 @@ import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { FaPlus, FaMinus } from 'react-icons/fa'
-import {
-  Button,
-} from '@fluentui/react-components'
+import { Button } from '@fluentui/react-components'
 
 import { FieldTypes as FieldType } from '../../../generated/client'
 import { fieldType as fieldTypePreset } from '../modules/dataPresets'
@@ -49,15 +47,18 @@ export const Component = () => {
       const value =
         targetType === 'checkbox'
           ? data.checked
+          : targetType === 'change'
+          ? data.value
           : targetType === 'number'
           ? e.target.valueAsNumber ?? null
           : e.target.value ?? null
       const name = e.target.name
-      // console.log('onChange', {
-      //   name,
-      //   targetType,
-      //   value,
-      // })
+      console.log('onChange', {
+        name,
+        targetType,
+        value,
+        field_type_id,
+      })
       db.projects.update({
         where: { field_type_id },
         data: { [name]: value },
