@@ -9,6 +9,7 @@ import { widgetForField as createwidgetForFieldPreset } from '../modules/dataPre
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { getValueFromChange } from '../modules/getValueFromChange'
 
 import '../form.css'
 
@@ -43,21 +44,7 @@ export const Component = () => {
 
   const onChange = useCallback(
     (e, data) => {
-      const targetType = e.target.type
-      const value =
-        targetType === 'checkbox'
-          ? data.checked
-          : targetType === 'change'
-          ? data.value
-          : targetType === 'number'
-          ? e.target.valueAsNumber ?? null
-          : e.target.value ?? null
-      const name = e.target.name
-      // console.log('onChange', {
-      //   name,
-      //   targetType,
-      //   value,
-      // })
+      const { name, value } = getValueFromChange(e, data)
       db.widgets_for_fields.update({
         where: { widget_for_field_id },
         data: { [name]: value },

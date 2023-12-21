@@ -12,6 +12,7 @@ import '../form.css'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { getValueFromChange } from '../modules/getValueFromChange'
 
 export const Component = () => {
   const { project_id, subproject_id } = useParams()
@@ -51,21 +52,7 @@ export const Component = () => {
 
   const onChange = useCallback(
     (e, data) => {
-      const targetType = e.target.type
-      const value =
-        targetType === 'checkbox'
-          ? data.checked
-          : targetType === 'change'
-          ? data.value
-          : targetType === 'number'
-          ? e.target.valueAsNumber ?? null
-          : e.target.value ?? null // targetType === 'checkbox' ? data.checked :
-      const name = e.target.name
-      // console.log('onChange', {
-      //   name,
-      //   targetType,
-      //   value,
-      // })
+      const { name, value } = getValueFromChange(e, data)
       db.subprojects.update({
         where: { subproject_id },
         data: { [name]: value },
