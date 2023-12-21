@@ -27,7 +27,7 @@ export const Component = () => {
     await db.widgets_for_fields.create({
       data: newWidgetForField,
     })
-    navigate(`/widgets_for_fields/${newWidgetForField.widget_for_field_id}`)
+    navigate(`/widgets-for-fields/${newWidgetForField.widget_for_field_id}`)
   }
 
   const deleteRow = async () => {
@@ -36,7 +36,7 @@ export const Component = () => {
         widget_for_field_id,
       },
     })
-    navigate(`/widgets_for_fields`)
+    navigate(`/widgets-for-fields`)
   }
 
   const row: WidgetsForField = results
