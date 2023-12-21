@@ -3,7 +3,6 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { FaPlus, FaMinus } from 'react-icons/fa'
 import { Button, Field, RadioGroup, Radio } from '@fluentui/react-components'
-import { DatePicker } from '@fluentui/react-datepicker-compat'
 
 import { Accounts as Account } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
