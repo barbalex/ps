@@ -53,7 +53,7 @@ body {
 
 .navs a {
   margin: 0;
-  padding: 6px;
+  padding: 7px;
   color: rgb(51, 51, 51);
   text-decoration-color: rgba(0, 0, 0, 0.3);
 }
@@ -61,6 +61,7 @@ body {
 .navs a:before {
   content: url(./images/caret-right.svg);
   display: inline-block;
-  vertical-align: text-top;
+  vertical-align: middle;
+  margin-top: 2px;
   filter: opacity(0.4);
 }
