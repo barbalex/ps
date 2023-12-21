@@ -12,12 +12,12 @@ import {
 
 import { Projects as Project } from '../../../generated/client'
 import { project as createProjectPreset } from '../modules/dataPresets'
-
-import '../form.css'
-
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+
+import '../form.css'
+
 
 export const Component = () => {
   const { project_id } = useParams()
