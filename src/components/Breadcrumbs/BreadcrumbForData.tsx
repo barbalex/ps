@@ -20,8 +20,8 @@ export const Breadcrumb = ({ match }) => {
 
   const idField = idFieldFromTable(table)
   // filter by parents
-  const filterParams = {  }
-  if (!tablesWithoutDeleted.includes(table)) {{
+  const filterParams = {}
+  if (!tablesWithoutDeleted.includes(table)) {
     filterParams.deleted = false
   }
 
@@ -39,15 +39,10 @@ export const Breadcrumb = ({ match }) => {
     [db, table],
   )
 
-  const myNavs = (results ?? []).map((result) => {
-    const path = `${match.pathname}/${result[idField]}`
-    // console.log('Breadcrumb, path', { path, idField, result, table })
-
-    return {
-      path,
-      text: result.label ?? result[idField],
-    }
-  })
+  const myNavs = (results ?? []).map((result) => ({
+    path: `${match.pathname}/${result[idField]}`,
+    text: result.label ?? result[idField],
+  }))
 
   // console.log('BreadcrumbForData', {
   //   myNavs,
