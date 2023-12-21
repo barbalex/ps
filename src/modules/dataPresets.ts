@@ -52,3 +52,8 @@ export const account = () => ({
   account_id: uuidv7(),
   type: 'free',
 })
+
+export const user = () => ({
+  user_id: uuidv7(),
+  deleted: false,
+})
