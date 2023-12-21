@@ -8,6 +8,7 @@ import { WidgetTypes as WidgetType } from '../../../generated/client'
 import { widgetType as createWidgetTypePreset } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
+import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 
 import '../form.css'
 
@@ -83,6 +84,11 @@ export const Component = () => {
           title="Delete project"
         />
       </div>
+      <TextFieldInactive
+        label="ID"
+        name="widget_type_id"
+        value={row.widget_type_id}
+      />
       <TextField
         label="Type"
         name="name"
