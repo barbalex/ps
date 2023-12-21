@@ -1,24 +1,30 @@
 import { useLiveQuery } from 'electric-sql/react'
 import { uuidv7 } from '@kripod/uuidv7'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { FieldTypes as FieldType } from '../../../generated/client'
+import { fieldTypes as fieldTypePreset } from '../modules/dataPresets'
+import { useElectric } from '../ElectricProvider'
 
 import '../form.css'
 
-import { useElectric } from '../ElectricProvider'
-
 export const Component = () => {
-  const { db } = useElectric()!
-  const { results } = useLiveQuery(db.field_types.liveMany())
+  const navigate = useNavigate()
+
+  const { db } = useElectric()
+  const { results } = useLiveQuery(
+    db.field_types.liveMany({
+      where: { deleted: false },
+      orderBy: [{ name: 'asc' }, { field_type_id: 'asc' }],
+    }),
+  )
 
   const add = async () => {
+    const newFieldType = fieldTypePreset()
     await db.field_types.create({
-      data: {
-        field_type_id: uuidv7(),
-        deleted: false,
-      },
+      data: newFieldType,
     })
+    navigate(`/field-types/${newFieldType.field_type_id}`)
   }
 
   const clear = async () => {
@@ -40,7 +46,7 @@ export const Component = () => {
       {fieldTypes.map((fieldType: FieldType, index: number) => (
         <p key={index} className="item">
           <Link to={`/field-types/${fieldType.field_type_id}`}>
-            {fieldType.field_type_id}
+            {fieldType.label ?? fieldType.field_type_id}
           </Link>
         </p>
       ))}
