@@ -57,3 +57,8 @@ export const user = () => ({
   user_id: uuidv7(),
   deleted: false,
 })
+
+export const person = () => ({
+  person_id: uuidv7(),
+  deleted: false,
+})
