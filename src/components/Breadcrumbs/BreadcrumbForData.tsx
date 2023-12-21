@@ -7,6 +7,8 @@ import { MenuComponent } from './Menu'
 import { useElectric } from '../../ElectricProvider'
 import { idFieldFromTable } from '../../modules/idFieldFromTable'
 
+const tablesWithoutDeleted = ['root', 'docs', 'accounts', 'messages']
+
 export const Breadcrumb = ({ match }) => {
   const navigate = useNavigate()
 
@@ -18,7 +20,11 @@ export const Breadcrumb = ({ match }) => {
 
   const idField = idFieldFromTable(table)
   // filter by parents
-  const filterParams = { deleted: false }
+  const filterParams = {  }
+  if (!tablesWithoutDeleted.includes(table)) {{
+    filterParams.deleted = false
+  }
+
   const parentFilterParamsArray = Object.entries(match.params).filter(
     ([key, value]) => key !== idField, // eslint-disable-line @typescript-eslint/no-unused-vars
   )
@@ -33,30 +39,26 @@ export const Breadcrumb = ({ match }) => {
     [db, table],
   )
 
-  const myNavs = useMemo(
-    () =>
-      (results ?? []).map((result) => {
-        const path = `${match.pathname}/${result[idField]}`
-        // console.log('Breadcrumb, path', { path, idField, result, table })
+  const myNavs = (results ?? []).map((result) => {
+    const path = `${match.pathname}/${result[idField]}`
+    // console.log('Breadcrumb, path', { path, idField, result, table })
 
-        return {
-          path,
-          text: result.label ?? result[idField],
-        }
-      }),
-    [idField, match.pathname, results],
-  )
+    return {
+      path,
+      text: result.label ?? result[idField],
+    }
+  })
 
-  // console.log('BreadcrumbForData', {
-  //   myNavs,
-  //   match,
-  //   results,
-  //   idField,
-  //   parentFilterParamsArray,
-  //   table,
-  //   queryTable,
-  //   filterParams,
-  // })
+  console.log('BreadcrumbForData', {
+    myNavs,
+    match,
+    results,
+    idField,
+    parentFilterParamsArray,
+    table,
+    queryTable,
+    filterParams,
+  })
 
   return (
     <>
