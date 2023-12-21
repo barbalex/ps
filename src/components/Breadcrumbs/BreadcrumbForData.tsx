@@ -49,16 +49,16 @@ export const Breadcrumb = ({ match }) => {
     }
   })
 
-  console.log('BreadcrumbForData', {
-    myNavs,
-    match,
-    results,
-    idField,
-    parentFilterParamsArray,
-    table,
-    queryTable,
-    filterParams,
-  })
+  // console.log('BreadcrumbForData', {
+  //   myNavs,
+  //   match,
+  //   results,
+  //   idField,
+  //   parentFilterParamsArray,
+  //   table,
+  //   queryTable,
+  //   filterParams,
+  // })
 
   return (
     <>
