@@ -91,14 +91,14 @@ export const Component = () => {
       />
       <TextField
         label="Field type"
-        name="field_type"
-        value={row.field_type ?? ''}
+        name="field_type_id"
+        value={row.field_type_id ?? ''}
         onChange={onChange}
       />
       <TextField
         label="Widget type"
-        name="widget_type"
-        value={row.widget_type ?? ''}
+        name="widget_type_id"
+        value={row.widget_type_id ?? ''}
         onChange={onChange}
       />
     </div>

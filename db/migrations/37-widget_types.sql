@@ -1,5 +1,6 @@
 CREATE TABLE widget_types(
-  widget_type text PRIMARY KEY DEFAULT NULL,
+  widget_type_id uuid PRIMARY KEY DEFAULT NULL,
+  name text DEFAULT NULL,
   -- no account_id as field_types are predefined for all projects
   needs_list boolean DEFAULT NULL, -- FALSE,
   sort smallint DEFAULT NULL,
@@ -8,7 +9,8 @@ CREATE TABLE widget_types(
   deleted boolean DEFAULT NULL -- FALSE
 );
 
--- CREATE INDEX ON widget_types(widget_type);
+CREATE INDEX ON widget_types(name);
+
 CREATE INDEX ON widget_types(sort);
 
 -- CREATE INDEX ON widget_types((1))

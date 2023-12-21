@@ -10,15 +10,15 @@ import { useElectric } from '../ElectricProvider'
 
 export const Component = () => {
   const { db } = useElectric()!
-  const { field_type } = useParams()
+  const { field_type_id } = useParams()
   const { results } = useLiveQuery(
-    db.field_types.liveUnique({ where: { field_type } }),
+    db.field_types.liveUnique({ where: {  field_type_id } }),
   )
 
   const addItem = async () => {
     await db.field_types.create({
       data: {
-        field_type: uuidv7(),
+        field_type_id: uuidv7(),
         deleted: false,
       },
     })
@@ -40,7 +40,7 @@ export const Component = () => {
           Clear
         </button>
       </div>
-      <div>{`Field Type ${fieldType?.field_type ?? ''}`}</div>
+      <div>{`Field Type ${fieldType?.field_type_id ?? ''}`}</div>
     </div>
   )
 }

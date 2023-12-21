@@ -15,7 +15,7 @@ export const Component = () => {
   const add = async () => {
     await db.field_types.create({
       data: {
-        field_type: uuidv7(),
+        field_type_id: uuidv7(),
         deleted: false,
       },
     })
@@ -39,8 +39,8 @@ export const Component = () => {
       </div>
       {fieldTypes.map((fieldType: FieldType, index: number) => (
         <p key={index} className="item">
-          <Link to={`/field-types/${fieldType.field_type}`}>
-            {fieldType.field_type}
+          <Link to={`/field-types/${fieldType.field_type_id}`}>
+            {fieldType.field_type_id}
           </Link>
         </p>
       ))}

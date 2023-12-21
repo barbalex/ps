@@ -1429,14 +1429,18 @@ COMMENT ON COLUMN persons.order_by IS 'Used to order persons in lists. Contains 
 DROP TABLE IF EXISTS field_types CASCADE;
 
 CREATE TABLE field_types(
-  field_type text PRIMARY KEY DEFAULT NULL,
+  -- id needed for electric-sql
+  field_type_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  name text DEFAULT NULL,
   -- no account_id as field_types are predefined for all projects
   sort smallint DEFAULT NULL,
   comment text,
   deleted boolean DEFAULT FALSE
 );
 
-CREATE INDEX ON field_types(field_type);
+CREATE INDEX ON field_types(field_type_id);
+
+CREATE INDEX ON field_types(name);
 
 CREATE INDEX ON field_types(sort);
 
@@ -1444,7 +1448,7 @@ CREATE INDEX ON field_types((1))
 WHERE
   deleted;
 
-INSERT INTO field_types(field_type, sort, comment)
+INSERT INTO field_types(name, sort, comment)
   VALUES ('text', 1, 'Example: text'),
 ('boolean', 2, 'true or false'),
 ('integer', 3, 'Example: 1'),
@@ -1463,7 +1467,9 @@ ON CONFLICT ON CONSTRAINT field_types_pkey
 DROP TABLE IF EXISTS widget_types CASCADE;
 
 CREATE TABLE widget_types(
-  widget_type text PRIMARY KEY DEFAULT NULL,
+  -- id needed for electric-sql
+  widget_type_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  name text DEFAULT NULL,
   -- no account_id as field_types are predefined for all projects
   needs_list boolean DEFAULT FALSE,
   sort smallint DEFAULT NULL,
@@ -1471,7 +1477,9 @@ CREATE TABLE widget_types(
   deleted boolean DEFAULT FALSE
 );
 
-CREATE INDEX ON widget_types(widget_type);
+CREATE INDEX ON widget_types(widget_type_id);
+
+CREATE INDEX ON widget_types(name);
 
 CREATE INDEX ON widget_types(sort);
 
@@ -1479,7 +1487,7 @@ CREATE INDEX ON widget_types((1))
 WHERE
   deleted;
 
-INSERT INTO widget_types(widget_type, needs_list, sort, comment)
+INSERT INTO widget_types(name, needs_list, sort, comment)
   VALUES ('text', 0, 1, 'Short field accepting text'),
 ('textarea', 0, 2, 'Field accepting text, lines can break'),
 ('markdown', 0, 3, 'Field accepting text, expressing markdown'),
@@ -1505,16 +1513,16 @@ DROP TABLE IF EXISTS widgets_for_fields CASCADE;
 CREATE TABLE widgets_for_fields(
   widget_for_field_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   -- no account_id as field_types are predefined for all projects
-  field_type uuid DEFAULT NULL REFERENCES field_types(field_type) ON DELETE CASCADE ON UPDATE CASCADE,
-  widget_type uuid DEFAULT NULL REFERENCES widget_types(widget_type) ON DELETE CASCADE ON UPDATE CASCADE,
+  field_type_id uuid DEFAULT NULL REFERENCES field_types(field_type_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  widget_type_id uuid DEFAULT NULL REFERENCES widget_types(widget_type_id) ON DELETE CASCADE ON UPDATE CASCADE,
   deleted boolean DEFAULT FALSE
 );
 
 CREATE INDEX ON widgets_for_fields(widget_for_field_id);
 
-CREATE INDEX ON widgets_for_fields(field_type);
+CREATE INDEX ON widgets_for_fields(field_type_id);
 
-CREATE INDEX ON widgets_for_fields(widget_type);
+CREATE INDEX ON widgets_for_fields(widget_type_id);
 
 CREATE INDEX ON widgets_for_fields((1))
 WHERE
@@ -1553,8 +1561,8 @@ CREATE TABLE fields(
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   tble text DEFAULT NULL,
-  type text DEFAULT NULL REFERENCES field_types(field_type) ON DELETE CASCADE ON UPDATE CASCADE,
-  widget text DEFAULT NULL REFERENCES widget_types(widget_type) ON DELETE CASCADE ON UPDATE CASCADE,
+  field_type_id text DEFAULT NULL REFERENCES field_types(field_type_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  widget_type_id text DEFAULT NULL REFERENCES widget_types(widget_type_id) ON DELETE CASCADE ON UPDATE CASCADE,
   label text DEFAULT NULL,
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE NO action ON UPDATE CASCADE,
   preset text DEFAULT NULL,
@@ -1570,9 +1578,9 @@ CREATE INDEX ON fields USING btree(account_id);
 
 CREATE INDEX ON fields USING btree(tble);
 
-CREATE INDEX ON fields USING btree(type);
+CREATE INDEX ON fields USING btree(field_type_id);
 
-CREATE INDEX ON fields USING btree(widget);
+CREATE INDEX ON fields USING btree(widget_type_id);
 
 CREATE INDEX ON fields USING btree(label);
 

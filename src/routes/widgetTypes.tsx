@@ -18,7 +18,7 @@ export const Component = () => {
     await db.widget_types.create({
       data: newWidgetType,
     })
-    navigate(`/widget-types/${newWidgetType.widget_type}`)
+    navigate(`/widget-types/${newWidgetType.widget_type_id}`)
   }
 
   const clear = async () => {
@@ -39,8 +39,8 @@ export const Component = () => {
       </div>
       {rows.map((widgetType: WidgetType, index: number) => (
         <p key={index} className="item">
-          <Link to={`/widget-types/${widgetType.widget_type}`}>
-            {rows.label ?? widgetType.widget_type ?? '(not set)'}
+          <Link to={`/widget-types/${widgetType.widget_type_id}`}>
+            {rows.label ?? widgetType.widget_type_id ?? '(not set)'}
           </Link>
         </p>
       ))}

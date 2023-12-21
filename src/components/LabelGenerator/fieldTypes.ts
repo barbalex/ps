@@ -5,7 +5,7 @@ export const generateFieldTypeLabel = async (db) => {
   const hasLabel = columns.some((column) => column.name === 'label')
   if (!hasLabel) {
     await db.raw({
-      sql: 'ALTER TABLE field_types ADD COLUMN label text GENERATED ALWAYS AS (field_type)',
+      sql: 'ALTER TABLE field_types ADD COLUMN label text GENERATED ALWAYS AS (coalesce(name, field_type_id))',
     })
     await db.raw({
       sql: 'CREATE INDEX IF NOT EXISTS field_types_label_idx ON field_types(label)',

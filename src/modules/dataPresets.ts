@@ -36,7 +36,7 @@ export const widgetForField = () => ({
 })
 
 export const widgetType = () => ({
-  widget_type: uuidv7(),
+  widget_type_id: uuidv7(),
   needs_list: false,
   sort: 0,
   deleted: false,
