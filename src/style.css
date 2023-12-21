@@ -43,23 +43,24 @@ body {
 }
 
 .navs {
-  background-color: rgba(103, 216, 101, 0.052);
+  /* background-color: rgba(103, 216, 101, 0.052); */
   display: flex;
   flex-wrap: wrap;
-  column-gap: 10px;
-  row-gap: 5px;
+  column-gap: 0;
+  row-gap: 0;
+  border-bottom: 1px solid #cbd2d9;
 }
 
 .navs a {
   margin: 0;
-  padding: 0.75em;
+  padding: 6px;
   color: rgb(51, 51, 51);
+  text-decoration-color: rgba(0, 0, 0, 0.3);
 }
 
-/* .navs a:before {
-  content: url(./images/navigate-next.svg);
+.navs a:before {
+  content: url(./images/caret-right.svg);
   display: inline-block;
-  vertical-align: middle;
-  margin-right: -5px;
-  filter: grayscale(10%);
-} */
+  vertical-align: text-top;
+  filter: opacity(0.4);
+}

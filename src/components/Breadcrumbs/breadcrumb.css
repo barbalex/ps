@@ -13,6 +13,10 @@
   min-height: 46px;
 }
 
+.breadcrumbs__crumb:first-of-type {
+  padding-left: 25px;
+}
+
 .breadcrumbs__crumb.link {
   cursor: pointer;
   text-decoration: underline;
