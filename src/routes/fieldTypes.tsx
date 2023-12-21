@@ -1,5 +1,4 @@
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { FieldTypes as FieldType } from '../../../generated/client'
