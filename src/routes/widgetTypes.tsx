@@ -1,31 +1,31 @@
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { WidgetTypes as WidgetType } from '../../../generated/client'
+import { widgetType as createWidgetTypePreset } from '../modules/dataPresets'
+import { useElectric } from '../ElectricProvider'
 
 import '../form.css'
 
-import { useElectric } from '../ElectricProvider'
-
 export const Component = () => {
-  const { db } = useElectric()!
+  const navigate = useNavigate()
+
+  const { db } = useElectric()
   const { results } = useLiveQuery(db.widget_types.liveMany())
 
   const add = async () => {
+    const newWidgetType = createWidgetTypePreset()
     await db.widget_types.create({
-      data: {
-        widget_type: uuidv7(),
-        deleted: false,
-      },
+      data: newWidgetType,
     })
+    navigate(`/widget-types/${newWidgetType.widget_type}`)
   }
 
   const clear = async () => {
     await db.widget_types.deleteMany()
   }
 
-  const widgetTypes: WidgetType[] = results ?? []
+  const rows: WidgetType[] = results ?? []
 
   return (
     <div className="form-container">
@@ -37,10 +37,10 @@ export const Component = () => {
           Clear
         </button>
       </div>
-      {widgetTypes.map((widgetType: WidgetType, index: number) => (
+      {rows.map((widgetType: WidgetType, index: number) => (
         <p key={index} className="item">
           <Link to={`/widget-types/${widgetType.widget_type}`}>
-            {widgetType.widget_type}
+            {rows.label ?? widgetType.widget_type ?? '(not set)'}
           </Link>
         </p>
       ))}

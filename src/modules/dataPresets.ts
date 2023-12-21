@@ -34,3 +34,10 @@ export const widgetForField = () => ({
   widget_for_field_id: uuidv7(),
   deleted: false,
 })
+
+export const widgetType = () => ({
+  widget_type: uuidv7(),
+  needs_list: false,
+  sort: 0,
+  deleted: false,
+})

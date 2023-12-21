@@ -1,6 +1,6 @@
 import { useLiveQuery } from 'electric-sql/react'
 import { uuidv7 } from '@kripod/uuidv7'
-import { useParams } from 'react-router-dom'
+import { useParams, } from 'react-router-dom'
 
 import { WidgetTypes as WidgetType } from '../../../generated/client'
 
