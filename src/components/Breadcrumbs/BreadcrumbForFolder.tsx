@@ -31,13 +31,8 @@ export const Breadcrumb = ({ match }) => {
   )
   const row = results?.[0]
 
-  const label = useMemo(
-    () =>
-      table === 'root' || table === 'docs'
-        ? text
-        : row?.label ?? row?.[idField],
-    [idField, row, table, text],
-  )
+  const label =
+    table === 'root' || table === 'docs' ? text : row?.label ?? row?.[idField]
 
   // console.log('BreadcrumbForFolder', {
   //   results,
