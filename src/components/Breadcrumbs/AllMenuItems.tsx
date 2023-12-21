@@ -24,7 +24,12 @@ const items: MenuItem[] = [
         label: text, // TODO: style menu with text and BsCaretRight
         path,
         key: index,
-        children: [],
+        children: [{
+          label: 'Users',
+          path: '/users',
+          key: 'users',
+          folder: true,
+        }],
       }),
     ),
   },
