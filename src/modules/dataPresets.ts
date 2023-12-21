@@ -42,7 +42,7 @@ export const widgetType = () => ({
   deleted: false,
 })
 
-export const fieldTypes = () => ({
+export const fieldType = () => ({
   field_type_id: uuidv7(),
   sort: 0,
   deleted: false,
