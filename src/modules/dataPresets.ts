@@ -62,3 +62,8 @@ export const person = () => ({
   person_id: uuidv7(),
   deleted: false,
 })
+
+export const observationSource = () => ({
+  observation_source_id: uuidv7(),
+  deleted: false,
+})
