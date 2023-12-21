@@ -90,7 +90,7 @@ export const Component = () => {
         value={row.widget_type_id}
       />
       <TextField
-        label="Type"
+        label="Name"
         name="name"
         value={row.name ?? ''}
         onChange={onChange}
