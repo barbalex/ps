@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import {
   makeStyles,
   shorthands,
@@ -17,20 +18,21 @@ const useStyles = makeStyles({
   },
 })
 
-export const TextField = (props: InputProps) => {
+export const TextField = memo((props: InputProps) => {
   const inputId = useId('input')
   const styles = useStyles()
+  const { size, disabled, label } = props
 
   return (
     <div className={styles.root}>
       <Label
         htmlFor={inputId}
-        size={props.size ?? 'medium'}
-        disabled={props.disabled ?? false}
+        size={size ?? 'medium'}
+        disabled={disabled ?? false}
       >
-        {props.label ?? '(no label provided)'}
+        {label ?? '(no label provided)'}
       </Label>
       <Input id={inputId} {...props} />
     </div>
   )
-}
+})
