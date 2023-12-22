@@ -1,25 +1,32 @@
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { Subprojects as Subproject } from '../../../generated/client'
+import { subproject as createSubprojectPreset } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import '../form.css'
 
 export const Component = () => {
-  const { project_id } = useParams<{ project_id: string }>()
-  const { db } = useElectric()!
-  const { results } = useLiveQuery(db.subprojects.liveMany())
+  const { project_id } = useParams()
+  const Navigate = useNavigate()
+
+  const { db } = useElectric()
+  const { results } = useLiveQuery(
+    () => db.subprojects.liveMany({ where: { project_id, deleted: false } }),
+    [project_id],
+  )
 
   const add = async () => {
+    const newSubproject = createSubprojectPreset()
     await db.subprojects.create({
       data: {
-        subproject_id: uuidv7(),
+        ...newSubproject,
         project_id,
-        deleted: false,
-        // TODO: add account_id
       },
     })
+    Navigate(
+      `/projects/${project_id}/subprojects/${newSubproject.subproject_id}`,
+    )
   }
 
   const clear = async () => {
