@@ -1,3 +1,4 @@
+import { goalReport } from './dataPresets'
 import { uuidv7 } from '@kripod/uuidv7'
 
 // TODO: add account_id
@@ -153,5 +154,10 @@ export const goal = () => ({
 
 export const goalReport = () => ({
   goal_report_id: uuidv7(),
+  deleted: false,
+})
+
+export const goalReportValue = () => ({
+  goal_report_value_id: uuidv7(),
   deleted: false,
 })
