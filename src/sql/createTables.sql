@@ -1563,7 +1563,7 @@ CREATE TABLE fields(
   table_name text DEFAULT NULL,
   field_type_id text DEFAULT NULL REFERENCES field_types(field_type_id) ON DELETE CASCADE ON UPDATE CASCADE,
   widget_type_id text DEFAULT NULL REFERENCES widget_types(widget_type_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  label text DEFAULT NULL,
+  name text DEFAULT NULL,
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE NO action ON UPDATE CASCADE,
   preset text DEFAULT NULL,
   obsolete boolean DEFAULT FALSE,
@@ -1582,7 +1582,7 @@ CREATE INDEX ON fields USING btree(field_type_id);
 
 CREATE INDEX ON fields USING btree(widget_type_id);
 
-CREATE INDEX ON fields USING btree(label);
+CREATE INDEX ON fields USING btree(name);
 
 CREATE INDEX ON fields USING btree(list_id);
 
