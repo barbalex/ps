@@ -352,7 +352,6 @@ CREATE TABLE taxa(
   name text DEFAULT NULL,
   id_in_source text DEFAULT NULL,
   url text DEFAULT NULL,
-  obsolete boolean DEFAULT NULL, -- FALSE,
   deleted boolean DEFAULT NULL -- FALSE
 );
 
@@ -364,9 +363,7 @@ CREATE INDEX ON taxa USING btree(taxonomy_id);
 
 CREATE INDEX ON taxa USING btree(name);
 
-CREATE INDEX ON taxa((1))
-WHERE
-  obsolete;
+
 
 CREATE INDEX ON taxa((1))
 WHERE
