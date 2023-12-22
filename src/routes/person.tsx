@@ -14,7 +14,10 @@ import { getValueFromChange } from '../modules/getValueFromChange'
 import '../form.css'
 
 export const Component = () => {
-  const { project_id, person_id } = useParams()
+  const { project_id, person_id } = useParams<{
+    project_id: string
+    person_id: string
+  }>()
   const navigate = useNavigate()
 
   const { db } = useElectric()
