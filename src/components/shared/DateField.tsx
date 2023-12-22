@@ -1,8 +1,9 @@
+import { memo } from 'react'
 import type { InputProps } from '@fluentui/react-components'
 import { Field } from '@fluentui/react-components'
 import { DatePicker } from '@fluentui/react-datepicker-compat'
 
-export const DateField = (props: InputProps) => {
+export const DateField = memo((props: InputProps) => {
   const { label, value, name, onChange } = props
 
   return (
@@ -19,4 +20,4 @@ export const DateField = (props: InputProps) => {
       />
     </Field>
   )
-}
+})
