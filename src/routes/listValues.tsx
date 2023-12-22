@@ -1,25 +1,32 @@
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { ListValues as ListValue } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
+import { listValue as createListValuePreset } from '../modules/dataPresets'
 import '../form.css'
 
 export const Component = () => {
-  const { project_id, list_id } = useParams<{ project_id: string }>()
+  const { project_id, list_id } = useParams()
+  const navigate = useNavigate()
+
   const { db } = useElectric()!
-  const { results } = useLiveQuery(db.list_values.liveMany())
+  const { results } = useLiveQuery(
+    () => db.list_values.liveMany({ where: { list_id, deleted: false } }),
+    [list_id],
+  )
 
   const add = async () => {
+    const newListValue = createListValuePreset()
     await db.list_values.create({
       data: {
-        list_value_id: uuidv7(),
+        ...newListValue,
         list_id,
-        deleted: false,
-        // TODO: add account_id
       },
     })
+    navigate(
+      `/projects/${project_id}/lists/${list_id}/values/${newListValue.list_value_id}`,
+    )
   }
 
   const clear = async () => {
@@ -43,7 +50,7 @@ export const Component = () => {
           <Link
             to={`/projects/${project_id}/lists/${list_id}/values/${listValue.list_value_id}`}
           >
-            {listValue.list_value_id}
+            {listValue.label ?? listValue.list_value_id}
           </Link>
         </p>
       ))}

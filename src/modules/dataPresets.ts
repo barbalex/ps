@@ -138,3 +138,9 @@ export const taxon = () => ({
   taxon_id: uuidv7(),
   deleted: false,
 })
+
+export const listValue = () => ({
+  list_value_id: uuidv7(),
+  obsolete: false,
+  deleted: false,
+})

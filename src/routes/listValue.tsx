@@ -1,48 +1,97 @@
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
+import { FaPlus, FaMinus } from 'react-icons/fa'
+import { Button, Switch } from '@fluentui/react-components'
 
 import { ListValues as ListValue } from '../../../generated/client'
+import { listValue as createListValuePreset } from '../modules/dataPresets'
+import { useElectric } from '../ElectricProvider'
+import { TextField } from '../components/shared/TextField'
+import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { getValueFromChange } from '../modules/getValueFromChange'
 
 import '../form.css'
 
-import { useElectric } from '../ElectricProvider'
-
 export const Component = () => {
-  const { db } = useElectric()!
   const { list_id, list_value_id } = useParams()
+  const navigate = useNavigate()
+
+  const { db } = useElectric()
   const { results } = useLiveQuery(
-    db.list_values.liveUnique({ where: { list_value_id } }),
+    () => db.list_values.liveUnique({ where: { list_value_id } }),
+    [list_value_id],
   )
 
-  const addItem = async () => {
+  const addRow = async () => {
+    const newListValue = createListValuePreset()
     await db.list_values.create({
-      data: {
-        list_value_id: uuidv7(),
-        list_id,
-        deleted: false,
-        // TODO: add account_id
+      data: { ...newListValue, project_id },
+    })
+    navigate(
+      `/projects/${project_id}/lists/${list_id}/values/${newListValue.list_value_id}`,
+    )
+  }
+
+  const deleteRow = async () => {
+    await db.list_values.delete({
+      where: {
+        list_value_id,
       },
     })
+    navigate(`/projects/${project_id}/lists/${list_id}/values`)
   }
 
-  const clearItems = async () => {
-    await db.list_values.deleteMany()
-  }
+  const row: ListValue = results
 
-  const listValue: ListValue = results
+  const onChange = useCallback(
+    (e, data) => {
+      const { name, value } = getValueFromChange(e, data)
+      db.list_values.update({
+        where: { list_value_id },
+        data: { [name]: value },
+      })
+    },
+    [db.list_values, list_value_id],
+  )
+
+  if (!row) {
+    return <div>Loading...</div>
+  }
 
   return (
     <div className="form-container">
       <div className="controls">
-        <button className="button" onClick={addItem}>
-          Add
-        </button>
-        <button className="button" onClick={clearItems}>
-          Clear
-        </button>
+        <Button
+          size="large"
+          icon={<FaPlus />}
+          onClick={addRow}
+          title="Add new list value"
+        />
+        <Button
+          size="large"
+          icon={<FaMinus />}
+          onClick={deleteRow}
+          title="Delete list value"
+        />
       </div>
-      <div>{`List value with id ${listValue?.list_value_id ?? ''}`}</div>
+      <TextFieldInactive
+        label="ID"
+        name="list_value_id"
+        value={row.list_value_id}
+      />
+      <TextField
+        label="Value"
+        name="value"
+        value={row.value ?? ''}
+        onChange={onChange}
+      />
+      <Switch
+        label="Obsolete"
+        name="obsolete"
+        checked={row.obsolete ?? false}
+        onChange={onChange}
+      />
     </div>
   )
 }
