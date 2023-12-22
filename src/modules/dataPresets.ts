@@ -133,3 +133,8 @@ export const observation = () => ({
   observation_id: uuidv7(),
   deleted: false,
 })
+
+export const taxon = () => ({
+  taxon_id: uuidv7(),
+  deleted: false,
+})

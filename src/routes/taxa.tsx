@@ -1,25 +1,32 @@
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { Taxa as Taxon } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
+import { taxon as createTaxonPreset } from '../modules/dataPresets'
 import '../form.css'
 
 export const Component = () => {
-  const { project_id, taxonomy_id } = useParams<{ project_id: string }>()
-  const { db } = useElectric()!
-  const { results } = useLiveQuery(db.taxa.liveMany())
+  const { project_id, taxonomy_id } = useParams()
+  const navigate = useNavigate()
+
+  const { db } = useElectric()
+  const { results } = useLiveQuery(
+    () => db.taxa.liveMany({ where: { taxonomy_id, deleted: false } }),
+    [project_id, taxonomy_id],
+  )
 
   const add = async () => {
+    const newTaxon = createTaxonPreset()
     await db.taxa.create({
       data: {
-        taxon_id: uuidv7(),
+        ...newTaxon,
         taxonomy_id,
-        deleted: false,
-        // TODO: add account_id
       },
     })
+    navigate(
+      `/projects/${project_id}/taxonomies/${taxonomy_id}/taxa/${newTaxon.taxon_id}`,
+    )
   }
 
   const clear = async () => {
@@ -43,7 +50,7 @@ export const Component = () => {
           <Link
             to={`/projects/${project_id}/taxonomies/${taxonomy_id}/taxa/${taxon.taxon_id}`}
           >
-            {taxon.taxon_id}
+            {taxon.label ?? taxon.taxon_id}
           </Link>
         </p>
       ))}

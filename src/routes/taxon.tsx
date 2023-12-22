@@ -1,46 +1,100 @@
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
+import { FaPlus, FaMinus } from 'react-icons/fa'
+import { Button } from '@fluentui/react-components'
 
 import { Taxa as Taxon } from '../../../generated/client'
+import { taxon as createTaxonPreset } from '../modules/dataPresets'
+import { useElectric } from '../ElectricProvider'
+import { TextField } from '../components/shared/TextField'
+import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { getValueFromChange } from '../modules/getValueFromChange'
 
 import '../form.css'
 
-import { useElectric } from '../ElectricProvider'
-
 export const Component = () => {
-  const { db } = useElectric()!
   const { taxonomy_id, taxon_id } = useParams()
-  const { results } = useLiveQuery(db.taxa.liveUnique({ where: { taxon_id } }))
+  const navigate = useNavigate()
 
-  const addItem = async () => {
+  const { db } = useElectric()
+  const { results } = useLiveQuery(
+    () => db.taxa.liveUnique({ where: { taxon_id } }),
+    [taxon_id],
+  )
+
+  const addRow = async () => {
+    const newTaxon = createTaxonPreset()
     await db.taxa.create({
-      data: {
-        taxon_id: uuidv7(),
-        taxonomy_id,
-        deleted: false,
-        // TODO: add account_id
+      data: { ...newTaxon, project_id },
+    })
+    navigate(
+      `/projects/${project_id}/taxonomies/${taxonomy_id}/taxa/${newTaxon.taxon_id}`,
+    )
+  }
+
+  const deleteRow = async () => {
+    await db.taxa.delete({
+      where: {
+        taxon_id,
       },
     })
+    navigate(`/projects/${project_id}/taxonomies/${taxonomy_id}/taxa`)
   }
 
-  const clearItems = async () => {
-    await db.taxa.deleteMany()
-  }
+  const row: Taxon = results
 
-  const taxon: Taxon = results
+  const onChange = useCallback(
+    (e, data) => {
+      const { name, value } = getValueFromChange(e, data)
+      db.taxa.update({
+        where: { taxon_id },
+        data: { [name]: value },
+      })
+    },
+    [db.taxa, taxon_id],
+  )
+
+  if (!row) {
+    return <div>Loading...</div>
+  }
 
   return (
     <div className="form-container">
       <div className="controls">
-        <button className="button" onClick={addItem}>
-          Add
-        </button>
-        <button className="button" onClick={clearItems}>
-          Clear
-        </button>
+        <Button
+          size="large"
+          icon={<FaPlus />}
+          onClick={addRow}
+          title="Add new taxon"
+        />
+        <Button
+          size="large"
+          icon={<FaMinus />}
+          onClick={deleteRow}
+          title="Delete taxon"
+        />
       </div>
-      <div>{`Taxon with id ${taxon?.taxon_id ?? ''}`}</div>
+      <TextFieldInactive label="ID" name="taxon_id" value={row.taxon_id} />
+      <TextField
+        label="Name"
+        name="name"
+        value={row.name ?? ''}
+        onChange={onChange}
+      />
+      <TextField
+        label="ID in source"
+        name="id_in_source"
+        value={row.id_in_source ?? ''}
+        onChange={onChange}
+      />
+      <TextField
+        label="Url"
+        name="url"
+        type="url"
+        value={row.url ?? ''}
+        onChange={onChange}
+      />
     </div>
   )
 }
