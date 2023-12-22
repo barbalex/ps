@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+// import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { FaPlus, FaMinus } from 'react-icons/fa'
@@ -8,7 +8,7 @@ import { GoalReports as GoalReport } from '../../../generated/client'
 import { goalReport as createGoalReportPreset } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
-import { getValueFromChange } from '../modules/getValueFromChange'
+// import { getValueFromChange } from '../modules/getValueFromChange'
 
 import '../form.css'
 
