@@ -14,10 +14,10 @@ CREATE TABLE place_levels(
   action_reports boolean DEFAULT NULL, -- FALSE,
   checks boolean DEFAULT NULL, -- FALSE,
   check_values boolean DEFAULT NULL, -- FALSE,
-  check_taxons boolean DEFAULT NULL, -- FALSE,
+  check_taxa boolean DEFAULT NULL, -- FALSE,
   observation_references boolean DEFAULT NULL, -- FALSE,
   files_active boolean DEFAULT NULL, -- TRUE,
-  label_replace_by_generated_column text DEFAULT NULL,
+     text DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
 );
 
@@ -56,7 +56,7 @@ COMMENT ON COLUMN place_levels.checks IS 'Are checks used? Preset: false';
 
 COMMENT ON COLUMN place_levels.check_values IS 'Are check values used? Preset: false';
 
-COMMENT ON COLUMN place_levels.check_taxons IS 'Are check taxons used? Preset: false';
+COMMENT ON COLUMN place_levels.check_taxa IS 'Are check taxa used? Preset: false';
 
 COMMENT ON COLUMN place_levels.observation_references IS 'Are observation references used? Preset: false';
 
