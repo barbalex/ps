@@ -29,10 +29,6 @@ export const Component = () => {
     )
   }
 
-  const clear = async () => {
-    await db.goals.deleteMany()
-  }
-
   const goals: Goal[] = results ?? []
 
   return (
@@ -40,9 +36,6 @@ export const Component = () => {
       <div className="controls">
         <button className="button" onClick={add}>
           Add
-        </button>
-        <button className="button" onClick={clear}>
-          Clear
         </button>
       </div>
       {goals.map((goal: Goal, index: number) => (

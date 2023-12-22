@@ -27,10 +27,6 @@ export const Component = () => {
     navigate(`/projects/${project_id}/taxonomies/${newTaxonomy.taxonomy_id}`)
   }
 
-  const clear = async () => {
-    await db.taxonomies.deleteMany()
-  }
-
   const taxonomies: Taxonomy[] = results ?? []
 
   return (
@@ -38,9 +34,6 @@ export const Component = () => {
       <div className="controls">
         <button className="button" onClick={add}>
           Add
-        </button>
-        <button className="button" onClick={clear}>
-          Clear
         </button>
       </div>
       {taxonomies.map((taxonomy: Taxonomy, index: number) => (

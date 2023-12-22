@@ -21,10 +21,6 @@ export const Component = () => {
     navigate(`/accounts/${newAccount.account_id}`)
   }
 
-  const clear = async () => {
-    await db.accounts.deleteMany()
-  }
-
   const accounts: Account[] = results ?? []
 
   return (
@@ -32,9 +28,6 @@ export const Component = () => {
       <div className="controls">
         <button className="button" onClick={add}>
           Add
-        </button>
-        <button className="button" onClick={clear}>
-          Clear
         </button>
       </div>
       {accounts.map((account: Account, index: number) => (

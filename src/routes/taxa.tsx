@@ -29,10 +29,6 @@ export const Component = () => {
     )
   }
 
-  const clear = async () => {
-    await db.taxa.deleteMany()
-  }
-
   const taxa: Taxon[] = results ?? []
 
   return (
@@ -40,9 +36,6 @@ export const Component = () => {
       <div className="controls">
         <button className="button" onClick={add}>
           Add
-        </button>
-        <button className="button" onClick={clear}>
-          Clear
         </button>
       </div>
       {taxa.map((taxon: Taxon, index: number) => (

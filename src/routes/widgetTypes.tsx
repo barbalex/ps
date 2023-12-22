@@ -21,10 +21,6 @@ export const Component = () => {
     navigate(`/widget-types/${newWidgetType.widget_type_id}`)
   }
 
-  const clear = async () => {
-    await db.widget_types.deleteMany()
-  }
-
   const rows: WidgetType[] = results ?? []
 
   return (
@@ -32,9 +28,6 @@ export const Component = () => {
       <div className="controls">
         <button className="button" onClick={add}>
           Add
-        </button>
-        <button className="button" onClick={clear}>
-          Clear
         </button>
       </div>
       {rows.map((widgetType: WidgetType, index: number) => (

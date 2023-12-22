@@ -8,14 +8,9 @@ import '../form.css'
 
 export const Component = () => {
   const { subproject_id, project_id, place_id, action_id, action_report_id } =
-    useParams<{
-      subproject_id: string
-      project_id: string
-      place_id: string
-      action_id: string
-      action_report_id: string
-    }>()
-  const { db } = useElectric()!
+    useParams()
+
+  const { db } = useElectric()
   const { results } = useLiveQuery(db.action_report_values.liveMany())
 
   const add = async () => {
@@ -29,10 +24,6 @@ export const Component = () => {
     })
   }
 
-  const clear = async () => {
-    await db.action_report_values.deleteMany()
-  }
-
   const actionReportValues: ActionReportValue[] = results ?? []
 
   return (
@@ -40,9 +31,6 @@ export const Component = () => {
       <div className="controls">
         <button className="button" onClick={add}>
           Add
-        </button>
-        <button className="button" onClick={clear}>
-          Clear
         </button>
       </div>
       {actionReportValues.map(

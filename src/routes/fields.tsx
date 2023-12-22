@@ -29,10 +29,6 @@ export const Component = () => {
     navigate(`/projects/${project_id}/fields/${newField.field_id}`)
   }
 
-  const clear = async () => {
-    await db.fields.deleteMany()
-  }
-
   const fields: Field[] = results ?? []
 
   return (
@@ -40,9 +36,6 @@ export const Component = () => {
       <div className="controls">
         <button className="button" onClick={add}>
           Add
-        </button>
-        <button className="button" onClick={clear}>
-          Clear
         </button>
       </div>
       {fields.map((field: Field, index: number) => (

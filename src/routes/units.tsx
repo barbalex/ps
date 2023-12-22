@@ -27,10 +27,6 @@ export const Component = () => {
     navigate(`/projects/${project_id}/units/${newUnit.unit_id}`)
   }
 
-  const clear = async () => {
-    await db.units.deleteMany()
-  }
-
   const units: Unit[] = results ?? []
 
   return (
@@ -38,9 +34,6 @@ export const Component = () => {
       <div className="controls">
         <button className="button" onClick={add}>
           Add
-        </button>
-        <button className="button" onClick={clear}>
-          Clear
         </button>
       </div>
       {units.map((unit: Unit, index: number) => (

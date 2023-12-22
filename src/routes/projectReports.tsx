@@ -10,7 +10,7 @@ export const Component = () => {
   const { project_id } = useParams()
   const navigate = useNavigate()
 
-  const { db } = useElectric()!
+  const { db } = useElectric()
   const { results } = useLiveQuery(
     () =>
       db.project_reports.liveMany({ where: { project_id, deleted: false } }),
@@ -30,10 +30,6 @@ export const Component = () => {
     )
   }
 
-  const clear = async () => {
-    await db.project_reports.deleteMany()
-  }
-
   const projectReports: ProjectReport[] = results ?? []
 
   return (
@@ -41,9 +37,6 @@ export const Component = () => {
       <div className="controls">
         <button className="button" onClick={add}>
           Add
-        </button>
-        <button className="button" onClick={clear}>
-          Clear
         </button>
       </div>
       {projectReports.map((projectReport: ProjectReport, index: number) => (

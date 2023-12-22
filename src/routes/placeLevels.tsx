@@ -29,10 +29,6 @@ export const Component = () => {
     )
   }
 
-  const clear = async () => {
-    await db.place_levels.deleteMany()
-  }
-
   const placeLevels: PlaceLevel[] = results ?? []
 
   return (
@@ -40,9 +36,6 @@ export const Component = () => {
       <div className="controls">
         <button className="button" onClick={add}>
           Add
-        </button>
-        <button className="button" onClick={clear}>
-          Clear
         </button>
       </div>
       {placeLevels.map((placeLevel: PlaceLevel, index: number) => (

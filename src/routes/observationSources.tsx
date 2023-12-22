@@ -30,10 +30,6 @@ export const Component = () => {
     )
   }
 
-  const clear = async () => {
-    await db.observation_sources.deleteMany()
-  }
-
   const observationSources: ObservationSource[] = results ?? []
 
   return (
@@ -41,9 +37,6 @@ export const Component = () => {
       <div className="controls">
         <button className="button" onClick={add}>
           Add
-        </button>
-        <button className="button" onClick={clear}>
-          Clear
         </button>
       </div>
       {observationSources.map(

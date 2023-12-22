@@ -26,10 +26,6 @@ export const Component = () => {
     navigate(`/field-types/${newFieldType.field_type_id}`)
   }
 
-  const clear = async () => {
-    await db.field_types.deleteMany()
-  }
-
   const fieldTypes: FieldType[] = results ?? []
 
   return (
@@ -37,9 +33,6 @@ export const Component = () => {
       <div className="controls">
         <button className="button" onClick={add}>
           Add
-        </button>
-        <button className="button" onClick={clear}>
-          Clear
         </button>
       </div>
       {fieldTypes.map((fieldType: FieldType, index: number) => (

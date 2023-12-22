@@ -28,10 +28,6 @@ export const Component = () => {
     navigate(`/widgets-for-fields/${newWidgetForField.widget_for_field_id}`)
   }
 
-  const clear = async () => {
-    await db.widgets_for_fields.deleteMany()
-  }
-
   const widgetsForFields: WidgetForField[] = results ?? []
 
   return (
@@ -39,9 +35,6 @@ export const Component = () => {
       <div className="controls">
         <button className="button" onClick={add}>
           Add
-        </button>
-        <button className="button" onClick={clear}>
-          Clear
         </button>
       </div>
       {widgetsForFields.map((widgetForField: WidgetForField, index: number) => (

@@ -22,10 +22,6 @@ export const Component = () => {
     navigate(`/files/${newFile.file_id}`)
   }
 
-  const clear = async () => {
-    await db.files.deleteMany()
-  }
-
   const files: File[] = results ?? []
 
   return (
@@ -33,9 +29,6 @@ export const Component = () => {
       <div className="controls">
         <button className="button" onClick={add}>
           Add
-        </button>
-        <button className="button" onClick={clear}>
-          Clear
         </button>
       </div>
       {files.map((file: File, index: number) => (
