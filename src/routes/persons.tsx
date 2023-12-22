@@ -11,12 +11,15 @@ export const Component = () => {
   const { project_id } = useParams<{ project_id: string }>()
 
   const { db } = useElectric()
-  const { results } = useLiveQuery(db.persons.liveMany())
+  const { results } = useLiveQuery(
+    () => db.persons.liveMany({ where: { project_id } }),
+    [project_id],
+  )
 
   const add = async () => {
     const newPerson = createPersonPreset()
     await db.persons.create({
-      data: newPerson,
+      data: { ...newPerson, project_id },
     })
     navigate(`/projects/${project_id}/persons/${newPerson.person_id}`)
   }
