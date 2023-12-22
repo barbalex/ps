@@ -1,14 +1,7 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { FaPlus, FaMinus } from 'react-icons/fa'
-import {
-  Button,
-  Field,
-  RadioGroup,
-  Radio,
-  Switch,
-} from '@fluentui/react-components'
+import { Field, RadioGroup, Radio, Switch } from '@fluentui/react-components'
 
 import { Projects as Project } from '../../../generated/client'
 import { project as createProjectPreset } from '../modules/dataPresets'
@@ -16,6 +9,7 @@ import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { getValueFromChange } from '../modules/getValueFromChange'
+import { FormMenu } from '../components/FormMenu'
 
 import '../form.css'
 
@@ -29,22 +23,22 @@ export const Component = () => {
     [project_id],
   )
 
-  const addRow = async () => {
+  const addRow = useCallback(async () => {
     const newProject = createProjectPreset()
     await db.projects.create({
       data: newProject,
     })
     navigate(`/projects/${newProject.project_id}`)
-  }
+  }, [db.projects, navigate])
 
-  const deleteRow = async () => {
+  const deleteRow = useCallback(async () => {
     await db.projects.delete({
       where: {
         project_id,
       },
     })
     navigate(`/projects`)
-  }
+  }, [db.projects, navigate, project_id])
 
   const row: Project = results
 
@@ -65,20 +59,7 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <div className="controls">
-        <Button
-          size="large"
-          icon={<FaPlus />}
-          onClick={addRow}
-          title="Add new project"
-        />
-        <Button
-          size="large"
-          icon={<FaMinus />}
-          onClick={deleteRow}
-          title="Delete project"
-        />
-      </div>
+      <FormMenu addRow={addRow} deleteRow={deleteRow} tableName="project" />
       <TextFieldInactive label="ID" name="project_id" value={row.project_id} />
       <TextField
         label="Name"
