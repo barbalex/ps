@@ -1,5 +1,7 @@
 import { useMatches, useLocation, Link } from 'react-router-dom'
 
+import { DataNavs } from './DataNavs'
+
 // new idea
 // get all matches for next level down
 // But: does not seem possible with react-router
@@ -22,7 +24,7 @@ export const Navs = () => {
   console.log('Navs', { matches, tos, thisPathsMatches })
 
   // hide this area of there are no tos
-  if (!tos?.length) return null
+  if (!tos?.length) return <DataNavs matches={thisPathsMatches} />
 
   return (
     <nav className="navs">
