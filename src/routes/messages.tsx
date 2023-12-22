@@ -1,6 +1,6 @@
 import { useLiveQuery } from 'electric-sql/react'
 import { uuidv7 } from '@kripod/uuidv7'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { Messages as Message } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
@@ -8,15 +8,19 @@ import { useElectric } from '../ElectricProvider'
 import '../form.css'
 
 export const Component = () => {
+  const navigate = useNavigate()
+
   const { db } = useElectric()
   const { results } = useLiveQuery(db.messages.liveMany())
 
   const add = async () => {
+    const newId = uuidv7()
     await db.messages.create({
       data: {
-        message_id: uuidv7(),
+        message_id: newId,
       },
     })
+    navigate(`/messages/${newId}`)
   }
 
   const messages: Message[] = results ?? []
