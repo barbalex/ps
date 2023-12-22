@@ -1,48 +1,90 @@
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
+import { FaPlus, FaMinus } from 'react-icons/fa'
+import { Button } from '@fluentui/react-components'
 
 import { GoalReports as GoalReport } from '../../../generated/client'
+import { goalReport as createGoalReportPreset } from '../modules/dataPresets'
+import { useElectric } from '../ElectricProvider'
+import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { getValueFromChange } from '../modules/getValueFromChange'
 
 import '../form.css'
 
-import { useElectric } from '../ElectricProvider'
-
 export const Component = () => {
-  const { db } = useElectric()!
   const { goal_id } = useParams()
+  const navigate = useNavigate()
+
+  const { db } = useElectric()
   const { results } = useLiveQuery(
-    db.goal_reports.liveUnique({ where: { goal_id } }),
+    () => db.goal_reports.liveUnique({ where: { goal_id } }),
+    [goal_id],
   )
 
-  const addItem = async () => {
+  const addRow = async () => {
+    const newGoalReport = createGoalReportPreset()
     await db.goal_reports.create({
       data: {
-        goal_report_id: uuidv7(),
-        goal_id,
-        deleted: false,
+        ...newGoalReport,
+        project_id,
         // TODO: add account_id
       },
     })
+    navigate(
+      `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${newGoalReport.goal_report_id}`,
+    )
   }
 
-  const clearItems = async () => {
-    await db.goal_reports.deleteMany()
+  const deleteRow = async () => {
+    await db.goal_reports.delete({
+      where: {
+        goal_report_id,
+      },
+    })
+    navigate(
+      `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports`,
+    )
   }
 
-  const goalReport: GoalReport = results
+  const row: GoalReport = results
+
+  const onChange = useCallback(
+    (e, data) => {
+      const { name, value } = getValueFromChange(e, data)
+      db.goal_reports.update({
+        where: { goal_report_id },
+        data: { [name]: value },
+      })
+    },
+    [db.goal_reports],
+  )
+
+  if (!row) {
+    return <div>Loading...</div>
+  }
 
   return (
     <div className="form-container">
       <div className="controls">
-        <button className="button" onClick={addItem}>
-          Add
-        </button>
-        <button className="button" onClick={clearItems}>
-          Clear
-        </button>
+        <Button
+          size="large"
+          icon={<FaPlus />}
+          onClick={addRow}
+          title="Add new goal report"
+        />
+        <Button
+          size="large"
+          icon={<FaMinus />}
+          onClick={deleteRow}
+          title="Delete goal report"
+        />
       </div>
-      <div>{`Goal Report with id ${goalReport?.goal_report_id ?? ''}`}</div>
+      <TextFieldInactive
+        label="ID"
+        name="goal_report_id"
+        value={row.goal_report_id ?? ''}
+      />
     </div>
   )
 }
