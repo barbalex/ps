@@ -1,4 +1,4 @@
-export const idFieldFromTable = (table: string): string =>
+export const idFieldFromTable = (table: string = ''): string =>
   table.endsWith('taxa')
     ? `${table.slice(0, -1)}on_id`
     : table === 'taxonomies'
