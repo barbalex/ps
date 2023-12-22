@@ -11,12 +11,15 @@ export const Navs = () => {
   const location = useLocation()
   const matches = useMatches()
 
-  // console.log('Navs, matches', matches)
+  const thisPathsMatches = matches.filter(
+    (match) => match.pathname === location.pathname,
+  )
 
-  const tos = matches
-    .filter((match) => match.pathname === location.pathname)
+  const tos = thisPathsMatches
     .map((match) => match?.handle?.to?.(match))
     .filter((to) => Boolean(to))
+
+  console.log('Navs', { matches, tos, thisPathsMatches })
 
   // hide this area of there are no tos
   if (!tos?.length) return null
