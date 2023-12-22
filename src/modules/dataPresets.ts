@@ -72,3 +72,18 @@ export const field = () => ({
   field_id: uuidv7(),
   deleted: false,
 })
+
+export const unit = () => ({
+  unit_id: uuidv7(),
+  use_for_action_values: false,
+  use_for_action_report_values: false,
+  use_for_check_values: false,
+  use_for_place_report_values: false,
+  use_for_goal_report_values: false,
+  use_for_subproject_taxa: false,
+  use_for_check_taxa: false,
+  summable: false,
+  sort: 0,
+  type: 'integer',
+  deleted: false,
+})

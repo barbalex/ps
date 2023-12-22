@@ -8,7 +8,7 @@ import '../form.css'
 
 export const Component = () => {
   const navigate = useNavigate()
-  const { project_id } = useParams<{ project_id: string }>()
+  const { project_id } = useParams()
 
   const { db } = useElectric()
   const { results } = useLiveQuery(

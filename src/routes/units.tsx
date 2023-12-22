@@ -1,25 +1,30 @@
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { Units as Unit } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
+import { unit as createUnitPreset } from '../modules/dataPresets'
 import '../form.css'
 
 export const Component = () => {
-  const { project_id } = useParams<{ project_id: string }>()
-  const { db } = useElectric()!
-  const { results } = useLiveQuery(db.units.liveMany())
+  const { project_id } = useParams()
+  const navigate = useNavigate()
+
+  const { db } = useElectric()
+  const { results } = useLiveQuery(
+    () => db.units.liveMany({ where: { project_id, deleted: false } }),
+    [project_id],
+  )
 
   const add = async () => {
+    const newUnit = createUnitPreset()
     await db.units.create({
       data: {
-        unit_id: uuidv7(),
+        ...newUnit,
         project_id,
-        deleted: false,
-        // TODO: add account_id
       },
     })
+    navigate(`/projects/${project_id}/units/${newUnit.unit_id}`)
   }
 
   const clear = async () => {
@@ -41,7 +46,7 @@ export const Component = () => {
       {units.map((unit: Unit, index: number) => (
         <p key={index} className="item">
           <Link to={`/projects/${project_id}/units/${unit.unit_id}`}>
-            {unit.unit_id}
+            {unit.label ?? unit.unit_id}
           </Link>
         </p>
       ))}
