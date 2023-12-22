@@ -1,50 +1,102 @@
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
+import { FaPlus, FaMinus } from 'react-icons/fa'
+import { Button } from '@fluentui/react-components'
 
 import { ObservationSources as ObservationSource } from '../../../generated/client'
+import { observationSource as createObservationSourcePreset } from '../modules/dataPresets'
+import { useElectric } from '../ElectricProvider'
+import { TextField } from '../components/shared/TextField'
+import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { getValueFromChange } from '../modules/getValueFromChange'
 
 import '../form.css'
 
-import { useElectric } from '../ElectricProvider'
-
 export const Component = () => {
-  const { db } = useElectric()!
-  const { observation_source_id, project_id } = useParams()
+  const { project_id, observation_source_id } = useParams<{
+    project_id: string
+    observation_source_id: string
+  }>()
+  const navigate = useNavigate()
+
+  const { db } = useElectric()
   const { results } = useLiveQuery(
-    db.observation_sources.liveUnique({ where: { observation_source_id } }),
+    () =>
+      db.observation_sources.liveUnique({ where: { observation_source_id } }),
+    [observation_source_id],
   )
 
-  const addItem = async () => {
+  const addRow = async () => {
+    const newObservationSource = createObservationSourcePreset()
     await db.observation_sources.create({
-      data: {
-        observation_source_id: uuidv7(),
-        project_id,
-        deleted: false,
-        // TODO: set account_id
+      data: { ...newObservationSource, project_id },
+    })
+    navigate(
+      `/projects/${project_id}/observation-sources/${newObservationSource.observation_source_id}`,
+    )
+  }
+
+  const deleteRow = async () => {
+    await db.observation_sources.delete({
+      where: {
+        observation_source_id,
       },
     })
+    navigate(`/projects/${project_id}/observation-sources`)
   }
 
-  const clearItems = async () => {
-    await db.observation_sources.deleteMany()
-  }
+  const row: ObservationSource = results
 
-  const observationSource: ObservationSource = results
+  const onChange = useCallback(
+    (e, data) => {
+      const { name, value } = getValueFromChange(e, data)
+      db.observation_sources.update({
+        where: { observation_source_id },
+        data: { [name]: value },
+      })
+    },
+    [db.observation_sources, observation_source_id],
+  )
+
+  if (!row) {
+    return <div>Loading...</div>
+  }
 
   return (
     <div className="form-container">
       <div className="controls">
-        <button className="button" onClick={addItem}>
-          Add
-        </button>
-        <button className="button" onClick={clearItems}>
-          Clear
-        </button>
+        <Button
+          size="large"
+          icon={<FaPlus />}
+          onClick={addRow}
+          title="Add new observation source"
+        />
+        <Button
+          size="large"
+          icon={<FaMinus />}
+          onClick={deleteRow}
+          title="Delete observation source"
+        />
       </div>
-      <div>{`Observation Source with id ${
-        observationSource?.observation_source_id ?? ''
-      }`}</div>
+      <TextFieldInactive
+        label="ID"
+        name="observation_source_id"
+        value={row.observation_source_id}
+      />
+      <TextField
+        label="Name"
+        name="name"
+        value={row.name ?? ''}
+        onChange={onChange}
+      />
+      <TextField
+        label="Url"
+        name="url"
+        type="url"
+        value={row.url ?? ''}
+        onChange={onChange}
+      />
     </div>
   )
 }
