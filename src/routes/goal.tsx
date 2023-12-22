@@ -47,8 +47,6 @@ export const Component = () => {
 
   const row: Goal = results
 
-  console.log('goal, row:', row)
-
   const onChange = useCallback(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)

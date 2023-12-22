@@ -64,8 +64,6 @@ export const Component = () => {
     return <div>Loading...</div>
   }
 
-  console.log('goalReportValue, row:', row)
-
   return (
     <div className="form-container">
       <div className="controls">
