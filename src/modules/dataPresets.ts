@@ -67,3 +67,8 @@ export const observationSource = () => ({
   observation_source_id: uuidv7(),
   deleted: false,
 })
+
+export const field = () => ({
+  field_id: uuidv7(),
+  deleted: false,
+})
