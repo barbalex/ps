@@ -1,25 +1,30 @@
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { ProjectUsers as ProjectUser } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
+import { projectUser as createProjectUserPreset } from '../modules/dataPresets'
 import '../form.css'
 
 export const Component = () => {
-  const { project_id } = useParams<{ project_id: string }>()
-  const { db } = useElectric()!
-  const { results } = useLiveQuery(db.project_users.liveMany())
+  const { project_id } = useParams()
+  const navigate = useNavigate()
+
+  const { db } = useElectric()
+  const { results } = useLiveQuery(
+    () => db.project_users.liveMany({ where: { project_id, deleted: false } }),
+    [project_id],
+  )
 
   const add = async () => {
+    const newProjectUser = createProjectUserPreset()
     await db.project_users.create({
       data: {
-        project_user_id: uuidv7(),
+        ...newProjectUser,
         project_id,
-        deleted: false,
-        // TODO: add account_id
       },
     })
+    navigate(`/projects/${project_id}/users/${newProjectUser.project_user_id}`)
   }
 
   const clear = async () => {
@@ -43,7 +48,7 @@ export const Component = () => {
           <Link
             to={`/projects/${project_id}/users/${projectUser.project_user_id}`}
           >
-            {projectUser.project_user_id}
+            {projectUser.label ?? projectUser.project_user_id}
           </Link>
         </p>
       ))}

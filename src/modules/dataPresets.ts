@@ -99,3 +99,9 @@ export const taxonomy = () => ({
   obsolete: false,
   deleted: false,
 })
+
+export const projectUser = () => ({
+  project_user_id: uuidv7(),
+  role: 'reader',
+  deleted: false,
+})

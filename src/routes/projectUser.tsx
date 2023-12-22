@@ -1,48 +1,101 @@
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
+import { FaPlus, FaMinus } from 'react-icons/fa'
+import { Button, Field, RadioGroup, Radio } from '@fluentui/react-components'
 
 import { ProjectUsers as ProjectUser } from '../../../generated/client'
+import { projectUser as createProjectUserPreset } from '../modules/dataPresets'
+import { useElectric } from '../ElectricProvider'
+import { TextField } from '../components/shared/TextField'
+import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { getValueFromChange } from '../modules/getValueFromChange'
 
 import '../form.css'
 
-import { useElectric } from '../ElectricProvider'
-
 export const Component = () => {
-  const { db } = useElectric()!
   const { project_id, project_user_id } = useParams()
+  const navigate = useNavigate()
+
+  const { db } = useElectric()
   const { results } = useLiveQuery(
-    db.project_users.liveUnique({ where: { project_user_id } }),
+    () => db.project_users.liveUnique({ where: { project_user_id } }),
+    [project_user_id],
   )
 
-  const addItem = async () => {
+  const addRow = async () => {
+    const newProjectUser = createProjectUserPreset()
     await db.project_users.create({
-      data: {
-        project_user_id: uuidv7(),
-        project_id,
-        deleted: false,
-        // TODO: add account_id
+      data: { ...newProjectUser, project_id },
+    })
+    navigate(`/projects/${project_id}/users/${newProjectUser.project_user_id}`)
+  }
+
+  const deleteRow = async () => {
+    await db.project_users.delete({
+      where: {
+        project_user_id,
       },
     })
+    navigate(`/projects/${project_id}/users`)
   }
 
-  const clearItems = async () => {
-    await db.project_users.deleteMany()
-  }
+  const row: ProjectUser = results
 
-  const projectUser: ProjectUser = results
+  const onChange = useCallback(
+    (e, data) => {
+      const { name, value } = getValueFromChange(e, data)
+      db.project_users.update({
+        where: { project_user_id },
+        data: { [name]: value },
+      })
+    },
+    [db.project_users, project_user_id],
+  )
+
+  if (!row) {
+    return <div>Loading...</div>
+  }
 
   return (
     <div className="form-container">
       <div className="controls">
-        <button className="button" onClick={addItem}>
-          Add
-        </button>
-        <button className="button" onClick={clearItems}>
-          Clear
-        </button>
+        <Button
+          size="large"
+          icon={<FaPlus />}
+          onClick={addRow}
+          title="Add new project user"
+        />
+        <Button
+          size="large"
+          icon={<FaMinus />}
+          onClick={deleteRow}
+          title="Delete project user"
+        />
       </div>
-      <div>{`Project User with id ${projectUser?.project_user_id ?? ''}`}</div>
+      <TextFieldInactive
+        label="ID"
+        name="project_user_id"
+        value={row.project_user_id}
+      />
+      <TextField
+        label="User"
+        name="user_id"
+        value={row.user_id ?? ''}
+        onChange={onChange}
+      />
+      <Field label="Role">
+        <RadioGroup
+          layout="horizontal"
+          value={row.role ?? ''}
+          name="role"
+          onChange={onChange}
+        >
+          <Radio label="Reader" value="reader" />
+          <Radio label="Editor" value="editor" />
+          <Radio label="Manager" value="manager" />
+        </RadioGroup>
+      </Field>
     </div>
   )
 }
