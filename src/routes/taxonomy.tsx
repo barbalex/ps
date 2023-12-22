@@ -1,49 +1,119 @@
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
+import { FaPlus, FaMinus } from 'react-icons/fa'
+import {
+  Button,
+  Field,
+  RadioGroup,
+  Radio,
+  Switch,
+} from '@fluentui/react-components'
 
 import { Taxonomies as Taxonomy } from '../../../generated/client'
+import { useElectric } from '../ElectricProvider'
+import { taxonomy as createTaxonomyPreset } from '../modules/dataPresets'
+import { TextField } from '../components/shared/TextField'
+import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { getValueFromChange } from '../modules/getValueFromChange'
 
 import '../form.css'
 
-import { useElectric } from '../ElectricProvider'
-
 export const Component = () => {
-  const { db } = useElectric()!
   const { project_id, taxonomy_id } = useParams()
+  const navigate = useNavigate()
+
+  const { db } = useElectric()
   const { results } = useLiveQuery(
-    db.taxonomies.liveUnique({ where: { taxonomy_id } }),
+    () => db.taxonomies.liveUnique({ where: { taxonomy_id } }),
+    [taxonomy_id],
   )
 
-  const addItem = async () => {
+  const addRow = async () => {
+    const newTaxonomy = createTaxonomyPreset()
     await db.taxonomies.create({
-      data: {
-        taxonomy_id: uuidv7(),
-        project_id,
-        deleted: false,
-        // TODO: add account_id
+      data: { ...newTaxonomy, project_id },
+    })
+    navigate(`/projects/${project_id}/taxonomies/${newTaxonomy.taxonomy_id}`)
+  }
+
+  const deleteRow = async () => {
+    await db.taxonomies.delete({
+      where: {
+        taxonomy_id,
       },
     })
+    navigate(`/projects/${project_id}/taxonomies`)
   }
 
-  const clearItems = async () => {
-    await db.taxonomies.deleteMany()
-  }
+  const row: Taxonomy = results
 
-  const taxonomy: Taxonomy = results
-  // console.log('Taxonomy', { taxonomy, project_id, taxonomy_id })
+  const onChange = useCallback(
+    (e, data) => {
+      const { name, value } = getValueFromChange(e, data)
+      db.taxonomies.update({
+        where: { taxonomy_id },
+        data: { [name]: value },
+      })
+    },
+    [db.taxonomies, taxonomy_id],
+  )
+
+  if (!row) {
+    return <div>Loading...</div>
+  }
 
   return (
     <div className="form-container">
       <div className="controls">
-        <button className="button" onClick={addItem}>
-          Add
-        </button>
-        <button className="button" onClick={clearItems}>
-          Clear
-        </button>
+        <Button
+          size="large"
+          icon={<FaPlus />}
+          onClick={addRow}
+          title="Add new taxonomy"
+        />
+        <Button
+          size="large"
+          icon={<FaMinus />}
+          onClick={deleteRow}
+          title="Delete taxonomy"
+        />
       </div>
-      <div>{`Taxonomy with id ${taxonomy?.taxonomy_id ?? ''}`}</div>
+      <TextFieldInactive
+        label="ID"
+        name="taxonomy_id"
+        value={row.taxonomy_id}
+      />
+      <TextField
+        label="Name"
+        name="name"
+        value={row.name ?? ''}
+        onChange={onChange}
+      />
+      <Field label="Type">
+        <RadioGroup
+          layout="horizontal"
+          value={row.type ?? ''}
+          name="type"
+          onChange={onChange}
+        >
+          <Radio label="Species" value="species" />
+          <Radio label="Biotope" value="biotope" />
+        </RadioGroup>
+      </Field>
+      <TextField
+        label="Url"
+        name="url"
+        type="url"
+        value={row.url ?? ''}
+        onChange={onChange}
+      />
+      <Switch
+        label="Obsolete"
+        name="obsolete"
+        checked={row.obsolete ?? false}
+        onChange={onChange}
+      />
     </div>
   )
 }

@@ -93,3 +93,9 @@ export const list = () => ({
   obsolete: false,
   deleted: false,
 })
+
+export const taxonomy = () => ({
+  taxonomy_id: uuidv7(),
+  obsolete: false,
+  deleted: false,
+})
