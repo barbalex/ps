@@ -128,3 +128,8 @@ export const placeLevel = () => ({
   files_active: true,
   deleted: false,
 })
+
+export const observation = () => ({
+  observation_id: uuidv7(),
+  deleted: false,
+})
