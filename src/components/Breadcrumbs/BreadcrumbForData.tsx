@@ -6,7 +6,7 @@ import { MenuComponent } from './Menu'
 import { useElectric } from '../../ElectricProvider'
 import { idFieldFromTable } from '../../modules/idFieldFromTable'
 
-const tablesWithoutDeleted = ['root', 'docs', 'accounts', 'messages']
+export const tablesWithoutDeleted = ['root', 'docs', 'accounts', 'messages']
 
 export const Breadcrumb = ({ match }) => {
   const navigate = useNavigate()
