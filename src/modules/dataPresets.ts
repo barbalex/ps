@@ -150,3 +150,8 @@ export const goal = () => ({
   year: new Date().getFullYear(),
   deleted: false,
 })
+
+export const goalReport = () => ({
+  goal_report_id: uuidv7(),
+  deleted: false,
+})

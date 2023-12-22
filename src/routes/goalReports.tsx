@@ -1,32 +1,32 @@
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { GoalReports as GoalReport } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
+import { goalReport as createGoalReportPreset } from '../modules/dataPresets'
 import '../form.css'
 
 export const Component = () => {
-  const { subproject_id, project_id, goal_id } = useParams<{
-    subproject_id: string
-    goal_id: string
-  }>()
-  const { db } = useElectric()!
-  const { results } = useLiveQuery(db.goal_reports.liveMany())
+  const { subproject_id, project_id, goal_id } = useParams()
+  const navigate = useNavigate()
+
+  const { db } = useElectric()
+  const { results } = useLiveQuery(
+    () => db.goal_reports.liveMany({ where: { goal_id, deleted: false } }),
+    [goal_id],
+  )
 
   const add = async () => {
+    const newGoalReport = createGoalReportPreset()
     await db.goal_reports.create({
       data: {
-        goal_report_id: uuidv7(),
+        ...newGoalReport,
         goal_id,
-        deleted: false,
-        // TODO: add account_id
       },
     })
-  }
-
-  const clear = async () => {
-    await db.goal_reports.deleteMany()
+    navigate(
+      `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${newGoalReport.goal_report_id}`,
+    )
   }
 
   const goals: GoalReport[] = results ?? []
@@ -36,9 +36,6 @@ export const Component = () => {
       <div className="controls">
         <button className="button" onClick={add}>
           Add
-        </button>
-        <button className="button" onClick={clear}>
-          Clear
         </button>
       </div>
       {goals.map((goalReport: GoalReport, index: number) => (
