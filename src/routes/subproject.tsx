@@ -13,7 +13,6 @@ import { getValueFromChange } from '../modules/getValueFromChange'
 
 import '../form.css'
 
-
 export const Component = () => {
   const { project_id, subproject_id } = useParams()
   const navigate = useNavigate()
@@ -82,9 +81,9 @@ export const Component = () => {
         />
       </div>
       <TextFieldInactive
-        label="Project"
-        name="project_id"
-        value={row.project_id ?? ''}
+        label="ID"
+        name="subproject_id"
+        value={row.subproject_id ?? ''}
       />
       <TextField
         label="Name"
