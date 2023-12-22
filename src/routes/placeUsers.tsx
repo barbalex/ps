@@ -23,7 +23,6 @@ export const Component = () => {
     })
   }
 
-
   const placeUsers: PlaceUser[] = results ?? []
 
   return (
@@ -31,7 +30,6 @@ export const Component = () => {
       <div className="controls">
         <button className="button" onClick={add}>
           Add
-        </button>
         </button>
       </div>
       {placeUsers.map((placeUser: PlaceUser, index: number) => (

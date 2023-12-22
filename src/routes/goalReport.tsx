@@ -27,8 +27,7 @@ export const Component = () => {
     await db.goal_reports.create({
       data: {
         ...newGoalReport,
-        project_id,
-        // TODO: add account_id
+        goal_id,
       },
     })
     navigate(
