@@ -99,7 +99,8 @@ export const router = createBrowserRouter([
                     table: 'projects',
                     folder: false,
                   }),
-                  to: (match) => buildNavs({ table: `projects`, params: match.params }),
+                  to: (match) =>
+                    buildNavs({ table: `projects`, params: match.params }),
                 },
                 children: [
                   { index: true, lazy: () => import('./routes/project') },
@@ -127,7 +128,11 @@ export const router = createBrowserRouter([
                             table: 'subprojects',
                             folder: false,
                           }),
-                          to: (match) => buildNavs({ table: `subprojects`, params: match.params }),
+                          to: (match) =>
+                            buildNavs({
+                              table: `subprojects`,
+                              params: match.params,
+                            }),
                         },
                         children: [
                           {
@@ -159,7 +164,10 @@ export const router = createBrowserRouter([
                                     folder: false,
                                   }),
                                   to: (match) =>
-                                    buildNavs({ table: `places`, params: match.params }),
+                                    buildNavs({
+                                      table: `places`,
+                                      params: match.params,
+                                    }),
                                 },
                                 children: [
                                   {
@@ -191,7 +199,10 @@ export const router = createBrowserRouter([
                                             folder: false,
                                           }),
                                           to: (match) =>
-                                            buildNavs({ table: `checks`, params: match.params }),
+                                            buildNavs({
+                                              table: `checks`,
+                                              params: match.params,
+                                            }),
                                         },
                                         children: [
                                           {
@@ -292,7 +303,10 @@ export const router = createBrowserRouter([
                                             folder: false,
                                           }),
                                           to: (match) =>
-                                            buildNavs({ table: `actions`, params: match.params }),
+                                            buildNavs({
+                                              table: `actions`,
+                                              params: match.params,
+                                            }),
                                         },
                                         children: [
                                           {
@@ -643,7 +657,10 @@ export const router = createBrowserRouter([
                                     folder: false,
                                   }),
                                   to: (match) =>
-                                    buildNavs({ table: `goals`, params: match.params }),
+                                    buildNavs({
+                                      table: `goals`,
+                                      params: match.params,
+                                    }),
                                 },
                                 children: [
                                   {
@@ -808,7 +825,8 @@ export const router = createBrowserRouter([
                             table: 'lists',
                             folder: false,
                           }),
-                          to: (match) => buildNavs({ table: `lists`, params: match.params }),
+                          to: (match) =>
+                            buildNavs({ table: `lists`, params: match.params }),
                         },
                         children: [
                           {
@@ -871,7 +889,11 @@ export const router = createBrowserRouter([
                             table: 'taxonomies',
                             folder: false,
                           }),
-                          to: (match) => buildNavs({ table: `taxonomies`, params: match.params }),
+                          to: (match) =>
+                            buildNavs({
+                              table: `taxonomies`,
+                              params: match.params,
+                            }),
                         },
                         children: [
                           {
@@ -1016,7 +1038,10 @@ export const router = createBrowserRouter([
                             folder: false,
                           }),
                           to: (match) =>
-                            buildNavs({ table: `observation_sources`, params: match.params }),
+                            buildNavs({
+                              table: `observation_sources`,
+                              params: match.params,
+                            }),
                         },
                         children: [
                           {
@@ -1025,7 +1050,7 @@ export const router = createBrowserRouter([
                           },
                           {
                             path: 'observations',
-                            lazy: () => import('./routes/observations'),
+                            element: null,
                             handle: {
                               crumb: () => ({
                                 text: 'Observations',
