@@ -3,9 +3,9 @@ export const buildNavs = ({ table, params }) => {
   switch (table) {
     case 'root':
       return [
+        { path: '/projects', text: 'Projects' },
         { path: '/users', text: 'Users' },
         { path: '/accounts', text: 'Accounts' },
-        { path: '/projects', text: 'Projects' },
         { path: '/field-types', text: 'Field Types' },
         { path: '/widget-types', text: 'Widget Types' },
         { path: '/widgets-for-fields', text: 'Widgets For Fields' },
@@ -21,28 +21,28 @@ export const buildNavs = ({ table, params }) => {
           text: 'Subprojects',
         },
         {
-          path: `/projects/${params.project_id}/place-levels`,
-          text: 'Place Levels',
+          path: `/projects/${params.project_id}/reports`,
+          text: 'Reports',
         },
-        { path: `/projects/${params.project_id}/units`, text: 'Units' },
+        {
+          path: `/projects/${params.project_id}/persons`,
+          text: 'Persons',
+        },
         { path: `/projects/${params.project_id}/lists`, text: 'Lists' },
         {
           path: `/projects/${params.project_id}/taxonomies`,
           text: 'Taxonomies',
         },
+        { path: `/projects/${params.project_id}/units`, text: 'Units' },
         { path: `/projects/${params.project_id}/users`, text: 'Users' },
         {
-          path: `/projects/${params.project_id}/reports`,
-          text: 'Reports',
+          path: `/projects/${params.project_id}/place-levels`,
+          text: 'Place Levels',
         },
         { path: `/projects/${params.project_id}/fields`, text: 'Fields' },
         {
           path: `/projects/${params.project_id}/observation-sources`,
           text: 'Observation Sources',
-        },
-        {
-          path: `/projects/${params.project_id}/persons`,
-          text: 'Persons',
         },
       ]
     case 'subprojects':
@@ -52,20 +52,20 @@ export const buildNavs = ({ table, params }) => {
           text: 'Places',
         },
         {
-          path: `/projects/${params.project_id}/subprojects/${params.subproject_id}/users`,
-          text: 'Users',
-        },
-        {
-          path: `/projects/${params.project_id}/subprojects/${params.subproject_id}/taxa`,
-          text: 'Taxa',
-        },
-        {
           path: `/projects/${params.project_id}/subprojects/${params.subproject_id}/reports`,
           text: 'Reports',
         },
         {
           path: `/projects/${params.project_id}/subprojects/${params.subproject_id}/goals`,
           text: 'Goals',
+        },
+        {
+          path: `/projects/${params.project_id}/subprojects/${params.subproject_id}/taxa`,
+          text: 'Taxa',
+        },
+        {
+          path: `/projects/${params.project_id}/subprojects/${params.subproject_id}/users`,
+          text: 'Users',
         },
       ]
     case 'places':
