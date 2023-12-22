@@ -1,11 +1,12 @@
 import { useLiveQuery } from 'electric-sql/react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
 import { idFieldFromTable } from '../../modules/idFieldFromTable'
 import { tablesWithoutDeleted } from '../Breadcrumbs/BreadcrumbForData'
 
 export const DataNavs = ({ matches }) => {
+  const location = useLocation()
   const filteredMatches = matches.filter((match) => {
     const { table, folder } = match?.handle?.crumb?.(match) ?? {}
 
@@ -35,28 +36,28 @@ export const DataNavs = ({ matches }) => {
   const { db } = useElectric()
   const { results } = useLiveQuery(
     () => db[table]?.liveMany({ where: filterParams }),
-    [db, table],
+    [db, location.pathname],
   )
 
-  console.log('DataNavs', {
-    table,
-    params,
-    idField,
-    pathname,
-    pathArray,
-    parentTable,
-    parentId,
-    parentIdFieldName,
-    results,
-  })
+  // console.log('DataNavs', {
+  //   table,
+  //   params,
+  //   idField,
+  //   pathname,
+  //   pathArray,
+  //   parentTable,
+  //   parentId,
+  //   parentIdFieldName,
+  //   results,
+  // })
 
   return (
     <nav className="navs">
-      {(results ?? []).map((result) => {
+      {(results ?? []).map((result, index) => {
         const label = result.label ?? result[idField]
 
         return (
-          <Link key={result[idField]} to={`${pathname}/${result[idField]}`}>
+          <Link key={`${result[idField]}/${index}`} to={`${pathname}/${result[idField]}`}>
             {label}
           </Link>
         )
