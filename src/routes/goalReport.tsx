@@ -49,16 +49,16 @@ export const Component = () => {
 
   const row: GoalReport = results
 
-  const onChange = useCallback(
-    (e, data) => {
-      const { name, value } = getValueFromChange(e, data)
-      db.goal_reports.update({
-        where: { goal_report_id },
-        data: { [name]: value },
-      })
-    },
-    [db.goal_reports],
-  )
+  // const onChange = useCallback(
+  //   (e, data) => {
+  //     const { name, value } = getValueFromChange(e, data)
+  //     db.goal_reports.update({
+  //       where: { goal_report_id },
+  //       data: { [name]: value },
+  //     })
+  //   },
+  //   [db.goal_reports],
+  // )
 
   if (!row) {
     return <div>Loading...</div>
