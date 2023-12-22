@@ -113,3 +113,18 @@ export const projectReport = () => ({
   files_active: true,
   deleted: false,
 })
+
+export const placeLevel = () => ({
+  place_level_id: uuidv7(),
+  reports: false,
+  report_values: false,
+  actions: false,
+  action_values: false,
+  action_reports: false,
+  checks: false,
+  check_values: false,
+  check_taxa: false,
+  observation_references: false,
+  files_active: true,
+  deleted: false,
+})

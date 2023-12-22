@@ -1,27 +1,32 @@
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { PlaceLevels as PlaceLevel } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
+import { placeLevel as createPlaceLevelPreset } from '../modules/dataPresets'
 import '../form.css'
 
 export const Component = () => {
-  const { project_id } = useParams<{
-    project_id: string
-  }>()
-  const { db } = useElectric()!
-  const { results } = useLiveQuery(db.place_levels.liveMany())
+  const { project_id } = useParams()
+  const navigate = useNavigate()
+
+  const { db } = useElectric()
+  const { results } = useLiveQuery(
+    () => db.place_levels.liveMany({ where: { project_id, deleted: false } }),
+    [project_id],
+  )
 
   const add = async () => {
+    const newPlaceLevel = createPlaceLevelPreset()
     await db.place_levels.create({
       data: {
-        place_level_id: uuidv7(),
+        ...newPlaceLevel,
         project_id,
-        deleted: false,
-        // TODO: add account_id
       },
     })
+    navigate(
+      `/projects/${project_id}/place-levels/${newPlaceLevel.place_level_id}`,
+    )
   }
 
   const clear = async () => {
@@ -45,7 +50,7 @@ export const Component = () => {
           <Link
             to={`/projects/${project_id}/place-levels/${placeLevel.place_level_id}`}
           >
-            {placeLevel.place_level_id}
+            {placeLevel.label ?? placeLevel.place_level_id}
           </Link>
         </p>
       ))}
