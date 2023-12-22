@@ -1,25 +1,33 @@
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { ProjectReports as ProjectReport } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
+import { projectReport as createProjectReportPreset } from '../modules/dataPresets'
 import '../form.css'
 
 export const Component = () => {
-  const { project_id } = useParams<{ project_id: string }>()
+  const { project_id } = useParams()
+  const navigate = useNavigate()
+
   const { db } = useElectric()!
-  const { results } = useLiveQuery(db.project_reports.liveMany())
+  const { results } = useLiveQuery(
+    () =>
+      db.project_reports.liveMany({ where: { project_id, deleted: false } }),
+    [project_id],
+  )
 
   const add = async () => {
+    const newProjectReport = createProjectReportPreset()
     await db.project_reports.create({
       data: {
-        project_report_id: uuidv7(),
+        ...newProjectReport,
         project_id,
-        deleted: false,
-        // TODO: add account_id
       },
     })
+    navigate(
+      `/projects/${project_id}/reports/${newProjectReport.project_report_id}`,
+    )
   }
 
   const clear = async () => {
@@ -43,7 +51,7 @@ export const Component = () => {
           <Link
             to={`/projects/${project_id}/reports/${projectReport.project_report_id}`}
           >
-            {projectReport.project_report_id}
+            {projectReport.label ?? projectReport.project_report_id}
           </Link>
         </p>
       ))}

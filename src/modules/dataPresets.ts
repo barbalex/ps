@@ -1,6 +1,7 @@
 import { uuidv7 } from '@kripod/uuidv7'
 
 // TODO: add account_id
+// TODO: refactor names to express creation
 export const project = () => ({
   project_id: uuidv7(),
   type: 'species',
@@ -103,5 +104,12 @@ export const taxonomy = () => ({
 export const projectUser = () => ({
   project_user_id: uuidv7(),
   role: 'reader',
+  deleted: false,
+})
+
+export const projectReport = () => ({
+  project_report_id: uuidv7(),
+  year: new Date().getFullYear(),
+  files_active: true,
   deleted: false,
 })
