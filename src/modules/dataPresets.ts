@@ -144,3 +144,9 @@ export const listValue = () => ({
   obsolete: false,
   deleted: false,
 })
+
+export const goal = () => ({
+  goal_id: uuidv7(),
+  year: new Date().getFullYear(),
+  deleted: false,
+})
