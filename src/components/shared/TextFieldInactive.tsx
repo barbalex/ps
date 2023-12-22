@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { useState } from 'react'
 import {
   makeStyles,
@@ -22,7 +23,7 @@ const useStyles = makeStyles({
   },
 })
 
-export const TextFieldInactive = (props: InputProps) => {
+export const TextFieldInactive = memo((props: InputProps) => {
   const inputId = useId('input')
   const styles = useStyles()
 
@@ -61,4 +62,4 @@ export const TextFieldInactive = (props: InputProps) => {
       )}
     </div>
   )
-}
+})
