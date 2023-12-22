@@ -49,6 +49,8 @@ export const Component = () => {
 
   const row: GoalReportValue = results
 
+  // console.log('GoalReportValue', { row, results })
+
   const onChange = useCallback(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
@@ -86,7 +88,7 @@ export const Component = () => {
         value={row.goal_report_value_id ?? ''}
       />
       <TextField
-        label="Unit"
+        label="Unit ID"
         name="unit_id"
         value={row.unit_id ?? ''}
         onChange={onChange}
