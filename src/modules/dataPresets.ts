@@ -87,3 +87,9 @@ export const unit = () => ({
   type: 'integer',
   deleted: false,
 })
+
+export const list = () => ({
+  list_id: uuidv7(),
+  obsolete: false,
+  deleted: false,
+})

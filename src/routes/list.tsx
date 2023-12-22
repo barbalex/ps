@@ -1,46 +1,91 @@
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
+import { FaPlus, FaMinus } from 'react-icons/fa'
+import { Button, Switch } from '@fluentui/react-components'
 
 import { Lists as List } from '../../../generated/client'
+import { useElectric } from '../ElectricProvider'
+import { list as createListPreset } from '../modules/dataPresets'
+import { TextField } from '../components/shared/TextField'
+import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { getValueFromChange } from '../modules/getValueFromChange'
 
 import '../form.css'
 
-import { useElectric } from '../ElectricProvider'
-
 export const Component = () => {
-  const { db } = useElectric()!
   const { project_id, list_id } = useParams()
-  const { results } = useLiveQuery(db.lists.liveUnique({ where: { list_id } }))
+  const navigate = useNavigate()
 
-  const addItem = async () => {
+  const { db } = useElectric()
+  const { results } = useLiveQuery(
+    () => db.lists.liveUnique({ where: { list_id } }),
+    [list_id],
+  )
+
+  const addRow = async () => {
+    const newList = createListPreset()
     await db.lists.create({
-      data: {
-        list_id: uuidv7(),
-        project_id,
-        deleted: false,
-        // TODO: add account_id
+      data: { ...newList, project_id },
+    })
+    navigate(`/projects/${project_id}/lists/${newList.list_id}`)
+  }
+
+  const deleteRow = async () => {
+    await db.lists.delete({
+      where: {
+        list_id,
       },
     })
+    navigate(`/projects/${project_id}/lists`)
   }
 
-  const clearItems = async () => {
-    await db.lists.deleteMany()
-  }
+  const row: List = results
 
-  const list: List = results
+  const onChange = useCallback(
+    (e, data) => {
+      const { name, value } = getValueFromChange(e, data)
+      db.lists.update({
+        where: { list_id },
+        data: { [name]: value },
+      })
+    },
+    [db.lists, list_id],
+  )
+
+  if (!row) {
+    return <div>Loading...</div>
+  }
 
   return (
     <div className="form-container">
       <div className="controls">
-        <button className="button" onClick={addItem}>
-          Add
-        </button>
-        <button className="button" onClick={clearItems}>
-          Clear
-        </button>
+        <Button
+          size="large"
+          icon={<FaPlus />}
+          onClick={addRow}
+          title="Add new list"
+        />
+        <Button
+          size="large"
+          icon={<FaMinus />}
+          onClick={deleteRow}
+          title="Delete list"
+        />
       </div>
-      <div>{`List with id ${list?.list_id ?? ''}`}</div>
+      <TextFieldInactive label="ID" name="list_id" value={row.list_id} />
+      <TextField
+        label="Name"
+        name="name"
+        value={row.name ?? ''}
+        onChange={onChange}
+      />
+      <Switch
+        label="Obsolete"
+        name="obsolete"
+        checked={row.obsolete ?? false}
+        onChange={onChange}
+      />
     </div>
   )
 }
