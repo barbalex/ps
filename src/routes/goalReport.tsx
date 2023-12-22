@@ -13,13 +13,13 @@ import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import '../form.css'
 
 export const Component = () => {
-  const { goal_id } = useParams()
+  const { goal_id, goal_report_id } = useParams()
   const navigate = useNavigate()
 
   const { db } = useElectric()
   const { results } = useLiveQuery(
-    () => db.goal_reports.liveUnique({ where: { goal_id } }),
-    [goal_id],
+    () => db.goal_reports.liveUnique({ where: { goal_report_id } }),
+    [goal_report_id],
   )
 
   const addRow = async () => {
@@ -47,6 +47,8 @@ export const Component = () => {
   }
 
   const row: GoalReport = results
+
+  // console.log('goalReport', { row, goal_id })
 
   // const onChange = useCallback(
   //   (e, data) => {
