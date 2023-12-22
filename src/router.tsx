@@ -26,59 +26,6 @@ export const router = createBrowserRouter([
             lazy: () => import('./routes/home'),
           },
           {
-            path: 'users',
-            element: null,
-            handle: {
-              crumb: () => ({
-                text: 'Users',
-                table: 'users',
-                folder: true,
-              }),
-            },
-            children: [
-              {
-                index: true,
-                lazy: () => import('./routes/users'),
-              },
-              {
-                path: ':user_id',
-                lazy: () => import('./routes/user'),
-                handle: {
-                  crumb: (match) => ({
-                    text: match.params.user_id,
-                    table: 'users',
-                    folder: false,
-                  }),
-                },
-              },
-            ],
-          },
-          {
-            path: 'accounts',
-            element: null,
-            handle: {
-              crumb: () => ({
-                text: 'Accounts',
-                table: 'accounts',
-                folder: true,
-              }),
-            },
-            children: [
-              { index: true, lazy: () => import('./routes/accounts') },
-              {
-                path: ':account_id',
-                lazy: () => import('./routes/account'),
-                handle: {
-                  crumb: (match) => ({
-                    text: match.params.account_id,
-                    table: 'accounts',
-                    folder: false,
-                  }),
-                },
-              },
-            ],
-          },
-          {
             path: 'projects',
             element: null,
             handle: {
@@ -100,7 +47,7 @@ export const router = createBrowserRouter([
                     folder: false,
                   }),
                   to: (match) =>
-                    buildNavs({ table: `projects`, params: match.params }),
+                    buildNavs({ table: `projects`, params: match.params, sort: 1 }),
                 },
                 children: [
                   { index: true, lazy: () => import('./routes/project') },
@@ -1106,6 +1053,59 @@ export const router = createBrowserRouter([
                     ],
                   },
                 ],
+              },
+            ],
+          },
+          {
+            path: 'users',
+            element: null,
+            handle: {
+              crumb: () => ({
+                text: 'Users',
+                table: 'users',
+                folder: true,
+              }),
+            },
+            children: [
+              {
+                index: true,
+                lazy: () => import('./routes/users'),
+              },
+              {
+                path: ':user_id',
+                lazy: () => import('./routes/user'),
+                handle: {
+                  crumb: (match) => ({
+                    text: match.params.user_id,
+                    table: 'users',
+                    folder: false,
+                  }),
+                },
+              },
+            ],
+          },
+          {
+            path: 'accounts',
+            element: null,
+            handle: {
+              crumb: () => ({
+                text: 'Accounts',
+                table: 'accounts',
+                folder: true,
+              }),
+            },
+            children: [
+              { index: true, lazy: () => import('./routes/accounts') },
+              {
+                path: ':account_id',
+                lazy: () => import('./routes/account'),
+                handle: {
+                  crumb: (match) => ({
+                    text: match.params.account_id,
+                    table: 'accounts',
+                    folder: false,
+                  }),
+                },
               },
             ],
           },
