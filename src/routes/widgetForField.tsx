@@ -1,8 +1,6 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { FaPlus, FaMinus } from 'react-icons/fa'
-import { Button } from '@fluentui/react-components'
 
 import { WidgetsForFields as WidgetsForField } from '../../../generated/client'
 import { widgetForField as createwidgetForFieldPreset } from '../modules/dataPresets'
@@ -10,6 +8,7 @@ import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { getValueFromChange } from '../modules/getValueFromChange'
+import { FormMenu } from '../components/FormMenu'
 
 import '../form.css'
 
@@ -23,22 +22,22 @@ export const Component = () => {
     [widget_for_field_id],
   )
 
-  const addRow = async () => {
+  const addRow = useCallback(async () => {
     const newWidgetForField = createwidgetForFieldPreset()
     await db.widgets_for_fields.create({
       data: newWidgetForField,
     })
     navigate(`/widgets-for-fields/${newWidgetForField.widget_for_field_id}`)
-  }
+  }, [db.widgets_for_fields, navigate])
 
-  const deleteRow = async () => {
+  const deleteRow = useCallback(async () => {
     await db.widgets_for_fields.delete({
       where: {
         widget_for_field_id,
       },
     })
     navigate(`/widgets-for-fields`)
-  }
+  }, [db.widgets_for_fields, navigate, widget_for_field_id])
 
   const row: WidgetsForField = results
 
@@ -59,20 +58,11 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <div className="controls">
-        <Button
-          size="large"
-          icon={<FaPlus />}
-          onClick={addRow}
-          title="Add new project"
-        />
-        <Button
-          size="large"
-          icon={<FaMinus />}
-          onClick={deleteRow}
-          title="Delete project"
-        />
-      </div>
+      <FormMenu
+        addRow={addRow}
+        deleteRow={deleteRow}
+        tableName="widget for field"
+      />
       <TextFieldInactive
         label="ID"
         name="widget_for_field_id"

@@ -1,8 +1,7 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { FaPlus, FaMinus } from 'react-icons/fa'
-import { Button, Switch } from '@fluentui/react-components'
+import { Switch } from '@fluentui/react-components'
 
 import { ProjectReports as ProjectReport } from '../../../generated/client'
 import { projectReport as createProjectReportPreset } from '../modules/dataPresets'
@@ -10,6 +9,7 @@ import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { getValueFromChange } from '../modules/getValueFromChange'
+import { FormMenu } from '../components/FormMenu'
 
 import '../form.css'
 
@@ -23,7 +23,7 @@ export const Component = () => {
     [project_report_id],
   )
 
-  const addRow = async () => {
+  const addRow = useCallback(async () => {
     const newProjectReport = createProjectReportPreset()
     await db.project_reports.create({
       data: { ...newProjectReport, project_id },
@@ -31,16 +31,16 @@ export const Component = () => {
     navigate(
       `/projects/${project_id}/reports/${newProjectReport.project_report_id}`,
     )
-  }
+  }, [db.project_reports, navigate, project_id])
 
-  const deleteRow = async () => {
+  const deleteRow = useCallback(async () => {
     await db.project_reports.delete({
       where: {
         project_report_id,
       },
     })
     navigate(`/projects/${project_id}/reports`)
-  }
+  }, [db.project_reports, navigate, project_id, project_report_id])
 
   const row: ProjectReport = results
 
@@ -61,20 +61,11 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <div className="controls">
-        <Button
-          size="large"
-          icon={<FaPlus />}
-          onClick={addRow}
-          title="Add new project report"
-        />
-        <Button
-          size="large"
-          icon={<FaMinus />}
-          onClick={deleteRow}
-          title="Delete project report"
-        />
-      </div>
+      <FormMenu
+        addRow={addRow}
+        deleteRow={deleteRow}
+        tableName="project report"
+      />
       <TextFieldInactive
         label="ID"
         name="project_report_id"

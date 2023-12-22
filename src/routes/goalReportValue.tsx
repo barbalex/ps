@@ -1,8 +1,6 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { FaPlus, FaMinus } from 'react-icons/fa'
-import { Button } from '@fluentui/react-components'
 
 import { GoalReportValues as GoalReportValue } from '../../../generated/client'
 import { goalReportValue as createGoalReportValuePreset } from '../modules/dataPresets'
@@ -10,6 +8,7 @@ import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { getValueFromChange } from '../modules/getValueFromChange'
+import { FormMenu } from '../components/FormMenu'
 
 import '../form.css'
 
@@ -23,7 +22,7 @@ export const Component = () => {
     [goal_report_value_id],
   )
 
-  const addRow = async () => {
+  const addRow = useCallback(async () => {
     const newGoalReportValue = createGoalReportValuePreset()
     await db.goal_report_values.create({
       data: {
@@ -34,9 +33,9 @@ export const Component = () => {
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${goal_report_id}/values/${newGoalReportValue.goal_report_value_id}`,
     )
-  }
+  }, [db.goal_report_values, goal_report_id, navigate])
 
-  const deleteRow = async () => {
+  const deleteRow = useCallback(async () => {
     await db.goal_report_values.delete({
       where: {
         goal_report_value_id,
@@ -45,7 +44,7 @@ export const Component = () => {
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${goal_report_id}/values`,
     )
-  }
+  }, [db.goal_report_values, goal_report_id, goal_report_value_id, navigate])
 
   const row: GoalReportValue = results
 
@@ -68,20 +67,11 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <div className="controls">
-        <Button
-          size="large"
-          icon={<FaPlus />}
-          onClick={addRow}
-          title="Add new goal report"
-        />
-        <Button
-          size="large"
-          icon={<FaMinus />}
-          onClick={deleteRow}
-          title="Delete goal report"
-        />
-      </div>
+      <FormMenu
+        addRow={addRow}
+        deleteRow={deleteRow}
+        tableName="goal report value"
+      />
       <TextFieldInactive
         label="ID"
         name="goal_report_value_id"

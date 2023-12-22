@@ -1,14 +1,7 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { FaPlus, FaMinus } from 'react-icons/fa'
-import {
-  Button,
-  Field,
-  Radio,
-  RadioGroup,
-  Switch,
-} from '@fluentui/react-components'
+import { Field, Radio, RadioGroup, Switch } from '@fluentui/react-components'
 
 import { PlaceLevels as PlaceLevel } from '../../../generated/client'
 import { placeLevel as createPlaceLevelPreset } from '../modules/dataPresets'
@@ -16,6 +9,7 @@ import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { getValueFromChange } from '../modules/getValueFromChange'
+import { FormMenu } from '../components/FormMenu'
 
 import '../form.css'
 
@@ -29,7 +23,7 @@ export const Component = () => {
     [place_level_id],
   )
 
-  const addRow = async () => {
+  const addRow = useCallback(async () => {
     const newPlaceLevel = createPlaceLevelPreset()
     await db.place_levels.create({
       data: { ...newPlaceLevel, project_id },
@@ -37,16 +31,16 @@ export const Component = () => {
     navigate(
       `/projects/${project_id}/place-levels/${newPlaceLevel.place_level_id}`,
     )
-  }
+  }, [db.place_levels, navigate, project_id])
 
-  const deleteRow = async () => {
+  const deleteRow = useCallback(async () => {
     await db.place_levels.delete({
       where: {
         place_level_id,
       },
     })
     navigate(`/projects/${project_id}/place-levels`)
-  }
+  }, [db.place_levels, navigate, place_level_id, project_id])
 
   const row: PlaceLevel = results
 
@@ -67,20 +61,7 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <div className="controls">
-        <Button
-          size="large"
-          icon={<FaPlus />}
-          onClick={addRow}
-          title="Add new place level"
-        />
-        <Button
-          size="large"
-          icon={<FaMinus />}
-          onClick={deleteRow}
-          title="Delete place level"
-        />
-      </div>
+      <FormMenu addRow={addRow} deleteRow={deleteRow} tableName="place level" />
       <TextFieldInactive
         label="ID"
         name="place_level_id"

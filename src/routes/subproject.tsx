@@ -1,8 +1,7 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { FaPlus, FaMinus } from 'react-icons/fa'
-import { Button, Switch } from '@fluentui/react-components'
+import { Switch } from '@fluentui/react-components'
 
 import { Subprojects as Subproject } from '../../../generated/client'
 import { subproject as createSubprojectPreset } from '../modules/dataPresets'
@@ -10,6 +9,7 @@ import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { getValueFromChange } from '../modules/getValueFromChange'
+import { FormMenu } from '../components/FormMenu'
 
 import '../form.css'
 
@@ -22,7 +22,7 @@ export const Component = () => {
     db.subprojects.liveUnique({ where: { subproject_id } }),
   )
 
-  const addRow = async () => {
+  const addRow = useCallback(async () => {
     const newSubproject = createSubprojectPreset()
     await db.subprojects.create({
       data: {
@@ -34,16 +34,16 @@ export const Component = () => {
     navigate(
       `/projects/${project_id}/subprojects/${newSubproject.subproject_id}`,
     )
-  }
+  }, [db.subprojects, navigate, project_id])
 
-  const deleteRow = async () => {
+  const deleteRow = useCallback(async () => {
     await db.subprojects.delete({
       where: {
         subproject_id,
       },
     })
     navigate(`/projects/${project_id}/subprojects`)
-  }
+  }, [db.subprojects, navigate, project_id, subproject_id])
 
   const row: Subproject = results
 
@@ -64,20 +64,11 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <div className="controls">
-        <Button
-          size="large"
-          icon={<FaPlus />}
-          onClick={addRow}
-          title="Add new subproject" // TODO: use subproject_name_singular
-        />
-        <Button
-          size="large"
-          icon={<FaMinus />}
-          onClick={deleteRow}
-          title="Delete subproject" // TODO: use subproject_name_singular
-        />
-      </div>
+      <FormMenu
+        addRow={addRow}
+        deleteRow={deleteRow}
+        tableName="subproject" // TODO: use subproject_name_singular
+      />
       <TextFieldInactive
         label="ID"
         name="subproject_id"

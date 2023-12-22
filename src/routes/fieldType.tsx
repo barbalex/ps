@@ -1,8 +1,6 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { FaPlus, FaMinus } from 'react-icons/fa'
-import { Button } from '@fluentui/react-components'
 
 import { FieldTypes as FieldType } from '../../../generated/client'
 import { fieldType as fieldTypePreset } from '../modules/dataPresets'
@@ -10,6 +8,7 @@ import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { getValueFromChange } from '../modules/getValueFromChange'
+import { FormMenu } from '../components/FormMenu'
 
 import '../form.css'
 
@@ -23,22 +22,22 @@ export const Component = () => {
     [field_type_id],
   )
 
-  const addRow = async () => {
+  const addRow = useCallback(async () => {
     const newFieldType = fieldTypePreset()
     await db.field_types.create({
       data: newFieldType,
     })
     navigate(`/field-types/${newFieldType.field_type_id}`)
-  }
+  }, [db.field_types, navigate])
 
-  const deleteRow = async () => {
+  const deleteRow = useCallback(async () => {
     await db.field_types.delete({
       where: {
         field_type_id,
       },
     })
     navigate(`/field-types`)
-  }
+  }, [db.field_types, field_type_id, navigate])
 
   const row: FieldType = results
 
@@ -59,20 +58,7 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <div className="controls">
-        <Button
-          size="large"
-          icon={<FaPlus />}
-          onClick={addRow}
-          title="Add new field type"
-        />
-        <Button
-          size="large"
-          icon={<FaMinus />}
-          onClick={deleteRow}
-          title="Delete field type"
-        />
-      </div>
+      <FormMenu addRow={addRow} deleteRow={deleteRow} tableName="field type" />
       <TextFieldInactive
         label="ID"
         name="field_type_id"

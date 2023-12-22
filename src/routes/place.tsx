@@ -1,8 +1,7 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { FaPlus, FaMinus } from 'react-icons/fa'
-import { Button, Switch } from '@fluentui/react-components'
+import { Switch } from '@fluentui/react-components'
 
 import { Places as Place } from '../../../generated/client'
 import { place as createPlacePreset } from '../modules/dataPresets'
@@ -10,16 +9,13 @@ import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { getValueFromChange } from '../modules/getValueFromChange'
+import { FormMenu } from '../components/FormMenu'
 
 import '../form.css'
 
 export const Component = () => {
   const navigate = useNavigate()
-  const { project_id, subproject_id, place_id } = useParams<{
-    project_id: string
-    subproject_id: string
-    place_id: string
-  }>()
+  const { project_id, subproject_id, place_id } = useParams()
 
   const { db } = useElectric()
   const { results } = useLiveQuery(
@@ -27,7 +23,7 @@ export const Component = () => {
     [place_id],
   )
 
-  const addRow = async () => {
+  const addRow = useCallback(async () => {
     const newPlace = createPlacePreset()
     await db.places.create({
       data: newPlace,
@@ -35,16 +31,16 @@ export const Component = () => {
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/places/${newPlace.place_id}`,
     )
-  }
+  }, [db.places, navigate, project_id, subproject_id])
 
-  const deleteRow = async () => {
+  const deleteRow = useCallback(async () => {
     await db.places.delete({
       where: {
         place_id,
       },
     })
     navigate(`/projects/${project_id}/subprojects/${subproject_id}/places`)
-  }
+  }, [db.places, navigate, place_id, project_id, subproject_id])
 
   const row: Place = results
 
@@ -65,20 +61,7 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <div className="controls">
-        <Button
-          size="large"
-          icon={<FaPlus />}
-          onClick={addRow}
-          title="Add new project"
-        />
-        <Button
-          size="large"
-          icon={<FaMinus />}
-          onClick={deleteRow}
-          title="Delete project"
-        />
-      </div>
+      <FormMenu addRow={addRow} deleteRow={deleteRow} tableName="place" />
       <TextFieldInactive label="ID" name="place_id" value={row.place_id} />
       <TextField
         label="Subproject"

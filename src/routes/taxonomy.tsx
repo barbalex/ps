@@ -1,14 +1,7 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { FaPlus, FaMinus } from 'react-icons/fa'
-import {
-  Button,
-  Field,
-  RadioGroup,
-  Radio,
-  Switch,
-} from '@fluentui/react-components'
+import { Field, RadioGroup, Radio, Switch } from '@fluentui/react-components'
 
 import { Taxonomies as Taxonomy } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
@@ -16,6 +9,7 @@ import { taxonomy as createTaxonomyPreset } from '../modules/dataPresets'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { getValueFromChange } from '../modules/getValueFromChange'
+import { FormMenu } from '../components/FormMenu'
 
 import '../form.css'
 
@@ -29,22 +23,22 @@ export const Component = () => {
     [taxonomy_id],
   )
 
-  const addRow = async () => {
+  const addRow = useCallback(async () => {
     const newTaxonomy = createTaxonomyPreset()
     await db.taxonomies.create({
       data: { ...newTaxonomy, project_id },
     })
     navigate(`/projects/${project_id}/taxonomies/${newTaxonomy.taxonomy_id}`)
-  }
+  }, [db.taxonomies, navigate, project_id])
 
-  const deleteRow = async () => {
+  const deleteRow = useCallback(async () => {
     await db.taxonomies.delete({
       where: {
         taxonomy_id,
       },
     })
     navigate(`/projects/${project_id}/taxonomies`)
-  }
+  }, [db.taxonomies, navigate, project_id, taxonomy_id])
 
   const row: Taxonomy = results
 
@@ -65,20 +59,7 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <div className="controls">
-        <Button
-          size="large"
-          icon={<FaPlus />}
-          onClick={addRow}
-          title="Add new taxonomy"
-        />
-        <Button
-          size="large"
-          icon={<FaMinus />}
-          onClick={deleteRow}
-          title="Delete taxonomy"
-        />
-      </div>
+      <FormMenu addRow={addRow} deleteRow={deleteRow} tableName="taxonomy" />
       <TextFieldInactive
         label="ID"
         name="taxonomy_id"

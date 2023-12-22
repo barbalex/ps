@@ -1,8 +1,7 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { FaPlus, FaMinus } from 'react-icons/fa'
-import { Button, Field, RadioGroup, Radio } from '@fluentui/react-components'
+import { Field, RadioGroup, Radio } from '@fluentui/react-components'
 
 import { Accounts as Account } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
@@ -11,6 +10,7 @@ import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { DateField } from '../components/shared/DateField'
 import { getValueFromChange } from '../modules/getValueFromChange'
+import { FormMenu } from '../components/FormMenu'
 
 import '../form.css'
 
@@ -24,22 +24,22 @@ export const Component = () => {
     [account_id],
   )
 
-  const addRow = async () => {
+  const addRow = useCallback(async () => {
     const newAccount = createAccountPreset()
     await db.accounts.create({
       data: newAccount,
     })
     navigate(`/accounts/${newAccount.account_id}`)
-  }
+  }, [db.accounts, navigate])
 
-  const deleteRow = async () => {
+  const deleteRow = useCallback(async () => {
     await db.accounts.delete({
       where: {
         account_id,
       },
     })
     navigate(`/accounts`)
-  }
+  }, [account_id, db.accounts, navigate])
 
   const row: Account = results
 
@@ -60,20 +60,7 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <div className="controls">
-        <Button
-          size="large"
-          icon={<FaPlus />}
-          onClick={addRow}
-          title="Add new account"
-        />
-        <Button
-          size="large"
-          icon={<FaMinus />}
-          onClick={deleteRow}
-          title="Delete account"
-        />
-      </div>
+      <FormMenu addRow={addRow} deleteRow={deleteRow} tableName="account" />
       <TextFieldInactive label="ID" name="account_id" value={row.account_id} />
       <TextField
         label="User"

@@ -1,8 +1,7 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { FaPlus, FaMinus } from 'react-icons/fa'
-import { Button, Switch } from '@fluentui/react-components'
+import { Switch } from '@fluentui/react-components'
 
 import { WidgetTypes as WidgetType } from '../../../generated/client'
 import { widgetType as createWidgetTypePreset } from '../modules/dataPresets'
@@ -10,6 +9,7 @@ import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { getValueFromChange } from '../modules/getValueFromChange'
+import { FormMenu } from '../components/FormMenu'
 
 import '../form.css'
 
@@ -23,22 +23,22 @@ export const Component = () => {
     [widget_type_id],
   )
 
-  const addRow = async () => {
+  const addRow = useCallback(async () => {
     const newWidgetType = createWidgetTypePreset()
     await db.widget_types.create({
       data: newWidgetType,
     })
     navigate(`/widget-types/${newWidgetType.widget_type_id}`)
-  }
+  }, [db.widget_types, navigate])
 
-  const deleteRow = async () => {
+  const deleteRow = useCallback(async () => {
     await db.widget_types.delete({
       where: {
         widget_type_id,
       },
     })
     navigate(`/widget-types`)
-  }
+  }, [db.widget_types, navigate, widget_type_id])
 
   const row: WidgetType = results
 
@@ -59,20 +59,7 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <div className="controls">
-        <Button
-          size="large"
-          icon={<FaPlus />}
-          onClick={addRow}
-          title="Add new project"
-        />
-        <Button
-          size="large"
-          icon={<FaMinus />}
-          onClick={deleteRow}
-          title="Delete project"
-        />
-      </div>
+      <FormMenu addRow={addRow} deleteRow={deleteRow} tableName="widget type" />
       <TextFieldInactive
         label="ID"
         name="widget_type_id"

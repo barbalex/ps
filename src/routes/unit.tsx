@@ -1,8 +1,7 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { FaPlus, FaMinus } from 'react-icons/fa'
-import { Button, Switch } from '@fluentui/react-components'
+import { Switch } from '@fluentui/react-components'
 
 import { Units as Unit } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
@@ -10,6 +9,7 @@ import { unit as createUnitPreset } from '../modules/dataPresets'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { getValueFromChange } from '../modules/getValueFromChange'
+import { FormMenu } from '../components/FormMenu'
 
 import '../form.css'
 
@@ -20,22 +20,22 @@ export const Component = () => {
   const { db } = useElectric()
   const { results } = useLiveQuery(db.units.liveUnique({ where: { unit_id } }))
 
-  const addRow = async () => {
+  const addRow = useCallback(async () => {
     const newUnit = createUnitPreset()
     await db.units.create({
       data: { ...newUnit, project_id },
     })
     navigate(`/projects/${project_id}/units/${newUnit.unit_id}`)
-  }
+  }, [db.units, navigate, project_id])
 
-  const deleteRow = async () => {
+  const deleteRow = useCallback(async () => {
     await db.units.delete({
       where: {
         unit_id,
       },
     })
     navigate(`/projects/${project_id}/units`)
-  }
+  }, [db.units, navigate, project_id, unit_id])
 
   const row: Unit = results
 
@@ -56,20 +56,7 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <div className="controls">
-        <Button
-          size="large"
-          icon={<FaPlus />}
-          onClick={addRow}
-          title="Add new unit"
-        />
-        <Button
-          size="large"
-          icon={<FaMinus />}
-          onClick={deleteRow}
-          title="Delete unit"
-        />
-      </div>
+      <FormMenu addRow={addRow} deleteRow={deleteRow} tableName="unit" />
       <TextFieldInactive label="ID" name="unit_id" value={row.unit_id} />
       <TextField
         label="Name"

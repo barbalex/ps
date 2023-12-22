@@ -1,8 +1,6 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { FaPlus, FaMinus } from 'react-icons/fa'
-import { Button } from '@fluentui/react-components'
 
 import { Goals as Goal } from '../../../generated/client'
 import { goal as createGoalPreset } from '../modules/dataPresets'
@@ -10,6 +8,7 @@ import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { getValueFromChange } from '../modules/getValueFromChange'
+import { FormMenu } from '../components/FormMenu'
 
 import '../form.css'
 
@@ -23,7 +22,7 @@ export const Component = () => {
     [goal_id],
   )
 
-  const addRow = async () => {
+  const addRow = useCallback(async () => {
     const newGoal = createGoalPreset()
     await db.goals.create({
       data: {
@@ -34,16 +33,16 @@ export const Component = () => {
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/goals/${newGoal.goal_id}`,
     )
-  }
+  }, [db.goals, navigate, subproject_id])
 
-  const deleteRow = async () => {
+  const deleteRow = useCallback(async () => {
     await db.goals.delete({
       where: {
         goal_id,
       },
     })
     navigate(`/projects/${project_id}/subprojects/${subproject_id}/goals`)
-  }
+  }, [db.goals, goal_id, navigate, subproject_id])
 
   const row: Goal = results
 
@@ -64,20 +63,7 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <div className="controls">
-        <Button
-          size="large"
-          icon={<FaPlus />}
-          onClick={addRow}
-          title="Add new goal"
-        />
-        <Button
-          size="large"
-          icon={<FaMinus />}
-          onClick={deleteRow}
-          title="Delete goal"
-        />
-      </div>
+      <FormMenu addRow={addRow} deleteRow={deleteRow} tableName="goal" />
       <TextFieldInactive label="ID" name="goal_id" value={row.goal_id ?? ''} />
       <TextField
         label="Year"

@@ -1,8 +1,6 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { FaPlus, FaMinus } from 'react-icons/fa'
-import { Button } from '@fluentui/react-components'
 
 import { Observations as Observation } from '../../../generated/client'
 import { observation as createObservationPreset } from '../modules/dataPresets'
@@ -10,6 +8,7 @@ import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { getValueFromChange } from '../modules/getValueFromChange'
+import { FormMenu } from '../components/FormMenu'
 
 import '../form.css'
 
@@ -23,7 +22,7 @@ export const Component = () => {
     [observation_id],
   )
 
-  const addRow = async () => {
+  const addRow = useCallback(async () => {
     const newObservation = createObservationPreset()
     await db.observations.create({
       data: { ...newObservation, observation_source_id },
@@ -31,9 +30,9 @@ export const Component = () => {
     navigate(
       `/projects/${project_id}/observation-sources/${observation_source_id}/observations/${newObservation.observation_id}`,
     )
-  }
+  }, [db.observations, navigate, observation_source_id])
 
-  const deleteRow = async () => {
+  const deleteRow = useCallback(async () => {
     await db.observations.delete({
       where: {
         observation_id,
@@ -42,7 +41,7 @@ export const Component = () => {
     navigate(
       `/projects/${project_id}/observation-sources/${observation_source_id}/observations`,
     )
-  }
+  }, [db.observations, navigate, observation_id, observation_source_id])
 
   const row: Observation = results
 
@@ -63,20 +62,7 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <div className="controls">
-        <Button
-          size="large"
-          icon={<FaPlus />}
-          onClick={addRow}
-          title="Add new observation"
-        />
-        <Button
-          size="large"
-          icon={<FaMinus />}
-          onClick={deleteRow}
-          title="Delete observation"
-        />
-      </div>
+      <FormMenu addRow={addRow} deleteRow={deleteRow} tableName="observation" />
       <TextFieldInactive
         label="ID"
         name="observation_id"

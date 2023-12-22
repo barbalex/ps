@@ -1,13 +1,12 @@
-// import { useCallback } from 'react'
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { FaPlus, FaMinus } from 'react-icons/fa'
-import { Button } from '@fluentui/react-components'
 
 import { GoalReports as GoalReport } from '../../../generated/client'
 import { goalReport as createGoalReportPreset } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { FormMenu } from '../components/FormMenu'
 // import { getValueFromChange } from '../modules/getValueFromChange'
 
 import '../form.css'
@@ -22,7 +21,7 @@ export const Component = () => {
     [goal_report_id],
   )
 
-  const addRow = async () => {
+  const addRow = useCallback(async () => {
     const newGoalReport = createGoalReportPreset()
     await db.goal_reports.create({
       data: {
@@ -33,9 +32,9 @@ export const Component = () => {
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${newGoalReport.goal_report_id}`,
     )
-  }
+  }, [db.goal_reports, goal_id, navigate])
 
-  const deleteRow = async () => {
+  const deleteRow = useCallback(async () => {
     await db.goal_reports.delete({
       where: {
         goal_report_id,
@@ -44,7 +43,7 @@ export const Component = () => {
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports`,
     )
-  }
+  }, [db.goal_reports, goal_id, goal_report_id, navigate])
 
   const row: GoalReport = results
 
@@ -67,20 +66,7 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <div className="controls">
-        <Button
-          size="large"
-          icon={<FaPlus />}
-          onClick={addRow}
-          title="Add new goal report"
-        />
-        <Button
-          size="large"
-          icon={<FaMinus />}
-          onClick={deleteRow}
-          title="Delete goal report"
-        />
-      </div>
+      <FormMenu addRow={addRow} deleteRow={deleteRow} tableName="goal report" />
       <TextFieldInactive
         label="ID"
         name="goal_report_id"

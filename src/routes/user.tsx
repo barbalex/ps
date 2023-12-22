@@ -1,8 +1,6 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { FaPlus, FaMinus } from 'react-icons/fa'
-import { Button } from '@fluentui/react-components'
 
 import { Users as User } from '../../../generated/client'
 import { user as createUserPreset } from '../modules/dataPresets'
@@ -10,6 +8,7 @@ import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { getValueFromChange } from '../modules/getValueFromChange'
+import { FormMenu } from '../components/FormMenu'
 
 import '../form.css'
 
@@ -23,22 +22,22 @@ export const Component = () => {
     [user_id],
   )
 
-  const addRow = async () => {
+  const addRow = useCallback(async () => {
     const newUser = createUserPreset()
     await db.users.create({
       data: newUser,
     })
     navigate(`/users/${newUser.user_id}`)
-  }
+  }, [db.users, navigate])
 
-  const deleteRow = async () => {
+  const deleteRow = useCallback(async () => {
     await db.users.delete({
       where: {
         user_id,
       },
     })
     navigate(`/users`)
-  }
+  }, [db.users, navigate, user_id])
 
   const row: User = results
 
@@ -59,20 +58,7 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <div className="controls">
-        <Button
-          size="large"
-          icon={<FaPlus />}
-          onClick={addRow}
-          title="Add new user"
-        />
-        <Button
-          size="large"
-          icon={<FaMinus />}
-          onClick={deleteRow}
-          title="Delete user"
-        />
-      </div>
+      <FormMenu addRow={addRow} deleteRow={deleteRow} tableName="user" />
       <TextFieldInactive label="ID" name="user_id" value={row.user_id} />
       <TextField
         label="Email"
