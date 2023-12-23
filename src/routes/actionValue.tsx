@@ -1,48 +1,124 @@
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
 import { ActionValues as ActionValue } from '../../../generated/client'
+import { actionValue as createActionValuePreset } from '../modules/dataPresets'
+import { useElectric } from '../ElectricProvider'
+import { TextField } from '../components/shared/TextField'
+import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { getValueFromChange } from '../modules/getValueFromChange'
+import { FormMenu } from '../components/FormMenu'
 
 import '../form.css'
 
-import { useElectric } from '../ElectricProvider'
-
 export const Component = () => {
-  const { db } = useElectric()!
-  const { action_id, action_value_id } = useParams()
+  const { project_id, subproject_id, place_id, action_id, action_value_id } =
+    useParams()
+  const navigate = useNavigate()
+
+  const { db } = useElectric()
   const { results } = useLiveQuery(
-    db.action_values.liveUnique({ where: { action_value_id } }),
+    () => db.action_values.liveUnique({ where: { action_value_id } }),
+    [action_value_id],
   )
 
-  const addItem = async () => {
+  const addRow = useCallback(async () => {
+    const newActionValue = createActionValuePreset()
     await db.action_values.create({
       data: {
-        action_value_id: uuidv7(),
+        ...newActionValue,
         action_id,
-        deleted: false,
-        // TODO: add account_id
       },
     })
-  }
+    navigate(
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/actions/${action_id}/values/${newActionValue.action_value_id}`,
+    )
+  }, [
+    action_id,
+    db.action_values,
+    navigate,
+    place_id,
+    project_id,
+    subproject_id,
+  ])
 
-  const clearItems = async () => {
-    await db.action_values.deleteMany()
-  }
+  const deleteRow = useCallback(async () => {
+    await db.action_values.delete({
+      where: {
+        action_value_id,
+      },
+    })
+    navigate(
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/actions/${action_id}/values`,
+    )
+  }, [
+    action_id,
+    action_value_id,
+    db.action_values,
+    navigate,
+    place_id,
+    project_id,
+    subproject_id,
+  ])
 
-  const actionValue: ActionValue = results
+  const row: ActionValue = results
+
+  // console.log('ActionValue', { row, results })
+
+  const onChange = useCallback(
+    (e, data) => {
+      const { name, value } = getValueFromChange(e, data)
+      db.action_values.update({
+        where: { action_value_id },
+        data: { [name]: value },
+      })
+    },
+    [db.action_values, action_value_id],
+  )
+
+  if (!row) {
+    return <div>Loading...</div>
+  }
 
   return (
     <div className="form-container">
-      <div className="controls">
-        <button className="button" onClick={addItem}>
-          Add
-        </button>
-        <button className="button" onClick={clearItems}>
-          Clear
-        </button>
-      </div>
-      <div>{`Action Value with id ${actionValue?.action_value_id ?? ''}`}</div>
+      <FormMenu
+        addRow={addRow}
+        deleteRow={deleteRow}
+        tableName="goal report value"
+      />
+      <TextFieldInactive
+        label="ID"
+        name="action_value_id"
+        value={row.action_value_id ?? ''}
+      />
+      <TextField
+        label="Unit ID"
+        name="unit_id"
+        value={row.unit_id ?? ''}
+        onChange={onChange}
+      />
+      <TextField
+        label="Value (integer)"
+        name="value_integer"
+        type="number"
+        value={row.value_integer ?? ''}
+        onChange={onChange}
+      />
+      <TextField
+        label="Value (numeric)"
+        name="value_numeric"
+        type="number"
+        value={row.value_numeric ?? ''}
+        onChange={onChange}
+      />
+      <TextField
+        label="Value (text)"
+        name="value_text"
+        value={row.value_text ?? ''}
+        onChange={onChange}
+      />
     </div>
   )
 }
