@@ -1,7 +1,14 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Field, RadioGroup, Radio, Switch } from '@fluentui/react-components'
+import {
+  Field,
+  RadioGroup,
+  Radio,
+  Label,
+  Checkbox,
+  Divider,
+} from '@fluentui/react-components'
 
 import { Projects as Project } from '../../../generated/client'
 import { project as createProjectPreset } from '../modules/dataPresets'
@@ -67,6 +74,8 @@ export const Component = () => {
         value={row.name ?? ''}
         onChange={onChange}
       />
+      <Divider />
+      <Label>Project configuration</Label>
       <Field label="Type">
         <RadioGroup
           layout="horizontal"
@@ -96,7 +105,9 @@ export const Component = () => {
         value={row.subproject_order_by ?? ''}
         onChange={onChange}
       />
-      <Field label="Value(s) to use when values exist on multiple place levels">
+      <Divider />
+      <Label>{`Value(s) to use in reports when:`}</Label>
+      <Field label="...values exist on multiple place levels">
         <RadioGroup
           layout="horizontal"
           value={row.values_on_multiple_levels ?? ''}
@@ -108,7 +119,7 @@ export const Component = () => {
           <Radio label="all levels" value="all" />
         </RadioGroup>
       </Field>
-      <Field label="Value(s) to use when multiple action values exist on the same place level">
+      <Field label="...multiple action values exist on the same place level">
         <RadioGroup
           layout="horizontal"
           value={row.multiple_action_values_on_same_level ?? ''}
@@ -120,7 +131,7 @@ export const Component = () => {
           <Radio label="all" value="all" />
         </RadioGroup>
       </Field>
-      <Field label="Value(s) to use when multiple check Values exist on the same place level">
+      <Field label="...multiple check Values exist on the same place level">
         <RadioGroup
           layout="horizontal"
           value={row.multiple_check_values_on_same_level ?? ''}
@@ -132,50 +143,52 @@ export const Component = () => {
           <Radio label="all" value="all" />
         </RadioGroup>
       </Field>
-      <Switch
-        label="Enable uploading files to projects"
+      <Divider />
+      <Label>Enable uploading files to:</Label>
+      <Checkbox
+        label="Projects"
         name="files_active_projects"
         checked={row.files_active_projects ?? false}
         onChange={onChange}
       />
-      <Switch
-        label="Enable uploading files to project reports"
+      <Checkbox
+        label="Project reports"
         name="files_active_projects_reports"
         checked={row.files_active_projects_reports ?? false}
         onChange={onChange}
       />
-      <Switch
-        label="Enable uploading files to subprojects"
+      <Checkbox
+        label="Subprojects"
         name="files_active_subprojects"
         checked={row.files_active_subprojects ?? false}
         onChange={onChange}
       />
-      <Switch
-        label="Enable uploading files to subproject reports"
+      <Checkbox
+        label="Subproject reports"
         name="files_active_subproject_reports"
         checked={row.files_active_subproject_reports ?? false}
         onChange={onChange}
       />
-      <Switch
-        label="Enable uploading files to places"
+      <Checkbox
+        label="Places"
         name="files_active_places"
         checked={row.files_active_places ?? false}
         onChange={onChange}
       />
-      <Switch
-        label="Enable uploading files to actions"
+      <Checkbox
+        label="Actions"
         name="files_active_actions"
         checked={row.files_active_actions ?? false}
         onChange={onChange}
       />
-      <Switch
-        label="Enable uploading files to checks"
+      <Checkbox
+        label="Checks"
         name="files_active_checks"
         checked={row.files_active_checks ?? false}
         onChange={onChange}
       />
-      <Switch
-        label="Enable uploading files to check reports"
+      <Checkbox
+        label="Check reports"
         name="files_active_check_reports"
         checked={row.files_active_check_reports ?? false}
         onChange={onChange}
