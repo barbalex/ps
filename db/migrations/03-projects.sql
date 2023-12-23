@@ -12,6 +12,8 @@ CREATE TABLE projects(
   multiple_check_values_on_same_level text DEFAULT NULL,
   data jsonb DEFAULT NULL,
   files_active boolean DEFAULT NULL, -- TRUE,
+  -- TODO: add files_active for every table that can use files
+  -- instead remove that field from those tables
   deleted boolean DEFAULT NULL -- FALSE
 );
 
