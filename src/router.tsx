@@ -47,7 +47,11 @@ export const router = createBrowserRouter([
                     folder: false,
                   }),
                   to: (match) =>
-                    buildNavs({ table: `projects`, params: match.params, sort: 1 }),
+                    buildNavs({
+                      table: `projects`,
+                      params: match.params,
+                      sort: 1,
+                    }),
                 },
                 children: [
                   { index: true, lazy: () => import('./routes/project') },
