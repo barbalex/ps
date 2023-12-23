@@ -173,3 +173,8 @@ export const placeUser = () => ({
   role: 'reader',
   deleted: false,
 })
+
+export const subprojectTaxon = () => ({
+  subproject_taxon_id: uuidv7(),
+  deleted: false,
+})

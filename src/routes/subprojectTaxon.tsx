@@ -1,50 +1,87 @@
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
-import { Places as Place } from '../../../generated/client'
+import { SubprojectTaxa as SubprojectTaxon } from '../../../generated/client'
+import { subprojectTaxon as createSubprojectTaxonPreset } from '../modules/dataPresets'
+import { useElectric } from '../ElectricProvider'
+import { TextField } from '../components/shared/TextField'
+import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { getValueFromChange } from '../modules/getValueFromChange'
+import { FormMenu } from '../components/FormMenu'
 
 import '../form.css'
 
-import { useElectric } from '../ElectricProvider'
-
 export const Component = () => {
-  const { db } = useElectric()!
-  const { subproject_id, subproject_taxon_id } = useParams()
+  const { project_id, subproject_id, subproject_taxon_id } = useParams()
+  const navigate = useNavigate()
+
+  const { db } = useElectric()
   const { results } = useLiveQuery(
-    db.subproject_taxa.liveUnique({ where: { subproject_taxon_id } }),
+    () => db.subproject_taxa.liveUnique({ where: { subproject_taxon_id } }),
+    [subproject_taxon_id],
   )
 
-  const addItem = async () => {
+  const addRow = useCallback(async () => {
+    const newSubprojectTaxon = createSubprojectTaxonPreset()
     await db.subproject_taxa.create({
-      data: {
-        subproject_taxon_id: uuidv7(),
-        subproject_id,
-        deleted: false,
-        // TODO: add account_id
+      data: { ...newSubprojectTaxon, subproject_id },
+    })
+    navigate(
+      `/projects/${project_id}/subprojects/${subproject_id}/taxa/${newSubprojectTaxon.subproject_taxon_id}`,
+    )
+  }, [db.subproject_taxa, navigate, project_id, subproject_id])
+
+  const deleteRow = useCallback(async () => {
+    await db.subproject_taxa.delete({
+      where: {
+        subproject_taxon_id,
       },
     })
-  }
+    navigate(`/projects/${project_id}/subprojects/${subproject_id}/taxa`)
+  }, [
+    db.subproject_taxa,
+    navigate,
+    project_id,
+    subproject_id,
+    subproject_taxon_id,
+  ])
 
-  const clearItems = async () => {
-    await db.subproject_taxa.deleteMany()
-  }
+  const row: SubprojectTaxon = results
 
-  const subproject_taxon: Place = results
+  const onChange = useCallback(
+    (e, data) => {
+      const { name, value } = getValueFromChange(e, data)
+      db.subproject_taxa.update({
+        where: { subproject_taxon_id },
+        data: { [name]: value },
+      })
+    },
+    [db.subproject_taxa, subproject_taxon_id],
+  )
+
+  if (!row) {
+    return <div>Loading...</div>
+  }
 
   return (
     <div className="form-container">
-      <div className="controls">
-        <button className="button" onClick={addItem}>
-          Add
-        </button>
-        <button className="button" onClick={clearItems}>
-          Clear
-        </button>
-      </div>
-      <div>{`Taxon with id ${
-        subproject_taxon?.subproject_taxon_id ?? ''
-      }`}</div>
+      <FormMenu
+        addRow={addRow}
+        deleteRow={deleteRow}
+        tableName="project user"
+      />
+      <TextFieldInactive
+        label="ID"
+        name="subproject_taxon_id"
+        value={row.subproject_taxon_id}
+      />
+      <TextField
+        label="Taxon ID"
+        name="taxon_id"
+        value={row.taxon_id ?? ''}
+        onChange={onChange}
+      />
     </div>
   )
 }
