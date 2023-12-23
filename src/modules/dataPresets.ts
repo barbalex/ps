@@ -11,13 +11,19 @@ export const project = () => ({
   values_on_multiple_levels: 'first',
   multiple_action_values_on_same_level: 'all',
   multiple_check_values_on_same_level: 'last',
-  files_active: true,
+  files_active_projects: true,
+  files_active_projects_reports: true,
+  files_active_subprojects: true,
+  files_active_subproject_reports: true,
+  files_active_places: true,
+  files_active_actions: true,
+  files_active_checks: true,
+  files_active_check_reports: true,
   deleted: false,
 })
 
 export const subproject = () => ({
   subproject_id: uuidv7(),
-  files_active: true,
   deleted: false,
 })
 
@@ -111,7 +117,6 @@ export const projectUser = () => ({
 export const projectReport = () => ({
   project_report_id: uuidv7(),
   year: new Date().getFullYear(),
-  files_active: true,
   deleted: false,
 })
 
@@ -126,7 +131,6 @@ export const placeLevel = () => ({
   check_values: false,
   check_taxa: false,
   observation_references: false,
-  files_active: true,
   deleted: false,
 })
 
@@ -182,6 +186,5 @@ export const subprojectTaxon = () => ({
 export const subprojectReport = () => ({
   subproject_report_id: uuidv7(),
   year: new Date().getFullYear(),
-  files_active: true,
   deleted: false,
 })

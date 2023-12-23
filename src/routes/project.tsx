@@ -134,8 +134,50 @@ export const Component = () => {
       </Field>
       <Switch
         label="Enable uploading files to projects"
-        name="files_active"
-        checked={row.files_active ?? false}
+        name="files_active_projects"
+        checked={row.files_active_projects ?? false}
+        onChange={onChange}
+      />
+      <Switch
+        label="Enable uploading files to project reports"
+        name="files_active_projects_reports"
+        checked={row.files_active_projects_reports ?? false}
+        onChange={onChange}
+      />
+      <Switch
+        label="Enable uploading files to subprojects"
+        name="files_active_subprojects"
+        checked={row.files_active_subprojects ?? false}
+        onChange={onChange}
+      />
+      <Switch
+        label="Enable uploading files to subproject reports"
+        name="files_active_subproject_reports"
+        checked={row.files_active_subproject_reports ?? false}
+        onChange={onChange}
+      />
+      <Switch
+        label="Enable uploading files to places"
+        name="files_active_places"
+        checked={row.files_active_places ?? false}
+        onChange={onChange}
+      />
+      <Switch
+        label="Enable uploading files to actions"
+        name="files_active_actions"
+        checked={row.files_active_actions ?? false}
+        onChange={onChange}
+      />
+      <Switch
+        label="Enable uploading files to checks"
+        name="files_active_checks"
+        checked={row.files_active_checks ?? false}
+        onChange={onChange}
+      />
+      <Switch
+        label="Enable uploading files to check reports"
+        name="files_active_check_reports"
+        checked={row.files_active_check_reports ?? false}
         onChange={onChange}
       />
     </div>

@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Switch } from '@fluentui/react-components'
 
 import { Subprojects as Subproject } from '../../../generated/client'
 import { subproject as createSubprojectPreset } from '../modules/dataPresets'
@@ -85,12 +84,6 @@ export const Component = () => {
         name="since_year"
         value={row.since_year ?? ''}
         type="number"
-        onChange={onChange}
-      />
-      <Switch
-        label="Enable uploading files to subprojects"
-        name="files_active"
-        checked={row.files_active ?? false}
         onChange={onChange}
       />
     </div>

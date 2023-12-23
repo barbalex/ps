@@ -4,7 +4,6 @@ CREATE TABLE project_reports(
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT NULL, -- DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
-  files_active boolean DEFAULT NULL, -- TRUE,
   label_replace_by_generated_column text DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
 );
@@ -26,8 +25,6 @@ COMMENT ON COLUMN project_reports.account_id IS 'redundant account_id enhances d
 COMMENT ON COLUMN project_reports.year IS 'Year of report. Preset: current year';
 
 COMMENT ON COLUMN project_reports.data IS 'Room for project report specific data, defined in "fields" table';
-
-COMMENT ON COLUMN project_reports.files_active IS 'Whether files are used. Preset: true';
 
 ALTER TABLE project_reports ENABLE electric;
 

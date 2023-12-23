@@ -11,9 +11,14 @@ CREATE TABLE projects(
   multiple_action_values_on_same_level text DEFAULT NULL,
   multiple_check_values_on_same_level text DEFAULT NULL,
   data jsonb DEFAULT NULL,
-  files_active boolean DEFAULT NULL, -- TRUE,
-  -- TODO: add files_active for every table that can use files
-  -- instead remove that field from those tables
+  files_active_projects boolean DEFAULT NULL, -- TRUE,
+  files_active_projects_reports boolean DEFAULT NULL, -- TRUE,
+  files_active_subprojects boolean DEFAULT NULL, -- TRUE,
+  files_active_subproject_reports boolean DEFAULT NULL, -- TRUE,
+  files_active_places boolean DEFAULT NULL, -- TRUE,
+  files_active_actions boolean DEFAULT NULL, -- TRUE,
+  files_active_checks boolean DEFAULT NULL, -- TRUE,
+  files_active_check_reports boolean DEFAULT NULL, -- TRUE,
   deleted boolean DEFAULT NULL -- FALSE
 );
 
@@ -41,7 +46,21 @@ COMMENT ON COLUMN projects.multiple_check_values_on_same_level IS 'One of: "use 
 
 COMMENT ON COLUMN projects.data IS 'Room for project specific data, defined in "fields" table';
 
-COMMENT ON COLUMN projects.files_active IS 'Whether files are used. Preset: true';
+COMMENT ON COLUMN projects.files_active_projects IS 'Whether files are used in table projects. Preset: true';
+
+COMMENT ON COLUMN projects.files_active_projects_reports IS 'Whether files are used in table project reports. Preset: true';
+
+COMMENT ON COLUMN projects.files_active_subprojects IS 'Whether files are used in table subprojects. Preset: true';
+
+COMMENT ON COLUMN projects.files_active_subproject_reports IS 'Whether files are used in table subproject reports. Preset: true';
+
+COMMENT ON COLUMN projects.files_active_places IS 'Whether files are used in table places. Preset: true';
+
+COMMENT ON COLUMN projects.files_active_actions IS 'Whether files are used in table actions. Preset: true';
+
+COMMENT ON COLUMN projects.files_active_checks IS 'Whether files are used in table checks. Preset: true';
+
+COMMENT ON COLUMN projects.files_active_check_reports IS 'Whether files are used in table check reports. Preset: true';
 
 COMMENT ON TABLE projects IS 'Goal: manage projects';
 

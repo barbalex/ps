@@ -76,7 +76,14 @@ CREATE TABLE projects(
   multiple_action_values_on_same_level text DEFAULT NULL,
   multiple_check_values_on_same_level text DEFAULT NULL,
   data jsonb DEFAULT NULL,
-  files_active boolean DEFAULT NULL, -- TRUE,
+  files_active_projects boolean DEFAULT NULL, -- TRUE,
+  files_active_projects_reports boolean DEFAULT NULL, -- TRUE,
+  files_active_subprojects boolean DEFAULT NULL, -- TRUE,
+  files_active_subproject_reports boolean DEFAULT NULL, -- TRUE,
+  files_active_places boolean DEFAULT NULL, -- TRUE,
+  files_active_actions boolean DEFAULT NULL, -- TRUE,
+  files_active_checks boolean DEFAULT NULL, -- TRUE,
+  files_active_check_reports boolean DEFAULT NULL, -- TRUE,
   deleted boolean DEFAULT NULL -- FALSE
 );
 
@@ -106,7 +113,21 @@ COMMENT ON COLUMN projects.multiple_check_values_on_same_level IS 'One of: "use 
 
 COMMENT ON COLUMN projects.data IS 'Room for project specific data, defined in "fields" table';
 
-COMMENT ON COLUMN projects.files_active IS 'Whether files are used. Preset: true';
+COMMENT ON COLUMN projects.files_active_projects IS 'Whether files are used in table projects. Preset: true';
+
+COMMENT ON COLUMN projects.files_active_projects_reports IS 'Whether files are used in table project reports. Preset: true';
+
+COMMENT ON COLUMN projects.files_active_subprojects IS 'Whether files are used in table subprojects. Preset: true';
+
+COMMENT ON COLUMN projects.files_active_subproject_reports IS 'Whether files are used in table subproject reports. Preset: true';
+
+COMMENT ON COLUMN projects.files_active_places IS 'Whether files are used in table places. Preset: true';
+
+COMMENT ON COLUMN projects.files_active_actions IS 'Whether files are used in table actions. Preset: true';
+
+COMMENT ON COLUMN projects.files_active_checks IS 'Whether files are used in table checks. Preset: true';
+
+COMMENT ON COLUMN projects.files_active_check_reports IS 'Whether files are used in table check reports. Preset: true';
 
 COMMENT ON TABLE projects IS 'Goal: manage projects';
 
@@ -133,7 +154,6 @@ CREATE TABLE place_levels(
   check_values boolean DEFAULT NULL, -- FALSE,
   check_taxa boolean DEFAULT NULL, -- FALSE,
   observation_references boolean DEFAULT NULL, -- FALSE,
-  files_active boolean DEFAULT NULL, -- TRUE,
   deleted boolean DEFAULT NULL -- FALSE
 );
 
@@ -181,8 +201,6 @@ COMMENT ON COLUMN place_levels.check_taxa IS 'Are check taxons used? Preset: fal
 
 COMMENT ON COLUMN place_levels.observation_references IS 'Are observation references used? Preset: false';
 
-COMMENT ON COLUMN place_levels.files_active IS 'Whether files are used. Preset: true';
-
 COMMENT ON TABLE place_levels IS 'Goal: manage place levels. Enable working with one or two levels. Organize what features are used on which level.';
 
 ---------------------------------------------
@@ -197,7 +215,6 @@ CREATE TABLE subprojects(
   name text DEFAULT NULL,
   since_year integer DEFAULT NULL,
   data jsonb DEFAULT NULL,
-  files_active boolean DEFAULT NULL, -- TRUE,
   deleted boolean DEFAULT NULL -- FALSE
 );
 
@@ -222,8 +239,6 @@ COMMENT ON COLUMN subprojects.name IS 'Example: a species name like "Pulsatilla 
 COMMENT ON COLUMN subprojects.since_year IS 'Enables analyzing a development since a certain year, like the begin of the project';
 
 COMMENT ON COLUMN subprojects.data IS 'Room for subproject specific data, defined in "fields" table';
-
-COMMENT ON COLUMN subprojects.files_active IS 'Whether files are used. Preset: true';
 
 COMMENT ON TABLE subprojects IS 'Goal: manage subprojects. Will most often be a species that is promoted. Can also be a (class of) biotope(s).';
 
@@ -362,8 +377,6 @@ CREATE INDEX ON taxa USING btree(account_id);
 CREATE INDEX ON taxa USING btree(taxonomy_id);
 
 CREATE INDEX ON taxa USING btree(name);
-
-
 
 CREATE INDEX ON taxa((1))
 WHERE
@@ -562,7 +575,6 @@ CREATE TABLE places(
   label_by jsonb DEFAULT NULL,
   order_by jsonb DEFAULT NULL,
   geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
-  files_active boolean DEFAULT TRUE,
   deleted boolean DEFAULT FALSE
 );
 
@@ -602,8 +614,6 @@ COMMENT ON COLUMN places.order_by IS 'Used to order places in lists. Contains an
 
 COMMENT ON COLUMN places.geometry IS 'geometry of place';
 
-COMMENT ON COLUMN places.files_active IS 'Whether files are used. Preset: true';
-
 ---------------------------------------------
 -- actions
 --
@@ -617,7 +627,6 @@ CREATE TABLE actions(
   data jsonb DEFAULT NULL,
   geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
   relevant_for_reports boolean DEFAULT TRUE,
-  files_active boolean DEFAULT TRUE,
   deleted boolean DEFAULT FALSE
 );
 
@@ -650,8 +659,6 @@ COMMENT ON COLUMN actions.data IS 'Room for action specific data, defined in "fi
 COMMENT ON COLUMN actions.geometry IS 'geometry of action';
 
 COMMENT ON COLUMN actions.relevant_for_reports IS 'Whether action is relevant for reports. Preset: true';
-
-COMMENT ON COLUMN actions.files_active IS 'Whether files are used. Preset: true';
 
 ---------------------------------------------
 -- action_values
@@ -788,7 +795,6 @@ CREATE TABLE checks(
   data jsonb DEFAULT NULL,
   geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
   relevant_for_reports boolean DEFAULT TRUE,
-  files_active boolean DEFAULT TRUE,
   deleted boolean DEFAULT FALSE
 );
 
@@ -817,8 +823,6 @@ COMMENT ON TABLE checks IS 'Checks describe the situation of the subproject in t
 COMMENT ON COLUMN checks.account_id IS 'redundant account_id enhances data safety';
 
 COMMENT ON COLUMN checks.data IS 'Room for check specific data, defined in "fields" table';
-
-COMMENT ON COLUMN checks.files_active IS 'Whether files are used. Preset: true';
 
 ---------------------------------------------
 -- check_values
@@ -914,7 +918,6 @@ CREATE TABLE place_reports(
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
-  files_active boolean DEFAULT TRUE,
   deleted boolean DEFAULT FALSE
 );
 
@@ -937,8 +940,6 @@ COMMENT ON COLUMN place_reports.account_id IS 'redundant account_id enhances dat
 COMMENT ON COLUMN place_reports.year IS 'Year of report. Preset: current year';
 
 COMMENT ON COLUMN place_reports.data IS 'Room for place report specific data, defined in "fields" table';
-
-COMMENT ON COLUMN place_reports.files_active IS 'Whether files are used. Preset: true';
 
 ---------------------------------------------
 -- place_report_values
@@ -1263,7 +1264,6 @@ CREATE TABLE subproject_reports(
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
-  files_active boolean DEFAULT TRUE,
   deleted boolean DEFAULT FALSE
 );
 
@@ -1287,8 +1287,6 @@ COMMENT ON COLUMN subproject_reports.year IS 'Year of report. Preset: current ye
 
 COMMENT ON COLUMN subproject_reports.data IS 'Room for subproject report specific data, defined in "fields" table';
 
-COMMENT ON COLUMN subproject_reports.files_active IS 'Whether files are used. Preset: true';
-
 ---------------------------------------------
 -- project_reports
 --
@@ -1300,7 +1298,6 @@ CREATE TABLE project_reports(
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
-  files_active boolean DEFAULT TRUE,
   deleted boolean DEFAULT FALSE
 );
 
@@ -1323,8 +1320,6 @@ COMMENT ON COLUMN project_reports.account_id IS 'redundant account_id enhances d
 COMMENT ON COLUMN project_reports.year IS 'Year of report. Preset: current year';
 
 COMMENT ON COLUMN project_reports.data IS 'Room for project report specific data, defined in "fields" table';
-
-COMMENT ON COLUMN project_reports.files_active IS 'Whether files are used. Preset: true';
 
 ---------------------------------------------
 -- files

@@ -6,7 +6,6 @@ CREATE TABLE subprojects(
   label_replace_by_generated_column text DEFAULT NULL,
   since_year integer DEFAULT NULL,
   data jsonb DEFAULT NULL,
-  files_active boolean DEFAULT NULL, -- TRUE,
   deleted boolean DEFAULT NULL -- FALSE
 );
 
@@ -26,8 +25,6 @@ COMMENT ON COLUMN subprojects.name IS 'Example: a species name like "Pulsatilla 
 COMMENT ON COLUMN subprojects.since_year IS 'Enables analyzing a development since a certain year, like the begin of the project';
 
 COMMENT ON COLUMN subprojects.data IS 'Room for subproject specific data, defined in "fields" table';
-
-COMMENT ON COLUMN subprojects.files_active IS 'Whether files are used. Preset: true';
 
 COMMENT ON TABLE subprojects IS 'Goal: manage subprojects. Will most often be a species that is promoted. Can also be a (class of) biotope(s).';
 

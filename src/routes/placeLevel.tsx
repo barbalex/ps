@@ -152,12 +152,6 @@ export const Component = () => {
         checked={row.observation_references ?? false}
         onChange={onChange}
       />
-      <Switch
-        label="Enable uploading files to places at this level"
-        name="files_active"
-        checked={row.files_active ?? false}
-        onChange={onChange}
-      />
     </div>
   )
 }

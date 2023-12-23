@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Switch } from '@fluentui/react-components'
 
 import { Places as Place } from '../../../generated/client'
 import { place as createPlacePreset } from '../modules/dataPresets'
@@ -81,12 +80,6 @@ export const Component = () => {
         label="Level"
         name="level"
         value={row.level ?? ''}
-        onChange={onChange}
-      />
-      <Switch
-        label="Enable uploading files"
-        name="files_active"
-        checked={row.files_active ?? false}
         onChange={onChange}
       />
     </div>
