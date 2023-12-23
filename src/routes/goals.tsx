@@ -8,7 +8,7 @@ import { goal as createGoalPreset } from '../modules/dataPresets'
 import '../form.css'
 
 export const Component = () => {
-  const { project_id, subproject_id, project_id } = useParams()
+  const { project_id, subproject_id } = useParams()
   const navigate = useNavigate()
 
   const { db } = useElectric()
