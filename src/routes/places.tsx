@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 
@@ -13,15 +14,15 @@ export const Component = () => {
   const { db } = useElectric()
   const { results } = useLiveQuery(db.places.liveMany())
 
-  const add = async () => {
+  const add = useCallback(async () => {
     const newPlace = createPlacePreset()
     await db.places.create({
-      data: newPlace,
+      data: { ...newPlace, subproject_id },
     })
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/places/${newPlace.place_id}`,
     )
-  }
+  }, [db.places, navigate, project_id, subproject_id])
 
   const places: Place[] = results ?? []
 

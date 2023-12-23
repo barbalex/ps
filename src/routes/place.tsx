@@ -26,7 +26,7 @@ export const Component = () => {
   const addRow = useCallback(async () => {
     const newPlace = createPlacePreset()
     await db.places.create({
-      data: newPlace,
+      data: { ...newPlace, subproject_id },
     })
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/places/${newPlace.place_id}`,
@@ -58,6 +58,8 @@ export const Component = () => {
   if (!row) {
     return <div>Loading...</div>
   }
+
+  console.log('place, row:', row)
 
   return (
     <div className="form-container">
