@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 
@@ -19,7 +20,7 @@ export const Component = () => {
     [project_id, observation_source_id],
   )
 
-  const add = async () => {
+  const add = useCallback(async () => {
     const newObservation = createObservationPreset()
     await db.observations.create({
       data: {
@@ -30,7 +31,7 @@ export const Component = () => {
     navigate(
       `/projects/${project_id}/observation-sources/${observation_source_id}/observations/${newObservation.observation_id}`,
     )
-  }
+  }, [db.observations, navigate, observation_source_id, project_id])
 
   const observations: Observation[] = results ?? []
 

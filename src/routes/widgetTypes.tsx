@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { Link, useNavigate } from 'react-router-dom'
 
@@ -13,13 +14,13 @@ export const Component = () => {
   const { db } = useElectric()
   const { results } = useLiveQuery(db.widget_types.liveMany())
 
-  const add = async () => {
+  const add = useCallback(async () => {
     const newWidgetType = createWidgetTypePreset()
     await db.widget_types.create({
       data: newWidgetType,
     })
     navigate(`/widget-types/${newWidgetType.widget_type_id}`)
-  }
+  }, [db.widget_types, navigate])
 
   const rows: WidgetType[] = results ?? []
 

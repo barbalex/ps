@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { uuidv7 } from '@kripod/uuidv7'
 import { Link, useNavigate } from 'react-router-dom'
@@ -13,7 +14,7 @@ export const Component = () => {
   const { db } = useElectric()
   const { results } = useLiveQuery(db.messages.liveMany())
 
-  const add = async () => {
+  const add = useCallback(async () => {
     const newId = uuidv7()
     await db.messages.create({
       data: {
@@ -21,7 +22,7 @@ export const Component = () => {
       },
     })
     navigate(`/messages/${newId}`)
-  }
+  }, [db.messages, navigate])
 
   const messages: Message[] = results ?? []
 

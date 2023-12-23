@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { Link, useNavigate } from 'react-router-dom'
 
@@ -20,13 +21,13 @@ export const Component = () => {
     }),
   )
 
-  const add = async () => {
+  const add = useCallback(async () => {
     const newWidgetForField = createwidgetForFieldPreset()
     await db.widgets_for_fields.create({
       data: newWidgetForField,
     })
     navigate(`/widgets-for-fields/${newWidgetForField.widget_for_field_id}`)
-  }
+  }, [db.widgets_for_fields, navigate])
 
   const widgetsForFields: WidgetForField[] = results ?? []
 

@@ -1,5 +1,5 @@
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { ObservationSources as ObservationSource } from '../../../generated/client'
@@ -17,7 +17,7 @@ export const Component = () => {
     [project_id],
   )
 
-  const add = async () => {
+  const add = useCallback(async () => {
     const newObservationSource = createObservationSourcePreset()
     await db.observation_sources.create({
       data: {
@@ -28,7 +28,7 @@ export const Component = () => {
     navigate(
       `/projects/${project_id}/observation-sources/${newObservationSource.observation_source_id}`,
     )
-  }
+  }, [db.observation_sources, navigate, project_id])
 
   const observationSources: ObservationSource[] = results ?? []
 

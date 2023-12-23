@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 
@@ -18,7 +19,7 @@ export const Component = () => {
     [project_id],
   )
 
-  const add = async () => {
+  const add = useCallback(async () => {
     const newField = createFieldPreset()
     await db.fields.create({
       data: {
@@ -27,7 +28,7 @@ export const Component = () => {
       },
     })
     navigate(`/projects/${project_id}/fields/${newField.field_id}`)
-  }
+  }, [db.fields, navigate, project_id])
 
   const fields: Field[] = results ?? []
 

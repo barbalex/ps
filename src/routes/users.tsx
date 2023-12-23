@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { Link, useNavigate } from 'react-router-dom'
 
@@ -13,13 +14,13 @@ export const Component = () => {
   const { db } = useElectric()
   const { results } = useLiveQuery(db.users.liveMany())
 
-  const add = async () => {
+  const add = useCallback(async () => {
     const newUser = createUserPreset()
     await db.users.create({
       data: newUser,
     })
     navigate(`/users/${newUser.user_id}`)
-  }
+  }, [db.users, navigate])
 
   const users: User[] = results ?? []
 

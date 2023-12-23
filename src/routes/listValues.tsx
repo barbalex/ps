@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 
@@ -16,7 +17,7 @@ export const Component = () => {
     [list_id],
   )
 
-  const add = async () => {
+  const add = useCallback(async () => {
     const newListValue = createListValuePreset()
     await db.list_values.create({
       data: {
@@ -27,7 +28,7 @@ export const Component = () => {
     navigate(
       `/projects/${project_id}/lists/${list_id}/values/${newListValue.list_value_id}`,
     )
-  }
+  }, [db.list_values, list_id, navigate, project_id])
 
   const listValues: ListValue[] = results ?? []
 

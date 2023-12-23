@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 
@@ -16,7 +17,7 @@ export const Component = () => {
     [project_id],
   )
 
-  const add = async () => {
+  const add = useCallback(async () => {
     const newSubproject = createSubprojectPreset()
     await db.subprojects.create({
       data: {
@@ -27,7 +28,7 @@ export const Component = () => {
     Navigate(
       `/projects/${project_id}/subprojects/${newSubproject.subproject_id}`,
     )
-  }
+  }, [Navigate, db.subprojects, project_id])
 
   const subprojects: Subproject[] = results ?? []
 

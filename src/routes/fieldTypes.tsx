@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { Link, useNavigate } from 'react-router-dom'
 
@@ -18,13 +19,13 @@ export const Component = () => {
     }),
   )
 
-  const add = async () => {
+  const add = useCallback(async () => {
     const newFieldType = fieldTypePreset()
     await db.field_types.create({
       data: newFieldType,
     })
     navigate(`/field-types/${newFieldType.field_type_id}`)
-  }
+  }, [db.field_types, navigate])
 
   const fieldTypes: FieldType[] = results ?? []
 

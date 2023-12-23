@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 
@@ -17,7 +18,7 @@ export const Component = () => {
     [project_id],
   )
 
-  const add = async () => {
+  const add = useCallback(async () => {
     const newProjectReport = createProjectReportPreset()
     await db.project_reports.create({
       data: {
@@ -28,7 +29,7 @@ export const Component = () => {
     navigate(
       `/projects/${project_id}/reports/${newProjectReport.project_report_id}`,
     )
-  }
+  }, [db.project_reports, navigate, project_id])
 
   const projectReports: ProjectReport[] = results ?? []
 

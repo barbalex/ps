@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 
@@ -16,7 +17,7 @@ export const Component = () => {
     [project_id, taxonomy_id],
   )
 
-  const add = async () => {
+  const add = useCallback(async () => {
     const newTaxon = createTaxonPreset()
     await db.taxa.create({
       data: {
@@ -27,7 +28,7 @@ export const Component = () => {
     navigate(
       `/projects/${project_id}/taxonomies/${taxonomy_id}/taxa/${newTaxon.taxon_id}`,
     )
-  }
+  }, [db.taxa, navigate, project_id, taxonomy_id])
 
   const taxa: Taxon[] = results ?? []
 

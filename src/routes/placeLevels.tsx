@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 
@@ -16,7 +17,7 @@ export const Component = () => {
     [project_id],
   )
 
-  const add = async () => {
+  const add = useCallback(async () => {
     const newPlaceLevel = createPlaceLevelPreset()
     await db.place_levels.create({
       data: {
@@ -27,7 +28,7 @@ export const Component = () => {
     navigate(
       `/projects/${project_id}/place-levels/${newPlaceLevel.place_level_id}`,
     )
-  }
+  }, [db.place_levels, navigate, project_id])
 
   const placeLevels: PlaceLevel[] = results ?? []
 

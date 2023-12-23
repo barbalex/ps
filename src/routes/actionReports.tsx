@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { uuidv7 } from '@kripod/uuidv7'
 import { Link, useParams } from 'react-router-dom'
@@ -12,7 +13,7 @@ export const Component = () => {
   const { db } = useElectric()
   const { results } = useLiveQuery(db.action_reports.liveMany())
 
-  const add = async () => {
+  const add = useCallback(async () => {
     await db.action_reports.create({
       data: {
         action_report_id: uuidv7(),
@@ -21,7 +22,7 @@ export const Component = () => {
         // TODO: add account_id
       },
     })
-  }
+  }, [action_id, db.action_reports])
 
   const actionReports: ActionReport[] = results ?? []
 
