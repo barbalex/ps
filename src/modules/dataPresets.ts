@@ -200,3 +200,8 @@ export const checkValue = () => ({
   check_value_id: uuidv7(),
   deleted: false,
 })
+
+export const checkTaxon = () => ({
+  check_taxon_id: uuidv7(),
+  deleted: false,
+})
