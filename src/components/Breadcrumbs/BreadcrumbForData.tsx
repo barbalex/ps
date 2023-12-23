@@ -27,9 +27,11 @@ export const Breadcrumb = ({ match }) => {
   const parentFilterParamsArray = Object.entries(match.params).filter(
     ([key, value]) => key !== idField, // eslint-disable-line @typescript-eslint/no-unused-vars
   )
-  parentFilterParamsArray.forEach(([key, value]) => {
-    filterParams[key] = value
-  })
+  // Add only the last to the filter
+  const parentFilter = parentFilterParamsArray.at(-1)
+  if (parentFilter) {
+    filterParams[parentFilter[0]] = parentFilter[1]
+  }
 
   const { db } = useElectric()
   const queryTable = table === 'root' || table === 'docs' ? 'projects' : table
@@ -52,6 +54,7 @@ export const Breadcrumb = ({ match }) => {
   //   table,
   //   queryTable,
   //   filterParams,
+  //   parentFilter,
   // })
 
   return (
