@@ -167,3 +167,9 @@ export const subprojectUser = () => ({
   role: 'reader',
   deleted: false,
 })
+
+export const placeUser = () => ({
+  place_user_id: uuidv7(),
+  role: 'reader',
+  deleted: false,
+})

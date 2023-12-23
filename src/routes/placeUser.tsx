@@ -1,48 +1,103 @@
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
+import { Field, RadioGroup, Radio } from '@fluentui/react-components'
 
 import { PlaceUsers as PlaceUser } from '../../../generated/client'
+import { useElectric } from '../ElectricProvider'
+import { placeUser as createPlaceUserPreset } from '../modules/dataPresets'
+import { TextField } from '../components/shared/TextField'
+import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { getValueFromChange } from '../modules/getValueFromChange'
+import { FormMenu } from '../components/FormMenu'
 
 import '../form.css'
 
-import { useElectric } from '../ElectricProvider'
-
 export const Component = () => {
-  const { db } = useElectric()!
-  const { place_id, place_user_id } = useParams()
+  const { project_id, subproject_id, place_id, place_user_id } = useParams()
+  const navigate = useNavigate()
+
+  const { db } = useElectric()
   const { results } = useLiveQuery(
-    db.place_users.liveUnique({ where: { place_user_id } }),
+    () => db.place_users.liveUnique({ where: { place_user_id } }),
+    [place_user_id],
   )
 
-  const addItem = async () => {
+  const addRow = useCallback(async () => {
+    const newPlaceUser = createPlaceUserPreset()
     await db.place_users.create({
-      data: {
-        place_user_id: uuidv7(),
-        place_id,
-        deleted: false,
-        // TODO: add account_id
+      data: { ...newPlaceUser, project_id },
+    })
+    navigate(
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/users/${newPlaceUser.place_user_id}`,
+    )
+  }, [db.place_users, navigate, place_id, project_id, subproject_id])
+
+  const deleteRow = useCallback(async () => {
+    await db.place_users.delete({
+      where: {
+        place_user_id,
       },
     })
-  }
+    navigate(
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/users`,
+    )
+  }, [
+    db.place_users,
+    place_user_id,
+    navigate,
+    project_id,
+    subproject_id,
+    place_id,
+  ])
 
-  const clearItems = async () => {
-    await db.place_users.deleteMany()
-  }
+  const row: PlaceUser = results
 
-  const placeUser: PlaceUser = results
+  const onChange = useCallback(
+    (e, data) => {
+      const { name, value } = getValueFromChange(e, data)
+      db.place_users.update({
+        where: { place_user_id },
+        data: { [name]: value },
+      })
+    },
+    [db.place_users, place_user_id],
+  )
+
+  if (!row) {
+    return <div>Loading...</div>
+  }
 
   return (
     <div className="form-container">
-      <div className="controls">
-        <button className="button" onClick={addItem}>
-          Add
-        </button>
-        <button className="button" onClick={clearItems}>
-          Clear
-        </button>
-      </div>
-      <div>{`Place User with id ${placeUser?.place_user_id ?? ''}`}</div>
+      <FormMenu
+        addRow={addRow}
+        deleteRow={deleteRow}
+        tableName="project user"
+      />
+      <TextFieldInactive
+        label="ID"
+        name="place_user_id"
+        value={row.place_user_id}
+      />
+      <TextField
+        label="User ID"
+        name="user_id"
+        value={row.user_id ?? ''}
+        onChange={onChange}
+      />
+      <Field label="Role">
+        <RadioGroup
+          layout="horizontal"
+          value={row.role ?? ''}
+          name="role"
+          onChange={onChange}
+        >
+          <Radio label="Reader" value="reader" />
+          <Radio label="Editor" value="editor" />
+          <Radio label="Manager" value="manager" />
+        </RadioGroup>
+      </Field>
     </div>
   )
 }
