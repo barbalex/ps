@@ -8,7 +8,7 @@ import { check as createCheckPreset } from '../modules/dataPresets'
 import '../form.css'
 
 export const Component = () => {
-  const { subproject_id, project_id, place_id } = useParams()
+  const { project_id, subproject_id, place_id } = useParams()
   const navigate = useNavigate()
 
   const { db } = useElectric()
