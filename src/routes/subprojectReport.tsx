@@ -1,50 +1,88 @@
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
 import { SubprojectReports as SubprojectReport } from '../../../generated/client'
+import { subprojectReport as createSubprojectReportPreset } from '../modules/dataPresets'
+import { useElectric } from '../ElectricProvider'
+import { TextField } from '../components/shared/TextField'
+import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { getValueFromChange } from '../modules/getValueFromChange'
+import { FormMenu } from '../components/FormMenu'
 
 import '../form.css'
 
-import { useElectric } from '../ElectricProvider'
-
 export const Component = () => {
-  const { db } = useElectric()!
-  const { subproject_id, subproject_report_id } = useParams()
+  const { project_id, subproject_id, subproject_report_id } = useParams()
+  const navigate = useNavigate()
+
+  const { db } = useElectric()
   const { results } = useLiveQuery(
-    db.subproject_reports.liveUnique({ where: { subproject_report_id } }),
+    () => db.subproject_reports.liveUnique({ where: { subproject_report_id } }),
+    [subproject_report_id],
   )
 
-  const addItem = async () => {
+  const addRow = useCallback(async () => {
+    const newSubprojectReport = createSubprojectReportPreset()
     await db.subproject_reports.create({
-      data: {
-        subproject_report_id: uuidv7(),
-        subproject_id,
-        deleted: false,
-        // TODO: add account_id
+      data: { ...newSubprojectReport, project_id },
+    })
+    navigate(
+      `/projects/${project_id}/subprojects/${subproject_id}/reports/${newSubprojectReport.subproject_report_id}`,
+    )
+  }, [db.subproject_reports, navigate, project_id, subproject_id])
+
+  const deleteRow = useCallback(async () => {
+    await db.subproject_reports.delete({
+      where: {
+        subproject_report_id,
       },
     })
-  }
+    navigate(`/projects/${project_id}/subprojects/${subproject_id}/reports`)
+  }, [
+    db.subproject_reports,
+    navigate,
+    project_id,
+    subproject_id,
+    subproject_report_id,
+  ])
 
-  const clearItems = async () => {
-    await db.subproject_reports.deleteMany()
-  }
+  const row: SubprojectReport = results
 
-  const subprojectReport: SubprojectReport = results
+  const onChange = useCallback(
+    (e, data) => {
+      const { name, value } = getValueFromChange(e, data)
+      db.subproject_reports.update({
+        where: { subproject_report_id },
+        data: { [name]: value },
+      })
+    },
+    [db.subproject_reports, subproject_report_id],
+  )
+
+  if (!row) {
+    return <div>Loading...</div>
+  }
 
   return (
     <div className="form-container">
-      <div className="controls">
-        <button className="button" onClick={addItem}>
-          Add
-        </button>
-        <button className="button" onClick={clearItems}>
-          Clear
-        </button>
-      </div>
-      <div>{`Subproject Report with id ${
-        subprojectReport?.subproject_report_id ?? ''
-      }`}</div>
+      <FormMenu
+        addRow={addRow}
+        deleteRow={deleteRow}
+        tableName="project report"
+      />
+      <TextFieldInactive
+        label="ID"
+        name="subproject_report_id"
+        value={row.subproject_report_id}
+      />
+      <TextField
+        label="Year"
+        name="year"
+        type="number"
+        value={row.year ?? ''}
+        onChange={onChange}
+      />
     </div>
   )
 }

@@ -1,28 +1,37 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { SubprojectReports as SubprojectReport } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
+import { subprojectReport as createSubprojectReportPreset } from '../modules/dataPresets'
 import '../form.css'
 
 export const Component = () => {
   const { subproject_id, project_id } = useParams()
+  const navigate = useNavigate()
 
   const { db } = useElectric()
-  const { results } = useLiveQuery(db.subproject_reports.liveMany())
+  const { results } = useLiveQuery(
+    () =>
+      db.subproject_reports.liveMany({
+        where: { subproject_id, deleted: false },
+      }),
+    [subproject_id],
+  )
 
   const add = useCallback(async () => {
+    const newSubprojectReport = createSubprojectReportPreset()
     await db.subproject_reports.create({
       data: {
-        subproject_report_id: uuidv7(),
+        ...newSubprojectReport,
         subproject_id,
-        deleted: false,
-        // TODO: add account_id
       },
     })
-  }, [db.subproject_reports, subproject_id])
+    navigate(
+      `/projects/${project_id}/subprojects/${subproject_id}/reports/${newSubprojectReport.subproject_report_id}`,
+    )
+  }, [db.subproject_reports, navigate, project_id, subproject_id])
 
   const subprojectReports: SubprojectReport[] = results ?? []
 
@@ -39,7 +48,7 @@ export const Component = () => {
             <Link
               to={`/projects/${project_id}/subprojects/${subproject_id}/reports/${subprojectReport.subproject_report_id}`}
             >
-              {subprojectReport.subproject_report_id}
+              {subprojectReport.label ?? subprojectReport.subproject_report_id}
             </Link>
           </p>
         ),

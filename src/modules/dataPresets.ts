@@ -178,3 +178,10 @@ export const subprojectTaxon = () => ({
   subproject_taxon_id: uuidv7(),
   deleted: false,
 })
+
+export const subprojectReport = () => ({
+  subproject_report_id: uuidv7(),
+  year: new Date().getFullYear(),
+  files_active: true,
+  deleted: false,
+})
