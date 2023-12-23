@@ -12,7 +12,7 @@ import { FormMenu } from '../components/FormMenu'
 import '../form.css'
 
 export const Component = () => {
-  const { goal_id, goal_report_id } = useParams()
+  const { project_id, subproject_id, goal_id, goal_report_id } = useParams()
   const navigate = useNavigate()
 
   const { db } = useElectric()
@@ -32,7 +32,7 @@ export const Component = () => {
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${newGoalReport.goal_report_id}`,
     )
-  }, [db.goal_reports, goal_id, navigate])
+  }, [db.goal_reports, goal_id, navigate, project_id, subproject_id])
 
   const deleteRow = useCallback(async () => {
     await db.goal_reports.delete({
@@ -43,7 +43,14 @@ export const Component = () => {
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports`,
     )
-  }, [db.goal_reports, goal_id, goal_report_id, navigate])
+  }, [
+    db.goal_reports,
+    goal_id,
+    goal_report_id,
+    navigate,
+    project_id,
+    subproject_id,
+  ])
 
   const row: GoalReport = results
 

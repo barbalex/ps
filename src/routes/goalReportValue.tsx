@@ -13,7 +13,13 @@ import { FormMenu } from '../components/FormMenu'
 import '../form.css'
 
 export const Component = () => {
-  const { goal_report_id, goal_report_value_id } = useParams()
+  const {
+    project_id,
+    subproject_id,
+    goal_id,
+    goal_report_id,
+    goal_report_value_id,
+  } = useParams()
   const navigate = useNavigate()
 
   const { db } = useElectric()
@@ -33,7 +39,14 @@ export const Component = () => {
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${goal_report_id}/values/${newGoalReportValue.goal_report_value_id}`,
     )
-  }, [db.goal_report_values, goal_report_id, navigate])
+  }, [
+    db.goal_report_values,
+    goal_id,
+    goal_report_id,
+    navigate,
+    project_id,
+    subproject_id,
+  ])
 
   const deleteRow = useCallback(async () => {
     await db.goal_report_values.delete({
@@ -44,7 +57,15 @@ export const Component = () => {
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${goal_report_id}/values`,
     )
-  }, [db.goal_report_values, goal_report_id, goal_report_value_id, navigate])
+  }, [
+    db.goal_report_values,
+    goal_id,
+    goal_report_id,
+    goal_report_value_id,
+    navigate,
+    project_id,
+    subproject_id,
+  ])
 
   const row: GoalReportValue = results
 
