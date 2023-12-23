@@ -8,14 +8,14 @@ body {
 #root {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  align-items: stretch;
   overflow: hidden;
 }
 
 .fui-FluentProvider {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  align-items: stretch;
 }
 
 /* the calendar modal backdrop is set to whitish, COVERING the entire form... */
@@ -45,6 +45,7 @@ body {
   display: flex;
   flex-direction: column;
   row-gap: 15px;
+  overflow: auto;
 }
 
 .navs {
