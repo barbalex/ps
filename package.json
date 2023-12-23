@@ -22,7 +22,7 @@
     "node": ">=16.11.0"
   },
   "dependencies": {
-    "@fluentui/react-components": "^9.43.2",
+    "@fluentui/react-components": "^9.43.3",
     "@fluentui/react-datepicker-compat": "^0.4.10",
     "@fluentui/react-icons": "^2.0.224",
     "@fontsource/roboto": "5.0.8",
@@ -30,7 +30,7 @@
     "@preact/signals": "1.2.2",
     "@typescript-eslint/eslint-plugin": "6.15.0",
     "@typescript-eslint/parser": "6.15.0",
-    "antd": "5.12.4",
+    "antd": "5.12.5",
     "electric-sql": "0.8.2",
     "eslint": "8.56.0",
     "eslint-plugin-import": "2.29.1",
@@ -39,7 +39,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "4.12.0",
-    "react-router-dom": "6.21.0",
+    "react-router-dom": "6.21.1",
     "wa-sqlite": "rhashimoto/wa-sqlite#semver:v0.9.9"
   },
   "devDependencies": {
