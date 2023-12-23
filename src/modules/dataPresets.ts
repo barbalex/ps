@@ -188,3 +188,10 @@ export const subprojectReport = () => ({
   year: new Date().getFullYear(),
   deleted: false,
 })
+
+export const check = () => ({
+  check_id: uuidv7(),
+  date: new Date(),
+  relevant_for_reports: true,
+  deleted: false,
+})

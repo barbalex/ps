@@ -1,48 +1,82 @@
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
+import { Switch } from '@fluentui/react-components'
 
 import { Checks as Check } from '../../../generated/client'
+import { check as createCheckPreset } from '../modules/dataPresets'
+import { useElectric } from '../ElectricProvider'
+import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { DateField } from '../components/shared/DateField'
+import { getValueFromChange } from '../modules/getValueFromChange'
+import { FormMenu } from '../components/FormMenu'
 
 import '../form.css'
 
-import { useElectric } from '../ElectricProvider'
-
 export const Component = () => {
-  const { db } = useElectric()!
-  const { place_id, check_id } = useParams()
+  const { project_id, subproject_id, place_id, check_id } = useParams()
+  const navigate = useNavigate()
+
+  const { db } = useElectric()
   const { results } = useLiveQuery(
-    db.checks.liveUnique({ where: { check_id } }),
+    () => db.checks.liveUnique({ where: { check_id } }),
+    [check_id],
   )
 
-  const addItem = async () => {
+  const addRow = useCallback(async () => {
+    const newCheck = createCheckPreset()
     await db.checks.create({
-      data: {
-        check_id: uuidv7(),
-        place_id,
-        deleted: false,
-        // TODO: add account_id
+      data: { ...newCheck, place_id },
+    })
+    navigate(
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/checks/${newCheck.check_id}`,
+    )
+  }, [db.checks, navigate, place_id, project_id, subproject_id])
+
+  const deleteRow = useCallback(async () => {
+    await db.checks.delete({
+      where: {
+        check_id,
       },
     })
-  }
+    navigate(
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/checks`,
+    )
+  }, [check_id, db.checks, navigate, place_id, project_id, subproject_id])
 
-  const clearItems = async () => {
-    await db.checks.deleteMany()
-  }
+  const row: Check = results
 
-  const check: Check = results
+  const onChange = useCallback(
+    (e, data) => {
+      const { name, value } = getValueFromChange(e, data)
+      db.checks.update({
+        where: { check_id },
+        data: { [name]: value },
+      })
+    },
+    [db.checks, check_id],
+  )
+
+  if (!row) {
+    return <div>Loading...</div>
+  }
 
   return (
     <div className="form-container">
-      <div className="controls">
-        <button className="button" onClick={addItem}>
-          Add
-        </button>
-        <button className="button" onClick={clearItems}>
-          Clear
-        </button>
-      </div>
-      <div>{`Check with id ${check?.check_id ?? ''}`}</div>
+      <FormMenu addRow={addRow} deleteRow={deleteRow} tableName="check" />
+      <TextFieldInactive label="ID" name="check_id" value={row.check_id} />
+      <DateField
+        label="Date"
+        name="date"
+        value={row.date}
+        onChange={onChange}
+      />
+      <Switch
+        label="relevant for reports"
+        name="relevant_for_reports"
+        checked={row.relevant_for_reports ?? false}
+        onChange={onChange}
+      />
     </div>
   )
 }

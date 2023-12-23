@@ -1,28 +1,34 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { Checks as Check } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
+import { check as createCheckPreset } from '../modules/dataPresets'
 import '../form.css'
 
 export const Component = () => {
   const { subproject_id, project_id, place_id } = useParams()
+  const navigate = useNavigate()
 
   const { db } = useElectric()
-  const { results } = useLiveQuery(db.checks.liveMany())
+  const { results } = useLiveQuery(
+    () => db.checks.liveMany({ where: { place_id, deleted: false } }),
+    [place_id],
+  )
 
   const add = useCallback(async () => {
+    const newCheck = createCheckPreset()
     await db.checks.create({
       data: {
-        check_id: uuidv7(),
+        ...newCheck,
         place_id,
-        deleted: false,
-        // TODO: add account_id
       },
     })
-  }, [db.checks, place_id])
+    navigate(
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/checks/${newCheck.check_id}`,
+    )
+  }, [db.checks, navigate, place_id, project_id, subproject_id])
 
   const checks: Check[] = results ?? []
 
@@ -38,7 +44,7 @@ export const Component = () => {
           <Link
             to={`/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/checks/${check.check_id}`}
           >
-            {check.check_id}
+            {check.label ?? check.check_id}
           </Link>
         </p>
       ))}
