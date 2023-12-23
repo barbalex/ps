@@ -3,19 +3,19 @@ body {
   -webkit-font-smoothing: antialiased;
   display: flex;
   flex-direction: column;
+  height: 100vh;
 }
 
 #root {
   display: flex;
   flex-direction: column;
-  align-items: stretch;
-  overflow: hidden;
+  height: 100vh;
 }
 
 .fui-FluentProvider {
   display: flex;
   flex-direction: column;
-  align-items: stretch;
+  height: 100vh;
 }
 
 /* the calendar modal backdrop is set to whitish, COVERING the entire form... */
@@ -35,8 +35,8 @@ body {
 .content {
   display: flex;
   flex-direction: column;
-  align-items: stretch;
   flex-grow: 1;
+  overflow: auto;
 }
 
 .form-container {
@@ -45,7 +45,6 @@ body {
   display: flex;
   flex-direction: column;
   row-gap: 15px;
-  overflow: auto;
 }
 
 .navs {
