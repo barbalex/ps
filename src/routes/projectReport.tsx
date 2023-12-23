@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Switch } from '@fluentui/react-components'
 
 import { ProjectReports as ProjectReport } from '../../../generated/client'
 import { projectReport as createProjectReportPreset } from '../modules/dataPresets'
@@ -76,12 +75,6 @@ export const Component = () => {
         name="year"
         type="number"
         value={row.year ?? ''}
-        onChange={onChange}
-      />
-      <Switch
-        label="Enable uploading files to project reports"
-        name="files_active"
-        checked={row.files_active ?? false}
         onChange={onChange}
       />
     </div>
