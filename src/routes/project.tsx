@@ -96,7 +96,7 @@ export const Component = () => {
         value={row.subproject_order_by ?? ''}
         onChange={onChange}
       />
-      <Field label="Value(s) to use when Values exist on multiple place levels">
+      <Field label="Value(s) to use when values exist on multiple place levels">
         <RadioGroup
           layout="horizontal"
           value={row.values_on_multiple_levels ?? ''}
@@ -108,7 +108,7 @@ export const Component = () => {
           <Radio label="all levels" value="all" />
         </RadioGroup>
       </Field>
-      <Field label="Value(s) to use when multiple action Values exist on the same place level">
+      <Field label="Value(s) to use when multiple action values exist on the same place level">
         <RadioGroup
           layout="horizontal"
           value={row.multiple_action_values_on_same_level ?? ''}
