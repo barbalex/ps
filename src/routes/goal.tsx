@@ -27,7 +27,7 @@ export const Component = () => {
     await db.goals.create({
       data: {
         ...newGoal,
-        project_id,
+        subproject_id,
       },
     })
     navigate(
