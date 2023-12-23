@@ -3,7 +3,8 @@ import { Button } from '@fluentui/react-components'
 import { FaPlus, FaMinus } from 'react-icons/fa'
 
 export const FormMenu = memo(({ addRow, deleteRow, tableName }) => {
-  console.log('render FormMenu')
+  // console.log('render FormMenu')
+  
   return (
     <div className="controls">
       <Button
