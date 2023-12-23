@@ -1,26 +1,35 @@
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { SubprojectUser as SubprojectUser } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
+import { subprojectUser as createSubprojectUserPreset } from '../modules/dataPresets'
 import '../form.css'
 
 export const Component = () => {
   const { subproject_id, project_id } = useParams()
+  const navigate = useNavigate()
 
   const { db } = useElectric()
-  const { results } = useLiveQuery(db.subproject_users.liveMany())
+  const { results } = useLiveQuery(
+    () =>
+      db.subproject_users.liveMany({
+        where: { subproject_id, deleted: false },
+      }),
+    [subproject_id],
+  )
 
   const add = async () => {
+    const newSubprojectUser = createSubprojectUserPreset()
     await db.subproject_users.create({
       data: {
-        subproject_user_id: uuidv7(),
+        ...newSubprojectUser,
         subproject_id,
-        deleted: false,
-        // TODO: add account_id
       },
     })
+    navigate(
+      `/projects/${project_id}/subprojects/${subproject_id}/users/${newSubprojectUser.subproject_user_id}`,
+    )
   }
 
   const subproject_users: SubprojectUser[] = results ?? []
@@ -38,7 +47,7 @@ export const Component = () => {
             <Link
               to={`/projects/${project_id}/subprojects/${subproject_id}/users/${subproject_user.subproject_user_id}`}
             >
-              {subproject_user.subproject_user_id}
+              {subproject_user.label ?? subproject_user.subproject_user_id}
             </Link>
           </p>
         ),

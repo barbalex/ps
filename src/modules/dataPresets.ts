@@ -161,3 +161,9 @@ export const goalReportValue = () => ({
   goal_report_value_id: uuidv7(),
   deleted: false,
 })
+
+export const subprojectUser = () => ({
+  subproject_user_id: uuidv7(),
+  role: 'reader',
+  deleted: false,
+})
