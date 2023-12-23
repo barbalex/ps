@@ -25,7 +25,7 @@ export const Component = () => {
   const addRow = useCallback(async () => {
     const newSubprojectReport = createSubprojectReportPreset()
     await db.subproject_reports.create({
-      data: { ...newSubprojectReport, project_id },
+      data: { ...newSubprojectReport, subproject_id },
     })
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/reports/${newSubprojectReport.subproject_report_id}`,
