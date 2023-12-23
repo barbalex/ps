@@ -1,28 +1,34 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { CheckValues as CheckValue } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
+import { checkValue as createCheckValuePreset } from '../modules/dataPresets'
 import '../form.css'
 
 export const Component = () => {
-  const { subproject_id, project_id, place_id, check_id } = useParams()
+  const { project_id, subproject_id, place_id, check_id } = useParams()
+  const navigate = useNavigate()
 
   const { db } = useElectric()
-  const { results } = useLiveQuery(db.check_values.liveMany())
+  const { results } = useLiveQuery(
+    () => db.check_values.liveMany({ where: { check_id, deleted: false } }),
+    [check_id],
+  )
 
   const add = useCallback(async () => {
+    const newCheckValue = createCheckValuePreset()
     await db.check_values.create({
       data: {
-        check_value_id: uuidv7(),
+        ...newCheckValue,
         check_id,
-        deleted: false,
-        // TODO: add account_id
       },
     })
-  }, [check_id, db.check_values])
+    navigate(
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/checks/${check_id}/values/${newCheckValue.check_value_id}`,
+    )
+  }, [check_id, db.check_values, navigate, place_id, project_id, subproject_id])
 
   const checkValues: CheckValue[] = results ?? []
 
@@ -38,7 +44,7 @@ export const Component = () => {
           <Link
             to={`/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/checks/${check_id}/values/${checkValue.check_value_id}`}
           >
-            {checkValue.check_value_id}
+            {checkValue.label ?? checkValue.check_value_id}
           </Link>
         </p>
       ))}

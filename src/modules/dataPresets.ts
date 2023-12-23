@@ -195,3 +195,8 @@ export const check = () => ({
   relevant_for_reports: true,
   deleted: false,
 })
+
+export const checkValue = () => ({
+  check_value_id: uuidv7(),
+  deleted: false,
+})
