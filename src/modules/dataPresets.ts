@@ -205,3 +205,10 @@ export const checkTaxon = () => ({
   check_taxon_id: uuidv7(),
   deleted: false,
 })
+
+export const action = () => ({
+  action_id: uuidv7(),
+  date: new Date(),
+  relevant_for_reports: true,
+  deleted: false,
+})
