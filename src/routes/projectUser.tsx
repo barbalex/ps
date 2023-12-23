@@ -70,7 +70,7 @@ export const Component = () => {
         value={row.project_user_id}
       />
       <TextField
-        label="User"
+        label="User ID"
         name="user_id"
         value={row.user_id ?? ''}
         onChange={onChange}
