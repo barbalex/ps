@@ -1,50 +1,90 @@
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
 import { ActionReports as ActionReport } from '../../../generated/client'
+import { actionReport as createActionReportPreset } from '../modules/dataPresets'
+import { useElectric } from '../ElectricProvider'
+import { TextField } from '../components/shared/TextField'
+import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { getValueFromChange } from '../modules/getValueFromChange'
+import { FormMenu } from '../components/FormMenu'
 
 import '../form.css'
 
-import { useElectric } from '../ElectricProvider'
-
 export const Component = () => {
-  const { db } = useElectric()!
-  const { action_id, action_report_id } = useParams()
+  const { project_id, subproject_id, place_id, action_id, action_report_id } =
+    useParams()
+  const navigate = useNavigate()
+
+  const { db } = useElectric()
   const { results } = useLiveQuery(
-    db.action_reports.liveUnique({ where: { action_report_id } }),
+    () => db.action_reports.liveUnique({ where: { action_report_id } }),
+    [action_report_id],
   )
 
-  const addItem = async () => {
+  const addRow = useCallback(async () => {
+    const newActionReport = createActionReportPreset()
     await db.action_reports.create({
       data: {
-        action_report_id: uuidv7(),
+        ...newActionReport,
         action_id,
-        deleted: false,
-        // TODO: add account_id
       },
     })
-  }
+    navigate(
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/actions/${action_id}/reports/${newActionReport.action_report_id}`,
+    )
+  }, [action_id, db.action_reports, navigate, place_id, project_id, subproject_id])
 
-  const clearItems = async () => {
-    await db.action_reports.deleteMany()
-  }
+  const deleteRow = useCallback(async () => {
+    await db.action_reports.delete({
+      where: {
+        action_report_id,
+      },
+    })
+    navigate(
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/actions/${action_id}/reports`,
+    )
+  }, [action_id, action_report_id, db.action_reports, navigate, place_id, project_id, subproject_id])
 
-  const actionReport: ActionReport = results
+  const row: ActionReport = results
+
+  // console.log('ActionReport', { row, results })
+
+  const onChange = useCallback(
+    (e, data) => {
+      const { name, value } = getValueFromChange(e, data)
+      db.action_reports.update({
+        where: { action_report_id },
+        data: { [name]: value },
+      })
+    },
+    [db.action_reports, action_report_id],
+  )
+
+  if (!row) {
+    return <div>Loading...</div>
+  }
 
   return (
     <div className="form-container">
-      <div className="controls">
-        <button className="button" onClick={addItem}>
-          Add
-        </button>
-        <button className="button" onClick={clearItems}>
-          Clear
-        </button>
-      </div>
-      <div>{`Action Report with id ${
-        actionReport?.action_report_id ?? ''
-      }`}</div>
+      <FormMenu
+        addRow={addRow}
+        deleteRow={deleteRow}
+        tableName="goal report value"
+      />
+      <TextFieldInactive
+        label="ID"
+        name="action_report_id"
+        value={row.action_report_id ?? ''}
+      />
+      <TextField
+        label="Year"
+        name="year"
+        value={row.year ?? ''}
+        type="number"
+        onChange={onChange}
+      />
     </div>
   )
 }

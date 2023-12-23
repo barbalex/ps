@@ -212,3 +212,14 @@ export const action = () => ({
   relevant_for_reports: true,
   deleted: false,
 })
+
+export const actionValue = () => ({
+  action_value_id: uuidv7(),
+  deleted: false,
+})
+
+export const actionReport = () => ({
+  action_report_id: uuidv7(),
+  year: new Date().getFullYear(),
+  deleted: false,
+})
