@@ -27,7 +27,5 @@ COMMENT ON COLUMN taxa.id_in_source IS 'ID of taxon as used in the source taxono
 
 COMMENT ON COLUMN taxa.url IS 'URL of taxon, like "https://www.infoflora.ch/de/flora/pulsatilla-vulgaris.html"';
 
-COMMENT ON COLUMN taxa.obsolete IS 'Is taxon obsolete? Preset: false';
-
 ALTER TABLE taxa ENABLE electric;
 
