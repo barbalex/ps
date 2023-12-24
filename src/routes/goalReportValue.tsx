@@ -7,6 +7,7 @@ import { goalReportValue as createGoalReportValuePreset } from '../modules/dataP
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { DropdownField } from '../components/shared/DropdownField'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormMenu } from '../components/FormMenu'
 
@@ -69,6 +70,19 @@ export const Component = () => {
 
   const row: GoalReportValue = results
 
+  const { results: unitResults } = useLiveQuery(
+    db.units.liveMany({
+      where: {
+        use_for_goal_report_values: true,
+      },
+    }),
+  )
+
+  const unitOptions = (unitResults ?? []).map((unit: Unit) => ({
+    text: unit.label,
+    value: unit.unit_id,
+  }))
+
   // console.log('GoalReportValue', { row, results })
 
   const onChange = useCallback(
@@ -98,10 +112,11 @@ export const Component = () => {
         name="goal_report_value_id"
         value={row.goal_report_value_id ?? ''}
       />
-      <TextField
-        label="Unit ID"
+      <DropdownField
+        label="Unit"
         name="unit_id"
         value={row.unit_id ?? ''}
+        options={unitOptions}
         onChange={onChange}
       />
       <TextField
