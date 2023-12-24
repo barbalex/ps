@@ -234,3 +234,8 @@ export const placeReport = () => ({
   year: new Date().getFullYear(),
   deleted: false,
 })
+
+export const placeReportValue = () => ({
+  place_report_value_id: uuidv7(),
+  deleted: false,
+})
