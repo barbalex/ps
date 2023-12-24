@@ -2,12 +2,16 @@ import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
-import { ActionValues as ActionValue } from '../../../generated/client'
+import {
+  ActionValues as ActionValue,
+  Units as Unit,
+} from '../../../generated/client'
 import { actionValue as createActionValuePreset } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { getValueFromChange } from '../modules/getValueFromChange'
+import { DropdownField } from '../components/shared/DropdownField'
 import { FormMenu } from '../components/FormMenu'
 
 import '../form.css'
@@ -64,7 +68,25 @@ export const Component = () => {
 
   const row: ActionValue = results
 
-  // console.log('ActionValue', { row, results })
+  const { results: unitResults } = useLiveQuery(
+    db.units.liveMany({
+      where: {
+        use_for_action_values: true,
+      },
+    }),
+  )
+
+  const unitOptions = (unitResults ?? []).map((unit: Unit) => ({
+    text: unit.label,
+    value: unit.unit_id,
+  }))
+
+  console.log('ActionValue', {
+    row,
+    unit: row?.unit_id,
+    unitResults,
+    unitOptions,
+  })
 
   const onChange = useCallback(
     (e, data) => {
@@ -92,6 +114,13 @@ export const Component = () => {
         label="ID"
         name="action_value_id"
         value={row.action_value_id ?? ''}
+      />
+      <DropdownField
+        label="Unit"
+        name="unit_id"
+        options={unitOptions}
+        value={row.unit_id ?? ''}
+        onChange={onChange}
       />
       <TextField
         label="Unit ID"
