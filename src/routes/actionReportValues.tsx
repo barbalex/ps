@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { ActionReportValues as ActionReportValue } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { actionValue as createActionValuePreset } from '../modules/dataPresets'
+import { actionReportValue as createActionReportValuePreset } from '../modules/dataPresets'
 import '../form.css'
 
 export const Component = () => {
@@ -22,7 +22,7 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const newActionReportValue = createActionValuePreset()
+    const newActionReportValue = createActionReportValuePreset()
     await db.action_report_values.create({
       data: {
         ...newActionReportValue,

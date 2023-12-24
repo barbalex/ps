@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { ActionReportValues as ActionReportValue } from '../../../generated/client'
-import { actionValue as createActionValuePreset } from '../modules/dataPresets'
+import { actionReportValue as createActionReportValuePreset } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
@@ -36,7 +36,7 @@ export const Component = () => {
     await db.action_report_values.create({
       data: {
         ...newActionReportValue,
-        action_id,
+        action_report_id,
       },
     })
     navigate(
