@@ -223,3 +223,8 @@ export const actionReport = () => ({
   year: new Date().getFullYear(),
   deleted: false,
 })
+
+export const actionReportValue = () => ({
+  action_report_value_id: uuidv7(),
+  deleted: false,
+})
