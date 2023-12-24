@@ -4,23 +4,29 @@ import type { InputProps } from '@fluentui/react-components'
 
 export const DropdownField = memo((props: InputProps) => {
   const { name, label, options, value, onChange } = props
+  const selectedOptions = options.filter(({ value: v }) => v === value)
+  console.log('DropdownField', { props, name, value, options, selectedOptions })
 
   return (
     <Field label={label ?? '(no label provided)'}>
       <Dropdown
         name={name}
-        value={value}
-        selectedOptions={options.filter(({ value: v }) => v === value)}
+        value={selectedOptions?.[0]?.text ?? ''}
+        selectedOptions={selectedOptions}
         onOptionSelect={(e, data) =>
           onChange({ target: { name, value: data.optionValue } })
         }
         appearance="underline"
       >
-        {options.map(({ text, value }) => (
-          <Option key={value} value={value}>
-            {text}
-          </Option>
-        ))}
+        {options.map((params) => {
+          const { text, value } = params
+          console.log('DropdownField', { params, name, value, options })
+          return (
+            <Option key={value} value={value}>
+              {text}
+            </Option>
+          )
+        })}
       </Dropdown>
     </Field>
   )
