@@ -1,29 +1,46 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { ActionReportValues as ActionReportValue } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
+import { actionValue as createActionValuePreset } from '../modules/dataPresets'
 import '../form.css'
 
 export const Component = () => {
-  const { subproject_id, project_id, place_id, action_id, action_report_id } =
+  const { project_id, subproject_id, place_id, action_id, action_report_id } =
     useParams()
+  const navigate = useNavigate()
 
   const { db } = useElectric()
-  const { results } = useLiveQuery(db.action_report_values.liveMany())
+  const { results } = useLiveQuery(
+    () =>
+      db.action_report_values.liveMany({
+        where: { action_report_id, deleted: false },
+      }),
+    [action_report_id],
+  )
 
   const add = useCallback(async () => {
+    const newActionReportValue = createActionValuePreset()
     await db.action_report_values.create({
       data: {
-        action_report_value_id: uuidv7(),
+        ...newActionReportValue,
         action_report_id,
-        deleted: false,
-        // TODO: add account_id
       },
     })
-  }, [action_report_id, db.action_report_values])
+    navigate(
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/actions/${action_id}/reports/${action_report_id}/values/${newActionReportValue.action_report_value_id}`,
+    )
+  }, [
+    action_id,
+    action_report_id,
+    db.action_report_values,
+    navigate,
+    place_id,
+    project_id,
+    subproject_id,
+  ])
 
   const actionReportValues: ActionReportValue[] = results ?? []
 
@@ -40,7 +57,8 @@ export const Component = () => {
             <Link
               to={`/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/actions/${action_id}/reports/${action_report_id}/values/${actionReportValue.action_report_value_id}`}
             >
-              {actionReportValue.action_report_value_id}
+              {actionReportValue.label ??
+                actionReportValue.action_report_value_id}
             </Link>
           </p>
         ),
