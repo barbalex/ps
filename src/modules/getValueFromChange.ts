@@ -10,14 +10,14 @@ export const getValueFromChange = (e, data) => {
       : e.target.value ?? null
   const name = e.target.name
 
-  console.log('getValueFromChange', {
-    targetType,
-    value,
-    name,
-    e,
-    data,
-    valueAsNumber: e.target.valueAsNumber,
-  })
+  // console.log('getValueFromChange', {
+  //   targetType,
+  //   value,
+  //   name,
+  //   e,
+  //   data,
+  //   valueAsNumber: e.target.valueAsNumber,
+  // })
 
   return { value, name }
 }
