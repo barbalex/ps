@@ -22,7 +22,7 @@ export const DropdownField = memo((props: InputProps) => {
       >
         {options.map((params) => {
           const { text, value } = params
-          console.log('DropdownField', { params, name, value, options })
+
           return (
             <Option key={value} value={value}>
               {text}
