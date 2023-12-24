@@ -8,7 +8,6 @@ export const DropdownField = memo((props: InputProps) => {
   return (
     <Field label={label ?? '(no label provided)'}>
       <Dropdown
-        // {...props}
         name={name}
         value={value}
         selectedOptions={options.filter(({ value: v }) => v === value)}
