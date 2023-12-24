@@ -123,12 +123,6 @@ export const Component = () => {
         onChange={onChange}
       />
       <TextField
-        label="Unit ID"
-        name="unit_id"
-        value={row.unit_id ?? ''}
-        onChange={onChange}
-      />
-      <TextField
         label="Value (integer)"
         name="value_integer"
         type="number"
