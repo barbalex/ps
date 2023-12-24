@@ -7,6 +7,7 @@ import { checkValue as createCheckValuePreset } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { DropdownField } from '../components/shared/DropdownField'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormMenu } from '../components/FormMenu'
 
@@ -57,6 +58,19 @@ export const Component = () => {
 
   const row: CheckValue = results
 
+  const { results: unitResults } = useLiveQuery(
+    db.units.liveMany({
+      where: {
+        use_for_check_values: true,
+      },
+    }),
+  )
+
+  const unitOptions = (unitResults ?? []).map((unit: Unit) => ({
+    text: unit.label,
+    value: unit.unit_id,
+  }))
+
   // console.log('CheckValue', { row, results })
 
   const onChange = useCallback(
@@ -86,10 +100,11 @@ export const Component = () => {
         name="check_value_id"
         value={row.check_value_id ?? ''}
       />
-      <TextField
-        label="Unit ID"
+      <DropdownField
+        label="Unit"
         name="unit_id"
         value={row.unit_id ?? ''}
+        options={unitOptions}
         onChange={onChange}
       />
       <TextField
