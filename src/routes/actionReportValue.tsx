@@ -1,50 +1,146 @@
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
 import { ActionReportValues as ActionReportValue } from '../../../generated/client'
+import { actionValue as createActionValuePreset } from '../modules/dataPresets'
+import { useElectric } from '../ElectricProvider'
+import { TextField } from '../components/shared/TextField'
+import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { DropdownField } from '../components/shared/DropdownField'
+import { getValueFromChange } from '../modules/getValueFromChange'
+import { FormMenu } from '../components/FormMenu'
 
 import '../form.css'
 
-import { useElectric } from '../ElectricProvider'
-
 export const Component = () => {
-  const { db } = useElectric()!
-  const { action_report_id, action_report_value_id } = useParams()
+  const {
+    project_id,
+    subproject_id,
+    place_id,
+    action_id,
+    action_report_id,
+    action_report_value_id,
+  } = useParams()
+  const navigate = useNavigate()
+
+  const { db } = useElectric()
   const { results } = useLiveQuery(
-    db.action_report_values.liveUnique({ where: { action_report_value_id } }),
+    () =>
+      db.action_report_values.liveUnique({ where: { action_report_value_id } }),
+    [action_report_value_id],
   )
 
-  const addItem = async () => {
+  const addRow = useCallback(async () => {
+    const newActionReportValue = createActionReportValuePreset()
     await db.action_report_values.create({
       data: {
-        action_report_value_id: uuidv7(),
-        action_report_id,
-        deleted: false,
-        // TODO: add account_id
+        ...newActionReportValue,
+        action_id,
       },
     })
-  }
+    navigate(
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/actions/${action_id}/reports/${action_report_id}/values/${newActionReportValue.action_report_value_id}`,
+    )
+  }, [
+    action_id,
+    action_report_id,
+    db.action_report_values,
+    navigate,
+    place_id,
+    project_id,
+    subproject_id,
+  ])
 
-  const clearItems = async () => {
-    await db.action_report_values.deleteMany()
-  }
+  const deleteRow = useCallback(async () => {
+    await db.action_report_values.delete({
+      where: {
+        action_report_value_id,
+      },
+    })
+    navigate(
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/actions/${action_id}/reports/${action_report_id}/values`,
+    )
+  }, [
+    action_id,
+    action_report_id,
+    action_report_value_id,
+    db.action_report_values,
+    navigate,
+    place_id,
+    project_id,
+    subproject_id,
+  ])
 
-  const actionReportValue: ActionReportValue = results
+  const row: ActionReportValue = results
+
+  const { results: unitResults } = useLiveQuery(
+    db.units.liveMany({
+      where: {
+        use_for_action_report_values: true,
+      },
+    }),
+  )
+
+  const unitOptions = (unitResults ?? []).map((unit: Unit) => ({
+    text: unit.label,
+    value: unit.unit_id,
+  }))
+
+  const onChange = useCallback(
+    (e, data) => {
+      const { name, value } = getValueFromChange(e, data)
+      db.action_report_values.update({
+        where: { action_report_value_id },
+        data: { [name]: value },
+      })
+    },
+    [db.action_report_values, action_report_value_id],
+  )
+
+  if (!row) {
+    return <div>Loading...</div>
+  }
 
   return (
     <div className="form-container">
-      <div className="controls">
-        <button className="button" onClick={addItem}>
-          Add
-        </button>
-        <button className="button" onClick={clearItems}>
-          Clear
-        </button>
-      </div>
-      <div>{`Action Report Value with id ${
-        actionReportValue?.action_report_value_id ?? ''
-      }`}</div>
+      <FormMenu
+        addRow={addRow}
+        deleteRow={deleteRow}
+        tableName="goal report value"
+      />
+      <TextFieldInactive
+        label="ID"
+        name="action_report_value_id"
+        value={row.action_report_value_id ?? ''}
+      />
+      <DropdownField
+        label="Unit"
+        name="unit_id"
+        options={unitOptions}
+        value={row.unit_id ?? ''}
+        onChange={onChange}
+      />
+      <TextField
+        label="Value (integer)"
+        name="value_integer"
+        type="number"
+        value={row.value_integer ?? ''}
+        onChange={onChange}
+      />
+      <TextField
+        label="Value (numeric)"
+        name="value_numeric"
+        type="number"
+        value={row.value_numeric ?? ''}
+        onChange={onChange}
+      />
+      <TextField
+        label="Value (text)"
+        name="value_text"
+        value={row.value_text ?? ''}
+        onChange={onChange}
+      />
     </div>
   )
 }
