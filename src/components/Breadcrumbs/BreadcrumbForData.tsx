@@ -59,19 +59,19 @@ export const Breadcrumb = ({ match }) => {
     text: result.label ?? result[idField],
   }))
 
-  console.log('BreadcrumbForData', {
-    // myNavs,
-    // match,
-    results,
-    idField,
-    // parentFilterParamsArray,
-    // table,
-    queryTable,
-    // filterParams,
-    queryParam,
-    error,
-    // parentFilter,
-  })
+  // console.log('BreadcrumbForData', {
+  //   // myNavs,
+  //   // match,
+  //   results,
+  //   idField,
+  //   // parentFilterParamsArray,
+  //   // table,
+  //   queryTable,
+  //   // filterParams,
+  //   queryParam,
+  //   error,
+  //   // parentFilter,
+  // })
 
   return (
     <>
