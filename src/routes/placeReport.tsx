@@ -1,48 +1,92 @@
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
 import { PlaceReports as PlaceReport } from '../../../generated/client'
+import { placeReport as createPlaceReportPreset } from '../modules/dataPresets'
+import { useElectric } from '../ElectricProvider'
+import { TextField } from '../components/shared/TextField'
+import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { getValueFromChange } from '../modules/getValueFromChange'
+import { FormMenu } from '../components/FormMenu'
 
 import '../form.css'
 
-import { useElectric } from '../ElectricProvider'
-
 export const Component = () => {
-  const { db } = useElectric()!
-  const { place_id, place_report_id } = useParams()
+  const { project_id, subproject_id, place_id, place_report_id } = useParams()
+  const navigate = useNavigate()
+
+  const { db } = useElectric()
   const { results } = useLiveQuery(
-    db.place_reports.liveUnique({ where: { place_report_id } }),
+    () => db.place_reports.liveUnique({ where: { place_report_id } }),
+    [place_report_id],
   )
 
-  const addItem = async () => {
-    await db.place_reports.create({
-      data: {
-        place_report_id: uuidv7(),
-        place_id,
-        deleted: false,
-        // TODO: add account_id
+  const addRow = useCallback(async () => {
+    const newPlaceReport = createPlaceReportPreset()
+    console.log('newPlaceReport', newPlaceReport)
+    await db.project_reports.create({
+      data: { ...newPlaceReport, place_id },
+    })
+    navigate(
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/reports/${newPlaceReport.place_report_id}`,
+    )
+  }, [db.project_reports, navigate, place_id, project_id, subproject_id])
+
+  const deleteRow = useCallback(async () => {
+    await db.place_reports.delete({
+      where: {
+        place_report_id,
       },
     })
-  }
+    navigate(
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/reports`,
+    )
+  }, [
+    db.place_reports,
+    navigate,
+    place_id,
+    place_report_id,
+    project_id,
+    subproject_id,
+  ])
 
-  const clearItems = async () => {
-    await db.place_reports.deleteMany()
-  }
+  const row: PlaceReport = results
 
-  const placeReport: PlaceReport = results
+  const onChange = useCallback(
+    (e, data) => {
+      const { name, value } = getValueFromChange(e, data)
+      db.place_reports.update({
+        where: { place_report_id },
+        data: { [name]: value },
+      })
+    },
+    [db.place_reports, place_report_id],
+  )
+
+  if (!row) {
+    return <div>Loading...</div>
+  }
 
   return (
     <div className="form-container">
-      <div className="controls">
-        <button className="button" onClick={addItem}>
-          Add
-        </button>
-        <button className="button" onClick={clearItems}>
-          Clear
-        </button>
-      </div>
-      <div>{`Place Report with id ${placeReport?.place_report_id ?? ''}`}</div>
+      <FormMenu
+        addRow={addRow}
+        deleteRow={deleteRow}
+        tableName="place report"
+      />
+      <TextFieldInactive
+        label="ID"
+        name="place_report_id"
+        value={row.place_report_id}
+      />
+      <TextField
+        label="Year"
+        name="year"
+        type="number"
+        value={row.year ?? ''}
+        onChange={onChange}
+      />
     </div>
   )
 }

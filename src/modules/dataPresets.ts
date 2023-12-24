@@ -228,3 +228,9 @@ export const actionReportValue = () => ({
   action_report_value_id: uuidv7(),
   deleted: false,
 })
+
+export const placeReport = () => ({
+  place_report_id: uuidv7(),
+  year: new Date().getFullYear(),
+  deleted: false,
+})
