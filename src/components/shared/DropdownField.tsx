@@ -3,7 +3,7 @@ import { Dropdown, Field, Option } from '@fluentui/react-components'
 import type { InputProps } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 
-import { useElectric } from '../ElectricProvider'
+import { useElectric } from '../../ElectricProvider'
 
 export const DropdownField = memo((props: InputProps) => {
   const {
