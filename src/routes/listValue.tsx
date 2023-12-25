@@ -14,7 +14,7 @@ import { FormMenu } from '../components/FormMenu'
 import '../form.css'
 
 export const Component = () => {
-  const { list_id, list_value_id } = useParams()
+  const { project_id, list_id, list_value_id } = useParams()
   const navigate = useNavigate()
 
   const { db } = useElectric()
@@ -26,12 +26,12 @@ export const Component = () => {
   const addRow = useCallback(async () => {
     const newListValue = createListValuePreset()
     await db.list_values.create({
-      data: { ...newListValue, project_id },
+      data: { ...newListValue, list_id },
     })
     navigate(
       `/projects/${project_id}/lists/${list_id}/values/${newListValue.list_value_id}`,
     )
-  }, [db.list_values, list_id, navigate])
+  }, [db.list_values, list_id, navigate, project_id])
 
   const deleteRow = useCallback(async () => {
     await db.list_values.delete({
@@ -40,7 +40,7 @@ export const Component = () => {
       },
     })
     navigate(`/projects/${project_id}/lists/${list_id}/values`)
-  }, [db.list_values, list_id, list_value_id, navigate])
+  }, [db.list_values, list_id, list_value_id, navigate, project_id])
 
   const row: ListValue = results
 
