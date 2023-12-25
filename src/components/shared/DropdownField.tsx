@@ -3,7 +3,7 @@ import { Dropdown, Field, Option } from '@fluentui/react-components'
 import type { InputProps } from '@fluentui/react-components'
 
 export const DropdownField = memo((props: InputProps) => {
-  const { name, label, options, value, onChange } = props
+  const { name, label, options = [], value, onChange } = props
   const selectedOptions = useMemo(
     () => options.filter(({ value: v }) => v === value),
     [options, value],
