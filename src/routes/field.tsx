@@ -102,21 +102,22 @@ export const Component = () => {
         label="Type"
         name="field_type_id"
         table="field_types"
-        idField="field_type_id"
         where={fieldTypeWhere}
         orderBy={fieldTypeOrderBy}
         value={row.field_type_id ?? ''}
         onChange={onChange}
       />
-      <TextField
+      <DropdownField
         label="Widget"
         name="widget_type_id"
+        table="widget_types"
         value={row.widget_type_id ?? ''}
         onChange={onChange}
       />
-      <TextField
+      <DropdownField
         label="List"
         name="list_id"
+        table="lists"
         value={row.list_id ?? ''}
         onChange={onChange}
       />
