@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
-import {  Switch } from '@fluentui/react-components'
+import { Switch } from '@fluentui/react-components'
 
 import { Fields as Field } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
@@ -12,6 +12,26 @@ import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormMenu } from '../components/FormMenu'
 
 import '../form.css'
+
+const tables = [
+  'projects',
+  'project_reports',
+  'subprojects',
+  'subproject_reports',
+  'taxonomies',
+  'lists',
+  'places',
+  'place_reports',
+  'actions',
+  'action_reports',
+  'checks',
+  'observation_sources',
+  'observations',
+  'goals',
+  'goal_reports',
+  'files',
+  'persons',
+]
 
 export const Component = () => {
   const { project_id, field_id } = useParams()
@@ -58,7 +78,7 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-    <FormMenu addRow={addRow} deleteRow={deleteRow} tableName="field" />
+      <FormMenu addRow={addRow} deleteRow={deleteRow} tableName="field" />
       <TextFieldInactive label="ID" name="field_id" value={row.field_id} />
       <TextField
         label="Table"
