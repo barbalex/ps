@@ -1,3 +1,4 @@
+-- TODO: this data does not seem to appear in sqlite
 INSERT INTO widget_types(widget_type_id, name, needs_list, sort, comment, deleted)
   VALUES ('018ca1a0-f187-7fdf-955b-4eaadaa92553', 'text', FALSE, 1, 'Short field accepting text', FALSE),
 ('018ca1a1-0868-7f1e-80aa-119fa3932538', 'textarea', FALSE, 2, 'Field accepting text, lines can break', FALSE),

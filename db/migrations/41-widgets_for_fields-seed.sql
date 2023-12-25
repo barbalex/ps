@@ -1,3 +1,4 @@
+-- TODO: this data does not seem to appear in sqlite
 INSERT INTO widgets_for_fields(widget_for_field_id, field_type_id, widget_type_id, deleted)
   VALUES ('018ca1aa-6fa6-7be5-b5f8-5caca1565687', '018ca19e-7a23-7bf4-8523-ff41e3b60807', '018ca1a0-f187-7fdf-955b-4eaadaa92553', FALSE),
 ('018ca1aa-898a-7120-9dbd-a7cd5e0c436a', '018ca19e-7a23-7bf4-8523-ff41e3b60807', '018ca1a1-2e50-7426-9199-1cf37717aef8', FALSE),
