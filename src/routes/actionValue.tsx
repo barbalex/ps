@@ -98,7 +98,6 @@ export const Component = () => {
         label="Unit"
         name="unit_id"
         table="units"
-        idField="unit_id"
         where={unitWhere}
         value={row.unit_id ?? ''}
         onChange={onChange}

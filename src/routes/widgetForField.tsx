@@ -72,7 +72,6 @@ export const Component = () => {
         label="Field type"
         name="field_type_id"
         table="field_types"
-        idField="field_type_id"
         value={row.field_type_id ?? ''}
         onChange={onChange}
       />
@@ -80,7 +79,6 @@ export const Component = () => {
         label="Widget type"
         name="widget_type_id"
         table="widget_types"
-        idField="widget_type_id"
         value={row.widget_type_id ?? ''}
         onChange={onChange}
       />

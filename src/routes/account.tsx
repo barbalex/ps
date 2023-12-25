@@ -66,7 +66,6 @@ export const Component = () => {
         label="User"
         name="user_id"
         table="users"
-        idField="user_id"
         value={row.user_id ?? ''}
         onChange={onChange}
       />
