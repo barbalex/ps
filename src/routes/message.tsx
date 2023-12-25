@@ -1,45 +1,86 @@
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
 import { Messages as Message } from '../../../generated/client'
+import { message as createMessagePreset } from '../modules/dataPresets'
+import { useElectric } from '../ElectricProvider'
+import { TextField } from '../components/shared/TextField'
+import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { DateField } from '../components/shared/DateField'
+import { getValueFromChange } from '../modules/getValueFromChange'
+import { FormMenu } from '../components/FormMenu'
 
 import '../form.css'
 
-import { useElectric } from '../ElectricProvider'
-
 export const Component = () => {
-  const { db } = useElectric()!
   const { message_id } = useParams()
+  const navigate = useNavigate()
+
+  const { db } = useElectric()
   const { results } = useLiveQuery(
-    db.messages.liveUnique({ where: { message_id } }),
+    () => db.messages.liveUnique({ where: { message_id } }),
+    [message_id],
   )
 
-  const addItem = async () => {
+  const addRow = useCallback(async () => {
+    const newMessage = createMessagePreset()
     await db.messages.create({
-      data: {
-        message_id: uuidv7(),
+      data: newMessage,
+    })
+    navigate(`/messages/${newMessage.message_id}`)
+  }, [db.messages, navigate])
+
+  const deleteRow = useCallback(async () => {
+    await db.messages.delete({
+      where: {
+        message_id,
       },
     })
-  }
+    navigate(`/messages`)
+  }, [message_id, db.messages, navigate])
 
-  const clearItems = async () => {
-    await db.messages.deleteMany()
-  }
+  const row: Message = results
 
-  const message: Message = results
+  const onChange = useCallback(
+    (e, data) => {
+      const { name, value } = getValueFromChange(e, data)
+      db.messages.update({
+        where: { message_id },
+        data: { [name]: value },
+      })
+    },
+    [db.messages, message_id],
+  )
+
+  if (!row) {
+    return <div>Loading...</div>
+  }
 
   return (
     <div className="form-container">
-      <div className="controls">
-        <button className="button" onClick={addItem}>
-          Add
-        </button>
-        <button className="button" onClick={clearItems}>
-          Clear
-        </button>
-      </div>
-      <div>{`Message with id ${message?.message_id ?? ''}`}</div>
+      <FormMenu
+        addRow={addRow}
+        deleteRow={deleteRow}
+        tableName="goal report value"
+      />
+      <TextFieldInactive
+        label="ID"
+        name="message_id"
+        value={row.message_id ?? ''}
+      />
+      <DateField
+        label="Date"
+        name="date"
+        value={row.date}
+        onChange={onChange}
+      />
+      <TextField
+        label="Message"
+        name="message"
+        value={row.message ?? ''}
+        onChange={onChange}
+      />
     </div>
   )
 }

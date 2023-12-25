@@ -239,3 +239,8 @@ export const placeReportValue = () => ({
   place_report_value_id: uuidv7(),
   deleted: false,
 })
+
+export const message = () => ({
+  message_id: uuidv7(),
+  date: new Date(),
+})

@@ -1,10 +1,10 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { uuidv7 } from '@kripod/uuidv7'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { Messages as Message } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
+import { message as createMessagePreset } from '../modules/dataPresets'
 
 import '../form.css'
 
@@ -15,13 +15,11 @@ export const Component = () => {
   const { results } = useLiveQuery(db.messages.liveMany())
 
   const add = useCallback(async () => {
-    const newId = uuidv7()
+    const newMessage = createMessagePreset()
     await db.messages.create({
-      data: {
-        message_id: newId,
-      },
+      data: newMessage,
     })
-    navigate(`/messages/${newId}`)
+    navigate(`/messages/${newMessage.message_id}`)
   }, [db.messages, navigate])
 
   const messages: Message[] = results ?? []
@@ -36,7 +34,7 @@ export const Component = () => {
       {messages.map((message: Message, index: number) => (
         <p key={index} className="item">
           <Link to={`/messages/${message.message_id}`}>
-            {message.message_id}
+            {message.label ?? message.message_id}
           </Link>
         </p>
       ))}
