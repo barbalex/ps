@@ -1,3 +1,4 @@
+-- TODO: this data does not seem to appear in sqlite
 INSERT INTO field_types(field_type_id, name, sort, comment, deleted)
   VALUES ('018ca19e-7a23-7bf4-8523-ff41e3b60807', 'text', 1, 'Example: text', FALSE),
 ('018ca19f-2923-7ae5-9ae6-a5c81ab65042', 'boolean', 2, 'true or false', FALSE),
