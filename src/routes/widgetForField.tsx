@@ -5,8 +5,8 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { WidgetsForFields as WidgetsForField } from '../../../generated/client'
 import { widgetForField as createwidgetForFieldPreset } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
-import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { DropdownField } from '../components/shared/DropdownField'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormMenu } from '../components/FormMenu'
 
@@ -41,6 +41,24 @@ export const Component = () => {
 
   const row: WidgetsForField = results
 
+  const { results: fieldTypes } = useLiveQuery(
+    () => db.field_types.liveMany(),
+    [],
+  )
+  const fieldTypeOptions = fieldTypes?.map((fieldType) => ({
+    value: fieldType.field_type_id,
+    text: fieldType.label ?? fieldType.field_type_id,
+  }))
+
+  const { results: widgetTypes } = useLiveQuery(
+    () => db.widget_types.liveMany(),
+    [],
+  )
+  const widgetTypeOptions = widgetTypes?.map((widgetType) => ({
+    value: widgetType.widget_type_id,
+    text: widgetType.label ?? widgetType.widget_type_id,
+  }))
+
   const onChange = useCallback(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
@@ -68,15 +86,17 @@ export const Component = () => {
         name="widget_for_field_id"
         value={row.widget_for_field_id}
       />
-      <TextField
+      <DropdownField
         label="Field type"
         name="field_type_id"
+        options={fieldTypeOptions}
         value={row.field_type_id ?? ''}
         onChange={onChange}
       />
-      <TextField
+      <DropdownField
         label="Widget type"
         name="widget_type_id"
+        options={widgetTypeOptions}
         value={row.widget_type_id ?? ''}
         onChange={onChange}
       />
