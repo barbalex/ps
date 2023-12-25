@@ -81,13 +81,6 @@ export const Component = () => {
     value: unit.unit_id,
   }))
 
-  console.log('ActionValue', {
-    row,
-    unit: row?.unit_id,
-    unitResults,
-    unitOptions,
-  })
-
   const onChange = useCallback(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
