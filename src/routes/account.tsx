@@ -8,6 +8,7 @@ import { useElectric } from '../ElectricProvider'
 import { account as createAccountPreset } from '../modules/dataPresets'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { DropdownField } from '../components/shared/DropdownField'
 import { DateField } from '../components/shared/DateField'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormMenu } from '../components/FormMenu'
@@ -43,6 +44,12 @@ export const Component = () => {
 
   const row: Account = results
 
+  const { results: users } = useLiveQuery(() => db.users.liveMany(), [])
+  const userOptions = users?.map((user) => ({
+    value: user.user_id,
+    text: user.label ?? user.user_id,
+  }))
+
   const onChange = useCallback(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
@@ -62,11 +69,12 @@ export const Component = () => {
     <div className="form-container">
       <FormMenu addRow={addRow} deleteRow={deleteRow} tableName="account" />
       <TextFieldInactive label="ID" name="account_id" value={row.account_id} />
-      <TextField
+      <DropdownField
         label="User"
         name="user_id"
         value={row.user_id ?? ''}
         onChange={onChange}
+        options={userOptions}
       />
       <Field label="Type">
         <RadioGroup
