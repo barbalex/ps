@@ -44,12 +44,12 @@ export const Component = () => {
   const onChange = useCallback(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
-      db.projects.update({
+      db.field_types.update({
         where: { field_type_id },
         data: { [name]: value },
       })
     },
-    [db.projects, field_type_id],
+    [db.field_types, field_type_id],
   )
 
   if (!row) {
