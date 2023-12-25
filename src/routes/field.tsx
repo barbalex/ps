@@ -8,29 +8,31 @@ import { useElectric } from '../ElectricProvider'
 import { field as createFieldPreset } from '../modules/dataPresets'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { DropdownFieldSimpleOptions } from '../components/shared/DropdownFieldSimpleOptions'
+import { DropdownField } from '../components/shared/DropdownField'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormMenu } from '../components/FormMenu'
 
 import '../form.css'
 
 const tables = [
-  'projects',
-  'project_reports',
-  'subprojects',
-  'subproject_reports',
-  'taxonomies',
-  'lists',
-  'places',
-  'place_reports',
-  'actions',
   'action_reports',
+  'actions',
   'checks',
+  'files',
+  'goal_reports',
+  'goals',
+  'lists',
   'observation_sources',
   'observations',
-  'goals',
-  'goal_reports',
-  'files',
   'persons',
+  'place_reports',
+  'places',
+  'project_reports',
+  'projects',
+  'subproject_reports',
+  'subprojects',
+  'taxonomies',
 ]
 
 export const Component = () => {
@@ -61,6 +63,19 @@ export const Component = () => {
 
   const row: Field = results
 
+  const { results: fieldTypes = [] } = useLiveQuery(
+    () =>
+      db.field_types.liveMany({
+        where: { deleted: false },
+        orderBy: [{ sort: 'asc' }, { name: 'asc' }],
+      }),
+    [],
+  )
+  const fieldTypeOptions = fieldTypes.map((fieldType) => ({
+    value: fieldType.field_type_id,
+    text: fieldType.label ?? fieldType.field_type_id,
+  }))
+
   const onChange = useCallback(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
@@ -80,11 +95,12 @@ export const Component = () => {
     <div className="form-container">
       <FormMenu addRow={addRow} deleteRow={deleteRow} tableName="field" />
       <TextFieldInactive label="ID" name="field_id" value={row.field_id} />
-      <TextField
+      <DropdownFieldSimpleOptions
         label="Table"
         name="table_name"
         value={row.table_name ?? ''}
         onChange={onChange}
+        options={tables}
       />
       <TextField
         label="Name"
@@ -92,11 +108,12 @@ export const Component = () => {
         value={row.name ?? ''}
         onChange={onChange}
       />
-      <TextField
+      <DropdownField
         label="Type"
         name="field_type_id"
         value={row.field_type_id ?? ''}
         onChange={onChange}
+        options={fieldTypeOptions}
       />
       <TextField
         label="Widget"
