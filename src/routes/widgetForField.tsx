@@ -41,24 +41,6 @@ export const Component = () => {
 
   const row: WidgetsForField = results
 
-  const { results: fieldTypes } = useLiveQuery(
-    () => db.field_types.liveMany(),
-    [],
-  )
-  const fieldTypeOptions = fieldTypes?.map((fieldType) => ({
-    value: fieldType.field_type_id,
-    text: fieldType.label ?? fieldType.field_type_id,
-  }))
-
-  const { results: widgetTypes } = useLiveQuery(
-    () => db.widget_types.liveMany(),
-    [],
-  )
-  const widgetTypeOptions = widgetTypes?.map((widgetType) => ({
-    value: widgetType.widget_type_id,
-    text: widgetType.label ?? widgetType.widget_type_id,
-  }))
-
   const onChange = useCallback(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
@@ -89,14 +71,16 @@ export const Component = () => {
       <DropdownField
         label="Field type"
         name="field_type_id"
-        options={fieldTypeOptions}
+        table="field_types"
+        idField="field_type_id"
         value={row.field_type_id ?? ''}
         onChange={onChange}
       />
       <DropdownField
         label="Widget type"
         name="widget_type_id"
-        options={widgetTypeOptions}
+        table="widget_types"
+        idField="widget_type_id"
         value={row.widget_type_id ?? ''}
         onChange={onChange}
       />

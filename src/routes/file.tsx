@@ -42,36 +42,6 @@ export const Component = () => {
 
   const row: File = results
 
-  const { results: projectResults } = useLiveQuery(db.projects.liveMany())
-  const projectOptions = (projectResults ?? []).map((project) => ({
-    text: project.label,
-    value: project.project_id,
-  }))
-
-  const { results: subprojectResults } = useLiveQuery(db.subprojects.liveMany())
-  const subprojectOptions = (subprojectResults ?? []).map((subproject) => ({
-    text: subproject.label,
-    value: subproject.subproject_id,
-  }))
-
-  const { results: placeResults } = useLiveQuery(db.places.liveMany())
-  const placeOptions = (placeResults ?? []).map((place) => ({
-    text: place.label,
-    value: place.place_id,
-  }))
-
-  const { results: actionResults } = useLiveQuery(db.actions.liveMany())
-  const actionOptions = (actionResults ?? []).map((action) => ({
-    text: action.label,
-    value: action.action_id,
-  }))
-
-  const { results: checkResults } = useLiveQuery(db.checks.liveMany())
-  const checkOptions = (checkResults ?? []).map((check) => ({
-    text: check.label,
-    value: check.check_id,
-  }))
-
   const onChange = useCallback(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
@@ -98,35 +68,35 @@ export const Component = () => {
       <DropdownField
         label="Project"
         name="project_id"
-        options={projectOptions}
+        table="projects"
         value={row.project_id ?? ''}
         onChange={onChange}
       />
       <DropdownField
         label="Subproject"
         name="subproject_id"
-        options={subprojectOptions}
+        table="subprojects"
         value={row.subproject_id ?? ''}
         onChange={onChange}
       />
       <DropdownField
         label="Place"
         name="place_id"
-        options={placeOptions}
+        table="places"
         value={row.place_id ?? ''}
         onChange={onChange}
       />
       <DropdownField
         label="Action"
         name="action_id"
-        options={actionOptions}
+        table="actions"
         value={row.action_id ?? ''}
         onChange={onChange}
       />
       <DropdownField
         label="Check"
         name="check_id"
-        options={checkOptions}
+        table="checks"
         value={row.check_id ?? ''}
         onChange={onChange}
       />

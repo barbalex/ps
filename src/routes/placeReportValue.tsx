@@ -71,18 +71,7 @@ export const Component = () => {
 
   const row: PlaceReportValue = results
 
-  const { results: unitResults } = useLiveQuery(
-    db.units.liveMany({
-      where: {
-        use_for_place_report_values: true,
-      },
-    }),
-  )
-
-  const unitOptions = (unitResults ?? []).map((unit: Unit) => ({
-    text: unit.label,
-    value: unit.unit_id,
-  }))
+  const unitWhere = useMemo(() => ({ use_for_place_report_values: true }), [])
 
   // console.log('PlaceReportValue', { row, results })
 
@@ -116,8 +105,9 @@ export const Component = () => {
       <DropdownField
         label="Unit"
         name="unit_id"
+        table="units"
+        where={unitWhere}
         value={row.unit_id ?? ''}
-        options={unitOptions}
         onChange={onChange}
       />
       <TextField

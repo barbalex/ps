@@ -70,18 +70,8 @@ export const Component = () => {
 
   const row: GoalReportValue = results
 
-  const { results: unitResults } = useLiveQuery(
-    db.units.liveMany({
-      where: {
-        use_for_goal_report_values: true,
-      },
-    }),
-  )
-
-  const unitOptions = (unitResults ?? []).map((unit: Unit) => ({
-    text: unit.label,
-    value: unit.unit_id,
-  }))
+  const unitWhere = useMemo(() => ({ use_for_goal_report_values: true }), [])
+  const unitOrderBy = useMemo(() => [{ sort: 'asc' }, { name: 'asc' }], [])
 
   // console.log('GoalReportValue', { row, results })
 
@@ -115,8 +105,10 @@ export const Component = () => {
       <DropdownField
         label="Unit"
         name="unit_id"
+        table="units"
+        where={unitWhere}
+        orderBy={unitOrderBy}
         value={row.unit_id ?? ''}
-        options={unitOptions}
         onChange={onChange}
       />
       <TextField

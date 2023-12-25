@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Switch } from '@fluentui/react-components'
@@ -63,18 +63,8 @@ export const Component = () => {
 
   const row: Field = results
 
-  const { results: fieldTypes = [] } = useLiveQuery(
-    () =>
-      db.field_types.liveMany({
-        where: { deleted: false },
-        orderBy: [{ sort: 'asc' }, { name: 'asc' }],
-      }),
-    [],
-  )
-  const fieldTypeOptions = fieldTypes.map((fieldType) => ({
-    value: fieldType.field_type_id,
-    text: fieldType.label ?? fieldType.field_type_id,
-  }))
+  const fieldTypeWhere = useMemo(() => ({ deleted: false }), [])
+  const fieldTypeOrderBy = useMemo(() => [{ sort: 'asc' }, { name: 'asc' }], [])
 
   const onChange = useCallback(
     (e, data) => {
@@ -111,9 +101,12 @@ export const Component = () => {
       <DropdownField
         label="Type"
         name="field_type_id"
+        table="field_types"
+        idField="field_type_id"
+        where={fieldTypeWhere}
+        orderBy={fieldTypeOrderBy}
         value={row.field_type_id ?? ''}
         onChange={onChange}
-        options={fieldTypeOptions}
       />
       <TextField
         label="Widget"

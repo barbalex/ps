@@ -1,9 +1,33 @@
 import { memo, useMemo } from 'react'
 import { Dropdown, Field, Option } from '@fluentui/react-components'
 import type { InputProps } from '@fluentui/react-components'
+import { useLiveQuery } from 'electric-sql/react'
+
+import { useElectric } from '../ElectricProvider'
 
 export const DropdownField = memo((props: InputProps) => {
-  const { name, label, options = [], value, onChange } = props
+  const {
+    name,
+    label,
+    table,
+    idField, // defaults to name, used for cases where the id field is not the same as the name field (?)
+    where = {},
+    orderBy = { label: 'asc' },
+    value,
+    onChange,
+  } = props
+
+  const { db } = useElectric()
+  const { results = [] } = useLiveQuery(
+    db[table]?.liveMany({
+      where,
+      orderBy,
+    }),
+  )
+  const options = results.map((o) => ({
+    text: o.label,
+    value: o[idField ?? name],
+  }))
   const selectedOptions = useMemo(
     () => options.filter(({ value: v }) => v === value),
     [options, value],

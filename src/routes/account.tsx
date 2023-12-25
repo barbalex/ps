@@ -43,12 +43,6 @@ export const Component = () => {
 
   const row: Account = results
 
-  const { results: users } = useLiveQuery(() => db.users.liveMany(), [])
-  const userOptions = users?.map((user) => ({
-    value: user.user_id,
-    text: user.label ?? user.user_id,
-  }))
-
   const onChange = useCallback(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
@@ -71,9 +65,10 @@ export const Component = () => {
       <DropdownField
         label="User"
         name="user_id"
+        table="users"
+        idField="user_id"
         value={row.user_id ?? ''}
         onChange={onChange}
-        options={userOptions}
       />
       <Field label="Type">
         <RadioGroup
