@@ -16,10 +16,22 @@ import { DropdownFieldSimpleOptions } from './DropdownFieldSimpleOptions'
 
 const widget = {
   text: ({ label, name, value, type, onChange }) => (
-    <TextField label={label} name={name} value={value} type={type??'text'} onChange={onChange} />
+    <TextField
+      label={label}
+      name={name}
+      value={value}
+      type={type ?? 'text'}
+      onChange={onChange}
+    />
   ),
   textarea: ({ label, name, value, type, onChange }) => (
-    <TextField label={label} name={name} value={value} type={type??'text'} onChange={onChange} />
+    <TextField
+      label={label}
+      name={name}
+      value={value}
+      type={type ?? 'text'}
+      onChange={onChange}
+    />
   ),
   dropdown: ({ name, value, onChange }) => (
     <DropdownField name={name} value={value} onChange={onChange} />
@@ -56,9 +68,11 @@ export const Jsonb = ({
   )
 
   const [fieldsWithRefs, setFieldsWithRefs] = useState([])
+  const [ownData, setOwnData] = useState({ ...rowData })
   useEffect(() => {
     const fieldsWithRefs = []
     for (const field of fields) {
+      console.log('field', field)
       db.widget_types
         .findUnique({
           where: { widget_type_id: field.widget_type_id },
@@ -69,36 +83,52 @@ export const Jsonb = ({
             .then((fieldType) => {
               fieldsWithRefs.push({ ...field, fieldType, widgetType })
               setFieldsWithRefs(fieldsWithRefs)
+              let doSetOwnData = false
+              const ownData = { ...rowData }
+              for (const field of fieldsWithRefs) {
+                if (!(field.name in ownData)) {
+                  console.log('field.name', field.name)
+                  ownData[field.name] = null
+                  doSetOwnData = true
+                }
+              }
+              doSetOwnData && setOwnData(ownData)
             })
         })
     }
-  }, [db.field_types, db.widget_types, fields])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fields])
 
   const onChange = useCallback(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
-      const val = { ...rowData, [name]: value }
+      const val = { ...ownData, [name]: value }
       db[table].update({
         where: { [idField]: id },
         data: { [jsonFieldName]: val },
       })
     },
-    [db, id, idField, jsonFieldName, rowData, table],
+    [db, id, idField, jsonFieldName, ownData, table],
   )
 
-  return fieldsWithRefs.map((field) => {
+  console.log('Jsonb:', {
+    fields: fieldsWithRefs.map((f) => f.name),
+    ownData,
+    rowData,
+  })
+
+  return fieldsWithRefs.map((field, index) => {
     const { name, field_label, fieldType, widgetType } = field
     const Widget = widget?.[widgetType?.name]
     const type = fieldType?.name === 'integer' ? 'number' : fieldType?.name
-    console.log('field', { field, type, name })
 
     return (
       <Widget
-        key={name}
+        key={`${name}/${index}`}
         label={field_label}
         name={name}
         type={type}
-        value={rowData?.[name] ?? ''}
+        value={ownData?.[name] ?? ''}
         onChange={onChange}
       />
     )
