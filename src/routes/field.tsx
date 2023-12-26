@@ -98,6 +98,12 @@ export const Component = () => {
         value={row.name ?? ''}
         onChange={onChange}
       />
+      <TextField
+        label="Label"
+        name="field_label"
+        value={row.field_label ?? ''}
+        onChange={onChange}
+      />
       <DropdownField
         label="Type"
         name="field_type_id"
