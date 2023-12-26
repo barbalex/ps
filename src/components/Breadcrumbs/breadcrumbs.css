@@ -1,5 +1,6 @@
 .breadcrumbs {
-  border: 1px solid #cbd2d9;
+  border: 1px solid rgba(55, 118, 28, 0.5);
+  border-collapse: collapse;
   display: flex;
   flex-wrap: wrap;
   user-select: none;

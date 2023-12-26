@@ -45,18 +45,18 @@ body {
   display: flex;
   flex-direction: column;
   row-gap: 15px;
-  [role=separator] {
+  [role='separator'] {
     padding: 10px 0;
     margin-left: -10px;
     margin-right: -10px;
     width: auto;
     &:before {
       border-top-width: 2px;
-      border-color: var(--colorCompoundBrandStroke);
+      border-color: rgba(55, 118, 28, 0.5);
     }
     &:after {
       border-top-width: 2px;
-      border-color: var(--colorCompoundBrandStroke);
+      border-color: rgba(55, 118, 28, 0.5);
     }
   }
 }
@@ -67,7 +67,9 @@ body {
   flex-wrap: wrap;
   column-gap: 0;
   row-gap: 0;
-  border-bottom: 1px solid #cbd2d9;
+  border: 1px solid rgba(55, 118, 28, 0.5);
+  border-collapse: collapse;
+  border-top: none;
 }
 
 .navs a {
