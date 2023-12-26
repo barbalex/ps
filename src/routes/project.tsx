@@ -78,11 +78,11 @@ export const Component = () => {
         onChange={onChange}
       />
       <Jsonb
-        key={`${row.project_id}${Object.keys(row.data ?? {}).length}`}
+        // key={`${row.project_id}${Object.keys(row.data ?? {}).length}`}
         table="projects"
         idField="project_id"
         id={row.project_id}
-        data={row.data??{}}
+        data={row.data ?? {}}
       />
       <Divider />
       <Label>Project configuration</Label>
