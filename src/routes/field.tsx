@@ -49,7 +49,7 @@ export const Component = () => {
     await db.fields.create({
       data: { ...newField, project_id },
     })
-    navigate(`/projects/${project_id}/persons/${newField.field_id}`)
+    navigate(`/projects/${project_id}/fields/${newField.field_id}`)
   }, [db.fields, navigate, project_id])
 
   const deleteRow = useCallback(async () => {
