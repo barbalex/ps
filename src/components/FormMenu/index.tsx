@@ -8,13 +8,13 @@ export const FormMenu = memo(({ addRow, deleteRow, tableName }) => {
   return (
     <div className="controls">
       <Button
-        size="large"
+        size="medium"
         icon={<FaPlus />}
         onClick={addRow}
         title={`Add new ${tableName}`}
       />
       <Button
-        size="large"
+        size="medium"
         icon={<FaMinus />}
         onClick={deleteRow}
         title={`Delete ${tableName}`}
