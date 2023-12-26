@@ -15,6 +15,7 @@ import { project as createProjectPreset } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { Jsonb } from '../components/shared/Jsonb'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormMenu } from '../components/FormMenu'
 
@@ -73,6 +74,10 @@ export const Component = () => {
         name="name"
         value={row.name ?? ''}
         onChange={onChange}
+      />
+      <Jsonb
+        table="projects"
+        data={row.data ?? {}}
       />
       <Divider />
       <Label>Project configuration</Label>
