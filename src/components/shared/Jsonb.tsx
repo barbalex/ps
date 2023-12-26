@@ -19,17 +19,13 @@ const widget = {
     <TextField label={label} name={name} value={value} onChange={onChange} />
   ),
   textArea: ({ name, value, onChange }) => (
-    <TextField label={label}  name={name} value={value} onChange={onChange} />
+    <TextField label={label} name={name} value={value} onChange={onChange} />
   ),
   dropdown: ({ name, value, onChange }) => (
     <DropdownField name={name} value={value} onChange={onChange} />
   ),
   dropdownSimpleOptions: ({ name, value, onChange }) => (
-    <DropdownFieldSimpleOptions
-      name={name}
-      value={value}
-      onChange={onChange}
-    />
+    <DropdownFieldSimpleOptions name={name} value={value} onChange={onChange} />
   ),
   // checkbox: ({ name, value, onChange }) => (
   //   <Checkbox name={name} checked={value} onChange={onChange} />
@@ -42,45 +38,72 @@ const widget = {
   // ),
 }
 
-export const Jsonb = memo(({ table, idField, id, data }) => {
-  const { project_id } = useParams()
+export const Jsonb = memo(
+  ({ table, name: jsonFieldName, idField, id, data = {} }) => {
+    const { project_id } = useParams()
 
-  const { db } = useElectric()
-  const { results: fields = [], error } = useLiveQuery(
-    db.fields.liveMany({
-      where: { table_name: table, project_id, deleted: false },
-      include: { widget_types: true },
-    }),
-  )
+    const { db } = useElectric()
+    const { results: fields = [], error } = useLiveQuery(
+      db.fields.liveMany({
+        where: { table_name: table, project_id, deleted: false },
+        // include: { widget_types: true }, // errors
+      }),
+    )
 
-  const onChange = useCallback(
-    (e, data) => {
-      const { name, value } = getValueFromChange(e, data)
-      console.log('Jsonb, onChange', { name, value })
-      // db[table].update({
-      //   where: { [idField]: id },
-      //   data: { [name]: value },
-      // })
-    },
-    [],
-  )
+    const onChange = useCallback(
+      (e, data) => {
+        const { name, value } = getValueFromChange(e, data)
+        console.log('Jsonb, onChange', { name, value })
+        const val = { ...data, [name]: value }
+        db[table].update({
+          where: { [idField]: id },
+          data: { [jsonFieldName]: val },
+        })
+      },
+      [db, id, idField, jsonFieldName, table],
+    )
 
-  console.log('Jsonb, fields', { fields, table, idField, id, data, error })
+    const fieldsWithWidget = []
+    for (const field of fields) {
+      db.widget_types
+        .findUnique({
+          where: { widget_type_id: field.widget_type_id },
+        })
+        .then((widgetType) => {
+          console.log('Jsonb, widgetType:', widgetType)
+          if (widgetType) {
+            fieldsWithWidget.push({ ...field, widgetType })
+          }
+        })
+    }
 
-  return fields.map((field) => {
-    const { name, widget_type } = field
-    const value = data[name]
-    const Widget = widget[widget_type]
+    console.log('Jsonb, fields', {
+      fields,
+      table,
+      idField,
+      id,
+      data,
+      error,
+      fieldsWithWidget,
+    })
 
-    return (
-      <div key={name}>
-        <label>{name}</label>
+    return fieldsWithWidget.map((field) => {
+      console.log('Jsonb, field', field)
+      const { name, field_label, widget_type } = field
+      // const value = data[name]
+      // const Widget = widget[widget_type]
+
+      return null
+
+      return (
         <Widget
+          key={name}
+          label={field_label}
           name={name}
           value={value}
           onChange={onChange}
         />
-      </div>
-    )
-  })
-})
+      )
+    })
+  },
+)
