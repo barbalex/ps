@@ -45,6 +45,20 @@ body {
   display: flex;
   flex-direction: column;
   row-gap: 15px;
+  [role=separator] {
+    padding: 10px 0;
+    margin-left: -10px;
+    margin-right: -10px;
+    width: auto;
+    &:before {
+      border-top-width: 2px;
+      border-color: var(--colorCompoundBrandStroke);
+    }
+    &:after {
+      border-top-width: 2px;
+      border-color: var(--colorCompoundBrandStroke);
+    }
+  }
 }
 
 .navs {
