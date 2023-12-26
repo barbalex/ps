@@ -77,7 +77,9 @@ export const Component = () => {
       />
       <Jsonb
         table="projects"
-        data={row.data ?? {}}
+        idField="project_id"
+        id={row.project_id}
+        data={row.data}
       />
       <Divider />
       <Label>Project configuration</Label>
