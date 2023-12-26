@@ -4,7 +4,7 @@
 // 2. build own onChange to pass to the fields?
 // 3. loop through fields
 // 4. build input depending on field properties
-import { memo, useMemo, useCallback } from 'react'
+import { memo, useCallback, useState, useEffect } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 
@@ -18,7 +18,7 @@ const widget = {
   text: ({ label, name, value, onChange }) => (
     <TextField label={label} name={name} value={value} onChange={onChange} />
   ),
-  textarea: ({ name, value, onChange }) => (
+  textarea: ({ label, name, value, onChange }) => (
     <TextField label={label} name={name} value={value} onChange={onChange} />
   ),
   dropdown: ({ name, value, onChange }) => (
@@ -40,7 +40,7 @@ const widget = {
 
 export const Jsonb = ({
   table,
-  name: jsonFieldName,
+  name: jsonFieldName = 'data',
   idField,
   id,
   data = {},
@@ -55,20 +55,8 @@ export const Jsonb = ({
     }),
   )
 
-  const onChange = useCallback(
-    (e, data) => {
-      const { name, value } = getValueFromChange(e, data)
-      console.log('Jsonb, onChange', { name, value })
-      const val = { ...data, [name]: value }
-      db[table].update({
-        where: { [idField]: id },
-        data: { [jsonFieldName]: val },
-      })
-    },
-    [db, id, idField, jsonFieldName, table],
-  )
-
-  const fieldsWithRefs = useMemo(() => {
+  const [fieldsWithRefs, setFieldsWithRefs] = useState([])
+  useEffect(() => {
     const fieldsWithRefs = []
     for (const field of fields) {
       db.widget_types
@@ -80,31 +68,43 @@ export const Jsonb = ({
             .findUnique({ where: { field_type_id: field.field_type_id } })
             .then((fieldType) => {
               fieldsWithRefs.push({ ...field, fieldType, widgetType })
+              setFieldsWithRefs(fieldsWithRefs)
             })
         })
     }
-    return fieldsWithRefs
   }, [db.field_types, db.widget_types, fields])
 
-  console.log('Jsonb, fields 1', {
-    table,
-    idField,
-    id,
-    data,
-    error,
-    fieldsWithRefs,
-  })
+  const onChange = useCallback(
+    (e, data) => {
+      const { name, value } = getValueFromChange(e, data)
+      const val = { ...data, [name]: value }
+      console.log('Jsonb, onChange', { name, value, jsonFieldName, val, data })
+      // db[table].update({
+      //   where: { [idField]: id },
+      //   data: { [jsonFieldName]: val },
+      // })
+    },
+    [jsonFieldName],
+  )
+
+  // console.log('Jsonb, fields 1', {
+  //   table,
+  //   idField,
+  //   id,
+  //   data,
+  //   error,
+  //   fieldsWithRefs,
+  // })
 
   return fieldsWithRefs.map((field) => {
     console.log('Jsonb, fieldWithRefs 1', field)
-    const { name, field_label, widgetType } = field
+    const { name, field_label, fieldType, widgetType } = field
     const Widget = widget?.[widgetType?.name]
     console.log('Jsonb, fieldWithRefs 2', {
       name,
       field_label,
-      widgetType,
-      widgetTypeName: widgetType?.name,
       Widget,
+      fieldType,
     })
 
     return (
@@ -112,7 +112,8 @@ export const Jsonb = ({
         key={name}
         label={field_label}
         name={name}
-        value={value}
+        type={fieldType?.name === 'integer' ? 'number' : fieldType?.name}
+        value={data?.[name] ?? ''}
         onChange={onChange}
       />
     )

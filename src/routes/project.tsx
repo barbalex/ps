@@ -76,6 +76,7 @@ export const Component = () => {
         onChange={onChange}
       />
       <Jsonb
+        key={JSON.stringify(row.data ?? {})}
         table="projects"
         idField="project_id"
         id={row.project_id}
