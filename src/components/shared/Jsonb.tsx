@@ -15,11 +15,11 @@ import { DropdownField } from './DropdownField'
 import { DropdownFieldSimpleOptions } from './DropdownFieldSimpleOptions'
 
 const widget = {
-  text: ({ label, name, value, onChange }) => (
-    <TextField label={label} name={name} value={value} onChange={onChange} />
+  text: ({ label, name, value, type, onChange }) => (
+    <TextField label={label} name={name} value={value} type={type??'text'} onChange={onChange} />
   ),
-  textarea: ({ label, name, value, onChange }) => (
-    <TextField label={label} name={name} value={value} onChange={onChange} />
+  textarea: ({ label, name, value, type, onChange }) => (
+    <TextField label={label} name={name} value={value} type={type??'text'} onChange={onChange} />
   ),
   dropdown: ({ name, value, onChange }) => (
     <DropdownField name={name} value={value} onChange={onChange} />
@@ -43,12 +43,12 @@ export const Jsonb = ({
   name: jsonFieldName = 'data',
   idField,
   id,
-  data = {},
+  data: rowData = {},
 }) => {
   const { project_id } = useParams()
 
   const { db } = useElectric()
-  const { results: fields = [], error } = useLiveQuery(
+  const { results: fields = [] } = useLiveQuery(
     db.fields.liveMany({
       where: { table_name: table, project_id, deleted: false },
       // include: { widget_types: true }, // errors
@@ -77,43 +77,28 @@ export const Jsonb = ({
   const onChange = useCallback(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
-      const val = { ...data, [name]: value }
-      console.log('Jsonb, onChange', { name, value, jsonFieldName, val, data })
-      // db[table].update({
-      //   where: { [idField]: id },
-      //   data: { [jsonFieldName]: val },
-      // })
+      const val = { ...rowData, [name]: value }
+      db[table].update({
+        where: { [idField]: id },
+        data: { [jsonFieldName]: val },
+      })
     },
-    [jsonFieldName],
+    [db, id, idField, jsonFieldName, rowData, table],
   )
 
-  // console.log('Jsonb, fields 1', {
-  //   table,
-  //   idField,
-  //   id,
-  //   data,
-  //   error,
-  //   fieldsWithRefs,
-  // })
-
   return fieldsWithRefs.map((field) => {
-    console.log('Jsonb, fieldWithRefs 1', field)
     const { name, field_label, fieldType, widgetType } = field
     const Widget = widget?.[widgetType?.name]
-    console.log('Jsonb, fieldWithRefs 2', {
-      name,
-      field_label,
-      Widget,
-      fieldType,
-    })
+    const type = fieldType?.name === 'integer' ? 'number' : fieldType?.name
+    console.log('field', { field, type, name })
 
     return (
       <Widget
         key={name}
         label={field_label}
         name={name}
-        type={fieldType?.name === 'integer' ? 'number' : fieldType?.name}
-        value={data?.[name] ?? ''}
+        type={type}
+        value={rowData?.[name] ?? ''}
         onChange={onChange}
       />
     )
