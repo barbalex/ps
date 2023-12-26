@@ -4,7 +4,7 @@
 // 2. build own onChange to pass to the fields?
 // 3. loop through fields
 // 4. build input depending on field properties
-import { memo, useCallback } from 'react'
+import { memo, useMemo, useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 
@@ -18,7 +18,7 @@ const widget = {
   text: ({ label, name, value, onChange }) => (
     <TextField label={label} name={name} value={value} onChange={onChange} />
   ),
-  textArea: ({ name, value, onChange }) => (
+  textarea: ({ name, value, onChange }) => (
     <TextField label={label} name={name} value={value} onChange={onChange} />
   ),
   dropdown: ({ name, value, onChange }) => (
@@ -38,72 +38,83 @@ const widget = {
   // ),
 }
 
-export const Jsonb = memo(
-  ({ table, name: jsonFieldName, idField, id, data = {} }) => {
-    const { project_id } = useParams()
+export const Jsonb = ({
+  table,
+  name: jsonFieldName,
+  idField,
+  id,
+  data = {},
+}) => {
+  const { project_id } = useParams()
 
-    const { db } = useElectric()
-    const { results: fields = [], error } = useLiveQuery(
-      db.fields.liveMany({
-        where: { table_name: table, project_id, deleted: false },
-        // include: { widget_types: true }, // errors
-      }),
-    )
+  const { db } = useElectric()
+  const { results: fields = [], error } = useLiveQuery(
+    db.fields.liveMany({
+      where: { table_name: table, project_id, deleted: false },
+      // include: { widget_types: true }, // errors
+    }),
+  )
 
-    const onChange = useCallback(
-      (e, data) => {
-        const { name, value } = getValueFromChange(e, data)
-        console.log('Jsonb, onChange', { name, value })
-        const val = { ...data, [name]: value }
-        db[table].update({
-          where: { [idField]: id },
-          data: { [jsonFieldName]: val },
-        })
-      },
-      [db, id, idField, jsonFieldName, table],
-    )
+  const onChange = useCallback(
+    (e, data) => {
+      const { name, value } = getValueFromChange(e, data)
+      console.log('Jsonb, onChange', { name, value })
+      const val = { ...data, [name]: value }
+      db[table].update({
+        where: { [idField]: id },
+        data: { [jsonFieldName]: val },
+      })
+    },
+    [db, id, idField, jsonFieldName, table],
+  )
 
-    const fieldsWithWidget = []
+  const fieldsWithRefs = useMemo(() => {
+    const fieldsWithRefs = []
     for (const field of fields) {
       db.widget_types
         .findUnique({
           where: { widget_type_id: field.widget_type_id },
         })
         .then((widgetType) => {
-          console.log('Jsonb, widgetType:', widgetType)
-          if (widgetType) {
-            fieldsWithWidget.push({ ...field, widgetType })
-          }
+          db.field_types
+            .findUnique({ where: { field_type_id: field.field_type_id } })
+            .then((fieldType) => {
+              fieldsWithRefs.push({ ...field, fieldType, widgetType })
+            })
         })
     }
+    return fieldsWithRefs
+  }, [db.field_types, db.widget_types, fields])
 
-    console.log('Jsonb, fields', {
-      fields,
-      table,
-      idField,
-      id,
-      data,
-      error,
-      fieldsWithWidget,
+  console.log('Jsonb, fields 1', {
+    table,
+    idField,
+    id,
+    data,
+    error,
+    fieldsWithRefs,
+  })
+
+  return fieldsWithRefs.map((field) => {
+    console.log('Jsonb, fieldWithRefs 1', field)
+    const { name, field_label, widgetType } = field
+    const Widget = widget?.[widgetType?.name]
+    console.log('Jsonb, fieldWithRefs 2', {
+      name,
+      field_label,
+      widgetType,
+      widgetTypeName: widgetType?.name,
+      Widget,
     })
 
-    return fieldsWithWidget.map((field) => {
-      console.log('Jsonb, field', field)
-      const { name, field_label, widget_type } = field
-      // const value = data[name]
-      // const Widget = widget[widget_type]
-
-      return null
-
-      return (
-        <Widget
-          key={name}
-          label={field_label}
-          name={name}
-          value={value}
-          onChange={onChange}
-        />
-      )
-    })
-  },
-)
+    return (
+      <Widget
+        key={name}
+        label={field_label}
+        name={name}
+        value={value}
+        onChange={onChange}
+      />
+    )
+  })
+}
