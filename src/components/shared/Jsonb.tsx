@@ -4,7 +4,7 @@
 // 2. build own onChange to pass to the fields?
 // 3. loop through fields
 // 4. build input depending on field properties
-import { memo, useCallback, useMemo, useEffect, useState } from 'react'
+import { memo, useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
@@ -49,82 +49,78 @@ const widget = {
   // ),
 }
 
-export const Jsonb = ({
-  table,
-  name: jsonFieldName = 'data',
-  idField,
-  id,
-  data = {},
-}) => {
-  const { project_id } = useParams()
-  const { db } = useElectric()!
+export const Jsonb = memo(
+  ({ table, name: jsonFieldName = 'data', idField, id, data = {} }) => {
+    const { project_id } = useParams()
+    const { db } = useElectric()!
 
-  const [fetchedData, setFetchedData] = useState({
-    fields: [],
-    fieldTypes: [],
-    widgetTypes: [],
-  })
-  useEffect(() => {
-    const fetchData = async () => {
-      const fields = await db.fields.findMany({
-        where: { table_name: table, project_id, deleted: false },
-      })
-      const fieldTypes = await db.field_types.findMany({
-        where: {
-          field_type_id: {
-            in: fields.map((field) => field.field_type_id),
+    const [fetchedData, setFetchedData] = useState({
+      fields: [],
+      fieldTypes: [],
+      widgetTypes: [],
+    })
+    useEffect(() => {
+      const fetchData = async () => {
+        const fields = await db.fields.findMany({
+          where: { table_name: table, project_id, deleted: false },
+        })
+        const fieldTypes = await db.field_types.findMany({
+          where: {
+            field_type_id: {
+              in: fields.map((field) => field.field_type_id),
+            },
           },
-        },
-      })
-      const widgetTypes = await db.widget_types.findMany({
-        where: {
-          widget_type_id: {
-            in: fields.map((field) => field.widget_type_id),
+        })
+        const widgetTypes = await db.widget_types.findMany({
+          where: {
+            widget_type_id: {
+              in: fields.map((field) => field.widget_type_id),
+            },
           },
-        },
-      })
-      setFetchedData({ fields, fieldTypes, widgetTypes })
-    }
-    fetchData()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [db])
+        })
+        setFetchedData({ fields, fieldTypes, widgetTypes })
+      }
+      fetchData()
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [db])
 
-  const onChange = useCallback(
-    (e, dataReturned) => {
-      const { name, value } = getValueFromChange(e, dataReturned)
-      const val = { ...data, [name]: value }
-      db[table].update({
-        where: { [idField]: id },
-        data: { [jsonFieldName]: val },
-      })
-    },
-    [db, id, idField, jsonFieldName, data, table],
-  )
-
-  return fetchedData.fields.map((field, index) => {
-    const { name, field_label } = field
-    const widgetType = fetchedData.widgetTypes.find(
-      (widgetType) => widgetType.widget_type_id === field.widget_type_id,
+    const onChange = useCallback(
+      (e, dataReturned) => {
+        const { name, value } = getValueFromChange(e, dataReturned)
+        const val = { ...data, [name]: value }
+        db[table].update({
+          where: { [idField]: id },
+          data: { [jsonFieldName]: val },
+        })
+      },
+      [db, id, idField, jsonFieldName, data, table],
     )
-    const Widget = widget?.[widgetType?.name]
-    const fieldType = fetchedData.fieldTypes.find(
-      (fieldType) => fieldType.field_type_id === field.field_type_id,
-    )
-    const type = fieldType?.name === 'integer' ? 'number' : fieldType?.name
 
-    if (!Widget) {
-      return null
-    }
+    return fetchedData.fields.map((field, index) => {
+      const { name, field_label } = field
+      const widgetType = fetchedData.widgetTypes.find(
+        (widgetType) => widgetType.widget_type_id === field.widget_type_id,
+      )
+      const Widget = widget?.[widgetType?.name]
+      const fieldType = fetchedData.fieldTypes.find(
+        (fieldType) => fieldType.field_type_id === field.field_type_id,
+      )
+      const type = fieldType?.name === 'integer' ? 'number' : fieldType?.name
 
-    return (
-      <Widget
-        key={`${name}/${index}`}
-        label={field_label}
-        name={name}
-        type={type}
-        value={data?.[name] ?? ''}
-        onChange={onChange}
-      />
-    )
-  })
-}
+      if (!Widget) {
+        return null
+      }
+
+      return (
+        <Widget
+          key={`${name}/${index}`}
+          label={field_label}
+          name={name}
+          type={type}
+          value={data?.[name] ?? ''}
+          onChange={onChange}
+        />
+      )
+    })
+  },
+)
