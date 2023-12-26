@@ -82,7 +82,7 @@ export const Component = () => {
         table="projects"
         idField="project_id"
         id={row.project_id}
-        data={row.data}
+        data={row.data??{}}
       />
       <Divider />
       <Label>Project configuration</Label>

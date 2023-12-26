@@ -96,6 +96,7 @@ export const Jsonb = memo(
       [db, id, idField, jsonFieldName, data, table],
     )
 
+    // TODO: what if data contains keys not existing in fields?
     return fetchedData.fields.map((field, index) => {
       const { name, field_label } = field
       const widgetType = fetchedData.widgetTypes.find(
