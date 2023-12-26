@@ -49,7 +49,7 @@ export const Breadcrumb = ({ match }) => {
   const { db } = useElectric()
   const queryTable = table === 'root' || table === 'docs' ? 'projects' : table
 
-  const { error, results } = useLiveQuery(
+  const { results } = useLiveQuery(
     () => db[queryTable]?.liveMany(queryParam),
     [db, table],
   )
