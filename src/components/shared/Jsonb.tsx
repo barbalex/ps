@@ -4,7 +4,7 @@
 // 2. build own onChange to pass to the fields?
 // 3. loop through fields
 // 4. build input depending on field properties
-import { memo, useCallback, useState, useEffect } from 'react'
+import { memo, useCallback, useMemo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 
@@ -55,7 +55,7 @@ export const Jsonb = ({
   name: jsonFieldName = 'data',
   idField,
   id,
-  data: rowData = {},
+  data = {},
 }) => {
   const { project_id } = useParams()
 
@@ -66,61 +66,81 @@ export const Jsonb = ({
       // include: { widget_types: true }, // errors
     }),
   )
+  const widgetTypeIds = useMemo(
+    () => fields.map((field) => field.widget_type_id),
+    [fields.length],
+  )
+  const fieldTypeIds = useMemo(
+    () => fields.map((field) => field.field_type_id),
+    [fields.length],
+  )
 
-  const [fieldsWithRefs, setFieldsWithRefs] = useState([])
-  const [ownData, setOwnData] = useState({ ...rowData })
-  useEffect(() => {
-    const fieldsWithRefs = []
-    for (const field of fields) {
-      console.log('field', field)
-      db.widget_types
-        .findUnique({
-          where: { widget_type_id: field.widget_type_id },
-        })
-        .then((widgetType) => {
-          db.field_types
-            .findUnique({ where: { field_type_id: field.field_type_id } })
-            .then((fieldType) => {
-              fieldsWithRefs.push({ ...field, fieldType, widgetType })
-              setFieldsWithRefs(fieldsWithRefs)
-              let doSetOwnData = false
-              const ownData = { ...rowData }
-              for (const field of fieldsWithRefs) {
-                if (!(field.name in ownData)) {
-                  console.log('field.name', field.name)
-                  ownData[field.name] = null
-                  doSetOwnData = true
-                }
-              }
-              doSetOwnData && setOwnData(ownData)
-            })
-        })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fields])
+  const { result: widgetTypes = [] } = useLiveQuery(
+    () =>
+      db.widget_types.findMany({
+        where: {
+          widget_type_id: {
+            in: widgetTypeIds,
+          },
+        },
+      }),
+    [widgetTypeIds.length],
+  )
+  const { result: fieldTypes = [] } = useLiveQuery(
+    () =>
+      db.field_types.findMany({
+        where: {
+          field_type_id: {
+            in: fieldTypeIds,
+          },
+        },
+      }),
+    [fieldTypeIds.length],
+  )
 
   const onChange = useCallback(
-    (e, data) => {
-      const { name, value } = getValueFromChange(e, data)
-      const val = { ...ownData, [name]: value }
+    (e, dataReturned) => {
+      const { name, value } = getValueFromChange(e, dataReturned)
+      const val = { ...data, [name]: value }
       db[table].update({
         where: { [idField]: id },
         data: { [jsonFieldName]: val },
       })
     },
-    [db, id, idField, jsonFieldName, ownData, table],
+    [db, id, idField, jsonFieldName, data, table],
   )
 
   console.log('Jsonb:', {
-    fields: fieldsWithRefs.map((f) => f.name),
-    ownData,
-    rowData,
+    fieldTypes,
+    widgetTypes,
+    data,
+    fields,
+    widgetTypeIds,
+    fieldTypeIds,
   })
 
-  return fieldsWithRefs.map((field, index) => {
-    const { name, field_label, fieldType, widgetType } = field
+  return fields.map((field, index) => {
+    const { name, field_label } = field
+    const widgetType = widgetTypes.find(
+      (widgetType) => widgetType.widget_type_id === field.widget_type_id,
+    )
     const Widget = widget?.[widgetType?.name]
+    const fieldType = fieldTypes.find(
+      (fieldType) => fieldType.field_type_id === field.field_type_id,
+    )
     const type = fieldType?.name === 'integer' ? 'number' : fieldType?.name
+    console.log('Jsonb, rendering fields', {
+      name,
+      field_label,
+      fieldType,
+      widgetType,
+      Widget,
+      type,
+    })
+
+    if (!Widget) {
+      return null
+    }
 
     return (
       <Widget
@@ -128,7 +148,7 @@ export const Jsonb = ({
         label={field_label}
         name={name}
         type={type}
-        value={ownData?.[name] ?? ''}
+        value={data?.[name] ?? ''}
         onChange={onChange}
       />
     )
