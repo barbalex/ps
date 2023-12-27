@@ -7,6 +7,7 @@ import { subproject as createSubprojectPreset } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { Jsonb } from '../components/shared/Jsonb'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormMenu } from '../components/FormMenu'
 
@@ -27,7 +28,6 @@ export const Component = () => {
       data: {
         ...newSubproject,
         project_id,
-        // TODO: add account_id
       },
     })
     navigate(
@@ -85,6 +85,12 @@ export const Component = () => {
         value={row.since_year ?? ''}
         type="number"
         onChange={onChange}
+      />
+      <Jsonb
+        table="subprojects"
+        idField="subproject_id"
+        id={row.subproject_id}
+        data={row.data ?? {}}
       />
     </div>
   )
