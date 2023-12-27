@@ -7,6 +7,7 @@ import { place as createPlacePreset } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { Jsonb } from '../components/shared/Jsonb'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormMenu } from '../components/FormMenu'
 
@@ -65,12 +66,6 @@ export const Component = () => {
       <FormMenu addRow={addRow} deleteRow={deleteRow} tableName="place" />
       <TextFieldInactive label="ID" name="place_id" value={row.place_id} />
       <TextField
-        label="Subproject"
-        name="subproject_id"
-        value={row.subproject_id ?? ''}
-        onChange={onChange}
-      />
-      <TextField
         label="Parent Place"
         name="parent_id"
         value={row.parent_id ?? ''}
@@ -81,6 +76,12 @@ export const Component = () => {
         name="level"
         value={row.level ?? ''}
         onChange={onChange}
+      />
+      <Jsonb
+        table="places"
+        idField="place_id"
+        id={row.place_id}
+        data={row.data ?? {}}
       />
     </div>
   )
