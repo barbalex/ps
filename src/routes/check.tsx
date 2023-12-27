@@ -8,6 +8,7 @@ import { check as createCheckPreset } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { DateField } from '../components/shared/DateField'
+import { Jsonb } from '../components/shared/Jsonb'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormMenu } from '../components/FormMenu'
 
@@ -76,6 +77,12 @@ export const Component = () => {
         name="relevant_for_reports"
         checked={row.relevant_for_reports ?? false}
         onChange={onChange}
+      />
+      <Jsonb
+        table="checks"
+        idField="check_id"
+        id={row.check_id}
+        data={row.data ?? {}}
       />
     </div>
   )
