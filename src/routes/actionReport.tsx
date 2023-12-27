@@ -7,6 +7,7 @@ import { actionReport as createActionReportPreset } from '../modules/dataPresets
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { Jsonb } from '../components/shared/Jsonb'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormMenu } from '../components/FormMenu'
 
@@ -34,7 +35,14 @@ export const Component = () => {
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/actions/${action_id}/reports/${newActionReport.action_report_id}`,
     )
-  }, [action_id, db.action_reports, navigate, place_id, project_id, subproject_id])
+  }, [
+    action_id,
+    db.action_reports,
+    navigate,
+    place_id,
+    project_id,
+    subproject_id,
+  ])
 
   const deleteRow = useCallback(async () => {
     await db.action_reports.delete({
@@ -45,7 +53,15 @@ export const Component = () => {
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/actions/${action_id}/reports`,
     )
-  }, [action_id, action_report_id, db.action_reports, navigate, place_id, project_id, subproject_id])
+  }, [
+    action_id,
+    action_report_id,
+    db.action_reports,
+    navigate,
+    place_id,
+    project_id,
+    subproject_id,
+  ])
 
   const row: ActionReport = results
 
@@ -84,6 +100,12 @@ export const Component = () => {
         value={row.year ?? ''}
         type="number"
         onChange={onChange}
+      />
+      <Jsonb
+        table="action_reports"
+        idField="action_report_id"
+        id={row.action_report_id}
+        data={row.data ?? {}}
       />
     </div>
   )
