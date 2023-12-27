@@ -44,7 +44,7 @@ export const seed = async (db) => {
   const result = await db.raw({
     sql: `select * from field_types where field_type_id = '018ca19e-7a23-7bf4-8523-ff41e3b60807';`,
   })
-  console.log('seed, result', result)
+  // console.log('seed, result', result)
   if (result.length === 0) {
     await db.raw({
       sql: seedFieldTypes,
