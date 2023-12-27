@@ -7,6 +7,7 @@ import { goal as createGoalPreset } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { Jsonb } from '../components/shared/Jsonb'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormMenu } from '../components/FormMenu'
 
@@ -77,6 +78,12 @@ export const Component = () => {
         name="name"
         value={row.name ?? ''}
         onChange={onChange}
+      />
+      <Jsonb
+        table="goals"
+        idField="goal_id"
+        id={row.goal_id}
+        data={row.data ?? {}}
       />
     </div>
   )
