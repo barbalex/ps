@@ -7,6 +7,7 @@ import { subprojectReport as createSubprojectReportPreset } from '../modules/dat
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { Jsonb } from '../components/shared/Jsonb'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormMenu } from '../components/FormMenu'
 
@@ -82,6 +83,12 @@ export const Component = () => {
         type="number"
         value={row.year ?? ''}
         onChange={onChange}
+      />
+      <Jsonb
+        table="subproject_reports"
+        idField="subproject_report_id"
+        id={row.subproject_report_id}
+        data={row.data ?? {}}
       />
     </div>
   )
