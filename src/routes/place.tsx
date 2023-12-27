@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
@@ -8,6 +8,7 @@ import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { Jsonb } from '../components/shared/Jsonb'
+import { DropdownField } from '../components/shared/DropdownField'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormMenu } from '../components/FormMenu'
 
@@ -44,6 +45,12 @@ export const Component = () => {
 
   const row: Place = results
 
+  // TODO: only show parent place if level 2 exists in place_levels
+  const parentPlaceWhere = useMemo(
+    () => ({ deleted: false, level: 1, subproject_id }),
+    [subproject_id],
+  )
+
   const onChange = useCallback(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
@@ -66,17 +73,23 @@ export const Component = () => {
       <FormMenu addRow={addRow} deleteRow={deleteRow} tableName="place" />
       <TextFieldInactive label="ID" name="place_id" value={row.place_id} />
       <TextField
-        label="Parent Place"
-        name="parent_id"
-        value={row.parent_id ?? ''}
-        onChange={onChange}
-      />
-      <TextField
         label="Level"
         name="level"
+        type="number"
         value={row.level ?? ''}
         onChange={onChange}
       />
+      {row.level === 2 && (
+        <DropdownField
+          label="Parent Place"
+          name="parent_id"
+          idField="place_id"
+          table="places"
+          where={parentPlaceWhere}
+          value={row.parent_id ?? ''}
+          onChange={onChange}
+        />
+      )}
       <Jsonb
         table="places"
         idField="place_id"
