@@ -65,7 +65,7 @@ export const Component = () => {
     return <div>Loading...</div>
   }
 
-  console.log('project, data:', row.data)
+  // console.log('project, data:', row.data)
 
   return (
     <div className="form-container">
@@ -78,7 +78,6 @@ export const Component = () => {
         onChange={onChange}
       />
       <Jsonb
-        // key={`${row.project_id}${Object.keys(row.data ?? {}).length}`}
         table="projects"
         idField="project_id"
         id={row.project_id}
