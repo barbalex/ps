@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
@@ -6,6 +6,7 @@ import { CheckTaxa as CheckTaxon } from '../../../generated/client'
 import { checkTaxon as createCheckTaxonPreset } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
+import { DropdownField } from '../components/shared/DropdownField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormMenu } from '../components/FormMenu'
@@ -48,6 +49,9 @@ export const Component = () => {
 
   const row: CheckTaxon = results
 
+  const taxaWhere = useMemo(() => ({ deleted: false }), [])
+
+
   // console.log('CheckTaxon', { row, results })
 
   const onChange = useCallback(
@@ -77,9 +81,11 @@ export const Component = () => {
         name="check_taxon_id"
         value={row.check_taxon_id ?? ''}
       />
-      <TextField
-        label="Taxon ID"
+      <DropdownField
+        label="Taxon"
         name="taxon_id"
+        table="taxa"
+        where={taxaWhere}
         value={row.taxon_id ?? ''}
         onChange={onChange}
       />
