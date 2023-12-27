@@ -6,6 +6,7 @@ import { GoalReports as GoalReport } from '../../../generated/client'
 import { goalReport as createGoalReportPreset } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { Jsonb } from '../components/shared/Jsonb'
 import { FormMenu } from '../components/FormMenu'
 // import { getValueFromChange } from '../modules/getValueFromChange'
 
@@ -78,6 +79,12 @@ export const Component = () => {
         label="ID"
         name="goal_report_id"
         value={row.goal_report_id ?? ''}
+      />
+      <Jsonb
+        table="goal_reports"
+        idField="goal_report_id"
+        id={row.goal_report_id}
+        data={row.data ?? {}}
       />
     </div>
   )
