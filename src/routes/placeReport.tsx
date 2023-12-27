@@ -7,6 +7,7 @@ import { placeReport as createPlaceReportPreset } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { Jsonb } from '../components/shared/Jsonb'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormMenu } from '../components/FormMenu'
 
@@ -24,14 +25,13 @@ export const Component = () => {
 
   const addRow = useCallback(async () => {
     const newPlaceReport = createPlaceReportPreset()
-    console.log('newPlaceReport', newPlaceReport)
-    await db.project_reports.create({
+    await db.place_reports.create({
       data: { ...newPlaceReport, place_id },
     })
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/reports/${newPlaceReport.place_report_id}`,
     )
-  }, [db.project_reports, navigate, place_id, project_id, subproject_id])
+  }, [db.place_reports, navigate, place_id, project_id, subproject_id])
 
   const deleteRow = useCallback(async () => {
     await db.place_reports.delete({
@@ -86,6 +86,12 @@ export const Component = () => {
         type="number"
         value={row.year ?? ''}
         onChange={onChange}
+      />
+      <Jsonb
+        table="place_reports"
+        idField="place_report_id"
+        id={row.place_report_id}
+        data={row.data ?? {}}
       />
     </div>
   )
