@@ -1,12 +1,12 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { SubprojectTaxa as SubprojectTaxon } from '../../../generated/client'
 import { subprojectTaxon as createSubprojectTaxonPreset } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
-import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { DropdownField } from '../components/shared/DropdownField'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormMenu } from '../components/FormMenu'
 
@@ -60,6 +60,8 @@ export const Component = () => {
     [db.subproject_taxa, subproject_taxon_id],
   )
 
+  const taxaWhere = useMemo(() => ({ deleted: false }), [])
+
   if (!row) {
     return <div>Loading...</div>
   }
@@ -76,9 +78,11 @@ export const Component = () => {
         name="subproject_taxon_id"
         value={row.subproject_taxon_id}
       />
-      <TextField
-        label="Taxon ID"
+      <DropdownField
+        label="Taxon"
         name="taxon_id"
+        table="taxa"
+        where={taxaWhere}
         value={row.taxon_id ?? ''}
         onChange={onChange}
       />
