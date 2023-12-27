@@ -7,6 +7,7 @@ import { observationSource as createObservationSourcePreset } from '../modules/d
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { Jsonb } from '../components/shared/Jsonb'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormMenu } from '../components/FormMenu'
 
@@ -86,6 +87,12 @@ export const Component = () => {
         type="url"
         value={row.url ?? ''}
         onChange={onChange}
+      />
+      <Jsonb
+        table="observation_sources"
+        idField="observation_source_id"
+        id={row.observation_source_id}
+        data={row.data ?? {}}
       />
     </div>
   )
