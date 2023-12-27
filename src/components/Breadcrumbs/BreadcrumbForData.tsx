@@ -33,12 +33,12 @@ export const Breadcrumb = ({ match }) => {
     filterParams[parentFilter[0]] = parentFilter[1]
   }
   const queryParam = { where: filterParams }
-  if (table === 'projects') {
-    queryParam.include = { subprojects: true }
-  }
-  if (table === 'subprojects') {
-    queryParam.include = { projects: true }
-  }
+  // if (table === 'projects') {
+  //   queryParam.include = { subprojects: true }
+  // }
+  // if (table === 'subprojects') {
+  //   queryParam.include = { projects: true }
+  // }
   // include referenced tables needed for the label
   // TODO: this results in zod error: invalid type. expected string, received null
   // https://github.com/electric-sql/electric/issues/782
@@ -49,10 +49,7 @@ export const Breadcrumb = ({ match }) => {
   const { db } = useElectric()
   const queryTable = table === 'root' || table === 'docs' ? 'projects' : table
 
-  const { results } = useLiveQuery(
-    () => db[queryTable]?.liveMany(queryParam),
-    [db, table],
-  )
+  const { results } = useLiveQuery(db[queryTable]?.liveMany(queryParam))
 
   const myNavs = (results ?? []).map((result) => ({
     path: `${match.pathname}/${result[idField]}`,
@@ -65,7 +62,7 @@ export const Breadcrumb = ({ match }) => {
   //   results,
   //   idField,
   //   // parentFilterParamsArray,
-  //   // table,
+  //   table,
   //   queryTable,
   //   // filterParams,
   //   queryParam,
