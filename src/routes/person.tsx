@@ -7,6 +7,7 @@ import { person as createPersonPreset } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { Jsonb } from '../components/shared/Jsonb'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormMenu } from '../components/FormMenu'
 
@@ -66,6 +67,12 @@ export const Component = () => {
         type="email"
         value={row.email ?? ''}
         onChange={onChange}
+      />
+      <Jsonb
+        table="persons"
+        idField="person_id"
+        id={row.person_id}
+        data={row.data ?? {}}
       />
     </div>
   )
