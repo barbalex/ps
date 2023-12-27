@@ -8,6 +8,7 @@ import { useElectric } from '../ElectricProvider'
 import { taxonomy as createTaxonomyPreset } from '../modules/dataPresets'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { Jsonb } from '../components/shared/Jsonb'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormMenu } from '../components/FormMenu'
 
@@ -88,6 +89,12 @@ export const Component = () => {
         type="url"
         value={row.url ?? ''}
         onChange={onChange}
+      />
+      <Jsonb
+        table="taxonomies"
+        idField="taxonomy_id"
+        id={row.taxonomy_id}
+        data={row.data ?? {}}
       />
       <Switch
         label="Obsolete"
