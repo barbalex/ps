@@ -8,6 +8,7 @@ import { useElectric } from '../ElectricProvider'
 import { list as createListPreset } from '../modules/dataPresets'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { Jsonb } from '../components/shared/Jsonb'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormMenu } from '../components/FormMenu'
 
@@ -66,6 +67,12 @@ export const Component = () => {
         name="name"
         value={row.name ?? ''}
         onChange={onChange}
+      />
+      <Jsonb
+        table="lists"
+        idField="list_id"
+        id={row.list_id}
+        data={row.data ?? {}}
       />
       <Switch
         label="Obsolete"
