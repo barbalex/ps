@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Messages as Message } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { message as createMessagePreset } from '../modules/dataPresets'
+import { ListViewMenu } from '../components/ListViewMenu'
 
 import '../form.css'
 
@@ -26,11 +27,7 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <div className="controls">
-        <button className="button" onClick={add}>
-          Add
-        </button>
-      </div>
+      <ListViewMenu addRow={add} tableName="message" />
       {messages.map((message: Message, index: number) => (
         <p key={index} className="item">
           <Link to={`/messages/${message.message_id}`}>

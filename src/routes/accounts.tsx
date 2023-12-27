@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 
 import { Accounts as Account } from '../../../generated/client'
 import { account as createAccountPreset } from '../modules/dataPresets'
+import { ListViewMenu } from '../components/ListViewMenu'
 import { useElectric } from '../ElectricProvider'
 
 import '../form.css'
@@ -26,11 +27,7 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <div className="controls">
-        <button className="button" onClick={add}>
-          Add
-        </button>
-      </div>
+      <ListViewMenu addRow={add} tableName="account" />
       {accounts.map((account: Account, index: number) => (
         <p key={index} className="item">
           <Link to={`/accounts/${account.account_id}`}>

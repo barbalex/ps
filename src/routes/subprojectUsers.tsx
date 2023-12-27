@@ -5,6 +5,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 import { SubprojectUser as SubprojectUser } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { subprojectUser as createSubprojectUserPreset } from '../modules/dataPresets'
+import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
 export const Component = () => {
@@ -37,11 +38,7 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <div className="controls">
-        <button className="button" onClick={add}>
-          Add
-        </button>
-      </div>
+      <ListViewMenu addRow={add} tableName="subproject user" />
       {subproject_users.map(
         (subproject_user: SubprojectUser, index: number) => (
           <p key={index} className="item">

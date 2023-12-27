@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 
 import { Files as File } from '../../../generated/client'
 import { file as createFilePreset } from '../modules/dataPresets'
+import { ListViewMenu } from '../components/ListViewMenu'
 
 import '../form.css'
 
@@ -27,11 +28,7 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <div className="controls">
-        <button className="button" onClick={add}>
-          Add
-        </button>
-      </div>
+      <ListViewMenu addRow={add} tableName="file" />
       {files.map((file: File, index: number) => (
         <p key={index} className="item">
           <Link to={`/files/${file.file_id}`}>

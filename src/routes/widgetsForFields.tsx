@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { WidgetsForFields as WidgetForField } from '../../../generated/client'
 import { widgetForField as createwidgetForFieldPreset } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
+import { ListViewMenu } from '../components/ListViewMenu'
 
 import '../form.css'
 
@@ -33,11 +34,7 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <div className="controls">
-        <button className="button" onClick={add}>
-          Add
-        </button>
-      </div>
+      <ListViewMenu addRow={add} tableName="widget for field" />
       {widgetsForFields.map((widgetForField: WidgetForField, index: number) => (
         <p key={index} className="item">
           <Link

@@ -5,6 +5,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 import { SubprojectTaxa as SubprojectTaxon } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { subprojectTaxon as createSubprojectTaxonPreset } from '../modules/dataPresets'
+import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
 export const Component = () => {
@@ -35,11 +36,7 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <div className="controls">
-        <button className="button" onClick={add}>
-          Add
-        </button>
-      </div>
+      <ListViewMenu addRow={add} tableName="subproject taxon" />
       {subproject_taxa.map(
         (subproject_taxon: SubprojectTaxon, index: number) => (
           <p key={index} className="item">
