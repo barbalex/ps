@@ -7,6 +7,7 @@ import { file as createFilePreset } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { Jsonb } from '../components/shared/Jsonb'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { DropdownField } from '../components/shared/DropdownField'
 import { FormMenu } from '../components/FormMenu'
@@ -118,6 +119,12 @@ export const Component = () => {
         type="url"
         value={row.url ?? ''}
         onChange={onChange}
+      />
+      <Jsonb
+        table="files"
+        idField="file_id"
+        id={row.file_id}
+        data={row.data ?? {}}
       />
     </div>
   )
