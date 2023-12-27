@@ -102,7 +102,7 @@ export const Jsonb = memo(
       const widgetType = fetchedData.widgetTypes.find(
         (widgetType) => widgetType.widget_type_id === field.widget_type_id,
       )
-      const Widget = widget?.[widgetType?.name]
+      const Widget = widget?.[widgetType?.name] ?? widget?.text
       const fieldType = fetchedData.fieldTypes.find(
         (fieldType) => fieldType.field_type_id === field.field_type_id,
       )
@@ -117,7 +117,7 @@ export const Jsonb = memo(
           key={`${name}/${index}`}
           label={field_label}
           name={name}
-          type={type}
+          type={type ?? 'text'}
           value={data?.[name] ?? ''}
           onChange={onChange}
         />
