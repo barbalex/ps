@@ -7,6 +7,7 @@ import { observation as createObservationPreset } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { Jsonb } from '../components/shared/Jsonb'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormMenu } from '../components/FormMenu'
 
@@ -95,6 +96,12 @@ export const Component = () => {
         label="Author"
         name="author"
         value={row.author ?? ''}
+      />
+      <Jsonb
+        table="observations"
+        idField="observation_id"
+        id={row.observation_id}
+        data={row.data ?? {}}
       />
     </div>
   )
