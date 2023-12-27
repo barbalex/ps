@@ -122,6 +122,7 @@ export const projectReport = () => ({
 
 export const placeLevel = () => ({
   place_level_id: uuidv7(),
+  level: 1,
   reports: false,
   report_values: false,
   actions: false,
