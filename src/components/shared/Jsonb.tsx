@@ -11,7 +11,7 @@ import { useElectric } from '../../ElectricProvider'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { TextField } from './TextField'
 import { DropdownField } from './DropdownField'
-import { DropdownFieldSimpleOptions } from './DropdownFieldSimpleOptions'
+import { DropdownFieldFromList } from './DropdownFieldFromList'
 
 const widget = {
   text: ({ label, name, value, type, onChange }) => (
@@ -35,8 +35,8 @@ const widget = {
   dropdown: ({ name, value, onChange }) => (
     <DropdownField name={name} value={value} onChange={onChange} />
   ),
-  dropdownSimpleOptions: ({ name, value, onChange }) => (
-    <DropdownFieldSimpleOptions name={name} value={value} onChange={onChange} />
+  "options-many": ({ name, label, list_id, value, onChange }) => (
+    <DropdownFieldFromList name={name} label={label} list_id={list_id} value={value} onChange={onChange} />
   ),
   // checkbox: ({ name, value, onChange }) => (
   //   <Checkbox name={name} checked={value} onChange={onChange} />
@@ -118,6 +118,7 @@ export const Jsonb = memo(
           label={field_label}
           name={name}
           type={type ?? 'text'}
+          list_id={field.list_id}
           value={data?.[name] ?? ''}
           onChange={onChange}
         />

@@ -9,9 +9,7 @@ import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
 export const Component = () => {
-  const { project_id } = useParams<{
-    project_id: string
-  }>()
+  const { project_id } = useParams()
   const navigate = useNavigate()
 
   const { db } = useElectric()
