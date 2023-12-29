@@ -5,7 +5,15 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useElectric } from '../../ElectricProvider'
 
 export const RadioGroupFromList = memo(
-  ({ name, label, list_id, value: rowValue, onChange }) => {
+  ({
+    name,
+    label,
+    list_id,
+    value: rowValue,
+    onChange,
+    validationMessage,
+    validationState,
+  }) => {
     const { db } = useElectric()
     const { results: listValues = [] } = useLiveQuery(
       () => db.list_values.liveMany({ where: { list_id, deleted: false } }),
@@ -13,7 +21,11 @@ export const RadioGroupFromList = memo(
     )
 
     return (
-      <Field label={label ?? '(no label provided)'}>
+      <Field
+        label={label ?? '(no label provided)'}
+        validationMessage={validationMessage}
+        validationState={validationState}
+      >
         <RadioGroup
           layout="horizontal"
           name={name}

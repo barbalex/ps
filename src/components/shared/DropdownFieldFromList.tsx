@@ -5,7 +5,15 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useElectric } from '../../ElectricProvider'
 
 export const DropdownFieldFromList = memo(
-  ({ name, label, list_id, value, onChange }) => {
+  ({
+    name,
+    label,
+    list_id,
+    value,
+    onChange,
+    validationMessage,
+    validationState,
+  }) => {
     const { db } = useElectric()
     const { results: listItems = [] } = useLiveQuery(
       () => db.list_values.liveMany({ where: { list_id, deleted: false } }),
@@ -21,7 +29,11 @@ export const DropdownFieldFromList = memo(
     )
 
     return (
-      <Field label={label ?? '(no label provided)'}>
+      <Field
+        label={label ?? '(no label provided)'}
+        validationMessage={validationMessage}
+        validationState={validationState}
+      >
         <Dropdown
           name={name}
           value={selectedOptions?.[0] ?? ''}

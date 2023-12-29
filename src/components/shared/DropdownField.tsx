@@ -15,6 +15,8 @@ export const DropdownField = memo((props: InputProps) => {
     orderBy = { label: 'asc' },
     value,
     onChange,
+    validationMessage,
+    validationState,
   } = props
 
   const { db } = useElectric()
@@ -34,7 +36,11 @@ export const DropdownField = memo((props: InputProps) => {
   )
 
   return (
-    <Field label={label ?? '(no label provided)'}>
+    <Field
+      label={label ?? '(no label provided)'}
+      validationMessage={validationMessage}
+      validationState={validationState}
+    >
       <Dropdown
         name={name}
         value={selectedOptions?.[0]?.text ?? ''}
