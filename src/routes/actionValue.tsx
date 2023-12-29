@@ -101,6 +101,7 @@ export const Component = () => {
         where={unitWhere}
         value={row.unit_id ?? ''}
         onChange={onChange}
+        autoFocus
       />
       <TextField
         label="Value (integer)"
