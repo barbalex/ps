@@ -15,6 +15,7 @@ import { DropdownField } from './DropdownField'
 import { DropdownFieldFromList } from './DropdownFieldFromList'
 import { RadioGroupFromList } from './RadioGroupFromList'
 import { DateField } from './DateField'
+import { TimeField } from './TimeField'
 
 const widget = {
   text: ({ label, name, value, type, onChange, autoFocus }) => (
@@ -67,6 +68,16 @@ const widget = {
   ),
   datepicker: ({ label, name, value, onChange, autoFocus }) => (
     <DateField
+      label={label}
+      name={name}
+      // in json date is saved as iso string
+      value={value ? new Date(value) : null}
+      onChange={onChange}
+      autoFocus={autoFocus}
+    />
+  ),
+  timepicker: ({ label, name, value, onChange, autoFocus }) => (
+    <TimeField
       label={label}
       name={name}
       // in json date is saved as iso string
