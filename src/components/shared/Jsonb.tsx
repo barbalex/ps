@@ -16,52 +16,62 @@ import { RadioGroupFromList } from './RadioGroupFromList'
 import { DateField } from './DateField'
 
 const widget = {
-  text: ({ label, name, value, type, onChange }) => (
+  text: ({ label, name, value, type, onChange, autoFocus }) => (
     <TextField
       label={label}
       name={name}
       value={value}
       type={type ?? 'text'}
       onChange={onChange}
+      autoFocus={autoFocus}
     />
   ),
-  textarea: ({ label, name, value, type, onChange }) => (
+  textarea: ({ label, name, value, type, onChange, autoFocus }) => (
     <TextField
       label={label}
       name={name}
       value={value}
       type={type ?? 'text'}
       onChange={onChange}
+      autoFocus={autoFocus}
     />
   ),
-  dropdown: ({ name, value, onChange }) => (
-    <DropdownField name={name} value={value} onChange={onChange} />
+  dropdown: ({ name, value, onChange, autoFocus }) => (
+    <DropdownField
+      name={name}
+      value={value}
+      onChange={onChange}
+      autoFocus={autoFocus}
+    />
   ),
-  'options-many': ({ name, label, list_id, value, onChange }) => (
+  'options-many': ({ name, label, list_id, value, onChange, autoFocus }) => (
     <DropdownFieldFromList
       name={name}
       label={label}
       list_id={list_id}
       value={value}
       onChange={onChange}
+      autoFocus={autoFocus}
     />
   ),
-  'options-few': ({ name, label, list_id, value, onChange }) => (
+  'options-few': ({ name, label, list_id, value, onChange, autoFocus }) => (
     <RadioGroupFromList
       name={name}
       label={label}
       list_id={list_id}
       value={value}
       onChange={onChange}
+      autoFocus={autoFocus}
     />
   ),
-  datepicker: ({ label, name, value, onChange }) => (
+  datepicker: ({ label, name, value, onChange, autoFocus }) => (
     <DateField
       label={label}
       name={name}
       // in json date is saved as iso string
       value={value ? new Date(value) : null}
       onChange={onChange}
+      autoFocus={autoFocus}
     />
   ),
   // checkbox: ({ name, value, onChange }) => (
@@ -76,7 +86,14 @@ const widget = {
 }
 
 export const Jsonb = memo(
-  ({ table, name: jsonFieldName = 'data', idField, id, data = {} }) => {
+  ({
+    table,
+    name: jsonFieldName = 'data',
+    idField,
+    id,
+    data = {},
+    autoFocus = false,
+  }) => {
     const { project_id } = useParams()
     const { db } = useElectric()!
 
@@ -164,6 +181,7 @@ export const Jsonb = memo(
             list_id={field.list_id}
             value={data?.[name] ?? ''}
             onChange={onChange}
+            autoFocus={autoFocus && index === 0}
           />
         )
       },
@@ -181,6 +199,9 @@ export const Jsonb = memo(
           onChange={onChange}
           validationState="warning"
           validationMessage="This field is not defined for this project."
+          autoFocus={
+            autoFocus && index === 0 && fetchedData.fields.length === 0
+          }
         />
       )
     })
