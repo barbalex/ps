@@ -163,12 +163,12 @@ export const Jsonb = memo(
       )
     })
 
-    console.log('Jsonb', {
-      widgetsFromDataFieldsDefined,
-      fieldsFromDataKeysNotDefined,
-      fieldsFromDataKeysNotDefined,
-      fieldNamesDefined,
-    })
+    // console.log('Jsonb', {
+    //   widgetsFromDataFieldsDefined,
+    //   fieldsFromDataKeysNotDefined,
+    //   fieldsFromDataKeysNotDefined,
+    //   fieldNamesDefined,
+    // })
 
     return [widgetsFromDataFieldsDefined, fieldsFromDataKeysNotDefined]
   },
