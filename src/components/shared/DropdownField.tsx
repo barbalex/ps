@@ -15,6 +15,7 @@ export const DropdownField = memo((props: InputProps) => {
     orderBy = { label: 'asc' },
     value,
     onChange,
+    autoFocus,
   } = props
 
   const { db } = useElectric()
@@ -63,6 +64,7 @@ export const DropdownField = memo((props: InputProps) => {
           onChange({ target: { name, value: data.optionValue } })
         }
         appearance="underline"
+        autoFocus={autoFocus}
       >
         {options.map((params) => {
           const { text, value } = params
