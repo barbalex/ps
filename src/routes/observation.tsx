@@ -74,6 +74,7 @@ export const Component = () => {
         name="place_id"
         value={row.place_id ?? ''}
         onChange={onChange}
+        autoFocus
       />
       <TextFieldInactive
         label="ID in source"

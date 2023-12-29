@@ -80,6 +80,7 @@ export const Component = () => {
         name="message"
         value={row.message ?? ''}
         onChange={onChange}
+        autoFocus
       />
     </div>
   )

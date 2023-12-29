@@ -80,6 +80,7 @@ export const Component = () => {
         name="name"
         value={row.name ?? ''}
         onChange={onChange}
+        autoFocus
       />
       <TextField
         label="Url"
