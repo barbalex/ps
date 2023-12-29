@@ -10,6 +10,7 @@ import { useParams } from 'react-router-dom'
 import { useElectric } from '../../ElectricProvider'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { TextField } from './TextField'
+import { TextArea } from './TextArea'
 import { DropdownField } from './DropdownField'
 import { DropdownFieldFromList } from './DropdownFieldFromList'
 import { RadioGroupFromList } from './RadioGroupFromList'
@@ -27,7 +28,7 @@ const widget = {
     />
   ),
   textarea: ({ label, name, value, type, onChange, autoFocus }) => (
-    <TextField
+    <TextArea
       label={label}
       name={name}
       value={value}
