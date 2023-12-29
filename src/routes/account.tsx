@@ -68,6 +68,7 @@ export const Component = () => {
         table="users"
         value={row.user_id ?? ''}
         onChange={onChange}
+        autoFocus 
       />
       <Field label="Type">
         <RadioGroup
