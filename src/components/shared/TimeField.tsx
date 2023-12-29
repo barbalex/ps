@@ -14,7 +14,7 @@ export const TimeField = memo(
     autoFocus,
   }) => {
     // const selectedTime = value ? dayjs(`2020-01-01 ${value}`) : null
-    const selectedTime = value ? new Date(`2020-01-01T${value}:00`) : null
+    const selectedTime = value ? new Date(`2020-01-01T${value}:00Z`) : null
     console.log('TimeField', {
       value,
       name,
@@ -28,11 +28,13 @@ export const TimeField = memo(
         validationState={validationState}
       >
         <TimePicker
-          // placeholder="Select a time or click to write..."
+          placeholder="Select a time or click to write..."
           name={name}
-          freeform
+          // TODO: when freeform is active, blur sets value to ''!
+          // freeform
           startHour={8}
           endHour={20}
+          hourCycle="h23"
           selectedTime={selectedTime}
           onTimeChange={(ev, data) => {
             console.log('onTimeChange', { ev, data })
@@ -41,11 +43,6 @@ export const TimeField = memo(
             console.log('onTimeChange', { date, timeString })
             onChange({ target: { name, value: timeString } })
           }}
-          onInput={(ev, data) => {
-            console.log('onInput', { ev, data })
-          }}
-          // allowTextInput
-          hourCycle="h23"
           formatDateToTimeString={(date) =>
             !date ? '' : dayjs(date).format('HH:mm')
           }
