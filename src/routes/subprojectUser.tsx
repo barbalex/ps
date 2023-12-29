@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Field, RadioGroup, Radio } from '@fluentui/react-components'
@@ -6,8 +6,8 @@ import { Field, RadioGroup, Radio } from '@fluentui/react-components'
 import { SubprojectUsers as SubprojectUser } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { subprojectUser as createSubprojectUserPreset } from '../modules/dataPresets'
-import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { DropdownField } from '../components/shared/DropdownField'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormMenu } from '../components/FormMenu'
 
@@ -50,6 +50,8 @@ export const Component = () => {
 
   const row: SubprojectUser = results
 
+  const userWhere = useMemo(() => ({ deleted: false }), [])
+
   const onChange = useCallback(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
@@ -77,11 +79,14 @@ export const Component = () => {
         name="subproject_user_id"
         value={row.subproject_user_id}
       />
-      <TextField
-        label="User ID"
+      <DropdownField
+        label="User"
         name="user_id"
+        table="users"
+        where={userWhere}
         value={row.user_id ?? ''}
         onChange={onChange}
+        autoFocus 
       />
       <Field label="Role">
         <RadioGroup
