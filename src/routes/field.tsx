@@ -101,6 +101,7 @@ export const Component = () => {
         value={row.table_name ?? ''}
         onChange={onChange}
         options={tables}
+        autoFocus 
       />
       <TextField
         label="Name"
