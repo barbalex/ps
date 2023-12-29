@@ -66,6 +66,7 @@ export const Component = () => {
         type="email"
         value={row.email ?? ''}
         onChange={onChange}
+        autoFocus 
       />
     </div>
   )

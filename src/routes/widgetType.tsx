@@ -70,6 +70,7 @@ export const Component = () => {
         name="name"
         value={row.name ?? ''}
         onChange={onChange}
+        autoFocus
       />
       <Switch
         label="Needs a list"

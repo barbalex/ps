@@ -74,6 +74,7 @@ export const Component = () => {
         table="field_types"
         value={row.field_type_id ?? ''}
         onChange={onChange}
+        autoFocus
       />
       <DropdownField
         label="Widget type"
