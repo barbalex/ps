@@ -12,6 +12,7 @@ import { getValueFromChange } from '../../modules/getValueFromChange'
 import { TextField } from './TextField'
 import { DropdownField } from './DropdownField'
 import { DropdownFieldFromList } from './DropdownFieldFromList'
+import { RadioGroupFromList } from './RadioGroupFromList'
 
 const widget = {
   text: ({ label, name, value, type, onChange }) => (
@@ -35,8 +36,23 @@ const widget = {
   dropdown: ({ name, value, onChange }) => (
     <DropdownField name={name} value={value} onChange={onChange} />
   ),
-  "options-many": ({ name, label, list_id, value, onChange }) => (
-    <DropdownFieldFromList name={name} label={label} list_id={list_id} value={value} onChange={onChange} />
+  'options-many': ({ name, label, list_id, value, onChange }) => (
+    <DropdownFieldFromList
+      name={name}
+      label={label}
+      list_id={list_id}
+      value={value}
+      onChange={onChange}
+    />
+  ),
+  'options-few': ({ name, label, list_id, value, onChange }) => (
+    <RadioGroupFromList
+      name={name}
+      label={label}
+      list_id={list_id}
+      value={value}
+      onChange={onChange}
+    />
   ),
   // checkbox: ({ name, value, onChange }) => (
   //   <Checkbox name={name} checked={value} onChange={onChange} />
