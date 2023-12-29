@@ -30,7 +30,7 @@ export const TimeField = memo(
           placeholder="Select a time or click to write..."
           name={name}
           // TODO: when freeform is active, blur sets value to ''!
-          // freeform
+          freeform
           startHour={8}
           endHour={20}
           hourCycle="h23"
@@ -39,15 +39,17 @@ export const TimeField = memo(
             const date = data.selectedTime
             const timeString = date ? dayjs(date).format('HH:mm') : ''
             console.log('onTimeChange', { ev, data, date, timeString })
+            // if (ev.type === 'blur') return
             onChange({ target: { name, value: timeString } })
           }}
           formatDateToTimeString={(date) =>
             !date ? '' : dayjs(date).format('HH:mm')
           }
           parseTimeStringToDate={(timeString) =>
-            !timeString ? null : new Date(`2020-01-01T${timeString}:00Z`)
+            !timeString ? '' : new Date(`2020-01-01T${timeString}:00Z`)
           }
           autoFocus={autoFocus}
+          appearance="underline"
         />
       </Field>
     )

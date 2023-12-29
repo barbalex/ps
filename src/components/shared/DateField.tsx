@@ -30,6 +30,7 @@ export const DateField = memo(
           allowTextInput
           formatDate={(date) => (!date ? '' : date.toLocaleDateString('de-CH'))}
           autoFocus={autoFocus}
+          appearance="underline"
         />
       </Field>
     )
