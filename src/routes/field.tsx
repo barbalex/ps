@@ -71,6 +71,20 @@ export const Component = () => {
   const fieldTypeWhere = useMemo(() => ({ deleted: false }), [])
   const fieldTypeOrderBy = useMemo(() => [{ sort: 'asc' }, { name: 'asc' }], [])
 
+  const { results: widgetsForFieldResults = [] } = useLiveQuery(
+    db.widgets_for_fields.liveMany({
+      where: { field_type_id: row?.field_type_id },
+    }),
+  )
+  const widgetWhere = useMemo(
+    () => ({
+      widget_type_id: {
+        in: widgetsForFieldResults?.map(({ widget_type_id }) => widget_type_id),
+      },
+    }),
+    [widgetsForFieldResults],
+  )
+
   const onChange = useCallback(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
@@ -101,7 +115,7 @@ export const Component = () => {
         value={row.table_name ?? ''}
         onChange={onChange}
         options={tables}
-        autoFocus 
+        autoFocus
       />
       <TextField
         label="Name"
@@ -129,6 +143,7 @@ export const Component = () => {
         name="widget_type_id"
         table="widget_types"
         value={row.widget_type_id ?? ''}
+        where={widgetWhere}
         onChange={onChange}
       />
       {widgetNeedsList && (
