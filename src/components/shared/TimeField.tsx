@@ -13,7 +13,6 @@ export const TimeField = memo(
     validationState,
     autoFocus,
   }) => {
-    // const selectedTime = value ? dayjs(`2020-01-01 ${value}`) : null
     const selectedTime = value ? new Date(`2020-01-01T${value}:00Z`) : null
     console.log('TimeField', {
       value,
@@ -37,14 +36,16 @@ export const TimeField = memo(
           hourCycle="h23"
           selectedTime={selectedTime}
           onTimeChange={(ev, data) => {
-            console.log('onTimeChange', { ev, data })
             const date = data.selectedTime
             const timeString = date ? dayjs(date).format('HH:mm') : ''
-            console.log('onTimeChange', { date, timeString })
+            console.log('onTimeChange', { ev, data, date, timeString })
             onChange({ target: { name, value: timeString } })
           }}
           formatDateToTimeString={(date) =>
             !date ? '' : dayjs(date).format('HH:mm')
+          }
+          parseTimeStringToDate={(timeString) =>
+            !timeString ? null : new Date(`2020-01-01T${timeString}:00Z`)
           }
           autoFocus={autoFocus}
         />
