@@ -35,6 +35,11 @@ const tables = [
   'taxonomies',
 ]
 
+const widgetsNeedingList = [
+  '018ca1a1-9ea1-77a0-a89e-e7dfa92e2cfe',
+  '018ca1a1-c94b-7d29-b21c-42053ade0411',
+] // options-few, options-many
+
 export const Component = () => {
   const { project_id, field_id } = useParams()
   const navigate = useNavigate()
@@ -75,6 +80,11 @@ export const Component = () => {
       })
     },
     [db.fields, field_id],
+  )
+
+  const widgetNeedsList = useMemo(
+    () => widgetsNeedingList.includes(row?.widget_type_id),
+    [row],
   )
 
   if (!row) {
@@ -120,13 +130,15 @@ export const Component = () => {
         value={row.widget_type_id ?? ''}
         onChange={onChange}
       />
-      <DropdownField
-        label="List"
-        name="list_id"
-        table="lists"
-        value={row.list_id ?? ''}
-        onChange={onChange}
-      />
+      {widgetNeedsList && (
+        <DropdownField
+          label="List"
+          name="list_id"
+          table="lists"
+          value={row.list_id ?? ''}
+          onChange={onChange}
+        />
+      )}
       <TextField
         label="Preset value"
         name="preset"
