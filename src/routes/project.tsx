@@ -101,6 +101,7 @@ export const Component = () => {
         name="subproject_name_singular"
         value={row.subproject_name_singular ?? ''}
         onChange={onChange}
+        autoFocus
       />
       <TextField
         label="Name of subproject (plural)"

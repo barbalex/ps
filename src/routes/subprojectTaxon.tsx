@@ -85,6 +85,7 @@ export const Component = () => {
         where={taxaWhere}
         value={row.taxon_id ?? ''}
         onChange={onChange}
+        autoFocus
       />
     </div>
   )
