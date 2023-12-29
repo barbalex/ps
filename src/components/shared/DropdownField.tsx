@@ -15,8 +15,6 @@ export const DropdownField = memo((props: InputProps) => {
     orderBy = { label: 'asc' },
     value,
     onChange,
-    validationMessage,
-    validationState,
   } = props
 
   const { db } = useElectric()
@@ -34,6 +32,22 @@ export const DropdownField = memo((props: InputProps) => {
     () => options.filter(({ value: v }) => v === value),
     [options, value],
   )
+
+  const validationState = results?.length ? 'none' : 'warning'
+  const validationMessage = results?.length
+    ? undefined
+    : `No ${table} found. Please add one first.`
+
+  // console.log('DropdownField', {
+  //   name,
+  //   label,
+  //   value,
+  //   options,
+  //   selectedOptions,
+  //   validationState,
+  //   validationMessage,
+  //   results,
+  // })
 
   return (
     <Field
