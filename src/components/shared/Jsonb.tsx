@@ -13,6 +13,7 @@ import { TextField } from './TextField'
 import { DropdownField } from './DropdownField'
 import { DropdownFieldFromList } from './DropdownFieldFromList'
 import { RadioGroupFromList } from './RadioGroupFromList'
+import { DateField } from './DateField'
 
 const widget = {
   text: ({ label, name, value, type, onChange }) => (
@@ -51,6 +52,15 @@ const widget = {
       label={label}
       list_id={list_id}
       value={value}
+      onChange={onChange}
+    />
+  ),
+  datepicker: ({ label, name, value, onChange }) => (
+    <DateField
+      label={label}
+      name={name}
+      // in json date is saved as iso string
+      value={value ? new Date(value) : null}
       onChange={onChange}
     />
   ),
@@ -103,7 +113,17 @@ export const Jsonb = memo(
     const onChange = useCallback(
       (e, dataReturned) => {
         const { name, value } = getValueFromChange(e, dataReturned)
-        const val = { ...data, [name]: value }
+        const isDate = value instanceof Date
+        // in json need to save date as iso string
+        const val = { ...data, [name]: isDate ? value.toISOString() : value }
+        // console.log('Jsonb, onChange', {
+        //   name,
+        //   value,
+        //   val,
+        //   jsonFieldName,
+        //   isDate,
+        //   dateIsoString: isDate ? value.toISOString() : undefined,
+        // })
         db[table].update({
           where: { [idField]: id },
           data: { [jsonFieldName]: val },
@@ -155,7 +175,9 @@ export const Jsonb = memo(
           key={dataKey}
           label={dataKey}
           name={dataKey}
-          value={data?.[dataKey] ?? ''}
+          value={
+            data?.[dataKey]?.toLocaleDateString?.() ?? data?.[dataKey] ?? ''
+          }
           onChange={onChange}
           validationState="warning"
           validationMessage="This field is not defined for this project."
