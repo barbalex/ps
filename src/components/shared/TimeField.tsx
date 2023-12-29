@@ -1,9 +1,7 @@
 import { memo } from 'react'
 import { Field } from '@fluentui/react-components'
-import {
-  TimePicker,
-  formatDateToTimeString,
-} from '@fluentui/react-timepicker-compat-preview'
+import { TimePicker } from '@fluentui/react-timepicker-compat-preview'
+import dayjs from 'dayjs'
 
 export const TimeField = memo(
   ({
@@ -15,11 +13,12 @@ export const TimeField = memo(
     validationState,
     autoFocus,
   }) => {
+    const selectedTime = value ? dayjs(`2020-01-01 ${value}`) : null
     console.log('TimeField', {
       value,
       label,
       name,
-      selectedTime: value ? new Date(formatDateToTimeString(value)) : '',
+      selectedTime,
     })
 
     return (
@@ -31,22 +30,24 @@ export const TimeField = memo(
         <TimePicker
           // placeholder="Select a time or click to write..."
           name={name}
+          freeform
           startHour={8}
           endHour={20}
-          selectedTime={value ? formatDateToTimeString(new Date(value)) : ''}
+          selectedTime={selectedTime}
           onTimeChange={(ev, data) => {
             console.log('onChange', { ev, data })
-            onChange({ target: { name, value: data.selectedTimeText } })
+            const date = data.selectedTime
+            const timeString = date ? dayjs(date).format('HH:mm') : ''
+            console.log('onChange', { date, timeString })
+            onChange({ target: { name, value: timeString } })
+          }}
+          onInput={(ev, data) => {
+            console.log('onInput', { ev, data })
           }}
           // allowTextInput
           hourCycle="h23"
           formatDateToTimeString={(date) =>
-            !date
-              ? ''
-              : date.toLocaleDateString('de-CH', {
-                  hour: '2-digit',
-                  minute: '2-digit',
-                })
+            !date ? '' : dayjs(date).format('HH:mm')
           }
           autoFocus={autoFocus}
         />

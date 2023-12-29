@@ -80,8 +80,7 @@ const widget = {
     <TimeField
       label={label}
       name={name}
-      // in json date is saved as iso string
-      value={value ? new Date(value) : null}
+      value={value}
       onChange={onChange}
       autoFocus={autoFocus}
     />

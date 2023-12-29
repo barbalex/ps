@@ -25,13 +25,15 @@ export const Component = () => {
 
   const rows: WidgetType[] = results ?? []
 
+  console.log('WidgetTypes', rows)
+
   return (
     <div className="form-container">
       <ListViewMenu addRow={add} tableName="widget type" />
       {rows.map((widgetType: WidgetType, index: number) => (
         <p key={index} className="item">
           <Link to={`/widget-types/${widgetType.widget_type_id}`}>
-            {rows.label ?? widgetType.widget_type_id ?? '(not set)'}
+            {widgetType.label ?? '(not set)'}
           </Link>
         </p>
       ))}
