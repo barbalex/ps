@@ -3,7 +3,15 @@ import { Field } from '@fluentui/react-components'
 import { DatePicker } from '@fluentui/react-datepicker-compat'
 
 export const DateField = memo(
-  ({ label, value, name, onChange, validationMessage, validationState }) => {
+  ({
+    label,
+    value,
+    name,
+    onChange,
+    validationMessage,
+    validationState,
+    autoFocus,
+  }) => {
     // console.log('DateField', { value, label, name })
 
     return (
@@ -21,6 +29,7 @@ export const DateField = memo(
           firstDayOfWeek={1}
           allowTextInput
           formatDate={(date) => (!date ? '' : date.toLocaleDateString('de-CH'))}
+          autoFocus={autoFocus}
         />
       </Field>
     )
