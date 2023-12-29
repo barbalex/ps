@@ -85,6 +85,7 @@ export const Component = () => {
         name="name_singular"
         value={row.name_singular ?? ''}
         onChange={onChange}
+        autoFocus
       />
       <TextField
         label="Name (plural)"

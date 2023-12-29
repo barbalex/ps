@@ -92,6 +92,7 @@ export const Component = () => {
         idField="place_report_id"
         id={row.place_report_id}
         data={row.data ?? {}}
+        autoFocus
       />
     </div>
   )

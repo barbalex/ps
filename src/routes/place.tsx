@@ -88,6 +88,7 @@ export const Component = () => {
           where={parentPlaceWhere}
           value={row.parent_id ?? ''}
           onChange={onChange}
+          autoFocus
         />
       )}
       <Jsonb
@@ -95,6 +96,7 @@ export const Component = () => {
         idField="place_id"
         id={row.place_id}
         data={row.data ?? {}}
+        autoFocus={row.level !== 2}
       />
     </div>
   )
