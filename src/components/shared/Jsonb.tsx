@@ -112,33 +112,64 @@ export const Jsonb = memo(
       [db, id, idField, jsonFieldName, data, table],
     )
 
-    // TODO: what if data contains keys not existing in fields?
-    return fetchedData.fields.map((field, index) => {
-      const { name, field_label } = field
-      const widgetType = fetchedData.widgetTypes.find(
-        (widgetType) => widgetType.widget_type_id === field.widget_type_id,
-      )
-      const Widget = widget?.[widgetType?.name] ?? widget?.text
-      const fieldType = fetchedData.fieldTypes.find(
-        (fieldType) => fieldType.field_type_id === field.field_type_id,
-      )
-      const type = fieldType?.name === 'integer' ? 'number' : fieldType?.name
+    // What if data contains keys not existing in fields? > show but warn
+    const fieldNamesDefined = fetchedData.fields.map((field) => field.name)
+    const dataKeys = Object.keys(data)
+    const dataKeysNotDefined = dataKeys.filter(
+      (dataKey) => !fieldNamesDefined.includes(dataKey),
+    )
 
-      if (!Widget) {
-        return null
-      }
+    const widgetsFromDataFieldsDefined = fetchedData.fields.map(
+      (field, index) => {
+        const { name, field_label } = field
+        const widgetType = fetchedData.widgetTypes.find(
+          (widgetType) => widgetType.widget_type_id === field.widget_type_id,
+        )
+        const Widget = widget?.[widgetType?.name] ?? widget?.text
+        const fieldType = fetchedData.fieldTypes.find(
+          (fieldType) => fieldType.field_type_id === field.field_type_id,
+        )
+        const type = fieldType?.name === 'integer' ? 'number' : fieldType?.name
 
+        if (!Widget) {
+          return null
+        }
+
+        return (
+          <Widget
+            key={`${name}/${index}`}
+            label={field_label}
+            name={name}
+            type={type ?? 'text'}
+            list_id={field.list_id}
+            value={data?.[name] ?? ''}
+            onChange={onChange}
+          />
+        )
+      },
+    )
+
+    const fieldsFromDataKeysNotDefined = dataKeysNotDefined.map((dataKey) => {
       return (
-        <Widget
-          key={`${name}/${index}`}
-          label={field_label}
-          name={name}
-          type={type ?? 'text'}
-          list_id={field.list_id}
-          value={data?.[name] ?? ''}
+        <TextField
+          key={dataKey}
+          label={dataKey}
+          name={dataKey}
+          value={data?.[dataKey] ?? ''}
           onChange={onChange}
+          validationState="warning"
+          validationMessage="This field is not defined for this project."
         />
       )
     })
+
+    console.log('Jsonb', {
+      widgetsFromDataFieldsDefined,
+      fieldsFromDataKeysNotDefined,
+      fieldsFromDataKeysNotDefined,
+      fieldNamesDefined,
+    })
+
+    return [widgetsFromDataFieldsDefined, fieldsFromDataKeysNotDefined]
   },
 )

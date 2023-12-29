@@ -1,15 +1,16 @@
 import { memo } from 'react'
-import {
-  Input,
-  Field,
-} from '@fluentui/react-components'
+import { Input, Field } from '@fluentui/react-components'
 import type { InputProps } from '@fluentui/react-components'
 
 export const TextField = memo((props: InputProps) => {
-  const { label } = props
+  const { label, validationMessage, validationState } = props
 
   return (
-    <Field label={label ?? '(no label provided)'} >
+    <Field
+      label={label ?? '(no label provided)'}
+      validationMessage={validationMessage}
+      validationState={validationState}
+    >
       <Input {...props} appearance="underline" />
     </Field>
   )
