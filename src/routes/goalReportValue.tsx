@@ -110,6 +110,7 @@ export const Component = () => {
         orderBy={unitOrderBy}
         value={row.unit_id ?? ''}
         onChange={onChange}
+        autoFocus
       />
       <TextField
         label="Value (integer)"

@@ -72,6 +72,7 @@ export const Component = () => {
         name="value"
         value={row.value ?? ''}
         onChange={onChange}
+        autoFocus 
       />
       <Switch
         label="Obsolete"
