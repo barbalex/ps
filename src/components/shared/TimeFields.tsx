@@ -3,7 +3,6 @@ import { Input, Field } from '@fluentui/react-components'
 
 export const TimeFields = memo(
   ({ label, name, value = '', autoFocus, onChange }) => {
-    console.log('TimeFields', { value, label, name })
     const valArray = (value ?? '').split(':')
     const [hours, setHours] = useState(valArray[0] ?? '')
     const [minutes, setMinutes] = useState(valArray[1] ?? '')
