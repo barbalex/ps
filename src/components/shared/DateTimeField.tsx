@@ -10,32 +10,36 @@ export const DateTimeField = memo(
     const [hours, setHours] = useState(value?.getHours?.() ?? '')
     const [minutes, setMinutes] = useState(value?.getMinutes?.() ?? '')
 
-    console.log('DateTimeField', {
-      value,
-      label,
-      name,
-      years,
-      months,
-      days,hours,minutes
-    })
+    // console.log('DateTimeField', {
+    //   value,
+    //   label,
+    //   name,
+    //   years,
+    //   months,
+    //   days,
+    //   hours,
+    //   minutes,
+    // })
 
+    const [dateValidationState, dateValidationMessage] = useMemo(() => {
+      if (!value && hours === '' && minutes === '') return ['none', '']
+      if (years !== '') return ['none', '']
+      return ['warning', 'must be set']
+    }, [hours, minutes, value, years])
     const [hoursValidationState, hoursValidationMessage] = useMemo(() => {
-      if (!value) return ['none', '']
+      if (!value && years === '' && minutes === '') return ['none', '']
       if (hours !== '') return ['none', '']
-      if (minutes === '') return ['none', '']
       return ['warning', 'must be set']
-    }, [hours, minutes, value])
+    }, [hours, minutes, value, years])
     const [minutesValidationState, minutesValidationMessage] = useMemo(() => {
-      if (!value) return ['none', '']
+      if (!value && years === '' && hours === '') return ['none', '']
       if (minutes !== '') return ['none', '']
-      if (hours === '') return ['none', '']
       return ['warning', 'must be set']
-    }, [hours, minutes, value])
+    }, [hours, minutes, value, years])
 
     const onChangeDate = useCallback(
       (ev) => {
         const newDate = ev?.target.value
-        console.log('onChangeDate', { ev, newDate })
         const newYear = newDate?.getFullYear?.() ?? ''
         const newMonth = newDate?.getMonth?.() ?? ''
         const newDay = newDate?.getDate?.() ?? ''
@@ -50,14 +54,6 @@ export const DateTimeField = memo(
             hours ?? 0,
             minutes ?? 0,
           )
-          console.log('onChangeDate', {
-            newYear,
-            newMonth,
-            newDay,
-            hours,
-            minutes,
-            newDateTimeValue,
-          })
           onChange({ target: { name, value: newDateTimeValue } })
         } else {
           if (!newDate && hours && minutes) {
@@ -70,7 +66,6 @@ export const DateTimeField = memo(
 
     const onChangeHours = useCallback(
       (ev, data) => {
-        console.log('onChangeHours', { data, ev })
         const newHours = data.value ? +data.value : ''
         setHours(newHours)
         if (years && months && days && newHours && minutes) {
@@ -81,14 +76,6 @@ export const DateTimeField = memo(
             newHours,
             minutes,
           )
-          // console.log('onChangeHours', {
-          //   newHours,
-          //   year,
-          //   month,
-          //   day,
-          //   minutes,
-          //   newDateTimeValue,
-          // })
           onChange({ target: { name, value: newDateTimeValue } })
         } else if (!years && !months && !days && !newHours && !minutes) {
           onChange({ target: { name, value: null } })
@@ -98,7 +85,6 @@ export const DateTimeField = memo(
     )
     const onChangeMinutes = useCallback(
       (ev, data) => {
-        console.log('onChangeMinutes', { data, ev })
         const newMinutes = data.value
         setMinutes(newMinutes)
         if (years && months && days && hours && newMinutes) {
@@ -120,9 +106,13 @@ export const DateTimeField = memo(
     return (
       <Field label={label ?? '(no label provided)'}>
         <div className="field-group-horizontal">
-          <Field label="Date">
+          <Field
+            label="Date"
+            validationMessage={dateValidationMessage}
+            validationState={dateValidationState}
+          >
             <DatePicker
-              placeholder="Select a date or click to write..."
+              placeholder="Select a date or click to write"
               name={name}
               value={
                 years && months && days ? new Date(years, months, days) : null
@@ -133,16 +123,13 @@ export const DateTimeField = memo(
               }
               firstDayOfWeek={1}
               allowTextInput
-              formatDate={(date) => {
-                console.log('formatDate, date:', date)
-                return date?.toLocaleDateString?.('de-CH') ?? ''
-              }}
+              formatDate={(date) => date?.toLocaleDateString?.('de-CH') ?? ''}
               autoFocus={autoFocus}
               appearance="underline"
             />
           </Field>
           <Field
-            label="hours"
+            label="Hours"
             validationMessage={hoursValidationMessage}
             validationState={hoursValidationState}
           >
@@ -157,7 +144,7 @@ export const DateTimeField = memo(
             />
           </Field>
           <Field
-            label="minutes"
+            label="Minutes"
             validationMessage={minutesValidationMessage}
             validationState={minutesValidationState}
           >
