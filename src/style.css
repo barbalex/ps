@@ -67,7 +67,7 @@ body {
   flex-wrap: wrap;
   column-gap: 0;
   row-gap: 0;
-  border: 1px solid rgba(55, 118, 28, 0.5);
+  border-bottom: 1px solid rgba(55, 118, 28, 0.5);
   border-collapse: collapse;
   border-top: none;
 }
