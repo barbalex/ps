@@ -3,12 +3,13 @@ import { Input, Field } from '@fluentui/react-components'
 
 export const TimeFields = memo(
   ({ label, name, value = '', autoFocus, onChange }) => {
-    const valArray = value.split(':')
+    console.log('TimeFields', { value, label, name })
+    const valArray = (value ?? '').split(':')
     const [hours, setHours] = useState(valArray[0] ?? '')
     const [minutes, setMinutes] = useState(valArray[1] ?? '')
 
     const [hoursValidationState, hoursValidationMessage] = useMemo(() => {
-      if (hours !=='') return ['none', '']
+      if (hours !== '') return ['none', '']
       if (minutes === '') return ['none', '']
       return ['warning', 'must be set']
     }, [hours, minutes])

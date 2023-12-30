@@ -18,6 +18,7 @@ import { RadioGroupFromList } from './RadioGroupFromList'
 import { DateField } from './DateField'
 import { TimeField } from './TimeField'
 import { TimeFields } from './TimeFields'
+import { DateTimeField } from './DateTimeField'
 
 const widget = {
   text: ({ label, name, value, type, onChange, autoFocus }) => (
@@ -87,6 +88,15 @@ const widget = {
       autoFocus={autoFocus}
     />
   ),
+  datetimepicker: ({ label, name, value, onChange, autoFocus }) => (
+    <DateTimeField
+      label={label}
+      name={name}
+      value={value}
+      onChange={onChange}
+      autoFocus={autoFocus}
+    />
+  ),
   // checkbox: ({ name, value, onChange }) => (
   //   <Checkbox name={name} checked={value} onChange={onChange} />
   // ),
@@ -146,15 +156,15 @@ export const Jsonb = memo(
         const isDate = value instanceof Date
         // in json need to save date as iso string
         const val = { ...data, [name]: isDate ? value.toISOString() : value }
-        console.log('Jsonb, onChange', {
-          name,
-          value,
-          val,
-          jsonFieldName,
-          isDate,
-          dateIsoString: isDate ? value.toISOString() : undefined,
-          fieldNotDefined,
-        })
+        // console.log('Jsonb, onChange', {
+        //   name,
+        //   value,
+        //   val,
+        //   jsonFieldName,
+        //   isDate,
+        //   dateIsoString: isDate ? value.toISOString() : undefined,
+        //   fieldNotDefined,
+        // })
         db[table].update({
           where: { [idField]: id },
           data: { [jsonFieldName]: val },
