@@ -4,11 +4,20 @@ import { DatePicker } from '@fluentui/react-datepicker-compat'
 
 export const DateTimeField = memo(
   ({ label, name, value = '', autoFocus, onChange }) => {
-    const [year, setYear] = useState(value?.getFullYear?.() ?? '')
-    const [month, setMonth] = useState(value?.getMonth?.() ?? '')
-    const [day, setDay] = useState(value?.getDate?.() ?? '')
+    const [years, setYears] = useState(value?.getFullYear?.() ?? '')
+    const [months, setMonths] = useState(value?.getMonth?.() ?? '')
+    const [days, setDays] = useState(value?.getDate?.() ?? '')
     const [hours, setHours] = useState(value?.getHours?.() ?? '')
     const [minutes, setMinutes] = useState(value?.getMinutes?.() ?? '')
+
+    console.log('DateTimeField', {
+      value,
+      label,
+      name,
+      years,
+      months,
+      days,hours,minutes
+    })
 
     const [hoursValidationState, hoursValidationMessage] = useMemo(() => {
       if (!value) return ['none', '']
@@ -25,22 +34,35 @@ export const DateTimeField = memo(
 
     const onChangeDate = useCallback(
       (ev) => {
-        console.log('onChangeDate', { ev })
-        const newDate = event?.target.value
+        const newDate = ev?.target.value
+        console.log('onChangeDate', { ev, newDate })
         const newYear = newDate?.getFullYear?.() ?? ''
         const newMonth = newDate?.getMonth?.() ?? ''
         const newDay = newDate?.getDate?.() ?? ''
-        setYear(newYear)
-        setMonth(newMonth)
-        setDay(newDay)
+        setYears(newYear)
+        setMonths(newMonth)
+        setDays(newDay)
         if (newDate) {
-          const newDateTimeValue = new Date()
-          newDateTimeValue.setFullYear(newYear)
-          newDateTimeValue.setMonth(newMonth)
-          newDateTimeValue.setDate(newDay)
-          newDateTimeValue.setHours(hours)
-          newDateTimeValue.setMinutes(minutes)
+          const newDateTimeValue = new Date(
+            newYear,
+            newMonth,
+            newDay,
+            hours ?? 0,
+            minutes ?? 0,
+          )
+          console.log('onChangeDate', {
+            newYear,
+            newMonth,
+            newDay,
+            hours,
+            minutes,
+            newDateTimeValue,
+          })
           onChange({ target: { name, value: newDateTimeValue } })
+        } else {
+          if (!newDate && hours && minutes) {
+            onChange({ target: { name, value: null } })
+          }
         }
       },
       [hours, minutes, name, onChange],
@@ -49,36 +71,50 @@ export const DateTimeField = memo(
     const onChangeHours = useCallback(
       (ev, data) => {
         console.log('onChangeHours', { data, ev })
-        const newHours = data.value
+        const newHours = data.value ? +data.value : ''
         setHours(newHours)
-        if (minutes && value) {
-          const newDateTimeValue = new Date()
-          newDateTimeValue.setFullYear(year)
-          newDateTimeValue.setMonth(month)
-          newDateTimeValue.setDate(day)
-          newDateTimeValue.setHours(newHours)
-          newDateTimeValue.setMinutes(minutes)
+        if (years && months && days && newHours && minutes) {
+          const newDateTimeValue = new Date(
+            years,
+            months - 1,
+            days,
+            newHours,
+            minutes,
+          )
+          // console.log('onChangeHours', {
+          //   newHours,
+          //   year,
+          //   month,
+          //   day,
+          //   minutes,
+          //   newDateTimeValue,
+          // })
           onChange({ target: { name, value: newDateTimeValue } })
+        } else if (!years && !months && !days && !newHours && !minutes) {
+          onChange({ target: { name, value: null } })
         }
       },
-      [day, minutes, month, name, onChange, value, year],
+      [days, minutes, months, name, onChange, years],
     )
     const onChangeMinutes = useCallback(
       (ev, data) => {
         console.log('onChangeMinutes', { data, ev })
         const newMinutes = data.value
         setMinutes(newMinutes)
-        if (hours && value) {
-          const newDateTimeValue = new Date()
-          newDateTimeValue.setFullYear(year)
-          newDateTimeValue.setMonth(month)
-          newDateTimeValue.setDate(day)
-          newDateTimeValue.setHours(hours)
-          newDateTimeValue.setMinutes(newMinutes)
+        if (years && months && days && hours && newMinutes) {
+          const newDateTimeValue = new Date(
+            years,
+            months - 1,
+            days,
+            hours,
+            newMinutes,
+          )
           onChange({ target: { name, value: newDateTimeValue } })
+        } else if (!years && !months && !days && !hours && !newMinutes) {
+          onChange({ target: { name, value: null } })
         }
       },
-      [day, hours, month, name, onChange, value, year],
+      [days, hours, months, name, onChange, years],
     )
 
     return (
@@ -88,7 +124,9 @@ export const DateTimeField = memo(
             <DatePicker
               placeholder="Select a date or click to write..."
               name={name}
-              value={value}
+              value={
+                years && months && days ? new Date(years, months, days) : null
+              }
               onChange={onChangeDate}
               onSelectDate={(date) =>
                 onChangeDate({ target: { name, value: date } })

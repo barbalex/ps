@@ -92,7 +92,7 @@ const widget = {
     <DateTimeField
       label={label}
       name={name}
-      value={value}
+      value={value ? new Date(value) : null}
       onChange={onChange}
       autoFocus={autoFocus}
     />
@@ -154,17 +154,23 @@ export const Jsonb = memo(
       (e, dataReturned, fieldNotDefined) => {
         const { name, value } = getValueFromChange(e, dataReturned)
         const isDate = value instanceof Date
-        // in json need to save date as iso string
-        const val = { ...data, [name]: isDate ? value.toISOString() : value }
-        // console.log('Jsonb, onChange', {
-        //   name,
-        //   value,
-        //   val,
-        //   jsonFieldName,
-        //   isDate,
-        //   dateIsoString: isDate ? value.toISOString() : undefined,
-        //   fieldNotDefined,
-        // })
+        const val = { ...data }
+        if (value === undefined) {
+          // need to remove the key from the json object
+          delete val[name]
+        } else {
+          // in json need to save date as iso string
+          val[name] = isDate ? value.toISOString() : value
+        }
+        console.log('Jsonb, onChange', {
+          name,
+          value,
+          val,
+          jsonFieldName,
+          isDate,
+          dateIsoString: isDate ? value.toISOString() : undefined,
+          fieldNotDefined,
+        })
         db[table].update({
           where: { [idField]: id },
           data: { [jsonFieldName]: val },
