@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Field, RadioGroup, Radio, Switch } from '@fluentui/react-components'
 
 import { Taxonomies as Taxonomy } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
@@ -9,6 +8,8 @@ import { taxonomy as createTaxonomyPreset } from '../modules/dataPresets'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { Jsonb } from '../components/shared/Jsonb'
+import { SwitchField } from '../components/shared/SwitchField'
+import { RadioGroupField } from '../components/shared/RadioGroupField'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormMenu } from '../components/FormMenu'
 
@@ -72,17 +73,13 @@ export const Component = () => {
         value={row.name ?? ''}
         onChange={onChange}
       />
-      <Field label="Type">
-        <RadioGroup
-          layout="horizontal"
-          value={row.type ?? ''}
-          name="type"
-          onChange={onChange}
-        >
-          <Radio label="Species" value="species" />
-          <Radio label="Biotope" value="biotope" />
-        </RadioGroup>
-      </Field>
+      <RadioGroupField
+        label="Type"
+        name="type"
+        list={['species', 'biotope']}
+        value={row.type ?? ''}
+        onChange={onChange}
+      />
       <TextField
         label="Url"
         name="url"
@@ -96,10 +93,10 @@ export const Component = () => {
         id={row.taxonomy_id}
         data={row.data ?? {}}
       />
-      <Switch
+      <SwitchField
         label="Obsolete"
         name="obsolete"
-        checked={row.obsolete ?? false}
+        value={row.obsolete ?? false}
         onChange={onChange}
       />
     </div>
