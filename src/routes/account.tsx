@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Field, RadioGroup, Radio } from '@fluentui/react-components'
 
 import { Accounts as Account } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
@@ -9,6 +8,7 @@ import { account as createAccountPreset } from '../modules/dataPresets'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { DropdownField } from '../components/shared/DropdownField'
 import { DateField } from '../components/shared/DateField'
+import { RadioGroupField } from '../components/shared/RadioGroupField'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormMenu } from '../components/FormMenu'
 
@@ -68,20 +68,15 @@ export const Component = () => {
         table="users"
         value={row.user_id ?? ''}
         onChange={onChange}
-        autoFocus 
+        autoFocus
       />
-      <Field label="Type">
-        <RadioGroup
-          layout="horizontal"
-          value={row.type ?? ''}
-          name="type"
-          onChange={onChange}
-        >
-          <Radio label="free" value="free" />
-          <Radio label="basic" value="basic" />
-          <Radio label="premium" value="premium" />
-        </RadioGroup>
-      </Field>
+      <RadioGroupField
+        label="Type"
+        name="type"
+        list={['free', 'basic', 'premium']}
+        value={row.type ?? ''}
+        onChange={onChange}
+      />
       <DateField
         label="Starts"
         name="period_start"
