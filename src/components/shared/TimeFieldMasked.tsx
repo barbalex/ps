@@ -1,0 +1,29 @@
+import { memo } from 'react'
+import { Field } from '@fluentui/react-components'
+import type { InputProps } from '@fluentui/react-components'
+import { IMaskInput } from 'react-imask'
+
+export const TimeFieldMasked = memo((props: InputProps) => {
+  const { label, validationMessage, validationState, autoFocus, onChange } =
+    props
+
+  return (
+    <Field
+      label={label ?? '(no label provided)'}
+      validationMessage={validationMessage}
+      validationState={validationState}
+    >
+      <IMaskInput
+        className="imask-input"
+        {...props}
+        autoFocus={autoFocus}
+        mask={'X0:Y0'}
+        definitions={{ X: /[0-2]/, Y: /[0-5]/ }}
+        lazy={false}
+        overwrite="shift"
+        onAccept={(value) => onChange({ target: { name: props.name, value } })}
+        type="text"
+      />
+    </Field>
+  )
+})

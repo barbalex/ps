@@ -47,3 +47,22 @@
   width: var(--ant-button-only-icon-size-lg);
   height: var(--ant-button-only-icon-size-lg);
 }
+
+.imask-input {
+  line-height: 20px;
+  min-height: 32px;
+  padding: 0 10px;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-width: 1px;
+}
+.imask-input:focus {
+  outline: none;
+  border-bottom-color: var(--colorCompoundBrandStroke);
+  border-width: 2px;
+  transform: scaleX(1);
+  transition-property: transform;
+  transition-duration: 0.5s;
+  transition-delay: var(--curveAccelerateMid);
+}
