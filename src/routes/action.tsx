@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Switch } from '@fluentui/react-components'
 
 import { Actions as Action } from '../../../generated/client'
 import { action as createActionPreset } from '../modules/dataPresets'
