@@ -1,13 +1,13 @@
 import { useCallback, useMemo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Field, RadioGroup, Radio } from '@fluentui/react-components'
 
 import { PlaceUsers as PlaceUser } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { placeUser as createPlaceUserPreset } from '../modules/dataPresets'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { DropdownField } from '../components/shared/DropdownField'
+import { RadioGroupField } from '../components/shared/RadioGroupField'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormMenu } from '../components/FormMenu'
 
@@ -91,18 +91,13 @@ export const Component = () => {
         onChange={onChange}
         autoFocus 
       />
-      <Field label="Role">
-        <RadioGroup
-          layout="horizontal"
-          value={row.role ?? ''}
-          name="role"
-          onChange={onChange}
-        >
-          <Radio label="Reader" value="reader" />
-          <Radio label="Editor" value="editor" />
-          <Radio label="Manager" value="manager" />
-        </RadioGroup>
-      </Field>
+      <RadioGroupField
+        label="Role"
+        name="role"
+        list={['reader', 'editor','manager']}
+        value={row.role ?? ''}
+        onChange={onChange}
+      />
     </div>
   )
 }
