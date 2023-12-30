@@ -1,13 +1,13 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Switch } from '@fluentui/react-components'
 
 import { Lists as List } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { list as createListPreset } from '../modules/dataPresets'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { SwitchField } from '../components/shared/SwitchField'
 import { Jsonb } from '../components/shared/Jsonb'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormMenu } from '../components/FormMenu'
@@ -75,10 +75,10 @@ export const Component = () => {
         id={row.list_id}
         data={row.data ?? {}}
       />
-      <Switch
+      <SwitchField
         label="Obsolete"
         name="obsolete"
-        checked={row.obsolete ?? false}
+        value={row.obsolete}
         onChange={onChange}
       />
     </div>
