@@ -1,13 +1,14 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Field, Radio, RadioGroup, Switch } from '@fluentui/react-components'
 
 import { PlaceLevels as PlaceLevel } from '../../../generated/client'
 import { placeLevel as createPlaceLevelPreset } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { SwitchField } from '../components/shared/SwitchField'
+import { RadioGroupField } from '../components/shared/RadioGroupField'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormMenu } from '../components/FormMenu'
 
@@ -47,9 +48,10 @@ export const Component = () => {
   const onChange = useCallback(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
+      const valueToUse = name === 'level' ? +value : value
       db.place_levels.update({
         where: { place_level_id },
-        data: { [name]: value },
+        data: { [name]: valueToUse },
       })
     },
     [db.place_levels, place_level_id],
@@ -67,19 +69,13 @@ export const Component = () => {
         name="place_level_id"
         value={row.place_level_id}
       />
-      <Field label="Level">
-        <RadioGroup
-          layout="horizontal"
-          value={row.level ?? ''}
-          name="level"
-          onChange={(e, data) => {
-            onChange({ target: { name: 'level', value: +data.value } })
-          }}
-        >
-          <Radio label="1" value={1} />
-          <Radio label="2" value={2} />
-        </RadioGroup>
-      </Field>
+      <RadioGroupField
+        label="Level"
+        name="level"
+        list={[1, 2]}
+        value={row.level ?? ''}
+        onChange={onChange}
+      />
       <TextField
         label="Name (singular)"
         name="name_singular"
@@ -99,58 +95,58 @@ export const Component = () => {
         value={row.name_short ?? ''}
         onChange={onChange}
       />
-      <Switch
+      <SwitchField
         label="Enable reports"
         name="reports"
-        checked={row.reports ?? false}
+        value={row.reports ?? false}
         onChange={onChange}
       />
-      <Switch
+      <SwitchField
         label="Enable report values"
         name="report_values"
-        checked={row.report_values ?? false}
+        value={row.report_values ?? false}
         onChange={onChange}
       />
-      <Switch
+      <SwitchField
         label="Enable actions"
         name="actions"
-        checked={row.actions ?? false}
+        value={row.actions ?? false}
         onChange={onChange}
       />
-      <Switch
+      <SwitchField
         label="Enable action values"
         name="action_values"
-        checked={row.action_values ?? false}
+        value={row.action_values ?? false}
         onChange={onChange}
       />
-      <Switch
+      <SwitchField
         label="Enable action reports"
         name="action_reports"
-        checked={row.action_reports ?? false}
+        value={row.action_reports ?? false}
         onChange={onChange}
       />
-      <Switch
+      <SwitchField
         label="Enable checks"
         name="checks"
-        checked={row.checks ?? false}
+        value={row.checks ?? false}
         onChange={onChange}
       />
-      <Switch
+      <SwitchField
         label="Enable check values"
         name="check_values"
-        checked={row.check_values ?? false}
+        value={row.check_values ?? false}
         onChange={onChange}
       />
-      <Switch
+      <SwitchField
         label="Enable check taxa"
         name="check_taxa"
-        checked={row.check_taxa ?? false}
+        value={row.check_taxa ?? false}
         onChange={onChange}
       />
-      <Switch
+      <SwitchField
         label="Enable observation references"
         name="observation_references"
-        checked={row.observation_references ?? false}
+        value={row.observation_references ?? false}
         onChange={onChange}
       />
     </div>
