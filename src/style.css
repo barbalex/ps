@@ -51,12 +51,12 @@ body {
     margin-right: -10px;
     width: auto;
     &:before {
-      border-top-width: 2px;
-      border-color: rgba(55, 118, 28, 0.5);
+      border-top-width: 5px;
+      border-color: rgba(55, 118, 28, 0.3);
     }
     &:after {
-      border-top-width: 2px;
-      border-color: rgba(55, 118, 28, 0.5);
+      border-top-width: 5px;
+      border-color: rgba(55, 118, 28, 0.3);
     }
   }
 }

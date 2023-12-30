@@ -130,55 +130,57 @@ export const Component = () => {
         onChange={onChange}
       />
       <Divider />
-      <Label>Enable uploading files to:</Label>
-      <CheckboxField
-        label="Projects"
-        name="files_active_projects"
-        value={row.files_active_projects ?? false}
-        onChange={onChange}
-      />
-      <CheckboxField
-        label="Project reports"
-        name="files_active_projects_reports"
-        value={row.files_active_projects_reports ?? false}
-        onChange={onChange}
-      />
-      <CheckboxField
-        label="Subprojects"
-        name="files_active_subprojects"
-        value={row.files_active_subprojects ?? false}
-        onChange={onChange}
-      />
-      <CheckboxField
-        label="Subproject reports"
-        name="files_active_subproject_reports"
-        value={row.files_active_subproject_reports ?? false}
-        onChange={onChange}
-      />
-      <CheckboxField
-        label="Places"
-        name="files_active_places"
-        value={row.files_active_places ?? false}
-        onChange={onChange}
-      />
-      <CheckboxField
-        label="Actions"
-        name="files_active_actions"
-        value={row.files_active_actions ?? false}
-        onChange={onChange}
-      />
-      <CheckboxField
-        label="Checks"
-        name="files_active_checks"
-        value={row.files_active_checks ?? false}
-        onChange={onChange}
-      />
-      <CheckboxField
-        label="Check reports"
-        name="files_active_check_reports"
-        value={row.files_active_check_reports ?? false}
-        onChange={onChange}
-      />
+      <div className="checkboxfield-list">
+        <Label>Enable uploading files to:</Label>
+        <CheckboxField
+          label="Projects"
+          name="files_active_projects"
+          value={row.files_active_projects ?? false}
+          onChange={onChange}
+        />
+        <CheckboxField
+          label="Project reports"
+          name="files_active_projects_reports"
+          value={row.files_active_projects_reports ?? false}
+          onChange={onChange}
+        />
+        <CheckboxField
+          label="Subprojects"
+          name="files_active_subprojects"
+          value={row.files_active_subprojects ?? false}
+          onChange={onChange}
+        />
+        <CheckboxField
+          label="Subproject reports"
+          name="files_active_subproject_reports"
+          value={row.files_active_subproject_reports ?? false}
+          onChange={onChange}
+        />
+        <CheckboxField
+          label="Places"
+          name="files_active_places"
+          value={row.files_active_places ?? false}
+          onChange={onChange}
+        />
+        <CheckboxField
+          label="Actions"
+          name="files_active_actions"
+          value={row.files_active_actions ?? false}
+          onChange={onChange}
+        />
+        <CheckboxField
+          label="Checks"
+          name="files_active_checks"
+          value={row.files_active_checks ?? false}
+          onChange={onChange}
+        />
+        <CheckboxField
+          label="Check reports"
+          name="files_active_check_reports"
+          value={row.files_active_check_reports ?? false}
+          onChange={onChange}
+        />
+      </div>
     </div>
   )
 }
