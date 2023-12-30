@@ -10,17 +10,6 @@ export const DateTimeField = memo(
     const [hours, setHours] = useState(value?.getHours?.() ?? '')
     const [minutes, setMinutes] = useState(value?.getMinutes?.() ?? '')
 
-    // console.log('DateTimeField', {
-    //   value,
-    //   label,
-    //   name,
-    //   years,
-    //   months,
-    //   days,
-    //   hours,
-    //   minutes,
-    // })
-
     const [dateValidationState, dateValidationMessage] = useMemo(() => {
       if (!value && hours === '' && minutes === '') return ['none', '']
       if (years !== '') return ['none', '']
