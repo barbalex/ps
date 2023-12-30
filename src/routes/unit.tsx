@@ -1,13 +1,13 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Switch } from '@fluentui/react-components'
 
 import { Units as Unit } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { unit as createUnitPreset } from '../modules/dataPresets'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { SwitchField } from '../components/shared/SwitchField'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormMenu } from '../components/FormMenu'
 
@@ -64,52 +64,52 @@ export const Component = () => {
         value={row.name ?? ''}
         onChange={onChange}
       />
-      <Switch
+      <SwitchField
         label="Use for action values"
         name="use_for_action_values"
-        checked={row.use_for_action_values ?? false}
+        value={row.use_for_action_values ?? false}
         onChange={onChange}
       />
-      <Switch
+      <SwitchField
         label="Use for action report values"
         name="use_for_action_report_values"
-        checked={row.use_for_action_report_values ?? false}
+        value={row.use_for_action_report_values ?? false}
         onChange={onChange}
       />
-      <Switch
+      <SwitchField
         label="Use for check values"
         name="use_for_check_values"
-        checked={row.use_for_check_values ?? false}
+        value={row.use_for_check_values ?? false}
         onChange={onChange}
       />
-      <Switch
+      <SwitchField
         label="Use for place report values"
         name="use_for_place_report_values"
-        checked={row.use_for_place_report_values ?? false}
+        value={row.use_for_place_report_values ?? false}
         onChange={onChange}
       />
-      <Switch
+      <SwitchField
         label="Use for goal report values"
         name="use_for_goal_report_values"
-        checked={row.use_for_goal_report_values ?? false}
+        value={row.use_for_goal_report_values ?? false}
         onChange={onChange}
       />
-      <Switch
+      <SwitchField
         label="Use for subproject taxa"
         name="use_for_subproject_taxa"
-        checked={row.use_for_subproject_taxa ?? false}
+        value={row.use_for_subproject_taxa ?? false}
         onChange={onChange}
       />
-      <Switch
+      <SwitchField
         label="Use for check taxa"
         name="use_for_check_taxa"
-        checked={row.use_for_check_taxa ?? false}
+        value={row.use_for_check_taxa ?? false}
         onChange={onChange}
       />
-      <Switch
+      <SwitchField
         label="Summable"
         name="summable"
-        checked={row.summable ?? false}
+        value={row.summable ?? false}
         onChange={onChange}
       />
       <TextField
