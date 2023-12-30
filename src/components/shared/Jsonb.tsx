@@ -10,17 +10,18 @@ import { useParams } from 'react-router-dom'
 import { useElectric } from '../../ElectricProvider'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { TextField } from './TextField'
-import { TimeFieldMasked } from './TimeFieldMasked'
+// import { TimeFieldMasked } from './TimeFieldMasked'
 import { TextArea } from './TextArea'
 import { DropdownField } from './DropdownField'
 import { DropdownFieldFromList } from './DropdownFieldFromList'
 import { RadioGroupFromList } from './RadioGroupFromList'
 import { DateField } from './DateField'
 import { TimeField } from './TimeField'
+import { TimeFields } from './TimeFields'
 
 const widget = {
   text: ({ label, name, value, type, onChange, autoFocus }) => (
-    <TimeFieldMasked
+    <TimeFields
       label={label}
       name={name}
       value={value}
@@ -140,19 +141,20 @@ export const Jsonb = memo(
     }, [db])
 
     const onChange = useCallback(
-      (e, dataReturned) => {
+      (e, dataReturned, fieldNotDefined) => {
         const { name, value } = getValueFromChange(e, dataReturned)
         const isDate = value instanceof Date
         // in json need to save date as iso string
         const val = { ...data, [name]: isDate ? value.toISOString() : value }
-        // console.log('Jsonb, onChange', {
-        //   name,
-        //   value,
-        //   val,
-        //   jsonFieldName,
-        //   isDate,
-        //   dateIsoString: isDate ? value.toISOString() : undefined,
-        // })
+        console.log('Jsonb, onChange', {
+          name,
+          value,
+          val,
+          jsonFieldName,
+          isDate,
+          dateIsoString: isDate ? value.toISOString() : undefined,
+          fieldNotDefined,
+        })
         db[table].update({
           where: { [idField]: id },
           data: { [jsonFieldName]: val },
@@ -208,7 +210,10 @@ export const Jsonb = memo(
           value={
             data?.[dataKey]?.toLocaleDateString?.() ?? data?.[dataKey] ?? ''
           }
-          onChange={onChange}
+          onChange={(e, dataReturned) => {
+            // if value was removed, remove the key also
+            onChange(e, dataReturned, true)
+          }}
           validationState="warning"
           validationMessage="This field is not defined for this project."
           autoFocus={

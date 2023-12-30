@@ -15,13 +15,16 @@ export const TimeFieldMasked = memo((props: InputProps) => {
     >
       <IMaskInput
         className="imask-input"
-        {...props}
         autoFocus={autoFocus}
-        mask={'X0:Y0'}
+        mask="X0:Y0"
         definitions={{ X: /[0-2]/, Y: /[0-5]/ }}
         lazy={false}
         overwrite="shift"
-        onAccept={(value) => onChange({ target: { name: props.name, value } })}
+        onAccept={(value) => {
+          if (value.includes('_')) return
+          console.log('onAccept', { value })
+          onChange({ target: { name: props.name, value } })
+        }}
         type="text"
       />
     </Field>

@@ -66,3 +66,12 @@
   transition-duration: 0.5s;
   transition-delay: var(--curveAccelerateMid);
 }
+.field-group-horizontal{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 10px;
+  label {
+    color: grey;
+  }
+}
