@@ -34,14 +34,16 @@ export const DropdownField = memo((props: InputProps) => {
     [options, value],
   )
 
-  const validationState = results?.length ? 'none' : 'warning'
-  const validationMessage = results?.length
-    ? undefined
-    : `No ${table} found. Please add one first.`
+  const validationState = !results?.length && !!value ? 'warning' : 'none'
+  const validationMessage =
+    !results?.length && !!value
+      ? `No ${table} found. Please add one first.`
+      : undefined
 
   // console.log('DropdownField', {
   //   name,
   //   label,
+  //   table,
   //   value,
   //   options,
   //   selectedOptions,
