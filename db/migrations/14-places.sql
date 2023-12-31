@@ -42,10 +42,6 @@ COMMENT ON COLUMN projects.files_active_projects IS 'Whether files are used in t
 
 COMMENT ON COLUMN projects.files_active_subprojects IS 'Whether files are used in table subprojects. Preset: true';
 
-COMMENT ON COLUMN places.label_by IS 'Used to label places in lists. Contains an array of names of fields included in the data field (first priority) or table itself. TODO: One or multiple comma separated virtual fields will be added in sqlite and postgresql.';
-
-COMMENT ON COLUMN places.order_by IS 'Used to order places in lists. Contains an array of names of fields included in the data field (first priority) or table itself. TODO: One or multiple comma separated virtual fields will be added and indexed in sqlite and postgresql. ';
-
 -- COMMENT ON COLUMN places.geometry IS 'geometry of place';
 ALTER TABLE places ENABLE electric;
 
