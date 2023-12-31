@@ -16,6 +16,7 @@ CREATE TABLE place_levels(
   check_values boolean DEFAULT NULL, -- FALSE,
   check_taxa boolean DEFAULT NULL, -- FALSE,
   observation_references boolean DEFAULT NULL, -- FALSE,
+  label_replace_by_generated_column text DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
 );
 
