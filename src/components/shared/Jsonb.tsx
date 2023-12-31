@@ -16,13 +16,13 @@ import { DropdownField } from './DropdownField'
 import { DropdownFieldFromList } from './DropdownFieldFromList'
 import { RadioGroupFromList } from './RadioGroupFromList'
 import { DateField } from './DateField'
-import { TimeField } from './TimeField'
+// import { TimeField } from './TimeField'
 import { TimeFields } from './TimeFields'
 import { DateTimeField } from './DateTimeField'
 
 const widget = {
   text: ({ label, name, value, type, onChange, autoFocus }) => (
-    <TimeFields
+    <TextField
       label={label}
       name={name}
       value={value}
@@ -80,7 +80,7 @@ const widget = {
     />
   ),
   timepicker: ({ label, name, value, onChange, autoFocus }) => (
-    <TimeField
+    <TimeFields
       label={label}
       name={name}
       value={value}
@@ -217,7 +217,7 @@ export const Jsonb = memo(
       },
     )
 
-    const fieldsFromDataKeysNotDefined = dataKeysNotDefined.map((dataKey) => {
+    const fieldsFromDataKeysNotDefined = dataKeysNotDefined.map((dataKey, index) => {
       return (
         <TextField
           key={dataKey}
