@@ -5,8 +5,6 @@ CREATE TABLE places(
   parent_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE NO action ON UPDATE CASCADE,
   level integer DEFAULT NULL, -- 1,
   data jsonb DEFAULT NULL,
-  label_by jsonb DEFAULT NULL,
-  order_by jsonb DEFAULT NULL,
   --geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
   label_replace_by_generated_column text DEFAULT NULL,
   files_active_places boolean DEFAULT NULL, -- TRUE,

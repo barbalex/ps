@@ -7,6 +7,8 @@ CREATE TABLE projects(
   subproject_name_singular text DEFAULT NULL,
   subproject_name_plural text DEFAULT NULL,
   subproject_order_by text DEFAULT NULL,
+  places_label_by text DEFAULT NULL,
+  places_order_by text DEFAULT NULL,
   values_on_multiple_levels text DEFAULT NULL,
   multiple_action_values_on_same_level text DEFAULT NULL,
   multiple_check_values_on_same_level text DEFAULT NULL,
@@ -37,6 +39,10 @@ COMMENT ON COLUMN projects.type IS '"species" or "biotope", preset: "species"';
 COMMENT ON COLUMN projects.subproject_name_singular IS 'Preset: "Art"';
 
 COMMENT ON COLUMN projects.subproject_name_plural IS 'Preset: "Arten"';
+
+COMMENT ON COLUMN projects.places_label_by IS 'Used to label places in lists. Contains an array of names of fields included in the data field (first priority) or table itself. TODO: One or multiple comma separated virtual fields will be added in sqlite and postgresql.';
+
+COMMENT ON COLUMN projects.places_order_by IS 'Used to order places in lists. Contains an array of names of fields included in the data field (first priority) or table itself. TODO: One or multiple comma separated virtual fields will be added and indexed in sqlite and postgresql. ';
 
 COMMENT ON COLUMN projects.values_on_multiple_levels IS 'One of: "use first", "use second", "use all". Preset: "use first"';
 
