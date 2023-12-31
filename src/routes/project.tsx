@@ -60,7 +60,7 @@ export const Component = () => {
     return <div>Loading...</div>
   }
 
-  console.log('project, data:', row.data)
+  // console.log('project, row:', row)
 
   return (
     <div className="form-container">
@@ -71,6 +71,7 @@ export const Component = () => {
         name="name"
         value={row.name ?? ''}
         onChange={onChange}
+        autoFocus
       />
       <Jsonb
         table="projects"
@@ -92,7 +93,6 @@ export const Component = () => {
         name="subproject_name_singular"
         value={row.subproject_name_singular ?? ''}
         onChange={onChange}
-        autoFocus
       />
       <TextField
         label="Name of subproject (plural)"
