@@ -7,6 +7,7 @@ CREATE TABLE places(
   data jsonb DEFAULT NULL,
   --geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
   label_replace_by_generated_column text DEFAULT NULL,
+  label_triggered text DEFAULT NULL,
   files_active_places boolean DEFAULT NULL, -- TRUE,
   deleted boolean DEFAULT NULL -- FALSE
 );
