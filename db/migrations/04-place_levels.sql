@@ -6,7 +6,6 @@ CREATE TABLE place_levels(
   name_singular text DEFAULT NULL,
   name_plural text DEFAULT NULL,
   name_short text DEFAULT NULL,
-  order_by text DEFAULT NULL,
   reports boolean DEFAULT NULL, -- FALSE,
   report_values boolean DEFAULT NULL, -- FALSE,
   actions boolean DEFAULT NULL, -- FALSE,
@@ -39,7 +38,6 @@ COMMENT ON COLUMN place_levels.name_plural IS 'Preset: "Populationen"';
 
 COMMENT ON COLUMN place_levels.name_short IS 'Preset: "Pop"';
 
-COMMENT ON COLUMN place_levels.order_by IS 'Used to order places. Contains a field included in the data. Can be a comma separated list of fields. TODO: One or multiple comma separated virtual fields will be added and indexed in sqlite and postgresql. Preset: "name_singular". Alternatives: data.[field]';
 
 COMMENT ON COLUMN place_levels.reports IS 'Are reports used? Preset: false';
 

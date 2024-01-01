@@ -152,7 +152,6 @@ CREATE TABLE place_levels(
   name_singular text DEFAULT NULL,
   name_plural text DEFAULT NULL,
   name_short text DEFAULT NULL,
-  order_by text DEFAULT NULL,
   reports boolean DEFAULT NULL, -- FALSE,
   report_values boolean DEFAULT NULL, -- FALSE,
   actions boolean DEFAULT NULL, -- FALSE,
