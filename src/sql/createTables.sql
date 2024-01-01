@@ -72,8 +72,10 @@ CREATE TABLE projects(
   subproject_name_singular text DEFAULT NULL,
   subproject_name_plural text DEFAULT NULL,
   subproject_order_by text DEFAULT NULL,
-  places_label_by text DEFAULT NULL,
-  places_order_by text DEFAULT NULL,
+  places_label_by text DEFAULT NULL, -- TODO: jsonb array
+  places_order_by text DEFAULT NULL, -- TODO: jsonb array
+  persons_label_by text DEFAULT NULL, -- TODO: jsonb array
+  persons_order_by text DEFAULT NULL, -- TODO: jsonb array
   values_on_multiple_levels text DEFAULT NULL,
   multiple_action_values_on_same_level text DEFAULT NULL,
   multiple_check_values_on_same_level text DEFAULT NULL,
@@ -1386,8 +1388,6 @@ CREATE TABLE persons(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   email text DEFAULT NULL,
   data jsonb DEFAULT NULL,
-  label_by jsonb DEFAULT NULL,
-  order_by jsonb DEFAULT NULL,
   deleted boolean DEFAULT FALSE
 );
 
@@ -1408,10 +1408,6 @@ COMMENT ON TABLE persons IS 'Persons are used to assign actions and checks to';
 COMMENT ON COLUMN persons.account_id IS 'redundant account_id enhances data safety';
 
 COMMENT ON COLUMN persons.data IS 'Room for person specific data, defined in "fields" table';
-
-COMMENT ON COLUMN persons.label_by IS 'Used to label persons in lists. Contains an array of names of fields included in the data field (first priority) or table itself. TODO: One or multiple comma separated virtual fields will be added in sqlite and postgresql.';
-
-COMMENT ON COLUMN persons.order_by IS 'Used to order persons in lists. Contains an array of names of fields included in the data field (first priority) or table itself. TODO: One or multiple comma separated virtual fields will be added and indexed in sqlite and postgresql. ';
 
 ---------------------------------------------
 -- field_types
