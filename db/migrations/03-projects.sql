@@ -11,6 +11,8 @@ CREATE TABLE projects(
   places_order_by text DEFAULT NULL, -- TODO: jsonb array
   persons_label_by text DEFAULT NULL, -- TODO: jsonb array
   persons_order_by text DEFAULT NULL, -- TODO: jsonb array
+  goal_reports_label_by text DEFAULT NULL, -- TODO: jsonb array
+  goal_reports_order_by text DEFAULT NULL, -- TODO: jsonb array
   values_on_multiple_levels text DEFAULT NULL,
   multiple_action_values_on_same_level text DEFAULT NULL,
   multiple_check_values_on_same_level text DEFAULT NULL,
