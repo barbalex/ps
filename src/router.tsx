@@ -129,6 +129,9 @@ export const router = (db) =>
                                       index: true,
                                       lazy: () => import('./routes/place'),
                                     },
+                                    // TODO:
+                                    // add places with place_id2
+                                    // should have same children as this
                                     {
                                       path: 'checks',
                                       element: null,
