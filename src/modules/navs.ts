@@ -1,4 +1,15 @@
 export const buildNavs = async ({ table, params, db }) => {
+  const {
+    project_id,
+    subproject_id,
+    place_id,
+    place_id2,
+    goal_id,
+    goal_report_id,
+    list_id,
+    taxonomy_id,
+    observation_source_id,
+  } = params
   // console.log('navs:', { table, params, db })
 
   switch (table) {
@@ -18,38 +29,36 @@ export const buildNavs = async ({ table, params, db }) => {
     case `projects`:
       return [
         {
-          path: `/projects/${params.project_id}/subprojects`,
+          path: `/projects/${project_id}/subprojects`,
           text: 'Subprojects',
         },
         {
-          path: `/projects/${params.project_id}/reports`,
+          path: `/projects/${project_id}/reports`,
           text: 'Reports',
         },
         {
-          path: `/projects/${params.project_id}/persons`,
+          path: `/projects/${project_id}/persons`,
           text: 'Persons',
         },
-        { path: `/projects/${params.project_id}/lists`, text: 'Lists' },
+        { path: `/projects/${project_id}/lists`, text: 'Lists' },
         {
-          path: `/projects/${params.project_id}/taxonomies`,
+          path: `/projects/${project_id}/taxonomies`,
           text: 'Taxonomies',
         },
-        { path: `/projects/${params.project_id}/units`, text: 'Units' },
-        { path: `/projects/${params.project_id}/users`, text: 'Users' },
+        { path: `/projects/${project_id}/units`, text: 'Units' },
+        { path: `/projects/${project_id}/users`, text: 'Users' },
         {
-          path: `/projects/${params.project_id}/place-levels`,
+          path: `/projects/${project_id}/place-levels`,
           text: 'Place Levels',
         },
-        { path: `/projects/${params.project_id}/fields`, text: 'Fields' },
+        { path: `/projects/${project_id}/fields`, text: 'Fields' },
         {
-          path: `/projects/${params.project_id}/observation-sources`,
+          path: `/projects/${project_id}/observation-sources`,
           text: 'Observation Sources',
         },
       ]
     case 'subprojects': {
       // need to fetch how places are named
-      const project_id =
-        params.project_id ?? '99999999-9999-9999-9999-999999999999'
       // findUnique only works for primary keys
       const placeLevels = await db?.place_levels?.findMany({
         where: { project_id, deleted: false, level: 1 },
@@ -60,23 +69,23 @@ export const buildNavs = async ({ table, params, db }) => {
 
       return [
         {
-          path: `/projects/${params.project_id}/subprojects/${params.subproject_id}/places`,
+          path: `/projects/${project_id}/subprojects/${subproject_id}/places`,
           text: placeName,
         },
         {
-          path: `/projects/${params.project_id}/subprojects/${params.subproject_id}/reports`,
+          path: `/projects/${project_id}/subprojects/${subproject_id}/reports`,
           text: 'Reports',
         },
         {
-          path: `/projects/${params.project_id}/subprojects/${params.subproject_id}/goals`,
+          path: `/projects/${project_id}/subprojects/${subproject_id}/goals`,
           text: 'Goals',
         },
         {
-          path: `/projects/${params.project_id}/subprojects/${params.subproject_id}/taxa`,
+          path: `/projects/${project_id}/subprojects/${subproject_id}/taxa`,
           text: 'Taxa',
         },
         {
-          path: `/projects/${params.project_id}/subprojects/${params.subproject_id}/users`,
+          path: `/projects/${project_id}/subprojects/${subproject_id}/users`,
           text: 'Users',
         },
       ]
@@ -86,123 +95,136 @@ export const buildNavs = async ({ table, params, db }) => {
       // if place_id2 exists, do not add any more place levels
       // add second place level if exists
       // name it as defined in place_levels
-      const needToIncludeLevel2 = params.place_id && !params.place_id2
-      const isLevel2 = !!params.place_id2
+      const needToIncludeLevel2 = place_id && !place_id2
       let placeName = 'Places'
       if (needToIncludeLevel2) {
         // findUnique only works for primary keys
         const placeLevels = await db?.place_levels?.findMany({
-          where: { project_id: params.project_id, deleted: false, level: 2 },
+          where: { project_id, deleted: false, level: 2 },
         })
         const placeLevel = placeLevels?.[0]
         placeName =
           placeLevel?.name_plural ?? placeLevel?.name_short ?? 'Places'
       }
 
-      console.log('paramsLength:', {
-        place_id: params.place_id,
-        place_id2: params.place_id2,
-      })
-
       return [
         ...[
           needToIncludeLevel2
             ? {
-                path: `/projects/${params.project_id}/subprojects/${
-                  params.subproject_id
-                }/places/${params.place_id}/places${
-                  isLevel2 ? `/${params.place_id2}/places` : ''
-                }`,
+                path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/places`,
                 text: placeName,
               }
             : {},
         ],
         {
-          path: `/projects/${params.project_id}/subprojects/${params.subproject_id}/places/${params.place_id}/checks`,
+          path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+            place_id2 ? `/places/${place_id2}` : ''
+          }/checks`,
           text: 'Checks',
         },
         {
-          path: `/projects/${params.project_id}/subprojects/${params.subproject_id}/places/${params.place_id}/actions`,
+          path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+            place_id2 ? `/places/${place_id2}` : ''
+          }/actions`,
           text: 'Actions',
         },
         {
-          path: `/projects/${params.project_id}/subprojects/${params.subproject_id}/places/${params.place_id}/reports`,
+          path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+            place_id2 ? `/places/${place_id2}` : ''
+          }/reports`,
           text: 'Reports',
         },
         {
-          path: `/projects/${params.project_id}/subprojects/${params.subproject_id}/places/${params.place_id}/users`,
+          path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+            place_id2 ? `/places/${place_id2}` : ''
+          }/users`,
           text: 'Users',
         },
       ]
     }
-    case 'checks':
+    case 'checks': {
       return [
         {
-          path: `/projects/${params.project_id}/subprojects/${params.subproject_id}/places/${params.place_id}/checks/${params.check_id}/values`,
+          path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+            place_id2 ? `/places/${place_id2}` : ''
+          }/checks/${params.check_id}/values`,
           text: 'Values',
         },
         {
-          path: `/projects/${params.project_id}/subprojects/${params.subproject_id}/places/${params.place_id}/checks/${params.check_id}/taxa`,
+          path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+            place_id2 ? `/places/${place_id2}` : ''
+          }/checks/${params.check_id}/taxa`,
           text: 'Taxa',
         },
       ]
+    }
     case 'actions':
       return [
         {
-          path: `/projects/${params.project_id}/subprojects/${params.subproject_id}/places/${params.place_id}/actions/${params.action_id}/values`,
+          path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+            place_id2 ? `/places/${place_id2}` : ''
+          }/actions/${params.action_id}/values`,
           text: 'Values',
         },
         {
-          path: `/projects/${params.project_id}/subprojects/${params.subproject_id}/places/${params.place_id}/actions/${params.action_id}/reports`,
+          path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+            place_id2 ? `/places/${place_id2}` : ''
+          }/actions/${params.action_id}/reports`,
           text: 'Reports',
         },
       ]
     case 'action_reports':
       return [
         {
-          path: `/projects/${params.project_id}/subprojects/${params.subproject_id}/places/${params.place_id}/actions/${params.action_id}/reports/${params.action_report_id}/values`,
+          path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+            place_id2 ? `/places/${place_id2}` : ''
+          }/actions/${params.action_id}/reports/${
+            params.action_report_id
+          }/values`,
           text: 'Values',
         },
       ]
     case 'place_reports':
       return [
         {
-          path: `/projects/${params.project_id}/subprojects/${params.subproject_id}/places/${params.place_id}/reports/${params.place_report_id}/values`,
+          path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+            place_id2 ? `/places/${place_id2}` : ''
+          }/reports/${params.place_report_id}/values`,
           text: 'Values',
         },
       ]
     case 'goals':
       return [
         {
-          path: `/projects/${params.project_id}/subprojects/${params.subproject_id}/goals/${params.goal_id}/reports`,
+          path: `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports`,
           text: 'Reports',
         },
       ]
     case 'goal_reports':
       return [
         {
-          path: `/projects/${params.project_id}/subprojects/${params.subproject_id}/goals/${params.goal_id}/reports/${params.goal_report_id}/values`,
+          path: `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${goal_report_id}/values`,
           text: 'Values',
         },
       ]
     case 'lists':
       return [
         {
-          path: `/projects/${params.project_id}/lists/${params.list_id}/values`,
+          path: `/projects/${project_id}/lists/${list_id}/values`,
           text: 'Values',
         },
       ]
     case 'taxonomies':
       return [
         {
-          path: `/projects/${params.project_id}/taxonomies/${params.taxonomy_id}/taxa`,
+          path: `/projects/${project_id}/taxonomies/${taxonomy_id}/taxa`,
           text: 'Taxa',
         },
       ]
     case 'observation_sources':
       return [
         {
-          path: `/projects/${params.project_id}/observation-sources/${params.observation_source_id}/observations`,
+          path: `/projects/${project_id}/observation-sources/${observation_source_id}/observations`,
           text: 'Observations',
         },
       ]

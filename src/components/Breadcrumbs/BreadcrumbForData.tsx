@@ -61,19 +61,24 @@ export const Breadcrumb = ({ match }) => {
   useEffect(() => {
     const get = async () => {
       if (table !== 'places') return
-      const placeLevels = await db.place_levels?.findMany({
-        where: {
-          project_id: match.params.project_id,
-          deleted: false,
-        },
-      })
-      const levelWanted = Object.keys(match.params).length < 4 ? 1 : 2
-      const levelRow = (placeLevels ?? []).find((r) => r.level === levelWanted)
+      const path = match.pathname.split('/')
+      path.shift()
+      const placesCount = path.filter((p) => p.includes('places')).length
+      const levelWanted = placesCount < 2 ? 1 : 2
+      const placeLevels =
+        (await db.place_levels?.findMany({
+          where: {
+            project_id: match.params.project_id,
+            deleted: false,
+            level: levelWanted,
+          },
+        })) ?? []
+      const levelRow = placeLevels[0]
       const label = levelRow?.name_plural ?? levelRow?.name_short ?? 'Places'
       setLabel(label)
     }
     get()
-  }, [db, match.params, match.params.project_id, table])
+  }, [db, match, match.params, match.params.project_id, table])
 
   // console.log('BreadcrumbForData', {
   //   // myNavs,
