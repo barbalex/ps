@@ -45,24 +45,24 @@ export const DataNavs = ({ matches }) => {
     () => db[table]?.liveMany({ where: filterParams }),
     [db, location.pathname],
   )
-  const project_id = params.project_id ?? '99999999-9999-9999-9999-999999999999'
-  const { results: levelResults } = useLiveQuery(
-    () => db.place_levels?.liveMany({ where: { project_id, deleted: false } }),
-    [db, project_id],
-  )
+  // const project_id = params.project_id ?? '99999999-9999-9999-9999-999999999999'
+  // const { results: levelResults } = useLiveQuery(
+  //   () => db.place_levels?.liveMany({ where: { project_id, deleted: false } }),
+  //   [db, project_id],
+  // )
 
-  console.log('DataNavs', {
-    table,
-    params,
-    idField,
-    pathname,
-    pathArray,
-    parentTable,
-    parentId,
-    parentIdFieldName,
-    tableResults,
-    levelResults,
-  })
+  // console.log('DataNavs', {
+  //   table,
+  //   params,
+  //   idField,
+  //   pathname,
+  //   pathArray,
+  //   parentTable,
+  //   parentId,
+  //   parentIdFieldName,
+  //   tableResults,
+  //   levelResults,
+  // })
 
   return (
     <nav className="navs">
