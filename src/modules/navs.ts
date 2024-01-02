@@ -69,8 +69,9 @@ export const buildNavs = ({ table, params }) => {
         },
       ]
     case 'places':
-      // TODO: 
+      // TODO:
       // add second place level if exists
+      // name it as defined in place_levels
       return [
         {
           path: `/projects/${params.project_id}/subprojects/${params.subproject_id}/places/${params.place_id}/checks`,

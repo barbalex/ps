@@ -16,16 +16,14 @@ export const Breadcrumb = ({ match }) => {
       ? 'breadcrumbs__crumb is-active'
       : 'breadcrumbs__crumb link'
 
-  const navs = buildNavs({ table, params: match.params }) ?? []
-
   const idField = idFieldFromTable(table)
   const queryTable = table === 'root' || table === 'docs' ? 'projects' : table
   const { db } = useElectric()
-  // TODO: 
+  // TODO:
   // if table === 'places'
   // include subproject > project > place_levels
   // to:
-  // 1. know how to label place
+  // 1. know how to label place?
   // 2. know if second level exists
   // then pass to buildNavs
   const { results } = useLiveQuery(
@@ -36,6 +34,8 @@ export const Breadcrumb = ({ match }) => {
     [db, queryTable, match],
   )
   const row = results?.[0]
+
+  const navs = buildNavs({ table, params: match.params }) ?? []
 
   const label =
     table === 'root' || table === 'docs' ? text : row?.label ?? row?.[idField]

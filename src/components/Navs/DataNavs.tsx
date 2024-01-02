@@ -33,6 +33,12 @@ export const DataNavs = ({ matches }) => {
     filterParams[parentIdFieldName] = params[parentIdFieldName]
   }
 
+  // TODO:
+  // if table === 'places'
+  // include subproject > project > place_levels
+  // to:
+  // 1. know how to label places?
+  // 2. know if second level exists
   const { db } = useElectric()
   const { results } = useLiveQuery(
     () => db[table]?.liveMany({ where: filterParams }),
@@ -57,7 +63,10 @@ export const DataNavs = ({ matches }) => {
         const label = result.label ?? result[idField]
 
         return (
-          <Link key={`${result[idField]}/${index}`} to={`${pathname}/${result[idField]}`}>
+          <Link
+            key={`${result[idField]}/${index}`}
+            to={`${pathname}/${result[idField]}`}
+          >
             {label}
           </Link>
         )
