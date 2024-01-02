@@ -21,6 +21,13 @@ export const Breadcrumb = ({ match }) => {
   const idField = idFieldFromTable(table)
   const queryTable = table === 'root' || table === 'docs' ? 'projects' : table
   const { db } = useElectric()
+  // TODO: 
+  // if table === 'places'
+  // include subproject > project > place_levels
+  // to:
+  // 1. know how to label place
+  // 2. know if second level exists
+  // then pass to buildNavs
   const { results } = useLiveQuery(
     () =>
       db[queryTable]?.liveMany({
