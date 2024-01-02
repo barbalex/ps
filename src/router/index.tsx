@@ -1,8 +1,9 @@
 import { createBrowserRouter } from 'react-router-dom'
 
-import { Header } from './components/Header'
-import { ErrorPage } from './routes/error'
-import { buildNavs } from './modules/navs'
+import { Header } from '../components/Header'
+import { ErrorPage } from '../routes/error'
+import { buildNavs } from '../modules/navs'
+import {placesChildren} from './placesChildren'
 
 export const router = (db) =>
   createBrowserRouter([
@@ -25,7 +26,7 @@ export const router = (db) =>
           children: [
             {
               index: true,
-              lazy: () => import('./routes/home'),
+              lazy: () => import('../routes/home'),
             },
             {
               path: 'projects',
@@ -38,7 +39,7 @@ export const router = (db) =>
                 }),
               },
               children: [
-                { index: true, lazy: () => import('./routes/projects') },
+                { index: true, lazy: () => import('../routes/projects') },
                 {
                   path: ':project_id',
                   element: null,
@@ -56,7 +57,7 @@ export const router = (db) =>
                       }),
                   },
                   children: [
-                    { index: true, lazy: () => import('./routes/project') },
+                    { index: true, lazy: () => import('../routes/project') },
                     {
                       path: 'subprojects',
                       element: null,
@@ -70,7 +71,7 @@ export const router = (db) =>
                       children: [
                         {
                           index: true,
-                          lazy: () => import('./routes/subprojects'),
+                          lazy: () => import('../routes/subprojects'),
                         },
                         {
                           path: ':subproject_id',
@@ -91,7 +92,7 @@ export const router = (db) =>
                           children: [
                             {
                               index: true,
-                              lazy: () => import('./routes/subproject'),
+                              lazy: () => import('../routes/subproject'),
                             },
                             {
                               path: 'places',
@@ -106,7 +107,7 @@ export const router = (db) =>
                               children: [
                                 {
                                   index: true,
-                                  lazy: () => import('./routes/places'),
+                                  lazy: () => import('../routes/places'),
                                 },
                                 {
                                   path: ':place_id',
@@ -127,393 +128,13 @@ export const router = (db) =>
                                   children: [
                                     {
                                       index: true,
-                                      lazy: () => import('./routes/place'),
+                                      lazy: () => import('../routes/place'),
                                     },
                                     // TODO:
                                     // add places with place_id2
                                     // should have same children as this
-                                    {
-                                      path: 'checks',
-                                      element: null,
-                                      handle: {
-                                        crumb: () => ({
-                                          text: 'Checks',
-                                          table: 'checks',
-                                          folder: true,
-                                        }),
-                                      },
-                                      children: [
-                                        {
-                                          index: true,
-                                          lazy: () => import('./routes/checks'),
-                                        },
-                                        {
-                                          path: ':check_id',
-                                          element: null,
-                                          handle: {
-                                            crumb: (match) => ({
-                                              text: match.params.check_id,
-                                              table: 'checks',
-                                              folder: false,
-                                            }),
-                                            to: (match) =>
-                                              buildNavs({
-                                                table: `checks`,
-                                                params: match.params,
-                                                db,
-                                              }),
-                                          },
-                                          children: [
-                                            {
-                                              index: true,
-                                              lazy: () =>
-                                                import('./routes/check'),
-                                            },
-                                            {
-                                              path: 'values',
-                                              element: null,
-                                              handle: {
-                                                crumb: () => ({
-                                                  text: 'Values',
-                                                  table: 'check_values',
-                                                  folder: true,
-                                                }),
-                                              },
-                                              children: [
-                                                {
-                                                  index: true,
-                                                  lazy: () =>
-                                                    import(
-                                                      './routes/checkValues'
-                                                    ),
-                                                },
-                                                {
-                                                  path: ':check_value_id',
-                                                  lazy: () =>
-                                                    import(
-                                                      './routes/checkValue'
-                                                    ),
-                                                  handle: {
-                                                    crumb: (match) => ({
-                                                      text: match.params
-                                                        .check_value_id,
-                                                      table: 'check_values',
-                                                      folder: false,
-                                                    }),
-                                                  },
-                                                },
-                                              ],
-                                            },
-                                            {
-                                              path: 'taxa',
-                                              element: null,
-                                              handle: {
-                                                crumb: () => ({
-                                                  text: 'Taxa',
-                                                  table: 'check_taxa',
-                                                  folder: true,
-                                                }),
-                                              },
-                                              children: [
-                                                {
-                                                  index: true,
-                                                  lazy: () =>
-                                                    import(
-                                                      './routes/checkTaxa'
-                                                    ),
-                                                },
-                                                {
-                                                  path: ':check_taxon_id',
-                                                  lazy: () =>
-                                                    import(
-                                                      './routes/checkTaxon'
-                                                    ),
-                                                  handle: {
-                                                    crumb: (match) => ({
-                                                      text: match.params
-                                                        .check_taxon_id,
-                                                      table: 'check_taxa',
-                                                      folder: false,
-                                                    }),
-                                                  },
-                                                },
-                                              ],
-                                            },
-                                          ],
-                                        },
-                                      ],
-                                    },
-                                    {
-                                      path: 'actions',
-                                      element: null,
-                                      handle: {
-                                        crumb: () => ({
-                                          text: 'Actions',
-                                          table: 'actions',
-                                          folder: true,
-                                        }),
-                                      },
-                                      children: [
-                                        {
-                                          index: true,
-                                          lazy: () =>
-                                            import('./routes/actions'),
-                                        },
-                                        {
-                                          path: ':action_id',
-                                          element: null,
-                                          handle: {
-                                            crumb: (match) => ({
-                                              text: match.params.action_id,
-                                              table: 'actions',
-                                              folder: false,
-                                            }),
-                                            to: (match) =>
-                                              buildNavs({
-                                                table: `actions`,
-                                                params: match.params,
-                                                db,
-                                              }),
-                                          },
-                                          children: [
-                                            {
-                                              index: true,
-                                              lazy: () =>
-                                                import('./routes/action'),
-                                            },
-                                            {
-                                              path: 'values',
-                                              element: null,
-                                              handle: {
-                                                crumb: () => ({
-                                                  text: 'Values',
-                                                  table: 'action_values',
-                                                  folder: true,
-                                                }),
-                                              },
-                                              children: [
-                                                {
-                                                  index: true,
-                                                  lazy: () =>
-                                                    import(
-                                                      './routes/actionValues'
-                                                    ),
-                                                },
-                                                {
-                                                  path: ':action_value_id',
-                                                  lazy: () =>
-                                                    import(
-                                                      './routes/actionValue'
-                                                    ),
-                                                  handle: {
-                                                    crumb: (match) => ({
-                                                      text: match.params
-                                                        .action_value_id,
-                                                      table: 'action_values',
-                                                      folder: false,
-                                                    }),
-                                                  },
-                                                },
-                                              ],
-                                            },
-                                            {
-                                              path: 'reports',
-                                              element: null,
-                                              handle: {
-                                                crumb: () => ({
-                                                  text: 'Reports',
-                                                  table: 'action_reports',
-                                                  folder: true,
-                                                }),
-                                              },
-                                              children: [
-                                                {
-                                                  index: true,
-                                                  lazy: () =>
-                                                    import(
-                                                      './routes/actionReports'
-                                                    ),
-                                                },
-                                                {
-                                                  path: ':action_report_id',
-                                                  element: null,
-                                                  handle: {
-                                                    crumb: (match) => ({
-                                                      text: match.params
-                                                        .action_report_id,
-                                                      table: 'action_reports',
-                                                      folder: false,
-                                                    }),
-                                                    to: (match) =>
-                                                      buildNavs({
-                                                        table: `action_reports`,
-                                                        params: match.params,
-                                                        db,
-                                                      }),
-                                                  },
-                                                  children: [
-                                                    {
-                                                      index: true,
-                                                      lazy: () =>
-                                                        import(
-                                                          './routes/actionReport'
-                                                        ),
-                                                    },
-                                                    {
-                                                      path: 'values',
-                                                      element: null,
-                                                      handle: {
-                                                        crumb: () => ({
-                                                          text: 'Values',
-                                                          table:
-                                                            'action_report_values',
-                                                          folder: true,
-                                                        }),
-                                                      },
-                                                      children: [
-                                                        {
-                                                          index: true,
-                                                          lazy: () =>
-                                                            import(
-                                                              './routes/actionReportValues'
-                                                            ),
-                                                        },
-                                                        {
-                                                          path: ':action_report_value_id',
-                                                          lazy: () =>
-                                                            import(
-                                                              './routes/actionReportValue'
-                                                            ),
-                                                          handle: {
-                                                            crumb: (match) => ({
-                                                              text: match.params
-                                                                .action_report_value_id,
-                                                              table:
-                                                                'action_report_values',
-                                                              folder: false,
-                                                            }),
-                                                          },
-                                                        },
-                                                      ],
-                                                    },
-                                                  ],
-                                                },
-                                              ],
-                                            },
-                                          ],
-                                        },
-                                      ],
-                                    },
-                                    {
-                                      path: 'reports',
-                                      element: null,
-                                      handle: {
-                                        crumb: () => ({
-                                          text: 'Reports',
-                                          table: 'place_reports',
-                                          folder: true,
-                                        }),
-                                      },
-                                      children: [
-                                        {
-                                          index: true,
-                                          lazy: () =>
-                                            import('./routes/placeReports'),
-                                        },
-                                        {
-                                          path: ':place_report_id',
-                                          element: null,
-                                          handle: {
-                                            crumb: (match) => ({
-                                              text: match.params
-                                                .place_report_id,
-                                              table: 'place_reports',
-                                              folder: false,
-                                            }),
-                                            to: (match) =>
-                                              buildNavs({
-                                                table: `place_reports`,
-                                                params: match.params,
-                                                db,
-                                              }),
-                                          },
-                                          children: [
-                                            {
-                                              index: true,
-                                              lazy: () =>
-                                                import('./routes/placeReport'),
-                                            },
-                                            {
-                                              path: 'values',
-                                              element: null,
-                                              handle: {
-                                                crumb: () => ({
-                                                  text: 'Values',
-                                                  table: 'place_report_values',
-                                                  folder: true,
-                                                }),
-                                              },
-                                              children: [
-                                                {
-                                                  index: true,
-                                                  lazy: () =>
-                                                    import(
-                                                      './routes/placeReportValues'
-                                                    ),
-                                                },
-                                                {
-                                                  path: ':place_report_value_id',
-                                                  lazy: () =>
-                                                    import(
-                                                      './routes/placeReportValue'
-                                                    ),
-                                                  handle: {
-                                                    crumb: (match) => ({
-                                                      text: match.params
-                                                        .place_report_value_id,
-                                                      table:
-                                                        'place_report_values',
-                                                      folder: false,
-                                                    }),
-                                                  },
-                                                },
-                                              ],
-                                            },
-                                          ],
-                                        },
-                                      ],
-                                    },
-                                    {
-                                      path: 'users',
-                                      element: null,
-                                      handle: {
-                                        crumb: () => ({
-                                          text: 'Users',
-                                          table: 'place_users',
-                                          folder: true,
-                                        }),
-                                      },
-                                      children: [
-                                        {
-                                          index: true,
-                                          lazy: () =>
-                                            import('./routes/placeUsers'),
-                                        },
-                                        {
-                                          path: ':place_user_id',
-                                          lazy: () =>
-                                            import('./routes/placeUser'),
-                                          handle: {
-                                            crumb: (match) => ({
-                                              text: match.params.place_user_id,
-                                              table: 'place_users',
-                                              folder: false,
-                                            }),
-                                          },
-                                        },
-                                      ],
-                                    },
-                                  ],
+                                    ...placesChildren(db)
+                                  ]
                                 },
                               ],
                             },
@@ -531,11 +152,12 @@ export const router = (db) =>
                                 {
                                   index: true,
                                   lazy: () =>
-                                    import('./routes/subprojectUsers'),
+                                    import('../routes/subprojectUsers'),
                                 },
                                 {
                                   path: ':subproject_user_id',
-                                  lazy: () => import('./routes/subprojectUser'),
+                                  lazy: () =>
+                                    import('../routes/subprojectUser'),
                                   handle: {
                                     crumb: (match) => ({
                                       text: match.params.subproject_user_id,
@@ -559,12 +181,13 @@ export const router = (db) =>
                               children: [
                                 {
                                   index: true,
-                                  lazy: () => import('./routes/subprojectTaxa'),
+                                  lazy: () =>
+                                    import('../routes/subprojectTaxa'),
                                 },
                                 {
                                   path: ':subproject_taxon_id',
                                   lazy: () =>
-                                    import('./routes/subprojectTaxon'),
+                                    import('../routes/subprojectTaxon'),
                                   handle: {
                                     crumb: (match) => ({
                                       text: match.params.subproject_taxon_id,
@@ -589,12 +212,12 @@ export const router = (db) =>
                                 {
                                   index: true,
                                   lazy: () =>
-                                    import('./routes/subprojectReports'),
+                                    import('../routes/subprojectReports'),
                                 },
                                 {
                                   path: ':subproject_report_id',
                                   lazy: () =>
-                                    import('./routes/subprojectReport'),
+                                    import('../routes/subprojectReport'),
                                   handle: {
                                     crumb: (match) => ({
                                       text: match.params.subproject_report_id,
@@ -618,7 +241,7 @@ export const router = (db) =>
                               children: [
                                 {
                                   index: true,
-                                  lazy: () => import('./routes/goals'),
+                                  lazy: () => import('../routes/goals'),
                                 },
                                 {
                                   path: ':goal_id',
@@ -639,7 +262,7 @@ export const router = (db) =>
                                   children: [
                                     {
                                       index: true,
-                                      lazy: () => import('./routes/goal'),
+                                      lazy: () => import('../routes/goal'),
                                     },
                                     {
                                       path: 'reports',
@@ -655,7 +278,7 @@ export const router = (db) =>
                                         {
                                           index: true,
                                           lazy: () =>
-                                            import('./routes/goalReports'),
+                                            import('../routes/goalReports'),
                                         },
                                         {
                                           path: ':goal_report_id',
@@ -677,7 +300,7 @@ export const router = (db) =>
                                             {
                                               index: true,
                                               lazy: () =>
-                                                import('./routes/goalReport'),
+                                                import('../routes/goalReport'),
                                             },
                                             {
                                               path: 'values',
@@ -694,14 +317,14 @@ export const router = (db) =>
                                                   index: true,
                                                   lazy: () =>
                                                     import(
-                                                      './routes/goalReportValues'
+                                                      '../routes/goalReportValues'
                                                     ),
                                                 },
                                                 {
                                                   path: ':goal_report_value_id',
                                                   lazy: () =>
                                                     import(
-                                                      './routes/goalReportValue'
+                                                      '../routes/goalReportValue'
                                                     ),
                                                   handle: {
                                                     crumb: (match) => ({
@@ -740,11 +363,11 @@ export const router = (db) =>
                       children: [
                         {
                           index: true,
-                          lazy: () => import('./routes/placeLevels'),
+                          lazy: () => import('../routes/placeLevels'),
                         },
                         {
                           path: ':place_level_id',
-                          lazy: () => import('./routes/placeLevel'),
+                          lazy: () => import('../routes/placeLevel'),
                           handle: {
                             crumb: (match) => ({
                               text: match.params.place_level_id,
@@ -766,10 +389,10 @@ export const router = (db) =>
                         }),
                       },
                       children: [
-                        { index: true, lazy: () => import('./routes/units') },
+                        { index: true, lazy: () => import('../routes/units') },
                         {
                           path: ':unit_id',
-                          lazy: () => import('./routes/unit'),
+                          lazy: () => import('../routes/unit'),
                           handle: {
                             crumb: (match) => ({
                               text: match.params.unit_id,
@@ -791,7 +414,7 @@ export const router = (db) =>
                         }),
                       },
                       children: [
-                        { index: true, lazy: () => import('./routes/lists') },
+                        { index: true, lazy: () => import('../routes/lists') },
                         {
                           path: ':list_id',
                           element: null,
@@ -811,7 +434,7 @@ export const router = (db) =>
                           children: [
                             {
                               index: true,
-                              lazy: () => import('./routes/list'),
+                              lazy: () => import('../routes/list'),
                             },
                             {
                               path: 'values',
@@ -826,11 +449,11 @@ export const router = (db) =>
                               children: [
                                 {
                                   index: true,
-                                  lazy: () => import('./routes/listValues'),
+                                  lazy: () => import('../routes/listValues'),
                                 },
                                 {
                                   path: ':list_value_id',
-                                  lazy: () => import('./routes/listValue'),
+                                  lazy: () => import('../routes/listValue'),
                                   handle: {
                                     crumb: (match) => ({
                                       text: match.params.list_value_id,
@@ -858,7 +481,7 @@ export const router = (db) =>
                       children: [
                         {
                           index: true,
-                          lazy: () => import('./routes/taxonomies'),
+                          lazy: () => import('../routes/taxonomies'),
                         },
                         {
                           path: ':taxonomy_id',
@@ -879,7 +502,7 @@ export const router = (db) =>
                           children: [
                             {
                               index: true,
-                              lazy: () => import('./routes/taxonomy'),
+                              lazy: () => import('../routes/taxonomy'),
                             },
                             {
                               path: 'taxa',
@@ -894,11 +517,11 @@ export const router = (db) =>
                               children: [
                                 {
                                   index: true,
-                                  lazy: () => import('./routes/taxa'),
+                                  lazy: () => import('../routes/taxa'),
                                 },
                                 {
                                   path: ':taxon_id',
-                                  lazy: () => import('./routes/taxon'),
+                                  lazy: () => import('../routes/taxon'),
                                   handle: {
                                     crumb: (match) => ({
                                       text: match.params.taxon_id,
@@ -926,11 +549,11 @@ export const router = (db) =>
                       children: [
                         {
                           index: true,
-                          lazy: () => import('./routes/projectUsers'),
+                          lazy: () => import('../routes/projectUsers'),
                         },
                         {
                           path: ':project_user_id',
-                          lazy: () => import('./routes/projectUser'),
+                          lazy: () => import('../routes/projectUser'),
                           handle: {
                             crumb: (match) => ({
                               text: match.params.project_user_id,
@@ -954,11 +577,11 @@ export const router = (db) =>
                       children: [
                         {
                           index: true,
-                          lazy: () => import('./routes/projectReports'),
+                          lazy: () => import('../routes/projectReports'),
                         },
                         {
                           path: ':project_report_id',
-                          lazy: () => import('./routes/projectReport'),
+                          lazy: () => import('../routes/projectReport'),
                           handle: {
                             crumb: (match) => ({
                               text: match.params.project_report_id,
@@ -980,10 +603,10 @@ export const router = (db) =>
                         }),
                       },
                       children: [
-                        { index: true, lazy: () => import('./routes/fields') },
+                        { index: true, lazy: () => import('../routes/fields') },
                         {
                           path: ':field_id',
-                          lazy: () => import('./routes/field'),
+                          lazy: () => import('../routes/field'),
                           handle: {
                             crumb: (match) => ({
                               text: match.params.field_id,
@@ -1007,7 +630,7 @@ export const router = (db) =>
                       children: [
                         {
                           index: true,
-                          lazy: () => import('./routes/observationSources'),
+                          lazy: () => import('../routes/observationSources'),
                         },
                         {
                           path: ':observation_source_id',
@@ -1028,7 +651,7 @@ export const router = (db) =>
                           children: [
                             {
                               index: true,
-                              lazy: () => import('./routes/observationSource'),
+                              lazy: () => import('../routes/observationSource'),
                             },
                             {
                               path: 'observations',
@@ -1043,11 +666,11 @@ export const router = (db) =>
                               children: [
                                 {
                                   index: true,
-                                  lazy: () => import('./routes/observations'),
+                                  lazy: () => import('../routes/observations'),
                                 },
                                 {
                                   path: ':observation_id',
-                                  lazy: () => import('./routes/observation'),
+                                  lazy: () => import('../routes/observation'),
                                   handle: {
                                     crumb: (match) => ({
                                       text: match.params.observation_id,
@@ -1073,10 +696,13 @@ export const router = (db) =>
                         }),
                       },
                       children: [
-                        { index: true, lazy: () => import('./routes/persons') },
+                        {
+                          index: true,
+                          lazy: () => import('../routes/persons'),
+                        },
                         {
                           path: ':person_id',
-                          lazy: () => import('./routes/person'),
+                          lazy: () => import('../routes/person'),
                           handle: {
                             crumb: (match) => ({
                               text: match.params.person_id,
@@ -1104,11 +730,11 @@ export const router = (db) =>
               children: [
                 {
                   index: true,
-                  lazy: () => import('./routes/users'),
+                  lazy: () => import('../routes/users'),
                 },
                 {
                   path: ':user_id',
-                  lazy: () => import('./routes/user'),
+                  lazy: () => import('../routes/user'),
                   handle: {
                     crumb: (match) => ({
                       text: match.params.user_id,
@@ -1130,10 +756,10 @@ export const router = (db) =>
                 }),
               },
               children: [
-                { index: true, lazy: () => import('./routes/accounts') },
+                { index: true, lazy: () => import('../routes/accounts') },
                 {
                   path: ':account_id',
-                  lazy: () => import('./routes/account'),
+                  lazy: () => import('../routes/account'),
                   handle: {
                     crumb: (match) => ({
                       text: match.params.account_id,
@@ -1155,10 +781,10 @@ export const router = (db) =>
                 }),
               },
               children: [
-                { index: true, lazy: () => import('./routes/fieldTypes') },
+                { index: true, lazy: () => import('../routes/fieldTypes') },
                 {
                   path: ':field_type_id',
-                  lazy: () => import('./routes/fieldType'),
+                  lazy: () => import('../routes/fieldType'),
                   handle: {
                     crumb: (match) => ({
                       text: match.params.field_type_id,
@@ -1180,10 +806,10 @@ export const router = (db) =>
                 }),
               },
               children: [
-                { index: true, lazy: () => import('./routes/widgetTypes') },
+                { index: true, lazy: () => import('../routes/widgetTypes') },
                 {
                   path: ':widget_type_id',
-                  lazy: () => import('./routes/widgetType'),
+                  lazy: () => import('../routes/widgetType'),
                   handle: {
                     crumb: (match) => ({
                       text: match.params.widget_type_id,
@@ -1207,11 +833,11 @@ export const router = (db) =>
               children: [
                 {
                   index: true,
-                  lazy: () => import('./routes/widgetsForFields'),
+                  lazy: () => import('../routes/widgetsForFields'),
                 },
                 {
                   path: ':widget_for_field_id',
-                  lazy: () => import('./routes/widgetForField'),
+                  lazy: () => import('../routes/widgetForField'),
                   handle: {
                     crumb: (match) => ({
                       text: match.params.widget_for_field_id,
@@ -1233,10 +859,10 @@ export const router = (db) =>
                 }),
               },
               children: [
-                { index: true, lazy: () => import('./routes/files') },
+                { index: true, lazy: () => import('../routes/files') },
                 {
                   path: ':file_id',
-                  lazy: () => import('./routes/file'),
+                  lazy: () => import('../routes/file'),
                   handle: {
                     crumb: (match) => ({
                       text: match.params.file_id,
@@ -1258,10 +884,10 @@ export const router = (db) =>
                 }),
               },
               children: [
-                { index: true, lazy: () => import('./routes/messages') },
+                { index: true, lazy: () => import('../routes/messages') },
                 {
                   path: ':message_id',
-                  lazy: () => import('./routes/message'),
+                  lazy: () => import('../routes/message'),
                   handle: {
                     crumb: (match) => ({
                       text: match.params.message_id,
@@ -1274,7 +900,7 @@ export const router = (db) =>
             },
             {
               path: 'docs',
-              lazy: () => import('./routes/docs'),
+              lazy: () => import('../routes/docs'),
               handle: {
                 crumb: () => ({
                   text: 'Docs',
