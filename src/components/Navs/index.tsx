@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { useMatches, useLocation, Link } from 'react-router-dom'
 
 import { DataNavs } from './DataNavs'
@@ -17,9 +18,19 @@ export const Navs = () => {
     (match) => match.pathname === location.pathname,
   )
 
-  const tos = thisPathsMatches
-    .map((match) => match?.handle?.to?.(match))
-    .filter((to) => Boolean(to))
+  const [tos, setTos] = useState([])
+  useEffect(() => {
+    const fetch = async () => {
+      const tos = []
+      for (const match of thisPathsMatches) {
+        const to = await match?.handle?.to?.(match)
+        if (to) tos.push(to)
+      }
+
+      return setTos(tos.filter((to) => Boolean(to)))
+    }
+    fetch()
+  }, [thisPathsMatches])
 
   // console.log('Navs', { matches, tos, thisPathsMatches })
 
