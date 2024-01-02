@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useElectric } from '../../ElectricProvider'
 import { useLiveQuery } from 'electric-sql/react'
@@ -35,10 +36,29 @@ export const Breadcrumb = ({ match }) => {
   )
   const row = results?.[0]
 
-  const navs = buildNavs({ table, params: match.params, db }) ?? []
+  const [navs, setNavs] = useState([])
+  useEffect(() => {
+    const fetch = async () => {
+      const navs = await buildNavs({ table, params: match.params, db })
+      return setNavs(navs)
+    }
+    fetch()
+  }, [match, db, table])
 
-  const label =
-    table === 'root' || table === 'docs' ? text : row?.label ?? row?.[idField]
+  let label = row?.label ?? row?.[idField]
+  if (table === 'root' || table === 'docs') label = text
+  // const project_id =
+  //   match.params.project_id ?? '99999999-9999-9999-9999-999999999999'
+  // const { results: levelResults } = useLiveQuery(
+  //   () =>
+  //     db.place_levels?.liveMany({
+  //       where: { project_id, deleted: false, level: row?.level ?? 1 },
+  //     }),
+  //   [db, project_id],
+  // )
+  // const levelRow = levelResults?.[0]
+  // const placeName = levelRow?.name_plural ?? levelRow?.name_short ?? 'Places'
+  // if (['subprojects'].includes(table)) label = placeName
 
   // console.log('BreadcrumbForFolder', {
   //   results,
