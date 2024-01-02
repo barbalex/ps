@@ -35,7 +35,7 @@ export const Breadcrumb = ({ match }) => {
   )
   const row = results?.[0]
 
-  const navs = buildNavs({ table, params: match.params }) ?? []
+  const navs = buildNavs({ table, params: match.params, db }) ?? []
 
   const label =
     table === 'root' || table === 'docs' ? text : row?.label ?? row?.[idField]
