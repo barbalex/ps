@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 
@@ -56,6 +57,24 @@ export const Breadcrumb = ({ match }) => {
     text: result.label ?? result[idField],
   }))
 
+  const [label, setLabel] = useState(text)
+  useEffect(() => {
+    const get = async () => {
+      if (table !== 'places') return
+      const placeLevels = await db.place_levels?.findMany({
+        where: {
+          project_id: match.params.project_id,
+          deleted: false,
+        },
+      })
+      const levelWanted = Object.keys(match.params).length < 4 ? 1 : 2
+      const levelRow = (placeLevels ?? []).find((r) => r.level === levelWanted)
+      const label = levelRow?.name_plural ?? levelRow?.name_short ?? 'Places'
+      setLabel(label)
+    }
+    get()
+  }, [db, match.params, match.params.project_id, table])
+
   // console.log('BreadcrumbForData', {
   //   // myNavs,
   //   // match,
@@ -73,7 +92,7 @@ export const Breadcrumb = ({ match }) => {
   return (
     <>
       <div className={className} onClick={() => navigate(match.pathname)}>
-        <div className="text">{text}</div>
+        <div className="text">{label}</div>
         {myNavs?.length > 0 && <MenuComponent navs={myNavs} />}
       </div>
     </>
