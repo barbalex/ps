@@ -5,7 +5,10 @@ import deDe from 'antd/locale/de_DE'
 import { FluentProvider } from '@fluentui/react-components'
 
 import './style.css'
-import { ElectricWrapper as ElectricProvider } from './ElectricProvider'
+import {
+  ElectricWrapper as ElectricProvider,
+  useElectric,
+} from './ElectricProvider'
 import { lightTheme } from './modules/theme'
 import { router } from './router'
 import { LabelGenerator } from './components/LabelGenerator'
@@ -15,6 +18,14 @@ import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
 
+const RouterProviderWithDb = () => {
+  const { db } = useElectric()!
+
+  return (
+    <RouterProvider router={router(db)} future={{ v7_startTransition: true }} />
+  )
+}
+
 export default function App() {
   // console.log('App, theme:', customLightTheme)
 
@@ -23,10 +34,7 @@ export default function App() {
       <LabelGenerator />
       <ConfigProvider locale={deDe} theme={{ cssVar: true }}>
         <FluentProvider theme={lightTheme}>
-          <RouterProvider
-            router={router}
-            future={{ v7_startTransition: true }}
-          />
+          <RouterProviderWithDb />
         </FluentProvider>
       </ConfigProvider>
     </ElectricProvider>
