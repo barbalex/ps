@@ -81,11 +81,28 @@ export const buildNavs = async ({ table, params, db }) => {
         },
       ]
     }
-    case 'places':
+    case 'places': {
       // TODO:
       // add second place level if exists
       // name it as defined in place_levels
+      // need to fetch how places are named
+      const project_id =
+        params.project_id ?? '99999999-9999-9999-9999-999999999999'
+      // findUnique only works for primary keys
+      const placeLevels = await db?.place_levels?.findMany({
+        where: { project_id, deleted: false, level: 2 },
+      })
+      const placeLevel = placeLevels?.[0]
+
       return [
+        ...[
+          placeLevel
+            ? {
+                path: `/projects/${params.project_id}/subprojects/${params.subproject_id}/places/${params.place_id}/places`,
+                text: 'Places',
+              }
+            : {},
+        ],
         {
           path: `/projects/${params.project_id}/subprojects/${params.subproject_id}/places/${params.place_id}/checks`,
           text: 'Checks',
@@ -103,6 +120,7 @@ export const buildNavs = async ({ table, params, db }) => {
           text: 'Users',
         },
       ]
+    }
     case 'checks':
       return [
         {
