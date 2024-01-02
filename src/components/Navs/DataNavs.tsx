@@ -7,6 +7,7 @@ import { tablesWithoutDeleted } from '../Breadcrumbs/BreadcrumbForData'
 
 export const DataNavs = ({ matches }) => {
   const location = useLocation()
+
   const filteredMatches = matches.filter((match) => {
     const { table, folder } = match?.handle?.crumb?.(match) ?? {}
 
@@ -40,10 +41,16 @@ export const DataNavs = ({ matches }) => {
   // 1. know how to label places?
   // 2. know if second level exists
   const { db } = useElectric()
-  const { results } = useLiveQuery(
+  const { results: tableResults } = useLiveQuery(
     () => db[table]?.liveMany({ where: filterParams }),
     [db, location.pathname],
   )
+  const project_id = params.project_id ?? '99999999-9999-9999-9999-999999999999'
+  const { results: levelResults } = useLiveQuery(
+    () => db.place_levels?.liveMany({ where: { project_id } }),
+    [db, project_id],
+  )
+  
 
   // console.log('DataNavs', {
   //   table,
@@ -59,7 +66,7 @@ export const DataNavs = ({ matches }) => {
 
   return (
     <nav className="navs">
-      {(results ?? []).map((result, index) => {
+      {(tableResults ?? []).map((result, index) => {
         const label = result.label ?? result[idField]
 
         return (
