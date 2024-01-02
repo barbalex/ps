@@ -1,6 +1,6 @@
 import { buildNavs } from '../modules/navs'
 
-export const placesChildren = (db) => [
+export const placesChildren = ({ db, level }) => [
   {
     path: 'checks',
     element: null,
@@ -9,6 +9,7 @@ export const placesChildren = (db) => [
         text: 'Checks',
         table: 'checks',
         folder: true,
+        level
       }),
     },
     children: [
@@ -24,12 +25,14 @@ export const placesChildren = (db) => [
             text: match.params.check_id,
             table: 'checks',
             folder: false,
+            level
           }),
           to: (match) =>
             buildNavs({
               table: `checks`,
               params: match.params,
               db,
+              level
             }),
         },
         children: [

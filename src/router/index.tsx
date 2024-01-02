@@ -138,7 +138,7 @@ export const router = (db) =>
                                     // add places with place_id2
                                     // should have same children as this
                                     placesLevel2(db),
-                                    ...placesChildren(db),
+                                    ...placesChildren({ db, level: 1 }),
                                   ],
                                 },
                               ],

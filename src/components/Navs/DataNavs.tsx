@@ -4,7 +4,6 @@ import { Link, useLocation } from 'react-router-dom'
 import { useElectric } from '../../ElectricProvider'
 import { idFieldFromTable } from '../../modules/idFieldFromTable'
 import { tablesWithoutDeleted } from '../Breadcrumbs/BreadcrumbForData'
-import path from 'path'
 
 export const DataNavs = ({ matches }) => {
   const location = useLocation()
@@ -24,10 +23,11 @@ export const DataNavs = ({ matches }) => {
   const parentIdFieldName = parentTable
     ? idFieldFromTable(parentTable)
     : undefined
+  const isPlaceId2 = parentTable === 'places' && pathArray.length > 8
   let parentId = params[parentIdFieldName]
   // TODO: where needed use place_id2 instead of place_id
-  if (parentTable === 'places' && pathArray.length > 8) {
-    parentId = params['place_id2']
+  if (isPlaceId2) {
+    parentId = params.place_id2
   }
   const idField = idFieldFromTable(table)
 
@@ -36,8 +36,13 @@ export const DataNavs = ({ matches }) => {
   if (!tablesWithoutDeleted.includes(table)) {
     filterParams.deleted = false
   }
-  if (parentTable && parentId) {
-    filterParams[parentIdFieldName] = params[parentIdFieldName]
+  // if level 2 places, need to filter by parent_id
+  const isLevel2Places =
+    params.place_id && !params.place_id2 && pathArray.at(-1) === 'places'
+  if (isLevel2Places) {
+    filterParams.parent_id = params.place_id
+  } else if (parentTable && parentId) {
+    filterParams[parentIdFieldName] = parentId
   }
 
   const { db } = useElectric()
@@ -56,6 +61,7 @@ export const DataNavs = ({ matches }) => {
     parentId,
     parentIdFieldName,
     tableResults,
+    filterParams,
   })
 
   return (

@@ -1,4 +1,4 @@
-export const buildNavs = async ({ table, params, db }) => {
+export const buildNavs = async ({ table, params, db, level }) => {
   const {
     project_id,
     subproject_id,
@@ -118,25 +118,25 @@ export const buildNavs = async ({ table, params, db }) => {
         ],
         {
           path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-            place_id2 ? `/places/${place_id2}` : ''
+            level === 2 ? `/places/${place_id2}` : ''
           }/checks`,
           text: 'Checks',
         },
         {
           path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-            place_id2 ? `/places/${place_id2}` : ''
+            level === 2 ? `/places/${place_id2}` : ''
           }/actions`,
           text: 'Actions',
         },
         {
           path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-            place_id2 ? `/places/${place_id2}` : ''
+            level === 2 ? `/places/${place_id2}` : ''
           }/reports`,
           text: 'Reports',
         },
         {
           path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-            place_id2 ? `/places/${place_id2}` : ''
+            level === 2 ? `/places/${place_id2}` : ''
           }/users`,
           text: 'Users',
         },
@@ -146,13 +146,13 @@ export const buildNavs = async ({ table, params, db }) => {
       return [
         {
           path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-            place_id2 ? `/places/${place_id2}` : ''
+            level === 2 ? `/places/${place_id2}` : ''
           }/checks/${params.check_id}/values`,
           text: 'Values',
         },
         {
           path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-            place_id2 ? `/places/${place_id2}` : ''
+            level === 2 ? `/places/${place_id2}` : ''
           }/checks/${params.check_id}/taxa`,
           text: 'Taxa',
         },
@@ -162,13 +162,13 @@ export const buildNavs = async ({ table, params, db }) => {
       return [
         {
           path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-            place_id2 ? `/places/${place_id2}` : ''
+            level === 2 ? `/places/${place_id2}` : ''
           }/actions/${params.action_id}/values`,
           text: 'Values',
         },
         {
           path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-            place_id2 ? `/places/${place_id2}` : ''
+            level === 2 ? `/places/${place_id2}` : ''
           }/actions/${params.action_id}/reports`,
           text: 'Reports',
         },
@@ -177,7 +177,7 @@ export const buildNavs = async ({ table, params, db }) => {
       return [
         {
           path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-            place_id2 ? `/places/${place_id2}` : ''
+            level === 2 ? `/places/${place_id2}` : ''
           }/actions/${params.action_id}/reports/${
             params.action_report_id
           }/values`,
@@ -188,7 +188,7 @@ export const buildNavs = async ({ table, params, db }) => {
       return [
         {
           path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-            place_id2 ? `/places/${place_id2}` : ''
+            level === 2 ? `/places/${place_id2}` : ''
           }/reports/${params.place_report_id}/values`,
           text: 'Values',
         },

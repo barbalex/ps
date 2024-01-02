@@ -40,7 +40,7 @@ export const placesLevel2 = (db) => ({
           index: true,
           lazy: () => import('../routes/place'),
         },
-        ...placesChildren(db),
+        ...placesChildren({ db, level: 2 }),
       ],
     },
   ],
