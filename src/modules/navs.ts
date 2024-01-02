@@ -1,5 +1,5 @@
 export const buildNavs = async ({ table, params, db }) => {
-  // console.log('navs:', { table, params, db })
+  console.log('navs:', { table, params, db })
 
   switch (table) {
     case 'root':
@@ -50,7 +50,7 @@ export const buildNavs = async ({ table, params, db }) => {
       // need to fetch how places are named
       const project_id =
         params.project_id ?? '99999999-9999-9999-9999-999999999999'
-      // findUnique does not work for non primary keys
+      // findUnique only works for primary keys
       const placeLevels = await db?.place_levels?.findMany({
         where: { project_id, deleted: false, level: 1 },
       })
