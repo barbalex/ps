@@ -3,7 +3,8 @@ import { createBrowserRouter } from 'react-router-dom'
 import { Header } from '../components/Header'
 import { ErrorPage } from '../routes/error'
 import { buildNavs } from '../modules/navs'
-import {placesChildren} from './placesChildren'
+import { placesChildren } from './placesChildren'
+import { placesLevel2 } from './placesLevel2'
 
 export const router = (db) =>
   createBrowserRouter([
@@ -101,6 +102,7 @@ export const router = (db) =>
                                 crumb: () => ({
                                   text: 'Places',
                                   table: 'places',
+                                  level: 1,
                                   folder: true,
                                 }),
                               },
@@ -116,6 +118,7 @@ export const router = (db) =>
                                     crumb: (match) => ({
                                       text: match.params.place_id,
                                       table: 'places',
+                                      level: 1,
                                       folder: false,
                                     }),
                                     to: (match) =>
@@ -123,6 +126,7 @@ export const router = (db) =>
                                         table: `places`,
                                         params: match.params,
                                         db,
+                                        level: 1,
                                       }),
                                   },
                                   children: [
@@ -133,8 +137,9 @@ export const router = (db) =>
                                     // TODO:
                                     // add places with place_id2
                                     // should have same children as this
-                                    ...placesChildren(db)
-                                  ]
+                                    placesLevel2(db),
+                                    ...placesChildren(db),
+                                  ],
                                 },
                               ],
                             },

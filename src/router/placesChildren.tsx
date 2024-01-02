@@ -1,3 +1,5 @@
+import { buildNavs } from '../modules/navs'
+
 export const placesChildren = (db) => [
   {
     path: 'checks',

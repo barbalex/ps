@@ -82,23 +82,37 @@ export const buildNavs = async ({ table, params, db }) => {
       ]
     }
     case 'places': {
+      // if place_id exists, this is at least level 2
+      // if place_id2 exists, do not add any more place levels
       // add second place level if exists
       // name it as defined in place_levels
-      const project_id =
-        params.project_id ?? '99999999-9999-9999-9999-999999999999'
-      // findUnique only works for primary keys
-      const placeLevels = await db?.place_levels?.findMany({
-        where: { project_id, deleted: false, level: 2 },
+      const needToIncludeLevel2 = params.place_id && !params.place_id2
+      const isLevel2 = !!params.place_id2
+      let placeName = 'Places'
+      if (needToIncludeLevel2) {
+        // findUnique only works for primary keys
+        const placeLevels = await db?.place_levels?.findMany({
+          where: { project_id: params.project_id, deleted: false, level: 2 },
+        })
+        const placeLevel = placeLevels?.[0]
+        placeName =
+          placeLevel?.name_plural ?? placeLevel?.name_short ?? 'Places'
+      }
+
+      console.log('paramsLength:', {
+        place_id: params.place_id,
+        place_id2: params.place_id2,
       })
-      const placeLevel = placeLevels?.[0]
-      const placeName =
-        placeLevel?.name_plural ?? placeLevel?.name_short ?? 'Places'
 
       return [
         ...[
-          placeLevel
+          needToIncludeLevel2
             ? {
-                path: `/projects/${params.project_id}/subprojects/${params.subproject_id}/places/${params.place_id}/places`,
+                path: `/projects/${params.project_id}/subprojects/${
+                  params.subproject_id
+                }/places/${params.place_id}/places${
+                  isLevel2 ? `/${params.place_id2}/places` : ''
+                }`,
                 text: placeName,
               }
             : {},
