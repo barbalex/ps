@@ -27,10 +27,14 @@ export const placesChildren = ({ db, level }) => [
             folder: false,
             level
           }),
-          to: (match) =>
-            buildNavs({
+          to: async (match) =>
+            await buildNavs({
               table: `checks`,
-              params: match.params,
+              project_id: match.params.project_id,
+              subproject_id: match.params.subproject_id,
+              place_id: match.params.place_id,
+              ...[level === 2 ? { place_id2: match.params.place_id2 } : {}],
+              check_id: match.params.check_id,
               db,
               level
             }),
@@ -124,10 +128,14 @@ export const placesChildren = ({ db, level }) => [
             table: 'actions',
             folder: false,
           }),
-          to: (match) =>
-            buildNavs({
+          to: async (match) =>
+            await buildNavs({
               table: `actions`,
-              params: match.params,
+              project_id: match.params.project_id,
+              subproject_id: match.params.subproject_id,
+              place_id: match.params.place_id,
+              ...[level === 2 ? { place_id2: match.params.place_id2 } : {}],
+              action_id: match.params.action_id,
               db,
             }),
         },
@@ -188,10 +196,15 @@ export const placesChildren = ({ db, level }) => [
                     table: 'action_reports',
                     folder: false,
                   }),
-                  to: (match) =>
-                    buildNavs({
+                  to: async (match) =>
+                    await buildNavs({
                       table: `action_reports`,
-                      params: match.params,
+                      project_id: match.params.project_id,
+                      subproject_id: match.params.subproject_id,
+                      place_id: match.params.place_id,
+                      ...[level === 2 ? { place_id2: match.params.place_id2 } : {}],
+                      action_id: match.params.action_id,
+                      action_report_id: match.params.action_report_id,
                       db,
                     }),
                 },
@@ -260,10 +273,14 @@ export const placesChildren = ({ db, level }) => [
             table: 'place_reports',
             folder: false,
           }),
-          to: (match) =>
-            buildNavs({
+          to: async (match) =>
+            await buildNavs({
               table: `place_reports`,
-              params: match.params,
+              project_id: match.params.project_id,
+              subproject_id: match.params.subproject_id,
+              place_id: match.params.place_id,
+              ...[level === 2 ? { place_id2: match.params.place_id2 } : {}],
+              place_report_id: match.params.place_report_id,
               db,
             }),
         },
