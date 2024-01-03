@@ -15,7 +15,7 @@ export const Navs = () => {
   const matches = useMatches()
 
   const thisPathsMatches = matches.filter(
-    (match) => match.pathname === location.pathname,
+    (match) => match.pathname === location.pathname && match.handle,
   )
 
   const [tos, setTos] = useState([])
@@ -32,7 +32,12 @@ export const Navs = () => {
     fetch()
   }, [thisPathsMatches])
 
-  // console.log('Navs', { matches, tos, thisPathsMatches })
+  console.log('Navs', {
+    matches,
+    tos,
+    thisPathsMatches,
+    pathname: location.pathname,
+  })
 
   // hide this area of there are no tos
   if (!tos?.length) return <DataNavs matches={thisPathsMatches} />
