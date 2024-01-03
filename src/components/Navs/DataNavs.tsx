@@ -41,6 +41,8 @@ export const DataNavs = ({ matches }) => {
     params.place_id && !params.place_id2 && pathArray.at(-1) === 'places'
   if (isLevel2Places) {
     filterParams.parent_id = params.place_id
+  } else if (pathArray.at(-1) === 'places') {
+    filterParams.level = 1
   } else if (parentTable && parentId) {
     filterParams[parentIdFieldName] = parentId
   }
@@ -51,18 +53,18 @@ export const DataNavs = ({ matches }) => {
     [db, location.pathname],
   )
 
-  console.log('DataNavs', {
-    table,
-    params,
-    idField,
-    pathname,
-    pathArray,
-    parentTable,
-    parentId,
-    parentIdFieldName,
-    tableResults,
-    filterParams,
-  })
+  // console.log('DataNavs', {
+  //   table,
+  //   params,
+  //   idField,
+  //   pathname,
+  //   pathArray,
+  //   parentTable,
+  //   parentId,
+  //   parentIdFieldName,
+  //   tableResults,
+  //   filterParams,
+  // })
 
   return (
     <nav className="navs">

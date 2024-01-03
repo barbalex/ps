@@ -18,6 +18,11 @@ export const Breadcrumb = ({ match }) => {
       ? 'breadcrumbs__crumb is-active'
       : 'breadcrumbs__crumb link'
 
+  const path = match.pathname.split('/')
+  path.shift()
+  const placesCount = path.filter((p) => p.includes('places')).length
+  const levelWanted = placesCount < 2 ? 1 : 2
+
   const idField = idFieldFromTable(table)
   // filter by parents
   const filterParams = {}
@@ -30,8 +35,16 @@ export const Breadcrumb = ({ match }) => {
   )
   // Add only the last to the filter
   const parentFilter = parentFilterParamsArray.at(-1)
+  const grandParentFilter = parentFilterParamsArray.at(-2)
   if (parentFilter) {
-    filterParams[parentFilter[0]] = parentFilter[1]
+    if (grandParentFilter && grandParentFilter[0] === 'places') {
+      filterParams['parent_id'] = parentFilter[1]
+    } else {
+      filterParams[parentFilter[0]] = parentFilter[1]
+    }
+  }
+  if (table === 'places') {
+    filterParams.level = levelWanted
   }
   const queryParam = { where: filterParams }
   // if (table === 'projects') {
@@ -61,10 +74,6 @@ export const Breadcrumb = ({ match }) => {
   useEffect(() => {
     const get = async () => {
       if (table !== 'places') return
-      const path = match.pathname.split('/')
-      path.shift()
-      const placesCount = path.filter((p) => p.includes('places')).length
-      const levelWanted = placesCount < 2 ? 1 : 2
       const placeLevels =
         (await db.place_levels?.findMany({
           where: {
@@ -78,21 +87,21 @@ export const Breadcrumb = ({ match }) => {
       setLabel(label)
     }
     get()
-  }, [db, match, match.params, match.params.project_id, table])
+  }, [db, levelWanted, match, match.params, match.params.project_id, table])
 
-  // console.log('BreadcrumbForData', {
-  //   // myNavs,
-  //   // match,
-  //   results,
-  //   idField,
-  //   // parentFilterParamsArray,
-  //   table,
-  //   queryTable,
-  //   // filterParams,
-  //   queryParam,
-  //   error,
-  //   // parentFilter,
-  // })
+  console.log('BreadcrumbForData', {
+    myNavs,
+    match,
+    results,
+    idField,
+    // parentFilterParamsArray,
+    table,
+    queryTable,
+    // filterParams,
+    queryParam,
+    // error,
+    // parentFilter,
+  })
 
   return (
     <>
