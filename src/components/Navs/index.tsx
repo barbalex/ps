@@ -32,7 +32,7 @@ export const Navs = () => {
     fetch()
   }, [thisPathsMatches])
 
-  console.log('Navs', { matches, tos, thisPathsMatches })
+  // console.log('Navs', { matches, tos, thisPathsMatches })
 
   // hide this area of there are no tos
   if (!tos?.length) return <DataNavs matches={thisPathsMatches} />

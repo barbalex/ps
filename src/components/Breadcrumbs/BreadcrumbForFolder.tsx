@@ -27,10 +27,14 @@ export const Breadcrumb = ({ match }) => {
   // 1. know how to label place?
   // 2. know if second level exists
   // then pass to buildNavs
+  const matchParam =
+    table === 'places' && match.params.place_id2
+      ? match.params.place_id2
+      : match.params[idField]
   const { results } = useLiveQuery(
     () =>
       db[queryTable]?.liveMany({
-        where: { [idField]: match.params[idField] },
+        where: { [idField]: matchParam },
       }),
     [db, queryTable, match],
   )
@@ -47,29 +51,18 @@ export const Breadcrumb = ({ match }) => {
 
   let label = row?.label ?? row?.[idField]
   if (table === 'root' || table === 'docs') label = text
-  // const project_id =
-  //   match.params.project_id ?? '99999999-9999-9999-9999-999999999999'
-  // const { results: levelResults } = useLiveQuery(
-  //   () =>
-  //     db.place_levels?.liveMany({
-  //       where: { project_id, deleted: false, level: row?.level ?? 1 },
-  //     }),
-  //   [db, project_id],
-  // )
-  // const levelRow = levelResults?.[0]
-  // const placeName = levelRow?.name_plural ?? levelRow?.name_short ?? 'Places'
-  // if (['subprojects'].includes(table)) label = placeName
 
-  // console.log('BreadcrumbForFolder', {
-  //   results,
-  //   label,
-  //   idField,
-  //   row,
-  //   table,
-  //   text,
-  //   params: match.params,
-  //   navs,
-  // })
+  console.log('BreadcrumbForFolder', {
+    results,
+    label,
+    idField,
+    row,
+    table,
+    text,
+    params: match.params,
+    match,
+    navs,
+  })
 
   return (
     <>
