@@ -30,7 +30,9 @@ export const Component = () => {
       },
     })
     navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/actions/${newAction.action_id}`,
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+        place_id2 ? `/places/${place_id2}` : ''
+      }/actions/${newAction.action_id}`,
     )
   }, [db.actions, navigate, place_id, place_id2, project_id, subproject_id])
 
