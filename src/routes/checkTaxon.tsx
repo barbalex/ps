@@ -14,7 +14,14 @@ import { FormMenu } from '../components/FormMenu'
 import '../form.css'
 
 export const Component = () => {
-  const { project_id, subproject_id, place_id, check_id, check_taxon_id } = useParams()
+  const {
+    project_id,
+    subproject_id,
+    place_id,
+    place_id2,
+    check_id,
+    check_taxon_id,
+  } = useParams()
   const navigate = useNavigate()
 
   const { db } = useElectric()
@@ -32,9 +39,19 @@ export const Component = () => {
       },
     })
     navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/checks/${check_id}/taxa/${newCheckTaxon.check_taxon_id}`,
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+        place_id2 ? `/places/${place_id2}` : ''
+      }/checks/${check_id}/taxa/${newCheckTaxon.check_taxon_id}`,
     )
-  }, [check_id, db.check_taxa, navigate, place_id, project_id, subproject_id])
+  }, [
+    check_id,
+    db.check_taxa,
+    navigate,
+    place_id,
+    place_id2,
+    project_id,
+    subproject_id,
+  ])
 
   const deleteRow = useCallback(async () => {
     await db.check_taxa.delete({
@@ -43,14 +60,24 @@ export const Component = () => {
       },
     })
     navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/checks/${check_id}/taxa`,
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+        place_id2 ? `/places/${place_id2}` : ''
+      }/checks/${check_id}/taxa`,
     )
-  }, [check_id, check_taxon_id, db.check_taxa, navigate, place_id, project_id, subproject_id])
+  }, [
+    check_id,
+    check_taxon_id,
+    db.check_taxa,
+    navigate,
+    place_id,
+    place_id2,
+    project_id,
+    subproject_id,
+  ])
 
   const row: CheckTaxon = results
 
   const taxaWhere = useMemo(() => ({ deleted: false }), [])
-
 
   // console.log('CheckTaxon', { row, results })
 
@@ -88,7 +115,7 @@ export const Component = () => {
         where={taxaWhere}
         value={row.taxon_id ?? ''}
         onChange={onChange}
-        autoFocus 
+        autoFocus
       />
       <TextField
         label="Value (integer)"

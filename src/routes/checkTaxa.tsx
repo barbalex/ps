@@ -9,7 +9,8 @@ import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
 export const Component = () => {
-  const { project_id, subproject_id, place_id, check_id } = useParams()
+  const { project_id, subproject_id, place_id, place_id2, check_id } =
+    useParams()
   const navigate = useNavigate()
 
   const { db } = useElectric()
@@ -27,9 +28,19 @@ export const Component = () => {
       },
     })
     navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/checks/${check_id}/taxa/${newCheckTaxon.check_taxon_id}`,
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+        place_id2 ? `/places/${place_id2}` : ''
+      }/checks/${check_id}/taxa/${newCheckTaxon.check_taxon_id}`,
     )
-  }, [check_id, db.check_taxa, navigate, place_id, project_id, subproject_id])
+  }, [
+    check_id,
+    db.check_taxa,
+    navigate,
+    place_id,
+    place_id2,
+    project_id,
+    subproject_id,
+  ])
 
   const checkTaxa: CheckTaxon[] = results ?? []
 
@@ -39,7 +50,9 @@ export const Component = () => {
       {checkTaxa.map((checkTaxon: CheckTaxon, index: number) => (
         <p key={index} className="item">
           <Link
-            to={`/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/checks/${check_id}/taxa/${checkTaxon.check_taxon_id}`}
+            to={`/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+              place_id2 ? `/places/${place_id2}` : ''
+            }/checks/${check_id}/taxa/${checkTaxon.check_taxon_id}`}
           >
             {checkTaxon.label ?? checkTaxon.check_taxon_id}
           </Link>
