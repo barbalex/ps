@@ -35,16 +35,13 @@ export const Breadcrumb = ({ match }) => {
   )
   // Add only the last to the filter
   const parentFilter = parentFilterParamsArray.at(-1)
-  const grandParentFilter = parentFilterParamsArray.at(-2)
+  const placesCountInPath = path.filter((p) => p.includes('places')).length
   if (parentFilter) {
-    if (grandParentFilter && grandParentFilter[0] === 'places') {
-      filterParams['parent_id'] = parentFilter[1]
+    if (table === 'places' && placesCountInPath === 2) {
+      filterParams.parent_id = match.params.place_id
     } else {
       filterParams[parentFilter[0]] = parentFilter[1]
     }
-  }
-  if (table === 'places') {
-    filterParams.level = levelWanted
   }
   const queryParam = { where: filterParams }
   // if (table === 'projects') {
@@ -88,20 +85,6 @@ export const Breadcrumb = ({ match }) => {
     }
     get()
   }, [db, levelWanted, match, match.params, match.params.project_id, table])
-
-  // console.log('BreadcrumbForData', {
-  //   myNavs,
-  //   match,
-  //   results,
-  //   idField,
-  //   // parentFilterParamsArray,
-  //   table,
-  //   queryTable,
-  //   // filterParams,
-  //   queryParam,
-  //   // error,
-  //   // parentFilter,
-  // })
 
   return (
     <>
