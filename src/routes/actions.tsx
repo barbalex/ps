@@ -9,13 +9,16 @@ import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
 export const Component = () => {
-  const { project_id, subproject_id, place_id } = useParams()
+  const { project_id, subproject_id, place_id, place_id2 } = useParams()
   const navigate = useNavigate()
 
   const { db } = useElectric()
   const { results } = useLiveQuery(
-    () => db.actions.liveMany({ where: { place_id, deleted: false } }),
-    [place_id],
+    () =>
+      db.actions.liveMany({
+        where: { place_id: place_id2 ?? place_id, deleted: false },
+      }),
+    [place_id, place_id2],
   )
 
   const add = useCallback(async () => {
@@ -23,13 +26,13 @@ export const Component = () => {
     await db.actions.create({
       data: {
         ...newAction,
-        place_id,
+        place_id: place_id2 ?? place_id,
       },
     })
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/actions/${newAction.action_id}`,
     )
-  }, [db.actions, navigate, place_id, project_id, subproject_id])
+  }, [db.actions, navigate, place_id, place_id2, project_id, subproject_id])
 
   const actions: Action[] = results ?? []
 
@@ -39,7 +42,9 @@ export const Component = () => {
       {actions.map((action: Action, index: number) => (
         <p key={index} className="item">
           <Link
-            to={`/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/actions/${action.action_id}`}
+            to={`/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+              place_id2 ? `/places/${place_id2}` : ''
+            }/actions/${action.action_id}`}
           >
             {action.label ?? action.action_id}
           </Link>
