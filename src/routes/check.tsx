@@ -15,7 +15,8 @@ import { FormMenu } from '../components/FormMenu'
 import '../form.css'
 
 export const Component = () => {
-  const { project_id, subproject_id, place_id, check_id } = useParams()
+  const { project_id, subproject_id, place_id, place_id2, check_id } =
+    useParams()
   const navigate = useNavigate()
 
   const { db } = useElectric()
@@ -27,12 +28,14 @@ export const Component = () => {
   const addRow = useCallback(async () => {
     const newCheck = createCheckPreset()
     await db.checks.create({
-      data: { ...newCheck, place_id },
+      data: { ...newCheck, place_id: place_id2 ?? place_id },
     })
     navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/checks/${newCheck.check_id}`,
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+        place_id2 ? `/places/${place_id2}` : ''
+      }/checks/${newCheck.check_id}`,
     )
-  }, [db.checks, navigate, place_id, project_id, subproject_id])
+  }, [db.checks, navigate, place_id, place_id2, project_id, subproject_id])
 
   const deleteRow = useCallback(async () => {
     await db.checks.delete({
@@ -41,9 +44,19 @@ export const Component = () => {
       },
     })
     navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/checks`,
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+        place_id2 ? `/places/${place_id2}` : ''
+      }/checks`,
     )
-  }, [check_id, db.checks, navigate, place_id, project_id, subproject_id])
+  }, [
+    check_id,
+    db.checks,
+    navigate,
+    place_id,
+    place_id2,
+    project_id,
+    subproject_id,
+  ])
 
   const row: Check = results
 
@@ -75,7 +88,7 @@ export const Component = () => {
       <SwitchField
         label="relevant for reports"
         name="relevant_for_reports"
-        value={row.relevant_for_reports }
+        value={row.relevant_for_reports}
         onChange={onChange}
       />
       <Jsonb
@@ -83,7 +96,7 @@ export const Component = () => {
         idField="check_id"
         id={row.check_id}
         data={row.data ?? {}}
-        autoFocus 
+        autoFocus
       />
     </div>
   )
