@@ -18,6 +18,7 @@ export const Component = () => {
     project_id,
     subproject_id,
     place_id,
+    place_id2,
     action_id,
     action_report_id,
     action_report_value_id,
@@ -40,7 +41,11 @@ export const Component = () => {
       },
     })
     navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/actions/${action_id}/reports/${action_report_id}/values/${newActionReportValue.action_report_value_id}`,
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+        place_id2 ? `/places/${place_id2}` : ''
+      }/actions/${action_id}/reports/${action_report_id}/values/${
+        newActionReportValue.action_report_value_id
+      }`,
     )
   }, [
     action_id,
@@ -48,6 +53,7 @@ export const Component = () => {
     db.action_report_values,
     navigate,
     place_id,
+    place_id2,
     project_id,
     subproject_id,
   ])
@@ -59,7 +65,9 @@ export const Component = () => {
       },
     })
     navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/actions/${action_id}/reports/${action_report_id}/values`,
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+        place_id2 ? `/places/${place_id2}` : ''
+      }/actions/${action_id}/reports/${action_report_id}/values`,
     )
   }, [
     action_id,
@@ -68,6 +76,7 @@ export const Component = () => {
     db.action_report_values,
     navigate,
     place_id,
+    place_id2,
     project_id,
     subproject_id,
   ])
@@ -110,7 +119,7 @@ export const Component = () => {
         where={unitWhere}
         value={row.unit_id ?? ''}
         onChange={onChange}
-        autoFocus 
+        autoFocus
       />
       <TextField
         label="Value (integer)"
