@@ -14,8 +14,14 @@ import { FormMenu } from '../components/FormMenu'
 import '../form.css'
 
 export const Component = () => {
-  const { project_id, subproject_id, place_id, check_id, check_value_id } =
-    useParams()
+  const {
+    project_id,
+    subproject_id,
+    place_id,
+    place_id2,
+    check_id,
+    check_value_id,
+  } = useParams()
   const navigate = useNavigate()
 
   const { db } = useElectric()
@@ -33,9 +39,19 @@ export const Component = () => {
       },
     })
     navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/checks/${check_id}/values/${newCheckValue.check_value_id}`,
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+        place_id2 ? `/places/${place_id2}` : ''
+      }/checks/${check_id}/values/${newCheckValue.check_value_id}`,
     )
-  }, [check_id, db.check_values, navigate, place_id, project_id, subproject_id])
+  }, [
+    check_id,
+    db.check_values,
+    navigate,
+    place_id,
+    place_id2,
+    project_id,
+    subproject_id,
+  ])
 
   const deleteRow = useCallback(async () => {
     await db.check_values.delete({
@@ -44,7 +60,9 @@ export const Component = () => {
       },
     })
     navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/checks/${check_id}/values`,
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+        place_id2 ? `/places/${place_id2}` : ''
+      }/checks/${check_id}/values`,
     )
   }, [
     check_id,
@@ -52,6 +70,7 @@ export const Component = () => {
     db.check_values,
     navigate,
     place_id,
+    place_id2,
     project_id,
     subproject_id,
   ])
@@ -96,7 +115,7 @@ export const Component = () => {
         where={unitWhere}
         value={row.unit_id ?? ''}
         onChange={onChange}
-        autoFocus 
+        autoFocus
       />
       <TextField
         label="Value (integer)"
