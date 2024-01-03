@@ -33,12 +33,12 @@ export const Navs = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname])
 
-  console.log('Navs', {
-    matches,
-    tos,
-    thisPathsMatches,
-    pathname: location.pathname,
-  })
+  // console.log('Navs', {
+  //   matches,
+  //   tos,
+  //   thisPathsMatches,
+  //   pathname: location.pathname,
+  // })
 
   // hide this area of there are no tos
   if (!tos?.length) return <DataNavs matches={thisPathsMatches} />
