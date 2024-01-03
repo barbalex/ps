@@ -14,7 +14,8 @@ import { FormMenu } from '../components/FormMenu'
 import '../form.css'
 
 export const Component = () => {
-  const { project_id, subproject_id, place_id, place_user_id } = useParams()
+  const { project_id, subproject_id, place_id, place_id2, place_user_id } =
+    useParams()
   const navigate = useNavigate()
 
   const { db } = useElectric()
@@ -26,12 +27,14 @@ export const Component = () => {
   const addRow = useCallback(async () => {
     const newPlaceUser = createPlaceUserPreset()
     await db.place_users.create({
-      data: { ...newPlaceUser, project_id },
+      data: { ...newPlaceUser, place_id: place_id2 ?? place_id },
     })
     navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/users/${newPlaceUser.place_user_id}`,
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+        place_id2 ? `/places/${place_id2}` : ''
+      }/users/${newPlaceUser.place_user_id}`,
     )
-  }, [db.place_users, navigate, place_id, project_id, subproject_id])
+  }, [db.place_users, navigate, place_id, place_id2, project_id, subproject_id])
 
   const deleteRow = useCallback(async () => {
     await db.place_users.delete({
@@ -40,7 +43,9 @@ export const Component = () => {
       },
     })
     navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/users`,
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+        place_id2 ? `/places/${place_id2}` : ''
+      }/users`,
     )
   }, [
     db.place_users,
@@ -49,6 +54,7 @@ export const Component = () => {
     project_id,
     subproject_id,
     place_id,
+    place_id2,
   ])
 
   const row: PlaceUser = results
@@ -89,12 +95,12 @@ export const Component = () => {
         where={userWhere}
         value={row.user_id ?? ''}
         onChange={onChange}
-        autoFocus 
+        autoFocus
       />
       <RadioGroupField
         label="Role"
         name="role"
-        list={['reader', 'editor','manager']}
+        list={['reader', 'editor', 'manager']}
         value={row.role ?? ''}
         onChange={onChange}
       />
