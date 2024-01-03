@@ -14,7 +14,8 @@ import { FormMenu } from '../components/FormMenu'
 import '../form.css'
 
 export const Component = () => {
-  const { project_id, subproject_id, place_id, place_report_id } = useParams()
+  const { project_id, subproject_id, place_id, place_id2, place_report_id } =
+    useParams()
   const navigate = useNavigate()
 
   const { db } = useElectric()
@@ -26,12 +27,21 @@ export const Component = () => {
   const addRow = useCallback(async () => {
     const newPlaceReport = createPlaceReportPreset()
     await db.place_reports.create({
-      data: { ...newPlaceReport, place_id },
+      data: { ...newPlaceReport, place_id: place_id2 ?? place_id },
     })
     navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/reports/${newPlaceReport.place_report_id}`,
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+        place_id2 ? `/places/${place_id2}` : ''
+      }/reports/${newPlaceReport.place_report_id}`,
     )
-  }, [db.place_reports, navigate, place_id, project_id, subproject_id])
+  }, [
+    db.place_reports,
+    navigate,
+    place_id,
+    place_id2,
+    project_id,
+    subproject_id,
+  ])
 
   const deleteRow = useCallback(async () => {
     await db.place_reports.delete({
@@ -40,12 +50,15 @@ export const Component = () => {
       },
     })
     navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/reports`,
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+        place_id2 ? `/places/${place_id2}` : ''
+      }/reports`,
     )
   }, [
     db.place_reports,
     navigate,
     place_id,
+    place_id2,
     place_report_id,
     project_id,
     subproject_id,

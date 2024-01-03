@@ -9,13 +9,16 @@ import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
 export const Component = () => {
-  const { project_id, subproject_id, place_id } = useParams()
+  const { project_id, subproject_id, place_id, place_id2 } = useParams()
   const navigate = useNavigate()
 
   const { db } = useElectric()
   const { results } = useLiveQuery(
-    () => db.place_reports.liveMany({ where: { place_id, deleted: false } }),
-    [place_id],
+    () =>
+      db.place_reports.liveMany({
+        where: { place_id: place_id2 ?? place_id, deleted: false },
+      }),
+    [place_id, place_id2],
   )
 
   const add = useCallback(async () => {
@@ -23,13 +26,20 @@ export const Component = () => {
     await db.place_reports.create({
       data: {
         ...newPlaceReport,
-        place_id,
+        place_id: place_id2 ?? place_id,
       },
     })
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/reports/${newPlaceReport.place_report_id}`,
     )
-  }, [db.place_reports, navigate, place_id, project_id, subproject_id])
+  }, [
+    db.place_reports,
+    navigate,
+    place_id,
+    place_id2,
+    project_id,
+    subproject_id,
+  ])
 
   const placeReports: PlaceReport[] = results ?? []
 
@@ -39,7 +49,9 @@ export const Component = () => {
       {placeReports.map((placeReport: PlaceReport, index: number) => (
         <p key={index} className="item">
           <Link
-            to={`/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/reports/${placeReport.place_report_id}`}
+            to={`/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+              place_id2 ? `/places/${place_id2}` : ''
+            }/reports/${placeReport.place_report_id}`}
           >
             {placeReport.label ?? placeReport.place_report_id}
           </Link>
