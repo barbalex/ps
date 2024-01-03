@@ -45,13 +45,14 @@ export const Breadcrumb = ({ match }) => {
     }
   }
   const queryParam = { where: filterParams }
+  // TODO: test including
   // if (table === 'projects') {
   //   queryParam.include = { subprojects: true }
   // }
   // if (table === 'subprojects') {
   //   queryParam.include = { projects: true }
   // }
-  // include referenced tables needed for the label
+  // TODO: include referenced tables needed for the label
   // TODO: this results in zod error: invalid type. expected string, received null
   // https://github.com/electric-sql/electric/issues/782
   // if (table.endsWith('_values')) {
