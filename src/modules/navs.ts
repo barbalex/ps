@@ -16,25 +16,6 @@ export const buildNavs = async ({
   db,
   level,
 }) => {
-  console.log('navs:', {
-    table,
-    check_id,
-    action_id,
-    action_report_id,
-    project_id,
-    subproject_id,
-    place_id,
-    place_id2,
-    place_report_id,
-    goal_id,
-    goal_report_id,
-    list_id,
-    taxonomy_id,
-    observation_source_id,
-    db,
-    level,
-  })
-
   switch (table) {
     case 'root':
       return [
