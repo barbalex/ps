@@ -6,8 +6,10 @@ import { buildNavs } from '../modules/navs'
 import { placesChildren } from './placesChildren'
 import { placesLevel2 } from './placesLevel2'
 
-export const router = (db) =>
-  createBrowserRouter([
+export const router = (db) => {
+  console.log('router building')
+
+  return createBrowserRouter([
     {
       element: <Header />,
       children: [
@@ -21,8 +23,10 @@ export const router = (db) =>
               table: 'root',
               folder: true,
             }),
-            to: (match) =>
-              buildNavs({ table: 'root', params: match.params, db }),
+            to: () => {
+              console.log('router building navs for root')
+              buildNavs({ table: 'root', db })
+            },
           },
           children: [
             {
@@ -50,12 +54,14 @@ export const router = (db) =>
                       table: 'projects',
                       folder: false,
                     }),
-                    to: (match) =>
+                    to: (match) => {
+                      console.log('router building navs for projects')
                       buildNavs({
                         table: `projects`,
-                        params: match.params,
+                        project_id: match.params.project_id,
                         db,
-                      }),
+                      })
+                    },
                   },
                   children: [
                     { index: true, lazy: () => import('../routes/project') },
@@ -83,12 +89,17 @@ export const router = (db) =>
                               table: 'subprojects',
                               folder: false,
                             }),
-                            to: (match) =>
+                            to: (match) => {
+                              console.log(
+                                'router building navs for subprojects',
+                              )
                               buildNavs({
                                 table: `subprojects`,
-                                params: match.params,
+                                project_id: match.params.project_id,
+                                subproject_id: match.params.subproject_id,
                                 db,
-                              }),
+                              })
+                            },
                           },
                           children: [
                             {
@@ -121,22 +132,26 @@ export const router = (db) =>
                                       level: 1,
                                       folder: false,
                                     }),
-                                    to: (match) =>
+                                    to: (match) => {
+                                      console.log(
+                                        'router building navs for places',
+                                      )
                                       buildNavs({
                                         table: `places`,
-                                        params: match.params,
+                                        project_id: match.params.project_id,
+                                        subproject_id:
+                                          match.params.subproject_id,
+                                        place_id: match.params.place_id,
                                         db,
                                         level: 1,
-                                      }),
+                                      })
+                                    },
                                   },
                                   children: [
                                     {
                                       index: true,
                                       lazy: () => import('../routes/place'),
                                     },
-                                    // TODO:
-                                    // add places with place_id2
-                                    // should have same children as this
                                     placesLevel2(db),
                                     ...placesChildren({ db, level: 1 }),
                                   ],
@@ -257,12 +272,19 @@ export const router = (db) =>
                                       table: 'goals',
                                       folder: false,
                                     }),
-                                    to: (match) =>
+                                    to: (match) => {
+                                      console.log(
+                                        'router building navs for goals',
+                                      )
                                       buildNavs({
                                         table: `goals`,
-                                        params: match.params,
+                                        project_id: match.params.project_id,
+                                        subproject_id:
+                                          match.params.subproject_id,
+                                        goal_id: match.params.goal_id,
                                         db,
-                                      }),
+                                      })
+                                    },
                                   },
                                   children: [
                                     {
@@ -294,12 +316,22 @@ export const router = (db) =>
                                               table: 'goal_reports',
                                               folder: false,
                                             }),
-                                            to: (match) =>
+                                            to: (match) => {
+                                              console.log(
+                                                'router building navs for goal_reports',
+                                              )
                                               buildNavs({
                                                 table: `goal_reports`,
-                                                params: match.params,
+                                                project_id:
+                                                  match.params.project_id,
+                                                subproject_id:
+                                                  match.params.subproject_id,
+                                                goal_id: match.params.goal_id,
+                                                goal_report_id:
+                                                  match.params.goal_report_id,
                                                 db,
-                                              }),
+                                              })
+                                            },
                                           },
                                           children: [
                                             {
@@ -429,12 +461,15 @@ export const router = (db) =>
                               table: 'lists',
                               folder: false,
                             }),
-                            to: (match) =>
+                            to: (match) => {
+                              console.log('router building navs for lists')
                               buildNavs({
                                 table: `lists`,
-                                params: match.params,
+                                project_id: match.params.project_id,
+                                list_id: match.params.list_id,
                                 db,
-                              }),
+                              })
+                            },
                           },
                           children: [
                             {
@@ -497,12 +532,15 @@ export const router = (db) =>
                               table: 'taxonomies',
                               folder: false,
                             }),
-                            to: (match) =>
+                            to: (match) => {
+                              console.log('router building navs for taxonomies')
                               buildNavs({
                                 table: `taxonomies`,
-                                params: match.params,
+                                project_id: match.params.project_id,
+                                taxonomy_id: match.params.taxonomy_id,
                                 db,
-                              }),
+                              })
+                            },
                           },
                           children: [
                             {
@@ -646,12 +684,18 @@ export const router = (db) =>
                               table: 'observation_sources',
                               folder: false,
                             }),
-                            to: (match) =>
+                            to: (match) => {
+                              console.log(
+                                'router building navs for observation_sources',
+                              )
                               buildNavs({
                                 table: `observation_sources`,
-                                params: match.params,
+                                project_id: match.params.project_id,
+                                observation_source_id:
+                                  match.params.observation_source_id,
                                 db,
-                              }),
+                              })
+                            },
                           },
                           children: [
                             {
@@ -919,3 +963,4 @@ export const router = (db) =>
       ],
     },
   ])
+}
