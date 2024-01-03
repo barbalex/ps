@@ -18,6 +18,7 @@ export const Component = () => {
     project_id,
     subproject_id,
     place_id,
+    place_id2,
     place_report_id,
     place_report_value_id,
   } = useParams()
@@ -39,12 +40,17 @@ export const Component = () => {
       },
     })
     navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/reports/${place_report_id}/values/${newPlaceReportValue.place_report_value_id}`,
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+        place_id2 ? `/places/${place_id2}` : ''
+      }/reports/${place_report_id}/values/${
+        newPlaceReportValue.place_report_value_id
+      }`,
     )
   }, [
     db.place_report_values,
     navigate,
     place_id,
+    place_id2,
     place_report_id,
     project_id,
     subproject_id,
@@ -57,12 +63,15 @@ export const Component = () => {
       },
     })
     navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/reports/${place_report_id}/values`,
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+        place_id2 ? `/places/${place_id2}` : ''
+      }/reports/${place_report_id}/values`,
     )
   }, [
     db.place_report_values,
     navigate,
     place_id,
+    place_id2,
     place_report_id,
     place_report_value_id,
     project_id,

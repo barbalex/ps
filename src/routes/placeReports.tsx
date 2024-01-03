@@ -30,7 +30,9 @@ export const Component = () => {
       },
     })
     navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/reports/${newPlaceReport.place_report_id}`,
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+        place_id2 ? `/places/${place_id2}` : ''
+      }/reports/${newPlaceReport.place_report_id}`,
     )
   }, [
     db.place_reports,

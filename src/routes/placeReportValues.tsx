@@ -9,7 +9,8 @@ import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
 export const Component = () => {
-  const { project_id, subproject_id, place_id, place_report_id } = useParams()
+  const { project_id, subproject_id, place_id, place_id2, place_report_id } =
+    useParams()
   const navigate = useNavigate()
 
   const { db } = useElectric()
@@ -30,12 +31,17 @@ export const Component = () => {
       },
     })
     navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/reports/${place_report_id}/values/${newPlaceReportValue.place_report_value_id}`,
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+        place_id2 ? `/places/${place_id2}` : ''
+      }/reports/${place_report_id}/values/${
+        newPlaceReportValue.place_report_value_id
+      }`,
     )
   }, [
     db.place_report_values,
     navigate,
     place_id,
+    place_id2,
     place_report_id,
     project_id,
     subproject_id,
@@ -50,7 +56,11 @@ export const Component = () => {
         (placeReportValue: PlaceReportValue, index: number) => (
           <p key={index} className="item">
             <Link
-              to={`/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/reports/${place_report_id}/values/${placeReportValue.place_report_value_id}`}
+              to={`/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+                place_id2 ? `/places/${place_id2}` : ''
+              }/reports/${place_report_id}/values/${
+                placeReportValue.place_report_value_id
+              }`}
             >
               {placeReportValue.label ?? placeReportValue.place_report_value_id}
             </Link>
