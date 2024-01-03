@@ -1,16 +1,39 @@
-export const buildNavs = async ({ table, params, db, level }) => {
-  const {
+export const buildNavs = async ({
+  table,
+  check_id,
+  action_id,
+  action_report_id,
+  project_id,
+  subproject_id,
+  place_id,
+  place_id2,
+  place_report_id,
+  goal_id,
+  goal_report_id,
+  list_id,
+  taxonomy_id,
+  observation_source_id,
+  db,
+  level,
+}) => {
+  console.log('navs:', {
+    table,
+    check_id,
+    action_id,
+    action_report_id,
     project_id,
     subproject_id,
     place_id,
     place_id2,
+    place_report_id,
     goal_id,
     goal_report_id,
     list_id,
     taxonomy_id,
     observation_source_id,
-  } = params
-  // console.log('navs:', { table, params, db })
+    db,
+    level,
+  })
 
   switch (table) {
     case 'root':
@@ -147,13 +170,13 @@ export const buildNavs = async ({ table, params, db, level }) => {
         {
           path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
             level === 2 ? `/places/${place_id2}` : ''
-          }/checks/${params.check_id}/values`,
+          }/checks/${check_id}/values`,
           text: 'Values',
         },
         {
           path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
             level === 2 ? `/places/${place_id2}` : ''
-          }/checks/${params.check_id}/taxa`,
+          }/checks/${check_id}/taxa`,
           text: 'Taxa',
         },
       ]
@@ -163,13 +186,13 @@ export const buildNavs = async ({ table, params, db, level }) => {
         {
           path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
             level === 2 ? `/places/${place_id2}` : ''
-          }/actions/${params.action_id}/values`,
+          }/actions/${action_id}/values`,
           text: 'Values',
         },
         {
           path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
             level === 2 ? `/places/${place_id2}` : ''
-          }/actions/${params.action_id}/reports`,
+          }/actions/${action_id}/reports`,
           text: 'Reports',
         },
       ]
@@ -178,9 +201,7 @@ export const buildNavs = async ({ table, params, db, level }) => {
         {
           path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
             level === 2 ? `/places/${place_id2}` : ''
-          }/actions/${params.action_id}/reports/${
-            params.action_report_id
-          }/values`,
+          }/actions/${action_id}/reports/${action_report_id}/values`,
           text: 'Values',
         },
       ]
@@ -189,7 +210,7 @@ export const buildNavs = async ({ table, params, db, level }) => {
         {
           path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
             level === 2 ? `/places/${place_id2}` : ''
-          }/reports/${params.place_report_id}/values`,
+          }/reports/${place_report_id}/values`,
           text: 'Values',
         },
       ]

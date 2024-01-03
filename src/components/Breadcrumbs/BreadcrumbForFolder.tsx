@@ -10,6 +10,21 @@ import { idFieldFromTable } from '../../modules/idFieldFromTable'
 
 export const Breadcrumb = ({ match }) => {
   const navigate = useNavigate()
+  const {
+    check_id,
+    action_id,
+    action_report_id,
+    project_id,
+    subproject_id,
+    place_id,
+    place_id2,
+    place_report_id,
+    goal_id,
+    goal_report_id,
+    list_id,
+    taxonomy_id,
+    observation_source_id,
+  } = match.params
 
   const { text, table } = match?.handle?.crumb?.(match) ?? {}
   const className =
@@ -20,49 +35,72 @@ export const Breadcrumb = ({ match }) => {
   const idField = idFieldFromTable(table)
   const queryTable = table === 'root' || table === 'docs' ? 'projects' : table
   const { db } = useElectric()
-  // TODO:
-  // if table === 'places'
-  // include subproject > project > place_levels
-  // to:
-  // 1. know how to label place?
-  // 2. know if second level exists
-  // then pass to buildNavs
   const matchParam =
-    table === 'places' && match.params.place_id2
-      ? match.params.place_id2
-      : match.params[idField]
+    table === 'places' && place_id2 ? place_id2 : match.params[idField]
   const { results } = useLiveQuery(
     () =>
       db[queryTable]?.liveMany({
         where: { [idField]: matchParam },
       }),
-    [db, queryTable, match],
+    [db, queryTable, matchParam, idField],
   )
   const row = results?.[0]
 
   const [navs, setNavs] = useState([])
   useEffect(() => {
     const fetch = async () => {
-      const navs = await buildNavs({ table, params: match.params, db })
+      const navs = await buildNavs({
+        table,
+        check_id,
+        action_id,
+        action_report_id,
+        project_id,
+        subproject_id,
+        place_id,
+        place_id2,
+        place_report_id,
+        goal_id,
+        goal_report_id,
+        list_id,
+        taxonomy_id,
+        observation_source_id,
+        db,
+      })
       return setNavs(navs)
     }
     fetch()
-  }, [match, db, table])
+  }, [
+    check_id,
+    action_id,
+    action_report_id,
+    project_id,
+    subproject_id,
+    place_id,
+    place_id2,
+    place_report_id,
+    goal_id,
+    goal_report_id,
+    list_id,
+    taxonomy_id,
+    observation_source_id,
+    db,
+    table,
+  ])
 
   let label = row?.label ?? row?.[idField]
   if (table === 'root' || table === 'docs') label = text
 
-  // console.log('BreadcrumbForFolder', {
-  //   results,
-  //   label,
-  //   idField,
-  //   row,
-  //   table,
-  //   text,
-  //   params: match.params,
-  //   match,
-  //   navs,
-  // })
+  console.log('BreadcrumbForFolder', {
+    results,
+    label,
+    idField,
+    row,
+    table,
+    text,
+    params: match.params,
+    match,
+    navs,
+  })
 
   return (
     <>
