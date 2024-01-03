@@ -49,6 +49,7 @@ export const Breadcrumb = ({ match }) => {
   const [navs, setNavs] = useState([])
   useEffect(() => {
     const fetch = async () => {
+      console.log('BreadcrumbForFolder calling navs')
       const navs = await buildNavs({
         table,
         check_id,
