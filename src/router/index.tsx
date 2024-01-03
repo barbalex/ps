@@ -23,9 +23,9 @@ export const router = (db) => {
               table: 'root',
               folder: true,
             }),
-            to: () => {
+            to: async () => {
               console.log('router building navs for root')
-              buildNavs({ table: 'root', db })
+              return await buildNavs({ table: 'root', db })
             },
           },
           children: [
@@ -54,9 +54,9 @@ export const router = (db) => {
                       table: 'projects',
                       folder: false,
                     }),
-                    to: (match) => {
+                    to: async (match) => {
                       console.log('router building navs for projects')
-                      buildNavs({
+                      return await buildNavs({
                         table: `projects`,
                         project_id: match.params.project_id,
                         db,
@@ -89,11 +89,11 @@ export const router = (db) => {
                               table: 'subprojects',
                               folder: false,
                             }),
-                            to: (match) => {
+                            to: async (match) => {
                               console.log(
                                 'router building navs for subprojects',
                               )
-                              buildNavs({
+                              return await buildNavs({
                                 table: `subprojects`,
                                 project_id: match.params.project_id,
                                 subproject_id: match.params.subproject_id,
@@ -132,11 +132,11 @@ export const router = (db) => {
                                       level: 1,
                                       folder: false,
                                     }),
-                                    to: (match) => {
+                                    to: async (match) => {
                                       console.log(
                                         'router building navs for places',
                                       )
-                                      buildNavs({
+                                      return await buildNavs({
                                         table: `places`,
                                         project_id: match.params.project_id,
                                         subproject_id:
@@ -272,11 +272,11 @@ export const router = (db) => {
                                       table: 'goals',
                                       folder: false,
                                     }),
-                                    to: (match) => {
+                                    to: async (match) => {
                                       console.log(
                                         'router building navs for goals',
                                       )
-                                      buildNavs({
+                                      return await buildNavs({
                                         table: `goals`,
                                         project_id: match.params.project_id,
                                         subproject_id:
@@ -316,11 +316,11 @@ export const router = (db) => {
                                               table: 'goal_reports',
                                               folder: false,
                                             }),
-                                            to: (match) => {
+                                            to: async (match) => {
                                               console.log(
                                                 'router building navs for goal_reports',
                                               )
-                                              buildNavs({
+                                              return await buildNavs({
                                                 table: `goal_reports`,
                                                 project_id:
                                                   match.params.project_id,
@@ -461,9 +461,9 @@ export const router = (db) => {
                               table: 'lists',
                               folder: false,
                             }),
-                            to: (match) => {
+                            to: async (match) => {
                               console.log('router building navs for lists')
-                              buildNavs({
+                              return await buildNavs({
                                 table: `lists`,
                                 project_id: match.params.project_id,
                                 list_id: match.params.list_id,
@@ -532,9 +532,9 @@ export const router = (db) => {
                               table: 'taxonomies',
                               folder: false,
                             }),
-                            to: (match) => {
+                            to: async (match) => {
                               console.log('router building navs for taxonomies')
-                              buildNavs({
+                              return await buildNavs({
                                 table: `taxonomies`,
                                 project_id: match.params.project_id,
                                 taxonomy_id: match.params.taxonomy_id,
@@ -684,11 +684,11 @@ export const router = (db) => {
                               table: 'observation_sources',
                               folder: false,
                             }),
-                            to: (match) => {
+                            to: async (match) => {
                               console.log(
                                 'router building navs for observation_sources',
                               )
-                              buildNavs({
+                              return await buildNavs({
                                 table: `observation_sources`,
                                 project_id: match.params.project_id,
                                 observation_source_id:
