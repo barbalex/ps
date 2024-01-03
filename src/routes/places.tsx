@@ -10,10 +10,14 @@ import '../form.css'
 
 export const Component = () => {
   const navigate = useNavigate()
-  const { subproject_id, project_id } = useParams()
+  const { subproject_id, project_id, place_id } = useParams()
 
   const { db } = useElectric()
-  const { results } = useLiveQuery(db.places.liveMany())
+  const where = { deleted: false }
+  if (place_id) {
+    where.parent_id = place_id
+  }
+  const { results } = useLiveQuery(db.places.liveMany({ where }))
 
   const add = useCallback(async () => {
     const newPlace = createPlacePreset()
@@ -21,9 +25,11 @@ export const Component = () => {
       data: { ...newPlace, subproject_id },
     })
     navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${newPlace.place_id}`,
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${
+        place_id ? `${place_id}/places/` : ''
+      }${newPlace.place_id}`,
     )
-  }, [db.places, navigate, project_id, subproject_id])
+  }, [db.places, navigate, place_id, project_id, subproject_id])
 
   const places: Place[] = results ?? []
 
@@ -33,7 +39,9 @@ export const Component = () => {
       {places.map((place: Place, index: number) => (
         <p key={index} className="item">
           <Link
-            to={`/projects/${project_id}/subprojects/${subproject_id}/places/${place.place_id}`}
+            to={`/projects/${project_id}/subprojects/${subproject_id}/places/${
+              place_id ? `${place_id}/places/` : ''
+            }${place.place_id}`}
           >
             {place.label ?? place.place_id}
           </Link>
