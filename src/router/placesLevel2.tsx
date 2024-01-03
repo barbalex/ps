@@ -27,10 +27,13 @@ export const placesLevel2 = (db) => ({
           level: 2,
           folder: false,
         }),
-        to: (match) =>
-          buildNavs({
+        to: async (match) =>
+          await buildNavs({
             table: `places`,
-            params: match.params,
+            project_id: match.params.project_id,
+            subproject_id: match.params.subproject_id,
+            place_id: match.params.place_id,
+            place_id2: match.params.place_id2,
             db,
             level: 2,
           }),
