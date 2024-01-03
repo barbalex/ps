@@ -14,8 +14,14 @@ import { FormMenu } from '../components/FormMenu'
 import '../form.css'
 
 export const Component = () => {
-  const { project_id, subproject_id, place_id, action_id, action_value_id } =
-    useParams()
+  const {
+    project_id,
+    subproject_id,
+    place_id,
+    place_id2,
+    action_id,
+    action_value_id,
+  } = useParams()
   const navigate = useNavigate()
 
   const { db } = useElectric()
@@ -33,13 +39,16 @@ export const Component = () => {
       },
     })
     navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/actions/${action_id}/values/${newActionValue.action_value_id}`,
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+        place_id2 ? `/places/${place_id2}` : ''
+      }/actions/${action_id}/values/${newActionValue.action_value_id}`,
     )
   }, [
     action_id,
     db.action_values,
     navigate,
     place_id,
+    place_id2,
     project_id,
     subproject_id,
   ])
@@ -51,7 +60,9 @@ export const Component = () => {
       },
     })
     navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/actions/${action_id}/values`,
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+        place_id2 ? `/places/${place_id2}` : ''
+      }/actions/${action_id}/values`,
     )
   }, [
     action_id,
@@ -59,6 +70,7 @@ export const Component = () => {
     db.action_values,
     navigate,
     place_id,
+    place_id2,
     project_id,
     subproject_id,
   ])
