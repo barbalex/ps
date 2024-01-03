@@ -1,4 +1,4 @@
-export const buildNavs = async ({
+export const buildNavs = async ({ 
   table,
   check_id,
   action_id,

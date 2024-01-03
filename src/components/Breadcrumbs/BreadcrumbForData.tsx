@@ -40,7 +40,8 @@ export const Breadcrumb = ({ match }) => {
     if (table === 'places' && placesCountInPath === 2) {
       filterParams.parent_id = match.params.place_id
     } else {
-      filterParams[parentFilter[0]] = parentFilter[1]
+      filterParams[parentFilter[0].replace('place_id2', 'place_id')] =
+        parentFilter[1]
     }
   }
   const queryParam = { where: filterParams }
@@ -56,6 +57,12 @@ export const Breadcrumb = ({ match }) => {
   // if (table.endsWith('_values')) {
   //   queryParam.include = { units: true }
   // }
+
+  console.log('BreadcrumbForData, queryParam:', {
+    filterParams,
+    table,
+    params: match.params,
+  })
 
   const { db } = useElectric()
   const queryTable = table === 'root' || table === 'docs' ? 'projects' : table
