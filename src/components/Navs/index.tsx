@@ -30,7 +30,8 @@ export const Navs = () => {
       return setTos(tos.filter((to) => Boolean(to)))
     }
     fetch()
-  }, [thisPathsMatches])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname])
 
   console.log('Navs', {
     matches,
