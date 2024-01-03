@@ -22,6 +22,8 @@ export const Header = () => {
     syncItems()
   }, [db.users])
 
+  // console.log('Header')
+
   return (
     <>
       <div className="header">
