@@ -1,4 +1,4 @@
-export const buildNavs = async ({ 
+export const buildNavs = async ({
   table,
   check_id,
   action_id,
@@ -14,8 +14,9 @@ export const buildNavs = async ({
   taxonomy_id,
   observation_source_id,
   db,
-  level,
+  level = 1,
 }) => {
+  console.log('buildNavs', { place_id2, place_id, table, level })
   switch (table) {
     case 'root':
       return [
