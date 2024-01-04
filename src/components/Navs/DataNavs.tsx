@@ -3,7 +3,8 @@ import { Link, useLocation } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
 import { idFieldFromTable } from '../../modules/idFieldFromTable'
-import { tablesWithoutDeleted } from '../Breadcrumbs/BreadcrumbForData'
+
+const isOdd = (num) => num % 2
 
 export const DataNavs = ({ matches }) => {
   const location = useLocation()
@@ -15,36 +16,34 @@ export const DataNavs = ({ matches }) => {
   })
   const dataMatch = filteredMatches?.[0] ?? {}
   const { table } = dataMatch?.handle?.crumb?.(dataMatch) ?? {}
-  const params = dataMatch?.params ?? {}
   const pathname = dataMatch?.pathname ?? ''
-  const pathArray = pathname.split('/').filter((path) => path !== '')
-  const parentTable = pathArray?.[pathArray.length - 3]
-  // TODO: for places can also be place_id2
-  const parentIdFieldName = parentTable
-    ? idFieldFromTable(parentTable)
-    : undefined
-  const isPlaceId2 = parentTable === 'places' && pathArray.length > 8
-  let parentId = params[parentIdFieldName]
-  // TODO: where needed use place_id2 instead of place_id
-  if (isPlaceId2) {
-    parentId = params.place_id2
-  }
+  const path = pathname.split('/').filter((path) => path !== '')
   const idField = idFieldFromTable(table)
 
-  // filter by parents
   const filterParams = {}
-  if (!tablesWithoutDeleted.includes(table)) {
-    filterParams.deleted = false
-  }
-  // if level 2 places, need to filter by parent_id
-  const isLevel2Places =
-    params.place_id && !params.place_id2 && pathArray.at(-1) === 'places'
-  if (isLevel2Places) {
-    filterParams.parent_id = params.place_id
-  } else if (pathArray.at(-1) === 'places') {
-    filterParams.level = 1
-  } else if (parentTable && parentId) {
-    filterParams[parentIdFieldName] = parentId
+  // Add only the last to the filter
+  // Wanted to get it from params. But not useable because also contains lower level ids!!!
+  // so need to get it from path which does NOT contain lower levels
+  // if length is divisable by two, then it is a parent id
+  const indexOfParentId =
+    path.length > 1
+      ? isOdd(path.length)
+        ? path.length - 2
+        : path.length - 1
+      : undefined
+  const parentId = indexOfParentId ? path[indexOfParentId] : undefined
+  // need to get the name from the parents as in path is altered
+  // for instance: place_report_values > values
+  const parentIdName = Object.keys(dataMatch.params ?? {})
+    .find((key) => dataMatch.params[key] === parentId)
+    ?.replace('place_id2', 'place_id')
+  const placesCountInPath = path.filter((p) => p.includes('places')).length
+  if (parentIdName && parentId) {
+    if (table === 'places' && placesCountInPath === 2) {
+      filterParams.parent_id = dataMatch?.params?.place_id
+    } else {
+      filterParams[parentIdName] = parentId
+    }
   }
 
   const { db } = useElectric()
