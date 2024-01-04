@@ -44,9 +44,9 @@ export const Breadcrumb = ({ match }) => {
   const parentId = indexOfParentId ? path[indexOfParentId] : undefined
   // need to get the name from the parents as in path is altered
   // for instance: place_report_values > values
-  const parentIdName = Object.values(match.params).find(
-    (p) => p[1] === parentId,
-  )?.[0]
+  const parentIdName = Object.keys(match.params).find(
+    (key) => match.params[key] === parentId,
+  )
   const placesCountInPath = path.filter((p) => p.includes('places')).length
   if (parentIdName && parentId) {
     if (table === 'places' && placesCountInPath === 2) {
@@ -110,6 +110,8 @@ export const Breadcrumb = ({ match }) => {
     filterParams,
     idField,
     path,
+    parentId,
+    parentIdName,
   })
 
   return (
