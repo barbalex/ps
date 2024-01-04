@@ -42,7 +42,7 @@ export const Breadcrumb = ({ match }) => {
         : path.length - 1
       : undefined
   const parentId = indexOfParentId ? path[indexOfParentId] : undefined
-  // need to get the name from the parents as in path is altered 
+  // need to get the name from the parents as in path is altered
   // for instance: place_report_values > values
   const parentIdName = Object.values(match.params).find(
     (p) => p[1] === parentId,
@@ -52,8 +52,7 @@ export const Breadcrumb = ({ match }) => {
     if (table === 'places' && placesCountInPath === 2) {
       filterParams.parent_id = match.params.place_id
     } else {
-      // TODO: replace not needed?
-      filterParams[parentIdName.replace('place_id2', 'place_id')] = parentId
+      filterParams[parentIdName] = parentId
     }
   }
   const queryParam = { where: filterParams }
