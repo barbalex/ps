@@ -13,11 +13,11 @@ export const Component = () => {
   const { subproject_id, project_id, place_id } = useParams()
 
   const { db } = useElectric()
-  const where = { deleted: false }
-  if (place_id) {
-    where.parent_id = place_id
-  }
-  const { results } = useLiveQuery(db.places.liveMany({ where }))
+  const { results } = useLiveQuery(
+    db.places.liveMany({
+      where: { deleted: false, parent_id: place_id ?? null },
+    }),
+  )
 
   const add = useCallback(async () => {
     const newPlace = createPlacePreset()
