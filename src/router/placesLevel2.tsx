@@ -30,10 +30,7 @@ export const placesLevel2 = (db) => ({
         to: async (match) =>
           await buildNavs({
             table: `places`,
-            project_id: match.params.project_id,
-            subproject_id: match.params.subproject_id,
-            place_id: match.params.place_id,
-            place_id2: match.params.place_id2,
+            ...match.params,
             db,
             level: 2,
           }),
