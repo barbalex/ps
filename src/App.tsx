@@ -20,7 +20,8 @@ import '@fontsource/roboto/700.css'
 
 const RouterProviderWithDb = () => {
   const { db } = useElectric()!
-  console.log('RouterProviderWithDb', { db })
+  // confirmed: this only runs once
+  // console.log('RouterProviderWithDb', { db })
 
   return (
     <RouterProvider router={router(db)} future={{ v7_startTransition: true }} />
