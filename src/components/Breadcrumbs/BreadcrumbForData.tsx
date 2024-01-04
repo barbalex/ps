@@ -99,20 +99,20 @@ export const Breadcrumb = ({ match }) => {
     get()
   }, [db, levelWanted, match, match.params, match.params.project_id, table])
 
-  console.log('BreadcrumbForData', {
-    table,
-    params: match.params,
-    text,
-    label,
-    results,
-    pathname: match.pathname,
-    myNavs,
-    filterParams,
-    idField,
-    path,
-    parentId,
-    parentIdName,
-  })
+  // console.log('BreadcrumbForData', {
+  //   table,
+  //   // params: match.params,
+  //   // text,
+  //   // label,
+  //   // results,
+  //   pathname: match.pathname,
+  //   myNavs,
+  //   // filterParams,
+  //   // idField,
+  //   // path,
+  //   // parentId,
+  //   // parentIdName,
+  // })
 
   return (
     <>
