@@ -82,7 +82,7 @@ export const Component = () => {
 
   const unitWhere = useMemo(() => ({ use_for_place_report_values: true }), [])
 
-  // console.log('PlaceReportValue', { row, results })
+  // console.log('PlaceReportValue, row:', row)
 
   const onChange = useCallback(
     (e, data) => {
