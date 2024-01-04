@@ -54,16 +54,14 @@ export const DataNavs = ({ matches }) => {
 
   // console.log('DataNavs', {
   //   table,
-  //   params,
   //   idField,
   //   pathname,
-  //   pathArray,
-  //   parentTable,
   //   parentId,
-  //   parentIdFieldName,
   //   tableResults,
   //   filterParams,
   // })
+
+  if (!table) return null
 
   return (
     <nav className="navs">
