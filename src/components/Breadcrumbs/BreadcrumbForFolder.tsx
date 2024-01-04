@@ -98,21 +98,21 @@ export const Breadcrumb = ({ match }) => {
   let label = row?.label ?? row?.[idField]
   if (table === 'root' || table === 'docs') label = text
 
-  console.log('BreadcrumbForFolder', {
-    // results,
-    // label,
-    // idField,
-    // matchParam,
-    // row,
-    table,
-    // text,
-    // params: match.params,
-    // match,
-    pathname: match.pathname,
-    navs,
-    // where,
-    // place_id2,
-  })
+  // console.log('BreadcrumbForFolder', {
+  //   // results,
+  //   // label,
+  //   // idField,
+  //   // matchParam,
+  //   // row,
+  //   table,
+  //   // text,
+  //   // params: match.params,
+  //   // match,
+  //   pathname: match.pathname,
+  //   navs,
+  //   // where,
+  //   // place_id2,
+  // })
 
   return (
     <>

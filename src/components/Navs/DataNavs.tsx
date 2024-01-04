@@ -41,6 +41,8 @@ export const DataNavs = ({ matches }) => {
   if (parentIdName && parentId) {
     if (table === 'places' && placesCountInPath === 2) {
       filterParams.parent_id = dataMatch?.params?.place_id
+    } else if (table === 'places') {
+      filterParams.parent_id = null
     } else {
       filterParams[parentIdName] = parentId
     }
