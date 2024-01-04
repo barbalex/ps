@@ -7,7 +7,8 @@ import { placesChildren } from './placesChildren'
 import { placesLevel2 } from './placesLevel2'
 
 export const router = (db) => {
-  console.log('router building')
+  // confirmed: this is called only once
+  // console.log('router building')
 
   return createBrowserRouter([
     {
