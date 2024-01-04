@@ -9,6 +9,8 @@ import { idFieldFromTable } from '../../modules/idFieldFromTable'
 
 export const tablesWithoutDeleted = ['root', 'docs', 'accounts', 'messages']
 
+const isOdd = (num) => num % 2
+
 export const Breadcrumb = ({ match }) => {
   const navigate = useNavigate()
 
@@ -29,18 +31,28 @@ export const Breadcrumb = ({ match }) => {
     filterParams.deleted = false
   }
 
-  const parentFilterParamsArray = Object.entries(match.params).filter(
-    ([key, value]) => key !== idField, // eslint-disable-line @typescript-eslint/no-unused-vars
-  )
   // Add only the last to the filter
-  const parentFilter = parentFilterParamsArray.at(-1)
+  // Wanted to get it from params. But not useable because also contains lower level ids!!!
+  // so need to get it from path which does NOT contain lower levels
+  // if length is divisable by two, then it is a parent id
+  const indexOfParentId =
+    path.length > 1
+      ? isOdd(path.length)
+        ? path.length - 2
+        : path.length - 1
+      : undefined
+  const parentId = indexOfParentId ? path[indexOfParentId] : undefined
+  const indexOfParentName = indexOfParentId ? indexOfParentId - 1 : undefined
+  const parentName = indexOfParentName ? path[indexOfParentName] : undefined
   const placesCountInPath = path.filter((p) => p.includes('places')).length
-  if (parentFilter) {
+  if (parentName && parentId) {
     if (table === 'places' && placesCountInPath === 2) {
       filterParams.parent_id = match.params.place_id
     } else {
-      filterParams[parentFilter[0].replace('place_id2', 'place_id')] =
-        parentFilter[1]
+      // TODO: replace not needed?
+      filterParams[
+        idFieldFromTable(parentName).replace('place_id2', 'place_id')
+      ] = parentId
     }
   }
   const queryParam = { where: filterParams }
@@ -87,14 +99,17 @@ export const Breadcrumb = ({ match }) => {
     get()
   }, [db, levelWanted, match, match.params, match.params.project_id, table])
 
-  // console.log('BreadcrumbForData, queryParam:', {
-  //   filterParams,
+  // console.log('BreadcrumbForData', {
   //   table,
   //   params: match.params,
   //   text,
   //   label,
   //   results,
   //   pathname: match.pathname,
+  //   myNavs,
+  //   filterParams,
+  //   idField,
+  //   path,
   // })
 
   return (
