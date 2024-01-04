@@ -59,7 +59,7 @@ export const router = (db) => {
                       console.log('router building navs for projects')
                       return await buildNavs({
                         table: `projects`,
-                        project_id: match.params.project_id,
+                        ...match.params,
                         db,
                       })
                     },
@@ -96,8 +96,7 @@ export const router = (db) => {
                               )
                               return await buildNavs({
                                 table: `subprojects`,
-                                project_id: match.params.project_id,
-                                subproject_id: match.params.subproject_id,
+                                ...match.params,
                                 db,
                               })
                             },
@@ -139,12 +138,8 @@ export const router = (db) => {
                                       )
                                       return await buildNavs({
                                         table: `places`,
-                                        project_id: match.params.project_id,
-                                        subproject_id:
-                                          match.params.subproject_id,
-                                        place_id: match.params.place_id,
+                                        ...match.params,
                                         db,
-                                        level: 1,
                                       })
                                     },
                                   },
@@ -279,10 +274,7 @@ export const router = (db) => {
                                       )
                                       return await buildNavs({
                                         table: `goals`,
-                                        project_id: match.params.project_id,
-                                        subproject_id:
-                                          match.params.subproject_id,
-                                        goal_id: match.params.goal_id,
+                                        ...match.params,
                                         db,
                                       })
                                     },
@@ -323,13 +315,7 @@ export const router = (db) => {
                                               )
                                               return await buildNavs({
                                                 table: `goal_reports`,
-                                                project_id:
-                                                  match.params.project_id,
-                                                subproject_id:
-                                                  match.params.subproject_id,
-                                                goal_id: match.params.goal_id,
-                                                goal_report_id:
-                                                  match.params.goal_report_id,
+                                                ...match.params,
                                                 db,
                                               })
                                             },
@@ -466,8 +452,7 @@ export const router = (db) => {
                               console.log('router building navs for lists')
                               return await buildNavs({
                                 table: `lists`,
-                                project_id: match.params.project_id,
-                                list_id: match.params.list_id,
+                                ...match.params,
                                 db,
                               })
                             },
@@ -537,8 +522,7 @@ export const router = (db) => {
                               console.log('router building navs for taxonomies')
                               return await buildNavs({
                                 table: `taxonomies`,
-                                project_id: match.params.project_id,
-                                taxonomy_id: match.params.taxonomy_id,
+                                ...match.params,
                                 db,
                               })
                             },
@@ -691,9 +675,7 @@ export const router = (db) => {
                               )
                               return await buildNavs({
                                 table: `observation_sources`,
-                                project_id: match.params.project_id,
-                                observation_source_id:
-                                  match.params.observation_source_id,
+                                ...match.params,
                                 db,
                               })
                             },
