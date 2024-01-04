@@ -71,6 +71,7 @@ export const Breadcrumb = ({ match }) => {
         taxonomy_id,
         observation_source_id,
         db,
+        level: levelWanted,
       })
       return setNavs(navs)
     }
@@ -91,25 +92,27 @@ export const Breadcrumb = ({ match }) => {
     observation_source_id,
     db,
     table,
+    levelWanted,
   ])
 
   let label = row?.label ?? row?.[idField]
   if (table === 'root' || table === 'docs') label = text
 
-  // console.log('BreadcrumbForFolder', {
-  //   // results,
-  //   label,
-  //   idField,
-  //   matchParam,
-  //   row,
-  //   table,
-  //   text,
-  //   params: match.params,
-  //   // match,
-  //   pathname: match.pathname,
-  //   // navs,
-  //   where,
-  // })
+  console.log('BreadcrumbForFolder', {
+    // results,
+    label,
+    idField,
+    matchParam,
+    row,
+    table,
+    text,
+    params: match.params,
+    match,
+    pathname: match.pathname,
+    navs,
+    where,
+    place_id2,
+  })
 
   return (
     <>
