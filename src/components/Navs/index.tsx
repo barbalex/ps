@@ -24,7 +24,8 @@ export const Navs = () => {
       const tos = []
       for (const match of thisPathsMatches) {
         const to = await match?.handle?.to?.(match)
-        if (to) tos.push(to)
+        if (!to) continue
+        tos.push(to)
       }
 
       return setTos(tos.filter((to) => Boolean(to)))
