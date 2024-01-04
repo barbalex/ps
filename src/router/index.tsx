@@ -24,10 +24,7 @@ export const router = (db) => {
               table: 'root',
               folder: true,
             }),
-            to: async () => {
-              console.log('router building navs for root')
-              return await buildNavs({ table: 'root', db })
-            },
+            to: async () => await buildNavs({ table: 'root', db }),
           },
           children: [
             {
@@ -55,14 +52,12 @@ export const router = (db) => {
                       table: 'projects',
                       folder: false,
                     }),
-                    to: async (match) => {
-                      console.log('router building navs for projects')
-                      return await buildNavs({
+                    to: async (match) =>
+                      await buildNavs({
                         table: `projects`,
                         ...match.params,
                         db,
-                      })
-                    },
+                      }),
                   },
                   children: [
                     { index: true, lazy: () => import('../routes/project') },
@@ -90,16 +85,12 @@ export const router = (db) => {
                               table: 'subprojects',
                               folder: false,
                             }),
-                            to: async (match) => {
-                              console.log(
-                                'router building navs for subprojects',
-                              )
-                              return await buildNavs({
+                            to: async (match) =>
+                              await buildNavs({
                                 table: `subprojects`,
                                 ...match.params,
                                 db,
-                              })
-                            },
+                              }),
                           },
                           children: [
                             {
@@ -132,16 +123,12 @@ export const router = (db) => {
                                       level: 1,
                                       folder: false,
                                     }),
-                                    to: async (match) => {
-                                      console.log(
-                                        'router building navs for places',
-                                      )
-                                      return await buildNavs({
+                                    to: async (match) =>
+                                      await buildNavs({
                                         table: `places`,
                                         ...match.params,
                                         db,
-                                      })
-                                    },
+                                      }),
                                   },
                                   children: [
                                     {
@@ -268,16 +255,12 @@ export const router = (db) => {
                                       table: 'goals',
                                       folder: false,
                                     }),
-                                    to: async (match) => {
-                                      console.log(
-                                        'router building navs for goals',
-                                      )
-                                      return await buildNavs({
+                                    to: async (match) =>
+                                      await buildNavs({
                                         table: `goals`,
                                         ...match.params,
                                         db,
-                                      })
-                                    },
+                                      }),
                                   },
                                   children: [
                                     {
@@ -309,16 +292,12 @@ export const router = (db) => {
                                               table: 'goal_reports',
                                               folder: false,
                                             }),
-                                            to: async (match) => {
-                                              console.log(
-                                                'router building navs for goal_reports',
-                                              )
-                                              return await buildNavs({
+                                            to: async (match) =>
+                                              await buildNavs({
                                                 table: `goal_reports`,
                                                 ...match.params,
                                                 db,
-                                              })
-                                            },
+                                              }),
                                           },
                                           children: [
                                             {
@@ -448,14 +427,12 @@ export const router = (db) => {
                               table: 'lists',
                               folder: false,
                             }),
-                            to: async (match) => {
-                              console.log('router building navs for lists')
-                              return await buildNavs({
+                            to: async (match) =>
+                              await buildNavs({
                                 table: `lists`,
                                 ...match.params,
                                 db,
-                              })
-                            },
+                              }),
                           },
                           children: [
                             {
@@ -518,14 +495,12 @@ export const router = (db) => {
                               table: 'taxonomies',
                               folder: false,
                             }),
-                            to: async (match) => {
-                              console.log('router building navs for taxonomies')
-                              return await buildNavs({
+                            to: async (match) =>
+                              await buildNavs({
                                 table: `taxonomies`,
                                 ...match.params,
                                 db,
-                              })
-                            },
+                              }),
                           },
                           children: [
                             {
@@ -669,16 +644,12 @@ export const router = (db) => {
                               table: 'observation_sources',
                               folder: false,
                             }),
-                            to: async (match) => {
-                              console.log(
-                                'router building navs for observation_sources',
-                              )
-                              return await buildNavs({
+                            to: async (match) =>
+                              await buildNavs({
                                 table: `observation_sources`,
                                 ...match.params,
                                 db,
-                              })
-                            },
+                              }),
                           },
                           children: [
                             {
