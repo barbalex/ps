@@ -112,15 +112,16 @@ export const buildNavs = async ({
           placeLevel?.name_plural ?? placeLevel?.name_short ?? 'Places'
       }
 
+      const navs = []
+      if (needToIncludeLevel2) {
+        navs.push({
+          path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/places`,
+          text: placeName,
+        })
+      }
+
       return [
-        ...[
-          needToIncludeLevel2
-            ? {
-                path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/places`,
-                text: placeName,
-              }
-            : {},
-        ],
+        ...navs,
         {
           path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
             level === 2 ? `/places/${place_id2}` : ''
