@@ -42,17 +42,18 @@ export const Breadcrumb = ({ match }) => {
         : path.length - 1
       : undefined
   const parentId = indexOfParentId ? path[indexOfParentId] : undefined
-  const indexOfParentName = indexOfParentId ? indexOfParentId - 1 : undefined
-  const parentName = indexOfParentName ? path[indexOfParentName] : undefined
+  // need to get the name from the parents as in path is altered 
+  // for instance: place_report_values > values
+  const parentIdName = Object.values(match.params).find(
+    (p) => p[1] === parentId,
+  )?.[0]
   const placesCountInPath = path.filter((p) => p.includes('places')).length
-  if (parentName && parentId) {
+  if (parentIdName && parentId) {
     if (table === 'places' && placesCountInPath === 2) {
       filterParams.parent_id = match.params.place_id
     } else {
       // TODO: replace not needed?
-      filterParams[
-        idFieldFromTable(parentName).replace('place_id2', 'place_id')
-      ] = parentId
+      filterParams[parentIdName.replace('place_id2', 'place_id')] = parentId
     }
   }
   const queryParam = { where: filterParams }
@@ -99,18 +100,18 @@ export const Breadcrumb = ({ match }) => {
     get()
   }, [db, levelWanted, match, match.params, match.params.project_id, table])
 
-  // console.log('BreadcrumbForData', {
-  //   table,
-  //   params: match.params,
-  //   text,
-  //   label,
-  //   results,
-  //   pathname: match.pathname,
-  //   myNavs,
-  //   filterParams,
-  //   idField,
-  //   path,
-  // })
+  console.log('BreadcrumbForData', {
+    table,
+    params: match.params,
+    text,
+    label,
+    results,
+    pathname: match.pathname,
+    myNavs,
+    filterParams,
+    idField,
+    path,
+  })
 
   return (
     <>
