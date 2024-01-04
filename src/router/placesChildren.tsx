@@ -30,11 +30,7 @@ export const placesChildren = ({ db, level }) => [
           to: async (match) =>
             await buildNavs({
               table: `checks`,
-              project_id: match.params.project_id,
-              subproject_id: match.params.subproject_id,
-              place_id: match.params.place_id,
-              ...[level === 2 ? { place_id2: match.params.place_id2 } : {}],
-              check_id: match.params.check_id,
+              ...match.params,
               db,
               level
             }),
@@ -131,12 +127,9 @@ export const placesChildren = ({ db, level }) => [
           to: async (match) =>
             await buildNavs({
               table: `actions`,
-              project_id: match.params.project_id,
-              subproject_id: match.params.subproject_id,
-              place_id: match.params.place_id,
-              ...[level === 2 ? { place_id2: match.params.place_id2 } : {}],
-              action_id: match.params.action_id,
+              ...match.params,
               db,
+              level
             }),
         },
         children: [
@@ -199,13 +192,9 @@ export const placesChildren = ({ db, level }) => [
                   to: async (match) =>
                     await buildNavs({
                       table: `action_reports`,
-                      project_id: match.params.project_id,
-                      subproject_id: match.params.subproject_id,
-                      place_id: match.params.place_id,
-                      ...[level === 2 ? { place_id2: match.params.place_id2 } : {}],
-                      action_id: match.params.action_id,
-                      action_report_id: match.params.action_report_id,
+                      ...match.params,
                       db,
+                      level
                     }),
                 },
                 children: [
@@ -276,12 +265,9 @@ export const placesChildren = ({ db, level }) => [
           to: async (match) =>
             await buildNavs({
               table: `place_reports`,
-              project_id: match.params.project_id,
-              subproject_id: match.params.subproject_id,
-              place_id: match.params.place_id,
-              ...[level === 2 ? { place_id2: match.params.place_id2 } : {}],
-              place_report_id: match.params.place_report_id,
+              ...match.params,
               db,
+              level
             }),
         },
         children: [
