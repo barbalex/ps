@@ -19,7 +19,6 @@ export const Breadcrumb = ({ match }) => {
       : 'breadcrumbs__crumb link'
 
   const path = match.pathname.split('/').filter((p) => p !== '')
-
   const placesCount = path.filter((p) => p.includes('places')).length
   const levelWanted = placesCount < 2 ? 1 : 2
 
@@ -88,14 +87,15 @@ export const Breadcrumb = ({ match }) => {
     get()
   }, [db, levelWanted, match, match.params, match.params.project_id, table])
 
-  console.log('BreadcrumbForData, queryParam:', {
-    filterParams,
-    table,
-    params: match.params,
-    text,
-    label,
-    results,
-  })
+  // console.log('BreadcrumbForData, queryParam:', {
+  //   filterParams,
+  //   table,
+  //   params: match.params,
+  //   text,
+  //   label,
+  //   results,
+  //   pathname: match.pathname,
+  // })
 
   return (
     <>

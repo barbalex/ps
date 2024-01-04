@@ -32,15 +32,20 @@ export const Breadcrumb = ({ match }) => {
       ? 'breadcrumbs__crumb is-active'
       : 'breadcrumbs__crumb link'
 
+  const path = match.pathname.split('/').filter((p) => p !== '')
+  const placesCount = path.filter((p) => p.includes('places')).length
+  const levelWanted = placesCount < 2 ? 1 : 2
+
   const idField = idFieldFromTable(table)
   const queryTable = table === 'root' || table === 'docs' ? 'projects' : table
   const { db } = useElectric()
   const matchParam =
-    table === 'places' && place_id2 ? place_id2 : match.params[idField]
+    table === 'places' && levelWanted === 2 ? place_id2 : match.params[idField]
+  const where = { [idField]: matchParam }
   const { results } = useLiveQuery(
     () =>
       db[queryTable]?.liveMany({
-        where: { [idField]: matchParam },
+        where,
       }),
     [db, queryTable, matchParam, idField],
   )
@@ -92,15 +97,18 @@ export const Breadcrumb = ({ match }) => {
   if (table === 'root' || table === 'docs') label = text
 
   // console.log('BreadcrumbForFolder', {
-  //   results,
+  //   // results,
   //   label,
   //   idField,
+  //   matchParam,
   //   row,
   //   table,
   //   text,
   //   params: match.params,
-  //   match,
-  //   navs,
+  //   // match,
+  //   pathname: match.pathname,
+  //   // navs,
+  //   where,
   // })
 
   return (
