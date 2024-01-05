@@ -3,13 +3,6 @@ import { useMatches, useLocation, Link } from 'react-router-dom'
 
 import { DataNavs } from './DataNavs'
 
-// new idea
-// get all matches for next level down
-// But: does not seem possible with react-router
-// Hard part would be to navigate through the route object using the location
-// Plus: Adding other stuff is probably easier with the current approach
-// like: inserting, deleting etc.
-
 export const Navs = () => {
   const location = useLocation()
   const matches = useMatches()
