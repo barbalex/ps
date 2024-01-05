@@ -1,6 +1,28 @@
 import { goalReport } from './dataPresets'
 import { uuidv7 } from '@kripod/uuidv7'
 
+const fetchPresetData = async ({ db, project_id, table }) => {
+  const fieldsWithPresets = await db.fields.findMany({
+    where: {
+      project_id,
+      deleted: false,
+      table_name: table,
+      preset: { not: null },
+    },
+  })
+  // TODO: include field_type to set correct data type
+  const data = {}
+  fieldsWithPresets.forEach((field) => {
+    data[field.name] = field.preset
+  })
+  console.log('fetchDataForFieldsWithPresets', {
+    fieldsWithPresets,
+    data,
+    table,
+  })
+  return { data }
+}
+
 // TODO: add account_id
 // TODO: refactor names to express creation
 export const project = () => ({
@@ -24,24 +46,16 @@ export const project = () => ({
 
 export const subproject = async ({ db, project_id }) => {
   // fild fields with preset values on the data column
-  const fieldsWithPresets = await db.fields.findMany({
-    where: {
-      project_id,
-      deleted: false,
-      table_name: 'subprojects',
-      preset: { not: null },
-    },
-  })
-  // TODO: include field_type to set correct data type
-  const data = {}
-  fieldsWithPresets.forEach((field) => {
-    data[field.name] = field.preset
+  const presetData = await fetchPresetData({
+    db,
+    project_id,
+    table: 'subprojects',
   })
 
   return {
     subproject_id: uuidv7(),
     deleted: false,
-    ...(fieldsWithPresets.length ? { data } : {}),
+    ...presetData,
   }
 }
 
