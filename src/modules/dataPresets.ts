@@ -22,10 +22,28 @@ export const project = () => ({
   deleted: false,
 })
 
-export const subproject = () => ({
-  subproject_id: uuidv7(),
-  deleted: false,
-})
+export const subproject = async ({ db, project_id }) => {
+  // fild fields with preset values on the data column
+  const fieldsWithPresets = await db.fields.findMany({
+    where: {
+      project_id,
+      deleted: false,
+      table_name: 'subprojects',
+      preset: { not: null },
+    },
+  })
+  // TODO: include field_type to set correct data type
+  const data = {}
+  fieldsWithPresets.forEach((field) => {
+    data[field.name] = field.preset
+  })
+
+  return {
+    subproject_id: uuidv7(),
+    deleted: false,
+    ...(fieldsWithPresets.length ? { data } : {}),
+  }
+}
 
 export const file = () => ({
   file_id: uuidv7(),

@@ -19,7 +19,7 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const newSubproject = createSubprojectPreset()
+    const newSubproject = await createSubprojectPreset({ db, project_id })
     await db.subprojects.create({
       data: {
         ...newSubproject,
@@ -29,7 +29,7 @@ export const Component = () => {
     Navigate(
       `/projects/${project_id}/subprojects/${newSubproject.subproject_id}`,
     )
-  }, [Navigate, db.subprojects, project_id])
+  }, [Navigate, db, project_id])
 
   const subprojects: Subproject[] = results ?? []
 
