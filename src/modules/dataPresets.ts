@@ -50,6 +50,7 @@ export const subproject = async ({ db, project_id }) => {
 
   return {
     subproject_id: uuidv7(),
+    project_id,
     deleted: false,
     ...presetData,
   }

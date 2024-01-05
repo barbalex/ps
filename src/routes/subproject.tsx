@@ -23,16 +23,9 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const newSubproject = await createNewSubproject({ db, project_id })
-    await db.subprojects.create({
-      data: {
-        ...newSubproject,
-        project_id,
-      },
-    })
-    navigate(
-      `/projects/${project_id}/subprojects/${newSubproject.subproject_id}`,
-    )
+    const data = await createNewSubproject({ db, project_id })
+    await db.subprojects.create({ data })
+    navigate(`/projects/${project_id}/subprojects/${data.subproject_id}`)
   }, [db, navigate, project_id])
 
   const deleteRow = useCallback(async () => {
