@@ -15,11 +15,7 @@ const fetchPresetData = async ({ db, project_id, table }) => {
   fieldsWithPresets.forEach((field) => {
     data[field.name] = field.preset
   })
-  console.log('fetchDataForFieldsWithPresets', {
-    fieldsWithPresets,
-    data,
-    table,
-  })
+
   return { data }
 }
 

@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { Subprojects as Subproject } from '../../../generated/client'
-import { subproject as createSubprojectPreset } from '../modules/dataPresets'
+import { subproject as createNewSubproject } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
@@ -23,7 +23,7 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const newSubproject = await createSubprojectPreset({ db, project_id })
+    const newSubproject = await createNewSubproject({ db, project_id })
     await db.subprojects.create({
       data: {
         ...newSubproject,
@@ -33,7 +33,7 @@ export const Component = () => {
     navigate(
       `/projects/${project_id}/subprojects/${newSubproject.subproject_id}`,
     )
-  }, [db.subprojects, navigate, project_id])
+  }, [db, navigate, project_id])
 
   const deleteRow = useCallback(async () => {
     await db.subprojects.delete({
