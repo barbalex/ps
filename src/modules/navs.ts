@@ -1,11 +1,3 @@
-export const placeLevelDependantNavs = [
-  'places',
-  'checks',
-  'actions',
-  'action_reports',
-  'place_reports',
-]
-
 export const buildNavs = async ({
   table,
   check_id,
