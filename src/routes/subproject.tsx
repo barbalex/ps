@@ -23,7 +23,7 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const newSubproject = createSubprojectPreset()
+    const newSubproject = await createSubprojectPreset({ db, project_id })
     await db.subprojects.create({
       data: {
         ...newSubproject,
