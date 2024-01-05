@@ -24,19 +24,15 @@ export const buildNavs = async ({
   db,
   level = 1,
 }) => {
-  // console.log('buildNavs', { place_id2, place_id, table, level })
-  // TODO:
-  // if table is child of places, get place_level for this level
-  const tableIsLevelDependant = placeLevelDependantNavs.includes(table)
+  // if table is places, get place_level for this level
   let placeLevel = {}
-  if (tableIsLevelDependant) {
+  if (table === 'places') {
     // findUnique only works for primary keys
     const placeLevels = await db?.place_levels?.findMany({
       where: { project_id, deleted: false, level },
     })
     placeLevel = placeLevels?.[0] ?? {}
   }
-  console.log('buildNavs', { placeLevel, tableIsLevelDependant, table })
 
   switch (table) {
     case 'root':
