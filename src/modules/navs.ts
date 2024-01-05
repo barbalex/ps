@@ -1,3 +1,11 @@
+export const placeLevelDependantNavs = [
+  'places',
+  'checks',
+  'actions',
+  'action_reports',
+  'place_reports',
+]
+
 export const buildNavs = async ({
   table,
   check_id,
@@ -17,6 +25,19 @@ export const buildNavs = async ({
   level = 1,
 }) => {
   // console.log('buildNavs', { place_id2, place_id, table, level })
+  // TODO:
+  // if table is child of places, get place_level for this level
+  const tableIsLevelDependant = placeLevelDependantNavs.includes(table)
+  let placeLevel = {}
+  if (tableIsLevelDependant) {
+    // findUnique only works for primary keys
+    const placeLevels = await db?.place_levels?.findMany({
+      where: { project_id, deleted: false, level },
+    })
+    placeLevel = placeLevels?.[0] ?? {}
+  }
+  console.log('buildNavs', { placeLevel, tableIsLevelDependant, table })
+
   switch (table) {
     case 'root':
       return [
@@ -64,11 +85,6 @@ export const buildNavs = async ({
       ]
     case 'subprojects': {
       // need to fetch how places are named
-      // findUnique only works for primary keys
-      const placeLevels = await db?.place_levels?.findMany({
-        where: { project_id, deleted: false, level: 1 },
-      })
-      const placeLevel = placeLevels?.[0] ?? {}
       const placeName =
         placeLevel?.name_plural ?? placeLevel?.name_short ?? 'Places'
 
@@ -107,39 +123,50 @@ export const buildNavs = async ({
         const placeLevels = await db?.place_levels?.findMany({
           where: { project_id, deleted: false, level: 2 },
         })
-        const placeLevel = placeLevels?.[0]
+        const placeLevel2 = placeLevels?.[0]
         placeName =
-          placeLevel?.name_plural ?? placeLevel?.name_short ?? 'Places'
-      }
-
-      const navs = []
-      if (needToIncludeLevel2) {
-        navs.push({
-          path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/places`,
-          text: placeName,
-        })
+          placeLevel2?.name_plural ?? placeLevel2?.name_short ?? 'Places'
       }
 
       return [
-        ...navs,
-        {
-          path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-            level === 2 ? `/places/${place_id2}` : ''
-          }/checks`,
-          text: 'Checks',
-        },
-        {
-          path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-            level === 2 ? `/places/${place_id2}` : ''
-          }/actions`,
-          text: 'Actions',
-        },
-        {
-          path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-            level === 2 ? `/places/${place_id2}` : ''
-          }/reports`,
-          text: 'Reports',
-        },
+        ...(needToIncludeLevel2
+          ? [
+              {
+                path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/places`,
+                text: placeName,
+              },
+            ]
+          : []),
+        ...(placeLevel.checks
+          ? [
+              {
+                path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+                  level === 2 ? `/places/${place_id2}` : ''
+                }/checks`,
+                text: 'Checks',
+              },
+            ]
+          : []),
+        ...(placeLevel.actions
+          ? [
+              {
+                path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+                  level === 2 ? `/places/${place_id2}` : ''
+                }/actions`,
+                text: 'Actions',
+              },
+            ]
+          : []),
+        ...(placeLevel.reports
+          ? [
+              {
+                path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+                  level === 2 ? `/places/${place_id2}` : ''
+                }/reports`,
+                text: 'Reports',
+              },
+            ]
+          : []),
         {
           path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
             level === 2 ? `/places/${place_id2}` : ''
