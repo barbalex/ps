@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { Actions as Action } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { action as createActionPreset } from '../modules/dataPresets'
+import { action as createAction } from '../modules/dataPresets'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
@@ -22,7 +22,7 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const data = await createActionPreset({
+    const data = await createAction({
       db,
       project_id,
       place_id: place_id2 ?? place_id,

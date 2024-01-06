@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { ActionValues as ActionValue } from '../../../generated/client'
-import { actionValue as createActionValuePreset } from '../modules/dataPresets'
+import { actionValue as createActionValue } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
@@ -31,17 +31,17 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const newActionValue = createActionValuePreset()
+    const actionValue = createActionValue()
     await db.action_values.create({
       data: {
-        ...newActionValue,
+        ...actionValue,
         action_id,
       },
     })
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
         place_id2 ? `/places/${place_id2}` : ''
-      }/actions/${action_id}/values/${newActionValue.action_value_id}`,
+      }/actions/${action_id}/values/${actionValue.action_value_id}`,
     )
   }, [
     action_id,
