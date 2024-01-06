@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 
 import { SubprojectUsers as SubprojectUser } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { subprojectUser as createSubprojectUserPreset } from '../modules/dataPresets'
+import { subprojectUser as createSubprojectUser } from '../modules/dataPresets'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { DropdownField } from '../components/shared/DropdownField'
 import { RadioGroupField } from '../components/shared/RadioGroupField'
@@ -24,12 +24,12 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const newSubprojectUser = createSubprojectUserPreset()
+    const subprojectUser = createSubprojectUser()
     await db.subproject_users.create({
-      data: { ...newSubprojectUser, subproject_id },
+      data: { ...subprojectUser, subproject_id },
     })
     navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/users/${newSubprojectUser.subproject_user_id}`,
+      `/projects/${project_id}/subprojects/${subproject_id}/users/${subprojectUser.subproject_user_id}`,
     )
   }, [db.subproject_users, navigate, project_id, subproject_id])
 
@@ -86,12 +86,12 @@ export const Component = () => {
         where={userWhere}
         value={row.user_id ?? ''}
         onChange={onChange}
-        autoFocus 
+        autoFocus
       />
       <RadioGroupField
         label="Role"
         name="role"
-        list={['reader', 'editor','manager']}
+        list={['reader', 'editor', 'manager']}
         value={row.role ?? ''}
         onChange={onChange}
       />

@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { SubprojectTaxa as SubprojectTaxon } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { subprojectTaxon as createSubprojectTaxonPreset } from '../modules/dataPresets'
+import { subprojectTaxon as createSubprojectTaxon } from '../modules/dataPresets'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
@@ -20,15 +20,15 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const newSubprojectTaxon = createSubprojectTaxonPreset()
+    const subprojectTaxon = createSubprojectTaxon()
     await db.subproject_taxa.create({
       data: {
-        ...newSubprojectTaxon,
+        ...subprojectTaxon,
         subproject_id,
       },
     })
     navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/taxa/${newSubprojectTaxon.subproject_taxon_id}`,
+      `/projects/${project_id}/subprojects/${subproject_id}/taxa/${subprojectTaxon.subproject_taxon_id}`,
     )
   }, [db.subproject_taxa, navigate, project_id, subproject_id])
 

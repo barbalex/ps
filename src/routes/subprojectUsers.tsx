@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { SubprojectUser as SubprojectUser } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { subprojectUser as createSubprojectUserPreset } from '../modules/dataPresets'
+import { subprojectUser as createSubprojectUser } from '../modules/dataPresets'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
@@ -22,15 +22,15 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const newSubprojectUser = createSubprojectUserPreset()
+    const subprojectUser = createSubprojectUser()
     await db.subproject_users.create({
       data: {
-        ...newSubprojectUser,
+        ...subprojectUser,
         subproject_id,
       },
     })
     navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/users/${newSubprojectUser.subproject_user_id}`,
+      `/projects/${project_id}/subprojects/${subproject_id}/users/${subprojectUser.subproject_user_id}`,
     )
   }, [db.subproject_users, navigate, project_id, subproject_id])
 
