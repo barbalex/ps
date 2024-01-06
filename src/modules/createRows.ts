@@ -90,7 +90,7 @@ export const createWidgetType = () => ({
   deleted: false,
 })
 
-export const fieldType = () => ({
+export const createFieldType = () => ({
   field_type_id: uuidv7(),
   sort: 0,
   deleted: false,
