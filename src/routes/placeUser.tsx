@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 
 import { PlaceUsers as PlaceUser } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { placeUser as createPlaceUser } from '../modules/createRows'
+import { createPlaceUser } from '../modules/createRows'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { DropdownField } from '../components/shared/DropdownField'
 import { RadioGroupField } from '../components/shared/RadioGroupField'

@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 
 import { SubprojectUsers as SubprojectUser } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { subprojectUser as createSubprojectUser } from '../modules/createRows'
+import { createSubprojectUser } from '../modules/createRows'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { DropdownField } from '../components/shared/DropdownField'
 import { RadioGroupField } from '../components/shared/RadioGroupField'

@@ -299,24 +299,24 @@ export const createGoalReportValue = () => ({
   deleted: false,
 })
 
-export const subprojectUser = () => ({
+export const createSubprojectUser = () => ({
   subproject_user_id: uuidv7(),
   role: 'reader',
   deleted: false,
 })
 
-export const placeUser = () => ({
+export const createPlaceUser = () => ({
   place_user_id: uuidv7(),
   role: 'reader',
   deleted: false,
 })
 
-export const subprojectTaxon = () => ({
+export const createSubprojectTaxon = () => ({
   subproject_taxon_id: uuidv7(),
   deleted: false,
 })
 
-export const subprojectReport = async ({ db, project_id, subproject_id }) => {
+export const createSubprojectReport = async ({ db, project_id, subproject_id }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     db,
@@ -333,7 +333,7 @@ export const subprojectReport = async ({ db, project_id, subproject_id }) => {
   }
 }
 
-export const check = async ({ db, project_id, place_id }) => {
+export const createCheck = async ({ db, project_id, place_id }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     db,

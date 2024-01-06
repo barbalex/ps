@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { SubprojectUser as SubprojectUser } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { subprojectUser as createSubprojectUser } from '../modules/createRows'
+import { createSubprojectUser } from '../modules/createRows'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 

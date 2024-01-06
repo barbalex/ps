@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { Checks as Check } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { check as createCheck } from '../modules/createRows'
+import { createCheck } from '../modules/createRows'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 

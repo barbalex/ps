@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { SubprojectTaxa as SubprojectTaxon } from '../../../generated/client'
-import { subprojectTaxon as createSubprojectTaxon } from '../modules/createRows'
+import { createSubprojectTaxon } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { DropdownField } from '../components/shared/DropdownField'
