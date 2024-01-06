@@ -292,11 +292,22 @@ export const actionValue = () => ({
   deleted: false,
 })
 
-export const actionReport = () => ({
-  action_report_id: uuidv7(),
-  year: new Date().getFullYear(),
-  deleted: false,
-})
+export const actionReport = async ({ db, project_id, action_id }) => {
+  // find fields with preset values on the data column
+  const presetData = await fetchPresetData({
+    db,
+    project_id,
+    table: 'action_reports',
+  })
+
+  return {
+    action_report_id: uuidv7(),
+    action_id,
+    year: new Date().getFullYear(),
+    deleted: false,
+    ...presetData,
+  }
+}
 
 export const actionReportValue = () => ({
   action_report_value_id: uuidv7(),

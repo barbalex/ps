@@ -20,27 +20,18 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const newActionReport = createActionReportPreset()
-    await db.action_reports.create({
-      data: {
-        ...newActionReport,
-        action_id,
-      },
+    const data = await createActionReportPreset({
+      db,
+      project_id,
+      action_id,
     })
+    await db.action_reports.create({ data })
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
         place_id2 ? `/places/${place_id2}` : ''
-      }/actions/${action_id}/reports/${newActionReport.action_report_id}`,
+      }/actions/${action_id}/reports/${data.action_report_id}`,
     )
-  }, [
-    action_id,
-    db.action_reports,
-    navigate,
-    place_id,
-    place_id2,
-    project_id,
-    subproject_id,
-  ])
+  }, [action_id, db, navigate, place_id, place_id2, project_id, subproject_id])
 
   const actionReports: ActionReport[] = results ?? []
 
