@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { Goals as Goal } from '../../../generated/client'
-import { goal as createGoalPreset } from '../modules/dataPresets'
+import { goal as createNewGoal } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
@@ -24,17 +24,12 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const newGoal = createGoalPreset()
-    await db.goals.create({
-      data: {
-        ...newGoal,
-        subproject_id,
-      },
-    })
+    const data = await createNewGoal({ db, project_id, subproject_id })
+    await db.goals.create({ data })
     navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/goals/${newGoal.goal_id}`,
+      `/projects/${project_id}/subprojects/${subproject_id}/goals/${data.goal_id}`,
     )
-  }, [db.goals, navigate, project_id, subproject_id])
+  }, [db, navigate, project_id, subproject_id])
 
   const deleteRow = useCallback(async () => {
     await db.goals.delete({
@@ -78,7 +73,7 @@ export const Component = () => {
         name="name"
         value={row.name ?? ''}
         onChange={onChange}
-        autoFocus 
+        autoFocus
       />
       <Jsonb
         table="goals"

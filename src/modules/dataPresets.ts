@@ -239,11 +239,22 @@ export const listValue = () => ({
   deleted: false,
 })
 
-export const goal = () => ({
-  goal_id: uuidv7(),
-  year: new Date().getFullYear(),
-  deleted: false,
-})
+export const goal = async ({ db, project_id, subproject_id }) => {
+  // find fields with preset values on the data column
+  const presetData = await fetchPresetData({
+    db,
+    project_id,
+    table: 'goals',
+  })
+
+  return {
+    goal_id: uuidv7(),
+    subproject_id,
+    year: new Date().getFullYear(),
+    deleted: false,
+    ...presetData,
+  }
+}
 
 export const goalReport = () => ({
   goal_report_id: uuidv7(),
