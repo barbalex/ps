@@ -26,12 +26,10 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const newTaxonomy = createTaxonomyPreset()
-    await db.taxonomies.create({
-      data: { ...newTaxonomy, project_id },
-    })
-    navigate(`/projects/${project_id}/taxonomies/${newTaxonomy.taxonomy_id}`)
-  }, [db.taxonomies, navigate, project_id])
+    const data = await createTaxonomyPreset({ db, project_id })
+    await db.taxonomies.create({ data })
+    navigate(`/projects/${project_id}/taxonomies/${data.taxonomy_id}`)
+  }, [db, navigate, project_id])
 
   const deleteRow = useCallback(async () => {
     await db.taxonomies.delete({

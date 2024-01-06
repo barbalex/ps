@@ -30,9 +30,7 @@ export const Component = () => {
 
   const deleteRow = useCallback(async () => {
     await db.subprojects.delete({
-      where: {
-        subproject_id,
-      },
+      where: { subproject_id },
     })
     navigate(`/projects/${project_id}/subprojects`)
   }, [db.subprojects, navigate, project_id, subproject_id])
