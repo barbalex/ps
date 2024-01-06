@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { Accounts as Account } from '../../../generated/client'
-import { account as createAccountPreset } from '../modules/dataPresets'
+import { account as createAccount } from '../modules/dataPresets'
 import { ListViewMenu } from '../components/ListViewMenu'
 import { useElectric } from '../ElectricProvider'
 
@@ -16,11 +16,9 @@ export const Component = () => {
   const { results } = useLiveQuery(db.accounts.liveMany())
 
   const add = useCallback(async () => {
-    const newAccount = createAccountPreset()
-    await db.accounts.create({
-      data: newAccount,
-    })
-    navigate(`/accounts/${newAccount.account_id}`)
+    const data = createAccount()
+    await db.accounts.create({ data })
+    navigate(`/accounts/${data.account_id}`)
   }, [db.accounts, navigate])
 
   const accounts: Account[] = results ?? []
