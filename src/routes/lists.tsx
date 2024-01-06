@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { Lists as List } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { list as createListPreset } from '../modules/dataPresets'
+import { list as createList } from '../modules/dataPresets'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
@@ -19,7 +19,7 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const data = await createListPreset({ db, project_id })
+    const data = await createList({ db, project_id })
     await db.lists.create({ data })
     navigate(`/projects/${project_id}/lists/${data.list_id}`)
   }, [db, navigate, project_id])

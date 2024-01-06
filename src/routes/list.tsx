@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 
 import { Lists as List } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { list as createListPreset } from '../modules/dataPresets'
+import { list as createList } from '../modules/dataPresets'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { SwitchField } from '../components/shared/SwitchField'
@@ -25,7 +25,7 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const data = await createListPreset({ db, project_id })
+    const data = await createList({ db, project_id })
     await db.lists.create({ data })
     navigate(`/projects/${project_id}/lists/${data.list_id}`)
   }, [db, navigate, project_id])

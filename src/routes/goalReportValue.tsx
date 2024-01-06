@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { GoalReportValues as GoalReportValue } from '../../../generated/client'
-import { goalReportValue as createGoalReportValuePreset } from '../modules/dataPresets'
+import { goalReportValue as createGoalReportValue } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
@@ -30,15 +30,15 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const newGoalReportValue = createGoalReportValuePreset()
+    const goalReportValue = createGoalReportValue()
     await db.goal_report_values.create({
       data: {
-        ...newGoalReportValue,
+        ...goalReportValue,
         goal_report_id,
       },
     })
     navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${goal_report_id}/values/${newGoalReportValue.goal_report_value_id}`,
+      `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${goal_report_id}/values/${goalReportValue.goal_report_value_id}`,
     )
   }, [
     db.goal_report_values,

@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { GoalReportValues as GoalReportValue } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { goalReportValue as createGoalReportValuePreset } from '../modules/dataPresets'
+import { goalReportValue as createGoalReportValue } from '../modules/dataPresets'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
@@ -22,7 +22,7 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const newGoalReportValue = createGoalReportValuePreset()
+    const newGoalReportValue = createGoalReportValue()
     await db.goal_report_values.create({
       data: {
         ...newGoalReportValue,
