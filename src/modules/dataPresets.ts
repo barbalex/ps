@@ -252,12 +252,23 @@ export const subprojectReport = () => ({
   deleted: false,
 })
 
-export const check = () => ({
-  check_id: uuidv7(),
-  date: new Date(),
-  relevant_for_reports: true,
-  deleted: false,
-})
+export const check = async ({ db, project_id, place_id }) => {
+  // find fields with preset values on the data column
+  const presetData = await fetchPresetData({
+    db,
+    project_id,
+    table: 'checks',
+  })
+
+  return {
+    check_id: uuidv7(),
+    place_id,
+    date: new Date(),
+    relevant_for_reports: true,
+    deleted: false,
+    ...presetData,
+  }
+}
 
 export const checkValue = () => ({
   check_value_id: uuidv7(),

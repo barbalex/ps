@@ -26,16 +26,18 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const newCheck = createCheckPreset()
-    await db.checks.create({
-      data: { ...newCheck, place_id: place_id2 ?? place_id },
+    const data = await createCheckPreset({
+      db,
+      project_id,
+      place_id: place_id2 ?? place_id,
     })
+    await db.checks.create({ data })
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
         place_id2 ? `/places/${place_id2}` : ''
-      }/checks/${newCheck.check_id}`,
+      }/checks/${data.check_id}`,
     )
-  }, [db.checks, navigate, place_id, place_id2, project_id, subproject_id])
+  }, [db, navigate, place_id, place_id2, project_id, subproject_id])
 
   const deleteRow = useCallback(async () => {
     await db.checks.delete({
