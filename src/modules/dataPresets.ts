@@ -256,10 +256,21 @@ export const goal = async ({ db, project_id, subproject_id }) => {
   }
 }
 
-export const goalReport = () => ({
-  goal_report_id: uuidv7(),
-  deleted: false,
-})
+export const goalReport = async ({ db, project_id, goal_id }) => {
+  // find fields with preset values on the data column
+  const presetData = await fetchPresetData({
+    db,
+    project_id,
+    table: 'goal_reports',
+  })
+
+  return {
+    goal_report_id: uuidv7(),
+    goal_id,
+    deleted: false,
+    ...presetData,
+  }
+}
 
 export const goalReportValue = () => ({
   goal_report_value_id: uuidv7(),

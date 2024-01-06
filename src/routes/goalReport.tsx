@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { GoalReports as GoalReport } from '../../../generated/client'
-import { goalReport as createGoalReportPreset } from '../modules/dataPresets'
+import { goalReport as createNewGoalReport } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { Jsonb } from '../components/shared/Jsonb'
@@ -23,17 +23,12 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const newGoalReport = createGoalReportPreset()
-    await db.goal_reports.create({
-      data: {
-        ...newGoalReport,
-        goal_id,
-      },
-    })
+    const data = await createNewGoalReport({ db, project_id, goal_id })
+    await db.goal_reports.create({ data })
     navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${newGoalReport.goal_report_id}`,
+      `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${data.goal_report_id}`,
     )
-  }, [db.goal_reports, goal_id, navigate, project_id, subproject_id])
+  }, [db, goal_id, navigate, project_id, subproject_id])
 
   const deleteRow = useCallback(async () => {
     await db.goal_reports.delete({

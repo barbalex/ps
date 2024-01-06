@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { GoalReports as GoalReport } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { goalReport as createGoalReportPreset } from '../modules/dataPresets'
+import { goalReport as createNewGoalReport } from '../modules/dataPresets'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
@@ -19,17 +19,12 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const newGoalReport = createGoalReportPreset()
-    await db.goal_reports.create({
-      data: {
-        ...newGoalReport,
-        goal_id,
-      },
-    })
+    const data = await createNewGoalReport({ db, project_id, goal_id })
+    await db.goal_reports.create({ data })
     navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${newGoalReport.goal_report_id}`,
+      `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${data.goal_report_id}`,
     )
-  }, [db.goal_reports, goal_id, navigate, project_id, subproject_id])
+  }, [db, goal_id, navigate, project_id, subproject_id])
 
   const goals: GoalReport[] = results ?? []
 
