@@ -106,10 +106,21 @@ export const user = () => ({
   deleted: false,
 })
 
-export const person = () => ({
-  person_id: uuidv7(),
-  deleted: false,
-})
+export const person = async ({ db, project_id }) => {
+  // find fields with preset values on the data column
+  const presetData = await fetchPresetData({
+    db,
+    project_id,
+    table: 'persons',
+  })
+
+  return {
+    person_id: uuidv7(),
+    project_id,
+    deleted: false,
+    ...presetData,
+  }
+}
 
 export const observationSource = async ({ db, project_id }) => {
   // find fields with preset values on the data column

@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { Persons as Person } from '../../../generated/client'
-import { person as createPersonPreset } from '../modules/dataPresets'
+import { person as createNewPerson } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
@@ -24,12 +24,10 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const newPerson = createPersonPreset()
-    await db.persons.create({
-      data: { ...newPerson, project_id },
-    })
-    navigate(`/projects/${project_id}/persons/${newPerson.person_id}`)
-  }, [db.persons, navigate, project_id])
+    const data = await createNewPerson({ db, project_id })
+    await db.persons.create({ data })
+    navigate(`/projects/${project_id}/persons/${data.person_id}`)
+  }, [db, navigate, project_id])
 
   const deleteRow = useCallback(async () => {
     await db.persons.delete({

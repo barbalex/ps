@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { Persons as Person } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { person as createPersonPreset } from '../modules/dataPresets'
+import { person as createNewPerson } from '../modules/dataPresets'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
@@ -19,12 +19,10 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const newPerson = createPersonPreset()
-    await db.persons.create({
-      data: { ...newPerson, project_id },
-    })
-    navigate(`/projects/${project_id}/persons/${newPerson.person_id}`)
-  }, [db.persons, navigate, project_id])
+    const data = await createNewPerson({ db, project_id })
+    await db.persons.create({ data })
+    navigate(`/projects/${project_id}/persons/${data.person_id}`)
+  }, [db, navigate, project_id])
 
   const persons: Person[] = results ?? []
 
