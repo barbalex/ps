@@ -294,11 +294,22 @@ export const subprojectTaxon = () => ({
   deleted: false,
 })
 
-export const subprojectReport = () => ({
-  subproject_report_id: uuidv7(),
-  year: new Date().getFullYear(),
-  deleted: false,
-})
+export const subprojectReport = async ({ db, project_id, subproject_id }) => {
+  // find fields with preset values on the data column
+  const presetData = await fetchPresetData({
+    db,
+    project_id,
+    table: 'subproject_reports',
+  })
+
+  return {
+    subproject_report_id: uuidv7(),
+    subproject_id,
+    year: new Date().getFullYear(),
+    deleted: false,
+    ...presetData,
+  }
+}
 
 export const check = async ({ db, project_id, place_id }) => {
   // find fields with preset values on the data column
