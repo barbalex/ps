@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { SubprojectTaxa as SubprojectTaxon } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { subprojectTaxon as createSubprojectTaxon } from '../modules/dataPresets'
+import { subprojectTaxon as createSubprojectTaxon } from '../modules/createRows'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 

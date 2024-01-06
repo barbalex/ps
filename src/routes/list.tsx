@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 
 import { Lists as List } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { list as createList } from '../modules/dataPresets'
+import { list as createList } from '../modules/createRows'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { SwitchField } from '../components/shared/SwitchField'

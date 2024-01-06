@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { PlaceReportValues as PlaceReportValue } from '../../../generated/client'
-import { placeReportValue as createNewPlaceReportValue } from '../modules/dataPresets'
+import { placeReportValue as createNewPlaceReportValue } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'

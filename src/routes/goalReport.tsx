@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { GoalReports as GoalReport } from '../../../generated/client'
-import { goalReport as createNewGoalReport } from '../modules/dataPresets'
+import { goalReport as createGoalReport } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { Jsonb } from '../components/shared/Jsonb'
@@ -23,7 +23,7 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const data = await createNewGoalReport({ db, project_id, goal_id })
+    const data = await createGoalReport({ db, project_id, goal_id })
     await db.goal_reports.create({ data })
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${data.goal_report_id}`,

@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { Files as File } from '../../../generated/client'
-import { file as createFile } from '../modules/dataPresets'
+import { file as createFile } from '../modules/createRows'
 import { ListViewMenu } from '../components/ListViewMenu'
 
 import '../form.css'

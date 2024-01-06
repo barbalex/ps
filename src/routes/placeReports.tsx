@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { PlaceReports as PlaceReport } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { placeReport as createNewPlaceReport } from '../modules/dataPresets'
+import { placeReport as createNewPlaceReport } from '../modules/createRows'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 

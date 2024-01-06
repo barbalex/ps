@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { CheckValues as CheckValue } from '../../../generated/client'
-import { checkValue as createCheckValue } from '../modules/dataPresets'
+import { checkValue as createCheckValue } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'

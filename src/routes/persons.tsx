@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { Persons as Person } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { person as createNewPerson } from '../modules/dataPresets'
+import { person as createNewPerson } from '../modules/createRows'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 

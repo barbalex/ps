@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { FieldTypes as FieldType } from '../../../generated/client'
-import { fieldType as createFieldType } from '../modules/dataPresets'
+import { fieldType as createFieldType } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
 import { ListViewMenu } from '../components/ListViewMenu'
 

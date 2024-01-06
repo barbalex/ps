@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { Label, Divider } from '@fluentui/react-components'
 
 import { Projects as Project } from '../../../generated/client'
-import { project as createNewProject } from '../modules/dataPresets'
+import { project as createNewProject } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'

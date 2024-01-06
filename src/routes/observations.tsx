@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { ObservationSources as Observation } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { observation as createNewObservation } from '../modules/dataPresets'
+import { observation as createNewObservation } from '../modules/createRows'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 

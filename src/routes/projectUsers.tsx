@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { ProjectUsers as ProjectUser } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { projectUser as createProjectUser } from '../modules/dataPresets'
+import { projectUser as createProjectUser } from '../modules/createRows'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
