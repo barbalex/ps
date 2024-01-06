@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { PlaceUsers as PlaceUser } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { placeUser as createPlaceUserPreset } from '../modules/dataPresets'
+import { placeUser as createNewPlaceUser } from '../modules/dataPresets'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
@@ -22,7 +22,7 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const newPlaceUser = createPlaceUserPreset()
+    const newPlaceUser = createNewPlaceUser()
     await db.place_users.create({
       data: {
         ...newPlaceUser,

@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { Label, Divider } from '@fluentui/react-components'
 
 import { Projects as Project } from '../../../generated/client'
-import { project as createProjectPreset } from '../modules/dataPresets'
+import { project as createNewProject } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
@@ -27,11 +27,9 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const newProject = createProjectPreset()
-    await db.projects.create({
-      data: newProject,
-    })
-    navigate(`/projects/${newProject.project_id}`)
+    const data = createNewProject()
+    await db.projects.create({ data })
+    navigate(`/projects/${data.project_id}`)
   }, [db.projects, navigate])
 
   const deleteRow = useCallback(async () => {

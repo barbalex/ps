@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 
 import { PlaceUsers as PlaceUser } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { placeUser as createPlaceUserPreset } from '../modules/dataPresets'
+import { placeUser as createNewPlaceUser } from '../modules/dataPresets'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { DropdownField } from '../components/shared/DropdownField'
 import { RadioGroupField } from '../components/shared/RadioGroupField'
@@ -25,7 +25,7 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const newPlaceUser = createPlaceUserPreset()
+    const newPlaceUser = createNewPlaceUser()
     await db.place_users.create({
       data: { ...newPlaceUser, place_id: place_id2 ?? place_id },
     })
