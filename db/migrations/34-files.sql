@@ -8,7 +8,7 @@ CREATE TABLE files(
   check_id uuid DEFAULT NULL REFERENCES checks(check_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
   label_replace_by_generated_column text DEFAULT NULL,
-  data jsonb DEFAULT NULL,
+  data jsonb DEFAULT NULL, -- TODO: not defineable in fields table!!
   mimetype text DEFAULT NULL,
   -- file bytea DEFAULT NULL, -- not supported by electric-sql
   url text DEFAULT NULL,

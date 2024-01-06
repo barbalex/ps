@@ -1337,7 +1337,7 @@ CREATE TABLE files(
   action_id uuid DEFAULT NULL REFERENCES actions(action_id) ON DELETE CASCADE ON UPDATE CASCADE,
   check_id uuid DEFAULT NULL REFERENCES checks(check_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
-  data jsonb DEFAULT NULL,
+  data jsonb DEFAULT NULL, -- TODO: not defineable in fields table!!
   mimetype text DEFAULT NULL,
   file bytea DEFAULT NULL,
   url text DEFAULT NULL,
