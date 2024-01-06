@@ -21,7 +21,7 @@ const getPresetData = async ({ db, project_id, table }) => {
 
 // TODO: add account_id
 // TODO: refactor names to express creation
-export const project = () => ({
+export const createProject = () => ({
   project_id: uuidv7(),
   type: 'species',
   subproject_name_singular: 'Art',
@@ -40,7 +40,7 @@ export const project = () => ({
   deleted: false,
 })
 
-export const subproject = async ({ db, project_id }) => {
+export const createSubproject = async ({ db, project_id }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     db,
