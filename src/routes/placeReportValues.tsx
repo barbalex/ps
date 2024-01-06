@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { PlaceReportValues as PlaceReportValue } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { placeReportValue as createPlaceReportValuePreset } from '../modules/dataPresets'
+import { placeReportValue as createNewPlaceReportValue } from '../modules/dataPresets'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
@@ -23,7 +23,7 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const newPlaceReportValue = createPlaceReportValuePreset()
+    const newPlaceReportValue = createNewPlaceReportValue()
     await db.place_report_values.create({
       data: {
         ...newPlaceReportValue,

@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { Places as Place } from '../../../generated/client'
-import { place as createPlacePreset } from '../modules/dataPresets'
+import { place as createNewPlace } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
@@ -20,7 +20,7 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const data = await createPlacePreset({ db, project_id, subproject_id })
+    const data = await createNewPlace({ db, project_id, subproject_id })
     if (place_id) {
       data.parent_id = place_id
       data.level = 2
