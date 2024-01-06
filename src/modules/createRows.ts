@@ -101,7 +101,7 @@ export const createAccount = () => ({
   type: 'free',
 })
 
-export const user = () => ({
+export const createUser = () => ({
   user_id: uuidv7(),
   deleted: false,
 })
@@ -122,7 +122,7 @@ export const createPerson = async ({ db, project_id }) => {
   }
 }
 
-export const observationSource = async ({ db, project_id }) => {
+export const createObservationSource = async ({ db, project_id }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     db,
