@@ -83,7 +83,7 @@ export const createWidgetForField = () => ({
   deleted: false,
 })
 
-export const widgetType = () => ({
+export const createWidgetType = () => ({
   widget_type_id: uuidv7(),
   needs_list: false,
   sort: 0,
