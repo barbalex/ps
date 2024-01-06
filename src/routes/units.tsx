@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { Units as Unit } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { unit as createUnitPreset } from '../modules/dataPresets'
+import { unit as createUnit } from '../modules/dataPresets'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
@@ -19,14 +19,14 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const newUnit = createUnitPreset()
+    const unit = createUnit()
     await db.units.create({
       data: {
-        ...newUnit,
+        ...unit,
         project_id,
       },
     })
-    navigate(`/projects/${project_id}/units/${newUnit.unit_id}`)
+    navigate(`/projects/${project_id}/units/${unit.unit_id}`)
   }, [db.units, navigate, project_id])
 
   const units: Unit[] = results ?? []

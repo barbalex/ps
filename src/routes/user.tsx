@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { Users as User } from '../../../generated/client'
-import { user as createUserPreset } from '../modules/dataPresets'
+import { user as createUser } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
@@ -23,11 +23,9 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const newUser = createUserPreset()
-    await db.users.create({
-      data: newUser,
-    })
-    navigate(`/users/${newUser.user_id}`)
+    const data = createUser()
+    await db.users.create({ data })
+    navigate(`/users/${data.user_id}`)
   }, [db.users, navigate])
 
   const deleteRow = useCallback(async () => {
@@ -66,7 +64,7 @@ export const Component = () => {
         type="email"
         value={row.email ?? ''}
         onChange={onChange}
-        autoFocus 
+        autoFocus
       />
     </div>
   )

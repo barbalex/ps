@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 
 import { Units as Unit } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { unit as createUnitPreset } from '../modules/dataPresets'
+import { unit as createUnit } from '../modules/dataPresets'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { SwitchField } from '../components/shared/SwitchField'
@@ -21,11 +21,11 @@ export const Component = () => {
   const { results } = useLiveQuery(db.units.liveUnique({ where: { unit_id } }))
 
   const addRow = useCallback(async () => {
-    const newUnit = createUnitPreset()
+    const unit = createUnit()
     await db.units.create({
-      data: { ...newUnit, project_id },
+      data: { ...unit, project_id },
     })
-    navigate(`/projects/${project_id}/units/${newUnit.unit_id}`)
+    navigate(`/projects/${project_id}/units/${unit.unit_id}`)
   }, [db.units, navigate, project_id])
 
   const deleteRow = useCallback(async () => {
