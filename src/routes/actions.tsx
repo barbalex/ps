@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { Actions as Action } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { action as createAction } from '../modules/createRows'
+import { createAction } from '../modules/createRows'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 

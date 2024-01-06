@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { CheckTaxa as CheckTaxon } from '../../../generated/client'
-import { checkTaxon as createCheckTaxon } from '../modules/createRows'
+import { createCheckTaxon } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { DropdownField } from '../components/shared/DropdownField'

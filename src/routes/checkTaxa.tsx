@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { CheckTaxa as CheckTaxon } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { checkTaxon as createCheckTaxon } from '../modules/createRows'
+import { createCheckTaxon } from '../modules/createRows'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 

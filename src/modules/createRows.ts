@@ -351,17 +351,17 @@ export const createCheck = async ({ db, project_id, place_id }) => {
   }
 }
 
-export const checkValue = () => ({
+export const createCheckValue = () => ({
   check_value_id: uuidv7(),
   deleted: false,
 })
 
-export const checkTaxon = () => ({
+export const createCheckTaxon = () => ({
   check_taxon_id: uuidv7(),
   deleted: false,
 })
 
-export const action = async ({ db, project_id, place_id }) => {
+export const createAction = async ({ db, project_id, place_id }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     db,
@@ -379,12 +379,12 @@ export const action = async ({ db, project_id, place_id }) => {
   }
 }
 
-export const actionValue = () => ({
+export const createActionValue = () => ({
   action_value_id: uuidv7(),
   deleted: false,
 })
 
-export const actionReport = async ({ db, project_id, action_id }) => {
+export const createActionReport = async ({ db, project_id, action_id }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     db,
