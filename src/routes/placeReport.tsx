@@ -25,23 +25,18 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const newPlaceReport = createPlaceReportPreset()
-    await db.place_reports.create({
-      data: { ...newPlaceReport, place_id: place_id2 ?? place_id },
+    const data = await createPlaceReportPreset({
+      db,
+      project_id,
+      place_id: place_id2 ?? place_id,
     })
+    await db.place_reports.create({ data })
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
         place_id2 ? `/places/${place_id2}` : ''
-      }/reports/${newPlaceReport.place_report_id}`,
+      }/reports/${data.place_report_id}`,
     )
-  }, [
-    db.place_reports,
-    navigate,
-    place_id,
-    place_id2,
-    project_id,
-    subproject_id,
-  ])
+  }, [db, navigate, place_id, place_id2, project_id, subproject_id])
 
   const deleteRow = useCallback(async () => {
     await db.place_reports.delete({
