@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { SubprojectReports as SubprojectReport } from '../../../generated/client'
-import { subprojectReport as createNewSubprojectReport } from '../modules/createRows'
+import { subprojectReport as createSubprojectReport } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
@@ -24,7 +24,7 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const data = await createNewSubprojectReport({
+    const data = await createSubprojectReport({
       db,
       project_id,
       subproject_id,

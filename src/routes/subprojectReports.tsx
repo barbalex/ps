@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { SubprojectReports as SubprojectReport } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { subprojectReport as createNewSubprojectReport } from '../modules/createRows'
+import { subprojectReport as createSubprojectReport } from '../modules/createRows'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
@@ -22,7 +22,7 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const data = await createNewSubprojectReport({
+    const data = await createSubprojectReport({
       db,
       project_id,
       subproject_id,

@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { PlaceUsers as PlaceUser } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { placeUser as createNewPlaceUser } from '../modules/createRows'
+import { placeUser as createPlaceUser } from '../modules/createRows'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
@@ -22,17 +22,17 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const newPlaceUser = createNewPlaceUser()
+    const placeUser = createPlaceUser()
     await db.place_users.create({
       data: {
-        ...newPlaceUser,
+        ...placeUser,
         place_id: place_id2 ?? place_id,
       },
     })
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
         place_id2 ? `/places/${place_id2}` : ''
-      }/users/${newPlaceUser.place_user_id}`,
+      }/users/${placeUser.place_user_id}`,
     )
   }, [db.place_users, navigate, place_id, place_id2, project_id, subproject_id])
 
