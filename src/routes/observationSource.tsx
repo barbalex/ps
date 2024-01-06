@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { ObservationSources as ObservationSource } from '../../../generated/client'
-import { observationSource as createObservationSourcePreset } from '../modules/dataPresets'
+import { observationSource as createNewObservationSource } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
@@ -28,14 +28,15 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const newObservationSource = createObservationSourcePreset()
-    await db.observation_sources.create({
-      data: { ...newObservationSource, project_id },
+    const data = await createNewObservationSource({
+      db,
+      project_id,
     })
+    await db.observation_sources.create({ data })
     navigate(
-      `/projects/${project_id}/observation-sources/${newObservationSource.observation_source_id}`,
+      `/projects/${project_id}/observation-sources/${data.observation_source_id}`,
     )
-  }, [db.observation_sources, navigate, project_id])
+  }, [db, navigate, project_id])
 
   const deleteRow = useCallback(async () => {
     await db.observation_sources.delete({
