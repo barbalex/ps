@@ -78,7 +78,7 @@ export const createPlace = async ({ db, project_id, subproject_id }) => {
   }
 }
 
-export const widgetForField = () => ({
+export const createWidgetForField = () => ({
   widget_for_field_id: uuidv7(),
   deleted: false,
 })

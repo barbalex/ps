@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { WidgetsForFields as WidgetsForField } from '../../../generated/client'
-import { widgetForField as createWidgetForField } from '../modules/createRows'
+import { createWidgetForField } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { DropdownField } from '../components/shared/DropdownField'

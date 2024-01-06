@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { WidgetsForFields as WidgetForField } from '../../../generated/client'
-import { widgetForField as createWidgetForField } from '../modules/createRows'
+import { createWidgetForField } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
 import { ListViewMenu } from '../components/ListViewMenu'
 
