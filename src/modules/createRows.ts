@@ -1,4 +1,3 @@
-import { goalReport } from './createRows'
 import { uuidv7 } from '@kripod/uuidv7'
 
 const getPresetData = async ({ db, project_id, table }) => {
@@ -316,7 +315,11 @@ export const createSubprojectTaxon = () => ({
   deleted: false,
 })
 
-export const createSubprojectReport = async ({ db, project_id, subproject_id }) => {
+export const createSubprojectReport = async ({
+  db,
+  project_id,
+  subproject_id,
+}) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     db,
@@ -401,12 +404,12 @@ export const createActionReport = async ({ db, project_id, action_id }) => {
   }
 }
 
-export const actionReportValue = () => ({
+export const createActionReportValue = () => ({
   action_report_value_id: uuidv7(),
   deleted: false,
 })
 
-export const placeReport = async ({ db, project_id, place_id }) => {
+export const createPlaceReport = async ({ db, project_id, place_id }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     db,
@@ -423,12 +426,12 @@ export const placeReport = async ({ db, project_id, place_id }) => {
   }
 }
 
-export const placeReportValue = () => ({
+export const createPlaceReportValue = () => ({
   place_report_value_id: uuidv7(),
   deleted: false,
 })
 
-export const message = () => ({
+export const createMessage = () => ({
   message_id: uuidv7(),
   date: new Date(),
 })

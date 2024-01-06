@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 
 import { Messages as Message } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { message as createMessage } from '../modules/createRows'
+import { createMessage } from '../modules/createRows'
 import { ListViewMenu } from '../components/ListViewMenu'
 
 import '../form.css'
