@@ -56,12 +56,12 @@ export const createSubproject = async ({ db, project_id }) => {
   }
 }
 
-export const file = () => ({
+export const createFile = () => ({
   file_id: uuidv7(),
   deleted: false,
 })
 
-export const place = async ({ db, project_id, subproject_id }) => {
+export const createPlace = async ({ db, project_id, subproject_id }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     db,
