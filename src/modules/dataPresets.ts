@@ -187,11 +187,22 @@ export const projectUser = () => ({
   deleted: false,
 })
 
-export const projectReport = () => ({
-  project_report_id: uuidv7(),
-  year: new Date().getFullYear(),
-  deleted: false,
-})
+export const projectReport = async ({ db, project_id }) => {
+  // find fields with preset values on the data column
+  const presetData = await fetchPresetData({
+    db,
+    project_id,
+    table: 'project_reports',
+  })
+
+  return {
+    project_report_id: uuidv7(),
+    project_id,
+    year: new Date().getFullYear(),
+    deleted: false,
+    ...presetData,
+  }
+}
 
 export const placeLevel = () => ({
   place_level_id: uuidv7(),

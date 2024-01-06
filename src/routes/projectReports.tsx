@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { ProjectReports as ProjectReport } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { projectReport as createProjectReportPreset } from '../modules/dataPresets'
+import { projectReport as createNewProjectReport } from '../modules/dataPresets'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
@@ -20,17 +20,10 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const newProjectReport = createProjectReportPreset()
-    await db.project_reports.create({
-      data: {
-        ...newProjectReport,
-        project_id,
-      },
-    })
-    navigate(
-      `/projects/${project_id}/reports/${newProjectReport.project_report_id}`,
-    )
-  }, [db.project_reports, navigate, project_id])
+    const data = await createNewProjectReport({ db, project_id })
+    await db.project_reports.create({ data })
+    navigate(`/projects/${project_id}/reports/${data.project_report_id}`)
+  }, [db, navigate, project_id])
 
   const projectReports: ProjectReport[] = results ?? []
 
