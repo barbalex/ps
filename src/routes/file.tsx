@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { Files as File } from '../../../generated/client'
-import { file as createFilePreset } from '../modules/dataPresets'
+import { file as createFile } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
@@ -25,11 +25,9 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const newFile = createFilePreset()
-    await db.files.create({
-      data: newFile,
-    })
-    navigate(`/files/${newFile.file_id}`)
+    const data = createFile()
+    await db.files.create({ data })
+    navigate(`/files/${data.file_id}`)
   }, [db.files, navigate])
 
   const deleteRow = useCallback(async () => {

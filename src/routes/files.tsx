@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { Files as File } from '../../../generated/client'
-import { file as createFilePreset } from '../modules/dataPresets'
+import { file as createFile } from '../modules/dataPresets'
 import { ListViewMenu } from '../components/ListViewMenu'
 
 import '../form.css'
@@ -17,11 +17,9 @@ export const Component = () => {
   const { results } = useLiveQuery(db.files.liveMany())
 
   const add = useCallback(async () => {
-    const newFile = createFilePreset()
-    await db.files.create({
-      data: newFile,
-    })
-    navigate(`/files/${newFile.file_id}`)
+    const data = createFile()
+    await db.files.create({ data })
+    navigate(`/files/${data.file_id}`)
   }, [db.files, navigate])
 
   const files: File[] = results ?? []
