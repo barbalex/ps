@@ -19,7 +19,6 @@ const getPresetData = async ({ db, project_id, table }) => {
 }
 
 // TODO: add account_id
-// TODO: refactor names to express creation
 export const createProject = () => ({
   project_id: uuidv7(),
   type: 'species',
