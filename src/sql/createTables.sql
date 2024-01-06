@@ -79,7 +79,7 @@ CREATE TABLE projects(
   values_on_multiple_levels text DEFAULT NULL,
   multiple_action_values_on_same_level text DEFAULT NULL,
   multiple_check_values_on_same_level text DEFAULT NULL,
-  data jsonb DEFAULT NULL,
+  data jsonb DEFAULT NULL, -- TODO: can not be defined in fields
   files_active_projects boolean DEFAULT NULL, -- TRUE,
   files_active_projects_reports boolean DEFAULT NULL, -- TRUE,
   files_active_subprojects boolean DEFAULT NULL, -- TRUE,
