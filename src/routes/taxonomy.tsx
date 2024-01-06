@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 
 import { Taxonomies as Taxonomy } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { taxonomy as createTaxonomyPreset } from '../modules/dataPresets'
+import { taxonomy as createTaxonomy } from '../modules/dataPresets'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { Jsonb } from '../components/shared/Jsonb'
@@ -26,7 +26,7 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const data = await createTaxonomyPreset({ db, project_id })
+    const data = await createTaxonomy({ db, project_id })
     await db.taxonomies.create({ data })
     navigate(`/projects/${project_id}/taxonomies/${data.taxonomy_id}`)
   }, [db, navigate, project_id])

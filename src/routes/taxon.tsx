@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { Taxa as Taxon } from '../../../generated/client'
-import { taxon as createTaxonPreset } from '../modules/dataPresets'
+import { taxon as createTaxon } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
@@ -23,12 +23,12 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const newTaxon = createTaxonPreset()
+    const taxon = createTaxon()
     await db.taxa.create({
-      data: { ...newTaxon, project_id },
+      data: { ...taxon, project_id },
     })
     navigate(
-      `/projects/${project_id}/taxonomies/${taxonomy_id}/taxa/${newTaxon.taxon_id}`,
+      `/projects/${project_id}/taxonomies/${taxonomy_id}/taxa/${taxon.taxon_id}`,
     )
   }, [db.taxa, navigate, taxonomy_id])
 

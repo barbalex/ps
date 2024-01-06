@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { Taxa as Taxon } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { taxon as createTaxonPreset } from '../modules/dataPresets'
+import { taxon as createTaxon } from '../modules/dataPresets'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
@@ -19,15 +19,15 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const newTaxon = createTaxonPreset()
+    const taxon = createTaxon()
     await db.taxa.create({
       data: {
-        ...newTaxon,
+        ...taxon,
         taxonomy_id,
       },
     })
     navigate(
-      `/projects/${project_id}/taxonomies/${taxonomy_id}/taxa/${newTaxon.taxon_id}`,
+      `/projects/${project_id}/taxonomies/${taxonomy_id}/taxa/${taxon.taxon_id}`,
     )
   }, [db.taxa, navigate, project_id, taxonomy_id])
 

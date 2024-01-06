@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { Taxonomies as Taxonomy } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { taxonomy as createTaxonomyPreset } from '../modules/dataPresets'
+import { taxonomy as createTaxonomy } from '../modules/dataPresets'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
@@ -19,7 +19,7 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const data = await createTaxonomyPreset({ db, project_id })
+    const data = await createTaxonomy({ db, project_id })
     await db.taxonomies.create({ data })
     navigate(`/projects/${project_id}/taxonomies/${data.taxonomy_id}`)
   }, [db, navigate, project_id])
