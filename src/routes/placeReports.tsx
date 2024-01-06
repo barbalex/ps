@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { PlaceReports as PlaceReport } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { placeReport as createNewPlaceReport } from '../modules/createRows'
+import { placeReport as createPlaceReport } from '../modules/createRows'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
@@ -22,7 +22,7 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const data = await createNewPlaceReport({
+    const data = await createPlaceReport({
       db,
       project_id,
       place_id: place_id2 ?? place_id,

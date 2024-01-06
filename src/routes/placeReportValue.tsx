@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { PlaceReportValues as PlaceReportValue } from '../../../generated/client'
-import { placeReportValue as createNewPlaceReportValue } from '../modules/createRows'
+import { placeReportValue as createPlaceReportValue } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
@@ -32,10 +32,10 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const newPlaceReportValue = createNewPlaceReportValue()
+    const placeReportValue = createPlaceReportValue()
     await db.place_report_values.create({
       data: {
-        ...newPlaceReportValue,
+        ...placeReportValue,
         place_report_id,
       },
     })
@@ -43,7 +43,7 @@ export const Component = () => {
       `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
         place_id2 ? `/places/${place_id2}` : ''
       }/reports/${place_report_id}/values/${
-        newPlaceReportValue.place_report_value_id
+        placeReportValue.place_report_value_id
       }`,
     )
   }, [

@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { PlaceLevels as PlaceLevel } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { placeLevel as createNewPlaceLevel } from '../modules/createRows'
+import { placeLevel as createPlaceLevel } from '../modules/createRows'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
@@ -19,15 +19,15 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const newPlaceLevel = createNewPlaceLevel()
+    const placeLevel = createPlaceLevel()
     await db.place_levels.create({
       data: {
-        ...newPlaceLevel,
+        ...placeLevel,
         project_id,
       },
     })
     navigate(
-      `/projects/${project_id}/place-levels/${newPlaceLevel.place_level_id}`,
+      `/projects/${project_id}/place-levels/${placeLevel.place_level_id}`,
     )
   }, [db.place_levels, navigate, project_id])
 

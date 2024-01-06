@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { PlaceReportValues as PlaceReportValue } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { placeReportValue as createNewPlaceReportValue } from '../modules/createRows'
+import { placeReportValue as createPlaceReportValue } from '../modules/createRows'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
@@ -23,10 +23,10 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const newPlaceReportValue = createNewPlaceReportValue()
+    const placeReportValue = createPlaceReportValue()
     await db.place_report_values.create({
       data: {
-        ...newPlaceReportValue,
+        ...placeReportValue,
         place_report_id,
       },
     })
@@ -34,7 +34,7 @@ export const Component = () => {
       `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
         place_id2 ? `/places/${place_id2}` : ''
       }/reports/${place_report_id}/values/${
-        newPlaceReportValue.place_report_value_id
+        placeReportValue.place_report_value_id
       }`,
     )
   }, [

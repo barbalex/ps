@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { Persons as Person } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { person as createNewPerson } from '../modules/createRows'
+import { person as createPerson } from '../modules/createRows'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
@@ -19,7 +19,7 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const data = await createNewPerson({ db, project_id })
+    const data = await createPerson({ db, project_id })
     await db.persons.create({ data })
     navigate(`/projects/${project_id}/persons/${data.person_id}`)
   }, [db, navigate, project_id])
