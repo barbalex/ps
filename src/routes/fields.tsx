@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { Fields as Field } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { field as createField } from '../modules/createRows'
+import { createField } from '../modules/createRows'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 

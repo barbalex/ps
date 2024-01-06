@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 
 import { Taxonomies as Taxonomy } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { taxonomy as createTaxonomy } from '../modules/createRows'
+import { createTaxonomy } from '../modules/createRows'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { Jsonb } from '../components/shared/Jsonb'

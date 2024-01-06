@@ -138,12 +138,12 @@ export const createObservationSource = async ({ db, project_id }) => {
   }
 }
 
-export const field = () => ({
+export const createField = () => ({
   field_id: uuidv7(),
   deleted: false,
 })
 
-export const unit = () => ({
+export const createUnit = () => ({
   unit_id: uuidv7(),
   use_for_action_values: true,
   use_for_action_report_values: true,
@@ -158,7 +158,7 @@ export const unit = () => ({
   deleted: false,
 })
 
-export const list = async ({ db, project_id }) => {
+export const createList = async ({ db, project_id }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     db,
@@ -175,7 +175,7 @@ export const list = async ({ db, project_id }) => {
   }
 }
 
-export const taxonomy = async ({ db, project_id }) => {
+export const createTaxonomy = async ({ db, project_id }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     db,

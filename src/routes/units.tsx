@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { Units as Unit } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { unit as createUnit } from '../modules/createRows'
+import { createUnit } from '../modules/createRows'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 

@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { Lists as List } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { list as createList } from '../modules/createRows'
+import { createList } from '../modules/createRows'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 

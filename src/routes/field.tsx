@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 
 import { Fields as Field } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { field as createField } from '../modules/createRows'
+import { createField } from '../modules/createRows'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { DropdownFieldSimpleOptions } from '../components/shared/DropdownFieldSimpleOptions'
