@@ -269,12 +269,23 @@ export const checkTaxon = () => ({
   deleted: false,
 })
 
-export const action = () => ({
-  action_id: uuidv7(),
-  date: new Date(),
-  relevant_for_reports: true,
-  deleted: false,
-})
+export const action = async ({ db, project_id, place_id }) => {
+  // find fields with preset values on the data column
+  const presetData = await fetchPresetData({
+    db,
+    project_id,
+    table: 'actions',
+  })
+
+  return {
+    action_id: uuidv7(),
+    place_id,
+    date: new Date(),
+    relevant_for_reports: true,
+    deleted: false,
+    ...presetData,
+  }
+}
 
 export const actionValue = () => ({
   action_value_id: uuidv7(),
