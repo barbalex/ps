@@ -96,7 +96,7 @@ export const createFieldType = () => ({
   deleted: false,
 })
 
-export const account = () => ({
+export const createAccount = () => ({
   account_id: uuidv7(),
   type: 'free',
 })

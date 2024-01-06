@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 
 import { Accounts as Account } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { account as createAccount } from '../modules/createRows'
+import { createAccount } from '../modules/createRows'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { DropdownField } from '../components/shared/DropdownField'
 import { DateField } from '../components/shared/DateField'

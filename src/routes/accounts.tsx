@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { Accounts as Account } from '../../../generated/client'
-import { account as createAccount } from '../modules/createRows'
+import { createAccount } from '../modules/createRows'
 import { ListViewMenu } from '../components/ListViewMenu'
 import { useElectric } from '../ElectricProvider'
 
