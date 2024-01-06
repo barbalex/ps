@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { CheckValues as CheckValue } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { checkValue as createCheckValuePreset } from '../modules/dataPresets'
+import { checkValue as createCheckValue } from '../modules/dataPresets'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
@@ -20,17 +20,17 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const newCheckValue = createCheckValuePreset()
+    const checkValue = createCheckValue()
     await db.check_values.create({
       data: {
-        ...newCheckValue,
+        ...checkValue,
         check_id,
       },
     })
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
         place_id2 ? `/places/${place_id2}` : ''
-      }/checks/${check_id}/values/${newCheckValue.check_value_id}`,
+      }/checks/${check_id}/values/${checkValue.check_value_id}`,
     )
   }, [
     check_id,

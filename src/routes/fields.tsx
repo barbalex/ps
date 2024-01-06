@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { Fields as Field } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { field as createFieldPreset } from '../modules/dataPresets'
+import { field as createField } from '../modules/dataPresets'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
@@ -19,14 +19,14 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const newField = createFieldPreset()
+    const field = createField()
     await db.fields.create({
       data: {
-        ...newField,
+        ...field,
         project_id,
       },
     })
-    navigate(`/projects/${project_id}/fields/${newField.field_id}`)
+    navigate(`/projects/${project_id}/fields/${field.field_id}`)
   }, [db.fields, navigate, project_id])
 
   const fields: Field[] = results ?? []

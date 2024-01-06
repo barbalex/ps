@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 
 import { Fields as Field } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { field as createFieldPreset } from '../modules/dataPresets'
+import { field as createField } from '../modules/dataPresets'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { DropdownFieldSimpleOptions } from '../components/shared/DropdownFieldSimpleOptions'
@@ -50,11 +50,11 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const newField = createFieldPreset()
+    const field = createField()
     await db.fields.create({
-      data: { ...newField, project_id },
+      data: { ...field, project_id },
     })
-    navigate(`/projects/${project_id}/fields/${newField.field_id}`)
+    navigate(`/projects/${project_id}/fields/${field.field_id}`)
   }, [db.fields, navigate, project_id])
 
   const deleteRow = useCallback(async () => {

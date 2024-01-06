@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { CheckValues as CheckValue } from '../../../generated/client'
-import { checkValue as createCheckValuePreset } from '../modules/dataPresets'
+import { checkValue as createCheckValue } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
@@ -31,17 +31,17 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const newCheckValue = createCheckValuePreset()
+    const checkValue = createCheckValue()
     await db.check_values.create({
       data: {
-        ...newCheckValue,
+        ...checkValue,
         check_id,
       },
     })
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
         place_id2 ? `/places/${place_id2}` : ''
-      }/checks/${check_id}/values/${newCheckValue.check_value_id}`,
+      }/checks/${check_id}/values/${checkValue.check_value_id}`,
     )
   }, [
     check_id,
