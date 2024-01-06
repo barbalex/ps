@@ -192,13 +192,13 @@ export const createTaxonomy = async ({ db, project_id }) => {
   }
 }
 
-export const projectUser = () => ({
+export const createProjectUser = () => ({
   project_user_id: uuidv7(),
   role: 'reader',
   deleted: false,
 })
 
-export const projectReport = async ({ db, project_id }) => {
+export const createProjectReport = async ({ db, project_id }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     db,
@@ -215,7 +215,7 @@ export const projectReport = async ({ db, project_id }) => {
   }
 }
 
-export const placeLevel = () => ({
+export const createPlaceLevel = () => ({
   place_level_id: uuidv7(),
   level: 1,
   reports: false,
@@ -230,7 +230,7 @@ export const placeLevel = () => ({
   deleted: false,
 })
 
-export const observation = async ({
+export const createObservation = async ({
   db,
   project_id,
   observation_source_id,
