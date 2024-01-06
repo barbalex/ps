@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { Messages as Message } from '../../../generated/client'
-import { message as createNewMessage } from '../modules/createRows'
+import { message as createMessage } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
@@ -24,7 +24,7 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const data = createNewMessage()
+    const data = createMessage()
     await db.messages.create({ data })
     navigate(`/messages/${data.message_id}`)
   }, [db.messages, navigate])

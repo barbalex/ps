@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { GoalReports as GoalReport } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { goalReport as createNewGoalReport } from '../modules/createRows'
+import { goalReport as createGoalReport } from '../modules/createRows'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
@@ -19,7 +19,7 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const data = await createNewGoalReport({ db, project_id, goal_id })
+    const data = await createGoalReport({ db, project_id, goal_id })
     await db.goal_reports.create({ data })
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${data.goal_report_id}`,

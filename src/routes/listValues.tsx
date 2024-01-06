@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { ListValues as ListValue } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { listValue as createNewListValue } from '../modules/createRows'
+import { listValue as createListValue } from '../modules/createRows'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
@@ -19,15 +19,15 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const newListValue = createNewListValue()
+    const listValue = createListValue()
     await db.list_values.create({
       data: {
-        ...newListValue,
+        ...listValue,
         list_id,
       },
     })
     navigate(
-      `/projects/${project_id}/lists/${list_id}/values/${newListValue.list_value_id}`,
+      `/projects/${project_id}/lists/${list_id}/values/${listValue.list_value_id}`,
     )
   }, [db.list_values, list_id, navigate, project_id])
 
