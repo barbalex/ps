@@ -125,11 +125,22 @@ export const unit = () => ({
   deleted: false,
 })
 
-export const list = () => ({
-  list_id: uuidv7(),
-  obsolete: false,
-  deleted: false,
-})
+export const list = async ({ db, project_id }) => {
+  // find fields with preset values on the data column
+  const presetData = await fetchPresetData({
+    db,
+    project_id,
+    table: 'lists',
+  })
+
+  return {
+    list_id: uuidv7(),
+    project_id,
+    obsolete: false,
+    deleted: false,
+    ...presetData,
+  }
+}
 
 export const taxonomy = async ({ db, project_id }) => {
   // find fields with preset values on the data column

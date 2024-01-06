@@ -25,12 +25,10 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const newList = createListPreset()
-    await db.lists.create({
-      data: { ...newList, project_id },
-    })
-    navigate(`/projects/${project_id}/lists/${newList.list_id}`)
-  }, [db.lists, navigate, project_id])
+    const data = await createListPreset({ db, project_id })
+    await db.lists.create({ data })
+    navigate(`/projects/${project_id}/lists/${data.list_id}`)
+  }, [db, navigate, project_id])
 
   const deleteRow = useCallback(async () => {
     await db.lists.delete({
