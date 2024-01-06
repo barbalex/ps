@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { ProjectUsers as ProjectUser } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { projectUser as createProjectUserPreset } from '../modules/dataPresets'
+import { projectUser as createProjectUser } from '../modules/dataPresets'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
@@ -19,14 +19,14 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const newProjectUser = createProjectUserPreset()
+    const projectUser = createProjectUser()
     await db.project_users.create({
       data: {
-        ...newProjectUser,
+        ...projectUser,
         project_id,
       },
     })
-    navigate(`/projects/${project_id}/users/${newProjectUser.project_user_id}`)
+    navigate(`/projects/${project_id}/users/${projectUser.project_user_id}`)
   }, [db.project_users, navigate, project_id])
 
   const projectUsers: ProjectUser[] = results ?? []

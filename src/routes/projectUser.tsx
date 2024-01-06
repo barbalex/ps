@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { ProjectUsers as ProjectUser } from '../../../generated/client'
-import { projectUser as createProjectUserPreset } from '../modules/dataPresets'
+import { projectUser as createProjectUser } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { DropdownField } from '../components/shared/DropdownField'
@@ -24,11 +24,11 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const newProjectUser = createProjectUserPreset()
+    const projectUser = createProjectUser()
     await db.project_users.create({
-      data: { ...newProjectUser, project_id },
+      data: { ...projectUser, project_id },
     })
-    navigate(`/projects/${project_id}/users/${newProjectUser.project_user_id}`)
+    navigate(`/projects/${project_id}/users/${projectUser.project_user_id}`)
   }, [db.project_users, navigate, project_id])
 
   const deleteRow = useCallback(async () => {

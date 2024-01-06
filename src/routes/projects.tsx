@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { Projects as Project } from '../../../generated/client'
-import { project as createProjectPreset } from '../modules/dataPresets'
+import { project as createProject } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
@@ -20,11 +20,9 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const newProject = createProjectPreset()
-    await db.projects.create({
-      data: newProject,
-    })
-    navigate(`/projects/${newProject.project_id}`)
+    const data = createProject()
+    await db.projects.create({ data })
+    navigate(`/projects/${data.project_id}`)
   }, [db.projects, navigate])
 
   const projects: Project[] = results ?? []
