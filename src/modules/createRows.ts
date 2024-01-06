@@ -250,18 +250,18 @@ export const createObservation = async ({
   }
 }
 
-export const taxon = () => ({
+export const createTaxon = () => ({
   taxon_id: uuidv7(),
   deleted: false,
 })
 
-export const listValue = () => ({
+export const createListValue = () => ({
   list_value_id: uuidv7(),
   obsolete: false,
   deleted: false,
 })
 
-export const goal = async ({ db, project_id, subproject_id }) => {
+export const createGoal = async ({ db, project_id, subproject_id }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     db,
@@ -278,7 +278,7 @@ export const goal = async ({ db, project_id, subproject_id }) => {
   }
 }
 
-export const goalReport = async ({ db, project_id, goal_id }) => {
+export const createGoalReport = async ({ db, project_id, goal_id }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     db,
@@ -294,7 +294,7 @@ export const goalReport = async ({ db, project_id, goal_id }) => {
   }
 }
 
-export const goalReportValue = () => ({
+export const createGoalReportValue = () => ({
   goal_report_value_id: uuidv7(),
   deleted: false,
 })

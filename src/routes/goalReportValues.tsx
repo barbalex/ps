@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { GoalReportValues as GoalReportValue } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { goalReportValue as createGoalReportValue } from '../modules/createRows'
+import { createGoalReportValue } from '../modules/createRows'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 

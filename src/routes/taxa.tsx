@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { Taxa as Taxon } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { taxon as createTaxon } from '../modules/createRows'
+import { createTaxon } from '../modules/createRows'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 

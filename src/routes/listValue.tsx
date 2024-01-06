@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { ListValues as ListValue } from '../../../generated/client'
-import { listValue as createListValue } from '../modules/createRows'
+import { createListValue } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'

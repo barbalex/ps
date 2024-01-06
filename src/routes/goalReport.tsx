@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { GoalReports as GoalReport } from '../../../generated/client'
-import { goalReport as createGoalReport } from '../modules/createRows'
+import { createGoalReport } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { Jsonb } from '../components/shared/Jsonb'

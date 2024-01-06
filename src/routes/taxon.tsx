@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { Taxa as Taxon } from '../../../generated/client'
-import { taxon as createTaxon } from '../modules/createRows'
+import { createTaxon } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
