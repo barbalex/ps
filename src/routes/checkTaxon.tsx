@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { CheckTaxa as CheckTaxon } from '../../../generated/client'
-import { checkTaxon as createCheckTaxonPreset } from '../modules/dataPresets'
+import { checkTaxon as createCheckTaxon } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { DropdownField } from '../components/shared/DropdownField'
@@ -31,17 +31,17 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const newCheckTaxon = createCheckTaxonPreset()
+    const checkTaxon = createCheckTaxon()
     await db.check_taxa.create({
       data: {
-        ...newCheckTaxon,
+        ...checkTaxon,
         check_id,
       },
     })
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
         place_id2 ? `/places/${place_id2}` : ''
-      }/checks/${check_id}/taxa/${newCheckTaxon.check_taxon_id}`,
+      }/checks/${check_id}/taxa/${checkTaxon.check_taxon_id}`,
     )
   }, [
     check_id,

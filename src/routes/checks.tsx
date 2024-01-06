@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { Checks as Check } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { check as createCheckPreset } from '../modules/dataPresets'
+import { check as createCheck } from '../modules/dataPresets'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
@@ -22,7 +22,7 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const data = await createCheckPreset({
+    const data = await createCheck({
       db,
       project_id,
       place_id: place_id2 ?? place_id,

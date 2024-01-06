@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { Checks as Check } from '../../../generated/client'
-import { check as createCheckPreset } from '../modules/dataPresets'
+import { check as createCheck } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { DateField } from '../components/shared/DateField'
@@ -26,7 +26,7 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const data = await createCheckPreset({
+    const data = await createCheck({
       db,
       project_id,
       place_id: place_id2 ?? place_id,
