@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { ActionReports as ActionReport } from '../../../generated/client'
-import { actionReport as createActionReportPreset } from '../modules/dataPresets'
+import { actionReport as createActionReport } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
@@ -31,7 +31,7 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const data = await createActionReportPreset({
+    const data = await createActionReport({
       db,
       project_id,
       action_id,

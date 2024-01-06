@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { ActionReportValues as ActionReportValue } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { actionReportValue as createActionReportValuePreset } from '../modules/dataPresets'
+import { actionReportValue as createActionReportValue } from '../modules/dataPresets'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
@@ -29,10 +29,10 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const newActionReportValue = createActionReportValuePreset()
+    const actionReportValue = createActionReportValue()
     await db.action_report_values.create({
       data: {
-        ...newActionReportValue,
+        ...actionReportValue,
         action_report_id,
       },
     })
@@ -40,7 +40,7 @@ export const Component = () => {
       `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
         place_id2 ? `/places/${place_id2}` : ''
       }/actions/${action_id}/reports/${action_report_id}/values/${
-        newActionReportValue.action_report_value_id
+        actionReportValue.action_report_value_id
       }`,
     )
   }, [
