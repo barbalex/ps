@@ -208,10 +208,25 @@ export const placeLevel = () => ({
   deleted: false,
 })
 
-export const observation = () => ({
-  observation_id: uuidv7(),
-  deleted: false,
-})
+export const observation = async ({
+  db,
+  project_id,
+  observation_source_id,
+}) => {
+  // find fields with preset values on the data column
+  const presetData = await fetchPresetData({
+    db,
+    project_id,
+    table: 'observations',
+  })
+
+  return {
+    observation_id: uuidv7(),
+    observation_source_id,
+    deleted: false,
+    ...presetData,
+  }
+}
 
 export const taxon = () => ({
   taxon_id: uuidv7(),

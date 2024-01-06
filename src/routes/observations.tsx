@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { ObservationSources as Observation } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { observation as createObservationPreset } from '../modules/dataPresets'
+import { observation as createNewObservation } from '../modules/dataPresets'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
@@ -22,17 +22,16 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const newObservation = createObservationPreset()
-    await db.observations.create({
-      data: {
-        ...newObservation,
-        observation_source_id,
-      },
+    const data = await createNewObservation({
+      db,
+      project_id,
+      observation_source_id,
     })
+    await db.observations.create({ data })
     navigate(
-      `/projects/${project_id}/observation-sources/${observation_source_id}/observations/${newObservation.observation_id}`,
+      `/projects/${project_id}/observation-sources/${observation_source_id}/observations/${data.observation_id}`,
     )
-  }, [db.observations, navigate, observation_source_id, project_id])
+  }, [db, navigate, observation_source_id, project_id])
 
   const observations: Observation[] = results ?? []
 

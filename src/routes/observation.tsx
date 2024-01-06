@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { Observations as Observation } from '../../../generated/client'
-import { observation as createObservationPreset } from '../modules/dataPresets'
+import { observation as createNewObservation } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
@@ -14,7 +14,7 @@ import { FormMenu } from '../components/FormMenu'
 import '../form.css'
 
 export const Component = () => {
-  const { observation_id, observation_source_id } = useParams()
+  const { project_id, observation_id, observation_source_id } = useParams()
   const navigate = useNavigate()
 
   const { db } = useElectric()
@@ -24,14 +24,16 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const newObservation = createObservationPreset()
-    await db.observations.create({
-      data: { ...newObservation, observation_source_id },
+    const data = await createNewObservation({
+      db,
+      project_id,
+      observation_source_id,
     })
+    await db.observations.create({ data })
     navigate(
-      `/projects/${project_id}/observation-sources/${observation_source_id}/observations/${newObservation.observation_id}`,
+      `/projects/${project_id}/observation-sources/${observation_source_id}/observations/${data.observation_id}`,
     )
-  }, [db.observations, navigate, observation_source_id])
+  }, [db, navigate, observation_source_id, project_id])
 
   const deleteRow = useCallback(async () => {
     await db.observations.delete({
