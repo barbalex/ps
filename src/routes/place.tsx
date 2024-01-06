@@ -25,14 +25,12 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const newPlace = createPlacePreset()
-    await db.places.create({
-      data: { ...newPlace, subproject_id },
-    })
+    const data = await createPlacePreset({ db, project_id, subproject_id })
+    await db.places.create({ data })
     navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${newPlace.place_id}`,
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${data.place_id}`,
     )
-  }, [db.places, navigate, project_id, subproject_id])
+  }, [db, navigate, project_id, subproject_id])
 
   const deleteRow = useCallback(async () => {
     await db.places.delete({

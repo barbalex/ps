@@ -20,21 +20,18 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const newPlace = createPlacePreset()
-    const data = { ...newPlace, subproject_id }
+    const data = await createPlacePreset({ db, project_id, subproject_id })
     if (place_id) {
       data.parent_id = place_id
       data.level = 2
     }
-    await db.places.create({
-      data,
-    })
+    await db.places.create({ data })
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/places/${
         place_id ? `${place_id}/places/` : ''
-      }${newPlace.place_id}`,
+      }${data.place_id}`,
     )
-  }, [db.places, navigate, place_id, project_id, subproject_id])
+  }, [db, navigate, place_id, project_id, subproject_id])
 
   const places: Place[] = results ?? []
 

@@ -61,11 +61,22 @@ export const file = () => ({
   deleted: false,
 })
 
-export const place = () => ({
-  place_id: uuidv7(),
-  level: 1,
-  deleted: false,
-})
+export const place = async ({ db, project_id, subproject_id }) => {
+  // find fields with preset values on the data column
+  const presetData = await fetchPresetData({
+    db,
+    project_id,
+    table: 'places',
+  })
+
+  return {
+    place_id: uuidv7(),
+    subproject_id,
+    level: 1,
+    deleted: false,
+    ...presetData,
+  }
+}
 
 export const widgetForField = () => ({
   widget_for_field_id: uuidv7(),
