@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { WidgetTypes as WidgetType } from '../../../generated/client'
-import { widgetType as createWidgetTypePreset } from '../modules/dataPresets'
+import { widgetType as createWidgetType } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
@@ -24,11 +24,9 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const newWidgetType = createWidgetTypePreset()
-    await db.widget_types.create({
-      data: newWidgetType,
-    })
-    navigate(`/widget-types/${newWidgetType.widget_type_id}`)
+    const data = createWidgetType()
+    await db.widget_types.create({ data })
+    navigate(`/widget-types/${data.widget_type_id}`)
   }, [db.widget_types, navigate])
 
   const deleteRow = useCallback(async () => {
