@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { ListValues as ListValue } from '../../../generated/client'
-import { listValue as createListValuePreset } from '../modules/dataPresets'
+import { listValue as createNewListValue } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
@@ -24,7 +24,7 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const newListValue = createListValuePreset()
+    const newListValue = createNewListValue()
     await db.list_values.create({
       data: { ...newListValue, list_id },
     })

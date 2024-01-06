@@ -4,7 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 
 import { ListValues as ListValue } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { listValue as createListValuePreset } from '../modules/dataPresets'
+import { listValue as createNewListValue } from '../modules/dataPresets'
 import { ListViewMenu } from '../components/ListViewMenu'
 import '../form.css'
 
@@ -19,7 +19,7 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const newListValue = createListValuePreset()
+    const newListValue = createNewListValue()
     await db.list_values.create({
       data: {
         ...newListValue,

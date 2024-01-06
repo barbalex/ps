@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 
 import { Messages as Message } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
-import { message as createMessagePreset } from '../modules/dataPresets'
+import { message as createNewMessage } from '../modules/dataPresets'
 import { ListViewMenu } from '../components/ListViewMenu'
 
 import '../form.css'
@@ -16,11 +16,9 @@ export const Component = () => {
   const { results } = useLiveQuery(db.messages.liveMany())
 
   const add = useCallback(async () => {
-    const newMessage = createMessagePreset()
-    await db.messages.create({
-      data: newMessage,
-    })
-    navigate(`/messages/${newMessage.message_id}`)
+    const data = createNewMessage()
+    await db.messages.create({ data })
+    navigate(`/messages/${data.message_id}`)
   }, [db.messages, navigate])
 
   const messages: Message[] = results ?? []
