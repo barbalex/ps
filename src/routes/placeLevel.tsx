@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { PlaceLevels as PlaceLevel } from '../../../generated/client'
-import { placeLevel as createPlaceLevelPreset } from '../modules/dataPresets'
+import { placeLevel as createNewPlaceLevel } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
@@ -25,7 +25,7 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const newPlaceLevel = createPlaceLevelPreset()
+    const newPlaceLevel = createNewPlaceLevel()
     await db.place_levels.create({
       data: { ...newPlaceLevel, project_id },
     })
