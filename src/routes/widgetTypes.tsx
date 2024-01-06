@@ -23,7 +23,7 @@ export const Component = () => {
 
   const rows: WidgetType[] = results ?? []
 
-  console.log('WidgetTypes', rows)
+  // console.log('WidgetTypes', rows)
 
   return (
     <div className="form-container">
