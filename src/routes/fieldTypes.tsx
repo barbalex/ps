@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { FieldTypes as FieldType } from '../../../generated/client'
-import { fieldType as fieldTypePreset } from '../modules/dataPresets'
+import { fieldType as createFieldType } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { ListViewMenu } from '../components/ListViewMenu'
 
@@ -21,11 +21,9 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const newFieldType = fieldTypePreset()
-    await db.field_types.create({
-      data: newFieldType,
-    })
-    navigate(`/field-types/${newFieldType.field_type_id}`)
+    const data = createFieldType()
+    await db.field_types.create({ data })
+    navigate(`/field-types/${data.field_type_id}`)
   }, [db.field_types, navigate])
 
   const fieldTypes: FieldType[] = results ?? []

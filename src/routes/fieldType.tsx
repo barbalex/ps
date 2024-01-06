@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { FieldTypes as FieldType } from '../../../generated/client'
-import { fieldType as fieldTypePreset } from '../modules/dataPresets'
+import { fieldType as createFieldType } from '../modules/dataPresets'
 import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
@@ -23,11 +23,9 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const newFieldType = fieldTypePreset()
-    await db.field_types.create({
-      data: newFieldType,
-    })
-    navigate(`/field-types/${newFieldType.field_type_id}`)
+    const data = createFieldType()
+    await db.field_types.create({ data })
+    navigate(`/field-types/${data.field_type_id}`)
   }, [db.field_types, navigate])
 
   const deleteRow = useCallback(async () => {
@@ -69,7 +67,7 @@ export const Component = () => {
         name="name"
         value={row.name ?? ''}
         onChange={onChange}
-        autoFocus 
+        autoFocus
       />
       <TextField
         label="Sort value"
