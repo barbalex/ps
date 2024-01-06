@@ -106,7 +106,7 @@ export const user = () => ({
   deleted: false,
 })
 
-export const person = async ({ db, project_id }) => {
+export const createPerson = async ({ db, project_id }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     db,
