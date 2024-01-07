@@ -48,7 +48,7 @@ import { generatePartialIndexes } from './partialIndexes'
 // 4. load app twice for LabelGenerator to generate generated label
 // 5. replace 'label_replace_by_generated_column' with 'label' in generated code
 
-export const InitializingSql = () => {
+export const SqlInitializer = () => {
   const { db } = useElectric()
 
   useEffect(() => {

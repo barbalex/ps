@@ -11,7 +11,7 @@ import {
 } from './ElectricProvider'
 import { lightTheme } from './modules/theme'
 import { router } from './router'
-import { InitializingSql } from './components/InitializingSql'
+import { SqlInitializer } from './components/SqlInitializer'
 
 import '@fontsource/roboto/300.css'
 import '@fontsource/roboto/400.css'
@@ -33,7 +33,7 @@ export default function App() {
 
   return (
     <ElectricProvider>
-      <InitializingSql />
+      <SqlInitializer />
       <ConfigProvider locale={deDe} theme={{ cssVar: true }}>
         <FluentProvider theme={lightTheme}>
           <RouterProviderWithDb />
