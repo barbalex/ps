@@ -9,7 +9,7 @@ import '../../form.css'
 export const WidgetType = memo(({ onChange, value }) => {
   const { db } = useElectric()
 
-  const { results: widgetsForFieldResults = [] } = useLiveQuery(
+  const { results = [] } = useLiveQuery(
     db.widgets_for_fields.liveMany({
       where: { field_type_id: value },
     }),
@@ -17,10 +17,10 @@ export const WidgetType = memo(({ onChange, value }) => {
   const widgetWhere = useMemo(
     () => ({
       widget_type_id: {
-        in: widgetsForFieldResults?.map(({ widget_type_id }) => widget_type_id),
+        in: results?.map(({ widget_type_id }) => widget_type_id),
       },
     }),
-    [widgetsForFieldResults],
+    [results],
   )
 
   return (
