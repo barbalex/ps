@@ -125,9 +125,11 @@ export const Component = () => {
         value={row.field_type_id ?? ''}
         onChange={onChange}
       />
-      {row?.field_type_id && (
-        <WidgetType onChange={onChange} value={row.field_type_id} />
-      )}
+      <WidgetType
+        onChange={onChange}
+        field_type_id={row.field_type_id}
+        value={row.widget_type_id}
+      />
       {widgetNeedsList && (
         <DropdownField
           label="List"
