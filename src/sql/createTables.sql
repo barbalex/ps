@@ -1577,6 +1577,8 @@ WHERE
 
 COMMENT ON TABLE fields IS 'Fields are used to define the data structure of data jsonb fields in other tables.';
 
+COMMENT ON COLUMN projects.project_id IS 'project this field is used in. If empty: field is used in all projects of an account';
+
 COMMENT ON COLUMN fields.account_id IS 'redundant account_id enhances data safety';
 
 COMMENT ON COLUMN fields.table_name IS 'table, on which this field is used inside the jsob field "data"';
