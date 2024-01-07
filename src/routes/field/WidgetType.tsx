@@ -1,13 +1,12 @@
-import { useMemo } from 'react'
+import { useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 
 import { useElectric } from '../../ElectricProvider'
 import { DropdownField } from '../../components/shared/DropdownField'
 
-
 import '../../form.css'
 
-export const WidgetType = ({ onChange, value }) => {
+export const WidgetType = memo(({ onChange, value }) => {
   const { db } = useElectric()
 
   const { results: widgetsForFieldResults = [] } = useLiveQuery(
@@ -34,4 +33,4 @@ export const WidgetType = ({ onChange, value }) => {
       onChange={onChange}
     />
   )
-}
+})
