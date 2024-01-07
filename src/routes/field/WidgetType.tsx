@@ -6,12 +6,12 @@ import { DropdownField } from '../../components/shared/DropdownField'
 
 import '../../form.css'
 
-export const WidgetType = memo(({ onChange, value }) => {
+export const WidgetType = memo(({ onChange, field_type_id = '', value }) => {
   const { db } = useElectric()
 
   const { results = [] } = useLiveQuery(
     db.widgets_for_fields.liveMany({
-      where: { field_type_id: value },
+      where: { field_type_id },
     }),
   )
   const widgetWhere = useMemo(
@@ -31,6 +31,8 @@ export const WidgetType = memo(({ onChange, value }) => {
       value={value ?? ''}
       where={widgetWhere}
       onChange={onChange}
+      validationMessageIn={field_type_id ? undefined : 'Field type required'}
+      validationStateIn={field_type_id ? undefined : 'none'}
     />
   )
 })
