@@ -52,6 +52,8 @@ export const Component = () => {
     return <div>Loading...</div>
   }
 
+  // console.log('subproject, row.data:', row?.data)
+
   return (
     <div className="form-container">
       <FormMenu
