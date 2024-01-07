@@ -16,13 +16,6 @@ export const DropdownFieldSimpleOptions = memo(
       [options, value],
     )
 
-    console.log('DropdownFieldSimpleOptions', {
-      name,
-      options,
-      value,
-      selectedOptions,
-    })
-
     return (
       <Field
         label={label ?? '(no label provided)'}
