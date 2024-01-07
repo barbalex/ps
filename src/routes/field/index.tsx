@@ -3,17 +3,18 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { Fields as Field } from '../../../generated/client'
-import { useElectric } from '../ElectricProvider'
-import { createField } from '../modules/createRows'
-import { TextField } from '../components/shared/TextField'
-import { TextFieldInactive } from '../components/shared/TextFieldInactive'
-import { DropdownFieldSimpleOptions } from '../components/shared/DropdownFieldSimpleOptions'
-import { DropdownField } from '../components/shared/DropdownField'
-import { SwitchField } from '../components/shared/SwitchField'
-import { getValueFromChange } from '../modules/getValueFromChange'
-import { FormMenu } from '../components/FormMenu'
+import { useElectric } from '../../ElectricProvider'
+import { createField } from '../../modules/createRows'
+import { TextField } from '../../components/shared/TextField'
+import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
+import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions'
+import { DropdownField } from '../../components/shared/DropdownField'
+import { SwitchField } from '../../components/shared/SwitchField'
+import { getValueFromChange } from '../../modules/getValueFromChange'
+import { FormMenu } from '../../components/FormMenu'
+import { WidgetType } from './WidgetType'
 
-import '../form.css'
+import '../../form.css'
 
 const tables = [
   'action_reports',
@@ -71,20 +72,6 @@ export const Component = () => {
   const fieldTypeWhere = useMemo(() => ({ deleted: false }), [])
   const fieldTypeOrderBy = useMemo(() => [{ sort: 'asc' }, { name: 'asc' }], [])
 
-  const { results: widgetsForFieldResults = [] } = useLiveQuery(
-    db.widgets_for_fields.liveMany({
-      where: { field_type_id: row?.field_type_id },
-    }),
-  )
-  const widgetWhere = useMemo(
-    () => ({
-      widget_type_id: {
-        in: widgetsForFieldResults?.map(({ widget_type_id }) => widget_type_id),
-      },
-    }),
-    [widgetsForFieldResults],
-  )
-
   const onChange = useCallback(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
@@ -104,6 +91,8 @@ export const Component = () => {
   if (!row) {
     return <div>Loading...</div>
   }
+
+  console.log('field', { row, tables })
 
   return (
     <div className="form-container">
@@ -138,14 +127,9 @@ export const Component = () => {
         value={row.field_type_id ?? ''}
         onChange={onChange}
       />
-      <DropdownField
-        label="Widget"
-        name="widget_type_id"
-        table="widget_types"
-        value={row.widget_type_id ?? ''}
-        where={widgetWhere}
-        onChange={onChange}
-      />
+      {row?.field_type_id && (
+        <WidgetType onChange={onChange} value={row.field_type_id} />
+      )}
       {widgetNeedsList && (
         <DropdownField
           label="List"
