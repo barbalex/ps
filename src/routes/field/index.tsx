@@ -92,8 +92,6 @@ export const Component = () => {
     return <div>Loading...</div>
   }
 
-  console.log('field', { row, tables })
-
   return (
     <div className="form-container">
       <FormMenu addRow={addRow} deleteRow={deleteRow} tableName="field" />
