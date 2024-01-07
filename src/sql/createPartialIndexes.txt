@@ -1,3 +1,4 @@
+-- This is a .txt file because esbuild does not know how to import .sql files
 CREATE INDEX if not exists users_deleted_idx ON users(deleted) WHERE deleted;
 CREATE INDEX if not exists projects_deleted_idx ON projects(deleted) WHERE deleted;
 CREATE INDEX if not exists place_levels_deleted_idx ON place_levels(deleted) WHERE deleted;
