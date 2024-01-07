@@ -36,7 +36,8 @@ export default function App() {
       <SqlInitializer />
       <ConfigProvider locale={deDe} theme={{ cssVar: true }}>
         <FluentProvider theme={lightTheme}>
-          <RouterProviderWithDb />
+          <div className="full-height-container">
+          <RouterProviderWithDb /></div>
         </FluentProvider>
       </ConfigProvider>
     </ElectricProvider>
