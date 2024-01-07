@@ -12,17 +12,6 @@ body {
   height: 100vh;
 }
 
-.fui-FluentProvider {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-}
-
-/* the calendar modal backdrop is set to whitish, COVERING the entire form... */
-.fui-FluentProviderr1 {
-  background-color: transparent !important;
-}
-
 .header {
   background-color: rgba(103, 216, 101, 0.222);
   padding: 0 10px;
