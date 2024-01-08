@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
@@ -42,14 +42,50 @@ export const Component = () => {
   const row: File = results
 
   const onChange = useCallback(
-    (e, data) => {
-      const { name, value } = getValueFromChange(e, data)
+    (e, dataIn) => {
+      const { name, value } = getValueFromChange(e, dataIn)
+      const data = { [name]: value }
+      // if higher level is changed, lower levels need to be removed
+      if (name === 'project_id') {
+        data.subproject_id = null
+        data.place_id = null
+        data.action_id = null
+        data.check_id = null
+      }
+      if (name === 'subproject_id') {
+        data.place_id = null
+        data.action_id = null
+        data.check_id = null
+      }
+      if (name === 'place_id') {
+        data.action_id = null
+        data.check_id = null
+      }
       db.files.update({
         where: { file_id },
-        data: { [name]: value },
+        data,
       })
     },
     [db.files, file_id],
+  )
+
+  const subprojectWhere = useMemo(
+    () => ({
+      project_id: row?.project_id,
+    }),
+    [row?.project_id],
+  )
+  const placeWhere = useMemo(
+    () => ({
+      subproject_id: row?.subproject_id,
+    }),
+    [row?.subproject_id],
+  )
+  const actionWhere = useMemo(
+    () => ({
+      place_id: row?.place_id,
+    }),
+    [row?.place_id],
   )
 
   if (!row) {
@@ -71,34 +107,46 @@ export const Component = () => {
         value={row.project_id ?? ''}
         onChange={onChange}
       />
-      <DropdownField
-        label="Subproject"
-        name="subproject_id"
-        table="subprojects"
-        value={row.subproject_id ?? ''}
-        onChange={onChange}
-      />
-      <DropdownField
-        label="Place"
-        name="place_id"
-        table="places"
-        value={row.place_id ?? ''}
-        onChange={onChange}
-      />
-      <DropdownField
-        label="Action"
-        name="action_id"
-        table="actions"
-        value={row.action_id ?? ''}
-        onChange={onChange}
-      />
-      <DropdownField
-        label="Check"
-        name="check_id"
-        table="checks"
-        value={row.check_id ?? ''}
-        onChange={onChange}
-      />
+      {!!row?.project_id && (
+        <DropdownField
+          label="Subproject"
+          name="subproject_id"
+          table="subprojects"
+          where={subprojectWhere}
+          value={row.subproject_id ?? ''}
+          onChange={onChange}
+        />
+      )}
+      {!!row?.subproject_id && (
+        <DropdownField
+          label="Place"
+          name="place_id"
+          table="places"
+          where={placeWhere}
+          value={row.place_id ?? ''}
+          onChange={onChange}
+        />
+      )}
+      {!!row?.place_id && (
+        <DropdownField
+          label="Action"
+          name="action_id"
+          table="actions"
+          where={actionWhere}
+          value={row.action_id ?? ''}
+          onChange={onChange}
+        />
+      )}
+      {!!row.place_id && (
+        <DropdownField
+          label="Check"
+          name="check_id"
+          table="checks"
+          where={actionWhere}
+          value={row.check_id ?? ''}
+          onChange={onChange}
+        />
+      )}
       <TextField
         label="Name"
         name="name"
