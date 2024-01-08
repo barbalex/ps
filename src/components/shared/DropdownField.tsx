@@ -34,16 +34,24 @@ export const DropdownField = memo(
       [options, value],
     )
 
-    const validationState = validationStateIn
-      ? validationStateIn
-      : !results?.length && !!value
-      ? 'warning'
-      : 'none'
-    const validationMessage = validationMessageIn
-      ? validationMessageIn
-      : !results?.length && !!value
-      ? `No ${table} found. Please add one first.`
-      : undefined
+    const validationState = useMemo(
+      () =>
+        validationStateIn
+          ? validationStateIn
+          : !options?.length //&& !!value
+          ? 'warning'
+          : 'none',
+      [options?.length, validationStateIn],
+    )
+    const validationMessage = useMemo(
+      () =>
+        validationMessageIn
+          ? validationMessageIn
+          : !options?.length //&& !!value
+          ? `No ${table} found. Please add one first.`
+          : undefined,
+      [options?.length, table, validationMessageIn],
+    )
 
     // console.log('DropdownField', {
     //   name,
