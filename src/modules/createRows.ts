@@ -1,6 +1,6 @@
 import { uuidv7 } from '@kripod/uuidv7'
 
-const getPresetData = async ({ db, project_id, table }) => {
+const getPresetData = async ({ db, project_id = null, table }) => {
   const fieldsWithPresets = await db.fields.findMany({
     where: {
       project_id,
@@ -19,24 +19,30 @@ const getPresetData = async ({ db, project_id, table }) => {
 }
 
 // TODO: add account_id
-export const createProject = () => ({
-  project_id: uuidv7(),
-  type: 'species',
-  subproject_name_singular: 'Art',
-  subproject_name_plural: 'Arten',
-  values_on_multiple_levels: 'first',
-  multiple_action_values_on_same_level: 'all',
-  multiple_check_values_on_same_level: 'last',
-  files_active_projects: true,
-  files_active_projects_reports: true,
-  files_active_subprojects: true,
-  files_active_subproject_reports: true,
-  files_active_places: true,
-  files_active_actions: true,
-  files_active_checks: true,
-  files_active_check_reports: true,
-  deleted: false,
-})
+export const createProject = async ({ db }) => {
+  // find fields with preset values on the data column
+  const presetData = await getPresetData({ db, table: 'projects' })
+
+  return {
+    project_id: uuidv7(),
+    type: 'species',
+    subproject_name_singular: 'Art',
+    subproject_name_plural: 'Arten',
+    values_on_multiple_levels: 'first',
+    multiple_action_values_on_same_level: 'all',
+    multiple_check_values_on_same_level: 'last',
+    files_active_projects: true,
+    files_active_projects_reports: true,
+    files_active_subprojects: true,
+    files_active_subproject_reports: true,
+    files_active_places: true,
+    files_active_actions: true,
+    files_active_checks: true,
+    files_active_check_reports: true,
+    deleted: false,
+    ...presetData,
+  }
+}
 
 export const createSubproject = async ({ db, project_id }) => {
   // find fields with preset values on the data column
@@ -136,8 +142,9 @@ export const createObservationSource = async ({ db, project_id }) => {
   }
 }
 
-export const createField = () => ({
+export const createField = ({ project_id }) => ({
   field_id: uuidv7(),
+  project_id: project_id ? project_id : null,
   deleted: false,
 })
 

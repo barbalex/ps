@@ -852,6 +852,34 @@ export const router = (db) => {
               ],
             },
             {
+              path: 'fields',
+              element: null,
+              handle: {
+                crumb: () => ({
+                  text: 'Fields',
+                  table: 'fields',
+                  folder: true,
+                }),
+              },
+              children: [
+                {
+                  index: true,
+                  lazy: () => import('../routes/fields'),
+                },
+                {
+                  path: ':field_id',
+                  lazy: () => import('../routes/field'),
+                  handle: {
+                    crumb: (match) => ({
+                      text: match.params.field_id,
+                      table: 'fields',
+                      folder: false,
+                    }),
+                  },
+                },
+              ],
+            },
+            {
               path: 'files',
               element: null,
               handle: {

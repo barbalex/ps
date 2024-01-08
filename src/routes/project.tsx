@@ -27,10 +27,10 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const data = createProject()
+    const data = await createProject({ db })
     await db.projects.create({ data })
     navigate(`/projects/${data.project_id}`)
-  }, [db.projects, navigate])
+  }, [db, navigate])
 
   const deleteRow = useCallback(async () => {
     await db.projects.delete({

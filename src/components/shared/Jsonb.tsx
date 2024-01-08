@@ -19,6 +19,7 @@ import { DateField } from './DateField'
 // import { TimeField } from './TimeField'
 import { TimeFields } from './TimeFields'
 import { DateTimeField } from './DateTimeField'
+import { accountTables } from '../../routes/field'
 
 const widget = {
   text: ({ label, name, value, type, onChange, autoFocus }) => (
@@ -117,6 +118,7 @@ export const Jsonb = memo(
     data = {},
     autoFocus = false,
   }) => {
+    const isAccountTable = accountTables.includes(table)
     const { project_id } = useParams()
     const { db } = useElectric()!
 
@@ -128,7 +130,11 @@ export const Jsonb = memo(
     useEffect(() => {
       const fetchData = async () => {
         const fields = await db.fields.findMany({
-          where: { table_name: table, project_id, deleted: false },
+          where: {
+            table_name: table,
+            project_id: isAccountTable ? null : project_id,
+            deleted: false,
+          },
         })
         const fieldTypes = await db.field_types.findMany({
           where: {
@@ -217,34 +223,31 @@ export const Jsonb = memo(
       },
     )
 
-    const fieldsFromDataKeysNotDefined = dataKeysNotDefined.map((dataKey, index) => {
-      return (
-        <TextField
-          key={dataKey}
-          label={dataKey}
-          name={dataKey}
-          value={
-            data?.[dataKey]?.toLocaleDateString?.() ?? data?.[dataKey] ?? ''
-          }
-          onChange={(e, dataReturned) => {
-            // if value was removed, remove the key also
-            onChange(e, dataReturned, true)
-          }}
-          validationState="warning"
-          validationMessage="This field is not defined for this project."
-          autoFocus={
-            autoFocus && index === 0 && fetchedData.fields.length === 0
-          }
-        />
-      )
-    })
-
-    // console.log('Jsonb', {
-    //   widgetsFromDataFieldsDefined,
-    //   fieldsFromDataKeysNotDefined,
-    //   fieldsFromDataKeysNotDefined,
-    //   fieldNamesDefined,
-    // })
+    const fieldsFromDataKeysNotDefined = dataKeysNotDefined.map(
+      (dataKey, index) => {
+        return (
+          <TextField
+            key={dataKey}
+            label={dataKey}
+            name={dataKey}
+            value={
+              data?.[dataKey]?.toLocaleDateString?.() ?? data?.[dataKey] ?? ''
+            }
+            onChange={(e, dataReturned) => {
+              // if value was removed, remove the key also
+              onChange(e, dataReturned, true)
+            }}
+            validationState="warning"
+            validationMessage={`This field is not defined for this ${
+              isAccountTable ? 'account' : 'project'
+            }.`}
+            autoFocus={
+              autoFocus && index === 0 && fetchedData.fields.length === 0
+            }
+          />
+        )
+      },
+    )
 
     return [widgetsFromDataFieldsDefined, fieldsFromDataKeysNotDefined]
   },

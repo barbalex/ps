@@ -35,6 +35,7 @@ export const buildNavs = async ({
         { path: '/field-types', text: 'Field Types' },
         { path: '/widget-types', text: 'Widget Types' },
         { path: '/widgets-for-fields', text: 'Widgets For Fields' },
+        { path: '/fields', text: 'Fields' },
         { path: '/files', text: 'Files' },
         { path: '/messages', text: 'Messages' },
         { path: '/docs', text: 'Docs' },

@@ -16,11 +16,11 @@ import { WidgetType } from './WidgetType'
 
 import '../../form.css'
 
-const tables = [
+export const accountTables = ['projects', 'files']
+const projectTables = [
   'action_reports',
   'actions',
   'checks',
-  'files',
   'goal_reports',
   'goals',
   'lists',
@@ -30,7 +30,6 @@ const tables = [
   'place_reports',
   'places',
   'project_reports',
-  'projects',
   'subproject_reports',
   'subprojects',
   'taxonomies',
@@ -51,11 +50,13 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const field = createField()
-    await db.fields.create({
-      data: { ...field, project_id },
-    })
-    navigate(`/projects/${project_id}/fields/${field.field_id}`)
+    const data = createField({ project_id })
+    await db.fields.create({ data })
+    navigate(
+      project_id
+        ? `/projects/${project_id}/fields/${data.field_id}`
+        : `/fields/${data.field_id}`,
+    )
   }, [db.fields, navigate, project_id])
 
   const deleteRow = useCallback(async () => {
@@ -64,7 +65,7 @@ export const Component = () => {
         field_id,
       },
     })
-    navigate(`/projects/${project_id}/fields`)
+    navigate(project_id ? `/projects/${project_id}/fields` : '/fields')
   }, [db.fields, field_id, navigate, project_id])
 
   const row: Field = results
@@ -101,7 +102,7 @@ export const Component = () => {
         name="table_name"
         value={row.table_name ?? ''}
         onChange={onChange}
-        options={tables}
+        options={project_id ? projectTables : accountTables}
         autoFocus
       />
       <TextField
