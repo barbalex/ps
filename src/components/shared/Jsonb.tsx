@@ -157,7 +157,7 @@ export const Jsonb = memo(
     }, [db])
 
     const onChange = useCallback(
-      (e, dataReturned, fieldNotDefined) => {
+      (e, dataReturned) => {
         const { name, value } = getValueFromChange(e, dataReturned)
         const isDate = value instanceof Date
         const val = { ...data }
@@ -168,15 +168,6 @@ export const Jsonb = memo(
           // in json need to save date as iso string
           val[name] = isDate ? value.toISOString() : value
         }
-        console.log('Jsonb, onChange', {
-          name,
-          value,
-          val,
-          jsonFieldName,
-          isDate,
-          dateIsoString: isDate ? value.toISOString() : undefined,
-          fieldNotDefined,
-        })
         db[table].update({
           where: { [idField]: id },
           data: { [jsonFieldName]: val },
