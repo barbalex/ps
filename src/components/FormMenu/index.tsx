@@ -19,14 +19,14 @@ export const FormMenu = memo(
             size="medium"
             icon={<FaChevronLeft />}
             onClick={toPrevious}
-            title="Previous"
+            title={`Previous ${tableName}`}
           />
         )}
         <Button
           size="medium"
           icon={<FaPlus />}
           onClick={addRow}
-          title={`Add new ${tableName}`}
+          title={`New ${tableName}`}
         />
         <Button
           size="medium"
@@ -39,7 +39,7 @@ export const FormMenu = memo(
             size="medium"
             icon={<FaChevronRight />}
             onClick={toNext}
-            title="Next"
+            title={`Next ${tableName}`}
           />
         )}
       </div>
