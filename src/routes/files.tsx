@@ -17,10 +17,10 @@ export const Component = () => {
   const { results } = useLiveQuery(db.files.liveMany())
 
   const add = useCallback(async () => {
-    const data = createFile()
+    const data = await createFile({ db })
     await db.files.create({ data })
     navigate(`/files/${data.file_id}`)
-  }, [db.files, navigate])
+  }, [db, navigate])
 
   const files: File[] = results ?? []
 

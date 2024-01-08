@@ -25,10 +25,10 @@ export const Component = () => {
   )
 
   const addRow = useCallback(async () => {
-    const data = createFile()
+    const data = await createFile({ db })
     await db.files.create({ data })
     navigate(`/files/${data.file_id}`)
-  }, [db.files, navigate])
+  }, [db, navigate])
 
   const deleteRow = useCallback(async () => {
     await db.files.delete({
