@@ -1,5 +1,5 @@
 import { memo, useMemo, useCallback } from 'react'
-import { Field } from '@fluentui/react-components'
+import { Field, TagGroup, Tag } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 
@@ -32,6 +32,17 @@ export const FieldList = memo(
       [options, valueArray],
     )
 
+    const removeItem = useCallback(
+      (e, { value }) => {
+        const idField = idFieldFromTable(table)
+        db[table].update({
+          where: { [idField]: id },
+          data: { [name]: valueArray.filter((v) => v !== value) },
+        })
+      },
+      [db, id, name, table, valueArray],
+    )
+
     const onChange = useCallback(
       ({ value, previousValue }) => {
         let val = [...valueArray]
@@ -48,15 +59,6 @@ export const FieldList = memo(
           }
         }
         const idField = idFieldFromTable(table)
-        console.log('FieldList onChange', {
-          table,
-          idField,
-          id,
-          name,
-          val,
-          value,
-          previousValue,
-        })
         db[table].update({
           where: { [idField]: id },
           data: { [name]: val },
@@ -66,27 +68,35 @@ export const FieldList = memo(
     )
 
     return (
-      <div className="field-list">
-        <Field label={label ?? '(no label provided)'}>
-          {valueArray.map((value) => (
-            <DropdownField
-              key={value}
-              value={value ?? ''}
-              onChange={onChange}
-              options={[...unusedOptions, value]}
-            />
-          ))}
-          {unusedOptions.length > 0 && (
-            <Field label="Add new option">
+        <Field
+          label={label ?? '(no label provided)'}
+          validationState="none"
+          validationMessage="Add multiple items in the order you want places to be ordered."
+        >
+          <TagGroup onDismiss={removeItem}>
+            {valueArray.map((value) => (
+              <Tag
+                key={value}
+                dismissible
+                dismissIcon={{ 'aria-label': 'remove' }}
+                value={value}
+                secondaryText={
+                  !options.includes(value) ? 'not defined in fields' : undefined
+                }
+              >
+                {value}
+              </Tag>
+            ))}
+            {unusedOptions.length > 0 && (
               <DropdownField
+                placeholder="Select an option"
                 value={''}
                 onChange={onChange}
                 options={unusedOptions}
               />
-            </Field>
-          )}
+            )}
+          </TagGroup>
         </Field>
-      </div>
     )
   },
 )
