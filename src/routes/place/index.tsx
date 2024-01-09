@@ -3,16 +3,16 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { Places as Place } from '../../../generated/client'
-import { createPlace } from '../modules/createRows'
-import { useElectric } from '../ElectricProvider'
-import { TextField } from '../components/shared/TextField'
-import { TextFieldInactive } from '../components/shared/TextFieldInactive'
-import { Jsonb } from '../components/shared/Jsonb'
-import { DropdownField } from '../components/shared/DropdownField'
-import { getValueFromChange } from '../modules/getValueFromChange'
-import { FormMenu } from '../components/FormMenu'
+import { createPlace } from '../../modules/createRows'
+import { useElectric } from '../../ElectricProvider'
+import { TextField } from '../../components/shared/TextField'
+import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
+import { Jsonb } from '../../components/shared/Jsonb'
+import { DropdownField } from '../../components/shared/DropdownField'
+import { getValueFromChange } from '../../modules/getValueFromChange'
+import { FormMenu } from '../../components/FormMenu'
 
-import '../form.css'
+import '../../form.css'
 
 export const Component = () => {
   const navigate = useNavigate()
