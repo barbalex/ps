@@ -46,7 +46,7 @@ export const Component = () => {
   const toNext = useCallback(async () => {
     const projects = await db.projects.findMany({
       where: { deleted: false },
-      orderBy: [{ name: 'asc' }, { project_id: 'asc' }],
+      orderBy: { label: 'asc' },
     })
     const len = projects.length
     const index = projects.findIndex((p) => p.project_id === project_id)
@@ -57,7 +57,7 @@ export const Component = () => {
   const toPrevious = useCallback(async () => {
     const projects = await db.projects.findMany({
       where: { deleted: false },
-      orderBy: [{ name: 'asc' }, { project_id: 'asc' }],
+      orderBy: { label: 'asc' },
     })
     const len = projects.length
     const index = projects.findIndex((p) => p.project_id === project_id)
