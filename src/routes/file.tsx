@@ -42,7 +42,7 @@ export const Component = () => {
   const toNext = useCallback(async () => {
     const files = await db.files.findMany({
       where: { deleted: false },
-      orderBy: [{ name: 'asc' }, { file_id: 'asc' }],
+      orderBy: { label: 'asc' },
     })
     const len = files.length
     const index = files.findIndex((p) => p.file_id === file_id)
@@ -53,7 +53,7 @@ export const Component = () => {
   const toPrevious = useCallback(async () => {
     const files = await db.files.findMany({
       where: { deleted: false },
-      orderBy: [{ name: 'asc' }, { file_id: 'asc' }],
+      orderBy: { label: 'asc' },
     })
     const len = files.length
     const index = files.findIndex((p) => p.file_id === file_id)
