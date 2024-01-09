@@ -13,15 +13,13 @@ export const FieldList = memo(
 
     const { db } = useElectric()
     const { results: fields = [] } = useLiveQuery(
-      () =>
-        db.fields.liveMany({
-          where: {
-            table_name: fieldsTable,
-            project_id,
-            deleted: false,
-          },
-        }),
-      [project_id, fieldsTable],
+      db.fields.liveMany({
+        where: {
+          table_name: fieldsTable,
+          project_id,
+          deleted: false,
+        },
+      }),
     )
     const options = useMemo(() => fields.map(({ name }) => name), [fields])
     const unusedOptions = useMemo(
