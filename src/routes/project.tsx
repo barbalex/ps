@@ -82,7 +82,7 @@ export const Component = () => {
     return <div>Loading...</div>
   }
 
-  console.log('project, row:', row)
+  // console.log('project, row:', row)
 
   return (
     <div className="form-container">
