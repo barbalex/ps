@@ -18,7 +18,8 @@ export const Component = () => {
     if (!place_id) where.subproject_id = subproject_id
     return where
   }, [place_id, subproject_id])
-  const { results } = useLiveQuery(db.places.liveMany({ where }))
+  const orderBy = useMemo(() => [{ label: 'asc' }, { place_id: 'asc' }], [])
+  const { results } = useLiveQuery(db.places.liveMany({ where, orderBy }))
 
   const add = useCallback(async () => {
     const data = await createPlace({ db, project_id, subproject_id })
