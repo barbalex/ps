@@ -13,6 +13,7 @@ import { CheckboxField } from '../components/shared/CheckboxField'
 import { Jsonb } from '../components/shared/Jsonb'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormMenu } from '../components/FormMenu'
+import { PlacesLabelBy } from './place/PlacesLabelBy'
 
 import '../form.css'
 
@@ -132,6 +133,9 @@ export const Component = () => {
         value={row.subproject_order_by ?? ''}
         onChange={onChange}
       />
+      <PlacesLabelBy
+        value={row.places_label_by ?? ''}
+        onChange={onChange} />
       <Divider />
       <Label>{`Value(s) to use in reports when:`}</Label>
       <RadioGroupField
