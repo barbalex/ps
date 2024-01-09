@@ -52,6 +52,7 @@ export const Breadcrumb = ({ match }) => {
     if (table === 'places' && placesCountInPath === 2) {
       filterParams.parent_id = match.params.place_id
     } else if (table === 'places') {
+      filterParams[parentIdName] = parentId
       filterParams.parent_id = null
     } else {
       filterParams[parentIdName] = parentId
@@ -101,20 +102,20 @@ export const Breadcrumb = ({ match }) => {
     get()
   }, [db, levelWanted, match, match.params, match.params.project_id, table])
 
-  // console.log('BreadcrumbForData', {
-  //   table,
-  //   // params: match.params,
-  //   // text,
-  //   // label,
-  //   // results,
-  //   pathname: match.pathname,
-  //   myNavs,
-  //   // filterParams,
-  //   // idField,
-  //   // path,
-  //   // parentId,
-  //   // parentIdName,
-  // })
+  console.log('BreadcrumbForData', {
+    table,
+    params: match.params,
+    text,
+    label,
+    results,
+    pathname: match.pathname,
+    myNavs,
+    filterParams,
+    idField,
+    path,
+    parentId,
+    parentIdName
+  })
 
   return (
     <>
