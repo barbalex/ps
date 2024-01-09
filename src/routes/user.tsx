@@ -37,6 +37,28 @@ export const Component = () => {
     navigate(`/users`)
   }, [db.users, navigate, user_id])
 
+  const toNext = useCallback(async () => {
+    const users = await db.users.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = users.length
+    const index = users.findIndex((p) => p.user_id === user_id)
+    const next = users[(index + 1) % len]
+    navigate(`/users/${next.user_id}`)
+  }, [db.users, navigate, user_id])
+
+  const toPrevious = useCallback(async () => {
+    const users = await db.users.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = users.length
+    const index = users.findIndex((p) => p.user_id === user_id)
+    const previous = users[(index + len - 1) % len]
+    navigate(`/users/${previous.user_id}`)
+  }, [db.users, navigate, user_id])
+
   const row: User = results
 
   const onChange = useCallback(
@@ -56,7 +78,13 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <FormMenu addRow={addRow} deleteRow={deleteRow} tableName="user" />
+      <FormMenu
+        addRow={addRow}
+        deleteRow={deleteRow}
+        toNext={toNext}
+        toPrevious={toPrevious}
+        tableName="user"
+      />
       <TextFieldInactive label="ID" name="user_id" value={row.user_id} />
       <TextField
         label="Email"
