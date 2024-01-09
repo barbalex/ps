@@ -71,7 +71,7 @@ export const Component = () => {
   const toNext = useCallback(async () => {
     const fields = await db.fields.findMany({
       where: { deleted: false },
-      orderBy: [{ name: 'asc' }, { field_id: 'asc' }],
+      orderBy: { label: 'asc' },
     })
     const len = fields.length
     const index = fields.findIndex((p) => p.field_id === field_id)
@@ -82,7 +82,7 @@ export const Component = () => {
   const toPrevious = useCallback(async () => {
     const fields = await db.fields.findMany({
       where: { deleted: false },
-      orderBy: [{ name: 'asc' }, { field_id: 'asc' }],
+      orderBy: { label: 'asc' },
     })
     const len = fields.length
     const index = fields.findIndex((p) => p.field_id === field_id)
