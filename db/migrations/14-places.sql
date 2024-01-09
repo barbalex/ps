@@ -6,7 +6,7 @@ CREATE TABLE places(
   level integer DEFAULT NULL, -- 1,
   data jsonb DEFAULT NULL,
   --geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
-  label_replace_by_generated_column text DEFAULT NULL,
+  label text DEFAULT NULL, -- not generated, so no need to rename
   files_active_places boolean DEFAULT NULL, -- TRUE,
   deleted boolean DEFAULT NULL -- FALSE
 );
@@ -19,6 +19,8 @@ CREATE INDEX ON places USING btree(subproject_id);
 CREATE INDEX ON places USING btree(parent_id);
 
 CREATE INDEX ON places USING btree(level);
+
+CREATE INDEX ON places USING btree(label);
 
 -- CREATE INDEX ON places USING gin(data); -- seems not to work with electric-sql
 -- CREATE INDEX ON places USING gist(geometry);
