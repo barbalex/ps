@@ -38,6 +38,32 @@ export const Component = () => {
     navigate(`/widget-types`)
   }, [db.widget_types, navigate, widget_type_id])
 
+  const toNext = useCallback(async () => {
+    const widgetTypes = await db.widget_types.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = widgetTypes.length
+    const index = widgetTypes.findIndex(
+      (p) => p.widget_type_id === widget_type_id,
+    )
+    const next = widgetTypes[(index + 1) % len]
+    navigate(`/widget-types/${next.widget_type_id}`)
+  }, [db.widget_types, navigate, widget_type_id])
+
+  const toPrevious = useCallback(async () => {
+    const widgetTypes = await db.widget_types.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = widgetTypes.length
+    const index = widgetTypes.findIndex(
+      (p) => p.widget_type_id === widget_type_id,
+    )
+    const previous = widgetTypes[(index + len - 1) % len]
+    navigate(`/widget-types/${previous.widget_type_id}`)
+  }, [db.widget_types, navigate, widget_type_id])
+
   const row: WidgetType = results
 
   const onChange = useCallback(
@@ -57,7 +83,13 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <FormMenu addRow={addRow} deleteRow={deleteRow} tableName="widget type" />
+      <FormMenu
+        addRow={addRow}
+        deleteRow={deleteRow}
+        toNext={toNext}
+        toPrevious={toPrevious}
+        tableName="widget type"
+      />
       <TextFieldInactive
         label="ID"
         name="widget_type_id"
