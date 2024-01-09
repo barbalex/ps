@@ -14,10 +14,7 @@ import { FormMenu } from '../components/FormMenu'
 import '../form.css'
 
 export const Component = () => {
-  const { project_id, observation_source_id } = useParams<{
-    project_id: string
-    observation_source_id: string
-  }>()
+  const { project_id, observation_source_id } = useParams()
   const navigate = useNavigate()
 
   const { db } = useElectric()
@@ -47,6 +44,32 @@ export const Component = () => {
     navigate(`/projects/${project_id}/observation-sources`)
   }, [db.observation_sources, navigate, observation_source_id, project_id])
 
+  const toNext = useCallback(async () => {
+    const observationSources = await db.observation_sources.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = observationSources.length
+    const index = observationSources.findIndex(
+      (p) => p.observation_source_id === observation_source_id,
+    )
+    const next = observationSources[(index + 1) % len]
+    navigate(`/projects/${project_id}/observation-sources/${next.observation_source_id}`)
+  }, [db.observation_sources, navigate, observation_source_id, project_id])
+
+  const toPrevious = useCallback(async () => {
+    const observationSources = await db.observation_sources.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = observationSources.length
+    const index = observationSources.findIndex(
+      (p) => p.observation_source_id === observation_source_id,
+    )
+    const previous = observationSources[(index + len - 1) % len]
+    navigate(`/projects/${project_id}/observation-sources/${previous.observation_source_id}`)
+  }, [db.observation_sources, navigate, observation_source_id, project_id])
+
   const row: ObservationSource = results
 
   const onChange = useCallback(
@@ -69,6 +92,8 @@ export const Component = () => {
       <FormMenu
         addRow={addRow}
         deleteRow={deleteRow}
+        toNext={toNext}
+        toPrevious={toPrevious}
         tableName="observation source"
       />
       <TextFieldInactive
