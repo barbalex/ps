@@ -37,6 +37,28 @@ export const Component = () => {
     navigate(`/field-types`)
   }, [db.field_types, field_type_id, navigate])
 
+  const toNext = useCallback(async () => {
+    const fieldTypes = await db.field_types.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = fieldTypes.length
+    const index = fieldTypes.findIndex((p) => p.field_type_id === field_type_id)
+    const next = fieldTypes[(index + 1) % len]
+    navigate(`/field-types/${next.field_type_id}`)
+  }, [db.field_types, field_type_id, navigate])
+
+  const toPrevious = useCallback(async () => {
+    const fieldTypes = await db.field_types.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = fieldTypes.length
+    const index = fieldTypes.findIndex((p) => p.field_type_id === field_type_id)
+    const previous = fieldTypes[(index + len - 1) % len]
+    navigate(`/field-types/${previous.field_type_id}`)
+  }, [db.field_types, field_type_id, navigate])
+
   const row: FieldType = results
 
   const onChange = useCallback(
@@ -56,7 +78,13 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <FormMenu addRow={addRow} deleteRow={deleteRow} tableName="field type" />
+      <FormMenu
+        addRow={addRow}
+        deleteRow={deleteRow}
+        toNext={toNext}
+        toPrevious={toPrevious}
+        tableName="field type"
+      />
       <TextFieldInactive
         label="ID"
         name="field_type_id"
