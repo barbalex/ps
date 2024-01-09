@@ -68,6 +68,28 @@ export const Component = () => {
     navigate(project_id ? `/projects/${project_id}/fields` : '/fields')
   }, [db.fields, field_id, navigate, project_id])
 
+  const toNext = useCallback(async () => {
+    const fields = await db.fields.findMany({
+      where: { deleted: false },
+      orderBy: [{ name: 'asc' }, { field_id: 'asc' }],
+    })
+    const len = fields.length
+    const index = fields.findIndex((p) => p.field_id === field_id)
+    const next = fields[(index + 1) % len]
+    navigate(`/fields/${next.field_id}`)
+  }, [db.fields, navigate, field_id])
+
+  const toPrevious = useCallback(async () => {
+    const fields = await db.fields.findMany({
+      where: { deleted: false },
+      orderBy: [{ name: 'asc' }, { field_id: 'asc' }],
+    })
+    const len = fields.length
+    const index = fields.findIndex((p) => p.field_id === field_id)
+    const previous = fields[(index + len - 1) % len]
+    navigate(`/fields/${previous.field_id}`)
+  }, [db.fields, navigate, field_id])
+
   const row: Field = results
 
   const fieldTypeWhere = useMemo(() => ({ deleted: false }), [])
@@ -95,7 +117,13 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <FormMenu addRow={addRow} deleteRow={deleteRow} tableName="field" />
+      <FormMenu
+        addRow={addRow}
+        deleteRow={deleteRow}
+        toNext={toNext}
+        toPrevious={toPrevious}
+        tableName="field"
+      />
       <TextFieldInactive label="ID" name="field_id" value={row.field_id} />
       <DropdownFieldSimpleOptions
         label="Table"

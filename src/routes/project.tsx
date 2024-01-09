@@ -50,8 +50,8 @@ export const Component = () => {
     })
     const len = projects.length
     const index = projects.findIndex((p) => p.project_id === project_id)
-    const nextProject = projects[(index + 1) % len]
-    navigate(`/projects/${nextProject.project_id}`)
+    const next = projects[(index + 1) % len]
+    navigate(`/projects/${next.project_id}`)
   }, [db.projects, navigate, project_id])
 
   const toPrevious = useCallback(async () => {
@@ -61,8 +61,8 @@ export const Component = () => {
     })
     const len = projects.length
     const index = projects.findIndex((p) => p.project_id === project_id)
-    const previousProject = projects[(index + len - 1) % len]
-    navigate(`/projects/${previousProject.project_id}`)
+    const previous = projects[(index + len - 1) % len]
+    navigate(`/projects/${previous.project_id}`)
   }, [db.projects, navigate, project_id])
 
   const row: Project = results

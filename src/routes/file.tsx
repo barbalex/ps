@@ -46,8 +46,8 @@ export const Component = () => {
     })
     const len = files.length
     const index = files.findIndex((p) => p.file_id === file_id)
-    const nextFile = files[(index + 1) % len]
-    navigate(`/files/${nextFile.file_id}`)
+    const next = files[(index + 1) % len]
+    navigate(`/files/${next.file_id}`)
   }, [db.files, navigate, file_id])
 
   const toPrevious = useCallback(async () => {
@@ -57,8 +57,8 @@ export const Component = () => {
     })
     const len = files.length
     const index = files.findIndex((p) => p.file_id === file_id)
-    const previousFile = files[(index + len - 1) % len]
-    navigate(`/files/${previousFile.file_id}`)
+    const previous = files[(index + len - 1) % len]
+    navigate(`/files/${previous.file_id}`)
   }, [db.files, navigate, file_id])
 
   const row: File = results
