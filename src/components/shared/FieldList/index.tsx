@@ -7,9 +7,6 @@ import { useElectric } from '../../../ElectricProvider'
 import { DropdownField } from './DropdownField'
 import { idFieldFromTable } from '../../../modules/idFieldFromTable'
 
-// TODO:
-// - [ ] add remove button do dropdowns
-// - [ ] add add button to whole
 export const FieldList = memo(
   ({ name, label, table, fieldsTable, id, valueArray = [] }) => {
     const { project_id } = useParams()
@@ -68,35 +65,35 @@ export const FieldList = memo(
     )
 
     return (
-        <Field
-          label={label ?? '(no label provided)'}
-          validationState="none"
-          validationMessage="Add multiple items in the order you want places to be ordered."
-        >
-          <TagGroup onDismiss={removeItem}>
-            {valueArray.map((value) => (
-              <Tag
-                key={value}
-                dismissible
-                dismissIcon={{ 'aria-label': 'remove' }}
-                value={value}
-                secondaryText={
-                  !options.includes(value) ? 'not defined in fields' : undefined
-                }
-              >
-                {value}
-              </Tag>
-            ))}
-            {unusedOptions.length > 0 && (
-              <DropdownField
-                placeholder="Select an option"
-                value={''}
-                onChange={onChange}
-                options={unusedOptions}
-              />
-            )}
-          </TagGroup>
-        </Field>
+      <Field
+        label={label ?? '(no label provided)'}
+        validationState="none"
+        validationMessage={`Add multiple items in the order you want ${fieldsTable} to be ordered.`}
+      >
+        <TagGroup onDismiss={removeItem}>
+          {valueArray.map((value) => (
+            <Tag
+              key={value}
+              dismissible
+              dismissIcon={{ 'aria-label': 'remove' }}
+              value={value}
+              secondaryText={
+                !options.includes(value) ? 'not defined in fields' : undefined
+              }
+            >
+              {value}
+            </Tag>
+          ))}
+          {unusedOptions.length > 0 && (
+            <DropdownField
+              placeholder="Select an option"
+              value={''}
+              onChange={onChange}
+              options={unusedOptions}
+            />
+          )}
+        </TagGroup>
+      </Field>
     )
   },
 )
