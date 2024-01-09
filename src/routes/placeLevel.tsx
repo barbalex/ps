@@ -43,6 +43,32 @@ export const Component = () => {
     navigate(`/projects/${project_id}/place-levels`)
   }, [db.place_levels, navigate, place_level_id, project_id])
 
+  const toNext = useCallback(async () => {
+    const placeLevels = await db.place_levels.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = placeLevels.length
+    const index = placeLevels.findIndex(
+      (p) => p.place_level_id === place_level_id,
+    )
+    const next = placeLevels[(index + 1) % len]
+    navigate(`/projects/${project_id}/place-levels/${next.place_level_id}`)
+  }, [db.place_levels, navigate, place_level_id, project_id])
+
+  const toPrevious = useCallback(async () => {
+    const placeLevels = await db.place_levels.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = placeLevels.length
+    const index = placeLevels.findIndex(
+      (p) => p.place_level_id === place_level_id,
+    )
+    const previous = placeLevels[(index + len - 1) % len]
+    navigate(`/projects/${project_id}/place-levels/${previous.place_level_id}`)
+  }, [db.place_levels, navigate, place_level_id, project_id])
+
   const row: PlaceLevel = results
 
   const onChange = useCallback(
@@ -63,7 +89,13 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <FormMenu addRow={addRow} deleteRow={deleteRow} tableName="place level" />
+      <FormMenu
+        addRow={addRow}
+        deleteRow={deleteRow}
+        toNext={toNext}
+        toPrevious={toPrevious}
+        tableName="place level"
+      />
       <TextFieldInactive
         label="ID"
         name="place_level_id"
