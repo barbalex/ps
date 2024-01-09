@@ -40,6 +40,32 @@ export const Component = () => {
     navigate(`/projects/${project_id}/users`)
   }, [db.project_users, navigate, project_id, project_user_id])
 
+  const toNext = useCallback(async () => {
+    const projectUsers = await db.project_users.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = projectUsers.length
+    const index = projectUsers.findIndex(
+      (p) => p.project_user_id === project_user_id,
+    )
+    const next = projectUsers[(index + 1) % len]
+    navigate(`/projects/${project_id}/users/${next.project_user_id}`)
+  }, [db.project_users, navigate, project_id, project_user_id])
+
+  const toPrevious = useCallback(async () => {
+    const projectUsers = await db.project_users.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = projectUsers.length
+    const index = projectUsers.findIndex(
+      (p) => p.project_user_id === project_user_id,
+    )
+    const previous = projectUsers[(index + len - 1) % len]
+    navigate(`/projects/${project_id}/users/${previous.project_user_id}`)
+  }, [db.project_users, navigate, project_id, project_user_id])
+
   const row: ProjectUser = results
 
   const userWhere = useMemo(() => ({ deleted: false }), [])
@@ -64,6 +90,8 @@ export const Component = () => {
       <FormMenu
         addRow={addRow}
         deleteRow={deleteRow}
+        toNext={toNext}
+        toPrevious={toPrevious}
         tableName="project user"
       />
       <TextFieldInactive
