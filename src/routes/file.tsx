@@ -39,6 +39,28 @@ export const Component = () => {
     navigate(`/files`)
   }, [file_id, db.files, navigate])
 
+  const toNext = useCallback(async () => {
+    const files = await db.files.findMany({
+      where: { deleted: false },
+      orderBy: [{ name: 'asc' }, { file_id: 'asc' }],
+    })
+    const len = files.length
+    const index = files.findIndex((p) => p.file_id === file_id)
+    const nextFile = files[(index + 1) % len]
+    navigate(`/files/${nextFile.file_id}`)
+  }, [db.files, navigate, file_id])
+
+  const toPrevious = useCallback(async () => {
+    const files = await db.files.findMany({
+      where: { deleted: false },
+      orderBy: [{ name: 'asc' }, { file_id: 'asc' }],
+    })
+    const len = files.length
+    const index = files.findIndex((p) => p.file_id === file_id)
+    const previousFile = files[(index + len - 1) % len]
+    navigate(`/files/${previousFile.file_id}`)
+  }, [db.files, navigate, file_id])
+
   const row: File = results
 
   const onChange = useCallback(
@@ -97,6 +119,8 @@ export const Component = () => {
       <FormMenu
         addRow={addRow}
         deleteRow={deleteRow}
+        toNext={toNext}
+        toPrevious={toPrevious}
         tableName="goal report value"
       />
       <TextFieldInactive label="ID" name="file_id" value={row.file_id ?? ''} />
