@@ -39,6 +39,26 @@ export const Component = () => {
     navigate(`/accounts`)
   }, [account_id, db.accounts, navigate])
 
+  const toNext = useCallback(async () => {
+    const accounts = await db.accounts.findMany({
+      orderBy: { label: 'asc' },
+    })
+    const len = accounts.length
+    const index = accounts.findIndex((p) => p.account_id === account_id)
+    const next = accounts[(index + 1) % len]
+    navigate(`/accounts/${next.account_id}`)
+  }, [account_id, db.accounts, navigate])
+
+  const toPrevious = useCallback(async () => {
+    const accounts = await db.accounts.findMany({
+      orderBy: { label: 'asc' },
+    })
+    const len = accounts.length
+    const index = accounts.findIndex((p) => p.account_id === account_id)
+    const previous = accounts[(index + len - 1) % len]
+    navigate(`/accounts/${previous.account_id}`)
+  }, [account_id, db.accounts, navigate])
+
   const row: Account = results
 
   const onChange = useCallback(
@@ -58,7 +78,13 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <FormMenu addRow={addRow} deleteRow={deleteRow} tableName="account" />
+      <FormMenu
+        addRow={addRow}
+        deleteRow={deleteRow}
+        toNext={toNext}
+        toPrevious={toPrevious}
+        tableName="account"
+      />
       <TextFieldInactive label="ID" name="account_id" value={row.account_id} />
       <DropdownField
         label="User"
