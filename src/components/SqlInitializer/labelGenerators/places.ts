@@ -25,5 +25,19 @@ export const generatePlaceLabel = async (db) => {
       END`,
     })
     console.log('LabelGenerator, places, result:', result)
+    // const resultArray = await db.raw({
+    //   sql: `
+    //   CREATE TRIGGER if not exists places_label_array_trigger
+    //   AFTER UPDATE of data ON places
+    //   BEGIN
+    //     UPDATE places SET label_array = '$.' || group_concat(json_extract(NEW.data, projects.places_label_by_array), '.')
+    //     FROM (
+    //       SELECT places_label_by_array from projects
+    //       where project_id = (select project_id from subprojects where subproject_id = NEW.subproject_id)
+    //     ) as projects
+    //      WHERE places.place_id = NEW.place_id;
+    //   END`,
+    // })
+    // console.log('LabelGenerator, places, resultArray:', resultArray)
   }
 }
