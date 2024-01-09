@@ -14,6 +14,7 @@ import { Jsonb } from '../components/shared/Jsonb'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormMenu } from '../components/FormMenu'
 import { PlacesLabelBy } from './place/PlacesLabelBy'
+import { FieldList } from '../components/shared/FieldList'
 
 import '../form.css'
 
@@ -81,7 +82,7 @@ export const Component = () => {
     return <div>Loading...</div>
   }
 
-  // console.log('project, row:', row)
+  console.log('project, row:', row)
 
   return (
     <div className="form-container">
@@ -133,9 +134,15 @@ export const Component = () => {
         value={row.subproject_order_by ?? ''}
         onChange={onChange}
       />
-      <PlacesLabelBy
-        value={row.places_label_by ?? ''}
-        onChange={onChange} />
+      <PlacesLabelBy value={row.places_label_by ?? ''} onChange={onChange} />
+      <FieldList
+        label="Places ordered by"
+        name="places_order_by"
+        table="projects"
+        fieldsTable="places"
+        id={project_id}
+        valueArray={row.places_order_by ?? []}
+      />
       <Divider />
       <Label>{`Value(s) to use in reports when:`}</Label>
       <RadioGroupField
