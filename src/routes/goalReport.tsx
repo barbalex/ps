@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
@@ -16,6 +16,8 @@ export const Component = () => {
   const { project_id, subproject_id, goal_id, goal_report_id } = useParams()
   const navigate = useNavigate()
 
+  const autoFocusRef = useRef<HTMLInputElement>(null)
+
   const { db } = useElectric()
   const { results } = useLiveQuery(
     () => db.goal_reports.liveUnique({ where: { goal_report_id } }),
@@ -28,6 +30,7 @@ export const Component = () => {
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${data.goal_report_id}`,
     )
+    autoFocusRef.current?.focus()
   }, [db, goal_id, navigate, project_id, subproject_id])
 
   const deleteRow = useCallback(async () => {
@@ -38,6 +41,50 @@ export const Component = () => {
     })
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports`,
+    )
+  }, [
+    db.goal_reports,
+    goal_id,
+    goal_report_id,
+    navigate,
+    project_id,
+    subproject_id,
+  ])
+
+  const toNext = useCallback(async () => {
+    const goalReports = await db.goal_reports.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = goalReports.length
+    const index = goalReports.findIndex(
+      (p) => p.goal_report_id === goal_report_id,
+    )
+    const next = goalReports[(index + 1) % len]
+    navigate(
+      `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${next.goal_report_id}`,
+    )
+  }, [
+    db.goal_reports,
+    goal_id,
+    goal_report_id,
+    navigate,
+    project_id,
+    subproject_id,
+  ])
+
+  const toPrevious = useCallback(async () => {
+    const goalReports = await db.goal_reports.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = goalReports.length
+    const index = goalReports.findIndex(
+      (p) => p.goal_report_id === goal_report_id,
+    )
+    const previous = goalReports[(index + len - 1) % len]
+    navigate(
+      `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${previous.goal_report_id}`,
     )
   }, [
     db.goal_reports,
@@ -69,7 +116,13 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <FormMenu addRow={addRow} deleteRow={deleteRow} tableName="goal report" />
+      <FormMenu
+        addRow={addRow}
+        deleteRow={deleteRow}
+        toNext={toNext}
+        toPrevious={toPrevious}
+        tableName="goal report"
+      />
       <TextFieldInactive
         label="ID"
         name="goal_report_id"
@@ -81,6 +134,7 @@ export const Component = () => {
         id={row.goal_report_id}
         data={row.data ?? {}}
         autoFocus
+        ref={autoFocusRef}
       />
     </div>
   )
