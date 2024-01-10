@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 
@@ -13,13 +13,13 @@ export const Component = () => {
   const { subproject_id, project_id, place_id } = useParams()
 
   const { db } = useElectric()
-  const where = useMemo(() => {
-    const where = { deleted: false, parent_id: place_id ?? null }
-    if (!place_id) where.subproject_id = subproject_id
-    return where
-  }, [place_id, subproject_id])
-  const orderBy = useMemo(() => [{ label: 'asc' }, { place_id: 'asc' }], [])
-  const { results } = useLiveQuery(db.places.liveMany({ where, orderBy }))
+
+  const { results } = useLiveQuery(
+    db.places.liveMany({
+      where: { deleted: false, parent_id: place_id ?? null, subproject_id },
+      orderBy: { label: 'asc' },
+    }),
+  )
 
   const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/places${
     place_id ? `/${place_id}/places` : ''
