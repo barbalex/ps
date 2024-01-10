@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, useMemo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
@@ -25,14 +25,17 @@ export const Component = () => {
     [goal_id],
   )
 
+  const baseUrl = useMemo(
+    () => `/projects/${project_id}/subprojects/${subproject_id}/goals`,
+    [project_id, subproject_id],
+  )
+
   const addRow = useCallback(async () => {
     const data = await createGoal({ db, project_id, subproject_id })
     await db.goals.create({ data })
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/goals/${data.goal_id}`,
-    )
+    navigate(`${baseUrl}/${data.goal_id}`)
     autoFocusRef.current?.focus()
-  }, [db, navigate, project_id, subproject_id])
+  }, [baseUrl, db, navigate, project_id, subproject_id])
 
   const deleteRow = useCallback(async () => {
     await db.goals.delete({
@@ -40,34 +43,30 @@ export const Component = () => {
         goal_id,
       },
     })
-    navigate(`/projects/${project_id}/subprojects/${subproject_id}/goals`)
-  }, [db.goals, goal_id, navigate, project_id, subproject_id])
+    navigate(baseUrl)
+  }, [baseUrl, db.goals, goal_id, navigate])
 
   const toNext = useCallback(async () => {
     const goals = await db.goals.findMany({
-      where: { deleted: false },
+      where: { deleted: false, subproject_id },
       orderBy: { label: 'asc' },
     })
     const len = goals.length
     const index = goals.findIndex((p) => p.goal_id === goal_id)
     const next = goals[(index + 1) % len]
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/goals/${next.goal_id}`,
-    )
-  }, [db.goals, goal_id, navigate, project_id, subproject_id])
+    navigate(`${baseUrl}/${next.goal_id}`)
+  }, [baseUrl, db.goals, goal_id, navigate, subproject_id])
 
   const toPrevious = useCallback(async () => {
     const goals = await db.goals.findMany({
-      where: { deleted: false },
+      where: { deleted: false, subproject_id },
       orderBy: { label: 'asc' },
     })
     const len = goals.length
     const index = goals.findIndex((p) => p.goal_id === goal_id)
     const previous = goals[(index + len - 1) % len]
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/goals/${previous.goal_id}`,
-    )
-  }, [db.goals, goal_id, navigate, project_id, subproject_id])
+    navigate(`${baseUrl}/${previous.goal_id}`)
+  }, [baseUrl, db.goals, goal_id, navigate, subproject_id])
 
   const row: Goal = results
 
