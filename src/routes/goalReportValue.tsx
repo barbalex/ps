@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
@@ -23,6 +23,8 @@ export const Component = () => {
   } = useParams()
   const navigate = useNavigate()
 
+  const autoFocusRef = useRef<HTMLInputElement>(null)
+
   const { db } = useElectric()
   const { results } = useLiveQuery(
     () => db.goal_report_values.liveUnique({ where: { goal_report_value_id } }),
@@ -40,6 +42,7 @@ export const Component = () => {
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${goal_report_id}/values/${goalReportValue.goal_report_value_id}`,
     )
+    autoFocusRef.current?.focus()
   }, [
     db.goal_report_values,
     goal_id,
@@ -57,6 +60,52 @@ export const Component = () => {
     })
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${goal_report_id}/values`,
+    )
+  }, [
+    db.goal_report_values,
+    goal_id,
+    goal_report_id,
+    goal_report_value_id,
+    navigate,
+    project_id,
+    subproject_id,
+  ])
+
+  const toNext = useCallback(async () => {
+    const goalReportValues = await db.goal_report_values.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = goalReportValues.length
+    const index = goalReportValues.findIndex(
+      (p) => p.goal_report_value_id === goal_report_value_id,
+    )
+    const next = goalReportValues[(index + 1) % len]
+    navigate(
+      `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${goal_report_id}/values/${next.goal_report_value_id}`,
+    )
+  }, [
+    db.goal_report_values,
+    goal_id,
+    goal_report_id,
+    goal_report_value_id,
+    navigate,
+    project_id,
+    subproject_id,
+  ])
+
+  const toPrevious = useCallback(async () => {
+    const goalReportValues = await db.goal_report_values.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = goalReportValues.length
+    const index = goalReportValues.findIndex(
+      (p) => p.goal_report_value_id === goal_report_value_id,
+    )
+    const previous = goalReportValues[(index + len - 1) % len]
+    navigate(
+      `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${goal_report_id}/values/${previous.goal_report_value_id}`,
     )
   }, [
     db.goal_report_values,
@@ -95,6 +144,8 @@ export const Component = () => {
       <FormMenu
         addRow={addRow}
         deleteRow={deleteRow}
+        toNext={toNext}
+        toPrevious={toPrevious}
         tableName="goal report value"
       />
       <TextFieldInactive
@@ -111,6 +162,7 @@ export const Component = () => {
         value={row.unit_id ?? ''}
         onChange={onChange}
         autoFocus
+        ref={autoFocusRef}
       />
       <TextField
         label="Value (integer)"
