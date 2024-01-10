@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
@@ -17,6 +17,8 @@ export const Component = () => {
   const { project_id, observation_id, observation_source_id } = useParams()
   const navigate = useNavigate()
 
+  const autoFocusRef = useRef<HTMLInputElement>(null)
+
   const { db } = useElectric()
   const { results } = useLiveQuery(
     () => db.observations.liveUnique({ where: { observation_id } }),
@@ -33,6 +35,7 @@ export const Component = () => {
     navigate(
       `/projects/${project_id}/observation-sources/${observation_source_id}/observations/${data.observation_id}`,
     )
+    autoFocusRef.current?.focus()
   }, [db, navigate, observation_source_id, project_id])
 
   const deleteRow = useCallback(async () => {
@@ -44,7 +47,55 @@ export const Component = () => {
     navigate(
       `/projects/${project_id}/observation-sources/${observation_source_id}/observations`,
     )
-  }, [db.observations, navigate, observation_id, observation_source_id])
+  }, [
+    db.observations,
+    navigate,
+    observation_id,
+    observation_source_id,
+    project_id,
+  ])
+
+  const toNext = useCallback(async () => {
+    const observations = await db.observations.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = observations.length
+    const index = observations.findIndex(
+      (p) => p.observation_id === observation_id,
+    )
+    const next = observations[(index + 1) % len]
+    navigate(
+      `/projects/${project_id}/observation-sources/${observation_source_id}/observations/${next.observation_id}`,
+    )
+  }, [
+    db.observations,
+    navigate,
+    observation_id,
+    observation_source_id,
+    project_id,
+  ])
+
+  const toPrevious = useCallback(async () => {
+    const observations = await db.observations.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = observations.length
+    const index = observations.findIndex(
+      (p) => p.observation_id === observation_id,
+    )
+    const previous = observations[(index + len - 1) % len]
+    navigate(
+      `/projects/${project_id}/observation-sources/${observation_source_id}/observations/${previous.observation_id}`,
+    )
+  }, [
+    db.observations,
+    navigate,
+    observation_id,
+    observation_source_id,
+    project_id,
+  ])
 
   const row: Observation = results
 
@@ -65,7 +116,13 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <FormMenu addRow={addRow} deleteRow={deleteRow} tableName="observation" />
+      <FormMenu
+        addRow={addRow}
+        deleteRow={deleteRow}
+        toNext={toNext}
+        toPrevious={toPrevious}
+        tableName="observation"
+      />
       <TextFieldInactive
         label="ID"
         name="observation_id"
@@ -77,6 +134,7 @@ export const Component = () => {
         value={row.place_id ?? ''}
         onChange={onChange}
         autoFocus
+        ref={autoFocusRef}
       />
       <TextFieldInactive
         label="ID in source"
