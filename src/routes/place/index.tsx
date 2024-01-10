@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
@@ -18,6 +18,8 @@ export const Component = () => {
   const navigate = useNavigate()
   const { project_id, subproject_id, place_id } = useParams()
 
+  const autoFocusRef = useRef<HTMLInputElement>(null)
+
   const { db } = useElectric()
   const { results } = useLiveQuery(
     () => db.places.liveUnique({ where: { place_id } }),
@@ -30,6 +32,7 @@ export const Component = () => {
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/places/${data.place_id}`,
     )
+    autoFocusRef.current?.focus()
   }, [db, navigate, project_id, subproject_id])
 
   const deleteRow = useCallback(async () => {
@@ -39,6 +42,32 @@ export const Component = () => {
       },
     })
     navigate(`/projects/${project_id}/subprojects/${subproject_id}/places`)
+  }, [db.places, navigate, place_id, project_id, subproject_id])
+
+  const toNext = useCallback(async () => {
+    const places = await db.places.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = places.length
+    const index = places.findIndex((p) => p.place_id === place_id)
+    const next = places[(index + 1) % len]
+    navigate(
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${next.place_id}`,
+    )
+  }, [db.places, navigate, place_id, project_id, subproject_id])
+
+  const toPrevious = useCallback(async () => {
+    const places = await db.places.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = places.length
+    const index = places.findIndex((p) => p.place_id === place_id)
+    const previous = places[(index + len - 1) % len]
+    navigate(
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${previous.place_id}`,
+    )
   }, [db.places, navigate, place_id, project_id, subproject_id])
 
   const row: Place = results
@@ -64,11 +93,17 @@ export const Component = () => {
     return <div>Loading...</div>
   }
 
-  console.log('place, row:', row)
+  // console.log('place, row:', row)
 
   return (
     <div className="form-container">
-      <FormMenu addRow={addRow} deleteRow={deleteRow} tableName="place" />
+      <FormMenu
+        addRow={addRow}
+        deleteRow={deleteRow}
+        toNext={toNext}
+        toPrevious={toPrevious}
+        tableName="place"
+      />
       <TextFieldInactive label="ID" name="place_id" value={row.place_id} />
       <TextField
         label="Level"
@@ -87,6 +122,7 @@ export const Component = () => {
           value={row.parent_id ?? ''}
           onChange={onChange}
           autoFocus
+          ref={autoFocusRef}
         />
       )}
       <Jsonb
@@ -95,6 +131,7 @@ export const Component = () => {
         id={row.place_id}
         data={row.data ?? {}}
         autoFocus={row.level !== 2}
+        ref={row.level !== 2 ? autoFocusRef : undefined}
       />
     </div>
   )
