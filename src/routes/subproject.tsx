@@ -17,6 +17,8 @@ export const Component = () => {
   const { project_id, subproject_id } = useParams()
   const navigate = useNavigate()
 
+  const autoFocusRef = useRef<HTMLInputElement>(null)
+
   const { db } = useElectric()
   const { results } = useLiveQuery(
     db.subprojects.liveUnique({ where: { subproject_id } }),
@@ -74,8 +76,6 @@ export const Component = () => {
     },
     [db.subprojects, subproject_id],
   )
-
-  const autoFocusRef = useRef<HTMLInputElement>(null)
 
   if (!row) {
     return <div>Loading...</div>

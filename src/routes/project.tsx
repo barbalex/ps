@@ -22,6 +22,8 @@ export const Component = () => {
   const { project_id } = useParams()
   const navigate = useNavigate()
 
+  const autoFocusRef = useRef<HTMLInputElement>(null)
+
   const { db } = useElectric()
   const { results } = useLiveQuery(
     () => db.projects.liveUnique({ where: { project_id } }),
@@ -32,6 +34,7 @@ export const Component = () => {
     const data = await createProject({ db })
     await db.projects.create({ data })
     navigate(`/projects/${data.project_id}`)
+    autoFocusRef.current?.focus()
   }, [db, navigate])
 
   const deleteRow = useCallback(async () => {
@@ -100,6 +103,7 @@ export const Component = () => {
         value={row.name ?? ''}
         onChange={onChange}
         autoFocus
+        ref={autoFocusRef}
       />
       <Jsonb
         table="projects"
