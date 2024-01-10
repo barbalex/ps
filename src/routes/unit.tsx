@@ -91,6 +91,7 @@ export const Component = () => {
         name="name"
         value={row.name ?? ''}
         onChange={onChange}
+        autoFocus
       />
       <SwitchField
         label="Use for action values"
