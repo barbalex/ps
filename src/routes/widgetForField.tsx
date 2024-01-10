@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
@@ -16,6 +16,8 @@ export const Component = () => {
   const { widget_for_field_id } = useParams<{ widget_for_field_id: string }>()
   const navigate = useNavigate()
 
+  const autoFocusRef = useRef<HTMLInputElement>(null)
+
   const { db } = useElectric()
   const { results } = useLiveQuery(
     () => db.widgets_for_fields.liveUnique({ where: { widget_for_field_id } }),
@@ -26,13 +28,12 @@ export const Component = () => {
     const data = createWidgetForField()
     await db.widgets_for_fields.create({ data })
     navigate(`/widgets-for-fields/${data.widget_for_field_id}`)
+    autoFocusRef.current?.focus()
   }, [db.widgets_for_fields, navigate])
 
   const deleteRow = useCallback(async () => {
     await db.widgets_for_fields.delete({
-      where: {
-        widget_for_field_id,
-      },
+      where: { widget_for_field_id },
     })
     navigate(`/widgets-for-fields`)
   }, [db.widgets_for_fields, navigate, widget_for_field_id])
@@ -101,6 +102,7 @@ export const Component = () => {
         value={row.field_type_id ?? ''}
         onChange={onChange}
         autoFocus
+        ref={autoFocusRef}
       />
       <DropdownField
         label="Widget type"

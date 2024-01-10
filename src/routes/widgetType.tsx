@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
@@ -17,6 +17,8 @@ export const Component = () => {
   const { widget_type_id } = useParams<{ widget_type_id: string }>()
   const navigate = useNavigate()
 
+  const autoFocusRef = useRef<HTMLInputElement>(null)
+
   const { db } = useElectric()
   const { results } = useLiveQuery(
     () => db.widget_types.liveUnique({ where: { widget_type_id } }),
@@ -27,13 +29,12 @@ export const Component = () => {
     const data = createWidgetType()
     await db.widget_types.create({ data })
     navigate(`/widget-types/${data.widget_type_id}`)
+    autoFocusRef.current?.focus()
   }, [db.widget_types, navigate])
 
   const deleteRow = useCallback(async () => {
     await db.widget_types.delete({
-      where: {
-        widget_type_id,
-      },
+      where: { widget_type_id },
     })
     navigate(`/widget-types`)
   }, [db.widget_types, navigate, widget_type_id])
@@ -101,6 +102,7 @@ export const Component = () => {
         value={row.name ?? ''}
         onChange={onChange}
         autoFocus
+        ref={autoFocusRef}
       />
       <SwitchField
         label="Needs a list"

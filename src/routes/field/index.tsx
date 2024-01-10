@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
@@ -44,51 +44,59 @@ export const Component = () => {
   const { project_id, field_id } = useParams()
   const navigate = useNavigate()
 
+  const autoFocusRef = useRef<HTMLInputElement>(null)
+
   const { db } = useElectric()
   const { results } = useLiveQuery(
     db.fields.liveUnique({ where: { field_id } }),
   )
 
+  const baseUrl = useMemo(
+    () => (project_id ? `/projects/${project_id}/fields` : '/fields'),
+    [project_id],
+  )
+
   const addRow = useCallback(async () => {
     const data = createField({ project_id })
     await db.fields.create({ data })
-    navigate(
-      project_id
-        ? `/projects/${project_id}/fields/${data.field_id}`
-        : `/fields/${data.field_id}`,
-    )
-  }, [db.fields, navigate, project_id])
+    navigate(`${baseUrl}/${data.field_id}`)
+    autoFocusRef.current?.focus()
+  }, [baseUrl, db.fields, navigate, project_id])
 
   const deleteRow = useCallback(async () => {
     await db.fields.delete({
-      where: {
-        field_id,
-      },
+      where: { field_id },
     })
-    navigate(project_id ? `/projects/${project_id}/fields` : '/fields')
-  }, [db.fields, field_id, navigate, project_id])
+    navigate(baseUrl)
+  }, [baseUrl, db.fields, field_id, navigate])
 
   const toNext = useCallback(async () => {
     const fields = await db.fields.findMany({
-      where: { deleted: false },
+      where: {
+        deleted: false,
+        project_id: project_id ?? null,
+      },
       orderBy: { label: 'asc' },
     })
     const len = fields.length
     const index = fields.findIndex((p) => p.field_id === field_id)
     const next = fields[(index + 1) % len]
-    navigate(`/fields/${next.field_id}`)
-  }, [db.fields, navigate, field_id])
+    navigate(`${baseUrl}/${next.field_id}`)
+  }, [db.fields, project_id, navigate, baseUrl, field_id])
 
   const toPrevious = useCallback(async () => {
     const fields = await db.fields.findMany({
-      where: { deleted: false },
+      where: {
+        deleted: false,
+        project_id: project_id ?? null,
+      },
       orderBy: { label: 'asc' },
     })
     const len = fields.length
     const index = fields.findIndex((p) => p.field_id === field_id)
     const previous = fields[(index + len - 1) % len]
-    navigate(`/fields/${previous.field_id}`)
-  }, [db.fields, navigate, field_id])
+    navigate(`${baseUrl}/${previous.field_id}`)
+  }, [db.fields, project_id, navigate, baseUrl, field_id])
 
   const row: Field = results
 
@@ -132,6 +140,7 @@ export const Component = () => {
         onChange={onChange}
         options={project_id ? projectTables : accountTables}
         autoFocus
+        ref={autoFocusRef}
       />
       <TextField
         label="Name"
