@@ -20,44 +20,44 @@ export const Component = () => {
   const { db } = useElectric()
   const { results } = useLiveQuery(db.units.liveUnique({ where: { unit_id } }))
 
+  const baseUrl = `/projects/${project_id}/units`
+
   const addRow = useCallback(async () => {
     const unit = createUnit()
     await db.units.create({
       data: { ...unit, project_id },
     })
-    navigate(`/projects/${project_id}/units/${unit.unit_id}`)
-  }, [db.units, navigate, project_id])
+    navigate(`${baseUrl}/${unit.unit_id}`)
+  }, [baseUrl, db.units, navigate, project_id])
 
   const deleteRow = useCallback(async () => {
     await db.units.delete({
-      where: {
-        unit_id,
-      },
+      where: { unit_id },
     })
-    navigate(`/projects/${project_id}/units`)
-  }, [db.units, navigate, project_id, unit_id])
+    navigate(baseUrl)
+  }, [baseUrl, db.units, navigate, unit_id])
 
   const toNext = useCallback(async () => {
     const units = await db.units.findMany({
-      where: { deleted: false },
+      where: { deleted: false, project_id },
       orderBy: { label: 'asc' },
     })
     const len = units.length
     const index = units.findIndex((p) => p.unit_id === unit_id)
     const next = units[(index + 1) % len]
-    navigate(`/projects/${project_id}/units/${next.unit_id}`)
-  }, [db.units, navigate, project_id, unit_id])
+    navigate(`${baseUrl}/${next.unit_id}`)
+  }, [baseUrl, db.units, navigate, project_id, unit_id])
 
   const toPrevious = useCallback(async () => {
     const units = await db.units.findMany({
-      where: { deleted: false },
+      where: { deleted: false, project_id },
       orderBy: { label: 'asc' },
     })
     const len = units.length
     const index = units.findIndex((p) => p.unit_id === unit_id)
     const previous = units[(index + len - 1) % len]
-    navigate(`/projects/${project_id}/units/${previous.unit_id}`)
-  }, [db.units, navigate, project_id, unit_id])
+    navigate(`${baseUrl}/${previous.unit_id}`)
+  }, [baseUrl, db.units, navigate, project_id, unit_id])
 
   const row: Unit = results
 

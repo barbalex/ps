@@ -24,35 +24,27 @@ export const Component = () => {
     [subproject_taxon_id],
   )
 
+  const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/taxa`
+
   const addRow = useCallback(async () => {
     const subprojectTaxon = createSubprojectTaxon()
     await db.subproject_taxa.create({
       data: { ...subprojectTaxon, subproject_id },
     })
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/taxa/${subprojectTaxon.subproject_taxon_id}`,
-    )
+    navigate(`${baseUrl}/${subprojectTaxon.subproject_taxon_id}`)
     autoFocusRef.current?.focus()
-  }, [db.subproject_taxa, navigate, project_id, subproject_id])
+  }, [baseUrl, db.subproject_taxa, navigate, subproject_id])
 
   const deleteRow = useCallback(async () => {
     await db.subproject_taxa.delete({
-      where: {
-        subproject_taxon_id,
-      },
+      where: { subproject_taxon_id },
     })
-    navigate(`/projects/${project_id}/subprojects/${subproject_id}/taxa`)
-  }, [
-    db.subproject_taxa,
-    navigate,
-    project_id,
-    subproject_id,
-    subproject_taxon_id,
-  ])
+    navigate(baseUrl)
+  }, [baseUrl, db.subproject_taxa, navigate, subproject_taxon_id])
 
   const toNext = useCallback(async () => {
     const subprojectTaxa = await db.subproject_taxa.findMany({
-      where: { deleted: false },
+      where: { deleted: false, subproject_id },
       orderBy: { label: 'asc' },
     })
     const len = subprojectTaxa.length
@@ -60,20 +52,18 @@ export const Component = () => {
       (p) => p.subproject_taxon_id === subproject_taxon_id,
     )
     const next = subprojectTaxa[(index + 1) % len]
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/taxa/${next.subproject_taxon_id}`,
-    )
+    navigate(`${baseUrl}/${next.subproject_taxon_id}`)
   }, [
+    baseUrl,
     db.subproject_taxa,
     navigate,
-    project_id,
     subproject_id,
     subproject_taxon_id,
   ])
 
   const toPrevious = useCallback(async () => {
     const subprojectTaxa = await db.subproject_taxa.findMany({
-      where: { deleted: false },
+      where: { deleted: false, subproject_id },
       orderBy: { label: 'asc' },
     })
     const len = subprojectTaxa.length
@@ -81,13 +71,11 @@ export const Component = () => {
       (p) => p.subproject_taxon_id === subproject_taxon_id,
     )
     const previous = subprojectTaxa[(index + len - 1) % len]
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/taxa/${previous.subproject_taxon_id}`,
-    )
+    navigate(`${baseUrl}/${previous.subproject_taxon_id}`)
   }, [
+    baseUrl,
     db.subproject_taxa,
     navigate,
-    project_id,
     subproject_id,
     subproject_taxon_id,
   ])

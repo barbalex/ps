@@ -24,23 +24,25 @@ export const Component = () => {
     db.subprojects.liveUnique({ where: { subproject_id } }),
   )
 
+  const baseUrl = `/projects/${project_id}/subprojects`
+
   const addRow = useCallback(async () => {
     const data = await createSubproject({ db, project_id })
     await db.subprojects.create({ data })
-    navigate(`/projects/${project_id}/subprojects/${data.subproject_id}`)
+    navigate(`${baseUrl}/${data.subproject_id}`)
     autoFocusRef.current?.focus()
-  }, [db, navigate, project_id])
+  }, [baseUrl, db, navigate, project_id])
 
   const deleteRow = useCallback(async () => {
     await db.subprojects.delete({
       where: { subproject_id },
     })
-    navigate(`/projects/${project_id}/subprojects`)
-  }, [db.subprojects, navigate, project_id, subproject_id])
+    navigate(baseUrl)
+  }, [baseUrl, db.subprojects, navigate, subproject_id])
 
   const toNext = useCallback(async () => {
     const subprojects = await db.subprojects.findMany({
-      where: { deleted: false },
+      where: { deleted: false, project_id },
       orderBy: { label: 'asc' },
     })
     const len = subprojects.length
@@ -48,12 +50,12 @@ export const Component = () => {
       (p) => p.subproject_id === subproject_id,
     )
     const next = subprojects[(index + 1) % len]
-    navigate(`/projects/${project_id}/subprojects/${next.subproject_id}`)
-  }, [db.subprojects, navigate, project_id, subproject_id])
+    navigate(`${baseUrl}/${next.subproject_id}`)
+  }, [baseUrl, db.subprojects, navigate, project_id, subproject_id])
 
   const toPrevious = useCallback(async () => {
     const subprojects = await db.subprojects.findMany({
-      where: { deleted: false },
+      where: { deleted: false, project_id },
       orderBy: { label: 'asc' },
     })
     const len = subprojects.length
@@ -61,8 +63,8 @@ export const Component = () => {
       (p) => p.subproject_id === subproject_id,
     )
     const previous = subprojects[(index + len - 1) % len]
-    navigate(`/projects/${project_id}/subprojects/${previous.subproject_id}`)
-  }, [db.subprojects, navigate, project_id, subproject_id])
+    navigate(`${baseUrl}/${previous.subproject_id}`)
+  }, [baseUrl, db.subprojects, navigate, project_id, subproject_id])
 
   const row: Subproject = results
 
