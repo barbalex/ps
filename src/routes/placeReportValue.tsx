@@ -116,7 +116,7 @@ export const Component = () => {
         deleteRow={deleteRow}
         toNext={toNext}
         toPrevious={toPrevious}
-        tableName="goal report value"
+        tableName="place report value"
       />
       <TextFieldInactive
         label="ID"
