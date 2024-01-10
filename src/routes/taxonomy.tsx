@@ -40,6 +40,28 @@ export const Component = () => {
     navigate(`/projects/${project_id}/taxonomies`)
   }, [db.taxonomies, navigate, project_id, taxonomy_id])
 
+  const toNext = useCallback(async () => {
+    const taxonomies = await db.taxonomies.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = taxonomies.length
+    const index = taxonomies.findIndex((p) => p.taxonomy_id === taxonomy_id)
+    const next = taxonomies[(index + 1) % len]
+    navigate(`/projects/${project_id}/taxonomies/${next.taxonomy_id}`)
+  }, [db.taxonomies, navigate, project_id, taxonomy_id])
+
+  const toPrevious = useCallback(async () => {
+    const taxonomies = await db.taxonomies.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = taxonomies.length
+    const index = taxonomies.findIndex((p) => p.taxonomy_id === taxonomy_id)
+    const previous = taxonomies[(index + len - 1) % len]
+    navigate(`/projects/${project_id}/taxonomies/${previous.taxonomy_id}`)
+  }, [db.taxonomies, navigate, project_id, taxonomy_id])
+
   const row: Taxonomy = results
 
   const onChange = useCallback(
@@ -59,7 +81,13 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <FormMenu addRow={addRow} deleteRow={deleteRow} tableName="taxonomy" />
+      <FormMenu
+        addRow={addRow}
+        deleteRow={deleteRow}
+        toNext={toNext}
+        toPrevious={toPrevious}
+        tableName="taxonomy"
+      />
       <TextFieldInactive
         label="ID"
         name="taxonomy_id"
@@ -70,6 +98,7 @@ export const Component = () => {
         name="name"
         value={row.name ?? ''}
         onChange={onChange}
+        autoFocus
       />
       <RadioGroupField
         label="Type"
