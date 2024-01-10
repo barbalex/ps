@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
@@ -19,10 +19,20 @@ export const Component = () => {
     useParams()
   const navigate = useNavigate()
 
+  const autoFocusRef = useRef<HTMLInputElement>(null)
+
   const { db } = useElectric()
   const { results } = useLiveQuery(
     () => db.checks.liveUnique({ where: { check_id } }),
     [check_id],
+  )
+
+  const baseUrl = useMemo(
+    () =>
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+        place_id2 ? `/places/${place_id2}` : ''
+      }/checks`,
+    [place_id, place_id2, project_id, subproject_id],
   )
 
   const addRow = useCallback(async () => {
@@ -32,12 +42,9 @@ export const Component = () => {
       place_id: place_id2 ?? place_id,
     })
     await db.checks.create({ data })
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-        place_id2 ? `/places/${place_id2}` : ''
-      }/checks/${data.check_id}`,
-    )
-  }, [db, navigate, place_id, place_id2, project_id, subproject_id])
+    navigate(`${baseUrl}/${data.check_id}`)
+    autoFocusRef.current?.focus()
+  }, [baseUrl, db, navigate, place_id, place_id2, project_id])
 
   const deleteRow = useCallback(async () => {
     await db.checks.delete({
@@ -45,20 +52,30 @@ export const Component = () => {
         check_id,
       },
     })
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-        place_id2 ? `/places/${place_id2}` : ''
-      }/checks`,
-    )
-  }, [
-    check_id,
-    db.checks,
-    navigate,
-    place_id,
-    place_id2,
-    project_id,
-    subproject_id,
-  ])
+    navigate(baseUrl)
+  }, [baseUrl, check_id, db.checks, navigate])
+
+  const toNext = useCallback(async () => {
+    const checks = await db.checks.findMany({
+      where: { deleted: false, place_id: place_id2 ?? place_id },
+      orderBy: { label: 'asc' },
+    })
+    const len = checks.length
+    const index = checks.findIndex((p) => p.check_id === check_id)
+    const next = checks[(index + 1) % len]
+    navigate(`${baseUrl}/${next.check_id}`)
+  }, [baseUrl, check_id, db.checks, navigate, place_id, place_id2])
+
+  const toPrevious = useCallback(async () => {
+    const checks = await db.checks.findMany({
+      where: { deleted: false, place_id: place_id2 ?? place_id },
+      orderBy: { label: 'asc' },
+    })
+    const len = checks.length
+    const index = checks.findIndex((p) => p.check_id === check_id)
+    const previous = checks[(index + len - 1) % len]
+    navigate(`${baseUrl}/${previous.check_id}`)
+  }, [baseUrl, check_id, db.checks, navigate, place_id, place_id2])
 
   const row: Check = results
 
@@ -79,7 +96,13 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <FormMenu addRow={addRow} deleteRow={deleteRow} tableName="check" />
+      <FormMenu
+        addRow={addRow}
+        deleteRow={deleteRow}
+        toNext={toNext}
+        toPrevious={toPrevious}
+        tableName="check"
+      />
       <TextFieldInactive label="ID" name="check_id" value={row.check_id} />
       <DateField
         label="Date"
@@ -99,6 +122,7 @@ export const Component = () => {
         id={row.check_id}
         data={row.data ?? {}}
         autoFocus
+        ref={autoFocusRef}
       />
     </div>
   )
