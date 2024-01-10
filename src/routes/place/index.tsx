@@ -44,33 +44,28 @@ export const Component = () => {
     navigate(baseUrl)
   }, [baseUrl, db.places, navigate, place_id])
 
-  const toWhere = useMemo(() => {
-    const where = { deleted: false, parent_id: place_id ?? null }
-    if (!place_id) where.subproject_id = subproject_id
-    return where
-  }, [place_id, subproject_id])
-
   const toNext = useCallback(async () => {
     const places = await db.places.findMany({
-      where: toWhere,
+      where: { deleted: false, parent_id: place_id ?? null, subproject_id },
       orderBy: { label: 'asc' },
     })
     const len = places.length
     const index = places.findIndex((p) => p.place_id === place_id)
     const next = places[(index + 1) % len]
+    console.log('place, toNext', {})
     navigate(`${baseUrl}/${next.place_id}`)
-  }, [baseUrl, db.places, navigate, place_id, toWhere])
+  }, [baseUrl, db.places, navigate, place_id, subproject_id])
 
   const toPrevious = useCallback(async () => {
     const places = await db.places.findMany({
-      where: toWhere,
+      where: { deleted: false, parent_id: place_id ?? null, subproject_id },
       orderBy: { label: 'asc' },
     })
     const len = places.length
     const index = places.findIndex((p) => p.place_id === place_id)
     const previous = places[(index + len - 1) % len]
     navigate(`${baseUrl}/${previous.place_id}`)
-  }, [baseUrl, db.places, navigate, place_id, toWhere])
+  }, [baseUrl, db.places, navigate, place_id, subproject_id])
 
   const row: Place = results
 
