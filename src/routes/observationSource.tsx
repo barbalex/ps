@@ -24,16 +24,16 @@ export const Component = () => {
     [observation_source_id],
   )
 
+  const baseUrl = `/projects/${project_id}/observation-sources`
+
   const addRow = useCallback(async () => {
     const data = await createObservationSource({
       db,
       project_id,
     })
     await db.observation_sources.create({ data })
-    navigate(
-      `/projects/${project_id}/observation-sources/${data.observation_source_id}`,
-    )
-  }, [db, navigate, project_id])
+    navigate(`${baseUrl}/${data.observation_source_id}`)
+  }, [baseUrl, db, navigate, project_id])
 
   const deleteRow = useCallback(async () => {
     await db.observation_sources.delete({
@@ -41,12 +41,12 @@ export const Component = () => {
         observation_source_id,
       },
     })
-    navigate(`/projects/${project_id}/observation-sources`)
-  }, [db.observation_sources, navigate, observation_source_id, project_id])
+    navigate(baseUrl)
+  }, [baseUrl, db.observation_sources, navigate, observation_source_id])
 
   const toNext = useCallback(async () => {
     const observationSources = await db.observation_sources.findMany({
-      where: { deleted: false },
+      where: { deleted: false, project_id },
       orderBy: { label: 'asc' },
     })
     const len = observationSources.length
@@ -54,12 +54,18 @@ export const Component = () => {
       (p) => p.observation_source_id === observation_source_id,
     )
     const next = observationSources[(index + 1) % len]
-    navigate(`/projects/${project_id}/observation-sources/${next.observation_source_id}`)
-  }, [db.observation_sources, navigate, observation_source_id, project_id])
+    navigate(`${baseUrl}/${next.observation_source_id}`)
+  }, [
+    baseUrl,
+    db.observation_sources,
+    navigate,
+    observation_source_id,
+    project_id,
+  ])
 
   const toPrevious = useCallback(async () => {
     const observationSources = await db.observation_sources.findMany({
-      where: { deleted: false },
+      where: { deleted: false, project_id },
       orderBy: { label: 'asc' },
     })
     const len = observationSources.length
@@ -67,8 +73,14 @@ export const Component = () => {
       (p) => p.observation_source_id === observation_source_id,
     )
     const previous = observationSources[(index + len - 1) % len]
-    navigate(`/projects/${project_id}/observation-sources/${previous.observation_source_id}`)
-  }, [db.observation_sources, navigate, observation_source_id, project_id])
+    navigate(`${baseUrl}/${previous.observation_source_id}`)
+  }, [
+    baseUrl,
+    db.observation_sources,
+    navigate,
+    observation_source_id,
+    project_id,
+  ])
 
   const row: ObservationSource = results
 
