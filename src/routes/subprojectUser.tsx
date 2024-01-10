@@ -25,16 +25,16 @@ export const Component = () => {
     [subproject_user_id],
   )
 
+  const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/users`
+
   const addRow = useCallback(async () => {
     const subprojectUser = createSubprojectUser()
     await db.subproject_users.create({
       data: { ...subprojectUser, subproject_id },
     })
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/users/${subprojectUser.subproject_user_id}`,
-    )
+    navigate(`${baseUrl}/${subprojectUser.subproject_user_id}`)
     autoFocusRef.current?.focus()
-  }, [db.subproject_users, navigate, project_id, subproject_id])
+  }, [baseUrl, db.subproject_users, navigate, subproject_id])
 
   const deleteRow = useCallback(async () => {
     await db.subproject_users.delete({
@@ -42,18 +42,12 @@ export const Component = () => {
         subproject_user_id,
       },
     })
-    navigate(`/projects/${project_id}/subprojects/${subproject_id}/users`)
-  }, [
-    db.subproject_users,
-    navigate,
-    project_id,
-    subproject_id,
-    subproject_user_id,
-  ])
+    navigate(baseUrl)
+  }, [baseUrl, db.subproject_users, navigate, subproject_user_id])
 
   const toNext = useCallback(async () => {
     const subprojectUsers = await db.subproject_users.findMany({
-      where: { deleted: false },
+      where: { deleted: false, subproject_id },
       orderBy: { label: 'asc' },
     })
     const len = subprojectUsers.length
@@ -61,20 +55,18 @@ export const Component = () => {
       (p) => p.subproject_user_id === subproject_user_id,
     )
     const next = subprojectUsers[(index + 1) % len]
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/users/${next.subproject_user_id}`,
-    )
+    navigate(`${baseUrl}/${next.subproject_user_id}`)
   }, [
+    baseUrl,
     db.subproject_users,
     navigate,
-    project_id,
     subproject_id,
     subproject_user_id,
   ])
 
   const toPrevious = useCallback(async () => {
     const subprojectUsers = await db.subproject_users.findMany({
-      where: { deleted: false },
+      where: { deleted: false, subproject_id },
       orderBy: { label: 'asc' },
     })
     const len = subprojectUsers.length
@@ -82,13 +74,11 @@ export const Component = () => {
       (p) => p.subproject_user_id === subproject_user_id,
     )
     const previous = subprojectUsers[(index + len - 1) % len]
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/users/${previous.subproject_user_id}`,
-    )
+    navigate(`${baseUrl}/${previous.subproject_user_id}`)
   }, [
+    baseUrl,
     db.subproject_users,
     navigate,
-    project_id,
     subproject_id,
     subproject_user_id,
   ])

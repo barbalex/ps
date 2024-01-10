@@ -23,24 +23,24 @@ export const Component = () => {
     [project_report_id],
   )
 
+  const baseUrl = `/projects/${project_id}/reports`
+
   const addRow = useCallback(async () => {
     const data = await createProjectReport({ db, project_id })
     await db.project_reports.create({ data })
-    navigate(`/projects/${project_id}/reports/${data.project_report_id}`)
-  }, [db, navigate, project_id])
+    navigate(`${baseUrl}/${data.project_report_id}`)
+  }, [baseUrl, db, navigate, project_id])
 
   const deleteRow = useCallback(async () => {
     await db.project_reports.delete({
-      where: {
-        project_report_id,
-      },
+      where: { project_report_id },
     })
-    navigate(`/projects/${project_id}/reports`)
-  }, [db.project_reports, navigate, project_id, project_report_id])
+    navigate(baseUrl)
+  }, [baseUrl, db.project_reports, navigate, project_report_id])
 
   const toNext = useCallback(async () => {
     const projectReports = await db.project_reports.findMany({
-      where: { deleted: false },
+      where: { deleted: false, project_id },
       orderBy: { label: 'asc' },
     })
     const len = projectReports.length
@@ -48,12 +48,12 @@ export const Component = () => {
       (p) => p.project_report_id === project_report_id,
     )
     const next = projectReports[(index + 1) % len]
-    navigate(`/projects/${project_id}/reports/${next.project_report_id}`)
-  }, [db.project_reports, navigate, project_id, project_report_id])
+    navigate(`${baseUrl}/${next.project_report_id}`)
+  }, [baseUrl, db.project_reports, navigate, project_id, project_report_id])
 
   const toPrevious = useCallback(async () => {
     const projectReports = await db.project_reports.findMany({
-      where: { deleted: false },
+      where: { deleted: false, project_id },
       orderBy: { label: 'asc' },
     })
     const len = projectReports.length
@@ -61,8 +61,8 @@ export const Component = () => {
       (p) => p.project_report_id === project_report_id,
     )
     const previous = projectReports[(index + len - 1) % len]
-    navigate(`/projects/${project_id}/reports/${previous.project_report_id}`)
-  }, [db.project_reports, navigate, project_id, project_report_id])
+    navigate(`${baseUrl}/${previous.project_report_id}`)
+  }, [baseUrl, db.project_reports, navigate, project_id, project_report_id])
 
   const row: ProjectReport = results
 

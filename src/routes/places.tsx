@@ -21,6 +21,10 @@ export const Component = () => {
   const orderBy = useMemo(() => [{ label: 'asc' }, { place_id: 'asc' }], [])
   const { results } = useLiveQuery(db.places.liveMany({ where, orderBy }))
 
+  const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/places${
+    place_id ? `/${place_id}/places` : ''
+  }`
+
   const add = useCallback(async () => {
     const data = await createPlace({ db, project_id, subproject_id })
     if (place_id) {
@@ -28,12 +32,8 @@ export const Component = () => {
       data.level = 2
     }
     await db.places.create({ data })
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${
-        place_id ? `${place_id}/places/` : ''
-      }${data.place_id}`,
-    )
-  }, [db, navigate, place_id, project_id, subproject_id])
+    navigate(`${baseUrl}/${data.place_id}`)
+  }, [baseUrl, db, navigate, place_id, project_id, subproject_id])
 
   const places: Place[] = results ?? []
 
@@ -42,11 +42,7 @@ export const Component = () => {
       <ListViewMenu addRow={add} tableName="place" />
       {places.map((place: Place, index: number) => (
         <p key={index} className="item">
-          <Link
-            to={`/projects/${project_id}/subprojects/${subproject_id}/places/${
-              place_id ? `${place_id}/places/` : ''
-            }${place.place_id}`}
-          >
+          <Link to={`${baseUrl}/${place.place_id}`}>
             {place.label ?? place.place_id}
           </Link>
         </p>
