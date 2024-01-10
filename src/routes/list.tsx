@@ -24,11 +24,13 @@ export const Component = () => {
     [list_id],
   )
 
+  const baseUrl = `/projects/${project_id}/lists`
+
   const addRow = useCallback(async () => {
     const data = await createList({ db, project_id })
     await db.lists.create({ data })
-    navigate(`/projects/${project_id}/lists/${data.list_id}`)
-  }, [db, navigate, project_id])
+    navigate(`${baseUrl}/${data.list_id}`)
+  }, [baseUrl, db, navigate, project_id])
 
   const deleteRow = useCallback(async () => {
     await db.lists.delete({
@@ -36,30 +38,30 @@ export const Component = () => {
         list_id,
       },
     })
-    navigate(`/projects/${project_id}/lists`)
-  }, [db.lists, list_id, navigate, project_id])
+    navigate(baseUrl)
+  }, [baseUrl, db.lists, list_id, navigate])
 
   const toNext = useCallback(async () => {
     const lists = await db.lists.findMany({
-      where: { deleted: false },
+      where: { deleted: false, project_id },
       orderBy: { label: 'asc' },
     })
     const len = lists.length
     const index = lists.findIndex((p) => p.list_id === list_id)
     const next = lists[(index + 1) % len]
-    navigate(`/projects/${project_id}/lists/${next.list_id}`)
-  }, [db.lists, list_id, navigate, project_id])
+    navigate(`${baseUrl}/${next.list_id}`)
+  }, [baseUrl, db.lists, list_id, navigate, project_id])
 
   const toPrevious = useCallback(async () => {
     const lists = await db.lists.findMany({
-      where: { deleted: false },
+      where: { deleted: false, project_id },
       orderBy: { label: 'asc' },
     })
     const len = lists.length
     const index = lists.findIndex((p) => p.list_id === list_id)
     const previous = lists[(index + len - 1) % len]
-    navigate(`/projects/${project_id}/lists/${previous.list_id}`)
-  }, [db.lists, list_id, navigate, project_id])
+    navigate(`${baseUrl}/${previous.list_id}`)
+  }, [baseUrl, db.lists, list_id, navigate, project_id])
 
   const row: List = results
 
