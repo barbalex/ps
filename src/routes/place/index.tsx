@@ -26,49 +26,51 @@ export const Component = () => {
     [place_id],
   )
 
+  const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/places${
+    place_id ? `/${place_id}/places` : ''
+  }`
+
   const addRow = useCallback(async () => {
     const data = await createPlace({ db, project_id, subproject_id })
     await db.places.create({ data })
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${data.place_id}`,
-    )
+    navigate(`${baseUrl}/${data.place_id}`)
     autoFocusRef.current?.focus()
-  }, [db, navigate, project_id, subproject_id])
+  }, [baseUrl, db, navigate, project_id, subproject_id])
 
   const deleteRow = useCallback(async () => {
     await db.places.delete({
-      where: {
-        place_id,
-      },
+      where: { place_id },
     })
-    navigate(`/projects/${project_id}/subprojects/${subproject_id}/places`)
-  }, [db.places, navigate, place_id, project_id, subproject_id])
+    navigate(baseUrl)
+  }, [baseUrl, db.places, navigate, place_id])
+
+  const toWhere = useMemo(() => {
+    const where = { deleted: false, parent_id: place_id ?? null }
+    if (!place_id) where.subproject_id = subproject_id
+    return where
+  }, [place_id, subproject_id])
 
   const toNext = useCallback(async () => {
     const places = await db.places.findMany({
-      where: { deleted: false },
+      where: toWhere,
       orderBy: { label: 'asc' },
     })
     const len = places.length
     const index = places.findIndex((p) => p.place_id === place_id)
     const next = places[(index + 1) % len]
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${next.place_id}`,
-    )
-  }, [db.places, navigate, place_id, project_id, subproject_id])
+    navigate(`${baseUrl}/${next.place_id}`)
+  }, [baseUrl, db.places, navigate, place_id, toWhere])
 
   const toPrevious = useCallback(async () => {
     const places = await db.places.findMany({
-      where: { deleted: false },
+      where: toWhere,
       orderBy: { label: 'asc' },
     })
     const len = places.length
     const index = places.findIndex((p) => p.place_id === place_id)
     const previous = places[(index + len - 1) % len]
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${previous.place_id}`,
-    )
-  }, [db.places, navigate, place_id, project_id, subproject_id])
+    navigate(`${baseUrl}/${previous.place_id}`)
+  }, [baseUrl, db.places, navigate, place_id, toWhere])
 
   const row: Place = results
 

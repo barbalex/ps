@@ -25,42 +25,42 @@ export const Component = () => {
     [taxonomy_id],
   )
 
+  const baseUrl = `/projects/${project_id}/taxonomies`
+
   const addRow = useCallback(async () => {
     const data = await createTaxonomy({ db, project_id })
     await db.taxonomies.create({ data })
-    navigate(`/projects/${project_id}/taxonomies/${data.taxonomy_id}`)
-  }, [db, navigate, project_id])
+    navigate(`${baseUrl}/${data.taxonomy_id}`)
+  }, [baseUrl, db, navigate, project_id])
 
   const deleteRow = useCallback(async () => {
     await db.taxonomies.delete({
-      where: {
-        taxonomy_id,
-      },
+      where: { taxonomy_id },
     })
-    navigate(`/projects/${project_id}/taxonomies`)
-  }, [db.taxonomies, navigate, project_id, taxonomy_id])
+    navigate(baseUrl)
+  }, [baseUrl, db.taxonomies, navigate, taxonomy_id])
 
   const toNext = useCallback(async () => {
     const taxonomies = await db.taxonomies.findMany({
-      where: { deleted: false },
+      where: { deleted: false, project_id },
       orderBy: { label: 'asc' },
     })
     const len = taxonomies.length
     const index = taxonomies.findIndex((p) => p.taxonomy_id === taxonomy_id)
     const next = taxonomies[(index + 1) % len]
-    navigate(`/projects/${project_id}/taxonomies/${next.taxonomy_id}`)
-  }, [db.taxonomies, navigate, project_id, taxonomy_id])
+    navigate(`${baseUrl}/${next.taxonomy_id}`)
+  }, [baseUrl, db.taxonomies, navigate, project_id, taxonomy_id])
 
   const toPrevious = useCallback(async () => {
     const taxonomies = await db.taxonomies.findMany({
-      where: { deleted: false },
+      where: { deleted: false, project_id },
       orderBy: { label: 'asc' },
     })
     const len = taxonomies.length
     const index = taxonomies.findIndex((p) => p.taxonomy_id === taxonomy_id)
     const previous = taxonomies[(index + len - 1) % len]
-    navigate(`/projects/${project_id}/taxonomies/${previous.taxonomy_id}`)
-  }, [db.taxonomies, navigate, project_id, taxonomy_id])
+    navigate(`${baseUrl}/${previous.taxonomy_id}`)
+  }, [baseUrl, db.taxonomies, navigate, project_id, taxonomy_id])
 
   const row: Taxonomy = results
 
