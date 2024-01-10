@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
@@ -16,6 +16,8 @@ export const Component = () => {
   const { project_id, taxonomy_id, taxon_id } = useParams()
   const navigate = useNavigate()
 
+  const autoFocusRef = useRef<HTMLInputElement>(null)
+
   const { db } = useElectric()
   const { results } = useLiveQuery(
     () => db.taxa.liveUnique({ where: { taxon_id } }),
@@ -30,6 +32,7 @@ export const Component = () => {
     navigate(
       `/projects/${project_id}/taxonomies/${taxonomy_id}/taxa/${taxon.taxon_id}`,
     )
+    autoFocusRef.current?.focus()
   }, [db.taxa, navigate, project_id, taxonomy_id])
 
   const deleteRow = useCallback(async () => {
@@ -68,6 +71,7 @@ export const Component = () => {
         value={row.name ?? ''}
         onChange={onChange}
         autoFocus
+        ref={autoFocusRef}
       />
       <TextField
         label="ID in source"
