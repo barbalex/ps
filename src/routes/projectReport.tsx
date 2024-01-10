@@ -38,6 +38,32 @@ export const Component = () => {
     navigate(`/projects/${project_id}/reports`)
   }, [db.project_reports, navigate, project_id, project_report_id])
 
+  const toNext = useCallback(async () => {
+    const projectReports = await db.project_reports.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = projectReports.length
+    const index = projectReports.findIndex(
+      (p) => p.project_report_id === project_report_id,
+    )
+    const next = projectReports[(index + 1) % len]
+    navigate(`/projects/${project_id}/reports/${next.project_report_id}`)
+  }, [db.project_reports, navigate, project_id, project_report_id])
+
+  const toPrevious = useCallback(async () => {
+    const projectReports = await db.project_reports.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = projectReports.length
+    const index = projectReports.findIndex(
+      (p) => p.project_report_id === project_report_id,
+    )
+    const previous = projectReports[(index + len - 1) % len]
+    navigate(`/projects/${project_id}/reports/${previous.project_report_id}`)
+  }, [db.project_reports, navigate, project_id, project_report_id])
+
   const row: ProjectReport = results
 
   const onChange = useCallback(
@@ -60,6 +86,8 @@ export const Component = () => {
       <FormMenu
         addRow={addRow}
         deleteRow={deleteRow}
+        toNext={toNext}
+        toPrevious={toPrevious}
         tableName="project report"
       />
       <TextFieldInactive
