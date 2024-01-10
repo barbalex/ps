@@ -58,6 +58,10 @@ export const Breadcrumb = ({ match }) => {
       filterParams[parentIdName] = parentId
     }
   }
+  // fields exist in root and in projects
+  if (table === 'fields' && !parentId) {
+    filterParams.project_id = null
+  }
   const queryParam = { where: filterParams }
   // TODO: test including
   // if (table === 'projects') {

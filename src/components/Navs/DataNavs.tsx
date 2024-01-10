@@ -48,6 +48,10 @@ export const DataNavs = ({ matches }) => {
       filterParams[parentIdName] = parentId
     }
   }
+  // fields exist in root and in projects
+  if (table === 'fields' && !parentId) {
+    filterParams.project_id = null
+  }
 
   const { db } = useElectric()
   const { results: tableResults } = useLiveQuery(
