@@ -26,18 +26,22 @@ export const Component = () => {
     [place_user_id],
   )
 
+  const baseUrl = useMemo(
+    () =>
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+        place_id2 ? `/places/${place_id2}` : ''
+      }/users`,
+    [place_id, place_id2, project_id, subproject_id],
+  )
+
   const addRow = useCallback(async () => {
     const placeUser = createPlaceUser()
     await db.place_users.create({
       data: { ...placeUser, place_id: place_id2 ?? place_id },
     })
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-        place_id2 ? `/places/${place_id2}` : ''
-      }/users/${placeUser.place_user_id}`,
-    )
+    navigate(`${baseUrl}/${placeUser.place_user_id}`)
     autoFocusRef.current?.focus()
-  }, [db.place_users, navigate, place_id, place_id2, project_id, subproject_id])
+  }, [baseUrl, db.place_users, navigate, place_id, place_id2])
 
   const deleteRow = useCallback(async () => {
     await db.place_users.delete({
@@ -45,43 +49,19 @@ export const Component = () => {
         place_user_id,
       },
     })
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-        place_id2 ? `/places/${place_id2}` : ''
-      }/users`,
-    )
-  }, [
-    db.place_users,
-    place_user_id,
-    navigate,
-    project_id,
-    subproject_id,
-    place_id,
-    place_id2,
-  ])
+    navigate(baseUrl)
+  }, [db.place_users, place_user_id, navigate, baseUrl])
 
   const toNext = useCallback(async () => {
     const placeUsers = await db.place_users.findMany({
-      where: { deleted: false },
+      where: { deleted: false, place_id: place_id2 ?? place_id },
       orderBy: { label: 'asc' },
     })
     const len = placeUsers.length
     const index = placeUsers.findIndex((p) => p.place_user_id === place_user_id)
     const next = placeUsers[(index + 1) % len]
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-        place_id2 ? `/places/${place_id2}` : ''
-      }/users/${next.place_user_id}`,
-    )
-  }, [
-    db.place_users,
-    navigate,
-    place_id,
-    place_id2,
-    place_user_id,
-    project_id,
-    subproject_id,
-  ])
+    navigate(`${baseUrl}/${next.place_user_id}`)
+  }, [baseUrl, db.place_users, navigate, place_id, place_id2, place_user_id])
 
   const toPrevious = useCallback(async () => {
     const placeUsers = await db.place_users.findMany({
@@ -91,20 +71,8 @@ export const Component = () => {
     const len = placeUsers.length
     const index = placeUsers.findIndex((p) => p.place_user_id === place_user_id)
     const previous = placeUsers[(index + len - 1) % len]
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-        place_id2 ? `/places/${place_id2}` : ''
-      }/users/${previous.place_user_id}`,
-    )
-  }, [
-    db.place_users,
-    navigate,
-    place_id,
-    place_id2,
-    place_user_id,
-    project_id,
-    subproject_id,
-  ])
+    navigate(`${baseUrl}/${previous.place_user_id}`)
+  }, [baseUrl, db.place_users, navigate, place_user_id])
 
   const row: PlaceUser = results
 
