@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
@@ -19,10 +19,20 @@ export const Component = () => {
     useParams()
   const navigate = useNavigate()
 
+  const autoFocusRef = useRef<HTMLInputElement>(null)
+
   const { db } = useElectric()
   const { results } = useLiveQuery(
     () => db.actions.liveUnique({ where: { action_id } }),
     [action_id],
+  )
+
+  const baseUrl = useMemo(
+    () =>
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+        place_id2 ? `/places/${place_id2}` : ''
+      }/actions`,
+    [place_id, place_id2, project_id, subproject_id],
   )
 
   const addRow = useCallback(async () => {
@@ -32,12 +42,9 @@ export const Component = () => {
       place_id: place_id2 ?? place_id,
     })
     await db.actions.create({ data })
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-        place_id2 ? `/places/${place_id2}` : ''
-      }/actions/${data.action_id}`,
-    )
-  }, [db, navigate, place_id, place_id2, project_id, subproject_id])
+    navigate(`${baseUrl}/${data.action_id}`)
+    autoFocusRef.current?.focus()
+  }, [baseUrl, db, navigate, place_id, place_id2, project_id])
 
   const deleteRow = useCallback(async () => {
     await db.actions.delete({
@@ -45,20 +52,30 @@ export const Component = () => {
         action_id,
       },
     })
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-        place_id2 ? `/places/${place_id2}` : ''
-      }/actions`,
-    )
-  }, [
-    action_id,
-    db.actions,
-    navigate,
-    place_id,
-    place_id2,
-    project_id,
-    subproject_id,
-  ])
+    navigate(baseUrl)
+  }, [action_id, baseUrl, db.actions, navigate])
+
+  const toNext = useCallback(async () => {
+    const actions = await db.actions.findMany({
+      where: { deleted: false, place_id: place_id2 ?? place_id },
+      orderBy: { label: 'asc' },
+    })
+    const len = actions.length
+    const index = actions.findIndex((p) => p.action_id === action_id)
+    const next = actions[(index + 1) % len]
+    navigate(`${baseUrl}/${next.action_id}`)
+  }, [action_id, baseUrl, db.actions, navigate, place_id, place_id2])
+
+  const toPrevious = useCallback(async () => {
+    const actions = await db.actions.findMany({
+      where: { deleted: false, place_id: place_id2 ?? place_id },
+      orderBy: { label: 'asc' },
+    })
+    const len = actions.length
+    const index = actions.findIndex((p) => p.action_id === action_id)
+    const previous = actions[(index + len - 1) % len]
+    navigate(`${baseUrl}/${previous.action_id}`)
+  }, [action_id, baseUrl, db.actions, navigate, place_id, place_id2])
 
   const row: Action = results
 
@@ -79,7 +96,13 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <FormMenu addRow={addRow} deleteRow={deleteRow} tableName="action" />
+      <FormMenu
+        addRow={addRow}
+        deleteRow={deleteRow}
+        toNext={toNext}
+        toPrevious={toPrevious}
+        tableName="action"
+      />
       <TextFieldInactive label="ID" name="action_id" value={row.action_id} />
       <DateField
         label="Date"
@@ -99,6 +122,7 @@ export const Component = () => {
         id={row.action_id}
         data={row.data ?? {}}
         autoFocus
+        ref={autoFocusRef}
       />
     </div>
   )
