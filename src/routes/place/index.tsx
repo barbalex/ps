@@ -16,7 +16,7 @@ import '../../form.css'
 
 export const Component = () => {
   const navigate = useNavigate()
-  const { project_id, subproject_id, place_id } = useParams()
+  const { project_id, subproject_id, place_id, place_id2 } = useParams()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -27,15 +27,20 @@ export const Component = () => {
   )
 
   const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/places${
-    place_id ? `/${place_id}/places` : ''
+    place_id2 ? `/${place_id}/places` : ''
   }`
 
   const addRow = useCallback(async () => {
-    const data = await createPlace({ db, project_id, subproject_id })
+    const data = await createPlace({
+      db,
+      project_id,
+      subproject_id,
+      place_id,
+    })
     await db.places.create({ data })
     navigate(`${baseUrl}/${data.place_id}`)
     autoFocusRef.current?.focus()
-  }, [baseUrl, db, navigate, project_id, subproject_id])
+  }, [baseUrl, db, navigate, place_id, project_id, subproject_id])
 
   const deleteRow = useCallback(async () => {
     await db.places.delete({
@@ -46,26 +51,33 @@ export const Component = () => {
 
   const toNext = useCallback(async () => {
     const places = await db.places.findMany({
-      where: { deleted: false, parent_id: place_id ?? null, subproject_id },
+      where: {
+        deleted: false,
+        parent_id: place_id2 ? place_id : null,
+        subproject_id,
+      },
       orderBy: { label: 'asc' },
     })
     const len = places.length
     const index = places.findIndex((p) => p.place_id === place_id)
     const next = places[(index + 1) % len]
-    console.log('place, toNext', {})
     navigate(`${baseUrl}/${next.place_id}`)
-  }, [baseUrl, db.places, navigate, place_id, subproject_id])
+  }, [baseUrl, db.places, navigate, place_id, place_id2, subproject_id])
 
   const toPrevious = useCallback(async () => {
     const places = await db.places.findMany({
-      where: { deleted: false, parent_id: place_id ?? null, subproject_id },
+      where: {
+        deleted: false,
+        parent_id: place_id2 ? place_id : null,
+        subproject_id,
+      },
       orderBy: { label: 'asc' },
     })
     const len = places.length
     const index = places.findIndex((p) => p.place_id === place_id)
     const previous = places[(index + len - 1) % len]
     navigate(`${baseUrl}/${previous.place_id}`)
-  }, [baseUrl, db.places, navigate, place_id, subproject_id])
+  }, [baseUrl, db.places, navigate, place_id, place_id2, subproject_id])
 
   const row: Place = results
 
