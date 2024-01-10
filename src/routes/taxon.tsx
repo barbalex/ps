@@ -44,6 +44,32 @@ export const Component = () => {
     navigate(`/projects/${project_id}/taxonomies/${taxonomy_id}/taxa`)
   }, [db.taxa, navigate, project_id, taxon_id, taxonomy_id])
 
+  const toNext = useCallback(async () => {
+    const taxa = await db.taxa.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = taxa.length
+    const index = taxa.findIndex((p) => p.taxon_id === taxon_id)
+    const next = taxa[(index + 1) % len]
+    navigate(
+      `/projects/${project_id}/taxonomies/${taxonomy_id}/taxa/${next.taxon_id}`,
+    )
+  }, [db.taxa, navigate, project_id, taxon_id, taxonomy_id])
+
+  const toPrevious = useCallback(async () => {
+    const taxa = await db.taxa.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = taxa.length
+    const index = taxa.findIndex((p) => p.taxon_id === taxon_id)
+    const previous = taxa[(index + len - 1) % len]
+    navigate(
+      `/projects/${project_id}/taxonomies/${taxonomy_id}/taxa/${previous.taxon_id}`,
+    )
+  }, [db.taxa, navigate, project_id, taxon_id, taxonomy_id])
+
   const row: Taxon = results
 
   const onChange = useCallback(
@@ -63,7 +89,13 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <FormMenu addRow={addRow} deleteRow={deleteRow} tableName="taxon" />
+      <FormMenu
+        addRow={addRow}
+        deleteRow={deleteRow}
+        toNext={toNext}
+        toPrevious={toPrevious}
+        tableName="taxon"
+      />
       <TextFieldInactive label="ID" name="taxon_id" value={row.taxon_id} />
       <TextField
         label="Name"
