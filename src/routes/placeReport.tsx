@@ -56,7 +56,7 @@ export const Component = () => {
 
   const toNext = useCallback(async () => {
     const placeReports = await db.place_reports.findMany({
-      where: { deleted: false },
+      where: { deleted: false, place_id: place_id2 ?? place_id },
       orderBy: { label: 'asc' },
     })
     const len = placeReports.length
@@ -65,11 +65,11 @@ export const Component = () => {
     )
     const next = placeReports[(index + 1) % len]
     navigate(`${baseUrl}/${next.place_report_id}`)
-  }, [baseUrl, db.place_reports, navigate, place_report_id])
+  }, [baseUrl, db.place_reports, navigate, place_id, place_id2, place_report_id])
 
   const toPrevious = useCallback(async () => {
     const placeReports = await db.place_reports.findMany({
-      where: { deleted: false },
+      where: { deleted: false,place_id: place_id2 ?? place_id },
       orderBy: { label: 'asc' },
     })
     const len = placeReports.length
@@ -78,7 +78,7 @@ export const Component = () => {
     )
     const previous = placeReports[(index + len - 1) % len]
     navigate(`${baseUrl}/${previous.place_report_id}`)
-  }, [baseUrl, db.place_reports, navigate, place_report_id])
+  }, [baseUrl, db.place_reports, navigate, place_id, place_id2, place_report_id])
 
   const row: PlaceReport = results
 
