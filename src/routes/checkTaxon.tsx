@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
@@ -24,10 +24,20 @@ export const Component = () => {
   } = useParams()
   const navigate = useNavigate()
 
+  const autoFocusRef = useRef<HTMLInputElement>(null)
+
   const { db } = useElectric()
   const { results } = useLiveQuery(
     () => db.check_taxa.liveUnique({ where: { check_taxon_id } }),
     [check_taxon_id],
+  )
+
+  const baseUrl = useMemo(
+    () =>
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+        place_id2 ? `/places/${place_id2}` : ''
+      }/checks/${check_id}/taxa`,
+    [check_id, place_id, place_id2, project_id, subproject_id],
   )
 
   const addRow = useCallback(async () => {
@@ -38,20 +48,9 @@ export const Component = () => {
         check_id,
       },
     })
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-        place_id2 ? `/places/${place_id2}` : ''
-      }/checks/${check_id}/taxa/${checkTaxon.check_taxon_id}`,
-    )
-  }, [
-    check_id,
-    db.check_taxa,
-    navigate,
-    place_id,
-    place_id2,
-    project_id,
-    subproject_id,
-  ])
+    navigate(`${baseUrl}/${checkTaxon.check_taxon_id}`)
+    autoFocusRef.current?.focus()
+  }, [baseUrl, check_id, db.check_taxa, navigate])
 
   const deleteRow = useCallback(async () => {
     await db.check_taxa.delete({
@@ -59,21 +58,34 @@ export const Component = () => {
         check_taxon_id,
       },
     })
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-        place_id2 ? `/places/${place_id2}` : ''
-      }/checks/${check_id}/taxa`,
+    navigate(baseUrl)
+  }, [baseUrl, check_taxon_id, db.check_taxa, navigate])
+
+  const toNext = useCallback(async () => {
+    const checkTaxa = await db.check_taxa.findMany({
+      where: { deleted: false, check_id },
+      orderBy: { label: 'asc' },
+    })
+    const len = checkTaxa.length
+    const index = checkTaxa.findIndex(
+      (p) => p.check_taxon_id === check_taxon_id,
     )
-  }, [
-    check_id,
-    check_taxon_id,
-    db.check_taxa,
-    navigate,
-    place_id,
-    place_id2,
-    project_id,
-    subproject_id,
-  ])
+    const next = checkTaxa[(index + 1) % len]
+    navigate(`${baseUrl}/${next.check_taxon_id}`)
+  }, [baseUrl, check_id, check_taxon_id, db.check_taxa, navigate])
+
+  const toPrevious = useCallback(async () => {
+    const checkTaxa = await db.check_taxa.findMany({
+      where: { deleted: false, check_id },
+      orderBy: { label: 'asc' },
+    })
+    const len = checkTaxa.length
+    const index = checkTaxa.findIndex(
+      (p) => p.check_taxon_id === check_taxon_id,
+    )
+    const previous = checkTaxa[(index + len - 1) % len]
+    navigate(`${baseUrl}/${previous.check_taxon_id}`)
+  }, [baseUrl, check_id, check_taxon_id, db.check_taxa, navigate])
 
   const row: CheckTaxon = results
 
@@ -101,7 +113,9 @@ export const Component = () => {
       <FormMenu
         addRow={addRow}
         deleteRow={deleteRow}
-        tableName="goal report value"
+        toNext={toNext}
+        toPrevious={toPrevious}
+        tableName="check taxon"
       />
       <TextFieldInactive
         label="ID"
@@ -116,6 +130,7 @@ export const Component = () => {
         value={row.taxon_id ?? ''}
         onChange={onChange}
         autoFocus
+        ref={autoFocusRef}
       />
       <TextField
         label="Value (integer)"
