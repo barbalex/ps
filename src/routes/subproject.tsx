@@ -35,6 +35,32 @@ export const Component = () => {
     navigate(`/projects/${project_id}/subprojects`)
   }, [db.subprojects, navigate, project_id, subproject_id])
 
+  const toNext = useCallback(async () => {
+    const subprojects = await db.subprojects.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = subprojects.length
+    const index = subprojects.findIndex(
+      (p) => p.subproject_id === subproject_id,
+    )
+    const next = subprojects[(index + 1) % len]
+    navigate(`/projects/${project_id}/subprojects/${next.subproject_id}`)
+  }, [db.subprojects, navigate, project_id, subproject_id])
+
+  const toPrevious = useCallback(async () => {
+    const subprojects = await db.subprojects.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = subprojects.length
+    const index = subprojects.findIndex(
+      (p) => p.subproject_id === subproject_id,
+    )
+    const previous = subprojects[(index + len - 1) % len]
+    navigate(`/projects/${project_id}/subprojects/${previous.subproject_id}`)
+  }, [db.subprojects, navigate, project_id, subproject_id])
+
   const row: Subproject = results
 
   const onChange = useCallback(
@@ -59,6 +85,8 @@ export const Component = () => {
       <FormMenu
         addRow={addRow}
         deleteRow={deleteRow}
+        toNext={toNext}
+        toPrevious={toPrevious}
         tableName="subproject" // TODO: use subproject_name_singular
       />
       <TextFieldInactive
