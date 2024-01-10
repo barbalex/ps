@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useRef, useMemo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
@@ -18,10 +18,20 @@ export const Component = () => {
     useParams()
   const navigate = useNavigate()
 
+  const autoFocusRef = useRef<HTMLInputElement>(null)
+
   const { db } = useElectric()
   const { results } = useLiveQuery(
     () => db.place_reports.liveUnique({ where: { place_report_id } }),
     [place_report_id],
+  )
+
+  const baseUrl = useMemo(
+    () =>
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+        place_id2 ? `/places/${place_id2}` : ''
+      }/reports`,
+    [place_id, place_id2, project_id, subproject_id],
   )
 
   const addRow = useCallback(async () => {
@@ -31,12 +41,9 @@ export const Component = () => {
       place_id: place_id2 ?? place_id,
     })
     await db.place_reports.create({ data })
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-        place_id2 ? `/places/${place_id2}` : ''
-      }/reports/${data.place_report_id}`,
-    )
-  }, [db, navigate, place_id, place_id2, project_id, subproject_id])
+    navigate(`${baseUrl}/${data.place_report_id}`)
+    autoFocusRef.current?.focus()
+  }, [baseUrl, db, navigate, place_id, place_id2, project_id])
 
   const deleteRow = useCallback(async () => {
     await db.place_reports.delete({
@@ -44,20 +51,34 @@ export const Component = () => {
         place_report_id,
       },
     })
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-        place_id2 ? `/places/${place_id2}` : ''
-      }/reports`,
+    navigate(baseUrl)
+  }, [baseUrl, db.place_reports, navigate, place_report_id])
+
+  const toNext = useCallback(async () => {
+    const placeReports = await db.place_reports.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = placeReports.length
+    const index = placeReports.findIndex(
+      (p) => p.place_report_id === place_report_id,
     )
-  }, [
-    db.place_reports,
-    navigate,
-    place_id,
-    place_id2,
-    place_report_id,
-    project_id,
-    subproject_id,
-  ])
+    const next = placeReports[(index + 1) % len]
+    navigate(`${baseUrl}/${next.place_report_id}`)
+  }, [baseUrl, db.place_reports, navigate, place_report_id])
+
+  const toPrevious = useCallback(async () => {
+    const placeReports = await db.place_reports.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = placeReports.length
+    const index = placeReports.findIndex(
+      (p) => p.place_report_id === place_report_id,
+    )
+    const previous = placeReports[(index + len - 1) % len]
+    navigate(`${baseUrl}/${previous.place_report_id}`)
+  }, [baseUrl, db.place_reports, navigate, place_report_id])
 
   const row: PlaceReport = results
 
@@ -81,6 +102,8 @@ export const Component = () => {
       <FormMenu
         addRow={addRow}
         deleteRow={deleteRow}
+        toNext={toNext}
+        toPrevious={toPrevious}
         tableName="place report"
       />
       <TextFieldInactive
@@ -101,6 +124,7 @@ export const Component = () => {
         id={row.place_report_id}
         data={row.data ?? {}}
         autoFocus
+        ref={autoFocusRef}
       />
     </div>
   )
