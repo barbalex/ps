@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
@@ -16,6 +16,8 @@ export const Component = () => {
   const { field_type_id } = useParams()
   const navigate = useNavigate()
 
+  const autoFocusRef = useRef<HTMLInputElement>(null)
+
   const { db } = useElectric()
   const { results } = useLiveQuery(
     () => db.field_types.liveUnique({ where: { field_type_id } }),
@@ -26,13 +28,12 @@ export const Component = () => {
     const data = createFieldType()
     await db.field_types.create({ data })
     navigate(`/field-types/${data.field_type_id}`)
+    autoFocusRef.current?.focus()
   }, [db.field_types, navigate])
 
   const deleteRow = useCallback(async () => {
     await db.field_types.delete({
-      where: {
-        field_type_id,
-      },
+      where: { field_type_id },
     })
     navigate(`/field-types`)
   }, [db.field_types, field_type_id, navigate])
@@ -96,6 +97,7 @@ export const Component = () => {
         value={row.name ?? ''}
         onChange={onChange}
         autoFocus
+        ref={autoFocusRef}
       />
       <TextField
         label="Sort value"
