@@ -31,6 +31,8 @@ export const Component = () => {
     [goal_report_value_id],
   )
 
+  const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${goal_report_id}/values`
+
   const addRow = useCallback(async () => {
     const goalReportValue = createGoalReportValue()
     await db.goal_report_values.create({
@@ -39,18 +41,9 @@ export const Component = () => {
         goal_report_id,
       },
     })
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${goal_report_id}/values/${goalReportValue.goal_report_value_id}`,
-    )
+    navigate(`${baseUrl}/${goalReportValue.goal_report_value_id}`)
     autoFocusRef.current?.focus()
-  }, [
-    db.goal_report_values,
-    goal_id,
-    goal_report_id,
-    navigate,
-    project_id,
-    subproject_id,
-  ])
+  }, [baseUrl, db.goal_report_values, goal_report_id, navigate])
 
   const deleteRow = useCallback(async () => {
     await db.goal_report_values.delete({
@@ -58,22 +51,12 @@ export const Component = () => {
         goal_report_value_id,
       },
     })
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${goal_report_id}/values`,
-    )
-  }, [
-    db.goal_report_values,
-    goal_id,
-    goal_report_id,
-    goal_report_value_id,
-    navigate,
-    project_id,
-    subproject_id,
-  ])
+    navigate(baseUrl)
+  }, [baseUrl, db.goal_report_values, goal_report_value_id, navigate])
 
   const toNext = useCallback(async () => {
     const goalReportValues = await db.goal_report_values.findMany({
-      where: { deleted: false },
+      where: { deleted: false, goal_report_id },
       orderBy: { label: 'asc' },
     })
     const len = goalReportValues.length
@@ -81,22 +64,18 @@ export const Component = () => {
       (p) => p.goal_report_value_id === goal_report_value_id,
     )
     const next = goalReportValues[(index + 1) % len]
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${goal_report_id}/values/${next.goal_report_value_id}`,
-    )
+    navigate(`${baseUrl}/${next.goal_report_value_id}`)
   }, [
+    baseUrl,
     db.goal_report_values,
-    goal_id,
     goal_report_id,
     goal_report_value_id,
     navigate,
-    project_id,
-    subproject_id,
   ])
 
   const toPrevious = useCallback(async () => {
     const goalReportValues = await db.goal_report_values.findMany({
-      where: { deleted: false },
+      where: { deleted: false, goal_report_id },
       orderBy: { label: 'asc' },
     })
     const len = goalReportValues.length
@@ -104,17 +83,13 @@ export const Component = () => {
       (p) => p.goal_report_value_id === goal_report_value_id,
     )
     const previous = goalReportValues[(index + len - 1) % len]
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${goal_report_id}/values/${previous.goal_report_value_id}`,
-    )
+    navigate(`${baseUrl}/${previous.goal_report_value_id}`)
   }, [
+    baseUrl,
     db.goal_report_values,
-    goal_id,
     goal_report_id,
     goal_report_value_id,
     navigate,
-    project_id,
-    subproject_id,
   ])
 
   const row: GoalReportValue = results
