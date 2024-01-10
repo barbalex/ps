@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
@@ -17,6 +17,8 @@ export const Component = () => {
   const { project_id, project_report_id } = useParams()
   const navigate = useNavigate()
 
+  const autoFocusRef = useRef<HTMLInputElement>(null)
+
   const { db } = useElectric()
   const { results } = useLiveQuery(
     () => db.project_reports.liveUnique({ where: { project_report_id } }),
@@ -29,6 +31,7 @@ export const Component = () => {
     const data = await createProjectReport({ db, project_id })
     await db.project_reports.create({ data })
     navigate(`${baseUrl}/${data.project_report_id}`)
+    autoFocusRef.current?.focus()
   }, [baseUrl, db, navigate, project_id])
 
   const deleteRow = useCallback(async () => {
@@ -108,6 +111,7 @@ export const Component = () => {
         id={row.project_report_id}
         data={row.data ?? {}}
         autoFocus
+        ref={autoFocusRef}
       />
     </div>
   )

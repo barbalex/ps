@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
@@ -18,6 +18,8 @@ export const Component = () => {
   const { project_id, place_level_id } = useParams()
   const navigate = useNavigate()
 
+  const autoFocusRef = useRef<HTMLInputElement>(null)
+
   const { db } = useElectric()
   const { results } = useLiveQuery(
     () => db.place_levels.liveUnique({ where: { place_level_id } }),
@@ -32,13 +34,12 @@ export const Component = () => {
       data: { ...placeLevel, project_id },
     })
     navigate(`${baseUrl}/${placeLevel.place_level_id}`)
+    autoFocusRef.current?.focus()
   }, [baseUrl, db.place_levels, navigate, project_id])
 
   const deleteRow = useCallback(async () => {
     await db.place_levels.delete({
-      where: {
-        place_level_id,
-      },
+      where: { place_level_id },
     })
     navigate(baseUrl)
   }, [baseUrl, db.place_levels, navigate, place_level_id])
@@ -114,6 +115,7 @@ export const Component = () => {
         value={row.name_singular ?? ''}
         onChange={onChange}
         autoFocus
+        ref={autoFocusRef}
       />
       <TextField
         label="Name (plural)"

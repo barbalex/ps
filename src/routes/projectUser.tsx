@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
@@ -17,6 +17,8 @@ export const Component = () => {
   const { project_id, project_user_id } = useParams()
   const navigate = useNavigate()
 
+  const autoFocusRef = useRef<HTMLInputElement>(null)
+
   const { db } = useElectric()
   const { results } = useLiveQuery(
     () => db.project_users.liveUnique({ where: { project_user_id } }),
@@ -31,6 +33,7 @@ export const Component = () => {
       data: { ...projectUser, project_id },
     })
     navigate(`${baseUrl}/${projectUser.project_user_id}`)
+    autoFocusRef.current?.focus()
   }, [baseUrl, db.project_users, navigate, project_id])
 
   const deleteRow = useCallback(async () => {
@@ -109,6 +112,7 @@ export const Component = () => {
         value={row.user_id ?? ''}
         onChange={onChange}
         autoFocus
+        ref={autoFocusRef}
       />
       <RadioGroupField
         label="Role"
