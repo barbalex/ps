@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
@@ -17,6 +17,8 @@ export const Component = () => {
   const { project_id, list_id, list_value_id } = useParams()
   const navigate = useNavigate()
 
+  const autoFocusRef = useRef<HTMLInputElement>(null)
+
   const { db } = useElectric()
   const { results } = useLiveQuery(
     () => db.list_values.liveUnique({ where: { list_value_id } }),
@@ -31,6 +33,7 @@ export const Component = () => {
     navigate(
       `/projects/${project_id}/lists/${list_id}/values/${listValue.list_value_id}`,
     )
+    autoFocusRef.current?.focus()
   }, [db.list_values, list_id, navigate, project_id])
 
   const deleteRow = useCallback(async () => {
@@ -40,6 +43,32 @@ export const Component = () => {
       },
     })
     navigate(`/projects/${project_id}/lists/${list_id}/values`)
+  }, [db.list_values, list_id, list_value_id, navigate, project_id])
+
+  const toNext = useCallback(async () => {
+    const listValues = await db.list_values.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = listValues.length
+    const index = listValues.findIndex((p) => p.list_value_id === list_value_id)
+    const next = listValues[(index + 1) % len]
+    navigate(
+      `/projects/${project_id}/lists/${list_id}/values/${next.list_value_id}`,
+    )
+  }, [db.list_values, list_id, list_value_id, navigate, project_id])
+
+  const toPrevious = useCallback(async () => {
+    const listValues = await db.list_values.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = listValues.length
+    const index = listValues.findIndex((p) => p.list_value_id === list_value_id)
+    const previous = listValues[(index + len - 1) % len]
+    navigate(
+      `/projects/${project_id}/lists/${list_id}/values/${previous.list_value_id}`,
+    )
   }, [db.list_values, list_id, list_value_id, navigate, project_id])
 
   const row: ListValue = results
@@ -61,7 +90,13 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <FormMenu addRow={addRow} deleteRow={deleteRow} tableName="list value" />
+      <FormMenu
+        addRow={addRow}
+        deleteRow={deleteRow}
+        toNext={toNext}
+        toPrevious={toPrevious}
+        tableName="list value"
+      />
       <TextFieldInactive
         label="ID"
         name="list_value_id"
@@ -73,6 +108,7 @@ export const Component = () => {
         value={row.value ?? ''}
         onChange={onChange}
         autoFocus
+        ref={autoFocusRef}
       />
       <SwitchField
         label="Obsolete"
