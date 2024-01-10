@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
@@ -18,6 +18,8 @@ export const Component = () => {
   const { project_id, list_id } = useParams()
   const navigate = useNavigate()
 
+  const autoFocusRef = useRef<HTMLInputElement>(null)
+
   const { db } = useElectric()
   const { results } = useLiveQuery(
     () => db.lists.liveUnique({ where: { list_id } }),
@@ -30,13 +32,12 @@ export const Component = () => {
     const data = await createList({ db, project_id })
     await db.lists.create({ data })
     navigate(`${baseUrl}/${data.list_id}`)
+    autoFocusRef.current?.focus()
   }, [baseUrl, db, navigate, project_id])
 
   const deleteRow = useCallback(async () => {
     await db.lists.delete({
-      where: {
-        list_id,
-      },
+      where: { list_id },
     })
     navigate(baseUrl)
   }, [baseUrl, db.lists, list_id, navigate])
@@ -96,6 +97,7 @@ export const Component = () => {
         value={row.name ?? ''}
         onChange={onChange}
         autoFocus
+        ref={autoFocusRef}
       />
       <Jsonb
         table="lists"
