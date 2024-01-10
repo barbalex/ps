@@ -25,6 +25,8 @@ export const Component = () => {
     [observation_id],
   )
 
+  const baseUrl = `/projects/${project_id}/observation-sources/${observation_source_id}/observations`
+
   const addRow = useCallback(async () => {
     const data = await createObservation({
       db,
@@ -32,11 +34,9 @@ export const Component = () => {
       observation_source_id,
     })
     await db.observations.create({ data })
-    navigate(
-      `/projects/${project_id}/observation-sources/${observation_source_id}/observations/${data.observation_id}`,
-    )
+    navigate(`${baseUrl}/${data.observation_id}`)
     autoFocusRef.current?.focus()
-  }, [db, navigate, observation_source_id, project_id])
+  }, [baseUrl, db, navigate, observation_source_id, project_id])
 
   const deleteRow = useCallback(async () => {
     await db.observations.delete({
@@ -44,20 +44,12 @@ export const Component = () => {
         observation_id,
       },
     })
-    navigate(
-      `/projects/${project_id}/observation-sources/${observation_source_id}/observations`,
-    )
-  }, [
-    db.observations,
-    navigate,
-    observation_id,
-    observation_source_id,
-    project_id,
-  ])
+    navigate(baseUrl)
+  }, [baseUrl, db.observations, navigate, observation_id])
 
   const toNext = useCallback(async () => {
     const observations = await db.observations.findMany({
-      where: { deleted: false },
+      where: { deleted: false, observation_source_id },
       orderBy: { label: 'asc' },
     })
     const len = observations.length
@@ -65,20 +57,18 @@ export const Component = () => {
       (p) => p.observation_id === observation_id,
     )
     const next = observations[(index + 1) % len]
-    navigate(
-      `/projects/${project_id}/observation-sources/${observation_source_id}/observations/${next.observation_id}`,
-    )
+    navigate(`${baseUrl}/${next.observation_id}`)
   }, [
+    baseUrl,
     db.observations,
     navigate,
     observation_id,
     observation_source_id,
-    project_id,
   ])
 
   const toPrevious = useCallback(async () => {
     const observations = await db.observations.findMany({
-      where: { deleted: false },
+      where: { deleted: false, observation_source_id },
       orderBy: { label: 'asc' },
     })
     const len = observations.length
@@ -86,15 +76,13 @@ export const Component = () => {
       (p) => p.observation_id === observation_id,
     )
     const previous = observations[(index + len - 1) % len]
-    navigate(
-      `/projects/${project_id}/observation-sources/${observation_source_id}/observations/${previous.observation_id}`,
-    )
+    navigate(`${baseUrl}/${previous.observation_id}`)
   }, [
+    baseUrl,
     db.observations,
     navigate,
     observation_id,
     observation_source_id,
-    project_id,
   ])
 
   const row: Observation = results

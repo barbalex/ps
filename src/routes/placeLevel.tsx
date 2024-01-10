@@ -24,15 +24,15 @@ export const Component = () => {
     [place_level_id],
   )
 
+  const baseUrl = `/projects/${project_id}/place-levels`
+
   const addRow = useCallback(async () => {
     const placeLevel = createPlaceLevel()
     await db.place_levels.create({
       data: { ...placeLevel, project_id },
     })
-    navigate(
-      `/projects/${project_id}/place-levels/${placeLevel.place_level_id}`,
-    )
-  }, [db.place_levels, navigate, project_id])
+    navigate(`${baseUrl}/${placeLevel.place_level_id}`)
+  }, [baseUrl, db.place_levels, navigate, project_id])
 
   const deleteRow = useCallback(async () => {
     await db.place_levels.delete({
@@ -40,12 +40,12 @@ export const Component = () => {
         place_level_id,
       },
     })
-    navigate(`/projects/${project_id}/place-levels`)
-  }, [db.place_levels, navigate, place_level_id, project_id])
+    navigate(baseUrl)
+  }, [baseUrl, db.place_levels, navigate, place_level_id])
 
   const toNext = useCallback(async () => {
     const placeLevels = await db.place_levels.findMany({
-      where: { deleted: false },
+      where: { deleted: false, project_id },
       orderBy: { label: 'asc' },
     })
     const len = placeLevels.length
@@ -53,12 +53,12 @@ export const Component = () => {
       (p) => p.place_level_id === place_level_id,
     )
     const next = placeLevels[(index + 1) % len]
-    navigate(`/projects/${project_id}/place-levels/${next.place_level_id}`)
-  }, [db.place_levels, navigate, place_level_id, project_id])
+    navigate(`${baseUrl}/${next.place_level_id}`)
+  }, [baseUrl, db.place_levels, navigate, place_level_id, project_id])
 
   const toPrevious = useCallback(async () => {
     const placeLevels = await db.place_levels.findMany({
-      where: { deleted: false },
+      where: { deleted: false, project_id },
       orderBy: { label: 'asc' },
     })
     const len = placeLevels.length
@@ -66,8 +66,8 @@ export const Component = () => {
       (p) => p.place_level_id === place_level_id,
     )
     const previous = placeLevels[(index + len - 1) % len]
-    navigate(`/projects/${project_id}/place-levels/${previous.place_level_id}`)
-  }, [db.place_levels, navigate, place_level_id, project_id])
+    navigate(`${baseUrl}/${previous.place_level_id}`)
+  }, [baseUrl, db.place_levels, navigate, place_level_id, project_id])
 
   const row: PlaceLevel = results
 
