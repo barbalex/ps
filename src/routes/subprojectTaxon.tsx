@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
@@ -16,6 +16,8 @@ export const Component = () => {
   const { project_id, subproject_id, subproject_taxon_id } = useParams()
   const navigate = useNavigate()
 
+  const autoFocusRef = useRef<HTMLInputElement>(null)
+
   const { db } = useElectric()
   const { results } = useLiveQuery(
     () => db.subproject_taxa.liveUnique({ where: { subproject_taxon_id } }),
@@ -30,6 +32,7 @@ export const Component = () => {
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/taxa/${subprojectTaxon.subproject_taxon_id}`,
     )
+    autoFocusRef.current?.focus()
   }, [db.subproject_taxa, navigate, project_id, subproject_id])
 
   const deleteRow = useCallback(async () => {
@@ -39,6 +42,48 @@ export const Component = () => {
       },
     })
     navigate(`/projects/${project_id}/subprojects/${subproject_id}/taxa`)
+  }, [
+    db.subproject_taxa,
+    navigate,
+    project_id,
+    subproject_id,
+    subproject_taxon_id,
+  ])
+
+  const toNext = useCallback(async () => {
+    const subprojectTaxa = await db.subproject_taxa.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = subprojectTaxa.length
+    const index = subprojectTaxa.findIndex(
+      (p) => p.subproject_taxon_id === subproject_taxon_id,
+    )
+    const next = subprojectTaxa[(index + 1) % len]
+    navigate(
+      `/projects/${project_id}/subprojects/${subproject_id}/taxa/${next.subproject_taxon_id}`,
+    )
+  }, [
+    db.subproject_taxa,
+    navigate,
+    project_id,
+    subproject_id,
+    subproject_taxon_id,
+  ])
+
+  const toPrevious = useCallback(async () => {
+    const subprojectTaxa = await db.subproject_taxa.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = subprojectTaxa.length
+    const index = subprojectTaxa.findIndex(
+      (p) => p.subproject_taxon_id === subproject_taxon_id,
+    )
+    const previous = subprojectTaxa[(index + len - 1) % len]
+    navigate(
+      `/projects/${project_id}/subprojects/${subproject_id}/taxa/${previous.subproject_taxon_id}`,
+    )
   }, [
     db.subproject_taxa,
     navigate,
@@ -71,6 +116,8 @@ export const Component = () => {
       <FormMenu
         addRow={addRow}
         deleteRow={deleteRow}
+        toNext={toNext}
+        toPrevious={toPrevious}
         tableName="project user"
       />
       <TextFieldInactive
@@ -86,6 +133,7 @@ export const Component = () => {
         value={row.taxon_id ?? ''}
         onChange={onChange}
         autoFocus
+        ref={autoFocusRef}
       />
     </div>
   )
