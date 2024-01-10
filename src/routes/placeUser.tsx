@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
@@ -18,6 +18,8 @@ export const Component = () => {
     useParams()
   const navigate = useNavigate()
 
+  const autoFocusRef = useRef<HTMLInputElement>(null)
+
   const { db } = useElectric()
   const { results } = useLiveQuery(
     () => db.place_users.liveUnique({ where: { place_user_id } }),
@@ -34,6 +36,7 @@ export const Component = () => {
         place_id2 ? `/places/${place_id2}` : ''
       }/users/${placeUser.place_user_id}`,
     )
+    autoFocusRef.current?.focus()
   }, [db.place_users, navigate, place_id, place_id2, project_id, subproject_id])
 
   const deleteRow = useCallback(async () => {
@@ -55,6 +58,52 @@ export const Component = () => {
     subproject_id,
     place_id,
     place_id2,
+  ])
+
+  const toNext = useCallback(async () => {
+    const placeUsers = await db.place_users.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = placeUsers.length
+    const index = placeUsers.findIndex((p) => p.place_user_id === place_user_id)
+    const next = placeUsers[(index + 1) % len]
+    navigate(
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+        place_id2 ? `/places/${place_id2}` : ''
+      }/users/${next.place_user_id}`,
+    )
+  }, [
+    db.place_users,
+    navigate,
+    place_id,
+    place_id2,
+    place_user_id,
+    project_id,
+    subproject_id,
+  ])
+
+  const toPrevious = useCallback(async () => {
+    const placeUsers = await db.place_users.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = placeUsers.length
+    const index = placeUsers.findIndex((p) => p.place_user_id === place_user_id)
+    const previous = placeUsers[(index + len - 1) % len]
+    navigate(
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+        place_id2 ? `/places/${place_id2}` : ''
+      }/users/${previous.place_user_id}`,
+    )
+  }, [
+    db.place_users,
+    navigate,
+    place_id,
+    place_id2,
+    place_user_id,
+    project_id,
+    subproject_id,
   ])
 
   const row: PlaceUser = results
@@ -81,6 +130,8 @@ export const Component = () => {
       <FormMenu
         addRow={addRow}
         deleteRow={deleteRow}
+        toNext={toNext}
+        toPrevious={toPrevious}
         tableName="project user"
       />
       <TextFieldInactive
@@ -96,6 +147,7 @@ export const Component = () => {
         value={row.user_id ?? ''}
         onChange={onChange}
         autoFocus
+        ref={autoFocusRef}
       />
       <RadioGroupField
         label="Role"
