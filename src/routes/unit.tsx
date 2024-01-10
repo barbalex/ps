@@ -37,6 +37,28 @@ export const Component = () => {
     navigate(`/projects/${project_id}/units`)
   }, [db.units, navigate, project_id, unit_id])
 
+  const toNext = useCallback(async () => {
+    const units = await db.units.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = units.length
+    const index = units.findIndex((p) => p.unit_id === unit_id)
+    const next = units[(index + 1) % len]
+    navigate(`/projects/${project_id}/units/${next.unit_id}`)
+  }, [db.units, navigate, project_id, unit_id])
+
+  const toPrevious = useCallback(async () => {
+    const units = await db.units.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = units.length
+    const index = units.findIndex((p) => p.unit_id === unit_id)
+    const previous = units[(index + len - 1) % len]
+    navigate(`/projects/${project_id}/units/${previous.unit_id}`)
+  }, [db.units, navigate, project_id, unit_id])
+
   const row: Unit = results
 
   const onChange = useCallback(
@@ -56,7 +78,13 @@ export const Component = () => {
 
   return (
     <div className="form-container">
-      <FormMenu addRow={addRow} deleteRow={deleteRow} tableName="unit" />
+      <FormMenu
+        addRow={addRow}
+        deleteRow={deleteRow}
+        toNext={toNext}
+        toPrevious={toPrevious}
+        tableName="unit"
+      />
       <TextFieldInactive label="ID" name="unit_id" value={row.unit_id} />
       <TextField
         label="Name"
