@@ -74,7 +74,11 @@ export const buildNavs = async ({
       ]
     case 'subprojects': {
       // need to fetch how places are named
-      const placeName =
+      const placeLevels = await db?.place_levels?.findMany({
+        where: { project_id, deleted: false, level: 1 },
+      })
+      const placeLevel = placeLevels?.[0]
+      placeName =
         placeLevel?.name_plural ?? placeLevel?.name_short ?? 'Places'
 
       return [
