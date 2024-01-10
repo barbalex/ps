@@ -1,4 +1,4 @@
-import { useCallback, useRef, useMemo } from 'react'
+import { useCallback, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
@@ -24,11 +24,7 @@ export const Component = () => {
     [goal_report_id],
   )
 
-  const baseUrl = useMemo(
-    () =>
-      `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports`,
-    [goal_id, project_id, subproject_id],
-  )
+  const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports`
 
   const addRow = useCallback(async () => {
     const data = await createGoalReport({ db, project_id, goal_id })
