@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
@@ -26,6 +26,7 @@ export const Component = () => {
     const data = await createSubproject({ db, project_id })
     await db.subprojects.create({ data })
     navigate(`/projects/${project_id}/subprojects/${data.subproject_id}`)
+    autoFocusRef.current?.focus()
   }, [db, navigate, project_id])
 
   const deleteRow = useCallback(async () => {
@@ -74,6 +75,8 @@ export const Component = () => {
     [db.subprojects, subproject_id],
   )
 
+  const autoFocusRef = useRef<HTMLInputElement>(null)
+
   if (!row) {
     return <div>Loading...</div>
   }
@@ -100,6 +103,7 @@ export const Component = () => {
         value={row.name ?? ''}
         onChange={onChange}
         autoFocus
+        ref={autoFocusRef}
       />
       <TextField
         label="Since year"
