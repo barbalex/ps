@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
@@ -17,6 +17,8 @@ export const Component = () => {
   const { project_id, subproject_id, subproject_report_id } = useParams()
   const navigate = useNavigate()
 
+  const autoFocusRef = useRef<HTMLInputElement>(null)
+
   const { db } = useElectric()
   const { results } = useLiveQuery(
     () => db.subproject_reports.liveUnique({ where: { subproject_report_id } }),
@@ -33,6 +35,7 @@ export const Component = () => {
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/reports/${data.subproject_report_id}`,
     )
+    autoFocusRef.current?.focus()
   }, [db, navigate, project_id, subproject_id])
 
   const deleteRow = useCallback(async () => {
@@ -49,6 +52,32 @@ export const Component = () => {
     subproject_id,
     subproject_report_id,
   ])
+
+  const toNext = useCallback(async () => {
+    const subprojectReports = await db.subproject_reports.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = subprojectReports.length
+    const index = subprojectReports.findIndex(
+      (p) => p.subproject_report_id === subproject_report_id,
+    )
+    const next = subprojectReports[(index + 1) % len]
+    navigate(`/projects/${project_id}/subprojects/${subproject_id}/reports/${next.subproject_report_id}`)
+  }, [db.subproject_reports, navigate, project_id, subproject_id, subproject_report_id])
+
+  const toPrevious = useCallback(async () => {
+    const subprojectReports = await db.subproject_reports.findMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    })
+    const len = subprojectReports.length
+    const index = subprojectReports.findIndex(
+      (p) => p.subproject_report_id === subproject_report_id,
+    )
+    const previous = subprojectReports[(index + len - 1) % len]
+    navigate(`/projects/${project_id}/subprojects/${subproject_id}/reports/${previous.subproject_report_id}`)
+  }, [db.subproject_reports, navigate, project_id, subproject_id, subproject_report_id])
 
   const row: SubprojectReport = results
 
@@ -72,6 +101,8 @@ export const Component = () => {
       <FormMenu
         addRow={addRow}
         deleteRow={deleteRow}
+        toNext={toNext}
+        toPrevious={toPrevious}
         tableName="project report"
       />
       <TextFieldInactive
@@ -92,6 +123,7 @@ export const Component = () => {
         id={row.subproject_report_id}
         data={row.data ?? {}}
         autoFocus
+        ref={autoFocusRef}
       />
     </div>
   )
