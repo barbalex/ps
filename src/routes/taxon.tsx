@@ -13,7 +13,7 @@ import { FormMenu } from '../components/FormMenu'
 import '../form.css'
 
 export const Component = () => {
-  const { taxonomy_id, taxon_id } = useParams()
+  const { project_id, taxonomy_id, taxon_id } = useParams()
   const navigate = useNavigate()
 
   const { db } = useElectric()
@@ -25,12 +25,12 @@ export const Component = () => {
   const addRow = useCallback(async () => {
     const taxon = createTaxon()
     await db.taxa.create({
-      data: { ...taxon, project_id },
+      data: { ...taxon, taxonomy_id },
     })
     navigate(
       `/projects/${project_id}/taxonomies/${taxonomy_id}/taxa/${taxon.taxon_id}`,
     )
-  }, [db.taxa, navigate, taxonomy_id])
+  }, [db.taxa, navigate, project_id, taxonomy_id])
 
   const deleteRow = useCallback(async () => {
     await db.taxa.delete({
@@ -39,7 +39,7 @@ export const Component = () => {
       },
     })
     navigate(`/projects/${project_id}/taxonomies/${taxonomy_id}/taxa`)
-  }, [db.taxa, navigate, taxon_id, taxonomy_id])
+  }, [db.taxa, navigate, project_id, taxon_id, taxonomy_id])
 
   const row: Taxon = results
 
