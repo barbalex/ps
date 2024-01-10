@@ -62,7 +62,7 @@ export const Breadcrumb = ({ match }) => {
   if (table === 'fields' && !parentId) {
     filterParams.project_id = null
   }
-  const queryParam = { where: filterParams }
+  const queryParam = { where: filterParams, orderBy: { label: 'asc' } }
   // TODO: test including
   // if (table === 'projects') {
   //   queryParam.include = { subprojects: true }

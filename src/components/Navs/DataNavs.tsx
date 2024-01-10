@@ -55,7 +55,7 @@ export const DataNavs = ({ matches }) => {
 
   const { db } = useElectric()
   const { results: tableResults } = useLiveQuery(
-    () => db[table]?.liveMany({ where: filterParams }),
+    () => db[table]?.liveMany({ where: filterParams, orderBy: { label: 'asc' } }),
     [db, location.pathname],
   )
 
