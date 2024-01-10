@@ -22,10 +22,10 @@
     "node": ">=16.11.0"
   },
   "dependencies": {
-    "@fluentui/react-components": "9.44.1",
-    "@fluentui/react-datepicker-compat": "0.4.13",
+    "@fluentui/react-components": "9.44.2",
+    "@fluentui/react-datepicker-compat": "0.4.14",
     "@fluentui/react-icons": "2.0.224",
-    "@fluentui/react-timepicker-compat-preview": "0.1.10",
+    "@fluentui/react-timepicker-compat-preview": "0.2.0",
     "@fontsource/roboto": "5.0.8",
     "@kripod/uuidv7": "0.3.4",
     "@preact/signals": "1.2.2",
@@ -47,7 +47,7 @@
   },
   "devDependencies": {
     "@databases/pg-migrations": "5.0.2",
-    "@types/node": ">=20.10.7",
+    "@types/node": ">=20.10.8",
     "@types/react": "18.2.47",
     "@types/react-dom": "18.2.18",
     "cross-env": "7.0.3",
