@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
@@ -17,6 +17,8 @@ export const Component = () => {
   const { project_id, unit_id } = useParams()
   const navigate = useNavigate()
 
+  const autoFocusRef = useRef<HTMLInputElement>(null)
+
   const { db } = useElectric()
   const { results } = useLiveQuery(db.units.liveUnique({ where: { unit_id } }))
 
@@ -28,6 +30,7 @@ export const Component = () => {
       data: { ...unit, project_id },
     })
     navigate(`${baseUrl}/${unit.unit_id}`)
+    autoFocusRef.current?.focus()
   }, [baseUrl, db.units, navigate, project_id])
 
   const deleteRow = useCallback(async () => {
@@ -92,6 +95,7 @@ export const Component = () => {
         value={row.name ?? ''}
         onChange={onChange}
         autoFocus
+        ref={autoFocusRef}
       />
       <SwitchField
         label="Use for action values"
