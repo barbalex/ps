@@ -65,14 +65,14 @@ export const Component = () => {
 
   const toPrevious = useCallback(async () => {
     const placeUsers = await db.place_users.findMany({
-      where: { deleted: false },
+      where: { deleted: false, place_id: place_id2 ?? place_id },
       orderBy: { label: 'asc' },
     })
     const len = placeUsers.length
     const index = placeUsers.findIndex((p) => p.place_user_id === place_user_id)
     const previous = placeUsers[(index + len - 1) % len]
     navigate(`${baseUrl}/${previous.place_user_id}`)
-  }, [baseUrl, db.place_users, navigate, place_user_id])
+  }, [baseUrl, db.place_users, navigate, place_id, place_id2, place_user_id])
 
   const row: PlaceUser = results
 
