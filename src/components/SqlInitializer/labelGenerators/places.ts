@@ -14,7 +14,7 @@ export const generatePlaceLabel = async (db) => {
     const result = await db.raw({
       sql: `
       CREATE TRIGGER if not exists places_label_trigger
-      AFTER UPDATE ON places
+      AFTER UPDATE of level, data ON places
       BEGIN
         UPDATE places SET label = case 
         when projects.places_label_by is null then place_id 
