@@ -1,19 +1,38 @@
 export const generateWidgetForFieldLabel = async (db) => {
-  const columns = await db.raw({
-    sql: 'PRAGMA table_xinfo(widgets_for_fields)',
+  const triggers = await db.raw({
+    sql: `select name from sqlite_master where type = 'trigger';`,
   })
-  const hasLabel = columns.some((column) => column.name === 'label')
-  if (!hasLabel) {
-    await db.raw({
-      sql: 'ALTER TABLE widgets_for_fields ADD COLUMN label text GENERATED ALWAYS AS (widget_for_field_id)',
+  const triggerExists = triggers.some(
+    (column) => column.name === 'widgets_for_fields_label_trigger',
+  )
+
+  if (!triggerExists) {
+    // Wanted to build virtual field from projects.places_label_by, return that here
+    // But: not possible because generated columns can only fetch from the same row/table
+    // Alternative: use a trigger to update the label field
+    // TODO: enable using an array of column names
+    const result = await db.raw({
+      sql: `
+      CREATE TRIGGER if not exists widgets_for_fields_label_trigger
+      AFTER UPDATE of field_type_id, widget_type_id ON widgets_for_fields
+      BEGIN
+        UPDATE widgets_for_fields SET label = (SELECT field_types.name FROM field_types WHERE field_types.field_type_id = NEW.field_type_id) || ': ' || (SELECT widget_types.name FROM widget_types WHERE widget_types.widget_type_id = NEW.widget_type_id)
+         WHERE widgets_for_fields.widget_for_field_id = NEW.widget_for_field_id;
+      END`,
     })
-    await db.raw({
-      sql: 'CREATE INDEX IF NOT EXISTS widgets_for_fields_label_idx ON widgets_for_fields(label)',
+    console.log('LabelGenerator, widgets for fields, result:', result)
+    const resultInsert = await db.raw({
+      sql: `
+      CREATE TRIGGER if not exists widgets_for_fields_label_insert_trigger
+      AFTER insert ON widgets_for_fields
+      BEGIN
+        UPDATE widgets_for_fields SET label = (SELECT field_types.name FROM field_types WHERE field_types.field_type_id = NEW.field_type_id) || ': ' || (SELECT widget_types.name FROM widget_types WHERE widget_types.widget_type_id = NEW.widget_type_id)
+         WHERE widgets_for_fields.widget_for_field_id = NEW.widget_for_field_id;
+      END`,
     })
+    console.log(
+      'LabelGenerator, widgets for fields, resultInsert:',
+      resultInsert,
+    )
   }
-  // console.log('LabelGenerator, widgets_for_fields:', {
-  //   columns,
-  //   hasLabel,
-  //   indexes,
-  // })
 }

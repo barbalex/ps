@@ -44,11 +44,26 @@ const seedUsers = `INSERT INTO users(user_id, email, deleted) values ('018cf95a-
 const seedAccounts = `INSERT INTO accounts(account_id, user_id, type) values ('018cf958-27e2-7000-90d3-59f024d467be', '018cf95a-d817-7000-92fa-bb3b2ad59dda', 'premium');`
 
 export const seed = async (db) => {
-  const result = await db.raw({
-    sql: `select * from field_types where field_type_id = '018ca19e-7a23-7bf4-8523-ff41e3b60807';`,
+  const users = await db.raw({
+    sql: `select count(*) as count from users;`,
   })
-  // console.log('seed, result', result)
-  if (result.length === 0) {
+  if (users[0].count === 0) {
+    await db.raw({
+      sql: seedUsers,
+    })
+  }
+  const accounts = await db.raw({
+    sql: `select count(*) as count from accounts;`,
+  })
+  if (accounts[0].count === 0) {
+    await db.raw({
+      sql: seedAccounts,
+    })
+  }
+  const fieldTypes = await db.raw({
+    sql: `select count(*) as count from field_types;`,
+  })
+  if (fieldTypes[0].count === 0) {
     await db.raw({
       sql: seedFieldTypes,
     })
@@ -57,12 +72,6 @@ export const seed = async (db) => {
     })
     await db.raw({
       sql: seedWidgetsForFields,
-    })
-    await db.raw({
-      sql: seedUsers,
-    })
-    await db.raw({
-      sql: seedAccounts,
     })
   }
 }
