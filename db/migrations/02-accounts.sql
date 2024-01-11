@@ -6,6 +6,7 @@ CREATE TABLE accounts(
   type text DEFAULT NULL,
   period_start date DEFAULT NULL,
   period_end date DEFAULT NULL,
+  projects_label_by text DEFAULT NULL,
   label_replace_by_generated_column text DEFAULT NULL
 );
 
@@ -23,6 +24,8 @@ COMMENT ON TABLE accounts IS 'Goal: earn money';
 COMMENT ON COLUMN accounts.user_id IS 'user that owns the account. null for accounts that are not owned by a user';
 
 COMMENT ON COLUMN accounts.type IS 'type of account: "free", "basic", "premium"? (TODO: needs to be defined)';
+
+COMMENT ON COLUMN accounts.projects_label_by IS 'Used to label projects in lists. Either "name" or the name of a key in the data field. Assumed value if is null is "name"';
 
 ALTER TABLE accounts ENABLE electric;
 

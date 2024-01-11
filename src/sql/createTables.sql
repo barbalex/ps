@@ -39,6 +39,7 @@ CREATE TABLE accounts(
   -- period daterange DEFAULT NULL -- not supported by electric-sql
   period_start date DEFAULT NULL,
   period_end date DEFAULT NULL
+  projects_label_by text DEFAULT NULL,
 );
 
 -- how to query if date is in range:
@@ -57,6 +58,8 @@ COMMENT ON TABLE accounts IS 'Goal: earn money';
 COMMENT ON COLUMN accounts.user_id IS 'user that owns the account. null for accounts that are not owned by a user';
 
 COMMENT ON COLUMN accounts.type IS 'type of account: "free", "basic", "premium"? (TODO: needs to be defined)';
+
+COMMENT ON COLUMN accounts.projects_label_by IS 'Used to label projects in lists. Either "name" or the name of a key in the data field. Assumed value if is null is "name"';
 
 -- COMMENT ON COLUMN accounts.period IS 'period of account: free: 1 month, basic: 1 year, premium: 1 year (TODO: needs to be defined)';
 ---------------------------------------------
