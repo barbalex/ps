@@ -20,6 +20,7 @@ export const PlacesLabelBy = memo(({ onChange, value }) => {
       },
     }),
   )
+  // Could add some fields from root here if needed
   const fieldNames = useMemo(() => fields?.map(({ name }) => name), [fields])
 
   return (
@@ -29,6 +30,8 @@ export const PlacesLabelBy = memo(({ onChange, value }) => {
       value={value}
       onChange={onChange}
       options={fieldNames}
+      validationState="none"
+      validationMessage={`If no value is set, places are labeled by id.`}
     />
   )
 })
