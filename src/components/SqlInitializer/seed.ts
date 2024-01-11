@@ -39,6 +39,9 @@ VALUES ('018ca1aa-6fa6-7be5-b5f8-5caca1565687', '018ca19e-7a23-7bf4-8523-ff41e3b
 ('018ca1ab-9db6-7ddd-9d5c-c1b4ea8e808d', '018ca19f-787d-78f6-ac72-01f1e7f53d4f', '018ca1a2-058b-78b3-a078-0558dcef75cb', FALSE),
 ('018ca1ab-b0ae-732b-a9f2-50589d2e0508', '018ca19f-8b79-7194-b59b-7075bb5b550a', '018ca1a2-1a76-7218-8289-44688fd14101', FALSE),
 ('018ca1ab-c323-7d01-995b-9759ae9a3eb8', '018ca19e-7a23-7bf4-8523-ff41e3b60807', '018ca1a2-2e2a-7fd6-8c57-92654c3201a5', FALSE);`
+// TODO: this is used until authorization is implemented
+const seedUsers = `INSERT INTO users(user_id, email, deleted) values ('018cf95a-d817-7000-92fa-bb3b2ad59dda', 'admin@admin.ch', FALSE);`
+const seedAccounts = `INSERT INTO accounts(account_id, user_id, deleted) values ('018cf958-27e2-7000-90d3-59f024d467be', '018cf95a-d817-7000-92fa-bb3b2ad59dda', FALSE);`
 
 export const seed = async (db) => {
   const result = await db.raw({
@@ -54,6 +57,12 @@ export const seed = async (db) => {
     })
     await db.raw({
       sql: seedWidgetsForFields,
+    })
+    await db.raw({
+      sql: seedUsers,
+    })
+    await db.raw({
+      sql: seedAccounts,
     })
   }
 }
