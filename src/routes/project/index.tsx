@@ -144,7 +144,7 @@ export const Component = () => {
         table="places"
         value={row.places_label_by ?? ''}
         onChange={onChange}
-        extraFieldNames={['level']}
+        extraFieldNames={['id', 'level']}
       />
       <FieldList
         label="Places ordered by"

@@ -18,6 +18,7 @@ export const generatePlaceLabel = async (db) => {
       BEGIN
         UPDATE places SET label = case 
         when projects.places_label_by is null then place_id 
+        when projects.places_label_by = 'id' then place_id 
         when projects.places_label_by = 'level' then level 
         else json_extract(NEW.data, '$.' || projects.places_label_by) 
         end
