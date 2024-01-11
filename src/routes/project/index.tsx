@@ -13,7 +13,7 @@ import { CheckboxField } from '../../components/shared/CheckboxField'
 import { Jsonb } from '../../components/shared/Jsonb'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { FormMenu } from '../../components/FormMenu'
-import { PlacesLabelBy } from './PlacesLabelBy'
+import { LabelBy } from '../../components/shared/LabelBy'
 import { FieldList } from '../../components/shared/FieldList'
 
 import '../../form.css'
@@ -138,7 +138,14 @@ export const Component = () => {
         value={row.subproject_order_by ?? ''}
         onChange={onChange}
       />
-      <PlacesLabelBy value={row.places_label_by ?? ''} onChange={onChange} />
+      <LabelBy
+        label="Places labelled by"
+        name="places_label_by"
+        table="places"
+        value={row.places_label_by ?? ''}
+        onChange={onChange}
+        extraFieldNames={['level']}
+      />
       <FieldList
         label="Places ordered by"
         name="places_order_by"
