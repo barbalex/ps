@@ -16,10 +16,10 @@ export const generateAccountLabel = async (db) => {
   const triggers = await db.raw({
     sql: `select name from sqlite_master where type = 'trigger';`,
   })
-  const triggerExists = triggers.some(
+  const accountsProjectsLabeltriggerExists = triggers.some(
     (column) => column.name === 'accounts_projects_label_trigger',
   )
-  if (!triggerExists) {
+  if (!accountsProjectsLabeltriggerExists) {
     const result = await db.raw({
       sql: `
       CREATE TRIGGER IF NOT EXISTS accounts_projects_label_trigger
@@ -36,5 +36,29 @@ export const generateAccountLabel = async (db) => {
       END;`,
     })
     console.log('TriggerGenerator, accounts, result:', result)
+  }
+  // own label is updated when user_id or type is changed
+  // plus on insert. TODO: what if select is empty?
+  const accountsLabelTriggerExists = triggers.some(
+    (column) => column.name === 'accounts_label_trigger',
+  )
+  if (!accountsLabelTriggerExists) {
+    const result = await db.raw({
+      sql: `
+      CREATE TRIGGER IF NOT EXISTS accounts_label_trigger
+        AFTER UPDATE OF user_id, type ON accounts
+      BEGIN
+        UPDATE accounts SET label = (SELECT email FROM users WHERE user_id = NEW.user_id) || ' (' || NEW.type || ')';
+      END;`,
+    })
+    const resultInsert = await db.raw({
+      sql: `
+      CREATE TRIGGER IF NOT EXISTS accounts_label_insert_trigger
+        AFTER insert ON accounts
+      BEGIN
+        UPDATE accounts SET label = coalesce((SELECT email FROM users WHERE user_id = NEW.user_id), '(no user)') || ' (' || coalesce(NEW.type, 'no type') || ')';
+      END;`,
+    })
+    console.log('TriggerGenerator, accounts, result:', { result, resultInsert })
   }
 }
