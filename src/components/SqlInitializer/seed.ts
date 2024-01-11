@@ -41,7 +41,7 @@ VALUES ('018ca1aa-6fa6-7be5-b5f8-5caca1565687', '018ca19e-7a23-7bf4-8523-ff41e3b
 ('018ca1ab-c323-7d01-995b-9759ae9a3eb8', '018ca19e-7a23-7bf4-8523-ff41e3b60807', '018ca1a2-2e2a-7fd6-8c57-92654c3201a5', FALSE);`
 // TODO: this is used until authorization is implemented
 const seedUsers = `INSERT INTO users(user_id, email, deleted) values ('018cf95a-d817-7000-92fa-bb3b2ad59dda', 'admin@admin.ch', FALSE);`
-const seedAccounts = `INSERT INTO accounts(account_id, user_id) values ('018cf958-27e2-7000-90d3-59f024d467be', '018cf95a-d817-7000-92fa-bb3b2ad59dda');`
+const seedAccounts = `INSERT INTO accounts(account_id, user_id, type) values ('018cf958-27e2-7000-90d3-59f024d467be', '018cf95a-d817-7000-92fa-bb3b2ad59dda', 'premium');`
 
 export const seed = async (db) => {
   const result = await db.raw({
