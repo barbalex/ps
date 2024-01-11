@@ -11,9 +11,27 @@ export const generateUserLabel = async (db) => {
       sql: 'CREATE INDEX IF NOT EXISTS users_label_idx ON users(label)',
     })
   }
-  // console.log('LabelGenerator, users:', {
-  //   columns,
-  //   hasLabel,
-  //   indexes,
-  // })
+
+  // if email is changed, label of account needs to be updated
+  const triggers = await db.raw({
+    sql: `select name from sqlite_master where type = 'trigger';`,
+  })
+  const usersAccountsLabelTriggerExists = triggers.some(
+    (column) => column.name === 'users_accounts_label_trigger',
+  )
+  if (!usersAccountsLabelTriggerExists) {
+    const result = await db.raw({
+      sql: `
+      CREATE TRIGGER IF NOT EXISTS users_accounts_label_trigger
+        AFTER UPDATE OF email ON users
+      BEGIN
+        UPDATE accounts SET label = NEW.email || ' (' || accounts.type || ')'
+        WHERE user_id = NEW.user_id;
+      END;`,
+    })
+    console.log(
+      'TriggerGenerator, users_accounts_label_trigger, result:',
+      result,
+    )
+  }
 }
