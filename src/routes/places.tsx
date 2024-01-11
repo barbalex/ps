@@ -26,7 +26,13 @@ export const Component = () => {
   }`
 
   const add = useCallback(async () => {
-    const data = await createPlace({ db, project_id, subproject_id, place_id })
+    const data = await createPlace({
+      db,
+      project_id,
+      subproject_id,
+      place_id: place_id ?? null,
+      level: place_id ? 2 : 1,
+    })
     await db.places.create({ data })
     navigate(`${baseUrl}/${data.place_id}`)
   }, [baseUrl, db, navigate, place_id, project_id, subproject_id])
