@@ -25,6 +25,7 @@ export const createProject = async ({ db }) => {
 
   return {
     project_id: uuidv7(),
+    account_id: '018cf958-27e2-7000-90d3-59f024d467be', // TODO: replace with auth data when implemented
     type: 'species',
     subproject_name_singular: 'Art',
     subproject_name_plural: 'Arten',
@@ -76,7 +77,7 @@ export const createPlace = async ({
   project_id,
   subproject_id,
   parent_id,
-  level
+  level,
 }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
@@ -89,7 +90,7 @@ export const createPlace = async ({
     place_id: uuidv7(),
     subproject_id,
     parent_id,
-    level, 
+    level,
     deleted: false,
     ...presetData,
   }
