@@ -35,12 +35,13 @@ export const Component = () => {
       db,
       project_id,
       subproject_id,
-      place_id,
+      parent_id: place_id2 ? place_id : null,
+      level: place_id2 ? 2 : 1,
     })
     await db.places.create({ data })
     navigate(`${baseUrl}/${data.place_id}`)
     autoFocusRef.current?.focus()
-  }, [baseUrl, db, navigate, place_id, project_id, subproject_id])
+  }, [baseUrl, db, navigate, place_id, place_id2, project_id, subproject_id])
 
   const deleteRow = useCallback(async () => {
     await db.places.delete({
