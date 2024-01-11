@@ -66,7 +66,12 @@ export const FieldList = memo(
       <Field
         label={label ?? '(no label provided)'}
         validationState="none"
-        validationMessage={`Add multiple items in the order you want ${fieldsTable} to be ordered.`}
+        validationMessage={
+          <>
+            <div>{`Add multiple items in the order you want ${fieldsTable} to be ordered.`}</div>
+            <div>{`If no value is set, ${fieldsTable} are ordered by label.`}</div>
+          </>
+        }
       >
         <TagGroup onDismiss={removeItem}>
           {valueArray.map((value) => (
