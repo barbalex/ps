@@ -75,7 +75,8 @@ export const createPlace = async ({
   db,
   project_id,
   subproject_id,
-  place_id,
+  parent_id,
+  level
 }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
@@ -87,8 +88,8 @@ export const createPlace = async ({
   return {
     place_id: uuidv7(),
     subproject_id,
-    parent_id: place_id ? place_id : null,
-    level: place_id ? 2 : 1,
+    parent_id,
+    level, 
     deleted: false,
     ...presetData,
   }
