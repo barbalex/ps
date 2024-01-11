@@ -7,7 +7,7 @@ CREATE TABLE accounts(
   period_start date DEFAULT NULL,
   period_end date DEFAULT NULL,
   projects_label_by text DEFAULT NULL,
-  label_replace_by_generated_column text DEFAULT NULL
+  label text DEFAULT NULL
 );
 
 -- how to query if date is in range:
@@ -18,6 +18,8 @@ CREATE INDEX ON accounts USING btree(user_id);
 CREATE INDEX ON accounts USING btree(period_start);
 
 CREATE INDEX ON accounts USING btree(period_end);
+
+CREATE INDEX ON accounts USING btree(label);
 
 COMMENT ON TABLE accounts IS 'Goal: earn money';
 
