@@ -43,6 +43,7 @@ VALUES ('018ca1aa-6fa6-7be5-b5f8-5caca1565687', '018ca19e-7a23-7bf4-8523-ff41e3b
 const seedUsers = `INSERT INTO users(user_id, email, deleted) values ('018cf95a-d817-7000-92fa-bb3b2ad59dda', 'admin@admin.ch', FALSE);`
 const seedAccounts = `INSERT INTO accounts(account_id, user_id, type) values ('018cf958-27e2-7000-90d3-59f024d467be', '018cf95a-d817-7000-92fa-bb3b2ad59dda', 'premium');`
 const seedProjects = `INSERT INTO projects(project_id, account_id, name, deleted) values ('018cfcf7-6424-7000-a100-851c5cc2c878', '018cf958-27e2-7000-90d3-59f024d467be', 'Demo Project', false);`
+const seedUnits = `INSERT INTO units(project_id, account_id, name, unit_id, deleted, use_for_action_values, use_for_action_report_values, use_for_check_values, use_for_place_report_values, use_for_goal_report_values, use_for_subproject_taxa, use_for_check_taxa) values ('018cfcf7-6424-7000-a100-851c5cc2c878', '018cf958-27e2-7000-90d3-59f024d467be', 'Demo Unit 1', '018cff37-ece7-77b8-abe5-7cbe86b5dc88', false, true, true, true, true, true, true, true), ('018cfcf7-6424-7000-a100-851c5cc2c878', '018cf958-27e2-7000-90d3-59f024d467be', 'Demo Unit 2', '018cff39-fcdd-7046-aa4f-49532086eb69', false, true, true, true, true, true, true, true);`
 const seedProjectUsers = `INSERT INTO project_users(project_user_id, project_id, user_id, role, deleted) values ('018cfd1d-6baa-7000-93cc-817e822e80e2', '018cfcf7-6424-7000-a100-851c5cc2c878', '018cf95a-d817-7000-92fa-bb3b2ad59dda', 'manager', false);`
 const seedPlaceLevels = `INSERT INTO place_levels(account_id, level, name_plural, name_short, name_singular, place_level_id, project_id, reports, deleted) values ('018cf958-27e2-7000-90d3-59f024d467be', 1, 'Populations', 'Pop', 'Population', '018cfcf8-1abd-7000-a2f2-2708c92063d5', '018cfcf7-6424-7000-a100-851c5cc2c878', true, false),('018cf958-27e2-7000-90d3-59f024d467be', 2, 'Subpopulations', 'SPop', 'Subpopulation', '018cfcf8-785b-7000-a9b9-91495f23f309', '018cfcf7-6424-7000-a100-851c5cc2c878', true, false);`
 const seedTaxonomies = `INSERT INTO taxonomies(account_id, project_id, name, taxonomy_id, type, deleted) values ('018cf958-27e2-7000-90d3-59f024d467be', '018cfcf7-6424-7000-a100-851c5cc2c878', 'Demo Taxonomy 1', '018cfcf8-9b2a-7000-9c7e-5b0b8b0e2b0e', 'species', false);`
@@ -102,6 +103,9 @@ export const seed = async (db) => {
     })
     await db.raw({
       sql: seedTaxons,
+    })
+    await db.raw({
+      sql: seedUnits,
     })
   }
   const placeLevels = await db.raw({
