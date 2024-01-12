@@ -7,6 +7,7 @@ import { createSubprojectTaxon } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { DropdownField } from '../components/shared/DropdownField'
+import { FilteringCombobox } from '../components/shared/FilteringCombobox'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormMenu } from '../components/FormMenu'
 
@@ -99,6 +100,8 @@ export const Component = () => {
     return <div>Loading...</div>
   }
 
+  console.log('subprojectTaxon, row:', row)
+
   return (
     <div className="form-container">
       <FormMenu
@@ -114,6 +117,14 @@ export const Component = () => {
         value={row.subproject_taxon_id}
       />
       <DropdownField
+        label="Taxon"
+        name="taxon_id"
+        table="taxa"
+        where={taxaWhere}
+        value={row.taxon_id ?? ''}
+        onChange={onChange}
+      />
+      <FilteringCombobox
         label="Taxon"
         name="taxon_id"
         table="taxa"
