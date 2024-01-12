@@ -54,13 +54,13 @@
   margin-left: 1px;
 }
 
-.breadcrumbs__crumb:last-child {
-  border-right: none;
-}
-
 .breadcrumbs__crumb.is-active,
 .breadcrumbs__crumb.is-active:after {
   background: rgba(237, 241, 245, 1);
+}
+
+.breadcrumbs__crumb:last-child {
+  border-right: none;
 }
 
 .breadcrumbs__crumb > ul {
