@@ -4,7 +4,7 @@ CREATE TABLE subproject_users(
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
   role text DEFAULT NULL,
-  label_replace_by_generated_column text DEFAULT NULL,
+  label text DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
 );
 
@@ -14,6 +14,8 @@ CREATE INDEX ON subproject_users USING btree(account_id);
 CREATE INDEX ON subproject_users USING btree(subproject_id);
 
 CREATE INDEX ON subproject_users USING btree(user_id);
+
+CREATE INDEX ON subproject_users USING btree(label);
 
 COMMENT ON COLUMN subproject_users.account_id IS 'redundant account_id enhances data safety';
 
