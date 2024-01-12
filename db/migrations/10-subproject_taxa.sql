@@ -3,7 +3,7 @@ CREATE TABLE subproject_taxa(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   taxon_id uuid DEFAULT NULL REFERENCES taxa(taxon_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  label_replace_by_generated_column text DEFAULT NULL,
+  label text DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
 );
 
@@ -13,6 +13,8 @@ CREATE INDEX ON subproject_taxa USING btree(account_id);
 CREATE INDEX ON subproject_taxa USING btree(subproject_id);
 
 CREATE INDEX ON subproject_taxa USING btree(taxon_id);
+
+CREATE INDEX ON subproject_taxa USING btree(label);
 
 -- CREATE INDEX ON subproject_taxa((1))
 -- WHERE
