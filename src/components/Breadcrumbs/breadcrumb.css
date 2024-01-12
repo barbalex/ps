@@ -25,7 +25,7 @@
 
 .breadcrumbs__crumb:hover:after,
 .breadcrumbs__crumb:hover {
-  background: #edf1f5;
+  background: rgba(237, 241, 245, 1);
 }
 
 .breadcrumbs__crumb:focus:after,
@@ -60,7 +60,7 @@
 
 .breadcrumbs__crumb.is-active,
 .breadcrumbs__crumb.is-active:after {
-  background: #edf1f5;
+  background: rgba(237, 241, 245, 1);
 }
 
 .breadcrumbs__crumb > ul {
