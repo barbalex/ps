@@ -1,18 +1,33 @@
 export const generateActionValueLabel = async (db) => {
-  const columns = await db.raw({
-    sql: 'PRAGMA table_xinfo(action_values)',
+  // when any data is changed, update label using units name
+  const triggers = await db.raw({
+    sql: `select name from sqlite_master where type = 'trigger';`,
   })
-  const hasLabel = columns.some((column) => column.name === 'label')
-  if (!hasLabel) {
-    await db.raw({
-      sql: 'ALTER TABLE action_values ADD COLUMN label text GENERATED ALWAYS AS (action_value_id)',
+  const actionValuesLabelTriggerExists = triggers.some(
+    (column) => column.name === 'action_values_label_trigger',
+  )
+  if (!actionValuesLabelTriggerExists) {
+    const result = await db.raw({
+      sql: `
+      CREATE TRIGGER IF NOT EXISTS action_values_label_trigger
+        AFTER UPDATE ON action_values
+      BEGIN
+        UPDATE action_values SET label = concat(
+          units.name,
+          ': ',
+          coalesce(NEW.value_integer, NEW.value_numeric, NEW.value_text)
+        )
+        FROM(
+        SELECT
+          name
+        FROM
+          units
+        WHERE
+          unit_id = NEW.unit_id) AS units
+        WHERE
+          action_values.action_value_id = NEW.action_value_id;
+      END;`,
     })
-    await db.raw({
-      sql: 'CREATE INDEX IF NOT EXISTS action_values_label_idx ON action_values(label)',
-    })
+    console.log('TriggerGenerator, action_values, result:', result)
   }
-  // console.log('LabelGenerator, action_values:', {
-  //   columns,
-  //   hasLabel,
-  // })
 }

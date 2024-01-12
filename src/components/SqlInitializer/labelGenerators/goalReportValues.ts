@@ -1,20 +1,33 @@
 export const generateGoalReportValueLabel = async (db) => {
-  const columns = await db.raw({
-    sql: 'PRAGMA table_xinfo(goal_report_values)',
+  // when any data is changed, update label using units name
+  const triggers = await db.raw({
+    sql: `select name from sqlite_master where type = 'trigger';`,
   })
-  const hasLabel = columns.some((column) => column.name === 'label')
-  if (!hasLabel) {
-    await db.raw({
-      sql: `ALTER TABLE goal_report_values ADD COLUMN label text GENERATED ALWAYS AS (goal_report_value_id)`,
-      // subqueries are not possible in generated columns...
-      // sql: `ALTER TABLE goal_report_values ADD COLUMN label text GENERATED ALWAYS AS (iif(coalesce(unit_id, value_integer, value_numeric, value_text) is not null, select label from units u where u.unit_id = unit_id || ':' || coalesce(value_integer, value_numeric, value_text), goal_report_value_id))`,
+  const goalReportValuesLabelTriggerExists = triggers.some(
+    (column) => column.name === 'goal_report_values_label_trigger',
+  )
+  if (!goalReportValuesLabelTriggerExists) {
+    const result = await db.raw({
+      sql: `
+      CREATE TRIGGER IF NOT EXISTS goal_report_values_label_trigger
+        AFTER UPDATE ON goal_report_values
+      BEGIN
+        UPDATE goal_report_values SET label = concat(
+          units.name,
+          ': ',
+          coalesce(NEW.value_integer, NEW.value_numeric, NEW.value_text)
+        )
+        FROM(
+        SELECT
+          name
+        FROM
+          units
+        WHERE
+          unit_id = NEW.unit_id) AS units
+        WHERE
+          goal_report_values.goal_report_value_id = NEW.goal_report_value_id;
+      END;`,
     })
-    await db.raw({
-      sql: 'CREATE INDEX IF NOT EXISTS goal_report_values_label_idx ON goal_report_values(label)',
-    })
+    console.log('TriggerGenerator, goal_report_values, result:', result)
   }
-  // console.log('LabelGenerator, goal_report_values:', {
-  //   columns,
-  //   hasLabel,
-  // })
 }

@@ -1,18 +1,33 @@
 export const generateCheckValueLabel = async (db) => {
-  const columns = await db.raw({
-    sql: 'PRAGMA table_xinfo(check_values)',
+  // when any data is changed, update label using units name
+  const triggers = await db.raw({
+    sql: `select name from sqlite_master where type = 'trigger';`,
   })
-  const hasLabel = columns.some((column) => column.name === 'label')
-  if (!hasLabel) {
-    await db.raw({
-      sql: 'ALTER TABLE check_values ADD COLUMN label text GENERATED ALWAYS AS (check_value_id)',
+  const checkValuesLabelTriggerExists = triggers.some(
+    (column) => column.name === 'check_values_label_trigger',
+  )
+  if (!checkValuesLabelTriggerExists) {
+    const result = await db.raw({
+      sql: `
+      CREATE TRIGGER IF NOT EXISTS check_values_label_trigger
+        AFTER UPDATE ON check_values
+      BEGIN
+        UPDATE check_values SET label = concat(
+          units.name,
+          ': ',
+          coalesce(NEW.value_integer, NEW.value_numeric, NEW.value_text)
+        )
+        FROM(
+        SELECT
+          name
+        FROM
+          units
+        WHERE
+          unit_id = NEW.unit_id) AS units
+        WHERE
+          check_values.check_value_id = NEW.check_value_id;
+      END;`,
     })
-    await db.raw({
-      sql: 'CREATE INDEX IF NOT EXISTS check_values_label_idx ON check_values(label)',
-    })
+    console.log('TriggerGenerator, check_values, result:', result)
   }
-  // console.log('LabelGenerator, check_values:', {
-  //   columns,
-  //   hasLabel,
-  // })
 }

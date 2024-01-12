@@ -117,7 +117,12 @@ export const Component = () => {
       const { name, value } = getValueFromChange(e, data)
       db.action_report_values.update({
         where: { action_report_value_id },
-        data: { [name]: value },
+        data: {
+          [name]:
+            isNaN(value) && ['value_integer', 'value_numeric'].includes(name)
+              ? null
+              : value,
+        },
       })
     },
     [db.action_report_values, action_report_value_id],
