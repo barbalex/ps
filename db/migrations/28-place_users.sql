@@ -4,7 +4,7 @@ CREATE TABLE place_users(
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
   role text DEFAULT NULL,
-  label_replace_by_generated_column text DEFAULT NULL,
+  label text DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
 );
 
@@ -14,6 +14,8 @@ CREATE INDEX ON place_users USING btree(account_id);
 CREATE INDEX ON place_users USING btree(place_id);
 
 CREATE INDEX ON place_users USING btree(user_id);
+
+CREATE INDEX ON place_users USING btree(label);
 
 -- CREATE INDEX ON place_users((1))
 -- WHERE
