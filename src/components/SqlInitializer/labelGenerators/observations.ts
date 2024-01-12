@@ -4,15 +4,12 @@ export const generateObservationLabel = async (db) => {
   })
   const hasLabel = columns.some((column) => column.name === 'label')
   if (!hasLabel) {
-    await db.raw({
-      sql: 'ALTER TABLE observations ADD COLUMN label text GENERATED ALWAYS AS (observation_id)',
+    const result = await db.raw({
+      sql: `ALTER TABLE observations ADD COLUMN label text GENERATED ALWAYS AS (coalesce(concat(date, ': ', author), observation_id))`,
     })
     await db.raw({
       sql: 'CREATE INDEX IF NOT EXISTS observations_label_idx ON observations(label)',
     })
+    console.log('LabelGenerator, observations, result:', result)
   }
-  // console.log('LabelGenerator, observations:', {
-  //   columns,
-  //   hasLabel,
-  // })
 }
