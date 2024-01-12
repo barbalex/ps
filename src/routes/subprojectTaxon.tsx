@@ -6,7 +6,6 @@ import { SubprojectTaxa as SubprojectTaxon } from '../../../generated/client'
 import { createSubprojectTaxon } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
-import { DropdownField } from '../components/shared/DropdownField'
 import { FilteringCombobox } from '../components/shared/FilteringCombobox'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormMenu } from '../components/FormMenu'
@@ -115,14 +114,6 @@ export const Component = () => {
         label="ID"
         name="subproject_taxon_id"
         value={row.subproject_taxon_id}
-      />
-      <DropdownField
-        label="Taxon"
-        name="taxon_id"
-        table="taxa"
-        where={taxaWhere}
-        value={row.taxon_id ?? ''}
-        onChange={onChange}
       />
       <FilteringCombobox
         label="Taxon"
