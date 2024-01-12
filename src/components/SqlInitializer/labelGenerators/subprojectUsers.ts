@@ -1,4 +1,5 @@
 export const generateSubprojectUserLabel = async (db) => {
+  // if user_id or role is changed, update label with email from users and with role
   const triggers = await db.raw({
     sql: `select name from sqlite_master where type = 'trigger';`,
   })

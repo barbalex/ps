@@ -1,18 +1,29 @@
 export const generatePlaceUserLabel = async (db) => {
-  const columns = await db.raw({
-    sql: 'PRAGMA table_xinfo(place_users)',
+  // if user_id or role is changed, update label with email from users and with role
+  const triggers = await db.raw({
+    sql: `select name from sqlite_master where type = 'trigger';`,
   })
-  const hasLabel = columns.some((column) => column.name === 'label')
-  if (!hasLabel) {
-    await db.raw({
-      sql: 'ALTER TABLE place_users ADD COLUMN label text GENERATED ALWAYS AS (place_user_id)',
+  const placeUsersLabelTriggerExists = triggers.some(
+    (column) => column.name === 'place_users_label_trigger',
+  )
+  if (!placeUsersLabelTriggerExists) {
+    const result = await db.raw({
+      sql: `
+      CREATE TRIGGER IF NOT EXISTS place_users_label_trigger
+        AFTER UPDATE OF user_id, role ON place_users
+      BEGIN
+        UPDATE place_users SET label = (SELECT email FROM users WHERE user_id = NEW.user_id) || ' (' || NEW.role || ')';
+      END;`,
     })
+    console.log('TriggerGenerator, place_users, result:', result)
+    // same on insert
     await db.raw({
-      sql: 'CREATE INDEX IF NOT EXISTS place_users_label_idx ON place_users(label)',
+      sql: `
+      CREATE TRIGGER IF NOT EXISTS place_users_label_trigger_insert
+        AFTER INSERT ON place_users
+      BEGIN
+        UPDATE place_users SET label = (SELECT email FROM users WHERE user_id = NEW.user_id) || ' (' || NEW.role || ')';
+      END;`,
     })
   }
-  // console.log('LabelGenerator, place_users:', {
-  //   columns,
-  //   hasLabel,
-  // })
 }
