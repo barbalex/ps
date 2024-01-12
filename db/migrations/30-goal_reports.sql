@@ -3,7 +3,7 @@ CREATE TABLE goal_reports(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   goal_id uuid DEFAULT NULL REFERENCES goals(goal_id) ON DELETE CASCADE ON UPDATE CASCADE,
   data jsonb DEFAULT NULL,
-  label_replace_by_generated_column text DEFAULT NULL,
+  label text DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
 );
 
@@ -11,6 +11,8 @@ CREATE TABLE goal_reports(
 CREATE INDEX ON goal_reports USING btree(account_id);
 
 CREATE INDEX ON goal_reports USING btree(goal_id);
+
+CREATE INDEX ON goal_reports USING btree(label);
 
 -- CREATE INDEX ON goal_reports((1))
 -- WHERE
