@@ -45,6 +45,10 @@ const seedAccounts = `INSERT INTO accounts(account_id, user_id, type) values ('0
 const seedProjects = `INSERT INTO projects(project_id, account_id, name, deleted) values ('018cfcf7-6424-7000-a100-851c5cc2c878', '018cf958-27e2-7000-90d3-59f024d467be', 'Demo Project', false);`
 const seedProjectUsers = `INSERT INTO project_users(project_user_id, project_id, user_id, role, deleted) values ('018cfd1d-6baa-7000-93cc-817e822e80e2', '018cfcf7-6424-7000-a100-851c5cc2c878', '018cf95a-d817-7000-92fa-bb3b2ad59dda', 'manager', false);`
 const seedPlaceLevels = `INSERT INTO place_levels(account_id, level, name_plural, name_short, name_singular, place_level_id, project_id, reports, deleted) values ('018cf958-27e2-7000-90d3-59f024d467be', 1, 'Populations', 'Pop', 'Population', '018cfcf8-1abd-7000-a2f2-2708c92063d5', '018cfcf7-6424-7000-a100-851c5cc2c878', true, false),('018cf958-27e2-7000-90d3-59f024d467be', 2, 'Subpopulations', 'SPop', 'Subpopulation', '018cfcf8-785b-7000-a9b9-91495f23f309', '018cfcf7-6424-7000-a100-851c5cc2c878', true, false);`
+const seedTaxonomies = `INSERT INTO taxonomies(account_id, project_id, name, taxonomy_id, type, deleted) values ('018cf958-27e2-7000-90d3-59f024d467be', '018cfcf7-6424-7000-a100-851c5cc2c878', 'Demo Taxonomy 1', '018cfcf8-9b2a-7000-9c7e-5b0b8b0e2b0e', 'species', false);`
+const seedTaxons = `INSERT INTO taxa(account_id, name, taxonomy_id, taxon_id, deleted) values ('018cf958-27e2-7000-90d3-59f024d467be', 'Demo Taxon 1', '018cfcf8-9b2a-7000-9c7e-5b0b8b0e2b0e', '018cfcf8-9b2a-7000-9c7e-5b0b8b0e2b0e', false);`
+const seedSubprojects = `INSERT INTO subprojects(subproject_id, project_id, name, deleted) values ('018cfd27-ee92-7000-b678-e75497d6c60e', '018cfcf7-6424-7000-a100-851c5cc2c878', 'Demo Subproject 1', false);`
+const seedSubprojectUsers = `INSERT INTO subproject_users(subproject_user_id, subproject_id, user_id, role, deleted) values ('018cfd29-ccaa-7000-a686-8566a27eee45', '018cfd27-ee92-7000-b678-e75497d6c60e', '018cf95a-d817-7000-92fa-bb3b2ad59dda', 'manager', false);`
 
 export const seed = async (db) => {
   const users = await db.raw({
@@ -86,6 +90,18 @@ export const seed = async (db) => {
     })
     await db.raw({
       sql: seedProjectUsers,
+    })
+    await db.raw({
+      sql: seedSubprojects,
+    })
+    await db.raw({
+      sql: seedSubprojectUsers,
+    })
+    await db.raw({
+      sql: seedTaxonomies,
+    })
+    await db.raw({
+      sql: seedTaxons,
     })
   }
   const placeLevels = await db.raw({
