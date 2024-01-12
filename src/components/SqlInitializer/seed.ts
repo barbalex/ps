@@ -42,6 +42,8 @@ VALUES ('018ca1aa-6fa6-7be5-b5f8-5caca1565687', '018ca19e-7a23-7bf4-8523-ff41e3b
 // TODO: this is used until authorization is implemented
 const seedUsers = `INSERT INTO users(user_id, email, deleted) values ('018cf95a-d817-7000-92fa-bb3b2ad59dda', 'admin@admin.ch', FALSE);`
 const seedAccounts = `INSERT INTO accounts(account_id, user_id, type) values ('018cf958-27e2-7000-90d3-59f024d467be', '018cf95a-d817-7000-92fa-bb3b2ad59dda', 'premium');`
+const seedProjects = `INSERT INTO projects(project_id, account_id, name, deleted) values ('018cfcf7-6424-7000-a100-851c5cc2c878', '018cf958-27e2-7000-90d3-59f024d467be', 'Demo Project', false);`
+const seedPlaceLevels = `INSERT INTO place_levels(account_id, level, name_plural, name_short, name_singular, place_level_id, project_id, reports, deleted) values ('018cf958-27e2-7000-90d3-59f024d467be', 1, 'Populations', 'Pop', 'Population', '018cfcf8-1abd-7000-a2f2-2708c92063d5', '018cfcf7-6424-7000-a100-851c5cc2c878', true, false),('018cf958-27e2-7000-90d3-59f024d467be', 2, 'Subpopulations', 'SPop', 'Subpopulation', '018cfcf8-785b-7000-a9b9-91495f23f309', '018cfcf7-6424-7000-a100-851c5cc2c878', true, false);`
 
 export const seed = async (db) => {
   const users = await db.raw({
@@ -72,6 +74,22 @@ export const seed = async (db) => {
     })
     await db.raw({
       sql: seedWidgetsForFields,
+    })
+  }
+  const projects = await db.raw({
+    sql: `select count(*) as count from projects;`,
+  })
+  if (projects[0].count === 0) {
+    await db.raw({
+      sql: seedProjects,
+    })
+  }
+  const placeLevels = await db.raw({
+    sql: `select count(*) as count from place_levels;`,
+  })
+  if (placeLevels[0].count === 0) {
+    await db.raw({
+      sql: seedPlaceLevels,
     })
   }
 }
