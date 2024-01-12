@@ -34,4 +34,24 @@ export const generateUserLabel = async (db) => {
       result,
     )
   }
+
+  // if email is changed, label of project_user needs to be updated
+  const usersProjectUsersLabelTriggerExists = triggers.some(
+    (column) => column.name === 'users_project_users_label_trigger',
+  )
+  if (!usersProjectUsersLabelTriggerExists) {
+    const result = await db.raw({
+      sql: `
+      CREATE TRIGGER IF NOT EXISTS users_project_users_label_trigger
+        AFTER UPDATE OF email ON users
+      BEGIN
+        UPDATE project_users SET label = NEW.email || ' (' || project_users.type || ')'
+        WHERE user_id = NEW.user_id;
+      END;`,
+    })
+    console.log(
+      'TriggerGenerator, users_project_users_label_trigger, result:',
+      result,
+    )
+  }
 }

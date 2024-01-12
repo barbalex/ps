@@ -22,6 +22,18 @@ export const generateProjectLabel = async (db) => {
       'TriggerGenerator, projects_places_label_trigger, result:',
       result,
     )
+    // same on insert
+    await db.raw({
+      sql: `CREATE TRIGGER IF NOT EXISTS projects_places_label_trigger_insert
+              AFTER INSERT ON projects
+            BEGIN
+              UPDATE places SET label = case
+                when NEW.places_label_by = 'id' then place_id
+                when NEW.places_label_by = 'level' then level
+                else json_extract(data, '$.' || NEW.places_label_by)
+              end;
+            END;`,
+    })
   }
 
   //if anything in projects is changed, update its label
