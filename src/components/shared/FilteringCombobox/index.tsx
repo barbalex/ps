@@ -66,7 +66,10 @@ export const FilteringCombobox = memo(
         [setFilter],
       )
       const onOptionSelect = useCallback(
-        (e, data) => onChange({ target: { name, value: data.optionValue } }),
+        (e, data) => {
+          if (data.optionValue === 0) return setFilter('') // No options found
+          onChange({ target: { name, value: data.optionValue } })
+        },
         [name, onChange],
       )
 
@@ -86,7 +89,6 @@ export const FilteringCombobox = memo(
       return (
         <Field label={label ?? '(no label provided)'}>
           <Combobox
-            key={value}
             name={name}
             value={filter}
             selectedOptions={selectedOptions}

@@ -28,6 +28,15 @@ export const FilteringComboboxOptions = memo(
       value: o[idField ?? name],
     }))
 
+    if (!options.length) {
+      return (
+        <Option
+          key={0}
+          value={0}
+        >{`No ${table} found containing "${filter}".`}</Option>
+      )
+    }
+
     return options.map(({ text, value }) => (
       <Option key={value} value={value}>
         {text}
