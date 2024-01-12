@@ -24,6 +24,27 @@ export const generateProjectLabel = async (db) => {
     )
   }
 
+  // if goals_label_by is changed, need to update all labels of goals
+  const projectsGoalsLabelTriggerExists = triggers.some(
+    (column) => column.name === 'projects_goals_label_trigger',
+  )
+  if (!projectsGoalsLabelTriggerExists) {
+    const result = await db.raw({
+      sql: `CREATE TRIGGER IF NOT EXISTS projects_goals_label_trigger
+              AFTER UPDATE OF goals_label_by ON projects
+            BEGIN
+              UPDATE goals SET label = case
+                when NEW.goals_label_by = 'id' then goal_id
+                else json_extract(data, '$.' || NEW.goals_label_by)
+              end;
+            END;`,
+    })
+    console.log(
+      'TriggerGenerator, projects_goals_label_trigger, result:',
+      result,
+    )
+  }
+
   //if anything in projects is changed, update its label
   const projectsLabelTriggerExists = triggers.some(
     (column) => column.name === 'projects_label_trigger',

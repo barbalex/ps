@@ -28,7 +28,7 @@ import { generateSubprojectReportLabel } from './labelGenerators/subprojectRepor
 import { generateGoalLabel } from './labelGenerators/goals'
 import { generateGoalReportLabel } from './labelGenerators/goalReports'
 import { generateGoalReportValueLabel } from './labelGenerators/goalReportValues'
-import { generateSubprojectUserLabel } from './labelGenerators/subprojectUers'
+import { generateSubprojectUserLabel } from './labelGenerators/subprojectUsers'
 import { generateCheckLabel } from './labelGenerators/checks'
 import { generateCheckValueLabel } from './labelGenerators/checkValues'
 import { generateCheckTaxonLabel } from './labelGenerators/checkTaxa'

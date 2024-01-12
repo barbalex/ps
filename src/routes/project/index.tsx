@@ -139,6 +139,14 @@ export const Component = () => {
         onChange={onChange}
       />
       <LabelBy
+        label="Goal reports labelled by"
+        name="goal_reports_label_by"
+        table="goal_reports"
+        value={row.goal_reports_label_by ?? ''}
+        onChange={onChange}
+        extraFieldNames={['id']}
+      />
+      <LabelBy
         label="Places labelled by"
         name="places_label_by"
         table="places"
