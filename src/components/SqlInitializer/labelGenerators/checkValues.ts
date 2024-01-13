@@ -12,11 +12,15 @@ export const generateCheckValueLabel = async (db) => {
       CREATE TRIGGER IF NOT EXISTS check_values_label_trigger
         AFTER UPDATE ON check_values
       BEGIN
-        UPDATE check_values SET label = concat(
-          units.name,
-          ': ',
-          coalesce(NEW.value_integer, NEW.value_numeric, NEW.value_text)
-        )
+        UPDATE check_values SET label = iif(
+          units.name is null,
+          NEW.check_value_id,
+          concat(
+            units.name,
+            ': ',
+            coalesce(NEW.value_integer, NEW.value_numeric, NEW.value_text)
+          )
+        ) 
         FROM(
         SELECT
           name

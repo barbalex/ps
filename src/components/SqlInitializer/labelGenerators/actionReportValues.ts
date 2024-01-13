@@ -14,7 +14,7 @@ export const generateActionReportValueLabel = async (db) => {
       BEGIN
         UPDATE action_report_values SET label = iif(
           units.name is null,
-          NEW.action_report_id,
+          NEW.action_report_value_id,
           concat(
             units.name,
             ': ',
