@@ -90,18 +90,33 @@ export const Breadcrumb = ({ match }) => {
   const [label, setLabel] = useState(text)
   useEffect(() => {
     const get = async () => {
-      if (table !== 'places') return
-      const placeLevels =
-        (await db.place_levels?.findMany({
-          where: {
-            project_id: match.params.project_id,
-            deleted: false,
-            level: levelWanted,
-          },
-        })) ?? []
-      const levelRow = placeLevels[0]
-      const label = levelRow?.name_plural ?? levelRow?.name_short ?? 'Places'
-      setLabel(label)
+      switch (table) {
+        case 'places': {
+          const placeLevels =
+            (await db.place_levels?.findMany({
+              where: {
+                project_id: match.params.project_id,
+                deleted: false,
+                level: levelWanted,
+              },
+            })) ?? []
+          const levelRow = placeLevels[0]
+          const label =
+            levelRow?.name_plural ?? levelRow?.name_short ?? 'Places'
+          setLabel(label)
+          break
+        }
+        case 'subprojects': {
+          const project = await db.projects?.findUnique({
+            where: { project_id: match.params.project_id },
+          })
+          const label = project?.subproject_name_plural ?? 'Subprojects'
+          setLabel(label)
+          break
+        }
+        default:
+          break
+      }
     }
     get()
   }, [db, levelWanted, match, match.params, match.params.project_id, table])
