@@ -1,11 +1,12 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { Link, useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
 import { GoalReportValues as GoalReportValue } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { createGoalReportValue } from '../modules/createRows'
 import { ListViewHeader } from '../components/ListViewHeader'
+import { Row } from '../components/shared/Row'
 import '../form.css'
 
 export const Component = () => {
@@ -50,17 +51,15 @@ export const Component = () => {
         addRow={add}
         tableName="goal report value"
       />
-      {goalReportValues.map(
-        (goalReportValue: GoalReportValue, index: number) => (
-          <p key={index} className="item">
-            <Link
-              to={`/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${goal_report_id}/values/${goalReportValue.goal_report_value_id}`}
-            >
-              {goalReportValue.label ?? goalReportValue.goal_report_value_id}
-            </Link>
-          </p>
-        ),
-      )}
+      <div className="list-container">
+        {goalReportValues.map(({ goal_report_value_id, label }) => (
+          <Row
+            key={goal_report_value_id}
+            label={label}
+            to={`/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${goal_report_id}/values/${goal_report_value_id}`}
+          />
+        ))}
+      </div>
     </div>
   )
 }
