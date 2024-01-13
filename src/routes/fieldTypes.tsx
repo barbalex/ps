@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { FieldTypes as FieldType } from '../../../generated/client'
 import { createFieldType } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
-import { ListViewMenu } from '../components/ListViewMenu'
+import { ListViewHeader } from '../components/ListViewHeader'
 
 import '../form.css'
 
@@ -29,8 +29,8 @@ export const Component = () => {
   const fieldTypes: FieldType[] = results ?? []
 
   return (
-    <div className="form-container">
-      <ListViewMenu addRow={add} tableName="field type" />
+    <div className="list-view">
+      <ListViewHeader title="Field Types" addRow={add} tableName="field type" />
       {fieldTypes.map((fieldType: FieldType, index: number) => (
         <p key={index} className="item">
           <Link to={`/field-types/${fieldType.field_type_id}`}>
