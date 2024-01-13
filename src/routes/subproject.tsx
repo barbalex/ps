@@ -24,6 +24,13 @@ export const Component = () => {
     db.subprojects.liveUnique({ where: { subproject_id } }),
   )
 
+  // get projects.subproject_name_singular to name the table
+  const { results: project = {} } = useLiveQuery(
+    db.projects.liveUnique({ where: { project_id } }),
+  )
+  const nameSingular = project?.subproject_name_singular ?? 'Subproject'
+  const nameSingularLower = nameSingular.toLowerCase()
+
   const baseUrl = `/projects/${project_id}/subprojects`
 
   const addRow = useCallback(async () => {
@@ -88,12 +95,12 @@ export const Component = () => {
   return (
     <>
       <FormHeader
-        title="Subproject"
+        title={nameSingular}
         addRow={addRow}
         deleteRow={deleteRow}
         toNext={toNext}
         toPrevious={toPrevious}
-        tableName="subproject" // TODO: use subproject_name_singular
+        tableName={nameSingularLower}
       />
       <div className="form-container">
         <TextFieldInactive

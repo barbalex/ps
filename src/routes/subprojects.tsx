@@ -19,6 +19,14 @@ export const Component = () => {
     [project_id],
   )
 
+  // get projects.subproject_name_plural to name the table
+  const { results: project = {} } = useLiveQuery(
+    db.projects.liveUnique({ where: { project_id } }),
+  )
+  const namePlural = project?.subproject_name_plural ?? 'Subprojects'
+  const nameSingular = project?.subproject_name_singular ?? 'Subproject'
+  const nameSingularLower = nameSingular.toLowerCase()
+
   const add = useCallback(async () => {
     const data = await createSubproject({ db, project_id })
     await db.subprojects.create({ data })
@@ -29,7 +37,11 @@ export const Component = () => {
 
   return (
     <div className="list-view">
-      <ListViewHeader title="Subprojects" addRow={add} tableName="subproject" />
+      <ListViewHeader
+        title={namePlural}
+        addRow={add}
+        tableName={nameSingularLower}
+      />
       <div className="list-container">
         {subprojects.map(({ subproject_id, label }) => (
           <Row
