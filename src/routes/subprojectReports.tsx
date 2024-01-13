@@ -1,11 +1,12 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { Link, useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
 import { SubprojectReports as SubprojectReport } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { createSubprojectReport } from '../modules/createRows'
 import { ListViewHeader } from '../components/ListViewHeader'
+import { Row } from '../components/shared/Row'
 import '../form.css'
 
 export const Component = () => {
@@ -42,17 +43,15 @@ export const Component = () => {
         addRow={add}
         tableName="subproject report"
       />
-      {subprojectReports.map(
-        (subprojectReport: SubprojectReport, index: number) => (
-          <p key={index} className="item">
-            <Link
-              to={`/projects/${project_id}/subprojects/${subproject_id}/reports/${subprojectReport.subproject_report_id}`}
-            >
-              {subprojectReport.label ?? subprojectReport.subproject_report_id}
-            </Link>
-          </p>
-        ),
-      )}
+      <div className="list-container">
+        {subprojectReports.map(({ subproject_report_id, label }) => (
+          <Row
+            key={subproject_report_id}
+            to={`/projects/${project_id}/subprojects/${subproject_id}/reports/${subproject_report_id}`}
+            label={label}
+          />
+        ))}
+      </div>
     </div>
   )
 }
