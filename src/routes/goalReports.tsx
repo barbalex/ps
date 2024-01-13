@@ -5,7 +5,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 import { GoalReports as GoalReport } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { createGoalReport } from '../modules/createRows'
-import { ListViewMenu } from '../components/ListViewMenu'
+import { ListViewHeader } from '../components/ListViewHeader'
 import '../form.css'
 
 export const Component = () => {
@@ -29,8 +29,12 @@ export const Component = () => {
   const goals: GoalReport[] = results ?? []
 
   return (
-    <div className="form-container">
-      <ListViewMenu addRow={add} tableName="goal report" />
+    <div className="list-view">
+      <ListViewHeader
+        title="Goal Reports"
+        addRow={add}
+        tableName="goal report"
+      />
       {goals.map((goalReport: GoalReport, index: number) => (
         <p key={index} className="item">
           <Link

@@ -5,7 +5,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 import { ObservationSources as Observation } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { createObservation } from '../modules/createRows'
-import { ListViewMenu } from '../components/ListViewMenu'
+import { ListViewHeader } from '../components/ListViewHeader'
 import '../form.css'
 
 export const Component = () => {
@@ -36,8 +36,12 @@ export const Component = () => {
   const observations: Observation[] = results ?? []
 
   return (
-    <div className="form-container">
-      <ListViewMenu addRow={add} tableName="observation" />
+    <div className="list-view">
+      <ListViewHeader
+        title="Observations"
+        addRow={add}
+        tableName="observation"
+      />
       {observations.map((observation: Observation, index: number) => (
         <p key={index} className="item">
           <Link
