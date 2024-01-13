@@ -9,7 +9,7 @@ import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { DateField } from '../components/shared/DateField'
 import { getValueFromChange } from '../modules/getValueFromChange'
-import { FormMenu } from '../components/FormMenu'
+import { FormHeader } from '../components/FormHeader'
 
 import '../form.css'
 
@@ -56,30 +56,33 @@ export const Component = () => {
   }
 
   return (
-    <div className="form-container">
-      <FormMenu
+    <>
+      <FormHeader
+        title="Message"
         addRow={addRow}
         deleteRow={deleteRow}
-        tableName="goal report value"
+        tableName="message"
       />
-      <TextFieldInactive
-        label="ID"
-        name="message_id"
-        value={row.message_id ?? ''}
-      />
-      <DateField
-        label="Date"
-        name="date"
-        value={row.date}
-        onChange={onChange}
-      />
-      <TextField
-        label="Message"
-        name="message"
-        value={row.message ?? ''}
-        onChange={onChange}
-        autoFocus
-      />
-    </div>
+      <div className="form-container">
+        <TextFieldInactive
+          label="ID"
+          name="message_id"
+          value={row.message_id ?? ''}
+        />
+        <DateField
+          label="Date"
+          name="date"
+          value={row.date}
+          onChange={onChange}
+        />
+        <TextField
+          label="Message"
+          name="message"
+          value={row.message ?? ''}
+          onChange={onChange}
+          autoFocus
+        />
+      </div>
+    </>
   )
 }

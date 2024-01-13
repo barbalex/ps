@@ -9,7 +9,7 @@ import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { SwitchField } from '../components/shared/SwitchField'
 import { getValueFromChange } from '../modules/getValueFromChange'
-import { FormMenu } from '../components/FormMenu'
+import { FormHeader } from '../components/FormHeader'
 
 import '../form.css'
 
@@ -85,33 +85,36 @@ export const Component = () => {
   }
 
   return (
-    <div className="form-container">
-      <FormMenu
+    <>
+      <FormHeader
+        title="List Value"
         addRow={addRow}
         deleteRow={deleteRow}
         toNext={toNext}
         toPrevious={toPrevious}
         tableName="list value"
       />
-      <TextFieldInactive
-        label="ID"
-        name="list_value_id"
-        value={row.list_value_id}
-      />
-      <TextField
-        label="Value"
-        name="value"
-        value={row.value ?? ''}
-        onChange={onChange}
-        autoFocus
-        ref={autoFocusRef}
-      />
-      <SwitchField
-        label="Obsolete"
-        name="obsolete"
-        value={row.obsolete}
-        onChange={onChange}
-      />
-    </div>
+      <div className="form-container">
+        <TextFieldInactive
+          label="ID"
+          name="list_value_id"
+          value={row.list_value_id}
+        />
+        <TextField
+          label="Value"
+          name="value"
+          value={row.value ?? ''}
+          onChange={onChange}
+          autoFocus
+          ref={autoFocusRef}
+        />
+        <SwitchField
+          label="Obsolete"
+          name="obsolete"
+          value={row.obsolete}
+          onChange={onChange}
+        />
+      </div>
+    </>
   )
 }

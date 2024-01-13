@@ -9,8 +9,8 @@ import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { Jsonb } from '../components/shared/Jsonb'
 import { getValueFromChange } from '../modules/getValueFromChange'
-import { FormMenu } from '../components/FormMenu'
 import { DateField } from '../components/shared/DateField'
+import { FormHeader } from '../components/FormHeader'
 
 import '../form.css'
 
@@ -106,56 +106,59 @@ export const Component = () => {
   // TODO: inactivate these fields
   // observations are only imported, not created
   return (
-    <div className="form-container">
-      <FormMenu
+    <>
+      <FormHeader
+        title="Observation"
         addRow={addRow}
         deleteRow={deleteRow}
         toNext={toNext}
         toPrevious={toPrevious}
         tableName="observation"
       />
-      <TextFieldInactive
-        label="ID"
-        name="observation_id"
-        value={row.observation_id}
-      />
-      <TextField
-        label="Place"
-        name="place_id"
-        value={row.place_id ?? ''}
-        onChange={onChange}
-        autoFocus
-        ref={autoFocusRef}
-      />
-      <TextFieldInactive
-        label="ID in source"
-        name="id_in_source"
-        value={row.id_in_source ?? ''}
-      />
-      <TextFieldInactive
-        label="Url"
-        name="url"
-        type="url"
-        value={row.url ?? ''}
-      />
-      <DateField
-        label="Date"
-        name="date"
-        value={row.date ?? ''}
-        onChange={onChange}
-      />
-      <TextField
-        label="Author"
-        name="author"
-        value={row.author ?? ''}
-        onChange={onChange}
-      />
-      <Jsonb
-        table="observations"
-        idField="observation_id"
-        id={row.observation_id}
-        data={row.data ?? {}}
-      />
-    </div>
+      <div className="form-container">
+        <TextFieldInactive
+          label="ID"
+          name="observation_id"
+          value={row.observation_id}
+        />
+        <TextField
+          label="Place"
+          name="place_id"
+          value={row.place_id ?? ''}
+          onChange={onChange}
+          autoFocus
+          ref={autoFocusRef}
+        />
+        <TextFieldInactive
+          label="ID in source"
+          name="id_in_source"
+          value={row.id_in_source ?? ''}
+        />
+        <TextFieldInactive
+          label="Url"
+          name="url"
+          type="url"
+          value={row.url ?? ''}
+        />
+        <DateField
+          label="Date"
+          name="date"
+          value={row.date ?? ''}
+          onChange={onChange}
+        />
+        <TextField
+          label="Author"
+          name="author"
+          value={row.author ?? ''}
+          onChange={onChange}
+        />
+        <Jsonb
+          table="observations"
+          idField="observation_id"
+          id={row.observation_id}
+          data={row.data ?? {}}
+        />
+      </div>
+    </>
   )
 }

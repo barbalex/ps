@@ -9,7 +9,7 @@ import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { Jsonb } from '../components/shared/Jsonb'
 import { getValueFromChange } from '../modules/getValueFromChange'
-import { FormMenu } from '../components/FormMenu'
+import { FormHeader } from '../components/FormHeader'
 
 import '../form.css'
 
@@ -81,30 +81,33 @@ export const Component = () => {
   }
 
   return (
-    <div className="form-container">
-      <FormMenu
+    <>
+      <FormHeader
+        title="Person"
         addRow={addRow}
         deleteRow={deleteRow}
         toNext={toNext}
         toPrevious={toPrevious}
         tableName="person"
       />
-      <TextFieldInactive label="ID" name="person_id" value={row.person_id} />
-      <TextField
-        label="Email"
-        name="email"
-        type="email"
-        value={row.email ?? ''}
-        onChange={onChange}
-        autoFocus
-        ref={autoFocusRef}
-      />
-      <Jsonb
-        table="persons"
-        idField="person_id"
-        id={row.person_id}
-        data={row.data ?? {}}
-      />
-    </div>
+      <div className="form-container">
+        <TextFieldInactive label="ID" name="person_id" value={row.person_id} />
+        <TextField
+          label="Email"
+          name="email"
+          type="email"
+          value={row.email ?? ''}
+          onChange={onChange}
+          autoFocus
+          ref={autoFocusRef}
+        />
+        <Jsonb
+          table="persons"
+          idField="person_id"
+          id={row.person_id}
+          data={row.data ?? {}}
+        />
+      </div>
+    </>
   )
 }
