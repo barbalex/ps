@@ -9,7 +9,7 @@ import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { Jsonb } from '../components/shared/Jsonb'
 import { getValueFromChange } from '../modules/getValueFromChange'
-import { FormMenu } from '../components/FormMenu'
+import { FormHeader } from '../components/FormHeader'
 
 import '../form.css'
 
@@ -83,36 +83,43 @@ export const Component = () => {
   }
 
   return (
-    <div className="form-container">
-      <FormMenu
+    <>
+      <FormHeader
+        title="Goal"
         addRow={addRow}
         deleteRow={deleteRow}
         toNext={toNext}
         toPrevious={toPrevious}
         tableName="goal"
       />
-      <TextFieldInactive label="ID" name="goal_id" value={row.goal_id ?? ''} />
-      <TextField
-        label="Year"
-        name="year"
-        value={row.year ?? ''}
-        type="number"
-        onChange={onChange}
-      />
-      <TextField
-        label="Name"
-        name="name"
-        value={row.name ?? ''}
-        onChange={onChange}
-        autoFocus
-        ref={autoFocusRef}
-      />
-      <Jsonb
-        table="goals"
-        idField="goal_id"
-        id={row.goal_id}
-        data={row.data ?? {}}
-      />
-    </div>
+      <div className="form-container">
+        <TextFieldInactive
+          label="ID"
+          name="goal_id"
+          value={row.goal_id ?? ''}
+        />
+        <TextField
+          label="Year"
+          name="year"
+          value={row.year ?? ''}
+          type="number"
+          onChange={onChange}
+        />
+        <TextField
+          label="Name"
+          name="name"
+          value={row.name ?? ''}
+          onChange={onChange}
+          autoFocus
+          ref={autoFocusRef}
+        />
+        <Jsonb
+          table="goals"
+          idField="goal_id"
+          id={row.goal_id}
+          data={row.data ?? {}}
+        />
+      </div>
+    </>
   )
 }

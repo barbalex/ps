@@ -9,7 +9,7 @@ import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { Jsonb } from '../components/shared/Jsonb'
 import { getValueFromChange } from '../modules/getValueFromChange'
-import { FormMenu } from '../components/FormMenu'
+import { FormHeader } from '../components/FormHeader'
 
 import '../form.css'
 
@@ -101,40 +101,43 @@ export const Component = () => {
   }
 
   return (
-    <div className="form-container">
-      <FormMenu
+    <>
+      <FormHeader
+        title="Observation Source"
         addRow={addRow}
         deleteRow={deleteRow}
         toNext={toNext}
         toPrevious={toPrevious}
         tableName="observation source"
       />
-      <TextFieldInactive
-        label="ID"
-        name="observation_source_id"
-        value={row.observation_source_id}
-      />
-      <TextField
-        label="Name"
-        name="name"
-        value={row.name ?? ''}
-        onChange={onChange}
-        autoFocus
-        ref={autoFocusRef}
-      />
-      <TextField
-        label="Url"
-        name="url"
-        type="url"
-        value={row.url ?? ''}
-        onChange={onChange}
-      />
-      <Jsonb
-        table="observation_sources"
-        idField="observation_source_id"
-        id={row.observation_source_id}
-        data={row.data ?? {}}
-      />
-    </div>
+      <div className="form-container">
+        <TextFieldInactive
+          label="ID"
+          name="observation_source_id"
+          value={row.observation_source_id}
+        />
+        <TextField
+          label="Name"
+          name="name"
+          value={row.name ?? ''}
+          onChange={onChange}
+          autoFocus
+          ref={autoFocusRef}
+        />
+        <TextField
+          label="Url"
+          name="url"
+          type="url"
+          value={row.url ?? ''}
+          onChange={onChange}
+        />
+        <Jsonb
+          table="observation_sources"
+          idField="observation_source_id"
+          id={row.observation_source_id}
+          data={row.data ?? {}}
+        />
+      </div>
+    </>
   )
 }

@@ -7,7 +7,7 @@ import { createGoalReport } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { Jsonb } from '../components/shared/Jsonb'
-import { FormMenu } from '../components/FormMenu'
+import { FormHeader } from '../components/FormHeader'
 // import { getValueFromChange } from '../modules/getValueFromChange'
 
 import '../form.css'
@@ -88,27 +88,30 @@ export const Component = () => {
   }
 
   return (
-    <div className="form-container">
-      <FormMenu
+    <>
+      <FormHeader
+        title="Goal Report"
         addRow={addRow}
         deleteRow={deleteRow}
         toNext={toNext}
         toPrevious={toPrevious}
         tableName="goal report"
       />
-      <TextFieldInactive
-        label="ID"
-        name="goal_report_id"
-        value={row.goal_report_id ?? ''}
-      />
-      <Jsonb
-        table="goal_reports"
-        idField="goal_report_id"
-        id={row.goal_report_id}
-        data={row.data ?? {}}
-        autoFocus
-        ref={autoFocusRef}
-      />
-    </div>
+      <div className="form-container">
+        <TextFieldInactive
+          label="ID"
+          name="goal_report_id"
+          value={row.goal_report_id ?? ''}
+        />
+        <Jsonb
+          table="goal_reports"
+          idField="goal_report_id"
+          id={row.goal_report_id}
+          data={row.data ?? {}}
+          autoFocus
+          ref={autoFocusRef}
+        />
+      </div>
+    </>
   )
 }
