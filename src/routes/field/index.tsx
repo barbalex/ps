@@ -143,12 +143,14 @@ export const Component = () => {
           options={project_id ? projectTables : accountTables}
           autoFocus
           ref={autoFocusRef}
+          validationMessage={row.table_name ? undefined : 'Required'}
         />
         <TextField
           label="Name"
           name="name"
           value={row.name ?? ''}
           onChange={onChange}
+          validationMessage={row.name ? undefined : 'Required'}
         />
         <TextField
           label="Label"
@@ -164,6 +166,7 @@ export const Component = () => {
           orderBy={fieldTypeOrderBy}
           value={row.field_type_id ?? ''}
           onChange={onChange}
+          validationMessage={row.field_type_id ? undefined : 'Required'}
         />
         <WidgetType
           onChange={onChange}
@@ -190,6 +193,7 @@ export const Component = () => {
           name="obsolete"
           value={row.obsolete ?? false}
           onChange={onChange}
+          validationMessage="If obsolete, existing data is shown but, this field will not be available for new records."
         />
       </div>
     </>
