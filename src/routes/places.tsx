@@ -20,20 +20,18 @@ export const Component = () => {
       orderBy: { label: 'asc' },
     }),
   )
-  // TODO: query name of places from place_levels
+
   const { results: placeLevels } = useLiveQuery(
     db.place_levels.liveMany({
       where: {
-        // deleted: false,
-        // project_id,
-        // level: place_id ? 2 : 1,
+        deleted: false,
+        project_id,
+        level: place_id ? 2 : 1,
       },
-      orderBy: { name: 'asc' },
     }),
   )
   const placeNameSingular = placeLevels?.[0]?.name_singular ?? 'Place'
   const placeNamePlural = placeLevels?.[0]?.name_plural ?? 'Places'
-  console.log('places', { placeLevels, placeNameSingular, placeNamePlural })
 
   const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/places${
     place_id ? `/${place_id}/places` : ''
