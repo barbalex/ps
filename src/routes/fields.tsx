@@ -5,7 +5,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 import { Fields as Field } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { createField } from '../modules/createRows'
-import { ListViewMenu } from '../components/ListViewMenu'
+import { ListViewHeader } from '../components/ListViewHeader'
 import '../form.css'
 
 export const Component = () => {
@@ -34,8 +34,8 @@ export const Component = () => {
   const fields: Field[] = results ?? []
 
   return (
-    <div className="form-container">
-      <ListViewMenu addRow={add} tableName="field" />
+    <div className="list-view">
+      <ListViewHeader title="Fields" addRow={add} tableName="field" />
       {fields.map((field: Field, index: number) => (
         <p key={index} className="item">
           <Link
