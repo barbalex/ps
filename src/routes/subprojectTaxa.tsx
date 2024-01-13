@@ -5,7 +5,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 import { SubprojectTaxa as SubprojectTaxon } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { createSubprojectTaxon } from '../modules/createRows'
-import { ListViewMenu } from '../components/ListViewMenu'
+import { ListViewHeader } from '../components/ListViewHeader'
 import '../form.css'
 
 export const Component = () => {
@@ -35,8 +35,12 @@ export const Component = () => {
   const subproject_taxa: SubprojectTaxon[] = results ?? []
 
   return (
-    <div className="form-container">
-      <ListViewMenu addRow={add} tableName="subproject taxon" />
+    <div className="list-view">
+      <ListViewHeader
+        title="Subproject Taxa"
+        addRow={add}
+        tableName="subproject taxon"
+      />
       {subproject_taxa.map(
         (subproject_taxon: SubprojectTaxon, index: number) => (
           <p key={index} className="item">

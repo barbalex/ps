@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Messages as Message } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { createMessage } from '../modules/createRows'
-import { ListViewMenu } from '../components/ListViewMenu'
+import { ListViewHeader } from '../components/ListViewHeader'
 
 import '../form.css'
 
@@ -24,8 +24,8 @@ export const Component = () => {
   const messages: Message[] = results ?? []
 
   return (
-    <div className="form-container">
-      <ListViewMenu addRow={add} tableName="message" />
+    <div className="list-view">
+      <ListViewHeader title="Messages" addRow={add} tableName="message" />
       {messages.map((message: Message, index: number) => (
         <p key={index} className="item">
           <Link to={`/messages/${message.message_id}`}>
