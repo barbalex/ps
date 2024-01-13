@@ -5,7 +5,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 import { ActionValues as ActionValue } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { createActionValue } from '../modules/createRows'
-import { ListViewMenu } from '../components/ListViewMenu'
+import { ListViewHeader } from '../components/ListViewHeader'
 import '../form.css'
 
 export const Component = () => {
@@ -45,8 +45,12 @@ export const Component = () => {
   const actionValues: ActionValue[] = results ?? []
 
   return (
-    <div className="form-container">
-      <ListViewMenu addRow={add} tableName="action value" />
+    <div className="list-view">
+      <ListViewHeader
+        title="Action Values"
+        addRow={add}
+        tableName="action value"
+      />
       {actionValues.map((actionValue: ActionValue, index: number) => (
         <p key={index} className="item">
           <Link
