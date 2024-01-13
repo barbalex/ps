@@ -5,7 +5,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 import { Checks as Check } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { createCheck } from '../modules/createRows'
-import { ListViewMenu } from '../components/ListViewMenu'
+import { ListViewHeader } from '../components/ListViewHeader'
 import '../form.css'
 
 export const Component = () => {
@@ -38,8 +38,8 @@ export const Component = () => {
   const checks: Check[] = results ?? []
 
   return (
-    <div className="form-container">
-      <ListViewMenu addRow={add} tableName="check" />
+    <div className="list-view">
+      <ListViewHeader title="Checks" addRow={add} tableName="check" />
       {checks.map((check: Check, index: number) => (
         <p key={index} className="item">
           <Link
