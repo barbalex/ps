@@ -1,11 +1,12 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { Link, useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
 import { Taxa as Taxon } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { createTaxon } from '../modules/createRows'
 import { ListViewHeader } from '../components/ListViewHeader'
+import { Row } from '../components/shared/Row'
 import '../form.css'
 
 export const Component = () => {
@@ -36,15 +37,15 @@ export const Component = () => {
   return (
     <div className="list-view">
       <ListViewHeader title="Taxa" addRow={add} tableName="taxon" />
-      {taxa.map((taxon: Taxon, index: number) => (
-        <p key={index} className="item">
-          <Link
-            to={`/projects/${project_id}/taxonomies/${taxonomy_id}/taxa/${taxon.taxon_id}`}
-          >
-            {taxon.label ?? taxon.taxon_id}
-          </Link>
-        </p>
-      ))}
+      <div className="list-container">
+        {taxa.map(({ taxon_id, label }) => (
+          <Row
+            key={taxon_id}
+            label={label}
+            to={`/projects/${project_id}/taxonomies/${taxonomy_id}/taxa/${taxon_id}`}
+          />
+        ))}
+      </div>
     </div>
   )
 }
