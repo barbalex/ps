@@ -88,6 +88,8 @@ export const Component = () => {
     return <div>Loading...</div>
   }
 
+  // console.log('place level', row)
+
   return (
     <div className="form-container">
       <FormMenu

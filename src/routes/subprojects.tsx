@@ -5,7 +5,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 import { Subprojects as Subproject } from '../../../generated/client'
 import { createSubproject } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
-import { ListViewMenu } from '../components/ListViewMenu'
+import { ListViewHeader } from '../components/ListViewHeader'
 import '../form.css'
 
 export const Component = () => {
@@ -27,8 +27,8 @@ export const Component = () => {
   const subprojects: Subproject[] = results ?? []
 
   return (
-    <div className="form-container">
-      <ListViewMenu addRow={add} tableName="subproject" />
+    <div className="list-view">
+      <ListViewHeader title="Subprojects" addRow={add} tableName="subproject" />
       {subprojects.map((subproject: Subproject, index: number) => (
         <p key={index} className="item">
           <Link
