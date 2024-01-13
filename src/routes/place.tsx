@@ -3,16 +3,16 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { Places as Place } from '../../../generated/client'
-import { createPlace } from '../../modules/createRows'
-import { useElectric } from '../../ElectricProvider'
-import { TextField } from '../../components/shared/TextField'
-import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
-import { Jsonb } from '../../components/shared/Jsonb'
-import { DropdownField } from '../../components/shared/DropdownField'
-import { getValueFromChange } from '../../modules/getValueFromChange'
-import { FormMenu } from '../../components/FormMenu'
+import { createPlace } from '../modules/createRows'
+import { useElectric } from '../ElectricProvider'
+import { TextField } from '../components/shared/TextField'
+import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { Jsonb } from '../components/shared/Jsonb'
+import { DropdownField } from '../components/shared/DropdownField'
+import { getValueFromChange } from '../modules/getValueFromChange'
+import { FormHeader } from '../components/FormHeader'
 
-import '../../form.css'
+import '../form.css'
 
 export const Component = () => {
   const navigate = useNavigate()
@@ -25,6 +25,17 @@ export const Component = () => {
     () => db.places.liveUnique({ where: { place_id } }),
     [place_id],
   )
+
+  const { results: placeLevels } = useLiveQuery(
+    db.place_levels.liveMany({
+      where: {
+        deleted: false,
+        project_id,
+        level: place_id2 ? 2 : 1,
+      },
+    }),
+  )
+  const placeNameSingular = placeLevels?.[0]?.name_singular ?? 'Place'
 
   const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/places${
     place_id2 ? `/${place_id}/places` : ''
@@ -106,43 +117,46 @@ export const Component = () => {
   // console.log('place, row:', row)
 
   return (
-    <div className="form-container">
-      <FormMenu
+    <>
+      <FormHeader
+        title={placeNameSingular}
         addRow={addRow}
         deleteRow={deleteRow}
         toNext={toNext}
         toPrevious={toPrevious}
-        tableName="place"
+        tableName={placeNameSingular}
       />
-      <TextFieldInactive label="ID" name="place_id" value={row.place_id} />
-      <TextField
-        label="Level"
-        name="level"
-        type="number"
-        value={row.level ?? ''}
-        onChange={onChange}
-      />
-      {row.level === 2 && (
-        <DropdownField
-          label="Parent Place"
-          name="parent_id"
-          idField="place_id"
-          table="places"
-          where={parentPlaceWhere}
-          value={row.parent_id ?? ''}
+      <div className="form-container">
+        <TextFieldInactive label="ID" name="place_id" value={row.place_id} />
+        <TextField
+          label="Level"
+          name="level"
+          type="number"
+          value={row.level ?? ''}
           onChange={onChange}
-          autoFocus
-          ref={autoFocusRef}
         />
-      )}
-      <Jsonb
-        table="places"
-        idField="place_id"
-        id={row.place_id}
-        data={row.data ?? {}}
-        autoFocus={row.level !== 2}
-        ref={row.level !== 2 ? autoFocusRef : undefined}
-      />
-    </div>
+        {row.level === 2 && (
+          <DropdownField
+            label="Parent Place"
+            name="parent_id"
+            idField="place_id"
+            table="places"
+            where={parentPlaceWhere}
+            value={row.parent_id ?? ''}
+            onChange={onChange}
+            autoFocus
+            ref={autoFocusRef}
+          />
+        )}
+        <Jsonb
+          table="places"
+          idField="place_id"
+          id={row.place_id}
+          data={row.data ?? {}}
+          autoFocus={row.level !== 2}
+          ref={row.level !== 2 ? autoFocusRef : undefined}
+        />
+      </div>
+    </>
   )
 }

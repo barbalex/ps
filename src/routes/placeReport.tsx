@@ -9,7 +9,7 @@ import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { Jsonb } from '../components/shared/Jsonb'
 import { getValueFromChange } from '../modules/getValueFromChange'
-import { FormMenu } from '../components/FormMenu'
+import { FormHeader } from '../components/FormHeader'
 
 import '../form.css'
 
@@ -65,11 +65,18 @@ export const Component = () => {
     )
     const next = placeReports[(index + 1) % len]
     navigate(`${baseUrl}/${next.place_report_id}`)
-  }, [baseUrl, db.place_reports, navigate, place_id, place_id2, place_report_id])
+  }, [
+    baseUrl,
+    db.place_reports,
+    navigate,
+    place_id,
+    place_id2,
+    place_report_id,
+  ])
 
   const toPrevious = useCallback(async () => {
     const placeReports = await db.place_reports.findMany({
-      where: { deleted: false,place_id: place_id2 ?? place_id },
+      where: { deleted: false, place_id: place_id2 ?? place_id },
       orderBy: { label: 'asc' },
     })
     const len = placeReports.length
@@ -78,7 +85,14 @@ export const Component = () => {
     )
     const previous = placeReports[(index + len - 1) % len]
     navigate(`${baseUrl}/${previous.place_report_id}`)
-  }, [baseUrl, db.place_reports, navigate, place_id, place_id2, place_report_id])
+  }, [
+    baseUrl,
+    db.place_reports,
+    navigate,
+    place_id,
+    place_id2,
+    place_report_id,
+  ])
 
   const row: PlaceReport = results
 
@@ -98,34 +112,37 @@ export const Component = () => {
   }
 
   return (
-    <div className="form-container">
-      <FormMenu
+    <>
+      <FormHeader
+        title="Place Report"
         addRow={addRow}
         deleteRow={deleteRow}
         toNext={toNext}
         toPrevious={toPrevious}
         tableName="place report"
       />
-      <TextFieldInactive
-        label="ID"
-        name="place_report_id"
-        value={row.place_report_id}
-      />
-      <TextField
-        label="Year"
-        name="year"
-        type="number"
-        value={row.year ?? ''}
-        onChange={onChange}
-      />
-      <Jsonb
-        table="place_reports"
-        idField="place_report_id"
-        id={row.place_report_id}
-        data={row.data ?? {}}
-        autoFocus
-        ref={autoFocusRef}
-      />
-    </div>
+      <div className="form-container">
+        <TextFieldInactive
+          label="ID"
+          name="place_report_id"
+          value={row.place_report_id}
+        />
+        <TextField
+          label="Year"
+          name="year"
+          type="number"
+          value={row.year ?? ''}
+          onChange={onChange}
+        />
+        <Jsonb
+          table="place_reports"
+          idField="place_report_id"
+          id={row.place_report_id}
+          data={row.data ?? {}}
+          autoFocus
+          ref={autoFocusRef}
+        />
+      </div>
+    </>
   )
 }

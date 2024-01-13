@@ -9,8 +9,7 @@ import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { Jsonb } from '../components/shared/Jsonb'
 import { getValueFromChange } from '../modules/getValueFromChange'
-import { FormMenu } from '../components/FormMenu'
-
+import { FormHeader } from '../components/FormHeader'
 import '../form.css'
 
 export const Component = () => {
@@ -63,8 +62,16 @@ export const Component = () => {
       (p) => p.subproject_report_id === subproject_report_id,
     )
     const next = subprojectReports[(index + 1) % len]
-    navigate(`/projects/${project_id}/subprojects/${subproject_id}/reports/${next.subproject_report_id}`)
-  }, [db.subproject_reports, navigate, project_id, subproject_id, subproject_report_id])
+    navigate(
+      `/projects/${project_id}/subprojects/${subproject_id}/reports/${next.subproject_report_id}`,
+    )
+  }, [
+    db.subproject_reports,
+    navigate,
+    project_id,
+    subproject_id,
+    subproject_report_id,
+  ])
 
   const toPrevious = useCallback(async () => {
     const subprojectReports = await db.subproject_reports.findMany({
@@ -76,8 +83,16 @@ export const Component = () => {
       (p) => p.subproject_report_id === subproject_report_id,
     )
     const previous = subprojectReports[(index + len - 1) % len]
-    navigate(`/projects/${project_id}/subprojects/${subproject_id}/reports/${previous.subproject_report_id}`)
-  }, [db.subproject_reports, navigate, project_id, subproject_id, subproject_report_id])
+    navigate(
+      `/projects/${project_id}/subprojects/${subproject_id}/reports/${previous.subproject_report_id}`,
+    )
+  }, [
+    db.subproject_reports,
+    navigate,
+    project_id,
+    subproject_id,
+    subproject_report_id,
+  ])
 
   const row: SubprojectReport = results
 
@@ -97,34 +112,37 @@ export const Component = () => {
   }
 
   return (
-    <div className="form-container">
-      <FormMenu
+    <>
+      <FormHeader
+        title="Subproject Report"
         addRow={addRow}
         deleteRow={deleteRow}
         toNext={toNext}
         toPrevious={toPrevious}
-        tableName="project report"
+        tableName="subproject report"
       />
-      <TextFieldInactive
-        label="ID"
-        name="subproject_report_id"
-        value={row.subproject_report_id}
-      />
-      <TextField
-        label="Year"
-        name="year"
-        type="number"
-        value={row.year ?? ''}
-        onChange={onChange}
-      />
-      <Jsonb
-        table="subproject_reports"
-        idField="subproject_report_id"
-        id={row.subproject_report_id}
-        data={row.data ?? {}}
-        autoFocus
-        ref={autoFocusRef}
-      />
-    </div>
+      <div className="form-container">
+        <TextFieldInactive
+          label="ID"
+          name="subproject_report_id"
+          value={row.subproject_report_id}
+        />
+        <TextField
+          label="Year"
+          name="year"
+          type="number"
+          value={row.year ?? ''}
+          onChange={onChange}
+        />
+        <Jsonb
+          table="subproject_reports"
+          idField="subproject_report_id"
+          id={row.subproject_report_id}
+          data={row.data ?? {}}
+          autoFocus
+          ref={autoFocusRef}
+        />
+      </div>
+    </>
   )
 }

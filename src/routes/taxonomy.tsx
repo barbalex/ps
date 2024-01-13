@@ -11,7 +11,7 @@ import { Jsonb } from '../components/shared/Jsonb'
 import { SwitchField } from '../components/shared/SwitchField'
 import { RadioGroupField } from '../components/shared/RadioGroupField'
 import { getValueFromChange } from '../modules/getValueFromChange'
-import { FormMenu } from '../components/FormMenu'
+import { FormHeader } from '../components/FormHeader'
 
 import '../form.css'
 
@@ -83,53 +83,56 @@ export const Component = () => {
   }
 
   return (
-    <div className="form-container">
-      <FormMenu
+    <>
+      <FormHeader
+        title="Taxonomy"
         addRow={addRow}
         deleteRow={deleteRow}
         toNext={toNext}
         toPrevious={toPrevious}
         tableName="taxonomy"
       />
-      <TextFieldInactive
-        label="ID"
-        name="taxonomy_id"
-        value={row.taxonomy_id}
-      />
-      <TextField
-        label="Name"
-        name="name"
-        value={row.name ?? ''}
-        onChange={onChange}
-        autoFocus
-        ref={autoFocusRef}
-      />
-      <RadioGroupField
-        label="Type"
-        name="type"
-        list={['species', 'biotope']}
-        value={row.type ?? ''}
-        onChange={onChange}
-      />
-      <TextField
-        label="Url"
-        name="url"
-        type="url"
-        value={row.url ?? ''}
-        onChange={onChange}
-      />
-      <Jsonb
-        table="taxonomies"
-        idField="taxonomy_id"
-        id={row.taxonomy_id}
-        data={row.data ?? {}}
-      />
-      <SwitchField
-        label="Obsolete"
-        name="obsolete"
-        value={row.obsolete ?? false}
-        onChange={onChange}
-      />
-    </div>
+      <div className="form-container">
+        <TextFieldInactive
+          label="ID"
+          name="taxonomy_id"
+          value={row.taxonomy_id}
+        />
+        <TextField
+          label="Name"
+          name="name"
+          value={row.name ?? ''}
+          onChange={onChange}
+          autoFocus
+          ref={autoFocusRef}
+        />
+        <RadioGroupField
+          label="Type"
+          name="type"
+          list={['species', 'biotope']}
+          value={row.type ?? ''}
+          onChange={onChange}
+        />
+        <TextField
+          label="Url"
+          name="url"
+          type="url"
+          value={row.url ?? ''}
+          onChange={onChange}
+        />
+        <Jsonb
+          table="taxonomies"
+          idField="taxonomy_id"
+          id={row.taxonomy_id}
+          data={row.data ?? {}}
+        />
+        <SwitchField
+          label="Obsolete"
+          name="obsolete"
+          value={row.obsolete ?? false}
+          onChange={onChange}
+        />
+      </div>
+    </>
   )
 }

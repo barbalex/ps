@@ -8,7 +8,7 @@ import { useElectric } from '../ElectricProvider'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { FilteringCombobox } from '../components/shared/FilteringCombobox'
 import { getValueFromChange } from '../modules/getValueFromChange'
-import { FormMenu } from '../components/FormMenu'
+import { FormHeader } from '../components/FormHeader'
 
 import '../form.css'
 
@@ -99,32 +99,33 @@ export const Component = () => {
     return <div>Loading...</div>
   }
 
-  console.log('subprojectTaxon, row:', row)
-
   return (
-    <div className="form-container">
-      <FormMenu
+    <>
+      <FormHeader
+        title="Subproject Taxon"
         addRow={addRow}
         deleteRow={deleteRow}
         toNext={toNext}
         toPrevious={toPrevious}
-        tableName="project user"
+        tableName="subproject taxon"
       />
-      <TextFieldInactive
-        label="ID"
-        name="subproject_taxon_id"
-        value={row.subproject_taxon_id}
-      />
-      <FilteringCombobox
-        label="Taxon"
-        name="taxon_id"
-        table="taxa"
-        where={taxaWhere}
-        value={row.taxon_id ?? ''}
-        onChange={onChange}
-        autoFocus
-        ref={autoFocusRef}
-      />
-    </div>
+      <div className="form-container">
+        <TextFieldInactive
+          label="ID"
+          name="subproject_taxon_id"
+          value={row.subproject_taxon_id}
+        />
+        <FilteringCombobox
+          label="Taxon"
+          name="taxon_id"
+          table="taxa"
+          where={taxaWhere}
+          value={row.taxon_id ?? ''}
+          onChange={onChange}
+          autoFocus
+          ref={autoFocusRef}
+        />
+      </div>
+    </>
   )
 }

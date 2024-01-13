@@ -8,7 +8,7 @@ import { useElectric } from '../ElectricProvider'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { DropdownField } from '../components/shared/DropdownField'
 import { getValueFromChange } from '../modules/getValueFromChange'
-import { FormMenu } from '../components/FormMenu'
+import { FormHeader } from '../components/FormHeader'
 
 import '../form.css'
 
@@ -82,35 +82,38 @@ export const Component = () => {
   }
 
   return (
-    <div className="form-container">
-      <FormMenu
+    <>
+      <FormHeader
+        title="Widget for field"
         addRow={addRow}
         deleteRow={deleteRow}
         toNext={toNext}
         toPrevious={toPrevious}
         tableName="widget for field"
       />
-      <TextFieldInactive
-        label="ID"
-        name="widget_for_field_id"
-        value={row.widget_for_field_id}
-      />
-      <DropdownField
-        label="Field type"
-        name="field_type_id"
-        table="field_types"
-        value={row.field_type_id ?? ''}
-        onChange={onChange}
-        autoFocus
-        ref={autoFocusRef}
-      />
-      <DropdownField
-        label="Widget type"
-        name="widget_type_id"
-        table="widget_types"
-        value={row.widget_type_id ?? ''}
-        onChange={onChange}
-      />
-    </div>
+      <div className="form-container">
+        <TextFieldInactive
+          label="ID"
+          name="widget_for_field_id"
+          value={row.widget_for_field_id}
+        />
+        <DropdownField
+          label="Field type"
+          name="field_type_id"
+          table="field_types"
+          value={row.field_type_id ?? ''}
+          onChange={onChange}
+          autoFocus
+          ref={autoFocusRef}
+        />
+        <DropdownField
+          label="Widget type"
+          name="widget_type_id"
+          table="widget_types"
+          value={row.widget_type_id ?? ''}
+          onChange={onChange}
+        />
+      </div>
+    </>
   )
 }

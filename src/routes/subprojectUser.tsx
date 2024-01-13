@@ -9,7 +9,7 @@ import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { DropdownField } from '../components/shared/DropdownField'
 import { RadioGroupField } from '../components/shared/RadioGroupField'
 import { getValueFromChange } from '../modules/getValueFromChange'
-import { FormMenu } from '../components/FormMenu'
+import { FormHeader } from '../components/FormHeader'
 
 import '../form.css'
 
@@ -103,36 +103,39 @@ export const Component = () => {
   }
 
   return (
-    <div className="form-container">
-      <FormMenu
+    <>
+      <FormHeader
+        title="Subproject User"
         addRow={addRow}
         deleteRow={deleteRow}
         toNext={toNext}
         toPrevious={toPrevious}
         tableName="subproject user"
       />
-      <TextFieldInactive
-        label="ID"
-        name="subproject_user_id"
-        value={row.subproject_user_id}
-      />
-      <DropdownField
-        label="User"
-        name="user_id"
-        table="users"
-        where={userWhere}
-        value={row.user_id ?? ''}
-        onChange={onChange}
-        autoFocus
-        ref={autoFocusRef}
-      />
-      <RadioGroupField
-        label="Role"
-        name="role"
-        list={['reader', 'editor', 'manager']}
-        value={row.role ?? ''}
-        onChange={onChange}
-      />
-    </div>
+      <div className="form-container">
+        <TextFieldInactive
+          label="ID"
+          name="subproject_user_id"
+          value={row.subproject_user_id}
+        />
+        <DropdownField
+          label="User"
+          name="user_id"
+          table="users"
+          where={userWhere}
+          value={row.user_id ?? ''}
+          onChange={onChange}
+          autoFocus
+          ref={autoFocusRef}
+        />
+        <RadioGroupField
+          label="Role"
+          name="role"
+          list={['reader', 'editor', 'manager']}
+          value={row.role ?? ''}
+          onChange={onChange}
+        />
+      </div>
+    </>
   )
 }

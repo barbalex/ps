@@ -9,7 +9,7 @@ import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { Jsonb } from '../components/shared/Jsonb'
 import { getValueFromChange } from '../modules/getValueFromChange'
-import { FormMenu } from '../components/FormMenu'
+import { FormHeader } from '../components/FormHeader'
 
 import '../form.css'
 
@@ -86,40 +86,43 @@ export const Component = () => {
   // console.log('subproject, row.data:', row?.data)
 
   return (
-    <div className="form-container">
-      <FormMenu
+    <>
+      <FormHeader
+        title="Subproject"
         addRow={addRow}
         deleteRow={deleteRow}
         toNext={toNext}
         toPrevious={toPrevious}
         tableName="subproject" // TODO: use subproject_name_singular
       />
-      <TextFieldInactive
-        label="ID"
-        name="subproject_id"
-        value={row.subproject_id ?? ''}
-      />
-      <TextField
-        label="Name"
-        name="name"
-        value={row.name ?? ''}
-        onChange={onChange}
-        autoFocus
-        ref={autoFocusRef}
-      />
-      <TextField
-        label="Since year"
-        name="since_year"
-        value={row.since_year ?? ''}
-        type="number"
-        onChange={onChange}
-      />
-      <Jsonb
-        table="subprojects"
-        idField="subproject_id"
-        id={row.subproject_id}
-        data={row.data ?? {}}
-      />
-    </div>
+      <div className="form-container">
+        <TextFieldInactive
+          label="ID"
+          name="subproject_id"
+          value={row.subproject_id ?? ''}
+        />
+        <TextField
+          label="Name"
+          name="name"
+          value={row.name ?? ''}
+          onChange={onChange}
+          autoFocus
+          ref={autoFocusRef}
+        />
+        <TextField
+          label="Since year"
+          name="since_year"
+          value={row.since_year ?? ''}
+          type="number"
+          onChange={onChange}
+        />
+        <Jsonb
+          table="subprojects"
+          idField="subproject_id"
+          id={row.subproject_id}
+          data={row.data ?? {}}
+        />
+      </div>
+    </>
   )
 }

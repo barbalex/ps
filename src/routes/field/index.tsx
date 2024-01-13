@@ -11,7 +11,7 @@ import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFiel
 import { DropdownField } from '../../components/shared/DropdownField'
 import { SwitchField } from '../../components/shared/SwitchField'
 import { getValueFromChange } from '../../modules/getValueFromChange'
-import { FormMenu } from '../../components/FormMenu'
+import { FormHeader } from '../../components/FormHeader'
 import { WidgetType } from './WidgetType'
 
 import '../../form.css'
@@ -124,71 +124,74 @@ export const Component = () => {
   }
 
   return (
-    <div className="form-container">
-      <FormMenu
+    <>
+      <FormHeader
+        title="Field"
         addRow={addRow}
         deleteRow={deleteRow}
         toNext={toNext}
         toPrevious={toPrevious}
         tableName="field"
       />
-      <TextFieldInactive label="ID" name="field_id" value={row.field_id} />
-      <DropdownFieldSimpleOptions
-        label="Table"
-        name="table_name"
-        value={row.table_name ?? ''}
-        onChange={onChange}
-        options={project_id ? projectTables : accountTables}
-        autoFocus
-        ref={autoFocusRef}
-      />
-      <TextField
-        label="Name"
-        name="name"
-        value={row.name ?? ''}
-        onChange={onChange}
-      />
-      <TextField
-        label="Label"
-        name="field_label"
-        value={row.field_label ?? ''}
-        onChange={onChange}
-      />
-      <DropdownField
-        label="Type"
-        name="field_type_id"
-        table="field_types"
-        where={fieldTypeWhere}
-        orderBy={fieldTypeOrderBy}
-        value={row.field_type_id ?? ''}
-        onChange={onChange}
-      />
-      <WidgetType
-        onChange={onChange}
-        field_type_id={row.field_type_id}
-        value={row.widget_type_id}
-      />
-      {widgetNeedsList && (
-        <DropdownField
-          label="List"
-          name="list_id"
-          table="lists"
-          value={row.list_id ?? ''}
+      <div className="form-container">
+        <TextFieldInactive label="ID" name="field_id" value={row.field_id} />
+        <DropdownFieldSimpleOptions
+          label="Table"
+          name="table_name"
+          value={row.table_name ?? ''}
+          onChange={onChange}
+          options={project_id ? projectTables : accountTables}
+          autoFocus
+          ref={autoFocusRef}
+        />
+        <TextField
+          label="Name"
+          name="name"
+          value={row.name ?? ''}
           onChange={onChange}
         />
-      )}
-      <TextField
-        label="Preset value"
-        name="preset"
-        value={row.preset ?? ''}
-        onChange={onChange}
-      />
-      <SwitchField
-        label="Obsolete"
-        name="obsolete"
-        value={row.obsolete ?? false}
-        onChange={onChange}
-      />
-    </div>
+        <TextField
+          label="Label"
+          name="field_label"
+          value={row.field_label ?? ''}
+          onChange={onChange}
+        />
+        <DropdownField
+          label="Type"
+          name="field_type_id"
+          table="field_types"
+          where={fieldTypeWhere}
+          orderBy={fieldTypeOrderBy}
+          value={row.field_type_id ?? ''}
+          onChange={onChange}
+        />
+        <WidgetType
+          onChange={onChange}
+          field_type_id={row.field_type_id}
+          value={row.widget_type_id}
+        />
+        {widgetNeedsList && (
+          <DropdownField
+            label="List"
+            name="list_id"
+            table="lists"
+            value={row.list_id ?? ''}
+            onChange={onChange}
+          />
+        )}
+        <TextField
+          label="Preset value"
+          name="preset"
+          value={row.preset ?? ''}
+          onChange={onChange}
+        />
+        <SwitchField
+          label="Obsolete"
+          name="obsolete"
+          value={row.obsolete ?? false}
+          onChange={onChange}
+        />
+      </div>
+    </>
   )
 }

@@ -9,7 +9,7 @@ import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { SwitchField } from '../components/shared/SwitchField'
 import { getValueFromChange } from '../modules/getValueFromChange'
-import { FormMenu } from '../components/FormMenu'
+import { FormHeader } from '../components/FormHeader'
 
 import '../form.css'
 
@@ -83,46 +83,49 @@ export const Component = () => {
   }
 
   return (
-    <div className="form-container">
-      <FormMenu
+    <>
+      <FormHeader
+        title="Widget type"
         addRow={addRow}
         deleteRow={deleteRow}
         toNext={toNext}
         toPrevious={toPrevious}
         tableName="widget type"
       />
-      <TextFieldInactive
-        label="ID"
-        name="widget_type_id"
-        value={row.widget_type_id}
-      />
-      <TextField
-        label="Name"
-        name="name"
-        value={row.name ?? ''}
-        onChange={onChange}
-        autoFocus
-        ref={autoFocusRef}
-      />
-      <SwitchField
-        label="Needs a list"
-        name="needs_list"
-        value={row.needs_list ?? false}
-        onChange={onChange}
-      />
-      <TextField
-        label="Sort value"
-        name="sort"
-        value={row.sort ?? ''}
-        type="number"
-        onChange={onChange}
-      />
-      <TextField
-        label="Comment"
-        name="comment"
-        value={row.comment ?? ''}
-        onChange={onChange}
-      />
-    </div>
+      <div className="form-container">
+        <TextFieldInactive
+          label="ID"
+          name="widget_type_id"
+          value={row.widget_type_id}
+        />
+        <TextField
+          label="Name"
+          name="name"
+          value={row.name ?? ''}
+          onChange={onChange}
+          autoFocus
+          ref={autoFocusRef}
+        />
+        <SwitchField
+          label="Needs a list"
+          name="needs_list"
+          value={row.needs_list ?? false}
+          onChange={onChange}
+        />
+        <TextField
+          label="Sort value"
+          name="sort"
+          value={row.sort ?? ''}
+          type="number"
+          onChange={onChange}
+        />
+        <TextField
+          label="Comment"
+          name="comment"
+          value={row.comment ?? ''}
+          onChange={onChange}
+        />
+      </div>
+    </>
   )
 }

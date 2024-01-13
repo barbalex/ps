@@ -8,7 +8,7 @@ import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { getValueFromChange } from '../modules/getValueFromChange'
-import { FormMenu } from '../components/FormMenu'
+import { FormHeader } from '../components/FormHeader'
 
 import '../form.css'
 
@@ -82,36 +82,39 @@ export const Component = () => {
   }
 
   return (
-    <div className="form-container">
-      <FormMenu
+    <>
+      <FormHeader
+        title="Taxon"
         addRow={addRow}
         deleteRow={deleteRow}
         toNext={toNext}
         toPrevious={toPrevious}
         tableName="taxon"
       />
-      <TextFieldInactive label="ID" name="taxon_id" value={row.taxon_id} />
-      <TextField
-        label="Name"
-        name="name"
-        value={row.name ?? ''}
-        onChange={onChange}
-        autoFocus
-        ref={autoFocusRef}
-      />
-      <TextField
-        label="ID in source"
-        name="id_in_source"
-        value={row.id_in_source ?? ''}
-        onChange={onChange}
-      />
-      <TextField
-        label="Url"
-        name="url"
-        type="url"
-        value={row.url ?? ''}
-        onChange={onChange}
-      />
-    </div>
+      <div className="form-container">
+        <TextFieldInactive label="ID" name="taxon_id" value={row.taxon_id} />
+        <TextField
+          label="Name"
+          name="name"
+          value={row.name ?? ''}
+          onChange={onChange}
+          autoFocus
+          ref={autoFocusRef}
+        />
+        <TextField
+          label="ID in source"
+          name="id_in_source"
+          value={row.id_in_source ?? ''}
+          onChange={onChange}
+        />
+        <TextField
+          label="Url"
+          name="url"
+          type="url"
+          value={row.url ?? ''}
+          onChange={onChange}
+        />
+      </div>
+    </>
   )
 }
