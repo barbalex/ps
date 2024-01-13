@@ -5,7 +5,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 import { Taxonomies as Taxonomy } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { createTaxonomy } from '../modules/createRows'
-import { ListViewMenu } from '../components/ListViewMenu'
+import { ListViewHeader } from '../components/ListViewHeader'
 import '../form.css'
 
 export const Component = () => {
@@ -27,8 +27,8 @@ export const Component = () => {
   const taxonomies: Taxonomy[] = results ?? []
 
   return (
-    <div className="form-container">
-      <ListViewMenu addRow={add} tableName="taxonomy" />
+    <div className="list-view">
+      <ListViewHeader title="Taxonomies" addRow={add} tableName="taxonomy" />
       {taxonomies.map((taxonomy: Taxonomy, index: number) => (
         <p key={index} className="item">
           <Link
