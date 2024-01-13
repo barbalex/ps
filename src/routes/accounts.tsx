@@ -1,10 +1,11 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import { Accounts as Account } from '../../../generated/client'
 import { createAccount } from '../modules/createRows'
 import { ListViewHeader } from '../components/ListViewHeader'
+import { Row } from '../components/shared/Row'
 import { useElectric } from '../ElectricProvider'
 
 import '../form.css'
@@ -26,13 +27,15 @@ export const Component = () => {
   return (
     <div className="list-view">
       <ListViewHeader title="Accounts" addRow={add} tableName="account" />
-      {accounts.map((account: Account, index: number) => (
-        <p key={index} className="item">
-          <Link to={`/accounts/${account.account_id}`}>
-            {account.label ?? account.account_id}
-          </Link>
-        </p>
-      ))}
+      <div className="list-container">
+        {accounts.map(({account_id, label}) => (
+          <Row
+            key={account_id}
+            label={label}
+            to={`/accounts/${account_id}`}
+          />
+        ))}
+      </div>
     </div>
   )
 }
