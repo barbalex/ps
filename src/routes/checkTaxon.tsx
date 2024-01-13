@@ -9,7 +9,7 @@ import { TextField } from '../components/shared/TextField'
 import { DropdownField } from '../components/shared/DropdownField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { getValueFromChange } from '../modules/getValueFromChange'
-import { FormMenu } from '../components/FormMenu'
+import { FormHeader } from '../components/FormHeader'
 
 import '../form.css'
 
@@ -109,49 +109,52 @@ export const Component = () => {
   }
 
   return (
-    <div className="form-container">
-      <FormMenu
+    <>
+      <FormHeader
+        title="Check taxon"
         addRow={addRow}
         deleteRow={deleteRow}
         toNext={toNext}
         toPrevious={toPrevious}
         tableName="check taxon"
       />
-      <TextFieldInactive
-        label="ID"
-        name="check_taxon_id"
-        value={row.check_taxon_id ?? ''}
-      />
-      <DropdownField
-        label="Taxon"
-        name="taxon_id"
-        table="taxa"
-        where={taxaWhere}
-        value={row.taxon_id ?? ''}
-        onChange={onChange}
-        autoFocus
-        ref={autoFocusRef}
-      />
-      <TextField
-        label="Value (integer)"
-        name="value_integer"
-        type="number"
-        value={row.value_integer ?? ''}
-        onChange={onChange}
-      />
-      <TextField
-        label="Value (numeric)"
-        name="value_numeric"
-        type="number"
-        value={row.value_numeric ?? ''}
-        onChange={onChange}
-      />
-      <TextField
-        label="Value (text)"
-        name="value_text"
-        value={row.value_text ?? ''}
-        onChange={onChange}
-      />
-    </div>
+      <div className="form-container">
+        <TextFieldInactive
+          label="ID"
+          name="check_taxon_id"
+          value={row.check_taxon_id ?? ''}
+        />
+        <DropdownField
+          label="Taxon"
+          name="taxon_id"
+          table="taxa"
+          where={taxaWhere}
+          value={row.taxon_id ?? ''}
+          onChange={onChange}
+          autoFocus
+          ref={autoFocusRef}
+        />
+        <TextField
+          label="Value (integer)"
+          name="value_integer"
+          type="number"
+          value={row.value_integer ?? ''}
+          onChange={onChange}
+        />
+        <TextField
+          label="Value (numeric)"
+          name="value_numeric"
+          type="number"
+          value={row.value_numeric ?? ''}
+          onChange={onChange}
+        />
+        <TextField
+          label="Value (text)"
+          name="value_text"
+          value={row.value_text ?? ''}
+          onChange={onChange}
+        />
+      </div>
+    </>
   )
 }

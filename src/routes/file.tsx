@@ -10,7 +10,7 @@ import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { Jsonb } from '../components/shared/Jsonb'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { DropdownField } from '../components/shared/DropdownField'
-import { FormMenu } from '../components/FormMenu'
+import { FormHeader } from '../components/FormHeader'
 
 import '../form.css'
 
@@ -115,87 +115,94 @@ export const Component = () => {
   }
 
   return (
-    <div className="form-container">
-      <FormMenu
+    <>
+      <FormHeader
+        title="File"
         addRow={addRow}
         deleteRow={deleteRow}
         toNext={toNext}
         toPrevious={toPrevious}
-        tableName="goal report value"
+        tableName="file value"
       />
-      <TextFieldInactive label="ID" name="file_id" value={row.file_id ?? ''} />
-      <DropdownField
-        label="Project"
-        name="project_id"
-        table="projects"
-        value={row.project_id ?? ''}
-        onChange={onChange}
-      />
-      {!!row?.project_id && (
+      <div className="form-container">
+        <TextFieldInactive
+          label="ID"
+          name="file_id"
+          value={row.file_id ?? ''}
+        />
         <DropdownField
-          label="Subproject"
-          name="subproject_id"
-          table="subprojects"
-          where={subprojectWhere}
-          value={row.subproject_id ?? ''}
+          label="Project"
+          name="project_id"
+          table="projects"
+          value={row.project_id ?? ''}
           onChange={onChange}
         />
-      )}
-      {!!row?.subproject_id && (
-        <DropdownField
-          label="Place"
-          name="place_id"
-          table="places"
-          where={placeWhere}
-          value={row.place_id ?? ''}
+        {!!row?.project_id && (
+          <DropdownField
+            label="Subproject"
+            name="subproject_id"
+            table="subprojects"
+            where={subprojectWhere}
+            value={row.subproject_id ?? ''}
+            onChange={onChange}
+          />
+        )}
+        {!!row?.subproject_id && (
+          <DropdownField
+            label="Place"
+            name="place_id"
+            table="places"
+            where={placeWhere}
+            value={row.place_id ?? ''}
+            onChange={onChange}
+          />
+        )}
+        {!!row?.place_id && (
+          <DropdownField
+            label="Action"
+            name="action_id"
+            table="actions"
+            where={actionWhere}
+            value={row.action_id ?? ''}
+            onChange={onChange}
+          />
+        )}
+        {!!row.place_id && (
+          <DropdownField
+            label="Check"
+            name="check_id"
+            table="checks"
+            where={actionWhere}
+            value={row.check_id ?? ''}
+            onChange={onChange}
+          />
+        )}
+        <TextField
+          label="Name"
+          name="name"
+          value={row.name ?? ''}
           onChange={onChange}
         />
-      )}
-      {!!row?.place_id && (
-        <DropdownField
-          label="Action"
-          name="action_id"
-          table="actions"
-          where={actionWhere}
-          value={row.action_id ?? ''}
+        <TextField
+          label="Mimetype"
+          name="mimetype"
+          value={row.mimetype ?? ''}
           onChange={onChange}
         />
-      )}
-      {!!row.place_id && (
-        <DropdownField
-          label="Check"
-          name="check_id"
-          table="checks"
-          where={actionWhere}
-          value={row.check_id ?? ''}
+        <TextField
+          label="Url"
+          name="url"
+          type="url"
+          value={row.url ?? ''}
           onChange={onChange}
         />
-      )}
-      <TextField
-        label="Name"
-        name="name"
-        value={row.name ?? ''}
-        onChange={onChange}
-      />
-      <TextField
-        label="Mimetype"
-        name="mimetype"
-        value={row.mimetype ?? ''}
-        onChange={onChange}
-      />
-      <TextField
-        label="Url"
-        name="url"
-        type="url"
-        value={row.url ?? ''}
-        onChange={onChange}
-      />
-      <Jsonb
-        table="files"
-        idField="file_id"
-        id={row.file_id}
-        data={row.data ?? {}}
-      />
-    </div>
+        <Jsonb
+          table="files"
+          idField="file_id"
+          id={row.file_id}
+          data={row.data ?? {}}
+        />
+      </div>
+    </>
   )
 }
