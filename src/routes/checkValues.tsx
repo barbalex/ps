@@ -1,11 +1,12 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { Link, useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
 import { CheckValues as CheckValue } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { createCheckValue } from '../modules/createRows'
 import { ListViewHeader } from '../components/ListViewHeader'
+import { Row } from '../components/shared/Row'
 import '../form.css'
 
 export const Component = () => {
@@ -51,17 +52,17 @@ export const Component = () => {
         addRow={add}
         tableName="check value"
       />
-      {checkValues.map((checkValue: CheckValue, index: number) => (
-        <p key={index} className="item">
-          <Link
+      <div className="list-container">
+        {checkValues.map(({ check_value_id, label }) => (
+          <Row
+            key={check_value_id}
+            label={label}
             to={`/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
               place_id2 ? `/places/${place_id2}` : ''
-            }/checks/${check_id}/values/${checkValue.check_value_id}`}
-          >
-            {checkValue.label ?? checkValue.check_value_id}
-          </Link>
-        </p>
-      ))}
+            }/checks/${check_id}/values/${check_value_id}`}
+          />
+        ))}
+      </div>
     </div>
   )
 }
