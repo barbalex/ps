@@ -32,7 +32,7 @@ body {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  overflow: auto;
+  overflow: hidden;
 }
 
 .form-container {
@@ -41,6 +41,7 @@ body {
   display: flex;
   flex-direction: column;
   row-gap: 15px;
+  overflow: auto;
   [role='separator'] {
     padding: 10px 0;
     margin-left: -10px;
@@ -54,6 +55,18 @@ body {
       border-top-width: 5px;
       border-color: rgba(55, 118, 28, 0.3);
     }
+  }
+}
+.form-header {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  padding: 5px 10px;
+  background-color: rgba(103, 216, 101, 0.2);
+  h1 {
+    margin: 0;
+    font-size: medium;
+    line-height: 32px;
   }
 }
 
@@ -87,6 +100,7 @@ body {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  overflow: hidden;
 
   .list-view-header {
     display: flex;
@@ -104,8 +118,7 @@ body {
   .list-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    flex-grow: 1;
     overflow: auto;
 
     .row {
