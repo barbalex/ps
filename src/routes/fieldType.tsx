@@ -8,7 +8,7 @@ import { useElectric } from '../ElectricProvider'
 import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { getValueFromChange } from '../modules/getValueFromChange'
-import { FormMenu } from '../components/FormMenu'
+import { FormHeader } from '../components/FormHeader'
 
 import '../form.css'
 
@@ -78,39 +78,42 @@ export const Component = () => {
   }
 
   return (
-    <div className="form-container">
-      <FormMenu
+    <>
+      <FormHeader
+        title="Field type"
         addRow={addRow}
         deleteRow={deleteRow}
         toNext={toNext}
         toPrevious={toPrevious}
         tableName="field type"
       />
-      <TextFieldInactive
-        label="ID"
-        name="field_type_id"
-        value={row.field_type_id}
-      />
-      <TextField
-        label="Name"
-        name="name"
-        value={row.name ?? ''}
-        onChange={onChange}
-        autoFocus
-        ref={autoFocusRef}
-      />
-      <TextField
-        label="Sort value"
-        name="sort"
-        value={row.sort ?? ''}
-        onChange={onChange}
-      />
-      <TextField
-        label="Comment"
-        name="comment"
-        value={row.comment ?? ''}
-        onChange={onChange}
-      />
-    </div>
+      <div className="form-container">
+        <TextFieldInactive
+          label="ID"
+          name="field_type_id"
+          value={row.field_type_id}
+        />
+        <TextField
+          label="Name"
+          name="name"
+          value={row.name ?? ''}
+          onChange={onChange}
+          autoFocus
+          ref={autoFocusRef}
+        />
+        <TextField
+          label="Sort value"
+          name="sort"
+          value={row.sort ?? ''}
+          onChange={onChange}
+        />
+        <TextField
+          label="Comment"
+          name="comment"
+          value={row.comment ?? ''}
+          onChange={onChange}
+        />
+      </div>
+    </>
   )
 }

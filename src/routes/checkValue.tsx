@@ -9,7 +9,7 @@ import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { DropdownField } from '../components/shared/DropdownField'
 import { getValueFromChange } from '../modules/getValueFromChange'
-import { FormMenu } from '../components/FormMenu'
+import { FormHeader } from '../components/FormHeader'
 
 import '../form.css'
 
@@ -98,11 +98,12 @@ export const Component = () => {
       const { name, value } = getValueFromChange(e, data)
       db.check_values.update({
         where: { check_value_id },
-        data: { 
+        data: {
           [name]:
             isNaN(value) && ['value_integer', 'value_numeric'].includes(name)
               ? null
-              : value, },
+              : value,
+        },
       })
     },
     [db.check_values, check_value_id],
@@ -113,49 +114,52 @@ export const Component = () => {
   }
 
   return (
-    <div className="form-container">
-      <FormMenu
+    <>
+      <FormHeader
+        title="Check value"
         addRow={addRow}
         deleteRow={deleteRow}
         toNext={toNext}
         toPrevious={toPrevious}
-        tableName="goal report value"
+        tableName="check value"
       />
-      <TextFieldInactive
-        label="ID"
-        name="check_value_id"
-        value={row.check_value_id ?? ''}
-      />
-      <DropdownField
-        label="Unit"
-        name="unit_id"
-        table="units"
-        where={unitWhere}
-        value={row.unit_id ?? ''}
-        onChange={onChange}
-        autoFocus
-        ref={autoFocusRef}
-      />
-      <TextField
-        label="Value (integer)"
-        name="value_integer"
-        type="number"
-        value={row.value_integer ?? ''}
-        onChange={onChange}
-      />
-      <TextField
-        label="Value (numeric)"
-        name="value_numeric"
-        type="number"
-        value={row.value_numeric ?? ''}
-        onChange={onChange}
-      />
-      <TextField
-        label="Value (text)"
-        name="value_text"
-        value={row.value_text ?? ''}
-        onChange={onChange}
-      />
-    </div>
+      <div className="form-container">
+        <TextFieldInactive
+          label="ID"
+          name="check_value_id"
+          value={row.check_value_id ?? ''}
+        />
+        <DropdownField
+          label="Unit"
+          name="unit_id"
+          table="units"
+          where={unitWhere}
+          value={row.unit_id ?? ''}
+          onChange={onChange}
+          autoFocus
+          ref={autoFocusRef}
+        />
+        <TextField
+          label="Value (integer)"
+          name="value_integer"
+          type="number"
+          value={row.value_integer ?? ''}
+          onChange={onChange}
+        />
+        <TextField
+          label="Value (numeric)"
+          name="value_numeric"
+          type="number"
+          value={row.value_numeric ?? ''}
+          onChange={onChange}
+        />
+        <TextField
+          label="Value (text)"
+          name="value_text"
+          value={row.value_text ?? ''}
+          onChange={onChange}
+        />
+      </div>
+    </>
   )
 }

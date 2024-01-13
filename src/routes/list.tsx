@@ -10,7 +10,7 @@ import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { SwitchField } from '../components/shared/SwitchField'
 import { Jsonb } from '../components/shared/Jsonb'
 import { getValueFromChange } from '../modules/getValueFromChange'
-import { FormMenu } from '../components/FormMenu'
+import { FormHeader } from '../components/FormHeader'
 
 import '../form.css'
 
@@ -82,35 +82,38 @@ export const Component = () => {
   }
 
   return (
-    <div className="form-container">
-      <FormMenu
+    <>
+      <FormHeader
+        title="List"
         addRow={addRow}
         deleteRow={deleteRow}
         toNext={toNext}
         toPrevious={toPrevious}
         tableName="list"
       />
-      <TextFieldInactive label="ID" name="list_id" value={row.list_id} />
-      <TextField
-        label="Name"
-        name="name"
-        value={row.name ?? ''}
-        onChange={onChange}
-        autoFocus
-        ref={autoFocusRef}
-      />
-      <Jsonb
-        table="lists"
-        idField="list_id"
-        id={row.list_id}
-        data={row.data ?? {}}
-      />
-      <SwitchField
-        label="Obsolete"
-        name="obsolete"
-        value={row.obsolete}
-        onChange={onChange}
-      />
-    </div>
+      <div className="form-container">
+        <TextFieldInactive label="ID" name="list_id" value={row.list_id} />
+        <TextField
+          label="Name"
+          name="name"
+          value={row.name ?? ''}
+          onChange={onChange}
+          autoFocus
+          ref={autoFocusRef}
+        />
+        <Jsonb
+          table="lists"
+          idField="list_id"
+          id={row.list_id}
+          data={row.data ?? {}}
+        />
+        <SwitchField
+          label="Obsolete"
+          name="obsolete"
+          value={row.obsolete}
+          onChange={onChange}
+        />
+      </div>
+    </>
   )
 }
