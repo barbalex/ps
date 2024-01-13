@@ -11,7 +11,7 @@ export const DropdownFieldSimpleOptions = memo(
         value,
         onChange,
         validationMessage,
-        validationState,
+        validationState = 'none',
       },
       ref,
     ) => {
