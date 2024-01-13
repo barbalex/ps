@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { ListViewMenu } from '../ListViewMenu'
+import { ListViewMenu } from './ListViewMenu'
 
 export const ListViewHeader = memo(({ title, addRow, tableName }) => {
   return (
