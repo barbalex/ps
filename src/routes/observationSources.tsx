@@ -1,11 +1,12 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { Link, useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
 import { ObservationSources as ObservationSource } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { createObservationSource } from '../modules/createRows'
 import { ListViewHeader } from '../components/ListViewHeader'
+import { Row } from '../components/shared/Row'
 import '../form.css'
 
 export const Component = () => {
@@ -38,18 +39,15 @@ export const Component = () => {
         addRow={add}
         tableName="observation source"
       />
-      {observationSources.map(
-        (observationSource: ObservationSource, index: number) => (
-          <p key={index} className="item">
-            <Link
-              to={`/projects/${observationSource.project_id}/observation-sources/${observationSource.observation_source_id}`}
-            >
-              {observationSource.label ??
-                observationSource.observation_source_id}
-            </Link>
-          </p>
-        ),
-      )}
+      <div className="list-container">
+        {observationSources.map(({ observation_source_id, label }) => (
+          <Row
+            key={observation_source_id}
+            to={`/projects/${project_id}/observation-sources/${observation_source_id}`}
+            label={label}
+          />
+        ))}
+      </div>
     </div>
   )
 }
