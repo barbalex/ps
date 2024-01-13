@@ -12,10 +12,14 @@ export const generateActionReportValueLabel = async (db) => {
       CREATE TRIGGER IF NOT EXISTS action_report_values_label_trigger
         AFTER UPDATE ON action_report_values
       BEGIN
-        UPDATE action_report_values SET label = concat(
-          units.name,
-          ': ',
-          coalesce(NEW.value_integer, NEW.value_numeric, NEW.value_text)
+        UPDATE action_report_values SET label = iif(
+          units.name is null,
+          NEW.action_report_id,
+          concat(
+            units.name,
+            ': ',
+            coalesce(NEW.value_integer, NEW.value_numeric, NEW.value_text)
+          )
         )
         FROM(
         SELECT
