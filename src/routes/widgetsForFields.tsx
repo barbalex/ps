@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { WidgetsForFields as WidgetForField } from '../../../generated/client'
 import { createWidgetForField } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
-import { ListViewMenu } from '../components/ListViewMenu'
+import { ListViewHeader } from '../components/ListViewHeader'
 
 import '../form.css'
 
@@ -31,8 +31,12 @@ export const Component = () => {
   const widgetsForFields: WidgetForField[] = results ?? []
 
   return (
-    <div className="form-container">
-      <ListViewMenu addRow={add} tableName="widget for field" />
+    <div className="list-view">
+      <ListViewHeader
+        title="Widgets for fields"
+        addRow={add}
+        tableName="widget for field"
+      />
       {widgetsForFields.map((widgetForField: WidgetForField, index: number) => (
         <p key={index} className="item">
           <Link

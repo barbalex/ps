@@ -5,7 +5,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 import { Taxa as Taxon } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { createTaxon } from '../modules/createRows'
-import { ListViewMenu } from '../components/ListViewMenu'
+import { ListViewHeader } from '../components/ListViewHeader'
 import '../form.css'
 
 export const Component = () => {
@@ -34,8 +34,8 @@ export const Component = () => {
   const taxa: Taxon[] = results ?? []
 
   return (
-    <div className="form-container">
-      <ListViewMenu addRow={add} tableName="taxon" />
+    <div className="list-view">
+      <ListViewHeader title="Taxa" addRow={add} tableName="taxon" />
       {taxa.map((taxon: Taxon, index: number) => (
         <p key={index} className="item">
           <Link
