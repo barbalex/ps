@@ -1,10 +1,11 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import { Files as File } from '../../../generated/client'
 import { createFile } from '../modules/createRows'
 import { ListViewHeader } from '../components/ListViewHeader'
+import { Row } from '../components/shared/Row'
 
 import '../form.css'
 
@@ -27,13 +28,11 @@ export const Component = () => {
   return (
     <div className="list-view">
       <ListViewHeader title="Files" addRow={add} tableName="file" />
-      {files.map((file: File, index: number) => (
-        <p key={index} className="item">
-          <Link to={`/files/${file.file_id}`}>
-            {file.label ?? file.file_id}
-          </Link>
-        </p>
-      ))}
+      <div className="list-container">
+        {files.map(({ file_id, label }) => (
+          <Row key={file_id} label={label} to={`/files/${file_id}`} />
+        ))}
+      </div>
     </div>
   )
 }
