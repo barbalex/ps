@@ -1,11 +1,12 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import { WidgetsForFields as WidgetForField } from '../../../generated/client'
 import { createWidgetForField } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
 import { ListViewHeader } from '../components/ListViewHeader'
+import { Row } from '../components/shared/Row'
 
 import '../form.css'
 
@@ -37,15 +38,15 @@ export const Component = () => {
         addRow={add}
         tableName="widget for field"
       />
-      {widgetsForFields.map((widgetForField: WidgetForField, index: number) => (
-        <p key={index} className="item">
-          <Link
-            to={`/widgets-for-fields/${widgetForField.widget_for_field_id}`}
-          >
-            {widgetForField.label ?? widgetForField.widget_for_field_id}
-          </Link>
-        </p>
-      ))}
+      <div className="list-container">
+        {widgetsForFields.map(({ widget_for_field_id, label }) => (
+          <Row
+            key={widget_for_field_id}
+            label={label}
+            to={`/widgets-for-fields/${widget_for_field_id}`}
+          />
+        ))}
+      </div>
     </div>
   )
 }
