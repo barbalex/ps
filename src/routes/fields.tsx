@@ -1,11 +1,12 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { Link, useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
 import { Fields as Field } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { createField } from '../modules/createRows'
 import { ListViewHeader } from '../components/ListViewHeader'
+import { Row } from '../components/shared/Row'
 import '../form.css'
 
 export const Component = () => {
@@ -36,19 +37,19 @@ export const Component = () => {
   return (
     <div className="list-view">
       <ListViewHeader title="Fields" addRow={add} tableName="field" />
-      {fields.map((field: Field, index: number) => (
-        <p key={index} className="item">
-          <Link
+      <div className="list-container">
+        {fields.map(({ field_id, label }) => (
+          <Row
+            key={field_id}
+            label={label}
             to={
               project_id
-                ? `/projects/${project_id}/fields/${field.field_id}`
-                : `/fields/${field.field_id}`
+                ? `/projects/${project_id}/fields/${field_id}`
+                : `/fields/${field_id}`
             }
-          >
-            {field.label ?? field.field_id}
-          </Link>
-        </p>
-      ))}
+          />
+        ))}
+      </div>
     </div>
   )
 }
