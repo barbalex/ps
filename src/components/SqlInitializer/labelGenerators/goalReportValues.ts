@@ -12,10 +12,18 @@ export const generateGoalReportValueLabel = async (db) => {
       CREATE TRIGGER IF NOT EXISTS goal_report_values_label_trigger
         AFTER UPDATE ON goal_report_values
       BEGIN
-        UPDATE goal_report_values SET label = concat(
-          units.name,
-          ': ',
-          coalesce(NEW.value_integer, NEW.value_numeric, NEW.value_text)
+        UPDATE goal_report_values SET label = iif(
+          units.name is null,
+          NEW.goal_report_id,
+          concat(
+            units.name,
+            ': ',
+            coalesce(
+              NEW.value_integer,
+              NEW.value_numeric,
+              NEW.value_text
+            )
+          )
         )
         FROM(
         SELECT
