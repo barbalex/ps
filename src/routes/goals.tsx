@@ -1,11 +1,12 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { Link, useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
 import { Goals as Goal } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { createGoal } from '../modules/createRows'
 import { ListViewHeader } from '../components/ListViewHeader'
+import { Row } from '../components/shared/Row'
 import '../form.css'
 
 export const Component = () => {
@@ -31,15 +32,15 @@ export const Component = () => {
   return (
     <div className="list-view">
       <ListViewHeader title="Goals" addRow={add} tableName="goal" />
-      {goals.map((goal: Goal, index: number) => (
-        <p key={index} className="item">
-          <Link
-            to={`/projects/${project_id}/subprojects/${subproject_id}/goals/${goal.goal_id}`}
-          >
-            {goal.label ?? goal.goal_id}
-          </Link>
-        </p>
-      ))}
+      <div className="list-container">
+        {goals.map(({ goal_id, label }) => (
+          <Row
+            key={goal_id}
+            label={label}
+            to={`/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}`}
+          />
+        ))}
+      </div>
     </div>
   )
 }
