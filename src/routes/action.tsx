@@ -10,7 +10,7 @@ import { DateField } from '../components/shared/DateField'
 import { SwitchField } from '../components/shared/SwitchField'
 import { Jsonb } from '../components/shared/Jsonb'
 import { getValueFromChange } from '../modules/getValueFromChange'
-import { FormMenu } from '../components/FormMenu'
+import { FormHeader } from '../components/FormHeader'
 
 import '../form.css'
 
@@ -95,35 +95,38 @@ export const Component = () => {
   }
 
   return (
-    <div className="form-container">
-      <FormMenu
+    <>
+      <FormHeader
+        title="Action"
         addRow={addRow}
         deleteRow={deleteRow}
         toNext={toNext}
         toPrevious={toPrevious}
         tableName="action"
       />
-      <TextFieldInactive label="ID" name="action_id" value={row.action_id} />
-      <DateField
-        label="Date"
-        name="date"
-        value={row.date}
-        onChange={onChange}
-      />
-      <SwitchField
-        label="relevant for reports"
-        name="relevant_for_reports"
-        value={row.relevant_for_reports}
-        onChange={onChange}
-      />
-      <Jsonb
-        table="actions"
-        idField="action_id"
-        id={row.action_id}
-        data={row.data ?? {}}
-        autoFocus
-        ref={autoFocusRef}
-      />
-    </div>
+      <div className="form-container">
+        <TextFieldInactive label="ID" name="action_id" value={row.action_id} />
+        <DateField
+          label="Date"
+          name="date"
+          value={row.date}
+          onChange={onChange}
+        />
+        <SwitchField
+          label="relevant for reports"
+          name="relevant_for_reports"
+          value={row.relevant_for_reports}
+          onChange={onChange}
+        />
+        <Jsonb
+          table="actions"
+          idField="action_id"
+          id={row.action_id}
+          data={row.data ?? {}}
+          autoFocus
+          ref={autoFocusRef}
+        />
+      </div>
+    </>
   )
 }

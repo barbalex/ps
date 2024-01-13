@@ -10,7 +10,7 @@ import { DropdownField } from '../components/shared/DropdownField'
 import { DateField } from '../components/shared/DateField'
 import { RadioGroupField } from '../components/shared/RadioGroupField'
 import { getValueFromChange } from '../modules/getValueFromChange'
-import { FormMenu } from '../components/FormMenu'
+import { FormHeader } from '../components/FormHeader'
 
 import '../form.css'
 
@@ -80,43 +80,50 @@ export const Component = () => {
   }
 
   return (
-    <div className="form-container">
-      <FormMenu
+    <>
+      <FormHeader
+        title="Account"
         addRow={addRow}
         deleteRow={deleteRow}
         toNext={toNext}
         toPrevious={toPrevious}
         tableName="account"
       />
-      <TextFieldInactive label="ID" name="account_id" value={row.account_id} />
-      <DropdownField
-        label="User"
-        name="user_id"
-        table="users"
-        value={row.user_id ?? ''}
-        onChange={onChange}
-        autoFocus
-        ref={autoFocusRef}
-      />
-      <RadioGroupField
-        label="Type"
-        name="type"
-        list={['free', 'basic', 'premium']}
-        value={row.type ?? ''}
-        onChange={onChange}
-      />
-      <DateField
-        label="Starts"
-        name="period_start"
-        value={row.period_start}
-        onChange={onChange}
-      />
-      <DateField
-        label="Ends"
-        name="period_end"
-        value={row.period_end}
-        onChange={onChange}
-      />
-    </div>
+      <div className="form-container">
+        <TextFieldInactive
+          label="ID"
+          name="account_id"
+          value={row.account_id}
+        />
+        <DropdownField
+          label="User"
+          name="user_id"
+          table="users"
+          value={row.user_id ?? ''}
+          onChange={onChange}
+          autoFocus
+          ref={autoFocusRef}
+        />
+        <RadioGroupField
+          label="Type"
+          name="type"
+          list={['free', 'basic', 'premium']}
+          value={row.type ?? ''}
+          onChange={onChange}
+        />
+        <DateField
+          label="Starts"
+          name="period_start"
+          value={row.period_start}
+          onChange={onChange}
+        />
+        <DateField
+          label="Ends"
+          name="period_end"
+          value={row.period_end}
+          onChange={onChange}
+        />
+      </div>
+    </>
   )
 }

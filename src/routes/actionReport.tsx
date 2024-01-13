@@ -9,7 +9,7 @@ import { TextField } from '../components/shared/TextField'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { Jsonb } from '../components/shared/Jsonb'
 import { getValueFromChange } from '../modules/getValueFromChange'
-import { FormMenu } from '../components/FormMenu'
+import { FormHeader } from '../components/FormHeader'
 
 import '../form.css'
 
@@ -106,34 +106,37 @@ export const Component = () => {
   }
 
   return (
-    <div className="form-container">
-      <FormMenu
+    <>
+      <FormHeader
+        title="Action Report"
         addRow={addRow}
         deleteRow={deleteRow}
         toNext={toNext}
         toPrevious={toPrevious}
         tableName="goal report value"
       />
-      <TextFieldInactive
-        label="ID"
-        name="action_report_id"
-        value={row.action_report_id ?? ''}
-      />
-      <TextField
-        label="Year"
-        name="year"
-        value={row.year ?? ''}
-        type="number"
-        onChange={onChange}
-      />
-      <Jsonb
-        table="action_reports"
-        idField="action_report_id"
-        id={row.action_report_id}
-        data={row.data ?? {}}
-        autoFocus
-        ref={autoFocusRef}
-      />
-    </div>
+      <div className="form-container">
+        <TextFieldInactive
+          label="ID"
+          name="action_report_id"
+          value={row.action_report_id ?? ''}
+        />
+        <TextField
+          label="Year"
+          name="year"
+          value={row.year ?? ''}
+          type="number"
+          onChange={onChange}
+        />
+        <Jsonb
+          table="action_reports"
+          idField="action_report_id"
+          id={row.action_report_id}
+          data={row.data ?? {}}
+          autoFocus
+          ref={autoFocusRef}
+        />
+      </div>
+    </>
   )
 }
