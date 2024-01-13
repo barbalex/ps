@@ -5,7 +5,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 import { PlaceLevels as PlaceLevel } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { createPlaceLevel } from '../modules/createRows'
-import { ListViewMenu } from '../components/ListViewMenu'
+import { ListViewHeader } from '../components/ListViewHeader'
 import '../form.css'
 
 export const Component = () => {
@@ -34,8 +34,12 @@ export const Component = () => {
   const placeLevels: PlaceLevel[] = results ?? []
 
   return (
-    <div className="form-container">
-      <ListViewMenu addRow={add} tableName="place level" />
+    <div className="list-view">
+      <ListViewHeader
+        title="Place Levels"
+        addRow={add}
+        tableName="place level"
+      />
       {placeLevels.map((placeLevel: PlaceLevel, index: number) => (
         <p key={index} className="item">
           <Link

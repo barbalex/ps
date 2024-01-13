@@ -5,12 +5,12 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 import { Places as Place } from '../../../generated/client'
 import { createPlace } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
-import { ListViewMenu } from '../components/ListViewMenu'
+import { ListViewHeader } from '../components/ListViewHeader'
 import '../form.css'
 
 export const Component = () => {
   const navigate = useNavigate()
-  const { subproject_id, project_id, place_id } = useParams()
+  const { project_id, subproject_id, place_id } = useParams()
 
   const { db } = useElectric()
 
@@ -20,6 +20,20 @@ export const Component = () => {
       orderBy: { label: 'asc' },
     }),
   )
+  // TODO: query name of places from place_levels
+  const { results: placeLevels } = useLiveQuery(
+    db.place_levels.liveMany({
+      where: {
+        // deleted: false,
+        // project_id,
+        // level: place_id ? 2 : 1,
+      },
+      orderBy: { name: 'asc' },
+    }),
+  )
+  const placeNameSingular = placeLevels?.[0]?.name_singular ?? 'Place'
+  const placeNamePlural = placeLevels?.[0]?.name_plural ?? 'Places'
+  console.log('places', { placeLevels, placeNameSingular, placeNamePlural })
 
   const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/places${
     place_id ? `/${place_id}/places` : ''
@@ -40,8 +54,12 @@ export const Component = () => {
   const places: Place[] = results ?? []
 
   return (
-    <div className="form-container">
-      <ListViewMenu addRow={add} tableName="place" />
+    <div className="list-view">
+      <ListViewHeader
+        title={placeNamePlural}
+        addRow={add}
+        tableName={placeNameSingular}
+      />
       {places.map((place: Place, index: number) => (
         <p key={index} className="item">
           <Link to={`${baseUrl}/${place.place_id}`}>
