@@ -31,8 +31,8 @@ export const WidgetType = memo(({ onChange, field_type_id = '', value }) => {
       value={value ?? ''}
       where={widgetWhere}
       onChange={onChange}
-      validationMessageIn={field_type_id ? undefined : 'Field type required'}
-      validationStateIn={field_type_id ? undefined : 'none'}
+      validationMessage={field_type_id ? undefined : 'Field type required'}
+      validationState={'none'}
     />
   )
 })
