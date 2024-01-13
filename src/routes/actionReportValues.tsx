@@ -1,11 +1,12 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { Link, useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
 import { ActionReportValues as ActionReportValue } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { createActionReportValue } from '../modules/createRows'
 import { ListViewHeader } from '../components/ListViewHeader'
+import { Row } from '../components/shared/Row'
 import '../form.css'
 
 export const Component = () => {
@@ -63,22 +64,17 @@ export const Component = () => {
         addRow={add}
         tableName="action report value"
       />
-      {actionReportValues.map(
-        (actionReportValue: ActionReportValue, index: number) => (
-          <p key={index} className="item">
-            <Link
-              to={`/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-                place_id2 ? `/places/${place_id2}` : ''
-              }/actions/${action_id}/reports/${action_report_id}/values/${
-                actionReportValue.action_report_value_id
-              }`}
-            >
-              {actionReportValue.label ??
-                actionReportValue.action_report_value_id}
-            </Link>
-          </p>
-        ),
-      )}
+      <div className="list-container">
+        {actionReportValues.map(({ action_report_value_id, label }) => (
+          <Row
+            key={action_report_value_id}
+            label={label}
+            navigateTo={`/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+              place_id2 ? `/places/${place_id2}` : ''
+            }/actions/${action_id}/reports/${action_report_id}/values/${action_report_value_id}`}
+          />
+        ))}
+      </div>
     </div>
   )
 }
