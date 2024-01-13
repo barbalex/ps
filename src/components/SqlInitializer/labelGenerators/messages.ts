@@ -4,15 +4,12 @@ export const generateMessageLabel = async (db) => {
   })
   const hasLabel = columns.some((column) => column.name === 'label')
   if (!hasLabel) {
-    await db.raw({
-      sql: 'ALTER TABLE messages ADD COLUMN label text GENERATED ALWAYS AS (message_id)',
+    const result = await db.raw({
+      sql: 'ALTER TABLE messages ADD COLUMN label text GENERATED ALWAYS AS (strftime("%Y.%m.%d %H:%M:%S", date))',
     })
     await db.raw({
       sql: 'CREATE INDEX IF NOT EXISTS messages_label_idx ON messages(label)',
     })
+    console.log('LabelGenerator, messages, result:', result)
   }
-  // console.log('LabelGenerator, messages:', {
-  //   columns,
-  //   hasLabel,
-  // })
 }
