@@ -41,11 +41,17 @@ export const buildNavs = async ({
         { path: '/docs', text: 'Docs' },
       ]
       break
-    case `projects`:
+    case `projects`: {
+      // fetch projects.subproject_name_plural to name subprojects
+      const project = await db?.projects?.findUnique({
+        where: { project_id },
+      })
+      const subprojectName = project?.subproject_name_plural ?? 'Subprojects'
+
       return [
         {
           path: `/projects/${project_id}/subprojects`,
-          text: 'Subprojects',
+          text: subprojectName,
         },
         {
           path: `/projects/${project_id}/reports`,
@@ -72,14 +78,14 @@ export const buildNavs = async ({
           text: 'Observation Sources',
         },
       ]
+    }
     case 'subprojects': {
       // need to fetch how places are named
       const placeLevels = await db?.place_levels?.findMany({
         where: { project_id, deleted: false, level: 1 },
       })
       const placeLevel = placeLevels?.[0]
-      placeName =
-        placeLevel?.name_plural ?? placeLevel?.name_short ?? 'Places'
+      placeName = placeLevel?.name_plural ?? placeLevel?.name_short ?? 'Places'
 
       return [
         {
