@@ -4,7 +4,12 @@ import type { InputProps } from '@fluentui/react-components'
 
 export const TextField = memo(
   forwardRef((props: InputProps, ref) => {
-    const { label, validationMessage, validationState, autoFocus } = props
+    const {
+      label,
+      validationMessage,
+      validationState = 'none',
+      autoFocus,
+    } = props
 
     return (
       <Field
