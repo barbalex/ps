@@ -1,11 +1,12 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { Link, useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
 import { ActionValues as ActionValue } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { createActionValue } from '../modules/createRows'
 import { ListViewHeader } from '../components/ListViewHeader'
+import { Row } from '../components/shared/Row'
 import '../form.css'
 
 export const Component = () => {
@@ -51,17 +52,17 @@ export const Component = () => {
         addRow={add}
         tableName="action value"
       />
-      {actionValues.map((actionValue: ActionValue, index: number) => (
-        <p key={index} className="item">
-          <Link
+      <div className="list-container">
+        {actionValues.map(({ action_value_id, label }) => (
+          <Row
+            key={action_value_id}
+            label={label}
             to={`/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
               place_id2 ? `/places/${place_id2}` : ''
-            }/actions/${action_id}/values/${actionValue.action_value_id}`}
-          >
-            {actionValue.label ?? actionValue.action_value_id}
-          </Link>
-        </p>
-      ))}
+            }/actions/${action_id}/values/${action_value_id}`}
+          />
+        ))}
+      </div>
     </div>
   )
 }
