@@ -5,7 +5,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 import { Units as Unit } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { createUnit } from '../modules/createRows'
-import { ListViewMenu } from '../components/ListViewMenu'
+import { ListViewHeader } from '../components/ListViewHeader'
 import '../form.css'
 
 export const Component = () => {
@@ -32,8 +32,8 @@ export const Component = () => {
   const units: Unit[] = results ?? []
 
   return (
-    <div className="form-container">
-      <ListViewMenu addRow={add} tableName="unit" />
+    <div className="list-view">
+      <ListViewHeader title="Units" addRow={add} tableName="unit" />
       {units.map((unit: Unit, index: number) => (
         <p key={index} className="item">
           <Link to={`/projects/${project_id}/units/${unit.unit_id}`}>

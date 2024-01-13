@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { WidgetTypes as WidgetType } from '../../../generated/client'
 import { createWidgetType } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
-import { ListViewMenu } from '../components/ListViewMenu'
+import { ListViewHeader } from '../components/ListViewHeader'
 
 import '../form.css'
 
@@ -26,8 +26,12 @@ export const Component = () => {
   // console.log('WidgetTypes', rows)
 
   return (
-    <div className="form-container">
-      <ListViewMenu addRow={add} tableName="widget type" />
+    <div className="list-view">
+      <ListViewHeader
+        title="Widget Types"
+        addRow={add}
+        tableName="widget type"
+      />
       {rows.map((widgetType: WidgetType, index: number) => (
         <p key={index} className="item">
           <Link to={`/widget-types/${widgetType.widget_type_id}`}>

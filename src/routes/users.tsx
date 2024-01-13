@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Users as User } from '../../../generated/client'
 import { createUser } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
-import { ListViewMenu } from '../components/ListViewMenu'
+import { ListViewHeader } from '../components/ListViewHeader'
 
 import '../form.css'
 
@@ -24,8 +24,8 @@ export const Component = () => {
   const users: User[] = results ?? []
 
   return (
-    <div className="form-container">
-      <ListViewMenu addRow={add} tableName="user" />
+    <div className="list-view">
+      <ListViewHeader title="Users" addRow={add} tableName="user" />
       {users.map((user: User, index: number) => (
         <p key={index} className="item">
           <Link to={`/users/${user.user_id}`}>
