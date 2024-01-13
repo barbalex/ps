@@ -17,8 +17,8 @@ export const DropdownField = memo(
         value,
         onChange,
         autoFocus,
-        validationMessageIn,
-        validationStateIn,
+        validationMessage: validationMessageIn,
+        validationState: validationStateIn,
       },
       ref,
     ) => {
