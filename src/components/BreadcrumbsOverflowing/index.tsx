@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import {
   Menu,
   MenuTrigger,
@@ -18,20 +18,22 @@ import { BreadcrumbForFolder } from './BreadcrumbForFolder'
 import { BsCaretDown } from 'react-icons/bs'
 import './breadcrumbs.css'
 
-const OverflowMenuItem: React.FC = ({ id, match }) => {
+const OverflowMenuItem: React.FC = ({ id, match, upRerenderInteger }) => {
   const navigate = useNavigate()
   const isVisible = useIsOverflowItemVisible(id)
 
-  const onClick = useCallback(() => navigate(match.pathname), [match, navigate])
+  const onClick = useCallback(() => {
+    // console.log('OverflowMenuItem, onClick')
+    navigate(match.pathname)
+    // somehow nav icon is not rendered without this
+    upRerenderInteger()
+  }, [match.pathname, navigate, upRerenderInteger])
   const { table, folder } = match?.handle?.crumb?.(match) ?? {}
 
   if (isVisible) {
     return null
   }
 
-  console.log('OverflowMenuItem', { id, match })
-
-  // TODO: add fitting icon as icon prop
   return (
     <MenuItem onClick={onClick}>
       {table === 'root' || folder === false ? (
@@ -43,7 +45,7 @@ const OverflowMenuItem: React.FC = ({ id, match }) => {
   )
 }
 
-const OverflowMenu: React.FC = ({ matches }) => {
+const OverflowMenu: React.FC = ({ matches, upRerenderInteger }) => {
   const { ref, overflowCount, isOverflowing } =
     useOverflowMenu<HTMLButtonElement>()
 
@@ -67,7 +69,12 @@ const OverflowMenu: React.FC = ({ matches }) => {
         <MenuList>
           {matches.map((match) => {
             return (
-              <OverflowMenuItem key={match.id} id={match.id} match={match} />
+              <OverflowMenuItem
+                key={match.id}
+                id={match.id}
+                match={match}
+                upRerenderInteger={upRerenderInteger}
+              />
             )
           })}
         </MenuList>
@@ -78,18 +85,22 @@ const OverflowMenu: React.FC = ({ matches }) => {
 
 export const BreadcrumbsOverflowing = () => {
   const unfilteredMatches = useMatches()
+  const [rerenderInteger, setRerenderInteger] = useState(0)
+  const upRerenderInteger = useCallback(() => {
+    setRerenderInteger((i) => i + 1)
+  }, [])
 
   const matches = unfilteredMatches.filter((match) => match.handle?.crumb)
 
   return (
     <Overflow overflowDirection="start" padding={20}>
       <div className="resizable-area">
-        <OverflowMenu matches={matches} />
+        <OverflowMenu matches={matches} upRerenderInteger={upRerenderInteger} />
         {matches.map((match) => {
           const { table, folder } = match?.handle?.crumb?.(match) ?? {}
 
           return (
-            <OverflowItem key={match.id} id={match.id}>
+            <OverflowItem key={`${match.id}/${rerenderInteger}`} id={match.id}>
               {table === 'root' || folder === false ? (
                 <BreadcrumbForFolder match={match} />
               ) : (
