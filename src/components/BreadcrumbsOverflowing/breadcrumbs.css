@@ -2,7 +2,6 @@
   display: flex;
   flex-wrap: nowrap;
   position: relative;
-  resize: horizontal;
   height: 47px;
   margin-left: -1em;
   background-color: rgba(103, 216, 101, 0.07);

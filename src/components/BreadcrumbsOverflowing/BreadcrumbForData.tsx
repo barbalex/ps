@@ -11,6 +11,8 @@ export const tablesWithoutDeleted = ['root', 'docs', 'accounts', 'messages']
 
 const isOdd = (num) => num % 2
 
+// forwarding refs is crucial for the overflow menu to work
+// https://github.com/microsoft/fluentui/issues/27652#issuecomment-1520447241
 export const BreadcrumbForData = forwardRef(({ match }, ref) => {
   const navigate = useNavigate()
 
