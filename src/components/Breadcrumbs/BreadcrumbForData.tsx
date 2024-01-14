@@ -137,11 +137,9 @@ export const BreadcrumbForData = ({ match }) => {
   // })
 
   return (
-    <>
-      <div className={className} onClick={() => navigate(match.pathname)}>
-        <div className="text">{label}</div>
-        {myNavs?.length > 0 && <MenuComponent navs={myNavs} />}
-      </div>
-    </>
+    <div className={className} onClick={() => navigate(match.pathname)}>
+      <div className="text">{label}</div>
+      {myNavs?.length > 0 && <MenuComponent navs={myNavs} />}
+    </div>
   )
 }

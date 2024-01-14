@@ -115,11 +115,9 @@ export const BreadcrumbForFolder = ({ match }) => {
   // })
 
   return (
-    <>
-      <div className={className} onClick={() => navigate(match.pathname)}>
-        <div className="text">{label}</div>
-        {navs?.length > 0 && <MenuComponent navs={navs} />}
-      </div>
-    </>
+    <div className={className} onClick={() => navigate(match.pathname)}>
+      <div className="text">{label}</div>
+      {navs?.length > 0 && <MenuComponent navs={navs} />}
+    </div>
   )
 }

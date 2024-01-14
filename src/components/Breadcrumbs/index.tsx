@@ -6,7 +6,7 @@ import { useMatches } from 'react-router-dom'
 import './breadcrumbs.css'
 import { BreadcrumbForData } from './BreadcrumbForData'
 import { BreadcrumbForFolder } from './BreadcrumbForFolder'
-import { OverflowingBreadcrumbs } from './Overflowing'
+import { OverflowingBreadcrumbs } from './OverflowingBreadcrumbs'
 
 // TODO: if overflowing, show single line
 export const Breadcrumbs = ({ overflowing }) => {
