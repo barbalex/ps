@@ -1,15 +1,10 @@
 import {
-  makeStyles,
-  shorthands,
-  Button,
   Menu,
   MenuTrigger,
   MenuPopover,
   MenuList,
   MenuItem,
   MenuButton,
-  tokens,
-  mergeClasses,
   Overflow,
   OverflowItem,
   OverflowItemProps,
@@ -76,22 +71,18 @@ export const BreadcrumbsOverflowing = () => {
     <Overflow overflowDirection="start">
       <div className="resizable-area">
         <OverflowMenu itemIds={itemIds} />
-        {filteredMatches.map((match, index) => {
+        {filteredMatches.map((match) => {
           const { table, folder } = match?.handle?.crumb?.(match) ?? {}
 
           // console.log('Breadcrumbs', { match, table, folder })
 
-          if (table === 'root' || folder === false) {
-            return (
-              <OverflowItem key={match.id} id={match.id}>
-                <BreadcrumbForFolder match={match} />
-              </OverflowItem>
-            )
-          }
-
           return (
             <OverflowItem key={match.id} id={match.id}>
-              <BreadcrumbForData match={match} />
+              {table === 'root' || folder === false ? (
+                <BreadcrumbForFolder match={match} />
+              ) : (
+                <BreadcrumbForData match={match} />
+              )}
             </OverflowItem>
           )
         })}

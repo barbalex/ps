@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, forwardRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 
@@ -11,7 +11,7 @@ export const tablesWithoutDeleted = ['root', 'docs', 'accounts', 'messages']
 
 const isOdd = (num) => num % 2
 
-export const BreadcrumbForData = ({ match }) => {
+export const BreadcrumbForData = forwardRef(({ match }, ref) => {
   const navigate = useNavigate()
 
   const { text, table } = match?.handle?.crumb?.(match) ?? {}
@@ -137,9 +137,13 @@ export const BreadcrumbForData = ({ match }) => {
   // })
 
   return (
-    <div className={className} onClick={() => navigate(match.pathname)}>
+    <div
+      className={className}
+      onClick={() => navigate(match.pathname)}
+      ref={ref}
+    >
       <div className="text">{label}</div>
       {myNavs?.length > 0 && <MenuComponent navs={myNavs} />}
     </div>
   )
-}
+})

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, forwardRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useElectric } from '../../ElectricProvider'
 import { useLiveQuery } from 'electric-sql/react'
@@ -8,7 +8,7 @@ import { buildNavs } from '../../modules/navs'
 import { MenuComponent } from './Menu'
 import { idFieldFromTable } from '../../modules/idFieldFromTable'
 
-export const BreadcrumbForFolder = ({ match }) => {
+export const BreadcrumbForFolder = forwardRef(({ match }, ref) => {
   const navigate = useNavigate()
   const {
     check_id,
@@ -115,9 +115,13 @@ export const BreadcrumbForFolder = ({ match }) => {
   // })
 
   return (
-    <div className={className} onClick={() => navigate(match.pathname)}>
+    <div
+      className={className}
+      onClick={() => navigate(match.pathname)}
+      ref={ref}
+    >
       <div className="text">{label}</div>
       {navs?.length > 0 && <MenuComponent navs={navs} />}
     </div>
   )
-}
+})
