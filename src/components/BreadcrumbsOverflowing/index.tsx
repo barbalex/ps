@@ -21,28 +21,19 @@ const OverflowMenuItem: React.FC = ({ id, match }) => {
   const navigate = useNavigate()
   const isVisible = useIsOverflowItemVisible(id)
 
-  console.log('OverflowMenuItem', { id, isVisible })
-  const onClick = useCallback(
-    (e) => {
-      console.log('OverflowMenuItem onClick', { id, match })
-      navigate(match.pathname)
-    },
-    [id, match, navigate],
-  )
+  const onClick = useCallback(() => navigate(match.pathname), [match, navigate])
 
   if (isVisible) {
     return null
   }
 
-  // As an union between button props and div props may be conflicting, casting is required
+  // TODO: add fitting icon as icon prop
   return <MenuItem onClick={onClick}>Item {id}</MenuItem>
 }
 
 const OverflowMenu: React.FC = ({ matches }) => {
   const { ref, overflowCount, isOverflowing } =
     useOverflowMenu<HTMLButtonElement>()
-
-  console.log('OverflowMenu', { overflowCount, isOverflowing })
 
   if (!isOverflowing) {
     return null
@@ -68,21 +59,16 @@ const OverflowMenu: React.FC = ({ matches }) => {
 }
 
 export const BreadcrumbsOverflowing = () => {
-  const matches = useMatches()
+  const unfilteredMatches = useMatches()
 
-  const filteredMatches = matches.filter((match) => match.handle?.crumb)
-
-  const itemIds = filteredMatches.map((match) => match.id)
-  console.log('BreadcrumbsOverflowing', { filteredMatches, itemIds })
+  const matches = unfilteredMatches.filter((match) => match.handle?.crumb)
 
   return (
     <Overflow overflowDirection="start" padding={20}>
       <div className="resizable-area">
-        <OverflowMenu matches={filteredMatches} />
-        {filteredMatches.map((match) => {
+        <OverflowMenu matches={matches} />
+        {matches.map((match) => {
           const { table, folder } = match?.handle?.crumb?.(match) ?? {}
-
-          // console.log('Breadcrumbs', { match, table, folder })
 
           return (
             <OverflowItem key={match.id} id={match.id}>
