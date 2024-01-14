@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import {
   Menu,
   MenuTrigger,
@@ -7,35 +8,41 @@ import {
   MenuButton,
   Overflow,
   OverflowItem,
-  OverflowItemProps,
   useIsOverflowItemVisible,
   useOverflowMenu,
 } from '@fluentui/react-components'
-import { useMatches } from 'react-router-dom'
+import { useMatches, useNavigate } from 'react-router-dom'
 
 import { BreadcrumbForData } from './BreadcrumbForData'
 import { BreadcrumbForFolder } from './BreadcrumbForFolder'
 import './breadcrumbs.css'
 
-const OverflowMenuItem: React.FC<Pick<OverflowItemProps, 'id'>> = (props) => {
-  const { id } = props
+const OverflowMenuItem: React.FC = ({ id, match }) => {
+  const navigate = useNavigate()
   const isVisible = useIsOverflowItemVisible(id)
 
   console.log('OverflowMenuItem', { id, isVisible })
+  const onClick = useCallback(
+    (e) => {
+      console.log('OverflowMenuItem onClick', { id, match })
+      navigate(match.pathname)
+    },
+    [id, match, navigate],
+  )
 
   if (isVisible) {
     return null
   }
 
   // As an union between button props and div props may be conflicting, casting is required
-  return <MenuItem>Item {id}</MenuItem>
+  return <MenuItem onClick={onClick}>Item {id}</MenuItem>
 }
 
-const OverflowMenu: React.FC<{ itemIds: string[] }> = ({ itemIds }) => {
+const OverflowMenu: React.FC = ({ matches }) => {
   const { ref, overflowCount, isOverflowing } =
     useOverflowMenu<HTMLButtonElement>()
 
-  console.log('OverflowMenu', { itemIds, overflowCount, isOverflowing })
+  console.log('OverflowMenu', { overflowCount, isOverflowing })
 
   if (!isOverflowing) {
     return null
@@ -49,8 +56,10 @@ const OverflowMenu: React.FC<{ itemIds: string[] }> = ({ itemIds }) => {
 
       <MenuPopover>
         <MenuList>
-          {itemIds.map((i) => {
-            return <OverflowMenuItem key={i} id={i} />
+          {matches.map((match) => {
+            return (
+              <OverflowMenuItem key={match.id} id={match.id} match={match} />
+            )
           })}
         </MenuList>
       </MenuPopover>
@@ -63,14 +72,13 @@ export const BreadcrumbsOverflowing = () => {
 
   const filteredMatches = matches.filter((match) => match.handle?.crumb)
 
-  // const itemIds = new Array(8).fill(0).map((_, i) => i.toString())
   const itemIds = filteredMatches.map((match) => match.id)
   console.log('BreadcrumbsOverflowing', { filteredMatches, itemIds })
 
   return (
-    <Overflow overflowDirection="start">
+    <Overflow overflowDirection="start" padding={20}>
       <div className="resizable-area">
-        <OverflowMenu itemIds={itemIds} />
+        <OverflowMenu matches={filteredMatches} />
         {filteredMatches.map((match) => {
           const { table, folder } = match?.handle?.crumb?.(match) ?? {}
 
