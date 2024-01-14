@@ -22,13 +22,11 @@
   align-items: center;
 }
 
-.menu-button {
-  svg {
-    height: 18px;
-    width: 18px;
-    top: -3px;
-    position: relative;
-  }
+.menu-button svg {
+  height: 18px;
+  width: 18px;
+  top: -3px;
+  position: relative;
 }
 
 .breadcrumbs__crumb:first-of-type {
@@ -54,6 +52,8 @@
   color: #fff;
 }
 
+.resizable-area > button::after,
+.resizable-area > button::before,
 .breadcrumbs__crumb::after,
 .breadcrumbs__crumb::before {
   background: white;
