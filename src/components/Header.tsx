@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
 
 import { Breadcrumbs } from './Breadcrumbs'
+import { BreadcrumbsOverflowing } from './BreadcrumbsOverflowing'
 import { Navs } from './Navs'
 import { useElectric } from '../ElectricProvider'
 
@@ -31,7 +32,7 @@ export const Header = () => {
       <div className="header">
         <h1>Promoting Species</h1>
       </div>
-      <Breadcrumbs overflowing={overflowing} />
+      {overflowing ? <BreadcrumbsOverflowing /> : <Breadcrumbs />}
       <Navs />
       <div className="content">
         <Outlet />

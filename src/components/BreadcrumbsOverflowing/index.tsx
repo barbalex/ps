@@ -16,6 +16,11 @@ import {
   useIsOverflowItemVisible,
   useOverflowMenu,
 } from '@fluentui/react-components'
+import { useMatches } from 'react-router-dom'
+
+import { BreadcrumbForData } from './BreadcrumbForData'
+import { BreadcrumbForFolder } from './BreadcrumbForFolder'
+import './breadcrumbs.css'
 
 const OverflowMenuItem: React.FC<Pick<OverflowItemProps, 'id'>> = (props) => {
   const { id } = props
@@ -54,19 +59,42 @@ const OverflowMenu: React.FC<{ itemIds: string[] }> = ({ itemIds }) => {
   )
 }
 
-export const OverflowingBreadcrumbs = ({ matches }) => {
+export const BreadcrumbsOverflowing = () => {
+  const matches = useMatches()
+
+  const filteredMatches = matches.filter((match) => match.handle?.crumb)
+
   const itemIds = new Array(8).fill(0).map((_, i) => i.toString())
-  console.log('OverflowingBreadcrumbs', { matches, itemIds })
+  console.log('BreadcrumbsOverflowing', { filteredMatches, itemIds })
 
   return (
     <Overflow overflowDirection="start">
       <div>
         <OverflowMenu itemIds={itemIds} />
-        {itemIds.map((i) => (
-          <OverflowItem key={i} id={i}>
-            <Button>Item {i}</Button>
-          </OverflowItem>
-        ))}
+        {filteredMatches.map((match, index) => {
+          const { table, folder } = match?.handle?.crumb?.(match) ?? {}
+
+          // console.log('Breadcrumbs', { match, table, folder })
+
+          if (table === 'root' || folder === false) {
+            return (
+              <OverflowItem key={index} id={index}>
+                <BreadcrumbForFolder key={index} match={match} />
+              </OverflowItem>
+            )
+          }
+
+          return (
+            <OverflowItem key={index} id={index}>
+              <BreadcrumbForData key={index} match={match} />
+            </OverflowItem>
+          )
+          // return (
+          //   <OverflowItem key={i} id={i}>
+          //     <Button>Item {i}</Button>
+          //   </OverflowItem>
+          // )
+        })}
       </div>
     </Overflow>
   )

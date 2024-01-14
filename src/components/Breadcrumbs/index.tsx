@@ -6,16 +6,12 @@ import { useMatches } from 'react-router-dom'
 import './breadcrumbs.css'
 import { BreadcrumbForData } from './BreadcrumbForData'
 import { BreadcrumbForFolder } from './BreadcrumbForFolder'
-import { OverflowingBreadcrumbs } from './OverflowingBreadcrumbs'
 
 // TODO: if overflowing, show single line
-export const Breadcrumbs = ({ overflowing }) => {
+export const Breadcrumbs = () => {
   const matches = useMatches()
 
   const filteredMatches = matches.filter((match) => match.handle?.crumb)
-
-  console.log('Breadcrumbs, overflowing:', overflowing)
-  if (overflowing) return <OverflowingBreadcrumbs matches={filteredMatches} />
 
   return (
     <nav className="breadcrumbs">
