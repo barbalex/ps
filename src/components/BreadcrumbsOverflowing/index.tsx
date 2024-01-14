@@ -13,11 +13,9 @@ import {
 } from '@fluentui/react-components'
 import { useMatches, useNavigate } from 'react-router-dom'
 
-import { useElectric } from '../../ElectricProvider'
-import { useLiveQuery } from 'electric-sql/react'
 import { BreadcrumbForData } from './BreadcrumbForData'
 import { BreadcrumbForFolder } from './BreadcrumbForFolder'
-import { idFieldFromTable } from '../../modules/idFieldFromTable'
+import { BsCaretDown } from 'react-icons/bs'
 import './breadcrumbs.css'
 
 const OverflowMenuItem: React.FC = ({ id, match }) => {
@@ -25,24 +23,7 @@ const OverflowMenuItem: React.FC = ({ id, match }) => {
   const isVisible = useIsOverflowItemVisible(id)
 
   const onClick = useCallback(() => navigate(match.pathname), [match, navigate])
-  const { text, table } = match?.handle?.crumb?.(match) ?? {}
-
-  const queryTable = table === 'root' || table === 'docs' ? 'projects' : table
-  const { db } = useElectric()
-  const idField = idFieldFromTable(table)
-  const matchParam =
-    table === 'places' && levelWanted === 2 ? place_id2 : match.params[idField]
-  const where = { [idField]: matchParam }
-  const { results } = useLiveQuery(
-    () =>
-      db[queryTable]?.liveMany({
-        where,
-      }),
-    [db, queryTable, matchParam, idField],
-  )
-  const row = results?.[0]
-  let label = row?.label
-  if (table === 'root' || table === 'docs') label = text
+  const { table, folder } = match?.handle?.crumb?.(match) ?? {}
 
   if (isVisible) {
     return null
@@ -51,7 +32,15 @@ const OverflowMenuItem: React.FC = ({ id, match }) => {
   console.log('OverflowMenuItem', { id, match })
 
   // TODO: add fitting icon as icon prop
-  return <MenuItem onClick={onClick}>{label}</MenuItem>
+  return (
+    <MenuItem onClick={onClick}>
+      {table === 'root' || folder === false ? (
+        <BreadcrumbForFolder match={match} forOverflowMenu />
+      ) : (
+        <BreadcrumbForData match={match} forOverflowMenu />
+      )}
+    </MenuItem>
+  )
 }
 
 const OverflowMenu: React.FC = ({ matches }) => {
@@ -63,9 +52,13 @@ const OverflowMenu: React.FC = ({ matches }) => {
   }
 
   return (
-    <Menu>
-      <MenuTrigger disableButtonEnhancement>
-        <MenuButton className="menu-button" ref={ref}>
+    <Menu openOnHover>
+      <MenuTrigger>
+        <MenuButton
+          className="menu-button"
+          ref={ref}
+          menuIcon={<BsCaretDown />}
+        >
           +{overflowCount}
         </MenuButton>
       </MenuTrigger>

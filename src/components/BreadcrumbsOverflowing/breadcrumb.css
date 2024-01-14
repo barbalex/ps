@@ -10,8 +10,24 @@
   display: flex;
   align-items: center;
   min-height: 46px;
+}
 
-  .menu-button {
+.breadcrumbs__crumb__menu-item {
+  color: #333;
+  outline: none;
+  padding: 0 0 0 1.5em;
+  text-decoration: none;
+  transition: background 0.2s linear;
+  display: flex;
+  align-items: center;
+}
+
+.menu-button {
+  svg {
+    height: 18px;
+    width: 18px;
+    top: -3px;
+    position: relative;
   }
 }
 
@@ -19,7 +35,8 @@
   padding-left: 25px;
 }
 
-.breadcrumbs__crumb.link {
+.breadcrumbs__crumb.link,
+.breadcrumbs__crumb__menu-item.link {
   cursor: pointer;
   text-decoration: underline;
   text-decoration-color: rgba(0, 0, 0, 0.3);
@@ -65,23 +82,28 @@
   border-right: none;
 }
 
-.breadcrumbs__crumb > ul {
+.breadcrumbs__crumb > ul,
+.breadcrumbs__crumb__menu-item > ul {
   --ant-menu-item-bg: transparent !important;
   align-items: center;
   align-content: center;
   justify-content: center;
+  border-bottom: none;
 }
 
-.breadcrumbs__crumb > ul > li {
+.breadcrumbs__crumb > ul > li,
+.breadcrumbs__crumb__menu-item > ul > li {
   padding-inline-start: 10px !important;
   padding-inline-end: 5px !important;
 }
 
-.breadcrumbs__crumb > ul > li > div > span {
+.breadcrumbs__crumb > ul > li > div > span,
+.breadcrumbs__crumb__menu-item > ul > li > div > span {
   position: relative;
   top: 4px;
 }
 
-.breadcrumbs__crumb > ul > li > div > span > svg {
+.breadcrumbs__crumb > ul > li > div > span > svg,
+.breadcrumbs__crumb__menu-item > ul > li > div > span > svg {
   font-size: large;
 }

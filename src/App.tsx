@@ -18,6 +18,11 @@ import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
 
+const antdTheme = {
+  cssVar: true,
+  components: { Menu: { zIndexPopup: 1000001 } },
+}
+
 const RouterProviderWithDb = () => {
   const { db } = useElectric()!
   // confirmed: this only runs once
@@ -34,7 +39,7 @@ export default function App() {
   return (
     <ElectricProvider>
       <SqlInitializer />
-      <ConfigProvider locale={deDe} theme={{ cssVar: true }}>
+      <ConfigProvider locale={deDe} theme={antdTheme}>
         <FluentProvider theme={lightTheme}>
           <div className="full-height-container">
             <RouterProviderWithDb />
