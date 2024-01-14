@@ -23,13 +23,15 @@ export const Header = () => {
   }, [db.users])
 
   // console.log('Header')
+  // set true to show single line of breadcrumbs
+  const overflowing = true
 
   return (
     <>
       <div className="header">
         <h1>Promoting Species</h1>
       </div>
-      <Breadcrumbs />
+      <Breadcrumbs overflowing={overflowing} />
       <Navs />
       <div className="content">
         <Outlet />

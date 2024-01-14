@@ -8,7 +8,7 @@ import { buildNavs } from '../../modules/navs'
 import { MenuComponent } from './Menu'
 import { idFieldFromTable } from '../../modules/idFieldFromTable'
 
-export const Breadcrumb = ({ match }) => {
+export const BreadcrumbForFolder = ({ match }) => {
   const navigate = useNavigate()
   const {
     check_id,

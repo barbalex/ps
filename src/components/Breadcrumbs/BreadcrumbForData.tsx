@@ -11,7 +11,7 @@ export const tablesWithoutDeleted = ['root', 'docs', 'accounts', 'messages']
 
 const isOdd = (num) => num % 2
 
-export const Breadcrumb = ({ match }) => {
+export const BreadcrumbForData = ({ match }) => {
   const navigate = useNavigate()
 
   const { text, table } = match?.handle?.crumb?.(match) ?? {}
