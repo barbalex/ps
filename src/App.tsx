@@ -37,7 +37,8 @@ export default function App() {
       <ConfigProvider locale={deDe} theme={{ cssVar: true }}>
         <FluentProvider theme={lightTheme}>
           <div className="full-height-container">
-          <RouterProviderWithDb /></div>
+            <RouterProviderWithDb />
+          </div>
         </FluentProvider>
       </ConfigProvider>
     </ElectricProvider>
