@@ -10,6 +10,9 @@
   display: flex;
   align-items: center;
   min-height: 46px;
+
+  .menu-button {
+  }
 }
 
 .breadcrumbs__crumb:first-of-type {

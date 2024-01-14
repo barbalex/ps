@@ -97,7 +97,7 @@ export const BreadcrumbForFolder = forwardRef(({ match }, ref) => {
     levelWanted,
   ])
 
-  let label = row?.label ?? row?.[idField]
+  let label = row?.label
   if (table === 'root' || table === 'docs') label = text
 
   // console.log('BreadcrumbForFolder', {
