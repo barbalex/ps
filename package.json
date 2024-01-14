@@ -31,7 +31,7 @@
     "@preact/signals": "1.2.2",
     "@typescript-eslint/eslint-plugin": "6.18.1",
     "@typescript-eslint/parser": "6.18.1",
-    "antd": "5.12.8",
+    "antd": "5.13.0",
     "dayjs": "1.11.10",
     "electric-sql": "0.8.2",
     "eslint": "8.56.0",
