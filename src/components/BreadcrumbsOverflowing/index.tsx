@@ -26,6 +26,8 @@ const OverflowMenuItem: React.FC<Pick<OverflowItemProps, 'id'>> = (props) => {
   const { id } = props
   const isVisible = useIsOverflowItemVisible(id)
 
+  console.log('OverflowMenuItem', { id, isVisible })
+
   if (isVisible) {
     return null
   }
@@ -37,6 +39,8 @@ const OverflowMenuItem: React.FC<Pick<OverflowItemProps, 'id'>> = (props) => {
 const OverflowMenu: React.FC<{ itemIds: string[] }> = ({ itemIds }) => {
   const { ref, overflowCount, isOverflowing } =
     useOverflowMenu<HTMLButtonElement>()
+
+  console.log('OverflowMenu', { itemIds, overflowCount, isOverflowing })
 
   if (!isOverflowing) {
     return null
@@ -64,12 +68,13 @@ export const BreadcrumbsOverflowing = () => {
 
   const filteredMatches = matches.filter((match) => match.handle?.crumb)
 
-  const itemIds = new Array(8).fill(0).map((_, i) => i.toString())
+  // const itemIds = new Array(8).fill(0).map((_, i) => i.toString())
+  const itemIds = filteredMatches.map((match) => match.id)
   console.log('BreadcrumbsOverflowing', { filteredMatches, itemIds })
 
   return (
     <Overflow overflowDirection="start">
-      <div>
+      <div className="resizable-area">
         <OverflowMenu itemIds={itemIds} />
         {filteredMatches.map((match, index) => {
           const { table, folder } = match?.handle?.crumb?.(match) ?? {}
@@ -78,22 +83,17 @@ export const BreadcrumbsOverflowing = () => {
 
           if (table === 'root' || folder === false) {
             return (
-              <OverflowItem key={index} id={index}>
-                <BreadcrumbForFolder key={index} match={match} />
+              <OverflowItem key={match.id} id={match.id}>
+                <BreadcrumbForFolder match={match} />
               </OverflowItem>
             )
           }
 
           return (
-            <OverflowItem key={index} id={index}>
-              <BreadcrumbForData key={index} match={match} />
+            <OverflowItem key={match.id} id={match.id}>
+              <BreadcrumbForData match={match} />
             </OverflowItem>
           )
-          // return (
-          //   <OverflowItem key={i} id={i}>
-          //     <Button>Item {i}</Button>
-          //   </OverflowItem>
-          // )
         })}
       </div>
     </Overflow>
