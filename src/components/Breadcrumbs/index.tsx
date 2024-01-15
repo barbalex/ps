@@ -12,12 +12,14 @@ export const Breadcrumbs = () => {
 
   const filteredMatches = matches.filter((match) => match.handle?.crumb)
 
+  console.log('Breadcrumbs', { matches, filteredMatches })
+
   return (
     <nav className="breadcrumbs">
       {filteredMatches.map((match, index) => {
         const { table, folder } = match?.handle?.crumb?.(match) ?? {}
 
-        // console.log('Breadcrumbs', { match, table, folder })
+        console.log('Breadcrumbs', { match, table, folder })
 
         if (table === 'root' || folder === false) {
           return <FolderBreadcrumb key={index} match={match} />
