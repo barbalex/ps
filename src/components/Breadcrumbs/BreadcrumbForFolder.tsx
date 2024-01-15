@@ -1,4 +1,4 @@
-import { useEffect, useState, forwardRef } from 'react'
+import { useEffect, useState, forwardRef, memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useElectric } from '../../ElectricProvider'
 import { useLiveQuery } from 'electric-sql/react'
@@ -21,7 +21,7 @@ const CustomMenuTrigger = forwardRef((props, ref) => (
   </div>
 ))
 
-export const Breadcrumb = ({ match }) => {
+export const Breadcrumb = memo(({ match }) => {
   const navigate = useNavigate()
   const {
     check_id,
@@ -146,4 +146,4 @@ export const Breadcrumb = ({ match }) => {
       </div>
     </>
   )
-}
+})

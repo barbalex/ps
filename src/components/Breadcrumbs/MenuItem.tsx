@@ -7,7 +7,7 @@ export const MenuItem = ({ path, text }) => {
   const onClick = useCallback(() => {
     // why do I need this timeout?
     setTimeout(() => {
-      navigate(path)
+      navigate(path), 100
     })
   }, [navigate, path])
 

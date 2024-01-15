@@ -16,16 +16,14 @@ export const Breadcrumbs = () => {
   // need to ensure the breadcrumbs rerender on every location change
   return (
     <nav key={location.pathname} className="breadcrumbs">
-      {filteredMatches.map((match, index) => {
+      {filteredMatches.map((match) => {
         const { table, folder } = match?.handle?.crumb?.(match) ?? {}
 
-        // console.log('Breadcrumbs', { match, table, folder })
-
         if (table === 'root' || folder === false) {
-          return <FolderBreadcrumb key={index} match={match} />
+          return <FolderBreadcrumb key={match.id} match={match} />
         }
 
-        return <DataBreadcrumb key={index} match={match} />
+        return <DataBreadcrumb key={match.id} match={match} />
       })}
     </nav>
   )
