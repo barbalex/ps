@@ -462,4 +462,5 @@ export const createUi = ({ user_id }) => ({
   user_id,
   designing: false,
   breadcrumbs_overflowing: true,
+  navs_overflowing: true,
 })

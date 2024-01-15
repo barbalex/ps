@@ -1595,6 +1595,7 @@ CREATE TABLE ui(
   user_id uuid PRIMARY KEY DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
   designing boolean DEFAULT FALSE,
   breadcrumbs_overflowing boolean DEFAULT TRUE,
+  navs_overflowing boolean DEFAULT TRUE
 );
 
 CREATE INDEX ON ui USING btree(user_id);
