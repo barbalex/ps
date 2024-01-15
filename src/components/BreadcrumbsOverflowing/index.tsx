@@ -46,8 +46,7 @@ const OverflowMenuItem: React.FC = ({ id, match, upRerenderInteger }) => {
 }
 
 const OverflowMenu: React.FC = ({ matches, upRerenderInteger }) => {
-  const { ref, overflowCount, isOverflowing } =
-    useOverflowMenu<HTMLButtonElement>()
+  const { ref, overflowCount, isOverflowing } = useOverflowMenu()
 
   if (!isOverflowing) {
     return null
