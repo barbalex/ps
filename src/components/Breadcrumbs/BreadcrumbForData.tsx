@@ -24,7 +24,7 @@ const CustomMenuTrigger = forwardRef((props, ref) => (
   </div>
 ))
 
-export const Breadcrumb = ({ match }) => {
+export const Breadcrumb = ({ match, rerender }) => {
   const navigate = useNavigate()
 
   const { text, table } = match?.handle?.crumb?.(match) ?? {}

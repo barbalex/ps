@@ -20,10 +20,7 @@ export const Breadcrumbs = () => {
   console.log('Breadcrumbs', { matches, filteredMatches, rerenderInteger })
 
   return (
-    <nav
-      key={`${rerenderInteger}/${location.pathname}`}
-      className="breadcrumbs"
-    >
+    <nav key={location.pathname} className="breadcrumbs">
       {filteredMatches.map((match, index) => {
         const { table, folder } = match?.handle?.crumb?.(match) ?? {}
 
