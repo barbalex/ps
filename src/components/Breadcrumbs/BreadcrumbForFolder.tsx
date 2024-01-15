@@ -1,25 +1,12 @@
-import { useEffect, useState, forwardRef, memo } from 'react'
+import { useEffect, useState, memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useElectric } from '../../ElectricProvider'
 import { useLiveQuery } from 'electric-sql/react'
-import {
-  Menu,
-  MenuTrigger,
-  MenuList,
-  MenuPopover,
-} from '@fluentui/react-components'
-import { BsCaretDown } from 'react-icons/bs'
 
 import './breadcrumb.css'
 import { buildNavs } from '../../modules/navs'
 import { idFieldFromTable } from '../../modules/idFieldFromTable'
-import { MenuItems } from './MenuItems'
-
-const CustomMenuTrigger = forwardRef((props, ref) => (
-  <div ref={ref} className="menu-icon" {...props}>
-    <BsCaretDown />
-  </div>
-))
+import { Menu } from './Menu'
 
 export const Breadcrumb = memo(({ match }) => {
   const navigate = useNavigate()
@@ -131,18 +118,7 @@ export const Breadcrumb = memo(({ match }) => {
     <>
       <div className={className} onClick={() => navigate(match.pathname)}>
         <div className="text">{label}</div>
-        {navs?.length > 0 && (
-          <Menu openOnHover>
-            <MenuTrigger>
-              <CustomMenuTrigger />
-            </MenuTrigger>
-            <MenuPopover>
-              <MenuList>
-                <MenuItems navs={navs} />
-              </MenuList>
-            </MenuPopover>
-          </Menu>
-        )}
+        <Menu navs={navs} />
       </div>
     </>
   )
