@@ -38,8 +38,7 @@ CREATE TABLE accounts(
   type text DEFAULT NULL,
   -- period daterange DEFAULT NULL -- not supported by electric-sql
   period_start date DEFAULT NULL,
-  period_end date DEFAULT NULL
-  projects_label_by text DEFAULT NULL,
+  period_end date DEFAULT NULL projects_label_by text DEFAULT NULL,
 );
 
 -- how to query if date is in range:
@@ -1595,6 +1594,7 @@ DROP TABLE IF EXISTS ui CASCADE;
 CREATE TABLE ui(
   user_id uuid PRIMARY KEY DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
   designing boolean DEFAULT FALSE,
+  breadcrumbs_overflowing boolean DEFAULT TRUE,
 );
 
 CREATE INDEX ON ui USING btree(user_id);
