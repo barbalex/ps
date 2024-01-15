@@ -5,6 +5,7 @@ import { Breadcrumbs } from './Breadcrumbs'
 import { BreadcrumbsOverflowing } from './BreadcrumbsOverflowing'
 import { Navs } from '../Navs'
 import { useElectric } from '../../ElectricProvider'
+import { TopHeader } from './TopHeader'
 
 export const Header = () => {
   const { db } = useElectric()!
@@ -29,9 +30,7 @@ export const Header = () => {
 
   return (
     <>
-      <div className="header">
-        <h1>Promoting Species</h1>
-      </div>
+      <TopHeader />
       {overflowing ? <BreadcrumbsOverflowing /> : <Breadcrumbs />}
       <Navs />
       <div className="content">

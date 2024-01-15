@@ -18,16 +18,18 @@ body {
   height: 100vh;
 }
 
-.header {
+.top-header {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  padding: 5px 10px;
   background-color: rgba(38, 82, 37, 0.9);
   padding: 0 10px;
   color: white;
+  h1 {
+    font-size: large;
+  }
 }
-
-.header h1 {
-  font-size: large;
-}
-
 .content {
   display: flex;
   flex-direction: column;
