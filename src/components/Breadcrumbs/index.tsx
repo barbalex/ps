@@ -14,6 +14,7 @@ export const Breadcrumbs = () => {
   const filteredMatches = matches.filter((match) => match.handle?.crumb)
 
   // need to ensure the breadcrumbs rerender on every location change
+
   return (
     <nav key={location.pathname} className="breadcrumbs">
       {filteredMatches.map((match) => {
