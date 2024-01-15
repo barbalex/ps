@@ -138,4 +138,8 @@ body {
       border-bottom: rgba(55, 118, 28, 0.5) solid 1px;
     }
   }
+
+  [role='menu'] [role='menuitem'] {
+    text-decoration: none !important;
+  }
 }

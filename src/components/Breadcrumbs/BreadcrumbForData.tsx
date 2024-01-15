@@ -1,5 +1,5 @@
 import { useEffect, useState, forwardRef } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import {
   Menu,
@@ -156,9 +156,9 @@ export const Breadcrumb = ({ match }) => {
         {navs?.length > 0 && (
           <Menu
             openOnHover
-            onCheckedValueChange={(e, data) => {
-              console.log('menu onCheckedValueChange', { e, data })
-            }}
+            // onCheckedValueChange={(e, data) => {
+            //   console.log('menu onCheckedValueChange', { e, data })
+            // }}
           >
             <MenuTrigger>
               <CustomMenuTrigger />
@@ -169,11 +169,20 @@ export const Breadcrumb = ({ match }) => {
                   <MenuItem
                     key={index}
                     onClick={() => {
-                      console.log('MenuItem onClick', { path, text })
-                      navigate(path)
+                      console.log('BreadcrumbForData, MenuItem onClick', {
+                        path,
+                        text,
+                        navigate,
+                      })
+                      // why do I need this setTimeout?
+                      setTimeout(() => {
+                        navigate(path)
+                        // after navigating, db fetches new data
+                        // on direct rerender, that data is not yet available
+                        // so stale data is shown
+                        setTimeout(() => rerender())
+                      })
                     }}
-                    as={Link}
-                    to={path}
                   >
                     {text}
                   </MenuItem>
