@@ -6,7 +6,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import './breadcrumb.css'
 import { buildNavs } from '../../modules/navs'
 import { idFieldFromTable } from '../../modules/idFieldFromTable'
-import { Menu } from './Menu'
+import { Menu } from '../BreadcrumbsMenu'
 
 export const BreadcrumbForFolder = memo(({ match }) => {
   const navigate = useNavigate()
