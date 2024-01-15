@@ -85,7 +85,8 @@ export const buildNavs = async ({
         where: { project_id, deleted: false, level: 1 },
       })
       const placeLevel = placeLevels?.[0]
-      placeName = placeLevel?.name_plural ?? placeLevel?.name_short ?? 'Places'
+      const placeName =
+        placeLevel?.name_plural ?? placeLevel?.name_short ?? 'Places'
 
       return [
         {
