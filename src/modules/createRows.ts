@@ -458,7 +458,7 @@ export const createMessage = () => ({
   date: new Date(),
 })
 
-export const createUi = ({ user_id }) => ({
+export const createUiOption = ({ user_id }) => ({
   user_id,
   designing: false,
   breadcrumbs_overflowing: true,

@@ -1591,16 +1591,16 @@ COMMENT ON COLUMN fields.table_name IS 'table, on which this field is used insid
 --
 DROP TABLE IF EXISTS ui CASCADE;
 
-CREATE TABLE ui(
-  user_id uuid PRIMARY KEY DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
+CREATE TABLE ui_options(
+  user_id uuid PRIMARY KEY DEFAULT NULL,
   designing boolean DEFAULT FALSE,
   breadcrumbs_overflowing boolean DEFAULT TRUE,
   navs_overflowing boolean DEFAULT TRUE
 );
 
-CREATE INDEX ON ui USING btree(user_id);
+CREATE INDEX ON uis USING btree(user_id);
 
-COMMENT ON TABLE ui IS 'User interface settings (state saved in db)';
+COMMENT ON TABLE uis IS 'User interface settings (state saved in db)';
 
-COMMENT ON COLUMN ui.designing IS 'Whether user is currently designing projects. Preset: false';
+COMMENT ON COLUMN uis.designing IS 'Whether user is currently designing projects. Preset: false';
 
