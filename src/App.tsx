@@ -1,7 +1,5 @@
 import React from 'react'
 import { RouterProvider } from 'react-router-dom'
-import { ConfigProvider } from 'antd'
-import deDe from 'antd/locale/de_DE'
 import { FluentProvider } from '@fluentui/react-components'
 
 import './style.css'
@@ -17,11 +15,6 @@ import '@fontsource/roboto/300.css'
 import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
-
-const antdTheme = {
-  cssVar: true,
-  components: { Menu: { zIndexPopup: 1000001 } },
-}
 
 const RouterProviderWithDb = () => {
   const { db } = useElectric()!
@@ -39,13 +32,11 @@ export default function App() {
   return (
     <ElectricProvider>
       <SqlInitializer />
-      <ConfigProvider locale={deDe} theme={antdTheme}>
-        <FluentProvider theme={lightTheme}>
-          <div className="full-height-container">
-            <RouterProviderWithDb />
-          </div>
-        </FluentProvider>
-      </ConfigProvider>
+      <FluentProvider theme={lightTheme}>
+        <div className="full-height-container">
+          <RouterProviderWithDb />
+        </div>
+      </FluentProvider>
     </ElectricProvider>
   )
 }
