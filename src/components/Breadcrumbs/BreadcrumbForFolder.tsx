@@ -1,12 +1,25 @@
-import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useState, forwardRef } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
 import { useElectric } from '../../ElectricProvider'
 import { useLiveQuery } from 'electric-sql/react'
+import {
+  Menu,
+  MenuTrigger,
+  MenuList,
+  MenuPopover,
+  MenuItem,
+} from '@fluentui/react-components'
+import { BsCaretDown } from 'react-icons/bs'
 
 import './breadcrumb.css'
 import { buildNavs } from '../../modules/navs'
-import { MenuComponent } from './Menu'
 import { idFieldFromTable } from '../../modules/idFieldFromTable'
+
+const CustomMenuTrigger = forwardRef((props, ref) => (
+  <div ref={ref} className="menu-icon" {...props}>
+    <BsCaretDown />
+  </div>
+))
 
 export const Breadcrumb = ({ match }) => {
   const navigate = useNavigate()
@@ -118,7 +131,35 @@ export const Breadcrumb = ({ match }) => {
     <>
       <div className={className} onClick={() => navigate(match.pathname)}>
         <div className="text">{label}</div>
-        {navs?.length > 0 && <MenuComponent navs={navs} />}
+        {navs?.length > 0 && (
+          <Menu
+            openOnHover
+            onCheckedValueChange={(e, data) => {
+              console.log('menu onCheckedValueChange', { e, data })
+            }}
+          >
+            <MenuTrigger>
+              <CustomMenuTrigger />
+            </MenuTrigger>
+            <MenuPopover>
+              <MenuList>
+                {navs.map(({ path, text }, index) => (
+                  <MenuItem
+                    key={index}
+                    onClick={() => {
+                      console.log('MenuItem onClick', { path, text })
+                      navigate(path)
+                    }}
+                    as={Link}
+                    to={path}
+                  >
+                    {text}
+                  </MenuItem>
+                ))}
+              </MenuList>
+            </MenuPopover>
+          </Menu>
+        )}
       </div>
     </>
   )

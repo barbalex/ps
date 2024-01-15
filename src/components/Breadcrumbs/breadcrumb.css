@@ -83,3 +83,12 @@
 .breadcrumbs__crumb > ul > li > div > span > svg {
   font-size: large;
 }
+
+.menu-icon {
+  font-size: 1.2em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  cursor: pointer;
+  position: relative;
+  top: 0.1em;
+}

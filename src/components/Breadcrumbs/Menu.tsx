@@ -1,29 +1,26 @@
 import { useNavigate } from 'react-router-dom'
-import type { MenuProps } from 'antd'
-import { Menu } from 'antd'
-import { BsCaretDown } from 'react-icons/bs'
+import { MenuList, MenuItem, MenuPopover } from '@fluentui/react-components'
 
-export const MenuComponent = ({ navs }) => {
+export const MenuPopover = ({ navs }) => {
   const navigate = useNavigate()
 
-  const onClick: MenuProps['onClick'] = ({ item, domEvent }) => {
-    navigate(item.props.path)
-    domEvent.stopPropagation()
-  }
+  // const onClick = ({ item, domEvent }) => {
+  //   const path = navs.find((nav) => text === item.props.children).path
+  //   navigate(item.props.path)
+  //   domEvent.stopPropagation()
+  // }
 
-  const items = [
-    {
-      label: <BsCaretDown />,
-      key: 'menu',
-      children: navs.map(({ path, text }, index) => ({
-        label: text,
-        path,
-        key: index,
-      })),
-    },
-  ]
+  console.log('MenuPopover, navs:', navs)
 
   return (
-    <Menu onClick={onClick} selectedKeys={[]} mode="horizontal" items={items} />
+    <MenuPopover>
+      <MenuList>
+        {navs.map(({ path, text }, index) => (
+          <MenuItem key={index} onClick={() => navigate(path)}>
+            {text}
+          </MenuItem>
+        ))}
+      </MenuList>
+    </MenuPopover>
   )
 }

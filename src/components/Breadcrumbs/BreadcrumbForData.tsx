@@ -1,15 +1,28 @@
-import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useState, forwardRef } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
+import {
+  Menu,
+  MenuTrigger,
+  MenuList,
+  MenuPopover,
+  MenuItem,
+} from '@fluentui/react-components'
+import { BsCaretDown } from 'react-icons/bs'
 
 import './breadcrumb.css'
-import { MenuComponent } from './Menu'
 import { useElectric } from '../../ElectricProvider'
 import { idFieldFromTable } from '../../modules/idFieldFromTable'
 
 export const tablesWithoutDeleted = ['root', 'docs', 'accounts', 'messages']
 
 const isOdd = (num) => num % 2
+
+const CustomMenuTrigger = forwardRef((props, ref) => (
+  <div ref={ref} className="menu-icon" {...props}>
+    <BsCaretDown />
+  </div>
+))
 
 export const Breadcrumb = ({ match }) => {
   const navigate = useNavigate()
@@ -82,7 +95,7 @@ export const Breadcrumb = ({ match }) => {
 
   const { results } = useLiveQuery(db[queryTable]?.liveMany(queryParam))
 
-  const myNavs = (results ?? []).map((result) => ({
+  const navs = (results ?? []).map((result) => ({
     path: `${match.pathname}/${result[idField]}`,
     text: result.label ?? result[idField],
   }))
@@ -128,7 +141,7 @@ export const Breadcrumb = ({ match }) => {
   //   label,
   //   results,
   //   pathname: match.pathname,
-  //   myNavs,
+  //   navs,
   //   filterParams,
   //   idField,
   //   path,
@@ -140,7 +153,35 @@ export const Breadcrumb = ({ match }) => {
     <>
       <div className={className} onClick={() => navigate(match.pathname)}>
         <div className="text">{label}</div>
-        {myNavs?.length > 0 && <MenuComponent navs={myNavs} />}
+        {navs?.length > 0 && (
+          <Menu
+            openOnHover
+            onCheckedValueChange={(e, data) => {
+              console.log('menu onCheckedValueChange', { e, data })
+            }}
+          >
+            <MenuTrigger>
+              <CustomMenuTrigger />
+            </MenuTrigger>
+            <MenuPopover>
+              <MenuList>
+                {navs.map(({ path, text }, index) => (
+                  <MenuItem
+                    key={index}
+                    onClick={() => {
+                      console.log('MenuItem onClick', { path, text })
+                      navigate(path)
+                    }}
+                    as={Link}
+                    to={path}
+                  >
+                    {text}
+                  </MenuItem>
+                ))}
+              </MenuList>
+            </MenuPopover>
+          </Menu>
+        )}
       </div>
     </>
   )
