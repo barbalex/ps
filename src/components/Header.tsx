@@ -25,7 +25,7 @@ export const Header = () => {
 
   // console.log('Header')
   // set true to show single line of breadcrumbs
-  const overflowing = false
+  const overflowing = true
 
   return (
     <>

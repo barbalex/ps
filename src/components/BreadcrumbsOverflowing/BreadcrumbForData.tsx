@@ -6,6 +6,7 @@ import './breadcrumb.css'
 import { MenuComponent } from './Menu'
 import { useElectric } from '../../ElectricProvider'
 import { idFieldFromTable } from '../../modules/idFieldFromTable'
+import { Menu } from '../BreadcrumbsMenu'
 
 export const tablesWithoutDeleted = ['root', 'docs', 'accounts', 'messages']
 
@@ -87,7 +88,7 @@ export const BreadcrumbForData = forwardRef(
 
     const { results } = useLiveQuery(db[queryTable]?.liveMany(queryParam))
 
-    const myNavs = (results ?? []).map((result) => ({
+    const navs = (results ?? []).map((result) => ({
       path: `${match.pathname}/${result[idField]}`,
       text: result.label ?? result[idField],
     }))
@@ -148,7 +149,7 @@ export const BreadcrumbForData = forwardRef(
         ref={ref}
       >
         <div className="text">{label}</div>
-        {myNavs?.length > 0 && <MenuComponent navs={myNavs} />}
+        <Menu navs={navs} />
       </div>
     )
   },

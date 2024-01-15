@@ -7,6 +7,7 @@ import './breadcrumb.css'
 import { buildNavs } from '../../modules/navs'
 import { MenuComponent } from './Menu'
 import { idFieldFromTable } from '../../modules/idFieldFromTable'
+import { Menu } from '../BreadcrumbsMenu'
 
 // forwarding refs is crucial for the overflow menu to work
 // https://github.com/microsoft/fluentui/issues/27652#issuecomment-1520447241
@@ -126,7 +127,7 @@ export const BreadcrumbForFolder = forwardRef(
         ref={ref}
       >
         <div className="text">{label}</div>
-        {navs?.length > 0 && <MenuComponent navs={navs} />}
+        <Menu navs={navs} />
       </div>
     )
   },
