@@ -1,17 +1,17 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 
 import './breadcrumb.css'
-import { MenuComponent } from './Menu'
 import { useElectric } from '../../ElectricProvider'
 import { idFieldFromTable } from '../../modules/idFieldFromTable'
+import { Menu } from './Menu'
 
 export const tablesWithoutDeleted = ['root', 'docs', 'accounts', 'messages']
 
 const isOdd = (num) => num % 2
 
-export const Breadcrumb = ({ match }) => {
+export const Breadcrumb = memo(({ match }) => {
   const navigate = useNavigate()
 
   const { text, table } = match?.handle?.crumb?.(match) ?? {}
@@ -82,7 +82,7 @@ export const Breadcrumb = ({ match }) => {
 
   const { results } = useLiveQuery(db[queryTable]?.liveMany(queryParam))
 
-  const myNavs = (results ?? []).map((result) => ({
+  const navs = (results ?? []).map((result) => ({
     path: `${match.pathname}/${result[idField]}`,
     text: result.label ?? result[idField],
   }))
@@ -128,7 +128,7 @@ export const Breadcrumb = ({ match }) => {
   //   label,
   //   results,
   //   pathname: match.pathname,
-  //   myNavs,
+  //   navs,
   //   filterParams,
   //   idField,
   //   path,
@@ -140,8 +140,8 @@ export const Breadcrumb = ({ match }) => {
     <>
       <div className={className} onClick={() => navigate(match.pathname)}>
         <div className="text">{label}</div>
-        {myNavs?.length > 0 && <MenuComponent navs={myNavs} />}
+        <Menu navs={navs} />
       </div>
     </>
   )
-}
+})

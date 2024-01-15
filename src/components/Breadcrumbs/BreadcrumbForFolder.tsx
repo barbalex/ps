@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useElectric } from '../../ElectricProvider'
 import { useLiveQuery } from 'electric-sql/react'
 
 import './breadcrumb.css'
 import { buildNavs } from '../../modules/navs'
-import { MenuComponent } from './Menu'
 import { idFieldFromTable } from '../../modules/idFieldFromTable'
+import { Menu } from './Menu'
 
-export const Breadcrumb = ({ match }) => {
+export const Breadcrumb = memo(({ match }) => {
   const navigate = useNavigate()
   const {
     check_id,
@@ -118,8 +118,8 @@ export const Breadcrumb = ({ match }) => {
     <>
       <div className={className} onClick={() => navigate(match.pathname)}>
         <div className="text">{label}</div>
-        {navs?.length > 0 && <MenuComponent navs={navs} />}
+        <Menu navs={navs} />
       </div>
     </>
   )
-}
+})
