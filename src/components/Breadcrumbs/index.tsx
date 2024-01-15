@@ -1,4 +1,4 @@
-import { useMatches } from 'react-router-dom'
+import { useMatches, useLocation } from 'react-router-dom'
 
 // to only query when needed,
 // create two different breadcrumb components
@@ -9,16 +9,17 @@ import { BreadcrumbForFolder } from './BreadcrumbForFolder'
 
 // TODO: if overflowing, show single line
 export const Breadcrumbs = () => {
+  const location = useLocation()
   const matches = useMatches()
 
   const filteredMatches = matches.filter((match) => match.handle?.crumb)
 
-  return (
-    <nav className="breadcrumbs">
-      {filteredMatches.map((match, index) => {
-        const { table, folder } = match?.handle?.crumb?.(match) ?? {}
+  // need to ensure the breadcrumbs rerender on every location change
 
-        // console.log('Breadcrumbs', { match, table, folder })
+  return (
+    <nav key={location.pathname} className="breadcrumbs">
+      {filteredMatches.map((match) => {
+        const { table, folder } = match?.handle?.crumb?.(match) ?? {}
 
         if (table === 'root' || folder === false) {
           return <BreadcrumbForFolder key={index} match={match} />
