@@ -6,9 +6,9 @@ import { useLiveQuery } from 'electric-sql/react'
 import './breadcrumb.css'
 import { buildNavs } from '../../modules/navs'
 import { idFieldFromTable } from '../../modules/idFieldFromTable'
-import { Menu } from './Menu'
+import { Menu } from '../BreadcrumbsMenu'
 
-export const Breadcrumb = memo(({ match }) => {
+export const BreadcrumbForFolder = memo(({ match }) => {
   const navigate = useNavigate()
   const {
     check_id,
@@ -115,11 +115,9 @@ export const Breadcrumb = memo(({ match }) => {
   // })
 
   return (
-    <>
-      <div className={className} onClick={() => navigate(match.pathname)}>
-        <div className="text">{label}</div>
-        <Menu navs={navs} />
-      </div>
-    </>
+    <div className={className} onClick={() => navigate(match.pathname)}>
+      <div className="text">{label}</div>
+      <Menu navs={navs} />
+    </div>
   )
 })

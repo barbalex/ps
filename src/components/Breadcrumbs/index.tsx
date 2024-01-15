@@ -4,9 +4,10 @@ import { useMatches, useLocation } from 'react-router-dom'
 // create two different breadcrumb components
 // one that queries data and one that only uses navs
 import './breadcrumbs.css'
-import { Breadcrumb as DataBreadcrumb } from './BreadcrumbForData'
-import { Breadcrumb as FolderBreadcrumb } from './BreadcrumbForFolder'
+import { BreadcrumbForData } from './BreadcrumbForData'
+import { BreadcrumbForFolder } from './BreadcrumbForFolder'
 
+// TODO: if overflowing, show single line
 export const Breadcrumbs = () => {
   const location = useLocation()
   const matches = useMatches()
@@ -21,10 +22,10 @@ export const Breadcrumbs = () => {
         const { table, folder } = match?.handle?.crumb?.(match) ?? {}
 
         if (table === 'root' || folder === false) {
-          return <FolderBreadcrumb key={match.id} match={match} />
+          return <BreadcrumbForFolder key={match.id} match={match} />
         }
 
-        return <DataBreadcrumb key={match.id} match={match} />
+        return <BreadcrumbForData key={match.id} match={match} />
       })}
     </nav>
   )
