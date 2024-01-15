@@ -1,4 +1,3 @@
-import { useState, useCallback } from 'react'
 import { useMatches, useLocation } from 'react-router-dom'
 
 // to only query when needed,
@@ -12,13 +11,9 @@ export const Breadcrumbs = () => {
   const location = useLocation()
   const matches = useMatches()
 
-  const [rerenderInteger, setRerenderInteger] = useState(0)
-  const rerender = useCallback(() => setRerenderInteger((i) => i + 1), [])
-
   const filteredMatches = matches.filter((match) => match.handle?.crumb)
 
-  console.log('Breadcrumbs', { matches, filteredMatches, rerenderInteger })
-
+  // need to ensure the breadcrumbs rerender on every location change
   return (
     <nav key={location.pathname} className="breadcrumbs">
       {filteredMatches.map((match, index) => {
@@ -27,12 +22,10 @@ export const Breadcrumbs = () => {
         // console.log('Breadcrumbs', { match, table, folder })
 
         if (table === 'root' || folder === false) {
-          return (
-            <FolderBreadcrumb key={index} match={match} rerender={rerender} />
-          )
+          return <FolderBreadcrumb key={index} match={match} />
         }
 
-        return <DataBreadcrumb key={index} match={match} rerender={rerender} />
+        return <DataBreadcrumb key={index} match={match} />
       })}
     </nav>
   )

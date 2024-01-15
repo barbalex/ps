@@ -7,13 +7,13 @@ import {
   MenuTrigger,
   MenuList,
   MenuPopover,
-  MenuItem,
 } from '@fluentui/react-components'
 import { BsCaretDown } from 'react-icons/bs'
 
 import './breadcrumb.css'
 import { buildNavs } from '../../modules/navs'
 import { idFieldFromTable } from '../../modules/idFieldFromTable'
+import { MenuItems } from './MenuItems'
 
 const CustomMenuTrigger = forwardRef((props, ref) => (
   <div ref={ref} className="menu-icon" {...props}>
@@ -21,7 +21,7 @@ const CustomMenuTrigger = forwardRef((props, ref) => (
   </div>
 ))
 
-export const Breadcrumb = ({ match, rerender }) => {
+export const Breadcrumb = ({ match }) => {
   const navigate = useNavigate()
   const {
     check_id,
@@ -132,39 +132,13 @@ export const Breadcrumb = ({ match, rerender }) => {
       <div className={className} onClick={() => navigate(match.pathname)}>
         <div className="text">{label}</div>
         {navs?.length > 0 && (
-          <Menu
-            openOnHover
-            // onCheckedValueChange={(e, data) => {
-            //   console.log('menu onCheckedValueChange', { e, data })
-            // }}
-          >
+          <Menu openOnHover>
             <MenuTrigger>
               <CustomMenuTrigger />
             </MenuTrigger>
             <MenuPopover>
               <MenuList>
-                {navs.map(({ path, text }, index) => (
-                  <MenuItem
-                    key={index}
-                    onClick={() => {
-                      console.log('BreadcrumbForFolder, MenuItem onClick', {
-                        path,
-                        text,
-                        navigate,
-                      })
-                      // why do I need this setTimeout?
-                      setTimeout(() => {
-                        navigate(path)
-                        // after navigating, db fetches new data
-                        // on direct rerender, that data is not yet available
-                        // so stale data is shown
-                        setTimeout(() => rerender())
-                      })
-                    }}
-                  >
-                    {text}
-                  </MenuItem>
-                ))}
+                <MenuItems navs={navs} />
               </MenuList>
             </MenuPopover>
           </Menu>
