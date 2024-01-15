@@ -1,11 +1,11 @@
 import { useEffect, useState, forwardRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../../../ElectricProvider'
 import { useLiveQuery } from 'electric-sql/react'
 
 import './breadcrumb.css'
-import { buildNavs } from '../../modules/navs'
-import { idFieldFromTable } from '../../modules/idFieldFromTable'
+import { buildNavs } from '../../../modules/navs'
+import { idFieldFromTable } from '../../../modules/idFieldFromTable'
 import { Menu } from '../BreadcrumbsMenu'
 
 // forwarding refs is crucial for the overflow menu to work

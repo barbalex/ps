@@ -3,8 +3,8 @@ import { Outlet } from 'react-router-dom'
 
 import { Breadcrumbs } from './Breadcrumbs'
 import { BreadcrumbsOverflowing } from './BreadcrumbsOverflowing'
-import { Navs } from './Navs'
-import { useElectric } from '../ElectricProvider'
+import { Navs } from '../Navs'
+import { useElectric } from '../../ElectricProvider'
 
 export const Header = () => {
   const { db } = useElectric()!
