@@ -7,15 +7,16 @@ import {
   MenuItem,
   MenuButton,
   Overflow,
-  OverflowItem,
   useIsOverflowItemVisible,
   useOverflowMenu,
 } from '@fluentui/react-components'
 import { useMatches, useNavigate } from 'react-router-dom'
+import { useResizeDetector } from 'react-resize-detector'
 
 import { BreadcrumbForData } from './BreadcrumbForData'
 import { BreadcrumbForFolder } from './BreadcrumbForFolder'
 import { BsCaretDown } from 'react-icons/bs'
+import { Matches } from './Matches'
 import './breadcrumbs.css'
 
 const OverflowMenuItem: React.FC = ({ id, match, upRerenderInteger }) => {
@@ -82,32 +83,34 @@ const OverflowMenu: React.FC = ({ matches, upRerenderInteger }) => {
   )
 }
 
+// problem: menu is not rendered after width changes
+// solution: rerender after width changes
 export const BreadcrumbsOverflowing = () => {
   const unfilteredMatches = useMatches()
+
   const [rerenderInteger, setRerenderInteger] = useState(0)
   const upRerenderInteger = useCallback(() => {
     setRerenderInteger((i) => i + 1)
   }, [])
 
   const matches = unfilteredMatches.filter((match) => match.handle?.crumb)
+  const { width, ref } = useResizeDetector({
+    handleHeight: false,
+    refreshMode: 'debounce',
+    refreshRate: 100,
+    refreshOptions: { leading: false, trailing: true },
+  })
 
   return (
-    <Overflow overflowDirection="start" padding={20}>
+    <Overflow ref={ref} overflowDirection="start" padding={20}>
       <div className="resizable-area">
         <OverflowMenu matches={matches} upRerenderInteger={upRerenderInteger} />
-        {matches.map((match) => {
-          const { table, folder } = match?.handle?.crumb?.(match) ?? {}
-
-          return (
-            <OverflowItem key={`${match.id}/${rerenderInteger}`} id={match.id}>
-              {table === 'root' || folder === false ? (
-                <BreadcrumbForFolder match={match} />
-              ) : (
-                <BreadcrumbForData match={match} />
-              )}
-            </OverflowItem>
-          )
-        })}
+        <Matches
+          rerenderInteger={rerenderInteger}
+          upRerenderInteger={upRerenderInteger}
+          matches={matches}
+          width={width}
+        />
       </div>
     </Overflow>
   )

@@ -11,3 +11,7 @@
   white-space: nowrap;
   overflow: hidden;
 }
+
+.matches-container {
+  width: 100%;
+}

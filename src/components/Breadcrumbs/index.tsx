@@ -22,10 +22,10 @@ export const Breadcrumbs = () => {
         const { table, folder } = match?.handle?.crumb?.(match) ?? {}
 
         if (table === 'root' || folder === false) {
-          return <BreadcrumbForFolder key={index} match={match} />
+          return <BreadcrumbForFolder key={match.id} match={match} />
         }
 
-        return <BreadcrumbForData key={index} match={match} />
+        return <BreadcrumbForData key={match.id} match={match} />
       })}
     </nav>
   )
