@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 
 import './breadcrumb.css'
-import { MenuComponent } from './Menu'
 import { useElectric } from '../../ElectricProvider'
 import { idFieldFromTable } from '../../modules/idFieldFromTable'
 import { Menu } from '../BreadcrumbsMenu'

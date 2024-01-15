@@ -5,7 +5,6 @@ import { useLiveQuery } from 'electric-sql/react'
 
 import './breadcrumb.css'
 import { buildNavs } from '../../modules/navs'
-import { MenuComponent } from './Menu'
 import { idFieldFromTable } from '../../modules/idFieldFromTable'
 import { Menu } from '../BreadcrumbsMenu'
 
