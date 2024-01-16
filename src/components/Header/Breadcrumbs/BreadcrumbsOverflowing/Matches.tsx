@@ -1,6 +1,6 @@
 import { OverflowItem } from '@fluentui/react-components'
 
-import { BreadcrumbForData } from './BreadcrumbForData'
+import { BreadcrumbForData } from '../BreadcrumbForData'
 import { BreadcrumbForFolder } from '../BreadcrumbForFolder'
 import '../breadcrumbs.css'
 

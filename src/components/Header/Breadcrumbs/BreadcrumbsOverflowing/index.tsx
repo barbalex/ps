@@ -13,7 +13,7 @@ import {
 import { useMatches, useNavigate } from 'react-router-dom'
 import { useResizeDetector } from 'react-resize-detector'
 
-import { BreadcrumbForData } from './BreadcrumbForData'
+import { BreadcrumbForData } from '../BreadcrumbForData'
 import { BreadcrumbForFolder } from '../BreadcrumbForFolder'
 import { BsCaretDown } from 'react-icons/bs'
 import { Matches } from './Matches'
