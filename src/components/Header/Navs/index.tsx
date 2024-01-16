@@ -39,8 +39,8 @@ export const Navs = () => {
 
   return (
     <nav className="navs">
-      {(tos[0] ?? []).map(({ path, text }, index) => (
-        <Link key={index} to={path}>
+      {(tos[0] ?? []).map(({ path, text }) => (
+        <Link key={path} to={path}>
           {text}
         </Link>
       ))}
