@@ -8,7 +8,7 @@ import { BreadcrumbForData } from './BreadcrumbForData'
 import { BreadcrumbForFolder } from './BreadcrumbForFolder'
 
 // TODO: if overflowing, show single line
-export const Breadcrumbs = () => {
+export const BreadcrumbsWrapping = () => {
   const location = useLocation()
   const matches = useMatches()
 
