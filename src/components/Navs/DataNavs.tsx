@@ -55,18 +55,19 @@ export const DataNavs = ({ matches }) => {
 
   const { db } = useElectric()
   const { results: tableResults } = useLiveQuery(
-    () => db[table]?.liveMany({ where: filterParams, orderBy: { label: 'asc' } }),
+    () =>
+      db[table]?.liveMany({ where: filterParams, orderBy: { label: 'asc' } }),
     [db, location.pathname],
   )
 
-  // console.log('DataNavs', {
-  //   table,
-  //   idField,
-  //   pathname,
-  //   parentId,
-  //   tableResults,
-  //   filterParams,
-  // })
+  console.log('DataNavs', {
+    table,
+    idField,
+    pathname,
+    parentId,
+    tableResults,
+    filterParams,
+  })
 
   if (!table) return null
 

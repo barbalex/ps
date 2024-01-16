@@ -1,5 +1,7 @@
 export const idFieldFromTable = (table: string = ''): string =>
-  table.endsWith('taxa')
+  table === 'ui_options'
+    ? 'user_id'
+    : table.endsWith('taxa')
     ? `${table.slice(0, -1)}on_id`
     : table === 'taxonomies'
     ? 'taxonomy_id'
