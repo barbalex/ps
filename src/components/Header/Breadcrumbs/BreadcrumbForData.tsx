@@ -5,7 +5,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import './breadcrumb.css'
 import { useElectric } from '../../../ElectricProvider'
 import { idFieldFromTable } from '../../../modules/idFieldFromTable'
-import { Menu } from './BreadcrumbsMenu'
+import { Menu } from './Menu'
 
 export const tablesWithoutDeleted = ['root', 'docs', 'accounts', 'messages']
 
