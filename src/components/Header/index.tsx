@@ -23,7 +23,7 @@ export const Header = () => {
     syncItems()
   }, [db.users])
 
-  console.log('Header rendering')
+  // console.log('Header rendering')
 
   return (
     <>
