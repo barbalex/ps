@@ -6,13 +6,15 @@ export const FormHeader = memo(
     return (
       <div className="form-header">
         <h1>{title}</h1>
-        <FormMenu
-          addRow={addRow}
-          deleteRow={deleteRow}
-          toNext={toNext}
-          toPrevious={toPrevious}
-          tableName={tableName}
-        />
+        {(addRow || deleteRow || toNext || toPrevious) && (
+          <FormMenu
+            addRow={addRow}
+            deleteRow={deleteRow}
+            toNext={toNext}
+            toPrevious={toPrevious}
+            tableName={tableName}
+          />
+        )}
       </div>
     )
   },
