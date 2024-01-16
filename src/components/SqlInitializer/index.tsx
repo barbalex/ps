@@ -39,6 +39,7 @@ import { generateActionReportValueLabel } from './labelGenerators/actionReportVa
 import { generatePlaceReportLabel } from './labelGenerators/placeReports'
 import { generatePlaceReportValueLabel } from './labelGenerators/placeReportValues'
 import { generateMessageLabel } from './labelGenerators/messages'
+import { generateUiOptionLabel } from './labelGenerators/uiOptions'
 import { seed } from './seed'
 import { generatePartialIndexes } from './partialIndexes'
 import { generateUiOptions } from './uiOptions'
@@ -98,8 +99,9 @@ export const SqlInitializer = () => {
       await generatePlaceReportValueLabel(db)
       await generateMessageLabel(db)
       await generatePartialIndexes(db)
-      await generateUiOptions({ db, user_id })
-      seed(db)
+      await generateUiOptionLabel(db)
+      await seed(db)
+      generateUiOptions({ db, user_id })
     }
     generate()
   }, [db])
