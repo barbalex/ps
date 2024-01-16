@@ -1,7 +1,7 @@
 import { useLiveQuery } from 'electric-sql/react'
 
-import { BreadcrumbsWrapping } from './BreadcrumbsWrapping'
-import { BreadcrumbsOverflowing } from './BreadcrumbsOverflowing'
+import { BreadcrumbsWrapping } from './Wrapping'
+import { BreadcrumbsOverflowing } from './Overflowing'
 import { useElectric } from '../../../ElectricProvider'
 import { user_id } from '../../SqlInitializer'
 import { UiOptions as UiOption } from '../../../../generated/client'
