@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useMatches, useLocation, Link } from 'react-router-dom'
 
-import { DataNavs } from './DataNavs'
+import { DataNavs } from '../DataNavs'
 
 export const NavsOverflowing = () => {
   const location = useLocation()

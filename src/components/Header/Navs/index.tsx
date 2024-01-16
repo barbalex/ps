@@ -1,7 +1,7 @@
 import { useLiveQuery } from 'electric-sql/react'
 
-import { NavsWrapping } from './NavsWrapping'
-import { NavsOverflowing } from './NavsOverflowing'
+import { NavsWrapping } from './Wrapping'
+import { NavsOverflowing } from './Overflowing'
 import { useElectric } from '../../../ElectricProvider'
 import { user_id } from '../../SqlInitializer'
 import { UiOptions as UiOption } from '../../../generated/client'
