@@ -17,7 +17,7 @@ import { BreadcrumbForData } from './BreadcrumbForData'
 import { BreadcrumbForFolder } from '../BreadcrumbForFolder'
 import { BsCaretDown } from 'react-icons/bs'
 import { Matches } from './Matches'
-import './breadcrumbs.css'
+import '../breadcrumbs.css'
 
 const OverflowMenuItem: React.FC = ({ id, match, upRerenderInteger }) => {
   const navigate = useNavigate()

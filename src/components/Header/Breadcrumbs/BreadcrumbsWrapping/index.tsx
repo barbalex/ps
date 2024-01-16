@@ -3,7 +3,7 @@ import { useMatches, useLocation } from 'react-router-dom'
 // to only query when needed,
 // create two different breadcrumb components
 // one that queries data and one that only uses navs
-import './breadcrumbs.css'
+import '../breadcrumbs.css'
 import { BreadcrumbForData } from './BreadcrumbForData'
 import { BreadcrumbForFolder } from '../BreadcrumbForFolder'
 

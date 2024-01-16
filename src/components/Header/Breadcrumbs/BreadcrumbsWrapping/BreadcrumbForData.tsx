@@ -2,7 +2,7 @@ import { useEffect, useState, memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 
-import './breadcrumb.css'
+import '../breadcrumb.css'
 import { useElectric } from '../../../../ElectricProvider'
 import { idFieldFromTable } from '../../../../modules/idFieldFromTable'
 import { Menu } from '../BreadcrumbsMenu'
