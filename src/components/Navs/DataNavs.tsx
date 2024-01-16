@@ -60,14 +60,14 @@ export const DataNavs = ({ matches }) => {
     [db, location.pathname],
   )
 
-  console.log('DataNavs', {
-    table,
-    idField,
-    pathname,
-    parentId,
-    tableResults,
-    filterParams,
-  })
+  // console.log('DataNavs', {
+  //   table,
+  //   idField,
+  //   pathname,
+  //   parentId,
+  //   tableResults,
+  //   filterParams,
+  // })
 
   if (!table) return null
 
