@@ -1,8 +1,8 @@
 import { useLiveQuery } from 'electric-sql/react'
 import { Link, useLocation } from 'react-router-dom'
 
-import { useElectric } from '../../ElectricProvider'
-import { idFieldFromTable } from '../../modules/idFieldFromTable'
+import { useElectric } from '../../../ElectricProvider'
+import { idFieldFromTable } from '../../../modules/idFieldFromTable'
 
 const isOdd = (num) => num % 2
 

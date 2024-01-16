@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
 
 import { Breadcrumbs } from './Breadcrumbs'
-import { Navs } from '../Navs'
+import { Navs } from './Navs'
 import { useElectric } from '../../ElectricProvider'
 import { TopHeader } from './TopHeader'
 
