@@ -940,6 +940,31 @@ export const router = (db) => {
                 }),
               },
             },
+            {
+              path: 'options',
+              element: null,
+              handle: {
+                crumb: () => ({
+                  text: 'Options',
+                  table: 'ui_options',
+                  folder: true,
+                }),
+              },
+              children: [
+                { index: true, lazy: () => import('../routes/options') },
+                {
+                  path: ':user_id',
+                  lazy: () => import('../routes/option'),
+                  handle: {
+                    crumb: (match) => ({
+                      text: match.params.user_id,
+                      table: 'ui_options',
+                      folder: false,
+                    }),
+                  },
+                },
+              ],
+            },
           ],
         },
       ],
