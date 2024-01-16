@@ -5,7 +5,7 @@ export const ListViewHeader = memo(({ title, addRow, tableName }) => {
   return (
     <div className="list-view-header">
       <h1>{title}</h1>
-      <Menu addRow={addRow} tableName={tableName} />
+      {!!addRow && <Menu addRow={addRow} tableName={tableName} />}
     </div>
   )
 })
