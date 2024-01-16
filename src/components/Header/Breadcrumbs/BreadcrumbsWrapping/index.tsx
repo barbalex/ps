@@ -5,7 +5,7 @@ import { useMatches, useLocation } from 'react-router-dom'
 // one that queries data and one that only uses navs
 import './breadcrumbs.css'
 import { BreadcrumbForData } from './BreadcrumbForData'
-import { BreadcrumbForFolder } from './BreadcrumbForFolder'
+import { BreadcrumbForFolder } from '../BreadcrumbForFolder'
 
 // TODO: if overflowing, show single line
 export const BreadcrumbsWrapping = () => {
