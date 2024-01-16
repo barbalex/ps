@@ -5,7 +5,7 @@ import { FaPlus, FaMinus, FaChevronRight, FaChevronLeft } from 'react-icons/fa'
 export const FormMenu = memo(
   ({ addRow, deleteRow, toNext, toPrevious, tableName }) => (
     <div className="controls">
-      {toPrevious && (
+      {!!toPrevious && (
         <Button
           size="medium"
           icon={<FaChevronLeft />}
@@ -13,19 +13,23 @@ export const FormMenu = memo(
           title={`Previous ${tableName}`}
         />
       )}
-      <Button
-        size="medium"
-        icon={<FaPlus />}
-        onClick={addRow}
-        title={`New ${tableName}`}
-      />
-      <Button
-        size="medium"
-        icon={<FaMinus />}
-        onClick={deleteRow}
-        title={`Delete ${tableName}`}
-      />
-      {toNext && (
+      {!!addRow && (
+        <Button
+          size="medium"
+          icon={<FaPlus />}
+          onClick={addRow}
+          title={`New ${tableName}`}
+        />
+      )}
+      {!!deleteRow && (
+        <Button
+          size="medium"
+          icon={<FaMinus />}
+          onClick={deleteRow}
+          title={`Delete ${tableName}`}
+        />
+      )}
+      {!!toNext && (
         <Button
           size="medium"
           icon={<FaChevronRight />}
