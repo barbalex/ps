@@ -1,11 +1,14 @@
 import { useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
+import { useLiveQuery } from 'electric-sql/react'
 
 import { Breadcrumbs } from './Breadcrumbs'
 import { BreadcrumbsOverflowing } from './BreadcrumbsOverflowing'
 import { Navs } from '../Navs'
 import { useElectric } from '../../ElectricProvider'
 import { TopHeader } from './TopHeader'
+import { user_id } from '../SqlInitializer'
+import { UiOptions as UiOption } from '../../../generated/client'
 
 export const Header = () => {
   const { db } = useElectric()!
@@ -23,15 +26,22 @@ export const Header = () => {
 
     syncItems()
   }, [db.users])
+  // get ui_options.breadcrumbs_overflowing
+  const { results } = useLiveQuery(
+    db.ui_options.liveUnique({ where: { user_id } }),
+  )
 
-  // console.log('Header')
+  const uiOption: UiOption = results
+
+  // console.log('Header, uiOption:', uiOption)
+
   // set true to show single line of breadcrumbs
-  const overflowing = true
+  const overflowing = uiOption?.breadcrumbs_overflowing ?? true
 
   return (
     <>
       <TopHeader />
-      {overflowing ? <BreadcrumbsOverflowing /> : <Breadcrumbs />}
+      {!!uiOption && overflowing ? <BreadcrumbsOverflowing /> : <Breadcrumbs />}
       <Navs />
       <div className="content">
         <Outlet />
