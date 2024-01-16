@@ -46,8 +46,15 @@ export const Component = () => {
           name="breadcrumbs_overflowing"
           value={row.breadcrumbs_overflowing ?? false}
           onChange={onChange}
-          validationMessage="If overflowing, breadcrumbs will only use a single line. If they overflow, the overflowing will be collected in a menu on the left."
+          validationMessage="If true, breadcrumbs will only use a single line. When they overflow, the overflowing breadcrumbs will be collected in a menu on the left."
           autoFocus
+        />
+        <SwitchField
+          label="Navs overflowing"
+          name="navs_overflowing"
+          value={row.navs_overflowing ?? false}
+          onChange={onChange}
+          validationMessage="If true, navs will only use a single line. When they overflow, the overflowing navs will be collected in a menu on the left."
         />
       </div>
     </>
