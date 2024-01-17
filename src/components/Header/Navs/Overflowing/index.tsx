@@ -16,6 +16,7 @@ import { useResizeDetector } from 'react-resize-detector'
 
 import { DataNavs } from '../DataNavs'
 import { ToNavs } from '../ToNavs'
+import { Nav } from '../Nav'
 
 const OverflowMenuItem: React.FC = ({ id, match, upRerenderInteger }) => {
   const navigate = useNavigate()
@@ -44,7 +45,7 @@ const OverflowMenuItem: React.FC = ({ id, match, upRerenderInteger }) => {
   )
 }
 
-const OverflowMenu: React.FC = ({ matches, upRerenderInteger }) => {
+const OverflowMenu: React.FC = ({ matches, tos, upRerenderInteger }) => {
   const { ref, overflowCount, isOverflowing } = useOverflowMenu()
 
   if (!isOverflowing) {
@@ -124,7 +125,7 @@ export const NavsOverflowing = () => {
   return (
     <Overflow ref={ref} overflowDirection="start" padding={20}>
       <nav className="navs">
-        <OverflowMenu matches={matches} />
+        <OverflowMenu matches={matches} tos={tosToUse} />
         {tosToUse?.length ? (
           <ToNavs tos={tosToUse} />
         ) : (
