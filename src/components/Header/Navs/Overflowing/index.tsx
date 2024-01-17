@@ -14,21 +14,17 @@ import {
 } from '@fluentui/react-components'
 import { useResizeDetector } from 'react-resize-detector'
 
-import { DataNavs } from '../DataNavs'
 import { ToNavs } from '../ToNavs'
+import { DataNavsOverflowing } from './DataNavs'
 import { Nav } from '../Nav'
 
-const OverflowMenuItem: React.FC = ({ id, match, upRerenderInteger }) => {
+const OverflowMenuItem: React.FC = ({ path, text }) => {
   const navigate = useNavigate()
-  const isVisible = useIsOverflowItemVisible(id)
+  const isVisible = useIsOverflowItemVisible(path)
 
   const onClick = useCallback(() => {
-    // console.log('OverflowMenuItem, onClick')
-    navigate(match.pathname)
-    // somehow nav icon is not rendered without this
-    upRerenderInteger()
-  }, [match.pathname, navigate, upRerenderInteger])
-  const { table, folder } = match?.handle?.crumb?.(match) ?? {}
+    navigate(path)
+  }, [navigate, path])
 
   if (isVisible) {
     return null
@@ -36,16 +32,12 @@ const OverflowMenuItem: React.FC = ({ id, match, upRerenderInteger }) => {
 
   return (
     <MenuItem onClick={onClick}>
-      {table === 'root' || folder === false ? (
-        <BreadcrumbForFolder match={match} forOverflowMenu />
-      ) : (
-        <BreadcrumbForData match={match} forOverflowMenu />
-      )}
+      <Nav path={path} text={text} />
     </MenuItem>
   )
 }
 
-const OverflowMenu: React.FC = ({ matches, tos, upRerenderInteger }) => {
+const OverflowMenu: React.FC = ({ tos }) => {
   const { ref, overflowCount, isOverflowing } = useOverflowMenu()
 
   if (!isOverflowing) {
@@ -66,14 +58,9 @@ const OverflowMenu: React.FC = ({ matches, tos, upRerenderInteger }) => {
 
       <MenuPopover>
         <MenuList>
-          {matches.map((match) => {
+          {tos.map(({ path, text }) => {
             return (
-              <OverflowMenuItem
-                key={match.id}
-                id={match.id}
-                match={match}
-                upRerenderInteger={upRerenderInteger}
-              />
+              <OverflowMenuItem key={path} id={path} path={path} text={text} />
             )
           })}
         </MenuList>
@@ -122,16 +109,15 @@ export const NavsOverflowing = () => {
   //   pathname: location.pathname,
   // })
 
-  return (
-    <Overflow ref={ref} overflowDirection="start" padding={20}>
-      <nav className="navs">
-        <OverflowMenu matches={matches} tos={tosToUse} />
-        {tosToUse?.length ? (
+  if (tosToUse?.length) {
+    return (
+      <Overflow ref={ref} overflowDirection="start" padding={20}>
+        <nav className="navs" width={width}>
+          <OverflowMenu tos={tosToUse} />
           <ToNavs tos={tosToUse} />
-        ) : (
-          <DataNavs matches={thisPathsMatches} />
-        )}
-      </nav>
-    </Overflow>
-  )
+        </nav>
+      </Overflow>
+    )
+  }
+  return <DataNavsOverflowing matches={thisPathsMatches} width={width} />
 }
