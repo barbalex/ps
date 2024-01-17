@@ -15,7 +15,7 @@ export const Navs = () => {
 
   const uiOption: UiOption = results
 
-  console.log('Navs', { uiOption, navsOverflowing: uiOption?.navs_overflowing })
+  console.log('Navs, navsOverflowing:', uiOption?.navs_overflowing)
 
   if (uiOption?.navs_overflowing === false) {
     return <NavsWrapping />

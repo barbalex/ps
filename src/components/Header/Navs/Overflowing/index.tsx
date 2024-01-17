@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useMatches, useLocation, Link } from 'react-router-dom'
+import { BsCaretDown } from 'react-icons/bs'
 import {
   Menu,
   MenuTrigger,
@@ -14,6 +15,71 @@ import {
 import { useResizeDetector } from 'react-resize-detector'
 
 import { DataNavs } from '../DataNavs'
+import { ToNavs } from '../ToNavs'
+
+const OverflowMenuItem: React.FC = ({ id, match, upRerenderInteger }) => {
+  const navigate = useNavigate()
+  const isVisible = useIsOverflowItemVisible(id)
+
+  const onClick = useCallback(() => {
+    // console.log('OverflowMenuItem, onClick')
+    navigate(match.pathname)
+    // somehow nav icon is not rendered without this
+    upRerenderInteger()
+  }, [match.pathname, navigate, upRerenderInteger])
+  const { table, folder } = match?.handle?.crumb?.(match) ?? {}
+
+  if (isVisible) {
+    return null
+  }
+
+  return (
+    <MenuItem onClick={onClick}>
+      {table === 'root' || folder === false ? (
+        <BreadcrumbForFolder match={match} forOverflowMenu />
+      ) : (
+        <BreadcrumbForData match={match} forOverflowMenu />
+      )}
+    </MenuItem>
+  )
+}
+
+const OverflowMenu: React.FC = ({ matches, upRerenderInteger }) => {
+  const { ref, overflowCount, isOverflowing } = useOverflowMenu()
+
+  if (!isOverflowing) {
+    return null
+  }
+
+  return (
+    <Menu openOnHover>
+      <MenuTrigger>
+        <MenuButton
+          className="menu-button"
+          ref={ref}
+          menuIcon={<BsCaretDown />}
+        >
+          +{overflowCount}
+        </MenuButton>
+      </MenuTrigger>
+
+      <MenuPopover>
+        <MenuList>
+          {matches.map((match) => {
+            return (
+              <OverflowMenuItem
+                key={match.id}
+                id={match.id}
+                match={match}
+                upRerenderInteger={upRerenderInteger}
+              />
+            )
+          })}
+        </MenuList>
+      </MenuPopover>
+    </Menu>
+  )
+}
 
 export const NavsOverflowing = () => {
   const location = useLocation()
@@ -39,6 +105,8 @@ export const NavsOverflowing = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname])
 
+  const tosToUse = tos[0] ?? []
+
   const { width, ref } = useResizeDetector({
     handleHeight: false,
     refreshMode: 'debounce',
@@ -54,16 +122,14 @@ export const NavsOverflowing = () => {
   // })
 
   // hide this area of there are no tos
-  if (!tos?.length) return <DataNavs matches={thisPathsMatches} />
+  if (!tosToUse?.length) return <DataNavs matches={thisPathsMatches} />
 
   return (
     <Overflow ref={ref} overflowDirection="start" padding={20}>
       <nav className="navs">
-        {(tos[0] ?? []).map(({ path, text }) => (
-          <Link key={path} to={path}>
-            {text}
-          </Link>
-        ))}
+        <OverflowMenu matches={matches} />
+        {/* TODO: here either use tosToUse or DataNavs */}
+        <ToNavs tos={tosToUse} />
       </nav>
     </Overflow>
   )

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
-import { useMatches, useLocation, Link } from 'react-router-dom'
+import { useMatches, useLocation } from 'react-router-dom'
 
 import { DataNavs } from './DataNavs'
+import { ToNavs } from './ToNavs'
 
 export const NavsWrapping = () => {
   const location = useLocation()
@@ -39,11 +40,7 @@ export const NavsWrapping = () => {
 
   return (
     <nav className="navs">
-      {(tos[0] ?? []).map(({ path, text }) => (
-        <Link key={path} to={path}>
-          {text}
-        </Link>
-      ))}
+      <ToNavs tos={tos} />
     </nav>
   )
 }

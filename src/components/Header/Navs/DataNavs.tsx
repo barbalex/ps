@@ -54,7 +54,7 @@ export const DataNavs = ({ matches }) => {
   }
 
   const { db } = useElectric()
-  const { results: tableResults } = useLiveQuery(
+  const { results: tableResults = [] } = useLiveQuery(
     () =>
       db[table]?.liveMany({ where: filterParams, orderBy: { label: 'asc' } }),
     [db, location.pathname],
@@ -73,7 +73,7 @@ export const DataNavs = ({ matches }) => {
 
   return (
     <nav className="navs">
-      {(tableResults ?? []).map((result, index) => {
+      {tableResults.map((result, index) => {
         const label = result.label ?? result[idField]
 
         return (
