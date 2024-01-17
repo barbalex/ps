@@ -74,18 +74,11 @@ export const DataNavs = ({ matches }) => {
 
   return (
     <nav className="navs">
-      {tableResults.map((result, index) => {
+      {tableResults.map((result) => {
         const value = result[idField]
         const label = result.label ?? value
 
-        return (
-          <DataNav
-            key={`${value}/${index}`}
-            label={label}
-            value={value}
-            pathname={pathname}
-          />
-        )
+        return <DataNav key={value} label={label} to={`${pathname}/${value}`} />
       })}
     </nav>
   )
