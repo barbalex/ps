@@ -1,11 +1,9 @@
-import { Link } from 'react-router-dom'
+import { ToNav } from './ToNav'
 
 export const ToNavs = ({ tos }) => (
   <nav className="navs">
-    {tos.map(({ path, text }) => (
-      <Link key={path} to={path}>
-        {text}
-      </Link>
+    {tos.map((to, index) => (
+      <ToNav key={`${tos.path}/${index}`} to={to} />
     ))}
   </nav>
 )

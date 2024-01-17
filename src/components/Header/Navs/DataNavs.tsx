@@ -1,8 +1,9 @@
 import { useLiveQuery } from 'electric-sql/react'
-import { Link, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 import { useElectric } from '../../../ElectricProvider'
 import { idFieldFromTable } from '../../../modules/idFieldFromTable'
+import { DataNav } from './DataNav'
 
 const isOdd = (num) => num % 2
 
@@ -74,15 +75,14 @@ export const DataNavs = ({ matches }) => {
   return (
     <nav className="navs">
       {tableResults.map((result, index) => {
-        const label = result.label ?? result[idField]
-
+        const value = result[idField]
+        
         return (
-          <Link
-            key={`${result[idField]}/${index}`}
-            to={`${pathname}/${result[idField]}`}
-          >
-            {label}
-          </Link>
+          <DataNav
+            key={`${value}/${index}`}
+            value={value}
+            pathname={pathname}
+          />
         )
       })}
     </nav>
