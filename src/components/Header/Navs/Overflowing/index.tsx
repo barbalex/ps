@@ -1,5 +1,17 @@
 import { useEffect, useState } from 'react'
 import { useMatches, useLocation, Link } from 'react-router-dom'
+import {
+  Menu,
+  MenuTrigger,
+  MenuPopover,
+  MenuList,
+  MenuItem,
+  MenuButton,
+  Overflow,
+  useIsOverflowItemVisible,
+  useOverflowMenu,
+} from '@fluentui/react-components'
+import { useResizeDetector } from 'react-resize-detector'
 
 import { DataNavs } from '../DataNavs'
 
@@ -27,6 +39,13 @@ export const NavsOverflowing = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname])
 
+  const { width, ref } = useResizeDetector({
+    handleHeight: false,
+    refreshMode: 'debounce',
+    refreshRate: 100,
+    refreshOptions: { leading: false, trailing: true },
+  })
+
   // console.log('Navs', {
   //   matches,
   //   tos,
@@ -38,12 +57,14 @@ export const NavsOverflowing = () => {
   if (!tos?.length) return <DataNavs matches={thisPathsMatches} />
 
   return (
-    <nav className="navs">
-      {(tos[0] ?? []).map(({ path, text }) => (
-        <Link key={path} to={path}>
-          {text}
-        </Link>
-      ))}
-    </nav>
+    <Overflow ref={ref} overflowDirection="start" padding={20}>
+      <nav className="navs">
+        {(tos[0] ?? []).map(({ path, text }) => (
+          <Link key={path} to={path}>
+            {text}
+          </Link>
+        ))}
+      </nav>
+    </Overflow>
   )
 }
