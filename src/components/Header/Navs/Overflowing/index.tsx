@@ -121,15 +121,15 @@ export const NavsOverflowing = () => {
   //   pathname: location.pathname,
   // })
 
-  // hide this area of there are no tos
-  if (!tosToUse?.length) return <DataNavs matches={thisPathsMatches} />
-
   return (
     <Overflow ref={ref} overflowDirection="start" padding={20}>
       <nav className="navs">
         <OverflowMenu matches={matches} />
-        {/* TODO: here either use tosToUse or DataNavs */}
-        <ToNavs tos={tosToUse} />
+        {tosToUse?.length ? (
+          <ToNavs tos={tosToUse} />
+        ) : (
+          <DataNavs matches={thisPathsMatches} />
+        )}
       </nav>
     </Overflow>
   )

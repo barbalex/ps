@@ -35,12 +35,13 @@ export const NavsWrapping = () => {
   //   pathname: location.pathname,
   // })
 
-  // hide this area of there are no tos
-  if (!tos?.length) return <DataNavs matches={thisPathsMatches} />
-
   return (
     <nav className="navs">
-      <ToNavs tos={tos} />
+      {tos?.length ? (
+        <ToNavs tos={tos} />
+      ) : (
+        <DataNavs matches={thisPathsMatches} />
+      )}
     </nav>
   )
 }
