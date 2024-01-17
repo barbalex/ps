@@ -76,10 +76,12 @@ export const DataNavs = ({ matches }) => {
     <nav className="navs">
       {tableResults.map((result, index) => {
         const value = result[idField]
-        
+        const label = result.label ?? value
+
         return (
           <DataNav
             key={`${value}/${index}`}
+            label={label}
             value={value}
             pathname={pathname}
           />
