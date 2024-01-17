@@ -1,9 +1,9 @@
-import { ToNav } from './ToNav'
+import { Nav } from './Nav'
 
 export const ToNavs = ({ tos }) => (
   <nav className="navs">
     {tos.map((to) => (
-      <ToNav key={to.path} to={to} />
+      <Nav key={to.path} to={to.path} label={to.text} />
     ))}
   </nav>
 )

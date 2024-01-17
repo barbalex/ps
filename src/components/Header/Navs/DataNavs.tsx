@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom'
 
 import { useElectric } from '../../../ElectricProvider'
 import { idFieldFromTable } from '../../../modules/idFieldFromTable'
-import { DataNav } from './DataNav'
+import { Nav } from './Nav'
 
 const isOdd = (num) => num % 2
 
@@ -78,7 +78,7 @@ export const DataNavs = ({ matches }) => {
         const value = result[idField]
         const label = result.label ?? value
 
-        return <DataNav key={value} label={label} to={`${pathname}/${value}`} />
+        return <Nav key={value} label={label} to={`${pathname}/${value}`} />
       })}
     </nav>
   )
