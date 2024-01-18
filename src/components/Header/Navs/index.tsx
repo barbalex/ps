@@ -1,49 +1,27 @@
-import { useEffect, useState } from 'react'
-import { useMatches, useLocation, Link } from 'react-router-dom'
+import { useLiveQuery } from 'electric-sql/react'
 
-import { DataNavs } from './DataNavs'
+import { NavsWrapping } from './Wrapping'
+import { NavsOverflowing } from './Overflowing'
+import { useElectric } from '../../../ElectricProvider'
+import { user_id } from '../../SqlInitializer'
+import { UiOptions as UiOption } from '../../../generated/client'
 
 export const Navs = () => {
-  const location = useLocation()
-  const matches = useMatches()
-
-  const thisPathsMatches = matches.filter(
-    (match) => match.pathname === location.pathname && match.handle,
+  const { db } = useElectric()!
+  // get ui_options.navs_overflowing
+  const { results } = useLiveQuery(
+    db.ui_options.liveUnique({ where: { user_id } }),
   )
 
-  const [tos, setTos] = useState([])
-  useEffect(() => {
-    const fetch = async () => {
-      const tos = []
-      for (const match of thisPathsMatches) {
-        const to = await match?.handle?.to?.(match)
-        if (!to) continue
-        tos.push(to)
-      }
+  const uiOption: UiOption = results
 
-      return setTos(tos.filter((to) => Boolean(to)))
-    }
-    fetch()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.pathname])
+  if (uiOption?.navs_overflowing === undefined) {
+    return null
+  }
 
-  // console.log('Navs', {
-  //   matches,
-  //   tos,
-  //   thisPathsMatches,
-  //   pathname: location.pathname,
-  // })
+  if (uiOption?.navs_overflowing === false) {
+    return <NavsWrapping />
+  }
 
-  // hide this area of there are no tos
-  if (!tos?.length) return <DataNavs matches={thisPathsMatches} />
-
-  return (
-    <nav className="navs">
-      {(tos[0] ?? []).map(({ path, text }) => (
-        <Link key={path} to={path}>
-          {text}
-        </Link>
-      ))}
-    </nav>
-  )
+  return <NavsOverflowing />
 }

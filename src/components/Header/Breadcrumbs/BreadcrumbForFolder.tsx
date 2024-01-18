@@ -1,12 +1,12 @@
 import { useEffect, useState, forwardRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useElectric } from '../../../../ElectricProvider'
-import { useLiveQuery } from 'electric-sql/react'
+import { useElectric } from '../../../ElectricProvider'
+import { useLiveQuery } from 'electric-sql/react' 
 
 import './breadcrumb.css'
-import { buildNavs } from '../../../../modules/navs'
-import { idFieldFromTable } from '../../../../modules/idFieldFromTable'
-import { Menu } from '../BreadcrumbsMenu'
+import { buildNavs } from '../../../modules/navs'
+import { idFieldFromTable } from '../../../modules/idFieldFromTable'
+import { Menu } from './Menu'
 
 // forwarding refs is crucial for the overflow menu to work
 // https://github.com/microsoft/fluentui/issues/27652#issuecomment-1520447241

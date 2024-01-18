@@ -1,8 +1,8 @@
 import { OverflowItem } from '@fluentui/react-components'
 
-import { BreadcrumbForData } from './BreadcrumbForData'
-import { BreadcrumbForFolder } from './BreadcrumbForFolder'
-import './breadcrumbs.css'
+import { BreadcrumbForData } from '../BreadcrumbForData'
+import { BreadcrumbForFolder } from '../BreadcrumbForFolder'
+import '../breadcrumbs.css'
 
 // problem: menu is not rendered after width changes
 // solution: rerender after width changes

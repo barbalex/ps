@@ -12,19 +12,18 @@ import {
 } from '@fluentui/react-components'
 import { useMatches, useNavigate } from 'react-router-dom'
 import { useResizeDetector } from 'react-resize-detector'
-
-import { BreadcrumbForData } from './BreadcrumbForData'
-import { BreadcrumbForFolder } from './BreadcrumbForFolder'
 import { BsCaretDown } from 'react-icons/bs'
+
+import { BreadcrumbForData } from '../BreadcrumbForData'
+import { BreadcrumbForFolder } from '../BreadcrumbForFolder'
 import { Matches } from './Matches'
-import './breadcrumbs.css'
+import '../breadcrumbs.css'
 
 const OverflowMenuItem: React.FC = ({ id, match, upRerenderInteger }) => {
   const navigate = useNavigate()
   const isVisible = useIsOverflowItemVisible(id)
 
   const onClick = useCallback(() => {
-    // console.log('OverflowMenuItem, onClick')
     navigate(match.pathname)
     // somehow nav icon is not rendered without this
     upRerenderInteger()
@@ -107,7 +106,6 @@ export const BreadcrumbsOverflowing = () => {
         <OverflowMenu matches={matches} upRerenderInteger={upRerenderInteger} />
         <Matches
           rerenderInteger={rerenderInteger}
-          upRerenderInteger={upRerenderInteger}
           matches={matches}
           width={width}
         />

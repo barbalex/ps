@@ -1,14 +1,18 @@
-import { memo } from 'react'
+import { forwardRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useLocation } from 'react-router-dom'
+import { OverflowItem, Overflow } from '@fluentui/react-components'
 
-import { useElectric } from '../../../ElectricProvider'
-import { idFieldFromTable } from '../../../modules/idFieldFromTable'
-import { Nav } from './Nav'
+import { useElectric } from '../../../../ElectricProvider'
+import { idFieldFromTable } from '../../../../modules/idFieldFromTable'
+import { Nav } from '../Nav'
+import { OverflowMenu } from '.'
 
 const isOdd = (num) => num % 2
 
-export const DataNavs = memo(({ matches }) => {
+// Datanavas need to query db
+// so need to be in a separate component
+export const DataNavsOverflowing = forwardRef(({ matches }, ref) => {
   const location = useLocation()
 
   const filteredMatches = matches.filter((match) => {
@@ -61,6 +65,13 @@ export const DataNavs = memo(({ matches }) => {
       db[table]?.liveMany({ where: filterParams, orderBy: { label: 'asc' } }),
     [db, location.pathname],
   )
+  const tos = tableResults.map((result) => {
+    const value = result[idField]
+    const text = result.label
+    const path = `${pathname}/${value}`
+
+    return { path, text }
+  })
 
   // console.log('DataNavs', {
   //   table,
@@ -72,15 +83,19 @@ export const DataNavs = memo(({ matches }) => {
   // })
 
   if (!table) return null
+  if (!tos.length) return null
 
   return (
-    <nav className="navs">
-      {tableResults.map((result) => {
-        const value = result[idField]
-        const label = result.label ?? value
-
-        return <Nav key={value} label={label} to={`${pathname}/${value}`} />
-      })}
-    </nav>
+    <Overflow overflowDirection="start" padding={20} ref={ref}>
+      <nav className="navs-resizable">
+        <OverflowMenu tos={tos} />
+        {tos.map(({ text, path }) => (
+          <OverflowItem key={path} id={path}>
+            <Nav label={text} to={path} />
+          </OverflowItem>
+        ))}
+      </nav>
+    </Overflow>
   )
-})
+}
+)

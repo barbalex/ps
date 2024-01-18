@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 
 import './breadcrumb.css'
-import { useElectric } from '../../../../ElectricProvider'
-import { idFieldFromTable } from '../../../../modules/idFieldFromTable'
-import { Menu } from '../BreadcrumbsMenu'
+import { useElectric } from '../../../ElectricProvider'
+import { idFieldFromTable } from '../../../modules/idFieldFromTable'
+import { Menu } from './Menu'
 
 export const tablesWithoutDeleted = ['root', 'docs', 'accounts', 'messages']
 
@@ -16,8 +16,6 @@ const isOdd = (num) => num % 2
 export const BreadcrumbForData = forwardRef(
   ({ match, forOverflowMenu }, ref) => {
     const navigate = useNavigate()
-
-    // console.log('BreadcrumbForData, forOverflowMenu:', forOverflowMenu)
 
     const { text, table } = match?.handle?.crumb?.(match) ?? {}
     const className =

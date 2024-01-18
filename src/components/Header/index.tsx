@@ -12,7 +12,7 @@ export const Header = () => {
     const syncItems = async () => {
       // Resolves when the shape subscription has been established.
       const usersSync = await db.users.sync({
-        // project_ussers: not possible as emails...
+        // project_users: not possible as emails...
         include: { accounts: true },
       })
 
