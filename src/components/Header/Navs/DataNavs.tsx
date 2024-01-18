@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useLocation } from 'react-router-dom'
 
@@ -7,7 +8,7 @@ import { Nav } from './Nav'
 
 const isOdd = (num) => num % 2
 
-export const DataNavs = ({ matches }) => {
+export const DataNavs = memo(({ matches }) => {
   const location = useLocation()
 
   const filteredMatches = matches.filter((match) => {
@@ -82,4 +83,4 @@ export const DataNavs = ({ matches }) => {
       })}
     </nav>
   )
-}
+})
