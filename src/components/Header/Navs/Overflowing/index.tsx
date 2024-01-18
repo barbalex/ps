@@ -102,12 +102,12 @@ export const NavsOverflowing = () => {
     refreshOptions: { leading: false, trailing: true },
   })
 
-  console.log('Navs', {
-    matches,
-    tosToUse,
-    thisPathsMatches,
-    pathname: location.pathname,
-  })
+  // console.log('Navs', {
+  //   matches,
+  //   tosToUse,
+  //   thisPathsMatches,
+  //   pathname: location.pathname,
+  // })
 
   if (tosToUse?.length) {
     return (
