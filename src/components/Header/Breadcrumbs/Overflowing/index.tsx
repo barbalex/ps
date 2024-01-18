@@ -107,7 +107,6 @@ export const BreadcrumbsOverflowing = () => {
         <OverflowMenu matches={matches} upRerenderInteger={upRerenderInteger} />
         <Matches
           rerenderInteger={rerenderInteger}
-          upRerenderInteger={upRerenderInteger}
           matches={matches}
           width={width}
         />
