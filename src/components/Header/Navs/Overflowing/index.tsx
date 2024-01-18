@@ -119,11 +119,10 @@ export const NavsOverflowing = () => {
 
   // in DataNavs tos are built very complicatedly
   // as they are passed to the menu and the nav items, DataNavsOverflowing renders both
+  // as nothing is to be rendered of no tos are found, the Overflow is also rendered in DataNavsOverflowing
   return (
-    <Overflow ref={widthMeasureRef} overflowDirection="start" padding={20}>
-      <nav className="navs-resizable">
-        <DataNavsOverflowing matches={thisPathsMatches} width={width} />
-      </nav>
-    </Overflow>
+    <div ref={widthMeasureRef}>
+      <DataNavsOverflowing matches={thisPathsMatches} width={width} />
+    </div>
   )
 }

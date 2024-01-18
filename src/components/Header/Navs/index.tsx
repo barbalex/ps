@@ -20,10 +20,8 @@ export const Navs = () => {
   }
 
   if (uiOption?.navs_overflowing === false) {
-    console.log('Navs, NavsWrapping')
     return <NavsWrapping />
   }
 
-  console.log('Navs, NavsOverflowing')
   return <NavsOverflowing />
 }

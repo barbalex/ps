@@ -1,6 +1,6 @@
 import { useLiveQuery } from 'electric-sql/react'
 import { useLocation } from 'react-router-dom'
-import { OverflowItem } from '@fluentui/react-components'
+import { OverflowItem, Overflow } from '@fluentui/react-components'
 
 import { useElectric } from '../../../../ElectricProvider'
 import { idFieldFromTable } from '../../../../modules/idFieldFromTable'
@@ -82,15 +82,18 @@ export const DataNavsOverflowing = ({ matches }) => {
   // })
 
   if (!table) return null
+  if (!tos.length) return null
 
   return (
-    <>
-      <OverflowMenu tos={tos} />
-      {tos.map(({ text, path }) => (
-        <OverflowItem key={path} id={path}>
-          <Nav label={text} to={path} />
-        </OverflowItem>
-      ))}
-    </>
+    <Overflow overflowDirection="start" padding={20}>
+      <nav className="navs-resizable">
+        <OverflowMenu tos={tos} />
+        {tos.map(({ text, path }) => (
+          <OverflowItem key={path} id={path}>
+            <Nav label={text} to={path} />
+          </OverflowItem>
+        ))}
+      </nav>
+    </Overflow>
   )
 }
