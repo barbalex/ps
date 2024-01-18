@@ -15,8 +15,6 @@ export const Navs = () => {
 
   const uiOption: UiOption = results
 
-  console.log('Navs, navsOverflowing:', uiOption?.navs_overflowing)
-
   if (uiOption?.navs_overflowing === undefined) {
     return null
   }
@@ -26,5 +24,6 @@ export const Navs = () => {
     return <NavsWrapping />
   }
 
+  console.log('Navs, NavsOverflowing')
   return <NavsOverflowing />
 }

@@ -20,11 +20,9 @@ import { Nav } from '../Nav'
 
 const OverflowMenuItem: React.FC = ({ path, text }) => {
   const navigate = useNavigate()
-  const isVisible = useIsOverflowItemVisible(path)
+  const isVisible = useIsOverflowItemVisible(`${path}/nav}`)
 
-  const onClick = useCallback(() => {
-    navigate(path)
-  }, [navigate, path])
+  const onClick = useCallback(() => navigate(path), [navigate, path])
 
   if (isVisible) {
     return null
@@ -39,6 +37,8 @@ const OverflowMenuItem: React.FC = ({ path, text }) => {
 
 const OverflowMenu: React.FC = ({ tos }) => {
   const { ref, overflowCount, isOverflowing } = useOverflowMenu()
+
+  console.log('OverflowMenu', { tos, overflowCount, isOverflowing })
 
   if (!isOverflowing) {
     return null
@@ -95,7 +95,7 @@ export const NavsOverflowing = () => {
 
   const tosToUse = tos[0] ?? []
 
-  const { width, ref } = useResizeDetector({
+  const { width, ref: widthMeasureRef } = useResizeDetector({
     handleHeight: false,
     refreshMode: 'debounce',
     refreshRate: 100,
@@ -110,14 +110,20 @@ export const NavsOverflowing = () => {
   // })
 
   if (tosToUse?.length) {
+    console.log('NavsOverflowing, tos', tosToUse)
     return (
-      <Overflow ref={ref} overflowDirection="start" padding={20}>
-        <nav className="navs" width={width}>
+      <Overflow ref={widthMeasureRef} overflowDirection="start" padding={20}>
+        <nav className="navs-resizable">
           <OverflowMenu tos={tosToUse} />
-          <ToNavs tos={tosToUse} />
+          <ToNavs tos={tosToUse} width={width} />
         </nav>
       </Overflow>
     )
   }
+
+  console.log(
+    'NavsOverflowing, DataNavsOverflowing, matches:',
+    thisPathsMatches,
+  )
   return <DataNavsOverflowing matches={thisPathsMatches} width={width} />
 }

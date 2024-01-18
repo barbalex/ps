@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom'
 import { useElectric } from '../../../../ElectricProvider'
 import { idFieldFromTable } from '../../../../modules/idFieldFromTable'
 import { Nav } from '../Nav'
-
+ 
 const isOdd = (num) => num % 2
 
 // Datanavas need to query db
@@ -75,7 +75,7 @@ export const DataNavsOverflowing = ({ matches }) => {
   if (!table) return null
 
   return (
-    <nav className="navs">
+    <nav className="navs-resizable">
       {tableResults.map((result) => {
         const value = result[idField]
         const label = result.label ?? value
