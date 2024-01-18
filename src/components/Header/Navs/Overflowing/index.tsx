@@ -16,7 +16,6 @@ import { useResizeDetector } from 'react-resize-detector'
 
 import { ToNavs } from '../ToNavs'
 import { DataNavsOverflowing } from './DataNavs'
-import { Nav } from '../Nav'
 
 const OverflowMenuItem: React.FC = ({ path, text }) => {
   const navigate = useNavigate()
@@ -29,8 +28,8 @@ const OverflowMenuItem: React.FC = ({ path, text }) => {
   }
 
   return (
-    <MenuItem onClick={onClick}>
-      <Nav path={path} text={text} />
+    <MenuItem className="nav-menu-item" onClick={onClick}>
+      {text}
     </MenuItem>
   )
 }
@@ -60,12 +59,7 @@ const OverflowMenu: React.FC = ({ tos }) => {
         <MenuList>
           {tos.map(({ path, text }) => {
             return (
-              <OverflowMenuItem
-                key={path}
-                id={`${path}/nav`}
-                path={path}
-                text={text}
-              />
+              <OverflowMenuItem key={path} id={path} path={path} text={text} />
             )
           })}
         </MenuList>
