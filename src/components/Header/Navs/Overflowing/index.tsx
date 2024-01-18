@@ -37,8 +37,6 @@ const OverflowMenuItem: React.FC = ({ path, text }) => {
 export const OverflowMenu: React.FC = ({ tos }) => {
   const { ref, overflowCount, isOverflowing } = useOverflowMenu()
 
-  console.log('OverflowMenu', { tos, overflowCount, isOverflowing })
-
   if (!isOverflowing) {
     return null
   }
@@ -109,7 +107,6 @@ export const NavsOverflowing = () => {
   // })
 
   if (tosToUse?.length) {
-    console.log('NavsOverflowing, tos', tosToUse)
     return (
       <Overflow ref={widthMeasureRef} overflowDirection="start" padding={20}>
         <nav className="navs-resizable">
@@ -120,17 +117,12 @@ export const NavsOverflowing = () => {
     )
   }
 
-  console.log(
-    'NavsOverflowing, DataNavsOverflowing, matches:',
-    thisPathsMatches,
-  )
+  // in DataNavs tos are built very complicatedly
+  // as they are passed to the menu and the nav items, DataNavsOverflowing renders both
   return (
     <Overflow ref={widthMeasureRef} overflowDirection="start" padding={20}>
       <nav className="navs-resizable">
-        <DataNavsOverflowing
-          matches={thisPathsMatches}
-          width={width}
-        />
+        <DataNavsOverflowing matches={thisPathsMatches} width={width} />
       </nav>
     </Overflow>
   )
