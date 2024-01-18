@@ -28,17 +28,19 @@ export const NavsWrapping = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname])
 
-  // console.log('Navs', {
-  //   matches,
-  //   tos,
-  //   thisPathsMatches,
-  //   pathname: location.pathname,
-  // })
+  const tosToUse = tos[0] ?? []
+
+  console.log('Navs', {
+    matches,
+    tosToUse,
+    thisPathsMatches,
+    pathname: location.pathname,
+  })
 
   return (
     <nav className="navs">
-      {tos?.length ? (
-        <ToNavs tos={tos} />
+      {tosToUse?.length ? (
+        <ToNavs tos={tosToUse} />
       ) : (
         <DataNavs matches={thisPathsMatches} />
       )}
