@@ -1,7 +1,7 @@
 import React from 'react'
 import { RouterProvider } from 'react-router-dom'
 import { FluentProvider } from '@fluentui/react-components'
-import { hooks, css } from './css'
+import { hooks } from './css'
 
 import './style.css'
 import {
@@ -16,6 +16,12 @@ import '@fontsource/roboto/300.css'
 import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
+
+const routerContainerStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  height: '100vh',
+}
 
 const RouterProviderWithDb = () => {
   const { db } = useElectric()!
@@ -35,13 +41,7 @@ export default function App() {
       <style dangerouslySetInnerHTML={{ __html: hooks }} />
       <SqlInitializer />
       <FluentProvider theme={lightTheme}>
-        <div
-          style={css({
-            display: 'flex',
-            flexDirection: 'column',
-            height: '100vh',
-          })}
-        >
+        <div style={routerContainerStyle}>
           <RouterProviderWithDb />
         </div>
       </FluentProvider>
