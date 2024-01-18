@@ -1,9 +1,11 @@
 import { useLiveQuery } from 'electric-sql/react'
 import { useLocation } from 'react-router-dom'
+import { OverflowItem } from '@fluentui/react-components'
 
 import { useElectric } from '../../../../ElectricProvider'
 import { idFieldFromTable } from '../../../../modules/idFieldFromTable'
 import { Nav } from '../Nav'
+import { OverflowMenu } from '.'
 
 const isOdd = (num) => num % 2
 
@@ -62,6 +64,13 @@ export const DataNavsOverflowing = ({ matches }) => {
       db[table]?.liveMany({ where: filterParams, orderBy: { label: 'asc' } }),
     [db, location.pathname],
   )
+  const tos = tableResults.map((result) => {
+    const value = result[idField]
+    const text = result.label
+    const path = `${pathname}/${value}`
+
+    return { path, text }
+  })
 
   // console.log('DataNavs', {
   //   table,
@@ -74,10 +83,14 @@ export const DataNavsOverflowing = ({ matches }) => {
 
   if (!table) return null
 
-  return tableResults.map((result) => {
-    const value = result[idField]
-    const label = result.label ?? value
-
-    return <Nav key={value} label={label} to={`${pathname}/${value}`} />
-  })
+  return (
+    <>
+      <OverflowMenu tos={tos} />
+      {tos.map(({ text, path }) => (
+        <OverflowItem key={path} id={path}>
+          <Nav label={text} to={path} />
+        </OverflowItem>
+      ))}
+    </>
+  )
 }
