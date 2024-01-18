@@ -1,6 +1,7 @@
 import React from 'react'
 import { RouterProvider } from 'react-router-dom'
 import { FluentProvider } from '@fluentui/react-components'
+import { hooks, css } from './css'
 
 import './style.css'
 import {
@@ -31,9 +32,16 @@ export default function App() {
 
   return (
     <ElectricProvider>
+      <style dangerouslySetInnerHTML={{ __html: hooks }} />
       <SqlInitializer />
       <FluentProvider theme={lightTheme}>
-        <div className="full-height-container">
+        <div
+          style={css({
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100vh',
+          })}
+        >
           <RouterProviderWithDb />
         </div>
       </FluentProvider>

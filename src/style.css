@@ -12,12 +12,6 @@ body {
   height: 100vh;
 }
 
-.full-height-container {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-}
-
 .top-header {
   display: flex;
   flex-wrap: nowrap;
