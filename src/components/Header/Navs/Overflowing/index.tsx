@@ -125,5 +125,9 @@ export const NavsOverflowing = () => {
     'NavsOverflowing, DataNavsOverflowing, matches:',
     thisPathsMatches,
   )
-  return <DataNavsOverflowing matches={thisPathsMatches} width={width} />
+  return (
+    <nav className="navs-resizable">
+      <DataNavsOverflowing matches={thisPathsMatches} width={width} />
+    </nav>
+  )
 }
