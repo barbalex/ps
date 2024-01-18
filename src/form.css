@@ -1,9 +1,3 @@
-.controls {
-  display: flex;
-  justify-content: center;
-  column-gap: 10px;
-}
-
 .ant-btn-icon svg {
   font-size: var(--ant-button-only-icon-size-lg);
   width: var(--ant-button-only-icon-size-lg);

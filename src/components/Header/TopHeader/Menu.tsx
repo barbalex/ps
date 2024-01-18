@@ -4,6 +4,7 @@ import { FaCog } from 'react-icons/fa'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { user_id } from '../../SqlInitializer'
+import { controls } from '../../../styles'
 
 export const Menu = memo(() => {
   const navigate = useNavigate()
@@ -15,7 +16,7 @@ export const Menu = memo(() => {
   }, [navigate, params])
 
   return (
-    <div className="controls">
+    <div style={controls}>
       <Button
         size="medium"
         icon={<FaCog />}
