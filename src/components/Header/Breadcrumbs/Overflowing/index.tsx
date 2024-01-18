@@ -24,7 +24,6 @@ const OverflowMenuItem: React.FC = ({ id, match, upRerenderInteger }) => {
   const isVisible = useIsOverflowItemVisible(id)
 
   const onClick = useCallback(() => {
-    // console.log('OverflowMenuItem, onClick')
     navigate(match.pathname)
     // somehow nav icon is not rendered without this
     upRerenderInteger()

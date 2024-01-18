@@ -17,8 +17,6 @@ export const BreadcrumbForData = forwardRef(
   ({ match, forOverflowMenu }, ref) => {
     const navigate = useNavigate()
 
-    // console.log('BreadcrumbForData, forOverflowMenu:', forOverflowMenu)
-
     const { text, table } = match?.handle?.crumb?.(match) ?? {}
     const className =
       location.pathname === match.pathname
