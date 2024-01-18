@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { useMatches, useLocation } from 'react-router-dom'
+import { useEffect, useState, useCallback } from 'react'
+import { useMatches, useLocation, useNavigate } from 'react-router-dom'
 import { BsCaretDown } from 'react-icons/bs'
 import {
   Menu,
@@ -60,7 +60,12 @@ const OverflowMenu: React.FC = ({ tos }) => {
         <MenuList>
           {tos.map(({ path, text }) => {
             return (
-              <OverflowMenuItem key={path} id={path} path={path} text={text} />
+              <OverflowMenuItem
+                key={path}
+                id={`${path}/nav`}
+                path={path}
+                text={text}
+              />
             )
           })}
         </MenuList>
