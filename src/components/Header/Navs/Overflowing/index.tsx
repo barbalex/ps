@@ -55,11 +55,14 @@ export const OverflowMenu: React.FC = ({ tos }) => {
 
       <MenuPopover>
         <MenuList>
-          {tos.map(({ path, text }) => {
-            return (
-              <OverflowMenuItem key={path} id={path} path={path} text={text} />
-            )
-          })}
+          {tos.map(({ path, text }, index) => (
+            <OverflowMenuItem
+              key={`${path}/${index}`}
+              id={path}
+              path={path}
+              text={text}
+            />
+          ))}
         </MenuList>
       </MenuPopover>
     </Menu>
@@ -99,12 +102,12 @@ export const NavsOverflowing = () => {
     refreshOptions: { leading: false, trailing: true },
   })
 
-  // console.log('Navs', {
-  //   matches,
-  //   tos,
-  //   thisPathsMatches,
-  //   pathname: location.pathname,
-  // })
+  console.log('Navs', {
+    matches,
+    tosToUse,
+    thisPathsMatches,
+    pathname: location.pathname,
+  })
 
   if (tosToUse?.length) {
     return (
@@ -121,8 +124,10 @@ export const NavsOverflowing = () => {
   // as they are passed to the menu and the nav items, DataNavsOverflowing renders both
   // as nothing is to be rendered of no tos are found, the Overflow is also rendered in DataNavsOverflowing
   return (
-    <div ref={widthMeasureRef}>
-      <DataNavsOverflowing matches={thisPathsMatches} width={width} />
-    </div>
+    <DataNavsOverflowing
+      matches={thisPathsMatches}
+      width={width}
+      ref={widthMeasureRef}
+    />
   )
 }

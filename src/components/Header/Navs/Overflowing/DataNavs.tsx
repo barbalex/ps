@@ -1,3 +1,4 @@
+import { forwardRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useLocation } from 'react-router-dom'
 import { OverflowItem, Overflow } from '@fluentui/react-components'
@@ -11,7 +12,7 @@ const isOdd = (num) => num % 2
 
 // Datanavas need to query db
 // so need to be in a separate component
-export const DataNavsOverflowing = ({ matches }) => {
+export const DataNavsOverflowing = forwardRef(({ matches }, ref) => {
   const location = useLocation()
 
   const filteredMatches = matches.filter((match) => {
@@ -85,7 +86,7 @@ export const DataNavsOverflowing = ({ matches }) => {
   if (!tos.length) return null
 
   return (
-    <Overflow overflowDirection="start" padding={20}>
+    <Overflow overflowDirection="start" padding={20} ref={ref}>
       <nav className="navs-resizable">
         <OverflowMenu tos={tos} />
         {tos.map(({ text, path }) => (
@@ -97,3 +98,4 @@ export const DataNavsOverflowing = ({ matches }) => {
     </Overflow>
   )
 }
+)
