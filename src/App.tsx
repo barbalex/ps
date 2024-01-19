@@ -1,9 +1,11 @@
 import React from 'react'
 import { RouterProvider } from 'react-router-dom'
 import { FluentProvider } from '@fluentui/react-components'
-import { hooks } from './css'
 
+import { hooks } from './css'
+import 'allotment/dist/style.css'
 import './style.css'
+
 import {
   ElectricWrapper as ElectricProvider,
   useElectric,
