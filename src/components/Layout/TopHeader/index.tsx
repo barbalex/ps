@@ -1,6 +1,6 @@
 import { Menu } from './Menu'
 
-const containerDivStyle = {
+const containerStyle = {
   display: 'flex',
   flexWrap: 'nowrap',
   justifyContent: 'space-between',
@@ -9,12 +9,12 @@ const containerDivStyle = {
   padding: '0 10px',
   color: 'white',
 }
-const h1Style = { fontSize: 'large' }
+const titleStyle = { fontSize: 'large' }
 
 export const TopHeader = () => {
   return (
-    <div style={containerDivStyle}>
-      <h1 style={h1Style}>Promoting Species</h1>
+    <div style={containerStyle}>
+      <h1 style={titleStyle}>Promoting Species</h1>
       <Menu />
     </div>
   )

@@ -11,7 +11,6 @@ export const controlsButton = {
   border: 'none',
   color: 'white',
   '&:hover': {
-    backgroundColor: 'rgba(38, 82, 37, 0.8)',
-    color: 'white',
+    filter: 'brightness(85%)',
   },
 }
