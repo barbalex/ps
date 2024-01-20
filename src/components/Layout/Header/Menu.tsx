@@ -22,6 +22,39 @@ const optionsButtonStyle = {
   },
 }
 
+const activeButtonStyle = {
+  backgroundColor: 'rgba(38, 82, 37, 0)',
+  color: 'white',
+  '&:hover': {
+    filter: 'brightness(85%)',
+  },
+}
+
+const inactiveButtonStyle = {
+  backgroundColor: 'rgba(38, 82, 37, 0)',
+  border: 'none',
+  color: 'rgba(255, 255, 255, 0.7)',
+  '&:hover': {
+    color: 'white',
+  },
+}
+
+const buildButtonStyle = ({ prevIsActive, nextIsActive, selfIsActive }) => {
+  if (!selfIsActive) return inactiveButtonStyle
+
+  const style = { ...activeButtonStyle }
+  if (prevIsActive) {
+    style.borderTopLeftRadius = 0
+    style.borderBottomLeftRadius = 0
+    style.borderLeft = 'none'
+  }
+  if (nextIsActive) {
+    style.borderTopRightRadius = 0
+    style.borderBottomRightRadius = 0
+  }
+  return style
+}
+
 // TODO:
 // add buttons for tabs
 // read tabs from ui_options
@@ -47,27 +80,15 @@ export const Menu = memo(() => {
     [db.ui_options],
   )
 
-  const buttonStyle = {
-    backgroundColor: 'rgba(38, 82, 37, 0)',
-    border: 'none',
-    color: 'white',
-    '&:hover': {
-      filter: 'brightness(85%)',
-    },
-  }
-
-  const activeButtonStyle = {
-    backgroundColor: 'rgba(38, 82, 37, 0)',
-    color: 'white',
-    '&:hover': {
-      filter: 'brightness(85%)',
-    },
-  }
-
   const onClick = useCallback(() => {
     if (params.user_id) return navigate(-1)
     navigate(`/options/${user_id}`)
   }, [navigate, params])
+
+  const treeIsActive = tabs.includes('tree')
+  const dataIsActive = tabs.includes('data')
+  const filterIsActive = tabs.includes('filter')
+  const mapIsActive = tabs.includes('map')
 
   return (
     <div style={controls}>
@@ -80,7 +101,13 @@ export const Menu = memo(() => {
           aria-label="Tree"
           name="tabs"
           value="tree"
-          style={tabs.includes('tree') ? activeButtonStyle : buttonStyle}
+          style={css(
+            buildButtonStyle({
+              prevIsActive: false,
+              nextIsActive: dataIsActive,
+              selfIsActive: treeIsActive,
+            }),
+          )}
         >
           Tree
         </ToolbarToggleButton>
@@ -88,15 +115,41 @@ export const Menu = memo(() => {
           aria-label="Data"
           name="tabs"
           value="data"
-          style={tabs.includes('data') ? activeButtonStyle : buttonStyle}
+          style={css(
+            buildButtonStyle({
+              prevIsActive: treeIsActive,
+              nextIsActive: filterIsActive,
+              selfIsActive: dataIsActive,
+            }),
+          )}
         >
           Data
+        </ToolbarToggleButton>
+        <ToolbarToggleButton
+          aria-label="Filter"
+          name="tabs"
+          value="filter"
+          style={css(
+            buildButtonStyle({
+              prevIsActive: dataIsActive,
+              nextIsActive: mapIsActive,
+              selfIsActive: filterIsActive,
+            }),
+          )}
+        >
+          Filter
         </ToolbarToggleButton>
         <ToolbarToggleButton
           aria-label="Map"
           name="tabs"
           value="map"
-          style={tabs.includes('map') ? activeButtonStyle : buttonStyle}
+          style={css(
+            buildButtonStyle({
+              prevIsActive: filterIsActive,
+              nextIsActive: false,
+              selfIsActive: mapIsActive,
+            }),
+          )}
         >
           Map
         </ToolbarToggleButton>
