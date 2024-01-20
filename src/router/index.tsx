@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom'
 
-import { Header } from '../components/Header'
+import { Layout } from '../components/Layout'
 import { ErrorPage } from '../routes/error'
 import { buildNavs } from '../modules/navs'
 import { placesChildren } from './placesChildren'
@@ -12,7 +12,7 @@ export const router = (db) => {
 
   return createBrowserRouter([
     {
-      element: <Header />,
+      element: <Layout />,
       children: [
         {
           path: '/',

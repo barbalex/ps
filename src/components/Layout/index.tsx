@@ -6,7 +6,7 @@ import { Navs } from './Navs'
 import { useElectric } from '../../ElectricProvider'
 import { TopHeader } from './TopHeader'
 
-export const Header = () => {
+export const Layout = () => {
   const { db } = useElectric()!
   useEffect(() => {
     const syncItems = async () => {
@@ -23,7 +23,7 @@ export const Header = () => {
     syncItems()
   }, [db.users])
 
-  // console.log('Header rendering')
+  // console.log('Layout rendering')
 
   return (
     <>
