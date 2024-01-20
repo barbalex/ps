@@ -460,6 +460,7 @@ export const createMessage = () => ({
   date: new Date(),
 })
 
+// TODO: sync (most of) these with search params
 export const createUiOption = ({ user_id }) => ({
   user_id,
   designing: false,
