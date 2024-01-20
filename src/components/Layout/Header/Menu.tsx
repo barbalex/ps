@@ -56,8 +56,7 @@ const buildButtonStyle = ({ prevIsActive, nextIsActive, selfIsActive }) => {
 }
 
 // TODO:
-// add buttons for tabs
-// read tabs from ui_options
+// use overflow menu for tabs and options
 export const Menu = memo(() => {
   const navigate = useNavigate()
   const params = useParams()
