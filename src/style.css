@@ -23,14 +23,15 @@ body {
   h1 {
     font-size: large;
   }
-  .controls button {
+  /* button {
     background-color: rgba(38, 82, 37, 0);
     border: none;
     color: white;
     &:hover {
       background-color: rgba(38, 82, 37, 0.8);
+      color: white;
     }
-  }
+  } */
 }
 .content {
   display: flex;
