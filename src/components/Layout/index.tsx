@@ -1,17 +1,10 @@
 import { useEffect } from 'react'
-import { Outlet } from 'react-router-dom'
 
 import { Breadcrumbs } from './Breadcrumbs'
 import { Navs } from './Navs'
 import { useElectric } from '../../ElectricProvider'
 import { Header } from './Header'
-
-const outletContainerStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  flexGrow: 1,
-  overflow: 'hidden',
-}
+import { Main } from './Main'
 
 export const Layout = () => {
   const { db } = useElectric()!
@@ -37,9 +30,7 @@ export const Layout = () => {
       <Header />
       <Breadcrumbs />
       <Navs />
-      <div style={outletContainerStyle}>
-        <Outlet />
-      </div>
+      <Main />
     </>
   )
 }
