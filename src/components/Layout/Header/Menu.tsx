@@ -38,22 +38,31 @@ export const Menu = memo(() => {
   const tabs = useMemo(() => results?.tabs ?? [], [results?.tabs])
   console.log('Menu, tabs:', tabs)
   const onChangeTabs = useCallback(
-    (e, { name, checkedItems }) => {
-      console.log('onChangeTabs', { e, name, checkedItems })
-      // if checkedItems[0] is not in tabs, add it
-      // if checkedItems[0] is in tabs, remove it
-      const checkedItem = checkedItems[0]
-      const newTabs = tabs.includes(checkedItem)
-        ? tabs.filter((tab) => tab !== checkedItem)
-        : [...tabs, checkedItem]
-      // then update ui_options.tabs
+    (e, { checkedItems }) => {
       db.ui_options.update({
         where: { user_id },
-        data: { tabs: newTabs },
+        data: { tabs: checkedItems },
       })
     },
-    [db.ui_options, tabs],
+    [db.ui_options],
   )
+
+  const buttonStyle = {
+    backgroundColor: 'rgba(38, 82, 37, 0)',
+    border: 'none',
+    color: 'white',
+    '&:hover': {
+      filter: 'brightness(85%)',
+    },
+  }
+
+  const activeButtonStyle = {
+    backgroundColor: 'rgba(38, 82, 37, 0)',
+    color: 'white',
+    '&:hover': {
+      filter: 'brightness(85%)',
+    },
+  }
 
   const onClick = useCallback(() => {
     if (params.user_id) return navigate(-1)
@@ -64,16 +73,31 @@ export const Menu = memo(() => {
     <div style={controls}>
       <Toolbar
         aria-label="active tabs"
-        checkedValues={tabs}
+        checkedValues={{ tabs }}
         onCheckedValueChange={onChangeTabs}
       >
-        <ToolbarToggleButton aria-label="Bold" name="tabs" value="tree">
+        <ToolbarToggleButton
+          aria-label="Tree"
+          name="tabs"
+          value="tree"
+          style={tabs.includes('tree') ? activeButtonStyle : buttonStyle}
+        >
           Tree
         </ToolbarToggleButton>
-        <ToolbarToggleButton aria-label="Italic" name="tabs" value="data">
+        <ToolbarToggleButton
+          aria-label="Data"
+          name="tabs"
+          value="data"
+          style={tabs.includes('data') ? activeButtonStyle : buttonStyle}
+        >
           Data
         </ToolbarToggleButton>
-        <ToolbarToggleButton aria-label="Underline" name="tabs" value="map">
+        <ToolbarToggleButton
+          aria-label="Map"
+          name="tabs"
+          value="map"
+          style={tabs.includes('map') ? activeButtonStyle : buttonStyle}
+        >
           Map
         </ToolbarToggleButton>
       </Toolbar>
