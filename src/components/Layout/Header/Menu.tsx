@@ -68,7 +68,6 @@ export const Menu = memo(() => {
   )
 
   const tabs = useMemo(() => results?.tabs ?? [], [results?.tabs])
-  console.log('Menu, tabs:', tabs)
   const onChangeTabs = useCallback(
     (e, { checkedItems }) => {
       db.ui_options.update({
