@@ -1,4 +1,4 @@
-import { memo, useCallback } from 'react'
+import { memo, useCallback, useMemo } from 'react'
 import {
   Button,
   Toolbar,
@@ -35,7 +35,7 @@ export const Menu = memo(() => {
     db.ui_options.liveUnique({ where: { user_id } }),
   )
 
-  const tabs = results?.tabs ?? []
+  const tabs = useMemo(() => results?.tabs ?? [], [results?.tabs])
   console.log('Menu, tabs:', tabs)
   const onChangeTabs = useCallback(
     (e, { name, checkedItems }) => {
@@ -63,7 +63,7 @@ export const Menu = memo(() => {
   return (
     <div style={controls}>
       <Toolbar
-        aria-label="with controlled Toggle Button"
+        aria-label="active tabs"
         checkedValues={tabs}
         onCheckedValueChange={onChangeTabs}
       >
