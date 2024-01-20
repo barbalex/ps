@@ -3,6 +3,7 @@ CREATE TABLE ui_options(
   designing boolean DEFAULT NULL, -- FALSE,
   breadcrumbs_overflowing boolean DEFAULT NULL, -- FALSE,
   navs_overflowing boolean DEFAULT NULL, -- FALSE,
+  tabs jsonb DEFAULT NULL, -- TODO: jsonb array
   label text DEFAULT NULL
 );
 

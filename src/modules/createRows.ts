@@ -1,5 +1,7 @@
 import { uuidv7 } from '@kripod/uuidv7'
 
+import { isMobilePhone } from './isMobilePhone'
+
 const getPresetData = async ({ db, project_id = null, table }) => {
   const fieldsWithPresets = await db.fields.findMany({
     where: {
@@ -458,9 +460,11 @@ export const createMessage = () => ({
   date: new Date(),
 })
 
+// TODO: sync (most of) these with search params
 export const createUiOption = ({ user_id }) => ({
   user_id,
   designing: false,
   breadcrumbs_overflowing: true,
   navs_overflowing: true,
+  tabs: isMobilePhone() ? ['data'] : ['tree', 'data'],
 })
