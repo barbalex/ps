@@ -4,7 +4,14 @@ import { Outlet } from 'react-router-dom'
 import { Breadcrumbs } from './Breadcrumbs'
 import { Navs } from './Navs'
 import { useElectric } from '../../ElectricProvider'
-import { TopHeader } from './TopHeader'
+import { Header } from './Header'
+
+const outletContainerStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  flexGrow: 1,
+  overflow: 'hidden',
+}
 
 export const Layout = () => {
   const { db } = useElectric()!
@@ -27,10 +34,10 @@ export const Layout = () => {
 
   return (
     <>
-      <TopHeader />
+      <Header />
       <Breadcrumbs />
       <Navs />
-      <div className="content">
+      <div style={outletContainerStyle}>
         <Outlet />
       </div>
     </>

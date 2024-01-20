@@ -11,7 +11,7 @@ const containerStyle = {
 }
 const titleStyle = { fontSize: 'large' }
 
-export const TopHeader = () => {
+export const Header = () => {
   return (
     <div style={containerStyle}>
       <h1 style={titleStyle}>Promoting Species</h1>

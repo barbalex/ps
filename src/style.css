@@ -12,13 +12,6 @@ body {
   height: 100vh;
 }
 
-.content {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  overflow: hidden;
-}
-
 .form-container {
   padding: 10px;
   flex-grow: 1;
