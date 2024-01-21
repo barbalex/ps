@@ -26,6 +26,7 @@ export const ProjectsNode = () => {
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isOpen = urlPath[0] === 'projects'
+  const isActive = urlPath[0] === 'projects' && urlPath.length === 1
 
   const onClickButton = useCallback(() => {
     console.log('onClickLabel', { isParentOpen: isOpen })
@@ -39,6 +40,8 @@ export const ProjectsNode = () => {
         node={projectsNode}
         level={1}
         isOpen={isOpen}
+        isInActiveNodeArray={isOpen}
+        isActive={isActive}
         childrenCount={projects.length}
         to={`/projects`}
         onClickButton={onClickButton}

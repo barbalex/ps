@@ -16,8 +16,6 @@ export const ProjectNode = ({
   const params = useParams()
   const location = useLocation()
 
-  const { db } = useElectric()!
-
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isOpen =
     urlPath[0] === 'projects' && params.project_id === project.project_id

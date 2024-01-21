@@ -2,7 +2,11 @@ import {
   MdChevronRight as ClosedWithChildrenIcon,
   MdExpandMore as OpenWithChildrenIcon,
 } from 'react-icons/md'
+import { FiMinus as NoChildrenIcon } from 'react-icons/fi'
 import { Button } from '@fluentui/react-components'
+import { Link } from 'react-router-dom'
+
+import { css } from '../../css'
 
 const labelStyle = {
   fontSize: '1em',
@@ -11,15 +15,21 @@ const labelStyle = {
   whiteSpace: 'nowrap',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
+  textDecoration: 'none',
+  color: 'rgb(51, 51, 51)',
   '&:hover': {
-    backgroundColor: 'rgba(55, 118, 28, 0.05)',
-    cursor: 'pointer',
+    fontWeight: 'bold',
   },
 }
 
+const buttonStyle = {
+  width: '2em',
+  height: '2em',
+}
+
 export const Node = ({
-  inActiveNodeArray,
-  active,
+  isInActiveNodeArray,
+  isActive,
   isOpen,
   level,
   node,
@@ -32,16 +42,33 @@ export const Node = ({
       style={{
         display: 'flex',
         alignItems: 'center',
-        fontWeight: inActiveNodeArray ? 'bold' : 'normal',
-        ...(active && { color: 'red' }),
+        fontWeight: isInActiveNodeArray ? 'bold' : 'normal',
+        ...(isActive && { color: 'red' }),
         marginLeft: level * 28,
       }}
     >
       <Button
-        icon={isOpen ? <OpenWithChildrenIcon /> : <ClosedWithChildrenIcon />}
+        size="small"
+        icon={
+          !childrenCount ? (
+            <NoChildrenIcon />
+          ) : isOpen ? (
+            <OpenWithChildrenIcon />
+          ) : (
+            <ClosedWithChildrenIcon />
+          )
+        }
         onClick={onClickButton}
+        disabled={!childrenCount}
+        // style={buttonStyle}
       />
-      <div style={labelStyle}>{node.label}</div>
+      {isActive ? (
+        node.label
+      ) : (
+        <Link style={css(labelStyle)} to={to}>
+          {node.label}
+        </Link>
+      )}
     </div>
   )
 }
