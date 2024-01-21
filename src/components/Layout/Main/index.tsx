@@ -1,15 +1,18 @@
 import { useMemo } from 'react'
 import { Outlet } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
+import { Allotment } from 'allotment'
 
 import { useElectric } from '../../../ElectricProvider'
 import { user_id } from '../../SqlInitializer'
 
-const outletContainerStyle = {
+
+const containerStyle = {
   display: 'flex',
   flexDirection: 'column',
   flexGrow: 1,
   overflow: 'hidden',
+  position: 'relative',
 }
 
 export const Main = () => {
@@ -22,8 +25,10 @@ export const Main = () => {
   console.log('Main, tabs:', tabs)
 
   return (
-    <div style={outletContainerStyle}>
-      <Outlet />
+    <div style={containerStyle}>
+      <Allotment>
+        <Outlet />
+      </Allotment>
     </div>
   )
 }
