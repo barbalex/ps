@@ -19,6 +19,7 @@ export const ProjectNode = ({
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isOpen =
     urlPath[0] === 'projects' && params.project_id === project.project_id
+  const isActive = isOpen && urlPath.length === 2
 
   const onClickButton = useCallback(() => {
     if (isOpen) return navigate('/projects')
@@ -31,6 +32,9 @@ export const ProjectNode = ({
         node={project}
         level={level}
         isOpen={isOpen}
+        isInActiveNodeArray={isOpen}
+        isActive={isActive}
+        childrenCount={10}
         to={`/projects/${project.project_id}`}
         onClickButton={onClickButton}
       />
