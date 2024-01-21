@@ -106,7 +106,7 @@ export const Component = () => {
   // TODO: inactivate these fields
   // observations are only imported, not created
   return (
-    <>
+    <div className="form-outer-container">
       <FormHeader
         title="Observation"
         addRow={addRow}
@@ -159,6 +159,6 @@ export const Component = () => {
           data={row.data ?? {}}
         />
       </div>
-    </>
+    </div>
   )
 }
