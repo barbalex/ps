@@ -30,7 +30,7 @@ export const Main = () => {
     <div style={containerStyle}>
       <Allotment>
         {tabs.includes('tree') && <Tree />}
-        <Outlet />
+        {tabs.includes('data') && <Outlet />}
         {tabs.includes('filter') && <Filter />}
         {tabs.includes('map') && <Map />}
       </Allotment>
