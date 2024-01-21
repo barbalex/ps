@@ -1,11 +1,11 @@
 import { ProjectsNode } from './Projects'
-import { Users } from './Users'
+import { UsersNode } from './Users'
 
 export const Tree = () => {
   return (
     <>
       <ProjectsNode />
-      <Users />
+      <UsersNode />
     </>
   )
 }

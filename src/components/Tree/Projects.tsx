@@ -29,7 +29,6 @@ export const ProjectsNode = () => {
   const isActive = isOpen && urlPath.length === 1
 
   const onClickButton = useCallback(() => {
-    console.log('onClickLabel', { isParentOpen: isOpen })
     if (isOpen) return navigate('/')
     navigate('/projects')
   }, [isOpen, navigate])

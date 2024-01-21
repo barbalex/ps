@@ -2,7 +2,7 @@ import {
   MdChevronRight as ClosedWithChildrenIcon,
   MdExpandMore as OpenWithChildrenIcon,
 } from 'react-icons/md'
-import { FiMinus as NoChildrenIcon } from 'react-icons/fi'
+import { HiMiniMinusSmall as NoChildrenIcon } from 'react-icons/hi2'
 import { Button } from '@fluentui/react-components'
 import { Link } from 'react-router-dom'
 
@@ -11,7 +11,6 @@ import { css } from '../../css'
 const labelStyle = {
   fontSize: '1em',
   flexGrow: 1,
-  paddingLeft: 5,
   whiteSpace: 'nowrap',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
@@ -25,7 +24,11 @@ const labelStyle = {
 const buttonStyle = {
   borderRadius: 20,
   border: 'none',
+  backgroundColor: 'transparent',
+  color: 'rgb(51, 51, 51) !important',
 }
+
+const labelSpanStyle = { cursor: 'default' }
 
 export const Node = ({
   isInActiveNodeArray,
@@ -48,6 +51,7 @@ export const Node = ({
       }}
     >
       <Button
+        aria-label="toggle"
         size="small"
         icon={
           !childrenCount ? (
@@ -60,10 +64,11 @@ export const Node = ({
         }
         onClick={onClickButton}
         disabled={!childrenCount}
-        style={buttonStyle}
+        style={{ ...buttonStyle, ...(!childrenCount && { cursor: 'default' }) }}
+        className="tree-node"
       />
       {isActive ? (
-        node.label
+        <span style={labelSpanStyle}>node.label</span>
       ) : (
         <Link style={css(labelStyle)} to={to}>
           {node.label}
