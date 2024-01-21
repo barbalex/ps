@@ -44,7 +44,7 @@ export const Node = ({
         alignItems: 'center',
         fontWeight: isInActiveNodeArray ? 'bold' : 'normal',
         ...(isActive && { color: 'red' }),
-        marginLeft: level * 28,
+        marginLeft: level * 20 - 15,
       }}
     >
       <Button
