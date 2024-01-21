@@ -1,1 +1,1 @@
-export const Component = () => <div className="form-container">Docs</div>
+export const Component = () => <div className="form-outer-container">Docs</div>

@@ -115,7 +115,7 @@ export const Component = () => {
   }
 
   return (
-    <>
+    <div className="form-outer-container">
       <FormHeader
         title="File"
         addRow={addRow}
@@ -203,6 +203,6 @@ export const Component = () => {
           data={row.data ?? {}}
         />
       </div>
-    </>
+    </div>
   )
 }
