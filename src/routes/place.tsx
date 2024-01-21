@@ -117,7 +117,7 @@ export const Component = () => {
   // console.log('place, row:', row)
 
   return (
-    <>
+    <div className="form-outer-container">
       <FormHeader
         title={placeNameSingular}
         addRow={addRow}
@@ -157,6 +157,6 @@ export const Component = () => {
           ref={row.level !== 2 ? autoFocusRef : undefined}
         />
       </div>
-    </>
+    </div>
   )
 }

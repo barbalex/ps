@@ -88,7 +88,7 @@ export const Component = () => {
   // console.log('project, row:', row)
 
   return (
-    <>
+    <div className="form-outer-container">
       <FormHeader
         title="Project"
         addRow={addRow}
@@ -244,6 +244,6 @@ export const Component = () => {
           />
         </div>
       </div>
-    </>
+    </div>
   )
 }
