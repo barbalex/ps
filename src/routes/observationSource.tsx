@@ -101,7 +101,7 @@ export const Component = () => {
   }
 
   return (
-    <>
+    <div className="form-outer-container">
       <FormHeader
         title="Observation Source"
         addRow={addRow}
@@ -138,6 +138,6 @@ export const Component = () => {
           data={row.data ?? {}}
         />
       </div>
-    </>
+    </div>
   )
 }

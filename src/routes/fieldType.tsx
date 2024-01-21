@@ -78,7 +78,7 @@ export const Component = () => {
   }
 
   return (
-    <>
+    <div className="form-outer-container">
       <FormHeader
         title="Field type"
         addRow={addRow}
@@ -114,6 +114,6 @@ export const Component = () => {
           onChange={onChange}
         />
       </div>
-    </>
+    </div>
   )
 }
