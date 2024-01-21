@@ -1,14 +1,14 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useLocation, useParams, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
-import { useElectric } from '../../../ElectricProvider'
-import { Node } from '../Node'
-import { Projects as Project } from '../../../../generated/client'
+import { useElectric } from '../../ElectricProvider'
+import { Node } from './Node'
+import { Projects as Project } from '../../../generated/client'
+import { ProjectNode } from './Project'
 
-export const Projects = () => {
+export const ProjectsNode = () => {
   const location = useLocation()
-  const params = useParams()
   const navigate = useNavigate()
 
   const { db } = useElectric()!
@@ -25,33 +25,27 @@ export const Projects = () => {
   }
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const isParentOpen = urlPath[0] === 'projects'
+  const isOpen = urlPath[0] === 'projects'
 
   const onClickButton = useCallback(() => {
-    console.log('onClickLabel', { isParentOpen })
-    if (isParentOpen) return navigate('/')
+    console.log('onClickLabel', { isParentOpen: isOpen })
+    if (isOpen) return navigate('/')
     navigate('/projects')
-  }, [isParentOpen, navigate])
+  }, [isOpen, navigate])
 
   return (
     <>
       <Node
         node={projectsNode}
         level={1}
-        isOpen={isParentOpen}
+        isOpen={isOpen}
         childrenCount={projects.length}
         to={`/projects`}
         onClickButton={onClickButton}
       />
-      {isParentOpen &&
+      {isOpen &&
         projects.map((project) => (
-          <Node
-            key={project.project_id}
-            node={project}
-            level={2}
-            isOpen={isParentOpen && params?.project_id === project.project_id}
-            to={`/projects/${project.project_id}`}
-          />
+          <ProjectNode key={project.project_id} project={project} />
         ))}
     </>
   )

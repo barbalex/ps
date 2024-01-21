@@ -1,10 +1,10 @@
-import { Projects } from './Projects.tsx'
+import { ProjectsNode } from './Projects'
 import { Users } from './Users'
 
 export const Tree = () => {
   return (
     <>
-      <Projects />
+      <ProjectsNode />
       <Users />
     </>
   )
