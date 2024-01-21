@@ -15,8 +15,19 @@ export const Projects = () => {
   const projects: Project[] = results ?? []
 
   console.log('projects', projects)
+  const projectsNode = {
+    label: `Projects (${projects.length})`,
+  }
 
-  return (projects ?? []).map((project) => (
-    <Node key={project.project_id} node={project} level={1} />
-  ))
+  const isOpen = true // TODO:
+
+  return (
+    <>
+      <Node node={projectsNode} level={1} />
+      {isOpen &&
+        projects.map((project) => (
+          <Node key={project.project_id} node={project} level={2} />
+        ))}
+    </>
+  )
 }
