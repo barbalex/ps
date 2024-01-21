@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
@@ -20,9 +20,12 @@ export const UsersNode = () => {
   )
   const users: User[] = results ?? []
 
-  const usersNode = {
-    label: `Users (${users.length})`,
-  }
+  const usersNode = useMemo(
+    () => ({
+      label: `Users (${users.length})`,
+    }),
+    [users.length],
+  )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isOpen = urlPath[0] === 'users'

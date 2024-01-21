@@ -68,7 +68,7 @@ export const Node = ({
         className="tree-node"
       />
       {isActive ? (
-        <span style={labelSpanStyle}>node.label</span>
+        <span style={labelSpanStyle}>{node.label}</span>
       ) : (
         <Link style={css(labelStyle)} to={to}>
           {node.label}
