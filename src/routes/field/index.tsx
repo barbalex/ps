@@ -124,7 +124,7 @@ export const Component = () => {
   }
 
   return (
-    <>
+    <div className="form-outer-container">
       <FormHeader
         title="Field"
         addRow={addRow}
@@ -196,6 +196,6 @@ export const Component = () => {
           validationMessage="If obsolete, existing data is shown but, this field will not be available for new records."
         />
       </div>
-    </>
+    </div>
   )
 }
