@@ -24,8 +24,8 @@
   "dependencies": {
     "@css-hooks/react": "1.8.0",
     "@css-hooks/recommended": "1.8.0",
-    "@fluentui/react-components": "9.44.5",
-    "@fluentui/react-datepicker-compat": "0.4.17",
+    "@fluentui/react-components": "9.45.0",
+    "@fluentui/react-datepicker-compat": "0.4.18",
     "@fluentui/react-icons": "2.0.225",
     "@fluentui/react-timepicker-compat-preview": "0.2.0",
     "@fontsource/roboto": "5.0.8",
@@ -44,8 +44,8 @@
     "react-icons": "5.0.1",
     "react-imask": "7.3.0",
     "react-resize-detector": "10.0.1",
-    "react-router-dom": "6.21.2",
-    "wa-sqlite": "rhashimoto/wa-sqlite#semver:v0.9.9"
+    "react-router-dom": "6.21.3",
+    "wa-sqlite": "rhashimoto/wa-sqlite#semver:v0.9.11"
   },
   "devDependencies": {
     "@databases/pg-migrations": "5.0.3",
