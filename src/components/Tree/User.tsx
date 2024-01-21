@@ -25,17 +25,15 @@ export const UserNode = ({
   }, [isOpen, navigate, user.user_id])
 
   return (
-    <>
-      <Node
-        node={user}
-        level={level}
-        isOpen={isOpen}
-        isInActiveNodeArray={isOpen}
-        isActive={isActive}
-        childrenCount={0}
-        to={`/users/${user.user_id}`}
-        onClickButton={onClickButton}
-      />
-    </>
+    <Node
+      node={user}
+      level={level}
+      isOpen={isOpen}
+      isInActiveNodeArray={isOpen}
+      isActive={isActive}
+      childrenCount={0}
+      to={`/users/${user.user_id}`}
+      onClickButton={onClickButton}
+    />
   )
 }

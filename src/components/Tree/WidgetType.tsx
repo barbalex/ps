@@ -2,13 +2,13 @@ import { useCallback } from 'react'
 import { useLocation, useParams, useNavigate } from 'react-router-dom'
 
 import { Node } from './Node'
-import { FieldTypes as FieldType } from '../../../generated/client'
+import { WidgetTypes as WidgetType } from '../../../generated/client'
 
-export const FieldTypeNode = ({
-  fieldType,
+export const WidgetTypeNode = ({
+  widgetType,
   level = 2,
 }: {
-  fieldTypes: FieldType[]
+  widgetTypes: WidgetType[]
   level: number
 }) => {
   const params = useParams()
@@ -17,24 +17,24 @@ export const FieldTypeNode = ({
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isOpen =
-    urlPath[0] === 'field-types' &&
-    params.field_type_id === fieldType.field_type_id
+    urlPath[0] === 'widget-types' &&
+    params.widget_type_id === widgetType.widget_type_id
   const isActive = isOpen && urlPath.length === 2
 
   const onClickButton = useCallback(() => {
-    if (isOpen) return navigate('/field-types')
-    navigate(`/field-types/${fieldType.field_type_id}`)
-  }, [isOpen, navigate, fieldType.field_type_id])
+    if (isOpen) return navigate('/widget-types')
+    navigate(`/widget-types/${widgetType.widget_type_id}`)
+  }, [isOpen, navigate, widgetType.widget_type_id])
 
   return (
     <Node
-      node={fieldType}
+      node={widgetType}
       level={level}
       isOpen={isOpen}
       isInActiveNodeArray={isOpen}
       isActive={isActive}
       childrenCount={0}
-      to={`/field-types/${fieldType.field_type_id}`}
+      to={`/widget-types/${widgetType.widget_type_id}`}
       onClickButton={onClickButton}
     />
   )

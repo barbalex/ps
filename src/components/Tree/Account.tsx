@@ -16,7 +16,8 @@ export const AccountNode = ({
   const navigate = useNavigate()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const isOpen = urlPath[0] === 'accounts' && params.account_id === account.account_id
+  const isOpen =
+    urlPath[0] === 'accounts' && params.account_id === account.account_id
   const isActive = isOpen && urlPath.length === 2
 
   const onClickButton = useCallback(() => {
@@ -25,17 +26,15 @@ export const AccountNode = ({
   }, [isOpen, navigate, account.account_id])
 
   return (
-    <>
-      <Node
-        node={account}
-        level={level}
-        isOpen={isOpen}
-        isInActiveNodeArray={isOpen}
-        isActive={isActive}
-        childrenCount={0}
-        to={`/accounts/${account.account_id}`}
-        onClickButton={onClickButton}
-      />
-    </>
+    <Node
+      node={account}
+      level={level}
+      isOpen={isOpen}
+      isInActiveNodeArray={isOpen}
+      isActive={isActive}
+      childrenCount={0}
+      to={`/accounts/${account.account_id}`}
+      onClickButton={onClickButton}
+    />
   )
 }

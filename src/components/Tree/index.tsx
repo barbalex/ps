@@ -2,6 +2,7 @@ import { ProjectsNode } from './Projects'
 import { UsersNode } from './Users'
 import { AccountsNode } from './Accounts'
 import { FieldTypesNode } from './FieldTypes'
+import { WidgetTypesNode } from './WidgetTypes'
 
 export const Tree = () => {
   return (
@@ -10,6 +11,7 @@ export const Tree = () => {
       <UsersNode />
       <AccountsNode />
       <FieldTypesNode />
+      <WidgetTypesNode />
     </>
   )
 }
