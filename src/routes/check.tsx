@@ -95,7 +95,7 @@ export const Component = () => {
   }
 
   return (
-    <>
+    <div className="form-outer-container">
       <FormHeader
         title="Check"
         addRow={addRow}
@@ -127,6 +127,6 @@ export const Component = () => {
           ref={autoFocusRef}
         />
       </div>
-    </>
+    </div>
   )
 }
