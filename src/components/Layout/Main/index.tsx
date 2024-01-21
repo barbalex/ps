@@ -5,7 +5,7 @@ import { Allotment } from 'allotment'
 
 import { useElectric } from '../../../ElectricProvider'
 import { user_id } from '../../SqlInitializer'
-import { Tree } from '@fluentui/react-components'
+import { Tree } from '../../Tree'
 import { Filter } from '../../Filter'
 import { Map } from '../../Map'
 
