@@ -5,7 +5,9 @@ import { Allotment } from 'allotment'
 
 import { useElectric } from '../../../ElectricProvider'
 import { user_id } from '../../SqlInitializer'
-
+import { Tree } from '@fluentui/react-components'
+import { Filter } from '../../Filter'
+import { Map } from '../../Map'
 
 const containerStyle = {
   display: 'flex',
@@ -27,7 +29,10 @@ export const Main = () => {
   return (
     <div style={containerStyle}>
       <Allotment>
+        {tabs.includes('tree') && <Tree />}
         <Outlet />
+        {tabs.includes('filter') && <Filter />}
+        {tabs.includes('map') && <Map />}
       </Allotment>
     </div>
   )
