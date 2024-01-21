@@ -1,3 +1,4 @@
+import { Projects } from './Projects.tsx'
 export const Tree = () => {
-  return <div>Tree</div>
+  return <Projects />
 }

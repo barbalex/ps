@@ -6,12 +6,12 @@ const labelStyle = {
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   '&:hover': {
-    backgroundColor: rgba(55, 118, 28, 0.05),
+    backgroundColor: 'rgba(55, 118, 28, 0.05)',
     cursor: 'pointer',
   },
 }
 
-export const Row = ({ inActiveNodeArray, active, level, node }) => {
+export const Node = ({ inActiveNodeArray, active, level, node }) => {
   return (
     <div
       style={{
