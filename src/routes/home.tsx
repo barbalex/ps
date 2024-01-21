@@ -1,7 +1,7 @@
 import './home.css'
 
 const Home = () => (
-  <div className="outer-container">
+  <div style={{ height: '100%' }}>
     <picture>
       <source
         srcSet="home_700.avif 700w, home_1000.avif 1000w, home_1400.avif 1400w, home_2000.avif 2000w, home_2500.avif 2500w"
