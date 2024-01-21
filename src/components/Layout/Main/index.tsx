@@ -1,7 +1,9 @@
 import { useMemo } from 'react'
 import { Outlet } from 'react-router-dom'
+import { useLiveQuery } from 'electric-sql/react'
 
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../../../ElectricProvider'
+import { user_id } from '../../SqlInitializer'
 
 const outletContainerStyle = {
   display: 'flex',
