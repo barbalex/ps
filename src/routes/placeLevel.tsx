@@ -91,7 +91,7 @@ export const Component = () => {
   // console.log('place level', row)
 
   return (
-    <>
+    <div className="form-outer-container">
       <FormHeader
         title="Place level"
         addRow={addRow}
@@ -188,6 +188,6 @@ export const Component = () => {
           onChange={onChange}
         />
       </div>
-    </>
+    </div>
   )
 }
