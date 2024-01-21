@@ -3,6 +3,7 @@ import { useLocation, useParams, useNavigate } from 'react-router-dom'
 
 import { Node } from './Node'
 import { Projects as Project } from '../../../generated/client'
+import { SubprojectsNode } from './Subprojects'
 
 export const ProjectNode = ({
   project,
@@ -37,7 +38,7 @@ export const ProjectNode = ({
         to={`/projects/${project.project_id}`}
         onClickButton={onClickButton}
       />
-      {isOpen && <div>Project Folders</div>}
+      {isOpen && <SubprojectsNode project_id={project.project_id} />}
     </>
   )
 }
