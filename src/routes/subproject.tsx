@@ -93,7 +93,7 @@ export const Component = () => {
   // console.log('subproject, row.data:', row?.data)
 
   return (
-    <>
+    <div className="form-outer-container">
       <FormHeader
         title={nameSingular}
         addRow={addRow}
@@ -130,6 +130,6 @@ export const Component = () => {
           data={row.data ?? {}}
         />
       </div>
-    </>
+    </div>
   )
 }

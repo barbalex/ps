@@ -37,7 +37,7 @@ export const Component = () => {
   }
 
   return (
-    <>
+    <div className="form-outer-container">
       <FormHeader title="Options" tableName="options" />
       <div className="form-container">
         <TextFieldInactive label="ID" name="user_id" value={row.user_id} />
@@ -57,6 +57,6 @@ export const Component = () => {
           validationMessage="If true, navs will only use a single line. When they overflow, the overflowing navs will be collected in a menu on the left."
         />
       </div>
-    </>
+    </div>
   )
 }
