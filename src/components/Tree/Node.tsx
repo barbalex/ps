@@ -1,3 +1,9 @@
+import {
+  MdChevronRight as ClosedWithChildrenIcon,
+  MdExpandMore as OpenWithChildrenIcon,
+} from 'react-icons/md'
+import { Button } from '@fluentui/react-components'
+
 const labelStyle = {
   fontSize: '1em',
   flexGrow: 1,
@@ -11,7 +17,16 @@ const labelStyle = {
   },
 }
 
-export const Node = ({ inActiveNodeArray, active, level, node }) => {
+export const Node = ({
+  inActiveNodeArray,
+  active,
+  isOpen,
+  level,
+  node,
+  childrenCount,
+  to,
+  onClickButton,
+}) => {
   return (
     <div
       style={{
@@ -22,6 +37,10 @@ export const Node = ({ inActiveNodeArray, active, level, node }) => {
         marginLeft: level * 28,
       }}
     >
+      <Button
+        icon={isOpen ? <OpenWithChildrenIcon /> : <ClosedWithChildrenIcon />}
+        onClick={onClickButton}
+      />
       <div style={labelStyle}>{node.label}</div>
     </div>
   )
