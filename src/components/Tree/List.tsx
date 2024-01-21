@@ -35,7 +35,7 @@ export const ListNode = ({
       isOpen={isOpen}
       isInActiveNodeArray={isOpen}
       isActive={isActive}
-      childrenCount={10}
+      childrenCount={0}
       to={`/projects/${project_id}/lists/${list.list_id}`}
       onClickButton={onClickButton}
     />

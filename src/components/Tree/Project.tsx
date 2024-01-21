@@ -7,6 +7,7 @@ import { SubprojectsNode } from './Subprojects'
 import { ProjectReportsNode } from './ProjectReports'
 import { PersonsNode } from './Persons'
 import { ListsNode } from './Lists'
+import { ProjectUsersNode } from './ProjectUsers'
 
 export const ProjectNode = ({
   project,
@@ -47,6 +48,7 @@ export const ProjectNode = ({
           <ProjectReportsNode project_id={project.project_id} />
           <PersonsNode project_id={project.project_id} />
           <ListsNode project_id={project.project_id} />
+          <ProjectUsersNode project_id={project.project_id} />
         </>
       )}
     </>

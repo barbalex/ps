@@ -35,7 +35,7 @@ export const PersonNode = ({
       isOpen={isOpen}
       isInActiveNodeArray={isOpen}
       isActive={isActive}
-      childrenCount={10}
+      childrenCount={0}
       to={`/projects/${project_id}/persons/${person.person_id}`}
       onClickButton={onClickButton}
     />

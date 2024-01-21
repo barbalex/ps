@@ -2,14 +2,14 @@ import { useCallback } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { Node } from './Node'
-import { Subprojects as Subproject } from '../../../generated/client'
+import { ProjectUsers as ProjectUser } from '../../../generated/client'
 
-export const SubprojectNode = ({
+export const ProjectUserNode = ({
   project_id,
-  subproject,
+  projectUser,
   level = 4,
 }: {
-  subprojects: Subproject[]
+  projectUsers: ProjectUser[]
   level: number
 }) => {
   const location = useLocation()
@@ -19,25 +19,24 @@ export const SubprojectNode = ({
   const isOpen =
     urlPath[0] === 'projects' &&
     urlPath[1] === project_id &&
-    urlPath[2] === 'subprojects' &&
-    urlPath[3] === subproject.subproject_id
+    urlPath[2] === 'users' &&
+    urlPath[3] === projectUser.project_user_id
   const isActive = isOpen && urlPath.length === 4
 
   const onClickButton = useCallback(() => {
-    if (isOpen) return navigate(`/projects/${project_id}/subprojects`)
-    navigate(`/projects/${project_id}/subprojects/${subproject.subproject_id}`)
-  }, [isOpen, navigate, project_id, subproject.subproject_id])
+    if (isOpen) return navigate(`/projects/${project_id}/users`)
+    navigate(`/projects/${project_id}/users/${projectUser.project_user_id}`)
+  }, [isOpen, navigate, project_id, projectUser.project_user_id])
 
-  // TODO: childrenCount
   return (
     <Node
-      node={subproject}
+      node={projectUser}
       level={level}
       isOpen={isOpen}
       isInActiveNodeArray={isOpen}
       isActive={isActive}
-      childrenCount={10}
-      to={`/projects/${project_id}/subprojects/${subproject.subproject_id}`}
+      childrenCount={0}
+      to={`/projects/${project_id}/users/${projectUser.project_user_id}`}
       onClickButton={onClickButton}
     />
   )
