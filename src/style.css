@@ -152,3 +152,38 @@ body {
   --separator-border: rgba(55, 118, 28, 0.1);
   --sash-hover-size: 8px;
 }
+
+/* scrollbars */
+
+.simplebar-scrollbar:before {
+  background: rgba(55, 118, 28, 1) !important;
+}
+/* hide native scrollbar */
+.simplebar-content-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+/* newer syntax for firefox */
+html {
+  scrollbar-color: rgba(55, 118, 28, 1) #f2fef3;
+  scrollbar-width: thin;
+}
+
+/* own syntax for webkit */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar:horizontal {
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  box-shadow: inset 0 0 7px rgba(55, 118, 28, 1);
+  background: rgba(85, 85, 85, 0.05);
+}
+
+::-webkit-scrollbar-corner {
+  background: rgba(0, 0, 0, 0);
+}
