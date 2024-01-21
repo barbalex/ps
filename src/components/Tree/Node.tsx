@@ -23,8 +23,8 @@ const labelStyle = {
 }
 
 const buttonStyle = {
-  width: '2em',
-  height: '2em',
+  borderRadius: 20,
+  border: 'none',
 }
 
 export const Node = ({
@@ -60,7 +60,7 @@ export const Node = ({
         }
         onClick={onClickButton}
         disabled={!childrenCount}
-        // style={buttonStyle}
+        style={buttonStyle}
       />
       {isActive ? (
         node.label
