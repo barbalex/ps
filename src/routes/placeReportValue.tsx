@@ -127,7 +127,7 @@ export const Component = () => {
   }
 
   return (
-    <>
+    <div className="form-outer-container">
       <FormHeader
         title="Place Report Value"
         addRow={addRow}
@@ -173,6 +173,6 @@ export const Component = () => {
           onChange={onChange}
         />
       </div>
-    </>
+    </div>
   )
 }
