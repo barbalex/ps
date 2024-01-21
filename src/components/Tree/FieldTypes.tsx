@@ -4,53 +4,53 @@ import { useLocation, useNavigate } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
 import { Node } from './Node'
-import { Projects as Project } from '../../../generated/client'
-import { ProjectNode } from './Project'
+import { FieldTypes as FieldType } from '../../../generated/client'
+import { FieldTypeNode } from './FieldType'
 
-export const ProjectsNode = () => {
+export const FieldTypesNode = () => {
   const location = useLocation()
   const navigate = useNavigate()
 
   const { db } = useElectric()!
   const { results } = useLiveQuery(
-    db.projects.liveMany({
+    db.field_types.liveMany({
       where: { deleted: false },
       orderBy: { label: 'asc' },
     }),
   )
-  const projects: Project[] = results ?? []
+  const fieldTypes: FieldType[] = results ?? []
 
-  const projectsNode = useMemo(
+  const fieldTypesNode = useMemo(
     () => ({
-      label: `Projects (${projects.length})`,
+      label: `Field Types (${fieldTypes.length})`,
     }),
-    [projects.length],
+    [fieldTypes.length],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const isOpen = urlPath[0] === 'projects'
+  const isOpen = urlPath[0] === 'field-types'
   const isActive = isOpen && urlPath.length === 1
 
   const onClickButton = useCallback(() => {
     if (isOpen) return navigate('/')
-    navigate('/projects')
+    navigate('/field-types')
   }, [isOpen, navigate])
 
   return (
     <>
       <Node
-        node={projectsNode}
+        node={fieldTypesNode}
         level={1}
         isOpen={isOpen}
         isInActiveNodeArray={isOpen}
         isActive={isActive}
-        childrenCount={projects.length}
-        to={`/projects`}
+        childrenCount={fieldTypes.length}
+        to={`/field-types`}
         onClickButton={onClickButton}
       />
       {isOpen &&
-        projects.map((project) => (
-          <ProjectNode key={project.project_id} project={project} />
+        fieldTypes.map((fieldType) => (
+          <FieldTypeNode key={fieldType.field_type_id} fieldType={fieldType} />
         ))}
     </>
   )
