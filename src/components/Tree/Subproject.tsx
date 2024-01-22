@@ -5,6 +5,7 @@ import { Node } from './Node'
 import { Subprojects as Subproject } from '../../../generated/client'
 import { PlacesNode } from './Places'
 import { SubprojectReportsNode } from './SubprojectReports'
+import { GoalsNode } from './Goals'
 
 export const SubprojectNode = ({
   project_id,
@@ -52,6 +53,10 @@ export const SubprojectNode = ({
             level={level + 1}
           />
           <SubprojectReportsNode
+            project_id={project_id}
+            subproject_id={subproject.subproject_id}
+          />
+          <GoalsNode
             project_id={project_id}
             subproject_id={subproject.subproject_id}
           />
