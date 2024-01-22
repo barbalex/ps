@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { Node } from './Node'
+import { ActionReportValuesNode } from './ActionsReportValues'
 
 export const ActionReportNode = ({
   project_id,
@@ -47,15 +48,26 @@ export const ActionReportNode = ({
   ])
 
   return (
-    <Node
-      node={actionReport}
-      level={level}
-      isOpen={isOpen}
-      isInActiveNodeArray={isOpen}
-      isActive={isActive}
-      childrenCount={0}
-      to={`/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/actions/${action_id}/reports/${actionReport.action_report_id}`}
-      onClickButton={onClickButton}
-    />
+    <>
+      <Node
+        node={actionReport}
+        level={level}
+        isOpen={isOpen}
+        isInActiveNodeArray={isOpen}
+        isActive={isActive}
+        childrenCount={1}
+        to={`/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/actions/${action_id}/reports/${actionReport.action_report_id}`}
+        onClickButton={onClickButton}
+      />
+      {isOpen && (
+        <ActionReportValuesNode
+          project_id={project_id}
+          subproject_id={subproject_id}
+          place_id={place_id}
+          action_id={action_id}
+          action_report_id={actionReport.action_report_id}
+        />
+      )}
+    </>
   )
 }
