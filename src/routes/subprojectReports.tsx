@@ -18,6 +18,7 @@ export const Component = () => {
     () =>
       db.subproject_reports.liveMany({
         where: { subproject_id, deleted: false },
+        orderBy: { label: 'asc' },
       }),
     [subproject_id],
   )
