@@ -8,7 +8,7 @@ export const FileNode = ({
   file,
   level = 2,
 }: {
-  files: File[]
+  file: File
   level: number
 }) => {
   const params = useParams()

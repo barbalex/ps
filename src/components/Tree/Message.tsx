@@ -8,7 +8,7 @@ export const MessageNode = ({
   message,
   level = 2,
 }: {
-  messages: Message[]
+  message: Message
   level: number
 }) => {
   const params = useParams()

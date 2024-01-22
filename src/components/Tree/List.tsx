@@ -9,7 +9,8 @@ export const ListNode = ({
   list,
   level = 4,
 }: {
-  lists: List[]
+  project_id: string
+  list: List
   level: number
 }) => {
   const location = useLocation()
