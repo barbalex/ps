@@ -14,7 +14,12 @@ export const Component = () => {
   const navigate = useNavigate()
 
   const { db } = useElectric()
-  const { results } = useLiveQuery(db.widget_types.liveMany())
+  const { results } = useLiveQuery(
+    db.widget_types.liveMany({
+      where: { deleted: false },
+      orderBy: { label: 'asc' },
+    }),
+  )
 
   const add = useCallback(async () => {
     const data = createWidgetType()
