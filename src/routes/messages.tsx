@@ -14,7 +14,9 @@ export const Component = () => {
   const navigate = useNavigate()
 
   const { db } = useElectric()
-  const { results } = useLiveQuery(db.messages.liveMany())
+  const { results } = useLiveQuery(
+    db.messages.liveMany({ orderBy: { label: 'asc' } }),
+  )
 
   const add = useCallback(async () => {
     const data = createMessage()

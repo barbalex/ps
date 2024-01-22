@@ -18,6 +18,7 @@ export const Component = () => {
     () =>
       db.goal_report_values.liveMany({
         where: { goal_report_id, deleted: false },
+        orderBy: { label: 'asc' },
       }),
     [goal_report_id],
   )
