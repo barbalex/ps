@@ -2,21 +2,20 @@ import { useCallback } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { Node } from './Node'
-import { Places as Place } from '../../../generated/client'
-import { ChecksNode } from './Checks'
-import { ActionsNode } from './Actions'
-import { PlaceReportsNode } from './PlaceReports'
-import { PlaceUsersNode } from './PlaceUsers'
+import { Checks as Check } from '../../../generated/client'
+import { CheckValuesNode } from './ChecksValues'
+import { CheckReportsNode } from './ChecksReports'
 
-export const PlaceNode = ({
+export const CheckNode = ({
   project_id,
   subproject_id,
-  place,
-  level = 6,
+  place_id,
+  check,
+  level = 8,
 }: {
   project_id: string
   subproject_id: string
-  place: Place
+  check: Check
   level: number
 }) => {
   const location = useLocation()
@@ -29,55 +28,49 @@ export const PlaceNode = ({
     urlPath[2] === 'subprojects' &&
     urlPath[3] === subproject_id &&
     urlPath[4] === 'places' &&
-    urlPath[5] === place.place_id
+    urlPath[5] === place_id &&
+    urlPath[6] === 'checks' &&
+    urlPath[7] === check.check_id
   const isActive = isOpen && urlPath.length === level
 
   const onClickButton = useCallback(() => {
     if (isOpen)
       return navigate(
-        `/projects/${project_id}/subprojects/${subproject_id}/places`,
+        `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/checks`,
       )
     navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place.place_id}`,
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/checks/${check.check_id}`,
     )
-  }, [isOpen, navigate, place.place_id, project_id, subproject_id])
+  }, [isOpen, navigate, check.check_id, place_id, project_id, subproject_id])
 
   return (
     <>
       <Node
-        node={place}
+        node={check}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isOpen}
         isActive={isActive}
         childrenCount={10}
-        to={`/projects/${project_id}/subprojects/${subproject_id}/places/${place.place_id}`}
+        to={`/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/checks/${check.check_id}`}
         onClickButton={onClickButton}
       />
-      {isOpen && (
+      {/* {isOpen && (
         <>
-          <ChecksNode
+          <CheckValuesNode
             project_id={project_id}
             subproject_id={subproject_id}
-            place_id={place.place_id}
+            place_id={place_id}
+            check_id={check.check_id}
           />
-          <ActionsNode
+          <CheckReportsNode
             project_id={project_id}
             subproject_id={subproject_id}
-            place_id={place.place_id}
-          />
-          <PlaceReportsNode
-            project_id={project_id}
-            subproject_id={subproject_id}
-            place_id={place.place_id}
-          />
-          <PlaceUsersNode
-            project_id={project_id}
-            subproject_id={subproject_id}
-            place_id={place.place_id}
+            place_id={place_id}
+            check_id={check.check_id}
           />
         </>
-      )}
+      )} */}
     </>
   )
 }
