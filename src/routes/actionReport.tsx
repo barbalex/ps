@@ -31,7 +31,6 @@ export const Component = () => {
     () =>
       db.action_reports.liveUnique({
         where: { action_report_id },
-        orderBy: { label: 'asc' },
       }),
     [action_report_id],
   )

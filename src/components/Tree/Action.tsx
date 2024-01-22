@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { Node } from './Node'
 import { Actions as Action } from '../../../generated/client'
 import { ActionValuesNode } from './ActionsValues'
+import { ActionReportsNode } from './ActionsReports'
 
 export const ActionNode = ({
   project_id,
@@ -55,12 +56,20 @@ export const ActionNode = ({
         onClickButton={onClickButton}
       />
       {isOpen && (
-        <ActionValuesNode
-          project_id={project_id}
-          subproject_id={subproject_id}
-          place_id={place_id}
-          action_id={action.action_id}
-        />
+        <>
+          <ActionValuesNode
+            project_id={project_id}
+            subproject_id={subproject_id}
+            place_id={place_id}
+            action_id={action.action_id}
+          />
+          <ActionReportsNode
+            project_id={project_id}
+            subproject_id={subproject_id}
+            place_id={place_id}
+            action_id={action.action_id}
+          />
+        </>
       )}
     </>
   )
