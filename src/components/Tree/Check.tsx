@@ -3,8 +3,8 @@ import { useLocation, useNavigate } from 'react-router-dom'
 
 import { Node } from './Node'
 import { Checks as Check } from '../../../generated/client'
-import { CheckValuesNode } from './ChecksValues'
-import { CheckReportsNode } from './ChecksReports'
+import { CheckValuesNode } from './CheckValues'
+// import { CheckReportsNode } from './ChecksReports'
 
 export const CheckNode = ({
   project_id,
@@ -55,7 +55,7 @@ export const CheckNode = ({
         to={`/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/checks/${check.check_id}`}
         onClickButton={onClickButton}
       />
-      {/* {isOpen && (
+      {isOpen && (
         <>
           <CheckValuesNode
             project_id={project_id}
@@ -63,14 +63,14 @@ export const CheckNode = ({
             place_id={place_id}
             check_id={check.check_id}
           />
-          <CheckReportsNode
+          {/* <CheckReportsNode
             project_id={project_id}
             subproject_id={subproject_id}
             place_id={place_id}
             check_id={check.check_id}
-          />
+          /> */}
         </>
-      )} */}
+      )}
     </>
   )
 }
