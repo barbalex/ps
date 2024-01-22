@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { Node } from './Node'
 import { Subprojects as Subproject } from '../../../generated/client'
 import { PlacesNode } from './Places'
+import { SubprojectReportsNode } from './SubprojectReports'
 
 export const SubprojectNode = ({
   project_id,
@@ -44,11 +45,17 @@ export const SubprojectNode = ({
         onClickButton={onClickButton}
       />
       {isOpen && (
-        <PlacesNode
-          project_id={project_id}
-          subproject_id={subproject.subproject_id}
-          level={level + 1}
-        />
+        <>
+          <PlacesNode
+            project_id={project_id}
+            subproject_id={subproject.subproject_id}
+            level={level + 1}
+          />
+          <SubprojectReportsNode
+            project_id={project_id}
+            subproject_id={subproject.subproject_id}
+          />
+        </>
       )}
     </>
   )
