@@ -9,7 +9,8 @@ export const PersonNode = ({
   person,
   level = 4,
 }: {
-  persons: Person[]
+  project_id: string
+  person: Person
   level: number
 }) => {
   const location = useLocation()

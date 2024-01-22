@@ -9,7 +9,8 @@ export const ProjectReportNode = ({
   projectReport,
   level = 4,
 }: {
-  projectReports: ProjectReport[]
+  project_id: string
+  projectReport: ProjectReport
   level: number
 }) => {
   const location = useLocation()
