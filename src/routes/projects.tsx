@@ -16,7 +16,7 @@ export const Component = () => {
   const { results } = useLiveQuery(
     db.projects.liveMany({
       where: { deleted: false },
-      orderBy: [{ name: 'asc' }, { project_id: 'asc' }],
+      orderBy: { label: 'asc' },
     }),
   )
 

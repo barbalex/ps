@@ -29,6 +29,7 @@ export const Component = () => {
         project_id,
         level: place_id ? 2 : 1,
       },
+      orderBy: { label: 'asc' },
     }),
   )
   const placeNameSingular = placeLevels?.[0]?.name_singular ?? 'Place'
