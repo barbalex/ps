@@ -19,7 +19,7 @@ export const Component = () => {
   const { results } = useLiveQuery(
     db.widgets_for_fields.liveMany({
       where: { deleted: false },
-      orderBy: [{ widget_for_field_id: 'asc' }],
+      orderBy: { label: 'asc' },
     }),
   )
 
