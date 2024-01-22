@@ -8,7 +8,7 @@ export const FieldNode = ({
   field,
   level = 2,
 }: {
-  fields: Field[]
+  field: Field
   level: number
 }) => {
   const params = useParams()

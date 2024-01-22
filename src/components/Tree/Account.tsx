@@ -8,7 +8,7 @@ export const AccountNode = ({
   account,
   level = 2,
 }: {
-  accounts: Account[]
+  account: Account
   level: number
 }) => {
   const params = useParams()
