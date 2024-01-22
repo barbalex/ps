@@ -11,6 +11,7 @@ import { TaxonomiesNode } from './Taxonomies'
 import { UnitsNode } from './Units'
 import { ProjectUsersNode } from './ProjectUsers'
 import { PlaceLevelsNode } from './PlaceLevels'
+import { FieldsNode } from './Fields'
 
 export const ProjectNode = ({
   project,
@@ -55,6 +56,7 @@ export const ProjectNode = ({
           <UnitsNode project_id={project.project_id} />
           <ProjectUsersNode project_id={project.project_id} />
           <PlaceLevelsNode project_id={project.project_id} />
+          <FieldsNode project_id={project.project_id} />
         </>
       )}
     </>
