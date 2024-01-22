@@ -18,6 +18,7 @@ export const Component = () => {
     () =>
       db.fields.liveMany({
         where: { project_id: project_id ?? null, deleted: false },
+        orderBy: { label: 'asc' },
       }),
     [project_id],
   )

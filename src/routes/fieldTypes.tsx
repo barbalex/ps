@@ -17,7 +17,7 @@ export const Component = () => {
   const { results } = useLiveQuery(
     db.field_types.liveMany({
       where: { deleted: false },
-      orderBy: [{ name: 'asc' }, { field_type_id: 'asc' }],
+      orderBy: { label: 'asc' },
     }),
   )
 

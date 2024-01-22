@@ -15,7 +15,11 @@ export const Component = () => {
 
   const { db } = useElectric()
   const { results } = useLiveQuery(
-    () => db.goals.liveMany({ where: { subproject_id, deleted: false } }),
+    () =>
+      db.goals.liveMany({
+        where: { subproject_id, deleted: false },
+        orderBy: { label: 'asc' },
+      }),
     [subproject_id],
   )
 
