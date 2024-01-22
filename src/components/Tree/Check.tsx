@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { Node } from './Node'
 import { Checks as Check } from '../../../generated/client'
 import { CheckValuesNode } from './CheckValues'
-// import { CheckReportsNode } from './ChecksReports'
+import { CheckTaxaNode } from './CheckTaxa'
 
 export const CheckNode = ({
   project_id,
@@ -63,12 +63,12 @@ export const CheckNode = ({
             place_id={place_id}
             check_id={check.check_id}
           />
-          {/* <CheckReportsNode
+          <CheckTaxaNode
             project_id={project_id}
             subproject_id={subproject_id}
             place_id={place_id}
             check_id={check.check_id}
-          /> */}
+          />
         </>
       )}
     </>

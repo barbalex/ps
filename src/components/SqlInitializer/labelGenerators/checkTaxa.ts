@@ -1,18 +1,45 @@
 export const generateCheckTaxonLabel = async (db) => {
-  const columns = await db.raw({
-    sql: 'PRAGMA table_xinfo(check_taxa)',
+  // if check_taxon_id is changed, update the label
+  const triggers = await db.raw({
+    sql: `select name from sqlite_master where type = 'trigger';`,
   })
-  const hasLabel = columns.some((column) => column.name === 'label')
-  if (!hasLabel) {
-    await db.raw({
-      sql: 'ALTER TABLE check_taxa ADD COLUMN label text GENERATED ALWAYS AS (check_taxon_id)',
+  const checkTaxonLabelTriggerExists = triggers.some(
+    (column) => column.name === 'check_taxon_label_trigger',
+  )
+  if (!checkTaxonLabelTriggerExists) {
+    const result = await db.raw({
+      sql: `
+      CREATE TRIGGER IF NOT EXISTS check_taxon_label_trigger
+        AFTER UPDATE OF taxon_id ON check_taxa
+      BEGIN
+        UPDATE check_taxa SET label = iif(
+          (SELECT name FROM taxa WHERE taxon_id = NEW.taxon_id) is not null,
+          concat(
+            (SELECT name FROM taxonomies where taxonomy_id = (select taxonomy_id from taxa where taxon_id = NEW.taxon_id)),
+            ': ',
+            (SELECT name FROM taxa WHERE taxon_id = NEW.taxon_id)
+          ),
+          NEW.check_taxon_id
+        );
+      END;`,
     })
+    console.log('TriggerGenerator, check_taxa, result:', result)
+    // same on insert
     await db.raw({
-      sql: 'CREATE INDEX IF NOT EXISTS check_taxa_label_idx ON check_taxa(label)',
+      sql: `
+      CREATE TRIGGER IF NOT EXISTS check_taxon_label_trigger_insert
+        AFTER INSERT ON check_taxa
+      BEGIN
+        UPDATE check_taxa SET label = iif(
+          (SELECT name FROM taxa WHERE taxon_id = NEW.taxon_id) is not null,
+          concat(
+            (SELECT name FROM taxonomies where taxonomy_id = (select taxonomy_id from taxa where taxon_id = NEW.taxon_id)),
+            ': ',
+            (SELECT name FROM taxa WHERE taxon_id = NEW.taxon_id)
+          ),
+          NEW.check_taxon_id
+        );
+      END;`,
     })
   }
-  // console.log('LabelGenerator, check_taxa:', {
-  //   columns,
-  //   hasLabel,
-  // })
 }
