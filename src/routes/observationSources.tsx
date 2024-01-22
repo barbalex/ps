@@ -15,7 +15,11 @@ export const Component = () => {
 
   const { db } = useElectric()
   const { results } = useLiveQuery(
-    () => db.observation_sources.liveMany({ where: { project_id } }),
+    () =>
+      db.observation_sources.liveMany({
+        where: { project_id, deleted: false },
+        orderBy: { label: 'asc' },
+      }),
     [project_id],
   )
 
