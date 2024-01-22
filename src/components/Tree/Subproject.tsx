@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 
 import { Node } from './Node'
 import { Subprojects as Subproject } from '../../../generated/client'
+import { PlacesNode } from './Places'
 
 export const SubprojectNode = ({
   project_id,
@@ -31,15 +32,24 @@ export const SubprojectNode = ({
 
   // TODO: childrenCount
   return (
-    <Node
-      node={subproject}
-      level={level}
-      isOpen={isOpen}
-      isInActiveNodeArray={isOpen}
-      isActive={isActive}
-      childrenCount={10}
-      to={`/projects/${project_id}/subprojects/${subproject.subproject_id}`}
-      onClickButton={onClickButton}
-    />
+    <>
+      <Node
+        node={subproject}
+        level={level}
+        isOpen={isOpen}
+        isInActiveNodeArray={isOpen}
+        isActive={isActive}
+        childrenCount={10}
+        to={`/projects/${project_id}/subprojects/${subproject.subproject_id}`}
+        onClickButton={onClickButton}
+      />
+      {isOpen && (
+        <PlacesNode
+          project_id={project_id}
+          subproject_id={subproject.subproject_id}
+          level={level + 1}
+        />
+      )}
+    </>
   )
 }
