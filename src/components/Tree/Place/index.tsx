@@ -1,12 +1,12 @@
 import { useCallback } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-import { Node } from './Node'
+import { Node } from '../Node'
 import { Places as Place } from '../../../generated/client'
-import { ChecksNode } from './Checks'
-import { ActionsNode } from './Actions'
-import { PlaceReportsNode } from './PlaceReports'
-import { PlaceUsersNode } from './PlaceUsers'
+import { ChecksNode } from '../Checks'
+import { ActionsNode } from '../Actions'
+import { PlaceReportsNode } from '../PlaceReports'
+import { PlaceUsersNode } from '../PlaceUsers'
 
 export const PlaceNode = ({
   project_id,
@@ -42,6 +42,7 @@ export const PlaceNode = ({
     )
   }, [isOpen, navigate, place.place_id, project_id, subproject_id])
 
+  // TODO: query from place_level settings what children to show
   return (
     <>
       <Node
