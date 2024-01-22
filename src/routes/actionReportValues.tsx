@@ -25,6 +25,7 @@ export const Component = () => {
     () =>
       db.action_report_values.liveMany({
         where: { action_report_id, deleted: false },
+        orderBy: { label: 'asc' },
       }),
     [action_report_id],
   )

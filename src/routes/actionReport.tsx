@@ -28,7 +28,11 @@ export const Component = () => {
 
   const { db } = useElectric()
   const { results } = useLiveQuery(
-    () => db.action_reports.liveUnique({ where: { action_report_id } }),
+    () =>
+      db.action_reports.liveUnique({
+        where: { action_report_id },
+        orderBy: { label: 'asc' },
+      }),
     [action_report_id],
   )
 
