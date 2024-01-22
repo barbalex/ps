@@ -9,7 +9,8 @@ export const SubprojectNode = ({
   subproject,
   level = 4,
 }: {
-  subprojects: Subproject[]
+  project_id: string
+  subproject: Subproject
   level: number
 }) => {
   const location = useLocation()

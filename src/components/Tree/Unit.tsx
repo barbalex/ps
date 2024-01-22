@@ -9,7 +9,8 @@ export const UnitNode = ({
   unit,
   level = 4,
 }: {
-  units: Unit[]
+  project_id: string
+  unit: Unit
   level: number
 }) => {
   const location = useLocation()

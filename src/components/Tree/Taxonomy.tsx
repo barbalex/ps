@@ -9,7 +9,8 @@ export const TaxonomyNode = ({
   taxonomy,
   level = 4,
 }: {
-  taxonomies: Taxonomy[]
+  project_id: string
+  taxonomy: Taxonomy
   level: number
 }) => {
   const location = useLocation()
