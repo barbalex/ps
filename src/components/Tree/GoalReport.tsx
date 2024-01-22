@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 
 import { Node } from './Node'
 import { GoalReports as GoalReport } from '../../../generated/client'
+import { GoalReportValuesNode } from './GoalReportValues'
 
 export const GoalReportNode = ({
   project_id,
@@ -39,18 +40,35 @@ export const GoalReportNode = ({
     navigate(
       `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${goalReport.goal_report_id}`,
     )
-  }, [isOpen, navigate, project_id, subproject_id, goal_id, goalReport.goal_report_id])
+  }, [
+    isOpen,
+    navigate,
+    project_id,
+    subproject_id,
+    goal_id,
+    goalReport.goal_report_id,
+  ])
 
   return (
-    <Node
-      node={goalReport}
-      level={level}
-      isOpen={isOpen}
-      isInActiveNodeArray={isOpen}
-      isActive={isActive}
-      childrenCount={10}
-      to={`/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${goalReport.goal_report_id}`}
-      onClickButton={onClickButton}
-    />
+    <>
+      <Node
+        node={goalReport}
+        level={level}
+        isOpen={isOpen}
+        isInActiveNodeArray={isOpen}
+        isActive={isActive}
+        childrenCount={10}
+        to={`/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${goalReport.goal_report_id}`}
+        onClickButton={onClickButton}
+      />
+      {isOpen && (
+        <GoalReportValuesNode
+          project_id={project_id}
+          subproject_id={subproject_id}
+          goal_id={goal_id}
+          goal_report_id={goalReport.goal_report_id}
+        />
+      )}
+    </>
   )
 }
