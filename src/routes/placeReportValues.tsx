@@ -19,6 +19,7 @@ export const Component = () => {
     () =>
       db.place_report_values.liveMany({
         where: { place_report_id, deleted: false },
+        orderBy: { label: 'asc' },
       }),
     [place_report_id],
   )
