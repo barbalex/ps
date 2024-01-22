@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 
 import { Node } from './Node'
 import { Places as Place } from '../../../generated/client'
+import { PlaceReportsNode } from './PlaceReports'
 import { PlaceUsersNode } from './PlaceUsers'
 
 export const PlaceNode = ({
@@ -52,11 +53,18 @@ export const PlaceNode = ({
         onClickButton={onClickButton}
       />
       {isOpen && (
-        <PlaceUsersNode
-          project_id={project_id}
-          subproject_id={subproject_id}
-          place_id={place.place_id}
-        />
+        <>
+          <PlaceReportsNode
+            project_id={project_id}
+            subproject_id={subproject_id}
+            place_id={place.place_id}
+          />
+          <PlaceUsersNode
+            project_id={project_id}
+            subproject_id={subproject_id}
+            place_id={place.place_id}
+          />
+        </>
       )}
     </>
   )

@@ -2,18 +2,18 @@ import { useCallback } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { Node } from './Node'
-import { PlaceUsers as PlaceUser } from '../../../generated/client'
+import { PlaceReports as PlaceReport } from '../../../generated/client'
 
-export const PlaceUserNode = ({
+export const PlaceReportNode = ({
   project_id,
   subproject_id,
   place_id,
-  placeUser,
+  placeReport,
   level = 8,
 }: {
   project_id: string
   subproject_id: string
-  placeUser: PlaceUser
+  placeReport: PlaceReport
   level: number
 }) => {
   const location = useLocation()
@@ -27,22 +27,22 @@ export const PlaceUserNode = ({
     urlPath[3] === subproject_id &&
     urlPath[4] === 'places' &&
     urlPath[5] === place_id &&
-    urlPath[6] === 'users' &&
-    urlPath[7] === placeUser.place_user_id
+    urlPath[6] === 'reports' &&
+    urlPath[7] === placeReport.place_report_id
   const isActive = isOpen && urlPath.length === level
 
   const onClickButton = useCallback(() => {
     if (isOpen)
       return navigate(
-        `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/users`,
+        `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/reports`,
       )
     navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/users/${placeUser.place_user_id}`,
+      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/reports/${placeReport.place_report_id}`,
     )
   }, [
     isOpen,
     navigate,
-    placeUser.place_user_id,
+    placeReport.place_report_id,
     place_id,
     project_id,
     subproject_id,
@@ -50,13 +50,13 @@ export const PlaceUserNode = ({
 
   return (
     <Node
-      node={placeUser}
+      node={placeReport}
       level={level}
       isOpen={isOpen}
       isInActiveNodeArray={isOpen}
       isActive={isActive}
       childrenCount={10}
-      to={`/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/users/${placeUser.place_user_id}`}
+      to={`/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/reports/${placeReport.place_report_id}`}
       onClickButton={onClickButton}
     />
   )
