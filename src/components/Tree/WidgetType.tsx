@@ -8,7 +8,7 @@ export const WidgetTypeNode = ({
   widgetType,
   level = 2,
 }: {
-  widgetTypes: WidgetType[]
+  widgetType: WidgetType
   level: number
 }) => {
   const params = useParams()

@@ -8,7 +8,7 @@ export const UserNode = ({
   user,
   level = 2,
 }: {
-  users: User[]
+  user: User
   level: number
 }) => {
   const params = useParams()

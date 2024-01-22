@@ -8,7 +8,7 @@ export const WidgetForFieldNode = ({
   widgetForField,
   level = 2,
 }: {
-  widgetsForFields: WidgetForField[]
+  widgetForField: WidgetForField
   level: number
 }) => {
   const params = useParams()
