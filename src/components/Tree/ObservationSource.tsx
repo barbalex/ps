@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 
 import { Node } from './Node'
 import { ObservationSources as ObservationSource } from '../../../generated/client'
+import { ObservationsNode } from './Observations'
 
 export const ObservationSourceNode = ({
   project_id,
@@ -33,15 +34,23 @@ export const ObservationSourceNode = ({
 
   // TODO: childrenCount
   return (
-    <Node
-      node={observationSource}
-      level={level}
-      isOpen={isOpen}
-      isInActiveNodeArray={isOpen}
-      isActive={isActive}
-      childrenCount={10}
-      to={`/projects/${project_id}/observation-sources/${observationSource.observation_source_id}`}
-      onClickButton={onClickButton}
-    />
+    <>
+      <Node
+        node={observationSource}
+        level={level}
+        isOpen={isOpen}
+        isInActiveNodeArray={isOpen}
+        isActive={isActive}
+        childrenCount={10}
+        to={`/projects/${project_id}/observation-sources/${observationSource.observation_source_id}`}
+        onClickButton={onClickButton}
+      />
+      {isOpen && (
+        <ObservationsNode
+          project_id={project_id}
+          observation_source_id={observationSource.observation_source_id}
+        />
+      )}
+    </>
   )
 }

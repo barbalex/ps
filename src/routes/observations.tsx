@@ -18,6 +18,7 @@ export const Component = () => {
     () =>
       db.observations.liveMany({
         where: { observation_source_id, deleted: false },
+        orderBy: { label: 'asc' },
       }),
     [project_id, observation_source_id],
   )

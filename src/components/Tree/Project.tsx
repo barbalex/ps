@@ -12,7 +12,7 @@ import { UnitsNode } from './Units'
 import { ProjectUsersNode } from './ProjectUsers'
 import { PlaceLevelsNode } from './PlaceLevels'
 import { FieldsNode } from './Fields'
-import { ObservationSourcesNode } from './OvservationSources'
+import { ObservationSourcesNode } from './ObservationSources'
 
 export const ProjectNode = ({
   project,
