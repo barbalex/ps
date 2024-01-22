@@ -60,7 +60,6 @@ body {
   position: relative;
   column-gap: 0;
   row-gap: 0;
-  height: 38px;
   background-color: rgba(103, 216, 101, 0.07);
   border-bottom: 1px solid rgba(55, 118, 28, 0.5);
   border-collapse: collapse;
@@ -68,6 +67,7 @@ body {
   align-items: stretch;
   white-space: nowrap;
   overflow: hidden;
+  min-height: 38.7px;
 }
 
 .navs {
@@ -79,6 +79,7 @@ body {
   border-bottom: 1px solid rgba(55, 118, 28, 0.5);
   border-collapse: collapse;
   border-top: none;
+  min-height: 38.7px;
 }
 
 .navs a,

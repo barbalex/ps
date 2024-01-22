@@ -16,7 +16,7 @@ export const Navs = () => {
   const uiOption: UiOption = results
 
   if (uiOption?.navs_overflowing === undefined) {
-    return null
+    return <div className="navs" />
   }
 
   if (uiOption?.navs_overflowing === false) {

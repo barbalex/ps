@@ -30,12 +30,12 @@ export const NavsWrapping = () => {
 
   const tosToUse = tos[0] ?? []
 
-  console.log('Navs', {
-    matches,
-    tosToUse,
-    thisPathsMatches,
-    pathname: location.pathname,
-  })
+  // console.log('Navs', {
+  //   matches,
+  //   tosToUse,
+  //   thisPathsMatches,
+  //   pathname: location.pathname,
+  // })
 
   return (
     <nav className="navs">

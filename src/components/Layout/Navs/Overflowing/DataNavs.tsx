@@ -82,8 +82,8 @@ export const DataNavsOverflowing = forwardRef(({ matches }, ref) => {
   //   filterParams,
   // })
 
-  if (!table) return null
-  if (!tos.length) return null
+  if (!table) return <div className="navs-resizable" />
+  if (!tos.length) return <div className="navs-resizable" />
 
   return (
     <Overflow overflowDirection="start" padding={20} ref={ref}>
@@ -97,5 +97,4 @@ export const DataNavsOverflowing = forwardRef(({ matches }, ref) => {
       </nav>
     </Overflow>
   )
-}
-)
+})

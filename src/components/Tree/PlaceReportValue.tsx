@@ -59,7 +59,7 @@ export const PlaceReportValueNode = ({
       isOpen={isOpen}
       isInActiveNodeArray={isOpen}
       isActive={isActive}
-      childrenCount={10}
+      childrenCount={0}
       to={`/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/reports/${place_report_id}/values/${placeReportValue.place_report_value_id}`}
       onClickButton={onClickButton}
     />

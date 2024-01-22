@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 
 import { Node } from './Node'
 import { Places as Place } from '../../../generated/client'
+import { ActionsNode } from './Actions'
 import { PlaceReportsNode } from './PlaceReports'
 import { PlaceUsersNode } from './PlaceUsers'
 
@@ -54,6 +55,11 @@ export const PlaceNode = ({
       />
       {isOpen && (
         <>
+          <ActionsNode
+            project_id={project_id}
+            subproject_id={subproject_id}
+            place_id={place.place_id}
+          />
           <PlaceReportsNode
             project_id={project_id}
             subproject_id={subproject_id}
