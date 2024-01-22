@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 
 import { Node } from './Node'
 import { Lists as List } from '../../../generated/client'
+import { ListValuesNode } from './ListValues'
 
 export const ListNode = ({
   project_id,
@@ -30,15 +31,20 @@ export const ListNode = ({
   }, [isOpen, navigate, project_id, list.list_id])
 
   return (
-    <Node
-      node={list}
-      level={level}
-      isOpen={isOpen}
-      isInActiveNodeArray={isOpen}
-      isActive={isActive}
-      childrenCount={0}
-      to={`/projects/${project_id}/lists/${list.list_id}`}
-      onClickButton={onClickButton}
-    />
+    <>
+      <Node
+        node={list}
+        level={level}
+        isOpen={isOpen}
+        isInActiveNodeArray={isOpen}
+        isActive={isActive}
+        childrenCount={0}
+        to={`/projects/${project_id}/lists/${list.list_id}`}
+        onClickButton={onClickButton}
+      />
+      {isOpen && (
+        <ListValuesNode project_id={project_id} list_id={list.list_id} />
+      )}
+    </>
   )
 }
