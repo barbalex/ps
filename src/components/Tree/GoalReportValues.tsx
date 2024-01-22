@@ -71,7 +71,7 @@ export const GoalReportValuesNode = ({
       {isOpen &&
         goalReportValues.map((goalReportValue) => (
           <GoalReportValueNode
-            key={goalReportValue.goal_report_id}
+            key={goalReportValue.goal_report_value_id}
             project_id={project_id}
             subproject_id={subproject_id}
             goal_id={goal_id}
