@@ -24,7 +24,7 @@ export const Main = () => {
   )
   const tabs = useMemo(() => results?.tabs ?? [], [results?.tabs])
 
-  console.log('Main, tabs:', tabs)
+  // console.log('Main, tabs:', tabs)
 
   return (
     <div style={containerStyle}>
