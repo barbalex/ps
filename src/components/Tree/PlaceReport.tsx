@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 
 import { Node } from './Node'
 import { PlaceReports as PlaceReport } from '../../../generated/client'
+import { PlaceReportValuesNode } from './PlaceReportValues'
 
 export const PlaceReportNode = ({
   project_id,
@@ -49,15 +50,25 @@ export const PlaceReportNode = ({
   ])
 
   return (
-    <Node
-      node={placeReport}
-      level={level}
-      isOpen={isOpen}
-      isInActiveNodeArray={isOpen}
-      isActive={isActive}
-      childrenCount={10}
-      to={`/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/reports/${placeReport.place_report_id}`}
-      onClickButton={onClickButton}
-    />
+    <>
+      <Node
+        node={placeReport}
+        level={level}
+        isOpen={isOpen}
+        isInActiveNodeArray={isOpen}
+        isActive={isActive}
+        childrenCount={10}
+        to={`/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/reports/${placeReport.place_report_id}`}
+        onClickButton={onClickButton}
+      />
+      {isOpen && (
+        <PlaceReportValuesNode
+          project_id={project_id}
+          subproject_id={subproject_id}
+          place_id={place_id}
+          place_report_id={placeReport.place_report_id}
+        />
+      )}
+    </>
   )
 }
