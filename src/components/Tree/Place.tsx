@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 
 import { Node } from './Node'
 import { Places as Place } from '../../../generated/client'
+import { PlaceUsersNode } from './PlaceUsers'
 
 export const PlaceNode = ({
   project_id,
@@ -39,15 +40,24 @@ export const PlaceNode = ({
   }, [isOpen, navigate, place.place_id, project_id, subproject_id])
 
   return (
-    <Node
-      node={place}
-      level={level}
-      isOpen={isOpen}
-      isInActiveNodeArray={isOpen}
-      isActive={isActive}
-      childrenCount={10}
-      to={`/projects/${project_id}/subprojects/${subproject_id}/places/${place.place_id}`}
-      onClickButton={onClickButton}
-    />
+    <>
+      <Node
+        node={place}
+        level={level}
+        isOpen={isOpen}
+        isInActiveNodeArray={isOpen}
+        isActive={isActive}
+        childrenCount={10}
+        to={`/projects/${project_id}/subprojects/${subproject_id}/places/${place.place_id}`}
+        onClickButton={onClickButton}
+      />
+      {isOpen && (
+        <PlaceUsersNode
+          project_id={project_id}
+          subproject_id={subproject_id}
+          place_id={place.place_id}
+        />
+      )}
+    </>
   )
 }
