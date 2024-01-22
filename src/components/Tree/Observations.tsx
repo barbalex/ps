@@ -50,13 +50,6 @@ export const ObservationsNode = ({
     )
   }, [isOpen, navigate, observation_source_id, project_id])
 
-  console.log('ObservationsNode', {
-    observationsNode,
-    isOpen,
-    isActive,
-    observations,
-  })
-
   return (
     <>
       <Node

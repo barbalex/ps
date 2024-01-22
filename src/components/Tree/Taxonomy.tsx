@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 
 import { Node } from './Node'
 import { Taxonomies as Taxonomy } from '../../../generated/client'
+import { TaxaNode } from './Taxa'
 
 export const TaxonomyNode = ({
   project_id,
@@ -29,17 +30,21 @@ export const TaxonomyNode = ({
     navigate(`/projects/${project_id}/taxonomies/${taxonomy.taxonomy_id}`)
   }, [isOpen, navigate, project_id, taxonomy.taxonomy_id])
 
-  // TODO: childrenCount
   return (
-    <Node
-      node={taxonomy}
-      level={level}
-      isOpen={isOpen}
-      isInActiveNodeArray={isOpen}
-      isActive={isActive}
-      childrenCount={10}
-      to={`/projects/${project_id}/taxonomies/${taxonomy.taxonomy_id}`}
-      onClickButton={onClickButton}
-    />
+    <>
+      <Node
+        node={taxonomy}
+        level={level}
+        isOpen={isOpen}
+        isInActiveNodeArray={isOpen}
+        isActive={isActive}
+        childrenCount={1}
+        to={`/projects/${project_id}/taxonomies/${taxonomy.taxonomy_id}`}
+        onClickButton={onClickButton}
+      />
+      {isOpen && (
+        <TaxaNode project_id={project_id} taxonomy_id={taxonomy.taxonomy_id} />
+      )}
+    </>
   )
 }
