@@ -8,6 +8,7 @@ import { SubprojectReportsNode } from './SubprojectReports'
 import { GoalsNode } from './Goals'
 import { SubprojectReportsNode } from './SubprojectReports'
 import { SubprojectTaxaNode } from './SubprojectTaxa'
+import { SubprojectUsersNode } from './SubprojectUsers'
 
 export const SubprojectNode = ({
   project_id,
@@ -34,7 +35,6 @@ export const SubprojectNode = ({
     navigate(`/projects/${project_id}/subprojects/${subproject.subproject_id}`)
   }, [isOpen, navigate, project_id, subproject.subproject_id])
 
-  // TODO: childrenCount
   return (
     <>
       <Node
@@ -43,7 +43,7 @@ export const SubprojectNode = ({
         isOpen={isOpen}
         isInActiveNodeArray={isOpen}
         isActive={isActive}
-        childrenCount={10}
+        childrenCount={5}
         to={`/projects/${project_id}/subprojects/${subproject.subproject_id}`}
         onClickButton={onClickButton}
       />
@@ -63,6 +63,10 @@ export const SubprojectNode = ({
             subproject_id={subproject.subproject_id}
           />
           <SubprojectTaxaNode
+            project_id={project_id}
+            subproject_id={subproject.subproject_id}
+          />
+          <SubprojectUsersNode
             project_id={project_id}
             subproject_id={subproject.subproject_id}
           />
