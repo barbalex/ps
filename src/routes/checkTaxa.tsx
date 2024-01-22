@@ -16,7 +16,11 @@ export const Component = () => {
 
   const { db } = useElectric()
   const { results } = useLiveQuery(
-    () => db.check_taxa.liveMany({ where: { check_id, deleted: false } }),
+    () =>
+      db.check_taxa.liveMany({
+        where: { check_id, deleted: false },
+        orderBy: { label: 'asc' },
+      }),
     [check_id],
   )
 

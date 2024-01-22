@@ -15,7 +15,9 @@ export const Component = () => {
   const navigate = useNavigate()
 
   const { db } = useElectric()
-  const { results } = useLiveQuery(db.files.liveMany())
+  const { results } = useLiveQuery(
+    db.files.liveMany({ where: { deleted: false }, orderBy: { label: 'asc' } }),
+  )
 
   const add = useCallback(async () => {
     const data = await createFile({ db })
