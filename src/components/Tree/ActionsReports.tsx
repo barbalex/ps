@@ -28,7 +28,7 @@ export const ActionReportsNode = ({
 
   const actionReportsNode = useMemo(
     () => ({
-      label: `Action Reports (${actionReports.length})`,
+      label: `Reports (${actionReports.length})`,
     }),
     [actionReports.length],
   )

@@ -12,24 +12,7 @@ export const generatePlaceReportValueLabel = async (db) => {
       CREATE TRIGGER IF NOT EXISTS place_report_values_label_trigger
         AFTER UPDATE ON place_report_values
       BEGIN
-        UPDATE place_report_values SET label = iif(
-          units.name is null,
-          NEW.place_report_value_id,
-          concat(
-            units.name,
-            ': ',
-            coalesce(NEW.value_integer, NEW.value_numeric, NEW.value_text)
-          )
-        )
-        FROM(
-        SELECT
-          name
-        FROM
-          units
-        WHERE
-          unit_id = NEW.unit_id) AS units
-        WHERE
-          place_report_values.place_report_value_id = NEW.place_report_value_id;
+        UPDATE place_report_values SET label = NEW.place_report_value_id;
       END;`,
     })
     console.log('TriggerGenerator, place_report_values, result:', result)

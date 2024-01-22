@@ -12,24 +12,7 @@ export const generateActionValueLabel = async (db) => {
       CREATE TRIGGER IF NOT EXISTS action_values_label_trigger
         AFTER UPDATE ON action_values
       BEGIN
-        UPDATE action_values SET label = iif(
-          units.name is null,
-          NEW.action_value_id,
-          concat(
-            units.name,
-            ': ',
-            coalesce(NEW.value_integer, NEW.value_numeric, NEW.value_text)
-          )
-        )
-        FROM(
-        SELECT
-          name
-        FROM
-          units
-        WHERE
-          unit_id = NEW.unit_id) AS units
-        WHERE
-          action_values.action_value_id = NEW.action_value_id;
+        UPDATE action_values SET label = NEW.action_value_id;
       END;`,
     })
     console.log('TriggerGenerator, action_values, result:', result)
