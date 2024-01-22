@@ -7,6 +7,7 @@ import { ChecksNode } from '../Checks'
 import { ActionsNode } from '../Actions'
 import { PlaceReportsNode } from '../PlaceReports'
 import { PlaceUsersNode } from '../PlaceUsers'
+import { PlaceChildren } from './Children'
 
 export const PlaceNode = ({
   project_id,
@@ -56,28 +57,12 @@ export const PlaceNode = ({
         onClickButton={onClickButton}
       />
       {isOpen && (
-        <>
-          <ChecksNode
-            project_id={project_id}
-            subproject_id={subproject_id}
-            place_id={place.place_id}
-          />
-          <ActionsNode
-            project_id={project_id}
-            subproject_id={subproject_id}
-            place_id={place.place_id}
-          />
-          <PlaceReportsNode
-            project_id={project_id}
-            subproject_id={subproject_id}
-            place_id={place.place_id}
-          />
-          <PlaceUsersNode
-            project_id={project_id}
-            subproject_id={subproject_id}
-            place_id={place.place_id}
-          />
-        </>
+        <PlaceChildren
+          project_id={project_id}
+          subproject_id={subproject_id}
+          place_id={place.place_id}
+          level={level}
+        />
       )}
     </>
   )
