@@ -83,8 +83,10 @@ export const CheckValuesNode = ({
             project_id={project_id}
             subproject_id={subproject_id}
             place_id={place_id}
+            place={place}
             check_id={check_id}
             checkValue={checkValue}
+            level={level + 1}
           />
         ))}
     </>
