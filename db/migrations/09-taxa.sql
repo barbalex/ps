@@ -5,7 +5,7 @@ CREATE TABLE taxa(
   name text DEFAULT NULL,
   id_in_source text DEFAULT NULL,
   url text DEFAULT NULL,
-  label_replace_by_generated_column text DEFAULT NULL,
+  label text DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
 );
 
@@ -15,6 +15,8 @@ CREATE INDEX ON taxa USING btree(account_id);
 CREATE INDEX ON taxa USING btree(taxonomy_id);
 
 CREATE INDEX ON taxa USING btree(name);
+
+CREATE INDEX ON taxa USING btree(label);
 
 -- CREATE INDEX ON taxa((1))
 -- WHERE
