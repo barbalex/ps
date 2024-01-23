@@ -41,7 +41,7 @@ export const generateGoalReportValueLabel = async (db) => {
     const result = await db.raw({
       sql: `
       CREATE TRIGGER IF NOT EXISTS goal_report_values_label_insert_trigger
-        AFTER UPDATE ON goal_report_values
+        AFTER insert ON goal_report_values
       BEGIN
         UPDATE goal_report_values SET label = NEW.goal_report_value_id;
       END;`,

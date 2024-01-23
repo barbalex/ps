@@ -22,7 +22,7 @@ export const generatePlaceUserLabel = async (db) => {
       CREATE TRIGGER IF NOT EXISTS place_users_label_trigger_insert
         AFTER INSERT ON place_users
       BEGIN
-        UPDATE place_users SET label = (SELECT email FROM users WHERE user_id = NEW.user_id) || ' (' || NEW.role || ')';
+        UPDATE place_users SET label = NEW.place_user_id;
       END;`,
     })
   }
