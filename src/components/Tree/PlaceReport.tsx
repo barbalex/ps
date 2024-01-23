@@ -70,7 +70,9 @@ export const PlaceReportNode = ({
           project_id={project_id}
           subproject_id={subproject_id}
           place_id={place_id}
+          place={place}
           place_report_id={placeReport.place_report_id}
+          level={level + 1}
         />
       )}
     </>
