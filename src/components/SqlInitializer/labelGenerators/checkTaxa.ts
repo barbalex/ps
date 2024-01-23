@@ -30,15 +30,7 @@ export const generateCheckTaxonLabel = async (db) => {
       CREATE TRIGGER IF NOT EXISTS check_taxon_label_trigger_insert
         AFTER INSERT ON check_taxa
       BEGIN
-        UPDATE check_taxa SET label = iif(
-          (SELECT name FROM taxa WHERE taxon_id = NEW.taxon_id) is not null,
-          concat(
-            (SELECT name FROM taxonomies where taxonomy_id = (select taxonomy_id from taxa where taxon_id = NEW.taxon_id)),
-            ': ',
-            (SELECT name FROM taxa WHERE taxon_id = NEW.taxon_id)
-          ),
-          NEW.check_taxon_id
-        );
+        UPDATE check_taxa SET label = NEW.check_taxon_id;
       END;`,
     })
   }

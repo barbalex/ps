@@ -41,7 +41,7 @@ export const generateActionValueLabel = async (db) => {
     const result = await db.raw({
       sql: `
       CREATE TRIGGER IF NOT EXISTS action_values_label_insert_trigger
-        AFTER UPDATE ON action_values
+        AFTER insert ON action_values
       BEGIN
         UPDATE action_values SET label = NEW.action_value_id;
       END;`,
