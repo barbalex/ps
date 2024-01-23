@@ -23,7 +23,7 @@ export const FilteringCombobox = memo(
         where: whereForOptions = {},
         orderBy = { label: 'asc' },
         include = {},
-        labelFromResult,
+        labelFromResult, // allows passing in special data. Not in use yet.
         value,
         onChange,
         autoFocus,

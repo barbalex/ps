@@ -122,9 +122,6 @@ export const Component = () => {
           table="taxa"
           where={taxaWhere}
           include={taxaInclude}
-          labelFromResult={(result) =>
-            `${result.taxonomies.name} (${result.taxonomies.type}): ${result.label}`
-          }
           value={row.taxon_id ?? ''}
           onChange={onChange}
           autoFocus

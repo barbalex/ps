@@ -26,6 +26,7 @@ export const FilteringComboboxOptions = memo(
         include,
       }),
     )
+    // labelFromResult allows passing in special data. Not in use yet.
     const options = results.map((o) => ({
       text: labelFromResult ? labelFromResult(o) : o.label,
       value: o[idField ?? name],
