@@ -49,6 +49,7 @@ export const Component = () => {
       parent_id: place_id2 ? place_id : null,
       level: place_id2 ? 2 : 1,
     })
+    console.log('place, addRow, data:', data)
     await db.places.create({ data })
     navigate(`${baseUrl}/${data.place_id}`)
     autoFocusRef.current?.focus()

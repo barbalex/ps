@@ -7,12 +7,8 @@ import { Node } from './Node'
 import { Places as Place } from '../../../generated/client'
 import { PlaceNode } from './Place'
 
-export const PlacesNode = ({
-  project_id,
-  subproject_id,
-  place_id,
-  level = 5,
-}) => {
+export const PlacesNode = ({ project_id, subproject_id, place_id }) => {
+  const level = place_id ? 7 : 5
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -37,7 +33,7 @@ export const PlacesNode = ({
   )
   const placeNamePlural = placeLevels?.[0]?.name_plural ?? 'Places'
 
-  // TODO: get name by place_level
+  // get name by place_level
   const placesNode = useMemo(
     () => ({
       label: `${placeNamePlural} (${places.length})`,
@@ -45,20 +41,27 @@ export const PlacesNode = ({
     [placeNamePlural, places.length],
   )
 
+  const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/places${
+    place_id ? `/${place_id}/places` : ''
+  }`
+
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const isOpen =
+  const isOpenBase =
     urlPath[0] === 'projects' &&
     urlPath[1] === project_id &&
     urlPath[2] === 'subprojects' &&
     urlPath[3] === subproject_id &&
     urlPath[4] === 'places'
+  const isOpen = place_id
+    ? isOpenBase && urlPath[5] === place_id && urlPath[6] === 'places'
+    : isOpenBase
   const isActive = isOpen && urlPath.length === level
 
   const onClickButton = useCallback(() => {
     if (isOpen)
       return navigate(`/projects/${project_id}/subprojects/${subproject_id}`)
-    navigate(`/projects/${project_id}/subprojects/${subproject_id}/places`)
-  }, [isOpen, navigate, project_id, subproject_id])
+    navigate(baseUrl)
+  }, [baseUrl, isOpen, navigate, project_id, subproject_id])
 
   return (
     <>
@@ -69,7 +72,7 @@ export const PlacesNode = ({
         isInActiveNodeArray={isOpen}
         isActive={isActive}
         childrenCount={places.length}
-        to={`/projects/${project_id}/subprojects/${subproject_id}/places`}
+        to={baseUrl}
         onClickButton={onClickButton}
       />
       {isOpen &&
@@ -78,7 +81,7 @@ export const PlacesNode = ({
             key={place.place_id}
             project_id={project_id}
             subproject_id={subproject_id}
-            place_id={place.place_id}
+            place_id={place_id}
             place={place}
             level={level + 1}
           />

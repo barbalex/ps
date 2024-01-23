@@ -44,7 +44,7 @@ export const Component = () => {
       db,
       project_id,
       subproject_id,
-      place_id: place_id ?? null,
+      parent_id: place_id ?? null,
       level: place_id ? 2 : 1,
     })
     await db.places.create({ data })

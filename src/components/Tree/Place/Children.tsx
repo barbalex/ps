@@ -1,21 +1,26 @@
 import { useLiveQuery } from 'electric-sql/react'
 
-import { Place_levels as PlaceLevel } from '../../../generated/client'
+import {
+  Place_levels as PlaceLevel,
+  Places as Place,
+} from '../../../generated/client'
 import { ChecksNode } from '../Checks'
 import { ActionsNode } from '../Actions'
 import { PlaceReportsNode } from '../PlaceReports'
 import { PlaceUsersNode } from '../PlaceUsers'
+import { PlacesNode } from '../Places'
 import { useElectric } from '../../../ElectricProvider'
 
 export const PlaceChildren = ({
   project_id,
   subproject_id,
   place_id,
-  level = 6,
+  place,
 }: {
   project_id: string
   subproject_id: string
   place_id: string
+  place: Place
   level: number
 }) => {
   const { db } = useElectric()!
@@ -25,7 +30,7 @@ export const PlaceChildren = ({
       where: {
         deleted: false,
         project_id,
-        level: level === 6 ? 1 : 2,
+        level: place_id ? 2 : 1,
       },
     }),
   )
@@ -33,6 +38,13 @@ export const PlaceChildren = ({
 
   return (
     <>
+      {!place_id && (
+        <PlacesNode
+          project_id={project_id}
+          subproject_id={subproject_id}
+          place_id={place.place_id}
+        />
+      )}
       {!!placeLevel?.checks && (
         <ChecksNode
           project_id={project_id}

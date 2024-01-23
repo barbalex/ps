@@ -52,7 +52,6 @@ export const SubprojectNode = ({
           <PlacesNode
             project_id={project_id}
             subproject_id={subproject.subproject_id}
-            level={level + 1}
           />
           <SubprojectReportsNode
             project_id={project_id}
