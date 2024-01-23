@@ -22,7 +22,7 @@ export const generateUiOptionLabel = async (db) => {
       CREATE TRIGGER IF NOT EXISTS ui_options_label_trigger_insert
         AFTER INSERT ON ui_options
       BEGIN
-        UPDATE ui_options SET label = (SELECT email FROM users WHERE user_id = NEW.user_id);
+        UPDATE ui_options SET label = NEW.user_id;
       END;`,
     })
   }

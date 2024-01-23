@@ -22,7 +22,7 @@ export const generateProjectUserLabel = async (db) => {
       CREATE TRIGGER IF NOT EXISTS project_users_label_trigger_insert
         AFTER INSERT ON project_users
       BEGIN
-        UPDATE project_users SET label = (SELECT email FROM users WHERE user_id = NEW.user_id) || ' (' || NEW.role || ')';
+        UPDATE project_users SET label = NEW.project_user_id;
       END;`,
     })
   }
