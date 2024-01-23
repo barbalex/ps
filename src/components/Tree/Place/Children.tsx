@@ -21,8 +21,9 @@ export const PlaceChildren = ({
   subproject_id: string
   place_id: string
   place: Place
-  level: number
 }) => {
+  const level = place_id ? 8 : 6
+
   const { db } = useElectric()!
   // query from place_level what children to show
   const { results: placeLevels } = useLiveQuery(
@@ -50,6 +51,8 @@ export const PlaceChildren = ({
           project_id={project_id}
           subproject_id={subproject_id}
           place_id={place_id}
+          place={place}
+          level={level + 1}
         />
       )}
       {!!placeLevel?.actions && (
@@ -57,6 +60,8 @@ export const PlaceChildren = ({
           project_id={project_id}
           subproject_id={subproject_id}
           place_id={place_id}
+          place={place}
+          level={level + 1}
         />
       )}
       {!!placeLevel?.reports && (
@@ -64,12 +69,16 @@ export const PlaceChildren = ({
           project_id={project_id}
           subproject_id={subproject_id}
           place_id={place_id}
+          place={place}
+          level={level + 1}
         />
       )}
       <PlaceUsersNode
         project_id={project_id}
         subproject_id={subproject_id}
         place_id={place_id}
+        place={place}
+        level={level + 1}
       />
     </>
   )
