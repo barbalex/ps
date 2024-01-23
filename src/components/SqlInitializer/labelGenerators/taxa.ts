@@ -3,20 +3,52 @@ export const generateTaxonLabel = async (db) => {
   // use physical label
   // build by:
   // `${taxonomy.name} (${taxonomy.type}): ${taxon.name}
-  const columns = await db.raw({
-    sql: 'PRAGMA table_xinfo(taxa)',
+  const triggers = await db.raw({
+    sql: `select name from sqlite_master where type = 'trigger';`,
   })
-  const hasLabel = columns.some((column) => column.name === 'label')
-  if (!hasLabel) {
-    await db.raw({
-      sql: 'ALTER TABLE taxa ADD COLUMN label text GENERATED ALWAYS AS (coalesce(name, taxon_id))',
+  const triggerExists = triggers.some(
+    (column) => column.name === 'taxa_label_trigger',
+  )
+  if (!triggerExists) {
+    const result = await db.raw({
+      sql: `
+      CREATE TRIGGER if not exists taxa_label_trigger
+      AFTER UPDATE of taxonomy_id, name ON taxa
+      BEGIN
+        UPDATE taxa SET label = case 
+        when taxonomies.name is null then taxon_id
+        else concat(taxonomies.name, ' (', taxonomies.type, '): ', taxa.name)
+        end
+        FROM (
+          SELECT name, type from taxonomies 
+          where taxonomy_id = NEW.taxonomy_id
+        ) as taxonomies
+         WHERE taxa.taxon_id = NEW.taxon_id;
+      END`,
     })
-    await db.raw({
-      sql: 'CREATE INDEX IF NOT EXISTS taxa_label_idx ON taxa(label)',
-    })
+    console.log('taxa_label_trigger, result: ', result)
   }
-  // console.log('LabelGenerator, taxa:', {
-  //   columns,
-  //   hasLabel,
-  // })
+  // same on insert
+  const insertTriggerExists = triggers.some(
+    (column) => column.name === 'taxa_label_insert_trigger',
+  )
+  if (!insertTriggerExists) {
+    const result = await db.raw({
+      sql: `
+      CREATE TRIGGER if not exists taxa_label_insert_trigger
+      AFTER INSERT ON taxa
+      BEGIN
+        UPDATE taxa SET label = case 
+        when taxonomies.name is null then taxon_id
+        else concat(taxonomies.name, ' (', taxonomies.type, '): ', taxa.name)
+        end
+        FROM (
+          SELECT name, type from taxonomies 
+          where taxonomy_id = NEW.taxonomy_id
+        ) as taxonomies
+         WHERE taxa.taxon_id = NEW.taxon_id;
+      END`,
+    })
+    console.log('taxa_label_insert_trigger, result: ', result)
+  }
 }
