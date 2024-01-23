@@ -1,4 +1,8 @@
 export const generateTaxonLabel = async (db) => {
+  // TODO:
+  // use physical label
+  // build by:
+  // `${taxonomy.name} (${taxonomy.type}): ${taxon.name}
   const columns = await db.raw({
     sql: 'PRAGMA table_xinfo(taxa)',
   })
