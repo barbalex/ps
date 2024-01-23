@@ -83,8 +83,10 @@ export const ActionValuesNode = ({
             project_id={project_id}
             subproject_id={subproject_id}
             place_id={place_id}
+            place={place}
             action_id={action_id}
             actionValue={actionValue}
+            level={level + 1}
           />
         ))}
     </>
