@@ -81,8 +81,10 @@ export const CheckTaxaNode = ({
             project_id={project_id}
             subproject_id={subproject_id}
             place_id={place_id}
+            place={place}
             check_id={check_id}
             checkTaxon={checkTaxon}
+            level={level + 1}
           />
         ))}
     </>
