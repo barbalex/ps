@@ -11,6 +11,8 @@ export const FilteringComboboxOptions = memo(
     idField, // defaults to name, used for cases where the id field is not the same as the name field (?)
     where = {},
     orderBy = { label: 'asc' },
+    include = {},
+    labelFromResult,
     filter,
   }) => {
     const { db } = useElectric()
@@ -21,12 +23,24 @@ export const FilteringComboboxOptions = memo(
           label: { contains: filter },
         },
         orderBy,
+        include,
       }),
     )
     const options = results.map((o) => ({
-      text: o.label,
+      text: labelFromResult ? labelFromResult(o) : o.label,
       value: o[idField ?? name],
     }))
+
+    // console.log('FilteringComboboxOptions', {
+    //   name,
+    //   table,
+    //   where,
+    //   orderBy,
+    //   include,
+    //   filter,
+    //   options,
+    //   results,
+    // })
 
     if (!options.length) {
       return (

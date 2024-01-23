@@ -22,6 +22,8 @@ export const FilteringCombobox = memo(
         idField, // defaults to name, used for cases where the id field is not the same as the name field (?)
         where: whereForOptions = {},
         orderBy = { label: 'asc' },
+        include = {},
+        labelFromResult,
         value,
         onChange,
         autoFocus,
@@ -105,6 +107,8 @@ export const FilteringCombobox = memo(
               idField={idField}
               where={whereForOptions}
               orderBy={orderBy}
+              include={include}
+              labelFromResult={labelFromResult}
               filter={filter}
             />
           </Combobox>

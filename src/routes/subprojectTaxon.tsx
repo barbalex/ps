@@ -94,6 +94,7 @@ export const Component = () => {
   )
 
   const taxaWhere = useMemo(() => ({ deleted: false }), [])
+  const taxaInclude = useMemo(() => ({ taxonomies: true }), [])
 
   if (!row) {
     return <div>Loading...</div>
@@ -120,6 +121,10 @@ export const Component = () => {
           name="taxon_id"
           table="taxa"
           where={taxaWhere}
+          include={taxaInclude}
+          labelFromResult={(result) =>
+            `${result.taxonomies.name} (${result.taxonomies.type}): ${result.label}`
+          }
           value={row.taxon_id ?? ''}
           onChange={onChange}
           autoFocus
