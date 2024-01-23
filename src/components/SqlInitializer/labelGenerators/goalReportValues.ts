@@ -12,9 +12,40 @@ export const generateGoalReportValueLabel = async (db) => {
       CREATE TRIGGER IF NOT EXISTS goal_report_values_label_trigger
         AFTER UPDATE ON goal_report_values
       BEGIN
-        UPDATE goal_report_values SET label = NEW.goal_report_value_id;
+        UPDATE goal_report_values SET label = iif(
+          units.name is not null,
+          concat(
+            units.name,
+            ': ',
+            coalesce(NEW.value_integer, NEW.value_numeric, NEW.value_text)
+          ),
+          NEW.goal_report_value_id
+        ) 
+        FROM(
+        SELECT
+          name
+        FROM
+          units
+        WHERE
+          unit_id = NEW.unit_id) AS units
+        WHERE
+          goal_report_values.goal_report_value_id = NEW.goal_report_value_id;
       END;`,
     })
     console.log('TriggerGenerator, goal_report_values, result:', result)
+  }
+  const goalReportValuesLabelInsertTriggerExists = triggers.some(
+    (column) => column.name === 'goal_report_values_label_insert_trigger',
+  )
+  if (!goalReportValuesLabelInsertTriggerExists) {
+    const result = await db.raw({
+      sql: `
+      CREATE TRIGGER IF NOT EXISTS goal_report_values_label_insert_trigger
+        AFTER UPDATE ON goal_report_values
+      BEGIN
+        UPDATE goal_report_values SET label = NEW.goal_report_value_id;
+      END;`,
+    })
+    console.log('TriggerGenerator, goal_report_values_insert, result:', result)
   }
 }
