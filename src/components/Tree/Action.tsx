@@ -67,13 +67,17 @@ export const ActionNode = ({
             project_id={project_id}
             subproject_id={subproject_id}
             place_id={place_id}
+            place={place}
             action_id={action.action_id}
+            level={level + 1}
           />
           <ActionReportsNode
             project_id={project_id}
             subproject_id={subproject_id}
             place_id={place_id}
+            place={place}
             action_id={action.action_id}
+            level={level + 1}
           />
         </>
       )}
