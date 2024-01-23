@@ -67,13 +67,17 @@ export const CheckNode = ({
             project_id={project_id}
             subproject_id={subproject_id}
             place_id={place_id}
+            place={place}
             check_id={check.check_id}
+            level={level + 1}
           />
           <CheckTaxaNode
             project_id={project_id}
             subproject_id={subproject_id}
             place_id={place_id}
+            place={place}
             check_id={check.check_id}
+            level={level + 1}
           />
         </>
       )}
