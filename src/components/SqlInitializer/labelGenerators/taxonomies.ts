@@ -5,7 +5,7 @@ export const generateTaxonomyLabel = async (db) => {
   const hasLabel = columns.some((column) => column.name === 'label')
   if (!hasLabel) {
     await db.raw({
-      sql: `ALTER TABLE taxonomies ADD COLUMN label text GENERATED ALWAYS AS (coalesce(concat(type, ': ', name), taxonomy_id))`,
+      sql: `ALTER TABLE taxonomies ADD COLUMN label text GENERATED ALWAYS AS (coalesce(concat(name, ' (', type, ')'), taxonomy_id))`,
     })
     await db.raw({
       sql: 'CREATE INDEX IF NOT EXISTS taxonomies_label_idx ON taxonomies(label)',
