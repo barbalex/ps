@@ -11,6 +11,7 @@ export const ChecksNode = ({
   project_id,
   subproject_id,
   place_id,
+  place,
   level = 7,
 }) => {
   const location = useLocation()
@@ -19,7 +20,7 @@ export const ChecksNode = ({
   const { db } = useElectric()!
   const { results } = useLiveQuery(
     db.checks.liveMany({
-      where: { deleted: false, place_id },
+      where: { deleted: false, place_id: place.place_id },
       orderBy: { label: 'asc' },
     }),
   )
@@ -34,25 +35,29 @@ export const ChecksNode = ({
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const isOpen =
+  const isOpenBase =
     urlPath[0] === 'projects' &&
     urlPath[1] === project_id &&
     urlPath[2] === 'subprojects' &&
     urlPath[3] === subproject_id &&
     urlPath[4] === 'places' &&
-    urlPath[5] === place_id &&
-    urlPath[6] === 'checks'
+    urlPath[5] === (place_id ?? place.place_id)
+  const isOpen = place_id
+    ? isOpenBase &&
+      urlPath[6] === 'places' &&
+      urlPath[7] === place.place_id &&
+      urlPath[8] === 'checks'
+    : isOpenBase && urlPath[6] === 'checks'
   const isActive = isOpen && urlPath.length === level
 
+  const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/places/${
+    place_id ?? place.place_id
+  }${place_id ? `/places/${place.place_id}` : ''}`
+
   const onClickButton = useCallback(() => {
-    if (isOpen)
-      return navigate(
-        `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}`,
-      )
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/checks`,
-    )
-  }, [isOpen, navigate, place_id, project_id, subproject_id])
+    if (isOpen) return navigate(baseUrl)
+    navigate(`${baseUrl}/checks`)
+  }, [baseUrl, isOpen, navigate])
 
   return (
     <>
@@ -63,7 +68,7 @@ export const ChecksNode = ({
         isInActiveNodeArray={isOpen}
         isActive={isActive}
         childrenCount={checks.length}
-        to={`/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}/checks`}
+        to={`${baseUrl}/checks`}
         onClickButton={onClickButton}
       />
       {isOpen &&
@@ -73,7 +78,9 @@ export const ChecksNode = ({
             project_id={project_id}
             subproject_id={subproject_id}
             place_id={place_id}
+            place={place}
             check={check}
+            level={level + 1}
           />
         ))}
     </>
