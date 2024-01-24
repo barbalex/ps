@@ -39,6 +39,7 @@
 //    https://stackoverflow.com/a/30097538/712005
 //    https://www.bezkoder.com/node-js-csv-postgresql/
 //    TODO: https://www.npmjs.com/package/pg-copy-streams
+//    TODO: https://www.digitalocean.com/community/tutorials/how-to-read-and-write-csv-files-in-node-js-using-node-csv
 // 7. insert the data into the postgreSQL database
 // 8. delete the .csv file
 // 9. update the status of the download in the database
