@@ -1,6 +1,10 @@
 // connect to the postgreSQL database
 // listen to changes in two tables: gbif_occurrence_downloads, gbif_taxa_downloads
 // also: on startup, search for any downloads that haven't been processed yet
+// 0.1 register when a change occurs
+//     https://gist.github.com/fritzy/5db6221bebe53eda4c2d
+//     https://www.npmjs.com/package/pg-listen
+// 0.2 On startup, query for any downloads that haven't been processed yet
 // when a change occurs / a download is found:
 // 1. build the download request (query.json):
 // {
