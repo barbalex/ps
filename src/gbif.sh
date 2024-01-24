@@ -28,6 +28,16 @@ curl -X 'GET' \
   'https://api.gbif.org/v1/species/search?datasetKey=83fdfd3d-3a25-4705-9fbe-3db1d1892b13&limit=3' \
   -H 'accept: application/json'
 
+# does work but results make no sense
+curl -X 'GET' \
+  'https://api.gbif.org/v1/species/search?datasetID=INFOFLORA-TRAC&limit=3' \
+  -H 'accept: application/json'
+
+# does work but results make no sense
+curl -X 'GET' \
+  'https://api.gbif.org/v1/species/search?datasetName=Swiss%National%Databank%of%Vascular%Plants&limit=3' \
+  -H 'accept: application/json'
+
 # works without datasetKey
 curl -X 'GET' \
   'https://api.gbif.org/v1/species/search?q=pulsatilla&limit=3' \
