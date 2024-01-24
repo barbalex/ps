@@ -36,6 +36,9 @@
 // 5. download and store the file in a local folder:
 //    curl --location --remote-name https://api.gbif.org/occurrence/download/request/0001005-130906152512535.zip
 // 6. open the .csv file and read the data (needs lots of memory? can this be streamed?)
+//    https://stackoverflow.com/a/30097538/712005
+//    https://www.bezkoder.com/node-js-csv-postgresql/
+//    TODO: https://www.npmjs.com/package/pg-copy-streams
 // 7. insert the data into the postgreSQL database
 // 8. delete the .csv file
 // 9. update the status of the download in the database
