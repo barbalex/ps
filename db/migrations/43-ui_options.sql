@@ -4,6 +4,7 @@ CREATE TABLE ui_options(
   breadcrumbs_overflowing boolean DEFAULT NULL, -- FALSE,
   navs_overflowing boolean DEFAULT NULL, -- FALSE,
   tabs jsonb DEFAULT NULL, -- TODO: jsonb array
+  show_map boolean DEFAULT NULL, -- TRUE,
   label text DEFAULT NULL
 );
 

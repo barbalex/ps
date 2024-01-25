@@ -1619,6 +1619,7 @@ CREATE TABLE ui_options(
   breadcrumbs_overflowing boolean DEFAULT TRUE,
   navs_overflowing boolean DEFAULT TRUE,
   tabs jsonb DEFAULT NULL,
+  show_map boolean DEFAULT TRUE,
 );
 
 CREATE INDEX ON uis USING btree(user_id);

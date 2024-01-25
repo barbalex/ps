@@ -194,3 +194,31 @@ html {
 .tree-node svg {
   color: rgb(51, 51, 51);
 }
+
+/* map */
+.map-container {
+  .leaflet-control-container {
+    user-select: none !important;
+  }
+
+  .leaflet-div-icon {
+    background: rgba(0, 0, 0, 0);
+    border: none;
+  }
+
+  .grayscale {
+    filter: grayscale(1);
+  }
+
+  @media print {
+    height: 100%;
+    width: 100%;
+    overflow: visible;
+  }
+
+  @media print {
+    .leaflet-control-container {
+      display: none !important;
+    }
+  }
+}
