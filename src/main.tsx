@@ -1,11 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
+import './style.css'
 
-const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
-root.render(<App />)
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />)
 // causes LabelGenerator to run twice
-// root.render(
+// .render(
 //   <React.StrictMode>
 //     <App />
 //   </React.StrictMode>,

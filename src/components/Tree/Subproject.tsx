@@ -6,7 +6,6 @@ import { Subprojects as Subproject } from '../../../generated/client'
 import { PlacesNode } from './Places'
 import { SubprojectReportsNode } from './SubprojectReports'
 import { GoalsNode } from './Goals'
-import { SubprojectReportsNode } from './SubprojectReports'
 import { SubprojectTaxaNode } from './SubprojectTaxa'
 import { SubprojectUsersNode } from './SubprojectUsers'
 

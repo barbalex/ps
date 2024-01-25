@@ -1,4 +1,4 @@
-const fs = require('fs')
+import fs from 'fs'
 
 // read src\generated\client\index.ts and replace all label_replace_by_generated_column by label
 fs.readFile('src/generated/client/index.ts', 'utf8', function (err, data) {
