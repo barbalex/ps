@@ -22,12 +22,10 @@ export const Component = () => {
 
   const { db } = useElectric()
   const { results } = useLiveQuery(
-    () =>
-      db.action_report_values.liveMany({
-        where: { action_report_id, deleted: false },
-        orderBy: { label: 'asc' },
-      }),
-    [action_report_id],
+    db.action_report_values.liveMany({
+      where: { action_report_id, deleted: false },
+      orderBy: { label: 'asc' },
+    }),
   )
 
   const add = useCallback(async () => {
