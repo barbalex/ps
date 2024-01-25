@@ -8,9 +8,15 @@ import { FieldsNode } from './Fields'
 import { FilesNode } from './Files'
 import { MessagesNode } from './messages'
 
+const containerStyle = {
+  height: '100%',
+  width: '100%',
+  overflow: 'auto',
+}
+
 export const Tree = () => {
   return (
-    <>
+    <div style={containerStyle}>
       <ProjectsNode />
       <UsersNode />
       <AccountsNode />
@@ -20,6 +26,6 @@ export const Tree = () => {
       <FieldsNode />
       <FilesNode />
       <MessagesNode />
-    </>
+    </div>
   )
 }
