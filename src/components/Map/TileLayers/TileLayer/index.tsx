@@ -4,7 +4,7 @@ import {
   Tile_layers as TileLayer,
   Ui_options as UiOption,
 } from '../../../../generated/client'
-import WMS from './WMS'
+import { WMS } from './WMS'
 import WMTS from './WMTSOffline'
 import LocalMap from './LocalMap'
 import { useElectric } from '../../../../ElectricProvider'

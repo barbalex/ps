@@ -10,6 +10,7 @@ export const [hooks, css] = createHooks({
   }),
   '&:not(:first-of-type)': '&:not(:first-of-type)',
   '&:nth-child(odd)': '&:nth-child(odd)',
+  'span': 'span',
 })
 
 /* Hooks created:

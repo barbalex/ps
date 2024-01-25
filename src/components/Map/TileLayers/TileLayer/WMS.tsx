@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useMap, WMSTileLayer } from 'react-leaflet'
 import styled from '@emotion/styled'
 import { useMapEvent } from 'react-leaflet'
@@ -9,19 +10,13 @@ import { xmlToLayersData } from '../../../../modules/xmlToLayersData'
 import { Popup } from '../../Popup'
 import { onTileError } from './onTileError'
 import { useElectric } from '../../../../ElectricProvider'
+import { css } from '../../../../css'
 
-const StyledPopupContent = styled.div`
-  white-space: pre;
-`
-const PopupContainer = styled.div`
-  overflow: auto;
-  max-height: ${(props) => `${props.maxheight}px`};
-  span {
-    font-size: x-small !important;
-  }
-`
+const popupContentStyle = {
+  whiteSpace: 'pre',
+}
 
-const WMS = ({ layer }) => {
+export const WMS = ({ layer }) => {
   const map = useMap()
 
   const { db } = useElectric()!
@@ -81,15 +76,25 @@ const WMS = ({ layer }) => {
     }
 
     // console.log({ mapSize, y: mapSize.y })
+    const popupContainerStyle = css({
+      overflow: 'auto',
+      maxHeight: mapSize.y - 40,
+      maxWidth: mapSize.x - 60,
+      span: {
+        fontSize: 'x-small !important',
+      },
+    })
 
     // build popup depending on wms_info_format
     let popupContent
     // see for values: https://docs.geoserver.org/stable/en/user/services/wms/reference.html#getfeatureinfo
     if (failedToFetch) {
       popupContent = ReactDOMServer.renderToString(
-        <PopupContainer>
-          <StyledPopupContent>{`Sie könnten offline sein.\n\nOffline können keine WMS-Informationen\nabgerufen werden.`}</StyledPopupContent>
-        </PopupContainer>,
+        <div style={popupContainerStyle}>
+          <div
+            style={popupContentStyle}
+          >{`Sie könnten offline sein.\n\nOffline können keine WMS-Informationen\nabgerufen werden.`}</div>
+        </div>,
       )
     } else {
       switch (layer.wms_info_format) {
@@ -111,9 +116,9 @@ const WMS = ({ layer }) => {
         // TODO: test
         case 'text/html': {
           popupContent = (
-            <PopupContainer maxheight={mapSize.y - 40}>
+            <div style={popupContainerStyle}>
               <div dangerouslySetInnerHTML={{ __html: res.data }} />
-            </PopupContainer>
+            </div>
           )
           break
         }
@@ -125,11 +130,9 @@ const WMS = ({ layer }) => {
           if (res.data.includes('no results')) return
 
           popupContent = ReactDOMServer.renderToString(
-            <PopupContainer maxheight={mapSize.y - 40}>
-              <StyledPopupContent>
-                {JSON.stringify(res.data)}
-              </StyledPopupContent>
-            </PopupContainer>,
+            <div style={popupContainerStyle}>
+              <div style={popupContentStyle}>{JSON.stringify(res.data)}</div>
+            </div>,
           )
           break
         }
@@ -140,9 +143,9 @@ const WMS = ({ layer }) => {
           if (res.data.includes('no results')) return
 
           popupContent = ReactDOMServer.renderToString(
-            <PopupContainer maxheight={mapSize.y - 40}>
-              <StyledPopupContent>{res.data}</StyledPopupContent>
-            </PopupContainer>,
+            <div style={popupContainerStyle}>
+              <div style={popupContentStyle}>{res.data}</div>
+            </div>,
           )
           break
         }
@@ -178,5 +181,3 @@ const WMS = ({ layer }) => {
     />
   )
 }
-
-export default WMS
