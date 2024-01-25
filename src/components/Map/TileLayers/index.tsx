@@ -6,7 +6,7 @@ import TileLayer from './TileLayer'
 import OsmColor from '../layers/OsmColor'
 import { useElectric } from '../../../ElectricProvider'
 
-const TileLayers = () => {
+export const TileLayers = () => {
   const { project_id } = useParams()
   const where = projectId
     ? // Beware: projectId can be undefined and dexie does not like that
@@ -70,5 +70,3 @@ const TileLayers = () => {
     return <TileLayer key={JSON.stringify(partsToRedrawOn)} layer={layer} />
   })
 }
-
-export default TileLayers

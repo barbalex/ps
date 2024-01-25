@@ -9,7 +9,7 @@ import 'leaflet/dist/leaflet.css'
 import 'leaflet-draw/dist/leaflet.draw.css'
 
 import { user_id } from '../SqlInitializer'
-import { UiOptions as UiOption } from '../../../generated/client'
+import { Ui_options as UiOption } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
 
 const containerStyle = {
