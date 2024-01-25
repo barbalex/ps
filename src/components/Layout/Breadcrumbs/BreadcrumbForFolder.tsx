@@ -1,7 +1,7 @@
 import { useEffect, useState, forwardRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useElectric } from '../../../ElectricProvider'
-import { useLiveQuery } from 'electric-sql/react' 
+import { useLiveQuery } from 'electric-sql/react'
 
 import './breadcrumb.css'
 import { buildNavs } from '../../../modules/navs'
@@ -48,11 +48,9 @@ export const BreadcrumbForFolder = forwardRef(
         : match.params[idField]
     const where = { [idField]: matchParam }
     const { results } = useLiveQuery(
-      () =>
-        db[queryTable]?.liveMany({
-          where,
-        }),
-      [db, queryTable, matchParam, idField],
+      db[queryTable]?.liveMany({
+        where,
+      }),
     )
     const row = results?.[0]
 

@@ -26,8 +26,7 @@ export const Component = () => {
 
   const { db } = useElectric()
   const { results } = useLiveQuery(
-    () => db.projects.liveUnique({ where: { project_id } }),
-    [project_id],
+    db.projects.liveUnique({ where: { project_id } }),
   )
 
   const addRow = useCallback(async () => {
