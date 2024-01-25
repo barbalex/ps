@@ -4,6 +4,7 @@ import { useMap } from 'react-leaflet'
 import { TileLayer as TileLayerType } from '../../../../dexieClient'
 import storeContext from '../../../../storeContext'
 import { IStore } from '../../../../store'
+import { useElectric } from '../../../../ElectricProvider'
 
 type Props = {
   layer: TileLayerType
@@ -13,6 +14,8 @@ const WMTSOffline = ({ layer }: Props) => {
   const map = useMap()
   const store: IStore = useContext(storeContext)
   const { setLocalMapValues } = store
+
+  const { db } = useElectric()!
 
   console.log('WMTSOffline, layer:', layer)
 
@@ -35,9 +38,18 @@ const WMTSOffline = ({ layer }: Props) => {
       try {
         control.saveMap({ layer, store, map })
       } catch (error) {
-        store.addNotification({
-          title: `Fehler beim Laden der Karten für ${layer.label}`,
-          message: error.message,
+        db.ui_options.update({
+          where: { user_id },
+          data: {
+            notifications: [
+              {
+                title: `Fehler beim Laden der Karten für ${layer.label}`,
+                body: error.message,
+                intent: 'error', // 'success' | 'error' | 'warning' | 'info'
+              },
+              ...notifications,
+            ],
+          },
         })
       }
     }
@@ -50,6 +62,7 @@ const WMTSOffline = ({ layer }: Props) => {
       map.removeControl(control)
     }
   }, [
+    db.ui_options,
     layer,
     layer.grayscale,
     layer.id,
