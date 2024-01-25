@@ -19,10 +19,7 @@ export const Component = () => {
   const navigate = useNavigate()
 
   const { db } = useElectric()
-  const { results } = useLiveQuery(
-    () => db.files.liveUnique({ where: { file_id } }),
-    [file_id],
-  )
+  const { results } = useLiveQuery(db.files.liveUnique({ where: { file_id } }))
 
   const addRow = useCallback(async () => {
     const data = await createFile({ db })
