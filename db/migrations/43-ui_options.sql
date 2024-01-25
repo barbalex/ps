@@ -6,6 +6,7 @@ CREATE TABLE ui_options(
   tabs jsonb DEFAULT NULL, -- TODO: jsonb array
   show_map boolean DEFAULT NULL, -- TRUE,
   local_map_show jsonb DEFAULT NULL, -- map of id (layer.id, key) and show boolean
+  notifications jsonb DEFAULT NULL, -- TODO: jsonb array of objects
   label text DEFAULT NULL
 );
 

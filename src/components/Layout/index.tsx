@@ -5,6 +5,7 @@ import { Navs } from './Navs'
 import { useElectric } from '../../ElectricProvider'
 import { Header } from './Header'
 import { Main } from './Main'
+import { Notifier } from '../Notifier'
 
 export const Layout = () => {
   const { db } = useElectric()!
@@ -31,6 +32,7 @@ export const Layout = () => {
       <Breadcrumbs />
       <Navs />
       <Main />
+      <Notifier />
     </>
   )
 }
