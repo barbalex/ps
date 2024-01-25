@@ -49,6 +49,7 @@ export const generatePartialIndexes = async (db) => {
           CREATE INDEX if not exists ON fields fields_obsolete_idx USING btree(obsolete) WHERE obsolete;
           CREATE INDEX if not exists ON fields fields_deleted_idx USING btree(deleted) WHERE deleted;
           CREATE INDEX if not exists ON gbif_occurrence_downloads gbif_occurrence_downloads_deleted_idx USING btree(deleted) WHERE deleted;
+          CREATE INDEX if not exists ON tile_layers tile_layers_deleted_idx USING btree(deleted) WHERE deleted;
     `,
   })
   // console.log('partialIndexes, result:', result)
