@@ -1,12 +1,12 @@
 // TODO: need to debounce
 import axios from 'redaxios'
 
-import { TileLayer } from '../../../../dexieClient'
-import xmlToJson from '../../../../utils/xmlToJson'
-import { IStore } from '../../../../store'
+import { Tile_layers as TileLayer } from '../../../../generated/client'
+import { xmlToJson } from '../../../../modules/xmlToJson'
+import { user_id } from '../../../SqlInitializer'
 
-const onTileError = async (store: IStore, map, layer: TileLayer, ignore) => {
-  console.log('onTileError', { ignore, map, layer, store })
+export const onTileError = async (db, map, layer: TileLayer, ignore) => {
+  console.log('onTileError', { ignore, map, layer, db })
   const mapSize = map.getSize()
   const bbox = map.getBounds().toBBoxString()
   const res = await axios({
@@ -35,11 +35,18 @@ const onTileError = async (store: IStore, map, layer: TileLayer, ignore) => {
   const errorMessage =
     data?.HTML?.BODY?.SERVICEEXCEPTIONREPORT?.SERVICEEXCEPTION?.['#text']
   // console.log(`onTileError errorMessage:`, errorMessage)
-  store.addNotification({
-    title: `Fehler beim Laden der Bild-Karte '${layer.label}'. Der WMS-Server meldet`,
-    message: errorMessage,
-    type: 'error',
-    duration: 20000,
+  db.ui_options.update({
+    where: { user_id },
+    data: {
+      notifications: [
+        {
+          title: `Fehler beim Laden der Bild-Karte '${layer.label}'. Der WMS-Server meldet`,
+          body: errorMessage,
+          intent: 'error', // 'success' | 'error' | 'warning' | 'info'
+        },
+        ...notifications,
+      ],
+    },
   })
 }
 

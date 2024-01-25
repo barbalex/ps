@@ -8,9 +8,10 @@ import { useDebouncedCallback } from 'use-debounce'
 
 import { xmlToLayersData } from '../../../../modules/xmlToLayersData'
 import Popup from '../../Popup'
-import onTileError from './onTileError'
+import { onTileError } from './onTileError'
 import storeContext from '../../../../storeContext'
 import { IStore } from '../../../../store'
+import { useElectric } from '../../../../ElectricProvider'
 
 const StyledPopupContent = styled.div`
   white-space: pre;
@@ -26,6 +27,8 @@ const PopupContainer = styled.div`
 const WMS = ({ layer }) => {
   const map = useMap()
   const store: IStore = useContext(storeContext)
+
+  const {db} = useElectric()!
 
   useMapEvent('click', async (e) => {
     // console.log({ layer })
@@ -153,7 +156,7 @@ const WMS = ({ layer }) => {
     L.popup().setLatLng(e.latlng).setContent(popupContent).openOn(map)
   })
   const onTileErrorDebounced = useDebouncedCallback(
-    onTileError.bind(this, store, map, layer),
+    onTileError.bind(this, db, map, layer),
     600,
   )
 
