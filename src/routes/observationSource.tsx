@@ -21,9 +21,7 @@ export const Component = () => {
 
   const { db } = useElectric()
   const { results } = useLiveQuery(
-    () =>
-      db.observation_sources.liveUnique({ where: { observation_source_id } }),
-    [observation_source_id],
+    db.observation_sources.liveUnique({ where: { observation_source_id } }),
   )
 
   const baseUrl = `/projects/${project_id}/observation-sources`
