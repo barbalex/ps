@@ -49,35 +49,26 @@
 // 9.  delete the .csv file
 // 10. update the status of the download in the database
 import axios from 'axios'
-import createSubscriber from "pg-listen"
-import { createSubscriber } from "pg-listen";
+import createSubscriber from 'pg-listen'
 
-const subscriber = createSubscriber({ connectionString: process.env.DATABASE_URL })
-
-
-subscriber.notifications.on("gbif-channel", (payload) => {
-  // Payload as passed to subscriber.notify() (see below)
-  console.log("Received notification in 'gbif-channel':", payload)
+const subscriber = createSubscriber({
+  connectionString: process.env.DATABASE_URL,
 })
 
-subscriber.events.on("error", (error) => {
-  console.error("Fatal database connection error:", error)
+subscriber.notifications.on('gbif_occurrence_download_update', (payload) => {
+  // Payload as passed to subscriber.notify() (see below)
+  console.log(
+    "Received notification in 'gbif_occurrence_download_update':",
+    payload,
+  )
+  // TODO: process the payload
+})
+
+subscriber.events.on('error', (error) => {
+  console.error('Fatal database connection error:', error)
   process.exit(1)
 })
 
-process.on("exit", () => {
+process.on('exit', () => {
   subscriber.close()
 })
-
-export async function connect () {
-  await subscriber.connect()
-  await subscriber.listenTo("gbif-channel")
-}
-
-export async function sendSampleMessage () {
-  await subscriber.notify("gbif-channel", {
-    greeting: "Hey, buddy.",
-    timestamp: Date.now()
-  })
-}
-
