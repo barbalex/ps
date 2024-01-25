@@ -21,10 +21,7 @@ export const Component = () => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const { db } = useElectric()
-  const { results } = useLiveQuery(
-    () => db.lists.liveUnique({ where: { list_id } }),
-    [list_id],
-  )
+  const { results } = useLiveQuery(db.lists.liveUnique({ where: { list_id } }))
 
   const baseUrl = `/projects/${project_id}/lists`
 
