@@ -1641,6 +1641,10 @@ CREATE INDEX ON gbif_occurrence_downloads USING btree(subproject_id);
 
 CREATE INDEX ON gbif_occurrence_downloads USING btree(created_time);
 
+CREATE INDEX ON gbif_occurrence_downloads USING btree((1))
+WHERE
+  deleted;
+
 COMMENT ON TABLE gbif_occurrence_downloads IS 'GBIF occurrence downloads. Used also for species (of an area, format: SPECIES_LIST). Is created in client, synced to server, executed by gbif backend server, written to db and synced back to client';
 
 COMMENT ON COLUMN gbif_occurrence_downloads.filters IS 'area, groups, speciesKeys...';
@@ -1657,8 +1661,7 @@ CREATE TABLE gbif_taxa(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   gbif_data jsonb DEFAULT NULL,
-  label text DEFAULT NULL,
-  deleted boolean DEFAULT FALSE
+  label text DEFAULT NULL
 );
 
 CREATE INDEX ON gbif_taxa USING btree(gbif_taxon_id);
@@ -1668,10 +1671,6 @@ CREATE INDEX ON gbif_taxa USING btree(account_id);
 CREATE INDEX ON gbif_taxa USING btree(project_id);
 
 CREATE INDEX ON gbif_taxa USING btree(label);
-
-CREATE INDEX ON gbif_taxa USING btree((1))
-WHERE
-  deleted;
 
 COMMENT ON TABLE gbif_taxa IS 'GBIF taxa. Used for species of an area, thus imported from occurrences (format: SPECIES_LIST).';
 
@@ -1690,8 +1689,7 @@ CREATE TABLE gbif_occurrences(
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   gbif_data jsonb DEFAULT NULL,
-  label text DEFAULT NULL,
-  deleted boolean DEFAULT FALSE
+  label text DEFAULT NULL
 );
 
 CREATE INDEX ON gbif_occurrences USING btree(gbif_occurrence_id);
@@ -1705,10 +1703,6 @@ CREATE INDEX ON gbif_occurrences USING btree(subproject_id);
 CREATE INDEX ON gbif_occurrences USING btree(label);
 
 -- CREATE INDEX ON gbif_occurrences USING gist(gbif_data); TODO: when supported by electric-sql
-CREATE INDEX ON gbif_occurrences USING btree((1))
-WHERE
-  deleted;
-
 COMMENT ON TABLE gbif_occurrences IS 'GBIF occurrences. Imported for subprojects (species projects) or projects (biotope projects).';
 
 COMMENT ON COLUMN gbif_occurrences.gbif_data IS 'data as received from GBIF';
