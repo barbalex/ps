@@ -1,22 +1,23 @@
-import { useLiveQuery } from 'dexie-react-hooks'
+import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 
-import { dexie, TileLayer as TileLayerType } from '../../../dexieClient'
+import { Tile_layers as TileLayer } from '../../../generated/client'
 import TileLayer from './TileLayer'
 import OsmColor from '../layers/OsmColor'
+import { useElectric } from '../../../ElectricProvider'
 
 const TileLayers = () => {
-  const { projectId } = useParams()
+  const { project_id } = useParams()
   const where = projectId
     ? // Beware: projectId can be undefined and dexie does not like that
-      { deleted: 0, active: 1, project_id: projectId }
-    : { deleted: 0, active: 1 }
+      { deleted: false, active: true, project_id }
+    : { deleted: false, active: true }
 
-  const tileLayers: TileLayerType[] =
-    useLiveQuery(
-      async () => await dexie.tile_layers.where(where).reverse().sortBy('sort'),
-      [projectId],
-    ) ?? []
+  const { db } = useElectric()!
+  const { result: layersResult } = useLiveQuery(
+    db.tile_layers({ where, sortBy: { sort: 'asc' } }),
+  )
+  const tileLayers: TileLayer[] = layersResult ?? []
   /**
    * Ensure needed data exists:
    * - wmts_url_template has template
