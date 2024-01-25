@@ -21,25 +21,3 @@ $$
 LANGUAGE plpgsql
 VOLATILE;
 
--- Generate a custom UUID v8 with microsecond precision
-CREATE OR REPLACE FUNCTION uuid_generate_v8()
-  RETURNS uuid
-  AS $$
-DECLARE
-  timestamp timestamptz;
-  microseconds int;
-BEGIN
-  timestamp = clock_timestamp();
-  microseconds =(cast(extract(microseconds FROM timestamp)::int -(floor(extract(milliseconds FROM timestamp))::int * 1000) AS double precision) * 4.096)::int;
-  -- use random v4 uuid as starting point (which has the same variant we need)
-  -- then overlay timestamp
-  -- then set version 8 and add microseconds
-  RETURN encode(set_byte(set_byte(overlay(uuid_send(gen_random_uuid())
-        PLACING substring(int8send(floor(extract(epoch FROM timestamp) * 1000)::bigint)
-          FROM 3)
-        FROM 1 FOR 6), 6,(b'1000' ||(microseconds >> 8)::bit(4))::bit(8)::int), 7, microseconds::bit(8)::int), 'hex')::uuid;
-END
-$$
-LANGUAGE plpgsql
-VOLATILE;
-
