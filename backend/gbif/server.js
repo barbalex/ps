@@ -1,5 +1,5 @@
 // connect to the postgreSQL database
-// listen to changes in two tables: gbif_occurrence_downloads, gbif_taxa_downloads
+// listen to changes in gbif_occurrence_downloads
 // also: on startup, search for any downloads that haven't been processed yet
 // 1.1 register when a change occurs
 //     https://gist.github.com/fritzy/5db6221bebe53eda4c2d
@@ -48,3 +48,36 @@
 //     using pg: https://node-postgres.com/apis/client or node-postgres: https://github.com/brianc/node-postgres
 // 9.  delete the .csv file
 // 10. update the status of the download in the database
+import axios from 'axios'
+import createSubscriber from "pg-listen"
+import { createSubscriber } from "pg-listen";
+
+const subscriber = createSubscriber({ connectionString: process.env.DATABASE_URL })
+
+
+subscriber.notifications.on("gbif-channel", (payload) => {
+  // Payload as passed to subscriber.notify() (see below)
+  console.log("Received notification in 'gbif-channel':", payload)
+})
+
+subscriber.events.on("error", (error) => {
+  console.error("Fatal database connection error:", error)
+  process.exit(1)
+})
+
+process.on("exit", () => {
+  subscriber.close()
+})
+
+export async function connect () {
+  await subscriber.connect()
+  await subscriber.listenTo("gbif-channel")
+}
+
+export async function sendSampleMessage () {
+  await subscriber.notify("gbif-channel", {
+    greeting: "Hey, buddy.",
+    timestamp: Date.now()
+  })
+}
+

@@ -1,0 +1,21 @@
+version: '3.7'
+services:
+  gbif:
+    build:
+      context: ./gbif
+    networks:
+      - network
+    container_name: ps_gbif
+    restart: always
+    env_file:
+      - ./.env
+    expose:
+      - '7000'
+    ports:
+      - '7000:7000'
+    volumes:
+      - gbif_data:/gbif_data
+volumes:
+  gbif_data:
+networks:
+  network:
