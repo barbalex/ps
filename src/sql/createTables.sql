@@ -1611,7 +1611,7 @@ COMMENT ON COLUMN fields.table_name IS 'table, on which this field is used insid
 ---------------------------------------------
 -- ui
 --
-DROP TABLE IF EXISTS ui CASCADE;
+DROP TABLE IF EXISTS ui_options CASCADE;
 
 CREATE TABLE ui_options(
   user_id uuid PRIMARY KEY DEFAULT NULL,
@@ -1620,13 +1620,17 @@ CREATE TABLE ui_options(
   navs_overflowing boolean DEFAULT TRUE,
   tabs jsonb DEFAULT NULL,
   show_map boolean DEFAULT TRUE,
+  local_map_show jsonb DEFAULT NULL,
+  label text DEFAULT NULL
 );
 
-CREATE INDEX ON uis USING btree(user_id);
+CREATE INDEX ON ui_options USING btree(user_id);
 
-COMMENT ON TABLE uis IS 'User interface settings (state saved in db)';
+CREATE INDEX ON ui_options USING btree(label);
 
-COMMENT ON COLUMN uis.designing IS 'Whether user is currently designing projects. Preset: false';
+COMMENT ON TABLE ui_options IS 'User interface settings (state saved in db)';
+
+COMMENT ON COLUMN ui_options.designing IS 'Whether user is currently designing projects. Preset: false';
 
 ---------------------------------------------
 -- gbif_occurrence_downloads
