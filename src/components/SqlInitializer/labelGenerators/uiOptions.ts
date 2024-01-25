@@ -1,3 +1,7 @@
+// TODO: db.raw is deprecated in v0.9
+// https://electric-sql.com/docs/usage/data-access/queries#raw-sql
+// try db.rawQuery instead for reading data
+// alternatively use db.unsafeExec(sql): https://electric-sql.com/docs/api/clients/typescript#instantiation
 export const generateUiOptionLabel = async (db) => {
   // if user_id or role is changed, update label with email from users and with role
   const triggers = await db.raw({
