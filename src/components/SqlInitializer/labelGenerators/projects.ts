@@ -1,3 +1,7 @@
+// TODO: db.raw is deprecated in v0.9
+// https://electric-sql.com/docs/usage/data-access/queries#raw-sql
+// try db.rawQuery instead for reading data
+// alternatively use db.unsafeExec(sql): https://electric-sql.com/docs/api/clients/typescript#instantiation
 export const generateProjectLabel = async (db) => {
   // if places_label_by is changed, need to update all labels of places
   const triggers = await db.raw({
