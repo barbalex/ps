@@ -29,9 +29,7 @@ export const Component = () => {
 
   const { db } = useElectric()
   const { results } = useLiveQuery(
-    () =>
-      db.action_report_values.liveUnique({ where: { action_report_value_id } }),
-    [action_report_value_id],
+    db.action_report_values.liveUnique({ where: { action_report_value_id } }),
   )
 
   const baseUrl = useMemo(
