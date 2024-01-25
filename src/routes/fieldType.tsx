@@ -20,8 +20,7 @@ export const Component = () => {
 
   const { db } = useElectric()
   const { results } = useLiveQuery(
-    () => db.field_types.liveUnique({ where: { field_type_id } }),
-    [field_type_id],
+    db.field_types.liveUnique({ where: { field_type_id } }),
   )
 
   const addRow = useCallback(async () => {
