@@ -1732,3 +1732,55 @@ COMMENT ON COLUMN gbif_occurrences.gbif_data IS 'data as received from GBIF';
 
 COMMENT ON COLUMN gbif_occurrences.label IS 'label of occurrence, used to show it in the UI. Created on import';
 
+---------------------------------------------
+-- tile_layers
+--
+CREATE TYPE tile_layer_type_enum AS enum(
+  'wms',
+  'wmts'
+  -- 'tms'
+);
+
+DROP TABLE IF EXISTS tile_layers CASCADE;
+
+CREATE TABLE tile_layers(
+  tile_layer_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  label text DEFAULT NULL,
+  sort smallint DEFAULT 0,
+  active integer DEFAULT 0,
+  project_id uuid NOT NULL REFERENCES projects(id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  type tile_layer_type_enum DEFAULT 'wmts',
+  wmts_url_template text DEFAULT NULL,
+  wmts_subdomains jsonb DEFAULT NULL, -- array of strings
+  max_zoom decimal DEFAULT 19,
+  min_zoom decimal DEFAULT 0,
+  opacity decimal DEFAULT 1,
+  wms_base_url text DEFAULT NULL,
+  wms_format text DEFAULT NULL,
+  wms_layers text DEFAULT NULL,
+  wms_parameters jsonb DEFAULT NULL,
+  wms_styles jsonb DEFAULT NULL, -- array of strings
+  wms_transparent integer DEFAULT 0,
+  wms_version text DEFAULT NULL, -- values: 1.1.1, 1.3.0
+  wms_info_format text DEFAULT NULL,
+  wms_queryable integer DEFAULT NULL,
+  grayscale integer DEFAULT 0,
+  local_data_size integer DEFAULT NULL,
+  local_data_bounds jsonb DEFAULT NULL,
+  deleted integer DEFAULT 0
+);
+
+CREATE INDEX ON tile_layers USING btree(tile_layer_id);
+
+CREATE INDEX ON tile_layers USING btree(sort);
+
+CREATE INDEX ON tile_layers USING btree((1))
+WHERE
+  deleted;
+
+COMMENT ON TABLE tile_layers IS 'Goal: Bring your own tile layers. Not versioned (not recorded and only added by manager).';
+
+COMMENT ON COLUMN tile_layers.local_data_size IS 'Size of locally saved image data';
+
+COMMENT ON COLUMN tile_layers.local_data_bounds IS 'Array of bounds and their size of locally saved image data';
+
