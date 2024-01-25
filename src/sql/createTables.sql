@@ -260,6 +260,12 @@ COMMENT ON TABLE subprojects IS 'Goal: manage subprojects. Will most often be a 
 ---------------------------------------------
 -- project_users
 --
+CREATE TYPE user_role AS enum(
+  'manager',
+  'editor',
+  'reader'
+);
+
 DROP TABLE IF EXISTS project_users CASCADE;
 
 CREATE TABLE project_users(
@@ -267,7 +273,7 @@ CREATE TABLE project_users(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  role text DEFAULT NULL,
+  ROLE user_role DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
 );
 
@@ -299,7 +305,7 @@ CREATE TABLE subproject_users(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  role text DEFAULT NULL,
+  ROLE user_role DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
 );
 
@@ -512,6 +518,12 @@ COMMENT ON COLUMN list_values.account_id IS 'redundant account_id enhances data 
 ---------------------------------------------
 -- units
 --
+CREATE TYPE unit_type AS enum(
+  'integer',
+  'numeric',
+  'text'
+);
+
 DROP TABLE IF EXISTS units CASCADE;
 
 CREATE TABLE units(
@@ -528,7 +540,7 @@ CREATE TABLE units(
   name text DEFAULT NULL,
   summable boolean DEFAULT FALSE,
   sort integer DEFAULT NULL,
-  type text DEFAULT NULL,
+  type unit_type DEFAULT NULL,
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE NO action ON UPDATE CASCADE,
   deleted boolean DEFAULT FALSE
 );
@@ -1134,7 +1146,7 @@ CREATE TABLE place_users(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  role text DEFAULT NULL,
+  ROLE user_role DEFAULT NULL,
   deleted boolean DEFAULT FALSE
 );
 

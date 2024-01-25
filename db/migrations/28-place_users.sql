@@ -3,7 +3,7 @@ CREATE TABLE place_users(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  role text DEFAULT NULL,
+  role user_role DEFAULT NULL,
   label text DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
 );

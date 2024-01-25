@@ -1,3 +1,9 @@
+CREATE TYPE unit_type AS enum(
+  'integer',
+  'numeric',
+  'text'
+);
+
 CREATE TABLE units(
   unit_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -12,7 +18,7 @@ CREATE TABLE units(
   name text DEFAULT NULL,
   summable boolean DEFAULT NULL, -- FALSE,
   sort integer DEFAULT NULL,
-  type text DEFAULT NULL,
+  type unit_type DEFAULT NULL,
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE NO action ON UPDATE CASCADE,
   label_replace_by_generated_column text DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE

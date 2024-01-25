@@ -2,7 +2,7 @@ CREATE TABLE taxonomies(
   taxonomy_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  type text DEFAULT NULL,
+  type project_type DEFAULT NULL,
   name text DEFAULT NULL,
   url text DEFAULT NULL,
   obsolete boolean DEFAULT NULL, -- FALSE,
