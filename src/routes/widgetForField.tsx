@@ -20,8 +20,7 @@ export const Component = () => {
 
   const { db } = useElectric()
   const { results } = useLiveQuery(
-    () => db.widgets_for_fields.liveUnique({ where: { widget_for_field_id } }),
-    [widget_for_field_id],
+    db.widgets_for_fields.liveUnique({ where: { widget_for_field_id } }),
   )
 
   const addRow = useCallback(async () => {
