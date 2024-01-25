@@ -8,6 +8,8 @@ export const [hooks, css] = createHooks({
     // colorSchemes: ["dark", "light"],
     pseudoClasses: [':hover', ':focus', ':active', ':disabled'],
   }),
+  '&:not(:first-of-type)': '&:not(:first-of-type)',
+  '&:nth-child(odd)': '&:nth-child(odd)',
 })
 
 /* Hooks created:

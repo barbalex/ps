@@ -6,7 +6,7 @@ import * as ReactDOMServer from 'react-dom/server'
 import { useDebouncedCallback } from 'use-debounce'
 
 import { xmlToLayersData } from '../../../../modules/xmlToLayersData'
-import Popup from '../../Popup'
+import { Popup } from '../../Popup'
 import { onTileError } from './onTileError'
 import { useElectric } from '../../../../ElectricProvider'
 
