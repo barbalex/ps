@@ -15,12 +15,10 @@ export const Component = () => {
 
   const { db } = useElectric()
   const { results } = useLiveQuery(
-    () =>
-      db.persons.liveMany({
-        where: { project_id, deleted: false },
-        orderBy: { label: 'asc' },
-      }),
-    [project_id],
+    db.persons.liveMany({
+      where: { project_id, deleted: false },
+      orderBy: { label: 'asc' },
+    }),
   )
 
   const add = useCallback(async () => {

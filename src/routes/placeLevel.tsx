@@ -22,8 +22,7 @@ export const Component = () => {
 
   const { db } = useElectric()
   const { results } = useLiveQuery(
-    () => db.place_levels.liveUnique({ where: { place_level_id } }),
-    [place_level_id],
+    db.place_levels.liveUnique({ where: { place_level_id } }),
   )
 
   const baseUrl = `/projects/${project_id}/place-levels`

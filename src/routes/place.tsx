@@ -22,8 +22,7 @@ export const Component = () => {
 
   const { db } = useElectric()
   const { results } = useLiveQuery(
-    () => db.places.liveUnique({ where: { place_id } }),
-    [place_id],
+    db.places.liveUnique({ where: { place_id } }),
   )
 
   const { results: placeLevels } = useLiveQuery(
