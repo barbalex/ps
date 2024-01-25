@@ -1,4 +1,3 @@
-import { useContext } from 'react'
 import { useMap, WMSTileLayer } from 'react-leaflet'
 import styled from '@emotion/styled'
 import { useMapEvent } from 'react-leaflet'
@@ -9,8 +8,6 @@ import { useDebouncedCallback } from 'use-debounce'
 import { xmlToLayersData } from '../../../../modules/xmlToLayersData'
 import Popup from '../../Popup'
 import { onTileError } from './onTileError'
-import storeContext from '../../../../storeContext'
-import { IStore } from '../../../../store'
 import { useElectric } from '../../../../ElectricProvider'
 
 const StyledPopupContent = styled.div`
@@ -26,9 +23,8 @@ const PopupContainer = styled.div`
 
 const WMS = ({ layer }) => {
   const map = useMap()
-  const store: IStore = useContext(storeContext)
 
-  const {db} = useElectric()!
+  const { db } = useElectric()!
 
   useMapEvent('click', async (e) => {
     // console.log({ layer })
