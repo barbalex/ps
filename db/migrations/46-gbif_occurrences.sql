@@ -18,10 +18,11 @@ CREATE INDEX ON gbif_occurrences USING btree(subproject_id);
 CREATE INDEX ON gbif_occurrences USING btree(label);
 
 -- CREATE INDEX ON gbif_occurrences USING gist(gbif_data); TODO: when supported by electric-sql
-
 COMMENT ON TABLE gbif_occurrences IS 'GBIF occurrences. Imported for subprojects (species projects) or projects (biotope projects).';
 
 COMMENT ON COLUMN gbif_occurrences.gbif_data IS 'data as received from GBIF';
 
 COMMENT ON COLUMN gbif_occurrences.label IS 'label of occurrence, used to show it in the UI. Created on import';
+
+ALTER TABLE gbif_occurrences ENABLE electric;
 

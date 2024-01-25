@@ -20,3 +20,5 @@ COMMENT ON COLUMN gbif_taxa.gbif_data IS 'data as received from GBIF';
 
 COMMENT ON COLUMN gbif_taxa.label IS 'label of taxon, used to show it in the UI. Created on import';
 
+ALTER TABLE gbif_taxa ENABLE electric;
+
