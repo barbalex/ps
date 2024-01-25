@@ -22,8 +22,7 @@ export const Component = () => {
 
   const { db } = useElectric()
   const { results } = useLiveQuery(
-    () => db.place_users.liveUnique({ where: { place_user_id } }),
-    [place_user_id],
+    db.place_users.liveUnique({ where: { place_user_id } }),
   )
 
   const baseUrl = useMemo(
