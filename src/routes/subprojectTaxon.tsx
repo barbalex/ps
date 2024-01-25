@@ -20,8 +20,7 @@ export const Component = () => {
 
   const { db } = useElectric()
   const { results } = useLiveQuery(
-    () => db.subproject_taxa.liveUnique({ where: { subproject_taxon_id } }),
-    [subproject_taxon_id],
+    db.subproject_taxa.liveUnique({ where: { subproject_taxon_id } }),
   )
 
   const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/taxa`

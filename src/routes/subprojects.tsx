@@ -15,12 +15,10 @@ export const Component = () => {
 
   const { db } = useElectric()
   const { results } = useLiveQuery(
-    () =>
-      db.subprojects.liveMany({
-        where: { project_id, deleted: false },
-        orderBy: { label: 'asc' },
-      }),
-    [project_id],
+    db.subprojects.liveMany({
+      where: { project_id, deleted: false },
+      orderBy: { label: 'asc' },
+    }),
   )
 
   // get projects.subproject_name_plural to name the table
