@@ -19,10 +19,7 @@ export const Component = () => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const { db } = useElectric()
-  const { results } = useLiveQuery(
-    () => db.users.liveUnique({ where: { user_id } }),
-    [user_id],
-  )
+  const { results } = useLiveQuery(db.users.liveUnique({ where: { user_id } }))
 
   const addRow = useCallback(async () => {
     const data = createUser()

@@ -21,8 +21,7 @@ export const Component = () => {
 
   const { db } = useElectric()
   const { results } = useLiveQuery(
-    () => db.widget_types.liveUnique({ where: { widget_type_id } }),
-    [widget_type_id],
+    db.widget_types.liveUnique({ where: { widget_type_id } }),
   )
 
   const addRow = useCallback(async () => {

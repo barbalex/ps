@@ -41,11 +41,9 @@ export const FilteringCombobox = memo(
         [idField, name, value],
       )
       const { results = [] } = useLiveQuery(
-        () =>
-          db[table]?.liveMany({
-            where: whereForSelectedOption,
-          }),
-        [table, name, value, idField],
+        db[table]?.liveMany({
+          where: whereForSelectedOption,
+        }),
       )
       const selectedOptions = useMemo(
         () =>

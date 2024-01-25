@@ -16,8 +16,7 @@ export const DropdownFieldFromList = memo(
   }) => {
     const { db } = useElectric()
     const { results: listItems = [] } = useLiveQuery(
-      () => db.list_values.liveMany({ where: { list_id, deleted: false } }),
-      [list_id],
+      db.list_values.liveMany({ where: { list_id, deleted: false } }),
     )
     const options = useMemo(
       () => listItems.map(({ value }) => value),
