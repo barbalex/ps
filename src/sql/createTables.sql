@@ -64,13 +64,18 @@ COMMENT ON COLUMN accounts.projects_label_by IS 'Used to label projects in lists
 ---------------------------------------------
 -- projects
 --
+CREATE TYPE project_type AS enum(
+  'species',
+  'biotope'
+);
+
 DROP TABLE IF EXISTS projects CASCADE;
 
 CREATE TABLE projects(
   project_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
-  type text DEFAULT NULL,
+  type project_type DEFAULT NULL,
   subproject_name_singular text DEFAULT NULL,
   subproject_name_plural text DEFAULT NULL,
   subproject_order_by text DEFAULT NULL,
