@@ -10,13 +10,13 @@ CREATE TABLE gbif_occurrence_downloads(
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   gbif_table gbif_table DEFAULT NULL, -- one of: gbif_taxa, gbif_occurrences
   filters jsonb DEFAULT NULL,
-  created_time timestamptz DEFAULT now(),
+  created_time timestamptz DEFAULT NULL, -- now() not supported yet
   download_key text DEFAULT NULL,
   error text DEFAULT NULL,
   inserted_time timestamptz DEFAULT NULL,
   inserted_count integer DEFAULT NULL,
   attribution text DEFAULT NULL,
-  deleted boolean DEFAULT FALSE
+  deleted boolean DEFAULT NULL
 );
 
 CREATE INDEX ON gbif_occurrence_downloads USING btree(account_id);
