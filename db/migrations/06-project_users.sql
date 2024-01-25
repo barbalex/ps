@@ -1,15 +1,17 @@
-CREATE TYPE user_role AS enum(
-  'manager',
-  'editor',
-  'reader'
-);
+-- CREATE TYPE user_role AS enum(
+--   'manager',
+--   'editor',
+--   'reader'
+-- );
 
 CREATE TABLE project_users(
   project_user_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  role user_role DEFAULT NULL,
+  role text DEFAULT NULL,
+  -- https://github.com/electric-sql/electric/issues/893
+  -- role user_role DEFAULT NULL,
   label text DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
 );
