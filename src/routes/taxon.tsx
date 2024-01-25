@@ -19,10 +19,7 @@ export const Component = () => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const { db } = useElectric()
-  const { results } = useLiveQuery(
-    () => db.taxa.liveUnique({ where: { taxon_id } }),
-    [taxon_id],
-  )
+  const { results } = useLiveQuery(db.taxa.liveUnique({ where: { taxon_id } }))
 
   const baseUrl = `/projects/${project_id}/taxonomies/${taxonomy_id}/taxa`
 
