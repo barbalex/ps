@@ -1,17 +1,13 @@
-// TODO: db.raw is deprecated in v0.9
-// https://electric-sql.com/docs/usage/data-access/queries#raw-sql
-// try db.rawQuery instead for reading data
-// alternatively use db.unsafeExec(sql): https://electric-sql.com/docs/api/clients/typescript#instantiation
 export const generateUiOptionLabel = async (db) => {
   // if user_id or role is changed, update label with email from users and with role
-  const triggers = await db.raw({
+  const triggers = await db.rawQuery({
     sql: `select name from sqlite_master where type = 'trigger';`,
   })
   const uiOptionsLabelTriggerExists = triggers.some(
     (column) => column.name === 'ui_options_label_trigger',
   )
   if (!uiOptionsLabelTriggerExists) {
-    const result = await db.raw({
+    const result = await db.unsafeExec({
       sql: `
       CREATE TRIGGER IF NOT EXISTS ui_options_label_trigger
         AFTER UPDATE OF user_id ON ui_options
@@ -21,7 +17,7 @@ export const generateUiOptionLabel = async (db) => {
     })
     console.log('TriggerGenerator, ui_options, result:', result)
     // same on insert
-    await db.raw({
+    await db.unsafeExec({
       sql: `
       CREATE TRIGGER IF NOT EXISTS ui_options_label_trigger_insert
         AFTER INSERT ON ui_options
