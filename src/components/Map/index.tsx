@@ -14,6 +14,7 @@ import { useElectric } from '../../ElectricProvider'
 import { TileLayers } from './TileLayers'
 import { LocationMarker } from './LocationMarker'
 import { tableNameFromIdField } from '../../modules/tableNameFromIdField'
+import { DrawControl } from './DrawControl'
 
 const mapContainerStyle = {
   width: '100%',
@@ -80,6 +81,7 @@ export const Map = () => {
         ref={mapRef}
       >
         <LocationMarker />
+        <DrawControl />
         <TileLayers key={`${tileLayerSorter}/tileLayers`} />
       </MapContainer>
     </div>

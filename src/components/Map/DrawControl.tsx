@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react'
+import { useEffect, useCallback } from 'react'
 import 'leaflet'
 import 'leaflet-draw'
 import { useMap } from 'react-leaflet'
@@ -48,7 +48,10 @@ export const DrawControl = () => {
       }
       const bbox = getBbox(geometry)
       // TODO: bbox???
-      db[tableName].update({ where: { id: rowId }, data: { geometry, bbox } })
+      db[tableName].update({
+        where: { [activeIdName]: activeId },
+        data: { geometry, bbox },
+      })
     },
     [db, params, pathArray],
   )
@@ -129,7 +132,7 @@ export const DrawControl = () => {
       map.off('draw:edited')
       map.off('draw:deleted')
     }
-  }, [map, onEdit, rowId])
+  }, [map, onEdit])
 
-  return <div style={{ display: 'none' }} />
+  return null
 }
