@@ -1,4 +1,4 @@
-import { useCallback, forwardRef, useEffect } from 'react'
+import { useCallback, useRef, useEffect } from 'react'
 import 'leaflet'
 import 'proj4'
 import 'proj4leaflet'
@@ -18,7 +18,7 @@ const mapContainerStyle = {
   height: '100%',
 }
 
-export const Map = forwardRef((props, mapRef) => {
+export const Map = () => {
   const { db } = useElectric()!
   const { results } = useLiveQuery(
     db.ui_options.liveUnique({ where: { user_id } }),
@@ -27,6 +27,8 @@ export const Map = forwardRef((props, mapRef) => {
   const showMap = uiOption?.show_map ?? true
   const tileLayerSorter = uiOption?.tile_layer_sorter ?? ''
   // const vectorLayerSorter = uiOption?.vector_layer_sorter ?? ''
+
+  const mapRef = useRef()
 
   const onResize = useCallback(() => {
     if (!showMap) return
@@ -40,6 +42,8 @@ export const Map = forwardRef((props, mapRef) => {
     refreshOptions: { trailing: true },
   })
 
+  // Issue: map is not drawn correctly on first render
+  // Solution: invalidateSize() after first render
   useEffect(() => {
     if (!mapRef.current) return
     mapRef.current?.invalidateSize()
@@ -69,4 +73,4 @@ export const Map = forwardRef((props, mapRef) => {
       </MapContainer>
     </div>
   )
-})
+}
