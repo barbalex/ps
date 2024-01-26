@@ -10,7 +10,7 @@ CREATE TABLE tile_layers(
   tile_layer_id uuid PRIMARY KEY DEFAULT NULL,
   label text DEFAULT NULL,
   sort smallint DEFAULT NULL, -- 0
-  active integer DEFAULT NULL, -- 0
+  active boolean DEFAULT NULL, -- false
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE RESTRICT ON UPDATE CASCADE,
   type tile_layer_type_enum DEFAULT NULL, -- 'wmts'
   wmts_url_template text DEFAULT NULL,
@@ -23,14 +23,14 @@ CREATE TABLE tile_layers(
   wms_layers text DEFAULT NULL,
   wms_parameters jsonb DEFAULT NULL,
   wms_styles jsonb DEFAULT NULL, -- array of text
-  wms_transparent integer DEFAULT NULL, -- 0
+  wms_transparent boolean DEFAULT NULL, -- false
   wms_version text DEFAULT NULL, -- values: '1.1.1', '1.3.0'
   wms_info_format text DEFAULT NULL,
-  wms_queryable integer DEFAULT NULL,
-  grayscale integer DEFAULT NULL, -- 0
+  wms_queryable boolean DEFAULT NULL,
+  grayscale boolean DEFAULT NULL, -- false
   local_data_size integer DEFAULT NULL,
   local_data_bounds jsonb DEFAULT NULL,
-  deleted integer DEFAULT NULL -- 0
+  deleted boolean DEFAULT NULL -- false
 );
 
 CREATE INDEX ON tile_layers USING btree(sort);
