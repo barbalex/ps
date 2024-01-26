@@ -1763,7 +1763,7 @@ CREATE TABLE tile_layers(
   tile_layer_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   label text DEFAULT NULL,
   sort smallint DEFAULT 0,
-  active integer DEFAULT 0,
+  active boolean DEFAULT FALSE,
   project_id uuid NOT NULL REFERENCES projects(id) ON DELETE RESTRICT ON UPDATE CASCADE,
   type tile_layer_type_enum DEFAULT 'wmts',
   wmts_url_template text DEFAULT NULL,
@@ -1776,14 +1776,14 @@ CREATE TABLE tile_layers(
   wms_layers text DEFAULT NULL,
   wms_parameters jsonb DEFAULT NULL,
   wms_styles jsonb DEFAULT NULL, -- array of strings
-  wms_transparent integer DEFAULT 0,
+  wms_transparent boolean DEFAULT FALSE,
   wms_version text DEFAULT NULL, -- values: 1.1.1, 1.3.0
   wms_info_format text DEFAULT NULL,
-  wms_queryable integer DEFAULT NULL,
-  grayscale integer DEFAULT 0,
+  wms_queryable boolean DEFAULT NULL,
+  grayscale boolean DEFAULT FALSE,
   local_data_size integer DEFAULT NULL,
   local_data_bounds jsonb DEFAULT NULL,
-  deleted integer DEFAULT 0
+  deleted boolean DEFAULT FALSE
 );
 
 CREATE INDEX ON tile_layers USING btree(tile_layer_id);
@@ -1799,4 +1799,56 @@ COMMENT ON TABLE tile_layers IS 'Goal: Bring your own tile layers. Not versioned
 COMMENT ON COLUMN tile_layers.local_data_size IS 'Size of locally saved image data';
 
 COMMENT ON COLUMN tile_layers.local_data_bounds IS 'Array of bounds and their size of locally saved image data';
+
+---------------------------------------------
+-- vector_layers
+--
+CREATE TYPE vector_layer_type_enum AS enum(
+  'wfs',
+  'upload'
+);
+
+DROP TABLE IF EXISTS vector_layers CASCADE;
+
+CREATE TABLE vector_layers(
+  vector_layer_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  label text DEFAULT NULL,
+  sort smallint DEFAULT 0,
+  active boolean DEFAULT FALSE,
+  project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  type vector_layer_type_enum DEFAULT 'wfs',
+  url text DEFAULT NULL, -- WFS url, for example https://maps.zh.ch/wfs/OGDZHWFS
+  max_zoom decimal DEFAULT 19,
+  min_zoom decimal DEFAULT 0,
+  type_name text DEFAULT NULL, -- type name, for example ms:ogd-0119_giszhpub_feuchtgebietinv_79_90_beob_p
+  wfs_version text DEFAULT NULL, -- often: 1.1.0 or 2.0.0
+  output_format text DEFAULT NULL, -- need some form of json. TODO: Convert others?
+  opacity integer DEFAULT 1,
+  max_features integer DEFAULT 1000,
+  feature_count integer DEFAULT NULL,
+  point_count integer DEFAULT NULL,
+  line_count integer DEFAULT NULL,
+  polygon_count integer DEFAULT NULL,
+  deleted boolean DEFAULT FALSE
+);
+
+CREATE INDEX ON vector_layers USING btree(vector_layer_id);
+
+CREATE INDEX ON vector_layers USING btree(sort);
+
+CREATE INDEX ON vector_layers USING btree((1))
+WHERE
+  deleted;
+
+COMMENT ON TABLE vector_layers IS 'Goal: Bring your own tile layers. Either from wfs or importing GeoJSON. Not versioned (not recorded and only added by manager).';
+
+COMMENT ON COLUMN vector_layers.max_features IS 'maximum number of features to be loaded into a map';
+
+COMMENT ON COLUMN vector_layers.feature_count IS 'Number of features. Set when downloaded features';
+
+COMMENT ON COLUMN vector_layers.point_count IS 'Number of point features. Used to show styling for points - or not. Set when downloaded features';
+
+COMMENT ON COLUMN vector_layers.line_count IS 'Number of line features. Used to show styling for lines - or not. Set when downloaded features';
+
+COMMENT ON COLUMN vector_layers.polygon_count IS 'Number of polygon features. Used to show styling for polygons - or not. Set when downloaded features';
 
