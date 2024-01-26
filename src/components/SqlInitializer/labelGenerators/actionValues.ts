@@ -1,17 +1,13 @@
-// TODO: db.raw is deprecated in v0.9
-// https://electric-sql.com/docs/usage/data-access/queries#raw-sql
-// try db.rawQuery instead for reading data
-// alternatively use db.unsafeExec(sql): https://electric-sql.com/docs/api/clients/typescript#instantiation
 export const generateActionValueLabel = async (db) => {
   // when any data is changed, update label using units name
-  const triggers = await db.raw({
+  const triggers = await db.rawQuery({
     sql: `select name from sqlite_master where type = 'trigger';`,
   })
   const actionValuesLabelTriggerExists = triggers.some(
     (column) => column.name === 'action_values_label_trigger',
   )
   if (!actionValuesLabelTriggerExists) {
-    const result = await db.raw({
+    const result = await db.unsafeExec({
       sql: `
       CREATE TRIGGER IF NOT EXISTS action_values_label_trigger
         AFTER UPDATE ON action_values
@@ -42,7 +38,7 @@ export const generateActionValueLabel = async (db) => {
     (column) => column.name === 'action_values_label_insert_trigger',
   )
   if (!actionValuesLabelInsertTriggerExists) {
-    const result = await db.raw({
+    const result = await db.unsafeExec({
       sql: `
       CREATE TRIGGER IF NOT EXISTS action_values_label_insert_trigger
         AFTER insert ON action_values
