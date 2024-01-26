@@ -67,6 +67,11 @@ export const buildNavs = async ({
           text: 'Taxonomies',
         },
         { path: `/projects/${project_id}/units`, text: 'Units' },
+        { path: `/projects/${project_id}/tile-layers`, text: 'Tile Layers' },
+        {
+          path: `/projects/${project_id}/vector-layers`,
+          text: 'Vector Layers',
+        },
         { path: `/projects/${project_id}/users`, text: 'Users' },
         {
           path: `/projects/${project_id}/place-levels`,
