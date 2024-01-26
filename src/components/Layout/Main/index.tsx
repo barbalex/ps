@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useRef } from 'react'
 import { Outlet } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import { Allotment } from 'allotment'
@@ -24,17 +24,24 @@ export const Main = () => {
   )
   const tabs = useMemo(() => results?.tabs ?? [], [results?.tabs])
 
+  const mapRef = useRef()
+
   // console.log('hello Main', { tabs })
 
   // Allotment prevents the map from drawing correctly
   // UNLESS: an empty div is rendered instead of a missing Map...???
   return (
     <div style={containerStyle}>
-      <Allotment>
+      <Allotment
+        onChange={() => {
+          console.log('hello Main.Allotment.onChange, mapRef:', mapRef)
+          mapRef.current?.invalidateSize()
+        }}
+      >
         {tabs.includes('tree') && <Tree />}
         {tabs.includes('data') && <Outlet />}
         {tabs.includes('filter') && <Filter />}
-        {tabs.includes('map') ? <Map /> : <></>}
+        {tabs.includes('map') && <Map ref={mapRef} />}
       </Allotment>
     </div>
   )

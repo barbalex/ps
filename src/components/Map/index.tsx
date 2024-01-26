@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, forwardRef, useEffect } from 'react'
 import 'leaflet'
 import 'proj4'
 import 'proj4leaflet'
@@ -18,7 +18,7 @@ const mapContainerStyle = {
   height: '100%',
 }
 
-export const Map = () => {
+export const Map = forwardRef((props, mapRef) => {
   const { db } = useElectric()!
   const { results } = useLiveQuery(
     db.ui_options.liveUnique({ where: { user_id } }),
@@ -28,12 +28,10 @@ export const Map = () => {
   const tileLayerSorter = uiOption?.tile_layer_sorter ?? ''
   // const vectorLayerSorter = uiOption?.vector_layer_sorter ?? ''
 
-  const mapRef = useRef()
-
   const onResize = useCallback(() => {
     if (!showMap) return
     // console.log('hello Map.onResize')
-    mapRef.current?.leafletElement?.invalidateSize()
+    mapRef.current?.invalidateSize()
   }, [mapRef, showMap])
   const { ref: resizeRef } = useResizeDetector({
     onResize,
@@ -42,13 +40,18 @@ export const Map = () => {
     refreshOptions: { trailing: true },
   })
 
+  useEffect(() => {
+    if (!mapRef.current) return
+    mapRef.current?.invalidateSize()
+  }, [mapRef, mapRef.current?.invalidateSize])
+
   // const bounds = [
   //   [47.159, 8.354],
   //   [47.696, 8.984],
   // ]
   const position = [51.505, -0.09]
 
-  // console.log('hello Map')
+  console.log('hello Map, mapRef:', mapRef)
 
   return (
     <div style={mapContainerStyle} ref={resizeRef}>
@@ -66,4 +69,4 @@ export const Map = () => {
       </MapContainer>
     </div>
   )
-}
+})
