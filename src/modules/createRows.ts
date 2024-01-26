@@ -489,6 +489,8 @@ export const createVectorLayer = ({ project_id }) => ({
   sort: 0,
   active: false,
   type: 'wfs',
+  max_zoom: 19,
+  min_zoom: 0,
   opacity: 1,
   max_features: 1000,
   deleted: false,

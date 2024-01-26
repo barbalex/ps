@@ -110,6 +110,7 @@ export const Component = () => {
           value={row.sort ?? ''}
           onChange={onChange}
           type="number"
+          validationMessage="Add a sorting order here if alphabetically by label is not desired."
         />
         <SwitchField
           label="active"
@@ -123,6 +124,32 @@ export const Component = () => {
           list={['wms', 'wmts']}
           value={row.type ?? ''}
           onChange={onChange}
+        />
+        <TextField
+          label="WMTS Subdomains TODO: array of strings"
+          name="wmts_subdomains"
+          value={row.wmts_subdomains ?? ''}
+          onChange={onChange}
+        />
+        <TextField
+          label="Max Zoom"
+          name="max_zoom"
+          value={row.max_zoom ?? ''}
+          onChange={onChange}
+          type="number"
+          max={19}
+          min={0}
+          validationMessage="Zoom can be between 0 and 19"
+        />
+        <TextField
+          label="Min Zoom"
+          name="min_zoom"
+          value={row.min_zoom ?? ''}
+          onChange={onChange}
+          type="number"
+          max={19}
+          min={0}
+          validationMessage="Zoom can be between 0 and 19"
         />
       </div>
     </div>

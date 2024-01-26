@@ -17,7 +17,7 @@ CREATE TABLE tile_layers(
   wmts_subdomains jsonb DEFAULT NULL, -- array of text
   max_zoom integer DEFAULT NULL, -- 19
   min_zoom integer DEFAULT NULL, -- 0
-  opacity integer DEFAULT NULL, -- 1
+  opacity real DEFAULT NULL, -- 1
   wms_base_url text DEFAULT NULL,
   wms_format text DEFAULT NULL,
   wms_layers text DEFAULT NULL,
