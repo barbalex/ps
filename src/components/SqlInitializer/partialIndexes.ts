@@ -1,9 +1,5 @@
-// TODO: db.raw is deprecated in v0.9
-// https://electric-sql.com/docs/usage/data-access/queries#raw-sql
-// try db.rawQuery instead for reading data
-// alternatively use db.unsafeExec(sql): https://electric-sql.com/docs/api/clients/typescript#instantiation
 export const generatePartialIndexes = async (db) => {
-  await db.raw({
+  await db.unsafeExec({
     sql: `
           CREATE INDEX if not exists users_deleted_idx ON users(deleted) WHERE deleted;
           CREATE INDEX if not exists projects_deleted_idx ON projects(deleted) WHERE deleted;
