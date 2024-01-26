@@ -11,8 +11,8 @@ CREATE TABLE vector_layers(
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE RESTRICT ON UPDATE CASCADE,
   type vector_layer_type_enum DEFAULT NULL, -- 'wfs',
   url text DEFAULT NULL, -- WFS url, for example https://maps.zh.ch/wfs/OGDZHWFS
-  max_zoom decimal DEFAULT NULL, -- 19,
-  min_zoom decimal DEFAULT NULL, -- 0,
+  max_zoom integer DEFAULT NULL, -- 19,
+  min_zoom integer DEFAULT NULL, -- 0,
   type_name text DEFAULT NULL, -- type name, for example ms:ogd-0119_giszhpub_feuchtgebietinv_79_90_beob_p
   wfs_version text DEFAULT NULL, -- often: 1.1.0 or 2.0.0
   output_format text DEFAULT NULL, -- need some form of json. TODO: Convert others?
@@ -38,4 +38,6 @@ COMMENT ON COLUMN vector_layers.point_count IS 'Number of point features. Used t
 COMMENT ON COLUMN vector_layers.line_count IS 'Number of line features. Used to show styling for lines - or not. Set when downloaded features';
 
 COMMENT ON COLUMN vector_layers.polygon_count IS 'Number of polygon features. Used to show styling for polygons - or not. Set when downloaded features';
+
+ALTER TABLE vector_layers ENABLE electric;
 
