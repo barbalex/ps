@@ -1,30 +1,26 @@
-// TODO: db.raw is deprecated in v0.9
-// https://electric-sql.com/docs/usage/data-access/queries#raw-sql
-// try db.rawQuery instead for reading data
-// alternatively use db.unsafeExec(sql): https://electric-sql.com/docs/api/clients/typescript#instantiation
 export const generateUserLabel = async (db) => {
-  const columns = await db.raw({
+  const columns = await db.rawQuery({
     sql: 'PRAGMA table_xinfo(users)',
   })
   const hasLabel = columns.some((column) => column.name === 'label')
   if (!hasLabel) {
-    await db.raw({
+    await db.unsafeExec({
       sql: 'ALTER TABLE users ADD COLUMN label text GENERATED ALWAYS AS (coalesce(email, user_id))',
     })
-    await db.raw({
+    await db.unsafeExec({
       sql: 'CREATE INDEX IF NOT EXISTS users_label_idx ON users(label)',
     })
   }
 
   // if email is changed, label of account needs to be updated
-  const triggers = await db.raw({
+  const triggers = await db.rawQuery({
     sql: `select name from sqlite_master where type = 'trigger';`,
   })
   const usersAccountsLabelTriggerExists = triggers.some(
     (column) => column.name === 'users_accounts_label_trigger',
   )
   if (!usersAccountsLabelTriggerExists) {
-    const result = await db.raw({
+    const result = await db.unsafeExec({
       sql: `
       CREATE TRIGGER IF NOT EXISTS users_accounts_label_trigger
         AFTER UPDATE OF email ON users
@@ -44,7 +40,7 @@ export const generateUserLabel = async (db) => {
     (column) => column.name === 'users_project_users_label_trigger',
   )
   if (!usersProjectUsersLabelTriggerExists) {
-    const result = await db.raw({
+    const result = await db.unsafeExec({
       sql: `
       CREATE TRIGGER IF NOT EXISTS users_project_users_label_trigger
         AFTER UPDATE OF email ON users
@@ -64,7 +60,7 @@ export const generateUserLabel = async (db) => {
     (column) => column.name === 'users_subproject_users_label_trigger',
   )
   if (!usersSubprojectUsersLabelTriggerExists) {
-    await db.raw({
+    await db.unsafeExec({
       sql: `
       CREATE TRIGGER IF NOT EXISTS users_subproject_users_label_trigger
         AFTER UPDATE OF email ON users

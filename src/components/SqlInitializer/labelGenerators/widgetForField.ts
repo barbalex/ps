@@ -1,9 +1,5 @@
-// TODO: db.raw is deprecated in v0.9
-// https://electric-sql.com/docs/usage/data-access/queries#raw-sql
-// try db.rawQuery instead for reading data
-// alternatively use db.unsafeExec(sql): https://electric-sql.com/docs/api/clients/typescript#instantiation
 export const generateWidgetForFieldLabel = async (db) => {
-  const triggers = await db.raw({
+  const triggers = await db.rawQuery({
     sql: `select name from sqlite_master where type = 'trigger';`,
   })
   const triggerExists = triggers.some(
@@ -15,7 +11,7 @@ export const generateWidgetForFieldLabel = async (db) => {
     // But: not possible because generated columns can only fetch from the same row/table
     // Alternative: use a trigger to update the label field
     // TODO: enable using an array of column names
-    const result = await db.raw({
+    const result = await db.unsafeExec({
       sql: `
       CREATE TRIGGER if not exists widgets_for_fields_label_trigger
       AFTER UPDATE of field_type_id, widget_type_id ON widgets_for_fields
@@ -25,7 +21,7 @@ export const generateWidgetForFieldLabel = async (db) => {
       END`,
     })
     console.log('LabelGenerator, widgets for fields, result:', result)
-    const resultInsert = await db.raw({
+    const resultInsert = await db.unsafeExec({
       sql: `
       CREATE TRIGGER if not exists widgets_for_fields_label_insert_trigger
       AFTER insert ON widgets_for_fields
