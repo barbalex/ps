@@ -10,7 +10,7 @@ type Props = {
   layer: TileLayerType
 }
 
-const WMTSOffline = ({ layer }: Props) => {
+export const WMTSOffline = ({ layer }: Props) => {
   const map = useMap()
   const store: IStore = useContext(storeContext)
   const { setLocalMapValues } = store
@@ -56,6 +56,16 @@ const WMTSOffline = ({ layer }: Props) => {
     const del = () => control.deleteTable(layer.id)
 
     setLocalMapValues({ id: layer.id, save, del })
+    db.ui_options.update({
+      where: { user_id },
+      data: {
+        local_map_show: {
+          [layer.id]: {
+            show: true,
+          },
+        },
+      },
+    })
 
     return () => {
       map.removeLayer(wmtsLayer)
@@ -79,4 +89,3 @@ const WMTSOffline = ({ layer }: Props) => {
   return null
 }
 
-export default WMTSOffline

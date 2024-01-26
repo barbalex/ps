@@ -2,20 +2,19 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 
 import { Tile_layers as TileLayer } from '../../../generated/client'
-import TileLayer from './TileLayer'
-import OsmColor from '../layers/OsmColor'
+import { TileLayerComponent } from './TileLayer'
+import { OsmColor } from '../layers/OsmColor'
 import { useElectric } from '../../../ElectricProvider'
 
 export const TileLayers = () => {
   const { project_id } = useParams()
-  const where = projectId
-    ? // Beware: projectId can be undefined and dexie does not like that
-      { deleted: false, active: true, project_id }
+  const where = project_id
+    ? { deleted: false, active: true, project_id }
     : { deleted: false, active: true }
 
   const { db } = useElectric()!
   const { result: layersResult } = useLiveQuery(
-    db.tile_layers({ where, sortBy: { sort: 'asc' } }),
+    db.tile_layers.liveMany({ where, sortBy: { sort: 'asc' } }),
   )
   const tileLayers: TileLayer[] = layersResult ?? []
   /**
@@ -34,9 +33,10 @@ export const TileLayers = () => {
     return true
   })
 
+  console.log('Map, TileLayers', { tileLayers, validTileLayers, OsmColor })
+
   // is no tile layer was yet defined, use osm
   if (!validTileLayers.length) return [<OsmColor key="osm" />]
-  // if (!validTileLayers.length) return []
 
   // console.log(
   //   'Map, TileLayers, validTileLayers:',
@@ -67,6 +67,8 @@ export const TileLayers = () => {
       grayscale: layer.grayscale,
     }
 
-    return <TileLayer key={JSON.stringify(partsToRedrawOn)} layer={layer} />
+    return (
+      <TileLayerComponent key={JSON.stringify(partsToRedrawOn)} layer={layer} />
+    )
   })
 }

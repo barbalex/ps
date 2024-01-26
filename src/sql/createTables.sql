@@ -1621,6 +1621,8 @@ CREATE TABLE ui_options(
   tabs jsonb DEFAULT NULL,
   show_map boolean DEFAULT TRUE,
   local_map_show jsonb DEFAULT NULL,
+  tile_layer_sorter text DEFAULT NULL,
+  vector_layer_sorter text DEFAULT NULL,
   notifications jsonb DEFAULT NULL,
   label text DEFAULT NULL
 );

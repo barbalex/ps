@@ -5,8 +5,8 @@ import {
   Ui_options as UiOption,
 } from '../../../../generated/client'
 import { WMS } from './WMS'
-import WMTS from './WMTSOffline'
-import LocalMap from './LocalMap'
+// import { WMTSOffline } from './WMTSOffline'
+import { LocalMap } from './LocalMap'
 import { useElectric } from '../../../../ElectricProvider'
 import { user_id } from '../../../SqlInitializer'
 
@@ -26,7 +26,8 @@ export const TileLayerComponent = ({ layer }: Props) => {
     return (
       <>
         {showLocalMap && <LocalMap layer={layer} />}
-        <WMTS layer={layer} />
+        {/* TODO: get offline wmts to work */}
+        {/* <WMTSOffline layer={layer} /> */}
       </>
     )
   } else {
