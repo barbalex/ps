@@ -8,6 +8,7 @@ import { useElectric } from '../ElectricProvider'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { TextField } from '../components/shared/TextField'
 import { SwitchField } from '../components/shared/SwitchField'
+import { SliderField } from '../components/shared/SliderField'
 import { RadioGroupField } from '../components/shared/RadioGroupField'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormHeader } from '../components/FormHeader'
@@ -66,12 +67,13 @@ export const Component = () => {
   const row: TileLayer = results
 
   const onChange = useCallback(
-    (e, data) => {
+    async (e, data) => {
       const { name, value } = getValueFromChange(e, data)
-      db.tile_layers.update({
+      const result = await db.tile_layers.update({
         where: { tile_layer_id },
         data: { [name]: value },
       })
+      console.log('hello tileLayer, onChange, result', result)
     },
     [db.tile_layers, tile_layer_id],
   )
@@ -150,6 +152,27 @@ export const Component = () => {
           max={19}
           min={0}
           validationMessage="Zoom can be between 0 and 19"
+        />
+        <TextField
+          label="Opacity"
+          name="opacity"
+          value={row.opacity ?? ''}
+          onChange={onChange}
+          type="number"
+          max={1.0}
+          min={0}
+          step={0.01}
+          validationMessage="Opacity can be between 0 and 1"
+        />
+        <SliderField
+          label="Opacity"
+          name="opacity"
+          value={row.opacity ?? ''}
+          onChange={onChange}
+          max={1.0}
+          min={0}
+          step={0.05}
+          validationMessage="Opacity can be between 0 and 1"
         />
       </div>
     </div>
