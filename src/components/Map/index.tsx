@@ -16,6 +16,7 @@ import { LocationMarker } from './LocationMarker'
 import { tableNameFromIdField } from '../../modules/tableNameFromIdField'
 import { DrawControl } from './DrawControl'
 import { Control } from './Control'
+import { OwnControls } from './OwnControls'
 
 const mapContainerStyle = {
   width: '100%',
@@ -84,6 +85,9 @@ export const Map = () => {
         <LocationMarker />
         <DrawControl />
         <TileLayers key={`${tileLayerSorter}/tileLayers`} />
+        <Control position="topright" visible={true}>
+          <OwnControls />
+        </Control>
       </MapContainer>
     </div>
   )

@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import { useMap } from 'react-leaflet'
 
-import ErrorBoundary from '../../shared/ErrorBoundary'
+import { ErrorBoundary } from '../../shared/ErrorBoundary'
 import { Tile_layers as TileLayer } from '../../../generated/client'
 import { useElectric } from '../../../ElectricProvider'
 
@@ -41,7 +41,7 @@ export const Legends = () => {
   const { result } = useLiveQuery(
     db.tile_layers.liveMany({ where, orderBy: { sort: 'asc' } }),
   )
-  const tileLayers: TileLayer[] = result
+  const tileLayers: TileLayer[] = result ?? []
   /**
    * Ensure needed data exists:
    * - wmts_url_template has template
