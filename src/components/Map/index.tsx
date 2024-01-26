@@ -12,6 +12,7 @@ import { user_id } from '../SqlInitializer'
 import { Ui_options as UiOption } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
 import { TileLayers } from './TileLayers'
+import { LocationMarker } from './LocationMarker'
 
 const mapContainerStyle = {
   width: '100%',
@@ -69,6 +70,7 @@ export const Map = () => {
         zoom={13}
         ref={mapRef}
       >
+        <LocationMarker />
         <TileLayers key={`${tileLayerSorter}/tileLayers`} />
       </MapContainer>
     </div>
