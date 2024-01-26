@@ -83,7 +83,13 @@ export const BreadcrumbForData = forwardRef(
     const { db } = useElectric()
     const queryTable = table === 'root' || table === 'docs' ? 'projects' : table
 
-    console.log('BreadcrumbForData', { queryTable, table })
+    // console.log('BreadcrumbForData', {
+    //   queryTable,
+    //   table,
+    //   filterParams,
+    //   queryParam,
+    //   db,
+    // })
 
     const { results } = useLiveQuery(db[queryTable]?.liveMany(queryParam))
 
