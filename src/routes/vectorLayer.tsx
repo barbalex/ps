@@ -6,6 +6,7 @@ import { Vector_layers as VectorLayer } from '../../../generated/client'
 import { createVectorLayer } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { TextField } from '../components/shared/TextField'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormHeader } from '../components/FormHeader'
 
@@ -96,6 +97,14 @@ export const Component = () => {
           label="ID"
           name="vector_layer_id"
           value={row.vector_layer_id}
+        />
+        <TextField
+          label="Label"
+          name="label"
+          value={row.label ?? ''}
+          onChange={onChange}
+          autoFocus
+          ref={autoFocusRef}
         />
       </div>
     </div>

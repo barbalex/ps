@@ -6,6 +6,7 @@ import { Tile_layers as TileLayer } from '../../../generated/client'
 import { createTileLayer } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
+import { TextField } from '../components/shared/TextField'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormHeader } from '../components/FormHeader'
 
@@ -92,6 +93,14 @@ export const Component = () => {
           label="ID"
           name="tile_layer_id"
           value={row.tile_layer_id}
+        />
+        <TextField
+          label="Label"
+          name="label"
+          value={row.label ?? ''}
+          onChange={onChange}
+          autoFocus
+          ref={autoFocusRef}
         />
       </div>
     </div>
