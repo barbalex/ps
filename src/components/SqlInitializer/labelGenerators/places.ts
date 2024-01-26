@@ -1,9 +1,5 @@
-// TODO: db.raw is deprecated in v0.9
-// https://electric-sql.com/docs/usage/data-access/queries#raw-sql
-// try db.rawQuery instead for reading data
-// alternatively use db.unsafeExec(sql): https://electric-sql.com/docs/api/clients/typescript#instantiation
 export const generatePlaceLabel = async (db) => {
-  const triggers = await db.raw({
+  const triggers = await db.rawQuery({
     sql: `select name from sqlite_master where type = 'trigger';`,
   })
   const triggerExists = triggers.some(
@@ -15,7 +11,7 @@ export const generatePlaceLabel = async (db) => {
     // But: not possible because generated columns can only fetch from the same row/table
     // Alternative: use a trigger to update the label field
     // TODO: enable using an array of column names
-    const result = await db.raw({
+    const result = await db.unsafeExec({
       sql: `
       CREATE TRIGGER if not exists places_label_trigger
       AFTER UPDATE of level, data ON places
@@ -35,7 +31,7 @@ export const generatePlaceLabel = async (db) => {
     })
     console.log('LabelGenerator, places, result:', result)
     // now to same on insert
-    const resultInsert = await db.raw({
+    const resultInsert = await db.unsafeExec({
       sql: `
       CREATE TRIGGER if not exists places_label_insert_trigger
       AFTER INSERT ON places
@@ -54,7 +50,7 @@ export const generatePlaceLabel = async (db) => {
       END`,
     })
     console.log('LabelGenerator, places, resultInsert:', resultInsert)
-    // const resultArray = await db.raw({
+    // const resultArray = await db.unsafeExec({
     //   sql: `
     //   CREATE TRIGGER if not exists places_label_array_trigger
     //   AFTER UPDATE of data ON places
