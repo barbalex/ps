@@ -1,20 +1,12 @@
-// TODO: db.raw is deprecated in v0.9
-// https://electric-sql.com/docs/usage/data-access/queries#raw-sql
-// try db.rawQuery instead for reading data
-// alternatively use db.unsafeExec(sql): https://electric-sql.com/docs/api/clients/typescript#instantiation
 export const generateTaxonLabel = async (db) => {
-  // TODO:
-  // use physical label
-  // build by:
-  // `${taxonomy.name} (${taxonomy.type}): ${taxon.name}
-  const triggers = await db.raw({
+  const triggers = await db.rawQuery({
     sql: `select name from sqlite_master where type = 'trigger';`,
   })
   const triggerExists = triggers.some(
     (column) => column.name === 'taxa_label_trigger',
   )
   if (!triggerExists) {
-    const result = await db.raw({
+    const result = await db.unsafeExec({
       sql: `
       CREATE TRIGGER if not exists taxa_label_trigger
       AFTER UPDATE of taxonomy_id, name ON taxa
@@ -37,7 +29,7 @@ export const generateTaxonLabel = async (db) => {
     (column) => column.name === 'taxa_label_insert_trigger',
   )
   if (!insertTriggerExists) {
-    const result = await db.raw({
+    const result = await db.unsafeExec({
       sql: `
       CREATE TRIGGER if not exists taxa_label_insert_trigger
       AFTER INSERT ON taxa
