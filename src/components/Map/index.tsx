@@ -15,6 +15,7 @@ import { TileLayers } from './TileLayers'
 import { LocationMarker } from './LocationMarker'
 import { tableNameFromIdField } from '../../modules/tableNameFromIdField'
 import { DrawControl } from './DrawControl'
+import { Control } from './Control'
 
 const mapContainerStyle = {
   width: '100%',
