@@ -1,17 +1,13 @@
-// TODO: db.raw is deprecated in v0.9
-// https://electric-sql.com/docs/usage/data-access/queries#raw-sql
-// try db.rawQuery instead for reading data
-// alternatively use db.unsafeExec(sql): https://electric-sql.com/docs/api/clients/typescript#instantiation
 export const generateGoalReportLabel = async (db) => {
   // if data is changed, update its label
-  const triggers = await db.raw({
+  const triggers = await db.rawQuery({
     sql: `select name from sqlite_master where type = 'trigger';`,
   })
   const goalReportsLabelTriggerExists = triggers.some(
     (column) => column.name === 'goal_reports_label_trigger',
   )
   if (!goalReportsLabelTriggerExists) {
-    const result = await db.raw({
+    const result = await db.unsafeExec({
       sql: `
       CREATE TRIGGER IF NOT EXISTS goal_reports_label_trigger
         AFTER UPDATE OF data ON goal_reports
@@ -53,7 +49,7 @@ export const generateGoalReportLabel = async (db) => {
     (column) => column.name === 'goal_reports_label_insert_trigger',
   )
   if (!goalReportsLabelInsertTriggerExists) {
-    const result = await db.raw({
+    const result = await db.unsafeExec({
       sql: `
       CREATE TRIGGER IF NOT EXISTS goal_reports_label_insert_trigger
         AFTER INSERT ON goal_reports
