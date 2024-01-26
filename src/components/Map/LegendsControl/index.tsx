@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react'
 import { MdExpandMore, MdExpandLess } from 'react-icons/md'
 import { motion, useAnimation } from 'framer-motion'
 
-import Legends from './Legends'
+import { Legends } from './Legends'
 import { css } from '../../../css'
 
 const cardContainerStyle = {

@@ -1,56 +1,47 @@
 import React, { useMemo } from 'react'
-import styled from '@emotion/styled'
-import { useLiveQuery } from 'dexie-react-hooks'
+import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import { useMap } from 'react-leaflet'
 
 import ErrorBoundary from '../../shared/ErrorBoundary'
-import { dexie, TileLayer } from '../../../dexieClient'
+import { Tile_layers as TileLayer } from '../../../generated/client'
+import { useElectric } from '../../../ElectricProvider'
 
-const LegendsContainer = styled.div`
-  max-height: ${(props) => `${props.maxheight}px`};
-  max-width: ${(props) => `${props.maxwidth}px`};
-  overflow: auto;
-`
-const Legend = styled.div`
-  padding: 5px 10px;
-  ${(props) =>
-    !props['data-last'] && `border-bottom: 1px solid rgba(0, 0, 0, 0.1);`}
-`
-const Label = styled.div`
-  cursor: text;
-  font-size: 0.8rem;
-  font-weight: bold;
-  color: rgba(0, 0, 0, 0.8);
-  pointer-events: none;
-  user-select: none;
-`
-const Title = styled.div`
-  margin-top: 2px;
-  cursor: text;
-  font-size: 0.75rem;
-  color: rgba(0, 0, 0, 0.8);
-  pointer-events: none;
-  user-select: none;
-  padding-bottom: 8px;
-`
+const labelStyle = {
+  cursor: 'text',
+  fontSize: '0.8rem',
+  fontWeight: 'bold',
+  color: 'rgba(0, 0, 0, 0.8)',
+  pointerEvents: 'none',
+  userSelect: 'none',
+}
+const titleStyle = {
+  marginTop: 2,
+  cursor: 'text',
+  fontSize: '0.75rem',
+  color: 'rgba(0, 0, 0, 0.8)',
+  pointerEvents: 'none',
+  userSelect: 'none',
+  paddingBottom: 8,
+}
 
 // = '99999999-9999-9999-9999-999999999999'
-const MapLegends = () => {
-  const { projectId } = useParams()
+export const Legends = () => {
+  const { project_id } = useParams()
   const map = useMap()
   const mapSize = map.getSize()
 
-  const where = projectId
-    ? // Beware: projectId can be undefined and dexie does not like that
-      { deleted: 0, active: 1, project_id: projectId }
-    : { deleted: 0, active: 1 }
+  const { db } = useElectric()!
 
-  const tileLayers: TileLayerType[] =
-    useLiveQuery(
-      async () => await dexie.tile_layers.where(where).reverse().sortBy('sort'),
-      [projectId],
-    ) ?? []
+  const where = project_id
+    ? // Beware: projectId can be undefined
+      { deleted: false, active: true, project_id }
+    : { deleted: false, active: true }
+
+  const { result } = useLiveQuery(
+    db.tile_layers.liveMany({ where, orderBy: { sort: 'asc' } }),
+  )
+  const tileLayers: TileLayer[] = result
   /**
    * Ensure needed data exists:
    * - wmts_url_template has template
@@ -97,22 +88,33 @@ const MapLegends = () => {
 
   return (
     <ErrorBoundary>
-      <LegendsContainer maxheight={mapSize.y - 70} maxwidth={mapSize.x - 45}>
+      <div
+        style={{
+          overflow: 'auto',
+          maxHeight: mapSize.y - 70,
+          maxWidth: mapSize.x - 45,
+        }}
+      >
         {(legends ?? []).map((legend, index) => {
           return (
             <Legend
               key={`${legend.label}/${legend.title}`}
               data-last={index === legends.length - 1}
+              style={{
+                padding: '5px 10px',
+                // last has bottom border
+                ...(index === legends.length - 1
+                  ? { borderBottom: '1px solid rgba(0, 0, 0, 0.1)' }
+                  : {}),
+              }}
             >
-              <Label>{legend.label}</Label>
-              <Title>{legend.title}</Title>
+              <div style={labelStyle}>{legend.label}</div>
+              <div style={titleStyle}>{legend.title}</div>
               {!!legend.blob && <img src={legend.blob} />}
             </Legend>
           )
         })}
-      </LegendsContainer>
+      </div>
     </ErrorBoundary>
   )
 }
-
-export default MapLegends
