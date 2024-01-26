@@ -8,6 +8,7 @@ import { useElectric } from '../ElectricProvider'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { TextField } from '../components/shared/TextField'
 import { SwitchField } from '../components/shared/SwitchField'
+import { RadioGroupField } from '../components/shared/RadioGroupField'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormHeader } from '../components/FormHeader'
 
@@ -118,6 +119,13 @@ export const Component = () => {
           label="active"
           name="active"
           value={row.active}
+          onChange={onChange}
+        />
+        <RadioGroupField
+          label="Type"
+          name="type"
+          list={['wfs', 'upload']}
+          value={row.type ?? ''}
           onChange={onChange}
         />
       </div>
