@@ -4,7 +4,9 @@ CREATE TABLE actions(
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   date date DEFAULT NULL, -- CURRENT_DATE,
   data jsonb DEFAULT NULL,
-  -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
+  -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL, -- not supported by electic-sql
+  geometry jsonb DEFAULT NULL,
+  bbox jsonb DEFAULT NULL,
   relevant_for_reports boolean DEFAULT NULL, -- TRUE,
   label_replace_by_generated_column text DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
@@ -31,7 +33,10 @@ COMMENT ON COLUMN actions.account_id IS 'redundant account_id enhances data safe
 
 COMMENT ON COLUMN actions.data IS 'Room for action specific data, defined in "fields" table';
 
--- COMMENT ON COLUMN actions.geometry IS 'geometry of action';
+COMMENT ON COLUMN actions.geometry IS 'geometry of action';
+
+COMMENT ON COLUMN actions.bbox IS 'bbox of the geometry. Set client-side on every change of geometry. Used to filter geometries for viewport client-side';
+
 COMMENT ON COLUMN actions.relevant_for_reports IS 'Whether action is relevant for reports. Preset: true';
 
 ALTER TABLE actions ENABLE electric;

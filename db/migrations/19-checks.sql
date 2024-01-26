@@ -4,7 +4,9 @@ CREATE TABLE checks(
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   date date DEFAULT NULL, -- CURRENT_DATE,
   data jsonb DEFAULT NULL,
-  -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
+  -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL, -- not supported by electic-sql
+  geometry jsonb DEFAULT NULL,
+  bbox jsonb DEFAULT NULL,
   relevant_for_reports boolean DEFAULT NULL, -- TRUE,
   label_replace_by_generated_column text DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
@@ -30,6 +32,8 @@ COMMENT ON TABLE checks IS 'Checks describe the situation of the subproject in t
 COMMENT ON COLUMN checks.account_id IS 'redundant account_id enhances data safety';
 
 COMMENT ON COLUMN checks.data IS 'Room for check specific data, defined in "fields" table';
+
+COMMENT ON COLUMN checks.bbox IS 'bbox of the geometry. Set client-side on every change of geometry. Used to filter geometries for viewport client-side';
 
 ALTER TABLE checks ENABLE electric;
 

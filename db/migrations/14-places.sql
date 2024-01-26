@@ -5,7 +5,9 @@ CREATE TABLE places(
   parent_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE NO action ON UPDATE CASCADE,
   level integer DEFAULT NULL, -- 1,
   data jsonb DEFAULT NULL,
-  --geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
+  -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL, -- not supported by electic-sql
+  geometry jsonb DEFAULT NULL,
+  bbox jsonb DEFAULT NULL,
   label text DEFAULT NULL, -- not generated, so no need to rename
   files_active_places boolean DEFAULT NULL, -- TRUE,
   deleted boolean DEFAULT NULL -- FALSE
@@ -43,6 +45,9 @@ COMMENT ON COLUMN projects.files_active_projects IS 'Whether files are used in t
 
 COMMENT ON COLUMN projects.files_active_subprojects IS 'Whether files are used in table subprojects. Preset: true';
 
--- COMMENT ON COLUMN places.geometry IS 'geometry of place';
+COMMENT ON COLUMN places.geometry IS 'geometry of place';
+
+COMMENT ON COLUMN places.bbox IS 'bbox of the geometry. Set client-side on every change of geometry. Used to filter geometries for viewport client-side';
+
 ALTER TABLE places ENABLE electric;
 

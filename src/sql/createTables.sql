@@ -603,6 +603,7 @@ CREATE TABLE places(
   level integer DEFAULT 1,
   data jsonb DEFAULT NULL,
   geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
+  bbox jsonb DEFAULT NULL,
   deleted boolean DEFAULT FALSE
 );
 
@@ -638,6 +639,8 @@ COMMENT ON COLUMN places.data IS 'Room for place specific data, defined in "fiel
 
 COMMENT ON COLUMN places.geometry IS 'geometry of place';
 
+COMMENT ON COLUMN places.bbox IS 'bbox of the geometry. Set client-side on every change of geometry. Used to filter geometries for viewport client-side';
+
 ---------------------------------------------
 -- actions
 --
@@ -650,6 +653,7 @@ CREATE TABLE actions(
   date date DEFAULT CURRENT_DATE,
   data jsonb DEFAULT NULL,
   geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
+  bbox jsonb DEFAULT NULL,
   relevant_for_reports boolean DEFAULT TRUE,
   deleted boolean DEFAULT FALSE
 );
@@ -681,6 +685,8 @@ COMMENT ON COLUMN actions.account_id IS 'redundant account_id enhances data safe
 COMMENT ON COLUMN actions.data IS 'Room for action specific data, defined in "fields" table';
 
 COMMENT ON COLUMN actions.geometry IS 'geometry of action';
+
+COMMENT ON COLUMN actions.bbox IS 'bbox of the geometry. Set client-side on every change of geometry. Used to filter geometries for viewport client-side';
 
 COMMENT ON COLUMN actions.relevant_for_reports IS 'Whether action is relevant for reports. Preset: true';
 
@@ -818,6 +824,7 @@ CREATE TABLE checks(
   date date DEFAULT CURRENT_DATE,
   data jsonb DEFAULT NULL,
   geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
+  bbox jsonb DEFAULT NULL,
   relevant_for_reports boolean DEFAULT TRUE,
   deleted boolean DEFAULT FALSE
 );
@@ -847,6 +854,8 @@ COMMENT ON TABLE checks IS 'Checks describe the situation of the subproject in t
 COMMENT ON COLUMN checks.account_id IS 'redundant account_id enhances data safety';
 
 COMMENT ON COLUMN checks.data IS 'Room for check specific data, defined in "fields" table';
+
+COMMENT ON COLUMN checks.bbox IS 'bbox of the geometry. Set client-side on every change of geometry. Used to filter geometries for viewport client-side';
 
 ---------------------------------------------
 -- check_values
