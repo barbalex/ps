@@ -1,21 +1,20 @@
 import React, { useState, useCallback } from 'react'
-import styled from '@emotion/styled'
 import { MdExpandMore, MdExpandLess } from 'react-icons/md'
 import { motion, useAnimation } from 'framer-motion'
 
 import Legends from './Legends'
 import { css } from '../../../css'
 
-const CardContainer = styled.div`
-  background-color: white;
-  background-clip: padding-box;
-  border-radius: 5px;
-  outline: 2px solid rgba(0, 0, 0, 0.2);
-`
-const Card = styled.div`
-  padding-top: 3px;
-  color: rgb(48, 48, 48);
-`
+const cardContainerStyle = {
+  backgroundColor: 'white',
+  backgroundClip: 'padding-box',
+  borderRadius: 5,
+  outline: '2px solid rgba(0, 0, 0, 0.2)',
+}
+const cardStyle = {
+  paddingTop: 3,
+  color: 'rgb(48, 48, 48)',
+}
 const cardHeaderStyle = {
   display: 'flex',
   justifyContent: 'space-between',
@@ -68,8 +67,8 @@ export const LegendsControl = () => {
   }, [anim, legendsExpanded])
 
   return (
-    <CardContainer>
-      <Card>
+    <div style={cardContainerStyle}>
+      <div style={cardStyle}>
         <div
           onClick={onToggleApfloraLayersExpanded}
           open={legendsExpanded}
@@ -94,7 +93,7 @@ export const LegendsControl = () => {
         <motion.div animate={anim} transition={{ type: 'just', duration: 0.2 }}>
           {legendsExpanded && <Legends />}
         </motion.div>
-      </Card>
-    </CardContainer>
+      </div>
+    </div>
   )
 }
