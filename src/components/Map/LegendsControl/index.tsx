@@ -4,6 +4,7 @@ import { MdExpandMore, MdExpandLess } from 'react-icons/md'
 import { motion, useAnimation } from 'framer-motion'
 
 import Legends from './Legends'
+import { css } from '../../../css'
 
 const CardContainer = styled.div`
   background-color: white;
@@ -15,26 +16,28 @@ const Card = styled.div`
   padding-top: 3px;
   color: rgb(48, 48, 48);
 `
-const CardHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding-left: 7px;
-  padding-right: 2px;
-  ${(props) => props.open && `border-bottom: 1px solid rgba(0, 0, 0, 0.2);`}
-  cursor: pointer;
-  font-weight: bold;
-  user-select: none;
-  height: 21px;
-`
-const CardTitle = styled.div`
-  padding-right: 5px;
-`
-const CardTitleApfloraOpen = styled(CardTitle)`
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  width: 70px;
-`
+const cardHeaderStyle = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  paddingLeft: 7,
+  paddingRight: 2,
+  cursor: 'pointer',
+  fontWeight: 'bold',
+  userSelect: 'none',
+  height: 21,
+}
+
+const cardTitleStyle = {
+  paddingRight: 5,
+}
+
+const cardTitleOpenStyle = {
+  paddingRight: 5,
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  width: 70,
+}
 const expandLessIconStyle = {
   height: '18px !important',
   fontSize: '1.5rem',
@@ -64,16 +67,22 @@ export const LegendsControl = () => {
     }
   }, [anim, legendsExpanded])
 
-  const ApfloraCard = legendsExpanded ? CardTitle : CardTitleApfloraOpen
-
   return (
     <CardContainer>
       <Card>
-        <CardHeader
+        <div
           onClick={onToggleApfloraLayersExpanded}
           open={legendsExpanded}
+          style={css({
+            ...cardHeaderStyle,
+            ...(legendsExpanded
+              ? { borderBottom: '1px solid rgba(0, 0, 0, 0.2)' }
+              : {}),
+          })}
         >
-          <ApfloraCard>Legenden</ApfloraCard>
+          <div style={legendsExpanded ? cardTitleStyle : cardTitleOpenStyle}>
+            Legenden
+          </div>
           <div>
             {legendsExpanded ? (
               <MdExpandLess style={expandLessIconStyle} />
@@ -81,7 +90,7 @@ export const LegendsControl = () => {
               <MdExpandMore style={expandMoreIconStyle} />
             )}
           </div>
-        </CardHeader>
+        </div>
         <motion.div animate={anim} transition={{ type: 'just', duration: 0.2 }}>
           {legendsExpanded && <Legends />}
         </motion.div>
