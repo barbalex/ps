@@ -56,67 +56,67 @@ const seedSubprojectUsers = `INSERT INTO subproject_users(subproject_user_id, su
 // try db.rawQuery instead for reading data
 // alternatively use db.unsafeExec(sql): https://electric-sql.com/docs/api/clients/typescript#instantiation
 export const seed = async (db) => {
-  const users = await db.raw({
+  const users = await db.rawQuery({
     sql: `select count(*) as count from users;`,
   })
   if (users[0].count === 0) {
-    await db.raw({
+    await db.unsafeExec({
       sql: seedUsers,
     })
   }
-  const accounts = await db.raw({
+  const accounts = await db.rawQuery({
     sql: `select count(*) as count from accounts;`,
   })
   if (accounts[0].count === 0) {
-    await db.raw({
+    await db.unsafeExec({
       sql: seedAccounts,
     })
   }
-  const fieldTypes = await db.raw({
+  const fieldTypes = await db.rawQuery({
     sql: `select count(*) as count from field_types;`,
   })
   if (fieldTypes[0].count === 0) {
-    await db.raw({
+    await db.unsafeExec({
       sql: seedFieldTypes,
     })
-    await db.raw({
+    await db.unsafeExec({
       sql: seedWidgetTypes,
     })
-    await db.raw({
+    await db.unsafeExec({
       sql: seedWidgetsForFields,
     })
   }
-  const projects = await db.raw({
+  const projects = await db.rawQuery({
     sql: `select count(*) as count from projects;`,
   })
   if (projects[0].count === 0) {
-    await db.raw({
+    await db.unsafeExec({
       sql: seedProjects,
     })
-    await db.raw({
+    await db.unsafeExec({
       sql: seedProjectUsers,
     })
-    await db.raw({
+    await db.unsafeExec({
       sql: seedSubprojects,
     })
-    await db.raw({
+    await db.unsafeExec({
       sql: seedSubprojectUsers,
     })
-    await db.raw({
+    await db.unsafeExec({
       sql: seedTaxonomies,
     })
-    await db.raw({
+    await db.unsafeExec({
       sql: seedTaxons,
     })
-    await db.raw({
+    await db.unsafeExec({
       sql: seedUnits,
     })
   }
-  const placeLevels = await db.raw({
+  const placeLevels = await db.rawQuery({
     sql: `select count(*) as count from place_levels;`,
   })
   if (placeLevels[0].count === 0) {
-    await db.raw({
+    await db.unsafeExec({
       sql: seedPlaceLevels,
     })
   }
