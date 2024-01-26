@@ -13,6 +13,7 @@ import { Ui_options as UiOption } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
 import { TileLayers } from './TileLayers'
 import { LocationMarker } from './LocationMarker'
+import { tableNameFromIdField } from '../../modules/tableNameFromIdField'
 
 const mapContainerStyle = {
   width: '100%',
@@ -50,13 +51,21 @@ export const Map = () => {
     mapRef.current?.invalidateSize()
   }, [mapRef, mapRef.current?.invalidateSize])
 
+  useEffect(() => {
+    if (!db) return
+    const run = async () => {
+      await tableNameFromIdField({ idField: 'project_id', db })
+    }
+    run()
+  }, [db])
+
   // const bounds = [
   //   [47.159, 8.354],
   //   [47.696, 8.984],
   // ]
   const position = [51.505, -0.09]
 
-  console.log('hello Map, mapRef:', mapRef)
+  // console.log('hello Map, mapRef:', mapRef)
 
   return (
     <div style={mapContainerStyle} ref={resizeRef}>

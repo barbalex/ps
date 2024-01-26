@@ -32,6 +32,7 @@
     "allotment": "1.20.0",
     "dayjs": "1.11.10",
     "electric-sql": "0.9.1",
+    "is-uuid": "^1.0.2",
     "leaflet": "1.9.4",
     "leaflet-draw": "1.0.4",
     "proj4": "2.10.0",
