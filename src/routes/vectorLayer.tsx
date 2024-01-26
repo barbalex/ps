@@ -160,8 +160,6 @@ export const Component = () => {
           name="type_name"
           value={row.type_name ?? ''}
           onChange={onChange}
-          autoFocus
-          ref={autoFocusRef}
         />
       </div>
     </div>
