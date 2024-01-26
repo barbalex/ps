@@ -7,6 +7,7 @@ import { createTileLayer } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { TextField } from '../components/shared/TextField'
+import { SwitchField } from '../components/shared/SwitchField'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormHeader } from '../components/FormHeader'
 
@@ -101,6 +102,19 @@ export const Component = () => {
           onChange={onChange}
           autoFocus
           ref={autoFocusRef}
+        />
+        <TextField
+          label="Sort"
+          name="sort"
+          value={row.sort ?? ''}
+          onChange={onChange}
+          type="number"
+        />
+        <SwitchField
+          label="active"
+          name="active"
+          value={row.active}
+          onChange={onChange}
         />
       </div>
     </div>

@@ -15,7 +15,7 @@ export const VectorLayersNode = ({ project_id, level = 3 }) => {
   const { results } = useLiveQuery(
     db.vector_layers.liveMany({
       where: { deleted: false, project_id },
-      orderBy: { label: 'asc' },
+      orderBy: [{ sort: 'asc' }, { label: 'asc' }],
     }),
   )
   const vectorLayers: VectorLayer[] = results ?? []

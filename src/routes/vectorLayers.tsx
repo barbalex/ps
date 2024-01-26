@@ -17,7 +17,7 @@ export const Component = () => {
   const { results } = useLiveQuery(
     db.vector_layers.liveMany({
       where: { project_id, deleted: false },
-      orderBy: { label: 'asc' },
+      orderBy: [{ sort: 'asc' }, { label: 'asc' }],
     }),
   )
 

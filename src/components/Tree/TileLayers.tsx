@@ -15,7 +15,7 @@ export const TileLayersNode = ({ project_id, level = 3 }) => {
   const { results } = useLiveQuery(
     db.tile_layers.liveMany({
       where: { deleted: false, project_id },
-      orderBy: { label: 'asc' },
+      orderBy: [{ sort: 'asc' }, { label: 'asc' }],
     }),
   )
   const tileLayers: TileLayer[] = results ?? []
