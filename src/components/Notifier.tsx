@@ -53,8 +53,6 @@ export const Notifier = () => {
     db.ui_options.update({ where: { user_id }, data: { notifications: [] } })
   }, [db.ui_options, dispatchToast, notifications])
 
-  console.log('Notifier, notifications:', notifications)
-
   return (
     <>
       <Toaster
