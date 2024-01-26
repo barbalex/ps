@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useRef } from 'react'
 import { Outlet } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import { Allotment } from 'allotment'
@@ -23,16 +23,23 @@ export const Main = () => {
     db.ui_options.liveUnique({ where: { user_id } }),
   )
   const tabs = useMemo(() => results?.tabs ?? [], [results?.tabs])
+  const mapRef = useRef()
 
-  // console.log('Main, tabs:', tabs)
+  console.log('hello Main', { tabs, mapRef })
 
+  // TODO: Allotment prevents the map from drawing correctly
   return (
     <div style={containerStyle}>
-      <Allotment>
+      <Allotment
+        onChange={() => {
+          console.log('hello Allotment.onChange')
+          mapRef.current && mapRef.current.invalidateSize(false)
+        }}
+      >
         {tabs.includes('tree') && <Tree />}
         {tabs.includes('data') && <Outlet />}
         {tabs.includes('filter') && <Filter />}
-        {tabs.includes('map') && <Map />}
+        {tabs.includes('map') ? <Map ref={mapRef} /> : <></>}
       </Allotment>
     </div>
   )

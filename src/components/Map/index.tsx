@@ -1,4 +1,4 @@
-import { useRef, useCallback } from 'react'
+import { useCallback, forwardRef } from 'react'
 import 'leaflet'
 import 'proj4'
 import 'proj4leaflet'
@@ -13,18 +13,12 @@ import { Ui_options as UiOption } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
 import { TileLayers } from './TileLayers'
 
-const containerStyle = {
-  width: '100%',
-  height: '100%',
-}
 const mapContainerStyle = {
   width: '100%',
   height: '100%',
 }
 
-export const Map = () => {
-  const mapRef = useRef()
-
+export const Map = forwardRef((props, mapRef) => {
   const { db } = useElectric()!
   const { results } = useLiveQuery(
     db.ui_options.liveUnique({ where: { user_id } }),
@@ -33,12 +27,13 @@ export const Map = () => {
   const showMap = uiOption?.show_map ?? true
   const tileLayerSorter = uiOption?.tile_layer_sorter ?? ''
   // const vectorLayerSorter = uiOption?.vector_layer_sorter ?? ''
-  console.log('Map', { uiOption, showMap })
+  console.log('hello Map', { uiOption, showMap, mapRef })
 
   const onResize = useCallback(() => {
     if (!showMap) return
+    console.log('hello Map.onResize')
     mapRef.current?.leafletElement?.invalidateSize()
-  }, [showMap])
+  }, [mapRef, showMap])
   const { ref } = useResizeDetector({
     onResize,
     refreshMode: 'debounce',
@@ -53,7 +48,7 @@ export const Map = () => {
   const position = [51.505, -0.09]
 
   return (
-    <div style={containerStyle} ref={ref}>
+    <div style={mapContainerStyle} ref={ref}>
       <MapContainer
         className="map-container"
         style={mapContainerStyle}
@@ -63,10 +58,9 @@ export const Map = () => {
         center={position}
         zoom={13}
         ref={mapRef}
-        // attributionControl={false}
       >
         <TileLayers key={`${tileLayerSorter}/tileLayers`} />
       </MapContainer>
     </div>
   )
-}
+})
