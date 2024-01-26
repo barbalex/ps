@@ -468,3 +468,28 @@ export const createUiOption = ({ user_id }) => ({
   navs_overflowing: true,
   tabs: isMobilePhone() ? ['data'] : ['tree', 'data'],
 })
+
+export const createTileLayer = ({ project_id }) => ({
+  tile_layer_id: uuidv7(),
+  project_id,
+  sort: 0,
+  active: false,
+  type: 'wmts',
+  max_zoom: 19,
+  min_zoom: 0,
+  opacity: 1,
+  wms_transparent: false,
+  grayscale: false,
+  deleted: false,
+})
+
+export const createVectorLayer = ({ project_id }) => ({
+  vector_layer_id: uuidv7(),
+  project_id,
+  sort: 0,
+  active: false,
+  type: 'wfs',
+  opacity: 1,
+  max_features: 1000,
+  deleted: false,
+})

@@ -540,6 +540,62 @@ export const router = (db) => {
                       ],
                     },
                     {
+                      path: 'tile-layers',
+                      element: null,
+                      handle: {
+                        crumb: () => ({
+                          text: 'Tile Layers',
+                          table: 'tile_layers',
+                          folder: true,
+                        }),
+                      },
+                      children: [
+                        {
+                          index: true,
+                          lazy: () => import('../routes/tileLayers'),
+                        },
+                        {
+                          path: ':tile_layer_id',
+                          lazy: () => import('../routes/tileLayer'),
+                          handle: {
+                            crumb: (match) => ({
+                              text: match.params.tile_layer_id,
+                              table: 'tile_layers',
+                              folder: false,
+                            }),
+                          },
+                        },
+                      ],
+                    },
+                    {
+                      path: 'vector-layers',
+                      element: null,
+                      handle: {
+                        crumb: () => ({
+                          text: 'Vector Layers',
+                          table: 'vector_layers',
+                          folder: true,
+                        }),
+                      },
+                      children: [
+                        {
+                          index: true,
+                          lazy: () => import('../routes/vectorLayers'),
+                        },
+                        {
+                          path: ':vector_layer_id',
+                          lazy: () => import('../routes/vectorLayer'),
+                          handle: {
+                            crumb: (match) => ({
+                              text: match.params.vector_layer_id,
+                              table: 'vector_layers',
+                              folder: false,
+                            }),
+                          },
+                        },
+                      ],
+                    },
+                    {
                       path: 'users',
                       element: null,
                       handle: {
