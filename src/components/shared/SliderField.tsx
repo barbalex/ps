@@ -1,5 +1,5 @@
 import { memo, forwardRef } from 'react'
-import { Field, Slider } from '@fluentui/react-components'
+import { Field, Slider, Label } from '@fluentui/react-components'
 import type { InputProps } from '@fluentui/react-components'
 import { useDebouncedCallback } from 'use-debounce'
 
@@ -26,16 +26,20 @@ export const SliderField = memo(
         validationMessage={validationMessage}
         validationState={validationState}
       >
-        <Slider
-          name={name}
-          min={min}
-          max={max}
-          step={step}
-          defaultValue={value}
-          onChange={onChangeDebounced}
-          autoFocus={autoFocus}
-          ref={ref}
-        />
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <Label aria-hidden>{min}</Label>
+          <Slider
+            name={name}
+            min={min}
+            max={max}
+            step={step}
+            defaultValue={value}
+            onChange={onChangeDebounced}
+            autoFocus={autoFocus}
+            ref={ref}
+          />
+          <Label aria-hidden>{max}</Label>
+        </div>
       </Field>
     )
   }),
