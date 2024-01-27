@@ -16,7 +16,7 @@ CREATE TABLE vector_layers(
   type_name text DEFAULT NULL, -- type name, for example ms:ogd-0119_giszhpub_feuchtgebietinv_79_90_beob_p
   wfs_version text DEFAULT NULL, -- often: 1.1.0 or 2.0.0
   output_format text DEFAULT NULL, -- need some form of json. TODO: Convert others?
-  opacity real DEFAULT NULL, -- 1,
+  opacity_percent integer DEFAULT NULL, -- 100,
   max_features integer DEFAULT NULL, -- 1000,
   feature_count integer DEFAULT NULL,
   point_count integer DEFAULT NULL,
@@ -38,6 +38,8 @@ COMMENT ON COLUMN vector_layers.point_count IS 'Number of point features. Used t
 COMMENT ON COLUMN vector_layers.line_count IS 'Number of line features. Used to show styling for lines - or not. Set when downloaded features';
 
 COMMENT ON COLUMN vector_layers.polygon_count IS 'Number of polygon features. Used to show styling for polygons - or not. Set when downloaded features';
+
+COMMENT ON COLUMN vector_layers.opacity_percent IS 'As numeric is not supported by electric-sql, we cant use values between 0 and 1 for opacity. So we use integer values between 0 and 100 and divide by 100 in the frontend.';
 
 ALTER TABLE vector_layers ENABLE electric;
 

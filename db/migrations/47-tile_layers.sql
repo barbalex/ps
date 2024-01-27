@@ -17,7 +17,7 @@ CREATE TABLE tile_layers(
   wmts_subdomains jsonb DEFAULT NULL, -- array of text
   max_zoom integer DEFAULT NULL, -- 19
   min_zoom integer DEFAULT NULL, -- 0
-  opacity real DEFAULT NULL, -- 1
+  opacity_percent integer DEFAULT NULL, -- 100
   wms_base_url text DEFAULT NULL,
   wms_format text DEFAULT NULL,
   wms_layers text DEFAULT NULL,
@@ -40,6 +40,8 @@ COMMENT ON TABLE tile_layers IS 'Goal: Bring your own tile layers. Not versioned
 COMMENT ON COLUMN tile_layers.local_data_size IS 'Size of locally saved image data';
 
 COMMENT ON COLUMN tile_layers.local_data_bounds IS 'Array of bounds and their size of locally saved image data';
+
+COMMENT ON COLUMN tile_layers.opacity_percent IS 'As numeric is not supported by electric-sql, we cant use values between 0 and 1 for opacity. So we use integer values between 0 and 100 and divide by 100 in the frontend.';
 
 ALTER TABLE tile_layers ENABLE electric;
 

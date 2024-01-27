@@ -69,11 +69,12 @@ export const Component = () => {
   const onChange = useCallback(
     async (e, data) => {
       const { name, value } = getValueFromChange(e, data)
+      console.log('hello tileLayer, onChange, result', { e, data, name, value })
       const result = await db.tile_layers.update({
         where: { tile_layer_id },
         data: { [name]: value },
       })
-      console.log('hello tileLayer, onChange, result', result)
+      console.log('hello tileLayer, onChange, result', { result })
     },
     [db.tile_layers, tile_layer_id],
   )
@@ -154,14 +155,14 @@ export const Component = () => {
           validationMessage="Zoom can be between 0 and 19"
         />
         <SliderField
-          label="Opacity"
-          name="opacity"
-          value={row.opacity ?? ''}
+          label="Opacity (%)"
+          name="opacity_percent"
+          value={row.opacity_percent ?? ''}
           onChange={onChange}
-          max={1.0}
+          max={100}
           min={0}
-          step={0.05}
-          validationMessage="Opacity can be between 0 and 1"
+          step={1}
+          validationMessage="Opacity can be between 0 and 100"
         />
       </div>
     </div>

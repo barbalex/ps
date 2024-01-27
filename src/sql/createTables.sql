@@ -1770,7 +1770,7 @@ CREATE TABLE tile_layers(
   wmts_subdomains jsonb DEFAULT NULL, -- array of strings
   max_zoom decimal DEFAULT 19,
   min_zoom decimal DEFAULT 0,
-  opacity decimal DEFAULT 1,
+  opacity numeric DEFAULT 1, -- is opacity_percent client side because electric-sql does not support numeric
   wms_base_url text DEFAULT NULL,
   wms_format text DEFAULT NULL,
   wms_layers text DEFAULT NULL,
@@ -1823,7 +1823,7 @@ CREATE TABLE vector_layers(
   type_name text DEFAULT NULL, -- type name, for example ms:ogd-0119_giszhpub_feuchtgebietinv_79_90_beob_p
   wfs_version text DEFAULT NULL, -- often: 1.1.0 or 2.0.0
   output_format text DEFAULT NULL, -- need some form of json. TODO: Convert others?
-  opacity integer DEFAULT 1,
+  opacity numeric DEFAULT 1, -- is opacity_percent client side because electric-sql does not support numeric
   max_features integer DEFAULT 1000,
   feature_count integer DEFAULT NULL,
   point_count integer DEFAULT NULL,

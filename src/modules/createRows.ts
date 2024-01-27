@@ -477,7 +477,7 @@ export const createTileLayer = ({ project_id }) => ({
   type: 'wmts',
   max_zoom: 19,
   min_zoom: 0,
-  opacity: 1,
+  opacity_percent: 100,
   wms_transparent: false,
   grayscale: false,
   deleted: false,
@@ -491,7 +491,7 @@ export const createVectorLayer = ({ project_id }) => ({
   type: 'wfs',
   max_zoom: 19,
   min_zoom: 0,
-  opacity: 1,
+  opacity_percent: 100,
   max_features: 1000,
   deleted: false,
 })
