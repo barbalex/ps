@@ -21,15 +21,6 @@ export const MultiSelect = memo(
     const removeItem = useCallback(
       (e, { value }) => {
         const idField = idFieldFromTable(table)
-        console.log('hello MultiSelect, removeItem', {
-          e,
-          value,
-          idField,
-          name,
-          id,
-          table,
-          valueArray,
-        })
         db[table].update({
           where: { [idField]: id },
           data: { [name]: valueArray.filter((v) => v.value !== value) },

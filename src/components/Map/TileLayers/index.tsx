@@ -73,6 +73,8 @@ export const TileLayers = () => {
       wms_transparent: layer.wms_transparent,
       wms_version: layer.wms_version,
       grayscale: layer.grayscale,
+      sort: layer.sort,
+      label: layer.label,
     }
 
     // console.log('hello Map, TileLayers', { partsToRedrawOn, layer })

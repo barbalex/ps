@@ -16,7 +16,7 @@ export const getCapabilitiesData = async ({
 }: Props) => {
   if (!row?.wms_base_url) return undefined
 
-  console.log('hello getCapabilitiesDataForTileLayer, label:', row.label)
+  console.log('hello getting capabilites data for Tile Layer', row.label)
 
   const values = {}
 

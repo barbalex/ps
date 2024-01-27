@@ -68,19 +68,13 @@ export const Component = () => {
 
   const row: TileLayer = results
 
-  useEffect(() => {
-    if (!row?.wms_base_url) return
-    if (row?._layerOptions?.length) return
-    console.log('hello TileLayer, getCapabilitiesData')
-    getCapabilitiesData({ row, db })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    tile_layer_id,
-    row?.wms_base_url,
-    row?._layerOptions?.length,
-    row?.wms_layers,
-    db,
-  ])
+  // useEffect(() => {
+  //   if (!row?.wms_base_url) return
+  //   if (row?.wms_layers?.length) return
+  //   console.log('hello TileLayer, getCapabilitiesData')
+  //   getCapabilitiesData({ row, db })
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [tile_layer_id, row?.wms_base_url, row?.wms_layers, db])
 
   const onChange = useCallback(
     async (e, data) => {
@@ -90,14 +84,17 @@ export const Component = () => {
         data: { [name]: value },
       })
     },
-    [db.tile_layers, tile_layer_id],
+    [db, tile_layer_id],
   )
+
+  const onBlurWmsBaseUrl = useCallback(async () => {
+    console.log('hello TileLayer, onBlurWmsBaseUrl, getting capabilities')
+    getCapabilitiesData({ row, db })
+  }, [db, row])
 
   if (!row) {
     return <div>Loading...</div>
   }
-
-  console.log('hello TileLayer, row:', row)
 
   return (
     <div className="form-outer-container">
@@ -169,6 +166,7 @@ export const Component = () => {
               name="wms_base_url"
               value={row.wms_base_url ?? ''}
               onChange={onChange}
+              onBlur={onBlurWmsBaseUrl}
             />
             <TextField
               label="WMS (Bild-)Format"

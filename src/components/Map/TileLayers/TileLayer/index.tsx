@@ -17,16 +17,19 @@ type Props = {
 export const TileLayerComponent = ({ layer }: Props) => {
   const { db } = useElectric()!
   const { results } = useLiveQuery(
-    db.ui_options.liveUnique({ where: { user_id } }),
+    db.ui_options.liveUnique({
+      where: { user_id },
+      select: { local_map_show: true },
+    }),
   )
   const uiOption: UiOption = results
   const showLocalMap = uiOption?.local_map_show?.[layer.id]?.show ?? false
 
-  // console.log('hello TileLayerComponent', {
-  //   layer,
-  //   showLocalMap,
-  //   uiOption,
-  // })
+  console.log('hello TileLayerComponent', {
+    layer,
+    showLocalMap,
+    uiOption,
+  })
 
   if (layer.type === 'wmts') {
     return (
