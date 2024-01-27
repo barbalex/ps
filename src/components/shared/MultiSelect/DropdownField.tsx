@@ -18,7 +18,11 @@ export const DropdownField = memo(({ options, value, onChange }) => {
       }
     >
       {options.map((option) => {
-        return <Option key={option.value}>{option.label}</Option>
+        return (
+          <Option key={option.value} value={option.value}>
+            {option.label}
+          </Option>
+        )
       })}
     </Dropdown>
   )

@@ -189,15 +189,13 @@ export const Component = () => {
               options={row.wms_layer_options ?? []}
               valueArray={row.wms_layers ?? []}
               validationMessage={
-                row.wms_layers?.length > 1
-                  ? 'Sie können mehrere wählen'
-                  : ''
+                row.wms_layers?.length > 1 ? 'Sie können mehrere wählen' : ''
               }
             />
             <TextField
               label="WMS Layers"
               name="wms_layers"
-              value={row.wms_layers}
+              value={row.wms_layers ? JSON.stringify(row.wms_layers) : ''}
               onChange={onChange}
               validationMessage={
                 row.wms_layers?.length > 1 ? 'Sie können mehrere wählen' : ''

@@ -21,9 +21,18 @@ export const MultiSelect = memo(
     const removeItem = useCallback(
       (e, { value }) => {
         const idField = idFieldFromTable(table)
+        console.log('hello MultiSelect, removeItem', {
+          e,
+          value,
+          idField,
+          name,
+          id,
+          table,
+          valueArray,
+        })
         db[table].update({
           where: { [idField]: id },
-          data: { [name]: valueArray.filter((v) => v.value !== value.value) },
+          data: { [name]: valueArray.filter((v) => v.value !== value) },
         })
       },
       [db, id, name, table, valueArray],
@@ -31,6 +40,7 @@ export const MultiSelect = memo(
 
     const onChange = useCallback(
       ({ value, previousValue }) => {
+        const option = options.find((o) => o.value === value)
         let val = [...valueArray]
         if (!value) {
           // need to remove the key from the json object
@@ -39,9 +49,9 @@ export const MultiSelect = memo(
           // replace the previous value with the new value
           const index = val.findIndex((v) => v.value === previousValue.value)
           if (index !== -1) {
-            val[index] = value
+            val[index] = option
           } else {
-            val.push(value)
+            val.push(option)
           }
         }
         const idField = idFieldFromTable(table)
@@ -50,10 +60,8 @@ export const MultiSelect = memo(
           data: { [name]: val },
         })
       },
-      [db, id, name, table, valueArray],
+      [db, id, name, options, table, valueArray],
     )
-
-    console.log('hello MultiSelect', { optionValues, valueArray })
 
     return (
       <Field
