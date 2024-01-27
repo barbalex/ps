@@ -177,14 +177,41 @@ export const Component = () => {
           validationMessage="TODO: needs explanation"
         />
         <SliderField
-          label="Opacity"
-          name="opacity"
-          value={row.opacity ?? ''}
+          label="Opacity (%)"
+          name="opacity_percent"
+          value={row.opacity_percent ?? ''}
           onChange={onChange}
-          max={1.0}
+          max={100}
           min={0}
-          step={0.05}
-          validationMessage="Opacity can be between 0 and 1"
+          step={5}
+        />
+        <TextField
+          label="Max number of features"
+          name="max_features"
+          value={row.max_features ?? ''}
+          onChange={onChange}
+          type="number"
+          validationMessage="Drawing too many features can crash the app. Your mileage my vary."
+        />
+        <TextFieldInactive
+          label="Feature count"
+          name="feature_count"
+          value={row.feature_count}
+        />
+        <TextFieldInactive
+          label="Point count"
+          name="point_count"
+          value={row.point_count}
+        />
+        <TextFieldInactive
+          label="Line count"
+          name="line_count"
+          value={row.line_count}
+        />
+        <TextFieldInactive
+          label="Polygon count"
+          name="polygon_count"
+          value={row.polygon_count}
         />
       </div>
     </div>
