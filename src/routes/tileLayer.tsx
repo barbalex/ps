@@ -153,17 +153,6 @@ export const Component = () => {
           min={0}
           validationMessage="Zoom can be between 0 and 19"
         />
-        <TextField
-          label="Opacity"
-          name="opacity"
-          value={row.opacity ?? ''}
-          onChange={onChange}
-          type="number"
-          max={1.0}
-          min={0}
-          step={0.01}
-          validationMessage="Opacity can be between 0 and 1"
-        />
         <SliderField
           label="Opacity"
           name="opacity"
