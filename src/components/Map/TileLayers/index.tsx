@@ -9,21 +9,30 @@ import { useElectric } from '../../../ElectricProvider'
 export const TileLayers = () => {
   const { project_id } = useParams()
   const where = project_id
-    ? { deleted: false, active: true, project_id }
-    : { deleted: false, active: true }
+    ? { deleted: false, active: true, type: { not: null }, project_id }
+    : { deleted: false, active: true, type: { not: null } }
 
   const { db } = useElectric()!
-  const { result: layersResult } = useLiveQuery(
-    db.tile_layers.liveMany({ where, sortBy: { sort: 'asc' } }),
+  const { results: layersResult = [] } = useLiveQuery(
+    db.tile_layers.liveMany({
+      where,
+      orderBy: [{ sort: 'asc' }, { label: 'asc' }],
+    }),
   )
-  const tileLayers: TileLayer[] = layersResult ?? []
+  const tileLayers: TileLayer[] = layersResult.map((l) => {
+    // need to convert opacity_percent to opacity
+    const { opacity_percent, ...rest } = l
+    return {
+      ...rest,
+      opacity: opacity_percent ? opacity_percent / 100 : 1,
+    }
+  })
   /**
    * Ensure needed data exists:
    * - wmts_url_template has template
    * - wms has base-url and layers
    */
   const validTileLayers = tileLayers.filter((l) => {
-    if (!l.type) return false
     if (l.type === 'wmts') {
       if (!l.wmts_url_template) return false
     } else {
@@ -33,13 +42,14 @@ export const TileLayers = () => {
     return true
   })
 
+  // console.log('hello Map, TileLayers', {
+  //   validTileLayerLabels: validTileLayers.map((t) => t.label),
+  //   tileLayers,
+  //   where,
+  // })
+
   // is no tile layer was yet defined, use osm
   if (!validTileLayers.length) return [<OsmColor key="osm" />]
-
-  // console.log(
-  //   'Map, TileLayers, validTileLayers:',
-  //   validTileLayers.map((t) => t.label),
-  // )
 
   /**
    * TODO:
@@ -49,7 +59,7 @@ export const TileLayers = () => {
    * then in layer only call source.getLayer
    */
 
-  return validTileLayers.map((layer: TileLayerType) => {
+  return validTileLayers.map((layer: TileLayer) => {
     const partsToRedrawOn = {
       wmts_url_template: layer.wmts_url_template,
       max_zoom: layer.max_zoom,
@@ -64,6 +74,8 @@ export const TileLayers = () => {
       wms_version: layer.wms_version,
       grayscale: layer.grayscale,
     }
+
+    // console.log('hello Map, TileLayers', { partsToRedrawOn, layer })
 
     return (
       <TileLayerComponent key={JSON.stringify(partsToRedrawOn)} layer={layer} />

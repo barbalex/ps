@@ -21,7 +21,7 @@ export const WMS = ({ layer }) => {
 
   useMapEvent('click', async (e) => {
     // console.log({ layer })
-    if (layer.wms_queryable === 0) return
+    if (layer.wms_queryable === false) return
     const mapSize = map.getSize()
     const bounds = map.getBounds()
     let res
@@ -157,6 +157,8 @@ export const WMS = ({ layer }) => {
     600,
   )
 
+  console.log('hello WMS', { layer })
+
   // TODO:
   // leaflet calls server internally
   // BUT: if call errors, leaflet does not surface the error
@@ -171,7 +173,7 @@ export const WMS = ({ layer }) => {
       maxZoom={layer.max_zoom}
       className={layer.grayscale ? 'grayscale' : ''}
       opacity={layer.opacity}
-      transparent={layer.wms_transparent === 1}
+      transparent={layer.wms_transparent === true}
       // exceptions="inimage"
       eventHandlers={{
         tileerror: onTileErrorDebounced,

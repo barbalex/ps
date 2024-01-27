@@ -1,19 +1,20 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, useEffect } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { Tile_layers as TileLayer } from '../../../generated/client'
-import { createTileLayer } from '../modules/createRows'
-import { useElectric } from '../ElectricProvider'
-import { TextFieldInactive } from '../components/shared/TextFieldInactive'
-import { TextField } from '../components/shared/TextField'
-import { SwitchField } from '../components/shared/SwitchField'
-import { SliderField } from '../components/shared/SliderField'
-import { RadioGroupField } from '../components/shared/RadioGroupField'
-import { getValueFromChange } from '../modules/getValueFromChange'
-import { FormHeader } from '../components/FormHeader'
+import { createTileLayer } from '../../modules/createRows'
+import { useElectric } from '../../ElectricProvider'
+import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
+import { TextField } from '../../components/shared/TextField'
+import { SwitchField } from '../../components/shared/SwitchField'
+import { SliderField } from '../../components/shared/SliderField'
+import { RadioGroupField } from '../../components/shared/RadioGroupField'
+import { getValueFromChange } from '../../modules/getValueFromChange'
+import { FormHeader } from '../../components/FormHeader'
+import { getCapabilitiesData } from './getCapabilitiesData'
 
-import '../form.css'
+import '../../form.css'
 
 export const Component = () => {
   const { project_id, tile_layer_id } = useParams()
@@ -66,16 +67,27 @@ export const Component = () => {
 
   const row: TileLayer = results
 
+  useEffect(() => {
+    if (!row?.wms_base_url) return
+    if (row?._layerOptions?.length) return
+    console.log('hello TileLayer, getCapabilitiesData')
+    getCapabilitiesData({ row, db })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    tile_layer_id,
+    row?.wms_base_url,
+    row?._layerOptions?.length,
+    row?.wms_layers,
+    db,
+  ])
+
   const onChange = useCallback(
     async (e, data) => {
       const { name, value } = getValueFromChange(e, data)
-      console.log('hello tileLayer, onChange, result', { e, data, name, value })
-      const result = await db.tile_layers.update({
+      return await db.tile_layers.update({
         where: { tile_layer_id },
         data: { [name]: value },
       })
-      console.log('hello tileLayer, onChange, result', { result })
-      return
     },
     [db.tile_layers, tile_layer_id],
   )
@@ -83,6 +95,8 @@ export const Component = () => {
   if (!row) {
     return <div>Loading...</div>
   }
+
+  console.log('hello TileLayer, row:', row)
 
   return (
     <div className="form-outer-container">
@@ -129,12 +143,91 @@ export const Component = () => {
           value={row.type ?? ''}
           onChange={onChange}
         />
-        <TextField
-          label="WMTS Subdomains TODO: array of strings"
-          name="wmts_subdomains"
-          value={row.wmts_subdomains ?? ''}
-          onChange={onChange}
-        />
+        {row?.type === 'wmts' && (
+          <>
+            <TextField
+              label="URL Template"
+              name="wmts_url_template"
+              value={row.wmts_url_template ?? ''}
+              onChange={onChange}
+              multiLine={true}
+              validationMessage="ℹ Projektion muss 3857 oder 4326 sein. Beispiel (Server-abhängig): https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg"
+            />
+            <TextField
+              label="WMTS Subdomains TODO: array of strings"
+              name="wmts_subdomains"
+              value={row.wmts_subdomains ?? ''}
+              onChange={onChange}
+            />
+          </>
+        )}
+        {row?.type === 'wms' && (
+          <>
+            <TextField
+              label="WMS Base URL"
+              name="wms_base_url"
+              value={row.wms_base_url ?? ''}
+              onChange={onChange}
+            />
+            <TextField
+              label="WMS (Bild-)Format"
+              name="wms_format"
+              value={row.wms_format ?? ''}
+              onChange={onChange}
+              validationMessage={
+                row.wms_format === 'image/png'
+                  ? ''
+                  : `Empfehlung: 'image/png'. Ermöglicht transparenten Hintergrund`
+              }
+            />
+            <TextField
+              label="WMS Layers"
+              name="wms_layers"
+              value={row.wms_layers ?? ''}
+              onChange={onChange}
+            />
+            <TextField
+              label="WMS Parameters"
+              name="wms_parameters"
+              value={row.wms_parameters ?? ''}
+              onChange={onChange}
+              validationMessage="TODO: is an array of values, needs building"
+            />
+            <TextField
+              label="WMS Styles"
+              name="wms_styles"
+              value={row.wms_styles ?? ''}
+              onChange={onChange}
+              validationMessage="TODO: is an array of strings, needs building"
+            />
+            <SwitchField
+              label="WMS Transparent"
+              name="wms_transparent"
+              value={row.wms_transparent}
+              onChange={onChange}
+            />
+            <TextField
+              label="WMS Version"
+              name="wms_version"
+              value={row.wms_version ?? ''}
+              onChange={onChange}
+              validationMessage="Examples: '1.1.1', '1.3.0'"
+            />
+            <TextField
+              label="WMS Info Format"
+              name="wms_info_format"
+              value={row.wms_info_format ?? ''}
+              onChange={onChange}
+              validationMessage="TODO: needs explanation"
+            />
+            <SwitchField
+              label="WMS Queryable"
+              name="wms_queryable"
+              value={row.wms_queryable}
+              onChange={onChange}
+            />
+          </>
+        )}
         <TextField
           label="Max Zoom"
           name="max_zoom"
@@ -163,65 +256,6 @@ export const Component = () => {
           max={100}
           min={0}
           step={5}
-        />
-        <TextField
-          label="WMS Base URL"
-          name="wms_base_url"
-          value={row.wms_base_url ?? ''}
-          onChange={onChange}
-        />
-        <TextField
-          label="WMS Format"
-          name="wms_format"
-          value={row.wms_format ?? ''}
-          onChange={onChange}
-          validationMessage="TODO: needs explanation"
-        />
-        <TextField
-          label="WMS Layers"
-          name="wms_layers"
-          value={row.wms_layers ?? ''}
-          onChange={onChange}
-        />
-        <TextField
-          label="WMS Parameters"
-          name="wms_parameters"
-          value={row.wms_parameters ?? ''}
-          onChange={onChange}
-          validationMessage="TODO: is an array of values, needs building"
-        />
-        <TextField
-          label="WMS Styles"
-          name="wms_styles"
-          value={row.wms_styles ?? ''}
-          onChange={onChange}
-          validationMessage="TODO: is an array of strings, needs building"
-        />
-        <SwitchField
-          label="WMS Transparent"
-          name="wms_transparent"
-          value={row.wms_transparent}
-          onChange={onChange}
-        />
-        <TextField
-          label="WMS Version"
-          name="wms_version"
-          value={row.wms_version ?? ''}
-          onChange={onChange}
-          validationMessage="Examples: '1.1.1', '1.3.0'"
-        />
-        <TextField
-          label="WMS Info Format"
-          name="wms_info_format"
-          value={row.wms_info_format ?? ''}
-          onChange={onChange}
-          validationMessage="TODO: needs explanation"
-        />
-        <SwitchField
-          label="WMS Queryable"
-          name="wms_queryable"
-          value={row.wms_queryable}
-          onChange={onChange}
         />
         <SwitchField
           label="Grayscale"
