@@ -75,6 +75,7 @@ export const Component = () => {
         data: { [name]: value },
       })
       console.log('hello tileLayer, onChange, result', { result })
+      return
     },
     [db.tile_layers, tile_layer_id],
   )
@@ -162,7 +163,7 @@ export const Component = () => {
           max={100}
           min={0}
           step={1}
-          validationMessage="Opacity can be between 0 and 100"
+          // validationMessage="Opacity can be between 0 and 100"
         />
       </div>
     </div>
