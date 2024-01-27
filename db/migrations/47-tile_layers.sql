@@ -18,7 +18,7 @@ CREATE TABLE tile_layers(
   wms_base_url text DEFAULT NULL,
   wms_format text DEFAULT NULL,
   wms_format_options jsonb DEFAULT NULL, -- fetched from GetCapabilities
-  wms_layers text DEFAULT NULL,
+  wms_layers jsonb DEFAULT NULL,
   wms_parameters jsonb DEFAULT NULL,
   wms_styles jsonb DEFAULT NULL, -- array of text
   wms_transparent boolean DEFAULT NULL, -- false

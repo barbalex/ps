@@ -16,7 +16,7 @@ export const onTileError = async (db, map, layer: TileLayer, ignore) => {
       service: 'WMS',
       request: 'GetMap',
       version: layer.wms_version,
-      layers: layer.wms_layers,
+      layers: (layer.wms_layers ?? []).map((l) => l.value).join(','),
       format: layer.wms_format,
       crs: 'EPSG:4326',
       width: mapSize.x,

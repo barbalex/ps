@@ -10,6 +10,7 @@ import { TextField } from '../../components/shared/TextField'
 import { SwitchField } from '../../components/shared/SwitchField'
 import { SliderField } from '../../components/shared/SliderField'
 import { RadioGroupField } from '../../components/shared/RadioGroupField'
+import { MultiSelect } from '../../components/shared/MultiSelect'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { FormHeader } from '../../components/FormHeader'
 import { getCapabilitiesData } from './getCapabilitiesData'
@@ -180,11 +181,27 @@ export const Component = () => {
                   : `Empfehlung: 'image/png'. Ermöglicht transparenten Hintergrund`
               }
             />
+            <MultiSelect
+              label="WMS Layers"
+              name="wms_layers"
+              table="tile_layers"
+              id={tile_layer_id}
+              options={row.wms_layer_options ?? []}
+              valueArray={row.wms_layers ?? []}
+              validationMessage={
+                row.wms_layers?.length > 1
+                  ? 'Sie können mehrere wählen'
+                  : ''
+              }
+            />
             <TextField
               label="WMS Layers"
               name="wms_layers"
-              value={row.wms_layers ?? ''}
+              value={row.wms_layers}
               onChange={onChange}
+              validationMessage={
+                row.wms_layers?.length > 1 ? 'Sie können mehrere wählen' : ''
+              }
             />
             <TextField
               label="WMS Parameters"

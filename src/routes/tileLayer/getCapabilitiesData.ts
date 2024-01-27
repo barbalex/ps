@@ -52,8 +52,10 @@ export const getCapabilitiesData = async ({
     }))
     .filter((u) => !!u.url)
 
+  const wmsLayerValues = (row.wms_layers ?? []).map((l) => l.value)
+
   const legendUrlsToUse = values.wms_legend_urls.filter((lUrl) =>
-    row.wms_layers?.includes?.(lUrl.name),
+    wmsLayerValues.includes?.(lUrl.name),
   )
 
   const _legendBlobs: [Blob, string] = []
@@ -117,10 +119,12 @@ export const getCapabilitiesData = async ({
     values.label = capabilities?.Service?.Title
   }
 
-  const _layerOptions = layers.map((v) => v.Name)
   // activate layer, if not too many
-  if (!row?.wms_layers && _layerOptions?.map && _layerOptions?.length <= 5) {
-    values.wms_layers = _layerOptions.map((o) => o.value).join(',')
+  if (!row?.wms_layers && layers?.length && layers?.length <= 5) {
+    values.wms_layers = layers.map((o) => ({
+      value: o.Name,
+      label: o.Title,
+    }))
   }
 
   // use capabilities.Capability?.Layer?.Layer[this]?.queryable to allow/disallow getting feature info?
@@ -152,20 +156,10 @@ export const getCapabilitiesData = async ({
   // enable updating in a single operation
   if (returnValue) return values
 
-  console.log('hello getCapabilitiesData 1', {
-    values,
-    where: { tile_layer_id: row.tile_layer_id },
-    row,
-    db,
-    tile_layers: db.tile_layers,
-    update: db.tile_layers.update,
-  })
-  // TODO: somehow above log appears, next no more - and update seems not to happen
-
-  const result = await db.tile_layers.update({
+  await db.tile_layers.update({
     where: { tile_layer_id: row.tile_layer_id },
     data: values,
   })
-  console.log('hello getCapabilitiesData 2', { result })
+
   return
 }

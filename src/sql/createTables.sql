@@ -1773,7 +1773,7 @@ CREATE TABLE tile_layers(
   opacity numeric DEFAULT 1, -- is opacity_percent client side because electric-sql does not support numeric
   wms_base_url text DEFAULT NULL,
   wms_format text DEFAULT NULL,
-  wms_layers text DEFAULT NULL,
+  wms_layers jsonb DEFAULT NULL,
   wms_parameters jsonb DEFAULT NULL,
   wms_styles jsonb DEFAULT NULL, -- array of strings
   wms_transparent boolean DEFAULT FALSE,
