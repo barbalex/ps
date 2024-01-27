@@ -8,14 +8,32 @@ import { useElectric } from '../../../ElectricProvider'
 
 export const TileLayers = () => {
   const { project_id } = useParams()
-  const where = project_id
-    ? { deleted: false, active: true, type: { not: null }, project_id }
-    : { deleted: false, active: true, type: { not: null } }
 
   const { db } = useElectric()!
+
+  /**
+   * Ensure needed data exists:
+   * - wmts_url_template has template
+   * - wms has base-url and layers
+   */
   const { results: layersResult = [] } = useLiveQuery(
     db.tile_layers.liveMany({
-      where,
+      where: {
+        deleted: false,
+        active: true,
+        type: { not: null },
+        project_id,
+        OR: [
+          { type: 'wmts', wmts_url_template: { not: null } },
+          {
+            type: 'wms',
+            AND: [
+              { wms_base_url: { not: null } },
+              { wms_layers: { not: null } },
+            ],
+          },
+        ],
+      },
       orderBy: [{ sort: 'asc' }, { label: 'asc' }],
     }),
   )
@@ -27,20 +45,6 @@ export const TileLayers = () => {
       opacity: opacity_percent ? opacity_percent / 100 : 1,
     }
   })
-  /**
-   * Ensure needed data exists:
-   * - wmts_url_template has template
-   * - wms has base-url and layers
-   */
-  const validTileLayers = tileLayers.filter((l) => {
-    if (l.type === 'wmts') {
-      if (!l.wmts_url_template) return false
-    } else {
-      if (!l.wms_base_url) return false
-      if (!l.wms_layers) return false
-    }
-    return true
-  })
 
   // console.log('hello Map, TileLayers', {
   //   validTileLayerLabels: validTileLayers.map((t) => t.label),
@@ -49,7 +53,7 @@ export const TileLayers = () => {
   // })
 
   // is no tile layer was yet defined, use osm
-  if (!validTileLayers.length) return [<OsmColor key="osm" />]
+  if (!tileLayers.length) return [<OsmColor key="osm" />]
 
   /**
    * TODO:
@@ -59,7 +63,7 @@ export const TileLayers = () => {
    * then in layer only call source.getLayer
    */
 
-  return validTileLayers.map((layer: TileLayer) => {
+  return tileLayers.map((layer: TileLayer) => {
     const partsToRedrawOn = {
       wmts_url_template: layer.wmts_url_template,
       max_zoom: layer.max_zoom,
