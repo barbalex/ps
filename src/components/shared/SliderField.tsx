@@ -83,7 +83,7 @@ export const SliderField = memo(
           >
             <Label aria-hidden>{min}</Label>
             <Slider
-              key={`${name}/${sliderKey}/${value}`}
+              key={`${sliderKey}/${value}`}
               name={name}
               min={min}
               max={max}
