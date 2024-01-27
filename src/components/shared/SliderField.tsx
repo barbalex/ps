@@ -1,27 +1,7 @@
-import { memo, forwardRef, useState, useCallback } from 'react'
+import { memo, forwardRef } from 'react'
 import { Field, Slider, Label, Input } from '@fluentui/react-components'
 import type { InputProps } from '@fluentui/react-components'
 import { useDebouncedCallback } from 'use-debounce'
-
-const MyInput = forwardRef((props: InputProps, ref) => {
-  const { name, min, max, step, value, onChange, autoFocus } = props
-  console.log('hello MyInput', { name, value })
-  const onChangeInputDebounced = useDebouncedCallback(onChange, 200)
-  return (
-    <Input
-      name={name}
-      min={min}
-      max={max}
-      step={step}
-      value={value}
-      onChange={onChange}
-      type="number"
-      appearance="outline"
-      autoFocus={autoFocus}
-      ref={ref}
-    />
-  )
-})
 
 export const SliderField = memo(
   forwardRef((props: InputProps, ref) => {
@@ -38,22 +18,9 @@ export const SliderField = memo(
       autoFocus,
     } = props
 
-    const [sliderKey, setSliderKey] = useState(0)
-    const incrementSliderKey = useCallback(
-      () => setSliderKey(sliderKey + 1),
-      [sliderKey],
-    )
-
-    const onChangeInput = useCallback(
-      async (e, data) => {
-        await onChange(e, data)
-        incrementSliderKey()
-      },
-      [incrementSliderKey, onChange],
-    )
-    const onChangeSliderDebounced = useDebouncedCallback(onChange, 200)
-
-    console.log('hello SliderField', { name, value, sliderKey })
+    // need to debounce changes when sliding or slider will not render correctly
+    // do not use a small value or if slid slowly the user will loose the drag
+    const onChangeSliderDebounced = useDebouncedCallback(onChange, 300)
 
     return (
       <Field
@@ -72,7 +39,7 @@ export const SliderField = memo(
           >
             <Label aria-hidden>{min}</Label>
             <Slider
-              key={`${sliderKey}/${value}`}
+              key={value}
               name={name}
               min={min}
               max={max}
@@ -89,11 +56,25 @@ export const SliderField = memo(
             max={max}
             step={step}
             value={value}
-            onChange={onChangeInput}
+            onChange={onChange}
             type="number"
             appearance="outline"
             autoFocus={autoFocus}
             ref={ref}
+            style={{
+              width:
+                max > 10000000
+                  ? '9em'
+                  : max > 100000
+                  ? '8em'
+                  : max > 10000
+                  ? '7em'
+                  : max > 1000
+                  ? '6em'
+                  : max > 100
+                  ? '6em'
+                  : '5em',
+            }}
           />
         </div>
       </Field>

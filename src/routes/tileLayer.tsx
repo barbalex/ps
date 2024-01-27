@@ -162,8 +162,7 @@ export const Component = () => {
           onChange={onChange}
           max={100}
           min={0}
-          step={1}
-          // validationMessage="Opacity can be between 0 and 100"
+          step={5}
         />
       </div>
     </div>
