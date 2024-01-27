@@ -9,6 +9,7 @@ import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { TextField } from '../components/shared/TextField'
 import { SwitchField } from '../components/shared/SwitchField'
 import { RadioGroupField } from '../components/shared/RadioGroupField'
+import { SliderField } from '../components/shared/SliderField'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormHeader } from '../components/FormHeader'
 
@@ -160,6 +161,30 @@ export const Component = () => {
           name="type_name"
           value={row.type_name ?? ''}
           onChange={onChange}
+        />
+        <TextField
+          label="WFS version"
+          name="wfs_version"
+          value={row.wfs_version ?? ''}
+          onChange={onChange}
+          validationMessage="often 1.1.0 or 2.0.0"
+        />
+        <TextField
+          label="Output format"
+          name="output_format"
+          value={row.output_format ?? ''}
+          onChange={onChange}
+          validationMessage="TODO: needs explanation"
+        />
+        <SliderField
+          label="Opacity"
+          name="opacity"
+          value={row.opacity ?? ''}
+          onChange={onChange}
+          max={1.0}
+          min={0}
+          step={0.05}
+          validationMessage="Opacity can be between 0 and 1"
         />
       </div>
     </div>
