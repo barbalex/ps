@@ -39,22 +39,11 @@ export const SliderField = memo(
     } = props
 
     const [sliderKey, setSliderKey] = useState(0)
-    const [inputKey, setInputKey] = useState(0)
     const incrementSliderKey = useCallback(
       () => setSliderKey(sliderKey + 1),
       [sliderKey],
     )
-    const incrementInputKey = useCallback(
-      () => setInputKey(inputKey + 1),
-      [inputKey],
-    )
-    const onChangeSlider = useCallback(
-      (e, data) => {
-        onChange(e, data)
-        setTimeout(incrementInputKey)
-      },
-      [incrementInputKey, onChange],
-    )
+
     const onChangeInput = useCallback(
       async (e, data) => {
         await onChange(e, data)
@@ -62,9 +51,9 @@ export const SliderField = memo(
       },
       [incrementSliderKey, onChange],
     )
-    const onChangeSliderDebounced = useDebouncedCallback(onChangeSlider, 200)
+    const onChangeSliderDebounced = useDebouncedCallback(onChange, 200)
 
-    console.log('hello SliderField', { name, value, sliderKey, inputKey })
+    console.log('hello SliderField', { name, value, sliderKey })
 
     return (
       <Field
