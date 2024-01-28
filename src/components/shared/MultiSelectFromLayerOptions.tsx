@@ -35,16 +35,6 @@ export const MultiSelectFromLayerOptions = memo(
       () => layerOptions.map(({ value, label }) => ({ value, label })),
       [layerOptions],
     )
-    console.log('hello MultiSelectFromLayerOptions', {
-      options,
-      tile_layer_id,
-      field,
-      valueArray,
-      name,
-      label,
-      table,
-      id,
-    })
 
     return (
       <MultiSelect

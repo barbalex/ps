@@ -11,8 +11,8 @@ DROP TABLE IF EXISTS layer_options;
 
 CREATE TABLE layer_options(
   layer_option_id text PRIMARY KEY DEFAULT NULL,
-  tile_layer_id uuid DEFAULT NULL REFERENCES tile_layers(tile_layer_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-  vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  tile_layer_id uuid DEFAULT NULL REFERENCES tile_layers(tile_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
   field text DEFAULT NULL,
   value text DEFAULT NULL,
   label text DEFAULT NULL

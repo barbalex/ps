@@ -10,7 +10,6 @@ import { TextField } from '../../components/shared/TextField'
 import { SwitchField } from '../../components/shared/SwitchField'
 import { SliderField } from '../../components/shared/SliderField'
 import { RadioGroupField } from '../../components/shared/RadioGroupField'
-import { MultiSelect } from '../../components/shared/MultiSelect'
 import { MultiSelectFromLayerOptions } from '../../components/shared/MultiSelectFromLayerOptions'
 import { DropdownFieldOptions } from '../../components/shared/DropdownFieldOptions'
 import { DropdownFieldFromLayerOptions } from '../../components/shared/DropdownFieldFromLayerOptions'
@@ -92,14 +91,13 @@ export const Component = () => {
 
   const onBlurWmsBaseUrl = useCallback(async () => {
     console.log('hello TileLayer, onBlurWmsBaseUrl, getting capabilities')
+    // TODO: show loading indicator
     getCapabilitiesData({ row, db })
   }, [db, row])
 
   if (!row) {
     return <div>Loading...</div>
   }
-
-  console.log('hello TileLayer', row)
 
   return (
     <div className="form-outer-container">
