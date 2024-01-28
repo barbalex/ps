@@ -1,0 +1,94 @@
+import { memo, useMemo, forwardRef } from 'react'
+import { Dropdown, Field, Option } from '@fluentui/react-components'
+
+import { useElectric } from '../../ElectricProvider'
+
+export const DropdownFieldOptions = memo(
+  forwardRef(
+    (
+      {
+        name,
+        label,
+        table,
+        idField, // defaults to name, used for cases where the id field is not the same as the name field (?)
+        options,
+        value,
+        onChange,
+        autoFocus,
+        validationMessage: validationMessageIn,
+        validationState: validationStateIn,
+      },
+      ref,
+    ) => {
+      const { db } = useElectric()
+
+      const selectedOptions = useMemo(
+        () => options.filter(({ value: v }) => v === value),
+        [options, value],
+      )
+
+      const validationState = useMemo(
+        () =>
+          validationStateIn
+            ? validationStateIn
+            : !options?.length //&& !!value
+            ? 'warning'
+            : 'none',
+        [options?.length, validationStateIn],
+      )
+      const validationMessage = useMemo(
+        () =>
+          validationMessageIn
+            ? validationMessageIn
+            : !options?.length //&& !!value
+            ? `No ${table} found. Please add one first.`
+            : undefined,
+        [options?.length, table, validationMessageIn],
+      )
+
+      // console.log('DropdownField', {
+      //   name,
+      //   label,
+      //   table,
+      //   value,
+      //   options,
+      //   selectedOptions,
+      //   validationState,
+      //   validationMessage,
+      //   results,
+      //   validationMessageIn,
+      //   validationStateIn,
+      // })
+
+      return (
+        <Field
+          label={label ?? '(no label provided)'}
+          validationMessage={validationMessage}
+          validationState={validationState}
+        >
+          <Dropdown
+            name={name}
+            value={selectedOptions?.[0]?.text ?? ''}
+            selectedOptions={selectedOptions}
+            onOptionSelect={(e, data) =>
+              onChange({ target: { name, value: data.optionValue } })
+            }
+            appearance="underline"
+            autoFocus={autoFocus}
+            ref={ref}
+          >
+            {options.map((params) => {
+              const { text, value } = params
+
+              return (
+                <Option key={value} value={value}>
+                  {text}
+                </Option>
+              )
+            })}
+          </Dropdown>
+        </Field>
+      )
+    },
+  ),
+)

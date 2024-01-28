@@ -168,17 +168,6 @@ export const Component = () => {
               onChange={onChange}
               onBlur={onBlurWmsBaseUrl}
             />
-            <TextField
-              label="WMS (Bild-)Format"
-              name="wms_format"
-              value={row.wms_format ?? ''}
-              onChange={onChange}
-              validationMessage={
-                row.wms_format === 'image/png'
-                  ? ''
-                  : `Empfehlung: 'image/png'. Ermöglicht transparenten Hintergrund`
-              }
-            />
             <MultiSelect
               label="WMS Layers"
               name="wms_layers"
@@ -191,12 +180,14 @@ export const Component = () => {
               }
             />
             <TextField
-              label="WMS Layers"
-              name="wms_layers"
-              value={row.wms_layers ? JSON.stringify(row.wms_layers) : ''}
+              label="WMS (Bild-)Format"
+              name="wms_format"
+              value={row.wms_format ?? ''}
               onChange={onChange}
               validationMessage={
-                row.wms_layers?.length > 1 ? 'Sie können mehrere wählen' : ''
+                row.wms_format === 'image/png'
+                  ? ''
+                  : `Empfehlung: 'image/png'. Ermöglicht transparenten Hintergrund`
               }
             />
             <TextField
