@@ -153,7 +153,7 @@ export const Component = () => {
               validationMessage="ℹ Projektion muss 3857 oder 4326 sein. Beispiel (Server-abhängig): https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg"
             />
             <TextField
-              label="WMTS Subdomains TODO: array of strings"
+              label="Subdomains TODO: array of strings"
               name="wmts_subdomains"
               value={row.wmts_subdomains ?? ''}
               onChange={onChange}
@@ -163,14 +163,14 @@ export const Component = () => {
         {row?.type === 'wms' && (
           <>
             <TextField
-              label="WMS Base URL"
+              label="Base URL"
               name="wms_base_url"
               value={row.wms_base_url ?? ''}
               onChange={onChange}
               onBlur={onBlurWmsBaseUrl}
             />
             <MultiSelect
-              label="WMS Layers"
+              label="Layers"
               name="wms_layers"
               table="tile_layers"
               id={tile_layer_id}
@@ -182,7 +182,7 @@ export const Component = () => {
             />
             {!!row.wms_format_option?.length && (
               <DropdownFieldOptions
-                label="WMS (Bild-)Format"
+                label="(Image-)Format"
                 name="wms_format"
                 value={row.wms_format ?? ''}
                 options={row.wms_format_options ?? []}
@@ -195,14 +195,14 @@ export const Component = () => {
               />
             )}
             <TextField
-              label="WMS Parameters"
+              label="Parameters"
               name="wms_parameters"
               value={row.wms_parameters ?? ''}
               onChange={onChange}
               validationMessage="TODO: is an array of values, needs building"
             />
             <TextField
-              label="WMS Styles"
+              label="Styles"
               name="wms_styles"
               value={row.wms_styles ?? ''}
               onChange={onChange}
@@ -223,7 +223,7 @@ export const Component = () => {
             />
             {!!row.wms_info_format_options?.length && (
               <DropdownFieldOptions
-                label="WMS Info Format"
+                label="Info Format"
                 name="wms_info_format"
                 value={row.wms_info_format ?? ''}
                 options={row.wms_info_format_options ?? []}
@@ -232,11 +232,11 @@ export const Component = () => {
               />
             )}
             <SwitchField
-              label="WMS Queryable"
+              label="Queryable"
               name="wms_queryable"
               value={row.wms_queryable}
               onChange={onChange}
-              validationMessage="Set automatically but can be changed."
+              validationMessage="Whether the wms service is queryable. May not work for all layers if multiple exist. Set automatically but can be changed."
             />
           </>
         )}

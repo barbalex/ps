@@ -5,6 +5,8 @@ import { useElectric } from '../../../ElectricProvider'
 import { DropdownField } from './DropdownField'
 import { idFieldFromTable } from '../../../modules/idFieldFromTable'
 
+const tabGroupStyle = { flexWrap: 'wrap', rowGap: 5 }
+
 export const MultiSelect = memo(
   ({ name, label, table, options, id, valueArray = [] }) => {
     const optionValues = useMemo(() => options.map((o) => o.value), [options])
@@ -65,7 +67,7 @@ export const MultiSelect = memo(
           </>
         }
       >
-        <TagGroup onDismiss={removeItem}>
+        <TagGroup onDismiss={removeItem} style={tabGroupStyle}>
           {valueArray.map((value) => (
             <Tag
               key={value.value}
