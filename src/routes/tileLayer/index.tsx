@@ -219,13 +219,6 @@ export const Component = () => {
               onChange={onChange}
               validationMessage="Examples: '1.1.1', '1.3.0'"
             />
-            <TextField
-              label="WMS Info Format"
-              name="wms_info_format"
-              value={row.wms_info_format ?? ''}
-              onChange={onChange}
-              validationMessage="TODO: needs explanation"
-            />
             <DropdownFieldOptions
               label="WMS Info Format"
               name="wms_info_format"
