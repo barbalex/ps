@@ -8,7 +8,7 @@ import { idFieldFromTable } from '../../../modules/idFieldFromTable'
 const tabGroupStyle = { flexWrap: 'wrap', rowGap: 5 }
 
 export const MultiSelect = memo(
-  ({ name, label, table, options, id, valueArray = [] }) => {
+  ({ name, label, table, options, id, valueArray = [], validationMessage }) => {
     const optionValues = useMemo(() => options.map((o) => o.value), [options])
     const valueArrayValues = useMemo(
       () => valueArray.map((v) => v.value),
@@ -60,12 +60,7 @@ export const MultiSelect = memo(
       <Field
         label={label ?? '(no label provided)'}
         validationState="none"
-        validationMessage={
-          <>
-            <div>{`Add multiple items in the order you want Layers to be ordered.`}</div>
-            <div>{`If no value is set, Layers are ordered by label.`}</div>
-          </>
-        }
+        validationMessage={validationMessage}
       >
         <TagGroup onDismiss={removeItem} style={tabGroupStyle}>
           {valueArray.map((value) => (
@@ -76,7 +71,7 @@ export const MultiSelect = memo(
               value={value.value}
               secondaryText={
                 !optionValues.includes(value.value)
-                  ? 'not defined in WMS Layers'
+                  ? 'not found in options'
                   : undefined
               }
             >

@@ -1,21 +1,22 @@
 import { memo, useMemo } from 'react'
-import { Dropdown, Field, Option } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 
 import { useElectric } from '../../ElectricProvider'
 import { Layer_options as LayerOption } from '../../generated/client'
+import { MultiSelect } from './MultiSelect'
 
-export const DropdownFieldFromLayerOptions = memo(
+export const MultiSelectFromLayerOptions = memo(
   ({
     name,
     label,
+    table,
+    id,
     tile_layer_id,
     vector_layer_id,
     field,
-    value,
-    onChange,
     validationMessage,
     validationState = 'none',
+    valueArray = [],
   }) => {
     const { db } = useElectric()
     const { results = [] } = useLiveQuery(
@@ -34,35 +35,28 @@ export const DropdownFieldFromLayerOptions = memo(
       () => layerOptions.map(({ value, label }) => ({ value, label })),
       [layerOptions],
     )
-    const selectedOptions = useMemo(
-      () => options.filter((option) => option.value === value),
-      [options, value],
-    )
+    console.log('hello MultiSelectFromLayerOptions', {
+      options,
+      tile_layer_id,
+      field,
+      valueArray,
+      name,
+      label,
+      table,
+      id,
+    })
 
     return (
-      <Field
-        label={label ?? '(no label provided)'}
+      <MultiSelect
+        label={label}
+        name={name}
+        table={table}
+        id={id}
+        options={options}
+        valueArray={valueArray}
         validationMessage={validationMessage}
         validationState={validationState}
-      >
-        <Dropdown
-          name={name}
-          value={selectedOptions?.[0]?.value ?? ''}
-          selectedOptions={selectedOptions}
-          onOptionSelect={(e, data) =>
-            onChange({ target: { name, value: data.optionValue } })
-          }
-          appearance="underline"
-        >
-          {options.map((option) => {
-            return (
-              <Option key={option.value} value={option.value}>
-                {option.label}
-              </Option>
-            )
-          })}
-        </Dropdown>
-      </Field>
+      />
     )
   },
 )

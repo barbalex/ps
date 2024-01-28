@@ -11,6 +11,7 @@ import { SwitchField } from '../../components/shared/SwitchField'
 import { SliderField } from '../../components/shared/SliderField'
 import { RadioGroupField } from '../../components/shared/RadioGroupField'
 import { MultiSelect } from '../../components/shared/MultiSelect'
+import { MultiSelectFromLayerOptions } from '../../components/shared/MultiSelectFromLayerOptions'
 import { DropdownFieldOptions } from '../../components/shared/DropdownFieldOptions'
 import { DropdownFieldFromLayerOptions } from '../../components/shared/DropdownFieldFromLayerOptions'
 import { getValueFromChange } from '../../modules/getValueFromChange'
@@ -98,6 +99,8 @@ export const Component = () => {
     return <div>Loading...</div>
   }
 
+  console.log('hello TileLayer', row)
+
   return (
     <div className="form-outer-container">
       <FormHeader
@@ -170,11 +173,13 @@ export const Component = () => {
               onChange={onChange}
               onBlur={onBlurWmsBaseUrl}
             />
-            <MultiSelect
-              label="Layers"
+            <MultiSelectFromLayerOptions
               name="wms_layers"
+              label="Layers"
               table="tile_layers"
               id={tile_layer_id}
+              tile_layer_id={tile_layer_id}
+              field="wms_layer_options"
               options={row.wms_layer_options ?? []}
               valueArray={row.wms_layers ?? []}
               validationMessage={

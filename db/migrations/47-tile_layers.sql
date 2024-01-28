@@ -16,10 +16,7 @@ CREATE TABLE tile_layers(
   wmts_url_template text DEFAULT NULL,
   wmts_subdomains jsonb DEFAULT NULL, -- array of text
   wms_base_url text DEFAULT NULL,
-  wms_format text DEFAULT NULL, -- wms_format_options are saved in layer_options table
-  -- TODO: wms_layer_options can be too many, slowing the tileLayer form
-  -- Solution: outsource to different table?
-  wms_layer_options jsonb DEFAULT NULL, -- fetched from GetCapabilities
+  wms_format text DEFAULT NULL,
   wms_layers jsonb DEFAULT NULL,
   wms_parameters jsonb DEFAULT NULL,
   wms_styles jsonb DEFAULT NULL, -- array of text
