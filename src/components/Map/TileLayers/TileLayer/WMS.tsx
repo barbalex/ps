@@ -157,8 +157,6 @@ export const WMS = ({ layer }) => {
     600,
   )
 
-  console.log('hello WMS', { layer })
-
   // TODO:
   // leaflet calls server internally
   // BUT: if call errors, leaflet does not surface the error
