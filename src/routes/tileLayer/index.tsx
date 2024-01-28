@@ -226,6 +226,14 @@ export const Component = () => {
               onChange={onChange}
               validationMessage="TODO: needs explanation"
             />
+            <DropdownFieldOptions
+              label="WMS Info Format"
+              name="wms_info_format"
+              value={row.wms_info_format ?? ''}
+              options={row.wms_info_format_options ?? []}
+              onChange={onChange}
+              validationMessage="TODO: needs explanation"
+            />
             <SwitchField
               label="WMS Queryable"
               name="wms_queryable"
