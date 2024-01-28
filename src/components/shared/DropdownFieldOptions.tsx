@@ -12,7 +12,7 @@ export const DropdownFieldOptions = memo(
         onChange,
         autoFocus,
         validationMessage,
-        validationState,
+        validationState = 'none',
       },
       ref,
     ) => {
