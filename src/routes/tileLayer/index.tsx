@@ -1,4 +1,4 @@
-import { useCallback, useRef, useEffect } from 'react'
+import { useCallback, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
@@ -11,6 +11,7 @@ import { SwitchField } from '../../components/shared/SwitchField'
 import { SliderField } from '../../components/shared/SliderField'
 import { RadioGroupField } from '../../components/shared/RadioGroupField'
 import { MultiSelect } from '../../components/shared/MultiSelect'
+import { DropdownFieldOptions } from '../../components/shared/DropdownFieldOptions'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { FormHeader } from '../../components/FormHeader'
 import { getCapabilitiesData } from './getCapabilitiesData'
@@ -179,10 +180,11 @@ export const Component = () => {
                 row.wms_layers?.length > 1 ? 'Sie können mehrere wählen' : ''
               }
             />
-            <TextField
+            <DropdownFieldOptions
               label="WMS (Bild-)Format"
               name="wms_format"
               value={row.wms_format ?? ''}
+              options={row.wms_format_options ?? []}
               onChange={onChange}
               validationMessage={
                 row.wms_format === 'image/png'

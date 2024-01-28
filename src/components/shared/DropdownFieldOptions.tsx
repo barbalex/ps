@@ -1,7 +1,5 @@
-import { memo, useMemo, forwardRef } from 'react'
+import { memo, useMemo, forwardRef, useCallback } from 'react'
 import { Dropdown, Field, Option } from '@fluentui/react-components'
-
-import { useElectric } from '../../ElectricProvider'
 
 export const DropdownFieldOptions = memo(
   forwardRef(
@@ -9,56 +7,27 @@ export const DropdownFieldOptions = memo(
       {
         name,
         label,
-        table,
-        idField, // defaults to name, used for cases where the id field is not the same as the name field (?)
         options,
         value,
         onChange,
         autoFocus,
-        validationMessage: validationMessageIn,
-        validationState: validationStateIn,
+        validationMessage,
+        validationState,
       },
       ref,
     ) => {
-      const { db } = useElectric()
+      const onChangeOption = useCallback(
+        (e, data) => {
+          console.log('hello DropdownFieldOptions, onChangeOption', { e, data })
+          onChange({ target: { name, value: data.optionValue } })
+        },
+        [name, onChange],
+      )
 
       const selectedOptions = useMemo(
         () => options.filter(({ value: v }) => v === value),
         [options, value],
       )
-
-      const validationState = useMemo(
-        () =>
-          validationStateIn
-            ? validationStateIn
-            : !options?.length //&& !!value
-            ? 'warning'
-            : 'none',
-        [options?.length, validationStateIn],
-      )
-      const validationMessage = useMemo(
-        () =>
-          validationMessageIn
-            ? validationMessageIn
-            : !options?.length //&& !!value
-            ? `No ${table} found. Please add one first.`
-            : undefined,
-        [options?.length, table, validationMessageIn],
-      )
-
-      // console.log('DropdownField', {
-      //   name,
-      //   label,
-      //   table,
-      //   value,
-      //   options,
-      //   selectedOptions,
-      //   validationState,
-      //   validationMessage,
-      //   results,
-      //   validationMessageIn,
-      //   validationStateIn,
-      // })
 
       return (
         <Field
@@ -68,21 +37,19 @@ export const DropdownFieldOptions = memo(
         >
           <Dropdown
             name={name}
-            value={selectedOptions?.[0]?.text ?? ''}
+            value={selectedOptions?.[0]?.value ?? ''}
             selectedOptions={selectedOptions}
-            onOptionSelect={(e, data) =>
-              onChange({ target: { name, value: data.optionValue } })
-            }
+            onOptionSelect={onChangeOption}
             appearance="underline"
             autoFocus={autoFocus}
             ref={ref}
           >
             {options.map((params) => {
-              const { text, value } = params
+              const { label, value } = params
 
               return (
                 <Option key={value} value={value}>
-                  {text}
+                  {label}
                 </Option>
               )
             })}
