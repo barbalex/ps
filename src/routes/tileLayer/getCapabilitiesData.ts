@@ -16,7 +16,11 @@ export const getCapabilitiesData = async ({
 }: Props) => {
   if (!row?.wms_base_url) return undefined
 
-  console.log('hello getting capabilites data for Tile Layer', row.label)
+  console.log('hello getting capabilites data for Tile Layer', {
+    label: row.label,
+    id: row.tile_layer_id,
+    db,
+  })
 
   const values = {}
 
@@ -25,13 +29,74 @@ export const getCapabilitiesData = async ({
     service: 'WMS',
   })
 
-  values.wms_format_options =
+  const wms_format_options =
     capabilities?.Capability?.Request?.GetMap?.Format.filter((v) =>
       v.toLowerCase().includes('image'),
     ).map((v) => ({
       label: v,
       value: v,
     }))
+  if (wms_format_options.length) {
+    console.log(
+      'hello getting capabilites data for Tile Layer, will upsert layer options for these wms format options:',
+      wms_format_options,
+    )
+    for (const o of wms_format_options) {
+      console.log(
+        'hello getting capabilites data for Tile Layer, will upsert layer options for this wms format option:',
+        o,
+      )
+      // const result = await db.layer_options.upsert({
+      //   create: {
+      //     layer_option_id: `tile-layers/${
+      //       row.tile_layer_id ?? ''
+      //     }/wms-format-options/${o.value}`,
+      //     tile_layer_id: row.tile_layer_id,
+      //     vector_layer_id: null,
+      //     field: 'wms_format_options',
+      //     value: o.value,
+      //     label: o.label,
+      //   },
+      //   update: {
+      //     tile_layer_id: row.tile_layer_id,
+      //     field: 'wms_format_options',
+      //     value: o.value,
+      //     label: o.label,
+      //   },
+      //   where: {
+      //     layer_option_id: `tile-layers/${
+      //       row.tile_layer_id ?? ''
+      //     }/wms-format-options/${o.value}`,
+      //   },
+      // })
+      const result = await db.layer_options.create({
+        data: {
+          layer_option_id: `tile-layers/${
+            row.tile_layer_id ?? ''
+          }/wms-format-options/${o.value}`,
+          tile_layer_id: row.tile_layer_id,
+          field: 'wms_format_options',
+          value: o.value,
+          label: o.label,
+        },
+      })
+      console.log(
+        'hello getting capabilites data for Tile Layer, upserted layer_options for:',
+        {
+          option: o,
+          result,
+        },
+      )
+    }
+    console.log(
+      'hello getting capabilites data for Tile Layer, set layer_options for:',
+      {
+        tileLayerId: row.tile_layer_id,
+        field: 'wms_format_options',
+        values: wms_format_options,
+      },
+    )
+  }
 
   // let user choose from layers
   // only layers with crs EPSG:4326

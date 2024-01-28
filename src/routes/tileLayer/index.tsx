@@ -12,6 +12,7 @@ import { SliderField } from '../../components/shared/SliderField'
 import { RadioGroupField } from '../../components/shared/RadioGroupField'
 import { MultiSelect } from '../../components/shared/MultiSelect'
 import { DropdownFieldOptions } from '../../components/shared/DropdownFieldOptions'
+import { DropdownFieldFromLayerOptions } from '../../components/shared/DropdownFieldFromLayerOptions'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { FormHeader } from '../../components/FormHeader'
 import { getCapabilitiesData } from './getCapabilitiesData'
@@ -180,20 +181,19 @@ export const Component = () => {
                 row.wms_layers?.length > 1 ? 'Sie können mehrere wählen' : ''
               }
             />
-            {!!row.wms_format_option?.length && (
-              <DropdownFieldOptions
-                label="(Image-)Format"
-                name="wms_format"
-                value={row.wms_format ?? ''}
-                options={row.wms_format_options ?? []}
-                onChange={onChange}
-                validationMessage={
-                  row.wms_format === 'image/png'
-                    ? ''
-                    : `Empfehlung: 'image/png'. Ermöglicht transparenten Hintergrund`
-                }
-              />
-            )}
+            <DropdownFieldFromLayerOptions
+              label="(Image-)Format"
+              name="wms_format"
+              value={row.wms_format ?? ''}
+              tile_layer_id={tile_layer_id}
+              field="wms_format_options"
+              onChange={onChange}
+              validationMessage={
+                row.wms_format === 'image/png'
+                  ? ''
+                  : `Empfehlung: 'image/png'. Ermöglicht transparenten Hintergrund`
+              }
+            />
             <TextField
               label="Parameters"
               name="wms_parameters"
