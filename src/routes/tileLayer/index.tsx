@@ -180,18 +180,20 @@ export const Component = () => {
                 row.wms_layers?.length > 1 ? 'Sie können mehrere wählen' : ''
               }
             />
-            <DropdownFieldOptions
-              label="WMS (Bild-)Format"
-              name="wms_format"
-              value={row.wms_format ?? ''}
-              options={row.wms_format_options ?? []}
-              onChange={onChange}
-              validationMessage={
-                row.wms_format === 'image/png'
-                  ? ''
-                  : `Empfehlung: 'image/png'. Ermöglicht transparenten Hintergrund`
-              }
-            />
+            {!!row.wms_format_option?.length && (
+              <DropdownFieldOptions
+                label="WMS (Bild-)Format"
+                name="wms_format"
+                value={row.wms_format ?? ''}
+                options={row.wms_format_options ?? []}
+                onChange={onChange}
+                validationMessage={
+                  row.wms_format === 'image/png'
+                    ? ''
+                    : `Empfehlung: 'image/png'. Ermöglicht transparenten Hintergrund`
+                }
+              />
+            )}
             <TextField
               label="WMS Parameters"
               name="wms_parameters"
@@ -207,7 +209,7 @@ export const Component = () => {
               validationMessage="TODO: is an array of strings, needs building"
             />
             <SwitchField
-              label="WMS Transparent"
+              label="Transparent background"
               name="wms_transparent"
               value={row.wms_transparent}
               onChange={onChange}
@@ -217,21 +219,24 @@ export const Component = () => {
               name="wms_version"
               value={row.wms_version ?? ''}
               onChange={onChange}
-              validationMessage="Examples: '1.1.1', '1.3.0'"
+              validationMessage="Examples: '1.1.1', '1.3.0'. Set automatically but can be changed."
             />
-            <DropdownFieldOptions
-              label="WMS Info Format"
-              name="wms_info_format"
-              value={row.wms_info_format ?? ''}
-              options={row.wms_info_format_options ?? []}
-              onChange={onChange}
-              validationMessage="TODO: needs explanation"
-            />
+            {!!row.wms_info_format_options?.length && (
+              <DropdownFieldOptions
+                label="WMS Info Format"
+                name="wms_info_format"
+                value={row.wms_info_format ?? ''}
+                options={row.wms_info_format_options ?? []}
+                onChange={onChange}
+                validationMessage="In what format the info is downloaded. Set automatically but can be changed."
+              />
+            )}
             <SwitchField
               label="WMS Queryable"
               name="wms_queryable"
               value={row.wms_queryable}
               onChange={onChange}
+              validationMessage="Set automatically but can be changed."
             />
           </>
         )}
