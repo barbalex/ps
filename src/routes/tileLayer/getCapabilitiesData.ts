@@ -29,6 +29,8 @@ export const getCapabilitiesData = async ({
     service: 'WMS',
   })
 
+  if (!capabilities) return undefined
+
   const wmsFormatOptions =
     capabilities?.Capability?.Request?.GetMap?.Format.filter((v) =>
       v.toLowerCase().includes('image'),
@@ -36,7 +38,7 @@ export const getCapabilitiesData = async ({
       label: v,
       value: v,
     }))
-  if (wmsFormatOptions.length) {
+  if (wmsFormatOptions?.length) {
     for (const o of wmsFormatOptions) {
       await db.layer_options.upsert({
         create: {
@@ -69,7 +71,7 @@ export const getCapabilitiesData = async ({
     label: v.Title,
     value: v.Name,
   }))
-  if (wmsLayerOptions.length) {
+  if (wmsLayerOptions?.length) {
     for (const o of wmsLayerOptions) {
       await db.layer_options.upsert({
         create: {
@@ -137,7 +139,7 @@ export const getCapabilitiesData = async ({
     label: l,
     value: l,
   }))
-  if (wmsInfoFormatOptions.length) {
+  if (wmsInfoFormatOptions?.length) {
     for (const o of wmsInfoFormatOptions) {
       await db.layer_options.upsert({
         create: {
@@ -206,7 +208,7 @@ export const getCapabilitiesData = async ({
   }
 
   // set info_format if undefined
-  if (!row?.wms_info_format && infoFormats.length) {
+  if (!row?.wms_info_format && infoFormats?.length) {
     // for values see: https://docs.geoserver.org/stable/en/user/services/wms/reference.html#getfeatureinfo
     const preferedFormat =
       infoFormats.find(

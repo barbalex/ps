@@ -15,10 +15,13 @@ export const getCapabilities = async ({
   let res
   try {
     // Issue: only the error logged with line 19 informs well when invalid url is used, i.e.: net::ERR_NAME_NOT_RESOLVED
-    // How to catch this error?
+    // How to catch this error? res is undefined...
     res = await fetch(`${url}?service=${service}&request=GetCapabilities`)
   } catch (error) {
-    console.error(`hello error fetching capabilities for ${url}`, error)
+    console.error(
+      `hello, getCapabilities, error fetching capabilities for ${url}`,
+      error,
+    )
     if (error.response) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
@@ -43,14 +46,14 @@ export const getCapabilities = async ({
       // http.ClientRequest in node.js
       error?.request &&
         console.error('request error with request property:', error.request)
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      // TODO: surface
-      error?.message && console.error('Error:', error.message)
     }
-    error?.config && console.error(error.config)
+    error?.config &&
+      console.error('hello, getCapabilities, config error:', error.config)
     throw error
   }
+
+  if (!res) return undefined
+  console.log('hello, res:', res)
   console.log('hello, res status:', res?.status)
   console.log('hello, res.ok:', res?.ok)
   const data = await res?.blob()

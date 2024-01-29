@@ -106,7 +106,15 @@ export const Component = () => {
           console.log('hello, status of toast:', status),
       },
     )
-    await getCapabilitiesData({ row, db })
+    try {
+      await getCapabilitiesData({ row, db })
+    } catch (error) {
+      console.error(
+        'hello TileLayer, onBlurWmsBaseUrl, error getting capabilities data:',
+        error?.message ?? error,
+      )
+      // TODO: surface error to user
+    }
     dismissToast(toastId)
     console.log(
       'hello TileLayer, onBlurWmsBaseUrl, finished getting capabilities',
@@ -191,71 +199,77 @@ export const Component = () => {
               onChange={onChange}
               onBlur={onBlurWmsBaseUrl}
             />
-            <MultiSelectFromLayerOptions
-              name="wms_layers"
-              label="Layers"
-              table="tile_layers"
-              id={tile_layer_id}
-              tile_layer_id={tile_layer_id}
-              valueArray={row.wms_layers ?? []}
-              validationMessage={
-                row.wms_layers?.length > 1 ? 'Sie können mehrere wählen' : ''
-              }
-            />
-            <DropdownFieldFromLayerOptions
-              label="(Image-)Format"
-              name="wms_format"
-              value={row.wms_format ?? ''}
-              tile_layer_id={tile_layer_id}
-              onChange={onChange}
-              validationMessage={
-                row.wms_format === 'image/png'
-                  ? ''
-                  : `Empfehlung: 'image/png'. Ermöglicht transparenten Hintergrund`
-              }
-            />
-            <TextField
-              label="Parameters"
-              name="wms_parameters"
-              value={row.wms_parameters ?? ''}
-              onChange={onChange}
-              validationMessage="TODO: is an array of values, needs building"
-            />
-            <TextField
-              label="Styles"
-              name="wms_styles"
-              value={row.wms_styles ?? ''}
-              onChange={onChange}
-              validationMessage="TODO: is an array of strings, needs building"
-            />
-            <SwitchField
-              label="Transparent background"
-              name="wms_transparent"
-              value={row.wms_transparent}
-              onChange={onChange}
-            />
-            <TextField
-              label="WMS Version"
-              name="wms_version"
-              value={row.wms_version ?? ''}
-              onChange={onChange}
-              validationMessage="Examples: '1.1.1', '1.3.0'. Set automatically but can be changed."
-            />
-            <DropdownFieldFromLayerOptions
-              label="Info Format"
-              name="wms_info_format"
-              value={row.wms_info_format ?? ''}
-              tile_layer_id={tile_layer_id}
-              onChange={onChange}
-              validationMessage="In what format the info is downloaded. Set automatically but can be changed."
-            />
-            <SwitchField
-              label="Queryable"
-              name="wms_queryable"
-              value={row.wms_queryable}
-              onChange={onChange}
-              validationMessage="Whether the wms service is queryable. May not work for all layers if multiple exist. Set automatically but can be changed."
-            />
+            {row?.wms_base_url && (
+              <>
+                <MultiSelectFromLayerOptions
+                  name="wms_layers"
+                  label="Layers"
+                  table="tile_layers"
+                  id={tile_layer_id}
+                  tile_layer_id={tile_layer_id}
+                  valueArray={row.wms_layers ?? []}
+                  validationMessage={
+                    row.wms_layers?.length > 1
+                      ? 'Sie können mehrere wählen'
+                      : ''
+                  }
+                />
+                <DropdownFieldFromLayerOptions
+                  label="(Image-)Format"
+                  name="wms_format"
+                  value={row.wms_format ?? ''}
+                  tile_layer_id={tile_layer_id}
+                  onChange={onChange}
+                  validationMessage={
+                    row.wms_format === 'image/png'
+                      ? ''
+                      : `Empfehlung: 'image/png'. Ermöglicht transparenten Hintergrund`
+                  }
+                />
+                <TextField
+                  label="Parameters"
+                  name="wms_parameters"
+                  value={row.wms_parameters ?? ''}
+                  onChange={onChange}
+                  validationMessage="TODO: is an array of values, needs building"
+                />
+                <TextField
+                  label="Styles"
+                  name="wms_styles"
+                  value={row.wms_styles ?? ''}
+                  onChange={onChange}
+                  validationMessage="TODO: is an array of strings, needs building"
+                />
+                <SwitchField
+                  label="Transparent background"
+                  name="wms_transparent"
+                  value={row.wms_transparent}
+                  onChange={onChange}
+                />
+                <TextField
+                  label="WMS Version"
+                  name="wms_version"
+                  value={row.wms_version ?? ''}
+                  onChange={onChange}
+                  validationMessage="Examples: '1.1.1', '1.3.0'. Set automatically but can be changed."
+                />
+                <DropdownFieldFromLayerOptions
+                  label="Info Format"
+                  name="wms_info_format"
+                  value={row.wms_info_format ?? ''}
+                  tile_layer_id={tile_layer_id}
+                  onChange={onChange}
+                  validationMessage="In what format the info is downloaded. Set automatically but can be changed."
+                />
+                <SwitchField
+                  label="Queryable"
+                  name="wms_queryable"
+                  value={row.wms_queryable}
+                  onChange={onChange}
+                  validationMessage="Whether the wms service is queryable. May not work for all layers if multiple exist. Set automatically but can be changed."
+                />
+              </>
+            )}
           </>
         )}
         <TextField
