@@ -5,13 +5,12 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useElectric } from '../../ElectricProvider'
 import { Layer_options as LayerOption } from '../../generated/client'
 
-export const DropdownFieldFromLayerOptions = memo(
+export const DropdownFieldFromLayerOptions = memo( 
   ({
     name,
     label,
     tile_layer_id,
     vector_layer_id,
-    field,
     value,
     onChange,
     validationMessage,
@@ -23,7 +22,7 @@ export const DropdownFieldFromLayerOptions = memo(
         where: {
           ...(tile_layer_id ? { tile_layer_id } : {}),
           ...(vector_layer_id ? { vector_layer_id } : {}),
-          field,
+          field: name,
         },
         select: { value: true, label: true },
         orderBy: { label: 'asc' },

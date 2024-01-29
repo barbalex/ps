@@ -13,7 +13,6 @@ export const MultiSelectFromLayerOptions = memo(
     id,
     tile_layer_id,
     vector_layer_id,
-    field,
     validationMessage,
     validationState = 'none',
     valueArray = [],
@@ -24,7 +23,7 @@ export const MultiSelectFromLayerOptions = memo(
         where: {
           ...(tile_layer_id ? { tile_layer_id } : {}),
           ...(vector_layer_id ? { vector_layer_id } : {}),
-          field,
+          field: name,
         },
         select: { value: true, label: true },
         orderBy: { label: 'asc' },

@@ -170,8 +170,6 @@ export const Component = () => {
               table="tile_layers"
               id={tile_layer_id}
               tile_layer_id={tile_layer_id}
-              field="wms_layer_options"
-              options={row.wms_layer_options ?? []}
               valueArray={row.wms_layers ?? []}
               validationMessage={
                 row.wms_layers?.length > 1 ? 'Sie können mehrere wählen' : ''
@@ -182,7 +180,6 @@ export const Component = () => {
               name="wms_format"
               value={row.wms_format ?? ''}
               tile_layer_id={tile_layer_id}
-              field="wms_format_options"
               onChange={onChange}
               validationMessage={
                 row.wms_format === 'image/png'
@@ -222,7 +219,6 @@ export const Component = () => {
               name="wms_info_format"
               value={row.wms_info_format ?? ''}
               tile_layer_id={tile_layer_id}
-              field="wms_info_format_options"
               onChange={onChange}
               validationMessage="In what format the info is downloaded. Set automatically but can be changed."
             />

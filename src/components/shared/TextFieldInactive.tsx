@@ -1,11 +1,6 @@
 import { memo } from 'react'
 import { useState } from 'react'
-import {
-  makeStyles,
-  Input,
-  Body1,
-  Field,
-} from '@fluentui/react-components'
+import { makeStyles, Input, Body1, Field } from '@fluentui/react-components'
 import type { InputProps } from '@fluentui/react-components'
 
 const useStyles = makeStyles({
@@ -24,6 +19,7 @@ export const TextFieldInactive = memo((props: InputProps) => {
       <Input
         appearance="underline"
         {...props}
+        value={props.value ?? ''}
         onChange={(e) => {
           if (!changed && e.target.value !== props.value) {
             setChanged(true)
