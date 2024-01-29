@@ -54,7 +54,6 @@ export const getCapabilities = async ({
 
   if (!res) return undefined
   console.log('hello, res:', res)
-  console.log('hello, res.data:', res.data)
   // console.log('hello, res status:', res?.status)
   // console.log('hello, res.ok:', res?.ok)
   // const jsonData = await res?.json?.() // fails: not valid json
