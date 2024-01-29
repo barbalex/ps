@@ -27,7 +27,7 @@ CREATE TABLE vector_layers(
 
 CREATE INDEX ON vector_layers USING btree(sort);
 
-COMMENT ON TABLE vector_layers IS 'Goal: Bring your own tile layers. Either from wfs or importing GeoJSON. Not versioned (not recorded and only added by manager).';
+COMMENT ON TABLE vector_layers IS 'Goal: Bring your own tile layers. Either from wfs or importing GeoJSON. Should only contain metadata, not data fetched from wms or wmts servers (that should only be saved locally on the client).';
 
 COMMENT ON COLUMN vector_layers.max_features IS 'maximum number of features to be loaded into a map';
 
