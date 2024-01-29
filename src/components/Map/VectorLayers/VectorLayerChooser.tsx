@@ -1,6 +1,5 @@
-import { useLiveQuery } from 'dexie-react-hooks'
+import { useLiveQuery } from 'electric-sql/react'
 
-import { dexie } from '../../../dexieClient'
 import VectorLayerWFS from './VectorLayerWFS'
 import VectorLayerPVLGeom from './VectorLayerPVLGeom'
 import { useElectric } from '../../../ElectricProvider'
@@ -13,21 +12,15 @@ import { useElectric } from '../../../ElectricProvider'
 export const VectorLayerChooser = ({ layer }) => {
   const { db } = useElectric()!
 
-  // TODO: add pvl_geoms to sqlite
-  const pvlGeomCount: integer = useLiveQuery(
-    async () =>
-      await dexie.pvl_geoms
-        .where({
-          deleted: 0,
-          pvl_id: layer.id,
-        })
-        .count(),
-    [layer.id],
+  const { results: vectorLayerGeoms = [] } = useLiveQuery(
+    db.vector_layer_geoms.liveMany({
+      where: { vector_layer_id: layer.vector_layer_id, deleted: false },
+    }),
   )
+  const pvlGeomCount: integer = vectorLayerGeoms.length
 
   // TODO: only accept pre-downloaded layers because of
   // problems filtering by bbox?
-  if (pvlGeomCount === undefined) return null
   if (pvlGeomCount === 0) return <VectorLayerWFS layer={layer} />
   return <VectorLayerPVLGeom layer={layer} />
 }
