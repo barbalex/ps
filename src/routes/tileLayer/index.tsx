@@ -11,7 +11,6 @@ import { SwitchField } from '../../components/shared/SwitchField'
 import { SliderField } from '../../components/shared/SliderField'
 import { RadioGroupField } from '../../components/shared/RadioGroupField'
 import { MultiSelectFromLayerOptions } from '../../components/shared/MultiSelectFromLayerOptions'
-import { DropdownFieldOptions } from '../../components/shared/DropdownFieldOptions'
 import { DropdownFieldFromLayerOptions } from '../../components/shared/DropdownFieldFromLayerOptions'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { FormHeader } from '../../components/FormHeader'
@@ -218,16 +217,15 @@ export const Component = () => {
               onChange={onChange}
               validationMessage="Examples: '1.1.1', '1.3.0'. Set automatically but can be changed."
             />
-            {!!row.wms_info_format_options?.length && (
-              <DropdownFieldOptions
-                label="Info Format"
-                name="wms_info_format"
-                value={row.wms_info_format ?? ''}
-                options={row.wms_info_format_options ?? []}
-                onChange={onChange}
-                validationMessage="In what format the info is downloaded. Set automatically but can be changed."
-              />
-            )}
+            <DropdownFieldFromLayerOptions
+              label="Info Format"
+              name="wms_info_format"
+              value={row.wms_info_format ?? ''}
+              tile_layer_id={tile_layer_id}
+              field="wms_info_format_options"
+              onChange={onChange}
+              validationMessage="In what format the info is downloaded. Set automatically but can be changed."
+            />
             <SwitchField
               label="Queryable"
               name="wms_queryable"

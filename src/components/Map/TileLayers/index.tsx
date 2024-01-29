@@ -51,7 +51,6 @@ export const TileLayers = () => {
         wms_transparent: true,
         wms_version: true,
         wms_info_format: true,
-        wms_info_format_options: true,
         wms_legends: true,
         wms_legend_urls: true,
         wms_queryable: true,

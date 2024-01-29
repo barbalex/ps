@@ -1,6 +1,7 @@
 -- Goal: wms_layer_options can be > 700, slowing down the tileLayer form
 -- Solution: outsource them (and maybe later others) here
 -- This table is client side only, so we dont need a soft delete column
+-- Also: there is no use in saving this data on the server or syncing it
 CREATE TYPE layer_options_field_enum AS enum(
   'wms_format_options',
   'wms_layer_options',

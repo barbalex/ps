@@ -29,15 +29,15 @@ export const getCapabilitiesData = async ({
     service: 'WMS',
   })
 
-  const wms_format_options =
+  const wmsFormatOptions =
     capabilities?.Capability?.Request?.GetMap?.Format.filter((v) =>
       v.toLowerCase().includes('image'),
     ).map((v) => ({
       label: v,
       value: v,
     }))
-  if (wms_format_options.length) {
-    for (const o of wms_format_options) {
+  if (wmsFormatOptions.length) {
+    for (const o of wmsFormatOptions) {
       await db.layer_options.upsert({
         create: {
           layer_option_id: `tile-layers/${
@@ -69,12 +69,12 @@ export const getCapabilitiesData = async ({
   const layers = (capabilities?.Capability?.Layer?.Layer ?? []).filter((v) =>
     v?.CRS?.includes('EPSG:4326'),
   )
-  const wms_layer_options = layers.map((v) => ({
+  const wmsLayerOptions = layers.map((v) => ({
     label: v.Title,
     value: v.Name,
   }))
-  if (wms_layer_options.length) {
-    for (const o of wms_layer_options) {
+  if (wmsLayerOptions.length) {
+    for (const o of wmsLayerOptions) {
       await db.layer_options.upsert({
         create: {
           layer_option_id: `tile-layers/${
@@ -141,10 +141,37 @@ export const getCapabilitiesData = async ({
   // to set wms_info_format
   const infoFormats =
     capabilities?.Capability?.Request?.GetFeatureInfo?.Format ?? []
-  values.wms_info_format_options = infoFormats.map((l) => ({
+  const wmsInfoFormatOptions = infoFormats.map((l) => ({
     label: l,
     value: l,
   }))
+  if (wmsInfoFormatOptions.length) {
+    for (const o of wmsInfoFormatOptions) {
+      await db.layer_options.upsert({
+        create: {
+          layer_option_id: `tile-layers/${
+            row.tile_layer_id ?? ''
+          }/wms-info-format-options/${o.value}`,
+          tile_layer_id: row.tile_layer_id,
+          vector_layer_id: null,
+          field: 'wms_info_format_options',
+          value: o.value,
+          label: o.label,
+        },
+        update: {
+          tile_layer_id: row.tile_layer_id,
+          field: 'wms_info_format_options',
+          value: o.value,
+          label: o.label,
+        },
+        where: {
+          layer_option_id: `tile-layers/${
+            row.tile_layer_id ?? ''
+          }/wms-info-format-options/${o.value}`,
+        },
+      })
+    }
+  }
   // console.log('TileLayerForm, cbData:', cbData)
 
   // if wms_format is not yet set, set version with png or jpg
