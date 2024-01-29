@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { useMap, WMSTileLayer } from 'react-leaflet'
 import { useMapEvent } from 'react-leaflet'
 import axios from 'redaxios'
@@ -14,7 +15,7 @@ const popupContentStyle = {
   whiteSpace: 'pre',
 }
 
-export const WMS = ({ layer }) => {
+export const WMS = memo(({ layer }) => {
   const map = useMap()
 
   const { db } = useElectric()!
@@ -178,4 +179,4 @@ export const WMS = ({ layer }) => {
       }}
     />
   )
-}
+})
