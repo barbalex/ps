@@ -69,6 +69,8 @@ export const getCapabilities = async ({
   if (service === 'WMS') return new WMSCapabilities().parse(blobData)
 
   // is WFS
+  // could WMSCapabilities be used for WFS?: new WMSCapabilities(xmlString).toJSON();
+  // see: https://github.com/w8r/wms-capabilities
   const parser = new window.DOMParser()
   return xmlToJson(parser.parseFromString(blobData, 'text/html'))
 }
