@@ -1,14 +1,6 @@
 import { useCallback, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
-import {
-  useId,
-  Button,
-  Toaster,
-  useToastController,
-  ToastTitle,
-  Toast,
-} from '@fluentui/react-components'
 
 import { Tile_layers as TileLayer } from '../../../generated/client'
 import { createTileLayer } from '../../modules/createRows'
@@ -22,7 +14,7 @@ import { MultiSelectFromLayerOptions } from '../../components/shared/MultiSelect
 import { DropdownFieldFromLayerOptions } from '../../components/shared/DropdownFieldFromLayerOptions'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { FormHeader } from '../../components/FormHeader'
-import { getCapabilitiesData } from './getCapabilitiesData'
+import { WmsBaseUrl } from './WmsBaseUrl'
 
 import '../../form.css'
 
@@ -87,39 +79,6 @@ export const Component = () => {
     },
     [db, tile_layer_id],
   )
-
-  const toasterId = useId(`capabilitiesToaster/${tile_layer_id}`)
-  const toastId = useId(`capabilitiesToast/${tile_layer_id}`)
-  const { dispatchToast, dismissToast } = useToastController(toasterId)
-  const onBlurWmsBaseUrl = useCallback(async () => {
-    if (!row?.wms_base_url) return
-    console.log('hello TileLayer, onBlurWmsBaseUrl, getting capabilities')
-    // show loading indicator
-    dispatchToast(
-      <Toast>
-        <ToastTitle>{`Loading capabilities data for ${row.wms_base_url}`}</ToastTitle>
-      </Toast>,
-      {
-        toastId,
-        intent: 'success',
-        onStatusChange: (e, { status }) =>
-          console.log('hello, status of toast:', status),
-      },
-    )
-    try {
-      await getCapabilitiesData({ row, db })
-    } catch (error) {
-      console.error(
-        'hello TileLayer, onBlurWmsBaseUrl, error getting capabilities data:',
-        error?.message ?? error,
-      )
-      // TODO: surface error to user
-    }
-    dismissToast(toastId)
-    console.log(
-      'hello TileLayer, onBlurWmsBaseUrl, finished getting capabilities',
-    )
-  }, [db, dismissToast, dispatchToast, row, toastId])
 
   if (!row) {
     return <div>Loading...</div>
@@ -192,13 +151,7 @@ export const Component = () => {
         )}
         {row?.type === 'wms' && (
           <>
-            <TextField
-              label="Base URL"
-              name="wms_base_url"
-              value={row.wms_base_url ?? ''}
-              onChange={onChange}
-              onBlur={onBlurWmsBaseUrl}
-            />
+            <WmsBaseUrl row={row} onChange={onChange} />
             {row?.wms_base_url && (
               <>
                 <MultiSelectFromLayerOptions
