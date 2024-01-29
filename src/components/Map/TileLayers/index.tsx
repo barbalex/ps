@@ -34,31 +34,8 @@ export const TileLayers = () => {
           },
         ],
       },
-      select: {
-        // try not selecting label, to see if it helps with performance when label is changed
-        tile_layer_id: true,
-        project_id: true,
-        sort: true,
-        active: true,
-        type: true,
-        wmts_url_template: true,
-        wmts_subdomains: true,
-        wms_base_url: true,
-        wms_format: true,
-        wms_layers: true,
-        wms_parameters: true,
-        wms_styles: true,
-        wms_transparent: true,
-        wms_version: true,
-        wms_info_format: true,
-        wms_legends: true,
-        wms_legend_urls: true,
-        wms_queryable: true,
-        max_zoom: true,
-        min_zoom: true,
-        opacity_percent: true,
-        grayscale: true,
-      },
+      // try not selecting label, to see if it helps with performance when label is changed
+      // but: had no influence on performance
       orderBy: [{ sort: 'asc' }, { label: 'asc' }],
     }),
   )
