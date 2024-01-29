@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 
 import {
@@ -14,7 +15,7 @@ type Props = {
   layer: TileLayer
 }
 
-export const TileLayerComponent = ({ layer }: Props) => {
+export const TileLayerComponent = memo(({ layer }: Props) => {
   const { db } = useElectric()!
   const { results } = useLiveQuery(
     db.ui_options.liveUnique({
@@ -36,4 +37,4 @@ export const TileLayerComponent = ({ layer }: Props) => {
   } else {
     return <WMS layer={layer} />
   }
-}
+})
