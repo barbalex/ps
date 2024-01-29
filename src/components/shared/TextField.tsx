@@ -11,6 +11,8 @@ export const TextField = memo(
       autoFocus,
     } = props
 
+    // console.log('hello TextField, props:', props)
+
     return (
       <Field
         label={label ?? '(no label provided)'}
