@@ -54,15 +54,22 @@ export const getCapabilities = async ({
 
   if (!res) return undefined
   console.log('hello, res:', res)
-  console.log('hello, res status:', res?.status)
-  console.log('hello, res.ok:', res?.ok)
-  const data = await res?.blob()
+  console.log('hello, res.data:', res.data)
+  // console.log('hello, res status:', res?.status)
+  // console.log('hello, res.ok:', res?.ok)
+  // const jsonData = await res?.json?.() // fails: not valid json
+  const blobData = await res?.blob()
+  console.log('hello, getCapabilities', {
+    blobData,
+    service,
+    parsedData: new WMSCapabilities().parse(blobData),
+  })
 
-  if (!data) return undefined
+  if (!blobData) return undefined
 
-  if (service === 'WMS') return new WMSCapabilities().parse(data)
+  if (service === 'WMS') return new WMSCapabilities().parse(blobData)
 
   // is WFS
   const parser = new window.DOMParser()
-  return xmlToJson(parser.parseFromString(data, 'text/html'))
+  return xmlToJson(parser.parseFromString(blobData, 'text/html'))
 }
