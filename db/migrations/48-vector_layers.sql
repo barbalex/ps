@@ -8,7 +8,7 @@ CREATE TABLE vector_layers(
   label text DEFAULT NULL,
   sort smallint DEFAULT NULL, -- 0,
   active boolean DEFAULT NULL, -- FALSE,
-  project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   type vector_layer_type_enum DEFAULT NULL, -- 'wfs',
   url text DEFAULT NULL, -- WFS url, for example https://maps.zh.ch/wfs/OGDZHWFS
   max_zoom integer DEFAULT NULL, -- 19,

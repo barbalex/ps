@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS tile_layers CASCADE;
 
 CREATE TABLE tile_layers(
   tile_layer_id uuid PRIMARY KEY DEFAULT NULL,
-  project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   label text DEFAULT NULL,
   sort smallint DEFAULT NULL, -- 0
   active boolean DEFAULT NULL, -- false
