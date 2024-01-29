@@ -1,6 +1,14 @@
 import { useCallback, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
+import {
+  useId,
+  Button,
+  Toaster,
+  useToastController,
+  ToastTitle,
+  Toast,
+} from '@fluentui/react-components'
 
 import { Tile_layers as TileLayer } from '../../../generated/client'
 import { createTileLayer } from '../../modules/createRows'
@@ -80,11 +88,30 @@ export const Component = () => {
     [db, tile_layer_id],
   )
 
+  const toasterId = useId(`capabilitiesToaster/${tile_layer_id}`)
+  const toastId = useId(`capabilitiesToast/${tile_layer_id}`)
+  const { dispatchToast, dismissToast } = useToastController(toasterId)
   const onBlurWmsBaseUrl = useCallback(async () => {
+    if (!row?.wms_base_url) return
     console.log('hello TileLayer, onBlurWmsBaseUrl, getting capabilities')
-    // TODO: show loading indicator
-    getCapabilitiesData({ row, db })
-  }, [db, row])
+    // show loading indicator
+    dispatchToast(
+      <Toast>
+        <ToastTitle>{`Loading capabilities data for ${row.wms_base_url}`}</ToastTitle>
+      </Toast>,
+      {
+        toastId,
+        intent: 'success',
+        onStatusChange: (e, { status }) =>
+          console.log('hello, status of toast:', status),
+      },
+    )
+    await getCapabilitiesData({ row, db })
+    dismissToast(toastId)
+    console.log(
+      'hello TileLayer, onBlurWmsBaseUrl, finished getting capabilities',
+    )
+  }, [db, dismissToast, dispatchToast, row, toastId])
 
   if (!row) {
     return <div>Loading...</div>

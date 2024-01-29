@@ -31,7 +31,7 @@ CREATE INDEX ON layer_options USING btree(label);
 
 COMMENT ON TABLE layer_options IS 'Goal: wms_layer options can be > 700, slowing down the tileLayer form. Solution: outsource them (and maybe later others) here. Also: there is no use in saving this data on the server or syncing it.';
 
-COMMENT ON COLUMN layer_options.layer_option_id IS 'Special text id to make sure we dont have duplicates: built from tile_layer_id, vector_layer_id, field and value. As if it was the datasets url';
+COMMENT ON COLUMN layer_options.layer_option_id IS 'The base url of the wms server, combined with the field name whose data is stored. Insures that we dont have duplicate entries.';
 
 ALTER TABLE layer_options ENABLE electric;
 
