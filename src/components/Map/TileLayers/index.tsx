@@ -48,7 +48,7 @@ export const TileLayers = () => {
     }
   })
 
-  console.log('hello Map, TileLayers, tileLayers:', tileLayers)
+  // console.log('hello Map, TileLayers, tileLayers:', tileLayers)
 
   // is no tile layer was yet defined, use osm
   if (!tileLayers.length) return [<OsmColor key="osm" />]
