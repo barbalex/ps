@@ -28,6 +28,7 @@ export const Component = () => {
   const { results } = useLiveQuery(
     db.projects.liveUnique({ where: { project_id } }),
   )
+  const row: Project = results
 
   const addRow = useCallback(async () => {
     const data = await createProject({ db })
@@ -67,8 +68,6 @@ export const Component = () => {
     navigate(`/projects/${previous.project_id}`)
   }, [db.projects, navigate, project_id])
 
-  const row: Project = results
-
   const onChange = useCallback(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
@@ -84,7 +83,7 @@ export const Component = () => {
     return <div>Loading...</div>
   }
 
-  // console.log('project, row:', row)
+  console.log('hello project, row:', row)
 
   return (
     <div className="form-outer-container">
