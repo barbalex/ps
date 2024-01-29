@@ -5,11 +5,16 @@ import { useDebouncedCallback } from 'use-debounce'
 import * as icons from 'react-icons/md'
 import styled from '@emotion/styled'
 
-import { dexie, LayerStyle, VectorLayer, PVLGeom } from '../../../dexieClient'
+import { dexie, LayerStyle } from '../../../dexieClient'
+import {
+  Vector_layer_geoms as VectorLayerGeom,
+  Vector_layers as VectorLayer,
+} from '../../../generated/client'
+
 import layerstyleToProperties from '../../../utils/layerstyleToProperties'
-import Popup from '../Popup'
+import { Popup } from '../Popup'
 import storeContext from '../../../storeContext'
-import MapErrorBoundary from '../../../components/shared/MapErrorBoundary'
+import MapErrorBoundary from '../MapErrorBoundary'
 import { IStore } from '../../../store'
 
 // const bboxBuffer = 0.01
@@ -17,7 +22,7 @@ import { IStore } from '../../../store'
 type Props = {
   layer: VectorLayer
 }
-const VectorLayerComponent = ({ layer }: Props) => {
+export const VectorLayerComponent = ({ layer }: Props) => {
   const [data, setData] = useState()
 
   const store: IStore = useContext(storeContext)
@@ -50,7 +55,7 @@ const VectorLayerComponent = ({ layer }: Props) => {
         duration: 100000,
       })
       loadingNotifIds.current = [loadingNotifId, ...loadingNotifIds.current]
-      const pvlGeoms: PVLGeom[] = await dexie.pvl_geoms
+      const pvlGeoms: VectorLayerGeom[] = await dexie.pvl_geoms
         .where({
           deleted: 0,
           pvl_id: layer.id,
@@ -187,5 +192,3 @@ const VectorLayerComponent = ({ layer }: Props) => {
     </MapErrorBoundary>
   )
 }
-
-export default VectorLayerComponent
