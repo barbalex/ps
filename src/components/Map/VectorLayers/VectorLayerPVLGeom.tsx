@@ -5,10 +5,10 @@ import { useDebouncedCallback } from 'use-debounce'
 import * as icons from 'react-icons/md'
 import styled from '@emotion/styled'
 
-import { dexie, LayerStyle } from '../../../dexieClient'
 import {
   Vector_layer_geoms as VectorLayerGeom,
   Vector_layers as VectorLayer,
+  Layer_styles as LayerStyle,
 } from '../../../generated/client'
 
 import layerstyleToProperties from '../../../utils/layerstyleToProperties'
@@ -16,6 +16,7 @@ import { Popup } from '../Popup'
 import storeContext from '../../../storeContext'
 import MapErrorBoundary from '../MapErrorBoundary'
 import { IStore } from '../../../store'
+import { useElectric } from '../../../ElectricProvider'
 
 // const bboxBuffer = 0.01
 
@@ -23,6 +24,8 @@ type Props = {
   layer: VectorLayer
 }
 export const VectorLayerComponent = ({ layer }: Props) => {
+  const { db } = useElectric()!
+
   const [data, setData] = useState()
 
   const store: IStore = useContext(storeContext)
@@ -48,6 +51,7 @@ export const VectorLayerComponent = ({ layer }: Props) => {
     async ({ bounds }) => {
       if (!showMap) return
       // console.log('VectorLayerPVLGeom fetching data')
+      // TODO: manage notifications
       removeNotifs()
       const loadingNotifId = addNotification({
         message: `Lade Vektor-Karte '${layer.label}'...`,
@@ -55,39 +59,41 @@ export const VectorLayerComponent = ({ layer }: Props) => {
         duration: 100000,
       })
       loadingNotifIds.current = [loadingNotifId, ...loadingNotifIds.current]
-      const pvlGeoms: VectorLayerGeom[] = await dexie.pvl_geoms
-        .where({
-          deleted: 0,
-          pvl_id: layer.id,
-        })
-        .filter((g) => {
-          return (
-            bounds._southWest.lng < g.bbox_sw_lng &&
-            bounds._southWest.lat < g.bbox_sw_lat &&
-            bounds._northEast.lng > g.bbox_ne_lng &&
-            bounds._northEast.lat > g.bbox_ne_lat
-          )
-        })
-        .limit(layer.max_features ?? 1000)
-        .toArray()
 
-      const data = pvlGeoms.map((pvlGeom) => ({
+      const { results: vectorLayerGeoms = [] }: { results: VectorLayerGeom[] } =
+        await db.vector_layer_geoms.findMany({
+          where: {
+            vector_layer_id: layer.vector_layer_id,
+            deleted: false,
+            bbox_sw_lng: { gt: bounds._southWest.lng },
+            bbox_sw_lat: { gt: bounds._southWest.lat },
+            bbox_ne_lng: { lt: bounds._northEast.lng },
+            bbox_ne_lat: { lt: bounds._northEast.lat },
+          },
+          take: layer.max_features ?? 1000,
+        })
+
+      const data = vectorLayerGeoms.map((pvlGeom) => ({
         ...pvlGeom.geometry,
         properties: pvlGeom.properties,
       }))
+      // TODO: manage notifications
       removeNotifs()
-      const _layerStyle: LayerStyle = await dexie.layer_styles.get({
-        vector_layer_id: layer.id,
+
+      const layerStyle: LayerStyle = await db.layer_styles.findUnique({
+        where: { vector_layer_id: layer.vector_layer_id },
       })
       setData(data)
-      setLayerStyle(_layerStyle)
+      setLayerStyle(layerStyle)
       setZoom(map.getZoom())
     },
     [
       addNotification,
-      layer.id,
+      db.layer_styles,
+      db.vector_layer_geoms,
       layer.label,
       layer.max_features,
+      layer.vector_layer_id,
       map,
       removeNotifs,
       showMap,

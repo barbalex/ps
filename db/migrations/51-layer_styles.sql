@@ -25,8 +25,7 @@ CREATE TYPE fill_rule_enum AS enum(
 DROP TABLE IF EXISTS layer_styles CASCADE;
 
 CREATE TABLE layer_styles(
-  layer_style_id uuid PRIMARY KEY DEFAULT NULL, -- gen_random_uuid(),
-  vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  vector_layer_id uuid PRIMARY KEY DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE, -- 1:1 relationship
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   action_id uuid DEFAULT NULL REFERENCES actions(action_id) ON DELETE CASCADE ON UPDATE CASCADE,
   check_id uuid DEFAULT NULL REFERENCES checks(check_id) ON DELETE CASCADE ON UPDATE CASCADE,
