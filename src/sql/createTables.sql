@@ -1764,7 +1764,7 @@ CREATE TABLE tile_layers(
   label text DEFAULT NULL,
   sort smallint DEFAULT 0,
   active boolean DEFAULT FALSE,
-  project_id uuid NOT NULL REFERENCES projects(id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  project_id uuid NOT NULL REFERENCES projects(id) ON DELETE CASCADE ON UPDATE CASCADE,
   type tile_layer_type_enum DEFAULT 'wmts',
   wmts_url_template text DEFAULT NULL,
   wmts_subdomains jsonb DEFAULT NULL, -- array of strings
@@ -1815,7 +1815,7 @@ CREATE TABLE vector_layers(
   label text DEFAULT NULL,
   sort smallint DEFAULT 0,
   active boolean DEFAULT FALSE,
-  project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   type vector_layer_type_enum DEFAULT 'wfs',
   url text DEFAULT NULL, -- WFS url, for example https://maps.zh.ch/wfs/OGDZHWFS
   max_zoom decimal DEFAULT 19,
