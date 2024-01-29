@@ -23,9 +23,9 @@ export const WmsBaseUrl = memo(
     const toasterId = useId(`capabilitiesToaster/${tile_layer_id}`)
     const toastId = useId(`capabilitiesToast/${tile_layer_id}`)
     const { dispatchToast, dismissToast } = useToastController(toasterId)
-    const onBlurWmsBaseUrl = useCallback(async () => {
+    const onBlur = useCallback(async () => {
       if (!row?.wms_base_url) return
-      console.log('hello TileLayer, onBlurWmsBaseUrl, getting capabilities')
+      console.log('hello WmsBaseUrl, onBlur, getting capabilities')
       // show loading indicator
       dispatchToast(
         <Toast>
@@ -42,15 +42,13 @@ export const WmsBaseUrl = memo(
         await getCapabilitiesData({ row, db })
       } catch (error) {
         console.error(
-          'hello TileLayer, onBlurWmsBaseUrl, error getting capabilities data:',
+          'hello WmsBaseUrl, onBlur, error getting capabilities data:',
           error?.message ?? error,
         )
         // TODO: surface error to user
       }
       dismissToast(toastId)
-      console.log(
-        'hello TileLayer, onBlurWmsBaseUrl, finished getting capabilities',
-      )
+      console.log('hello WmsBaseUrl, onBlur, finished getting capabilities')
     }, [db, dismissToast, dispatchToast, row, toastId])
 
     return (
@@ -59,7 +57,7 @@ export const WmsBaseUrl = memo(
         name="wms_base_url"
         value={row.wms_base_url ?? ''}
         onChange={onChange}
-        onBlur={onBlurWmsBaseUrl}
+        onBlur={onBlur}
       />
     )
   },
