@@ -29,6 +29,8 @@ export const getCapabilitiesData = async ({
     service: 'WMS',
   })
 
+  console.log('hello, getCapabilitiesData, capabilities:', capabilities)
+
   if (!capabilities) return undefined
 
   const wmsFormatOptions =
