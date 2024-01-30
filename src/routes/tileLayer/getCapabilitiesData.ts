@@ -1,4 +1,4 @@
-import axios from 'redaxios'
+// import axios from 'redaxios'
 
 import { getCapabilities } from '../../modules/getCapabilities'
 import { Tile_layers as TileLayer, Electric } from '../../generated/client'
@@ -16,11 +16,11 @@ export const getCapabilitiesData = async ({
 }: Props) => {
   if (!row?.wms_base_url) return undefined
 
-  // console.log('hello getting capabilites data for Tile Layer', {
-  //   label: row.label,
-  //   id: row.tile_layer_id,
-  //   db,
-  // })
+  console.log('hello getting capabilites data for Tile Layer', {
+    label: row.label,
+    id: row.tile_layer_id,
+    db,
+  })
 
   const values = {}
 
@@ -34,7 +34,7 @@ export const getCapabilitiesData = async ({
   if (!capabilities) return undefined
 
   const wmsFormatOptions =
-    capabilities?.Capability?.Request?.GetMap?.Format.filter((v) =>
+    capabilities?.Capability?.Request?.GetMap?.Format?.filter((v) =>
       v.toLowerCase().includes('image'),
     ).map((v) => ({
       label: v,
@@ -69,10 +69,12 @@ export const getCapabilitiesData = async ({
   const layers = (capabilities?.Capability?.Layer?.Layer ?? []).filter((v) =>
     v?.CRS?.includes('EPSG:4326'),
   )
-  const wmsLayerOptions = layers.map((v) => ({
-    label: v.Title,
-    value: v.Name,
+  const wmsLayerOptions = layers.map((l) => ({
+    label: l.Title,
+    value: l.Name,
+    legend_url: l.Style?.[0]?.LegendURL?.[0]?.OnlineResource,
   }))
+  console.log('hello, getCapabilitiesData, wmsLayerOptions:', wmsLayerOptions)
   if (wmsLayerOptions?.length) {
     for (const o of wmsLayerOptions) {
       await db.layer_options.upsert({
@@ -83,12 +85,14 @@ export const getCapabilitiesData = async ({
           field: 'wms_layers',
           value: o.value,
           label: o.label,
+          legend_url: o.legend_url,
         },
         update: {
           tile_layer_id: row.tile_layer_id,
           field: 'wms_layers',
           value: o.value,
           label: o.label,
+          legend_url: o.legend_url,
         },
         where: {
           layer_option_id: `${row.wms_base_url}/wms_layers`,
@@ -97,36 +101,29 @@ export const getCapabilitiesData = async ({
     }
   }
 
-  // fetch legends
-  values.wms_legend_urls = layers
-    .map((l) => ({
-      title: l.Title,
-      url: l.Style?.[0]?.LegendURL?.[0]?.OnlineResource,
-      name: l.Name,
-    }))
-    .filter((u) => !!u.url)
+  // TODO: should legends be saved in sqlite? can be 700!!!
+  // ensure only for layers with tile_layer
+  // const wmsLayerValues = (row.wms_layers ?? []).map((l) => l.value)
 
-  const wmsLayerValues = (row.wms_layers ?? []).map((l) => l.value)
+  // const legendUrlsToUse = (wmsLayerOptions ?? []).filter((o) =>
+  //   wmsLayerValues.includes?.(o.value),
+  // )
 
-  const legendUrlsToUse = values.wms_legend_urls.filter((lUrl) =>
-    wmsLayerValues.includes?.(lUrl.name),
-  )
-
-  const _legendBlobs: [Blob, string] = []
-  for (const lUrl of legendUrlsToUse) {
-    let res
-    try {
-      res = await axios.get(lUrl.url, {
-        responseType: 'blob',
-      })
-    } catch (error) {
-      // error can also be caused by timeout
-      console.error(`error fetching legend for layer '${lUrl.title}':`, error)
-      return false
-    }
-    // console.log('Legends, res.data:', res.data)
-    if (res.data) _legendBlobs.push([lUrl.title, res.data])
-  }
+  // const _legendBlobs: [Blob, string] = []
+  // for (const lUrl of legendUrlsToUse) {
+  //   let res
+  //   try {
+  //     res = await axios.get(lUrl.url, {
+  //       responseType: 'blob',
+  //     })
+  //   } catch (error) {
+  //     // error can also be caused by timeout
+  //     console.error(`error fetching legend for layer '${lUrl.title}':`, error)
+  //     return false
+  //   }
+  //   // console.log('Legends, res.data:', res.data)
+  //   if (res.data) _legendBlobs.push([lUrl.title, res.data])
+  // }
 
   // TODO: these are blobs. How to save in sqlite?
   // TODO: solve this problem, then set the wms_legends
@@ -205,7 +202,7 @@ export const getCapabilitiesData = async ({
   }
 
   // use capabilities.Capability?.Layer?.Layer[this]?.queryable to allow/disallow getting feature info?
-  if (![true, false].includes(row?.wms_queryable)) {
+  if (layers.length && ![true, false].includes(row?.wms_queryable)) {
     values.wms_queryable = layers.some((l) => l.queryable)
   }
 
@@ -233,8 +230,14 @@ export const getCapabilitiesData = async ({
   // enable updating in a single operation
   if (returnValue) return values
 
-  return await db.tile_layers.update({
-    where: { tile_layer_id: row.tile_layer_id },
-    data: values,
-  })
+  console.log('hello, getCapabilitiesData, values added to tileLayer:', values)
+
+  if (Object.keys(values).length) {
+    await db.tile_layers.update({
+      where: { tile_layer_id: row.tile_layer_id },
+      data: values,
+    })
+  }
+
+  return false
 }
