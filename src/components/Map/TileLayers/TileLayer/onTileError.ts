@@ -1,5 +1,6 @@
 // TODO: need to debounce
 import axios from 'redaxios'
+import { uuidv7 } from '@kripod/uuidv7'
 
 import { Tile_layers as TileLayer } from '../../../../generated/client'
 import { xmlToJson } from '../../../../modules/xmlToJson'
@@ -43,6 +44,7 @@ export const onTileError = async (db, map, layer: TileLayer, ignore) => {
           title: `Fehler beim Laden der Bild-Karte '${layer.label}'. Der WMS-Server meldet`,
           body: errorMessage,
           intent: 'error', // 'success' | 'error' | 'warning' | 'info'
+          id: uuidv7(),
         },
         ...notifications,
       ],

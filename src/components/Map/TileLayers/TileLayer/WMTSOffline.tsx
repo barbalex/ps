@@ -1,5 +1,6 @@
 import { useEffect, useContext } from 'react'
 import { useMap } from 'react-leaflet'
+import { uuidv7 } from '@kripod/uuidv7'
 
 import { TileLayer as TileLayerType } from '../../../../dexieClient'
 import storeContext from '../../../../storeContext'
@@ -46,6 +47,7 @@ export const WMTSOffline = ({ layer }: Props) => {
                 title: `Fehler beim Laden der Karten für ${layer.label}`,
                 body: error.message,
                 intent: 'error', // 'success' | 'error' | 'warning' | 'info'
+                id: uuidv7(),
               },
               ...notifications,
             ],
@@ -88,4 +90,3 @@ export const WMTSOffline = ({ layer }: Props) => {
 
   return null
 }
-

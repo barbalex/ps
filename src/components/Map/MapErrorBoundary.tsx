@@ -1,5 +1,6 @@
 import { PropsWithChildren } from 'react'
 import { ErrorBoundary as ErrorBoundaryComponent } from 'react-error-boundary'
+import { uuidv7 } from '@kripod/uuidv7'
 
 import { TileLayer } from '../../dexieClient'
 import { useElectric } from '../../ElectricProvider'
@@ -22,6 +23,7 @@ const ErrorFallback = ({ error, db, layer, notifications }) => {
           title: `Fehler in Vektor-Layer '${layerName}'`,
           body: error.message,
           intent: 'error', // 'success' | 'error' | 'warning' | 'info'
+          id: uuidv7(),
         },
         ...notifications,
       ],
