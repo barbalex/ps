@@ -16,7 +16,8 @@ CREATE TABLE layer_options(
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
   field layer_options_field_enum DEFAULT NULL,
   value text DEFAULT NULL,
-  label text DEFAULT NULL
+  label text DEFAULT NULL,
+  legend_url text DEFAULT NULL
 );
 
 CREATE INDEX ON layer_options USING btree(tile_layer_id);
@@ -32,6 +33,8 @@ CREATE INDEX ON layer_options USING btree(label);
 COMMENT ON TABLE layer_options IS 'Goal: wms_layer options can be > 700, slowing down the tileLayer form. Solution: outsource them (and maybe later others) here. Also: there is no use in saving this data on the server or syncing it.';
 
 COMMENT ON COLUMN layer_options.layer_option_id IS 'The base url of the wms server, combined with the field name whose data is stored. Insures that we dont have duplicate entries.';
+
+COMMENT ON COLUMN layer_options.legend_url IS 'The url to fetch the legend image from.';
 
 ALTER TABLE layer_options ENABLE electric;
 

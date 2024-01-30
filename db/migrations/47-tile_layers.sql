@@ -24,7 +24,6 @@ CREATE TABLE tile_layers(
   wms_version text DEFAULT NULL, -- values: '1.1.1', '1.3.0'
   wms_info_format text DEFAULT NULL,
   wms_legends jsonb DEFAULT NULL, -- fetched from GetCapabilities
-  wms_legend_urls jsonb DEFAULT NULL, -- fetched from GetCapabilities
   wms_queryable boolean DEFAULT NULL,
   max_zoom integer DEFAULT NULL, -- 19
   min_zoom integer DEFAULT NULL, -- 0
