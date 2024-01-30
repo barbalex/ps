@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 import { Button } from '@fluentui/react-components'
 import { MdClose as CloseIcon } from 'react-icons/md'
 import { useLiveQuery } from 'electric-sql/react'
+import { uuidv7 } from '@kripod/uuidv7'
 
 import { useElectric } from '../../ElectricProvider'
 import { Notifications as Notification } from '../../generated/client'
@@ -16,7 +17,7 @@ const containerStyle = {
   left: 10,
 }
 const buttonStyle = {
-  marginLeft: '5px !important',
+  marginLeft: 5,
 }
 
 export const Notifications: React.FC = () => {
@@ -34,30 +35,45 @@ export const Notifications: React.FC = () => {
     db.notifications.deleteMany()
   }, [db.notifications])
 
-  if (notifications.length === 0) return null
+  console.log('hello Notifications', notifications)
 
   return (
-    <div
-      style={containerStyle}
-      // key={Object.keys(notifObject)}
-    >
-      {notifications.map((n) => (
-        <NotificationComponent key={n.id} notification={n} />
-      ))}
-      {notifications.length > 2 && (
-        <Button
-          key="close"
-          aria-label="Close"
-          color="secondary"
-          onClick={onClickClose}
-          title="Close all"
-          size="small"
-          edge="start"
-          style={buttonStyle}
-        >
-          <CloseIcon />
-        </Button>
+    <>
+      {notifications.length > 0 && (
+        <div style={containerStyle}>
+          {notifications.map((n) => (
+            <NotificationComponent key={n.notification_id} notification={n} />
+          ))}
+          {notifications.length > 1 && (
+            <Button
+              aria-label="Close"
+              color="secondary"
+              onClick={onClickClose}
+              title="Close all"
+              size="small"
+              edge="start"
+              style={buttonStyle}
+              icon={<CloseIcon />}
+            />
+          )}
+        </div>
       )}
-    </div>
+      {/* <Button
+        onClick={() => {
+          db.notifications.create({
+            data: {
+              notification_id: uuidv7(),
+              title: 'Test',
+              // body: 'Test body',
+              intent: 'success',
+              timeout: 3000,
+            },
+          })
+        }}
+        size="small"
+      >
+        Make a notification
+      </Button> */}
+    </>
   )
 }

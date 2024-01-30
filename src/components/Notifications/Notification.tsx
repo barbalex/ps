@@ -1,28 +1,32 @@
-import { useCallback, useEvent } from 'react'
+import { useCallback, useEffect, memo } from 'react'
 import { Button } from '@fluentui/react-components'
-import { MdClose as CloseIcon } from 'react-icons/md'
+import {
+  MdClose as CloseIcon,
+  MdError as ErrorIcon,
+  MdCheckCircle as SuccessIcon,
+  MdWarning as WarningIcon,
+} from 'react-icons/md'
 
 import { useElectric } from '../../ElectricProvider'
 
 const containerStyle = {
   display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  flexWrap: 'wrap',
+  flexDirection: 'column',
   margin: '5px',
   padding: '10px',
   borderRadius: '3px',
-  backgroundColor: 'red',
-  color: 'white',
+  // color: 'white',
+  backgroundColor: 'white',
   minHeight: '18px',
   maxWidth: 'calc(100% - 10px)',
   wordWrap: 'break-word',
+  boxShadow:
+    'rgba(0, 0, 0, 0.12) 0px 0px 2px 0px, rgba(0, 0, 0, 0.14) 0px 4px 8px 0px',
+  minWidth: 200,
 }
 const titleRowStyle = {
   display: 'flex',
-}
-const iconButtonStyle = {
-  alignSelf: 'flex-start',
+  justifyContent: 'space-between',
 }
 // http://hackingui.com/front-end/a-pure-css-solution-for-multiline-text-truncation/
 const messageStyle = {
@@ -35,6 +39,12 @@ const titleStyle = {
   fontWeight: 500,
   marginRight: '30px',
 }
+const iconAndTitleStyle = {
+  display: 'flex',
+  justifyContent: 'flex-start',
+  alignItems: 'center',
+  columnGap: 5,
+}
 
 const colorMap = {
   error: '#D84315',
@@ -43,7 +53,7 @@ const colorMap = {
   warning: 'orange',
 }
 
-export const Notification = ({ notification }) => {
+export const Notification = memo(({ notification }) => {
   const { db } = useElectric()!
   const {
     notification_id,
@@ -61,7 +71,9 @@ export const Notification = ({ notification }) => {
     })
   }, [db.notifications, notification_id])
 
-  useEvent(() => {
+  console.log('hello Notification', notification)
+
+  useEffect(() => {
     let timeoutId
     if (progress_percent === 100 || paused === false) {
       timeoutId = setTimeout(() => {
@@ -70,7 +82,7 @@ export const Notification = ({ notification }) => {
         })
       }, 500)
       return () => clearTimeout(timeoutId)
-    } else if (timeout && paused === undefined) {
+    } else if (timeout && paused === null) {
       timeoutId = setTimeout(() => {
         db.notifications.delete({
           where: { notification_id },
@@ -80,35 +92,31 @@ export const Notification = ({ notification }) => {
       // do nothing - will do when notification is updated to paused === false
     }
     return () => timeoutId && clearTimeout(timeoutId)
-  }, [])
+  }, [db.notifications, notification_id, paused, progress_percent, timeout])
 
   // TODO: add icon for intent
   // TODO: add progress bar
   // TODO: add spinner for paused
   return (
-    <div
-      style={{
-        ...containerStyle,
-        backgroundColor: colorMap[intent] ?? 'error',
-      }}
-    >
-      <div>
-        <div style={titleRowStyle}>
+    <div style={containerStyle}>
+      <div style={titleRowStyle}>
+        <div style={iconAndTitleStyle}>
+          {intent === 'error' && <ErrorIcon color={colorMap[intent]} />}
+          {intent === 'success' && <SuccessIcon color={colorMap[intent]} />}
+          {intent === 'info' && <SuccessIcon color={colorMap[intent]} />}
+          {intent === 'warning' && <WarningIcon color={colorMap[intent]} />}
           {!!title && <div style={titleStyle}>{`${title}:`}</div>}
         </div>
-        <div style={messageStyle}>{body}</div>
+        <Button
+          aria-label="Close"
+          onClick={onClickClose}
+          title="Close"
+          size="small"
+          icon={<CloseIcon />}
+          appearance="subtle"
+        />
       </div>
-      <Button
-        key="close"
-        aria-label="Close"
-        color="inherit"
-        onClick={onClickClose}
-        title="Close"
-        size="small"
-        style={{ iconButtonStyle }}
-      >
-        <CloseIcon />
-      </Button>
+      <div style={messageStyle}>{body}</div>
     </div>
   )
-}
+})
