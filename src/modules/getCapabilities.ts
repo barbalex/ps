@@ -1,4 +1,5 @@
 import WMSCapabilities from 'wms-capabilities'
+import axios from 'redaxios'
 
 import { xmlToJson } from './xmlToJson'
 
@@ -16,7 +17,7 @@ export const getCapabilities = async ({
   try {
     // Issue: only the error logged with line 19 informs well when invalid url is used, i.e.: net::ERR_NAME_NOT_RESOLVED
     // How to catch this error? res is undefined...
-    res = await fetch(`${url}?service=${service}&request=GetCapabilities`)
+    res = await axios.get(`${url}?service=${service}&request=GetCapabilities`)
   } catch (error) {
     console.error(
       `hello, getCapabilities, error fetching capabilities for ${url}`,
@@ -53,24 +54,14 @@ export const getCapabilities = async ({
   }
 
   if (!res) return undefined
-  console.log('hello, res:', res)
-  // console.log('hello, res status:', res?.status)
-  // console.log('hello, res.ok:', res?.ok)
-  // const jsonData = await res?.json?.() // fails: not valid json
-  const blobData = await res?.blob()
-  console.log('hello, getCapabilities', {
-    blobData,
-    service,
-    parsedData: new WMSCapabilities().parse(blobData),
-  })
 
-  if (!blobData) return undefined
+  if (!res?.data) return undefined
 
-  if (service === 'WMS') return new WMSCapabilities().parse(blobData)
+  if (service === 'WMS') return new WMSCapabilities().parse(res?.data)
 
   // is WFS
   // could WMSCapabilities be used for WFS?: new WMSCapabilities(xmlString).toJSON();
   // see: https://github.com/w8r/wms-capabilities
   const parser = new window.DOMParser()
-  return xmlToJson(parser.parseFromString(blobData, 'text/html'))
+  return xmlToJson(parser.parseFromString(res?.data, 'text/html'))
 }
