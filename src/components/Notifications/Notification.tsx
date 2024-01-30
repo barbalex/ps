@@ -18,22 +18,11 @@ const containerStyle = {
   maxWidth: 'calc(100% - 10px)',
   wordWrap: 'break-word',
 }
+const titleRowStyle = {
+  display: 'flex',
+}
 const iconButtonStyle = {
   alignSelf: 'flex-start',
-}
-// const StyledButton = styled(Button)`
-//   color: white !important;
-//   border-color: white !important;
-//   margin-left: 10px;
-//   > span {
-//     text-transform: none;
-//   }
-// `
-const buttonStyle = {
-  color: 'white !important',
-  borderColor: 'white !important',
-  marginLeft: '10px',
-  textTransform: 'none',
 }
 // http://hackingui.com/front-end/a-pure-css-solution-for-multiline-text-truncation/
 const messageStyle = {
@@ -72,14 +61,31 @@ export const Notification = ({ notification }) => {
     })
   }, [db.notifications, notification_id])
 
-  useEvent(() => {}, [])
+  useEvent(() => {
+    if ((timeout && !paused) || progress_percent === 100) {
+      const timeoutId = setTimeout(() => {
+        db.notifications.delete({
+          where: { notification_id },
+        })
+      }, timeout ?? 1000)
+      return () => clearTimeout(timeoutId)
+    }
+  }, [])
 
+  // TODO: add icon for intent
+  // TODO: add progress bar
+  // TODO: add spinner for paused
   return (
     <div
-      style={{ ...containerStyle, backgroundColor: colorMap[type] ?? 'error' }}
+      style={{
+        ...containerStyle,
+        backgroundColor: colorMap[intent] ?? 'error',
+      }}
     >
       <div>
-        {!!title && <div style={titleStyle}>{`${title}:`}</div>}
+        <div style={titleRowStyle}>
+          {!!title && <div style={titleStyle}>{`${title}:`}</div>}
+        </div>
         <div style={messageStyle}>{body}</div>
       </div>
       <Button

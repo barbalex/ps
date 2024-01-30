@@ -5,6 +5,7 @@ import { useLiveQuery } from 'electric-sql/react'
 
 import { useElectric } from '../../ElectricProvider'
 import { Notifications as Notification } from '../../generated/client'
+import { Notification as NotificationComponent } from './Notification'
 
 // z-index needs to cover map, thus so hight
 const containerStyle = {
@@ -18,12 +19,10 @@ const buttonStyle = {
   marginLeft: '5px !important',
 }
 
-import Notification from './Notification'
-
-const Notifications: React.FC = () => {
+export const Notifications: React.FC = () => {
   const { db } = useElectric()!
   // get the oldest four notification first
-  const { results } = useLiveQuery(
+  const { results = [] } = useLiveQuery(
     db.notifications.liveMany({
       orderBy: { notification_id: 'desc' },
       take: 4,
@@ -35,14 +34,15 @@ const Notifications: React.FC = () => {
     db.notifications.deleteMany()
   }, [db.notifications])
 
-  const notifObject = notifications.toJSON()
-
   if (notifications.length === 0) return null
 
   return (
-    <div style={containerStyle} key={Object.keys(notifObject)}>
+    <div
+      style={containerStyle}
+      // key={Object.keys(notifObject)}
+    >
       {notifications.map((n) => (
-        <Notification key={n.id} notification={n} />
+        <NotificationComponent key={n.id} notification={n} />
       ))}
       {notifications.length > 2 && (
         <Button
@@ -61,5 +61,3 @@ const Notifications: React.FC = () => {
     </div>
   )
 }
-
-export default Notifications
