@@ -26,8 +26,8 @@ type Props = {
 }
 export const VectorLayerPVLGeom = ({ layer }: Props) => {
   const { db } = useElectric()!
-  const uiOption: UiOption = db.ui_options.findUnique({ where: { user_id } })
-  const showMap = uiOption?.show_map ?? true
+  const uiOption: UiOption = db.ui_options.liveUnique({ where: { user_id } })
+  const showMap = uiOption?.show_map ?? false
 
   const [data, setData] = useState()
 

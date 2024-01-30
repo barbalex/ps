@@ -12,6 +12,7 @@ import { user_id } from '../SqlInitializer'
 import { Ui_options as UiOption } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
 import { TileLayers } from './TileLayers'
+import { VectorLayers } from './VectorLayers'
 import { LocationMarker } from './LocationMarker'
 import { tableNameFromIdField } from '../../modules/tableNameFromIdField'
 import { DrawControl } from './DrawControl'
@@ -31,7 +32,7 @@ export const Map = () => {
   const uiOption: UiOption = results
   const showMap = uiOption?.show_map ?? true
   const tileLayerSorter = uiOption?.tile_layer_sorter ?? ''
-  // const vectorLayerSorter = uiOption?.vector_layer_sorter ?? ''
+  const vectorLayerSorter = uiOption?.vector_layer_sorter ?? ''
 
   const mapRef = useRef()
 
@@ -85,6 +86,7 @@ export const Map = () => {
         <LocationMarker />
         <DrawControl />
         <TileLayers key={`${tileLayerSorter}/tileLayers`} />
+        <VectorLayers key={`${vectorLayerSorter}/vectorLayers`} />
         <Control position="topright" visible={true}>
           <OwnControls />
         </Control>
