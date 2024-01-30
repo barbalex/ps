@@ -1,26 +1,9 @@
-import React, { useContext, useCallback } from 'react'
-import styled from '@emotion/styled'
-import IconButton from '@mui/material/IconButton'
-import Button from '@mui/material/Button'
+import { useCallback, useEvent } from 'react'
+import { Button } from '@fluentui/react-components'
 import { MdClose as CloseIcon } from 'react-icons/md'
 
-import StoreContext from '../../storeContext'
-import { IStore } from '../../store'
+import { useElectric } from '../../ElectricProvider'
 
-const Container = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  margin: 5px;
-  padding: 10px;
-  border-radius: 3px;
-  background-color: ${(props) => props['data-color']};
-  color: white;
-  min-height: 18px;
-  max-width: calc(100% - 10px);
-  word-wrap: break-word;
-`
 const containerStyle = {
   display: 'flex',
   justifyContent: 'space-between',
@@ -35,28 +18,34 @@ const containerStyle = {
   maxWidth: 'calc(100% - 10px)',
   wordWrap: 'break-word',
 }
-const StyledIconButton = styled(IconButton)`
-  align-self: flex-start;
-`
-const StyledButton = styled(Button)`
-  color: white !important;
-  border-color: white !important;
-  margin-left: 10px;
-  > span {
-    text-transform: none;
-  }
-`
+const iconButtonStyle = {
+  alignSelf: 'flex-start',
+}
+// const StyledButton = styled(Button)`
+//   color: white !important;
+//   border-color: white !important;
+//   margin-left: 10px;
+//   > span {
+//     text-transform: none;
+//   }
+// `
+const buttonStyle = {
+  color: 'white !important',
+  borderColor: 'white !important',
+  marginLeft: '10px',
+  textTransform: 'none',
+}
 // http://hackingui.com/front-end/a-pure-css-solution-for-multiline-text-truncation/
-const Message = styled.div`
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-`
-const Title = styled.div`
-  font-weight: 500;
-  margin-right: 30px;
-`
+const messageStyle = {
+  overflow: 'hidden',
+  display: '-webkit-box',
+  WebkitLineClamp: 3,
+  WebkitBoxOrient: 'vertical',
+}
+const titleStyle = {
+  fontWeight: 500,
+  marginRight: '30px',
+}
 
 const colorMap = {
   error: '#D84315',
@@ -65,82 +54,45 @@ const colorMap = {
   warning: 'orange',
 }
 
-export const Notification = ({ notification: n }) => {
-  const store: IStore = useContext(StoreContext)
-  const { removeNotificationById } = store
+export const Notification = ({ notification }) => {
+  const { db } = useElectric()!
   const {
+    notification_id,
     title,
-    message,
-    actionLabel,
-    actionName,
-    actionArgument,
-    revertTable,
-    revertId,
-    revertField,
-    revertValue,
-    revertValues,
-    type,
-  } = n
+    body,
+    intent,
+    timeout,
+    paused,
+    progress_percent,
+  } = notification
 
-  const color = colorMap[type] ?? 'error'
+  const onClickClose = useCallback(() => {
+    db.notifications.delete({
+      where: { notification_id },
+    })
+  }, [db.notifications, notification_id])
 
-  const onClickClose = useCallback(
-    () => removeNotificationById(n.id),
-    [n.id, removeNotificationById],
-  )
-  const onClickAction = useCallback(() => {
-    store?.[actionName]?.(actionArgument ?? undefined)
-    if (revertTable && revertId && revertField) {
-      store.updateModelValue({
-        table: revertTable,
-        id: revertId,
-        field: revertField,
-        value: revertValue,
-      })
-    } else if (revertTable && revertId && revertValues) {
-      store.updateModelValues({
-        table: revertTable,
-        id: revertId,
-        values: JSON.parse(revertValues),
-      })
-    }
-    removeNotificationById(n.id)
-  }, [
-    actionArgument,
-    actionName,
-    n.id,
-    removeNotificationById,
-    revertField,
-    revertId,
-    revertTable,
-    revertValue,
-    revertValues,
-    store,
-  ])
+  useEvent(() => {}, [])
 
   return (
     <div
-      style={{ ...containerStyle, backgroundColor: color }}
+      style={{ ...containerStyle, backgroundColor: colorMap[type] ?? 'error' }}
     >
       <div>
-        {!!title && <Title>{`${title}:`}</Title>}
-        <Message>{message}</Message>
+        {!!title && <div style={titleStyle}>{`${title}:`}</div>}
+        <div style={messageStyle}>{body}</div>
       </div>
-      {!!actionName && !!actionLabel && (
-        <StyledButton onClick={onClickAction} variant="outlined">
-          {actionLabel}
-        </StyledButton>
-      )}
-      <StyledIconButton
+      <Button
         key="close"
         aria-label="Close"
         color="inherit"
         onClick={onClickClose}
-        title="Diese Meldung schliessen"
+        title="Close"
         size="small"
+        style={{ iconButtonStyle }}
       >
         <CloseIcon />
-      </StyledIconButton>
+      </Button>
     </div>
   )
 }
