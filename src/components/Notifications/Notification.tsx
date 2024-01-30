@@ -103,7 +103,7 @@ export const Notification = memo(({ notification }) => {
           {intent === 'success' && <SuccessIcon color={colorMap[intent]} />}
           {intent === 'info' && <SuccessIcon color={colorMap[intent]} />}
           {intent === 'warning' && <WarningIcon color={colorMap[intent]} />}
-          {!!title && <div style={titleStyle}>{`${title}:`}</div>}
+          {!!title && <div style={titleStyle}>{title}</div>}
         </div>
         <Button
           aria-label="Close"
