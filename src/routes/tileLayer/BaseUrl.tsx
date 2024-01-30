@@ -1,11 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams } from 'react-router-dom'
-import {
-  useId,
-  useToastController,
-  ToastTitle,
-  Toast,
-} from '@fluentui/react-components'
+import { uuidv7 } from '@kripod/uuidv7'
 
 import { Tile_layers as TileLayer } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
@@ -16,28 +10,21 @@ import '../../form.css'
 
 export const BaseUrl = memo(
   ({ onChange, row }: { onChange: () => void; row: TileLayer }) => {
-    const { tile_layer_id } = useParams()
-
     const { db } = useElectric()
 
-    const toasterId = useId(`capabilitiesToaster/${tile_layer_id}`)
-    const toastId = useId(`capabilitiesToast/${tile_layer_id}`)
-    const { dispatchToast, dismissToast } = useToastController(toasterId)
     const onBlur = useCallback(async () => {
       if (!row?.wms_base_url) return
       console.log('hello WmsBaseUrl, onBlur, getting capabilities')
       // show loading indicator
-      dispatchToast(
-        <Toast>
-          <ToastTitle>{`Loading capabilities data for ${row.wms_base_url}`}</ToastTitle>
-        </Toast>,
-        {
-          toastId,
-          intent: 'success',
-          onStatusChange: (e, { status }) =>
-            console.log('hello, status of toast:', status),
+      const notification_id = uuidv7()
+      await db.notifications.create({
+        data: {
+          notification_id,
+          title: `Loading capabilities data for ${row.wms_base_url}`,
+          intent: 'info',
+          paused: true,
         },
-      )
+      })
       try {
         await getCapabilitiesData({ row, db })
       } catch (error) {
@@ -47,9 +34,12 @@ export const BaseUrl = memo(
         )
         // TODO: surface error to user
       }
-      dismissToast(toastId)
+      await db.notifications.update({
+        where: { notification_id },
+        data: { paused: false, timeout: 500 },
+      })
       console.log('hello WmsBaseUrl, onBlur, finished getting capabilities')
-    }, [db, dismissToast, dispatchToast, row, toastId])
+    }, [db, row])
 
     return (
       <TextField

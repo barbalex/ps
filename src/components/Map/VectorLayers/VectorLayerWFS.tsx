@@ -156,8 +156,8 @@ export const VectorLayerWFS = ({ layer }: Props) => {
 
   removeNotifs()
   if (
-    data?.length >= layer.max_features ??
-    (1000 && !notificationIds.current.length)
+    data?.length >= (layer.max_features ?? 1000) &&
+    !notificationIds.current.length
   ) {
     const notification_id = uuidv7()
     db.notifications.create({

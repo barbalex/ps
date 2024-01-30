@@ -15,7 +15,7 @@ import {
 
 import { layerstyleToProperties } from '../../../modules/layerstyleToProperties'
 import { Popup } from '../Popup'
-import { MapErrorBoundary } from '../MapErrorBoundary'
+import { ErrorBoundary } from '../MapErrorBoundary'
 import { useElectric } from '../../../ElectricProvider'
 import { user_id } from '../../SqlInitializer'
 
@@ -126,8 +126,8 @@ export const VectorLayerPVLGeom = ({ layer }: Props) => {
 
   removeNotifs()
   if (
-    data?.length === layer.max_features ??
-    (1000 && !notificationIds.current.length)
+    data?.length === (layer.max_features ?? 1000) &&
+    !notificationIds.current.length
   ) {
     const notification_id = uuidv7()
     db.notifications.create({
@@ -148,7 +148,7 @@ export const VectorLayerPVLGeom = ({ layer }: Props) => {
   const mapSize = map.getSize()
 
   return (
-    <MapErrorBoundary layer={layer}>
+    <ErrorBoundary layer={layer}>
       <GeoJSON
         key={`${layer.id}/${layerStyle.marker_symbol}/${
           layerStyle?.marker_size
@@ -203,6 +203,6 @@ export const VectorLayerPVLGeom = ({ layer }: Props) => {
           })
         }}
       />
-    </MapErrorBoundary>
+    </ErrorBoundary>
   )
 }
