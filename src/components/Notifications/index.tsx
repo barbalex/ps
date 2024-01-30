@@ -35,8 +35,6 @@ export const Notifications: React.FC = () => {
     db.notifications.deleteMany()
   }, [db.notifications])
 
-  console.log('hello Notifications', notifications)
-
   return (
     <>
       {notifications.length > 0 && (

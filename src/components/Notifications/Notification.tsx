@@ -71,8 +71,6 @@ export const Notification = memo(({ notification }) => {
     })
   }, [db.notifications, notification_id])
 
-  console.log('hello Notification', notification)
-
   useEffect(() => {
     let timeoutId
     if (progress_percent === 100 || paused === false) {
