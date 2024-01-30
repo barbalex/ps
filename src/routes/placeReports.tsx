@@ -39,11 +39,7 @@ export const Component = () => {
 
   return (
     <div className="list-view">
-      <ListViewHeader
-        title="Place Reports"
-        addRow={add}
-        tableName="place report"
-      />
+      <ListViewHeader title="Reports" addRow={add} tableName="report" />
       <div className="list-container">
         {placeReports.map(({ place_report_id, label }) => (
           <Row

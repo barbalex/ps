@@ -40,7 +40,7 @@ export const Component = () => {
 
   return (
     <div className="list-view">
-      <ListViewHeader title="Place Users" addRow={add} tableName="place user" />
+      <ListViewHeader title="Users" addRow={add} tableName="user" />
       <div className="list-container">
         {placeUsers.map(({ place_user_id, label }) => (
           <Row
