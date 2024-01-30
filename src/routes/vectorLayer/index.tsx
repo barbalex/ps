@@ -3,17 +3,17 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { Vector_layers as VectorLayer } from '../../../generated/client'
-import { createVectorLayer } from '../modules/createRows'
-import { useElectric } from '../ElectricProvider'
-import { TextFieldInactive } from '../components/shared/TextFieldInactive'
-import { TextField } from '../components/shared/TextField'
-import { SwitchField } from '../components/shared/SwitchField'
-import { RadioGroupField } from '../components/shared/RadioGroupField'
-import { SliderField } from '../components/shared/SliderField'
-import { getValueFromChange } from '../modules/getValueFromChange'
-import { FormHeader } from '../components/FormHeader'
+import { createVectorLayer } from '../../modules/createRows'
+import { useElectric } from '../../ElectricProvider'
+import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
+import { TextField } from '../../components/shared/TextField'
+import { SwitchField } from '../../components/shared/SwitchField'
+import { RadioGroupField } from '../../components/shared/RadioGroupField'
+import { SliderField } from '../../components/shared/SliderField'
+import { getValueFromChange } from '../../modules/getValueFromChange'
+import { FormHeader } from '../../components/FormHeader'
 
-import '../form.css'
+import '../../form.css'
 
 export const Component = () => {
   const { project_id, vector_layer_id } = useParams()
@@ -130,12 +130,16 @@ export const Component = () => {
           value={row.type ?? ''}
           onChange={onChange}
         />
-        <TextField
-          label="Url"
-          name="url"
-          value={row.url ?? ''}
-          onChange={onChange}
-        />
+        {row?.type === 'wfs' && (
+          <>
+            <TextField
+              label="Url"
+              name="url"
+              value={row.url ?? ''}
+              onChange={onChange}
+            />
+          </>
+        )}
         <TextField
           label="Max Zoom"
           name="max_zoom"

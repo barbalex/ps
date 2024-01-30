@@ -14,7 +14,7 @@ import { getCapabilitiesData } from './getCapabilitiesData'
 
 import '../../form.css'
 
-export const WmsBaseUrl = memo(
+export const BaseUrl = memo(
   ({ onChange, row }: { onChange: () => void; row: TileLayer }) => {
     const { tile_layer_id } = useParams()
 

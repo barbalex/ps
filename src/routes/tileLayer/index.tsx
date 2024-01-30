@@ -14,7 +14,7 @@ import { MultiSelectFromLayerOptions } from '../../components/shared/MultiSelect
 import { DropdownFieldFromLayerOptions } from '../../components/shared/DropdownFieldFromLayerOptions'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { FormHeader } from '../../components/FormHeader'
-import { WmsBaseUrl } from './WmsBaseUrl'
+import { BaseUrl } from './BaseUrl'
 
 import '../../form.css'
 
@@ -151,7 +151,7 @@ export const Component = () => {
         )}
         {row?.type === 'wms' && (
           <>
-            <WmsBaseUrl row={row} onChange={onChange} />
+            <BaseUrl row={row} onChange={onChange} />
             {row?.wms_base_url && (
               <>
                 <MultiSelectFromLayerOptions
