@@ -39,18 +39,12 @@ export const WMTSOffline = ({ layer }: Props) => {
       try {
         control.saveMap({ layer, store, map })
       } catch (error) {
-        db.ui_options.update({
-          where: { user_id },
+        db.notifications.create({
           data: {
-            notifications: [
-              {
-                title: `Fehler beim Laden der Karten für ${layer.label}`,
-                body: error.message,
-                intent: 'error', // 'success' | 'error' | 'warning' | 'info'
-                id: uuidv7(),
-              },
-              ...notifications,
-            ],
+            notification_id: uuidv7(),
+            title: `Fehler beim Laden der Karten für ${layer.label}`,
+            body: error.message,
+            intent: 'error', // 'success' | 'error' | 'warning' | 'info'
           },
         })
       }
@@ -74,6 +68,7 @@ export const WMTSOffline = ({ layer }: Props) => {
       map.removeControl(control)
     }
   }, [
+    db.notifications,
     db.ui_options,
     layer,
     layer.grayscale,

@@ -4,7 +4,6 @@ import { uuidv7 } from '@kripod/uuidv7'
 
 import { Tile_layers as TileLayer } from '../../../../generated/client'
 import { xmlToJson } from '../../../../modules/xmlToJson'
-import { user_id } from '../../../SqlInitializer'
 
 export const onTileError = async (db, map, layer: TileLayer, ignore) => {
   console.log('onTileError', { ignore, map, layer, db })
@@ -36,18 +35,12 @@ export const onTileError = async (db, map, layer: TileLayer, ignore) => {
   const errorMessage =
     data?.HTML?.BODY?.SERVICEEXCEPTIONREPORT?.SERVICEEXCEPTION?.['#text']
   // console.log(`onTileError errorMessage:`, errorMessage)
-  db.ui_options.update({
-    where: { user_id },
+  db.notifications.create({
     data: {
-      notifications: [
-        {
-          title: `Fehler beim Laden der Bild-Karte '${layer.label}'. Der WMS-Server meldet`,
-          body: errorMessage,
-          intent: 'error', // 'success' | 'error' | 'warning' | 'info'
-          id: uuidv7(),
-        },
-        ...notifications,
-      ],
+      title: `Fehler beim Laden der Bild-Karte '${layer.label}'. Der WMS-Server meldet`,
+      body: errorMessage,
+      intent: 'error', // 'success' | 'error' | 'warning' | 'info'
+      notification_id: uuidv7(),
     },
   })
 }

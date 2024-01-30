@@ -50,7 +50,7 @@ export const Notification = ({ notification }) => {
     title,
     body,
     intent,
-    timeout,
+    timeout = 10000,
     paused,
     progress_percent,
   } = notification
@@ -62,14 +62,24 @@ export const Notification = ({ notification }) => {
   }, [db.notifications, notification_id])
 
   useEvent(() => {
-    if ((timeout && !paused) || progress_percent === 100) {
-      const timeoutId = setTimeout(() => {
+    let timeoutId
+    if (progress_percent === 100 || paused === false) {
+      timeoutId = setTimeout(() => {
         db.notifications.delete({
           where: { notification_id },
         })
-      }, timeout ?? 1000)
+      }, 500)
       return () => clearTimeout(timeoutId)
+    } else if (timeout && paused === undefined) {
+      timeoutId = setTimeout(() => {
+        db.notifications.delete({
+          where: { notification_id },
+        })
+      }, timeout)
+    } else if (paused === true) {
+      // do nothing - will do when notification is updated to paused === false
     }
+    return () => timeoutId && clearTimeout(timeoutId)
   }, [])
 
   // TODO: add icon for intent
