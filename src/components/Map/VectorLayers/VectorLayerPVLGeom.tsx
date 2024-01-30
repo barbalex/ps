@@ -3,8 +3,8 @@ import { GeoJSON, useMapEvent, useMap } from 'react-leaflet'
 import * as ReactDOMServer from 'react-dom/server'
 import { useDebouncedCallback } from 'use-debounce'
 import * as icons from 'react-icons/md'
-import styled from '@emotion/styled'
 import { uuidv7 } from '@kripod/uuidv7'
+import { css } from '../../../css'
 
 import {
   Vector_layer_geoms as VectorLayerGeom,
@@ -156,7 +156,7 @@ export const VectorLayerPVLGeom = ({ layer }: Props) => {
           layerStyle?.marker_type
         }/${layerStyle?.marker_weight}/${data?.length ?? 0}`}
         data={data}
-        opacity={layer.opacity}
+        opacity={layer.opacity_percent ? layer.opacity_percent / 100 : 0}
         style={layerstyleToProperties({ layerStyle })}
         onEachFeature={(feature, _layer) => {
           const layersData = [
@@ -178,26 +178,28 @@ export const VectorLayerPVLGeom = ({ layer }: Props) => {
               radius: layerStyle.circle_marker_radius ?? 8,
             })
           }
-          let Component = icons[layerStyle.marker_symbol] ?? icons.MdPlace
-          if (layerStyle.marker_weight) {
-            Component = styled(Component)`
-              path:nth-of-type(2) {
-                stroke-width: ${layerStyle.marker_weight};
-              }
-            `
-          }
+          const Component = icons[layerStyle.marker_symbol] ?? icons.MdPlace
           return L.marker(latlng, {
             icon: new L.divIcon({
               html: ReactDOMServer.renderToString(
                 <Component
-                  style={{
+                  style={css({
                     color: layerStyle?.color,
                     fontSize: `${layerStyle?.marker_size ?? 16}px`,
-                  }}
+                    ...(layerStyle.marker_weight
+                      ? {
+                          'path:nth-of-type(2)': {
+                            strokeWidth: layerStyle.marker_weight,
+                          },
+                        }
+                      : {}),
+                  })}
                 />,
               ),
             }),
-            opacity: layerStyle.opacity,
+            opacity: layerStyle.opacity_percent
+              ? layerStyle.opacity_percent / 100
+              : 0,
           })
         }}
       />
