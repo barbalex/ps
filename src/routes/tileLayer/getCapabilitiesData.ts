@@ -16,11 +16,11 @@ export const getCapabilitiesData = async ({
 }: Props) => {
   if (!row?.wms_base_url) return undefined
 
-  console.log('hello getting capabilites data for Tile Layer', {
-    label: row.label,
-    id: row.tile_layer_id,
-    db,
-  })
+  // console.log('hello getting capabilites data for Tile Layer', {
+  //   label: row.label,
+  //   id: row.tile_layer_id,
+  //   db,
+  // })
 
   const values = {}
 
@@ -29,7 +29,7 @@ export const getCapabilitiesData = async ({
     service: 'WMS',
   })
 
-  console.log('hello, getCapabilitiesData, capabilities:', capabilities)
+  // console.log('hello, getCapabilitiesData, capabilities:', capabilities)
 
   if (!capabilities) return undefined
 
@@ -74,7 +74,7 @@ export const getCapabilitiesData = async ({
     value: l.Name,
     legend_url: l.Style?.[0]?.LegendURL?.[0]?.OnlineResource,
   }))
-  console.log('hello, getCapabilitiesData, wmsLayerOptions:', wmsLayerOptions)
+  // console.log('hello, getCapabilitiesData, wmsLayerOptions:', wmsLayerOptions)
   if (wmsLayerOptions?.length) {
     for (const o of wmsLayerOptions) {
       await db.layer_options.upsert({
@@ -230,7 +230,7 @@ export const getCapabilitiesData = async ({
   // enable updating in a single operation
   if (returnValue) return values
 
-  console.log('hello, getCapabilitiesData, values added to tileLayer:', values)
+  // console.log('hello, getCapabilitiesData, values added to tileLayer:', values)
 
   if (Object.keys(values).length) {
     await db.tile_layers.update({
