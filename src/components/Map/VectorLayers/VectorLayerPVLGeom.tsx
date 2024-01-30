@@ -1,41 +1,45 @@
-import { useEffect, useState, useContext, useRef, useCallback } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import { GeoJSON, useMapEvent, useMap } from 'react-leaflet'
 import * as ReactDOMServer from 'react-dom/server'
 import { useDebouncedCallback } from 'use-debounce'
 import * as icons from 'react-icons/md'
 import styled from '@emotion/styled'
+import { uuidv7 } from '@kripod/uuidv7'
 
 import {
   Vector_layer_geoms as VectorLayerGeom,
   Vector_layers as VectorLayer,
   Layer_styles as LayerStyle,
+  Ui_options as UiOption,
 } from '../../../generated/client'
 
-import layerstyleToProperties from '../../../utils/layerstyleToProperties'
+import { layerstyleToProperties } from '../../../modules/layerstyleToProperties'
 import { Popup } from '../Popup'
-import storeContext from '../../../storeContext'
-import MapErrorBoundary from '../MapErrorBoundary'
-import { IStore } from '../../../store'
+import { MapErrorBoundary } from '../MapErrorBoundary'
 import { useElectric } from '../../../ElectricProvider'
+import { user_id } from '../../SqlInitializer'
 
 // const bboxBuffer = 0.01
 
 type Props = {
   layer: VectorLayer
 }
-export const VectorLayerComponent = ({ layer }: Props) => {
+export const VectorLayerPVLGeom = ({ layer }: Props) => {
   const { db } = useElectric()!
+  const uiOption: UiOption = db.ui_options.findUnique({ where: { user_id } })
+  const showMap = uiOption?.show_map ?? true
 
   const [data, setData] = useState()
 
-  const store: IStore = useContext(storeContext)
-  const { addNotification, removeNotificationById, showMap } = store
+  const notificationIds = useRef([])
 
-  const removeNotifs = useCallback(() => {
+  const removeNotifs = useCallback(async () => {
     // console.log('removing notifs')
-    loadingNotifIds.current.forEach((id) => removeNotificationById(id))
-    loadingNotifIds.current = []
-  }, [removeNotificationById])
+    await db.notifications.deleteMany({
+      where: { notification_id: { in: notificationIds.current } },
+    })
+    notificationIds.current = []
+  }, [db.notifications])
 
   const map = useMap()
 
@@ -51,14 +55,15 @@ export const VectorLayerComponent = ({ layer }: Props) => {
     async ({ bounds }) => {
       if (!showMap) return
       // console.log('VectorLayerPVLGeom fetching data')
-      // TODO: manage notifications
       removeNotifs()
-      const loadingNotifId = addNotification({
-        message: `Lade Vektor-Karte '${layer.label}'...`,
-        type: 'info',
+      const notification_id = uuidv7()
+      db.notifications.create({
+        notification_id,
+        title: `Lade Vektor-Karte '${layer.label}'...`,
+        intent: 'info',
         duration: 100000,
       })
-      loadingNotifIds.current = [loadingNotifId, ...loadingNotifIds.current]
+      notificationIds.current = [notification_id, ...notificationIds.current]
 
       const { results: vectorLayerGeoms = [] }: { results: VectorLayerGeom[] } =
         await db.vector_layer_geoms.findMany({
@@ -77,7 +82,6 @@ export const VectorLayerComponent = ({ layer }: Props) => {
         ...pvlGeom.geometry,
         properties: pvlGeom.properties,
       }))
-      // TODO: manage notifications
       removeNotifs()
 
       const layerStyle: LayerStyle = await db.layer_styles.findUnique({
@@ -88,8 +92,8 @@ export const VectorLayerComponent = ({ layer }: Props) => {
       setZoom(map.getZoom())
     },
     [
-      addNotification,
       db.layer_styles,
+      db.notifications,
       db.vector_layer_geoms,
       layer.label,
       layer.max_features,
@@ -104,7 +108,6 @@ export const VectorLayerComponent = ({ layer }: Props) => {
   useEffect(() => {
     fetchDataDebounced({ bounds: map.getBounds() })
   }, [fetchDataDebounced, map, showMap])
-  const loadingNotifIds = useRef([])
 
   useEffect(() => {
     // goal: remove own notifs when (de-)activating layer
@@ -124,16 +127,19 @@ export const VectorLayerComponent = ({ layer }: Props) => {
   removeNotifs()
   if (
     data?.length === layer.max_features ??
-    (1000 && !loadingNotifIds.current.length)
+    (1000 && !notificationIds.current.length)
   ) {
-    const loadingNotifId = addNotification({
+    const notification_id = uuidv7()
+    db.notifications.create({
+      notification_id,
       title: `Zuviele Geometrien`,
-      message: `Die maximale Anzahl Features von ${
+      body: `Die maximale Anzahl Features von ${
         layer.max_features ?? 1000
       } für Vektor-Karte '${layer.label}' wurde geladen. Zoomen sie näher ran`,
-      type: 'warning',
+      intent: 'warning',
+      duration: 10000,
     })
-    loadingNotifIds.current = [loadingNotifId, ...loadingNotifIds.current]
+    notificationIds.current = [notification_id, ...notificationIds.current]
   }
 
   if (!data?.length) return null

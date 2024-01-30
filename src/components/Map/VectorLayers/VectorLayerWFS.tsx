@@ -40,7 +40,7 @@ const xmlTheme = {
 type Props = {
   layer: VectorLayerType
 }
-const VectorLayerComponent = ({ layer }: Props) => {
+export const VectorLayerWFS = ({ layer }: Props) => {
   const [error, setError] = useState()
 
   const store: IStore = useContext(storeContext)
@@ -204,5 +204,3 @@ const VectorLayerComponent = ({ layer }: Props) => {
     </>
   )
 }
-
-export default VectorLayerComponent
