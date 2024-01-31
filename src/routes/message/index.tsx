@@ -1,41 +1,24 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
 import { Messages as Message } from '../../../generated/client'
-import { createMessage } from '../modules/createRows'
-import { useElectric } from '../ElectricProvider'
-import { TextField } from '../components/shared/TextField'
-import { TextFieldInactive } from '../components/shared/TextFieldInactive'
-import { DateField } from '../components/shared/DateField'
-import { getValueFromChange } from '../modules/getValueFromChange'
-import { FormHeader } from '../components/FormHeader'
+import { useElectric } from '../../ElectricProvider'
+import { TextField } from '../../components/shared/TextField'
+import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
+import { DateField } from '../../components/shared/DateField'
+import { getValueFromChange } from '../../modules/getValueFromChange'
+import { FormHeaderComponent } from './FormHeader'
 
-import '../form.css'
+import '../../form.css'
 
 export const Component = () => {
   const { message_id } = useParams()
-  const navigate = useNavigate()
 
   const { db } = useElectric()
   const { results } = useLiveQuery(
     db.messages.liveUnique({ where: { message_id } }),
   )
-
-  const addRow = useCallback(async () => {
-    const data = createMessage()
-    await db.messages.create({ data })
-    navigate(`/messages/${data.message_id}`)
-  }, [db.messages, navigate])
-
-  const deleteRow = useCallback(async () => {
-    await db.messages.delete({
-      where: {
-        message_id,
-      },
-    })
-    navigate(`/messages`)
-  }, [message_id, db.messages, navigate])
 
   const row: Message = results
 
@@ -56,12 +39,7 @@ export const Component = () => {
 
   return (
     <div className="form-outer-container">
-      <FormHeader
-        title="Message"
-        addRow={addRow}
-        deleteRow={deleteRow}
-        tableName="message"
-      />
+      <FormHeaderComponent />
       <div className="form-container">
         <TextFieldInactive
           label="ID"
