@@ -3,16 +3,16 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { Actions as Action } from '../../../generated/client'
-import { createAction } from '../modules/createRows'
-import { useElectric } from '../ElectricProvider'
-import { TextFieldInactive } from '../components/shared/TextFieldInactive'
-import { DateField } from '../components/shared/DateField'
-import { SwitchField } from '../components/shared/SwitchField'
-import { Jsonb } from '../components/shared/Jsonb'
-import { getValueFromChange } from '../modules/getValueFromChange'
-import { FormHeader } from '../components/FormHeader'
+import { createAction } from '../../modules/createRows'
+import { useElectric } from '../../ElectricProvider'
+import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
+import { DateField } from '../../components/shared/DateField'
+import { SwitchField } from '../../components/shared/SwitchField'
+import { Jsonb } from '../../components/shared/Jsonb'
+import { getValueFromChange } from '../../modules/getValueFromChange'
+import { FormHeader } from '../../components/FormHeader'
 
-import '../form.css'
+import '../../form.css'
 
 export const Component = () => {
   const { project_id, subproject_id, place_id, place_id2, action_id } =
