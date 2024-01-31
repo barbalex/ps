@@ -1,29 +1,16 @@
-import { useCallback, useRef, useMemo } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
+import { useCallback, memo, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 
-import { PlaceReports as PlaceReport } from '../../../generated/client'
-import { createPlaceReport } from '../modules/createRows'
-import { useElectric } from '../ElectricProvider'
-import { TextField } from '../components/shared/TextField'
-import { TextFieldInactive } from '../components/shared/TextFieldInactive'
-import { Jsonb } from '../components/shared/Jsonb'
-import { getValueFromChange } from '../modules/getValueFromChange'
-import { FormHeader } from '../components/FormHeader'
+import { createPlaceReport } from '../../modules/createRows'
+import { useElectric } from '../../ElectricProvider'
+import { FormHeader } from '../../components/FormHeader'
 
-import '../form.css'
-
-export const Component = () => {
+export const FormHeaderComponent = memo(({ autoFocusRef }) => {
   const { project_id, subproject_id, place_id, place_id2, place_report_id } =
     useParams()
   const navigate = useNavigate()
 
-  const autoFocusRef = useRef<HTMLInputElement>(null)
-
   const { db } = useElectric()
-  const { results } = useLiveQuery(
-    db.place_reports.liveUnique({ where: { place_report_id } }),
-  )
 
   const baseUrl = useMemo(
     () =>
@@ -42,7 +29,7 @@ export const Component = () => {
     await db.place_reports.create({ data })
     navigate(`${baseUrl}/${data.place_report_id}`)
     autoFocusRef.current?.focus()
-  }, [baseUrl, db, navigate, place_id, place_id2, project_id])
+  }, [autoFocusRef, baseUrl, db, navigate, place_id, place_id2, project_id])
 
   const deleteRow = useCallback(async () => {
     await db.place_reports.delete({
@@ -93,55 +80,14 @@ export const Component = () => {
     place_report_id,
   ])
 
-  const row: PlaceReport = results
-
-  const onChange = useCallback(
-    (e, data) => {
-      const { name, value } = getValueFromChange(e, data)
-      db.place_reports.update({
-        where: { place_report_id },
-        data: { [name]: value },
-      })
-    },
-    [db.place_reports, place_report_id],
-  )
-
-  if (!row) {
-    return <div>Loading...</div>
-  }
-
   return (
-    <div className="form-outer-container">
-      <FormHeader
-        title="Place Report"
-        addRow={addRow}
-        deleteRow={deleteRow}
-        toNext={toNext}
-        toPrevious={toPrevious}
-        tableName="place report"
-      />
-      <div className="form-container">
-        <TextFieldInactive
-          label="ID"
-          name="place_report_id"
-          value={row.place_report_id}
-        />
-        <TextField
-          label="Year"
-          name="year"
-          type="number"
-          value={row.year ?? ''}
-          onChange={onChange}
-        />
-        <Jsonb
-          table="place_reports"
-          idField="place_report_id"
-          id={row.place_report_id}
-          data={row.data ?? {}}
-          autoFocus
-          ref={autoFocusRef}
-        />
-      </div>
-    </div>
+    <FormHeader
+      title="Place Report"
+      addRow={addRow}
+      deleteRow={deleteRow}
+      toNext={toNext}
+      toPrevious={toPrevious}
+      tableName="place report"
+    />
   )
-}
+})
