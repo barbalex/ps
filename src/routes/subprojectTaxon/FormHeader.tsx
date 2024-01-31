@@ -1,0 +1,80 @@
+import { useCallback, memo } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
+
+import { createSubprojectTaxon } from '../../modules/createRows'
+import { useElectric } from '../../ElectricProvider'
+import { FormHeader } from '../../components/FormHeader'
+
+export const FormHeaderComponent = memo(({ autoFocusRef }) => {
+  const { project_id, subproject_id, subproject_taxon_id } = useParams()
+  const navigate = useNavigate()
+
+  const { db } = useElectric()
+
+  const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/taxa`
+
+  const addRow = useCallback(async () => {
+    const subprojectTaxon = createSubprojectTaxon()
+    await db.subproject_taxa.create({
+      data: { ...subprojectTaxon, subproject_id },
+    })
+    navigate(`${baseUrl}/${subprojectTaxon.subproject_taxon_id}`)
+    autoFocusRef.current?.focus()
+  }, [autoFocusRef, baseUrl, db.subproject_taxa, navigate, subproject_id])
+
+  const deleteRow = useCallback(async () => {
+    await db.subproject_taxa.delete({
+      where: { subproject_taxon_id },
+    })
+    navigate(baseUrl)
+  }, [baseUrl, db.subproject_taxa, navigate, subproject_taxon_id])
+
+  const toNext = useCallback(async () => {
+    const subprojectTaxa = await db.subproject_taxa.findMany({
+      where: { deleted: false, subproject_id },
+      orderBy: { label: 'asc' },
+    })
+    const len = subprojectTaxa.length
+    const index = subprojectTaxa.findIndex(
+      (p) => p.subproject_taxon_id === subproject_taxon_id,
+    )
+    const next = subprojectTaxa[(index + 1) % len]
+    navigate(`${baseUrl}/${next.subproject_taxon_id}`)
+  }, [
+    baseUrl,
+    db.subproject_taxa,
+    navigate,
+    subproject_id,
+    subproject_taxon_id,
+  ])
+
+  const toPrevious = useCallback(async () => {
+    const subprojectTaxa = await db.subproject_taxa.findMany({
+      where: { deleted: false, subproject_id },
+      orderBy: { label: 'asc' },
+    })
+    const len = subprojectTaxa.length
+    const index = subprojectTaxa.findIndex(
+      (p) => p.subproject_taxon_id === subproject_taxon_id,
+    )
+    const previous = subprojectTaxa[(index + len - 1) % len]
+    navigate(`${baseUrl}/${previous.subproject_taxon_id}`)
+  }, [
+    baseUrl,
+    db.subproject_taxa,
+    navigate,
+    subproject_id,
+    subproject_taxon_id,
+  ])
+
+  return (
+    <FormHeader
+      title="Subproject Taxon"
+      addRow={addRow}
+      deleteRow={deleteRow}
+      toNext={toNext}
+      toPrevious={toPrevious}
+      tableName="subproject taxon"
+    />
+  )
+})
