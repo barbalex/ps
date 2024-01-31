@@ -5,8 +5,6 @@ import { createActionReport } from '../../modules/createRows'
 import { useElectric } from '../../ElectricProvider'
 import { FormHeader } from '../../components/FormHeader'
 
-import '../../form.css'
-
 export const FormHeaderComponent = memo(({ autoFocusRef }) => {
   const {
     project_id,

@@ -6,8 +6,6 @@ import { createPlace } from '../../modules/createRows'
 import { useElectric } from '../../ElectricProvider'
 import { FormHeader } from '../../components/FormHeader'
 
-import '../../form.css'
-
 type Props = {
   autoFocusRef: React.RefObject<HTMLInputElement>
 }

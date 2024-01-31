@@ -5,8 +5,6 @@ import { createActionReportValue } from '../../modules/createRows'
 import { useElectric } from '../../ElectricProvider'
 import { FormHeader } from '../../components/FormHeader'
 
-import '../../form.css'
-
 export const FormHeaderComponent = memo(({ autoFocusRef }) => {
   const {
     project_id,
@@ -46,7 +44,13 @@ export const FormHeaderComponent = memo(({ autoFocusRef }) => {
     })
     navigate(`${baseUrl}/${actionReportValue.action_report_value_id}`)
     autoFocusRef.current?.focus()
-  }, [action_report_id, baseUrl, db.action_report_values, navigate])
+  }, [
+    action_report_id,
+    autoFocusRef,
+    baseUrl,
+    db.action_report_values,
+    navigate,
+  ])
 
   const deleteRow = useCallback(async () => {
     await db.action_report_values.delete({
