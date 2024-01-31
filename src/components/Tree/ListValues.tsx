@@ -22,7 +22,7 @@ export const ListValuesNode = ({ project_id, list_id, level = 5 }) => {
 
   const valuesNode = useMemo(
     () => ({
-      label: `List Values (${listValues.length})`,
+      label: `Values (${listValues.length})`,
     }),
     [listValues.length],
   )
