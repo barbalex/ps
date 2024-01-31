@@ -1,22 +1,20 @@
 import { useCallback, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
 import { PlaceLevels as PlaceLevel } from '../../../generated/client'
-import { createPlaceLevel } from '../modules/createRows'
-import { useElectric } from '../ElectricProvider'
-import { TextField } from '../components/shared/TextField'
-import { TextFieldInactive } from '../components/shared/TextFieldInactive'
-import { SwitchField } from '../components/shared/SwitchField'
-import { RadioGroupField } from '../components/shared/RadioGroupField'
-import { getValueFromChange } from '../modules/getValueFromChange'
-import { FormHeader } from '../components/FormHeader'
+import { useElectric } from '../../ElectricProvider'
+import { TextField } from '../../components/shared/TextField'
+import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
+import { SwitchField } from '../../components/shared/SwitchField'
+import { RadioGroupField } from '../../components/shared/RadioGroupField'
+import { getValueFromChange } from '../../modules/getValueFromChange'
+import { FormHeaderComponent } from './FormHeader'
 
-import '../form.css'
+import '../../form.css'
 
 export const Component = () => {
-  const { project_id, place_level_id } = useParams()
-  const navigate = useNavigate()
+  const { place_level_id } = useParams()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -24,50 +22,6 @@ export const Component = () => {
   const { results } = useLiveQuery(
     db.place_levels.liveUnique({ where: { place_level_id } }),
   )
-
-  const baseUrl = `/projects/${project_id}/place-levels`
-
-  const addRow = useCallback(async () => {
-    const placeLevel = createPlaceLevel()
-    await db.place_levels.create({
-      data: { ...placeLevel, project_id },
-    })
-    navigate(`${baseUrl}/${placeLevel.place_level_id}`)
-    autoFocusRef.current?.focus()
-  }, [baseUrl, db.place_levels, navigate, project_id])
-
-  const deleteRow = useCallback(async () => {
-    await db.place_levels.delete({
-      where: { place_level_id },
-    })
-    navigate(baseUrl)
-  }, [baseUrl, db.place_levels, navigate, place_level_id])
-
-  const toNext = useCallback(async () => {
-    const placeLevels = await db.place_levels.findMany({
-      where: { deleted: false, project_id },
-      orderBy: { label: 'asc' },
-    })
-    const len = placeLevels.length
-    const index = placeLevels.findIndex(
-      (p) => p.place_level_id === place_level_id,
-    )
-    const next = placeLevels[(index + 1) % len]
-    navigate(`${baseUrl}/${next.place_level_id}`)
-  }, [baseUrl, db.place_levels, navigate, place_level_id, project_id])
-
-  const toPrevious = useCallback(async () => {
-    const placeLevels = await db.place_levels.findMany({
-      where: { deleted: false, project_id },
-      orderBy: { label: 'asc' },
-    })
-    const len = placeLevels.length
-    const index = placeLevels.findIndex(
-      (p) => p.place_level_id === place_level_id,
-    )
-    const previous = placeLevels[(index + len - 1) % len]
-    navigate(`${baseUrl}/${previous.place_level_id}`)
-  }, [baseUrl, db.place_levels, navigate, place_level_id, project_id])
 
   const row: PlaceLevel = results
 
@@ -91,14 +45,7 @@ export const Component = () => {
 
   return (
     <div className="form-outer-container">
-      <FormHeader
-        title="Place level"
-        addRow={addRow}
-        deleteRow={deleteRow}
-        toNext={toNext}
-        toPrevious={toPrevious}
-        tableName="place level"
-      />
+      <FormHeaderComponent autoFocusRef={autoFocusRef} />
       <div className="form-container">
         <TextFieldInactive
           label="ID"
