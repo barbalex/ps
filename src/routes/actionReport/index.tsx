@@ -3,15 +3,15 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { ActionReports as ActionReport } from '../../../generated/client'
-import { createActionReport } from '../modules/createRows'
-import { useElectric } from '../ElectricProvider'
-import { TextField } from '../components/shared/TextField'
-import { TextFieldInactive } from '../components/shared/TextFieldInactive'
-import { Jsonb } from '../components/shared/Jsonb'
-import { getValueFromChange } from '../modules/getValueFromChange'
-import { FormHeader } from '../components/FormHeader'
+import { createActionReport } from '../../modules/createRows'
+import { useElectric } from '../../ElectricProvider'
+import { TextField } from '../../components/shared/TextField'
+import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
+import { Jsonb } from '../../components/shared/Jsonb'
+import { getValueFromChange } from '../../modules/getValueFromChange'
+import { FormHeader } from '../../components/FormHeader'
 
-import '../form.css'
+import '../../form.css'
 
 export const Component = () => {
   const {
