@@ -28,7 +28,7 @@ export const GoalReportValuesNode = ({
 
   const goalReportValuesNode = useMemo(
     () => ({
-      label: `Goal Report Values (${goalReportValues.length})`,
+      label: `Values (${goalReportValues.length})`,
     }),
     [goalReportValues.length],
   )
