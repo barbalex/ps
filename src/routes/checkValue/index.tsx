@@ -11,7 +11,7 @@ import { DropdownField } from '../../components/shared/DropdownField'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { FormHeader } from '../../components/FormHeader'
 
-import '../form.css'
+import '../../form.css'
 
 export const Component = () => {
   const {

@@ -1,62 +1,23 @@
 import { useCallback, useMemo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
 import { Files as File } from '../../../generated/client'
-import { createFile } from '../modules/createRows'
-import { useElectric } from '../ElectricProvider'
-import { TextField } from '../components/shared/TextField'
-import { TextFieldInactive } from '../components/shared/TextFieldInactive'
-import { Jsonb } from '../components/shared/Jsonb'
-import { getValueFromChange } from '../modules/getValueFromChange'
-import { DropdownField } from '../components/shared/DropdownField'
-import { FormHeader } from '../components/FormHeader'
+import { useElectric } from '../../ElectricProvider'
+import { TextField } from '../../components/shared/TextField'
+import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
+import { Jsonb } from '../../components/shared/Jsonb'
+import { getValueFromChange } from '../../modules/getValueFromChange'
+import { DropdownField } from '../../components/shared/DropdownField'
+import { FormHeaderComponent } from './FormHeader'
 
-import '../form.css'
+import '../../form.css'
 
 export const Component = () => {
   const { file_id } = useParams()
-  const navigate = useNavigate()
 
   const { db } = useElectric()
   const { results } = useLiveQuery(db.files.liveUnique({ where: { file_id } }))
-
-  const addRow = useCallback(async () => {
-    const data = await createFile({ db })
-    await db.files.create({ data })
-    navigate(`/files/${data.file_id}`)
-  }, [db, navigate])
-
-  const deleteRow = useCallback(async () => {
-    await db.files.delete({
-      where: {
-        file_id,
-      },
-    })
-    navigate(`/files`)
-  }, [file_id, db.files, navigate])
-
-  const toNext = useCallback(async () => {
-    const files = await db.files.findMany({
-      where: { deleted: false },
-      orderBy: { label: 'asc' },
-    })
-    const len = files.length
-    const index = files.findIndex((p) => p.file_id === file_id)
-    const next = files[(index + 1) % len]
-    navigate(`/files/${next.file_id}`)
-  }, [db.files, navigate, file_id])
-
-  const toPrevious = useCallback(async () => {
-    const files = await db.files.findMany({
-      where: { deleted: false },
-      orderBy: { label: 'asc' },
-    })
-    const len = files.length
-    const index = files.findIndex((p) => p.file_id === file_id)
-    const previous = files[(index + len - 1) % len]
-    navigate(`/files/${previous.file_id}`)
-  }, [db.files, navigate, file_id])
 
   const row: File = results
 
@@ -113,14 +74,7 @@ export const Component = () => {
 
   return (
     <div className="form-outer-container">
-      <FormHeader
-        title="File"
-        addRow={addRow}
-        deleteRow={deleteRow}
-        toNext={toNext}
-        toPrevious={toPrevious}
-        tableName="file value"
-      />
+      <FormHeaderComponent />
       <div className="form-container">
         <TextFieldInactive
           label="ID"
