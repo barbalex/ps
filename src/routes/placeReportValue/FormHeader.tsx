@@ -32,7 +32,7 @@ export const FormHeaderComponent = memo(({ autoFocusRef }) => {
     })
     navigate(`${baseUrl}/${placeReportValue.place_report_value_id}`)
     autoFocusRef.current?.focus()
-  }, [baseUrl, db.place_report_values, navigate, place_report_id])
+  }, [autoFocusRef, baseUrl, db.place_report_values, navigate, place_report_id])
 
   const deleteRow = useCallback(async () => {
     await db.place_report_values.delete({
