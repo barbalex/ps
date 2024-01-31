@@ -3,14 +3,14 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { GoalReports as GoalReport } from '../../../generated/client'
-import { createGoalReport } from '../modules/createRows'
-import { useElectric } from '../ElectricProvider'
-import { TextFieldInactive } from '../components/shared/TextFieldInactive'
-import { Jsonb } from '../components/shared/Jsonb'
-import { FormHeader } from '../components/FormHeader'
+import { createGoalReport } from '../../modules/createRows'
+import { useElectric } from '../../ElectricProvider'
+import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
+import { Jsonb } from '../../components/shared/Jsonb'
+import { FormHeader } from '../../components/FormHeader'
 // import { getValueFromChange } from '../modules/getValueFromChange'
 
-import '../form.css'
+import '../../form.css'
 
 export const Component = () => {
   const { project_id, subproject_id, goal_id, goal_report_id } = useParams()
