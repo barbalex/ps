@@ -22,7 +22,7 @@ export const ProjectUsersNode = ({ project_id, level = 3 }) => {
 
   const projectUsersNode = useMemo(
     () => ({
-      label: `Project Users (${projectUsers.length})`,
+      label: `Users (${projectUsers.length})`,
     }),
     [projectUsers.length],
   )
