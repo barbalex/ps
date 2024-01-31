@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, memo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { createActionValue } from '../../modules/createRows'
@@ -7,7 +7,7 @@ import { FormHeader } from '../../components/FormHeader'
 
 import '../../form.css'
 
-export const FormHeaderComponent = ({ autoFocusRef }) => {
+export const FormHeaderComponent = memo(({ autoFocusRef }) => {
   const {
     project_id,
     subproject_id,
@@ -85,4 +85,4 @@ export const FormHeaderComponent = ({ autoFocusRef }) => {
       tableName="action value"
     />
   )
-}
+})
