@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
@@ -11,7 +11,7 @@ import '../../form.css'
 type Props = {
   autoFocusRef: React.RefObject<HTMLInputElement>
 }
-export const FormHeaderComponent = ({ autoFocusRef }: Props) => {
+export const FormHeaderComponent = memo(({ autoFocusRef }: Props) => {
   const navigate = useNavigate()
   const { project_id, subproject_id, place_id, place_id2 } = useParams()
 
@@ -100,4 +100,4 @@ export const FormHeaderComponent = ({ autoFocusRef }: Props) => {
       tableName={placeNameSingular}
     />
   )
-}
+})
