@@ -1,26 +1,24 @@
 import { useCallback, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { Label, Divider } from '@fluentui/react-components'
 
 import { Projects as Project } from '../../../generated/client'
-import { createProject } from '../modules/createRows'
-import { useElectric } from '../ElectricProvider'
-import { TextField } from '../components/shared/TextField'
-import { TextFieldInactive } from '../components/shared/TextFieldInactive'
-import { RadioGroupField } from '../components/shared/RadioGroupField'
-import { CheckboxField } from '../components/shared/CheckboxField'
-import { Jsonb } from '../components/shared/Jsonb'
-import { getValueFromChange } from '../modules/getValueFromChange'
-import { FormHeader } from '../components/FormHeader'
-import { LabelBy } from '../components/shared/LabelBy'
-import { FieldList } from '../components/shared/FieldList'
+import { useElectric } from '../../ElectricProvider'
+import { TextField } from '../../components/shared/TextField'
+import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
+import { RadioGroupField } from '../../components/shared/RadioGroupField'
+import { CheckboxField } from '../../components/shared/CheckboxField'
+import { Jsonb } from '../../components/shared/Jsonb'
+import { getValueFromChange } from '../../modules/getValueFromChange'
+import { LabelBy } from '../../components/shared/LabelBy'
+import { FieldList } from '../../components/shared/FieldList'
+import { FormHeaderComponent } from './FormHeader'
 
-import '../form.css'
+import '../../form.css'
 
 export const Component = () => {
   const { project_id } = useParams()
-  const navigate = useNavigate()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -29,44 +27,6 @@ export const Component = () => {
     db.projects.liveUnique({ where: { project_id } }),
   )
   const row: Project = results
-
-  const addRow = useCallback(async () => {
-    const data = await createProject({ db })
-    await db.projects.create({ data })
-    navigate(`/projects/${data.project_id}`)
-    autoFocusRef.current?.focus()
-  }, [db, navigate])
-
-  const deleteRow = useCallback(async () => {
-    await db.projects.delete({
-      where: {
-        project_id,
-      },
-    })
-    navigate(`/projects`)
-  }, [db.projects, navigate, project_id])
-
-  const toNext = useCallback(async () => {
-    const projects = await db.projects.findMany({
-      where: { deleted: false },
-      orderBy: { label: 'asc' },
-    })
-    const len = projects.length
-    const index = projects.findIndex((p) => p.project_id === project_id)
-    const next = projects[(index + 1) % len]
-    navigate(`/projects/${next.project_id}`)
-  }, [db.projects, navigate, project_id])
-
-  const toPrevious = useCallback(async () => {
-    const projects = await db.projects.findMany({
-      where: { deleted: false },
-      orderBy: { label: 'asc' },
-    })
-    const len = projects.length
-    const index = projects.findIndex((p) => p.project_id === project_id)
-    const previous = projects[(index + len - 1) % len]
-    navigate(`/projects/${previous.project_id}`)
-  }, [db.projects, navigate, project_id])
 
   const onChange = useCallback(
     (e, data) => {
@@ -83,18 +43,9 @@ export const Component = () => {
     return <div>Loading...</div>
   }
 
-  console.log('hello project, row:', row)
-
   return (
     <div className="form-outer-container">
-      <FormHeader
-        title="Project"
-        addRow={addRow}
-        deleteRow={deleteRow}
-        toNext={toNext}
-        toPrevious={toPrevious}
-        tableName="project"
-      />
+      <FormHeaderComponent autoFocusRef={autoFocusRef} />
       <div className="form-container">
         <TextFieldInactive
           label="ID"
