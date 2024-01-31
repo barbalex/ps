@@ -1,18 +1,17 @@
 import { useCallback, useMemo, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
 import { Fields as Field } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
-import { createField } from '../../modules/createRows'
 import { TextField } from '../../components/shared/TextField'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions'
 import { DropdownField } from '../../components/shared/DropdownField'
 import { SwitchField } from '../../components/shared/SwitchField'
 import { getValueFromChange } from '../../modules/getValueFromChange'
-import { FormHeader } from '../../components/FormHeader'
 import { WidgetType } from './WidgetType'
+import { FormHeaderComponent } from './FormHeader'
 
 import '../../form.css'
 
@@ -42,7 +41,6 @@ const widgetsNeedingList = [
 
 export const Component = () => {
   const { project_id, field_id } = useParams()
-  const navigate = useNavigate()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -50,53 +48,6 @@ export const Component = () => {
   const { results } = useLiveQuery(
     db.fields.liveUnique({ where: { field_id } }),
   )
-
-  const baseUrl = useMemo(
-    () => (project_id ? `/projects/${project_id}/fields` : '/fields'),
-    [project_id],
-  )
-
-  const addRow = useCallback(async () => {
-    const data = createField({ project_id })
-    await db.fields.create({ data })
-    navigate(`${baseUrl}/${data.field_id}`)
-    autoFocusRef.current?.focus()
-  }, [baseUrl, db.fields, navigate, project_id])
-
-  const deleteRow = useCallback(async () => {
-    await db.fields.delete({
-      where: { field_id },
-    })
-    navigate(baseUrl)
-  }, [baseUrl, db.fields, field_id, navigate])
-
-  const toNext = useCallback(async () => {
-    const fields = await db.fields.findMany({
-      where: {
-        deleted: false,
-        project_id: project_id ?? null,
-      },
-      orderBy: { label: 'asc' },
-    })
-    const len = fields.length
-    const index = fields.findIndex((p) => p.field_id === field_id)
-    const next = fields[(index + 1) % len]
-    navigate(`${baseUrl}/${next.field_id}`)
-  }, [db.fields, project_id, navigate, baseUrl, field_id])
-
-  const toPrevious = useCallback(async () => {
-    const fields = await db.fields.findMany({
-      where: {
-        deleted: false,
-        project_id: project_id ?? null,
-      },
-      orderBy: { label: 'asc' },
-    })
-    const len = fields.length
-    const index = fields.findIndex((p) => p.field_id === field_id)
-    const previous = fields[(index + len - 1) % len]
-    navigate(`${baseUrl}/${previous.field_id}`)
-  }, [db.fields, project_id, navigate, baseUrl, field_id])
 
   const row: Field = results
 
@@ -125,14 +76,7 @@ export const Component = () => {
 
   return (
     <div className="form-outer-container">
-      <FormHeader
-        title="Field"
-        addRow={addRow}
-        deleteRow={deleteRow}
-        toNext={toNext}
-        toPrevious={toPrevious}
-        tableName="field"
-      />
+      <FormHeaderComponent autoFocusRef={autoFocusRef} />
       <div className="form-container">
         <TextFieldInactive label="ID" name="field_id" value={row.field_id} />
         <DropdownFieldSimpleOptions
