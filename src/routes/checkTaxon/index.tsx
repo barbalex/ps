@@ -3,15 +3,15 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { CheckTaxa as CheckTaxon } from '../../../generated/client'
-import { createCheckTaxon } from '../modules/createRows'
-import { useElectric } from '../ElectricProvider'
-import { TextField } from '../components/shared/TextField'
-import { DropdownField } from '../components/shared/DropdownField'
-import { TextFieldInactive } from '../components/shared/TextFieldInactive'
-import { getValueFromChange } from '../modules/getValueFromChange'
-import { FormHeader } from '../components/FormHeader'
+import { createCheckTaxon } from '../../modules/createRows'
+import { useElectric } from '../../ElectricProvider'
+import { TextField } from '../../components/shared/TextField'
+import { DropdownField } from '../../components/shared/DropdownField'
+import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
+import { getValueFromChange } from '../../modules/getValueFromChange'
+import { FormHeader } from '../../components/FormHeader'
 
-import '../form.css'
+import '../../form.css'
 
 export const Component = () => {
   const {
