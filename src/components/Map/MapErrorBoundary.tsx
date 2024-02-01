@@ -10,12 +10,8 @@ const onReload = () => {
 }
 
 const ErrorFallback = ({ error, db, layer }) => {
-  const layerName =
-    layer._layerOptions.find((o) => o.value === layer.type_name)?.label ??
-    layer.type_name
-
   db.notifications.create({
-    title: `Fehler in Vektor-Layer '${layerName}'`,
+    title: `Fehler in Vektor-Layer '${layer.label}'`,
     body: error.message,
     intent: 'error', // 'success' | 'error' | 'warning' | 'info'
     notification_id: uuidv7(),

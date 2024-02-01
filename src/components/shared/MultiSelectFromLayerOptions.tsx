@@ -51,7 +51,7 @@ export const MultiSelectFromLayerOptions = memo(
 
     return (
       <MultiSelect
-        label={label}
+        label={options?.length ? `${label} (${options.length})` : label}
         name={name}
         table={table}
         id={tile_layer_id || vector_layer_id}

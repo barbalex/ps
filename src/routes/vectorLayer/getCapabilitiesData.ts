@@ -4,11 +4,13 @@ import { Vector_layers as VectorLayer } from '../../../generated/client'
 interface Props {
   row: VectorLayer
   returnValue?: boolean
+  db: Electric
 }
 
 export const getCapabilitiesData = async ({
   row,
   returnValue = false,
+  db,
 }: Props) => {
   if (!row) return
   if (!row.url) return
@@ -63,13 +65,13 @@ export const getCapabilitiesData = async ({
       create: {
         layer_option_id: `${row.url}/${f.value}/wfs_output_format`,
         vector_layer_id: row.vector_layer_id,
-        field: 'output_format',
+        field: 'wfs_output_format',
         value: f.value,
         label: f.label,
       },
       update: {
         vector_layer_id: row.vector_layer_id,
-        field: 'output_format',
+        field: 'wfs_output_format',
         value: f.value,
         label: f.label,
       },
@@ -133,20 +135,24 @@ export const getCapabilitiesData = async ({
 
   // activate layer, if only one
   if (
-    !row?.type_name &&
+    (!row?.wfs_layers || !row?.wfs_layers?.length) &&
     layerOptions?.length === 1 &&
     layerOptions?.[0]?.value
   ) {
-    values.type_name = layerOptions?.[0]?.value
+    values.wfs_layers = layerOptions?.[0]
     values.active = true
   }
 
-  console.log('pvl, getCapabilitiesData, values:', values)
+  console.log('hello vector layers getCapabilitiesData', {
+    values,
+    layerOptions,
+    acceptableOutputFormats,
+  })
 
   // enable updating in a single operation
   if (returnValue) return values
 
-  return db.tile_layers.update({
+  return db.vector_layers.update({
     where: { vector_layer_id: row.vector_layer_id },
     data: values,
   })

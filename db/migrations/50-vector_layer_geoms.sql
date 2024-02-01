@@ -31,5 +31,5 @@ COMMENT ON COLUMN vector_layer_geoms.bbox_ne_lng IS 'bbox of the geometry. Set c
 
 COMMENT ON COLUMN vector_layer_geoms.bbox_ne_lat IS 'bbox of the geometry. Set client-side on every change of geometry. Used to filter geometries client-side for viewport';
 
-ALTER TABLE layer_options ENABLE electric;
+ALTER TABLE vector_layer_geoms ENABLE electric;
 

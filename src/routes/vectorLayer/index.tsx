@@ -9,6 +9,7 @@ import { TextField } from '../../components/shared/TextField'
 import { SwitchField } from '../../components/shared/SwitchField'
 import { RadioGroupField } from '../../components/shared/RadioGroupField'
 import { SliderField } from '../../components/shared/SliderField'
+import { MultiSelectFromLayerOptions } from '../../components/shared/MultiSelectFromLayerOptions'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { css } from '../../css'
 import { constants } from '../../modules/constants'
@@ -121,11 +122,17 @@ export const Component = () => {
                   TODO: if layer options exist, choose layer with multi select.
                   Else show textfield. field name: type_name
                 </div>
-                <TextField
-                  label="Type name"
-                  name="type_name"
-                  value={row.type_name ?? ''}
-                  onChange={onChange}
+                <MultiSelectFromLayerOptions
+                  name="wfs_layers"
+                  label="Layers"
+                  table="vector_layers"
+                  vector_layer_id={vector_layer_id}
+                  valueArray={row.wfs_layers ?? []}
+                  validationMessage={
+                    row.wfs_layers?.length > 1
+                      ? 'Sie können mehrere wählen'
+                      : ''
+                  }
                 />
                 {!row.wfs_version && (
                   <TextField

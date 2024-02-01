@@ -17,10 +17,12 @@ export const VectorLayerChooser = ({ layer }) => {
       where: { vector_layer_id: layer.vector_layer_id, deleted: false },
     }),
   )
-  const pvlGeomCount: integer = vectorLayerGeoms.length
+  const geomCount: integer = vectorLayerGeoms.length
+
+  console.log('hello VectorLayerChooser', { layer, db, geomCount })
 
   // TODO: only accept pre-downloaded layers because of
   // problems filtering by bbox?
-  if (pvlGeomCount === 0) return <VectorLayerWFS layer={layer} />
+  if (!geomCount) return <VectorLayerWFS layer={layer} />
   return <VectorLayerPVLGeom layer={layer} />
 }

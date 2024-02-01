@@ -51,9 +51,10 @@ export const VectorLayerWFS = ({ layer }: Props) => {
   const [error, setError] = useState()
   const notificationIds = useRef([])
 
-  const uiOption: UiOption = useLiveQuery(
+  const { results: uiOptionResults } = useLiveQuery(
     db.ui_options.liveUnique({ where: { user_id } }),
   )
+  const uiOption: UiOption = uiOptionResults
   const showMap = uiOption?.show_map ?? false
 
   const removeNotifs = useCallback(async () => {
@@ -83,25 +84,27 @@ export const VectorLayerWFS = ({ layer }: Props) => {
       })
       notificationIds.current = [notification_id, ...notificationIds.current]
       let res
+      const params = {
+        service: 'WFS',
+        version: layer.wfs_version,
+        request: 'GetFeature',
+        typeName: (layer.wfs_layers ?? []).map((o) => o.value).join(','),
+        srsName: 'EPSG:4326',
+        outputFormat: layer.output_format,
+        maxfeatures: 1000,
+        // bbox is NOT WORKING
+        // always returning 0 features...
+        // bbox: `${bounds.toBBoxString()},EPSG:4326`,
+        // bbox: bounds.toBBoxString(),
+        // width: mapSize.x,
+        // height: mapSize.y,
+      }
+      console.log('hello VectorLayerWFS, params:', params)
       try {
         res = await axios({
           method: 'get',
           url: layer.url,
-          params: {
-            service: 'WFS',
-            version: layer.wfs_version,
-            request: 'GetFeature',
-            typeName: layer.type_name,
-            srsName: 'EPSG:4326',
-            outputFormat: layer.output_format,
-            maxfeatures: 1000,
-            // bbox is NOT WORKING
-            // always returning 0 features...
-            // bbox: `${bounds.toBBoxString()},EPSG:4326`,
-            // bbox: bounds.toBBoxString(),
-            // width: mapSize.x,
-            // height: mapSize.y,
-          },
+          params,
         })
       } catch (error) {
         await db.notifications.delete({
@@ -124,14 +127,18 @@ export const VectorLayerWFS = ({ layer }: Props) => {
         })
         return false
       }
+      console.log('hello VectorLayerWFS, after fetching data', {
+        res,
+        features: res.data?.features,
+      })
       removeNotifs()
       setData(res.data?.features)
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       layer.label,
+      layer.wfs_layers,
       layer.output_format,
-      layer.type_name,
       layer.url,
       layer.wfs_version,
       removeNotifs,
@@ -144,11 +151,20 @@ export const VectorLayerWFS = ({ layer }: Props) => {
     fetchDataDebounced({ bounds: map.getBounds() })
   }, [fetchDataDebounced, map, showMap])
 
-  const layerStyle: LayerStyle = useLiveQuery(
+  const { results: layerStyleResults } = useLiveQuery(
     db.layer_styles.liveUnique({
       where: { vector_layer_id: layer.vector_layer_id },
     }),
   )
+  const layerStyle: LayerStyle = layerStyleResults
+
+  console.log('hello VectorLayerWFS', {
+    layerStyle,
+    layer,
+    zoom,
+    showMap,
+    uiOption,
+  })
 
   // include only if zoom between min_zoom and max_zoom
   if (layer.min_zoom !== undefined && zoom < layer.min_zoom) return null

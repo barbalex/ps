@@ -9,14 +9,13 @@ CREATE TYPE line_cap_enum AS enum(
   'square'
 );
 
-CREATE TYPE line_join_enum AS enum(
-  'arcs',
-  'bevel',
-  'miter',
-  'miter-clip',
-  'round'
-);
-
+-- CREATE TYPE line_join_enum AS enum(
+--   'arcs',
+--   'bevel',
+--   'miter',
+--   'miter-clip', // NOT supported by electric-sql
+--   'round'
+-- );
 CREATE TYPE fill_rule_enum AS enum(
   'nonzero',
   'evenodd'
@@ -42,7 +41,7 @@ CREATE TABLE layer_styles(
   weight integer DEFAULT NULL, -- 3,
   opacity_percent integer DEFAULT NULL, -- 100,
   line_cap line_cap_enum DEFAULT NULL, -- 'round',
-  line_join line_join_enum DEFAULT NULL, -- 'round',
+  line_join text DEFAULT NULL, -- 'round',
   dash_array text DEFAULT NULL,
   dash_offset text DEFAULT NULL,
   fill boolean DEFAULT NULL, -- true,
@@ -100,5 +99,5 @@ COMMENT ON COLUMN layer_styles.fill_rule IS 'A string that defines how the insid
 
 COMMENT ON COLUMN layer_styles.deleted IS 'marks if the row is deleted';
 
-ALTER TABLE layer_options ENABLE electric;
+ALTER TABLE layer_styles ENABLE electric;
 
