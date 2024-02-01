@@ -10,8 +10,6 @@ import { Row } from '../components/shared/Row'
 
 import '../form.css'
 
-import { useElectric } from '../ElectricProvider'
-
 export const Component = () => {
   const navigate = useNavigate()
 
