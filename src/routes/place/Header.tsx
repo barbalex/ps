@@ -9,7 +9,7 @@ import { FormHeader } from '../../components/FormHeader'
 type Props = {
   autoFocusRef: React.RefObject<HTMLInputElement>
 }
-export const FormHeaderComponent = memo(({ autoFocusRef }: Props) => {
+export const Header = memo(({ autoFocusRef }: Props) => {
   const navigate = useNavigate()
   const { project_id, subproject_id, place_id, place_id2 } = useParams()
 
