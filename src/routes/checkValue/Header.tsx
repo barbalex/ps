@@ -5,7 +5,7 @@ import { createCheckValue } from '../../modules/createRows'
 import { useElectric } from '../../ElectricProvider'
 import { FormHeader } from '../../components/FormHeader'
 
-export const FormHeaderComponent = memo(({ autoFocusRef }) => {
+export const Header = memo(({ autoFocusRef }) => {
   const {
     project_id,
     subproject_id,
@@ -36,7 +36,7 @@ export const FormHeaderComponent = memo(({ autoFocusRef }) => {
     })
     navigate(`${baseUrl}/${checkValue.check_value_id}`)
     autoFocusRef.current?.focus()
-  }, [baseUrl, check_id, db.check_values, navigate])
+  }, [autoFocusRef, baseUrl, check_id, db.check_values, navigate])
 
   const deleteRow = useCallback(async () => {
     await db.check_values.delete({
