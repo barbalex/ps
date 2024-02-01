@@ -6,7 +6,7 @@ import { Tile_layers as TileLayer } from '../../../../generated/client'
 import { xmlToJson } from '../../../../modules/xmlToJson'
 
 export const onTileError = async (db, map, layer: TileLayer, ignore) => {
-  console.log('onTileError', { ignore, map, layer, db })
+  console.log('hello onTileError', { ignore, map, layer, db })
   const mapSize = map.getSize()
   const bbox = map.getBounds().toBBoxString()
   const res = await axios({
