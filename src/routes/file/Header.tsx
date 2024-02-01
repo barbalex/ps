@@ -5,7 +5,7 @@ import { createFile } from '../../modules/createRows'
 import { useElectric } from '../../ElectricProvider'
 import { FormHeader } from '../../components/FormHeader'
 
-export const FormHeaderComponent = memo(() => {
+export const Header = memo(() => {
   const { file_id } = useParams()
   const navigate = useNavigate()
 

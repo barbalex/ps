@@ -9,7 +9,7 @@ import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { Jsonb } from '../../components/shared/Jsonb'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { DropdownField } from '../../components/shared/DropdownField'
-import { FormHeaderComponent } from './FormHeader'
+import { Header } from './Header'
 
 import '../../form.css'
 
@@ -74,7 +74,7 @@ export const Component = () => {
 
   return (
     <div className="form-outer-container">
-      <FormHeaderComponent />
+      <Header />
       <div className="form-container">
         <TextFieldInactive
           label="ID"
