@@ -24,7 +24,7 @@ export const getCapabilitiesData = async ({
 
   const capabilities = response?.HTML?.BODY?.['WFS:WFS_CAPABILITIES']
 
-  // console.log('getCapabilitiesDataForVectorLayer, capabilities:', capabilities)
+  console.log('getCapabilitiesDataForVectorLayer, capabilities:', capabilities)
 
   // 1. wfs version
   if (!row.wfs_version) {
@@ -132,7 +132,11 @@ export const getCapabilitiesData = async ({
   }
 
   // activate layer, if only one
-  if (!row?.type_name && layerOptions?.length === 1) {
+  if (
+    !row?.type_name &&
+    layerOptions?.length === 1 &&
+    layerOptions?.[0]?.value
+  ) {
     values.type_name = layerOptions?.[0]?.value
     values.active = true
   }
