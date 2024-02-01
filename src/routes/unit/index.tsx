@@ -1,66 +1,24 @@
 import { useCallback, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
 import { Units as Unit } from '../../../generated/client'
-import { useElectric } from '../ElectricProvider'
-import { createUnit } from '../modules/createRows'
-import { TextField } from '../components/shared/TextField'
-import { TextFieldInactive } from '../components/shared/TextFieldInactive'
-import { SwitchField } from '../components/shared/SwitchField'
-import { getValueFromChange } from '../modules/getValueFromChange'
-import { FormHeader } from '../components/FormHeader'
+import { useElectric } from '../../ElectricProvider'
+import { TextField } from '../../components/shared/TextField'
+import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
+import { SwitchField } from '../../components/shared/SwitchField'
+import { getValueFromChange } from '../../modules/getValueFromChange'
+import { Header } from './Header'
 
-import '../form.css'
+import '../../form.css'
 
 export const Component = () => {
-  const { project_id, unit_id } = useParams()
-  const navigate = useNavigate()
+  const { unit_id } = useParams()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const { db } = useElectric()
   const { results } = useLiveQuery(db.units.liveUnique({ where: { unit_id } }))
-
-  const baseUrl = `/projects/${project_id}/units`
-
-  const addRow = useCallback(async () => {
-    const unit = createUnit()
-    await db.units.create({
-      data: { ...unit, project_id },
-    })
-    navigate(`${baseUrl}/${unit.unit_id}`)
-    autoFocusRef.current?.focus()
-  }, [baseUrl, db.units, navigate, project_id])
-
-  const deleteRow = useCallback(async () => {
-    await db.units.delete({
-      where: { unit_id },
-    })
-    navigate(baseUrl)
-  }, [baseUrl, db.units, navigate, unit_id])
-
-  const toNext = useCallback(async () => {
-    const units = await db.units.findMany({
-      where: { deleted: false, project_id },
-      orderBy: { label: 'asc' },
-    })
-    const len = units.length
-    const index = units.findIndex((p) => p.unit_id === unit_id)
-    const next = units[(index + 1) % len]
-    navigate(`${baseUrl}/${next.unit_id}`)
-  }, [baseUrl, db.units, navigate, project_id, unit_id])
-
-  const toPrevious = useCallback(async () => {
-    const units = await db.units.findMany({
-      where: { deleted: false, project_id },
-      orderBy: { label: 'asc' },
-    })
-    const len = units.length
-    const index = units.findIndex((p) => p.unit_id === unit_id)
-    const previous = units[(index + len - 1) % len]
-    navigate(`${baseUrl}/${previous.unit_id}`)
-  }, [baseUrl, db.units, navigate, project_id, unit_id])
 
   const row: Unit = results
 
@@ -81,14 +39,7 @@ export const Component = () => {
 
   return (
     <div className="form-outer-container">
-      <FormHeader
-        title="Unit"
-        addRow={addRow}
-        deleteRow={deleteRow}
-        toNext={toNext}
-        toPrevious={toPrevious}
-        tableName="unit"
-      />
+      <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
         <TextFieldInactive label="ID" name="unit_id" value={row.unit_id} />
         <TextField
