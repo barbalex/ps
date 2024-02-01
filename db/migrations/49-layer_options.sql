@@ -32,7 +32,7 @@ CREATE INDEX ON layer_options USING btree(label);
 
 COMMENT ON TABLE layer_options IS 'Goal: wms_layer options can be > 700, slowing down the tileLayer form. Solution: outsource them (and maybe later others) here. Also: there is no use in saving this data on the server or syncing it.';
 
-COMMENT ON COLUMN layer_options.layer_option_id IS 'The base url of the wms server, combined with the field name whose data is stored. Insures that we dont have duplicate entries.';
+COMMENT ON COLUMN layer_options.layer_option_id IS 'The base url of the wms server, combined with the field name whose data is stored and the value. Insures that we dont have duplicate entries.';
 
 COMMENT ON COLUMN layer_options.legend_url IS 'The url to fetch the legend image from.';
 
