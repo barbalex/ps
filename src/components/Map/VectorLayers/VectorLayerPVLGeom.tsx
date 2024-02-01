@@ -61,7 +61,7 @@ export const VectorLayerPVLGeom = ({ layer }: Props) => {
         notification_id,
         title: `Lade Vektor-Karte '${layer.label}'...`,
         intent: 'info',
-        duration: 100000,
+        timeout: 100000,
       })
       notificationIds.current = [notification_id, ...notificationIds.current]
 
@@ -137,7 +137,7 @@ export const VectorLayerPVLGeom = ({ layer }: Props) => {
         layer.max_features ?? 1000
       } für Vektor-Karte '${layer.label}' wurde geladen. Zoomen sie näher ran`,
       intent: 'warning',
-      duration: 10000,
+      timeout: 10000,
     })
     notificationIds.current = [notification_id, ...notificationIds.current]
   }

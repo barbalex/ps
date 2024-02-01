@@ -55,7 +55,8 @@ export const VectorLayerWFS = ({ layer }: Props) => {
     db.ui_options.liveUnique({ where: { user_id } }),
   )
   const uiOption: UiOption = uiOptionResults
-  const showMap = uiOption?.show_map ?? false
+  // const showMap = uiOption?.show_map ?? false TODO:
+  const showMap = uiOption?.show_map ?? true
 
   const removeNotifs = useCallback(async () => {
     // console.log('removing notifs')
@@ -71,16 +72,22 @@ export const VectorLayerWFS = ({ layer }: Props) => {
   const [data, setData] = useState()
   const fetchData = useCallback(
     async (/*{ bounds }*/) => {
+      console.log('hello VectorLayerWFS, fetchData 1')
       if (!showMap) return
+      console.log('hello VectorLayerWFS, fetchData 2')
 
       // const mapSize = map.getSize()
       removeNotifs()
+      console.log('hello VectorLayerWFS, fetchData 3')
       const notification_id = uuidv7()
+      console.log('hello VectorLayerWFS, fetchData 4')
       await db.notifications.create({
-        notification_id,
-        title: `Lade Vektor-Karte '${layer.label}'...`,
-        intent: 'info',
-        duration: 100000,
+        data: {
+          notification_id,
+          title: `Lade Vektor-Karte '${layer.label}'...`,
+          intent: 'info',
+          timeout: 100000,
+        },
       })
       notificationIds.current = [notification_id, ...notificationIds.current]
       let res
@@ -99,7 +106,7 @@ export const VectorLayerWFS = ({ layer }: Props) => {
         // width: mapSize.x,
         // height: mapSize.y,
       }
-      console.log('hello VectorLayerWFS, params:', params)
+      console.log('hello VectorLayerWFS, fetchData, params:', params)
       try {
         res = await axios({
           method: 'get',
@@ -148,6 +155,7 @@ export const VectorLayerWFS = ({ layer }: Props) => {
 
   const fetchDataDebounced = useDebouncedCallback(fetchData, 600)
   useEffect(() => {
+    console.log('hello VectorLayerWFS, useEffect calling fetchDataDebounced')
     fetchDataDebounced({ bounds: map.getBounds() })
   }, [fetchDataDebounced, map, showMap])
 
@@ -183,7 +191,7 @@ export const VectorLayerWFS = ({ layer }: Props) => {
         layer.max_features ?? 1000
       } für Vektor-Karte '${layer.label}' wurde geladen. Zoomen sie näher ran`,
       intent: 'warning',
-      duration: 10000,
+      timeout: 10000,
     })
     notificationIds.current = [notification_id, ...notificationIds.current]
   }

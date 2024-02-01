@@ -108,7 +108,7 @@ export const Component = () => {
             <div
               style={css({
                 ...titleRowStyle,
-                '&:first-of-type': {
+                '&:firstOfType': {
                   marginTop: '-10px',
                 },
               })}
