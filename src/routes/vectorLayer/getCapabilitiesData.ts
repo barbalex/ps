@@ -37,7 +37,7 @@ export const getCapabilitiesData = async ({
   const getFeatureOperation = _operations.find(
     (o) => o?.['@attributes']?.name === 'GetFeature',
   )
-  const _outputFormats = (
+  const outputFormats = (
     getFeatureOperation?.['OWS:PARAMETER']?.['OWS:ALLOWEDVALUES']?.[
       'OWS:VALUE'
     ] ?? []
@@ -45,7 +45,7 @@ export const getCapabilitiesData = async ({
 
   // also accept gml
   // example: https://maps.zh.ch/wfs/VeloparkieranlagenZHWFS
-  const acceptableOutputFormats = _outputFormats.filter(
+  const acceptableOutputFormats = outputFormats.filter(
     (v) =>
       v?.toLowerCase?.()?.includes('json') ||
       v?.toLowerCase?.()?.includes('gml'),
@@ -58,11 +58,26 @@ export const getCapabilitiesData = async ({
       v.toLowerCase().includes('application/json'),
     )[0] ??
     acceptableOutputFormats[0]
-  if (!row._outputFormatOptions) {
-    values._outputFormatOptions = acceptableOutputFormats.map((v) => ({
-      label: v,
-      value: v,
-    }))
+  for (const f of acceptableOutputFormats) {
+    await db.layer_options.upsert({
+      create: {
+        layer_option_id: `${row.url}/${f.value}/wfs_output_format`,
+        vector_layer_id: row.vector_layer_id,
+        vector_layer_id: null,
+        field: 'output_format',
+        value: f.value,
+        label: f.label,
+      },
+      update: {
+        vector_layer_id: row.vector_layer_id,
+        field: 'output_format',
+        value: f.value,
+        label: f.label,
+      },
+      where: {
+        layer_option_id: `${row.url}/${f.value}/wfs_output_format`,
+      },
+    })
   }
   if (!row.output_format) {
     values.output_format = preferredOutputFormat
@@ -116,4 +131,3 @@ export const getCapabilitiesData = async ({
 
   return dexie.vector_layers.update(row.id, values)
 }
-

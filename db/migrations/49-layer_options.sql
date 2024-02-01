@@ -5,7 +5,8 @@
 CREATE TYPE layer_options_field_enum AS enum(
   'wms_format',
   'wms_layers',
-  'wms_info_format'
+  'wms_info_format',
+  'wfs_output_format'
 );
 
 DROP TABLE IF EXISTS layer_options;
