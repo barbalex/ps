@@ -111,7 +111,6 @@ export const Component = () => {
                   name="wms_layers"
                   label="Layers"
                   table="tile_layers"
-                  id={tile_layer_id}
                   tile_layer_id={tile_layer_id}
                   valueArray={row.wms_layers ?? []}
                   validationMessage={
