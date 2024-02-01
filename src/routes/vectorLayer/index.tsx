@@ -13,6 +13,7 @@ import { getValueFromChange } from '../../modules/getValueFromChange'
 import { css } from '../../css'
 import { constants } from '../../modules/constants'
 import { Header } from './Header'
+import { Url } from './Url'
 
 import '../../form.css'
 
@@ -113,12 +114,7 @@ export const Component = () => {
             >
               <div style={titleStyle}>WFS konfigurieren</div>
             </div>
-            <TextField
-              label="Url"
-              name="url"
-              value={row.url ?? ''}
-              onChange={onChange}
-            />
+            <Url onChange={onChange} row={row} />
             {!!row?.url && (
               <>
                 <div>

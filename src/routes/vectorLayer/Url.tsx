@@ -1,26 +1,26 @@
 import { useCallback, memo } from 'react'
 import { uuidv7 } from '@kripod/uuidv7'
 
-import { Tile_layers as TileLayer } from '../../../generated/client'
+import { Vector_layers as VectorLayer } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
 import { TextField } from '../../components/shared/TextField'
-import { getCapabilitiesData } from './getCapabilitiesData' 
+import { getCapabilitiesData } from './getCapabilitiesData'
 
 import '../../form.css'
 
-export const BaseUrl = memo(
-  ({ onChange, row }: { onChange: () => void; row: TileLayer }) => {
+export const Url = memo(
+  ({ onChange, row }: { onChange: () => void; row: VectorLayer }) => {
     const { db } = useElectric()
 
     const onBlur = useCallback(async () => {
-      if (!row?.wms_base_url) return
-      console.log('hello WmsBaseUrl, onBlur, getting capabilities')
+      if (!row?.url) return
+      console.log('hello Url, onBlur, getting capabilities')
       // show loading indicator
       const notification_id = uuidv7()
       await db.notifications.create({
         data: {
           notification_id,
-          title: `Loading capabilities data for ${row.wms_base_url}`,
+          title: `Loading capabilities data for ${row.url}`,
           intent: 'info',
           paused: true,
         },
@@ -29,7 +29,7 @@ export const BaseUrl = memo(
         await getCapabilitiesData({ row, db })
       } catch (error) {
         console.error(
-          'hello WmsBaseUrl, onBlur, error getting capabilities data:',
+          'hello Url, onBlur, error getting capabilities data:',
           error?.message ?? error,
         )
         // TODO: surface error to user
@@ -38,14 +38,14 @@ export const BaseUrl = memo(
         where: { notification_id },
         data: { paused: false, timeout: 500 },
       })
-      console.log('hello WmsBaseUrl, onBlur, finished getting capabilities')
+      console.log('hello Url, onBlur, finished getting capabilities')
     }, [db, row])
 
     return (
       <TextField
-        label="Base URL"
-        name="wms_base_url"
-        value={row.wms_base_url ?? ''}
+        label="Url"
+        name="url"
+        value={row.url ?? ''}
         onChange={onChange}
         onBlur={onBlur}
       />
