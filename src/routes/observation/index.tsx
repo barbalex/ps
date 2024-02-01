@@ -9,7 +9,7 @@ import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { Jsonb } from '../../components/shared/Jsonb'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { DateField } from '../../components/shared/DateField'
-import { FormHeaderComponent } from './FormHeader'
+import { Header } from './Header'
 
 import '../../form.css'
 
@@ -44,7 +44,7 @@ export const Component = () => {
   // observations are only imported, not created
   return (
     <div className="form-outer-container">
-      <FormHeaderComponent autoFocusRef={autoFocusRef} />
+      <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
         <TextFieldInactive
           label="ID"
