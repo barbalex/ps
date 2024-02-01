@@ -5,7 +5,7 @@ import { useElectric } from '../../ElectricProvider'
 import { createAccount } from '../../modules/createRows'
 import { FormHeader } from '../../components/FormHeader'
 
-export const FormHeaderComponent = memo(({ autoFocusRef }) => {
+export const Header = memo(({ autoFocusRef }) => {
   const { account_id } = useParams()
   const navigate = useNavigate()
 
