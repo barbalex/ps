@@ -9,7 +9,7 @@ type Props = {
   autoFocusRef: React.RefObject<HTMLInputElement>
 }
 
-export const FormHeaderComponent = memo(({ autoFocusRef }: Props) => {
+export const Header = memo(({ autoFocusRef }: Props) => {
   const { project_id } = useParams()
   const navigate = useNavigate()
 
