@@ -8,7 +8,7 @@ import { TextField } from '../../components/shared/TextField'
 import { DropdownField } from '../../components/shared/DropdownField'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { getValueFromChange } from '../../modules/getValueFromChange'
-import { FormHeaderComponent } from './FormHeader'
+import { Header } from './Header'
 
 import '../../form.css'
 
@@ -45,7 +45,7 @@ export const Component = () => {
 
   return (
     <div className="form-outer-container">
-      <FormHeaderComponent autoFocusRef={autoFocusRef} />
+      <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
         <TextFieldInactive
           label="ID"
