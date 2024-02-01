@@ -162,6 +162,7 @@ export const WMS = memo(({ layer }) => {
   // leaflet calls server internally
   // BUT: if call errors, leaflet does not surface the error
   // instead ALL WMS LAYERS FAIL!!!!!!!!
+  // console.log('hello WMS, layer:', layer)
   return (
     <WMSTileLayer
       url={layer.wms_base_url}
