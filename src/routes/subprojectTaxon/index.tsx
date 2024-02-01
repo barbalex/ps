@@ -7,7 +7,7 @@ import { useElectric } from '../../ElectricProvider'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { FilteringCombobox } from '../../components/shared/FilteringCombobox'
 import { getValueFromChange } from '../../modules/getValueFromChange'
-import { FormHeaderComponent } from './FormHeader'
+import { Header } from './Header'
 
 import '../../form.css'
 
@@ -43,7 +43,7 @@ export const Component = () => {
 
   return (
     <div className="form-outer-container">
-      <FormHeaderComponent autoFocusRef={autoFocusRef} />
+      <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
         <TextFieldInactive
           label="ID"
