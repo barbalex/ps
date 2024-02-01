@@ -5,7 +5,7 @@ import { createFieldType } from '../../modules/createRows'
 import { useElectric } from '../../ElectricProvider'
 import { FormHeader } from '../../components/FormHeader'
 
-export const FormHeaderComponent = memo(({ autoFocusRef }) => {
+export const Header = memo(({ autoFocusRef }) => {
   const { field_type_id } = useParams()
   const navigate = useNavigate()
 
