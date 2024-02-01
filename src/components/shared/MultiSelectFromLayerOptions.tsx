@@ -10,7 +10,6 @@ export const MultiSelectFromLayerOptions = memo(
     name,
     label,
     table,
-    id,
     tile_layer_id,
     vector_layer_id,
     validationMessage,
@@ -18,6 +17,16 @@ export const MultiSelectFromLayerOptions = memo(
     valueArray = [],
   }) => {
     const { db } = useElectric()
+    // console.log('hello MultiSelectFromLayerOptions, inputs:', {
+    //   name,
+    //   label,
+    //   table,
+    //   tile_layer_id,
+    //   vector_layer_id,
+    //   validationMessage,
+    //   validationState,
+    //   valueArray,
+    // })
     const { results = [] } = useLiveQuery(
       db.layer_options.liveMany({
         where: {
@@ -34,13 +43,18 @@ export const MultiSelectFromLayerOptions = memo(
       () => layerOptions.map(({ value, label }) => ({ value, label })),
       [layerOptions],
     )
+    // console.log('hello MultiSelectFromLayerOptions, results:', {
+    //   results,
+    //   layerOptions,
+    //   options,
+    // })
 
     return (
       <MultiSelect
         label={label}
         name={name}
         table={table}
-        id={id}
+        id={tile_layer_id || vector_layer_id}
         options={options}
         valueArray={valueArray}
         validationMessage={validationMessage}
