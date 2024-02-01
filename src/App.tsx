@@ -22,7 +22,7 @@ import '@fontsource/roboto/700.css'
 const routerContainerStyle = {
   display: 'flex',
   flexDirection: 'column',
-  height: '100vh',
+  height: '100dvh',
 }
 
 const RouterProviderWithDb = () => {
