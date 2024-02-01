@@ -5,7 +5,7 @@ import { createGoalReport } from '../../modules/createRows'
 import { useElectric } from '../../ElectricProvider'
 import { FormHeader } from '../../components/FormHeader'
 
-export const FormHeaderComponent = memo(({ autoFocusRef }) => {
+export const Header = memo(({ autoFocusRef }) => {
   const { project_id, subproject_id, goal_id, goal_report_id } = useParams()
   const navigate = useNavigate()
 
