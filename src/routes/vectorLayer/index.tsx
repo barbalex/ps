@@ -119,6 +119,29 @@ export const Component = () => {
               value={row.url ?? ''}
               onChange={onChange}
             />
+            {!!row?.url && (
+              <>
+                <div>
+                  TODO: if layer options exist, choose layer with multi select.
+                  Else show textfield. field name: type_name
+                </div>
+                <TextField
+                  label="Type name"
+                  name="type_name"
+                  value={row.type_name ?? ''}
+                  onChange={onChange}
+                />
+                {!row.wfs_version && (
+                  <TextField
+                    label="WFS version"
+                    name="wfs_version"
+                    value={row.wfs_version ?? ''}
+                    onChange={onChange}
+                    validationMessage="often 1.1.0 or 2.0.0"
+                  />
+                )}
+              </>
+            )}
           </>
         )}
         <TextField
@@ -140,19 +163,6 @@ export const Component = () => {
           max={19}
           min={0}
           validationMessage="Zoom can be between 0 and 19"
-        />
-        <TextField
-          label="Type name"
-          name="type_name"
-          value={row.type_name ?? ''}
-          onChange={onChange}
-        />
-        <TextField
-          label="WFS version"
-          name="wfs_version"
-          value={row.wfs_version ?? ''}
-          onChange={onChange}
-          validationMessage="often 1.1.0 or 2.0.0"
         />
         <TextField
           label="Output format"
