@@ -44,7 +44,7 @@ export const getCapabilitiesData = async ({
     for (const o of wmsFormatOptions) {
       await db.layer_options.upsert({
         create: {
-          layer_option_id: `${row.wms_base_url}/wms_format`,
+          layer_option_id: `${row.wms_base_url}/${o.value}/wms_format`,
           tile_layer_id: row.tile_layer_id,
           vector_layer_id: null,
           field: 'wms_format',
@@ -58,7 +58,7 @@ export const getCapabilitiesData = async ({
           label: o.label,
         },
         where: {
-          layer_option_id: `${row.wms_base_url}/wms_format`,
+          layer_option_id: `${row.wms_base_url}/${o.value}/wms_format`,
         },
       })
     }
@@ -79,7 +79,7 @@ export const getCapabilitiesData = async ({
     for (const o of wmsLayerOptions) {
       await db.layer_options.upsert({
         create: {
-          layer_option_id: `${row.wms_base_url}/wms_layers`,
+          layer_option_id: `${row.wms_base_url}/${o.value}/wms_layers`,
           tile_layer_id: row.tile_layer_id,
           vector_layer_id: null,
           field: 'wms_layers',
@@ -95,7 +95,7 @@ export const getCapabilitiesData = async ({
           legend_url: o.legend_url,
         },
         where: {
-          layer_option_id: `${row.wms_base_url}/wms_layers`,
+          layer_option_id: `${row.wms_base_url}/${o.value}/wms_layers`,
         },
       })
     }
@@ -142,7 +142,7 @@ export const getCapabilitiesData = async ({
     for (const o of wmsInfoFormatOptions) {
       await db.layer_options.upsert({
         create: {
-          layer_option_id: `${row.wms_base_url}/wms_info_format`,
+          layer_option_id: `${row.wms_base_url}/${o.value}/wms_info_format`,
           tile_layer_id: row.tile_layer_id,
           vector_layer_id: null,
           field: 'wms_info_format',
@@ -156,7 +156,7 @@ export const getCapabilitiesData = async ({
           label: o.label,
         },
         where: {
-          layer_option_id: `${row.wms_base_url}/wms_info_format`,
+          layer_option_id: `${row.wms_base_url}/${o.value}/wms_info_format`,
         },
       })
     }
