@@ -11,7 +11,7 @@ import { DropdownField } from '../../components/shared/DropdownField'
 import { SwitchField } from '../../components/shared/SwitchField'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { WidgetType } from './WidgetType'
-import { FormHeaderComponent } from './FormHeader'
+import { Header } from './Header'
 
 import '../../form.css'
 
@@ -76,7 +76,7 @@ export const Component = () => {
 
   return (
     <div className="form-outer-container">
-      <FormHeaderComponent autoFocusRef={autoFocusRef} />
+      <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
         <TextFieldInactive label="ID" name="field_id" value={row.field_id} />
         <DropdownFieldSimpleOptions
