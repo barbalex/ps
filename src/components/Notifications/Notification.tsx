@@ -1,5 +1,5 @@
 import { useCallback, useEffect, memo } from 'react'
-import { Button } from '@fluentui/react-components'
+import { Button, Spinner } from '@fluentui/react-components'
 import {
   MdClose as CloseIcon,
   MdError as ErrorIcon,
@@ -92,17 +92,22 @@ export const Notification = memo(({ notification }) => {
     return () => timeoutId && clearTimeout(timeoutId)
   }, [db.notifications, notification_id, paused, progress_percent, timeout])
 
-  // TODO: add icon for intent
   // TODO: add progress bar
-  // TODO: add spinner for paused
+  // https://react.fluentui.dev/?path=/docs/components-progressbar--default
   return (
     <div style={containerStyle}>
       <div style={titleRowStyle}>
         <div style={iconAndTitleStyle}>
-          {intent === 'error' && <ErrorIcon color={colorMap[intent]} />}
-          {intent === 'success' && <SuccessIcon color={colorMap[intent]} />}
-          {intent === 'info' && <SuccessIcon color={colorMap[intent]} />}
-          {intent === 'warning' && <WarningIcon color={colorMap[intent]} />}
+          {paused === true ? (
+            <Spinner size="small" />
+          ) : (
+            <>
+              {intent === 'error' && <ErrorIcon color={colorMap[intent]} />}
+              {intent === 'success' && <SuccessIcon color={colorMap[intent]} />}
+              {intent === 'info' && <SuccessIcon color={colorMap[intent]} />}
+              {intent === 'warning' && <WarningIcon color={colorMap[intent]} />}
+            </>
+          )}
           {!!title && <div style={titleStyle}>{title}</div>}
         </div>
         <Button
