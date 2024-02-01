@@ -8,7 +8,7 @@ import { TextField } from '../../components/shared/TextField'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { DateField } from '../../components/shared/DateField'
 import { getValueFromChange } from '../../modules/getValueFromChange'
-import { FormHeaderComponent } from './FormHeader'
+import { Header } from './Header'
 
 import '../../form.css'
 
@@ -39,7 +39,7 @@ export const Component = () => {
 
   return (
     <div className="form-outer-container">
-      <FormHeaderComponent />
+      <Header />
       <div className="form-container">
         <TextFieldInactive
           label="ID"
