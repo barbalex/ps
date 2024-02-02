@@ -158,6 +158,8 @@ export const WMS = memo(({ layer }) => {
     600,
   )
 
+  console.log('hello WMS, layer:', layer)
+
   // TODO:
   // leaflet calls server internally
   // BUT: if call errors, leaflet does not surface the error
@@ -168,7 +170,7 @@ export const WMS = memo(({ layer }) => {
       url={layer.wms_base_url}
       layers={(layer.wms_layers ?? []).map((l) => l.value).join(',')}
       version={layer.wms_version}
-      format={layer.wms_format}
+      format={layer.wms_format?.value}
       minZoom={layer.min_zoom}
       maxZoom={layer.max_zoom}
       className={layer.grayscale ? 'grayscale' : ''}

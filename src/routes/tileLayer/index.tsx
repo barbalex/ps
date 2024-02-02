@@ -44,7 +44,7 @@ export const Component = () => {
     return <div>Loading...</div>
   }
 
-  console.log('hello TileLayer, row:', row)
+  // console.log('hello TileLayer, row:', row)
 
   return (
     <div className="form-outer-container">
@@ -55,35 +55,38 @@ export const Component = () => {
           name="tile_layer_id"
           value={row.tile_layer_id}
         />
-        <TextField
-          label="Label"
-          name="label"
-          value={row.label ?? ''}
-          onChange={onChange}
-          autoFocus
-          ref={autoFocusRef}
-        />
-        <TextField
-          label="Sort"
-          name="sort"
-          value={row.sort ?? ''}
-          onChange={onChange}
-          type="number"
-          validationMessage="Add a sorting order here if alphabetically by label is not desired."
-        />
-        <SwitchField
-          label="active"
-          name="active"
-          value={row.active}
-          onChange={onChange}
-        />
         <RadioGroupField
           label="Type"
           name="type"
           list={['wms', 'wmts']}
           value={row.type ?? ''}
           onChange={onChange}
+          autoFocus
+          ref={autoFocusRef}
         />
+        {row?.type === 'wms' && (
+          <>
+            <BaseUrl row={row} onChange={onChange} />
+            {row?.wms_base_url && (
+              <>
+                {/* TODO: pass row to set label */}
+                <MultiSelectFromLayerOptions
+                  name="wms_layers"
+                  label="Layers"
+                  table="tile_layers"
+                  tile_layer_id={tile_layer_id}
+                  valueArray={row.wms_layers ?? []}
+                  row={row}
+                  validationMessage={
+                    row.wms_layers?.length === 1
+                      ? 'Sie können mehrere wählen (falls das sinnvoll scheint)'
+                      : ''
+                  }
+                />
+              </>
+            )}
+          </>
+        )}
         {row?.type === 'wmts' && (
           <>
             <TextField
@@ -102,24 +105,31 @@ export const Component = () => {
             />
           </>
         )}
-        {row?.type === 'wms' && (
+        {((row?.type === 'wms' && row?.wms_base_url) ||
+          (row?.type === 'wmts' && row?.wmts_url_template)) && (
           <>
-            <BaseUrl row={row} onChange={onChange} />
-            {row?.wms_base_url && (
+            <TextField
+              label="Label"
+              name="label"
+              value={row.label ?? ''}
+              onChange={onChange}
+            />
+            <TextField
+              label="Sort"
+              name="sort"
+              value={row.sort ?? ''}
+              onChange={onChange}
+              type="number"
+              validationMessage="Add a sorting order here if alphabetically by label is not desired."
+            />
+            <SwitchField
+              label="active"
+              name="active"
+              value={row.active}
+              onChange={onChange}
+            />
+            {row?.type === 'wms' && row?.wms_base_url && (
               <>
-                {/* TODO: pass row to set label */}
-                <MultiSelectFromLayerOptions
-                  name="wms_layers"
-                  label="Layers"
-                  table="tile_layers"
-                  tile_layer_id={tile_layer_id}
-                  valueArray={row.wms_layers ?? []}
-                  validationMessage={
-                    row.wms_layers?.length > 1
-                      ? 'Sie können mehrere wählen'
-                      : ''
-                  }
-                />
                 <DropdownFieldFromLayerOptions
                   label="(Image-)Format"
                   name="wms_format"
@@ -176,53 +186,54 @@ export const Component = () => {
                 />
               </>
             )}
+            <TextField
+              label="Max Zoom"
+              name="max_zoom"
+              value={row.max_zoom ?? ''}
+              onChange={onChange}
+              type="number"
+              max={19}
+              min={0}
+              validationMessage="Zoom can be between 0 and 19"
+            />
+            <TextField
+              label="Min Zoom"
+              name="min_zoom"
+              value={row.min_zoom ?? ''}
+              onChange={onChange}
+              type="number"
+              max={19}
+              min={0}
+              validationMessage="Zoom can be between 0 and 19"
+            />
+            <SliderField
+              label="Opacity (%)"
+              name="opacity_percent"
+              value={row.opacity_percent ?? ''}
+              onChange={onChange}
+              max={100}
+              min={0}
+              step={5}
+            />
+            <SwitchField
+              label="Grayscale"
+              name="grayscale"
+              value={row.grayscale}
+              onChange={onChange}
+            />
+            <div>TODO: show the following only if loaded for offline</div>
+            <TextFieldInactive
+              label="Local Data Size"
+              name="local_data_size"
+              value={row.local_data_size}
+            />
+            <TextFieldInactive
+              label="Local Data Bounds"
+              name="local_data_bounds"
+              value={row.local_data_bounds}
+            />
           </>
         )}
-        <TextField
-          label="Max Zoom"
-          name="max_zoom"
-          value={row.max_zoom ?? ''}
-          onChange={onChange}
-          type="number"
-          max={19}
-          min={0}
-          validationMessage="Zoom can be between 0 and 19"
-        />
-        <TextField
-          label="Min Zoom"
-          name="min_zoom"
-          value={row.min_zoom ?? ''}
-          onChange={onChange}
-          type="number"
-          max={19}
-          min={0}
-          validationMessage="Zoom can be between 0 and 19"
-        />
-        <SliderField
-          label="Opacity (%)"
-          name="opacity_percent"
-          value={row.opacity_percent ?? ''}
-          onChange={onChange}
-          max={100}
-          min={0}
-          step={5}
-        />
-        <SwitchField
-          label="Grayscale"
-          name="grayscale"
-          value={row.grayscale}
-          onChange={onChange}
-        />
-        <TextFieldInactive
-          label="Local Data Size"
-          name="local_data_size"
-          value={row.local_data_size}
-        />
-        <TextFieldInactive
-          label="Local Data Bounds"
-          name="local_data_bounds"
-          value={row.local_data_bounds}
-        />
       </div>
     </div>
   )

@@ -1,9 +1,10 @@
-import { memo, useMemo } from 'react'
+import { memo, useMemo, useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 
 import { useElectric } from '../../ElectricProvider'
 import { Layer_options as LayerOption } from '../../generated/client'
 import { MultiSelect } from './MultiSelect'
+import { idFieldFromTable } from '../../modules/idFieldFromTable'
 
 export const MultiSelectFromLayerOptions = memo(
   ({
@@ -15,18 +16,9 @@ export const MultiSelectFromLayerOptions = memo(
     validationMessage,
     validationState = 'none',
     valueArray = [],
+    row,
   }) => {
     const { db } = useElectric()
-    console.log('hello MultiSelectFromLayerOptions, inputs:', {
-      name,
-      label,
-      table,
-      tile_layer_id,
-      vector_layer_id,
-      validationMessage,
-      validationState,
-      valueArray,
-    })
     const { results = [] } = useLiveQuery(
       db.layer_options.liveMany({
         where: {
@@ -43,11 +35,20 @@ export const MultiSelectFromLayerOptions = memo(
       () => layerOptions.map(({ value, label }) => ({ value, label })),
       [layerOptions],
     )
-    // console.log('hello MultiSelectFromLayerOptions, results:', {
-    //   results,
-    //   layerOptions,
-    //   options,
-    // })
+    const afterChange = useCallback(
+      (options) => {
+        // set row.label to be the option.label
+        // of label is null and options.length === 1
+        if (!!row && !row.label && options.length === 1) {
+          const idField = idFieldFromTable(table)
+          db[table].update({
+            where: { [idField]: tile_layer_id || vector_layer_id },
+            data: { label: options?.[0]?.label },
+          })
+        }
+      },
+      [db, row, table, tile_layer_id, vector_layer_id],
+    )
 
     return (
       <MultiSelect
@@ -59,6 +60,7 @@ export const MultiSelectFromLayerOptions = memo(
         valueArray={valueArray}
         validationMessage={validationMessage}
         validationState={validationState}
+        afterChange={afterChange}
       />
     )
   },

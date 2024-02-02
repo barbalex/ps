@@ -179,17 +179,18 @@ export const getCapabilitiesData = async ({
     }
   }
 
-  const _wmsVersion = capabilities?.version
-  if (_wmsVersion) {
+  const wmsVersion = capabilities?.version
+  if (wmsVersion) {
     if (!row?.wms_version) {
-      values.wms_version = _wmsVersion
+      values.wms_version = wmsVersion
     }
   }
 
   // set title as label if undefined
-  if (!row?.label && capabilities?.Service?.Title) {
-    values.label = capabilities?.Service?.Title
-  }
+  // nope: better to set layer title as label
+  // if (!row?.label && capabilities?.Service?.Title) {
+  //   values.label = capabilities?.Service?.Title
+  // }
 
   // activate layer, if not too many
   if (!row?.wms_layers && layers?.length && layers?.length <= 5) {
@@ -199,6 +200,8 @@ export const getCapabilitiesData = async ({
     }))
   }
 
+  // TODO: queryable should be per layer
+  // So also: allow only one layer per tile_layer
   // use capabilities.Capability?.Layer?.Layer[this]?.queryable to allow/disallow getting feature info?
   if (layers.length && ![true, false].includes(row?.wms_queryable)) {
     values.wms_queryable = layers.some((l) => l.queryable)
