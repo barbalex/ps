@@ -6,8 +6,6 @@ import { useElectric } from '../../ElectricProvider'
 import { TextField } from '../../components/shared/TextField'
 import { getCapabilitiesData } from './getCapabilitiesData'
 
-import '../../form.css'
-
 export const Url = memo(
   ({ onChange, row }: { onChange: () => void; row: VectorLayer }) => {
     const { db } = useElectric()
