@@ -11,32 +11,10 @@ import { RadioGroupField } from '../../components/shared/RadioGroupField'
 import { SliderField } from '../../components/shared/SliderField'
 import { DropdownFieldFromLayerOptions } from '../../components/shared/DropdownFieldFromLayerOptions'
 import { getValueFromChange } from '../../modules/getValueFromChange'
-import { css } from '../../css'
-import { constants } from '../../modules/constants'
 import { Header } from './Header'
 import { Url } from './Url'
 
 import '../../form.css'
-
-const titleRowStyle = {
-  margin: '0 -10px 15px -10px',
-  backgroundColor: 'rgba(248, 243, 254, 1)',
-  flexShrink: 0,
-  display: 'flex',
-  height: constants.titleRowHeight,
-  justifyContent: 'space-between',
-  padding: '0 10px',
-  cursor: 'pointer',
-  userSelect: 'none',
-  position: 'sticky',
-  top: '-10px',
-  zIndex: 4,
-}
-const titleStyle = {
-  fontWeight: 'bold',
-  marginTop: 'auto',
-  marginBottom: 'auto',
-}
 
 export const Component = () => {
   const { vector_layer_id } = useParams()
