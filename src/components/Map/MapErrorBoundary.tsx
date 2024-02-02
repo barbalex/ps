@@ -11,10 +11,12 @@ const onReload = () => {
 
 const ErrorFallback = ({ error, db, layer }) => {
   db.notifications.create({
-    title: `Fehler in Vektor-Layer '${layer.label}'`,
-    body: error.message,
-    intent: 'error', // 'success' | 'error' | 'warning' | 'info'
-    notification_id: uuidv7(),
+    data: {
+      title: `Fehler in Vektor-Layer '${layer.label}'`,
+      body: error.message,
+      intent: 'error', // 'success' | 'error' | 'warning' | 'info'
+      notification_id: uuidv7(),
+    },
   })
 
   return null

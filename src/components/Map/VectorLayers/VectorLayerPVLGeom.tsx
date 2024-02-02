@@ -59,10 +59,12 @@ export const VectorLayerPVLGeom = ({ layer }: Props) => {
       removeNotifs()
       const notification_id = uuidv7()
       db.notifications.create({
-        notification_id,
-        title: `Lade Vektor-Karte '${layer.label}'...`,
-        intent: 'info',
-        timeout: 100000,
+        data: {
+          notification_id,
+          title: `Lade Vektor-Karte '${layer.label}'...`,
+          intent: 'info',
+          timeout: 100000,
+        },
       })
       notificationIds.current = [notification_id, ...notificationIds.current]
 
@@ -132,13 +134,17 @@ export const VectorLayerPVLGeom = ({ layer }: Props) => {
   ) {
     const notification_id = uuidv7()
     db.notifications.create({
-      notification_id,
-      title: `Zuviele Geometrien`,
-      body: `Die maximale Anzahl Features von ${
-        layer.max_features ?? 1000
-      } für Vektor-Karte '${layer.label}' wurde geladen. Zoomen sie näher ran`,
-      intent: 'warning',
-      timeout: 10000,
+      data: {
+        notification_id,
+        title: `Zuviele Geometrien`,
+        body: `Die maximale Anzahl Features von ${
+          layer.max_features ?? 1000
+        } für Vektor-Karte '${
+          layer.label
+        }' wurde geladen. Zoomen sie näher ran`,
+        intent: 'warning',
+        timeout: 10000,
+      },
     })
     notificationIds.current = [notification_id, ...notificationIds.current]
   }

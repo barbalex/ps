@@ -135,7 +135,7 @@ export const Component = () => {
           value={row.max_features ?? ''}
           onChange={onChange}
           type="number"
-          validationMessage="Drawing too many features can crash the app. Your mileage my vary."
+          validationMessage="Drawing too many features can crash the app. Your mileage may vary."
         />
         {row?.type === 'upload' && (
           <>

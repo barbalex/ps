@@ -120,13 +120,14 @@ export const VectorLayerWFS = ({ layer }: Props) => {
           type: error?.type,
         })
         setError(error.data)
-        await db.notifications.create({
-          notification_id: uuidv7(),
-          title: `Fehler beim Laden der Geometrien für ${layer.label}`,
-          body: error.message,
-          intent: 'error',
+        return await db.notifications.create({
+          data: {
+            notification_id: uuidv7(),
+            title: `Fehler beim Laden der Geometrien für ${layer.label}`,
+            body: error.message,
+            intent: 'error',
+          },
         })
-        return false
       }
       removeNotifs()
       setData(res.data?.features)
@@ -166,13 +167,17 @@ export const VectorLayerWFS = ({ layer }: Props) => {
   ) {
     const notification_id = uuidv7()
     db.notifications.create({
-      notification_id,
-      title: `Zuviele Geometrien`,
-      body: `Die maximale Anzahl Features von ${
-        layer.max_features ?? 1000
-      } für Vektor-Karte '${layer.label}' wurde geladen. Zoomen sie näher ran`,
-      intent: 'warning',
-      timeout: 10000,
+      data: {
+        notification_id,
+        title: `Zuviele Geometrien`,
+        body: `Die maximale Anzahl Features von ${
+          layer.max_features ?? 1000
+        } für Vektor-Karte '${
+          layer.label
+        }' wurde geladen. Zoomen sie näher ran`,
+        intent: 'warning',
+        timeout: 10000,
+      },
     })
     notificationIds.current = [notification_id, ...notificationIds.current]
   }
