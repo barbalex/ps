@@ -17,16 +17,16 @@ export const MultiSelectFromLayerOptions = memo(
     valueArray = [],
   }) => {
     const { db } = useElectric()
-    // console.log('hello MultiSelectFromLayerOptions, inputs:', {
-    //   name,
-    //   label,
-    //   table,
-    //   tile_layer_id,
-    //   vector_layer_id,
-    //   validationMessage,
-    //   validationState,
-    //   valueArray,
-    // })
+    console.log('hello MultiSelectFromLayerOptions, inputs:', {
+      name,
+      label,
+      table,
+      tile_layer_id,
+      vector_layer_id,
+      validationMessage,
+      validationState,
+      valueArray,
+    })
     const { results = [] } = useLiveQuery(
       db.layer_options.liveMany({
         where: {

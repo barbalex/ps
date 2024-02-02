@@ -97,7 +97,7 @@ export const VectorLayerWFS = ({ layer }: Props) => {
         request: 'GetFeature',
         typeName: (layer.wfs_layers ?? []).map((o) => o.value).join(','),
         srsName: 'EPSG:4326',
-        outputFormat: layer.output_format,
+        outputFormat: layer.output_format?.value,
         maxfeatures: 1000,
         // bbox is NOT WORKING
         // always returning 0 features...

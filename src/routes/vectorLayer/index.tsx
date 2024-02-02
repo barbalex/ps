@@ -10,6 +10,7 @@ import { SwitchField } from '../../components/shared/SwitchField'
 import { RadioGroupField } from '../../components/shared/RadioGroupField'
 import { SliderField } from '../../components/shared/SliderField'
 import { MultiSelectFromLayerOptions } from '../../components/shared/MultiSelectFromLayerOptions'
+import { DropdownFieldFromLayerOptions } from '../../components/shared/DropdownFieldFromLayerOptions'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { css } from '../../css'
 import { constants } from '../../modules/constants'
@@ -65,6 +66,8 @@ export const Component = () => {
     return <div>Loading...</div>
   }
 
+  console.log('hello VectorLayer, row:', row)
+
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
@@ -118,21 +121,12 @@ export const Component = () => {
             <Url onChange={onChange} row={row} />
             {!!row?.url && (
               <>
-                <div>
-                  TODO: if layer options exist, choose layer with multi select.
-                  Else show textfield. field name: type_name
-                </div>
-                <MultiSelectFromLayerOptions
+                <DropdownFieldFromLayerOptions
+                  label="Layer"
                   name="wfs_layers"
-                  label="Layers"
-                  table="vector_layers"
+                  value={row.wfs_layers ?? ''}
                   vector_layer_id={vector_layer_id}
-                  valueArray={row.wfs_layers ?? []}
-                  validationMessage={
-                    row.wfs_layers?.length > 1
-                      ? 'Sie können mehrere wählen'
-                      : ''
-                  }
+                  onChange={onChange}
                 />
                 {!row.wfs_version && (
                   <TextField

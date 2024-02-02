@@ -81,7 +81,10 @@ export const getCapabilitiesData = async ({
     })
   }
   if (!row.output_format) {
-    values.output_format = preferredOutputFormat
+    values.output_format = {
+      label: preferredOutputFormat,
+      value: preferredOutputFormat,
+    }
   }
 
   // 3. label

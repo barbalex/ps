@@ -165,19 +165,17 @@ export const getCapabilitiesData = async ({
 
   // if wms_format is not yet set, set version with png or jpg
   if (!row?.wms_format) {
-    const _wmsFormatValues =
+    const wmsFormatValues =
       capabilities?.Capability?.Request?.GetMap?.Format.filter((v) =>
         v.toLowerCase().includes('image'),
       )
     const preferedFormat =
-      _wmsFormatValues?.find((v) => v?.toLowerCase?.().includes('image/png')) ??
-      _wmsFormatValues?.find((v) => v?.toLowerCase?.().includes('png')) ??
-      _wmsFormatValues?.find((v) =>
-        v?.toLowerCase?.().includes('image/jpeg'),
-      ) ??
-      _wmsFormatValues?.find((v) => v?.toLowerCase?.().includes('jpeg'))
+      wmsFormatValues?.find((v) => v?.toLowerCase?.().includes('image/png')) ??
+      wmsFormatValues?.find((v) => v?.toLowerCase?.().includes('png')) ??
+      wmsFormatValues?.find((v) => v?.toLowerCase?.().includes('image/jpeg')) ??
+      wmsFormatValues?.find((v) => v?.toLowerCase?.().includes('jpeg'))
     if (preferedFormat) {
-      values.wms_format = preferedFormat
+      values.wms_format = { label: preferedFormat, value: preferedFormat }
     }
   }
 
@@ -223,7 +221,7 @@ export const getCapabilitiesData = async ({
       infoFormats.find((v) => v?.toLowerCase?.().includes('text/javascript')) ??
       infoFormats.find((v) => v?.toLowerCase?.().includes('text/html'))
     if (preferedFormat) {
-      values.wms_info_format = preferedFormat
+      values.wms_info_format = { label: preferedFormat, value: preferedFormat }
     }
   }
 

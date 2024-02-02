@@ -7,7 +7,7 @@ import { idFieldFromTable } from '../../../modules/idFieldFromTable'
 
 const tabGroupStyle = { flexWrap: 'wrap', rowGap: 5 }
 
-export const MultiSelect = memo(
+export const MultiSelect = memo( 
   ({ name, label, table, options, id, valueArray = [], validationMessage }) => {
     const optionValues = useMemo(() => options.map((o) => o.value), [options])
     const valueArrayValues = useMemo(
