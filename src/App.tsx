@@ -6,10 +6,8 @@ import { hooks } from './css'
 import 'allotment/dist/style.css'
 import './style.css'
 
-import {
-  ElectricWrapper as ElectricProvider,
-  useElectric,
-} from './ElectricProvider'
+import { useElectric } from './ElectricProvider'
+import { ElectricWrapper as ElectricProvider } from './ElectricWrapper'
 import { lightTheme } from './modules/theme'
 import { router } from './router'
 import { SqlInitializer } from './components/SqlInitializer'
