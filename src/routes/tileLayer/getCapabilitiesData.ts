@@ -71,27 +71,29 @@ export const getCapabilitiesData = async ({
   )
   console.log('hello, getCapabilitiesData, layers:', layers)
   for (const l of layers) {
+    const layer_option_id = `${row.wms_base_url}/${l.Name}/wms_layer`
+    const value = {
+      tile_layer_id: row.tile_layer_id,
+      field: 'wms_layer',
+      value: l.Name,
+      label: l.Title,
+      legend_url: l.Style?.[0]?.LegendURL?.[0]?.OnlineResource,
+      queryable: l.queryable,
+    }
+    console.log('hello, getCapabilitiesData', {
+      layer: l,
+      value,
+      layer_option_id,
+      row,
+    })
     await db.layer_options.upsert({
       create: {
-        layer_option_id: `${row.wms_base_url}/${l.value}/wms_layer`,
-        tile_layer_id: row.tile_layer_id,
-        vector_layer_id: null,
-        field: 'wms_layer',
-        value: l.Name,
-        label: l.Title,
-        legend_url: l.Style?.[0]?.LegendURL?.[0]?.OnlineResource,
-        queryable: l.queryable,
+        layer_option_id,
+        ...value,
       },
-      update: {
-        tile_layer_id: row.tile_layer_id,
-        field: 'wms_layer',
-        value: l.Name,
-        label: l.Title,
-        legend_url: l.Style?.[0]?.LegendURL?.[0]?.OnlineResource,
-        queryable: l.queryable,
-      },
+      update: value,
       where: {
-        layer_option_id: `${row.wms_base_url}/${l.value}/wms_layer`,
+        layer_option_id,
       },
     })
   }
