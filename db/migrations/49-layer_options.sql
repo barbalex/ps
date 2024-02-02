@@ -4,7 +4,7 @@
 -- Also: there is no use in saving this data on the server or syncing it
 CREATE TYPE layer_options_field_enum AS enum(
   'wms_format',
-  'wms_layers',
+  'wms_layer',
   'wms_info_format',
   'wfs_output_format',
   'wfs_layer'
@@ -19,6 +19,7 @@ CREATE TABLE layer_options(
   field layer_options_field_enum DEFAULT NULL,
   value text DEFAULT NULL,
   label text DEFAULT NULL,
+  queryable boolean DEFAULT NULL,
   legend_url text DEFAULT NULL
 );
 

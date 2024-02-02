@@ -9,7 +9,6 @@ import { TextField } from '../../components/shared/TextField'
 import { SwitchField } from '../../components/shared/SwitchField'
 import { SliderField } from '../../components/shared/SliderField'
 import { RadioGroupField } from '../../components/shared/RadioGroupField'
-import { MultiSelectFromLayerOptions } from '../../components/shared/MultiSelectFromLayerOptions'
 import { DropdownFieldFromLayerOptions } from '../../components/shared/DropdownFieldFromLayerOptions'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { BaseUrl } from './BaseUrl'
@@ -68,22 +67,15 @@ export const Component = () => {
           <>
             <BaseUrl row={row} onChange={onChange} />
             {row?.wms_base_url && (
-              <>
-                {/* TODO: pass row to set label */}
-                <MultiSelectFromLayerOptions
-                  name="wms_layers"
-                  label="Layers"
-                  table="tile_layers"
-                  tile_layer_id={tile_layer_id}
-                  valueArray={row.wms_layers ?? []}
-                  row={row}
-                  validationMessage={
-                    row.wms_layers?.length === 1
-                      ? 'Sie können mehrere wählen (falls das sinnvoll scheint)'
-                      : ''
-                  }
-                />
-              </>
+              <DropdownFieldFromLayerOptions
+                label="Layer"
+                name="wms_layer"
+                value={row.wms_layer ?? ''}
+                tile_layer_id={tile_layer_id}
+                onChange={onChange}
+                validationMessage={row.wms_layer ? '' : 'Select a layer'}
+                row={row}
+              />
             )}
           </>
         )}
@@ -176,13 +168,6 @@ export const Component = () => {
                   tile_layer_id={tile_layer_id}
                   onChange={onChange}
                   validationMessage="In what format the info is downloaded. Set automatically but can be changed."
-                />
-                <SwitchField
-                  label="Queryable"
-                  name="wms_queryable"
-                  value={row.wms_queryable}
-                  onChange={onChange}
-                  validationMessage="Whether the wms service is queryable. May not work for all layers if multiple exist. Set automatically but can be changed."
                 />
               </>
             )}

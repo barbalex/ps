@@ -1,17 +1,19 @@
-import { memo } from 'react'
+import { memo, forwardRef } from 'react'
 import { Field, RadioGroup, Radio } from '@fluentui/react-components'
 
 export const RadioGroupField = memo(
-  ({
-    name,
-    label,
-    list = [],
-    value,
-    onChange,
-    validationMessage,
-    validationState,
-    autoFocus,
-  }) => {
+  forwardRef((props, ref) => {
+    const {
+      name,
+      label,
+      list = [],
+      value,
+      onChange,
+      validationMessage,
+      validationState,
+      autoFocus,
+    } = props
+
     return (
       <Field
         label={label ?? '(no label provided)'}
@@ -31,10 +33,11 @@ export const RadioGroupField = memo(
               label={val}
               value={val}
               autoFocus={index === 0 && autoFocus}
+              ref={index === 0 ? ref : undefined}
             />
           ))}
         </RadioGroup>
       </Field>
     )
-  },
+  }),
 )

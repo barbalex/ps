@@ -22,7 +22,7 @@ export const WMS = memo(({ layer }) => {
 
   useMapEvent('click', async (e) => {
     // console.log({ layer })
-    if (layer.wms_queryable === false) return
+    if (layer.queryable === false) return
     const mapSize = map.getSize()
     const bounds = map.getBounds()
     let res
@@ -33,12 +33,12 @@ export const WMS = memo(({ layer }) => {
         service: 'WMS',
         version: layer.wms_version,
         request: 'GetFeatureInfo',
-        layers: (layer.wms_layers ?? []).map((l) => l.value).join(','),
+        layers: layer.wms_layer?.value,
         crs: 'EPSG:4326',
         format: layer.wms_format,
         info_format: layer.wms_info_format ?? 'application/vnd.ogc.gml',
         // info_format: 'text/plain',
-        query_layers: (layer.wms_layers ?? []).map((l) => l.value).join(','),
+        query_layers: layer.wms_layer?.value,
         x: e.containerPoint.x,
         y: e.containerPoint.y,
         width: mapSize.x,
@@ -168,7 +168,7 @@ export const WMS = memo(({ layer }) => {
   return (
     <WMSTileLayer
       url={layer.wms_base_url}
-      layers={(layer.wms_layers ?? []).map((l) => l.value).join(',')}
+      layers={layer.wms_layer?.value}
       version={layer.wms_version}
       format={layer.wms_format?.value}
       minZoom={layer.min_zoom}

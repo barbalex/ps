@@ -69,41 +69,36 @@ export const getCapabilitiesData = async ({
   const layers = (capabilities?.Capability?.Layer?.Layer ?? []).filter((v) =>
     v?.CRS?.includes('EPSG:4326'),
   )
-  const wmsLayerOptions = layers.map((l) => ({
-    label: l.Title,
-    value: l.Name,
-    legend_url: l.Style?.[0]?.LegendURL?.[0]?.OnlineResource,
-  }))
-  // console.log('hello, getCapabilitiesData, wmsLayerOptions:', wmsLayerOptions)
-  if (wmsLayerOptions?.length) {
-    for (const o of wmsLayerOptions) {
-      await db.layer_options.upsert({
-        create: {
-          layer_option_id: `${row.wms_base_url}/${o.value}/wms_layers`,
-          tile_layer_id: row.tile_layer_id,
-          vector_layer_id: null,
-          field: 'wms_layers',
-          value: o.value,
-          label: o.label,
-          legend_url: o.legend_url,
-        },
-        update: {
-          tile_layer_id: row.tile_layer_id,
-          field: 'wms_layers',
-          value: o.value,
-          label: o.label,
-          legend_url: o.legend_url,
-        },
-        where: {
-          layer_option_id: `${row.wms_base_url}/${o.value}/wms_layers`,
-        },
-      })
-    }
+  console.log('hello, getCapabilitiesData, layers:', layers)
+  for (const l of layers) {
+    await db.layer_options.upsert({
+      create: {
+        layer_option_id: `${row.wms_base_url}/${l.value}/wms_layer`,
+        tile_layer_id: row.tile_layer_id,
+        vector_layer_id: null,
+        field: 'wms_layer',
+        value: l.Name,
+        label: l.Title,
+        legend_url: l.Style?.[0]?.LegendURL?.[0]?.OnlineResource,
+        queryable: l.queryable,
+      },
+      update: {
+        tile_layer_id: row.tile_layer_id,
+        field: 'wms_layer',
+        value: l.Name,
+        label: l.Title,
+        legend_url: l.Style?.[0]?.LegendURL?.[0]?.OnlineResource,
+        queryable: l.queryable,
+      },
+      where: {
+        layer_option_id: `${row.wms_base_url}/${l.value}/wms_layer`,
+      },
+    })
   }
 
   // TODO: should legends be saved in sqlite? can be 700!!!
   // ensure only for layers with tile_layer
-  // const wmsLayerValues = (row.wms_layers ?? []).map((l) => l.value)
+  // const wmsLayerValues = (row.wms_layer ?? []).map((l) => l.value)
 
   // const legendUrlsToUse = (wmsLayerOptions ?? []).filter((o) =>
   //   wmsLayerValues.includes?.(o.value),
@@ -193,18 +188,11 @@ export const getCapabilitiesData = async ({
   // }
 
   // activate layer, if not too many
-  if (!row?.wms_layers && layers?.length && layers?.length <= 5) {
-    values.wms_layers = layers.map((o) => ({
-      value: o.Name,
-      label: o.Title,
-    }))
-  }
-
-  // TODO: queryable should be per layer
-  // So also: allow only one layer per tile_layer
-  // use capabilities.Capability?.Layer?.Layer[this]?.queryable to allow/disallow getting feature info?
-  if (layers.length && ![true, false].includes(row?.wms_queryable)) {
-    values.wms_queryable = layers.some((l) => l.queryable)
+  if (!row?.wms_layer && layers?.length === 1) {
+    values.wms_layer = {
+      value: layers[0].Name,
+      label: layers[0].Title,
+    }
   }
 
   // set info_format if undefined

@@ -17,14 +17,14 @@ CREATE TABLE tile_layers(
   wmts_subdomains jsonb DEFAULT NULL, -- array of text
   wms_base_url text DEFAULT NULL,
   wms_format jsonb DEFAULT NULL,
-  wms_layers jsonb DEFAULT NULL,
+  wms_layer jsonb DEFAULT NULL,
   wms_parameters jsonb DEFAULT NULL,
   wms_styles jsonb DEFAULT NULL, -- array of text
   wms_transparent boolean DEFAULT NULL, -- false
   wms_version text DEFAULT NULL, -- values: '1.1.1', '1.3.0'
   wms_info_format jsonb DEFAULT NULL,
-  wms_legends jsonb DEFAULT NULL, -- fetched from GetCapabilities
-  wms_queryable boolean DEFAULT NULL,
+  wms_legends jsonb DEFAULT NULL, -- fetched from GetCapabilities. TODO: needed? where save image?
+  queryable boolean DEFAULT NULL,
   max_zoom integer DEFAULT NULL, -- 19
   min_zoom integer DEFAULT NULL, -- 0
   opacity_percent integer DEFAULT NULL, -- 100

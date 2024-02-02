@@ -29,7 +29,7 @@ export const TileLayers = () => {
             type: 'wms',
             AND: [
               { wms_base_url: { not: null } },
-              { wms_layers: { not: null } },
+              { wms_layer: { not: null } },
             ],
           },
         ],
@@ -69,7 +69,7 @@ export const TileLayers = () => {
       opacity: layer.opacity,
       wms_base_url: layer.wms_base_url,
       wms_format: layer.wms_format,
-      wms_layers: (layer.wms_layers ?? []).map((l) => l.value).join(','),
+      wms_layer: (layer.wms_layer ?? []).map((l) => l.value).join(','),
       wms_parameters: layer.wms_parameters,
       wms_styles: layer.wms_styles,
       wms_transparent: layer.wms_transparent,
