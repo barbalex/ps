@@ -24,7 +24,6 @@ CREATE TABLE tile_layers(
   wms_version text DEFAULT NULL, -- values: '1.1.1', '1.3.0'
   wms_info_format jsonb DEFAULT NULL,
   wms_legends jsonb DEFAULT NULL, -- fetched from GetCapabilities. TODO: needed? where save image?
-  queryable boolean DEFAULT NULL,
   max_zoom integer DEFAULT NULL, -- 19
   min_zoom integer DEFAULT NULL, -- 0
   opacity_percent integer DEFAULT NULL, -- 100
