@@ -15,7 +15,7 @@ export const getCapabilitiesData = async ({
   if (!row) return
   if (!row.url) return
 
-  console.log('getCapabilitiesDataForVectorLayer, row:', row)
+  // console.log('getCapabilitiesDataForVectorLayer, row:', row)
 
   const values = {}
 
@@ -26,7 +26,7 @@ export const getCapabilitiesData = async ({
 
   const capabilities = response?.HTML?.BODY?.['WFS:WFS_CAPABILITIES']
 
-  console.log('getCapabilitiesDataForVectorLayer, capabilities:', capabilities)
+  // console.log('getCapabilitiesDataForVectorLayer, capabilities:', capabilities)
 
   // 1. wfs version
   if (!row.wfs_version) {
@@ -143,11 +143,11 @@ export const getCapabilitiesData = async ({
     values.active = true
   }
 
-  console.log('hello vector layers getCapabilitiesData', {
-    values,
-    layerOptions,
-    acceptableOutputFormats,
-  })
+  // console.log('hello vector layers getCapabilitiesData', {
+  //   values,
+  //   layerOptions,
+  //   acceptableOutputFormats,
+  // })
 
   // enable updating in a single operation
   if (returnValue) return values
