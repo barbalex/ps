@@ -65,7 +65,7 @@ export const Component = () => {
     return <div>Loading...</div>
   }
 
-  console.log('hello VectorLayer, row:', row)
+  // console.log('hello VectorLayer, row:', row)
 
   return (
     <div className="form-outer-container">
@@ -127,19 +127,11 @@ export const Component = () => {
                   vector_layer_id={vector_layer_id}
                   onChange={onChange}
                 />
-                {!row.wfs_version && (
-                  <TextField
-                    label="WFS version"
-                    name="wfs_version"
-                    value={row.wfs_version ?? ''}
-                    onChange={onChange}
-                    validationMessage="often 1.1.0 or 2.0.0"
-                  />
-                )}
               </>
             )}
           </>
         )}
+        {row?.type === 'upload' && <div>TODO: Upload</div>}
         <TextField
           label="Max Zoom"
           name="max_zoom"
@@ -159,13 +151,6 @@ export const Component = () => {
           max={19}
           min={0}
           validationMessage="Zoom can be between 0 and 19"
-        />
-        <TextField
-          label="Output format"
-          name="output_format"
-          value={row.output_format ?? ''}
-          onChange={onChange}
-          validationMessage="TODO: needs explanation"
         />
         <SliderField
           label="Opacity (%)"

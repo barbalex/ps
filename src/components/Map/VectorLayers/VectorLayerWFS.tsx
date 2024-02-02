@@ -59,7 +59,6 @@ export const VectorLayerWFS = ({ layer }: Props) => {
   const showMap = uiOption?.show_map ?? true
 
   const removeNotifs = useCallback(async () => {
-    // console.log('removing notifs')
     await db.notifications.deleteMany({
       where: { notification_id: { in: notificationIds.current } },
     })
@@ -72,15 +71,11 @@ export const VectorLayerWFS = ({ layer }: Props) => {
   const [data, setData] = useState()
   const fetchData = useCallback(
     async (/*{ bounds }*/) => {
-      console.log('hello VectorLayerWFS, fetchData 1')
       if (!showMap) return
-      console.log('hello VectorLayerWFS, fetchData 2')
 
       // const mapSize = map.getSize()
       removeNotifs()
-      console.log('hello VectorLayerWFS, fetchData 3')
       const notification_id = uuidv7()
-      console.log('hello VectorLayerWFS, fetchData 4')
       await db.notifications.create({
         data: {
           notification_id,
@@ -106,7 +101,6 @@ export const VectorLayerWFS = ({ layer }: Props) => {
         // width: mapSize.x,
         // height: mapSize.y,
       }
-      console.log('hello VectorLayerWFS, fetchData, params:', params)
       try {
         res = await axios({
           method: 'get',
@@ -134,10 +128,6 @@ export const VectorLayerWFS = ({ layer }: Props) => {
         })
         return false
       }
-      console.log('hello VectorLayerWFS, after fetching data', {
-        res,
-        features: res.data?.features,
-      })
       removeNotifs()
       setData(res.data?.features)
     },
@@ -155,7 +145,6 @@ export const VectorLayerWFS = ({ layer }: Props) => {
 
   const fetchDataDebounced = useDebouncedCallback(fetchData, 600)
   useEffect(() => {
-    console.log('hello VectorLayerWFS, useEffect calling fetchDataDebounced')
     fetchDataDebounced({ bounds: map.getBounds() })
   }, [fetchDataDebounced, map, showMap])
 
@@ -165,14 +154,6 @@ export const VectorLayerWFS = ({ layer }: Props) => {
     }),
   )
   const layerStyle: LayerStyle = layerStyleResults
-
-  console.log('hello VectorLayerWFS', {
-    layerStyle,
-    layer,
-    zoom,
-    showMap,
-    uiOption,
-  })
 
   // include only if zoom between min_zoom and max_zoom
   if (layer.min_zoom !== undefined && zoom < layer.min_zoom) return null
@@ -196,7 +177,6 @@ export const VectorLayerWFS = ({ layer }: Props) => {
     notificationIds.current = [notification_id, ...notificationIds.current]
   }
 
-  // console.log('VectorLayerWFS, data:', data)
   const mapSize = map.getSize()
 
   return (
