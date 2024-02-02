@@ -43,23 +43,6 @@ export const DropdownFieldFromLayerOptions = memo(
         : label
       : '(no label provided)'
 
-    console.log('hello DropdownFieldFromLayerOptions', {
-      name,
-      label,
-      tile_layer_id,
-      vector_layer_id,
-      value,
-      onChange,
-      validationMessage,
-      validationState,
-      db,
-      results,
-      layerOptions,
-      options,
-      selectedOptions,
-      labelWithCount,
-    })
-
     return (
       <Field
         label={labelWithCount}
@@ -71,10 +54,6 @@ export const DropdownFieldFromLayerOptions = memo(
           value={selectedOptions?.[0]?.label ?? ''}
           selectedOptions={selectedOptions}
           onOptionSelect={(e, data) => {
-            console.log(
-              'hello DropdownFieldFromLayerOptions, onOptionSelect:',
-              { name, data, optionValue: data.optionValue },
-            )
             onChange({
               target: {
                 name,

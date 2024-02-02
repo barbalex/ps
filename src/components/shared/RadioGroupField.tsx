@@ -1,18 +1,17 @@
 import { memo } from 'react'
 import { Field, RadioGroup, Radio } from '@fluentui/react-components'
 
-
 export const RadioGroupField = memo(
   ({
     name,
     label,
-    list=[],
+    list = [],
     value,
     onChange,
     validationMessage,
     validationState,
+    autoFocus,
   }) => {
-
     return (
       <Field
         label={label ?? '(no label provided)'}
@@ -26,8 +25,13 @@ export const RadioGroupField = memo(
           onChange={onChange}
           appearance="underline"
         >
-          {list.map((val) => (
-            <Radio key={val} label={val} value={val} />
+          {list.map((val, index) => (
+            <Radio
+              key={val}
+              label={val}
+              value={val}
+              autoFocus={index === 0 && autoFocus}
+            />
           ))}
         </RadioGroup>
       </Field>

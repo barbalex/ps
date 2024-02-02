@@ -46,6 +46,11 @@ export const Url = memo(
         value={row.url ?? ''}
         onChange={onChange}
         onBlur={onBlur}
+        validationMessage={
+          row?.url
+            ? 'The url of the service providing the wfs'
+            : 'Enter the url of the service providing the wfs'
+        }
       />
     )
   },

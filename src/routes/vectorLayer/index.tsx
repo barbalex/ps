@@ -76,13 +76,36 @@ export const Component = () => {
           name="vector_layer_id"
           value={row.vector_layer_id}
         />
+        <RadioGroupField
+          label="Type"
+          name="type"
+          list={['wfs', 'upload']}
+          value={row.type ?? ''}
+          onChange={onChange}
+          autoFocus
+          ref={autoFocusRef}
+        />
+        {row?.type === 'wfs' && (
+          <>
+            <Url onChange={onChange} row={row} />
+            {!!row?.url && (
+              <DropdownFieldFromLayerOptions
+                label="Layer"
+                name="wfs_layer"
+                value={row.wfs_layer ?? ''}
+                vector_layer_id={vector_layer_id}
+                onChange={onChange}
+                validationMessage={row.wfs_layer ? '' : 'Select a layer'}
+              />
+            )}
+          </>
+        )}
+        {row?.type === 'upload' && <div>TODO: Upload</div>}
         <TextField
           label="Label"
           name="label"
           value={row.label ?? ''}
           onChange={onChange}
-          autoFocus
-          ref={autoFocusRef}
         />
         <TextField
           label="Sort"
@@ -90,7 +113,7 @@ export const Component = () => {
           value={row.sort ?? ''}
           onChange={onChange}
           type="number"
-          validationMessage="Add a sorting order here if alphabetically by label is not desired."
+          validationMessage="Add a sorting order here if sorting by label is not desired."
         />
         <SwitchField
           label="active"
@@ -98,40 +121,6 @@ export const Component = () => {
           value={row.active}
           onChange={onChange}
         />
-        <RadioGroupField
-          label="Type"
-          name="type"
-          list={['wfs', 'upload']}
-          value={row.type ?? ''}
-          onChange={onChange}
-        />
-        {row?.type === 'wfs' && (
-          <>
-            <div
-              style={css({
-                ...titleRowStyle,
-                '&:firstOfType': {
-                  marginTop: '-10px',
-                },
-              })}
-            >
-              <div style={titleStyle}>WFS konfigurieren</div>
-            </div>
-            <Url onChange={onChange} row={row} />
-            {!!row?.url && (
-              <>
-                <DropdownFieldFromLayerOptions
-                  label="Layer"
-                  name="wfs_layer"
-                  value={row.wfs_layer ?? ''}
-                  vector_layer_id={vector_layer_id}
-                  onChange={onChange}
-                />
-              </>
-            )}
-          </>
-        )}
-        {row?.type === 'upload' && <div>TODO: Upload</div>}
         <TextField
           label="Max Zoom"
           name="max_zoom"
