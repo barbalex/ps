@@ -159,26 +159,30 @@ export const Component = () => {
           type="number"
           validationMessage="Drawing too many features can crash the app. Your mileage my vary."
         />
-        <TextFieldInactive
-          label="Feature count"
-          name="feature_count"
-          value={row.feature_count}
-        />
-        <TextFieldInactive
-          label="Point count"
-          name="point_count"
-          value={row.point_count}
-        />
-        <TextFieldInactive
-          label="Line count"
-          name="line_count"
-          value={row.line_count}
-        />
-        <TextFieldInactive
-          label="Polygon count"
-          name="polygon_count"
-          value={row.polygon_count}
-        />
+        {row?.type === 'upload' && (
+          <>
+            <TextFieldInactive
+              label="Feature count"
+              name="feature_count"
+              value={row.feature_count}
+            />
+            <TextFieldInactive
+              label="Point count"
+              name="point_count"
+              value={row.point_count}
+            />
+            <TextFieldInactive
+              label="Line count"
+              name="line_count"
+              value={row.line_count}
+            />
+            <TextFieldInactive
+              label="Polygon count"
+              name="polygon_count"
+              value={row.polygon_count}
+            />
+          </>
+        )}
       </div>
     </div>
   )
