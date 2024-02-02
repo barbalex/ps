@@ -24,6 +24,7 @@ import { user_id } from '../../SqlInitializer'
 type Props = {
   layer: VectorLayer
 }
+
 export const VectorLayerPVLGeom = ({ layer }: Props) => {
   const { db } = useElectric()!
   const uiOption: UiOption = db.ui_options.liveUnique({ where: { user_id } })
