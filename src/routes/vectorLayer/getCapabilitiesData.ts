@@ -118,31 +118,31 @@ export const getCapabilitiesData = async ({
   for (const o of layerOptions) {
     await db.layer_options.upsert({
       create: {
-        layer_option_id: `${row.url}/${o.value}/wfs_layers`,
+        layer_option_id: `${row.url}/${o.value}/wfs_layer`,
         vector_layer_id: row.vector_layer_id,
-        field: 'wfs_layers',
+        field: 'wfs_layer',
         value: o.value,
         label: o.label,
       },
       update: {
         vector_layer_id: row.vector_layer_id,
-        field: 'wfs_layers',
+        field: 'wfs_layer',
         value: o.value,
         label: o.label,
       },
       where: {
-        layer_option_id: `${row.url}/${o.value}/wfs_layers`,
+        layer_option_id: `${row.url}/${o.value}/wfs_layer`,
       },
     })
   }
 
   // activate layer, if only one
   if (
-    (!row?.wfs_layers || !row?.wfs_layers?.length) &&
+    (!row?.wfs_layer ) &&
     layerOptions?.length === 1 &&
     layerOptions?.[0]?.value
   ) {
-    values.wfs_layers = layerOptions?.[0]
+    values.wfs_layer = layerOptions?.[0]
     values.active = true
   }
 

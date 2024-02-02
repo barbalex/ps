@@ -16,8 +16,6 @@ export const DropdownFieldFromLayerOptions = memo(
     validationMessage,
     validationState = 'none',
   }) => {
-    // only one option can be selected, otherwise MultiSelectFromLayerOptions should be used
-    const activeOption = value?.[0]
     const { db } = useElectric()
     const { results = [] } = useLiveQuery(
       db.layer_options.liveMany({
@@ -36,8 +34,8 @@ export const DropdownFieldFromLayerOptions = memo(
       [layerOptions],
     )
     const selectedOptions = useMemo(
-      () => options.filter((option) => option.value === activeOption.value),
-      [activeOption.value, options],
+      () => options.filter((option) => option.value === value.value),
+      [value.value, options],
     )
     const labelWithCount = label
       ? options?.length
@@ -54,7 +52,6 @@ export const DropdownFieldFromLayerOptions = memo(
       onChange,
       validationMessage,
       validationState,
-      activeOption,
       db,
       results,
       layerOptions,
@@ -81,7 +78,7 @@ export const DropdownFieldFromLayerOptions = memo(
             onChange({
               target: {
                 name,
-                value: [{ label: data.optionText, value: data.optionValue }],
+                value: { label: data.optionText, value: data.optionValue },
               },
             })
           }}

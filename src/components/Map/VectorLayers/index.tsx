@@ -18,7 +18,7 @@ export const VectorLayers = () => {
         project_id,
         // Ensure needed data exists
         url: { not: null },
-        wfs_layers: { not: null },
+        wfs_layer: { not: null },
         output_format: { not: null },
       }
     : {
@@ -26,7 +26,7 @@ export const VectorLayers = () => {
         active: true,
         // Ensure needed data exists
         url: { not: null },
-        wfs_layers: { not: null },
+        wfs_layer: { not: null },
         output_format: { not: null },
       }
 
@@ -43,7 +43,7 @@ export const VectorLayers = () => {
       max_zoom: layer.max_zoom,
       min_zoom: layer.min_zoom,
       opacity: layer.opacity,
-      wfs_layers: layer.wfs_layers,
+      wfs_layer: layer.wfs_layer,
       wfs_version: layer.wfs_version,
       output_format: layer.output_format,
     }

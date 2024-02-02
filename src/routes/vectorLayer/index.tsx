@@ -123,8 +123,8 @@ export const Component = () => {
               <>
                 <DropdownFieldFromLayerOptions
                   label="Layer"
-                  name="wfs_layers"
-                  value={row.wfs_layers ?? ''}
+                  name="wfs_layer"
+                  value={row.wfs_layer ?? ''}
                   vector_layer_id={vector_layer_id}
                   onChange={onChange}
                 />

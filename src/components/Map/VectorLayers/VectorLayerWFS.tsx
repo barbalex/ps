@@ -95,7 +95,7 @@ export const VectorLayerWFS = ({ layer }: Props) => {
         service: 'WFS',
         version: layer.wfs_version,
         request: 'GetFeature',
-        typeName: (layer.wfs_layers ?? []).map((o) => o.value).join(','),
+        typeName: layer.wfs_layer?.value,
         srsName: 'EPSG:4326',
         outputFormat: layer.output_format?.value,
         maxfeatures: 1000,
@@ -144,7 +144,7 @@ export const VectorLayerWFS = ({ layer }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       layer.label,
-      layer.wfs_layers,
+      layer.wfs_layer,
       layer.output_format,
       layer.url,
       layer.wfs_version,

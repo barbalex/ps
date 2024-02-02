@@ -13,9 +13,9 @@ CREATE TABLE vector_layers(
   url text DEFAULT NULL, -- WFS url, for example https://maps.zh.ch/wfs/OGDZHWFS
   max_zoom integer DEFAULT NULL, -- 19,
   min_zoom integer DEFAULT NULL, -- 0,
-  wfs_layers jsonb DEFAULT NULL, -- for example ms:ogd-0119_giszhpub_feuchtgebietinv_79_90_beob_p
+  wfs_layer jsonb DEFAULT NULL, -- a single option
   wfs_version text DEFAULT NULL, -- often: 1.1.0 or 2.0.0
-  output_format jsonb DEFAULT NULL, -- need some form of json. TODO: Convert others?
+  output_format jsonb DEFAULT NULL, --  a single option
   opacity_percent integer DEFAULT NULL, -- 100,
   max_features integer DEFAULT NULL, -- 1000,
   feature_count integer DEFAULT NULL,
