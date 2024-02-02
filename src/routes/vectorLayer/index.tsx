@@ -96,6 +96,7 @@ export const Component = () => {
                 vector_layer_id={vector_layer_id}
                 onChange={onChange}
                 validationMessage={row.wfs_layer ? '' : 'Select a layer'}
+                row={row}
               />
             )}
           </>

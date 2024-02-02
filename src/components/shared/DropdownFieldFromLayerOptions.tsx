@@ -15,6 +15,7 @@ export const DropdownFieldFromLayerOptions = memo(
     onChange,
     validationMessage,
     validationState = 'none',
+    row,
   }) => {
     const { db } = useElectric()
     const { results = [] } = useLiveQuery(
@@ -60,6 +61,15 @@ export const DropdownFieldFromLayerOptions = memo(
                 value: { label: data.optionText, value: data.optionValue },
               },
             })
+            // set the label if it is empty
+            if (!!row && !row.label) {
+              onChange({
+                target: {
+                  name: 'label',
+                  value: data.optionText,
+                },
+              })
+            }
           }}
           appearance="underline"
         >

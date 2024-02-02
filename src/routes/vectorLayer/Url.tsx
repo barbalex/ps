@@ -12,7 +12,6 @@ export const Url = memo(
 
     const onBlur = useCallback(async () => {
       if (!row?.url) return
-      console.log('hello Url, onBlur, getting capabilities')
       // show loading indicator
       const notification_id = uuidv7()
       await db.notifications.create({
@@ -36,7 +35,6 @@ export const Url = memo(
         where: { notification_id },
         data: { paused: false, timeout: 500 },
       })
-      console.log('hello Url, onBlur, finished getting capabilities')
     }, [db, row])
 
     return (

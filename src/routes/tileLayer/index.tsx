@@ -107,6 +107,7 @@ export const Component = () => {
             <BaseUrl row={row} onChange={onChange} />
             {row?.wms_base_url && (
               <>
+                {/* TODO: pass row to set label */}
                 <MultiSelectFromLayerOptions
                   name="wms_layers"
                   label="Layers"

@@ -96,6 +96,7 @@ export const getCapabilitiesData = async ({
 
   // 4. layers
   let layers = capabilities?.FEATURETYPELIST?.FEATURETYPE ?? []
+  console.log('hello vector layers getCapabilitiesData', { layers })
   // this value can be array OR object!!!
   if (!Array.isArray(layers)) layers = [layers]
   const layerOptions = layers
@@ -138,7 +139,7 @@ export const getCapabilitiesData = async ({
 
   // activate layer, if only one
   if (
-    (!row?.wfs_layer ) &&
+    !row?.wfs_layer &&
     layerOptions?.length === 1 &&
     layerOptions?.[0]?.value
   ) {
