@@ -9,6 +9,7 @@ export const TextField = memo(
       validationMessage,
       validationState = 'none',
       autoFocus,
+      disabled = false,
     } = props
 
     // console.log('hello TextField, props:', props)
@@ -24,6 +25,7 @@ export const TextField = memo(
           appearance="underline"
           autoFocus={autoFocus}
           ref={ref}
+          disabled={disabled}
         />
       </Field>
     )

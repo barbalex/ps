@@ -12,6 +12,7 @@ export const RadioGroupField = memo(
       validationMessage,
       validationState,
       autoFocus,
+      disabled = false,
     } = props
 
     return (
@@ -26,6 +27,7 @@ export const RadioGroupField = memo(
           value={value}
           onChange={onChange}
           appearance="underline"
+          disabled={disabled}
         >
           {list.map((val, index) => (
             <Radio

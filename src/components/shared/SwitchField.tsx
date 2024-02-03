@@ -8,6 +8,7 @@ export const SwitchField = memo(
     value = false,
     onChange,
     autoFocus,
+    disabled = false,
   }) => (
     <Switch
       label={label}
@@ -15,6 +16,7 @@ export const SwitchField = memo(
       checked={value}
       onChange={onChange}
       autoFocus={autoFocus}
+      disabled={disabled}
     />
   ),
 )

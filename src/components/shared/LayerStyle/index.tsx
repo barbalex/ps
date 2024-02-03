@@ -9,26 +9,23 @@ import isEqual from 'lodash/isEqual'
 import { useParams } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
 
-import Checkbox2States from '../Checkbox2States'
+import { SwitchField } from '../SwitchField'
 import { ErrorBoundary } from '../ErrorBoundary'
 import { ColorPicker } from '../ColorPicker'
+import { dexie } from '../../../dexieClient'
 import {
-  dexie,
-  LayerStyle,
-  LineCapEnum,
-  LineJoinEnum,
-  FillRuleEnum,
-  MarkerTypeEnum,
-  VectorLayer,
-} from '../../../dexieClient'
-import TextField from '../TextField'
-import RadioButtonGroup from '../RadioButtonGroup'
-import Slider from '../Slider'
+  Vector_layers as VectorLayer,
+  Layer_styles as LayerStyle,
+} from '../../../generated/client'
+import { TextField } from '../TextField'
+import { RadioGroupField } from '../RadioGroupField'
+import { SliderField } from '../SliderField'
 import insertLayerStyle from '../../../utils/insertLayerStyle'
 import MarkerSymbolPicker from './MarkerSymbolPicker'
 import storeContext from '../../../storeContext'
 import { css } from '../../../css'
 
+// was used to
 const markerTypeGerman = {
   circle: 'Kreis',
   marker: 'Symbol',
@@ -57,6 +54,25 @@ const titleStyle = {
 const fieldsContainerStyle = {
   padding: '15px 10px 10px 10px',
 }
+
+const lineCapValues = ['butt', 'round', 'square'].map((v) => ({
+  value: v,
+  label: v,
+}))
+const lineJoinValues = ['arcs', 'bevel', 'miter', 'miter-clip', 'round'].map(
+  (v) => ({
+    value: v,
+    label: v,
+  }),
+)
+const fillRuleValues = ['nonzero', 'evenodd'].map((v) => ({
+  value: v,
+  label: v,
+}))
+const markerTypeValues = ['circle', 'marker'].map((v) => ({
+  value: v,
+  label: markerTypeGerman[v],
+}))
 
 interface Props {
   userMayEdit: boolean
@@ -115,6 +131,7 @@ export const LayerStyleForm = ({ userMayEdit, row: layer }: Props) => {
         const layerStyle: LayerStyle = await dexie.layer_styles.get(criteria)
         if (!layerStyle) {
           console.log('inserting new layer_style')
+          // TODO: upsert to ensure new one is created if needed
           insertLayerStyle({
             tableId,
             vectorLayerId,
@@ -174,25 +191,6 @@ export const LayerStyleForm = ({ userMayEdit, row: layer }: Props) => {
     [row],
   )
 
-  const showDeleted = false
-
-  const lineCapValues = Object.values(LineCapEnum).map((v) => ({
-    value: v,
-    label: v,
-  }))
-  const lineJoinValues = Object.values(LineJoinEnum).map((v) => ({
-    value: v,
-    label: v,
-  }))
-  const fillRuleValues = Object.values(FillRuleEnum).map((v) => ({
-    value: v,
-    label: v,
-  }))
-  const markerTypeValues = Object.values(MarkerTypeEnum).map((v) => ({
-    value: v,
-    label: markerTypeGerman[v],
-  }))
-
   if (!row) return null // no spinner as is null until enough data input
 
   return (
@@ -208,37 +206,16 @@ export const LayerStyleForm = ({ userMayEdit, row: layer }: Props) => {
         >
           <div style={titleStyle}>Geometrien stylen</div>
         </div>
-        <div
-          style={fieldsContainerStyle}
-          onBlur={(e) => {
-            if (!e.currentTarget.contains(e.relatedTarget)) {
-              // focus left the container
-              // https://github.com/facebook/react/issues/6410#issuecomment-671915381
-              updateOnServer()
-            }
-          }}
-        >
-          {showDeleted && (
-            <Checkbox2States
-              label="gelöscht"
-              name="deleted"
-              value={row.deleted}
-              onBlur={onBlur}
-              // error={errors?.project?.deleted}
-              disabled={!userMayEdit}
-            />
-          )}
+        <div style={fieldsContainerStyle}>
           {pointCount !== 0 && (
             <>
               <div>
-                <RadioButtonGroup
+                <RadioGroupField
                   name="marker_type"
-                  value={row.marker_type}
-                  field="marker_type"
                   label="Punkt-Typ"
-                  dataSource={markerTypeValues}
-                  onBlur={onBlur}
-                  // error={errors?.field?.marker_type}
+                  list={markerTypeValues}
+                  value={row.marker_type}
+                  onChange={onChange}
                   disabled={!userMayEdit}
                 />
               </div>
@@ -247,8 +224,7 @@ export const LayerStyleForm = ({ userMayEdit, row: layer }: Props) => {
                   name="circle_marker_radius"
                   label="Kreis-Radius in Bild-Punkten"
                   value={row.circle_marker_radius}
-                  onBlur={onBlur}
-                  // error={errors?.project?.circle_marker_radius}
+                  onChange={onChange}
                   type="number"
                   disabled={!userMayEdit}
                 />
@@ -263,21 +239,19 @@ export const LayerStyleForm = ({ userMayEdit, row: layer }: Props) => {
                     name="marker_size"
                     label="Symbol: Grösse (in Bild-Punkten)"
                     value={row.marker_size}
-                    onBlur={onBlur}
-                    // error={errors?.project?.marker_size}
+                    onChange={onChange}
                     type="number"
                     disabled={!userMayEdit}
                   />
-                  <Slider
-                    key={`${row.id}marker_weight/slider`}
+                  <SliderField
                     name="marker_weight"
                     value={row.marker_weight}
                     label="Symbol: Linien-Dicke"
                     min={0}
                     max={5}
                     step={0.1}
-                    onBlur={onBlur}
-                    helperText="0 ist dünn, 5 dick. Funktioniert nur bei linien-artigen Symbolen gut"
+                    onChange={onChange}
+                    validationMessage="0 ist dünn, 5 dick. Funktioniert nur bei linien-artigen Symbolen gut"
                   />
                 </>
               )}
@@ -297,8 +271,7 @@ export const LayerStyleForm = ({ userMayEdit, row: layer }: Props) => {
                 name="opacity"
                 label="Linien und Punkte: Deckkraft"
                 value={row.opacity}
-                onBlur={onBlur}
-                // error={errors?.project?.opacity}
+                onChange={onChange}
                 type="number"
                 disabled={!userMayEdit}
               />
@@ -310,32 +283,27 @@ export const LayerStyleForm = ({ userMayEdit, row: layer }: Props) => {
                 name="weight"
                 label="Linien: Breite (in Bild-Punkten)"
                 value={row.weight}
-                onBlur={onBlur}
-                // error={errors?.project?.weight}
+                onChange={onChange}
                 type="number"
                 disabled={!userMayEdit}
               />
               <div>
-                <RadioButtonGroup
+                <RadioGroupField
                   name="line_cap"
                   value={row.line_cap}
-                  field="line_cap"
                   label="Linien: Abschluss"
-                  dataSource={lineCapValues}
-                  onBlur={onBlur}
-                  // error={errors?.field?.line_cap}
+                  list={lineCapValues}
+                  onChange={onChange}
                   disabled={!userMayEdit}
                 />
               </div>
               <div>
-                <RadioButtonGroup
+                <RadioGroupField
                   name="line_join"
                   value={row.line_join}
-                  field="line_join"
                   label="Linien: Ecken"
-                  dataSource={lineJoinValues}
-                  onBlur={onBlur}
-                  // error={errors?.field?.line_join}
+                  list={lineJoinValues}
+                  onChange={onChange}
                   disabled={!userMayEdit}
                 />
               </div>
@@ -343,35 +311,31 @@ export const LayerStyleForm = ({ userMayEdit, row: layer }: Props) => {
                 name="dash_array"
                 label="Linien: Dash-Array"
                 value={row.dash_array}
-                onBlur={onBlur}
-                // error={errors?.project?.dash_array}
+                onChange={onChange}
                 disabled={!userMayEdit}
               />
               <TextField
                 name="dash_offset"
                 label="Linien: Dash-Offset"
                 value={row.dash_offset}
-                onBlur={onBlur}
-                // error={errors?.project?.dash_offset}
+                onChange={onChange}
                 disabled={!userMayEdit}
               />
             </>
           )}
           {polygonCount !== 0 && (
             <>
-              <Checkbox2States
+              <SwitchField
                 label="(Umriss-)Linien zeichnen (Polygone und Kreise)"
                 name="stroke"
                 value={row.stroke}
-                onBlur={onBlur}
-                // error={errors?.project?.stroke}
+                onChange={onChange}
               />
-              <Checkbox2States
+              <SwitchField
                 label="Flächen füllen"
                 name="fill"
                 value={row.fill}
-                onBlur={onBlur}
-                // error={errors?.project?.fill}
+                onChange={onChange}
                 disabled={!userMayEdit}
               />
               <ColorPicker
@@ -386,20 +350,17 @@ export const LayerStyleForm = ({ userMayEdit, row: layer }: Props) => {
                 name="fill_opacity"
                 label="Füllung: Deckkraft / Opazität"
                 value={row.fill_opacity}
-                onBlur={onBlur}
-                // error={errors?.project?.fill_opacity}
+                onChange={onChange}
                 type="number"
                 disabled={!userMayEdit}
               />
               <div>
-                <RadioButtonGroup
+                <RadioGroupField
                   name="fill_rule"
                   value={row.fill_rule}
-                  field="fill_rule"
                   label="Füllung: Regel, um den Inhalt von Flächen zu bestimmen"
-                  dataSource={fillRuleValues}
-                  onBlur={onBlur}
-                  // error={errors?.field?.fill_rule}
+                  list={fillRuleValues}
+                  onChange={onChange}
                   disabled={!userMayEdit}
                 />
               </div>
