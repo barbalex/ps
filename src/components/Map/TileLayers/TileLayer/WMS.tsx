@@ -45,7 +45,7 @@ export const WMS = memo(({ layer }) => {
         height: mapSize.y,
         bbox,
       }
-      console.log('hello WMS, onClick', { layer, params })
+      // console.log('hello WMS, onClick', { layer, params })
       res = await axios({
         method: 'get',
         url: layer.wms_base_url,
@@ -159,18 +159,18 @@ export const WMS = memo(({ layer }) => {
     600,
   )
 
-  console.log('hello WMS', {
-    layer,
-    url: layer.wms_base_url,
-    layers: layer.wms_layer?.value,
-    version: layer.wms_version,
-    format: layer.wms_format?.value,
-    minZoom: layer.min_zoom,
-    maxZoom: layer.max_zoom,
-    className: layer.grayscale ? 'grayscale' : '',
-    opacity: layer.opacity,
-    transparent: layer.wms_transparent === true,
-  })
+  // console.log('hello WMS', {
+  //   layer,
+  //   url: layer.wms_base_url,
+  //   layers: layer.wms_layer?.value,
+  //   version: layer.wms_version,
+  //   format: layer.wms_format?.value,
+  //   minZoom: layer.min_zoom,
+  //   maxZoom: layer.max_zoom,
+  //   className: layer.grayscale ? 'grayscale' : '',
+  //   opacity: layer.opacity,
+  //   transparent: layer.wms_transparent === true,
+  // })
 
   // TODO:
   // leaflet calls server internally
