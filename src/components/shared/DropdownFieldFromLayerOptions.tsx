@@ -61,8 +61,8 @@ export const DropdownFieldFromLayerOptions = memo(
                 value: { label: data.optionText, value: data.optionValue },
               },
             })
-            // set the label if it is empty
-            if (!!row && !row.label) {
+            // set the label too
+            if (row) {
               onChange({
                 target: {
                   name: 'label',
