@@ -13,6 +13,7 @@ export const [hooks, css] = createHooks({
   span: 'span',
   'path:nth-of-type(2)': 'path:nth-of-type(2)',
   '&:before': '&:before',
+  '&:first-of-type': '&:first-of-type',
 })
 
 /* Hooks created:

@@ -5,14 +5,12 @@ import React, {
   useMemo,
   useContext,
 } from 'react'
-import { observer } from 'mobx-react-lite'
-import styled from '@emotion/styled'
 import isEqual from 'lodash/isEqual'
 import { useParams } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
 
 import Checkbox2States from '../Checkbox2States'
-import ErrorBoundary from '../ErrorBoundary'
+import { ErrorBoundary } from '../ErrorBoundary'
 import { ColorPicker } from '../ColorPicker'
 import {
   dexie,
@@ -28,48 +26,44 @@ import RadioButtonGroup from '../RadioButtonGroup'
 import Slider from '../Slider'
 import insertLayerStyle from '../../../utils/insertLayerStyle'
 import MarkerSymbolPicker from './MarkerSymbolPicker'
-import constants from '../../../utils/constants'
 import storeContext from '../../../storeContext'
+import { css } from '../../../css'
 
 const markerTypeGerman = {
   circle: 'Kreis',
   marker: 'Symbol',
 }
-
-const Container = styled.div`
-  margin: 25px -10px 0 -10px;
-`
-const TitleRow = styled.div`
-  background-color: rgba(248, 243, 254, 1);
-  flex-shrink: 0;
-  display: flex;
-  height: ${constants.titleRowHeight}px;
-  justify-content: space-between;
-  padding: 0 10px;
-  cursor: pointer;
-  user-select: none;
-  position: sticky;
-  top: -10px;
-  z-index: 4;
-  &:first-of-type {
-    margin-top: -10px;
-  }
-`
-const Title = styled.div`
-  font-weight: bold;
-  margin-top: auto;
-  margin-bottom: auto;
-`
-const FieldsContainer = styled.div`
-  padding: 15px 10px 10px 10px;
-`
+const containerStyle = {
+  margin: '25px -10px 0 -10px',
+}
+const titleRowStyle = {
+  backgroundColor: 'rgba(248, 243, 254, 1)',
+  flexShrink: 0,
+  display: 'flex',
+  height: '30px',
+  justifyContent: 'space-between',
+  padding: '0 10px',
+  cursor: 'pointer',
+  userSelect: 'none',
+  position: 'sticky',
+  top: '-10px',
+  zIndex: 4,
+}
+const titleStyle = {
+  fontWeight: 'bold',
+  marginTop: 'auto',
+  marginBottom: 'auto',
+}
+const fieldsContainerStyle = {
+  padding: '15px 10px 10px 10px',
+}
 
 interface Props {
   userMayEdit: boolean
   row: VectorLayer
 }
 
-const LayerStyleForm = ({ userMayEdit, row: layer }: Props) => {
+export const LayerStyleForm = ({ userMayEdit, row: layer }: Props) => {
   const { session } = useContext(storeContext)
   const { vectorLayerId, tableId } = useParams()
 
@@ -203,11 +197,19 @@ const LayerStyleForm = ({ userMayEdit, row: layer }: Props) => {
 
   return (
     <ErrorBoundary>
-      <Container>
-        <TitleRow>
-          <Title>Geometrien stylen</Title>
-        </TitleRow>
-        <FieldsContainer
+      <div style={containerStyle}>
+        <div
+          style={css({
+            ...titleRowStyle,
+            '&:first-of-type': {
+              marginTop: '-10px',
+            },
+          })}
+        >
+          <div style={titleStyle}>Geometrien stylen</div>
+        </div>
+        <div
+          style={fieldsContainerStyle}
           onBlur={(e) => {
             if (!e.currentTarget.contains(e.relatedTarget)) {
               // focus left the container
@@ -403,10 +405,8 @@ const LayerStyleForm = ({ userMayEdit, row: layer }: Props) => {
               </div>
             </>
           )}
-        </FieldsContainer>
-      </Container>
+        </div>
+      </div>
     </ErrorBoundary>
   )
 }
-
-export default observer(LayerStyleForm)
