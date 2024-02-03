@@ -10,8 +10,6 @@ CREATE TYPE layer_options_field_enum AS enum(
   'wfs_layer'
 );
 
-DROP TABLE IF EXISTS layer_options;
-
 CREATE TABLE layer_options(
   layer_option_id text PRIMARY KEY DEFAULT NULL,
   tile_layer_id uuid DEFAULT NULL REFERENCES tile_layers(tile_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,

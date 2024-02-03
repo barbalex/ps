@@ -44,7 +44,7 @@ export const getCapabilitiesData = async ({
     for (const o of wmsFormatOptions) {
       await db.layer_options.upsert({
         create: {
-          layer_option_id: `${row.wms_base_url}/${o.value}/wms_format`,
+          layer_option_id: `${row.wms_base_url}/wms_format/${o.value}`,
           tile_layer_id: row.tile_layer_id,
           vector_layer_id: null,
           field: 'wms_format',
@@ -58,7 +58,7 @@ export const getCapabilitiesData = async ({
           label: o.label,
         },
         where: {
-          layer_option_id: `${row.wms_base_url}/${o.value}/wms_format`,
+          layer_option_id: `${row.wms_base_url}/wms_format/${o.value}`,
         },
       })
     }
@@ -71,27 +71,25 @@ export const getCapabilitiesData = async ({
   )
   console.log('hello, getCapabilitiesData 1, layers:', layers)
   // TODO: because upsert errors and single creates are slow
+  // https://github.com/electric-sql/electric/issues/916
+  // Deleting may not be good because other layers might use the same layer_option_id
   // 1. deleteMany
   const layerOptionIds = layers.map(
-    (l) => `${row.wms_base_url}/${l.Name}/wms_layer`,
+    (l) => `${row.wms_base_url}/wms_layer/${l.Name}`,
   )
   try {
-    const deleteRes = await db.layer_options.deleteMany({
+    await db.layer_options.deleteMany({
       where: {
-        layer_option_id: {
-          in: layerOptionIds,
-        },
+        layer_option_id: { in: layerOptionIds },
       },
     })
-    console.log('hello, getCapabilitiesData 2, deleteRes:', deleteRes)
   } catch (error) {
     console.error('hello, getCapabilitiesData 3, error:', error)
   }
   // 2. createMany
   const layerOptions = layers.map((l) => ({
-    layer_option_id: `${row.wms_base_url}/${l.Name}/wms_layer`,
+    layer_option_id: `${row.wms_base_url}/wms_layer/${l.Name}`,
     tile_layer_id: row.tile_layer_id,
-    // vector_layer_id: null,
     field: 'wms_layer',
     value: l.Name,
     label: l.Title,
@@ -99,6 +97,7 @@ export const getCapabilitiesData = async ({
     legend_url: l.Style?.[0]?.LegendURL?.[0]?.OnlineResource,
   }))
   console.log('hello, getCapabilitiesData 4, layerOptions:', layerOptions)
+  // sadly, creating many this errors
   // try {
   //   const createManyRes = await db.layer_options.createMany({
   //     data: layerOptions,
@@ -109,17 +108,28 @@ export const getCapabilitiesData = async ({
   // }
 
   for (const l of layerOptions) {
+    // creating works
     try {
-      await db.layer_options.create({
-        data: l,
-      })
+      await db.layer_options.create({ data: l })
       // console.log('hello, getCapabilitiesData 4, res from creating:', res)
     } catch (error) {
       console.error('hello, getCapabilitiesData 5, error from creating:', error)
     }
-    console.log(
-      'hello, getCapabilitiesData 6, upserted value into layer_options',
-    )
+    // upserting errors too
+    // try {
+    //   await db.layer_options.upsert({
+    //     create: l,
+    //     update: l,
+    //     where: {
+    //       layer_option_id: l.layer_option_id,
+    //     },
+    //   })
+    // } catch (error) {
+    //   console.error(
+    //     'hello, getCapabilitiesData 5, error from upserting:',
+    //     error,
+    //   )
+    // }
   }
 
   // TODO: should legends be saved in sqlite? can be 700!!!
@@ -163,7 +173,7 @@ export const getCapabilitiesData = async ({
     for (const o of wmsInfoFormatOptions) {
       await db.layer_options.upsert({
         create: {
-          layer_option_id: `${row.wms_base_url}/${o.value}/wms_info_format`,
+          layer_option_id: `${row.wms_base_url}/wms_info_format/${o.value}`,
           tile_layer_id: row.tile_layer_id,
           vector_layer_id: null,
           field: 'wms_info_format',
@@ -177,7 +187,7 @@ export const getCapabilitiesData = async ({
           label: o.label,
         },
         where: {
-          layer_option_id: `${row.wms_base_url}/${o.value}/wms_info_format`,
+          layer_option_id: `${row.wms_base_url}/wms_info_format/${o.value}`,
         },
       })
     }
