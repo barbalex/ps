@@ -12,6 +12,7 @@ export const [hooks, css] = createHooks({
   '&:nth-child(odd)': '&:nth-child(odd)',
   span: 'span',
   'path:nth-of-type(2)': 'path:nth-of-type(2)',
+  '&:before': '&:before',
 })
 
 /* Hooks created:
