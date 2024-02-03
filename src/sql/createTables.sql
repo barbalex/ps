@@ -1772,13 +1772,13 @@ CREATE TABLE tile_layers(
   min_zoom decimal DEFAULT 0,
   opacity numeric DEFAULT 1, -- is opacity_percent client side because electric-sql does not support numeric
   wms_base_url text DEFAULT NULL,
-  wms_format text DEFAULT NULL,
+  wms_format jsonb DEFAULT NULL,
   wms_layer jsonb DEFAULT NULL,
   wms_parameters jsonb DEFAULT NULL,
   wms_styles jsonb DEFAULT NULL, -- array of strings
   wms_transparent boolean DEFAULT FALSE,
   wms_version text DEFAULT NULL, -- values: 1.1.1, 1.3.0
-  wms_info_format text DEFAULT NULL,
+  wms_info_format jsonb DEFAULT NULL,
   queryable boolean DEFAULT NULL,
   grayscale boolean DEFAULT FALSE,
   local_data_size integer DEFAULT NULL,

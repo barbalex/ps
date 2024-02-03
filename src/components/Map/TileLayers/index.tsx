@@ -68,7 +68,7 @@ export const TileLayers = () => {
       min_zoom: layer.min_zoom,
       opacity: layer.opacity,
       wms_base_url: layer.wms_base_url,
-      wms_format: layer.wms_format,
+      wms_format: layer.wms_format?.value,
       wms_layer: layer.wms_layer?.value,
       wms_parameters: layer.wms_parameters,
       wms_styles: layer.wms_styles,
