@@ -55,20 +55,18 @@ const fieldsContainerStyle = {
   padding: '15px 10px 10px 10px',
 }
 
-const lineCapValues = ['butt', 'round', 'square'].map((v) => ({
-  value: v,
-  label: v,
-}))
-const lineJoinValues = ['arcs', 'bevel', 'miter', 'miter-clip', 'round'].map(
-  (v) => ({
-    value: v,
-    label: v,
-  }),
-)
-const fillRuleValues = ['nonzero', 'evenodd'].map((v) => ({
-  value: v,
-  label: v,
-}))
+const arrayToOptions = (arr: string[]) =>
+  arr.map((v) => ({ value: v, label: v }))
+
+const lineCapValues = arrayToOptions(['butt', 'round', 'square'])
+const lineJoinValues = arrayToOptions([
+  'arcs',
+  'bevel',
+  'miter',
+  'miter-clip',
+  'round',
+])
+const fillRuleValues = arrayToOptions(['nonzero', 'evenodd'])
 const markerTypeValues = ['circle', 'marker'].map((v) => ({
   value: v,
   label: markerTypeGerman[v],
