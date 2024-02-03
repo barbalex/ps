@@ -69,33 +69,42 @@ export const getCapabilitiesData = async ({
   const layers = (capabilities?.Capability?.Layer?.Layer ?? []).filter((v) =>
     v?.CRS?.includes('EPSG:4326'),
   )
-  console.log('hello, getCapabilitiesData, layers:', layers)
+  console.log('hello, getCapabilitiesData 1, layers:', layers)
   for (const l of layers) {
     const layer_option_id = `${row.wms_base_url}/${l.Name}/wms_layer`
     const value = {
       tile_layer_id: row.tile_layer_id,
+      vector_layer_id: null,
       field: 'wms_layer',
       value: l.Name,
       label: l.Title,
-      legend_url: l.Style?.[0]?.LegendURL?.[0]?.OnlineResource,
       queryable: l.queryable,
+      legend_url: l.Style?.[0]?.LegendURL?.[0]?.OnlineResource,
     }
-    console.log('hello, getCapabilitiesData', {
+    console.log('hello, getCapabilitiesData 2', {
       layer: l,
       value,
       layer_option_id,
       row,
     })
-    await db.layer_options.upsert({
-      create: {
-        layer_option_id,
-        ...value,
-      },
-      update: value,
-      where: {
-        layer_option_id,
-      },
-    })
+    try {
+      const res = await db.layer_options.upsert({
+        create: {
+          layer_option_id,
+          ...value,
+        },
+        update: value,
+        where: {
+          layer_option_id,
+        },
+      })
+      console.log('hello, getCapabilitiesData 3, res:', res)
+    } catch (error) {
+      console.error('hello, getCapabilitiesData 4, error:', error)
+    }
+    console.log(
+      'hello, getCapabilitiesData 5, upserted value into layer_options',
+    )
   }
 
   // TODO: should legends be saved in sqlite? can be 700!!!

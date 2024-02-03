@@ -474,7 +474,7 @@ export const createTileLayer = ({ project_id }) => ({
   project_id,
   sort: 0,
   active: false,
-  type: 'wmts',
+  type: 'wms',
   max_zoom: 19,
   min_zoom: 0,
   opacity_percent: 100,
