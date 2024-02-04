@@ -1,9 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
 import { HexColorPicker } from 'react-colorful'
-import { Input } from '@fluentui/react-components'
+import { Input, Field } from '@fluentui/react-components'
 
 import { Label } from './Label'
-import { css } from '../../css'
 
 const inputRowStyle = {
   display: 'flex',
@@ -14,6 +13,8 @@ const inputLabelStyle = {
   paddingRight: '8px',
   alignSelf: 'center',
 }
+// need to vertically align, see: https://github.com/microsoft/fluentui/issues/30470
+const fieldStyle = { gridTemplateColumns: '80px 1fr', alignItems: 'center' }
 const inputStyle = {
   width: 80,
 }
@@ -57,14 +58,12 @@ export const ColorPicker = ({
   }, [onBlurControl])
 
   // weird placing without the div
-  // TODO: use fluent ui Field
   return (
     <div>
       <div style={formControlStyle} onBlur={onBlurControl}>
         <Label label={label} />
         <HexColorPicker color={val} onChange={setVal} />
-        <div style={inputRowStyle}>
-          <div style={inputLabelStyle}>Hex-Wert:</div>
+        <Field label="Hex-Wert" orientation="horizontal" style={fieldStyle}>
           <Input
             name={name}
             value={val}
@@ -75,7 +74,7 @@ export const ColorPicker = ({
             style={inputStyle}
             appearance="underline"
           />
-        </div>
+        </Field>
       </div>
     </div>
   )
