@@ -90,7 +90,6 @@ export const LayerStyleForm = ({ userMayEdit = true, row: layer }: Props) => {
   )
   const { results } = useLiveQuery(db.layer_styles.liveFirst({ where }))
   const row: LayerStyle = results
-  console.log('hello LayerStyle, row:', row)
 
   const isFirstRender = useRef(true)
   // ensure new one is created if needed
