@@ -87,7 +87,7 @@ export const VectorLayerPVLGeom = ({ layer }: Props) => {
       }))
       removeNotifs()
 
-      const layerStyle: LayerStyle = await db.layer_styles.findUnique({
+      const layerStyle: LayerStyle = await db.layer_styles.findFirst({
         where: { vector_layer_id: layer.vector_layer_id },
       })
       setData(data)

@@ -24,7 +24,8 @@ CREATE TYPE fill_rule_enum AS enum(
 DROP TABLE IF EXISTS layer_styles CASCADE;
 
 CREATE TABLE layer_styles(
-  vector_layer_id uuid PRIMARY KEY DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE, -- 1:1 relationship
+  layer_style_id uuid PRIMARY KEY DEFAULT NULL,
+  vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   action_id uuid DEFAULT NULL REFERENCES actions(action_id) ON DELETE CASCADE ON UPDATE CASCADE,
   check_id uuid DEFAULT NULL REFERENCES checks(check_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -50,6 +51,8 @@ CREATE TABLE layer_styles(
   fill_rule fill_rule_enum DEFAULT NULL, -- 'evenodd',
   deleted boolean DEFAULT NULL -- false
 );
+
+CREATE INDEX ON layer_styles USING btree(vector_layer_id);
 
 CREATE INDEX ON layer_styles USING btree(place_id);
 

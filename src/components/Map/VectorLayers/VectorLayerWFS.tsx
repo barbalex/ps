@@ -150,7 +150,7 @@ export const VectorLayerWFS = ({ layer }: Props) => {
   }, [fetchDataDebounced, map, showMap])
 
   const { results: layerStyleResults } = useLiveQuery(
-    db.layer_styles.liveUnique({
+    db.layer_styles.liveFirst({
       where: { vector_layer_id: layer.vector_layer_id },
     }),
   )

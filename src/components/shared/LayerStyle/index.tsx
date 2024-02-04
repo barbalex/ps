@@ -7,7 +7,7 @@ import React, {
 } from 'react'
 import isEqual from 'lodash/isEqual'
 import { useParams } from 'react-router-dom'
-import { useLiveQuery } from 'dexie-react-hooks'
+import { useLiveQuery } from 'electric-sql/react'
 
 import { SwitchField } from '../SwitchField'
 import { ErrorBoundary } from '../ErrorBoundary'
@@ -20,10 +20,11 @@ import {
 import { TextField } from '../TextField'
 import { RadioGroupField } from '../RadioGroupField'
 import { SliderField } from '../SliderField'
-import insertLayerStyle from '../../../utils/insertLayerStyle'
 import MarkerSymbolPicker from './MarkerSymbolPicker'
 import storeContext from '../../../storeContext'
 import { css } from '../../../css'
+import { useElectric } from '../../../ElectricProvider'
+import { createLayerStyle } from '../../../modules/createRows'
 
 // was used to
 const markerTypeGerman = {
@@ -78,8 +79,11 @@ interface Props {
 }
 
 export const LayerStyleForm = ({ userMayEdit, row: layer }: Props) => {
+  const { db } = useElectric()!
+
   const { session } = useContext(storeContext)
-  const { vectorLayerId, tableId } = useParams()
+  const { vector_layer_id, place_id, check_id, action_id, observation_id } =
+    useParams()
 
   // Get these numbers for tables?
   // No: Manager should be able to set styling before features exist
@@ -89,56 +93,40 @@ export const LayerStyleForm = ({ userMayEdit, row: layer }: Props) => {
 
   const criteria = useMemo(
     () =>
-      tableId
-        ? { table_id: tableId }
-        : vectorLayerId
-        ? { vector_layer_id: vectorLayerId }
+      vector_layer_id
+        ? { vector_layer_id }
+        : check_id
+        ? { check_id }
+        : action_id
+        ? { action_id }
+        : observation_id
+        ? { observation_id }
+        : // place_id needs to come last because it can be hierarchically above the others
+        place_id
+        ? { place_id }
         : 'none',
-    [vectorLayerId, tableId],
+    [vector_layer_id, place_id, check_id, action_id, observation_id],
   )
   const row: LayerStyle = useLiveQuery(
-    async () => {
-      const _row: LayerStyle = await dexie.layer_styles.get(criteria)
-
-      // create layer_style for this table / vector_layer
-      // IF it does not yet exist
-      // if (!_row) {
-      //   _row = await insertLayerStyle({
-      //     tableId,
-      //     vectorLayerId,
-      //   })
-      //   /**
-      //    * somehow this is FUCKED UP
-      //    * first call returns undefined
-      //    * second: already exists...
-      //    * Unable to add key to index 'vector_layer_id': at least one key does not satisfy the uniqueness requirements
-      //    */
-      // }
-
-      return _row
-    },
-    [vectorLayerId, tableId],
-    // pass value to be used on first render
-    null,
+    db.layer_styles.liveFirst({ where: criteria }),
   )
 
+  // ensure new one is created if needed
   useEffect(() => {
     const run = async () => {
-      if (row === null) {
-        // first: check DOUBLE if not already exists
-        const layerStyle: LayerStyle = await dexie.layer_styles.get(criteria)
-        if (!layerStyle) {
-          console.log('inserting new layer_style')
-          // TODO: upsert to ensure new one is created if needed
-          insertLayerStyle({
-            tableId,
-            vectorLayerId,
-          })
-        }
+      if (row) return
+      // await own fetch because row is returned only on second render...
+      const layerStyle: LayerStyle = await db.layer_styles.findFirst({
+        where: criteria,
+      })
+      if (!layerStyle) {
+        console.log('inserting new layer_style')
+        const newLayerStyle = createLayerStyle(criteria)
+        db.layer_styles.create({ data: newLayerStyle })
       }
     }
     run()
-  }, [criteria, vectorLayerId, row, tableId])
+  }, [criteria, db.layer_styles, row])
 
   const originalRow = useRef<LayerStyle>()
   const rowState = useRef<LayerStyle>()

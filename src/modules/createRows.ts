@@ -495,3 +495,19 @@ export const createVectorLayer = ({ project_id }) => ({
   max_features: 1000,
   deleted: false,
 })
+
+export const createLayerStyle = ({
+  vector_layer_id = null,
+  place_id = null,
+  check_id = null,
+  action_id = null,
+  observation_id = null,
+}) => ({
+  layer_style_id: uuidv7(),
+  vector_layer_id,
+  place_id,
+  check_id,
+  action_id,
+  observation_id,
+  deleted: false,
+})
