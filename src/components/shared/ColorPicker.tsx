@@ -1,6 +1,7 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import { HexColorPicker } from 'react-colorful'
 import { Input, Field } from '@fluentui/react-components'
+import { useDebouncedCallback } from 'use-debounce'
 
 const outerFieldStyle = {
   paddingBottom: 19,
@@ -30,11 +31,26 @@ export const ColorPicker = ({
   name,
   disabled,
 }: Props) => {
-  const [val, setVal] = useState<string>('')
+  const [val, setVal] = useState<string>(color)
 
-  useEffect(() => {
-    setVal(color ?? '')
-  }, [color])
+  // need to debounce changes when choosing
+  const onChangeDebounced = useDebouncedCallback(onChange, 300)
+
+  const onChangeColorPicker = useCallback(
+    (color: string) => {
+      setVal(color)
+      const fakeEvent = {
+        target: {
+          name,
+          value: val,
+        },
+      }
+      onChangeDebounced(fakeEvent)
+    },
+    [name, onChangeDebounced, val],
+  )
+
+  const onChangeInput = useCallback((e) => setVal(e.target.value), [])
 
   const onBlurControl = useCallback(() => {
     const fakeEvent = {
@@ -46,14 +62,9 @@ export const ColorPicker = ({
     onChange(fakeEvent)
   }, [name, onChange, val])
 
-  const onBlurInput = useCallback(() => {
-    setTimeout(() => onBlurControl)
-  }, [onBlurControl])
-
-  // weird placing without the div
   return (
     <Field label={label} style={outerFieldStyle}>
-      <HexColorPicker color={val} onChange={setVal} />
+      <HexColorPicker color={val} onChange={onChangeColorPicker} />
       <Field
         label="Hex-Wert"
         orientation="horizontal"
@@ -62,9 +73,8 @@ export const ColorPicker = ({
         <Input
           name={name}
           value={val}
-          type="text"
-          onChange={(e) => setVal(e.target.value)}
-          onBlur={onBlurInput}
+          onChange={onChangeInput}
+          onBlur={onBlurControl}
           disabled={disabled}
           style={inputStyle}
           appearance="underline"
