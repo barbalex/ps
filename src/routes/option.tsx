@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
+import type { InputProps } from '@fluentui/react-components'
 
 import { UiOptions as UiOption } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
@@ -21,7 +22,7 @@ export const Component = () => {
 
   const row: UiOption = results
 
-  const onChange = useCallback(
+  const onChange: InputProps['onChange'] = useCallback(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       db.ui_options.update({
