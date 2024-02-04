@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
+import type { InputProps } from '@fluentui/react-components'
 
 import { SubprojectTaxa as SubprojectTaxon } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
@@ -23,7 +24,7 @@ export const Component = () => {
 
   const row: SubprojectTaxon = results
 
-  const onChange = useCallback(
+  const onChange: InputProps['onChange'] = useCallback(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       db.subproject_taxa.update({
