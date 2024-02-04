@@ -14,6 +14,9 @@ const inputLabelStyle = {
   paddingRight: '8px',
   alignSelf: 'center',
 }
+const inputStyle = {
+  width: 80,
+}
 const formControlStyle = {
   paddingBottom: '19px',
 }
@@ -48,6 +51,7 @@ export const ColorPicker = ({
     }
     onChange(fakeEvent)
   }, [name, onChange, val])
+
   const onBlurInput = useCallback(() => {
     setTimeout(() => onBlurControl)
   }, [onBlurControl])
@@ -68,12 +72,8 @@ export const ColorPicker = ({
             onChange={(e) => setVal(e.target.value)}
             onBlur={onBlurInput}
             disabled={disabled}
-            style={css({
-              '&:before': {
-                borderBottomColor: 'rgba(0, 0, 0, 0.1)',
-              },
-              width: 70,
-            })}
+            style={inputStyle}
+            appearance="underline"
           />
         </div>
       </div>

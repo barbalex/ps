@@ -96,32 +96,19 @@ export const LayerStyleForm = ({ userMayEdit = true, row: layer }: Props) => {
   // ensure new one is created if needed
   useEffect(() => {
     const run = async () => {
-      console.log(
-        'hello LayerStyle effect 0, isFirstRender:',
-        isFirstRender.current,
-      )
-      // BUT: this should not run on first render as row is null then anyway
+      // this should NOT run on first render as row is null then anyway
       if (isFirstRender.current) {
         isFirstRender.current = false
         return
       }
       // stop if row already exists
-      console.log('hello LayerStyle effect 1, row:', row)
       if (row) return
-      console.log('hello LayerStyle effect 2, where:', where)
-      // await own fetch because row is returned only on second render...
-      const layerStyle: LayerStyle = await db.layer_styles.findFirst({ where })
-      console.log('hello LayerStyle effect 3, layerStyle:', layerStyle)
-      if (!layerStyle) {
-        const newLayerStyle = createLayerStyle(where)
-        console.log(
-          'hello LayerStyle effect 4, inserting new layer_style:',
-          newLayerStyle,
-        )
-        // need to await. else next effect will run before was inserted
-        // so will insert a second one...
-        await db.layer_styles.create({ data: newLayerStyle })
-      }
+      const newLayerStyle = createLayerStyle(where)
+      console.log(
+        'hello LayerStyle effect, inserting new layer_style:',
+        newLayerStyle,
+      )
+      db.layer_styles.create({ data: newLayerStyle })
     }
     run()
   }, [where, db.layer_styles, row])
