@@ -4,7 +4,7 @@ import type { InputProps } from '@fluentui/react-components'
 import { css } from '../../../../css'
 
 interface Props {
-  Component: any
+  Component: React.ReactElement
   name: string
   onChange: InputProps['onChange']
   active: boolean
