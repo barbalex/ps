@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
+import type { InputProps } from '@fluentui/react-components'
 
 import { PlaceReportValues as PlaceReportValue } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
@@ -28,7 +29,7 @@ export const Component = () => {
 
   // console.log('PlaceReportValue, row:', row)
 
-  const onChange = useCallback(
+  const onChange: InputProps['onChange'] = useCallback(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       db.place_report_values.update({
