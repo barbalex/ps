@@ -1,6 +1,7 @@
 import { useCallback, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
+import type { InputProps } from '@fluentui/react-components'
 
 import { Tile_layers as TileLayer } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
@@ -28,7 +29,7 @@ export const Component = () => {
 
   const row: TileLayer = results
 
-  const onChange = useCallback(
+  const onChange: InputProps['onChange'] = useCallback(
     async (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       return await db.tile_layers.update({
