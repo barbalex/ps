@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useMemo } from 'react'
+import React, { useEffect, useCallback, useMemo, useRef } from 'react'
 import { useParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import type { InputProps } from '@fluentui/react-components'
@@ -19,11 +19,11 @@ import { useElectric } from '../../../ElectricProvider'
 import { createLayerStyle } from '../../../modules/createRows'
 import { getValueFromChange } from '../../../modules/getValueFromChange'
 
-// was used to
-const markerTypeGerman = {
-  circle: 'Kreis',
-  marker: 'Symbol',
-}
+// was used to translate
+// const markerTypeGerman = {
+//   circle: 'Kreis',
+//   marker: 'Symbol',
+// }
 const containerStyle = {
   margin: '25px -10px 0 -10px',
 }
@@ -88,18 +88,39 @@ export const LayerStyleForm = ({ userMayEdit = true, row: layer }: Props) => {
         : 'none',
     [vector_layer_id, place_id, check_id, action_id, observation_id],
   )
-  const row: LayerStyle = useLiveQuery(db.layer_styles.liveFirst({ where }))
+  const { results } = useLiveQuery(db.layer_styles.liveFirst({ where }))
+  const row: LayerStyle = results
+  console.log('hello LayerStyle, row:', row)
 
+  const isFirstRender = useRef(true)
   // ensure new one is created if needed
   useEffect(() => {
     const run = async () => {
+      console.log(
+        'hello LayerStyle effect 0, isFirstRender:',
+        isFirstRender.current,
+      )
+      // BUT: this should not run on first render as row is null then anyway
+      if (isFirstRender.current) {
+        isFirstRender.current = false
+        return
+      }
+      // stop if row already exists
+      console.log('hello LayerStyle effect 1, row:', row)
       if (row) return
+      console.log('hello LayerStyle effect 2, where:', where)
       // await own fetch because row is returned only on second render...
       const layerStyle: LayerStyle = await db.layer_styles.findFirst({ where })
+      console.log('hello LayerStyle effect 3, layerStyle:', layerStyle)
       if (!layerStyle) {
-        console.log('inserting new layer_style')
         const newLayerStyle = createLayerStyle(where)
-        db.layer_styles.create({ data: newLayerStyle })
+        console.log(
+          'hello LayerStyle effect 4, inserting new layer_style:',
+          newLayerStyle,
+        )
+        // need to await. else next effect will run before was inserted
+        // so will insert a second one...
+        await db.layer_styles.create({ data: newLayerStyle })
       }
     }
     run()
@@ -109,11 +130,11 @@ export const LayerStyleForm = ({ userMayEdit = true, row: layer }: Props) => {
     (e: React.ChangeEvent<HTMLInputElement>, data) => {
       const { name, value } = getValueFromChange(e, data)
       db.layer_styles.update({
-        where: { layer_style_id: row.layer_style_id },
+        where: { layer_style_id: row?.layer_style_id },
         data: { [name]: value },
       })
     },
-    [db.layer_styles, row.layer_style_id],
+    [db.layer_styles, row?.layer_style_id],
   )
 
   if (!row) return null // no spinner as is null until enough data input
