@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
+import type { InputProps } from '@fluentui/react-components'
 
 import { Files as File } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
@@ -21,7 +22,7 @@ export const Component = () => {
 
   const row: File = results
 
-  const onChange = useCallback(
+  const onChange: InputProps['onChange'] = useCallback(
     (e, dataIn) => {
       const { name, value } = getValueFromChange(e, dataIn)
       const data = { [name]: value }
