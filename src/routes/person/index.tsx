@@ -1,6 +1,7 @@
 import { useCallback, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
+import type { InputProps } from '@fluentui/react-components'
 
 import { Persons as Person } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
@@ -24,7 +25,7 @@ export const Component = () => {
 
   const row: Person = results
 
-  const onChange = useCallback(
+  const onChange: InputProps['onChange'] = useCallback(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       db.persons.update({

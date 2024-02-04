@@ -1,6 +1,7 @@
 import { useCallback, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
+import type { InputProps } from '@fluentui/react-components'
 
 import { PlaceLevels as PlaceLevel } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
@@ -25,7 +26,7 @@ export const Component = () => {
 
   const row: PlaceLevel = results
 
-  const onChange = useCallback(
+  const onChange: InputProps['onChange'] = useCallback(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       const valueToUse = name === 'level' ? +value : value
