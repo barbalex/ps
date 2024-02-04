@@ -67,7 +67,7 @@ export const LayerStyleForm = ({ userMayEdit = true, row: layer }: Props) => {
     useParams()
 
   // TODO: only show stuff existing in the layer? BUT: manager should be able to set befor layer exists?
-  // if so: get count for points, lines and polygons
+  // if so: get count for points, lines and polygons (fields exist in layer)
 
   const where = useMemo(
     () =>
