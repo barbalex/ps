@@ -31,7 +31,7 @@ const titleRowStyle = {
   backgroundColor: 'rgba(248, 243, 254, 1)',
   flexShrink: 0,
   display: 'flex',
-  height: '30px',
+  height: '35px',
   justifyContent: 'space-between',
   padding: '0 10px',
   cursor: 'pointer',
@@ -69,8 +69,6 @@ export const LayerStyleForm = ({ userMayEdit = true, row: layer }: Props) => {
   // Get these numbers for tables?
   // No: Manager should be able to set styling before features exist
   const pointCount = layer?.point_count
-  const lineCount = layer?.line_count
-  const polygonCount = layer?.polygon_count
 
   const where = useMemo(
     () =>
@@ -139,171 +137,147 @@ export const LayerStyleForm = ({ userMayEdit = true, row: layer }: Props) => {
           <div style={titleStyle}>Geometrien stylen</div>
         </div>
         <div style={fieldsContainerStyle}>
-          {pointCount !== 0 && (
-            <>
-              <div>
-                <RadioGroupField
-                  name="marker_type"
-                  label="Punkt-Typ"
-                  list={markerTypeValues}
-                  value={row.marker_type}
-                  onChange={onChange}
-                  disabled={!userMayEdit}
-                />
-              </div>
-              {row.marker_type === 'circle' && (
-                <TextField
-                  name="circle_marker_radius"
-                  label="Kreis-Radius in Bild-Punkten"
-                  value={row.circle_marker_radius}
-                  onChange={onChange}
-                  type="number"
-                  disabled={!userMayEdit}
-                />
-              )}
-              {row.marker_type === 'marker' && (
-                <>
-                  <MarkerSymbolPicker
-                    onChange={onChange}
-                    value={row.marker_symbol}
-                  />
-                  <TextField
-                    name="marker_size"
-                    label="Symbol: Grösse (in Bild-Punkten)"
-                    value={row.marker_size}
-                    onChange={onChange}
-                    type="number"
-                    disabled={!userMayEdit}
-                  />
-                  <SliderField
-                    name="marker_weight"
-                    value={row.marker_weight}
-                    label="Symbol: Linien-Dicke"
-                    min={0}
-                    max={5}
-                    step={0.1}
-                    onChange={onChange}
-                    validationMessage="0 ist dünn, 5 dick. Funktioniert nur bei linien-artigen Symbolen gut"
-                  />
-                </>
-              )}
-            </>
+          <RadioGroupField
+            name="marker_type"
+            label="Punkt-Typ"
+            list={markerTypeValues}
+            value={row.marker_type}
+            onChange={onChange}
+            disabled={!userMayEdit}
+          />
+          {row.marker_type === 'circle' && (
+            <TextField
+              name="circle_marker_radius"
+              label="Kreis-Radius in Bild-Punkten"
+              value={row.circle_marker_radius}
+              onChange={onChange}
+              type="number"
+              disabled={!userMayEdit}
+            />
           )}
-          {(lineCount !== 0 || polygonCount !== 0 || pointCount !== 0) && (
+          {row.marker_type === 'marker' && (
             <>
-              <ColorPicker
-                id={`${row.id}/color`}
-                label="Linien und Punkte: Farbe"
+              <MarkerSymbolPicker
                 onChange={onChange}
-                color={row.color}
-                name="color"
-                disabled={!userMayEdit}
+                value={row.marker_symbol}
               />
               <TextField
-                name="opacity_percent"
-                label="Linien und Punkte: Deckkraft"
-                value={row.opacity_percent}
+                name="marker_size"
+                label="Symbol: Grösse (in Bild-Punkten)"
+                value={row.marker_size}
                 onChange={onChange}
                 type="number"
-                max={100}
+                disabled={!userMayEdit}
+              />
+              <SliderField
+                name="marker_weight"
+                value={row.marker_weight}
+                label="Symbol: Linien-Dicke"
                 min={0}
-                step={5}
-                disabled={!userMayEdit}
+                max={5}
+                step={0.1}
+                onChange={onChange}
+                validationMessage="0 ist dünn, 5 dick. Funktioniert nur bei linien-artigen Symbolen gut"
               />
             </>
           )}
-          {(lineCount !== 0 || polygonCount !== 0) && (
-            <>
-              <TextField
-                name="weight"
-                label="Linien: Breite (in Bild-Punkten)"
-                value={row.weight}
-                onChange={onChange}
-                type="number"
-                disabled={!userMayEdit}
-              />
-              <div>
-                <RadioGroupField
-                  name="line_cap"
-                  value={row.line_cap}
-                  label="Linien: Abschluss"
-                  list={lineCapValues}
-                  onChange={onChange}
-                  disabled={!userMayEdit}
-                />
-              </div>
-              <div>
-                <RadioGroupField
-                  name="line_join"
-                  value={row.line_join}
-                  label="Linien: Ecken"
-                  list={lineJoinValues}
-                  onChange={onChange}
-                  disabled={!userMayEdit}
-                />
-              </div>
-              <TextField
-                name="dash_array"
-                label="Linien: Dash-Array"
-                value={row.dash_array}
-                onChange={onChange}
-                disabled={!userMayEdit}
-              />
-              <TextField
-                name="dash_offset"
-                label="Linien: Dash-Offset"
-                value={row.dash_offset}
-                onChange={onChange}
-                disabled={!userMayEdit}
-              />
-            </>
-          )}
-          {polygonCount !== 0 && (
-            <>
-              <SwitchField
-                label="(Umriss-)Linien zeichnen (Polygone und Kreise)"
-                name="stroke"
-                value={row.stroke}
-                onChange={onChange}
-              />
-              <SwitchField
-                label="Flächen füllen"
-                name="fill"
-                value={row.fill}
-                onChange={onChange}
-                disabled={!userMayEdit}
-              />
-              <ColorPicker
-                id={`${row.id}/fill_color`}
-                label="Füllung: Farbe"
-                name="fill_color"
-                onChange={onChange}
-                color={row.fill_color}
-                disabled={!userMayEdit}
-              />
-              <TextField
-                name="fill_opacity_percent"
-                label="Fill: Opacity (%)"
-                value={row.fill_opacity_percent}
-                onChange={onChange}
-                type="number"
-                max={100}
-                min={0}
-                step={5}
-                disabled={!userMayEdit}
-              />
-              <div>
-                <RadioGroupField
-                  name="fill_rule"
-                  value={row.fill_rule}
-                  label="Füllung: Regel, um den Inhalt von Flächen zu bestimmen"
-                  list={fillRuleValues}
-                  onChange={onChange}
-                  disabled={!userMayEdit}
-                />
-              </div>
-            </>
-          )}
+          <ColorPicker
+            id={`${row.id}/color`}
+            label="Linien und Punkte: Farbe"
+            onChange={onChange}
+            color={row.color}
+            name="color"
+            disabled={!userMayEdit}
+          />
+          <TextField
+            name="opacity_percent"
+            label="Linien und Punkte: Deckkraft"
+            value={row.opacity_percent}
+            onChange={onChange}
+            type="number"
+            max={100}
+            min={0}
+            step={5}
+            disabled={!userMayEdit}
+          />
+          <TextField
+            name="weight"
+            label="Linien: Breite (in Bild-Punkten)"
+            value={row.weight}
+            onChange={onChange}
+            type="number"
+            disabled={!userMayEdit}
+          />
+          <RadioGroupField
+            name="line_cap"
+            value={row.line_cap}
+            label="Linien: Abschluss"
+            list={lineCapValues}
+            onChange={onChange}
+            disabled={!userMayEdit}
+          />
+          <RadioGroupField
+            name="line_join"
+            value={row.line_join}
+            label="Linien: Ecken"
+            list={lineJoinValues}
+            onChange={onChange}
+            disabled={!userMayEdit}
+          />
+          <TextField
+            name="dash_array"
+            label="Linien: Dash-Array"
+            value={row.dash_array}
+            onChange={onChange}
+            disabled={!userMayEdit}
+          />
+          <TextField
+            name="dash_offset"
+            label="Linien: Dash-Offset"
+            value={row.dash_offset}
+            onChange={onChange}
+            disabled={!userMayEdit}
+          />
+          <SwitchField
+            label="(Umriss-)Linien zeichnen (Polygone und Kreise)"
+            name="stroke"
+            value={row.stroke}
+            onChange={onChange}
+          />
+          <SwitchField
+            label="Flächen füllen"
+            name="fill"
+            value={row.fill}
+            onChange={onChange}
+            disabled={!userMayEdit}
+          />
+          <ColorPicker
+            id={`${row.id}/fill_color`}
+            label="Füllung: Farbe"
+            name="fill_color"
+            onChange={onChange}
+            color={row.fill_color}
+            disabled={!userMayEdit}
+          />
+          <TextField
+            name="fill_opacity_percent"
+            label="Fill: Opacity (%)"
+            value={row.fill_opacity_percent}
+            onChange={onChange}
+            type="number"
+            max={100}
+            min={0}
+            step={5}
+            disabled={!userMayEdit}
+          />
+          <RadioGroupField
+            name="fill_rule"
+            value={row.fill_rule}
+            label="Füllung: Regel, um den Inhalt von Flächen zu bestimmen"
+            list={fillRuleValues}
+            onChange={onChange}
+            disabled={!userMayEdit}
+          />
         </div>
       </div>
     </ErrorBoundary>
