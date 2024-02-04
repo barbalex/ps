@@ -1,34 +1,42 @@
-import { useCallback } from 'react'
+import React, { useCallback } from 'react'
+import type { InputProps } from '@fluentui/react-components'
+
+import { css } from '../../../../css'
 
 interface Props {
   Component: any
   name: string
-  onBlur: (event: any) => void
+  onChange: InputProps['onChange']
   active: boolean
 }
 
-const Symbol = ({ Component, name, onBlur, active }: Props) => {
+export const Symbol = ({ Component, name, onChange, active }: Props) => {
   const onClick = useCallback(() => {
-    onBlur({
+    onChange({
       target: {
         name: 'marker_symbol',
         value: name,
       },
     })
-  }, [name, onBlur])
+  }, [name, onChange])
 
   if (active) {
     return (
       <Component
-        style={{
+        style={css({
           backgroundColor: 'rgba(74, 20, 140, 0.1)',
           outline: '2px solid rgba(74, 20, 140, 1)',
-        }}
+          // was '> svg' from the container
+          fontSize: 'x-large',
+          padding: 4,
+          cursor: 'pointer',
+          '&:hover': {
+            backgroundColor: 'rgba(74, 20, 140, 0.1)',
+          },
+        })}
       />
     )
   }
 
   return <Component onClick={onClick} />
 }
-
-export default Symbol

@@ -1,18 +1,11 @@
-import React, {
-  useEffect,
-  useCallback,
-  useRef,
-  useMemo,
-  useContext,
-} from 'react'
-import isEqual from 'lodash/isEqual'
+import React, { useEffect, useCallback, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
+import type { InputProps } from '@fluentui/react-components'
 
 import { SwitchField } from '../SwitchField'
 import { ErrorBoundary } from '../ErrorBoundary'
 import { ColorPicker } from '../ColorPicker'
-import { dexie } from '../../../dexieClient'
 import {
   Vector_layers as VectorLayer,
   Layer_styles as LayerStyle,
@@ -20,11 +13,11 @@ import {
 import { TextField } from '../TextField'
 import { RadioGroupField } from '../RadioGroupField'
 import { SliderField } from '../SliderField'
-import MarkerSymbolPicker from './MarkerSymbolPicker'
-import storeContext from '../../../storeContext'
+import { MarkerSymbolPicker } from './MarkerSymbolPicker'
 import { css } from '../../../css'
 import { useElectric } from '../../../ElectricProvider'
 import { createLayerStyle } from '../../../modules/createRows'
+import { getValueFromChange } from '../../../modules/getValueFromChange'
 
 // was used to
 const markerTypeGerman = {
@@ -81,7 +74,6 @@ interface Props {
 export const LayerStyleForm = ({ userMayEdit, row: layer }: Props) => {
   const { db } = useElectric()!
 
-  const { session } = useContext(storeContext)
   const { vector_layer_id, place_id, check_id, action_id, observation_id } =
     useParams()
 
@@ -91,7 +83,7 @@ export const LayerStyleForm = ({ userMayEdit, row: layer }: Props) => {
   const lineCount = layer?.line_count
   const polygonCount = layer?.polygon_count
 
-  const criteria = useMemo(
+  const where = useMemo(
     () =>
       vector_layer_id
         ? { vector_layer_id }
@@ -107,74 +99,32 @@ export const LayerStyleForm = ({ userMayEdit, row: layer }: Props) => {
         : 'none',
     [vector_layer_id, place_id, check_id, action_id, observation_id],
   )
-  const row: LayerStyle = useLiveQuery(
-    db.layer_styles.liveFirst({ where: criteria }),
-  )
+  const row: LayerStyle = useLiveQuery(db.layer_styles.liveFirst({ where }))
 
   // ensure new one is created if needed
   useEffect(() => {
     const run = async () => {
       if (row) return
       // await own fetch because row is returned only on second render...
-      const layerStyle: LayerStyle = await db.layer_styles.findFirst({
-        where: criteria,
-      })
+      const layerStyle: LayerStyle = await db.layer_styles.findFirst({ where })
       if (!layerStyle) {
         console.log('inserting new layer_style')
-        const newLayerStyle = createLayerStyle(criteria)
+        const newLayerStyle = createLayerStyle(where)
         db.layer_styles.create({ data: newLayerStyle })
       }
     }
     run()
-  }, [criteria, db.layer_styles, row])
+  }, [where, db.layer_styles, row])
 
-  const originalRow = useRef<LayerStyle>()
-  const rowState = useRef<LayerStyle>()
-  useEffect(() => {
-    rowState.current = row
-    if (!originalRow.current && row) {
-      originalRow.current = row
-    }
-  }, [row])
-
-  // console.log('LayerStyleForm rendering, row:', row)
-
-  const updateOnServer = useCallback(async () => {
-    // only update if is changed
-    if (isEqual(originalRow.current, rowState.current)) return
-
-    row.updateOnServer({
-      was: originalRow.current,
-      is: rowState.current,
-      session,
-    })
-    // ensure originalRow is reset too
-    originalRow.current = rowState.current
-  }, [row, session])
-
-  useEffect(() => {
-    window.onbeforeunload = async () => {
-      // save any data changed before closing tab or browser
-      updateOnServer()
-    }
-  }, [updateOnServer])
-
-  const onBlur = useCallback(
-    async (event) => {
-      const { name: field, value, type, valueAsNumber } = event.target
-      let newValue = type === 'number' ? valueAsNumber : value
-      if ([undefined, '', NaN].includes(newValue)) newValue = null
-
-      // only update if value has changed
-      const previousValue = rowState.current[field]
-      if (newValue === previousValue) return
-
-      // update rowState
-      rowState.current = { ...row, ...{ [field]: newValue } }
-      // update dexie
-      dexie.layer_styles.update(row.id, { [field]: newValue })
+  const onChange: InputProps['onChange'] = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>, data) => {
+      const { name, value } = getValueFromChange(e, data)
+      db.layer_styles.update({
+        where: { layer_style_id: row.layer_style_id },
+        data: { [name]: value },
+      })
     },
-    [row],
+    [db.layer_styles, row.layer_style_id],
   )
 
   if (!row) return null // no spinner as is null until enough data input
@@ -218,7 +168,7 @@ export const LayerStyleForm = ({ userMayEdit, row: layer }: Props) => {
               {row.marker_type === 'marker' && (
                 <>
                   <MarkerSymbolPicker
-                    onBlur={onBlur}
+                    onChange={onChange}
                     value={row.marker_symbol}
                   />
                   <TextField

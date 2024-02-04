@@ -1,34 +1,25 @@
 import React, { useMemo } from 'react'
 import * as icons from 'react-icons/md'
-import styled from '@emotion/styled'
+import type { InputProps } from '@fluentui/react-components'
 
 import Label from '../../Label'
 import Symbol from './Symbol'
 
-const SymbolContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  height: 500px;
-  overflow: auto;
-  outline: 1px solid rgba(74, 20, 140, 0.1);
-  margin-bottom: 19px;
-  > svg {
-    font-size: x-large;
-    padding: 4px;
-    cursor: pointer;
-    &:hover {
-      background-color: rgba(74, 20, 140, 0.1);
-    }
-  }
-`
+const symbolContainerStyle = {
+  display: 'flex',
+  flexWrap: 'wrap',
+  height: 500,
+  overflow: 'auto',
+  outline: '1px solid rgba(74, 20, 140, 0.1)',
+  marginBottom: 19,
+}
 
 interface Props {
-  onBlur: () => void
+  onChange: InputProps['onChange']
   value: string | undefined
 }
 
-const MarkerSymbolPicker = ({ onBlur, value }: Props) => {
-  // console.log('MarkerSymbolPicker, images:', icons)
+export const MarkerSymbolPicker = ({ onChange, value }: Props) => {
   const wantedIconKeys = useMemo(
     () =>
       Object.keys(icons)
@@ -37,12 +28,11 @@ const MarkerSymbolPicker = ({ onBlur, value }: Props) => {
         .filter((key) => !key.endsWith('KPlus')),
     [],
   )
-  // console.log('MarkerSymbolPicker, wantedIconKeys:', wantedIconKeys)
 
   return (
     <>
       <Label label="Symbol" />
-      <SymbolContainer>
+      <div style={symbolContainerStyle}>
         {wantedIconKeys.map((key) => {
           const Component = icons[key]
 
@@ -51,14 +41,12 @@ const MarkerSymbolPicker = ({ onBlur, value }: Props) => {
               key={key}
               Component={Component}
               name={key}
-              onBlur={onBlur}
+              onChange={onChange}
               active={value === key}
             />
           )
         })}
-      </SymbolContainer>
+      </div>
     </>
   )
 }
-
-export default MarkerSymbolPicker
