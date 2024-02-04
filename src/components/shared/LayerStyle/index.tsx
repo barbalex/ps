@@ -49,22 +49,10 @@ const fieldsContainerStyle = {
   padding: '15px 10px 10px 10px',
 }
 
-const arrayToOptions = (arr: string[]) =>
-  arr.map((v) => ({ value: v, label: v }))
-
-const lineCapValues = arrayToOptions(['butt', 'round', 'square'])
-const lineJoinValues = arrayToOptions([
-  'arcs',
-  'bevel',
-  'miter',
-  'miter-clip',
-  'round',
-])
-const fillRuleValues = arrayToOptions(['nonzero', 'evenodd'])
-const markerTypeValues = ['circle', 'marker'].map((v) => ({
-  value: v,
-  label: markerTypeGerman[v],
-}))
+const lineCapValues = ['butt', 'round', 'square']
+const lineJoinValues = ['arcs', 'bevel', 'miter', 'miter-clip', 'round']
+const fillRuleValues = ['nonzero', 'evenodd']
+const markerTypeValues = ['circle', 'marker']
 
 interface Props {
   userMayEdit: boolean
@@ -199,7 +187,7 @@ export const LayerStyleForm = ({ userMayEdit = true, row: layer }: Props) => {
               <ColorPicker
                 id={`${row.id}/color`}
                 label="Linien und Punkte: Farbe"
-                onBlur={onBlur}
+                onChange={onChange}
                 color={row.color}
                 name="color"
                 disabled={!userMayEdit}
@@ -279,7 +267,7 @@ export const LayerStyleForm = ({ userMayEdit = true, row: layer }: Props) => {
                 id={`${row.id}/fill_color`}
                 label="Füllung: Farbe"
                 name="fill_color"
-                onBlur={onBlur}
+                onChange={onChange}
                 color={row.fill_color}
                 disabled={!userMayEdit}
               />

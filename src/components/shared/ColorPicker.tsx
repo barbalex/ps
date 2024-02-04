@@ -28,7 +28,7 @@ interface Props {
 
 export const ColorPicker = ({
   color = '#ff0000',
-  onBlur,
+  onChange,
   label,
   name,
   disabled,
@@ -46,8 +46,8 @@ export const ColorPicker = ({
         value: val,
       },
     }
-    onBlur(fakeEvent)
-  }, [name, onBlur, val])
+    onChange(fakeEvent)
+  }, [name, onChange, val])
   const onBlurInput = useCallback(() => {
     setTimeout(() => onBlurControl)
   }, [onBlurControl])
