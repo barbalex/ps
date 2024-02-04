@@ -1,5 +1,6 @@
 import { memo, useMemo, useCallback } from 'react'
 import { Field, TagGroup, Tag } from '@fluentui/react-components'
+import type { InputProps } from '@fluentui/react-components'
 
 import { useElectric } from '../../../ElectricProvider'
 import { DropdownField } from './DropdownField'
@@ -40,7 +41,7 @@ export const MultiSelect = memo(
       [db, id, name, table, valueArray],
     )
 
-    const onChange = useCallback(
+    const onChange: InputProps['onChange'] = useCallback(
       ({ value, previousValue }) => {
         const option = options.find((o) => o.value === value)
         let val = [...valueArray]
