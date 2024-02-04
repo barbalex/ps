@@ -2,8 +2,8 @@ import React, { useMemo } from 'react'
 import * as icons from 'react-icons/md'
 import type { InputProps } from '@fluentui/react-components'
 
-import Label from '../../Label'
-import Symbol from './Symbol'
+import { Label } from '../../Label'
+import { Symbol } from './Symbol'
 
 const symbolContainerStyle = {
   display: 'flex',
