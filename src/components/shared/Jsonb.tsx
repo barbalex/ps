@@ -6,6 +6,7 @@
 // 4. build input depending on field properties
 import { memo, useCallback, useEffect, useState, forwardRef } from 'react'
 import { useParams } from 'react-router-dom'
+import type { InputProps } from '@fluentui/react-components'
 
 import { useElectric } from '../../ElectricProvider'
 import { getValueFromChange } from '../../modules/getValueFromChange'
@@ -73,7 +74,7 @@ export const Jsonb = memo(
         // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [db])
 
-      const onChange = useCallback(
+      const onChange: InputProps['onChange'] = useCallback(
         (e, dataReturned) => {
           const { name, value } = getValueFromChange(e, dataReturned)
           const isDate = value instanceof Date

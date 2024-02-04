@@ -1,5 +1,6 @@
 import { memo, useMemo, useCallback } from 'react'
 import { Field, TagGroup, Tag } from '@fluentui/react-components'
+import type { InputProps } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 
@@ -38,7 +39,7 @@ export const FieldList = memo(
       [db, id, name, table, valueArray],
     )
 
-    const onChange = useCallback(
+    const onChange: InputProps['onChange'] = useCallback(
       ({ value, previousValue }) => {
         let val = [...valueArray]
         if (!value) {
