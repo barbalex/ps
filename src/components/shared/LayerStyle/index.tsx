@@ -200,11 +200,14 @@ export const LayerStyleForm = ({ userMayEdit = true, row: layer }: Props) => {
                 disabled={!userMayEdit}
               />
               <TextField
-                name="opacity"
+                name="opacity_percent"
                 label="Linien und Punkte: Deckkraft"
-                value={row.opacity}
+                value={row.opacity_percent}
                 onChange={onChange}
                 type="number"
+                max={100}
+                min={0}
+                step={5}
                 disabled={!userMayEdit}
               />
             </>
@@ -279,11 +282,14 @@ export const LayerStyleForm = ({ userMayEdit = true, row: layer }: Props) => {
                 disabled={!userMayEdit}
               />
               <TextField
-                name="fill_opacity"
-                label="Füllung: Deckkraft / Opazität"
-                value={row.fill_opacity}
+                name="fill_opacity_percent"
+                label="Fill: Opacity (%)"
+                value={row.fill_opacity_percent}
                 onChange={onChange}
                 type="number"
+                max={100}
+                min={0}
+                step={5}
                 disabled={!userMayEdit}
               />
               <div>
