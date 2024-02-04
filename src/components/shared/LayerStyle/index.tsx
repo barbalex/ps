@@ -66,9 +66,8 @@ export const LayerStyleForm = ({ userMayEdit = true, row: layer }: Props) => {
   const { vector_layer_id, place_id, check_id, action_id, observation_id } =
     useParams()
 
-  // Get these numbers for tables?
-  // No: Manager should be able to set styling before features exist
-  const pointCount = layer?.point_count
+  // TODO: only show stuff existing in the layer? BUT: manager should be able to set befor layer exists?
+  // if so: get count for points, lines and polygons
 
   const where = useMemo(
     () =>
