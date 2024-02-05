@@ -161,6 +161,14 @@ export const VectorLayerWFS = ({ layer }: Props) => {
     () => ({
       ...layerstyleToProperties({ layerStyle }),
       pointToLayer: (geoJsonPoint, latlng) => {
+        // TODO: add font-weight setting
+        if (layerStyle.marker_type === 'circle') {
+          return L.circleMarker(latlng, {
+            ...layerStyle,
+            radius: layerStyle.circle_marker_radius ?? 8,
+          })
+        }
+
         const IconComponent = icons[layerStyle?.marker_symbol]
 
         // TODO: this is not working
