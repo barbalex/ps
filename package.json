@@ -8,6 +8,7 @@
     "backend:stop": "npx electric-sql stop",
     "backend:up": "npx electric-sql start --with-postgres --detach",
     "backend:down": "npx electric-sql stop --remove",
+    "client:generate:minimal": "npx electric-sql generate --debug",
     "client:generate": "npx electric-sql generate && node renameLables.js",
     "client:watch": "npx electric-sql generate --watch",
     "db:migrate": "npx electric-sql with-config \"npx pg-migrations apply --database {{ELECTRIC_PROXY}} --directory ./db/migrations\"",
