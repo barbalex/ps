@@ -15,6 +15,7 @@ export const Url = memo(
 
     const onBlur = useCallback(async () => {
       if (!row?.url) return
+      // TODO: compare with old value and only update if changed
       // show loading indicator
       const notification_id = uuidv7()
       await db.notifications.create({

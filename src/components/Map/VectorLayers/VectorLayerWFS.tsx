@@ -1,7 +1,7 @@
 /**
  * Not sure if this is ever used - data should always be downloaded
  */
-import { useEffect, useState, useCallback, useRef } from 'react'
+import { useEffect, useState, useCallback, useRef, useMemo } from 'react'
 import { GeoJSON, useMapEvent } from 'react-leaflet'
 import axios from 'redaxios'
 import XMLViewer from 'react-xml-viewer'
@@ -10,6 +10,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import * as ReactDOMServer from 'react-dom/server'
 import { useDebouncedCallback } from 'use-debounce'
 import { uuidv7 } from '@kripod/uuidv7'
+import * as icons from 'react-icons/md'
 
 import {
   Dialog,
@@ -156,6 +157,48 @@ export const VectorLayerWFS = ({ layer }: Props) => {
   )
   const layerStyle: LayerStyle = layerStyleResults
 
+  console.log('hello VectorLayerWFS, icons:', icons)
+  console.log('hello VectorLayerWFS, markerSymbol:', layerStyle?.marker_symbol)
+  const IconComponent = icons[layerStyle?.marker_symbol]
+  console.log('hello VectorLayerWFS, IconComponent:', IconComponent)
+  const iconElement = IconComponent
+    ? ReactDOMServer.renderToString(
+        <IconComponent
+          mapIconColor={'#cc756b'}
+          mapIconColorInnerCircle={'#fff'}
+          pinInnerCircleRadius={48}
+        />,
+      )
+    : undefined
+
+  console.log('hello VectorLayerWFS', {
+    layer,
+  })
+
+  const style = useMemo(
+    () => ({
+      ...layerstyleToProperties({ layerStyle }),
+      pointToLayer: (geoJsonPoint, latlng) =>
+        IconComponent
+          ? L.marker(latlng, {
+              icon: L.divIcon({
+                html: ReactDOMServer.renderToString(
+                  <IconComponent
+                    mapIconColor={'#cc756b'}
+                    mapIconColorInnerCircle={'#fff'}
+                    pinInnerCircleRadius={48}
+                  />,
+                ),
+                iconAnchor: L.CRS.EPSG4326.latLngToPoint(latlng),
+                iconSize: [25, 30],
+                popupAnchor: [0, -28],
+              }),
+            })
+          : L.marker(latlng),
+    }),
+    [IconComponent, layerStyle],
+  )
+
   // include only if zoom between min_zoom and max_zoom
   if (layer.min_zoom !== undefined && zoom < layer.min_zoom) return null
   if (layer.max_zoom !== undefined && zoom > layer.max_zoom) return null
@@ -190,7 +233,7 @@ export const VectorLayerWFS = ({ layer }: Props) => {
         key={data?.length ?? 0}
         data={data}
         opacity={layer.opacity}
-        style={layerstyleToProperties({ layerStyle })}
+        style={style}
         onEachFeature={(feature, _layer) => {
           const layersData = [
             {
