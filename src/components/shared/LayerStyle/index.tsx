@@ -60,7 +60,10 @@ interface Props {
 }
 
 // TODO: userMayEdit. Was: role in ['account_manager', 'project_manager']
-export const LayerStyleForm = ({ userMayEdit = true, row: layer }: Props) => {
+export const LayerStyleForm = ({
+  userMayEdit = true,
+}: // row: layer
+Props) => {
   const { db } = useElectric()!
 
   const { vector_layer_id, place_id, check_id, action_id, observation_id } =
