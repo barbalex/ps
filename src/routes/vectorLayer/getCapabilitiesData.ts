@@ -12,8 +12,8 @@ export const getCapabilitiesData = async ({
   returnValue = false,
   db,
 }: Props) => {
-  if (!row) return
-  if (!row.url) return
+  if (!row) throw new Error('row is required')
+  if (!row.url) throw new Error('row.url is required')
 
   // console.log('getCapabilitiesDataForVectorLayer, row:', row)
 
