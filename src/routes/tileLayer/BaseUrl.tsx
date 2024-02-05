@@ -1,20 +1,21 @@
 import { useCallback, memo } from 'react'
 import { uuidv7 } from '@kripod/uuidv7'
+import { createWorkerFactory, useWorker } from '@shopify/react-web-worker'
 
 import { Tile_layers as TileLayer } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
 import { TextField } from '../../components/shared/TextField'
-import { getCapabilitiesData } from './getCapabilitiesData' 
 
 import '../../form.css'
+const createWorker = createWorkerFactory(() => import('./getCapabilitiesData'))
 
 export const BaseUrl = memo(
   ({ onChange, row }: { onChange: () => void; row: TileLayer }) => {
-    const { db } = useElectric()
+    const { db } = useElectric()!
+    const worker = useWorker(createWorker)
 
     const onBlur = useCallback(async () => {
       if (!row?.wms_base_url) return
-      console.log('hello WmsBaseUrl, onBlur, getting capabilities')
       // show loading indicator
       const notification_id = uuidv7()
       await db.notifications.create({
@@ -26,7 +27,7 @@ export const BaseUrl = memo(
         },
       })
       try {
-        await getCapabilitiesData({ row, db })
+        await worker.getCapabilitiesData({ row, db })
       } catch (error) {
         console.error(
           'hello WmsBaseUrl, onBlur, error getting capabilities data:',
@@ -38,8 +39,7 @@ export const BaseUrl = memo(
         where: { notification_id },
         data: { paused: false, timeout: 500 },
       })
-      console.log('hello WmsBaseUrl, onBlur, finished getting capabilities')
-    }, [db, row])
+    }, [db, row, worker])
 
     return (
       <TextField
