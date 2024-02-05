@@ -9,6 +9,17 @@ interface Props {
   onChange: InputProps['onChange']
   active: boolean
 }
+const style = {
+  backgroundColor: 'white',
+  outline: '1px solid rgba(74, 20, 140, 1)',
+  fontSize: 'large',
+  padding: 4,
+  cursor: 'pointer',
+}
+const activeStyle = {
+  ...style,
+  backgroundColor: 'yellow',
+}
 
 export const Symbol = ({ Component, name, onChange, active }: Props) => {
   const onClick = useCallback(() => {
@@ -21,22 +32,18 @@ export const Symbol = ({ Component, name, onChange, active }: Props) => {
   }, [name, onChange])
 
   if (active) {
-    return (
-      <Component
-        style={css({
-          backgroundColor: 'rgba(74, 20, 140, 0.1)',
-          outline: '2px solid rgba(74, 20, 140, 1)',
-          // was '> svg' from the container
-          fontSize: 'x-large',
-          padding: 4,
-          cursor: 'pointer',
-          '&:hover': {
-            backgroundColor: 'rgba(74, 20, 140, 0.1)',
-          },
-        })}
-      />
-    )
+    return <Component style={activeStyle} />
   }
 
-  return <Component onClick={onClick} />
+  return (
+    <Component
+      onClick={onClick}
+      style={css({
+        ...style,
+        '&:hover': {
+          backgroundColor: 'rgba(74, 20, 140, 0.1)',
+        },
+      })}
+    />
+  )
 }

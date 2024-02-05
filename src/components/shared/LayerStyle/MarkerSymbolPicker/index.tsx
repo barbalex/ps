@@ -8,7 +8,7 @@ import { Symbol } from './Symbol'
 const symbolContainerStyle = {
   display: 'flex',
   flexWrap: 'wrap',
-  height: 500,
+  maxHeight: 700,
   overflow: 'auto',
   outline: '1px solid rgba(74, 20, 140, 0.1)',
   marginBottom: 19,
