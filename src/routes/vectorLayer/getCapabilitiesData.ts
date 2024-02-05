@@ -1,5 +1,9 @@
+import { Electric } from './../../generated/client/index'
 import { getCapabilities } from '../../modules/getCapabilities'
-import { Vector_layers as VectorLayer } from '../../../generated/client'
+import {
+  Vector_layers as VectorLayer,
+  Electric,
+} from '../../../generated/client'
 
 interface Props {
   row: VectorLayer
