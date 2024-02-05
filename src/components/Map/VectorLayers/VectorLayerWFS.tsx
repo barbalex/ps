@@ -157,43 +157,6 @@ export const VectorLayerWFS = ({ layer }: Props) => {
   )
   const layerStyle: LayerStyle = layerStyleResults
 
-  const style = useMemo(
-    () => ({
-      ...layerstyleToProperties({ layerStyle }),
-      pointToLayer: (geoJsonPoint, latlng) => {
-        // TODO: add font-weight setting
-        if (layerStyle.marker_type === 'circle') {
-          return L.circleMarker(latlng, {
-            ...layerStyle,
-            radius: layerStyle.circle_marker_radius ?? 8,
-          })
-        }
-
-        const IconComponent = icons[layerStyle?.marker_symbol]
-
-        // TODO: this is not working
-        // standard icon is always used
-        return IconComponent
-          ? L.marker(latlng, {
-              icon: L.divIcon({
-                html: ReactDOMServer.renderToString(
-                  <IconComponent
-                    mapIconColor={'#cc756b'}
-                    mapIconColorInnerCircle={'#fff'}
-                    pinInnerCircleRadius={48}
-                  />,
-                ),
-                iconAnchor: L.CRS.EPSG4326.latLngToPoint(latlng),
-                iconSize: [25, 30],
-                popupAnchor: [0, -28],
-              }),
-            })
-          : L.marker(latlng)
-      },
-    }),
-    [layerStyle],
-  )
-
   // include only if zoom between min_zoom and max_zoom
   if (layer.min_zoom !== undefined && zoom < layer.min_zoom) return null
   if (layer.max_zoom !== undefined && zoom > layer.max_zoom) return null
@@ -228,7 +191,37 @@ export const VectorLayerWFS = ({ layer }: Props) => {
         key={data?.length ?? 0}
         data={data}
         opacity={layer.opacity}
-        style={style}
+        style={layerstyleToProperties({ layerStyle })}
+        pointToLayer={(geoJsonPoint, latlng) => {
+          // TODO: add font-weight setting
+          if (layerStyle.marker_type === 'circle') {
+            return L.circleMarker(latlng, {
+              ...layerStyle,
+              radius: layerStyle.circle_marker_radius ?? 8,
+            })
+          }
+
+          const IconComponent = icons[layerStyle?.marker_symbol]
+
+          // TODO: this is not working
+          // standard icon is always used
+          return IconComponent
+            ? L.marker(latlng, {
+                icon: L.divIcon({
+                  html: ReactDOMServer.renderToString(
+                    <IconComponent
+                      mapIconColor={'#cc756b'}
+                      mapIconColorInnerCircle={'#fff'}
+                      pinInnerCircleRadius={48}
+                    />,
+                  ),
+                  iconAnchor: L.CRS.EPSG4326.latLngToPoint(latlng),
+                  iconSize: [25, 30],
+                  popupAnchor: [0, -28],
+                }),
+              })
+            : L.marker(latlng)
+        }}
         onEachFeature={(feature, _layer) => {
           const layersData = [
             {
