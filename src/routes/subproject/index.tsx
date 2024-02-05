@@ -44,7 +44,7 @@ export const Component = () => {
 
   return (
     <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} />å
+      <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
         <TextFieldInactive
           label="ID"
