@@ -157,29 +157,13 @@ export const VectorLayerWFS = ({ layer }: Props) => {
   )
   const layerStyle: LayerStyle = layerStyleResults
 
-  console.log('hello VectorLayerWFS, icons:', icons)
-  console.log('hello VectorLayerWFS, markerSymbol:', layerStyle?.marker_symbol)
-  const IconComponent = icons[layerStyle?.marker_symbol]
-  console.log('hello VectorLayerWFS, IconComponent:', IconComponent)
-  const iconElement = IconComponent
-    ? ReactDOMServer.renderToString(
-        <IconComponent
-          mapIconColor={'#cc756b'}
-          mapIconColorInnerCircle={'#fff'}
-          pinInnerCircleRadius={48}
-        />,
-      )
-    : undefined
-
-  console.log('hello VectorLayerWFS', {
-    layer,
-  })
-
   const style = useMemo(
     () => ({
       ...layerstyleToProperties({ layerStyle }),
-      pointToLayer: (geoJsonPoint, latlng) =>
-        IconComponent
+      pointToLayer: (geoJsonPoint, latlng) => {
+        const IconComponent = icons[layerStyle?.marker_symbol]
+
+        return IconComponent
           ? L.marker(latlng, {
               icon: L.divIcon({
                 html: ReactDOMServer.renderToString(
@@ -194,9 +178,10 @@ export const VectorLayerWFS = ({ layer }: Props) => {
                 popupAnchor: [0, -28],
               }),
             })
-          : L.marker(latlng),
+          : L.marker(latlng)
+      },
     }),
-    [IconComponent, layerStyle],
+    [layerStyle],
   )
 
   // include only if zoom between min_zoom and max_zoom
