@@ -20,8 +20,6 @@ export const SubprojectsNode = ({ project_id, level = 3 }) => {
   )
   const subprojects: Subproject[] = results ?? []
 
-  console.log('hello from SubprojectsNode, subprojects:', subprojects)
-
   // get projects.subproject_name_plural to name the table
   // can't include projects in subprojects query because there will be no result before subprojects are created
   const { results: project } = useLiveQuery(
@@ -30,9 +28,7 @@ export const SubprojectsNode = ({ project_id, level = 3 }) => {
   const namePlural = project?.subproject_name_plural ?? 'Subprojects'
 
   const subprojectsNode = useMemo(
-    () => ({
-      label: `${namePlural} (${subprojects.length})`,
-    }),
+    () => ({ label: `${namePlural} (${subprojects.length})` }),
     [namePlural, subprojects.length],
   )
 
