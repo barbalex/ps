@@ -161,7 +161,7 @@ export const VectorLayerPVLGeom = ({ layer }: Props) => {
           layerStyle?.marker_size
         }/${layerStyle?.color}/${layerStyle?.opacity}/${
           layerStyle?.marker_type
-        }/${layerStyle?.marker_weight}/${data?.length ?? 0}`}
+        }/${data?.length ?? 0}`}
         data={data}
         opacity={layer.opacity_percent ? layer.opacity_percent / 100 : 0}
         style={layerstyleToProperties({ layerStyle })}
@@ -192,14 +192,7 @@ export const VectorLayerPVLGeom = ({ layer }: Props) => {
                 <Component
                   style={css({
                     color: layerStyle?.color,
-                    fontSize: `${layerStyle?.marker_size ?? 16}px`,
-                    ...(layerStyle.marker_weight
-                      ? {
-                          'path:nth-of-type(2)': {
-                            strokeWidth: layerStyle.marker_weight,
-                          },
-                        }
-                      : {}),
+                    fontSize: layerStyle?.marker_size ?? 16,
                   })}
                 />,
               ),

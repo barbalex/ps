@@ -171,16 +171,6 @@ Props) => {
                 type="number"
                 disabled={!userMayEdit}
               />
-              <SliderField
-                name="marker_weight"
-                value={row.marker_weight}
-                label="Symbol: Linien-Dicke"
-                min={0}
-                max={5}
-                step={0.1}
-                onChange={onChange}
-                validationMessage="0 ist dünn, 5 dick. Funktioniert nur bei linien-artigen Symbolen gut"
-              />
             </>
           )}
           <ColorPicker

@@ -36,7 +36,6 @@ CREATE TABLE layer_styles(
   circle_marker_radius integer DEFAULT NULL, -- 8,
   marker_symbol text DEFAULT NULL,
   marker_size integer DEFAULT NULL, -- 16,
-  marker_weight integer DEFAULT NULL,
   stroke boolean DEFAULT NULL, -- true,
   color text DEFAULT NULL, -- '#3388ff',
   weight integer DEFAULT NULL, -- 3,

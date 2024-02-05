@@ -1,7 +1,7 @@
 /**
  * Not sure if this is ever used - data should always be downloaded
  */
-import { useEffect, useState, useCallback, useRef, useMemo } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { GeoJSON, useMapEvent } from 'react-leaflet'
 import axios from 'redaxios'
 import XMLViewer from 'react-xml-viewer'
@@ -188,12 +188,11 @@ export const VectorLayerWFS = ({ layer }: Props) => {
   return (
     <>
       <GeoJSON
-        key={data?.length ?? 0}
+        key={`${data?.length ?? 0}/${JSON.stringify(layerStyle)}`}
         data={data}
         opacity={layer.opacity}
         style={layerstyleToProperties({ layerStyle })}
         pointToLayer={(geoJsonPoint, latlng) => {
-          // TODO: add font-weight setting
           if (layerStyle.marker_type === 'circle') {
             return L.circleMarker(latlng, {
               ...layerStyle,
@@ -203,21 +202,17 @@ export const VectorLayerWFS = ({ layer }: Props) => {
 
           const IconComponent = icons[layerStyle?.marker_symbol]
 
-          // TODO: this is not working
-          // standard icon is always used
           return IconComponent
             ? L.marker(latlng, {
                 icon: L.divIcon({
                   html: ReactDOMServer.renderToString(
                     <IconComponent
-                      mapIconColor={'#cc756b'}
-                      mapIconColorInnerCircle={'#fff'}
-                      pinInnerCircleRadius={48}
+                      style={{
+                        color: layerStyle.color ?? '#cc756b',
+                        fontSize: layerStyle.marker_size ?? 16,
+                      }}
                     />,
                   ),
-                  iconAnchor: L.CRS.EPSG4326.latLngToPoint(latlng),
-                  iconSize: [25, 30],
-                  popupAnchor: [0, -28],
                 }),
               })
             : L.marker(latlng)
