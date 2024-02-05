@@ -1,14 +1,17 @@
 import { useCallback, memo } from 'react'
 import { uuidv7 } from '@kripod/uuidv7'
+import { createWorkerFactory, useWorker } from '@shopify/react-web-worker'
 
 import { Vector_layers as VectorLayer } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
 import { TextField } from '../../components/shared/TextField'
-import { getCapabilitiesData } from './getCapabilitiesData'
+
+const createWorker = createWorkerFactory(() => import('./getCapabilitiesData'))
 
 export const Url = memo(
   ({ onChange, row }: { onChange: () => void; row: VectorLayer }) => {
     const { db } = useElectric()
+    const worker = useWorker(createWorker)
 
     const onBlur = useCallback(async () => {
       if (!row?.url) return
@@ -23,7 +26,8 @@ export const Url = memo(
         },
       })
       try {
-        await getCapabilitiesData({ row, db })
+        // await getCapabilitiesData({ row, db })
+        await worker.getCapabilitiesData({ row, db })
       } catch (error) {
         console.error(
           'hello Url, onBlur, error getting capabilities data:',
@@ -35,7 +39,7 @@ export const Url = memo(
         where: { notification_id },
         data: { paused: false, timeout: 500 },
       })
-    }, [db, row])
+    }, [db, row, worker])
 
     return (
       <TextField

@@ -65,3 +65,5 @@ export const getCapabilities = async ({
   const parser = new window.DOMParser()
   return xmlToJson(parser.parseFromString(res?.data, 'text/html'))
 }
+
+export default getCapabilities
