@@ -12,7 +12,6 @@ import {
 } from '../../../generated/client'
 import { TextField } from '../TextField'
 import { RadioGroupField } from '../RadioGroupField'
-import { SliderField } from '../SliderField'
 import { MarkerSymbolPicker } from './MarkerSymbolPicker'
 import { css } from '../../../css'
 import { useElectric } from '../../../ElectricProvider'
