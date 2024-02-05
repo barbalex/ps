@@ -163,6 +163,8 @@ export const VectorLayerWFS = ({ layer }: Props) => {
       pointToLayer: (geoJsonPoint, latlng) => {
         const IconComponent = icons[layerStyle?.marker_symbol]
 
+        // TODO: this is not working
+        // standard icon is always used
         return IconComponent
           ? L.marker(latlng, {
               icon: L.divIcon({
