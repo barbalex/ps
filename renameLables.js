@@ -9,6 +9,9 @@ fs.readFile('src/generated/client/index.ts', 'utf8', function (err, data) {
 
   fs.writeFile('src/generated/client/index.ts', result, 'utf8', function (err) {
     if (err) return console.log(err)
+    console.log(
+      'label_replace_by_generated_column replaced by label in src/generated/client/index.ts',
+    )
   })
 })
 
@@ -28,6 +31,9 @@ fs.readFile(
       'utf8',
       function (err) {
         if (err) return console.log(err)
+        console.log(
+          'label_replace_by_generated_column replaced by label in src/generated/client/prismaClient.d.ts',
+        )
       },
     )
   },
