@@ -84,12 +84,12 @@ export const Map = () => {
         ref={mapRef}
       >
         <LocationMarker />
-        <DrawControl />
+        {/* <DrawControl /> */}
         <TileLayers key={`${tileLayerSorter}/tileLayers`} />
         <VectorLayers key={`${vectorLayerSorter}/vectorLayers`} />
-        <Control position="topright" visible={true}>
+        {/* <Control position="topright" visible={true}>
           <OwnControls />
-        </Control>
+        </Control> */}
       </MapContainer>
     </div>
   )
