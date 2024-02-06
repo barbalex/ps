@@ -26,6 +26,7 @@ export const DrawControl = () => {
     .filter((p) => !!p)
 
   const lastPathElement = pathArray.at(-1)
+
   if (!lastPathElement) return null
 
   if (lastPathElement === editingPlaceGeometry) {
