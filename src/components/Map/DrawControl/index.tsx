@@ -28,14 +28,17 @@ export const DrawControl = () => {
   const lastPathElement = pathArray.at(-1)
   if (!lastPathElement) return null
 
-  if (lastPathElement === editingPlaceGeometry)
+  if (lastPathElement === editingPlaceGeometry) {
     return <DrawControlComponent editingPlace={editingPlaceGeometry} />
+  }
 
-  if (lastPathElement === editingCheckGeometry)
+  if (lastPathElement === editingCheckGeometry) {
     return <DrawControlComponent editingCheck={editingCheckGeometry} />
+  }
 
-  if (lastPathElement === editingActionGeometry)
+  if (lastPathElement === editingActionGeometry) {
     return <DrawControlComponent editingAction={editingActionGeometry} />
+  }
 
   return null
 }
