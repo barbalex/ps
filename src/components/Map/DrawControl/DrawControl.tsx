@@ -3,12 +3,9 @@ import 'leaflet'
 import 'leaflet-draw'
 import 'leaflet-draw/dist/leaflet.draw.css'
 import { useMap } from 'react-leaflet'
-import { useParams, useLocation } from 'react-router-dom'
 import getBbox from '@turf/bbox'
 
 import { useElectric } from '../../../ElectricProvider'
-import { getLastIdFromUrl } from '../../../modules/getLastIdFromUrl'
-import { tableNameFromIdField } from '../../../modules/tableNameFromIdField'
 
 export const DrawControlComponent = ({
   editingPlace,
@@ -18,10 +15,6 @@ export const DrawControlComponent = ({
   const map = useMap()
 
   const { db } = useElectric()!
-  const params = useParams()
-  const pathArray = useLocation()
-    .pathname.split('/')
-    .filter((p) => !!p)
 
   const onEdit = useCallback(
     async (featureCollection) => {
@@ -29,27 +22,25 @@ export const DrawControlComponent = ({
         'hello DrawControl.onEdit, featureCollection:',
         featureCollection,
       )
-      const activeId = getLastIdFromUrl(pathArray)
+      const activeId = editingPlace ?? editingCheck ?? editingAction
       console.log('hello DrawControl.onEdit, activeId:', activeId)
-      if (!activeId)
-        return console.log(
-          'no row edited due to missing id of the active table',
-        )
-      const activeIdName = Object.entries(params).filter(
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        ([key, value]) => value === activeId,
-      )[0][0]
+      const activeIdName = editingPlace
+        ? 'place_id'
+        : editingCheck
+        ? 'check_id'
+        : editingAction
+        ? 'action_id'
+        : null
       console.log('hello DrawControl.onEdit, activeIdName:', activeIdName)
-      const tableName = await tableNameFromIdField({
-        idField: activeIdName,
-        db,
-      })
+      const tableName = editingPlace
+        ? 'places'
+        : editingCheck
+        ? 'checks'
+        : editingAction
+        ? 'actions'
+        : null
       console.log('hello DrawControl.onEdit, tableName:', tableName)
-      if (!tableName) {
-        return console.log(
-          `no row edited due to not finding the table name for the active id ${activeId}`,
-        )
-      }
+
       const geometry = {
         type: 'GeometryCollection',
         geometries: featureCollection.features
@@ -63,7 +54,7 @@ export const DrawControlComponent = ({
         data: { geometry, bbox },
       })
     },
-    [db, params, pathArray],
+    [db, editingAction, editingCheck, editingPlace],
   )
 
   useEffect(() => {

@@ -46,3 +46,10 @@
   margin-top: -15px;
   font-weight: 700;
 }
+
+.geometry-textarea > textarea {
+  height: auto;
+  max-height: unset;
+  font-size: 0.7rem;
+  line-height: normal;
+}

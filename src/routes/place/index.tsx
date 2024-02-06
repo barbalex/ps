@@ -83,7 +83,7 @@ export const Component = () => {
           autoFocus={row.level !== 2}
           ref={row.level !== 2 ? autoFocusRef : undefined}
         />
-        <EditingGeometry place_id={place_id} />
+        <EditingGeometry row={row} />
       </div>
     </div>
   )
