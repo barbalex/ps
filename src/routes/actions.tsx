@@ -7,6 +7,8 @@ import { useElectric } from '../ElectricProvider'
 import { createAction } from '../modules/createRows'
 import { ListViewHeader } from '../components/ListViewHeader'
 import { Row } from '../components/shared/Row'
+import { LayerMenu } from '../components/shared/LayerMenu'
+
 import '../form.css'
 
 export const Component = () => {
@@ -39,7 +41,12 @@ export const Component = () => {
 
   return (
     <div className="list-view">
-      <ListViewHeader title="Actions" addRow={add} tableName="action" />
+      <ListViewHeader
+        title="Actions"
+        addRow={add}
+        tableName="action"
+        menus={<LayerMenu table="actions" />}
+      />
       <div className="list-container">
         {actions.map(({ action_id, label }) => (
           <Row

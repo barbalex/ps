@@ -7,10 +7,12 @@ import { useElectric } from '../../ElectricProvider'
 import { user_id } from '../SqlInitializer'
 import { Ui_options as UiOption } from '../../generated/client'
 
-export const LayerMenu = ({ table }) => {
+export const LayerMenu = ({ table, placeNamePlural }) => {
   const fieldName =
-    table === 'places'
-      ? 'show_place_layer'
+    table === 'places1'
+      ? 'show_place1_layer'
+      : table === 'places2'
+      ? 'show_place2_layer'
       : table === 'checks'
       ? 'show_check_layer'
       : table === 'actions'
@@ -37,7 +39,9 @@ export const LayerMenu = ({ table }) => {
       icon={showLayer ? <MdLayersClear /> : <MdLayers />}
       onClick={onClick}
       title={
-        showLayer ? `Show checks layer in map` : `Remove checks layer from map`
+        showLayer
+          ? `Show ${placeNamePlural ?? table} layer in map`
+          : `Remove ${placeNamePlural ?? table} layer from map`
       }
     />
   )

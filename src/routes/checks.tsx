@@ -45,7 +45,7 @@ export const Component = () => {
         title="Checks"
         addRow={add}
         tableName="check"
-        menus={<LayerMenu />}
+        menus={<LayerMenu table="checks" />}
       />
       <div className="list-container">
         {checks.map(({ check_id, label }) => (

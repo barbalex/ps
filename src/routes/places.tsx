@@ -7,6 +7,8 @@ import { createPlace } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
 import { ListViewHeader } from '../components/ListViewHeader'
 import { Row } from '../components/shared/Row'
+import { LayerMenu } from '../components/shared/LayerMenu'
+
 import '../form.css'
 
 export const Component = () => {
@@ -59,6 +61,12 @@ export const Component = () => {
         title={placeNamePlural}
         addRow={add}
         tableName={placeNameSingular}
+        menus={
+          <LayerMenu
+            table={place_id ? 'places2' : 'places1'}
+            placeNamePlural={placeNamePlural}
+          />
+        }
       />
       <div className="list-container">
         {places.map(({ place_id, label }) => (
