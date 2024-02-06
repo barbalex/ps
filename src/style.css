@@ -149,7 +149,7 @@ body {
 
 /* allotment */
 :root {
-  --focus-border: rgba(55, 118, 28, 0.15);
+  --focus-border: rgba(55, 118, 28, 0.3);
   --separator-border: rgba(55, 118, 28, 0.1);
   --sash-hover-size: 8px;
 }
