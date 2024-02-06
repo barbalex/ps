@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, memo } from 'react'
 import { Button } from '@fluentui/react-button'
 import { MdLayers, MdLayersClear } from 'react-icons/md'
 import { useLiveQuery } from 'electric-sql/react'
@@ -7,7 +7,7 @@ import { useElectric } from '../../ElectricProvider'
 import { user_id } from '../SqlInitializer'
 import { Ui_options as UiOption } from '../../generated/client'
 
-export const LayerMenu = ({ table, placeNamePlural }) => {
+export const LayerMenu = memo(({ table, placeNamePlural }) => {
   const fieldName =
     table === 'places1'
       ? 'show_place1_layer'
@@ -45,4 +45,4 @@ export const LayerMenu = ({ table, placeNamePlural }) => {
       }
     />
   )
-}
+})

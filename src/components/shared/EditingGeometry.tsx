@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { Field, Textarea } from '@fluentui/react-components'
 
@@ -9,7 +9,7 @@ import { SwitchField } from './SwitchField'
 // TODO:
 // maybe generalize this component for all geometry editing
 // and move it to the shared folder
-export const EditingGeometry = ({ row, table }) => {
+export const EditingGeometry = memo(({ row, table }) => {
   const id =
     table === 'places'
       ? row.place_id
@@ -65,4 +65,4 @@ export const EditingGeometry = ({ row, table }) => {
       />
     </Field>
   )
-}
+})
