@@ -3,13 +3,13 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { Checks as Check } from '../../../generated/client'
-import { useElectric } from '../../ElectricProvider'
-import { createCheck } from '../../modules/createRows'
-import { ListViewHeader } from '../../components/ListViewHeader'
-import { Row } from '../../components/shared/Row'
-import { LayerMenu } from './LayerMenu'
+import { useElectric } from '../ElectricProvider'
+import { createCheck } from '../modules/createRows'
+import { ListViewHeader } from '../components/ListViewHeader'
+import { Row } from '../components/shared/Row'
+import { LayerMenu } from '../components/shared/LayerMenu'
 
-import '../../form.css'
+import '../form.css'
 
 export const Component = () => {
   const { project_id, subproject_id, place_id, place_id2 } = useParams()
