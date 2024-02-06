@@ -12,7 +12,6 @@ import { tableNameFromIdField } from '../../modules/tableNameFromIdField'
 
 export const DrawControl = () => {
   const map = useMap()
-  console.log('hello DrawControl, map:', map)
 
   const { db } = useElectric()!
   const params = useParams()
