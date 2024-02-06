@@ -4,11 +4,10 @@ import { MdLayers, MdLayersClear } from 'react-icons/md'
 import { useLiveQuery } from 'electric-sql/react'
 
 import { useElectric } from '../../ElectricProvider'
-import { user_id } from '../SqlInitializer'
+import { user_id } from '../../components/SqlInitializer'
 import { Ui_options as UiOption } from '../../generated/client'
 
 export const LayerMenu = () => {
-  // query if ui_options.show_check_layer is set
   const { db } = useElectric()!
   const { results } = useLiveQuery(
     db.ui_options.liveUnique({ where: { user_id } }),
@@ -16,12 +15,23 @@ export const LayerMenu = () => {
   const uiOption: UiOption = results
   const showCheckLayer = uiOption?.show_check_layer ?? false
 
+  const onClick = useCallback(() => {
+    db.ui_options.update({
+      where: { user_id },
+      data: { show_check_layer: !showCheckLayer },
+    })
+  }, [db.ui_options, showCheckLayer])
+
   return (
     <Button
       size="medium"
-      // icon={<FaPlus />}
-      // onClick={addRow}
-      // title={`Add new ${tableName}`}
+      icon={showCheckLayer ? <MdLayersClear /> : <MdLayers />}
+      onClick={onClick}
+      title={
+        showCheckLayer
+          ? `Show checks layer in map`
+          : `Remove checks layer from map`
+      }
     />
   )
 }
