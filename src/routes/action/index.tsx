@@ -10,6 +10,7 @@ import { DateField } from '../../components/shared/DateField'
 import { SwitchField } from '../../components/shared/SwitchField'
 import { Jsonb } from '../../components/shared/Jsonb'
 import { getValueFromChange } from '../../modules/getValueFromChange'
+import { EditingGeometry } from '../../components/shared/EditingGeometry'
 import { Header } from './Header'
 
 import '../../form.css'
@@ -66,6 +67,7 @@ export const Component = () => {
           autoFocus
           ref={autoFocusRef}
         />
+        <EditingGeometry row={row} table="actions" />
       </div>
     </div>
   )
