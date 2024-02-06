@@ -1,6 +1,7 @@
 import { useEffect, useCallback } from 'react'
 import 'leaflet'
 import 'leaflet-draw'
+import 'leaflet-draw/dist/leaflet.draw.css'
 import { useMap } from 'react-leaflet'
 import { useParams, useLocation } from 'react-router-dom'
 import getBbox from '@turf/bbox'
@@ -11,6 +12,7 @@ import { tableNameFromIdField } from '../../modules/tableNameFromIdField'
 
 export const DrawControl = () => {
   const map = useMap()
+  console.log('hello DrawControl, map:', map)
 
   const { db } = useElectric()!
   const params = useParams()
@@ -18,11 +20,14 @@ export const DrawControl = () => {
     .pathname.split('/')
     .filter((p) => !!p)
 
-  //console.log('DrawControl, map:', map)
-
   const onEdit = useCallback(
     async (featureCollection) => {
+      console.log(
+        'hello DrawControl.onEdit, featureCollection:',
+        featureCollection,
+      )
       const activeId = getLastIdFromUrl(pathArray)
+      console.log('hello DrawControl.onEdit, activeId:', activeId)
       if (!activeId)
         return console.log(
           'no row edited due to missing id of the active table',
@@ -31,10 +36,12 @@ export const DrawControl = () => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         ([key, value]) => value === activeId,
       )[0][0]
+      console.log('hello DrawControl.onEdit, activeIdName:', activeIdName)
       const tableName = await tableNameFromIdField({
         idField: activeIdName,
         db,
       })
+      console.log('hello DrawControl.onEdit, tableName:', tableName)
       if (!tableName) {
         return console.log(
           `no row edited due to not finding the table name for the active id ${activeId}`,
@@ -57,50 +64,49 @@ export const DrawControl = () => {
   )
 
   useEffect(() => {
-    window.L.drawLocal.draw.toolbar.buttons.polygon =
+    L.drawLocal.draw.toolbar.buttons.polygon =
       'Polygon(e) zeichnen, um zu filtern'
-    window.L.drawLocal.draw.toolbar.buttons.rectangle =
+    L.drawLocal.draw.toolbar.buttons.rectangle =
       'Rechteck(e) zeichnen, um zu filtern'
-    window.L.drawLocal.draw.toolbar.actions.title = 'Zeichnen rückgängig machen'
-    window.L.drawLocal.draw.toolbar.actions.text = 'rückgängig machen'
-    window.L.drawLocal.draw.toolbar.finish.title = 'Zeichnen beenden'
-    window.L.drawLocal.draw.toolbar.finish.text = 'beenden'
-    window.L.drawLocal.draw.toolbar.undo.title =
-      'Zuletzt erfassten Punkt löschen'
-    window.L.drawLocal.draw.toolbar.undo.text = 'letzten Punkt löschen'
-    window.L.drawLocal.draw.handlers.polygon.tooltip.start =
+    L.drawLocal.draw.toolbar.actions.title = 'Zeichnen rückgängig machen'
+    L.drawLocal.draw.toolbar.actions.text = 'rückgängig machen'
+    L.drawLocal.draw.toolbar.finish.title = 'Zeichnen beenden'
+    L.drawLocal.draw.toolbar.finish.text = 'beenden'
+    L.drawLocal.draw.toolbar.undo.title = 'Zuletzt erfassten Punkt löschen'
+    L.drawLocal.draw.toolbar.undo.text = 'letzten Punkt löschen'
+    L.drawLocal.draw.handlers.polygon.tooltip.start =
       'Klicken um Polygon zu beginnen'
-    window.L.drawLocal.draw.handlers.polygon.tooltip.cont =
+    L.drawLocal.draw.handlers.polygon.tooltip.cont =
       'Klicken um Polygon weiter zu zeichnen'
-    window.L.drawLocal.draw.handlers.polygon.tooltip.end =
+    L.drawLocal.draw.handlers.polygon.tooltip.end =
       'ersten Punkt klicken, um Polygon zu beenden'
-    window.L.drawLocal.draw.handlers.rectangle.tooltip.start =
+    L.drawLocal.draw.handlers.rectangle.tooltip.start =
       'Klicken und ziehen, um Rechteck zu zeichnen'
-    window.L.drawLocal.edit.toolbar.actions.save.title = 'Zeichnung speichern'
-    window.L.drawLocal.edit.toolbar.actions.save.text = 'speichern'
-    window.L.drawLocal.edit.toolbar.actions.cancel.title =
+    L.drawLocal.edit.toolbar.actions.save.title = 'Zeichnung speichern'
+    L.drawLocal.edit.toolbar.actions.save.text = 'speichern'
+    L.drawLocal.edit.toolbar.actions.cancel.title =
       'Zeichnung abbrechen und verwerfen'
-    window.L.drawLocal.edit.toolbar.actions.cancel.text = 'abbrechen'
-    // window.L.drawLocal.edit.toolbar.actions.clearAll.title = 'alle Umrisse löschen'
-    // window.L.drawLocal.edit.toolbar.actions.clearAll.text = 'alle löschen'
-    window.L.drawLocal.edit.toolbar.buttons.edit = 'Umriss(e) ändern'
-    window.L.drawLocal.edit.toolbar.buttons.editDisabled =
+    L.drawLocal.edit.toolbar.actions.cancel.text = 'abbrechen'
+    // L.drawLocal.edit.toolbar.actions.clearAll.title = 'alle Umrisse löschen'
+    // L.drawLocal.edit.toolbar.actions.clearAll.text = 'alle löschen'
+    L.drawLocal.edit.toolbar.buttons.edit = 'Umriss(e) ändern'
+    L.drawLocal.edit.toolbar.buttons.editDisabled =
       'Umriss(e) ändern (aktuell gibt es keine)'
-    window.L.drawLocal.edit.toolbar.buttons.remove = 'Umriss(e) löschen'
-    window.L.drawLocal.edit.toolbar.buttons.removeDisabled =
+    L.drawLocal.edit.toolbar.buttons.remove = 'Umriss(e) löschen'
+    L.drawLocal.edit.toolbar.buttons.removeDisabled =
       'Umriss(e) löschen (aktuell gibt es keine)'
-    window.L.drawLocal.edit.handlers.edit.tooltip.text = `dann auf 'speichern' klicken`
-    window.L.drawLocal.edit.handlers.edit.tooltip.subtext =
+    L.drawLocal.edit.handlers.edit.tooltip.text = `dann auf 'speichern' klicken`
+    L.drawLocal.edit.handlers.edit.tooltip.subtext =
       'Punkte ziehen, um Umriss(e) zu verändern'
-    window.L.drawLocal.edit.handlers.remove.tooltip.text = `zum Löschen auf Umriss klicken, dann auf 'speichern'`
+    L.drawLocal.edit.handlers.remove.tooltip.text = `zum Löschen auf Umriss klicken, dann auf 'speichern'`
 
     // solution to allow only one geometry to be drawn
     // see: https://github.com/Leaflet/Leaflet.draw/issues/315#issuecomment-500246272
-    const drawLayer = new window.L.FeatureGroup()
+    const drawLayer = new L.FeatureGroup()
     map.addLayer(drawLayer)
     // TODO: if row has geometry, add it
     // like this?: drawLayer.addLayer(e.layer)
-    const drawControlFull = new window.L.Control.Draw({
+    const drawControlFull = new L.Control.Draw({
       draw: {
         marker: true,
         polyline: true,

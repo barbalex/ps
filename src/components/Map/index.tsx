@@ -15,7 +15,7 @@ import { TileLayers } from './TileLayers'
 import { VectorLayers } from './VectorLayers'
 import { LocationMarker } from './LocationMarker'
 import { tableNameFromIdField } from '../../modules/tableNameFromIdField'
-// import { DrawControl } from './DrawControl'
+import { DrawControl } from './DrawControl'
 // import { Control } from './Control'
 // import { OwnControls } from './OwnControls'
 
@@ -84,7 +84,7 @@ export const Map = () => {
         ref={mapRef}
       >
         <LocationMarker />
-        {/* <DrawControl /> */}
+        <DrawControl />
         <TileLayers key={`${tileLayerSorter}/tileLayers`} />
         <VectorLayers key={`${vectorLayerSorter}/vectorLayers`} />
         {/* <Control position="topright" visible={true}>
