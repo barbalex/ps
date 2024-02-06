@@ -10,6 +10,7 @@ import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { Jsonb } from '../../components/shared/Jsonb'
 import { DropdownField } from '../../components/shared/DropdownField'
 import { getValueFromChange } from '../../modules/getValueFromChange'
+import { EditingGeometry } from './EditingGeometry'
 import { Header } from './Header'
 
 import '../../form.css'
@@ -82,6 +83,7 @@ export const Component = () => {
           autoFocus={row.level !== 2}
           ref={row.level !== 2 ? autoFocusRef : undefined}
         />
+        <EditingGeometry place_id={place_id} />
       </div>
     </div>
   )

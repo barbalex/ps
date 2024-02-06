@@ -6,11 +6,15 @@ import { useMap } from 'react-leaflet'
 import { useParams, useLocation } from 'react-router-dom'
 import getBbox from '@turf/bbox'
 
-import { useElectric } from '../../ElectricProvider'
-import { getLastIdFromUrl } from '../../modules/getLastIdFromUrl'
-import { tableNameFromIdField } from '../../modules/tableNameFromIdField'
+import { useElectric } from '../../../ElectricProvider'
+import { getLastIdFromUrl } from '../../../modules/getLastIdFromUrl'
+import { tableNameFromIdField } from '../../../modules/tableNameFromIdField'
 
-export const DrawControl = () => {
+export const DrawControlComponent = ({
+  editingPlace,
+  editingCheck,
+  editingAction,
+}) => {
   const map = useMap()
 
   const { db } = useElectric()!
