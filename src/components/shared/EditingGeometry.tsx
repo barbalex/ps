@@ -49,22 +49,20 @@ export const EditingGeometry = ({ row, table }) => {
   const lineCount = value ? value.split(/\r\n|\r|\n/).length : 1
 
   return (
-    <>
+    <Field label="Geometry">
       <SwitchField
-        label="Edit geometry"
+        label="Edit"
         name={fieldName}
         value={id === editedId}
         onChange={onChange}
       />
-      <Field label="Geometry">
-        <Textarea
-          value={row.geometry ? JSON.stringify(row.geometry, null, 3) : ''}
-          appearance="outline"
-          resize="vertical"
-          rows={lineCount}
-          className="geometry-textarea"
-        />
-      </Field>
-    </>
+      <Textarea
+        value={row.geometry ? JSON.stringify(row.geometry, null, 3) : ''}
+        appearance="outline"
+        resize="vertical"
+        rows={lineCount}
+        className="geometry-textarea"
+      />
+    </Field>
   )
 }
