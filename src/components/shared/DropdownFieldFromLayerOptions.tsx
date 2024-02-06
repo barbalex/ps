@@ -56,8 +56,8 @@ export const DropdownFieldFromLayerOptions = memo(
             },
           })
         }
-        // TODO: download the legend image
-        // 1. query the layer_options table for the legend_url
+        // download the legend image
+        // 1. get the legend_url from the layer_options
         const legendUrl = layerOptions.find(
           (option) => option.value === data.optionValue,
         )?.legend_url
@@ -73,6 +73,9 @@ export const DropdownFieldFromLayerOptions = memo(
         // 2. download the legend image
         // TODO:
         // this fails because electric-sql does not support binary data yet
+        // When support is added:
+        // check if it works
+        // show legend in vector_layer form, maybe map?
         let res
         try {
           res = await axios.get(legendUrl, { responseType: 'blob' })
