@@ -1,6 +1,7 @@
 import { memo, useMemo } from 'react'
 import { Dropdown, Field, Option } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
+import axios from 'redaxios'
 
 import { useElectric } from '../../ElectricProvider'
 import { Layer_options as LayerOption } from '../../generated/client'
@@ -54,7 +55,7 @@ export const DropdownFieldFromLayerOptions = memo(
           name={name}
           value={selectedOptions?.[0]?.label ?? ''}
           selectedOptions={selectedOptions}
-          onOptionSelect={(e, data) => {
+          onOptionSelect={async (e, data) => {
             onChange({
               target: {
                 name,
@@ -67,6 +68,33 @@ export const DropdownFieldFromLayerOptions = memo(
                 target: {
                   name: 'label',
                   value: data.optionText,
+                },
+              })
+            }
+            // TODO: download the legend image
+            // 1. query the layer_options table for the legend_url
+            const legendUrl = layerOptions.find(
+              (option) => option.value === data.optionValue,
+            )?.legend_url
+            // 2. download the legend image
+            try {
+              res = await axios.get(legendUrl, {
+                responseType: 'blob',
+              })
+            } catch (error) {
+              // error can also be caused by timeout
+              console.error(
+                `error fetching legend for layer '${data.optionText}':`,
+                error,
+              )
+              return false
+            }
+            // 3. store it in tile_layers.wms_legend
+            if (res.data) {
+              onChange({
+                target: {
+                  name: 'wms_legend',
+                  value: res.data,
                 },
               })
             }
