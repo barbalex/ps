@@ -1,4 +1,4 @@
-import { memo, useMemo } from 'react'
+import { memo, useMemo, useCallback } from 'react'
 import { Dropdown, Field, Option } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 import axios from 'redaxios'
@@ -26,7 +26,6 @@ export const DropdownFieldFromLayerOptions = memo(
           ...(vector_layer_id ? { vector_layer_id } : {}),
           field: name,
         },
-        select: { value: true, label: true },
         orderBy: { label: 'asc' },
       }),
     )
@@ -39,6 +38,69 @@ export const DropdownFieldFromLayerOptions = memo(
       () => options.filter((option) => option.value === value.value),
       [value.value, options],
     )
+
+    const onOptionSelect = useCallback(
+      async (e, data) => {
+        onChange({
+          target: {
+            name,
+            value: { label: data.optionText, value: data.optionValue },
+          },
+        })
+        // set the label too
+        if (row) {
+          onChange({
+            target: {
+              name: 'label',
+              value: data.optionText,
+            },
+          })
+        }
+        // TODO: download the legend image
+        // 1. query the layer_options table for the legend_url
+        const legendUrl = layerOptions.find(
+          (option) => option.value === data.optionValue,
+        )?.legend_url
+        console.log('hello DropdownFieldFromLayerOptions, onOptionSelect', {
+          legendUrl,
+          layerOptions,
+          data,
+          option: layerOptions.find(
+            (option) => option.value === data.optionValue,
+          ),
+        })
+        if (!legendUrl) return
+        // 2. download the legend image
+        // TODO:
+        // this fails because electric-sql does not support binary data yet
+        let res
+        try {
+          res = await axios.get(legendUrl, { responseType: 'blob' })
+        } catch (error) {
+          // error can also be caused by timeout
+          console.error(
+            `hello error fetching legend for layer '${data.optionText}':`,
+            error,
+          )
+          return false
+        }
+        console.log(
+          'hello DropdownFieldFromLayerOptions, onOptionSelect, blob data:',
+          res.data,
+        )
+        // 3. store it in tile_layers.wms_legend
+        if (res.data) {
+          onChange({
+            target: {
+              name: 'wms_legend',
+              value: res.data,
+            },
+          })
+        }
+      },
+      [layerOptions, name, onChange, row],
+    )
+
     const labelWithCount = label
       ? options?.length
         ? `${label} (${options.length})`
@@ -55,50 +117,7 @@ export const DropdownFieldFromLayerOptions = memo(
           name={name}
           value={selectedOptions?.[0]?.label ?? ''}
           selectedOptions={selectedOptions}
-          onOptionSelect={async (e, data) => {
-            onChange({
-              target: {
-                name,
-                value: { label: data.optionText, value: data.optionValue },
-              },
-            })
-            // set the label too
-            if (row) {
-              onChange({
-                target: {
-                  name: 'label',
-                  value: data.optionText,
-                },
-              })
-            }
-            // TODO: download the legend image
-            // 1. query the layer_options table for the legend_url
-            const legendUrl = layerOptions.find(
-              (option) => option.value === data.optionValue,
-            )?.legend_url
-            // 2. download the legend image
-            try {
-              res = await axios.get(legendUrl, {
-                responseType: 'blob',
-              })
-            } catch (error) {
-              // error can also be caused by timeout
-              console.error(
-                `error fetching legend for layer '${data.optionText}':`,
-                error,
-              )
-              return false
-            }
-            // 3. store it in tile_layers.wms_legend
-            if (res.data) {
-              onChange({
-                target: {
-                  name: 'wms_legend',
-                  value: res.data,
-                },
-              })
-            }
-          }}
+          onOptionSelect={onOptionSelect}
           appearance="underline"
         >
           {options.map((option) => {
