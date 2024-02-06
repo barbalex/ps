@@ -3,11 +3,13 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { Checks as Check } from '../../../generated/client'
-import { useElectric } from '../ElectricProvider'
-import { createCheck } from '../modules/createRows'
-import { ListViewHeader } from '../components/ListViewHeader'
-import { Row } from '../components/shared/Row'
-import '../form.css'
+import { useElectric } from '../../ElectricProvider'
+import { createCheck } from '../../modules/createRows'
+import { ListViewHeader } from '../../components/ListViewHeader'
+import { Row } from '../../components/shared/Row'
+import { LayerMenu } from './LayerMenu'
+
+import '../../form.css'
 
 export const Component = () => {
   const { project_id, subproject_id, place_id, place_id2 } = useParams()
@@ -39,7 +41,12 @@ export const Component = () => {
 
   return (
     <div className="list-view">
-      <ListViewHeader title="Checks" addRow={add} tableName="check" />
+      <ListViewHeader
+        title="Checks"
+        addRow={add}
+        tableName="check"
+        menus={<LayerMenu />}
+      />
       <div className="list-container">
         {checks.map(({ check_id, label }) => (
           <Row
