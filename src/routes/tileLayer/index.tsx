@@ -44,7 +44,7 @@ export const Component = () => {
     return <div>Loading...</div>
   }
 
-  console.log('hello TileLayer, row:', row)
+  // console.log('hello TileLayer, row:', row)
 
   return (
     <div className="form-outer-container">
