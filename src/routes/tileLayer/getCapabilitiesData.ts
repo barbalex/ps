@@ -157,9 +157,9 @@ export const getCapabilitiesData = async ({
   // }
 
   // TODO: these are blobs. How to save in sqlite?
-  // TODO: solve this problem, then set the wms_legends
+  // TODO: solve this problem, then set the wms_legend
   // add legends into row to reduce network activity and make them offline available
-  // values.wms_legends = _legendBlobs.length ? _legendBlobs : undefined
+  // values.wms_legend = _legendBlobs.length ? _legendBlobs : undefined
 
   // use capabilities.Capability?.Request?.GetFeatureInfo?.Format
   // to set wms_info_format
