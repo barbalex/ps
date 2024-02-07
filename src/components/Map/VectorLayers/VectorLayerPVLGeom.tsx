@@ -159,11 +159,13 @@ export const VectorLayerPVLGeom = ({ layer }: Props) => {
       <GeoJSON
         key={`${layer.id}/${layerStyle.marker_symbol}/${
           layerStyle?.marker_size
-        }/${layerStyle?.color}/${layerStyle?.opacity}/${
+        }/${layerStyle?.color}/${layerStyle?.opacity_percent}/${
           layerStyle?.marker_type
         }/${data?.length ?? 0}`}
         data={data}
-        opacity={layer.opacity_percent ? layer.opacity_percent / 100 : 0}
+        opacity={
+          layerStyle.opacity_percent ? layerStyle.opacity_percent / 100 : 0
+        }
         style={layerstyleToProperties({ layerStyle })}
         onEachFeature={(feature, _layer) => {
           const layersData = [

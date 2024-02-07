@@ -16,7 +16,6 @@ CREATE TABLE vector_layers(
   wfs_layer jsonb DEFAULT NULL, -- a single option
   wfs_version text DEFAULT NULL, -- often: 1.1.0 or 2.0.0
   output_format jsonb DEFAULT NULL, --  a single option
-  opacity_percent integer DEFAULT NULL, -- TODO: there is same field in layer_styles. Use that instead?,
   max_features integer DEFAULT NULL, -- 1000,
   feature_count integer DEFAULT NULL,
   point_count integer DEFAULT NULL,
