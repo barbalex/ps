@@ -22,7 +22,7 @@ import {
   Button,
 } from '@fluentui/react-components'
 
-import { layerstyleToProperties } from '../../../modules/layerstyleToProperties'
+import { vectorLayerDisplayToProperties } from '../../../modules/vectorLayerDisplayToProperties'
 import { Popup } from '../Popup'
 import { useElectric } from '../../../ElectricProvider'
 import {
@@ -191,7 +191,7 @@ export const VectorLayerWFS = ({ layer }: Props) => {
         key={`${data?.length ?? 0}/${JSON.stringify(vectorLayerDisplay)}`}
         data={data}
         opacity={layer.opacity}
-        style={layerstyleToProperties({ layerStyle: vectorLayerDisplay })}
+        style={vectorLayerDisplayToProperties({ vectorLayerDisplay })}
         pointToLayer={(geoJsonPoint, latlng) => {
           if (vectorLayerDisplay.marker_type === 'circle') {
             return L.circleMarker(latlng, {

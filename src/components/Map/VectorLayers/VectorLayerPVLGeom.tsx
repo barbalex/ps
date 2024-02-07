@@ -13,7 +13,7 @@ import {
   Ui_options as UiOption,
 } from '../../../generated/client'
 
-import { layerstyleToProperties } from '../../../modules/layerstyleToProperties'
+import { vectorLayerDisplayToProperties } from '../../../modules/vectorLayerDisplayToProperties'
 import { Popup } from '../Popup'
 import { ErrorBoundary } from '../MapErrorBoundary'
 import { useElectric } from '../../../ElectricProvider'
@@ -45,7 +45,8 @@ export const VectorLayerPVLGeom = ({ layer }: Props) => {
   const map = useMap()
 
   const [zoom, setZoom] = useState<number>(map.getZoom())
-  const [layerStyle, setLayerStyle] = useState<VectorLayerDisplay>()
+  const [vectorLayerDisplay, setVectorLayerDisplay] =
+    useState<VectorLayerDisplay>()
 
   useMapEvent('dragend zoomend ', () => {
     // console.log('dragend zoomend ')
@@ -87,12 +88,12 @@ export const VectorLayerPVLGeom = ({ layer }: Props) => {
       }))
       removeNotifs()
 
-      const layerStyle: VectorLayerDisplay =
+      const vectorLayerDisplay: VectorLayerDisplay =
         await db.vector_layer_displays.findFirst({
           where: { vector_layer_id: layer.vector_layer_id },
         })
       setData(data)
-      setLayerStyle(layerStyle)
+      setVectorLayerDisplay(vectorLayerDisplay)
       setZoom(map.getZoom())
     },
     [
@@ -151,23 +152,25 @@ export const VectorLayerPVLGeom = ({ layer }: Props) => {
   }
 
   if (!data?.length) return null
-  if (!layerStyle) return null
+  if (!vectorLayerDisplay) return null
 
   const mapSize = map.getSize()
 
   return (
     <ErrorBoundary layer={layer}>
       <GeoJSON
-        key={`${layer.id}/${layerStyle.marker_symbol}/${
-          layerStyle?.marker_size
-        }/${layerStyle?.color}/${layerStyle?.opacity_percent}/${
-          layerStyle?.marker_type
+        key={`${layer.id}/${vectorLayerDisplay.marker_symbol}/${
+          vectorLayerDisplay?.marker_size
+        }/${vectorLayerDisplay?.color}/${vectorLayerDisplay?.opacity_percent}/${
+          vectorLayerDisplay?.marker_type
         }/${data?.length ?? 0}`}
         data={data}
         opacity={
-          layerStyle.opacity_percent ? layerStyle.opacity_percent / 100 : 0
+          vectorLayerDisplay.opacity_percent
+            ? vectorLayerDisplay.opacity_percent / 100
+            : 0
         }
-        style={layerstyleToProperties({ layerStyle })}
+        style={vectorLayerDisplayToProperties({ vectorLayerDisplay })}
         onEachFeature={(feature, _layer) => {
           const layersData = [
             {
@@ -182,26 +185,27 @@ export const VectorLayerPVLGeom = ({ layer }: Props) => {
         }}
         pointToLayer={(geoJsonPoint, latlng) => {
           // TODO: add font-weight setting
-          if (layerStyle.marker_type === 'circle') {
+          if (vectorLayerDisplay.marker_type === 'circle') {
             return L.circleMarker(latlng, {
-              ...layerStyle,
-              radius: layerStyle.circle_marker_radius ?? 8,
+              ...vectorLayerDisplay,
+              radius: vectorLayerDisplay.circle_marker_radius ?? 8,
             })
           }
-          const Component = icons[layerStyle.marker_symbol] ?? icons.MdPlace
+          const Component =
+            icons[vectorLayerDisplay.marker_symbol] ?? icons.MdPlace
           return L.marker(latlng, {
             icon: new L.divIcon({
               html: ReactDOMServer.renderToString(
                 <Component
                   style={css({
-                    color: layerStyle?.color,
-                    fontSize: layerStyle?.marker_size ?? 16,
+                    color: vectorLayerDisplay?.color,
+                    fontSize: vectorLayerDisplay?.marker_size ?? 16,
                   })}
                 />,
               ),
             }),
-            opacity: layerStyle.opacity_percent
-              ? layerStyle.opacity_percent / 100
+            opacity: vectorLayerDisplay.opacity_percent
+              ? vectorLayerDisplay.opacity_percent / 100
               : 0,
           })
         }}

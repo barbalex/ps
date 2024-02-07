@@ -13,7 +13,7 @@ import { DropdownFieldFromLayerOptions } from '../../components/shared/DropdownF
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { Header } from './Header'
 import { Url } from './Url'
-import { LayerStyleForm as LayerStyle } from '../../components/shared/LayerStyle'
+import { VectorLayerDisplayForm as VectorLayerDisplay } from '../../components/shared/VectorLayerDisplay'
 
 import '../../form.css'
 
@@ -131,7 +131,7 @@ export const Component = () => {
               type="number"
               validationMessage="Drawing too many features can crash the app. Your mileage may vary."
             />
-            <LayerStyle row={row} />
+            <VectorLayerDisplay row={row} />
           </>
         )}
         {row?.type === 'upload' && (

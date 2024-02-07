@@ -8,7 +8,7 @@ import { createCheck } from '../modules/createRows'
 import { ListViewHeader } from '../components/ListViewHeader'
 import { Row } from '../components/shared/Row'
 import { LayerMenu } from '../components/shared/LayerMenu'
-import { LayerStyleForm as LayerStyle } from '../../components/shared/LayerStyle'
+import { VectorLayerDisplayForm as VectorLayerDisplay } from '../../components/shared/VectorLayerDisplay'
 
 import '../form.css'
 
@@ -23,8 +23,6 @@ export const Component = () => {
       orderBy: { label: 'asc' },
     }),
   )
-
-
 
   const checks: Check[] = results ?? []
 

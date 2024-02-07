@@ -63,7 +63,7 @@ interface Props {
 }
 
 // TODO: userMayEdit. Was: role in ['account_manager', 'project_manager']
-export const LayerStyleForm = ({
+export const VectorLayerDisplayForm = ({
   userMayEdit = true,
 }: // row: layer
 Props) => {
@@ -107,8 +107,8 @@ Props) => {
       }
       // stop if row already exists
       if (row) return
-      const newLayerStyle = createVectorLayerDisplay(where)
-      db.vector_layer_displays.create({ data: newLayerStyle })
+      const newVLD = createVectorLayerDisplay(where)
+      db.vector_layer_displays.create({ data: newVLD })
     }
     run()
   }, [where, db.vector_layer_displays, row])
