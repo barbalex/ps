@@ -31,14 +31,7 @@ CREATE TYPE fill_rule_enum AS enum(
 
 DROP TABLE IF EXISTS vector_layer_displays CASCADE;
 
--- TODO:
 -- manage all map related properties here? For imported/wfs and also own tables?
--- active
--- sort
--- max_zoom
--- min_zoom
--- max_features
--- Thus: rename to vector_layer_displays
 CREATE TABLE vector_layer_displays(
   vector_layer_display_id uuid PRIMARY KEY DEFAULT NULL,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -71,7 +64,7 @@ CREATE INDEX ON vector_layer_displays USING btree(vector_layer_id);
 
 CREATE INDEX ON vector_layer_displays USING btree(data_table);
 
-COMMENT ON data_table vector_layer_displays IS 'Goal: style table layers, project tile layers and project vector layers';
+COMMENT ON data_table vector_layer_displays IS 'Goal: manage all map related properties of vector layers including places, actions, checks and observations';
 
 COMMENT ON COLUMN vector_layer_displays.table IS 'Whether this style is used for this table';
 
