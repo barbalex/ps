@@ -6,8 +6,8 @@ CREATE TYPE vector_layer_type_enum AS enum(
 CREATE TABLE vector_layers(
   vector_layer_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   label text DEFAULT NULL,
-  sort smallint DEFAULT NULL, -- 0,
-  active boolean DEFAULT NULL, -- FALSE,
+  sort smallint DEFAULT NULL, -- TODO: move to layer_styles
+  active boolean DEFAULT NULL, -- TODO: move to layer_styles
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   type vector_layer_type_enum DEFAULT NULL, -- 'wfs',
   url text DEFAULT NULL, -- WFS url, for example https://maps.zh.ch/wfs/OGDZHWFS
@@ -17,7 +17,7 @@ CREATE TABLE vector_layers(
   wfs_version text DEFAULT NULL, -- often: 1.1.0 or 2.0.0
   output_format jsonb DEFAULT NULL, --  a single option
   max_features integer DEFAULT NULL, -- 1000,
-  feature_count integer DEFAULT NULL,
+  feature_count integer DEFAULT NULL, -- TODO: move to layer_styles
   point_count integer DEFAULT NULL,
   line_count integer DEFAULT NULL,
   polygon_count integer DEFAULT NULL,
