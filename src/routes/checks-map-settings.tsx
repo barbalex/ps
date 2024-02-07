@@ -24,27 +24,14 @@ export const Component = () => {
     }),
   )
 
-  const add = useCallback(async () => {
-    const data = await createCheck({
-      db,
-      project_id,
-      place_id: place_id2 ?? place_id,
-    })
-    await db.checks.create({ data })
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-        place_id2 ? `/places/${place_id2}` : ''
-      }/checks/${data.check_id}`,
-    )
-  }, [db, navigate, place_id, place_id2, project_id, subproject_id])
+
 
   const checks: Check[] = results ?? []
 
   return (
     <div className="list-view">
       <ListViewHeader
-        title="Checks"
-        addRow={add}
+        title="Checks map settings"
         tableName="check"
         menus={<LayerMenu table="checks" />}
       />
