@@ -115,11 +115,11 @@ Props) => {
     (e: React.ChangeEvent<HTMLInputElement>, data) => {
       const { name, value } = getValueFromChange(e, data)
       db.layer_styles.update({
-        where: { layer_style_id: row?.layer_style_id },
+        where: { vector_layer_display_id: row?.vector_layer_display_id },
         data: { [name]: value },
       })
     },
-    [db.layer_styles, row?.layer_style_id],
+    [db.layer_styles, row?.vector_layer_display_id],
   )
 
   if (!row) return null // no spinner as is null until enough data input

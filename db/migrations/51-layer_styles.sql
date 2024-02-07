@@ -30,9 +30,9 @@ DROP TABLE IF EXISTS layer_styles CASCADE;
 -- max_zoom
 -- min_zoom
 -- max_features
--- Thus: rename to vector_layer_display
+-- Thus: rename to vector_layer_displays
 CREATE TABLE layer_styles(
-  layer_style_id uuid PRIMARY KEY DEFAULT NULL,
+  vector_layer_display_id uuid PRIMARY KEY DEFAULT NULL,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
   places1 boolean DEFAULT NULL, -- true,
   places2 boolean DEFAULT NULL, -- true,

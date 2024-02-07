@@ -503,7 +503,7 @@ export const createLayerStyle = ({
   min_zoom = 0,
   max_features = 1000,
 }) => ({
-  layer_style_id: uuidv7(),
+  vector_layer_display_id: uuidv7(),
   vector_layer_id,
   places1,
   places2,
