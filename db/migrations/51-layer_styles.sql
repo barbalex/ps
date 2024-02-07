@@ -41,6 +41,8 @@ CREATE TABLE layer_styles(
   observations boolean DEFAULT NULL, -- true,
   sort smallint DEFAULT NULL,
   active boolean DEFAULT NULL,
+  max_zoom integer DEFAULT NULL, -- 19,
+  min_zoom integer DEFAULT NULL, -- 0,
   max_features integer DEFAULT NULL, -- 1000
   marker_type marker_type_enum DEFAULT NULL, -- 'circle',
   circle_marker_radius integer DEFAULT NULL, -- 8,

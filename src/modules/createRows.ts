@@ -486,12 +486,7 @@ export const createTileLayer = ({ project_id }) => ({
 export const createVectorLayer = ({ project_id }) => ({
   vector_layer_id: uuidv7(),
   project_id,
-  sort: 0,
-  active: false,
   type: 'wfs',
-  max_zoom: 19,
-  min_zoom: 0,
-  max_features: 1000,
   deleted: false,
 })
 
@@ -502,6 +497,11 @@ export const createLayerStyle = ({
   actions = false,
   checks = false,
   observations = false,
+  sort = 0,
+  active = false,
+  max_zoom = 19,
+  min_zoom = 0,
+  max_features = 1000,
 }) => ({
   layer_style_id: uuidv7(),
   vector_layer_id,
@@ -510,6 +510,11 @@ export const createLayerStyle = ({
   actions,
   checks,
   observations,
+  sort,
+  active,
+  max_zoom,
+  min_zoom,
+  max_features,
   marker_type: 'circle',
   circle_marker_radius: 8,
   marker_size: 16,

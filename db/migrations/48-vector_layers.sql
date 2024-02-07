@@ -11,8 +11,8 @@ CREATE TABLE vector_layers(
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   type vector_layer_type_enum DEFAULT NULL, -- 'wfs',
   url text DEFAULT NULL, -- WFS url, for example https://maps.zh.ch/wfs/OGDZHWFS
-  max_zoom integer DEFAULT NULL, -- 19,
-  min_zoom integer DEFAULT NULL, -- 0,
+  max_zoom integer DEFAULT NULL, -- 19, TODO: move to layer_styles
+  min_zoom integer DEFAULT NULL, -- 0, TODO: move to layer_styles
   wfs_layer jsonb DEFAULT NULL, -- a single option
   wfs_version text DEFAULT NULL, -- often: 1.1.0 or 2.0.0
   output_format jsonb DEFAULT NULL, --  a single option
