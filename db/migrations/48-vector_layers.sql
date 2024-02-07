@@ -38,7 +38,5 @@ COMMENT ON COLUMN vector_layers.line_count IS 'Number of line features. Used to 
 
 COMMENT ON COLUMN vector_layers.polygon_count IS 'Number of polygon features. Used to show styling for polygons - or not. Set when downloaded features';
 
-COMMENT ON COLUMN vector_layers.opacity_percent IS 'As numeric is not supported by electric-sql, we cant use values between 0 and 1 for opacity. So we use integer values between 0 and 100 and divide by 100 in the frontend.';
-
 ALTER TABLE vector_layers ENABLE electric;
 
