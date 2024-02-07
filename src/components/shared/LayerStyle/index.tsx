@@ -102,10 +102,6 @@ Props) => {
       // stop if row already exists
       if (row) return
       const newLayerStyle = createLayerStyle(where)
-      console.log(
-        'hello LayerStyle effect, inserting new layer_style:',
-        newLayerStyle,
-      )
       db.layer_styles.create({ data: newLayerStyle })
     }
     run()
