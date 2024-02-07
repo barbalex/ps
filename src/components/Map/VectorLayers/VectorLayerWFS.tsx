@@ -158,12 +158,20 @@ export const VectorLayerWFS = ({ layer }: Props) => {
   const vectorLayerDisplay: VectorLayerDisplay = vectorLayerDisplayResults
 
   // include only if zoom between min_zoom and max_zoom
-  if (layer.min_zoom !== undefined && zoom < layer.min_zoom) return null
-  if (layer.max_zoom !== undefined && zoom > layer.max_zoom) return null
+  if (
+    layer.vector_layer_displays.min_zoom !== undefined &&
+    zoom < layer.vector_layer_displays.min_zoom
+  )
+    return null
+  if (
+    layer.vector_layer_displays.max_zoom !== undefined &&
+    zoom > layer.vector_layer_displays.max_zoom
+  )
+    return null
 
   removeNotifs()
   if (
-    data?.length >= (layer.max_features ?? 1000) &&
+    data?.length >= (layer.vector_layer_displays.max_features ?? 1000) &&
     !notificationIds.current.length
   ) {
     const notification_id = uuidv7()
@@ -172,7 +180,7 @@ export const VectorLayerWFS = ({ layer }: Props) => {
         notification_id,
         title: `Zuviele Geometrien`,
         body: `Die maximale Anzahl Features von ${
-          layer.max_features ?? 1000
+          layer.vector_layer_displays.max_features ?? 1000
         } für Vektor-Karte '${
           layer.label
         }' wurde geladen. Zoomen sie näher ran`,
@@ -190,7 +198,12 @@ export const VectorLayerWFS = ({ layer }: Props) => {
       <GeoJSON
         key={`${data?.length ?? 0}/${JSON.stringify(vectorLayerDisplay)}`}
         data={data}
-        opacity={layer.opacity}
+        opacity={
+          // TODO: what is this for?
+          layer.vector_layer_displays.opacity_percent
+            ? layer.vector_layer_displays.opacity_percent / 100
+            : 1
+        }
         style={vectorLayerDisplayToProperties({ vectorLayerDisplay })}
         pointToLayer={(geoJsonPoint, latlng) => {
           if (vectorLayerDisplay.marker_type === 'circle') {

@@ -19,7 +19,7 @@ export const VectorLayerChooser = ({ layer }) => {
   )
   const geomCount: integer = vectorLayerGeoms.length
 
-  // console.log('hello VectorLayerChooser', { layer, db, geomCount })
+  console.log('hello VectorLayerChooser', { layer, db, geomCount })
 
   // TODO: only accept pre-downloaded layers because of
   // problems filtering by bbox?

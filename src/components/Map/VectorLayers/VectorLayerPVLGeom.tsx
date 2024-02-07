@@ -69,6 +69,11 @@ export const VectorLayerPVLGeom = ({ layer }: Props) => {
       })
       notificationIds.current = [notification_id, ...notificationIds.current]
 
+      const vectorLayerDisplay: VectorLayerDisplay =
+        await db.vector_layer_displays.findFirst({
+          where: { vector_layer_id: layer.vector_layer_id },
+        })
+
       const { results: vectorLayerGeoms = [] }: { results: VectorLayerGeom[] } =
         await db.vector_layer_geoms.findMany({
           where: {
@@ -79,7 +84,7 @@ export const VectorLayerPVLGeom = ({ layer }: Props) => {
             bbox_ne_lng: { lt: bounds._northEast.lng },
             bbox_ne_lat: { lt: bounds._northEast.lat },
           },
-          take: layer.max_features ?? 1000,
+          take: vectorLayerDisplay.max_features ?? 1000,
         })
 
       const data = vectorLayerGeoms.map((pvlGeom) => ({
@@ -88,24 +93,20 @@ export const VectorLayerPVLGeom = ({ layer }: Props) => {
       }))
       removeNotifs()
 
-      const vectorLayerDisplay: VectorLayerDisplay =
-        await db.vector_layer_displays.findFirst({
-          where: { vector_layer_id: layer.vector_layer_id },
-        })
       setData(data)
       setVectorLayerDisplay(vectorLayerDisplay)
       setZoom(map.getZoom())
     },
     [
-      db.vector_layer_displays,
+      showMap,
+      removeNotifs,
       db.notifications,
       db.vector_layer_geoms,
+      db.vector_layer_displays,
       layer.label,
-      layer.max_features,
       layer.vector_layer_id,
+      vectorLayerDisplay.max_features,
       map,
-      removeNotifs,
-      showMap,
     ],
   )
   const fetchDataDebounced = useDebouncedCallback(fetchData, 600)
@@ -117,7 +118,7 @@ export const VectorLayerPVLGeom = ({ layer }: Props) => {
   useEffect(() => {
     // goal: remove own notifs when (de-)activating layer
     removeNotifs()
-  }, [layer.active, removeNotifs])
+  }, [layer.vector_layer_displays.active, removeNotifs])
   useEffect(() => {
     return () => {
       // goal: remove notifs on leaving component. Does not seem to work
@@ -126,12 +127,12 @@ export const VectorLayerPVLGeom = ({ layer }: Props) => {
   }, [removeNotifs])
 
   // include only if zoom between min_zoom and max_zoom
-  if (layer.min_zoom !== undefined && zoom < layer.min_zoom) return null
-  if (layer.max_zoom !== undefined && zoom > layer.max_zoom) return null
+  if (layer.vector_layer_displays.min_zoom !== undefined && zoom < layer.vector_layer_displays.min_zoom) return null
+  if (layer.vector_layer_displays.max_zoom !== undefined && zoom > layer.vector_layer_displays.max_zoom) return null
 
   removeNotifs()
   if (
-    data?.length === (layer.max_features ?? 1000) &&
+    data?.length === (layer.vector_layer_displays.max_features ?? 1000) &&
     !notificationIds.current.length
   ) {
     const notification_id = uuidv7()
@@ -140,7 +141,7 @@ export const VectorLayerPVLGeom = ({ layer }: Props) => {
         notification_id,
         title: `Zuviele Geometrien`,
         body: `Die maximale Anzahl Features von ${
-          layer.max_features ?? 1000
+          layer.vector_layer_displays.max_features ?? 1000
         } für Vektor-Karte '${
           layer.label
         }' wurde geladen. Zoomen sie näher ran`,

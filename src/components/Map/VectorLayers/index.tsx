@@ -11,10 +11,10 @@ export const VectorLayers = () => {
   const { db } = useElectric()!
 
   const where = project_id
-    ? // Beware: projectId can be undefined and dexie does not like that
+    ? // Beware: projectId can be undefined
       {
         deleted: false,
-        active: true,
+        // vector_layer_displays: { active: true },
         project_id,
         // Ensure needed data exists
         url: { not: null },
@@ -23,16 +23,22 @@ export const VectorLayers = () => {
       }
     : {
         deleted: false,
-        active: true,
+        // vector_layer_displays: { active: true },
         // Ensure needed data exists
         url: { not: null },
         wfs_layer: { not: null },
         output_format: { not: null },
       }
 
-  const { results = [] } = useLiveQuery(db.vector_layers.liveMany({ where }))
+  const { results = [] } = useLiveQuery(
+    db.vector_layers.liveMany({
+      where,
+      // include: { vector_layer_displays: true },
+    }),
+  )
 
   const vectorLayers: VectorLayer[] = results
+  console.log('hello VectorLayers, vectorLayers:', vectorLayers)
 
   // if (!vectorLayers.length) return []
 
