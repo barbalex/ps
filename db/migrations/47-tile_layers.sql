@@ -19,14 +19,14 @@ CREATE TABLE tile_layers(
   wms_format jsonb DEFAULT NULL,
   wms_layer jsonb DEFAULT NULL,
   wms_parameters jsonb DEFAULT NULL,
-  wms_styles jsonb DEFAULT NULL, -- array of text
+  wms_styles jsonb DEFAULT NULL, -- array of text. TODO: what is this exactly?
   wms_transparent boolean DEFAULT NULL, -- false
   wms_version text DEFAULT NULL, -- values: '1.1.1', '1.3.0'
   wms_info_format jsonb DEFAULT NULL,
   wms_legend jsonb DEFAULT NULL, -- TODO: blob is not yet supported by electric-sql. Change when it is
   max_zoom integer DEFAULT NULL, -- 19
   min_zoom integer DEFAULT NULL, -- 0
-  opacity_percent integer DEFAULT NULL, -- 100
+  opacity_percent integer DEFAULT NULL, -- 100. TODO: difference to wms_transparent?
   grayscale boolean DEFAULT NULL, -- false
   local_data_size integer DEFAULT NULL,
   local_data_bounds jsonb DEFAULT NULL,
