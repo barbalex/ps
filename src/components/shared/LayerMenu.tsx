@@ -34,6 +34,8 @@ export const LayerMenu = memo(({ table, placeNamePlural }) => {
     })
   }, [db.ui_options, fieldName, showLayer])
 
+  // TODO: implement onClickMapSettings
+  // They should get their own url
   const onClickMapSettings = useCallback(() => {
     console.log('onClickMapSettings')
   }, [])
