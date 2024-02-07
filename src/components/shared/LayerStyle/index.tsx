@@ -8,7 +8,7 @@ import { ErrorBoundary } from '../ErrorBoundary'
 import { ColorPicker } from '../ColorPicker'
 import {
   Vector_layers as VectorLayer,
-  Layer_styles as LayerStyle,
+  Vector_layer_displays as VectorLayerDisplay,
 } from '../../../generated/client'
 import { TextField } from '../TextField'
 import { RadioGroupField } from '../RadioGroupField'
@@ -16,7 +16,7 @@ import { MarkerSymbolPicker } from './MarkerSymbolPicker'
 import { SliderField } from '../SliderField'
 import { css } from '../../../css'
 import { useElectric } from '../../../ElectricProvider'
-import { createLayerStyle } from '../../../modules/createRows'
+import { createVectorLayerDisplay } from '../../../modules/createRows'
 import { getValueFromChange } from '../../../modules/getValueFromChange'
 
 // was used to translate
@@ -91,8 +91,10 @@ Props) => {
         : 'none',
     [vector_layer_id, place_id, check_id, action_id, observation_id],
   )
-  const { results } = useLiveQuery(db.layer_styles.liveFirst({ where }))
-  const row: LayerStyle = results
+  const { results } = useLiveQuery(
+    db.vector_layer_displays.liveFirst({ where }),
+  )
+  const row: VectorLayerDisplay = results
 
   const isFirstRender = useRef(true)
   // ensure new one is created if needed
@@ -105,21 +107,21 @@ Props) => {
       }
       // stop if row already exists
       if (row) return
-      const newLayerStyle = createLayerStyle(where)
-      db.layer_styles.create({ data: newLayerStyle })
+      const newLayerStyle = createVectorLayerDisplay(where)
+      db.vector_layer_displays.create({ data: newLayerStyle })
     }
     run()
-  }, [where, db.layer_styles, row])
+  }, [where, db.vector_layer_displays, row])
 
   const onChange: InputProps['onChange'] = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>, data) => {
       const { name, value } = getValueFromChange(e, data)
-      db.layer_styles.update({
+      db.vector_layer_displays.update({
         where: { vector_layer_display_id: row?.vector_layer_display_id },
         data: { [name]: value },
       })
     },
-    [db.layer_styles, row?.vector_layer_display_id],
+    [db.vector_layer_displays, row?.vector_layer_display_id],
   )
 
   if (!row) return null // no spinner as is null until enough data input

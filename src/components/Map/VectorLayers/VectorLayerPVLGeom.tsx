@@ -9,7 +9,7 @@ import { css } from '../../../css'
 import {
   Vector_layer_geoms as VectorLayerGeom,
   Vector_layers as VectorLayer,
-  Layer_styles as LayerStyle,
+  Vector_layer_displays as VectorLayerDisplay,
   Ui_options as UiOption,
 } from '../../../generated/client'
 
@@ -45,7 +45,7 @@ export const VectorLayerPVLGeom = ({ layer }: Props) => {
   const map = useMap()
 
   const [zoom, setZoom] = useState<number>(map.getZoom())
-  const [layerStyle, setLayerStyle] = useState<LayerStyle>()
+  const [layerStyle, setLayerStyle] = useState<VectorLayerDisplay>()
 
   useMapEvent('dragend zoomend ', () => {
     // console.log('dragend zoomend ')
@@ -87,15 +87,16 @@ export const VectorLayerPVLGeom = ({ layer }: Props) => {
       }))
       removeNotifs()
 
-      const layerStyle: LayerStyle = await db.layer_styles.findFirst({
-        where: { vector_layer_id: layer.vector_layer_id },
-      })
+      const layerStyle: VectorLayerDisplay =
+        await db.vector_layer_displays.findFirst({
+          where: { vector_layer_id: layer.vector_layer_id },
+        })
       setData(data)
       setLayerStyle(layerStyle)
       setZoom(map.getZoom())
     },
     [
-      db.layer_styles,
+      db.vector_layer_displays,
       db.notifications,
       db.vector_layer_geoms,
       layer.label,

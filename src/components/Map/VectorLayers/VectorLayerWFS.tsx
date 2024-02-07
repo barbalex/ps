@@ -27,7 +27,7 @@ import { Popup } from '../Popup'
 import { useElectric } from '../../../ElectricProvider'
 import {
   Vector_layers as VectorLayer,
-  Layer_styles as LayerStyle,
+  Vector_layer_displays as VectorLayerDisplay,
   Ui_options as UiOption,
 } from '../../../generated/client'
 import { user_id } from '../../SqlInitializer'
@@ -150,12 +150,12 @@ export const VectorLayerWFS = ({ layer }: Props) => {
     fetchDataDebounced({ bounds: map.getBounds() })
   }, [fetchDataDebounced, map, showMap])
 
-  const { results: layerStyleResults } = useLiveQuery(
-    db.layer_styles.liveFirst({
+  const { results: vectorLayerDisplayResults } = useLiveQuery(
+    db.vector_layer_displays.liveFirst({
       where: { vector_layer_id: layer.vector_layer_id },
     }),
   )
-  const layerStyle: LayerStyle = layerStyleResults
+  const vectorLayerDisplay: VectorLayerDisplay = vectorLayerDisplayResults
 
   // include only if zoom between min_zoom and max_zoom
   if (layer.min_zoom !== undefined && zoom < layer.min_zoom) return null
@@ -188,19 +188,19 @@ export const VectorLayerWFS = ({ layer }: Props) => {
   return (
     <>
       <GeoJSON
-        key={`${data?.length ?? 0}/${JSON.stringify(layerStyle)}`}
+        key={`${data?.length ?? 0}/${JSON.stringify(vectorLayerDisplay)}`}
         data={data}
         opacity={layer.opacity}
-        style={layerstyleToProperties({ layerStyle })}
+        style={layerstyleToProperties({ layerStyle: vectorLayerDisplay })}
         pointToLayer={(geoJsonPoint, latlng) => {
-          if (layerStyle.marker_type === 'circle') {
+          if (vectorLayerDisplay.marker_type === 'circle') {
             return L.circleMarker(latlng, {
-              ...layerStyle,
-              radius: layerStyle.circle_marker_radius ?? 8,
+              ...vectorLayerDisplay,
+              radius: vectorLayerDisplay.circle_marker_radius ?? 8,
             })
           }
 
-          const IconComponent = icons[layerStyle?.marker_symbol]
+          const IconComponent = icons[vectorLayerDisplay?.marker_symbol]
 
           return IconComponent
             ? L.marker(latlng, {
@@ -208,8 +208,8 @@ export const VectorLayerWFS = ({ layer }: Props) => {
                   html: ReactDOMServer.renderToString(
                     <IconComponent
                       style={{
-                        color: layerStyle.color ?? '#cc756b',
-                        fontSize: layerStyle.marker_size ?? 16,
+                        color: vectorLayerDisplay.color ?? '#cc756b',
+                        fontSize: vectorLayerDisplay.marker_size ?? 16,
                       }}
                     />,
                   ),

@@ -490,7 +490,7 @@ export const createVectorLayer = ({ project_id }) => ({
   deleted: false,
 })
 
-export const createLayerStyle = ({
+export const createVectorLayerDisplay = ({
   vector_layer_id = null,
   places1 = false,
   places2 = false,
