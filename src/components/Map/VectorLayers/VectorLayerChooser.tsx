@@ -3,13 +3,22 @@ import { useLiveQuery } from 'electric-sql/react'
 import { VectorLayerWFS } from './VectorLayerWFS'
 import { VectorLayerPVLGeom } from './VectorLayerPVLGeom'
 import { useElectric } from '../../../ElectricProvider'
+import {
+  Vector_layers as VectorLayer,
+  Vector_layer_displays as VectorLayerDisplay,
+} from '../../../generated/client'
 
 /**
  * This component chooses whether to render
  * from WFS or PVLGeom
  */
 
-export const VectorLayerChooser = ({ layer }) => {
+type Props = {
+  layer: VectorLayer
+  display: VectorLayerDisplay
+}
+
+export const VectorLayerChooser = ({ layer, display }: Props) => {
   const { db } = useElectric()!
 
   const { results: vectorLayerGeoms = [] } = useLiveQuery(
@@ -19,10 +28,10 @@ export const VectorLayerChooser = ({ layer }) => {
   )
   const geomCount: integer = vectorLayerGeoms.length
 
-  console.log('hello VectorLayerChooser', { layer, db, geomCount })
+  console.log('hello VectorLayerChooser', { layer, db, geomCount, display })
 
   // TODO: only accept pre-downloaded layers because of
   // problems filtering by bbox?
-  if (!geomCount) return <VectorLayerWFS layer={layer} />
-  return <VectorLayerPVLGeom layer={layer} />
+  if (!geomCount) return <VectorLayerWFS layer={layer} display={display} />
+  return <VectorLayerPVLGeom layer={layer} display={display} />
 }

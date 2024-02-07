@@ -1,8 +1,12 @@
+import { useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 
 import { VectorLayerChooser } from './VectorLayerChooser'
-import { Vector_layers as VectorLayer } from '../../../generated/client'
+import {
+  Vector_layers as VectorLayer,
+  Vector_layer_displays as VectorLayerDisplay,
+} from '../../../generated/client'
 import { useElectric } from '../../../ElectricProvider'
 
 export const VectorLayers = () => {
@@ -10,39 +14,54 @@ export const VectorLayers = () => {
 
   const { db } = useElectric()!
 
-  const where = project_id
-    ? // Beware: projectId can be undefined
-      {
-        deleted: false,
-        // vector_layer_displays: { active: true },
-        project_id,
-        // Ensure needed data exists
-        url: { not: null },
-        wfs_layer: { not: null },
-        output_format: { not: null },
-      }
-    : {
-        deleted: false,
-        // vector_layer_displays: { active: true },
-        // Ensure needed data exists
-        url: { not: null },
-        wfs_layer: { not: null },
-        output_format: { not: null },
-      }
+  const { results: vectorLayerDisplayResults = [] } = useLiveQuery(
+    db.vector_layer_displays.liveMany({
+      where: { active: true },
+    }),
+  )
+  const vectorLayerDisplays: VectorLayerDisplay[] = vectorLayerDisplayResults
 
-  const { results = [] } = useLiveQuery(
+  const vectorLayerWhere = useMemo(() => {
+    const where = {
+      vector_layer_id: {
+        in: vectorLayerDisplays.map((d) => d.vector_layer_id),
+      },
+      deleted: false,
+      // TODO: not working
+      // vector_layer_displays: { active: true },
+      // Ensure needed data exists
+      url: { not: null },
+      wfs_layer: { not: null },
+      output_format: { not: null },
+    }
+    if (project_id) {
+      where.project_id = project_id
+    }
+    return where
+  }, [project_id, vectorLayerDisplays])
+
+  const { results: vectorLayerResults = [] } = useLiveQuery(
     db.vector_layers.liveMany({
-      where,
+      where: vectorLayerWhere,
+      // TODO: not working
       // include: { vector_layer_displays: true },
     }),
   )
 
-  const vectorLayers: VectorLayer[] = results
-  console.log('hello VectorLayers, vectorLayers:', vectorLayers)
+  const vectorLayers: VectorLayer[] = vectorLayerResults
+  console.log('hello VectorLayers', {
+    vectorLayers,
+    vectorLayerDisplays,
+    vectorLayerWhere,
+    project_id,
+  })
 
-  // if (!vectorLayers.length) return []
+  if (!vectorLayers.length || !vectorLayerDisplays.length) return []
 
   return vectorLayers.map((layer: VectorLayer) => {
+    const display = vectorLayerDisplays.find(
+      (d) => d.vector_layer_id === layer.vector_layer_id,
+    )
     const partsToRedrawOn = {
       id: layer.vector_layer_id,
       url: layer.url,
@@ -55,7 +74,11 @@ export const VectorLayers = () => {
     }
 
     return (
-      <VectorLayerChooser key={JSON.stringify(partsToRedrawOn)} layer={layer} />
+      <VectorLayerChooser
+        key={JSON.stringify(partsToRedrawOn)}
+        layer={layer}
+        display={display}
+      />
     )
   })
 }

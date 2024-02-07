@@ -7,7 +7,6 @@ import { Vector_layers as VectorLayer } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { TextField } from '../../components/shared/TextField'
-import { SwitchField } from '../../components/shared/SwitchField'
 import { RadioGroupField } from '../../components/shared/RadioGroupField'
 import { DropdownFieldFromLayerOptions } from '../../components/shared/DropdownFieldFromLayerOptions'
 import { getValueFromChange } from '../../modules/getValueFromChange'
@@ -88,48 +87,6 @@ export const Component = () => {
               name="label"
               value={row.label ?? ''}
               onChange={onChange}
-            />
-            <TextField
-              label="Sort"
-              name="sort"
-              value={row.sort ?? ''}
-              onChange={onChange}
-              type="number"
-              validationMessage="Add a sorting order here if sorting by label is not desired."
-            />
-            <SwitchField
-              label="active"
-              name="active"
-              value={row.active}
-              onChange={onChange}
-            />
-            <TextField
-              label="Max Zoom"
-              name="max_zoom"
-              value={row.max_zoom ?? ''}
-              onChange={onChange}
-              type="number"
-              max={19}
-              min={0}
-              validationMessage="Zoom can be between 0 and 19"
-            />
-            <TextField
-              label="Min Zoom"
-              name="min_zoom"
-              value={row.min_zoom ?? ''}
-              onChange={onChange}
-              type="number"
-              max={19}
-              min={0}
-              validationMessage="Zoom can be between 0 and 19"
-            />
-            <TextField
-              label="Max number of features"
-              name="max_features"
-              value={row.max_features ?? ''}
-              onChange={onChange}
-              type="number"
-              validationMessage="Drawing too many features can crash the app. Your mileage may vary."
             />
             <VectorLayerDisplay row={row} />
           </>
