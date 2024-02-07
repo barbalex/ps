@@ -37,7 +37,7 @@ const titleRowStyle = {
   cursor: 'pointer',
   userSelect: 'none',
   position: 'sticky',
-  top: '-10px',
+  top: '-11px',
   zIndex: 4,
 }
 const titleStyle = {
@@ -135,7 +135,7 @@ Props) => {
             },
           })}
         >
-          <div style={titleStyle}>Geometrien stylen</div>
+          <div style={titleStyle}>Display</div>
         </div>
         <div style={fieldsContainerStyle}>
           <RadioGroupField
