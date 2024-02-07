@@ -23,12 +23,14 @@ CREATE TYPE fill_rule_enum AS enum(
 
 DROP TABLE IF EXISTS layer_styles CASCADE;
 
--- TODO: manage all map related properties here? For imported/wfs and also own tables?
+-- TODO:
+-- manage all map related properties here? For imported/wfs and also own tables?
 -- active
 -- sort
 -- max_zoom
 -- min_zoom
 -- max_features
+-- Thus: rename to vector_layer_map_properties?
 CREATE TABLE layer_styles(
   layer_style_id uuid PRIMARY KEY DEFAULT NULL,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
