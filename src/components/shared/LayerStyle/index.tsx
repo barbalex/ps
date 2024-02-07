@@ -13,6 +13,7 @@ import {
 import { TextField } from '../TextField'
 import { RadioGroupField } from '../RadioGroupField'
 import { MarkerSymbolPicker } from './MarkerSymbolPicker'
+import { SliderField } from '../SliderField'
 import { css } from '../../../css'
 import { useElectric } from '../../../ElectricProvider'
 import { createLayerStyle } from '../../../modules/createRows'
@@ -46,6 +47,9 @@ const titleStyle = {
 }
 const fieldsContainerStyle = {
   padding: '15px 10px 10px 10px',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 15,
 }
 
 const lineCapValues = ['butt', 'round', 'square']
@@ -176,16 +180,14 @@ Props) => {
             name="color"
             disabled={!userMayEdit}
           />
-          <TextField
+          <SliderField
+            label="Lines and Points: Opacity (%)"
             name="opacity_percent"
-            label="Linien und Punkte: Deckkraft"
-            value={row.opacity_percent}
+            value={row.opacity_percent ?? ''}
             onChange={onChange}
-            type="number"
             max={100}
             min={0}
             step={5}
-            disabled={!userMayEdit}
           />
           <TextField
             name="weight"
@@ -246,16 +248,14 @@ Props) => {
             color={row.fill_color}
             disabled={!userMayEdit}
           />
-          <TextField
-            name="fill_opacity_percent"
+          <SliderField
             label="Fill: Opacity (%)"
-            value={row.fill_opacity_percent}
+            name="fill_opacity_percent"
+            value={row.fill_opacity_percent ?? ''}
             onChange={onChange}
-            type="number"
             max={100}
             min={0}
             step={5}
-            disabled={!userMayEdit}
           />
           <RadioGroupField
             name="fill_rule"
