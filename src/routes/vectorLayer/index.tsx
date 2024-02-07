@@ -9,7 +9,6 @@ import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { TextField } from '../../components/shared/TextField'
 import { SwitchField } from '../../components/shared/SwitchField'
 import { RadioGroupField } from '../../components/shared/RadioGroupField'
-import { SliderField } from '../../components/shared/SliderField'
 import { DropdownFieldFromLayerOptions } from '../../components/shared/DropdownFieldFromLayerOptions'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { Header } from './Header'
@@ -123,15 +122,6 @@ export const Component = () => {
               max={19}
               min={0}
               validationMessage="Zoom can be between 0 and 19"
-            />
-            <SliderField
-              label="Opacity (%)"
-              name="opacity_percent"
-              value={row.opacity_percent ?? ''}
-              onChange={onChange}
-              max={100}
-              min={0}
-              step={5}
             />
             <TextField
               label="Max number of features"
