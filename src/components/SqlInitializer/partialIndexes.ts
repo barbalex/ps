@@ -47,11 +47,6 @@ export const generatePartialIndexes = async (db) => {
           CREATE INDEX if not exists ON gbif_occurrence_downloads gbif_occurrence_downloads_deleted_idx USING btree(deleted) WHERE deleted;
           CREATE INDEX if not exists ON tile_layers tile_layers_deleted_idx USING btree(deleted) WHERE deleted;
           CREATE INDEX if not exists ON vector_layers vector_layers_deleted_idx USING btree(deleted) WHERE deleted;
-          CREATE INDEX if not exists ON vector_layer_displays vector_layer_displays_places1_idx USING btree(places1) WHERE places1;
-          CREATE INDEX if not exists ON vector_layer_displays vector_layer_displays_places2_idx USING btree(places2) WHERE places2;
-          CREATE INDEX if not exists ON vector_layer_displays vector_layer_displays_actions_idx USING btree(actions) WHERE actions;
-          CREATE INDEX if not exists ON vector_layer_displays vector_layer_displays_checks_idx USING btree(checks) WHERE checks;
-          CREATE INDEX if not exists ON vector_layer_displays vector_layer_displays_observations_idx USING btree(observations) WHERE observations;
           CREATE INDEX if not exists ON vector_layer_displays vector_layer_displays_deleted_idx USING btree(deleted) WHERE deleted;
     `,
   })

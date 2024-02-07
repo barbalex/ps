@@ -9,6 +9,14 @@ CREATE TYPE line_cap_enum AS enum(
   'square'
 );
 
+CREATE TYPE vector_layer_table_enum AS enum(
+  'places1',
+  'places2',
+  'actions',
+  'checks',
+  'observations'
+);
+
 -- CREATE TYPE line_join_enum AS enum(
 --   'arcs',
 --   'bevel',
@@ -34,11 +42,7 @@ DROP TABLE IF EXISTS vector_layer_displays CASCADE;
 CREATE TABLE vector_layer_displays(
   vector_layer_display_id uuid PRIMARY KEY DEFAULT NULL,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  places1 boolean DEFAULT NULL, -- true,
-  places2 boolean DEFAULT NULL, -- true,
-  actions boolean DEFAULT NULL, -- true,
-  checks boolean DEFAULT NULL, -- true,
-  observations boolean DEFAULT NULL, -- true,
+  data_table vector_layer_table_enum DEFAULT NULL,
   sort smallint DEFAULT NULL,
   active boolean DEFAULT NULL,
   max_zoom integer DEFAULT NULL, -- 19,
@@ -65,17 +69,11 @@ CREATE TABLE vector_layer_displays(
 
 CREATE INDEX ON vector_layer_displays USING btree(vector_layer_id);
 
-COMMENT ON TABLE vector_layer_displays IS 'Goal: style table layers, project tile layers and project vector layers';
+CREATE INDEX ON vector_layer_displays USING btree(data_table);
 
-COMMENT ON COLUMN vector_layer_displays.places1 IS 'Whether this style is used for places1';
+COMMENT ON data_table vector_layer_displays IS 'Goal: style table layers, project tile layers and project vector layers';
 
-COMMENT ON COLUMN vector_layer_displays.places2 IS 'Whether this style is used for places2';
-
-COMMENT ON COLUMN vector_layer_displays.actions IS 'Whether this style is used for actions';
-
-COMMENT ON COLUMN vector_layer_displays.checks IS 'Whether this style is used for checks';
-
-COMMENT ON COLUMN vector_layer_displays.observations IS 'Whether this style is used for observations';
+COMMENT ON COLUMN vector_layer_displays.table IS 'Whether this style is used for this table';
 
 COMMENT ON COLUMN vector_layer_displays.marker_symbol IS 'Name of the symbol used for the marker';
 
