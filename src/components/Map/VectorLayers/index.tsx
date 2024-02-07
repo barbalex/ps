@@ -49,12 +49,6 @@ export const VectorLayers = () => {
   )
 
   const vectorLayers: VectorLayer[] = vectorLayerResults
-  console.log('hello VectorLayers', {
-    vectorLayers,
-    vectorLayerDisplays,
-    vectorLayerWhere,
-    project_id,
-  })
 
   if (!vectorLayers.length || !vectorLayerDisplays.length) return []
 
