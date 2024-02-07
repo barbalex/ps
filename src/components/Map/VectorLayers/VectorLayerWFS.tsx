@@ -53,8 +53,6 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
   const [error, setError] = useState()
   const notificationIds = useRef([])
 
-  console.log('hello VectorLayerWFS', { layer, display })
-
   const { results: uiOptionResults } = useLiveQuery(
     db.ui_options.liveUnique({ where: { user_id } }),
   )
