@@ -39,8 +39,9 @@ CREATE TABLE layer_styles(
   actions boolean DEFAULT NULL, -- true,
   checks boolean DEFAULT NULL, -- true,
   observations boolean DEFAULT NULL, -- true,
-  -- TODO: add ids for all tables with geometries
-  --table_id uuid UNIQUE DEFAULT NULL REFERENCES tables(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  sort smallint DEFAULT NULL,
+  active boolean DEFAULT NULL,
+  max_features integer DEFAULT NULL, -- 1000
   marker_type marker_type_enum DEFAULT NULL, -- 'circle',
   circle_marker_radius integer DEFAULT NULL, -- 8,
   marker_symbol text DEFAULT NULL,
