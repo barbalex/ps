@@ -26,10 +26,11 @@ DROP TABLE IF EXISTS layer_styles CASCADE;
 CREATE TABLE layer_styles(
   layer_style_id uuid PRIMARY KEY DEFAULT NULL,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  action_id uuid DEFAULT NULL REFERENCES actions(action_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  check_id uuid DEFAULT NULL REFERENCES checks(check_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  observation_id uuid DEFAULT NULL REFERENCES observations(observation_id) ON DELETE CASCADE ON UPDATE CASCADE, -- really?
+  places1 boolean DEFAULT NULL, -- true,
+  places2 boolean DEFAULT NULL, -- true,
+  actions boolean DEFAULT NULL, -- true,
+  checks boolean DEFAULT NULL, -- true,
+  observations boolean DEFAULT NULL, -- true,
   -- TODO: add ids for all tables with geometries
   --table_id uuid UNIQUE DEFAULT NULL REFERENCES tables(id) ON DELETE CASCADE ON UPDATE CASCADE,
   marker_type marker_type_enum DEFAULT NULL, -- 'circle',
@@ -53,23 +54,17 @@ CREATE TABLE layer_styles(
 
 CREATE INDEX ON layer_styles USING btree(vector_layer_id);
 
-CREATE INDEX ON layer_styles USING btree(place_id);
-
-CREATE INDEX ON layer_styles USING btree(action_id);
-
-CREATE INDEX ON layer_styles USING btree(check_id);
-
-CREATE INDEX ON layer_styles USING btree(observation_id);
-
 COMMENT ON TABLE layer_styles IS 'Goal: style table layers, project tile layers and project vector layers';
 
-COMMENT ON COLUMN layer_styles.place_id IS 'associated place';
+COMMENT ON COLUMN layer_styles.places1 IS 'Whether this style is used for places1';
 
-COMMENT ON COLUMN layer_styles.action_id IS 'associated action';
+COMMENT ON COLUMN layer_styles.places2 IS 'Whether this style is used for places2';
 
-COMMENT ON COLUMN layer_styles.check_id IS 'associated check';
+COMMENT ON COLUMN layer_styles.actions IS 'Whether this style is used for actions';
 
-COMMENT ON COLUMN layer_styles.observation_id IS 'associated observation';
+COMMENT ON COLUMN layer_styles.checks IS 'Whether this style is used for checks';
+
+COMMENT ON COLUMN layer_styles.observations IS 'Whether this style is used for observations';
 
 COMMENT ON COLUMN layer_styles.marker_symbol IS 'Name of the symbol used for the marker';
 
