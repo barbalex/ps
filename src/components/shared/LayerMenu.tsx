@@ -1,6 +1,7 @@
 import { useCallback, memo } from 'react'
 import { Button } from '@fluentui/react-button'
 import { MdLayers, MdLayersClear } from 'react-icons/md'
+import { TbMapCog } from 'react-icons/tb'
 import { useLiveQuery } from 'electric-sql/react'
 
 import { useElectric } from '../../ElectricProvider'
@@ -24,25 +25,41 @@ export const LayerMenu = memo(({ table, placeNamePlural }) => {
     db.ui_options.liveUnique({ where: { user_id } }),
   )
   const uiOption: UiOption = results
-  const showLayer = uiOption?.[fieldName] ?? false
 
-  const onClick = useCallback(() => {
+  const showLayer = uiOption?.[fieldName] ?? false
+  const onClickShowLayer = useCallback(() => {
     db.ui_options.update({
       where: { user_id },
       data: { [fieldName]: !showLayer },
     })
   }, [db.ui_options, fieldName, showLayer])
 
+  const onClickMapSettings = useCallback(() => {
+    console.log('onClickMapSettings')
+  }, [])
+
   return (
-    <Button
-      size="medium"
-      icon={showLayer ? <MdLayersClear /> : <MdLayers />}
-      onClick={onClick}
-      title={
-        showLayer
-          ? `Show ${placeNamePlural ?? table} layer in map`
-          : `Remove ${placeNamePlural ?? table} layer from map`
-      }
-    />
+    <>
+      <Button
+        size="medium"
+        icon={showLayer ? <MdLayersClear /> : <MdLayers />}
+        onClick={onClickShowLayer}
+        title={
+          showLayer
+            ? `Show ${placeNamePlural ?? table} layer in map`
+            : `Remove ${placeNamePlural ?? table} layer from map`
+        }
+      />
+      <Button
+        size="medium"
+        icon={<TbMapCog />}
+        onClick={onClickMapSettings}
+        title={
+          showLayer
+            ? `Show ${placeNamePlural ?? table} map settings`
+            : `Hide ${placeNamePlural ?? table} map settings`
+        }
+      />
+    </>
   )
 })
