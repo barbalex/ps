@@ -22,8 +22,8 @@
   "dependencies": {
     "@css-hooks/react": "1.8.2",
     "@css-hooks/recommended": "1.8.2",
-    "@fluentui/react-components": "9.46.3",
-    "@fluentui/react-datepicker-compat": "0.4.22",
+    "@fluentui/react-components": "9.46.4",
+    "@fluentui/react-datepicker-compat": "0.4.23",
     "@fluentui/react-icons": "2.0.226",
     "@fluentui/react-timepicker-compat-preview": "0.2.0",
     "@fontsource/roboto": "5.0.8",
