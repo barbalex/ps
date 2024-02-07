@@ -12,9 +12,12 @@ CREATE TYPE line_cap_enum AS enum(
 CREATE TYPE vector_layer_table_enum AS enum(
   'places1',
   'places2',
-  'actions',
-  'checks',
-  'observations'
+  'actions1',
+  'actions2',
+  'checks1',
+  'checks2',
+  'observations1',
+  'observations2'
 );
 
 -- CREATE TYPE line_join_enum AS enum(
@@ -64,9 +67,9 @@ CREATE INDEX ON vector_layer_displays USING btree(vector_layer_id);
 
 CREATE INDEX ON vector_layer_displays USING btree(data_table);
 
-COMMENT ON data_table vector_layer_displays IS 'Goal: manage all map related properties of vector layers including places, actions, checks and observations';
+COMMENT ON TABLE vector_layer_displays IS 'Goal: manage all map related properties of vector layers including places, actions, checks and observations';
 
-COMMENT ON COLUMN vector_layer_displays.table IS 'Whether this style is used for this table';
+COMMENT ON COLUMN vector_layer_displays.data_table IS 'Whether this style is used for this table';
 
 COMMENT ON COLUMN vector_layer_displays.marker_symbol IS 'Name of the symbol used for the marker';
 
