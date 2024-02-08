@@ -11,6 +11,7 @@ import { vectorLayerDisplayToProperties } from '../../../modules/vectorLayerDisp
 import { Popup } from '../Popup'
 import { useElectric } from '../../../ElectricProvider'
 import { Vector_layer_displays as VectorLayerDisplay } from '../../../generated/client'
+import { createVectorLayerDisplay } from '../../../modules/createRows'
 
 // TODO: query ui_options.show_place1_layer in parent
 // and render this component accordingly to prevent querying all places here
@@ -20,7 +21,34 @@ export const Places1Layer = () => {
   const { results: vectorLayerDisplayResults } = useLiveQuery(
     db.vector_layer_displays.liveFirst({ where: { data_table: 'places1' } }),
   )
-  const vectorLayerDisplay: VectorLayerDisplay = vectorLayerDisplayResults
+  const display: VectorLayerDisplay = vectorLayerDisplayResults
+
+  console.log('hello Places1Layer, row:', display)
+
+  const isFirstRender = useRef(true)
+  // ensure new vectorLayerDisplay is created if needed
+  useEffect(() => {
+    const run = async () => {
+      // this should NOT run on first render as row is null then anyway
+      if (isFirstRender.current) {
+        isFirstRender.current = false
+        return
+      }
+      // stop if row already exists
+      if (display) return
+      const newVLD = createVectorLayerDisplay({ data_table: 'places1' })
+      db.vector_layer_displays.create({ data: newVLD })
+    }
+    run()
+  }, [db.vector_layer_displays, display])
+
+  // a geometry is built as FeatureCollection Object: https://datatracker.ietf.org/doc/html/rfc7946#section-3.3
+  // properties need to go into every feature
+  const data = []
+  // const geometry = {
+  //   type: 'FeatureCollection',
+  //   features: [],
+  // }
 
   const map = useMapEvent('zoomend', () => setZoom(map.getZoom()))
   const [zoom, setZoom] = useState(map.getZoom())
@@ -32,14 +60,6 @@ export const Places1Layer = () => {
   if (display.max_zoom !== undefined && zoom > display.max_zoom) return null
 
   const mapSize = map.getSize()
-
-  // a geometry is built as FeatureCollection Object: https://datatracker.ietf.org/doc/html/rfc7946#section-3.3
-  // properties need to go into every feature
-  // const geometry = {
-  //   type: 'FeatureCollection',
-  //   features: [],
-  // }
-
   return (
     <GeoJSON
       key={`${data?.length ?? 0}/${JSON.stringify(display)}`}

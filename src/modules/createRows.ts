@@ -492,6 +492,7 @@ export const createVectorLayer = ({ project_id }) => ({
 
 export const createVectorLayerDisplay = ({
   vector_layer_id = null,
+  data_table = null,
   sort = 0,
   active = false,
   max_zoom = 19,
@@ -500,6 +501,7 @@ export const createVectorLayerDisplay = ({
 }) => ({
   vector_layer_display_id: uuidv7(),
   vector_layer_id,
+  data_table,
   sort,
   active,
   max_zoom,
