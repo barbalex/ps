@@ -54,13 +54,17 @@ export const Places1Layer = () => {
 
   // a geometry is built as FeatureCollection Object: https://datatracker.ietf.org/doc/html/rfc7946#section-3.3
   // properties need to go into every feature
-  const data = places.map((p) => p.geometry)
+  const data = places.map((p) => {
+    // need to add p's properties to all features:
+    // somehow there is a data property with empty object as value???
+    const { geometry: geom, bbox, data, ...placeProperties } = p
+    const geometry = { ...p.geometry }
+    geometry.features.forEach((f) => {
+      f.properties = placeProperties ?? {}
+    })
+    return p.geometry
+  })
   console.log('hello Places1Layer, data:', data)
-  // TODO: add properties to data
-  // const geometry = {
-  //   type: 'FeatureCollection',
-  //   features: [],
-  // }
 
   const map = useMapEvent('zoomend', () => setZoom(map.getZoom()))
   const [zoom, setZoom] = useState(map.getZoom())
@@ -112,7 +116,8 @@ export const Places1Layer = () => {
       onEachFeature={(feature, _layer) => {
         const layersData = [
           {
-            label: layer.label,
+            label: feature.label,
+            // TODO: choose what properties to show
             properties: Object.entries(feature?.properties ?? {}),
           },
         ]

@@ -179,7 +179,7 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
 
   const mapSize = map.getSize()
 
-  console.log('hello VectorLayerWFS, data:', data)
+  // console.log('hello VectorLayerWFS, data:', data)
 
   return (
     <>
