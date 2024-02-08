@@ -6,7 +6,7 @@ import { WidgetTypesNode } from './WidgetTypes'
 import { WidgetsForFieldsNode } from './WidgetsForFields'
 import { FieldsNode } from './Fields'
 import { FilesNode } from './Files'
-import { MessagesNode } from './messages'
+import { MessagesNode } from './Messages'
 
 const containerStyle = {
   height: '100%',
