@@ -56,23 +56,7 @@ export const VectorLayers = () => {
     const display = vectorLayerDisplays.find(
       (d) => d.vector_layer_id === layer.vector_layer_id,
     )
-    const partsToRedrawOn = {
-      id: layer.vector_layer_id,
-      url: layer.url,
-      max_zoom: layer.max_zoom,
-      min_zoom: layer.min_zoom,
-      opacity: layer.opacity,
-      wfs_layer: layer.wfs_layer,
-      wfs_version: layer.wfs_version,
-      output_format: layer.output_format,
-    }
 
-    return (
-      <VectorLayerChooser
-        key={JSON.stringify(partsToRedrawOn)}
-        layer={layer}
-        display={display}
-      />
-    )
+    return <VectorLayerChooser layer={layer} display={display} />
   })
 }
