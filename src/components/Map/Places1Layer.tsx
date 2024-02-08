@@ -3,55 +3,21 @@
  */
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { GeoJSON, useMapEvent } from 'react-leaflet'
-import axios from 'redaxios'
-import XMLViewer from 'react-xml-viewer'
-import { MdClose } from 'react-icons/md'
 import { useLiveQuery } from 'electric-sql/react'
 import * as ReactDOMServer from 'react-dom/server'
-import { useDebouncedCallback } from 'use-debounce'
-import { uuidv7 } from '@kripod/uuidv7'
 import * as icons from 'react-icons/md'
-
-import {
-  Dialog,
-  DialogSurface,
-  DialogTitle,
-  DialogBody,
-  DialogActions,
-  DialogContent,
-  Button,
-} from '@fluentui/react-components'
 
 import { vectorLayerDisplayToProperties } from '../../../modules/vectorLayerDisplayToProperties'
 import { Popup } from '../Popup'
 import { useElectric } from '../../../ElectricProvider'
 import {
-  Vector_layers as VectorLayer,
   Vector_layer_displays as VectorLayerDisplay,
   Ui_options as UiOption,
 } from '../../../generated/client'
 import { user_id } from '../../SqlInitializer'
 
-const xmlViewerStyle = {
-  fontSize: 'small',
-}
-const dialogContentStyle = {
-  paddingTop: 0,
-}
-
-const xmlTheme = {
-  attributeKeyColor: '#0074D9',
-  attributeValueColor: '#2ECC40',
-}
-
-type Props = {
-  layer: VectorLayer
-  display: VectorLayerDisplay
-}
-export const VectorLayerWFS = ({ layer, display }: Props) => {
+export const Places1Layer = () => {
   const { db } = useElectric()!
-  const [error, setError] = useState()
-  const notificationIds = useRef([])
 
   const { results: uiOptionResults } = useLiveQuery(
     db.ui_options.liveUnique({ where: { user_id } }),
@@ -72,10 +38,11 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
   const mapSize = map.getSize()
 
   // a geometry is built as FeatureCollection Object: https://datatracker.ietf.org/doc/html/rfc7946#section-3.3
-  const geometry = {
-    type: 'FeatureCollection',
-    features: [],
-  }
+  // properties need to go into every feature
+  // const geometry = {
+  //   type: 'FeatureCollection',
+  //   features: [],
+  // }
 
   return (
     <GeoJSON
