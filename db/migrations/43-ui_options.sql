@@ -11,14 +11,6 @@ CREATE TABLE ui_options(
   editing_place_geometry uuid DEFAULT NULL,
   editing_check_geometry uuid DEFAULT NULL,
   editing_action_geometry uuid DEFAULT NULL,
-  show_place1_layer boolean DEFAULT NULL,
-  show_place2_layer boolean DEFAULT NULL,
-  show_check1_layer boolean DEFAULT NULL,
-  show_check2_layer boolean DEFAULT NULL,
-  show_action1_layer boolean DEFAULT NULL,
-  show_action2_layer boolean DEFAULT NULL,
-  show_observation1_layer boolean DEFAULT NULL,
-  show_observation2_layer boolean DEFAULT NULL,
   label text DEFAULT NULL
 );
 
