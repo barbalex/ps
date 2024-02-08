@@ -16,15 +16,15 @@ import {
 } from '../../../generated/client'
 import { user_id } from '../../SqlInitializer'
 
+// TODO: query ui_options.show_place1_layer in parent
+// and render this component accordingly to prevent querying all places here
 export const Places1Layer = () => {
   const { db } = useElectric()!
 
-  const { results: uiOptionResults } = useLiveQuery(
-    db.ui_options.liveUnique({ where: { user_id } }),
+  const { results: vectorLayerDisplayResults } = useLiveQuery(
+    db.vector_layer_displays.liveFirst({ where: { data_table: 'places1' } }),
   )
-  const uiOption: UiOption = uiOptionResults
-  // const showMap = uiOption?.show_map ?? false TODO:
-  const showMap = uiOption?.show_map ?? true
+  const vectorLayerDisplay: VectorLayerDisplay = vectorLayerDisplayResults
 
   const map = useMapEvent('zoomend', () => setZoom(map.getZoom()))
   const [zoom, setZoom] = useState(map.getZoom())
