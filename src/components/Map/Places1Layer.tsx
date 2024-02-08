@@ -10,11 +10,7 @@ import * as icons from 'react-icons/md'
 import { vectorLayerDisplayToProperties } from '../../../modules/vectorLayerDisplayToProperties'
 import { Popup } from '../Popup'
 import { useElectric } from '../../../ElectricProvider'
-import {
-  Vector_layer_displays as VectorLayerDisplay,
-  Ui_options as UiOption,
-} from '../../../generated/client'
-import { user_id } from '../../SqlInitializer'
+import { Vector_layer_displays as VectorLayerDisplay } from '../../../generated/client'
 
 // TODO: query ui_options.show_place1_layer in parent
 // and render this component accordingly to prevent querying all places here
