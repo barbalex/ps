@@ -57,6 +57,12 @@ export const VectorLayers = () => {
       (d) => d.vector_layer_id === layer.vector_layer_id,
     )
 
-    return <VectorLayerChooser layer={layer} display={display} />
+    return (
+      <VectorLayerChooser
+        key={layer.vector_layer_id}
+        layer={layer}
+        display={display}
+      />
+    )
   })
 }
