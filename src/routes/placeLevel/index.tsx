@@ -11,6 +11,7 @@ import { SwitchField } from '../../components/shared/SwitchField'
 import { RadioGroupField } from '../../components/shared/RadioGroupField'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { Header } from './Header'
+import { updateTableVectorLayerLabels } from '../../modules/updateTableVectorLayerLabels'
 
 import '../../form.css'
 
@@ -34,24 +35,33 @@ export const Component = () => {
         where: { place_level_id },
         data: { [name]: valueToUse },
       })
-      // if name_plural was changed, need to update the label of the corresponding vector layer
-      if (row && name === 'name_plural' && row.level && row.project_id) {
+      // if name_plural was changed, need to update the label of corresponding vector layers
+      if (
+        row &&
+        ['name_plural', 'name_singular'].includes(name) &&
+        row.level &&
+        row.project_id
+      ) {
         console.log(
           'hello placeLevel, onChange: name_plural changed - need to update vector layer label',
         )
-        const vectorLayer = await db.vector_layers.findFirst({
-          where: { type: `places${row.level}`, project_id: row.project_id },
+        await updateTableVectorLayerLabels({
+          db,
+          project_id: row.project_id,
         })
-        console.log('hello placeLevel, onChange: vectorLayer:', vectorLayer)
-        if (vectorLayer) {
-          db.vector_layers.update({
-            where: { vector_layer_id: vectorLayer.vector_layer_id },
-            data: { label: valueToUse },
-          })
-        }
+        // const vectorLayer = await db.vector_layers.findFirst({
+        //   where: { type: `places${row.level}`, project_id: row.project_id },
+        // })
+        // console.log('hello placeLevel, onChange: vectorLayer:', vectorLayer)
+        // if (vectorLayer) {
+        //   db.vector_layers.update({
+        //     where: { vector_layer_id: vectorLayer.vector_layer_id },
+        //     data: { label: valueToUse },
+        //   })
+        // }
       }
     },
-    [db.place_levels, db.vector_layers, place_level_id, row],
+    [db, place_level_id, row],
   )
 
   if (!row) {
