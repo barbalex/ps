@@ -1,10 +1,14 @@
 import { useLiveQuery } from 'electric-sql/react'
 
 import { useElectric } from '../../../ElectricProvider'
-import { Places1Layer } from './Places1Layer'
+import { Places1 } from './Places1'
+import { Places2 } from './Places2'
+import { Checks1 } from './Checks1'
 
 const layerToComponent = {
-  places1: Places1Layer,
+  places1: Places1,
+  places2: Places2,
+  checks1: Checks1,
 }
 
 export const TableLayers = () => {

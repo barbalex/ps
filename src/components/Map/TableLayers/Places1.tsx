@@ -11,16 +11,14 @@ type Props = {
   display: VectorLayerDisplay
 }
 
-// TODO: query ui_options.show_place1_layer in parent
-// and render this component accordingly to prevent querying all places here
-export const Places1Layer = ({ display }: Props) => {
+export const Places1 = ({ display }: Props) => {
   const { db } = useElectric()!
 
   // TODO: query only inside current map bounds using places.bbox
-  const { results: placesResults = [] } = useLiveQuery(
+  const { results = [] } = useLiveQuery(
     db.places.liveMany({ where: { parent_id: null, geometry: { not: null } } }),
   )
-  const places: Place[] = placesResults
+  const places: Place[] = results
 
   // a geometry is built as FeatureCollection Object: https://datatracker.ietf.org/doc/html/rfc7946#section-3.3
   // properties need to go into every feature
@@ -36,7 +34,10 @@ export const Places1Layer = ({ display }: Props) => {
     })
     return p.geometry
   })
-  console.log('hello Places1Layer, data:', data)
+  console.log('hello Places1, data:', data)
+
+  if (!data?.length) return null
+  if (!display) return null
 
   return <TableLayer data={data} display={display} />
 }

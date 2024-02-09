@@ -1,7 +1,4 @@
-/**
- * Not sure if this is ever used - data should always be downloaded
- */
-import { useState } from 'react'
+import { useState, memo } from 'react'
 import { GeoJSON, useMapEvent } from 'react-leaflet'
 import * as ReactDOMServer from 'react-dom/server'
 import * as icons from 'react-icons/md'
@@ -21,24 +18,25 @@ type Props = {
   display: VectorLayerDisplay
 }
 
-// TODO: query ui_options.show_place1_layer in parent
-// and render this component accordingly to prevent querying all places here
-export const TableLayer = ({ data, display }: Props) => {
+export const TableLayer = memo(({ data, display }: Props) => {
+  console.log('hello TableLayer, data:', data)
   const map = useMapEvent('zoomend', () => setZoom(map.getZoom()))
   const [zoom, setZoom] = useState(map.getZoom())
 
-  // TODO: fetch data from places and vector_layer_displays
-
   // include only if zoom between min_zoom and max_zoom
   if (!display) return null
-  if (display?.min_zoom !== undefined && zoom < display?.min_zoom) return null
-  if (display?.max_zoom !== undefined && zoom > display?.max_zoom) return null
+  if (display.min_zoom !== undefined && zoom < display.min_zoom) return null
+  if (display.max_zoom !== undefined && zoom > display.max_zoom) return null
   if (!data?.length) return null
 
   const mapSize = map.getSize()
+  console.log('hello TableLayer, mapSize:', mapSize)
+
+  // return null
+
   return (
     <GeoJSON
-      key={`${data?.length ?? 0}/${JSON.stringify(display)}`}
+      key={`${data.length ?? 0}/${JSON.stringify(display)}`}
       data={data}
       // TODO: style by properties, use a function that receives the feature: https://stackoverflow.com/a/66106512/712005
       style={vectorLayerDisplayToProperties({ vectorLayerDisplay: display })}
@@ -50,7 +48,7 @@ export const TableLayer = ({ data, display }: Props) => {
           })
         }
 
-        const IconComponent = icons[display?.marker_symbol]
+        const IconComponent = icons[display.marker_symbol]
 
         return IconComponent
           ? L.marker(latlng, {
@@ -71,8 +69,16 @@ export const TableLayer = ({ data, display }: Props) => {
         const layersData = [
           {
             label: feature.label,
-            // TODO: choose what properties to show
-            properties: Object.entries(feature?.properties ?? {}),
+            properties: Object.entries(feature?.properties ?? {}).map(
+              ([key, value]) => {
+                // if value is a date, format it
+                // the date object blows up
+                if (value instanceof Date) {
+                  return [key, value.toLocaleString('de-CH')]
+                }
+                return [key, value]
+              },
+            ),
           },
         ]
         const popupContent = ReactDOMServer.renderToString(
@@ -82,4 +88,4 @@ export const TableLayer = ({ data, display }: Props) => {
       }}
     />
   )
-}
+})
