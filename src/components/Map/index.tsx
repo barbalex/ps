@@ -68,7 +68,7 @@ export const Map = () => {
   //   [47.159, 8.354],
   //   [47.696, 8.984],
   // ]
-  const position = [51.505, -0.09]
+  const position = [47.4, 8.65]
 
   // console.log('hello Map, mapRef:', mapRef)
 
