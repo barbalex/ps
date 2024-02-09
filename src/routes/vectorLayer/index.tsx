@@ -82,8 +82,7 @@ export const Component = () => {
           </>
         )}
         {row?.type === 'upload' && <div>TODO: Upload</div>}
-        {((row?.type === 'wfs' && row?.url && row.wfs_layer) ||
-          !['wfs', 'upload'].includes(row.type)) && (
+        {row?.type === 'wfs' && row?.url && row.wfs_layer && (
           <>
             <TextField
               label="Label"
@@ -91,6 +90,12 @@ export const Component = () => {
               value={row.label ?? ''}
               onChange={onChange}
             />
+            <VectorLayerDisplay row={row} />
+          </>
+        )}
+        {!['wfs', 'upload'].includes(row.type) && (
+          <>
+            <TextFieldInactive label="Label" name="label" value={row.label} />
             <VectorLayerDisplay row={row} />
           </>
         )}
