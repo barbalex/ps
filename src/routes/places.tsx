@@ -58,6 +58,7 @@ export const Component = () => {
     const vectorLayer = createVectorLayer({
       project_id,
       type: place_id ? 'places2' : 'places1',
+      label: placeNamePlural,
     })
     const newVectorLayer = await db.vector_layers.create({ data: vectorLayer })
     const newVLD = createVectorLayerDisplay({
@@ -65,9 +66,17 @@ export const Component = () => {
       vector_layer_id: newVectorLayer.vector_layer_id,
     })
     db.vector_layer_displays.create({ data: newVLD })
-    
+
     navigate(`${baseUrl}/${data.place_id}`)
-  }, [baseUrl, db, navigate, place_id, project_id, subproject_id])
+  }, [
+    baseUrl,
+    db,
+    navigate,
+    placeNamePlural,
+    place_id,
+    project_id,
+    subproject_id,
+  ])
 
   const places: Place[] = results ?? []
 

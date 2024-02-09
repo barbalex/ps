@@ -54,15 +54,17 @@ export const Component = () => {
           name="vector_layer_id"
           value={row.vector_layer_id}
         />
-        <RadioGroupField
-          label="Type"
-          name="type"
-          list={['wfs', 'upload']}
-          value={row.type ?? ''}
-          onChange={onChange}
-          autoFocus
-          ref={autoFocusRef}
-        />
+        {['wfs', 'upload'].includes(row.type) && (
+          <RadioGroupField
+            label="Type"
+            name="type"
+            list={['wfs', 'upload']}
+            value={row.type ?? ''}
+            onChange={onChange}
+            autoFocus
+            ref={autoFocusRef}
+          />
+        )}
         {row?.type === 'wfs' && (
           <>
             <Url onChange={onChange} row={row} />
@@ -80,7 +82,8 @@ export const Component = () => {
           </>
         )}
         {row?.type === 'upload' && <div>TODO: Upload</div>}
-        {row?.type === 'wfs' && row?.url && row.wfs_layer && (
+        {((row?.type === 'wfs' && row?.url && row.wfs_layer) ||
+          !['wfs', 'upload'].includes(row.type)) && (
           <>
             <TextField
               label="Label"

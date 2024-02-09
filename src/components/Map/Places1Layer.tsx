@@ -36,8 +36,10 @@ export const Places1Layer = () => {
   // a geometry is built as FeatureCollection Object: https://datatracker.ietf.org/doc/html/rfc7946#section-3.3
   // properties need to go into every feature
   const data = places.map((p) => {
-    // need to add p's properties to all features:
+    // add p's properties to all features:
     // somehow there is a data property with empty object as value???
+    // TODO: make properties more readable for user
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { geometry: geom, bbox, data, ...placeProperties } = p
     const geometry = { ...p.geometry }
     geometry.features.forEach((f) => {

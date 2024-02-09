@@ -28,6 +28,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     }),
   )
   const placeNameSingular = placeLevels?.[0]?.name_singular ?? 'Place'
+  const placeNamePlural = placeLevels?.[0]?.name_plural ?? 'Places'
 
   const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/places${
     place_id2 ? `/${place_id}/places` : ''
@@ -46,6 +47,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     const vectorLayer = createVectorLayer({
       project_id,
       type: place_id2 ? 'places2' : 'places1',
+      label: placeNamePlural,
     })
     const newVectorLayer = await db.vector_layers.create({ data: vectorLayer })
     const newVLD = createVectorLayerDisplay({
@@ -61,6 +63,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     baseUrl,
     db,
     navigate,
+    placeNamePlural,
     place_id,
     place_id2,
     project_id,
@@ -71,6 +74,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     await db.places.delete({
       where: { place_id },
     })
+    // TODO: delete corresponding vector layer and vector layer display
     navigate(baseUrl)
   }, [baseUrl, db.places, navigate, place_id])
 

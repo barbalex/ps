@@ -483,9 +483,14 @@ export const createTileLayer = ({ project_id }) => ({
   deleted: false,
 })
 
-export const createVectorLayer = ({ project_id, type = 'wfs' }) => ({
+export const createVectorLayer = ({
+  project_id,
+  type = 'wfs',
+  label = null,
+}) => ({
   vector_layer_id: uuidv7(),
   project_id,
+  label,
   type,
   deleted: false,
 })
