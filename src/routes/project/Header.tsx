@@ -8,7 +8,7 @@ import {
 } from '../../modules/createRows'
 import { useElectric } from '../../ElectricProvider'
 import { FormHeader } from '../../components/FormHeader'
-import { addVectorLayersForProject } from '../../modules/addVectorLayersForProject'
+import { upsertVectorLayersForProject } from '../../modules/addVectorLayersForProject'
 
 type Props = {
   autoFocusRef: React.RefObject<HTMLInputElement>
@@ -27,7 +27,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     // TODO: add place_levels
 
     // add vector_layers and vector_layer_displays for tables with geometry
-    await addVectorLayersForProject({ db, project_id: data.project_id })
+    await upsertVectorLayersForProject({ db, project_id: data.project_id })
     // now navigate to the new project
     navigate(`/projects/${data.project_id}`)
     autoFocusRef.current?.focus()
