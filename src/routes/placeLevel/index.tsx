@@ -11,7 +11,7 @@ import { SwitchField } from '../../components/shared/SwitchField'
 import { RadioGroupField } from '../../components/shared/RadioGroupField'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { Header } from './Header'
-import { updateTableVectorLayerLabels } from '../../modules/updateTableVectorLayerLabels'
+import { upsertTableVectorLayersForProject } from '../../modules/upsertTableVectorLayersForProject'
 
 import '../../form.css'
 
@@ -38,11 +38,17 @@ export const Component = () => {
       // if name_plural was changed, need to update the label of corresponding vector layers
       if (
         row &&
-        ['name_plural', 'name_singular'].includes(name) &&
+        [
+          'name_plural',
+          'name_singular',
+          'actions',
+          'checks',
+          'observations',
+        ].includes(name) &&
         row.level &&
         row.project_id
       ) {
-        await updateTableVectorLayerLabels({
+        await upsertTableVectorLayersForProject({
           db,
           project_id: row.project_id,
         })
@@ -143,8 +149,8 @@ export const Component = () => {
         />
         <SwitchField
           label="Enable observation references"
-          name="observation_references"
-          value={row.observation_references ?? false}
+          name="observations"
+          value={row.observations ?? false}
           onChange={onChange}
         />
       </div>

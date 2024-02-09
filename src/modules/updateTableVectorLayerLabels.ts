@@ -1,4 +1,4 @@
-import { vectorLayerTables } from './upsertVectorLayersForProject'
+import { vectorLayerTables } from './upsertTableVectorLayersForProject'
 
 export const updateTableVectorLayerLabels = async ({ db, project_id }) => {
   const placeLevels = await db.place_levels.findMany({

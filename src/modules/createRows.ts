@@ -249,7 +249,7 @@ export const createPlaceLevel = () => ({
   checks: false,
   check_values: false,
   check_taxa: false,
-  observation_references: false,
+  observations: false,
   deleted: false,
 })
 
