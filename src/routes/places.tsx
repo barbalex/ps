@@ -3,7 +3,11 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { Places as Place } from '../../../generated/client'
-import { createPlace } from '../modules/createRows'
+import {
+  createPlace,
+  createVectorLayer,
+  createVectorLayerDisplay,
+} from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
 import { ListViewHeader } from '../components/ListViewHeader'
 import { Row } from '../components/shared/Row'
@@ -50,6 +54,18 @@ export const Component = () => {
       level: place_id ? 2 : 1,
     })
     await db.places.create({ data })
+    // need to create a corresponding vector layer and vector layer display
+    const vectorLayer = createVectorLayer({
+      project_id,
+      type: place_id ? 'places2' : 'places1',
+    })
+    const newVectorLayer = await db.vector_layers.create({ data: vectorLayer })
+    const newVLD = createVectorLayerDisplay({
+      data_table: place_id ? 'places2' : 'places1',
+      vector_layer_id: newVectorLayer.vector_layer_id,
+    })
+    db.vector_layer_displays.create({ data: newVLD })
+    
     navigate(`${baseUrl}/${data.place_id}`)
   }, [baseUrl, db, navigate, place_id, project_id, subproject_id])
 

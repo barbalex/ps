@@ -1,7 +1,7 @@
 /**
  * Not sure if this is ever used - data should always be downloaded
  */
-import { useEffect, useState, useRef } from 'react'
+import { useState } from 'react'
 import { GeoJSON, useMapEvent } from 'react-leaflet'
 import { useLiveQuery } from 'electric-sql/react'
 import * as ReactDOMServer from 'react-dom/server'
@@ -14,7 +14,6 @@ import {
   Vector_layer_displays as VectorLayerDisplay,
   Places as Place,
 } from '../../../generated/client'
-import { createVectorLayerDisplay } from '../../modules/createRows'
 
 // TODO: query ui_options.show_place1_layer in parent
 // and render this component accordingly to prevent querying all places here
@@ -28,29 +27,11 @@ export const Places1Layer = () => {
 
   console.log('hello Places1Layer, display:', display)
 
-  const isFirstRender = useRef(true)
-  // ensure new vectorLayerDisplay is created if needed
-  useEffect(() => {
-    const run = async () => {
-      // this should NOT run on first render as row is null then anyway
-      if (isFirstRender.current) {
-        isFirstRender.current = false
-        return
-      }
-      // stop if row already exists
-      if (display) return
-      const newVLD = createVectorLayerDisplay({ data_table: 'places1' })
-      db.vector_layer_displays.create({ data: newVLD })
-    }
-    run()
-  }, [db.vector_layer_displays, display])
-
   // TODO: query only inside current map bounds using places.bbox
   const { results: placesResults = [] } = useLiveQuery(
     db.places.liveMany({ where: { parent_id: null, geometry: { not: null } } }),
   )
   const places: Place[] = placesResults
-  console.log('hello Places1Layer, places (with geomtry):', places)
 
   // a geometry is built as FeatureCollection Object: https://datatracker.ietf.org/doc/html/rfc7946#section-3.3
   // properties need to go into every feature
@@ -82,10 +63,6 @@ export const Places1Layer = () => {
     <GeoJSON
       key={`${data?.length ?? 0}/${JSON.stringify(display)}`}
       data={data}
-      opacity={
-        // TODO: what is this for?
-        display.opacity_percent ? display.opacity_percent / 100 : 1
-      }
       // TODO: style by properties, use a function that receives the feature: https://stackoverflow.com/a/66106512/712005
       style={vectorLayerDisplayToProperties({ vectorLayerDisplay: display })}
       pointToLayer={(geoJsonPoint, latlng) => {

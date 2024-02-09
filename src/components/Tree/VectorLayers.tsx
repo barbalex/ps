@@ -12,13 +12,16 @@ export const VectorLayersNode = ({ project_id, level = 3 }) => {
   const navigate = useNavigate()
 
   const { db } = useElectric()!
+  // TODO: sort by vector_layer_displays.sort
   const { results } = useLiveQuery(
     db.vector_layers.liveMany({
       where: { deleted: false, project_id },
-      orderBy: [{ sort: 'asc' }, { label: 'asc' }],
+      orderBy: { label: 'asc' },
     }),
   )
   const vectorLayers: VectorLayer[] = results ?? []
+
+  console.log('hello VectorLayersNode', { vectorLayers, project_id, results })
 
   const vectorLayersNode = useMemo(
     () => ({

@@ -1,6 +1,14 @@
 CREATE TYPE vector_layer_type_enum AS enum(
   'wfs',
-  'upload'
+  'upload',
+  'places1',
+  'places2',
+  'actions1',
+  'actions2',
+  'checks1',
+  'checks2',
+  'observations1',
+  'observations2'
 );
 
 CREATE TABLE vector_layers(

@@ -14,10 +14,11 @@ export const Component = () => {
   const navigate = useNavigate()
 
   const { db } = useElectric()
+  // TODO: sort by vector_layer_displays.sort
   const { results } = useLiveQuery(
     db.vector_layers.liveMany({
       where: { project_id, deleted: false },
-      orderBy: [{ sort: 'asc' }, { label: 'asc' }],
+      orderBy: { label: 'asc' },
     }),
   )
 
