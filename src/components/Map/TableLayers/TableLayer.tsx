@@ -19,7 +19,6 @@ type Props = {
 }
 
 export const TableLayer = memo(({ data, display }: Props) => {
-  console.log('hello TableLayer, data:', data)
   const map = useMapEvent('zoomend', () => setZoom(map.getZoom()))
   const [zoom, setZoom] = useState(map.getZoom())
 
@@ -30,7 +29,6 @@ export const TableLayer = memo(({ data, display }: Props) => {
   if (!data?.length) return null
 
   const mapSize = map.getSize()
-  console.log('hello TableLayer, mapSize:', mapSize)
 
   // return null
 

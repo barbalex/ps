@@ -36,7 +36,7 @@ export const Places2 = ({ display }: Props) => {
     })
     return p.geometry
   })
-  console.log('hello Places2, data:', data)
+  // console.log('hello Places2, data:', data)
 
   if (!data?.length) return null
   if (!display) return null
