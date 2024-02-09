@@ -42,23 +42,10 @@ export const Component = () => {
         row.level &&
         row.project_id
       ) {
-        console.log(
-          'hello placeLevel, onChange: name_plural changed - need to update vector layer label',
-        )
         await updateTableVectorLayerLabels({
           db,
           project_id: row.project_id,
         })
-        // const vectorLayer = await db.vector_layers.findFirst({
-        //   where: { type: `places${row.level}`, project_id: row.project_id },
-        // })
-        // console.log('hello placeLevel, onChange: vectorLayer:', vectorLayer)
-        // if (vectorLayer) {
-        //   db.vector_layers.update({
-        //     where: { vector_layer_id: vectorLayer.vector_layer_id },
-        //     data: { label: valueToUse },
-        //   })
-        // }
       }
     },
     [db, place_level_id, row],
