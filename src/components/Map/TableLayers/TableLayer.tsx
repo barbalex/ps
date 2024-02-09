@@ -3,52 +3,27 @@
  */
 import { useState } from 'react'
 import { GeoJSON, useMapEvent } from 'react-leaflet'
-import { useLiveQuery } from 'electric-sql/react'
 import * as ReactDOMServer from 'react-dom/server'
 import * as icons from 'react-icons/md'
 
-import { vectorLayerDisplayToProperties } from '../../modules/vectorLayerDisplayToProperties'
-import { Popup } from './Popup'
-import { useElectric } from '../../ElectricProvider'
+import { vectorLayerDisplayToProperties } from '../../../modules/vectorLayerDisplayToProperties'
+import { Popup } from '../Popup'
 import {
   Vector_layer_displays as VectorLayerDisplay,
   Places as Place,
+  Actions as Action,
+  Checks as Check,
+  Observations as Observation,
 } from '../../../generated/client'
+
+type Props = {
+  data: Place[] | Action[] | Check[] | Observation[]
+  display: VectorLayerDisplay
+}
 
 // TODO: query ui_options.show_place1_layer in parent
 // and render this component accordingly to prevent querying all places here
-export const Places1Layer = () => {
-  const { db } = useElectric()!
-
-  const { results: vectorLayerDisplayResults } = useLiveQuery(
-    db.vector_layer_displays.liveFirst({ where: { data_table: 'places1' } }),
-  )
-  const display: VectorLayerDisplay = vectorLayerDisplayResults
-
-  console.log('hello Places1Layer, display:', display)
-
-  // TODO: query only inside current map bounds using places.bbox
-  const { results: placesResults = [] } = useLiveQuery(
-    db.places.liveMany({ where: { parent_id: null, geometry: { not: null } } }),
-  )
-  const places: Place[] = placesResults
-
-  // a geometry is built as FeatureCollection Object: https://datatracker.ietf.org/doc/html/rfc7946#section-3.3
-  // properties need to go into every feature
-  const data = places.map((p) => {
-    // add p's properties to all features:
-    // somehow there is a data property with empty object as value???
-    // TODO: make properties more readable for user
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { geometry: geom, bbox, data, ...placeProperties } = p
-    const geometry = { ...p.geometry }
-    geometry.features.forEach((f) => {
-      f.properties = placeProperties ?? {}
-    })
-    return p.geometry
-  })
-  console.log('hello Places1Layer, data:', data)
-
+export const TableLayer = ({ data, display }: Props) => {
   const map = useMapEvent('zoomend', () => setZoom(map.getZoom()))
   const [zoom, setZoom] = useState(map.getZoom())
 
