@@ -7,13 +7,12 @@ import { Vector_layers as VectorLayer } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { TextField } from '../../components/shared/TextField'
-import { SwitchField } from '../../components/shared/SwitchField'
 import { RadioGroupField } from '../../components/shared/RadioGroupField'
 import { DropdownFieldFromLayerOptions } from '../../components/shared/DropdownFieldFromLayerOptions'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { Header } from './Header'
 import { Url } from './Url'
-import { LayerStyleForm as LayerStyle } from '../../components/shared/LayerStyle'
+import { VectorLayerDisplayForm as VectorLayerDisplay } from '../../components/shared/VectorLayerDisplay'
 
 import '../../form.css'
 
@@ -44,7 +43,7 @@ export const Component = () => {
     return <div>Loading...</div>
   }
 
-  // console.log('hello VectorLayer, row:', row)
+  console.log('hello VectorLayer, row:', row)
 
   return (
     <div className="form-outer-container">
@@ -55,15 +54,17 @@ export const Component = () => {
           name="vector_layer_id"
           value={row.vector_layer_id}
         />
-        <RadioGroupField
-          label="Type"
-          name="type"
-          list={['wfs', 'upload']}
-          value={row.type ?? ''}
-          onChange={onChange}
-          autoFocus
-          ref={autoFocusRef}
-        />
+        {['wfs', 'upload'].includes(row.type) && (
+          <RadioGroupField
+            label="Type"
+            name="type"
+            list={['wfs', 'upload']}
+            value={row.type ?? ''}
+            onChange={onChange}
+            autoFocus
+            ref={autoFocusRef}
+          />
+        )}
         {row?.type === 'wfs' && (
           <>
             <Url onChange={onChange} row={row} />
@@ -89,49 +90,13 @@ export const Component = () => {
               value={row.label ?? ''}
               onChange={onChange}
             />
-            <TextField
-              label="Sort"
-              name="sort"
-              value={row.sort ?? ''}
-              onChange={onChange}
-              type="number"
-              validationMessage="Add a sorting order here if sorting by label is not desired."
-            />
-            <SwitchField
-              label="active"
-              name="active"
-              value={row.active}
-              onChange={onChange}
-            />
-            <TextField
-              label="Max Zoom"
-              name="max_zoom"
-              value={row.max_zoom ?? ''}
-              onChange={onChange}
-              type="number"
-              max={19}
-              min={0}
-              validationMessage="Zoom can be between 0 and 19"
-            />
-            <TextField
-              label="Min Zoom"
-              name="min_zoom"
-              value={row.min_zoom ?? ''}
-              onChange={onChange}
-              type="number"
-              max={19}
-              min={0}
-              validationMessage="Zoom can be between 0 and 19"
-            />
-            <TextField
-              label="Max number of features"
-              name="max_features"
-              value={row.max_features ?? ''}
-              onChange={onChange}
-              type="number"
-              validationMessage="Drawing too many features can crash the app. Your mileage may vary."
-            />
-            <LayerStyle row={row} />
+            <VectorLayerDisplay row={row} />
+          </>
+        )}
+        {!['wfs', 'upload'].includes(row.type) && (
+          <>
+            <TextFieldInactive label="Label" name="label" value={row.label} />
+            <VectorLayerDisplay row={row} />
           </>
         )}
         {row?.type === 'upload' && (

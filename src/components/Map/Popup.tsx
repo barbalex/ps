@@ -31,8 +31,8 @@ export const Popup = ({ layersData, mapSize = {} }) => {
         marginRight: -5,
       }}
     >
-      {layersData.map((ld) => (
-        <div key={ld.label}>
+      {layersData.map((ld, index) => (
+        <div key={`${ld.label}/${index}`}>
           <div
             style={css({
               ...titleStyle,

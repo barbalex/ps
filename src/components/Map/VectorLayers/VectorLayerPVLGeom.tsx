@@ -9,11 +9,11 @@ import { css } from '../../../css'
 import {
   Vector_layer_geoms as VectorLayerGeom,
   Vector_layers as VectorLayer,
-  Layer_styles as LayerStyle,
+  Vector_layer_displays as VectorLayerDisplay,
   Ui_options as UiOption,
 } from '../../../generated/client'
 
-import { layerstyleToProperties } from '../../../modules/layerstyleToProperties'
+import { vectorLayerDisplayToProperties } from '../../../modules/vectorLayerDisplayToProperties'
 import { Popup } from '../Popup'
 import { ErrorBoundary } from '../MapErrorBoundary'
 import { useElectric } from '../../../ElectricProvider'
@@ -23,9 +23,10 @@ import { user_id } from '../../SqlInitializer'
 
 type Props = {
   layer: VectorLayer
+  display: VectorLayerDisplay
 }
 
-export const VectorLayerPVLGeom = ({ layer }: Props) => {
+export const VectorLayerPVLGeom = ({ layer, display }: Props) => {
   const { db } = useElectric()!
   const uiOption: UiOption = db.ui_options.liveUnique({ where: { user_id } })
   const showMap = uiOption?.show_map ?? false
@@ -45,7 +46,6 @@ export const VectorLayerPVLGeom = ({ layer }: Props) => {
   const map = useMap()
 
   const [zoom, setZoom] = useState<number>(map.getZoom())
-  const [layerStyle, setLayerStyle] = useState<LayerStyle>()
 
   useMapEvent('dragend zoomend ', () => {
     // console.log('dragend zoomend ')
@@ -78,7 +78,7 @@ export const VectorLayerPVLGeom = ({ layer }: Props) => {
             bbox_ne_lng: { lt: bounds._northEast.lng },
             bbox_ne_lat: { lt: bounds._northEast.lat },
           },
-          take: layer.max_features ?? 1000,
+          take: display.max_features ?? 1000,
         })
 
       const data = vectorLayerGeoms.map((pvlGeom) => ({
@@ -87,23 +87,18 @@ export const VectorLayerPVLGeom = ({ layer }: Props) => {
       }))
       removeNotifs()
 
-      const layerStyle: LayerStyle = await db.layer_styles.findFirst({
-        where: { vector_layer_id: layer.vector_layer_id },
-      })
       setData(data)
-      setLayerStyle(layerStyle)
       setZoom(map.getZoom())
     },
     [
-      db.layer_styles,
+      showMap,
+      removeNotifs,
       db.notifications,
       db.vector_layer_geoms,
       layer.label,
-      layer.max_features,
       layer.vector_layer_id,
+      display.max_features,
       map,
-      removeNotifs,
-      showMap,
     ],
   )
   const fetchDataDebounced = useDebouncedCallback(fetchData, 600)
@@ -115,7 +110,7 @@ export const VectorLayerPVLGeom = ({ layer }: Props) => {
   useEffect(() => {
     // goal: remove own notifs when (de-)activating layer
     removeNotifs()
-  }, [layer.active, removeNotifs])
+  }, [layer.vector_layer_displays.active, removeNotifs])
   useEffect(() => {
     return () => {
       // goal: remove notifs on leaving component. Does not seem to work
@@ -124,12 +119,20 @@ export const VectorLayerPVLGeom = ({ layer }: Props) => {
   }, [removeNotifs])
 
   // include only if zoom between min_zoom and max_zoom
-  if (layer.min_zoom !== undefined && zoom < layer.min_zoom) return null
-  if (layer.max_zoom !== undefined && zoom > layer.max_zoom) return null
+  if (
+    layer.vector_layer_displays.min_zoom !== undefined &&
+    zoom < layer.vector_layer_displays.min_zoom
+  )
+    return null
+  if (
+    layer.vector_layer_displays.max_zoom !== undefined &&
+    zoom > layer.vector_layer_displays.max_zoom
+  )
+    return null
 
   removeNotifs()
   if (
-    data?.length === (layer.max_features ?? 1000) &&
+    data?.length === (layer.vector_layer_displays.max_features ?? 1000) &&
     !notificationIds.current.length
   ) {
     const notification_id = uuidv7()
@@ -138,7 +141,7 @@ export const VectorLayerPVLGeom = ({ layer }: Props) => {
         notification_id,
         title: `Zuviele Geometrien`,
         body: `Die maximale Anzahl Features von ${
-          layer.max_features ?? 1000
+          layer.vector_layer_displays.max_features ?? 1000
         } für Vektor-Karte '${
           layer.label
         }' wurde geladen. Zoomen sie näher ran`,
@@ -150,23 +153,21 @@ export const VectorLayerPVLGeom = ({ layer }: Props) => {
   }
 
   if (!data?.length) return null
-  if (!layerStyle) return null
+  if (!display) return null
 
   const mapSize = map.getSize()
 
   return (
     <ErrorBoundary layer={layer}>
       <GeoJSON
-        key={`${layer.id}/${layerStyle.marker_symbol}/${
-          layerStyle?.marker_size
-        }/${layerStyle?.color}/${layerStyle?.opacity_percent}/${
-          layerStyle?.marker_type
-        }/${data?.length ?? 0}`}
+        key={`${layer.id}/${display.marker_symbol}/${display?.marker_size}/${
+          display?.color
+        }/${display?.opacity_percent}/${display?.marker_type}/${
+          data?.length ?? 0
+        }`}
         data={data}
-        opacity={
-          layerStyle.opacity_percent ? layerStyle.opacity_percent / 100 : 0
-        }
-        style={layerstyleToProperties({ layerStyle })}
+        opacity={display.opacity_percent ? display.opacity_percent / 100 : 0}
+        style={vectorLayerDisplayToProperties({ vectorLayerDisplay: display })}
         onEachFeature={(feature, _layer) => {
           const layersData = [
             {
@@ -181,26 +182,26 @@ export const VectorLayerPVLGeom = ({ layer }: Props) => {
         }}
         pointToLayer={(geoJsonPoint, latlng) => {
           // TODO: add font-weight setting
-          if (layerStyle.marker_type === 'circle') {
+          if (display.marker_type === 'circle') {
             return L.circleMarker(latlng, {
-              ...layerStyle,
-              radius: layerStyle.circle_marker_radius ?? 8,
+              ...display,
+              radius: display.circle_marker_radius ?? 8,
             })
           }
-          const Component = icons[layerStyle.marker_symbol] ?? icons.MdPlace
+          const Component = icons[display.marker_symbol] ?? icons.MdPlace
           return L.marker(latlng, {
             icon: new L.divIcon({
               html: ReactDOMServer.renderToString(
                 <Component
                   style={css({
-                    color: layerStyle?.color,
-                    fontSize: layerStyle?.marker_size ?? 16,
+                    color: display?.color,
+                    fontSize: display?.marker_size ?? 16,
                   })}
                 />,
               ),
             }),
-            opacity: layerStyle.opacity_percent
-              ? layerStyle.opacity_percent / 100
+            opacity: display.opacity_percent
+              ? display.opacity_percent / 100
               : 0,
           })
         }}

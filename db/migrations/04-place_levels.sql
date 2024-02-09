@@ -14,7 +14,7 @@ CREATE TABLE place_levels(
   checks boolean DEFAULT NULL, -- FALSE,
   check_values boolean DEFAULT NULL, -- FALSE,
   check_taxa boolean DEFAULT NULL, -- FALSE,
-  observation_references boolean DEFAULT NULL, -- FALSE,
+  observations boolean DEFAULT NULL, -- FALSE,
   label_replace_by_generated_column text DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
 );
@@ -55,7 +55,7 @@ COMMENT ON COLUMN place_levels.check_values IS 'Are check values used? Preset: f
 
 COMMENT ON COLUMN place_levels.check_taxa IS 'Are check taxa used? Preset: false';
 
-COMMENT ON COLUMN place_levels.observation_references IS 'Are observation references used? Preset: false';
+COMMENT ON COLUMN place_levels.observations IS 'Are observation references used? Preset: false';
 
 COMMENT ON TABLE place_levels IS 'Goal: manage place levels. Enable working with one or two levels. Organize what features are used on which level.';
 

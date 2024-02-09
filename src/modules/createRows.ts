@@ -249,7 +249,7 @@ export const createPlaceLevel = () => ({
   checks: false,
   check_values: false,
   check_taxa: false,
-  observation_references: false,
+  observations: false,
   deleted: false,
 })
 
@@ -483,33 +483,30 @@ export const createTileLayer = ({ project_id }) => ({
   deleted: false,
 })
 
-export const createVectorLayer = ({ project_id }) => ({
+export const createVectorLayer = ({
+  project_id,
+  type = 'wfs',
+  label = null,
+}) => ({
   vector_layer_id: uuidv7(),
   project_id,
-  type: 'wfs',
+  label,
+  type,
   deleted: false,
 })
 
-export const createLayerStyle = ({
+export const createVectorLayerDisplay = ({
   vector_layer_id = null,
-  places1 = false,
-  places2 = false,
-  actions = false,
-  checks = false,
-  observations = false,
+  data_table = null,
   sort = 0,
   active = false,
   max_zoom = 19,
   min_zoom = 0,
   max_features = 1000,
 }) => ({
-  layer_style_id: uuidv7(),
+  vector_layer_display_id: uuidv7(),
   vector_layer_id,
-  places1,
-  places2,
-  actions,
-  checks,
-  observations,
+  data_table,
   sort,
   active,
   max_zoom,

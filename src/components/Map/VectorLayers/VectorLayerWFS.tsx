@@ -22,12 +22,12 @@ import {
   Button,
 } from '@fluentui/react-components'
 
-import { layerstyleToProperties } from '../../../modules/layerstyleToProperties'
+import { vectorLayerDisplayToProperties } from '../../../modules/vectorLayerDisplayToProperties'
 import { Popup } from '../Popup'
 import { useElectric } from '../../../ElectricProvider'
 import {
   Vector_layers as VectorLayer,
-  Layer_styles as LayerStyle,
+  Vector_layer_displays as VectorLayerDisplay,
   Ui_options as UiOption,
 } from '../../../generated/client'
 import { user_id } from '../../SqlInitializer'
@@ -46,8 +46,9 @@ const xmlTheme = {
 
 type Props = {
   layer: VectorLayer
+  display: VectorLayerDisplay
 }
-export const VectorLayerWFS = ({ layer }: Props) => {
+export const VectorLayerWFS = ({ layer, display }: Props) => {
   const { db } = useElectric()!
   const [error, setError] = useState()
   const notificationIds = useRef([])
@@ -150,20 +151,13 @@ export const VectorLayerWFS = ({ layer }: Props) => {
     fetchDataDebounced({ bounds: map.getBounds() })
   }, [fetchDataDebounced, map, showMap])
 
-  const { results: layerStyleResults } = useLiveQuery(
-    db.layer_styles.liveFirst({
-      where: { vector_layer_id: layer.vector_layer_id },
-    }),
-  )
-  const layerStyle: LayerStyle = layerStyleResults
-
   // include only if zoom between min_zoom and max_zoom
-  if (layer.min_zoom !== undefined && zoom < layer.min_zoom) return null
-  if (layer.max_zoom !== undefined && zoom > layer.max_zoom) return null
+  if (display.min_zoom !== undefined && zoom < display.min_zoom) return null
+  if (display.max_zoom !== undefined && zoom > display.max_zoom) return null
 
   removeNotifs()
   if (
-    data?.length >= (layer.max_features ?? 1000) &&
+    data?.length >= (display.max_features ?? 1000) &&
     !notificationIds.current.length
   ) {
     const notification_id = uuidv7()
@@ -172,7 +166,7 @@ export const VectorLayerWFS = ({ layer }: Props) => {
         notification_id,
         title: `Zuviele Geometrien`,
         body: `Die maximale Anzahl Features von ${
-          layer.max_features ?? 1000
+          display.max_features ?? 1000
         } für Vektor-Karte '${
           layer.label
         }' wurde geladen. Zoomen sie näher ran`,
@@ -185,22 +179,27 @@ export const VectorLayerWFS = ({ layer }: Props) => {
 
   const mapSize = map.getSize()
 
+  // console.log('hello VectorLayerWFS, data:', data)
+
   return (
     <>
       <GeoJSON
-        key={`${data?.length ?? 0}/${JSON.stringify(layerStyle)}`}
+        key={`${data?.length ?? 0}/${JSON.stringify(display)}`}
         data={data}
-        opacity={layer.opacity}
-        style={layerstyleToProperties({ layerStyle })}
+        opacity={
+          // TODO: what is this for?
+          display.opacity_percent ? display.opacity_percent / 100 : 1
+        }
+        style={vectorLayerDisplayToProperties({ vectorLayerDisplay: display })}
         pointToLayer={(geoJsonPoint, latlng) => {
-          if (layerStyle.marker_type === 'circle') {
+          if (display.marker_type === 'circle') {
             return L.circleMarker(latlng, {
-              ...layerStyle,
-              radius: layerStyle.circle_marker_radius ?? 8,
+              ...display,
+              radius: display.circle_marker_radius ?? 8,
             })
           }
 
-          const IconComponent = icons[layerStyle?.marker_symbol]
+          const IconComponent = icons[display?.marker_symbol]
 
           return IconComponent
             ? L.marker(latlng, {
@@ -208,8 +207,8 @@ export const VectorLayerWFS = ({ layer }: Props) => {
                   html: ReactDOMServer.renderToString(
                     <IconComponent
                       style={{
-                        color: layerStyle.color ?? '#cc756b',
-                        fontSize: layerStyle.marker_size ?? 16,
+                        color: display.color ?? '#cc756b',
+                        fontSize: display.marker_size ?? 16,
                       }}
                     />,
                   ),

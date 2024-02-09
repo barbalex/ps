@@ -51,7 +51,7 @@ export const DrawControlComponent = ({
       // TODO: bbox???
       db[tableName].update({
         where: { [activeIdName]: activeId },
-        data: { geometry, bbox },
+        data: { geometry: featureCollection, bbox },
       })
     },
     [db, editingAction, editingCheck, editingPlace],

@@ -2,7 +2,11 @@ import { useCallback, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
-import { createPlace } from '../../modules/createRows'
+import {
+  createPlace,
+  createVectorLayer,
+  createVectorLayerDisplay,
+} from '../../modules/createRows'
 import { useElectric } from '../../ElectricProvider'
 import { FormHeader } from '../../components/FormHeader'
 
@@ -24,6 +28,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     }),
   )
   const placeNameSingular = placeLevels?.[0]?.name_singular ?? 'Place'
+  const placeNamePlural = placeLevels?.[0]?.name_plural ?? 'Places'
 
   const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/places${
     place_id2 ? `/${place_id}/places` : ''
@@ -38,6 +43,19 @@ export const Header = memo(({ autoFocusRef }: Props) => {
       level: place_id2 ? 2 : 1,
     })
     await db.places.create({ data })
+    // need to create a corresponding vector layer and vector layer display
+    const vectorLayer = createVectorLayer({
+      project_id,
+      type: place_id2 ? 'places2' : 'places1',
+      label: placeNamePlural,
+    })
+    const newVectorLayer = await db.vector_layers.create({ data: vectorLayer })
+    const newVLD = createVectorLayerDisplay({
+      data_table: place_id2 ? 'places2' : 'places1',
+      vector_layer_id: newVectorLayer.vector_layer_id,
+    })
+    db.vector_layer_displays.create({ data: newVLD })
+
     navigate(`${baseUrl}/${data.place_id}`)
     autoFocusRef.current?.focus()
   }, [
@@ -45,6 +63,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     baseUrl,
     db,
     navigate,
+    placeNamePlural,
     place_id,
     place_id2,
     project_id,
@@ -52,9 +71,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
   ])
 
   const deleteRow = useCallback(async () => {
-    await db.places.delete({
-      where: { place_id },
-    })
+    await db.places.delete({ where: { place_id } })
     navigate(baseUrl)
   }, [baseUrl, db.places, navigate, place_id])
 

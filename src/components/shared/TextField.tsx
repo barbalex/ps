@@ -9,6 +9,7 @@ export const TextField = memo(
       validationMessage,
       validationState = 'none',
       autoFocus,
+      value,
       disabled = false,
     } = props
 
@@ -22,6 +23,7 @@ export const TextField = memo(
       >
         <Input
           {...props}
+          value={value ?? ''}
           appearance="underline"
           autoFocus={autoFocus}
           ref={ref}

@@ -16,6 +16,7 @@ import { VectorLayers } from './VectorLayers'
 import { LocationMarker } from './LocationMarker'
 import { tableNameFromIdField } from '../../modules/tableNameFromIdField'
 import { DrawControl } from './DrawControl'
+import { TableLayers } from './TableLayers'
 // import { Control } from './Control'
 // import { OwnControls } from './OwnControls'
 
@@ -86,6 +87,7 @@ export const Map = () => {
         <LocationMarker />
         <DrawControl />
         <TileLayers key={`${tileLayerSorter}/tileLayers`} />
+        <TableLayers />
         <VectorLayers key={`${vectorLayerSorter}/vectorLayers`} />
         {/* <Control position="topright" visible={true}>
           <OwnControls />
