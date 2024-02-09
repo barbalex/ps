@@ -1,14 +1,10 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 
-import {
-  createProject,
-  createVectorLayer,
-  createVectorLayerDisplay,
-} from '../../modules/createRows'
+import { createProject } from '../../modules/createRows'
 import { useElectric } from '../../ElectricProvider'
 import { FormHeader } from '../../components/FormHeader'
-import { upsertVectorLayersForProject } from '../../modules/addVectorLayersForProject'
+import { upsertVectorLayersForProject } from '../../modules/upsertVectorLayersForProject'
 
 type Props = {
   autoFocusRef: React.RefObject<HTMLInputElement>
