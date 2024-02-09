@@ -12,21 +12,21 @@ type Props = {
   display: VectorLayerDisplay
 }
 
-export const Checks1 = ({ display }: Props) => {
+export const Checks2 = ({ display }: Props) => {
   const { db } = useElectric()!
 
   // need to query places1 because filtering by places in checks query does not work
-  const { results: places1Results = [] } = useLiveQuery(
-    db.places.liveMany({ where: { parent_id: null } }),
+  const { results: places2Results = [] } = useLiveQuery(
+    db.places.liveMany({ where: { parent_id: { not: null } } }),
   )
-  const places1: Place[] = places1Results
+  const places2: Place[] = places2Results
 
   // TODO: query only inside current map bounds using places.bbox
   const { results = [] } = useLiveQuery(
     db.checks.liveMany({
       where: {
         // places: { parent_id: null }, // this returns no results
-        place_id: { in: places1.map((p) => p.place_id) },
+        place_id: { in: places2.map((p) => p.place_id) },
         geometry: { not: null },
       },
     }),
@@ -48,7 +48,7 @@ export const Checks1 = ({ display }: Props) => {
     })
     return p.geometry
   })
-  // console.log('hello Checks1, data:', data)
+  // console.log('hello Checks2, data:', data)
 
   if (!data?.length) return null
   if (!display) return null

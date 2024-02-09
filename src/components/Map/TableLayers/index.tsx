@@ -4,11 +4,13 @@ import { useElectric } from '../../../ElectricProvider'
 import { Places1 } from './Places1'
 import { Places2 } from './Places2'
 import { Checks1 } from './Checks1'
+import { Checks2 } from './Checks2'
 
 const layerToComponent = {
   places1: Places1,
   places2: Places2,
   checks1: Checks1,
+  checks2: Checks2,
 }
 
 export const TableLayers = () => {
