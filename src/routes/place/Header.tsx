@@ -71,12 +71,26 @@ export const Header = memo(({ autoFocusRef }: Props) => {
   ])
 
   const deleteRow = useCallback(async () => {
+    // TODO: delete corresponding vector layer (cascades to vector layer display)
+    // need level to know which vector layer to delete
+    const place = await db.places.findUnique({
+      where: { place_id },
+    })
+    if (place) {
+      const vectorLayer = await db.vector_layers.findFirst({
+        where: { type: place.level === 2 ? 'places2' : 'places1', project_id },
+      })
+      if (vectorLayer) {
+        await db.vector_layers.delete({
+          where: { vector_layer_id: vectorLayer.vector_layer_id },
+        })
+      }
+    }
     await db.places.delete({
       where: { place_id },
     })
-    // TODO: delete corresponding vector layer and vector layer display
     navigate(baseUrl)
-  }, [baseUrl, db.places, navigate, place_id])
+  }, [baseUrl, db.places, db.vector_layers, navigate, place_id, project_id])
 
   const toNext = useCallback(async () => {
     const places = await db.places.findMany({
