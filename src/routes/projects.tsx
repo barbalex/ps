@@ -7,6 +7,8 @@ import { createProject } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
 import { ListViewHeader } from '../components/ListViewHeader'
 import { Row } from '../components/shared/Row'
+import { upsertVectorLayersForProject } from '../modules/upsertVectorLayersForProject'
+
 import '../form.css'
 
 export const Component = () => {
@@ -23,6 +25,8 @@ export const Component = () => {
   const add = useCallback(async () => {
     const data = await createProject({ db })
     await db.projects.create({ data })
+    // add vector_layers and vector_layer_displays for tables with geometry
+    await upsertVectorLayersForProject({ db, project_id: data.project_id })
     navigate(`/projects/${data.project_id}`)
   }, [db, navigate])
 

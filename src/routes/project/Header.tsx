@@ -20,7 +20,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     const data = await createProject({ db })
     await db.projects.create({ data })
 
-    // TODO: add place_levels
+    // TODO: add place_levels?
 
     // add vector_layers and vector_layer_displays for tables with geometry
     await upsertVectorLayersForProject({ db, project_id: data.project_id })

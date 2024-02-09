@@ -21,8 +21,6 @@ export const VectorLayersNode = ({ project_id, level = 3 }) => {
   )
   const vectorLayers: VectorLayer[] = results ?? []
 
-  console.log('hello VectorLayersNode', { vectorLayers, project_id, results })
-
   const vectorLayersNode = useMemo(
     () => ({
       label: `Vector Layers (${vectorLayers.length})`,
