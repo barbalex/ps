@@ -68,7 +68,7 @@ export const Component = () => {
         {row?.type === 'wfs' && (
           <>
             <Url onChange={onChange} row={row} />
-            {!!row?.url && (
+            {!!row?.wfs_url && (
               <DropdownFieldFromLayerOptions
                 label="Layer"
                 name="wfs_layer"
@@ -82,7 +82,7 @@ export const Component = () => {
           </>
         )}
         {row?.type === 'upload' && <div>TODO: Upload</div>}
-        {row?.type === 'wfs' && row?.url && row.wfs_layer && (
+        {row?.type === 'wfs' && row?.wfs_url && row.wfs_layer && (
           <>
             <TextField
               label="Label"

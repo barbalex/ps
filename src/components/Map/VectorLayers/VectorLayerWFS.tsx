@@ -106,7 +106,7 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
       try {
         res = await axios({
           method: 'get',
-          url: layer.url,
+          url: layer.wfs_url,
           params,
         })
       } catch (error) {
@@ -139,7 +139,7 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
       layer.label,
       layer.wfs_layer,
       layer.output_format,
-      layer.url,
+      layer.wfs_url,
       layer.wfs_version,
       removeNotifs,
       showMap,

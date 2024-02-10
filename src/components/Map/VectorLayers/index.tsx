@@ -30,7 +30,7 @@ export const VectorLayers = () => {
       // TODO: not working
       // vector_layer_displays: { active: true },
       // Ensure needed data exists
-      url: { not: null },
+      wfs_url: { not: null },
       wfs_layer: { not: null },
       output_format: { not: null },
     }
