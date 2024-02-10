@@ -1,6 +1,8 @@
 import { useLiveQuery } from 'electric-sql/react'
 
 import { useElectric } from '../../../ElectricProvider'
+import { Vector_layers } from '../../../generated/client'
+import { vectorLayerTables } from '../../../modules/upsertTableVectorLayersForProject'
 import { Places1 } from './Places1'
 import { Places2 } from './Places2'
 import { Checks1 } from './Checks1'
@@ -20,15 +22,16 @@ const layerToComponent = {
 export const TableLayers = () => {
   const { db } = useElectric()!
 
-  const { results: vectorLayerDisplayResults = [] } = useLiveQuery(
-    db.vector_layer_displays.liveMany({
-      where: { data_table: { not: null }, active: true },
+  const { results: vectorLayerResults = [] } = useLiveQuery(
+    db.vector_layers.liveMany({
+      where: { active: true, type: { in: vectorLayerTables } },
+      include: { vector_layer_displays: true },
     }),
   )
 
-  return vectorLayerDisplayResults.map((display) => {
-    const Component = layerToComponent[display.data_table]
+  return vectorLayerResults.map((vl) => {
+    const Component = layerToComponent[vl.type]
 
-    return <Component key={display.vector_layer_display_id} display={display} />
+    return <Component key={vl.vector_layer_id} layer={vl} />
   })
 }

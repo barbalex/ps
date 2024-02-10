@@ -62,7 +62,6 @@ export const Component = () => {
     })
     const newVectorLayer = await db.vector_layers.create({ data: vectorLayer })
     const newVLD = createVectorLayerDisplay({
-      data_table: place_id ? 'places2' : 'places1',
       vector_layer_id: newVectorLayer.vector_layer_id,
     })
     db.vector_layer_displays.create({ data: newVLD })

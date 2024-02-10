@@ -487,31 +487,27 @@ export const createVectorLayer = ({
   project_id,
   type = 'wfs',
   label = null,
-}) => ({
-  vector_layer_id: uuidv7(),
-  project_id,
-  label,
-  type,
-  deleted: false,
-})
-
-export const createVectorLayerDisplay = ({
-  vector_layer_id = null,
-  data_table = null,
   sort = 0,
   active = false,
   max_zoom = 19,
   min_zoom = 0,
   max_features = 1000,
 }) => ({
-  vector_layer_display_id: uuidv7(),
-  vector_layer_id,
-  data_table,
+  vector_layer_id: uuidv7(),
+  project_id,
+  label,
+  type,
   sort,
   active,
   max_zoom,
   min_zoom,
   max_features,
+  deleted: false,
+})
+
+export const createVectorLayerDisplay = ({ vector_layer_id = null }) => ({
+  vector_layer_display_id: uuidv7(),
+  vector_layer_id,
   marker_type: 'circle',
   circle_marker_radius: 8,
   marker_size: 16,

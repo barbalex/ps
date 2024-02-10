@@ -14,21 +14,10 @@ export const VectorLayers = () => {
 
   const { db } = useElectric()!
 
-  const { results: vectorLayerDisplayResults = [] } = useLiveQuery(
-    db.vector_layer_displays.liveMany({
-      where: { active: true },
-    }),
-  )
-  const vectorLayerDisplays: VectorLayerDisplay[] = vectorLayerDisplayResults
-
   const vectorLayerWhere = useMemo(() => {
     const where = {
-      vector_layer_id: {
-        in: vectorLayerDisplays.map((d) => d.vector_layer_id),
-      },
+      active: true,
       deleted: false,
-      // TODO: not working
-      // vector_layer_displays: { active: true },
       // Ensure needed data exists
       wfs_url: { not: null },
       wfs_layer: { not: null },
@@ -38,7 +27,7 @@ export const VectorLayers = () => {
       where.project_id = project_id
     }
     return where
-  }, [project_id, vectorLayerDisplays])
+  }, [project_id])
 
   const { results: vectorLayerResults = [] } = useLiveQuery(
     db.vector_layers.liveMany({
@@ -47,6 +36,18 @@ export const VectorLayers = () => {
       // include: { vector_layer_displays: true },
     }),
   )
+
+  const { results: vectorLayerDisplayResults = [] } = useLiveQuery(
+    db.vector_layer_displays.liveMany({
+      where: {
+        deleted: false,
+        vector_layer_id: {
+          in: vectorLayerResults.map((vl) => vl.vector_layer_id),
+        },
+      },
+    }),
+  )
+  const vectorLayerDisplays: VectorLayerDisplay[] = vectorLayerDisplayResults
 
   const vectorLayers: VectorLayer[] = vectorLayerResults
 

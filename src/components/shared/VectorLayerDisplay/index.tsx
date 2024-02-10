@@ -140,48 +140,6 @@ Props) => {
           <div style={titleStyle}>Display</div>
         </div>
         <div style={fieldsContainerStyle}>
-          <TextField
-            label="Sort"
-            name="sort"
-            value={row.sort ?? ''}
-            onChange={onChange}
-            type="number"
-            validationMessage="Add a sorting order here if sorting by label is not desired."
-          />
-          <SwitchField
-            label="active"
-            name="active"
-            value={row.active}
-            onChange={onChange}
-          />
-          <TextField
-            label="Max Zoom"
-            name="max_zoom"
-            value={row.max_zoom ?? ''}
-            onChange={onChange}
-            type="number"
-            max={19}
-            min={0}
-            validationMessage="Zoom can be between 0 and 19"
-          />
-          <TextField
-            label="Min Zoom"
-            name="min_zoom"
-            value={row.min_zoom ?? ''}
-            onChange={onChange}
-            type="number"
-            max={19}
-            min={0}
-            validationMessage="Zoom can be between 0 and 19"
-          />
-          <TextField
-            label="Max number of features"
-            name="max_features"
-            value={row.max_features ?? ''}
-            onChange={onChange}
-            type="number"
-            validationMessage="Drawing too many features can crash the app. Your mileage may vary."
-          />
           <RadioGroupField
             name="marker_type"
             label="Punkt-Typ"

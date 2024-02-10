@@ -17,6 +17,11 @@ CREATE TABLE vector_layers(
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   type vector_layer_type_enum DEFAULT NULL, -- 'wfs',
   display_by_property_value boolean DEFAULT NULL,
+  sort smallint DEFAULT NULL,
+  active boolean DEFAULT NULL,
+  max_zoom integer DEFAULT NULL, -- 19,
+  min_zoom integer DEFAULT NULL, -- 0,
+  max_features integer DEFAULT NULL, -- 1000 
   wfs_url text DEFAULT NULL, -- WFS url, for example https://maps.zh.ch/wfs/OGDZHWFS. TODO: rename wfs_url
   wfs_layer jsonb DEFAULT NULL, -- a single option
   wfs_version text DEFAULT NULL, -- often: 1.1.0 or 2.0.0
@@ -27,6 +32,14 @@ CREATE TABLE vector_layers(
   polygon_count integer DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
 );
+
+CREATE INDEX ON vector_layers USING btree(label);
+
+CREATE INDEX ON vector_layers USING btree(project_id);
+
+CREATE INDEX ON vector_layers USING btree(type);
+
+CREATE INDEX ON vector_layers USING btree(sort);
 
 COMMENT ON TABLE vector_layers IS 'Goal: Bring your own tile layers. Either from wfs or importing GeoJSON. Should only contain metadata, not data fetched from wms or wmts servers (that should only be saved locally on the client).';
 

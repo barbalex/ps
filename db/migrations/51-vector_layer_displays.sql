@@ -41,12 +41,6 @@ CREATE TABLE vector_layer_displays(
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
   -- TODO: add property_field. Default: null
   -- TODO: add property_value. Default: null
-  data_table vector_layer_table_enum DEFAULT NULL, -- TODO: move to vector_layers
-  sort smallint DEFAULT NULL, -- TODO: move to vector_layers
-  active boolean DEFAULT NULL, -- TODO: move to vector_layers
-  max_zoom integer DEFAULT NULL, -- 19, TODO: move to vector_layers
-  min_zoom integer DEFAULT NULL, -- 0, TODO: move to vector_layers
-  max_features integer DEFAULT NULL, -- 1000 TODO: move to vector_layers
   marker_type marker_type_enum DEFAULT NULL, -- 'circle',
   circle_marker_radius integer DEFAULT NULL, -- 8,
   marker_symbol text DEFAULT NULL,
@@ -68,11 +62,7 @@ CREATE TABLE vector_layer_displays(
 
 CREATE INDEX ON vector_layer_displays USING btree(vector_layer_id);
 
-CREATE INDEX ON vector_layer_displays USING btree(data_table);
-
 COMMENT ON TABLE vector_layer_displays IS 'Goal: manage all map related properties of vector layers including places, actions, checks and observations';
-
-COMMENT ON COLUMN vector_layer_displays.data_table IS 'Whether this style is used for this table';
 
 COMMENT ON COLUMN vector_layer_displays.marker_symbol IS 'Name of the symbol used for the marker';
 
