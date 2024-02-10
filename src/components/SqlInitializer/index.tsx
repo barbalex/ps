@@ -40,6 +40,7 @@ import { generatePlaceReportLabel } from './labelGenerators/placeReports'
 import { generatePlaceReportValueLabel } from './labelGenerators/placeReportValues'
 import { generateMessageLabel } from './labelGenerators/messages'
 import { generateUiOptionLabel } from './labelGenerators/uiOptions'
+import { generateVectorLayerDisplayLabel } from './labelGenerators/vectorLayerDisplays'
 import { seed } from './seed'
 import { generatePartialIndexes } from './partialIndexes'
 import { generateUiOptions } from './uiOptions'
@@ -100,6 +101,7 @@ export const SqlInitializer = () => {
       await generateMessageLabel(db)
       await generatePartialIndexes(db)
       await generateUiOptionLabel(db)
+      await generateVectorLayerDisplayLabel(db)
       await seed(db)
       generateUiOptions({ db, user_id })
     }

@@ -56,6 +56,7 @@ CREATE TABLE vector_layer_displays(
   fill_color text DEFAULT NULL,
   fill_opacity_percent integer DEFAULT NULL, -- 100,
   fill_rule fill_rule_enum DEFAULT NULL, -- 'evenodd',
+  label_replace_by_generated_column text DEFAULT NULL,
   deleted boolean DEFAULT NULL -- false
 );
 
