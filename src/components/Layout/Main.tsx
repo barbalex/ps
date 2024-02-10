@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 import { Outlet } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import { Allotment } from 'allotment'
-import { useParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
 import { user_id } from '../SqlInitializer'
@@ -19,8 +18,6 @@ const containerStyle = {
 }
 
 export const Main = () => {
-  const params = useParams()
-  console.log('hello Main, params:', params)
   const { db } = useElectric()!
   const { results } = useLiveQuery(
     db.ui_options.liveUnique({ where: { user_id } }),
