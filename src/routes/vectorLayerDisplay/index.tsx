@@ -12,7 +12,6 @@ import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 // import { DropdownFieldFromLayerOptions } from '../../components/shared/DropdownFieldFromLayerOptions'
 // import { getValueFromChange } from '../../modules/getValueFromChange'
 import { Header } from './Header'
-import { VectorLayerDisplayForm as VectorLayerDisplay } from '../../components/shared/VectorLayerDisplay'
 
 import '../../form.css'
 
