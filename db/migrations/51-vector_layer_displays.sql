@@ -35,12 +35,11 @@ CREATE TYPE fill_rule_enum AS enum(
 DROP TABLE IF EXISTS vector_layer_displays CASCADE;
 
 -- manage all map related properties here? For imported/wfs and also own tables?
--- TODO: enable styling per property value
 CREATE TABLE vector_layer_displays(
   vector_layer_display_id uuid PRIMARY KEY DEFAULT NULL,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  -- TODO: add property_field. Default: null
-  -- TODO: add property_value. Default: null
+  property_field text DEFAULT NULL,
+  property_value text DEFAULT NULL,
   marker_type marker_type_enum DEFAULT NULL, -- 'circle',
   circle_marker_radius integer DEFAULT NULL, -- 8,
   marker_symbol text DEFAULT NULL,
@@ -62,7 +61,15 @@ CREATE TABLE vector_layer_displays(
 
 CREATE INDEX ON vector_layer_displays USING btree(vector_layer_id);
 
+CREATE INDEX ON vector_layer_displays USING btree(property_field);
+
+CREATE INDEX ON vector_layer_displays USING btree(property_value);
+
 COMMENT ON TABLE vector_layer_displays IS 'Goal: manage all map related properties of vector layers including places, actions, checks and observations';
+
+COMMENT ON COLUMN vector_layer_displays.property_field IS 'Enables styling per property value';
+
+COMMENT ON COLUMN vector_layer_displays.property_value IS 'Enables styling per property value';
 
 COMMENT ON COLUMN vector_layer_displays.marker_symbol IS 'Name of the symbol used for the marker';
 
