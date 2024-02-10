@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import * as icons from 'react-icons/md'
 import type { InputProps } from '@fluentui/react-components'
 
-import { Label } from '../../Label'
+import { Label } from '../../../components/shared/Label'
 import { Symbol } from './Symbol'
 
 const symbolContainerStyle = {

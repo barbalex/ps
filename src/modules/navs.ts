@@ -11,6 +11,7 @@ export const buildNavs = async ({
   goal_id,
   goal_report_id,
   list_id,
+  vector_layer_id,
   taxonomy_id,
   observation_source_id,
   db,
@@ -248,6 +249,13 @@ export const buildNavs = async ({
         {
           path: `/projects/${project_id}/lists/${list_id}/values`,
           text: 'Values',
+        },
+      ]
+    case 'vector_layers':
+      return [
+        {
+          path: `/projects/${project_id}/vector-layers/${vector_layer_id}/vector-layer-displays`,
+          text: 'Displays',
         },
       ]
     case 'taxonomies':

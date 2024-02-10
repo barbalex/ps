@@ -14,14 +14,14 @@ export const Url = memo(
     const worker = useWorker(createWorker)
 
     const onBlur = useCallback(async () => {
-      if (!row?.url) return
+      if (!row?.wfs_url) return
       // TODO: compare with old value and only update if changed
       // show loading indicator
       const notification_id = uuidv7()
       await db.notifications.create({
         data: {
           notification_id,
-          title: `Loading capabilities data for ${row.url}`,
+          title: `Loading capabilities data for ${row.wfs_url}`,
           intent: 'info',
           paused: true,
         },
@@ -45,12 +45,12 @@ export const Url = memo(
     return (
       <TextField
         label="Url"
-        name="url"
-        value={row.url ?? ''}
+        name="wfs_url"
+        value={row.wfs_url ?? ''}
         onChange={onChange}
         onBlur={onBlur}
         validationMessage={
-          row?.url
+          row?.wfs_url
             ? 'The url of the service providing the wfs'
             : 'Enter the url of the service providing the wfs. The capabilities will then be loaded and the layers available for selection.'
         }

@@ -35,19 +35,11 @@ CREATE TYPE fill_rule_enum AS enum(
 DROP TABLE IF EXISTS vector_layer_displays CASCADE;
 
 -- manage all map related properties here? For imported/wfs and also own tables?
--- TODO: enable styling per property value
--- add display_per_property_value boolean DEFAULT NULL, -- TODO: move to vector_layers
 CREATE TABLE vector_layer_displays(
   vector_layer_display_id uuid PRIMARY KEY DEFAULT NULL,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  -- TODO: add property_field. Default: null
-  -- TODO: add property_value. Default: null
-  data_table vector_layer_table_enum DEFAULT NULL, -- TODO: move to vector_layers
-  sort smallint DEFAULT NULL, -- TODO: move to vector_layers
-  active boolean DEFAULT NULL, -- TODO: move to vector_layers
-  max_zoom integer DEFAULT NULL, -- 19, TODO: move to vector_layers
-  min_zoom integer DEFAULT NULL, -- 0, TODO: move to vector_layers
-  max_features integer DEFAULT NULL, -- 1000 TODO: move to vector_layers
+  property_field text DEFAULT NULL,
+  property_value text DEFAULT NULL,
   marker_type marker_type_enum DEFAULT NULL, -- 'circle',
   circle_marker_radius integer DEFAULT NULL, -- 8,
   marker_symbol text DEFAULT NULL,
@@ -64,16 +56,21 @@ CREATE TABLE vector_layer_displays(
   fill_color text DEFAULT NULL,
   fill_opacity_percent integer DEFAULT NULL, -- 100,
   fill_rule fill_rule_enum DEFAULT NULL, -- 'evenodd',
+  label_replace_by_generated_column text DEFAULT NULL,
   deleted boolean DEFAULT NULL -- false
 );
 
 CREATE INDEX ON vector_layer_displays USING btree(vector_layer_id);
 
-CREATE INDEX ON vector_layer_displays USING btree(data_table);
+CREATE INDEX ON vector_layer_displays USING btree(property_field);
+
+CREATE INDEX ON vector_layer_displays USING btree(property_value);
 
 COMMENT ON TABLE vector_layer_displays IS 'Goal: manage all map related properties of vector layers including places, actions, checks and observations';
 
-COMMENT ON COLUMN vector_layer_displays.data_table IS 'Whether this style is used for this table';
+COMMENT ON COLUMN vector_layer_displays.property_field IS 'Enables styling per property value';
+
+COMMENT ON COLUMN vector_layer_displays.property_value IS 'Enables styling per property value';
 
 COMMENT ON COLUMN vector_layer_displays.marker_symbol IS 'Name of the symbol used for the marker';
 

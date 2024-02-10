@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 
 import { Node } from './Node'
 import { Vector_layers as VectorLayer } from '../../../generated/client'
+import { VectorLayerDisplaysNode } from './VectorLayerDisplays'
 
 export const VectorLayerNode = ({
   project_id,
@@ -26,19 +27,29 @@ export const VectorLayerNode = ({
 
   const onClickButton = useCallback(() => {
     if (isOpen) return navigate(`/projects/${project_id}/vector-layers`)
-    navigate(`/projects/${project_id}/vector-layers/${vectorLayer.vector_layer_id}`)
+    navigate(
+      `/projects/${project_id}/vector-layers/${vectorLayer.vector_layer_id}`,
+    )
   }, [isOpen, navigate, project_id, vectorLayer.vector_layer_id])
 
   return (
-    <Node
-      node={vectorLayer}
-      level={level}
-      isOpen={isOpen}
-      isInActiveNodeArray={isOpen}
-      isActive={isActive}
-      childrenCount={0}
-      to={`/projects/${project_id}/vector-layers/${vectorLayer.vector_layer_id}`}
-      onClickButton={onClickButton}
-    />
+    <>
+      <Node
+        node={vectorLayer}
+        level={level}
+        isOpen={isOpen}
+        isInActiveNodeArray={isOpen}
+        isActive={isActive}
+        childrenCount={0}
+        to={`/projects/${project_id}/vector-layers/${vectorLayer.vector_layer_id}`}
+        onClickButton={onClickButton}
+      />
+      {isOpen && (
+        <VectorLayerDisplaysNode
+          project_id={project_id}
+          vector_layer_id={vectorLayer.vector_layer_id}
+        />
+      )}
+    </>
   )
 }

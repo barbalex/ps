@@ -1817,12 +1817,12 @@ CREATE TABLE vector_layers(
   active boolean DEFAULT FALSE,
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   type vector_layer_type_enum DEFAULT 'wfs',
-  url text DEFAULT NULL, -- WFS url, for example https://maps.zh.ch/wfs/OGDZHWFS
+  wfs_url text DEFAULT NULL, -- WFS url, for example https://maps.zh.ch/wfs/OGDZHWFS
   max_zoom decimal DEFAULT 19,
   min_zoom decimal DEFAULT 0,
   wfs_layer jsonb DEFAULT NULL, -- for example ms:ogd-0119_giszhpub_feuchtgebietinv_79_90_beob_p
   wfs_version text DEFAULT NULL, -- often: 1.1.0 or 2.0.0
-  output_format text DEFAULT NULL, -- need some form of json. TODO: Convert others?
+  wfs_output_format text DEFAULT NULL, -- need some form of json. TODO: Convert others?
   opacity numeric DEFAULT 1, -- is opacity_percent client side because electric-sql does not support numeric
   max_features integer DEFAULT 1000,
   feature_count integer DEFAULT NULL,

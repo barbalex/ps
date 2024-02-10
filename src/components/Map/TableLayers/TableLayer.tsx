@@ -2,30 +2,43 @@ import { useState, memo } from 'react'
 import { GeoJSON, useMapEvent } from 'react-leaflet'
 import * as ReactDOMServer from 'react-dom/server'
 import * as icons from 'react-icons/md'
+import { useLiveQuery } from 'electric-sql/react'
 
 import { vectorLayerDisplayToProperties } from '../../../modules/vectorLayerDisplayToProperties'
 import { Popup } from '../Popup'
 import {
   Vector_layer_displays as VectorLayerDisplay,
+  vector_layers as VectorLayer,
   Places as Place,
   Actions as Action,
   Checks as Check,
   Observations as Observation,
 } from '../../../generated/client'
+import { useElectric } from '../../../ElectricProvider'
 
 type Props = {
   data: Place[] | Action[] | Check[] | Observation[]
-  display: VectorLayerDisplay
+  layer: VectorLayer
 }
 
-export const TableLayer = memo(({ data, display }: Props) => {
+export const TableLayer = memo(({ data, layer }: Props) => {
+  const { db } = useElectric()!
+  const { results: vectorLayerDisplayResults = [] } = useLiveQuery(
+    db.vector_layer_displays.liveMany({
+      where: { vector_layer_id: layer.vector_layer_id },
+    }),
+  )
+  // TODO: adapt to multiple vector_layer_displays
+  const display: VectorLayerDisplay = vectorLayerDisplayResults[0]
+
   const map = useMapEvent('zoomend', () => setZoom(map.getZoom()))
   const [zoom, setZoom] = useState(map.getZoom())
 
-  // include only if zoom between min_zoom and max_zoom
   if (!display) return null
-  if (display.min_zoom !== undefined && zoom < display.min_zoom) return null
-  if (display.max_zoom !== undefined && zoom > display.max_zoom) return null
+  if (!layer) return null
+  // include only if zoom between min_zoom and max_zoom
+  if (layer.min_zoom !== undefined && zoom < layer.min_zoom) return null
+  if (layer.max_zoom !== undefined && zoom > layer.max_zoom) return null
   if (!data?.length) return null
 
   const mapSize = map.getSize()

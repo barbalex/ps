@@ -130,7 +130,6 @@ export const upsertTableVectorLayersForProject = async ({ db, project_id }) => {
   // 7. create missing vector_layer_displays
   const newVectorLayerDisplays = vectorLayersMissingDisplay.map((vl) =>
     createVectorLayerDisplay({
-      data_table: vl.type,
       vector_layer_id: vl.vector_layer_id,
     }),
   )

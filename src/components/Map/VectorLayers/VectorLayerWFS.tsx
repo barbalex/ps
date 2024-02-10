@@ -94,7 +94,7 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
         request: 'GetFeature',
         typeName: layer.wfs_layer?.value,
         srsName: 'EPSG:4326',
-        outputFormat: layer.output_format?.value,
+        outputFormat: layer.wfs_output_format?.value,
         maxfeatures: 1000,
         // bbox is NOT WORKING
         // always returning 0 features...
@@ -106,7 +106,7 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
       try {
         res = await axios({
           method: 'get',
-          url: layer.url,
+          url: layer.wfs_url,
           params,
         })
       } catch (error) {
@@ -138,8 +138,8 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
     [
       layer.label,
       layer.wfs_layer,
-      layer.output_format,
-      layer.url,
+      layer.wfs_output_format,
+      layer.wfs_url,
       layer.wfs_version,
       removeNotifs,
       showMap,
@@ -152,12 +152,12 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
   }, [fetchDataDebounced, map, showMap])
 
   // include only if zoom between min_zoom and max_zoom
-  if (display.min_zoom !== undefined && zoom < display.min_zoom) return null
-  if (display.max_zoom !== undefined && zoom > display.max_zoom) return null
+  if (layer.min_zoom !== undefined && zoom < layer.min_zoom) return null
+  if (layer.max_zoom !== undefined && zoom > layer.max_zoom) return null
 
   removeNotifs()
   if (
-    data?.length >= (display.max_features ?? 1000) &&
+    data?.length >= (layer.max_features ?? 1000) &&
     !notificationIds.current.length
   ) {
     const notification_id = uuidv7()
@@ -166,7 +166,7 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
         notification_id,
         title: `Zuviele Geometrien`,
         body: `Die maximale Anzahl Features von ${
-          display.max_features ?? 1000
+          layer.max_features ?? 1000
         } für Vektor-Karte '${
           layer.label
         }' wurde geladen. Zoomen sie näher ran`,

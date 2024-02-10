@@ -2,17 +2,17 @@ import { useLiveQuery } from 'electric-sql/react'
 
 import { useElectric } from '../../../ElectricProvider'
 import {
-  Vector_layer_displays as VectorLayerDisplay,
+  Vector_layers as VectorLayer,
   Actions as Action,
   Places as Place,
 } from '../../../generated/client'
 import { TableLayer } from './TableLayer'
 
 type Props = {
-  display: VectorLayerDisplay
+  layer: VectorLayer
 }
 
-export const Actions1 = ({ display }: Props) => {
+export const Actions1 = ({ layer }: Props) => {
   const { db } = useElectric()!
 
   // need to query places1 because filtering by places in checks query does not work
@@ -51,7 +51,7 @@ export const Actions1 = ({ display }: Props) => {
   // console.log('hello Actions1, data:', data)
 
   if (!data?.length) return null
-  if (!display) return null
+  if (!layer) return null
 
-  return <TableLayer data={data} display={display} />
+  return <TableLayer data={data} layer={layer} />
 }
