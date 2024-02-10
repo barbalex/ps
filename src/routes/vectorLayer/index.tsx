@@ -144,7 +144,7 @@ export const Component = () => {
               type="number"
               validationMessage="Drawing too many features can crash the app. Your mileage may vary."
             />
-            <VectorLayerDisplay row={row} />
+            {/* <VectorLayerDisplay row={row} /> */}
           </>
         )}
         {row?.type === 'upload' && (

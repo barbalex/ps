@@ -3,11 +3,11 @@ import { Outlet } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import { Allotment } from 'allotment'
 
-import { useElectric } from '../../../ElectricProvider'
-import { user_id } from '../../SqlInitializer'
-import { Tree } from '../../Tree'
-import { Filter } from '../../Filter'
-import { Map } from '../../Map'
+import { useElectric } from '../../ElectricProvider'
+import { user_id } from '../SqlInitializer'
+import { Tree } from '../Tree'
+import { Filter } from '../Filter'
+import { Map } from '../Map'
 
 const containerStyle = {
   display: 'flex',
