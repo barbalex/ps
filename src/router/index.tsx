@@ -580,11 +580,11 @@ export const router = (db) => {
                       children: [
                         {
                           index: true,
-                          element: null,
+                          lazy: () => import('../routes/vectorLayer'),
                         },
                         {
                           path: ':vector_layer_id',
-                          lazy: () => import('../routes/vectorLayer'),
+                          element: null,
                           handle: {
                             crumb: (match) => ({
                               text: match.params.vector_layer_id,
