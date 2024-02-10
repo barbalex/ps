@@ -85,8 +85,8 @@ export const getCapabilitiesData = async ({
       },
     })
   }
-  if (!row.output_format) {
-    values.output_format = {
+  if (!row.wfs_output_format) {
+    values.wfs_output_format = {
       label: preferredOutputFormat,
       value: preferredOutputFormat,
     }

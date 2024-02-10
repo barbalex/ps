@@ -32,7 +32,7 @@ export const VectorLayers = () => {
       // Ensure needed data exists
       wfs_url: { not: null },
       wfs_layer: { not: null },
-      output_format: { not: null },
+      wfs_output_format: { not: null },
     }
     if (project_id) {
       where.project_id = project_id

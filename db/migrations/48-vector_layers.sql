@@ -19,7 +19,7 @@ CREATE TABLE vector_layers(
   wfs_url text DEFAULT NULL, -- WFS url, for example https://maps.zh.ch/wfs/OGDZHWFS. TODO: rename wfs_url
   wfs_layer jsonb DEFAULT NULL, -- a single option
   wfs_version text DEFAULT NULL, -- often: 1.1.0 or 2.0.0
-  output_format jsonb DEFAULT NULL, --  a single option. TODO: rename wfs_output_format
+  wfs_output_format jsonb DEFAULT NULL, --  a single option. TODO: rename wfs_output_format
   feature_count integer DEFAULT NULL,
   point_count integer DEFAULT NULL,
   line_count integer DEFAULT NULL,
