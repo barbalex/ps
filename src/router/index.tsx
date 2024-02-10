@@ -580,7 +580,7 @@ export const router = (db) => {
                       children: [
                         {
                           index: true,
-                          lazy: () => import('../routes/vectorLayer'),
+                          lazy: () => import('../routes/vectorLayers'),
                         },
                         {
                           path: ':vector_layer_id',
