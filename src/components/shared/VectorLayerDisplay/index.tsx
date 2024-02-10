@@ -126,6 +126,8 @@ Props) => {
 
   if (!row) return null // no spinner as is null until enough data input
 
+  console.log('hello VectorLayerDisplayForm, row:', row)
+
   return (
     <ErrorBoundary>
       <div style={containerStyle}>

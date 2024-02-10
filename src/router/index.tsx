@@ -580,7 +580,7 @@ export const router = (db) => {
                       children: [
                         {
                           index: true,
-                          lazy: () => import('../routes/vectorLayers'),
+                          element: null,
                         },
                         {
                           path: ':vector_layer_id',
@@ -592,6 +592,43 @@ export const router = (db) => {
                               folder: false,
                             }),
                           },
+                          children: [
+                            {
+                              index: true,
+                              lazy: () => import('../routes/vectorLayer'),
+                            },
+                            {
+                              path: 'vector-layer-displays',
+                              element: null,
+                              handle: {
+                                crumb: () => ({
+                                  text: 'Vector Layer Displays',
+                                  table: 'vector_layer_displays',
+                                  folder: true,
+                                }),
+                              },
+                              children: [
+                                {
+                                  index: true,
+                                  lazy: () =>
+                                    import('../routes/vectorLayerDisplays'),
+                                },
+                                {
+                                  path: ':vector_layer_display_id',
+                                  lazy: () =>
+                                    import('../routes/vectorLayerDisplay'),
+                                  handle: {
+                                    crumb: (match) => ({
+                                      text: match.params
+                                        .vector_layer_display_id,
+                                      table: 'vector_layer_displays',
+                                      folder: false,
+                                    }),
+                                  },
+                                },
+                              ],
+                            },
+                          ],
                         },
                       ],
                     },
