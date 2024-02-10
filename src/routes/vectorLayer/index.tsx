@@ -44,8 +44,6 @@ export const Component = () => {
     return <div>Loading...</div>
   }
 
-  console.log('hello VectorLayer, row:', row)
-
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
