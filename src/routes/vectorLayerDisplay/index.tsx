@@ -61,7 +61,8 @@ export const Component = () => {
   // - enable choosing field and values from a list of available fields and values:
   //   - from tables
   //   - from wfs
-  // - Then apply the styles to the vector layer
+  // - when choosing field, generate a display for every unique value
+  // - apply the styles to the vector layer
   return (
     <ErrorBoundary>
       <div className="form-outer-container">
