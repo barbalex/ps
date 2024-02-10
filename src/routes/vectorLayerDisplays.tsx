@@ -19,12 +19,7 @@ export const Component = () => {
     }),
   )
 
-  const vectorLayerDisplays: VectorLayerDisplay[] = results ?? []
-
-  console.log(
-    'hello vectorLayerDisplays, vectorLayerDisplays:',
-    vectorLayerDisplays,
-  )
+  const vlds: VectorLayerDisplay[] = results ?? []
 
   return (
     <div className="list-view">
@@ -33,7 +28,7 @@ export const Component = () => {
         tableName="vector layer display"
       />
       <div className="list-container">
-        {vectorLayerDisplays.map(({ vector_layer_display_id, label }) => (
+        {vlds.map(({ vector_layer_display_id, label }) => (
           <Row
             key={vector_layer_display_id}
             to={`/projects/${project_id}/vector-layers/${vector_layer_id}/vector-layer-displays/${vector_layer_display_id}`}
