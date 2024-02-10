@@ -12,7 +12,6 @@ export const VectorLayersNode = ({ project_id, level = 3 }) => {
   const navigate = useNavigate()
 
   const { db } = useElectric()!
-  // TODO: sort by vector_layer_displays.sort
   const { results } = useLiveQuery(
     db.vector_layers.liveMany({
       where: { deleted: false, project_id },
