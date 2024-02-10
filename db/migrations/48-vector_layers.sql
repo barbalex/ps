@@ -16,6 +16,7 @@ CREATE TABLE vector_layers(
   label text DEFAULT NULL,
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   type vector_layer_type_enum DEFAULT NULL, -- 'wfs',
+  display_by_property_value boolean DEFAULT NULL,
   wfs_url text DEFAULT NULL, -- WFS url, for example https://maps.zh.ch/wfs/OGDZHWFS. TODO: rename wfs_url
   wfs_layer jsonb DEFAULT NULL, -- a single option
   wfs_version text DEFAULT NULL, -- often: 1.1.0 or 2.0.0

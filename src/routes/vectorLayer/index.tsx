@@ -7,6 +7,7 @@ import { Vector_layers as VectorLayer } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { TextField } from '../../components/shared/TextField'
+import { SwitchField } from '../../components/shared/SwitchField'
 import { RadioGroupField } from '../../components/shared/RadioGroupField'
 import { DropdownFieldFromLayerOptions } from '../../components/shared/DropdownFieldFromLayerOptions'
 import { getValueFromChange } from '../../modules/getValueFromChange'
@@ -99,6 +100,13 @@ export const Component = () => {
             <VectorLayerDisplay row={row} />
           </>
         )}
+        <SwitchField
+          label="Display by property value"
+          name="display_by_property_value"
+          value={row.display_by_property_value}
+          onChange={onChange}
+          validationMessage="If checked, the layer will be displayed based on the values of a property."
+        />
         {row?.type === 'upload' && (
           <>
             <TextFieldInactive

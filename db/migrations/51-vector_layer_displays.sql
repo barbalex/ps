@@ -36,7 +36,6 @@ DROP TABLE IF EXISTS vector_layer_displays CASCADE;
 
 -- manage all map related properties here? For imported/wfs and also own tables?
 -- TODO: enable styling per property value
--- add display_per_property_value boolean DEFAULT NULL, -- TODO: move to vector_layers
 CREATE TABLE vector_layer_displays(
   vector_layer_display_id uuid PRIMARY KEY DEFAULT NULL,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
