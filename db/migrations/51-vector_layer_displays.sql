@@ -35,15 +35,18 @@ CREATE TYPE fill_rule_enum AS enum(
 DROP TABLE IF EXISTS vector_layer_displays CASCADE;
 
 -- manage all map related properties here? For imported/wfs and also own tables?
+-- TODO: enable styling per property value
 CREATE TABLE vector_layer_displays(
   vector_layer_display_id uuid PRIMARY KEY DEFAULT NULL,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  data_table vector_layer_table_enum DEFAULT NULL,
-  sort smallint DEFAULT NULL,
-  active boolean DEFAULT NULL,
-  max_zoom integer DEFAULT NULL, -- 19,
-  min_zoom integer DEFAULT NULL, -- 0,
-  max_features integer DEFAULT NULL, -- 1000
+  -- TODO: add property_field. Default: null
+  -- TODO: add property_value. Default: null
+  data_table vector_layer_table_enum DEFAULT NULL, -- TODO: move to vector_layers
+  sort smallint DEFAULT NULL, -- TODO: move to vector_layers
+  active boolean DEFAULT NULL, -- TODO: move to vector_layers
+  max_zoom integer DEFAULT NULL, -- 19, TODO: move to vector_layers
+  min_zoom integer DEFAULT NULL, -- 0, TODO: move to vector_layers
+  max_features integer DEFAULT NULL, -- 1000 TODO: move to vector_layers
   marker_type marker_type_enum DEFAULT NULL, -- 'circle',
   circle_marker_radius integer DEFAULT NULL, -- 8,
   marker_symbol text DEFAULT NULL,
