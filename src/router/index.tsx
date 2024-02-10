@@ -608,7 +608,7 @@ export const router = (db) => {
                               element: null,
                               handle: {
                                 crumb: () => ({
-                                  text: 'Vector Layer Displays',
+                                  text: 'Displays',
                                   table: 'vector_layer_displays',
                                   folder: true,
                                 }),

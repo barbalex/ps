@@ -21,6 +21,11 @@ export const Component = () => {
 
   const vectorLayerDisplays: VectorLayerDisplay[] = results ?? []
 
+  console.log(
+    'hello vectorLayerDisplays, vectorLayerDisplays:',
+    vectorLayerDisplays,
+  )
+
   return (
     <div className="list-view">
       <ListViewHeader

@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
 import { Node } from './Node'
-import { Vector_layers as VectorLayer } from '../../../generated/client'
+import { Vector_layer_displays as VectorLayerDisplay } from '../../../generated/client'
 import { VectorLayerDisplayNode } from './VectorLayerDisplay'
 
 export const VectorLayerDisplaysNode = ({
@@ -16,17 +16,17 @@ export const VectorLayerDisplaysNode = ({
   const navigate = useNavigate()
 
   const { db } = useElectric()!
-  const { results } = useLiveQuery(
+  const { results = [] } = useLiveQuery(
     db.vector_layer_displays.liveMany({
       where: { deleted: false, vector_layer_id },
       orderBy: { label: 'asc' },
     }),
   )
-  const vlds: VectorLayer[] = results ?? []
+  const vlds: VectorLayerDisplay[] = results
 
-  const vectorLayersNode = useMemo(
+  const vectorLayerDisplaysNode = useMemo(
     () => ({
-      label: `Vector Layer Displays (${vlds.length})`,
+      label: `Displays (${vlds.length})`,
     }),
     [vlds.length],
   )
@@ -53,7 +53,7 @@ export const VectorLayerDisplaysNode = ({
   return (
     <>
       <Node
-        node={vectorLayersNode}
+        node={vectorLayerDisplaysNode}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isOpen}

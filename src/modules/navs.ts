@@ -255,7 +255,7 @@ export const buildNavs = async ({
       return [
         {
           path: `/projects/${project_id}/vector-layers/${vector_layer_id}/vector-layer-displays`,
-          text: 'Vector Layer Displays',
+          text: 'Displays',
         },
       ]
     case 'taxonomies':
