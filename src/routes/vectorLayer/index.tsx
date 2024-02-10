@@ -84,71 +84,71 @@ export const Component = () => {
         )}
         {row?.type === 'upload' && <div>TODO: Upload</div>}
         {row?.type === 'wfs' && row?.wfs_url && row.wfs_layer && (
+          <TextField
+            label="Label"
+            name="label"
+            value={row.label ?? ''}
+            onChange={onChange}
+          />
+        )}
+        {!['wfs', 'upload'].includes(row.type) && (
+          <TextFieldInactive label="Label" name="label" value={row.label} />
+        )}
+        {((row?.type === 'wfs' && row?.wfs_url && row.wfs_layer) ||
+          !['wfs', 'upload'].includes(row.type)) && (
           <>
-            <TextField
-              label="Label"
-              name="label"
-              value={row.label ?? ''}
+            <SwitchField
+              label="Display by property value"
+              name="display_by_property_value"
+              value={row.display_by_property_value}
               onChange={onChange}
+              validationMessage="If checked, the layer will be displayed based on the values of a property."
+            />
+            <TextField
+              label="Sort"
+              name="sort"
+              value={row.sort ?? ''}
+              onChange={onChange}
+              type="number"
+              validationMessage="Add a sorting order here if sorting by label is not desired."
+            />
+            <SwitchField
+              label="active"
+              name="active"
+              value={row.active}
+              onChange={onChange}
+            />
+            <TextField
+              label="Max Zoom"
+              name="max_zoom"
+              value={row.max_zoom ?? ''}
+              onChange={onChange}
+              type="number"
+              max={19}
+              min={0}
+              validationMessage="Zoom can be between 0 and 19"
+            />
+            <TextField
+              label="Min Zoom"
+              name="min_zoom"
+              value={row.min_zoom ?? ''}
+              onChange={onChange}
+              type="number"
+              max={19}
+              min={0}
+              validationMessage="Zoom can be between 0 and 19"
+            />
+            <TextField
+              label="Max number of features"
+              name="max_features"
+              value={row.max_features ?? ''}
+              onChange={onChange}
+              type="number"
+              validationMessage="Drawing too many features can crash the app. Your mileage may vary."
             />
             <VectorLayerDisplay row={row} />
           </>
         )}
-        {!['wfs', 'upload'].includes(row.type) && (
-          <>
-            <TextFieldInactive label="Label" name="label" value={row.label} />
-            <VectorLayerDisplay row={row} />
-          </>
-        )}
-        <SwitchField
-          label="Display by property value"
-          name="display_by_property_value"
-          value={row.display_by_property_value}
-          onChange={onChange}
-          validationMessage="If checked, the layer will be displayed based on the values of a property."
-        />
-        <TextField
-          label="Sort"
-          name="sort"
-          value={row.sort ?? ''}
-          onChange={onChange}
-          type="number"
-          validationMessage="Add a sorting order here if sorting by label is not desired."
-        />
-        <SwitchField
-          label="active"
-          name="active"
-          value={row.active}
-          onChange={onChange}
-        />
-        <TextField
-          label="Max Zoom"
-          name="max_zoom"
-          value={row.max_zoom ?? ''}
-          onChange={onChange}
-          type="number"
-          max={19}
-          min={0}
-          validationMessage="Zoom can be between 0 and 19"
-        />
-        <TextField
-          label="Min Zoom"
-          name="min_zoom"
-          value={row.min_zoom ?? ''}
-          onChange={onChange}
-          type="number"
-          max={19}
-          min={0}
-          validationMessage="Zoom can be between 0 and 19"
-        />
-        <TextField
-          label="Max number of features"
-          name="max_features"
-          value={row.max_features ?? ''}
-          onChange={onChange}
-          type="number"
-          validationMessage="Drawing too many features can crash the app. Your mileage may vary."
-        />
         {row?.type === 'upload' && (
           <>
             <TextFieldInactive
