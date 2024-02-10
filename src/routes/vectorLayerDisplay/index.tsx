@@ -28,6 +28,8 @@ export const Component = () => {
 
   const row: VectorLayerDisplay = results
 
+  console.log('hello VectorLayerDisplayForm, row:', row)
+
   // const onChange: InputProps['onChange'] = useCallback(
   //   (e, data) => {
   //     const { name, value } = getValueFromChange(e, data)

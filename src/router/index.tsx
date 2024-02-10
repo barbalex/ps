@@ -591,6 +591,12 @@ export const router = (db) => {
                               table: 'vector_layers',
                               folder: false,
                             }),
+                            to: async (match) =>
+                              await buildNavs({
+                                table: `vector_layers`,
+                                ...match.params,
+                                db,
+                              }),
                           },
                           children: [
                             {
