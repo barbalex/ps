@@ -28,8 +28,6 @@ export const VectorLayerChooser = ({ layer, display }: Props) => {
   )
   const geomCount: integer = vectorLayerGeoms.length
 
-  console.log('hello VectorLayerChooser', { layer, db, geomCount, display })
-
   // TODO: only accept pre-downloaded layers because of
   // problems filtering by bbox?
   if (!geomCount) return <VectorLayerWFS layer={layer} display={display} />
