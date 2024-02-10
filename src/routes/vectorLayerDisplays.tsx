@@ -21,8 +21,6 @@ export const Component = () => {
 
   const vlds: VectorLayerDisplay[] = results ?? []
 
-  console.log('hello vectorLayerDisplays', vlds)
-
   return (
     <div className="list-view">
       <ListViewHeader
