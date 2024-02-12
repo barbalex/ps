@@ -18,12 +18,7 @@ export const DrawControlComponent = ({
 
   const onEdit = useCallback(
     async (featureCollection) => {
-      console.log(
-        'hello DrawControl.onEdit, featureCollection:',
-        featureCollection,
-      )
       const activeId = editingPlace ?? editingCheck ?? editingAction
-      console.log('hello DrawControl.onEdit, activeId:', activeId)
       const activeIdName = editingPlace
         ? 'place_id'
         : editingCheck
@@ -31,7 +26,6 @@ export const DrawControlComponent = ({
         : editingAction
         ? 'action_id'
         : null
-      console.log('hello DrawControl.onEdit, activeIdName:', activeIdName)
       const tableName = editingPlace
         ? 'places'
         : editingCheck
@@ -39,7 +33,6 @@ export const DrawControlComponent = ({
         : editingAction
         ? 'actions'
         : null
-      console.log('hello DrawControl.onEdit, tableName:', tableName)
 
       const geometry = {
         type: 'GeometryCollection',
