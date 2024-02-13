@@ -98,11 +98,7 @@ export const upsertTableVectorLayersForProject = async ({ db, project_id }) => {
   // ...and remove unneeded vector_layers
   // this also removes their vector_layer_displays
   await db.vector_layers.deleteMany({
-    where: {
-      vector_layer_id: {
-        in: unneededVectorLayerTables.map((t) => t.vector_layer_id),
-      },
-    },
+    where: { type: { in: unneededVectorLayerTables } },
   })
 
   // 4. update vector_layer labels using place_levels
