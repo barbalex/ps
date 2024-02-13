@@ -15,6 +15,7 @@ import { MarkerSymbolPicker } from './MarkerSymbolPicker'
 import { Header } from './Header'
 import { ErrorBoundary } from '../../components/shared/ErrorBoundary'
 import { ColorPicker } from '../../components/shared/ColorPicker'
+import { PropertyField } from './PropertyField'
 
 import '../../form.css'
 
@@ -73,6 +74,7 @@ export const Component = () => {
             name="vector_layer_display_id"
             value={row.vector_layer_display_id}
           />
+          <PropertyField vectorLayerDisplay={row} />
           <RadioGroupField
             name="marker_type"
             label="Punkt-Typ"

@@ -5,39 +5,54 @@ import { useElectric } from '../../ElectricProvider'
 import {
   Fields as Field,
   Vector_layer_displays as VectorLayerDisplay,
+  Vector_layers as VectorLayer,
 } from '../../generated/client'
 
 type Props = {
-  table: string
   vectorLayerDisplay: VectorLayerDisplay
+}
+
+type VLResults = {
+  results: VectorLayer
 }
 
 type FieldResults = {
   results: Field[]
 }
-type VLResults = {
+type VLDResults = {
   results: VectorLayerDisplay[]
 }
 
-export const PropertyField = ({ table, vectorLayerDisplay }) => {
-  const { project_id } = useParams()
+export const PropertyField = ({ vectorLayerDisplay }: Props) => {
+  const { project_id, vector_layer_id, vector_layer_display_id } = useParams()
 
   const { db } = useElectric()!
+  // get table and level from vector_layer.type
+  const { results: vectorLayer }: VLResults = useLiveQuery(
+    db.vector_layers.findUnique({
+      where: { vector_layer_id },
+    }),
+  )
+  // table is vectorLayer.type without last character
+  const table = vectorLayer?.type?.slice(0, -1)
+  // level is last character of vectorLayer.type
+  const level = parseInt(vectorLayer?.type?.slice(-1))
+
   // get fields of table
   const { results: fields = [] }: FieldResults = useLiveQuery(
     db.fields.findMany({
-      where: { table_name: table, project_id, deleted: false },
+      where: { table_name: table, level, project_id, deleted: false },
     }),
   )
 
   // also need all other vector_layer_displays of this vector_layer with set propery_field
-  const { results: vectorLayerDisplays = [] }: VLResults = useLiveQuery(
+  const { results: otherVectorLayerDisplays = [] }: VLDResults = useLiveQuery(
     db.vector_layer_displays.findMany({
       where: {
         vector_layer_display_id: {
-          not: vectorLayerDisplay.vector_layer_display_id,
+          not: vector_layer_display_id,
         },
-        vector_layer_id: vectorLayerDisplay.vector_layer_id,
+        vector_layer_id,
         deleted: false,
         property_field: { not: null },
       },
@@ -47,14 +62,27 @@ export const PropertyField = ({ table, vectorLayerDisplay }) => {
   // extract all fields not yet used as property_field
   const propertyFields = fields.filter(
     (field) =>
-      !vectorLayerDisplays.find(
+      !otherVectorLayerDisplays.find(
         (vld) => vld.property_field === field.field_id,
       ),
   )
 
+  console.log('hello propertyField', {
+    table,
+    level,
+    vectorLayer,
+    vectorLayerDisplay,
+    project_id,
+    vector_layer_id,
+    vector_layer_display_id,
+    propertyFields,
+    vectorLayerDisplays: otherVectorLayerDisplays,
+    fields,
+  })
+
   return (
     <div>
-      <h1>PropertyField</h1>
+      <h3>PropertyField</h3>
     </div>
   )
 }
