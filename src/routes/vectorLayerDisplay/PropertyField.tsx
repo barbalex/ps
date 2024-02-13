@@ -14,13 +14,16 @@ type Props = {
 
 type VLResults = {
   results: VectorLayer
+  error: Error
 }
 
 type FieldResults = {
   results: Field[]
+  error: Error
 }
 type VLDResults = {
   results: VectorLayerDisplay[]
+  error: Error
 }
 
 export const PropertyField = ({ vectorLayerDisplay }: Props) => {
@@ -28,7 +31,7 @@ export const PropertyField = ({ vectorLayerDisplay }: Props) => {
 
   const { db } = useElectric()!
   // get table and level from vector_layer.type
-  const { results: vectorLayer }: VLResults = useLiveQuery(
+  const { results: vectorLayer, error: errorVL }: VLResults = useLiveQuery(
     db.vector_layers.findUnique({
       where: { vector_layer_id },
     }),
@@ -39,14 +42,18 @@ export const PropertyField = ({ vectorLayerDisplay }: Props) => {
   const level = parseInt(vectorLayer?.type?.slice(-1))
 
   // get fields of table
-  const { results: fields = [] }: FieldResults = useLiveQuery(
-    db.fields.findMany({
-      where: { table_name: table, level, project_id, deleted: false },
-    }),
-  )
+  const { results: fields = [], error: errorFields }: FieldResults =
+    useLiveQuery(
+      db.fields.findMany({
+        where: { table_name: table, level, project_id, deleted: false },
+      }),
+    )
 
   // also need all other vector_layer_displays of this vector_layer with set propery_field
-  const { results: otherVectorLayerDisplays = [] }: VLDResults = useLiveQuery(
+  const {
+    results: otherVectorLayerDisplays = [],
+    error: errorVLD,
+  }: VLDResults = useLiveQuery(
     db.vector_layer_displays.findMany({
       where: {
         vector_layer_display_id: {
@@ -68,8 +75,12 @@ export const PropertyField = ({ vectorLayerDisplay }: Props) => {
   )
 
   console.log('hello propertyField', {
+    db,
     table,
     level,
+    errorVL,
+    errorFields,
+    errorVLD,
     vectorLayer,
     vectorLayerDisplay,
     project_id,
