@@ -37,9 +37,9 @@ export const PropertyField = ({ vectorLayerDisplay }: Props) => {
     }),
   )
   // table is vectorLayer.type without last character
-  const table = vectorLayer?.type?.slice(0, -1)
+  const table = vectorLayer?.type?.slice(0, -1) ?? null
   // level is last character of vectorLayer.type
-  const level = parseInt(vectorLayer?.type?.slice(-1))
+  const level = parseInt(vectorLayer?.type?.slice(-1)) ?? null
 
   // get fields of table
   const { results: fields = [], error: errorFields }: FieldResults =
