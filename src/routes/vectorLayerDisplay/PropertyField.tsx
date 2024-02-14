@@ -7,6 +7,8 @@ import {
   Vector_layer_displays as VectorLayerDisplay,
   Vector_layers as VectorLayer,
 } from '../../generated/client'
+import { DropdownFieldOptions } from '../../components/shared/DropdownFieldOptions'
+import { getValueFromChange } from '../../modules/getValueFromChange'
 
 type Props = {
   vectorLayerDisplay: VectorLayerDisplay
@@ -91,9 +93,25 @@ export const PropertyField = ({ vectorLayerDisplay }: Props) => {
     fields,
   })
 
+  if (!propertyFields.length) return null
+
+  // show a dropdown listing propertyFields
   return (
-    <div>
-      <h3>PropertyField</h3>
-    </div>
+    <DropdownFieldOptions
+      label="Property Field"
+      name="property_field"
+      value={vectorLayerDisplay.property_field}
+      onChange={(e, data) => {
+        const { name, value } = getValueFromChange(e, data)
+        db.vector_layer_displays.update({
+          where: { vector_layer_display_id },
+          data: { [name]: value },
+        })
+      }}
+      options={propertyFields.map((field) => ({
+        label: field.field_label ?? field.name,
+        value: field.field_id,
+      }))}
+    />
   )
 }
