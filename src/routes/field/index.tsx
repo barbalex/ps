@@ -91,6 +91,13 @@ export const Component = () => {
           validationMessage={row.table_name ? undefined : 'Required'}
         />
         <TextField
+          label="Level"
+          name="level"
+          value={row.level}
+          type="number"
+          onChange={onChange}
+        />
+        <TextField
           label="Name"
           name="name"
           value={row.name ?? ''}
