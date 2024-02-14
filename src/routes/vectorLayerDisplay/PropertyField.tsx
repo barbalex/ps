@@ -32,7 +32,7 @@ export const PropertyField = ({ vectorLayerDisplay }: Props) => {
   const { db } = useElectric()!
   // get table and level from vector_layer.type
   const { results: vectorLayer, error: errorVL }: VLResults = useLiveQuery(
-    db.vector_layers.findUnique({
+    db.vector_layers.liveUnique({
       where: { vector_layer_id },
     }),
   )
@@ -44,7 +44,7 @@ export const PropertyField = ({ vectorLayerDisplay }: Props) => {
   // get fields of table
   const { results: fields = [], error: errorFields }: FieldResults =
     useLiveQuery(
-      db.fields.findMany({
+      db.fields.liveMany({
         where: { table_name: table, level, project_id, deleted: false },
       }),
     )
@@ -54,7 +54,7 @@ export const PropertyField = ({ vectorLayerDisplay }: Props) => {
     results: otherVectorLayerDisplays = [],
     error: errorVLD,
   }: VLDResults = useLiveQuery(
-    db.vector_layer_displays.findMany({
+    db.vector_layer_displays.liveMany({
       where: {
         vector_layer_display_id: {
           not: vector_layer_display_id,
