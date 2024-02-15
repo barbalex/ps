@@ -38,8 +38,6 @@ DROP TABLE IF EXISTS vector_layer_displays CASCADE;
 CREATE TABLE vector_layer_displays(
   vector_layer_display_id uuid PRIMARY KEY DEFAULT NULL,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  property_field text DEFAULT NULL, -- TODO: remove
-  property_value text DEFAULT NULL, -- TODO: remove
   display_property_value text DEFAULT NULL,
   marker_type marker_type_enum DEFAULT NULL, -- 'circle',
   circle_marker_radius integer DEFAULT NULL, -- 8,
@@ -63,15 +61,11 @@ CREATE TABLE vector_layer_displays(
 
 CREATE INDEX ON vector_layer_displays USING btree(vector_layer_id);
 
-CREATE INDEX ON vector_layer_displays USING btree(property_field);
-
-CREATE INDEX ON vector_layer_displays USING btree(property_value);
+CREATE INDEX ON vector_layer_displays USING btree(display_property_value);
 
 COMMENT ON TABLE vector_layer_displays IS 'Goal: manage all map related properties of vector layers including places, actions, checks and observations';
 
-COMMENT ON COLUMN vector_layer_displays.property_field IS 'Enables styling per property value';
-
-COMMENT ON COLUMN vector_layer_displays.property_value IS 'Enables styling per property value';
+COMMENT ON COLUMN vector_layer_displays.display_property_value IS 'Enables styling per property value';
 
 COMMENT ON COLUMN vector_layer_displays.marker_symbol IS 'Name of the symbol used for the marker';
 
