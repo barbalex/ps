@@ -19,6 +19,7 @@ import { DrawControl } from './DrawControl'
 import { TableLayers } from './TableLayers'
 // import { Control } from './Control'
 // import { OwnControls } from './OwnControls'
+import { ErrorBoundary } from '../shared/ErrorBoundary'
 
 const mapContainerStyle = {
   width: '100%',
@@ -73,26 +74,28 @@ export const Map = () => {
   // console.log('hello Map, mapRef:', mapRef)
 
   return (
-    <div style={mapContainerStyle} ref={resizeRef}>
-      <MapContainer
-        className="map-container"
-        style={mapContainerStyle}
-        // maxZoom={22}
-        // minZoom={0}
-        // bounds={bounds}
-        center={position}
-        zoom={13}
-        ref={mapRef}
-      >
-        <LocationMarker />
-        <DrawControl />
-        <TileLayers key={`${tileLayerSorter}/tileLayers`} />
-        <TableLayers />
-        <VectorLayers key={`${vectorLayerSorter}/vectorLayers`} />
-        {/* <Control position="topright" visible={true}>
+    <ErrorBoundary>
+      <div style={mapContainerStyle} ref={resizeRef}>
+        <MapContainer
+          className="map-container"
+          style={mapContainerStyle}
+          // maxZoom={22}
+          // minZoom={0}
+          // bounds={bounds}
+          center={position}
+          zoom={13}
+          ref={mapRef}
+        >
+          <LocationMarker />
+          <DrawControl />
+          <TileLayers key={`${tileLayerSorter}/tileLayers`} />
+          <TableLayers />
+          <VectorLayers key={`${vectorLayerSorter}/vectorLayers`} />
+          {/* <Control position="topright" visible={true}>
           <OwnControls />
         </Control> */}
-      </MapContainer>
-    </div>
+        </MapContainer>
+      </div>
+    </ErrorBoundary>
   )
 }

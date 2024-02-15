@@ -1,4 +1,4 @@
-import { useState, memo } from 'react'
+import { useState, memo, useCallback } from 'react'
 import { GeoJSON, useMapEvent } from 'react-leaflet'
 import * as ReactDOMServer from 'react-dom/server'
 import * as icons from 'react-icons/md'
@@ -15,21 +15,44 @@ import {
   Observations as Observation,
 } from '../../../generated/client'
 import { useElectric } from '../../../ElectricProvider'
+import { ErrorBoundary } from '../MapErrorBoundary'
 
 type Props = {
   data: Place[] | Action[] | Check[] | Observation[]
   layer: VectorLayer
 }
 
+type vldResults = {
+  results: VectorLayerDisplay[]
+}
+
 export const TableLayer = memo(({ data, layer }: Props) => {
   const { db } = useElectric()!
-  const { results: vectorLayerDisplayResults = [] } = useLiveQuery(
+  const { results: vectorLayerDisplays = [] }: vldResults = useLiveQuery(
     db.vector_layer_displays.liveMany({
       where: { vector_layer_id: layer.vector_layer_id },
     }),
   )
+  console.log('hello TableLayer', {
+    data,
+    layer,
+    vectorLayerDisplays,
+  })
   // TODO: adapt to multiple vector_layer_displays
-  const display: VectorLayerDisplay = vectorLayerDisplayResults[0]
+  const display: VectorLayerDisplay = vectorLayerDisplays[0]
+
+  const displayFromFeature = useCallback(
+    (feature) => {
+      const displayToUse = vectorLayerDisplays.find(
+        (vld) =>
+          vld.display_property_value ===
+          feature.properties?.data?.[layer?.display_by_property_field],
+      )
+
+      return displayToUse ?? display
+    },
+    [display, layer?.display_by_property_field, vectorLayerDisplays],
+  )
 
   const map = useMapEvent('zoomend', () => setZoom(map.getZoom()))
   const [zoom, setZoom] = useState(map.getZoom())
@@ -43,60 +66,71 @@ export const TableLayer = memo(({ data, layer }: Props) => {
 
   const mapSize = map.getSize()
 
-  // return null
-
   return (
-    <GeoJSON
-      key={`${data.length ?? 0}/${JSON.stringify(display)}`}
-      data={data}
-      // TODO: style by properties, use a function that receives the feature: https://stackoverflow.com/a/66106512/712005
-      style={vectorLayerDisplayToProperties({ vectorLayerDisplay: display })}
-      pointToLayer={(geoJsonPoint, latlng) => {
-        if (display.marker_type === 'circle') {
-          return L.circleMarker(latlng, {
-            ...display,
-            radius: display.circle_marker_radius ?? 8,
+    <ErrorBoundary layer={layer}>
+      <GeoJSON
+        key={`${data.length ?? 0}/${JSON.stringify(display)}`}
+        data={data}
+        // style by properties, use a function that receives the feature: https://stackoverflow.com/a/66106512/712005
+        style={(feature) => {
+          // need to choose display to pass in
+          const displayToUse = displayFromFeature(feature)
+
+          return vectorLayerDisplayToProperties({
+            vectorLayerDisplay: displayToUse,
           })
-        }
+        }}
+        pointToLayer={(feature, latlng) => {
+          const displayToUse = displayFromFeature(feature)
 
-        const IconComponent = icons[display.marker_symbol]
-
-        return IconComponent
-          ? L.marker(latlng, {
-              icon: L.divIcon({
-                html: ReactDOMServer.renderToString(
-                  <IconComponent
-                    style={{
-                      color: display.color ?? '#cc756b',
-                      fontSize: display.marker_size ?? 16,
-                    }}
-                  />,
-                ),
-              }),
+          if (displayToUse.marker_type === 'circle') {
+            return L.circleMarker(latlng, {
+              ...displayToUse,
+              radius: displayToUse.circle_marker_radius ?? 8,
             })
-          : L.marker(latlng)
-      }}
-      onEachFeature={(feature, _layer) => {
-        const layersData = [
-          {
-            label: feature.label,
-            properties: Object.entries(feature?.properties ?? {}).map(
-              ([key, value]) => {
-                // if value is a date, format it
-                // the date object blows up
-                if (value instanceof Date) {
-                  return [key, value.toLocaleString('de-CH')]
-                }
-                return [key, value]
-              },
-            ),
-          },
-        ]
-        const popupContent = ReactDOMServer.renderToString(
-          <Popup layersData={layersData} mapSize={mapSize} />,
-        )
-        _layer.bindPopup(popupContent)
-      }}
-    />
+          }
+
+          const IconComponent = icons[displayToUse.marker_symbol]
+
+          return IconComponent
+            ? L.marker(latlng, {
+                icon: L.divIcon({
+                  html: ReactDOMServer.renderToString(
+                    <IconComponent
+                      style={{
+                        color: displayToUse.color ?? '#cc756b',
+                        fontSize: displayToUse.marker_size ?? 16,
+                      }}
+                    />,
+                  ),
+                }),
+              })
+            : L.marker(latlng)
+        }}
+        onEachFeature={(feature, _layer) => {
+          if (!feature) return
+
+          const layersData = [
+            {
+              label: feature.label,
+              properties: Object.entries(feature?.properties ?? {}).map(
+                ([key, value]) => {
+                  // if value is a date, format it
+                  // the date object blows up
+                  if (value instanceof Date) {
+                    return [key, value.toLocaleString('de-CH')]
+                  }
+                  return [key, value]
+                },
+              ),
+            },
+          ]
+          const popupContent = ReactDOMServer.renderToString(
+            <Popup layersData={layersData} mapSize={mapSize} />,
+          )
+          _layer.bindPopup(popupContent)
+        }}
+      />
+    </ErrorBoundary>
   )
 })
