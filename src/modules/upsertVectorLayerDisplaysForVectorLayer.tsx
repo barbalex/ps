@@ -87,7 +87,13 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
       where: {
         vector_layer_id,
         display_property_value: { notIn: listValues.map((v) => v.value) },
-        deleted: false,
+      },
+    })
+    // above does not remove null values...
+    await db.vector_layer_displays.deleteMany({
+      where: {
+        vector_layer_id,
+        display_property_value: null,
       },
     })
     // upsert displays in list
