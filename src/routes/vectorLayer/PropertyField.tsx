@@ -9,6 +9,7 @@ import {
 } from '../../generated/client'
 import { DropdownFieldOptions } from '../../components/shared/DropdownFieldOptions'
 import { getValueFromChange } from '../../modules/getValueFromChange'
+import { upsertVectorLayerDisplaysForVectorLayer } from '../../modules/upsertVectorLayerDisplaysForVectorLayer'
 
 type Props = {
   vectorLayer: VectorLayer
@@ -46,26 +47,17 @@ export const PropertyField = memo(({ vectorLayer }: Props) => {
   )
 
   const onChange = useCallback(
-    (e, data) => {
+    async (e, data) => {
       const { name, value } = getValueFromChange(e, data)
-      db.vector_layers.update({
+      await db.vector_layers.update({
         where: { vector_layer_id },
         data: { [name]: value },
       })
-      // TODO: set vector_layer_displays
+      // set vector_layer_displays
+      upsertVectorLayerDisplaysForVectorLayer({ db, vector_layer_id })
     },
-    [db.vector_layers, vector_layer_id],
+    [db, vector_layer_id],
   )
-
-  console.log('hello propertyField', {
-    table,
-    level,
-    errorFields,
-    vectorLayer,
-    project_id,
-    vector_layer_id,
-    fields,
-  })
 
   if (!fields.length) return null
 

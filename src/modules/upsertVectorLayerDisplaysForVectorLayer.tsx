@@ -45,6 +45,11 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     // leave existing VLD unchanged
     if (existingVectorLayerDisplay) return
 
+    // remove all other displays
+    await db.vector_layer_displays.deleteMany({
+      where: { vector_layer_id, deleted: false },
+    })
+
     const newVLD = createVectorLayerDisplay({ vector_layer_id })
     return await db.vector_layer_displays.create({ data: newVLD })
   }
@@ -77,6 +82,15 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     const listValues = await db.list_values.findMany({
       where: { list_id: field.list_id, deleted: false },
     })
+    // remove all displays not in list
+    await db.vector_layer_displays.deleteMany({
+      where: {
+        vector_layer_id,
+        display_property_value: { notIn: listValues.map((v) => v.value) },
+        deleted: false,
+      },
+    })
+    // upsert displays in list
     for (const listValue of listValues) {
       const existingVectorLayerDisplay =
         await db.vector_layer_displays.findFirst({
@@ -107,7 +121,30 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
       where.parent_id = { not: null }
     }
   }
-  const tableRows = await db[table]?.findMany?.({ where })
-  // get data
-  // get unique values of field
+  const tableRows = await db[table]?.findMany?.({
+    where,
+    distinct: [displayByPropertyField],
+  })
+  const distinctValues = tableRows.map((row) => row[displayByPropertyField])
+
+  for (const value of distinctValues) {
+    const existingVectorLayerDisplay = await db.vector_layer_displays.findFirst(
+      {
+        where: {
+          vector_layer_id,
+          display_property_value: value,
+          deleted: false,
+        },
+      },
+    )
+    // leave existing VLD unchanged
+    if (existingVectorLayerDisplay) return
+
+    const newVLD = createVectorLayerDisplay({
+      vector_layer_id,
+      display_property_value: value,
+    })
+    await db.vector_layer_displays.create({ data: newVLD })
+  }
+  return
 }
