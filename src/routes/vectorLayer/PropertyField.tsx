@@ -55,8 +55,8 @@ export const PropertyField = ({ vectorLayer }: Props) => {
   return (
     <DropdownFieldOptions
       label="Property Field"
-      name="property_field"
-      value={vectorLayer.property_field}
+      name="display_by_property_field"
+      value={vectorLayer.display_by_property_field}
       onChange={(e, data) => {
         const { name, value } = getValueFromChange(e, data)
         db.vector_layers.update({

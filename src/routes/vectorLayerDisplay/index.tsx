@@ -76,7 +76,7 @@ export const Component = () => {
   }
 
   // TODO:
-  // - add property_field and property_value
+  // - add property_value
   // - enable choosing field and values from a list of available fields and values:
   //   - from tables
   //   - from wfs
