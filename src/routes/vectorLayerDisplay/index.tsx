@@ -30,17 +30,20 @@ const lineJoinValues = ['arcs', 'bevel', 'miter', 'miter-clip', 'round']
 const fillRuleValues = ['nonzero', 'evenodd']
 const markerTypeValues = ['circle', 'marker']
 
+type vldResults = {
+  results: VectorLayerDisplay
+  error: Error
+}
+
 export const Component = () => {
   const { vector_layer_display_id } = useParams()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const { db } = useElectric()
-  const { results } = useLiveQuery(
+  const { results: row }: vldResults = useLiveQuery(
     db.vector_layer_displays.liveUnique({ where: { vector_layer_display_id } }),
   )
-
-  const row: VectorLayerDisplay = results
 
   const onChange: InputProps['onChange'] = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>, data) => {
