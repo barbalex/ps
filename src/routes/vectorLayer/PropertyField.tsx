@@ -39,19 +39,16 @@ export const PropertyField = ({ vectorLayer }: Props) => {
   console.log('hello propertyField', {
     table,
     level,
-    errorVL,
     errorFields,
     vectorLayer,
-    vectorLayerDisplay: vectorLayer,
     project_id,
     vector_layer_id,
-    propertyFields,
     fields,
   })
 
-  if (!propertyFields.length) return null
+  if (!fields.length) return null
 
-  // show a dropdown listing propertyFields
+  // show a dropdown listing fields
   return (
     <DropdownFieldOptions
       label="Property Field"
@@ -64,9 +61,9 @@ export const PropertyField = ({ vectorLayer }: Props) => {
           data: { [name]: value },
         })
       }}
-      options={propertyFields.map((field) => ({
+      options={fields.map((field) => ({
         label: field.field_label ?? field.name,
-        value: field.field_id,
+        value: field.field_label ?? field.name,
       }))}
     />
   )
