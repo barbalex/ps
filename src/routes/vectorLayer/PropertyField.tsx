@@ -76,6 +76,7 @@ export const PropertyField = memo(({ vectorLayer }: Props) => {
       value={vectorLayer.display_by_property_field}
       onChange={onChange}
       options={options}
+      validationMessage="For every unique value of this field, a map display will be generated."
     />
   )
 })
