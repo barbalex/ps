@@ -3,7 +3,10 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 // import type { InputProps } from '@fluentui/react-components'
 
-import { Vector_layer_displays as VectorLayerDisplay } from '../../../generated/client'
+import {
+  Vector_layer_displays as VectorLayerDisplay,
+  Vector_layers as VectorLayer,
+} from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { TextField } from '../../components/shared/TextField'
@@ -35,8 +38,13 @@ type vldResults = {
   error: Error
 }
 
+type vlResults = {
+  results: VectorLayer
+  error: Error
+}
+
 export const Component = () => {
-  const { vector_layer_display_id } = useParams()
+  const { vector_layer_id, vector_layer_display_id } = useParams()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -44,6 +52,16 @@ export const Component = () => {
   const { results: row }: vldResults = useLiveQuery(
     db.vector_layer_displays.liveUnique({ where: { vector_layer_display_id } }),
   )
+  const { results: vectorLayer }: vlResults = useLiveQuery(
+    db.vector_layers.liveUnique({ where: { vector_layer_id } }),
+  )
+  const displayByPropertyValue = vectorLayer?.display_by_property_value
+
+  console.log('hello vectorLayerDisplay', {
+    row,
+    vectorLayer,
+    displayByPropertyValue,
+  })
 
   const onChange: InputProps['onChange'] = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>, data) => {
@@ -77,7 +95,9 @@ export const Component = () => {
             name="vector_layer_display_id"
             value={row.vector_layer_display_id}
           />
-          <PropertyField vectorLayerDisplay={row} />
+          {!!displayByPropertyValue && (
+            <PropertyField vectorLayerDisplay={row} />
+          )}
           <RadioGroupField
             name="marker_type"
             label="Punkt-Typ"
