@@ -17,10 +17,7 @@ export const DropdownFieldOptions = memo(
       ref,
     ) => {
       const onChangeOption = useCallback(
-        (e, data) => {
-          console.log('hello DropdownFieldOptions, onChangeOption', { e, data })
-          onChange({ target: { name, value: data.optionValue } })
-        },
+        (e, data) => onChange({ target: { name, value: data.optionValue } }),
         [name, onChange],
       )
 
