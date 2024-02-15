@@ -1,3 +1,4 @@
+import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 
@@ -18,7 +19,7 @@ type FieldResults = {
   error: Error
 }
 
-export const PropertyField = ({ vectorLayer }: Props) => {
+export const PropertyField = memo(({ vectorLayer }: Props) => {
   const { project_id, vector_layer_id } = useParams()
 
   // get table and level from vector_layer.type
@@ -35,6 +36,26 @@ export const PropertyField = ({ vectorLayer }: Props) => {
         where: { table_name: table, level, project_id, deleted: false },
       }),
     )
+  const options = useMemo(
+    () =>
+      fields.map((field) => ({
+        label: field.field_label ?? field.name,
+        value: field.field_label ?? field.name,
+      })),
+    [fields],
+  )
+
+  const onChange = useCallback(
+    (e, data) => {
+      const { name, value } = getValueFromChange(e, data)
+      db.vector_layers.update({
+        where: { vector_layer_id },
+        data: { [name]: value },
+      })
+      // TODO: set vector_layer_displays
+    },
+    [db.vector_layers, vector_layer_id],
+  )
 
   console.log('hello propertyField', {
     table,
@@ -48,23 +69,13 @@ export const PropertyField = ({ vectorLayer }: Props) => {
 
   if (!fields.length) return null
 
-  // show a dropdown listing fields
   return (
     <DropdownFieldOptions
-      label="Property Field"
+      label="Display by"
       name="display_by_property_field"
       value={vectorLayer.display_by_property_field}
-      onChange={(e, data) => {
-        const { name, value } = getValueFromChange(e, data)
-        db.vector_layers.update({
-          where: { vector_layer_id },
-          data: { [name]: value },
-        })
-      }}
-      options={fields.map((field) => ({
-        label: field.field_label ?? field.name,
-        value: field.field_label ?? field.name,
-      }))}
+      onChange={onChange}
+      options={options}
     />
   )
-}
+})
