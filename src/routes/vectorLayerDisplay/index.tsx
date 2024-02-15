@@ -124,7 +124,7 @@ export const Component = () => {
             </>
           )}
           <ColorPicker
-            id={`${row.id}/color`}
+            key={`${row.vector_layer_display_id}/color`}
             label="Linien und Punkte: Farbe"
             onChange={onChange}
             color={row.color}
