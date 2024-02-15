@@ -506,8 +506,12 @@ export const createVectorLayer = ({
   deleted: false,
 })
 
-export const createVectorLayerDisplay = ({ vector_layer_id = null }) => ({
+export const createVectorLayerDisplay = ({
+  vector_layer_id = null,
+  display_property_value = null,
+}) => ({
   vector_layer_display_id: uuidv7(),
+  display_property_value,
   vector_layer_id,
   marker_type: 'circle',
   circle_marker_radius: 8,

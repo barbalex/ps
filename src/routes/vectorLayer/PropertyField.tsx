@@ -40,7 +40,7 @@ export const PropertyField = memo(({ vectorLayer }: Props) => {
     () =>
       fields.map((field) => ({
         label: field.field_label ?? field.name,
-        value: field.field_label ?? field.name,
+        value: field.name,
       })),
     [fields],
   )

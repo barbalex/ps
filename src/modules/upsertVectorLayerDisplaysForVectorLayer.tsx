@@ -1,4 +1,5 @@
 import { Vector_layers as VectorLayer, Electric } from '../generated/client'
+import { createVectorLayerDisplay } from './createRows'
 
 type Props = {
   vector_layer_id: string
@@ -31,9 +32,27 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   const level = parseInt(vectorLayer.type.slice(-1))
   const displayByPropertyField = vectorLayer?.display_by_property_field ?? false
 
-  // get fields of table
-  const fields = await db.fields.findMany({
+  if (!displayByPropertyField) {
+    // create single display
+    const existingVectorLayerDisplay = await db.vector_layer_displays.findFirst(
+      {
+        where: {
+          vector_layer_id,
+          deleted: false,
+        },
+      },
+    )
+    // leave existing VLD unchanged
+    if (existingVectorLayerDisplay) return
+
+    const newVLD = createVectorLayerDisplay({ vector_layer_id })
+    return await db.vector_layer_displays.create({ data: newVLD })
+  }
+
+  // get field of displayByPropertyField
+  const field = await db.fields.findFirst({
     where: {
+      name: displayByPropertyField,
       table_name: table,
       level,
       project_id: vectorLayer.project_id,
@@ -41,30 +60,54 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     },
   })
 
-  // get vector_layer_displays of vector_layer
-  const vectorLayerDisplays = await db.vector_layer_displays.findMany({
-    where: { vector_layer_id, deleted: false },
-  })
-
-  // upsert vector_layer_displays
-  for (const field of fields) {
-    const vectorLayerDisplay = vectorLayerDisplays.find(
-      (vld) => vld.field_name === field.name,
+  if (!field) {
+    throw new Error(
+      `field ${displayByPropertyField} not found in table ${table} level ${level}`,
     )
-    const value = vectorLayerDisplay?.value ?? field.field_label ?? field.name
-    await db.vector_layer_displays.upsert({
-      create: {
-        vector_layer_display_id: `${vector_layer_id}/${field.name}`,
-        vector_layer_id,
-        field_name: field.name,
-        value,
-      },
-      update: {
-        vector_layer_id,
-        field_name: field.name,
-        value,
-      },
-      where: { vector_layer_display_id: `${vector_layer_id}/${field.name}` },
-    })
   }
+
+  // if this field has a list_id, get the list
+  if (field?.list_id) {
+    const list = await db.lists.findUnique({
+      where: { list_id: field.list_id },
+    })
+    if (!list) {
+      throw new Error(`list_id ${field.list_id} not found`)
+    }
+    const listValues = await db.list_values.findMany({
+      where: { list_id: field.list_id, deleted: false },
+    })
+    for (const listValue of listValues) {
+      const existingVectorLayerDisplay =
+        await db.vector_layer_displays.findFirst({
+          where: {
+            vector_layer_id,
+            display_property_value: listValue.value,
+            deleted: false,
+          },
+        })
+      // leave existing VLD unchanged
+      if (existingVectorLayerDisplay) return
+
+      const newVLD = createVectorLayerDisplay({
+        vector_layer_id,
+        display_property_value: listValue.value,
+      })
+      await db.vector_layer_displays.create({ data: newVLD })
+    }
+    return
+  }
+
+  // if this field has no list_id, get the unique values of this field in the table
+  const where = { project_id: vectorLayer.project_id, deleted: false }
+  if (table === 'places') {
+    if (level === 1) {
+      where.parent_id = null
+    } else {
+      where.parent_id = { not: null }
+    }
+  }
+  const tableRows = await db[table]?.findMany?.({ where })
+  // get data
+  // get unique values of field
 }
