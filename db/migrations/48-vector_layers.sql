@@ -16,7 +16,6 @@ CREATE TABLE vector_layers(
   label text DEFAULT NULL,
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   type vector_layer_type_enum DEFAULT NULL, -- 'wfs',
-  display_by_property_value boolean DEFAULT NULL,
   display_by_property_field text DEFAULT NULL,
   sort smallint DEFAULT NULL,
   active boolean DEFAULT NULL,

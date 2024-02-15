@@ -18,7 +18,6 @@ import { MarkerSymbolPicker } from './MarkerSymbolPicker'
 import { Header } from './Header'
 import { ErrorBoundary } from '../../components/shared/ErrorBoundary'
 import { ColorPicker } from '../../components/shared/ColorPicker'
-import { PropertyField } from './PropertyField'
 
 import '../../form.css'
 
@@ -55,12 +54,10 @@ export const Component = () => {
   const { results: vectorLayer }: vlResults = useLiveQuery(
     db.vector_layers.liveUnique({ where: { vector_layer_id } }),
   )
-  const displayByPropertyValue = vectorLayer?.display_by_property_value
 
   console.log('hello vectorLayerDisplay', {
     row,
     vectorLayer,
-    displayByPropertyValue,
   })
 
   const onChange: InputProps['onChange'] = useCallback(
@@ -95,9 +92,6 @@ export const Component = () => {
             name="vector_layer_display_id"
             value={row.vector_layer_display_id}
           />
-          {!!displayByPropertyValue && (
-            <PropertyField vectorLayerDisplay={row} />
-          )}
           <RadioGroupField
             name="marker_type"
             label="Punkt-Typ"

@@ -38,8 +38,9 @@ DROP TABLE IF EXISTS vector_layer_displays CASCADE;
 CREATE TABLE vector_layer_displays(
   vector_layer_display_id uuid PRIMARY KEY DEFAULT NULL,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  property_field text DEFAULT NULL,
-  property_value text DEFAULT NULL,
+  property_field text DEFAULT NULL, -- TODO: remove
+  property_value text DEFAULT NULL, -- TODO: remove
+  display_property_value text DEFAULT NULL,
   marker_type marker_type_enum DEFAULT NULL, -- 'circle',
   circle_marker_radius integer DEFAULT NULL, -- 8,
   marker_symbol text DEFAULT NULL,

@@ -13,6 +13,7 @@ import { DropdownFieldFromLayerOptions } from '../../components/shared/DropdownF
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { Header } from './Header'
 import { Url } from './Url'
+import { PropertyField } from './PropertyField'
 
 import '../../form.css'
 
@@ -96,13 +97,8 @@ export const Component = () => {
         {((row?.type === 'wfs' && row?.wfs_url && row.wfs_layer) ||
           !['wfs', 'upload'].includes(row.type)) && (
           <>
-            <SwitchField
-              label="Display by property value"
-              name="display_by_property_value"
-              value={row.display_by_property_value}
-              onChange={onChange}
-              validationMessage="If checked, the layer will be displayed based on the values of a property."
-            />
+            {/* TODO: add display by property field */}
+            <PropertyField vectorLayer={row} />
             <TextField
               label="Sort"
               name="sort"
