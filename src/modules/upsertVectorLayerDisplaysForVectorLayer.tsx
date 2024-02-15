@@ -15,11 +15,20 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   if (!vectorLayer) {
     throw new Error(`vector_layer_id ${vector_layer_id} not found`)
   }
+  if (!vectorLayer.type) {
+    throw new Error(`vector_layer_id ${vector_layer_id} has no type`)
+  }
+  // TODO: do this for wfs and upload
+  if ([`wfs`, `upload`].includes(vectorLayer.type)) {
+    throw new Error(
+      `creating vector_layer_displays for wfs and upload not implemented`,
+    )
+  }
   // get table and level from vector_layer.type
   // table is vectorLayer.type without last character
-  const table = vectorLayer?.type?.slice(0, -1) ?? null
+  const table = vectorLayer.type.slice(0, -1)
   // level is last character of vectorLayer.type
-  const level = parseInt(vectorLayer?.type?.slice(-1)) ?? null
+  const level = parseInt(vectorLayer.type.slice(-1))
   const displayByPropertyField = vectorLayer?.display_by_property_field ?? false
 
   // get fields of table
