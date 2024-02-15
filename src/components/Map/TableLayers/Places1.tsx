@@ -31,6 +31,8 @@ export const Places1 = ({ layer }: Props) => {
     const geometry = { ...p.geometry }
     geometry.features.forEach((f) => {
       f.properties = placeProperties ?? {}
+      // only add data if it exists
+      if (Object.keys(data)?.length) f.properties.data = data
     })
     return p.geometry
   })
