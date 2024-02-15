@@ -31,7 +31,7 @@ export const PropertyField = memo(({ vectorLayer }: Props) => {
 
   const { db } = useElectric()!
   // get fields of table
-  const { results: fields = [], error: errorFields }: FieldResults =
+  const { results: fields = [] }: FieldResults =
     useLiveQuery(
       db.fields.liveMany({
         where: { table_name: table, level, project_id, deleted: false },
