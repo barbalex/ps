@@ -8,20 +8,22 @@ import { memo, useCallback, useEffect, useState, forwardRef } from 'react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 
-import { useElectric } from '../../ElectricProvider'
-import { getValueFromChange } from '../../modules/getValueFromChange'
-import { TextField } from './TextField'
+import { useElectric } from '../../../ElectricProvider'
+import { getValueFromChange } from '../../../modules/getValueFromChange'
+import { TextField } from '../TextField'
 // import { TimeFieldMasked } from './TimeFieldMasked'
-import { TextArea } from './TextArea'
-import { DropdownField } from './DropdownField'
-import { DropdownFieldFromList } from './DropdownFieldFromList'
-import { RadioGroupFromList } from './RadioGroupFromList'
-import { DateField } from './DateField'
+import { TextArea } from '../TextArea'
+import { DropdownField } from '../DropdownField'
+import { DropdownFieldFromList } from '../DropdownFieldFromList'
+import { RadioGroupFromList } from '../RadioGroupFromList'
+import { DateField } from '../DateField'
 // import { TimeField } from './TimeField'
-import { TimeFields } from './TimeFields'
-import { DateTimeField } from './DateTimeField'
-import { accountTables } from '../../routes/field/Form'
+import { TimeFields } from '../TimeFields'
+import { DateTimeField } from '../DateTimeField'
+import { accountTables } from '../../../routes/field/Form'
 
+// TODO: if editing a field, show the field form
+// and focus the name field on first render?
 export const Jsonb = memo(
   forwardRef(
     (
