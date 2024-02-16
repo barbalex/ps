@@ -20,7 +20,7 @@ import { DateField } from './DateField'
 // import { TimeField } from './TimeField'
 import { TimeFields } from './TimeFields'
 import { DateTimeField } from './DateTimeField'
-import { accountTables } from '../../routes/field'
+import { accountTables } from '../../routes/field/Form'
 
 export const Jsonb = memo(
   forwardRef(
