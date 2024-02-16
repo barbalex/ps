@@ -33,31 +33,28 @@ export const TableLayer = memo(({ data, layer }: Props) => {
       where: { vector_layer_id: layer.vector_layer_id },
     }),
   )
-  console.log('hello TableLayer', {
-    data,
-    layer,
-    vectorLayerDisplays,
-  })
-  // TODO: adapt to multiple vector_layer_displays
-  const display: VectorLayerDisplay = vectorLayerDisplays[0]
+  // adapt to multiple vector_layer_displays
+  const firstDisplay: VectorLayerDisplay = vectorLayerDisplays[0]
 
   const displayFromFeature = useCallback(
     (feature) => {
+      // display_by_property_field is _not_ under the data property
+      // as passing the data object to feature.properties lead to errors
       const displayToUse = vectorLayerDisplays.find(
         (vld) =>
           vld.display_property_value ===
-          feature.properties?.data?.[layer?.display_by_property_field],
+          feature.properties?.[layer?.display_by_property_field],
       )
 
-      return displayToUse ?? display
+      return displayToUse ?? firstDisplay
     },
-    [display, layer?.display_by_property_field, vectorLayerDisplays],
+    [firstDisplay, layer?.display_by_property_field, vectorLayerDisplays],
   )
 
   const map = useMapEvent('zoomend', () => setZoom(map.getZoom()))
   const [zoom, setZoom] = useState(map.getZoom())
 
-  if (!display) return null
+  if (!firstDisplay) return null
   if (!layer) return null
   // include only if zoom between min_zoom and max_zoom
   if (layer.min_zoom !== undefined && zoom < layer.min_zoom) return null
@@ -69,7 +66,7 @@ export const TableLayer = memo(({ data, layer }: Props) => {
   return (
     <ErrorBoundary layer={layer}>
       <GeoJSON
-        key={`${data.length ?? 0}/${JSON.stringify(display)}`}
+        key={`${data.length ?? 0}/${JSON.stringify(firstDisplay)}`}
         data={data}
         // style by properties, use a function that receives the feature: https://stackoverflow.com/a/66106512/712005
         style={(feature) => {
