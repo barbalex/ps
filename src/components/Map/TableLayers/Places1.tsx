@@ -31,9 +31,13 @@ export const Places1 = ({ layer }: Props) => {
     const geometry = { ...p.geometry }
     geometry.features.forEach((f) => {
       f.properties = placeProperties ?? {}
-      // only add data if it exists
-      if (Object.keys(data)?.length) f.properties.data = { ...data }
+      // data is _not_ passed under the data property
+      // as passing the data object to feature.properties lead to errors
+      for (const [key, value] of Object.entries(data)) {
+        f.properties[key] = value
+      }
     })
+
     return p.geometry
   })
   // console.log('hello Places1, data:', data)
