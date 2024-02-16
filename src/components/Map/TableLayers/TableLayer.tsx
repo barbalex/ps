@@ -6,7 +6,6 @@ import { useLiveQuery } from 'electric-sql/react'
 
 import { vectorLayerDisplayToProperties } from '../../../modules/vectorLayerDisplayToProperties'
 import { Popup } from '../Popup'
-import { PlaceForm } from '../../../routes/place/Form'
 import {
   Vector_layer_displays as VectorLayerDisplay,
   vector_layers as VectorLayer,
