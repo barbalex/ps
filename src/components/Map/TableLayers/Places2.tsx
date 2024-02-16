@@ -32,9 +32,18 @@ export const Places2 = ({ layer }: Props) => {
     // somehow there is a data property with empty object as value???
     // TODO: make properties more readable for user
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { geometry, bbox, data, ...placeProperties } = p
+    const { geometry, bbox, data, ...properties } = p
     geometry.features.forEach((f) => {
-      f.properties = placeProperties ?? {}
+      f.properties = properties ?? {}
+      // data is _not_ passed under the data property due to errors created
+      for (const [key, value] of Object.entries(data)) {
+        // ensure that properties are not overwritten
+        // but also make sure if key is used for styling, it is not changed...
+        if (key in properties) {
+          f.properties[`_${key}`] = properties[key]
+        }
+        f.properties[key] = value
+      }
     })
 
     return geometry

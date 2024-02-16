@@ -30,15 +30,15 @@ export const Places1 = ({ layer }: Props) => {
     // TODO: make properties more readable for user
     // Idea: use iframe to open form, see TableLayer
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { geometry, bbox, data, ...placeProperties } = p
+    const { geometry, bbox, data, ...properties } = p
     geometry.features.forEach((f) => {
-      f.properties = placeProperties ?? {}
+      f.properties = properties ?? {}
       // data is _not_ passed under the data property due to errors created
       for (const [key, value] of Object.entries(data)) {
         // ensure that properties are not overwritten
         // but also make sure if key is used for styling, it is not changed...
-        if (key in placeProperties) {
-          f.properties[`_${key}`] = placeProperties[key]
+        if (key in properties) {
+          f.properties[`_${key}`] = properties[key]
         }
         f.properties[key] = value
       }
