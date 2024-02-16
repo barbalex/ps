@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import type { InputProps } from '@fluentui/react-components'
+import { useParams } from 'react-router-dom'
 
 import { Fields as Field } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
@@ -37,13 +38,10 @@ const widgetsNeedingList = [
 ] // options-few, options-many
 
 // seperate from the route because it is also used inside other forms
-export const FieldForm = ({
-  project_id,
-  field_id,
-  autoFocusRef,
-  isInForm = true,
-}) => {
-  const { db } = useElectric()
+export const FieldForm = ({ field_id, autoFocusRef, isInForm = false }) => {
+  const { project_id } = useParams()
+
+  const { db } = useElectric()!
   const { results } = useLiveQuery(
     db.fields.liveUnique({ where: { field_id } }),
   )
@@ -75,7 +73,7 @@ export const FieldForm = ({
 
   return (
     <div className="form-container">
-      {isInForm && (
+      {!isInForm && (
         <>
           <TextFieldInactive label="ID" name="field_id" value={row.field_id} />
           <DropdownFieldSimpleOptions

@@ -7,7 +7,7 @@ import { FieldForm } from './Form'
 import '../../form.css'
 
 export const Component = () => {
-  const { project_id, field_id } = useParams()
+  const { field_id } = useParams()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -15,7 +15,6 @@ export const Component = () => {
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
       <FieldForm
-        project_id={project_id}
         field_id={field_id}
         autoFocusRef={autoFocusRef}
       />

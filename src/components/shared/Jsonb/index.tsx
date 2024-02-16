@@ -5,7 +5,7 @@
 // 3. loop through fields
 // 4. build input depending on field properties
 import { memo, useCallback, useEffect, useState, forwardRef } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 
 import { useElectric } from '../../../ElectricProvider'
@@ -21,6 +21,7 @@ import { DateField } from '../DateField'
 import { TimeFields } from '../TimeFields'
 import { DateTimeField } from '../DateTimeField'
 import { accountTables } from '../../../routes/field/Form'
+import { FieldForm } from '../../../routes/field/Form'
 
 // TODO: if editing a field, show the field form
 // and focus the name field on first render?
@@ -39,6 +40,9 @@ export const Jsonb = memo(
     ) => {
       const isAccountTable = accountTables.includes(table)
       const { project_id } = useParams()
+      const [searchParams] = useSearchParams()
+      const editingField = searchParams.get('editingField')
+
       const { db } = useElectric()!
 
       const [fetchedData, setFetchedData] = useState({
