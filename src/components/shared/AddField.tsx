@@ -12,7 +12,7 @@ import { createField } from '../../modules/createRows'
 // 4. which is:
 //    - a title and the necessary part of the field form
 //    - a search param in the url: editingField=fieldId
-export const AddFields = ({ tableName, level }) => {
+export const AddField = ({ tableName, level }) => {
   const { project_id } = useParams()
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchParams, setSearchParams] = useSearchParams()

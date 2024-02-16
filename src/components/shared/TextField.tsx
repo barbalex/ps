@@ -11,6 +11,7 @@ export const TextField = memo(
       autoFocus,
       value,
       disabled = false,
+      button,
     } = props
 
     // console.log('hello TextField, props:', props)
@@ -29,6 +30,7 @@ export const TextField = memo(
           ref={ref}
           disabled={disabled}
         />
+        {!!button && button}
       </Field>
     )
   }),

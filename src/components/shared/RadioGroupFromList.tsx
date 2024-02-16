@@ -4,6 +4,12 @@ import { useLiveQuery } from 'electric-sql/react'
 
 import { useElectric } from '../../ElectricProvider'
 
+const rowStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+}
+
 export const RadioGroupFromList = memo(
   ({
     name,
@@ -13,6 +19,7 @@ export const RadioGroupFromList = memo(
     onChange,
     validationMessage,
     validationState,
+    button,
   }) => {
     const { db } = useElectric()
     const { results: listValues = [] } = useLiveQuery(
@@ -25,17 +32,22 @@ export const RadioGroupFromList = memo(
         validationMessage={validationMessage}
         validationState={validationState}
       >
-        <RadioGroup
-          layout="horizontal"
-          name={name}
-          value={rowValue}
-          onChange={onChange}
-          appearance="underline"
-        >
-          {listValues.map(({ value: listValue }) => {
-            return <Radio key={listValue} label={listValue} value={listValue} />
-          })}
-        </RadioGroup>
+        <div style={rowStyle}>
+          <RadioGroup
+            layout="horizontal"
+            name={name}
+            value={rowValue}
+            onChange={onChange}
+            appearance="underline"
+          >
+            {listValues.map(({ value: listValue }) => {
+              return (
+                <Radio key={listValue} label={listValue} value={listValue} />
+              )
+            })}
+          </RadioGroup>
+          {!!button && button}
+        </div>
       </Field>
     )
   },

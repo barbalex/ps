@@ -22,6 +22,8 @@ import { TimeFields } from '../TimeFields'
 import { DateTimeField } from '../DateTimeField'
 import { accountTables } from '../../../routes/field/Form'
 import { FieldForm } from '../../../routes/field/Form'
+import { EditField } from '../EditField'
+import { Edit } from 'leaflet'
 
 // TODO: if editing a field, show the field form
 // and focus the name field on first render?
@@ -109,6 +111,15 @@ export const Jsonb = memo(
 
       const widgetsFromDataFieldsDefined = fetchedData.fields.map(
         (field, index) => {
+          if (editingField === field.field_id) {
+            return (
+              <FieldForm
+                key={field.field_id}
+                field_id={field.field_id}
+                isInForm={true}
+              />
+            )
+          }
           const { name, field_label } = field
           const widgetType = fetchedData.widgetTypes.find(
             (widgetType) => widgetType.widget_type_id === field.widget_type_id,
@@ -134,6 +145,7 @@ export const Jsonb = memo(
                 onChange={onChange}
                 autoFocus={autoFocus && index === 0}
                 ref={ref}
+                button={<EditField field_id={field.field_id} />}
               />
             )
           }
@@ -150,6 +162,7 @@ export const Jsonb = memo(
                   onChange={onChange}
                   autoFocus={autoFocus && index === 0}
                   ref={ref}
+                  button={<EditField field_id={field.field_id} />}
                 />
               )
             case 'textarea':
@@ -197,6 +210,7 @@ export const Jsonb = memo(
                   value={value}
                   onChange={onChange}
                   autoFocus={autoFocus && index === 0}
+                  button={<EditField field_id={field.field_id} />}
                 />
               )
             case 'datepicker':
@@ -244,6 +258,7 @@ export const Jsonb = memo(
                   onChange={onChange}
                   autoFocus={autoFocus && index === 0}
                   ref={ref}
+                  button={<EditField field_id={field.field_id} />}
                 />
               )
           }
