@@ -145,7 +145,7 @@ export const FieldForm = ({
         name="obsolete"
         value={row.obsolete ?? false}
         onChange={onChange}
-        validationMessage="If obsolete, existing data is shown but, this field will not be available for new records."
+        validationMessage="If obsolete, existing data is shown but this field will not be available for new records."
       />
     </div>
   )
