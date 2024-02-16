@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 
 import { Breadcrumbs } from './Breadcrumbs'
 import { Navs } from './Navs'
@@ -8,6 +9,9 @@ import { Main } from './Main'
 import { Notifications } from '../Notifications'
 
 export const Layout = () => {
+  const [searchParams] = useSearchParams()
+  const onlyForm = searchParams.get('onlyForm')
+
   const { db } = useElectric()!
   useEffect(() => {
     const syncItems = async () => {
@@ -25,6 +29,11 @@ export const Layout = () => {
   }, [db.users])
 
   // console.log('Layout rendering')
+
+  // this is used to show forms inside popups in the map
+  if (onlyForm) {
+    return <Main />
+  }
 
   return (
     <>
