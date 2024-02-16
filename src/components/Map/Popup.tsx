@@ -19,9 +19,23 @@ const valueStyle = {
   overflowWrap: 'anywhere',
 }
 
-export const Popup = ({ layersData, mapSize = {} }) => {
-  // console.log('Popup', { mapSize, x: mapSize.x, y: mapSize.y })
-
+export const Popup = ({
+  layersData,
+  mapSize = {},
+  // src
+}) => {
+  // if (src) {
+  //   return (
+  //     <iframe
+  //       id="inlineFrameExample"
+  //       title="Inline Frame Example"
+  //       width={mapSize.y - 40}
+  //       height={mapSize.x - 60}
+  //       src={src}
+  //       style={{ border: 'none' }}
+  //     ></iframe>
+  //   )
+  // }
   return (
     <div
       style={{

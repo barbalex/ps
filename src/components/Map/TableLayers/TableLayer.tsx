@@ -6,6 +6,7 @@ import { useLiveQuery } from 'electric-sql/react'
 
 import { vectorLayerDisplayToProperties } from '../../../modules/vectorLayerDisplayToProperties'
 import { Popup } from '../Popup'
+import { PlaceForm } from '../../../routes/place/Form'
 import {
   Vector_layer_displays as VectorLayerDisplay,
   vector_layers as VectorLayer,
@@ -20,13 +21,14 @@ import { ErrorBoundary } from '../MapErrorBoundary'
 type Props = {
   data: Place[] | Action[] | Check[] | Observation[]
   layer: VectorLayer
+  form?: React.FC
 }
 
 type vldResults = {
   results: VectorLayerDisplay[]
 }
 
-export const TableLayer = memo(({ data, layer }: Props) => {
+export const TableLayer = memo(({ data, layer, form }: Props) => {
   const { db } = useElectric()!
   const { results: vectorLayerDisplays = [] }: vldResults = useLiveQuery(
     db.vector_layer_displays.liveMany({
@@ -122,8 +124,19 @@ export const TableLayer = memo(({ data, layer }: Props) => {
               ),
             },
           ]
+          console.log('hello TableLayer, onEachFeature, form:', form)
+          // TODO: idea
+          // open form in iframe
+          // but: electric-sql syncing errors...
+          // const src =
+          //   'http://localhost:5173/projects/018cfcf7-6424-7000-a100-851c5cc2c878/subprojects/018cfd27-ee92-7000-b678-e75497d6c60e/places/018dacec-eef1-7000-8801-353c1a84c65b?onlyForm=true'
+          // this would definitely work better with qwick
           const popupContent = ReactDOMServer.renderToString(
-            <Popup layersData={layersData} mapSize={mapSize} />,
+            <Popup
+              layersData={layersData}
+              mapSize={mapSize}
+              // src={src}
+            />,
           )
           _layer.bindPopup(popupContent)
         }}

@@ -6,6 +6,7 @@ import {
   Places as Place,
 } from '../../../generated/client'
 import { TableLayer } from './TableLayer'
+import { PlaceForm } from '../../../routes/place/Form'
 
 type Props = {
   layer: VectorLayer
@@ -51,5 +52,5 @@ export const Places1 = ({ layer }: Props) => {
   if (!data?.length) return null
   if (!layer) return null
 
-  return <TableLayer data={data} layer={layer} />
+  return <TableLayer data={data} layer={layer} form={<PlaceForm />} />
 }

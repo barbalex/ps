@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import { Allotment } from 'allotment'
 
@@ -18,6 +18,9 @@ const containerStyle = {
 }
 
 export const Main = () => {
+  const [searchParams] = useSearchParams()
+  const onlyForm = searchParams.get('onlyForm')
+
   const { db } = useElectric()!
   const { results } = useLiveQuery(
     db.ui_options.liveUnique({ where: { user_id } }),
@@ -25,6 +28,9 @@ export const Main = () => {
   const tabs = useMemo(() => results?.tabs ?? [], [results?.tabs])
 
   // console.log('hello Main', { tabs })
+  if (onlyForm) {
+    return <Outlet />
+  }
 
   // Allotment prevents the map from drawing correctly
   // UNLESS: an empty div is rendered instead of a missing Map...???
