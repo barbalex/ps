@@ -11,14 +11,17 @@ type Props = {
   layer: VectorLayer
 }
 
+type placesResults = {
+  results: Place[]
+}
+
 export const Places1 = ({ layer }: Props) => {
   const { db } = useElectric()!
 
   // TODO: query only inside current map bounds using places.bbox
-  const { results = [] } = useLiveQuery(
+  const { results: places = [] }: placesResults = useLiveQuery(
     db.places.liveMany({ where: { parent_id: null, geometry: { not: null } } }),
   )
-  const places: Place[] = results
 
   // a geometry is built as FeatureCollection Object: https://datatracker.ietf.org/doc/html/rfc7946#section-3.3
   // properties need to go into every feature
@@ -27,7 +30,7 @@ export const Places1 = ({ layer }: Props) => {
     // TODO: make properties more readable for user
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { geometry: geom, bbox, data, ...placeProperties } = p
-    const geometry = { ...p.geometry }
+    const geometry = { ...geom }
     geometry.features.forEach((f) => {
       f.properties = placeProperties ?? {}
       // data is _not_ passed under the data property due to errors created
