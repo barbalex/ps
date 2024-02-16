@@ -47,12 +47,12 @@ export const Checks1 = ({ layer }: Props) => {
     // somehow there is a data property with empty object as value???
     // TODO: make properties more readable for user
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { geometry: geom, bbox, data, ...otherProperties } = p
-    const geometry = { ...p.geometry }
+    const { geometry, bbox, data, ...otherProperties } = p
     geometry.features.forEach((f) => {
       f.properties = otherProperties ?? {}
     })
-    return p.geometry
+
+    return geometry
   })
   // console.log('hello Checks1, data:', data)
 

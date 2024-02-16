@@ -30,8 +30,7 @@ export const Places1 = ({ layer }: Props) => {
     // TODO: make properties more readable for user
     // Idea: use iframe to open form, see TableLayer
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { geometry: geom, bbox, data, ...placeProperties } = p
-    const geometry = { ...geom }
+    const { geometry, bbox, data, ...placeProperties } = p
     geometry.features.forEach((f) => {
       f.properties = placeProperties ?? {}
       // data is _not_ passed under the data property due to errors created
@@ -45,7 +44,7 @@ export const Places1 = ({ layer }: Props) => {
       }
     })
 
-    return p.geometry
+    return geometry
   })
 
   if (!data?.length) return null
