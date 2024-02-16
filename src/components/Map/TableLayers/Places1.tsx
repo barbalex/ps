@@ -24,16 +24,19 @@ export const Places1 = ({ layer }: Props) => {
   // properties need to go into every feature
   const data = places.map((p) => {
     // add p's properties to all features:
-    // somehow there is a data property with empty object as value???
     // TODO: make properties more readable for user
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { geometry: geom, bbox, data, ...placeProperties } = p
     const geometry = { ...p.geometry }
     geometry.features.forEach((f) => {
       f.properties = placeProperties ?? {}
-      // data is _not_ passed under the data property
-      // as passing the data object to feature.properties lead to errors
+      // data is _not_ passed under the data property due to errors created
       for (const [key, value] of Object.entries(data)) {
+        // ensure that properties are not overwritten
+        // but also make sure if key is used for styling, it is not changed...
+        if (key in placeProperties) {
+          f.properties[`_${key}`] = placeProperties[key]
+        }
         f.properties[key] = value
       }
     })
