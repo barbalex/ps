@@ -28,7 +28,7 @@ type vldResults = {
   results: VectorLayerDisplay[]
 }
 
-export const TableLayer = memo(({ data, layer, form }: Props) => {
+export const TableLayer = memo(({ data, layer }: Props) => {
   const { db } = useElectric()!
   const { results: vectorLayerDisplays = [] }: vldResults = useLiveQuery(
     db.vector_layer_displays.liveMany({
@@ -124,7 +124,6 @@ export const TableLayer = memo(({ data, layer, form }: Props) => {
               ),
             },
           ]
-          console.log('hello TableLayer, onEachFeature, form:', form)
           // TODO: idea
           // open form in iframe
           // but: electric-sql syncing errors...
