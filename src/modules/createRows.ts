@@ -158,9 +158,14 @@ export const createObservationSource = async ({ db, project_id }) => {
   }
 }
 
-export const createField = ({ project_id = null, level = null }) => ({
+export const createField = ({
+  project_id = null,
+  table_name = null,
+  level = null,
+}) => ({
   field_id: uuidv7(),
   project_id,
+  table_name,
   level,
   field_type_id: '018ca19e-7a23-7bf4-8523-ff41e3b60807',
   widget_type_id: '018ca1a0-f187-7fdf-955b-4eaadaa92553',
