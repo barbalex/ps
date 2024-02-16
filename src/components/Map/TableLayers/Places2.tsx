@@ -11,16 +11,19 @@ type Props = {
   layer: VectorLayer
 }
 
+type placesResults = {
+  results: Place[]
+}
+
 export const Places2 = ({ layer }: Props) => {
   const { db } = useElectric()!
 
   // TODO: query only inside current map bounds using places.bbox
-  const { results = [] } = useLiveQuery(
+  const { results: places = [] }: placesResults = useLiveQuery(
     db.places.liveMany({
       where: { parent_id: { not: null }, geometry: { not: null } },
     }),
   )
-  const places: Place[] = results
 
   // a geometry is built as FeatureCollection Object: https://datatracker.ietf.org/doc/html/rfc7946#section-3.3
   // properties need to go into every feature

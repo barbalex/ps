@@ -28,6 +28,7 @@ export const Places1 = ({ layer }: Props) => {
   const data = places.map((p) => {
     // add p's properties to all features:
     // TODO: make properties more readable for user
+    // Idea: use iframe to open form, see TableLayer
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { geometry: geom, bbox, data, ...placeProperties } = p
     const geometry = { ...geom }
@@ -46,7 +47,6 @@ export const Places1 = ({ layer }: Props) => {
 
     return p.geometry
   })
-  // console.log('hello Places1, data:', data)
 
   if (!data?.length) return null
   if (!layer) return null

@@ -12,17 +12,24 @@ type Props = {
   layer: VectorLayer
 }
 
+type placesResults = {
+  results: Place[]
+}
+
+type checksResults = {
+  results: Check[]
+}
+
 export const Checks1 = ({ layer }: Props) => {
   const { db } = useElectric()!
 
   // need to query places1 because filtering by places in checks query does not work
-  const { results: places1Results = [] } = useLiveQuery(
+  const { results: places1 = [] }: placesResults = useLiveQuery(
     db.places.liveMany({ where: { parent_id: null } }),
   )
-  const places1: Place[] = places1Results
 
   // TODO: query only inside current map bounds using places.bbox
-  const { results = [] } = useLiveQuery(
+  const { results: checks = [] }: checksResults = useLiveQuery(
     db.checks.liveMany({
       where: {
         // places: { parent_id: null }, // this returns no results
@@ -31,7 +38,6 @@ export const Checks1 = ({ layer }: Props) => {
       },
     }),
   )
-  const checks: Check[] = results
   // console.log('hello Checks1, checks:', checks)
 
   // a geometry is built as FeatureCollection Object: https://datatracker.ietf.org/doc/html/rfc7946#section-3.3
