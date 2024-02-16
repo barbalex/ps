@@ -45,7 +45,7 @@ export const PlaceForm = ({ autoFocusRef }) => {
     return <div>Loading...</div>
   }
 
-  console.log('hello place form, row:', row)
+  // console.log('hello place form, row:', row)
 
   return (
     <div className="form-container">
