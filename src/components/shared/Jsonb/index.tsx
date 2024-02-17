@@ -22,8 +22,8 @@ import { TimeFields } from '../TimeFields'
 import { DateTimeField } from '../DateTimeField'
 import { accountTables } from '../../../routes/field/Form'
 import { FieldForm } from '../../../routes/field/Form'
+import { FieldFormInForm } from '../FieldFormInForm'
 import { EditField } from '../EditField'
-import { Edit } from 'leaflet'
 
 // TODO: if editing a field, show the field form
 // and focus the name field on first render?
@@ -113,11 +113,7 @@ export const Jsonb = memo(
         (field, index) => {
           if (editingField === field.field_id) {
             return (
-              <FieldForm
-                key={field.field_id}
-                field_id={field.field_id}
-                isInForm={true}
-              />
+              <FieldFormInForm key={field.field_id} field_id={field.field_id} />
             )
           }
           const { name, field_label } = field
