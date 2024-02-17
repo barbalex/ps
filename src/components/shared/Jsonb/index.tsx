@@ -23,6 +23,7 @@ import { DateTimeField } from '../DateTimeField'
 import { accountTables } from '../../../routes/field/Form'
 import { FieldFormInForm } from '../FieldFormInForm'
 import { EditField } from '../EditField'
+import { AddField } from '../AddField'
 
 // TODO: if editing a field, show the field form
 // and focus the name field on first render?
@@ -40,7 +41,7 @@ export const Jsonb = memo(
       ref,
     ) => {
       const isAccountTable = accountTables.includes(table)
-      const { project_id } = useParams()
+      const { project_id, place_id2 } = useParams()
       const [searchParams] = useSearchParams()
       const editingField = searchParams.get('editingField')
 
@@ -58,7 +59,7 @@ export const Jsonb = memo(
               table_name: table,
               project_id: isAccountTable ? null : project_id,
               deleted: false,
-              name: { not: null },
+              // name: { not: null },
             },
           })
           const fieldTypes = await db.field_types.findMany({
@@ -284,7 +285,11 @@ export const Jsonb = memo(
         },
       )
 
-      return [widgetsFromDataFieldsDefined, fieldsFromDataKeysNotDefined]
+      return [
+        widgetsFromDataFieldsDefined,
+        fieldsFromDataKeysNotDefined,
+        <AddField tableName={table} level={place_id2 ? 2 : 1} />,
+      ]
     },
   ),
 )

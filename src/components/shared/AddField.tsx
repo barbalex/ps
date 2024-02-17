@@ -21,7 +21,7 @@ export const AddField = ({ tableName, level }) => {
 
   const addRow = useCallback(async () => {
     const newField = createField({ project_id, table_name: tableName, level })
-    await db[tableName].create({ data: newField })
+    await db.fields.create({ data: newField })
     setSearchParams({ editingField: newField.field_id })
   }, [db, level, project_id, setSearchParams, tableName])
 
