@@ -113,7 +113,7 @@ export const Jsonb = memo(
         (field, index) => {
           if (editingField === field.field_id) {
             return (
-              <FieldFormInForm key={field.field_id} field_id={field.field_id} />
+              <FieldFormInForm key={field.field_id} field={field} />
             )
           }
           const { name, field_label } = field
