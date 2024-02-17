@@ -5,7 +5,7 @@ const containerStyle = {
   paddingLeft: '-10px',
   display: 'flex',
   flexDirection: 'column',
-  backgroundColor: 'rgba(103, 216, 101, 0.1)',
+  backgroundColor: 'rgba(103, 216, 101, 0.05)',
 }
 
 const titleRowStyle = {
@@ -13,7 +13,7 @@ const titleRowStyle = {
   flexWrap: 'nowrap',
   justifyContent: 'space-between',
   padding: '5px 10px',
-  backgroundColor: 'rgba(103, 216, 101, 0.2)',
+  backgroundColor: 'rgba(103, 216, 101, 0.15)',
 }
 const titleStyle = {
   margin: 0,
