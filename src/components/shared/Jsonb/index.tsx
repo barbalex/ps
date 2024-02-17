@@ -21,7 +21,6 @@ import { DateField } from '../DateField'
 import { TimeFields } from '../TimeFields'
 import { DateTimeField } from '../DateTimeField'
 import { accountTables } from '../../../routes/field/Form'
-import { FieldForm } from '../../../routes/field/Form'
 import { FieldFormInForm } from '../FieldFormInForm'
 import { EditField } from '../EditField'
 
@@ -112,9 +111,7 @@ export const Jsonb = memo(
       const widgetsFromDataFieldsDefined = fetchedData.fields.map(
         (field, index) => {
           if (editingField === field.field_id) {
-            return (
-              <FieldFormInForm key={field.field_id} field={field} />
-            )
+            return <FieldFormInForm key={field.field_id} field={field} />
           }
           const { name, field_label } = field
           const widgetType = fetchedData.widgetTypes.find(
