@@ -59,7 +59,6 @@ export const Jsonb = memo(
               table_name: table,
               project_id: isAccountTable ? null : project_id,
               deleted: false,
-              // name: { not: null },
             },
           })
           const fieldTypes = await db.field_types.findMany({

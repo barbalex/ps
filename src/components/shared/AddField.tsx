@@ -5,6 +5,12 @@ import { useParams, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
 import { createField } from '../../modules/createRows'
+
+const buttonStyle = {
+  minHeight: 32,
+  alignSelf: 'flex-start',
+}
+
 // idea:
 // 1. A button to add fields
 // 2. On Click, add a new field
@@ -26,7 +32,13 @@ export const AddField = ({ tableName, level }) => {
   }, [db, level, project_id, setSearchParams, tableName])
 
   return (
-    <Button size="medium" icon={<FaPlus />} onClick={addRow} title="Add Field">
+    <Button
+      size="medium"
+      icon={<FaPlus />}
+      onClick={addRow}
+      title="Add Field"
+      style={buttonStyle}
+    >
       Add Field
     </Button>
   )

@@ -2,6 +2,13 @@ import { memo, forwardRef } from 'react'
 import { Input, Field } from '@fluentui/react-components'
 import type { InputProps } from '@fluentui/react-components'
 
+const rowStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  columnGap: '10px',
+}
+
 export const TextField = memo(
   forwardRef((props: InputProps, ref) => {
     const {
@@ -22,15 +29,18 @@ export const TextField = memo(
         validationMessage={validationMessage}
         validationState={validationState}
       >
-        <Input
-          {...props}
-          value={value ?? ''}
-          appearance="underline"
-          autoFocus={autoFocus}
-          ref={ref}
-          disabled={disabled}
-        />
-        {!!button && button}
+        <div style={rowStyle}>
+          <Input
+            {...props}
+            value={value ?? ''}
+            appearance="underline"
+            autoFocus={autoFocus}
+            ref={ref}
+            disabled={disabled}
+            style={{ flexGrow: 1 }}
+          />
+          {!!button && button}
+        </div>
       </Field>
     )
   }),
