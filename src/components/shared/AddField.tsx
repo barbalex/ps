@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { Button } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
-import { useParams, useSearchParams, useNavigate } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
 import { createField } from '../../modules/createRows'
@@ -22,16 +22,14 @@ export const AddField = ({ tableName, level }) => {
   const { project_id } = useParams()
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchParams, setSearchParams] = useSearchParams()
-  const navigate = useNavigate()
 
   const { db } = useElectric()!
 
   const addRow = useCallback(async () => {
     const newField = createField({ project_id, table_name: tableName, level })
     await db.fields.create({ data: newField })
-    // setSearchParams({ editingField: newField.field_id })
-    navigate(`.?editingField=${newField.field_id}`)
-  }, [db.fields, level, navigate, project_id, tableName])
+    setSearchParams({ editingField: newField.field_id })
+  }, [db.fields, level, project_id, setSearchParams, tableName])
 
   return (
     <Button

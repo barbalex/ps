@@ -52,7 +52,6 @@ export const FieldFormInForm = memo(({ field }: Props) => {
   const { db } = useElectric()!
 
   const onClickDelete = useCallback(async () => {
-    // TODO: confirm
     db.fields.delete({ where: { field_id: field.field_id } })
     searchParams.delete('editingField')
     setSearchParams(searchParams)
