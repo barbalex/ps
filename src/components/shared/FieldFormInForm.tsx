@@ -62,11 +62,13 @@ export const FieldFormInForm = memo(({ field }: Props) => {
     setSearchParams(searchParams)
   }, [searchParams, setSearchParams])
 
+  const fieldLabel = field.field_label ?? field.name ?? ''
+
   return (
     <div style={containerStyle}>
       <div style={titleRowStyle}>
         <h2 style={titleStyle}>{`Editing Field ${
-          field.field_label ?? field.name ?? ''
+          fieldLabel ? `'${fieldLabel}'` : ''
         }`}</h2>
         <div style={menuStyle}>
           <Menu>
