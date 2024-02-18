@@ -3,40 +3,41 @@ import { Button } from '@fluentui/react-button'
 import { MdLayers, MdLayersClear } from 'react-icons/md'
 import { TbMapCog } from 'react-icons/tb'
 import { useLiveQuery } from 'electric-sql/react'
+import { useParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
 import { user_id } from '../SqlInitializer'
-import { Ui_options as UiOption } from '../../generated/client'
+import {
+  Ui_options as UiOption,
+  Vector_layers as VectorLayer,
+} from '../../generated/client'
 
-export const LayerMenu = memo(({ table, level, placeNamePlural }) => {
-  const fieldName =
-    table === 'places1'
-      ? 'show_place1_layer'
-      : table === 'places2'
-      ? 'show_place2_layer'
-      : table === 'checks'
-      ? 'show_check_layer'
-      : table === 'actions'
-      ? 'show_action_layer'
-      : null
+type Props = {
+  table: string
+  level: integer
+  placeNamePlural?: string
+}
+type vlResultsType = {
+  results: VectorLayer
+}
+
+export const LayerMenu = memo(({ table, level, placeNamePlural }: Props) => {
+  const { project_id } = useParams()
 
   const { db } = useElectric()!
-  const { results } = useLiveQuery(
-    db.ui_options.liveUnique({ where: { user_id } }),
+  const { results: vectorLayer }: vlResultsType = useLiveQuery(
+    db.vector_layers.liveFirst({
+      where: { project_id, type: `${table}${level}`, deleted: false },
+    }),
   )
-  const uiOption: UiOption = results
 
-  const showLayer = false // TODO:
+  const showLayer = vectorLayer?.active ?? false // TODO:
   const onClickShowLayer = useCallback(() => {
     db.vector_layers.update({
-      where: { project_id, type: table },
+      where: { vector_layer_id: vectorLayer?.vector_layer_id },
       data: { active: !showLayer },
     })
-    db.ui_options.update({
-      where: { user_id },
-      data: { [fieldName]: !showLayer },
-    })
-  }, [db.ui_options, fieldName, showLayer])
+  }, [db.vector_layers, showLayer, vectorLayer?.vector_layer_id])
 
   // TODO: implement onClickMapSettings
   // They should get their own url
