@@ -296,7 +296,7 @@ export const Jsonb = memo(
       return [
         widgetsFromDataFieldsDefined,
         fieldsFromDataKeysNotDefined,
-        <AddField tableName={table} level={place_id2 ? 2 : 1} />,
+        <AddField key="addField" tableName={table} level={place_id2 ? 2 : 1} />,
       ]
     },
   ),
