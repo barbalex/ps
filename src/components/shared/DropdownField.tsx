@@ -86,7 +86,7 @@ export const DropdownField = memo(
               appearance="underline"
               autoFocus={autoFocus}
               ref={ref}
-              root={ddStyle}
+              style={ddStyle}
             >
               {options.map((params) => {
                 const { text, value } = params

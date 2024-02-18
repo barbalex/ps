@@ -10,6 +10,9 @@ const rowStyle = {
   justifyContent: 'space-between',
   columnGap: '10px',
 }
+const ddStyle = {
+  flexGrow: 1,
+}
 
 export const DropdownFieldFromList = memo(
   ({
@@ -50,6 +53,7 @@ export const DropdownFieldFromList = memo(
               onChange({ target: { name, value: data.optionValue } })
             }
             appearance="underline"
+            style={ddStyle}
           >
             {options.map((option) => {
               return <Option key={option}>{option}</Option>

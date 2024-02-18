@@ -8,6 +8,9 @@ const rowStyle = {
   justifyContent: 'space-between',
   columnGap: '10px',
 }
+const dfStyle = {
+  flexGrow: 1,
+}
 
 export const DateField = memo(
   ({
@@ -42,6 +45,7 @@ export const DateField = memo(
             }
             autoFocus={autoFocus}
             appearance="underline"
+            style={dfStyle}
           />
           {!!button && button}
         </div>
