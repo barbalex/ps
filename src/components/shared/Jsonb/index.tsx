@@ -175,6 +175,7 @@ export const Jsonb = memo(
                 type={type ?? 'text'}
                 onChange={onChange}
                 autoFocus={autoFocus && index === 0}
+                button={<EditField field_id={field.field_id} />}
               />
             )
           case 'dropdown':

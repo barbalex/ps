@@ -10,6 +10,9 @@ const rowStyle = {
   justifyContent: 'space-between',
   columnGap: '10px',
 }
+const ddStyle = {
+  flexGrow: '1 !important',
+}
 
 export const DropdownField = memo(
   forwardRef(
@@ -65,20 +68,6 @@ export const DropdownField = memo(
         [options?.length, table, validationMessageIn],
       )
 
-      // console.log('DropdownField', {
-      //   name,
-      //   label,
-      //   table,
-      //   value,
-      //   options,
-      //   selectedOptions,
-      //   validationState,
-      //   validationMessage,
-      //   results,
-      //   validationMessageIn,
-      //   validationStateIn,
-      // })
-
       return (
         <Field
           label={label ?? '(no label provided)'}
@@ -96,6 +85,7 @@ export const DropdownField = memo(
               appearance="underline"
               autoFocus={autoFocus}
               ref={ref}
+              style={ddStyle}
             >
               {options.map((params) => {
                 const { text, value } = params
