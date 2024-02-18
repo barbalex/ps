@@ -4,6 +4,13 @@ import { useLiveQuery } from 'electric-sql/react'
 
 import { useElectric } from '../../ElectricProvider'
 
+const rowStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  columnGap: '10px',
+}
+
 export const DropdownFieldFromList = memo(
   ({
     name,
@@ -13,6 +20,7 @@ export const DropdownFieldFromList = memo(
     onChange,
     validationMessage,
     validationState,
+    button,
   }) => {
     const { db } = useElectric()
     const { results: listItems = [] } = useLiveQuery(
@@ -33,19 +41,22 @@ export const DropdownFieldFromList = memo(
         validationMessage={validationMessage}
         validationState={validationState}
       >
-        <Dropdown
-          name={name}
-          value={selectedOptions?.[0] ?? ''}
-          selectedOptions={selectedOptions}
-          onOptionSelect={(e, data) =>
-            onChange({ target: { name, value: data.optionValue } })
-          }
-          appearance="underline"
-        >
-          {options.map((option) => {
-            return <Option key={option}>{option}</Option>
-          })}
-        </Dropdown>
+        <div style={rowStyle}>
+          <Dropdown
+            name={name}
+            value={selectedOptions?.[0] ?? ''}
+            selectedOptions={selectedOptions}
+            onOptionSelect={(e, data) =>
+              onChange({ target: { name, value: data.optionValue } })
+            }
+            appearance="underline"
+          >
+            {options.map((option) => {
+              return <Option key={option}>{option}</Option>
+            })}
+          </Dropdown>
+          {!!button && button}
+        </div>
       </Field>
     )
   },

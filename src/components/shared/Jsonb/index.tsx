@@ -186,6 +186,7 @@ export const Jsonb = memo(
                 onChange={onChange}
                 autoFocus={autoFocus && index === 0}
                 ref={ref}
+                button={<EditField field_id={field.field_id} />}
               />
             )
           case 'options-many':
@@ -198,6 +199,7 @@ export const Jsonb = memo(
                 value={value}
                 onChange={onChange}
                 autoFocus={autoFocus && index === 0}
+                button={<EditField field_id={field.field_id} />}
               />
             )
           case 'options-few':

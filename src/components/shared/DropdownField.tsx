@@ -4,6 +4,13 @@ import { useLiveQuery } from 'electric-sql/react'
 
 import { useElectric } from '../../ElectricProvider'
 
+const rowStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  columnGap: '10px',
+}
+
 export const DropdownField = memo(
   forwardRef(
     (
@@ -19,6 +26,7 @@ export const DropdownField = memo(
         autoFocus,
         validationMessage: validationMessageIn,
         validationState: validationStateIn,
+        button,
       },
       ref,
     ) => {
@@ -77,27 +85,30 @@ export const DropdownField = memo(
           validationMessage={validationMessage}
           validationState={validationState}
         >
-          <Dropdown
-            name={name}
-            value={selectedOptions?.[0]?.text ?? ''}
-            selectedOptions={selectedOptions}
-            onOptionSelect={(e, data) =>
-              onChange({ target: { name, value: data.optionValue } })
-            }
-            appearance="underline"
-            autoFocus={autoFocus}
-            ref={ref}
-          >
-            {options.map((params) => {
-              const { text, value } = params
+          <div style={rowStyle}>
+            <Dropdown
+              name={name}
+              value={selectedOptions?.[0]?.text ?? ''}
+              selectedOptions={selectedOptions}
+              onOptionSelect={(e, data) =>
+                onChange({ target: { name, value: data.optionValue } })
+              }
+              appearance="underline"
+              autoFocus={autoFocus}
+              ref={ref}
+            >
+              {options.map((params) => {
+                const { text, value } = params
 
-              return (
-                <Option key={value} value={value}>
-                  {text}
-                </Option>
-              )
-            })}
-          </Dropdown>
+                return (
+                  <Option key={value} value={value}>
+                    {text}
+                  </Option>
+                )
+              })}
+            </Dropdown>
+            {!!button && button}
+          </div>
         </Field>
       )
     },
