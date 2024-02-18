@@ -25,7 +25,7 @@
 .field-group-horizontal {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: flex-end;
   column-gap: 10px;
   label {
     color: grey;
