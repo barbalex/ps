@@ -88,6 +88,7 @@ export const Component = () => {
         menus={
           <LayerMenu
             table={place_id ? 'places2' : 'places1'}
+            level={place_id ? 2 : 1}
             placeNamePlural={placeNamePlural}
           />
         }

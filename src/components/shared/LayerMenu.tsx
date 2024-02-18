@@ -8,7 +8,7 @@ import { useElectric } from '../../ElectricProvider'
 import { user_id } from '../SqlInitializer'
 import { Ui_options as UiOption } from '../../generated/client'
 
-export const LayerMenu = memo(({ table, placeNamePlural }) => {
+export const LayerMenu = memo(({ table, level, placeNamePlural }) => {
   const fieldName =
     table === 'places1'
       ? 'show_place1_layer'
@@ -26,8 +26,12 @@ export const LayerMenu = memo(({ table, placeNamePlural }) => {
   )
   const uiOption: UiOption = results
 
-  const showLayer = uiOption?.[fieldName] ?? false
+  const showLayer = false // TODO:
   const onClickShowLayer = useCallback(() => {
+    db.vector_layers.update({
+      where: { project_id, type: table },
+      data: { active: !showLayer },
+    })
     db.ui_options.update({
       where: { user_id },
       data: { [fieldName]: !showLayer },
