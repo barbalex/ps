@@ -1,8 +1,15 @@
 import { memo, useState, useCallback, useMemo } from 'react'
 import { Input, Field } from '@fluentui/react-components'
 
+const rowStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  columnGap: '10px',
+}
+
 export const TimeFields = memo(
-  ({ label, name, value = '', autoFocus, onChange }) => {
+  ({ label, name, value = '', autoFocus, onChange, button }) => {
     const valArray = (value ?? '').split(':')
     const [hours, setHours] = useState(valArray[0] ?? '')
     const [minutes, setMinutes] = useState(valArray[1] ?? '')
@@ -41,37 +48,40 @@ export const TimeFields = memo(
 
     return (
       <Field label={label ?? '(no label provided)'}>
-        <div className="field-group-horizontal">
-          <Field
-            label="hours"
-            validationMessage={hoursValidationMessage}
-            validationState={hoursValidationState}
-          >
-            <Input
-              value={hours}
-              type="number"
-              min={0}
-              max={23}
-              onChange={onChangeHours}
-              appearance="underline"
-              autoFocus={autoFocus}
-            />
-          </Field>
-          <Field
-            label="minutes"
-            validationMessage={minutesValidationMessage}
-            validationState={minutesValidationState}
-          >
-            <Input
-              value={minutes}
-              type="number"
-              min={0}
-              max={59}
-              onChange={onChangeMinutes}
-              appearance="underline"
-              autoFocus={autoFocus}
-            />
-          </Field>
+        <div style={rowStyle}>
+          <div className="field-group-horizontal">
+            <Field
+              label="hours"
+              validationMessage={hoursValidationMessage}
+              validationState={hoursValidationState}
+            >
+              <Input
+                value={hours}
+                type="number"
+                min={0}
+                max={23}
+                onChange={onChangeHours}
+                appearance="underline"
+                autoFocus={autoFocus}
+              />
+            </Field>
+            <Field
+              label="minutes"
+              validationMessage={minutesValidationMessage}
+              validationState={minutesValidationState}
+            >
+              <Input
+                value={minutes}
+                type="number"
+                min={0}
+                max={59}
+                onChange={onChangeMinutes}
+                appearance="underline"
+                autoFocus={autoFocus}
+              />
+            </Field>
+          </div>
+          {button && button}
         </div>
       </Field>
     )
