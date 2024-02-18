@@ -10,8 +10,9 @@ const rowStyle = {
   justifyContent: 'space-between',
   columnGap: '10px',
 }
+// TODO: not working
 const ddStyle = {
-  flexGrow: '1 !important',
+  flexGrow: 1,
 }
 
 export const DropdownField = memo(
@@ -85,7 +86,7 @@ export const DropdownField = memo(
               appearance="underline"
               autoFocus={autoFocus}
               ref={ref}
-              style={ddStyle}
+              root={ddStyle}
             >
               {options.map((params) => {
                 const { text, value } = params
