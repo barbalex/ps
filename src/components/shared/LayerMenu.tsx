@@ -6,11 +6,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
-import { user_id } from '../SqlInitializer'
-import {
-  Ui_options as UiOption,
-  Vector_layers as VectorLayer,
-} from '../../generated/client'
+import { Vector_layers as VectorLayer } from '../../generated/client'
 
 type Props = {
   table: string
@@ -31,7 +27,7 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }: Props) => {
     }),
   )
 
-  const showLayer = vectorLayer?.active ?? false // TODO:
+  const showLayer = vectorLayer?.active ?? false
   const onClickShowLayer = useCallback(() => {
     db.vector_layers.update({
       where: { vector_layer_id: vectorLayer?.vector_layer_id },
