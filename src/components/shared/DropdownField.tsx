@@ -10,7 +10,6 @@ const rowStyle = {
   justifyContent: 'space-between',
   columnGap: '10px',
 }
-// TODO: not working
 const ddStyle = {
   flexGrow: 1,
 }

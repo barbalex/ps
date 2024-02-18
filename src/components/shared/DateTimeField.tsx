@@ -2,8 +2,15 @@ import { memo, useState, useCallback, useMemo } from 'react'
 import { Input, Field } from '@fluentui/react-components'
 import { DatePicker } from '@fluentui/react-datepicker-compat'
 
+const rowStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  columnGap: '10px',
+}
+
 export const DateTimeField = memo(
-  ({ label, name, value = '', autoFocus, onChange }) => {
+  ({ label, name, value = '', autoFocus, onChange, button }) => {
     const [years, setYears] = useState(value?.getFullYear?.() ?? '')
     const [months, setMonths] = useState(value?.getMonth?.() ?? '')
     const [days, setDays] = useState(value?.getDate?.() ?? '')
@@ -94,59 +101,62 @@ export const DateTimeField = memo(
 
     return (
       <Field label={label ?? '(no label provided)'}>
-        <div className="field-group-horizontal">
-          <Field
-            label="Date"
-            validationMessage={dateValidationMessage}
-            validationState={dateValidationState}
-          >
-            <DatePicker
-              placeholder="Select a date or click to write"
-              name={name}
-              value={
-                years && months && days ? new Date(years, months, days) : null
-              }
-              onChange={onChangeDate}
-              onSelectDate={(date) =>
-                onChangeDate({ target: { name, value: date } })
-              }
-              firstDayOfWeek={1}
-              allowTextInput
-              formatDate={(date) => date?.toLocaleDateString?.('de-CH') ?? ''}
-              autoFocus={autoFocus}
-              appearance="underline"
-            />
-          </Field>
-          <Field
-            label="Hours"
-            validationMessage={hoursValidationMessage}
-            validationState={hoursValidationState}
-          >
-            <Input
-              value={hours}
-              type="number"
-              min={0}
-              max={23}
-              onChange={onChangeHours}
-              appearance="underline"
-              autoFocus={autoFocus}
-            />
-          </Field>
-          <Field
-            label="Minutes"
-            validationMessage={minutesValidationMessage}
-            validationState={minutesValidationState}
-          >
-            <Input
-              value={minutes}
-              type="number"
-              min={0}
-              max={59}
-              onChange={onChangeMinutes}
-              appearance="underline"
-              autoFocus={autoFocus}
-            />
-          </Field>
+        <div style={rowStyle}>
+          <div className="field-group-horizontal">
+            <Field
+              label="Date"
+              validationMessage={dateValidationMessage}
+              validationState={dateValidationState}
+            >
+              <DatePicker
+                placeholder="Select a date or click to write"
+                name={name}
+                value={
+                  years && months && days ? new Date(years, months, days) : null
+                }
+                onChange={onChangeDate}
+                onSelectDate={(date) =>
+                  onChangeDate({ target: { name, value: date } })
+                }
+                firstDayOfWeek={1}
+                allowTextInput
+                formatDate={(date) => date?.toLocaleDateString?.('de-CH') ?? ''}
+                autoFocus={autoFocus}
+                appearance="underline"
+              />
+            </Field>
+            <Field
+              label="Hours"
+              validationMessage={hoursValidationMessage}
+              validationState={hoursValidationState}
+            >
+              <Input
+                value={hours}
+                type="number"
+                min={0}
+                max={23}
+                onChange={onChangeHours}
+                appearance="underline"
+                autoFocus={autoFocus}
+              />
+            </Field>
+            <Field
+              label="Minutes"
+              validationMessage={minutesValidationMessage}
+              validationState={minutesValidationState}
+            >
+              <Input
+                value={minutes}
+                type="number"
+                min={0}
+                max={59}
+                onChange={onChangeMinutes}
+                appearance="underline"
+                autoFocus={autoFocus}
+              />
+            </Field>
+          </div>
+          {!!button && button}
         </div>
       </Field>
     )
