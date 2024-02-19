@@ -4,6 +4,7 @@ import { TbZoomScan } from 'react-icons/tb'
 import { Button } from '@fluentui/react-button'
 import bbox from '@turf/bbox'
 import buffer from '@turf/buffer'
+import { uuidv7 } from '@kripod/uuidv7'
 
 import { createAction } from '../../modules/createRows'
 import { useElectric } from '../../ElectricProvider'
@@ -70,13 +71,23 @@ export const Header = memo(({ autoFocusRef }) => {
     navigate(`${baseUrl}/${previous.action_id}`)
   }, [action_id, baseUrl, db.actions, navigate, place_id, place_id2])
 
+  const alertNoGeometry = useCallback(async () => {
+    await db.notifications.create({
+      data: {
+        notification_id: uuidv7(),
+        title: 'No geometry',
+        body: `To zoom to an action, create it's geometry first`,
+        intent: 'error',
+      },
+    })
+  }, [db.notifications])
+
   const onClickZoomTo = useCallback(async () => {
     const action: Action = await db.actions.findUnique({
       where: { action_id },
     })
     const geometry = action?.geometry
-    // TODO: tell user
-    if (!geometry) return
+    if (!geometry) return alertNoGeometry()
 
     // 1. show map if not happening
     const uiOption: UiOption = await db.ui_options.findUnique({
@@ -94,11 +105,12 @@ export const Header = memo(({ autoFocusRef }) => {
     const buffered = buffer(geometry, 0.05)
     const newBbox = bbox(buffered)
     const bounds = boundsFromBbox(newBbox)
+    if (!bounds) return alertNoGeometry()
     db.ui_options.update({
       where: { user_id },
       data: { map_bounds: bounds },
     })
-  }, [action_id, db.actions, db.ui_options])
+  }, [action_id, alertNoGeometry, db.actions, db.ui_options])
 
   return (
     <FormHeader
