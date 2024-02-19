@@ -116,6 +116,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
       where: { place_id: place_id2 ?? place_id },
     })
     const geometry = place?.geometry
+    // TODO: tell user
     if (!geometry) return
 
     // 1. show map if not happening

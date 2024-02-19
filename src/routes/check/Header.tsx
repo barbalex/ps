@@ -1,9 +1,16 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { TbZoomScan } from 'react-icons/tb'
+import { Button } from '@fluentui/react-button'
+import bbox from '@turf/bbox'
+import buffer from '@turf/buffer'
 
 import { createCheck } from '../../modules/createRows'
 import { useElectric } from '../../ElectricProvider'
 import { FormHeader } from '../../components/FormHeader'
+import { boundsFromBbox } from '../../modules/boundsFromBbox'
+import { user_id } from '../../components/SqlInitializer'
+import { Checks as Check, Ui_options as UiOption } from '../../generated/client'
 
 export const Header = memo(({ autoFocusRef }) => {
   const { project_id, subproject_id, place_id, place_id2, check_id } =
@@ -62,6 +69,36 @@ export const Header = memo(({ autoFocusRef }) => {
     navigate(`${baseUrl}/${previous.check_id}`)
   }, [baseUrl, check_id, db.checks, navigate, place_id, place_id2])
 
+  const onClickZoomTo = useCallback(async () => {
+    const check: Check = await db.checks.findUnique({
+      where: { check_id },
+    })
+    const geometry = check?.geometry
+    // TODO: tell user
+    if (!geometry) return
+
+    // 1. show map if not happening
+    const uiOption: UiOption = await db.ui_options.findUnique({
+      where: { user_id },
+    })
+    const tabs = uiOption?.tabs ?? []
+    if (!tabs.includes('map')) {
+      await db.ui_options.update({
+        where: { user_id },
+        data: { tabs: [...tabs, 'map'] },
+      })
+    }
+
+    // 2. zoom to place
+    const buffered = buffer(geometry, 0.05)
+    const newBbox = bbox(buffered)
+    const bounds = boundsFromBbox(newBbox)
+    db.ui_options.update({
+      where: { user_id },
+      data: { map_bounds: bounds },
+    })
+  }, [check_id, db.checks, db.ui_options])
+
   return (
     <FormHeader
       title="Check"
@@ -70,6 +107,14 @@ export const Header = memo(({ autoFocusRef }) => {
       toNext={toNext}
       toPrevious={toPrevious}
       tableName="check"
+      siblings={
+        <Button
+          size="medium"
+          icon={<TbZoomScan />}
+          onClick={onClickZoomTo}
+          title={`Zoom to check in map`}
+        />
+      }
     />
   )
 })
