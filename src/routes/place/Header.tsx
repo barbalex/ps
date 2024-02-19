@@ -5,6 +5,7 @@ import { TbZoomScan } from 'react-icons/tb'
 import { Button } from '@fluentui/react-button'
 import bbox from '@turf/bbox'
 import buffer from '@turf/buffer'
+import { uuidv7 } from '@kripod/uuidv7'
 
 import {
   createPlace,
@@ -111,13 +112,25 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     navigate(`${baseUrl}/${previous.place_id}`)
   }, [baseUrl, db.places, navigate, place_id, place_id2, subproject_id])
 
+  const alertNoGeometry = useCallback(async () => {
+    await db.notifications.create({
+      data: {
+        notification_id: uuidv7(),
+        title: 'No geometry',
+        body: `To zoom to a place, create it's geometry first`,
+        intent: 'error',
+      },
+    })
+  }, [db.notifications])
+
   const onClickZoomTo = useCallback(async () => {
     const place: Place = await db.places.findUnique({
       where: { place_id: place_id2 ?? place_id },
     })
     const geometry = place?.geometry
-    // TODO: tell user
-    if (!geometry) return
+    if (!geometry) {
+      return alertNoGeometry()
+    }
 
     // 1. show map if not happening
     const uiOption: UiOption = await db.ui_options.findUnique({
@@ -135,11 +148,12 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     const buffered = buffer(geometry, 0.05)
     const newBbox = bbox(buffered)
     const bounds = boundsFromBbox(newBbox)
+    if (!bounds) return alertNoGeometry()
     db.ui_options.update({
       where: { user_id },
       data: { map_bounds: bounds },
     })
-  }, [db.places, db.ui_options, place_id, place_id2])
+  }, [alertNoGeometry, db.places, db.ui_options, place_id, place_id2])
 
   return (
     <FormHeader
