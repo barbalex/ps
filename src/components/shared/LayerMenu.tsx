@@ -1,7 +1,8 @@
 import { useCallback, memo } from 'react'
 import { Button } from '@fluentui/react-button'
 import { MdLayers, MdLayersClear } from 'react-icons/md'
-import { TbMapCog } from 'react-icons/tb'
+import { TbZoomScan } from 'react-icons/tb'
+// import { TbMapCog } from 'react-icons/tb'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 
@@ -35,11 +36,15 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }: Props) => {
     })
   }, [db.vector_layers, showLayer, vectorLayer?.vector_layer_id])
 
+  const onClickZoomToLayer = useCallback(() => {
+    console.log('onClickZoomToLayer')
+  }, [])
+
   // TODO: implement onClickMapSettings
   // They should get their own url
-  const onClickMapSettings = useCallback(() => {
-    console.log('onClickMapSettings')
-  }, [])
+  // const onClickMapSettings = useCallback(() => {
+  //   console.log('onClickMapSettings')
+  // }, [])
 
   return (
     <>
@@ -55,6 +60,12 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }: Props) => {
       />
       <Button
         size="medium"
+        icon={<TbZoomScan />}
+        onClick={onClickZoomToLayer}
+        title={`Zoom to ${placeNamePlural ?? table} in map`}
+      />
+      {/* <Button
+        size="medium"
         icon={<TbMapCog />}
         onClick={onClickMapSettings}
         title={
@@ -62,7 +73,7 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }: Props) => {
             ? `Show ${placeNamePlural ?? table} map settings`
             : `Hide ${placeNamePlural ?? table} map settings`
         }
-      />
+      /> */}
     </>
   )
 })
