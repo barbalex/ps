@@ -5,8 +5,9 @@ import { TbZoomScan } from 'react-icons/tb'
 // import { TbMapCog } from 'react-icons/tb'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
-import { coordAll } from '@turf/meta'
 import bbox from '@turf/bbox'
+import buffer from '@turf/buffer'
+import { featureCollection } from '@turf/helpers'
 
 import { useElectric } from '../../ElectricProvider'
 import {
@@ -46,20 +47,12 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }: Props) => {
   }, [db.vector_layers, showLayer, vectorLayer?.vector_layer_id])
 
   const onClickZoomToLayer = useCallback(async () => {
-    console.log('onClickZoomToLayer')
     // get all geometries from layer
     // first get all places with level
     // then get all actions/checks/observations with place_id
     let geometries: GeometryType = []
     const places: Place[] = await db.places.findMany({
       where: { subproject_id, level, deleted: false },
-    })
-    console.log('hello LayerMenu, onClickZoomToLayer', {
-      table,
-      level,
-      places,
-      project_id,
-      subproject_id,
     })
     if (table === 'places') {
       geometries = places.map((place) => place.geometry)
@@ -88,15 +81,24 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }: Props) => {
       })
       geometries = observations.map((observation) => observation.geometry)
     }
-    console.log('hello LayerMenu, onClickZoomToLayer', {
-      geometries,
-    })
-    const allCoords = coordAll(geometries)
-    const newBounds = bbox(allCoords)
-    console.log('hello LayerMenu, onClickZoomToLayer', {
-      newBounds,
-      allCoords,
-    })
+    // geometries are saved as featureCollections
+    // bbox accepts a single feature or a featureCollection
+    // so we need to combine all features into a single featureCollection
+    const features = []
+    for (const geometry of geometries) {
+      if (geometry.features) {
+        for (const feature of geometry.features) {
+          features.push(feature)
+        }
+      } else {
+        features.push(geometry)
+      }
+    }
+    const fC = featureCollection(features)
+    const bufferedFC = buffer(fC, 0.05)
+
+    const newBounds = bbox(bufferedFC)
+    console.log('hello LayerMenu, onClickZoomToLayer, newBounds:', newBounds)
     // map.fitBounds(newBounds)
   }, [
     db.actions,
@@ -104,7 +106,7 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }: Props) => {
     db.observations,
     db.places,
     level,
-    project_id,
+    subproject_id,
     table,
   ])
 
