@@ -5,9 +5,17 @@ import { TbZoomScan } from 'react-icons/tb'
 // import { TbMapCog } from 'react-icons/tb'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
+import { coordAll } from '@turf/meta'
+import bbox from '@turf/bbox'
 
 import { useElectric } from '../../ElectricProvider'
-import { Vector_layers as VectorLayer } from '../../generated/client'
+import {
+  Vector_layers as VectorLayer,
+  Places as Place,
+  Actions as Action,
+  Checks as Check,
+  Observations as Observation,
+} from '../../generated/client'
 
 type Props = {
   table: string
@@ -17,9 +25,10 @@ type Props = {
 type vlResultsType = {
   results: VectorLayer
 }
+type GeometryType = Place[] | Action[] | Check[] | Observation[]
 
 export const LayerMenu = memo(({ table, level, placeNamePlural }: Props) => {
-  const { project_id } = useParams()
+  const { project_id, subproject_id } = useParams()
 
   const { db } = useElectric()!
   const { results: vectorLayer }: vlResultsType = useLiveQuery(
@@ -36,11 +45,68 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }: Props) => {
     })
   }, [db.vector_layers, showLayer, vectorLayer?.vector_layer_id])
 
-  const onClickZoomToLayer = useCallback(() => {
+  const onClickZoomToLayer = useCallback(async () => {
     console.log('onClickZoomToLayer')
-    // const newBounds = getBounds(layerData)
+    // get all geometries from layer
+    // first get all places with level
+    // then get all actions/checks/observations with place_id
+    let geometries: GeometryType = []
+    const places: Place[] = await db.places.findMany({
+      where: { subproject_id, level, deleted: false },
+    })
+    console.log('hello LayerMenu, onClickZoomToLayer', {
+      table,
+      level,
+      places,
+      project_id,
+      subproject_id,
+    })
+    if (table === 'places') {
+      geometries = places.map((place) => place.geometry)
+    } else if (table === 'actions') {
+      const actions: Action[] = await db.actions.findMany({
+        where: {
+          place_id: { in: places.map((place) => place.place_id) },
+          deleted: false,
+        },
+      })
+      geometries = actions.map((action) => action.geometry)
+    } else if (table === 'checks') {
+      const checks: Check[] = await db.checks.findMany({
+        where: {
+          place_id: { in: places.map((place) => place.place_id) },
+          deleted: false,
+        },
+      })
+      geometries = checks.map((check) => check.geometry)
+    } else if (table === 'observations') {
+      const observations: Observation[] = await db.observations.findMany({
+        where: {
+          place_id: { in: places.map((place) => place.place_id) },
+          deleted: false,
+        },
+      })
+      geometries = observations.map((observation) => observation.geometry)
+    }
+    console.log('hello LayerMenu, onClickZoomToLayer', {
+      geometries,
+    })
+    const allCoords = coordAll(geometries)
+    const newBounds = bbox(allCoords)
+    console.log('hello LayerMenu, onClickZoomToLayer', {
+      newBounds,
+      allCoords,
+    })
     // map.fitBounds(newBounds)
-  }, [])
+  }, [
+    db.actions,
+    db.checks,
+    db.observations,
+    db.places,
+    level,
+    project_id,
+    table,
+  ])
 
   // TODO: implement onClickMapSettings
   // They should get their own url

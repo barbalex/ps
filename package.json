@@ -31,6 +31,8 @@
     "@react-leaflet/core": "2.1.0",
     "@shopify/react-web-worker": "5.0.13",
     "@turf/bbox": "6.5.0",
+    "@turf/buffer": "^6.5.0",
+    "@turf/meta": "^6.5.0",
     "allotment": "1.20.0",
     "dayjs": "1.11.10",
     "electric-sql": "0.9.2",
