@@ -1,14 +1,21 @@
 import { useCallback, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { TbZoomScan } from 'react-icons/tb'
+import { Button } from '@fluentui/react-button'
+import bbox from '@turf/bbox'
+import buffer from '@turf/buffer'
 
 import {
   createPlace,
   createVectorLayer,
   createVectorLayerDisplay,
 } from '../../modules/createRows'
+import { Places as Place, Ui_options as UiOption } from '../../generated/client'
 import { useElectric } from '../../ElectricProvider'
 import { FormHeader } from '../../components/FormHeader'
+import { boundsFromBbox } from '../../modules/boundsFromBbox'
+import { user_id } from '../../components/SqlInitializer'
 
 type Props = {
   autoFocusRef: React.RefObject<HTMLInputElement>
@@ -104,6 +111,35 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     navigate(`${baseUrl}/${previous.place_id}`)
   }, [baseUrl, db.places, navigate, place_id, place_id2, subproject_id])
 
+  const onClickZoomTo = useCallback(async () => {
+    const place: Place = await db.places.findUnique({
+      where: { place_id: place_id2 ?? place_id },
+    })
+    const geometry = place?.geometry
+    if (!geometry) return
+
+    // 1. show map if not happening
+    const uiOption: UiOption = await db.ui_options.findUnique({
+      where: { user_id },
+    })
+    const tabs = uiOption?.tabs ?? []
+    if (!tabs.includes('map')) {
+      await db.ui_options.update({
+        where: { user_id },
+        data: { tabs: [...tabs, 'map'] },
+      })
+    }
+
+    // 2. zoom to place
+    const buffered = buffer(geometry, 0.05)
+    const newBbox = bbox(buffered)
+    const bounds = boundsFromBbox(newBbox)
+    db.ui_options.update({
+      where: { user_id },
+      data: { map_bounds: bounds },
+    })
+  }, [db.places, db.ui_options, place_id, place_id2])
+
   return (
     <FormHeader
       title={placeNameSingular}
@@ -112,6 +148,14 @@ export const Header = memo(({ autoFocusRef }: Props) => {
       toNext={toNext}
       toPrevious={toPrevious}
       tableName={placeNameSingular}
+      siblings={
+        <Button
+          size="medium"
+          icon={<TbZoomScan />}
+          onClick={onClickZoomTo}
+          title={`Zoom to ${placeNameSingular} in map`}
+        />
+      }
     />
   )
 })

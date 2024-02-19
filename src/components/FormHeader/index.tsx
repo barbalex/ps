@@ -2,7 +2,7 @@ import { memo } from 'react'
 import { FormMenu } from './FormMenu'
 
 export const FormHeader = memo(
-  ({ title, addRow, deleteRow, toNext, toPrevious, tableName }) => {
+  ({ title, addRow, deleteRow, toNext, toPrevious, tableName, siblings }) => {
     return (
       <div className="form-header">
         <h1>{title}</h1>
@@ -13,6 +13,7 @@ export const FormHeader = memo(
             toNext={toNext}
             toPrevious={toPrevious}
             tableName={tableName}
+            siblings={siblings}
           />
         )}
       </div>
