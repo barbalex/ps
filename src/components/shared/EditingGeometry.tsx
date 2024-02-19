@@ -36,7 +36,21 @@ export const EditingGeometry = memo(({ row, table }) => {
   const editedId = uiOption?.[fieldName] ?? null
 
   const onChange = useCallback(
-    (e, data) => {
+    async (e, data) => {
+      // 1. if checked, show map if not already shown
+      if (data.checked) {
+        const uiOption: UiOption = await db.ui_options.findUnique({
+          where: { user_id },
+        })
+        const tabs = uiOption?.tabs ?? []
+        if (!tabs.includes('map')) {
+          await db.ui_options.update({
+            where: { user_id },
+            data: { tabs: [...tabs, 'map'] },
+          })
+        }
+      }
+      // 2. update the editing id
       db.ui_options.update({
         where: { user_id },
         data: { [fieldName]: data.checked ? id : null },
