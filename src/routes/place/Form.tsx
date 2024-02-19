@@ -14,15 +14,17 @@ import { EditingGeometry } from '../../components/shared/EditingGeometry'
 
 import '../../form.css'
 
+type PlaceResults = {
+  results: Place
+}
+
 export const PlaceForm = ({ autoFocusRef }) => {
   const { subproject_id, place_id, place_id2 } = useParams()
 
-  const { db } = useElectric()
-  const { results } = useLiveQuery(
+  const { db } = useElectric()!
+  const { results: row }: PlaceResults = useLiveQuery(
     db.places.liveUnique({ where: { place_id: place_id2 ?? place_id } }),
   )
-
-  const row: Place = results
 
   // TODO: only show parent place if level 2 exists in place_levels
   const parentPlaceWhere = useMemo(

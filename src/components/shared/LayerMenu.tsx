@@ -17,6 +17,8 @@ import {
   Checks as Check,
   Observations as Observation,
 } from '../../generated/client'
+import { user_id } from '../SqlInitializer'
+import { boundsFromBbox } from '../../modules/boundsFromBbox'
 
 type Props = {
   table: string
@@ -97,14 +99,19 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }: Props) => {
     const fC = featureCollection(features)
     const bufferedFC = buffer(fC, 0.05)
 
-    const newBounds = bbox(bufferedFC)
-    console.log('hello LayerMenu, onClickZoomToLayer, newBounds:', newBounds)
-    // map.fitBounds(newBounds)
+    const newBbox = bbox(bufferedFC)
+    const newBounds = boundsFromBbox(newBbox)
+
+    db.ui_options.update({
+      where: { user_id },
+      data: { map_bounds: newBounds },
+    })
   }, [
     db.actions,
     db.checks,
     db.observations,
     db.places,
+    db.ui_options,
     level,
     subproject_id,
     table,

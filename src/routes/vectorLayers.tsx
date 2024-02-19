@@ -9,13 +9,16 @@ import { ListViewHeader } from '../components/ListViewHeader'
 import { Row } from '../components/shared/Row'
 import '../form.css'
 
+type VlResults = {
+  results: VectorLayer[]
+}
+
 export const Component = () => {
   const { project_id } = useParams()
   const navigate = useNavigate()
 
-  const { db } = useElectric()
-  // TODO: sort by vector_layer_displays.sort
-  const { results } = useLiveQuery(
+  const { db } = useElectric()!
+  const { results: vectorLayers = [] }: VlResults = useLiveQuery(
     db.vector_layers.liveMany({
       where: { project_id, deleted: false },
       orderBy: [{ sort: 'asc' }, { label: 'asc' }],
@@ -29,8 +32,6 @@ export const Component = () => {
       `/projects/${project_id}/vector-layers/${vectorLayer.vector_layer_id}`,
     )
   }, [db.vector_layers, navigate, project_id])
-
-  const vectorLayers: VectorLayer[] = results ?? []
 
   return (
     <div className="list-view">

@@ -10,6 +10,10 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   db,
   vector_layer_id,
 }: Props) => {
+  console.log('hello upsertVectorLayerDisplaysForVectorLayer', {
+    db,
+    vector_layer_id,
+  })
   const vectorLayer: VectorLayer = await db.vector_layers.findUnique({
     where: { vector_layer_id },
   })

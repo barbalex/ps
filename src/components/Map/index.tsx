@@ -17,6 +17,7 @@ import { LocationMarker } from './LocationMarker'
 import { tableNameFromIdField } from '../../modules/tableNameFromIdField'
 import { DrawControl } from './DrawControl'
 import { TableLayers } from './TableLayers'
+import { BoundsListener } from './BoundsListener'
 // import { Control } from './Control'
 // import { OwnControls } from './OwnControls'
 import { ErrorBoundary } from '../shared/ErrorBoundary'
@@ -94,6 +95,7 @@ export const Map = () => {
           {/* <Control position="topright" visible={true}>
           <OwnControls />
         </Control> */}
+          <BoundsListener />
         </MapContainer>
       </div>
     </ErrorBoundary>
