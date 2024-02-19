@@ -38,6 +38,8 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }: Props) => {
 
   const onClickZoomToLayer = useCallback(() => {
     console.log('onClickZoomToLayer')
+    // const newBounds = getBounds(layerData)
+    // map.fitBounds(newBounds)
   }, [])
 
   // TODO: implement onClickMapSettings
