@@ -34,14 +34,8 @@ export const DrawControlComponent = ({
         ? 'actions'
         : null
 
-      const geometry = {
-        type: 'GeometryCollection',
-        geometries: featureCollection.features
-          .filter((f) => !!f.geometry)
-          .map((f) => f.geometry),
-      }
-      const bbox = getBbox(geometry)
-      // TODO: bbox???
+      const bbox = getBbox(featureCollection)
+
       db[tableName].update({
         where: { [activeIdName]: activeId },
         data: { geometry: featureCollection, bbox },
