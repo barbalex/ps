@@ -30,8 +30,6 @@ export const MarkerSymbolPicker = ({ onChange, value }: Props) => {
     [],
   )
 
-  console.log('hello MarkerSymbolPicker, wantedIconKeys:', wantedIconKeys)
-
   // TODO: use fluent ui Label?
   return (
     <>
