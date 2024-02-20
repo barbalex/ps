@@ -3,10 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 // import type { InputProps } from '@fluentui/react-components'
 
-import {
-  Vector_layer_displays as VectorLayerDisplay,
-  Vector_layers as VectorLayer,
-} from '../../../generated/client'
+import { Vector_layer_displays as VectorLayerDisplay } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { TextField } from '../../components/shared/TextField'
@@ -37,13 +34,8 @@ type vldResults = {
   error: Error
 }
 
-type vlResults = {
-  results: VectorLayer
-  error: Error
-}
-
 export const Component = () => {
-  const { vector_layer_id, vector_layer_display_id } = useParams()
+  const { vector_layer_display_id } = useParams()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -51,14 +43,8 @@ export const Component = () => {
   const { results: row }: vldResults = useLiveQuery(
     db.vector_layer_displays.liveUnique({ where: { vector_layer_display_id } }),
   )
-  const { results: vectorLayer }: vlResults = useLiveQuery(
-    db.vector_layers.liveUnique({ where: { vector_layer_id } }),
-  )
 
-  console.log('hello vectorLayerDisplay', {
-    row,
-    vectorLayer,
-  })
+  // console.log('hello vectorLayerDisplay, row:', row)
 
   const onChange: InputProps['onChange'] = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>, data) => {
