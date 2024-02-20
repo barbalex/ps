@@ -8,19 +8,6 @@ import { Link } from 'react-router-dom'
 
 import { css } from '../../css'
 
-const labelStyle = {
-  fontSize: '1em',
-  flexGrow: 1,
-  whiteSpace: 'nowrap',
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  textDecoration: 'none',
-  color: 'rgb(51, 51, 51)',
-  '&:hover': {
-    fontWeight: 'bold',
-  },
-}
-
 const buttonStyle = {
   borderRadius: 20,
   border: 'none',
@@ -70,7 +57,23 @@ export const Node = ({
       {isActive ? (
         <span style={labelSpanStyle}>{node.label}</span>
       ) : (
-        <Link style={css(labelStyle)} to={to}>
+        <Link
+          style={css({
+            fontSize: '1em',
+            flexGrow: 1,
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            textDecoration: 'none',
+            color: 'rgb(51, 51, 51)',
+            on: ($) => [
+              $('&:hover', {
+                fontWeight: 'bold',
+              }),
+            ],
+          })}
+          to={to}
+        >
           {node.label}
         </Link>
       )}

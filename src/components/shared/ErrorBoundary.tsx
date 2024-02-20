@@ -43,9 +43,11 @@ const ErrorFallback = ({
       <summary
         style={css({
           userSelect: 'none',
-          '&:focus': {
-            outline: 'none !important',
-          },
+          on: ($) => [
+            $('&:focus', {
+              outline: 'none !important',
+            }),
+          ],
         })}
       >
         Mehr Informationen

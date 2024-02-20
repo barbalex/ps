@@ -4,7 +4,6 @@ import * as ReactDOMServer from 'react-dom/server'
 import { useDebouncedCallback } from 'use-debounce'
 import * as icons from 'react-icons/md'
 import { uuidv7 } from '@kripod/uuidv7'
-import { css } from '../../../css'
 
 import {
   Vector_layer_geoms as VectorLayerGeom,
@@ -185,10 +184,10 @@ export const VectorLayerPVLGeom = ({ layer, display }: Props) => {
             icon: new L.divIcon({
               html: ReactDOMServer.renderToString(
                 <Component
-                  style={css({
+                  style={{
                     color: display?.color,
                     fontSize: display?.marker_size ?? 16,
-                  })}
+                  }}
                 />,
               ),
             }),

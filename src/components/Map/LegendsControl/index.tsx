@@ -3,7 +3,6 @@ import { MdExpandMore, MdExpandLess } from 'react-icons/md'
 import { motion, useAnimation } from 'framer-motion'
 
 import { Legends } from './Legends'
-import { css } from '../../../css'
 
 const cardContainerStyle = {
   backgroundColor: 'white',
@@ -72,12 +71,12 @@ export const LegendsControl = () => {
         <div
           onClick={onToggleApfloraLayersExpanded}
           open={legendsExpanded}
-          style={css({
+          style={{
             ...cardHeaderStyle,
             ...(legendsExpanded
               ? { borderBottom: '1px solid rgba(0, 0, 0, 0.2)' }
               : {}),
-          })}
+          }}
         >
           <div style={legendsExpanded ? cardTitleStyle : cardTitleOpenStyle}>
             Legenden

@@ -14,36 +14,22 @@ import { css } from '../../../css'
 import { useElectric } from '../../../ElectricProvider'
 import { Ui_options as UiOption } from '../../../generated/client'
 
-const optionsButtonStyle = {
-  backgroundColor: 'rgba(38, 82, 37, 0)',
-  border: 'none',
-  color: 'white',
-  '&:hover': {
-    filter: 'brightness(85%)',
-  },
-}
-
-const activeButtonStyle = {
-  backgroundColor: 'rgba(38, 82, 37, 0)',
-  color: 'white',
-  '&:hover': {
-    filter: 'brightness(85%)',
-  },
-}
-
-const inactiveButtonStyle = {
-  backgroundColor: 'rgba(38, 82, 37, 0)',
-  border: 'none',
-  color: 'rgba(255, 255, 255, 0.7)',
-  '&:hover': {
-    color: 'white',
-  },
-}
-
 const buildButtonStyle = ({ prevIsActive, nextIsActive, selfIsActive }) => {
-  if (!selfIsActive) return inactiveButtonStyle
+  if (!selfIsActive) {
+    return {
+      backgroundColor: 'rgba(38, 82, 37, 0)',
+      border: 'none',
+      color: 'rgba(255, 255, 255, 0.7)',
+      on: ($) => [$('&:hover', { color: 'white' })],
+    }
+  }
 
-  const style = { ...activeButtonStyle }
+  const style = {
+    backgroundColor: 'rgba(38, 82, 37, 0)',
+    border: '1px solid rgba(255, 255, 255, 0.7)',
+    color: 'white',
+  }
+
   if (prevIsActive) {
     style.borderTopLeftRadius = 0
     style.borderBottomLeftRadius = 0
@@ -161,7 +147,12 @@ export const Menu = memo(() => {
         icon={<FaCog />}
         onClick={onClick}
         title="Options"
-        style={css(optionsButtonStyle)}
+        style={css({
+          backgroundColor: 'rgba(38, 82, 37, 0)',
+          border: 'none',
+          color: 'white',
+          on: ($) => [$('&:hover', { filter: 'brightness(85%)' })],
+        })}
       />
     </div>
   )

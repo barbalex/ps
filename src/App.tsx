@@ -2,7 +2,7 @@ import React from 'react'
 import { RouterProvider } from 'react-router-dom'
 import { FluentProvider } from '@fluentui/react-components'
 
-import { hooks } from './css'
+import { styleSheet } from './css'
 import 'allotment/dist/style.css'
 import './style.css'
 
@@ -38,7 +38,7 @@ export default function App() {
 
   return (
     <ElectricProvider>
-      <style dangerouslySetInnerHTML={{ __html: hooks }} />
+      <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
       <SqlInitializer />
       <FluentProvider theme={lightTheme}>
         <div style={routerContainerStyle}>

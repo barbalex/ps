@@ -50,9 +50,11 @@ export const Popup = ({
           <div
             style={css({
               ...titleStyle,
-              '&:not(:first-of-type)': {
-                marginTop: 8,
-              },
+              on: ($) => [
+                $('&:not(:first-of-type)', {
+                  marginTop: 8,
+                }),
+              ],
             })}
           >
             {ld.label}
@@ -61,10 +63,12 @@ export const Popup = ({
             <div
               style={css({
                 ...rowStyle,
-                '&:nth-child(odd)': {
-                  backgroundColor: 'rgba(0, 0, 0, 0.05)',
-                  color: 'black',
-                },
+                on: ($) => [
+                  $('&:nth-child(odd)', {
+                    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+                    color: 'black',
+                  }),
+                ],
               })}
               key={`${key}/${index}`}
             >

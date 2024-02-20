@@ -80,6 +80,7 @@ export const WMS = memo(({ layer }) => {
       overflow: 'auto',
       maxHeight: mapSize.y - 40,
       maxWidth: mapSize.x - 60,
+      // this probably does not work:
       span: {
         fontSize: 'x-small !important',
       },

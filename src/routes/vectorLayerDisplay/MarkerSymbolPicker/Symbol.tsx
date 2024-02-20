@@ -40,9 +40,11 @@ export const Symbol = ({ Component, name, onChange, active }: Props) => {
       onClick={onClick}
       style={css({
         ...style,
-        '&:hover': {
-          backgroundColor: 'rgba(74, 20, 140, 0.1)',
-        },
+        on: ($) => [
+          $('&:hover', {
+            backgroundColor: 'rgba(74, 20, 140, 0.1)',
+          }),
+        ],
       })}
     />
   )
