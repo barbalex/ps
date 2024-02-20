@@ -8,10 +8,11 @@ import { Symbol } from './Symbol'
 const symbolContainerStyle = {
   display: 'flex',
   flexWrap: 'wrap',
-  maxHeight: 700,
+  minHeight: 600,
   overflow: 'auto',
   outline: '1px solid rgba(74, 20, 140, 0.1)',
-  marginBottom: 19,
+  marginBottom: 13,
+  marginTop: -10,
 }
 
 interface Props {
@@ -28,6 +29,8 @@ export const MarkerSymbolPicker = ({ onChange, value }: Props) => {
         .filter((key) => !key.endsWith('KPlus')),
     [],
   )
+
+  console.log('hello MarkerSymbolPicker, wantedIconKeys:', wantedIconKeys)
 
   // TODO: use fluent ui Label?
   return (
