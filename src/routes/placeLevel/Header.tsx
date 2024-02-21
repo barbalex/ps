@@ -9,7 +9,7 @@ export const Header = memo(({ autoFocusRef }) => {
   const { project_id, place_level_id } = useParams()
   const navigate = useNavigate()
 
-  const { db } = useElectric()
+  const { db } = useElectric()!
 
   const baseUrl = `/projects/${project_id}/place-levels`
 

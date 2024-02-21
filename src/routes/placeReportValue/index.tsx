@@ -1,9 +1,8 @@
-import { useCallback, useMemo, useRef } from 'react'
+import { useCallback, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 
-import { PlaceReportValues as PlaceReportValue } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
 import { TextField } from '../../components/shared/TextField'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
@@ -13,19 +12,17 @@ import { Header } from './Header'
 
 import '../../form.css'
 
+const unitWhere = { use_for_place_report_values: true }
+
 export const Component = () => {
   const { place_report_value_id } = useParams()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const { db } = useElectric()
-  const { results } = useLiveQuery(
+  const { db } = useElectric()!
+  const { results: row } = useLiveQuery(
     db.place_report_values.liveUnique({ where: { place_report_value_id } }),
   )
-
-  const row: PlaceReportValue = results
-
-  const unitWhere = useMemo(() => ({ use_for_place_report_values: true }), [])
 
   // console.log('PlaceReportValue, row:', row)
 
