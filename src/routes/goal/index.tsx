@@ -3,7 +3,6 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 
-import { Goals as Goal } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
 import { TextField } from '../../components/shared/TextField'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
@@ -18,10 +17,10 @@ export const Component = () => {
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const { db } = useElectric()
-  const { results } = useLiveQuery(db.goals.liveUnique({ where: { goal_id } }))
-
-  const row: Goal = results
+  const { db } = useElectric()!
+  const { results: row } = useLiveQuery(
+    db.goals.liveUnique({ where: { goal_id } }),
+  )
 
   const onChange: InputProps['onChange'] = useCallback(
     (e, data) => {

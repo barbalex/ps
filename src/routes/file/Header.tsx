@@ -9,7 +9,7 @@ export const Header = memo(() => {
   const { file_id } = useParams()
   const navigate = useNavigate()
 
-  const { db } = useElectric()
+  const { db } = useElectric()!
 
   const addRow = useCallback(async () => {
     const data = await createFile({ db })

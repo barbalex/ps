@@ -3,7 +3,6 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 
-import { Files as File } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
 import { TextField } from '../../components/shared/TextField'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
@@ -17,10 +16,10 @@ import '../../form.css'
 export const Component = () => {
   const { file_id } = useParams()
 
-  const { db } = useElectric()
-  const { results } = useLiveQuery(db.files.liveUnique({ where: { file_id } }))
-
-  const row: File = results
+  const { db } = useElectric()!
+  const { results: row } = useLiveQuery(
+    db.files.liveUnique({ where: { file_id } }),
+  )
 
   const onChange: InputProps['onChange'] = useCallback(
     (e, dataIn) => {
