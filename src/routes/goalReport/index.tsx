@@ -2,7 +2,6 @@ import { useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 
-import { GoalReports as GoalReport } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { Jsonb } from '../../components/shared/Jsonb'
@@ -15,14 +14,10 @@ export const Component = () => {
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const { db } = useElectric()
-  const { results } = useLiveQuery(
+  const { db } = useElectric()!
+  const { results: row } = useLiveQuery(
     db.goal_reports.liveUnique({ where: { goal_report_id } }),
   )
-
-  const row: GoalReport = results
-
-  // console.log('goalReport', { row, goal_id })
 
   if (!row) {
     return <div>Loading...</div>
