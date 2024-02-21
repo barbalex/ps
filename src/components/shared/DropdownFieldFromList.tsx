@@ -3,7 +3,6 @@ import { Dropdown, Field, Option } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 
 import { useElectric } from '../../ElectricProvider'
-import { List_values as ListValue } from '../../generated/client'
 
 const rowStyle = {
   display: 'flex',
@@ -15,8 +14,15 @@ const ddStyle = {
   flexGrow: 1,
 }
 
-type ListValueResults = {
-  results: ListValue[]
+type Props = {
+  name: string
+  label?: string
+  list_id: string
+  value: string
+  onChange: () => void
+  validationMessage?: string
+  validationState?: string
+  button?: React.ReactNode
 }
 
 export const DropdownFieldFromList = memo(
@@ -29,9 +35,9 @@ export const DropdownFieldFromList = memo(
     validationMessage,
     validationState,
     button,
-  }) => {
+  }: Props) => {
     const { db } = useElectric()!
-    const { results: listValues = [] }: ListValueResults = useLiveQuery(
+    const { results: listValues = [] } = useLiveQuery(
       db.list_values.liveMany({ where: { list_id, deleted: false } }),
     )
     const options = useMemo(

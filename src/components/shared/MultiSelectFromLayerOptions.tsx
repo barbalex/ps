@@ -2,7 +2,6 @@ import { memo, useMemo, useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 
 import { useElectric } from '../../ElectricProvider'
-import { Layer_options as LayerOption } from '../../generated/client'
 import { MultiSelect } from './MultiSelect'
 import { idFieldFromTable } from '../../modules/idFieldFromTable'
 
@@ -16,9 +15,6 @@ type Props = {
   validationState?: 'none' | 'error'
   valueArray?: string[]
   row?: { label: string }
-}
-type LayerOptionResults = {
-  results: LayerOption[]
 }
 
 export const MultiSelectFromLayerOptions = memo(
@@ -34,7 +30,7 @@ export const MultiSelectFromLayerOptions = memo(
     row,
   }: Props) => {
     const { db } = useElectric()!
-    const { results: layerOptions = [] }: LayerOptionResults = useLiveQuery(
+    const { results: layerOptions = [] } = useLiveQuery(
       db.layer_options.liveMany({
         where: {
           ...(tile_layer_id ? { tile_layer_id } : {}),
