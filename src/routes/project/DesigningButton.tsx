@@ -1,6 +1,6 @@
 import { useCallback, memo } from 'react'
 import { useParams } from 'react-router-dom'
-import { MdOutlineDesignServices } from 'react-icons/md'
+import { MdOutlineDesignServices, MdEdit, MdEditOff } from 'react-icons/md'
 import { ToggleButton } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 
@@ -46,11 +46,10 @@ export const DesigningButton = memo(() => {
       title={
         designing
           ? 'designing. Click to stop designing '
-          : 'click to start dsigning'
+          : 'click to start designing'
       }
-      icon={<MdOutlineDesignServices />}
+      icon={designing ? <MdEdit /> : <MdEditOff />}
       onClick={onClickDesigning}
-      style={{ color: designing ? 'black' : 'grey' }}
     />
   )
 })
