@@ -55,7 +55,7 @@ export const DataNavs = memo(({ matches }) => {
     filterParams.project_id = null
   }
 
-  const { db } = useElectric()
+  const { db } = useElectric()!
   const { results: tableResults = [] } = useLiveQuery(
     () =>
       db[table]?.liveMany({ where: filterParams, orderBy: { label: 'asc' } }),

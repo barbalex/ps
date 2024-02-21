@@ -80,7 +80,7 @@ export const BreadcrumbForData = forwardRef(
     //   queryParam.include = { units: true }
     // }
 
-    const { db } = useElectric()
+    const { db } = useElectric()!
     const queryTable = table === 'root' || table === 'docs' ? 'projects' : table
 
     // console.log('BreadcrumbForData', {
