@@ -10,11 +10,15 @@ import { Row } from '../components/shared/Row'
 
 import '../form.css'
 
+type FieldTypeResults = {
+  results: FieldType[]
+}
+
 export const Component = () => {
   const navigate = useNavigate()
 
-  const { db } = useElectric()
-  const { results } = useLiveQuery(
+  const { db } = useElectric()!
+  const { results: fieldTypes = [] }: FieldTypeResults = useLiveQuery(
     db.field_types.liveMany({
       where: { deleted: false },
       orderBy: { label: 'asc' },
@@ -26,8 +30,6 @@ export const Component = () => {
     await db.field_types.create({ data })
     navigate(`/field-types/${data.field_type_id}`)
   }, [db.field_types, navigate])
-
-  const fieldTypes: FieldType[] = results ?? []
 
   return (
     <div className="list-view">

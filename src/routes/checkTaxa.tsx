@@ -9,13 +9,17 @@ import { ListViewHeader } from '../components/ListViewHeader'
 import { Row } from '../components/shared/Row'
 import '../form.css'
 
+type CheckTaxonResults = {
+  results: CheckTaxon[]
+}
+
 export const Component = () => {
   const { project_id, subproject_id, place_id, place_id2, check_id } =
     useParams()
   const navigate = useNavigate()
 
-  const { db } = useElectric()
-  const { results } = useLiveQuery(
+  const { db } = useElectric()!
+  const { results: checkTaxa = [] }: CheckTaxonResults = useLiveQuery(
     db.check_taxa.liveMany({
       where: { check_id, deleted: false },
       orderBy: { label: 'asc' },
@@ -44,8 +48,6 @@ export const Component = () => {
     project_id,
     subproject_id,
   ])
-
-  const checkTaxa: CheckTaxon[] = results ?? []
 
   return (
     <div className="list-view">
