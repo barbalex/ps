@@ -1,7 +1,6 @@
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 
-import { Vector_layer_displays as VectorLayerDisplay } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { ListViewHeader } from '../components/ListViewHeader'
 import { Row } from '../components/shared/Row'
@@ -11,15 +10,13 @@ import '../form.css'
 export const Component = () => {
   const { project_id, vector_layer_id } = useParams()
 
-  const { db } = useElectric()
-  const { results } = useLiveQuery(
+  const { db } = useElectric()!
+  const { results: vlds = [] } = useLiveQuery(
     db.vector_layer_displays.liveMany({
       where: { vector_layer_id, deleted: false },
       orderBy: { label: 'asc' },
     }),
   )
-
-  const vlds: VectorLayerDisplay[] = results ?? []
 
   return (
     <div className="list-view">
