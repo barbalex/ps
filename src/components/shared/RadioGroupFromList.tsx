@@ -3,11 +3,16 @@ import { Field, RadioGroup, Radio } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 
 import { useElectric } from '../../ElectricProvider'
+import { List_values as ListValue } from '../../generated/client'
 
 const rowStyle = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
+}
+
+type ListValueResults = {
+  results: ListValue[]
 }
 
 export const RadioGroupFromList = memo(
@@ -21,8 +26,8 @@ export const RadioGroupFromList = memo(
     validationState,
     button,
   }) => {
-    const { db } = useElectric()
-    const { results: listValues = [] } = useLiveQuery(
+    const { db } = useElectric()!
+    const { results: listValues = [] }: ListValueResults = useLiveQuery(
       db.list_values.liveMany({ where: { list_id, deleted: false } }),
     )
 

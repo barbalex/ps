@@ -4,15 +4,28 @@ import { useParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
 import { DropdownFieldSimpleOptions } from './DropdownFieldSimpleOptions'
+import { Fields as Field } from '../../generated/client'
 
 import '../../form.css'
 
+type Props = {
+  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
+  value: string
+  extraFieldNames?: string[]
+  table: string
+  label?: string
+  name: string
+}
+type FieldResults = {
+  results: Field[]
+}
+
 export const LabelBy = memo(
-  ({ onChange, value, extraFieldNames = [], table, label, name }) => {
-    const { db } = useElectric()
+  ({ onChange, value, extraFieldNames = [], table, label, name }: Props) => {
+    const { db } = useElectric()!
     const { project_id } = useParams()
 
-    const { results: fields = [] } = useLiveQuery(
+    const { results: fields = [] }: FieldResults = useLiveQuery(
       db.fields.liveMany({
         where: {
           table_name: table,

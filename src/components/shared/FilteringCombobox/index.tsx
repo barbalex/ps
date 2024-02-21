@@ -32,7 +32,7 @@ export const FilteringCombobox = memo(
     ) => {
       const [filter, setFilter] = useState('')
 
-      const { db } = useElectric()
+      const { db } = useElectric()!
       const whereForSelectedOption = useMemo(
         () => ({
           [idField ?? name]:
