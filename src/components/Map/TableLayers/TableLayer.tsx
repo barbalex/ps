@@ -7,7 +7,6 @@ import { useLiveQuery } from 'electric-sql/react'
 import { vectorLayerDisplayToProperties } from '../../../modules/vectorLayerDisplayToProperties'
 import { Popup } from '../Popup'
 import {
-  Vector_layer_displays as VectorLayerDisplay,
   vector_layers as VectorLayer,
   Places as Place,
   Actions as Action,
@@ -23,19 +22,15 @@ type Props = {
   form?: React.FC
 }
 
-type vldResults = {
-  results: VectorLayerDisplay[]
-}
-
 export const TableLayer = memo(({ data, layer }: Props) => {
   const { db } = useElectric()!
-  const { results: vectorLayerDisplays = [] }: vldResults = useLiveQuery(
+  const { results: vectorLayerDisplays = [] } = useLiveQuery(
     db.vector_layer_displays.liveMany({
       where: { vector_layer_id: layer.vector_layer_id },
     }),
   )
   // adapt to multiple vector_layer_displays
-  const firstDisplay: VectorLayerDisplay = vectorLayerDisplays[0]
+  const firstDisplay = vectorLayerDisplays[0]
 
   const displayFromFeature = useCallback(
     (feature) => {
