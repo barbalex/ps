@@ -15,7 +15,7 @@ export const FilteringComboboxOptions = memo(
     labelFromResult,
     filter,
   }) => {
-    const { db } = useElectric()
+    const { db } = useElectric()!
     const { results = [] } = useLiveQuery(
       db[table]?.liveMany({
         where: {
