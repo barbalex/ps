@@ -10,11 +10,15 @@ import { Row } from '../components/shared/Row'
 
 import '../form.css'
 
+type MessageResults = {
+  results: Message[]
+}
+
 export const Component = () => {
   const navigate = useNavigate()
 
-  const { db } = useElectric()
-  const { results } = useLiveQuery(
+  const { db } = useElectric()!
+  const { results: messages = [] }: MessageResults = useLiveQuery(
     db.messages.liveMany({ orderBy: { label: 'asc' } }),
   )
 
@@ -23,8 +27,6 @@ export const Component = () => {
     await db.messages.create({ data })
     navigate(`/messages/${data.message_id}`)
   }, [db.messages, navigate])
-
-  const messages: Message[] = results ?? []
 
   return (
     <div className="list-view">
