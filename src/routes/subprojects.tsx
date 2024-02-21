@@ -2,7 +2,6 @@ import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
-import { Subprojects as Subproject } from '../../../generated/client'
 import { createSubproject } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
 import { ListViewHeader } from '../components/ListViewHeader'
@@ -13,8 +12,8 @@ export const Component = () => {
   const { project_id } = useParams()
   const Navigate = useNavigate()
 
-  const { db } = useElectric()
-  const { results } = useLiveQuery(
+  const { db } = useElectric()!
+  const { results: subprojects = [] } = useLiveQuery(
     db.subprojects.liveMany({
       where: { project_id, deleted: false },
       orderBy: { label: 'asc' },
@@ -22,7 +21,7 @@ export const Component = () => {
   )
 
   // get projects.subproject_name_plural to name the table
-  const { results: project = {} } = useLiveQuery(
+  const { results: project } = useLiveQuery(
     db.projects.liveUnique({ where: { project_id } }),
   )
   const namePlural = project?.subproject_name_plural ?? 'Subprojects'
@@ -34,8 +33,6 @@ export const Component = () => {
     await db.subprojects.create({ data })
     Navigate(`/projects/${project_id}/subprojects/${data.subproject_id}`)
   }, [Navigate, db, project_id])
-
-  const subprojects: Subproject[] = results ?? []
 
   return (
     <div className="list-view">

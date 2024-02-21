@@ -2,7 +2,6 @@ import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
-import { Taxa as Taxon } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { createTaxon } from '../modules/createRows'
 import { ListViewHeader } from '../components/ListViewHeader'
@@ -13,8 +12,8 @@ export const Component = () => {
   const { project_id, taxonomy_id } = useParams()
   const navigate = useNavigate()
 
-  const { db } = useElectric()
-  const { results } = useLiveQuery(
+  const { db } = useElectric()!
+  const { results: taxa = [] } = useLiveQuery(
     db.taxa.liveMany({
       where: { taxonomy_id, deleted: false },
       orderBy: { label: 'asc' },
@@ -33,8 +32,6 @@ export const Component = () => {
       `/projects/${project_id}/taxonomies/${taxonomy_id}/taxa/${taxon.taxon_id}`,
     )
   }, [db.taxa, navigate, project_id, taxonomy_id])
-
-  const taxa: Taxon[] = results ?? []
 
   return (
     <div className="list-view">
