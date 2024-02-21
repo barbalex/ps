@@ -2,7 +2,6 @@ import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useNavigate } from 'react-router-dom'
 
-import { WidgetsForFields as WidgetForField } from '../../../generated/client'
 import { createWidgetForField } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
 import { ListViewHeader } from '../components/ListViewHeader'
@@ -13,8 +12,8 @@ import '../form.css'
 export const Component = () => {
   const navigate = useNavigate()
 
-  const { db } = useElectric()
-  const { results } = useLiveQuery(
+  const { db } = useElectric()!
+  const { results: widgetsForFields = [] } = useLiveQuery(
     db.widgets_for_fields.liveMany({
       where: { deleted: false },
       orderBy: { label: 'asc' },
@@ -26,8 +25,6 @@ export const Component = () => {
     await db.widgets_for_fields.create({ data })
     navigate(`/widgets-for-fields/${data.widget_for_field_id}`)
   }, [db.widgets_for_fields, navigate])
-
-  const widgetsForFields: WidgetForField[] = results ?? []
 
   return (
     <div className="list-view">

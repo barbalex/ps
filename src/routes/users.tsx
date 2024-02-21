@@ -2,7 +2,6 @@ import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useNavigate } from 'react-router-dom'
 
-import { Users as User } from '../../../generated/client'
 import { createUser } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
 import { ListViewHeader } from '../components/ListViewHeader'
@@ -13,8 +12,8 @@ import '../form.css'
 export const Component = () => {
   const navigate = useNavigate()
 
-  const { db } = useElectric()
-  const { results } = useLiveQuery(
+  const { db } = useElectric()!
+  const { results: users = [] } = useLiveQuery(
     db.users.liveMany({ where: { deleted: false }, orderBy: { label: 'asc' } }),
   )
 
@@ -23,8 +22,6 @@ export const Component = () => {
     await db.users.create({ data })
     navigate(`/users/${data.user_id}`)
   }, [db.users, navigate])
-
-  const users: User[] = results ?? []
 
   return (
     <div className="list-view">
