@@ -2,23 +2,18 @@ import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
-import { PlaceUsers as PlaceUser } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { createPlaceUser } from '../modules/createRows'
 import { ListViewHeader } from '../components/ListViewHeader'
 import { Row } from '../components/shared/Row'
 import '../form.css'
 
-type PlaceUserResults = {
-  results: PlaceUser[]
-}
-
 export const Component = () => {
   const { project_id, subproject_id, place_id, place_id2 } = useParams()
   const navigate = useNavigate()
 
   const { db } = useElectric()!
-  const { results: placeUsers = [] }: PlaceUserResults = useLiveQuery(
+  const { results: placeUsers = [] } = useLiveQuery(
     db.place_users.liveMany({
       where: { place_id: place_id2 ?? place_id, deleted: false },
       orderBy: { label: 'asc' },
