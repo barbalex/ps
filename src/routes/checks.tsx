@@ -11,12 +11,16 @@ import { LayerMenu } from '../components/shared/LayerMenu'
 
 import '../form.css'
 
+type CheckResults = {
+  results: Check[]
+}
+
 export const Component = () => {
   const { project_id, subproject_id, place_id, place_id2 } = useParams()
   const navigate = useNavigate()
 
-  const { db } = useElectric()
-  const { results } = useLiveQuery(
+  const { db } = useElectric()!
+  const { results: checks = [] }: CheckResults = useLiveQuery(
     db.checks.liveMany({
       where: { place_id: place_id2 ?? place_id, deleted: false },
       orderBy: { label: 'asc' },
@@ -36,8 +40,6 @@ export const Component = () => {
       }/checks/${data.check_id}`,
     )
   }, [db, navigate, place_id, place_id2, project_id, subproject_id])
-
-  const checks: Check[] = results ?? []
 
   return (
     <div className="list-view">
