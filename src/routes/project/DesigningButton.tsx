@@ -7,7 +7,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useElectric } from '../../ElectricProvider'
 import { user_id } from '../../components/SqlInitializer'
 
-// TODO: add button to enter design mode
+// TODO: button to enter design mode
 // add this only if user's account equals the account of the project
 export const DesigningButton = memo(() => {
   const { project_id } = useParams()
@@ -25,6 +25,22 @@ export const DesigningButton = memo(() => {
       data: { designing: !designing },
     })
   }, [db.ui_options, designing])
+
+  const { results: project } = useLiveQuery(
+    db.projects.liveUnique({ where: { project_id } }),
+  )
+  const { results: account } = useLiveQuery(
+    db.accounts.liveFirst({ where: { user_id } }),
+  )
+  const userIsOwner = project?.account_id === account?.account_id
+  const { results: projectUser } = useLiveQuery(
+    db.project_users.liveFirst({
+      where: { project_id, user_id, deleted: false },
+    }),
+  )
+  const userRole = projectUser?.role
+
+  if (!userIsOwner) return null
 
   return (
     <ToggleButton
