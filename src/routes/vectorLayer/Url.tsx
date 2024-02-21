@@ -10,7 +10,7 @@ const createWorker = createWorkerFactory(() => import('./getCapabilitiesData'))
 
 export const Url = memo(
   ({ onChange, row }: { onChange: () => void; row: VectorLayer }) => {
-    const { db } = useElectric()
+    const { db } = useElectric()!
     const worker = useWorker(createWorker)
 
     const onBlur = useCallback(async () => {

@@ -9,7 +9,7 @@ export const Header = memo(({ autoFocusRef }) => {
   const { widget_for_field_id } = useParams<{ widget_for_field_id: string }>()
   const navigate = useNavigate()
 
-  const { db } = useElectric()
+  const { db } = useElectric()!
 
   const addRow = useCallback(async () => {
     const data = createWidgetForField()
