@@ -3,7 +3,6 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 
-import { Messages as Message } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
 import { TextField } from '../../components/shared/TextField'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
@@ -16,12 +15,10 @@ import '../../form.css'
 export const Component = () => {
   const { message_id } = useParams()
 
-  const { db } = useElectric()
-  const { results } = useLiveQuery(
+  const { db } = useElectric()!
+  const { results: row } = useLiveQuery(
     db.messages.liveUnique({ where: { message_id } }),
   )
-
-  const row: Message = results
 
   const onChange: InputProps['onChange'] = useCallback(
     (e, data) => {
