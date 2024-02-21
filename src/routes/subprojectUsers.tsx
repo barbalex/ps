@@ -2,7 +2,6 @@ import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
-import { SubprojectUser as SubprojectUser } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { createSubprojectUser } from '../modules/createRows'
 import { ListViewHeader } from '../components/ListViewHeader'
@@ -13,8 +12,8 @@ export const Component = () => {
   const { subproject_id, project_id } = useParams()
   const navigate = useNavigate()
 
-  const { db } = useElectric()
-  const { results } = useLiveQuery(
+  const { db } = useElectric()!
+  const { results: subprojectUsers = [] } = useLiveQuery(
     db.subproject_users.liveMany({
       where: { subproject_id, deleted: false },
       orderBy: { label: 'asc' },
@@ -34,8 +33,6 @@ export const Component = () => {
     )
   }, [db.subproject_users, navigate, project_id, subproject_id])
 
-  const subproject_users: SubprojectUser[] = results ?? []
-
   return (
     <div className="list-view">
       <ListViewHeader
@@ -44,7 +41,7 @@ export const Component = () => {
         tableName="subproject user"
       />
       <div className="list-container">
-        {subproject_users.map(({ subproject_user_id, label }) => (
+        {subprojectUsers.map(({ subproject_user_id, label }) => (
           <Row
             key={subproject_user_id}
             to={`/projects/${project_id}/subprojects/${subproject_id}/users/${subproject_user_id}`}

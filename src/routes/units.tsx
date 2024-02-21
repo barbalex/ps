@@ -2,7 +2,6 @@ import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
-import { Units as Unit } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { createUnit } from '../modules/createRows'
 import { ListViewHeader } from '../components/ListViewHeader'
@@ -13,8 +12,8 @@ export const Component = () => {
   const { project_id } = useParams()
   const navigate = useNavigate()
 
-  const { db } = useElectric()
-  const { results } = useLiveQuery(
+  const { db } = useElectric()!
+  const { results: units = [] } = useLiveQuery(
     db.units.liveMany({
       where: { project_id, deleted: false },
       orderBy: { label: 'asc' },
@@ -31,8 +30,6 @@ export const Component = () => {
     })
     navigate(`/projects/${project_id}/units/${unit.unit_id}`)
   }, [db.units, navigate, project_id])
-
-  const units: Unit[] = results ?? []
 
   return (
     <div className="list-view">
