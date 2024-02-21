@@ -17,7 +17,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
   const { project_id } = useParams()
   const navigate = useNavigate()
 
-  const { db } = useElectric()
+  const { db } = useElectric()!
 
   const addRow = useCallback(async () => {
     const data = await createProject({ db })
@@ -34,9 +34,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
 
   const deleteRow = useCallback(async () => {
     await db.projects.delete({
-      where: {
-        project_id,
-      },
+      where: { project_id },
     })
     navigate(`/projects`)
   }, [db.projects, navigate, project_id])
