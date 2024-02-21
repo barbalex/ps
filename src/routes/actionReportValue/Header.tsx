@@ -17,7 +17,7 @@ export const Header = memo(({ autoFocusRef }) => {
   } = useParams()
   const navigate = useNavigate()
 
-  const { db } = useElectric()
+  const { db } = useElectric()!
 
   const baseUrl = useMemo(
     () =>
