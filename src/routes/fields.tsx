@@ -2,23 +2,18 @@ import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
-import { Fields as Field } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { createField } from '../modules/createRows'
 import { ListViewHeader } from '../components/ListViewHeader'
 import { Row } from '../components/shared/Row'
 import '../form.css'
 
-type FieldResults = {
-  results: Field[]
-}
-
 export const Component = () => {
   const { project_id } = useParams()
   const navigate = useNavigate()
 
   const { db } = useElectric()!
-  const { results: fields = [] }: FieldResults = useLiveQuery(
+  const { results: fields = [] } = useLiveQuery(
     db.fields.liveMany({
       where: { project_id: project_id ?? null, deleted: false },
       orderBy: { label: 'asc' },
