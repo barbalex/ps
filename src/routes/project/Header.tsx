@@ -1,6 +1,7 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { MdOutlineDesignServices } from 'react-icons/md'
+import { ToggleButton } from '@fluentui/react-components'
 
 import { createProject } from '../../modules/createRows'
 import { useElectric } from '../../ElectricProvider'
@@ -70,6 +71,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
       toNext={toNext}
       toPrevious={toPrevious}
       tableName="project"
+      siblings={<ToggleButton>Edit Project</ToggleButton>}
     />
   )
 })

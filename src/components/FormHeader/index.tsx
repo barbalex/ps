@@ -13,7 +13,7 @@ export const FormHeader = memo(
             toNext={toNext}
             toPrevious={toPrevious}
             tableName={tableName}
-            siblings={siblings}
+            siblings={siblings} 
           />
         )}
       </div>
