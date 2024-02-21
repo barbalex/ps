@@ -1,5 +1,6 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { MdOutlineDesignServices } from 'react-icons/md'
 
 import { createProject } from '../../modules/createRows'
 import { useElectric } from '../../ElectricProvider'
@@ -10,6 +11,7 @@ type Props = {
   autoFocusRef: React.RefObject<HTMLInputElement>
 }
 
+// TODO: add button to enter design mode
 export const Header = memo(({ autoFocusRef }: Props) => {
   const { project_id } = useParams()
   const navigate = useNavigate()
