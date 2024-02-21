@@ -43,7 +43,9 @@ export const DesigningButton = memo(() => {
   return (
     <ToggleButton
       checked={designing}
-      title={designing ? 'Designing. Click to stop' : 'Start designing'}
+      title={
+        designing ? 'Designing this project. Click to stop' : 'Start designing'
+      }
       icon={designing ? <MdEdit /> : <MdEditOff />}
       onClick={onClickDesigning}
     />

@@ -16,9 +16,9 @@ const buttonStyle = {
 }
 const siblingStyle = {
   marginLeft: 5,
-  lineHeight: '1em',
-  height: '1em',
-  verticalAlign: 'middle',
+  // lineHeight: '1em',
+  // height: '1em',
+  // verticalAlign: 'middle',
 }
 
 const labelSpanStyle = { cursor: 'default' }
