@@ -41,7 +41,7 @@ export const BreadcrumbForFolder = forwardRef(
 
     const idField = idFieldFromTable(table)
     const queryTable = table === 'root' || table === 'docs' ? 'projects' : table
-    const { db } = useElectric()
+    const { db } = useElectric()!
     const matchParam =
       table === 'places' && levelWanted === 2
         ? place_id2

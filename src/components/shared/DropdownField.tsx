@@ -33,7 +33,7 @@ export const DropdownField = memo(
       },
       ref,
     ) => {
-      const { db } = useElectric()
+      const { db } = useElectric()!
       const { results = [] } = useLiveQuery(
         db[table]?.liveMany({
           where,

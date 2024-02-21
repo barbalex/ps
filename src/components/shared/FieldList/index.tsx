@@ -7,13 +7,26 @@ import { useParams } from 'react-router-dom'
 import { useElectric } from '../../../ElectricProvider'
 import { DropdownField } from './DropdownField'
 import { idFieldFromTable } from '../../../modules/idFieldFromTable'
+import { Fields as Field } from '../../../generated/client'
+
+type Props = {
+  name: string
+  label: string
+  table: string
+  fieldsTable: string
+  id: string
+  valueArray: string[]
+}
+type FieldResults = {
+  results: Field[]
+}
 
 export const FieldList = memo(
-  ({ name, label, table, fieldsTable, id, valueArray = [] }) => {
+  ({ name, label, table, fieldsTable, id, valueArray = [] }: Props) => {
     const { project_id } = useParams()
 
-    const { db } = useElectric()
-    const { results: fields = [] } = useLiveQuery(
+    const { db } = useElectric()!
+    const { results: fields = [] }: FieldResults = useLiveQuery(
       db.fields.liveMany({
         where: {
           table_name: fieldsTable,
