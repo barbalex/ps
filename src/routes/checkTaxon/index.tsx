@@ -3,7 +3,6 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 
-import { CheckTaxa as CheckTaxon } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
 import { TextField } from '../../components/shared/TextField'
 import { DropdownField } from '../../components/shared/DropdownField'
@@ -13,19 +12,17 @@ import { Header } from './Header'
 
 import '../../form.css'
 
+const taxaWhere = { deleted: false }
+
 export const Component = () => {
   const { check_taxon_id } = useParams()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const { db } = useElectric()
-  const { results } = useLiveQuery(
+  const { db } = useElectric()!
+  const { results: row } = useLiveQuery(
     db.check_taxa.liveUnique({ where: { check_taxon_id } }),
   )
-
-  const row: CheckTaxon = results
-
-  const taxaWhere = useMemo(() => ({ deleted: false }), [])
 
   // console.log('CheckTaxon', { row, results })
 

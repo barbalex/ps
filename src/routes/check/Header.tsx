@@ -11,14 +11,13 @@ import { useElectric } from '../../ElectricProvider'
 import { FormHeader } from '../../components/FormHeader'
 import { boundsFromBbox } from '../../modules/boundsFromBbox'
 import { user_id } from '../../components/SqlInitializer'
-import { Checks as Check, Ui_options as UiOption } from '../../generated/client'
 
 export const Header = memo(({ autoFocusRef }) => {
   const { project_id, subproject_id, place_id, place_id2, check_id } =
     useParams()
   const navigate = useNavigate()
 
-  const { db } = useElectric()
+  const { db } = useElectric()!
 
   const baseUrl = useMemo(
     () =>
@@ -82,14 +81,12 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [db.notifications])
 
   const onClickZoomTo = useCallback(async () => {
-    const check: Check = await db.checks.findUnique({
-      where: { check_id },
-    })
+    const check = await db.checks.findUnique({ where: { check_id } })
     const geometry = check?.geometry
     if (!geometry) return alertNoGeometry()
 
     // 1. show map if not happening
-    const uiOption: UiOption = await db.ui_options.findUnique({
+    const uiOption = await db.ui_options.findUnique({
       where: { user_id },
     })
     const tabs = uiOption?.tabs ?? []
