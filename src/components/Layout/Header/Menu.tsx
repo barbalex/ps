@@ -12,7 +12,6 @@ import { user_id } from '../../SqlInitializer'
 import { controls } from '../../../styles'
 import { css } from '../../../css'
 import { useElectric } from '../../../ElectricProvider'
-import { Ui_options as UiOption } from '../../../generated/client'
 
 const buildButtonStyle = ({ prevIsActive, nextIsActive, selfIsActive }) => {
   if (!selfIsActive) {
@@ -42,10 +41,6 @@ const buildButtonStyle = ({ prevIsActive, nextIsActive, selfIsActive }) => {
   return style
 }
 
-type UiOptionResult = {
-  results: UiOption
-}
-
 // TODO:
 // use overflow menu for tabs and options
 export const Menu = memo(() => {
@@ -54,7 +49,7 @@ export const Menu = memo(() => {
 
   const { db } = useElectric()!
   // get ui_options.tabs
-  const { results: uiOption }: UiOptionResult = useLiveQuery(
+  const { results: uiOption } = useLiveQuery(
     db.ui_options.liveUnique({ where: { user_id } }),
   )
   const tabs = useMemo(() => uiOption?.tabs ?? [], [uiOption?.tabs])
