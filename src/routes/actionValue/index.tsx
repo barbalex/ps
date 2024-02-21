@@ -3,7 +3,6 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 
-import { ActionValues as ActionValue } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
 import { TextField } from '../../components/shared/TextField'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
@@ -18,12 +17,10 @@ export const Component = () => {
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const { db } = useElectric()
-  const { results } = useLiveQuery(
+  const { db } = useElectric()!
+  const { results: row } = useLiveQuery(
     db.action_values.liveUnique({ where: { action_value_id } }),
   )
-
-  const row: ActionValue = results
 
   const unitWhere = useMemo(() => ({ use_for_action_values: true }), [])
 
