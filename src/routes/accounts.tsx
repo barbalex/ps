@@ -10,11 +10,17 @@ import { useElectric } from '../ElectricProvider'
 
 import '../form.css'
 
+type AccountResults = {
+  results: Account[]
+}
+
 export const Component = () => {
   const navigate = useNavigate()
 
-  const { db } = useElectric()
-  const { results } = useLiveQuery(db.accounts.liveMany())
+  const { db } = useElectric()!
+  const { results: accounts = [] }: AccountResults = useLiveQuery(
+    db.accounts.liveMany(),
+  )
 
   const add = useCallback(async () => {
     const data = createAccount()
@@ -22,18 +28,12 @@ export const Component = () => {
     navigate(`/accounts/${data.account_id}`)
   }, [db.accounts, navigate])
 
-  const accounts: Account[] = results ?? []
-
   return (
     <div className="list-view">
       <ListViewHeader title="Accounts" addRow={add} tableName="account" />
       <div className="list-container">
-        {accounts.map(({account_id, label}) => (
-          <Row
-            key={account_id}
-            label={label}
-            to={`/accounts/${account_id}`}
-          />
+        {accounts.map(({ account_id, label }) => (
+          <Row key={account_id} label={label} to={`/accounts/${account_id}`} />
         ))}
       </div>
     </div>
