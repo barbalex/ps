@@ -14,8 +14,8 @@ import '../form.css'
 export const Component = () => {
   const navigate = useNavigate()
 
-  const { db } = useElectric()
-  const { results } = useLiveQuery(
+  const { db } = useElectric()!
+  const { results: projects = [] } = useLiveQuery(
     db.projects.liveMany({
       where: { deleted: false },
       orderBy: { label: 'asc' },
@@ -29,8 +29,6 @@ export const Component = () => {
     await upsertTableVectorLayersForProject({ db, project_id: data.project_id })
     navigate(`/projects/${data.project_id}`)
   }, [db, navigate])
-
-  const projects: Project[] = results ?? []
 
   return (
     <div className="list-view">

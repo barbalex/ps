@@ -3,7 +3,6 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 
-import { Places as Place } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
 import { TextField } from '../../components/shared/TextField'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
@@ -14,15 +13,11 @@ import { EditingGeometry } from '../../components/shared/EditingGeometry'
 
 import '../../form.css'
 
-type PlaceResults = {
-  results: Place
-}
-
 export const PlaceForm = ({ autoFocusRef }) => {
   const { subproject_id, place_id, place_id2 } = useParams()
 
   const { db } = useElectric()!
-  const { results: row }: PlaceResults = useLiveQuery(
+  const { results: row } = useLiveQuery(
     db.places.liveUnique({ where: { place_id: place_id2 ?? place_id } }),
   )
 

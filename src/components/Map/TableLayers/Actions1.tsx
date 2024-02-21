@@ -1,35 +1,23 @@
 import { useLiveQuery } from 'electric-sql/react'
 
 import { useElectric } from '../../../ElectricProvider'
-import {
-  Vector_layers as VectorLayer,
-  Actions as Action,
-  Places as Place,
-} from '../../../generated/client'
+import { Vector_layers as VectorLayer } from '../../../generated/client'
 import { TableLayer } from './TableLayer'
 
 type Props = {
   layer: VectorLayer
 }
 
-type placesResults = {
-  results: Place[]
-}
-
-type actionsResults = {
-  results: Action[]
-}
-
 export const Actions1 = ({ layer }: Props) => {
   const { db } = useElectric()!
 
   // need to query places1 because filtering by places in checks query does not work
-  const { results: places1 = [] }: placesResults = useLiveQuery(
+  const { results: places1 = [] } = useLiveQuery(
     db.places.liveMany({ where: { parent_id: null } }),
   )
 
   // TODO: query only inside current map bounds using places.bbox
-  const { results: actions = [] }: actionsResults = useLiveQuery(
+  const { results: actions = [] } = useLiveQuery(
     db.actions.liveMany({
       where: {
         // places: { parent_id: null }, // this returns no results
