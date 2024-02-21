@@ -9,13 +9,17 @@ import { ListViewHeader } from '../components/ListViewHeader'
 import { Row } from '../components/shared/Row'
 import '../form.css'
 
+type ActionValueResults = {
+  results: ActionValue[]
+}
+
 export const Component = () => {
   const { project_id, subproject_id, place_id, place_id2, action_id } =
     useParams()
   const navigate = useNavigate()
 
-  const { db } = useElectric()
-  const { results } = useLiveQuery(
+  const { db } = useElectric()!
+  const { results: actionValues = [] }: ActionValueResults = useLiveQuery(
     db.action_values.liveMany({
       where: { action_id, deleted: false },
       orderBy: { label: 'asc' },
@@ -44,8 +48,6 @@ export const Component = () => {
     project_id,
     subproject_id,
   ])
-
-  const actionValues: ActionValue[] = results ?? []
 
   return (
     <div className="list-view">

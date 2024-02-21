@@ -11,11 +11,15 @@ import '../form.css'
 
 import { useElectric } from '../ElectricProvider'
 
+type FileResults = {
+  results: File[]
+}
+
 export const Component = () => {
   const navigate = useNavigate()
 
-  const { db } = useElectric()
-  const { results } = useLiveQuery(
+  const { db } = useElectric()!
+  const { results: files = [] }: FileResults = useLiveQuery(
     db.files.liveMany({ where: { deleted: false }, orderBy: { label: 'asc' } }),
   )
 
@@ -24,8 +28,6 @@ export const Component = () => {
     await db.files.create({ data })
     navigate(`/files/${data.file_id}`)
   }, [db, navigate])
-
-  const files: File[] = results ?? []
 
   return (
     <div className="list-view">
