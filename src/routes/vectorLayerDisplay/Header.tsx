@@ -8,7 +8,7 @@ export const Header = memo(() => {
   const { project_id, vector_layer_id, vector_layer_display_id } = useParams()
   const navigate = useNavigate()
 
-  const { db } = useElectric()
+  const { db } = useElectric()!
 
   const baseUrl = `/projects/${project_id}/vector-layers/${vector_layer_id}/vector-layer-displays`
 

@@ -3,21 +3,13 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
-import {
-  Fields as Field,
-  Vector_layers as VectorLayer,
-} from '../../generated/client'
+import { Vector_layers as VectorLayer } from '../../generated/client'
 import { DropdownFieldOptions } from '../../components/shared/DropdownFieldOptions'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { upsertVectorLayerDisplaysForVectorLayer } from '../../modules/upsertVectorLayerDisplaysForVectorLayer'
 
 type Props = {
   vectorLayer: VectorLayer
-}
-
-type FieldResults = {
-  results: Field[]
-  error: Error
 }
 
 export const PropertyField = memo(({ vectorLayer }: Props) => {
@@ -31,12 +23,11 @@ export const PropertyField = memo(({ vectorLayer }: Props) => {
 
   const { db } = useElectric()!
   // get fields of table
-  const { results: fields = [] }: FieldResults =
-    useLiveQuery(
-      db.fields.liveMany({
-        where: { table_name: table, level, project_id, deleted: false },
-      }),
-    )
+  const { results: fields = [] } = useLiveQuery(
+    db.fields.liveMany({
+      where: { table_name: table, level, project_id, deleted: false },
+    }),
+  )
   const options = useMemo(
     () =>
       fields.map((field) => ({
