@@ -3,7 +3,6 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 
-import { Tile_layers as TileLayer } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { TextField } from '../../components/shared/TextField'
@@ -22,12 +21,10 @@ export const Component = () => {
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const { db } = useElectric()
-  const { results } = useLiveQuery(
+  const { db } = useElectric()!
+  const { results: row } = useLiveQuery(
     db.tile_layers.liveUnique({ where: { tile_layer_id } }),
   )
-
-  const row: TileLayer = results
 
   const onChange: InputProps['onChange'] = useCallback(
     async (e, data) => {
