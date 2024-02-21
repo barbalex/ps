@@ -1,9 +1,8 @@
-import { useCallback, useMemo, useRef } from 'react'
+import { useCallback, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 
-import { SubprojectTaxa as SubprojectTaxon } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { FilteringCombobox } from '../../components/shared/FilteringCombobox'
@@ -12,17 +11,18 @@ import { Header } from './Header'
 
 import '../../form.css'
 
+const taxaWhere = { deleted: false }
+const taxaInclude = { taxonomies: true }
+
 export const Component = () => {
   const { subproject_taxon_id } = useParams()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const { db } = useElectric()
-  const { results } = useLiveQuery(
+  const { db } = useElectric()!
+  const { results: row } = useLiveQuery(
     db.subproject_taxa.liveUnique({ where: { subproject_taxon_id } }),
   )
-
-  const row: SubprojectTaxon = results
 
   const onChange: InputProps['onChange'] = useCallback(
     (e, data) => {
@@ -34,9 +34,6 @@ export const Component = () => {
     },
     [db.subproject_taxa, subproject_taxon_id],
   )
-
-  const taxaWhere = useMemo(() => ({ deleted: false }), [])
-  const taxaInclude = useMemo(() => ({ taxonomies: true }), [])
 
   if (!row) {
     return <div>Loading...</div>
