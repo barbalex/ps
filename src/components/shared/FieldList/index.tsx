@@ -7,7 +7,7 @@ import { useParams } from 'react-router-dom'
 import { useElectric } from '../../../ElectricProvider'
 import { DropdownField } from './DropdownField'
 import { idFieldFromTable } from '../../../modules/idFieldFromTable'
-import { Fields as Field } from '../../../generated/client'
+import { Fields as FieldType } from '../../../generated/client'
 
 type Props = {
   name: string
@@ -18,7 +18,7 @@ type Props = {
   valueArray: string[]
 }
 type FieldResults = {
-  results: Field[]
+  results: FieldType[]
 }
 
 export const FieldList = memo(
