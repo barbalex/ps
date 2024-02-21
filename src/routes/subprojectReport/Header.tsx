@@ -9,7 +9,7 @@ export const Header = memo(({ autoFocusRef }) => {
   const { project_id, subproject_id, subproject_report_id } = useParams()
   const navigate = useNavigate()
 
-  const { db } = useElectric()
+  const { db } = useElectric()!
 
   const addRow = useCallback(async () => {
     const data = await createSubprojectReport({

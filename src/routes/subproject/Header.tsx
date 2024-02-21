@@ -10,7 +10,7 @@ export const Header = memo(({ autoFocusRef }) => {
   const { project_id, subproject_id } = useParams()
   const navigate = useNavigate()
 
-  const { db } = useElectric()
+  const { db } = useElectric()!
 
   // get projects.subproject_name_singular to name the table
   const { results: project = {} } = useLiveQuery(
