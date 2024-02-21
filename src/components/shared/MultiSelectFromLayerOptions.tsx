@@ -6,6 +6,21 @@ import { Layer_options as LayerOption } from '../../generated/client'
 import { MultiSelect } from './MultiSelect'
 import { idFieldFromTable } from '../../modules/idFieldFromTable'
 
+type Props = {
+  name: string
+  label: string
+  table: string
+  tile_layer_id?: string
+  vector_layer_id?: string
+  validationMessage?: string
+  validationState?: 'none' | 'error'
+  valueArray?: string[]
+  row?: { label: string }
+}
+type LayerOptionResults = {
+  results: LayerOption[]
+}
+
 export const MultiSelectFromLayerOptions = memo(
   ({
     name,
@@ -17,9 +32,9 @@ export const MultiSelectFromLayerOptions = memo(
     validationState = 'none',
     valueArray = [],
     row,
-  }) => {
-    const { db } = useElectric()
-    const { results = [] } = useLiveQuery(
+  }: Props) => {
+    const { db } = useElectric()!
+    const { results: layerOptions = [] }: LayerOptionResults = useLiveQuery(
       db.layer_options.liveMany({
         where: {
           ...(tile_layer_id ? { tile_layer_id } : {}),
@@ -30,7 +45,6 @@ export const MultiSelectFromLayerOptions = memo(
         orderBy: { label: 'asc' },
       }),
     )
-    const layerOptions: LayerOption[] = results
     const options = useMemo(
       () => layerOptions.map(({ value, label }) => ({ value, label })),
       [layerOptions],

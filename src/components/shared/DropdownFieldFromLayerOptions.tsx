@@ -18,7 +18,7 @@ export const DropdownFieldFromLayerOptions = memo(
     validationState = 'none',
     row,
   }) => {
-    const { db } = useElectric()
+    const { db } = useElectric()!
     const { results = [] } = useLiveQuery(
       db.layer_options.liveMany({
         where: {
