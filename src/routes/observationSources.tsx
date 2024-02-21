@@ -2,29 +2,23 @@ import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
-import { ObservationSources as ObservationSource } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { createObservationSource } from '../modules/createRows'
 import { ListViewHeader } from '../components/ListViewHeader'
 import { Row } from '../components/shared/Row'
 import '../form.css'
 
-type ObservationSourceResults = {
-  results: ObservationSource[]
-}
-
 export const Component = () => {
   const { project_id } = useParams()
   const navigate = useNavigate()
 
   const { db } = useElectric()!
-  const { results: observationSources = [] }: ObservationSourceResults =
-    useLiveQuery(
-      db.observation_sources.liveMany({
-        where: { project_id, deleted: false },
-        orderBy: { label: 'asc' },
-      }),
-    )
+  const { results: observationSources = [] } = useLiveQuery(
+    db.observation_sources.liveMany({
+      where: { project_id, deleted: false },
+      orderBy: { label: 'asc' },
+    }),
+  )
 
   const add = useCallback(async () => {
     const data = await createObservationSource({

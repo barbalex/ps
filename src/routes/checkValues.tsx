@@ -2,16 +2,11 @@ import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
-import { CheckValues as CheckValue } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { createCheckValue } from '../modules/createRows'
 import { ListViewHeader } from '../components/ListViewHeader'
 import { Row } from '../components/shared/Row'
 import '../form.css'
-
-type CheckValueResults = {
-  results: CheckValue[]
-}
 
 export const Component = () => {
   const { project_id, subproject_id, place_id, place_id2, check_id } =
@@ -19,7 +14,7 @@ export const Component = () => {
   const navigate = useNavigate()
 
   const { db } = useElectric()!
-  const { results: checkValues = [] }: CheckValueResults = useLiveQuery(
+  const { results: checkValues = [] } = useLiveQuery(
     db.check_values.liveMany({
       where: { check_id, deleted: false },
       orderBy: { label: 'asc' },
