@@ -189,12 +189,6 @@ html {
   background: rgba(0, 0, 0, 0);
 }
 
-/* Tree */
-
-.tree-node svg {
-  color: rgb(51, 51, 51);
-}
-
 /* map */
 .map-container {
   .leaflet-control-container {

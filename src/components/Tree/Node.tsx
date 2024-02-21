@@ -16,9 +16,9 @@ const buttonStyle = {
 }
 const siblingStyle = {
   marginLeft: 5,
-  // lineHeight: '1em',
-  // height: '1em',
-  // verticalAlign: 'middle',
+}
+const svgStyle = {
+  color: 'rgb(51, 51, 51)',
 }
 
 const labelSpanStyle = { cursor: 'default' }
@@ -51,17 +51,16 @@ export const Node = ({
         size="small"
         icon={
           !childrenCount ? (
-            <NoChildrenIcon />
+            <NoChildrenIcon style={svgStyle} />
           ) : isOpen ? (
-            <OpenWithChildrenIcon />
+            <OpenWithChildrenIcon style={svgStyle} />
           ) : (
-            <ClosedWithChildrenIcon />
+            <ClosedWithChildrenIcon style={svgStyle} />
           )
         }
         onClick={onClickButton}
         disabled={!childrenCount}
         style={{ ...buttonStyle, ...(!childrenCount && { cursor: 'default' }) }}
-        className="tree-node"
       />
       {isActive ? (
         <span style={labelSpanStyle}>{node.label}</span>
