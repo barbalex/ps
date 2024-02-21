@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom'
 import { Label, Divider } from '@fluentui/react-components'
 import type { InputProps } from '@fluentui/react-components'
 
-import { Projects as Project } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
 import { TextField } from '../../components/shared/TextField'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
@@ -23,11 +22,10 @@ export const Component = () => {
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const { db } = useElectric()
-  const { results } = useLiveQuery(
+  const { db } = useElectric()!
+  const { results: row } = useLiveQuery(
     db.projects.liveUnique({ where: { project_id } }),
   )
-  const row: Project = results
 
   const onChange: InputProps['onChange'] = useCallback(
     (e, data) => {
