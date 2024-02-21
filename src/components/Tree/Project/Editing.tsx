@@ -36,6 +36,9 @@ export const Editing = () => {
       onClick={onClick}
       style={buttonStyle}
       className="tree-node"
+      title={
+        designing ? 'Designing this project. Click to stop' : 'Start designing'
+      }
     />
   )
 
