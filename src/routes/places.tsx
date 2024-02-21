@@ -2,7 +2,6 @@ import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
-import { Places as Place } from '../../../generated/client'
 import {
   createPlace,
   createVectorLayer,
@@ -19,17 +18,17 @@ export const Component = () => {
   const navigate = useNavigate()
   const { project_id, subproject_id, place_id } = useParams()
 
-  const { db } = useElectric()
+  const { db } = useElectric()!
 
-  const { results } = useLiveQuery(
+  const { results: places = [] } = useLiveQuery(
     db.places.liveMany({
       where: { deleted: false, parent_id: place_id ?? null, subproject_id },
       orderBy: { label: 'asc' },
     }),
   )
 
-  const { results: placeLevels } = useLiveQuery(
-    db.place_levels.liveMany({
+  const { results: placeLevel } = useLiveQuery(
+    db.place_levels.liveFirst({
       where: {
         deleted: false,
         project_id,
@@ -38,8 +37,8 @@ export const Component = () => {
       orderBy: { label: 'asc' },
     }),
   )
-  const placeNameSingular = placeLevels?.[0]?.name_singular ?? 'Place'
-  const placeNamePlural = placeLevels?.[0]?.name_plural ?? 'Places'
+  const placeNameSingular = placeLevel?.name_singular ?? 'Place'
+  const placeNamePlural = placeLevel?.name_plural ?? 'Places'
 
   const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/places${
     place_id ? `/${place_id}/places` : ''
@@ -76,8 +75,6 @@ export const Component = () => {
     project_id,
     subproject_id,
   ])
-
-  const places: Place[] = results ?? []
 
   return (
     <div className="list-view">
