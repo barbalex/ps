@@ -17,7 +17,6 @@ export const DesigningButton = memo(() => {
   const { results: uiOption } = useLiveQuery(
     db.ui_options.liveUnique({ where: { user_id } }),
   )
-  // TODO: modularize to reduce renders
   const designing = uiOption?.designing ?? false
   const onClickDesigning = useCallback(() => {
     db.ui_options.update({
@@ -40,7 +39,10 @@ export const DesigningButton = memo(() => {
   )
   const userRole = projectUser?.role
 
-  if (!userIsOwner) return null
+  console.log('hello DesigningButton', { userRole, userIsOwner })
+  const userMayEdit = userIsOwner || userRole === 'manager'
+
+  if (!userMayEdit) return null
 
   return (
     <ToggleButton
