@@ -14,6 +14,7 @@ import { getValueFromChange } from '../../modules/getValueFromChange'
 import { WidgetType } from './WidgetType'
 
 export const accountTables = ['projects', 'files']
+
 const projectTables = [
   'action_reports',
   'actions',

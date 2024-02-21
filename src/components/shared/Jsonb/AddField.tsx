@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, memo } from 'react'
 import { Button } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
 import { useParams, useSearchParams } from 'react-router-dom'
@@ -7,6 +7,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useElectric } from '../../../ElectricProvider'
 import { createField } from '../../../modules/createRows'
 import { user_id } from '../../SqlInitializer'
+import { accountTables } from '../../../routes/field/Form'
 
 const buttonStyle = {
   minHeight: 32,
@@ -20,7 +21,7 @@ const buttonStyle = {
 // 4. which is:
 //    - a title and the necessary part of the field form
 //    - a search param in the url: editingField=fieldId
-export const AddField = ({ tableName, level }) => {
+export const AddField = memo(({ tableName, level }) => {
   const { project_id } = useParams()
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchParams, setSearchParams] = useSearchParams()
@@ -32,7 +33,10 @@ export const AddField = ({ tableName, level }) => {
   const designing = uiOption?.designing
 
   const addRow = useCallback(async () => {
-    const newField = createField({ project_id, table_name: tableName, level })
+    const isAccountTable = accountTables.includes(tableName)
+    const newFieldParams = { table_name: tableName, level }
+    if (!isAccountTable) newFieldParams.project_id = project_id
+    const newField = createField(newFieldParams)
     await db.fields.create({ data: newField })
     setSearchParams({ editingField: newField.field_id })
   }, [db.fields, level, project_id, setSearchParams, tableName])
@@ -50,4 +54,4 @@ export const AddField = ({ tableName, level }) => {
       Add Field
     </Button>
   )
-}
+})

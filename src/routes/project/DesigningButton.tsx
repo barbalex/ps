@@ -7,8 +7,6 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useElectric } from '../../ElectricProvider'
 import { user_id } from '../../components/SqlInitializer'
 
-// TODO: button to enter design mode
-// add this only if user's account equals the account of the project
 export const DesigningButton = memo(() => {
   const { project_id } = useParams()
 
@@ -38,10 +36,9 @@ export const DesigningButton = memo(() => {
   )
   const userRole = projectUser?.role
 
-  // console.log('hello DesigningButton', { userRole, userIsOwner, designing })
-  const userMayEdit = userIsOwner || userRole === 'manager'
+  const userMayDesign = userIsOwner || userRole === 'manager'
 
-  if (!userMayEdit) return null
+  if (!userMayDesign) return null
 
   return (
     <ToggleButton

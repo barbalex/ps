@@ -23,7 +23,7 @@ import { TimeFields } from '../TimeFields'
 import { DateTimeField } from '../DateTimeField'
 import { accountTables } from '../../../routes/field/Form'
 import { FieldFormInForm } from '../FieldFormInForm'
-import { EditField } from '../EditField'
+import { EditField } from './EditField'
 import { AddField } from './AddField'
 
 // TODO: if editing a field, show the field form
