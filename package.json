@@ -1,7 +1,7 @@
 {
   "name": "ps",
   "version": "0.1.0",
-  "author": "ElectricSQL",
+  "author": "Alexander Gabriel",
   "type": "module",
   "scripts": {
     "backend:start": "npx electric-sql start --with-postgres",
@@ -35,7 +35,7 @@
     "@turf/helpers": "6.5.0",
     "allotment": "1.20.0",
     "dayjs": "1.11.10",
-    "electric-sql": "0.9.2",
+    "electric-sql": "0.9.3",
     "framer-motion": "11.0.5",
     "is-uuid": "1.0.2",
     "leaflet": "1.9.4",
@@ -74,5 +74,8 @@
     "eslint-plugin-react-refresh": "0.4.5",
     "typescript": "5.3.3",
     "vite": "5.1.4"
+  },
+  "devRemarks": {
+    "electric-sql": "do not upgrade from 0.9.2 to 0.9.3, see: https://github.com/electric-sql/electric/issues/977"
   }
 }

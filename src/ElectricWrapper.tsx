@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
 
+import { insecureAuthToken } from 'electric-sql/auth'
+import { ElectricDatabase, electrify } from 'electric-sql/wa-sqlite'
 import { LIB_VERSION } from 'electric-sql/version'
 import { uniqueTabId } from 'electric-sql/util'
-import { ElectricDatabase, electrify } from 'electric-sql/wa-sqlite'
 
-import { authToken } from './auth'
+// import { authToken } from './auth'
 import { Electric, schema } from './generated/client'
 import { ElectricProvider } from './ElectricProvider'
-
 
 export const ElectricWrapper = ({ children }) => {
   const [electric, setElectric] = useState<Electric>()
@@ -18,17 +18,15 @@ export const ElectricWrapper = ({ children }) => {
     const init = async () => {
       const config = {
         auth: {
-          token: authToken(),
+          clientId: 'dummy client id',
         },
-        debug: import.meta.env.DEV,
-        url: import.meta.env.ELECTRIC_SERVICE,
       }
-
       const { tabId } = uniqueTabId()
       const scopedDbName = `basic-${LIB_VERSION}-${tabId}.db`
-
-      const conn = await ElectricDatabase.init(scopedDbName)
+      const conn = await ElectricDatabase.init(scopedDbName, '')
       const electric = await electrify(conn, schema, config)
+      const token = insecureAuthToken({ user_id: 'dummy' })
+      await electric.connect(token)
 
       if (!isMounted) {
         return
