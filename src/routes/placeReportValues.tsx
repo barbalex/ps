@@ -9,18 +9,23 @@ import { ListViewHeader } from '../components/ListViewHeader'
 import { Row } from '../components/shared/Row'
 import '../form.css'
 
+type PlaceReportValueResults = {
+  results: PlaceReportValue[]
+}
+
 export const Component = () => {
   const { project_id, subproject_id, place_id, place_id2, place_report_id } =
     useParams()
   const navigate = useNavigate()
 
-  const { db } = useElectric()
-  const { results } = useLiveQuery(
-    db.place_report_values.liveMany({
-      where: { place_report_id, deleted: false },
-      orderBy: { label: 'asc' },
-    }),
-  )
+  const { db } = useElectric()!
+  const { results: placeReportValues = [] }: PlaceReportValueResults =
+    useLiveQuery(
+      db.place_report_values.liveMany({
+        where: { place_report_id, deleted: false },
+        orderBy: { label: 'asc' },
+      }),
+    )
 
   const add = useCallback(async () => {
     const placeReportValue = createPlaceReportValue()
@@ -46,8 +51,6 @@ export const Component = () => {
     project_id,
     subproject_id,
   ])
-
-  const placeReportValues: PlaceReportValue[] = results ?? []
 
   return (
     <div className="list-view">

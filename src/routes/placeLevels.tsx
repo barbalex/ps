@@ -9,12 +9,16 @@ import { ListViewHeader } from '../components/ListViewHeader'
 import { Row } from '../components/shared/Row'
 import '../form.css'
 
+type PlaceLevelResults = {
+  results: PlaceLevel[]
+}
+
 export const Component = () => {
   const { project_id } = useParams()
   const navigate = useNavigate()
 
-  const { db } = useElectric()
-  const { results } = useLiveQuery(
+  const { db } = useElectric()!
+  const { results: placeLevels = [] }: PlaceLevelResults = useLiveQuery(
     db.place_levels.liveMany({
       where: { project_id, deleted: false },
       orderBy: { label: 'asc' },
@@ -33,8 +37,6 @@ export const Component = () => {
       `/projects/${project_id}/place-levels/${placeLevel.place_level_id}`,
     )
   }, [db.place_levels, navigate, project_id])
-
-  const placeLevels: PlaceLevel[] = results ?? []
 
   return (
     <div className="list-view">
