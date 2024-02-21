@@ -25,21 +25,6 @@ import { accountTables } from '../../../routes/field/Form'
 import { FieldFormInForm } from '../FieldFormInForm'
 import { EditField } from '../EditField'
 import { AddField } from '../AddField'
-import {
-  Fields as Field,
-  Field_types as FieldType,
-  Widget_types as WidgetType,
-} from '../../../generated/client'
-
-type fieldResults = {
-  fields: Field[]
-}
-type fieldTypeResults = {
-  fieldTypes: FieldType[]
-}
-type widgetTypeResults = {
-  widgetTypes: WidgetType[]
-}
 
 // TODO: if editing a field, show the field form
 // and focus the name field on first render?
@@ -62,7 +47,7 @@ export const Jsonb = memo(
       const editingField = searchParams.get('editingField')
 
       const { db } = useElectric()!
-      const { results: fields = [] }: fieldResults = useLiveQuery(
+      const { results: fields = [] } = useLiveQuery(
         db.fields.liveMany({
           where: {
             table_name: table,
@@ -71,7 +56,7 @@ export const Jsonb = memo(
           },
         }),
       )
-      const { results: fieldTypes = [] }: fieldTypeResults = useLiveQuery(
+      const { results: fieldTypes = [] } = useLiveQuery(
         db.field_types.liveMany({
           where: {
             field_type_id: {
@@ -80,7 +65,7 @@ export const Jsonb = memo(
           },
         }),
       )
-      const { results: widgetTypes = [] }: widgetTypeResults = useLiveQuery(
+      const { results: widgetTypes = [] } = useLiveQuery(
         db.widget_types.liveMany({
           where: {
             widget_type_id: {
