@@ -13,7 +13,6 @@ export const DesigningButton = memo(() => {
   const { project_id } = useParams()
 
   const { db } = useElectric()!
-
   const { results: uiOption } = useLiveQuery(
     db.ui_options.liveUnique({ where: { user_id } }),
   )
@@ -39,7 +38,7 @@ export const DesigningButton = memo(() => {
   )
   const userRole = projectUser?.role
 
-  console.log('hello DesigningButton', { userRole, userIsOwner })
+  // console.log('hello DesigningButton', { userRole, userIsOwner, designing })
   const userMayEdit = userIsOwner || userRole === 'manager'
 
   if (!userMayEdit) return null
@@ -47,9 +46,14 @@ export const DesigningButton = memo(() => {
   return (
     <ToggleButton
       checked={designing}
-      title={`${designing ? 'not ' : ''}designing`}
+      title={
+        designing
+          ? 'designing. Click to stop designing '
+          : 'click to start dsigning'
+      }
       icon={<MdOutlineDesignServices />}
       onClick={onClickDesigning}
+      style={{ color: designing ? 'black' : 'grey' }}
     />
   )
 })

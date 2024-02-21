@@ -24,7 +24,7 @@ import { DateTimeField } from '../DateTimeField'
 import { accountTables } from '../../../routes/field/Form'
 import { FieldFormInForm } from '../FieldFormInForm'
 import { EditField } from '../EditField'
-import { AddField } from '../AddField'
+import { AddField } from './AddField'
 
 // TODO: if editing a field, show the field form
 // and focus the name field on first render?

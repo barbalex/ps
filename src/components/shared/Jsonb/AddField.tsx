@@ -2,9 +2,11 @@ import { useCallback } from 'react'
 import { Button } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
 import { useParams, useSearchParams } from 'react-router-dom'
+import { useLiveQuery } from 'electric-sql/react'
 
-import { useElectric } from '../../ElectricProvider'
-import { createField } from '../../modules/createRows'
+import { useElectric } from '../../../ElectricProvider'
+import { createField } from '../../../modules/createRows'
+import { user_id } from '../../SqlInitializer'
 
 const buttonStyle = {
   minHeight: 32,
@@ -24,12 +26,18 @@ export const AddField = ({ tableName, level }) => {
   const [searchParams, setSearchParams] = useSearchParams()
 
   const { db } = useElectric()!
+  const { results: uiOption } = useLiveQuery(
+    db.ui_options.liveUnique({ where: { user_id } }),
+  )
+  const designing = uiOption?.designing
 
   const addRow = useCallback(async () => {
     const newField = createField({ project_id, table_name: tableName, level })
     await db.fields.create({ data: newField })
     setSearchParams({ editingField: newField.field_id })
   }, [db.fields, level, project_id, setSearchParams, tableName])
+
+  if (!designing) return null
 
   return (
     <Button
