@@ -9,17 +9,22 @@ import { ListViewHeader } from '../components/ListViewHeader'
 import { Row } from '../components/shared/Row'
 import '../form.css'
 
+type ObservationSourceResults = {
+  results: ObservationSource[]
+}
+
 export const Component = () => {
   const { project_id } = useParams()
   const navigate = useNavigate()
 
-  const { db } = useElectric()
-  const { results } = useLiveQuery(
-    db.observation_sources.liveMany({
-      where: { project_id, deleted: false },
-      orderBy: { label: 'asc' },
-    }),
-  )
+  const { db } = useElectric()!
+  const { results: observationSources = [] }: ObservationSourceResults =
+    useLiveQuery(
+      db.observation_sources.liveMany({
+        where: { project_id, deleted: false },
+        orderBy: { label: 'asc' },
+      }),
+    )
 
   const add = useCallback(async () => {
     const data = await createObservationSource({
@@ -31,8 +36,6 @@ export const Component = () => {
       `/projects/${project_id}/observation-sources/${data.observation_source_id}`,
     )
   }, [db, navigate, project_id])
-
-  const observationSources: ObservationSource[] = results ?? []
 
   return (
     <div className="list-view">

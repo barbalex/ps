@@ -12,15 +12,17 @@ import { FormHeader } from '../components/FormHeader'
 
 import '../form.css'
 
+type UiOptionResult = {
+  results: UiOption
+}
+
 export const Component = () => {
   const { user_id } = useParams()
 
-  const { db } = useElectric()
-  const { results } = useLiveQuery(
+  const { db } = useElectric()!
+  const { results: row }: UiOptionResult = useLiveQuery(
     db.ui_options.liveUnique({ where: { user_id } }),
   )
-
-  const row: UiOption = results
 
   const onChange: InputProps['onChange'] = useCallback(
     (e, data) => {
