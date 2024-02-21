@@ -2,16 +2,11 @@ import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate } from 'react-router-dom'
 
-import { ActionReportValues as ActionReportValue } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { createActionReportValue } from '../modules/createRows'
 import { ListViewHeader } from '../components/ListViewHeader'
 import { Row } from '../components/shared/Row'
 import '../form.css'
-
-type ActionReportValueResults = {
-  results: ActionReportValue[]
-}
 
 export const Component = () => {
   const {
@@ -25,13 +20,12 @@ export const Component = () => {
   const navigate = useNavigate()
 
   const { db } = useElectric()!
-  const { results: actionReportValues = [] }: ActionReportValueResults =
-    useLiveQuery(
-      db.action_report_values.liveMany({
-        where: { action_report_id, deleted: false },
-        orderBy: { label: 'asc' },
-      }),
-    )
+  const { results: actionReportValues = [] } = useLiveQuery(
+    db.action_report_values.liveMany({
+      where: { action_report_id, deleted: false },
+      orderBy: { label: 'asc' },
+    }),
+  )
 
   const add = useCallback(async () => {
     const actionReportValue = createActionReportValue()

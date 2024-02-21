@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
 import { DropdownFieldSimpleOptions } from './DropdownFieldSimpleOptions'
-import { Fields as Field } from '../../generated/client'
 
 import '../../form.css'
 
@@ -16,16 +15,13 @@ type Props = {
   label?: string
   name: string
 }
-type FieldResults = {
-  results: Field[]
-}
 
 export const LabelBy = memo(
   ({ onChange, value, extraFieldNames = [], table, label, name }: Props) => {
-    const { db } = useElectric()!
     const { project_id } = useParams()
 
-    const { results: fields = [] }: FieldResults = useLiveQuery(
+    const { db } = useElectric()!
+    const { results: fields = [] } = useLiveQuery(
       db.fields.liveMany({
         where: {
           table_name: table,
