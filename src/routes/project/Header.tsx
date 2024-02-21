@@ -2,11 +2,13 @@ import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { MdOutlineDesignServices } from 'react-icons/md'
 import { ToggleButton } from '@fluentui/react-components'
+import { useLiveQuery } from 'electric-sql/react'
 
 import { createProject } from '../../modules/createRows'
 import { useElectric } from '../../ElectricProvider'
 import { FormHeader } from '../../components/FormHeader'
 import { upsertTableVectorLayersForProject } from '../../modules/upsertTableVectorLayersForProject'
+import { user_id } from '../../components/SqlInitializer'
 
 type Props = {
   autoFocusRef: React.RefObject<HTMLInputElement>
@@ -62,6 +64,21 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     navigate(`/projects/${previous.project_id}`)
   }, [db.projects, navigate, project_id])
 
+  const { results: uiOption } = useLiveQuery(
+    db.ui_options.liveUnique({ where: { user_id } }),
+  )
+  // TODO: modularize to reduce renders
+  const designing = uiOption?.designing ?? false
+  const onClickDesigning = useCallback(() => {
+    console.log('click')
+    db.ui_options.update({
+      where: { user_id },
+      data: { designing: !designing },
+    })
+  }, [db.ui_options, designing])
+
+  console.log('hello project form header', { designing, uiOption, user_id })
+
   return (
     <FormHeader
       title="Project"
@@ -70,7 +87,14 @@ export const Header = memo(({ autoFocusRef }: Props) => {
       toNext={toNext}
       toPrevious={toPrevious}
       tableName="project"
-      siblings={<ToggleButton>Edit Project</ToggleButton>}
+      siblings={
+        <ToggleButton
+          checked={designing}
+          title={`${designing ? 'not ' : ''}designing`}
+          icon={<MdOutlineDesignServices />}
+          onClick={onClickDesigning}
+        />
+      }
     />
   )
 })
