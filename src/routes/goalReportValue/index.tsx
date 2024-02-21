@@ -3,7 +3,6 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 
-import { GoalReportValues as GoalReportValue } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
 import { TextField } from '../../components/shared/TextField'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
@@ -18,12 +17,10 @@ export const Component = () => {
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const { db } = useElectric()
-  const { results } = useLiveQuery(
+  const { db } = useElectric()!
+  const { results: row } = useLiveQuery(
     db.goal_report_values.liveUnique({ where: { goal_report_value_id } }),
   )
-
-  const row: GoalReportValue = results
 
   const unitWhere = useMemo(() => ({ use_for_goal_report_values: true }), [])
   const unitOrderBy = useMemo(() => [{ sort: 'asc' }, { name: 'asc' }], [])
