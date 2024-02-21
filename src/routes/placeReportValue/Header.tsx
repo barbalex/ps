@@ -16,7 +16,7 @@ export const Header = memo(({ autoFocusRef }) => {
   } = useParams()
   const navigate = useNavigate()
 
-  const { db } = useElectric()
+  const { db } = useElectric()!
 
   const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
     place_id2 ? `/places/${place_id2}` : ''
