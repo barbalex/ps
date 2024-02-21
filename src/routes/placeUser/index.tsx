@@ -1,9 +1,8 @@
-import { useCallback, useMemo, useRef } from 'react'
+import { useCallback, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 
-import { PlaceUsers as PlaceUser } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { DropdownField } from '../../components/shared/DropdownField'
@@ -13,19 +12,17 @@ import { Header } from './Header'
 
 import '../../form.css'
 
+const userWhere = { deleted: false }
+
 export const Component = () => {
   const { place_user_id } = useParams()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const { db } = useElectric()
-  const { results } = useLiveQuery(
+  const { db } = useElectric()!
+  const { results: row } = useLiveQuery(
     db.place_users.liveUnique({ where: { place_user_id } }),
   )
-
-  const row: PlaceUser = results
-
-  const userWhere = useMemo(() => ({ deleted: false }), [])
 
   const onChange: InputProps['onChange'] = useCallback(
     (e, data) => {
