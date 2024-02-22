@@ -28,12 +28,16 @@ export const Editing = () => {
   )
   const designing = uiOption?.designing ?? false
 
-  const onClick = useCallback(() => {
-    db.ui_options.update({
-      where: { user_id },
-      data: { designing: !designing },
-    })
-  }, [db.ui_options, designing])
+  const onClick = useCallback(
+    (e) => {
+      e.stopPropagation()
+      db.ui_options.update({
+        where: { user_id },
+        data: { designing: !designing },
+      })
+    },
+    [db.ui_options, designing],
+  )
 
   const { results: project } = useLiveQuery(
     db.projects.liveUnique({ where: { project_id } }),
