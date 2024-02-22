@@ -1,7 +1,19 @@
 import { useCallback, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
+import {
+  makeStyles,
+  shorthands,
+  tokens,
+  Tab,
+  TabList,
+} from '@fluentui/react-components'
+import type {
+  SelectTabData,
+  SelectTabEvent,
+  TabValue,
+} from '@fluentui/react-components'
 
 import { useElectric } from '../../ElectricProvider'
 import { TextField } from '../../components/shared/TextField'
@@ -15,6 +27,14 @@ import '../../form.css'
 
 export const Component = () => {
   const { subproject_id } = useParams()
+
+  const [searchParams, setSearchParams] = useSearchParams()
+  const tab = searchParams.get('tab') ?? 'form'
+  const onTabSelect = useCallback(
+    (event: SelectTabEvent, data: SelectTabData) =>
+      setSearchParams({ tab: data.value }),
+    [],
+  )
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -43,7 +63,32 @@ export const Component = () => {
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
-      <SubprojectForm autoFocusRef={autoFocusRef} />
+      <TabList selectedValue={tab} onTabSelect={onTabSelect}>
+        <Tab id="form" value="form">
+          Form
+        </Tab>
+        <Tab id="files" value="files">
+          Files
+        </Tab>
+        <Tab id="analysis" value="analysis">
+          Analysis
+        </Tab>
+      </TabList>
+      {tab === 'form' && (
+        <div role="tabpanel" aria-labelledby="form">
+          <SubprojectForm autoFocusRef={autoFocusRef} />
+        </div>
+      )}
+      {tab === 'files' && (
+        <div role="tabpanel" aria-labelledby="files">
+          <div>files</div>
+        </div>
+      )}
+      {tab === 'analysis' && (
+        <div role="tabpanel" aria-labelledby="analysis">
+          <div>analysis</div>
+        </div>
+      )}
     </div>
   )
 }
