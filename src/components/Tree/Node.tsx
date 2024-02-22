@@ -34,7 +34,6 @@ export const Node = ({
   onClickButton,
   sibling,
 }) => {
-  sibling && console.log('sibling', sibling)
   return (
     <div
       style={{
