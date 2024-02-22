@@ -1,13 +1,23 @@
-import { useCallback, memo } from 'react'
-import { useParams } from 'react-router-dom'
-import { MdOutlineDesignServices, MdEdit, MdEditOff } from 'react-icons/md'
-import { ToggleButton } from '@fluentui/react-components'
+import { useCallback } from 'react'
+import { MdEdit, MdEditOff } from 'react-icons/md'
 import { useLiveQuery } from 'electric-sql/react'
+import { Button } from '@fluentui/react-components'
+import { useParams } from 'react-router-dom'
 
-import { useElectric } from '../../ElectricProvider'
-import { user_id } from '../../components/SqlInitializer'
+import { useElectric } from '../../../ElectricProvider'
+import { user_id } from '../../SqlInitializer'
 
-export const DesigningButton = memo(() => {
+const buttonStyle = {
+  borderRadius: 20,
+  border: 'none',
+  color: 'rgb(51, 51, 51) !important',
+}
+
+const svgStyle = {
+  fontSize: 'medium',
+}
+
+export const Editing = () => {
   const { project_id } = useParams()
 
   const { db } = useElectric()!
@@ -15,7 +25,8 @@ export const DesigningButton = memo(() => {
     db.ui_options.liveUnique({ where: { user_id } }),
   )
   const designing = uiOption?.designing ?? false
-  const onClickDesigning = useCallback(() => {
+
+  const onClick = useCallback(() => {
     db.ui_options.update({
       where: { user_id },
       data: { designing: !designing },
@@ -41,13 +52,18 @@ export const DesigningButton = memo(() => {
   if (!userMayDesign) return null
 
   return (
-    <ToggleButton
-      checked={designing}
+    <Button
+      size="small"
+      icon={
+        designing ? <MdEdit style={svgStyle} /> : <MdEditOff style={svgStyle} />
+      }
+      onClick={onClick}
+      style={buttonStyle}
       title={
         designing ? 'Designing this project. Click to stop' : 'Start designing'
       }
-      icon={designing ? <MdEdit /> : <MdEditOff />}
-      onClick={onClickDesigning}
     />
   )
-})
+
+  // return <MdEdit title="designing" />
+}

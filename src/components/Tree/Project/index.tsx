@@ -1,20 +1,21 @@
 import { useCallback } from 'react'
 import { useLocation, useParams, useNavigate } from 'react-router-dom'
 
-import { Node } from './Node'
+import { Node } from '../Node'
 import { Projects as Project } from '../../../generated/client'
-import { SubprojectsNode } from './Subprojects'
-import { ProjectReportsNode } from './ProjectReports'
-import { PersonsNode } from './Persons'
-import { ListsNode } from './Lists'
-import { TaxonomiesNode } from './Taxonomies'
-import { UnitsNode } from './Units'
-import { TileLayersNode } from './TileLayers'
-import { VectorLayersNode } from './VectorLayers'
-import { ProjectUsersNode } from './ProjectUsers'
-import { PlaceLevelsNode } from './PlaceLevels'
-import { FieldsNode } from './Fields'
-import { ObservationSourcesNode } from './ObservationSources'
+import { SubprojectsNode } from '../Subprojects'
+import { ProjectReportsNode } from '../ProjectReports'
+import { PersonsNode } from '../Persons'
+import { ListsNode } from '../Lists'
+import { TaxonomiesNode } from '../Taxonomies'
+import { UnitsNode } from '../Units'
+import { TileLayersNode } from '../TileLayers'
+import { VectorLayersNode } from '../VectorLayers'
+import { ProjectUsersNode } from '../ProjectUsers'
+import { PlaceLevelsNode } from '../PlaceLevels'
+import { FieldsNode } from '../Fields'
+import { ObservationSourcesNode } from '../ObservationSources'
+import { Editing } from './Editing'
 
 export const ProjectNode = ({
   project,
@@ -48,6 +49,7 @@ export const ProjectNode = ({
         childrenCount={10}
         to={`/projects/${project.project_id}`}
         onClickButton={onClickButton}
+        sibling={<Editing />}
       />
       {isOpen && (
         <>
