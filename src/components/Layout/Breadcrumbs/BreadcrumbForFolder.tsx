@@ -8,6 +8,10 @@ import { buildNavs } from '../../../modules/navs'
 import { idFieldFromTable } from '../../../modules/idFieldFromTable'
 import { Menu } from './Menu'
 
+const siblingStyle = {
+  marginLeft: 7,
+}
+
 // forwarding refs is crucial for the overflow menu to work
 // https://github.com/microsoft/fluentui/issues/27652#issuecomment-1520447241
 export const BreadcrumbForFolder = forwardRef(
@@ -29,7 +33,7 @@ export const BreadcrumbForFolder = forwardRef(
       observation_source_id,
     } = match.params
 
-    const { text, table } = match?.handle?.crumb?.(match) ?? {}
+    const { text, table, sibling } = match?.handle?.crumb?.(match) ?? {}
     const className =
       location.pathname === match.pathname
         ? `breadcrumbs__crumb${forOverflowMenu ? '__menu-item' : ''} is-active`
@@ -124,6 +128,7 @@ export const BreadcrumbForFolder = forwardRef(
         ref={ref}
       >
         <div className="text">{label}</div>
+        {!!sibling && <div style={siblingStyle}>{sibling}</div>}
         <Menu navs={navs} />
       </div>
     )

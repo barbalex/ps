@@ -6,11 +6,13 @@ import { useParams } from 'react-router-dom'
 
 import { useElectric } from '../../../ElectricProvider'
 import { user_id } from '../../SqlInitializer'
+import { css } from '../../../css'
 
 const buttonStyle = {
   borderRadius: 20,
   border: 'none',
   color: 'rgb(51, 51, 51) !important',
+  backgroundColor: 'transparent',
 }
 
 const svgStyle = {
@@ -58,12 +60,15 @@ export const Editing = () => {
         designing ? <MdEdit style={svgStyle} /> : <MdEditOff style={svgStyle} />
       }
       onClick={onClick}
-      style={buttonStyle}
+      style={css({
+        ...buttonStyle,
+        on: ($) => [
+          $('&:hover', { filter: 'brightness(0.8)', backgroundColor: 'white' }),
+        ],
+      })}
       title={
         designing ? 'Designing this project. Click to stop' : 'Start designing'
       }
     />
   )
-
-  // return <MdEdit title="designing" />
 }
