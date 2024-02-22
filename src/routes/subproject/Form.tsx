@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
@@ -9,14 +9,9 @@ import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { Jsonb } from '../../components/shared/Jsonb'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { Header } from './Header'
-import { SubprojectForm } from './Form'
 
-import '../../form.css'
-
-export const Component = () => {
+export const SubprojectForm = memo(({ autoFocusRef }) => {
   const { subproject_id } = useParams()
-
-  const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const { db } = useElectric()!
   const { results: row } = useLiveQuery(
@@ -41,9 +36,33 @@ export const Component = () => {
   // console.log('subproject, row.data:', row?.data)
 
   return (
-    <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} />
-      <SubprojectForm autoFocusRef={autoFocusRef} />
+    <div className="form-container">
+      <TextFieldInactive
+        label="ID"
+        name="subproject_id"
+        value={row.subproject_id ?? ''}
+      />
+      <TextField
+        label="Name"
+        name="name"
+        value={row.name ?? ''}
+        onChange={onChange}
+        autoFocus
+        ref={autoFocusRef}
+      />
+      <TextField
+        label="Since year"
+        name="since_year"
+        value={row.since_year ?? ''}
+        type="number"
+        onChange={onChange}
+      />
+      <Jsonb
+        table="subprojects"
+        idField="subproject_id"
+        id={row.subproject_id}
+        data={row.data ?? {}}
+      />
     </div>
   )
-}
+})
