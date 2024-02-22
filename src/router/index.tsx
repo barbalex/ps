@@ -5,6 +5,7 @@ import { ErrorPage } from '../routes/error'
 import { buildNavs } from '../modules/navs'
 import { placesChildren } from './placesChildren'
 import { placesLevel2 } from './placesLevel2'
+import { Editing as EditingProject } from '../components/Tree/Project/Editing'
 
 export const router = (db) => {
   // confirmed: this is called only once
@@ -51,6 +52,7 @@ export const router = (db) => {
                       text: match.params.project_id,
                       table: 'projects',
                       folder: false,
+                      sibling: <EditingProject />,
                     }),
                     to: async (match) =>
                       await buildNavs({

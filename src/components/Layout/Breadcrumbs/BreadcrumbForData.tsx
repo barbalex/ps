@@ -11,13 +11,17 @@ export const tablesWithoutDeleted = ['root', 'docs', 'accounts', 'messages']
 
 const isOdd = (num) => num % 2
 
+const siblingStyle = {
+  marginLeft: 7,
+}
+
 // forwarding refs is crucial for the overflow menu to work
 // https://github.com/microsoft/fluentui/issues/27652#issuecomment-1520447241
 export const BreadcrumbForData = forwardRef(
   ({ match, forOverflowMenu }, ref) => {
     const navigate = useNavigate()
 
-    const { text, table } = match?.handle?.crumb?.(match) ?? {}
+    const { text, table, sibling } = match?.handle?.crumb?.(match) ?? {}
     const className =
       location.pathname === match.pathname
         ? `breadcrumbs__crumb${forOverflowMenu ? '__menu-item' : ''} is-active`
@@ -133,19 +137,19 @@ export const BreadcrumbForData = forwardRef(
     }, [db, levelWanted, match, match.params, match.params.project_id, table])
 
     // console.log('BreadcrumbForData', {
-    //   table,
-    //   params: match.params,
-    //   text,
-    //   label,
-    //   results,
-    //   pathname: match.pathname,
-    //   myNavs,
-    //   filterParams,
-    //   idField,
-    //   path,
-    //   parentId,
-    //   parentIdName
-    // })
+    //     table,
+    //     params: match.params,
+    //     text,
+    //     label,
+    //     results,
+    //     pathname: match.pathname,
+    //     myNavs,
+    //     filterParams,
+    //     idField,
+    //     path,
+    //     parentId,
+    //     parentIdName,
+    //   })
 
     return (
       <div
@@ -154,6 +158,7 @@ export const BreadcrumbForData = forwardRef(
         ref={ref}
       >
         <div className="text">{label}</div>
+        {!!sibling && <div style={siblingStyle}>{sibling}</div>}
         <Menu navs={navs} />
       </div>
     )
