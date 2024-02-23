@@ -1,4 +1,4 @@
-import { useCallback, useRef, memo } from 'react'
+import { useCallback, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
@@ -8,7 +8,6 @@ import { TextField } from '../../components/shared/TextField'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { Jsonb } from '../../components/shared/Jsonb'
 import { getValueFromChange } from '../../modules/getValueFromChange'
-import { Header } from './Header'
 
 export const SubprojectForm = memo(({ autoFocusRef }) => {
   const { subproject_id } = useParams()
@@ -36,7 +35,7 @@ export const SubprojectForm = memo(({ autoFocusRef }) => {
   // console.log('subproject, row.data:', row?.data)
 
   return (
-    <div className="form-container">
+    <div className="form-container" role="tabpanel" aria-labelledby="form">
       <TextFieldInactive
         label="ID"
         name="subproject_id"

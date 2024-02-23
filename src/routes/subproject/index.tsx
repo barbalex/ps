@@ -1,18 +1,14 @@
 import { useCallback, useRef } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
-import { useParams, useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import { Tab, TabList } from '@fluentui/react-components'
 import type { SelectTabData, SelectTabEvent } from '@fluentui/react-components'
 
-import { useElectric } from '../../ElectricProvider'
 import { Header } from './Header'
 import { SubprojectForm } from './Form'
 
 import '../../form.css'
 
 export const Component = () => {
-  const { subproject_id } = useParams()
-
   const [searchParams, setSearchParams] = useSearchParams()
   const tab = searchParams.get('tab') ?? 'form'
   const onTabSelect = useCallback(
@@ -42,11 +38,7 @@ export const Component = () => {
           Analysis
         </Tab>
       </TabList>
-      {tab === 'form' && (
-        <div role="tabpanel" aria-labelledby="form">
-          <SubprojectForm autoFocusRef={autoFocusRef} />
-        </div>
-      )}
+      {tab === 'form' && <SubprojectForm autoFocusRef={autoFocusRef} />}
       {tab === 'files' && (
         <div role="tabpanel" aria-labelledby="files" className="form-container">
           <div>files</div>
