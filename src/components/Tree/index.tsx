@@ -1,3 +1,5 @@
+import { memo } from 'react'
+
 import { ProjectsNode } from './Projects'
 import { UsersNode } from './Users'
 import { AccountsNode } from './Accounts'
@@ -14,18 +16,16 @@ const containerStyle = {
   overflow: 'auto',
 }
 
-export const Tree = () => {
-  return (
-    <div style={containerStyle}>
-      <ProjectsNode />
-      <UsersNode />
-      <AccountsNode />
-      <FieldTypesNode />
-      <WidgetTypesNode />
-      <WidgetsForFieldsNode />
-      <FieldsNode />
-      <FilesNode level={1} />
-      <MessagesNode />
-    </div>
-  )
-}
+export const Tree = memo(() => (
+  <div style={containerStyle}>
+    <ProjectsNode />
+    <UsersNode />
+    <AccountsNode />
+    <FieldTypesNode />
+    <WidgetTypesNode />
+    <WidgetsForFieldsNode />
+    <FieldsNode />
+    <FilesNode level={1} />
+    <MessagesNode />
+  </div>
+))
