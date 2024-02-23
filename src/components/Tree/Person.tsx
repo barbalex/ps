@@ -1,18 +1,16 @@
-import { useCallback } from 'react'
+import { useCallback, memo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { Node } from './Node'
 import { Persons as Person } from '../../../generated/client'
 
-export const PersonNode = ({
-  project_id,
-  person,
-  level = 4,
-}: {
+type Props = {
   project_id: string
   person: Person
-  level: number
-}) => {
+  level?: number
+}
+
+export const PersonNode = memo(({ project_id, person, level = 4 }: Props) => {
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -24,10 +22,12 @@ export const PersonNode = ({
     urlPath[3] === person.person_id
   const isActive = isOpen && urlPath.length === 4
 
+  const baseUrl = `/projects/${project_id}/persons`
+
   const onClickButton = useCallback(() => {
-    if (isOpen) return navigate(`/projects/${project_id}/persons`)
-    navigate(`/projects/${project_id}/persons/${person.person_id}`)
-  }, [isOpen, navigate, project_id, person.person_id])
+    if (isOpen) return navigate(baseUrl)
+    navigate(`${baseUrl}/${person.person_id}`)
+  }, [isOpen, navigate, baseUrl, person.person_id])
 
   return (
     <Node
@@ -37,8 +37,8 @@ export const PersonNode = ({
       isInActiveNodeArray={isOpen}
       isActive={isActive}
       childrenCount={0}
-      to={`/projects/${project_id}/persons/${person.person_id}`}
+      to={`${baseUrl}/${person.person_id}`}
       onClickButton={onClickButton}
     />
   )
-}
+})
