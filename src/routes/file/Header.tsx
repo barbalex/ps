@@ -6,15 +6,17 @@ import { useElectric } from '../../ElectricProvider'
 import { FormHeader } from '../../components/FormHeader'
 
 export const Header = memo(() => {
-  const { project_id, file_id } = useParams()
+  const { project_id = null, subproject_id = null, file_id } = useParams()
   const navigate = useNavigate()
 
   const { db } = useElectric()!
 
-  const baseUrl = `${project_id ? `/projects/${project_id}` : ''}/files`
+  const baseUrl = `${project_id ? `/projects/${project_id}` : ''}${
+    subproject_id ? `/subprojects/${subproject_id}` : ''
+  }/files`
 
   const addRow = useCallback(async () => {
-    const data = await createFile({ db, project_id })
+    const data = await createFile({ db, project_id, subproject_id })
     await db.files.create({ data })
     navigate(`${baseUrl}/${data.file_id}`)
   }, [db, navigate])
@@ -26,7 +28,11 @@ export const Header = memo(() => {
 
   const toNext = useCallback(async () => {
     const files = await db.files.findMany({
-      where: { deleted: false, ...(project_id ? { project_id } : {}) },
+      where: {
+        deleted: false,
+        project_id,
+        subproject_id,
+      },
       orderBy: { label: 'asc' },
     })
     const len = files.length
@@ -37,7 +43,11 @@ export const Header = memo(() => {
 
   const toPrevious = useCallback(async () => {
     const files = await db.files.findMany({
-      where: { deleted: false, ...(project_id ? { project_id } : {}) },
+      where: {
+        deleted: false,
+        project_id,
+        subproject_id,
+      },
       orderBy: { label: 'asc' },
     })
     const len = files.length
@@ -53,7 +63,7 @@ export const Header = memo(() => {
       deleteRow={deleteRow}
       toNext={toNext}
       toPrevious={toPrevious}
-      tableName="file value"
+      tableName="file"
     />
   )
 })

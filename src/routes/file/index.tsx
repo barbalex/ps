@@ -14,7 +14,7 @@ import { Header } from './Header'
 import '../../form.css'
 
 export const Component = () => {
-  const { project_id, file_id } = useParams()
+  const { project_id, subproject_id, file_id } = useParams()
 
   const { db } = useElectric()!
   const { results: row } = useLiveQuery(

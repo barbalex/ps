@@ -12,20 +12,26 @@ import { useElectric } from '../ElectricProvider'
 
 export const Component = () => {
   const navigate = useNavigate()
-  const { project_id } = useParams()
+  const { project_id = null, subproject_id = null } = useParams()
 
   const { db } = useElectric()!
   const { results: files = [] } = useLiveQuery(
     db.files.liveMany({
-      where: { deleted: false, ...(project_id ? { project_id } : {}) },
+      where: {
+        deleted: false,
+        project_id,
+        subproject_id,
+      },
       orderBy: { label: 'asc' },
     }),
   )
 
-  const baseUrl = `${project_id ? `/projects/${project_id}` : ''}/files`
+  const baseUrl = `${project_id ? `/projects/${project_id}` : ''}${
+    subproject_id ? `/subprojects/${subproject_id}` : ''
+  }/files`
 
   const add = useCallback(async () => {
-    const data = await createFile({ db, project_id })
+    const data = await createFile({ db, project_id, subproject_id })
     await db.files.create({ data })
     navigate(`${baseUrl}/${data.file_id}`)
   }, [db, navigate])

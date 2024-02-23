@@ -10,13 +10,25 @@ type Props = {
   level: number
 }
 
-export const FileNode = ({ project_id, file, level = 2 }: Props) => {
+export const FileNode = ({
+  project_id,
+  subproject_id,
+  file,
+  level = 2,
+}: Props) => {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const isOpen = project_id
+  const isOpen = subproject_id
+    ? urlPath[0] === 'projects' &&
+      urlPath[1] === project_id &&
+      urlPath[2] === 'subprojects' &&
+      urlPath[3] === subproject_id &&
+      urlPath[4] === 'files' &&
+      params.file_id === file.file_id
+    : project_id
     ? urlPath[0] === 'projects' &&
       urlPath[1] === project_id &&
       urlPath[2] === 'files' &&
@@ -24,9 +36,9 @@ export const FileNode = ({ project_id, file, level = 2 }: Props) => {
     : urlPath[0] === 'files' && params.file_id === file.file_id
   const isActive = isOpen && urlPath.length === level
 
-  const baseUrl = `${project_id ? `/projects/${project_id}` : ''}/files/${
-    file.file_id
-  }`
+  const baseUrl = `${project_id ? `/projects/${project_id}` : ''}${
+    subproject_id ? `/subprojects/${subproject_id}` : ''
+  }/files/${file.file_id}`
 
   const onClickButton = useCallback(() => {
     if (isOpen) return navigate('/files')

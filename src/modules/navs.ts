@@ -119,6 +119,10 @@ export const buildNavs = async ({
           path: `/projects/${project_id}/subprojects/${subproject_id}/users`,
           text: 'Users',
         },
+        {
+          path: `/projects/${project_id}/subprojects/${subproject_id}/files`,
+          text: 'Files',
+        },
       ]
     }
     case 'places': {

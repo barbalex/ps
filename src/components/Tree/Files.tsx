@@ -7,18 +7,25 @@ import { Node } from './Node'
 import { Files as File } from '../../../generated/client'
 import { FileNode } from './File'
 
-export const FilesNode = ({ project_id, level }) => {
+export const FilesNode = ({
+  project_id = null,
+  subproject_id = null,
+  level,
+}) => {
   const location = useLocation()
   const navigate = useNavigate()
 
   const { db } = useElectric()!
-  const { results } = useLiveQuery(
+  const { results: files = [] } = useLiveQuery(
     db.files.liveMany({
-      where: { deleted: false, ...(project_id ? { project_id } : {}) },
+      where: {
+        deleted: false,
+        project_id,
+        subproject_id,
+      },
       orderBy: { label: 'asc' },
     }),
   )
-  const files: File[] = results ?? []
 
   const filesNode = useMemo(
     () => ({ label: `Files (${files.length})` }),
@@ -26,14 +33,22 @@ export const FilesNode = ({ project_id, level }) => {
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const isOpen = project_id
+  const isOpen = subproject_id
+    ? urlPath[0] === 'projects' &&
+      urlPath[1] === project_id &&
+      urlPath[2] === 'subprojects' &&
+      urlPath[3] === subproject_id &&
+      urlPath[4] === 'files'
+    : project_id
     ? urlPath[0] === 'projects' &&
       urlPath[1] === project_id &&
       urlPath[2] === 'files'
     : urlPath[0] === 'files'
   const isActive = isOpen && urlPath.length === level
 
-  const baseUrl = `${project_id ? `/projects/${project_id}` : ''}/files`
+  const baseUrl = `${project_id ? `/projects/${project_id}` : ''}${
+    subproject_id ? `/subprojects/${subproject_id}` : ''
+  }/files`
 
   const onClickButton = useCallback(() => {
     if (isOpen) return navigate('/')
@@ -57,6 +72,7 @@ export const FilesNode = ({ project_id, level }) => {
           <FileNode
             key={file.file_id}
             project_id={project_id}
+            subproject_id={subproject_id}
             file={file}
             level={level + 1}
           />

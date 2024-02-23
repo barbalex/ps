@@ -8,6 +8,7 @@ import { SubprojectReportsNode } from './SubprojectReports'
 import { GoalsNode } from './Goals'
 import { SubprojectTaxaNode } from './SubprojectTaxa'
 import { SubprojectUsersNode } from './SubprojectUsers'
+import { FilesNode } from './Files'
 
 export const SubprojectNode = ({
   project_id,
@@ -67,6 +68,11 @@ export const SubprojectNode = ({
           <SubprojectUsersNode
             project_id={project_id}
             subproject_id={subproject.subproject_id}
+          />
+          <FilesNode
+            project_id={project_id}
+            subproject_id={subproject.subproject_id}
+            level={5}
           />
         </>
       )}
