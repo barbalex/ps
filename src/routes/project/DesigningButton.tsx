@@ -1,6 +1,6 @@
 import { useCallback, memo } from 'react'
 import { useParams } from 'react-router-dom'
-import { MdOutlineDesignServices, MdEdit, MdEditOff } from 'react-icons/md'
+import { MdEdit, MdEditOff } from 'react-icons/md'
 import { ToggleButton } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 
