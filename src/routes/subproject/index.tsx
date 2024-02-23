@@ -80,12 +80,16 @@ export const Component = () => {
         </div>
       )}
       {tab === 'files' && (
-        <div role="tabpanel" aria-labelledby="files">
+        <div role="tabpanel" aria-labelledby="files" className="form-container">
           <div>files</div>
         </div>
       )}
       {tab === 'analysis' && (
-        <div role="tabpanel" aria-labelledby="analysis">
+        <div
+          role="tabpanel"
+          aria-labelledby="analysis"
+          className="form-container"
+        >
           <div>analysis</div>
         </div>
       )}
