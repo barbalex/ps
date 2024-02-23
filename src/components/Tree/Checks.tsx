@@ -5,9 +5,18 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useElectric } from '../../ElectricProvider'
 import { Node } from './Node'
 import { CheckNode } from './Check'
+import { Places as Place } from '../../generated/client'
+
+type Props = {
+  project_id: string
+  subproject_id: string
+  place_id?: string
+  place: Place
+  level?: number
+}
 
 export const ChecksNode = memo(
-  ({ project_id, subproject_id, place_id, place, level = 7 }) => {
+  ({ project_id, subproject_id, place_id, place, level = 7 }: Props) => {
     const location = useLocation()
     const navigate = useNavigate()
 

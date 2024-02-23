@@ -5,6 +5,17 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useElectric } from '../../ElectricProvider'
 import { Node } from './Node'
 import { ActionReportValueNode } from './ActionReportValue'
+import { Places as Place } from '../../generated/client'
+
+type Props = {
+  project_id: string
+  subproject_id: string
+  place_id?: string
+  place: Place
+  action_id: string
+  action_report_id: string
+  level?: number
+}
 
 export const ActionReportValuesNode = memo(
   ({
@@ -15,7 +26,7 @@ export const ActionReportValuesNode = memo(
     action_id,
     action_report_id,
     level = 11,
-  }) => {
+  }: Props) => {
     const location = useLocation()
     const navigate = useNavigate()
 
