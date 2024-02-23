@@ -22,6 +22,7 @@ type Props = {
   project: Project
   level?: number
 }
+
 export const ProjectNode = memo(({ project, level = 2 }: Props) => {
   const params = useParams()
   const location = useLocation()

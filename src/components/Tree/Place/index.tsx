@@ -5,18 +5,15 @@ import { Node } from '../Node'
 import { Places as Place } from '../../../generated/client'
 import { PlaceChildren } from './Children'
 
+type Props = {
+  project_id: string
+  subproject_id: string
+  place_id?: string
+  place: Place
+}
+
 export const PlaceNode = memo(
-  ({
-    project_id,
-    subproject_id,
-    place_id,
-    place,
-  }: {
-    project_id: string
-    subproject_id: string
-    place_id?: string
-    place: Place
-  }) => {
+  ({ project_id, subproject_id, place_id, place }: Props) => {
     const location = useLocation()
     const navigate = useNavigate()
     const level = place_id ? 8 : 6
