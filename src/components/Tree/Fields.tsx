@@ -1,29 +1,29 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
 import { Node } from './Node'
-import { Fields as Field } from '../../../generated/client'
 import { FieldNode } from './Field'
 
-export const FieldsNode = ({ project_id }) => {
+type Props = {
+  project_id?: string
+}
+
+export const FieldsNode = memo(({ project_id }: Props) => {
   const location = useLocation()
   const navigate = useNavigate()
 
   const { db } = useElectric()!
-  const { results } = useLiveQuery(
+  const { results: fields = [] } = useLiveQuery(
     db.fields.liveMany({
       where: { deleted: false, project_id: project_id ?? null },
       orderBy: { label: 'asc' },
     }),
   )
-  const fields: Field[] = results ?? []
 
   const fieldsNode = useMemo(
-    () => ({
-      label: `Fields (${fields.length})`,
-    }),
+    () => ({ label: `Fields (${fields.length})` }),
     [fields.length],
   )
 
@@ -66,4 +66,4 @@ export const FieldsNode = ({ project_id }) => {
         ))}
     </>
   )
-}
+})

@@ -6,6 +6,7 @@ import { Files as File } from '../../../generated/client'
 
 type Props = {
   project_id?: string
+  subproject_id?: string
   file: File
   level: number
 }
@@ -38,12 +39,12 @@ export const FileNode = ({
 
   const baseUrl = `${project_id ? `/projects/${project_id}` : ''}${
     subproject_id ? `/subprojects/${subproject_id}` : ''
-  }/files/${file.file_id}`
+  }/files`
 
   const onClickButton = useCallback(() => {
-    if (isOpen) return navigate('/files')
-    navigate(baseUrl)
-  }, [isOpen, navigate, file.file_id])
+    if (isOpen) return navigate(baseUrl)
+    navigate(`${baseUrl}/${file.file_id}`)
+  }, [isOpen, navigate, baseUrl, file.file_id])
 
   return (
     <Node
@@ -53,7 +54,7 @@ export const FileNode = ({
       isInActiveNodeArray={isOpen}
       isActive={isActive}
       childrenCount={0}
-      to={baseUrl}
+      to={`${baseUrl}/${file.file_id}`}
       onClickButton={onClickButton}
     />
   )
