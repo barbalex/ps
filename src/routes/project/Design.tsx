@@ -14,6 +14,11 @@ import { FieldList } from '../../components/shared/FieldList'
 import { SwitchField } from '../../components/shared/SwitchField'
 import { user_id } from '../../components/SqlInitializer'
 
+const labelStyle = {
+  color: 'grey',
+  fontWeight: 700,
+}
+
 export const Design = () => {
   const { project_id } = useParams()
 
@@ -42,7 +47,7 @@ export const Design = () => {
 
   return (
     <div className="form-container" role="tabpanel" aria-labelledby="design">
-      <Label>Project configuration</Label>
+      <Label style={labelStyle}>Project configuration</Label>
       <RadioGroupField
         label="Type"
         name="type"
