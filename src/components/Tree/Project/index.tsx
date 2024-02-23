@@ -66,7 +66,7 @@ export const ProjectNode = ({
           <PlaceLevelsNode project_id={project.project_id} />
           <FieldsNode project_id={project.project_id} />
           <ObservationSourcesNode project_id={project.project_id} />
-          <FilesNode project_id={project.project_id} />
+          <FilesNode project_id={project.project_id} level={3} />
         </>
       )}
     </>

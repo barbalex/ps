@@ -24,7 +24,7 @@ export const Tree = () => {
       <WidgetTypesNode />
       <WidgetsForFieldsNode />
       <FieldsNode />
-      <FilesNode />
+      <FilesNode level={1} />
       <MessagesNode />
     </div>
   )

@@ -7,7 +7,7 @@ import { Node } from './Node'
 import { Files as File } from '../../../generated/client'
 import { FileNode } from './File'
 
-export const FilesNode = ({ project_id }) => {
+export const FilesNode = ({ project_id, level }) => {
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -31,7 +31,7 @@ export const FilesNode = ({ project_id }) => {
       urlPath[1] === project_id &&
       urlPath[2] === 'files'
     : urlPath[0] === 'files'
-  const isActive = isOpen && urlPath.length === (project_id ? 3 : 1)
+  const isActive = isOpen && urlPath.length === level
 
   const baseUrl = `${project_id ? `/projects/${project_id}` : ''}/files`
 
@@ -44,7 +44,7 @@ export const FilesNode = ({ project_id }) => {
     <>
       <Node
         node={filesNode}
-        level={1}
+        level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isOpen}
         isActive={isActive}
@@ -53,7 +53,14 @@ export const FilesNode = ({ project_id }) => {
         onClickButton={onClickButton}
       />
       {isOpen &&
-        files.map((file) => <FileNode key={file.file_id} file={file} />)}
+        files.map((file) => (
+          <FileNode
+            key={file.file_id}
+            project_id={project_id}
+            file={file}
+            level={level + 1}
+          />
+        ))}
     </>
   )
 }
