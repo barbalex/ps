@@ -41,7 +41,7 @@ export const Design = () => {
   if (!designing) return null
 
   return (
-    <div className="form-container">
+    <div className="form-container" role="tabpanel" aria-labelledby="design">
       <Label>Project configuration</Label>
       <RadioGroupField
         label="Type"

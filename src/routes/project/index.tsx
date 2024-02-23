@@ -12,12 +12,6 @@ import { user_id } from '../../components/SqlInitializer'
 
 import '../../form.css'
 
-const tabpanelStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  flexGrow: 0,
-}
-
 export const Component = () => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -52,27 +46,21 @@ export const Component = () => {
           Analysis
         </Tab>
       </TabList>
-      <div style={tabpanelStyle}>
-        {tab === 'form' && (
-          <div role="tabpanel" aria-labelledby="form">
-            <Form autoFocusRef={autoFocusRef} />
-          </div>
-        )}
-        {tab === 'design' && designing && (
-          <div role="tabpanel" aria-labelledby="design">
-            <Design />
-          </div>
-        )}
-        {tab === 'analysis' && (
-          <div
-            role="tabpanel"
-            aria-labelledby="analysis"
-            className="form-container"
-          >
-            <div>analysis</div>
-          </div>
-        )}
-      </div>
+      {tab === 'form' && (
+        <div role="tabpanel" aria-labelledby="form">
+          <Form autoFocusRef={autoFocusRef} />
+        </div>
+      )}
+      {tab === 'design' && designing && <Design />}
+      {tab === 'analysis' && (
+        <div
+          role="tabpanel"
+          aria-labelledby="analysis"
+          className="form-container"
+        >
+          <div>analysis</div>
+        </div>
+      )}
     </div>
   )
 }
