@@ -7,33 +7,37 @@ import { Node } from './Node'
 import { Files as File } from '../../../generated/client'
 import { FileNode } from './File'
 
-export const FilesNode = () => {
+export const FilesNode = ({ project_id }) => {
   const location = useLocation()
   const navigate = useNavigate()
 
   const { db } = useElectric()!
   const { results } = useLiveQuery(
     db.files.liveMany({
-      where: { deleted: false },
+      where: { deleted: false, ...(project_id ? { project_id } : {}) },
       orderBy: { label: 'asc' },
     }),
   )
   const files: File[] = results ?? []
 
   const filesNode = useMemo(
-    () => ({
-      label: `Files (${files.length})`,
-    }),
+    () => ({ label: `Files (${files.length})` }),
     [files.length],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const isOpen = urlPath[0] === 'files'
-  const isActive = isOpen && urlPath.length === 1
+  const isOpen = project_id
+    ? urlPath[0] === 'projects' &&
+      urlPath[1] === project_id &&
+      urlPath[2] === 'files'
+    : urlPath[0] === 'files'
+  const isActive = isOpen && urlPath.length === (project_id ? 3 : 1)
+
+  const baseUrl = `${project_id ? `/projects/${project_id}` : ''}/files`
 
   const onClickButton = useCallback(() => {
     if (isOpen) return navigate('/')
-    navigate('/files')
+    navigate(baseUrl)
   }, [isOpen, navigate])
 
   return (
@@ -45,7 +49,7 @@ export const FilesNode = () => {
         isInActiveNodeArray={isOpen}
         isActive={isActive}
         childrenCount={files.length}
-        to={`/files`}
+        to={baseUrl}
         onClickButton={onClickButton}
       />
       {isOpen &&

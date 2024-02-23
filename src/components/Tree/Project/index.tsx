@@ -15,6 +15,7 @@ import { ProjectUsersNode } from '../ProjectUsers'
 import { PlaceLevelsNode } from '../PlaceLevels'
 import { FieldsNode } from '../Fields'
 import { ObservationSourcesNode } from '../ObservationSources'
+import { FilesNode } from '../Files'
 import { Editing } from './Editing'
 
 export const ProjectNode = ({
@@ -65,6 +66,7 @@ export const ProjectNode = ({
           <PlaceLevelsNode project_id={project.project_id} />
           <FieldsNode project_id={project.project_id} />
           <ObservationSourcesNode project_id={project.project_id} />
+          <FilesNode project_id={project.project_id} />
         </>
       )}
     </>
