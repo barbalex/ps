@@ -1,74 +1,77 @@
-import { useCallback, useRef } from 'react'
+import { useRef, useCallback } from 'react'
+import { useSearchParams } from 'react-router-dom'
+import { Tab, TabList } from '@fluentui/react-components'
+import type { SelectTabData, SelectTabEvent } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
-import { useParams } from 'react-router-dom'
-import { Label, Divider } from '@fluentui/react-components'
-import type { InputProps } from '@fluentui/react-components'
 
-import { useElectric } from '../../ElectricProvider'
-import { TextField } from '../../components/shared/TextField'
-import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
-import { RadioGroupField } from '../../components/shared/RadioGroupField'
-import { CheckboxField } from '../../components/shared/CheckboxField'
-import { Jsonb } from '../../components/shared/Jsonb'
-import { getValueFromChange } from '../../modules/getValueFromChange'
-import { LabelBy } from '../../components/shared/LabelBy'
-import { FieldList } from '../../components/shared/FieldList'
 import { Header } from './Header'
-import { SwitchField } from '../../components/shared/SwitchField'
+import { Form } from './Form'
 import { Design } from './Design'
+import { useElectric } from '../../ElectricProvider'
+import { user_id } from '../../components/SqlInitializer'
 
 import '../../form.css'
 
-export const Component = () => {
-  const { project_id } = useParams()
+const tabpanelStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  flexGrow: 0,
+}
 
+export const Component = () => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const { db } = useElectric()!
-  const { results: row } = useLiveQuery(
-    db.projects.liveUnique({ where: { project_id } }),
-  )
 
-  const onChange: InputProps['onChange'] = useCallback(
-    (e, data) => {
-      const { name, value } = getValueFromChange(e, data)
-      db.projects.update({
-        where: { project_id },
-        data: { [name]: value },
-      })
-    },
-    [db.projects, project_id],
+  const { results: uiOption } = useLiveQuery(
+    db.ui_options.liveUnique({ where: { user_id } }),
   )
+  const designing = uiOption?.designing ?? false
 
-  if (!row) {
-    return <div>Loading...</div>
-  }
+  const [searchParams, setSearchParams] = useSearchParams()
+  const tab = searchParams.get('projectTab') ?? 'form'
+  const onTabSelect = useCallback(
+    (event: SelectTabEvent, data: SelectTabData) =>
+      setSearchParams({ projectTab: data.value }),
+    [setSearchParams],
+  )
 
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
-      <div className="form-container">
-        <TextFieldInactive
-          label="ID"
-          name="project_id"
-          value={row.project_id}
-        />
-        <TextField
-          label="Name"
-          name="name"
-          value={row.name ?? ''}
-          onChange={onChange}
-          autoFocus
-          ref={autoFocusRef}
-        />
-        <Jsonb
-          table="projects"
-          idField="project_id"
-          id={row.project_id}
-          data={row.data ?? {}}
-        />
-        <Divider />
-        <Design row={row} />
+      <TabList selectedValue={tab} onTabSelect={onTabSelect}>
+        <Tab id="form" value="form">
+          Form
+        </Tab>
+        {designing && (
+          <Tab id="design" value="design">
+            Design
+          </Tab>
+        )}
+        <Tab id="analysis" value="analysis">
+          Analysis
+        </Tab>
+      </TabList>
+      <div style={tabpanelStyle}>
+        {tab === 'form' && (
+          <div role="tabpanel" aria-labelledby="form">
+            <Form autoFocusRef={autoFocusRef} />
+          </div>
+        )}
+        {tab === 'design' && designing && (
+          <div role="tabpanel" aria-labelledby="design">
+            <Design />
+          </div>
+        )}
+        {tab === 'analysis' && (
+          <div
+            role="tabpanel"
+            aria-labelledby="analysis"
+            className="form-container"
+          >
+            <div>analysis</div>
+          </div>
+        )}
       </div>
     </div>
   )

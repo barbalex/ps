@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import { Label, Divider } from '@fluentui/react-components'
@@ -6,27 +6,21 @@ import type { InputProps } from '@fluentui/react-components'
 
 import { useElectric } from '../../ElectricProvider'
 import { TextField } from '../../components/shared/TextField'
-import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { RadioGroupField } from '../../components/shared/RadioGroupField'
 import { CheckboxField } from '../../components/shared/CheckboxField'
-import { Jsonb } from '../../components/shared/Jsonb'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { LabelBy } from '../../components/shared/LabelBy'
 import { FieldList } from '../../components/shared/FieldList'
-import { Header } from './Header'
 import { SwitchField } from '../../components/shared/SwitchField'
 import { user_id } from '../../components/SqlInitializer'
 
-const containerStyle = {
-  overflow: 'hidden',
-}
-
-export const Design = ({ row }) => {
+export const Design = () => {
   const { project_id } = useParams()
 
-  const autoFocusRef = useRef<HTMLInputElement>(null)
-
   const { db } = useElectric()!
+  const { results: row } = useLiveQuery(
+    db.projects.liveUnique({ where: { project_id } }),
+  )
   const { results: uiOption } = useLiveQuery(
     db.ui_options.liveUnique({ where: { user_id } }),
   )
@@ -47,7 +41,7 @@ export const Design = ({ row }) => {
   if (!designing) return null
 
   return (
-    <>
+    <div className="form-container">
       <Label>Project configuration</Label>
       <RadioGroupField
         label="Type"
@@ -179,6 +173,6 @@ export const Design = ({ row }) => {
           onChange={onChange}
         />
       </div>
-    </>
+    </div>
   )
 }
