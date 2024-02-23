@@ -1,29 +1,30 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
 import { Node } from './Node'
-import { ProjectUsers as ProjectUser } from '../../../generated/client'
 import { ProjectUserNode } from './ProjectUser'
 
-export const ProjectUsersNode = ({ project_id, level = 3 }) => {
+type Props = {
+  project_id: string
+  level?: number
+}
+
+export const ProjectUsersNode = memo(({ project_id, level = 3 }: Props) => {
   const location = useLocation()
   const navigate = useNavigate()
 
   const { db } = useElectric()!
-  const { results } = useLiveQuery(
+  const { results: projectUsers = [] } = useLiveQuery(
     db.project_users.liveMany({
       where: { deleted: false, project_id },
       orderBy: { label: 'asc' },
     }),
   )
-  const projectUsers: ProjectUser[] = results ?? []
 
   const projectUsersNode = useMemo(
-    () => ({
-      label: `Users (${projectUsers.length})`,
-    }),
+    () => ({ label: `Users (${projectUsers.length})` }),
     [projectUsers.length],
   )
 
@@ -34,10 +35,12 @@ export const ProjectUsersNode = ({ project_id, level = 3 }) => {
     urlPath[2] === 'users'
   const isActive = isOpen && urlPath.length === 3
 
+  const baseUrl = `/projects/${project_id}`
+
   const onClickButton = useCallback(() => {
-    if (isOpen) return navigate(`/projects/${project_id}`)
-    navigate(`/projects/${project_id}/users`)
-  }, [isOpen, navigate, project_id])
+    if (isOpen) return navigate(baseUrl)
+    navigate(`${baseUrl}/users`)
+  }, [baseUrl, isOpen, navigate])
 
   return (
     <>
@@ -48,7 +51,7 @@ export const ProjectUsersNode = ({ project_id, level = 3 }) => {
         isInActiveNodeArray={isOpen}
         isActive={isActive}
         childrenCount={projectUsers.length}
-        to={`/projects/${project_id}/users`}
+        to={`${baseUrl}/users`}
         onClickButton={onClickButton}
       />
       {isOpen &&
@@ -61,4 +64,4 @@ export const ProjectUsersNode = ({ project_id, level = 3 }) => {
         ))}
     </>
   )
-}
+})
