@@ -1,19 +1,17 @@
-import { useCallback } from 'react'
+import { useCallback, memo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { Node } from './Node'
 import { Lists as List } from '../../../generated/client'
 import { ListValuesNode } from './ListValues'
 
-export const ListNode = ({
-  project_id,
-  list,
-  level = 4,
-}: {
+type Props = {
   project_id: string
   list: List
-  level: number
-}) => {
+  level?: number
+}
+
+export const ListNode = memo(({ project_id, list, level = 4 }: Props) => {
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -25,10 +23,12 @@ export const ListNode = ({
     urlPath[3] === list.list_id
   const isActive = isOpen && urlPath.length === 4
 
+  const baseUrl = `/projects/${project_id}/lists`
+
   const onClickButton = useCallback(() => {
-    if (isOpen) return navigate(`/projects/${project_id}/lists`)
-    navigate(`/projects/${project_id}/lists/${list.list_id}`)
-  }, [isOpen, navigate, project_id, list.list_id])
+    if (isOpen) return navigate(baseUrl)
+    navigate(`${baseUrl}/${list.list_id}`)
+  }, [isOpen, navigate, baseUrl, list.list_id])
 
   return (
     <>
@@ -39,7 +39,7 @@ export const ListNode = ({
         isInActiveNodeArray={isOpen}
         isActive={isActive}
         childrenCount={0}
-        to={`/projects/${project_id}/lists/${list.list_id}`}
+        to={`${baseUrl}/${list.list_id}`}
         onClickButton={onClickButton}
       />
       {isOpen && (
@@ -47,4 +47,4 @@ export const ListNode = ({
       )}
     </>
   )
-}
+})

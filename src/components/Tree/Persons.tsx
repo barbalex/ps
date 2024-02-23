@@ -1,29 +1,30 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
 import { Node } from './Node'
-import { Persons as Person } from '../../../generated/client'
 import { PersonNode } from './Person'
 
-export const PersonsNode = ({ project_id, level = 3 }) => {
+type Props = {
+  project_id: string
+  level?: number
+}
+
+export const PersonsNode = memo(({ project_id, level = 3 }: Props) => {
   const location = useLocation()
   const navigate = useNavigate()
 
   const { db } = useElectric()!
-  const { results } = useLiveQuery(
+  const { results: persons = [] } = useLiveQuery(
     db.persons.liveMany({
       where: { deleted: false, project_id },
       orderBy: { label: 'asc' },
     }),
   )
-  const persons: Person[] = results ?? []
 
   const personsNode = useMemo(
-    () => ({
-      label: `Persons (${persons.length})`,
-    }),
+    () => ({ label: `Persons (${persons.length})` }),
     [persons.length],
   )
 
@@ -34,10 +35,12 @@ export const PersonsNode = ({ project_id, level = 3 }) => {
     urlPath[2] === 'persons'
   const isActive = isOpen && urlPath.length === 3
 
+  const baseUrl = `/projects/${project_id}`
+
   const onClickButton = useCallback(() => {
-    if (isOpen) return navigate(`/projects/${project_id}`)
-    navigate(`/projects/${project_id}/persons`)
-  }, [isOpen, navigate, project_id])
+    if (isOpen) return navigate(baseUrl)
+    navigate(`${baseUrl}/persons`)
+  }, [baseUrl, isOpen, navigate])
 
   return (
     <>
@@ -48,7 +51,7 @@ export const PersonsNode = ({ project_id, level = 3 }) => {
         isInActiveNodeArray={isOpen}
         isActive={isActive}
         childrenCount={persons.length}
-        to={`/projects/${project_id}/persons`}
+        to={`${baseUrl}/persons`}
         onClickButton={onClickButton}
       />
       {isOpen &&
@@ -61,4 +64,4 @@ export const PersonsNode = ({ project_id, level = 3 }) => {
         ))}
     </>
   )
-}
+})

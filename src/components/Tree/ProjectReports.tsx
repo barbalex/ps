@@ -1,29 +1,30 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
 import { Node } from './Node'
-import { ProjectReports as ProjectReport } from '../../../generated/client'
 import { ProjectReportNode } from './ProjectReport'
 
-export const ProjectReportsNode = ({ project_id, level = 3 }) => {
+type Props = {
+  project_id: string
+  level?: number
+}
+
+export const ProjectReportsNode = memo(({ project_id, level = 3 }: Props) => {
   const location = useLocation()
   const navigate = useNavigate()
 
   const { db } = useElectric()!
-  const { results } = useLiveQuery(
+  const { results: projectReports = [] } = useLiveQuery(
     db.project_reports.liveMany({
       where: { deleted: false, project_id },
       orderBy: { label: 'asc' },
     }),
   )
-  const projectReports: ProjectReport[] = results ?? []
 
   const projectReportsNode = useMemo(
-    () => ({
-      label: `Reports (${projectReports.length})`,
-    }),
+    () => ({ label: `Reports (${projectReports.length})` }),
     [projectReports.length],
   )
 
@@ -34,10 +35,12 @@ export const ProjectReportsNode = ({ project_id, level = 3 }) => {
     urlPath[2] === 'reports'
   const isActive = isOpen && urlPath.length === 3
 
+  const baseUrl = `/projects/${project_id}`
+
   const onClickButton = useCallback(() => {
-    if (isOpen) return navigate(`/projects/${project_id}`)
-    navigate(`/projects/${project_id}/reports`)
-  }, [isOpen, navigate, project_id])
+    if (isOpen) return navigate(baseUrl)
+    navigate(`${baseUrl}/reports`)
+  }, [baseUrl, isOpen, navigate])
 
   return (
     <>
@@ -48,7 +51,7 @@ export const ProjectReportsNode = ({ project_id, level = 3 }) => {
         isInActiveNodeArray={isOpen}
         isActive={isActive}
         childrenCount={projectReports.length}
-        to={`/projects/${project_id}/reports`}
+        to={`${baseUrl}/reports`}
         onClickButton={onClickButton}
       />
       {isOpen &&
@@ -61,4 +64,4 @@ export const ProjectReportsNode = ({ project_id, level = 3 }) => {
         ))}
     </>
   )
-}
+})

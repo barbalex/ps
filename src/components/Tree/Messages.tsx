@@ -1,29 +1,25 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
 import { Node } from './Node'
-import { Messages as Message } from '../../../generated/client'
 import { MessageNode } from './Message'
 
-export const MessagesNode = () => {
+export const MessagesNode = memo(() => {
   const location = useLocation()
   const navigate = useNavigate()
 
   const { db } = useElectric()!
-  const { results } = useLiveQuery(
+  const { results: messages = [] } = useLiveQuery(
     db.messages.liveMany({
       where: { deleted: false },
       orderBy: { label: 'asc' },
     }),
   )
-  const messages: Message[] = results ?? []
 
   const messagesNode = useMemo(
-    () => ({
-      label: `Messages (${messages.length})`,
-    }),
+    () => ({ label: `Messages (${messages.length})` }),
     [messages.length],
   )
 
@@ -54,4 +50,4 @@ export const MessagesNode = () => {
         ))}
     </>
   )
-}
+})

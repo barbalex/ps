@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, memo } from 'react'
 import { useLocation, useParams, useNavigate } from 'react-router-dom'
 
 import { Node } from '../Node'
@@ -15,15 +15,15 @@ import { ProjectUsersNode } from '../ProjectUsers'
 import { PlaceLevelsNode } from '../PlaceLevels'
 import { FieldsNode } from '../Fields'
 import { ObservationSourcesNode } from '../ObservationSources'
+import { FilesNode } from '../Files'
 import { Editing } from './Editing'
 
-export const ProjectNode = ({
-  project,
-  level = 2,
-}: {
-  projects: Project[]
-  level: number
-}) => {
+type Props = {
+  project: Project
+  level?: number
+}
+
+export const ProjectNode = memo(({ project, level = 2 }: Props) => {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
@@ -65,8 +65,9 @@ export const ProjectNode = ({
           <PlaceLevelsNode project_id={project.project_id} />
           <FieldsNode project_id={project.project_id} />
           <ObservationSourcesNode project_id={project.project_id} />
+          <FilesNode project_id={project.project_id} level={3} />
         </>
       )}
     </>
   )
-}
+})

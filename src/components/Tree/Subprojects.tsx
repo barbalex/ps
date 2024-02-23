@@ -1,24 +1,27 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
 import { Node } from './Node'
-import { Subprojects as Subproject } from '../../../generated/client'
 import { SubprojectNode } from './Subproject'
 
-export const SubprojectsNode = ({ project_id, level = 3 }) => {
+type Props = {
+  project_id: string
+  level?: number
+}
+
+export const SubprojectsNode = memo(({ project_id, level = 3 }: Props) => {
   const location = useLocation()
   const navigate = useNavigate()
 
   const { db } = useElectric()!
-  const { results } = useLiveQuery(
+  const { results: subprojects = [] } = useLiveQuery(
     db.subprojects.liveMany({
       where: { deleted: false, project_id },
       orderBy: { label: 'asc' },
     }),
   )
-  const subprojects: Subproject[] = results ?? []
 
   // get projects.subproject_name_plural to name the table
   // can't include projects in subprojects query because there will be no result before subprojects are created
@@ -39,10 +42,12 @@ export const SubprojectsNode = ({ project_id, level = 3 }) => {
     urlPath[2] === 'subprojects'
   const isActive = isOpen && urlPath.length === 3
 
+  const baseUrl = `/projects/${project_id}`
+
   const onClickButton = useCallback(() => {
-    if (isOpen) return navigate(`/projects/${project_id}`)
-    navigate(`/projects/${project_id}/subprojects`)
-  }, [isOpen, navigate, project_id])
+    if (isOpen) return navigate(baseUrl)
+    navigate(`${baseUrl}/subprojects`)
+  }, [baseUrl, isOpen, navigate])
 
   // prevent flash of different name that happens before namePlural is set
   if (!namePlural) return null
@@ -56,7 +61,7 @@ export const SubprojectsNode = ({ project_id, level = 3 }) => {
         isInActiveNodeArray={isOpen}
         isActive={isActive}
         childrenCount={subprojects.length}
-        to={`/projects/${project_id}/subprojects`}
+        to={`${baseUrl}/subprojects`}
         onClickButton={onClickButton}
       />
       {isOpen &&
@@ -69,4 +74,4 @@ export const SubprojectsNode = ({ project_id, level = 3 }) => {
         ))}
     </>
   )
-}
+})

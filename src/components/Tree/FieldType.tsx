@@ -1,16 +1,15 @@
-import { useCallback } from 'react'
+import { useCallback, memo } from 'react'
 import { useLocation, useParams, useNavigate } from 'react-router-dom'
 
 import { Node } from './Node'
 import { FieldTypes as FieldType } from '../../../generated/client'
 
-export const FieldTypeNode = ({
-  fieldType,
-  level = 2,
-}: {
+type Props = {
   fieldType: FieldType
-  level: number
-}) => {
+  level?: number
+}
+
+export const FieldTypeNode = memo(({ fieldType, level = 2 }: Props) => {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
@@ -38,4 +37,4 @@ export const FieldTypeNode = ({
       onClickButton={onClickButton}
     />
   )
-}
+})

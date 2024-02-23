@@ -53,3 +53,9 @@
   font-size: 0.7rem;
   line-height: normal;
 }
+
+/* tablist should have same height as header (42px) */
+[role='tablist'] > button {
+  padding-top: 11px;
+  padding-bottom: 11px;
+}

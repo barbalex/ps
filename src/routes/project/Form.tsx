@@ -9,38 +9,32 @@ import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { Jsonb } from '../../components/shared/Jsonb'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 
-export const SubprojectForm = memo(({ autoFocusRef }) => {
-  const { subproject_id } = useParams()
+export const Form = memo(({ autoFocusRef }) => {
+  const { project_id } = useParams()
 
   const { db } = useElectric()!
   const { results: row } = useLiveQuery(
-    db.subprojects.liveUnique({ where: { subproject_id } }),
+    db.projects.liveUnique({ where: { project_id } }),
   )
 
   const onChange: InputProps['onChange'] = useCallback(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
-      db.subprojects.update({
-        where: { subproject_id },
+      db.projects.update({
+        where: { project_id },
         data: { [name]: value },
       })
     },
-    [db.subprojects, subproject_id],
+    [db.projects, project_id],
   )
 
   if (!row) {
     return <div>Loading...</div>
   }
 
-  // console.log('subproject, row.data:', row?.data)
-
   return (
     <div className="form-container" role="tabpanel" aria-labelledby="form">
-      <TextFieldInactive
-        label="ID"
-        name="subproject_id"
-        value={row.subproject_id ?? ''}
-      />
+      <TextFieldInactive label="ID" name="project_id" value={row.project_id} />
       <TextField
         label="Name"
         name="name"
@@ -49,17 +43,10 @@ export const SubprojectForm = memo(({ autoFocusRef }) => {
         autoFocus
         ref={autoFocusRef}
       />
-      <TextField
-        label="Since year"
-        name="since_year"
-        value={row.since_year ?? ''}
-        type="number"
-        onChange={onChange}
-      />
       <Jsonb
-        table="subprojects"
-        idField="subproject_id"
-        id={row.subproject_id}
+        table="projects"
+        idField="project_id"
+        id={row.project_id}
         data={row.data ?? {}}
       />
     </div>

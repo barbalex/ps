@@ -12,16 +12,20 @@ body {
   height: 100dvh;
 }
 
+/* .form-container needs to overflow inside the form-outer-container
+even when other elements in between (header, tabs...)
+https://stackoverflow.com/a/21541021/712005 */
 .form-outer-container {
   height: 100%;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  min-height: min-content;
 }
 
 .form-container {
   padding: 10px;
-  flex-grow: 1;
+  flex: 1;
   display: flex;
   flex-direction: column;
   row-gap: 15px;

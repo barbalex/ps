@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, memo } from 'react'
 import { MdEdit, MdEditOff } from 'react-icons/md'
 import { useLiveQuery } from 'electric-sql/react'
 import { Button } from '@fluentui/react-components'
@@ -19,7 +19,7 @@ const svgStyle = {
   fontSize: 'medium',
 }
 
-export const Editing = () => {
+export const Editing = memo(() => {
   const { project_id } = useParams()
 
   const { db } = useElectric()!
@@ -75,4 +75,4 @@ export const Editing = () => {
       }
     />
   )
-}
+})

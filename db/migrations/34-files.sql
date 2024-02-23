@@ -10,7 +10,7 @@ CREATE TABLE files(
   label_replace_by_generated_column text DEFAULT NULL,
   data jsonb DEFAULT NULL, -- TODO: not defineable in fields table!!
   mimetype text DEFAULT NULL,
-  -- file bytea DEFAULT NULL, -- not supported by electric-sql
+  -- file bytea DEFAULT NULL, -- TODO: not yet supported by electric-sql
   url text DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
 );
