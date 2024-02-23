@@ -1,7 +1,6 @@
 import { useCallback, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
-import { Divider } from '@fluentui/react-components'
 import type { InputProps } from '@fluentui/react-components'
 
 import { useElectric } from '../../ElectricProvider'
@@ -50,7 +49,6 @@ export const Form = memo(({ autoFocusRef }) => {
         id={row.project_id}
         data={row.data ?? {}}
       />
-      <Divider />
     </div>
   )
 })
