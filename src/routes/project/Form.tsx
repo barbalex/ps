@@ -33,7 +33,7 @@ export const Form = memo(({ autoFocusRef }) => {
   }
 
   return (
-    <div className="form-container">
+    <div className="form-container" role="tabpanel" aria-labelledby="form">
       <TextFieldInactive label="ID" name="project_id" value={row.project_id} />
       <TextField
         label="Name"
