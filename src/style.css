@@ -20,7 +20,7 @@ https://stackoverflow.com/a/21541021/712005 */
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  min-height: -webkit-min-content;
+  min-height: min-content;
 }
 
 .form-container {
