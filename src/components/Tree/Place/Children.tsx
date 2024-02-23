@@ -12,18 +12,15 @@ import { PlaceUsersNode } from '../PlaceUsers'
 import { PlacesNode } from '../Places'
 import { useElectric } from '../../../ElectricProvider'
 
+type Props = {
+  project_id: string
+  subproject_id: string
+  place_id: string
+  place: Place
+}
+
 export const PlaceChildren = memo(
-  ({
-    project_id,
-    subproject_id,
-    place_id,
-    place,
-  }: {
-    project_id: string
-    subproject_id: string
-    place_id: string
-    place: Place
-  }) => {
+  ({ project_id, subproject_id, place_id, place }: Props) => {
     const level = place_id ? 8 : 6
 
     const { db } = useElectric()!

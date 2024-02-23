@@ -2,6 +2,21 @@ import { useCallback, memo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { Node } from './Node'
+import {
+  Action_report_values as ActionReportValue,
+  Places as Place,
+} from '../../generated/client'
+
+type Props = {
+  project_id: string
+  subproject_id: string
+  place_id: string
+  place: Place
+  action_id: string
+  action_report_id: string
+  actionReportValue: ActionReportValue
+  level?: number
+}
 
 export const ActionReportValueNode = memo(
   ({
@@ -13,7 +28,7 @@ export const ActionReportValueNode = memo(
     action_report_id,
     actionReportValue,
     level = 12,
-  }) => {
+  }: Props) => {
     const location = useLocation()
     const navigate = useNavigate()
 
