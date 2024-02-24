@@ -1,16 +1,15 @@
-import { useCallback } from 'react'
+import { useCallback, memo } from 'react'
 import { useLocation, useParams, useNavigate } from 'react-router-dom'
 
 import { Node } from './Node'
 import { Users as User } from '../../../generated/client'
 
-export const UserNode = ({
-  user,
-  level = 2,
-}: {
+type Props = {
   user: User
-  level: number
-}) => {
+  level?: number
+}
+
+export const UserNode = memo(({ user, level = 2 }: Props) => {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
@@ -36,4 +35,4 @@ export const UserNode = ({
       onClickButton={onClickButton}
     />
   )
-}
+})

@@ -1,29 +1,30 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
 import { Node } from './Node'
-import { Vector_layers as VectorLayer } from '../../../generated/client'
 import { VectorLayerNode } from './VectorLayer'
 
-export const VectorLayersNode = ({ project_id, level = 3 }) => {
+type Props = {
+  project_id: string
+  level?: number
+}
+
+export const VectorLayersNode = memo(({ project_id, level = 3 }: Props) => {
   const location = useLocation()
   const navigate = useNavigate()
 
   const { db } = useElectric()!
-  const { results } = useLiveQuery(
+  const { results: vectorLayers = [] } = useLiveQuery(
     db.vector_layers.liveMany({
       where: { deleted: false, project_id },
       orderBy: [{ sort: 'asc' }, { label: 'asc' }],
     }),
   )
-  const vectorLayers: VectorLayer[] = results ?? []
 
   const vectorLayersNode = useMemo(
-    () => ({
-      label: `Vector Layers (${vectorLayers.length})`,
-    }),
+    () => ({ label: `Vector Layers (${vectorLayers.length})` }),
     [vectorLayers.length],
   )
 
@@ -34,10 +35,12 @@ export const VectorLayersNode = ({ project_id, level = 3 }) => {
     urlPath[2] === 'vector-layers'
   const isActive = isOpen && urlPath.length === 3
 
+  const baseUrl = `/projects/${project_id}`
+
   const onClickButton = useCallback(() => {
-    if (isOpen) return navigate(`/projects/${project_id}`)
-    navigate(`/projects/${project_id}/vector-layers`)
-  }, [isOpen, navigate, project_id])
+    if (isOpen) return navigate(baseUrl)
+    navigate(`${baseUrl}/vector-layers`)
+  }, [baseUrl, isOpen, navigate])
 
   return (
     <>
@@ -48,7 +51,7 @@ export const VectorLayersNode = ({ project_id, level = 3 }) => {
         isInActiveNodeArray={isOpen}
         isActive={isActive}
         childrenCount={vectorLayers.length}
-        to={`/projects/${project_id}/vector-layers`}
+        to={`${baseUrl}/vector-layers`}
         onClickButton={onClickButton}
       />
       {isOpen &&
@@ -61,4 +64,4 @@ export const VectorLayersNode = ({ project_id, level = 3 }) => {
         ))}
     </>
   )
-}
+})
