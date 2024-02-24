@@ -20,11 +20,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@css-hooks/react": "2.0.0",
-    "@css-hooks/recommended": "2.0.0",
+    "@css-hooks/react": "2.0.1",
+    "@css-hooks/recommended": "2.0.1",
     "@fluentui/react-components": "9.46.5",
     "@fluentui/react-datepicker-compat": "0.4.24",
-    "@fluentui/react-icons": "2.0.229",
+    "@fluentui/react-icons": "2.0.230",
     "@fluentui/react-timepicker-compat-preview": "0.2.0",
     "@fontsource/roboto": "5.0.8",
     "@kripod/uuidv7": "0.3.4",
@@ -69,7 +69,7 @@
     "@typescript-eslint/eslint-plugin": "7.0.2",
     "@typescript-eslint/parser": "7.0.2",
     "@vitejs/plugin-react": "4.2.1",
-    "eslint": "8.56.0",
+    "eslint": "8.57.0",
     "eslint-plugin-react-hooks": "4.6.0",
     "eslint-plugin-react-refresh": "0.4.5",
     "typescript": "5.3.3",
