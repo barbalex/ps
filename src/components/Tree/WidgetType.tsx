@@ -1,16 +1,15 @@
-import { useCallback } from 'react'
+import { useCallback, memo } from 'react'
 import { useLocation, useParams, useNavigate } from 'react-router-dom'
 
 import { Node } from './Node'
 import { WidgetTypes as WidgetType } from '../../../generated/client'
 
-export const WidgetTypeNode = ({
-  widgetType,
-  level = 2,
-}: {
+type Props = {
   widgetType: WidgetType
-  level: number
-}) => {
+  level?: number
+}
+
+export const WidgetTypeNode = memo(({ widgetType, level = 2 }: Props) => {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
@@ -38,4 +37,4 @@ export const WidgetTypeNode = ({
       onClickButton={onClickButton}
     />
   )
-}
+})
