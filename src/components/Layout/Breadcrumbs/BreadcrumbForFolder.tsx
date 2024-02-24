@@ -51,11 +51,7 @@ export const BreadcrumbForFolder = forwardRef(
         ? place_id2
         : match.params[idField]
     const where = { [idField]: matchParam }
-    const { results } = useLiveQuery(
-      db[queryTable]?.liveMany({
-        where,
-      }),
-    )
+    const { results } = useLiveQuery(db[queryTable]?.liveMany({ where }))
     const row = results?.[0]
 
     const [navs, setNavs] = useState([])

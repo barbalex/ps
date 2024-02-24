@@ -1,5 +1,6 @@
 import { useCallback, memo } from 'react'
 import { useLocation, useParams, useNavigate } from 'react-router-dom'
+import { useLiveQuery } from 'electric-sql/react'
 
 import { Node } from '../Node'
 import { Projects as Project } from '../../../generated/client'
@@ -17,6 +18,8 @@ import { FieldsNode } from '../Fields'
 import { ObservationSourcesNode } from '../ObservationSources'
 import { FilesNode } from '../Files'
 import { Editing } from './Editing'
+import { useElectric } from '../../../ElectricProvider'
+import { user_id } from '../../SqlInitializer'
 
 type Props = {
   project: Project
@@ -27,6 +30,12 @@ export const ProjectNode = memo(({ project, level = 2 }: Props) => {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
+
+  const { db } = useElectric()!
+  const { results: uiOption } = useLiveQuery(
+    db.ui_options.liveUnique({ where: { user_id } }),
+  )
+  const designing = uiOption?.designing ?? false
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isOpen =
@@ -56,16 +65,20 @@ export const ProjectNode = memo(({ project, level = 2 }: Props) => {
           <SubprojectsNode project_id={project.project_id} />
           <ProjectReportsNode project_id={project.project_id} />
           <PersonsNode project_id={project.project_id} />
-          <ListsNode project_id={project.project_id} />
-          <TaxonomiesNode project_id={project.project_id} />
-          <UnitsNode project_id={project.project_id} />
           <TileLayersNode project_id={project.project_id} />
           <VectorLayersNode project_id={project.project_id} />
-          <ProjectUsersNode project_id={project.project_id} />
-          <PlaceLevelsNode project_id={project.project_id} />
-          <FieldsNode project_id={project.project_id} />
-          <ObservationSourcesNode project_id={project.project_id} />
           <FilesNode project_id={project.project_id} level={3} />
+          {designing && (
+            <>
+              <ProjectUsersNode project_id={project.project_id} />
+              <ListsNode project_id={project.project_id} />
+              <TaxonomiesNode project_id={project.project_id} />
+              <UnitsNode project_id={project.project_id} />
+              <PlaceLevelsNode project_id={project.project_id} />
+              <FieldsNode project_id={project.project_id} />
+              <ObservationSourcesNode project_id={project.project_id} />
+            </>
+          )}
         </>
       )}
     </>

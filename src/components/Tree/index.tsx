@@ -16,15 +16,19 @@ const containerStyle = {
   overflow: 'auto',
 }
 
-export const Tree = memo(() => (
+export const Tree = memo(({ designing }) => (
   <div style={containerStyle}>
     <ProjectsNode />
     <UsersNode />
     <AccountsNode />
-    <FieldTypesNode />
-    <WidgetTypesNode />
-    <WidgetsForFieldsNode />
-    <FieldsNode />
+    {designing && (
+      <>
+        <FieldTypesNode />
+        <WidgetTypesNode />
+        <WidgetsForFieldsNode />
+        <FieldsNode />
+      </>
+    )}
     <FilesNode level={1} />
     <MessagesNode />
   </div>

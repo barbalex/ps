@@ -1,3 +1,5 @@
+import { user_id } from '../components/SqlInitializer'
+
 export const buildNavs = async ({
   table,
   check_id,
@@ -17,6 +19,10 @@ export const buildNavs = async ({
   db,
   level = 1,
 }) => {
+  const uiOptions = await db?.ui_options?.findUnique({
+    where: { user_id },
+  })
+  const designing = uiOptions?.designing ?? false
   // if table is places, get place_level for this level
   let placeLevel = {}
   if (table === 'places') {
@@ -33,10 +39,14 @@ export const buildNavs = async ({
         { path: '/projects', text: 'Projects' },
         { path: '/users', text: 'Users' },
         { path: '/accounts', text: 'Accounts' },
-        { path: '/field-types', text: 'Field Types' },
-        { path: '/widget-types', text: 'Widget Types' },
-        { path: '/widgets-for-fields', text: 'Widgets For Fields' },
-        { path: '/fields', text: 'Fields' },
+        ...(designing
+          ? [
+              { path: '/field-types', text: 'Field Types' },
+              { path: '/widget-types', text: 'Widget Types' },
+              { path: '/widgets-for-fields', text: 'Widgets For Fields' },
+              { path: '/fields', text: 'Fields' },
+            ]
+          : []),
         { path: '/files', text: 'Files' },
         { path: '/messages', text: 'Messages' },
         { path: '/docs', text: 'Docs' },
@@ -62,31 +72,35 @@ export const buildNavs = async ({
           path: `/projects/${project_id}/persons`,
           text: 'Persons',
         },
-        { path: `/projects/${project_id}/lists`, text: 'Lists' },
-        {
-          path: `/projects/${project_id}/taxonomies`,
-          text: 'Taxonomies',
-        },
-        { path: `/projects/${project_id}/units`, text: 'Units' },
         { path: `/projects/${project_id}/tile-layers`, text: 'Tile Layers' },
         {
           path: `/projects/${project_id}/vector-layers`,
           text: 'Vector Layers',
         },
-        { path: `/projects/${project_id}/users`, text: 'Users' },
-        {
-          path: `/projects/${project_id}/place-levels`,
-          text: 'Place Levels',
-        },
-        { path: `/projects/${project_id}/fields`, text: 'Fields' },
-        {
-          path: `/projects/${project_id}/observation-sources`,
-          text: 'Observation Sources',
-        },
         {
           path: `/projects/${project_id}/files`,
           text: 'Files',
         },
+        ...(designing
+          ? [
+              { path: `/projects/${project_id}/users`, text: 'Users' },
+              { path: `/projects/${project_id}/lists`, text: 'Lists' },
+              {
+                path: `/projects/${project_id}/taxonomies`,
+                text: 'Taxonomies',
+              },
+              { path: `/projects/${project_id}/units`, text: 'Units' },
+              {
+                path: `/projects/${project_id}/place-levels`,
+                text: 'Place Levels',
+              },
+              { path: `/projects/${project_id}/fields`, text: 'Fields' },
+              {
+                path: `/projects/${project_id}/observation-sources`,
+                text: 'Observation Sources',
+              },
+            ]
+          : []),
       ]
     }
     case 'subprojects': {
