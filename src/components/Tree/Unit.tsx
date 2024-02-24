@@ -1,18 +1,16 @@
-import { useCallback } from 'react'
+import { useCallback, memo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { Node } from './Node'
 import { Units as Unit } from '../../../generated/client'
 
-export const UnitNode = ({
-  project_id,
-  unit,
-  level = 4,
-}: {
+type Props = {
   project_id: string
   unit: Unit
-  level: number
-}) => {
+  level?: number
+}
+
+export const UnitNode = memo(({ project_id, unit, level = 4 }: Props) => {
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -24,10 +22,12 @@ export const UnitNode = ({
     urlPath[3] === unit.unit_id
   const isActive = isOpen && urlPath.length === 4
 
+  const baseUrl = `/projects/${project_id}/units`
+
   const onClickButton = useCallback(() => {
-    if (isOpen) return navigate(`/projects/${project_id}/units`)
-    navigate(`/projects/${project_id}/units/${unit.unit_id}`)
-  }, [isOpen, navigate, project_id, unit.unit_id])
+    if (isOpen) return navigate(baseUrl)
+    navigate(`${baseUrl}/${unit.unit_id}`)
+  }, [baseUrl, isOpen, navigate, unit.unit_id])
 
   return (
     <Node
@@ -37,8 +37,8 @@ export const UnitNode = ({
       isInActiveNodeArray={isOpen}
       isActive={isActive}
       childrenCount={0}
-      to={`/projects/${project_id}/units/${unit.unit_id}`}
+      to={`${baseUrl}/${unit.unit_id}`}
       onClickButton={onClickButton}
     />
   )
-}
+})
