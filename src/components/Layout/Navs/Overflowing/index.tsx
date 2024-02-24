@@ -69,7 +69,7 @@ export const OverflowMenu: React.FC = ({ tos }) => {
   )
 }
 
-export const NavsOverflowing = () => {
+export const NavsOverflowing = ({ designing }) => {
   const location = useLocation()
   const matches = useMatches()
 
@@ -84,6 +84,7 @@ export const NavsOverflowing = () => {
       for (const match of thisPathsMatches) {
         const to = await match?.handle?.to?.(match)
         if (!to) continue
+        if (!designing && to.showOnlyWhenDesigning) continue
         tos.push(to)
       }
 
@@ -91,7 +92,7 @@ export const NavsOverflowing = () => {
     }
     fetch()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.pathname])
+  }, [location.pathname, designing])
 
   const tosToUse = tos[0] ?? []
 

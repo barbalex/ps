@@ -39,17 +39,29 @@ export const buildNavs = async ({
         { path: '/projects', text: 'Projects' },
         { path: '/users', text: 'Users' },
         { path: '/accounts', text: 'Accounts' },
-        ...(designing
-          ? [
-              { path: '/field-types', text: 'Field Types' },
-              { path: '/widget-types', text: 'Widget Types' },
-              { path: '/widgets-for-fields', text: 'Widgets For Fields' },
-              { path: '/fields', text: 'Fields' },
-            ]
-          : []),
         { path: '/files', text: 'Files' },
         { path: '/messages', text: 'Messages' },
         { path: '/docs', text: 'Docs' },
+        ...(designing
+          ? [
+              {
+                path: '/field-types',
+                text: 'Field Types',
+                showOnlyWhenDesigning: false,
+              },
+              {
+                path: '/widget-types',
+                text: 'Widget Types',
+                showOnlyWhenDesigning: false,
+              },
+              {
+                path: '/widgets-for-fields',
+                text: 'Widgets For Fields',
+                showOnlyWhenDesigning: false,
+              },
+              { path: '/fields', text: 'Fields', showOnlyWhenDesigning: false },
+            ]
+          : []),
       ]
       break
     case `projects`: {
@@ -83,21 +95,39 @@ export const buildNavs = async ({
         },
         ...(designing
           ? [
-              { path: `/projects/${project_id}/users`, text: 'Users' },
-              { path: `/projects/${project_id}/lists`, text: 'Lists' },
+              {
+                path: `/projects/${project_id}/users`,
+                text: 'Users',
+                showOnlyWhenDesigning: false,
+              },
+              {
+                path: `/projects/${project_id}/lists`,
+                text: 'Lists',
+                showOnlyWhenDesigning: false,
+              },
               {
                 path: `/projects/${project_id}/taxonomies`,
                 text: 'Taxonomies',
+                showOnlyWhenDesigning: false,
               },
-              { path: `/projects/${project_id}/units`, text: 'Units' },
+              {
+                path: `/projects/${project_id}/units`,
+                text: 'Units',
+                showOnlyWhenDesigning: false,
+              },
               {
                 path: `/projects/${project_id}/place-levels`,
                 text: 'Place Levels',
               },
-              { path: `/projects/${project_id}/fields`, text: 'Fields' },
+              {
+                path: `/projects/${project_id}/fields`,
+                text: 'Fields',
+                showOnlyWhenDesigning: false,
+              },
               {
                 path: `/projects/${project_id}/observation-sources`,
                 text: 'Observation Sources',
+                showOnlyWhenDesigning: false,
               },
             ]
           : []),

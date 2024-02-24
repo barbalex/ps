@@ -11,14 +11,15 @@ export const Navs = () => {
   const { results: uiOption } = useLiveQuery(
     db.ui_options.liveUnique({ where: { user_id } }),
   )
+  const designing = uiOption?.designing ?? false
 
   if (uiOption?.navs_overflowing === undefined) {
     return <div className="navs" />
   }
 
   if (uiOption?.navs_overflowing === false) {
-    return <NavsWrapping />
+    return <NavsWrapping designing={designing} />
   }
 
-  return <NavsOverflowing />
+  return <NavsOverflowing designing={designing} />
 }
