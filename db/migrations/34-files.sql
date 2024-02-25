@@ -12,6 +12,7 @@ CREATE TABLE files(
   data jsonb DEFAULT NULL, -- TODO: not defineable in fields table!!
   mimetype text DEFAULT NULL, -- file-upload-success-event.detail.mimeType
   -- file bytea DEFAULT NULL, -- TODO: not yet supported by electric-sql
+  -- preview bytea DEFAULT NULL, -- TODO: not yet supported by electric-sql
   url text DEFAULT NULL, -- file-upload-success-event.detail.cdnUrl
   uuid uuid DEFAULT NULL, -- file-upload-success-event.detail.uuid
   deleted boolean DEFAULT NULL -- FALSE
