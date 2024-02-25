@@ -1,6 +1,8 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { Button } from '@fluentui/react-components'
+import { FaPlus } from 'react-icons/fa'
 // import { Button } from '@fluentui/react-components'
 
 import { createFile } from '../../modules/createRows'
@@ -13,6 +15,8 @@ import '../../form.css'
 import { useElectric } from '../../ElectricProvider'
 
 export const Component = () => {
+  const uploaderCtx = document.querySelector('#uploaderctx')
+
   const navigate = useNavigate()
   const { project_id = null, subproject_id = null } = useParams()
 
@@ -32,17 +36,24 @@ export const Component = () => {
     subproject_id ? `/subprojects/${subproject_id}` : ''
   }/files`
 
-  const add = useCallback(async () => {
-    const data = await createFile({ db, project_id, subproject_id })
-    await db.files.create({ data })
-    navigate(`${baseUrl}/${data.file_id}`)
-  }, [baseUrl, db, navigate, project_id, subproject_id])
+  const onClickAdd = useCallback(() => uploaderCtx.initFlow(), [uploaderCtx])
 
   // TODO: get uploader css locally if it should be possible to upload files
   // offline to sqlite
   return (
     <div className="list-view">
-      <ListViewHeader title="Files" addRow={add} tableName="file" />
+      <ListViewHeader
+        title="Files"
+        tableName="file"
+        menus={
+          <Button
+            size="medium"
+            title="add File"
+            icon={<FaPlus />}
+            onClick={onClickAdd}
+          />
+        }
+      />
       <div className="list-container">
         <Uploader baseUrl={baseUrl} />
         {files.map(({ file_id, label }) => (

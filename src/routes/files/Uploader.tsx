@@ -21,9 +21,21 @@ export const Uploader = ({ baseUrl }) => {
   const { db } = useElectric()!
   const uploaderCtx = document.querySelector('#uploaderctx')
 
+  // ISSUE: the event is called THREE times
+  // Solution: query files with the uuid and only create if it doesn't exist
   const onUploadSuccess = useCallback(
     async (event: CustomEvent) => {
       console.log('Uploader, onUploadSuccess', event)
+      const { results: files = [] } = await db.files.findMany({
+        where: { uuid: event.detail.uuid, deleted: false },
+      })
+      console.log('hello Uploader, onUploadSuccess, files:', {
+        files,
+        event,
+        uuid: event.detail.uuid,
+      })
+      if (files.length) return
+
       const fileInput = {
         db,
         name: event.detail.name,
@@ -76,13 +88,10 @@ export const Uploader = ({ baseUrl }) => {
     }
   }, [onUploadFailed, onUploadSuccess, uploaderCtx])
 
-  const onClick = useCallback(() => uploaderCtx.initFlow(), [uploaderCtx])
-
   // TODO: get uploader css locally if it should be possible to upload files
   // offline to sqlite
   return (
     <>
-      <Button onClick={onClick}>Upload</Button>
       <lr-file-uploader-regular
         css-src="https://cdn.jsdelivr.net/npm/@uploadcare/blocks@0.32.4/web/lr-file-uploader-regular.min.css"
         ctx-name="uploadcare-uploader"
