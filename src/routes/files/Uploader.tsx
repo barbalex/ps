@@ -12,6 +12,10 @@ export const Uploader = () => {
   const { project_id = null, subproject_id = null } = useParams()
 
   const { db } = useElectric()!
+  const uploaderCtx = document.querySelector('#uploaderctx')
+  console.log('Uploader, uploaderCtx ', uploaderCtx)
+  const collectionState = uploaderCtx.getOutputCollectionState()
+  console.log('Uploader, collectionState ', collectionState)
 
   // TODO: get uploader css locally if it should be possible to upload files
   // offline to sqlite

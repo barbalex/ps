@@ -9,8 +9,6 @@ LR.FileUploaderRegular.shadowStyles = /* CSS */ `
   }
 `
 LR.registerBlocks(LR)
-const ctxProvider = document.querySelector('lr-upload-ctx-provider')
-console.log('ctxProvider', ctxProvider)
 
 import { styleSheet } from './css'
 import 'allotment/dist/style.css'
@@ -48,6 +46,10 @@ export default function App() {
 
   return (
     <ElectricProvider>
+      <lr-upload-ctx-provider
+        id="uploaderctx"
+        ctx-name="uploadcare-uploader"
+      ></lr-upload-ctx-provider>
       <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
       <SqlInitializer />
       <FluentProvider theme={lightTheme}>
