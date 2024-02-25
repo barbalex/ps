@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
+import { useResizeDetector } from 'react-resize-detector'
 
 import { useElectric } from '../../ElectricProvider'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
@@ -66,15 +67,29 @@ export const Component = () => {
     }),
     [row?.place_id],
   )
+  const { width, ref } = useResizeDetector({
+    handleHeight: false,
+    refreshMode: 'debounce',
+    refreshRate: 300,
+    refreshOptions: { leading: false, trailing: true },
+  })
 
   if (!row) {
     return <div>Loading...</div>
   }
 
   return (
-    <div className="form-outer-container">
+    <div className="form-outer-container" ref={ref}>
       <Header />
       <div className="form-container">
+        {row.mimetype.includes('image') && row.url && width && (
+          <img
+            src={`${row.url}-/resize/${Math.floor(
+              width,
+            )}x/-/format/auto/-/quality/smart/`}
+            alt={row.name}
+          />
+        )}
         <TextFieldInactive
           label="ID"
           name="file_id"

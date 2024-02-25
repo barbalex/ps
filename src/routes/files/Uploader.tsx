@@ -103,20 +103,19 @@ export const Uploader = ({ baseUrl }) => {
     }
   }, [onUploadFailed, onUploadSuccessDebounced, uploaderCtx])
 
+  // docs: https://uploadcare.com/docs/file-uploader
   // TODO: get uploader css locally if it should be possible to upload files
   // offline to sqlite
   return (
-    <>
-      <lr-file-uploader-regular
-        css-src="https://cdn.jsdelivr.net/npm/@uploadcare/blocks@0.32.4/web/lr-file-uploader-regular.min.css"
+    <lr-file-uploader-regular
+      css-src="https://cdn.jsdelivr.net/npm/@uploadcare/blocks@0.32.4/web/lr-file-uploader-regular.min.css"
+      ctx-name="uploadcare-uploader"
+      class="uploadcare-uploader-config"
+    >
+      <lr-data-output
         ctx-name="uploadcare-uploader"
-        class="uploadcare-uploader-config"
-      >
-        <lr-data-output
-          ctx-name="uploadcare-uploader"
-          ref={uploaderCtx}
-        ></lr-data-output>
-      </lr-file-uploader-regular>
-    </>
+        ref={uploaderCtx}
+      ></lr-data-output>
+    </lr-file-uploader-regular>
   )
 }
