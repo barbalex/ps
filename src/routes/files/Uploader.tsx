@@ -2,6 +2,7 @@ import { useCallback, useEffect } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Button } from '@fluentui/react-components'
+import { createFile } from '../../modules/createRows'
 
 import '../../form.css'
 
@@ -9,7 +10,14 @@ import { useElectric } from '../../ElectricProvider'
 
 export const Uploader = () => {
   const navigate = useNavigate()
-  const { project_id = null, subproject_id = null } = useParams()
+  const {
+    project_id,
+    subproject_id,
+    place_id,
+    place_id2,
+    action_id,
+    check_id,
+  } = useParams()
 
   const { db } = useElectric()!
   const uploaderCtx = document.querySelector('#uploaderctx')
@@ -17,33 +25,58 @@ export const Uploader = () => {
   const collectionState = uploaderCtx.getOutputCollectionState()
   console.log('Uploader, collectionState ', collectionState)
 
-  useEffect(() => {
-    uploaderCtx.addEventListener('change', (event: CustomEvent) => {
-      console.log('Uploader, change event', event)
-    })
+  const onUploadSuccess = useCallback(
+    async (event: CustomEvent) => {
+      console.log('Uploader, onUploadSuccess', event)
+      const fileInput = {
+        db,
+        name: event.detail.name,
+        size: event.detail.size,
+        mimetype: event.detail.mimeType,
+        url: event.detail.cdnUrl,
+        uuid: event.detail.uuid,
+      }
+      if (action_id) {
+        fileInput.action_id = action_id
+      } else if (check_id) {
+        fileInput.check_id = check_id
+      } else if (place_id2) {
+        fileInput.place_id = place_id2
+      } else if (place_id) {
+        fileInput.place_id = place_id
+      } else if (subproject_id) {
+        fileInput.subproject_id = subproject_id
+      } else if (project_id) {
+        fileInput.project_id = project_id
+      }
+      const data = await createFile(fileInput)
+      await db.files.create({ data })
+      navigate(`${baseUrl}/${data.file_id}`)
+    },
+    [
+      action_id,
+      check_id,
+      db,
+      navigate,
+      place_id,
+      place_id2,
+      project_id,
+      subproject_id,
+    ],
+  )
 
-    uploaderCtx.addEventListener(
-      'file-upload-success',
-      (event: CustomEvent) => {
-        console.log('Uploader, file-upload-success event', event)
-        // TODO:
-        // extract data from event
-        // e.detail.isFailed, e.detail.isSuccess, e.detail.isUploading, e.detail.status
-        // e.detail.allEntries[0]:
-        // - uuid
-        // - file.name
-        // - fileInfo.mimeType or fileInfo.mime.mime?
-      },
-    )
-    uploaderCtx.addEventListener('file-upload-failed', (event: CustomEvent) => {
-      console.log('Uploader, file-upload-failed event', event)
-    })
+  const onUploadFailed = useCallback((event: CustomEvent) => {
+    console.error('Uploader, onUploadFailed', event)
+  }, [])
+
+  useEffect(() => {
+    uploaderCtx.addEventListener('file-upload-success', onUploadSuccess)
+    uploaderCtx.addEventListener('file-upload-failed', onUploadFailed)
     return () => {
-      ctx.removeEventListener('change')
-      ctx.removeEventListener('file-upload-success')
-      ctx.removeEventListener('file-upload-failed')
+      uploaderCtx.removeEventListener('file-upload-success', onUploadSuccess)
+      uploaderCtx.removeEventListener('file-upload-failed', onUploadFailed)
     }
-  }, [uploaderCtx])
+  }, [onUploadFailed, onUploadSuccess, uploaderCtx])
 
   const onClick = useCallback(() => {
     uploaderCtx.initFlow()
