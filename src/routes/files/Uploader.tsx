@@ -117,13 +117,6 @@ export const Uploader = ({ baseUrl }) => {
           ref={uploaderCtx}
         ></lr-data-output>
       </lr-file-uploader-regular>
-      {/* <Button>
-          <lr-file-uploader-inline
-            css-src="lr-file-uploader-inline.min.css"
-            ctx-name="uploadcare-uploader"
-            class="uploadcare-uploader-config"
-          ></lr-file-uploader-inline>
-        </Button> */}
     </>
   )
 }
