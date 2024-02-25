@@ -67,6 +67,10 @@ export const Uploader = () => {
       // TODO: if is not an image, create a thumbnail
       // https://uploadcare.com/docs/transformations/document-conversion/#thumbnails
       // TODO: oops. as secret key is exposed, this should be done on a server
+      // So on the server:
+      // - watch file inserts
+      // - if file is not an image, create a thumbnail
+      // - then update the file with preview_uuid
       let res
       try {
         res = await axios({
