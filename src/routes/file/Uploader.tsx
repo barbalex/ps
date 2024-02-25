@@ -83,7 +83,9 @@ export const Uploader = () => {
             Accept: 'application/vnd.uploadcare-v0.7+json',
           },
         })
-      } catch (error) {}
+      } catch (error) {
+        console.error('Uploader, error when creating thumbnails:', error)
+      }
       // works for:
       // - csv > pdf > ?
       // - doc > thumbnail
