@@ -20,16 +20,28 @@ export const Uploader = () => {
   useEffect(() => {
     uploaderCtx.addEventListener('change', (event: CustomEvent) => {
       console.log('Uploader, change event', event)
-      // TODO:
-      // extract data from event
-      // e.detail.isFailed, e.detail.isSuccess, e.detail.isUploading, e.detail.status
-      // e.detail.allEntries[0]:
-      // - uuid
-      // - file.name
-      // - fileInfo.mimeType or fileInfo.mime.mime?
+    })
+
+    uploaderCtx.addEventListener(
+      'file-upload-success',
+      (event: CustomEvent) => {
+        console.log('Uploader, file-upload-success event', event)
+        // TODO:
+        // extract data from event
+        // e.detail.isFailed, e.detail.isSuccess, e.detail.isUploading, e.detail.status
+        // e.detail.allEntries[0]:
+        // - uuid
+        // - file.name
+        // - fileInfo.mimeType or fileInfo.mime.mime?
+      },
+    )
+    uploaderCtx.addEventListener('file-upload-failed', (event: CustomEvent) => {
+      console.log('Uploader, file-upload-failed event', event)
     })
     return () => {
-      ctx.removeEventListener('change', (event) => {})
+      ctx.removeEventListener('change')
+      ctx.removeEventListener('file-upload-success')
+      ctx.removeEventListener('file-upload-failed')
     }
   }, [uploaderCtx])
 
