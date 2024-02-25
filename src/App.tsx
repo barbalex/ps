@@ -7,6 +7,9 @@ LR.FileUploaderRegular.shadowStyles = /* CSS */ `
   :host lr-copyright {
     display: none;
   }
+  :host lr-simple-btn {
+    display: none;
+  }
 `
 LR.registerBlocks(LR)
 

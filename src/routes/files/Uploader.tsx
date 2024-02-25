@@ -62,6 +62,9 @@ export const Uploader = ({ baseUrl }) => {
       navigate(`${baseUrl}/${data.file_id}`)
       // close the uploader or it will be open when navigating to the list
       uploaderCtx.doneFlow()
+      // clear the uploader or it will show the last uploaded file when opened next time
+      // https://github.com/uploadcare/blocks/issues/219#issuecomment-1223881802
+      uploaderCtx.uploadCollection.clearAll()
     },
     [
       action_id,
@@ -108,7 +111,12 @@ export const Uploader = ({ baseUrl }) => {
         css-src="https://cdn.jsdelivr.net/npm/@uploadcare/blocks@0.32.4/web/lr-file-uploader-regular.min.css"
         ctx-name="uploadcare-uploader"
         class="uploadcare-uploader-config"
-      ></lr-file-uploader-regular>
+      >
+        <lr-data-output
+          ctx-name="uploadcare-uploader"
+          ref={uploaderCtx}
+        ></lr-data-output>
+      </lr-file-uploader-regular>
       {/* <Button>
           <lr-file-uploader-inline
             css-src="lr-file-uploader-inline.min.css"
