@@ -1,14 +1,16 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useNavigate, useParams } from 'react-router-dom'
+// import { Button } from '@fluentui/react-components'
 
-import { createFile } from '../modules/createRows'
-import { ListViewHeader } from '../components/ListViewHeader'
-import { Row } from '../components/shared/Row'
+import { createFile } from '../../modules/createRows'
+import { ListViewHeader } from '../../components/ListViewHeader'
+import { Row } from '../../components/shared/Row'
+import { Uploader } from './Uploader'
 
-import '../form.css'
+import '../../form.css'
 
-import { useElectric } from '../ElectricProvider'
+import { useElectric } from '../../ElectricProvider'
 
 export const Component = () => {
   const navigate = useNavigate()
@@ -42,11 +44,7 @@ export const Component = () => {
     <div className="list-view">
       <ListViewHeader title="Files" addRow={add} tableName="file" />
       <div className="list-container">
-        <lr-file-uploader-regular
-          css-src="https://cdn.jsdelivr.net/npm/@uploadcare/blocks@0.32.4/web/lr-file-uploader-regular.min.css"
-          ctx-name="uploadcare-uploader"
-          class="uploadcare-uploader-config"
-        ></lr-file-uploader-regular>
+        <Uploader />
         {files.map(({ file_id, label }) => (
           <Row key={file_id} label={label} to={`${baseUrl}/${file_id}`} />
         ))}
