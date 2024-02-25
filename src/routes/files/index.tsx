@@ -1,11 +1,10 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { Button } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
 // import { Button } from '@fluentui/react-components'
 
-import { createFile } from '../../modules/createRows'
 import { ListViewHeader } from '../../components/ListViewHeader'
 import { Row } from '../../components/shared/Row'
 import { Uploader } from './Uploader'
@@ -16,8 +15,6 @@ import { useElectric } from '../../ElectricProvider'
 
 export const Component = () => {
   const uploaderCtx = document.querySelector('#uploaderctx')
-
-  const navigate = useNavigate()
   const { project_id = null, subproject_id = null } = useParams()
 
   const { db } = useElectric()!

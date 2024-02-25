@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { useDebouncedCallback } from 'use-debounce'
 
 import { createFile } from '../../modules/createRows'
 import { useElectric } from '../../ElectricProvider'
@@ -59,6 +60,8 @@ export const Uploader = ({ baseUrl }) => {
       const data = await createFile(fileInput)
       await db.files.create({ data })
       navigate(`${baseUrl}/${data.file_id}`)
+      // close the uploader or it will be open when navigating to the list
+      uploaderCtx.doneFlow()
     },
     [
       action_id,
@@ -70,8 +73,12 @@ export const Uploader = ({ baseUrl }) => {
       place_id2,
       project_id,
       subproject_id,
+      uploaderCtx,
     ],
   )
+
+  // somehow this is called multiple times
+  const onUploadSuccessDebounced = useDebouncedCallback(onUploadSuccess, 300)
 
   const onUploadFailed = useCallback(
     (event: CustomEvent) => console.error('Uploader, onUploadFailed', event),
@@ -79,13 +86,19 @@ export const Uploader = ({ baseUrl }) => {
   )
 
   useEffect(() => {
-    uploaderCtx.addEventListener('file-upload-success', onUploadSuccess)
+    uploaderCtx.addEventListener(
+      'file-upload-success',
+      onUploadSuccessDebounced,
+    )
     uploaderCtx.addEventListener('file-upload-failed', onUploadFailed)
     return () => {
-      uploaderCtx.removeEventListener('file-upload-success', onUploadSuccess)
+      uploaderCtx.removeEventListener(
+        'file-upload-success',
+        onUploadSuccessDebounced,
+      )
       uploaderCtx.removeEventListener('file-upload-failed', onUploadFailed)
     }
-  }, [onUploadFailed, onUploadSuccess, uploaderCtx])
+  }, [onUploadFailed, onUploadSuccessDebounced, uploaderCtx])
 
   // TODO: get uploader css locally if it should be possible to upload files
   // offline to sqlite

@@ -128,6 +128,7 @@ export const Component = () => {
           value={row.mimetype ?? ''}
         />
         <TextFieldInactive label="Url" name="url" value={row.url ?? ''} />
+        <TextFieldInactive label="Uuid" name="uuid" value={row.uuid ?? ''} />
         <Jsonb
           table="files"
           idField="file_id"
