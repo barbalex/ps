@@ -44,7 +44,7 @@ export const Component = () => {
     <div className="list-view">
       <ListViewHeader title="Files" addRow={add} tableName="file" />
       <div className="list-container">
-        <Uploader />
+        <Uploader baseUrl={baseUrl} />
         {files.map(({ file_id, label }) => (
           <Row key={file_id} label={label} to={`${baseUrl}/${file_id}`} />
         ))}

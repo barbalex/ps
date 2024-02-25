@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 
 import { useElectric } from '../../ElectricProvider'
-import { TextField } from '../../components/shared/TextField'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { Jsonb } from '../../components/shared/Jsonb'
 import { getValueFromChange } from '../../modules/getValueFromChange'
@@ -14,7 +13,7 @@ import { Header } from './Header'
 import '../../form.css'
 
 export const Component = () => {
-  const { project_id, subproject_id, file_id } = useParams()
+  const { file_id } = useParams()
 
   const { db } = useElectric()!
   const { results: row } = useLiveQuery(
@@ -81,6 +80,7 @@ export const Component = () => {
           name="file_id"
           value={row.file_id ?? ''}
         />
+        {/* TODO: remove all id fields from form after implementing */}
         <DropdownField
           label="Project"
           name="project_id"
@@ -88,65 +88,46 @@ export const Component = () => {
           value={row.project_id ?? ''}
           onChange={onChange}
         />
-        {!!row?.project_id && (
-          <DropdownField
-            label="Subproject"
-            name="subproject_id"
-            table="subprojects"
-            where={subprojectWhere}
-            value={row.subproject_id ?? ''}
-            onChange={onChange}
-          />
-        )}
-        {!!row?.subproject_id && (
-          <DropdownField
-            label="Place"
-            name="place_id"
-            table="places"
-            where={placeWhere}
-            value={row.place_id ?? ''}
-            onChange={onChange}
-          />
-        )}
-        {!!row?.place_id && (
-          <DropdownField
-            label="Action"
-            name="action_id"
-            table="actions"
-            where={actionWhere}
-            value={row.action_id ?? ''}
-            onChange={onChange}
-          />
-        )}
-        {!!row.place_id && (
-          <DropdownField
-            label="Check"
-            name="check_id"
-            table="checks"
-            where={actionWhere}
-            value={row.check_id ?? ''}
-            onChange={onChange}
-          />
-        )}
-        <TextField
-          label="Name"
-          name="name"
-          value={row.name ?? ''}
+        <DropdownField
+          label="Subproject"
+          name="subproject_id"
+          table="subprojects"
+          where={subprojectWhere}
+          value={row.subproject_id ?? ''}
           onChange={onChange}
         />
-        <TextField
+        <DropdownField
+          label="Place"
+          name="place_id"
+          table="places"
+          where={placeWhere}
+          value={row.place_id ?? ''}
+          onChange={onChange}
+        />
+        <DropdownField
+          label="Action"
+          name="action_id"
+          table="actions"
+          where={actionWhere}
+          value={row.action_id ?? ''}
+          onChange={onChange}
+        />
+        <DropdownField
+          label="Check"
+          name="check_id"
+          table="checks"
+          where={actionWhere}
+          value={row.check_id ?? ''}
+          onChange={onChange}
+        />
+        <TextFieldInactive label="Name" name="name" value={row.name ?? ''} />
+        <TextFieldInactive label="Size" name="size" value={row.size ?? ''} />
+        <TextFieldInactive
           label="Mimetype"
           name="mimetype"
           value={row.mimetype ?? ''}
-          onChange={onChange}
         />
-        <TextField
-          label="Url"
-          name="url"
-          type="url"
-          value={row.url ?? ''}
-          onChange={onChange}
-        />
+        <TextFieldInactive label="Url" name="url" value={row.url ?? ''} />
         <Jsonb
           table="files"
           idField="file_id"

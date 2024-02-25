@@ -7,7 +7,7 @@ import { useElectric } from '../../ElectricProvider'
 
 import '../../form.css'
 
-export const Uploader = () => {
+export const Uploader = ({ baseUrl }) => {
   const navigate = useNavigate()
   const {
     project_id,
@@ -51,6 +51,7 @@ export const Uploader = () => {
     },
     [
       action_id,
+      baseUrl,
       check_id,
       db,
       navigate,
@@ -75,9 +76,7 @@ export const Uploader = () => {
     }
   }, [onUploadFailed, onUploadSuccess, uploaderCtx])
 
-  const onClick = useCallback(() => {
-    uploaderCtx.initFlow()
-  }, [uploaderCtx])
+  const onClick = useCallback(() => uploaderCtx.initFlow(), [uploaderCtx])
 
   // TODO: get uploader css locally if it should be possible to upload files
   // offline to sqlite
