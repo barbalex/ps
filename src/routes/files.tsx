@@ -34,8 +34,10 @@ export const Component = () => {
     const data = await createFile({ db, project_id, subproject_id })
     await db.files.create({ data })
     navigate(`${baseUrl}/${data.file_id}`)
-  }, [db, navigate])
+  }, [baseUrl, db, navigate, project_id, subproject_id])
 
+  // TODO: get uploader css locally if it should be possible to upload files
+  // offline to sqlite
   return (
     <div className="list-view">
       <ListViewHeader title="Files" addRow={add} tableName="file" />
