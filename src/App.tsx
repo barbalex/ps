@@ -2,6 +2,16 @@ import React from 'react'
 import { RouterProvider } from 'react-router-dom'
 import { FluentProvider } from '@fluentui/react-components'
 
+import * as LR from '@uploadcare/blocks'
+LR.FileUploaderRegular.shadowStyles = /* CSS */ `
+  :host lr-copyright {
+    display: none;
+  }
+`
+LR.registerBlocks(LR)
+const ctxProvider = document.querySelector('lr-upload-ctx-provider')
+console.log('ctxProvider', ctxProvider)
+
 import { styleSheet } from './css'
 import 'allotment/dist/style.css'
 import './style.css'

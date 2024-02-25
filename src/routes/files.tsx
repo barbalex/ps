@@ -40,6 +40,11 @@ export const Component = () => {
     <div className="list-view">
       <ListViewHeader title="Files" addRow={add} tableName="file" />
       <div className="list-container">
+        <lr-file-uploader-regular
+          css-src="https://cdn.jsdelivr.net/npm/@uploadcare/blocks@0.32.4/web/lr-file-uploader-regular.min.css"
+          ctx-name="uploadcare-uploader"
+          class="uploadcare-uploader-config"
+        ></lr-file-uploader-regular>
         {files.map(({ file_id, label }) => (
           <Row key={file_id} label={label} to={`${baseUrl}/${file_id}`} />
         ))}
