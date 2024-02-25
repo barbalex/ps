@@ -80,7 +80,7 @@ export const Component = () => {
           name="file_id"
           value={row.file_id ?? ''}
         />
-        {/* TODO: remove all id fields from form after implementing */}
+        {/* TODO: remove all id fields from form after implementing files everywhere */}
         <DropdownField
           label="Project"
           name="project_id"
