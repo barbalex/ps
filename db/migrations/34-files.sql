@@ -15,6 +15,7 @@ CREATE TABLE files(
   -- preview bytea DEFAULT NULL, -- TODO: not yet supported by electric-sql
   url text DEFAULT NULL, -- file-upload-success-event.detail.cdnUrl
   uuid uuid DEFAULT NULL, -- file-upload-success-event.detail.uuid
+  preview_uuid uuid DEFAULT NULL, -- https://uploadcare.com/docs/transformations/document-conversion/
   deleted boolean DEFAULT NULL -- FALSE
 );
 

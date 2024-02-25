@@ -1,13 +1,14 @@
 import { useCallback, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useDebouncedCallback } from 'use-debounce'
+import axios from 'redaxios'
 
 import { createFile } from '../../modules/createRows'
 import { useElectric } from '../../ElectricProvider'
 
 import '../../form.css'
 
-export const Uploader = ({ baseUrl }) => {
+export const Uploader = () => {
   const navigate = useNavigate()
   const {
     project_id,
@@ -18,6 +19,10 @@ export const Uploader = ({ baseUrl }) => {
     check_id,
   } = useParams()
 
+  const baseUrl = `${project_id ? `/projects/${project_id}` : ''}${
+    subproject_id ? `/subprojects/${subproject_id}` : ''
+  }/files`
+
   const { db } = useElectric()!
   const uploaderCtx = document.querySelector('#uploaderctx')
 
@@ -25,14 +30,8 @@ export const Uploader = ({ baseUrl }) => {
   // Solution: query files with the uuid and only create if it doesn't exist
   const onUploadSuccess = useCallback(
     async (event: CustomEvent) => {
-      console.log('Uploader, onUploadSuccess', event)
       const { results: files = [] } = await db.files.findMany({
         where: { uuid: event.detail.uuid, deleted: false },
-      })
-      console.log('hello Uploader, onUploadSuccess, files:', {
-        files,
-        event,
-        uuid: event.detail.uuid,
       })
       if (files.length) return
 
@@ -65,6 +64,43 @@ export const Uploader = ({ baseUrl }) => {
       // clear the uploader or it will show the last uploaded file when opened next time
       // https://github.com/uploadcare/blocks/issues/219#issuecomment-1223881802
       uploaderCtx.uploadCollection.clearAll()
+      // TODO: if is not an image, create a thumbnail
+      // https://uploadcare.com/docs/transformations/document-conversion/#thumbnails
+      // TODO: oops. as secret key is exposed, this should be done on a server
+      let res
+      try {
+        res = await axios({
+          method: 'POST',
+          url: 'https://api.uploadcare.com/convert/document/',
+          data: {
+            paths: [`${event.detail.uuid}/document/-/format/jpeg/-/page/1/`],
+            store: 1,
+          },
+          params,
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Uploadcare.Simple ${YOUR_PUBLIC_KEY}:${YOUR_SECRET_KEY}`,
+            Accept: 'application/vnd.uploadcare-v0.7+json',
+          },
+        })
+      } catch (error) {}
+      // works for:
+      // - csv > pdf > ?
+      // - doc > thumbnail
+      // - docx > thumbnail
+      // - docm > thumbnail
+      // - md > pdf > ?
+      // - msg > pdf > ?
+      // - odp > pdf > ?
+      // - ods > pdf > ?
+      // - odt > pdf > ?
+      // - pdf > thumbnail
+      // - pps > pdf/png > ?
+      // - ppt > pdf > ?
+      // - pptx > pdf > ?
+      // - txt > pdf > ?
+      // - xls > pdf/png > ?
+      // - xlsx > pdf/png > ?
     },
     [
       action_id,

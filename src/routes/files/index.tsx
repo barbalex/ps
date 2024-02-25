@@ -3,18 +3,16 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import { Button } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
-// import { Button } from '@fluentui/react-components'
 
 import { ListViewHeader } from '../../components/ListViewHeader'
 import { Row } from '../../components/shared/Row'
-import { Uploader } from './Uploader'
+import { Uploader } from '../file/Uploader'
 
 import '../../form.css'
 
 import { useElectric } from '../../ElectricProvider'
 
 export const Component = () => {
-  const uploaderCtx = document.querySelector('#uploaderctx')
   const { project_id = null, subproject_id = null } = useParams()
 
   const { db } = useElectric()!
@@ -33,6 +31,7 @@ export const Component = () => {
     subproject_id ? `/subprojects/${subproject_id}` : ''
   }/files`
 
+  const uploaderCtx = document.querySelector('#uploaderctx')
   const onClickAdd = useCallback(() => uploaderCtx.initFlow(), [uploaderCtx])
 
   // TODO: get uploader css locally if it should be possible to upload files
@@ -52,10 +51,22 @@ export const Component = () => {
         }
       />
       <div className="list-container">
-        <Uploader baseUrl={baseUrl} />
-        {files.map(({ file_id, label }) => (
-          <Row key={file_id} label={label} to={`${baseUrl}/${file_id}`} />
-        ))}
+        <Uploader />
+        {files.map((file) => {
+          const { file_id, label, url, mimetype } = file
+          let imgSrc = undefined
+          if ((mimetype.includes('image') || mimetype.includes('pdf')) && url) {
+            imgSrc = `${url}-/resize/x50/-/format/auto/-/quality/smart/`
+          }
+          return (
+            <Row
+              key={file_id}
+              label={label}
+              to={`${baseUrl}/${file_id}`}
+              imgSrc={imgSrc}
+            />
+          )
+        })}
       </div>
     </div>
   )

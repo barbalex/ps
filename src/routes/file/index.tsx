@@ -10,6 +10,7 @@ import { Jsonb } from '../../components/shared/Jsonb'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { DropdownField } from '../../components/shared/DropdownField'
 import { Header } from './Header'
+import { Uploader } from './Uploader'
 
 import '../../form.css'
 
@@ -80,16 +81,19 @@ export const Component = () => {
 
   return (
     <div className="form-outer-container" ref={ref}>
+      <Uploader />
       <Header />
       <div className="form-container">
-        {row.mimetype.includes('image') && row.url && width && (
-          <img
-            src={`${row.url}-/resize/${Math.floor(
-              width,
-            )}x/-/format/auto/-/quality/smart/`}
-            alt={row.name}
-          />
-        )}
+        {(row.mimetype.includes('image') || row.mimetype.includes('pdf')) &&
+          row.url &&
+          width && (
+            <img
+              src={`${row.url}-/resize/${Math.floor(
+                width,
+              )}x/-/format/auto/-/quality/smart/`}
+              alt={row.name}
+            />
+          )}
         <TextFieldInactive
           label="ID"
           name="file_id"
