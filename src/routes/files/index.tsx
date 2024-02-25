@@ -58,6 +58,7 @@ export const Component = () => {
           if ((mimetype.includes('image') || mimetype.includes('pdf')) && url) {
             imgSrc = `${url}-/resize/x50/-/format/auto/-/quality/smart/`
           }
+
           return (
             <Row
               key={file_id}
