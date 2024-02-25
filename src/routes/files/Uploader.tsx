@@ -1,12 +1,11 @@
 import { useCallback, useEffect } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Button } from '@fluentui/react-components'
+
 import { createFile } from '../../modules/createRows'
+import { useElectric } from '../../ElectricProvider'
 
 import '../../form.css'
-
-import { useElectric } from '../../ElectricProvider'
 
 export const Uploader = () => {
   const navigate = useNavigate()
@@ -21,9 +20,6 @@ export const Uploader = () => {
 
   const { db } = useElectric()!
   const uploaderCtx = document.querySelector('#uploaderctx')
-  console.log('Uploader, uploaderCtx ', uploaderCtx)
-  const collectionState = uploaderCtx.getOutputCollectionState()
-  console.log('Uploader, collectionState ', collectionState)
 
   const onUploadSuccess = useCallback(
     async (event: CustomEvent) => {
@@ -65,9 +61,10 @@ export const Uploader = () => {
     ],
   )
 
-  const onUploadFailed = useCallback((event: CustomEvent) => {
-    console.error('Uploader, onUploadFailed', event)
-  }, [])
+  const onUploadFailed = useCallback(
+    (event: CustomEvent) => console.error('Uploader, onUploadFailed', event),
+    [],
+  )
 
   useEffect(() => {
     uploaderCtx.addEventListener('file-upload-success', onUploadSuccess)
