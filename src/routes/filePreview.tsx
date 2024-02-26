@@ -9,6 +9,16 @@ import { Uploader } from './file/Uploader'
 
 import '../form.css'
 
+const containerStyle = {
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+}
+const fileStyle = {
+  flexGrow: 1,
+  display: 'flex',
+}
+
 export const Component = memo(() => {
   const { file_id } = useParams()
 
@@ -32,10 +42,10 @@ export const Component = memo(() => {
   const isPdf = row.mimetype.includes('pdf')
 
   return (
-    <div ref={ref}>
+    <div style={containerStyle} ref={ref}>
       <Uploader />
       <Header row={row} />
-      <div>
+      <div style={fileStyle}>
         {isImage && row.url && width && (
           <img
             src={`${row.url}-/resize/${Math.floor(
@@ -43,6 +53,21 @@ export const Component = memo(() => {
             )}x/-/format/auto/-/quality/smart/`}
             alt={row.name}
           />
+        )}
+        {isPdf && row.url && (
+          <object
+            data={row.url}
+            type="application/pdf"
+            style={{
+              width,
+              height: '100%',
+            }}
+          />
+        )}
+        {!isImage && !isPdf && (
+          <div
+            style={{ alignSelf: 'center', margin: 'auto' }}
+          >{`Not an image or pdf. Files with mime type '${row.mimetype}' can't be previewed (yet)`}</div>
         )}
       </div>
     </div>
