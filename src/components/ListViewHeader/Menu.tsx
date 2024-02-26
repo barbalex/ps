@@ -5,8 +5,6 @@ import { FaPlus } from 'react-icons/fa'
 import { controls } from '../../styles'
 
 export const Menu = memo(({ addRow, tableName, menus }) => {
-  // console.log('render FormMenu, table: ', tableName)
-
   if (!addRow && !menus) return null
 
   return (
