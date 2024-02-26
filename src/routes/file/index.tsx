@@ -79,6 +79,8 @@ export const Component = () => {
     return <div>Loading...</div>
   }
 
+  console.log('hello file, row:', row)
+
   return (
     <div className="form-outer-container" ref={ref}>
       <Uploader />
