@@ -17,6 +17,8 @@ export const PlaceNode = memo(
     const location = useLocation()
     const navigate = useNavigate()
     const level = place_id ? 8 : 6
+    const place_id1 = place_id ?? place.place_id
+    const place_id2 = place_id ? place.place_id : undefined
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isOpenBase =
@@ -34,7 +36,7 @@ export const PlaceNode = memo(
     const isActive = isOpen && urlPath.length === level
 
     const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/places${
-      place_id ? `/${place_id}/places` : ''
+      place_id2 ? `/${place_id1}/places` : ''
     }`
 
     const onClickButton = useCallback(() => {
