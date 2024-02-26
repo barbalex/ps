@@ -64,6 +64,9 @@ export const Uploader = () => {
       // clear the uploader or it will show the last uploaded file when opened next time
       // https://github.com/uploadcare/blocks/issues/219#issuecomment-1223881802
       uploaderCtx.uploadCollection.clearAll()
+
+      return
+
       // TODO: if is not an image, create a thumbnail
       // https://uploadcare.com/docs/transformations/document-conversion/#thumbnails
       // TODO: oops. as secret key is exposed, this should be done on a server
@@ -73,6 +76,7 @@ export const Uploader = () => {
       // - then update the file with preview_uuid
       let res
       try {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         res = await axios({
           method: 'POST',
           url: 'https://api.uploadcare.com/convert/document/',
