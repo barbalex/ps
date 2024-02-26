@@ -14,7 +14,7 @@ const labelStyle = {
   flexGrow: 1,
 }
 
-export const Row = ({ label, to, imgSrc }) => {
+export const Row = ({ label, to, imgSrc, lastHasImages = false }) => {
   const navigate = useNavigate()
   const onClick = useCallback(() => {
     navigate(to)
@@ -24,8 +24,10 @@ export const Row = ({ label, to, imgSrc }) => {
     <div className="row" onClick={onClick}>
       {imgSrc ? (
         <img src={imgSrc} alt={label} style={imgStyle} />
-      ) : (
+      ) : lastHasImages ? (
         <div style={imgDivStyle} />
+      ) : (
+        <div />
       )}
       <div style={labelStyle}>{label}</div>
     </div>
