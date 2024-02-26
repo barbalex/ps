@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import { useDebouncedCallback } from 'use-debounce'
 import axios from 'redaxios'
 
@@ -18,6 +18,9 @@ export const Uploader = () => {
     action_id,
     check_id,
   } = useParams()
+
+  const { pathname } = useLocation()
+  const isPreview = pathname.endsWith('preview')
 
   const baseUrl = `${project_id ? `/projects/${project_id}` : ''}${
     subproject_id ? `/subprojects/${subproject_id}` : ''
@@ -58,7 +61,7 @@ export const Uploader = () => {
       }
       const data = await createFile(fileInput)
       await db.files.create({ data })
-      navigate(`${baseUrl}/${data.file_id}`)
+      navigate(`${baseUrl}/${data.file_id}${isPreview ? '/preview' : ''}`)
       // close the uploader or it will be open when navigating to the list
       uploaderCtx.doneFlow()
       // clear the uploader or it will show the last uploaded file when opened next time

@@ -5,7 +5,15 @@ import { useElectric } from '../../ElectricProvider'
 import { FormHeader } from '../../components/FormHeader'
 
 export const Header = memo(() => {
-  const { project_id = null, subproject_id = null, file_id } = useParams()
+  const {
+    project_id,
+    subproject_id,
+    place_id,
+    place_id2,
+    action_id,
+    check_id,
+    file_id,
+  } = useParams()
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const isPreview = pathname.endsWith('preview')
@@ -17,6 +25,10 @@ export const Header = memo(() => {
   // TODO: if is preview, add preview to the url
   const baseUrl = `${project_id ? `/projects/${project_id}` : ''}${
     subproject_id ? `/subprojects/${subproject_id}` : ''
+  }${place_id ? `/places/${place_id}` : ''}${
+    place_id2 ? `/places/${place_id2}` : ''
+  }${action_id ? `/actions/${action_id}` : ''}${
+    check_id ? `/checks/${check_id}` : ''
   }/files`
 
   const uploaderCtx = document.querySelector('#uploaderctx')
