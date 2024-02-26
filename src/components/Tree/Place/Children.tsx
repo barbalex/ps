@@ -11,6 +11,7 @@ import { PlaceReportsNode } from '../PlaceReports'
 import { PlaceUsersNode } from '../PlaceUsers'
 import { PlacesNode } from '../Places'
 import { useElectric } from '../../../ElectricProvider'
+import { FilesNode } from '../Files'
 
 type Props = {
   project_id: string
@@ -35,6 +36,14 @@ export const PlaceChildren = memo(
       }),
     )
     const placeLevel: PlaceLevel | undefined = placeLevels?.[0]
+
+    console.log('PlaceChildren', {
+      project_id,
+      subproject_id,
+      place_id,
+      place,
+      placeLevel,
+    })
 
     return (
       <>
@@ -77,6 +86,13 @@ export const PlaceChildren = memo(
           subproject_id={subproject_id}
           place_id={place_id}
           place={place}
+          level={level + 1}
+        />
+        <FilesNode
+          project_id={project_id}
+          subproject_id={subproject_id}
+          place_id={place_id ?? place.place_id}
+          place_id2={place_id ? place.place_id : undefined}
           level={level + 1}
         />
       </>
