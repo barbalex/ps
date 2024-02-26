@@ -28,21 +28,22 @@ export const Component = memo(() => {
     return <div>Loading...</div>
   }
 
+  const isImage = row.mimetype.includes('image')
+  const isPdf = row.mimetype.includes('pdf')
+
   return (
-    <div className="form-outer-container" ref={ref}>
+    <div ref={ref}>
       <Uploader />
-      <Header />
-      <div className="form-container">
-        {(row.mimetype.includes('image') || row.mimetype.includes('pdf')) &&
-          row.url &&
-          width && (
-            <img
-              src={`${row.url}-/resize/${Math.floor(
-                width,
-              )}x/-/format/auto/-/quality/smart/`}
-              alt={row.name}
-            />
-          )}
+      <Header row={row} />
+      <div>
+        {isImage && row.url && width && (
+          <img
+            src={`${row.url}-/resize/${Math.floor(
+              width,
+            )}x/-/format/auto/-/quality/smart/`}
+            alt={row.name}
+          />
+        )}
       </div>
     </div>
   )

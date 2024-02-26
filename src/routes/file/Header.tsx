@@ -5,8 +5,13 @@ import { MdPreview, MdEditNote } from 'react-icons/md'
 
 import { useElectric } from '../../ElectricProvider'
 import { FormHeader } from '../../components/FormHeader'
+import { Files as File } from '../../generated/client'
 
-export const Header = memo(() => {
+type Props = {
+  row: File
+}
+
+export const Header = memo(({ row }: Props) => {
   const {
     project_id,
     subproject_id,
@@ -88,7 +93,7 @@ export const Header = memo(() => {
   // navigate to preview or out of it
   return (
     <FormHeader
-      title="File"
+      title={isPreview ? `File: ${row?.label ?? ''}` : 'File'}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
@@ -96,7 +101,7 @@ export const Header = memo(() => {
       tableName="file"
       siblings={
         <Button
-          title={isPreview ? 'Form' : 'File preview'}
+          title={isPreview ? 'View form' : 'Preview file'}
           icon={isPreview ? <MdEditNote /> : <MdPreview />}
           onClick={onClickPreview}
         />
