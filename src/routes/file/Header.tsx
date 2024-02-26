@@ -1,5 +1,7 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
+import { Button } from '@fluentui/react-components'
+import { MdPreview, MdEditNote } from 'react-icons/md'
 
 import { useElectric } from '../../ElectricProvider'
 import { FormHeader } from '../../components/FormHeader'
@@ -15,10 +17,16 @@ export const Header = memo(() => {
     file_id,
   } = useParams()
   const navigate = useNavigate()
+
   const { pathname } = useLocation()
   const isPreview = pathname.endsWith('preview')
-
-  console.log('hello fileHeader', { pathname, isPreview })
+  const onClickPreview = useCallback(() => {
+    if (isPreview) {
+      navigate(pathname.replace('/preview', ''))
+    } else {
+      navigate(`${pathname}/preview`)
+    }
+  }, [isPreview, navigate, pathname])
 
   const { db } = useElectric()!
 
@@ -76,6 +84,8 @@ export const Header = memo(() => {
     file_id,
   ])
 
+  // TODO: add sibling menu to:
+  // navigate to preview or out of it
   return (
     <FormHeader
       title="File"
@@ -84,6 +94,13 @@ export const Header = memo(() => {
       toNext={toNext}
       toPrevious={toPrevious}
       tableName="file"
+      siblings={
+        <Button
+          title={isPreview ? 'Form' : 'File preview'}
+          icon={isPreview ? <MdEditNote /> : <MdPreview />}
+          onClick={onClickPreview}
+        />
+      }
     />
   )
 })
