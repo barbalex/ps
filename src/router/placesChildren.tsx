@@ -9,7 +9,7 @@ export const placesChildren = ({ db, level }) => [
         text: 'Checks',
         table: 'checks',
         folder: true,
-        level
+        level,
       }),
     },
     children: [
@@ -25,14 +25,14 @@ export const placesChildren = ({ db, level }) => [
             text: match.params.check_id,
             table: 'checks',
             folder: false,
-            level
+            level,
           }),
           to: async (match) =>
             await buildNavs({
               table: `checks`,
               ...match.params,
               db,
-              level
+              level,
             }),
         },
         children: [
@@ -96,6 +96,41 @@ export const placesChildren = ({ db, level }) => [
               },
             ],
           },
+          {
+            path: 'files',
+            element: null,
+            handle: {
+              crumb: () => ({
+                text: 'Files',
+                table: 'files',
+                folder: true,
+              }),
+            },
+            children: [
+              { index: true, lazy: () => import('../routes/files') },
+              {
+                path: ':file_id',
+                element: null,
+                handle: {
+                  crumb: (match) => ({
+                    text: match.params.file_id,
+                    table: 'files',
+                    folder: false,
+                  }),
+                },
+                children: [
+                  {
+                    index: true,
+                    lazy: () => import('../routes/file'),
+                  },
+                  {
+                    path: 'preview',
+                    lazy: () => import('../routes/filePreview'),
+                  },
+                ],
+              },
+            ],
+          },
         ],
       },
     ],
@@ -129,7 +164,7 @@ export const placesChildren = ({ db, level }) => [
               table: `actions`,
               ...match.params,
               db,
-              level
+              level,
             }),
         },
         children: [
@@ -194,7 +229,7 @@ export const placesChildren = ({ db, level }) => [
                       table: `action_reports`,
                       ...match.params,
                       db,
-                      level
+                      level,
                     }),
                 },
                 children: [
@@ -234,6 +269,41 @@ export const placesChildren = ({ db, level }) => [
               },
             ],
           },
+          {
+            path: 'files',
+            element: null,
+            handle: {
+              crumb: () => ({
+                text: 'Files',
+                table: 'files',
+                folder: true,
+              }),
+            },
+            children: [
+              { index: true, lazy: () => import('../routes/files') },
+              {
+                path: ':file_id',
+                element: null,
+                handle: {
+                  crumb: (match) => ({
+                    text: match.params.file_id,
+                    table: 'files',
+                    folder: false,
+                  }),
+                },
+                children: [
+                  {
+                    index: true,
+                    lazy: () => import('../routes/file'),
+                  },
+                  {
+                    path: 'preview',
+                    lazy: () => import('../routes/filePreview'),
+                  },
+                ],
+              },
+            ],
+          },
         ],
       },
     ],
@@ -267,7 +337,7 @@ export const placesChildren = ({ db, level }) => [
               table: `place_reports`,
               ...match.params,
               db,
-              level
+              level,
             }),
         },
         children: [
@@ -332,6 +402,41 @@ export const placesChildren = ({ db, level }) => [
             folder: false,
           }),
         },
+      },
+    ],
+  },
+  {
+    path: 'files',
+    element: null,
+    handle: {
+      crumb: () => ({
+        text: 'Files',
+        table: 'files',
+        folder: true,
+      }),
+    },
+    children: [
+      { index: true, lazy: () => import('../routes/files') },
+      {
+        path: ':file_id',
+        element: null,
+        handle: {
+          crumb: (match) => ({
+            text: match.params.file_id,
+            table: 'files',
+            folder: false,
+          }),
+        },
+        children: [
+          {
+            index: true,
+            lazy: () => import('../routes/file'),
+          },
+          {
+            path: 'preview',
+            lazy: () => import('../routes/filePreview'),
+          },
+        ],
       },
     ],
   },
