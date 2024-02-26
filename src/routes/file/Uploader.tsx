@@ -38,6 +38,8 @@ export const Uploader = () => {
       })
       if (files.length) return
 
+      console.log('Uploader, onUploadSuccess', event.detail)
+
       const fileInput = {
         db,
         name: event.detail.name,
@@ -45,6 +47,8 @@ export const Uploader = () => {
         mimetype: event.detail.mimeType,
         url: event.detail.cdnUrl,
         uuid: event.detail.uuid,
+        width: event.detail.fileInfo?.imageInfo?.width ?? null,
+        height: event.detail.fileInfo?.imageInfo?.height ?? null,
       }
       if (action_id) {
         fileInput.action_id = action_id

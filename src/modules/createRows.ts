@@ -75,6 +75,8 @@ export const createFile = async ({
   mimetype = null,
   url = null,
   uuid = null,
+  width = null,
+  height = null,
 }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({ db, table: 'files' })
@@ -92,6 +94,8 @@ export const createFile = async ({
     mimetype,
     url,
     uuid,
+    width,
+    height,
     ...presetData,
   }
 }

@@ -11,6 +11,9 @@ CREATE TABLE files(
   label_replace_by_generated_column text DEFAULT NULL,
   data jsonb DEFAULT NULL, -- TODO: not defineable in fields table!!
   mimetype text DEFAULT NULL, -- file-upload-success-event.detail.mimeType
+  -- need width and height to get the aspect ratio of the image
+  width integer DEFAULT NULL, -- file-upload-success-event.detail.fileInfo.image.width
+  height integer DEFAULT NULL, -- file-upload-success-event.detail.fileInfo.image.height
   -- file bytea DEFAULT NULL, -- TODO: not yet supported by electric-sql
   -- preview bytea DEFAULT NULL, -- TODO: not yet supported by electric-sql
   url text DEFAULT NULL, -- file-upload-success-event.detail.cdnUrl
