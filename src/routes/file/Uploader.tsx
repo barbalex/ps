@@ -24,6 +24,10 @@ export const Uploader = () => {
 
   const baseUrl = `${project_id ? `/projects/${project_id}` : ''}${
     subproject_id ? `/subprojects/${subproject_id}` : ''
+  }${place_id ? `/places/${place_id}` : ''}${
+    place_id2 ? `/places/${place_id2}` : ''
+  }${action_id ? `/actions/${action_id}` : ''}${
+    check_id ? `/checks/${check_id}` : ''
   }/files`
 
   const { db } = useElectric()!
