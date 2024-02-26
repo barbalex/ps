@@ -40,6 +40,16 @@ export const FilesNode = memo(
     } else if (project_id) {
       where.project_id = project_id
     }
+    console.log('Tree FilesNode', {
+      where,
+      action_id,
+      check_id,
+      place_id2,
+      place_id,
+      subproject_id,
+      project_id,
+      level,
+    })
     const { results: files = [] } = useLiveQuery(
       db.files.liveMany({
         where,
