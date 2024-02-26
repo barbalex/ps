@@ -1,7 +1,20 @@
 import { useCallback } from 'react'
-import {  useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
-export const Row = ({ label, to }) => {
+const imgStyle = {
+  flexBasis: 50,
+  flexGrow: 0,
+}
+const imgDivStyle = {
+  flexBasis: 50,
+  flexGrow: 0,
+  backgroundColor: 'rgba(0, 0, 0, 0.05)',
+}
+const labelStyle = {
+  flexGrow: 1,
+}
+
+export const Row = ({ label, to, imgSrc }) => {
   const navigate = useNavigate()
   const onClick = useCallback(() => {
     navigate(to)
@@ -9,7 +22,12 @@ export const Row = ({ label, to }) => {
 
   return (
     <div className="row" onClick={onClick}>
-      {label}
+      {imgSrc ? (
+        <img src={imgSrc} alt={label} style={imgStyle} />
+      ) : (
+        <div style={imgDivStyle} />
+      )}
+      <div style={labelStyle}>{label}</div>
     </div>
   )
 }

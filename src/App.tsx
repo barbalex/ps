@@ -2,6 +2,17 @@ import React from 'react'
 import { RouterProvider } from 'react-router-dom'
 import { FluentProvider } from '@fluentui/react-components'
 
+import * as LR from '@uploadcare/blocks'
+LR.FileUploaderRegular.shadowStyles = /* CSS */ `
+  :host lr-copyright {
+    display: none;
+  }
+  :host lr-simple-btn {
+    display: none;
+  }
+`
+LR.registerBlocks(LR)
+
 import { styleSheet } from './css'
 import 'allotment/dist/style.css'
 import './style.css'
@@ -38,6 +49,10 @@ export default function App() {
 
   return (
     <ElectricProvider>
+      <lr-upload-ctx-provider
+        id="uploaderctx"
+        ctx-name="uploadcare-uploader"
+      ></lr-upload-ctx-provider>
       <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
       <SqlInitializer />
       <FluentProvider theme={lightTheme}>

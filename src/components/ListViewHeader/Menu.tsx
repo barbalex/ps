@@ -7,15 +7,19 @@ import { controls } from '../../styles'
 export const Menu = memo(({ addRow, tableName, menus }) => {
   // console.log('render FormMenu, table: ', tableName)
 
+  if (!addRow && !menus) return null
+
   return (
     <div style={controls}>
       {!!menus && menus}
-      <Button
-        size="medium"
-        icon={<FaPlus />}
-        onClick={addRow}
-        title={`Add new ${tableName}`}
-      />
+      {!!addRow && (
+        <Button
+          size="medium"
+          icon={<FaPlus />}
+          onClick={addRow}
+          title={`Add new ${tableName}`}
+        />
+      )}
     </div>
   )
 })

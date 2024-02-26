@@ -1,7 +1,6 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 
-import { createFile } from '../../modules/createRows'
 import { useElectric } from '../../ElectricProvider'
 import { FormHeader } from '../../components/FormHeader'
 
@@ -15,16 +14,13 @@ export const Header = memo(() => {
     subproject_id ? `/subprojects/${subproject_id}` : ''
   }/files`
 
-  const addRow = useCallback(async () => {
-    const data = await createFile({ db, project_id, subproject_id })
-    await db.files.create({ data })
-    navigate(`${baseUrl}/${data.file_id}`)
-  }, [db, navigate])
+  const uploaderCtx = document.querySelector('#uploaderctx')
+  const addRow = useCallback(async () => uploaderCtx.initFlow(), [uploaderCtx])
 
   const deleteRow = useCallback(async () => {
     await db.files.delete({ where: { file_id } })
     navigate(baseUrl)
-  }, [file_id, db.files, navigate])
+  }, [db.files, file_id, navigate, baseUrl])
 
   const toNext = useCallback(async () => {
     const files = await db.files.findMany({
@@ -39,7 +35,7 @@ export const Header = memo(() => {
     const index = files.findIndex((p) => p.file_id === file_id)
     const next = files[(index + 1) % len]
     navigate(`${baseUrl}/${next.file_id}`)
-  }, [db.files, navigate, file_id])
+  }, [db.files, project_id, subproject_id, navigate, baseUrl, file_id])
 
   const toPrevious = useCallback(async () => {
     const files = await db.files.findMany({
@@ -54,7 +50,7 @@ export const Header = memo(() => {
     const index = files.findIndex((p) => p.file_id === file_id)
     const previous = files[(index + len - 1) % len]
     navigate(`${baseUrl}/${previous.file_id}`)
-  }, [db.files, navigate, file_id])
+  }, [db.files, project_id, subproject_id, navigate, baseUrl, file_id])
 
   return (
     <FormHeader

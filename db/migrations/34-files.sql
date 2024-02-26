@@ -6,12 +6,16 @@ CREATE TABLE files(
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   action_id uuid DEFAULT NULL REFERENCES actions(action_id) ON DELETE CASCADE ON UPDATE CASCADE,
   check_id uuid DEFAULT NULL REFERENCES checks(check_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  name text DEFAULT NULL,
+  name text DEFAULT NULL, -- file-upload-success-event.detail.name
+  size bigint DEFAULT NULL, -- file-upload-success-event.detail.size
   label_replace_by_generated_column text DEFAULT NULL,
   data jsonb DEFAULT NULL, -- TODO: not defineable in fields table!!
-  mimetype text DEFAULT NULL,
+  mimetype text DEFAULT NULL, -- file-upload-success-event.detail.mimeType
   -- file bytea DEFAULT NULL, -- TODO: not yet supported by electric-sql
-  url text DEFAULT NULL,
+  -- preview bytea DEFAULT NULL, -- TODO: not yet supported by electric-sql
+  url text DEFAULT NULL, -- file-upload-success-event.detail.cdnUrl
+  uuid uuid DEFAULT NULL, -- file-upload-success-event.detail.uuid
+  preview_uuid uuid DEFAULT NULL, -- https://uploadcare.com/docs/transformations/document-conversion/
   deleted boolean DEFAULT NULL -- FALSE
 );
 
