@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useParams } from 'react-router-dom'
+import { useParams,  } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 import { useResizeDetector } from 'react-resize-detector'
 

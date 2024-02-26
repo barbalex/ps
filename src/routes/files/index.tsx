@@ -13,22 +13,44 @@ import '../../form.css'
 import { useElectric } from '../../ElectricProvider'
 
 export const Component = () => {
-  const { project_id = null, subproject_id = null } = useParams()
+  const {
+    project_id,
+    subproject_id,
+    place_id,
+    place_id2,
+    action_id,
+    check_id,
+  } = useParams()
+
+  const where = { deleted: false }
+  if (action_id) {
+    where.action_id = action_id
+  } else if (check_id) {
+    where.check_id = check_id
+  } else if (place_id2) {
+    where.place_id2 = place_id2
+  } else if (place_id) {
+    where.place_id = place_id
+  } else if (subproject_id) {
+    where.subproject_id = subproject_id
+  } else if (project_id) {
+    where.project_id = project_id
+  }
 
   const { db } = useElectric()!
   const { results: files = [] } = useLiveQuery(
     db.files.liveMany({
-      where: {
-        deleted: false,
-        project_id,
-        subproject_id,
-      },
+      where,
       orderBy: { label: 'asc' },
     }),
   )
 
   const baseUrl = `${project_id ? `/projects/${project_id}` : ''}${
     subproject_id ? `/subprojects/${subproject_id}` : ''
+  }${place_id ? `/places/${place_id}` : ''}${
+    place_id2 ? `/places/${place_id2}` : ''
+  }${action_id ? `/actions/${action_id}` : ''}${
+    check_id ? `/checks/${check_id}` : ''
   }/files`
 
   const uploaderCtx = document.querySelector('#uploaderctx')
