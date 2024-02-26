@@ -65,6 +65,7 @@ export const Component = () => {
               label={label}
               to={`${baseUrl}/${file_id}`}
               imgSrc={imgSrc}
+              lastHasImages={true}
             />
           )
         })}
