@@ -38,8 +38,6 @@ export const Uploader = () => {
       })
       if (files.length) return
 
-      console.log('Uploader, onUploadSuccess', event.detail)
-
       const fileInput = {
         db,
         name: event.detail.name,

@@ -32,8 +32,6 @@ export const Component = memo(() => {
     db.files.liveUnique({ where: { file_id } }),
   )
 
-  console.log('filePreview', row)
-
   const { width, height, ref } = useResizeDetector({
     // handleHeight: false,
     refreshMode: 'debounce',
