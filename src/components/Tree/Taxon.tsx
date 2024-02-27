@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { Node } from './Node'
 import { Taxa as Taxon } from '../../../generated/client'
 
-type Props = {
+interface Props {
   project_id: string
   taxonomy_id: string
   taxon: Taxon

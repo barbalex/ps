@@ -5,7 +5,7 @@ import { Node } from './Node'
 import { Vector_layers as VectorLayer } from '../../../generated/client'
 import { VectorLayerDisplaysNode } from './VectorLayerDisplays'
 
-type Props = {
+interface Props {
   project_id: string
   vectorLayer: VectorLayer
   level?: number

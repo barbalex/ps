@@ -6,7 +6,7 @@ import { Checks as Check, Places as Place } from '../../../generated/client'
 import { CheckValuesNode } from './CheckValues'
 import { CheckTaxaNode } from './CheckTaxa'
 
-type Props = {
+interface Props {
   project_id: string
   subproject_id: string
   place_id: string

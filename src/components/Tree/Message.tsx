@@ -4,7 +4,7 @@ import { useLocation, useParams, useNavigate } from 'react-router-dom'
 import { Node } from './Node'
 import { Messages as Message } from '../../../generated/client'
 
-type Props = {
+interface Props {
   message: Message
   level?: number
 }

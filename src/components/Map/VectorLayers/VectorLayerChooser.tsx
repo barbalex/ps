@@ -13,7 +13,7 @@ import {
  * from WFS or PVLGeom
  */
 
-type Props = {
+interface Props {
   layer: VectorLayer
   display: VectorLayerDisplay
 }

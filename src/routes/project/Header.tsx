@@ -7,7 +7,7 @@ import { FormHeader } from '../../components/FormHeader'
 import { upsertTableVectorLayersForProject } from '../../modules/upsertTableVectorLayersForProject'
 import { DesigningButton } from './DesigningButton'
 
-type Props = {
+interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
 }
 

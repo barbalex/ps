@@ -5,7 +5,7 @@ import { Node } from './Node'
 import { Taxonomies as Taxonomy } from '../../../generated/client'
 import { TaxaNode } from './Taxa'
 
-type Props = {
+interface Props {
   project_id: string
   taxonomy: Taxonomy
   level?: number

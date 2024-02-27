@@ -4,7 +4,7 @@ import { useLocation, useParams, useNavigate } from 'react-router-dom'
 import { Node } from './Node'
 import { FieldTypes as FieldType } from '../../../generated/client'
 
-type Props = {
+interface Props {
   fieldType: FieldType
   level?: number
 }

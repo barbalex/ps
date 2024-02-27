@@ -5,7 +5,7 @@ import { Node } from './Node'
 import { ObservationSources as ObservationSource } from '../../../generated/client'
 import { ObservationsNode } from './Observations'
 
-type Props = {
+interface Props {
   project_id: string
   observationSource: ObservationSource
   level?: number

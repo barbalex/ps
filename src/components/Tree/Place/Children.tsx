@@ -13,7 +13,7 @@ import { PlacesNode } from '../Places'
 import { useElectric } from '../../../ElectricProvider'
 import { FilesNode } from '../Files'
 
-type Props = {
+interface Props {
   project_id: string
   subproject_id: string
   place_id: string

@@ -14,7 +14,7 @@ const ddStyle = {
   flexGrow: 1,
 }
 
-type Props = {
+interface Props {
   name: string
   label?: string
   list_id: string

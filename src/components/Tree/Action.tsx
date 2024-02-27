@@ -6,7 +6,7 @@ import { Actions as Action, Places as Place } from '../../../generated/client'
 import { ActionValuesNode } from './ActionsValues'
 import { ActionReportsNode } from './ActionsReports'
 
-type Props = {
+interface Props {
   project_id: string
   subproject_id: string
   place_id: string

@@ -6,7 +6,7 @@ import { useElectric } from '../../ElectricProvider'
 import { Node } from './Node'
 import { TaxonNode } from './Taxon'
 
-type Props = {
+interface Props {
   project_id: string
   taxonomy_id: string
   level?: number

@@ -8,7 +8,7 @@ import { DropdownFieldOptions } from '../../components/shared/DropdownFieldOptio
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { upsertVectorLayerDisplaysForVectorLayer } from '../../modules/upsertVectorLayerDisplaysForVectorLayer'
 
-type Props = {
+interface Props {
   vectorLayer: VectorLayer
 }
 

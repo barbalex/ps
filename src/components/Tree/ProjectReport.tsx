@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { Node } from './Node'
 import { ProjectReports as ProjectReport } from '../../../generated/client'
 
-type Props = {
+interface Props {
   project_id: string
   projectReport: ProjectReport
   level?: number

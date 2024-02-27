@@ -7,7 +7,7 @@ import { useElectric } from '../../ElectricProvider'
 import { FormHeader } from '../../components/FormHeader'
 import { Files as File } from '../../generated/client'
 
-type Props = {
+interface Props {
   row: File
 }
 

@@ -10,7 +10,7 @@ import { SubprojectTaxaNode } from './SubprojectTaxa'
 import { SubprojectUsersNode } from './SubprojectUsers'
 import { FilesNode } from './Files'
 
-type Props = {
+interface Props {
   project_id: string
   subproject: Subproject
   level?: number

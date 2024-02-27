@@ -4,7 +4,7 @@ import { useLocation, useParams, useNavigate } from 'react-router-dom'
 import { Node } from './Node'
 import { Fields as Field } from '../../../generated/client'
 
-type Props = {
+interface Props {
   project_id?: string
   field: Field
 }

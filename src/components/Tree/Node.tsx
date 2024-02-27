@@ -24,7 +24,7 @@ const svgStyle = {
 
 const labelSpanStyle = { cursor: 'default' }
 
-type Props = {
+interface Props {
   isInActiveNodeArray: boolean
   isActive: boolean
   isOpen: boolean

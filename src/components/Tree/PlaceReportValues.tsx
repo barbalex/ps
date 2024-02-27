@@ -6,7 +6,7 @@ import { useElectric } from '../../ElectricProvider'
 import { Node } from './Node'
 import { PlaceReportValueNode } from './PlaceReportValue'
 
-type Props = {
+interface Props {
   project_id: string
   subproject_id: string
   place_id?: string

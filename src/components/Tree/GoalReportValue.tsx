@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { Node } from './Node'
 import { GoalReportValues as GoalReportValue } from '../../../generated/client'
 
-type Props = {
+interface Props {
   project_id: string
   subproject_id: string
   goal_id: string

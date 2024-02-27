@@ -7,7 +7,7 @@ import { Node } from './Node'
 import { CheckNode } from './Check'
 import { Places as Place } from '../../generated/client'
 
-type Props = {
+interface Props {
   project_id: string
   subproject_id: string
   place_id?: string

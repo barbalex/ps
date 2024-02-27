@@ -4,7 +4,7 @@ import { Tooltip } from 'react-leaflet/Tooltip'
 import { Tile_layers as TileLayer } from '../../../../generated/client'
 import { ErrorBoundary } from '../../MapErrorBoundary'
 
-type Props = {
+interface Props {
   layer: TileLayer
 }
 

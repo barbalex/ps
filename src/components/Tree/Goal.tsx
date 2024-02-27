@@ -5,7 +5,7 @@ import { Node } from './Node'
 import { Goals as Goal } from '../../../generated/client'
 import { GoalReportsNode } from './GoalReports'
 
-type Props = {
+interface Props {
   project_id: string
   subproject_id: string
   goal: Goal

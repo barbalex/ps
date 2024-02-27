@@ -4,7 +4,7 @@ import { useLocation, useParams, useNavigate } from 'react-router-dom'
 import { Node } from './Node'
 import { Accounts as Account } from '../../../generated/client'
 
-type Props = {
+interface Props {
   account: Account
   level?: number
 }

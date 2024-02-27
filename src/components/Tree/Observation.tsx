@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { Node } from './Node'
 import { Observations as Observation } from '../../../generated/client'
 
-type Props = {
+interface Props {
   project_id: string
   observation_source_id: string
   observation: Observation

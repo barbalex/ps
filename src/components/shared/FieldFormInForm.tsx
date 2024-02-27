@@ -43,7 +43,7 @@ const menuStyle = {
   columnGap: 5,
 }
 
-type Props = {
+interface Props {
   field: Field
 }
 

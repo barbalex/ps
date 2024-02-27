@@ -6,7 +6,7 @@ import { useElectric } from '../../ElectricProvider'
 import { Node } from './Node'
 import { VectorLayerDisplayNode } from './VectorLayerDisplay'
 
-type Props = {
+interface Props {
   project_id: string
   vector_layer_id: string
   level?: number

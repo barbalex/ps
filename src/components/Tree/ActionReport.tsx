@@ -8,7 +8,7 @@ import {
   Actions_reports as ActionReport,
 } from '../../generated/client'
 
-type Props = {
+interface Props {
   project_id: string
   subproject_id: string
   place_id: string

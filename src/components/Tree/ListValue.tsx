@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { Node } from './Node'
 import { ListValues as ListValue } from '../../../generated/client'
 
-type Props = {
+interface Props {
   project_id: string
   list_id: string
   listValue: ListValue

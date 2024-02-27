@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { Node } from './Node'
 import { Tile_layers as TileLayer } from '../../../generated/client'
 
-type Props = {
+interface Props {
   project_id: string
   tileLayer: TileLayer
   level?: number

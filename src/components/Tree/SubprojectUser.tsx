@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { Node } from './Node'
 import { SubprojectUsers as SubprojectUser } from '../../../generated/client'
 
-type Props = {
+interface Props {
   project_id: string
   subproject_id: string
   subprojectUser: SubprojectUser

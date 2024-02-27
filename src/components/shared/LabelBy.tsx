@@ -7,7 +7,7 @@ import { DropdownFieldSimpleOptions } from './DropdownFieldSimpleOptions'
 
 import '../../form.css'
 
-type Props = {
+interface Props {
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
   value: string
   extraFieldNames?: string[]

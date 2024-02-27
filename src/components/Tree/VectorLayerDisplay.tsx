@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { Node } from './Node'
 import { Vector_layer_displays as VectorLayerDisplay } from '../../../generated/client'
 
-type Props = {
+interface Props {
   project_id: string
   vector_layer_id: string
   vectorLayerDisplay: VectorLayerDisplay

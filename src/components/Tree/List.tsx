@@ -5,7 +5,7 @@ import { Node } from './Node'
 import { Lists as List } from '../../../generated/client'
 import { ListValuesNode } from './ListValues'
 
-type Props = {
+interface Props {
   project_id: string
   list: List
   level?: number

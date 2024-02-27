@@ -21,7 +21,7 @@ import { Editing } from './Editing'
 import { useElectric } from '../../../ElectricProvider'
 import { user_id } from '../../SqlInitializer'
 
-type Props = {
+interface Props {
   project: Project
   level?: number
 }

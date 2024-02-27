@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { Node } from './Node'
 import { Units as Unit } from '../../../generated/client'
 
-type Props = {
+interface Props {
   project_id: string
   unit: Unit
   level?: number

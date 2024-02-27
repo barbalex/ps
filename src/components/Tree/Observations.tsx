@@ -6,7 +6,7 @@ import { useElectric } from '../../ElectricProvider'
 import { Node } from './Node'
 import { ObservationNode } from './Observation'
 
-type Props = {
+interface Props {
   project_id: string
   observation_source_id: string
   level?: number

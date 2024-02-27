@@ -4,7 +4,7 @@ import { useLocation, useParams, useNavigate } from 'react-router-dom'
 import { Node } from './Node'
 import { WidgetTypes as WidgetType } from '../../../generated/client'
 
-type Props = {
+interface Props {
   widgetType: WidgetType
   level?: number
 }

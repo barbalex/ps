@@ -6,7 +6,7 @@ import { useElectric } from '../../ElectricProvider'
 import { Node } from './Node'
 import { GoalReportNode } from './GoalReport'
 
-type Props = {
+interface Props {
   project_id: string
   subproject_id: string
   goal_id: string

@@ -44,7 +44,7 @@ const xmlTheme = {
   attributeValueColor: '#2ECC40',
 }
 
-type Props = {
+interface Props {
   layer: VectorLayer
   display: VectorLayerDisplay
 }

@@ -5,7 +5,7 @@ import { useElectric } from '../../ElectricProvider'
 import { MultiSelect } from './MultiSelect'
 import { idFieldFromTable } from '../../modules/idFieldFromTable'
 
-type Props = {
+interface Props {
   name: string
   label: string
   table: string
