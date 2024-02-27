@@ -1,16 +1,16 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import { Button } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
 
-import { ListViewHeader } from '../../components/ListViewHeader'
-import { Row } from '../../components/shared/Row'
-import { Uploader } from '../file/Uploader'
+import { ListViewHeader } from '../components/ListViewHeader'
+import { Row } from '../components/shared/Row'
+import { Uploader } from './file/Uploader'
 
-import '../../form.css'
+import '../form.css'
 
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../ElectricProvider'
 
 export const Component = () => {
   const {
@@ -22,20 +22,23 @@ export const Component = () => {
     check_id,
   } = useParams()
 
-  const where = { deleted: false }
-  if (action_id) {
-    where.action_id = action_id
-  } else if (check_id) {
-    where.check_id = check_id
-  } else if (place_id2) {
-    where.place_id2 = place_id2
-  } else if (place_id) {
-    where.place_id = place_id
-  } else if (subproject_id) {
-    where.subproject_id = subproject_id
-  } else if (project_id) {
-    where.project_id = project_id
-  }
+  const where = useMemo(() => {
+    const where = { deleted: false }
+    if (action_id) {
+      where.action_id = action_id
+    } else if (check_id) {
+      where.check_id = check_id
+    } else if (place_id2) {
+      where.place_id2 = place_id2
+    } else if (place_id) {
+      where.place_id = place_id
+    } else if (subproject_id) {
+      where.subproject_id = subproject_id
+    } else if (project_id) {
+      where.project_id = project_id
+    }
+    return where
+  }, [action_id, check_id, place_id, place_id2, project_id, subproject_id])
 
   const { db } = useElectric()!
   const { results: files = [] } = useLiveQuery(
