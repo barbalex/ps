@@ -6,7 +6,7 @@ import { useElectric } from '../../ElectricProvider'
 import { user_id } from '../SqlInitializer'
 import { Ui_options as UiOption } from '../../generated/client'
 
-type uiOptionType = {
+interface uiOptionType {
   results: UiOption
 }
 

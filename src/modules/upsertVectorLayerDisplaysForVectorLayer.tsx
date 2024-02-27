@@ -1,7 +1,7 @@
 import { Vector_layers as VectorLayer, Electric } from '../generated/client'
 import { createVectorLayerDisplay } from './createRows'
 
-type Props = {
+interface Props {
   vector_layer_id: string
   db: Electric
 }

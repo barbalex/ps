@@ -11,7 +11,7 @@ import { LocalMap } from './LocalMap'
 import { useElectric } from '../../../../ElectricProvider'
 import { user_id } from '../../../SqlInitializer'
 
-type Props = {
+interface Props {
   layer: TileLayer
 }
 

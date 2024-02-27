@@ -1,3 +1,5 @@
+import { user_id } from '../components/SqlInitializer'
+
 export const buildNavs = async ({
   table,
   check_id,
@@ -17,6 +19,10 @@ export const buildNavs = async ({
   db,
   level = 1,
 }) => {
+  const uiOptions = await db?.ui_options?.findUnique({
+    where: { user_id },
+  })
+  const designing = uiOptions?.designing ?? false
   // if table is places, get place_level for this level
   let placeLevel = {}
   if (table === 'places') {
@@ -26,6 +32,16 @@ export const buildNavs = async ({
     })
     placeLevel = placeLevels?.[0] ?? {}
   }
+  // need project for it's settings
+  const project = await db?.projects?.findUnique({
+    where: { project_id: project_id ?? '99999999-9999-9999-9999-999999999999' },
+  })
+  const filesActiveProjects = project?.files_active_projects ?? false
+  const filesActiveSubprojects = project?.files_active_subprojects ?? false
+  const filesActivePlaces = project?.files_active_places ?? false
+  const filesActiveActions = project?.files_active_actions ?? false
+  const filesActiveChecks = project?.files_active_checks ?? false
+
 
   switch (table) {
     case 'root':
@@ -33,13 +49,28 @@ export const buildNavs = async ({
         { path: '/projects', text: 'Projects' },
         { path: '/users', text: 'Users' },
         { path: '/accounts', text: 'Accounts' },
-        { path: '/field-types', text: 'Field Types' },
-        { path: '/widget-types', text: 'Widget Types' },
-        { path: '/widgets-for-fields', text: 'Widgets For Fields' },
-        { path: '/fields', text: 'Fields' },
-        { path: '/files', text: 'Files' },
         { path: '/messages', text: 'Messages' },
         { path: '/docs', text: 'Docs' },
+        ...(designing
+          ? [
+              {
+                path: '/field-types',
+                text: 'Field Types',
+                showOnlyWhenDesigning: false,
+              },
+              {
+                path: '/widget-types',
+                text: 'Widget Types',
+                showOnlyWhenDesigning: false,
+              },
+              {
+                path: '/widgets-for-fields',
+                text: 'Widgets For Fields',
+                showOnlyWhenDesigning: false,
+              },
+              { path: '/fields', text: 'Fields', showOnlyWhenDesigning: false },
+            ]
+          : []),
       ]
       break
     case `projects`: {
@@ -62,27 +93,57 @@ export const buildNavs = async ({
           path: `/projects/${project_id}/persons`,
           text: 'Persons',
         },
-        { path: `/projects/${project_id}/lists`, text: 'Lists' },
-        {
-          path: `/projects/${project_id}/taxonomies`,
-          text: 'Taxonomies',
-        },
-        { path: `/projects/${project_id}/units`, text: 'Units' },
         { path: `/projects/${project_id}/tile-layers`, text: 'Tile Layers' },
         {
           path: `/projects/${project_id}/vector-layers`,
           text: 'Vector Layers',
         },
-        { path: `/projects/${project_id}/users`, text: 'Users' },
-        {
-          path: `/projects/${project_id}/place-levels`,
-          text: 'Place Levels',
-        },
-        { path: `/projects/${project_id}/fields`, text: 'Fields' },
-        {
-          path: `/projects/${project_id}/observation-sources`,
-          text: 'Observation Sources',
-        },
+        ...(filesActiveProjects
+          ? [
+              {
+                path: `/projects/${project_id}/files`,
+                text: 'Files',
+              },
+            ]
+          : []),
+        ...(designing
+          ? [
+              {
+                path: `/projects/${project_id}/users`,
+                text: 'Users',
+                showOnlyWhenDesigning: false,
+              },
+              {
+                path: `/projects/${project_id}/lists`,
+                text: 'Lists',
+                showOnlyWhenDesigning: false,
+              },
+              {
+                path: `/projects/${project_id}/taxonomies`,
+                text: 'Taxonomies',
+                showOnlyWhenDesigning: false,
+              },
+              {
+                path: `/projects/${project_id}/units`,
+                text: 'Units',
+                showOnlyWhenDesigning: false,
+              },
+              {
+                path: `/projects/${project_id}/place-levels`,
+                text: 'Place Levels',
+              },
+              {
+                path: `/projects/${project_id}/fields`,
+                text: 'Fields',
+                showOnlyWhenDesigning: false,
+              },
+              {
+                path: `/projects/${project_id}/observation-sources`,
+                text: 'Observation Sources',
+                showOnlyWhenDesigning: false,
+              },
+            ]
+          : []),
       ]
     }
     case 'subprojects': {
@@ -115,6 +176,14 @@ export const buildNavs = async ({
           path: `/projects/${project_id}/subprojects/${subproject_id}/users`,
           text: 'Users',
         },
+        ...(filesActiveSubprojects
+          ? [
+              {
+                path: `/projects/${project_id}/subprojects/${subproject_id}/files`,
+                text: 'Files',
+              },
+            ]
+          : []),
       ]
     }
     case 'places': {
@@ -179,6 +248,16 @@ export const buildNavs = async ({
           }/users`,
           text: 'Users',
         },
+        ...(filesActivePlaces
+          ? [
+              {
+                path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+                  level === 2 ? `/places/${place_id2}` : ''
+                }/files`,
+                text: 'Files',
+              },
+            ]
+          : []),
       ]
     }
     case 'checks': {
@@ -195,6 +274,16 @@ export const buildNavs = async ({
           }/checks/${check_id}/taxa`,
           text: 'Taxa',
         },
+        ...(filesActiveChecks
+          ? [
+              {
+                path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+                  level === 2 ? `/places/${place_id2}` : ''
+                }/checks/${check_id}/files`,
+                text: 'Files',
+              },
+            ]
+          : []),
       ]
     }
     case 'actions':
@@ -211,6 +300,16 @@ export const buildNavs = async ({
           }/actions/${action_id}/reports`,
           text: 'Reports',
         },
+        ...(filesActiveActions
+          ? [
+              {
+                path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+                  level === 2 ? `/places/${place_id2}` : ''
+                }/actions/${action_id}/files`,
+                text: 'Files',
+              },
+            ]
+          : []),
       ]
     case 'action_reports':
       return [

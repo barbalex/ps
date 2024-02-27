@@ -1,29 +1,30 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
 import { Node } from './Node'
-import { PlaceLevels as PlaceLevel } from '../../../generated/client'
 import { PlaceLevelNode } from './PlaceLevel'
 
-export const PlaceLevelsNode = ({ project_id, level = 3 }) => {
+interface Props {
+  project_id: string
+  level?: number
+}
+
+export const PlaceLevelsNode = memo(({ project_id, level = 3 }: Props) => {
   const location = useLocation()
   const navigate = useNavigate()
 
   const { db } = useElectric()!
-  const { results } = useLiveQuery(
+  const { results: placeLevels = [] } = useLiveQuery(
     db.place_levels.liveMany({
       where: { deleted: false, project_id },
       orderBy: { label: 'asc' },
     }),
   )
-  const placeLevels: PlaceLevel[] = results ?? []
 
   const placeLevelsNode = useMemo(
-    () => ({
-      label: `Place Levels (${placeLevels.length})`,
-    }),
+    () => ({ label: `Place Levels (${placeLevels.length})` }),
     [placeLevels.length],
   )
 
@@ -34,10 +35,12 @@ export const PlaceLevelsNode = ({ project_id, level = 3 }) => {
     urlPath[2] === 'place-levels'
   const isActive = isOpen && urlPath.length === 3
 
+  const baseUrl = `/projects/${project_id}`
+
   const onClickButton = useCallback(() => {
-    if (isOpen) return navigate(`/projects/${project_id}`)
-    navigate(`/projects/${project_id}/place-levels`)
-  }, [isOpen, navigate, project_id])
+    if (isOpen) return navigate(baseUrl)
+    navigate(`${baseUrl}/place-levels`)
+  }, [baseUrl, isOpen, navigate])
 
   return (
     <>
@@ -48,7 +51,7 @@ export const PlaceLevelsNode = ({ project_id, level = 3 }) => {
         isInActiveNodeArray={isOpen}
         isActive={isActive}
         childrenCount={placeLevels.length}
-        to={`/projects/${project_id}/place-levels`}
+        to={`${baseUrl}/place-levels`}
         onClickButton={onClickButton}
       />
       {isOpen &&
@@ -61,4 +64,4 @@ export const PlaceLevelsNode = ({ project_id, level = 3 }) => {
         ))}
     </>
   )
-}
+})

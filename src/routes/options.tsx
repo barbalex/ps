@@ -7,7 +7,7 @@ import '../form.css'
 import { user_id } from '../components/SqlInitializer'
 import { Ui_options as UiOption } from '../generated/client'
 
-type UiOptionResult = {
+interface UiOptionResult {
   results: UiOption
 }
 

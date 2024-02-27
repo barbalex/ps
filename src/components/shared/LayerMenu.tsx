@@ -20,12 +20,12 @@ import {
 import { user_id } from '../SqlInitializer'
 import { boundsFromBbox } from '../../modules/boundsFromBbox'
 
-type Props = {
+interface Props {
   table: string
   level: integer
   placeNamePlural?: string
 }
-type vlResultsType = {
+interface vlResultsType {
   results: VectorLayer
 }
 type GeometryType = Place[] | Action[] | Check[] | Observation[]

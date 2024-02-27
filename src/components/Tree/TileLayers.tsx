@@ -1,29 +1,30 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
 import { Node } from './Node'
-import { Tile_layers as TileLayer } from '../../../generated/client'
 import { TileLayerNode } from './TileLayer'
 
-export const TileLayersNode = ({ project_id, level = 3 }) => {
+interface Props {
+  project_id: string
+  level?: number
+}
+
+export const TileLayersNode = memo(({ project_id, level = 3 }: Props) => {
   const location = useLocation()
   const navigate = useNavigate()
 
   const { db } = useElectric()!
-  const { results } = useLiveQuery(
+  const { results: tileLayers = [] } = useLiveQuery(
     db.tile_layers.liveMany({
       where: { deleted: false, project_id },
       orderBy: [{ sort: 'asc' }, { label: 'asc' }],
     }),
   )
-  const tileLayers: TileLayer[] = results ?? []
 
   const tileLayersNode = useMemo(
-    () => ({
-      label: `Tile Layers (${tileLayers.length})`,
-    }),
+    () => ({ label: `Tile Layers (${tileLayers.length})` }),
     [tileLayers.length],
   )
 
@@ -34,10 +35,12 @@ export const TileLayersNode = ({ project_id, level = 3 }) => {
     urlPath[2] === 'tile-layers'
   const isActive = isOpen && urlPath.length === 3
 
+  const baseUrl = `/projects/${project_id}`
+
   const onClickButton = useCallback(() => {
-    if (isOpen) return navigate(`/projects/${project_id}`)
-    navigate(`/projects/${project_id}/tile-layers`)
-  }, [isOpen, navigate, project_id])
+    if (isOpen) return navigate(baseUrl)
+    navigate(`${baseUrl}/tile-layers`)
+  }, [baseUrl, isOpen, navigate])
 
   return (
     <>
@@ -48,7 +51,7 @@ export const TileLayersNode = ({ project_id, level = 3 }) => {
         isInActiveNodeArray={isOpen}
         isActive={isActive}
         childrenCount={tileLayers.length}
-        to={`/projects/${project_id}/tile-layers`}
+        to={`${baseUrl}/tile-layers`}
         onClickButton={onClickButton}
       />
       {isOpen &&
@@ -61,4 +64,4 @@ export const TileLayersNode = ({ project_id, level = 3 }) => {
         ))}
     </>
   )
-}
+})

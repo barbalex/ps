@@ -20,7 +20,7 @@ import { user_id } from '../../SqlInitializer'
 
 // const bboxBuffer = 0.01
 
-type Props = {
+interface Props {
   layer: VectorLayer
   display: VectorLayerDisplay
 }

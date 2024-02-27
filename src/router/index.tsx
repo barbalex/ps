@@ -174,6 +174,45 @@ export const router = (db) => {
                               ],
                             },
                             {
+                              path: 'files',
+                              element: null,
+                              handle: {
+                                crumb: () => ({
+                                  text: 'Files',
+                                  table: 'files',
+                                  folder: true,
+                                }),
+                              },
+                              children: [
+                                {
+                                  index: true,
+                                  lazy: () => import('../routes/files'),
+                                },
+                                {
+                                  path: ':file_id',
+                                  element: null,
+                                  handle: {
+                                    crumb: (match) => ({
+                                      text: match.params.file_id,
+                                      table: 'files',
+                                      folder: false,
+                                    }),
+                                  },
+                                  children: [
+                                    {
+                                      index: true,
+                                      lazy: () => import('../routes/file'),
+                                    },
+                                    {
+                                      path: 'preview',
+                                      lazy: () =>
+                                        import('../routes/filePreview'),
+                                    },
+                                  ],
+                                },
+                              ],
+                            },
+                            {
                               path: 'taxa',
                               element: null,
                               handle: {
@@ -817,6 +856,41 @@ export const router = (db) => {
                         },
                       ],
                     },
+                    {
+                      path: 'files',
+                      element: null,
+                      handle: {
+                        crumb: () => ({
+                          text: 'Files',
+                          table: 'files',
+                          folder: true,
+                        }),
+                      },
+                      children: [
+                        { index: true, lazy: () => import('../routes/files') },
+                        {
+                          path: ':file_id',
+                          element: null,
+                          handle: {
+                            crumb: (match) => ({
+                              text: match.params.file_id,
+                              table: 'files',
+                              folder: false,
+                            }),
+                          },
+                          children: [
+                            {
+                              index: true,
+                              lazy: () => import('../routes/file'),
+                            },
+                            {
+                              path: 'preview',
+                              lazy: () => import('../routes/filePreview'),
+                            },
+                          ],
+                        },
+                      ],
+                    },
                   ],
                 },
               ],
@@ -994,7 +1068,7 @@ export const router = (db) => {
                 { index: true, lazy: () => import('../routes/files') },
                 {
                   path: ':file_id',
-                  lazy: () => import('../routes/file'),
+                  element: null,
                   handle: {
                     crumb: (match) => ({
                       text: match.params.file_id,
@@ -1002,6 +1076,16 @@ export const router = (db) => {
                       folder: false,
                     }),
                   },
+                  children: [
+                    {
+                      index: true,
+                      lazy: () => import('../routes/file'),
+                    },
+                    {
+                      path: 'preview',
+                      lazy: () => import('../routes/filePreview'),
+                    },
+                  ],
                 },
               ],
             },

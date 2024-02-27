@@ -1,29 +1,25 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
 import { Node } from './Node'
-import { WidgetsForFields as WidgetForField } from '../../../generated/client'
 import { WidgetForFieldNode } from './WidgetForField'
 
-export const WidgetsForFieldsNode = () => {
+export const WidgetsForFieldsNode = memo(() => {
   const location = useLocation()
   const navigate = useNavigate()
 
   const { db } = useElectric()!
-  const { results } = useLiveQuery(
+  const { results: widgetsForFields = [] } = useLiveQuery(
     db.widgets_for_fields.liveMany({
       where: { deleted: false },
       orderBy: { label: 'asc' },
     }),
   )
-  const widgetsForFields: WidgetForField[] = results ?? []
 
   const widgetsForFieldsNode = useMemo(
-    () => ({
-      label: `Widgets For Fields (${widgetsForFields.length})`,
-    }),
+    () => ({ label: `Widgets For Fields (${widgetsForFields.length})` }),
     [widgetsForFields.length],
   )
 
@@ -57,4 +53,4 @@ export const WidgetsForFieldsNode = () => {
         ))}
     </>
   )
-}
+})

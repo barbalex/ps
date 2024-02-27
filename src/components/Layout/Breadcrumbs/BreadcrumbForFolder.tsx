@@ -7,6 +7,7 @@ import './breadcrumb.css'
 import { buildNavs } from '../../../modules/navs'
 import { idFieldFromTable } from '../../../modules/idFieldFromTable'
 import { Menu } from './Menu'
+import { user_id } from '../../SqlInitializer'
 
 const siblingStyle = {
   marginLeft: 7,
@@ -51,17 +52,16 @@ export const BreadcrumbForFolder = forwardRef(
         ? place_id2
         : match.params[idField]
     const where = { [idField]: matchParam }
-    const { results } = useLiveQuery(
-      db[queryTable]?.liveMany({
-        where,
-      }),
-    )
+    const { results } = useLiveQuery(db[queryTable]?.liveMany({ where }))
     const row = results?.[0]
+    const { results: uiOption } = useLiveQuery(
+      db.ui_options.liveUnique({ where: { user_id } }),
+    )
+    const designing = uiOption?.designing ?? false
 
     const [navs, setNavs] = useState([])
     useEffect(() => {
       const fetch = async () => {
-        // console.log('BreadcrumbForFolder calling navs')
         const navs = await buildNavs({
           table,
           check_id,
@@ -80,6 +80,7 @@ export const BreadcrumbForFolder = forwardRef(
           db,
           level: levelWanted,
         })
+
         return setNavs(navs)
       }
       fetch()
@@ -100,6 +101,7 @@ export const BreadcrumbForFolder = forwardRef(
       db,
       table,
       levelWanted,
+      designing,
     ])
 
     let label = row?.label

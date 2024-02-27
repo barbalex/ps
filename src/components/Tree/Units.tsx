@@ -1,29 +1,30 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
 import { Node } from './Node'
-import { Units as Unit } from '../../../generated/client'
 import { UnitNode } from './Unit'
 
-export const UnitsNode = ({ project_id, level = 3 }) => {
+interface Props {
+  project_id: string
+  level?: number
+}
+
+export const UnitsNode = memo(({ project_id, level = 3 }: Props) => {
   const location = useLocation()
   const navigate = useNavigate()
 
   const { db } = useElectric()!
-  const { results } = useLiveQuery(
+  const { results: units = [] } = useLiveQuery(
     db.units.liveMany({
       where: { deleted: false, project_id },
       orderBy: { label: 'asc' },
     }),
   )
-  const units: Unit[] = results ?? []
 
   const unitsNode = useMemo(
-    () => ({
-      label: `Units (${units.length})`,
-    }),
+    () => ({ label: `Units (${units.length})` }),
     [units.length],
   )
 
@@ -34,10 +35,12 @@ export const UnitsNode = ({ project_id, level = 3 }) => {
     urlPath[2] === 'units'
   const isActive = isOpen && urlPath.length === 3
 
+  const baseUrl = `/projects/${project_id}`
+
   const onClickButton = useCallback(() => {
-    if (isOpen) return navigate(`/projects/${project_id}`)
-    navigate(`/projects/${project_id}/units`)
-  }, [isOpen, navigate, project_id])
+    if (isOpen) return navigate(baseUrl)
+    navigate(`${baseUrl}/units`)
+  }, [baseUrl, isOpen, navigate])
 
   return (
     <>
@@ -48,7 +51,7 @@ export const UnitsNode = ({ project_id, level = 3 }) => {
         isInActiveNodeArray={isOpen}
         isActive={isActive}
         childrenCount={units.length}
-        to={`/projects/${project_id}/units`}
+        to={`${baseUrl}/units`}
         onClickButton={onClickButton}
       />
       {isOpen &&
@@ -57,4 +60,4 @@ export const UnitsNode = ({ project_id, level = 3 }) => {
         ))}
     </>
   )
-}
+})

@@ -1,29 +1,25 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
 import { Node } from './Node'
-import { FieldTypes as FieldType } from '../../../generated/client'
 import { FieldTypeNode } from './FieldType'
 
-export const FieldTypesNode = () => {
+export const FieldTypesNode = memo(() => {
   const location = useLocation()
   const navigate = useNavigate()
 
   const { db } = useElectric()!
-  const { results } = useLiveQuery(
+  const { results: fieldTypes = [] } = useLiveQuery(
     db.field_types.liveMany({
       where: { deleted: false },
       orderBy: { label: 'asc' },
     }),
   )
-  const fieldTypes: FieldType[] = results ?? []
 
   const fieldTypesNode = useMemo(
-    () => ({
-      label: `Field Types (${fieldTypes.length})`,
-    }),
+    () => ({ label: `Field Types (${fieldTypes.length})` }),
     [fieldTypes.length],
   )
 
@@ -54,4 +50,4 @@ export const FieldTypesNode = () => {
         ))}
     </>
   )
-}
+})

@@ -16,7 +16,7 @@ import {
 import { useElectric } from '../../../ElectricProvider'
 import { ErrorBoundary } from '../MapErrorBoundary'
 
-type Props = {
+interface Props {
   data: Place[] | Action[] | Check[] | Observation[]
   layer: VectorLayer
   form?: React.FC

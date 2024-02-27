@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import {
   MdChevronRight as ClosedWithChildrenIcon,
   MdExpandMore as OpenWithChildrenIcon,
@@ -23,67 +24,84 @@ const svgStyle = {
 
 const labelSpanStyle = { cursor: 'default' }
 
-export const Node = ({
-  isInActiveNodeArray,
-  isActive,
-  isOpen,
-  level,
-  node,
-  childrenCount,
-  to,
-  onClickButton,
-  sibling,
-}) => {
-  return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        fontWeight: isInActiveNodeArray ? 'bold' : 'normal',
-        ...(isActive && { color: 'red' }),
-        marginLeft: level * 20 - 15,
-        justifyContent: 'flex-start',
-      }}
-    >
-      <Button
-        aria-label="toggle"
-        size="small"
-        icon={
-          !childrenCount ? (
-            <NoChildrenIcon style={svgStyle} />
-          ) : isOpen ? (
-            <OpenWithChildrenIcon style={svgStyle} />
-          ) : (
-            <ClosedWithChildrenIcon style={svgStyle} />
-          )
-        }
-        onClick={onClickButton}
-        disabled={!childrenCount}
-        style={{ ...buttonStyle, ...(!childrenCount && { cursor: 'default' }) }}
-      />
-      {isActive ? (
-        <span style={labelSpanStyle}>{node.label}</span>
-      ) : (
-        <Link
-          style={css({
-            fontSize: '1em',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            textDecoration: 'none',
-            color: 'rgb(51, 51, 51)',
-            on: ($) => [
-              $('&:hover', {
-                fontWeight: 'bold',
-              }),
-            ],
-          })}
-          to={to}
-        >
-          {node.label}
-        </Link>
-      )}
-      {!!sibling && <div style={siblingStyle}>{sibling}</div>}
-    </div>
-  )
+interface Props {
+  isInActiveNodeArray: boolean
+  isActive: boolean
+  isOpen: boolean
+  level: number
+  node: { label: string }
+  childrenCount: number
+  to: string
+  onClickButton: () => void
+  sibling?: React.ReactNode
 }
+
+export const Node = memo(
+  ({
+    isInActiveNodeArray,
+    isActive,
+    isOpen,
+    level,
+    node,
+    childrenCount,
+    to,
+    onClickButton,
+    sibling,
+  }: Props) => {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          fontWeight: isInActiveNodeArray ? 'bold' : 'normal',
+          ...(isActive && { color: 'red' }),
+          marginLeft: level * 20 - 15,
+          justifyContent: 'flex-start',
+        }}
+      >
+        <Button
+          aria-label="toggle"
+          size="small"
+          icon={
+            !childrenCount ? (
+              <NoChildrenIcon style={svgStyle} />
+            ) : isOpen ? (
+              <OpenWithChildrenIcon style={svgStyle} />
+            ) : (
+              <ClosedWithChildrenIcon style={svgStyle} />
+            )
+          }
+          onClick={onClickButton}
+          disabled={!childrenCount}
+          style={{
+            ...buttonStyle,
+            ...(!childrenCount && { cursor: 'default' }),
+          }}
+        />
+        {isActive ? (
+          <span style={labelSpanStyle}>{node.label}</span>
+        ) : (
+          <Link
+            style={css({
+              fontSize: '1em',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              textDecoration: 'none',
+              color: 'rgb(51, 51, 51)',
+              on: ($) => [
+                $('&:hover', {
+                  fontWeight: 'bold',
+                }),
+              ],
+            })}
+            to={to}
+          >
+            {node.label}
+          </Link>
+        )}
+        {!!sibling && <div style={siblingStyle}>{sibling}</div>}
+      </div>
+    )
+  },
+)

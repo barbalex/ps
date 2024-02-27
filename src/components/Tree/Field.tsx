@@ -1,16 +1,15 @@
-import { useCallback } from 'react'
+import { useCallback, memo } from 'react'
 import { useLocation, useParams, useNavigate } from 'react-router-dom'
 
 import { Node } from './Node'
 import { Fields as Field } from '../../../generated/client'
 
-export const FieldNode = ({
-  project_id,
-  field,
-}: {
+interface Props {
+  project_id?: string
   field: Field
-  level: number
-}) => {
+}
+
+export const FieldNode = memo(({ project_id, field }: Props) => {
   const level: number = project_id ? 4 : 2
   const params = useParams()
   const location = useLocation()
@@ -51,4 +50,4 @@ export const FieldNode = ({
       onClickButton={onClickButton}
     />
   )
-}
+})

@@ -7,7 +7,7 @@ import storeContext from '../../../../storeContext'
 import { IStore } from '../../../../store'
 import { useElectric } from '../../../../ElectricProvider'
 
-type Props = {
+interface Props {
   layer: TileLayerType
 }
 

@@ -22,10 +22,11 @@ export const Main = () => {
   const onlyForm = searchParams.get('onlyForm')
 
   const { db } = useElectric()!
-  const { results } = useLiveQuery(
+  const { results: uiOption } = useLiveQuery(
     db.ui_options.liveUnique({ where: { user_id } }),
   )
-  const tabs = useMemo(() => results?.tabs ?? [], [results?.tabs])
+  const tabs = useMemo(() => uiOption?.tabs ?? [], [uiOption?.tabs])
+  const designing = uiOption?.designing ?? false
 
   // console.log('hello Main', { tabs })
   if (onlyForm) {
@@ -37,7 +38,7 @@ export const Main = () => {
   return (
     <div style={containerStyle}>
       <Allotment>
-        {tabs.includes('tree') && <Tree />}
+        {tabs.includes('tree') && <Tree designing={designing} />}
         {tabs.includes('data') && <Outlet />}
         {tabs.includes('filter') && <Filter />}
         {tabs.includes('map') && <Map />}

@@ -4,7 +4,7 @@ import { useElectric } from '../../../ElectricProvider'
 import { Vector_layers as VectorLayer } from '../../../generated/client'
 import { TableLayer } from './TableLayer'
 
-type Props = {
+interface Props {
   layer: VectorLayer
 }
 

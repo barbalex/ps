@@ -18,7 +18,7 @@ import { FormHeader } from '../../components/FormHeader'
 import { boundsFromBbox } from '../../modules/boundsFromBbox'
 import { user_id } from '../../components/SqlInitializer'
 
-type Props = {
+interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
 }
 export const Header = memo(({ autoFocusRef }: Props) => {

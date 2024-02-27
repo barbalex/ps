@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, memo } from 'react'
 import { MdEdit, MdEditOff } from 'react-icons/md'
 import { useLiveQuery } from 'electric-sql/react'
 import { Button } from '@fluentui/react-components'
@@ -19,7 +19,7 @@ const svgStyle = {
   fontSize: 'medium',
 }
 
-export const Editing = () => {
+export const Editing = memo(() => {
   const { project_id } = useParams()
 
   const { db } = useElectric()!
@@ -28,12 +28,16 @@ export const Editing = () => {
   )
   const designing = uiOption?.designing ?? false
 
-  const onClick = useCallback(() => {
-    db.ui_options.update({
-      where: { user_id },
-      data: { designing: !designing },
-    })
-  }, [db.ui_options, designing])
+  const onClick = useCallback(
+    (e) => {
+      e.stopPropagation()
+      db.ui_options.update({
+        where: { user_id },
+        data: { designing: !designing },
+      })
+    },
+    [db.ui_options, designing],
+  )
 
   const { results: project } = useLiveQuery(
     db.projects.liveUnique({ where: { project_id } }),
@@ -71,4 +75,4 @@ export const Editing = () => {
       }
     />
   )
-}
+})

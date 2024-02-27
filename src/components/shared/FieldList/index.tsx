@@ -8,7 +8,7 @@ import { useElectric } from '../../../ElectricProvider'
 import { DropdownField } from './DropdownField'
 import { idFieldFromTable } from '../../../modules/idFieldFromTable'
 
-type Props = {
+interface Props {
   name: string
   label: string
   table: string

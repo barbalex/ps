@@ -4,7 +4,7 @@ import { useMatches, useLocation } from 'react-router-dom'
 import { DataNavs } from './DataNavs'
 import { ToNavs } from './ToNavs'
 
-export const NavsWrapping = () => {
+export const NavsWrapping = ({ designing }) => {
   const location = useLocation()
   const matches = useMatches()
 
@@ -19,6 +19,7 @@ export const NavsWrapping = () => {
       for (const match of thisPathsMatches) {
         const to = await match?.handle?.to?.(match)
         if (!to) continue
+        if (!designing && to.showOnlyWhenDesigning) continue
         tos.push(to)
       }
 
@@ -26,7 +27,7 @@ export const NavsWrapping = () => {
     }
     fetch()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.pathname])
+  }, [location.pathname, designing])
 
   const tosToUse = tos[0] ?? []
 

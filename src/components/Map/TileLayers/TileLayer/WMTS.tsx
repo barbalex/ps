@@ -2,7 +2,7 @@ import { TileLayer } from 'react-leaflet'
 
 import { TileLayer as TileLayerType } from '../../../../dexieClient'
 
-type Props = {
+interface Props {
   layer: TileLayerType
 }
 

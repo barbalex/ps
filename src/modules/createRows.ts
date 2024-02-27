@@ -35,13 +35,10 @@ export const createProject = async ({ db }) => {
     multiple_action_values_on_same_level: 'all',
     multiple_check_values_on_same_level: 'last',
     files_active_projects: true,
-    files_active_projects_reports: true,
     files_active_subprojects: true,
-    files_active_subproject_reports: true,
     files_active_places: true,
     files_active_actions: true,
     files_active_checks: true,
-    files_active_check_reports: true,
     deleted: false,
     ...presetData,
   }
@@ -63,13 +60,39 @@ export const createSubproject = async ({ db, project_id }) => {
   }
 }
 
-export const createFile = async ({ db }) => {
+export const createFile = async ({
+  db,
+  project_id = null,
+  subproject_id = null,
+  place_id = null,
+  action_id = null,
+  check_id = null,
+  name = null,
+  size = null,
+  mimetype = null,
+  url = null,
+  uuid = null,
+  width = null,
+  height = null,
+}) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({ db, table: 'files' })
 
   return {
     file_id: uuidv7(),
+    project_id,
+    subproject_id,
+    place_id,
+    action_id,
+    check_id,
     deleted: false,
+    name,
+    size,
+    mimetype,
+    url,
+    uuid,
+    width,
+    height,
     ...presetData,
   }
 }
