@@ -1,10 +1,11 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useContext } from 'react'
 import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import { useDebouncedCallback } from 'use-debounce'
 import axios from 'redaxios'
 
 import { createFile } from '../../modules/createRows'
 import { useElectric } from '../../ElectricProvider'
+import { UploaderContext } from '../../UploaderContext'
 
 import '../../form.css'
 
@@ -31,7 +32,7 @@ export const Uploader = () => {
   }/files`
 
   const { db } = useElectric()!
-  const uploaderCtx = document.querySelector('#uploaderctx')
+  const uploaderCtx = useContext(UploaderContext)
 
   // ISSUE: the event is called THREE times
   // Solution: query files with the uuid and only create if it doesn't exist
@@ -69,10 +70,10 @@ export const Uploader = () => {
       await db.files.create({ data })
       navigate(`${baseUrl}/${data.file_id}${isPreview ? '/preview' : ''}`)
       // close the uploader or it will be open when navigating to the list
-      uploaderCtx.doneFlow()
+      uploaderCtx.current.doneFlow()
       // clear the uploader or it will show the last uploaded file when opened next time
       // https://github.com/uploadcare/blocks/issues/219#issuecomment-1223881802
-      uploaderCtx.uploadCollection.clearAll()
+      uploaderCtx.current.uploadCollection.clearAll()
 
       return
 
@@ -126,6 +127,7 @@ export const Uploader = () => {
       baseUrl,
       check_id,
       db,
+      isPreview,
       navigate,
       place_id,
       place_id2,
@@ -144,17 +146,12 @@ export const Uploader = () => {
   )
 
   useEffect(() => {
-    uploaderCtx.addEventListener(
-      'file-upload-success',
-      onUploadSuccessDebounced,
-    )
-    uploaderCtx.addEventListener('file-upload-failed', onUploadFailed)
+    const ctx = uploaderCtx.current
+    ctx.addEventListener('file-upload-success', onUploadSuccessDebounced)
+    ctx.addEventListener('file-upload-failed', onUploadFailed)
     return () => {
-      uploaderCtx.removeEventListener(
-        'file-upload-success',
-        onUploadSuccessDebounced,
-      )
-      uploaderCtx.removeEventListener('file-upload-failed', onUploadFailed)
+      ctx.removeEventListener('file-upload-success', onUploadSuccessDebounced)
+      ctx.removeEventListener('file-upload-failed', onUploadFailed)
     }
   }, [onUploadFailed, onUploadSuccessDebounced, uploaderCtx])
 
@@ -169,7 +166,7 @@ export const Uploader = () => {
     >
       <lr-data-output
         ctx-name="uploadcare-uploader"
-        ref={uploaderCtx}
+        ref={uploaderCtx.current}
       ></lr-data-output>
     </lr-file-uploader-regular>
   )

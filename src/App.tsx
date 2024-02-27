@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { createRef } from 'react'
 import { RouterProvider } from 'react-router-dom'
 import { FluentProvider } from '@fluentui/react-components'
 
@@ -22,6 +22,7 @@ import { ElectricWrapper as ElectricProvider } from './ElectricWrapper'
 import { lightTheme } from './modules/theme'
 import { router } from './router'
 import { SqlInitializer } from './components/SqlInitializer'
+import { UploaderContext } from './UploaderContext'
 
 import '@fontsource/roboto/300.css'
 import '@fontsource/roboto/400.css'
@@ -46,18 +47,21 @@ const RouterProviderWithDb = () => {
 
 export default function App() {
   // console.log('App, theme:', customLightTheme)
+  const uploaderRef = createRef<HTMLElement | null>(null)
 
   return (
     <ElectricProvider>
       <lr-upload-ctx-provider
-        id="uploaderctx"
+        ref={uploaderRef}
         ctx-name="uploadcare-uploader"
       ></lr-upload-ctx-provider>
       <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
       <SqlInitializer />
       <FluentProvider theme={lightTheme}>
         <div style={routerContainerStyle}>
-          <RouterProviderWithDb />
+          <UploaderContext.Provider value={uploaderRef}>
+            <RouterProviderWithDb />
+          </UploaderContext.Provider>
         </div>
       </FluentProvider>
     </ElectricProvider>

@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useContext } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import { Button } from '@fluentui/react-components'
@@ -7,6 +7,7 @@ import { FaPlus } from 'react-icons/fa'
 import { ListViewHeader } from '../components/ListViewHeader'
 import { Row } from '../components/shared/Row'
 import { Uploader } from './file/Uploader'
+import { UploaderContext } from '../UploaderContext'
 
 import '../form.css'
 
@@ -56,7 +57,7 @@ export const Component = () => {
     check_id ? `/checks/${check_id}` : ''
   }/files`
 
-  const uploaderCtx = document.querySelector('#uploaderctx')
+  const uploaderCtx = useContext(UploaderContext)
   const onClickAdd = useCallback(() => uploaderCtx.initFlow(), [uploaderCtx])
 
   // TODO: get uploader css locally if it should be possible to upload files

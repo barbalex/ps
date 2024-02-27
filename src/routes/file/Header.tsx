@@ -1,4 +1,4 @@
-import { useCallback, memo, useMemo } from 'react'
+import { useCallback, memo, useMemo, useContext } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { Button } from '@fluentui/react-components'
 import { MdPreview, MdEditNote } from 'react-icons/md'
@@ -6,6 +6,7 @@ import { MdPreview, MdEditNote } from 'react-icons/md'
 import { useElectric } from '../../ElectricProvider'
 import { FormHeader } from '../../components/FormHeader'
 import { Files as File } from '../../generated/client'
+import { UploaderContext } from '../../UploaderContext'
 
 interface Props {
   row: File
@@ -44,7 +45,7 @@ export const Header = memo(({ row }: Props) => {
     check_id ? `/checks/${check_id}` : ''
   }/files`
 
-  const uploaderCtx = document.querySelector('#uploaderctx')
+  const uploaderCtx = useContext(UploaderContext)
   const addRow = useCallback(async () => uploaderCtx.initFlow(), [uploaderCtx])
 
   const deleteRow = useCallback(async () => {
