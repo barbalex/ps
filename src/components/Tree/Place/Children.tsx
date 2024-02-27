@@ -1,10 +1,7 @@
 import { memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 
-import {
-  Place_levels as PlaceLevel,
-  Places as Place,
-} from '../../../generated/client'
+import { Places as Place } from '../../../generated/client'
 import { ChecksNode } from '../Checks'
 import { ActionsNode } from '../Actions'
 import { PlaceReportsNode } from '../PlaceReports'
@@ -35,7 +32,7 @@ export const PlaceChildren = memo(
         },
       }),
     )
-    const placeLevel: PlaceLevel | undefined = placeLevels?.[0]
+    const placeLevel = placeLevels?.[0]
 
     console.log('PlaceChildren', {
       project_id,
