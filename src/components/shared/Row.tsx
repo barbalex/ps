@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 const imgStyle = {
   flexBasis: 50,
   flexGrow: 0,
+  objectFit: 'cover',
 }
 const imgDivStyle = {
   flexBasis: 50,
@@ -23,7 +24,7 @@ export const Row = ({ label, to, imgSrc, lastHasImages = false }) => {
   return (
     <div className="row" onClick={onClick}>
       {imgSrc ? (
-        <img src={imgSrc} alt={label} style={imgStyle} />
+        <img src={imgSrc} alt={label} style={imgStyle} width="50" height="50" />
       ) : lastHasImages ? (
         <div style={imgDivStyle} />
       ) : (
