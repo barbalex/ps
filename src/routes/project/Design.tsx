@@ -171,12 +171,6 @@ export const Design = () => {
           value={row.files_active_checks ?? false}
           onChange={onChange}
         />
-        <CheckboxField
-          label="Check reports"
-          name="files_active_check_reports"
-          value={row.files_active_check_reports ?? false}
-          onChange={onChange}
-        />
       </div>
     </div>
   )

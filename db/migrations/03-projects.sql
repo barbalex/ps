@@ -30,7 +30,6 @@ CREATE TABLE projects(
   files_active_places boolean DEFAULT NULL, -- TRUE,
   files_active_actions boolean DEFAULT NULL, -- TRUE,
   files_active_checks boolean DEFAULT NULL, -- TRUE,
-  files_active_check_reports boolean DEFAULT NULL, -- TRUE,
   deleted boolean DEFAULT NULL -- FALSE
 );
 
@@ -77,8 +76,6 @@ COMMENT ON COLUMN projects.files_active_places IS 'Whether files are used in tab
 COMMENT ON COLUMN projects.files_active_actions IS 'Whether files are used in table actions. Preset: true';
 
 COMMENT ON COLUMN projects.files_active_checks IS 'Whether files are used in table checks. Preset: true';
-
-COMMENT ON COLUMN projects.files_active_check_reports IS 'Whether files are used in table check reports. Preset: true';
 
 COMMENT ON TABLE projects IS 'Goal: manage projects';
 

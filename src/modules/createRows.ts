@@ -41,7 +41,6 @@ export const createProject = async ({ db }) => {
     files_active_places: true,
     files_active_actions: true,
     files_active_checks: true,
-    files_active_check_reports: true,
     deleted: false,
     ...presetData,
   }
