@@ -34,7 +34,7 @@ export const FilesNode = memo(
       } else if (check_id) {
         where.check_id = check_id
       } else if (place_id2) {
-        where.place_id2 = place_id2
+        where.place_id = place_id2
       } else if (place_id) {
         where.place_id = place_id
       } else if (subproject_id) {
