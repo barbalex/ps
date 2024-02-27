@@ -15,7 +15,6 @@ const containerStyle = {
   height: '100%',
   display: 'flex',
   flexDirection: 'column',
-  justifyContent: 'flex-start',
 }
 const fileStyle = {
   flexGrow: 1,
@@ -24,9 +23,8 @@ const fileStyle = {
 }
 const imageStyle = {
   objectFit: 'contain',
-  alignSelf: 'flex-start',
 }
-const textStyle = { alignSelf: 'center', margin: 'auto' }
+const textStyle = { alignSelf: 'center', paddingTop: '2em' }
 
 export const Component = memo(() => {
   const { file_id } = useParams()
