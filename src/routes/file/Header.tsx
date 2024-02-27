@@ -92,8 +92,6 @@ export const Header = memo(({ row }: Props) => {
     navigate(`${baseUrl}/${previous.file_id}${isPreview ? '/preview' : ''}`)
   }, [db.files, where, navigate, baseUrl, isPreview, file_id])
 
-  // TODO: add sibling menu to:
-  // navigate to preview or out of it
   return (
     <FormHeader
       title={isPreview ? `File: ${row?.label ?? ''}` : 'File'}
@@ -104,7 +102,7 @@ export const Header = memo(({ row }: Props) => {
       tableName="file"
       siblings={
         <Button
-          title={isPreview ? 'View form' : 'Preview file'}
+          title={isPreview ? 'View form' : 'View file'}
           icon={isPreview ? <MdEditNote /> : <MdPreview />}
           onClick={onClickPreview}
         />

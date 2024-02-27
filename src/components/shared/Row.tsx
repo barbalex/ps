@@ -17,20 +17,31 @@ const labelStyle = {
 
 export const Row = ({ label, to, imgSrc, lastHasImages = false }) => {
   const navigate = useNavigate()
-  const onClick = useCallback(() => {
-    navigate(to)
-  }, [navigate, to])
+  const onClickLabel = useCallback(() => navigate(to), [navigate, to])
+  const onClickImg = useCallback(
+    () => navigate(`${to}/preview`),
+    [navigate, to],
+  )
 
   return (
-    <div className="row" onClick={onClick}>
+    <div className="row">
       {imgSrc ? (
-        <img src={imgSrc} alt={label} style={imgStyle} width="50" height="50" />
+        <img
+          onClick={onClickImg}
+          src={imgSrc}
+          alt={label}
+          style={imgStyle}
+          width="50"
+          height="50"
+        />
       ) : lastHasImages ? (
-        <div style={imgDivStyle} />
+        <div onClick={onClickImg} style={imgDivStyle} />
       ) : (
         <div />
       )}
-      <div style={labelStyle}>{label}</div>
+      <div onClick={onClickLabel} style={labelStyle}>
+        {label}
+      </div>
     </div>
   )
 }

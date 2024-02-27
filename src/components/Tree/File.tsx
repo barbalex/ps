@@ -25,6 +25,7 @@ export const FileNode = ({
   const location = useLocation()
   const navigate = useNavigate()
 
+  const isPreview = location.pathname.endsWith('/preview')
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isOpen =
     place_id2 && action_id
@@ -131,7 +132,7 @@ export const FileNode = ({
       isInActiveNodeArray={isOpen}
       isActive={isActive}
       childrenCount={0}
-      to={`${baseUrl}/${file.file_id}`}
+      to={`${baseUrl}/${file.file_id}${isPreview ? '/preview' : ''}`}
       onClickButton={onClickButton}
     />
   )
