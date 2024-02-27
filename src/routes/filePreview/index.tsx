@@ -15,14 +15,18 @@ const containerStyle = {
   height: '100%',
   display: 'flex',
   flexDirection: 'column',
+  justifyContent: 'flex-start',
 }
 const fileStyle = {
   flexGrow: 1,
   display: 'flex',
+  flexDirection: 'column',
 }
 const imageStyle = {
   objectFit: 'contain',
+  alignSelf: 'flex-start',
 }
+const textStyle = { alignSelf: 'center', margin: 'auto' }
 
 export const Component = memo(() => {
   const { file_id } = useParams()
@@ -110,7 +114,7 @@ export const Component = memo(() => {
         )}
         {isNotViewable && (
           <div
-            style={{ alignSelf: 'center', margin: 'auto' }}
+            style={textStyle}
           >{`Files with mime type '${row.mimetype}' can't be previewed (yet)`}</div>
         )}
       </div>
