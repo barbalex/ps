@@ -23,10 +23,9 @@ CREATE TABLE projects(
   multiple_check_values_on_same_level text DEFAULT NULL,
   data jsonb DEFAULT NULL, -- TODO: can not be defined in fields
   files_offline boolean DEFAULT NULL, -- FALSE,
+  files_active_account boolean DEFAULT NULL, -- TRUE,
   files_active_projects boolean DEFAULT NULL, -- TRUE,
-  files_active_projects_reports boolean DEFAULT NULL, -- TRUE,
   files_active_subprojects boolean DEFAULT NULL, -- TRUE,
-  files_active_subproject_reports boolean DEFAULT NULL, -- TRUE,
   files_active_places boolean DEFAULT NULL, -- TRUE,
   files_active_actions boolean DEFAULT NULL, -- TRUE,
   files_active_checks boolean DEFAULT NULL, -- TRUE,
@@ -65,11 +64,7 @@ COMMENT ON COLUMN projects.data IS 'Room for project specific data, defined in "
 
 COMMENT ON COLUMN projects.files_active_projects IS 'Whether files are used in table projects. Preset: true';
 
-COMMENT ON COLUMN projects.files_active_projects_reports IS 'Whether files are used in table project reports. Preset: true';
-
 COMMENT ON COLUMN projects.files_active_subprojects IS 'Whether files are used in table subprojects. Preset: true';
-
-COMMENT ON COLUMN projects.files_active_subproject_reports IS 'Whether files are used in table subproject reports. Preset: true';
 
 COMMENT ON COLUMN projects.files_active_places IS 'Whether files are used in table places. Preset: true';
 

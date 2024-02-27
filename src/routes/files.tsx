@@ -58,7 +58,7 @@ export const Component = () => {
   }/files`
 
   const uploaderCtx = useContext(UploaderContext)
-  const onClickAdd = useCallback(() => uploaderCtx.initFlow(), [uploaderCtx])
+  const onClickAdd = useCallback(() => uploaderCtx.current.initFlow(), [uploaderCtx])
 
   // TODO: get uploader css locally if it should be possible to upload files
   // offline to sqlite

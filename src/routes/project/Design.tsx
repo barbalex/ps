@@ -130,27 +130,21 @@ export const Design = () => {
         />
         <Label>Enable uploading files to:</Label>
         <CheckboxField
+          label="Account"
+          name="files_active_account"
+          value={row.files_active_account ?? false}
+          onChange={onChange}
+        />
+        <CheckboxField
           label="Projects"
           name="files_active_projects"
           value={row.files_active_projects ?? false}
           onChange={onChange}
         />
         <CheckboxField
-          label="Project reports"
-          name="files_active_projects_reports"
-          value={row.files_active_projects_reports ?? false}
-          onChange={onChange}
-        />
-        <CheckboxField
           label="Subprojects"
           name="files_active_subprojects"
           value={row.files_active_subprojects ?? false}
-          onChange={onChange}
-        />
-        <CheckboxField
-          label="Subproject reports"
-          name="files_active_subproject_reports"
-          value={row.files_active_subproject_reports ?? false}
           onChange={onChange}
         />
         <CheckboxField
