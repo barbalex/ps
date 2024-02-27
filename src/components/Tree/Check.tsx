@@ -5,6 +5,7 @@ import { Node } from './Node'
 import { Checks as Check, Places as Place } from '../../../generated/client'
 import { CheckValuesNode } from './CheckValues'
 import { CheckTaxaNode } from './CheckTaxa'
+import { FilesNode } from './Files'
 
 interface Props {
   project_id: string
@@ -73,6 +74,14 @@ export const CheckNode = memo(
               subproject_id={subproject_id}
               place_id={place_id}
               place={place}
+              check_id={check.check_id}
+              level={level + 1}
+            />
+            <FilesNode
+              project_id={project_id}
+              subproject_id={subproject_id}
+              place_id={place_id ?? place.place_id}
+              place_id2={place_id ? place.place_id : undefined}
               check_id={check.check_id}
               level={level + 1}
             />

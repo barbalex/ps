@@ -5,6 +5,7 @@ import { Node } from './Node'
 import { Actions as Action, Places as Place } from '../../../generated/client'
 import { ActionValuesNode } from './ActionsValues'
 import { ActionReportsNode } from './ActionsReports'
+import { FilesNode } from './Files'
 
 interface Props {
   project_id: string
@@ -82,6 +83,14 @@ export const ActionNode = memo(
               subproject_id={subproject_id}
               place_id={place_id}
               place={place}
+              action_id={action.action_id}
+              level={level + 1}
+            />
+            <FilesNode
+              project_id={project_id}
+              subproject_id={subproject_id}
+              place_id={place_id ?? place.place_id}
+              place_id2={place_id ? place.place_id : undefined}
               action_id={action.action_id}
               level={level + 1}
             />
