@@ -9,7 +9,7 @@ import { ListViewHeader } from '../components/ListViewHeader'
 import { Row } from '../components/shared/Row'
 import '../form.css'
 
-type PlaceReportResult = {
+interface PlaceReportResult {
   results: PlaceReport[]
 }
 
