@@ -7,7 +7,6 @@ import { FieldTypesNode } from './FieldTypes'
 import { WidgetTypesNode } from './WidgetTypes'
 import { WidgetsForFieldsNode } from './WidgetsForFields'
 import { FieldsNode } from './Fields'
-import { FilesNode } from './Files'
 import { MessagesNode } from './Messages'
 
 const containerStyle = {
@@ -29,7 +28,6 @@ export const Tree = memo(({ designing }) => (
         <FieldsNode />
       </>
     )}
-    <FilesNode level={1} />
     <MessagesNode />
   </div>
 ))

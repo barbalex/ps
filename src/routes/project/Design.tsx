@@ -130,12 +130,6 @@ export const Design = () => {
         />
         <Label>Enable uploading files to:</Label>
         <CheckboxField
-          label="Account"
-          name="files_active_account"
-          value={row.files_active_account ?? false}
-          onChange={onChange}
-        />
-        <CheckboxField
           label="Projects"
           name="files_active_projects"
           value={row.files_active_projects ?? false}

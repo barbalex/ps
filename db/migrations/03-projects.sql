@@ -23,7 +23,6 @@ CREATE TABLE projects(
   multiple_check_values_on_same_level text DEFAULT NULL,
   data jsonb DEFAULT NULL, -- TODO: can not be defined in fields
   files_offline boolean DEFAULT NULL, -- FALSE,
-  files_active_account boolean DEFAULT NULL, -- TRUE,
   files_active_projects boolean DEFAULT NULL, -- TRUE,
   files_active_subprojects boolean DEFAULT NULL, -- TRUE,
   files_active_places boolean DEFAULT NULL, -- TRUE,

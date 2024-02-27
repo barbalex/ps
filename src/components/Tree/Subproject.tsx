@@ -1,5 +1,6 @@
 import { useCallback, memo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { useLiveQuery } from 'electric-sql/react'
 
 import { Node } from './Node'
 import { Subprojects as Subproject } from '../../../generated/client'
@@ -9,6 +10,7 @@ import { GoalsNode } from './Goals'
 import { SubprojectTaxaNode } from './SubprojectTaxa'
 import { SubprojectUsersNode } from './SubprojectUsers'
 import { FilesNode } from './Files'
+import { useElectric } from '../../ElectricProvider'
 
 interface Props {
   project_id: string
@@ -20,6 +22,13 @@ export const SubprojectNode = memo(
   ({ project_id, subproject, level = 4 }: Props) => {
     const location = useLocation()
     const navigate = useNavigate()
+
+    // need project to know whether to show files
+    const { db } = useElectric()!
+    const { results: project } = useLiveQuery(
+      db.projects.liveUnique({ where: { project_id } }),
+    )
+    const showFiles = project?.files_active_subprojects ?? false
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isOpen =
@@ -70,11 +79,13 @@ export const SubprojectNode = memo(
               project_id={project_id}
               subproject_id={subproject.subproject_id}
             />
-            <FilesNode
-              project_id={project_id}
-              subproject_id={subproject.subproject_id}
-              level={5}
-            />
+            {showFiles && (
+              <FilesNode
+                project_id={project_id}
+                subproject_id={subproject.subproject_id}
+                level={5}
+              />
+            )}
           </>
         )}
       </>

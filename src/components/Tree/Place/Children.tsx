@@ -34,6 +34,12 @@ export const PlaceChildren = memo(
     )
     const placeLevel = placeLevels?.[0]
 
+    // need project to know whether to show files
+    const { results: project } = useLiveQuery(
+      db.projects.liveUnique({ where: { project_id } }),
+    )
+    const showFiles = project?.files_active_places ?? false
+
     console.log('PlaceChildren', {
       project_id,
       subproject_id,
@@ -85,13 +91,15 @@ export const PlaceChildren = memo(
           place={place}
           level={level + 1}
         />
-        <FilesNode
-          project_id={project_id}
-          subproject_id={subproject_id}
-          place_id={place_id ?? place.place_id}
-          place_id2={place_id ? place.place_id : undefined}
-          level={level + 1}
-        />
+        {showFiles && (
+          <FilesNode
+            project_id={project_id}
+            subproject_id={subproject_id}
+            place_id={place_id ?? place.place_id}
+            place_id2={place_id ? place.place_id : undefined}
+            level={level + 1}
+          />
+        )}
       </>
     )
   },

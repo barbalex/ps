@@ -36,12 +36,12 @@ export const buildNavs = async ({
   const project = await db?.projects?.findUnique({
     where: { project_id: project_id ?? '99999999-9999-9999-9999-999999999999' },
   })
-  const filesActiveAccount = project?.files_active_account ?? false
   const filesActiveProjects = project?.files_active_projects ?? false
   const filesActiveSubprojects = project?.files_active_subprojects ?? false
   const filesActivePlaces = project?.files_active_places ?? false
   const filesActiveActions = project?.files_active_actions ?? false
   const filesActiveChecks = project?.files_active_checks ?? false
+
 
   switch (table) {
     case 'root':
@@ -49,7 +49,6 @@ export const buildNavs = async ({
         { path: '/projects', text: 'Projects' },
         { path: '/users', text: 'Users' },
         { path: '/accounts', text: 'Accounts' },
-        ...(filesActiveAccount ? [{ path: '/files', text: 'Files' }] : []),
         { path: '/messages', text: 'Messages' },
         { path: '/docs', text: 'Docs' },
         ...(designing

@@ -37,6 +37,8 @@ export const ProjectNode = memo(({ project, level = 2 }: Props) => {
   )
   const designing = uiOption?.designing ?? false
 
+  const showFiles = project.files_active_projects ?? false
+
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isOpen =
     urlPath[0] === 'projects' && params.project_id === project.project_id
@@ -67,7 +69,7 @@ export const ProjectNode = memo(({ project, level = 2 }: Props) => {
           <PersonsNode project_id={project.project_id} />
           <TileLayersNode project_id={project.project_id} />
           <VectorLayersNode project_id={project.project_id} />
-          <FilesNode project_id={project.project_id} level={3} />
+          {showFiles && <FilesNode project_id={project.project_id} level={3} />}
           {designing && (
             <>
               <ProjectUsersNode project_id={project.project_id} />
