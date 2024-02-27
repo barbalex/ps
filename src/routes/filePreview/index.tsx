@@ -111,7 +111,7 @@ export const Component = memo(() => {
         {isNotViewable && (
           <div
             style={{ alignSelf: 'center', margin: 'auto' }}
-          >{`Not an image or pdf. Files with mime type '${row.mimetype}' can't be previewed (yet)`}</div>
+          >{`Files with mime type '${row.mimetype}' can't be previewed (yet)`}</div>
         )}
       </div>
     </div>
