@@ -1,4 +1,4 @@
-import { useCallback, memo } from 'react'
+import { useCallback, memo, useMemo } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { Button } from '@fluentui/react-components'
 import { MdPreview, MdEditNote } from 'react-icons/md'
@@ -52,42 +52,45 @@ export const Header = memo(({ row }: Props) => {
     navigate(baseUrl)
   }, [db.files, file_id, navigate, baseUrl])
 
+  const where = useMemo(() => {
+    const where = { deleted: false }
+    if (action_id) {
+      where.action_id = action_id
+    } else if (check_id) {
+      where.check_id = check_id
+    } else if (place_id2) {
+      where.place_id2 = place_id2
+    } else if (place_id) {
+      where.place_id = place_id
+    } else if (subproject_id) {
+      where.subproject_id = subproject_id
+    } else if (project_id) {
+      where.project_id = project_id
+    }
+    return where
+  }, [action_id, check_id, place_id, place_id2, project_id, subproject_id])
+
   const toNext = useCallback(async () => {
     const files = await db.files.findMany({
-      where: {
-        deleted: false,
-        subproject_id,
-      },
+      where,
       orderBy: { label: 'asc' },
     })
     const len = files.length
     const index = files.findIndex((p) => p.file_id === file_id)
     const next = files[(index + 1) % len]
     navigate(`${baseUrl}/${next.file_id}${isPreview ? '/preview' : ''}`)
-  }, [db.files, subproject_id, navigate, baseUrl, isPreview, file_id])
+  }, [db.files, where, navigate, baseUrl, isPreview, file_id])
 
   const toPrevious = useCallback(async () => {
     const files = await db.files.findMany({
-      where: {
-        deleted: false,
-        project_id,
-        subproject_id,
-      },
+      where,
       orderBy: { label: 'asc' },
     })
     const len = files.length
     const index = files.findIndex((p) => p.file_id === file_id)
     const previous = files[(index + len - 1) % len]
     navigate(`${baseUrl}/${previous.file_id}${isPreview ? '/preview' : ''}`)
-  }, [
-    db.files,
-    project_id,
-    subproject_id,
-    navigate,
-    baseUrl,
-    isPreview,
-    file_id,
-  ])
+  }, [db.files, where, navigate, baseUrl, isPreview, file_id])
 
   // TODO: add sibling menu to:
   // navigate to preview or out of it
