@@ -22,7 +22,7 @@ export const DropdownField = memo(
         label,
         table,
         idField, // defaults to name, used for cases where the id field is not the same as the name field (?)
-        where = {},
+        where = { deleted: false },
         orderBy = { label: 'asc' },
         value,
         onChange,
