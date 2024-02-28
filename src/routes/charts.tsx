@@ -58,7 +58,7 @@ export const Component = () => {
   // offline to sqlite
   return (
     <div className="list-view">
-      <ListViewHeader title="Files" tableName="chart" addRow={add} />
+      <ListViewHeader title="Charts" tableName="chart" addRow={add} />
       <div className="list-container">
         {charts.map(({ chart_id, label }) => (
           <Row key={chart_id} label={label} to={`${baseUrl}/${chart_id}`} />
