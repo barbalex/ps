@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
 import { ListViewHeader } from '../components/ListViewHeader'
 import { Row } from '../components/shared/Row'
@@ -12,6 +12,7 @@ import { useElectric } from '../ElectricProvider'
 
 export const Component = () => {
   const { project_id, subproject_id, place_id, place_id2 } = useParams()
+  const navigate = useNavigate()
 
   const where = useMemo(() => {
     const where = { deleted: false }

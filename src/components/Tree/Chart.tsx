@@ -11,7 +11,7 @@ interface Props {
   level: number
 }
 
-export const FileNode = ({
+export const ChartNode = ({
   project_id,
   subproject_id,
   place_id,

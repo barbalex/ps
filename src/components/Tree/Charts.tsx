@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
 import { Node } from './Node'
-import { FileNode } from './File'
+import { ChartNode } from './Chart'
 
 interface Props {
   project_id?: string
@@ -104,7 +104,7 @@ export const ChartsNode = memo(
         />
         {isOpen &&
           charts.map((chart) => (
-            <FileNode
+            <ChartNode
               key={chart.chart_id}
               project_id={project_id}
               subproject_id={subproject_id}

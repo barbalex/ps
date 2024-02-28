@@ -93,7 +93,6 @@ export const SubprojectNode = memo(
                 level={5}
               />
             )}
-            {/* TODO: add charts node */}
             {designing && (
               <ChartsNode
                 project_id={project_id}
