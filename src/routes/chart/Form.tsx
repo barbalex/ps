@@ -45,6 +45,8 @@ export const ChartForm = memo(({ autoFocusRef }) => {
     return <div>Loading...</div>
   }
 
+  console.log('hello ChartForm', { row, chart_id })
+
   return (
     <div className="form-container">
       <TextFieldInactive label="ID" name="chart_id" value={row.chart_id} />
@@ -128,7 +130,6 @@ export const ChartForm = memo(({ autoFocusRef }) => {
         label="Title"
         name="title"
         value={row.title}
-        type="number"
         onChange={onChange}
       />
     </div>
