@@ -9,6 +9,10 @@ import { FileNode } from './File'
 interface Props {
   project_id?: string
   subproject_id?: string
+  place_id?: string
+  place_id2?: string
+  check_id?: string
+  action_id?: string
   level: number
 }
 
