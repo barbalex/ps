@@ -7,10 +7,10 @@ CREATE TYPE chart_table AS enum(
   'action_values'
 );
 
-CREATE TYPE value_source AS enum(
+CREATE TYPE chart_value_source AS enum(
   'row_count',
   'field_count_rows_by_distinct_field_values',
-  'field_sum_values',
+  'field_sum_values'
 );
 
 CREATE TABLE chart_subjects(
@@ -20,7 +20,7 @@ CREATE TABLE chart_subjects(
   table_name chart_table DEFAULT NULL, -- subprojects, places, checks, check_values, actions, action_values
   table_level integer DEFAULT NULL, -- 1, 2 (not relevant for subprojects)
   table_filter jsonb DEFAULT NULL, -- save a filter that is applied to the table
-  value_source value_source DEFAULT NULL, --how to source the value
+  value_source chart_value_source DEFAULT NULL, --how to source the value
   value_field text DEFAULT NULL, -- field to be used for value_source
   value_unit uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE CASCADE ON UPDATE CASCADE, -- needed for action_values, check_values
   label_replace_by_generated_column text DEFAULT NULL, -- table, value_source, ?value_field, ?unit
