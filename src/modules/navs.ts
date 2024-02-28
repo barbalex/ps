@@ -16,6 +16,8 @@ export const buildNavs = async ({
   vector_layer_id,
   taxonomy_id,
   observation_source_id,
+  // chart_id,
+  // chart_subject_id,
   db,
   level = 1,
 }) => {
@@ -41,7 +43,6 @@ export const buildNavs = async ({
   const filesActivePlaces = project?.files_active_places ?? false
   const filesActiveActions = project?.files_active_actions ?? false
   const filesActiveChecks = project?.files_active_checks ?? false
-
 
   switch (table) {
     case 'root':
@@ -181,6 +182,14 @@ export const buildNavs = async ({
               {
                 path: `/projects/${project_id}/subprojects/${subproject_id}/files`,
                 text: 'Files',
+              },
+            ]
+          : []),
+        ...(designing
+          ? [
+              {
+                path: `/projects/${project_id}/subprojects/${subproject_id}/charts`,
+                text: 'Charts',
               },
             ]
           : []),
