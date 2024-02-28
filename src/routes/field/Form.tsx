@@ -38,6 +38,9 @@ const widgetsNeedingList = [
   '018ca1a1-c94b-7d29-b21c-42053ade0411',
 ] // options-few, options-many
 
+const fieldTypeWhere = { deleted: false }
+const fieldTypeOrderBy = [{ sort: 'asc' }, { name: 'asc' }]
+
 // seperate from the route because it is also used inside other forms
 export const FieldForm = ({ field_id, autoFocusRef, isInForm = false }) => {
   const { project_id } = useParams()
@@ -48,9 +51,6 @@ export const FieldForm = ({ field_id, autoFocusRef, isInForm = false }) => {
   )
 
   const row: Field = results
-
-  const fieldTypeWhere = useMemo(() => ({ deleted: false }), [])
-  const fieldTypeOrderBy = useMemo(() => [{ sort: 'asc' }, { name: 'asc' }], [])
 
   const onChange: InputProps['onChange'] = useCallback(
     (e, data) => {
