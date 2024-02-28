@@ -24,7 +24,7 @@ CREATE TABLE chart_subjects(
   value_field text DEFAULT NULL, -- field to be used for value_source
   value_unit uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE CASCADE ON UPDATE CASCADE, -- needed for action_values, check_values
   label_replace_by_generated_column text DEFAULT NULL, -- table, value_source, ?value_field, ?unit
-  -- TODO: styling (per distinct value for count)
+  styling jsonb DEFAULT NULL, -- per distinct value for count
   deleted boolean DEFAULT NULL -- FALSE
 );
 
@@ -60,6 +60,8 @@ COMMENT ON COLUMN chart_subjects.value_source IS 'How to source the value';
 COMMENT ON COLUMN chart_subjects.value_field IS 'Field to be used for value_source';
 
 COMMENT ON COLUMN chart_subjects.value_unit IS 'Needed for action_values, check_values';
+
+COMMENT ON COLUMN chart_subjects.styling IS 'Styling setting, per distinct value for value_source field_count_rows_by_distinct_field_values';
 
 ALTER TABLE chart_subjects ENABLE ELECTRIC;
 
