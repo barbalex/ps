@@ -55,8 +55,9 @@ export const Chart = memo(() => {
 
             return acc
           }, {})
-          console.log('hello Chart, effect, data:', data)
-          setData(Object.entries(data))
+          setData(
+            Object.entries(data).map(([year, count]) => ({ year, count })),
+          )
           break
         }
         default:
@@ -80,7 +81,7 @@ export const Chart = memo(() => {
           data={data}
           margin={{ top: 10, right: 10, left: 27 }}
         >
-          <XAxis dataKey="jahr" />
+          <XAxis dataKey="year" />
           <YAxis
             interval={0}
             label={{
@@ -91,12 +92,12 @@ export const Chart = memo(() => {
             }}
             tickFormatter={formatNumber}
           />
-          {data.reverse().map((id) => {
+          {data.map((val) => {
             return (
               <Area
-                key={id}
+                key={val.year}
                 type="linear"
-                dataKey={id}
+                dataKey="count"
                 stackId="1"
                 stroke={'red'}
                 strokeWidth={2}
