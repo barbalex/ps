@@ -51,7 +51,10 @@ const seedTaxons = `INSERT INTO taxa(account_id, name, taxonomy_id, taxon_id, de
 const seedSubprojects = `INSERT INTO subprojects(subproject_id, project_id, name, deleted) values ('018cfd27-ee92-7000-b678-e75497d6c60e', '018cfcf7-6424-7000-a100-851c5cc2c878', 'Demo Subproject 1', false);`
 const seedSubprojectUsers = `INSERT INTO subproject_users(subproject_user_id, subproject_id, user_id, role, deleted) values ('018cfd29-ccaa-7000-a686-8566a27eee45', '018cfd27-ee92-7000-b678-e75497d6c60e', '018cf95a-d817-7000-92fa-bb3b2ad59dda', 'manager', false);`
 const seedPlaces = `INSERT INTO places(account_id, place_id, subproject_id, level, deleted) values ('018cf958-27e2-7000-90d3-59f024d467be', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, false);`
-const seedChecks = `INSERT INTO checks(account_id, check_id, place_id, date, deleted) values ('018cf958-27e2-7000-90d3-59f024d467be', '018df4ff-9124-73f4-95c1-497387b995c0', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2024-03-03', false);`
+const seedChecks = `INSERT INTO checks(account_id, check_id, place_id, date, deleted) values ('018cf958-27e2-7000-90d3-59f024d467be', '018df4ff-9124-73f4-95c1-497387b995c0', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2024-03-03', false),
+('018cf958-27e2-7000-90d3-59f024d467be', '018df5da-6447-7bb9-944c-f824643a1b11', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2024-04-03', false),
+('018cf958-27e2-7000-90d3-59f024d467be', '018df5da-90f5-7ac4-aec1-e57d28076290', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2023-03-03', false),
+('018cf958-27e2-7000-90d3-59f024d467be', '018df5da-af3e-7e1c-b70f-ec40a32ae7d1', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2022-03-03', false);`
 const seedCharts = `INSERT INTO charts(account_id, subproject_id, chart_id, chart_type, title, years_last_x, deleted) values ('018cf958-27e2-7000-90d3-59f024d467be', '018cfd27-ee92-7000-b678-e75497d6c60e', '018df502-138a-77bb-82b9-e5ab16c988ee', 'SimpleAreaChart', 'Test Title', 5, false);`
 const seedChartSubjects = `INSERT INTO chart_subjects(account_id, chart_id, chart_subject_id, table_name, value_source, deleted) values ('018cf958-27e2-7000-90d3-59f024d467be', '018df502-138a-77bb-82b9-e5ab16c988ee', '018df505-0d65-71a2-b214-76343bfc95cb', 'checks', 'row_count', false);`
 

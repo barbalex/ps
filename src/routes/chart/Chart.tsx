@@ -10,7 +10,6 @@ import {
   Tooltip,
   CartesianGrid,
 } from 'recharts'
-import groupBy from 'lodash/groupBy'
 
 import { useElectric } from '../../ElectricProvider'
 
