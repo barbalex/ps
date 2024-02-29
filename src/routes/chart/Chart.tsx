@@ -25,14 +25,14 @@ export const Chart = memo(() => {
   const { chart_id } = useParams()
 
   const { db } = useElectric()!
-  const { results: row } = useLiveQuery(
+  const { results: chart } = useLiveQuery(
     db.charts.liveUnique({
       where: { chart_id },
       include: { chart_subjects: true },
     }),
   )
 
-  console.log('hello Chart', { row, chart_id })
+  console.log('hello Chart, chart:', chart)
   const unit = 'TODO: unit'
   const data = []
 
@@ -43,7 +43,7 @@ export const Chart = memo(() => {
         <AreaChart
           width={600}
           height={300}
-          data={popMengeData}
+          data={data}
           margin={{ top: 10, right: 10, left: 27 }}
         >
           <XAxis dataKey="jahr" />
@@ -58,15 +58,6 @@ export const Chart = memo(() => {
             tickFormatter={formatNumber}
           />
           {data.reverse().map((id) => {
-            const pop = popsData.find((p) => p.id === id)
-            let color
-            if (!pop) {
-              color = 'grey'
-            } else {
-              const isUrspruenglich = pop?.status < 200
-              color = isUrspruenglich ? colorUrspruenglich : colorAngesiedelt
-            }
-
             return (
               <Area
                 key={id}
@@ -80,9 +71,7 @@ export const Chart = memo(() => {
               />
             )
           })}
-          {!isSubReport && (
-            <Tooltip content={<CustomTooltip popsData={popsData} />} />
-          )}
+          <Tooltip content={<div>TODO:</div>} />
           <CartesianGrid strokeDasharray="3 3" horizontal={false} />
         </AreaChart>
       </ResponsiveContainer>
