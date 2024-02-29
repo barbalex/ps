@@ -10,7 +10,7 @@ interface Props {
   subject: Chart_subjects
 }
 
-export const Chart = memo(({ subject }: Props) => {
+export const Subject = memo(({ subject }: Props) => {
   const { subproject_id } = useParams()
 
   const { db } = useElectric()!

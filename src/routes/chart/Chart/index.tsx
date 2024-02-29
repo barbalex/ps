@@ -12,6 +12,7 @@ import {
 } from 'recharts'
 
 import { useElectric } from '../../../ElectricProvider'
+import { Subject } from './Subject'
 
 const formatNumber = (tickItem) => {
   const value =
@@ -33,11 +34,12 @@ export const Chart = memo(() => {
   )
   const subject = chart?.chart_subjects[0]
   const tableName = subject?.table_name
+  const label = subject?.label
 
   const [data, setData] = useState([])
 
   useEffect(() => {
-    const fetch = async () => {
+    const run = async () => {
       switch (tableName) {
         case 'checks': {
           const places = await db.places.findMany({
@@ -55,6 +57,11 @@ export const Chart = memo(() => {
 
             return acc
           }, {})
+          console.log('hello Chart effect, data:', data)
+          const ownData = Object.entries(data).map(([year, count]) => ({
+            year,
+            count,
+          }))
           setData(
             Object.entries(data).map(([year, count]) => ({ year, count })),
           )
@@ -64,7 +71,7 @@ export const Chart = memo(() => {
           break
       }
     }
-    fetch()
+    run()
   }, [subproject_id, tableName])
 
   console.log('hello Chart', { chart, data, tableName })
