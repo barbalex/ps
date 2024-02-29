@@ -12,7 +12,6 @@ import { SubprojectUsersNode } from './SubprojectUsers'
 import { FilesNode } from './Files'
 import { ChartsNode } from './Charts'
 import { useElectric } from '../../ElectricProvider'
-import { user_id } from '../SqlInitializer'
 
 interface Props {
   project_id: string
@@ -31,11 +30,6 @@ export const SubprojectNode = memo(
       db.projects.liveUnique({ where: { project_id } }),
     )
     const showFiles = project?.files_active_subprojects ?? false
-
-    const { results: uiOption } = useLiveQuery(
-      db.ui_options.liveUnique({ where: { user_id } }),
-    )
-    const designing = uiOption?.designing ?? false
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isOpen =
@@ -93,13 +87,11 @@ export const SubprojectNode = memo(
                 level={5}
               />
             )}
-            {designing && (
-              <ChartsNode
-                project_id={project_id}
-                subproject_id={subproject.subproject_id}
-                level={5}
-              />
-            )}
+            <ChartsNode
+              project_id={project_id}
+              subproject_id={subproject.subproject_id}
+              level={5}
+            />
           </>
         )}
       </>

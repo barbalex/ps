@@ -57,19 +57,19 @@ export const buildNavs = async ({
               {
                 path: '/field-types',
                 text: 'Field Types',
-                showOnlyWhenDesigning: false,
+                showOnlyWhenDesigning: true,
               },
               {
                 path: '/widget-types',
                 text: 'Widget Types',
-                showOnlyWhenDesigning: false,
+                showOnlyWhenDesigning: true,
               },
               {
                 path: '/widgets-for-fields',
                 text: 'Widgets For Fields',
-                showOnlyWhenDesigning: false,
+                showOnlyWhenDesigning: true,
               },
-              { path: '/fields', text: 'Fields', showOnlyWhenDesigning: false },
+              { path: '/fields', text: 'Fields', showOnlyWhenDesigning: true },
             ]
           : []),
       ]
@@ -112,22 +112,22 @@ export const buildNavs = async ({
               {
                 path: `/projects/${project_id}/users`,
                 text: 'Users',
-                showOnlyWhenDesigning: false,
+                showOnlyWhenDesigning: true,
               },
               {
                 path: `/projects/${project_id}/lists`,
                 text: 'Lists',
-                showOnlyWhenDesigning: false,
+                showOnlyWhenDesigning: true,
               },
               {
                 path: `/projects/${project_id}/taxonomies`,
                 text: 'Taxonomies',
-                showOnlyWhenDesigning: false,
+                showOnlyWhenDesigning: true,
               },
               {
                 path: `/projects/${project_id}/units`,
                 text: 'Units',
-                showOnlyWhenDesigning: false,
+                showOnlyWhenDesigning: true,
               },
               {
                 path: `/projects/${project_id}/place-levels`,
@@ -136,12 +136,12 @@ export const buildNavs = async ({
               {
                 path: `/projects/${project_id}/fields`,
                 text: 'Fields',
-                showOnlyWhenDesigning: false,
+                showOnlyWhenDesigning: true,
               },
               {
                 path: `/projects/${project_id}/observation-sources`,
                 text: 'Observation Sources',
-                showOnlyWhenDesigning: false,
+                showOnlyWhenDesigning: true,
               },
             ]
           : []),
@@ -177,19 +177,15 @@ export const buildNavs = async ({
           path: `/projects/${project_id}/subprojects/${subproject_id}/users`,
           text: 'Users',
         },
+        {
+          path: `/projects/${project_id}/subprojects/${subproject_id}/charts`,
+          text: 'Charts',
+        },
         ...(filesActiveSubprojects
           ? [
               {
                 path: `/projects/${project_id}/subprojects/${subproject_id}/files`,
                 text: 'Files',
-              },
-            ]
-          : []),
-        ...(designing
-          ? [
-              {
-                path: `/projects/${project_id}/subprojects/${subproject_id}/charts`,
-                text: 'Charts',
               },
             ]
           : []),

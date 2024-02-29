@@ -44,8 +44,6 @@ export const ChartSubjectForm = memo(({ autoFocusRef }) => {
     return <div>Loading...</div>
   }
 
-  // console.log('ChartSubjectForm, row:', row)
-
   return (
     <div className="form-container">
       <TextFieldInactive

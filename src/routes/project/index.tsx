@@ -42,19 +42,19 @@ export const Component = () => {
             Design
           </Tab>
         )}
-        <Tab id="analysis" value="analysis">
-          Analysis
+        <Tab id="charts" value="charts">
+          Charts
         </Tab>
       </TabList>
       {tab === 'form' && <Form autoFocusRef={autoFocusRef} />}
       {tab === 'design' && designing && <Design />}
-      {tab === 'analysis' && (
+      {tab === 'charts' && (
         <div
           role="tabpanel"
-          aria-labelledby="analysis"
+          aria-labelledby="charts"
           className="form-container"
         >
-          <div>analysis</div>
+          <div>charts</div>
         </div>
       )}
     </div>
