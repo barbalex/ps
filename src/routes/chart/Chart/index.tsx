@@ -11,7 +11,7 @@ import {
   CartesianGrid,
 } from 'recharts'
 
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../../../ElectricProvider'
 
 const formatNumber = (tickItem) => {
   const value =
