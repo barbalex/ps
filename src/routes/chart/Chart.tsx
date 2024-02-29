@@ -44,26 +44,20 @@ export const Chart = memo(() => {
           const places = await db.places.findMany({
             where: { subproject_id, deleted: false },
           })
-          console.log('hello Chart, effect, places:', places)
           const placeIds = places.map((place) => place.place_id)
-          console.log('hello Chart, effect, placeIds:', placeIds)
           const checks = await db.checks.findMany({
             where: { place_id: { in: placeIds }, deleted: false },
           })
-          console.log('hello Chart, effect, checks:', checks)
-          // add year to every check
-          const checksWithYear = [...checks].map((check) => {
-            let year
-            try {
-              const date = new Date(check.date)
-              year = date.getFullYear()
-            } catch (error) {}
-            if (!year) return check
-            return { ...check, year }
-          })
-          console.log('hello Chart, effect, checksWithYear:', checksWithYear)
-          // const data = groupBy(checks, )
-          setData(checksWithYear)
+          // use reduce to count checks per year
+          const data = checks.reduce((acc, check) => {
+            const year = check.date?.getFullYear?.()
+            if (!acc[year]) acc[year] = 0
+            acc[year]++
+
+            return acc
+          }, {})
+          console.log('hello Chart, effect, data:', data)
+          setData(Object.entries(data))
           break
         }
         default:
