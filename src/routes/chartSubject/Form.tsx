@@ -31,9 +31,10 @@ export const ChartSubjectForm = memo(({ autoFocusRef }) => {
   const onChange: InputProps['onChange'] = useCallback(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
+      const valueToUse = name === 'table_level' ? +value : value
       db.chart_subjects.update({
         where: { chart_subject_id },
-        data: { [name]: value },
+        data: { [name]: valueToUse },
       })
     },
     [db.chart_subjects, chart_subject_id],
@@ -42,6 +43,8 @@ export const ChartSubjectForm = memo(({ autoFocusRef }) => {
   if (!row) {
     return <div>Loading...</div>
   }
+
+  // console.log('ChartSubjectForm, row:', row)
 
   return (
     <div className="form-container">
