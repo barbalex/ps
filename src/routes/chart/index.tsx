@@ -8,7 +8,7 @@ import { useElectric } from '../../ElectricProvider'
 import { user_id } from '../../components/SqlInitializer'
 
 import '../../form.css'
-// TODO:
+
 // if editing, show form
 // if not editing, show chart
 export const Component = memo(() => {
