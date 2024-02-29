@@ -1,9 +1,11 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { useLiveQuery } from 'electric-sql/react'
 
 import { useElectric } from '../../ElectricProvider'
 import { createChart } from '../../modules/createRows'
 import { FormHeader } from '../../components/FormHeader'
+import { user_id } from '../../components/SqlInitializer'
 
 export const Header = memo(({ autoFocusRef }) => {
   const { project_id, subproject_id, place_id, place_id2, chart_id } =
@@ -11,6 +13,10 @@ export const Header = memo(({ autoFocusRef }) => {
   const navigate = useNavigate()
 
   const { db } = useElectric()!
+  const { results: uiOption } = useLiveQuery(
+    db.ui_options.liveUnique({ where: { user_id } }),
+  )
+  const designing = uiOption?.designing ?? false
 
   const baseUrl = `${project_id ? `/projects/${project_id}` : ''}${
     subproject_id ? `/subprojects/${subproject_id}` : ''
@@ -85,8 +91,8 @@ export const Header = memo(({ autoFocusRef }) => {
   return (
     <FormHeader
       title="Chart"
-      addRow={addRow}
-      deleteRow={deleteRow}
+      addRow={designing ? addRow : undefined}
+      deleteRow={designing ? deleteRow : undefined}
       toNext={toNext}
       toPrevious={toPrevious}
       tableName="chart"

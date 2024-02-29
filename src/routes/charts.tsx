@@ -5,6 +5,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { ListViewHeader } from '../components/ListViewHeader'
 import { Row } from '../components/shared/Row'
 import { createChart } from '../modules/createRows'
+import { user_id } from '../components/SqlInitializer'
 
 import '../form.css'
 
@@ -32,6 +33,10 @@ export const Component = () => {
   }, [place_id, place_id2, project_id, subproject_id])
 
   const { db } = useElectric()!
+  const { results: uiOption } = useLiveQuery(
+    db.ui_options.liveUnique({ where: { user_id } }),
+  )
+  const designing = uiOption?.designing ?? false
   const { results: charts = [] } = useLiveQuery(
     db.charts.liveMany({
       where,
@@ -56,13 +61,25 @@ export const Component = () => {
     const data = createChart(idToAdd)
     await db.charts.create({ data })
     navigate(`${baseUrl}/${data.chart_id}`)
-  }, [baseUrl, db.charts, place_id, place_id2, project_id, subproject_id])
+  }, [
+    baseUrl,
+    db.charts,
+    navigate,
+    place_id,
+    place_id2,
+    project_id,
+    subproject_id,
+  ])
 
   // TODO: get uploader css locally if it should be possible to upload charts
   // offline to sqlite
   return (
     <div className="list-view">
-      <ListViewHeader title="Charts" tableName="chart" addRow={add} />
+      <ListViewHeader
+        title="Charts"
+        tableName="chart"
+        addRow={designing ? add : undefined}
+      />
       <div className="list-container">
         {charts.map(({ chart_id, label }) => (
           <Row key={chart_id} label={label} to={`${baseUrl}/${chart_id}`} />
