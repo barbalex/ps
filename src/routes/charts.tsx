@@ -11,9 +11,6 @@ import '../form.css'
 
 import { useElectric } from '../ElectricProvider'
 
-// TODO:
-// if editing, show chart list
-// if not editing, show the charts themselves
 export const Component = () => {
   const { project_id, subproject_id, place_id, place_id2 } = useParams()
   const navigate = useNavigate()

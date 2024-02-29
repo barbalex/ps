@@ -22,7 +22,7 @@ const chartTypes = [
 ]
 
 // seperate from the route because it is also used inside other forms
-export const ChartForm = memo(({ autoFocusRef }) => {
+export const Form = memo(({ autoFocusRef }) => {
   const { chart_id } = useParams()
 
   const { db } = useElectric()!
