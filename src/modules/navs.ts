@@ -17,7 +17,7 @@ export const buildNavs = async ({
   taxonomy_id,
   observation_source_id,
   chart_id,
-  chart_subject_id,
+  // chart_subject_id,
   db,
   level = 1,
 }) => {
