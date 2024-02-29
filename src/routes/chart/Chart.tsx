@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import {
@@ -10,19 +10,20 @@ import {
   Tooltip,
   CartesianGrid,
 } from 'recharts'
+import groupBy from 'lodash/groupBy'
 
 import { useElectric } from '../../ElectricProvider'
 
 const formatNumber = (tickItem) => {
   const value =
-    exists(tickItem) && tickItem?.toLocaleString
+    tickItem && tickItem?.toLocaleString
       ? tickItem.toLocaleString('de-ch')
       : null
   return value
 }
 
 export const Chart = memo(() => {
-  const { chart_id } = useParams()
+  const { subproject_id, chart_id } = useParams()
 
   const { db } = useElectric()!
   const { results: chart } = useLiveQuery(
@@ -31,10 +32,50 @@ export const Chart = memo(() => {
       include: { chart_subjects: true },
     }),
   )
+  const subject = chart?.chart_subjects[0]
+  const tableName = subject?.table_name
 
-  console.log('hello Chart, chart:', chart)
+  const [data, setData] = useState([])
+
+  useEffect(() => {
+    const fetch = async () => {
+      switch (tableName) {
+        case 'checks': {
+          const places = await db.places.findMany({
+            where: { subproject_id, deleted: false },
+          })
+          console.log('hello Chart, effect, places:', places)
+          const placeIds = places.map((place) => place.place_id)
+          console.log('hello Chart, effect, placeIds:', placeIds)
+          const checks = await db.checks.findMany({
+            where: { place_id: { in: placeIds }, deleted: false },
+          })
+          console.log('hello Chart, effect, checks:', checks)
+          // add year to every check
+          const checksWithYear = [...checks].map((check) => {
+            let year
+            try {
+              const date = new Date(check.date)
+              year = date.getFullYear()
+            } catch (error) {}
+            if (!year) return check
+            return { ...check, year }
+          })
+          console.log('hello Chart, effect, checksWithYear:', checksWithYear)
+          // const data = groupBy(checks, )
+          setData(checksWithYear)
+          break
+        }
+        default:
+          break
+      }
+    }
+    fetch()
+  }, [subproject_id, tableName])
+
+  console.log('hello Chart', { chart, data, tableName })
+
   const unit = 'TODO: unit'
-  const data = []
 
   return (
     <>
