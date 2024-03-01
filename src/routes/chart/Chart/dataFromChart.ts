@@ -52,17 +52,30 @@ export const dataFromChart = async ({ db, chart, subproject_id }) => {
     }
   }
 
-  const years = Object.values(dataPerSubject).reduce((acc, data) => {
-    return [...new Set([...acc, ...Object.keys(data)])].sort()
-  }, [])
-  const data = years.map((year) => {
+  console.log('hello dataFromChart, dataPerSubject:', dataPerSubject)
+  const years = Object.values(dataPerSubject).reduce(
+    (acc, data) => [...acc, ...Object.keys(data).map((k) => +k)],
+    [],
+  )
+
+  console.log('hello dataFromChart, years:', years)
+  const minYear = Math.min(...years)
+  const maxYear = Math.max(...years)
+  const yearRange = Array(maxYear - minYear + 1)
+    .fill()
+    .map((element, i) => minYear + i)
+  console.log('hello dataFromChart, yearRange:', yearRange)
+
+  const data = yearRange.map((year) => {
     const yearsData = { year }
     for (const name of names) {
-      yearsData[name] = dataPerSubject[name]?.[year] || 0
+      if (!dataPerSubject[name]?.[year]) continue
+      yearsData[name] = dataPerSubject[name]?.[year]
     }
 
     return yearsData
   })
+  console.log('hello dataFromChart, data:', data)
 
   return { data, years }
 }

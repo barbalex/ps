@@ -27,6 +27,7 @@ CREATE TABLE chart_subjects(
   label_replace_by_generated_column text DEFAULT NULL, -- table, value_source, ?value_field, ?unit
   stroke text DEFAULT NULL,
   fill text DEFAULT NULL,
+  connect_nulls boolean DEFAULT NULL, -- TRUE
   deleted boolean DEFAULT NULL -- FALSE
 );
 
