@@ -1,5 +1,4 @@
-export const dataFromChart = async ({ db, chart, subproject_id }) => {
-  const subjects = chart.chart_subjects
+export const dataFromChart = async ({ db, subjects, subproject_id }) => {
   const names = subjects.map((subject) => subject.name)
 
   const dataPerSubject = {}

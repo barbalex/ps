@@ -38,26 +38,31 @@ export const Chart = memo(() => {
   const { results: chart } = useLiveQuery(
     db.charts.liveUnique({
       where: { chart_id },
-      include: { chart_subjects: true },
+      // include: { chart_subjects: true }, // NOT WORKING due to boolean value in subjects...
     }),
   )
+  console.log('hello Chart, chart:', chart)
+  const { results: subjects } = useLiveQuery(
+    db.chart_subjects.liveMany({
+      where: { chart_id, deleted: false },
+    }),
+  )
+  console.log('hello Chart, subjects:', subjects)
 
   const [data, setData] = useState({ data: [], names: [] })
 
   useEffect(() => {
-    if (!chart) return
+    if (!subjects) return
     const run = async () => {
-      const data = await dataFromChart({ db, chart, subproject_id })
+      const data = await dataFromChart({ db, subjects, subproject_id })
       setData(data)
     }
     run()
-  }, [chart, db, subproject_id])
-
-  console.log('hello Chart', { chart, data })
+  }, [db, subjects, subproject_id])
 
   const unit = 'TODO: unit'
 
-  if (!chart) return null
+  if (!chart || !subjects) return null
 
   return (
     <>
@@ -80,7 +85,7 @@ export const Chart = memo(() => {
             }}
             tickFormatter={formatNumber}
           />
-          {chart.chart_subjects.map((subject) => {
+          {subjects.map((subject) => {
             return (
               <Area
                 key={subject.chart_subject_id}
@@ -91,13 +96,13 @@ export const Chart = memo(() => {
                 strokeWidth={2}
                 fill={subject.fill ?? 'yellow'}
                 isAnimationActive={true} // false for print?
-                dot={{ stroke: subject.stroke ?? 'red', strokeWidth: 2 }}
+                dot={{ stroke: subject.stroke ?? 'red', strokeWidth: 3 }}
                 activeDot={{
                   stroke: subject.stroke ?? 'red',
                   strokeWidth: 2,
-                  r: 4,
+                  r: 6,
                 }}
-                connectNulls={subject.connect_nulls ?? true}
+                connectNulls={subject.connect_nulls ?? false}
               />
             )
           })}
