@@ -13,6 +13,7 @@ import {
 
 import { useElectric } from '../../../ElectricProvider'
 import { dataFromChart } from './dataFromChart'
+import { Tooltip as CustomTooltip } from './Tooltip'
 
 const formatNumber = (tickItem) => {
   const value =
@@ -20,6 +21,14 @@ const formatNumber = (tickItem) => {
       ? tickItem.toLocaleString('de-ch')
       : null
   return value
+}
+
+const titleRowStyle = {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  marginTop: 10,
+  fontWeight: 'bold',
 }
 
 export const Chart = memo(() => {
@@ -48,9 +57,11 @@ export const Chart = memo(() => {
 
   const unit = 'TODO: unit'
 
+  if (!chart) return null
+
   return (
     <>
-      <div>Chart</div>
+      <div style={titleRowStyle}>{chart.title}</div>
       <ResponsiveContainer width="99%" height={400}>
         <AreaChart
           width={600}
@@ -83,7 +94,7 @@ export const Chart = memo(() => {
               />
             )
           })}
-          <Tooltip content={<div>TODO:</div>} />
+          <Tooltip content={<CustomTooltip />} />
           <CartesianGrid strokeDasharray="3 3" horizontal={false} />
         </AreaChart>
       </ResponsiveContainer>
