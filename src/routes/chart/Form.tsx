@@ -119,6 +119,13 @@ export const Form = memo(({ autoFocusRef }) => {
         onChange={onChange}
         validationMessage="If true, subjects graphs will be stacked. If false, they will be drawn covering each other."
       />
+      <SwitchField
+        label="Draw subjects in separate charts?"
+        name="subjects_separate_synchronized"
+        value={row.subjects_separate_synchronized ?? false}
+        onChange={onChange}
+        validationMessage="If false, subjects will be drawn in a single graph."
+      />
     </div>
   )
 })

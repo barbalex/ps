@@ -3,7 +3,9 @@ import { useParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import {
   AreaChart,
+  LineChart,
   Area,
+  Line,
   XAxis,
   YAxis,
   ResponsiveContainer,
@@ -41,14 +43,14 @@ export const Chart = memo(() => {
       // include: { chart_subjects: true }, // NOT WORKING due to boolean value in subjects...
     }),
   )
-  console.log('hello Chart, chart:', chart)
+  // console.log('hello Chart, chart:', chart)
   const { results: subjects } = useLiveQuery(
     db.chart_subjects.liveMany({
       where: { chart_id, deleted: false },
       orderBy: [{ sort: 'asc' }, { name: 'asc' }],
     }),
   )
-  console.log('hello Chart, subjects:', subjects)
+  // console.log('hello Chart, subjects:', subjects)
 
   const [data, setData] = useState({ data: [], names: [] })
 
@@ -69,7 +71,7 @@ export const Chart = memo(() => {
     <>
       <div style={titleRowStyle}>{chart.title}</div>
       <ResponsiveContainer width="99%" height={400}>
-        <AreaChart
+        <LineChart
           width={600}
           height={300}
           data={data.data}
@@ -115,7 +117,7 @@ export const Chart = memo(() => {
           />
           {subjects.map((subject) => {
             return (
-              <Area
+              <Line
                 key={subject.chart_subject_id}
                 type={subject.type ?? 'monotone'} // or: linear
                 dataKey={subject.name}
@@ -141,7 +143,7 @@ export const Chart = memo(() => {
           <Tooltip />
           <CartesianGrid strokeDasharray="3 3" horizontal={false} />
           <Legend verticalAlign="bottom" height={36} />
-        </AreaChart>
+        </LineChart>
       </ResponsiveContainer>
     </>
   )
