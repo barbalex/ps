@@ -71,6 +71,12 @@ export const ChartSubjectForm = memo(({ autoFocusRef }) => {
         ref={autoFocusRef}
         validationMessage="Choose what table to get the data from."
       />
+      <TextField
+        label="Name"
+        name="name"
+        value={row.name}
+        onChange={onChange}
+      />
       <RadioGroupField
         label="Level"
         name="table_level"

@@ -12,6 +12,7 @@ import {
 } from 'recharts'
 
 import { useElectric } from '../../../ElectricProvider'
+import { dataFromChart } from './dataFromChart'
 
 const formatNumber = (tickItem) => {
   const value =
@@ -31,49 +32,19 @@ export const Chart = memo(() => {
       include: { chart_subjects: true },
     }),
   )
-  const subject = chart?.chart_subjects[0]
-  const tableName = subject?.table_name
-  const label = subject?.label
 
   const [data, setData] = useState([])
 
   useEffect(() => {
+    if (!chart) return
     const run = async () => {
-      switch (tableName) {
-        case 'checks': {
-          const places = await db.places.findMany({
-            where: { subproject_id, deleted: false },
-          })
-          const placeIds = places.map((place) => place.place_id)
-          const checks = await db.checks.findMany({
-            where: { place_id: { in: placeIds }, deleted: false },
-          })
-          // use reduce to count checks per year
-          const data = checks.reduce((acc, check) => {
-            const year = check.date?.getFullYear?.()
-            if (!acc[year]) acc[year] = 0
-            acc[year]++
-
-            return acc
-          }, {})
-          console.log('hello Chart effect, data:', data)
-          const ownData = Object.entries(data).map(([year, count]) => ({
-            year,
-            count,
-          }))
-          setData(
-            Object.entries(data).map(([year, count]) => ({ year, count })),
-          )
-          break
-        }
-        default:
-          break
-      }
+      const data = await dataFromChart({ db, chart, subproject_id })
+      setData(data)
     }
     run()
-  }, [subproject_id, tableName])
+  }, [chart, db])
 
-  console.log('hello Chart', { chart, data, tableName })
+  console.log('hello Chart', { chart, data })
 
   const unit = 'TODO: unit'
 

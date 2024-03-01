@@ -10,15 +10,19 @@ export const generateChartSubjectLabel = async (db) => {
       res = await db.unsafeExec({
         sql: `ALTER TABLE chart_subjects ADD COLUMN label text GENERATED ALWAYS AS (
                 iif(
-                  value_unit is not null, 
-                  concat(table_name, ', ', value_source, ', ', value_field, ', ', value_unit), 
+                  name is not null, 
+                  name,
                   iif(
-                    value_field is not null, 
-                    concat(table_name, ', ', value_source, ', ', value_field), 
+                    value_unit is not null, 
+                    concat(table_name, ', ', value_source, ', ', value_field, ', ', value_unit), 
                     iif(
-                      value_source is not null, 
-                      concat(table_name, ', ', value_source), 
-                      iif(table_name is not null, table_name, chart_subject_id)
+                      value_field is not null, 
+                      concat(table_name, ', ', value_source, ', ', value_field), 
+                      iif(
+                        value_source is not null, 
+                        concat(table_name, ', ', value_source), 
+                        iif(table_name is not null, table_name, chart_subject_id)
+                      )
                     )
                   )
                 )

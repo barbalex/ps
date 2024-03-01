@@ -23,6 +23,7 @@ CREATE TABLE chart_subjects(
   value_source chart_value_source DEFAULT NULL, --how to source the value
   value_field text DEFAULT NULL, -- field to be used for value_source
   value_unit uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE CASCADE ON UPDATE CASCADE, -- needed for action_values, check_values
+  name text DEFAULT NULL,
   label_replace_by_generated_column text DEFAULT NULL, -- table, value_source, ?value_field, ?unit
   styling jsonb DEFAULT NULL, -- per distinct value for count
   deleted boolean DEFAULT NULL -- FALSE

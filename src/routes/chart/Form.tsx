@@ -45,7 +45,7 @@ export const Form = memo(({ autoFocusRef }) => {
     return <div>Loading...</div>
   }
 
-  console.log('hello ChartForm', { row, chart_id })
+  // console.log('hello ChartForm', { row, chart_id })
 
   return (
     <div className="form-container">
