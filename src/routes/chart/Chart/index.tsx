@@ -9,11 +9,11 @@ import {
   ResponsiveContainer,
   Tooltip,
   CartesianGrid,
+  Legend,
 } from 'recharts'
 
 import { useElectric } from '../../../ElectricProvider'
 import { dataFromChart } from './dataFromChart'
-import { Tooltip as CustomTooltip } from './Tooltip'
 
 const formatNumber = (tickItem) => {
   const value =
@@ -80,22 +80,29 @@ export const Chart = memo(() => {
             }}
             tickFormatter={formatNumber}
           />
-          {data.names.map((name) => {
+          {chart.chart_subjects.map((subject) => {
             return (
               <Area
-                key={name}
+                key={subject.chart_subject_id}
                 type="linear"
-                dataKey={name}
-                stackId="1"
-                stroke={'red'}
+                dataKey={subject.name}
+                // stackId="1" set to stack
+                stroke={subject.stroke ?? 'red'}
                 strokeWidth={2}
-                fill={'yellow'}
-                isAnimationActive={true}
+                fill={subject.fill ?? 'yellow'}
+                isAnimationActive={true} // false for print?
+                dot={{ stroke: subject.stroke ?? 'red', strokeWidth: 2 }}
+                activeDot={{
+                  stroke: subject.stroke ?? 'red',
+                  strokeWidth: 2,
+                  r: 4,
+                }}
               />
             )
           })}
-          <Tooltip content={<CustomTooltip />} />
+          <Tooltip />
           <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+          <Legend verticalAlign="bottom" height={36} />
         </AreaChart>
       </ResponsiveContainer>
     </>

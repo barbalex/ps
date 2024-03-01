@@ -25,7 +25,8 @@ CREATE TABLE chart_subjects(
   value_unit uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE CASCADE ON UPDATE CASCADE, -- needed for action_values, check_values
   name text DEFAULT NULL,
   label_replace_by_generated_column text DEFAULT NULL, -- table, value_source, ?value_field, ?unit
-  styling jsonb DEFAULT NULL, -- per distinct value for count
+  stroke text DEFAULT NULL,
+  fill text DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
 );
 
@@ -62,7 +63,9 @@ COMMENT ON COLUMN chart_subjects.value_field IS 'Field to be used for value_sour
 
 COMMENT ON COLUMN chart_subjects.value_unit IS 'Needed for action_values, check_values';
 
-COMMENT ON COLUMN chart_subjects.styling IS 'Styling setting, per distinct value for value_source field_count_rows_by_distinct_field_values';
+COMMENT ON COLUMN chart_subjects.stroke IS 'Stroke color of the chart';
+
+COMMENT ON COLUMN chart_subjects.fill IS 'Fill color of the chart';
 
 ALTER TABLE chart_subjects ENABLE ELECTRIC;
 

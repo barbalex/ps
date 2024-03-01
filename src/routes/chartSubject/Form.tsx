@@ -117,10 +117,17 @@ export const ChartSubjectForm = memo(({ autoFocusRef }) => {
         onChange={onChange}
       />
       <TextField
-        label="TODO: Styling"
-        name="styling"
-        value={row.styling}
-        type="number"
+        label="Stroke"
+        name="stroke"
+        value={row.stroke}
+        type="color"
+        onChange={onChange}
+      />
+      <TextField
+        label="Fill"
+        name="fill"
+        value={row.fill}
+        type="color"
         onChange={onChange}
       />
     </div>

@@ -50,25 +50,21 @@ export const Form = memo(({ autoFocusRef }) => {
   return (
     <div className="form-container">
       <TextFieldInactive label="ID" name="chart_id" value={row.chart_id} />
-      <TextFieldInactive
-        label="Account ID"
-        name="account_id"
-        value={row.account_id}
+      <DropdownFieldSimpleOptions
+        label="Chart Type"
+        name="chart_type"
+        value={row.chart_type ?? ''}
+        onChange={onChange}
+        options={chartTypes}
+        autoFocus
+        ref={autoFocusRef}
+        validationMessage="Choose what type of chart you want to display."
       />
-      <TextFieldInactive
-        label="Project ID"
-        name="project_id"
-        value={row.project_id}
-      />
-      <TextFieldInactive
-        label="Subproject ID"
-        name="subproject_id"
-        value={row.subproject_id}
-      />
-      <TextFieldInactive
-        label="Place ID"
-        name="place_id"
-        value={row.place_id}
+      <TextField
+        label="Title"
+        name="title"
+        value={row.title}
+        onChange={onChange}
       />
       <SwitchField
         label="Years: Current"
@@ -115,22 +111,6 @@ export const Form = memo(({ autoFocusRef }) => {
         type="number"
         onChange={onChange}
         validationMessage="The chart shows data until the year entered."
-      />
-      <DropdownFieldSimpleOptions
-        label="Chart Type"
-        name="chart_type"
-        value={row.chart_type ?? ''}
-        onChange={onChange}
-        options={chartTypes}
-        autoFocus
-        ref={autoFocusRef}
-        validationMessage="Choose what type of chart you want to display."
-      />
-      <TextField
-        label="Title"
-        name="title"
-        value={row.title}
-        onChange={onChange}
       />
     </div>
   )

@@ -1,7 +1,6 @@
 export const dataFromChart = async ({ db, chart, subproject_id }) => {
   const subjects = chart.chart_subjects
   const names = subjects.map((subject) => subject.name)
-  console.log('hello dataFromChart, subjects', subjects)
 
   const dataPerSubject = {}
 
@@ -53,11 +52,9 @@ export const dataFromChart = async ({ db, chart, subproject_id }) => {
     }
   }
 
-  console.log('hello dataFromChart, dataPerSubject', dataPerSubject)
   const years = Object.values(dataPerSubject).reduce((acc, data) => {
     return [...new Set([...acc, ...Object.keys(data)])].sort()
   }, [])
-  console.log('hello dataFromChart, years', years)
   const data = years.map((year) => {
     const yearsData = { year }
     for (const name of names) {
@@ -66,7 +63,6 @@ export const dataFromChart = async ({ db, chart, subproject_id }) => {
 
     return yearsData
   })
-  console.log('hello dataFromChart, data', data)
 
-  return { data, years, names }
+  return { data, years }
 }
