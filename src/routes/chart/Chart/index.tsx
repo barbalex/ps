@@ -1,18 +1,6 @@
 import { memo, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
-import {
-  AreaChart,
-  LineChart,
-  Area,
-  Line,
-  XAxis,
-  YAxis,
-  ResponsiveContainer,
-  Tooltip,
-  CartesianGrid,
-  Legend,
-} from 'recharts'
 
 import { useElectric } from '../../../ElectricProvider'
 import { dataFromChart } from './dataFromChart'
@@ -36,14 +24,14 @@ export const Chart = memo(() => {
       // include: { chart_subjects: true }, // NOT WORKING due to boolean value in subjects...
     }),
   )
-  console.log('hello Chart, chart:', chart)
+  // console.log('hello Chart, chart:', chart)
   const { results: subjects } = useLiveQuery(
     db.chart_subjects.liveMany({
       where: { chart_id, deleted: false },
       orderBy: [{ sort: 'asc' }, { name: 'asc' }],
     }),
   )
-  console.log('hello Chart, subjects:', subjects)
+  // console.log('hello Chart, subjects:', subjects)
 
   const [data, setData] = useState({ data: [], names: [] })
 

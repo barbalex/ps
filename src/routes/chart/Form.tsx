@@ -13,12 +13,8 @@ import { getValueFromChange } from '../../modules/getValueFromChange'
 const chartTypes = [
   'PieChart',
   'RadarChart',
-  'SimpleLineChart',
-  'SynchornizedLineChart',
   'SimpleAreaChart',
-  'StackedAreaChart',
   'PercentAreaChart',
-  'SynchronizedAreaChart',
 ]
 
 // seperate from the route because it is also used inside other forms
