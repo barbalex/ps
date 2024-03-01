@@ -20,7 +20,7 @@ CREATE TABLE charts(
   title text DEFAULT NULL,
   subjects_stacked boolean DEFAULT NULL, -- FALSE
   subjects_single boolean DEFAULT NULL, -- FALSE
-  percent_areas boolean DEFAULT NULL, -- FALSE
+  percent boolean DEFAULT NULL, -- FALSE
   label_replace_by_generated_column text DEFAULT NULL, -- title
   deleted boolean DEFAULT NULL -- false
 );

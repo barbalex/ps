@@ -106,16 +106,23 @@ export const Form = memo(({ autoFocusRef }) => {
       <SwitchField
         label="Stack Subjects?"
         name="subjects_stacked"
-        value={row.subjects_stacked ?? false}
+        value={row.subjects_stacked}
         onChange={onChange}
         validationMessage="If true, subjects graphs will be stacked. If false, they will be drawn covering each other."
       />
       <SwitchField
         label="Draw subjects in separate charts?"
         name="subjects_single"
-        value={row.subjects_single ?? false}
+        value={row.subjects_single}
         onChange={onChange}
         validationMessage="If false, subjects will be drawn in a single graph."
+      />
+      <SwitchField
+        label="Show percent if multiple Subjects exist?"
+        name="percent"
+        value={row.percent}
+        onChange={onChange}
+        validationMessage="You will see the percentage of avery subject, totalling 100%."
       />
     </div>
   )
