@@ -33,7 +33,7 @@ export const Chart = memo(() => {
     }),
   )
 
-  const [data, setData] = useState([])
+  const [data, setData] = useState({ data: [], names: [] })
 
   useEffect(() => {
     if (!chart) return
@@ -42,7 +42,7 @@ export const Chart = memo(() => {
       setData(data)
     }
     run()
-  }, [chart, db])
+  }, [chart, db, subproject_id])
 
   console.log('hello Chart', { chart, data })
 
