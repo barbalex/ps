@@ -10,12 +10,7 @@ import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFiel
 import { SwitchField } from '../../components/shared/SwitchField'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 
-const chartTypes = [
-  'PieChart',
-  'RadarChart',
-  'SimpleAreaChart',
-  'PercentAreaChart',
-]
+const chartTypes = ['Pie', 'Radar', 'Area']
 
 // seperate from the route because it is also used inside other forms
 export const Form = memo(({ autoFocusRef }) => {

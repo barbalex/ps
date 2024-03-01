@@ -1,8 +1,7 @@
 CREATE TYPE chart_type AS enum(
-  'PieChart',
-  'RadarChart',
-  'SimpleAreaChart',
-  'PercentAreaChart',
+  'Pie',
+  'Radar',
+  'Area'
 );
 
 CREATE TABLE charts(

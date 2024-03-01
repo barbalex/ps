@@ -142,14 +142,14 @@ export const ChartSubjectForm = memo(({ autoFocusRef }) => {
       <SwitchField
         label="Fill is graded"
         name="fill_graded"
-        value={row.fill_graded ?? true}
+        value={row.fill_graded}
         onChange={onChange}
         validationMessage="If true, the area will be filled using a gradient."
       />
       <SwitchField
         label="Connect missing data"
         name="connect_nulls"
-        value={row.connect_nulls ?? false}
+        value={row.connect_nulls}
         onChange={onChange}
         validationMessage="If true, a line is drawn even when some data points are missing."
       />
