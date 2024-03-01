@@ -46,6 +46,9 @@ export const Chart = memo(() => {
 
   if (!chart || !subjects) return null
 
+  // const typeOfChart =
+  //   subjects.length === 1 && data.years.length === 1 ? 'Pie' : 'Area'
+
   return (
     <>
       <div style={titleRowStyle}>{chart.title}</div>
