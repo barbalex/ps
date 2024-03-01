@@ -18,12 +18,14 @@ export const Component = memo(() => {
   const { results: uiOption } = useLiveQuery(
     db.ui_options.liveUnique({ where: { user_id } }),
   )
-  const designing = uiOption?.designing ?? false
+  const designing = uiOption?.designing
 
+  // prevent Chart from being very shortly loaded while designing is undefined
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
-      {designing ? <Form autoFocusRef={autoFocusRef} /> : <Chart />}
+      {designing !== undefined &&
+        (designing ? <Form autoFocusRef={autoFocusRef} /> : <Chart />)}
     </div>
   )
 })
