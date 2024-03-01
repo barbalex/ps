@@ -574,8 +574,10 @@ export const createChartSubject = ({ chart_id }) => ({
   chart_subject_id: uuidv7(),
   account_id: '018cf958-27e2-7000-90d3-59f024d467be', // TODO: replace with auth data when implemented
   chart_id,
+  type: 'monotone',
   stroke: '#FF0000',
   fill: '#ffffff',
+  fill_graded: true,
   connect_nulls: true,
   deleted: false,
 })

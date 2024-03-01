@@ -78,6 +78,14 @@ export const ChartSubjectForm = memo(({ autoFocusRef }) => {
         value={row.name}
         onChange={onChange}
       />
+      <TextField
+        label="Sort"
+        name="sort"
+        value={row.sort}
+        type="number"
+        onChange={onChange}
+        validationMessage="Subjects are sorted by this value if set. Else by their name."
+      />
       <RadioGroupField
         label="Level"
         name="table_level"
@@ -130,6 +138,13 @@ export const ChartSubjectForm = memo(({ autoFocusRef }) => {
         value={row.fill}
         type="color"
         onChange={onChange}
+      />
+      <SwitchField
+        label="Fill is graded"
+        name="fill_graded"
+        value={row.fill_graded ?? true}
+        onChange={onChange}
+        validationMessage="If true, the area will be filled using a gradient."
       />
       <SwitchField
         label="Connect missing data"

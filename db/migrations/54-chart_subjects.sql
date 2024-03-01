@@ -1,4 +1,4 @@
-CREATE TYPE chart_table AS enum(
+CREATE TYPE chart_subject_table AS enum(
   'subprojects',
   'places',
   'checks',
@@ -7,27 +7,35 @@ CREATE TYPE chart_table AS enum(
   'action_values'
 );
 
-CREATE TYPE chart_value_source AS enum(
+CREATE TYPE chart_subject_value_source AS enum(
   'row_count',
   'field_count_rows_by_distinct_field_values',
   'field_sum_values'
+);
+
+CREATE TYPE chart_subject_type AS enum(
+  'linear',
+  'monotone',
 );
 
 CREATE TABLE chart_subjects(
   chart_subject_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   chart_id uuid DEFAULT NULL REFERENCES charts(chart_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  table_name chart_table DEFAULT NULL, -- subprojects, places, checks, check_values, actions, action_values
+  table_name chart_subject_table DEFAULT NULL, -- subprojects, places, checks, check_values, actions, action_values
   table_level integer DEFAULT NULL, -- 1, 2 (not relevant for subprojects)
   table_filter jsonb DEFAULT NULL, -- save a filter that is applied to the table
-  value_source chart_value_source DEFAULT NULL, --how to source the value
+  value_source chart_subject_value_source DEFAULT NULL, --how to source the value
   value_field text DEFAULT NULL, -- field to be used for value_source
   value_unit uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE CASCADE ON UPDATE CASCADE, -- needed for action_values, check_values
   name text DEFAULT NULL,
   label_replace_by_generated_column text DEFAULT NULL, -- table, value_source, ?value_field, ?unit
+  type chart_subject_type DEFAULT NULL, -- linear, monotone
   stroke text DEFAULT NULL,
   fill text DEFAULT NULL,
+  fill_graded boolean DEFAULT NULL, -- TRUE
   connect_nulls boolean DEFAULT NULL, -- TRUE
+  sort integer DEFAULT NULL, -- 0
   deleted boolean DEFAULT NULL -- FALSE
 );
 
