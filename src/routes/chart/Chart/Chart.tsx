@@ -79,7 +79,9 @@ export const SingleChart = memo(({ chart, subjects, data, synchronized }) => {
               id={`${subject.chart_subject_id}color`}
               type={subject.type ?? 'monotone'} // or: linear
               dataKey={subject.name}
-              stackId={chart.subjects_stacked ? '1' : undefined}
+              stackId={
+                chart.subjects_stacked || chart.percent ? '1' : undefined
+              }
               stroke={subject.stroke ?? 'red'}
               strokeWidth={2}
               fill={
