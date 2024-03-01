@@ -97,6 +97,7 @@ export const Chart = memo(() => {
                   strokeWidth: 2,
                   r: 4,
                 }}
+                connectNulls={subject.connect_nulls ?? true}
               />
             )
           })}

@@ -7,6 +7,7 @@ import { useElectric } from '../../ElectricProvider'
 import { TextField } from '../../components/shared/TextField'
 import { RadioGroupField } from '../../components/shared/RadioGroupField'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
+import { SwitchField } from '../../components/shared/SwitchField'
 import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 
@@ -129,6 +130,13 @@ export const ChartSubjectForm = memo(({ autoFocusRef }) => {
         value={row.fill}
         type="color"
         onChange={onChange}
+      />
+      <SwitchField
+        label="Connect missing data"
+        name="connect_nulls"
+        value={row.connect_nulls ?? false}
+        onChange={onChange}
+        validationMessage="If true, a line is drawn even when some data points are missing."
       />
     </div>
   )

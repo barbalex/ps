@@ -576,5 +576,6 @@ export const createChartSubject = ({ chart_id }) => ({
   chart_id,
   stroke: '#FF0000',
   fill: '#ffffff',
+  connect_nulls: true,
   deleted: false,
 })
