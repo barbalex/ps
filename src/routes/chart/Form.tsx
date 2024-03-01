@@ -112,6 +112,13 @@ export const Form = memo(({ autoFocusRef }) => {
         onChange={onChange}
         validationMessage="The chart shows data until the year entered."
       />
+      <SwitchField
+        label="Stack Subjects?"
+        name="subjects_stacked"
+        value={row.subjects_stacked ?? false}
+        onChange={onChange}
+        validationMessage="If true, subjects graphs will be stacked. If false, they will be drawn covering each other."
+      />
     </div>
   )
 })

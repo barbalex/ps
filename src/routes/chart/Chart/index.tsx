@@ -119,7 +119,7 @@ export const Chart = memo(() => {
                 key={subject.chart_subject_id}
                 type={subject.type ?? 'monotone'} // or: linear
                 dataKey={subject.name}
-                // stackId="1" set to stack
+                stackId={chart.subjects_stacked ? '1' : undefined}
                 stroke={subject.stroke ?? 'red'}
                 strokeWidth={2}
                 fill={
