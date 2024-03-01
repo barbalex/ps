@@ -118,7 +118,7 @@ export const Form = memo(({ autoFocusRef }) => {
         validationMessage="If false, subjects will be drawn in a single graph."
       />
       <SwitchField
-        label="Show percent if multiple Subjects exist?"
+        label="Show percent if multiple subjects exist?"
         name="percent"
         value={row.percent}
         onChange={onChange}

@@ -10,6 +10,14 @@ import {
   Legend,
 } from 'recharts'
 
+const toPercent = (decimal, fixed = 0) => `${(decimal * 100).toFixed(fixed)}%`
+
+const getPercent = (value, total) => {
+  const ratio = total > 0 ? value / total : 0
+
+  return toPercent(ratio, 2)
+}
+
 const formatNumber = (tickItem) => {
   const value =
     tickItem && tickItem?.toLocaleString
@@ -30,6 +38,7 @@ export const SingleChart = memo(({ chart, subjects, data, synchronized }) => {
         height={300}
         data={data.data}
         syncId={synchronized ? chart.chart_id : undefined}
+        stackOffset={chart.percent ? 'expand' : undefined}
         margin={{ top: 10, right: 10, left: 27 }}
       >
         <defs>
@@ -61,7 +70,7 @@ export const SingleChart = memo(({ chart, subjects, data, synchronized }) => {
             position: 'insideLeft',
             offset: print ? 0 : -15,
           }}
-          tickFormatter={formatNumber}
+          tickFormatter={chart.percent ? toPercent : formatNumber}
         />
         {subjects.map((subject) => {
           return (
