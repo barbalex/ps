@@ -121,8 +121,8 @@ export const Form = memo(({ autoFocusRef }) => {
       />
       <SwitchField
         label="Draw subjects in separate charts?"
-        name="subjects_separate_synchronized"
-        value={row.subjects_separate_synchronized ?? false}
+        name="subjects_single"
+        value={row.subjects_single ?? false}
         onChange={onChange}
         validationMessage="If false, subjects will be drawn in a single graph."
       />

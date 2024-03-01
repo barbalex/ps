@@ -3,7 +3,6 @@ CREATE TYPE chart_type AS enum(
   'RadarChart',
   'SimpleAreaChart',
   'PercentAreaChart',
-  'SynchronizedAreaChart'
 );
 
 CREATE TABLE charts(
@@ -21,7 +20,7 @@ CREATE TABLE charts(
   chart_type chart_type DEFAULT NULL, -- 'SimpleLineChart'
   title text DEFAULT NULL,
   subjects_stacked boolean DEFAULT NULL, -- FALSE
-  subjects_separate_synchronized boolean DEFAULT NULL, -- FALSE
+  subjects_single boolean DEFAULT NULL, -- FALSE
   label_replace_by_generated_column text DEFAULT NULL, -- title
   deleted boolean DEFAULT NULL -- false
 );
