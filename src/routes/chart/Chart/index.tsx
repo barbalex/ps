@@ -12,7 +12,6 @@ import {
 } from 'recharts'
 
 import { useElectric } from '../../../ElectricProvider'
-import { Subject } from './Subject'
 
 const formatNumber = (tickItem) => {
   const value =
