@@ -50,6 +50,23 @@ const seedTaxonomies = `INSERT INTO taxonomies(account_id, project_id, name, tax
 const seedTaxons = `INSERT INTO taxa(account_id, name, taxonomy_id, taxon_id, deleted) values ('018cf958-27e2-7000-90d3-59f024d467be', 'Demo Taxon 1', '018cfcf8-9b2a-7000-9c7e-5b0b8b0e2b0e', '018cfcf8-9b2a-7000-9c7e-5b0b8b0e2b0e', false), ('018cf958-27e2-7000-90d3-59f024d467be', 'Demo Taxon 2', '018cfcf8-9b2a-7000-9c7e-5b0b8b0e2b0e', '018cff12-54b6-7c49-9553-b84f0624f7ba', false);`
 const seedSubprojects = `INSERT INTO subprojects(subproject_id, project_id, name, deleted) values ('018cfd27-ee92-7000-b678-e75497d6c60e', '018cfcf7-6424-7000-a100-851c5cc2c878', 'Demo Subproject 1', false);`
 const seedSubprojectUsers = `INSERT INTO subproject_users(subproject_user_id, subproject_id, user_id, role, deleted) values ('018cfd29-ccaa-7000-a686-8566a27eee45', '018cfd27-ee92-7000-b678-e75497d6c60e', '018cf95a-d817-7000-92fa-bb3b2ad59dda', 'manager', false);`
+const seedPlaces = `INSERT INTO places(account_id, place_id, subproject_id, level, deleted) values ('018cf958-27e2-7000-90d3-59f024d467be', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, false);`
+const seedChecks = `INSERT INTO checks(account_id, check_id, place_id, date, deleted) values 
+('018cf958-27e2-7000-90d3-59f024d467be', '018df4ff-9124-73f4-95c1-497387b995c0', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2024-03-03', false),
+('018cf958-27e2-7000-90d3-59f024d467be', '018df5da-6447-7bb9-944c-f824643a1b11', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2024-04-03', false),
+('018cf958-27e2-7000-90d3-59f024d467be', '018df5da-90f5-7ac4-aec1-e57d28076290', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2023-03-03', false),
+('018cf958-27e2-7000-90d3-59f024d467be', '018df5da-af3e-7e1c-b70f-ec40a32ae7d1', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2022-03-03', false);`
+
+const seedActions = `INSERT INTO actions(account_id, action_id, place_id, date, deleted) values 
+('018cf958-27e2-7000-90d3-59f024d467be', '018df982-2799-7f91-824b-2470af893649', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2024-03-03', false),
+('018cf958-27e2-7000-90d3-59f024d467be', '018df982-5495-7646-839c-2f037e50a72e', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2023-04-03', false),
+('018cf958-27e2-7000-90d3-59f024d467be', '018df982-7ba7-7977-8577-09c65aca4e70', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2022-03-03', false),
+('018cf958-27e2-7000-90d3-59f024d467be', '018df982-a04e-719c-ae67-c4307e01d107', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2021-03-03', false);`
+
+const seedCharts = `INSERT INTO charts(account_id, subproject_id, chart_id, chart_type, title, years_last_x, deleted) values ('018cf958-27e2-7000-90d3-59f024d467be', '018cfd27-ee92-7000-b678-e75497d6c60e', '018df502-138a-77bb-82b9-e5ab16c988ee', 'SimpleAreaChart', 'Test Title', 5, false);`
+const seedChartSubjects = `INSERT INTO chart_subjects(account_id, chart_id, chart_subject_id, table_name, name, value_source, deleted) values 
+('018cf958-27e2-7000-90d3-59f024d467be', '018df502-138a-77bb-82b9-e5ab16c988ee', '018df505-0d65-71a2-b214-76343bfc95cb', 'checks', 'Number of Checks', 'row_count', false),
+('018cf958-27e2-7000-90d3-59f024d467be', '018df502-138a-77bb-82b9-e5ab16c988ee', '018df97e-905e-79b2-80a2-0cb3207a4aad', 'actions', 'Number of Actions', 'row_count', false);`
 
 export const seed = async (db) => {
   const users = await db.rawQuery({
@@ -97,6 +114,21 @@ export const seed = async (db) => {
     })
     await db.unsafeExec({
       sql: seedSubprojectUsers,
+    })
+    await db.unsafeExec({
+      sql: seedPlaces,
+    })
+    await db.unsafeExec({
+      sql: seedChecks,
+    })
+    await db.unsafeExec({
+      sql: seedActions,
+    })
+    await db.unsafeExec({
+      sql: seedCharts,
+    })
+    await db.unsafeExec({
+      sql: seedChartSubjects,
     })
     await db.unsafeExec({
       sql: seedTaxonomies,

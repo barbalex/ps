@@ -28,6 +28,7 @@ export const BreadcrumbForFolder = forwardRef(
       place_id2,
       place_report_id,
       goal_id,
+      chart_id,
       goal_report_id,
       list_id,
       taxonomy_id,
@@ -64,7 +65,6 @@ export const BreadcrumbForFolder = forwardRef(
       const fetch = async () => {
         const navs = await buildNavs({
           table,
-          check_id,
           action_id,
           action_report_id,
           project_id,
@@ -73,10 +73,12 @@ export const BreadcrumbForFolder = forwardRef(
           place_id2,
           place_report_id,
           goal_id,
+          chart_id,
           goal_report_id,
           list_id,
           taxonomy_id,
           observation_source_id,
+          check_id,
           db,
           level: levelWanted,
         })
@@ -94,6 +96,7 @@ export const BreadcrumbForFolder = forwardRef(
       place_id2,
       place_report_id,
       goal_id,
+      chart_id,
       goal_report_id,
       list_id,
       taxonomy_id,

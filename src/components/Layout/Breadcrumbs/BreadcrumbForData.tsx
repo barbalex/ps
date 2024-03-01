@@ -137,19 +137,18 @@ export const BreadcrumbForData = forwardRef(
     }, [db, levelWanted, match, match.params, match.params.project_id, table])
 
     // console.log('BreadcrumbForData', {
-    //     table,
-    //     params: match.params,
-    //     text,
-    //     label,
-    //     results,
-    //     pathname: match.pathname,
-    //     myNavs,
-    //     filterParams,
-    //     idField,
-    //     path,
-    //     parentId,
-    //     parentIdName,
-    //   })
+    //   table,
+    //   params: match.params,
+    //   text,
+    //   label,
+    //   results,
+    //   pathname: match.pathname,
+    //   filterParams,
+    //   idField,
+    //   path,
+    //   parentId,
+    //   parentIdName,
+    // })
 
     return (
       <div

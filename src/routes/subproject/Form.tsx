@@ -50,9 +50,9 @@ export const SubprojectForm = memo(({ autoFocusRef }) => {
         ref={autoFocusRef}
       />
       <TextField
-        label="Since year"
-        name="since_year"
-        value={row.since_year ?? ''}
+        label="Start year"
+        name="start_year"
+        value={row.start_year ?? ''}
         type="number"
         onChange={onChange}
       />

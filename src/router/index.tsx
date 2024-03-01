@@ -390,6 +390,83 @@ export const router = (db) => {
                                 },
                               ],
                             },
+                            {
+                              path: 'charts',
+                              element: null,
+                              handle: {
+                                crumb: () => ({
+                                  text: 'Charts',
+                                  table: 'charts',
+                                  folder: true,
+                                }),
+                              },
+                              children: [
+                                {
+                                  index: true,
+                                  lazy: () => import('../routes/charts'),
+                                },
+                                {
+                                  path: ':chart_id',
+                                  element: null,
+                                  handle: {
+                                    crumb: (match) => ({
+                                      text: match.params.chart_id,
+                                      table: 'charts',
+                                      folder: false,
+                                    }),
+                                    to: async (match) =>
+                                      await buildNavs({
+                                        table: `charts`,
+                                        ...match.params,
+                                        db,
+                                      }),
+                                  },
+                                  children: [
+                                    {
+                                      index: true,
+                                      lazy: () => import('../routes/chart'),
+                                    },
+                                    {
+                                      path: 'subjects',
+                                      element: null,
+                                      handle: {
+                                        crumb: () => ({
+                                          text: 'Subjects',
+                                          table: 'chart_subjects',
+                                          folder: true,
+                                        }),
+                                      },
+                                      children: [
+                                        {
+                                          index: true,
+                                          lazy: () =>
+                                            import('../routes/chartSubjects'),
+                                        },
+                                        {
+                                          path: ':chart_subject_id',
+                                          lazy: () =>
+                                            import('../routes/chartSubject'),
+                                          handle: {
+                                            crumb: (match) => ({
+                                              text: match.params
+                                                .chart_subject_id,
+                                              table: 'chart_subjects',
+                                              folder: false,
+                                            }),
+                                            to: async (match) =>
+                                              await buildNavs({
+                                                table: `chart_subjects`,
+                                                ...match.params,
+                                                db,
+                                              }),
+                                          },
+                                        },
+                                      ],
+                                    },
+                                  ],
+                                },
+                              ],
+                            },
                           ],
                         },
                       ],
