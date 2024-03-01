@@ -15,7 +15,7 @@ CREATE TYPE chart_subject_value_source AS enum(
 
 CREATE TYPE chart_subject_type AS enum(
   'linear',
-  'monotone',
+  'monotone'
 );
 
 CREATE TABLE chart_subjects(
