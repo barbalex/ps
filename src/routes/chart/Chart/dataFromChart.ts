@@ -67,5 +67,6 @@ export const dataFromChart = async ({ db, chart, subproject_id }) => {
     return yearsData
   })
   console.log('hello dataFromChart, data', data)
-  return data
+
+  return { data, years, names }
 }

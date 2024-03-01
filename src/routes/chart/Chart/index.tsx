@@ -55,7 +55,7 @@ export const Chart = memo(() => {
         <AreaChart
           width={600}
           height={300}
-          data={data}
+          data={data.data}
           margin={{ top: 10, right: 10, left: 27 }}
         >
           <XAxis dataKey="year" />
@@ -69,12 +69,12 @@ export const Chart = memo(() => {
             }}
             tickFormatter={formatNumber}
           />
-          {data.map((val) => {
+          {data.names.map((name) => {
             return (
               <Area
-                key={val.year}
+                key={name}
                 type="linear"
-                dataKey="count"
+                dataKey={name}
                 stackId="1"
                 stroke={'red'}
                 strokeWidth={2}
