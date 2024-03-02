@@ -4,6 +4,8 @@ CREATE TABLE places(
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   parent_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE NO action ON UPDATE CASCADE,
   level integer DEFAULT NULL, -- 1,
+  since integer DEFAULT NULL,
+  until integer DEFAULT NULL,
   data jsonb DEFAULT NULL,
   -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL, -- not supported by electic-sql
   geometry jsonb DEFAULT NULL,
@@ -38,6 +40,10 @@ COMMENT ON COLUMN places.subproject_id IS 'always set to optimize queries';
 COMMENT ON COLUMN places.parent_id IS 'parent place. null for places of level 1';
 
 COMMENT ON COLUMN places.level IS 'level of place: 1, 2';
+
+COMMENT ON COLUMN places.since IS 'start year of place';
+
+COMMENT ON COLUMN places.until IS 'end year of place';
 
 COMMENT ON COLUMN places.data IS 'Room for place specific data, defined in "fields" table';
 

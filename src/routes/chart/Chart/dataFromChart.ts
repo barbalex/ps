@@ -11,6 +11,31 @@ export const dataFromChart = async ({ db, chart, subjects, subproject_id }) => {
     switch (valueSource) {
       case 'count_rows': {
         switch (tableName) {
+          case 'places': {
+            switch (subject.table_level) {
+              case 1: {
+                const places = await db.places.findMany({
+                  where: { subproject_id, parent_id: null, deleted: false },
+                })
+                dataPerSubject[name] = places.length
+                break
+              }
+              case 2: {
+                const places = await db.places.findMany({
+                  where: { parent_id: { not: null }, deleted: false },
+                })
+                const placeIds = places.map((place) => place.place_id)
+                const checks = await db.checks.findMany({
+                  where: { place_id: { in: placeIds }, deleted: false },
+                })
+                dataPerSubject[name] = checks.length
+                break
+              }
+              default:
+                break
+            }
+            break
+          }
           case 'checks': {
             const places = await db.places.findMany({
               where: { subproject_id, deleted: false },
@@ -52,7 +77,18 @@ export const dataFromChart = async ({ db, chart, subjects, subproject_id }) => {
           default:
             break
         }
+        break
       }
+      case 'count_rows_by_distinct_field_values': {
+        // TODO: implement
+        break
+      }
+      case 'sum_values_of_field': {
+        // TODO: implement
+        break
+      }
+      default:
+        break
     }
   }
 
