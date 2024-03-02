@@ -1,15 +1,15 @@
 export const getValueFromChange = (e, data) => {
   const targetType = e.target.type
+  const name = e.target.name
   // console.log('hello getValueFromChange 1', {
   //   targetType,
   //   e,
   //   data,
   //   valueAsNumber: e.target.valueAsNumber,
-  //   name: e.target.name,
+  //   name,
   //   dataValue: data.value,
   // })
 
-  const name = e.target.name
   switch (targetType) {
     case 'checkbox':
       return { value: data.checked, name }
