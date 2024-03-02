@@ -15,20 +15,28 @@ export const dataFromChart = async ({ db, chart, subjects, subproject_id }) => {
             switch (subject.table_level) {
               case 1: {
                 const places = await db.places.findMany({
-                  where: { subproject_id, parent_id: null, deleted: false },
+                  where: {
+                    subproject_id,
+                    parent_id: null,
+                    deleted: false,
+                  },
                 })
-                dataPerSubject[name] = places.length
+                // TODO: choose years. oldest since?
+                // dataPerSubject[name] = places.length
                 break
               }
               case 2: {
                 const places = await db.places.findMany({
-                  where: { parent_id: { not: null }, deleted: false },
+                  where: {
+                    parent_id: { not: null },
+                    deleted: false,
+                  },
                 })
                 const placeIds = places.map((place) => place.place_id)
                 const checks = await db.checks.findMany({
                   where: { place_id: { in: placeIds }, deleted: false },
                 })
-                dataPerSubject[name] = checks.length
+                // dataPerSubject[name] = checks.length
                 break
               }
               default:
