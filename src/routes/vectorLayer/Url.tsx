@@ -52,7 +52,7 @@ export const Url = memo(
         validationMessage={
           row?.wfs_url
             ? 'The url of the service providing the wfs'
-            : 'Enter the url of the service providing the wfs. The capabilities will then be loaded and the layers available for selection.'
+            : 'Enter the url of the service providing the wfs. The capabilities will then be loaded and the layers available for selection'
         }
       />
     )

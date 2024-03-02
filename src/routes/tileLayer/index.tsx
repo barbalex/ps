@@ -110,7 +110,7 @@ export const Component = () => {
               value={row.sort ?? ''}
               onChange={onChange}
               type="number"
-              validationMessage="Add a sorting order here if alphabetically by label is not desired."
+              validationMessage="Add a sorting order here if alphabetically by label is not desired"
             />
             <SwitchField
               label="active"
@@ -157,7 +157,7 @@ export const Component = () => {
                   name="wms_version"
                   value={row.wms_version ?? ''}
                   onChange={onChange}
-                  validationMessage="Examples: '1.1.1', '1.3.0'. Set automatically but can be changed."
+                  validationMessage="Examples: '1.1.1', '1.3.0'. Set automatically but can be changed"
                 />
                 <DropdownFieldFromLayerOptions
                   label="Info Format"
@@ -165,7 +165,7 @@ export const Component = () => {
                   value={row.wms_info_format ?? ''}
                   tile_layer_id={tile_layer_id}
                   onChange={onChange}
-                  validationMessage="In what format the info is downloaded. Set automatically but can be changed."
+                  validationMessage="In what format the info is downloaded. Set automatically but can be changed"
                 />
               </>
             )}

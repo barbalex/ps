@@ -52,16 +52,6 @@ export const ChartSubjectForm = memo(({ autoFocusRef }) => {
         name="chart_subject_id"
         value={row.chart_subject_id}
       />
-      <TextFieldInactive
-        label="Account ID"
-        name="account_id"
-        value={row.account_id}
-      />
-      <TextFieldInactive
-        label="Chart ID"
-        name="chart_id"
-        value={row.chart_id}
-      />
       <DropdownFieldSimpleOptions
         label="Table"
         name="table_name"
@@ -70,7 +60,7 @@ export const ChartSubjectForm = memo(({ autoFocusRef }) => {
         options={chartTables}
         autoFocus
         ref={autoFocusRef}
-        validationMessage="Choose what table to get the data from."
+        validationMessage="Choose what table to get the data from"
       />
       <TextField
         label="Name"
@@ -84,7 +74,7 @@ export const ChartSubjectForm = memo(({ autoFocusRef }) => {
         value={row.sort}
         type="number"
         onChange={onChange}
-        validationMessage="Subjects are sorted by this value if set. Else by their name."
+        validationMessage="Subjects are sorted by this value if set. Else by their name"
       />
       <RadioGroupField
         label="Level"
@@ -116,7 +106,7 @@ export const ChartSubjectForm = memo(({ autoFocusRef }) => {
         name="value_field"
         value={row.value_field}
         onChange={onChange}
-        validationMessage="The name of the field."
+        validationMessage="The name of the field"
       />
       <TextField
         label="TODO: Value: Unit"
@@ -144,14 +134,14 @@ export const ChartSubjectForm = memo(({ autoFocusRef }) => {
         name="fill_graded"
         value={row.fill_graded}
         onChange={onChange}
-        validationMessage="If true, the area will be filled using a gradient."
+        validationMessage="If true, the area will be filled using a gradient"
       />
       <SwitchField
         label="Connect missing data"
         name="connect_nulls"
         value={row.connect_nulls}
         onChange={onChange}
-        validationMessage="If true, a line is drawn even when some data points are missing."
+        validationMessage="If true, a line is drawn even when some data points are missing"
       />
     </div>
   )
