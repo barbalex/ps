@@ -6,48 +6,53 @@ export const dataFromChart = async ({ db, chart, subjects, subproject_id }) => {
   for (const subject of subjects) {
     const tableName = subject.table_name
     const name = subject.name
+    const valueSource = subject.value_source
 
-    switch (tableName) {
-      case 'checks': {
-        const places = await db.places.findMany({
-          where: { subproject_id, deleted: false },
-        })
-        const placeIds = places.map((place) => place.place_id)
-        const checks = await db.checks.findMany({
-          where: { place_id: { in: placeIds }, deleted: false },
-        })
-        // use reduce to count checks per year
-        const data = checks.reduce((acc, check) => {
-          const year = check.date?.getFullYear?.()
-          if (!acc[year]) acc[year] = 0
-          acc[year]++
+    switch (valueSource) {
+      case 'count_rows': {
+        switch (tableName) {
+          case 'checks': {
+            const places = await db.places.findMany({
+              where: { subproject_id, deleted: false },
+            })
+            const placeIds = places.map((place) => place.place_id)
+            const checks = await db.checks.findMany({
+              where: { place_id: { in: placeIds }, deleted: false },
+            })
+            // use reduce to count checks per year
+            const data = checks.reduce((acc, check) => {
+              const year = check.date?.getFullYear?.()
+              if (!acc[year]) acc[year] = 0
+              acc[year]++
 
-          return acc
-        }, {})
-        dataPerSubject[name] = data
-        break
+              return acc
+            }, {})
+            dataPerSubject[name] = data
+            break
+          }
+          case 'actions': {
+            const places = await db.places.findMany({
+              where: { subproject_id, deleted: false },
+            })
+            const placeIds = places.map((place) => place.place_id)
+            const actions = await db.actions.findMany({
+              where: { place_id: { in: placeIds }, deleted: false },
+            })
+            // use reduce to count checks per year
+            const data = actions.reduce((acc, check) => {
+              const year = check.date?.getFullYear?.()
+              if (!acc[year]) acc[year] = 0
+              acc[year]++
+
+              return acc
+            }, {})
+            dataPerSubject[name] = data
+            break
+          }
+          default:
+            break
+        }
       }
-      case 'actions': {
-        const places = await db.places.findMany({
-          where: { subproject_id, deleted: false },
-        })
-        const placeIds = places.map((place) => place.place_id)
-        const actions = await db.actions.findMany({
-          where: { place_id: { in: placeIds }, deleted: false },
-        })
-        // use reduce to count checks per year
-        const data = actions.reduce((acc, check) => {
-          const year = check.date?.getFullYear?.()
-          if (!acc[year]) acc[year] = 0
-          acc[year]++
-
-          return acc
-        }, {})
-        dataPerSubject[name] = data
-        break
-      }
-      default:
-        break
     }
   }
 

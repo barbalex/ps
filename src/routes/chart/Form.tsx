@@ -158,7 +158,7 @@ export const Form = memo(({ autoFocusRef }) => {
           value={row.years_current ?? false}
           onChange={onChange}
           validationMessage="The chart shows data of the current year"
-        />
+        />                      
         <SwitchField
           label="Previous"
           name="years_previous"
