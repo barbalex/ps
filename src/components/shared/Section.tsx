@@ -1,6 +1,6 @@
 import { memo } from 'react'
 
-const sectionStyle = {
+const titleStyle = {
   margin: '5px 0',
   padding: '5px 10px',
   backgroundColor: 'rgb(225, 247, 224)',
@@ -16,7 +16,7 @@ const sectionStyle = {
 // because some have position: relative which makes them overlay the section title
 export const Section = memo(({ title, children }) => (
   <section>
-    <h2 style={sectionStyle}>{title}</h2>
+    <h2 style={titleStyle}>{title}</h2>
     {children}
   </section>
 ))
