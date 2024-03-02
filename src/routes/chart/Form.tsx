@@ -1,6 +1,7 @@
 import { useCallback, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import type { InputProps } from '@fluentui/react-components'
+import { Label, Divider } from '@fluentui/react-components'
 import { useParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
@@ -148,6 +149,8 @@ export const Form = memo(({ autoFocusRef }) => {
         value={row.title}
         onChange={onChange}
       />
+      <Divider />
+      <Label>Years</Label>
       <SwitchField
         label="Years: Current"
         name="years_current"
@@ -194,6 +197,8 @@ export const Form = memo(({ autoFocusRef }) => {
         onChange={onChange}
         validationMessage="The chart shows data until the year entered"
       />
+      <Divider />
+      <Label>Subjects presentation</Label>
       <SwitchField
         label="Stack Subjects?"
         name="subjects_stacked"
