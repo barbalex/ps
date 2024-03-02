@@ -1,4 +1,4 @@
-export const dataFromChart = async ({ db, subjects, subproject_id }) => {
+export const dataFromChart = async ({ db, chart, subjects, subproject_id }) => {
   const names = subjects.map((subject) => subject.name)
 
   const dataPerSubject = {}
@@ -58,12 +58,21 @@ export const dataFromChart = async ({ db, subjects, subproject_id }) => {
   )
 
   console.log('hello dataFromChart, years:', years)
-  const minYear = Math.min(...years)
+  let minYear = Math.min(...years)
+  if (chart.years_since && chart.years_since > minYear) {
+    minYear = chart.years_since
+  }
   const maxYear = Math.max(...years)
   const yearRange = Array(maxYear - minYear + 1)
     .fill()
     .map((element, i) => minYear + i)
-  console.log('hello dataFromChart, yearRange:', yearRange)
+  console.log('hello dataFromChart, yearRange:', [...yearRange])
+  if (chart.years_last_x) {
+    yearRange.splice(0, yearRange.length - chart.years_last_x)
+  }
+  console.log('hello dataFromChart, yearRange sliced to years_last_x:', [
+    ...yearRange,
+  ])
 
   const data = yearRange.map((year) => {
     const yearsData = { year }
