@@ -8,9 +8,9 @@ CREATE TYPE chart_subject_table AS enum(
 );
 
 CREATE TYPE chart_subject_value_source AS enum(
-  'row_count',
-  'field_count_rows_by_distinct_field_values',
-  'field_sum_values'
+  'count_rows',
+  'count_rows_by_distinct_field_values',
+  'sum_values_of_field'
 );
 
 CREATE TYPE chart_subject_type AS enum(

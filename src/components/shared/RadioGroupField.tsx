@@ -13,6 +13,7 @@ export const RadioGroupField = memo(
       validationState,
       autoFocus,
       disabled = false,
+      replaceUnderscoreInLabel = false,
     } = props
 
     return (
@@ -32,7 +33,7 @@ export const RadioGroupField = memo(
           {list.map((val, index) => (
             <Radio
               key={val}
-              label={val}
+              label={replaceUnderscoreInLabel ? val.replaceAll('_', ' ') : val}
               value={val}
               autoFocus={index === 0 && autoFocus}
               ref={index === 0 ? ref : undefined}

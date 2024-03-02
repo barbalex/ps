@@ -94,12 +94,13 @@ export const ChartSubjectForm = memo(({ autoFocusRef }) => {
         label="Value Source"
         name="value_source"
         list={[
-          'row_count',
-          'field_count_rows_by_distinct_field_values',
-          'field_sum_values',
+          'count_rows',
+          'count_rows_by_distinct_field_values',
+          'sum_values_of_field',
         ]}
         value={row.value_source ?? ''}
         onChange={onChange}
+        replaceUnderscoreInLabel={true}
       />
       <TextField
         label="Value Field"

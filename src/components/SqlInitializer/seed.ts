@@ -63,8 +63,8 @@ const seedActions = `INSERT INTO actions(account_id, action_id, place_id, date, 
 ('018cf958-27e2-7000-90d3-59f024d467be', '018df982-a04e-719c-ae67-c4307e01d107', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2019-03-03', false);`
 const seedCharts = `INSERT INTO charts(account_id, subproject_id, chart_id, chart_type, title, years_last_x, deleted) values ('018cf958-27e2-7000-90d3-59f024d467be', '018cfd27-ee92-7000-b678-e75497d6c60e', '018df502-138a-77bb-82b9-e5ab16c988ee', 'Area', 'Test Title', 5, false);`
 const seedChartSubjects = `INSERT INTO chart_subjects(account_id, chart_id, chart_subject_id, table_name, name, value_source, type, stroke, fill, connect_nulls, deleted) values 
-('018cf958-27e2-7000-90d3-59f024d467be', '018df502-138a-77bb-82b9-e5ab16c988ee', '018df505-0d65-71a2-b214-76343bfc95cb', 'checks', 'Number of Checks', 'row_count', 'monotone', '#FF0000', '#ffffff', true, false),
-('018cf958-27e2-7000-90d3-59f024d467be', '018df502-138a-77bb-82b9-e5ab16c988ee', '018df97e-905e-79b2-80a2-0cb3207a4aad', 'actions', 'Number of Actions', 'row_count', 'monotone', '#008000', '#ffffff', true, false);`
+('018cf958-27e2-7000-90d3-59f024d467be', '018df502-138a-77bb-82b9-e5ab16c988ee', '018df505-0d65-71a2-b214-76343bfc95cb', 'checks', 'Number of Checks', 'count_rows', 'monotone', '#FF0000', '#ffffff', true, false),
+('018cf958-27e2-7000-90d3-59f024d467be', '018df502-138a-77bb-82b9-e5ab16c988ee', '018df97e-905e-79b2-80a2-0cb3207a4aad', 'actions', 'Number of Actions', 'count_rows', 'monotone', '#008000', '#ffffff', true, false);`
 
 export const seed = async (db) => {
   const users = await db.rawQuery({
