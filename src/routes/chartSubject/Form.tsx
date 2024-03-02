@@ -6,7 +6,6 @@ import { useParams } from 'react-router-dom'
 import { useElectric } from '../../ElectricProvider'
 import { TextField } from '../../components/shared/TextField'
 import { RadioGroupField } from '../../components/shared/RadioGroupField'
-import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { SwitchField } from '../../components/shared/SwitchField'
 import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions'
 import { getValueFromChange } from '../../modules/getValueFromChange'
@@ -33,13 +32,6 @@ export const ChartSubjectForm = memo(({ autoFocusRef }) => {
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       const valueToUse = name === 'table_level' ? +value : value
-      console.log('hello ChartSubjectForm, onChange', {
-        name,
-        value,
-        valueToUse,
-        e,
-        data,
-      })
       db.chart_subjects.update({
         where: { chart_subject_id },
         data: { [name]: valueToUse },
@@ -52,15 +44,20 @@ export const ChartSubjectForm = memo(({ autoFocusRef }) => {
     return <div>Loading...</div>
   }
 
-  console.log('hello ChartSubjectForm, row:', row)
-
   return (
     <div className="form-container">
-      <TextFieldInactive
+      {/* <TextFieldInactive
         label="ID"
         name="chart_subject_id"
         value={row.chart_subject_id}
+      /> */}
+      <TextField
+        label="Name"
+        name="name"
+        value={row.name}
+        onChange={onChange}
       />
+      <div className="form-section">Data</div>
       <DropdownFieldSimpleOptions
         label="Table"
         name="table_name"
@@ -70,20 +67,6 @@ export const ChartSubjectForm = memo(({ autoFocusRef }) => {
         autoFocus
         ref={autoFocusRef}
         validationMessage="Choose what table to get the data from"
-      />
-      <TextField
-        label="Name"
-        name="name"
-        value={row.name}
-        onChange={onChange}
-      />
-      <TextField
-        label="Sort"
-        name="sort"
-        value={row.sort}
-        type="number"
-        onChange={onChange}
-        validationMessage="Subjects are sorted by this value if set. Else by their name"
       />
       <RadioGroupField
         label="Level"
@@ -110,6 +93,7 @@ export const ChartSubjectForm = memo(({ autoFocusRef }) => {
         value={row.value_source ?? ''}
         onChange={onChange}
         replaceUnderscoreInLabel={true}
+        validationMessage="How to extract the subject's data from the table"
       />
       {row.value_source && row.value_source !== 'count_rows' && (
         <>
@@ -129,6 +113,23 @@ export const ChartSubjectForm = memo(({ autoFocusRef }) => {
           />
         </>
       )}
+      <div className="form-section">Display</div>
+      <TextField
+        label="Sort"
+        name="sort"
+        value={row.sort}
+        type="number"
+        onChange={onChange}
+        validationMessage="Subjects are sorted by this value if set. Else by their name"
+      />
+      <SwitchField
+        label="Connect missing data"
+        name="connect_nulls"
+        value={row.connect_nulls}
+        onChange={onChange}
+        validationMessage="If true, a line is drawn even when some data points are missing"
+      />
+      <div className="form-section">Styling</div>
       <TextField
         label="Stroke"
         name="stroke"
@@ -148,14 +149,7 @@ export const ChartSubjectForm = memo(({ autoFocusRef }) => {
         name="fill_graded"
         value={row.fill_graded}
         onChange={onChange}
-        validationMessage="If true, the area will be filled using a gradient"
-      />
-      <SwitchField
-        label="Connect missing data"
-        name="connect_nulls"
-        value={row.connect_nulls}
-        onChange={onChange}
-        validationMessage="If true, a line is drawn even when some data points are missing"
+        validationMessage="If true, the area will be filled using a gradient. Can be helpful when multiple Subjects overlap"
       />
     </div>
   )
