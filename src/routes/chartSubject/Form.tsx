@@ -33,6 +33,13 @@ export const ChartSubjectForm = memo(({ autoFocusRef }) => {
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       const valueToUse = name === 'table_level' ? +value : value
+      console.log('hello ChartSubjectForm, onChange', {
+        name,
+        value,
+        valueToUse,
+        e,
+        data,
+      })
       db.chart_subjects.update({
         where: { chart_subject_id },
         data: { [name]: valueToUse },
@@ -44,6 +51,8 @@ export const ChartSubjectForm = memo(({ autoFocusRef }) => {
   if (!row) {
     return <div>Loading...</div>
   }
+
+  console.log('hello ChartSubjectForm, row:', row)
 
   return (
     <div className="form-container">
@@ -102,20 +111,24 @@ export const ChartSubjectForm = memo(({ autoFocusRef }) => {
         onChange={onChange}
         replaceUnderscoreInLabel={true}
       />
-      <TextField
-        label="Value Field"
-        name="value_field"
-        value={row.value_field}
-        onChange={onChange}
-        validationMessage="The name of the field"
-      />
-      <TextField
-        label="TODO: Value: Unit"
-        name="value_unit"
-        value={row.value_unit}
-        type="number"
-        onChange={onChange}
-      />
+      {row.value_source && row.value_source !== 'count_rows' && (
+        <>
+          <TextField
+            label="Value Field"
+            name="value_field"
+            value={row.value_field}
+            onChange={onChange}
+            validationMessage="The name of the field"
+          />
+          <TextField
+            label="TODO: Value: Unit"
+            name="value_unit"
+            value={row.value_unit}
+            type="number"
+            onChange={onChange}
+          />
+        </>
+      )}
       <TextField
         label="Stroke"
         name="stroke"
