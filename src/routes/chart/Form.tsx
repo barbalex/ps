@@ -28,6 +28,97 @@ export const Form = memo(({ autoFocusRef }) => {
         where: { chart_id },
         data: { [name]: value },
       })
+      // if one of the years settings is changed, prevent conflicts
+      switch (name) {
+        case 'years_current': {
+          if (value) {
+            db.charts.update({
+              where: { chart_id },
+              data: {
+                years_previous: false,
+                years_specific: null,
+                years_last_x: null,
+                years_since: null,
+                years_until: null,
+              },
+            })
+          }
+          break
+        }
+        case 'years_previous': {
+          if (value) {
+            db.charts.update({
+              where: { chart_id },
+              data: {
+                years_current: false,
+                years_specific: null,
+                years_last_x: null,
+                years_since: null,
+                years_until: null,
+              },
+            })
+          }
+          break
+        }
+        case 'years_specific': {
+          if (value) {
+            db.charts.update({
+              where: { chart_id },
+              data: {
+                years_current: false,
+                years_previous: false,
+                years_last_x: null,
+                years_since: null,
+                years_until: null,
+              },
+            })
+          }
+          break
+        }
+        case 'years_last_x': {
+          if (value) {
+            db.charts.update({
+              where: { chart_id },
+              data: {
+                years_current: false,
+                years_previous: false,
+                years_specific: null,
+                years_since: null,
+                years_until: null,
+              },
+            })
+          }
+          break
+        }
+        case 'years_since': {
+          if (value) {
+            db.charts.update({
+              where: { chart_id },
+              data: {
+                years_current: false,
+                years_previous: false,
+                years_specific: null,
+                years_last_x: null,
+              },
+            })
+          }
+          break
+        }
+        case 'years_until': {
+          if (value) {
+            db.charts.update({
+              where: { chart_id },
+              data: {
+                years_current: false,
+                years_previous: false,
+                years_specific: null,
+                years_last_x: null,
+              },
+            })
+          }
+          break
+        }
+      }
     },
     [db.charts, chart_id],
   )
