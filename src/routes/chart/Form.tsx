@@ -152,21 +152,21 @@ export const Form = memo(({ autoFocusRef }) => {
       <Divider />
       <Label>Years</Label>
       <SwitchField
-        label="Years: Current"
+        label="Current"
         name="years_current"
         value={row.years_current ?? false}
         onChange={onChange}
         validationMessage="The chart shows data of the current year"
       />
       <SwitchField
-        label="Years: Previous"
+        label="Previous"
         name="years_previous"
         value={row.years_previous ?? false}
         onChange={onChange}
         validationMessage="The chart shows data of the previous year"
       />
       <TextField
-        label="Years: Specific"
+        label="Specific"
         name="years_specific"
         value={row.years_specific}
         type="number"
@@ -174,7 +174,7 @@ export const Form = memo(({ autoFocusRef }) => {
         validationMessage="The chart shows data of the specific year entered"
       />
       <TextField
-        label="Years: Last X"
+        label="Last X"
         name="years_last_x"
         value={row.years_last_x}
         type="number"
@@ -182,7 +182,7 @@ export const Form = memo(({ autoFocusRef }) => {
         validationMessage="The chart shows no more than the last x years (x = value entered)"
       />
       <TextField
-        label="Years: Since"
+        label="Since"
         name="years_since"
         value={row.years_since}
         type="number"
@@ -190,7 +190,7 @@ export const Form = memo(({ autoFocusRef }) => {
         validationMessage="The chart shows data since the year entered"
       />
       <TextField
-        label="Years: Until"
+        label="Until"
         name="years_until"
         value={row.years_until}
         type="number"
