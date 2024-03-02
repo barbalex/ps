@@ -133,6 +133,8 @@ export const Form = memo(({ autoFocusRef }) => {
   return (
     <div className="form-container">
       <TextFieldInactive label="ID" name="chart_id" value={row.chart_id} />
+      <Divider />
+      <Label>General settings</Label>
       <DropdownFieldSimpleOptions
         label="Chart Type"
         name="chart_type"
@@ -198,27 +200,27 @@ export const Form = memo(({ autoFocusRef }) => {
         validationMessage="The chart shows data until the year entered"
       />
       <Divider />
-      <Label>Subjects presentation</Label>
+      <Label>Data / Subjects presentation</Label>
       <SwitchField
-        label="Stack Subjects?"
+        label="Stack subjects?"
         name="subjects_stacked"
         value={row.subjects_stacked}
         onChange={onChange}
-        validationMessage="If true, subjects graphs will be stacked. If false, they will be drawn covering each other"
+        validationMessage="When true, subjects graphs will be stacked. If false, they will be drawn covering each other"
       />
       <SwitchField
         label="Draw subjects in separate charts?"
         name="subjects_single"
         value={row.subjects_single}
         onChange={onChange}
-        validationMessage="If false, subjects will be drawn in a single graph"
+        validationMessage="When false, subjects will be drawn in a single graph"
       />
       <SwitchField
-        label="Show percent if multiple subjects exist?"
+        label="When multiple subjects exist: show their share as percentage?"
         name="percent"
         value={row.percent}
         onChange={onChange}
-        validationMessage="You will see the percentage of avery subject, totalling 100%"
+        validationMessage="You will see the percentage of every subject, totalling 100%. This only works well when subjects have values for every year"
       />
     </div>
   )

@@ -1,22 +1,30 @@
 import { memo } from 'react'
-import { Switch } from '@fluentui/react-components'
+import { Switch, Field } from '@fluentui/react-components'
 
 export const SwitchField = memo(
   ({
-    label = '(no label provided)',
+    label,
     name,
     value = false,
     onChange,
     autoFocus,
     disabled = false,
+    validationMessage,
+    validationState = 'none',
   }) => (
-    <Switch
-      label={label}
-      name={name}
-      checked={value}
-      onChange={onChange}
-      autoFocus={autoFocus}
-      disabled={disabled}
-    />
+    <Field
+      label={undefined}
+      validationMessage={validationMessage}
+      validationState={validationState}
+    >
+      <Switch
+        label={label ?? '(no label provided)'}
+        name={name}
+        checked={value}
+        onChange={onChange}
+        autoFocus={autoFocus}
+        disabled={disabled}
+      />
+    </Field>
   ),
 )
