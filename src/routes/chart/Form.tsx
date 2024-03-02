@@ -49,7 +49,7 @@ export const Form = memo(({ autoFocusRef }) => {
         options={chartTypes}
         autoFocus
         ref={autoFocusRef}
-        validationMessage="Choose what type of chart you want to display."
+        validationMessage="Choose what type of chart you want to display"
       />
       <TextField
         label="Title"
@@ -62,14 +62,14 @@ export const Form = memo(({ autoFocusRef }) => {
         name="years_current"
         value={row.years_current ?? false}
         onChange={onChange}
-        validationMessage="The chart shows data of the current year."
+        validationMessage="The chart shows data of the current year"
       />
       <SwitchField
         label="Years: Previous"
         name="years_previous"
         value={row.years_previous ?? false}
         onChange={onChange}
-        validationMessage="The chart shows data of the previous year."
+        validationMessage="The chart shows data of the previous year"
       />
       <TextField
         label="Years: Specific"
@@ -77,7 +77,7 @@ export const Form = memo(({ autoFocusRef }) => {
         value={row.years_specific}
         type="number"
         onChange={onChange}
-        validationMessage="The chart shows data of the specific year entered."
+        validationMessage="The chart shows data of the specific year entered"
       />
       <TextField
         label="Years: Last X"
@@ -85,7 +85,7 @@ export const Form = memo(({ autoFocusRef }) => {
         value={row.years_last_x}
         type="number"
         onChange={onChange}
-        validationMessage="The chart shows data of the last x years (x = value entered)."
+        validationMessage="The chart shows no more than the last x years (x = value entered)"
       />
       <TextField
         label="Years: Since"
@@ -93,7 +93,7 @@ export const Form = memo(({ autoFocusRef }) => {
         value={row.years_since}
         type="number"
         onChange={onChange}
-        validationMessage="The chart shows data since the year entered."
+        validationMessage="The chart shows data since the year entered"
       />
       <TextField
         label="Years: Until"
@@ -101,28 +101,28 @@ export const Form = memo(({ autoFocusRef }) => {
         value={row.years_until}
         type="number"
         onChange={onChange}
-        validationMessage="The chart shows data until the year entered."
+        validationMessage="The chart shows data until the year entered"
       />
       <SwitchField
         label="Stack Subjects?"
         name="subjects_stacked"
         value={row.subjects_stacked}
         onChange={onChange}
-        validationMessage="If true, subjects graphs will be stacked. If false, they will be drawn covering each other."
+        validationMessage="If true, subjects graphs will be stacked. If false, they will be drawn covering each other"
       />
       <SwitchField
         label="Draw subjects in separate charts?"
         name="subjects_single"
         value={row.subjects_single}
         onChange={onChange}
-        validationMessage="If false, subjects will be drawn in a single graph."
+        validationMessage="If false, subjects will be drawn in a single graph"
       />
       <SwitchField
         label="Show percent if multiple subjects exist?"
         name="percent"
         value={row.percent}
         onChange={onChange}
-        validationMessage="You will see the percentage of avery subject, totalling 100%."
+        validationMessage="You will see the percentage of avery subject, totalling 100%"
       />
     </div>
   )
