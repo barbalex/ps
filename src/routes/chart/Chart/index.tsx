@@ -38,11 +38,11 @@ export const Chart = memo(() => {
   useEffect(() => {
     if (!subjects) return
     const run = async () => {
-      const data = await dataFromChart({ db, subjects, subproject_id })
+      const data = await dataFromChart({ db, chart, subjects, subproject_id })
       setData(data)
     }
     run()
-  }, [db, subjects, subproject_id])
+  }, [chart, db, subjects, subproject_id])
 
   if (!chart || !subjects) return null
 
