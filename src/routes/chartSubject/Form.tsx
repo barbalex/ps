@@ -75,6 +75,7 @@ export const ChartSubjectForm = memo(({ autoFocusRef }) => {
           list={[1, 2]}
           value={row.table_level ?? ''}
           onChange={onChange}
+          validationMessage="Level of places and their respective checks and actions"
         />
         <TextField
           label="TODO: table filter"
