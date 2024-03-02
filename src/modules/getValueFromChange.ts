@@ -19,7 +19,7 @@ export const getValueFromChange = (e, data) => {
       return { value: data.value, name }
     case 'number':
       return {
-        value: isNaN(e.target.valueAsNumber) ? null : data.valueAsNumber,
+        value: isNaN(e.target.valueAsNumber) ? null : e.target.valueAsNumber,
         name,
       }
     case 'range':
