@@ -28,6 +28,7 @@
     "@fluentui/react-icons": "2.0.230",
     "@fluentui/react-timepicker-compat-preview": "0.2.0",
     "@fontsource/roboto": "5.0.8",
+    "@formkit/tempo": "0.0.13",
     "@kripod/uuidv7": "0.3.4",
     "@react-leaflet/core": "2.1.0",
     "@shopify/react-web-worker": "5.0.13",
