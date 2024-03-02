@@ -58,16 +58,6 @@ https://stackoverflow.com/a/21541021/712005 */
     line-height: 32px;
   }
 }
-.form-section {
-  margin: 5px 0;
-  padding: 5px 10px;
-  background-color: rgba(225, 247, 224, 1);
-  font-weight: bold;
-  margin-left: -10px;
-  margin-right: -10px;
-  position: sticky;
-  top: -12px;
-}
 
 .navs-resizable {
   display: flex;

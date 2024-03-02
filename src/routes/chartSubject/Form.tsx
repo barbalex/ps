@@ -9,6 +9,7 @@ import { RadioGroupField } from '../../components/shared/RadioGroupField'
 import { SwitchField } from '../../components/shared/SwitchField'
 import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions'
 import { getValueFromChange } from '../../modules/getValueFromChange'
+import { Section } from '../../components/shared/Section'
 
 const chartTables = [
   'subprojects',
@@ -57,100 +58,103 @@ export const ChartSubjectForm = memo(({ autoFocusRef }) => {
         value={row.name}
         onChange={onChange}
       />
-      <div className="form-section">Data</div>
-      <DropdownFieldSimpleOptions
-        label="Table"
-        name="table_name"
-        value={row.table_name ?? ''}
-        onChange={onChange}
-        options={chartTables}
-        autoFocus
-        ref={autoFocusRef}
-        validationMessage="Choose what table to get the data from"
-      />
-      <RadioGroupField
-        label="Level"
-        name="table_level"
-        list={[1, 2]}
-        value={row.table_level ?? ''}
-        onChange={onChange}
-      />
-      <TextField
-        label="TODO: table filter"
-        name="table_filter"
-        value={row.table_filter}
-        type="number"
-        onChange={onChange}
-      />
-      <RadioGroupField
-        label="Value Source"
-        name="value_source"
-        list={[
-          'count_rows',
-          'count_rows_by_distinct_field_values',
-          'sum_values_of_field',
-        ]}
-        value={row.value_source ?? ''}
-        onChange={onChange}
-        replaceUnderscoreInLabel={true}
-        validationMessage="How to extract the subject's data from the table"
-      />
-      {row.value_source && row.value_source !== 'count_rows' && (
-        <>
-          <TextField
-            label="Value Field"
-            name="value_field"
-            value={row.value_field}
-            onChange={onChange}
-            validationMessage="The name of the field"
-          />
-          <TextField
-            label="TODO: Value: Unit"
-            name="value_unit"
-            value={row.value_unit}
-            type="number"
-            onChange={onChange}
-          />
-        </>
-      )}
-      <div className="form-section">Display</div>
-      <TextField
-        label="Sort"
-        name="sort"
-        value={row.sort}
-        type="number"
-        onChange={onChange}
-        validationMessage="Subjects are sorted by this value if set. Else by their name"
-      />
-      <SwitchField
-        label="Connect missing data"
-        name="connect_nulls"
-        value={row.connect_nulls}
-        onChange={onChange}
-        validationMessage="If true, a line is drawn even when some data points are missing"
-      />
-      <div className="form-section">Styling</div>
-      <TextField
-        label="Stroke"
-        name="stroke"
-        value={row.stroke}
-        type="color"
-        onChange={onChange}
-      />
-      <TextField
-        label="Fill"
-        name="fill"
-        value={row.fill}
-        type="color"
-        onChange={onChange}
-      />
-      <SwitchField
-        label="Fill is graded"
-        name="fill_graded"
-        value={row.fill_graded}
-        onChange={onChange}
-        validationMessage="If true, the area will be filled using a gradient. Can be helpful when multiple Subjects overlap"
-      />
+      <Section title="Data">
+        <DropdownFieldSimpleOptions
+          label="Table"
+          name="table_name"
+          value={row.table_name ?? ''}
+          onChange={onChange}
+          options={chartTables}
+          autoFocus
+          ref={autoFocusRef}
+          validationMessage="Choose what table to get the data from"
+        />
+        <RadioGroupField
+          label="Level"
+          name="table_level"
+          list={[1, 2]}
+          value={row.table_level ?? ''}
+          onChange={onChange}
+        />
+        <TextField
+          label="TODO: table filter"
+          name="table_filter"
+          value={row.table_filter}
+          type="number"
+          onChange={onChange}
+        />
+        <RadioGroupField
+          label="Value Source"
+          name="value_source"
+          list={[
+            'count_rows',
+            'count_rows_by_distinct_field_values',
+            'sum_values_of_field',
+          ]}
+          value={row.value_source ?? ''}
+          onChange={onChange}
+          replaceUnderscoreInLabel={true}
+          validationMessage="How to extract the subject's data from the table"
+        />
+        {row.value_source && row.value_source !== 'count_rows' && (
+          <>
+            <TextField
+              label="Value Field"
+              name="value_field"
+              value={row.value_field}
+              onChange={onChange}
+              validationMessage="The name of the field"
+            />
+            <TextField
+              label="TODO: Value: Unit"
+              name="value_unit"
+              value={row.value_unit}
+              type="number"
+              onChange={onChange}
+            />
+          </>
+        )}
+      </Section>
+      <Section title="Display">
+        <TextField
+          label="Sort"
+          name="sort"
+          value={row.sort}
+          type="number"
+          onChange={onChange}
+          validationMessage="Subjects are sorted by this value if set. Else by their name"
+        />
+        <SwitchField
+          label="Connect missing data"
+          name="connect_nulls"
+          value={row.connect_nulls}
+          onChange={onChange}
+          validationMessage="If true, a line is drawn even when some data points are missing"
+        />
+      </Section>
+      <Section title="Styling">
+        <TextField
+          label="Stroke"
+          name="stroke"
+          value={row.stroke}
+          type="color"
+          onChange={onChange}
+        />
+        <TextField
+          label="Fill"
+          name="fill"
+          value={row.fill}
+          type="color"
+          onChange={onChange}
+        />
+        <SwitchField
+          label="Fill is graded"
+          name="fill_graded"
+          value={row.fill_graded}
+          onChange={onChange}
+          validationMessage="If true, the area will be filled using a gradient. Can be helpful when multiple Subjects overlap"
+        />
+      </Section>
     </div>
   )
 })
