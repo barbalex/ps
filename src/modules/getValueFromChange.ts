@@ -1,13 +1,6 @@
 export const getValueFromChange = (e, data) => {
   const targetType = e.target.type
-  // console.log('hello getValueFromChange', {
-  //   targetType,
-  //   data,
-  //   e,
-  //   targetValueAsNumber: e.target.valueAsNumber,
-  //   name: e.target.name,
-  // })
-  const value =
+  let value =
     targetType === 'checkbox'
       ? data.checked
       : ['change'].includes[targetType]
@@ -15,8 +8,9 @@ export const getValueFromChange = (e, data) => {
       : ['number', 'range'].includes(targetType)
       ? e.target.valueAsNumber ?? null
       : e.target.value ?? null
+  // happens when a number input is emptied
+  if (isNaN(value)) value = null
   const name = e.target.name
-  // console.log('hello getValueFromChange', { value })
 
   return { value, name }
 }
