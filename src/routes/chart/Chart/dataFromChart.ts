@@ -1,4 +1,10 @@
-export const dataFromChart = async ({ db, chart, subjects, subproject_id }) => {
+export const dataFromChart = async ({
+  db,
+  chart,
+  subjects,
+  subproject_id,
+  project_id,
+}) => {
   const names = subjects.map((subject) => subject.name)
 
   const dataPerSubject = {}
@@ -15,7 +21,7 @@ export const dataFromChart = async ({ db, chart, subjects, subproject_id }) => {
             switch (subject.table_level) {
               case 1: {
                 const placeLevel = await db.place_levels.findFirst({
-                  where: { subproject_id, level: 1, deleted: false },
+                  where: { project_id, level: 1, deleted: false },
                 })
                 const placeNamePlural = placeLevel?.name_plural
                 const places = await db.places.findMany({
@@ -52,10 +58,7 @@ export const dataFromChart = async ({ db, chart, subjects, subproject_id }) => {
                   },
                 })
                 const placeIds = places.map((place) => place.place_id)
-                const checks = await db.checks.findMany({
-                  where: { place_id: { in: placeIds }, deleted: false },
-                })
-                // dataPerSubject[name] = checks.length
+                // TODO: implement
                 break
               }
               default:

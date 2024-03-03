@@ -15,7 +15,7 @@ const titleRowStyle = {
 }
 
 export const Chart = memo(() => {
-  const { subproject_id, chart_id } = useParams()
+  const { project_id, subproject_id, chart_id } = useParams()
 
   const { db } = useElectric()!
   const { results: chart } = useLiveQuery(
@@ -38,7 +38,13 @@ export const Chart = memo(() => {
   useEffect(() => {
     if (!subjects) return
     const run = async () => {
-      const data = await dataFromChart({ db, chart, subjects, subproject_id })
+      const data = await dataFromChart({
+        db,
+        chart,
+        subjects,
+        subproject_id,
+        project_id,
+      })
       setData(data)
     }
     run()
