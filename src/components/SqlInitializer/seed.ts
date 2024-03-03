@@ -6,7 +6,6 @@ VALUES ('018ca19e-7a23-7bf4-8523-ff41e3b60807', 'text', 1, 'Example: text', FALS
 ('018ca19f-6638-77cf-98e8-38e601af97a1', 'date', 5, 'Example: 2021-03-08', FALSE),
 ('018ca19f-787d-78f6-ac72-01f1e7f53d4f', 'date-time', 6, 'Timestamp with time zone. Example: 2021-03-08 10:23:54+01', FALSE),
 ('018ca19f-8b79-7194-b59b-7075bb5b550a', 'time', 7, 'Time of day. Example: 10:23', FALSE);`
-
 const seedWidgetTypes = `INSERT INTO widget_types(widget_type_id, name, needs_list, sort, comment, deleted)
 VALUES ('018ca1a0-f187-7fdf-955b-4eaadaa92553', 'text', FALSE, 1, 'Short field accepting text', FALSE),
 ('018ca1a1-0868-7f1e-80aa-119fa3932538', 'textarea', FALSE, 2, 'Field accepting text, lines can break', FALSE),
@@ -50,7 +49,15 @@ const seedTaxonomies = `INSERT INTO taxonomies(account_id, project_id, name, tax
 const seedTaxons = `INSERT INTO taxa(account_id, name, taxonomy_id, taxon_id, deleted) values ('018cf958-27e2-7000-90d3-59f024d467be', 'Demo Taxon 1', '018cfcf8-9b2a-7000-9c7e-5b0b8b0e2b0e', '018cfcf8-9b2a-7000-9c7e-5b0b8b0e2b0e', false), ('018cf958-27e2-7000-90d3-59f024d467be', 'Demo Taxon 2', '018cfcf8-9b2a-7000-9c7e-5b0b8b0e2b0e', '018cff12-54b6-7c49-9553-b84f0624f7ba', false);`
 const seedSubprojects = `INSERT INTO subprojects(subproject_id, project_id, name, deleted) values ('018cfd27-ee92-7000-b678-e75497d6c60e', '018cfcf7-6424-7000-a100-851c5cc2c878', 'Demo Subproject 1', false);`
 const seedSubprojectUsers = `INSERT INTO subproject_users(subproject_user_id, subproject_id, user_id, role, deleted) values ('018cfd29-ccaa-7000-a686-8566a27eee45', '018cfd27-ee92-7000-b678-e75497d6c60e', '018cf95a-d817-7000-92fa-bb3b2ad59dda', 'manager', false);`
-const seedPlaces = `INSERT INTO places(account_id, place_id, subproject_id, level, deleted) values ('018cf958-27e2-7000-90d3-59f024d467be', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, false);`
+const seedPlaces = `INSERT INTO places(account_id, place_id, subproject_id, level, since, deleted) values 
+('018cf958-27e2-7000-90d3-59f024d467be', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020, false),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f8-9e60-763a-9191-2613ef4f1a16', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2021, false),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f8-c707-7485-9ec9-84067c4623cf', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2022, false),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f8-e644-7f09-abf7-8ea0a178ce79', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2019, false),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-1133-7c91-8220-913c861b3339', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020, false),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-323e-7753-aae1-37005b3f25cf', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2018, false),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-52e7-79a7-8e53-34c4558bfce5', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2021, false),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-6b13-72e0-8903-c23fa8f2acde', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020, false);`
 const seedChecks = `INSERT INTO checks(account_id, check_id, place_id, date, deleted) values 
 ('018cf958-27e2-7000-90d3-59f024d467be', '018df4ff-9124-73f4-95c1-497387b995c0', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2024-03-03', false),
 ('018cf958-27e2-7000-90d3-59f024d467be', '018df5da-6447-7bb9-944c-f824643a1b11', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2024-04-03', false),
