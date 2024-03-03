@@ -14,6 +14,10 @@ export const dataFromChart = async ({ db, chart, subjects, subproject_id }) => {
           case 'places': {
             switch (subject.table_level) {
               case 1: {
+                const placeLevel = await db.place_levels.findFirst({
+                  where: { subproject_id, level: 1, deleted: false },
+                })
+                const placeNamePlural = placeLevel?.name_plural
                 const places = await db.places.findMany({
                   where: {
                     subproject_id,
@@ -21,8 +25,23 @@ export const dataFromChart = async ({ db, chart, subjects, subproject_id }) => {
                     deleted: false,
                   },
                 })
-                // TODO: choose years. oldest since?
-                // dataPerSubject[name] = places.length
+                const sinceYears = places.map((place) => place.since)
+                const thisYear = new Date().getFullYear()
+                const minYear = sinceYears.length
+                  ? Math.min(...sinceYears)
+                  : thisYear - 10
+                const yearRange = Array(thisYear - minYear + 1)
+                  .fill()
+                  .map((element, i) => minYear + i)
+                const data = yearRange.map((year) => {
+                  const placesInYear = places.filter(
+                    (place) =>
+                      (place.since <= year || !place.since) &&
+                      (place.until >= year || !place.until),
+                  )
+                  return { year, [placeNamePlural]: placesInYear.length }
+                })
+                dataPerSubject[name] = data
                 break
               }
               case 2: {
