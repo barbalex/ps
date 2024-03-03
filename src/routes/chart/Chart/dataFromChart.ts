@@ -39,14 +39,16 @@ export const dataFromChart = async ({
                 const yearRange = Array(thisYear - minYear + 1)
                   .fill()
                   .map((element, i) => minYear + i)
-                const data = yearRange.map((year) => {
+                const data = {}
+                for (const year of yearRange) {
                   const placesInYear = places.filter(
                     (place) =>
                       (place.since <= year || !place.since) &&
                       (place.until >= year || !place.until),
                   )
-                  return { year, [placeNamePlural]: placesInYear.length }
-                })
+                  data[year] = placesInYear.length
+                }
+                console.log('hello dataFromChart, places level 1:', data)
                 dataPerSubject[name] = data
                 break
               }
