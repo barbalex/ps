@@ -24,14 +24,14 @@ export const Chart = memo(() => {
       // include: { chart_subjects: true }, // NOT WORKING due to boolean value in subjects...
     }),
   )
-  // console.log('hello Chart, chart:', chart)
+  console.log('hello Chart, chart:', chart)
   const { results: subjects } = useLiveQuery(
     db.chart_subjects.liveMany({
       where: { chart_id, deleted: false },
       orderBy: [{ sort: 'asc' }, { name: 'asc' }],
     }),
   )
-  // console.log('hello Chart, subjects:', subjects)
+  console.log('hello Chart, subjects:', subjects)
 
   const [data, setData] = useState({ data: [], names: [] })
 
@@ -39,6 +39,7 @@ export const Chart = memo(() => {
     if (!subjects) return
     const run = async () => {
       const data = await dataFromChart({
+        chart_id,
         db,
         chart,
         subjects,
@@ -48,7 +49,7 @@ export const Chart = memo(() => {
       setData(data)
     }
     run()
-  }, [chart, db, subjects, subproject_id])
+  }, [chart_id, chart, db, project_id, subjects, subproject_id])
 
   if (!chart || !subjects) return null
 

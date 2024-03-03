@@ -9,6 +9,9 @@ import {
   CartesianGrid,
   Legend,
 } from 'recharts'
+import { useLiveQuery } from 'electric-sql/react'
+
+import { useElectric } from '../../../ElectricProvider'
 
 const toPercent = (decimal) => `${(decimal * 100).toFixed(0)}%`
 
@@ -22,9 +25,18 @@ const formatNumber = (tickItem) =>
   tickItem && tickItem?.toLocaleString ? tickItem.toLocaleString('de-ch') : 0
 
 export const SingleChart = memo(({ chart, subjects, data, synchronized }) => {
-  const unit = 'TODO: unit'
-
+  const { db } = useElectric()!
+  const { results: firstSubjectsUnit } = useLiveQuery(
+    db.units.liveUnique({
+      where: {
+        unit_id:
+          subjects?.[0]?.value_unit ?? '99999999-9999-9999-9999-999999999999',
+      },
+    }),
+  )
   if (!chart || !subjects) return null
+
+  const unit = firstSubjectsUnit ?? 'Count'
 
   return (
     <ResponsiveContainer width="99%" height={synchronized ? 200 : 400}>
@@ -34,7 +46,7 @@ export const SingleChart = memo(({ chart, subjects, data, synchronized }) => {
         data={data.data}
         syncId={synchronized ? chart.chart_id : undefined}
         stackOffset={chart.percent ? 'expand' : undefined}
-        margin={{ top: 10, right: 10, left: 27 }}
+        margin={{ top: 10, right: 10, left: 20 }}
       >
         <defs>
           {subjects.map((subject) =>
@@ -59,6 +71,7 @@ export const SingleChart = memo(({ chart, subjects, data, synchronized }) => {
         <XAxis dataKey="year" />
         <YAxis
           interval={0}
+          width={40}
           label={{
             value: unit,
             angle: -90,

@@ -1,29 +1,21 @@
 export const dataFromChart = async ({
+  chart_id,
   db,
   chart,
   subjects,
   subproject_id,
-  project_id,
 }) => {
   const names = subjects.map((subject) => subject.name)
 
   const dataPerSubject = {}
 
   for (const subject of subjects) {
-    const tableName = subject.table_name
-    const name = subject.name
-    const valueSource = subject.value_source
-
-    switch (valueSource) {
+    switch (subject.value_source) {
       case 'count_rows': {
-        switch (tableName) {
+        switch (subject.table_name) {
           case 'places': {
             switch (subject.table_level) {
               case 1: {
-                const placeLevel = await db.place_levels.findFirst({
-                  where: { project_id, level: 1, deleted: false },
-                })
-                const placeNamePlural = placeLevel?.name_plural
                 const places = await db.places.findMany({
                   where: {
                     subproject_id,
@@ -48,18 +40,18 @@ export const dataFromChart = async ({
                   )
                   data[year] = placesInYear.length
                 }
-                console.log('hello dataFromChart, places level 1:', data)
-                dataPerSubject[name] = data
+                // console.log('hello dataFromChart, places level 1:', data)
+                dataPerSubject[subject.name] = data
                 break
               }
               case 2: {
-                const places = await db.places.findMany({
-                  where: {
-                    parent_id: { not: null },
-                    deleted: false,
-                  },
-                })
-                const placeIds = places.map((place) => place.place_id)
+                // const places = await db.places.findMany({
+                //   where: {
+                //     parent_id: { not: null },
+                //     deleted: false,
+                //   },
+                // })
+                // const placeIds = places.map((place) => place.place_id)
                 // TODO: implement
                 break
               }
@@ -84,7 +76,8 @@ export const dataFromChart = async ({
 
               return acc
             }, {})
-            dataPerSubject[name] = data
+            console.log('hello dataFromChart, checks:', data)
+            dataPerSubject[subject.name] = data
             break
           }
           case 'actions': {
@@ -103,7 +96,8 @@ export const dataFromChart = async ({
 
               return acc
             }, {})
-            dataPerSubject[name] = data
+            console.log('hello dataFromChart, actions:', data)
+            dataPerSubject[subject.name] = data
             break
           }
           default:
@@ -124,13 +118,15 @@ export const dataFromChart = async ({
     }
   }
 
-  console.log('hello dataFromChart, dataPerSubject:', dataPerSubject)
+  console.log('hello dataFromChart, dataPerSubject:', {
+    dataPerSubject,
+    chart_id,
+  })
   const years = Object.values(dataPerSubject).reduce(
     (acc, data) => [...acc, ...Object.keys(data).map((k) => +k)],
     [],
   )
 
-  console.log('hello dataFromChart, years:', years)
   let minYear = Math.min(...years)
   if (chart.years_since && chart.years_since > minYear) {
     minYear = chart.years_since
@@ -142,7 +138,6 @@ export const dataFromChart = async ({
   let yearRange = Array(maxYear - minYear + 1)
     .fill()
     .map((element, i) => minYear + i)
-  console.log('hello dataFromChart, yearRange:', [...yearRange])
   if (chart.years_last_x) {
     yearRange.splice(0, yearRange.length - chart.years_last_x)
   }
@@ -157,9 +152,6 @@ export const dataFromChart = async ({
       (year) => year === new Date().getFullYear() - 1,
     )
   }
-  console.log('hello dataFromChart, yearRange sliced to years_last_x:', [
-    ...yearRange,
-  ])
 
   const data = yearRange.map((year) => {
     const yearsData = { year }
