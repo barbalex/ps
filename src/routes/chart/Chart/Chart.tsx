@@ -18,13 +18,8 @@ const toPercent = (decimal) => `${(decimal * 100).toFixed(0)}%`
 //   return toPercent(ratio, 2)
 // }
 
-const formatNumber = (tickItem) => {
-  const value =
-    tickItem && tickItem?.toLocaleString
-      ? tickItem.toLocaleString('de-ch')
-      : null
-  return value
-}
+const formatNumber = (tickItem) =>
+  tickItem && tickItem?.toLocaleString ? tickItem.toLocaleString('de-ch') : 0
 
 export const SingleChart = memo(({ chart, subjects, data, synchronized }) => {
   const unit = 'TODO: unit'
