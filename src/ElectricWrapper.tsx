@@ -22,10 +22,13 @@ export const ElectricWrapper = ({ children }) => {
       }
 
       const { tabId } = uniqueTabId()
+      console.log('hello tabId', tabId)
       const scopedDbName = `basic-${LIB_VERSION}-${tabId}.db`
+      console.log('hello scopedDbName', scopedDbName)
 
       const conn = await ElectricDatabase.init(scopedDbName)
       const electric = await electrify(conn, schema, config)
+      console.log('hello electric', electric)
       await electric.connect(authToken())
 
       if (!isMounted) {
@@ -34,7 +37,7 @@ export const ElectricWrapper = ({ children }) => {
 
       setElectric(electric)
     }
-
+    console.log('hello ElectricWrapper, init')
     init()
 
     return () => {

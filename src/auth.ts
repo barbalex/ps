@@ -13,5 +13,5 @@ export const authToken = () => {
     window.sessionStorage.setItem(subKey, sub)
   }
   const claims = { sub }
-  return insecureAuthToken(claims)
+  return insecureAuthToken(claims) 
 }
