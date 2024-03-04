@@ -1,13 +1,11 @@
 // wrapper.tsx
-import React, { ReactNode, useEffect, useState } from 'react'
-import { insecureAuthToken } from 'electric-sql/auth'
-import { makeElectricContext } from 'electric-sql/react'
+import React, { useEffect, useState } from 'react'
 import { ElectricDatabase, electrify } from 'electric-sql/wa-sqlite'
 import { Electric, schema } from './generated/client'
-import { genUUID, uniqueTabId } from 'electric-sql/util'
+import { uniqueTabId } from 'electric-sql/util'
 import { LIB_VERSION } from 'electric-sql/version'
 
-const { ElectricProvider, useElectric } = makeElectricContext<Electric>()
+import { ElectricProvider } from './ElectricProvider'
 
 import { authToken } from './auth'
 
