@@ -59,7 +59,6 @@ import { generateUiOptions } from './uiOptions'
 export const user_id = '018cf95a-d817-7000-92fa-bb3b2ad59dda'
 
 export const SqlInitializer = () => {
-  console.log('SqlInitializer, useElectric:', useElectric())
   const { db } = useElectric()!
 
   useEffect(() => {
