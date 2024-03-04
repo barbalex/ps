@@ -1,4 +1,4 @@
-import { processPlaces } from './processPlaces'
+import { processPlaces as countPlacesRows } from './countPlacesRows'
 
 export const buildData = async ({
   chart_id,
@@ -25,7 +25,7 @@ export const buildData = async ({
                     deleted: false,
                   },
                 })
-                processPlaces({ dataPerSubject, places, subject })
+                countPlacesRows({ dataPerSubject, places, subject })
                 break
               }
               case 2: {
@@ -36,7 +36,7 @@ export const buildData = async ({
                     deleted: false,
                   },
                 })
-                processPlaces({ dataPerSubject, places, subject })
+                countPlacesRows({ dataPerSubject, places, subject })
                 break
               }
               default:
