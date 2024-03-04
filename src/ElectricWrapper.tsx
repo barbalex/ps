@@ -4,6 +4,7 @@ import { ElectricDatabase, electrify } from 'electric-sql/wa-sqlite'
 import { Electric, schema } from './generated/client'
 import { uniqueTabId } from 'electric-sql/util'
 import { LIB_VERSION } from 'electric-sql/version'
+import { ElectricConfig } from 'electric-sql/config'
 
 import { ElectricProvider } from './ElectricProvider'
 
@@ -16,7 +17,7 @@ export const ElectricWrapper = ({ children }) => {
     let isMounted = true
 
     const init = async () => {
-      const config = {
+      const config: ElectricConfig = {
         debug: import.meta.env.DEV,
         url: import.meta.env.ELECTRIC_SERVICE,
       }
