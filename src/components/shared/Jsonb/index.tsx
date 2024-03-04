@@ -272,7 +272,7 @@ export const Jsonb = memo(
               validationState="warning"
               validationMessage={`This field is not defined for this ${
                 isAccountTable ? 'account' : 'project'
-              }.`}
+              }`}
               autoFocus={autoFocus && index === 0 && fields.length === 0}
             />
           )

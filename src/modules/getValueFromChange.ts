@@ -1,22 +1,33 @@
 export const getValueFromChange = (e, data) => {
   const targetType = e.target.type
-  // console.log('hello getValueFromChange', {
-  //   targetType,
-  //   data,
-  //   e,
-  //   targetValueAsNumber: e.target.valueAsNumber,
-  //   name: e.target.name,
-  // })
-  const value =
-    targetType === 'checkbox'
-      ? data.checked
-      : ['change'].includes[targetType]
-      ? data.value
-      : ['number', 'range'].includes(targetType)
-      ? e.target.valueAsNumber ?? null
-      : e.target.value ?? null
   const name = e.target.name
-  // console.log('hello getValueFromChange', { value })
+  // console.log('hello getValueFromChange 1', {
+  //   targetType,
+  //   e,
+  //   data,
+  //   valueAsNumber: e.target.valueAsNumber,
+  //   name,
+  //   dataValue: data.value,
+  // })
 
-  return { value, name }
+  switch (targetType) {
+    case 'checkbox':
+      return { value: data.checked, name }
+    case 'radio':
+      return { value: data.value, name }
+    case 'change':
+      return { value: data.value, name }
+    case 'number':
+      return {
+        value: isNaN(e.target.valueAsNumber) ? null : e.target.valueAsNumber,
+        name,
+      }
+    case 'range':
+      return {
+        value: isNaN(e.target.valueAsNumber) ? null : data.valueAsNumber,
+        name,
+      }
+    default:
+      return { value: e.target.value ?? null, name }
+  }
 }

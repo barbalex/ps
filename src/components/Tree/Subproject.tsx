@@ -10,6 +10,7 @@ import { GoalsNode } from './Goals'
 import { SubprojectTaxaNode } from './SubprojectTaxa'
 import { SubprojectUsersNode } from './SubprojectUsers'
 import { FilesNode } from './Files'
+import { ChartsNode } from './Charts'
 import { useElectric } from '../../ElectricProvider'
 
 interface Props {
@@ -86,6 +87,11 @@ export const SubprojectNode = memo(
                 level={5}
               />
             )}
+            <ChartsNode
+              project_id={project_id}
+              subproject_id={subproject.subproject_id}
+              level={5}
+            />
           </>
         )}
       </>

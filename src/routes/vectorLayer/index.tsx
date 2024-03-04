@@ -102,7 +102,7 @@ export const Component = () => {
               value={row.sort ?? ''}
               onChange={onChange}
               type="number"
-              validationMessage="Add a sorting order here if sorting by label is not desired."
+              validationMessage="Add a sorting order here if sorting by label is not desired"
             />
             <SwitchField
               label="active"
@@ -136,7 +136,7 @@ export const Component = () => {
               value={row.max_features ?? ''}
               onChange={onChange}
               type="number"
-              validationMessage="Drawing too many features can crash the app. Your mileage may vary."
+              validationMessage="Drawing too many features can crash the app. Your mileage may vary"
             />
             {/* <VectorLayerDisplay row={row} /> */}
           </>
