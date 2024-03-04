@@ -17,7 +17,10 @@ export const ElectricWrapper = ({ children }) => {
     let isMounted = true
 
     const init = async () => {
+      // https://electric-sql.com/docs/api/clients/typescript#available-options
       const config: ElectricConfig = {
+        // Activate debug mode which logs the replication messages
+        // that are exchanged between the client and the sync service
         debug: import.meta.env.DEV,
         url: import.meta.env.ELECTRIC_SERVICE,
       }
