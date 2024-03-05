@@ -12,7 +12,6 @@ import {
   createVectorLayer,
   createVectorLayerDisplay,
 } from '../../modules/createRows'
-import { Places as Place, Ui_options as UiOption } from '../../generated/client'
 import { useElectric } from '../../ElectricProvider'
 import { FormHeader } from '../../components/FormHeader'
 import { boundsFromBbox } from '../../modules/boundsFromBbox'
@@ -133,7 +132,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     }
 
     // 1. show map if not happening
-    const uiOption: UiOption = await db.ui_options.findUnique({
+    const uiOption = await db.ui_options.findUnique({
       where: { user_id },
     })
     const tabs = uiOption?.tabs ?? []

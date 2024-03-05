@@ -12,6 +12,7 @@ CREATE TYPE layer_options_field_enum AS enum(
 
 CREATE TABLE layer_options(
   layer_option_id text PRIMARY KEY DEFAULT NULL,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   tile_layer_id uuid DEFAULT NULL REFERENCES tile_layers(tile_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
   field layer_options_field_enum DEFAULT NULL,
@@ -20,6 +21,8 @@ CREATE TABLE layer_options(
   queryable boolean DEFAULT NULL,
   legend_url text DEFAULT NULL
 );
+
+CREATE INDEX ON layer_options USING btree(account_id);
 
 CREATE INDEX ON layer_options USING btree(tile_layer_id);
 

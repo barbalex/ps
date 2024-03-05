@@ -21,7 +21,7 @@ export const buildNavs = async ({
   db,
   level = 1,
 }) => {
-  const uiOptions = await db?.ui_options?.findUnique({
+  const uiOptions = await db?.ui_options?.findFirst({
     where: { user_id },
   })
   const designing = uiOptions?.designing ?? false

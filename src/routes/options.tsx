@@ -5,18 +5,11 @@ import { Row } from '../components/shared/Row'
 import '../form.css'
 
 import { user_id } from '../components/SqlInitializer'
-import { Ui_options as UiOption } from '../generated/client'
-
-interface UiOptionResult {
-  results: UiOption
-}
 
 export const Component = () => {
   const { db } = useElectric()!
-  const { results: uiOption }: UiOptionResult = useLiveQuery(
-    db.ui_options.liveUnique({
-      where: { user_id },
-    }),
+  const { results: uiOption } = useLiveQuery(
+    db.ui_options.liveUnique({ where: { user_id } }),
   )
 
   return (

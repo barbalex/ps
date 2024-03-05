@@ -13,6 +13,7 @@ CREATE TYPE vector_layer_type_enum AS enum(
 
 CREATE TABLE vector_layers(
   vector_layer_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   label text DEFAULT NULL,
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   type vector_layer_type_enum DEFAULT NULL, -- 'wfs',
@@ -32,6 +33,8 @@ CREATE TABLE vector_layers(
   polygon_count integer DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
 );
+
+CREATE INDEX ON vector_layers USING btree(account_id);
 
 CREATE INDEX ON vector_layers USING btree(label);
 

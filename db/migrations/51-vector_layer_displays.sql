@@ -37,6 +37,7 @@ DROP TABLE IF EXISTS vector_layer_displays CASCADE;
 -- manage all map related properties here? For imported/wfs and also own tables?
 CREATE TABLE vector_layer_displays(
   vector_layer_display_id uuid PRIMARY KEY DEFAULT NULL,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
   display_property_value text DEFAULT NULL,
   marker_type marker_type_enum DEFAULT NULL, -- 'circle',
@@ -58,6 +59,8 @@ CREATE TABLE vector_layer_displays(
   label_replace_by_generated_column text DEFAULT NULL,
   deleted boolean DEFAULT NULL -- false
 );
+
+CREATE INDEX ON vector_layer_displays(account_id);
 
 CREATE INDEX ON vector_layer_displays USING btree(vector_layer_id);
 

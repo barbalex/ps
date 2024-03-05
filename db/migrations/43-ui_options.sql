@@ -1,5 +1,6 @@
 CREATE TABLE ui_options(
-  user_id uuid PRIMARY KEY DEFAULT NULL,
+  user_id uuid PRIMARY KEY DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   designing boolean DEFAULT NULL, -- FALSE,
   breadcrumbs_overflowing boolean DEFAULT NULL, -- FALSE,
   navs_overflowing boolean DEFAULT NULL, -- FALSE,
@@ -16,6 +17,8 @@ CREATE TABLE ui_options(
 );
 
 -- CREATE INDEX ON ui_options USING btree(user_id);
+CREATE INDEX ON ui_options USING btree(account_id);
+
 COMMENT ON TABLE ui_options IS 'User interface settings (state saved in db)';
 
 COMMENT ON COLUMN ui_options.designing IS 'Whether user is currently designing projects. Preset: false';

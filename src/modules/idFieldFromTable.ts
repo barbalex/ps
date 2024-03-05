@@ -1,5 +1,7 @@
-export const idFieldFromTable = (table: string = ''): string =>
-  table === 'ui_options'
+export const idFieldFromTable = (table): string => {
+  if (!table) return undefined
+
+  return table === 'ui_options'
     ? 'user_id'
     : table.endsWith('taxa')
     ? `${table.slice(0, -1)}on_id`
@@ -10,3 +12,4 @@ export const idFieldFromTable = (table: string = ''): string =>
     : table === 'root' // not important but seems nicer, else: roo_id
     ? 'root_id'
     : `${table.slice(0, -1)}_id`
+}
