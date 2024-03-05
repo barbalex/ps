@@ -22,6 +22,7 @@ import { ElectricWrapper as ElectricProvider } from './ElectricWrapper'
 import { lightTheme } from './modules/theme'
 import { router } from './router'
 import { SqlInitializer } from './components/SqlInitializer'
+import { Syncer } from './components/Syncer'
 import { UploaderContext } from './UploaderContext'
 
 import '@fontsource/roboto/300.css'
@@ -57,6 +58,7 @@ export default function App() {
       ></lr-upload-ctx-provider>
       <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
       <SqlInitializer />
+      <Syncer />
       <FluentProvider theme={lightTheme}>
         <div style={routerContainerStyle}>
           <UploaderContext.Provider value={uploaderRef}>
