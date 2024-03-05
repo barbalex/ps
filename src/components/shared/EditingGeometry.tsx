@@ -4,7 +4,6 @@ import { Field, Textarea } from '@fluentui/react-components'
 
 import { useElectric } from '../../ElectricProvider'
 import { user_id } from '../SqlInitializer'
-import { Ui_options as UiOption } from '../../generated/client'
 import { SwitchField } from './SwitchField'
 // TODO:
 // maybe generalize this component for all geometry editing
@@ -29,19 +28,15 @@ export const EditingGeometry = memo(({ row, table }) => {
       : null
 
   const { db } = useElectric()!
-  const { results } = useLiveQuery(
+  const { results: uiOption } = useLiveQuery(
     db.ui_options.liveUnique({ where: { user_id } }),
   )
-  const uiOption: UiOption = results
   const editedId = uiOption?.[fieldName] ?? null
 
   const onChange = useCallback(
     async (e, data) => {
       // 1. if checked, show map if not already shown
       if (data.checked) {
-        const uiOption: UiOption = await db.ui_options.findUnique({
-          where: { user_id },
-        })
         const tabs = uiOption?.tabs ?? []
         if (!tabs.includes('map')) {
           await db.ui_options.update({
@@ -56,7 +51,7 @@ export const EditingGeometry = memo(({ row, table }) => {
         data: { [fieldName]: data.checked ? id : null },
       })
     },
-    [db.ui_options, id, fieldName],
+    [db.ui_options, uiOption?.tabs, fieldName, id],
   )
 
   const value = row.geometry ? JSON.stringify(row.geometry, null, 3) : ''

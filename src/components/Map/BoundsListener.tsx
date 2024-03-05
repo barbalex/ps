@@ -4,11 +4,6 @@ import { useLiveQuery } from 'electric-sql/react'
 
 import { useElectric } from '../../ElectricProvider'
 import { user_id } from '../SqlInitializer'
-import { Ui_options as UiOption } from '../../generated/client'
-
-interface uiOptionType {
-  results: UiOption
-}
 
 // Problem: when setting bounds from a form query, map is not available
 // Solution: use BoundsListener to set bounds from here where map is available
@@ -16,7 +11,7 @@ export const BoundsListener = () => {
   const map = useMap()
 
   const { db } = useElectric()!
-  const { results: uiOption }: uiOptionType = useLiveQuery(
+  const { results: uiOption } = useLiveQuery(
     db.ui_options.liveUnique({ where: { user_id } }),
   )
   const mapBounds = uiOption?.map_bounds

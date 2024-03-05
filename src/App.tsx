@@ -22,7 +22,7 @@ import { ElectricWrapper as ElectricProvider } from './ElectricWrapper'
 import { lightTheme } from './modules/theme'
 import { router } from './router'
 import { SqlInitializer } from './components/SqlInitializer'
-import { Syncer } from './components/Syncer'
+import { Syncer } from './components/SyncerOrdered'
 import { UploaderContext } from './UploaderContext'
 
 import '@fontsource/roboto/300.css'

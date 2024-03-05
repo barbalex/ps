@@ -17,7 +17,6 @@ export const DataNavsOverflowing = forwardRef(({ matches }, ref) => {
 
   const filteredMatches = matches.filter((match) => {
     const { table, folder } = match?.handle?.crumb?.(match) ?? {}
-
     return table !== 'root' && folder === true
   })
   const dataMatch = filteredMatches?.[0] ?? {}
@@ -60,9 +59,14 @@ export const DataNavsOverflowing = forwardRef(({ matches }, ref) => {
   }
 
   const { db } = useElectric()!
+  // TODO: WARNING
+  // if table is undefined, bad things will happen
   const { results: tableResults = [] } = useLiveQuery(
     () =>
-      db[table]?.liveMany({ where: filterParams, orderBy: { label: 'asc' } }),
+      db[table ?? 'projects']?.liveMany({
+        where: filterParams,
+        orderBy: { label: 'asc' },
+      }),
     [db, location.pathname],
   )
   const tos = tableResults.map((result) => {
@@ -73,7 +77,7 @@ export const DataNavsOverflowing = forwardRef(({ matches }, ref) => {
     return { path, text }
   })
 
-  // console.log('DataNavs', {
+  // console.log('hello DataNavsOverflowing', {
   //   table,
   //   idField,
   //   pathname,

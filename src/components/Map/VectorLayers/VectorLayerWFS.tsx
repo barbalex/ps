@@ -28,7 +28,6 @@ import { useElectric } from '../../../ElectricProvider'
 import {
   Vector_layers as VectorLayer,
   Vector_layer_displays as VectorLayerDisplay,
-  Ui_options as UiOption,
 } from '../../../generated/client'
 import { user_id } from '../../SqlInitializer'
 
@@ -53,10 +52,9 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
   const [error, setError] = useState()
   const notificationIds = useRef([])
 
-  const { results: uiOptionResults } = useLiveQuery(
+  const { results: uiOption } = useLiveQuery(
     db.ui_options.liveUnique({ where: { user_id } }),
   )
-  const uiOption: UiOption = uiOptionResults
   // const showMap = uiOption?.show_map ?? false TODO:
   const showMap = uiOption?.show_map ?? true
 

@@ -3,7 +3,6 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 
-import { UiOptions as UiOption } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
 import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { SwitchField } from '../components/shared/SwitchField'
@@ -12,15 +11,11 @@ import { FormHeader } from '../components/FormHeader'
 
 import '../form.css'
 
-interface UiOptionResult {
-  results: UiOption
-}
-
 export const Component = () => {
   const { user_id } = useParams()
 
   const { db } = useElectric()!
-  const { results: row }: UiOptionResult = useLiveQuery(
+  const { results: row } = useLiveQuery(
     db.ui_options.liveUnique({ where: { user_id } }),
   )
 

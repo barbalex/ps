@@ -9,7 +9,6 @@ import {
   Vector_layer_geoms as VectorLayerGeom,
   Vector_layers as VectorLayer,
   Vector_layer_displays as VectorLayerDisplay,
-  Ui_options as UiOption,
 } from '../../../generated/client'
 
 import { vectorLayerDisplayToProperties } from '../../../modules/vectorLayerDisplayToProperties'
@@ -27,7 +26,7 @@ interface Props {
 
 export const VectorLayerPVLGeom = ({ layer, display }: Props) => {
   const { db } = useElectric()!
-  const uiOption: UiOption = db.ui_options.liveUnique({ where: { user_id } })
+  const { results: uiOption } = db.ui_options.liveUnique({ where: { user_id } })
   const showMap = uiOption?.show_map ?? false
 
   const [data, setData] = useState()
