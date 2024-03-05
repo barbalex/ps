@@ -74,22 +74,46 @@ export const Layout = () => {
       const { synced: actionValuesSync } = await db.action_values.sync({
         include: { accounts: true, actions: true, units: true },
       })
-      // const { synced: actionReportsSync } = await db.action_reports.sync()
-      // const { synced: actionReportValuesSync } =
-      //   await db.action_report_values.sync()
-      // const { synced: checksSync } = await db.checks.sync()
-      // const { synced: checkValuesSync } = await db.check_values.sync()
-      // const { synced: checkTaxaSync } = await db.check_taxa.sync()
-      // const { synced: placeReportsSync } = await db.place_reports.sync()
-      // const { synced: placeReportValuesSync } =
-      //   await db.place_report_values.sync()
-      // const { synced: observationSourcesSync } =
-      //   await db.observation_sources.sync()
-      // const { synced: observationsSync } = await db.observations.sync()
-      // const { synced: messagesSync } = await db.messages.sync()
-      // const { synced: userMessagesSync } = await db.user_messages.sync()
-      // const { synced: placeUsersSync } = await db.place_users.sync()
-      // const { synced: goalsSync } = await db.goals.sync()
+      const { synced: actionReportsSync } = await db.action_reports.sync({
+        include: { accounts: true, actions: true },
+      })
+      const { synced: actionReportValuesSync } =
+        await db.action_report_values.sync({
+          include: { accounts: true, action_reports: true, units: true },
+        })
+      const { synced: checksSync } = await db.checks.sync({
+        include: { accounts: true, places: true },
+      })
+      const { synced: checkValuesSync } = await db.check_values.sync({
+        include: { accounts: true, checks: true, units: true },
+      })
+      const { synced: checkTaxaSync } = await db.check_taxa.sync({
+        include: { accounts: true, checks: true, taxa: true, units: true },
+      })
+      const { synced: placeReportsSync } = await db.place_reports.sync({
+        include: { accounts: true, places: true },
+      })
+      const { synced: placeReportValuesSync } =
+        await db.place_report_values.sync({
+          include: { accounts: true, place_reports: true, units: true },
+        })
+      const { synced: observationSourcesSync } =
+        await db.observation_sources.sync({
+          include: { accounts: true, projects: true },
+        })
+      const { synced: observationsSync } = await db.observations.sync({
+        include: { accounts: true, observation_sources: true, places: true },
+      })
+      const { synced: messagesSync } = await db.messages.sync()
+      const { synced: userMessagesSync } = await db.user_messages.sync({
+        include: { users: true, messages: true },
+      })
+      const { synced: placeUsersSync } = await db.place_users.sync({
+        include: { accounts: true, places: true, users: true },
+      })
+      const { synced: goalsSync } = await db.goals.sync({
+        include: { accounts: true, subprojects: true },
+      })
       // const { synced: goalReportsSync } = await db.goal_reports.sync()
       // const { synced: goalReportValuesSync } =
       //   await db.goal_report_values.sync()
