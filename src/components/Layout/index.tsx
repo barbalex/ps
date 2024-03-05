@@ -114,22 +114,51 @@ export const Layout = () => {
       const { synced: goalsSync } = await db.goals.sync({
         include: { accounts: true, subprojects: true },
       })
-      // const { synced: goalReportsSync } = await db.goal_reports.sync()
-      // const { synced: goalReportValuesSync } =
-      //   await db.goal_report_values.sync()
-      // const { synced: subprojectReportsSync } =
-      //   await db.subproject_reports.sync()
-      // const { synced: projectReportsSync } = await db.project_reports.sync()
-      // const { synced: filesSync } = await db.files.sync()
-      // const { synced: personsSync } = await db.persons.sync()
-      // const { synced: fieldTypesSync } = await db.field_types.sync()
-      // const { synced: widgetTypesSync } = await db.widget_types.sync()
-      // const { synced: widgetsForFieldsSync } =
-      //   await db.widgets_for_fields.sync()
-      // const { synced: fieldsSync } = await db.fields.sync()
-      // const { synced: uiOptionsSync } = await db.ui_options.sync()
-      // const { synced: gbifOccurrenceDownloadsSync } =
-      //   await db.gbif_occurrence_downloads.sync()
+      const { synced: goalReportsSync } = await db.goal_reports.sync({
+        include: { accounts: true, goals: true },
+      })
+      const { synced: goalReportValuesSync } = await db.goal_report_values.sync(
+        { include: { accounts: true, goal_reports: true, units: true } },
+      )
+      const { synced: subprojectReportsSync } =
+        await db.subproject_reports.sync({
+          include: { accounts: true, subprojects: true },
+        })
+      const { synced: projectReportsSync } = await db.project_reports.sync({
+        include: { accounts: true, projects: true },
+      })
+      const { synced: filesSync } = await db.files.sync({
+        include: {
+          accounts: true,
+          projects: true,
+          subprojects: true,
+          places: true,
+          actions: true,
+          checks: true,
+        },
+      })
+      const { synced: personsSync } = await db.persons.sync({
+        include: { projects: true, accounts: true },
+      })
+      const { synced: fieldTypesSync } = await db.field_types.sync()
+      const { synced: widgetTypesSync } = await db.widget_types.sync()
+      const { synced: widgetsForFieldsSync } = await db.widgets_for_fields.sync(
+        { include: { field_types: true, widget_types: true } },
+      )
+      const { synced: fieldsSync } = await db.fields.sync({
+        include: {
+          projects: true,
+          accounts: true,
+          field_types: true,
+          widget_types: true,
+          lists: true,
+        },
+      })
+      const { synced: uiOptionsSync } = await db.ui_options.sync()
+      const { synced: gbifOccurrenceDownloadsSync } =
+        await db.gbif_occurrence_downloads.sync({
+          include: { accounts: true, projects: true, subprojects: true },
+        })
       // const { synced: gbifTaxaSync } = await db.gbif_taxa.sync()
       // const { synced: gbifOccurrencesSync } = await db.gbif_occurrences.sync()
       // const { synced: tileLayersSync } = await db.tile_layers.sync()
@@ -156,37 +185,37 @@ export const Layout = () => {
       await taxonomiesSync
       await taxaSync
       await subprojectTaxaSync
-      // await listsSync
-      // await listValuesSync
-      // await unitsSync
-      // await placesSync
-      // await actionsSync
-      // await actionValuesSync
-      // await actionReportsSync
-      // await actionReportValuesSync
-      // await checksSync
-      // await checkValuesSync
-      // await checkTaxaSync
-      // await placeReportsSync
-      // await placeReportValuesSync
-      // await observationSourcesSync
-      // await observationsSync
-      // await messagesSync
-      // await userMessagesSync
-      // await placeUsersSync
-      // await goalsSync
-      // await goalReportsSync
-      // await goalReportValuesSync
-      // await subprojectReportsSync
-      // await projectReportsSync
-      // await filesSync
-      // await personsSync
-      // await fieldTypesSync
-      // await widgetTypesSync
-      // await widgetsForFieldsSync
-      // await fieldsSync
-      // await uiOptionsSync
-      // await gbifOccurrenceDownloadsSync
+      await listsSync
+      await listValuesSync
+      await unitsSync
+      await placesSync
+      await actionsSync
+      await actionValuesSync
+      await actionReportsSync
+      await actionReportValuesSync
+      await checksSync
+      await checkValuesSync
+      await checkTaxaSync
+      await placeReportsSync
+      await placeReportValuesSync
+      await observationSourcesSync
+      await observationsSync
+      await messagesSync
+      await userMessagesSync
+      await placeUsersSync
+      await goalsSync
+      await goalReportsSync
+      await goalReportValuesSync
+      await subprojectReportsSync
+      await projectReportsSync
+      await filesSync
+      await personsSync
+      await fieldTypesSync
+      await widgetTypesSync
+      await widgetsForFieldsSync
+      await fieldsSync
+      await uiOptionsSync
+      await gbifOccurrenceDownloadsSync
       // await gbifTaxaSync
       // await gbifOccurrencesSync
       // await tileLayersSync
