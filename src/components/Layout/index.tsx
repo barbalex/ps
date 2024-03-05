@@ -29,17 +29,93 @@ export const Layout = () => {
       })
       // console.log('hello Layout, syncItems 2, usersSync:', usersSync)
       const { synced: accountsSync } = await db.accounts.sync({
-        include: { users: true },
+        include: {
+          users: true, // n-side
+          projects: true, // 1-side
+          place_levels: true, // 1-side
+          subprojects: true, // 1-side
+          project_users: true, // 1-side
+          action_report_values: true, // 1-side
+          actions: true, // 1-side
+          action_values: true, // 1-side
+          checks: true, // 1-side
+          action_reports: true, // 1-side
+          check_values: true, // 1-side
+          check_taxa: true, // 1-side
+          place_reports: true, // 1-side
+          place_report_values: true, // 1-side
+          observations: true, // 1-side
+          observation_sources: true, // 1-side
+          lists: true, // 1-side
+          list_values: true, // 1-side
+          chart_subjects: true, // 1-side
+          charts: true, // 1-side
+          files: true, // 1-side
+          fields: true, // 1-side
+          gbif_occurrence_downloads: true, // 1-side
+          gbif_occurrences: true, // 1-side
+          gbif_taxa: true, // 1-side
+          goals: true, // 1-side
+          goal_report_values: true, // 1-side
+          goal_reports: true, // 1-side
+          persons: true, // 1-side
+          places: true, // 1-side
+          project_reports: true, // 1-side
+          layer_options: true, // 1-side
+          tile_layers: true, // 1-side
+          vector_layers: true, // 1-side
+          vector_layer_geoms: true, // 1-side
+          place_users: true, // 1-side
+          subproject_reports: true, // 1-side
+          subproject_taxa: true, // 1-side
+          subproject_users: true, // 1-side
+          taxa: true, // 1-side
+          taxonomies: true, // 1-side
+          ui_options: true, // 1-side
+          units: true, // 1-side
+          user_messages: true, // 1-side
+          vector_layer_displays: true, // 1-side
+        },
       })
       // console.log('hello Layout, syncItems 3, accountsSync:', accountsSync)
       const { synced: projectsSync } = await db.projects.sync({
-        include: { accounts: true },
+        include: {
+          accounts: true, // n-side
+          project_users: true, // 1-side
+          subprojects: true, // 1-side
+          project_reports: true, // 1-side
+          charts: true, // 1-side
+          fields: true, // 1-side
+          files: true, // 1-side
+          persons: true, // 1-side
+          place_levels: true, // 1-side
+          gbif_occurrence_downloads: true, // 1-side
+          gbif_taxa: true, // 1-side
+          gbif_occurrences: true, // 1-side
+          lists: true, // 1-side
+          observation_sources: true, // 1-side
+          taxonomies: true, // 1-side
+          tile_layers: true, // 1-side
+          vector_layers: true, // 1-side
+        },
       })
       const { synced: placeLevelsSync } = await db.place_levels.sync({
         include: { accounts: true, projects: true },
       })
       const { synced: subprojectsSync } = await db.subprojects.sync({
-        include: { accounts: true, projects: true },
+        include: {
+          accounts: true, // n-side
+          projects: true, // n-side
+          subproject_users: true, // 1-side
+          subproject_reports: true, // 1-side
+          charts: true, // 1-side
+          files: true, // 1-side
+          gbif_occurrence_downloads: true, // 1-side
+          gbif_occurrences: true, // 1-side
+          goals: true, // 1-side
+          places: true, // 1-side
+          subproject_taxa: true, // 1-side
+        },
       })
       const { synced: projectUsersSync } = await db.project_users.sync({
         include: { accounts: true, projects: true, users: true },
