@@ -184,14 +184,24 @@ export const Syncer = () => {
         include: { accounts: true, actions: true, units: true },
       })
       const { synced: actionReportsSync } = await db.action_reports.sync({
-        include: { accounts: true, actions: true },
+        include: {
+          accounts: true, // n-side
+          actions: true, // n-side
+          action_report_values: true, // 1-side
+        },
       })
       const { synced: actionReportValuesSync } =
         await db.action_report_values.sync({
           include: { accounts: true, action_reports: true, units: true },
         })
       const { synced: checksSync } = await db.checks.sync({
-        include: { accounts: true, places: true },
+        include: {
+          accounts: true, // n-side
+          places: true, // n-side
+          check_values: true, // 1-side
+          check_taxa: true, // 1-side
+          files: true, // 1-side
+        },
       })
       const { synced: checkValuesSync } = await db.check_values.sync({
         include: { accounts: true, checks: true, units: true },
@@ -200,7 +210,11 @@ export const Syncer = () => {
         include: { accounts: true, checks: true, taxa: true, units: true },
       })
       const { synced: placeReportsSync } = await db.place_reports.sync({
-        include: { accounts: true, places: true },
+        include: {
+          accounts: true, // n-side
+          places: true, // n-side
+          place_report_values: true, // 1-side
+        },
       })
       const { synced: placeReportValuesSync } =
         await db.place_report_values.sync({
@@ -208,7 +222,11 @@ export const Syncer = () => {
         })
       const { synced: observationSourcesSync } =
         await db.observation_sources.sync({
-          include: { accounts: true, projects: true },
+          include: {
+            accounts: true, // n-side
+            projects: true, // n-side
+            observations: true, // 1-side,
+          },
         })
       const { synced: observationsSync } = await db.observations.sync({
         include: { accounts: true, observation_sources: true, places: true },
