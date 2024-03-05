@@ -106,7 +106,7 @@ export const Layout = () => {
       })
       const { synced: messagesSync } = await db.messages.sync()
       const { synced: userMessagesSync } = await db.user_messages.sync({
-        include: { users: true, messages: true },
+        include: { users: true, messages: true, accounts: true },
       })
       const { synced: placeUsersSync } = await db.place_users.sync({
         include: { accounts: true, places: true, users: true },
@@ -154,26 +154,46 @@ export const Layout = () => {
           lists: true,
         },
       })
-      const { synced: uiOptionsSync } = await db.ui_options.sync()
+      // const { synced: uiOptionsSync } = await db.ui_options.sync({
+      //   include: { accounts: true },
+      // })
       const { synced: gbifOccurrenceDownloadsSync } =
         await db.gbif_occurrence_downloads.sync({
           include: { accounts: true, projects: true, subprojects: true },
         })
-      // const { synced: gbifTaxaSync } = await db.gbif_taxa.sync()
-      // const { synced: gbifOccurrencesSync } = await db.gbif_occurrences.sync()
-      // const { synced: tileLayersSync } = await db.tile_layers.sync()
-      // const { synced: vectorLayersSync } = await db.vector_layers.sync({
-      //   include: { projects: true },
-      // })
-      // const { synced: layerOptionsSync } = await db.layer_options.sync()
-      // const { synced: vectorLayerGeomsSync } =
-      //   await db.vector_layer_geoms.sync()
-      // const { synced: vectorLayerDisplaysSync } =
-      //   await db.vector_layer_displays.sync()
-      // const { synced: chartsSync } = await db.charts.sync()
-      // const { synced: chartSubjectsSync } = await db.chart_subjects.sync({
-      //   include: { accounts: true, charts: true, units: true },
-      // })
+      const { synced: gbifTaxaSync } = await db.gbif_taxa.sync({
+        include: { accounts: true, projects: true },
+      })
+      const { synced: gbifOccurrencesSync } = await db.gbif_occurrences.sync({
+        include: { accounts: true, projects: true, subprojects: true },
+      })
+      const { synced: tileLayersSync } = await db.tile_layers.sync({
+        include: { projects: true, accounts: true },
+      })
+      const { synced: vectorLayersSync } = await db.vector_layers.sync({
+        include: { projects: true, accounts: true },
+      })
+      const { synced: layerOptionsSync } = await db.layer_options.sync({
+        include: { tile_layers: true, vector_layers: true, accounts: true },
+      })
+      const { synced: vectorLayerGeomsSync } = await db.vector_layer_geoms.sync(
+        { include: { accounts: true, vector_layers: true } },
+      )
+      const { synced: vectorLayerDisplaysSync } =
+        await db.vector_layer_displays.sync({
+          include: { accounts: true, vector_layers: true },
+        })
+      const { synced: chartsSync } = await db.charts.sync({
+        include: {
+          accounts: true,
+          projects: true,
+          subprojects: true,
+          places: true,
+        },
+      })
+      const { synced: chartSubjectsSync } = await db.chart_subjects.sync({
+        include: { accounts: true, charts: true, units: true },
+      })
       // Resolves when the data has been synced into the local database.
       await usersSync
       await accountsSync
@@ -214,22 +234,20 @@ export const Layout = () => {
       await widgetTypesSync
       await widgetsForFieldsSync
       await fieldsSync
-      await uiOptionsSync
+      // await uiOptionsSync
       await gbifOccurrenceDownloadsSync
-      // await gbifTaxaSync
-      // await gbifOccurrencesSync
-      // await tileLayersSync
-      // await vectorLayersSync
-      // await layerOptionsSync
-      // await vectorLayerGeomsSync
-      // await vectorLayerDisplaysSync
-      // await chartsSync
-      // await chartSubjectsSync
+      await gbifTaxaSync
+      await gbifOccurrencesSync
+      await tileLayersSync
+      await vectorLayersSync
+      await layerOptionsSync
+      await vectorLayerGeomsSync
+      await vectorLayerDisplaysSync
+      await chartsSync
+      await chartSubjectsSync
     }
 
-    console.log('hello Layout, syncItems 4')
     syncItems()
-    console.log('hello Layout, syncItems 5')
   }, [db])
 
   // console.log('Layout rendering')

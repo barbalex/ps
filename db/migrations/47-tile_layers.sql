@@ -8,6 +8,7 @@ DROP TABLE IF EXISTS tile_layers CASCADE;
 
 CREATE TABLE tile_layers(
   tile_layer_id uuid PRIMARY KEY DEFAULT NULL,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   label text DEFAULT NULL,
   sort smallint DEFAULT NULL, -- 0
@@ -32,6 +33,8 @@ CREATE TABLE tile_layers(
   local_data_bounds jsonb DEFAULT NULL,
   deleted boolean DEFAULT NULL -- false
 );
+
+CREATE INDEX ON tile_layers USING btree(account_id);
 
 CREATE INDEX ON tile_layers USING btree(sort);
 

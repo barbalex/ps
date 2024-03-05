@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS vector_layer_geoms CASCADE;
 -- this way bbox can be used to load only what is in view
 CREATE TABLE vector_layer_geoms(
   vector_layer_geom_id uuid PRIMARY KEY DEFAULT NULL,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
   geometry jsonb DEFAULT NULL, -- geometry(GeometryCollection, 4326),
   properties jsonb DEFAULT NULL,
@@ -14,6 +15,8 @@ CREATE TABLE vector_layer_geoms(
   bbox_ne_lat real DEFAULT NULL,
   deleted boolean DEFAULT NULL -- false
 );
+
+CREATE INDEX ON vector_layer_geoms USING btree(account_id);
 
 CREATE INDEX ON vector_layer_geoms USING btree(vector_layer_id);
 
