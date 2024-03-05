@@ -92,7 +92,10 @@ export const Syncer = () => {
         },
       })
       const { synced: placeLevelsSync } = await db.place_levels.sync({
-        include: { accounts: true, projects: true },
+        include: {
+          accounts: true, // n-side
+          projects: true, // n-side
+        },
       })
       const { synced: subprojectsSync } = await db.subprojects.sync({
         include: {
@@ -110,10 +113,18 @@ export const Syncer = () => {
         },
       })
       const { synced: projectUsersSync } = await db.project_users.sync({
-        include: { accounts: true, projects: true, users: true },
+        include: {
+          accounts: true, // n-side
+          projects: true, // n-side
+          users: true, // n-side
+        },
       })
       const { synced: subprojectUsersSync } = await db.subproject_users.sync({
-        include: { accounts: true, subprojects: true, users: true },
+        include: {
+          accounts: true, // n-side
+          subprojects: true, // n-side
+          users: true, // n-side
+        },
       })
       const { synced: taxonomiesSync } = await db.taxonomies.sync({
         include: {
@@ -131,7 +142,11 @@ export const Syncer = () => {
         },
       })
       const { synced: subprojectTaxaSync } = await db.subproject_taxa.sync({
-        include: { accounts: true, subprojects: true, taxa: true },
+        include: {
+          accounts: true, // n-side
+          subprojects: true, // n-side
+          taxa: true, // n-side
+        },
       })
       const { synced: listsSync } = await db.lists.sync({
         include: {
@@ -143,7 +158,10 @@ export const Syncer = () => {
         },
       })
       const { synced: listValuesSync } = await db.list_values.sync({
-        include: { accounts: true, lists: true },
+        include: {
+          accounts: true, // n-side
+          lists: true, // n-side
+        },
       })
       const { synced: unitsSync } = await db.units.sync({
         include: {
@@ -181,7 +199,11 @@ export const Syncer = () => {
         },
       })
       const { synced: actionValuesSync } = await db.action_values.sync({
-        include: { accounts: true, actions: true, units: true },
+        include: {
+          accounts: true, // n-side
+          actions: true, // n-side
+          units: true, // n-side
+        },
       })
       const { synced: actionReportsSync } = await db.action_reports.sync({
         include: {
@@ -192,7 +214,11 @@ export const Syncer = () => {
       })
       const { synced: actionReportValuesSync } =
         await db.action_report_values.sync({
-          include: { accounts: true, action_reports: true, units: true },
+          include: {
+            accounts: true, // n-side
+            action_reports: true, // n-side
+            units: true, // n-side
+          },
         })
       const { synced: checksSync } = await db.checks.sync({
         include: {
@@ -204,10 +230,19 @@ export const Syncer = () => {
         },
       })
       const { synced: checkValuesSync } = await db.check_values.sync({
-        include: { accounts: true, checks: true, units: true },
+        include: {
+          accounts: true, // n-side
+          checks: true, // n-side
+          units: true, // n-side
+        },
       })
       const { synced: checkTaxaSync } = await db.check_taxa.sync({
-        include: { accounts: true, checks: true, taxa: true, units: true },
+        include: {
+          accounts: true, // n-side
+          checks: true, // n-side
+          taxa: true, // n-side
+          units: true, // n-side
+        },
       })
       const { synced: placeReportsSync } = await db.place_reports.sync({
         include: {
@@ -218,7 +253,11 @@ export const Syncer = () => {
       })
       const { synced: placeReportValuesSync } =
         await db.place_report_values.sync({
-          include: { accounts: true, place_reports: true, units: true },
+          include: {
+            accounts: true, // n-side
+            place_reports: true, // n-side
+            units: true, // n-side
+          },
         })
       const { synced: observationSourcesSync } =
         await db.observation_sources.sync({
@@ -229,97 +268,191 @@ export const Syncer = () => {
           },
         })
       const { synced: observationsSync } = await db.observations.sync({
-        include: { accounts: true, observation_sources: true, places: true },
+        include: {
+          accounts: true, // n-side
+          observation_sources: true, // n-side
+          places: true, // n-side
+        },
       })
-      const { synced: messagesSync } = await db.messages.sync()
+      const { synced: messagesSync } = await db.messages.sync({
+        include: {
+          user_messages: true, // 1-side
+        },
+      })
       const { synced: userMessagesSync } = await db.user_messages.sync({
-        include: { users: true, messages: true, accounts: true },
+        include: {
+          users: true, // n-side
+          messages: true, // n-side
+          accounts: true, // n-side
+        },
       })
       const { synced: placeUsersSync } = await db.place_users.sync({
-        include: { accounts: true, places: true, users: true },
+        include: {
+          accounts: true, // n-side
+          places: true, // n-side
+          users: true, // n-side
+        },
       })
       const { synced: goalsSync } = await db.goals.sync({
-        include: { accounts: true, subprojects: true },
+        include: {
+          accounts: true, // n-side
+          subprojects: true, // n-side
+          goal_reports: true, // 1-side
+        },
       })
       const { synced: goalReportsSync } = await db.goal_reports.sync({
-        include: { accounts: true, goals: true },
+        include: {
+          accounts: true, // n-side
+          goals: true, // n-side
+          goal_report_values: true, // 1-side
+        },
       })
       const { synced: goalReportValuesSync } = await db.goal_report_values.sync(
-        { include: { accounts: true, goal_reports: true, units: true } },
+        {
+          include: {
+            accounts: true, // n-side
+            goal_reports: true, // n-side
+            units: true, // n-side
+          },
+        },
       )
       const { synced: subprojectReportsSync } =
         await db.subproject_reports.sync({
-          include: { accounts: true, subprojects: true },
+          include: {
+            accounts: true, // n-side
+            subprojects: true, // n-side
+          },
         })
       const { synced: projectReportsSync } = await db.project_reports.sync({
-        include: { accounts: true, projects: true },
+        include: {
+          accounts: true, // n-side
+          projects: true, // n-side
+        },
       })
       const { synced: filesSync } = await db.files.sync({
         include: {
-          accounts: true,
-          projects: true,
-          subprojects: true,
-          places: true,
-          actions: true,
-          checks: true,
+          accounts: true, // n-side
+          projects: true, // n-side
+          subprojects: true, // n-side
+          places: true, // n-side
+          actions: true, // n-side
+          checks: true, // n-side
         },
       })
       const { synced: personsSync } = await db.persons.sync({
-        include: { projects: true, accounts: true },
+        include: {
+          projects: true, // n-side
+          accounts: true, // n-side
+        },
       })
-      const { synced: fieldTypesSync } = await db.field_types.sync()
-      const { synced: widgetTypesSync } = await db.widget_types.sync()
+      const { synced: fieldTypesSync } = await db.field_types.sync({
+        include: {
+          fields: true, // 1-side
+          widgets_for_fields: true, // 1-side
+        },
+      })
+      const { synced: widgetTypesSync } = await db.widget_types.sync({
+        include: {
+          widgets_for_fields: true, // 1-side
+          fields: true, // 1-side
+        },
+      })
       const { synced: widgetsForFieldsSync } = await db.widgets_for_fields.sync(
-        { include: { field_types: true, widget_types: true } },
+        {
+          include: {
+            field_types: true, // n-side
+            widget_types: true, // n-side
+          },
+        },
       )
       const { synced: fieldsSync } = await db.fields.sync({
         include: {
-          projects: true,
-          accounts: true,
-          field_types: true,
-          widget_types: true,
-          lists: true,
+          projects: true, // n-side
+          accounts: true, // n-side
+          field_types: true, // n-side
+          widget_types: true, // n-side
+          lists: true, // n-side
         },
       })
-      // const { synced: uiOptionsSync } = await db.ui_options.sync({
-      //   include: { accounts: true },
-      // })
+      const { synced: uiOptionsSync } = await db.ui_options.sync({
+        include: {
+          accounts: true, // n-side
+        },
+      })
       const { synced: gbifOccurrenceDownloadsSync } =
         await db.gbif_occurrence_downloads.sync({
-          include: { accounts: true, projects: true, subprojects: true },
+          include: {
+            accounts: true, // n-side
+            projects: true, // n-side
+            subprojects: true, // n-side
+          },
         })
       const { synced: gbifTaxaSync } = await db.gbif_taxa.sync({
-        include: { accounts: true, projects: true },
+        include: {
+          accounts: true, // n-side
+          projects: true, // n-side
+        },
       })
       const { synced: gbifOccurrencesSync } = await db.gbif_occurrences.sync({
-        include: { accounts: true, projects: true, subprojects: true },
+        include: {
+          accounts: true, // n-side
+          projects: true, // n-side
+          subprojects: true, // n-side
+        },
       })
       const { synced: tileLayersSync } = await db.tile_layers.sync({
-        include: { projects: true, accounts: true },
+        include: {
+          projects: true, // n-side
+          accounts: true, // n-side
+          layer_options: true, // 1-side
+        },
       })
       const { synced: vectorLayersSync } = await db.vector_layers.sync({
-        include: { projects: true, accounts: true },
+        include: {
+          projects: true, // n-side
+          accounts: true, // n-side
+          layer_options: true, // 1-side
+          vector_layer_displays: true, // 1-side
+          vector_layer_geoms: true, // 1-side
+        },
       })
       const { synced: layerOptionsSync } = await db.layer_options.sync({
-        include: { tile_layers: true, vector_layers: true, accounts: true },
+        include: {
+          tile_layers: true, // n-side
+          vector_layers: true, // n-side
+          accounts: true, // n-side
+        },
       })
       const { synced: vectorLayerGeomsSync } = await db.vector_layer_geoms.sync(
-        { include: { accounts: true, vector_layers: true } },
+        {
+          include: {
+            accounts: true, // n-side
+            vector_layers: true, // n-side
+          },
+        },
       )
       const { synced: vectorLayerDisplaysSync } =
         await db.vector_layer_displays.sync({
-          include: { accounts: true, vector_layers: true },
+          include: {
+            accounts: true, // n-side
+            vector_layers: true, // n-side
+          },
         })
       const { synced: chartsSync } = await db.charts.sync({
         include: {
-          accounts: true,
-          projects: true,
-          subprojects: true,
-          places: true,
+          accounts: true, // n-side
+          projects: true, // n-side
+          subprojects: true, // n-side
+          places: true, // n-side
+          chart_subjects: true, // 1-side
         },
       })
       const { synced: chartSubjectsSync } = await db.chart_subjects.sync({
-        include: { accounts: true, charts: true, units: true },
+        include: {
+          accounts: true, // n-side
+          charts: true, // n-side
+          units: true, // n-side
+        },
       })
       // Resolves when the data has been synced into the local database.
       await usersSync
