@@ -18,34 +18,62 @@ export const Layout = () => {
       console.log('hello Layout, syncItems 1, db:', db)
       // Resolves when the shape subscription has been established.
       // console.log('hello Layout, syncItems 1, db:', db)
-      // const { synced: usersSync } = await db.users.sync({
-      //   include: {
-      //     accounts: true,
-      //     project_users: true,
-      //     subproject_users: true,
-      //     place_users: true,
-      //     user_messages: true,
-      //   },
-      // })
+      const { synced: usersSync } = await db.users.sync({
+        include: {
+          accounts: true,
+          project_users: true,
+          subproject_users: true,
+          place_users: true,
+          user_messages: true,
+        },
+      })
       // console.log('hello Layout, syncItems 2, usersSync:', usersSync)
-      // const { synced: accountsSync } = await db.accounts.sync({
-      //   include: { users: true },
-      // })
+      const { synced: accountsSync } = await db.accounts.sync({
+        include: { users: true },
+      })
       // console.log('hello Layout, syncItems 3, accountsSync:', accountsSync)
-      // const { synced: projectsSync } = await db.projects.sync()
-      // const { synced: placeLevelsSync } = await db.place_levels.sync()
-      // const { synced: subprojectsSync } = await db.subprojects.sync()
-      // const { synced: projectUsersSync } = await db.project_users.sync()
-      // const { synced: subprojectUsersSync } = await db.subproject_users.sync()
-      // const { synced: taxonomiesSync } = await db.taxonomies.sync()
-      // const { synced: taxaSync } = await db.taxa.sync()
-      // const { synced: subprojectTaxaSync } = await db.subproject_taxa.sync()
-      // const { synced: listsSync } = await db.lists.sync()
-      // const { synced: listValuesSync } = await db.list_values.sync()
-      // const { synced: unitsSync } = await db.units.sync()
-      // const { synced: placesSync } = await db.places.sync()
-      // const { synced: actionsSync } = await db.actions.sync()
-      // const { synced: actionValuesSync } = await db.action_values.sync()
+      const { synced: projectsSync } = await db.projects.sync({
+        include: { accounts: true },
+      })
+      const { synced: placeLevelsSync } = await db.place_levels.sync({
+        include: { accounts: true, projects: true },
+      })
+      const { synced: subprojectsSync } = await db.subprojects.sync({
+        include: { accounts: true, projects: true },
+      })
+      const { synced: projectUsersSync } = await db.project_users.sync({
+        include: { accounts: true, projects: true, users: true },
+      })
+      const { synced: subprojectUsersSync } = await db.subproject_users.sync({
+        include: { accounts: true, subprojects: true, users: true },
+      })
+      const { synced: taxonomiesSync } = await db.taxonomies.sync({
+        include: { accounts: true, projects: true }, // taxa?
+      })
+      const { synced: taxaSync } = await db.taxa.sync({
+        include: { accounts: true, taxonomies: true },
+      })
+      const { synced: subprojectTaxaSync } = await db.subproject_taxa.sync({
+        include: { accounts: true, subprojects: true, taxa: true },
+      })
+      const { synced: listsSync } = await db.lists.sync({
+        include: { accounts: true, projects: true },
+      })
+      const { synced: listValuesSync } = await db.list_values.sync({
+        include: { accounts: true, lists: true },
+      })
+      const { synced: unitsSync } = await db.units.sync({
+        include: { accounts: true, projects: true, lists: true },
+      })
+      const { synced: placesSync } = await db.places.sync({
+        include: { accounts: true, subprojects: true, places: true },
+      })
+      const { synced: actionsSync } = await db.actions.sync({
+        include: { accounts: true, places: true },
+      })
+      const { synced: actionValuesSync } = await db.action_values.sync({
+        include: { accounts: true, actions: true, units: true },
+      })
       // const { synced: actionReportsSync } = await db.action_reports.sync()
       // const { synced: actionReportValuesSync } =
       //   await db.action_report_values.sync()
@@ -94,16 +122,16 @@ export const Layout = () => {
       //   include: { accounts: true, charts: true, units: true },
       // })
       // Resolves when the data has been synced into the local database.
-      // await usersSync
-      // await accountsSync
-      // await projectsSync
-      // await placeLevelsSync
-      // await subprojectsSync
-      // await projectUsersSync
-      // await subprojectUsersSync
-      // await taxonomiesSync
-      // await taxaSync
-      // await subprojectTaxaSync
+      await usersSync
+      await accountsSync
+      await projectsSync
+      await placeLevelsSync
+      await subprojectsSync
+      await projectUsersSync
+      await subprojectUsersSync
+      await taxonomiesSync
+      await taxaSync
+      await subprojectTaxaSync
       // await listsSync
       // await listValuesSync
       // await unitsSync
