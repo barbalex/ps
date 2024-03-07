@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS notifications;
 
 CREATE TABLE notifications(
   notification_id uuid PRIMARY KEY DEFAULT NULL,
+  user_id uuid REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE DEFAULT NULL,
   title text DEFAULT NULL,
   body text DEFAULT NULL,
   intent notification_intent_enum DEFAULT NULL,
