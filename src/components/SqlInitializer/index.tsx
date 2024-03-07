@@ -44,7 +44,6 @@ import { generateVectorLayerDisplayLabel } from './labelGenerators/vectorLayerDi
 import { generateChartLabel } from './labelGenerators/charts'
 import { generateChartSubjectLabel } from './labelGenerators/chartSubjects'
 import { generatePartialIndexes } from './partialIndexes'
-import { generateUiOptions } from './uiOptions'
 
 // how to get work:
 // 1. Add label in labelGenerator's .tsx-filex, inside useEffect that only runs once if label column is not found
@@ -105,7 +104,6 @@ export const SqlInitializer = () => {
       await generateVectorLayerDisplayLabel(db)
       await generateChartLabel(db)
       await generateChartSubjectLabel(db)
-      generateUiOptions({ db, user_id })
     }
     generate()
   }, [db])
