@@ -43,7 +43,6 @@ import { generateUiOptionLabel } from './labelGenerators/uiOptions'
 import { generateVectorLayerDisplayLabel } from './labelGenerators/vectorLayerDisplays'
 import { generateChartLabel } from './labelGenerators/charts'
 import { generateChartSubjectLabel } from './labelGenerators/chartSubjects'
-import { seed } from './seed'
 import { generatePartialIndexes } from './partialIndexes'
 import { generateUiOptions } from './uiOptions'
 
@@ -106,7 +105,6 @@ export const SqlInitializer = () => {
       await generateVectorLayerDisplayLabel(db)
       await generateChartLabel(db)
       await generateChartSubjectLabel(db)
-      await seed(db)
       generateUiOptions({ db, user_id })
     }
     generate()
