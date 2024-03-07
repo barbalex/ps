@@ -1,3 +1,7 @@
+-- TODO:
+-- when run during migrations, on startup get the following error:
+-- Uncaught (in promise) Error: no such table: main.projects
+-- works when run later
 CREATE INDEX IF NOT EXISTS users_deleted_idx ON users(deleted)
 WHERE
   deleted;

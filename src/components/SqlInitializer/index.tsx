@@ -60,6 +60,7 @@ export const SqlInitializer = () => {
 
   useEffect(() => {
     const generate = async () => {
+      // seems that these can't be run in migrations
       await generateUserLabel(db)
       await generateAccountLabel(db)
       await generateProjectLabel(db)
