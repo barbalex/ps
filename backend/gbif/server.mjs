@@ -49,12 +49,20 @@
 //     using pg: https://node-postgres.com/apis/client or node-postgres: https://github.com/brianc/node-postgres
 // 9.  delete the .csv file
 // 10. update the status of the download in the database
+import dotenv from 'dotenv'
+dotenv.config()
 import axios from 'axios'
 import createSubscriber from 'pg-listen'
 
+console.log(
+  'process.env.ELECTRIC_DATABASE_URL',
+  process.env.ELECTRIC_DATABASE_URL,
+)
 const subscriber = createSubscriber({
   connectionString: process.env.ELECTRIC_DATABASE_URL,
 })
+console.log('subscriber', subscriber)
+console.log('env', process.env)
 
 subscriber.notifications.on('gbif_occurrence_download_update', (payload) => {
   // Payload as passed to subscriber.notify() (see below)
@@ -71,5 +79,9 @@ subscriber.events.on('error', (error) => {
 })
 
 process.on('exit', () => {
+  console.log('Closing database connection...')
   subscriber.close()
 })
+
+const connection = await subscriber.connect()
+console.log('Connected to database, connection:', connection)

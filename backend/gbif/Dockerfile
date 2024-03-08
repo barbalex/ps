@@ -20,4 +20,4 @@ EXPOSE 7000
 
 USER node
 
-CMD [ "dumb-init", "node", "server.js" ]
+CMD [ "dumb-init", "node", "server.mjs" ]

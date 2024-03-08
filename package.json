@@ -38,6 +38,7 @@
     "@uploadcare/blocks": "0.34.0",
     "allotment": "1.20.0",
     "dayjs": "1.11.10",
+    "dotenv": "16.4.5",
     "electric-sql": "0.9.4",
     "framer-motion": "11.0.8",
     "is-uuid": "1.0.2",

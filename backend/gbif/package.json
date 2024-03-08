@@ -3,12 +3,14 @@
   "version": "0.1.0",
   "description": "downloads gbif data and inserts into postgresql",
   "author": "alex@gabriel-software.ch",
-  "main": "server.js",
+  "main": "server.mjs",
+  "type": "module",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.mjs"
   },
   "dependencies": {
     "axios": "1.6.7",
+    "dotenv": "16.4.5",
     "pg-listen": "1.7.0"
   }
 }
