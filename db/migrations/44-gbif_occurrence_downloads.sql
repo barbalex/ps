@@ -33,3 +33,5 @@ COMMENT ON COLUMN gbif_occurrence_downloads.filters IS 'area, groups, speciesKey
 
 ALTER TABLE gbif_occurrence_downloads ENABLE electric;
 
+-- INSERT INTO gbif_occurrence_downloads(gbif_occurrence_download_id, account_id, project_id, subproject_id, gbif_table, filters, created_time, download_key, error, inserted_time, inserted_count, attribution, deleted)
+--   VALUES ('018e1dc5-992e-7167-a294-434163a27d4b', '018cf958-27e2-7000-90d3-59f024d467be', '018cfcf7-6424-7000-a100-851c5cc2c878', '018cfd27-ee92-7000-b678-e75497d6c60e', 'gbif_occurrences', '{"area": "POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))"}', '2020-01-01T00:00:00Z', '00000000-0000-0000-0000-000000000000', NULL, '2020-01-01T00:00:00Z', 0, NULL, FALSE);
