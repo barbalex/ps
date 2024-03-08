@@ -1472,6 +1472,190 @@ COMMENT ON COLUMN gbif_occurrences.gbif_data IS 'data as received from GBIF';
 
 COMMENT ON COLUMN gbif_occurrences.label IS 'label of occurrence, used to show it in the UI. Created on import';
 
+CREATE TYPE tile_layer_type_enum AS enum(
+  'wms',
+  'wmts'
+  -- 'tms'
+);
+
+DROP TABLE IF EXISTS tile_layers CASCADE;
+
+CREATE TABLE tile_layers(
+  tile_layer_id uuid PRIMARY KEY DEFAULT NULL,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  label text DEFAULT NULL,
+  sort smallint DEFAULT NULL, -- 0
+  active boolean DEFAULT NULL, -- false
+  type tile_layer_type_enum DEFAULT NULL, -- 'wmts'
+  wmts_url_template text DEFAULT NULL,
+  wmts_subdomains jsonb DEFAULT NULL, -- array of text
+  wms_base_url text DEFAULT NULL,
+  wms_format jsonb DEFAULT NULL,
+  wms_layer jsonb DEFAULT NULL,
+  wms_parameters jsonb DEFAULT NULL,
+  wms_styles jsonb DEFAULT NULL, -- array of text. TODO: what is this exactly?
+  wms_transparent boolean DEFAULT NULL, -- false
+  wms_version text DEFAULT NULL, -- values: '1.1.1', '1.3.0'
+  wms_info_format jsonb DEFAULT NULL,
+  wms_legend jsonb DEFAULT NULL, -- TODO: blob is not yet supported by electric-sql. Change when it is
+  max_zoom integer DEFAULT NULL, -- 19
+  min_zoom integer DEFAULT NULL, -- 0
+  opacity_percent integer DEFAULT NULL, -- 100. TODO: difference to wms_transparent?
+  grayscale boolean DEFAULT NULL, -- false
+  local_data_size integer DEFAULT NULL,
+  local_data_bounds jsonb DEFAULT NULL,
+  deleted boolean DEFAULT NULL -- false
+);
+
+CREATE INDEX ON tile_layers USING btree(account_id);
+
+CREATE INDEX ON tile_layers USING btree(sort);
+
+COMMENT ON TABLE tile_layers IS 'Goal: Bring your own tile layers. Not versioned (not recorded and only added by manager).';
+
+COMMENT ON COLUMN tile_layers.local_data_size IS 'Size of locally saved image data';
+
+COMMENT ON COLUMN tile_layers.local_data_bounds IS 'Array of bounds and their size of locally saved image data';
+
+COMMENT ON COLUMN tile_layers.opacity_percent IS 'As numeric is not supported by electric-sql, we cant use values between 0 and 1 for opacity. So we use integer values between 0 and 100 and divide by 100 in the frontend.';
+
+CREATE TYPE vector_layer_type_enum AS enum(
+  'wfs',
+  'upload',
+  'places1',
+  'places2',
+  'actions1',
+  'actions2',
+  'checks1',
+  'checks2',
+  'observations1',
+  'observations2'
+);
+
+CREATE TABLE vector_layers(
+  vector_layer_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  label text DEFAULT NULL,
+  project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  type vector_layer_type_enum DEFAULT NULL, -- 'wfs',
+  display_by_property_field text DEFAULT NULL,
+  sort smallint DEFAULT NULL,
+  active boolean DEFAULT NULL,
+  max_zoom integer DEFAULT NULL, -- 19,
+  min_zoom integer DEFAULT NULL, -- 0,
+  max_features integer DEFAULT NULL, -- 1000
+  wfs_url text DEFAULT NULL, -- WFS url, for example https://maps.zh.ch/wfs/OGDZHWFS. TODO: rename wfs_url
+  wfs_layer jsonb DEFAULT NULL, -- a single option
+  wfs_version text DEFAULT NULL, -- often: 1.1.0 or 2.0.0
+  wfs_output_format jsonb DEFAULT NULL, --  a single option. TODO: rename wfs_output_format
+  feature_count integer DEFAULT NULL,
+  point_count integer DEFAULT NULL,
+  line_count integer DEFAULT NULL,
+  polygon_count integer DEFAULT NULL,
+  deleted boolean DEFAULT NULL -- FALSE
+);
+
+CREATE INDEX ON vector_layers USING btree(account_id);
+
+CREATE INDEX ON vector_layers USING btree(label);
+
+CREATE INDEX ON vector_layers USING btree(project_id);
+
+CREATE INDEX ON vector_layers USING btree(type);
+
+CREATE INDEX ON vector_layers USING btree(sort);
+
+COMMENT ON TABLE vector_layers IS 'Goal: Bring your own tile layers. Either from wfs or importing GeoJSON. Should only contain metadata, not data fetched from wms or wmts servers (that should only be saved locally on the client).';
+
+COMMENT ON COLUMN vector_layers.display_by_property_field IS 'Name of the field whose values is used to display the layer. If null, a single display is used.';
+
+COMMENT ON COLUMN vector_layers.feature_count IS 'Number of features. Set when downloaded features';
+
+COMMENT ON COLUMN vector_layers.point_count IS 'Number of point features. Used to show styling for points - or not. Set when downloaded features';
+
+COMMENT ON COLUMN vector_layers.line_count IS 'Number of line features. Used to show styling for lines - or not. Set when downloaded features';
+
+COMMENT ON COLUMN vector_layers.polygon_count IS 'Number of polygon features. Used to show styling for polygons - or not. Set when downloaded features';
+
+-- Goal: wms_layer can be > 700, slowing down the tileLayer form
+-- Solution: outsource them (and maybe later others) here
+-- This table is client side only, so we dont need a soft delete column
+-- Also: there is no use in saving this data on the server or syncing it
+CREATE TYPE layer_options_field_enum AS enum(
+  'wms_format',
+  'wms_layer',
+  'wms_info_format',
+  'wfs_output_format',
+  'wfs_layer'
+);
+
+CREATE TABLE layer_options(
+  layer_option_id text PRIMARY KEY DEFAULT NULL,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  tile_layer_id uuid DEFAULT NULL REFERENCES tile_layers(tile_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  field layer_options_field_enum DEFAULT NULL,
+  value text DEFAULT NULL,
+  label text DEFAULT NULL,
+  queryable boolean DEFAULT NULL,
+  legend_url text DEFAULT NULL
+);
+
+CREATE INDEX ON layer_options USING btree(account_id);
+
+CREATE INDEX ON layer_options USING btree(tile_layer_id);
+
+CREATE INDEX ON layer_options USING btree(vector_layer_id);
+
+CREATE INDEX ON layer_options USING btree(field);
+
+CREATE INDEX ON layer_options USING btree(value);
+
+CREATE INDEX ON layer_options USING btree(label);
+
+COMMENT ON TABLE layer_options IS 'Goal: wms_layer options can be > 700, slowing down the tileLayer form. Solution: outsource them (and maybe later others) here. Also: there is no use in saving this data on the server or syncing it.';
+
+COMMENT ON COLUMN layer_options.layer_option_id IS 'The base url of the wms server, combined with the field name whose data is stored and the value. Insures that we dont have duplicate entries.';
+
+COMMENT ON COLUMN layer_options.legend_url IS 'The url to fetch the legend image from.';
+
+DROP TABLE IF EXISTS vector_layer_geoms CASCADE;
+
+--
+-- seperate from vector_layers because vector_layers : vector_layer_geoms = 1 : n
+-- this way bbox can be used to load only what is in view
+CREATE TABLE vector_layer_geoms(
+  vector_layer_geom_id uuid PRIMARY KEY DEFAULT NULL,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  geometry jsonb DEFAULT NULL, -- geometry(GeometryCollection, 4326),
+  properties jsonb DEFAULT NULL,
+  bbox_sw_lng real DEFAULT NULL,
+  bbox_sw_lat real DEFAULT NULL,
+  bbox_ne_lng real DEFAULT NULL,
+  bbox_ne_lat real DEFAULT NULL,
+  deleted boolean DEFAULT NULL -- false
+);
+
+CREATE INDEX ON vector_layer_geoms USING btree(account_id);
+
+CREATE INDEX ON vector_layer_geoms USING btree(vector_layer_id);
+
+COMMENT ON TABLE vector_layer_geoms IS 'Goal: Save vector layers client side for 1. offline usage 2. better filtering (to viewport). Data is downloaded when manager configures vector layer. Not versioned (not recorded and only added by manager).';
+
+COMMENT ON COLUMN vector_layer_geoms.geometry IS 'geometry-collection of this row';
+
+COMMENT ON COLUMN vector_layer_geoms.properties IS 'properties of this row';
+
+COMMENT ON COLUMN vector_layer_geoms.bbox_sw_lng IS 'bbox of the geometry. Set client-side on every change of geometry. Used to filter geometries client-side for viewport';
+
+COMMENT ON COLUMN vector_layer_geoms.bbox_sw_lat IS 'bbox of the geometry. Set client-side on every change of geometry. Used to filter geometries client-side for viewport';
+
+COMMENT ON COLUMN vector_layer_geoms.bbox_ne_lng IS 'bbox of the geometry. Set client-side on every change of geometry. Used to filter geometries client-side for viewport';
+
+COMMENT ON COLUMN vector_layer_geoms.bbox_ne_lat IS 'bbox of the geometry. Set client-side on every change of geometry. Used to filter geometries client-side for viewport';
+
 -- enable electric
 ALTER TABLE users ENABLE electric;
 
@@ -1558,4 +1742,12 @@ ALTER TABLE gbif_occurrence_downloads ENABLE electric;
 ALTER TABLE gbif_taxa ENABLE electric;
 
 ALTER TABLE gbif_occurrences ENABLE electric;
+
+ALTER TABLE tile_layers ENABLE electric;
+
+ALTER TABLE vector_layers ENABLE electric;
+
+ALTER TABLE layer_options ENABLE electric;
+
+ALTER TABLE vector_layer_geoms ENABLE electric;
 
