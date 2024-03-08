@@ -1,3 +1,4 @@
+// in pg need to run: gbif_occurrences_downloads_update_notification.sql to create notifications
 // connect to the postgreSQL database
 // listen to changes in gbif_occurrence_downloads
 // also: on startup, search for any downloads that haven't been processed yet
@@ -52,7 +53,7 @@ import axios from 'axios'
 import createSubscriber from 'pg-listen'
 
 const subscriber = createSubscriber({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: process.env.ELECTRIC_DATABASE_URL,
 })
 
 subscriber.notifications.on('gbif_occurrence_download_update', (payload) => {
