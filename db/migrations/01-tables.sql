@@ -787,6 +787,193 @@ COMMENT ON COLUMN check_values.value_numeric IS 'Used for numeric values';
 
 COMMENT ON COLUMN check_values.value_text IS 'Used for text values';
 
+CREATE TABLE check_taxa(
+  check_taxon_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  check_id uuid DEFAULT NULL REFERENCES checks(check_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  taxon_id uuid DEFAULT NULL REFERENCES taxa(taxon_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE CASCADE,
+  value_integer integer DEFAULT NULL,
+  value_numeric double precision DEFAULT NULL,
+  value_text text DEFAULT NULL,
+  label text DEFAULT NULL,
+  deleted boolean DEFAULT NULL -- FALSE
+);
+
+-- CREATE INDEX ON check_taxa USING btree(check_taxon_id);
+CREATE INDEX ON check_taxa USING btree(account_id);
+
+CREATE INDEX ON check_taxa USING btree(check_id);
+
+CREATE INDEX ON check_taxa USING btree(taxon_id);
+
+CREATE INDEX ON check_taxa USING btree(unit_id);
+
+CREATE INDEX ON check_taxa USING btree(value_integer);
+
+CREATE INDEX ON check_taxa USING btree(value_numeric);
+
+CREATE INDEX ON check_taxa USING btree(value_text);
+
+CREATE INDEX ON check_taxa USING btree(label);
+
+-- CREATE INDEX ON check_taxa((1))
+-- WHERE
+--   deleted;
+COMMENT ON COLUMN check_taxa.account_id IS 'redundant account_id enhances data safety';
+
+CREATE TABLE place_reports(
+  place_report_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  year integer DEFAULT NULL, -- DATE_PART('year', now()::date),
+  data jsonb DEFAULT NULL,
+  label_replace_by_generated_column text DEFAULT NULL,
+  deleted boolean DEFAULT NULL -- FALSE
+);
+
+-- CREATE INDEX ON place_reports USING btree(place_report_id);
+CREATE INDEX ON place_reports USING btree(account_id);
+
+CREATE INDEX ON place_reports USING btree(place_id);
+
+CREATE INDEX ON place_reports USING btree(year);
+
+-- CREATE INDEX ON place_reports((1))
+-- WHERE
+--   deleted;
+COMMENT ON TABLE place_reports IS 'Reporting on the situation of the subproject in this place.';
+
+COMMENT ON COLUMN place_reports.account_id IS 'redundant account_id enhances data safety';
+
+COMMENT ON COLUMN place_reports.year IS 'Year of report. Preset: current year';
+
+COMMENT ON COLUMN place_reports.data IS 'Room for place report specific data, defined in "fields" table';
+
+CREATE TABLE place_report_values(
+  place_report_value_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  place_report_id uuid DEFAULT NULL REFERENCES place_reports(place_report_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE CASCADE,
+  value_integer integer DEFAULT NULL,
+  value_numeric double precision DEFAULT NULL,
+  value_text text DEFAULT NULL,
+  label text DEFAULT NULL,
+  deleted boolean DEFAULT NULL -- FALSE
+);
+
+-- CREATE INDEX ON place_report_values USING btree(place_report_value_id);
+CREATE INDEX ON place_report_values USING btree(account_id);
+
+CREATE INDEX ON place_report_values USING btree(place_report_id);
+
+CREATE INDEX ON place_report_values USING btree(unit_id);
+
+CREATE INDEX ON place_report_values USING btree(value_integer);
+
+CREATE INDEX ON place_report_values USING btree(value_numeric);
+
+CREATE INDEX ON place_report_values USING btree(value_text);
+
+CREATE INDEX ON place_report_values USING btree(label);
+
+-- CREATE INDEX ON place_report_values((1))
+-- WHERE
+--   deleted;
+COMMENT ON TABLE place_report_values IS 'value-ing the situation of the subproject in this place';
+
+COMMENT ON COLUMN place_report_values.account_id IS 'redundant account_id enhances data safety';
+
+COMMENT ON COLUMN place_report_values.value_integer IS 'Used for integer values';
+
+COMMENT ON COLUMN place_report_values.value_numeric IS 'Used for numeric values';
+
+COMMENT ON COLUMN place_report_values.value_text IS 'Used for text values';
+
+CREATE TABLE observation_sources(
+  observation_source_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  name text DEFAULT NULL,
+  url text DEFAULT NULL,
+  data jsonb DEFAULT NULL,
+  label_replace_by_generated_column text DEFAULT NULL,
+  deleted boolean DEFAULT NULL -- FALSE
+);
+
+-- CREATE INDEX ON observation_sources USING btree(observation_source_id);
+CREATE INDEX ON observation_sources USING btree(account_id);
+
+CREATE INDEX ON observation_sources USING btree(project_id);
+
+CREATE INDEX ON observation_sources USING btree(name);
+
+-- CREATE INDEX ON observation_sources((1))
+-- WHERE
+--   deleted;
+COMMENT ON TABLE observation_sources IS 'Observation sources are where observations _outside of this project_ come from.';
+
+COMMENT ON COLUMN observation_sources.account_id IS 'redundant account_id enhances data safety';
+
+COMMENT ON COLUMN observation_sources.name IS 'Name of observation source, like "GBIF, 1995"';
+
+COMMENT ON COLUMN observation_sources.url IS 'URL of observation source, like "https://www.gbif.org/"';
+
+COMMENT ON COLUMN observation_sources.data IS 'Room for observation source specific data, defined in "fields" table';
+
+CREATE TABLE observations(
+  observation_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  observation_source_id uuid DEFAULT NULL REFERENCES observation_sources(observation_source_id) ON DELETE NO action ON UPDATE CASCADE,
+  place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  id_in_source text DEFAULT NULL,
+  url text DEFAULT NULL,
+  observation_data jsonb DEFAULT NULL,
+  date date DEFAULT NULL,
+  author text DEFAULT NULL,
+  -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL, -- not supported by electic-sql
+  geometry jsonb DEFAULT NULL,
+  data jsonb DEFAULT NULL,
+  label_replace_by_generated_column text DEFAULT NULL,
+  deleted boolean DEFAULT NULL -- FALSE
+);
+
+-- CREATE INDEX ON observations USING btree(observation_id);
+CREATE INDEX ON observations USING btree(account_id);
+
+CREATE INDEX ON observations USING btree(observation_source_id);
+
+CREATE INDEX ON observations USING btree(place_id);
+
+CREATE INDEX ON observations USING btree(date);
+
+CREATE INDEX ON observations USING btree(author);
+
+-- CREATE INDEX ON observations USING gist(geometry);
+-- CREATE INDEX ON observations((1))
+-- WHERE
+--   deleted;
+COMMENT ON TABLE observations IS 'Observations are what was observed _outside of this project_ in this place.';
+
+COMMENT ON COLUMN observations.account_id IS 'redundant account_id enhances data safety';
+
+COMMENT ON COLUMN observations.observation_source_id IS 'observation source of observation';
+
+COMMENT ON COLUMN observations.place_id IS 'place observation was assigned to';
+
+COMMENT ON COLUMN observations.id_in_source IS 'ID of observation as used in the source. Needed to update its data';
+
+COMMENT ON COLUMN observations.url IS 'URL of observation, like "https://www.gbif.org/occurrence/1234567890"';
+
+COMMENT ON COLUMN observations.observation_data IS 'data as received from observation source';
+
+COMMENT ON COLUMN observations.date IS 'date of observation. Extracted from observation_data to list the observation';
+
+COMMENT ON COLUMN observations.author IS 'author of observation. Extracted from observation_data to list the observation';
+
+-- COMMENT ON COLUMN observations.geometry IS 'geometry of observation. Extracted from observation_data to show the observation on a map';
+COMMENT ON COLUMN observations.data IS 'Room for observation specific data, defined in "fields" table';
+
 -- enable electric
 ALTER TABLE users ENABLE electric;
 
@@ -827,4 +1014,14 @@ ALTER TABLE action_report_values ENABLE electric;
 ALTER TABLE checks ENABLE electric;
 
 ALTER TABLE check_values ENABLE electric;
+
+ALTER TABLE check_taxa ENABLE electric;
+
+ALTER TABLE place_reports ENABLE electric;
+
+ALTER TABLE place_report_values ENABLE electric;
+
+ALTER TABLE observation_sources ENABLE electric;
+
+ALTER TABLE observations ENABLE electric;
 
