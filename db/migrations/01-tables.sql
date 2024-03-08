@@ -1358,6 +1358,120 @@ COMMENT ON COLUMN fields.table_name IS 'table, on which this field is used insid
 
 COMMENT ON COLUMN fields.level IS 'level of field if places or below: 1, 2';
 
+CREATE TABLE ui_options(
+  user_id uuid PRIMARY KEY DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  designing boolean DEFAULT NULL, -- FALSE,
+  breadcrumbs_overflowing boolean DEFAULT NULL, -- FALSE,
+  navs_overflowing boolean DEFAULT NULL, -- FALSE,
+  tabs jsonb DEFAULT NULL, -- TODO: jsonb array
+  show_map boolean DEFAULT NULL, -- TRUE,
+  map_bounds jsonb DEFAULT NULL, -- [minx, miny, maxx, maxy]
+  local_map_show jsonb DEFAULT NULL, -- map of id (layer.id, key) and show boolean
+  tile_layer_sorter text DEFAULT NULL,
+  vector_layer_sorter text DEFAULT NULL,
+  editing_place_geometry uuid DEFAULT NULL,
+  editing_check_geometry uuid DEFAULT NULL,
+  editing_action_geometry uuid DEFAULT NULL,
+  label text DEFAULT NULL
+);
+
+-- CREATE INDEX ON ui_options USING btree(user_id);
+CREATE INDEX ON ui_options USING btree(account_id);
+
+COMMENT ON TABLE ui_options IS 'User interface settings (state saved in db)';
+
+COMMENT ON COLUMN ui_options.designing IS 'Whether user is currently designing projects. Preset: false';
+
+COMMENT ON COLUMN ui_options.editing_place_geometry IS 'The id of the place whose geometry is currently being edited';
+
+COMMENT ON COLUMN ui_options.editing_check_geometry IS 'The id of the check whose geometry is currently being edited';
+
+COMMENT ON COLUMN ui_options.editing_action_geometry IS 'The id of the action whose geometry is currently being edited';
+
+CREATE TYPE gbif_table AS ENUM(
+  'gbif_taxa',
+  'gbif_occurrences'
+);
+
+CREATE TABLE gbif_occurrence_downloads(
+  gbif_occurrence_download_id uuid PRIMARY KEY DEFAULT NULL,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  gbif_table gbif_table DEFAULT NULL, -- one of: gbif_taxa, gbif_occurrences
+  filters jsonb DEFAULT NULL,
+  created_time timestamptz DEFAULT NULL, -- now() not supported yet
+  download_key text DEFAULT NULL,
+  error text DEFAULT NULL,
+  inserted_time timestamptz DEFAULT NULL,
+  inserted_count integer DEFAULT NULL,
+  attribution text DEFAULT NULL,
+  deleted boolean DEFAULT NULL
+);
+
+CREATE INDEX ON gbif_occurrence_downloads USING btree(account_id);
+
+CREATE INDEX ON gbif_occurrence_downloads USING btree(project_id);
+
+CREATE INDEX ON gbif_occurrence_downloads USING btree(subproject_id);
+
+CREATE INDEX ON gbif_occurrence_downloads USING btree(created_time);
+
+COMMENT ON TABLE gbif_occurrence_downloads IS 'GBIF occurrence downloads. Used also for species (of an area, format: SPECIES_LIST). Is created in client, synced to server, executed by gbif backend server, written to db and synced back to client';
+
+COMMENT ON COLUMN gbif_occurrence_downloads.filters IS 'area, groups, speciesKeys...';
+
+-- INSERT INTO gbif_occurrence_downloads(gbif_occurrence_download_id, account_id, project_id, subproject_id, gbif_table, filters, created_time, download_key, error, inserted_time, inserted_count, attribution, deleted)
+--   VALUES ('018e1dc5-992e-7167-a294-434163a27d4b', '018cf958-27e2-7000-90d3-59f024d467be', '018cfcf7-6424-7000-a100-851c5cc2c878', '018cfd27-ee92-7000-b678-e75497d6c60e', 'gbif_occurrences', '{"area": "POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))"}', '2020-01-01T00:00:00Z', '00000000-0000-0000-0000-000000000000', NULL, '2020-01-01T00:00:00Z', 0, NULL, FALSE);
+CREATE TABLE gbif_taxa(
+  gbif_taxon_id uuid PRIMARY KEY DEFAULT NULL,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  gbif_data jsonb DEFAULT NULL,
+  label text DEFAULT NULL
+);
+
+CREATE INDEX ON gbif_taxa USING btree(gbif_taxon_id);
+
+CREATE INDEX ON gbif_taxa USING btree(account_id);
+
+CREATE INDEX ON gbif_taxa USING btree(project_id);
+
+CREATE INDEX ON gbif_taxa USING btree(label);
+
+COMMENT ON TABLE gbif_taxa IS 'GBIF taxa. Used for species of an area, thus imported from occurrences (format: SPECIES_LIST).';
+
+COMMENT ON COLUMN gbif_taxa.gbif_data IS 'data as received from GBIF';
+
+COMMENT ON COLUMN gbif_taxa.label IS 'label of taxon, used to show it in the UI. Created on import';
+
+CREATE TABLE gbif_occurrences(
+  gbif_occurrence_id uuid PRIMARY KEY DEFAULT NULL,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  gbif_data jsonb DEFAULT NULL,
+  label text DEFAULT NULL
+);
+
+CREATE INDEX ON gbif_occurrences USING btree(gbif_occurrence_id);
+
+CREATE INDEX ON gbif_occurrences USING btree(account_id);
+
+CREATE INDEX ON gbif_occurrences USING btree(project_id);
+
+CREATE INDEX ON gbif_occurrences USING btree(subproject_id);
+
+CREATE INDEX ON gbif_occurrences USING btree(label);
+
+-- CREATE INDEX ON gbif_occurrences USING gist(gbif_data); TODO: when supported by electric-sql
+COMMENT ON TABLE gbif_occurrences IS 'GBIF occurrences. Imported for subprojects (species projects) or projects (biotope projects).';
+
+COMMENT ON COLUMN gbif_occurrences.gbif_data IS 'data as received from GBIF';
+
+COMMENT ON COLUMN gbif_occurrences.label IS 'label of occurrence, used to show it in the UI. Created on import';
+
 -- enable electric
 ALTER TABLE users ENABLE electric;
 
@@ -1436,4 +1550,12 @@ ALTER TABLE widget_types ENABLE electric;
 ALTER TABLE widgets_for_fields ENABLE electric;
 
 ALTER TABLE fields ENABLE electric;
+
+ALTER TABLE ui_options ENABLE electric;
+
+ALTER TABLE gbif_occurrence_downloads ENABLE electric;
+
+ALTER TABLE gbif_taxa ENABLE electric;
+
+ALTER TABLE gbif_occurrences ENABLE electric;
 
