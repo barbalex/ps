@@ -1080,6 +1080,182 @@ COMMENT ON COLUMN goal_reports.account_id IS 'redundant account_id enhances data
 
 COMMENT ON COLUMN goal_reports.data IS 'Room for goal report specific data, defined in "fields" table';
 
+CREATE TABLE goal_report_values(
+  goal_report_value_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  goal_report_id uuid DEFAULT NULL REFERENCES goal_reports(goal_report_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE CASCADE,
+  value_integer integer DEFAULT NULL,
+  value_numeric double precision DEFAULT NULL,
+  value_text text DEFAULT NULL,
+  label text DEFAULT NULL,
+  deleted boolean DEFAULT NULL -- FALSE
+);
+
+-- CREATE INDEX ON goal_report_values USING btree(goal_report_value_id);
+CREATE INDEX ON goal_report_values USING btree(account_id);
+
+CREATE INDEX ON goal_report_values USING btree(goal_report_id);
+
+CREATE INDEX ON goal_report_values USING btree(unit_id);
+
+CREATE INDEX ON goal_report_values USING btree(value_integer);
+
+CREATE INDEX ON goal_report_values USING btree(value_numeric);
+
+CREATE INDEX ON goal_report_values USING btree(value_text);
+
+CREATE INDEX ON goal_report_values USING btree(label);
+
+-- CREATE INDEX ON goal_report_values((1))
+-- WHERE
+--   deleted;
+COMMENT ON TABLE goal_report_values IS 'value-ing the success of goals';
+
+COMMENT ON COLUMN goal_report_values.account_id IS 'redundant account_id enhances data safety';
+
+COMMENT ON COLUMN goal_report_values.value_integer IS 'Used for integer values';
+
+COMMENT ON COLUMN goal_report_values.value_numeric IS 'Used for numeric values';
+
+COMMENT ON COLUMN goal_report_values.value_text IS 'Used for text values';
+
+CREATE TABLE subproject_reports(
+  subproject_report_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  year integer DEFAULT NULL, -- DATE_PART('year', now()::date),
+  data jsonb DEFAULT NULL,
+  label_replace_by_generated_column text DEFAULT NULL,
+  deleted boolean DEFAULT NULL -- FALSE
+);
+
+-- CREATE INDEX ON subproject_reports USING btree(subproject_report_id);
+CREATE INDEX ON subproject_reports USING btree(account_id);
+
+CREATE INDEX ON subproject_reports USING btree(subproject_id);
+
+CREATE INDEX ON subproject_reports USING btree(year);
+
+-- CREATE INDEX ON subproject_reports((1))
+-- WHERE
+--   deleted;
+COMMENT ON TABLE subproject_reports IS 'Reporting on the success of subprojects.';
+
+COMMENT ON COLUMN subproject_reports.account_id IS 'redundant account_id enhances data safety';
+
+COMMENT ON COLUMN subproject_reports.year IS 'Year of report. Preset: current year';
+
+COMMENT ON COLUMN subproject_reports.data IS 'Room for subproject report specific data, defined in "fields" table';
+
+CREATE TABLE project_reports(
+  project_report_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  year integer DEFAULT NULL, -- DATE_PART('year', now()::date),
+  data jsonb DEFAULT NULL,
+  label_replace_by_generated_column text DEFAULT NULL,
+  deleted boolean DEFAULT NULL -- FALSE
+);
+
+-- CREATE INDEX ON project_reports USING btree(project_report_id);
+CREATE INDEX ON project_reports USING btree(account_id);
+
+CREATE INDEX ON project_reports USING btree(project_id);
+
+CREATE INDEX ON project_reports USING btree(year);
+
+-- CREATE INDEX ON project_reports((1))
+-- WHERE
+--   deleted;
+COMMENT ON TABLE project_reports IS 'Reporting on the success of projects.';
+
+COMMENT ON COLUMN project_reports.account_id IS 'redundant account_id enhances data safety';
+
+COMMENT ON COLUMN project_reports.year IS 'Year of report. Preset: current year';
+
+COMMENT ON COLUMN project_reports.data IS 'Room for project report specific data, defined in "fields" table';
+
+CREATE TABLE files(
+  file_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  action_id uuid DEFAULT NULL REFERENCES actions(action_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  check_id uuid DEFAULT NULL REFERENCES checks(check_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  name text DEFAULT NULL, -- file-upload-success-event.detail.name
+  size bigint DEFAULT NULL, -- file-upload-success-event.detail.size
+  label_replace_by_generated_column text DEFAULT NULL,
+  data jsonb DEFAULT NULL, -- TODO: not defineable in fields table!!
+  mimetype text DEFAULT NULL, -- file-upload-success-event.detail.mimeType
+  -- need width and height to get the aspect ratio of the image
+  width integer DEFAULT NULL, -- file-upload-success-event.detail.fileInfo.image.width
+  height integer DEFAULT NULL, -- file-upload-success-event.detail.fileInfo.image.height
+  -- file bytea DEFAULT NULL, -- TODO: not yet supported by electric-sql
+  -- preview bytea DEFAULT NULL, -- TODO: not yet supported by electric-sql
+  url text DEFAULT NULL, -- file-upload-success-event.detail.cdnUrl
+  uuid uuid DEFAULT NULL, -- file-upload-success-event.detail.uuid
+  preview_uuid uuid DEFAULT NULL, -- https://uploadcare.com/docs/transformations/document-conversion/
+  deleted boolean DEFAULT NULL -- FALSE
+);
+
+-- CREATE INDEX ON files USING btree(file_id);
+CREATE INDEX ON files USING btree(account_id);
+
+CREATE INDEX ON files USING btree(project_id);
+
+CREATE INDEX ON files USING btree(subproject_id);
+
+CREATE INDEX ON files USING btree(place_id);
+
+CREATE INDEX ON files USING btree(action_id);
+
+CREATE INDEX ON files USING btree(check_id);
+
+CREATE INDEX ON files USING btree(name);
+
+-- CREATE INDEX ON files((1))
+-- WHERE
+--   deleted;
+COMMENT ON TABLE files IS 'used to store files.';
+
+COMMENT ON COLUMN files.account_id IS 'redundant account_id enhances data safety';
+
+COMMENT ON COLUMN files.data IS 'Room for file specific data, defined in "fields" table';
+
+COMMENT ON COLUMN files.mimetype IS 'mimetype of file, used to know how to open or preview it';
+
+-- COMMENT ON COLUMN files.file IS 'file content';
+COMMENT ON COLUMN files.url IS 'URL of file, if it is saved on a web service';
+
+-- TODO: this table causes a prisma error, see: https://github.com/electric-sql/electric/issues/716
+CREATE TABLE persons(
+  person_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  email text DEFAULT NULL,
+  data jsonb DEFAULT NULL,
+  label_replace_by_generated_column text DEFAULT NULL,
+  deleted boolean DEFAULT NULL -- FALSE
+);
+
+-- CREATE INDEX ON persons USING btree(person_id);
+CREATE INDEX ON persons USING btree(account_id);
+
+CREATE INDEX ON persons USING btree(project_id);
+
+CREATE INDEX ON persons USING btree(email);
+
+-- CREATE INDEX ON persons((1))
+-- WHERE
+--   deleted;
+COMMENT ON TABLE persons IS 'Persons are used to assign actions and checks to';
+
+COMMENT ON COLUMN persons.account_id IS 'redundant account_id enhances data safety';
+
+COMMENT ON COLUMN persons.data IS 'Room for person specific data, defined in "fields" table';
+
 -- enable electric
 ALTER TABLE users ENABLE electric;
 
@@ -1140,4 +1316,14 @@ ALTER TABLE place_users ENABLE electric;
 ALTER TABLE goals ENABLE electric;
 
 ALTER TABLE goal_reports ENABLE electric;
+
+ALTER TABLE goal_report_values ENABLE electric;
+
+ALTER TABLE subproject_reports ENABLE electric;
+
+ALTER TABLE project_reports ENABLE electric;
+
+ALTER TABLE files ENABLE electric;
+
+ALTER TABLE persons ENABLE electric;
 
