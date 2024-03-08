@@ -974,6 +974,112 @@ COMMENT ON COLUMN observations.author IS 'author of observation. Extracted from 
 -- COMMENT ON COLUMN observations.geometry IS 'geometry of observation. Extracted from observation_data to show the observation on a map';
 COMMENT ON COLUMN observations.data IS 'Room for observation specific data, defined in "fields" table';
 
+CREATE TABLE messages(
+  message_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  label_replace_by_generated_column text DEFAULT NULL,
+  date timestamp DEFAULT NULL, -- now(),
+  message text DEFAULT NULL
+);
+
+-- CREATE INDEX ON messages USING btree(message_id);
+CREATE INDEX ON messages USING btree(date);
+
+COMMENT ON TABLE messages IS 'messages for the user. Mostly informing about updates of';
+
+CREATE TABLE user_messages(
+  user_message_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  message_id uuid DEFAULT NULL REFERENCES messages(message_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  label_replace_by_generated_column text DEFAULT NULL,
+  read boolean DEFAULT NULL -- FALSE
+);
+
+-- CREATE INDEX ON user_messages USING btree(user_message_id);
+CREATE INDEX ON user_messages USING btree(user_id);
+
+CREATE INDEX ON user_messages USING btree(message_id);
+
+CREATE TABLE place_users(
+  place_user_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  role text DEFAULT NULL,
+  -- https://github.com/electric-sql/electric/issues/893
+  -- role user_role DEFAULT NULL,
+  label text DEFAULT NULL,
+  deleted boolean DEFAULT NULL -- FALSE
+);
+
+-- CREATE INDEX ON place_users USING btree(place_user_id);
+CREATE INDEX ON place_users USING btree(account_id);
+
+CREATE INDEX ON place_users USING btree(place_id);
+
+CREATE INDEX ON place_users USING btree(user_id);
+
+CREATE INDEX ON place_users USING btree(label);
+
+-- CREATE INDEX ON place_users((1))
+-- WHERE
+--   deleted;
+COMMENT ON TABLE place_users IS 'A way to give users access to places without giving them access to the whole project or subproject.';
+
+COMMENT ON COLUMN place_users.account_id IS 'redundant account_id enhances data safety';
+
+COMMENT ON COLUMN place_users.role IS 'TODO: One of: "manager", "editor", "reader". Preset: "reader"';
+
+CREATE TABLE goals(
+  goal_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  year integer DEFAULT NULL, -- DATE_PART('year', now()::date),
+  name text DEFAULT NULL,
+  data jsonb DEFAULT NULL,
+  label_replace_by_generated_column text DEFAULT NULL,
+  deleted boolean DEFAULT NULL -- FALSE
+);
+
+-- CREATE INDEX ON goals USING btree(goal_id);
+CREATE INDEX ON goals USING btree(account_id);
+
+CREATE INDEX ON goals USING btree(subproject_id);
+
+CREATE INDEX ON goals USING btree(year);
+
+-- CREATE INDEX ON goals((1))
+-- WHERE
+--   deleted;
+COMMENT ON TABLE goals IS 'What is to be achieved in the subproject in this year.';
+
+COMMENT ON COLUMN goals.account_id IS 'redundant account_id enhances data safety';
+
+CREATE TABLE goal_reports(
+  goal_report_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  goal_id uuid DEFAULT NULL REFERENCES goals(goal_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  data jsonb DEFAULT NULL,
+  label text DEFAULT NULL,
+  deleted boolean DEFAULT NULL -- FALSE
+);
+
+-- CREATE INDEX ON goal_reports USING btree(goal_report_id);
+CREATE INDEX ON goal_reports USING btree(account_id);
+
+CREATE INDEX ON goal_reports USING btree(goal_id);
+
+CREATE INDEX ON goal_reports USING btree(label);
+
+-- CREATE INDEX ON goal_reports((1))
+-- WHERE
+--   deleted;
+COMMENT ON TABLE goal_reports IS 'Reporting on the success of goals.';
+
+COMMENT ON COLUMN goal_reports.account_id IS 'redundant account_id enhances data safety';
+
+COMMENT ON COLUMN goal_reports.data IS 'Room for goal report specific data, defined in "fields" table';
+
 -- enable electric
 ALTER TABLE users ENABLE electric;
 
@@ -1024,4 +1130,14 @@ ALTER TABLE place_report_values ENABLE electric;
 ALTER TABLE observation_sources ENABLE electric;
 
 ALTER TABLE observations ENABLE electric;
+
+ALTER TABLE messages ENABLE electric;
+
+ALTER TABLE user_messages ENABLE electric;
+
+ALTER TABLE place_users ENABLE electric;
+
+ALTER TABLE goals ENABLE electric;
+
+ALTER TABLE goal_reports ENABLE electric;
 
