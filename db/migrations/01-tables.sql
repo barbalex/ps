@@ -1256,6 +1256,108 @@ COMMENT ON COLUMN persons.account_id IS 'redundant account_id enhances data safe
 
 COMMENT ON COLUMN persons.data IS 'Room for person specific data, defined in "fields" table';
 
+CREATE TABLE field_types(
+  field_type_id uuid PRIMARY KEY DEFAULT NULL,
+  name text DEFAULT NULL,
+  -- no account_id as field_types are predefined for all projects
+  sort smallint DEFAULT NULL,
+  comment text,
+  label_replace_by_generated_column text DEFAULT NULL,
+  deleted boolean DEFAULT NULL
+);
+
+CREATE INDEX ON field_types(name);
+
+CREATE INDEX ON field_types(sort);
+
+-- CREATE INDEX ON field_types((1))
+-- WHERE
+--   deleted;
+CREATE TABLE widget_types(
+  widget_type_id uuid PRIMARY KEY DEFAULT NULL,
+  name text DEFAULT NULL,
+  -- no account_id as field_types are predefined for all projects
+  needs_list boolean DEFAULT NULL, -- FALSE,
+  sort smallint DEFAULT NULL,
+  comment text,
+  label_replace_by_generated_column text DEFAULT NULL,
+  deleted boolean DEFAULT NULL -- FALSE
+);
+
+CREATE INDEX ON widget_types(name);
+
+CREATE INDEX ON widget_types(sort);
+
+-- CREATE INDEX ON widget_types((1))
+-- WHERE
+--   deleted;
+CREATE TABLE widgets_for_fields(
+  widget_for_field_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  field_type_id uuid DEFAULT NULL REFERENCES field_types(field_type_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  widget_type_id uuid DEFAULT NULL REFERENCES widget_types(widget_type_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  label text DEFAULT NULL,
+  deleted boolean DEFAULT NULL -- FALSE
+);
+
+-- CREATE INDEX ON widgets_for_fields(widget_for_field_id);
+CREATE INDEX ON widgets_for_fields(field_type_id);
+
+CREATE INDEX ON widgets_for_fields(widget_type_id);
+
+CREATE INDEX ON widgets_for_fields(label);
+
+-- CREATE INDEX ON widgets_for_fields((1))
+-- WHERE
+--   deleted;
+-- TODO: add level to places and all their child tables?
+CREATE TABLE fields(
+  field_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  table_name text DEFAULT NULL,
+  level integer DEFAULT NULL, -- 1,
+  field_type_id uuid DEFAULT NULL REFERENCES field_types(field_type_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  widget_type_id uuid DEFAULT NULL REFERENCES widget_types(widget_type_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  name text DEFAULT NULL,
+  field_label text DEFAULT NULL,
+  list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE NO action ON UPDATE CASCADE,
+  preset text DEFAULT NULL,
+  obsolete boolean DEFAULT NULL, -- FALSE,
+  label_replace_by_generated_column text DEFAULT NULL,
+  deleted boolean DEFAULT NULL -- FALSE
+);
+
+-- CREATE INDEX ON fields USING btree(field_id);
+CREATE INDEX ON fields USING btree(project_id);
+
+CREATE INDEX ON fields USING btree(account_id);
+
+CREATE INDEX ON fields USING btree(table_name);
+
+CREATE INDEX ON fields USING btree(level);
+
+CREATE INDEX ON fields USING btree(field_type_id);
+
+CREATE INDEX ON fields USING btree(widget_type_id);
+
+CREATE INDEX ON fields USING btree(name);
+
+CREATE INDEX ON fields USING btree(list_id);
+
+-- CREATE INDEX ON fields USING btree((1))
+-- WHERE
+--   obsolete;
+-- CREATE INDEX ON fields USING btree((1))
+-- WHERE
+--   deleted;
+COMMENT ON TABLE fields IS 'Fields are used to define the data structure of data jsonb fields in other tables.';
+
+COMMENT ON COLUMN fields.account_id IS 'redundant account_id enhances data safety';
+
+COMMENT ON COLUMN fields.table_name IS 'table, on which this field is used inside the jsob field "data"';
+
+COMMENT ON COLUMN fields.level IS 'level of field if places or below: 1, 2';
+
 -- enable electric
 ALTER TABLE users ENABLE electric;
 
@@ -1326,4 +1428,12 @@ ALTER TABLE project_reports ENABLE electric;
 ALTER TABLE files ENABLE electric;
 
 ALTER TABLE persons ENABLE electric;
+
+ALTER TABLE field_types ENABLE electric;
+
+ALTER TABLE widget_types ENABLE electric;
+
+ALTER TABLE widgets_for_fields ENABLE electric;
+
+ALTER TABLE fields ENABLE electric;
 
