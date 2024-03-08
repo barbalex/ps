@@ -62,7 +62,6 @@ const subscriber = createSubscriber({
   connectionString: process.env.ELECTRIC_DATABASE_URL,
 })
 console.log('subscriber', subscriber)
-console.log('env', process.env)
 
 subscriber.notifications.on('gbif_occurrence_download_update', (payload) => {
   // Payload as passed to subscriber.notify() (see below)
@@ -85,3 +84,4 @@ process.on('exit', () => {
 
 const connection = await subscriber.connect()
 console.log('Connected to database, connection:', connection)
+await subscriber.listenTo('gbif_occurrence_download_update')
