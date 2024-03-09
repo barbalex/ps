@@ -54,13 +54,9 @@ dotenv.config()
 import axios from 'axios'
 import createSubscriber from 'pg-listen'
 
-console.log(
-  'process.env.ELECTRIC_DATABASE_URL',
-  process.env.ELECTRIC_DATABASE_URL,
-)
-const subscriber = createSubscriber({
-  connectionString: process.env.ELECTRIC_DATABASE_URL,
-})
+const connectionString = `postgresql://postgres:${process.env.ELECTRIC_DATABASE_PASSWORD}@backend-pg-1:5432/postgres`
+console.log('connectionString', connectionString)
+const subscriber = createSubscriber({ connectionString })
 console.log('subscriber', subscriber)
 
 subscriber.notifications.on('gbif_occurrence_download_update', (payload) => {

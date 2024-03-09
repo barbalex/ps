@@ -1,11 +1,44 @@
+# TODO: use gbif, electric and postgresql in the same docker-compose file
 version: '3.7'
 services:
-  gbif:
-    build:
-      context: ./gbif
+  pg:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_PASSWORD: ${ELECTRIC_DATABASE_PASSWORD}
+    command:
+      - -c
+      - wal_level=logical
     networks:
       - network
-    container_name: ps_gbif
+    ports:
+      - 5432:5432
+    restart: always
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+  electric:
+    image: electricsql/electric
+    depends_on:
+      - pg
+    networks:
+      - network
+    environment:
+      DATABASE_URL: postgresql://postgres:${ELECTRIC_DATABASE_PASSWORD}@pg/postgres
+      DATABASE_REQUIRE_SSL: false
+      LOGICAL_PUBLISHER_HOST: electric
+      PG_PROXY_PASSWORD: ${ELECTRIC_PG_PROXY_PASSWORD}
+      AUTH_MODE: insecure
+    ports:
+      - 5133:5133
+      - 65432:65432
+    restart: always
+  gbif:
+    container_name: backend-gbif-1
+    build:
+      context: ./gbif
+    depends_on:
+      - pg
+    networks:
+      - network
     restart: always
     env_file:
       - ./.env
@@ -17,5 +50,6 @@ services:
       - gbif_data:/gbif_data
 volumes:
   gbif_data:
+  pg_data:
 networks:
   network:
