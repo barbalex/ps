@@ -10,13 +10,12 @@ $$
 LANGUAGE plpgsql;
 
 -- TG_OP = 'INSERT' OR 'UPDATE' OR 'DELETE'
-DROP TRIGGER gbif_occurrence_downloads_notify_update ON gbif_occurrence_downloads;
-
-CREATE TRIGGER gbif_occurrence_downloads_notify_update
-  AFTER UPDATE ON gbif_occurrence_downloads
-  FOR EACH ROW
-  EXECUTE PROCEDURE gbif_occurrence_download_notify();
-
+-- only need to notify on inserts
+-- DROP TRIGGER gbif_occurrence_downloads_notify_update ON gbif_occurrence_downloads;
+-- CREATE TRIGGER gbif_occurrence_downloads_notify_update
+--   AFTER UPDATE ON gbif_occurrence_downloads
+--   FOR EACH ROW
+--   EXECUTE PROCEDURE gbif_occurrence_download_notify();
 DROP TRIGGER gbif_occurrence_downloads_notify_insert ON gbif_occurrence_downloads;
 
 CREATE TRIGGER gbif_occurrence_downloads_notify_insert
