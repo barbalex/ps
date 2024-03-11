@@ -1400,7 +1400,7 @@ CREATE TABLE gbif_occurrence_downloads(
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   gbif_table gbif_table DEFAULT NULL, -- one of: gbif_taxa, gbif_occurrences
-  filters jsonb DEFAULT NULL,
+  filters jsonb DEFAULT NULL, -- TODO: use project geometry to filter by area
   created_time timestamptz DEFAULT NULL, -- now() not supported yet
   download_key text DEFAULT NULL,
   error text DEFAULT NULL,
