@@ -5,7 +5,9 @@ export const generateActionReportLabel = async (db) => {
   const hasLabel = columns.some((column) => column.name === 'label')
   if (!hasLabel) {
     await db.unsafeExec({
-      sql: 'ALTER TABLE action_reports ADD COLUMN label text GENERATED ALWAYS AS (coalesce(year, action_report_id))',
+      sql: `
+        ALTER TABLE action_reports ADD COLUMN label text GENERATED ALWAYS AS (coalesce(year, action_report_id));
+        ALTER TABLE action_reports drop COLUMN label_replace_by_generated_column;`,
     })
     await db.unsafeExec({
       sql: 'CREATE INDEX IF NOT EXISTS action_reports_label_idx ON action_reports(label)',

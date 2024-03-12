@@ -43,6 +43,7 @@ import { generateUiOptionLabel } from './labelGenerators/uiOptions'
 import { generateVectorLayerDisplayLabel } from './labelGenerators/vectorLayerDisplays'
 import { generateChartLabel } from './labelGenerators/charts'
 import { generateChartSubjectLabel } from './labelGenerators/chartSubjects'
+import { generateOccurrenceImportLabel } from './labelGenerators/occurrenceImports'
 import { seedTestData } from './seedTestData'
 
 // how to get work:
@@ -104,6 +105,7 @@ export const SqlInitializer = () => {
       await generateVectorLayerDisplayLabel(db)
       await generateChartLabel(db)
       await generateChartSubjectLabel(db)
+      await generateOccurrenceImportLabel(db)
       await seedTestData(db)
     }
     generate()
