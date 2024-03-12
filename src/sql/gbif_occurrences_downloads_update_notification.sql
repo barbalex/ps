@@ -11,11 +11,6 @@ LANGUAGE plpgsql;
 
 -- TG_OP = 'INSERT' OR 'UPDATE' OR 'DELETE'
 -- only need to notify on inserts
--- DROP TRIGGER gbif_downloads_notify_update ON occurrence_imports;
--- CREATE TRIGGER gbif_downloads_notify_update
---   AFTER UPDATE ON occurrence_imports
---   FOR EACH ROW
---   EXECUTE PROCEDURE gbif_download_notify();
 DROP TRIGGER gbif_downloads_notify_insert ON occurrence_imports;
 
 CREATE TRIGGER gbif_downloads_notify_insert
