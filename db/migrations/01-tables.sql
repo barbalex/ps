@@ -1393,7 +1393,7 @@ COMMENT ON COLUMN ui_options.editing_check_geometry IS 'The id of the check whos
 COMMENT ON COLUMN ui_options.editing_action_geometry IS 'The id of the action whose geometry is currently being edited';
 
 CREATE TYPE gbif_table AS ENUM(
-  'gbif_taxa',
+  'taxa',
   'occurrences'
 );
 
@@ -1402,7 +1402,7 @@ CREATE TABLE gbif_downloads(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  gbif_table gbif_table DEFAULT NULL, -- one of: gbif_taxa, occurrences
+  gbif_table gbif_table DEFAULT NULL, -- one of: taxa, occurrences
   filters jsonb DEFAULT NULL, -- TODO: use project geometry to filter by area
   created_time timestamptz DEFAULT NULL, -- now() not supported yet
   download_key text DEFAULT NULL,
