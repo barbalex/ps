@@ -167,7 +167,7 @@ CREATE INDEX IF NOT EXISTS fields_deleted_idx ON fields(deleted)
 WHERE
   deleted;
 
-CREATE INDEX IF NOT EXISTS gbif_occurrence_downloads_deleted_idx ON gbif_downloads(deleted)
+CREATE INDEX IF NOT EXISTS gbif_downloads_deleted_idx ON gbif_downloads(deleted)
 WHERE
   deleted;
 

@@ -59,10 +59,10 @@ console.log('connectionString', connectionString)
 const subscriber = createSubscriber({ connectionString })
 console.log('subscriber', subscriber)
 
-subscriber.notifications.on('gbif_occurrence_download_update', (payload) => {
+subscriber.notifications.on('gbif_download_update', (payload) => {
   // Payload as passed to subscriber.notify() (see below)
   console.log(
-    "Received notification in 'gbif_occurrence_download_update':",
+    "Received notification in 'gbif_download_update':",
     payload,
   )
   // TODO: process the payload
@@ -80,4 +80,4 @@ process.on('exit', () => {
 
 const connection = await subscriber.connect()
 console.log('Connected to database, connection:', connection)
-await subscriber.listenTo('gbif_occurrence_download_update')
+await subscriber.listenTo('gbif_download_update')

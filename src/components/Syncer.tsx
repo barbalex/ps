@@ -103,7 +103,6 @@ export const Syncer = () => {
                       },
                     },
                   },
-                  occurrences: true,
                   gbif_downloads: true,
                   units: true,
                   observation_sources: { include: { observations: true } },

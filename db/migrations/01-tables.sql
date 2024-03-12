@@ -1430,7 +1430,6 @@ COMMENT ON COLUMN gbif_downloads.filters IS 'area, groups, speciesKeys...';
 CREATE TABLE occurrences(
   occurrence_id uuid PRIMARY KEY DEFAULT NULL,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   data jsonb DEFAULT NULL,
   id_in_source text DEFAULT NULL,
@@ -1440,8 +1439,6 @@ CREATE TABLE occurrences(
 
 -- CREATE INDEX ON occurrences USING btree(occurrence_id);
 CREATE INDEX ON occurrences USING btree(account_id);
-
-CREATE INDEX ON occurrences USING btree(project_id);
 
 CREATE INDEX ON occurrences USING btree(subproject_id);
 
