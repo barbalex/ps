@@ -20,7 +20,7 @@ export const Syncer = () => {
                   subprojects: {
                     include: {
                       occurrences: true,
-                      gbif_downloads: true,
+                      occurrence_imports: true,
                       subproject_users: true,
                       subproject_taxa: true,
                       goals: {
@@ -103,7 +103,6 @@ export const Syncer = () => {
                       },
                     },
                   },
-                  gbif_downloads: true,
                   units: true,
                   observation_sources: { include: { observations: true } },
                   tile_layers: { include: { layer_options: true } },
@@ -131,7 +130,7 @@ export const Syncer = () => {
               persons: true,
               lists: true,
               occurrences: true,
-              gbif_downloads: true,
+              occurrence_imports: true,
               subproject_users: true,
               subproject_taxa: true,
               list_values: true,

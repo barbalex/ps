@@ -1,6 +1,6 @@
 // in pg need to run: gbif_occurrences_downloads_update_notification.sql to create notifications
 // connect to the postgreSQL database
-// listen to changes in gbif_downloads
+// listen to changes in occurrence_imports
 // also: on startup, search for any downloads that haven't been processed yet
 // 1.1 register when a change occurs
 //     https://gist.github.com/fritzy/5db6221bebe53eda4c2d
