@@ -1399,11 +1399,13 @@ CREATE TABLE occurrence_imports(
   created_time timestamptz DEFAULT NULL, -- now() not supported yet
   inserted_time timestamptz DEFAULT NULL,
   inserted_count integer DEFAULT NULL,
+  name text DEFAULT NULL,
   attribution text DEFAULT NULL,
   download_from_gbif boolean DEFAULT NULL,
   gbif_filters jsonb DEFAULT NULL, -- TODO: use project geometry to filter by area
   gbif_download_key text DEFAULT NULL,
   gbif_error text DEFAULT NULL,
+  label_replace_by_generated_column text DEFAULT NULL,
   deleted boolean DEFAULT NULL
 );
 
