@@ -329,6 +329,7 @@ CREATE TABLE taxa(
   taxonomy_id uuid DEFAULT NULL REFERENCES taxonomies(taxonomy_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
   id_in_source text DEFAULT NULL,
+  data jsonb DEFAULT NULL,
   url text DEFAULT NULL,
   label text DEFAULT NULL,
   deleted boolean DEFAULT NULL -- FALSE
@@ -351,6 +352,8 @@ COMMENT ON COLUMN taxa.name IS 'Name of taxon, like "Pulsatilla vulgaris"';
 COMMENT ON COLUMN taxa.account_id IS 'redundant account_id enhances data safety';
 
 COMMENT ON COLUMN taxa.id_in_source IS 'ID of taxon as used in the source taxonomy';
+
+COMMENT ON COLUMN taxa.data IS 'Data as received from source';
 
 COMMENT ON COLUMN taxa.url IS 'URL of taxon, like "https://www.infoflora.ch/de/flora/pulsatilla-vulgaris.html"';
 
@@ -1391,15 +1394,15 @@ COMMENT ON COLUMN ui_options.editing_action_geometry IS 'The id of the action wh
 
 CREATE TYPE gbif_table AS ENUM(
   'gbif_taxa',
-  'gbif_occurrences'
+  'occurrences'
 );
 
-CREATE TABLE gbif_occurrence_downloads(
+CREATE TABLE gbif_downloads(
   gbif_occurrence_download_id uuid PRIMARY KEY DEFAULT NULL,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  gbif_table gbif_table DEFAULT NULL, -- one of: gbif_taxa, gbif_occurrences
+  gbif_table gbif_table DEFAULT NULL, -- one of: gbif_taxa, occurrences
   filters jsonb DEFAULT NULL, -- TODO: use project geometry to filter by area
   created_time timestamptz DEFAULT NULL, -- now() not supported yet
   download_key text DEFAULT NULL,
@@ -1410,67 +1413,46 @@ CREATE TABLE gbif_occurrence_downloads(
   deleted boolean DEFAULT NULL
 );
 
-CREATE INDEX ON gbif_occurrence_downloads USING btree(account_id);
+CREATE INDEX ON gbif_downloads USING btree(account_id);
 
-CREATE INDEX ON gbif_occurrence_downloads USING btree(project_id);
+CREATE INDEX ON gbif_downloads USING btree(project_id);
 
-CREATE INDEX ON gbif_occurrence_downloads USING btree(subproject_id);
+CREATE INDEX ON gbif_downloads USING btree(subproject_id);
 
-CREATE INDEX ON gbif_occurrence_downloads USING btree(created_time);
+CREATE INDEX ON gbif_downloads USING btree(created_time);
 
-COMMENT ON TABLE gbif_occurrence_downloads IS 'GBIF occurrence downloads. Used also for species (of an area, format: SPECIES_LIST). Is created in client, synced to server, executed by gbif backend server, written to db and synced back to client';
+COMMENT ON TABLE gbif_downloads IS 'GBIF occurrence downloads. Used also for species (of an area, format: SPECIES_LIST). Is created in client, synced to server, executed by gbif backend server, written to db and synced back to client';
 
-COMMENT ON COLUMN gbif_occurrence_downloads.filters IS 'area, groups, speciesKeys...';
+COMMENT ON COLUMN gbif_downloads.filters IS 'area, groups, speciesKeys...';
 
--- INSERT INTO gbif_occurrence_downloads(gbif_occurrence_download_id, account_id, project_id, subproject_id, gbif_table, filters, created_time, download_key, error, inserted_time, inserted_count, attribution, deleted)
---   VALUES ('018e1dc5-992e-7167-a294-434163a27d4b', '018cf958-27e2-7000-90d3-59f024d467be', '018cfcf7-6424-7000-a100-851c5cc2c878', '018cfd27-ee92-7000-b678-e75497d6c60e', 'gbif_occurrences', '{"area": "POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))"}', '2020-01-01T00:00:00Z', '00000000-0000-0000-0000-000000000000', NULL, '2020-01-01T00:00:00Z', 0, NULL, FALSE);
-CREATE TABLE gbif_taxa(
-  gbif_taxon_id uuid PRIMARY KEY DEFAULT NULL,
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  gbif_data jsonb DEFAULT NULL,
-  label text DEFAULT NULL
-);
-
-CREATE INDEX ON gbif_taxa USING btree(gbif_taxon_id);
-
-CREATE INDEX ON gbif_taxa USING btree(account_id);
-
-CREATE INDEX ON gbif_taxa USING btree(project_id);
-
-CREATE INDEX ON gbif_taxa USING btree(label);
-
-COMMENT ON TABLE gbif_taxa IS 'GBIF taxa. Used for species of an area, thus imported from occurrences (format: SPECIES_LIST).';
-
-COMMENT ON COLUMN gbif_taxa.gbif_data IS 'data as received from GBIF';
-
-COMMENT ON COLUMN gbif_taxa.label IS 'label of taxon, used to show it in the UI. Created on import';
-
-CREATE TABLE gbif_occurrences(
-  gbif_occurrence_id uuid PRIMARY KEY DEFAULT NULL,
+-- INSERT INTO gbif_downloads(gbif_occurrence_download_id, account_id, project_id, subproject_id, gbif_table, filters, created_time, download_key, error, inserted_time, inserted_count, attribution, deleted)
+--   VALUES ('018e1dc5-992e-7167-a294-434163a27d4b', '018cf958-27e2-7000-90d3-59f024d467be', '018cfcf7-6424-7000-a100-851c5cc2c878', '018cfd27-ee92-7000-b678-e75497d6c60e', 'occurrences', '{"area": "POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))"}', '2020-01-01T00:00:00Z', '00000000-0000-0000-0000-000000000000', NULL, '2020-01-01T00:00:00Z', 0, NULL, FALSE);
+CREATE TABLE occurrences(
+  occurrence_id uuid PRIMARY KEY DEFAULT NULL,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  gbif_data jsonb DEFAULT NULL,
+  data jsonb DEFAULT NULL,
+  id_in_source text DEFAULT NULL,
+  geometry jsonb DEFAULT NULL,
   label text DEFAULT NULL
 );
 
-CREATE INDEX ON gbif_occurrences USING btree(gbif_occurrence_id);
+-- CREATE INDEX ON occurrences USING btree(occurrence_id);
+CREATE INDEX ON occurrences USING btree(account_id);
 
-CREATE INDEX ON gbif_occurrences USING btree(account_id);
+CREATE INDEX ON occurrences USING btree(project_id);
 
-CREATE INDEX ON gbif_occurrences USING btree(project_id);
+CREATE INDEX ON occurrences USING btree(subproject_id);
 
-CREATE INDEX ON gbif_occurrences USING btree(subproject_id);
+CREATE INDEX ON occurrences USING btree(label);
 
-CREATE INDEX ON gbif_occurrences USING btree(label);
+-- CREATE INDEX ON occurrences USING gist(data); TODO: when supported by electric-sql
+COMMENT ON TABLE occurrences IS 'GBIF occurrences. Imported for subprojects (species projects) or projects (biotope projects).';
 
--- CREATE INDEX ON gbif_occurrences USING gist(gbif_data); TODO: when supported by electric-sql
-COMMENT ON TABLE gbif_occurrences IS 'GBIF occurrences. Imported for subprojects (species projects) or projects (biotope projects).';
+COMMENT ON COLUMN occurrences.data IS 'data as received from GBIF';
 
-COMMENT ON COLUMN gbif_occurrences.gbif_data IS 'data as received from GBIF';
-
-COMMENT ON COLUMN gbif_occurrences.label IS 'label of occurrence, used to show it in the UI. Created on import';
+COMMENT ON COLUMN occurrences.label IS 'label of occurrence, used to show it in the UI. Created on import';
 
 CREATE TYPE tile_layer_type_enum AS enum(
   'wms',
@@ -2001,11 +1983,9 @@ ALTER TABLE fields ENABLE electric;
 
 ALTER TABLE ui_options ENABLE electric;
 
-ALTER TABLE gbif_occurrence_downloads ENABLE electric;
+ALTER TABLE gbif_downloads ENABLE electric;
 
-ALTER TABLE gbif_taxa ENABLE electric;
-
-ALTER TABLE gbif_occurrences ENABLE electric;
+ALTER TABLE occurrences ENABLE electric;
 
 ALTER TABLE tile_layers ENABLE electric;
 
