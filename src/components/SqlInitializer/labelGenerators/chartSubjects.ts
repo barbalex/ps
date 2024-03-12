@@ -26,7 +26,8 @@ export const generateChartSubjectLabel = async (db) => {
                     )
                   )
                 )
-              )`,
+              );
+              ALTER TABLE chart_subjects drop COLUMN label_replace_by_generated_column;`,
       })
       console.log('LabelGenarator, chart_subjects, result:', res)
     } catch (error) {
