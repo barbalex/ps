@@ -3,7 +3,7 @@ CREATE OR REPLACE FUNCTION gbif_download_notify()
   AS $$
 BEGIN
   PERFORM
-    pg_notify('gbif_download_update', json_build_object('id', NEW.occurrence_download_id, 'type', TG_OP)::text);
+    pg_notify('gbif_download_update', json_build_object('id', NEW.occurrence_import_id, 'type', TG_OP)::text);
   RETURN NEW;
 END;
 $$

@@ -19,8 +19,7 @@ export const Syncer = () => {
                   place_levels: true,
                   subprojects: {
                     include: {
-                      occurrences: true,
-                      occurrence_imports: true,
+                      occurrence_imports: { include: { occurrences: true } },
                       subproject_users: true,
                       subproject_taxa: true,
                       goals: {
