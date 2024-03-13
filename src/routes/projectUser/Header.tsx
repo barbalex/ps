@@ -11,25 +11,19 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const { db } = useElectric()!
 
-  const baseUrl = `/projects/${project_id}/users`
-
   const addRow = useCallback(async () => {
     const projectUser = createProjectUser()
     await db.project_users.create({
       data: { ...projectUser, project_id },
     })
-    navigate(`${baseUrl}/${projectUser.project_user_id}`)
+    navigate(`../${projectUser.project_user_id}`)
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, baseUrl, db.project_users, navigate, project_id])
+  }, [autoFocusRef, db.project_users, navigate, project_id])
 
   const deleteRow = useCallback(async () => {
-    await db.project_users.delete({
-      where: {
-        project_user_id,
-      },
-    })
+    await db.project_users.delete({ where: { project_user_id } })
     navigate('..')
-  }, [baseUrl, db.project_users, navigate, project_user_id])
+  }, [db.project_users, navigate, project_user_id])
 
   const toNext = useCallback(async () => {
     const projectUsers = await db.project_users.findMany({
@@ -41,8 +35,8 @@ export const Header = memo(({ autoFocusRef }) => {
       (p) => p.project_user_id === project_user_id,
     )
     const next = projectUsers[(index + 1) % len]
-    navigate(`${baseUrl}/${next.project_user_id}`)
-  }, [baseUrl, db.project_users, navigate, project_id, project_user_id])
+    navigate(`../${next.project_user_id}`)
+  }, [db.project_users, navigate, project_id, project_user_id])
 
   const toPrevious = useCallback(async () => {
     const projectUsers = await db.project_users.findMany({
@@ -54,8 +48,8 @@ export const Header = memo(({ autoFocusRef }) => {
       (p) => p.project_user_id === project_user_id,
     )
     const previous = projectUsers[(index + len - 1) % len]
-    navigate(`${baseUrl}/${previous.project_user_id}`)
-  }, [baseUrl, db.project_users, navigate, project_id, project_user_id])
+    navigate(`../${previous.project_user_id}`)
+  }, [db.project_users, navigate, project_id, project_user_id])
 
   return (
     <FormHeader
