@@ -78,7 +78,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
 
   const deleteRow = useCallback(async () => {
     await db.places.delete({ where: { place_id } })
-    navigate(baseUrl)
+    navigate('..')
   }, [baseUrl, db.places, navigate, place_id])
 
   const toNext = useCallback(async () => {

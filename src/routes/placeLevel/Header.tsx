@@ -26,7 +26,7 @@ export const Header = memo(({ autoFocusRef }) => {
     await db.place_levels.delete({
       where: { place_level_id },
     })
-    navigate(baseUrl)
+    navigate('..')
   }, [baseUrl, db.place_levels, navigate, place_level_id])
 
   const toNext = useCallback(async () => {
