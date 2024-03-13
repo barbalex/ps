@@ -11,8 +11,6 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const { db } = useElectric()!
 
-  const baseUrl = `/projects/${project_id}/observation-sources/${observation_source_id}/observations`
-
   const addRow = useCallback(async () => {
     const data = await createObservation({
       db,
@@ -20,18 +18,14 @@ export const Header = memo(({ autoFocusRef }) => {
       observation_source_id,
     })
     await db.observations.create({ data })
-    navigate(`${baseUrl}/${data.observation_id}`)
+    navigate(`../${data.observation_id}`)
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, baseUrl, db, navigate, observation_source_id, project_id])
+  }, [autoFocusRef, db, navigate, observation_source_id, project_id])
 
   const deleteRow = useCallback(async () => {
-    await db.observations.delete({
-      where: {
-        observation_id,
-      },
-    })
+    await db.observations.delete({ where: { observation_id } })
     navigate('..')
-  }, [baseUrl, db.observations, navigate, observation_id])
+  }, [db.observations, navigate, observation_id])
 
   const toNext = useCallback(async () => {
     const observations = await db.observations.findMany({
@@ -43,14 +37,8 @@ export const Header = memo(({ autoFocusRef }) => {
       (p) => p.observation_id === observation_id,
     )
     const next = observations[(index + 1) % len]
-    navigate(`${baseUrl}/${next.observation_id}`)
-  }, [
-    baseUrl,
-    db.observations,
-    navigate,
-    observation_id,
-    observation_source_id,
-  ])
+    navigate(`../${next.observation_id}`)
+  }, [db.observations, navigate, observation_id, observation_source_id])
 
   const toPrevious = useCallback(async () => {
     const observations = await db.observations.findMany({
@@ -62,14 +50,8 @@ export const Header = memo(({ autoFocusRef }) => {
       (p) => p.observation_id === observation_id,
     )
     const previous = observations[(index + len - 1) % len]
-    navigate(`${baseUrl}/${previous.observation_id}`)
-  }, [
-    baseUrl,
-    db.observations,
-    navigate,
-    observation_id,
-    observation_source_id,
-  ])
+    navigate(`../${previous.observation_id}`)
+  }, [db.observations, navigate, observation_id, observation_source_id])
 
   return (
     <FormHeader

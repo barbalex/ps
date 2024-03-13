@@ -11,24 +11,22 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const { db } = useElectric()!
 
-  const baseUrl = `/projects/${project_id}/observation-sources`
-
   const addRow = useCallback(async () => {
     const data = await createObservationSource({
       db,
       project_id,
     })
     await db.observation_sources.create({ data })
-    navigate(`${baseUrl}/${data.observation_source_id}`)
+    navigate(`../${data.observation_source_id}`)
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, baseUrl, db, navigate, project_id])
+  }, [autoFocusRef, db, navigate, project_id])
 
   const deleteRow = useCallback(async () => {
     await db.observation_sources.delete({
       where: { observation_source_id },
     })
     navigate('..')
-  }, [baseUrl, db.observation_sources, navigate, observation_source_id])
+  }, [db.observation_sources, navigate, observation_source_id])
 
   const toNext = useCallback(async () => {
     const observationSources = await db.observation_sources.findMany({
@@ -40,14 +38,8 @@ export const Header = memo(({ autoFocusRef }) => {
       (p) => p.observation_source_id === observation_source_id,
     )
     const next = observationSources[(index + 1) % len]
-    navigate(`${baseUrl}/${next.observation_source_id}`)
-  }, [
-    baseUrl,
-    db.observation_sources,
-    navigate,
-    observation_source_id,
-    project_id,
-  ])
+    navigate(`../${next.observation_source_id}`)
+  }, [db.observation_sources, navigate, observation_source_id, project_id])
 
   const toPrevious = useCallback(async () => {
     const observationSources = await db.observation_sources.findMany({
@@ -59,14 +51,8 @@ export const Header = memo(({ autoFocusRef }) => {
       (p) => p.observation_source_id === observation_source_id,
     )
     const previous = observationSources[(index + len - 1) % len]
-    navigate(`${baseUrl}/${previous.observation_source_id}`)
-  }, [
-    baseUrl,
-    db.observation_sources,
-    navigate,
-    observation_source_id,
-    project_id,
-  ])
+    navigate(`../${previous.observation_source_id}`)
+  }, [db.observation_sources, navigate, observation_source_id, project_id])
 
   return (
     <FormHeader
