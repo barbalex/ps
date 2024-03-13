@@ -9,6 +9,7 @@ import { SubprojectReportsNode } from './SubprojectReports'
 import { GoalsNode } from './Goals'
 import { SubprojectTaxaNode } from './SubprojectTaxa'
 import { SubprojectUsersNode } from './SubprojectUsers'
+import { OccurrenceImportsNode } from './OccurrenceImports'
 import { FilesNode } from './Files'
 import { ChartsNode } from './Charts'
 import { useElectric } from '../../ElectricProvider'
@@ -77,6 +78,10 @@ export const SubprojectNode = memo(
               subproject_id={subproject.subproject_id}
             />
             <SubprojectUsersNode
+              project_id={project_id}
+              subproject_id={subproject.subproject_id}
+            />
+            <OccurrenceImportsNode
               project_id={project_id}
               subproject_id={subproject.subproject_id}
             />
