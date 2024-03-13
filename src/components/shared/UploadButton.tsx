@@ -7,6 +7,7 @@ const uploadInputStyle = {
 
 export const UploadButton = () => {
   const uploadInputRef = useRef<HTMLInputElement>(null)
+
   const onUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) {
@@ -24,10 +25,32 @@ export const UploadButton = () => {
     }
     reader.readAsText(file)
   }, [])
+
   const onClickUploadButton = useCallback(
     () => uploadInputRef.current?.click(),
     [],
   )
+
+  const onDragEnter = useCallback((e) => {
+    e.stopPropagation()
+    e.preventDefault()
+    console.log('drag enter')
+  }, [])
+  const onDragOver = useCallback((e) => {
+    e.stopPropagation()
+    e.preventDefault()
+    console.log('drag over')
+  }, [])
+  const onDrop = useCallback((e) => {
+    e.stopPropagation()
+    e.preventDefault()
+    console.log('drop')
+    const dt = e.dataTransfer
+    const files = dt.files
+    if (files.length === 0) {
+      return
+    }
+  }, [])
 
   return (
     <>
@@ -39,7 +62,14 @@ export const UploadButton = () => {
         ref={uploadInputRef}
         style={uploadInputStyle}
       />
-      <Button onClick={onClickUploadButton}>Upload File</Button>
+      <Button
+        onClick={onClickUploadButton}
+        onDrop={onDrop}
+        onDragEnter={onDragEnter}
+        onDragOver={onDragOver}
+      >
+        Upload Import File
+      </Button>
     </>
   )
 }
