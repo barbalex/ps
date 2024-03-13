@@ -49,16 +49,11 @@ export const Component = () => {
     }),
   )
 
-  const baseUrl = `${project_id ? `/projects/${project_id}` : ''}${
-    subproject_id ? `/subprojects/${subproject_id}` : ''
-  }${place_id ? `/places/${place_id}` : ''}${
-    place_id2 ? `/places/${place_id2}` : ''
-  }${action_id ? `/actions/${action_id}` : ''}${
-    check_id ? `/checks/${check_id}` : ''
-  }/files`
-
   const uploaderCtx = useContext(UploaderContext)
-  const onClickAdd = useCallback(() => uploaderCtx.current.initFlow(), [uploaderCtx])
+  const onClickAdd = useCallback(
+    () => uploaderCtx.current.initFlow(),
+    [uploaderCtx],
+  )
 
   // TODO: get uploader css locally if it should be possible to upload files
   // offline to sqlite
@@ -89,7 +84,7 @@ export const Component = () => {
             <Row
               key={file_id}
               label={label}
-              to={`${baseUrl}/${file_id}`}
+              to={file_id}
               imgSrc={imgSrc}
               lastHasImages={true}
             />

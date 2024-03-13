@@ -40,10 +40,6 @@ export const Component = () => {
   const placeNameSingular = placeLevel?.name_singular ?? 'Place'
   const placeNamePlural = placeLevel?.name_plural ?? 'Places'
 
-  const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/places${
-    place_id ? `/${place_id}/places` : ''
-  }`
-
   const add = useCallback(async () => {
     const data = await createPlace({
       db,
@@ -65,16 +61,8 @@ export const Component = () => {
     })
     db.vector_layer_displays.create({ data: newVLD })
 
-    navigate(`${baseUrl}/${data.place_id}`)
-  }, [
-    baseUrl,
-    db,
-    navigate,
-    placeNamePlural,
-    place_id,
-    project_id,
-    subproject_id,
-  ])
+    navigate(data.place_id)
+  }, [db, navigate, placeNamePlural, place_id, project_id, subproject_id])
 
   return (
     <div className="list-view">
@@ -92,11 +80,7 @@ export const Component = () => {
       />
       <div className="list-container">
         {places.map(({ place_id, label }) => (
-          <Row
-            key={place_id}
-            to={`${baseUrl}/${place_id}`}
-            label={label ?? place_id}
-          />
+          <Row key={place_id} to={place_id} label={label ?? place_id} />
         ))}
       </div>
     </div>
