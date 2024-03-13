@@ -24,7 +24,7 @@ export const Header = memo(({ autoFocusRef }) => {
     await db.vector_layers.delete({
       where: { vector_layer_id },
     })
-    navigate(baseUrl)
+    navigate('..')
   }, [baseUrl, db.vector_layers, navigate, vector_layer_id])
 
   const toNext = useCallback(async () => {
