@@ -26,7 +26,7 @@ export const Header = memo(({ autoFocusRef }) => {
     await db.subproject_taxa.delete({
       where: { subproject_taxon_id },
     })
-    navigate(baseUrl)
+    navigate('..')
   }, [baseUrl, db.subproject_taxa, navigate, subproject_taxon_id])
 
   const toNext = useCallback(async () => {

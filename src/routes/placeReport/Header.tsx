@@ -37,7 +37,7 @@ export const Header = memo(({ autoFocusRef }) => {
         place_report_id,
       },
     })
-    navigate(baseUrl)
+    navigate('..')
   }, [baseUrl, db.place_reports, navigate, place_report_id])
 
   const toNext = useCallback(async () => {
