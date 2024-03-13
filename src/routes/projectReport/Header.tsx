@@ -11,21 +11,17 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const { db } = useElectric()!
 
-  const baseUrl = `/projects/${project_id}/reports`
-
   const addRow = useCallback(async () => {
     const data = await createProjectReport({ db, project_id })
     await db.project_reports.create({ data })
-    navigate(`${baseUrl}/${data.project_report_id}`)
+    navigate(`../${data.project_report_id}`)
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, baseUrl, db, navigate, project_id])
+  }, [autoFocusRef, db, navigate, project_id])
 
   const deleteRow = useCallback(async () => {
-    await db.project_reports.delete({
-      where: { project_report_id },
-    })
+    await db.project_reports.delete({ where: { project_report_id } })
     navigate('..')
-  }, [baseUrl, db.project_reports, navigate, project_report_id])
+  }, [db.project_reports, navigate, project_report_id])
 
   const toNext = useCallback(async () => {
     const projectReports = await db.project_reports.findMany({
@@ -37,8 +33,8 @@ export const Header = memo(({ autoFocusRef }) => {
       (p) => p.project_report_id === project_report_id,
     )
     const next = projectReports[(index + 1) % len]
-    navigate(`${baseUrl}/${next.project_report_id}`)
-  }, [baseUrl, db.project_reports, navigate, project_id, project_report_id])
+    navigate(`../${next.project_report_id}`)
+  }, [db.project_reports, navigate, project_id, project_report_id])
 
   const toPrevious = useCallback(async () => {
     const projectReports = await db.project_reports.findMany({
@@ -50,8 +46,8 @@ export const Header = memo(({ autoFocusRef }) => {
       (p) => p.project_report_id === project_report_id,
     )
     const previous = projectReports[(index + len - 1) % len]
-    navigate(`${baseUrl}/${previous.project_report_id}`)
-  }, [baseUrl, db.project_reports, navigate, project_id, project_report_id])
+    navigate(`../${previous.project_report_id}`)
+  }, [db.project_reports, navigate, project_id, project_report_id])
 
   return (
     <FormHeader
