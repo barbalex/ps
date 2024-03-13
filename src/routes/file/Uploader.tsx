@@ -23,14 +23,6 @@ export const Uploader = () => {
   const { pathname } = useLocation()
   const isPreview = pathname.endsWith('preview')
 
-  const baseUrl = `${project_id ? `/projects/${project_id}` : ''}${
-    subproject_id ? `/subprojects/${subproject_id}` : ''
-  }${place_id ? `/places/${place_id}` : ''}${
-    place_id2 ? `/places/${place_id2}` : ''
-  }${action_id ? `/actions/${action_id}` : ''}${
-    check_id ? `/checks/${check_id}` : ''
-  }/files`
-
   const { db } = useElectric()!
   const uploaderCtx = useContext(UploaderContext)
 
@@ -68,7 +60,7 @@ export const Uploader = () => {
       }
       const data = await createFile(fileInput)
       await db.files.create({ data })
-      navigate(`${baseUrl}/${data.file_id}${isPreview ? '/preview' : ''}`)
+      navigate(`../${data.file_id}${isPreview ? '/preview' : ''}`)
       // close the uploader or it will be open when navigating to the list
       uploaderCtx.current.doneFlow()
       // clear the uploader or it will show the last uploaded file when opened next time
@@ -124,7 +116,6 @@ export const Uploader = () => {
     },
     [
       action_id,
-      baseUrl,
       check_id,
       db,
       isPreview,
