@@ -37,21 +37,17 @@ export const Header = memo(({ row }: Props) => {
   const { db } = useElectric()!
 
   // TODO: if is preview, add preview to the url
-  const baseUrl = `${project_id ? `/projects/${project_id}` : ''}${
-    subproject_id ? `/subprojects/${subproject_id}` : ''
-  }${place_id ? `/places/${place_id}` : ''}${
-    place_id2 ? `/places/${place_id2}` : ''
-  }${action_id ? `/actions/${action_id}` : ''}${
-    check_id ? `/checks/${check_id}` : ''
-  }/files`
 
   const uploaderCtx = useContext(UploaderContext)
-  const addRow = useCallback(async () => uploaderCtx.current.initFlow(), [uploaderCtx])
+  const addRow = useCallback(
+    async () => uploaderCtx.current.initFlow(),
+    [uploaderCtx],
+  )
 
   const deleteRow = useCallback(async () => {
     await db.files.delete({ where: { file_id } })
     navigate('..')
-  }, [db.files, file_id, navigate, baseUrl])
+  }, [db.files, file_id, navigate])
 
   const where = useMemo(() => {
     const where = { deleted: false }
@@ -79,8 +75,8 @@ export const Header = memo(({ row }: Props) => {
     const len = files.length
     const index = files.findIndex((p) => p.file_id === file_id)
     const next = files[(index + 1) % len]
-    navigate(`${baseUrl}/${next.file_id}${isPreview ? '/preview' : ''}`)
-  }, [db.files, where, navigate, baseUrl, isPreview, file_id])
+    navigate(`../${next.file_id}${isPreview ? '/preview' : ''}`)
+  }, [db.files, where, navigate, isPreview, file_id])
 
   const toPrevious = useCallback(async () => {
     const files = await db.files.findMany({
@@ -90,8 +86,8 @@ export const Header = memo(({ row }: Props) => {
     const len = files.length
     const index = files.findIndex((p) => p.file_id === file_id)
     const previous = files[(index + len - 1) % len]
-    navigate(`${baseUrl}/${previous.file_id}${isPreview ? '/preview' : ''}`)
-  }, [db.files, where, navigate, baseUrl, isPreview, file_id])
+    navigate(`../${previous.file_id}${isPreview ? '/preview' : ''}`)
+  }, [db.files, where, navigate, isPreview, file_id])
 
   return (
     <FormHeader
