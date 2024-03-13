@@ -50,7 +50,7 @@ export const Header = memo(({ row }: Props) => {
 
   const deleteRow = useCallback(async () => {
     await db.files.delete({ where: { file_id } })
-    navigate(baseUrl)
+    navigate('..')
   }, [db.files, file_id, navigate, baseUrl])
 
   const where = useMemo(() => {
