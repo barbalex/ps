@@ -11,21 +11,17 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const { db } = useElectric()!
 
-  const baseUrl = `/projects/${project_id}/lists`
-
   const addRow = useCallback(async () => {
     const data = await createList({ db, project_id })
     await db.lists.create({ data })
-    navigate(`${baseUrl}/${data.list_id}`)
+    navigate(`../${data.list_id}`)
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, baseUrl, db, navigate, project_id])
+  }, [autoFocusRef, db, navigate, project_id])
 
   const deleteRow = useCallback(async () => {
-    await db.lists.delete({
-      where: { list_id },
-    })
+    await db.lists.delete({ where: { list_id } })
     navigate('..')
-  }, [baseUrl, db.lists, list_id, navigate])
+  }, [db.lists, list_id, navigate])
 
   const toNext = useCallback(async () => {
     const lists = await db.lists.findMany({
@@ -35,8 +31,8 @@ export const Header = memo(({ autoFocusRef }) => {
     const len = lists.length
     const index = lists.findIndex((p) => p.list_id === list_id)
     const next = lists[(index + 1) % len]
-    navigate(`${baseUrl}/${next.list_id}`)
-  }, [baseUrl, db.lists, list_id, navigate, project_id])
+    navigate(`../${next.list_id}`)
+  }, [db.lists, list_id, navigate, project_id])
 
   const toPrevious = useCallback(async () => {
     const lists = await db.lists.findMany({
@@ -46,8 +42,8 @@ export const Header = memo(({ autoFocusRef }) => {
     const len = lists.length
     const index = lists.findIndex((p) => p.list_id === list_id)
     const previous = lists[(index + len - 1) % len]
-    navigate(`${baseUrl}/${previous.list_id}`)
-  }, [baseUrl, db.lists, list_id, navigate, project_id])
+    navigate(`../${previous.list_id}`)
+  }, [db.lists, list_id, navigate, project_id])
 
   return (
     <FormHeader
