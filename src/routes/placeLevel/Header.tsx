@@ -11,23 +11,21 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const { db } = useElectric()!
 
-  const baseUrl = `/projects/${project_id}/place-levels`
-
   const addRow = useCallback(async () => {
     const placeLevel = createPlaceLevel()
     await db.place_levels.create({
       data: { ...placeLevel, project_id },
     })
-    navigate(`${baseUrl}/${placeLevel.place_level_id}`)
+    navigate(`../${placeLevel.place_level_id}`)
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, baseUrl, db.place_levels, navigate, project_id])
+  }, [autoFocusRef, db.place_levels, navigate, project_id])
 
   const deleteRow = useCallback(async () => {
     await db.place_levels.delete({
       where: { place_level_id },
     })
     navigate('..')
-  }, [baseUrl, db.place_levels, navigate, place_level_id])
+  }, [db.place_levels, navigate, place_level_id])
 
   const toNext = useCallback(async () => {
     const placeLevels = await db.place_levels.findMany({
@@ -39,8 +37,8 @@ export const Header = memo(({ autoFocusRef }) => {
       (p) => p.place_level_id === place_level_id,
     )
     const next = placeLevels[(index + 1) % len]
-    navigate(`${baseUrl}/${next.place_level_id}`)
-  }, [baseUrl, db.place_levels, navigate, place_level_id, project_id])
+    navigate(`../${next.place_level_id}`)
+  }, [db.place_levels, navigate, place_level_id, project_id])
 
   const toPrevious = useCallback(async () => {
     const placeLevels = await db.place_levels.findMany({
@@ -52,8 +50,8 @@ export const Header = memo(({ autoFocusRef }) => {
       (p) => p.place_level_id === place_level_id,
     )
     const previous = placeLevels[(index + len - 1) % len]
-    navigate(`${baseUrl}/${previous.place_level_id}`)
-  }, [baseUrl, db.place_levels, navigate, place_level_id, project_id])
+    navigate(`../${previous.place_level_id}`)
+  }, [db.place_levels, navigate, place_level_id, project_id])
 
   return (
     <FormHeader

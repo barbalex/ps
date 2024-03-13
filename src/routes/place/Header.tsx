@@ -37,10 +37,6 @@ export const Header = memo(({ autoFocusRef }: Props) => {
   const placeNameSingular = placeLevels?.[0]?.name_singular ?? 'Place'
   const placeNamePlural = placeLevels?.[0]?.name_plural ?? 'Places'
 
-  const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/places${
-    place_id2 ? `/${place_id}/places` : ''
-  }`
-
   const addRow = useCallback(async () => {
     const data = await createPlace({
       db,
@@ -62,11 +58,10 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     })
     db.vector_layer_displays.create({ data: newVLD })
 
-    navigate(`${baseUrl}/${data.place_id}`)
+    navigate(`../${data.place_id}`)
     autoFocusRef.current?.focus()
   }, [
     autoFocusRef,
-    baseUrl,
     db,
     navigate,
     placeNamePlural,
@@ -79,7 +74,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
   const deleteRow = useCallback(async () => {
     await db.places.delete({ where: { place_id } })
     navigate('..')
-  }, [baseUrl, db.places, navigate, place_id])
+  }, [db.places, navigate, place_id])
 
   const toNext = useCallback(async () => {
     const places = await db.places.findMany({
@@ -93,8 +88,8 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     const len = places.length
     const index = places.findIndex((p) => p.place_id === place_id)
     const next = places[(index + 1) % len]
-    navigate(`${baseUrl}/${next.place_id}`)
-  }, [baseUrl, db.places, navigate, place_id, place_id2, subproject_id])
+    navigate(`../${next.place_id}`)
+  }, [db.places, navigate, place_id, place_id2, subproject_id])
 
   const toPrevious = useCallback(async () => {
     const places = await db.places.findMany({
@@ -108,8 +103,8 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     const len = places.length
     const index = places.findIndex((p) => p.place_id === place_id)
     const previous = places[(index + len - 1) % len]
-    navigate(`${baseUrl}/${previous.place_id}`)
-  }, [baseUrl, db.places, navigate, place_id, place_id2, subproject_id])
+    navigate(`../${previous.place_id}`)
+  }, [db.places, navigate, place_id, place_id2, subproject_id])
 
   const alertNoGeometry = useCallback(async () => {
     await db.notifications.create({
