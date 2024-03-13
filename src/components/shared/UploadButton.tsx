@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { Button } from '@fluentui/react-components'
 
 const uploadInputStyle = {
@@ -7,6 +7,7 @@ const uploadInputStyle = {
 
 export const UploadButton = () => {
   const uploadInputRef = useRef<HTMLInputElement>(null)
+  const [isDragging, setIsDragging] = useState(false)
 
   const onUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -35,21 +36,28 @@ export const UploadButton = () => {
     e.stopPropagation()
     e.preventDefault()
     console.log('drag enter')
+    setIsDragging(true)
   }, [])
   const onDragOver = useCallback((e) => {
     e.stopPropagation()
     e.preventDefault()
     console.log('drag over')
   }, [])
+  const onDragLeave = useCallback((e) => {
+    e.stopPropagation()
+    e.preventDefault()
+    console.log('drag leave')
+    setIsDragging(false)
+  }, [])
   const onDrop = useCallback((e) => {
     e.stopPropagation()
     e.preventDefault()
+    setIsDragging(false)
     console.log('drop')
     const dt = e.dataTransfer
-    const files = dt.files
-    if (files.length === 0) {
-      return
-    }
+    const file = dt.files?.[0]
+    if (!file) return
+    console.log('file', file)
   }, [])
 
   return (
@@ -67,6 +75,12 @@ export const UploadButton = () => {
         onDrop={onDrop}
         onDragEnter={onDragEnter}
         onDragOver={onDragOver}
+        onDragLeave={onDragLeave}
+        style={{
+          backgroundColor: isDragging
+            ? 'rgba(103, 216, 101, 0.2)'
+            : 'transparent',
+        }}
       >
         Upload Import File
       </Button>
