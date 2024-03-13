@@ -582,7 +582,7 @@ export const createChartSubject = ({ chart_id }) => ({
   deleted: false,
 })
 
-export const createOccurrenceImport = async ({ subproject_id }) => ({
+export const createOccurrenceImport = ({ subproject_id }) => ({
   occurrence_import_id: uuidv7(),
   account_id: '018cf958-27e2-7000-90d3-59f024d467be', // TODO: replace with auth data when implemented
   subproject_id,

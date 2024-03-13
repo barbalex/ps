@@ -174,6 +174,36 @@ export const router = (db) => {
                               ],
                             },
                             {
+                              path: 'occurrence-imports',
+                              element: null,
+                              handle: {
+                                crumb: () => ({
+                                  text: 'Occurrence Imports',
+                                  table: 'occurrence_imports',
+                                  folder: true,
+                                }),
+                              },
+                              children: [
+                                {
+                                  index: true,
+                                  lazy: () =>
+                                    import('../routes/occurrenceImports'),
+                                },
+                                {
+                                  path: ':occurrence_import_id',
+                                  lazy: () =>
+                                    import('../routes/occurrenceImport'),
+                                  handle: {
+                                    crumb: (match) => ({
+                                      text: match.params.occurrence_import_id,
+                                      table: 'occurrence_imports',
+                                      folder: false,
+                                    }),
+                                  },
+                                },
+                              ],
+                            },
+                            {
                               path: 'files',
                               element: null,
                               handle: {
