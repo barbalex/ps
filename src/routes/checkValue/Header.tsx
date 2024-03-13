@@ -44,7 +44,7 @@ export const Header = memo(({ autoFocusRef }) => {
         check_value_id,
       },
     })
-    navigate(baseUrl)
+    navigate('..')
   }, [baseUrl, check_value_id, db.check_values, navigate])
 
   const toNext = useCallback(async () => {
