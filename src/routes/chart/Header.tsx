@@ -18,12 +18,6 @@ export const Header = memo(({ autoFocusRef }) => {
   )
   const designing = uiOption?.designing ?? false
 
-  const baseUrl = `${project_id ? `/projects/${project_id}` : ''}${
-    subproject_id ? `/subprojects/${subproject_id}` : ''
-  }${place_id ? `/places/${place_id}` : ''}${
-    place_id2 ? `/places/${place_id2}` : ''
-  }/charts`
-
   const addRow = useCallback(async () => {
     const idToAdd = place_id2
       ? { place_id2 }
@@ -34,11 +28,10 @@ export const Header = memo(({ autoFocusRef }) => {
       : { project_id }
     const data = createChart(idToAdd)
     await db.charts.create({ data })
-    navigate(`${baseUrl}/${data.chart_id}`)
+    navigate(`../${data.chart_id}`)
     autoFocusRef.current?.focus()
   }, [
     autoFocusRef,
-    baseUrl,
     db.charts,
     navigate,
     place_id,
@@ -49,8 +42,8 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const deleteRow = useCallback(async () => {
     await db.charts.delete({ where: { chart_id } })
-    navigate(baseUrl)
-  }, [baseUrl, db.charts, chart_id, navigate])
+    navigate('..')
+  }, [db.charts, chart_id, navigate])
 
   const where = useMemo(() => {
     const where = { deleted: false }
@@ -74,8 +67,8 @@ export const Header = memo(({ autoFocusRef }) => {
     const len = charts.length
     const index = charts.findIndex((p) => p.chart_id === chart_id)
     const next = charts[(index + 1) % len]
-    navigate(`${baseUrl}/${next.chart_id}`)
-  }, [db.charts, where, navigate, baseUrl, chart_id])
+    navigate(`../${next.chart_id}`)
+  }, [db.charts, where, navigate, chart_id])
 
   const toPrevious = useCallback(async () => {
     const charts = await db.charts.findMany({
@@ -85,8 +78,8 @@ export const Header = memo(({ autoFocusRef }) => {
     const len = charts.length
     const index = charts.findIndex((p) => p.chart_id === chart_id)
     const previous = charts[(index + len - 1) % len]
-    navigate(`${baseUrl}/${previous.chart_id}`)
-  }, [db.charts, where, navigate, baseUrl, chart_id])
+    navigate(`../${previous.chart_id}`)
+  }, [db.charts, where, navigate, chart_id])
 
   return (
     <FormHeader

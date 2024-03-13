@@ -1,4 +1,4 @@
-import { useCallback, useMemo, memo } from 'react'
+import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { TbZoomScan } from 'react-icons/tb'
 import { Button } from '@fluentui/react-button'
@@ -13,19 +13,10 @@ import { boundsFromBbox } from '../../modules/boundsFromBbox'
 import { user_id } from '../../components/SqlInitializer'
 
 export const Header = memo(({ autoFocusRef }) => {
-  const { project_id, subproject_id, place_id, place_id2, check_id } =
-    useParams()
+  const { project_id, place_id, place_id2, check_id } = useParams()
   const navigate = useNavigate()
 
   const { db } = useElectric()!
-
-  const baseUrl = useMemo(
-    () =>
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-        place_id2 ? `/places/${place_id2}` : ''
-      }/checks`,
-    [place_id, place_id2, project_id, subproject_id],
-  )
 
   const addRow = useCallback(async () => {
     const data = await createCheck({
@@ -34,18 +25,16 @@ export const Header = memo(({ autoFocusRef }) => {
       place_id: place_id2 ?? place_id,
     })
     await db.checks.create({ data })
-    navigate(`${baseUrl}/${data.check_id}`)
+    navigate(`../${data.check_id}`)
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, baseUrl, db, navigate, place_id, place_id2, project_id])
+  }, [autoFocusRef, db, navigate, place_id, place_id2, project_id])
 
   const deleteRow = useCallback(async () => {
     await db.checks.delete({
-      where: {
-        check_id,
-      },
+      where: { check_id },
     })
-    navigate(baseUrl)
-  }, [baseUrl, check_id, db.checks, navigate])
+    navigate('..')
+  }, [check_id, db.checks, navigate])
 
   const toNext = useCallback(async () => {
     const checks = await db.checks.findMany({
@@ -55,8 +44,8 @@ export const Header = memo(({ autoFocusRef }) => {
     const len = checks.length
     const index = checks.findIndex((p) => p.check_id === check_id)
     const next = checks[(index + 1) % len]
-    navigate(`${baseUrl}/${next.check_id}`)
-  }, [baseUrl, check_id, db.checks, navigate, place_id, place_id2])
+    navigate(`../${next.check_id}`)
+  }, [check_id, db.checks, navigate, place_id, place_id2])
 
   const toPrevious = useCallback(async () => {
     const checks = await db.checks.findMany({
@@ -66,8 +55,8 @@ export const Header = memo(({ autoFocusRef }) => {
     const len = checks.length
     const index = checks.findIndex((p) => p.check_id === check_id)
     const previous = checks[(index + len - 1) % len]
-    navigate(`${baseUrl}/${previous.check_id}`)
-  }, [baseUrl, check_id, db.checks, navigate, place_id, place_id2])
+    navigate(`../${previous.check_id}`)
+  }, [check_id, db.checks, navigate, place_id, place_id2])
 
   const alertNoGeometry = useCallback(async () => {
     await db.notifications.create({
