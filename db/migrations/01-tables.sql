@@ -1415,7 +1415,7 @@ CREATE INDEX ON occurrence_imports USING btree(subproject_id);
 
 CREATE INDEX ON occurrence_imports USING btree(created_time);
 
-COMMENT ON TABLE occurrence_imports IS 'GBIF occurrence downloads. Used also for species (of an area, format: SPECIES_LIST). Is created in client, synced to server, executed by gbif backend server, written to db and synced back to client';
+COMMENT ON TABLE occurrence_imports IS 'occurrence imports. Used also for species (when from gbif, of an area, format: SPECIES_LIST). Is created in client, synced to server, executed by gbif backend server, written to db and synced back to client';
 
 COMMENT ON COLUMN occurrence_imports.gbif_filters IS 'area, groups, speciesKeys...';
 
