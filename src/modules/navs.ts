@@ -181,6 +181,10 @@ export const buildNavs = async ({
           path: `/projects/${project_id}/subprojects/${subproject_id}/charts`,
           text: 'Charts',
         },
+        {
+          path: `/projects/${project_id}/subprojects/${subproject_id}/occurrence-imports`,
+          text: 'Occurrence Imports',
+        },
         ...(filesActiveSubprojects
           ? [
               {
