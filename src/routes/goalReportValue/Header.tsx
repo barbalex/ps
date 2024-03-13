@@ -35,7 +35,7 @@ export const Header = memo(({ autoFocusRef }) => {
     await db.goal_report_values.delete({
       where: { goal_report_value_id },
     })
-    navigate(baseUrl)
+    navigate('..')
   }, [baseUrl, db.goal_report_values, goal_report_value_id, navigate])
 
   const toNext = useCallback(async () => {
