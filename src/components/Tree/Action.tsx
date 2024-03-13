@@ -29,7 +29,7 @@ export const ActionNode = memo(
   }: Props) => {
     const location = useLocation()
     const navigate = useNavigate()
-    
+
     // need project to know whether to show files
     const { db } = useElectric()!
     const { results: project } = useLiveQuery(

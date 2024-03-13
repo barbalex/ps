@@ -41,12 +41,6 @@ export const Component = () => {
     }),
   )
 
-  const baseUrl = `${project_id ? `/projects/${project_id}` : ''}${
-    subproject_id ? `/subprojects/${subproject_id}` : ''
-  }${place_id ? `/places/${place_id}` : ''}${
-    place_id2 ? `/places/${place_id2}` : ''
-  }/charts`
-
   const add = useCallback(async () => {
     const idToAdd = place_id2
       ? { place_id2 }
@@ -57,16 +51,10 @@ export const Component = () => {
       : { project_id }
     const data = createChart(idToAdd)
     await db.charts.create({ data })
-    navigate(`${baseUrl}/${data.chart_id}`)
-  }, [
-    baseUrl,
-    db.charts,
-    navigate,
-    place_id,
-    place_id2,
-    project_id,
-    subproject_id,
-  ])
+    navigate(data.chart_id)
+  }, [db.charts, navigate, place_id, place_id2, project_id, subproject_id])
+
+  // console.log('charts', charts)
 
   // TODO: get uploader css locally if it should be possible to upload charts
   // offline to sqlite
@@ -79,7 +67,7 @@ export const Component = () => {
       />
       <div className="list-container">
         {charts.map(({ chart_id, label }) => (
-          <Row key={chart_id} label={label} to={`${baseUrl}/${chart_id}`} />
+          <Row key={chart_id} label={label} to={chart_id} />
         ))}
       </div>
     </div>
