@@ -11,21 +11,17 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const { db } = useElectric()!
 
-  const baseUrl = `/projects/${project_id}/taxonomies`
-
   const addRow = useCallback(async () => {
     const data = await createTaxonomy({ db, project_id })
     await db.taxonomies.create({ data })
-    navigate(`${baseUrl}/${data.taxonomy_id}`)
+    navigate(`../${data.taxonomy_id}`)
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, baseUrl, db, navigate, project_id])
+  }, [autoFocusRef, db, navigate, project_id])
 
   const deleteRow = useCallback(async () => {
-    await db.taxonomies.delete({
-      where: { taxonomy_id },
-    })
+    await db.taxonomies.delete({ where: { taxonomy_id } })
     navigate('..')
-  }, [baseUrl, db.taxonomies, navigate, taxonomy_id])
+  }, [db.taxonomies, navigate, taxonomy_id])
 
   const toNext = useCallback(async () => {
     const taxonomies = await db.taxonomies.findMany({
@@ -35,8 +31,8 @@ export const Header = memo(({ autoFocusRef }) => {
     const len = taxonomies.length
     const index = taxonomies.findIndex((p) => p.taxonomy_id === taxonomy_id)
     const next = taxonomies[(index + 1) % len]
-    navigate(`${baseUrl}/${next.taxonomy_id}`)
-  }, [baseUrl, db.taxonomies, navigate, project_id, taxonomy_id])
+    navigate(`../${next.taxonomy_id}`)
+  }, [db.taxonomies, navigate, project_id, taxonomy_id])
 
   const toPrevious = useCallback(async () => {
     const taxonomies = await db.taxonomies.findMany({
@@ -46,8 +42,8 @@ export const Header = memo(({ autoFocusRef }) => {
     const len = taxonomies.length
     const index = taxonomies.findIndex((p) => p.taxonomy_id === taxonomy_id)
     const previous = taxonomies[(index + len - 1) % len]
-    navigate(`${baseUrl}/${previous.taxonomy_id}`)
-  }, [baseUrl, db.taxonomies, navigate, project_id, taxonomy_id])
+    navigate(`../${previous.taxonomy_id}`)
+  }, [db.taxonomies, navigate, project_id, taxonomy_id])
 
   return (
     <FormHeader

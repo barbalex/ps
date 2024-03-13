@@ -6,28 +6,22 @@ import { useElectric } from '../../ElectricProvider'
 import { FormHeader } from '../../components/FormHeader'
 
 export const Header = memo(({ autoFocusRef }) => {
-  const { project_id, taxonomy_id, taxon_id } = useParams()
+  const { taxonomy_id, taxon_id } = useParams()
   const navigate = useNavigate()
 
   const { db } = useElectric()!
 
-  const baseUrl = `/projects/${project_id}/taxonomies/${taxonomy_id}/taxa`
-
   const addRow = useCallback(async () => {
     const taxon = createTaxon()
-    await db.taxa.create({
-      data: { ...taxon, taxonomy_id },
-    })
-    navigate(`${baseUrl}/${taxon.taxon_id}`)
+    await db.taxa.create({ data: { ...taxon, taxonomy_id } })
+    navigate(`../${taxon.taxon_id}`)
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, baseUrl, db.taxa, navigate, taxonomy_id])
+  }, [autoFocusRef, db.taxa, navigate, taxonomy_id])
 
   const deleteRow = useCallback(async () => {
-    await db.taxa.delete({
-      where: { taxon_id },
-    })
+    await db.taxa.delete({ where: { taxon_id } })
     navigate('..')
-  }, [baseUrl, db.taxa, navigate, taxon_id])
+  }, [db.taxa, navigate, taxon_id])
 
   const toNext = useCallback(async () => {
     const taxa = await db.taxa.findMany({
@@ -37,8 +31,8 @@ export const Header = memo(({ autoFocusRef }) => {
     const len = taxa.length
     const index = taxa.findIndex((p) => p.taxon_id === taxon_id)
     const next = taxa[(index + 1) % len]
-    navigate(`${baseUrl}/${next.taxon_id}`)
-  }, [baseUrl, db.taxa, navigate, taxon_id, taxonomy_id])
+    navigate(`../${next.taxon_id}`)
+  }, [db.taxa, navigate, taxon_id, taxonomy_id])
 
   const toPrevious = useCallback(async () => {
     const taxa = await db.taxa.findMany({
@@ -48,8 +42,8 @@ export const Header = memo(({ autoFocusRef }) => {
     const len = taxa.length
     const index = taxa.findIndex((p) => p.taxon_id === taxon_id)
     const previous = taxa[(index + len - 1) % len]
-    navigate(`${baseUrl}/${previous.taxon_id}`)
-  }, [baseUrl, db.taxa, navigate, taxon_id, taxonomy_id])
+    navigate(`../${previous.taxon_id}`)
+  }, [db.taxa, navigate, taxon_id, taxonomy_id])
 
   return (
     <FormHeader
