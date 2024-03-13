@@ -6,8 +6,8 @@ export const generateOccurrenceImportLabel = async (db) => {
   if (!hasLabel) {
     await db.unsafeExec({
       sql: `
-        ALTER TABLE occurrence_imports ADD COLUMN label text GENERATED ALWAYS AS (occurrence_import_id);
-        ALTER TABLE occurrence_imports drop COLUMN label_replace_by_generated_column;`,
+        ALTER TABLE occurrence_imports ADD COLUMN label text GENERATED ALWAYS AS (coalesce(name, occurrence_import_id));
+        ALTER TABLE occurrence_imports drop label_replace_by_generated_column;`,
     })
     await db.unsafeExec({
       sql: 'CREATE INDEX IF NOT EXISTS occurrence_imports_label_idx ON occurrence_imports(label)',
