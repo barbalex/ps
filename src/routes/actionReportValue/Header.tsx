@@ -1,4 +1,4 @@
-import { useCallback, useMemo, memo } from 'react'
+import { useCallback, memo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { createActionReportValue } from '../../modules/createRows'
@@ -6,33 +6,10 @@ import { useElectric } from '../../ElectricProvider'
 import { FormHeader } from '../../components/FormHeader'
 
 export const Header = memo(({ autoFocusRef }) => {
-  const {
-    project_id,
-    subproject_id,
-    place_id,
-    place_id2,
-    action_id,
-    action_report_id,
-    action_report_value_id,
-  } = useParams()
+  const { action_report_id, action_report_value_id } = useParams()
   const navigate = useNavigate()
 
   const { db } = useElectric()!
-
-  const baseUrl = useMemo(
-    () =>
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-        place_id2 ? `/places/${place_id2}` : ''
-      }/actions/${action_id}/reports/${action_report_id}/values`,
-    [
-      action_id,
-      action_report_id,
-      place_id,
-      place_id2,
-      project_id,
-      subproject_id,
-    ],
-  )
 
   const addRow = useCallback(async () => {
     const actionReportValue = createActionReportValue()
@@ -42,15 +19,9 @@ export const Header = memo(({ autoFocusRef }) => {
         action_report_id,
       },
     })
-    navigate(`${baseUrl}/${actionReportValue.action_report_value_id}`)
+    navigate(`../${actionReportValue.action_report_value_id}`)
     autoFocusRef.current?.focus()
-  }, [
-    action_report_id,
-    autoFocusRef,
-    baseUrl,
-    db.action_report_values,
-    navigate,
-  ])
+  }, [action_report_id, autoFocusRef, db.action_report_values, navigate])
 
   const deleteRow = useCallback(async () => {
     await db.action_report_values.delete({
@@ -58,8 +29,8 @@ export const Header = memo(({ autoFocusRef }) => {
         action_report_value_id,
       },
     })
-    navigate(baseUrl)
-  }, [action_report_value_id, baseUrl, db.action_report_values, navigate])
+    navigate('..')
+  }, [action_report_value_id, db.action_report_values, navigate])
 
   const toNext = useCallback(async () => {
     const actionReportValues = await db.action_report_values.findMany({
@@ -71,11 +42,10 @@ export const Header = memo(({ autoFocusRef }) => {
       (p) => p.action_report_value_id === action_report_value_id,
     )
     const next = actionReportValues[(index + 1) % len]
-    navigate(`${baseUrl}/${next.action_report_value_id}`)
+    navigate(`../${next.action_report_value_id}`)
   }, [
     action_report_id,
     action_report_value_id,
-    baseUrl,
     db.action_report_values,
     navigate,
   ])
@@ -90,11 +60,10 @@ export const Header = memo(({ autoFocusRef }) => {
       (p) => p.action_report_value_id === action_report_value_id,
     )
     const previous = actionReportValues[(index + len - 1) % len]
-    navigate(`${baseUrl}/${previous.action_report_value_id}`)
+    navigate(`../${previous.action_report_value_id}`)
   }, [
     action_report_id,
     action_report_value_id,
-    baseUrl,
     db.action_report_values,
     navigate,
   ])
