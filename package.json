@@ -4,10 +4,6 @@
   "author": "Alexander Gabriel",
   "type": "module",
   "scripts": {
-    "backend:start": "npx electric-sql start --with-postgres",
-    "backend:stop": "npx electric-sql stop",
-    "backend:up": "npx electric-sql start --with-postgres --detach",
-    "backend:down": "npx electric-sql stop --remove",
     "client:generate:debug": "npx electric-sql generate --debug",
     "client:generate": "npx electric-sql generate && node renameLables.js",
     "client:watch": "npx electric-sql generate --watch",
