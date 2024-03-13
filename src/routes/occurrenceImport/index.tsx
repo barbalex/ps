@@ -2,6 +2,7 @@ import { useCallback, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
+import { Button } from '@fluentui/react-components'
 
 import { useElectric } from '../../ElectricProvider'
 import { TextField } from '../../components/shared/TextField'
@@ -9,6 +10,7 @@ import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { TextArea } from '../../components/shared/TextArea'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { Header } from './Header'
+import { UploadButton } from '../../components/shared/UploadButton'
 
 import '../../form.css'
 
@@ -29,6 +31,30 @@ export const Component = () => {
         where: { occurrence_import_id },
         data: { [name]: value },
       })
+    },
+    [db.occurrence_imports, occurrence_import_id],
+  )
+
+  const onUpload = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0]
+      if (!file) {
+        return
+      }
+      console.log('file', file)
+      const reader = new FileReader()
+      reader.onload = () => {
+        const content = reader.result
+        console.log('content', content)
+        if (typeof content !== 'string') {
+          return
+        }
+        db.occurrence_imports.update({
+          where: { occurrence_import_id },
+          data: { content },
+        })
+      }
+      reader.readAsText(file)
     },
     [db.occurrence_imports, occurrence_import_id],
   )
@@ -77,6 +103,8 @@ export const Component = () => {
           value={row.attribution ?? ''}
           onChange={onChange}
         />
+        {/* TODO: pass function to process the content */}
+        <UploadButton />
       </div>
     </div>
   )
