@@ -24,7 +24,7 @@ export const Header = memo(({ autoFocusRef }) => {
     await db.tile_layers.delete({
       where: { tile_layer_id },
     })
-    navigate(baseUrl)
+    navigate('..')
   }, [baseUrl, db.tile_layers, navigate, tile_layer_id])
 
   const toNext = useCallback(async () => {
