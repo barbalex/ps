@@ -5,12 +5,10 @@ import { useElectric } from '../../ElectricProvider'
 import { FormHeader } from '../../components/FormHeader'
 
 export const Header = memo(() => {
-  const { project_id, vector_layer_id, vector_layer_display_id } = useParams()
+  const { vector_layer_id, vector_layer_display_id } = useParams()
   const navigate = useNavigate()
 
   const { db } = useElectric()!
-
-  const baseUrl = `/projects/${project_id}/vector-layers/${vector_layer_id}/vector-layer-displays`
 
   const toNext = useCallback(async () => {
     const vectorLayerDisplays = await db.vector_layer_displays.findMany({
@@ -22,9 +20,8 @@ export const Header = memo(() => {
       (p) => p.vector_layer_display_id === vector_layer_display_id,
     )
     const next = vectorLayerDisplays[(index + 1) % len]
-    navigate(`${baseUrl}/${next.vector_layer_display_id}`)
+    navigate(`../${next.vector_layer_display_id}`)
   }, [
-    baseUrl,
     db.vector_layer_displays,
     navigate,
     vector_layer_display_id,
@@ -41,9 +38,8 @@ export const Header = memo(() => {
       (p) => p.vector_layer_display_id === vector_layer_display_id,
     )
     const previous = vectorLayerDisplays[(index + len - 1) % len]
-    navigate(`${baseUrl}/${previous.vector_layer_display_id}`)
+    navigate(`../${previous.vector_layer_display_id}`)
   }, [
-    baseUrl,
     db.vector_layer_displays,
     navigate,
     vector_layer_display_id,

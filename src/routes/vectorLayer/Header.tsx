@@ -11,21 +11,17 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const { db } = useElectric()!
 
-  const baseUrl = `/projects/${project_id}/vector-layers`
-
   const addRow = useCallback(async () => {
     const vectorLayer = createVectorLayer({ project_id })
     await db.vector_layers.create({ data: vectorLayer })
-    navigate(`${baseUrl}/${vectorLayer.vector_layer_id}`)
+    navigate(`../${vectorLayer.vector_layer_id}`)
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, baseUrl, db.vector_layers, navigate, project_id])
+  }, [autoFocusRef, db.vector_layers, navigate, project_id])
 
   const deleteRow = useCallback(async () => {
-    await db.vector_layers.delete({
-      where: { vector_layer_id },
-    })
+    await db.vector_layers.delete({ where: { vector_layer_id } })
     navigate('..')
-  }, [baseUrl, db.vector_layers, navigate, vector_layer_id])
+  }, [db.vector_layers, navigate, vector_layer_id])
 
   const toNext = useCallback(async () => {
     const vectorLayers = await db.vector_layers.findMany({
@@ -37,8 +33,8 @@ export const Header = memo(({ autoFocusRef }) => {
       (p) => p.vector_layer_id === vector_layer_id,
     )
     const next = vectorLayers[(index + 1) % len]
-    navigate(`${baseUrl}/${next.vector_layer_id}`)
-  }, [baseUrl, db.vector_layers, navigate, project_id, vector_layer_id])
+    navigate(`../${next.vector_layer_id}`)
+  }, [db.vector_layers, navigate, project_id, vector_layer_id])
 
   const toPrevious = useCallback(async () => {
     const vectorLayers = await db.vector_layers.findMany({
@@ -50,8 +46,8 @@ export const Header = memo(({ autoFocusRef }) => {
       (p) => p.vector_layer_id === vector_layer_id,
     )
     const previous = vectorLayers[(index + len - 1) % len]
-    navigate(`${baseUrl}/${previous.vector_layer_id}`)
-  }, [baseUrl, db.vector_layers, navigate, project_id, vector_layer_id])
+    navigate(`../${previous.vector_layer_id}`)
+  }, [db.vector_layers, navigate, project_id, vector_layer_id])
 
   return (
     <FormHeader
