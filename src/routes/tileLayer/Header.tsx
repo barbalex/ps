@@ -11,21 +11,17 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const { db } = useElectric()!
 
-  const baseUrl = `/projects/${project_id}/tile-layers`
-
   const addRow = useCallback(async () => {
     const tileLayer = createTileLayer({ project_id })
     await db.tile_layers.create({ data: tileLayer })
-    navigate(`${baseUrl}/${tileLayer.tile_layer_id}`)
+    navigate(`../${tileLayer.tile_layer_id}`)
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, baseUrl, db.tile_layers, navigate, project_id])
+  }, [autoFocusRef, db.tile_layers, navigate, project_id])
 
   const deleteRow = useCallback(async () => {
-    await db.tile_layers.delete({
-      where: { tile_layer_id },
-    })
+    await db.tile_layers.delete({ where: { tile_layer_id } })
     navigate('..')
-  }, [baseUrl, db.tile_layers, navigate, tile_layer_id])
+  }, [db.tile_layers, navigate, tile_layer_id])
 
   const toNext = useCallback(async () => {
     const tileLayers = await db.tile_layers.findMany({
@@ -35,8 +31,8 @@ export const Header = memo(({ autoFocusRef }) => {
     const len = tileLayers.length
     const index = tileLayers.findIndex((p) => p.tile_layer_id === tile_layer_id)
     const next = tileLayers[(index + 1) % len]
-    navigate(`${baseUrl}/${next.tile_layer_id}`)
-  }, [baseUrl, db.tile_layers, navigate, project_id, tile_layer_id])
+    navigate(`../${next.tile_layer_id}`)
+  }, [db.tile_layers, navigate, project_id, tile_layer_id])
 
   const toPrevious = useCallback(async () => {
     const tileLayers = await db.tile_layers.findMany({
@@ -46,8 +42,8 @@ export const Header = memo(({ autoFocusRef }) => {
     const len = tileLayers.length
     const index = tileLayers.findIndex((p) => p.tile_layer_id === tile_layer_id)
     const previous = tileLayers[(index + len - 1) % len]
-    navigate(`${baseUrl}/${previous.tile_layer_id}`)
-  }, [baseUrl, db.tile_layers, navigate, project_id, tile_layer_id])
+    navigate(`../${previous.tile_layer_id}`)
+  }, [db.tile_layers, navigate, project_id, tile_layer_id])
 
   return (
     <FormHeader
