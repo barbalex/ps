@@ -11,7 +11,7 @@ import '../form.css'
 
 export const Component = () => {
   const navigate = useNavigate()
-  const { project_id, subproject_id } = useParams()
+  const { subproject_id } = useParams()
 
   const { db } = useElectric()!
   const { results: occurrenceImports = [] } = useLiveQuery(
@@ -21,13 +21,11 @@ export const Component = () => {
     }),
   )
 
-  const baseUrl = `projects/${project_id}/subprojects/${subproject_id}/occurrence-imports`
-
   const add = useCallback(async () => {
     const data = createOccurrenceImport({ subproject_id })
     await db.occurrence_imports.create({ data })
-    navigate(`${baseUrl}/${data.occurrence_import_id}`)
-  }, [baseUrl, db.occurrence_imports, navigate, subproject_id])
+    navigate(data.occurrence_import_id)
+  }, [db.occurrence_imports, navigate, subproject_id])
 
   return (
     <div className="list-view">
@@ -41,7 +39,7 @@ export const Component = () => {
           <Row
             key={occurrence_import_id}
             label={label}
-            to={`${baseUrl}/${occurrence_import_id}`}
+            to={occurrence_import_id}
           />
         ))}
       </div>
