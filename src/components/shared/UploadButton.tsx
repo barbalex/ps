@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from 'react'
-import { Button } from '@fluentui/react-components'
+import { Button, Field } from '@fluentui/react-components'
 
 const uploadInputStyle = {
   display: 'none',
@@ -9,11 +9,7 @@ export const UploadButton = () => {
   const uploadInputRef = useRef<HTMLInputElement>(null)
   const [isDragging, setIsDragging] = useState(false)
 
-  const onUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) {
-      return
-    }
+  const processFile = useCallback((file: File) => {
     console.log('file', file)
     const reader = new FileReader()
     reader.onload = () => {
@@ -22,10 +18,19 @@ export const UploadButton = () => {
         return
       }
       console.log('content', content)
-      // TODO: do something with the content
     }
+    // TODO: do something with the content
     reader.readAsText(file)
   }, [])
+
+  const onUpload = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0]
+      if (!file) return
+      processFile(file)
+    },
+    [processFile],
+  )
 
   const onClickUploadButton = useCallback(
     () => uploadInputRef.current?.click(),
@@ -35,33 +40,36 @@ export const UploadButton = () => {
   const onDragEnter = useCallback((e) => {
     e.stopPropagation()
     e.preventDefault()
-    console.log('drag enter')
     setIsDragging(true)
-  }, [])
-  const onDragOver = useCallback((e) => {
-    e.stopPropagation()
-    e.preventDefault()
-    console.log('drag over')
   }, [])
   const onDragLeave = useCallback((e) => {
     e.stopPropagation()
     e.preventDefault()
-    console.log('drag leave')
     setIsDragging(false)
   }, [])
-  const onDrop = useCallback((e) => {
+  // onDragOver is needed to prevent the browser from asking the user to save file as
+  const onDragOver = useCallback((e) => {
     e.stopPropagation()
     e.preventDefault()
-    setIsDragging(false)
-    console.log('drop')
-    const dt = e.dataTransfer
-    const file = dt.files?.[0]
-    if (!file) return
-    console.log('file', file)
   }, [])
+  const onDrop = useCallback(
+    (e) => {
+      e.stopPropagation()
+      e.preventDefault()
+      setIsDragging(false)
+      const dt = e.dataTransfer
+      const file = dt.files?.[0]
+      if (!file) return
+      processFile(file)
+    },
+    [processFile],
+  )
 
   return (
-    <>
+    <Field
+      validationMessage="Click to choose or drop a file. Accepts .csv, .json, .tsv, .xlsx, .xls, .ods."
+      validationState="none"
+    >
       <input
         label="Upload"
         type="file"
@@ -80,10 +88,12 @@ export const UploadButton = () => {
           backgroundColor: isDragging
             ? 'rgba(103, 216, 101, 0.2)'
             : 'transparent',
+          paddingTop: '10px',
+          paddingBottom: '10px',
         }}
       >
-        Upload Import File
+        Upload file containing occurrences
       </Button>
-    </>
+    </Field>
   )
 }

@@ -104,6 +104,7 @@ export const Component = () => {
           onChange={onChange}
         />
         {/* TODO: pass function to process the content */}
+        {/* TODO: only show when not yet uploaded */}
         <UploadButton />
       </div>
     </div>
