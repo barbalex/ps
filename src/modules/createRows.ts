@@ -581,3 +581,12 @@ export const createChartSubject = ({ chart_id }) => ({
   connect_nulls: true,
   deleted: false,
 })
+
+export const createOccurrenceImport = async ({ subproject_id }) => ({
+  occurrence_import_id: uuidv7(),
+  account_id: '018cf958-27e2-7000-90d3-59f024d467be', // TODO: replace with auth data when implemented
+  subproject_id,
+  created_time: Date.now(),
+  download_from_gbif: false,
+  deleted: false,
+})
