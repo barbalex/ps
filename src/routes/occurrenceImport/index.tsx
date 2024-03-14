@@ -35,14 +35,11 @@ export const Component = () => {
     [db.occurrence_imports, occurrence_import_id],
   )
 
-  const processData = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      // TODO:
-      // this function is passed to the UploadButton component
-      // it should process the content of the file
-    },
-    [db.occurrence_imports, occurrence_import_id],
-  )
+  const processData = useCallback(() => {
+    // TODO:
+    // this function is passed to the UploadButton component
+    // it should process the content of the file
+  }, [])
 
   if (!row) {
     return <div>Loading...</div>
@@ -88,7 +85,6 @@ export const Component = () => {
           value={row.attribution ?? ''}
           onChange={onChange}
         />
-        {/* TODO: pass function to process the content */}
         {/* TODO: only show when not yet uploaded */}
         <UploadButton processData={processData} />
       </div>
