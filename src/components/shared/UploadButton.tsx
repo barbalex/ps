@@ -9,27 +9,13 @@ export const UploadButton = memo(({ processData }) => {
   const uploadInputRef = useRef<HTMLInputElement>(null)
   const [isDragging, setIsDragging] = useState(false)
 
-  const processFile = useCallback((file: File) => {
-    console.log('file', file)
-    const reader = new FileReader()
-    reader.onload = () => {
-      const content = reader.result
-      if (typeof content !== 'string') {
-        return
-      }
-      console.log('content', content)
-    }
-    // TODO: do something with the content
-    reader.readAsText(file)
-  }, [])
-
   const onUpload = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0]
       if (!file) return
-      processFile(file)
+      processData(file)
     },
-    [processFile],
+    [processData],
   )
 
   const onClickUploadButton = useCallback(
@@ -60,9 +46,9 @@ export const UploadButton = memo(({ processData }) => {
       const dt = e.dataTransfer
       const file = dt.files?.[0]
       if (!file) return
-      processFile(file)
+      processData(file)
     },
-    [processFile],
+    [processData],
   )
 
   return (

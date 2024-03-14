@@ -2,7 +2,6 @@ import { useCallback, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
-import { Button } from '@fluentui/react-components'
 
 import { useElectric } from '../../ElectricProvider'
 import { TextField } from '../../components/shared/TextField'
@@ -11,6 +10,7 @@ import { TextArea } from '../../components/shared/TextArea'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { Header } from './Header'
 import { UploadButton } from '../../components/shared/UploadButton'
+import { processData } from './processData'
 
 import '../../form.css'
 
@@ -34,12 +34,6 @@ export const Component = () => {
     },
     [db.occurrence_imports, occurrence_import_id],
   )
-
-  const processData = useCallback(() => {
-    // TODO:
-    // this function is passed to the UploadButton component
-    // it should process the content of the file
-  }, [])
 
   if (!row) {
     return <div>Loading...</div>
