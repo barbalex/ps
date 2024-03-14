@@ -1,11 +1,11 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useRef, useState, memo } from 'react'
 import { Button, Field } from '@fluentui/react-components'
 
 const uploadInputStyle = {
   display: 'none',
 }
 
-export const UploadButton = () => {
+export const UploadButton = memo(({ processData }) => {
   const uploadInputRef = useRef<HTMLInputElement>(null)
   const [isDragging, setIsDragging] = useState(false)
 
@@ -96,4 +96,4 @@ export const UploadButton = () => {
       </Button>
     </Field>
   )
-}
+})

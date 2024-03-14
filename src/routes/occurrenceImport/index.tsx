@@ -35,26 +35,11 @@ export const Component = () => {
     [db.occurrence_imports, occurrence_import_id],
   )
 
-  const onUpload = useCallback(
+  const processData = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0]
-      if (!file) {
-        return
-      }
-      console.log('file', file)
-      const reader = new FileReader()
-      reader.onload = () => {
-        const content = reader.result
-        console.log('content', content)
-        if (typeof content !== 'string') {
-          return
-        }
-        db.occurrence_imports.update({
-          where: { occurrence_import_id },
-          data: { content },
-        })
-      }
-      reader.readAsText(file)
+      // TODO:
+      // this function is passed to the UploadButton component
+      // it should process the content of the file
     },
     [db.occurrence_imports, occurrence_import_id],
   )
@@ -105,7 +90,7 @@ export const Component = () => {
         />
         {/* TODO: pass function to process the content */}
         {/* TODO: only show when not yet uploaded */}
-        <UploadButton />
+        <UploadButton processData={processData} />
       </div>
     </div>
   )
