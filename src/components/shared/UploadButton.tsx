@@ -38,7 +38,7 @@ export const UploadButton = memo(({ processData }) => {
     e.preventDefault()
   }, [])
   const onDrop = useCallback(
-    (e) => {
+    (e: React.DragEvent) => {
       e.stopPropagation()
       e.preventDefault()
       setIsDragging(false)

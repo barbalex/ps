@@ -2,6 +2,7 @@ import { read, utils } from 'xlsx'
 
 export const processData = async (file) => {
   if (!file) return
+  console.log('processData, file:', file)
   // TODO:
   // this function is passed to the UploadButton component
   // it should process the content of the file
@@ -19,7 +20,7 @@ export const processData = async (file) => {
       .sheet_to_json(worksheet)
       .map((d) => omit(d, ['__rowNum__']))
     // test the data
-    console.log('data:', data)
+    console.log('processData, data:', data)
   }
   reader.onabort = () => console.log('file reading was aborted')
   reader.onerror = () => console.log('file reading has failed')
