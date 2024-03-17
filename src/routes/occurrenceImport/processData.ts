@@ -23,6 +23,7 @@ export const processData = async (file) => {
     })
     // test the data
     console.log('processData, data:', data)
+    // TODO: show user data rows
     // TODO: let user choose id field
     // TODO: let user choose geometry field(s)
     // TODO: let user choose projection
