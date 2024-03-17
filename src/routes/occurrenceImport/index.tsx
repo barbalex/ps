@@ -79,7 +79,7 @@ export const Component = () => {
           value={row.attribution ?? ''}
           onChange={onChange}
         />
-        {/* TODO: only show when not yet uploaded */}
+        {/* TODO: only show when not yet uploaded? */}
         <UploadButton processData={processData} />
       </div>
     </div>
