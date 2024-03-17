@@ -12,7 +12,6 @@ export const UploadButton = memo(({ processData }) => {
   const onUpload = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0]
-      if (!file) return
       processData(file)
     },
     [processData],
@@ -45,7 +44,6 @@ export const UploadButton = memo(({ processData }) => {
       setIsDragging(false)
       const dt = e.dataTransfer
       const file = dt.files?.[0]
-      if (!file) return
       processData(file)
     },
     [processData],

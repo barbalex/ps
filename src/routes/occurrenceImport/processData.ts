@@ -1,6 +1,7 @@
 import { read, utils } from 'xlsx'
 
 export const processData = async (file) => {
+  if (!file) return
   // TODO:
   // this function is passed to the UploadButton component
   // it should process the content of the file
