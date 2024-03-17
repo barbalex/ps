@@ -58,7 +58,7 @@ export const UploadButton = memo(({ processData }) => {
         label="Upload"
         type="file"
         onChange={onUpload}
-        accept=".csv, .json, .tsv, .xlsx, .xls, .ods"
+        accept=".csv, .tsv, .xlsx, .xlsm, .xls, .ods, .fods, .dbf, .rtf, .txt, .dif"
         ref={uploadInputRef}
         style={uploadInputStyle}
       />
