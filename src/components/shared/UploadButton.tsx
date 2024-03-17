@@ -10,17 +10,18 @@ export const UploadButton = memo(({ processData }) => {
   const [isDragging, setIsDragging] = useState(false)
 
   const onUpload = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0]
-      processData(file)
+      await processData(file)
     },
     [processData],
   )
 
-  const onClickUploadButton = useCallback(
-    () => uploadInputRef.current?.click(),
-    [],
-  )
+  const onClickUploadButton = useCallback(() => {
+    uploadInputRef.current.click()
+    // need to set the value to null to allow uploading more files
+    uploadInputRef.current.value = null
+  }, [])
 
   const onDragEnter = useCallback((e) => {
     e.stopPropagation()
@@ -38,13 +39,13 @@ export const UploadButton = memo(({ processData }) => {
     e.preventDefault()
   }, [])
   const onDrop = useCallback(
-    (e: React.DragEvent) => {
+    async (e: React.DragEvent) => {
       e.stopPropagation()
       e.preventDefault()
       setIsDragging(false)
       const dt = e.dataTransfer
       const file = dt.files?.[0]
-      processData(file)
+      await processData(file)
     },
     [processData],
   )
