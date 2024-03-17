@@ -16,9 +16,8 @@ export const processData = async (file) => {
       }),
       sheetName = workbook.SheetNames[0],
       worksheet = workbook.Sheets[sheetName]
-    const data = utils
-      .sheet_to_json(worksheet)
-      .map((d) => omit(d, ['__rowNum__']))
+    const data = utils.sheet_to_json(worksheet)
+    // .map((d) => omit(d, ['__rowNum__']))
     // test the data
     console.log('processData, data:', data)
   }
