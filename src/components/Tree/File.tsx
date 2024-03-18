@@ -1,5 +1,10 @@
 import { useCallback } from 'react'
-import { useLocation, useParams, useNavigate } from 'react-router-dom'
+import {
+  useLocation,
+  useParams,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom'
 
 import { Node } from './Node'
 import { Files as File } from '../../../generated/client'
@@ -24,6 +29,7 @@ export const FileNode = ({
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const isPreview = location.pathname.endsWith('/preview')
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -120,9 +126,14 @@ export const FileNode = ({
   }/files`
 
   const onClickButton = useCallback(() => {
-    if (isOpen) return navigate(baseUrl)
-    navigate(`${baseUrl}/${file.file_id}`)
-  }, [isOpen, navigate, baseUrl, file.file_id])
+    if (isOpen) {
+      return navigate({ pathname: baseUrl, search: searchParams.toString() })
+    }
+    navigate({
+      pathname: `${baseUrl}/${file.file_id}`,
+      search: searchParams.toString(),
+    })
+  }, [isOpen, navigate, baseUrl, file.file_id, searchParams])
 
   return (
     <Node
