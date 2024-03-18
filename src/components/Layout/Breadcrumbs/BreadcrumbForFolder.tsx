@@ -1,5 +1,5 @@
 import { useEffect, useState, forwardRef } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useElectric } from '../../../ElectricProvider'
 import { useLiveQuery } from 'electric-sql/react'
 
@@ -18,6 +18,7 @@ const siblingStyle = {
 export const BreadcrumbForFolder = forwardRef(
   ({ match, forOverflowMenu }, ref) => {
     const navigate = useNavigate()
+    const [searchParams] = useSearchParams()
     const {
       check_id,
       action_id,
@@ -129,7 +130,12 @@ export const BreadcrumbForFolder = forwardRef(
     return (
       <div
         className={className}
-        onClick={() => navigate(match.pathname)}
+        onClick={() =>
+          navigate({
+            pathname: match.pathname,
+            search: searchParams.toString(),
+          })
+        }
         ref={ref}
       >
         <div className="text">{label}</div>

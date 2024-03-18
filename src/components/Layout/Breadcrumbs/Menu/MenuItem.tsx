@@ -1,15 +1,17 @@
 import { useCallback } from 'react'
 import { MenuItem as MenuItemComponent } from '@fluentui/react-components'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
 export const MenuItem = ({ path, text }) => {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+
   const onClick = useCallback(() => {
     // why do I need this timeout?
     setTimeout(() => {
-      navigate(path), 100
+      navigate({ pathname: path, search: searchParams.toString() }), 100
     })
-  }, [navigate, path])
+  }, [navigate, path, searchParams])
 
   return <MenuItemComponent onClick={onClick}>{text}</MenuItemComponent>
 }

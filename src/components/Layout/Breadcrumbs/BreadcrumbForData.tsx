@@ -1,5 +1,5 @@
 import { useEffect, useState, forwardRef } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 
 import './breadcrumb.css'
@@ -20,6 +20,7 @@ const siblingStyle = {
 export const BreadcrumbForData = forwardRef(
   ({ match, forOverflowMenu }, ref) => {
     const navigate = useNavigate()
+    const [searchParams] = useSearchParams()
 
     const { text, table, sibling } = match?.handle?.crumb?.(match) ?? {}
     const className =
@@ -153,7 +154,12 @@ export const BreadcrumbForData = forwardRef(
     return (
       <div
         className={className}
-        onClick={() => navigate(match.pathname)}
+        onClick={() =>
+          navigate({
+            pathname: match.pathname,
+            search: searchParams.toString(),
+          })
+        }
         ref={ref}
       >
         <div className="text">{label}</div>
