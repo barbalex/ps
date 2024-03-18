@@ -1,6 +1,6 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
 import { Node } from './Node'
@@ -24,6 +24,7 @@ export const GoalReportValuesNode = memo(
   }: Props) => {
     const location = useLocation()
     const navigate = useNavigate()
+    const [searchParams] = useSearchParams()
 
     const { db } = useElectric()!
     const { results: goalReportValues = [] } = useLiveQuery(
@@ -54,9 +55,14 @@ export const GoalReportValuesNode = memo(
     const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${goal_report_id}`
 
     const onClickButton = useCallback(() => {
-      if (isOpen) return navigate(baseUrl)
-      navigate(`${baseUrl}/values`)
-    }, [baseUrl, isOpen, navigate])
+      if (isOpen) {
+        return navigate({ pathname: baseUrl, search: searchParams.toString() })
+      }
+      navigate({
+        pathname: `${baseUrl}/values`,
+        search: searchParams.toString(),
+      })
+    }, [baseUrl, isOpen, navigate, searchParams])
 
     return (
       <>

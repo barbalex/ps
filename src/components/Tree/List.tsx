@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { Node } from './Node'
 import { Lists as List } from '../../../generated/client'
@@ -14,6 +14,7 @@ interface Props {
 export const ListNode = memo(({ project_id, list, level = 4 }: Props) => {
   const location = useLocation()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isOpen =
@@ -26,9 +27,14 @@ export const ListNode = memo(({ project_id, list, level = 4 }: Props) => {
   const baseUrl = `/projects/${project_id}/lists`
 
   const onClickButton = useCallback(() => {
-    if (isOpen) return navigate(baseUrl)
-    navigate(`${baseUrl}/${list.list_id}`)
-  }, [isOpen, navigate, baseUrl, list.list_id])
+    if (isOpen) {
+      return navigate({ pathname: baseUrl, search: searchParams.toString() })
+    }
+    navigate({
+      pathname: `${baseUrl}/${list.list_id}`,
+      search: searchParams.toString(),
+    })
+  }, [isOpen, navigate, baseUrl, list.list_id, searchParams])
 
   return (
     <>
