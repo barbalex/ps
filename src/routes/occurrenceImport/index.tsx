@@ -5,8 +5,8 @@ import { Tab, TabList, InputProps } from '@fluentui/react-components'
 
 import { useElectric } from '../../ElectricProvider'
 import { TextField } from '../../components/shared/TextField'
-import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { TextArea } from '../../components/shared/TextArea'
+import { RadioGroupField } from '../../components/shared/RadioGroupField'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { Header } from './Header'
 import { UploadButton } from '../../components/shared/UploadButton'
@@ -105,11 +105,6 @@ export const Component = () => {
       <div className="form-container">
         {tab === 1 && (
           <>
-            <TextFieldInactive
-              label="ID"
-              name="occurrence_import_id"
-              value={row.occurrence_import_id}
-            />
             <TextField
               label="Name"
               name="name"
@@ -127,6 +122,17 @@ export const Component = () => {
             />
             {/* TODO: only show when not yet uploaded? */}
             <UploadButton processData={processData} />
+          </>
+        )}
+        {tab === 5 && (
+          <>
+            <RadioGroupField
+              label="How to deal with previous import"
+              name="geometry_method"
+              list={['update_and_extend', 'replace']}
+              value={row.geometry_method ?? ''}
+              onChange={onChange}
+            />
           </>
         )}
       </div>
