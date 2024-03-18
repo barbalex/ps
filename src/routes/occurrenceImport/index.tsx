@@ -49,6 +49,18 @@ export const Component = () => {
 
   const onTabSelect = useCallback((e, data) => setTab(+data.value), [])
 
+  const tabStyle = useCallback(
+    (tabValue) => ({
+      ...tabNumberStyle,
+      ...(tab === tabValue
+        ? { backgroundColor: 'black' }
+        : tab > tabValue
+        ? { backgroundColor: 'var(--colorCompoundBrandStrokeHover)' }
+        : {}),
+    }),
+    [tab],
+  )
+
   if (!row) {
     return <div>Loading...</div>
   }
@@ -71,40 +83,23 @@ export const Component = () => {
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
       <TabList selectedValue={tab} onTabSelect={onTabSelect}>
-        <Tab
-          id="1"
-          value={1}
-          icon={
-            <div
-              style={{
-                ...tabNumberStyle,
-                ...(tab === 1
-                  ? { backgroundColor: 'black' }
-                  : tab > 1
-                  ? { backgroundColor: 'var(--colorCompoundBrandStrokeHover)' }
-                  : {}),
-              }}
-            >
-              1
-            </div>
-          }
-        >
+        <Tab id="1" value={1} icon={<div style={tabStyle(1)}>1</div>}>
           Basic data
         </Tab>
-        <Tab id="2" value={2}>
-          2 Geometry
+        <Tab id="2" value={2} icon={<div style={tabStyle(2)}>2</div>}>
+          Geometry
         </Tab>
-        <Tab id="3" value={3}>
-          3 Date
+        <Tab id="3" value={3} icon={<div style={tabStyle(3)}>3</div>}>
+          Date
         </Tab>
-        <Tab id="4" value={4}>
-          4 Label
+        <Tab id="4" value={4} icon={<div style={tabStyle(4)}>4</div>}>
+          Label
         </Tab>
-        <Tab id="5" value={5}>
-          5 Identification
+        <Tab id="5" value={5} icon={<div style={tabStyle(5)}>5</div>}>
+          Identification
         </Tab>
-        <Tab id="6" value={6}>
-          6 Import
+        <Tab id="6" value={6} icon={<div style={tabStyle(6)}>6</div>}>
+          Import
         </Tab>
       </TabList>
       <div className="form-container">
