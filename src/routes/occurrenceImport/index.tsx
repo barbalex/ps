@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
 import { Tab, TabList, InputProps } from '@fluentui/react-components'
 
 import { useElectric } from '../../ElectricProvider'
@@ -26,8 +26,9 @@ const tabNumberStyle = {
 
 export const Component = () => {
   const { occurrence_import_id } = useParams()
-
-  const [tab, setTab] = useState(1)
+  const [searchParams, setSearchParams] = useSearchParams()
+  const tabString = searchParams.get('occurrence-import-tab')
+  const tab = tabString ? +tabString : 1
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -47,7 +48,13 @@ export const Component = () => {
     [db.occurrence_imports, occurrence_import_id],
   )
 
-  const onTabSelect = useCallback((e, data) => setTab(+data.value), [])
+  const onTabSelect = useCallback(
+    (e, data) => {
+      searchParams.set('occurrence-import-tab', data.value)
+      setSearchParams(searchParams)
+    },
+    [searchParams, setSearchParams],
+  )
 
   const tabStyle = useCallback(
     (tabValue) => ({
