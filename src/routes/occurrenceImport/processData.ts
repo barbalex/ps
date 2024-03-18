@@ -23,12 +23,15 @@ export const processData = async (file) => {
     })
     // test the data
     console.log('processData, data:', data)
-    // TODO: show user data rows
-    // TODO: let user choose id field
-    // TODO: let user choose geometry field(s)
-    // TODO: let user choose projection
-    // TODO: let user choose how to create label from fields
-    // TODO: Maybe tell user what is expected in the file instead
+    // TODO: 
+    // - show user data rows
+    // - let user choose id field
+    // - let user choose geometry mode (x-y or geometry)
+    // - let user choose geometry field or x- and y-fields
+    // - let user choose projection
+    // - let user choose how to create date from fields
+    // - let user choose how to create label from fields
+    // Maybe tell user what is expected in the file instead
   }
   reader.onabort = () => console.log('file reading was aborted')
   reader.onerror = () => console.log('file reading has failed')

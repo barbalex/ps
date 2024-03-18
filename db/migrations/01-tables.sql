@@ -1392,6 +1392,10 @@ COMMENT ON COLUMN ui_options.editing_check_geometry IS 'The id of the check whos
 
 COMMENT ON COLUMN ui_options.editing_action_geometry IS 'The id of the action whose geometry is currently being edited';
 
+create type occurrence_imports_previous_import_operation_enum as enum('update_and_extend', 'replace');
+
+create type occurrence_imports_geometry_method_enum as enum('coordinates', 'geojson');
+
 CREATE TABLE occurrence_imports(
   occurrence_import_id uuid PRIMARY KEY DEFAULT NULL,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1399,8 +1403,16 @@ CREATE TABLE occurrence_imports(
   created_time timestamptz DEFAULT NULL, -- now() not supported yet
   inserted_time timestamptz DEFAULT NULL,
   inserted_count integer DEFAULT NULL,
+  id_field text DEFAULT NULL,
+  geometry_method occurrence_imports_geometry_method_enum DEFAULT NULL,
+  geojson_geometry_field text DEFAULT NULL,
+  x_coordinate_field text DEFAULT NULL,
+  y_coordinate_field text DEFAULT NULL,
+  crs text DEFAULT NULL,
   name text DEFAULT NULL,
   attribution text DEFAULT NULL,
+  previous_import uuid DEFAULT NULL REFERENCES occurrence_imports(occurrence_import_id) ON DELETE NO action ON UPDATE CASCADE,
+  previous_import_operation occurrence_imports_previous_import_operation_enum DEFAULT NULL, -- 'update_and_extend'
   download_from_gbif boolean DEFAULT NULL,
   gbif_filters jsonb DEFAULT NULL, -- TODO: use project geometry to filter by area
   gbif_download_key text DEFAULT NULL,
@@ -1415,7 +1427,11 @@ CREATE INDEX ON occurrence_imports USING btree(subproject_id);
 
 CREATE INDEX ON occurrence_imports USING btree(created_time);
 
+CREATE INDEX ON occurrence_imports USING btree(previous_import);
+
 COMMENT ON TABLE occurrence_imports IS 'occurrence imports. Used also for species (when from gbif, of an area, format: SPECIES_LIST). Is created in client, synced to server, executed by gbif backend server, written to db and synced back to client';
+
+COMMENT ON COLUMN occurrence_imports.previous_import IS 'What import does this one update/replace/extend?';
 
 COMMENT ON COLUMN occurrence_imports.gbif_filters IS 'area, groups, speciesKeys...';
 
@@ -1426,8 +1442,8 @@ CREATE TABLE occurrences(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   occurrence_import_id uuid DEFAULT NULL REFERENCES occurrence_imports(occurrence_import_id) ON DELETE CASCADE ON UPDATE CASCADE,
   data jsonb DEFAULT NULL,
-  id_in_source text DEFAULT NULL,
-  geometry jsonb DEFAULT NULL,
+  id_in_source text DEFAULT NULL, -- extracted from data using occurrence_import_id.id_field
+  geometry jsonb DEFAULT NULL, -- extracted from data using occurrence_import_id.geometry_method and it's field(s)
   label text DEFAULT NULL
 );
 
@@ -1440,6 +1456,8 @@ CREATE INDEX ON occurrences USING btree(label);
 
 -- CREATE INDEX ON occurrences USING gist(data); TODO: when supported by electric-sql
 COMMENT ON TABLE occurrences IS 'GBIF occurrences. Imported for subprojects (species projects) or projects (biotope projects).';
+
+COMMENT ON COLUMN occurrences.id_in_source IS 'Used to replace previously imported occurrences';
 
 COMMENT ON COLUMN occurrences.data IS 'data as received from GBIF';
 
