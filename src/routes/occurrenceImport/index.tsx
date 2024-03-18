@@ -84,7 +84,7 @@ export const Component = () => {
       <Header autoFocusRef={autoFocusRef} />
       <TabList selectedValue={tab} onTabSelect={onTabSelect}>
         <Tab id="1" value={1} icon={<div style={tabStyle(1)}>1</div>}>
-          Basic data
+          Data
         </Tab>
         <Tab id="2" value={2} icon={<div style={tabStyle(2)}>2</div>}>
           Geometry
@@ -109,17 +109,6 @@ export const Component = () => {
               label="ID"
               name="occurrence_import_id"
               value={row.occurrence_import_id}
-            />
-            <TextFieldInactive
-              label="Created time"
-              name="created_time"
-              value={row.created_time}
-            />
-            <TextFieldInactive
-              label="Inserted count"
-              name="inserted_count"
-              value={row.inserted_count}
-              type="number"
             />
             <TextField
               label="Name"
