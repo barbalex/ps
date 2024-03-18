@@ -1,6 +1,6 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
 import { Node } from './Node'
@@ -13,6 +13,7 @@ interface Props {
 export const FieldsNode = memo(({ project_id }: Props) => {
   const location = useLocation()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
   const { results: fields = [] } = useLiveQuery(
@@ -37,12 +38,22 @@ export const FieldsNode = memo(({ project_id }: Props) => {
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
-      if (project_id) return navigate(`/projects/${project_id}`)
-      return navigate('/')
+      if (project_id) {
+        return navigate({
+          pathname: `/projects/${project_id}`,
+          search: searchParams.toString(),
+        })
+      }
+      return navigate({ pathname: '/', search: searchParams.toString() })
     }
-    if (project_id) return navigate(`/projects/${project_id}/fields`)
-    navigate('/fields')
-  }, [isOpen, navigate, project_id])
+    if (project_id) {
+      return navigate({
+        pathname: `/projects/${project_id}/fields`,
+        search: searchParams.toString(),
+      })
+    }
+    navigate({ pathname: '/fields', search: searchParams.toString() })
+  }, [isOpen, navigate, project_id, searchParams])
 
   return (
     <>
