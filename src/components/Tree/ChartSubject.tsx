@@ -1,5 +1,10 @@
 import { useCallback } from 'react'
-import { useLocation, useParams, useNavigate } from 'react-router-dom'
+import {
+  useLocation,
+  useParams,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom'
 
 import { Node } from './Node'
 import { Chart_subjects as ChartSubject } from '../../../generated/client'
@@ -26,6 +31,7 @@ export const ChartSubjectNode = ({
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isOpen = place_id2
@@ -78,9 +84,14 @@ export const ChartSubjectNode = ({
   }/charts/${chart_id}/subjects`
 
   const onClickButton = useCallback(() => {
-    if (isOpen) return navigate(baseUrl)
-    navigate(`${baseUrl}/${chartSubject.chart_subject_id}`)
-  }, [isOpen, navigate, baseUrl, chartSubject.chart_subject_id])
+    if (isOpen) {
+      return navigate({ pathname: baseUrl, search: searchParams.toString() })
+    }
+    navigate({
+      pathname: `${baseUrl}/${chartSubject.chart_subject_id}`,
+      search: searchParams.toString(),
+    })
+  }, [isOpen, navigate, baseUrl, chartSubject.chart_subject_id, searchParams])
 
   return (
     <Node
