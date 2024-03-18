@@ -1,5 +1,6 @@
 # TODO: use gbif, electric and postgresql in the same docker-compose file
 version: '3.7'
+name: ps
 services:
   pg:
     image: postgres:15-alpine
