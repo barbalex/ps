@@ -39,6 +39,20 @@ export const Component = () => {
     return <div>Loading...</div>
   }
 
+  // TODO:
+  // show stepper-like tabs on new import:
+  // 1. basics/data: name, attribution, file
+  // 2. geometry: mode (coordinates or geometry), field(s) and projection
+  // 4. date: choose how to extract date from fields
+  // 5. label: choose how to create label from fields
+  // 6. identification: choose id field, previous import and how to extend it
+  // 7. execute import (only visible before import)
+  // - stepper titles begin with a number in a circle
+  // - completed steps: circle is gren
+  // - uncompleted steps: circle is grey, title is normal
+  // - current step: circle is blue, title is bold
+  // - the next stepper can not be accessed before the previous is completed
+
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
@@ -52,11 +66,6 @@ export const Component = () => {
           label="Created time"
           name="created_time"
           value={row.created_time}
-        />
-        <TextFieldInactive
-          label="Inserted time"
-          name="inserted_time"
-          value={row.inserted_time}
         />
         <TextFieldInactive
           label="Inserted count"
