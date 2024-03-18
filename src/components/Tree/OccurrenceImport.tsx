@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { Node } from './Node'
 import { Occurrence_imports as OccurrenceImport } from '../../../generated/client'
@@ -15,6 +15,7 @@ export const OccurrenceImportNode = memo(
   ({ project_id, subproject_id, occurrenceImport, level = 6 }: Props) => {
     const location = useLocation()
     const navigate = useNavigate()
+    const [searchParams] = useSearchParams()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isOpen =
@@ -29,9 +30,20 @@ export const OccurrenceImportNode = memo(
     const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/occurrence-imports`
 
     const onClickButton = useCallback(() => {
-      if (isOpen) return navigate(baseUrl)
-      navigate(`${baseUrl}/${occurrenceImport.occurrence_import_id}`)
-    }, [isOpen, navigate, baseUrl, occurrenceImport.occurrence_import_id])
+      if (isOpen) {
+        return navigate({ pathname: baseUrl, search: searchParams.toString() })
+      }
+      navigate({
+        pathname: `${baseUrl}/${occurrenceImport.occurrence_import_id}`,
+        search: searchParams.toString(),
+      })
+    }, [
+      isOpen,
+      navigate,
+      baseUrl,
+      occurrenceImport.occurrence_import_id,
+      searchParams,
+    ])
 
     return (
       <Node
