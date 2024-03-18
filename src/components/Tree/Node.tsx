@@ -5,7 +5,7 @@ import {
 } from 'react-icons/md'
 import { HiMiniMinusSmall as NoChildrenIcon } from 'react-icons/hi2'
 import { Button } from '@fluentui/react-components'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 
 import { css } from '../../css'
 
@@ -48,6 +48,8 @@ export const Node = memo(
     onClickButton,
     sibling,
   }: Props) => {
+    const [searchParams] = useSearchParams()
+
     return (
       <div
         style={{
@@ -95,7 +97,7 @@ export const Node = memo(
                 }),
               ],
             })}
-            to={to}
+            to={{ pathname: to, search: searchParams.toString() }}
           >
             {node.label}
           </Link>

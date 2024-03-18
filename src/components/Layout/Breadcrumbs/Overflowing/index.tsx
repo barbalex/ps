@@ -10,7 +10,7 @@ import {
   useIsOverflowItemVisible,
   useOverflowMenu,
 } from '@fluentui/react-components'
-import { useMatches, useNavigate } from 'react-router-dom'
+import { useMatches, useNavigate, useSearchParams } from 'react-router-dom'
 import { useResizeDetector } from 'react-resize-detector'
 import { BsCaretDown } from 'react-icons/bs'
 
@@ -21,13 +21,14 @@ import '../breadcrumbs.css'
 
 const OverflowMenuItem: React.FC = ({ id, match, upRerenderInteger }) => {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const isVisible = useIsOverflowItemVisible(id)
 
   const onClick = useCallback(() => {
-    navigate(match.pathname)
+    navigate({ pathname: match.pathname, search: searchParams.toString() })
     // somehow nav icon is not rendered without this
     upRerenderInteger()
-  }, [match.pathname, navigate, upRerenderInteger])
+  }, [match.pathname, navigate, searchParams, upRerenderInteger])
   const { table, folder } = match?.handle?.crumb?.(match) ?? {}
 
   if (isVisible) {

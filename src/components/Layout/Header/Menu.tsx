@@ -5,7 +5,7 @@ import {
   ToolbarToggleButton,
 } from '@fluentui/react-components'
 import { FaCog } from 'react-icons/fa'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 
 import { user_id } from '../../SqlInitializer'
@@ -46,6 +46,7 @@ const buildButtonStyle = ({ prevIsActive, nextIsActive, selfIsActive }) => {
 export const Menu = memo(() => {
   const navigate = useNavigate()
   const params = useParams()
+  const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
   // get ui_options.tabs
@@ -65,8 +66,11 @@ export const Menu = memo(() => {
 
   const onClick = useCallback(() => {
     if (params.user_id) return navigate(-1)
-    navigate(`/options/${user_id}`)
-  }, [navigate, params])
+    navigate({
+      pathname: `/options/${user_id}`,
+      search: searchParams.toString(),
+    })
+  }, [navigate, params.user_id, searchParams])
 
   const treeIsActive = tabs.includes('tree')
   const dataIsActive = tabs.includes('data')
