@@ -1392,9 +1392,15 @@ COMMENT ON COLUMN ui_options.editing_check_geometry IS 'The id of the check whos
 
 COMMENT ON COLUMN ui_options.editing_action_geometry IS 'The id of the action whose geometry is currently being edited';
 
-create type occurrence_imports_previous_import_operation_enum as enum('update_and_extend', 'replace');
+CREATE TYPE occurrence_imports_previous_import_operation_enum AS enum(
+  'update_and_extend',
+  'replace'
+);
 
-create type occurrence_imports_geometry_method_enum as enum('coordinates', 'geojson');
+CREATE TYPE occurrence_imports_geometry_method_enum AS enum(
+  'coordinates',
+  'geojson'
+);
 
 CREATE TABLE occurrence_imports(
   occurrence_import_id uuid PRIMARY KEY DEFAULT NULL,
@@ -1409,12 +1415,13 @@ CREATE TABLE occurrence_imports(
   x_coordinate_field text DEFAULT NULL,
   y_coordinate_field text DEFAULT NULL,
   crs text DEFAULT NULL,
+  label_creation jsonb DEFAULT NULL, -- Array of objects with keys: type (field, separator), value (fieldname, separating text)
   name text DEFAULT NULL,
   attribution text DEFAULT NULL,
   previous_import uuid DEFAULT NULL REFERENCES occurrence_imports(occurrence_import_id) ON DELETE NO action ON UPDATE CASCADE,
   previous_import_operation occurrence_imports_previous_import_operation_enum DEFAULT NULL, -- 'update_and_extend'
   download_from_gbif boolean DEFAULT NULL,
-  gbif_filters jsonb DEFAULT NULL, -- TODO: use project geometry to filter by area
+  gbif_filters jsonb DEFAULT NULL, -- TODO: use project geometry to filter by area?
   gbif_download_key text DEFAULT NULL,
   gbif_error text DEFAULT NULL,
   label_replace_by_generated_column text DEFAULT NULL,
