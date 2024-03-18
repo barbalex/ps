@@ -1,7 +1,7 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
-import type { InputProps } from '@fluentui/react-components'
+import { Tab, TabList, InputProps } from '@fluentui/react-components'
 
 import { useElectric } from '../../ElectricProvider'
 import { TextField } from '../../components/shared/TextField'
@@ -14,8 +14,20 @@ import { processData } from './processData'
 
 import '../../form.css'
 
+const tabNumberStyle = {
+  width: '20px',
+  height: '20px',
+  borderRadius: '50%',
+  backgroundColor: 'grey',
+  color: 'white',
+  fontSize: '0.7em',
+  fontWeight: 'bold',
+}
+
 export const Component = () => {
   const { occurrence_import_id } = useParams()
+
+  const [tab, setTab] = useState(1)
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -35,6 +47,8 @@ export const Component = () => {
     [db.occurrence_imports, occurrence_import_id],
   )
 
+  const onTabSelect = useCallback((e, data) => setTab(+data.value), [])
+
   if (!row) {
     return <div>Loading...</div>
   }
@@ -43,10 +57,10 @@ export const Component = () => {
   // show stepper-like tabs on new import:
   // 1. basics/data: name, attribution, file
   // 2. geometry: mode (coordinates or geometry), field(s) and projection
-  // 4. date: choose how to extract date from fields
-  // 5. label: choose how to create label from fields
-  // 6. identification: choose id field, previous import and how to extend it
-  // 7. execute import (only visible before import)
+  // 3. date: choose how to extract date from fields
+  // 4. label: choose how to create label from fields
+  // 5. identification: choose id field, previous import and how to extend it
+  // 6. execute import (only visible before import)
   // - stepper titles begin with a number in a circle
   // - completed steps: circle is gren
   // - uncompleted steps: circle is grey, title is normal
@@ -56,40 +70,81 @@ export const Component = () => {
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
+      <TabList selectedValue={tab} onTabSelect={onTabSelect}>
+        <Tab
+          id="1"
+          value={1}
+          icon={
+            <div
+              style={{
+                ...tabNumberStyle,
+                ...(tab === 1
+                  ? { backgroundColor: 'black' }
+                  : tab > 1
+                  ? { backgroundColor: 'var(--colorCompoundBrandStrokeHover)' }
+                  : {}),
+              }}
+            >
+              1
+            </div>
+          }
+        >
+          Basic data
+        </Tab>
+        <Tab id="2" value={2}>
+          2 Geometry
+        </Tab>
+        <Tab id="3" value={3}>
+          3 Date
+        </Tab>
+        <Tab id="4" value={4}>
+          4 Label
+        </Tab>
+        <Tab id="5" value={5}>
+          5 Identification
+        </Tab>
+        <Tab id="6" value={6}>
+          6 Import
+        </Tab>
+      </TabList>
       <div className="form-container">
-        <TextFieldInactive
-          label="ID"
-          name="occurrence_import_id"
-          value={row.occurrence_import_id}
-        />
-        <TextFieldInactive
-          label="Created time"
-          name="created_time"
-          value={row.created_time}
-        />
-        <TextFieldInactive
-          label="Inserted count"
-          name="inserted_count"
-          value={row.inserted_count}
-          type="number"
-        />
-        <TextField
-          label="Name"
-          name="name"
-          type="name"
-          value={row.name ?? ''}
-          onChange={onChange}
-          autoFocus
-          ref={autoFocusRef}
-        />
-        <TextArea
-          label="Attribution"
-          name="attribution"
-          value={row.attribution ?? ''}
-          onChange={onChange}
-        />
-        {/* TODO: only show when not yet uploaded? */}
-        <UploadButton processData={processData} />
+        {tab === 1 && (
+          <>
+            <TextFieldInactive
+              label="ID"
+              name="occurrence_import_id"
+              value={row.occurrence_import_id}
+            />
+            <TextFieldInactive
+              label="Created time"
+              name="created_time"
+              value={row.created_time}
+            />
+            <TextFieldInactive
+              label="Inserted count"
+              name="inserted_count"
+              value={row.inserted_count}
+              type="number"
+            />
+            <TextField
+              label="Name"
+              name="name"
+              type="name"
+              value={row.name ?? ''}
+              onChange={onChange}
+              autoFocus
+              ref={autoFocusRef}
+            />
+            <TextArea
+              label="Attribution"
+              name="attribution"
+              value={row.attribution ?? ''}
+              onChange={onChange}
+            />
+            {/* TODO: only show when not yet uploaded? */}
+            <UploadButton processData={processData} />
+          </>
+        )}
       </div>
     </div>
   )
