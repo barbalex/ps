@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { Node } from './Node'
 import { ActionReportValuesNode } from './ActionsReportValues'
@@ -30,6 +30,7 @@ export const ActionReportNode = memo(
   }: Props) => {
     const location = useLocation()
     const navigate = useNavigate()
+    const [searchParams] = useSearchParams()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isOpenBase =
@@ -61,9 +62,14 @@ export const ActionReportNode = memo(
     }/actions/${action_id}/reports`
 
     const onClickButton = useCallback(() => {
-      if (isOpen) return navigate(baseUrl)
-      navigate(`${baseUrl}/${actionReport.action_report_id}`)
-    }, [isOpen, navigate, baseUrl, actionReport.action_report_id])
+      if (isOpen) {
+        return navigate({ pathname: baseUrl, search: searchParams.toString() })
+      }
+      navigate({
+        pathname: `${baseUrl}/${actionReport.action_report_id}`,
+        search: searchParams.toString(),
+      })
+    }, [isOpen, navigate, baseUrl, actionReport.action_report_id, searchParams])
 
     return (
       <>
