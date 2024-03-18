@@ -1,6 +1,6 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
 import { Node } from './Node'
@@ -18,6 +18,7 @@ export const ChartsNode = memo(
   ({ project_id, subproject_id, place_id, place_id2, level }: Props) => {
     const location = useLocation()
     const navigate = useNavigate()
+    const [searchParams] = useSearchParams()
 
     const { db } = useElectric()!
 
@@ -86,9 +87,14 @@ export const ChartsNode = memo(
     }`
 
     const onClickButton = useCallback(() => {
-      if (isOpen) return navigate(baseUrl)
-      navigate(`${baseUrl}/charts`)
-    }, [baseUrl, isOpen, navigate])
+      if (isOpen) {
+        return navigate({ pathname: baseUrl, search: searchParams.toString() })
+      }
+      navigate({
+        pathname: `${baseUrl}/charts`,
+        search: searchParams.toString(),
+      })
+    }, [baseUrl, isOpen, navigate, searchParams])
 
     return (
       <>
