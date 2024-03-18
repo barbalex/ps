@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useSearchParams } from 'react-router-dom'
 import { Tab, TabList, InputProps } from '@fluentui/react-components'
@@ -105,7 +105,12 @@ export const Component = () => {
         <Tab id="5" value={5} icon={<div style={tabStyle(5)}>5</div>}>
           Identification
         </Tab>
-        <Tab id="6" value={6} icon={<div style={tabStyle(6)}>6</div>}>
+        <Tab
+          id="6"
+          value={6}
+          icon={<div style={tabStyle(6)}>6</div>}
+          disabled={!row.id_field}
+        >
           Import
         </Tab>
       </TabList>
