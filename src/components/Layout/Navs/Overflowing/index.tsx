@@ -1,5 +1,10 @@
 import { useEffect, useState, useCallback } from 'react'
-import { useMatches, useLocation, useNavigate } from 'react-router-dom'
+import {
+  useMatches,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom'
 import { BsCaretDown } from 'react-icons/bs'
 import {
   Menu,
@@ -19,9 +24,13 @@ import { DataNavsOverflowing } from './DataNavs'
 
 const OverflowMenuItem: React.FC = ({ path, text }) => {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const isVisible = useIsOverflowItemVisible(path)
 
-  const onClick = useCallback(() => navigate(path), [navigate, path])
+  const onClick = useCallback(
+    () => navigate({ pathname: path, search: searchParams.toString() }),
+    [navigate, path, searchParams],
+  )
 
   if (isVisible) {
     return null

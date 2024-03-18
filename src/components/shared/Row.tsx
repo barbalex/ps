@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
 const imgStyle = {
   flexBasis: 50,
@@ -17,10 +17,16 @@ const labelStyle = {
 
 export const Row = ({ label, to, imgSrc, lastHasImages = false }) => {
   const navigate = useNavigate()
-  const onClickLabel = useCallback(() => navigate(to), [navigate, to])
+  const [searchParams] = useSearchParams()
+
+  const onClickLabel = useCallback(
+    () => navigate({ pathname: to, search: searchParams.toString() }),
+    [navigate, searchParams, to],
+  )
   const onClickImg = useCallback(
-    () => navigate(`${to}/preview`),
-    [navigate, to],
+    () =>
+      navigate({ pathname: `${to}/preview`, search: searchParams.toString() }),
+    [navigate, searchParams, to],
   )
 
   return (
