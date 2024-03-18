@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { Node } from './Node'
 import { SubprojectTaxa as SubprojectTaxon } from '../../../generated/client'
@@ -15,6 +15,7 @@ export const SubprojectTaxonNode = memo(
   ({ project_id, subproject_id, subprojectTaxon, level = 6 }: Props) => {
     const location = useLocation()
     const navigate = useNavigate()
+    const [searchParams] = useSearchParams()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isOpen =
@@ -29,9 +30,20 @@ export const SubprojectTaxonNode = memo(
     const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/taxa`
 
     const onClickButton = useCallback(() => {
-      if (isOpen) return navigate(baseUrl)
-      navigate(`${baseUrl}/${subprojectTaxon.subproject_taxon_id}`)
-    }, [isOpen, navigate, baseUrl, subprojectTaxon.subproject_taxon_id])
+      if (isOpen) {
+        return navigate({ pathname: baseUrl, search: searchParams.toString() })
+      }
+      navigate({
+        pathname: `${baseUrl}/${subprojectTaxon.subproject_taxon_id}`,
+        search: searchParams.toString(),
+      })
+    }, [
+      isOpen,
+      navigate,
+      baseUrl,
+      subprojectTaxon.subproject_taxon_id,
+      searchParams,
+    ])
 
     return (
       <Node
