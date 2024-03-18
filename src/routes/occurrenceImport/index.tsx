@@ -6,11 +6,11 @@ import { Tab, TabList, InputProps } from '@fluentui/react-components'
 import { useElectric } from '../../ElectricProvider'
 import { TextField } from '../../components/shared/TextField'
 import { TextArea } from '../../components/shared/TextArea'
-import { RadioGroupField } from '../../components/shared/RadioGroupField'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { Header } from './Header'
 import { UploadButton } from '../../components/shared/UploadButton'
 import { processData } from './processData'
+import { Five } from './5'
 
 import '../../form.css'
 
@@ -124,17 +124,7 @@ export const Component = () => {
             <UploadButton processData={processData} />
           </>
         )}
-        {tab === 5 && (
-          <>
-            <RadioGroupField
-              label="How to deal with previous import"
-              name="geometry_method"
-              list={['update_and_extend', 'replace']}
-              value={row.geometry_method ?? ''}
-              onChange={onChange}
-            />
-          </>
-        )}
+        {tab === 5 && <Five row={row} />}
       </div>
     </div>
   )
