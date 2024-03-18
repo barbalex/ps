@@ -1,5 +1,10 @@
 import { useCallback, memo } from 'react'
-import { useLocation, useParams, useNavigate } from 'react-router-dom'
+import {
+  useLocation,
+  useParams,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom'
 
 import { Node } from './Node'
 import { Fields as Field } from '../../../generated/client'
@@ -14,6 +19,7 @@ export const FieldNode = memo(({ project_id, field }: Props) => {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isOpen = project_id
@@ -25,14 +31,19 @@ export const FieldNode = memo(({ project_id, field }: Props) => {
   const isActive = isOpen && urlPath.length === (project_id ? 4 : 2)
 
   const onClickButton = useCallback(() => {
-    if (isOpen)
-      return navigate(project_id ? `/projects/${project_id}/fields` : '/fields')
-    navigate(
-      project_id
+    if (isOpen) {
+      return navigate({
+        pathname: project_id ? `/projects/${project_id}/fields` : '/fields',
+        search: searchParams.toString(),
+      })
+    }
+    navigate({
+      pathname: project_id
         ? `/projects/${project_id}/fields/${field.field_id}`
         : `/fields/${field.field_id}`,
-    )
-  }, [isOpen, navigate, project_id, field.field_id])
+      search: searchParams.toString(),
+    })
+  }, [isOpen, navigate, project_id, field.field_id, searchParams])
 
   return (
     <Node
