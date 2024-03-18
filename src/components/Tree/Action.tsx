@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 
 import { Node } from './Node'
@@ -29,6 +29,7 @@ export const ActionNode = memo(
   }: Props) => {
     const location = useLocation()
     const navigate = useNavigate()
+    const [searchParams] = useSearchParams()
 
     // need project to know whether to show files
     const { db } = useElectric()!
@@ -61,9 +62,14 @@ export const ActionNode = memo(
     }${place_id ? `/places/${place.place_id}` : ''}/actions`
 
     const onClickButton = useCallback(() => {
-      if (isOpen) return navigate(baseUrl)
-      navigate(`${baseUrl}/${action.action_id}`)
-    }, [isOpen, navigate, baseUrl, action.action_id])
+      if (isOpen) {
+        return navigate({ pathname: baseUrl, search: searchParams.toString() })
+      }
+      navigate({
+        pathname: `${baseUrl}/${action.action_id}`,
+        search: searchParams.toString(),
+      })
+    }, [isOpen, navigate, baseUrl, action.action_id, searchParams])
 
     return (
       <>

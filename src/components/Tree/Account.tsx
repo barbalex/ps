@@ -26,7 +26,11 @@ export const AccountNode = memo(({ account, level = 2 }: Props) => {
   const isActive = isOpen && urlPath.length === 2
 
   const onClickButton = useCallback(() => {
-    if (isOpen) return navigate('/accounts')
+    if (isOpen)
+      return navigate({
+        pathname: '/accounts',
+        search: searchParams.toString(),
+      })
     navigate({
       pathname: `/accounts/${account.account_id}`,
       search: searchParams.toString(),
