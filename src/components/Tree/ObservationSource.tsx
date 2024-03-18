@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { Node } from './Node'
 import { ObservationSources as ObservationSource } from '../../../generated/client'
@@ -15,6 +15,7 @@ export const ObservationSourceNode = memo(
   ({ project_id, observationSource, level = 4 }: Props) => {
     const location = useLocation()
     const navigate = useNavigate()
+    const [searchParams] = useSearchParams()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isOpen =
@@ -27,9 +28,20 @@ export const ObservationSourceNode = memo(
     const baseUrl = `/projects/${project_id}/observation-sources`
 
     const onClickButton = useCallback(() => {
-      if (isOpen) return navigate(baseUrl)
-      navigate(`${baseUrl}/${observationSource.observation_source_id}`)
-    }, [isOpen, navigate, baseUrl, observationSource.observation_source_id])
+      if (isOpen) {
+        return navigate({ pathname: baseUrl, search: searchParams.toString() })
+      }
+      navigate({
+        pathname: `${baseUrl}/${observationSource.observation_source_id}`,
+        search: searchParams.toString(),
+      })
+    }, [
+      isOpen,
+      navigate,
+      baseUrl,
+      observationSource.observation_source_id,
+      searchParams,
+    ])
 
     // TODO: childrenCount
     return (
