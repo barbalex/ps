@@ -54,17 +54,14 @@ dotenv.config()
 import axios from 'axios'
 import createSubscriber from 'pg-listen'
 
-const connectionString = `postgresql://postgres:${process.env.ELECTRIC_DATABASE_PASSWORD}@backend-pg-1:5432/postgres`
+const connectionString = `postgresql://postgres:${process.env.ELECTRIC_DATABASE_PASSWORD}@ps-pg-1:5432/postgres`
 console.log('connectionString', connectionString)
 const subscriber = createSubscriber({ connectionString })
 console.log('subscriber', subscriber)
 
 subscriber.notifications.on('gbif_download_update', (payload) => {
   // Payload as passed to subscriber.notify() (see below)
-  console.log(
-    "Received notification in 'gbif_download_update':",
-    payload,
-  )
+  console.log("Received notification in 'gbif_download_update':", payload)
   // TODO: process the payload
 })
 

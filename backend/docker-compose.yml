@@ -35,7 +35,7 @@ services:
       - 65432:65432
     restart: always
   gbif:
-    container_name: backend-gbif-1
+    container_name: ps-gbif-1
     build:
       context: ./gbif
     depends_on:
