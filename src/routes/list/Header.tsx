@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
 import { createList } from '../../modules/createRows'
@@ -8,20 +8,24 @@ import { FormHeader } from '../../components/FormHeader'
 export const Header = memo(({ autoFocusRef }) => {
   const { project_id, list_id } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
 
   const addRow = useCallback(async () => {
     const data = await createList({ db, project_id })
     await db.lists.create({ data })
-    navigate(`../${data.list_id}`)
+    navigate({
+      pathname: `../${data.list_id}`,
+      search: searchParams.toString(),
+    })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db, navigate, project_id])
+  }, [autoFocusRef, db, navigate, project_id, searchParams])
 
   const deleteRow = useCallback(async () => {
     await db.lists.delete({ where: { list_id } })
-    navigate('..')
-  }, [db.lists, list_id, navigate])
+    navigate({ pathname: '..', search: searchParams.toString() })
+  }, [db.lists, list_id, navigate, searchParams])
 
   const toNext = useCallback(async () => {
     const lists = await db.lists.findMany({
@@ -31,8 +35,11 @@ export const Header = memo(({ autoFocusRef }) => {
     const len = lists.length
     const index = lists.findIndex((p) => p.list_id === list_id)
     const next = lists[(index + 1) % len]
-    navigate(`../${next.list_id}`)
-  }, [db.lists, list_id, navigate, project_id])
+    navigate({
+      pathname: `../${next.list_id}`,
+      search: searchParams.toString(),
+    })
+  }, [db.lists, list_id, navigate, project_id, searchParams])
 
   const toPrevious = useCallback(async () => {
     const lists = await db.lists.findMany({
@@ -42,8 +49,11 @@ export const Header = memo(({ autoFocusRef }) => {
     const len = lists.length
     const index = lists.findIndex((p) => p.list_id === list_id)
     const previous = lists[(index + len - 1) % len]
-    navigate(`../${previous.list_id}`)
-  }, [db.lists, list_id, navigate, project_id])
+    navigate({
+      pathname: `../${previous.list_id}`,
+      search: searchParams.toString(),
+    })
+  }, [db.lists, list_id, navigate, project_id, searchParams])
 
   return (
     <FormHeader

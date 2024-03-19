@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useContext } from 'react'
-import { useNavigate, useParams, useLocation } from 'react-router-dom'
+import {
+  useNavigate,
+  useParams,
+  useLocation,
+  useSearchParams,
+} from 'react-router-dom'
 import { useDebouncedCallback } from 'use-debounce'
 import axios from 'redaxios'
 
@@ -11,6 +16,7 @@ import '../../form.css'
 
 export const Uploader = () => {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const {
     project_id,
     subproject_id,
@@ -60,7 +66,10 @@ export const Uploader = () => {
       }
       const data = await createFile(fileInput)
       await db.files.create({ data })
-      navigate(`../${data.file_id}${isPreview ? '/preview' : ''}`)
+      navigate({
+        pathname: `../${data.file_id}${isPreview ? '/preview' : ''}`,
+        search: searchParams.toString(),
+      })
       // close the uploader or it will be open when navigating to the list
       uploaderCtx.current.doneFlow()
       // clear the uploader or it will show the last uploaded file when opened next time
@@ -123,6 +132,7 @@ export const Uploader = () => {
       place_id,
       place_id2,
       project_id,
+      searchParams,
       subproject_id,
       uploaderCtx,
     ],

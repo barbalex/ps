@@ -1,5 +1,10 @@
 import { useCallback, memo, useMemo, useContext } from 'react'
-import { useParams, useNavigate, useLocation } from 'react-router-dom'
+import {
+  useParams,
+  useNavigate,
+  useLocation,
+  useSearchParams,
+} from 'react-router-dom'
 import { Button } from '@fluentui/react-components'
 import { MdPreview, MdEditNote } from 'react-icons/md'
 
@@ -23,16 +28,23 @@ export const Header = memo(({ row }: Props) => {
     file_id,
   } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { pathname } = useLocation()
   const isPreview = pathname.endsWith('preview')
   const onClickPreview = useCallback(() => {
     if (isPreview) {
-      navigate(pathname.replace('/preview', ''))
+      navigate({
+        pathname: pathname.replace('/preview', ''),
+        search: searchParams.toString(),
+      })
     } else {
-      navigate(`${pathname}/preview`)
+      navigate({
+        pathname: `${pathname}/preview`,
+        search: searchParams.toString(),
+      })
     }
-  }, [isPreview, navigate, pathname])
+  }, [isPreview, navigate, pathname, searchParams])
 
   const { db } = useElectric()!
 
@@ -46,8 +58,8 @@ export const Header = memo(({ row }: Props) => {
 
   const deleteRow = useCallback(async () => {
     await db.files.delete({ where: { file_id } })
-    navigate('..')
-  }, [db.files, file_id, navigate])
+    navigate({ pathname: '..', search: searchParams.toString() })
+  }, [db.files, file_id, navigate, searchParams])
 
   const where = useMemo(() => {
     const where = { deleted: false }
@@ -75,8 +87,11 @@ export const Header = memo(({ row }: Props) => {
     const len = files.length
     const index = files.findIndex((p) => p.file_id === file_id)
     const next = files[(index + 1) % len]
-    navigate(`../${next.file_id}${isPreview ? '/preview' : ''}`)
-  }, [db.files, where, navigate, isPreview, file_id])
+    navigate({
+      pathname: `../${next.file_id}${isPreview ? '/preview' : ''}`,
+      search: searchParams.toString(),
+    })
+  }, [db.files, where, navigate, isPreview, searchParams, file_id])
 
   const toPrevious = useCallback(async () => {
     const files = await db.files.findMany({
@@ -86,8 +101,11 @@ export const Header = memo(({ row }: Props) => {
     const len = files.length
     const index = files.findIndex((p) => p.file_id === file_id)
     const previous = files[(index + len - 1) % len]
-    navigate(`../${previous.file_id}${isPreview ? '/preview' : ''}`)
-  }, [db.files, where, navigate, isPreview, file_id])
+    navigate({
+      pathname: `../${previous.file_id}${isPreview ? '/preview' : ''}`,
+      search: searchParams.toString(),
+    })
+  }, [db.files, where, navigate, isPreview, searchParams, file_id])
 
   return (
     <FormHeader
