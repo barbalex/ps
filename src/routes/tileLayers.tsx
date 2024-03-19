@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../ElectricProvider'
 import { createTileLayer } from '../modules/createRows'
@@ -11,6 +11,7 @@ import '../form.css'
 export const Component = () => {
   const { project_id } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
   const { results: tileLayers = [] } = useLiveQuery(
@@ -23,19 +24,18 @@ export const Component = () => {
   const add = useCallback(async () => {
     const tileLayer = createTileLayer({ project_id })
     await db.tile_layers.create({ data: tileLayer })
-    navigate(`/projects/${project_id}/tile-layers/${tileLayer.tile_layer_id}`)
-  }, [db.tile_layers, navigate, project_id])
+    navigate({
+      pathname: tileLayer.tile_layer_id,
+      search: searchParams.toString(),
+    })
+  }, [db.tile_layers, navigate, project_id, searchParams])
 
   return (
     <div className="list-view">
       <ListViewHeader title="Tile Layers" addRow={add} tableName="tile layer" />
       <div className="list-container">
         {tileLayers.map(({ tile_layer_id, label }) => (
-          <Row
-            key={tile_layer_id}
-            to={`/projects/${project_id}/tile-layers/${tile_layer_id}`}
-            label={label}
-          />
+          <Row key={tile_layer_id} to={tile_layer_id} label={label} />
         ))}
       </div>
     </div>

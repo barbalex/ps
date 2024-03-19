@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
 import { createUser } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
@@ -11,6 +11,7 @@ import '../form.css'
 
 export const Component = () => {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
   const { results: users = [] } = useLiveQuery(
@@ -20,15 +21,15 @@ export const Component = () => {
   const add = useCallback(async () => {
     const data = createUser()
     await db.users.create({ data })
-    navigate(`/users/${data.user_id}`)
-  }, [db.users, navigate])
+    navigate({ pathname: data.user_id, search: searchParams.toString() })
+  }, [db.users, navigate, searchParams])
 
   return (
     <div className="list-view">
       <ListViewHeader title="Users" addRow={add} tableName="user" />
       <div className="list-container">
         {users.map(({ user_id, label }) => (
-          <Row key={user_id} label={label} to={`/users/${user_id}`} />
+          <Row key={user_id} label={label} to={user_id} />
         ))}
       </div>
     </div>
