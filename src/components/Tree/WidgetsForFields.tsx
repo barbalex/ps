@@ -1,6 +1,6 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
 import { Node } from './Node'
@@ -9,6 +9,7 @@ import { WidgetForFieldNode } from './WidgetForField'
 export const WidgetsForFieldsNode = memo(() => {
   const location = useLocation()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
   const { results: widgetsForFields = [] } = useLiveQuery(
@@ -28,9 +29,14 @@ export const WidgetsForFieldsNode = memo(() => {
   const isActive = isOpen && urlPath.length === 1
 
   const onClickButton = useCallback(() => {
-    if (isOpen) return navigate('/')
-    navigate('/widgets-for-fields')
-  }, [isOpen, navigate])
+    if (isOpen) {
+      return navigate({ pathname: '/', search: searchParams.toString() })
+    }
+    navigate({
+      pathname: '/widgets-for-fields',
+      search: searchParams.toString(),
+    })
+  }, [isOpen, navigate, searchParams])
 
   return (
     <>

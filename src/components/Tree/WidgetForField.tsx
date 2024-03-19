@@ -1,5 +1,10 @@
 import { useCallback, memo } from 'react'
-import { useLocation, useParams, useNavigate } from 'react-router-dom'
+import {
+  useLocation,
+  useParams,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom'
 
 import { Node } from './Node'
 import { WidgetsForFields as WidgetForField } from '../../../generated/client'
@@ -14,6 +19,7 @@ export const WidgetForFieldNode = memo(
     const params = useParams()
     const location = useLocation()
     const navigate = useNavigate()
+    const [searchParams] = useSearchParams()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isOpen =
@@ -22,9 +28,17 @@ export const WidgetForFieldNode = memo(
     const isActive = isOpen && urlPath.length === 2
 
     const onClickButton = useCallback(() => {
-      if (isOpen) return navigate('/widgets-for-fields')
-      navigate(`/widgets-for-fields/${widgetForField.widget_for_field_id}`)
-    }, [isOpen, navigate, widgetForField.widget_for_field_id])
+      if (isOpen) {
+        return navigate({
+          pathname: '/widgets-for-fields',
+          search: searchParams.toString(),
+        })
+      }
+      navigate({
+        pathname: `/widgets-for-fields/${widgetForField.widget_for_field_id}`,
+        search: searchParams.toString(),
+      })
+    }, [isOpen, navigate, searchParams, widgetForField.widget_for_field_id])
 
     return (
       <Node
