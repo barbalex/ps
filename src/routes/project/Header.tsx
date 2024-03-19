@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { createProject } from '../../modules/createRows'
 import { useElectric } from '../../ElectricProvider'
@@ -16,6 +16,7 @@ interface Props {
 export const Header = memo(({ autoFocusRef }: Props) => {
   const { project_id } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
 
@@ -28,16 +29,19 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     // add vector_layers and vector_layer_displays for tables with geometry
     await upsertTableVectorLayersForProject({ db, project_id: data.project_id })
     // now navigate to the new project
-    navigate(`/projects/${data.project_id}`)
+    navigate({
+      pathname: `../${data.project_id}`,
+      search: searchParams.toString(),
+    })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db, navigate])
+  }, [autoFocusRef, db, navigate, searchParams])
 
   const deleteRow = useCallback(async () => {
     await db.projects.delete({
       where: { project_id },
     })
-    navigate(`/projects`)
-  }, [db.projects, navigate, project_id])
+    navigate({ pathname: `..`, search: searchParams.toString() })
+  }, [db.projects, navigate, project_id, searchParams])
 
   const toNext = useCallback(async () => {
     const projects = await db.projects.findMany({
@@ -47,8 +51,11 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     const len = projects.length
     const index = projects.findIndex((p) => p.project_id === project_id)
     const next = projects[(index + 1) % len]
-    navigate(`/projects/${next.project_id}`)
-  }, [db.projects, navigate, project_id])
+    navigate({
+      pathname: `../${next.project_id}`,
+      search: searchParams.toString(),
+    })
+  }, [db.projects, navigate, project_id, searchParams])
 
   const toPrevious = useCallback(async () => {
     const projects = await db.projects.findMany({
@@ -58,8 +65,11 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     const len = projects.length
     const index = projects.findIndex((p) => p.project_id === project_id)
     const previous = projects[(index + len - 1) % len]
-    navigate(`/projects/${previous.project_id}`)
-  }, [db.projects, navigate, project_id])
+    navigate({
+      pathname: `../${previous.project_id}`,
+      search: searchParams.toString(),
+    })
+  }, [db.projects, navigate, project_id, searchParams])
 
   return (
     <FormHeader
