@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
 import { createTaxonomy } from '../../modules/createRows'
@@ -8,20 +8,24 @@ import { FormHeader } from '../../components/FormHeader'
 export const Header = memo(({ autoFocusRef }) => {
   const { project_id, taxonomy_id } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
 
   const addRow = useCallback(async () => {
     const data = await createTaxonomy({ db, project_id })
     await db.taxonomies.create({ data })
-    navigate(`../${data.taxonomy_id}`)
+    navigate({
+      pathname: `../${data.taxonomy_id}`,
+      search: searchParams.toString(),
+    })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db, navigate, project_id])
+  }, [autoFocusRef, db, navigate, project_id, searchParams])
 
   const deleteRow = useCallback(async () => {
     await db.taxonomies.delete({ where: { taxonomy_id } })
-    navigate('..')
-  }, [db.taxonomies, navigate, taxonomy_id])
+    navigate({ pathname: '..', search: searchParams.toString() })
+  }, [db.taxonomies, navigate, taxonomy_id, searchParams])
 
   const toNext = useCallback(async () => {
     const taxonomies = await db.taxonomies.findMany({
@@ -31,8 +35,11 @@ export const Header = memo(({ autoFocusRef }) => {
     const len = taxonomies.length
     const index = taxonomies.findIndex((p) => p.taxonomy_id === taxonomy_id)
     const next = taxonomies[(index + 1) % len]
-    navigate(`../${next.taxonomy_id}`)
-  }, [db.taxonomies, navigate, project_id, taxonomy_id])
+    navigate({
+      pathname: `../${next.taxonomy_id}`,
+      search: searchParams.toString(),
+    })
+  }, [db.taxonomies, navigate, project_id, taxonomy_id, searchParams])
 
   const toPrevious = useCallback(async () => {
     const taxonomies = await db.taxonomies.findMany({
@@ -42,8 +49,11 @@ export const Header = memo(({ autoFocusRef }) => {
     const len = taxonomies.length
     const index = taxonomies.findIndex((p) => p.taxonomy_id === taxonomy_id)
     const previous = taxonomies[(index + len - 1) % len]
-    navigate(`../${previous.taxonomy_id}`)
-  }, [db.taxonomies, navigate, project_id, taxonomy_id])
+    navigate({
+      pathname: `../${previous.taxonomy_id}`,
+      search: searchParams.toString(),
+    })
+  }, [db.taxonomies, navigate, project_id, taxonomy_id, searchParams])
 
   return (
     <FormHeader
