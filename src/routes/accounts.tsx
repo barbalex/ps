@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
 import { createAccount } from '../modules/createRows'
 import { ListViewHeader } from '../components/ListViewHeader'
@@ -11,6 +11,7 @@ import '../form.css'
 
 export const Component = () => {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
   const { results: accounts = [] } = useLiveQuery(db.accounts.liveMany())
@@ -18,8 +19,11 @@ export const Component = () => {
   const add = useCallback(async () => {
     const data = createAccount()
     await db.accounts.create({ data })
-    navigate(`/accounts/${data.account_id}`)
-  }, [db.accounts, navigate])
+    navigate({
+      pathname: data.account_id,
+      search: searchParams.toString(),
+    })
+  }, [db.accounts, navigate, searchParams])
 
   return (
     <div className="list-view">
