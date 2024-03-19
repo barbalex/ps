@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../ElectricProvider'
 import { createField } from '../modules/createRows'
@@ -11,6 +11,7 @@ import '../form.css'
 export const Component = () => {
   const { project_id } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
   const { results: fields = [] } = useLiveQuery(
@@ -23,27 +24,15 @@ export const Component = () => {
   const add = useCallback(async () => {
     const data = createField({ project_id })
     await db.fields.create({ data })
-    navigate(
-      project_id
-        ? `/projects/${project_id}/fields/${data.field_id}`
-        : `/fields/${data.field_id}`,
-    )
-  }, [db.fields, navigate, project_id])
+    navigate({ pathname: data.field_id, search: searchParams.toString() })
+  }, [db.fields, navigate, project_id, searchParams])
 
   return (
     <div className="list-view">
       <ListViewHeader title="Fields" addRow={add} tableName="field" />
       <div className="list-container">
         {fields.map(({ field_id, label }) => (
-          <Row
-            key={field_id}
-            label={label}
-            to={
-              project_id
-                ? `/projects/${project_id}/fields/${field_id}`
-                : `/fields/${field_id}`
-            }
-          />
+          <Row key={field_id} label={label} to={field_id} />
         ))}
       </div>
     </div>

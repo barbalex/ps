@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../ElectricProvider'
 import { createCheckTaxon } from '../modules/createRows'
@@ -9,9 +9,9 @@ import { Row } from '../components/shared/Row'
 import '../form.css'
 
 export const Component = () => {
-  const { project_id, subproject_id, place_id, place_id2, check_id } =
-    useParams()
+  const { check_id } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
   const { results: checkTaxa = [] } = useLiveQuery(
@@ -29,33 +29,18 @@ export const Component = () => {
         check_id,
       },
     })
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-        place_id2 ? `/places/${place_id2}` : ''
-      }/checks/${check_id}/taxa/${checkTaxon.check_taxon_id}`,
-    )
-  }, [
-    check_id,
-    db.check_taxa,
-    navigate,
-    place_id,
-    place_id2,
-    project_id,
-    subproject_id,
-  ])
+    navigate({
+      pathname: checkTaxon.check_taxon_id,
+      search: searchParams.toString(),
+    })
+  }, [check_id, db.check_taxa, navigate, searchParams])
 
   return (
     <div className="list-view">
       <ListViewHeader title="Check Taxa" addRow={add} tableName="check taxon" />
       <div className="list-container">
         {checkTaxa.map(({ check_taxon_id, label }) => (
-          <Row
-            key={check_taxon_id}
-            label={label}
-            to={`/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-              place_id2 ? `/places/${place_id2}` : ''
-            }/checks/${check_id}/taxa/${check_taxon_id}`}
-          />
+          <Row key={check_taxon_id} label={label} to={check_taxon_id} />
         ))}
       </div>
     </div>
