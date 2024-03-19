@@ -1,6 +1,6 @@
 import { useCallback, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { ListViewHeader } from '../components/ListViewHeader'
 import { Row } from '../components/shared/Row'
@@ -12,6 +12,8 @@ import { useElectric } from '../ElectricProvider'
 
 export const Component = memo(() => {
   const { chart_id } = useParams()
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
   const { results: chartSubjects = [] } = useLiveQuery(
@@ -24,9 +26,12 @@ export const Component = memo(() => {
   const addRow = useCallback(async () => {
     const data = createChartSubject({ chart_id })
     await db.chart_subjects.create({ data })
-    navigate(data.chart_subject_id)
+    navigate({
+      pathname: data.chart_subject_id,
+      search: searchParams.toString(),
+    })
     autoFocusRef.current?.focus()
-  }, [chart_id, db.chart_subjects])
+  }, [chart_id, db.chart_subjects, navigate, searchParams])
 
   // TODO: get uploader css locally if it should be possible to upload charts
   // offline to sqlite

@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { ListViewHeader } from '../components/ListViewHeader'
 import { Row } from '../components/shared/Row'
@@ -14,6 +14,7 @@ import { useElectric } from '../ElectricProvider'
 export const Component = () => {
   const { project_id, subproject_id, place_id, place_id2 } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const where = useMemo(() => {
     const where = { deleted: false }
@@ -51,8 +52,16 @@ export const Component = () => {
       : { project_id }
     const data = createChart(idToAdd)
     await db.charts.create({ data })
-    navigate(data.chart_id)
-  }, [db.charts, navigate, place_id, place_id2, project_id, subproject_id])
+    navigate({ pathname: data.chart_id, search: searchParams.toString() })
+  }, [
+    db.charts,
+    navigate,
+    place_id,
+    place_id2,
+    project_id,
+    searchParams,
+    subproject_id,
+  ])
 
   // console.log('charts', charts)
 
