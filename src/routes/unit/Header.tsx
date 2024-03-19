@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
 import { createUnit } from '../../modules/createRows'
@@ -8,6 +8,7 @@ import { FormHeader } from '../../components/FormHeader'
 export const Header = memo(({ autoFocusRef }) => {
   const { project_id, unit_id } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
 
@@ -16,14 +17,17 @@ export const Header = memo(({ autoFocusRef }) => {
     await db.units.create({
       data: { ...unit, project_id },
     })
-    navigate(`../${unit.unit_id}`)
+    navigate({
+      pathname: `../${unit.unit_id}`,
+      search: searchParams.toString(),
+    })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db.units, navigate, project_id])
+  }, [autoFocusRef, db.units, navigate, project_id, searchParams])
 
   const deleteRow = useCallback(async () => {
     await db.units.delete({ where: { unit_id } })
-    navigate('..')
-  }, [db.units, navigate, unit_id])
+    navigate({ pathname: '..', search: searchParams.toString() })
+  }, [db.units, navigate, unit_id, searchParams])
 
   const toNext = useCallback(async () => {
     const units = await db.units.findMany({
@@ -33,8 +37,11 @@ export const Header = memo(({ autoFocusRef }) => {
     const len = units.length
     const index = units.findIndex((p) => p.unit_id === unit_id)
     const next = units[(index + 1) % len]
-    navigate(`../${next.unit_id}`)
-  }, [db.units, navigate, project_id, unit_id])
+    navigate({
+      pathname: `../${next.unit_id}`,
+      search: searchParams.toString(),
+    })
+  }, [db.units, navigate, project_id, unit_id, searchParams])
 
   const toPrevious = useCallback(async () => {
     const units = await db.units.findMany({
@@ -44,8 +51,11 @@ export const Header = memo(({ autoFocusRef }) => {
     const len = units.length
     const index = units.findIndex((p) => p.unit_id === unit_id)
     const previous = units[(index + len - 1) % len]
-    navigate(`../${previous.unit_id}`)
-  }, [db.units, navigate, project_id, unit_id])
+    navigate({
+      pathname: `../${previous.unit_id}`,
+      search: searchParams.toString(),
+    })
+  }, [db.units, navigate, project_id, unit_id, searchParams])
 
   return (
     <FormHeader
