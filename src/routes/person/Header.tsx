@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { createPerson } from '../../modules/createRows'
 import { useElectric } from '../../ElectricProvider'
@@ -8,20 +8,24 @@ import { FormHeader } from '../../components/FormHeader'
 export const Header = memo(({ autoFocusRef }) => {
   const { project_id, person_id } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
 
   const addRow = useCallback(async () => {
     const data = await createPerson({ db, project_id })
     await db.persons.create({ data })
-    navigate(`../${data.person_id}`)
+    navigate({
+      pathname: `../${data.person_id}`,
+      search: searchParams.toString(),
+    })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db, navigate, project_id])
+  }, [autoFocusRef, db, navigate, project_id, searchParams])
 
   const deleteRow = useCallback(async () => {
     await db.persons.delete({ where: { person_id } })
-    navigate('..')
-  }, [db.persons, navigate, person_id])
+    navigate({ pathname: '..', search: searchParams.toString() })
+  }, [db.persons, navigate, person_id, searchParams])
 
   const toNext = useCallback(async () => {
     const persons = await db.persons.findMany({
@@ -31,8 +35,11 @@ export const Header = memo(({ autoFocusRef }) => {
     const len = persons.length
     const index = persons.findIndex((p) => p.person_id === person_id)
     const next = persons[(index + 1) % len]
-    navigate(`../${next.person_id}`)
-  }, [db.persons, navigate, person_id, project_id])
+    navigate({
+      pathname: `../${next.person_id}`,
+      search: searchParams.toString(),
+    })
+  }, [db.persons, navigate, person_id, project_id, searchParams])
 
   const toPrevious = useCallback(async () => {
     const persons = await db.persons.findMany({
@@ -42,8 +49,11 @@ export const Header = memo(({ autoFocusRef }) => {
     const len = persons.length
     const index = persons.findIndex((p) => p.person_id === person_id)
     const previous = persons[(index + len - 1) % len]
-    navigate(`../${previous.person_id}`)
-  }, [db.persons, navigate, person_id, project_id])
+    navigate({
+      pathname: `../${previous.person_id}`,
+      search: searchParams.toString(),
+    })
+  }, [db.persons, navigate, person_id, project_id, searchParams])
 
   return (
     <FormHeader

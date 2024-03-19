@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { createObservationSource } from '../../modules/createRows'
 import { useElectric } from '../../ElectricProvider'
@@ -8,6 +8,7 @@ import { FormHeader } from '../../components/FormHeader'
 export const Header = memo(({ autoFocusRef }) => {
   const { project_id, observation_source_id } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
 
@@ -17,16 +18,19 @@ export const Header = memo(({ autoFocusRef }) => {
       project_id,
     })
     await db.observation_sources.create({ data })
-    navigate(`../${data.observation_source_id}`)
+    navigate({
+      pathname: `../${data.observation_source_id}`,
+      search: searchParams.toString(),
+    })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db, navigate, project_id])
+  }, [autoFocusRef, db, navigate, project_id, searchParams])
 
   const deleteRow = useCallback(async () => {
     await db.observation_sources.delete({
       where: { observation_source_id },
     })
-    navigate('..')
-  }, [db.observation_sources, navigate, observation_source_id])
+    navigate({ pathname: '..', search: searchParams.toString() })
+  }, [db.observation_sources, navigate, observation_source_id, searchParams])
 
   const toNext = useCallback(async () => {
     const observationSources = await db.observation_sources.findMany({
@@ -38,8 +42,17 @@ export const Header = memo(({ autoFocusRef }) => {
       (p) => p.observation_source_id === observation_source_id,
     )
     const next = observationSources[(index + 1) % len]
-    navigate(`../${next.observation_source_id}`)
-  }, [db.observation_sources, navigate, observation_source_id, project_id])
+    navigate({
+      pathname: `../${next.observation_source_id}`,
+      search: searchParams.toString(),
+    })
+  }, [
+    db.observation_sources,
+    navigate,
+    observation_source_id,
+    project_id,
+    searchParams,
+  ])
 
   const toPrevious = useCallback(async () => {
     const observationSources = await db.observation_sources.findMany({
@@ -51,8 +64,17 @@ export const Header = memo(({ autoFocusRef }) => {
       (p) => p.observation_source_id === observation_source_id,
     )
     const previous = observationSources[(index + len - 1) % len]
-    navigate(`../${previous.observation_source_id}`)
-  }, [db.observation_sources, navigate, observation_source_id, project_id])
+    navigate({
+      pathname: `../${previous.observation_source_id}`,
+      search: searchParams.toString(),
+    })
+  }, [
+    db.observation_sources,
+    navigate,
+    observation_source_id,
+    project_id,
+    searchParams,
+  ])
 
   return (
     <FormHeader
