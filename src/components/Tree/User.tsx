@@ -1,5 +1,10 @@
 import { useCallback, memo } from 'react'
-import { useLocation, useParams, useNavigate } from 'react-router-dom'
+import {
+  useLocation,
+  useParams,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom'
 
 import { Node } from './Node'
 import { Users as User } from '../../../generated/client'
@@ -13,15 +18,21 @@ export const UserNode = memo(({ user, level = 2 }: Props) => {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isOpen = urlPath[0] === 'users' && params.user_id === user.user_id
   const isActive = isOpen && urlPath.length === 2
 
   const onClickButton = useCallback(() => {
-    if (isOpen) return navigate('/users')
-    navigate(`/users/${user.user_id}`)
-  }, [isOpen, navigate, user.user_id])
+    if (isOpen) {
+      return navigate({ pathname: '/users', search: searchParams.toString() })
+    }
+    navigate({
+      pathname: `/users/${user.user_id}`,
+      search: searchParams.toString(),
+    })
+  }, [isOpen, navigate, searchParams, user.user_id])
 
   return (
     <Node
