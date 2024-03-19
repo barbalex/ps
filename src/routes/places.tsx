@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import {
   createPlace,
@@ -16,6 +16,7 @@ import '../form.css'
 
 export const Component = () => {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { project_id, subproject_id, place_id } = useParams()
 
   const { db } = useElectric()!
@@ -60,9 +61,16 @@ export const Component = () => {
       vector_layer_id: newVectorLayer.vector_layer_id,
     })
     db.vector_layer_displays.create({ data: newVLD })
-
-    navigate(data.place_id)
-  }, [db, navigate, placeNamePlural, place_id, project_id, subproject_id])
+    navigate({ pathname: data.place_id, search: searchParams.toString() })
+  }, [
+    db,
+    navigate,
+    placeNamePlural,
+    place_id,
+    project_id,
+    searchParams,
+    subproject_id,
+  ])
 
   return (
     <div className="list-view">
