@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../ElectricProvider'
 import { createGoal } from '../modules/createRows'
@@ -11,6 +11,7 @@ import '../form.css'
 export const Component = () => {
   const { project_id, subproject_id } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
   const { results: goals = [] } = useLiveQuery(
@@ -23,21 +24,15 @@ export const Component = () => {
   const add = useCallback(async () => {
     const data = await createGoal({ db, project_id, subproject_id })
     await db.goals.create({ data })
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/goals/${data.goal_id}`,
-    )
-  }, [db, navigate, project_id, subproject_id])
+    navigate({ pathname: data.goal_id, search: searchParams.toString() })
+  }, [db, navigate, project_id, searchParams, subproject_id])
 
   return (
     <div className="list-view">
       <ListViewHeader title="Goals" addRow={add} tableName="goal" />
       <div className="list-container">
         {goals.map(({ goal_id, label }) => (
-          <Row
-            key={goal_id}
-            label={label}
-            to={`/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}`}
-          />
+          <Row key={goal_id} label={label} to={goal_id} />
         ))}
       </div>
     </div>
