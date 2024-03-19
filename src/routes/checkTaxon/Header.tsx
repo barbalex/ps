@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { createCheckTaxon } from '../../modules/createRows'
 import { useElectric } from '../../ElectricProvider'
@@ -8,6 +8,7 @@ import { FormHeader } from '../../components/FormHeader'
 export const Header = memo(({ autoFocusRef }) => {
   const { check_id, check_taxon_id } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
 
@@ -19,16 +20,19 @@ export const Header = memo(({ autoFocusRef }) => {
         check_id,
       },
     })
-    navigate(`../${checkTaxon.check_taxon_id}`)
+    navigate({
+      pathname: `../${checkTaxon.check_taxon_id}`,
+      search: searchParams.toString(),
+    })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, check_id, db.check_taxa, navigate])
+  }, [autoFocusRef, check_id, db.check_taxa, navigate, searchParams])
 
   const deleteRow = useCallback(async () => {
     await db.check_taxa.delete({
       where: { check_taxon_id },
     })
-    navigate('..')
-  }, [check_taxon_id, db.check_taxa, navigate])
+    navigate({ pathname: '..', search: searchParams.toString() })
+  }, [check_taxon_id, db.check_taxa, navigate, searchParams])
 
   const toNext = useCallback(async () => {
     const checkTaxa = await db.check_taxa.findMany({
@@ -40,8 +44,11 @@ export const Header = memo(({ autoFocusRef }) => {
       (p) => p.check_taxon_id === check_taxon_id,
     )
     const next = checkTaxa[(index + 1) % len]
-    navigate(`../${next.check_taxon_id}`)
-  }, [check_id, check_taxon_id, db.check_taxa, navigate])
+    navigate({
+      pathname: `../${next.check_taxon_id}`,
+      search: searchParams.toString(),
+    })
+  }, [check_id, check_taxon_id, db.check_taxa, navigate, searchParams])
 
   const toPrevious = useCallback(async () => {
     const checkTaxa = await db.check_taxa.findMany({
@@ -53,8 +60,11 @@ export const Header = memo(({ autoFocusRef }) => {
       (p) => p.check_taxon_id === check_taxon_id,
     )
     const previous = checkTaxa[(index + len - 1) % len]
-    navigate(`../${previous.check_taxon_id}`)
-  }, [check_id, check_taxon_id, db.check_taxa, navigate])
+    navigate({
+      pathname: `../${previous.check_taxon_id}`,
+      search: searchParams.toString(),
+    })
+  }, [check_id, check_taxon_id, db.check_taxa, navigate, searchParams])
 
   return (
     <FormHeader

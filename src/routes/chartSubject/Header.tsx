@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 
 import { useElectric } from '../../ElectricProvider'
@@ -11,6 +11,7 @@ import { user_id } from '../../components/SqlInitializer'
 export const Header = memo(({ autoFocusRef }) => {
   const { chart_id, chart_subject_id } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
   const { results: uiOption } = useLiveQuery(
@@ -21,14 +22,17 @@ export const Header = memo(({ autoFocusRef }) => {
   const addRow = useCallback(async () => {
     const data = createChartSubject({ chart_id })
     await db.chart_subjects.create({ data })
-    navigate(`../${data.chart_subject_id}`)
+    navigate({
+      pathname: `../${data.chart_subject_id}`,
+      search: searchParams.toString(),
+    })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, chart_id, db.chart_subjects, navigate])
+  }, [autoFocusRef, chart_id, db.chart_subjects, navigate, searchParams])
 
   const deleteRow = useCallback(async () => {
     await db.chart_subjects.delete({ where: { chart_subject_id } })
-    navigate('..')
-  }, [db.chart_subjects, chart_subject_id, navigate])
+    navigate({ pathname: '..', search: searchParams.toString() })
+  }, [db.chart_subjects, chart_subject_id, navigate, searchParams])
 
   const toNext = useCallback(async () => {
     const chartSubjects = await db.chart_subjects.findMany({
@@ -40,8 +44,11 @@ export const Header = memo(({ autoFocusRef }) => {
       (p) => p.chart_subject_id === chart_subject_id,
     )
     const next = chartSubjects[(index + 1) % len]
-    navigate(`../${next.chart_subject_id}`)
-  }, [db.chart_subjects, chart_id, navigate, chart_subject_id])
+    navigate({
+      pathname: `../${next.chart_subject_id}`,
+      search: searchParams.toString(),
+    })
+  }, [db.chart_subjects, chart_id, navigate, searchParams, chart_subject_id])
 
   const toPrevious = useCallback(async () => {
     const chartSubjects = await db.chart_subjects.findMany({
@@ -53,8 +60,11 @@ export const Header = memo(({ autoFocusRef }) => {
       (p) => p.chart_subject_id === chart_subject_id,
     )
     const previous = chartSubjects[(index + len - 1) % len]
-    navigate(`../${previous.chart_subject_id}`)
-  }, [db.chart_subjects, chart_id, navigate, chart_subject_id])
+    navigate({
+      pathname: `../${previous.chart_subject_id}`,
+      search: searchParams.toString(),
+    })
+  }, [db.chart_subjects, chart_id, navigate, searchParams, chart_subject_id])
 
   return (
     <FormHeader
