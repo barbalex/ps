@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../ElectricProvider'
 import { createPlaceUser } from '../modules/createRows'
@@ -9,8 +9,9 @@ import { Row } from '../components/shared/Row'
 import '../form.css'
 
 export const Component = () => {
-  const { project_id, subproject_id, place_id, place_id2 } = useParams()
+  const { place_id, place_id2 } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
   const { results: placeUsers = [] } = useLiveQuery(
@@ -28,25 +29,18 @@ export const Component = () => {
         place_id: place_id2 ?? place_id,
       },
     })
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-        place_id2 ? `/places/${place_id2}` : ''
-      }/users/${placeUser.place_user_id}`,
-    )
-  }, [db.place_users, navigate, place_id, place_id2, project_id, subproject_id])
+    navigate({
+      pathname: placeUser.place_user_id,
+      search: searchParams.toString(),
+    })
+  }, [db.place_users, navigate, place_id, place_id2, searchParams])
 
   return (
     <div className="list-view">
       <ListViewHeader title="Users" addRow={add} tableName="user" />
       <div className="list-container">
         {placeUsers.map(({ place_user_id, label }) => (
-          <Row
-            key={place_user_id}
-            to={`/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
-              place_id2 ? `/places/${place_id2}` : ''
-            }/users/${place_user_id}`}
-            label={label}
-          />
+          <Row key={place_user_id} to={place_user_id} label={label} />
         ))}
       </div>
     </div>

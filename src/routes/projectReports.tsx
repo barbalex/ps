@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../ElectricProvider'
 import { createProjectReport } from '../modules/createRows'
@@ -11,6 +11,7 @@ import '../form.css'
 export const Component = () => {
   const { project_id } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
   const { results: projectReports = [] } = useLiveQuery(
@@ -23,8 +24,11 @@ export const Component = () => {
   const add = useCallback(async () => {
     const data = await createProjectReport({ db, project_id })
     await db.project_reports.create({ data })
-    navigate(`/projects/${project_id}/reports/${data.project_report_id}`)
-  }, [db, navigate, project_id])
+    navigate({
+      pathname: data.project_report_id,
+      search: searchParams.toString(),
+    })
+  }, [db, navigate, project_id, searchParams])
 
   return (
     <div className="list-view">
@@ -35,11 +39,7 @@ export const Component = () => {
       />
       <div className="list-container">
         {projectReports.map(({ project_report_id, label }) => (
-          <Row
-            key={project_report_id}
-            to={`/projects/${project_id}/reports/${project_report_id}`}
-            label={label}
-          />
+          <Row key={project_report_id} to={project_report_id} label={label} />
         ))}
       </div>
     </div>

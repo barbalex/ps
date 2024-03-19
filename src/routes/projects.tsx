@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
 import { Projects as Project } from '../../../generated/client'
 import { createProject } from '../modules/createRows'
@@ -13,6 +13,7 @@ import '../form.css'
 
 export const Component = () => {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
   const { results: projects = [] } = useLiveQuery(
@@ -27,8 +28,8 @@ export const Component = () => {
     await db.projects.create({ data })
     // add vector_layers and vector_layer_displays for tables with geometry
     await upsertTableVectorLayersForProject({ db, project_id: data.project_id })
-    navigate(`/projects/${data.project_id}`)
-  }, [db, navigate])
+    navigate({ pathname: data.project_id, search: searchParams.toString() })
+  }, [db, navigate, searchParams])
 
   return (
     <div className="list-view">
@@ -38,7 +39,7 @@ export const Component = () => {
           <Row
             key={project.project_id}
             label={project.label}
-            to={`/projects/${project.project_id}`}
+            to={project.project_id}
           />
         ))}
       </div>
