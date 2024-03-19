@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { Node } from './Node'
 import { Tile_layers as TileLayer } from '../../../generated/client'
@@ -14,6 +14,7 @@ export const TileLayerNode = memo(
   ({ project_id, tileLayer, level = 4 }: Props) => {
     const location = useLocation()
     const navigate = useNavigate()
+    const [searchParams] = useSearchParams()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isOpen =
@@ -26,9 +27,14 @@ export const TileLayerNode = memo(
     const baseUrl = `/projects/${project_id}/tile-layers`
 
     const onClickButton = useCallback(() => {
-      if (isOpen) return navigate(baseUrl)
-      navigate(`${baseUrl}/${tileLayer.tile_layer_id}`)
-    }, [baseUrl, isOpen, navigate, tileLayer.tile_layer_id])
+      if (isOpen) {
+        return navigate({ pathname: baseUrl, search: searchParams.toString() })
+      }
+      navigate({
+        pathname: `${baseUrl}/${tileLayer.tile_layer_id}`,
+        search: searchParams.toString(),
+      })
+    }, [baseUrl, isOpen, navigate, searchParams, tileLayer.tile_layer_id])
 
     return (
       <Node
