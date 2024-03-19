@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
 import { FormHeader } from '../../components/FormHeader'
@@ -7,6 +7,7 @@ import { FormHeader } from '../../components/FormHeader'
 export const Header = memo(() => {
   const { vector_layer_id, vector_layer_display_id } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
 
@@ -20,10 +21,14 @@ export const Header = memo(() => {
       (p) => p.vector_layer_display_id === vector_layer_display_id,
     )
     const next = vectorLayerDisplays[(index + 1) % len]
-    navigate(`../${next.vector_layer_display_id}`)
+    navigate({
+      pathname: `../${next.vector_layer_display_id}`,
+      search: searchParams.toString(),
+    })
   }, [
     db.vector_layer_displays,
     navigate,
+    searchParams,
     vector_layer_display_id,
     vector_layer_id,
   ])
@@ -38,10 +43,14 @@ export const Header = memo(() => {
       (p) => p.vector_layer_display_id === vector_layer_display_id,
     )
     const previous = vectorLayerDisplays[(index + len - 1) % len]
-    navigate(`../${previous.vector_layer_display_id}`)
+    navigate({
+      pathname: `../${previous.vector_layer_display_id}`,
+      search: searchParams.toString(),
+    })
   }, [
     db.vector_layer_displays,
     navigate,
+    searchParams,
     vector_layer_display_id,
     vector_layer_id,
   ])
