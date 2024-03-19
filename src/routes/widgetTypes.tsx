@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
 import { createWidgetType } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
@@ -11,6 +11,7 @@ import '../form.css'
 
 export const Component = () => {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
   const { results: rows = [] } = useLiveQuery(
@@ -23,10 +24,8 @@ export const Component = () => {
   const add = useCallback(async () => {
     const data = createWidgetType()
     await db.widget_types.create({ data })
-    navigate(`/widget-types/${data.widget_type_id}`)
-  }, [db.widget_types, navigate])
-
-  // console.log('WidgetTypes', rows)
+    navigate({ pathname: data.widget_type_id, search: searchParams.toString() })
+  }, [db.widget_types, navigate, searchParams])
 
   return (
     <div className="list-view">
@@ -37,11 +36,7 @@ export const Component = () => {
       />
       <div className="list-container">
         {rows.map(({ widget_type_id, label }) => (
-          <Row
-            key={widget_type_id}
-            label={label}
-            to={`/widget-types/${widget_type_id}`}
-          />
+          <Row key={widget_type_id} label={label} to={widget_type_id} />
         ))}
       </div>
     </div>

@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
 import { createWidgetForField } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
@@ -11,6 +11,7 @@ import '../form.css'
 
 export const Component = () => {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
   const { results: widgetsForFields = [] } = useLiveQuery(
@@ -23,8 +24,11 @@ export const Component = () => {
   const add = useCallback(async () => {
     const data = createWidgetForField()
     await db.widgets_for_fields.create({ data })
-    navigate(`/widgets-for-fields/${data.widget_for_field_id}`)
-  }, [db.widgets_for_fields, navigate])
+    navigate({
+      pathname: data.widget_for_field_id,
+      search: searchParams.toString(),
+    })
+  }, [db.widgets_for_fields, navigate, searchParams])
 
   return (
     <div className="list-view">
@@ -38,7 +42,7 @@ export const Component = () => {
           <Row
             key={widget_for_field_id}
             label={label}
-            to={`/widgets-for-fields/${widget_for_field_id}`}
+            to={widget_for_field_id}
           />
         ))}
       </div>
