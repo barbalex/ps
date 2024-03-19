@@ -1,5 +1,10 @@
 import { useCallback, memo } from 'react'
-import { useLocation, useParams, useNavigate } from 'react-router-dom'
+import {
+  useLocation,
+  useParams,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom'
 
 import { Node } from './Node'
 import { WidgetTypes as WidgetType } from '../../../generated/client'
@@ -13,6 +18,7 @@ export const WidgetTypeNode = memo(({ widgetType, level = 2 }: Props) => {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isOpen =
@@ -21,9 +27,17 @@ export const WidgetTypeNode = memo(({ widgetType, level = 2 }: Props) => {
   const isActive = isOpen && urlPath.length === 2
 
   const onClickButton = useCallback(() => {
-    if (isOpen) return navigate('/widget-types')
-    navigate(`/widget-types/${widgetType.widget_type_id}`)
-  }, [isOpen, navigate, widgetType.widget_type_id])
+    if (isOpen) {
+      return navigate({
+        pathname: '/widget-types',
+        search: searchParams.toString(),
+      })
+    }
+    navigate({
+      pathname: `/widget-types/${widgetType.widget_type_id}`,
+      search: searchParams.toString(),
+    })
+  }, [isOpen, navigate, searchParams, widgetType.widget_type_id])
 
   return (
     <Node

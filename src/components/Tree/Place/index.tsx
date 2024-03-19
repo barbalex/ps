@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { Node } from '../Node'
 import { Places as Place } from '../../../generated/client'
@@ -16,6 +16,8 @@ export const PlaceNode = memo(
   ({ project_id, subproject_id, place_id, place }: Props) => {
     const location = useLocation()
     const navigate = useNavigate()
+    const [searchParams] = useSearchParams()
+
     const level = place_id ? 8 : 6
     const place_id1 = place_id ?? place.place_id
     const place_id2 = place_id ? place.place_id : undefined
@@ -40,9 +42,14 @@ export const PlaceNode = memo(
     }`
 
     const onClickButton = useCallback(() => {
-      if (isOpen) return navigate(baseUrl)
-      navigate(`${baseUrl}/${place.place_id}`)
-    }, [baseUrl, isOpen, navigate, place.place_id])
+      if (isOpen) {
+        return navigate({ pathname: baseUrl, search: searchParams.toString() })
+      }
+      navigate({
+        pathname: `${baseUrl}/${place.place_id}`,
+        search: searchParams.toString(),
+      })
+    }, [baseUrl, isOpen, navigate, place.place_id, searchParams])
 
     return (
       <>
