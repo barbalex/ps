@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 
 import { createOccurrenceImport } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
@@ -11,6 +11,7 @@ import '../form.css'
 
 export const Component = () => {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { subproject_id } = useParams()
 
   const { db } = useElectric()!
@@ -24,8 +25,11 @@ export const Component = () => {
   const add = useCallback(async () => {
     const data = createOccurrenceImport({ subproject_id })
     await db.occurrence_imports.create({ data })
-    navigate(data.occurrence_import_id)
-  }, [db.occurrence_imports, navigate, subproject_id])
+    navigate({
+      pathname: data.occurrence_import_id,
+      search: searchParams.toString(),
+    })
+  }, [db.occurrence_imports, navigate, searchParams, subproject_id])
 
   return (
     <div className="list-view">

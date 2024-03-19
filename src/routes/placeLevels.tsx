@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../ElectricProvider'
 import { createPlaceLevel } from '../modules/createRows'
@@ -11,6 +11,7 @@ import '../form.css'
 export const Component = () => {
   const { project_id } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
   const { results: placeLevels = [] } = useLiveQuery(
@@ -28,10 +29,11 @@ export const Component = () => {
         project_id,
       },
     })
-    navigate(
-      `/projects/${project_id}/place-levels/${placeLevel.place_level_id}`,
-    )
-  }, [db.place_levels, navigate, project_id])
+    navigate({
+      pathname: placeLevel.place_level_id,
+      search: searchParams.toString(),
+    })
+  }, [db.place_levels, navigate, project_id, searchParams])
 
   return (
     <div className="list-view">
@@ -42,11 +44,7 @@ export const Component = () => {
       />
       <div className="list-container">
         {placeLevels.map(({ place_level_id, label }) => (
-          <Row
-            key={place_level_id}
-            to={`/projects/${project_id}/place-levels/${place_level_id}`}
-            label={label}
-          />
+          <Row key={place_level_id} to={place_level_id} label={label} />
         ))}
       </div>
     </div>
