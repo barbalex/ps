@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
 import { createField } from '../../modules/createRows'
@@ -8,20 +8,24 @@ import { FormHeader } from '../../components/FormHeader'
 export const Header = memo(({ autoFocusRef }) => {
   const { project_id, field_id } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
 
   const addRow = useCallback(async () => {
     const data = createField({ project_id })
     await db.fields.create({ data })
-    navigate(`../${data.field_id}`)
+    navigate({
+      pathname: `../${data.field_id}`,
+      search: searchParams.toString(),
+    })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db.fields, navigate, project_id])
+  }, [autoFocusRef, db.fields, navigate, project_id, searchParams])
 
   const deleteRow = useCallback(async () => {
     await db.fields.delete({ where: { field_id } })
-    navigate('..')
-  }, [db.fields, field_id, navigate])
+    navigate({ pathname: '..', search: searchParams.toString() })
+  }, [db.fields, field_id, navigate, searchParams])
 
   const toNext = useCallback(async () => {
     const fields = await db.fields.findMany({
@@ -34,8 +38,11 @@ export const Header = memo(({ autoFocusRef }) => {
     const len = fields.length
     const index = fields.findIndex((p) => p.field_id === field_id)
     const next = fields[(index + 1) % len]
-    navigate(`../${next.field_id}`)
-  }, [db.fields, project_id, navigate, field_id])
+    navigate({
+      pathname: `../${next.field_id}`,
+      search: searchParams.toString(),
+    })
+  }, [db.fields, project_id, navigate, searchParams, field_id])
 
   const toPrevious = useCallback(async () => {
     const fields = await db.fields.findMany({
@@ -48,8 +55,11 @@ export const Header = memo(({ autoFocusRef }) => {
     const len = fields.length
     const index = fields.findIndex((p) => p.field_id === field_id)
     const previous = fields[(index + len - 1) % len]
-    navigate(`../${previous.field_id}`)
-  }, [db.fields, project_id, navigate, field_id])
+    navigate({
+      pathname: `../${previous.field_id}`,
+      search: searchParams.toString(),
+    })
+  }, [db.fields, project_id, navigate, searchParams, field_id])
 
   return (
     <FormHeader

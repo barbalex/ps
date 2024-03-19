@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { createCheckValue } from '../../modules/createRows'
 import { useElectric } from '../../ElectricProvider'
@@ -8,6 +8,7 @@ import { FormHeader } from '../../components/FormHeader'
 export const Header = memo(({ autoFocusRef }) => {
   const { check_id, check_value_id } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
 
@@ -19,16 +20,19 @@ export const Header = memo(({ autoFocusRef }) => {
         check_id,
       },
     })
-    navigate(`../${checkValue.check_value_id}`)
+    navigate({
+      pathname: `../${checkValue.check_value_id}`,
+      search: searchParams.toString(),
+    })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, check_id, db.check_values, navigate])
+  }, [autoFocusRef, check_id, db.check_values, navigate, searchParams])
 
   const deleteRow = useCallback(async () => {
     await db.check_values.delete({
       where: { check_value_id },
     })
-    navigate('..')
-  }, [check_value_id, db.check_values, navigate])
+    navigate({ pathname: '..', search: searchParams.toString() })
+  }, [check_value_id, db.check_values, navigate, searchParams])
 
   const toNext = useCallback(async () => {
     const checkValues = await db.check_values.findMany({
@@ -40,8 +44,11 @@ export const Header = memo(({ autoFocusRef }) => {
       (p) => p.check_value_id === check_value_id,
     )
     const next = checkValues[(index + 1) % len]
-    navigate(`../${next.check_value_id}`)
-  }, [check_id, check_value_id, db.check_values, navigate])
+    navigate({
+      pathname: `../${next.check_value_id}`,
+      search: searchParams.toString(),
+    })
+  }, [check_id, check_value_id, db.check_values, navigate, searchParams])
 
   const toPrevious = useCallback(async () => {
     const checkValues = await db.check_values.findMany({
@@ -53,8 +60,11 @@ export const Header = memo(({ autoFocusRef }) => {
       (p) => p.check_value_id === check_value_id,
     )
     const previous = checkValues[(index + len - 1) % len]
-    navigate(`../${previous.check_value_id}`)
-  }, [check_id, check_value_id, db.check_values, navigate])
+    navigate({
+      pathname: `../${previous.check_value_id}`,
+      search: searchParams.toString(),
+    })
+  }, [check_id, check_value_id, db.check_values, navigate, searchParams])
 
   return (
     <FormHeader
