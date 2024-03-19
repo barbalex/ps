@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../ElectricProvider'
 import { createGoalReportValue } from '../modules/createRows'
@@ -9,8 +9,9 @@ import { Row } from '../components/shared/Row'
 import '../form.css'
 
 export const Component = () => {
-  const { project_id, subproject_id, goal_id, goal_report_id } = useParams()
+  const { goal_report_id } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
   const { results: goalReportValues = [] } = useLiveQuery(
@@ -28,17 +29,11 @@ export const Component = () => {
         goal_report_id,
       },
     })
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${goal_report_id}/values/${newGoalReportValue.goal_report_value_id}`,
-    )
-  }, [
-    db.goal_report_values,
-    goal_id,
-    goal_report_id,
-    navigate,
-    project_id,
-    subproject_id,
-  ])
+    navigate({
+      pathname: newGoalReportValue.goal_report_value_id,
+      search: searchParams.toString(),
+    })
+  }, [db.goal_report_values, goal_report_id, navigate, searchParams])
 
   return (
     <div className="list-view">
@@ -52,7 +47,7 @@ export const Component = () => {
           <Row
             key={goal_report_value_id}
             label={label}
-            to={`/projects/${project_id}/subprojects/${subproject_id}/goals/${goal_id}/reports/${goal_report_id}/values/${goal_report_value_id}`}
+            to={goal_report_value_id}
           />
         ))}
       </div>
