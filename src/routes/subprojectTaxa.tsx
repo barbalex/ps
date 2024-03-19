@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../ElectricProvider'
 import { createSubprojectTaxon } from '../modules/createRows'
@@ -9,8 +9,9 @@ import { Row } from '../components/shared/Row'
 import '../form.css'
 
 export const Component = () => {
-  const { subproject_id, project_id } = useParams()
+  const { subproject_id } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
   const { results: subprojectTaxa = [] } = useLiveQuery(
@@ -28,10 +29,11 @@ export const Component = () => {
         subproject_id,
       },
     })
-    navigate(
-      `/projects/${project_id}/subprojects/${subproject_id}/taxa/${subprojectTaxon.subproject_taxon_id}`,
-    )
-  }, [db.subproject_taxa, navigate, project_id, subproject_id])
+    navigate({
+      pathname: subprojectTaxon.subproject_taxon_id,
+      search: searchParams.toString(),
+    })
+  }, [db.subproject_taxa, navigate, searchParams, subproject_id])
 
   return (
     <div className="list-view">
@@ -44,7 +46,7 @@ export const Component = () => {
         {subprojectTaxa.map(({ subproject_taxon_id, label }) => (
           <Row
             key={subproject_taxon_id}
-            to={`/projects/${project_id}/subprojects/${subproject_id}/taxa/${subproject_taxon_id}`}
+            to={subproject_taxon_id}
             label={label}
           />
         ))}

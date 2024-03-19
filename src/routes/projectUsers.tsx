@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../ElectricProvider'
 import { createProjectUser } from '../modules/createRows'
@@ -11,6 +11,7 @@ import '../form.css'
 export const Component = () => {
   const { project_id } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
   const { results: projectUsers = [] } = useLiveQuery(
@@ -28,8 +29,11 @@ export const Component = () => {
         project_id,
       },
     })
-    navigate(`/projects/${project_id}/users/${projectUser.project_user_id}`)
-  }, [db.project_users, navigate, project_id])
+    navigate({
+      pathname: projectUser.project_user_id,
+      search: searchParams.toString(),
+    })
+  }, [db.project_users, navigate, project_id, searchParams])
 
   return (
     <div className="list-view">
@@ -40,11 +44,7 @@ export const Component = () => {
       />
       <div className="list-container">
         {projectUsers.map(({ project_user_id, label }) => (
-          <Row
-            key={project_user_id}
-            to={`/projects/${project_id}/users/${project_user_id}`}
-            label={label}
-          />
+          <Row key={project_user_id} to={project_user_id} label={label} />
         ))}
       </div>
     </div>
