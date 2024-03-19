@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { createSubprojectTaxon } from '../../modules/createRows'
 import { useElectric } from '../../ElectricProvider'
@@ -8,6 +8,7 @@ import { FormHeader } from '../../components/FormHeader'
 export const Header = memo(({ autoFocusRef }) => {
   const { subproject_id, subproject_taxon_id } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
 
@@ -16,14 +17,17 @@ export const Header = memo(({ autoFocusRef }) => {
     await db.subproject_taxa.create({
       data: { ...subprojectTaxon, subproject_id },
     })
-    navigate(`../${subprojectTaxon.subproject_taxon_id}`)
+    navigate({
+      pathname: `../${subprojectTaxon.subproject_taxon_id}`,
+      search: searchParams.toString(),
+    })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db.subproject_taxa, navigate, subproject_id])
+  }, [autoFocusRef, db.subproject_taxa, navigate, subproject_id, searchParams])
 
   const deleteRow = useCallback(async () => {
     await db.subproject_taxa.delete({ where: { subproject_taxon_id } })
-    navigate('..')
-  }, [db.subproject_taxa, navigate, subproject_taxon_id])
+    navigate({ pathname: '..', search: searchParams.toString() })
+  }, [db.subproject_taxa, navigate, subproject_taxon_id, searchParams])
 
   const toNext = useCallback(async () => {
     const subprojectTaxa = await db.subproject_taxa.findMany({
@@ -35,8 +39,17 @@ export const Header = memo(({ autoFocusRef }) => {
       (p) => p.subproject_taxon_id === subproject_taxon_id,
     )
     const next = subprojectTaxa[(index + 1) % len]
-    navigate(`../${next.subproject_taxon_id}`)
-  }, [db.subproject_taxa, navigate, subproject_id, subproject_taxon_id])
+    navigate({
+      pathname: `../${next.subproject_taxon_id}`,
+      search: searchParams.toString(),
+    })
+  }, [
+    db.subproject_taxa,
+    navigate,
+    subproject_id,
+    subproject_taxon_id,
+    searchParams,
+  ])
 
   const toPrevious = useCallback(async () => {
     const subprojectTaxa = await db.subproject_taxa.findMany({
@@ -48,8 +61,17 @@ export const Header = memo(({ autoFocusRef }) => {
       (p) => p.subproject_taxon_id === subproject_taxon_id,
     )
     const previous = subprojectTaxa[(index + len - 1) % len]
-    navigate(`../${previous.subproject_taxon_id}`)
-  }, [db.subproject_taxa, navigate, subproject_id, subproject_taxon_id])
+    navigate({
+      pathname: `../${previous.subproject_taxon_id}`,
+      search: searchParams.toString(),
+    })
+  }, [
+    db.subproject_taxa,
+    navigate,
+    searchParams,
+    subproject_id,
+    subproject_taxon_id,
+  ])
 
   return (
     <FormHeader

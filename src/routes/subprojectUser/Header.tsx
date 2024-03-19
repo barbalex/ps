@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
 import { createSubprojectUser } from '../../modules/createRows'
@@ -8,6 +8,7 @@ import { FormHeader } from '../../components/FormHeader'
 export const Header = memo(({ autoFocusRef }) => {
   const { subproject_id, subproject_user_id } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
 
@@ -16,14 +17,17 @@ export const Header = memo(({ autoFocusRef }) => {
     await db.subproject_users.create({
       data: { ...subprojectUser, subproject_id },
     })
-    navigate(`../${subprojectUser.subproject_user_id}`)
+    navigate({
+      pathname: `../${subprojectUser.subproject_user_id}`,
+      search: searchParams.toString(),
+    })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db.subproject_users, navigate, subproject_id])
+  }, [autoFocusRef, db.subproject_users, navigate, subproject_id, searchParams])
 
   const deleteRow = useCallback(async () => {
     await db.subproject_users.delete({ where: { subproject_user_id } })
-    navigate('..')
-  }, [db.subproject_users, navigate, subproject_user_id])
+    navigate({ pathname: '..', search: searchParams.toString() })
+  }, [db.subproject_users, navigate, subproject_user_id, searchParams])
 
   const toNext = useCallback(async () => {
     const subprojectUsers = await db.subproject_users.findMany({
@@ -35,8 +39,17 @@ export const Header = memo(({ autoFocusRef }) => {
       (p) => p.subproject_user_id === subproject_user_id,
     )
     const next = subprojectUsers[(index + 1) % len]
-    navigate(`../${next.subproject_user_id}`)
-  }, [db.subproject_users, navigate, subproject_id, subproject_user_id])
+    navigate({
+      pathname: `../${next.subproject_user_id}`,
+      search: searchParams.toString(),
+    })
+  }, [
+    db.subproject_users,
+    navigate,
+    subproject_id,
+    subproject_user_id,
+    searchParams,
+  ])
 
   const toPrevious = useCallback(async () => {
     const subprojectUsers = await db.subproject_users.findMany({
@@ -48,8 +61,17 @@ export const Header = memo(({ autoFocusRef }) => {
       (p) => p.subproject_user_id === subproject_user_id,
     )
     const previous = subprojectUsers[(index + len - 1) % len]
-    navigate(`../${previous.subproject_user_id}`)
-  }, [db.subproject_users, navigate, subproject_id, subproject_user_id])
+    navigate({
+      pathname: `../${previous.subproject_user_id}`,
+      search: searchParams.toString(),
+    })
+  }, [
+    db.subproject_users,
+    navigate,
+    subproject_id,
+    subproject_user_id,
+    searchParams,
+  ])
 
   return (
     <FormHeader
