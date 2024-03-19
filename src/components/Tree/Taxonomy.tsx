@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { Node } from './Node'
 import { Taxonomies as Taxonomy } from '../../../generated/client'
@@ -15,6 +15,7 @@ export const TaxonomyNode = memo(
   ({ project_id, taxonomy, level = 4 }: Props) => {
     const location = useLocation()
     const navigate = useNavigate()
+    const [searchParams] = useSearchParams()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isOpen =
@@ -27,9 +28,14 @@ export const TaxonomyNode = memo(
     const baseUrl = `/projects/${project_id}/taxonomies`
 
     const onClickButton = useCallback(() => {
-      if (isOpen) return navigate(baseUrl)
-      navigate(`${baseUrl}/${taxonomy.taxonomy_id}`)
-    }, [baseUrl, isOpen, navigate, taxonomy.taxonomy_id])
+      if (isOpen) {
+        return navigate({ pathname: baseUrl, search: searchParams.toString() })
+      }
+      navigate({
+        pathname: `${baseUrl}/${taxonomy.taxonomy_id}`,
+        search: searchParams.toString(),
+      })
+    }, [baseUrl, isOpen, navigate, searchParams, taxonomy.taxonomy_id])
 
     return (
       <>

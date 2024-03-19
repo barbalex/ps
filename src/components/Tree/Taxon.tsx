@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { Node } from './Node'
 import { Taxa as Taxon } from '../../../generated/client'
@@ -15,6 +15,7 @@ export const TaxonNode = memo(
   ({ project_id, taxonomy_id, taxon, level = 6 }: Props) => {
     const location = useLocation()
     const navigate = useNavigate()
+    const [searchParams] = useSearchParams()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isOpen =
@@ -29,9 +30,14 @@ export const TaxonNode = memo(
     const baseUrl = `/projects/${project_id}/taxonomies/${taxonomy_id}/taxa`
 
     const onClickButton = useCallback(() => {
-      if (isOpen) return navigate(baseUrl)
-      navigate(`${baseUrl}/${taxon.taxon_id}`)
-    }, [isOpen, navigate, baseUrl, taxon.taxon_id])
+      if (isOpen) {
+        return navigate({ pathname: baseUrl, search: searchParams.toString() })
+      }
+      navigate({
+        pathname: `${baseUrl}/${taxon.taxon_id}`,
+        search: searchParams.toString(),
+      })
+    }, [isOpen, navigate, baseUrl, taxon.taxon_id, searchParams])
 
     // TODO: childrenCount
     return (
