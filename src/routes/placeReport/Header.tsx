@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { createPlaceReport } from '../../modules/createRows'
 import { useElectric } from '../../ElectricProvider'
@@ -8,6 +8,7 @@ import { FormHeader } from '../../components/FormHeader'
 export const Header = memo(({ autoFocusRef }) => {
   const { project_id, place_id, place_id2, place_report_id } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
 
@@ -18,14 +19,25 @@ export const Header = memo(({ autoFocusRef }) => {
       place_id: place_id2 ?? place_id,
     })
     await db.place_reports.create({ data })
-    navigate(`../${data.place_report_id}`)
+    navigate({
+      pathname: `../${data.place_report_id}`,
+      search: searchParams.toString(),
+    })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db, navigate, place_id, place_id2, project_id])
+  }, [
+    autoFocusRef,
+    db,
+    navigate,
+    place_id,
+    place_id2,
+    project_id,
+    searchParams,
+  ])
 
   const deleteRow = useCallback(async () => {
     await db.place_reports.delete({ where: { place_report_id } })
-    navigate('..')
-  }, [db.place_reports, navigate, place_report_id])
+    navigate({ pathname: '..', search: searchParams.toString() })
+  }, [db.place_reports, navigate, place_report_id, searchParams])
 
   const toNext = useCallback(async () => {
     const placeReports = await db.place_reports.findMany({
@@ -37,8 +49,18 @@ export const Header = memo(({ autoFocusRef }) => {
       (p) => p.place_report_id === place_report_id,
     )
     const next = placeReports[(index + 1) % len]
-    navigate(`../${next.place_report_id}`)
-  }, [db.place_reports, navigate, place_id, place_id2, place_report_id])
+    navigate({
+      pathname: `../${next.place_report_id}`,
+      search: searchParams.toString(),
+    })
+  }, [
+    db.place_reports,
+    navigate,
+    place_id,
+    place_id2,
+    place_report_id,
+    searchParams,
+  ])
 
   const toPrevious = useCallback(async () => {
     const placeReports = await db.place_reports.findMany({
@@ -50,8 +72,18 @@ export const Header = memo(({ autoFocusRef }) => {
       (p) => p.place_report_id === place_report_id,
     )
     const previous = placeReports[(index + len - 1) % len]
-    navigate(`../${previous.place_report_id}`)
-  }, [db.place_reports, navigate, place_id, place_id2, place_report_id])
+    navigate({
+      pathname: `../${previous.place_report_id}`,
+      search: searchParams.toString(),
+    })
+  }, [
+    db.place_reports,
+    navigate,
+    place_id,
+    place_id2,
+    place_report_id,
+    searchParams,
+  ])
 
   return (
     <FormHeader

@@ -1,6 +1,6 @@
 import { useCallback, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { TbZoomScan } from 'react-icons/tb'
 import { Button } from '@fluentui/react-button'
 import bbox from '@turf/bbox'
@@ -22,6 +22,7 @@ interface Props {
 }
 export const Header = memo(({ autoFocusRef }: Props) => {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { project_id, subproject_id, place_id, place_id2 } = useParams()
 
   const { db } = useElectric()!
@@ -58,7 +59,10 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     })
     db.vector_layer_displays.create({ data: newVLD })
 
-    navigate(`../${data.place_id}`)
+    navigate({
+      pathname: `../${data.place_id}`,
+      search: searchParams.toString(),
+    })
     autoFocusRef.current?.focus()
   }, [
     autoFocusRef,
@@ -68,13 +72,14 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     place_id,
     place_id2,
     project_id,
+    searchParams,
     subproject_id,
   ])
 
   const deleteRow = useCallback(async () => {
     await db.places.delete({ where: { place_id } })
-    navigate('..')
-  }, [db.places, navigate, place_id])
+    navigate({ pathname: '..', search: searchParams.toString() })
+  }, [db.places, navigate, place_id, searchParams])
 
   const toNext = useCallback(async () => {
     const places = await db.places.findMany({
@@ -88,8 +93,11 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     const len = places.length
     const index = places.findIndex((p) => p.place_id === place_id)
     const next = places[(index + 1) % len]
-    navigate(`../${next.place_id}`)
-  }, [db.places, navigate, place_id, place_id2, subproject_id])
+    navigate({
+      pathname: `../${next.place_id}`,
+      search: searchParams.toString(),
+    })
+  }, [db.places, navigate, place_id, place_id2, searchParams, subproject_id])
 
   const toPrevious = useCallback(async () => {
     const places = await db.places.findMany({
@@ -103,8 +111,11 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     const len = places.length
     const index = places.findIndex((p) => p.place_id === place_id)
     const previous = places[(index + len - 1) % len]
-    navigate(`../${previous.place_id}`)
-  }, [db.places, navigate, place_id, place_id2, subproject_id])
+    navigate({
+      pathname: `../${previous.place_id}`,
+      search: searchParams.toString(),
+    })
+  }, [db.places, navigate, place_id, place_id2, searchParams, subproject_id])
 
   const alertNoGeometry = useCallback(async () => {
     await db.notifications.create({
