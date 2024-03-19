@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { Node } from './Node'
 import { SubprojectUsers as SubprojectUser } from '../../../generated/client'
@@ -15,6 +15,7 @@ export const SubprojectUserNode = memo(
   ({ project_id, subproject_id, subprojectUser, level = 6 }: Props) => {
     const location = useLocation()
     const navigate = useNavigate()
+    const [searchParams] = useSearchParams()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isOpen =
@@ -29,9 +30,20 @@ export const SubprojectUserNode = memo(
     const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/users`
 
     const onClickButton = useCallback(() => {
-      if (isOpen) return navigate(baseUrl)
-      navigate(`${baseUrl}/${subprojectUser.subproject_user_id}`)
-    }, [isOpen, navigate, baseUrl, subprojectUser.subproject_user_id])
+      if (isOpen) {
+        return navigate({ pathname: baseUrl, search: searchParams.toString() })
+      }
+      navigate({
+        pathname: `${baseUrl}/${subprojectUser.subproject_user_id}`,
+        search: searchParams.toString(),
+      })
+    }, [
+      isOpen,
+      navigate,
+      baseUrl,
+      subprojectUser.subproject_user_id,
+      searchParams,
+    ])
 
     return (
       <Node

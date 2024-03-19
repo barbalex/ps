@@ -1,6 +1,6 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider'
 import { Node } from './Node'
@@ -16,6 +16,7 @@ export const TaxaNode = memo(
   ({ project_id, taxonomy_id, level = 5 }: Props) => {
     const location = useLocation()
     const navigate = useNavigate()
+    const [searchParams] = useSearchParams()
 
     const { db } = useElectric()!
     const { results: taxa = [] } = useLiveQuery(
@@ -42,9 +43,11 @@ export const TaxaNode = memo(
     const baseUrl = `/projects/${project_id}/taxonomies/${taxonomy_id}`
 
     const onClickButton = useCallback(() => {
-      if (isOpen) return navigate(baseUrl)
-      navigate(`${baseUrl}/taxa`)
-    }, [isOpen, navigate, baseUrl])
+      if (isOpen) {
+        return navigate({ pathname: baseUrl, search: searchParams.toString() })
+      }
+      navigate({ pathname: `${baseUrl}/taxa`, search: searchParams.toString() })
+    }, [isOpen, navigate, baseUrl, searchParams])
 
     return (
       <>
