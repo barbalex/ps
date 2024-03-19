@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { ObservationSources as Observation } from '../../../generated/client'
 import { useElectric } from '../ElectricProvider'
@@ -12,6 +12,7 @@ import '../form.css'
 export const Component = () => {
   const { project_id, observation_source_id } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
   const { results } = useLiveQuery(
@@ -28,10 +29,8 @@ export const Component = () => {
       observation_source_id,
     })
     await db.observations.create({ data })
-    navigate(
-      `/projects/${project_id}/observation-sources/${observation_source_id}/observations/${data.observation_id}`,
-    )
-  }, [db, navigate, observation_source_id, project_id])
+    navigate({ pathname: data.observation_id, search: searchParams.toString() })
+  }, [db, navigate, observation_source_id, project_id, searchParams])
 
   const observations: Observation[] = results ?? []
 
@@ -44,11 +43,7 @@ export const Component = () => {
       />
       <div className="list-container">
         {observations.map(({ observation_id, label }) => (
-          <Row
-            key={observation_id}
-            to={`/projects/${project_id}/observation-sources/${observation_source_id}/observations/${observation_id}`}
-            label={label}
-          />
+          <Row key={observation_id} to={observation_id} label={label} />
         ))}
       </div>
     </div>
