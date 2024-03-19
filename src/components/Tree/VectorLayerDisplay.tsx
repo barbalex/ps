@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { Node } from './Node'
 import { Vector_layer_displays as VectorLayerDisplay } from '../../../generated/client'
@@ -15,6 +15,7 @@ export const VectorLayerDisplayNode = memo(
   ({ project_id, vector_layer_id, vectorLayerDisplay, level = 6 }: Props) => {
     const location = useLocation()
     const navigate = useNavigate()
+    const [searchParams] = useSearchParams()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isOpen =
@@ -29,9 +30,20 @@ export const VectorLayerDisplayNode = memo(
     const baseUrl = `/projects/${project_id}/vector-layers/${vector_layer_id}/vector-layer-displays`
 
     const onClickButton = useCallback(() => {
-      if (isOpen) return navigate(baseUrl)
-      navigate(`${baseUrl}/${vectorLayerDisplay.vector_layer_display_id}`)
-    }, [baseUrl, isOpen, navigate, vectorLayerDisplay.vector_layer_display_id])
+      if (isOpen) {
+        return navigate({ pathname: baseUrl, search: searchParams.toString() })
+      }
+      navigate({
+        pathname: `${baseUrl}/${vectorLayerDisplay.vector_layer_display_id}`,
+        search: searchParams.toString(),
+      })
+    }, [
+      baseUrl,
+      isOpen,
+      navigate,
+      searchParams,
+      vectorLayerDisplay.vector_layer_display_id,
+    ])
 
     return (
       <Node
