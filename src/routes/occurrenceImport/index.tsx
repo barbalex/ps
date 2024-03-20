@@ -4,12 +4,9 @@ import { useParams, useSearchParams } from 'react-router-dom'
 import { Tab, TabList, InputProps } from '@fluentui/react-components'
 
 import { useElectric } from '../../ElectricProvider'
-import { TextField } from '../../components/shared/TextField'
-import { TextArea } from '../../components/shared/TextArea'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { Header } from './Header'
-import { UploadButton } from '../../components/shared/UploadButton'
-import { processData } from './processData'
+import { One } from './1'
 import { Five } from './5'
 
 import '../../form.css'
@@ -68,10 +65,6 @@ export const Component = () => {
     [tab],
   )
 
-  if (!row) {
-    return <div>Loading...</div>
-  }
-
   // TODO:
   // show stepper-like tabs on new import:
   // 1. basics/data: name, attribution, file
@@ -115,28 +108,8 @@ export const Component = () => {
         </Tab>
       </TabList>
       <div className="form-container">
-        {tab === 1 && (
-          <>
-            <TextField
-              label="Name"
-              name="name"
-              type="name"
-              value={row.name ?? ''}
-              onChange={onChange}
-              autoFocus
-              ref={autoFocusRef}
-            />
-            <TextArea
-              label="Attribution"
-              name="attribution"
-              value={row.attribution ?? ''}
-              onChange={onChange}
-            />
-            {/* TODO: only show when not yet uploaded? */}
-            <UploadButton processData={processData} />
-          </>
-        )}
-        {tab === 5 && <Five row={row} />}
+        {tab === 1 && <One row={row} onChange={onChange} autoFocusRef={autoFocusRef} />}
+        {tab === 5 && <Five row={row} onChange={onChange} />}
       </div>
     </div>
   )

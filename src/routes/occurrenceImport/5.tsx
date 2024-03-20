@@ -1,17 +1,13 @@
-import { useCallback, memo, useMemo } from 'react'
+import { memo, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
-import { InputProps } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 
 import { useElectric } from '../../ElectricProvider'
 import { RadioGroupField } from '../../components/shared/RadioGroupField'
 import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions'
 import { DropdownFieldOptions } from '../../components/shared/DropdownFieldOptions'
-import { getValueFromChange } from '../../modules/getValueFromChange'
 
-import '../../form.css'
-
-export const Five = memo(({ row }) => {
+export const Five = memo(({ row, onChange }) => {
   const { occurrence_import_id, subproject_id } = useParams()
 
   const { db } = useElectric()!
@@ -32,17 +28,6 @@ export const Five = memo(({ row }) => {
         value: o.occurrence_id,
       })),
     [occurrences],
-  )
-
-  const onChange: InputProps['onChange'] = useCallback(
-    (e, data) => {
-      const { name, value } = getValueFromChange(e, data)
-      db.occurrence_imports.update({
-        where: { occurrence_import_id },
-        data: { [name]: value },
-      })
-    },
-    [db.occurrence_imports, occurrence_import_id],
   )
 
   if (!row) {
