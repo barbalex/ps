@@ -10,6 +10,24 @@ import { Combobox } from '../../components/shared/Combobox'
 import { useElectric } from '../../ElectricProvider'
 import { createList, createListValue } from '../../modules/createRows'
 
+// https://www.30secondsofcode.org/js/s/split-array-into-chunks/
+const chunkWithMinSize = (arr, chunkSize, minChunkSize = 0) => {
+  const remainder = arr.length % chunkSize
+  const isLastChunkTooSmall = remainder < minChunkSize
+  const totalChunks = isLastChunkTooSmall
+    ? Math.floor(arr.length / chunkSize)
+    : Math.ceil(arr.length / chunkSize)
+  return Array.from({ length: totalChunks }, (_, i) => {
+    const chunk = arr.slice(i * chunkSize, i * chunkSize + chunkSize)
+    if (i === totalChunks - 1 && isLastChunkTooSmall)
+      chunk.push(...arr.slice(-remainder))
+    return chunk
+  })
+}
+// const x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+// chunkWithMinSize(x, 5, 3); // [[1, 2, 3, 4, 5], [6, 7, 8, 9, 10, 11]]
+// chunkWithMinSize(x, 4, 2); // [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11]]
+
 export const Two = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
   const { project_id } = useParams()
 
@@ -38,7 +56,6 @@ export const Two = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
     axios
       .get('https://spatialreference.org/crslist.json')
       .then(async (response) => {
-        console.log('response', response.data)
         const uniqueCrsOptions = [
           ...new Set(
             response.data
@@ -51,21 +68,33 @@ export const Two = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
               .map((d) => `${d.auth_name}:${d.code}`),
           ),
         ]
+        console.log('occurenceImport 2, uniqueCrsOptions', uniqueCrsOptions)
         // create a list named 'Coordinate Reference Systems' if it doesn't exist
-        const data = await createList({
+        const listData = await createList({
           db,
           project_id,
           name: 'Coordinate Reference Systems',
         })
-        await db.lists.create({ data })
-        await db.list_values.createMany({
-          data: uniqueCrsOptions.map((value) =>
-            createListValue({
-              list_id: data.list_id,
-              value,
-            }),
-          ),
-        })
+        await db.lists.create({ data: listData })
+        const listValuesData = uniqueCrsOptions.map((value) =>
+          createListValue({
+            list_id: listData.list_id,
+            value,
+          }),
+        )
+        console.log('occurenceImport 2, listValuesData', listValuesData)
+        // this takes forever:
+        // for (const listValueData of listValuesData) {
+        //   await db.list_values.create({ data: listValueData })
+        // }
+        const chunked = chunkWithMinSize(listValuesData, 500)
+        for (const chunk of chunked) {
+          await db.list_values.createMany({ data: chunk })
+        }
+        // results in error: too many SQL variables
+        // await db.list_values.createMany({
+        //   data: listValuesData,
+        // })
       })
       .catch((error) => {
         console.error('error', error)
@@ -73,7 +102,7 @@ export const Two = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
       .finally(() => {
         setLoadingCrs(false)
       })
-  }, [])
+  }, [db, project_id])
 
   if (!occurrenceImport) {
     return <div>Loading...</div>
