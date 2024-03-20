@@ -7,6 +7,7 @@ import { useElectric } from '../../ElectricProvider'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { Header } from './Header'
 import { One } from './1'
+import { Two } from './2'
 import { Five } from './5'
 
 import '../../form.css'
@@ -30,9 +31,22 @@ export const Component = () => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const { db } = useElectric()!
-  const { results: row } = useLiveQuery(
-    db.occurrence_imports.liveUnique({ where: { occurrence_import_id } }),
+  const { results: occurrenceImport } = useLiveQuery(
+    db.occurrence_imports.liveUnique({
+      where: { occurrence_import_id },
+      include: { occurrences: true },
+    }),
   )
+  const { results: occurrences = [] } = useLiveQuery(
+    db.occurrences.liveMany({
+      where: {
+        occurrence_import_id,
+        deleted: false,
+      },
+      orderBy: { label: 'asc' },
+    }),
+  )
+  const occurrenceFields = Object.keys(occurrences[0] ?? {})
 
   const onChange: InputProps['onChange'] = useCallback(
     (e, data) => {
@@ -64,6 +78,12 @@ export const Component = () => {
     }),
     [tab],
   )
+
+  console.log('OccurrenceImport Route:', {
+    occurrenceImport,
+    occurrenceFields,
+    occurrences,
+  })
 
   // TODO:
   // show stepper-like tabs on new import:
@@ -102,14 +122,33 @@ export const Component = () => {
           id="6"
           value={6}
           icon={<div style={tabStyle(6)}>6</div>}
-          disabled={!row.id_field}
+          disabled={!occurrenceImport?.id_field}
         >
           Import
         </Tab>
       </TabList>
       <div className="form-container">
-        {tab === 1 && <One row={row} onChange={onChange} autoFocusRef={autoFocusRef} />}
-        {tab === 5 && <Five row={row} onChange={onChange} />}
+        {tab === 1 && (
+          <One
+            occurrenceImport={occurrenceImport}
+            onChange={onChange}
+            autoFocusRef={autoFocusRef}
+          />
+        )}
+        {tab === 2 && (
+          <Two
+            occurrenceImport={occurrenceImport}
+            occurrenceFields={occurrenceFields}
+            onChange={onChange}
+          />
+        )}
+        {tab === 5 && (
+          <Five
+            occurrenceImport={occurrenceImport}
+            occurrenceFields={occurrenceFields}
+            onChange={onChange}
+          />
+        )}
       </div>
     </div>
   )

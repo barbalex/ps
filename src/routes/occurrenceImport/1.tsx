@@ -5,8 +5,8 @@ import { TextArea } from '../../components/shared/TextArea'
 import { UploadButton } from '../../components/shared/UploadButton'
 import { processData } from './processData'
 
-export const One = memo(({ row, onChange, autoFocusRef }) => {
-  if (!row) {
+export const One = memo(({ occurrenceImport, onChange, autoFocusRef }) => {
+  if (!occurrenceImport) {
     return <div>Loading...</div>
   }
 
@@ -16,7 +16,7 @@ export const One = memo(({ row, onChange, autoFocusRef }) => {
         label="Name"
         name="name"
         type="name"
-        value={row.name ?? ''}
+        value={occurrenceImport.name ?? ''}
         onChange={onChange}
         autoFocus
         ref={autoFocusRef}
@@ -24,7 +24,7 @@ export const One = memo(({ row, onChange, autoFocusRef }) => {
       <TextArea
         label="Attribution"
         name="attribution"
-        value={row.attribution ?? ''}
+        value={occurrenceImport.attribution ?? ''}
         onChange={onChange}
       />
       {/* TODO: only show when not yet uploaded? */}
