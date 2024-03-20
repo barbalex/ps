@@ -17,22 +17,22 @@ export const Two = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
         list={['coordinates', 'geojson']}
         value={occurrenceImport.geometry_method ?? ''}
         onChange={onChange}
-        validationMessage="Only GeoJSON and Coordinate Fields are supported"
+        validationMessage="GeoJSON and Coordinate Fields are supported"
       />
-      <DropdownFieldSimpleOptions
-        label="ID Field"
-        name="id_field"
-        value={occurrenceImport.id_field ?? ''}
-        onChange={onChange}
-        options={occurrenceFields}
-        validationMessage={
-          <>
-            <div>The field that identifies the occurrence</div>
-            <div>Needed when same occurrences are imported more than once</div>
-            <div>Enables choosing how to deal with a previous import</div>
-          </>
-        }
-      />
+      {occurrenceImport.geometry_method === 'geojson' && (
+        <DropdownFieldSimpleOptions
+          label="GeoJSON Field"
+          name="geojson_geometry_field"
+          value={occurrenceImport.geojson_geometry_field ?? ''}
+          onChange={onChange}
+          options={occurrenceFields}
+          validationMessage={
+            <>
+              <div>Which field contains the GeoJSON geometries?</div>
+            </>
+          }
+        />
+      )}
     </>
   )
 })
