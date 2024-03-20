@@ -586,6 +586,8 @@ export const createOccurrenceImport = ({ subproject_id }) => ({
   occurrence_import_id: uuidv7(),
   account_id: '018cf958-27e2-7000-90d3-59f024d467be', // TODO: replace with auth data when implemented
   subproject_id,
+  geometry_method: 'coordinates',
+  crs: 'EPSG:4326',
   created_time: Date.now(),
   download_from_gbif: false,
   deleted: false,

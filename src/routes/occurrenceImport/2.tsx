@@ -1,13 +1,29 @@
-import { memo } from 'react'
+import { memo, useCallback, useState } from 'react'
+import { Button } from '@fluentui/react-components'
 
 import { RadioGroupField } from '../../components/shared/RadioGroupField'
 import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions'
 import { DropdownFieldOptions } from '../../components/shared/DropdownFieldOptions'
 
 export const Two = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
+  const [crsOptions, setCrsOptions] = useState([])
+  const onClickLoadCrs = useCallback(() => {
+    // TODO:
+    // 1. fetch crs list from https://spatialreference.org/crslist.json
+    // 2. show a dropdown with the crs list
+    //    - value: auth_name:code
+    //    filter:
+    //    - type: GEOGRAPHIC_2D_CRS
+    //    - deprecated: false
+  }, [])
+
   if (!occurrenceImport) {
     return <div>Loading...</div>
   }
+
+  // TODO:
+  // - if geojson_geometry_field and crs choosen while geometry fields are empty,
+  //   copy that fields values to geometry field in all occurrences while transforming the crs to wgs84 using proj4
 
   return (
     <>
@@ -26,13 +42,59 @@ export const Two = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
           value={occurrenceImport.geojson_geometry_field ?? ''}
           onChange={onChange}
           options={occurrenceFields}
-          validationMessage={
-            <>
-              <div>Which field contains the GeoJSON geometries?</div>
-            </>
-          }
+          validationMessage="Which field contains the GeoJSON geometries?"
         />
       )}
+      {occurrenceImport.geometry_method === 'coordinates' && (
+        <>
+          <DropdownFieldSimpleOptions
+            label="X-Coordinate Field"
+            name="x_coordinate_field"
+            value={occurrenceImport.x_coordinate_field ?? ''}
+            onChange={onChange}
+            options={occurrenceFields}
+            validationMessage="Which field contains the X-Coordinates?"
+          />
+          <DropdownFieldSimpleOptions
+            label="Y-Coordinate Field"
+            name="y_coordinate_field"
+            value={occurrenceImport.y_coordinate_field ?? ''}
+            onChange={onChange}
+            options={occurrenceFields}
+            validationMessage="Which field contains the Y-Coordinates?"
+          />
+        </>
+      )}
+      <p>
+        The coordinate reference system used by promoting species is EPSG:4326.
+        <br />
+        Though common, thousands of others exist.
+        <br />
+        If the occurrences geometries are in EPSG:4326, no action is needed. If
+        not, they must be converted to WGS 84.
+      </p>
+      <Button onClick={onClickLoadCrs}>
+        Click here if the occurrence geometries use a coordinate reference
+        system other than EPSG:4326 (WGS 84)
+      </Button>
+      <DropdownFieldSimpleOptions
+        label="Coordinate Reference System EPSG Code"
+        name="crs"
+        value={occurrenceImport.crs ?? ''}
+        onChange={onChange}
+        options={occurrenceFields}
+        validationMessage={
+          <>
+            <div>
+              See{' '}
+              <a href="https://epsg.org/home.html" target="_blank">
+                https://epsg.org
+              </a>{' '}
+              for a list of EPSG codes and their descriptions
+            </div>
+          </>
+        }
+      />
     </>
   )
 })

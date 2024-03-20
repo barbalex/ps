@@ -1413,7 +1413,7 @@ CREATE TABLE occurrence_imports(
   geojson_geometry_field text DEFAULT NULL,
   x_coordinate_field text DEFAULT NULL,
   y_coordinate_field text DEFAULT NULL,
-  crs text DEFAULT NULL,
+  crs text DEFAULT NULL, -- 4326
   label_creation jsonb DEFAULT NULL, -- Array of objects with keys: type (field, separator), value (fieldname, separating text)
   name text DEFAULT NULL,
   attribution text DEFAULT NULL,
