@@ -87,11 +87,11 @@ export const Two = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
         // for (const listValueData of listValuesData) {
         //   await db.list_values.create({ data: listValueData })
         // }
-        const chunked = chunkWithMinSize(listValuesData, 500)
+        const chunked = chunkWithMinSize(listValuesData, 1000)
         for (const chunk of chunked) {
           await db.list_values.createMany({ data: chunk })
         }
-        // results in error: too many SQL variables
+        // results in error: too many SQL variables (11577 values)
         // await db.list_values.createMany({
         //   data: listValuesData,
         // })
