@@ -5,9 +5,10 @@ import axios from 'redaxios'
 import { RadioGroupField } from '../../components/shared/RadioGroupField'
 import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions'
 import { DropdownFieldOptions } from '../../components/shared/DropdownFieldOptions'
+import { Combobox } from '../../components/shared/Combobox'
 
 export const Two = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
-  const [crsOptions, setCrsOptions] = useState([])
+  const [crsOptions, setCrsOptions] = useState(['EPSG:4326'])
   const [loadingCrs, setLoadingCrs] = useState(false)
 
   const onClickLoadCrs = useCallback(() => {
@@ -18,16 +19,19 @@ export const Two = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
       .get('https://spatialreference.org/crslist.json')
       .then((response) => {
         console.log('response', response.data)
-        setCrsOptions(
-          // not sure if all types can be used
-          response.data
-            .filter(
-              (d) =>
-                // ['GEOGRAPHIC_2D_CRS', 'PROJECTED_CRS', 'COMPOUND_CRS'].includes(d.type) &&
-                d.deprecated === false,
-            )
-            .map((d) => () => `${d.auth_name}:${d.code}`),
-        )
+        const uniqueCrsOptions = [
+          ...new Set(
+            response.data
+              .filter(
+                (d) =>
+                  // not sure if all types can be used
+                  // ['GEOGRAPHIC_2D_CRS', 'PROJECTED_CRS', 'COMPOUND_CRS'].includes(d.type) &&
+                  d.deprecated === false,
+              )
+              .map((d) => `${d.auth_name}:${d.code}`),
+          ),
+        ]
+        setCrsOptions(uniqueCrsOptions)
       })
       .catch((error) => {
         console.error('error', error)
@@ -86,19 +90,22 @@ export const Two = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
         </>
       )}
       <p>
-        The coordinate reference system used by promoting species is EPSG:4326.
+        The coordinate reference system used by promoting species is EPSG:4326,
+        also known as WGS 84.
         <br />
-        Though common, thousands of others exist.
+        EPSG:4326 is always used in GeoJSON.
+        <br />
+        Though common, thousands of other coordinate reference systems exist.
         <br />
         If the occurrences geometries are in EPSG:4326, no action is needed. If
-        not, they must be converted to WGS 84.
+        not, they must be converted.
       </p>
       <Button onClick={onClickLoadCrs}>
         Click here if the occurrence geometries use a coordinate reference
         system other than EPSG:4326 (WGS 84)
       </Button>
       <DropdownFieldSimpleOptions
-        label="Coordinate Reference System EPSG Code"
+        label="Coordinate Reference System Code"
         name="crs"
         value={occurrenceImport.crs ?? ''}
         onChange={onChange}
@@ -114,6 +121,13 @@ export const Two = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
             </div>
           </>
         }
+      />
+      <Combobox
+        label="Coordinate Reference System"
+        name="crs"
+        value={occurrenceImport.crs ?? ''}
+        options={crsOptions}
+        onChange={onChange}
       />
     </>
   )
