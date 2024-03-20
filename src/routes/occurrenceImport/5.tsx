@@ -1,5 +1,5 @@
 import { useCallback, memo, useMemo } from 'react'
-import { useParams,  } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { InputProps } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 
@@ -48,20 +48,6 @@ export const Five = memo(({ row }) => {
   if (!row) {
     return <div>Loading...</div>
   }
-
-  // TODO:
-  // show stepper-like tabs on new import:
-  // 1. data: name, attribution, file
-  // 2. geometry: mode (coordinates or geometry), field(s) and projection
-  // 3. date: choose how to extract date from fields
-  // 4. label: choose how to create label from fields
-  // 5. identification: choose id field, previous import and how to extend it
-  // 6. execute import (only visible before import)
-  // - stepper titles begin with a number in a circle
-  // - completed steps: circle is gren
-  // - uncompleted steps: circle is grey, title is normal
-  // - current step: circle is blue, title is bold
-  // - the next stepper can not be accessed before the previous is completed
 
   return (
     <>
