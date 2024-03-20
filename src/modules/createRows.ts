@@ -210,7 +210,7 @@ export const createUnit = () => ({
   deleted: false,
 })
 
-export const createList = async ({ db, project_id }) => {
+export const createList = async ({ db, project_id, name = null }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     db,
@@ -221,6 +221,7 @@ export const createList = async ({ db, project_id }) => {
   return {
     list_id: uuidv7(),
     project_id,
+    name,
     obsolete: false,
     deleted: false,
     ...presetData,
@@ -307,8 +308,11 @@ export const createTaxon = () => ({
   deleted: false,
 })
 
-export const createListValue = () => ({
+export const createListValue = ({ value = null, list_id = null }) => ({
   list_value_id: uuidv7(),
+  account_id: '018cf958-27e2-7000-90d3-59f024d467be', // TODO: replace with auth data when implemented
+  list_id,
+  value,
   obsolete: false,
   deleted: false,
 })

@@ -1,22 +1,13 @@
+import { memo, forwardRef, useState, useCallback } from 'react'
 import {
-  memo,
-  forwardRef,
-  useState,
-  useCallback,
-  useEffect,
-  useMemo,
-} from 'react'
-import { Combobox as ComboboxComponent, Option, Field } from '@fluentui/react-components'
+  Combobox as ComboboxComponent,
+  Option,
+  Field,
+} from '@fluentui/react-components'
 
 export const Combobox = memo(
   forwardRef(({ name, label, options, value, onChange, autoFocus }, ref) => {
-    const [filter, setFilter] = useState('')
-
-    const selectedOptions = useMemo(() => (value ? [value] : []), [value])
-    useEffect(() => {
-      const filter = selectedOptions[0]?.text ?? ''
-      setFilter(filter)
-    }, [selectedOptions, value])
+    const [filter, setFilter] = useState(value ?? '')
 
     const onInput = useCallback(
       (event) => {
@@ -33,12 +24,14 @@ export const Combobox = memo(
       [name, onChange],
     )
 
+    console.log('Combobox', { name, label, options, value, filter })
+
     return (
       <Field label={label ?? '(no label provided)'}>
         <ComboboxComponent
           name={name}
           value={filter}
-          selectedOptions={[value]}
+          selectedOptions={value ? [value] : []}
           onOptionSelect={onOptionSelect}
           onInput={onInput}
           appearance="underline"
@@ -47,7 +40,7 @@ export const Combobox = memo(
           freeform
         >
           {options.map((value) => (
-            <Option text={value} value={value}></Option>
+            <Option text={value} value={value} />
           ))}
         </ComboboxComponent>
       </Field>

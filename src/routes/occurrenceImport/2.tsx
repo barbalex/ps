@@ -1,23 +1,43 @@
 import { memo, useCallback, useState } from 'react'
 import { Button } from '@fluentui/react-components'
 import axios from 'redaxios'
+import { useLiveQuery } from 'electric-sql/react'
+import { useParams } from 'react-router-dom'
 
 import { RadioGroupField } from '../../components/shared/RadioGroupField'
 import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions'
-import { DropdownFieldOptions } from '../../components/shared/DropdownFieldOptions'
 import { Combobox } from '../../components/shared/Combobox'
+import { useElectric } from '../../ElectricProvider'
+import { createList, createListValue } from '../../modules/createRows'
 
 export const Two = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
-  const [crsOptions, setCrsOptions] = useState(['EPSG:4326'])
+  const { project_id } = useParams()
+
+  const { db } = useElectric()!
+  const { results: crsList } = useLiveQuery(
+    db.lists.liveFirst({
+      where: { name: 'Coordinate Reference Systems', deleted: false },
+    }),
+  )
+  const { results: crsOptions = ['EPSG:4326'] } = useLiveQuery(
+    db.list_values.liveMany({
+      where: {
+        list_id: crsList?.list_id ?? '99999999-9999-9999-9999-999999999999',
+        deleted: false,
+      },
+    }),
+  )
   const [loadingCrs, setLoadingCrs] = useState(false)
 
   const onClickLoadCrs = useCallback(() => {
     // TODO:
     // 1. fetch crs list from https://spatialreference.org/crslist.json
+    // TODO: show loading indicator
+    // TODO: add crs to crs list
     setLoadingCrs(true)
     axios
       .get('https://spatialreference.org/crslist.json')
-      .then((response) => {
+      .then(async (response) => {
         console.log('response', response.data)
         const uniqueCrsOptions = [
           ...new Set(
@@ -31,7 +51,21 @@ export const Two = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
               .map((d) => `${d.auth_name}:${d.code}`),
           ),
         ]
-        setCrsOptions(uniqueCrsOptions)
+        // create a list named 'Coordinate Reference Systems' if it doesn't exist
+        const data = await createList({
+          db,
+          project_id,
+          name: 'Coordinate Reference Systems',
+        })
+        await db.lists.create({ data })
+        await db.list_values.createMany({
+          data: uniqueCrsOptions.map((value) =>
+            createListValue({
+              list_id: data.list_id,
+              value,
+            }),
+          ),
+        })
       })
       .catch((error) => {
         console.error('error', error)
@@ -100,10 +134,12 @@ export const Two = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
         If the occurrences geometries are in EPSG:4326, no action is needed. If
         not, they must be converted.
       </p>
-      <Button onClick={onClickLoadCrs}>
-        Click here if the occurrence geometries use a coordinate reference
-        system other than EPSG:4326 (WGS 84)
-      </Button>
+      {crsOptions.length < 2 && (
+        <Button onClick={onClickLoadCrs}>
+          Click here if the occurrence geometries use a coordinate reference
+          system other than EPSG:4326 (WGS 84)
+        </Button>
+      )}
       <DropdownFieldSimpleOptions
         label="Coordinate Reference System Code"
         name="crs"
