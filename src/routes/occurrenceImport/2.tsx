@@ -37,14 +37,17 @@ export const Two = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
       where: { name: 'Coordinate Reference Systems', deleted: false },
     }),
   )
-  const { results: crsOptions = ['EPSG:4326'] } = useLiveQuery(
+  const { results: crsResults = [] } = useLiveQuery(
     db.list_values.liveMany({
       where: {
         list_id: crsList?.list_id ?? '99999999-9999-9999-9999-999999999999',
         deleted: false,
       },
+      select: { value: true },
     }),
   )
+  const crsOptions = crsResults.map((d) => d.value)
+  console.log('occurenceImport 2, crsOptions', crsOptions)
   const [loadingCrs, setLoadingCrs] = useState(false)
 
   const onClickLoadCrs = useCallback(() => {
