@@ -1,5 +1,6 @@
 import { memo, useCallback, useState } from 'react'
 import { Button } from '@fluentui/react-components'
+import axios from 'redaxios'
 
 import { RadioGroupField } from '../../components/shared/RadioGroupField'
 import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions'
@@ -7,14 +8,33 @@ import { DropdownFieldOptions } from '../../components/shared/DropdownFieldOptio
 
 export const Two = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
   const [crsOptions, setCrsOptions] = useState([])
+  const [loadingCrs, setLoadingCrs] = useState(false)
+
   const onClickLoadCrs = useCallback(() => {
     // TODO:
     // 1. fetch crs list from https://spatialreference.org/crslist.json
-    // 2. show a dropdown with the crs list
-    //    - value: auth_name:code
-    //    filter:
-    //    - type: GEOGRAPHIC_2D_CRS
-    //    - deprecated: false
+    setLoadingCrs(true)
+    axios
+      .get('https://spatialreference.org/crslist.json')
+      .then((response) => {
+        console.log('response', response.data)
+        setCrsOptions(
+          // not sure if all types can be used
+          response.data
+            .filter(
+              (d) =>
+                // ['GEOGRAPHIC_2D_CRS', 'PROJECTED_CRS', 'COMPOUND_CRS'].includes(d.type) &&
+                d.deprecated === false,
+            )
+            .map((d) => () => `${d.auth_name}:${d.code}`),
+        )
+      })
+      .catch((error) => {
+        console.error('error', error)
+      })
+      .finally(() => {
+        setLoadingCrs(false)
+      })
   }, [])
 
   if (!occurrenceImport) {
@@ -82,7 +102,7 @@ export const Two = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
         name="crs"
         value={occurrenceImport.crs ?? ''}
         onChange={onChange}
-        options={occurrenceFields}
+        options={crsOptions}
         validationMessage={
           <>
             <div>
