@@ -1,7 +1,7 @@
 import { memo, useMemo, useCallback } from 'react'
 import { Dropdown, Field, Option } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
-import axios from 'redaxios'
+// import axios from 'redaxios'
 
 import { useElectric } from '../../ElectricProvider'
 import { Layer_options as LayerOption } from '../../generated/client'
