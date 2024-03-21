@@ -2,6 +2,7 @@
 
 import { getCapabilities } from '../../modules/getCapabilities'
 import { Tile_layers as TileLayer, Electric } from '../../generated/client'
+// import { chunkArrayWithMinSize } from '../../modules/chunkArrayWithMinSize'
 
 interface Props {
   row: TileLayer
@@ -98,38 +99,41 @@ export const getCapabilitiesData = async ({
   }))
   console.log('hello, getCapabilitiesData 4, layerOptions:', layerOptions)
   // sadly, creating many this errors
-  // try {
-  //   const createManyRes = await db.layer_options.createMany({
-  //     data: layerOptions,
-  //   })
-  //   console.log('hello, getCapabilitiesData 5, createManyRes:', createManyRes)
-  // } catch (error) {
-  //   console.error('hello, getCapabilitiesData 6, error:', error)
+  // const chunked = chunkArrayWithMinSize(layerOptions, 500)
+  // for (const chunk of chunked) {
+  //   try {
+  //     await db.layer_options.createMany({
+  //       data: chunk,
+  //     })
+  //   } catch (error) {
+  //     // field value must be a string, number, boolean, null or one of the registered custom value types
+  //     console.error('hello, getCapabilitiesData 5, error:', { error, chunk })
+  //   }
   // }
 
   for (const l of layerOptions) {
     // creating works
-    try {
-      await db.layer_options.create({ data: l })
-      // console.log('hello, getCapabilitiesData 4, res from creating:', res)
-    } catch (error) {
-      console.error('hello, getCapabilitiesData 5, error from creating:', error)
-    }
-    // upserting errors too
     // try {
-    //   await db.layer_options.upsert({
-    //     create: l,
-    //     update: l,
-    //     where: {
-    //       layer_option_id: l.layer_option_id,
-    //     },
-    //   })
+    //   await db.layer_options.create({ data: l })
+    //   // console.log('hello, getCapabilitiesData 4, res from creating:', res)
     // } catch (error) {
-    //   console.error(
-    //     'hello, getCapabilitiesData 5, error from upserting:',
-    //     error,
-    //   )
+    //   console.error('hello, getCapabilitiesData 5, error from creating:', error)
     // }
+    // upserting
+    try {
+      await db.layer_options.upsert({
+        create: l,
+        update: l,
+        where: {
+          layer_option_id: l.layer_option_id,
+        },
+      })
+    } catch (error) {
+      console.error(
+        'hello, getCapabilitiesData 5, error from upserting:',
+        error,
+      )
+    }
   }
 
   // TODO: should legends be saved in sqlite? can be 700!!!
