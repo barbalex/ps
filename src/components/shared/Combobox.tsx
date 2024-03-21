@@ -40,7 +40,7 @@ export const Combobox = memo(
           freeform
         >
           {options.map((value) => (
-            <Option text={value} value={value} />
+            <Option key={value} text={value} value={value} />
           ))}
         </ComboboxComponent>
       </Field>
