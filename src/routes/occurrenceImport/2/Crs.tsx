@@ -114,43 +114,48 @@ export const Crs = memo(({ occurrenceImport, onChange: onChangePassed }) => {
   //   copy that fields values to geometry field in all occurrences while transforming the crs to wgs84 using proj4
 
   return (
-    <TextField
-      label="Coordinate Reference System"
-      name="crs"
-      value={occurrenceImport.crs ?? ''}
-      onChange={onChange}
-      onBlur={onBlurCrs}
-      validationMessage={
-        <>
-          <div>
-            See{' '}
-            <a href="https://epsg.org/home.html" target="_blank">
-              https://epsg.org
-            </a>{' '}
-            or{' '}
-            <a href="https://spatialreference.org" target="_blank">
-              https://spatialreference.org
-            </a>{' '}
-            for a list of EPSG codes and their descriptions.
-          </div>
-          <div>
-            A valid example is: 'EPSG:2056',{' '}
-            <a
-              href="https://spatialreference.org/ref/epsg/2056/"
-              target="_blank"
-            >
-              the reference system
-            </a>{' '}
-            used in Switzerland.
-          </div>
-          {notification && <div style={notificationStyle}>{notification}</div>}
-          {transformCount > 0 && (
-            <div
-              style={transformCountStyle}
-            >{`Transforming ${transformCount} occurrences`}</div>
-          )}
-        </>
-      }
-    />
+    <>
+      <TextField
+        label="Coordinate Reference System"
+        name="crs"
+        value={occurrenceImport.crs ?? ''}
+        onChange={onChange}
+        onBlur={onBlurCrs}
+        validationMessage={
+          <>
+            <div>
+              See{' '}
+              <a href="https://epsg.org/home.html" target="_blank">
+                https://epsg.org
+              </a>{' '}
+              or{' '}
+              <a href="https://spatialreference.org" target="_blank">
+                https://spatialreference.org
+              </a>{' '}
+              for a list of EPSG codes and their descriptions.
+            </div>
+            <div>
+              A valid example is: 'EPSG:2056',{' '}
+              <a
+                href="https://spatialreference.org/ref/epsg/2056/"
+                target="_blank"
+              >
+                the reference system
+              </a>{' '}
+              used in Switzerland.
+            </div>
+            {notification && (
+              <div style={notificationStyle}>{notification}</div>
+            )}
+            {transformCount > 0 && (
+              <div
+                style={transformCountStyle}
+              >{`Transforming ${transformCount} occurrences`}</div>
+            )}
+          </>
+        }
+      />
+      {/* TODO: add button to copy/set geometries */}
+    </>
   )
 })
