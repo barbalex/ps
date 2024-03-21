@@ -1,94 +1,13 @@
-import { memo, useCallback, useState } from 'react'
-import { Button } from '@fluentui/react-components'
-import axios from 'redaxios'
-import { useLiveQuery } from 'electric-sql/react'
-import { useParams } from 'react-router-dom'
+import { memo } from 'react'
 
 import { RadioGroupField } from '../../../components/shared/RadioGroupField'
 import { DropdownFieldSimpleOptions } from '../../../components/shared/DropdownFieldSimpleOptions'
-import { useElectric } from '../../../ElectricProvider'
-import { createList, createListValue } from '../../../modules/createRows'
-import { chunkArrayWithMinSize } from '../../../modules/chunkArrayWithMinSize'
 import { Crs } from './Crs'
 
 export const Two = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
-  const { project_id } = useParams()
-
-  const { db } = useElectric()!
-  const { results: crsList } = useLiveQuery(
-    db.lists.liveFirst({
-      where: { name: 'Coordinate Reference Systems', deleted: false },
-    }),
-  )
-  const { results: crsResults = [] } = useLiveQuery(
-    db.list_values.liveMany({
-      where: {
-        list_id: crsList?.list_id ?? '99999999-9999-9999-9999-999999999999',
-        deleted: false,
-      },
-    }),
-  )
-  const crsOptions = crsResults.map((d) => d.value)
-  console.log('occurenceImport 2, crsOptions', crsOptions)
-  const [loadingCrs, setLoadingCrs] = useState(false)
-
-  const onClickLoadCrs = useCallback(() => {
-    // TODO:
-    // 1. fetch crs list from https://spatialreference.org/crslist.json
-    // TODO: show loading indicator
-    // TODO: add crs to crs list
-    setLoadingCrs(true)
-    axios
-      .get('https://spatialreference.org/crslist.json')
-      .then(async (response) => {
-        const uniqueCrsOptions = [
-          ...new Set(
-            response.data
-              .filter(
-                (d) =>
-                  // not sure if all types can be used
-                  // ['GEOGRAPHIC_2D_CRS', 'PROJECTED_CRS', 'COMPOUND_CRS'].includes(d.type) &&
-                  d.deprecated === false,
-              )
-              .map((d) => `${d.auth_name}:${d.code}`),
-          ),
-        ]
-        // create a list named 'Coordinate Reference Systems' if it doesn't exist
-        const listData = await createList({
-          db,
-          project_id,
-          name: 'Coordinate Reference Systems',
-        })
-        await db.lists.create({ data: listData })
-        const listValuesData = uniqueCrsOptions.map((value) =>
-          createListValue({
-            list_id: listData.list_id,
-            value,
-          }),
-        )
-        // need to chunk the data because:
-        // 1. creating singly is slow
-        // 2. creating many unchunked results in error: too many SQL variables (11577 values)
-        const chunked = chunkArrayWithMinSize(listValuesData, 1000)
-        for (const chunk of chunked) {
-          await db.list_values.createMany({ data: chunk })
-        }
-      })
-      .catch((error) => {
-        console.error('error', error)
-      })
-      .finally(() => {
-        setLoadingCrs(false)
-      })
-  }, [db, project_id])
-
   if (!occurrenceImport) {
     return <div>Loading...</div>
   }
-
-  // TODO:
-  // - if geojson_geometry_field and crs choosen while geometry fields are empty,
-  //   copy that fields values to geometry field in all occurrences while transforming the crs to wgs84 using proj4
 
   return (
     <>
@@ -139,12 +58,6 @@ export const Two = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
             If the occurrences coordinates are in 'EPSG:4326', no action is
             needed. If not, they must be converted.
           </p>
-          {crsOptions.length < 2 && (
-            <Button onClick={onClickLoadCrs}>
-              Click here if the occurrence geometries use a coordinate reference
-              system other than EPSG:4326 (WGS 84)
-            </Button>
-          )}
           {/* TODO: use a virtualized combobox solution, maybe like in apflora? */}
           <Crs occurrenceImport={occurrenceImport} onChange={onChange} />
         </>
