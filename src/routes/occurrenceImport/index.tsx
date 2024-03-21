@@ -37,16 +37,7 @@ export const Component = () => {
       include: { occurrences: true },
     }),
   )
-  console.log('occurrenceImport:', occurrenceImport)
-  const { results: occurrences = [] } = useLiveQuery(
-    db.occurrences.liveMany({
-      where: {
-        occurrence_import_id,
-        deleted: false,
-      },
-      orderBy: { label: 'asc' },
-    }),
-  )
+  const occurrences = occurrenceImport?.occurrences ?? []
   const occurrenceFields = Object.keys(occurrences[0] ?? {})
 
   const onChange: InputProps['onChange'] = useCallback(
