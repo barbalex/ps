@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom'
 
 import { RadioGroupField } from '../../components/shared/RadioGroupField'
 import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions'
-import { Combobox } from '../../components/shared/Combobox'
+import { TextField } from '../../components/shared/TextField'
 import { useElectric } from '../../ElectricProvider'
 import { createList, createListValue } from '../../modules/createRows'
 import { chunkArrayWithMinSize } from '../../modules/chunkArrayWithMinSize'
@@ -26,7 +26,6 @@ export const Two = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
         list_id: crsList?.list_id ?? '99999999-9999-9999-9999-999999999999',
         deleted: false,
       },
-      select: { value: true },
     }),
   )
   const crsOptions = crsResults.map((d) => d.value)
@@ -82,6 +81,31 @@ export const Two = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
         setLoadingCrs(false)
       })
   }, [db, project_id])
+
+  const onBlurCrs = useCallback(async () => {
+    if (!occurrenceImport?.crs) return
+    console.log('occurrenceImport 2, onBlurCrs, crs:', occurrenceImport.crs)
+    // TODO:
+    // extract system and number from crs
+    const system = occurrenceImport.crs?.split?.(':')?.[0]
+    const number = occurrenceImport.crs?.split?.(':')?.[1]
+    console.log('occurrenceImport 2, onBlurCrs', { system, number })
+    // get proj4 definition from https://spatialreference.org/ref/${system}/${number}/proj4.txt
+    const proj4Url = `https://spatialreference.org/ref/${system}/${number}/proj4.txt`
+    let proj4
+    try {
+      proj4 = await axios.get(proj4Url)
+    } catch (error) {
+      console.error(
+        'occurrenceImport 2, onBlurCrs, proj4 error status:',
+        error.status,
+      )
+      if (error.status === 404) {
+        // Tell user that the crs is not found
+      }
+    }
+    console.log('occurrenceImport 2, onBlurCrs, proj4', proj4?.data)
+  }, [crsOptions, occurrenceImport?.crs, onChange])
 
   if (!occurrenceImport) {
     return <div>Loading...</div>
@@ -146,13 +170,13 @@ export const Two = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
               system other than EPSG:4326 (WGS 84)
             </Button>
           )}
-          {/* TODO: use a virtualized solution, maybe like in apflora? */}
-          <DropdownFieldSimpleOptions
-            label="Coordinate Reference System Code"
+          {/* TODO: use a virtualized combobox solution, maybe like in apflora? */}
+          <TextField
+            label="Coordinate Reference System"
             name="crs"
             value={occurrenceImport.crs ?? ''}
             onChange={onChange}
-            options={crsOptions}
+            onBlur={onBlurCrs}
             validationMessage={
               <>
                 <div>
@@ -160,17 +184,24 @@ export const Two = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
                   <a href="https://epsg.org/home.html" target="_blank">
                     https://epsg.org
                   </a>{' '}
-                  for a list of EPSG codes and their descriptions
+                  or{' '}
+                  <a href="https://spatialreference.org" target="_blank">
+                    https://spatialreference.org
+                  </a>{' '}
+                  for a list of EPSG codes and their descriptions.
+                </div>
+                <div>
+                  A valid example is: 'EPSG:2056',{' '}
+                  <a
+                    href="https://spatialreference.org/ref/epsg/2056/"
+                    target="_blank"
+                  >
+                    the reference system
+                  </a>{' '}
+                  used in Switzerland.
                 </div>
               </>
             }
-          />
-          <Combobox
-            label="Coordinate Reference System"
-            name="crs"
-            value={occurrenceImport.crs ?? ''}
-            options={crsOptions}
-            onChange={onChange}
           />
         </>
       )}
