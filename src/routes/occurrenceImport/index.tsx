@@ -38,7 +38,10 @@ export const Component = () => {
     }),
   )
   const occurrences = occurrenceImport?.occurrences ?? []
-  const occurrenceFields = Object.keys(occurrences[0] ?? {})
+  // const occurrenceFields = Object.keys(occurrences[0] ?? {})
+  const occurrenceFields = Object.keys(
+    JSON.parse(occurrences?.[0]?.data ?? '{}'),
+  )
 
   const onChange: InputProps['onChange'] = useCallback(
     (e, data) => {
