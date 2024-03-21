@@ -11,8 +11,6 @@ import { useElectric } from '../../ElectricProvider'
 import { createList, createListValue } from '../../modules/createRows'
 import { chunkArrayWithMinSize } from '../../modules/chunkArrayWithMinSize'
 
-
-
 export const Two = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
   const { project_id } = useParams()
 
@@ -157,6 +155,7 @@ export const Two = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
           system other than EPSG:4326 (WGS 84)
         </Button>
       )}
+      {/* TODO: use a virtualized solution, maybe like in apflora? */}
       <DropdownFieldSimpleOptions
         label="Coordinate Reference System Code"
         name="crs"
