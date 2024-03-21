@@ -76,30 +76,31 @@ export const DropdownFieldFromLayerOptions = memo(
         // When support is added:
         // check if it works
         // show legend in vector_layer form, maybe map?
-        let res
-        try {
-          res = await axios.get(legendUrl, { responseType: 'blob' })
-        } catch (error) {
-          // error can also be caused by timeout
-          console.error(
-            `hello error fetching legend for layer '${data.optionText}':`,
-            error,
-          )
-          return false
-        }
-        console.log(
-          'hello DropdownFieldFromLayerOptions, onOptionSelect, blob data:',
-          res.data,
-        )
-        // 3. store it in tile_layers.wms_legend
-        if (res.data) {
-          onChange({
-            target: {
-              name: 'wms_legend',
-              value: res.data,
-            },
-          })
-        }
+        // TODO: deactivated because electric-sql does not support binary data yet, reactivate when it does
+        // let res
+        // try {
+        //   res = await axios.get(legendUrl, { responseType: 'blob' })
+        // } catch (error) {
+        //   // error can also be caused by timeout
+        //   console.error(
+        //     `hello error fetching legend for layer '${data.optionText}':`,
+        //     error,
+        //   )
+        //   return false
+        // }
+        // console.log(
+        //   'hello DropdownFieldFromLayerOptions, onOptionSelect, blob data:',
+        //   res.data,
+        // )
+        // // 3. store it in tile_layers.wms_legend
+        // if (res.data) {
+        //   onChange({
+        //     target: {
+        //       name: 'wms_legend',
+        //       value: res.data,
+        //     },
+        //   })
+        // }
       },
       [layerOptions, name, onChange, row],
     )
