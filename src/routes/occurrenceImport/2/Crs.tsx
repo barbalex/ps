@@ -3,6 +3,7 @@ import { Button } from '@fluentui/react-components'
 import axios from 'redaxios'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
+import proj4 from 'proj4'
 
 import { TextField } from '../../../components/shared/TextField'
 import { useElectric } from '../../../ElectricProvider'
@@ -28,12 +29,10 @@ export const Crs = memo(({ occurrenceImport, onChange: onChangePassed }) => {
 
   const onBlurCrs = useCallback(async () => {
     if (!occurrenceImport?.crs) return
-    console.log('occurrenceImport 2, onBlurCrs, crs:', occurrenceImport.crs)
     // TODO:
     // extract system and number from crs
     const system = occurrenceImport.crs?.split?.(':')?.[0]?.toLowerCase?.()
     const number = occurrenceImport.crs?.split?.(':')?.[1]
-    console.log('occurrenceImport 2, onBlurCrs', { system, number })
     // get proj4 definition from https://spatialreference.org/ref/${system}/${number}/proj4.txt
     const proj4Url = `https://spatialreference.org/ref/${system}/${number}/proj4.txt`
     console.log('occurrenceImport 2, onBlurCrs, proj4Url:', proj4Url)
@@ -41,10 +40,7 @@ export const Crs = memo(({ occurrenceImport, onChange: onChangePassed }) => {
     try {
       resp = await axios.get(proj4Url)
     } catch (error) {
-      console.error(
-        'occurrenceImport 2, onBlurCrs, proj4 error status:',
-        error.status,
-      )
+      console.error('occurrenceImport 2, onBlurCrs, resp error:', error)
       if (error.status === 404) {
         // Tell user that the crs is not found
         setNotification(
@@ -55,7 +51,32 @@ export const Crs = memo(({ occurrenceImport, onChange: onChangePassed }) => {
     console.log('occurrenceImport 2, onBlurCrs, resp', resp.data)
     const defs = resp?.data
     if (!defs) return
-  }, [occurrenceImport.crs])
+
+    // For all occurrences, transform the geometry field to wgs84 using proj4 and defs
+    const { result: occurrences = [] } = await db.occurrences.findMany({
+      where: {
+        occurrence_import_id: occurrenceImport.occurrence_import_id,
+        deleted: false,
+      },
+    })
+    console.log('occurrenceImport 2, onBlurCrs, occurrences', occurrences)
+    proj4.defs([
+      ['EPSG:4326', '+proj=longlat +datum=WGS84 +no_defs +type=crs'],
+      [occurrenceImport.crs, defs],
+    ])
+    // build an array of objects with the occurrence_id and the transformed geometry, extracted from the geometry field
+    const updates = occurrences.map((occurrence) => ({
+      occurrence_id: occurrence.occurrence_id,
+      geometry: proj4(occurrenceImport.crs, 'EPSG:4326', [
+        occurrence.data[x_coordinate_field],
+        occurrence.data[y_coordinate_field],
+      ]),
+    }))
+  }, [
+    db.occurrences,
+    occurrenceImport.crs,
+    occurrenceImport.occurrence_import_id,
+  ])
 
   if (!occurrenceImport) {
     return <div>Loading...</div>
