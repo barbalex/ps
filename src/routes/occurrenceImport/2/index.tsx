@@ -4,12 +4,13 @@ import axios from 'redaxios'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 
-import { RadioGroupField } from '../../components/shared/RadioGroupField'
-import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions'
-import { TextField } from '../../components/shared/TextField'
-import { useElectric } from '../../ElectricProvider'
-import { createList, createListValue } from '../../modules/createRows'
-import { chunkArrayWithMinSize } from '../../modules/chunkArrayWithMinSize'
+import { RadioGroupField } from '../../../components/shared/RadioGroupField'
+import { DropdownFieldSimpleOptions } from '../../../components/shared/DropdownFieldSimpleOptions'
+import { TextField } from '../../../components/shared/TextField'
+import { useElectric } from '../../../ElectricProvider'
+import { createList, createListValue } from '../../../modules/createRows'
+import { chunkArrayWithMinSize } from '../../../modules/chunkArrayWithMinSize'
+import { Crs } from './Crs'
 
 export const Two = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
   const { project_id } = useParams()
@@ -82,31 +83,6 @@ export const Two = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
       })
   }, [db, project_id])
 
-  const onBlurCrs = useCallback(async () => {
-    if (!occurrenceImport?.crs) return
-    console.log('occurrenceImport 2, onBlurCrs, crs:', occurrenceImport.crs)
-    // TODO:
-    // extract system and number from crs
-    const system = occurrenceImport.crs?.split?.(':')?.[0]
-    const number = occurrenceImport.crs?.split?.(':')?.[1]
-    console.log('occurrenceImport 2, onBlurCrs', { system, number })
-    // get proj4 definition from https://spatialreference.org/ref/${system}/${number}/proj4.txt
-    const proj4Url = `https://spatialreference.org/ref/${system}/${number}/proj4.txt`
-    let proj4
-    try {
-      proj4 = await axios.get(proj4Url)
-    } catch (error) {
-      console.error(
-        'occurrenceImport 2, onBlurCrs, proj4 error status:',
-        error.status,
-      )
-      if (error.status === 404) {
-        // Tell user that the crs is not found
-      }
-    }
-    console.log('occurrenceImport 2, onBlurCrs, proj4', proj4?.data)
-  }, [crsOptions, occurrenceImport?.crs, onChange])
-
   if (!occurrenceImport) {
     return <div>Loading...</div>
   }
@@ -171,38 +147,7 @@ export const Two = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
             </Button>
           )}
           {/* TODO: use a virtualized combobox solution, maybe like in apflora? */}
-          <TextField
-            label="Coordinate Reference System"
-            name="crs"
-            value={occurrenceImport.crs ?? ''}
-            onChange={onChange}
-            onBlur={onBlurCrs}
-            validationMessage={
-              <>
-                <div>
-                  See{' '}
-                  <a href="https://epsg.org/home.html" target="_blank">
-                    https://epsg.org
-                  </a>{' '}
-                  or{' '}
-                  <a href="https://spatialreference.org" target="_blank">
-                    https://spatialreference.org
-                  </a>{' '}
-                  for a list of EPSG codes and their descriptions.
-                </div>
-                <div>
-                  A valid example is: 'EPSG:2056',{' '}
-                  <a
-                    href="https://spatialreference.org/ref/epsg/2056/"
-                    target="_blank"
-                  >
-                    the reference system
-                  </a>{' '}
-                  used in Switzerland.
-                </div>
-              </>
-            }
-          />
+          <Crs occurrenceImport={occurrenceImport} onChange={onChange} />
         </>
       )}
     </>
