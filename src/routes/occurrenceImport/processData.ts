@@ -1,7 +1,10 @@
 import { read, utils } from 'xlsx'
+import { chunkArrayWithMinSize } from '../../modules/chunkArrayWithMinSize'
+import { createOccurrence } from '../../modules/createRows'
 
-export const processData = async (file) => {
+export const processData = async ({ file, additionalData, db }) => {
   if (!file) return
+
   console.log('processData, file:', file)
   // TODO:
   // this function is passed to the UploadButton component
@@ -9,7 +12,7 @@ export const processData = async (file) => {
 
   const reader = new FileReader()
 
-  reader.onload = () => {
+  reader.onload = async () => {
     const fileAsBinaryString = reader.result
     const workbook = read(fileAsBinaryString, {
         type: 'binary',
@@ -21,9 +24,22 @@ export const processData = async (file) => {
       const { __rowNum__, ...rest } = d
       return rest
     })
+    const occurrences = data.map((dat) =>
+      createOccurrence({
+        occurrence_import_id: additionalData.occurrence_import_id,
+        data: dat,
+      }),
+    )
     // test the data
-    console.log('processData, data:', data)
-    // TODO: 
+    console.log('processData, occurrences:', occurrences)
+    // TODO:
+    // - create chunks of 500 rows
+    const chunked = chunkArrayWithMinSize(occurrences, 500)
+    for (const chunk of chunked) {
+      await db.occurrences.createMany({
+        data: chunk,
+      })
+    }
     // - insert data into occurrences table
     // - set occurrence_imports.created_time
     // - set occurrence_imports.inserted_count

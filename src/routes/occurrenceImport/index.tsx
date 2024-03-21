@@ -37,6 +37,7 @@ export const Component = () => {
       include: { occurrences: true },
     }),
   )
+  console.log('occurrenceImport:', occurrenceImport)
   const { results: occurrences = [] } = useLiveQuery(
     db.occurrences.liveMany({
       where: {

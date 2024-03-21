@@ -28,7 +28,12 @@ export const One = memo(({ occurrenceImport, onChange, autoFocusRef }) => {
         onChange={onChange}
       />
       {/* TODO: only show when not yet uploaded? */}
-      <UploadButton processData={processData} />
+      <UploadButton
+        processData={processData}
+        additionalData={{
+          occurrence_import_id: occurrenceImport.occurrence_import_id,
+        }}
+      />
     </>
   )
 })

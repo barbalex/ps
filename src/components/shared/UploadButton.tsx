@@ -1,20 +1,23 @@
 import { useCallback, useRef, useState, memo } from 'react'
 import { Button, Field } from '@fluentui/react-components'
+import { useElectric } from '../../ElectricProvider'
 
 const uploadInputStyle = {
   display: 'none',
 }
 
-export const UploadButton = memo(({ processData }) => {
+export const UploadButton = memo(({ processData, additionalData = {} }) => {
   const uploadInputRef = useRef<HTMLInputElement>(null)
   const [isDragging, setIsDragging] = useState(false)
+
+  const { db } = useElectric()!
 
   const onUpload = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0]
-      await processData(file)
+      await processData({ file, db })
     },
-    [processData],
+    [db, processData],
   )
 
   const onClickUploadButton = useCallback(() => {
@@ -45,9 +48,9 @@ export const UploadButton = memo(({ processData }) => {
       setIsDragging(false)
       const dt = e.dataTransfer
       const file = dt.files?.[0]
-      await processData(file)
+      await processData({ file, additionalData, db })
     },
-    [processData],
+    [additionalData, db, processData],
   )
 
   return (
