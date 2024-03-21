@@ -54,7 +54,6 @@ export const Two = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
               .map((d) => `${d.auth_name}:${d.code}`),
           ),
         ]
-        console.log('occurenceImport 2, uniqueCrsOptions', uniqueCrsOptions)
         // create a list named 'Coordinate Reference Systems' if it doesn't exist
         const listData = await createList({
           db,
@@ -68,19 +67,13 @@ export const Two = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
             value,
           }),
         )
-        console.log('occurenceImport 2, listValuesData', listValuesData)
-        // this takes forever:
-        // for (const listValueData of listValuesData) {
-        //   await db.list_values.create({ data: listValueData })
-        // }
+        // need to chunk the data because:
+        // 1. creating singly is slow
+        // 2. creating many unchunked results in error: too many SQL variables (11577 values)
         const chunked = chunkArrayWithMinSize(listValuesData, 1000)
         for (const chunk of chunked) {
           await db.list_values.createMany({ data: chunk })
         }
-        // results in error: too many SQL variables (11577 values)
-        // await db.list_values.createMany({
-        //   data: listValuesData,
-        // })
       })
       .catch((error) => {
         console.error('error', error)
@@ -136,51 +129,51 @@ export const Two = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
             options={occurrenceFields}
             validationMessage="Which field contains the Y-Coordinates?"
           />
+
+          <p>
+            The coordinate reference system used by promoting species is
+            'EPSG:4326', also known as 'WGS 84'.
+            <br />
+            It is always used in GeoJSON. Though common, thousands of other
+            coordinate reference systems exist.
+            <br />
+            If the occurrences coordinates are in 'EPSG:4326', no action is
+            needed. If not, they must be converted.
+          </p>
+          {crsOptions.length < 2 && (
+            <Button onClick={onClickLoadCrs}>
+              Click here if the occurrence geometries use a coordinate reference
+              system other than EPSG:4326 (WGS 84)
+            </Button>
+          )}
+          {/* TODO: use a virtualized solution, maybe like in apflora? */}
+          <DropdownFieldSimpleOptions
+            label="Coordinate Reference System Code"
+            name="crs"
+            value={occurrenceImport.crs ?? ''}
+            onChange={onChange}
+            options={crsOptions}
+            validationMessage={
+              <>
+                <div>
+                  See{' '}
+                  <a href="https://epsg.org/home.html" target="_blank">
+                    https://epsg.org
+                  </a>{' '}
+                  for a list of EPSG codes and their descriptions
+                </div>
+              </>
+            }
+          />
+          <Combobox
+            label="Coordinate Reference System"
+            name="crs"
+            value={occurrenceImport.crs ?? ''}
+            options={crsOptions}
+            onChange={onChange}
+          />
         </>
       )}
-      <p>
-        The coordinate reference system used by promoting species is EPSG:4326,
-        also known as WGS 84.
-        <br />
-        EPSG:4326 is always used in GeoJSON.
-        <br />
-        Though common, thousands of other coordinate reference systems exist.
-        <br />
-        If the occurrences geometries are in EPSG:4326, no action is needed. If
-        not, they must be converted.
-      </p>
-      {crsOptions.length < 2 && (
-        <Button onClick={onClickLoadCrs}>
-          Click here if the occurrence geometries use a coordinate reference
-          system other than EPSG:4326 (WGS 84)
-        </Button>
-      )}
-      {/* TODO: use a virtualized solution, maybe like in apflora? */}
-      <DropdownFieldSimpleOptions
-        label="Coordinate Reference System Code"
-        name="crs"
-        value={occurrenceImport.crs ?? ''}
-        onChange={onChange}
-        options={crsOptions}
-        validationMessage={
-          <>
-            <div>
-              See{' '}
-              <a href="https://epsg.org/home.html" target="_blank">
-                https://epsg.org
-              </a>{' '}
-              for a list of EPSG codes and their descriptions
-            </div>
-          </>
-        }
-      />
-      <Combobox
-        label="Coordinate Reference System"
-        name="crs"
-        value={occurrenceImport.crs ?? ''}
-        options={crsOptions}
-        onChange={onChange}
-      />
     </>
   )
 })
