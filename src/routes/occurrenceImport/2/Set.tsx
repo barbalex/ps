@@ -1,0 +1,84 @@
+import { memo, useCallback, useState } from 'react'
+import { Button } from '@fluentui/react-components'
+import proj4 from 'proj4'
+import { point, Point } from '@turf/helpers'
+import axios from 'redaxios'
+import { useLiveQuery } from 'electric-sql/react'
+
+import { useElectric } from '../../../ElectricProvider'
+
+const notificationStyle = {
+  color: 'red',
+}
+
+export const Set = memo(({ occurrenceImport }) => {
+  const [notification, setNotification] = useState()
+  const { db } = useElectric()!
+  const { results: occurrences = [] } = useLiveQuery(
+    db.occurrences.liveMany({
+      where: { occurrence_import_id: occurrenceImport?.occurrence_import_id },
+    }),
+  )
+
+  const occurrencesWithoutGeometry = occurrences?.filter((o) => !o.geometry)
+
+  const toConvertCount = occurrencesWithoutGeometry?.length ?? 0
+
+  const onClick = useCallback(async () => {
+    // extract system and number from crs
+    const system = occurrenceImport.crs?.split?.(':')?.[0]?.toLowerCase?.()
+    const number = occurrenceImport.crs?.split?.(':')?.[1]
+    // get proj4 definition from https://spatialreference.org/ref/${system}/${number}/proj4.txt
+    const proj4Url = `https://spatialreference.org/ref/${system}/${number}/proj4.txt`
+    let resp
+    try {
+      resp = await axios.get(proj4Url)
+    } catch (error) {
+      console.error('occurrenceImport 2, onBlurCrs, resp error:', error)
+      if (error.status === 404) {
+        // Tell user that the crs is not found
+        return setNotification(
+          `No definitions were found for crs '${occurrenceImport.crs}'`,
+        )
+      }
+    }
+    const defs = resp?.data
+    if (!defs) return
+
+    proj4.defs([
+      ['EPSG:4326', '+proj=longlat +datum=WGS84 +no_defs +type=crs'],
+      [occurrenceImport.crs, defs],
+    ])
+    // unfortunately, updateMany can only be used to update many with a same value
+    for (const o of occurrencesWithoutGeometry) {
+      const coordinates = [
+        o.data[occurrenceImport?.x_coordinate_field],
+        o.data[occurrenceImport?.y_coordinate_field],
+      ]
+      const position = proj4(occurrenceImport.crs, 'EPSG:4326', coordinates)
+      // console.log('occurrenceImport 2, onBlurCrs, position', position)
+      // TODO: why is reversing needed? is it a bug?
+      const geometry: Point = point(position.reverse())
+      // console.log('occurrenceImport 2, onBlurCrs, geometry', geometry)
+      await db.occurrences.update({
+        where: { occurrence_id: o.occurrence_id },
+        data: { geometry },
+      })
+    }
+  }, [
+    db.occurrences,
+    occurrenceImport.crs,
+    occurrenceImport?.x_coordinate_field,
+    occurrenceImport?.y_coordinate_field,
+    occurrencesWithoutGeometry,
+  ])
+
+  return (
+    <Button onClick={onClick}>
+      <>
+        <div>{`Convert coordinates of ${toConvertCount} occurrences to EPSG:4326`}</div>
+        {notification && <div style={notificationStyle}>{notification}</div>}
+      </>
+    </Button>
+  )
+})

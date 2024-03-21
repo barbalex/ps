@@ -1,23 +1,14 @@
 import { memo, useCallback, useState } from 'react'
 import axios from 'redaxios'
-import proj4 from 'proj4'
-import { point, Point } from '@turf/helpers'
 
 import { TextField } from '../../../components/shared/TextField'
-import { useElectric } from '../../../ElectricProvider'
 
 const notificationStyle = {
   color: 'red',
 }
-const transformCountStyle = {
-  color: 'orange',
-}
 
 export const Crs = memo(({ occurrenceImport, onChange: onChangePassed }) => {
   const [notification, setNotification] = useState()
-  const [transformCount, setTransformCount] = useState(0)
-
-  const { db } = useElectric()!
 
   const onChange: TextField['props']['onChange'] = useCallback(
     (e, data) => {
@@ -50,60 +41,16 @@ export const Crs = memo(({ occurrenceImport, onChange: onChangePassed }) => {
     const defs = resp?.data
     if (!defs) return
 
-    // For all occurrences, transform the geometry field to wgs84 using proj4 and defs
-    const { result: occurrences = [] } = await db.occurrences.findMany({
-      where: {
-        occurrence_import_id: occurrenceImport.occurrence_import_id,
-      },
-    })
+    const occurrences = occurrenceImport?.occurrences ?? []
 
     if (!occurrences.length) {
       return setNotification('No occurrences found')
     }
     const occurrencesWithoutGeometry = occurrences.filter((o) => !o.geometry)
     if (!occurrencesWithoutGeometry.length) {
-      return setNotification('All occurrences already have a geometry')
+      return setNotification('All occurrences have a geometry')
     }
-
-    proj4.defs([
-      ['EPSG:4326', '+proj=longlat +datum=WGS84 +no_defs +type=crs'],
-      [occurrenceImport.crs, defs],
-    ])
-    // build an array of objects with the occurrence_id and the transformed geometry, extracted from the geometry field
-    // const fakeOccurrences = [
-    //   {
-    //     occurrence_id: 'fake-occurrence-id',
-    //     data: {
-    //       x: 2714988,
-    //       y: 1209007,
-    //     },
-    //   },
-    // ]
-    // unfortunately, updateMany can only be used to update many with a same value
-    // TODO: replace fake with real and test
-    for (const o of occurrencesWithoutGeometry) {
-      const coordinates = [
-        o.data[occurrenceImport?.x_coordinate_field ?? 'x'],
-        o.data[occurrenceImport?.y_coordinate_field ?? 'y'],
-      ]
-      const position = proj4(occurrenceImport.crs, 'EPSG:4326', coordinates)
-      // console.log('occurrenceImport 2, onBlurCrs, position', position)
-      // TODO: why is reversing needed? is it a bug?
-      const geometry: Point = point(position.reverse())
-      // console.log('occurrenceImport 2, onBlurCrs, geometry', geometry)
-      await db.occurrences.update({
-        where: { occurrence_id: o.occurrence_id },
-        data: { geometry },
-      })
-      setTransformCount((c) => c + 1)
-    }
-  }, [
-    db.occurrences,
-    occurrenceImport.crs,
-    occurrenceImport.occurrence_import_id,
-    occurrenceImport?.x_coordinate_field,
-    occurrenceImport?.y_coordinate_field,
-  ])
+  }, [occurrenceImport.crs, occurrenceImport?.occurrences])
 
   if (!occurrenceImport) {
     return <div>Loading...</div>
@@ -116,7 +63,7 @@ export const Crs = memo(({ occurrenceImport, onChange: onChangePassed }) => {
   return (
     <>
       <TextField
-        label="Coordinate Reference System"
+        label="Coordinate reference system of the imported occurrences"
         name="crs"
         value={occurrenceImport.crs ?? ''}
         onChange={onChange}
@@ -146,11 +93,6 @@ export const Crs = memo(({ occurrenceImport, onChange: onChangePassed }) => {
             </div>
             {notification && (
               <div style={notificationStyle}>{notification}</div>
-            )}
-            {transformCount > 0 && (
-              <div
-                style={transformCountStyle}
-              >{`Transforming ${transformCount} occurrences`}</div>
             )}
           </>
         }
