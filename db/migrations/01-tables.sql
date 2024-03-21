@@ -1450,7 +1450,6 @@ CREATE TABLE occurrences(
   data jsonb DEFAULT NULL,
   id_in_source text DEFAULT NULL, -- extracted from data using occurrence_import_id.id_field
   geometry jsonb DEFAULT NULL, -- extracted from data using occurrence_import_id.geometry_method and it's field(s)
-  crs text DEFAULT NULL, -- is needed to know if the geometry was converted to 4326
   label text DEFAULT NULL
 );
 
@@ -1467,8 +1466,6 @@ COMMENT ON TABLE occurrences IS 'GBIF occurrences. Imported for subprojects (spe
 COMMENT ON COLUMN occurrences.id_in_source IS 'Used to replace previously imported occurrences';
 
 COMMENT ON COLUMN occurrences.geometry IS 'geometry of occurrence. Extracted from data to show the occurrence on a map';
-
-COMMENT ON COLUMN occurrences.crs IS 'is needed to know if the geometry was converted to 4326';
 
 COMMENT ON COLUMN occurrences.data IS 'data as received from GBIF';
 
