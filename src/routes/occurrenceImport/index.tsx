@@ -8,7 +8,8 @@ import { getValueFromChange } from '../../modules/getValueFromChange'
 import { Header } from './Header'
 import { One } from './1'
 import { Two } from './2'
-import { Five } from './5'
+import { Four } from './4'
+import { Preview } from './Preview'
 
 import '../../form.css'
 
@@ -37,7 +38,6 @@ export const Component = () => {
       include: { occurrences: true },
     }),
   )
-  console.log('occurrenceImport, occurrenceImport:', occurrenceImport)
   const { results: occurrences = [] } = useLiveQuery(
     db.occurrences.liveMany({
       where: {
@@ -47,11 +47,8 @@ export const Component = () => {
       },
     }),
   )
-  console.log('occurrenceImport, occurrences:', occurrences)
   const occurrencesWithoutGeometry = occurrences?.filter((o) => !o.geometry)
-  // const occurrenceFields = Object.keys(occurrences[0] ?? {})
   const occurrenceFields = Object.keys(occurrences?.[0]?.data ?? {})
-  console.log('occurrenceImport, occurrenceFields:', occurrenceFields)
 
   const onChange: InputProps['onChange'] = useCallback(
     (e, data) => {
@@ -84,33 +81,42 @@ export const Component = () => {
     [tab],
   )
 
-  const tab2Style = useMemo(() => {
-    // green if all occurrences have geometry
-    if (occurrences.length && !occurrencesWithoutGeometry?.length)
-      return {
-        ...tabNumberStyle,
-        backgroundColor: 'var(--colorCompoundBrandStrokeHover)',
-      }
-    // black if is current
-    if (tab === 2) return { ...tabNumberStyle, backgroundColor: 'black' }
-    // grey if no occurrences or not current
-    return { ...tabNumberStyle, backgroundColor: 'grey' }
-  }, [occurrences.length, occurrencesWithoutGeometry?.length, tab])
+  const tab1Style = useMemo(
+    () => ({
+      ...tabNumberStyle,
+      backgroundColor:
+        occurrenceImport?.name && occurrences.length
+          ? 'var(--colorCompoundBrandStrokeHover)'
+          : tab === 1
+          ? 'black'
+          : 'grey',
+    }),
+    [occurrenceImport?.name, occurrences.length, tab],
+  )
 
-  console.log('OccurrenceImport Route:', {
-    occurrenceImport,
-    occurrenceFields,
-    occurrences,
-  })
+  const tab2Style = useMemo(
+    () => ({
+      ...tabNumberStyle,
+      backgroundColor:
+        // green if all occurrences have geometry
+        occurrences.length && !occurrencesWithoutGeometry?.length
+          ? 'var(--colorCompoundBrandStrokeHover)'
+          : // black if is current
+          tab === 2
+          ? 'black'
+          : // grey if no occurrences or not current
+            'grey',
+    }),
+    [occurrences.length, occurrencesWithoutGeometry?.length, tab],
+  )
 
   // TODO:
   // show stepper-like tabs on new import:
-  // 1. basics/data: name, attribution, file
+  // 1. data: name, attribution, file
   // 2. geometry: mode (coordinates or geometry), field(s) and projection
-  // 3. date: choose how to extract date from fields
+  // 3. date: choose how to extract date from fields. NOT YET IMPLEMENTED AS NO DIRECT USE CASE
   // 4. label: choose how to create label from fields
   // 5. identification: choose id field, previous import and how to extend it
-  // 6. execute import (only visible before import)
   // - stepper titles begin with a number in a circle
   // - completed steps: circle is gren
   // - uncompleted steps: circle is grey, title is normal
@@ -120,8 +126,14 @@ export const Component = () => {
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
+      {!!occurrences.length && (
+        <Preview
+          occurrences={occurrences}
+          occurrenceFields={occurrenceFields}
+        />
+      )}
       <TabList selectedValue={tab} onTabSelect={onTabSelect}>
-        <Tab id="1" value={1} icon={<div style={tabStyle(1)}>1</div>}>
+        <Tab id="1" value={1} icon={<div style={tab1Style}>1</div>}>
           Data
         </Tab>
         <Tab
@@ -133,21 +145,10 @@ export const Component = () => {
           Geometry
         </Tab>
         <Tab id="3" value={3} icon={<div style={tabStyle(3)}>3</div>}>
-          Date
-        </Tab>
-        <Tab id="4" value={4} icon={<div style={tabStyle(4)}>4</div>}>
           Label
         </Tab>
-        <Tab id="5" value={5} icon={<div style={tabStyle(5)}>5</div>}>
+        <Tab id="4" value={4} icon={<div style={tabStyle(4)}>4</div>}>
           Identification
-        </Tab>
-        <Tab
-          id="6"
-          value={6}
-          icon={<div style={tabStyle(6)}>6</div>}
-          disabled={!occurrenceImport?.id_field}
-        >
-          Import
         </Tab>
       </TabList>
       <div className="form-container">
@@ -165,8 +166,8 @@ export const Component = () => {
             onChange={onChange}
           />
         )}
-        {tab === 5 && (
-          <Five
+        {tab === 4 && (
+          <Four
             occurrenceImport={occurrenceImport}
             occurrenceFields={occurrenceFields}
             onChange={onChange}

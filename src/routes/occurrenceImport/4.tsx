@@ -7,7 +7,7 @@ import { RadioGroupField } from '../../components/shared/RadioGroupField'
 import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions'
 import { DropdownFieldOptions } from '../../components/shared/DropdownFieldOptions'
 
-export const Five = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
+export const Four = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
   const { occurrence_import_id, subproject_id } = useParams()
 
   const { db } = useElectric()!
