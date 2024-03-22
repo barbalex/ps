@@ -12,13 +12,15 @@ const notificationStyle = {
 export const Set = memo(({ occurrenceImport }) => {
   const [notification, setNotification] = useState()
   const { db } = useElectric()!
-  const { results: occurrences = [] } = useLiveQuery(
+  const { results: occurrences } = useLiveQuery(
     db.occurrences.liveMany({
       where: { occurrence_import_id: occurrenceImport?.occurrence_import_id },
     }),
   )
 
-  const occurrencesWithoutGeometry = occurrences?.filter((o) => !o.geometry)
+  const occurrencesWithoutGeometry = (occurrences ?? []).filter(
+    (o) => !o.geometry,
+  )
 
   const toSetCount = occurrencesWithoutGeometry?.length ?? 0
 
@@ -26,7 +28,9 @@ export const Set = memo(({ occurrenceImport }) => {
     setGeometries({ occurrenceImport, db, setNotification })
   }, [db, occurrenceImport])
 
-  if (toSetCount === 0) return null
+  if (!occurrences) return null
+
+  if (toSetCount === 0) return <div>All occurrences's geometries are set</div>
 
   return (
     <Button onClick={onClick}>

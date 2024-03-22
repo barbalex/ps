@@ -72,8 +72,7 @@ export const Two = memo(
             {occurrenceImport.crs &&
               occurrenceImport.geometry_method === 'coordinates' &&
               occurrenceImport.y_coordinate_field &&
-              occurrenceImport.x_coordinate_field &&
-              occurrenceImport.occurrences.some((o) => !o.geometry) && (
+              occurrenceImport.x_coordinate_field && (
                 <Set occurrenceImport={occurrenceImport} />
               )}
           </>
