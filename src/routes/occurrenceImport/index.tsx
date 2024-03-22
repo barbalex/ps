@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, useMemo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useSearchParams } from 'react-router-dom'
 import { Tab, TabList, InputProps } from '@fluentui/react-components'
@@ -48,6 +48,7 @@ export const Component = () => {
     }),
   )
   console.log('occurrenceImport, occurrences:', occurrences)
+  const occurrencesWithoutGeometry = occurrences?.filter((o) => !o.geometry)
   // const occurrenceFields = Object.keys(occurrences[0] ?? {})
   const occurrenceFields = Object.keys(occurrences?.[0]?.data ?? {})
   console.log('occurrenceImport, occurrenceFields:', occurrenceFields)
@@ -83,6 +84,19 @@ export const Component = () => {
     [tab],
   )
 
+  const tab2Style = useMemo(() => {
+    // green if all occurrences have geometry
+    if (occurrences.length && !occurrencesWithoutGeometry?.length)
+      return {
+        ...tabNumberStyle,
+        backgroundColor: 'var(--colorCompoundBrandStrokeHover)',
+      }
+    // black if is current
+    if (tab === 2) return { ...tabNumberStyle, backgroundColor: 'black' }
+    // grey if no occurrences or not current
+    return { ...tabNumberStyle, backgroundColor: 'grey' }
+  }, [occurrences.length, occurrencesWithoutGeometry?.length, tab])
+
   console.log('OccurrenceImport Route:', {
     occurrenceImport,
     occurrenceFields,
@@ -110,7 +124,12 @@ export const Component = () => {
         <Tab id="1" value={1} icon={<div style={tabStyle(1)}>1</div>}>
           Data
         </Tab>
-        <Tab id="2" value={2} icon={<div style={tabStyle(2)}>2</div>}>
+        <Tab
+          id="2"
+          value={2}
+          icon={<div style={tab2Style}>2</div>}
+          disabled={!occurrences.length}
+        >
           Geometry
         </Tab>
         <Tab id="3" value={3} icon={<div style={tabStyle(3)}>3</div>}>
