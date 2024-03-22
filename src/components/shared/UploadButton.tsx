@@ -15,9 +15,9 @@ export const UploadButton = memo(({ processData, additionalData = {} }) => {
   const onUpload = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0]
-      await processData({ file, db })
+      await processData({ file, additionalData, db })
     },
-    [db, processData],
+    [additionalData, db, processData],
   )
 
   const onClickUploadButton = useCallback(() => {

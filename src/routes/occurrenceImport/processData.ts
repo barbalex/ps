@@ -5,7 +5,7 @@ import { createOccurrence } from '../../modules/createRows'
 export const processData = async ({ file, additionalData, db }) => {
   if (!file) return
 
-  console.log('processData, file:', file)
+  console.log('processData', { file, additionalData, db })
   // TODO:
   // this function is passed to the UploadButton component
   // it should process the content of the file

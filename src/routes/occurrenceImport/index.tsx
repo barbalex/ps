@@ -37,11 +37,20 @@ export const Component = () => {
       include: { occurrences: true },
     }),
   )
-  const occurrences = occurrenceImport?.occurrences ?? []
-  // const occurrenceFields = Object.keys(occurrences[0] ?? {})
-  const occurrenceFields = Object.keys(
-    JSON.parse(occurrences?.[0]?.data ?? '{}'),
+  console.log('occurrenceImport, occurrenceImport:', occurrenceImport)
+  const { results: occurrences = [] } = useLiveQuery(
+    db.occurrences.liveMany({
+      where: {
+        occurrence_import_id:
+          occurrenceImport?.occurrence_import_id ??
+          '99999999-9999-9999-9999-999999999999',
+      },
+    }),
   )
+  console.log('occurrenceImport, occurrences:', occurrences)
+  // const occurrenceFields = Object.keys(occurrences[0] ?? {})
+  const occurrenceFields = Object.keys(occurrences?.[0]?.data ?? {})
+  console.log('occurrenceImport, occurrenceFields:', occurrenceFields)
 
   const onChange: InputProps['onChange'] = useCallback(
     (e, data) => {
