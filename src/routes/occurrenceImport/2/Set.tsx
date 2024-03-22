@@ -20,18 +20,18 @@ export const Set = memo(({ occurrenceImport }) => {
 
   const occurrencesWithoutGeometry = occurrences?.filter((o) => !o.geometry)
 
-  const toConvertCount = occurrencesWithoutGeometry?.length ?? 0
+  const toSetCount = occurrencesWithoutGeometry?.length ?? 0
 
   const onClick = useCallback(async () => {
     setGeometries({ occurrenceImport, db, setNotification })
   }, [db, occurrenceImport])
 
-  if (toConvertCount === 0) return null
+  if (toSetCount === 0) return null
 
   return (
     <Button onClick={onClick}>
       <>
-        <div>{`Convert coordinates of ${toConvertCount} occurrences to EPSG:4326`}</div>
+        <div>{`Set coordinates of ${toSetCount} occurrences`}</div>
         {notification && <div style={notificationStyle}>{notification}</div>}
       </>
     </Button>

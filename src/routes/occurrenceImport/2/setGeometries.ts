@@ -56,7 +56,7 @@ export const setGeometries = async ({
     const position = proj4(occurrenceImport.crs, 'EPSG:4326', coordinates)
     // TODO: why is reversing needed? is it a bug?
     const geometry: Point = point(position.reverse())
-    await db.occurrences.update({
+    db.occurrences.update({
       where: { occurrence_id: o.occurrence_id },
       data: { geometry },
     })
