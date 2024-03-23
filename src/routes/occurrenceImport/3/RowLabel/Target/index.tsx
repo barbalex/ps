@@ -89,7 +89,7 @@ export const Target = ({ label }: Props) => {
               </p>
             </div>
             <TargetElements
-              rowLabel={rowLabel}
+              label={label}
               isDraggingOver={snapshot.isDraggingOver}
               provided={provided}
             />

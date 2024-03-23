@@ -23,23 +23,23 @@ const StyledTextField = styled(TextField)`
 
 interface Props {
   el: TargetElement
-  rowState: ITable
+  label: ITable
   index: number
 }
 
 const BetweenCharacters = ({
   el,
-  rowState,
+  label,
   index,
   children,
 }: Props): PropsWithChildren => {
   const onBlur = useCallback(
     (event) => {
-      const clonedRowLabel = [...rowState.current.row_label]
+      const clonedRowLabel = [...label]
       clonedRowLabel[index].text = event.target.value
       const newRowLabel = clonedRowLabel.length ? clonedRowLabel : null
       const newRow = {
-        ...rowState.current,
+        ...label,
         row_label: newRowLabel,
       }
       rowState.current = newRow
