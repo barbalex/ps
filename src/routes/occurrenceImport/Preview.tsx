@@ -86,6 +86,13 @@ export const Preview = memo(({ occurrences, occurrenceFields }: Props) => {
               ))}
             </tr>
           ))}
+          {occurrences.length > 100 && (
+            <tr>
+              <td colSpan={occurrenceFields.length} style={bocyCellStyle}>
+                and {occurrences.length - 100} more rows...
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
     </div>
