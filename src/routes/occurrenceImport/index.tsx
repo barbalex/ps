@@ -38,16 +38,14 @@ export const Component = () => {
       include: { occurrences: true },
     }),
   )
-  const { results: occurrences = [] } = useLiveQuery(
+  const { results: occurrences } = useLiveQuery(
     db.occurrences.liveMany({
-      where: {
-        occurrence_import_id:
-          occurrenceImport?.occurrence_import_id ??
-          '99999999-9999-9999-9999-999999999999',
-      },
+      where: { occurrence_import_id },
     }),
   )
-  const occurrencesWithoutGeometry = occurrences?.filter((o) => !o.geometry)
+  const occurrencesWithoutGeometry = (occurrences ?? [])?.filter(
+    (o) => !o.geometry,
+  )
   const occurrenceFields = Object.keys(occurrences?.[0]?.data ?? {})
 
   const onChange: InputProps['onChange'] = useCallback(
@@ -85,13 +83,13 @@ export const Component = () => {
     () => ({
       ...tabNumberStyle,
       backgroundColor:
-        occurrenceImport?.name && occurrences.length
+        occurrenceImport?.name && (occurrences ?? []).length
           ? 'var(--colorCompoundBrandStrokeHover)'
           : tab === 1
           ? 'black'
           : 'grey',
     }),
-    [occurrenceImport?.name, occurrences.length, tab],
+    [occurrenceImport?.name, occurrences, tab],
   )
 
   const tab2Style = useMemo(
@@ -99,7 +97,7 @@ export const Component = () => {
       ...tabNumberStyle,
       backgroundColor:
         // green if all occurrences have geometry
-        occurrences.length && !occurrencesWithoutGeometry?.length
+        (occurrences ?? []).length && !occurrencesWithoutGeometry?.length
           ? 'var(--colorCompoundBrandStrokeHover)'
           : // black if is current
           tab === 2
@@ -107,7 +105,7 @@ export const Component = () => {
           : // grey if no occurrences or not current
             'grey',
     }),
-    [occurrences.length, occurrencesWithoutGeometry?.length, tab],
+    [occurrences, occurrencesWithoutGeometry?.length, tab],
   )
 
   // TODO:
@@ -126,12 +124,7 @@ export const Component = () => {
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
-      {!!occurrences.length && (
-        <Preview
-          occurrences={occurrences}
-          occurrenceFields={occurrenceFields}
-        />
-      )}
+      <Preview occurrences={occurrences} occurrenceFields={occurrenceFields} />
       <TabList selectedValue={tab} onTabSelect={onTabSelect}>
         <Tab id="1" value={1} icon={<div style={tab1Style}>1</div>}>
           Data
@@ -140,7 +133,7 @@ export const Component = () => {
           id="2"
           value={2}
           icon={<div style={tab2Style}>2</div>}
-          disabled={!occurrences.length}
+          disabled={!(occurrences ?? []).length}
         >
           Geometry
         </Tab>
