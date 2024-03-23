@@ -63,7 +63,7 @@ export const Crs = memo(({ occurrenceImport, onChange: onChangePassed }) => {
   return (
     <>
       <TextField
-        label="Coordinate reference system of the imported occurrences"
+        label="Coordinate reference system used in the imported data"
         name="crs"
         value={occurrenceImport.crs ?? ''}
         onChange={onChange}

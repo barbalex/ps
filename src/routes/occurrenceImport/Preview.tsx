@@ -77,7 +77,7 @@ export const Preview = memo(({ occurrences, occurrenceFields }: Props) => {
           </tr>
         </thead>
         <tbody>
-          {occurrences.slice(0, 100).map((o) => (
+          {occurrences.slice(0, 50).map((o) => (
             <tr key={o.occurrence_id}>
               {occurrenceFields.map((f) => (
                 <td key={f} style={bocyCellStyle}>
@@ -86,10 +86,10 @@ export const Preview = memo(({ occurrences, occurrenceFields }: Props) => {
               ))}
             </tr>
           ))}
-          {occurrences.length > 100 && (
+          {occurrences.length > 50 && (
             <tr>
               <td colSpan={occurrenceFields.length} style={bocyCellStyle}>
-                and {occurrences.length - 100} more rows...
+                and {occurrences.length - 50} more rows...
               </td>
             </tr>
           )}

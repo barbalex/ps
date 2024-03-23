@@ -55,14 +55,14 @@ export const UploadButton = memo(({ processData, additionalData = {} }) => {
 
   return (
     <Field
-      validationMessage="Click to choose or drop a file. Accepts .csv, .json, .tsv, .xlsx, .xls, .ods."
+      validationMessage="Click to choose or drop a file. Accepts .csv, .tsv, .xlsx, .xls, .ods, .txt."
       validationState="none"
     >
       <input
         label="Upload"
         type="file"
         onChange={onUpload}
-        accept=".csv, .tsv, .xlsx, .xlsm, .xls, .ods, .fods, .dbf, .rtf, .txt, .dif"
+        accept=".csv, .tsv, .xlsx, .xls, .ods, .txt"
         ref={uploadInputRef}
         style={uploadInputStyle}
       />
