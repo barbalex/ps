@@ -24,7 +24,7 @@ const tabNumberStyle = {
   fontWeight: 'bold',
 }
 
-export const Component = () => {
+export const LabelCreator = () => {
   const { occurrence_import_id } = useParams()
   const [searchParams, setSearchParams] = useSearchParams()
   const tabString = searchParams.get('occurrence-import-tab')
@@ -118,7 +118,7 @@ export const Component = () => {
         ? 'black'
         : 'grey',
     }),
-    [occurrenceImport?.name, occurrences, tab],
+    [occurrenceImport?.id_field, tab],
   )
 
   // TODO:
