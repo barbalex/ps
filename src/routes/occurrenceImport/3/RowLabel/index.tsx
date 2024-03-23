@@ -3,7 +3,7 @@ import { DragDropContext } from 'react-beautiful-dnd'
 import { arrayMoveImmutable } from 'array-move'
 
 import FieldList from './FieldList'
-import Target from './Target'
+import { Target } from './Target'
 
 const containerStyle = {
   outline: '1px solid lightgrey',
@@ -30,12 +30,12 @@ const innerContainerStyle = {
  * 2. presentation: only the drop area
  * 3. remind user to first define the fields
  */
-interface labelElement {
+export interface LabelElement {
   type: 'field' | 'separator'
-  field: string
+  value: string
 }
 interface Props {
-  label: labelElement[]
+  label: LabelElement[]
   fields: string[]
   name: string
   onChange: () => void
@@ -69,8 +69,7 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
             ...label.slice(0, destination.index),
             {
               type: 'separator',
-              index: destination.index,
-              text: '',
+              value: '',
             },
             ...label.slice(destination.index),
           ]
@@ -81,7 +80,6 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
             ...label.slice(0, destination.index),
             {
               type: 'field',
-              index: destination.index,
               value: field,
             },
             ...label.slice(destination.index),
@@ -123,7 +121,7 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
     <div style={containerStyle}>
       <DragDropContext onDragEnd={onDragEnd}>
         <div style={innerContainerStyle}>
-          <Target rowLabel={label} rowState={rowState} />
+          <Target label={label} />
           <FieldList useLabels={useLabels} fields={fields} />
         </div>
       </DragDropContext>

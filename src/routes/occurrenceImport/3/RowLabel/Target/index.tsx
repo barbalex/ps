@@ -1,42 +1,49 @@
 import { Droppable } from 'react-beautiful-dnd'
-import styled from '@emotion/styled'
 
 import TargetElements from './TargetElements'
+import { LabelElement } from '..'
 
-const Container = styled.div`
-  margin: 0;
-  margin-right: 8px;
-  outline: 1px dotted lightgrey;
-  border-radius: 4px;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-  border-collapse: collapse;
-  box-sizing: border-box;
-  flex-grow: 1;
-  > div {
-    flex-grow: 1;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-  }
-`
-const Target = styled.div``
-const TitleContainer = styled.div`
-  padding: 8px;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 0;
-  user-select: none;
-`
-const Title = styled.h4`
-margin 0;
-`
-const Explainer = styled.p`
-  font-size: x-small;
-  margin: 0;
-  color: grey;
-`
+const containerStyle = {
+  margin: 0,
+  marginRight: 8,
+  outline: '1px dotted lightgrey',
+  borderRadius: 4,
+  borderTopRightRadius: 0,
+  borderBottomRightRadius: 0,
+  borderCollapse: 'collapse',
+  boxSizing: 'border-box',
+  flexGrow: 1,
+}
+// was inside container:
+// > div {
+//   flex-grow: 1;
+//   height: 100%;
+//   width: 100%;
+//   display: flex;
+//   flex-direction: column;
+// }
+const droppableStyle = {
+  flexGrow: 1,
+  height: '100%',
+  width: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+}
+const titleContainerStyle = {
+  padding: 8,
+  display: 'flex',
+  flexDirection: 'column',
+  flexGrow: 0,
+  userSelect: 'none',
+}
+const titleStyle = {
+  margin: 0,
+}
+const explainerStyle = {
+  fontSize: 'x-small',
+  margin: 0,
+  color: 'grey',
+}
 
 /**
  * Have two versions:
@@ -54,41 +61,41 @@ const Explainer = styled.p`
  */
 
 interface Props {
-  rowLabel: any[]
-  rowState: ITable
+  label: LabelElement[]
 }
 
-const RowLabelTarget = ({ rowLabel, rowState }: Props) => {
+export const Target = ({ label }: Props) => {
   return (
-    <Container>
-      <Droppable droppableId="target" direction="horizontal">
+    <div style={containerStyle}>
+      <Droppable
+        droppableId="target"
+        direction="horizontal"
+        style={droppableStyle}
+      >
         {(provided, snapshot) => (
-          <Target ref={provided.innerRef} {...provided.droppableProps}>
-            <TitleContainer>
-              <Title>Datensatz-Beschriftung</Title>
-              <Explainer>
+          <div ref={provided.innerRef} {...provided.droppableProps}>
+            <div style={titleContainerStyle}>
+              <h4 style={titleStyle}>Datensatz-Beschriftung</h4>
+              <p style={explainerStyle}>
                 Hier bestimmen Sie, wie Datensätze beschriftet werden.
-              </Explainer>
-              <Explainer>
+              </p>
+              <p style={explainerStyle}>
                 Ziehen Sie Felder hierhin. Der jeweilige Wert des Felds wird
                 dann für die Beschriftung verwendet.
-              </Explainer>
-              <Explainer>
+              </p>
+              <p style={explainerStyle}>
                 Sie können mehrere Felder kombinieren. Und mit dem
                 Zeichen-Werkzeug (Trenn-)Zeichen platzieren.
-              </Explainer>
-            </TitleContainer>
+              </p>
+            </div>
             <TargetElements
               rowLabel={rowLabel}
-              rowState={rowState}
               isDraggingOver={snapshot.isDraggingOver}
               provided={provided}
             />
-          </Target>
+          </div>
         )}
       </Droppable>
-    </Container>
+    </div>
   )
 }
-
-export default RowLabelTarget
