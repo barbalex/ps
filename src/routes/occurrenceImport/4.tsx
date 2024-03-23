@@ -49,21 +49,25 @@ export const Four = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
           </>
         }
       />
-      <DropdownFieldOptions
-        label="Previous import"
-        name="previous_import"
-        options={occurrenceImportOptions}
-        value={occurrenceImport.previous_import ?? ''}
-        onChange={onChange}
-        validationMessage="Have occurrences been previously imported from the same source? If so: choose the previous import. If not: leave empty."
-      />
-      <RadioGroupField
-        label="How to deal with a previous import"
-        name="previous_import_operation"
-        list={['update_and_extend', 'replace']}
-        value={occurrenceImport.previous_import_operation ?? ''}
-        onChange={onChange}
-      />
+      {!!occurrenceImports.length && (
+        <>
+          <DropdownFieldOptions
+            label="Previous import"
+            name="previous_import"
+            options={occurrenceImportOptions}
+            value={occurrenceImport.previous_import ?? ''}
+            onChange={onChange}
+            validationMessage="Have occurrences been previously imported from the same source? If so: choose the previous import. If not: leave empty."
+          />
+          <RadioGroupField
+            label="How to deal with a previous import"
+            name="previous_import_operation"
+            list={['update_and_extend', 'replace']}
+            value={occurrenceImport.previous_import_operation ?? ''}
+            onChange={onChange}
+          />
+        </>
+      )}
     </>
   )
 })

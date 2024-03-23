@@ -14,7 +14,13 @@ const textareaStyle = {
 }
 
 export const TextArea = memo((props: Partial<TextareaProps>) => {
-  const { label, validationMessage, validationState, autoFocus, button } = props
+  const {
+    label,
+    validationMessage,
+    validationState = 'none',
+    autoFocus,
+    button,
+  } = props
 
   return (
     <Field

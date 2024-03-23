@@ -108,6 +108,18 @@ export const Component = () => {
     [occurrences, occurrencesWithoutGeometry?.length, tab],
   )
 
+  const tab4Style = useMemo(
+    () => ({
+      ...tabNumberStyle,
+      backgroundColor: occurrenceImport?.id_field
+        ? 'var(--colorCompoundBrandStrokeHover)'
+        : tab === 4
+        ? 'black'
+        : 'grey',
+    }),
+    [occurrenceImport?.name, occurrences, tab],
+  )
+
   // TODO:
   // show stepper-like tabs on new import:
   // 1. data: name, attribution, file
@@ -140,7 +152,7 @@ export const Component = () => {
         <Tab id="3" value={3} icon={<div style={tabStyle(3)}>3</div>}>
           Label
         </Tab>
-        <Tab id="4" value={4} icon={<div style={tabStyle(4)}>4</div>}>
+        <Tab id="4" value={4} icon={<div style={tab4Style}>4</div>}>
           Identification
         </Tab>
       </TabList>

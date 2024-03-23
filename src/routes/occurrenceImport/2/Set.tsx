@@ -30,7 +30,13 @@ export const Set = memo(({ occurrenceImport }) => {
 
   if (!occurrences) return null
 
-  if (toSetCount === 0) return <div>All occurrences's geometries are set</div>
+  if (toSetCount === 0) {
+    return (
+      <div>{`All ${new Intl.NumberFormat().format(
+        occurrences.length,
+      )} occurrences's geometries are set`}</div>
+    )
+  }
 
   return (
     <Button onClick={onClick}>

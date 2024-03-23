@@ -26,6 +26,7 @@ export const One = memo(({ occurrenceImport, onChange, autoFocusRef }) => {
         name="attribution"
         value={occurrenceImport.attribution ?? ''}
         onChange={onChange}
+        validationMessage="Please add the correct citation as required by the data provider"
       />
       {/* TODO: only show when not yet uploaded? */}
       <UploadButton
