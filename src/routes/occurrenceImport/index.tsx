@@ -8,6 +8,7 @@ import { getValueFromChange } from '../../modules/getValueFromChange'
 import { Header } from './Header'
 import { One } from './1'
 import { Two } from './2'
+import { Three } from './3'
 import { Four } from './4'
 import { Preview } from './Preview'
 
@@ -166,6 +167,13 @@ export const Component = () => {
         )}
         {tab === 2 && (
           <Two
+            occurrenceImport={occurrenceImport}
+            occurrenceFields={occurrenceFields}
+            onChange={onChange}
+          />
+        )}
+        {tab === 3 && (
+          <Three
             occurrenceImport={occurrenceImport}
             occurrenceFields={occurrenceFields}
             onChange={onChange}
