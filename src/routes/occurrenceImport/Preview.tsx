@@ -33,7 +33,7 @@ const headStyle = {
   zIndex: 1,
 }
 const cellStyle = {
-  border: '1px solid grey',
+  border: '1px solid rgb(210 210 210)',
   padding: 2,
   ...fontStyle,
 }
