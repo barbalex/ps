@@ -1,10 +1,21 @@
 import { memo } from 'react'
+
 import { Occurrences as Occurrence } from '../../generated/client'
 
+const emptyContainerStyle = {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  overflow: 'auto',
+  scrollbarGutter: 'auto',
+  width: '100%',
+  height: 250,
+}
 const containerStyle = {
   overflow: 'auto',
+  scrollbarGutter: 'auto',
   width: '100%',
-  maxHeight: 300,
+  maxHeight: 250,
 }
 const fontStyle = {
   fontSize: '0.8em',
@@ -41,33 +52,42 @@ interface Props {
   occurrenceFields: string[]
 }
 
-export const Preview = memo(({ occurrences, occurrenceFields }: Props) => (
-  <div style={containerStyle}>
-    <table
-      aria-label="Preview"
-      style={tableStyle}
-      width={occurrenceFields.length * 60}
-    >
-      <thead style={headStyle}>
-        <tr>
-          {occurrenceFields.map((f) => (
-            <th key={f} style={headerCellStyle}>
-              {f}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {occurrences.slice(0, 5).map((o) => (
-          <tr key={o.occurrence_id}>
+export const Preview = memo(({ occurrences, occurrenceFields }: Props) => {
+  if (!occurrences) {
+    return <div style={emptyContainerStyle}>loading preview...</div>
+  }
+  if (!occurrences.length) {
+    return <div style={emptyContainerStyle}>no data to preview</div>
+  }
+
+  return (
+    <div style={containerStyle}>
+      <table
+        aria-label="Preview"
+        style={tableStyle}
+        width={occurrenceFields.length * 60}
+      >
+        <thead style={headStyle}>
+          <tr>
             {occurrenceFields.map((f) => (
-              <td key={f} style={bocyCellStyle}>
-                {o.data[f]}
-              </td>
+              <th key={f} style={headerCellStyle}>
+                {f}
+              </th>
             ))}
           </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-))
+        </thead>
+        <tbody>
+          {occurrences.slice(0, 100).map((o) => (
+            <tr key={o.occurrence_id}>
+              {occurrenceFields.map((f) => (
+                <td key={f} style={bocyCellStyle}>
+                  {o.data[f]}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+})
