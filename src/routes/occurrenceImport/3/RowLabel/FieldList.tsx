@@ -2,27 +2,24 @@ import { Draggable, Droppable } from 'react-beautiful-dnd'
 import styled from '@emotion/styled'
 import { BsArrowsMove } from 'react-icons/bs'
 
-import { Field } from '../../../../dexieClient'
-import labelFromLabeledTable from '../../../../utils/labelFromLabeledTable'
-
-const Container = styled.div`
-  margin: 0;
-  outline: 1px dotted lightgrey;
-  border-radius: 4px;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  border-collapse: collapse;
-  box-sizing: border-box;
-`
-const Title = styled.h5`
-  margin 0;
-  padding: 4px;
-  padding-bottom: 0;
-  user-select: none;
-`
-const FieldList = styled.div`
-  padding: 4px;
-`
+const containerStyle = {
+  margin: 0,
+  outline: '1px dotted lightgrey',
+  borderRadius: 4,
+  borderTopLeftRadius: 0,
+  borderBottomLeftRadius: 0,
+  borderCollapse: 'collapse',
+  boxSizing: 'border-box',
+}
+const titleStyle = {
+  margin: 0,
+  padding: 4,
+  paddingBottom: 0,
+  userSelect: 'none',
+}
+const fieldListStyle = {
+  padding: 4,
+}
 const FieldContainer = styled.div`
   position: relative;
   padding: 4px 7px;
@@ -58,21 +55,24 @@ const Explainer = styled.p`
   color: grey;
 `
 
-type Props = {
-  useLabels: boolean
-  fields: Field[]
+interface Props {
+  fields: string[]
 }
 
-const RowLabelFieldList = ({ useLabels, fields }: Props) => (
-  <Container>
+export const FieldList = ({ fields }: Props) => (
+  <div style={containerStyle}>
     <Droppable droppableId="fieldList">
       {(provided) => (
-        <FieldList ref={provided.innerRef} {...provided.droppableProps}>
-          <Title>Felder</Title>
-          {(fields ?? []).map((f, index) => (
+        <div
+          ref={provided.innerRef}
+          {...provided.droppableProps}
+          style={fieldListStyle}
+        >
+          <h5 style={titleStyle}>Felder</h5>
+          {(fields ?? []).map((field, index) => (
             <Draggable
-              key={f.id}
-              draggableId={`${f.id}draggableField`}
+              key={field.id}
+              draggableId={`${field.id}draggableField`}
               index={index}
             >
               {(provided, snapshot) => (
@@ -82,10 +82,7 @@ const RowLabelFieldList = ({ useLabels, fields }: Props) => (
                   ref={provided.innerRef}
                   isDragging={snapshot.isDragging}
                 >
-                  {labelFromLabeledTable({
-                    object: f,
-                    useLabels,
-                  })}
+                  {field}
                   <FieldHandle />
                 </FieldContainer>
               )}
@@ -97,7 +94,7 @@ const RowLabelFieldList = ({ useLabels, fields }: Props) => (
               bestimmen.
             </Explainer>
           )}
-          <Title>Zeichen</Title>
+          <h5 style={titleStyle}>Zeichen</h5>
           <Draggable
             key="textfield"
             draggableId="textfield"
@@ -109,16 +106,14 @@ const RowLabelFieldList = ({ useLabels, fields }: Props) => (
                 {...provided.dragHandleProps}
                 ref={provided.innerRef}
               >
-                {'Zeichen vor / nach / zwischen Feldern'}
+                Any text
                 <FieldHandle />
               </DividerContainer>
             )}
           </Draggable>
           {provided.placeholder}
-        </FieldList>
+        </div>
       )}
     </Droppable>
-  </Container>
+  </div>
 )
-
-export default RowLabelFieldList

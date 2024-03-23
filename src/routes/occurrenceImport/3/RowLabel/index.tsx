@@ -1,24 +1,20 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, memo } from 'react'
 import { DragDropContext } from 'react-beautiful-dnd'
-import { useParams } from 'react-router-dom'
-import { useLiveQuery } from 'dexie-react-hooks'
-import styled from '@emotion/styled'
 import { arrayMoveImmutable } from 'array-move'
 
-import { Field } from '../../../../dexieClient'
 import FieldList from './FieldList'
 import Target from './Target'
 
-const Container = styled.div`
-  outline: 1px solid lightgrey;
-  border-radius: 4px;
-  border-collapse: collapse;
-  box-sizing: border-box;
-`
-const InnerContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-`
+const containerStyle = {
+  outline: '1px solid lightgrey',
+  borderRadius: 4,
+  borderCollapse: 'collapse',
+  boxSizing: 'border-box',
+}
+const innerContainerStyle = {
+  display: 'flex',
+  justifyContent: 'space-between',
+}
 
 /**
  * Have two versions:
@@ -41,10 +37,11 @@ interface labelElement {
 interface Props {
   label: labelElement[]
   fields: string[]
+  name: string
   onChange: () => void
 }
 
-export const LabelCreator = ({ label, fields, name, onChange }: Props) => {
+export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
   // TODO: on with https://egghead.io/lessons/react-persist-list-reordering-with-react-beautiful-dnd-using-the-ondragend-callback
   const onDragEnd = useCallback(
     (result) => {
@@ -123,13 +120,13 @@ export const LabelCreator = ({ label, fields, name, onChange }: Props) => {
   )
 
   return (
-    <Container>
+    <div style={containerStyle}>
       <DragDropContext onDragEnd={onDragEnd}>
-        <InnerContainer>
+        <div style={innerContainerStyle}>
           <Target rowLabel={label} rowState={rowState} />
           <FieldList useLabels={useLabels} fields={fields} />
-        </InnerContainer>
+        </div>
       </DragDropContext>
-    </Container>
+    </div>
   )
-}
+})
