@@ -62,9 +62,10 @@ const explainerStyle = {
 
 interface Props {
   label: LabelElement[]
+  onChange: () => void
 }
 
-export const Target = ({ label }: Props) => {
+export const Target = ({ label, onChange }: Props) => {
   return (
     <div style={containerStyle}>
       <Droppable
@@ -90,6 +91,7 @@ export const Target = ({ label }: Props) => {
             </div>
             <TargetElements
               label={label}
+              onChange={onChange}
               isDraggingOver={snapshot.isDraggingOver}
               provided={provided}
             />

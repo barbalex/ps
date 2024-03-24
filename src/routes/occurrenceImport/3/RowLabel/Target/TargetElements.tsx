@@ -4,8 +4,9 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import styled from '@emotion/styled'
 import { BsArrowsMove } from 'react-icons/bs'
 
-import { dexie, Field, ITable } from '../../../../../dexieClient'
+import { dexie, Field,  } from '../../../../../dexieClient'
 import BetweenCharactersElement from './BetweenCharacters'
+import { LabelElement } from '..'
 
 const TargetContainer = styled.div`
   display: flex;
@@ -58,8 +59,8 @@ export interface TargetElement {
 }
 
 interface Props {
-  rowLabel: any[]
-  rowState: ITable
+  label: LabelElement[]
+  onChange: () => void
   isDraggingOver: boolean
   provided: DroppableProvided
 }
@@ -80,25 +81,25 @@ interface Props {
  */
 
 const RowLabelTarget = ({
-  rowLabel,
-  rowState,
+  label,
+  onChange,
   isDraggingOver,
   provided,
 }: Props) => {
   const { tableId } = useParams()
 
   // rowLabel: array of {field: id, type: 'field'},{text, type: 'text'}
-  const targetFieldIds: string[] = rowLabel
+  const targetFieldIds: string[] = label
     .filter((el) => el.type === 'field')
     .map((el) => el.field)
   const targetFields: Field[] =
     useLiveQuery(
       async () =>
         await dexie.fields.where('id').anyOf(targetFieldIds).toArray(),
-      [tableId, rowLabel],
+      [tableId, label],
     ) ?? []
 
-  const targetElements: TargetElement[] = rowLabel.map((el) => ({
+  const targetElements: TargetElement[] = label.map((el) => ({
     type: el.type,
     field: el.field ? targetFields.find((f) => f.id === el.field) : undefined,
     text: el.text,
@@ -131,7 +132,8 @@ const RowLabelTarget = ({
               ) : (
                 <BetweenCharactersElement
                   el={el}
-                  rowState={rowState}
+                  label={label}
+                  onChange={onChange}
                   index={index}
                 >
                   <BetweenCharactersHandle />

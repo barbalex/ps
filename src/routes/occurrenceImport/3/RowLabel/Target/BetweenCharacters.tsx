@@ -1,13 +1,14 @@
 import { useCallback } from 'react'
 import TextField from '@mui/material/TextField'
+import { Input } from '@fluentui/react-components'
 import styled from '@emotion/styled'
 
-import { dexie, ITable } from '../../../../../dexieClient'
 import { TargetElement } from './TargetElements'
+import { LabelElement } from '..'
 
-const Container = styled.div`
-  position: relative;
-`
+const containerStyle = {
+  position: 'relative',
+}
 const StyledTextField = styled(TextField)`
   margin-right: 6px;
   margin-bottom: 0;
@@ -23,42 +24,44 @@ const StyledTextField = styled(TextField)`
 
 interface Props {
   el: TargetElement
-  label: ITable
+  label: LabelElement[]
+  onChange: () => void
   index: number
+  children: React.ReactNode
 }
 
 const BetweenCharacters = ({
   el,
   label,
+  onChange,
   index,
   children,
 }: Props): PropsWithChildren => {
   const onBlur = useCallback(
     (event) => {
-      const clonedRowLabel = [...label]
-      clonedRowLabel[index].text = event.target.value
-      const newRowLabel = clonedRowLabel.length ? clonedRowLabel : null
-      const newRow = {
-        ...label,
-        row_label: newRowLabel,
-      }
-      rowState.current = newRow
-      dexie.ttables.update(rowState.current.id, { row_label: newRowLabel })
+      const newRowLabel = [
+        ...label.slice(0, index),
+        {
+          type: 'separator',
+          value: event.target.value,
+        },
+        ...label.slice(index),
+      ]
+      onChange({ target: { [name]: newRowLabel } })
     },
-    [index, rowState],
+    [index, label, onChange],
   )
   return (
-    <Container>
-      <StyledTextField
+    <div style={containerStyle}>
+      <Input
         label="Zeichen"
-        variant="outlined"
-        margin="dense"
-        size="small"
         defaultValue={el.text ?? ''}
+        appearance="outline"
+        size="small"
         onBlur={onBlur}
       />
       {children}
-    </Container>
+    </div>
   )
 }
 

@@ -121,7 +121,7 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
     <div style={containerStyle}>
       <DragDropContext onDragEnd={onDragEnd}>
         <div style={innerContainerStyle}>
-          <Target label={label} />
+          <Target label={label} onChange={onChange} />
           <FieldList useLabels={useLabels} fields={fields} />
         </div>
       </DragDropContext>
