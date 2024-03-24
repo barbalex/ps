@@ -64,13 +64,9 @@ export const FieldList = ({ fields }: Props) => (
           {...provided.droppableProps}
           style={fieldListStyle}
         >
-          <h5 style={titleStyle}>Felder</h5>
+          <h5 style={titleStyle}>Fields</h5>
           {(fields ?? []).map((field, index) => (
-            <Draggable
-              key={field}
-              draggableId={`${field}draggableField`}
-              index={index}
-            >
+            <Draggable key={field} draggableId={field} index={index}>
               {(provided, snapshot) => (
                 <div
                   {...provided.draggableProps}
@@ -90,13 +86,7 @@ export const FieldList = ({ fields }: Props) => (
               )}
             </Draggable>
           ))}
-          {(fields ?? []).length === 0 && (
-            <p style={explainerStyle}>
-              Sie müssen Felder erzeugen, um die Datensatz-Beschriftung zu
-              bestimmen.
-            </p>
-          )}
-          <h5 style={titleStyle}>Zeichen</h5>
+          <h5 style={titleStyle}>Separator (any Text)</h5>
           <Draggable
             key="textfield"
             draggableId="textfield"

@@ -42,11 +42,20 @@ interface Props {
 }
 
 export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
+  console.log('occurrenceImport, Three, LabelCreator', {
+    label,
+    fields,
+    name,
+    onChange,
+  })
   // TODO: on with https://egghead.io/lessons/react-persist-list-reordering-with-react-beautiful-dnd-using-the-ondragend-callback
   const onDragEnd = useCallback(
     (result) => {
       // TODO:
-      // console.log('onDragEnd, result:', result)
+      console.log(
+        'occurrenceImport, Three, LabelCreator, onDragEnd, result:',
+        result,
+      )
       const { destination, source, draggableId } = result
       // if (!destination) {
       //   return
@@ -85,7 +94,14 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
             ...label.slice(destination.index),
           ]
         }
-        onChange({ target: { [name]: newRowLabel } })
+        console.log(
+          'occurrenceImport, Three, LabelCreator, onDragEnd, will save:',
+          {
+            name,
+            newRowLabel,
+          },
+        )
+        onChange({ target: { value: newRowLabel, name } })
       }
       if (
         // not checking destination - user can simply pull out of target
@@ -97,7 +113,7 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
         clonedRowLabel.splice(source.index, 1)
         const newRowLabel = clonedRowLabel.length ? clonedRowLabel : null
 
-        onChange({ target: { [name]: newRowLabel } })
+        onChange({ target: { value: newRowLabel, name } })
       }
 
       if (
@@ -111,7 +127,7 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
           source.index,
           destination.index,
         )
-        onChange({ target: { [name]: newRowLabel } })
+        onChange({ target: { value: newRowLabel, name } })
       }
     },
     [fields, label, name, onChange],

@@ -51,7 +51,9 @@ export const Component = () => {
 
   const onChange: InputProps['onChange'] = useCallback(
     (e, data) => {
+      console.log('occurrenceImport, onChange 1', { e, data })
       const { name, value } = getValueFromChange(e, data)
+      console.log('occurrenceImport, onChange 2', { name, value })
       db.occurrence_imports.update({
         where: { occurrence_import_id },
         data: { [name]: value },

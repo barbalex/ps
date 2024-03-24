@@ -73,6 +73,7 @@ export const TargetElements = ({
   isDraggingOver,
   provided,
 }: Props) => {
+  console.log('occurrenceImport, Three, TargetElements', { label, onChange, isDraggingOver })
   return (
     <div
       style={{
@@ -88,7 +89,7 @@ export const TargetElements = ({
         >
           {(provided) => (
             <div
-              key={el.field?.id ?? el.text ?? index}
+              key={el.value ?? index}
               {...provided.draggableProps}
               {...provided.dragHandleProps}
               ref={provided.innerRef}

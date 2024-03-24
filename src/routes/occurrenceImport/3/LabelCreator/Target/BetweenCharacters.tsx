@@ -45,15 +45,15 @@ const BetweenCharacters = ({
         },
         ...label.slice(index),
       ]
-      onChange({ target: { [name]: newRowLabel } })
+      onChange({ target: { value: newRowLabel, name } })
     },
     [index, label, onChange],
   )
   return (
     <div style={containerStyle}>
       <Input
-        label="Zeichen"
-        defaultValue={el.text ?? ''}
+        label="Separator (any Text)"
+        defaultValue={el.value ?? ''}
         appearance="outline"
         size="small"
         onBlur={onBlur}

@@ -1,14 +1,14 @@
 export const getValueFromChange = (e, data) => {
   const targetType = e.target.type
   const name = e.target.name
-  // console.log('hello getValueFromChange 1', {
-  //   targetType,
-  //   e,
-  //   data,
-  //   valueAsNumber: e.target.valueAsNumber,
-  //   name,
-  //   dataValue: data.value,
-  // })
+  console.log('occurrenceImport, getValueFromChange', {
+    targetType,
+    e,
+    data,
+    valueAsNumber: e.target.valueAsNumber,
+    name,
+    dataValue: data.value,
+  })
 
   switch (targetType) {
     case 'checkbox':
