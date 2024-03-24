@@ -27,17 +27,8 @@ const fieldElementStyle = {
 const fieldHandleStyle = {
   color: '#989898',
   position: 'absolute',
-  top: '-8.5px',
-  left: '-2px',
-  height: '1.2em',
-  width: '1.2em',
-  fontWeight: 'bold',
-}
-const betweenCharactersHandleStyle = {
-  color: '#989898',
-  position: 'absolute',
-  top: '0.7px',
-  left: '-1.5px',
+  top: 0,
+  left: 0,
   height: '0.95em',
   width: '0.95em',
 }
@@ -73,11 +64,6 @@ export const TargetElements = ({
   isDraggingOver,
   provided,
 }: Props) => {
-  console.log('occurrenceImport, Three, TargetElements', {
-    label,
-    onChange,
-    isDraggingOver,
-  })
   return (
     <div
       style={{
@@ -99,7 +85,6 @@ export const TargetElements = ({
               ref={provided.innerRef}
               style={elementContainerStyle}
             >
-              {/* <Handle /> */}
               {el.type === 'field' ? (
                 <div style={fieldElementStyle}>
                   {el.value}
@@ -112,7 +97,7 @@ export const TargetElements = ({
                   onChange={onChange}
                   index={index}
                 >
-                  <BsArrowsMove style={betweenCharactersHandleStyle} />
+                  <BsArrowsMove style={fieldHandleStyle} />
                 </BetweenCharactersElement>
               )}
             </div>

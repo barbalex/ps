@@ -6,19 +6,13 @@ import { LabelElement } from '..'
 
 const containerStyle = {
   position: 'relative',
+  top: 4,
 }
-// const StyledTextField = styled(TextField)`
-//   margin-right: 6px;
-//   margin-bottom: 0;
-//   width: 100px;
-//   label {
-//     font-size: small !important;
-//     padding-left: 6px;
-//   }
-//   input {
-//     font-size: small !important;
-//   }
-// `
+const inputStyle = {
+  marginRight: 6,
+  width: 100,
+  height: 35,
+}
 
 interface Props {
   el: TargetElement
@@ -37,10 +31,6 @@ const BetweenCharacters = ({
 }: Props): PropsWithChildren => {
   const onBlur = useCallback(
     (event) => {
-      console.log(
-        'occurrenceImport, Three, LabelCreator, Target, BetweenCharacters, onBlur',
-        { event, value: event.target.value },
-      )
       const newRowLabel = [
         ...label.slice(0, index),
         {
@@ -53,14 +43,17 @@ const BetweenCharacters = ({
     },
     [index, label, onChange],
   )
+
   return (
     <div style={containerStyle}>
       <Input
         label="Separator (any Text)"
+        placeholder="Enter any text"
         defaultValue={el.value ?? ''}
         appearance="outline"
-        size="small"
+        size="medium"
         onBlur={onBlur}
+        style={inputStyle}
       />
       {children}
     </div>

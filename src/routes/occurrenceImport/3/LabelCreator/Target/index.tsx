@@ -1,6 +1,6 @@
 import { Droppable } from 'react-beautiful-dnd'
 
-import {TargetElements} from './TargetElements'
+import { TargetElements } from './TargetElements'
 import { LabelElement } from '..'
 
 const containerStyle = {
@@ -76,17 +76,15 @@ export const Target = ({ label, onChange }: Props) => {
         {(provided, snapshot) => (
           <div ref={provided.innerRef} {...provided.droppableProps}>
             <div style={titleContainerStyle}>
-              <h4 style={titleStyle}>Datensatz-Beschriftung</h4>
+              <h4 style={titleStyle}>Label Creator</h4>
+              <p style={explainerStyle}>Build your own label.</p>
               <p style={explainerStyle}>
-                Hier bestimmen Sie, wie Datensätze beschriftet werden.
+                Pull fields here. The respective value of the field will be used
+                for the label.
               </p>
               <p style={explainerStyle}>
-                Ziehen Sie Felder hierhin. Der jeweilige Wert des Felds wird
-                dann für die Beschriftung verwendet.
-              </p>
-              <p style={explainerStyle}>
-                Sie können mehrere Felder kombinieren. Und mit dem
-                Zeichen-Werkzeug (Trenn-)Zeichen platzieren.
+                You can combine multiple fields. And place separating text using
+                the separator tool.
               </p>
             </div>
             <TargetElements

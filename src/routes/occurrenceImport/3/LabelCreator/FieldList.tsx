@@ -43,11 +43,10 @@ const fieldsListStyle = {
 const fieldHandleStyle = {
   color: '#989898',
   position: 'absolute',
-  top: -6.8,
-  left: -2,
-  transform: 'rotate(90deg)',
-  height: '1.2em',
-  width: '1.2em',
+  top: 0,
+  left: 0,
+  height: '0.8em',
+  width: '0.8em',
 }
 
 interface Props {
