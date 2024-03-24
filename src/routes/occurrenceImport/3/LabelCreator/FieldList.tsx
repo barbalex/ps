@@ -28,8 +28,7 @@ const fieldContainerStyle = {
   fontSize: 'x-small',
   lineHeight: '16.6px',
   userSelect: 'none',
-  transition: 'background-color 0.2s ease',
-  transition: 'color 0.2s ease',
+  transition: 'background-color 0.2s ease, color 0.2s ease',
 }
 const dividerContainerStyle = {
   ...fieldContainerStyle,
