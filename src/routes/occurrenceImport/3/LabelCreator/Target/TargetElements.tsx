@@ -15,6 +15,7 @@ const targetContainerStyle = {
 }
 const fieldElementStyle = {
   padding: '8.5px 14px',
+  backgroundColor: 'rgba(103, 216, 101, 0.07)',
   border: '1px solid lightgrey',
   marginRight: 6,
   marginTop: 8,

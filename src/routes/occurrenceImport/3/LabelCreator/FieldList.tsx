@@ -75,7 +75,7 @@ export const FieldList = ({ fields }: Props) => (
                       ...fieldContainerStyle,
                       backgroundColor: snapshot.isDragging
                         ? 'rgb(74, 20, 140)'
-                        : 'white',
+                        : 'rgba(103, 216, 101, 0.07)',
                       color: snapshot.isDragging ? 'white' : 'black',
                     }}
                   >
@@ -86,7 +86,7 @@ export const FieldList = ({ fields }: Props) => (
               </Draggable>
             ))}
           </div>
-          <h5 style={titleStyle}>Separator (any Text)</h5>
+          <h5 style={titleStyle}>Separating text/characters</h5>
           <Draggable
             key="textfield"
             draggableId="textfield"

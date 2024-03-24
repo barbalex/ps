@@ -10,7 +10,7 @@ const containerStyle = {
 }
 const inputStyle = {
   marginRight: 6,
-  width: 100,
+  width: 90,
   height: 35,
 }
 
@@ -51,7 +51,7 @@ const BetweenCharacters = ({
         placeholder="Enter any text"
         defaultValue={el.value ?? ''}
         appearance="outline"
-        size="medium"
+        size="small"
         onBlur={onBlur}
         style={inputStyle}
       />
