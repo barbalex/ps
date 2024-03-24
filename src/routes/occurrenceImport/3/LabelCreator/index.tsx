@@ -19,16 +19,11 @@ const innerContainerStyle = {
 /**
  * Have two versions:
  * 1. editing
- *    - (horizontal?) list of draggable fields
+ *    - list of draggable fields
  *    - text field element to drag between field elements and input some text
  *    - drop area, horizontally sortable
- *      edit creates array of: {field: field_id, text: 'field', index: 1}
- *      or
- *         have a table 'table_row_label_parts' with fields: table_id, sort, type, value
- *         and in class Table a get function to fetch the table's row label or use https://github.com/ignasbernotas/dexie-relationships
- *         No, because: new table needs to be policied and synced. Much easier to have a jsonb field in already synced table
+ *      edit creates array of: {type: 'field'|'separator', value: value}
  * 2. presentation: only the drop area
- * 3. remind user to first define the fields
  */
 export interface LabelElement {
   type: 'field' | 'separator'
@@ -42,12 +37,6 @@ interface Props {
 }
 
 export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
-  console.log('occurrenceImport, Three, LabelCreator', {
-    label,
-    fields,
-    name,
-    onChange,
-  })
   // TODO: on with https://egghead.io/lessons/react-persist-list-reordering-with-react-beautiful-dnd-using-the-ondragend-callback
   const onDragEnd = useCallback(
     (result) => {
