@@ -12,6 +12,7 @@ const targetContainerStyle = {
   minHeight: '42px',
   padding: '8px',
   transition: 'background-color 0.2s ease',
+  userSelect: 'none',
 }
 const fieldElementStyle = {
   padding: '8.5px 14px',

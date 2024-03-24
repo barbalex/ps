@@ -79,8 +79,7 @@ export const Target = ({ label, onChange }: Props) => {
               <h4 style={titleStyle}>Label Creator</h4>
               <p style={explainerStyle}>Build your own label.</p>
               <p style={explainerStyle}>
-                Pull fields here. The respective value of the field will be used
-                for the label.
+                Pull fields here. The field's value will be used in the label.
               </p>
               <p style={explainerStyle}>
                 You can combine multiple fields. And place separating text using

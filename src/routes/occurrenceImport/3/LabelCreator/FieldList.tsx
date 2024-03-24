@@ -110,7 +110,6 @@ export const FieldList = ({ fields }: Props) => (
               </div>
             )}
           </Draggable>
-          {provided.placeholder}
         </div>
       )}
     </Droppable>
