@@ -103,7 +103,7 @@ export const FieldList = ({ fields }: Props) => (
             draggableId="textfield"
             index={fields.length}
           >
-            {(provided) => (
+            {(provided, snapshot) => (
               <div
                 {...provided.draggableProps}
                 {...provided.dragHandleProps}
