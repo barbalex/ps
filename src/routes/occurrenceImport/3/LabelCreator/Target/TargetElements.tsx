@@ -75,7 +75,6 @@ export const TargetElements = ({
 }: Props) => {
   return (
     <div
-      isDraggingOver={isDraggingOver}
       style={{
         ...targetContainerStyle,
         backgroundColor: isDraggingOver ? 'rgba(74,20,140,0.1)' : 'white',

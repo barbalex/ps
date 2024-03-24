@@ -67,8 +67,8 @@ export const FieldList = ({ fields }: Props) => (
           <h5 style={titleStyle}>Felder</h5>
           {(fields ?? []).map((field, index) => (
             <Draggable
-              key={field.id}
-              draggableId={`${field.id}draggableField`}
+              key={field}
+              draggableId={`${field}draggableField`}
               index={index}
             >
               {(provided, snapshot) => (
