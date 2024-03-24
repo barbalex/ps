@@ -57,60 +57,63 @@ export const FieldList = ({ fields }: Props) => (
   <div style={containerStyle}>
     <Droppable droppableId="fieldList">
       {(provided) => (
-        <div
-          ref={provided.innerRef}
-          {...provided.droppableProps}
-          style={fieldListStyle}
-        >
-          <h5 style={titleStyle}>Fields</h5>
-          <div style={fieldsListStyle}>
-            {(fields ?? []).map((field, index) => (
-              <Draggable key={field} draggableId={field} index={index}>
-                {(provided, snapshot) => (
-                  <div
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                    ref={provided.innerRef}
-                    style={{
-                      ...fieldContainerStyle,
-                      backgroundColor: snapshot.isDragging
-                        ? 'rgb(74, 20, 140)'
-                        : 'rgba(103, 216, 101, 0.07)',
-                      color: snapshot.isDragging ? 'white' : 'black',
-                    }}
-                  >
-                    {field}
-                    <BsArrowsMove style={fieldHandleStyle} />
-                  </div>
-                )}
-              </Draggable>
-            ))}
-          </div>
-          <h5 style={titleStyle}>Separating text/characters</h5>
-          <Draggable
-            key="textfield"
-            draggableId="textfield"
-            index={fields.length}
+        <>
+          <div
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+            style={fieldListStyle}
           >
-            {(provided, snapshot) => (
-              <div
-                {...provided.draggableProps}
-                {...provided.dragHandleProps}
-                ref={provided.innerRef}
-                style={{
-                  ...dividerContainerStyle,
-                  backgroundColor: snapshot.isDragging
-                    ? 'rgb(74, 20, 140)'
-                    : 'white',
-                  color: snapshot.isDragging ? 'white' : 'black',
-                }}
-              >
-                Any text
-                <BsArrowsMove style={fieldHandleStyle} />
-              </div>
-            )}
-          </Draggable>
-        </div>
+            <h5 style={titleStyle}>Fields</h5>
+            <div style={fieldsListStyle}>
+              {(fields ?? []).map((field, index) => (
+                <Draggable key={field} draggableId={field} index={index}>
+                  {(provided, snapshot) => (
+                    <div
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                      ref={provided.innerRef}
+                      style={{
+                        ...fieldContainerStyle,
+                        backgroundColor: snapshot.isDragging
+                          ? 'rgb(74, 20, 140)'
+                          : 'rgba(103, 216, 101, 0.07)',
+                        color: snapshot.isDragging ? 'white' : 'black',
+                      }}
+                    >
+                      {field}
+                      <BsArrowsMove style={fieldHandleStyle} />
+                    </div>
+                  )}
+                </Draggable>
+              ))}
+            </div>
+            <h5 style={titleStyle}>Separating text/characters</h5>
+            <Draggable
+              key="textfield"
+              draggableId="textfield"
+              index={fields.length}
+            >
+              {(provided, snapshot) => (
+                <div
+                  {...provided.draggableProps}
+                  {...provided.dragHandleProps}
+                  ref={provided.innerRef}
+                  style={{
+                    ...dividerContainerStyle,
+                    backgroundColor: snapshot.isDragging
+                      ? 'rgb(74, 20, 140)'
+                      : 'white',
+                    color: snapshot.isDragging ? 'white' : 'black',
+                  }}
+                >
+                  Any text
+                  <BsArrowsMove style={fieldHandleStyle} />
+                </div>
+              )}
+            </Draggable>
+          </div>
+          {provided.placeholder}
+        </>
       )}
     </Droppable>
   </div>
