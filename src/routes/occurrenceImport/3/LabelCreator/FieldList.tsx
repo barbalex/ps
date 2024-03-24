@@ -35,6 +35,11 @@ const dividerContainerStyle = {
   marginTop: 4,
   position: 'relative',
 }
+const fieldsListStyle = {
+  maxHeight: 300,
+  overflowY: 'auto',
+  overflowX: 'hidden',
+}
 const fieldHandleStyle = {
   color: '#989898',
   position: 'absolute',
@@ -59,27 +64,29 @@ export const FieldList = ({ fields }: Props) => (
           style={fieldListStyle}
         >
           <h5 style={titleStyle}>Fields</h5>
-          {(fields ?? []).map((field, index) => (
-            <Draggable key={field} draggableId={field} index={index}>
-              {(provided, snapshot) => (
-                <div
-                  {...provided.draggableProps}
-                  {...provided.dragHandleProps}
-                  ref={provided.innerRef}
-                  style={{
-                    ...fieldContainerStyle,
-                    backgroundColor: snapshot.isDragging
-                      ? 'rgb(74, 20, 140)'
-                      : 'white',
-                    color: snapshot.isDragging ? 'white' : 'black',
-                  }}
-                >
-                  {field}
-                  <BsArrowsMove style={fieldHandleStyle} />
-                </div>
-              )}
-            </Draggable>
-          ))}
+          <div style={fieldsListStyle}>
+            {(fields ?? []).map((field, index) => (
+              <Draggable key={field} draggableId={field} index={index}>
+                {(provided, snapshot) => (
+                  <div
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                    ref={provided.innerRef}
+                    style={{
+                      ...fieldContainerStyle,
+                      backgroundColor: snapshot.isDragging
+                        ? 'rgb(74, 20, 140)'
+                        : 'white',
+                      color: snapshot.isDragging ? 'white' : 'black',
+                    }}
+                  >
+                    {field}
+                    <BsArrowsMove style={fieldHandleStyle} />
+                  </div>
+                )}
+              </Draggable>
+            ))}
+          </div>
           <h5 style={titleStyle}>Separator (any Text)</h5>
           <Draggable
             key="textfield"
