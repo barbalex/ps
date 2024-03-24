@@ -73,7 +73,11 @@ export const TargetElements = ({
   isDraggingOver,
   provided,
 }: Props) => {
-  console.log('occurrenceImport, Three, TargetElements', { label, onChange, isDraggingOver })
+  console.log('occurrenceImport, Three, TargetElements', {
+    label,
+    onChange,
+    isDraggingOver,
+  })
   return (
     <div
       style={{
@@ -83,13 +87,13 @@ export const TargetElements = ({
     >
       {label.map((el, index) => (
         <Draggable
-          key={el.value ?? index}
+          key={`${el.type}/${el.value}/${index}`}
           draggableId={`${el.value ?? index}draggableTarget`}
           index={index}
         >
           {(provided) => (
             <div
-              key={el.value ?? index}
+              key={`${el.value}/${index}`}
               {...provided.draggableProps}
               {...provided.dragHandleProps}
               ref={provided.innerRef}

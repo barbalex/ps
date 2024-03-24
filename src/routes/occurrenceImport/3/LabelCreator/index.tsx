@@ -112,6 +112,13 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
         const clonedRowLabel = [...label]
         clonedRowLabel.splice(source.index, 1)
         const newRowLabel = clonedRowLabel.length ? clonedRowLabel : null
+        console.log(
+          'occurrenceImport, Three, LabelCreator, onDragEnd, will save:',
+          {
+            name,
+            newRowLabel,
+          },
+        )
 
         onChange({ target: { value: newRowLabel, name } })
       }

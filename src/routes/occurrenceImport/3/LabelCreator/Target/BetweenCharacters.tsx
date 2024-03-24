@@ -37,6 +37,10 @@ const BetweenCharacters = ({
 }: Props): PropsWithChildren => {
   const onBlur = useCallback(
     (event) => {
+      console.log(
+        'occurrenceImport, Three, LabelCreator, Target, BetweenCharacters, onBlur',
+        { event, value: event.target.value },
+      )
       const newRowLabel = [
         ...label.slice(0, index),
         {
