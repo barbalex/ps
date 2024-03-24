@@ -78,6 +78,7 @@ export const WMS = memo(({ layer }) => {
     // console.log({ mapSize, y: mapSize.y })
     const popupContainerStyle = css({
       overflow: 'auto',
+      scrollbarWidth: 'thin',
       maxHeight: mapSize.y - 40,
       maxWidth: mapSize.x - 60,
       // this probably does not work:

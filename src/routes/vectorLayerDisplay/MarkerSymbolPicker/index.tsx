@@ -10,6 +10,7 @@ const symbolContainerStyle = {
   flexWrap: 'wrap',
   minHeight: 600,
   overflow: 'auto',
+  scrollbarWidth: 'thin',
   outline: '1px solid rgba(74, 20, 140, 0.1)',
   marginBottom: 13,
   marginTop: -10,

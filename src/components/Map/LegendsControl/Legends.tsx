@@ -91,6 +91,7 @@ export const Legends = () => {
       <div
         style={{
           overflow: 'auto',
+          scrollbarWidth: 'thin',
           maxHeight: mapSize.y - 70,
           maxWidth: mapSize.x - 45,
         }}

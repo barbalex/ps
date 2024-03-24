@@ -7,12 +7,14 @@ const emptyContainerStyle = {
   justifyContent: 'center',
   alignItems: 'center',
   overflow: 'auto',
+  scrollbarWidth: 'thin',
   scrollbarGutter: 'auto',
   width: '100%',
   height: 250,
 }
 const containerStyle = {
   overflow: 'auto',
+  scrollbarWidth: 'thin',
   scrollbarGutter: 'auto',
   width: '100%',
   maxHeight: 250,

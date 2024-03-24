@@ -30,6 +30,7 @@ https://stackoverflow.com/a/21541021/712005 */
   flex-direction: column;
   row-gap: 15px;
   overflow: auto;
+  scrollbar-width: thin;
   [role='separator'] {
     padding: 10px 0;
     margin-left: -10px;
@@ -129,6 +130,7 @@ https://stackoverflow.com/a/21541021/712005 */
     flex-direction: column;
     flex-grow: 1;
     overflow: auto;
+    scrollbar-width: thin;
 
     .row {
       display: flex;

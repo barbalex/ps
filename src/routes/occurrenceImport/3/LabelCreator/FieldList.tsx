@@ -38,6 +38,7 @@ const dividerContainerStyle = {
 const fieldsListStyle = {
   maxHeight: 300,
   overflowY: 'auto',
+  scrollbarWidth: 'thin',
   overflowX: 'hidden',
 }
 const fieldHandleStyle = {

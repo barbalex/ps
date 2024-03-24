@@ -13,6 +13,7 @@ const containerStyle = {
   height: '100%',
   width: '100%',
   overflow: 'auto',
+  scrollbarWidth: 'thin',
 }
 
 export const Tree = memo(({ designing }) => (
