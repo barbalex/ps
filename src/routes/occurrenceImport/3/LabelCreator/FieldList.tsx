@@ -44,12 +44,6 @@ const fieldHandleStyle = {
   height: '1.2em',
   width: '1.2em',
 }
-const explainerStyle = {
-  fontSize: 'x-small',
-  margin: 0,
-  padding: '0 4px',
-  color: 'grey',
-}
 
 interface Props {
   fields: string[]
