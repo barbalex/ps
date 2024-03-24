@@ -1,6 +1,6 @@
 import { Droppable } from 'react-beautiful-dnd'
 
-import TargetElements from './TargetElements'
+import {TargetElements} from './TargetElements'
 import { LabelElement } from '..'
 
 const containerStyle = {

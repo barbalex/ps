@@ -2,7 +2,7 @@ import { useCallback, memo } from 'react'
 import { DragDropContext } from 'react-beautiful-dnd'
 import { arrayMoveImmutable } from 'array-move'
 
-import FieldList from './FieldList'
+import { FieldList } from './FieldList'
 import { Target } from './Target'
 
 const containerStyle = {
@@ -122,7 +122,7 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
       <DragDropContext onDragEnd={onDragEnd}>
         <div style={innerContainerStyle}>
           <Target label={label} onChange={onChange} />
-          <FieldList useLabels={useLabels} fields={fields} />
+          <FieldList fields={fields} />
         </div>
       </DragDropContext>
     </div>

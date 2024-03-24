@@ -1,7 +1,5 @@
 import { useCallback } from 'react'
-import TextField from '@mui/material/TextField'
 import { Input } from '@fluentui/react-components'
-import styled from '@emotion/styled'
 
 import { TargetElement } from './TargetElements'
 import { LabelElement } from '..'
@@ -9,18 +7,18 @@ import { LabelElement } from '..'
 const containerStyle = {
   position: 'relative',
 }
-const StyledTextField = styled(TextField)`
-  margin-right: 6px;
-  margin-bottom: 0;
-  width: 100px;
-  label {
-    font-size: small !important;
-    padding-left: 6px;
-  }
-  input {
-    font-size: small !important;
-  }
-`
+// const StyledTextField = styled(TextField)`
+//   margin-right: 6px;
+//   margin-bottom: 0;
+//   width: 100px;
+//   label {
+//     font-size: small !important;
+//     padding-left: 6px;
+//   }
+//   input {
+//     font-size: small !important;
+//   }
+// `
 
 interface Props {
   el: TargetElement

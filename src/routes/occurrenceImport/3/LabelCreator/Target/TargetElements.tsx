@@ -1,61 +1,48 @@
 import { Draggable } from 'react-beautiful-dnd'
-import { useParams } from 'react-router-dom'
-import { useLiveQuery } from 'dexie-react-hooks'
-import styled from '@emotion/styled'
 import { BsArrowsMove } from 'react-icons/bs'
 
-import { dexie, Field,  } from '../../../../../dexieClient'
 import BetweenCharactersElement from './BetweenCharacters'
 import { LabelElement } from '..'
 
-const TargetContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  flex-grow: 1;
-  min-height: 42px;
-  padding: 8px;
-  background-color: ${(props) =>
-    props.isDraggingOver ? 'rgba(74,20,140,0.1)' : 'white'};
-  transition: background-color 0.2s ease;
-`
-const FieldElement = styled.div`
-  padding: 8.5px 14px;
-  border: 1px solid lightgrey;
-  margin-right: 6px;
-  margin-top: 8px;
-  border-radius: 4px;
-  font-size: small;
-  line-height: 16.6px;
-  user-select: none;
-  position: relative;
-`
-const FieldHandle = styled(BsArrowsMove)`
-  color: #989898;
-  position: absolute;
-  top: -8.5px;
-  left: -2px;
-  height: 1.2em;
-  width: 1.2em;
-  font-weight: bold;
-`
-const BetweenCharactersHandle = styled(BsArrowsMove)`
-  color: #989898;
-  position: absolute;
-  top: 0.7px;
-  left: -1.5px;
-  height: 0.95em;
-  width: 0.95em;
-`
-const ElementContainer = styled.div`
-  display: flex;
-`
-
-export interface TargetElement {
-  type: 'field' | 'text'
-  field?: Field
-  text?: string
-  index: number
+const targetContainerStyle = {
+  display: 'flex',
+  flexWrap: 'wrap',
+  alignItems: 'center',
+  flexGrow: 1,
+  minHeight: '42px',
+  padding: '8px',
+  transition: 'background-color 0.2s ease',
+}
+const fieldElementStyle = {
+  padding: '8.5px 14px',
+  border: '1px solid lightgrey',
+  marginRight: 6,
+  marginTop: 8,
+  borderRadius: 4,
+  fontSize: 'small',
+  lineHeight: '16.6px',
+  userSelect: 'none',
+  position: 'relative',
+}
+const fieldHandleStyle = {
+  color: '#989898',
+  position: 'absolute',
+  top: '-8.5px',
+  left: '-2px',
+  height: '1.2em',
+  width: '1.2em',
+  fontWeight: 'bold',
+}
+const betweenCharactersHandleStyle = {
+  color: '#989898',
+  position: 'absolute',
+  top: '0.7px',
+  left: '-1.5px',
+  height: '0.95em',
+  width: '0.95em',
+}
+const elementContainerStyle = {
+  display: 'flex',
 }
 
 interface Props {
@@ -80,55 +67,40 @@ interface Props {
  * 3. remind user to first define the fields
  */
 
-const RowLabelTarget = ({
+export const TargetElements = ({
   label,
   onChange,
   isDraggingOver,
   provided,
 }: Props) => {
-  const { tableId } = useParams()
-
-  // rowLabel: array of {field: id, type: 'field'},{text, type: 'text'}
-  const targetFieldIds: string[] = label
-    .filter((el) => el.type === 'field')
-    .map((el) => el.field)
-  const targetFields: Field[] =
-    useLiveQuery(
-      async () =>
-        await dexie.fields.where('id').anyOf(targetFieldIds).toArray(),
-      [tableId, label],
-    ) ?? []
-
-  const targetElements: TargetElement[] = label.map((el) => ({
-    type: el.type,
-    field: el.field ? targetFields.find((f) => f.id === el.field) : undefined,
-    text: el.text,
-    index: el.index,
-  }))
-
   return (
-    <TargetContainer isDraggingOver={isDraggingOver}>
-      {targetElements.map((el, index) => (
+    <div
+      isDraggingOver={isDraggingOver}
+      style={{
+        ...targetContainerStyle,
+        backgroundColor: isDraggingOver ? 'rgba(74,20,140,0.1)' : 'white',
+      }}
+    >
+      {label.map((el, index) => (
         <Draggable
-          key={el.field?.id ?? el.text ?? index}
-          draggableId={`${el.field?.id ?? el.text ?? index}draggableTarget`}
+          key={el.value ?? index}
+          draggableId={`${el.value ?? index}draggableTarget`}
           index={index}
         >
           {(provided) => (
-            <ElementContainer
+            <div
               key={el.field?.id ?? el.text ?? index}
               {...provided.draggableProps}
               {...provided.dragHandleProps}
               ref={provided.innerRef}
+              style={elementContainerStyle}
             >
               {/* <Handle /> */}
               {el.type === 'field' ? (
-                <FieldElement>
-                  {`${
-                    el.field?.name ?? el.text ?? 'neither fieldName nor text'
-                  }`}
-                  <FieldHandle />
-                </FieldElement>
+                <div style={fieldElementStyle}>
+                  {el.value}
+                  <BsArrowsMove style={fieldHandleStyle} />
+                </div>
               ) : (
                 <BetweenCharactersElement
                   el={el}
@@ -136,16 +108,14 @@ const RowLabelTarget = ({
                   onChange={onChange}
                   index={index}
                 >
-                  <BetweenCharactersHandle />
+                  <BsArrowsMove style={betweenCharactersHandleStyle} />
                 </BetweenCharactersElement>
               )}
-            </ElementContainer>
+            </div>
           )}
         </Draggable>
       ))}
       {provided.placeholder}
-    </TargetContainer>
+    </div>
   )
 }
-
-export default RowLabelTarget
