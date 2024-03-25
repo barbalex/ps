@@ -56,10 +56,6 @@ export const Crs = memo(({ occurrenceImport, onChange: onChangePassed }) => {
     return <div>Loading...</div>
   }
 
-  // TODO:
-  // - if geojson_geometry_field and crs choosen while geometry fields are empty,
-  //   copy that fields values to geometry field in all occurrences while transforming the crs to wgs84 using proj4
-
   return (
     <>
       <TextField
@@ -97,7 +93,6 @@ export const Crs = memo(({ occurrenceImport, onChange: onChangePassed }) => {
           </>
         }
       />
-      {/* TODO: add button to copy/set geometries */}
     </>
   )
 })

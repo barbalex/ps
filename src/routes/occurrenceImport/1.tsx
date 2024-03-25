@@ -1,14 +1,24 @@
 import { memo } from 'react'
+import { MdDone } from 'react-icons/md'
 
 import { TextField } from '../../components/shared/TextField'
 import { TextArea } from '../../components/shared/TextArea'
 import { UploadButton } from '../../components/shared/UploadButton'
 import { processData } from './processData'
 
+const occurrencesImportedStyle = {
+  color: 'rgba(38, 82, 37, 0.9)',
+  fontWeight: 'bold',
+}
+const doneIconStyle = {
+  paddingRight: 8,
+  fontSize: '1.4em',
+  fontWeight: 'bold',
+  verticalAlign: 'text-bottom',
+}
+
 export const One = memo(({ occurrenceImport, onChange, autoFocusRef }) => {
-  if (!occurrenceImport) {
-    return <div>Loading...</div>
-  }
+  if (!occurrenceImport) return <div>Loading...</div>
 
   return (
     <>
@@ -28,13 +38,21 @@ export const One = memo(({ occurrenceImport, onChange, autoFocusRef }) => {
         onChange={onChange}
         validationMessage="Please add the correct citation as required by the data provider"
       />
-      {/* TODO: only show when not yet uploaded? */}
-      <UploadButton
-        processData={processData}
-        additionalData={{
-          occurrence_import_id: occurrenceImport.occurrence_import_id,
-        }}
-      />
+      {occurrenceImport?.occurrences?.length ? (
+        <div style={occurrencesImportedStyle}>
+          <MdDone style={doneIconStyle} />
+          {`${new Intl.NumberFormat().format(
+            occurrenceImport.occurrences.length,
+          )} occurrences imported`}
+        </div>
+      ) : (
+        <UploadButton
+          processData={processData}
+          additionalData={{
+            occurrence_import_id: occurrenceImport.occurrence_import_id,
+          }}
+        />
+      )}
     </>
   )
 })
