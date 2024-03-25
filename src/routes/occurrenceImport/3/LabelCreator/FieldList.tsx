@@ -90,8 +90,8 @@ export const FieldList = ({ fields }: Props) => (
             </div>
             <h5 style={titleStyle}>Separating text/characters</h5>
             <Draggable
-              key="textfield"
-              draggableId="textfield"
+              key="separator"
+              draggableId="separator"
               index={fields.length}
             >
               {(provided, snapshot) => (

@@ -38,13 +38,18 @@ const BetweenCharacters = ({
         { el, label, index, event },
       )
       const newLabel = [...label]
-      for (const labelElement of newLabel) {
-        if (labelElement.type === 'separator') {
+      newLabel.forEach((labelElement, i) => {
+        if (i === index) {
           labelElement.value = event.target.value
-          break
         }
-      }
-      newLabel[index]?.value = event.target.value
+      })
+      // for (const labelElement of newLabel) {
+      //   if (labelElement.type === 'separator') {
+      //     labelElement.value = event.target.value
+      //     break
+      //   }
+      // }
+      // newLabel[index].value = event.target.value
       console.log(
         'occurrenceImport, Three, LabelCreator, BetweenCharacters, onBlur, newLabel:',
         newLabel,
