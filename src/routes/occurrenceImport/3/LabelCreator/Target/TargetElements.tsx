@@ -40,6 +40,7 @@ const elementContainerStyle = {
 
 interface Props {
   label: LabelElement[]
+  name: string
   onChange: () => void
   isDraggingOver: boolean
   provided: DroppableProvided
@@ -62,6 +63,7 @@ interface Props {
 
 export const TargetElements = ({
   label,
+  name,
   onChange,
   isDraggingOver,
   provided,
@@ -96,6 +98,7 @@ export const TargetElements = ({
                 <BetweenCharactersElement
                   el={el}
                   label={label}
+                  name={name}
                   onChange={onChange}
                   index={index}
                 >

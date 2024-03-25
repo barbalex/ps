@@ -17,6 +17,7 @@ const inputStyle = {
 interface Props {
   el: TargetElement
   label: LabelElement[]
+  name: string
   onChange: () => void
   index: number
   children: React.ReactNode
@@ -25,23 +26,32 @@ interface Props {
 const BetweenCharacters = ({
   el,
   label,
+  name,
   onChange,
   index,
   children,
 }: Props): PropsWithChildren => {
   const onBlur = useCallback(
     (event) => {
-      const newRowLabel = [
-        ...label.slice(0, index),
-        {
-          type: 'separator',
-          value: event.target.value,
-        },
-        ...label.slice(index),
-      ]
-      onChange({ target: { value: newRowLabel, name } })
+      console.log(
+        'occurrenceImport, Three, LabelCreator, BetweenCharacters, onBlur',
+        { el, label, index, event },
+      )
+      const newLabel = [...label]
+      for (const labelElement of newLabel) {
+        if (labelElement.type === 'separator') {
+          labelElement.value = event.target.value
+          break
+        }
+      }
+      newLabel[index]?.value = event.target.value
+      console.log(
+        'occurrenceImport, Three, LabelCreator, BetweenCharacters, onBlur, newLabel:',
+        newLabel,
+      )
+      onChange({ target: { value: newLabel, name } })
     },
-    [index, label, onChange],
+    [el, index, label, name, onChange],
   )
 
   return (
