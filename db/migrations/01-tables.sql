@@ -1414,7 +1414,7 @@ CREATE TABLE occurrence_imports(
   x_coordinate_field text DEFAULT NULL,
   y_coordinate_field text DEFAULT NULL,
   crs text DEFAULT NULL, -- 4326
-  label_creation jsonb DEFAULT NULL, -- Array of objects with keys: type (field, separator), value (fieldname, separating text)
+  label_creation jsonb DEFAULT NULL, -- Array of objects with keys: type (field, separator), value (fieldname, separating text), id (required by react-beautiful-dnd)
   name text DEFAULT NULL,
   attribution text DEFAULT NULL,
   previous_import uuid DEFAULT NULL REFERENCES occurrence_imports(occurrence_import_id) ON DELETE NO action ON UPDATE CASCADE,
