@@ -74,14 +74,9 @@ export const TargetElements = memo(
         {...provided.droppableProps}
       >
         {label.map((el, index) => (
-          <Draggable
-            key={el.id}
-            draggableId={el.id}
-            index={index}
-          >
+          <Draggable key={el.id} draggableId={el.id} index={index}>
             {(provided) => (
               <div
-                key={`${el.value}/${index}`}
                 {...provided.draggableProps}
                 {...provided.dragHandleProps}
                 ref={provided.innerRef}
