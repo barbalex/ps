@@ -50,6 +50,9 @@ const fieldHandleStyle = {
   height: '0.8em',
   width: '0.8em',
 }
+const titleSpanStyle = {
+  fontWeight: 'normal',
+}
 
 interface Props {
   fields: string[]
@@ -65,7 +68,9 @@ export const FieldList = memo(({ fields }: Props) => (
             {...provided.droppableProps}
             style={fieldListStyle}
           >
-            <h5 style={titleStyle}>Fields</h5>
+            <h5 style={titleStyle}>
+              Fields <span style={titleSpanStyle}>({fields.length})</span>
+            </h5>
             <div style={fieldsListStyle}>
               {(fields ?? []).map((field, index) => (
                 <Draggable key={field} draggableId={field} index={index}>
