@@ -63,15 +63,16 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
       const { destination, source, draggableId } = result
 
       if (
-        destination.droppableId === source.droppableId &&
-        destination.index === source.index
+        destination?.droppableId === source.droppableId &&
+        destination?.index === source.index
       ) {
         // do nothing
         return
       }
+
       if (
-        destination.droppableId === source.droppableId &&
-        destination.index === source.index
+        destination?.droppableId === source.droppableId &&
+        destination?.index === source.index
       ) {
         // user moved something inside same droppable without changing index
         // do nothing
@@ -81,7 +82,7 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
         return
       }
       if (
-        destination.droppableId === 'target' &&
+        destination?.droppableId === 'target' &&
         source.droppableId === 'fieldList'
       ) {
         // user pulled from field list into target
@@ -127,9 +128,9 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
       }
 
       if (
-        destination.droppableId === 'target' &&
+        destination?.droppableId === 'target' &&
         source.droppableId === 'target' &&
-        destination.index !== source.index
+        destination?.index !== source.index
       ) {
         // user moved inside target, to different index
         console.log(
