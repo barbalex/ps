@@ -95,6 +95,7 @@ export const Target = memo(({ name, label, onChange }: Props) => {
               isDraggingOver={snapshot.isDraggingOver}
               provided={provided}
             />
+            {provided.placeholder}
           </div>
         )}
       </Droppable>

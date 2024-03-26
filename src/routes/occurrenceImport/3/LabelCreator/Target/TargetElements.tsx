@@ -105,7 +105,6 @@ export const TargetElements = memo(
             )}
           </Draggable>
         ))}
-        {provided.placeholder}
       </div>
     )
   },
