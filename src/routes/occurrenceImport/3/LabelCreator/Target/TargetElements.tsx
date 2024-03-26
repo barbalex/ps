@@ -70,11 +70,13 @@ export const TargetElements = memo(
           ...targetContainerStyle,
           backgroundColor: isDraggingOver ? 'rgba(74,20,140,0.1)' : 'white',
         }}
+        ref={provided.innerRef}
+        {...provided.droppableProps}
       >
         {label.map((el, index) => (
           <Draggable
-            key={`${el.type}/${el.value}/${index}`}
-            draggableId={`${el.value ?? index}draggableTarget`}
+            key={el.id}
+            draggableId={el.id}
             index={index}
           >
             {(provided) => (
@@ -105,6 +107,7 @@ export const TargetElements = memo(
             )}
           </Draggable>
         ))}
+        {provided.placeholder}
       </div>
     )
   },

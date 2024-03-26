@@ -76,7 +76,7 @@ export const Target = memo(({ name, label, onChange }: Props) => {
         style={droppableStyle}
       >
         {(provided, snapshot) => (
-          <div ref={provided.innerRef} {...provided.droppableProps}>
+          <div>
             <div style={titleContainerStyle}>
               <h4 style={titleStyle}>Label Creator</h4>
               <p style={explainerStyle}>Build your own label.</p>
@@ -95,7 +95,6 @@ export const Target = memo(({ name, label, onChange }: Props) => {
               isDraggingOver={snapshot.isDraggingOver}
               provided={provided}
             />
-            {provided.placeholder}
           </div>
         )}
       </Droppable>

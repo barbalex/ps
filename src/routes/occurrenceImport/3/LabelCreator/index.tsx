@@ -1,6 +1,7 @@
 import { useCallback, memo } from 'react'
 import { DragDropContext } from 'react-beautiful-dnd'
 import { arrayMoveImmutable } from 'array-move'
+import { uuidv7 } from '@kripod/uuidv7'
 
 import { FieldList } from './FieldList'
 import { Target } from './Target'
@@ -79,6 +80,7 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
             {
               type: 'separator',
               value: '',
+              id: uuidv7(),
             },
             ...label.slice(destination.index),
           ]
@@ -93,6 +95,7 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
             {
               type: 'field',
               value: field,
+              id: uuidv7(),
             },
             ...label.slice(destination.index),
           ]
