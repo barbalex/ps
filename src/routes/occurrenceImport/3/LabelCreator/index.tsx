@@ -2,6 +2,7 @@ import { useCallback, memo } from 'react'
 import { DragDropContext } from 'react-beautiful-dnd'
 import { arrayMoveImmutable } from 'array-move'
 import { uuidv7 } from '@kripod/uuidv7'
+import { useDebouncedCallback } from 'use-debounce'
 
 import { FieldList } from './FieldList'
 import { Target } from './Target'
@@ -178,9 +179,31 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
     [fieldLabels, label, name, onChange],
   )
 
+  const onDragUpdate = useDebouncedCallback(onDragEnd, 600)
+
   return (
     <div style={containerStyle}>
-      <DragDropContext onDragEnd={onDragEnd}>
+      <DragDropContext
+        onDragEnd={(result) => {
+          // TODO: this often does not trigger!!!
+          // https://github.com/atlassian/react-beautiful-dnd/issues/1662
+          // workaround: use onDragUpdate
+          // onDragEnd(result)
+        }}
+        onDragStart={(result) =>
+          console.log(
+            'occurrenceImport, Three, LabelCreator, onDragStart, result:',
+            result,
+          )
+        }
+        onDragUpdate={onDragUpdate}
+        onTouchEnd={(result) =>
+          console.log(
+            'occurrenceImport, Three, LabelCreator, onTouchEnd, result:',
+            result,
+          )
+        }
+      >
         <div style={innerContainerStyle}>
           <Target
             name={name}
