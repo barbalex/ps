@@ -38,6 +38,7 @@ interface Props {
 
 export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
   console.warn('occurrenceImport, Three, LabelCreator 1, label:', label)
+
   // TODO: on with https://egghead.io/lessons/react-persist-list-reordering-with-react-beautiful-dnd-using-the-ondragend-callback
   const onDragEnd = useCallback(
     (result) => {
