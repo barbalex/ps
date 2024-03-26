@@ -1,6 +1,9 @@
 import { memo } from 'react'
 import { Draggable, Droppable } from 'react-beautiful-dnd'
 import { BsArrowsMove } from 'react-icons/bs'
+import { uuidv7 } from '@kripod/uuidv7'
+
+import { LabelElement } from '..'
 
 const containerStyle = {
   margin: 0,
@@ -56,74 +59,82 @@ const titleSpanStyle = {
 
 interface Props {
   fields: string[]
+  label: LabelElement[]
 }
 
-// TODO: only show fields not yet added to label
+// only show fields not yet added to label
 // TODO: build labelElements from fields
-export const FieldList = memo(({ fields }: Props) => (
-  <div style={containerStyle}>
-    <Droppable droppableId="fieldList">
-      {(provided) => (
-        <>
-          <div
-            ref={provided.innerRef}
-            {...provided.droppableProps}
-            style={fieldListStyle}
-          >
-            <h5 style={titleStyle}>
-              Fields <span style={titleSpanStyle}>({fields.length})</span>
-            </h5>
-            <div style={fieldsListStyle}>
-              {(fields ?? []).map((field, index) => (
-                <Draggable key={field} draggableId={field} index={index}>
-                  {(provided, snapshot) => (
-                    <div
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      ref={provided.innerRef}
-                      style={{
-                        ...fieldContainerStyle,
-                        backgroundColor: snapshot.isDragging
-                          ? 'rgb(74, 20, 140)'
-                          : 'rgba(103, 216, 101, 0.07)',
-                        color: snapshot.isDragging ? 'white' : 'black',
-                      }}
-                    >
-                      {field}
-                      <BsArrowsMove style={fieldHandleStyle} />
-                    </div>
-                  )}
-                </Draggable>
-              ))}
-            </div>
-            <h5 style={titleStyle}>Separating text/characters</h5>
-            <Draggable
-              key="separator"
-              draggableId="separator"
-              index={fields.length}
+export const FieldList = memo(({ fieldLabels }: Props) => {
+  return (
+    <div style={containerStyle}>
+      <Droppable droppableId="fieldList">
+        {(provided) => (
+          <>
+            <div
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+              style={fieldListStyle}
             >
-              {(provided, snapshot) => (
-                <div
-                  {...provided.draggableProps}
-                  {...provided.dragHandleProps}
-                  ref={provided.innerRef}
-                  style={{
-                    ...dividerContainerStyle,
-                    backgroundColor: snapshot.isDragging
-                      ? 'rgb(74, 20, 140)'
-                      : 'white',
-                    color: snapshot.isDragging ? 'white' : 'black',
-                  }}
-                >
-                  Any text
-                  <BsArrowsMove style={fieldHandleStyle} />
-                </div>
-              )}
-            </Draggable>
-          </div>
-          {provided.placeholder}
-        </>
-      )}
-    </Droppable>
-  </div>
-))
+              <h5 style={titleStyle}>
+                Fields{' '}
+                <span style={titleSpanStyle}>({fieldLabels.length})</span>
+              </h5>
+              <div style={fieldsListStyle}>
+                {(fieldLabels ?? []).map((fieldLabel, index) => (
+                  <Draggable
+                    key={fieldLabel.id}
+                    draggableId={fieldLabel.id}
+                    index={index}
+                  >
+                    {(provided, snapshot) => (
+                      <div
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        ref={provided.innerRef}
+                        style={{
+                          ...fieldContainerStyle,
+                          backgroundColor: snapshot.isDragging
+                            ? 'rgb(74, 20, 140)'
+                            : 'rgba(103, 216, 101, 0.07)',
+                          color: snapshot.isDragging ? 'white' : 'black',
+                        }}
+                      >
+                        {fieldLabel.value}
+                        <BsArrowsMove style={fieldHandleStyle} />
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+              </div>
+              <h5 style={titleStyle}>Separating text/characters</h5>
+              <Draggable
+                key="separator"
+                draggableId="separator"
+                index={fieldLabels.length}
+              >
+                {(provided, snapshot) => (
+                  <div
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                    ref={provided.innerRef}
+                    style={{
+                      ...dividerContainerStyle,
+                      backgroundColor: snapshot.isDragging
+                        ? 'rgb(74, 20, 140)'
+                        : 'white',
+                      color: snapshot.isDragging ? 'white' : 'black',
+                    }}
+                  >
+                    Any text
+                    <BsArrowsMove style={fieldHandleStyle} />
+                  </div>
+                )}
+              </Draggable>
+            </div>
+            {provided.placeholder}
+          </>
+        )}
+      </Droppable>
+    </div>
+  )
+})

@@ -40,6 +40,17 @@ interface Props {
 export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
   console.warn('occurrenceImport, Three, LabelCreator 1, label:', label)
 
+  const fieldLabelElements = label.filter((el) => el.type === 'field')
+  const fieldLabelValues = fieldLabelElements.map((el) => el.value)
+  const fieldsToAdd = fields.filter(
+    (field) => !fieldLabelValues.includes(field),
+  )
+  const fieldLabels = fieldsToAdd.map((field) => ({
+    type: 'field',
+    value: field,
+    id: uuidv7(),
+  }))
+
   // TODO: on with https://egghead.io/lessons/react-persist-list-reordering-with-react-beautiful-dnd-using-the-ondragend-callback
   const onDragEnd = useCallback(
     (result) => {
@@ -48,10 +59,8 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
         'occurrenceImport, Three, LabelCreator 2, onDragEnd, result:',
         result,
       )
+
       const { destination, source, draggableId } = result
-      // if (!destination) {
-      //   return
-      // }
       if (
         destination?.droppableId === source?.droppableId &&
         destination?.index === source?.index
@@ -88,15 +97,10 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
           console.warn(
             'occurrenceImport, Three, LabelCreator 6, onDragEnd: user moved a field from field list to target',
           )
-          // want to add this to rowLabel at this index
-          const field = fields[source.index]
+          const fieldLabel = fieldLabels.find((el) => el.id === draggableId)
           newRowLabel = [
             ...label.slice(0, destination.index),
-            {
-              type: 'field',
-              value: field,
-              id: uuidv7(),
-            },
+            fieldLabel,
             ...label.slice(destination.index),
           ]
         }
@@ -156,15 +160,20 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
         onChange({ target: { value: newRowLabel, name } })
       }
     },
-    [fields, label, name, onChange],
+    [fieldLabels, label, name, onChange],
   )
 
   return (
     <div style={containerStyle}>
       <DragDropContext onDragEnd={onDragEnd}>
         <div style={innerContainerStyle}>
-          <Target name={name} label={label} onChange={onChange} />
-          <FieldList fields={fields} />
+          <Target
+            name={name}
+            label={label}
+            fieldLabels={fieldLabels}
+            onChange={onChange}
+          />
+          <FieldList fieldLabels={fieldLabels} />
         </div>
       </DragDropContext>
     </div>
