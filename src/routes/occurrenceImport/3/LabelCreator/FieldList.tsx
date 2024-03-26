@@ -94,9 +94,11 @@ export const FieldList = memo(({ fieldLabels }: Props) => {
                         style={{
                           ...fieldContainerStyle,
                           backgroundColor: snapshot.isDragging
-                            ? 'rgb(74, 20, 140)'
+                            ? 'rgba(38, 82, 37, 0.9)'
                             : 'rgba(103, 216, 101, 0.07)',
                           color: snapshot.isDragging ? 'white' : 'black',
+                          // BEWARE: without this, onDragEnd doesn't fire and the dragged item does not move
+                          ...provided.draggableProps.style,
                         }}
                       >
                         {fieldLabel.value}
@@ -107,6 +109,7 @@ export const FieldList = memo(({ fieldLabels }: Props) => {
                 ))}
               </div>
               <h5 style={titleStyle}>Separating text/characters</h5>
+              {/* TODO: this draggable needs a uuidv7 draggableId that changes after every addition of a separator */}
               <Draggable
                 key="separator"
                 draggableId="separator"
@@ -120,9 +123,11 @@ export const FieldList = memo(({ fieldLabels }: Props) => {
                     style={{
                       ...dividerContainerStyle,
                       backgroundColor: snapshot.isDragging
-                        ? 'rgb(74, 20, 140)'
+                        ? 'rgba(38, 82, 37, 0.9)'
                         : 'white',
                       color: snapshot.isDragging ? 'white' : 'black',
+                      // BEWARE: without this, onDragEnd doesn't fire and the dragged item does not move
+                      ...provided.draggableProps.style,
                     }}
                   >
                     Any text

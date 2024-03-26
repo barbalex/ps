@@ -184,20 +184,11 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
   return (
     <div style={containerStyle}>
       <DragDropContext
-        onDragEnd={(result) => {
-          // TODO: this usually does not trigger!!!
-          // https://github.com/atlassian/react-beautiful-dnd/issues/1662
-          // workaround: use onDragUpdate
-        }}
-        onDragUpdate={onDragUpdate}
+        onDragEnd={onDragEnd}
+        // onDragUpdate={onDragUpdate}
       >
         <div style={innerContainerStyle}>
-          <Target
-            name={name}
-            label={label}
-            fieldLabels={fieldLabels}
-            onChange={onChange}
-          />
+          <Target name={name} label={label} onChange={onChange} />
           <FieldList fieldLabels={fieldLabels} />
         </div>
       </DragDropContext>

@@ -63,7 +63,7 @@ interface Props {
  */
 
 export const TargetElements = memo(
-  ({ label, fieldLabels, name, onChange, isDraggingOver, provided }: Props) => {
+  ({ label, name, onChange, isDraggingOver, provided }: Props) => {
     return (
       <div
         style={{
@@ -74,27 +74,42 @@ export const TargetElements = memo(
         ref={provided.innerRef}
         {...provided.droppableProps}
       >
-        {label.map((el, index) => (
-          <Draggable key={el.id} draggableId={el.id} index={index}>
-            {(provided) => (
+        {label.map((labelElement, index) => (
+          <Draggable
+            key={labelElement.id}
+            draggableId={labelElement.id}
+            index={index}
+          >
+            {(provided, snapshot) => (
               <div
                 {...provided.draggableProps}
                 {...provided.dragHandleProps}
                 ref={provided.innerRef}
                 style={elementContainerStyle}
               >
-                {el.type === 'field' ? (
-                  <div style={fieldElementStyle}>
-                    {el.value}
+                {labelElement.type === 'field' ? (
+                  <div
+                    style={{
+                      ...fieldElementStyle,
+                      backgroundColor: snapshot.isDragging
+                        ? 'rgba(38, 82, 37, 0.9)'
+                        : 'rgba(103, 216, 101, 0.07)',
+                      color: snapshot.isDragging ? 'white' : 'black',
+                      ...provided.draggableProps.style,
+                    }}
+                  >
+                    {labelElement.value}
                     <BsArrowsMove style={fieldHandleStyle} />
                   </div>
                 ) : (
                   <BetweenCharacters
-                    el={el}
+                    el={labelElement}
                     label={label}
                     name={name}
                     onChange={onChange}
                     index={index}
+                    snapshot={snapshot}
+                    provided={provided}
                   >
                     <BsArrowsMove style={fieldHandleStyle} />
                   </BetweenCharacters>

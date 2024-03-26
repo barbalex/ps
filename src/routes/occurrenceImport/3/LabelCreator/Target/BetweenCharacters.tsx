@@ -31,6 +31,8 @@ export const BetweenCharacters = memo(
     onChange,
     index,
     children,
+    snapshot,
+    provided,
   }: Props): PropsWithChildren => {
     const onBlur = useCallback(
       (event) => {
@@ -61,7 +63,12 @@ export const BetweenCharacters = memo(
     )
 
     return (
-      <div style={containerStyle}>
+      <div
+        style={{
+          ...(snapshot.isDragging ? {} : containerStyle),
+          ...provided.draggableProps.style,
+        }}
+      >
         <Input
           label="Separator (any Text)"
           placeholder="Enter any text"
