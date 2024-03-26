@@ -37,12 +37,12 @@ interface Props {
 }
 
 export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
-  console.log('occurrenceImport, Three, LabelCreator 1, label:', label)
+  console.warn('occurrenceImport, Three, LabelCreator 1, label:', label)
   // TODO: on with https://egghead.io/lessons/react-persist-list-reordering-with-react-beautiful-dnd-using-the-ondragend-callback
   const onDragEnd = useCallback(
     (result) => {
       // TODO:
-      console.log(
+      console.warn(
         'occurrenceImport, Three, LabelCreator 2, onDragEnd, result:',
         result,
       )
@@ -55,7 +55,7 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
         destination?.index === source?.index
       ) {
         // user moved something inside same droppable without changing index
-        console.log(
+        console.warn(
           'occurrenceImport, Three, LabelCreator 3, onDragEnd: user moved something inside same droppable without changing index',
         )
         return
@@ -65,12 +65,12 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
         source?.droppableId === 'fieldList'
       ) {
         // user pulled from field list into target
-        console.log(
+        console.warn(
           'occurrenceImport, Three, LabelCreator 4, onDragEnd: user moved from field list to target',
         )
         let newRowLabel
         if (draggableId === 'separator') {
-          console.log(
+          console.warn(
             'occurrenceImport, Three, LabelCreator 5, onDragEnd: user moved a separator from field list to target',
           )
           newRowLabel = [
@@ -82,7 +82,7 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
             ...label.slice(destination.index),
           ]
         } else {
-          console.log(
+          console.warn(
             'occurrenceImport, Three, LabelCreator 6, onDragEnd: user moved a field from field list to target',
           )
           // want to add this to rowLabel at this index
@@ -96,7 +96,7 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
             ...label.slice(destination.index),
           ]
         }
-        console.log(
+        console.warn(
           'occurrenceImport, Three, LabelCreator 7, onDragEnd, will save:',
           {
             name,
@@ -110,14 +110,14 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
         source?.droppableId === 'target'
       ) {
         // user pulled from target anywhere outside
-        console.log(
+        console.warn(
           'occurrenceImport, Three, LabelCreator 8, onDragEnd: user moved from target to anywhere outside',
         )
         // want to remove this from the rowLabel at this index
         const clonedLabel = [...label]
         clonedLabel.splice(source.index, 1)
         const newLabel = clonedLabel.length ? clonedLabel : null
-        console.log(
+        console.warn(
           'occurrenceImport, Three, LabelCreator 9, onDragEnd, will save:',
           {
             name,
@@ -134,7 +134,7 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
         destination.index !== source.index
       ) {
         // user moved inside target, to different index
-        console.log(
+        console.warn(
           'occurrenceImport, Three, LabelCreator 10, onDragEnd: user moved inside target, to different index',
         )
         const newRowLabel = arrayMoveImmutable(
@@ -142,7 +142,7 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
           source.index,
           destination.index,
         )
-        console.log(
+        console.warn(
           'occurrenceImport, Three, LabelCreator 11, onDragEnd, will save:',
           {
             name,
