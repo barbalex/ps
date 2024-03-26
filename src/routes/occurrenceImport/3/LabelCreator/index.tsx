@@ -2,7 +2,6 @@ import { useCallback, memo } from 'react'
 import { DragDropContext } from 'react-beautiful-dnd'
 import { arrayMoveImmutable } from 'array-move'
 import { uuidv7 } from '@kripod/uuidv7'
-import { useDebouncedCallback } from 'use-debounce'
 
 import { FieldList } from './FieldList'
 import { Target } from './Target'
@@ -178,8 +177,6 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
     },
     [fieldLabels, label, name, onChange],
   )
-
-  const onDragUpdate = useDebouncedCallback(onDragEnd, 600)
 
   return (
     <div style={containerStyle}>
