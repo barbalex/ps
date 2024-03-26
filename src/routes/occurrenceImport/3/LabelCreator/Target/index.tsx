@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { Droppable } from 'react-beautiful-dnd'
 
 import { TargetElements } from './TargetElements'
@@ -61,11 +62,12 @@ const explainerStyle = {
  */
 
 interface Props {
+  name: string
   label: LabelElement[]
   onChange: () => void
 }
 
-export const Target = ({name, label, onChange }: Props) => {
+export const Target = memo(({ name, label, onChange }: Props) => {
   return (
     <div style={containerStyle}>
       <Droppable
@@ -98,4 +100,4 @@ export const Target = ({name, label, onChange }: Props) => {
       </Droppable>
     </div>
   )
-}
+})

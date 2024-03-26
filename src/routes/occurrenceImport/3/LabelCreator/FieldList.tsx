@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { Draggable, Droppable } from 'react-beautiful-dnd'
 import { BsArrowsMove } from 'react-icons/bs'
 
@@ -54,7 +55,7 @@ interface Props {
   fields: string[]
 }
 
-export const FieldList = ({ fields }: Props) => (
+export const FieldList = memo(({ fields }: Props) => (
   <div style={containerStyle}>
     <Droppable droppableId="fieldList">
       {(provided) => (
@@ -118,4 +119,4 @@ export const FieldList = ({ fields }: Props) => (
       )}
     </Droppable>
   </div>
-)
+))

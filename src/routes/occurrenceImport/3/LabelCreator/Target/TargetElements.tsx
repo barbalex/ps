@@ -1,7 +1,8 @@
+import { memo } from 'react'
 import { Draggable } from 'react-beautiful-dnd'
 import { BsArrowsMove } from 'react-icons/bs'
 
-import BetweenCharactersElement from './BetweenCharacters'
+import { BetweenCharacters } from './BetweenCharacters'
 import { LabelElement } from '..'
 
 const targetContainerStyle = {
@@ -61,55 +62,51 @@ interface Props {
  * 3. remind user to first define the fields
  */
 
-export const TargetElements = ({
-  label,
-  name,
-  onChange,
-  isDraggingOver,
-  provided,
-}: Props) => {
-  return (
-    <div
-      style={{
-        ...targetContainerStyle,
-        backgroundColor: isDraggingOver ? 'rgba(74,20,140,0.1)' : 'white',
-      }}
-    >
-      {label.map((el, index) => (
-        <Draggable
-          key={`${el.type}/${el.value}/${index}`}
-          draggableId={`${el.value ?? index}draggableTarget`}
-          index={index}
-        >
-          {(provided) => (
-            <div
-              key={`${el.value}/${index}`}
-              {...provided.draggableProps}
-              {...provided.dragHandleProps}
-              ref={provided.innerRef}
-              style={elementContainerStyle}
-            >
-              {el.type === 'field' ? (
-                <div style={fieldElementStyle}>
-                  {el.value}
-                  <BsArrowsMove style={fieldHandleStyle} />
-                </div>
-              ) : (
-                <BetweenCharactersElement
-                  el={el}
-                  label={label}
-                  name={name}
-                  onChange={onChange}
-                  index={index}
-                >
-                  <BsArrowsMove style={fieldHandleStyle} />
-                </BetweenCharactersElement>
-              )}
-            </div>
-          )}
-        </Draggable>
-      ))}
-      {provided.placeholder}
-    </div>
-  )
-}
+export const TargetElements = memo(
+  ({ label, name, onChange, isDraggingOver, provided }: Props) => {
+    return (
+      <div
+        style={{
+          ...targetContainerStyle,
+          backgroundColor: isDraggingOver ? 'rgba(74,20,140,0.1)' : 'white',
+        }}
+      >
+        {label.map((el, index) => (
+          <Draggable
+            key={`${el.type}/${el.value}/${index}`}
+            draggableId={`${el.value ?? index}draggableTarget`}
+            index={index}
+          >
+            {(provided) => (
+              <div
+                key={`${el.value}/${index}`}
+                {...provided.draggableProps}
+                {...provided.dragHandleProps}
+                ref={provided.innerRef}
+                style={elementContainerStyle}
+              >
+                {el.type === 'field' ? (
+                  <div style={fieldElementStyle}>
+                    {el.value}
+                    <BsArrowsMove style={fieldHandleStyle} />
+                  </div>
+                ) : (
+                  <BetweenCharacters
+                    el={el}
+                    label={label}
+                    name={name}
+                    onChange={onChange}
+                    index={index}
+                  >
+                    <BsArrowsMove style={fieldHandleStyle} />
+                  </BetweenCharacters>
+                )}
+              </div>
+            )}
+          </Draggable>
+        ))}
+        {provided.placeholder}
+      </div>
+    )
+  },
+)
