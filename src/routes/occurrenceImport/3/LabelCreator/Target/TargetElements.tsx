@@ -69,6 +69,7 @@ export const TargetElements = memo(
         style={{
           ...targetContainerStyle,
           backgroundColor: isDraggingOver ? 'rgba(74,20,140,0.1)' : 'white',
+          transition: 'background-color 0.2s ease',
         }}
         ref={provided.innerRef}
         {...provided.droppableProps}

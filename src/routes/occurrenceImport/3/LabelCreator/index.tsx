@@ -185,24 +185,11 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
     <div style={containerStyle}>
       <DragDropContext
         onDragEnd={(result) => {
-          // TODO: this often does not trigger!!!
+          // TODO: this usually does not trigger!!!
           // https://github.com/atlassian/react-beautiful-dnd/issues/1662
           // workaround: use onDragUpdate
-          // onDragEnd(result)
         }}
-        onDragStart={(result) =>
-          console.log(
-            'occurrenceImport, Three, LabelCreator, onDragStart, result:',
-            result,
-          )
-        }
         onDragUpdate={onDragUpdate}
-        onTouchEnd={(result) =>
-          console.log(
-            'occurrenceImport, Three, LabelCreator, onTouchEnd, result:',
-            result,
-          )
-        }
       >
         <div style={innerContainerStyle}>
           <Target
