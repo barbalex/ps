@@ -61,9 +61,17 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
       )
 
       const { destination, source, draggableId } = result
+
       if (
-        destination?.droppableId === source?.droppableId &&
-        destination?.index === source?.index
+        destination.droppableId === source.droppableId &&
+        destination.index === source.index
+      ) {
+        // do nothing
+        return
+      }
+      if (
+        destination.droppableId === source.droppableId &&
+        destination.index === source.index
       ) {
         // user moved something inside same droppable without changing index
         // do nothing
@@ -73,8 +81,8 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
         return
       }
       if (
-        destination?.droppableId === 'target' &&
-        source?.droppableId === 'fieldList'
+        destination.droppableId === 'target' &&
+        source.droppableId === 'fieldList'
       ) {
         // user pulled from field list into target
         // so need to add this to the label at the destination index
@@ -119,15 +127,15 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
       }
 
       if (
-        destination?.droppableId === 'target' &&
-        source?.droppableId === 'target' &&
+        destination.droppableId === 'target' &&
+        source.droppableId === 'target' &&
         destination.index !== source.index
       ) {
         // user moved inside target, to different index
         console.log(
           'occurrenceImport, Three, LabelCreator 8, onDragEnd: user moved inside target, to different index',
         )
-        const newRowLabel = arrayMoveImmutable(
+        const newLabel = arrayMoveImmutable(
           label,
           source.index,
           destination.index,
@@ -136,21 +144,22 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
           'occurrenceImport, Three, LabelCreator 9, onDragEnd, will save:',
           {
             name,
-            newRowLabel,
+            newLabel,
           },
         )
-        onChange({ target: { value: newRowLabel, name } })
+        onChange({ target: { value: newLabel, name } })
         return
       }
+
       if (
-        // not checking destination - user can simply pull out of target
-        source?.droppableId === 'target'
+        source.droppableId === 'target' &&
+        (!destination || destination.droppableId !== 'target')
       ) {
         // user pulled from target anywhere outside
         console.log(
           'occurrenceImport, Three, LabelCreator 10, onDragEnd: user moved from target to anywhere outside',
         )
-        // want to remove this from the rowLabel at this index
+        // remove the label element at this index
         const clonedLabel = [...label]
         clonedLabel.splice(source.index, 1)
         const newLabel = clonedLabel.length ? clonedLabel : null
