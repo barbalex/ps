@@ -114,18 +114,18 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
           'occurrenceImport, Three, LabelCreator 8, onDragEnd: user moved from target to anywhere outside',
         )
         // want to remove this from the rowLabel at this index
-        const clonedRowLabel = [...label]
-        clonedRowLabel.splice(source.index, 1)
-        const newRowLabel = clonedRowLabel.length ? clonedRowLabel : null
+        const clonedLabel = [...label]
+        clonedLabel.splice(source.index, 1)
+        const newLabel = clonedLabel.length ? clonedLabel : null
         console.log(
           'occurrenceImport, Three, LabelCreator 9, onDragEnd, will save:',
           {
             name,
-            newRowLabel,
+            newLabel,
           },
         )
 
-        onChange({ target: { value: newRowLabel, name } })
+        onChange({ target: { value: newLabel, name } })
       }
 
       if (
