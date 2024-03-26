@@ -65,7 +65,9 @@ export const Set = memo(({ occurrenceImport }) => {
       }
     >
       <>
-        <div>{`Set coordinates of ${toSetCount} occurrences`}</div>
+        <div>{`${
+          settingGeometries ? 'Setting' : 'Set'
+        } coordinates of ${toSetCount} occurrences`}</div>
         {notification && <div style={notificationStyle}>{notification}</div>}
       </>
     </Button>
