@@ -68,18 +68,6 @@ export const Component = () => {
     [searchParams, setSearchParams],
   )
 
-  const tabStyle = useCallback(
-    (tabValue) => ({
-      ...tabNumberStyle,
-      ...(tab === tabValue
-        ? { backgroundColor: 'black' }
-        : tab > tabValue
-        ? { backgroundColor: 'var(--colorCompoundBrandStrokeHover)' }
-        : {}),
-    }),
-    [tab],
-  )
-
   const tab1Style = useMemo(
     () => ({
       ...tabNumberStyle,
@@ -107,6 +95,22 @@ export const Component = () => {
             'grey',
     }),
     [occurrences, occurrencesWithoutGeometry?.length, tab],
+  )
+
+  const tab3Style = useMemo(
+    () => ({
+      ...tabNumberStyle,
+      backgroundColor:
+        // green if label_creation exists
+        occurrenceImport?.label_creation
+          ? 'var(--colorCompoundBrandStrokeHover)'
+          : // black if is current
+          tab === 3
+          ? 'black'
+          : // grey if no occurrences or not current
+            'grey',
+    }),
+    [occurrenceImport?.label_creation, tab],
   )
 
   const tab4Style = useMemo(
@@ -150,7 +154,7 @@ export const Component = () => {
         >
           Geometry
         </Tab>
-        <Tab id="3" value={3} icon={<div style={tabStyle(3)}>3</div>}>
+        <Tab id="3" value={3} icon={<div style={tab3Style}>3</div>}>
           Label
         </Tab>
         <Tab id="4" value={4} icon={<div style={tab4Style}>4</div>}>
