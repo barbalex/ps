@@ -1,7 +1,6 @@
 import { memo } from 'react'
 import { Draggable, Droppable } from 'react-beautiful-dnd'
 import { BsArrowsMove } from 'react-icons/bs'
-import { uuidv7 } from '@kripod/uuidv7'
 
 import { LabelElement } from '..'
 
