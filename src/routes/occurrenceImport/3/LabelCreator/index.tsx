@@ -17,15 +17,6 @@ const innerContainerStyle = {
   justifyContent: 'space-between',
 }
 
-/**
- * Have two versions:
- * 1. editing
- *    - list of draggable fields
- *    - text field element to drag between field elements and input some text
- *    - drop area, horizontally sortable
- *      edit creates array of: {type: 'field'|'separator', value: value}
- * 2. presentation: only the drop area
- */
 export interface LabelElement {
   type: 'field' | 'separator'
   value: string
@@ -51,7 +42,6 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
     id: uuidv7(),
   }))
 
-  // TODO: on with https://egghead.io/lessons/react-persist-list-reordering-with-react-beautiful-dnd-using-the-ondragend-callback
   const onDragEnd = useCallback(
     (result) => {
       // TODO:
@@ -178,12 +168,10 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
     [fieldLabels, label, name, onChange],
   )
 
+  // TODO: hard to add field to second line if the line breaks
   return (
     <div style={containerStyle}>
-      <DragDropContext
-        onDragEnd={onDragEnd}
-        // onDragUpdate={onDragUpdate}
-      >
+      <DragDropContext onDragEnd={onDragEnd}>
         <div style={innerContainerStyle}>
           <Target name={name} label={label} onChange={onChange} />
           <FieldList fieldLabels={fieldLabels} />
