@@ -67,37 +67,35 @@ interface Props {
   onChange: () => void
 }
 
-export const Target = memo(({ name, label, onChange }: Props) => {
-  return (
-    <div style={containerStyle}>
-      <Droppable
-        droppableId="target"
-        direction="horizontal"
-        style={droppableStyle}
-      >
-        {(provided, snapshot) => (
-          <div>
-            <div style={titleContainerStyle}>
-              <h4 style={titleStyle}>Label Creator</h4>
-              <p style={explainerStyle}>Build your own label.</p>
-              <p style={explainerStyle}>
-                Pull fields here. The field's value will be used in the label.
-              </p>
-              <p style={explainerStyle}>
-                You can combine multiple fields. And place separating text using
-                the separator tool.
-              </p>
-            </div>
-            <TargetElements
-              label={label}
-              name={name}
-              onChange={onChange}
-              isDraggingOver={snapshot.isDraggingOver}
-              provided={provided}
-            />
+export const Target = memo(({ name, label, onChange }: Props) => (
+  <div style={containerStyle}>
+    <Droppable
+      droppableId="target"
+      direction="horizontal"
+      style={droppableStyle}
+    >
+      {(provided, snapshot) => (
+        <div>
+          <div style={titleContainerStyle}>
+            <h4 style={titleStyle}>Label Creator</h4>
+            <p style={explainerStyle}>Build your own label.</p>
+            <p style={explainerStyle}>
+              Pull fields here. The field's value will be used in the label.
+            </p>
+            <p style={explainerStyle}>
+              You can combine multiple fields. And place separating text using
+              the separator tool.
+            </p>
           </div>
-        )}
-      </Droppable>
-    </div>
-  )
-})
+          <TargetElements
+            label={label}
+            name={name}
+            onChange={onChange}
+            isDraggingOver={snapshot.isDraggingOver}
+            provided={provided}
+          />
+        </div>
+      )}
+    </Droppable>
+  </div>
+))
