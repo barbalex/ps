@@ -16,7 +16,7 @@ export const generateOccurrenceLabel = async (db) => {
         UPDATE occurrences SET label = iif(
           occurrence_imports.label_creation is not null,
           -- TODO: loop all labelElements using json_each()
-          -- https://www.sqlite.org/json1.html#jeach
+          -- https://www.sqlite.org/json1.html#jeach, see: https://stackoverflow.com/a/55937176/712005
           -- then iif type is separator, add value, else add value of json_extract(data, '$.value'):
           concat(
             'TODO:',
