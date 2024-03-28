@@ -44,12 +44,6 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
 
   const onDragEnd = useCallback(
     (result) => {
-      // TODO:
-      console.log(
-        'occurrenceImport, Three, LabelCreator 2, onDragEnd, result:',
-        result,
-      )
-
       const { destination, source, draggableId } = result
 
       if (
@@ -66,9 +60,6 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
       ) {
         // user moved something inside same droppable without changing index
         // do nothing
-        console.log(
-          'occurrenceImport, Three, LabelCreator 3, onDragEnd: user moved something inside same droppable without changing index',
-        )
         return
       }
       if (
@@ -77,14 +68,8 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
       ) {
         // user pulled from field list into target
         // so need to add this to the label at the destination index
-        console.log(
-          'occurrenceImport, Three, LabelCreator 4, onDragEnd: user moved from field list to target',
-        )
         let newLabel
         if (draggableId === 'separator') {
-          console.log(
-            'occurrenceImport, Three, LabelCreator 5, onDragEnd: user moved a separator from field list to target',
-          )
           newLabel = [
             ...label.slice(0, destination.index),
             {
@@ -95,9 +80,6 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
             ...label.slice(destination.index),
           ]
         } else {
-          console.log(
-            'occurrenceImport, Three, LabelCreator 6, onDragEnd: user moved a field from field list to target',
-          )
           const fieldLabel = fieldLabels.find((el) => el.id === draggableId)
           newLabel = [
             ...label.slice(0, destination.index),
@@ -106,13 +88,6 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
             ...label.slice(destination.index),
           ]
         }
-        console.log(
-          'occurrenceImport, Three, LabelCreator 7, onDragEnd, will save:',
-          {
-            name,
-            newLabel,
-          },
-        )
         onChange({ target: { value: newLabel, name } })
         return
       }
@@ -123,20 +98,10 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
         destination?.index !== source.index
       ) {
         // user moved inside target, to different index
-        console.log(
-          'occurrenceImport, Three, LabelCreator 8, onDragEnd: user moved inside target, to different index',
-        )
         const newLabel = arrayMoveImmutable(
           label,
           source.index,
           destination.index,
-        )
-        console.log(
-          'occurrenceImport, Three, LabelCreator 9, onDragEnd, will save:',
-          {
-            name,
-            newLabel,
-          },
         )
         onChange({ target: { value: newLabel, name } })
         return
@@ -147,28 +112,17 @@ export const LabelCreator = memo(({ label, fields, name, onChange }: Props) => {
         (!destination || destination.droppableId !== 'target')
       ) {
         // user pulled from target anywhere outside
-        console.log(
-          'occurrenceImport, Three, LabelCreator 10, onDragEnd: user moved from target to anywhere outside',
-        )
         // remove the label element at this index
         const clonedLabel = [...label]
         clonedLabel.splice(source.index, 1)
         const newLabel = clonedLabel.length ? clonedLabel : null
-        console.log(
-          'occurrenceImport, Three, LabelCreator 11, onDragEnd, will save:',
-          {
-            name,
-            newLabel,
-          },
-        )
-
         onChange({ target: { value: newLabel, name } })
       }
     },
     [fieldLabels, label, name, onChange],
   )
 
-  // TODO: hard to add field to second line if the line breaks
+  // TODO: hard to add field to second line if the line breaks?
   return (
     <div style={containerStyle}>
       <DragDropContext onDragEnd={onDragEnd}>
