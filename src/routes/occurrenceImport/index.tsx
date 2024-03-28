@@ -1,4 +1,4 @@
-import { useCallback, useRef, useMemo } from 'react'
+import { useCallback, useRef, useMemo, useState } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useSearchParams } from 'react-router-dom'
 import { Tab, TabList, InputProps } from '@fluentui/react-components'
@@ -29,6 +29,8 @@ export const Component = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const tabString = searchParams.get('occurrence-import-tab')
   const tab = tabString ? +tabString : 1
+
+  const [showPreview, setShowPreview] = useState(true)
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -140,8 +142,17 @@ export const Component = () => {
 
   return (
     <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} />
-      <Preview occurrences={occurrences} occurrenceFields={occurrenceFields} />
+      <Header
+        autoFocusRef={autoFocusRef}
+        showPreview={showPreview}
+        setShowPreview={setShowPreview}
+      />
+      {showPreview && (
+        <Preview
+          occurrences={occurrences}
+          occurrenceFields={occurrenceFields}
+        />
+      )}
       <TabList selectedValue={tab} onTabSelect={onTabSelect}>
         <Tab id="1" value={1} icon={<div style={tab1Style}>1</div>}>
           Data
