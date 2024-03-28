@@ -139,6 +139,7 @@ export const Component = () => {
   // - uncompleted steps: circle is grey, title is normal
   // - current step: circle is blue, title is bold
   // - the next stepper can not be accessed before the previous is completed
+  // TODO: animate showing/hiding of preview
 
   return (
     <div className="form-outer-container">
