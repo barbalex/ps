@@ -64,6 +64,7 @@ interface Props {
 
 export const TargetElements = memo(
   ({ label, name, onChange, isDraggingOver, provided }: Props) => {
+    console.log('occurrenceImport, Three, LabelCreator, TargetElements 1, label:', label)
     return (
       <div
         style={{
