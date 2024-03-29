@@ -32,6 +32,8 @@ export const router = (db) => {
               index: true,
               lazy: () => import('../routes/home'),
             },
+            // add auth page
+            { path: 'auth', lazy: () => import('../routes/auth') },
             {
               path: 'projects',
               element: null,

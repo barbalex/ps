@@ -1,6 +1,6 @@
 import './home.css'
 
-const Home = () => (
+export const Component = () => (
   <div style={{ height: '100%' }}>
     <picture>
       <source
@@ -69,5 +69,3 @@ const Home = () => (
     </div>
   </div>
 )
-
-export const Component = Home

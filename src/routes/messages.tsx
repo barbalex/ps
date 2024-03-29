@@ -6,6 +6,7 @@ import { useElectric } from '../ElectricProvider'
 import { createMessage } from '../modules/createRows'
 import { ListViewHeader } from '../components/ListViewHeader'
 import { Row } from '../components/shared/Row'
+import { ProtectedRoute } from '../components/ProtectedRoute'
 
 import '../form.css'
 
@@ -25,13 +26,15 @@ export const Component = () => {
   }, [db.messages, navigate, searchParams])
 
   return (
-    <div className="list-view">
-      <ListViewHeader title="Messages" addRow={add} tableName="message" />
-      <div className="list-container">
-        {messages.map(({ message_id, label }) => (
-          <Row key={message_id} to={message_id} label={label} />
-        ))}
+    <ProtectedRoute>
+      <div className="list-view">
+        <ListViewHeader title="Messages" addRow={add} tableName="message" />
+        <div className="list-container">
+          {messages.map(({ message_id, label }) => (
+            <Row key={message_id} to={message_id} label={label} />
+          ))}
+        </div>
       </div>
-    </div>
+    </ProtectedRoute>
   )
 }
