@@ -35,7 +35,7 @@
     "dayjs": "1.11.10",
     "dotenv": "16.4.5",
     "electric-sql": "0.9.6",
-    "framer-motion": "11.0.23",
+    "framer-motion": "11.0.24",
     "is-uuid": "1.0.2",
     "leaflet": "1.9.4",
     "leaflet-draw": "1.0.4",
@@ -68,7 +68,7 @@
     "@types/proj4": "2.5.5",
     "@types/proj4leaflet": "1.0.10",
     "@types/react": "18.2.73",
-    "@types/react-dom": "18.2.22",
+    "@types/react-dom": "18.2.23",
     "@typescript-eslint/eslint-plugin": "7.4.0",
     "@typescript-eslint/parser": "7.4.0",
     "@vitejs/plugin-react": "4.2.1",
@@ -76,7 +76,7 @@
     "eslint-plugin-react-hooks": "4.6.0",
     "eslint-plugin-react-refresh": "0.4.6",
     "typescript": "5.4.3",
-    "vite": "5.2.6"
+    "vite": "5.2.7"
   },
   "devRemarks": {
     "electric-sql": "do not upgrade from 0.9.2 to 0.9.3, see: https://github.com/electric-sql/electric/issues/977"
