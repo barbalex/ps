@@ -1,6 +1,7 @@
 import React, { createRef } from 'react'
 import { RouterProvider } from 'react-router-dom'
 import { FluentProvider } from '@fluentui/react-components'
+import { CorbadoProvider } from '@corbado/react'
 
 import * as LR from '@uploadcare/blocks'
 LR.FileUploaderRegular.shadowStyles = /* CSS */ `
@@ -30,6 +31,8 @@ import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
 
+const CORBADO_PROJECT_ID = import.meta.env.ELECTRIC_CORBADO_PROJECT_ID
+
 const routerContainerStyle = {
   display: 'flex',
   flexDirection: 'column',
@@ -51,21 +54,26 @@ export default function App() {
   const uploaderRef = createRef<HTMLElement | null>(null)
 
   return (
-    <ElectricProvider>
-      <lr-upload-ctx-provider
-        ref={uploaderRef}
-        ctx-name="uploadcare-uploader"
-      ></lr-upload-ctx-provider>
-      <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
-      <SqlInitializer />
-      <Syncer />
-      <FluentProvider theme={lightTheme}>
-        <div style={routerContainerStyle}>
-          <UploaderContext.Provider value={uploaderRef}>
-            <RouterProviderWithDb />
-          </UploaderContext.Provider>
-        </div>
-      </FluentProvider>
-    </ElectricProvider>
+    <CorbadoProvider
+      projectId={CORBADO_PROJECT_ID}
+      // add more config options here (styling, language, etc.)
+    >
+      <ElectricProvider>
+        <lr-upload-ctx-provider
+          ref={uploaderRef}
+          ctx-name="uploadcare-uploader"
+        ></lr-upload-ctx-provider>
+        <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
+        <SqlInitializer />
+        <Syncer />
+        <FluentProvider theme={lightTheme}>
+          <div style={routerContainerStyle}>
+            <UploaderContext.Provider value={uploaderRef}>
+              <RouterProviderWithDb />
+            </UploaderContext.Provider>
+          </div>
+        </FluentProvider>
+      </ElectricProvider>
+    </CorbadoProvider>
   )
 }
