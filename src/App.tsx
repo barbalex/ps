@@ -32,7 +32,6 @@ import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
 
 const CORBADO_PROJECT_ID = import.meta.env.ELECTRIC_CORBADO_PROJECT_ID
-const env = import.meta.env
 
 const routerContainerStyle = {
   display: 'flex',
@@ -53,9 +52,6 @@ const RouterProviderWithDb = () => {
 export default function App() {
   // console.log('App, theme:', customLightTheme)
   const uploaderRef = createRef<HTMLElement | null>(null)
-
-  console.log('App, CORBADO_PROJECT_ID:', CORBADO_PROJECT_ID)
-  console.log('App, env:', env)
 
   return (
     <CorbadoProvider
