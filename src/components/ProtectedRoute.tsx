@@ -6,7 +6,7 @@ export const ProtectedRoute = ({ children }) => {
   const { loading, isAuthenticated, user } = useCorbadoSession()
   const location = useLocation()
 
-  console.warn('ProtectedRoute', { loading, isAuthenticated, user })
+  // console.warn('ProtectedRoute', { loading, isAuthenticated, user })
 
   if (loading) {
     return <div>Loading...</div>
