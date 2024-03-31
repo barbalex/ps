@@ -6,6 +6,7 @@ import { useElectric } from '../../ElectricProvider'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { Jsonb } from '../../components/shared/Jsonb'
 import { Header } from './Header'
+import { Loading } from '../../components/shared/Loading'
 
 import '../../form.css'
 
@@ -19,9 +20,7 @@ export const Component = () => {
     db.goal_reports.liveUnique({ where: { goal_report_id } }),
   )
 
-  if (!row) {
-    return <div>Loading...</div>
-  }
+  if (!row) return <Loading />
 
   return (
     <div className="form-outer-container">

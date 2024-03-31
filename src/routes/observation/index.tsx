@@ -10,6 +10,7 @@ import { Jsonb } from '../../components/shared/Jsonb'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { DateField } from '../../components/shared/DateField'
 import { Header } from './Header'
+import { Loading } from '../../components/shared/Loading'
 
 import '../../form.css'
 
@@ -34,9 +35,7 @@ export const Component = () => {
     [db.observations, observation_id],
   )
 
-  if (!row) {
-    return <div>Loading...</div>
-  }
+  if (!row) return <Loading />
 
   // TODO: inactivate these fields
   // observations are only imported, not created
