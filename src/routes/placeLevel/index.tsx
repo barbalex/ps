@@ -11,6 +11,7 @@ import { RadioGroupField } from '../../components/shared/RadioGroupField'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { Header } from './Header'
 import { upsertTableVectorLayersForProject } from '../../modules/upsertTableVectorLayersForProject'
+import { Loading } from '../../components/shared/Loading'
 
 import '../../form.css'
 
@@ -54,9 +55,7 @@ export const Component = () => {
     [db, place_level_id, row],
   )
 
-  if (!row) {
-    return <div>Loading...</div>
-  }
+  if (!row) return <Loading />
 
   // console.log('place level', row)
 
