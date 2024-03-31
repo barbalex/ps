@@ -7,6 +7,7 @@ import DocViewer, { DocViewerRenderers } from '@cyntler/react-doc-viewer'
 import { useElectric } from '../../ElectricProvider'
 import { Header } from '../file/Header'
 import { Uploader } from '../file/Uploader'
+import { Loading } from '../../components/shared/Loading'
 
 import '../../form.css'
 import './style.css'
@@ -41,9 +42,7 @@ export const Component = memo(() => {
     refreshOptions: { leading: false, trailing: true },
   })
 
-  if (!row) {
-    return <div>Loading...</div>
-  }
+  if (!row) return <Loading />
 
   const isImage = row.mimetype.includes('image')
   const isPdf = row.mimetype.includes('pdf')

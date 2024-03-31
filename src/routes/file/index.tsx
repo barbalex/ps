@@ -11,6 +11,7 @@ import { getValueFromChange } from '../../modules/getValueFromChange'
 import { DropdownField } from '../../components/shared/DropdownField'
 import { Header } from './Header'
 import { Uploader } from './Uploader'
+import { Loading } from '../../components/shared/Loading'
 
 import '../../form.css'
 
@@ -75,9 +76,7 @@ export const Component = () => {
     refreshOptions: { leading: false, trailing: true },
   })
 
-  if (!row) {
-    return <div>Loading...</div>
-  }
+  if (!row) return <Loading />
 
   return (
     <div className="form-outer-container" ref={ref}>
