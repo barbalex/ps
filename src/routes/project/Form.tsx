@@ -8,6 +8,7 @@ import { TextField } from '../../components/shared/TextField'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { Jsonb } from '../../components/shared/Jsonb'
 import { getValueFromChange } from '../../modules/getValueFromChange'
+import { Loading } from '../../components/shared/Loading'
 
 export const Form = memo(({ autoFocusRef }) => {
   const { project_id } = useParams()
@@ -28,9 +29,7 @@ export const Form = memo(({ autoFocusRef }) => {
     [db.projects, project_id],
   )
 
-  if (!row) {
-    return <div>Loading...</div>
-  }
+  if (!row) return <Loading />
 
   return (
     <div className="form-container" role="tabpanel" aria-labelledby="form">
