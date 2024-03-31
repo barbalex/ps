@@ -8,6 +8,7 @@ import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { FilteringCombobox } from '../../components/shared/FilteringCombobox'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { Header } from './Header'
+import { Loading } from '../../components/shared/Loading'
 
 import '../../form.css'
 
@@ -35,9 +36,7 @@ export const Component = () => {
     [db.subproject_taxa, subproject_taxon_id],
   )
 
-  if (!row) {
-    return <div>Loading...</div>
-  }
+  if (!row) return <Loading />
 
   return (
     <div className="form-outer-container">
