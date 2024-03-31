@@ -1,5 +1,6 @@
 import { useCorbadoSession } from '@corbado/react'
 import { useLocation, Navigate } from 'react-router-dom'
+import { Loading } from './shared/Loading'
 
 // https://www.robinwieruch.de/react-router-authentication/
 export const ProtectedRoute = ({ children }) => {
@@ -9,7 +10,7 @@ export const ProtectedRoute = ({ children }) => {
   // console.warn('ProtectedRoute', { loading, isAuthenticated, user })
 
   if (loading) {
-    return <div>Loading...</div>
+    return <Loading label="Authenticating" />
   }
 
   if (!isAuthenticated || !user) {

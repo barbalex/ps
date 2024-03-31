@@ -8,6 +8,7 @@ import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { SwitchField } from '../components/shared/SwitchField'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormHeader } from '../components/FormHeader'
+import { Loading } from '../components/shared/Loading'
 
 import '../form.css'
 
@@ -30,9 +31,7 @@ export const Component = () => {
     [db.ui_options, user_id],
   )
 
-  if (!row) {
-    return <div>Loading...</div>
-  }
+  if (!row) return <Loading />
 
   return (
     <div className="form-outer-container">
