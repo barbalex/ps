@@ -10,6 +10,7 @@ import { SwitchField } from '../../components/shared/SwitchField'
 import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { Section } from '../../components/shared/Section'
+import { Loading } from '../../components/shared/Loading'
 
 const chartTables = [
   'subprojects',
@@ -41,9 +42,7 @@ export const ChartSubjectForm = memo(({ autoFocusRef }) => {
     [db.chart_subjects, chart_subject_id],
   )
 
-  if (!row) {
-    return <div>Loading...</div>
-  }
+  if (!row) return <Loading />
 
   return (
     <div className="form-container">

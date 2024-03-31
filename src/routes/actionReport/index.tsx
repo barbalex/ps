@@ -9,6 +9,7 @@ import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { Jsonb } from '../../components/shared/Jsonb'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { Header } from './Header'
+import { Loading } from '../../components/shared/Loading'
 
 import '../../form.css'
 
@@ -37,9 +38,7 @@ export const Component = () => {
     [db.action_reports, action_report_id],
   )
 
-  if (!row) {
-    return <div>Loading...</div>
-  }
+  if (!row) return <Loading />
 
   return (
     <div className="form-outer-container">
