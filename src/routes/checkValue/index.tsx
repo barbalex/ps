@@ -9,6 +9,7 @@ import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { DropdownField } from '../../components/shared/DropdownField'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { Header } from './Header'
+import { Loading } from '../../components/shared/Loading'
 
 import '../../form.css'
 
@@ -42,9 +43,7 @@ export const Component = () => {
     [db.check_values, check_value_id],
   )
 
-  if (!row) {
-    return <div>Loading...</div>
-  }
+  if (!row) return <Loading />
 
   return (
     <div className="form-outer-container">

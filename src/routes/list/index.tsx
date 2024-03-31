@@ -10,6 +10,7 @@ import { SwitchField } from '../../components/shared/SwitchField'
 import { Jsonb } from '../../components/shared/Jsonb'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { Header } from './Header'
+import { Loading } from '../../components/shared/Loading'
 
 import '../../form.css'
 
@@ -34,9 +35,7 @@ export const Component = () => {
     [db.lists, list_id],
   )
 
-  if (!row) {
-    return <div>Loading...</div>
-  }
+  if (!row) return <Loading />
 
   return (
     <div className="form-outer-container">
