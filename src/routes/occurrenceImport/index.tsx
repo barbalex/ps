@@ -11,6 +11,7 @@ import { Two } from './2'
 import { Three } from './3'
 import { Four } from './4'
 import { Preview } from './Preview'
+import { Loading } from '../../components/shared/Loading'
 
 import '../../form.css'
 
@@ -174,33 +175,39 @@ export const Component = () => {
         </Tab>
       </TabList>
       <div className="form-container">
-        {tab === 1 && (
-          <One
-            occurrenceImport={occurrenceImport}
-            onChange={onChange}
-            autoFocusRef={autoFocusRef}
-          />
-        )}
-        {tab === 2 && (
-          <Two
-            occurrenceImport={occurrenceImport}
-            occurrenceFields={occurrenceFields}
-            onChange={onChange}
-          />
-        )}
-        {tab === 3 && (
-          <Three
-            occurrenceImport={occurrenceImport}
-            occurrenceFields={occurrenceFields}
-            onChange={onChange}
-          />
-        )}
-        {tab === 4 && (
-          <Four
-            occurrenceImport={occurrenceImport}
-            occurrenceFields={occurrenceFields}
-            onChange={onChange}
-          />
+        {!occurrenceImport ? (
+          <Loading />
+        ) : (
+          <>
+            {tab === 1 && (
+              <One
+                occurrenceImport={occurrenceImport}
+                onChange={onChange}
+                autoFocusRef={autoFocusRef}
+              />
+            )}
+            {tab === 2 && (
+              <Two
+                occurrenceImport={occurrenceImport}
+                occurrenceFields={occurrenceFields}
+                onChange={onChange}
+              />
+            )}
+            {tab === 3 && (
+              <Three
+                occurrenceImport={occurrenceImport}
+                occurrenceFields={occurrenceFields}
+                onChange={onChange}
+              />
+            )}
+            {tab === 4 && (
+              <Four
+                occurrenceImport={occurrenceImport}
+                occurrenceFields={occurrenceFields}
+                onChange={onChange}
+              />
+            )}
+          </>
         )}
       </div>
     </div>

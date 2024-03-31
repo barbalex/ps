@@ -52,10 +52,6 @@ export const Crs = memo(({ occurrenceImport, onChange: onChangePassed }) => {
     }
   }, [occurrenceImport.crs, occurrenceImport?.occurrences])
 
-  if (!occurrenceImport) {
-    return <div>Loading...</div>
-  }
-
   return (
     <>
       <TextField
