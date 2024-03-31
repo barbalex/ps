@@ -10,6 +10,7 @@ import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFiel
 import { SwitchField } from '../../components/shared/SwitchField'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { Section } from '../../components/shared/Section'
+import { Loading } from '../../components/shared/Loading'
 
 const chartTypes = ['Pie', 'Radar', 'Area']
 
@@ -124,9 +125,7 @@ export const Form = memo(({ autoFocusRef }) => {
     [db.charts, chart_id],
   )
 
-  if (!row) {
-    return <div>Loading...</div>
-  }
+  if (!row) return <Loading />
 
   // console.log('hello ChartForm', { row, chart_id })
 
@@ -158,7 +157,7 @@ export const Form = memo(({ autoFocusRef }) => {
           value={row.years_current ?? false}
           onChange={onChange}
           validationMessage="The chart shows data of the current year"
-        />                      
+        />
         <SwitchField
           label="Previous"
           name="years_previous"
