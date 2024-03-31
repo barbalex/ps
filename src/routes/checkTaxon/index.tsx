@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from 'react'
+import { useCallback, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
@@ -9,6 +9,7 @@ import { DropdownField } from '../../components/shared/DropdownField'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { Header } from './Header'
+import { Loading } from '../../components/shared/Loading'
 
 import '../../form.css'
 
@@ -37,9 +38,7 @@ export const Component = () => {
     [db.check_taxa, check_taxon_id],
   )
 
-  if (!row) {
-    return <div>Loading...</div>
-  }
+  if (!row) return <Loading />
 
   return (
     <div className="form-outer-container">
