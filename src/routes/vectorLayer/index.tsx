@@ -13,6 +13,7 @@ import { getValueFromChange } from '../../modules/getValueFromChange'
 import { Header } from './Header'
 import { Url } from './Url'
 import { PropertyField } from './PropertyField'
+import { Loading } from '../../components/shared/Loading'
 
 import '../../form.css'
 
@@ -37,9 +38,7 @@ export const Component = () => {
     [db.vector_layers, vector_layer_id],
   )
 
-  if (!row) {
-    return <div>Loading...</div>
-  }
+  if (!row) return <Loading />
 
   // console.log('hello VectorLayerForm, row:', row)
 

@@ -14,6 +14,7 @@ import { MarkerSymbolPicker } from './MarkerSymbolPicker'
 import { Header } from './Header'
 import { ErrorBoundary } from '../../components/shared/ErrorBoundary'
 import { ColorPicker } from '../../components/shared/ColorPicker'
+import { Loading } from '../../components/shared/Loading'
 
 import '../../form.css'
 
@@ -51,9 +52,7 @@ export const Component = () => {
     [db.vector_layer_displays, vector_layer_display_id],
   )
 
-  if (!row) {
-    return <div>Loading...</div>
-  }
+  if (!row) return <Loading />
 
   // TODO:
   // - add display_property_value
