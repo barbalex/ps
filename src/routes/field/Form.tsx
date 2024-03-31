@@ -12,6 +12,7 @@ import { DropdownField } from '../../components/shared/DropdownField'
 import { SwitchField } from '../../components/shared/SwitchField'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { WidgetType } from './WidgetType'
+import { Loading } from '../../components/shared/Loading'
 
 export const accountTables = ['projects', 'files']
 
@@ -68,9 +69,7 @@ export const FieldForm = ({ field_id, autoFocusRef, isInForm = false }) => {
     [row],
   )
 
-  if (!row) {
-    return <div>Loading...</div>
-  }
+  if (!row) return <Loading />
 
   return (
     <div className="form-container">

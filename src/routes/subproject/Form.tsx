@@ -8,6 +8,7 @@ import { TextField } from '../../components/shared/TextField'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { Jsonb } from '../../components/shared/Jsonb'
 import { getValueFromChange } from '../../modules/getValueFromChange'
+import { Loading } from '../../components/shared/Loading'
 
 export const SubprojectForm = memo(({ autoFocusRef }) => {
   const { subproject_id } = useParams()
@@ -28,9 +29,7 @@ export const SubprojectForm = memo(({ autoFocusRef }) => {
     [db.subprojects, subproject_id],
   )
 
-  if (!row) {
-    return <div>Loading...</div>
-  }
+  if (!row) return <Loading />
 
   // console.log('subproject, row.data:', row?.data)
 
