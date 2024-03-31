@@ -13,6 +13,7 @@ import { DropdownFieldFromLayerOptions } from '../../components/shared/DropdownF
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { BaseUrl } from './BaseUrl'
 import { Header } from './Header'
+import { Loading } from '../../components/shared/Loading'
 
 import '../../form.css'
 
@@ -37,9 +38,7 @@ export const Component = () => {
     [db, tile_layer_id],
   )
 
-  if (!row) {
-    return <div>Loading...</div>
-  }
+  if (!row) return <Loading />
 
   // console.log('hello TileLayer, row:', row)
 
