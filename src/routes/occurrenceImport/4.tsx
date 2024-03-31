@@ -29,10 +29,6 @@ export const Four = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
     [occurrenceImports],
   )
 
-  if (!occurrenceImport) {
-    return <div>Loading...</div>
-  }
-
   return (
     <>
       <DropdownFieldSimpleOptions

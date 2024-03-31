@@ -18,8 +18,6 @@ const doneIconStyle = {
 }
 
 export const One = memo(({ occurrenceImport, onChange, autoFocusRef }) => {
-  if (!occurrenceImport) return <div>Loading...</div>
-
   return (
     <>
       <TextField
