@@ -11,6 +11,7 @@ import { Jsonb } from '../../components/shared/Jsonb'
 import { DropdownField } from '../../components/shared/DropdownField'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { EditingGeometry } from '../../components/shared/EditingGeometry'
+import { Loading } from '../../components/shared/Loading'
 
 import '../../form.css'
 
@@ -47,9 +48,7 @@ export const PlaceForm = ({ autoFocusRef }) => {
     [db.places, place_id],
   )
 
-  if (!row) {
-    return <div>Loading...</div>
-  }
+  if (!row) return <Loading />
 
   // console.log('hello place form, row:', row)
 
