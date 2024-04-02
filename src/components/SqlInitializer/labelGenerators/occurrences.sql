@@ -23,3 +23,15 @@ FROM (
 WHERE
   occurrences.occurrence_id = NEW.occurrence_id;
 
+-- 1. extract type and value from label elements
+SELECT
+  occurrence_imports.occurrence_import_id,
+  json_extract(labelElements.value, '$.type') as type,
+  json_extract(labelElements.value, '$.value') as value
+FROM
+  occurrence_imports
+  JOIN json_each(occurrence_imports.label_creation) AS labelElements
+WHERE
+  occurrence_imports.occurrence_import_id = 1;
+
+
