@@ -75,7 +75,20 @@ WHERE
 -- 5. group by occurrence_id and get all label elements
 SELECT
   occurrences.occurrence_id,
-  json_group_array(iif(json_extract(labelElements.value, '$.type') = 'separator', json_extract(labelElements.value, '$.value'), json_extract(occurrences.data, '$.' || json_extract(labelElements.value, '$.value')))) AS label
+  json_group_array(iif(json_extract(labelElements.value, '$.type') = 'separator', json_extract(labelElements.value, '$.value'), json_extract(occurrences.data, '$.' || json_extract(labelElements.value, '$.value')))) AS labelArray
+FROM
+  occurrences
+  INNER JOIN occurrence_imports ON occurrences.occurrence_import_id = occurrence_imports.occurrence_import_id
+  JOIN json_each(occurrence_imports.label_creation) AS labelElements
+GROUP BY
+  occurrences.occurrence_id
+HAVING
+  occurrences.occurrence_id = 1;
+
+-- 6. same but join labelArray to string
+SELECT
+  occurrences.occurrence_id,
+  group_concat(json_group_array(iif(json_extract(labelElements.value, '$.type') = 'separator', json_extract(labelElements.value, '$.value'), json_extract(occurrences.data, '$.' || json_extract(labelElements.value, '$.value'))))) AS label
 FROM
   occurrences
   INNER JOIN occurrence_imports ON occurrences.occurrence_import_id = occurrence_imports.occurrence_import_id
