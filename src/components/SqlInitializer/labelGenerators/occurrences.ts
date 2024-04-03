@@ -13,29 +13,19 @@ export const generateOccurrenceLabel = async (db) => {
       CREATE TRIGGER IF NOT EXISTS occurrences_label_trigger
         AFTER insert ON occurrences
       BEGIN
-        UPDATE occurrences SET label = iif(
-          occurrence_imports.label_creation is not null,
-          -- TODO: loop all labelElements using json_each()
-          -- https://www.sqlite.org/json1.html#jeach, TODO: see: https://stackoverflow.com/a/55937176/712005
-          -- then iif type is separator, add value, else add value of json_extract(data, '$.value'):
-          concat(
-            'TODO:',
-            'loop all labelElements and replace with values from occurrences',
-            coalesce(NEW.value_integer, NEW.value_numeric, NEW.value_text)
-          ),
-          NEW.occurrence_id
-        ) 
-        FROM(
-        SELECT
-          label_creation
-        FROM
-          occurrence_imports
-        WHERE
-          occurrence_import_id = NEW.occurrence_import_id) AS occurrence_imports,
-        (
-          json_each()
-          FROM json_each(occurrence_imports.label_creation)
-        ) as labelElements
+      UPDATE occurrences
+        SET
+          label =(
+            SELECT
+              group_concat(iif(json_extract(labelElements.value, '$.type') = 'separator', json_extract(labelElements.value, '$.value'), json_extract(occurrences.data, '$.' || json_extract(labelElements.value, '$.value'))), '')
+            FROM
+              occurrences
+              INNER JOIN occurrence_imports ON occurrences.occurrence_import_id = occurrence_imports.occurrence_import_id
+              JOIN json_each(occurrence_imports.label_creation) AS labelElements
+            WHERE
+              occurrence_imports.occurrence_import_id = occurrences.occurrence_import_id
+            GROUP BY
+              occurrences.occurrence_id)
         WHERE
           occurrences.occurrence_id = NEW.occurrence_id;
       END;`,
