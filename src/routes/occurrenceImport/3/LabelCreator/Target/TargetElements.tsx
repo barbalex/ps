@@ -9,6 +9,7 @@ const targetContainerStyle = {
   display: 'flex',
   flexWrap: 'wrap',
   alignItems: 'center',
+  alignContent: 'flex-start',
   flexGrow: 1,
   minHeight: '42px',
   padding: '8px',
@@ -63,7 +64,7 @@ interface Props {
  */
 
 export const TargetElements = memo(
-  ({ label,  onChange, isDraggingOver, provided }: Props) => (
+  ({ label, onChange, isDraggingOver, provided }: Props) => (
     <div
       style={{
         ...targetContainerStyle,

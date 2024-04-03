@@ -1,5 +1,6 @@
-import { memo } from 'react'
+import { memo, useState, useEffect, useCallback } from 'react'
 import { Droppable } from 'react-beautiful-dnd'
+import { Button, Spinner } from '@fluentui/react-components'
 
 import { TargetElements } from './TargetElements'
 import { LabelElement } from '..'
@@ -15,14 +16,6 @@ const containerStyle = {
   boxSizing: 'border-box',
   flexGrow: 1,
 }
-// was inside container:
-// > div {
-//   flex-grow: 1;
-//   height: 100%;
-//   width: 100%;
-//   display: flex;
-//   flex-direction: column;
-// }
 const droppableStyle = {
   flexGrow: 1,
   height: '100%',
@@ -45,6 +38,15 @@ const explainerStyle = {
   margin: 0,
   color: 'grey',
 }
+const innerContainerStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  flexGrow: 1,
+  height: '100%',
+}
+const buttonStyle = {
+  margin: 8,
+}
 
 /**
  * Have two versions:
@@ -64,37 +66,61 @@ const explainerStyle = {
 interface Props {
   name: string
   label: LabelElement[]
+  labelChanged: boolean
   onChange: () => void
+  saveToDb: () => void
 }
 
-export const Target = memo(({ label, onChange }: Props) => (
-  <div style={containerStyle}>
-    <Droppable
-      droppableId="target"
-      direction="horizontal"
-      style={droppableStyle}
-    >
-      {(provided, snapshot) => (
-        <div>
-          <div style={titleContainerStyle}>
-            <h4 style={titleStyle}>Label Creator</h4>
-            <p style={explainerStyle}>Build your own label.</p>
-            <p style={explainerStyle}>
-              Pull fields here. The field's value will be used in the label.
-            </p>
-            <p style={explainerStyle}>
-              You can combine multiple fields. And place separating text using
-              the separator tool.
-            </p>
-          </div>
-          <TargetElements
-            label={label}
-            onChange={onChange}
-            isDraggingOver={snapshot.isDraggingOver}
-            provided={provided}
-          />
-        </div>
-      )}
-    </Droppable>
-  </div>
-))
+export const Target = memo(
+  ({ label, labelChanged, onChange, saveToDb }: Props) => {
+    // TODO: on apply changes: set loading until labelChanged is false
+    const [changing, setChanging] = useState(false)
+    const onClick = useCallback(() => {
+      setChanging(true)
+      saveToDb()
+    }, [saveToDb])
+    useEffect(() => {
+      if (changing && !labelChanged) setChanging(false)
+    }, [changing, labelChanged])
+
+    return (
+      <div style={containerStyle}>
+        <Droppable
+          droppableId="target"
+          direction="horizontal"
+          style={droppableStyle}
+        >
+          {(provided, snapshot) => (
+            <div style={innerContainerStyle}>
+              <div style={titleContainerStyle}>
+                <h4 style={titleStyle}>Label Creator</h4>
+                <p style={explainerStyle}>Build your own label.</p>
+                <p style={explainerStyle}>
+                  Pull fields here. The field's value will be used in the label.
+                </p>
+                <p style={explainerStyle}>
+                  You can combine multiple fields. And place separating text
+                  using the separator tool.
+                </p>
+              </div>
+              <TargetElements
+                label={label}
+                onChange={onChange}
+                isDraggingOver={snapshot.isDraggingOver}
+                provided={provided}
+              />
+              <Button
+                onClick={onClick}
+                style={buttonStyle}
+                disabled={!labelChanged}
+                icon={changing ? <Spinner size="tiny" /> : undefined}
+              >
+                {changing ? 'Applying changes' : 'Apply changes'}
+              </Button>
+            </div>
+          )}
+        </Droppable>
+      </div>
+    )
+  },
+)

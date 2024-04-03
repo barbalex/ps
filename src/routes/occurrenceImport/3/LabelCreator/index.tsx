@@ -1,7 +1,8 @@
-import { useCallback, memo, useState, useEffect } from 'react'
+import { useCallback, memo, useState, useEffect, useRef, useMemo } from 'react'
 import { DragDropContext } from 'react-beautiful-dnd'
 import { arrayMoveImmutable } from 'array-move'
 import { uuidv7 } from '@kripod/uuidv7'
+import isEqual from 'lodash/isEqual'
 
 import { FieldList } from './FieldList'
 import { Target } from './Target'
@@ -15,6 +16,7 @@ const containerStyle = {
 const innerContainerStyle = {
   display: 'flex',
   justifyContent: 'space-between',
+  flexGrow: 1,
 }
 
 export interface LabelElement {
@@ -29,54 +31,77 @@ interface Props {
 }
 
 export const LabelCreator = memo(
-  ({ label, fields, name, onChange: onChangePassed }: Props) => {
-    console.log('occurrenceImport, Three, LabelCreator 1, label:', label)
+  ({
+    label: labelPassed = [],
+    fields,
+    name,
+    onChange: onChangePassed,
+  }: Props) => {
+    const [label, setLabel] = useState(structuredClone(labelPassed))
 
-    // TODO: do I need a useEffect to update the state when the props change?
-    const [state, setState] = useState({ label, fields })
-    const onBlur = useCallback(
-      (e) => {
-        if (!e.currentTarget.contains(e.relatedTarget)) {
-          // focus left the container
-          // https://github.com/facebook/react/issues/6410#issuecomment-671915381
-          console.log(
-            'occurrenceImport, Three, LabelCreator, saving label state on blur',
-            state.label,
-          )
-          onChangePassed({ target: { value: state.label, name } })
-        }
-      },
-      [name, onChangePassed, state],
-    )
-    const onChange = useCallback(
-      (newLabel) => {
-        console.log(
-          'occurrenceImport, Three, LabelCreator, onChange, newLabel:',
-          newLabel,
-        )
-        setState((prevState) => ({ ...prevState, label: newLabel }))
-      },
-      [setState],
-    )
-
+    const onChange = useCallback((newLabel) => setLabel(newLabel), [])
     useEffect(() => {
-      window.onbeforeunload = () => {
-        // save any data changed before closing tab or browser
-        // only works if updateOnServer can run without waiting for an async process
-        // https://stackoverflow.com/questions/36379155/wait-for-promises-in-onbeforeunload
-        // which is why rowState.current is needed (instead of getting up to date row)
-        console.log(
-          'occurrenceImport, Three, LabelCreator, saving label state on before unload:',
-          state.label,
-        )
-        onChangePassed({ target: { value: state.label, name } })
-        // do not return - otherwise user is dialogued, and that does not help the saving
-      }
-    }, [name, onChangePassed, state.label])
+      setLabel(structuredClone(labelPassed))
+    }, [labelPassed])
 
-    const fieldLabelElements = state.label.filter((el) => el.type === 'field')
+    const labelChanged = useMemo(() => {
+      if (!labelPassed) return false
+      return !isEqual(label, labelPassed)
+    }, [label, labelPassed])
+
+    const saveToDb = useCallback(() => {
+      onChangePassed({ target: { value: label, name } })
+    }, [label, name, onChangePassed])
+
+    // const onBlur = useCallback(
+    //   (e) => {
+    //     const currentTargetContainsRelatedTarget = e.currentTarget.contains(
+    //       e.relatedTarget,
+    //     )
+    //     console.log('occurrenceImport, Three, LabelCreator, on blur', {
+    //       e,
+    //       currentTarget: e.currentTarget,
+    //       relatedTarget: e.relatedTarget,
+    //       target: e.target,
+    //       currentTargetContainsRelatedTarget,
+    //     })
+    //     if (e.currentTarget === e.target) {
+    //       console.log(
+    //         'occurrenceImport, Three, LabelCreator, on blur, focus left self',
+    //       )
+    //     }
+    //     if (!currentTargetContainsRelatedTarget) {
+    //       // focus left the container
+    //       // https://github.com/facebook/react/issues/6410#issuecomment-671915381
+    //       console.log(
+    //         'occurrenceImport, Three, LabelCreator, on blur, focus left the container',
+    //       )
+    //       setTimeout(() => saveToDb())
+    //     }
+    //   },
+    //   [saveToDb],
+    // )
+
+    const containerRef = useRef<HTMLDivElement>(null)
+
+    // useEffect(() => {
+    //   window.onbeforeunload = () => {
+    //     // save any data changed before closing tab or browser
+    //     // only works if updateOnServer can run without waiting for an async process
+    //     // https://stackoverflow.com/questions/36379155/wait-for-promises-in-onbeforeunload
+    //     // which is why rowState.current is needed (instead of getting up to date row)
+    //     console.log(
+    //       'occurrenceImport, Three, LabelCreator, saving label state on before unload:',
+    //       label,
+    //     )
+    //     onChangePassed({ target: { value: label, name } })
+    //     // do not return - otherwise user is dialogued, and that does not help the saving
+    //   }
+    // }, [name, onChangePassed, label])
+
+    const fieldLabelElements = label.filter((el) => el.type === 'field')
     const fieldLabelValues = fieldLabelElements.map((el) => el.value)
-    const unusedFields = state.fields.filter(
+    const unusedFields = fields.filter(
       (field) => !fieldLabelValues.includes(field),
     )
     const fieldLabels = unusedFields.map((field) => ({
@@ -114,21 +139,21 @@ export const LabelCreator = memo(
           let newLabel
           if (draggableId === 'separator') {
             newLabel = [
-              ...state.label.slice(0, destination.index),
+              ...label.slice(0, destination.index),
               {
                 type: 'separator',
                 value: '',
                 id: uuidv7(),
               },
-              ...state.label.slice(destination.index),
+              ...label.slice(destination.index),
             ]
           } else {
             const fieldLabel = fieldLabels.find((el) => el.id === draggableId)
             newLabel = [
-              ...state.label.slice(0, destination.index),
+              ...label.slice(0, destination.index),
               // clone the label
               { ...fieldLabel },
-              ...state.label.slice(destination.index),
+              ...label.slice(destination.index),
             ]
           }
           return onChange(newLabel)
@@ -141,7 +166,7 @@ export const LabelCreator = memo(
         ) {
           // user moved inside target, to different index
           const newLabel = arrayMoveImmutable(
-            state.label,
+            label,
             source.index,
             destination.index,
           )
@@ -154,21 +179,31 @@ export const LabelCreator = memo(
         ) {
           // user pulled from target anywhere outside
           // remove the label element at this index
-          const clonedLabel = [...state.label]
+          const clonedLabel = [...label]
           clonedLabel.splice(source.index, 1)
           const newLabel = clonedLabel.length ? clonedLabel : null
           return onChange(newLabel)
         }
       },
-      [fieldLabels, onChange, state.label],
+      [fieldLabels, label, onChange],
     )
 
     // TODO: hard to add field to second line if the line breaks?
     return (
-      <div style={containerStyle} onBlur={onBlur}>
+      <div
+        id="label-creator"
+        style={containerStyle}
+        // onBlur={onBlur}
+        ref={containerRef}
+      >
         <DragDropContext onDragEnd={onDragEnd}>
           <div style={innerContainerStyle}>
-            <Target label={state.label} onChange={onChange} />
+            <Target
+              label={label}
+              labelChanged={labelChanged}
+              onChange={onChange}
+              saveToDb={saveToDb}
+            />
             <FieldList fieldLabels={fieldLabels} />
           </div>
         </DragDropContext>

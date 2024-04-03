@@ -35,30 +35,15 @@ export const BetweenCharacters = memo(
   }: Props): PropsWithChildren => {
     const onBlur = useCallback(
       (event) => {
-        console.log(
-          'occurrenceImport, Three, LabelCreator, BetweenCharacters, onBlur',
-          { el, label, index, event },
-        )
         const newLabel = [...label]
         newLabel.forEach((labelElement, i) => {
           if (i === index) {
             labelElement.value = event.target.value
           }
         })
-        // for (const labelElement of newLabel) {
-        //   if (labelElement.type === 'separator') {
-        //     labelElement.value = event.target.value
-        //     break
-        //   }
-        // }
-        // newLabel[index].value = event.target.value
-        console.log(
-          'occurrenceImport, Three, LabelCreator, BetweenCharacters, onBlur, newLabel:',
-          newLabel,
-        )
         onChange(newLabel)
       },
-      [el, index, label, onChange],
+      [index, label, onChange],
     )
 
     return (
@@ -74,7 +59,7 @@ export const BetweenCharacters = memo(
           defaultValue={el.value ?? ''}
           appearance="outline"
           size="small"
-          onBlur={onBlur}
+          onChange={onBlur}
           style={inputStyle}
         />
         {children}
