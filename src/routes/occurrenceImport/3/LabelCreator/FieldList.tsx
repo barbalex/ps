@@ -36,11 +36,9 @@ const fieldContainerStyle = {
   minHeight: '1.6em',
   userSelect: 'none',
   transition: 'background-color 0.2s ease, color 0.2s ease',
-  // enable in-word wrapping
   overflowWrap: 'anywhere',
   display: 'flex',
   flexDirection: 'column',
-  // vertical center text
   justifyContent: 'center',
 }
 const dividerContainerStyle = {
