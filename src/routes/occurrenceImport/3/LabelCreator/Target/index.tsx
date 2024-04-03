@@ -67,7 +67,7 @@ interface Props {
   onChange: () => void
 }
 
-export const Target = memo(({ name, label, onChange }: Props) => (
+export const Target = memo(({ label, onChange }: Props) => (
   <div style={containerStyle}>
     <Droppable
       droppableId="target"
@@ -89,7 +89,6 @@ export const Target = memo(({ name, label, onChange }: Props) => (
           </div>
           <TargetElements
             label={label}
-            name={name}
             onChange={onChange}
             isDraggingOver={snapshot.isDraggingOver}
             provided={provided}

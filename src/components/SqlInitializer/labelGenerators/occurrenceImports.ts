@@ -29,17 +29,17 @@ export const generateOccurrenceImportLabel = async (db) => {
         BEGIN
           UPDATE occurrences
             SET
-              label =(
+              label = (
                 SELECT
-                  group_concat(iif(json_extract(labelElements.value, '$.type') = 'separator', json_extract(labelElements.value, '$.value'), json_extract(occurrences.data, '$.' || json_extract(labelElements.value, '$.value'))), '')
+                  group_concat(iif(json_extract(labelElements.value, '$.type') = 'separator', json_extract(labelElements.value, '$.value'), json_extract(o.data, '$.' || json_extract(labelElements.value, '$.value'))), '')
                 FROM
-                  occurrences
-                  INNER JOIN occurrence_imports ON occurrences.occurrence_import_id = occurrence_imports.occurrence_import_id
+                  occurrences o
+                  INNER JOIN occurrence_imports ON o.occurrence_import_id = occurrence_imports.occurrence_import_id
                   JOIN json_each(occurrence_imports.label_creation) AS labelElements
                 WHERE
-                  occurrence_imports.occurrence_import_id = occurrences.occurrence_import_id
+                  o.occurrence_id = occurrences.occurrence_id
                 GROUP BY
-                  occurrences.occurrence_id)
+                  o.occurrence_id)
             WHERE
               occurrences.occurrence_import_id = NEW.occurrence_import_id;
         END;`,

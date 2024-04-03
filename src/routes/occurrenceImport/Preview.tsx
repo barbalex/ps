@@ -61,17 +61,18 @@ export const Preview = memo(({ occurrences, occurrenceFields }: Props) => {
   if (!occurrences.length) {
     return <div style={emptyContainerStyle}>no data to preview</div>
   }
+  const occurrenceFieldsWithLabel = ['label', ...occurrenceFields]
 
   return (
     <div style={containerStyle}>
       <table
         aria-label="Preview"
         style={tableStyle}
-        width={occurrenceFields.length * 60}
+        width={occurrenceFieldsWithLabel.length * 60}
       >
         <thead style={headStyle}>
           <tr>
-            {occurrenceFields.map((f) => (
+            {occurrenceFieldsWithLabel.map((f) => (
               <th key={f} style={headerCellStyle}>
                 {f}
               </th>
@@ -81,16 +82,19 @@ export const Preview = memo(({ occurrences, occurrenceFields }: Props) => {
         <tbody>
           {occurrences.slice(0, 50).map((o) => (
             <tr key={o.occurrence_id}>
-              {occurrenceFields.map((f) => (
+              {occurrenceFieldsWithLabel.map((f, i) => (
                 <td key={f} style={bocyCellStyle}>
-                  {o.data[f]}
+                  {f === 'label' && i === 0 ? o.label : o.data[f]}
                 </td>
               ))}
             </tr>
           ))}
           {occurrences.length > 50 && (
             <tr>
-              <td colSpan={occurrenceFields.length} style={bocyCellStyle}>
+              <td
+                colSpan={occurrenceFieldsWithLabel.length}
+                style={bocyCellStyle}
+              >
                 and {occurrences.length - 50} more rows...
               </td>
             </tr>

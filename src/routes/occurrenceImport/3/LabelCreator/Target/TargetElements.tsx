@@ -63,7 +63,7 @@ interface Props {
  */
 
 export const TargetElements = memo(
-  ({ label, name, onChange, isDraggingOver, provided }: Props) => (
+  ({ label,  onChange, isDraggingOver, provided }: Props) => (
     <div
       style={{
         ...targetContainerStyle,
@@ -104,7 +104,6 @@ export const TargetElements = memo(
                 <BetweenCharacters
                   el={labelElement}
                   label={label}
-                  name={name}
                   onChange={onChange}
                   index={index}
                   snapshot={snapshot}

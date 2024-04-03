@@ -27,7 +27,6 @@ export const BetweenCharacters = memo(
   ({
     el,
     label,
-    name,
     onChange,
     index,
     children,
@@ -57,9 +56,9 @@ export const BetweenCharacters = memo(
           'occurrenceImport, Three, LabelCreator, BetweenCharacters, onBlur, newLabel:',
           newLabel,
         )
-        onChange({ target: { value: newLabel, name } })
+        onChange(newLabel)
       },
-      [el, index, label, name, onChange],
+      [el, index, label, onChange],
     )
 
     return (
