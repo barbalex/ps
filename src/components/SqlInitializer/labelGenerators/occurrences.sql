@@ -46,10 +46,42 @@ FROM
 WHERE
   occurrences.occurrence_id = 1;
 
--- 3. group by occurrence_id and get all label elements
--- https://www.sqlite.org/json1.html#jgrouparray
+-- 3. same but with extracted value from occurrences.data
 SELECT
   occurrences.occurrence_id,
-  json_group_array(json_extract(labelElements.value, '$.type')) AS types,
-  json_group_array(json_extract(labelElements.value, '$.value')) AS
-VALUES
+  json_extract(labelElements.value, '$.type') AS type,
+  json_extract(labelElements.value, '$.value') AS value,
+  json_extract(occurrences.data, '$.' || json_extract(labelElements.value, '$.value')) AS fieldValue
+FROM
+  occurrences
+  INNER JOIN occurrence_imports ON occurrences.occurrence_import_id = occurrence_imports.occurrence_import_id
+  JOIN json_each(occurrence_imports.label_creation) AS labelElements
+WHERE
+  occurrences.occurrence_id = 1;
+
+-- 4. same but if type is separator, use value, else use value from occurrences.data
+SELECT
+  occurrences.occurrence_id,
+  json_extract(labelElements.value, '$.type') AS type,
+  json_extract(labelElements.value, '$.value') AS value,
+  iif(json_extract(labelElements.value, '$.type') = 'separator', json_extract(labelElements.value, '$.value'), json_extract(occurrences.data, '$.' || json_extract(labelElements.value, '$.value'))) AS fieldValue
+FROM
+  occurrences
+  INNER JOIN occurrence_imports ON occurrences.occurrence_import_id = occurrence_imports.occurrence_import_id
+  JOIN json_each(occurrence_imports.label_creation) AS labelElements
+WHERE
+  occurrences.occurrence_id = 1;
+
+-- 5. group by occurrence_id and get all label elements
+SELECT
+  occurrences.occurrence_id,
+  json_group_array(iif(json_extract(labelElements.value, '$.type') = 'separator', json_extract(labelElements.value, '$.value'), json_extract(occurrences.data, '$.' || json_extract(labelElements.value, '$.value')))) AS label
+FROM
+  occurrences
+  INNER JOIN occurrence_imports ON occurrences.occurrence_import_id = occurrence_imports.occurrence_import_id
+  JOIN json_each(occurrence_imports.label_creation) AS labelElements
+GROUP BY
+  occurrences.occurrence_id
+HAVING
+  occurrences.occurrence_id = 1;
+
