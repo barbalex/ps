@@ -36,7 +36,6 @@ const titleStyle = {
 const explainerStyle = {
   fontSize: 'x-small',
   margin: 0,
-  color: 'grey',
 }
 const innerContainerStyle = {
   display: 'flex',
