@@ -53,51 +53,7 @@ export const LabelCreator = memo(
       onChangePassed({ target: { value: label, name } })
     }, [label, name, onChangePassed])
 
-    // const onBlur = useCallback(
-    //   (e) => {
-    //     const currentTargetContainsRelatedTarget = e.currentTarget.contains(
-    //       e.relatedTarget,
-    //     )
-    //     console.log('occurrenceImport, Three, LabelCreator, on blur', {
-    //       e,
-    //       currentTarget: e.currentTarget,
-    //       relatedTarget: e.relatedTarget,
-    //       target: e.target,
-    //       currentTargetContainsRelatedTarget,
-    //     })
-    //     if (e.currentTarget === e.target) {
-    //       console.log(
-    //         'occurrenceImport, Three, LabelCreator, on blur, focus left self',
-    //       )
-    //     }
-    //     if (!currentTargetContainsRelatedTarget) {
-    //       // focus left the container
-    //       // https://github.com/facebook/react/issues/6410#issuecomment-671915381
-    //       console.log(
-    //         'occurrenceImport, Three, LabelCreator, on blur, focus left the container',
-    //       )
-    //       setTimeout(() => saveToDb())
-    //     }
-    //   },
-    //   [saveToDb],
-    // )
-
     const containerRef = useRef<HTMLDivElement>(null)
-
-    // useEffect(() => {
-    //   window.onbeforeunload = () => {
-    //     // save any data changed before closing tab or browser
-    //     // only works if updateOnServer can run without waiting for an async process
-    //     // https://stackoverflow.com/questions/36379155/wait-for-promises-in-onbeforeunload
-    //     // which is why rowState.current is needed (instead of getting up to date row)
-    //     console.log(
-    //       'occurrenceImport, Three, LabelCreator, saving label state on before unload:',
-    //       label,
-    //     )
-    //     onChangePassed({ target: { value: label, name } })
-    //     // do not return - otherwise user is dialogued, and that does not help the saving
-    //   }
-    // }, [name, onChangePassed, label])
 
     const fieldLabelElements = label.filter((el) => el.type === 'field')
     const fieldLabelValues = fieldLabelElements.map((el) => el.value)
