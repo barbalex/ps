@@ -36,6 +36,7 @@ const titleStyle = {
 const explainerStyle = {
   fontSize: 'x-small',
   margin: 0,
+  lineHeight: '1.3em',
 }
 const innerContainerStyle = {
   display: 'flex',
@@ -95,11 +96,11 @@ export const Target = memo(
                 <h4 style={titleStyle}>Label Creator</h4>
                 <p style={explainerStyle}>Build your own label.</p>
                 <p style={explainerStyle}>
-                  Pull fields here. The field's value will be used in the label.
+                  Pull fields here. A field's value will be used in the label.
                 </p>
+                <p style={explainerStyle}>Combine multiple fields.</p>
                 <p style={explainerStyle}>
-                  You can combine multiple fields. And place separating text
-                  using the separator tool.
+                  Place separating text using the separator tool.
                 </p>
               </div>
               <TargetElements
