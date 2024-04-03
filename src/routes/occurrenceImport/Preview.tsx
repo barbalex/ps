@@ -30,7 +30,7 @@ const tableStyle = {
 const headStyle = {
   position: 'sticky',
   top: 0,
-  backgroundColor: 'rgba(103, 216, 101, 0.07)',
+  backgroundColor: '#e2f7e2',
   fontWeight: 'bold',
   zIndex: 1,
 }

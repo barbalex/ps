@@ -12,12 +12,15 @@ const containerStyle = {
   borderBottomLeftRadius: 0,
   borderCollapse: 'collapse',
   boxSizing: 'border-box',
+  maxWidth: 140,
 }
 const titleStyle = {
   margin: 0,
   padding: 4,
   paddingBottom: 0,
   userSelect: 'none',
+  whiteSpace: 'normal',
+  lineHeight: '1.2em',
 }
 const fieldListStyle = {
   padding: 4,
@@ -29,9 +32,16 @@ const fieldContainerStyle = {
   marginBottom: 8,
   borderRadius: 4,
   fontSize: 'x-small',
-  lineHeight: '16.6px',
+  lineHeight: '1.2em',
+  minHeight: '1.6em',
   userSelect: 'none',
   transition: 'background-color 0.2s ease, color 0.2s ease',
+  // enable in-word wrapping
+  overflowWrap: 'anywhere',
+  display: 'flex',
+  flexDirection: 'column',
+  // vertical center text
+  justifyContent: 'center',
 }
 const dividerContainerStyle = {
   ...fieldContainerStyle,
@@ -105,7 +115,7 @@ export const FieldList = memo(({ fieldLabels }: Props) => (
                 </Draggable>
               ))}
             </div>
-            <h5 style={titleStyle}>Separating text/characters</h5>
+            <h5 style={titleStyle}>Separating text / characters</h5>
             {/* TODO: this draggable needs a uuidv7 draggableId that changes after every addition of a separator */}
             <Draggable
               key="separator"
