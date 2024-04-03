@@ -19,15 +19,20 @@ const brandRamp: BrandVariants = {
   160: '#D4E1CC',
 }
 
+// https://fonts.google.com/knowledge/glossary/system_font_web_safe_font
+// system-ui: doesn't need to be downloaded, looks consistent with the rest of the OS
+// but: is different on different OSes
 export const lightTheme: Theme = {
   ...createLightTheme(brandRamp),
-  fontFamilyBase: 'Roboto, Helvetica Neue, Helvetica, sans-serif',
+  // fontFamilyBase: 'Roboto, Helvetica Neue, Helvetica, sans-serif',
+  fontFamilyBase: 'system-ui, Helvetica Neue, Helvetica, sans-serif',
   // colorNeutralBackground1: 'transparent',
 }
 
 export const darkTheme: Theme = {
   ...createDarkTheme(brandRamp),
-  fontFamilyBase: 'Roboto, Helvetica Neue, Helvetica, sans-serif',
+  // fontFamilyBase: 'Roboto, Helvetica Neue, Helvetica, sans-serif',
+  fontFamilyBase: 'system-ui, Helvetica Neue, Helvetica, sans-serif',
 }
 
 darkTheme.colorBrandForeground1 = brandRamp[110]

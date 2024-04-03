@@ -26,11 +26,6 @@ import { SqlInitializer } from './components/SqlInitializer'
 import { Syncer } from './components/Syncer'
 import { UploaderContext } from './UploaderContext'
 
-import '@fontsource/roboto/300.css'
-import '@fontsource/roboto/400.css'
-import '@fontsource/roboto/500.css'
-import '@fontsource/roboto/700.css'
-
 const CORBADO_PROJECT_ID = import.meta.env.ELECTRIC_CORBADO_PROJECT_ID
 
 const routerContainerStyle = {
