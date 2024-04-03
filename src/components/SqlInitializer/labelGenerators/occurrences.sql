@@ -88,7 +88,7 @@ HAVING
 -- 6. same but join labelArray to string
 SELECT
   occurrences.occurrence_id,
-  concat(json_group_array(iif(json_extract(labelElements.value, '$.type') = 'separator', json_extract(labelElements.value, '$.value'), json_extract(occurrences.data, '$.' || json_extract(labelElements.value, '$.value'))))) AS label
+  group_concat(iif(json_extract(labelElements.value, '$.type') = 'separator', json_extract(labelElements.value, '$.value'), json_extract(occurrences.data, '$.' || json_extract(labelElements.value, '$.value'))), '') AS label
 FROM
   occurrences
   INNER JOIN occurrence_imports ON occurrences.occurrence_import_id = occurrence_imports.occurrence_import_id
