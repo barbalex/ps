@@ -84,16 +84,15 @@ export const Menu = memo(() => {
     })
   }, [navigate, params.user_id, searchParams])
 
-  const onClickLogin = useCallback(() => navigate('/auth'), [navigate])
-  const onClickLogout = useCallback(() => {
-    logout()
-    // navigate('/auth')
-  }, [logout])
+  const onClickLogout = useCallback(() => logout(), [logout])
+  const onClickEnter = useCallback(() => navigate('/projects'), [navigate])
 
   const treeIsActive = tabs.includes('tree')
   const dataIsActive = tabs.includes('data')
   const filterIsActive = tabs.includes('filter')
   const mapIsActive = tabs.includes('map')
+
+  console.log('hello Menu rendering', { isAuthenticated, isHome })
 
   return (
     <div style={controls}>
@@ -179,8 +178,8 @@ export const Menu = memo(() => {
       )}
       <Button
         size="medium"
-        icon={isAuthenticated ? <MdLogout /> : <MdLogin />}
-        onClick={isAuthenticated ? onClickLogout : onClickLogin}
+        icon={isAuthenticated && !isHome ? <MdLogout /> : <MdLogin />}
+        onClick={isAuthenticated && !isHome ? onClickLogout : onClickEnter}
         title={!isAuthenticated ? 'Login' : isHome ? 'Enter' : 'Logout'}
         style={css({
           backgroundColor: 'rgba(38, 82, 37, 0)',

@@ -7,6 +7,14 @@ import { Main } from './Main'
 import { Notifications } from '../Notifications'
 import { ProtectedRoute } from '../ProtectedRoute'
 
+const homeOutletStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  flexGrow: 1,
+  overflow: 'hidden',
+  position: 'relative',
+}
+
 export const Layout = () => {
   const [searchParams] = useSearchParams()
   const onlyForm = searchParams.get('onlyForm')
@@ -25,7 +33,9 @@ export const Layout = () => {
     return (
       <>
         <Header />
-        <Outlet />
+        <div style={homeOutletStyle}>
+          <Outlet />
+        </div>
       </>
     )
   }
