@@ -37,7 +37,6 @@ export const Component = () => {
     <div className="form-outer-container">
       <FormHeader title="Options" tableName="options" />
       <div className="form-container">
-        <TextFieldInactive label="ID" name="user_id" value={row.user_id} />
         <SwitchField
           label="Breadcrumbs overflowing"
           name="breadcrumbs_overflowing"
