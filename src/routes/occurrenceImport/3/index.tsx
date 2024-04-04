@@ -1,6 +1,6 @@
 import { memo } from 'react'
 
-import { LabelCreator } from './LabelCreator'
+import { LabelCreator } from '../../../components/shared/LabelCreator'
 
 export const Three = memo(
   ({ occurrenceImport, occurrenceFields, onChange }) => (

@@ -61,7 +61,7 @@ export const Set = memo(({ occurrenceImport }) => {
     <Button
       onClick={onClick}
       icon={
-        settingGeometries ? <Spinner size="small" style={spinnerStyle} /> : null
+        settingGeometries ? <Spinner size="tiny" style={spinnerStyle} /> : null
       }
     >
       <>
