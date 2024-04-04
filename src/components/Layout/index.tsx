@@ -15,6 +15,8 @@ export const Layout = () => {
   // this is used to show forms inside popups in the map
   if (onlyForm) return <Main />
 
+  // TODO: not logged in visitors
+  // should see only simplified header and home page
   return (
     <>
       <Header />
