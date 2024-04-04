@@ -5,8 +5,10 @@ import {
   ToolbarToggleButton,
 } from '@fluentui/react-components'
 import { FaCog } from 'react-icons/fa'
+import { MdLogout, MdLogin } from 'react-icons/md'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
+import { useCorbado } from '@corbado/react'
 
 import { user_id } from '../../SqlInitializer'
 import { controls } from '../../../styles'
@@ -48,6 +50,10 @@ export const Menu = memo(() => {
   const params = useParams()
   const [searchParams] = useSearchParams()
 
+  const { isAuthenticated, logout } = useCorbado()
+
+  console.log('hello Menu, isAuthenticated:', isAuthenticated)
+
   const { db } = useElectric()!
   // get ui_options.tabs
   const { results: uiOption } = useLiveQuery(
@@ -64,13 +70,19 @@ export const Menu = memo(() => {
     [db.ui_options],
   )
 
-  const onClick = useCallback(() => {
+  const onClickOptions = useCallback(() => {
     if (params.user_id) return navigate(-1)
     navigate({
       pathname: `/options/${user_id}`,
       search: searchParams.toString(),
     })
   }, [navigate, params.user_id, searchParams])
+
+  const onClickLogin = useCallback(() => navigate('/auth'), [navigate])
+  const onClickLogout = useCallback(() => {
+    logout()
+    navigate('/auth')
+  }, [logout, navigate])
 
   const treeIsActive = tabs.includes('tree')
   const dataIsActive = tabs.includes('data')
@@ -144,7 +156,7 @@ export const Menu = memo(() => {
       <Button
         size="medium"
         icon={<FaCog />}
-        onClick={onClick}
+        onClick={onClickOptions}
         title="Options"
         style={css({
           backgroundColor: 'rgba(38, 82, 37, 0)',
@@ -153,6 +165,33 @@ export const Menu = memo(() => {
           on: ($) => [$('&:hover', { filter: 'brightness(85%)' })],
         })}
       />
+      {isAuthenticated ? (
+        <Button
+          size="medium"
+          icon={<MdLogout />}
+          onClick={onClickLogout}
+          title="Log out"
+          style={css({
+            backgroundColor: 'rgba(38, 82, 37, 0)',
+            border: 'none',
+            color: 'white',
+            on: ($) => [$('&:hover', { filter: 'brightness(85%)' })],
+          })}
+        />
+      ) : (
+        <Button
+          size="medium"
+          icon={<MdLogin />}
+          onClick={onClickLogin}
+          title="Log in"
+          style={css({
+            backgroundColor: 'rgba(38, 82, 37, 0)',
+            border: 'none',
+            color: 'white',
+            on: ($) => [$('&:hover', { filter: 'brightness(85%)' })],
+          })}
+        />
+      )}
     </div>
   )
 })
