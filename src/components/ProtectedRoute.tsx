@@ -1,21 +1,17 @@
-import { useCorbadoSession } from '@corbado/react'
-import { useLocation, Navigate } from 'react-router-dom'
+import { memo } from 'react'
+import { useCorbado } from '@corbado/react'
 import { Loading } from './shared/Loading'
 
+import { Auth } from './Auth'
+
 // https://www.robinwieruch.de/react-router-authentication/
-export const ProtectedRoute = ({ children }) => {
-  const { loading, isAuthenticated, user } = useCorbadoSession()
-  const location = useLocation()
+export const ProtectedRoute = memo(({ children }) => {
+  const { loading, isAuthenticated } = useCorbado()
+  // console.log('hello ProtectedRoute', { loading, isAuthenticated })
 
-  // console.warn('ProtectedRoute', { loading, isAuthenticated, user })
+  if (loading) return <Loading label="Authenticating" />
 
-  if (loading) {
-    return <Loading label="Authenticating" />
-  }
-
-  if (!isAuthenticated || !user) {
-    return <Navigate to="/auth" replace state={{ from: location }} />
-  }
+  if (!isAuthenticated) return <Auth />
 
   return children
-}
+})

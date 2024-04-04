@@ -52,8 +52,6 @@ export const Menu = memo(() => {
 
   const { isAuthenticated, logout } = useCorbado()
 
-  console.log('hello Menu, isAuthenticated:', isAuthenticated)
-
   const { db } = useElectric()!
   // get ui_options.tabs
   const { results: uiOption } = useLiveQuery(
@@ -81,8 +79,8 @@ export const Menu = memo(() => {
   const onClickLogin = useCallback(() => navigate('/auth'), [navigate])
   const onClickLogout = useCallback(() => {
     logout()
-    navigate('/auth')
-  }, [logout, navigate])
+    // navigate('/auth')
+  }, [logout])
 
   const treeIsActive = tabs.includes('tree')
   const dataIsActive = tabs.includes('data')
