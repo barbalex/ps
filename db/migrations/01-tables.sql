@@ -1364,6 +1364,8 @@ COMMENT ON COLUMN fields.level IS 'level of field if places or below: 1, 2';
 CREATE TABLE ui_options(
   user_id uuid PRIMARY KEY DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  is_authenticated boolean DEFAULT NULL, -- FALSE,
+  user jsonb DEFAULT NULL,
   designing boolean DEFAULT NULL, -- FALSE,
   breadcrumbs_overflowing boolean DEFAULT NULL, -- FALSE,
   navs_overflowing boolean DEFAULT NULL, -- FALSE,
