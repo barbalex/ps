@@ -4,7 +4,7 @@ import App from './App'
 import './style.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(<App />)
-// causes LabelGenerator to run twice
+// causes LabelGenerator to run twice which deactivates dragging...
 // .render(
 //   <React.StrictMode>
 //     <App />
