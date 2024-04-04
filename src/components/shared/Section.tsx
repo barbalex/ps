@@ -10,6 +10,7 @@ const titleStyle = {
   position: 'sticky',
   top: -12,
   zIndex: 1,
+  userSelect: 'none',
 }
 
 // need to place children under their own parent
