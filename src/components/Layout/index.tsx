@@ -13,9 +13,7 @@ export const Layout = () => {
   // console.log('Layout rendering')
 
   // this is used to show forms inside popups in the map
-  if (onlyForm) {
-    return <Main />
-  }
+  if (onlyForm) return <Main />
 
   return (
     <>
