@@ -1,4 +1,4 @@
-import React, { createRef, useState } from 'react'
+import React, { createRef } from 'react'
 import { RouterProvider } from 'react-router-dom'
 import { FluentProvider } from '@fluentui/react-components'
 import { CorbadoProvider } from '@corbado/react'
@@ -25,9 +25,6 @@ import { router } from './router'
 import { SqlInitializer } from './components/SqlInitializer'
 import { Syncer } from './components/Syncer'
 import { UploaderContext } from './UploaderContext'
-import { UserSetter } from './components/UserSetter'
-
-import { Provider as UserProvider } from './userContext'
 
 const CORBADO_PROJECT_ID = import.meta.env.ELECTRIC_CORBADO_PROJECT_ID
 
@@ -50,9 +47,6 @@ const RouterProviderWithDb = () => {
 export default function App() {
   // console.log('App, theme:', customLightTheme)
   const uploaderRef = createRef<HTMLElement | null>(null)
-  const [user, setUser] = useState(null)
-
-  console.log('hello App, user:', user)
 
   return (
     <CorbadoProvider
@@ -65,16 +59,13 @@ export default function App() {
           ctx-name="uploadcare-uploader"
         ></lr-upload-ctx-provider>
         <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
-        <UserSetter setUser={setUser} />
         <FluentProvider theme={lightTheme}>
           <div style={routerContainerStyle}>
-            <UserProvider value={user}>
-              <SqlInitializer />
-              <Syncer />
-              <UploaderContext.Provider value={uploaderRef}>
-                <RouterProviderWithDb />
-              </UploaderContext.Provider>
-            </UserProvider>
+            <SqlInitializer />
+            <Syncer />
+            <UploaderContext.Provider value={uploaderRef}>
+              <RouterProviderWithDb />
+            </UploaderContext.Provider>
           </div>
         </FluentProvider>
       </ElectricProvider>
