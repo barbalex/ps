@@ -31,18 +31,11 @@ interface Props {
 }
 
 export const LabelCreator = memo(
-  ({
-    label: labelPassed = [],
-    fields,
-    name,
-    onChange: onChangePassed,
-  }: Props) => {
-    const [label, setLabel] = useState(structuredClone(labelPassed))
+  ({ label: labelPassed, fields, name, onChange: onChangePassed }: Props) => {
+    const [label, setLabel] = useState(structuredClone(labelPassed ?? []))
 
     const onChange = useCallback((newLabel) => setLabel(newLabel), [])
-    useEffect(() => {
-      setLabel(structuredClone(labelPassed))
-    }, [labelPassed])
+    useEffect(() => setLabel(structuredClone(labelPassed ?? [])), [labelPassed])
 
     const labelChanged = useMemo(() => {
       if (!labelPassed) return false

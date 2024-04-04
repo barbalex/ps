@@ -6,7 +6,6 @@ import { createAccount } from '../modules/createRows'
 import { ListViewHeader } from '../components/ListViewHeader'
 import { Row } from '../components/shared/Row'
 import { useElectric } from '../ElectricProvider'
-import { ProtectedRoute } from '../components/ProtectedRoute'
 
 import '../form.css'
 
@@ -27,19 +26,13 @@ export const Component = () => {
   }, [db.accounts, navigate, searchParams])
 
   return (
-    <ProtectedRoute>
-      <div className="list-view">
-        <ListViewHeader title="Accounts" addRow={add} tableName="account" />
-        <div className="list-container">
-          {accounts.map(({ account_id, label }) => (
-            <Row
-              key={account_id}
-              label={label}
-              to={`/accounts/${account_id}`}
-            />
-          ))}
-        </div>
+    <div className="list-view">
+      <ListViewHeader title="Accounts" addRow={add} tableName="account" />
+      <div className="list-container">
+        {accounts.map(({ account_id, label }) => (
+          <Row key={account_id} label={label} to={`/accounts/${account_id}`} />
+        ))}
       </div>
-    </ProtectedRoute>
+    </div>
   )
 }

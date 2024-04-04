@@ -1,28 +1,28 @@
-import { useCallback } from 'react'
+import { useCallback, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
-import { Projects as Project } from '../../../generated/client'
 import { createProject } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
 import { ListViewHeader } from '../components/ListViewHeader'
 import { Row } from '../components/shared/Row'
 import { upsertTableVectorLayersForProject } from '../modules/upsertTableVectorLayersForProject'
-import { ProtectedRoute } from '../components/ProtectedRoute'
 
 import '../form.css'
 
-export const Component = () => {
+export const Component = memo(() => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
+  // TODO: this component gets constantly re-rendered because of the live query!!!???
   const { results: projects = [] } = useLiveQuery(
     db.projects.liveMany({
       where: { deleted: false },
       orderBy: { label: 'asc' },
     }),
   )
+  console.log('hello Projects')
 
   const add = useCallback(async () => {
     const data = await createProject({ db })
@@ -33,19 +33,17 @@ export const Component = () => {
   }, [db, navigate, searchParams])
 
   return (
-    <ProtectedRoute>
-      <div className="list-view">
-        <ListViewHeader title="Projects" addRow={add} tableName="project" />
-        <div className="list-container">
-          {projects.map((project: Project) => (
-            <Row
-              key={project.project_id}
-              label={project.label}
-              to={project.project_id}
-            />
-          ))}
-        </div>
+    <div className="list-view">
+      <ListViewHeader title="Projects" addRow={add} tableName="project" />
+      <div className="list-container">
+        {projects.map((project) => (
+          <Row
+            key={project.project_id}
+            label={project.label}
+            to={project.project_id}
+          />
+        ))}
       </div>
-    </ProtectedRoute>
+    </div>
   )
-}
+})

@@ -1,7 +1,6 @@
 CREATE TABLE users(
   user_id uuid PRIMARY KEY DEFAULT NULL,
   email text DEFAULT NULL, -- TODO: email needs to be unique per account. But: not possible in electric-sql
-  auth_id uuid DEFAULT NULL,
   label_replace_by_generated_column text DEFAULT NULL,
   deleted boolean DEFAULT NULL
 );
@@ -1364,6 +1363,7 @@ COMMENT ON COLUMN fields.level IS 'level of field if places or below: 1, 2';
 CREATE TABLE ui_options(
   user_id uuid PRIMARY KEY DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  authenticated_email text DEFAULT NULL,
   designing boolean DEFAULT NULL, -- FALSE,
   breadcrumbs_overflowing boolean DEFAULT NULL, -- FALSE,
   navs_overflowing boolean DEFAULT NULL, -- FALSE,

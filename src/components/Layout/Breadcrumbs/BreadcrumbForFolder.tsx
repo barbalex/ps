@@ -12,6 +12,7 @@ import { user_id } from '../../SqlInitializer'
 const siblingStyle = {
   marginLeft: 7,
 }
+const labelStyle = { userSelect: 'none' }
 
 // forwarding refs is crucial for the overflow menu to work
 // https://github.com/microsoft/fluentui/issues/27652#issuecomment-1520447241
@@ -138,7 +139,7 @@ export const BreadcrumbForFolder = forwardRef(
         }
         ref={ref}
       >
-        <div className="text">{label}</div>
+        <div style={labelStyle}>{label}</div>
         {!!sibling && <div style={siblingStyle}>{sibling}</div>}
         <Menu navs={navs} />
       </div>

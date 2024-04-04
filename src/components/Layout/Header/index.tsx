@@ -8,7 +8,7 @@ const containerStyle = {
   padding: '0 10px',
   color: 'white',
 }
-const titleStyle = { fontSize: 'large' }
+const titleStyle = { fontSize: 'large', userSelect: 'none' }
 
 export const Header = () => {
   return (

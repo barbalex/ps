@@ -59,10 +59,10 @@ export default function App() {
           ctx-name="uploadcare-uploader"
         ></lr-upload-ctx-provider>
         <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
-        <SqlInitializer />
-        <Syncer />
         <FluentProvider theme={lightTheme}>
           <div style={routerContainerStyle}>
+            <SqlInitializer />
+            <Syncer />
             <UploaderContext.Provider value={uploaderRef}>
               <RouterProviderWithDb />
             </UploaderContext.Provider>
