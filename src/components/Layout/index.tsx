@@ -1,4 +1,4 @@
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams, useLocation, Outlet } from 'react-router-dom'
 
 import { Breadcrumbs } from './Breadcrumbs'
 import { Navs } from './Navs'
@@ -10,13 +10,22 @@ export const Layout = () => {
   const [searchParams] = useSearchParams()
   const onlyForm = searchParams.get('onlyForm')
 
-  // console.log('Layout rendering')
+  const { pathname } = useLocation()
+
+  console.log('hello Layout rendering, location:', pathname)
 
   // this is used to show forms inside popups in the map
   if (onlyForm) return <Main />
 
   // TODO: not logged in visitors
   // should see only simplified header and home page
+  if (pathname === '/')
+    return (
+      <>
+        <Header />
+        <Outlet />
+      </>
+    )
   return (
     <>
       <Header />
