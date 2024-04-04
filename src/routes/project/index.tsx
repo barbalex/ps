@@ -9,7 +9,6 @@ import { Form } from './Form'
 import { Design } from './Design'
 import { useElectric } from '../../ElectricProvider'
 import { user_id } from '../../components/SqlInitializer'
-import { ProtectedRoute } from '../../components/ProtectedRoute'
 
 import '../../form.css'
 
@@ -32,34 +31,32 @@ export const Component = () => {
   )
 
   return (
-    <ProtectedRoute>
-      <div className="form-outer-container">
-        <Header autoFocusRef={autoFocusRef} />
-        <TabList selectedValue={tab} onTabSelect={onTabSelect}>
-          <Tab id="form" value="form">
-            Form
+    <div className="form-outer-container">
+      <Header autoFocusRef={autoFocusRef} />
+      <TabList selectedValue={tab} onTabSelect={onTabSelect}>
+        <Tab id="form" value="form">
+          Form
+        </Tab>
+        {designing && (
+          <Tab id="design" value="design">
+            Design
           </Tab>
-          {designing && (
-            <Tab id="design" value="design">
-              Design
-            </Tab>
-          )}
-          <Tab id="charts" value="charts">
-            Charts
-          </Tab>
-        </TabList>
-        {tab === 'form' && <Form autoFocusRef={autoFocusRef} />}
-        {tab === 'design' && designing && <Design />}
-        {tab === 'charts' && (
-          <div
-            role="tabpanel"
-            aria-labelledby="charts"
-            className="form-container"
-          >
-            <div>charts</div>
-          </div>
         )}
-      </div>
-    </ProtectedRoute>
+        <Tab id="charts" value="charts">
+          Charts
+        </Tab>
+      </TabList>
+      {tab === 'form' && <Form autoFocusRef={autoFocusRef} />}
+      {tab === 'design' && designing && <Design />}
+      {tab === 'charts' && (
+        <div
+          role="tabpanel"
+          aria-labelledby="charts"
+          className="form-container"
+        >
+          <div>charts</div>
+        </div>
+      )}
+    </div>
   )
 }

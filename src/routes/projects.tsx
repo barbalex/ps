@@ -7,7 +7,6 @@ import { useElectric } from '../ElectricProvider'
 import { ListViewHeader } from '../components/ListViewHeader'
 import { Row } from '../components/shared/Row'
 import { upsertTableVectorLayersForProject } from '../modules/upsertTableVectorLayersForProject'
-import { ProtectedRoute } from '../components/ProtectedRoute'
 
 import '../form.css'
 
@@ -34,19 +33,17 @@ export const Component = memo(() => {
   }, [db, navigate, searchParams])
 
   return (
-    <ProtectedRoute>
-      <div className="list-view">
-        <ListViewHeader title="Projects" addRow={add} tableName="project" />
-        <div className="list-container">
-          {projects.map((project) => (
-            <Row
-              key={project.project_id}
-              label={project.label}
-              to={project.project_id}
-            />
-          ))}
-        </div>
+    <div className="list-view">
+      <ListViewHeader title="Projects" addRow={add} tableName="project" />
+      <div className="list-container">
+        {projects.map((project) => (
+          <Row
+            key={project.project_id}
+            label={project.label}
+            to={project.project_id}
+          />
+        ))}
       </div>
-    </ProtectedRoute>
+    </div>
   )
 })

@@ -6,7 +6,12 @@ import {
 } from '@fluentui/react-components'
 import { FaCog } from 'react-icons/fa'
 import { MdLogout, MdLogin } from 'react-icons/md'
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import {
+  useNavigate,
+  useParams,
+  useSearchParams,
+  useLocation,
+} from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 
@@ -49,6 +54,9 @@ export const Menu = memo(() => {
   const navigate = useNavigate()
   const params = useParams()
   const [searchParams] = useSearchParams()
+
+  const { pathname } = useLocation()
+  const isHome = pathname === '/'
 
   const { isAuthenticated, logout } = useCorbado()
 
@@ -94,80 +102,86 @@ export const Menu = memo(() => {
         checkedValues={{ tabs }}
         onCheckedValueChange={onChangeTabs}
       >
-        <ToolbarToggleButton
-          aria-label="Tree"
-          name="tabs"
-          value="tree"
-          style={css(
-            buildButtonStyle({
-              prevIsActive: false,
-              nextIsActive: dataIsActive,
-              selfIsActive: treeIsActive,
-            }),
-          )}
-        >
-          Tree
-        </ToolbarToggleButton>
-        <ToolbarToggleButton
-          aria-label="Data"
-          name="tabs"
-          value="data"
-          style={css(
-            buildButtonStyle({
-              prevIsActive: treeIsActive,
-              nextIsActive: filterIsActive,
-              selfIsActive: dataIsActive,
-            }),
-          )}
-        >
-          Data
-        </ToolbarToggleButton>
-        <ToolbarToggleButton
-          aria-label="Filter"
-          name="tabs"
-          value="filter"
-          style={css(
-            buildButtonStyle({
-              prevIsActive: dataIsActive,
-              nextIsActive: mapIsActive,
-              selfIsActive: filterIsActive,
-            }),
-          )}
-        >
-          Filter
-        </ToolbarToggleButton>
-        <ToolbarToggleButton
-          aria-label="Map"
-          name="tabs"
-          value="map"
-          style={css(
-            buildButtonStyle({
-              prevIsActive: filterIsActive,
-              nextIsActive: false,
-              selfIsActive: mapIsActive,
-            }),
-          )}
-        >
-          Map
-        </ToolbarToggleButton>
+        {!isHome && (
+          <>
+            <ToolbarToggleButton
+              aria-label="Tree"
+              name="tabs"
+              value="tree"
+              style={css(
+                buildButtonStyle({
+                  prevIsActive: false,
+                  nextIsActive: dataIsActive,
+                  selfIsActive: treeIsActive,
+                }),
+              )}
+            >
+              Tree
+            </ToolbarToggleButton>
+            <ToolbarToggleButton
+              aria-label="Data"
+              name="tabs"
+              value="data"
+              style={css(
+                buildButtonStyle({
+                  prevIsActive: treeIsActive,
+                  nextIsActive: filterIsActive,
+                  selfIsActive: dataIsActive,
+                }),
+              )}
+            >
+              Data
+            </ToolbarToggleButton>
+            <ToolbarToggleButton
+              aria-label="Filter"
+              name="tabs"
+              value="filter"
+              style={css(
+                buildButtonStyle({
+                  prevIsActive: dataIsActive,
+                  nextIsActive: mapIsActive,
+                  selfIsActive: filterIsActive,
+                }),
+              )}
+            >
+              Filter
+            </ToolbarToggleButton>
+            <ToolbarToggleButton
+              aria-label="Map"
+              name="tabs"
+              value="map"
+              style={css(
+                buildButtonStyle({
+                  prevIsActive: filterIsActive,
+                  nextIsActive: false,
+                  selfIsActive: mapIsActive,
+                }),
+              )}
+            >
+              Map
+            </ToolbarToggleButton>
+          </>
+        )}
       </Toolbar>
-      <Button
-        size="medium"
-        icon={<FaCog />}
-        onClick={onClickOptions}
-        title="Options"
-        style={css({
-          backgroundColor: 'rgba(38, 82, 37, 0)',
-          border: 'none',
-          color: 'white',
-          on: ($) => [$('&:hover', { filter: 'brightness(85%)' })],
-        })}
-      />
+      {!isHome && (
+        <Button
+          size="medium"
+          icon={<FaCog />}
+          onClick={onClickOptions}
+          title="Options"
+          style={css({
+            backgroundColor: 'rgba(38, 82, 37, 0)',
+            border: 'none',
+            color: 'white',
+            on: ($) => [$('&:hover', { filter: 'brightness(85%)' })],
+          })}
+        />
+      )}
       <Button
         size="medium"
         icon={isAuthenticated ? <MdLogout /> : <MdLogin />}
         onClick={isAuthenticated ? onClickLogout : onClickLogin}
-        title="Log out"
+        title={!isAuthenticated ? 'Login' : isHome ? 'Enter' : 'Logout'}
         style={css({
           backgroundColor: 'rgba(38, 82, 37, 0)',
           border: 'none',

@@ -5,12 +5,14 @@ import { Navs } from './Navs'
 import { Header } from './Header'
 import { Main } from './Main'
 import { Notifications } from '../Notifications'
+import { ProtectedRoute } from '../ProtectedRoute'
 
 export const Layout = () => {
   const [searchParams] = useSearchParams()
   const onlyForm = searchParams.get('onlyForm')
 
   const { pathname } = useLocation()
+  const isHome = pathname === '/'
 
   console.log('hello Layout rendering, location:', pathname)
 
@@ -19,19 +21,22 @@ export const Layout = () => {
 
   // TODO: not logged in visitors
   // should see only simplified header and home page
-  if (pathname === '/')
+  if (isHome) {
     return (
       <>
         <Header />
         <Outlet />
       </>
     )
+  }
   return (
     <>
       <Header />
       <Breadcrumbs />
       <Navs />
-      <Main />
+      <ProtectedRoute>
+        <Main />
+      </ProtectedRoute>
       <Notifications />
     </>
   )
