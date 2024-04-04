@@ -35,9 +35,7 @@ export const LabelCreator = memo(
     const [label, setLabel] = useState(structuredClone(labelPassed ?? []))
 
     const onChange = useCallback((newLabel) => setLabel(newLabel), [])
-    useEffect(() => {
-      setLabel(structuredClone(labelPassed ?? []))
-    }, [labelPassed])
+    useEffect(() => setLabel(structuredClone(labelPassed ?? [])), [labelPassed])
 
     const labelChanged = useMemo(() => {
       if (!labelPassed) return false

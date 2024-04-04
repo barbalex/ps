@@ -31,8 +31,6 @@ export const Component = () => {
     [setSearchParams],
   )
 
-  console.log('hello Project')
-
   return (
     <ProtectedRoute>
       <div className="form-outer-container">
