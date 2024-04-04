@@ -52,7 +52,7 @@ export const SubprojectUserNode = memo(
         isOpen={isOpen}
         isInActiveNodeArray={isOpen}
         isActive={isActive}
-        childrenCount={10}
+        childrenCount={0}
         to={`${baseUrl}/${subprojectUser.subproject_user_id}`}
         onClickButton={onClickButton}
       />

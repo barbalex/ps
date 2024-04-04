@@ -52,7 +52,7 @@ export const OccurrenceImportNode = memo(
         isOpen={isOpen}
         isInActiveNodeArray={isOpen}
         isActive={isActive}
-        childrenCount={10}
+        childrenCount={0}
         to={`${baseUrl}/${occurrenceImport.occurrence_import_id}`}
         onClickButton={onClickButton}
       />

@@ -22,7 +22,7 @@ const svgStyle = {
   color: 'rgb(51, 51, 51)',
 }
 
-const labelSpanStyle = { cursor: 'default' }
+const labelSpanStyle = { cursor: 'default', userSelect: 'none' }
 
 interface Props {
   isInActiveNodeArray: boolean
