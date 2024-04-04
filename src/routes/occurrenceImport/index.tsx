@@ -21,8 +21,11 @@ const tabNumberStyle = {
   borderRadius: '50%',
   backgroundColor: 'grey',
   color: 'white',
-  fontSize: '0.7em',
+  fontSize: '0.65em',
   fontWeight: 'bold',
+  verticalAlign: 'middle',
+  textAlign: 'center',
+  lineHeight: '19px',
 }
 
 export const Component = () => {
