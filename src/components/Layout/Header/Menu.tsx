@@ -163,33 +163,18 @@ export const Menu = memo(() => {
           on: ($) => [$('&:hover', { filter: 'brightness(85%)' })],
         })}
       />
-      {isAuthenticated ? (
-        <Button
-          size="medium"
-          icon={<MdLogout />}
-          onClick={onClickLogout}
-          title="Log out"
-          style={css({
-            backgroundColor: 'rgba(38, 82, 37, 0)',
-            border: 'none',
-            color: 'white',
-            on: ($) => [$('&:hover', { filter: 'brightness(85%)' })],
-          })}
-        />
-      ) : (
-        <Button
-          size="medium"
-          icon={<MdLogin />}
-          onClick={onClickLogin}
-          title="Log in"
-          style={css({
-            backgroundColor: 'rgba(38, 82, 37, 0)',
-            border: 'none',
-            color: 'white',
-            on: ($) => [$('&:hover', { filter: 'brightness(85%)' })],
-          })}
-        />
-      )}
+      <Button
+        size="medium"
+        icon={isAuthenticated ? <MdLogout /> : <MdLogin />}
+        onClick={isAuthenticated ? onClickLogout : onClickLogin}
+        title="Log out"
+        style={css({
+          backgroundColor: 'rgba(38, 82, 37, 0)',
+          border: 'none',
+          color: 'white',
+          on: ($) => [$('&:hover', { filter: 'brightness(85%)' })],
+        })}
+      />
     </div>
   )
 })
