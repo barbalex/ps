@@ -86,7 +86,7 @@ export const Node = memo(
           <Link
             style={css({
               fontSize: '1em',
-              lineHeight: '1em',
+              lineHeight: '1.5em',
               whiteSpace: 'nowrap',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
