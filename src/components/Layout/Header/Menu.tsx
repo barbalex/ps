@@ -92,8 +92,6 @@ export const Menu = memo(() => {
   const filterIsActive = tabs.includes('filter')
   const mapIsActive = tabs.includes('map')
 
-  console.log('hello Menu rendering', { isAuthenticated, isHome })
-
   return (
     <div style={controls}>
       <Toolbar
