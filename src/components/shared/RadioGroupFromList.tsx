@@ -23,7 +23,7 @@ export const RadioGroupFromList = memo(
   }) => {
     const { db } = useElectric()!
     const { results: listValues = [] } = useLiveQuery(
-      db.list_values.liveMany({ where: { list_id, deleted: false } }),
+      db.list_values.liveMany({ where: { list_id } }),
     )
 
     return (

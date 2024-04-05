@@ -26,7 +26,6 @@ export const LabelBy = memo(
         where: {
           table_name: table,
           project_id: ['files', 'projects'].includes(table) ? null : project_id,
-          deleted: false,
         },
       }),
     )

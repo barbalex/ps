@@ -74,7 +74,6 @@ export const VectorLayerPVLGeom = ({ layer, display }: Props) => {
         await db.vector_layer_geoms.findMany({
           where: {
             vector_layer_id: layer.vector_layer_id,
-            deleted: false,
             bbox_sw_lng: { gt: bounds._southWest.lng },
             bbox_sw_lat: { gt: bounds._southWest.lat },
             bbox_ne_lng: { lt: bounds._northEast.lng },
