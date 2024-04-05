@@ -23,7 +23,7 @@ export const Component = () => {
 
   const { results: places = [] } = useLiveQuery(
     db.places.liveMany({
-      where: { deleted: false, parent_id: place_id ?? null, subproject_id },
+      where: { parent_id: place_id ?? null, subproject_id },
       orderBy: { label: 'asc' },
     }),
   )
@@ -31,7 +31,6 @@ export const Component = () => {
   const { results: placeLevel } = useLiveQuery(
     db.place_levels.liveFirst({
       where: {
-        deleted: false,
         project_id,
         level: place_id ? 2 : 1,
       },

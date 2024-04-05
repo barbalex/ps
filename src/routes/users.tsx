@@ -15,7 +15,7 @@ export const Component = () => {
 
   const { db } = useElectric()!
   const { results: users = [] } = useLiveQuery(
-    db.users.liveMany({ where: { deleted: false }, orderBy: { label: 'asc' } }),
+    db.users.liveMany({ orderBy: { label: 'asc' } }),
   )
 
   const add = useCallback(async () => {
