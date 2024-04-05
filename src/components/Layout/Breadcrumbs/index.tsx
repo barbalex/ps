@@ -7,9 +7,9 @@ import { user_id } from '../../SqlInitializer'
 
 export const Breadcrumbs = () => {
   const { db } = useElectric()!
-  // get ui_options.breadcrumbs_overflowing
+  // get app_state.breadcrumbs_overflowing
   const { results: uiOption } = useLiveQuery(
-    db.ui_options.liveUnique({ where: { user_id } }),
+    db.app_state.liveUnique({ where: { user_id } }),
   )
 
   if (uiOption?.breadcrumbs_overflowing === false) {

@@ -18,7 +18,7 @@ interface Props {
 export const TileLayerComponent = memo(({ layer }: Props) => {
   const { db } = useElectric()!
   const { results } = useLiveQuery(
-    db.ui_options.liveUnique({
+    db.app_state.liveUnique({
       where: { user_id },
       select: { local_map_show: true },
     }),

@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { Outlet, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import { Allotment } from 'allotment'
+import { useCorbadoSession } from '@corbado/react'
 
 import { useElectric } from '../../ElectricProvider'
 import { user_id } from '../SqlInitializer'
@@ -20,15 +21,23 @@ const containerStyle = {
 export const Main = () => {
   const [searchParams] = useSearchParams()
   const onlyForm = searchParams.get('onlyForm')
+  const { user: authUser } = useCorbadoSession()
 
   const { db } = useElectric()!
+  const { results: user } = useLiveQuery(
+    db.users.liveFirst({
+      where: { email: authUser.email },
+      // include: { app_state: true },
+    }),
+  )
   const { results: uiOption } = useLiveQuery(
-    db.ui_options.liveUnique({ where: { user_id } }),
+    db.app_state.liveUnique({ where: { user_id } }),
   )
   const tabs = useMemo(() => uiOption?.tabs ?? [], [uiOption?.tabs])
   const designing = uiOption?.designing ?? false
 
-  // console.log('hello Main', { tabs })
+  console.log('hello Main Layout')
+  console.log('hello Main Layout', { authUser, user })
   if (onlyForm) {
     return <Outlet />
   }
