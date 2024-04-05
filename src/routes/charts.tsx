@@ -19,7 +19,7 @@ export const Component = () => {
   const { user: authUser } = useCorbadoSession()
 
   const where = useMemo(() => {
-    const where = { deleted: false }
+    const where = {}
     if (place_id2) {
       where.place_id2 = place_id2
     } else if (place_id) {

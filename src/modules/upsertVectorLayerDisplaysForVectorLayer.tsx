@@ -36,10 +36,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     // create single display
     const existingVectorLayerDisplay = await db.vector_layer_displays.findFirst(
       {
-        where: {
-          vector_layer_id,
-          deleted: false,
-        },
+        where: { vector_layer_id },
       },
     )
     // leave existing VLD unchanged
@@ -47,7 +44,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
 
     // remove all other displays
     await db.vector_layer_displays.deleteMany({
-      where: { vector_layer_id, deleted: false },
+      where: { vector_layer_id },
     })
 
     const newVLD = createVectorLayerDisplay({ vector_layer_id })
@@ -61,7 +58,6 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
       table_name: table,
       level,
       project_id: vectorLayer.project_id,
-      deleted: false,
     },
   })
 
@@ -80,7 +76,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
       throw new Error(`list_id ${field.list_id} not found`)
     }
     const listValues = await db.list_values.findMany({
-      where: { list_id: field.list_id, deleted: false },
+      where: { list_id: field.list_id },
     })
     // remove all displays not in list
     await db.vector_layer_displays.deleteMany({
@@ -103,7 +99,6 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
           where: {
             vector_layer_id,
             display_property_value: listValue.value,
-            deleted: false,
           },
         })
       // leave existing VLD unchanged
@@ -119,7 +114,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   }
 
   // if this field has no list_id, get the unique values of this field in the table
-  const where = { project_id: vectorLayer.project_id, deleted: false }
+  const where = { project_id: vectorLayer.project_id }
   if (table === 'places') {
     if (level === 1) {
       where.parent_id = null
@@ -139,7 +134,6 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
         where: {
           vector_layer_id,
           display_property_value: value,
-          deleted: false,
         },
       },
     )

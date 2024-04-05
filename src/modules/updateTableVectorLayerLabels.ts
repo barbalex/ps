@@ -2,15 +2,11 @@ import { vectorLayerTables } from './upsertTableVectorLayersForProject'
 
 export const updateTableVectorLayerLabels = async ({ db, project_id }) => {
   const placeLevels = await db.place_levels.findMany({
-    where: {
-      deleted: false,
-      project_id,
-    },
+    where: { project_id },
   })
   const tableVectorLayers = await db.vector_layers.findMany({
     where: {
       project_id,
-      deleted: false,
       type: { in: vectorLayerTables },
     },
   })
