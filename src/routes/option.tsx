@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 
 import { useElectric } from '../ElectricProvider'
-import { TextFieldInactive } from '../components/shared/TextFieldInactive'
 import { SwitchField } from '../components/shared/SwitchField'
 import { getValueFromChange } from '../modules/getValueFromChange'
 import { FormHeader } from '../components/FormHeader'
@@ -35,7 +34,7 @@ export const Component = () => {
 
   return (
     <div className="form-outer-container">
-      <FormHeader title="Options" tableName="options" />
+      <FormHeader title="Options" tableName="app-state" />
       <div className="form-container">
         <SwitchField
           label="Breadcrumbs overflowing"

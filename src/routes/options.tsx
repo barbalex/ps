@@ -8,7 +8,7 @@ import { user_id } from '../components/SqlInitializer'
 
 export const Component = () => {
   const { db } = useElectric()!
-  const { results: uiOption } = useLiveQuery(
+  const { results: appState } = useLiveQuery(
     db.app_states.liveUnique({ where: { user_id } }),
   )
 
@@ -16,7 +16,10 @@ export const Component = () => {
     <div className="list-view">
       <ListViewHeader title="Options" tableName="option" />
       <div className="list-container">
-        <Row label={uiOption?.label} to={`/options/${uiOption?.user_id}`} />
+        <Row
+          label={appState?.label}
+          to={`/app-state/${appState?.app_state_id}`}
+        />
       </div>
     </div>
   )

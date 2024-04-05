@@ -5,7 +5,6 @@ import { Allotment } from 'allotment'
 import { useCorbadoSession } from '@corbado/react'
 
 import { useElectric } from '../../ElectricProvider'
-import { user_id } from '../SqlInitializer'
 import { Tree } from '../Tree'
 import { Filter } from '../Filter'
 import { Map } from '../Map'
@@ -24,14 +23,8 @@ export const Main = () => {
   const { user: authUser } = useCorbadoSession()
 
   const { db } = useElectric()!
-  const { results: user } = useLiveQuery(
-    db.users.liveFirst({
-      where: { email: authUser.email },
-      // include: { app_states: true },
-    }),
-  )
   const { results: uiOption } = useLiveQuery(
-    db.app_states.liveUnique({ where: { user_id } }),
+    db.app_states.liveFirst({ where: { authenticated_email: authUser.email } }),
   )
   const tabs = useMemo(() => uiOption?.tabs ?? [], [uiOption?.tabs])
   const designing = uiOption?.designing ?? false

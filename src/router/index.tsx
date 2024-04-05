@@ -1235,7 +1235,7 @@ export const router = (db) => {
               },
             },
             {
-              path: 'options',
+              path: 'app-state',
               element: null,
               handle: {
                 crumb: () => ({
@@ -1245,7 +1245,7 @@ export const router = (db) => {
                 }),
               },
               children: [
-                { index: true, lazy: () => import('../routes/options') },
+                { index: true, lazy: () => import('../routes/app-state') },
                 {
                   path: ':user_id',
                   lazy: () => import('../routes/option'),

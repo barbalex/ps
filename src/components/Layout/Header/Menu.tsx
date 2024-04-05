@@ -13,9 +13,8 @@ import {
   useLocation,
 } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
+import { useCorbado, useCorbadoSession } from '@corbado/react'
 
-import { user_id } from '../../SqlInitializer'
 import { controls } from '../../../styles'
 import { css } from '../../../css'
 import { useElectric } from '../../../ElectricProvider'
@@ -49,7 +48,7 @@ const buildButtonStyle = ({ prevIsActive, nextIsActive, selfIsActive }) => {
 }
 
 // TODO:
-// use overflow menu for tabs and options
+// use overflow menu for tabs and app-state
 export const Menu = memo(() => {
   const navigate = useNavigate()
   const params = useParams()
@@ -59,27 +58,30 @@ export const Menu = memo(() => {
   const isHome = pathname === '/'
 
   const { isAuthenticated, logout } = useCorbado()
+  const { user: authUser } = useCorbadoSession()
 
   const { db } = useElectric()!
   // get app_states.tabs
-  const { results: uiOption } = useLiveQuery(
-    db.app_states.liveUnique({ where: { user_id } }),
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveUnique({
+      where: { authenticated_email: authUser.email },
+    }),
   )
-  const tabs = useMemo(() => uiOption?.tabs ?? [], [uiOption?.tabs])
+  const tabs = useMemo(() => appState?.tabs ?? [], [appState?.tabs])
   const onChangeTabs = useCallback(
     (e, { checkedItems }) => {
       db.app_states.update({
-        where: { user_id },
+        where: { app_state_id: appState.app_state_id },
         data: { tabs: checkedItems },
       })
     },
-    [db.app_states],
+    [appState.app_state_id, db.app_states],
   )
 
   const onClickOptions = useCallback(() => {
     if (params.user_id) return navigate(-1)
     navigate({
-      pathname: `/options/${user_id}`,
+      pathname: `/app-state/${appState.app_state_id}`,
       search: searchParams.toString(),
     })
   }, [navigate, params.user_id, searchParams])

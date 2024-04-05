@@ -2,12 +2,12 @@ import { useEffect, useState, forwardRef } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useElectric } from '../../../ElectricProvider'
 import { useLiveQuery } from 'electric-sql/react'
+import { useCorbadoSession } from '@corbado/react'
 
 import './breadcrumb.css'
 import { buildNavs } from '../../../modules/navs'
 import { idFieldFromTable } from '../../../modules/idFieldFromTable'
 import { Menu } from './Menu'
-import { user_id } from '../../SqlInitializer'
 
 const siblingStyle = {
   marginLeft: 7,
@@ -37,6 +37,8 @@ export const BreadcrumbForFolder = forwardRef(
       observation_source_id,
     } = match.params
 
+    const { user: authUser } = useCorbadoSession()
+
     const { text, table, sibling } = match?.handle?.crumb?.(match) ?? {}
     const className =
       location.pathname === match.pathname
@@ -58,7 +60,9 @@ export const BreadcrumbForFolder = forwardRef(
     const { results } = useLiveQuery(db[queryTable]?.liveMany({ where }))
     const row = results?.[0]
     const { results: uiOption } = useLiveQuery(
-      db.app_states.liveUnique({ where: { user_id } }),
+      db.app_states.liveFirst({
+        where: { authenticated_email: authUser.email },
+      }),
     )
     const designing = uiOption?.designing ?? false
 
