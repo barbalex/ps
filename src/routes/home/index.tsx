@@ -22,50 +22,51 @@ export const Component = () => (
           <h3 className="card-title">Arten oder Biotope</h3>
           Seltene und gefährdete Arten oder Biotope werden überwacht und
           gefördert.
+          <br />
+          <br />
+          Arten und Biotoptypen werden in eigenen Teilprojekten erfasst.
         </div>
         <div className="card">
           <h3 className="card-title">Ziele</h3>
-          beschreiben, wie sich die Populationen und Biotope künftig entwickeln
-          sollen.
+          beschreiben, wie sich Populationen und Biotope entwickeln sollen.
         </div>
         <div className="card">
           <h3 className="card-title">Verantwortliche</h3>
-          organisieren die Überwachung und Förderung.
+          organisieren, analysieren und berichten.
         </div>
         <div className="card">
           <h3 className="card-title">Räume</h3>
-          Einzelne Populationen und Biotope, für die Massnahmen und Kontrollen
-          durch&shy;geführt werden.
+          beschreiben einzelne Populationen und Biotope.
         </div>
         <div className="card">
           <h3 className="card-title">Zweistufige Räume</h3>
-          Sie können Populationen in Teil&shy;populationen, Biotope in
-          Teilflächen glie&shy;dern.
+          Populationen können in Teil&shy;populationen, Biotope in Teilflächen
+          gegliedert werden.
         </div>
         <div className="card">
           <h3 className="card-title">Massnahmen</h3>
-          Was gemacht wird, um den Zustand einer Art oder eines Biotops zu
-          verbessern.
+          verbessern den Zustand einer Art oder eines Biotops.
         </div>
         <div className="card">
           <h3 className="card-title">Kontrollen</h3>
-          Erfasst wird der aktuelle Zustand und die Wirkung von Massnahmen.
+          erfassen den aktuellen Zustand von Populationen und Biotopen sowie die
+          Wirkung von Massnahmen.
         </div>
         <div className="card">
           <h3 className="card-title">Berichte</h3>
-          Die Verantwortlichen berichten über die Entwick&shy;lung der
-          Populationen und Biotope, den Erfolg der Massnahmen und die
-          Errei&shy;chung der Ziele.
+          Verantwortliche berichten über die Entwick&shy;lung der Populationen
+          und Biotope, den Erfolg der Massnahmen und die Errei&shy;chung der
+          Ziele.
         </div>
         <div className="card">
           <h3 className="card-title">Beobachtungen</h3>
-          Verantwortliche prüfen von Dritten gemeldete Beobachtungen und ordnen
-          diese den Popula&shy;tionen und Biotopen zu.
+          Von Dritten gemeldete Beobachtungen werden geprüft und den
+          Popula&shy;tionen und Biotopen zugeordnet.
         </div>
         <div className="card">
           <h3 className="card-title">Mobilfähig</h3>
-          Promoting Species passt sich jeder Bildschirmgrösse an. Arbeiten sie
-          effizient auf ihrem Smartphone, Tablet oder Computer.
+          Promoting Species passt sich jeder Bildschirmgrösse an. Arbeiten Sie
+          effizient auf Ihrem Smartphone, Tablet oder Computer.
         </div>
         <div className="card">
           <h3 className="card-title">Bring your own device</h3>
@@ -74,18 +75,28 @@ export const Component = () => (
         </div>
         <div className="card">
           <h3 className="card-title">Kein Internet? Egal!</h3>
-          Promoting Species funktioniert auch offline. Sobald sie wieder online
+          Promoting Species funktioniert auch offline. Sobald Sie wieder online
           sind, werden die Daten synchronisiert.
         </div>
         <div className="card">
           <h3 className="card-title">Flexible Konfiguration</h3>
-          Sie können ihr Projekt individuell konfigurieren. Vermissen Sie eine
-          Funktion? Wir sind interessiert!
+          Sie können Ihr Projekt individuell Ihren Bedürfnissen anpassen.
+          Vermissen Sie eine Funktion? Wir sind interessiert!
         </div>
         <div className="card">
           <h3 className="card-title">Einfaches Onboarding</h3>
           Erfassen Sie neue Mitarbeitende mit deren Email. Ergänzen Sie diese
           Person bei allen Teilprojekten, in denen sie mitarbeiten soll. Fertig!
+        </div>
+        <div className="card">
+          <h3 className="card-title">Teamwork</h3>
+          Da die Daten laufend synchronisiert werden, können mehrere
+          Mitarbeitende effizient gleichzeitig arbeiten.
+          <br />
+          <br />
+          Aus versehen offline die gleichen Daten geändert? Nach der nächsten
+          Synchronisierung kann das bereinigt werden. Sie sehen, wer wann was
+          geändert hat.
         </div>
       </div>
     </div>
