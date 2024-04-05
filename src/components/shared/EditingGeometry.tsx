@@ -1,9 +1,9 @@
 import { useCallback, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { Field, Textarea } from '@fluentui/react-components'
+import { useCorbadoSession } from '@corbado/react'
 
 import { useElectric } from '../../ElectricProvider'
-import { user_id } from '../SqlInitializer'
 import { SwitchField } from './SwitchField'
 // TODO:
 // maybe generalize this component for all geometry editing
@@ -27,31 +27,32 @@ export const EditingGeometry = memo(({ row, table }) => {
       ? 'editing_action_geometry'
       : null
 
+  const { user: authUser } = useCorbadoSession()
   const { db } = useElectric()!
-  const { results: uiOption } = useLiveQuery(
-    db.app_states.liveUnique({ where: { user_id } }),
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({ where: { authenticated_email: authUser.email } }),
   )
-  const editedId = uiOption?.[fieldName] ?? null
+  const editedId = appState?.[fieldName] ?? null
 
   const onChange = useCallback(
     async (e, data) => {
       // 1. if checked, show map if not already shown
       if (data.checked) {
-        const tabs = uiOption?.tabs ?? []
+        const tabs = appState?.tabs ?? []
         if (!tabs.includes('map')) {
           await db.app_states.update({
-            where: { user_id },
+            where: { app_state_id: appState.app_state_id },
             data: { tabs: [...tabs, 'map'] },
           })
         }
       }
       // 2. update the editing id
       db.app_states.update({
-        where: { user_id },
+        where: { app_state_id: appState.app_state_id },
         data: { [fieldName]: data.checked ? id : null },
       })
     },
-    [db.app_states, uiOption?.tabs, fieldName, id],
+    [db.app_states, appState.app_state_id, appState?.tabs, fieldName, id],
   )
 
   const value = row.geometry ? JSON.stringify(row.geometry, null, 3) : ''

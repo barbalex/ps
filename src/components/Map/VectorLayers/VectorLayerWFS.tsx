@@ -11,6 +11,7 @@ import * as ReactDOMServer from 'react-dom/server'
 import { useDebouncedCallback } from 'use-debounce'
 import { uuidv7 } from '@kripod/uuidv7'
 import * as icons from 'react-icons/md'
+import { useCorbadoSession } from '@corbado/react'
 
 import {
   Dialog,
@@ -29,7 +30,6 @@ import {
   Vector_layers as VectorLayer,
   Vector_layer_displays as VectorLayerDisplay,
 } from '../../../generated/client'
-import { user_id } from '../../SqlInitializer'
 
 const xmlViewerStyle = {
   fontSize: 'small',
@@ -48,15 +48,17 @@ interface Props {
   display: VectorLayerDisplay
 }
 export const VectorLayerWFS = ({ layer, display }: Props) => {
+  const { user: authUser } = useCorbadoSession()
+
   const { db } = useElectric()!
   const [error, setError] = useState()
   const notificationIds = useRef([])
 
-  const { results: uiOption } = useLiveQuery(
-    db.app_states.liveUnique({ where: { user_id } }),
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({ where: { authenticated_email: authUser.email } }),
   )
   // const showMap = uiOption?.show_map ?? false TODO:
-  const showMap = uiOption?.show_map ?? true
+  const showMap = appState?.show_map ?? true
 
   const removeNotifs = useCallback(async () => {
     await db.notifications.deleteMany({

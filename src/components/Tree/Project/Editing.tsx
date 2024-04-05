@@ -3,9 +3,9 @@ import { MdEdit, MdEditOff } from 'react-icons/md'
 import { useLiveQuery } from 'electric-sql/react'
 import { Button } from '@fluentui/react-components'
 import { useParams } from 'react-router-dom'
+import { useCorbadoSession } from '@corbado/react'
 
 import { useElectric } from '../../../ElectricProvider'
-import { user_id } from '../../SqlInitializer'
 import { css } from '../../../css'
 
 const buttonStyle = {
@@ -22,33 +22,35 @@ const svgStyle = {
 export const Editing = memo(() => {
   const { project_id } = useParams()
 
+  const { user: authUser } = useCorbadoSession()
+
   const { db } = useElectric()!
-  const { results: uiOption } = useLiveQuery(
-    db.app_states.liveUnique({ where: { user_id } }),
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({ where: { authenticated_email: authUser.email } }),
   )
-  const designing = uiOption?.designing ?? false
+  const designing = appState?.designing ?? false
 
   const onClick = useCallback(
     (e) => {
       e.stopPropagation()
       db.app_states.update({
-        where: { user_id },
+        where: { app_state_id: appState.app_state_id },
         data: { designing: !designing },
       })
     },
-    [db.app_states, designing],
+    [appState.app_state_id, db.app_states, designing],
   )
 
   const { results: project } = useLiveQuery(
     db.projects.liveUnique({ where: { project_id } }),
   )
   const { results: account } = useLiveQuery(
-    db.accounts.liveFirst({ where: { user_id } }),
+    db.accounts.liveFirst({ where: { user_id: appState?.user_id } }),
   )
   const userIsOwner = project?.account_id === account?.account_id
   const { results: projectUser } = useLiveQuery(
     db.project_users.liveFirst({
-      where: { project_id, user_id, deleted: false },
+      where: { project_id, user_id: appState?.user_id, deleted: false },
     }),
   )
   const userRole = projectUser?.role

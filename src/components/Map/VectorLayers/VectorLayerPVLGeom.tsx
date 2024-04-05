@@ -4,6 +4,7 @@ import * as ReactDOMServer from 'react-dom/server'
 import { useDebouncedCallback } from 'use-debounce'
 import * as icons from 'react-icons/md'
 import { uuidv7 } from '@kripod/uuidv7'
+import { useCorbadoSession } from '@corbado/react'
 
 import {
   Vector_layer_geoms as VectorLayerGeom,
@@ -15,7 +16,6 @@ import { vectorLayerDisplayToProperties } from '../../../modules/vectorLayerDisp
 import { Popup } from '../Popup'
 import { ErrorBoundary } from '../MapErrorBoundary'
 import { useElectric } from '../../../ElectricProvider'
-import { user_id } from '../../SqlInitializer'
 
 // const bboxBuffer = 0.01
 
@@ -25,9 +25,13 @@ interface Props {
 }
 
 export const VectorLayerPVLGeom = ({ layer, display }: Props) => {
+  const { user: authUser } = useCorbadoSession()
+
   const { db } = useElectric()!
-  const { results: uiOption } = db.app_states.liveUnique({ where: { user_id } })
-  const showMap = uiOption?.show_map ?? false
+  const { results: appState } = db.app_states.liveFirst({
+    where: { authenticated_email: authUser.email },
+  })
+  const showMap = appState?.show_map ?? false
 
   const [data, setData] = useState()
 
