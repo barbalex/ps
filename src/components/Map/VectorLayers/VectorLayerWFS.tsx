@@ -57,7 +57,7 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { authenticated_email: authUser.email } }),
   )
-  // const showMap = uiOption?.show_map ?? false TODO:
+  // const showMap = appState?.show_map ?? false TODO:
   const showMap = appState?.show_map ?? true
 
   const removeNotifs = useCallback(async () => {

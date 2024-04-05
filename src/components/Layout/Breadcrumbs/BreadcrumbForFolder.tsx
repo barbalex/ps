@@ -59,12 +59,12 @@ export const BreadcrumbForFolder = forwardRef(
     const where = { [idField]: matchParam }
     const { results } = useLiveQuery(db[queryTable]?.liveMany({ where }))
     const row = results?.[0]
-    const { results: uiOption } = useLiveQuery(
+    const { results: appState } = useLiveQuery(
       db.app_states.liveFirst({
         where: { authenticated_email: authUser.email },
       }),
     )
-    const designing = uiOption?.designing ?? false
+    const designing = appState?.designing ?? false
 
     const [navs, setNavs] = useState([])
     useEffect(() => {

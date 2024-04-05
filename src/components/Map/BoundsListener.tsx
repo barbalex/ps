@@ -13,10 +13,10 @@ export const BoundsListener = () => {
   const { user: authUser } = useCorbadoSession()
 
   const { db } = useElectric()!
-  const { results: uiOption } = useLiveQuery(
+  const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { authenticated_email: authUser.email } }),
   )
-  const mapBounds = uiOption?.map_bounds
+  const mapBounds = appState?.map_bounds
 
   useEffect(() => {
     if (mapBounds) {

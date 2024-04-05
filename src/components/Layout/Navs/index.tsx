@@ -10,16 +10,16 @@ export const Navs = () => {
 
   const { db } = useElectric()!
   // get app_states.navs_overflowing
-  const { results: uiOption } = useLiveQuery(
+  const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { authenticated_email: authUser.email } }),
   )
-  const designing = uiOption?.designing ?? false
+  const designing = appState?.designing ?? false
 
-  if (uiOption?.navs_overflowing === undefined) {
+  if (appState?.navs_overflowing === undefined) {
     return <div className="navs" />
   }
 
-  if (uiOption?.navs_overflowing === false) {
+  if (appState?.navs_overflowing === false) {
     return <NavsWrapping designing={designing} />
   }
 

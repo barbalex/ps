@@ -23,17 +23,13 @@ export const Main = () => {
   const { user: authUser } = useCorbadoSession()
 
   const { db } = useElectric()!
-  const { results: uiOption } = useLiveQuery(
+  const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { authenticated_email: authUser.email } }),
   )
-  const tabs = useMemo(() => uiOption?.tabs ?? [], [uiOption?.tabs])
-  const designing = uiOption?.designing ?? false
+  const tabs = useMemo(() => appState?.tabs ?? [], [appState?.tabs])
+  const designing = appState?.designing ?? false
 
-  console.log('hello Main Layout')
-  console.log('hello Main Layout', { authUser, user })
-  if (onlyForm) {
-    return <Outlet />
-  }
+  if (onlyForm) return <Outlet />
 
   // Allotment prevents the map from drawing correctly
   // UNLESS: an empty div is rendered instead of a missing Map...???
