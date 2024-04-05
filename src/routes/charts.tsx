@@ -32,7 +32,7 @@ export const Component = () => {
 
   const { db } = useElectric()!
   const { results: uiOption } = useLiveQuery(
-    db.ui_options.liveUnique({ where: { user_id } }),
+    db.app_state.liveUnique({ where: { user_id } }),
   )
   const designing = uiOption?.designing ?? false
   const { results: charts = [] } = useLiveQuery(

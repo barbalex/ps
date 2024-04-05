@@ -21,10 +21,10 @@ export const buildNavs = async ({
   db,
   level = 1,
 }) => {
-  const uiOptions = await db?.ui_options?.findFirst({
+  const appState = await db?.app_state?.findFirst({
     where: { user_id },
   })
-  const designing = uiOptions?.designing ?? false
+  const designing = appState?.designing ?? false
   // if table is places, get place_level for this level
   let placeLevel = {}
   if (table === 'places') {
