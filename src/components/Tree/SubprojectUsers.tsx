@@ -21,7 +21,7 @@ export const SubprojectUsersNode = memo(
     const { db } = useElectric()!
     const { results: subprojectUsers = [] } = useLiveQuery(
       db.subproject_users.liveMany({
-        where: { deleted: false, subproject_id },
+        where: { subproject_id },
         orderBy: { label: 'asc' },
       }),
     )

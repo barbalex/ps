@@ -14,7 +14,6 @@ export const ProjectsNode = memo(() => {
   const { db } = useElectric()!
   const { results: projects = [] } = useLiveQuery(
     db.projects.liveMany({
-      where: { deleted: false },
       orderBy: { label: 'asc' },
     }),
   )
