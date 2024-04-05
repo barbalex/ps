@@ -1260,13 +1260,13 @@ export const router = ({ db, authUser }) => {
                 }),
               },
               children: [
-                { index: true, lazy: () => import('../routes/app-state') },
+                { index: true, lazy: () => import('../routes/appStates') },
                 {
-                  path: ':user_id',
-                  lazy: () => import('../routes/option'),
+                  path: ':app_state_id',
+                  lazy: () => import('../routes/appState'),
                   handle: {
                     crumb: (match) => ({
-                      text: match.params.user_id,
+                      text: match.params.app_state_id,
                       table: 'app_states',
                       folder: false,
                     }),

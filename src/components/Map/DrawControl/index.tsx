@@ -15,13 +15,12 @@ export const DrawControl = () => {
   const { user: authUser } = useCorbadoSession()
 
   const { db } = useElectric()!
-  const { results } = useLiveQuery(
+  const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { authenticated_email: authUser.email } }),
   )
-  const uiOption: UiOption = results
-  const editingPlaceGeometry = uiOption?.editing_place_geometry ?? null
-  const editingCheckGeometry = uiOption?.editing_check_geometry ?? null
-  const editingActionGeometry = uiOption?.editing_action_geometry ?? null
+  const editingPlaceGeometry = appState?.editing_place_geometry ?? null
+  const editingCheckGeometry = appState?.editing_check_geometry ?? null
+  const editingActionGeometry = appState?.editing_action_geometry ?? null
 
   const pathArray = useLocation()
     .pathname.split('/')

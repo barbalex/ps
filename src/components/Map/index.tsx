@@ -10,7 +10,7 @@ import { useCorbadoSession } from '@corbado/react'
 import 'leaflet/dist/leaflet.css'
 // import 'leaflet-draw/dist/leaflet.draw.css'
 
-import { Ui_options as UiOption } from '../../../generated/client'
+import { App_states as AppState } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
 import { TileLayers } from './TileLayers'
 import { VectorLayers } from './VectorLayers'
@@ -35,10 +35,10 @@ export const Map = () => {
   const { results } = useLiveQuery(
     db.app_states.liveFirst({ where: { authenticated_email: authUser.email } }),
   )
-  const uiOption: UiOption = results
-  const showMap = uiOption?.show_map ?? true
-  const tileLayerSorter = uiOption?.tile_layer_sorter ?? ''
-  const vectorLayerSorter = uiOption?.vector_layer_sorter ?? ''
+  const appState: AppState = results
+  const showMap = appState?.show_map ?? true
+  const tileLayerSorter = appState?.tile_layer_sorter ?? ''
+  const vectorLayerSorter = appState?.vector_layer_sorter ?? ''
 
   const mapRef = useRef()
 

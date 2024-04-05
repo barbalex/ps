@@ -2,10 +2,7 @@ import { memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbadoSession } from '@corbado/react'
 
-import {
-  Tile_layers as TileLayer,
-  Ui_options as UiOption,
-} from '../../../../generated/client'
+import { Tile_layers as TileLayer } from '../../../../generated/client'
 import { WMS } from './WMS'
 // import { WMTSOffline } from './WMTSOffline'
 import { LocalMap } from './LocalMap'
@@ -19,14 +16,12 @@ export const TileLayerComponent = memo(({ layer }: Props) => {
   const { user: authUser } = useCorbadoSession()
 
   const { db } = useElectric()!
-  const { results } = useLiveQuery(
+  const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({
       where: { authenticated_email: authUser.email },
-      select: { local_map_show: true },
     }),
   )
-  const uiOption: UiOption = results
-  const showLocalMap = uiOption?.local_map_show?.[layer.id]?.show ?? false
+  const showLocalMap = appState?.local_map_show?.[layer.id]?.show ?? false
 
   if (layer.type === 'wmts') {
     return (
