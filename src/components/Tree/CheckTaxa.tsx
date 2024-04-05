@@ -32,7 +32,7 @@ export const CheckTaxaNode = memo(
     const { db } = useElectric()!
     const { results: checkTaxa = [] } = useLiveQuery(
       db.check_taxa.liveMany({
-        where: { deleted: false, check_id },
+        where: { check_id },
         orderBy: { label: 'asc' },
       }),
     )

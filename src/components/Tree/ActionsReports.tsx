@@ -32,7 +32,7 @@ export const ActionReportsNode = memo(
     const { db } = useElectric()!
     const { results: actionReports = [] } = useLiveQuery(
       db.action_reports.liveMany({
-        where: { deleted: false, action_id },
+        where: { action_id },
         orderBy: { label: 'asc' },
       }),
     )
