@@ -29,7 +29,7 @@ export const buildNavs = async ({
   if (table === 'places') {
     // findUnique only works for primary keys
     const placeLevels = await db?.place_levels?.findMany({
-      where: { project_id, deleted: false, level },
+      where: { project_id, level },
     })
     placeLevel = placeLevels?.[0] ?? {}
   }
@@ -149,7 +149,7 @@ export const buildNavs = async ({
     case 'subprojects': {
       // need to fetch how places are named
       const placeLevels = await db?.place_levels?.findMany({
-        where: { project_id, deleted: false, level: 1 },
+        where: { project_id, level: 1 },
       })
       const placeLevel = placeLevels?.[0]
       const placeName =
@@ -204,7 +204,7 @@ export const buildNavs = async ({
       if (needToIncludeLevel2) {
         // findUnique only works for primary keys
         const placeLevels = await db?.place_levels?.findMany({
-          where: { project_id, deleted: false, level: 2 },
+          where: { project_id, level: 2 },
         })
         const placeLevel2 = placeLevels?.[0]
         placeName =

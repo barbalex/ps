@@ -18,7 +18,7 @@ export const upsertTableVectorLayersForProject = async ({ db, project_id }) => {
   const vectorLayerTablesNeeded = ['places1']
   const vectorLayerTablesNotNeeded = []
   const placeLevels: PlaceLevel[] = await db.place_levels.findMany({
-    where: { deleted: false, project_id },
+    where: { project_id },
   })
   const places2IsNeeded = placeLevels.some((pl) => pl.level === 2)
   if (places2IsNeeded) {
@@ -73,7 +73,7 @@ export const upsertTableVectorLayersForProject = async ({ db, project_id }) => {
 
   // 1. check if vector_layers exist for this project
   const existingVectorLayers = await db.vector_layers.findMany({
-    where: { project_id, deleted: false, type: { in: vectorLayerTables } },
+    where: { project_id, type: { in: vectorLayerTables } },
   })
   // 2. list tables missing vector_layers:
   const missingVectorLayerTables = vectorLayerTablesNeeded.filter(

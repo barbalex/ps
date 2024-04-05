@@ -26,7 +26,6 @@ export const PlaceChildren = memo(
     const { results: placeLevels } = useLiveQuery(
       db.place_levels.liveMany({
         where: {
-          deleted: false,
           project_id,
           level: place_id ? 2 : 1,
         },

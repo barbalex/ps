@@ -14,7 +14,6 @@ export const WidgetTypesNode = memo(() => {
   const { db } = useElectric()!
   const { results: widgetTypes = [] } = useLiveQuery(
     db.widget_types.liveMany({
-      where: { deleted: false },
       orderBy: { label: 'asc' },
     }),
   )

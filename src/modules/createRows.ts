@@ -6,7 +6,7 @@ const getPresetData = async ({ db, project_id = null, table }) => {
   const fieldsWithPresets = await db.fields.findMany({
     where: {
       project_id,
-      deleted: false,
+
       table_name: table,
       preset: { not: null },
     },
@@ -39,7 +39,7 @@ export const createProject = async ({ db }) => {
     files_active_places: true,
     files_active_actions: true,
     files_active_checks: true,
-    deleted: false,
+
     ...presetData,
   }
 }
@@ -55,7 +55,7 @@ export const createSubproject = async ({ db, project_id }) => {
   return {
     subproject_id: uuidv7(),
     project_id,
-    deleted: false,
+
     ...presetData,
   }
 }
@@ -85,7 +85,7 @@ export const createFile = async ({
     place_id,
     action_id,
     check_id,
-    deleted: false,
+
     name,
     size,
     mimetype,
@@ -116,27 +116,24 @@ export const createPlace = async ({
     subproject_id,
     parent_id,
     level,
-    deleted: false,
+
     ...presetData,
   }
 }
 
 export const createWidgetForField = () => ({
   widget_for_field_id: uuidv7(),
-  deleted: false,
 })
 
 export const createWidgetType = () => ({
   widget_type_id: uuidv7(),
   needs_list: false,
   sort: 0,
-  deleted: false,
 })
 
 export const createFieldType = () => ({
   field_type_id: uuidv7(),
   sort: 0,
-  deleted: false,
 })
 
 export const createAccount = () => ({
@@ -146,7 +143,6 @@ export const createAccount = () => ({
 
 export const createUser = () => ({
   user_id: uuidv7(),
-  deleted: false,
 })
 
 export const createPerson = async ({ db, project_id }) => {
@@ -160,7 +156,7 @@ export const createPerson = async ({ db, project_id }) => {
   return {
     person_id: uuidv7(),
     project_id,
-    deleted: false,
+
     ...presetData,
   }
 }
@@ -176,7 +172,7 @@ export const createObservationSource = async ({ db, project_id }) => {
   return {
     observation_source_id: uuidv7(),
     project_id,
-    deleted: false,
+
     ...presetData,
   }
 }
@@ -192,7 +188,6 @@ export const createField = ({
   level,
   field_type_id: '018ca19e-7a23-7bf4-8523-ff41e3b60807',
   widget_type_id: '018ca1a0-f187-7fdf-955b-4eaadaa92553',
-  deleted: false,
 })
 
 export const createUnit = () => ({
@@ -207,7 +202,6 @@ export const createUnit = () => ({
   summable: false,
   sort: 0,
   type: 'integer',
-  deleted: false,
 })
 
 export const createList = async ({ db, project_id, name = null }) => {
@@ -223,7 +217,7 @@ export const createList = async ({ db, project_id, name = null }) => {
     project_id,
     name,
     obsolete: false,
-    deleted: false,
+
     ...presetData,
   }
 }
@@ -240,7 +234,7 @@ export const createTaxonomy = async ({ db, project_id }) => {
     taxonomy_id: uuidv7(),
     project_id,
     obsolete: false,
-    deleted: false,
+
     ...presetData,
   }
 }
@@ -248,7 +242,6 @@ export const createTaxonomy = async ({ db, project_id }) => {
 export const createProjectUser = () => ({
   project_user_id: uuidv7(),
   role: 'reader',
-  deleted: false,
 })
 
 export const createProjectReport = async ({ db, project_id }) => {
@@ -263,7 +256,7 @@ export const createProjectReport = async ({ db, project_id }) => {
     project_report_id: uuidv7(),
     project_id,
     year: new Date().getFullYear(),
-    deleted: false,
+
     ...presetData,
   }
 }
@@ -280,7 +273,6 @@ export const createPlaceLevel = () => ({
   check_values: false,
   check_taxa: false,
   observations: false,
-  deleted: false,
 })
 
 export const createObservation = async ({
@@ -298,14 +290,13 @@ export const createObservation = async ({
   return {
     observation_id: uuidv7(),
     observation_source_id,
-    deleted: false,
+
     ...presetData,
   }
 }
 
 export const createTaxon = () => ({
   taxon_id: uuidv7(),
-  deleted: false,
 })
 
 export const createListValue = ({ value = null, list_id = null }) => ({
@@ -314,7 +305,6 @@ export const createListValue = ({ value = null, list_id = null }) => ({
   list_id,
   value,
   obsolete: false,
-  deleted: false,
 })
 
 export const createGoal = async ({ db, project_id, subproject_id }) => {
@@ -329,7 +319,7 @@ export const createGoal = async ({ db, project_id, subproject_id }) => {
     goal_id: uuidv7(),
     subproject_id,
     year: new Date().getFullYear(),
-    deleted: false,
+
     ...presetData,
   }
 }
@@ -345,31 +335,27 @@ export const createGoalReport = async ({ db, project_id, goal_id }) => {
   return {
     goal_report_id: uuidv7(),
     goal_id,
-    deleted: false,
+
     ...presetData,
   }
 }
 
 export const createGoalReportValue = () => ({
   goal_report_value_id: uuidv7(),
-  deleted: false,
 })
 
 export const createSubprojectUser = () => ({
   subproject_user_id: uuidv7(),
   role: 'reader',
-  deleted: false,
 })
 
 export const createPlaceUser = () => ({
   place_user_id: uuidv7(),
   role: 'reader',
-  deleted: false,
 })
 
 export const createSubprojectTaxon = () => ({
   subproject_taxon_id: uuidv7(),
-  deleted: false,
 })
 
 export const createSubprojectReport = async ({
@@ -388,7 +374,7 @@ export const createSubprojectReport = async ({
     subproject_report_id: uuidv7(),
     subproject_id,
     year: new Date().getFullYear(),
-    deleted: false,
+
     ...presetData,
   }
 }
@@ -406,19 +392,17 @@ export const createCheck = async ({ db, project_id, place_id }) => {
     place_id,
     date: new Date(),
     relevant_for_reports: true,
-    deleted: false,
+
     ...presetData,
   }
 }
 
 export const createCheckValue = () => ({
   check_value_id: uuidv7(),
-  deleted: false,
 })
 
 export const createCheckTaxon = () => ({
   check_taxon_id: uuidv7(),
-  deleted: false,
 })
 
 export const createAction = async ({ db, project_id, place_id }) => {
@@ -434,14 +418,13 @@ export const createAction = async ({ db, project_id, place_id }) => {
     place_id,
     date: new Date(),
     relevant_for_reports: true,
-    deleted: false,
+
     ...presetData,
   }
 }
 
 export const createActionValue = () => ({
   action_value_id: uuidv7(),
-  deleted: false,
 })
 
 export const createActionReport = async ({ db, project_id, action_id }) => {
@@ -456,14 +439,13 @@ export const createActionReport = async ({ db, project_id, action_id }) => {
     action_report_id: uuidv7(),
     action_id,
     year: new Date().getFullYear(),
-    deleted: false,
+
     ...presetData,
   }
 }
 
 export const createActionReportValue = () => ({
   action_report_value_id: uuidv7(),
-  deleted: false,
 })
 
 export const createPlaceReport = async ({ db, project_id, place_id }) => {
@@ -478,14 +460,13 @@ export const createPlaceReport = async ({ db, project_id, place_id }) => {
     place_report_id: uuidv7(),
     place_id,
     year: new Date().getFullYear(),
-    deleted: false,
+
     ...presetData,
   }
 }
 
 export const createPlaceReportValue = () => ({
   place_report_value_id: uuidv7(),
-  deleted: false,
 })
 
 export const createMessage = () => ({
@@ -514,7 +495,6 @@ export const createTileLayer = ({ project_id }) => ({
   opacity_percent: 100,
   wms_transparent: false,
   grayscale: false,
-  deleted: false,
 })
 
 export const createVectorLayer = ({
@@ -536,7 +516,6 @@ export const createVectorLayer = ({
   max_zoom,
   min_zoom,
   max_features,
-  deleted: false,
 })
 
 export const createVectorLayerDisplay = ({
@@ -559,7 +538,6 @@ export const createVectorLayerDisplay = ({
   fill_color: '#ff0000',
   fill_opacity_percent: 20,
   fill_rule: 'evenodd',
-  deleted: false,
 })
 
 export const createChart = ({
@@ -572,7 +550,6 @@ export const createChart = ({
   project_id,
   subproject_id,
   place_id,
-  deleted: false,
 })
 
 export const createChartSubject = ({ chart_id }) => ({
@@ -584,7 +561,6 @@ export const createChartSubject = ({ chart_id }) => ({
   fill: '#ffffff',
   fill_graded: true,
   connect_nulls: true,
-  deleted: false,
 })
 
 export const createOccurrenceImport = ({ subproject_id }) => ({
@@ -595,7 +571,6 @@ export const createOccurrenceImport = ({ subproject_id }) => ({
   crs: 'EPSG:4326',
   created_time: Date.now(),
   download_from_gbif: false,
-  deleted: false,
 })
 
 export const createOccurrence = ({ occurrence_import_id, data = null }) => ({
@@ -603,5 +578,4 @@ export const createOccurrence = ({ occurrence_import_id, data = null }) => ({
   account_id: '018cf958-27e2-7000-90d3-59f024d467be', // TODO: replace with auth data when implemented
   occurrence_import_id,
   data,
-  // deleted: false,
 })
