@@ -3,6 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import { Label, Divider } from '@fluentui/react-components'
 import type { InputProps } from '@fluentui/react-components'
+import { useCorbadoSession } from '@corbado/react'
 
 import { useElectric } from '../../ElectricProvider'
 import { TextField } from '../../components/shared/TextField'
@@ -12,7 +13,6 @@ import { getValueFromChange } from '../../modules/getValueFromChange'
 import { LabelBy } from '../../components/shared/LabelBy'
 import { FieldList } from '../../components/shared/FieldList'
 import { SwitchField } from '../../components/shared/SwitchField'
-import { user_id } from '../../components/SqlInitializer'
 
 const labelStyle = {
   color: 'grey',
@@ -22,14 +22,16 @@ const labelStyle = {
 export const Design = () => {
   const { project_id } = useParams()
 
+  const { user: authUser } = useCorbadoSession()
+
   const { db } = useElectric()!
   const { results: row } = useLiveQuery(
     db.projects.liveUnique({ where: { project_id } }),
   )
-  const { results: uiOption } = useLiveQuery(
-    db.app_states.liveUnique({ where: { user_id } }),
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({ where: { authenticated_email: authUser.email } }),
   )
-  const designing = uiOption?.designing ?? false
+  const designing = appState?.designing ?? false
 
   const onChange: InputProps['onChange'] = useCallback(
     (e, data) => {

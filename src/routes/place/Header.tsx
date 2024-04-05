@@ -6,6 +6,7 @@ import { Button } from '@fluentui/react-button'
 import bbox from '@turf/bbox'
 import buffer from '@turf/buffer'
 import { uuidv7 } from '@kripod/uuidv7'
+import { useCorbadoSession } from '@corbado/react'
 
 import {
   createPlace,
@@ -15,7 +16,6 @@ import {
 import { useElectric } from '../../ElectricProvider'
 import { FormHeader } from '../../components/FormHeader'
 import { boundsFromBbox } from '../../modules/boundsFromBbox'
-import { user_id } from '../../components/SqlInitializer'
 
 interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
@@ -24,6 +24,8 @@ export const Header = memo(({ autoFocusRef }: Props) => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { project_id, subproject_id, place_id, place_id2 } = useParams()
+
+  const { user: authUser } = useCorbadoSession()
 
   const { db } = useElectric()!
   const { results: placeLevels } = useLiveQuery(
@@ -138,13 +140,13 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     }
 
     // 1. show map if not happening
-    const uiOption = await db.app_states.findUnique({
-      where: { user_id },
+    const appState = await db.app_states.findFirst({
+      where: { authenticated_email: authUser.email },
     })
-    const tabs = uiOption?.tabs ?? []
+    const tabs = appState?.tabs ?? []
     if (!tabs.includes('map')) {
       await db.app_states.update({
-        where: { user_id },
+        where: { app_state_id: appState.app_state_id },
         data: { tabs: [...tabs, 'map'] },
       })
     }
@@ -155,10 +157,17 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     const bounds = boundsFromBbox(newBbox)
     if (!bounds) return alertNoGeometry()
     db.app_states.update({
-      where: { user_id },
+      where: { app_state_id: appState.app_state_id },
       data: { map_bounds: bounds },
     })
-  }, [alertNoGeometry, db.places, db.app_states, place_id, place_id2])
+  }, [
+    db.places,
+    db.app_states,
+    place_id2,
+    place_id,
+    authUser.email,
+    alertNoGeometry,
+  ])
 
   return (
     <FormHeader

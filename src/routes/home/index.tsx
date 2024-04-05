@@ -98,6 +98,11 @@ export const Component = () => (
           Synchronisierung kann das bereinigt werden. Sie sehen, wer wann was
           geändert hat.
         </div>
+        <div className="card">
+          <h3 className="card-title">Ihre Daten gehören Ihnen</h3>
+          100% Ihrer Daten werden auf Ihr Gerät synchronisiert. Sie können
+          jederzeit exportiert werden. TODO:
+        </div>
       </div>
     </div>
   </div>
