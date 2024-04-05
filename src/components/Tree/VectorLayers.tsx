@@ -19,7 +19,7 @@ export const VectorLayersNode = memo(({ project_id, level = 3 }: Props) => {
   const { db } = useElectric()!
   const { results: vectorLayers = [] } = useLiveQuery(
     db.vector_layers.liveMany({
-      where: { deleted: false, project_id },
+      where: { project_id },
       orderBy: [{ sort: 'asc' }, { label: 'asc' }],
     }),
   )

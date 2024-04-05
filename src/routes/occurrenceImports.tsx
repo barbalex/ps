@@ -17,7 +17,7 @@ export const Component = () => {
   const { db } = useElectric()!
   const { results: occurrenceImports = [] } = useLiveQuery(
     db.occurrence_imports.liveMany({
-      where: { deleted: false, subproject_id },
+      where: { subproject_id },
       orderBy: { label: 'asc' },
     }),
   )

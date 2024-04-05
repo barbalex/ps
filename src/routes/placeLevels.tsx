@@ -16,7 +16,7 @@ export const Component = () => {
   const { db } = useElectric()!
   const { results: placeLevels = [] } = useLiveQuery(
     db.place_levels.liveMany({
-      where: { project_id, deleted: false },
+      where: { project_id },
       orderBy: { label: 'asc' },
     }),
   )
