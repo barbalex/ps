@@ -1,11 +1,11 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
+import { useCorbadoSession } from '@corbado/react'
 
 import { useElectric } from '../../ElectricProvider'
 import { createChart } from '../../modules/createRows'
 import { FormHeader } from '../../components/FormHeader'
-import { user_id } from '../../components/SqlInitializer'
 
 export const Header = memo(({ autoFocusRef }) => {
   const { project_id, subproject_id, place_id, place_id2, chart_id } =
@@ -13,11 +13,13 @@ export const Header = memo(({ autoFocusRef }) => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
+  const { user: authUser } = useCorbadoSession()
+
   const { db } = useElectric()!
-  const { results: uiOption } = useLiveQuery(
-    db.app_states.liveUnique({ where: { user_id } }),
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({ where: { authenticated_email: authUser.email } }),
   )
-  const designing = uiOption?.designing ?? false
+  const designing = appState?.designing ?? false
 
   const addRow = useCallback(async () => {
     const idToAdd = place_id2
