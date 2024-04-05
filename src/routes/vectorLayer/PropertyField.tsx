@@ -25,7 +25,7 @@ export const PropertyField = memo(({ vectorLayer }: Props) => {
   // get fields of table
   const { results: fields = [] } = useLiveQuery(
     db.fields.liveMany({
-      where: { table_name: table, level, project_id, deleted: false },
+      where: { table_name: table, level, project_id },
     }),
   )
   const options = useMemo(

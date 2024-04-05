@@ -19,7 +19,6 @@ export const TileLayers = () => {
   const { results: layersResult = [] } = useLiveQuery(
     db.tile_layers.liveMany({
       where: {
-        deleted: false,
         active: true,
         type: { not: null },
         project_id,

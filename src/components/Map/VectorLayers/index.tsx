@@ -17,7 +17,6 @@ export const VectorLayers = () => {
   const vectorLayerWhere = useMemo(() => {
     const where = {
       active: true,
-      deleted: false,
       // Ensure needed data exists
       wfs_url: { not: null },
       wfs_layer: { not: null },
@@ -40,7 +39,6 @@ export const VectorLayers = () => {
   const { results: vectorLayerDisplayResults = [] } = useLiveQuery(
     db.vector_layer_displays.liveMany({
       where: {
-        deleted: false,
         vector_layer_id: {
           in: vectorLayerResults.map((vl) => vl.vector_layer_id),
         },
