@@ -39,7 +39,6 @@ const widgetsNeedingList = [
   '018ca1a1-c94b-7d29-b21c-42053ade0411',
 ] // options-few, options-many
 
-const fieldTypeWhere = { deleted: false }
 const fieldTypeOrderBy = [{ sort: 'asc' }, { name: 'asc' }]
 
 // seperate from the route because it is also used inside other forms
@@ -112,7 +111,6 @@ export const FieldForm = ({ field_id, autoFocusRef, isInForm = false }) => {
         label="Type"
         name="field_type_id"
         table="field_types"
-        where={fieldTypeWhere}
         orderBy={fieldTypeOrderBy}
         value={row.field_type_id ?? ''}
         onChange={onChange}

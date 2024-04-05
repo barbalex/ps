@@ -38,7 +38,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toNext = useCallback(async () => {
     const chartSubjects = await db.chart_subjects.findMany({
-      where: { chart_id, deleted: false },
+      where: { chart_id },
       orderBy: { label: 'asc' },
     })
     const len = chartSubjects.length
@@ -54,7 +54,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toPrevious = useCallback(async () => {
     const chartSubjects = await db.chart_subjects.findMany({
-      where: { chart_id, deleted: false },
+      where: { chart_id },
       orderBy: { label: 'asc' },
     })
     const len = chartSubjects.length

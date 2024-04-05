@@ -13,8 +13,6 @@ import { Loading } from '../../components/shared/Loading'
 
 import '../../form.css'
 
-const taxaWhere = { deleted: false }
-
 export const Component = () => {
   const { check_taxon_id } = useParams()
 
@@ -53,7 +51,6 @@ export const Component = () => {
           label="Taxon"
           name="taxon_id"
           table="taxa"
-          where={taxaWhere}
           value={row.taxon_id ?? ''}
           onChange={onChange}
           autoFocus
