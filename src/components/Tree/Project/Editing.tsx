@@ -24,19 +24,19 @@ export const Editing = memo(() => {
 
   const { db } = useElectric()!
   const { results: uiOption } = useLiveQuery(
-    db.app_state.liveUnique({ where: { user_id } }),
+    db.app_states.liveUnique({ where: { user_id } }),
   )
   const designing = uiOption?.designing ?? false
 
   const onClick = useCallback(
     (e) => {
       e.stopPropagation()
-      db.app_state.update({
+      db.app_states.update({
         where: { user_id },
         data: { designing: !designing },
       })
     },
-    [db.app_state, designing],
+    [db.app_states, designing],
   )
 
   const { results: project } = useLiveQuery(

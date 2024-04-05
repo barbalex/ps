@@ -1360,7 +1360,7 @@ COMMENT ON COLUMN fields.table_name IS 'table, on which this field is used insid
 
 COMMENT ON COLUMN fields.level IS 'level of field if places or below: 1, 2';
 
-CREATE TABLE app_state(
+CREATE TABLE app_states(
   ui_options_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1380,18 +1380,18 @@ CREATE TABLE app_state(
   label text DEFAULT NULL
 );
 
--- CREATE INDEX ON app_state USING btree(user_id);
-CREATE INDEX ON app_state USING btree(account_id);
+-- CREATE INDEX ON app_states USING btree(user_id);
+CREATE INDEX ON app_states USING btree(account_id);
 
-COMMENT ON TABLE app_state IS 'User interface settings (state saved in db)';
+COMMENT ON TABLE app_states IS 'User interface settings (state saved in db)';
 
-COMMENT ON COLUMN app_state.designing IS 'Whether user is currently designing projects. Preset: false';
+COMMENT ON COLUMN app_states.designing IS 'Whether user is currently designing projects. Preset: false';
 
-COMMENT ON COLUMN app_state.editing_place_geometry IS 'The id of the place whose geometry is currently being edited';
+COMMENT ON COLUMN app_states.editing_place_geometry IS 'The id of the place whose geometry is currently being edited';
 
-COMMENT ON COLUMN app_state.editing_check_geometry IS 'The id of the check whose geometry is currently being edited';
+COMMENT ON COLUMN app_states.editing_check_geometry IS 'The id of the check whose geometry is currently being edited';
 
-COMMENT ON COLUMN app_state.editing_action_geometry IS 'The id of the action whose geometry is currently being edited';
+COMMENT ON COLUMN app_states.editing_action_geometry IS 'The id of the action whose geometry is currently being edited';
 
 CREATE TYPE occurrence_imports_previous_import_operation_enum AS enum(
   'update_and_extend',
@@ -2000,7 +2000,7 @@ ALTER TABLE widgets_for_fields ENABLE electric;
 
 ALTER TABLE fields ENABLE electric;
 
-ALTER TABLE app_state ENABLE electric;
+ALTER TABLE app_states ENABLE electric;
 
 ALTER TABLE occurrence_imports ENABLE electric;
 

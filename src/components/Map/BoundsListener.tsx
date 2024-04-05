@@ -12,7 +12,7 @@ export const BoundsListener = () => {
 
   const { db } = useElectric()!
   const { results: uiOption } = useLiveQuery(
-    db.app_state.liveUnique({ where: { user_id } }),
+    db.app_states.liveUnique({ where: { user_id } }),
   )
   const mapBounds = uiOption?.map_bounds
 

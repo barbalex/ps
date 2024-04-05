@@ -26,7 +26,7 @@ interface Props {
 
 export const VectorLayerPVLGeom = ({ layer, display }: Props) => {
   const { db } = useElectric()!
-  const { results: uiOption } = db.app_state.liveUnique({ where: { user_id } })
+  const { results: uiOption } = db.app_states.liveUnique({ where: { user_id } })
   const showMap = uiOption?.show_map ?? false
 
   const [data, setData] = useState()

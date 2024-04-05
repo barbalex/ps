@@ -27,7 +27,7 @@ export const Design = () => {
     db.projects.liveUnique({ where: { project_id } }),
   )
   const { results: uiOption } = useLiveQuery(
-    db.app_state.liveUnique({ where: { user_id } }),
+    db.app_states.liveUnique({ where: { user_id } }),
   )
   const designing = uiOption?.designing ?? false
 

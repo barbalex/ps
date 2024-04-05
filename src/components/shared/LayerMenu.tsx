@@ -102,7 +102,7 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }: Props) => {
     const newBbox = bbox(bufferedFC)
     const newBounds = boundsFromBbox(newBbox)
 
-    db.app_state.update({
+    db.app_states.update({
       where: { user_id },
       data: { map_bounds: newBounds },
     })
@@ -111,7 +111,7 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }: Props) => {
     db.checks,
     db.observations,
     db.places,
-    db.app_state,
+    db.app_states,
     level,
     subproject_id,
     table,

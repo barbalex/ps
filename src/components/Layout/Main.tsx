@@ -27,11 +27,11 @@ export const Main = () => {
   const { results: user } = useLiveQuery(
     db.users.liveFirst({
       where: { email: authUser.email },
-      // include: { app_state: true },
+      // include: { app_states: true },
     }),
   )
   const { results: uiOption } = useLiveQuery(
-    db.app_state.liveUnique({ where: { user_id } }),
+    db.app_states.liveUnique({ where: { user_id } }),
   )
   const tabs = useMemo(() => uiOption?.tabs ?? [], [uiOption?.tabs])
   const designing = uiOption?.designing ?? false

@@ -1240,7 +1240,7 @@ export const router = (db) => {
               handle: {
                 crumb: () => ({
                   text: 'Options',
-                  table: 'app_state',
+                  table: 'app_states',
                   folder: true,
                 }),
               },
@@ -1252,7 +1252,7 @@ export const router = (db) => {
                   handle: {
                     crumb: (match) => ({
                       text: match.params.user_id,
-                      table: 'app_state',
+                      table: 'app_states',
                       folder: false,
                     }),
                   },

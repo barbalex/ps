@@ -1,7 +1,7 @@
 export const idFieldFromTable = (table): string => {
   if (!table) return undefined
 
-  return table === 'app_state'
+  return table === 'app_states'
     ? 'user_id'
     : table.endsWith('taxa')
     ? `${table.slice(0, -1)}on_id`

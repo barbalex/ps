@@ -52,7 +52,7 @@ export const WMTSOffline = ({ layer }: Props) => {
     const del = () => control.deleteTable(layer.id)
 
     setLocalMapValues({ id: layer.id, save, del })
-    db.app_state.update({
+    db.app_states.update({
       where: { user_id },
       data: {
         local_map_show: {
@@ -69,7 +69,7 @@ export const WMTSOffline = ({ layer }: Props) => {
     }
   }, [
     db.notifications,
-    db.app_state,
+    db.app_states,
     layer,
     layer.grayscale,
     layer.id,

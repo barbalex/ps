@@ -17,18 +17,18 @@ export const Component = () => {
 
   const { db } = useElectric()!
   const { results: row } = useLiveQuery(
-    db.app_state.liveUnique({ where: { user_id } }),
+    db.app_states.liveUnique({ where: { user_id } }),
   )
 
   const onChange: InputProps['onChange'] = useCallback(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
-      db.app_state.update({
+      db.app_states.update({
         where: { user_id },
         data: { [name]: value },
       })
     },
-    [db.app_state, user_id],
+    [db.app_states, user_id],
   )
 
   if (!row) return <Loading />
