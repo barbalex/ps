@@ -30,7 +30,7 @@ const mapContainerStyle = {
 export const Map = () => {
   const { db } = useElectric()!
   const { results } = useLiveQuery(
-    db.ui_options.liveUnique({ where: { user_id } }),
+    db.app_state.liveUnique({ where: { user_id } }),
   )
   const uiOption: UiOption = results
   const showMap = uiOption?.show_map ?? true

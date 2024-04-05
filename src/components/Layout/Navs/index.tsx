@@ -7,9 +7,9 @@ import { user_id } from '../../SqlInitializer'
 
 export const Navs = () => {
   const { db } = useElectric()!
-  // get ui_options.navs_overflowing
+  // get app_state.navs_overflowing
   const { results: uiOption } = useLiveQuery(
-    db.ui_options.liveUnique({ where: { user_id } }),
+    db.app_state.liveUnique({ where: { user_id } }),
   )
   const designing = uiOption?.designing ?? false
 
