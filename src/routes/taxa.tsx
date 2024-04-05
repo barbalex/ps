@@ -16,7 +16,7 @@ export const Component = () => {
   const { db } = useElectric()!
   const { results: taxa = [] } = useLiveQuery(
     db.taxa.liveMany({
-      where: { taxonomy_id, deleted: false },
+      where: { taxonomy_id },
       orderBy: { label: 'asc' },
     }),
   )

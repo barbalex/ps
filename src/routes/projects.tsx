@@ -18,7 +18,6 @@ export const Component = memo(() => {
   // TODO: this component gets constantly re-rendered because of the live query!!!???
   const { results: projects = [] } = useLiveQuery(
     db.projects.liveMany({
-      where: { deleted: false },
       orderBy: { label: 'asc' },
     }),
   )
