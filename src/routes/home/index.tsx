@@ -1,4 +1,4 @@
-import './home.css'
+import './index.css'
 
 export const Component = () => (
   <div style={{ height: '100%' }}>
