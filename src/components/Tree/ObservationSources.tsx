@@ -20,7 +20,7 @@ export const ObservationSourcesNode = memo(
     const { db } = useElectric()!
     const { results: observationSources = [] } = useLiveQuery(
       db.observation_sources.liveMany({
-        where: { deleted: false, project_id },
+        where: { project_id },
         orderBy: { label: 'asc' },
       }),
     )
