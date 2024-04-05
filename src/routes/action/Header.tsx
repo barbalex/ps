@@ -93,12 +93,12 @@ export const Header = memo(({ autoFocusRef }) => {
     if (!geometry) return alertNoGeometry()
 
     // 1. show map if not happening
-    const uiOption = await db.ui_options.findUnique({
+    const uiOption = await db.app_state.findUnique({
       where: { user_id },
     })
     const tabs = uiOption?.tabs ?? []
     if (!tabs.includes('map')) {
-      await db.ui_options.update({
+      await db.app_state.update({
         where: { user_id },
         data: { tabs: [...tabs, 'map'] },
       })
@@ -109,11 +109,11 @@ export const Header = memo(({ autoFocusRef }) => {
     const newBbox = bbox(buffered)
     const bounds = boundsFromBbox(newBbox)
     if (!bounds) return alertNoGeometry()
-    db.ui_options.update({
+    db.app_state.update({
       where: { user_id },
       data: { map_bounds: bounds },
     })
-  }, [action_id, alertNoGeometry, db.actions, db.ui_options])
+  }, [action_id, alertNoGeometry, db.actions, db.app_state])
 
   return (
     <FormHeader
