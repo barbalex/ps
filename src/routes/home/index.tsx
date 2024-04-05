@@ -19,51 +19,63 @@ export const Component = () => (
       <h6 className="page-title">Bedrohte Arten und Biotope fördern</h6>
       <div className="card-container">
         <div className="card">
-          <h3 className="card-title">Arten / Biotope</h3>
-          Seltene und gefährdete Arten oder Biotope, die überwacht und mit
-          Massnahmen gefördert werden.
+          <h3 className="card-title">Arten oder Biotope</h3>
+          Seltene und gefährdete Arten oder Biotope werden überwacht und
+          gefördert.
+        </div>
+        <div className="card">
+          <h3 className="card-title">Ziele</h3>
+          beschreiben, wie sich die Populationen und Biotope künftig entwickeln
+          sollen.
         </div>
         <div className="card">
           <h3 className="card-title">Verantwortliche</h3>
-          Für jede Art / jedes Biotop ist ein Experte oder eine Expertin
-          verant&shy;wortlich.
+          organisieren die Überwachung und Förderung.
         </div>
         <div className="card">
           <h3 className="card-title">Räume</h3>
-          Biotope / Populationen, für die Massnahmen und Kontrollen
+          Einzelne Populationen und Biotope, für die Massnahmen und Kontrollen
           durch&shy;geführt werden.
         </div>
         <div className="card">
           <h3 className="card-title">Zweistufige Räume</h3>
-          Es kann nützlich sein, Räume in zwei Stufen zu glie&shy;dern.
-          Beispiele: Populationen und Teil&shy;populationen, Biotope und deren
-          Teilflächen.
-        </div>
-        <div className="card">
-          <h3 className="card-title">Ziele</h3>
-          beschreiben, wie sich die Populationen / Biotope künftig entwickeln
-          sollen, damit die Art bzw. das Biotop langfristig erhalten bleibt.
+          Sie können Populationen in Teil&shy;populationen, Biotope in
+          Teilflächen glie&shy;dern.
         </div>
         <div className="card">
           <h3 className="card-title">Massnahmen</h3>
-          Was gemacht wird, um den Zustand der Art / des Biotops an diesem Ort
-          zu verbessern.
+          Was gemacht wird, um den Zustand einer Art oder eines Biotops zu
+          verbessern.
         </div>
         <div className="card">
           <h3 className="card-title">Kontrollen</h3>
-          Die aktuelle Situation wird erfasst (Arten, Populationsgrössen,
-          Mass&shy;nahmen-Wirkung).
+          Erfasst wird der aktuelle Zustand und die Wirkung von Massnahmen.
         </div>
         <div className="card">
           <h3 className="card-title">Berichte</h3>
-          Jährlich verfassen die Artverantwortlichen einen Bericht über die
-          Entwick&shy;lung der Populationen / Biotope, den Erfolg der Massnahmen
-          und die Errei&shy;chung der Ziele.
+          Die Verantwortlichen berichten über die Entwick&shy;lung der
+          Populationen und Biotope, den Erfolg der Massnahmen und die
+          Errei&shy;chung der Ziele.
         </div>
         <div className="card">
           <h3 className="card-title">Beobachtungen</h3>
-          Artverantwortliche prüfen von Dritten gemeldete Beobachtungen und
-          ordnen diese den Popula&shy;tionen / Biotopen zu.
+          Verantwortliche prüfen von Dritten gemeldete Beobachtungen und ordnen
+          diese den Popula&shy;tionen und Biotopen zu.
+        </div>
+        <div className="card">
+          <h3 className="card-title">Mobilfähig</h3>
+          Promoting Species passt sich jeder Bildschirmgrösse an. Arbeiten sie
+          effizient auf ihrem Smartphone, Tablet oder Computer.
+        </div>
+        <div className="card">
+          <h3 className="card-title">Bring your own device</h3>
+          Promoting Species funktioniert auf jedem Betriebssystem mit modernem
+          Browser: Windows, MacOS, Linux, Android, iOS...
+        </div>
+        <div className="card">
+          <h3 className="card-title">Kein Internet? Egal!</h3>
+          Promoting Species funktioniert auch offline. Sobald sie wieder online
+          sind, werden die Daten synchronisiert.
         </div>
       </div>
     </div>
