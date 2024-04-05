@@ -13,7 +13,7 @@ export const Component = () => {
   const { db } = useElectric()!
   const { results: vlds = [] } = useLiveQuery(
     db.vector_layer_displays.liveMany({
-      where: { vector_layer_id, deleted: false },
+      where: { vector_layer_id },
       orderBy: { label: 'asc' },
     }),
   )
