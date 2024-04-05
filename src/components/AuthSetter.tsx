@@ -11,7 +11,9 @@ export const AuthSetter = memo(() => {
   const { results: dbUser } = useLiveQuery(
     db.users.liveFirst({
       where: { email: authUser?.email },
-      include: { accounts: true },
+      // if app_states is included, dbUser is undefined
+      // but works with accounts??!!
+      // include: { app_states: true },
     }),
   )
   const { results: appState } = useLiveQuery(
