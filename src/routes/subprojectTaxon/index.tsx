@@ -12,7 +12,6 @@ import { Loading } from '../../components/shared/Loading'
 
 import '../../form.css'
 
-const taxaWhere = { deleted: false }
 const taxaInclude = { taxonomies: true }
 
 export const Component = () => {
@@ -51,7 +50,6 @@ export const Component = () => {
           label="Taxon"
           name="taxon_id"
           table="taxa"
-          where={taxaWhere}
           include={taxaInclude}
           value={row.taxon_id ?? ''}
           onChange={onChange}

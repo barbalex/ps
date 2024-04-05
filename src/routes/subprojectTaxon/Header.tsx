@@ -31,7 +31,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toNext = useCallback(async () => {
     const subprojectTaxa = await db.subproject_taxa.findMany({
-      where: { deleted: false, subproject_id },
+      where: {  subproject_id },
       orderBy: { label: 'asc' },
     })
     const len = subprojectTaxa.length
@@ -53,7 +53,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toPrevious = useCallback(async () => {
     const subprojectTaxa = await db.subproject_taxa.findMany({
-      where: { deleted: false, subproject_id },
+      where: {  subproject_id },
       orderBy: { label: 'asc' },
     })
     const len = subprojectTaxa.length

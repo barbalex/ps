@@ -29,7 +29,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toNext = useCallback(async () => {
     const taxa = await db.taxa.findMany({
-      where: { deleted: false, taxonomy_id },
+      where: {  taxonomy_id },
       orderBy: { label: 'asc' },
     })
     const len = taxa.length
@@ -43,7 +43,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toPrevious = useCallback(async () => {
     const taxa = await db.taxa.findMany({
-      where: { deleted: false, taxonomy_id },
+      where: {  taxonomy_id },
       orderBy: { label: 'asc' },
     })
     const len = taxa.length
