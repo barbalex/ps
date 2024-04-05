@@ -41,7 +41,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toNext = useCallback(async () => {
     const placeReports = await db.place_reports.findMany({
-      where: { deleted: false, place_id: place_id2 ?? place_id },
+      where: {  place_id: place_id2 ?? place_id },
       orderBy: { label: 'asc' },
     })
     const len = placeReports.length
@@ -64,7 +64,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toPrevious = useCallback(async () => {
     const placeReports = await db.place_reports.findMany({
-      where: { deleted: false, place_id: place_id2 ?? place_id },
+      where: {  place_id: place_id2 ?? place_id },
       orderBy: { label: 'asc' },
     })
     const len = placeReports.length

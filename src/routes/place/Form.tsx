@@ -25,7 +25,7 @@ export const PlaceForm = ({ autoFocusRef }) => {
 
   // TODO: only show parent place if level 2 exists in place_levels
   const parentPlaceWhere = useMemo(
-    () => ({ deleted: false, level: 1, subproject_id }),
+    () => ({  level: 1, subproject_id }),
     [subproject_id],
   )
 

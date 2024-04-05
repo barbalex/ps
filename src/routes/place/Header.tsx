@@ -31,7 +31,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
   const { results: placeLevels } = useLiveQuery(
     db.place_levels.liveMany({
       where: {
-        deleted: false,
+        
         project_id,
         level: place_id2 ? 2 : 1,
       },
@@ -86,7 +86,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
   const toNext = useCallback(async () => {
     const places = await db.places.findMany({
       where: {
-        deleted: false,
+        
         parent_id: place_id2 ? place_id : null,
         subproject_id,
       },
@@ -104,7 +104,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
   const toPrevious = useCallback(async () => {
     const places = await db.places.findMany({
       where: {
-        deleted: false,
+        
         parent_id: place_id2 ? place_id : null,
         subproject_id,
       },

@@ -13,8 +13,6 @@ import { Loading } from '../../components/shared/Loading'
 
 import '../../form.css'
 
-const userWhere = { deleted: false }
-
 export const Component = () => {
   const { place_user_id } = useParams()
 
@@ -51,7 +49,6 @@ export const Component = () => {
           label="User"
           name="user_id"
           table="users"
-          where={userWhere}
           value={row.user_id ?? ''}
           onChange={onChange}
           autoFocus
