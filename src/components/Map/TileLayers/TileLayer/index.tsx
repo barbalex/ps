@@ -1,5 +1,6 @@
 import { memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
+import { useCorbadoSession } from '@corbado/react'
 
 import {
   Tile_layers as TileLayer,
@@ -9,17 +10,18 @@ import { WMS } from './WMS'
 // import { WMTSOffline } from './WMTSOffline'
 import { LocalMap } from './LocalMap'
 import { useElectric } from '../../../../ElectricProvider'
-import { user_id } from '../../../SqlInitializer'
 
 interface Props {
   layer: TileLayer
 }
 
 export const TileLayerComponent = memo(({ layer }: Props) => {
+  const { user: authUser } = useCorbadoSession()
+
   const { db } = useElectric()!
   const { results } = useLiveQuery(
-    db.app_states.liveUnique({
-      where: { user_id },
+    db.app_states.liveFirst({
+      where: { authenticated_email: authUser.email },
       select: { local_map_show: true },
     }),
   )

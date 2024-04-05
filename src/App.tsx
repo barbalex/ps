@@ -1,7 +1,7 @@
 import React, { createRef } from 'react'
 import { RouterProvider } from 'react-router-dom'
 import { FluentProvider } from '@fluentui/react-components'
-import { CorbadoProvider } from '@corbado/react'
+import { CorbadoProvider, useCorbadoSession } from '@corbado/react'
 
 import * as LR from '@uploadcare/blocks'
 LR.FileUploaderRegular.shadowStyles = /* CSS */ `
@@ -36,11 +36,15 @@ const routerContainerStyle = {
 
 const RouterProviderWithDb = () => {
   const { db } = useElectric()!
+  const { user: authUser } = useCorbadoSession()
   // confirmed: this only runs once
   // console.log('RouterProviderWithDb', { db })
 
   return (
-    <RouterProvider router={router(db)} future={{ v7_startTransition: true }} />
+    <RouterProvider
+      router={router({ db, authUser })}
+      future={{ v7_startTransition: true }}
+    />
   )
 }
 

@@ -87,6 +87,7 @@ export const BreadcrumbForFolder = forwardRef(
           check_id,
           db,
           level: levelWanted,
+          authUser,
         })
 
         return setNavs(navs)
@@ -111,6 +112,7 @@ export const BreadcrumbForFolder = forwardRef(
       table,
       levelWanted,
       designing,
+      authUser,
     ])
 
     let label = row?.label
