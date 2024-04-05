@@ -5,17 +5,19 @@ import { Button } from '@fluentui/react-button'
 import bbox from '@turf/bbox'
 import buffer from '@turf/buffer'
 import { uuidv7 } from '@kripod/uuidv7'
+import { useCorbadoSession } from '@corbado/react'
 
 import { createCheck } from '../../modules/createRows'
 import { useElectric } from '../../ElectricProvider'
 import { FormHeader } from '../../components/FormHeader'
 import { boundsFromBbox } from '../../modules/boundsFromBbox'
-import { user_id } from '../../components/SqlInitializer'
 
 export const Header = memo(({ autoFocusRef }) => {
   const { project_id, place_id, place_id2, check_id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
+
+  const { user: authUser } = useCorbadoSession()
 
   const { db } = useElectric()!
 
@@ -93,13 +95,13 @@ export const Header = memo(({ autoFocusRef }) => {
     if (!geometry) return alertNoGeometry()
 
     // 1. show map if not happening
-    const uiOption = await db.app_states.findUnique({
-      where: { user_id },
+    const appState = await db.app_states.findFirst({
+      where: { authenticated_email: authUser.email },
     })
-    const tabs = uiOption?.tabs ?? []
+    const tabs = appState?.tabs ?? []
     if (!tabs.includes('map')) {
       await db.app_states.update({
-        where: { user_id },
+        where: { app_state_id: appState.app_state_id },
         data: { tabs: [...tabs, 'map'] },
       })
     }
@@ -110,10 +112,10 @@ export const Header = memo(({ autoFocusRef }) => {
     const bounds = boundsFromBbox(newBbox)
     if (!bounds) return alertNoGeometry()
     db.app_states.update({
-      where: { user_id },
+      where: { app_state_id: appState.app_state_id },
       data: { map_bounds: bounds },
     })
-  }, [alertNoGeometry, check_id, db.checks, db.app_states])
+  }, [db.checks, db.app_states, check_id, alertNoGeometry, authUser.email])
 
   return (
     <FormHeader

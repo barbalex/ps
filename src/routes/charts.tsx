@@ -1,11 +1,11 @@
 import { useCallback, useMemo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
+import { useCorbadoSession } from '@corbado/react'
 
 import { ListViewHeader } from '../components/ListViewHeader'
 import { Row } from '../components/shared/Row'
 import { createChart } from '../modules/createRows'
-import { user_id } from '../components/SqlInitializer'
 
 import '../form.css'
 
@@ -15,6 +15,8 @@ export const Component = () => {
   const { project_id, subproject_id, place_id, place_id2 } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
+
+  const { user: authUser } = useCorbadoSession()
 
   const where = useMemo(() => {
     const where = { deleted: false }
@@ -31,10 +33,10 @@ export const Component = () => {
   }, [place_id, place_id2, project_id, subproject_id])
 
   const { db } = useElectric()!
-  const { results: uiOption } = useLiveQuery(
-    db.app_states.liveUnique({ where: { user_id } }),
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({ where: { authenticated_email: authUser.email } }),
   )
-  const designing = uiOption?.designing ?? false
+  const designing = appState?.designing ?? false
   const { results: charts = [] } = useLiveQuery(
     db.charts.liveMany({
       where,
