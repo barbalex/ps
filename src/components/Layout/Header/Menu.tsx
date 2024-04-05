@@ -61,19 +61,19 @@ export const Menu = memo(() => {
   const { isAuthenticated, logout } = useCorbado()
 
   const { db } = useElectric()!
-  // get ui_options.tabs
+  // get app_state.tabs
   const { results: uiOption } = useLiveQuery(
-    db.ui_options.liveUnique({ where: { user_id } }),
+    db.app_state.liveUnique({ where: { user_id } }),
   )
   const tabs = useMemo(() => uiOption?.tabs ?? [], [uiOption?.tabs])
   const onChangeTabs = useCallback(
     (e, { checkedItems }) => {
-      db.ui_options.update({
+      db.app_state.update({
         where: { user_id },
         data: { tabs: checkedItems },
       })
     },
-    [db.ui_options],
+    [db.app_state],
   )
 
   const onClickOptions = useCallback(() => {
