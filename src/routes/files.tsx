@@ -24,7 +24,7 @@ export const Component = () => {
   } = useParams()
 
   const where = useMemo(() => {
-    const where = { deleted: false }
+    const where = {}
     if (action_id) {
       where.action_id = action_id
     } else if (check_id) {
