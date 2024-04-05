@@ -49,7 +49,6 @@ export const Header = memo(
 
     const toNext = useCallback(async () => {
       const occurrenceImports = await db.occurrence_imports.findMany({
-        where: { deleted: false },
         orderBy: { label: 'asc' },
       })
       const len = occurrenceImports.length
@@ -65,7 +64,6 @@ export const Header = memo(
 
     const toPrevious = useCallback(async () => {
       const occurrenceImports = await db.occurrence_imports.findMany({
-        where: { deleted: false },
         orderBy: { label: 'asc' },
       })
       const len = occurrenceImports.length

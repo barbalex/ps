@@ -37,7 +37,7 @@ export const Uploader = () => {
   const onUploadSuccess = useCallback(
     async (event: CustomEvent) => {
       const { results: files = [] } = await db.files.findMany({
-        where: { uuid: event.detail.uuid, deleted: false },
+        where: { uuid: event.detail.uuid },
       })
       if (files.length) return
 

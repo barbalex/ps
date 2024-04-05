@@ -40,7 +40,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toNext = useCallback(async () => {
     const observations = await db.observations.findMany({
-      where: { deleted: false, observation_source_id },
+      where: {  observation_source_id },
       orderBy: { label: 'asc' },
     })
     const len = observations.length
@@ -62,7 +62,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toPrevious = useCallback(async () => {
     const observations = await db.observations.findMany({
-      where: { deleted: false, observation_source_id },
+      where: {  observation_source_id },
       orderBy: { label: 'asc' },
     })
     const len = observations.length

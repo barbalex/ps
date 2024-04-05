@@ -31,7 +31,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toNext = useCallback(async () => {
     const listValues = await db.list_values.findMany({
-      where: { deleted: false, list_id },
+      where: {  list_id },
       orderBy: { label: 'asc' },
     })
     const len = listValues.length
@@ -45,7 +45,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toPrevious = useCallback(async () => {
     const listValues = await db.list_values.findMany({
-      where: { deleted: false, list_id },
+      where: {  list_id },
       orderBy: { label: 'asc' },
     })
     const len = listValues.length

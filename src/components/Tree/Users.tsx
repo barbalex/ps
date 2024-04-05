@@ -14,7 +14,6 @@ export const UsersNode = memo(() => {
   const { db } = useElectric()!
   const { results: users = [] } = useLiveQuery(
     db.users.liveMany({
-      where: { deleted: false },
       orderBy: { label: 'asc' },
     }),
   )
