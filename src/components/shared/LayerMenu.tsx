@@ -108,7 +108,7 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }: Props) => {
       where: { authenticated_email: authUser.email },
     })
     db.app_states.update({
-      where: { app_state_id: appState.app_state_id },
+      where: { app_state_id: appState?.app_state_id },
       data: { map_bounds: newBounds },
     })
   }, [

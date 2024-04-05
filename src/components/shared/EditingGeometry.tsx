@@ -41,18 +41,18 @@ export const EditingGeometry = memo(({ row, table }) => {
         const tabs = appState?.tabs ?? []
         if (!tabs.includes('map')) {
           await db.app_states.update({
-            where: { app_state_id: appState.app_state_id },
+            where: { app_state_id: appState?.app_state_id },
             data: { tabs: [...tabs, 'map'] },
           })
         }
       }
       // 2. update the editing id
       db.app_states.update({
-        where: { app_state_id: appState.app_state_id },
+        where: { app_state_id: appState?.app_state_id },
         data: { [fieldName]: data.checked ? id : null },
       })
     },
-    [db.app_states, appState.app_state_id, appState?.tabs, fieldName, id],
+    [db.app_states, appState?.app_state_id, appState?.tabs, fieldName, id],
   )
 
   const value = row.geometry ? JSON.stringify(row.geometry, null, 3) : ''

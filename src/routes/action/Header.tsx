@@ -101,7 +101,7 @@ export const Header = memo(({ autoFocusRef }) => {
     const tabs = appState?.tabs ?? []
     if (!tabs.includes('map')) {
       await db.app_states.update({
-        where: { app_state_id: appState.app_state_id },
+        where: { app_state_id: appState?.app_state_id },
         data: { tabs: [...tabs, 'map'] },
       })
     }
@@ -112,7 +112,7 @@ export const Header = memo(({ autoFocusRef }) => {
     const bounds = boundsFromBbox(newBbox)
     if (!bounds) return alertNoGeometry()
     db.app_states.update({
-      where: { app_state_id: appState.app_state_id },
+      where: { app_state_id: appState?.app_state_id },
       data: { map_bounds: bounds },
     })
   }, [action_id, alertNoGeometry, authUser.email, db.actions, db.app_states])
