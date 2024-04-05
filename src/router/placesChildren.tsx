@@ -1,6 +1,6 @@
 import { buildNavs } from '../modules/navs'
 
-export const placesChildren = ({ db, level }) => [
+export const placesChildren = ({ db, level, authUser }) => [
   {
     path: 'checks',
     element: null,
@@ -32,7 +32,7 @@ export const placesChildren = ({ db, level }) => [
               table: `checks`,
               ...match.params,
               db,
-              level,
+              level,authUser
             }),
         },
         children: [
@@ -164,7 +164,7 @@ export const placesChildren = ({ db, level }) => [
               table: `actions`,
               ...match.params,
               db,
-              level,
+              level,authUser
             }),
         },
         children: [
@@ -229,7 +229,7 @@ export const placesChildren = ({ db, level }) => [
                       table: `action_reports`,
                       ...match.params,
                       db,
-                      level,
+                      level,authUser
                     }),
                 },
                 children: [
@@ -337,7 +337,7 @@ export const placesChildren = ({ db, level }) => [
               table: `place_reports`,
               ...match.params,
               db,
-              level,
+              level,authUser
             }),
         },
         children: [

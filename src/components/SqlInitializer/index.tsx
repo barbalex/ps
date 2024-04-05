@@ -52,11 +52,6 @@ import { seedTestData } from './seedTestData'
 // 3. backend:down, backend:start, db:migrate, client:generate
 // 4. replace 'label_replace_by_generated_column' with 'label' in generated code (done by renameLabels.js script)
 
-// TODO:
-// this runs AFTER login
-// so user_id is passed in somehow
-export const user_id = '018cf95a-d817-7000-92fa-bb3b2ad59dda'
-
 export const SqlInitializer = () => {
   const { db } = useElectric()!
 

@@ -3,19 +3,21 @@ import { Button } from '@fluentui/react-components'
 import { MdEdit } from 'react-icons/md'
 import { useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
+import { useCorbadoSession } from '@corbado/react'
 
 import { useElectric } from '../../../ElectricProvider'
-import { user_id } from '../../SqlInitializer'
 
 export const EditField = memo(({ field_id }) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchParams, setSearchParams] = useSearchParams()
 
+  const { user: authUser } = useCorbadoSession()
+
   const { db } = useElectric()!
-  const { results: uiOption } = useLiveQuery(
-    db.app_states.liveUnique({ where: { user_id } }),
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({ where: { authenticated_email: authUser.email } }),
   )
-  const designing = uiOption?.designing
+  const designing = appState?.designing
 
   const onClick = useCallback(
     async () => setSearchParams({ editingField: field_id }),
