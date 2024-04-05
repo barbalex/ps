@@ -34,11 +34,11 @@ export const Editing = memo(() => {
     (e) => {
       e.stopPropagation()
       db.app_states.update({
-        where: { app_state_id: appState.app_state_id },
+        where: { app_state_id: appState?.app_state_id },
         data: { designing: !designing },
       })
     },
-    [appState.app_state_id, db.app_states, designing],
+    [appState?.app_state_id, db.app_states, designing],
   )
 
   const { results: project } = useLiveQuery(
