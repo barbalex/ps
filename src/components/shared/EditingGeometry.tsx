@@ -29,7 +29,7 @@ export const EditingGeometry = memo(({ row, table }) => {
 
   const { db } = useElectric()!
   const { results: uiOption } = useLiveQuery(
-    db.ui_options.liveUnique({ where: { user_id } }),
+    db.app_state.liveUnique({ where: { user_id } }),
   )
   const editedId = uiOption?.[fieldName] ?? null
 
@@ -39,19 +39,19 @@ export const EditingGeometry = memo(({ row, table }) => {
       if (data.checked) {
         const tabs = uiOption?.tabs ?? []
         if (!tabs.includes('map')) {
-          await db.ui_options.update({
+          await db.app_state.update({
             where: { user_id },
             data: { tabs: [...tabs, 'map'] },
           })
         }
       }
       // 2. update the editing id
-      db.ui_options.update({
+      db.app_state.update({
         where: { user_id },
         data: { [fieldName]: data.checked ? id : null },
       })
     },
-    [db.ui_options, uiOption?.tabs, fieldName, id],
+    [db.app_state, uiOption?.tabs, fieldName, id],
   )
 
   const value = row.geometry ? JSON.stringify(row.geometry, null, 3) : ''
