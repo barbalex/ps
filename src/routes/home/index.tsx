@@ -77,6 +77,16 @@ export const Component = () => (
           Promoting Species funktioniert auch offline. Sobald sie wieder online
           sind, werden die Daten synchronisiert.
         </div>
+        <div className="card">
+          <h3 className="card-title">Flexible Konfiguration</h3>
+          Sie können ihr Projekt individuell konfigurieren. Vermissen Sie eine
+          Funktion? Wir sind interessiert!
+        </div>
+        <div className="card">
+          <h3 className="card-title">Einfaches Onboarding</h3>
+          Erfassen Sie neue Mitarbeitende mit deren Email. Ergänzen Sie diese
+          Person bei allen Teilprojekten, in denen sie mitarbeiten soll. Fertig!
+        </div>
       </div>
     </div>
   </div>
