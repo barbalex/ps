@@ -52,7 +52,6 @@ export const Jsonb = memo(
           where: {
             table_name: table,
             project_id: isAccountTable ? null : project_id,
-            deleted: false,
           },
         }),
       )

@@ -27,7 +27,6 @@ export const FieldList = memo(
         where: {
           table_name: fieldsTable,
           project_id,
-          deleted: false,
         },
       }),
     )

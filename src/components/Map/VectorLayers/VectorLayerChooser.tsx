@@ -23,7 +23,7 @@ export const VectorLayerChooser = ({ layer, display }: Props) => {
 
   const { results: vectorLayerGeoms = [] } = useLiveQuery(
     db.vector_layer_geoms.liveMany({
-      where: { vector_layer_id: layer.vector_layer_id, deleted: false },
+      where: { vector_layer_id: layer.vector_layer_id },
     }),
   )
   const geomCount: integer = vectorLayerGeoms.length

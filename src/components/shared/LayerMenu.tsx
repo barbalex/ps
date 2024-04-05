@@ -37,7 +37,7 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }: Props) => {
   const { db } = useElectric()!
   const { results: vectorLayer }: vlResultsType = useLiveQuery(
     db.vector_layers.liveFirst({
-      where: { project_id, type: `${table}${level}`, deleted: false },
+      where: { project_id, type: `${table}${level}` },
     }),
   )
 
@@ -55,7 +55,7 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }: Props) => {
     // then get all actions/checks/observations with place_id
     let geometries: GeometryType = []
     const places: Place[] = await db.places.findMany({
-      where: { subproject_id, level, deleted: false },
+      where: { subproject_id, level },
     })
     if (table === 'places') {
       geometries = places.map((place) => place.geometry)
@@ -63,7 +63,6 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }: Props) => {
       const actions: Action[] = await db.actions.findMany({
         where: {
           place_id: { in: places.map((place) => place.place_id) },
-          deleted: false,
         },
       })
       geometries = actions.map((action) => action.geometry)
@@ -71,7 +70,6 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }: Props) => {
       const checks: Check[] = await db.checks.findMany({
         where: {
           place_id: { in: places.map((place) => place.place_id) },
-          deleted: false,
         },
       })
       geometries = checks.map((check) => check.geometry)
@@ -79,7 +77,6 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }: Props) => {
       const observations: Observation[] = await db.observations.findMany({
         where: {
           place_id: { in: places.map((place) => place.place_id) },
-          deleted: false,
         },
       })
       geometries = observations.map((observation) => observation.geometry)
