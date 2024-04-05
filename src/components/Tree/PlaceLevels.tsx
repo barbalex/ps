@@ -19,7 +19,7 @@ export const PlaceLevelsNode = memo(({ project_id, level = 3 }: Props) => {
   const { db } = useElectric()!
   const { results: placeLevels = [] } = useLiveQuery(
     db.place_levels.liveMany({
-      where: { deleted: false, project_id },
+      where: { project_id },
       orderBy: { label: 'asc' },
     }),
   )
