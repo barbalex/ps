@@ -5,10 +5,11 @@ import 'proj4leaflet'
 import { MapContainer } from 'react-leaflet'
 import { useResizeDetector } from 'react-resize-detector'
 import { useLiveQuery } from 'electric-sql/react'
+import { useCorbadoSession } from '@corbado/react'
+
 import 'leaflet/dist/leaflet.css'
 // import 'leaflet-draw/dist/leaflet.draw.css'
 
-import { user_id } from '../SqlInitializer'
 import { Ui_options as UiOption } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider'
 import { TileLayers } from './TileLayers'
@@ -28,9 +29,11 @@ const mapContainerStyle = {
 }
 
 export const Map = () => {
+  const { user: authUser } = useCorbadoSession()
+
   const { db } = useElectric()!
   const { results } = useLiveQuery(
-    db.app_states.liveUnique({ where: { user_id } }),
+    db.app_states.liveFirst({ where: { authenticated_email: authUser.email } }),
   )
   const uiOption: UiOption = results
   const showMap = uiOption?.show_map ?? true

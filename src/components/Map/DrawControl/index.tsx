@@ -1,9 +1,9 @@
 import { useLocation } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
+import { useCorbadoSession } from '@corbado/react'
 
 import { useElectric } from '../../../ElectricProvider'
 import { DrawControlComponent } from './DrawControl'
-import { user_id } from '../../SqlInitializer'
 
 // need to decide whether to show the draw control
 // show it if:
@@ -12,9 +12,11 @@ import { user_id } from '../../SqlInitializer'
 // - the active table is actions AND app_states.editing_action_geometry is the id of the active action
 // - maybe later more cases
 export const DrawControl = () => {
+  const { user: authUser } = useCorbadoSession()
+
   const { db } = useElectric()!
   const { results } = useLiveQuery(
-    db.app_states.liveUnique({ where: { user_id } }),
+    db.app_states.liveFirst({ where: { authenticated_email: authUser.email } }),
   )
   const uiOption: UiOption = results
   const editingPlaceGeometry = uiOption?.editing_place_geometry ?? null

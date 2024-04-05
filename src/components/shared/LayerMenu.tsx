@@ -8,6 +8,7 @@ import { useParams } from 'react-router-dom'
 import bbox from '@turf/bbox'
 import buffer from '@turf/buffer'
 import { featureCollection } from '@turf/helpers'
+import { useCorbadoSession } from '@corbado/react'
 
 import { useElectric } from '../../ElectricProvider'
 import {
@@ -17,7 +18,6 @@ import {
   Checks as Check,
   Observations as Observation,
 } from '../../generated/client'
-import { user_id } from '../SqlInitializer'
 import { boundsFromBbox } from '../../modules/boundsFromBbox'
 
 interface Props {
@@ -32,6 +32,7 @@ type GeometryType = Place[] | Action[] | Check[] | Observation[]
 
 export const LayerMenu = memo(({ table, level, placeNamePlural }: Props) => {
   const { project_id, subproject_id } = useParams()
+  const { user: authUser } = useCorbadoSession()
 
   const { db } = useElectric()!
   const { results: vectorLayer }: vlResultsType = useLiveQuery(
@@ -102,19 +103,24 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }: Props) => {
     const newBbox = bbox(bufferedFC)
     const newBounds = boundsFromBbox(newBbox)
 
+    // get app_states by authUser.email
+    const appState = await db.app_states.findFirst({
+      where: { authenticated_email: authUser.email },
+    })
     db.app_states.update({
-      where: { user_id },
+      where: { app_state_id: appState.app_state_id },
       data: { map_bounds: newBounds },
     })
   }, [
+    db.places,
+    db.app_states,
     db.actions,
     db.checks,
     db.observations,
-    db.places,
-    db.app_states,
-    level,
     subproject_id,
+    level,
     table,
+    authUser.email,
   ])
 
   // TODO: implement onClickMapSettings
