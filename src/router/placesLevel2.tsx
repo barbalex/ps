@@ -1,7 +1,7 @@
 import { placesChildren } from './placesChildren'
 import { buildNavs } from '../modules/navs'
 
-export const placesLevel2 = (db) => ({
+export const placesLevel2 = ({ db, authUser }) => ({
   path: 'places',
   element: null,
   handle: {
@@ -33,6 +33,7 @@ export const placesLevel2 = (db) => ({
             ...match.params,
             db,
             level: 2,
+            authUser,
           }),
       },
       children: [
@@ -40,7 +41,7 @@ export const placesLevel2 = (db) => ({
           index: true,
           lazy: () => import('../routes/place'),
         },
-        ...placesChildren({ db, level: 2 }),
+        ...placesChildren({ db, level: 2, authUser }),
       ],
     },
   ],

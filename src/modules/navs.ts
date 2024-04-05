@@ -1,5 +1,3 @@
-import { user_id } from '../components/SqlInitializer'
-
 export const buildNavs = async ({
   table,
   check_id,
@@ -20,9 +18,10 @@ export const buildNavs = async ({
   // chart_subject_id,
   db,
   level = 1,
+  authUser, // TODO: pass this is
 }) => {
   const appStates = await db?.app_states?.findFirst({
-    where: { user_id },
+    where: { authenticated_email: authUser.email },
   })
   const designing = appStates?.designing ?? false
   // if table is places, get place_level for this level

@@ -6,6 +6,7 @@ import {
   useSearchParams,
 } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
+import { useCorbadoSession } from '@corbado/react'
 
 import { Node } from '../Node'
 import { Projects as Project } from '../../../generated/client'
@@ -24,7 +25,6 @@ import { ObservationSourcesNode } from '../ObservationSources'
 import { FilesNode } from '../Files'
 import { Editing } from './Editing'
 import { useElectric } from '../../../ElectricProvider'
-import { user_id } from '../../SqlInitializer'
 
 interface Props {
   project: Project
@@ -37,11 +37,13 @@ export const ProjectNode = memo(({ project, level = 2 }: Props) => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
+  const { user: authUser } = useCorbadoSession()
+
   const { db } = useElectric()!
-  const { results: uiOption } = useLiveQuery(
-    db.app_states.liveUnique({ where: { user_id } }),
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({ where: { authenticated_email: authUser.email } }),
   )
-  const designing = uiOption?.designing ?? false
+  const designing = appState?.designing ?? false
 
   const showFiles = project.files_active_projects ?? false
 

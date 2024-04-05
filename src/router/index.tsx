@@ -7,7 +7,7 @@ import { placesChildren } from './placesChildren'
 import { placesLevel2 } from './placesLevel2'
 import { Editing as EditingProject } from '../components/Tree/Project/Editing'
 
-export const router = (db) => {
+export const router = ({ db, authUser }) => {
   // confirmed: this is called only once
   // console.log('router building')
 
@@ -25,7 +25,7 @@ export const router = (db) => {
               table: 'root',
               folder: true,
             }),
-            to: async () => await buildNavs({ table: 'root', db }),
+            to: async () => await buildNavs({ table: 'root', db, authUser }),
           },
           children: [
             {
@@ -61,6 +61,7 @@ export const router = (db) => {
                         table: `projects`,
                         ...match.params,
                         db,
+                        authUser,
                       }),
                   },
                   children: [
@@ -94,6 +95,7 @@ export const router = (db) => {
                                 table: `subprojects`,
                                 ...match.params,
                                 db,
+                                authUser,
                               }),
                           },
                           children: [
@@ -132,6 +134,7 @@ export const router = (db) => {
                                         table: `places`,
                                         ...match.params,
                                         db,
+                                        authUser,
                                       }),
                                   },
                                   children: [
@@ -139,8 +142,8 @@ export const router = (db) => {
                                       index: true,
                                       lazy: () => import('../routes/place'),
                                     },
-                                    placesLevel2(db),
-                                    ...placesChildren({ db, level: 1 }),
+                                    placesLevel2({ db, authUser }),
+                                    ...placesChildren({ db, level: 1, authUser }),
                                   ],
                                 },
                               ],
@@ -333,6 +336,7 @@ export const router = (db) => {
                                         table: `goals`,
                                         ...match.params,
                                         db,
+                                        authUser,
                                       }),
                                   },
                                   children: [
@@ -370,6 +374,7 @@ export const router = (db) => {
                                                 table: `goal_reports`,
                                                 ...match.params,
                                                 db,
+                                                authUser,
                                               }),
                                           },
                                           children: [
@@ -451,6 +456,7 @@ export const router = (db) => {
                                         table: `charts`,
                                         ...match.params,
                                         db,
+                                        authUser,
                                       }),
                                   },
                                   children: [
@@ -490,6 +496,7 @@ export const router = (db) => {
                                                 table: `chart_subjects`,
                                                 ...match.params,
                                                 db,
+                                                authUser,
                                               }),
                                           },
                                         },
@@ -582,6 +589,7 @@ export const router = (db) => {
                                 table: `lists`,
                                 ...match.params,
                                 db,
+                                authUser,
                               }),
                           },
                           children: [
@@ -650,6 +658,7 @@ export const router = (db) => {
                                 table: `taxonomies`,
                                 ...match.params,
                                 db,
+                                authUser,
                               }),
                           },
                           children: [
@@ -746,6 +755,7 @@ export const router = (db) => {
                                 table: `vector_layers`,
                                 ...match.params,
                                 db,
+                                authUser,
                               }),
                           },
                           children: [
@@ -898,6 +908,7 @@ export const router = (db) => {
                                 table: `observation_sources`,
                                 ...match.params,
                                 db,
+                                authUser,
                               }),
                           },
                           children: [
