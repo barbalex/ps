@@ -25,6 +25,7 @@ import { router } from './router'
 import { SqlInitializer } from './components/SqlInitializer'
 import { Syncer } from './components/Syncer'
 import { UploaderContext } from './UploaderContext'
+import { AuthSetter } from './components/AuthSetter'
 
 const CORBADO_PROJECT_ID = import.meta.env.ELECTRIC_CORBADO_PROJECT_ID
 
@@ -67,6 +68,7 @@ export default function App() {
           <div style={routerContainerStyle}>
             <SqlInitializer />
             <Syncer />
+            <AuthSetter />
             <UploaderContext.Provider value={uploaderRef}>
               <RouterProviderWithDb />
             </UploaderContext.Provider>

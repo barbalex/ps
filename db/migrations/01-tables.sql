@@ -1,18 +1,12 @@
 CREATE TABLE users(
   user_id uuid PRIMARY KEY DEFAULT NULL,
   email text DEFAULT NULL, -- TODO: email needs to be unique per account. But: not possible in electric-sql
-  label_replace_by_generated_column text DEFAULT NULL,
-  deleted boolean DEFAULT NULL
+  label_replace_by_generated_column text DEFAULT NULL
 );
 
 -- CREATE INDEX ON users USING btree(user_id);
 CREATE INDEX ON users USING btree(email);
 
--- The following index provokes an error in prisma and was thus uncommented
--- see: https://github.com/electric-sql/electric/issues/714
--- CREATE INDEX ON users((1))
--- WHERE
---   deleted;
 COMMENT ON COLUMN users.email IS 'email needs to be unique. project manager can list project user by email before this user creates an own login (thus has no user_id yet)';
 
 COMMENT ON TABLE users IS 'Goal: manage users and authorize them';
@@ -77,8 +71,7 @@ CREATE TABLE projects(
   files_active_subprojects boolean DEFAULT NULL, -- TRUE,
   files_active_places boolean DEFAULT NULL, -- TRUE,
   files_active_actions boolean DEFAULT NULL, -- TRUE,
-  files_active_checks boolean DEFAULT NULL, -- TRUE,
-  deleted boolean DEFAULT NULL -- FALSE
+  files_active_checks boolean DEFAULT NULL -- TRUE
 );
 
 -- CREATE INDEX ON projects USING btree(project_id);
@@ -88,9 +81,6 @@ CREATE INDEX ON projects USING btree(name);
 
 CREATE INDEX ON projects USING btree(label);
 
--- CREATE INDEX ON projects((1))
--- WHERE
---   deleted;
 COMMENT ON COLUMN projects.account_id IS 'redundant account_id enhances data safety';
 
 COMMENT ON COLUMN projects.type IS '"species" or "biotope", preset: "species"';
@@ -140,8 +130,7 @@ CREATE TABLE place_levels(
   check_values boolean DEFAULT NULL, -- FALSE,
   check_taxa boolean DEFAULT NULL, -- FALSE,
   observations boolean DEFAULT NULL, -- FALSE,
-  label_replace_by_generated_column text DEFAULT NULL,
-  deleted boolean DEFAULT NULL -- FALSE
+  label_replace_by_generated_column text DEFAULT NULL
 );
 
 -- CREATE INDEX ON place_levels USING btree(place_level_id);
@@ -191,8 +180,7 @@ CREATE TABLE subprojects(
   label_replace_by_generated_column text DEFAULT NULL,
   start_year integer DEFAULT NULL,
   end_year integer DEFAULT NULL,
-  data jsonb DEFAULT NULL,
-  deleted boolean DEFAULT NULL -- FALSE
+  data jsonb DEFAULT NULL
 );
 
 -- CREATE INDEX ON subprojects USING btree(subproject_id);
@@ -229,8 +217,7 @@ CREATE TABLE project_users(
   role text DEFAULT NULL,
   -- https://github.com/electric-sql/electric/issues/893
   -- role user_role DEFAULT NULL,
-  label text DEFAULT NULL,
-  deleted boolean DEFAULT NULL -- FALSE
+  label text DEFAULT NULL
 );
 
 -- CREATE INDEX ON project_users USING btree(project_user_id);
@@ -256,8 +243,7 @@ CREATE TABLE subproject_users(
   role text DEFAULT NULL,
   -- https://github.com/electric-sql/electric/issues/893
   -- role user_role DEFAULT NULL,
-  label text DEFAULT NULL,
-  deleted boolean DEFAULT NULL -- FALSE
+  label text DEFAULT NULL
 );
 
 -- CREATE INDEX ON subproject_users USING btree(subproject_user_id);
@@ -289,8 +275,7 @@ CREATE TABLE taxonomies(
   url text DEFAULT NULL,
   obsolete boolean DEFAULT NULL, -- FALSE,
   data jsonb DEFAULT NULL,
-  label_replace_by_generated_column text DEFAULT NULL,
-  deleted boolean DEFAULT NULL -- FALSE
+  label_replace_by_generated_column text DEFAULT NULL
 );
 
 -- CREATE INDEX ON taxonomies USING btree(taxonomy_id);
@@ -305,9 +290,6 @@ CREATE INDEX ON taxonomies USING btree(name);
 -- CREATE INDEX ON taxonomies((1))
 -- WHERE
 --   obsolete;
--- CREATE INDEX ON taxonomies((1))
--- WHERE
---   deleted;
 COMMENT ON TABLE taxonomies IS 'A taxonomy is a list of taxa (species or biotopes).';
 
 COMMENT ON COLUMN taxonomies.account_id IS 'redundant account_id enhances data safety';
@@ -330,8 +312,7 @@ CREATE TABLE taxa(
   id_in_source text DEFAULT NULL,
   data jsonb DEFAULT NULL,
   url text DEFAULT NULL,
-  label text DEFAULT NULL,
-  deleted boolean DEFAULT NULL -- FALSE
+  label text DEFAULT NULL
 );
 
 -- CREATE INDEX ON taxa USING btree(taxon_id);
@@ -343,9 +324,6 @@ CREATE INDEX ON taxa USING btree(name);
 
 CREATE INDEX ON taxa USING btree(label);
 
--- CREATE INDEX ON taxa((1))
--- WHERE
---   deleted;
 COMMENT ON COLUMN taxa.name IS 'Name of taxon, like "Pulsatilla vulgaris"';
 
 COMMENT ON COLUMN taxa.account_id IS 'redundant account_id enhances data safety';
@@ -361,8 +339,7 @@ CREATE TABLE subproject_taxa(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   taxon_id uuid DEFAULT NULL REFERENCES taxa(taxon_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  label text DEFAULT NULL,
-  deleted boolean DEFAULT NULL -- FALSE
+  label text DEFAULT NULL
 );
 
 -- CREATE INDEX ON subproject_taxa USING btree(subproject_taxon_id);
@@ -374,9 +351,6 @@ CREATE INDEX ON subproject_taxa USING btree(taxon_id);
 
 CREATE INDEX ON subproject_taxa USING btree(label);
 
--- CREATE INDEX ON subproject_taxa((1))
--- WHERE
---   deleted;
 COMMENT ON TABLE subproject_taxa IS 'list wor what taxa data is managed in the subproject.';
 
 COMMENT ON COLUMN subproject_taxa.account_id IS 'redundant account_id enhances data safety';
@@ -390,8 +364,7 @@ CREATE TABLE lists(
   name text DEFAULT NULL,
   data jsonb DEFAULT NULL,
   obsolete boolean DEFAULT NULL, -- FALSE,
-  label_replace_by_generated_column text DEFAULT NULL,
-  deleted boolean DEFAULT NULL -- FALSE
+  label_replace_by_generated_column text DEFAULT NULL
 );
 
 -- CREATE INDEX ON lists USING btree(list_id);
@@ -404,9 +377,6 @@ CREATE INDEX ON lists USING btree(name);
 -- CREATE INDEX ON lists((1))
 -- WHERE
 --   obsolete;
--- CREATE INDEX ON lists((1))
--- WHERE
---   deleted;
 COMMENT ON TABLE lists IS 'Manage lists of values. These lists can then be used on option-lists or dropdown-lists';
 
 COMMENT ON COLUMN lists.account_id IS 'redundant account_id enhances data safety';
@@ -421,8 +391,7 @@ CREATE TABLE list_values(
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE CASCADE ON UPDATE CASCADE,
   value text DEFAULT NULL,
   obsolete boolean DEFAULT NULL, -- FALSE,
-  label_replace_by_generated_column text DEFAULT NULL,
-  deleted boolean DEFAULT NULL -- FALSE
+  label_replace_by_generated_column text DEFAULT NULL
 );
 
 -- CREATE INDEX ON list_values USING btree(list_value_id);
@@ -435,9 +404,6 @@ CREATE INDEX ON list_values USING btree(value);
 -- CREATE INDEX ON list_values((1))
 -- WHERE
 --   obsolete;
--- CREATE INDEX ON list_values((1))
--- WHERE
---   deleted;
 COMMENT ON COLUMN list_values.value IS 'Value of list, like "Gefährdet", "5". If is a number, will have to be coerced to number when used.';
 
 COMMENT ON COLUMN list_values.account_id IS 'redundant account_id enhances data safety';
@@ -464,8 +430,7 @@ CREATE TABLE units(
   sort integer DEFAULT NULL,
   type unit_type DEFAULT NULL,
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE NO action ON UPDATE CASCADE,
-  label_replace_by_generated_column text DEFAULT NULL,
-  deleted boolean DEFAULT NULL -- FALSE
+  label_replace_by_generated_column text DEFAULT NULL
 );
 
 -- CREATE INDEX ON units USING btree(unit_id);
@@ -479,9 +444,6 @@ CREATE INDEX ON units USING btree(sort);
 
 CREATE INDEX ON units USING btree(list_id);
 
--- CREATE INDEX ON units((1))
--- WHERE
---   deleted;
 COMMENT ON TABLE units IS 'Manage units of values. These units can then be used for values of actions, checks, reports, goals, taxa';
 
 COMMENT ON COLUMN units.account_id IS 'redundant account_id enhances data safety';
@@ -519,8 +481,7 @@ CREATE TABLE places(
   geometry jsonb DEFAULT NULL,
   bbox jsonb DEFAULT NULL,
   label text DEFAULT NULL, -- not generated, so no need to rename
-  files_active_places boolean DEFAULT NULL, -- TRUE,
-  deleted boolean DEFAULT NULL -- FALSE
+  files_active_places boolean DEFAULT NULL, -- TRUE
 );
 
 -- CREATE INDEX ON places USING btree(place_id);
@@ -536,9 +497,6 @@ CREATE INDEX ON places USING btree(label);
 
 -- CREATE INDEX ON places USING gin(data); -- seems not to work with electric-sql
 -- CREATE INDEX ON places USING gist(geometry);
--- CREATE INDEX ON places((1))
--- WHERE
---   deleted;
 COMMENT ON TABLE places IS 'Places are where actions and checks are done. They can be organized in a hierarchy of one or two levels.';
 
 COMMENT ON COLUMN places.account_id IS 'redundant account_id enhances data safety';
@@ -573,8 +531,7 @@ CREATE TABLE actions(
   geometry jsonb DEFAULT NULL,
   bbox jsonb DEFAULT NULL,
   relevant_for_reports boolean DEFAULT NULL, -- TRUE,
-  label_replace_by_generated_column text DEFAULT NULL,
-  deleted boolean DEFAULT NULL -- FALSE
+  label_replace_by_generated_column text DEFAULT NULL
 );
 
 -- CREATE INDEX ON actions USING btree(action_id);
@@ -589,9 +546,6 @@ CREATE INDEX ON actions USING btree(date);
 -- CREATE INDEX ON actions((1))
 -- WHERE
 --   relevant_for_reports;
--- CREATE INDEX ON actions((1))
--- WHERE
---   deleted;
 COMMENT ON TABLE actions IS 'Actions are what is done to improve the situation of (promote) the subproject in this place.';
 
 COMMENT ON COLUMN actions.account_id IS 'redundant account_id enhances data safety';
@@ -612,8 +566,7 @@ CREATE TABLE action_values(
   value_integer integer DEFAULT NULL,
   value_numeric double precision DEFAULT NULL,
   value_text text DEFAULT NULL,
-  label text DEFAULT NULL,
-  deleted boolean DEFAULT NULL -- FALSE
+  label text DEFAULT NULL
 );
 
 -- CREATE INDEX ON action_values USING btree(action_value_id);
@@ -631,9 +584,6 @@ CREATE INDEX ON action_values USING btree(value_text);
 
 CREATE INDEX ON action_values USING btree(label);
 
--- CREATE INDEX ON action_values((1))
--- WHERE
---   deleted;
 COMMENT ON TABLE action_values IS 'value-ing actions. Measuring or assessing';
 
 COMMENT ON COLUMN action_values.account_id IS 'redundant account_id enhances data safety';
@@ -650,8 +600,7 @@ CREATE TABLE action_reports(
   action_id uuid DEFAULT NULL REFERENCES actions(action_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT NULL, -- DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
-  label_replace_by_generated_column text DEFAULT NULL,
-  deleted boolean DEFAULT NULL -- FALSE
+  label_replace_by_generated_column text DEFAULT NULL
 );
 
 -- CREATE INDEX ON action_reports USING btree(action_report_id);
@@ -661,9 +610,6 @@ CREATE INDEX ON action_reports USING btree(action_id);
 
 CREATE INDEX ON action_reports USING btree(year);
 
--- CREATE INDEX ON action_reports((1))
--- WHERE
---   deleted;
 COMMENT ON TABLE action_reports IS 'Reporting on the success of actions.';
 
 COMMENT ON COLUMN action_reports.account_id IS 'redundant account_id enhances data safety';
@@ -680,8 +626,7 @@ CREATE TABLE action_report_values(
   value_integer integer DEFAULT NULL,
   value_numeric double precision DEFAULT NULL,
   value_text text DEFAULT NULL,
-  label text DEFAULT NULL,
-  deleted boolean DEFAULT NULL -- FALSE
+  label text DEFAULT NULL
 );
 
 -- CREATE INDEX ON action_report_values USING btree(action_report_value_id);
@@ -699,9 +644,6 @@ CREATE INDEX ON action_report_values USING btree(value_text);
 
 CREATE INDEX ON action_report_values USING btree(label);
 
--- CREATE INDEX ON action_report_values((1))
--- WHERE
---   deleted;
 COMMENT ON TABLE action_report_values IS 'value-ing the success of actions';
 
 COMMENT ON COLUMN action_report_values.account_id IS 'redundant account_id enhances data safety';
@@ -722,12 +664,11 @@ CREATE TABLE checks(
   geometry jsonb DEFAULT NULL,
   bbox jsonb DEFAULT NULL,
   relevant_for_reports boolean DEFAULT NULL, -- TRUE,
-  label_replace_by_generated_column text DEFAULT NULL,
-  deleted boolean DEFAULT NULL -- FALSE
+  label_replace_by_generated_column text DEFAULT NULL
+  -- CREATE INDEX ON checks USING btree(check_id);
+  CREATE INDEX ON checks
+  USING btree(account_id
 );
-
--- CREATE INDEX ON checks USING btree(check_id);
-CREATE INDEX ON checks USING btree(account_id);
 
 CREATE INDEX ON checks USING btree(place_id);
 
@@ -738,9 +679,6 @@ CREATE INDEX ON checks USING btree(date);
 -- CREATE INDEX ON checks((1))
 -- WHERE
 --   relevant_for_reports;
--- CREATE INDEX ON checks((1))
--- WHERE
---   deleted;
 COMMENT ON TABLE checks IS 'Checks describe the situation of the subproject in this place.';
 
 COMMENT ON COLUMN checks.account_id IS 'redundant account_id enhances data safety';
@@ -757,8 +695,7 @@ CREATE TABLE check_values(
   value_integer integer DEFAULT NULL,
   value_numeric double precision DEFAULT NULL,
   value_text text DEFAULT NULL,
-  label text DEFAULT NULL,
-  deleted boolean DEFAULT NULL -- FALSE
+  label text DEFAULT NULL
 );
 
 -- CREATE INDEX ON check_values USING btree(check_value_id);
@@ -776,9 +713,6 @@ CREATE INDEX ON check_values USING btree(value_text);
 
 CREATE INDEX ON check_values USING btree(label);
 
--- CREATE INDEX ON check_values((1))
--- WHERE
---   deleted;
 COMMENT ON TABLE check_values IS 'value-ing checks i.e. the situation of the subproject in this place';
 
 COMMENT ON COLUMN check_values.account_id IS 'redundant account_id enhances data safety';
@@ -798,8 +732,7 @@ CREATE TABLE check_taxa(
   value_integer integer DEFAULT NULL,
   value_numeric double precision DEFAULT NULL,
   value_text text DEFAULT NULL,
-  label text DEFAULT NULL,
-  deleted boolean DEFAULT NULL -- FALSE
+  label text DEFAULT NULL
 );
 
 -- CREATE INDEX ON check_taxa USING btree(check_taxon_id);
@@ -819,9 +752,6 @@ CREATE INDEX ON check_taxa USING btree(value_text);
 
 CREATE INDEX ON check_taxa USING btree(label);
 
--- CREATE INDEX ON check_taxa((1))
--- WHERE
---   deleted;
 COMMENT ON COLUMN check_taxa.account_id IS 'redundant account_id enhances data safety';
 
 CREATE TABLE place_reports(
@@ -830,8 +760,7 @@ CREATE TABLE place_reports(
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT NULL, -- DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
-  label_replace_by_generated_column text DEFAULT NULL,
-  deleted boolean DEFAULT NULL -- FALSE
+  label_replace_by_generated_column text DEFAULT NULL
 );
 
 -- CREATE INDEX ON place_reports USING btree(place_report_id);
@@ -841,9 +770,6 @@ CREATE INDEX ON place_reports USING btree(place_id);
 
 CREATE INDEX ON place_reports USING btree(year);
 
--- CREATE INDEX ON place_reports((1))
--- WHERE
---   deleted;
 COMMENT ON TABLE place_reports IS 'Reporting on the situation of the subproject in this place.';
 
 COMMENT ON COLUMN place_reports.account_id IS 'redundant account_id enhances data safety';
@@ -860,8 +786,7 @@ CREATE TABLE place_report_values(
   value_integer integer DEFAULT NULL,
   value_numeric double precision DEFAULT NULL,
   value_text text DEFAULT NULL,
-  label text DEFAULT NULL,
-  deleted boolean DEFAULT NULL -- FALSE
+  label text DEFAULT NULL
 );
 
 -- CREATE INDEX ON place_report_values USING btree(place_report_value_id);
@@ -879,9 +804,6 @@ CREATE INDEX ON place_report_values USING btree(value_text);
 
 CREATE INDEX ON place_report_values USING btree(label);
 
--- CREATE INDEX ON place_report_values((1))
--- WHERE
---   deleted;
 COMMENT ON TABLE place_report_values IS 'value-ing the situation of the subproject in this place';
 
 COMMENT ON COLUMN place_report_values.account_id IS 'redundant account_id enhances data safety';
@@ -899,8 +821,7 @@ CREATE TABLE observation_sources(
   name text DEFAULT NULL,
   url text DEFAULT NULL,
   data jsonb DEFAULT NULL,
-  label_replace_by_generated_column text DEFAULT NULL,
-  deleted boolean DEFAULT NULL -- FALSE
+  label_replace_by_generated_column text DEFAULT NULL
 );
 
 -- CREATE INDEX ON observation_sources USING btree(observation_source_id);
@@ -910,9 +831,6 @@ CREATE INDEX ON observation_sources USING btree(project_id);
 
 CREATE INDEX ON observation_sources USING btree(name);
 
--- CREATE INDEX ON observation_sources((1))
--- WHERE
---   deleted;
 COMMENT ON TABLE observation_sources IS 'Observation sources are where observations _outside of this project_ come from.';
 
 COMMENT ON COLUMN observation_sources.account_id IS 'redundant account_id enhances data safety';
@@ -936,8 +854,7 @@ CREATE TABLE observations(
   -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL, -- not supported by electic-sql
   geometry jsonb DEFAULT NULL,
   data jsonb DEFAULT NULL,
-  label_replace_by_generated_column text DEFAULT NULL,
-  deleted boolean DEFAULT NULL -- FALSE
+  label_replace_by_generated_column text DEFAULT NULL
 );
 
 -- CREATE INDEX ON observations USING btree(observation_id);
@@ -952,9 +869,6 @@ CREATE INDEX ON observations USING btree(date);
 CREATE INDEX ON observations USING btree(author);
 
 -- CREATE INDEX ON observations USING gist(geometry);
--- CREATE INDEX ON observations((1))
--- WHERE
---   deleted;
 COMMENT ON TABLE observations IS 'Observations are what was observed _outside of this project_ in this place.';
 
 COMMENT ON COLUMN observations.account_id IS 'redundant account_id enhances data safety';
@@ -1010,8 +924,7 @@ CREATE TABLE place_users(
   role text DEFAULT NULL,
   -- https://github.com/electric-sql/electric/issues/893
   -- role user_role DEFAULT NULL,
-  label text DEFAULT NULL,
-  deleted boolean DEFAULT NULL -- FALSE
+  label text DEFAULT NULL
 );
 
 -- CREATE INDEX ON place_users USING btree(place_user_id);
@@ -1023,9 +936,6 @@ CREATE INDEX ON place_users USING btree(user_id);
 
 CREATE INDEX ON place_users USING btree(label);
 
--- CREATE INDEX ON place_users((1))
--- WHERE
---   deleted;
 COMMENT ON TABLE place_users IS 'A way to give users access to places without giving them access to the whole project or subproject.';
 
 COMMENT ON COLUMN place_users.account_id IS 'redundant account_id enhances data safety';
@@ -1039,8 +949,7 @@ CREATE TABLE goals(
   year integer DEFAULT NULL, -- DATE_PART('year', now()::date),
   name text DEFAULT NULL,
   data jsonb DEFAULT NULL,
-  label_replace_by_generated_column text DEFAULT NULL,
-  deleted boolean DEFAULT NULL -- FALSE
+  label_replace_by_generated_column text DEFAULT NULL
 );
 
 -- CREATE INDEX ON goals USING btree(goal_id);
@@ -1050,9 +959,6 @@ CREATE INDEX ON goals USING btree(subproject_id);
 
 CREATE INDEX ON goals USING btree(year);
 
--- CREATE INDEX ON goals((1))
--- WHERE
---   deleted;
 COMMENT ON TABLE goals IS 'What is to be achieved in the subproject in this year.';
 
 COMMENT ON COLUMN goals.account_id IS 'redundant account_id enhances data safety';
@@ -1062,8 +968,7 @@ CREATE TABLE goal_reports(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   goal_id uuid DEFAULT NULL REFERENCES goals(goal_id) ON DELETE CASCADE ON UPDATE CASCADE,
   data jsonb DEFAULT NULL,
-  label text DEFAULT NULL,
-  deleted boolean DEFAULT NULL -- FALSE
+  label text DEFAULT NULL
 );
 
 -- CREATE INDEX ON goal_reports USING btree(goal_report_id);
@@ -1073,9 +978,6 @@ CREATE INDEX ON goal_reports USING btree(goal_id);
 
 CREATE INDEX ON goal_reports USING btree(label);
 
--- CREATE INDEX ON goal_reports((1))
--- WHERE
---   deleted;
 COMMENT ON TABLE goal_reports IS 'Reporting on the success of goals.';
 
 COMMENT ON COLUMN goal_reports.account_id IS 'redundant account_id enhances data safety';
@@ -1090,8 +992,7 @@ CREATE TABLE goal_report_values(
   value_integer integer DEFAULT NULL,
   value_numeric double precision DEFAULT NULL,
   value_text text DEFAULT NULL,
-  label text DEFAULT NULL,
-  deleted boolean DEFAULT NULL -- FALSE
+  label text DEFAULT NULL
 );
 
 -- CREATE INDEX ON goal_report_values USING btree(goal_report_value_id);
@@ -1109,9 +1010,6 @@ CREATE INDEX ON goal_report_values USING btree(value_text);
 
 CREATE INDEX ON goal_report_values USING btree(label);
 
--- CREATE INDEX ON goal_report_values((1))
--- WHERE
---   deleted;
 COMMENT ON TABLE goal_report_values IS 'value-ing the success of goals';
 
 COMMENT ON COLUMN goal_report_values.account_id IS 'redundant account_id enhances data safety';
@@ -1128,8 +1026,7 @@ CREATE TABLE subproject_reports(
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT NULL, -- DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
-  label_replace_by_generated_column text DEFAULT NULL,
-  deleted boolean DEFAULT NULL -- FALSE
+  label_replace_by_generated_column text DEFAULT NULL
 );
 
 -- CREATE INDEX ON subproject_reports USING btree(subproject_report_id);
@@ -1139,9 +1036,6 @@ CREATE INDEX ON subproject_reports USING btree(subproject_id);
 
 CREATE INDEX ON subproject_reports USING btree(year);
 
--- CREATE INDEX ON subproject_reports((1))
--- WHERE
---   deleted;
 COMMENT ON TABLE subproject_reports IS 'Reporting on the success of subprojects.';
 
 COMMENT ON COLUMN subproject_reports.account_id IS 'redundant account_id enhances data safety';
@@ -1156,8 +1050,7 @@ CREATE TABLE project_reports(
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT NULL, -- DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
-  label_replace_by_generated_column text DEFAULT NULL,
-  deleted boolean DEFAULT NULL -- FALSE
+  label_replace_by_generated_column text DEFAULT NULL
 );
 
 -- CREATE INDEX ON project_reports USING btree(project_report_id);
@@ -1167,9 +1060,6 @@ CREATE INDEX ON project_reports USING btree(project_id);
 
 CREATE INDEX ON project_reports USING btree(year);
 
--- CREATE INDEX ON project_reports((1))
--- WHERE
---   deleted;
 COMMENT ON TABLE project_reports IS 'Reporting on the success of projects.';
 
 COMMENT ON COLUMN project_reports.account_id IS 'redundant account_id enhances data safety';
@@ -1198,8 +1088,7 @@ CREATE TABLE files(
   -- preview bytea DEFAULT NULL, -- TODO: not yet supported by electric-sql
   url text DEFAULT NULL, -- file-upload-success-event.detail.cdnUrl
   uuid uuid DEFAULT NULL, -- file-upload-success-event.detail.uuid
-  preview_uuid uuid DEFAULT NULL, -- https://uploadcare.com/docs/transformations/document-conversion/
-  deleted boolean DEFAULT NULL -- FALSE
+  preview_uuid uuid DEFAULT NULL -- https://uploadcare.com/docs/transformations/document-conversion/
 );
 
 -- CREATE INDEX ON files USING btree(file_id);
@@ -1217,9 +1106,6 @@ CREATE INDEX ON files USING btree(check_id);
 
 CREATE INDEX ON files USING btree(name);
 
--- CREATE INDEX ON files((1))
--- WHERE
---   deleted;
 COMMENT ON TABLE files IS 'used to store files.';
 
 COMMENT ON COLUMN files.account_id IS 'redundant account_id enhances data safety';
@@ -1238,8 +1124,7 @@ CREATE TABLE persons(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   email text DEFAULT NULL,
   data jsonb DEFAULT NULL,
-  label_replace_by_generated_column text DEFAULT NULL,
-  deleted boolean DEFAULT NULL -- FALSE
+  label_replace_by_generated_column text DEFAULT NULL
 );
 
 -- CREATE INDEX ON persons USING btree(person_id);
@@ -1249,9 +1134,6 @@ CREATE INDEX ON persons USING btree(project_id);
 
 CREATE INDEX ON persons USING btree(email);
 
--- CREATE INDEX ON persons((1))
--- WHERE
---   deleted;
 COMMENT ON TABLE persons IS 'Persons are used to assign actions and checks to';
 
 COMMENT ON COLUMN persons.account_id IS 'redundant account_id enhances data safety';
@@ -1264,17 +1146,13 @@ CREATE TABLE field_types(
   -- no account_id as field_types are predefined for all projects
   sort smallint DEFAULT NULL,
   comment text,
-  label_replace_by_generated_column text DEFAULT NULL,
-  deleted boolean DEFAULT NULL
+  label_replace_by_generated_column text DEFAULT NULL
 );
 
 CREATE INDEX ON field_types(name);
 
 CREATE INDEX ON field_types(sort);
 
--- CREATE INDEX ON field_types((1))
--- WHERE
---   deleted;
 CREATE TABLE widget_types(
   widget_type_id uuid PRIMARY KEY DEFAULT NULL,
   name text DEFAULT NULL,
@@ -1282,23 +1160,18 @@ CREATE TABLE widget_types(
   needs_list boolean DEFAULT NULL, -- FALSE,
   sort smallint DEFAULT NULL,
   comment text,
-  label_replace_by_generated_column text DEFAULT NULL,
-  deleted boolean DEFAULT NULL -- FALSE
+  label_replace_by_generated_column text DEFAULT NULL
 );
 
 CREATE INDEX ON widget_types(name);
 
 CREATE INDEX ON widget_types(sort);
 
--- CREATE INDEX ON widget_types((1))
--- WHERE
---   deleted;
 CREATE TABLE widgets_for_fields(
   widget_for_field_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   field_type_id uuid DEFAULT NULL REFERENCES field_types(field_type_id) ON DELETE CASCADE ON UPDATE CASCADE,
   widget_type_id uuid DEFAULT NULL REFERENCES widget_types(widget_type_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  label text DEFAULT NULL,
-  deleted boolean DEFAULT NULL -- FALSE
+  label text DEFAULT NULL
 );
 
 -- CREATE INDEX ON widgets_for_fields(widget_for_field_id);
@@ -1308,9 +1181,6 @@ CREATE INDEX ON widgets_for_fields(widget_type_id);
 
 CREATE INDEX ON widgets_for_fields(label);
 
--- CREATE INDEX ON widgets_for_fields((1))
--- WHERE
---   deleted;
 -- TODO: add level to places and all their child tables?
 CREATE TABLE fields(
   field_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
@@ -1325,8 +1195,7 @@ CREATE TABLE fields(
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE NO action ON UPDATE CASCADE,
   preset text DEFAULT NULL,
   obsolete boolean DEFAULT NULL, -- FALSE,
-  label_replace_by_generated_column text DEFAULT NULL,
-  deleted boolean DEFAULT NULL -- FALSE
+  label_replace_by_generated_column text DEFAULT NULL
 );
 
 -- CREATE INDEX ON fields USING btree(field_id);
@@ -1349,9 +1218,6 @@ CREATE INDEX ON fields USING btree(list_id);
 -- CREATE INDEX ON fields USING btree((1))
 -- WHERE
 --   obsolete;
--- CREATE INDEX ON fields USING btree((1))
--- WHERE
---   deleted;
 COMMENT ON TABLE fields IS 'Fields are used to define the data structure of data jsonb fields in other tables.';
 
 COMMENT ON COLUMN fields.account_id IS 'redundant account_id enhances data safety';
@@ -1424,8 +1290,7 @@ CREATE TABLE occurrence_imports(
   gbif_filters jsonb DEFAULT NULL, -- TODO: use project geometry to filter by area?
   gbif_download_key text DEFAULT NULL,
   gbif_error text DEFAULT NULL,
-  label_replace_by_generated_column text DEFAULT NULL,
-  deleted boolean DEFAULT NULL
+  label_replace_by_generated_column text DEFAULT NULL
 );
 
 CREATE INDEX ON occurrence_imports USING btree(account_id);
@@ -1442,8 +1307,8 @@ COMMENT ON COLUMN occurrence_imports.previous_import IS 'What import does this o
 
 COMMENT ON COLUMN occurrence_imports.gbif_filters IS 'area, groups, speciesKeys...';
 
--- INSERT INTO occurrence_imports(occurrence_import_id, account_id, subproject_id, gbif_filters, created_time, gbif_download_key, gbif_error, inserted_count, attribution, deleted)
---   VALUES ('018e1dc5-992e-7167-a294-434163a27d4b', '018cf958-27e2-7000-90d3-59f024d467be', '018cfd27-ee92-7000-b678-e75497d6c60e', '{"area": "POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))"}', '2020-01-01T00:00:00Z', '00000000-0000-0000-0000-000000000000', NULL, 0, NULL, FALSE);
+-- INSERT INTO occurrence_imports(occurrence_import_id, account_id, subproject_id, gbif_filters, created_time, gbif_download_key, gbif_error, inserted_count, attribution)
+--   VALUES ('018e1dc5-992e-7167-a294-434163a27d4b', '018cf958-27e2-7000-90d3-59f024d467be', '018cfd27-ee92-7000-b678-e75497d6c60e', '{"area": "POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))"}', '2020-01-01T00:00:00Z', '00000000-0000-0000-0000-000000000000', NULL, 0, NULL);
 -- TODO: need to add place_id. Either here or separate table place_occurrences
 CREATE TABLE occurrences(
   occurrence_id uuid PRIMARY KEY DEFAULT NULL,
@@ -1505,8 +1370,7 @@ CREATE TABLE tile_layers(
   opacity_percent integer DEFAULT NULL, -- 100. TODO: difference to wms_transparent?
   grayscale boolean DEFAULT NULL, -- false
   local_data_size integer DEFAULT NULL,
-  local_data_bounds jsonb DEFAULT NULL,
-  deleted boolean DEFAULT NULL -- false
+  local_data_bounds jsonb DEFAULT NULL
 );
 
 CREATE INDEX ON tile_layers USING btree(account_id);
@@ -1553,8 +1417,7 @@ CREATE TABLE vector_layers(
   feature_count integer DEFAULT NULL,
   point_count integer DEFAULT NULL,
   line_count integer DEFAULT NULL,
-  polygon_count integer DEFAULT NULL,
-  deleted boolean DEFAULT NULL -- FALSE
+  polygon_count integer DEFAULT NULL
 );
 
 CREATE INDEX ON vector_layers USING btree(account_id);
@@ -1635,8 +1498,7 @@ CREATE TABLE vector_layer_geoms(
   bbox_sw_lng real DEFAULT NULL,
   bbox_sw_lat real DEFAULT NULL,
   bbox_ne_lng real DEFAULT NULL,
-  bbox_ne_lat real DEFAULT NULL,
-  deleted boolean DEFAULT NULL -- false
+  bbox_ne_lat real DEFAULT NULL
 );
 
 CREATE INDEX ON vector_layer_geoms USING btree(account_id);
@@ -1715,8 +1577,7 @@ CREATE TABLE vector_layer_displays(
   fill_color text DEFAULT NULL,
   fill_opacity_percent integer DEFAULT NULL, -- 100,
   fill_rule fill_rule_enum DEFAULT NULL, -- 'evenodd',
-  label_replace_by_generated_column text DEFAULT NULL,
-  deleted boolean DEFAULT NULL -- false
+  label_replace_by_generated_column text DEFAULT NULL
 );
 
 CREATE INDEX ON vector_layer_displays(account_id);
@@ -1756,8 +1617,6 @@ COMMENT ON COLUMN vector_layer_displays.fill_color IS 'Fill color. Defaults to t
 COMMENT ON COLUMN vector_layer_displays.fill_opacity_percent IS 'Fill opacity. https://leafletjs.com/reference.html#path-fillopacity';
 
 COMMENT ON COLUMN vector_layer_displays.fill_rule IS 'A string that defines how the inside of a shape is determined. https://leafletjs.com/reference.html#path-fillrule. https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-rule';
-
-COMMENT ON COLUMN vector_layer_displays.deleted IS 'marks if the row is deleted';
 
 CREATE TYPE notification_intent_enum AS enum(
   'success',
@@ -1810,8 +1669,7 @@ CREATE TABLE charts(
   subjects_stacked boolean DEFAULT NULL, -- FALSE
   subjects_single boolean DEFAULT NULL, -- FALSE
   percent boolean DEFAULT NULL, -- FALSE
-  label_replace_by_generated_column text DEFAULT NULL, -- title
-  deleted boolean DEFAULT NULL -- false
+  label_replace_by_generated_column text DEFAULT NULL -- title
 );
 
 CREATE INDEX ON charts USING btree(chart_id);
@@ -1824,9 +1682,6 @@ CREATE INDEX ON charts USING btree(subproject_id);
 
 CREATE INDEX ON charts USING btree(place_id);
 
--- CREATE INDEX ON charts((1))
--- WHERE
---   deleted;
 COMMENT ON TABLE charts IS 'Charts for projects, subprojects or places.';
 
 COMMENT ON COLUMN charts.account_id IS 'redundant account_id enhances data safety';
@@ -1880,8 +1735,7 @@ CREATE TABLE chart_subjects(
   fill text DEFAULT NULL,
   fill_graded boolean DEFAULT NULL, -- TRUE
   connect_nulls boolean DEFAULT NULL, -- TRUE
-  sort integer DEFAULT NULL, -- 0
-  deleted boolean DEFAULT NULL -- FALSE
+  sort integer DEFAULT NULL -- 0
 );
 
 CREATE INDEX ON chart_subjects USING btree(chart_subject_id);
@@ -1898,9 +1752,6 @@ CREATE INDEX ON chart_subjects USING btree(value_field);
 
 CREATE INDEX ON chart_subjects USING btree(value_unit);
 
--- CREATE INDEX ON chart_subjects((1))
--- WHERE
---   deleted;
 COMMENT ON TABLE chart_subjects IS 'Subjects for charts. Or: what is shown in the chart';
 
 COMMENT ON COLUMN chart_subjects.account_id IS 'redundant account_id enhances data safety';
