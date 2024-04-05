@@ -21,7 +21,7 @@ export const VectorLayerDisplaysNode = memo(
     const { db } = useElectric()!
     const { results: vlds = [] } = useLiveQuery(
       db.vector_layer_displays.liveMany({
-        where: { deleted: false, vector_layer_id },
+        where: { vector_layer_id },
         orderBy: { label: 'asc' },
       }),
     )

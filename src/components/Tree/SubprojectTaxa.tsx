@@ -21,7 +21,7 @@ export const SubprojectTaxaNode = memo(
     const { db } = useElectric()!
     const { results: subprojectTaxa = [] } = useLiveQuery(
       db.subproject_taxa.liveMany({
-        where: { deleted: false, subproject_id },
+        where: { subproject_id },
         orderBy: { label: 'asc' },
       }),
     )

@@ -21,7 +21,7 @@ export const TaxaNode = memo(
     const { db } = useElectric()!
     const { results: taxa = [] } = useLiveQuery(
       db.taxa.liveMany({
-        where: { deleted: false, taxonomy_id },
+        where: { taxonomy_id },
         orderBy: { label: 'asc' },
       }),
     )

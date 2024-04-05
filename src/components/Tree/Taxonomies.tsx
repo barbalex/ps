@@ -19,7 +19,7 @@ export const TaxonomiesNode = memo(({ project_id, level = 3 }: Props) => {
   const { db } = useElectric()!
   const { results: taxonomies = [] } = useLiveQuery(
     db.taxonomies.liveMany({
-      where: { deleted: false, project_id },
+      where: { project_id },
       orderBy: { label: 'asc' },
     }),
   )

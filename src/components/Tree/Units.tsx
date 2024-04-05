@@ -19,7 +19,7 @@ export const UnitsNode = memo(({ project_id, level = 3 }: Props) => {
   const { db } = useElectric()!
   const { results: units = [] } = useLiveQuery(
     db.units.liveMany({
-      where: { deleted: false, project_id },
+      where: { project_id },
       orderBy: { label: 'asc' },
     }),
   )
