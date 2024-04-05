@@ -40,7 +40,7 @@ CREATE INDEX ON accounts USING btree(period_end);
 
 CREATE INDEX ON accounts USING btree(label);
 
-COMMENT ON TABLE accounts IS 'Goal: earn money';
+COMMENT ON TABLE accounts IS 'Goal: earn money. Separate from users to allow for multiple accounts per user. Enables seeing the account history.';
 
 COMMENT ON COLUMN accounts.user_id IS 'user that owns the account. null for accounts that are not owned by a user';
 
@@ -1361,7 +1361,8 @@ COMMENT ON COLUMN fields.table_name IS 'table, on which this field is used insid
 COMMENT ON COLUMN fields.level IS 'level of field if places or below: 1, 2';
 
 CREATE TABLE ui_options(
-  user_id uuid PRIMARY KEY DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  ui_options_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   authenticated_email text DEFAULT NULL,
   designing boolean DEFAULT NULL, -- FALSE,
