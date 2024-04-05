@@ -7,8 +7,6 @@ import { useElectric } from '../../../ElectricProvider'
 import { idFieldFromTable } from '../../../modules/idFieldFromTable'
 import { Menu } from './Menu'
 
-export const tablesWithoutDeleted = ['root', 'docs', 'accounts', 'messages']
-
 const isOdd = (num) => num % 2
 
 const siblingStyle = {
@@ -36,9 +34,6 @@ export const BreadcrumbForData = forwardRef(
     const idField = idFieldFromTable(table)
     // filter by parents
     const filterParams = {}
-    if (!tablesWithoutDeleted.includes(table)) {
-      filterParams.deleted = false
-    }
 
     // Add only the last to the filter
     // Wanted to get it from params. But not useable because also contains lower level ids!!!
@@ -113,7 +108,6 @@ export const BreadcrumbForData = forwardRef(
               (await db.place_levels?.findMany({
                 where: {
                   project_id: match.params.project_id,
-                  deleted: false,
                   level: levelWanted,
                 },
               })) ?? []

@@ -31,7 +31,6 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toNext = useCallback(async () => {
     const widgetsForFields = await db.widgets_for_fields.findMany({
-      where: { deleted: false },
       orderBy: { label: 'asc' },
     })
     const len = widgetsForFields.length
@@ -47,7 +46,6 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toPrevious = useCallback(async () => {
     const widgetsForFields = await db.widgets_for_fields.findMany({
-      where: { deleted: false },
       orderBy: { label: 'asc' },
     })
     const len = widgetsForFields.length

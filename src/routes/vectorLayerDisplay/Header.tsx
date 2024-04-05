@@ -13,7 +13,7 @@ export const Header = memo(() => {
 
   const toNext = useCallback(async () => {
     const vectorLayerDisplays = await db.vector_layer_displays.findMany({
-      where: { deleted: false, vector_layer_id },
+      where: {  vector_layer_id },
       orderBy: { label: 'asc' },
     })
     const len = vectorLayerDisplays.length
@@ -35,7 +35,7 @@ export const Header = memo(() => {
 
   const toPrevious = useCallback(async () => {
     const vectorLayerDisplays = await db.vector_layer_displays.findMany({
-      where: { deleted: false, vector_layer_id },
+      where: {  vector_layer_id },
       orderBy: { label: 'asc' },
     })
     const len = vectorLayerDisplays.length

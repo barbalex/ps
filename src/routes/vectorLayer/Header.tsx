@@ -29,7 +29,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toNext = useCallback(async () => {
     const vectorLayers = await db.vector_layers.findMany({
-      where: { deleted: false, project_id },
+      where: {  project_id },
       orderBy: { label: 'asc' },
     })
     const len = vectorLayers.length
@@ -45,7 +45,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toPrevious = useCallback(async () => {
     const vectorLayers = await db.vector_layers.findMany({
-      where: { deleted: false, project_id },
+      where: {  project_id },
       orderBy: { label: 'asc' },
     })
     const len = vectorLayers.length

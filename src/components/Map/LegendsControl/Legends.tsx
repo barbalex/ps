@@ -35,8 +35,8 @@ export const Legends = () => {
 
   const where = project_id
     ? // Beware: projectId can be undefined
-      { deleted: false, active: true, project_id }
-    : { deleted: false, active: true }
+      { active: true, project_id }
+    : { active: true }
 
   const { result } = useLiveQuery(
     db.tile_layers.liveMany({ where, orderBy: { sort: 'asc' } }),

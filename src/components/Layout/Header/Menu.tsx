@@ -72,12 +72,17 @@ export const Menu = memo(() => {
   const tabs = useMemo(() => appState?.tabs ?? [], [appState?.tabs])
   const onChangeTabs = useCallback(
     (e, { checkedItems }) => {
+      console.log('hello Layout/Header/Menu.tsx, onChangeTabs', {
+        checkedItems,
+        appState,
+        authUser,
+      })
       db.app_states.update({
         where: { app_state_id: appState?.app_state_id },
         data: { tabs: checkedItems },
       })
     },
-    [appState?.app_state_id, db.app_states],
+    [appState, authUser, db.app_states],
   )
 
   const onClickOptions = useCallback(() => {
