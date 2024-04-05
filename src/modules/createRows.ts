@@ -494,7 +494,8 @@ export const createMessage = () => ({
 })
 
 // TODO: sync (most of) these with search params
-export const createUiOption = ({ user_id }) => ({
+export const createAppState = ({ user_id }) => ({
+  app_state_id: uuidv7(),
   user_id,
   designing: false,
   breadcrumbs_overflowing: true,
