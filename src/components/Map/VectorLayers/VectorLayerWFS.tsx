@@ -53,7 +53,7 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
   const notificationIds = useRef([])
 
   const { results: uiOption } = useLiveQuery(
-    db.ui_options.liveUnique({ where: { user_id } }),
+    db.app_state.liveUnique({ where: { user_id } }),
   )
   // const showMap = uiOption?.show_map ?? false TODO:
   const showMap = uiOption?.show_map ?? true

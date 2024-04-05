@@ -39,7 +39,7 @@ import { generateActionReportValueLabel } from './labelGenerators/actionReportVa
 import { generatePlaceReportLabel } from './labelGenerators/placeReports'
 import { generatePlaceReportValueLabel } from './labelGenerators/placeReportValues'
 import { generateMessageLabel } from './labelGenerators/messages'
-import { generateUiOptionLabel } from './labelGenerators/uiOptions'
+import { generateAppStateLabel } from './labelGenerators/appState'
 import { generateVectorLayerDisplayLabel } from './labelGenerators/vectorLayerDisplays'
 import { generateChartLabel } from './labelGenerators/charts'
 import { generateChartSubjectLabel } from './labelGenerators/chartSubjects'
@@ -101,7 +101,7 @@ export const SqlInitializer = () => {
       await generatePlaceReportLabel(db)
       await generatePlaceReportValueLabel(db)
       await generateMessageLabel(db)
-      await generateUiOptionLabel(db)
+      await generateAppStateLabel(db)
       await generateVectorLayerDisplayLabel(db)
       await generateChartLabel(db)
       await generateChartSubjectLabel(db)
