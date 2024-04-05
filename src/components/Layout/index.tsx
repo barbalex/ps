@@ -22,8 +22,6 @@ export const Layout = () => {
   const { pathname } = useLocation()
   const isHome = pathname === '/'
 
-  console.log('hello Layout rendering, location:', pathname)
-
   // this is used to show forms inside popups in the map
   if (onlyForm) return <Main />
 
@@ -39,6 +37,7 @@ export const Layout = () => {
       </>
     )
   }
+
   return (
     <>
       <Header />
