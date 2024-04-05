@@ -63,7 +63,7 @@ export const Menu = memo(() => {
   const { db } = useElectric()!
   // get app_states.tabs
   const { results: appState } = useLiveQuery(
-    db.app_states.liveUnique({
+    db.app_states.liveFirst({
       where: { authenticated_email: authUser.email },
     }),
   )
@@ -84,7 +84,7 @@ export const Menu = memo(() => {
       pathname: `/app-state/${appState.app_state_id}`,
       search: searchParams.toString(),
     })
-  }, [navigate, params.user_id, searchParams])
+  }, [appState.app_state_id, navigate, params.user_id, searchParams])
 
   const onClickLogout = useCallback(() => logout(), [logout])
   const onClickEnter = useCallback(() => navigate('/projects'), [navigate])

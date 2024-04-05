@@ -32,7 +32,8 @@ export const placesChildren = ({ db, level, authUser }) => [
               table: `checks`,
               ...match.params,
               db,
-              level,authUser
+              level,
+              authUser,
             }),
         },
         children: [
@@ -164,7 +165,8 @@ export const placesChildren = ({ db, level, authUser }) => [
               table: `actions`,
               ...match.params,
               db,
-              level,authUser
+              level,
+              authUser,
             }),
         },
         children: [
@@ -229,7 +231,8 @@ export const placesChildren = ({ db, level, authUser }) => [
                       table: `action_reports`,
                       ...match.params,
                       db,
-                      level,authUser
+                      level,
+                      authUser,
                     }),
                 },
                 children: [
@@ -337,7 +340,8 @@ export const placesChildren = ({ db, level, authUser }) => [
               table: `place_reports`,
               ...match.params,
               db,
-              level,authUser
+              level,
+              authUser,
             }),
         },
         children: [

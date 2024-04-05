@@ -7,15 +7,15 @@ import { useElectric } from '../../../ElectricProvider'
 
 export const Breadcrumbs = () => {
   const { user: authUser } = useCorbadoSession()
+
   const { db } = useElectric()!
-  // get app_states.breadcrumbs_overflowing
-  const { results: uiOption } = useLiveQuery(
-    db.app_states.liveUnique({
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({
       where: { authenticated_email: authUser.email },
     }),
   )
 
-  if (uiOption?.breadcrumbs_overflowing === false) {
+  if (appState?.breadcrumbs_overflowing === false) {
     return <BreadcrumbsWrapping />
   }
 

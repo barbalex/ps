@@ -143,7 +143,11 @@ export const router = ({ db, authUser }) => {
                                       lazy: () => import('../routes/place'),
                                     },
                                     placesLevel2({ db, authUser }),
-                                    ...placesChildren({ db, level: 1, authUser }),
+                                    ...placesChildren({
+                                      db,
+                                      level: 1,
+                                      authUser,
+                                    }),
                                   ],
                                 },
                               ],
