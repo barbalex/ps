@@ -22,7 +22,7 @@ export const buildData = async ({
                   where: {
                     subproject_id,
                     parent_id: null,
-                    deleted: false,
+                    
                   },
                 })
                 countPlacesRows({ dataPerSubject, places, subject })
@@ -33,7 +33,7 @@ export const buildData = async ({
                   where: {
                     subproject_id,
                     parent_id: { not: null },
-                    deleted: false,
+                    
                   },
                 })
                 countPlacesRows({ dataPerSubject, places, subject })
@@ -46,11 +46,11 @@ export const buildData = async ({
           }
           case 'checks': {
             const places = await db.places.findMany({
-              where: { subproject_id, deleted: false },
+              where: { subproject_id },
             })
             const placeIds = places.map((place) => place.place_id)
             const checks = await db.checks.findMany({
-              where: { place_id: { in: placeIds }, deleted: false },
+              where: { place_id: { in: placeIds } },
             })
             // use reduce to count checks per year
             const data = checks.reduce((acc, check) => {
@@ -66,11 +66,11 @@ export const buildData = async ({
           }
           case 'actions': {
             const places = await db.places.findMany({
-              where: { subproject_id, deleted: false },
+              where: { subproject_id },
             })
             const placeIds = places.map((place) => place.place_id)
             const actions = await db.actions.findMany({
-              where: { place_id: { in: placeIds }, deleted: false },
+              where: { place_id: { in: placeIds } },
             })
             // use reduce to count checks per year
             const data = actions.reduce((acc, check) => {

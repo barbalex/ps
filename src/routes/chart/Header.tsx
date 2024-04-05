@@ -53,7 +53,7 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [db.charts, chart_id, navigate, searchParams])
 
   const where = useMemo(() => {
-    const where = { deleted: false }
+    const where = {}
     if (place_id2) {
       where.place_id2 = place_id2
     } else if (place_id) {

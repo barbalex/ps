@@ -62,7 +62,7 @@ export const Header = memo(({ row }: Props) => {
   }, [db.files, file_id, navigate, searchParams])
 
   const where = useMemo(() => {
-    const where = { deleted: false }
+    const where = {}
     if (action_id) {
       where.action_id = action_id
     } else if (check_id) {
