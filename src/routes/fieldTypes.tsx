@@ -16,7 +16,6 @@ export const Component = () => {
   const { db } = useElectric()!
   const { results: fieldTypes = [] } = useLiveQuery(
     db.field_types.liveMany({
-      where: { deleted: false },
       orderBy: { label: 'asc' },
     }),
   )

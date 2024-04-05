@@ -16,7 +16,7 @@ export const Component = () => {
   const { db } = useElectric()!
   const { results: checkValues = [] } = useLiveQuery(
     db.check_values.liveMany({
-      where: { check_id, deleted: false },
+      where: { check_id },
       orderBy: { label: 'asc' },
     }),
   )

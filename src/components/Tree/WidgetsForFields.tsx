@@ -14,7 +14,6 @@ export const WidgetsForFieldsNode = memo(() => {
   const { db } = useElectric()!
   const { results: widgetsForFields = [] } = useLiveQuery(
     db.widgets_for_fields.liveMany({
-      where: { deleted: false },
       orderBy: { label: 'asc' },
     }),
   )
