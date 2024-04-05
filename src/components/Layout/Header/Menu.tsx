@@ -60,31 +60,33 @@ export const Menu = memo(() => {
   const { isAuthenticated, logout } = useCorbado()
   const { user: authUser } = useCorbadoSession()
 
+  console.log('hello Layout/Header/Menu.tsx, authUser:', authUser)
+
   const { db } = useElectric()!
   // get app_states.tabs
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({
-      where: { authenticated_email: authUser.email },
+      where: { authenticated_email: authUser?.email },
     }),
   )
   const tabs = useMemo(() => appState?.tabs ?? [], [appState?.tabs])
   const onChangeTabs = useCallback(
     (e, { checkedItems }) => {
       db.app_states.update({
-        where: { app_state_id: appState.app_state_id },
+        where: { app_state_id: appState?.app_state_id },
         data: { tabs: checkedItems },
       })
     },
-    [appState.app_state_id, db.app_states],
+    [appState?.app_state_id, db.app_states],
   )
 
   const onClickOptions = useCallback(() => {
     if (params.user_id) return navigate(-1)
     navigate({
-      pathname: `/app-state/${appState.app_state_id}`,
+      pathname: `/app-state/${appState?.app_state_id}`,
       search: searchParams.toString(),
     })
-  }, [appState.app_state_id, navigate, params.user_id, searchParams])
+  }, [appState?.app_state_id, navigate, params.user_id, searchParams])
 
   const onClickLogout = useCallback(() => logout(), [logout])
   const onClickEnter = useCallback(() => navigate('/projects'), [navigate])
