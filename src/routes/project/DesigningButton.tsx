@@ -33,7 +33,7 @@ export const DesigningButton = memo(() => {
   const userIsOwner = project?.account_id === account?.account_id
   const { results: projectUser } = useLiveQuery(
     db.project_users.liveFirst({
-      where: { project_id, user_id: appState?.user_id, deleted: false },
+      where: { project_id, user_id: appState?.user_id },
     }),
   )
   const userRole = projectUser?.role

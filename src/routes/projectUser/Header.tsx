@@ -31,7 +31,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toNext = useCallback(async () => {
     const projectUsers = await db.project_users.findMany({
-      where: { deleted: false, project_id },
+      where: {  project_id },
       orderBy: { label: 'asc' },
     })
     const len = projectUsers.length
@@ -47,7 +47,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toPrevious = useCallback(async () => {
     const projectUsers = await db.project_users.findMany({
-      where: { deleted: false, project_id },
+      where: {  project_id },
       orderBy: { label: 'asc' },
     })
     const len = projectUsers.length
