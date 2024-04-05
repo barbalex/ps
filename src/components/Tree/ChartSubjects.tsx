@@ -32,7 +32,7 @@ export const ChartSubjectsNode = memo(
 
     const { results: chartSubjects = [] } = useLiveQuery(
       db.chart_subjects.liveMany({
-        where: { chart_id, deleted: false },
+        where: { chart_id },
         orderBy: { label: 'asc' },
       }),
     )

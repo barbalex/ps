@@ -32,7 +32,7 @@ export const CheckValuesNode = memo(
     const { db } = useElectric()!
     const { results: checkValues = [] } = useLiveQuery(
       db.check_values.liveMany({
-        where: { deleted: false, check_id },
+        where: { check_id },
         orderBy: { label: 'asc' },
       }),
     )
