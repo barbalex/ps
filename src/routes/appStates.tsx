@@ -12,17 +12,14 @@ export const Component = () => {
 
   const { db } = useElectric()!
   const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+    db.app_states.liveUnique({ where: { user_email: authUser?.email } }),
   )
 
   return (
     <div className="list-view">
       <ListViewHeader title="Options" tableName="option" />
       <div className="list-container">
-        <Row
-          label={appState?.label}
-          to={`/app-state/${appState?.app_state_id}`}
-        />
+        <Row label={appState?.label} to={`/app-state/${authUser?.email}`} />
       </div>
     </div>
   )
