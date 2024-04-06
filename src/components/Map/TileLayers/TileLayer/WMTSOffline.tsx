@@ -55,7 +55,7 @@ export const WMTSOffline = ({ layer }: Props) => {
     db.app_states.update({
       where: { user_id },
       data: {
-        local_map_show: {
+        show_local_map: {
           [layer.id]: {
             show: true,
           },

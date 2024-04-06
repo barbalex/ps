@@ -21,7 +21,7 @@ export const TileLayerComponent = memo(({ layer }: Props) => {
       where: { user_email: authUser?.email },
     }),
   )
-  const showLocalMap = appState?.local_map_show?.[layer.id]?.show ?? false
+  const showLocalMap = appState?.show_local_map?.[layer.id]?.show ?? false
 
   if (layer.type === 'wmts') {
     return (
