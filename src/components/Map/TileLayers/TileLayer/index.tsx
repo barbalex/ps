@@ -18,7 +18,7 @@ export const TileLayerComponent = memo(({ layer }: Props) => {
   const { db } = useElectric()!
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({
-      where: { user_email: authUser.email },
+      where: { user_email: authUser?.email },
     }),
   )
   const showLocalMap = appState?.local_map_show?.[layer.id]?.show ?? false

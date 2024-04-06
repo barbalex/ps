@@ -21,7 +21,7 @@ export const buildNavs = async ({
   authUser, // TODO: pass this is
 }) => {
   const appStates = await db?.app_states?.findFirst({
-    where: { user_email: authUser.email },
+    where: { user_email: authUser?.email },
   })
   const designing = appStates?.designing ?? false
   // if table is places, get place_level for this level
