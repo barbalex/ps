@@ -481,7 +481,7 @@ CREATE TABLE places(
   geometry jsonb DEFAULT NULL,
   bbox jsonb DEFAULT NULL,
   label text DEFAULT NULL, -- not generated, so no need to rename
-  files_active_places boolean DEFAULT NULL, -- TRUE
+  files_active_places boolean DEFAULT NULL -- TRUE
 );
 
 -- CREATE INDEX ON places USING btree(place_id);
