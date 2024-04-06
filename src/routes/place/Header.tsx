@@ -31,7 +31,6 @@ export const Header = memo(({ autoFocusRef }: Props) => {
   const { results: placeLevels } = useLiveQuery(
     db.place_levels.liveMany({
       where: {
-        
         project_id,
         level: place_id2 ? 2 : 1,
       },
@@ -86,7 +85,6 @@ export const Header = memo(({ autoFocusRef }: Props) => {
   const toNext = useCallback(async () => {
     const places = await db.places.findMany({
       where: {
-        
         parent_id: place_id2 ? place_id : null,
         subproject_id,
       },
@@ -104,7 +102,6 @@ export const Header = memo(({ autoFocusRef }: Props) => {
   const toPrevious = useCallback(async () => {
     const places = await db.places.findMany({
       where: {
-        
         parent_id: place_id2 ? place_id : null,
         subproject_id,
       },
@@ -140,13 +137,13 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     }
 
     // 1. show map if not happening
-    const appState = await db.app_states.findFirst({
+    const appState = await db.app_states.findUnique({
       where: { user_email: authUser?.email },
     })
     const tabs = appState?.tabs ?? []
     if (!tabs.includes('map')) {
       await db.app_states.update({
-        where: { app_state_id: appState?.app_state_id },
+        where: { user_email: authUser?.email },
         data: { tabs: [...tabs, 'map'] },
       })
     }
@@ -157,7 +154,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     const bounds = boundsFromBbox(newBbox)
     if (!bounds) return alertNoGeometry()
     db.app_states.update({
-      where: { app_state_id: appState?.app_state_id },
+      where: { user_email: authUser?.email },
       data: { map_bounds: bounds },
     })
   }, [
