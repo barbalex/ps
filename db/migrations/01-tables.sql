@@ -1229,8 +1229,8 @@ COMMENT ON COLUMN fields.level IS 'level of field if places or below: 1, 2';
 CREATE TABLE app_states(
   app_state_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   user_email text DEFAULT NULL,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   designing boolean DEFAULT NULL, -- FALSE,
   breadcrumbs_overflowing boolean DEFAULT NULL, -- FALSE,
   navs_overflowing boolean DEFAULT NULL, -- FALSE,
