@@ -28,7 +28,7 @@ export const VectorLayerPVLGeom = ({ layer, display }: Props) => {
   const { user: authUser } = useCorbadoSession()
 
   const { db } = useElectric()!
-  const { results: appState } = db.app_states.liveFirst({
+  const { results: appState } = db.app_states.liveUnique({
     where: { user_email: authUser?.email },
   })
   const showMap = appState?.show_map ?? false

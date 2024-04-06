@@ -16,7 +16,7 @@ export const DrawControl = () => {
 
   const { db } = useElectric()!
   const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+    db.app_states.liveUnique({ where: { user_email: authUser?.email } }),
   )
   const editingPlaceGeometry = appState?.editing_place_geometry ?? null
   const editingCheckGeometry = appState?.editing_check_geometry ?? null
