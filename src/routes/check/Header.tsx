@@ -52,7 +52,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toNext = useCallback(async () => {
     const checks = await db.checks.findMany({
-      where: {  place_id: place_id2 ?? place_id },
+      where: { place_id: place_id2 ?? place_id },
       orderBy: { label: 'asc' },
     })
     const len = checks.length
@@ -66,7 +66,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toPrevious = useCallback(async () => {
     const checks = await db.checks.findMany({
-      where: {  place_id: place_id2 ?? place_id },
+      where: { place_id: place_id2 ?? place_id },
       orderBy: { label: 'asc' },
     })
     const len = checks.length
@@ -95,13 +95,13 @@ export const Header = memo(({ autoFocusRef }) => {
     if (!geometry) return alertNoGeometry()
 
     // 1. show map if not happening
-    const appState = await db.app_states.findFirst({
+    const appState = await db.app_states.findUnique({
       where: { user_email: authUser?.email },
     })
     const tabs = appState?.tabs ?? []
     if (!tabs.includes('map')) {
       await db.app_states.update({
-        where: { app_state_id: appState?.app_state_id },
+        where: { user_email: authUser?.email },
         data: { tabs: [...tabs, 'map'] },
       })
     }
@@ -112,7 +112,7 @@ export const Header = memo(({ autoFocusRef }) => {
     const bounds = boundsFromBbox(newBbox)
     if (!bounds) return alertNoGeometry()
     db.app_states.update({
-      where: { app_state_id: appState?.app_state_id },
+      where: { user_email: authUser.email },
       data: { map_bounds: bounds },
     })
   }, [db.checks, db.app_states, check_id, alertNoGeometry, authUser.email])
