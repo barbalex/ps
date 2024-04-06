@@ -1234,7 +1234,6 @@ CREATE TABLE app_states(
   breadcrumbs_overflowing boolean DEFAULT NULL, -- FALSE,
   navs_overflowing boolean DEFAULT NULL, -- FALSE,
   tabs jsonb DEFAULT NULL, -- TODO: jsonb array
-  show_map boolean DEFAULT NULL, -- TRUE,
   map_bounds jsonb DEFAULT NULL, -- [minx, miny, maxx, maxy]
   local_map_show jsonb DEFAULT NULL, -- map of id (layer.id, key) and show boolean
   tile_layer_sorter text DEFAULT NULL,
@@ -1248,9 +1247,9 @@ CREATE TABLE app_states(
 -- CREATE INDEX ON app_states USING btree(user_id);
 CREATE INDEX ON app_states USING btree(account_id);
 
-COMMENT ON TABLE app_states IS 'User interface settings (state saved in db)';
+COMMENT ON COLUMN app_states.user_email IS 'email of authenticated user. Exists in users but copied here for easier querying. Also: is returned by auth hooks, so available in the client without additional query';
 
-COMMENT ON COLUMN app_states.user_email IS 'email of authenticated user. Exists in users but copied here for easier querying';
+COMMENT ON TABLE app_states IS 'User interface settings (state saved in db)';
 
 COMMENT ON COLUMN app_states.designing IS 'Whether user is currently designing projects. Preset: false';
 

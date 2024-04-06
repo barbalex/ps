@@ -4,7 +4,6 @@ import * as ReactDOMServer from 'react-dom/server'
 import { useDebouncedCallback } from 'use-debounce'
 import * as icons from 'react-icons/md'
 import { uuidv7 } from '@kripod/uuidv7'
-import { useCorbadoSession } from '@corbado/react'
 
 import {
   Vector_layer_geoms as VectorLayerGeom,
@@ -25,13 +24,7 @@ interface Props {
 }
 
 export const VectorLayerPVLGeom = ({ layer, display }: Props) => {
-  const { user: authUser } = useCorbadoSession()
-
   const { db } = useElectric()!
-  const { results: appState } = db.app_states.liveUnique({
-    where: { user_email: authUser?.email },
-  })
-  const showMap = appState?.show_map ?? false
 
   const [data, setData] = useState()
 
@@ -56,7 +49,6 @@ export const VectorLayerPVLGeom = ({ layer, display }: Props) => {
 
   const fetchData = useCallback(
     async ({ bounds }) => {
-      if (!showMap) return
       // console.log('VectorLayerPVLGeom fetching data')
       removeNotifs()
       const notification_id = uuidv7()
@@ -92,7 +84,6 @@ export const VectorLayerPVLGeom = ({ layer, display }: Props) => {
       setZoom(map.getZoom())
     },
     [
-      showMap,
       removeNotifs,
       db.notifications,
       db.vector_layer_geoms,
@@ -106,7 +97,7 @@ export const VectorLayerPVLGeom = ({ layer, display }: Props) => {
 
   useEffect(() => {
     fetchDataDebounced({ bounds: map.getBounds() })
-  }, [fetchDataDebounced, map, showMap])
+  }, [fetchDataDebounced, map])
 
   useEffect(() => {
     // goal: remove own notifs when (de-)activating layer

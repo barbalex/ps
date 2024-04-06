@@ -6,12 +6,10 @@ import { GeoJSON, useMapEvent } from 'react-leaflet'
 import axios from 'redaxios'
 import XMLViewer from 'react-xml-viewer'
 import { MdClose } from 'react-icons/md'
-import { useLiveQuery } from 'electric-sql/react'
 import * as ReactDOMServer from 'react-dom/server'
 import { useDebouncedCallback } from 'use-debounce'
 import { uuidv7 } from '@kripod/uuidv7'
 import * as icons from 'react-icons/md'
-import { useCorbadoSession } from '@corbado/react'
 
 import {
   Dialog,
@@ -48,17 +46,9 @@ interface Props {
   display: VectorLayerDisplay
 }
 export const VectorLayerWFS = ({ layer, display }: Props) => {
-  const { user: authUser } = useCorbadoSession()
-
   const { db } = useElectric()!
   const [error, setError] = useState()
   const notificationIds = useRef([])
-
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveUnique({ where: { user_email: authUser?.email } }),
-  )
-  // const showMap = appState?.show_map ?? false TODO:
-  const showMap = appState?.show_map ?? true
 
   const removeNotifs = useCallback(async () => {
     await db.notifications.deleteMany({
@@ -73,8 +63,6 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
   const [data, setData] = useState()
   const fetchData = useCallback(
     async (/*{ bounds }*/) => {
-      if (!showMap) return
-
       // const mapSize = map.getSize()
       removeNotifs()
       const notification_id = uuidv7()
@@ -142,14 +130,13 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
       layer.wfs_url,
       layer.wfs_version,
       removeNotifs,
-      showMap,
     ],
   )
 
   const fetchDataDebounced = useDebouncedCallback(fetchData, 600)
   useEffect(() => {
     fetchDataDebounced({ bounds: map.getBounds() })
-  }, [fetchDataDebounced, map, showMap])
+  }, [fetchDataDebounced, map])
 
   // include only if zoom between min_zoom and max_zoom
   if (layer.min_zoom !== undefined && zoom < layer.min_zoom) return null

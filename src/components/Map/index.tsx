@@ -36,17 +36,12 @@ export const Map = () => {
     db.app_states.liveUnique({ where: { user_email: authUser?.email } }),
   )
   const appState: AppState = results
-  const showMap = appState?.show_map ?? true
   const tileLayerSorter = appState?.tile_layer_sorter ?? ''
   const vectorLayerSorter = appState?.vector_layer_sorter ?? ''
 
   const mapRef = useRef()
 
-  const onResize = useCallback(() => {
-    if (!showMap) return
-    // console.log('hello Map.onResize')
-    mapRef.current?.invalidateSize()
-  }, [mapRef, showMap])
+  const onResize = useCallback(() => mapRef.current?.invalidateSize(), [mapRef])
   const { ref: resizeRef } = useResizeDetector({
     onResize,
     refreshMode: 'debounce',
