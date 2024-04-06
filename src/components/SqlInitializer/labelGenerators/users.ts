@@ -28,7 +28,7 @@ export const generateUserLabel = async (db) => {
         AFTER INSERT ON users
       BEGIN
         INSERT INTO app_states (app_state_id, user_id, user_email, designing, breadcrumbs_overflowing, navs_overflowing, tabs)
-        VALUES (NEW.user_id, NEW.user_id, NEW.email, false, true, true, ['tree', 'data']);
+        VALUES (NEW.user_id, NEW.user_id, NEW.email, false, true, true, '["tree","data"]');
       END;`,
     })
   }
