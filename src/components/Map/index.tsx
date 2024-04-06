@@ -33,7 +33,7 @@ export const Map = () => {
 
   const { db } = useElectric()!
   const { results } = useLiveQuery(
-    db.app_states.liveFirst({ where: { authenticated_email: authUser.email } }),
+    db.app_states.liveFirst({ where: { user_email: authUser.email } }),
   )
   const appState: AppState = results
   const showMap = appState?.show_map ?? true

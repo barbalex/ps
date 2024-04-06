@@ -16,27 +16,28 @@ export const AuthSetter = memo(() => {
       // include: { app_states: true },
     }),
   )
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({
-      where: { user_id: dbUser?.user_id },
-    }),
-  )
+  const appState = { user_email: 'alex.barbalex@gmail.com' }
+  // const { results: appState } = useLiveQuery(
+  //   db.app_states.liveFirst({
+  //     where: { user_id: dbUser?.user_id },
+  //   }),
+  // )
   console.log('hello AuthSetter.tsx', { dbUser, authUser, appState })
 
   useEffect(() => {
-    // set app_states.authenticated_email if not yet set
+    // set app_states.user_email if not yet set
     if (
       authUser?.email &&
       dbUser?.user_id &&
       appState &&
-      !appState?.authenticated_email
+      !appState?.user_email
     ) {
-      // console.log(
-      //   'hello AuthSetter.tsx, useEffect, setting appState.authenticated_email',
-      // )
+      console.log(
+        'hello AuthSetter.tsx, useEffect, setting appState.user_email',
+      )
       db.app_states.update({
         where: { app_state_id: appState.app_state_id },
-        data: { authenticated_email: authUser.email },
+        data: { user_email: authUser.email },
       })
     }
   }, [appState, authUser, db.app_states, dbUser])

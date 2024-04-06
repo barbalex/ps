@@ -66,7 +66,7 @@ export const Menu = memo(() => {
   // get app_states.tabs
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({
-      where: { authenticated_email: authUser?.email },
+      where: { user_email: authUser?.email },
     }),
   )
   const tabs = useMemo(() => appState?.tabs ?? [], [appState?.tabs])

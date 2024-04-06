@@ -12,7 +12,7 @@ export const Component = () => {
 
   const { db } = useElectric()!
   const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { authenticated_email: authUser.email } }),
+    db.app_states.liveFirst({ where: { user_email: authUser.email } }),
   )
 
   return (

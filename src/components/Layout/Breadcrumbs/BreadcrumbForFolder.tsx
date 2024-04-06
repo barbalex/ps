@@ -61,7 +61,7 @@ export const BreadcrumbForFolder = forwardRef(
     const row = results?.[0]
     const { results: appState } = useLiveQuery(
       db.app_states.liveFirst({
-        where: { authenticated_email: authUser.email },
+        where: { user_email: authUser.email },
       }),
     )
     const designing = appState?.designing ?? false

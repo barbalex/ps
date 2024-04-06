@@ -29,7 +29,7 @@ export const VectorLayerPVLGeom = ({ layer, display }: Props) => {
 
   const { db } = useElectric()!
   const { results: appState } = db.app_states.liveFirst({
-    where: { authenticated_email: authUser.email },
+    where: { user_email: authUser.email },
   })
   const showMap = appState?.show_map ?? false
 

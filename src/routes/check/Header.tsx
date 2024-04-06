@@ -96,7 +96,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
     // 1. show map if not happening
     const appState = await db.app_states.findFirst({
-      where: { authenticated_email: authUser.email },
+      where: { user_email: authUser.email },
     })
     const tabs = appState?.tabs ?? []
     if (!tabs.includes('map')) {
