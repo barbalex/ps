@@ -100,12 +100,8 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }: Props) => {
     const newBbox = bbox(bufferedFC)
     const newBounds = boundsFromBbox(newBbox)
 
-    // get app_states by authUser.email
-    const appState = await db.app_states.findFirst({
-      where: { user_email: authUser?.email },
-    })
     db.app_states.update({
-      where: { app_state_id: appState?.app_state_id },
+      where: { user_email: authUser?.email },
       data: { map_bounds: newBounds },
     })
   }, [

@@ -476,8 +476,8 @@ export const createMessage = () => ({
 
 // TODO: sync (most of) these with search params
 // this is not used. Instead: users_app_state_trigger creates app_state on user creation
-export const createAppState = ({ user_id }) => ({
-  app_state_id: uuidv7(),
+export const createAppState = ({ user_email, user_id }) => ({
+  user_email,
   user_id,
   designing: false,
   breadcrumbs_overflowing: true,
