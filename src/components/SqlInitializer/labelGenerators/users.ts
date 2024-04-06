@@ -14,10 +14,25 @@ export const generateUserLabel = async (db) => {
     })
   }
 
-  // if email is changed, label of account needs to be updated
   const triggers = await db.rawQuery({
     sql: `select name from sqlite_master where type = 'trigger';`,
   })
+  // on insert an app_state needs to be created
+  const usersAppStateTriggerExists = triggers.some(
+    (column) => column.name === 'users_app_state_trigger',
+  )
+  if (!usersAppStateTriggerExists) {
+    await db.unsafeExec({
+      sql: `
+      CREATE TRIGGER IF NOT EXISTS users_app_state_trigger
+        AFTER INSERT ON users
+      BEGIN
+        INSERT INTO app_states (app_state_id, user_id, user_email, designing, breadcrumbs_overflowing, navs_overflowing, tabs)
+        VALUES (NEW.user_id, NEW.user_id, NEW.email, false, true, true, ['tree', 'data']);
+      END;`,
+    })
+  }
+  // if email is changed, label of account needs to be updated
   const usersAccountsLabelTriggerExists = triggers.some(
     (column) => column.name === 'users_accounts_label_trigger',
   )
@@ -35,6 +50,21 @@ export const generateUserLabel = async (db) => {
       'TriggerGenerator, users_accounts_label_trigger, result:',
       result,
     )
+  }
+  // if email is changed, app_states.user_email needs to be updated
+  const usersAppStatesEmailTriggerExists = triggers.some(
+    (column) => column.name === 'users_app_states_email_trigger',
+  )
+  if (!usersAppStatesEmailTriggerExists) {
+    await db.unsafeExec({
+      sql: `
+      CREATE TRIGGER IF NOT EXISTS users_app_states_email_trigger
+        AFTER UPDATE OF email ON users
+      BEGIN
+        UPDATE app_states SET user_email = NEW.email
+        WHERE user_id = NEW.user_id;
+      END;`,
+    })
   }
 
   // if email is changed, label of project_user needs to be updated
