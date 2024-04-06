@@ -668,7 +668,9 @@ CREATE TABLE checks(
 );
 
 -- CREATE INDEX ON checks USING btree(check_id);
-CREATE INDEX ON checks USING btree(account_id CREATE INDEX ON checks USING btree(place_id);
+CREATE INDEX ON checks USING btree(account_id);
+
+CREATE INDEX ON checks USING btree(place_id);
 
 CREATE INDEX ON checks USING btree(date);
 
