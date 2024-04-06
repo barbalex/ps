@@ -665,12 +665,10 @@ CREATE TABLE checks(
   bbox jsonb DEFAULT NULL,
   relevant_for_reports boolean DEFAULT NULL, -- TRUE,
   label_replace_by_generated_column text DEFAULT NULL
-  -- CREATE INDEX ON checks USING btree(check_id);
-  CREATE INDEX ON checks
-  USING btree(account_id
 );
 
-CREATE INDEX ON checks USING btree(place_id);
+-- CREATE INDEX ON checks USING btree(check_id);
+CREATE INDEX ON checks USING btree(account_id CREATE INDEX ON checks USING btree(place_id);
 
 CREATE INDEX ON checks USING btree(date);
 
