@@ -42,18 +42,17 @@ export const Editing = memo(() => {
   )
 
   const { results: project } = useLiveQuery(
-    db.projects.liveUnique({ where: { project_id } }),
-  )
-  const { results: account } = useLiveQuery(
-    db.accounts.liveUnique({ where: { user_id: appState?.user_id } }),
-  )
-  const userIsOwner = project?.account_id === account?.account_id
-  const { results: projectUser } = useLiveQuery(
-    db.project_users.liveUnique({
-      where: { project_id, user_id: appState?.user_id },
+    db.projects.liveUnique({
+      where: { project_id },
+      include: { accounts: true, project_users: true },
     }),
   )
+  const userIsOwner = project?.account_id === project?.accounts?.account_id
+  const projectUser = project?.project_users?.find(
+    (pu) => pu.user_id === appState?.user_id,
+  )
   const userRole = projectUser?.role
+  console.log('hello Project Editing', { projectUser, userRole, project })
 
   const userMayDesign = userIsOwner || userRole === 'manager'
 
