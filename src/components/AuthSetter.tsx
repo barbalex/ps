@@ -16,12 +16,13 @@ export const AuthSetter = memo(() => {
       // include: { app_states: true },
     }),
   )
-  const appState = { user_email: 'alex.barbalex@gmail.com' }
-  // const { results: appState } = useLiveQuery(
-  //   db.app_states.liveFirst({
-  //     where: { user_id: dbUser?.user_id },
-  //   }),
-  // )
+  // TODO: this runs out of control
+  // replace with trigger on change of user.email?
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({
+      where: { user_id: dbUser?.user_id },
+    }),
+  )
   console.log('hello AuthSetter.tsx', { dbUser, authUser, appState })
 
   useEffect(() => {
