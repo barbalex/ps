@@ -27,8 +27,8 @@ export const generateUserLabel = async (db) => {
       CREATE TRIGGER IF NOT EXISTS users_app_state_trigger
         AFTER INSERT ON users
       BEGIN
-        INSERT INTO app_states (app_state_id, user_id, user_email, designing, breadcrumbs_overflowing, navs_overflowing, tabs)
-        VALUES (NEW.user_id, NEW.user_id, NEW.email, false, true, true, '["tree","data"]');
+        INSERT INTO app_states (user_id, user_email, designing, breadcrumbs_overflowing, navs_overflowing, tabs)
+        VALUES (NEW.user_id, NEW.email, false, true, true, '["tree","data"]');
       END;`,
     })
   }
