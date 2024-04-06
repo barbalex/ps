@@ -65,33 +65,28 @@ export const Menu = memo(() => {
   const { db } = useElectric()!
   // get app_states.tabs
   const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({
+    db.app_states.liveUnique({
       where: { user_email: authUser?.email },
     }),
   )
   const tabs = useMemo(() => appState?.tabs ?? [], [appState?.tabs])
   const onChangeTabs = useCallback(
     (e, { checkedItems }) => {
-      console.log('hello Layout/Header/Menu.tsx, onChangeTabs', {
-        checkedItems,
-        appState,
-        authUser,
-      })
       db.app_states.update({
-        where: { app_state_id: appState?.app_state_id },
+        where: { user_email: authUser?.email },
         data: { tabs: checkedItems },
       })
     },
-    [appState, authUser, db.app_states],
+    [authUser, db.app_states],
   )
 
   const onClickOptions = useCallback(() => {
     if (params.user_id) return navigate(-1)
     navigate({
-      pathname: `/app-state/${appState?.app_state_id}`,
+      pathname: `/app-state/${appState?.user_email}`,
       search: searchParams.toString(),
     })
-  }, [appState?.app_state_id, navigate, params.user_id, searchParams])
+  }, [appState?.user_email, navigate, params.user_id, searchParams])
 
   const onClickLogout = useCallback(() => logout(), [logout])
   const onClickEnter = useCallback(() => navigate('/projects'), [navigate])
