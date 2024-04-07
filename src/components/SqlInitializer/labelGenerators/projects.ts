@@ -45,7 +45,7 @@ export const generateProjectLabel = async (db) => {
     )
   }
 
-  //if anything in projects is changed, update its label
+  // if anything in projects is changed, update its label
   const projectsLabelTriggerExists = triggers.some(
     (column) => column.name === 'projects_label_trigger',
   )
@@ -75,19 +75,18 @@ export const generateProjectLabel = async (db) => {
       END;`,
     })
     console.log('TriggerGenerator, projects_label_trigger, result:', result)
-    // same on insert
+    // if a new project is created, update its label
     await db.unsafeExec({
       sql: `
       CREATE TRIGGER IF NOT EXISTS projects_label_trigger_insert
         AFTER INSERT ON projects
       BEGIN
-        UPDATE projects SET label = CASE
-        WHEN accounts.projects_label_by IS NULL THEN
-          name
-          WHEN accounts.projects_label_by = 'name' THEN
-          name
-        ELSE
-          json_extract(NEW.data, '$.' || accounts.projects_label_by)
+        UPDATE projects SET label = CASE WHEN accounts.projects_label_by IS NULL THEN
+          ifnull(name, project_id)
+            WHEN accounts.projects_label_by = 'name' THEN
+          ifnull(name, project_id)
+          ELSE
+            json_extract(NEW.data, '$.' || accounts.projects_label_by)
         END
       FROM(
       SELECT
@@ -98,6 +97,7 @@ export const generateProjectLabel = async (db) => {
         account_id = NEW.account_id) AS accounts
       WHERE
         projects.project_id = NEW.project_id;
+
       END;`,
     })
   }
