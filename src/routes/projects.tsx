@@ -15,13 +15,12 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
-  // TODO: this component gets constantly re-rendered because of the live query!!!???
   const { results: projects = [] } = useLiveQuery(
     db.projects.liveMany({
       orderBy: { label: 'asc' },
     }),
   )
-  console.log('hello Projects')
+  // console.log('hello Projects')
 
   const add = useCallback(async () => {
     const data = await createProject({ db })
