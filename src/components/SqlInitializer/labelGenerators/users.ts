@@ -6,12 +6,24 @@ export const generateUserLabel = async (db) => {
   if (!hasLabel) {
     await db.unsafeExec({
       sql: `
-        ALTER TABLE users ADD COLUMN label text GENERATED ALWAYS AS (coalesce(email, user_id));
-        ALTER TABLE users drop COLUMN label_replace_by_generated_column;`,
+        ALTER TABLE users ADD COLUMN label text GENERATED ALWAYS AS (coalesce(email, user_id));`,
     })
     await db.unsafeExec({
       sql: 'CREATE INDEX IF NOT EXISTS users_label_idx ON users(label)',
     })
+  }
+  // drop label_replace_by_generated_column if it exists
+  const hasLabelReplaceByGeneratedColumn = columns.some(
+    (column) => column.name === 'label_replace_by_generated_column',
+  )
+  if (hasLabelReplaceByGeneratedColumn) {
+    const result = await db.unsafeExec({
+      sql: 'ALTER TABLE users drop COLUMN label_replace_by_generated_column;',
+    })
+    console.log(
+      'LabelGenerator, users_label, result from dropping label_replace_by_generated_column:',
+      result,
+    )
   }
 
   const triggers = await db.rawQuery({
