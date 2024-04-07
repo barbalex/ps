@@ -16,18 +16,19 @@ export const generatePlaceLabel = async (db) => {
       CREATE TRIGGER if not exists places_label_trigger
       AFTER UPDATE of level, data ON places
       BEGIN
-        UPDATE places SET label = case 
-        when projects.places_label_by is null then place_id 
-        when projects.places_label_by = 'id' then place_id 
-        when projects.places_label_by = 'level' then level 
-        else json_extract(NEW.data, '$.' || projects.places_label_by) 
+        UPDATE places SET label = 
+        case 
+          when projects.places_label_by is null then place_id 
+          when projects.places_label_by = 'id' then place_id 
+          when projects.places_label_by = 'level' then level 
+          else ifnull(json_extract(NEW.data, '$.' || projects.places_label_by), place_id)
         end
         FROM (
           SELECT places_label_by from projects 
           where project_id = (select project_id from subprojects where subproject_id = NEW.subproject_id)
         ) as projects
          WHERE places.place_id = NEW.place_id;
-      END`,
+      END;`,
     })
     console.log('LabelGenerator, places, result:', result)
     // now to same on insert
@@ -40,14 +41,14 @@ export const generatePlaceLabel = async (db) => {
         when projects.places_label_by is null then place_id 
         when projects.places_label_by = 'id' then place_id 
         when projects.places_label_by = 'level' then level 
-        else json_extract(NEW.data, '$.' || projects.places_label_by) 
+        else ifnull(json_extract(NEW.data, '$.' || projects.places_label_by), place_id)
         end
         FROM (
           SELECT places_label_by from projects 
           where project_id = (select project_id from subprojects where subproject_id = NEW.subproject_id)
         ) as projects
          WHERE places.place_id = NEW.place_id;
-      END`,
+      END;`,
     })
     console.log('LabelGenerator, places, resultInsert:', resultInsert)
     // const resultArray = await db.unsafeExec({
