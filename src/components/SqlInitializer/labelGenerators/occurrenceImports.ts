@@ -6,12 +6,24 @@ export const generateOccurrenceImportLabel = async (db) => {
   if (!hasLabel) {
     await db.unsafeExec({
       sql: `
-        ALTER TABLE occurrence_imports ADD COLUMN label text GENERATED ALWAYS AS (coalesce(name, occurrence_import_id));
-        ALTER TABLE occurrence_imports drop label_replace_by_generated_column;`,
+        ALTER TABLE occurrence_imports ADD COLUMN label text GENERATED ALWAYS AS (coalesce(name, occurrence_import_id));`,
     })
     await db.unsafeExec({
       sql: 'CREATE INDEX IF NOT EXISTS occurrence_imports_label_idx ON occurrence_imports(label)',
     })
+  }
+  // drop label_replace_by_generated_column if it exists
+  const hasLabelReplaceByGeneratedColumn = columns.some(
+    (column) => column.name === 'label_replace_by_generated_column',
+  )
+  if (hasLabelReplaceByGeneratedColumn) {
+    const result = await db.unsafeExec({
+      sql: 'ALTER TABLE occurrence_imports drop COLUMN label_replace_by_generated_column;',
+    })
+    console.log(
+      'LabelGenerator, occurrence_imports_label, result from dropping label_replace_by_generated_column:',
+      result,
+    )
   }
   // when label_creation is changed, update occurrences.label
   const triggers = await db.rawQuery({
