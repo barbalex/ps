@@ -14,7 +14,7 @@ export const generateProjectLabel = async (db) => {
               UPDATE places SET label = case
                 when NEW.places_label_by = 'id' then place_id
                 when NEW.places_label_by = 'level' then level
-                else json_extract(data, '$.' || NEW.places_label_by)
+                else ifnull(json_extract(data, '$.' || NEW.places_label_by), place_id)
               end;
             END;`,
     })
@@ -35,7 +35,7 @@ export const generateProjectLabel = async (db) => {
             BEGIN
               UPDATE goals SET label = case
                 when NEW.goals_label_by = 'id' then goal_id
-                else json_extract(data, '$.' || NEW.goals_label_by)
+                else ifnull(json_extract(data, '$.' || NEW.goals_label_by), goal_id)
               end;
             END;`,
     })
@@ -56,12 +56,9 @@ export const generateProjectLabel = async (db) => {
         AFTER UPDATE OF name, data ON projects
       BEGIN
         UPDATE projects SET label = CASE
-        WHEN accounts.projects_label_by IS NULL THEN
-          name
-          WHEN accounts.projects_label_by = 'name' THEN
-          name
-        ELSE
-          json_extract(NEW.data, '$.' || accounts.projects_label_by)
+          WHEN accounts.projects_label_by IS NULL THEN name
+          WHEN accounts.projects_label_by = 'name' THEN name
+          ELSE ifnull(json_extract(NEW.data, '$.' || accounts.projects_label_by), project_id)
         END
       FROM(
       SELECT
@@ -81,12 +78,10 @@ export const generateProjectLabel = async (db) => {
       CREATE TRIGGER IF NOT EXISTS projects_label_trigger_insert
         AFTER INSERT ON projects
       BEGIN
-        UPDATE projects SET label = CASE WHEN accounts.projects_label_by IS NULL THEN
-          ifnull(name, project_id)
-            WHEN accounts.projects_label_by = 'name' THEN
-          ifnull(name, project_id)
-          ELSE
-            json_extract(NEW.data, '$.' || accounts.projects_label_by)
+        UPDATE projects SET label = CASE 
+          WHEN accounts.projects_label_by IS NULL THEN ifnull(name, project_id)
+          WHEN accounts.projects_label_by = 'name' THEN ifnull(name, project_id)
+          ELSE ifnull(json_extract(NEW.data, '$.' || accounts.projects_label_by), project_id)
         END
       FROM(
       SELECT
