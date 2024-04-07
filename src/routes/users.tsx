@@ -24,7 +24,7 @@ export const Component = () => {
     navigate({ pathname: data.user_id, search: searchParams.toString() })
   }, [db.users, navigate, searchParams])
 
-  console.log('hello users')
+  // console.log('hello users')
 
   return (
     <div className="list-view">
