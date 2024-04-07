@@ -56,10 +56,11 @@ CREATE TABLE projects(
   subproject_name_singular text DEFAULT NULL,
   subproject_name_plural text DEFAULT NULL,
   subproject_order_by text DEFAULT NULL,
-  places_label_by text DEFAULT NULL, -- TODO: jsonb array
+  places_label_by jsonb DEFAULT NULL, -- TODO: jsonb array
   places_order_by jsonb DEFAULT NULL, -- TODO: jsonb array
-  persons_label_by text DEFAULT NULL, -- TODO: jsonb array
-  persons_order_by text DEFAULT NULL, -- TODO: jsonb array
+  persons_label_by jsonb DEFAULT NULL, -- TODO: jsonb array
+  persons_order_by jsonb DEFAULT NULL, -- TODO: jsonb array
+  goals_label_by jsonb DEFAULT NULL, -- TODO: jsonb array
   goal_reports_label_by text DEFAULT NULL, -- TODO: jsonb array
   goal_reports_order_by text DEFAULT NULL, -- TODO: jsonb array
   values_on_multiple_levels text DEFAULT NULL,
