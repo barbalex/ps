@@ -2,28 +2,38 @@ export const generateUserLabel = async (db) => {
   const columns = await db.rawQuery({
     sql: 'PRAGMA table_xinfo(users)',
   })
-  const hasLabel = columns.some((column) => column.name === 'label')
-  if (!hasLabel) {
-    await db.unsafeExec({
-      sql: `
-        ALTER TABLE users ADD COLUMN label text GENERATED ALWAYS AS (coalesce(email, user_id));`,
-    })
-    await db.unsafeExec({
-      sql: 'CREATE INDEX IF NOT EXISTS users_label_idx ON users(label)',
-    })
-  }
-  // drop label_replace_by_generated_column if it exists
-  const hasLabelReplaceByGeneratedColumn = columns.some(
-    (column) => column.name === 'label_replace_by_generated_column',
+  console.log('hello from generateUserLabel, columns:', columns)
+  const labelColumn = columns.find((column) => column.name === 'label')
+  const labelIsGenerated = labelColumn && labelColumn.hidden === 2
+  console.log(
+    'hello from generateUserLabel, labelIsGenerated:',
+    labelIsGenerated,
   )
-  if (hasLabelReplaceByGeneratedColumn) {
-    const result = await db.unsafeExec({
-      sql: 'ALTER TABLE users drop COLUMN label_replace_by_generated_column;',
-    })
-    console.log(
-      'LabelGenerator, users_label, result from dropping label_replace_by_generated_column:',
-      result,
-    )
+  if (!labelIsGenerated) {
+    try {
+      const result = await db.unsafeExec({
+        sql: `ALTER TABLE users drop label;`,
+      })
+      console.log('hello generateUserLabel dropping label, result:', result)
+    } catch (error) {
+      console.log('hello generateUserLabel dropping label, error:', error)
+    }
+    try {
+      const result = await db.unsafeExec({
+        sql: `ALTER TABLE users ADD COLUMN label text GENERATED ALWAYS AS (coalesce(email, user_id));`,
+      })
+      console.log('hello generateUserLabel adding label, result:', result)
+    } catch (error) {
+      console.log('hello generateUserLabel adding label, error:', error)
+    }
+    try {
+      const result = await db.unsafeExec({
+        sql: `CREATE INDEX IF NOT EXISTS users_label_idx ON users(label);`,
+      })
+      console.log('hello generateUserLabel creating index, result:', result)
+    } catch (error) {
+      console.log('hello generateUserLabel creating index, error:', error)
+    }
   }
 
   const triggers = await db.rawQuery({

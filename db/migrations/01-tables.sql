@@ -1,7 +1,7 @@
 CREATE TABLE users(
   user_id uuid PRIMARY KEY DEFAULT NULL,
   email text DEFAULT NULL, -- TODO: email needs to be unique per account. But: not possible in electric-sql
-  label_replace_by_generated_column text DEFAULT NULL
+  label text DEFAULT NULL
 );
 
 -- CREATE INDEX ON users USING btree(user_id);
