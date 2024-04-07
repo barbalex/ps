@@ -35,7 +35,7 @@ export const DesigningButton = memo(() => {
     (pu) => pu.user_id === appState?.user_id,
   )
   const userRole = projectUser?.role
-  console.log('hello project DesignButton', { projectUser, userRole })
+  // console.log('hello project DesignButton', { projectUser, userRole })
 
   const userMayDesign = userIsOwner || userRole === 'manager'
 

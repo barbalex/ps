@@ -52,7 +52,7 @@ export const Editing = memo(() => {
     (pu) => pu.user_id === appState?.user_id,
   )
   const userRole = projectUser?.role
-  console.log('hello Project Editing', { projectUser, userRole, project })
+  // console.log('hello Project Editing', { projectUser, userRole, project })
 
   const userMayDesign = userIsOwner || userRole === 'manager'
 
