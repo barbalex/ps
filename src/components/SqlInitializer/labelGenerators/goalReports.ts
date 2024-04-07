@@ -12,12 +12,11 @@ export const generateGoalReportLabel = async (db) => {
       CREATE TRIGGER IF NOT EXISTS goal_reports_label_trigger
         AFTER UPDATE OF data ON goal_reports
       BEGIN
-        UPDATE goal_reports SET label = CASE WHEN projects.goal_reports_label_by IS NULL THEN
-          goal_id
-          WHEN projects.goal_reports_label_by = 'goal_id' THEN
-          goal_id
-        ELSE
-          json_extract(NEW.data, '$.' || projects.goal_reports_label_by)
+        UPDATE goal_reports SET label = 
+        CASE 
+          WHEN projects.goal_reports_label_by IS NULL THEN goal_id
+          WHEN projects.goal_reports_label_by = 'goal_id' THEN goal_id
+          ELSE ifnull(json_extract(NEW.data, '$.' || projects.goal_reports_label_by), goal_id)
         END
       FROM(
       SELECT
@@ -54,12 +53,10 @@ export const generateGoalReportLabel = async (db) => {
       CREATE TRIGGER IF NOT EXISTS goal_reports_label_insert_trigger
         AFTER INSERT ON goal_reports
       BEGIN
-        UPDATE goal_reports SET label = CASE WHEN projects.goal_reports_label_by IS NULL THEN
-          goal_id
-          WHEN projects.goal_reports_label_by = 'goal_id' THEN
-          goal_id
-        ELSE
-          json_extract(NEW.data, '$.' || projects.goal_reports_label_by)
+        UPDATE goal_reports SET label = CASE 
+          WHEN projects.goal_reports_label_by IS NULL THEN goal_id
+          WHEN projects.goal_reports_label_by = 'goal_id' THEN goal_id
+          ELSE ifnull(json_extract(NEW.data, '$.' || projects.goal_reports_label_by), goal_id)
         END
       FROM(
       SELECT
