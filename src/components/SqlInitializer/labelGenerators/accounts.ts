@@ -1,19 +1,4 @@
 export const generateAccountLabel = async (db) => {
-  const columns = await db.rawQuery({
-    sql: 'PRAGMA table_xinfo(accounts)',
-  })
-  const hasLabel = columns.some((column) => column.name === 'label')
-  if (!hasLabel) {
-    await db.unsafeExec({
-      sql: `
-        ALTER TABLE accounts ADD COLUMN label text GENERATED ALWAYS AS (account_id);
-        ALTER TABLE accounts drop COLUMN label_replace_by_generated_column;`,
-    })
-    await db.unsafeExec({
-      sql: 'CREATE INDEX IF NOT EXISTS accounts_label_idx ON accounts(label)',
-    })
-  }
-
   // if projects_label_by is changed, need to update all labels of projects
   const triggers = await db.rawQuery({
     sql: `select name from sqlite_master where type = 'trigger';`,
