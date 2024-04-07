@@ -63,7 +63,6 @@ export const Menu = memo(() => {
   console.log('hello Layout/Header/Menu.tsx, authUser:', authUser)
 
   const { db } = useElectric()!
-  // get app_states.tabs
   const { results: appState } = useLiveQuery(
     db.app_states.liveUnique({
       where: { user_email: authUser?.email },
