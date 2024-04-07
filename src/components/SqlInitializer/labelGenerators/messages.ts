@@ -6,12 +6,24 @@ export const generateMessageLabel = async (db) => {
   if (!hasLabel) {
     const result = await db.unsafeExec({
       sql: `
-        ALTER TABLE messages ADD COLUMN label text GENERATED ALWAYS AS (strftime("%Y.%m.%d %H:%M:%S", date));
-        ALTER TABLE messages drop COLUMN label_replace_by_generated_column;`,
+        ALTER TABLE messages ADD COLUMN label text GENERATED ALWAYS AS (strftime("%Y.%m.%d %H:%M:%S", date));`,
     })
     await db.unsafeExec({
       sql: 'CREATE INDEX IF NOT EXISTS messages_label_idx ON messages(label)',
     })
     console.log('LabelGenerator, messages, result:', result)
+  }
+  // drop label_replace_by_generated_column if it exists
+  const hasLabelReplaceByGeneratedColumn = columns.some(
+    (column) => column.name === 'label_replace_by_generated_column',
+  )
+  if (hasLabelReplaceByGeneratedColumn) {
+    const result = await db.unsafeExec({
+      sql: 'ALTER TABLE messages drop COLUMN label_replace_by_generated_column;',
+    })
+    console.log(
+      'LabelGenerator, messages_label, result from dropping label_replace_by_generated_column:',
+      result,
+    )
   }
 }
