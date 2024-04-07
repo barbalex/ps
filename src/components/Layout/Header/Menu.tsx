@@ -182,7 +182,13 @@ export const Menu = memo(() => {
         size="medium"
         icon={isAuthenticated && !isHome ? <MdLogout /> : <MdLogin />}
         onClick={isAuthenticated && !isHome ? onClickLogout : onClickEnter}
-        title={!isAuthenticated ? 'Login' : isHome ? 'Enter' : 'Logout'}
+        title={
+          !isAuthenticated
+            ? 'Login'
+            : isHome
+            ? 'Enter'
+            : `Logout ${authUser?.email}`
+        }
         style={css({
           backgroundColor: 'rgba(38, 82, 37, 0)',
           border: 'none',
