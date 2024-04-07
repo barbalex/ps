@@ -35,8 +35,8 @@ export const generateTaxonLabel = async (db) => {
       AFTER INSERT ON taxa
       BEGIN
         UPDATE taxa SET label = case 
-        when taxonomies.name is null then taxon_id
-        else concat(taxonomies.name, ' (', taxonomies.type, '): ', taxa.name)
+          when taxonomies.name is null then taxon_id
+          else concat(taxonomies.name, ' (', taxonomies.type, '): ', taxa.name)
         end
         FROM (
           SELECT name, type from taxonomies 
