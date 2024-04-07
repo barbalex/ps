@@ -81,7 +81,7 @@ export const Menu = memo(() => {
   )
 
   const onClickOptions = useCallback(() => {
-    if (params.user_id) return navigate(-1)
+    if (params.user_email) return navigate(-1)
     navigate({
       pathname: `/app-state/${appState?.user_email}`,
       search: searchParams.toString(),
