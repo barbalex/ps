@@ -79,15 +79,18 @@ export const generateUserLabel = async (db) => {
   // TODO: Error: cannot rollback - no transaction is active
   // Seems that electric-sql or sqlite do not support updating another tables primary key? https://github.com/electric-sql/electric/issues/1134
   // PROBLEM: email is pk in app_states because findFirst in electric-sql re-renders perpetually
-  const usersAppStatesEmailTriggerExists = triggers.some(
-    (column) => column.name === 'users_app_states_email_trigger',
-  )
+  // circumvention: create new row from copying data then delete old one - nope: same error!
+  // const usersAppStatesEmailTriggerExists = triggers.some(
+  //   (column) => column.name === 'users_app_states_email_trigger',
+  // )
   // if (!usersAppStatesEmailTriggerExists) {
   //   await db.unsafeExec({
   //     sql: `
   //     CREATE TRIGGER IF NOT EXISTS users_app_states_email_trigger
   //       AFTER UPDATE OF email ON users
   //     BEGIN
+  //       --insert into app_states (user_email, user_id, account_id, designing, breadcrumbs_overflowing, navs_overflowing, tabs, map_bounds, show_local_map, tile_layer_sorter, vector_layer_sorter, editing_place_geometry, editing_check_geometry, editing_action_geometry) values (NEW.user_email, NEW.user_id, NEW.account_id, NEW.designing, NEW.breadcrumbs_overflowing, NEW.navs_overflowing, NEW.tabs, NEW.map_bounds, NEW.show_local_map, NEW.tile_layer_sorter, NEW.vector_layer_sorter, NEW.editing_place_geometry, NEW.editing_check_geometry, NEW.editing_action_geometry);
+  //       --DELETE from app_states WHERE user_email = OLD.user_email;
   //       UPDATE app_states SET user_email = NEW.email
   //       WHERE user_id = NEW.user_id;
   //     END;`,
