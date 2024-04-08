@@ -86,7 +86,7 @@ export const Menu = memo(() => {
       pathname: `/app-state/${appState?.user_email}`,
       search: searchParams.toString(),
     })
-  }, [appState?.user_email, navigate, params.user_id, searchParams])
+  }, [appState?.user_email, navigate, params.user_email, searchParams])
 
   const onClickLogout = useCallback(() => logout(), [logout])
   const onClickEnter = useCallback(() => navigate('/projects'), [navigate])
