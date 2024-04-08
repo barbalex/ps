@@ -95,13 +95,13 @@ export const Header = memo(({ autoFocusRef }) => {
     if (!geometry) return alertNoGeometry()
 
     // 1. show map if not happening
-    const appState = await db.app_states.findUnique({
+    const appState = await db.app_states.findFirst({
       where: { user_email: authUser?.email },
     })
     const tabs = appState?.tabs ?? []
     if (!tabs.includes('map')) {
       await db.app_states.update({
-        where: { user_email: authUser?.email },
+        where: { app_state_id: appState?.app_state_id },
         data: { tabs: [...tabs, 'map'] },
       })
     }
@@ -112,7 +112,7 @@ export const Header = memo(({ autoFocusRef }) => {
     const bounds = boundsFromBbox(newBbox)
     if (!bounds) return alertNoGeometry()
     db.app_states.update({
-      where: { user_email: authUser.email },
+      where: { app_state_id: appState?.app_state_id },
       data: { map_bounds: bounds },
     })
   }, [db.checks, db.app_states, check_id, alertNoGeometry, authUser.email])
