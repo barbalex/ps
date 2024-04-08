@@ -76,7 +76,7 @@ export const generateUserLabel = async (db) => {
   }
   // if email is changed, app_states.user_email needs to be updated
   // TODO: this causes error when user is changed
-  // TODO: Error: cannot rollback - no transaction is active
+  // Error: cannot rollback - no transaction is active
   // Seems that electric-sql or sqlite do not support updating another tables primary key? https://github.com/electric-sql/electric/issues/1134
   // PROBLEM: email is pk in app_states because findFirst in electric-sql re-renders perpetually
   // circumvention: create new row from copying data then delete old one - nope: same error!
