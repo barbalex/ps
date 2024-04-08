@@ -26,7 +26,7 @@ export const Editing = memo(() => {
 
   const { db } = useElectric()!
   const { results: appState } = useLiveQuery(
-    db.app_states.liveUnique({ where: { user_email: authUser?.email } }),
+    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
   const designing = appState?.designing ?? false
 
@@ -34,7 +34,7 @@ export const Editing = memo(() => {
     (e) => {
       e.stopPropagation()
       db.app_states.update({
-        where: { user_email: authUser?.email },
+        where: { app_state_id: appState?.app_state_id },
         data: { designing: !designing },
       })
     },
