@@ -33,7 +33,7 @@ export const Map = () => {
 
   const { db } = useElectric()!
   const { results } = useLiveQuery(
-    db.app_states.liveUnique({ where: { user_email: authUser?.email } }),
+    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
   const appState: AppState = results
   const tileLayerSorter = appState?.tile_layer_sorter ?? ''
