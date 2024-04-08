@@ -81,7 +81,7 @@ export const Target = memo(
     }, [saveToDb])
     useEffect(() => {
       if (changing && !labelChanged) setChanging(false)
-    }, [changing, labelChanged])
+    }, [changing, labelChanged]) 
 
     return (
       <div style={containerStyle}>
