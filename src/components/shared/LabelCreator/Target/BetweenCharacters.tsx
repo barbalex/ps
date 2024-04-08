@@ -61,6 +61,7 @@ export const BetweenCharacters = memo(
           size="small"
           onChange={onBlur}
           style={inputStyle}
+          autoFocus
         />
         {children}
       </div>
