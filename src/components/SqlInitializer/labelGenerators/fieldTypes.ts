@@ -12,17 +12,4 @@ export const generateFieldTypeLabel = async (db) => {
       sql: 'CREATE INDEX IF NOT EXISTS field_types_label_idx ON field_types(label)',
     })
   }
-  // drop label_replace_by_generated_column if it exists
-  const hasLabelReplaceByGeneratedColumn = columns.some(
-    (column) => column.name === 'label_replace_by_generated_column',
-  )
-  if (hasLabelReplaceByGeneratedColumn) {
-    const result = await db.unsafeExec({
-      sql: 'ALTER TABLE field_types drop COLUMN label_replace_by_generated_column;',
-    })
-    console.log(
-      'LabelGenerator, field_types_label, result from dropping label_replace_by_generated_column:',
-      result,
-    )
-  }
 }

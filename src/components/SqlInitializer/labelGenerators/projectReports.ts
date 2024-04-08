@@ -12,17 +12,4 @@ export const generateProjectReportLabel = async (db) => {
       sql: 'CREATE INDEX IF NOT EXISTS project_reports_label_idx ON project_reports(label)',
     })
   }
-  // drop label_replace_by_generated_column if it exists
-  const hasLabelReplaceByGeneratedColumn = columns.some(
-    (column) => column.name === 'label_replace_by_generated_column',
-  )
-  if (hasLabelReplaceByGeneratedColumn) {
-    const result = await db.unsafeExec({
-      sql: 'ALTER TABLE project_reports drop COLUMN label_replace_by_generated_column;',
-    })
-    console.log(
-      'LabelGenerator, project_reports_label, result from dropping label_replace_by_generated_column:',
-      result,
-    )
-  }
 }

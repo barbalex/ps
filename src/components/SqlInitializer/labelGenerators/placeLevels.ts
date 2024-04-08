@@ -12,17 +12,4 @@ export const generatePlaceLevelLabel = async (db) => {
       sql: 'CREATE INDEX IF NOT EXISTS place_levels_label_idx ON place_levels(label)',
     })
   }
-  // drop label_replace_by_generated_column if it exists
-  const hasLabelReplaceByGeneratedColumn = columns.some(
-    (column) => column.name === 'label_replace_by_generated_column',
-  )
-  if (hasLabelReplaceByGeneratedColumn) {
-    const result = await db.unsafeExec({
-      sql: 'ALTER TABLE place_levels drop COLUMN label_replace_by_generated_column;',
-    })
-    console.log(
-      'LabelGenerator, place_levels_label, result from dropping label_replace_by_generated_column:',
-      result,
-    )
-  }
 }

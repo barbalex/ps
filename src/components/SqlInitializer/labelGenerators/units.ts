@@ -12,17 +12,4 @@ export const generateUnitLabel = async (db) => {
       sql: 'CREATE INDEX IF NOT EXISTS units_label_idx ON units(label)',
     })
   }
-  // drop label_replace_by_generated_column if it exists
-  const hasLabelReplaceByGeneratedColumn = columns.some(
-    (column) => column.name === 'label_replace_by_generated_column',
-  )
-  if (hasLabelReplaceByGeneratedColumn) {
-    const result = await db.unsafeExec({
-      sql: 'ALTER TABLE units drop COLUMN label_replace_by_generated_column;',
-    })
-    console.log(
-      'LabelGenerator, units_label, result from dropping label_replace_by_generated_column:',
-      result,
-    )
-  }
 }

@@ -13,17 +13,4 @@ export const generateObservationLabel = async (db) => {
     })
     console.log('LabelGenerator, observations, result:', result)
   }
-  // drop label_replace_by_generated_column if it exists
-  const hasLabelReplaceByGeneratedColumn = columns.some(
-    (column) => column.name === 'label_replace_by_generated_column',
-  )
-  if (hasLabelReplaceByGeneratedColumn) {
-    const result = await db.unsafeExec({
-      sql: 'ALTER TABLE observations drop COLUMN label_replace_by_generated_column;',
-    })
-    console.log(
-      'LabelGenerator, observations_label, result from dropping label_replace_by_generated_column:',
-      result,
-    )
-  }
 }
