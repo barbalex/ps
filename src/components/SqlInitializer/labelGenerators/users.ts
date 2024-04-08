@@ -1,5 +1,4 @@
 export const generateUserLabel = async (db) => {
-  // 1. remove label if exists. Reason: there were error shown
   const usersIndexList = await db.rawQuery({
     sql: 'PRAGMA index_list(users)',
   })
@@ -8,34 +7,34 @@ export const generateUserLabel = async (db) => {
     'hello from generateUserLabel, userIndexNamesList:',
     userIndexNamesList,
   )
-  if (userIndexNamesList.includes('users_label_idx')) {
-    try {
-      const result = await db.unsafeExec({
-        sql: `
-          drop index if exists users_label_idx;`,
-      })
-      console.log(
-        'hello generateUserLabel dropping label index, result:',
-        result,
-      )
-    } catch (error) {
-      console.log('hello generateUserLabel dropping label, error:', error)
-    }
-  }
+  // if (userIndexNamesList.includes('users_label_idx')) {
+  //   try {
+  //     const result = await db.unsafeExec({
+  //       sql: `
+  //         drop index if exists users_label_idx;`,
+  //     })
+  //     console.log(
+  //       'hello generateUserLabel dropping label index, result:',
+  //       result,
+  //     )
+  //   } catch (error) {
+  //     console.log('hello generateUserLabel dropping label, error:', error)
+  //   }
+  // }
 
-  const columns = await db.rawQuery({
-    sql: 'PRAGMA table_xinfo(users)',
-  })
-  const hasLabel = columns.some((column) => column.name === 'label')
-  if (!hasLabel) {
-    await db.unsafeExec({
-      sql: `
-        ALTER TABLE users ADD COLUMN label text GENERATED ALWAYS AS (coalesce(email, user_id));`,
-    })
-    await db.unsafeExec({
-      sql: 'CREATE INDEX IF NOT EXISTS users_label_idx ON users(label)',
-    })
-  }
+  // const columns = await db.rawQuery({
+  //   sql: 'PRAGMA table_xinfo(users)',
+  // })
+  // const hasLabel = columns.some((column) => column.name === 'label')
+  // if (!hasLabel) {
+  //   await db.unsafeExec({
+  //     sql: `
+  //       ALTER TABLE users ADD COLUMN label text GENERATED ALWAYS AS (coalesce(email, user_id));`,
+  //   })
+  //   await db.unsafeExec({
+  //     sql: 'CREATE INDEX IF NOT EXISTS users_label_idx ON users(label)',
+  //   })
+  // }
 
   const triggers = await db.rawQuery({
     sql: `select name from sqlite_master where type = 'trigger';`,
@@ -76,10 +75,12 @@ export const generateUserLabel = async (db) => {
   }
   // if email is changed, app_states.user_email needs to be updated
   // TODO: this causes error when user is changed
-  //  Error: cannot rollback - no transaction is active
-  // const usersAppStatesEmailTriggerExists = triggers.some(
-  //   (column) => column.name === 'users_app_states_email_trigger',
-  // )
+  // TODO: Error: cannot rollback - no transaction is active
+  // Seems that electric-sql or sqlite do not support updating another tables primary key?
+  // PROBLEM: email is pk in app_states because findFirst in electric-sql re-renders perpetually
+  const usersAppStatesEmailTriggerExists = triggers.some(
+    (column) => column.name === 'users_app_states_email_trigger',
+  )
   // if (!usersAppStatesEmailTriggerExists) {
   //   await db.unsafeExec({
   //     sql: `
