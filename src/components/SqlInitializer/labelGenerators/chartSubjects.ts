@@ -3,7 +3,6 @@ export const generateChartSubjectLabel = async (db) => {
     sql: 'PRAGMA table_xinfo(chart_subjects)',
   })
   const hasLabel = columns.some((column) => column.name === 'label')
-  console.log('LabelGenarator, chart_subjects, hasLabel:', hasLabel)
   if (!hasLabel) {
     let res
     try {

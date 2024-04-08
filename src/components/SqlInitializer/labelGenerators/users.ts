@@ -55,7 +55,7 @@ export const generateUserLabel = async (db) => {
       END;`,
     })
   }
-  // if email is changed, label of account needs to be updated
+  // // if email is changed, label of account needs to be updated
   const usersAccountsLabelTriggerExists = triggers.some(
     (column) => column.name === 'users_accounts_label_trigger',
   )
@@ -75,20 +75,22 @@ export const generateUserLabel = async (db) => {
     )
   }
   // if email is changed, app_states.user_email needs to be updated
-  const usersAppStatesEmailTriggerExists = triggers.some(
-    (column) => column.name === 'users_app_states_email_trigger',
-  )
-  if (!usersAppStatesEmailTriggerExists) {
-    await db.unsafeExec({
-      sql: `
-      CREATE TRIGGER IF NOT EXISTS users_app_states_email_trigger
-        AFTER UPDATE OF email ON users
-      BEGIN
-        UPDATE app_states SET user_email = NEW.email
-        WHERE user_id = NEW.user_id;
-      END;`,
-    })
-  }
+  // TODO: this causes error when user is changed
+  //  Error: cannot rollback - no transaction is active
+  // const usersAppStatesEmailTriggerExists = triggers.some(
+  //   (column) => column.name === 'users_app_states_email_trigger',
+  // )
+  // if (!usersAppStatesEmailTriggerExists) {
+  //   await db.unsafeExec({
+  //     sql: `
+  //     CREATE TRIGGER IF NOT EXISTS users_app_states_email_trigger
+  //       AFTER UPDATE OF email ON users
+  //     BEGIN
+  //       UPDATE app_states SET user_email = NEW.email
+  //       WHERE user_id = NEW.user_id;
+  //     END;`,
+  //   })
+  // }
 
   // if email is changed, label of project_user needs to be updated
   const usersProjectUsersLabelTriggerExists = triggers.some(
