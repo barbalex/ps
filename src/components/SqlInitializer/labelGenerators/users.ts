@@ -26,65 +26,16 @@ export const generateUserLabel = async (db) => {
   const columns = await db.rawQuery({
     sql: 'PRAGMA table_xinfo(users)',
   })
-  console.log('hello from generateUserLabel, columns:', columns)
-  const labelColumn = columns.find((column) => column.name === 'label')
-  const labelIsGenerated = labelColumn?.hidden === 2
-  console.log(
-    'hello from generateUserLabel, labelIsGenerated:',
-    labelIsGenerated,
-  )
-  if (labelColumn && !labelIsGenerated) {
-    // try {
-    //   const result = await db.unsafeExec({
-    //     sql: `
-    //       ALTER TABLE users drop label;`,
-    //   })
-    //   console.log('hello generateUserLabel dropping label, result:', result)
-    // } catch (error) {
-    //   console.log('hello generateUserLabel dropping label, error:', error)
-    // }
-    // dropping errored - rename instead
-    try {
-      const result = await db.unsafeExec({
-        sql: `ALTER TABLE users RENAME column label to label_old;`,
-      })
-      console.log('hello generateUserLabel renaming users, result:', result)
-    } catch (error) {
-      console.log('hello generateUserLabel renaming users, error:', error)
-    }
-    try {
-      const result = await db.unsafeExec({
-        sql: `ALTER TABLE users ADD COLUMN label text GENERATED ALWAYS AS (coalesce(email, user_id));`,
-      })
-      console.log('hello generateUserLabel adding label, result:', result)
-    } catch (error) {
-      console.log('hello generateUserLabel adding label, error:', error)
-    }
-    try {
-      const result = await db.unsafeExec({
-        sql: `CREATE INDEX IF NOT EXISTS users_label_idx ON users(label);`,
-      })
-      console.log('hello generateUserLabel creating index, result:', result)
-    } catch (error) {
-      console.log('hello generateUserLabel creating index, error:', error)
-    }
+  const hasLabel = columns.some((column) => column.name === 'label')
+  if (!hasLabel) {
+    await db.unsafeExec({
+      sql: `
+        ALTER TABLE users ADD COLUMN label text GENERATED ALWAYS AS (coalesce(email, user_id));`,
+    })
+    await db.unsafeExec({
+      sql: 'CREATE INDEX IF NOT EXISTS users_label_idx ON users(label)',
+    })
   }
-  // dropping columns always errors...
-  // Error: error in trigger insert_main_subprojects_into_oplog after drop column: no such column: new.label
-  // Uncaught (in promise) Error: cannot rollback - no transaction is active
-  // So DONT drop
-  // const labelOldColumn = columns.find((column) => column.name === 'label_old')
-  // if (labelOldColumn) {
-  //   // drop label_old
-  //   try {
-  //     const result = await db.unsafeExec({
-  //       sql: `ALTER TABLE users DROP COLUMN label_old;`,
-  //     })
-  //     console.log('hello generateUserLabel dropping label_old, result:', result)
-  //   } catch (error) {
-  //     console.log('hello generateUserLabel dropping label_old, error:', error)
-  //   }
-  // }
 
   const triggers = await db.rawQuery({
     sql: `select name from sqlite_master where type = 'trigger';`,

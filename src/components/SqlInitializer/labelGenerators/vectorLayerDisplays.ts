@@ -12,17 +12,4 @@ export const generateVectorLayerDisplayLabel = async (db) => {
       sql: 'CREATE INDEX IF NOT EXISTS vector_layer_displays_label_idx ON vector_layer_displays(label)',
     })
   }
-  // drop label_replace_by_generated_column if it exists
-  // const hasLabelReplaceByGeneratedColumn = columns.some(
-  //   (column) => column.name === 'label_replace_by_generated_column',
-  // )
-  // if (hasLabelReplaceByGeneratedColumn) {
-  //   const result = await db.unsafeExec({
-  //     sql: 'ALTER TABLE vector_layer_displays drop COLUMN label_replace_by_generated_column;',
-  //   })
-  //   console.log(
-  //     'LabelGenerator, vector_layer_displays_label, result from dropping label_replace_by_generated_column:',
-  //     result,
-  //   )
-  // }
 }
