@@ -1,22 +1,56 @@
 export const generateUserLabel = async (db) => {
+  // 1. remove label if exists. Reason: there were error shown
+  const usersIndexList = await db.rawQuery({
+    sql: 'PRAGMA index_list(users)',
+  })
+  const userIndexNamesList = usersIndexList.map((index) => index.name)
+  console.log(
+    'hello from generateUserLabel, userIndexNamesList:',
+    userIndexNamesList,
+  )
+  if (userIndexNamesList.includes('users_label_idx')) {
+    try {
+      const result = await db.unsafeExec({
+        sql: `
+          drop index if exists users_label_idx;`,
+      })
+      console.log(
+        'hello generateUserLabel dropping label index, result:',
+        result,
+      )
+    } catch (error) {
+      console.log('hello generateUserLabel dropping label, error:', error)
+    }
+  }
+
   const columns = await db.rawQuery({
     sql: 'PRAGMA table_xinfo(users)',
   })
   console.log('hello from generateUserLabel, columns:', columns)
   const labelColumn = columns.find((column) => column.name === 'label')
-  const labelIsGenerated = labelColumn && labelColumn.hidden === 2
+  const labelIsGenerated = labelColumn?.hidden === 2
   console.log(
     'hello from generateUserLabel, labelIsGenerated:',
     labelIsGenerated,
   )
-  if (!labelIsGenerated) {
+  if (labelColumn && !labelIsGenerated) {
+    // try {
+    //   const result = await db.unsafeExec({
+    //     sql: `
+    //       ALTER TABLE users drop label;`,
+    //   })
+    //   console.log('hello generateUserLabel dropping label, result:', result)
+    // } catch (error) {
+    //   console.log('hello generateUserLabel dropping label, error:', error)
+    // }
+    // dropping errored - rename instead
     try {
       const result = await db.unsafeExec({
-        sql: `ALTER TABLE users drop label;`,
+        sql: `ALTER TABLE users RENAME column label to label_old;`,
       })
-      console.log('hello generateUserLabel dropping label, result:', result)
+      console.log('hello generateUserLabel renaming users, result:', result)
     } catch (error) {
-      console.log('hello generateUserLabel dropping label, error:', error)
+      console.log('hello generateUserLabel renaming users, error:', error)
     }
     try {
       const result = await db.unsafeExec({
@@ -35,6 +69,19 @@ export const generateUserLabel = async (db) => {
       console.log('hello generateUserLabel creating index, error:', error)
     }
   }
+  // dropping columns always errors...
+  // const labelOldColumn = columns.find((column) => column.name === 'label_old')
+  // if (labelOldColumn) {
+  //   // drop label_old
+  //   try {
+  //     const result = await db.unsafeExec({
+  //       sql: `ALTER TABLE users DROP COLUMN label_old;`,
+  //     })
+  //     console.log('hello generateUserLabel dropping label_old, result:', result)
+  //   } catch (error) {
+  //     console.log('hello generateUserLabel dropping label_old, error:', error)
+  //   }
+  // }
 
   const triggers = await db.rawQuery({
     sql: `select name from sqlite_master where type = 'trigger';`,
