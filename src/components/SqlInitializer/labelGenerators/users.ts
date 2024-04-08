@@ -1,4 +1,28 @@
 export const generateUserLabel = async (db) => {
+  // remove index first, got some errors without
+  const usersIndexList = await db.rawQuery({
+    sql: 'PRAGMA index_list(users)',
+  })
+  const userIndexNamesList = usersIndexList.map((index) => index.name)
+  console.log(
+    'hello from generateUserLabel, userIndexNamesList:',
+    userIndexNamesList,
+  )
+  if (userIndexNamesList.includes('users_label_idx')) {
+    try {
+      const result = await db.unsafeExec({
+        sql: `
+          drop index if exists users_label_idx;`,
+      })
+      console.log(
+        'hello generateUserLabel dropping label index, result:',
+        result,
+      )
+    } catch (error) {
+      console.log('hello generateUserLabel dropping label, error:', error)
+    }
+  }
+
   const columns = await db.rawQuery({
     sql: 'PRAGMA table_xinfo(users)',
   })
@@ -31,7 +55,7 @@ export const generateUserLabel = async (db) => {
       END;`,
     })
   }
-  // if email is changed, label of account needs to be updated
+  // // if email is changed, label of account needs to be updated
   const usersAccountsLabelTriggerExists = triggers.some(
     (column) => column.name === 'users_accounts_label_trigger',
   )
@@ -51,20 +75,24 @@ export const generateUserLabel = async (db) => {
     )
   }
   // if email is changed, app_states.user_email needs to be updated
+  // TODO: this causes error when user is changed
+  // TODO: Error: cannot rollback - no transaction is active
+  // Seems that electric-sql or sqlite do not support updating another tables primary key? https://github.com/electric-sql/electric/issues/1134
+  // PROBLEM: email is pk in app_states because findFirst in electric-sql re-renders perpetually
   const usersAppStatesEmailTriggerExists = triggers.some(
     (column) => column.name === 'users_app_states_email_trigger',
   )
-  if (!usersAppStatesEmailTriggerExists) {
-    await db.unsafeExec({
-      sql: `
-      CREATE TRIGGER IF NOT EXISTS users_app_states_email_trigger
-        AFTER UPDATE OF email ON users
-      BEGIN
-        UPDATE app_states SET user_email = NEW.email
-        WHERE user_id = NEW.user_id;
-      END;`,
-    })
-  }
+  // if (!usersAppStatesEmailTriggerExists) {
+  //   await db.unsafeExec({
+  //     sql: `
+  //     CREATE TRIGGER IF NOT EXISTS users_app_states_email_trigger
+  //       AFTER UPDATE OF email ON users
+  //     BEGIN
+  //       UPDATE app_states SET user_email = NEW.email
+  //       WHERE user_id = NEW.user_id;
+  //     END;`,
+  //   })
+  // }
 
   // if email is changed, label of project_user needs to be updated
   const usersProjectUsersLabelTriggerExists = triggers.some(

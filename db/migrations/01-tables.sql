@@ -1,16 +1,19 @@
 CREATE TABLE users(
   user_id uuid PRIMARY KEY DEFAULT NULL,
-  email text DEFAULT NULL, -- TODO: email needs to be unique per account. But: not possible in electric-sql
+  email text DEFAULT NULL, -- TODO: email needs to be unique. But: not possible in electric-sql
   label_replace_by_generated_column text DEFAULT NULL
 );
 
--- CREATE INDEX ON users USING btree(user_id);
 CREATE INDEX ON users USING btree(email);
 
 COMMENT ON COLUMN users.email IS 'email needs to be unique. project manager can list project user by email before this user creates an own login (thus has no user_id yet)';
 
 COMMENT ON TABLE users IS 'Goal: manage users and authorize them';
 
+-- https://electric-sql.com/docs/api/ddlx#local-migrations
+-- BUT: not implemented yet: https://discord.com/channels/933657521581858818/1208902100801560676/1209495997726851133
+-- ELECTRIC SQLITE 'ALTER TABLE users ADD COLUMN label text GENERATED ALWAYS AS (coalesce(email, user_id))';
+-- ELECTRIC SQLITE 'CREATE INDEX IF NOT EXISTS users_label_idx ON users(label)'
 DROP TABLE IF EXISTS accounts CASCADE;
 
 CREATE TABLE accounts(
