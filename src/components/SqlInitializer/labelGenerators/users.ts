@@ -1,3 +1,5 @@
+import { uuidv7 } from '@kripod/uuidv7'
+
 export const generateUserLabel = async (db) => {
   // remove index first, got some errors without
   const usersIndexList = await db.rawQuery({
@@ -45,15 +47,19 @@ export const generateUserLabel = async (db) => {
     (column) => column.name === 'users_app_state_trigger',
   )
   if (!usersAppStateTriggerExists) {
-    await db.unsafeExec({
+    const result = await db.unsafeExec({
       sql: `
       CREATE TRIGGER IF NOT EXISTS users_app_state_trigger
         AFTER INSERT ON users
       BEGIN
-        INSERT INTO app_states (user_id, user_email, designing, breadcrumbs_overflowing, navs_overflowing, tabs)
-        VALUES (NEW.user_id, NEW.email, false, true, true, '["tree","data"]');
+        INSERT INTO app_states (app_state_id, user_id, user_email, designing, breadcrumbs_overflowing, navs_overflowing, tabs)
+        VALUES ('${uuidv7()}', NEW.user_id, NEW.email, false, true, true, '["tree","data"]');
       END;`,
     })
+    console.log(
+      'hello TriggerGenerator, users_app_state_trigger, result:',
+      result,
+    )
   }
   // // if email is changed, label of account needs to be updated
   const usersAccountsLabelTriggerExists = triggers.some(
@@ -80,22 +86,20 @@ export const generateUserLabel = async (db) => {
   // Seems that electric-sql or sqlite do not support updating another tables primary key? https://github.com/electric-sql/electric/issues/1134
   // PROBLEM: email is pk in app_states because findFirst in electric-sql re-renders perpetually
   // circumvention: create new row from copying data then delete old one - nope: same error!
-  // const usersAppStatesEmailTriggerExists = triggers.some(
-  //   (column) => column.name === 'users_app_states_email_trigger',
-  // )
-  // if (!usersAppStatesEmailTriggerExists) {
-  //   await db.unsafeExec({
-  //     sql: `
-  //     CREATE TRIGGER IF NOT EXISTS users_app_states_email_trigger
-  //       AFTER UPDATE OF email ON users
-  //     BEGIN
-  //       --insert into app_states (user_email, user_id, account_id, designing, breadcrumbs_overflowing, navs_overflowing, tabs, map_bounds, show_local_map, tile_layer_sorter, vector_layer_sorter, editing_place_geometry, editing_check_geometry, editing_action_geometry) values (NEW.user_email, NEW.user_id, NEW.account_id, NEW.designing, NEW.breadcrumbs_overflowing, NEW.navs_overflowing, NEW.tabs, NEW.map_bounds, NEW.show_local_map, NEW.tile_layer_sorter, NEW.vector_layer_sorter, NEW.editing_place_geometry, NEW.editing_check_geometry, NEW.editing_action_geometry);
-  //       --DELETE from app_states WHERE user_email = OLD.user_email;
-  //       UPDATE app_states SET user_email = NEW.email
-  //       WHERE user_id = NEW.user_id;
-  //     END;`,
-  //   })
-  // }
+  const usersAppStatesEmailTriggerExists = triggers.some(
+    (column) => column.name === 'users_app_states_email_trigger',
+  )
+  if (!usersAppStatesEmailTriggerExists) {
+    await db.unsafeExec({
+      sql: `
+      CREATE TRIGGER IF NOT EXISTS users_app_states_email_trigger
+        AFTER UPDATE OF email ON users
+      BEGIN
+        UPDATE app_states SET user_email = NEW.email
+        WHERE user_id = NEW.user_id;
+      END;`,
+    })
+  }
 
   // if email is changed, label of project_user needs to be updated
   const usersProjectUsersLabelTriggerExists = triggers.some(

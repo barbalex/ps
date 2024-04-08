@@ -15,7 +15,7 @@ export const EditField = memo(({ field_id }) => {
 
   const { db } = useElectric()!
   const { results: appState } = useLiveQuery(
-    db.app_states.liveUnique({ where: { user_email: authUser?.email } }),
+    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
   const designing = appState?.designing
 

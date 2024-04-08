@@ -1262,11 +1262,11 @@ export const router = ({ db, authUser }) => {
               children: [
                 { index: true, lazy: () => import('../routes/appStates') },
                 {
-                  path: ':user_email',
+                  path: ':app_state_id',
                   lazy: () => import('../routes/appState'),
                   handle: {
                     crumb: (match) => ({
-                      text: match.params.user_email,
+                      text: match.params.app_state_id,
                       table: 'app_states',
                       folder: false,
                     }),

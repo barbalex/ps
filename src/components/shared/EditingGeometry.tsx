@@ -30,7 +30,7 @@ export const EditingGeometry = memo(({ row, table }) => {
   const { user: authUser } = useCorbadoSession()
   const { db } = useElectric()!
   const { results: appState } = useLiveQuery(
-    db.app_states.liveUnique({ where: { user_email: authUser?.email } }),
+    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
   const editedId = appState?.[fieldName] ?? null
 
@@ -41,14 +41,14 @@ export const EditingGeometry = memo(({ row, table }) => {
         const tabs = appState?.tabs ?? []
         if (!tabs.includes('map')) {
           await db.app_states.update({
-            where: { user_email: authUser?.email },
+            where: { app_state_id: appState?.app_state_id },
             data: { tabs: [...tabs, 'map'] },
           })
         }
       }
       // 2. update the editing id
       db.app_states.update({
-        where: { user_email: authUser?.email },
+        where: { app_state_id: appState?.app_state_id },
         data: { [fieldName]: data.checked ? id : null },
       })
     },

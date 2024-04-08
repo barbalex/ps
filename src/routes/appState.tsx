@@ -12,22 +12,22 @@ import { Loading } from '../components/shared/Loading'
 import '../form.css'
 
 export const Component = () => {
-  const { user_email } = useParams()
+  const { app_state_id } = useParams()
 
   const { db } = useElectric()!
   const { results: row } = useLiveQuery(
-    db.app_states.liveUnique({ where: { user_email } }),
+    db.app_states.liveUnique({ where: { app_state_id } }),
   )
 
   const onChange: InputProps['onChange'] = useCallback(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       db.app_states.update({
-        where: { user_email },
+        where: { app_state_id },
         data: { [name]: value },
       })
     },
-    [user_email, db.app_states],
+    [db.app_states],
   )
 
   if (!row) return <Loading />
