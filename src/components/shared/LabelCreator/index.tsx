@@ -38,7 +38,13 @@ export const LabelCreator = memo(
     useEffect(() => setLabel(structuredClone(labelPassed ?? [])), [labelPassed])
 
     const labelChanged = useMemo(() => {
-      if (!labelPassed) return false
+      if (
+        (!labelPassed || labelPassed?.length === 0) &&
+        (!label || label?.length === 0)
+      ) {
+        return false
+      }
+
       return !isEqual(label, labelPassed)
     }, [label, labelPassed])
 
@@ -48,7 +54,7 @@ export const LabelCreator = memo(
 
     const containerRef = useRef<HTMLDivElement>(null)
 
-    const fieldLabelElements = label.filter((el) => el.type === 'field')
+    const fieldLabelElements = (label ?? []).filter((el) => el.type === 'field')
     const fieldLabelValues = fieldLabelElements.map((el) => el.value)
     const unusedFields = fields.filter(
       (field) => !fieldLabelValues.includes(field),
@@ -96,6 +102,7 @@ export const LabelCreator = memo(
               },
               ...label.slice(destination.index),
             ]
+            // TODO: focus the field
           } else {
             const fieldLabel = fieldLabels.find((el) => el.id === draggableId)
             newLabel = [
@@ -105,6 +112,7 @@ export const LabelCreator = memo(
               ...label.slice(destination.index),
             ]
           }
+
           return onChange(newLabel)
         }
 
