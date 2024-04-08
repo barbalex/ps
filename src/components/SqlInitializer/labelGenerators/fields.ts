@@ -13,16 +13,16 @@ export const generateFieldLabel = async (db) => {
     })
   }
   // drop label_replace_by_generated_column if it exists
-  const hasLabelReplaceByGeneratedColumn = columns.some(
-    (column) => column.name === 'label_replace_by_generated_column',
-  )
-  if (hasLabelReplaceByGeneratedColumn) {
-    const result = await db.unsafeExec({
-      sql: 'ALTER TABLE fields drop COLUMN label_replace_by_generated_column;',
-    })
-    console.log(
-      'LabelGenerator, fields_label, result from dropping label_replace_by_generated_column:',
-      result,
-    )
-  }
+  // const hasLabelReplaceByGeneratedColumn = columns.some(
+  //   (column) => column.name === 'label_replace_by_generated_column',
+  // )
+  // if (hasLabelReplaceByGeneratedColumn) {
+  //   const result = await db.unsafeExec({
+  //     sql: 'ALTER TABLE fields drop COLUMN label_replace_by_generated_column;',
+  //   })
+  //   console.log(
+  //     'LabelGenerator, fields_label, result from dropping label_replace_by_generated_column:',
+  //     result,
+  //   )
+  // }
 }

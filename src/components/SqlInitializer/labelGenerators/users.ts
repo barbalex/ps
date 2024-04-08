@@ -70,6 +70,9 @@ export const generateUserLabel = async (db) => {
     }
   }
   // dropping columns always errors...
+  // Error: error in trigger insert_main_subprojects_into_oplog after drop column: no such column: new.label_replace_by_generated_column
+  // Uncaught (in promise) Error: cannot rollback - no transaction is active
+  // So DONT drop
   // const labelOldColumn = columns.find((column) => column.name === 'label_old')
   // if (labelOldColumn) {
   //   // drop label_old

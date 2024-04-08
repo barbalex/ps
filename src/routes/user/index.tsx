@@ -33,7 +33,7 @@ export const Component = () => {
     [db.users, user_id],
   )
 
-  // console.log('hello user, row:', row)
+  console.log('hello user, row:', row)
 
   if (!row) return <Loading />
 
