@@ -60,7 +60,7 @@ export const BreadcrumbForFolder = forwardRef(
     const { results } = useLiveQuery(db[queryTable]?.liveMany({ where }))
     const row = results?.[0]
     const { results: appState } = useLiveQuery(
-      db.app_states.liveUnique({
+      db.app_states.liveFirst({
         where: { user_email: authUser?.email },
       }),
     )
