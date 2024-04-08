@@ -24,10 +24,12 @@ export const Main = () => {
 
   const { db } = useElectric()!
   const { results: appState } = useLiveQuery(
-    db.app_states.liveUnique({ where: { user_email: authUser?.email } }),
+    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
   const tabs = useMemo(() => appState?.tabs ?? [], [appState?.tabs])
   const designing = appState?.designing ?? false
+
+  console.log('hello, Layout Main, appState:', appState)
 
   if (onlyForm) return <Outlet />
 

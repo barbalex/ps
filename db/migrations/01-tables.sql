@@ -1231,7 +1231,8 @@ COMMENT ON COLUMN fields.table_name IS 'table, on which this field is used insid
 COMMENT ON COLUMN fields.level IS 'level of field if places or below: 1, 2';
 
 CREATE TABLE app_states(
-  user_email text PRIMARY KEY DEFAULT NULL,
+  app_state_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  user_email text DEFAULT NULL,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   designing boolean DEFAULT NULL, -- FALSE,
@@ -1252,6 +1253,8 @@ CREATE TABLE app_states(
 CREATE INDEX ON app_states USING btree(account_id);
 
 CREATE INDEX ON app_states USING btree(user_id);
+
+CREATE INDEX ON app_states USING btree(user_email);
 
 COMMENT ON COLUMN app_states.user_email IS 'email of authenticated user. Exists in users but copied here for easier querying. Also: is returned by auth hooks, so available in the client without additional query';
 
