@@ -29,8 +29,6 @@ export const Main = () => {
   const tabs = useMemo(() => appState?.tabs ?? [], [appState?.tabs])
   const designing = appState?.designing ?? false
 
-  console.log('hello, Layout Main, appState:', appState)
-
   if (onlyForm) return <Outlet />
 
   // Allotment prevents the map from drawing correctly

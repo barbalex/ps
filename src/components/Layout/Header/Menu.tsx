@@ -60,8 +60,6 @@ export const Menu = memo(() => {
   const { isAuthenticated, logout } = useCorbado()
   const { user: authUser } = useCorbadoSession()
 
-  console.log('hello Layout/Header/Menu.tsx, authUser:', authUser)
-
   const { db } = useElectric()!
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({
@@ -69,7 +67,6 @@ export const Menu = memo(() => {
     }),
   )
   const tabs = useMemo(() => appState?.tabs ?? [], [appState?.tabs])
-  console.log('hello Layout/Header/Menu.tsx, appState:', appState)
   const onChangeTabs = useCallback(
     (e, { checkedItems }) => {
       db.app_states.update({
