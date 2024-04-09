@@ -8,13 +8,20 @@ import { ElectricConfig } from 'electric-sql/config'
 import { useCorbadoSession } from '@corbado/react'
 
 import { ElectricProvider } from './ElectricProvider'
+import { subKey } from './auth'
 
 import { authToken } from './auth'
+const fakeAuth = authToken()
 
 export const ElectricWrapper = ({ children }) => {
   const [electric, setElectric] = useState<Electric>()
   const { shortSession } = useCorbadoSession()
-  console.log('hello ElectricWrapper', shortSession)
+
+  // TODO: move this to own component
+  useEffect(() => {
+    if (!shortSession) return
+    window.sessionStorage.setItem(subKey, shortSession)
+  }, [shortSession])
 
   useEffect(() => {
     let isMounted = true
@@ -33,7 +40,7 @@ export const ElectricWrapper = ({ children }) => {
 
       const conn = await ElectricDatabase.init(scopedDbName)
       const electric = await electrify(conn, schema, config)
-      await electric.connect(shortSession)
+      await electric.connect(fakeAuth)
 
       if (!isMounted) {
         return
