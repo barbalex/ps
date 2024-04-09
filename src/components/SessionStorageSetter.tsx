@@ -6,9 +6,10 @@ import { subKey } from '../auth'
 export const SessionStorageSetter = () => {
   const { shortSession } = useCorbadoSession()
 
-  // TODO: move this to own component
   useEffect(() => {
     if (!shortSession) return
+
+    console.log('hello SessionStorageSetter, shortSession', shortSession)
     window.sessionStorage.setItem(subKey, shortSession)
   }, [shortSession])
 
