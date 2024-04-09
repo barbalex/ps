@@ -59,6 +59,7 @@ export const Node = memo(
           ...(isActive && { color: 'red' }),
           marginLeft: level * 20 - 15,
           justifyContent: 'flex-start',
+          userSelect: 'none',
         }}
       >
         <Button
