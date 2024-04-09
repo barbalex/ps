@@ -70,7 +70,6 @@ export const Menu = memo(() => {
   console.log('hello Layout/Header/Menu.tsx', {
     appState,
     tabs,
-    authUser,
     authUserEmail: authUser?.email,
   })
   // TODO: somehow authUser is correct but appState is null
