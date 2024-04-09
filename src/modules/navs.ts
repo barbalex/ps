@@ -34,6 +34,13 @@ export const buildNavs = async ({
   }
   // need project for it's settings
   console.log('hello from buildNavs', { project_id, table, db })
+  // As everthing seems fucked on querying - lets try to get all projects
+  try {
+    const projects = await db?.projects?.findMany()
+    console.log('hello from buildNavs, projects:', projects)
+  } catch (error) {
+    console.log('hello from buildNavs, error:', error) // uups, happening! But only on first load after clearing cache
+  }
   const project = project_id
     ? await db?.projects?.findUnique({ where: { project_id } })
     : {}

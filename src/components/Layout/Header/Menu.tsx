@@ -61,10 +61,16 @@ export const Menu = memo(() => {
   const { user: authUser } = useCorbadoSession()
 
   const { db } = useElectric()!
+  // TODO: somehow authUser is correct but appState is null ???!!!
+  // Could it be that app_states is not being synced?
   const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({
-      where: { user_email: authUser?.email },
-    }),
+    // db.app_states.liveFirst({
+    //   where: { user_email: authUser?.email },
+    // }),
+    // db.app_states.liveUnique({
+    //   where: { app_state_id: '018ec37d-54b7-7d95-8bd9-a9117e1e7491' },
+    // }),
+    db.app_states.liveMany(),
   )
   const tabs = useMemo(() => appState?.tabs ?? [], [appState?.tabs])
   console.log('hello Layout/Header/Menu.tsx', {
@@ -72,7 +78,6 @@ export const Menu = memo(() => {
     tabs,
     authUserEmail: authUser?.email,
   })
-  // TODO: somehow authUser is correct but appState is null
   const onChangeTabs = useCallback(
     (e, { checkedItems }) => {
       db.app_states.update({

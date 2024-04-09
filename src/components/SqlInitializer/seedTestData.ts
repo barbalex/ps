@@ -44,7 +44,8 @@ VALUES ('018ca1aa-6fa6-7be5-b5f8-5caca1565687', '018ca19e-7a23-7bf4-8523-ff41e3b
 // TODO: this is used until authorization is implemented
 const seedUsers = `INSERT INTO users(user_id, email) values ('018cf95a-d817-7000-92fa-bb3b2ad59dda', 'alex.barbalex@gmail.com');`
 const seedAccounts = `INSERT INTO accounts(account_id, user_id, type) values ('018cf958-27e2-7000-90d3-59f024d467be', '018cf95a-d817-7000-92fa-bb3b2ad59dda', 'premium');`
-const seedProjects = `INSERT INTO projects(project_id, account_id, name) values ('018cfcf7-6424-7000-a100-851c5cc2c878', '018cf958-27e2-7000-90d3-59f024d467be', 'Demo Project');`
+const seedProjects = `INSERT INTO projects(project_id, account_id, name) values 
+('018cfcf7-6424-7000-a100-851c5cc2c878', '018cf958-27e2-7000-90d3-59f024d467be', 'Demo Project');`
 const seedUnits = `INSERT INTO units(project_id, account_id, name, unit_id, use_for_action_values, use_for_action_report_values, use_for_check_values, use_for_place_report_values, use_for_goal_report_values, use_for_subproject_taxa, use_for_check_taxa) values 
 ('018cfcf7-6424-7000-a100-851c5cc2c878', '018cf958-27e2-7000-90d3-59f024d467be', 'Demo Unit 1', '018cff37-ece7-77b8-abe5-7cbe86b5dc88', true, true, true, true, true, true, true), ('018cfcf7-6424-7000-a100-851c5cc2c878', '018cf958-27e2-7000-90d3-59f024d467be', 'Demo Unit 2', '018cff39-fcdd-7046-aa4f-49532086eb69', true, true, true, true, true, true, true);`
 const seedProjectUsers = `INSERT INTO project_users(project_user_id, project_id, user_id, role) values 
