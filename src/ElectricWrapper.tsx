@@ -5,6 +5,7 @@ import { Electric, schema } from './generated/client'
 import { uniqueTabId } from 'electric-sql/util'
 import { LIB_VERSION } from 'electric-sql/version'
 import { ElectricConfig } from 'electric-sql/config'
+import { useCorbadoSession } from '@corbado/react'
 
 import { ElectricProvider } from './ElectricProvider'
 
@@ -12,6 +13,8 @@ import { authToken } from './auth'
 
 export const ElectricWrapper = ({ children }) => {
   const [electric, setElectric] = useState<Electric>()
+  const { shortSession } = useCorbadoSession()
+  console.log('hello ElectricWrapper', shortSession)
 
   useEffect(() => {
     let isMounted = true
@@ -30,7 +33,7 @@ export const ElectricWrapper = ({ children }) => {
 
       const conn = await ElectricDatabase.init(scopedDbName)
       const electric = await electrify(conn, schema, config)
-      await electric.connect(authToken())
+      await electric.connect(shortSession)
 
       if (!isMounted) {
         return
