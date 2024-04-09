@@ -34,9 +34,9 @@ export const buildNavs = async ({
   }
   // need project for it's settings
   console.log('hello from buildNavs', { project_id, table, db })
-  const project = await db?.projects?.findUnique({
-    where: { project_id: project_id ?? '99999999-9999-9999-9999-999999999999' },
-  })
+  const project = project_id
+    ? await db?.projects?.findUnique({ where: { project_id } })
+    : {}
   const filesActiveProjects = project?.files_active_projects ?? false
   const filesActiveSubprojects = project?.files_active_subprojects ?? false
   const filesActivePlaces = project?.files_active_places ?? false
