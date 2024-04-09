@@ -5,23 +5,14 @@ import { Electric, schema } from './generated/client'
 import { uniqueTabId } from 'electric-sql/util'
 import { LIB_VERSION } from 'electric-sql/version'
 import { ElectricConfig } from 'electric-sql/config'
-import { useCorbadoSession } from '@corbado/react'
 
 import { ElectricProvider } from './ElectricProvider'
-import { subKey } from './auth'
 
 import { authToken } from './auth'
 const fakeAuth = authToken()
 
 export const ElectricWrapper = ({ children }) => {
   const [electric, setElectric] = useState<Electric>()
-  const { shortSession } = useCorbadoSession()
-
-  // TODO: move this to own component
-  useEffect(() => {
-    if (!shortSession) return
-    window.sessionStorage.setItem(subKey, shortSession)
-  }, [shortSession])
 
   useEffect(() => {
     let isMounted = true
