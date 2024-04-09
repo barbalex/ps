@@ -13,14 +13,14 @@ export const Header = memo(({ autoFocusRef }) => {
   const { db } = useElectric()!
 
   const addRow = useCallback(async () => {
-    const data = createUser()
+    const data = await createUser({ db })
     await db.users.create({ data })
     navigate({
       pathname: `../${data.user_id}`,
       search: searchParams.toString(),
     })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db.users, navigate, searchParams])
+  }, [autoFocusRef, db, navigate, searchParams])
 
   const deleteRow = useCallback(async () => {
     await db.users.delete({

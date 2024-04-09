@@ -1,5 +1,3 @@
-import { uuidv7 } from '@kripod/uuidv7'
-
 export const generateUserLabel = async (db) => {
   // remove index first, got some errors without
   const usersIndexList = await db.rawQuery({
@@ -43,24 +41,29 @@ export const generateUserLabel = async (db) => {
     sql: `select name from sqlite_master where type = 'trigger';`,
   })
   // on insert an app_state needs to be created
-  const usersAppStateTriggerExists = triggers.some(
-    (column) => column.name === 'users_app_state_trigger',
-  )
-  if (!usersAppStateTriggerExists) {
-    const result = await db.unsafeExec({
-      sql: `
-      CREATE TRIGGER IF NOT EXISTS users_app_state_trigger
-        AFTER INSERT ON users
-      BEGIN
-        INSERT INTO app_states (app_state_id, user_id, user_email, designing, breadcrumbs_overflowing, navs_overflowing, tabs)
-        VALUES ('${uuidv7()}', NEW.user_id, NEW.email, false, true, true, '["tree","data"]');
-      END;`,
-    })
-    console.log(
-      'hello TriggerGenerator, users_app_state_trigger, result:',
-      result,
-    )
-  }
+  // ISSUE: this does not work
+  // reason: electric-sql needs a string id that is unique
+  // but the app has to create it
+  // https://electric-sql.com/docs/usage/data-modelling/types#primary-keys
+  // SOLUTION: added this on create user
+  // const usersAppStateTriggerExists = triggers.some(
+  //   (column) => column.name === 'users_app_state_trigger',
+  // )
+  // if (!usersAppStateTriggerExists) {
+  //   const result = await db.unsafeExec({
+  //     sql: `
+  //     CREATE TRIGGER IF NOT EXISTS users_app_state_trigger
+  //       AFTER INSERT ON users
+  //     BEGIN
+  //       INSERT INTO app_states (app_state_id, user_id, user_email, designing, breadcrumbs_overflowing, navs_overflowing, tabs)
+  //       VALUES ('${uuidv7()}', NEW.user_id, NEW.email, false, true, true, '["tree","data"]');
+  //     END;`,
+  //   })
+  //   console.log(
+  //     'hello TriggerGenerator, users_app_state_trigger, result:',
+  //     result,
+  //   )
+  // }
   // // if email is changed, label of account needs to be updated
   const usersAccountsLabelTriggerExists = triggers.some(
     (column) => column.name === 'users_accounts_label_trigger',
