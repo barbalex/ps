@@ -52,7 +52,7 @@ export const EditingGeometry = memo(({ row, table }) => {
         data: { [fieldName]: data.checked ? id : null },
       })
     },
-    [db.app_states, authUser?.email, fieldName, id, appState?.tabs],
+    [db.app_states, appState?.app_state_id, appState?.tabs, fieldName, id],
   )
 
   const value = row.geometry ? JSON.stringify(row.geometry, null, 3) : ''

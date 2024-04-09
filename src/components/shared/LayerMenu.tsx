@@ -112,10 +112,11 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }: Props) => {
     db.app_states,
     db.actions,
     db.checks,
+    db.occurrences,
     subproject_id,
     level,
     table,
-    authUser.email,
+    authUser?.email,
   ])
 
   // TODO: implement onClickMapSettings
