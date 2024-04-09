@@ -87,6 +87,7 @@ https://stackoverflow.com/a/21541021/712005 */
   border-collapse: collapse;
   border-top: none;
   min-height: 38.7px;
+  user-select: none;
 }
 
 .navs a,
@@ -179,6 +180,29 @@ button {
 
 .sash {
   /* prevent focus on divider */
+  user-select: none;
+}
+
+/* corbado */
+
+.cb-container .cb-button-primary {
+  background-color: rgba(38, 82, 37, 0.9);
+}
+
+.cb-container + div {
+  background-color: rgba(38, 82, 37, 0.9) !important;
+  display: none !important;
+}
+
+.cb-container label {
+  color: rgba(38, 82, 37, 0.9);
+}
+
+.cb-container .cb-link-secondary {
+  color: rgba(38, 82, 37, 0.9);
+}
+
+.cb-container .cb-form-input {
   user-select: none;
 }
 
