@@ -23,8 +23,6 @@ const projectTables = [
   'goal_reports',
   'goals',
   'lists',
-  'observation_sources',
-  'observations',
   'persons',
   'place_reports',
   'places',

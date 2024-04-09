@@ -13,7 +13,6 @@ export const buildNavs = async ({
   list_id,
   vector_layer_id,
   taxonomy_id,
-  observation_source_id,
   chart_id,
   // chart_subject_id,
   db,
@@ -135,11 +134,6 @@ export const buildNavs = async ({
               {
                 path: `/projects/${project_id}/fields`,
                 text: 'Fields',
-                showOnlyWhenDesigning: true,
-              },
-              {
-                path: `/projects/${project_id}/observation-sources`,
-                text: 'Observation Sources',
                 showOnlyWhenDesigning: true,
               },
             ]
@@ -370,13 +364,6 @@ export const buildNavs = async ({
         {
           path: `/projects/${project_id}/taxonomies/${taxonomy_id}/taxa`,
           text: 'Taxa',
-        },
-      ]
-    case 'observation_sources':
-      return [
-        {
-          path: `/projects/${project_id}/observation-sources/${observation_source_id}/observations`,
-          text: 'Observations',
         },
       ]
     case 'charts':

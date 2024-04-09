@@ -11,13 +11,13 @@ import {
   Places as Place,
   Actions as Action,
   Checks as Check,
-  Observations as Observation,
+  Occurrences as Occurrence,
 } from '../../../generated/client'
 import { useElectric } from '../../../ElectricProvider'
 import { ErrorBoundary } from '../MapErrorBoundary'
 
 interface Props {
-  data: Place[] | Action[] | Check[] | Observation[]
+  data: Place[] | Action[] | Check[] | Occurrence[]
   layer: VectorLayer
   form?: React.FC
 }

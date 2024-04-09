@@ -21,7 +21,6 @@ import { VectorLayersNode } from '../VectorLayers'
 import { ProjectUsersNode } from '../ProjectUsers'
 import { PlaceLevelsNode } from '../PlaceLevels'
 import { FieldsNode } from '../Fields'
-import { ObservationSourcesNode } from '../ObservationSources'
 import { FilesNode } from '../Files'
 import { Editing } from './Editing'
 import { useElectric } from '../../../ElectricProvider'
@@ -94,7 +93,6 @@ export const ProjectNode = memo(({ project, level = 2 }: Props) => {
               <UnitsNode project_id={project.project_id} />
               <PlaceLevelsNode project_id={project.project_id} />
               <FieldsNode project_id={project.project_id} />
-              <ObservationSourcesNode project_id={project.project_id} />
             </>
           )}
         </>

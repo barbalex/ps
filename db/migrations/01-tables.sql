@@ -50,12 +50,6 @@ CREATE TYPE project_type AS enum(
   'biotope'
 );
 
-CREATE TYPE occurrences_assign_level AS enum(
-  'places1',
-  'places2',
-  'placesAll'
-);
-
 CREATE TABLE projects(
   project_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -75,7 +69,6 @@ CREATE TABLE projects(
   values_on_multiple_levels text DEFAULT NULL,
   multiple_action_values_on_same_level text DEFAULT NULL,
   multiple_check_values_on_same_level text DEFAULT NULL,
-  occurrences_assign_level occurrences_assign_level DEFAULT NULL, -- 'all'
   data jsonb DEFAULT NULL,
   files_offline boolean DEFAULT NULL, -- FALSE,
   files_active_projects boolean DEFAULT NULL, -- TRUE,
@@ -140,7 +133,7 @@ CREATE TABLE place_levels(
   checks boolean DEFAULT NULL, -- FALSE,
   check_values boolean DEFAULT NULL, -- FALSE,
   check_taxa boolean DEFAULT NULL, -- FALSE,
-  observations boolean DEFAULT NULL, -- FALSE,
+  occurrences boolean DEFAULT NULL, -- FALSE,
   label_replace_by_generated_column text DEFAULT NULL
 );
 
@@ -163,23 +156,23 @@ COMMENT ON COLUMN place_levels.name_plural IS 'Preset: "Populationen"';
 
 COMMENT ON COLUMN place_levels.name_short IS 'Preset: "Pop"';
 
-COMMENT ON COLUMN place_levels.reports IS 'Are reports used? Preset: false';
+COMMENT ON COLUMN place_levels.reports IS 'Are reports used? Preset: true';
 
-COMMENT ON COLUMN place_levels.report_values IS 'Are report values used? Preset: false';
+COMMENT ON COLUMN place_levels.report_values IS 'Are report values used? Preset: true';
 
-COMMENT ON COLUMN place_levels.actions IS 'Are actions used? Preset: false';
+COMMENT ON COLUMN place_levels.actions IS 'Are actions used? Preset: true';
 
-COMMENT ON COLUMN place_levels.action_values IS 'Are action values used? Preset: false';
+COMMENT ON COLUMN place_levels.action_values IS 'Are action values used? Preset: true';
 
-COMMENT ON COLUMN place_levels.action_reports IS 'Are action reports used? Preset: false';
+COMMENT ON COLUMN place_levels.action_reports IS 'Are action reports used? Preset: true';
 
-COMMENT ON COLUMN place_levels.checks IS 'Are checks used? Preset: false';
+COMMENT ON COLUMN place_levels.checks IS 'Are checks used? Preset: true';
 
-COMMENT ON COLUMN place_levels.check_values IS 'Are check values used? Preset: false';
+COMMENT ON COLUMN place_levels.check_values IS 'Are check values used? Preset: true';
 
-COMMENT ON COLUMN place_levels.check_taxa IS 'Are check taxa used? Preset: false';
+COMMENT ON COLUMN place_levels.check_taxa IS 'Are check taxa used? Preset: true';
 
-COMMENT ON COLUMN place_levels.observations IS 'Are observation references used? Preset: false';
+COMMENT ON COLUMN place_levels.occurrences IS 'Are occurrences used? Preset: true';
 
 COMMENT ON TABLE place_levels IS 'Goal: manage place levels. Enable working with one or two levels. Organize what features are used on which level.';
 
@@ -825,82 +818,6 @@ COMMENT ON COLUMN place_report_values.value_numeric IS 'Used for numeric values'
 
 COMMENT ON COLUMN place_report_values.value_text IS 'Used for text values';
 
-CREATE TABLE observation_sources(
-  observation_source_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  name text DEFAULT NULL,
-  url text DEFAULT NULL,
-  data jsonb DEFAULT NULL,
-  label_replace_by_generated_column text DEFAULT NULL
-);
-
--- CREATE INDEX ON observation_sources USING btree(observation_source_id);
-CREATE INDEX ON observation_sources USING btree(account_id);
-
-CREATE INDEX ON observation_sources USING btree(project_id);
-
-CREATE INDEX ON observation_sources USING btree(name);
-
-COMMENT ON TABLE observation_sources IS 'Observation sources are where observations _outside of this project_ come from.';
-
-COMMENT ON COLUMN observation_sources.account_id IS 'redundant account_id enhances data safety';
-
-COMMENT ON COLUMN observation_sources.name IS 'Name of observation source, like "GBIF, 1995"';
-
-COMMENT ON COLUMN observation_sources.url IS 'URL of observation source, like "https://www.gbif.org/"';
-
-COMMENT ON COLUMN observation_sources.data IS 'Room for observation source specific data, defined in "fields" table';
-
-CREATE TABLE observations(
-  observation_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  observation_source_id uuid DEFAULT NULL REFERENCES observation_sources(observation_source_id) ON DELETE NO action ON UPDATE CASCADE,
-  place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  id_in_source text DEFAULT NULL,
-  url text DEFAULT NULL,
-  observation_data jsonb DEFAULT NULL,
-  date date DEFAULT NULL,
-  author text DEFAULT NULL,
-  -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL, -- not supported by electic-sql
-  geometry jsonb DEFAULT NULL,
-  data jsonb DEFAULT NULL,
-  label_replace_by_generated_column text DEFAULT NULL
-);
-
--- CREATE INDEX ON observations USING btree(observation_id);
-CREATE INDEX ON observations USING btree(account_id);
-
-CREATE INDEX ON observations USING btree(observation_source_id);
-
-CREATE INDEX ON observations USING btree(place_id);
-
-CREATE INDEX ON observations USING btree(date);
-
-CREATE INDEX ON observations USING btree(author);
-
--- CREATE INDEX ON observations USING gist(geometry);
-COMMENT ON TABLE observations IS 'Observations are what was observed _outside of this project_ in this place.';
-
-COMMENT ON COLUMN observations.account_id IS 'redundant account_id enhances data safety';
-
-COMMENT ON COLUMN observations.observation_source_id IS 'observation source of observation';
-
-COMMENT ON COLUMN observations.place_id IS 'place observation was assigned to';
-
-COMMENT ON COLUMN observations.id_in_source IS 'ID of observation as used in the source. Needed to update its data';
-
-COMMENT ON COLUMN observations.url IS 'URL of observation, like "https://www.gbif.org/occurrence/1234567890"';
-
-COMMENT ON COLUMN observations.observation_data IS 'data as received from observation source';
-
-COMMENT ON COLUMN observations.date IS 'date of observation. Extracted from observation_data to list the observation';
-
-COMMENT ON COLUMN observations.author IS 'author of observation. Extracted from observation_data to list the observation';
-
--- COMMENT ON COLUMN observations.geometry IS 'geometry of observation. Extracted from observation_data to show the observation on a map';
-COMMENT ON COLUMN observations.data IS 'Room for observation specific data, defined in "fields" table';
-
 CREATE TABLE messages(
   message_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   label_replace_by_generated_column text DEFAULT NULL,
@@ -1410,8 +1327,8 @@ CREATE TYPE vector_layer_type_enum AS enum(
   'actions2',
   'checks1',
   'checks2',
-  'observations1',
-  'observations2'
+  'occurrences1',
+  'occurrences2'
 );
 
 CREATE TABLE vector_layers(
@@ -1553,8 +1470,8 @@ CREATE TYPE vector_layer_table_enum AS enum(
   'actions2',
   'checks1',
   'checks2',
-  'observations1',
-  'observations2'
+  'occurrences1',
+  'occurrences2'
 );
 
 -- CREATE TYPE line_join_enum AS enum(
@@ -1602,7 +1519,7 @@ CREATE INDEX ON vector_layer_displays USING btree(vector_layer_id);
 
 CREATE INDEX ON vector_layer_displays USING btree(display_property_value);
 
-COMMENT ON TABLE vector_layer_displays IS 'Goal: manage all map related properties of vector layers including places, actions, checks and observations';
+COMMENT ON TABLE vector_layer_displays IS 'Goal: manage all map related properties of vector layers including places, actions, checks and occurrences';
 
 COMMENT ON COLUMN vector_layer_displays.display_property_value IS 'Enables styling per property value';
 
@@ -1834,10 +1751,6 @@ ALTER TABLE check_taxa ENABLE electric;
 ALTER TABLE place_reports ENABLE electric;
 
 ALTER TABLE place_report_values ENABLE electric;
-
-ALTER TABLE observation_sources ENABLE electric;
-
-ALTER TABLE observations ENABLE electric;
 
 ALTER TABLE messages ENABLE electric;
 

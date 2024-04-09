@@ -18,8 +18,6 @@ import { generateTaxonLabel } from './labelGenerators/taxa'
 import { generateProjectUserLabel } from './labelGenerators/projectUsers'
 import { generateProjectReportLabel } from './labelGenerators/projectReports'
 import { generateFieldLabel } from './labelGenerators/fields'
-import { generateObservationSourceLabel } from './labelGenerators/observationSources'
-import { generateObservationLabel } from './labelGenerators/observations'
 import { generatePersonLabel } from './labelGenerators/persons'
 import { generatePlaceLabel } from './labelGenerators/places'
 import { generatePlaceUserLabel } from './labelGenerators/placeUsers'
@@ -75,8 +73,6 @@ export const SqlInitializer = () => {
       await generateProjectUserLabel(db)
       await generateProjectReportLabel(db)
       await generateFieldLabel(db)
-      await generateObservationSourceLabel(db)
-      await generateObservationLabel(db)
       await generatePersonLabel(db)
       await generatePlaceLabel(db)
       await generatePlaceUserLabel(db)

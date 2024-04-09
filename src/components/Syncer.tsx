@@ -35,7 +35,6 @@ export const Syncer = () => {
                           other_places: {
                             include: {
                               charts: { include: { chart_subjects: true } },
-                              observations: true,
                               place_reports: {
                                 include: { place_report_values: true },
                               },
@@ -60,7 +59,6 @@ export const Syncer = () => {
                             },
                           },
                           charts: { include: { chart_subjects: true } },
-                          observations: true,
                           place_reports: {
                             include: { place_report_values: true },
                           },
@@ -103,7 +101,6 @@ export const Syncer = () => {
                     },
                   },
                   units: true,
-                  observation_sources: { include: { observations: true } },
                   tile_layers: { include: { layer_options: true } },
                   vector_layers: {
                     include: {
@@ -136,7 +133,6 @@ export const Syncer = () => {
               units: true,
               goals: true,
               goal_reports: true,
-              observation_sources: true,
               goal_report_values: true,
               tile_layers: true,
               vector_layers: true,
@@ -149,7 +145,6 @@ export const Syncer = () => {
               chart_subjects: true,
               vector_layer_displays: true,
               vector_layer_geoms: true,
-              observations: true,
               place_reports: true,
               place_users: true,
               place_report_values: true,

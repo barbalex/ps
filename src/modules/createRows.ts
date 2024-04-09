@@ -161,22 +161,6 @@ export const createPerson = async ({ db, project_id }) => {
   }
 }
 
-export const createObservationSource = async ({ db, project_id }) => {
-  // find fields with preset values on the data column
-  const presetData = await getPresetData({
-    db,
-    project_id,
-    table: 'observation_sources',
-  })
-
-  return {
-    observation_source_id: uuidv7(),
-    project_id,
-
-    ...presetData,
-  }
-}
-
 export const createField = ({
   project_id = null,
   table_name = null,
@@ -264,36 +248,16 @@ export const createProjectReport = async ({ db, project_id }) => {
 export const createPlaceLevel = () => ({
   place_level_id: uuidv7(),
   level: 1,
-  reports: false,
-  report_values: false,
-  actions: false,
-  action_values: false,
-  action_reports: false,
-  checks: false,
-  check_values: false,
-  check_taxa: false,
-  observations: false,
+  reports: true,
+  report_values: true,
+  actions: true,
+  action_values: true,
+  action_reports: true,
+  checks: true,
+  check_values: true,
+  check_taxa: true,
+  occurrences: true,
 })
-
-export const createObservation = async ({
-  db,
-  project_id,
-  observation_source_id,
-}) => {
-  // find fields with preset values on the data column
-  const presetData = await getPresetData({
-    db,
-    project_id,
-    table: 'observations',
-  })
-
-  return {
-    observation_id: uuidv7(),
-    observation_source_id,
-
-    ...presetData,
-  }
-}
 
 export const createTaxon = () => ({
   taxon_id: uuidv7(),

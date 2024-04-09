@@ -58,7 +58,7 @@ INSERT INTO units(project_id, account_id, name, unit_id, use_for_action_values, 
 INSERT INTO project_users(project_user_id, project_id, user_id, ROLE)
   VALUES ('018cfd1d-6baa-7000-93cc-817e822e80e2', '018cfcf7-6424-7000-a100-851c5cc2c878', '018cf95a-d817-7000-92fa-bb3b2ad59dda', 'manager');
 
-INSERT INTO place_levels(account_id, level, name_plural, name_short, name_singular, place_level_id, project_id, reports, report_values, actions, action_values, action_reports, checks, check_values, check_taxa, observations)
+INSERT INTO place_levels(account_id, level, name_plural, name_short, name_singular, place_level_id, project_id, reports, report_values, actions, action_values, action_reports, checks, check_values, check_taxa, occurrences)
   VALUES ('018cf958-27e2-7000-90d3-59f024d467be', 1, 'Populations', 'Pop', 'Population', '018cfcf8-1abd-7000-a2f2-2708c92063d5', '018cfcf7-6424-7000-a100-851c5cc2c878', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE),
 ('018cf958-27e2-7000-90d3-59f024d467be', 2, 'Subpopulations', 'SPop', 'Subpopulation', '018cfcf8-785b-7000-a9b9-91495f23f309', '018cfcf7-6424-7000-a100-851c5cc2c878', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE);
 

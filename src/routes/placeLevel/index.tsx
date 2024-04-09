@@ -41,7 +41,7 @@ export const Component = () => {
           'name_singular',
           'actions',
           'checks',
-          'observations',
+          'occurrences',
         ].includes(name) &&
         row.level &&
         row.project_id
@@ -144,9 +144,9 @@ export const Component = () => {
           onChange={onChange}
         />
         <SwitchField
-          label="Enable observation references"
-          name="observations"
-          value={row.observations ?? false}
+          label="Enable occurrences"
+          name="occurrences"
+          value={row.occurrences ?? false}
           onChange={onChange}
         />
       </div>

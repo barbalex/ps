@@ -34,7 +34,6 @@ export const BreadcrumbForFolder = forwardRef(
       goal_report_id,
       list_id,
       taxonomy_id,
-      observation_source_id,
     } = match.params
 
     const { user: authUser } = useCorbadoSession()
@@ -83,7 +82,6 @@ export const BreadcrumbForFolder = forwardRef(
           goal_report_id,
           list_id,
           taxonomy_id,
-          observation_source_id,
           check_id,
           db,
           level: levelWanted,
@@ -107,7 +105,6 @@ export const BreadcrumbForFolder = forwardRef(
       goal_report_id,
       list_id,
       taxonomy_id,
-      observation_source_id,
       db,
       table,
       levelWanted,
