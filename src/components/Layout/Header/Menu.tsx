@@ -67,7 +67,12 @@ export const Menu = memo(() => {
     }),
   )
   const tabs = useMemo(() => appState?.tabs ?? [], [appState?.tabs])
-  console.log('hello Layout/Header/Menu.tsx', { appState, tabs, authUser })
+  console.log('hello Layout/Header/Menu.tsx', {
+    appState,
+    tabs,
+    authUser,
+    authUserEmail: authUser?.email,
+  })
   // TODO: somehow authUser is correct but appState is null
   const onChangeTabs = useCallback(
     (e, { checkedItems }) => {
