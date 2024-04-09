@@ -67,6 +67,8 @@ export const Menu = memo(() => {
     }),
   )
   const tabs = useMemo(() => appState?.tabs ?? [], [appState?.tabs])
+  console.log('hello Layout/Header/Menu.tsx', { appState, tabs, authUser })
+  // TODO: somehow authUser is correct but appState is null
   const onChangeTabs = useCallback(
     (e, { checkedItems }) => {
       db.app_states.update({
