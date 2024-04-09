@@ -158,17 +158,15 @@ https://stackoverflow.com/a/21541021/712005 */
   }
 }
 
-/* titles should generally not be selectable thus focused */
+/* titles, labels and buttons should generally not be selectable thus focused */
 h1,
 h2,
 h3,
 h4,
 h5,
-h6 {
-  user-select: none;
-}
-/* labels should generally not be selectable thus focused */
-label {
+h6,
+label,
+button {
   user-select: none;
 }
 
