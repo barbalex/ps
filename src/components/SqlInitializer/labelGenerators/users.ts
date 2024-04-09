@@ -1,28 +1,4 @@
 export const generateUserLabel = async (db) => {
-  // remove index first, got some errors without
-  const usersIndexList = await db.rawQuery({
-    sql: 'PRAGMA index_list(users)',
-  })
-  const userIndexNamesList = usersIndexList.map((index) => index.name)
-  console.log(
-    'hello from generateUserLabel, userIndexNamesList:',
-    userIndexNamesList,
-  )
-  if (userIndexNamesList.includes('users_label_idx')) {
-    try {
-      const result = await db.unsafeExec({
-        sql: `
-          drop index if exists users_label_idx;`,
-      })
-      console.log(
-        'hello generateUserLabel dropping label index, result:',
-        result,
-      )
-    } catch (error) {
-      console.log('hello generateUserLabel dropping label, error:', error)
-    }
-  }
-
   const columns = await db.rawQuery({
     sql: 'PRAGMA table_xinfo(users)',
   })
