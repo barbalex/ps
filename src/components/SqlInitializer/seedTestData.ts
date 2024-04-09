@@ -153,14 +153,9 @@ export const seedTestData = async (db) => {
     await db.unsafeExec({
       sql: seedCharts,
     })
-    try {
-      const csResult = await db.unsafeExec({
-        sql: seedChartSubjects,
-      })
-      console.log('hello seedChartSubjects result:', csResult)
-    } catch (error) {
-      console.error('hello seedChartSubjects error:', error)
-    }
+    await db.unsafeExec({
+      sql: seedChartSubjects,
+    })
     await db.unsafeExec({
       sql: seedTaxonomies,
     })
@@ -170,9 +165,14 @@ export const seedTestData = async (db) => {
     await db.unsafeExec({
       sql: seedUnits,
     })
-    await db.unsafeExec({
-      sql: seedAppStates,
-    })
+    try {
+      const apResult = await db.unsafeExec({
+        sql: seedAppStates,
+      })
+      console.log('hello seedTestData, app_states, result:', apResult)
+    } catch (error) {
+      console.log('hello seedTestData, app_states, error:', error)
+    }
   }
   const placeLevels = await db.rawQuery({
     sql: `select count(*) as count from place_levels;`,
