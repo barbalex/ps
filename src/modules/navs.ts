@@ -39,7 +39,7 @@ export const buildNavs = async ({
     const projects = await db?.projects?.findMany()
     console.log('hello from buildNavs, projects:', projects)
   } catch (error) {
-    console.log('hello from buildNavs, error:', error) // uups, happening! But only on first load after clearing cache
+    console.log('hello from buildNavs, error:', error) // uups, happening! Zod error. But only on first load after clearing cache
   }
   const project = project_id
     ? await db?.projects?.findUnique({ where: { project_id } })
