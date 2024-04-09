@@ -22,7 +22,6 @@ export const buildData = async ({
                   where: {
                     subproject_id,
                     parent_id: null,
-                    
                   },
                 })
                 countPlacesRows({ dataPerSubject, places, subject })
@@ -33,7 +32,6 @@ export const buildData = async ({
                   where: {
                     subproject_id,
                     parent_id: { not: null },
-                    
                   },
                 })
                 countPlacesRows({ dataPerSubject, places, subject })
@@ -60,7 +58,6 @@ export const buildData = async ({
 
               return acc
             }, {})
-            console.log('hello dataFromChart, checks:', data)
             dataPerSubject[subject.name] = data
             break
           }
@@ -80,7 +77,6 @@ export const buildData = async ({
 
               return acc
             }, {})
-            console.log('hello dataFromChart, actions:', data)
             dataPerSubject[subject.name] = data
             break
           }
@@ -102,10 +98,6 @@ export const buildData = async ({
     }
   }
 
-  console.log('hello dataFromChart, dataPerSubject:', {
-    dataPerSubject,
-    chart_id,
-  })
   const years = Object.values(dataPerSubject).reduce(
     (acc, data) => [...acc, ...Object.keys(data).map((k) => +k)],
     [],
@@ -146,7 +138,6 @@ export const buildData = async ({
 
     return yearsData
   })
-  console.log('hello dataFromChart, data:', data)
 
   return { data, years }
 }
