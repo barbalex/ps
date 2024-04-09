@@ -153,9 +153,14 @@ export const seedTestData = async (db) => {
     await db.unsafeExec({
       sql: seedCharts,
     })
-    await db.unsafeExec({
-      sql: seedChartSubjects,
-    })
+    try {
+      const csResult = await db.unsafeExec({
+        sql: seedChartSubjects,
+      })
+      console.log('hello seedChartSubjects result:', csResult)
+    } catch (error) {
+      console.error('hello seedChartSubjects error:', error)
+    }
     await db.unsafeExec({
       sql: seedTaxonomies,
     })
