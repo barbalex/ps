@@ -33,6 +33,7 @@ export const buildNavs = async ({
     placeLevel = placeLevels?.[0] ?? {}
   }
   // need project for it's settings
+  console.log('hello from buildNavs', { project_id, table, db })
   const project = await db?.projects?.findUnique({
     where: { project_id: project_id ?? '99999999-9999-9999-9999-999999999999' },
   })
