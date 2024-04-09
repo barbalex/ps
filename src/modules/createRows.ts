@@ -139,7 +139,7 @@ export const createAccount = () => ({
   type: 'free',
 })
 
-export const createUser = ({ db }) => {
+export const createUser = async ({ db }) => {
   const data = { user_id: uuidv7() }
   await db.users.create({ data })
   await db.app_states.create({
