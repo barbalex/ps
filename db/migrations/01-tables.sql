@@ -50,6 +50,12 @@ CREATE TYPE project_type AS enum(
   'biotope'
 );
 
+CREATE TYPE occurrences_assign_level AS enum(
+  'places1',
+  'places2',
+  'placesAll'
+);
+
 CREATE TABLE projects(
   project_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -69,6 +75,7 @@ CREATE TABLE projects(
   values_on_multiple_levels text DEFAULT NULL,
   multiple_action_values_on_same_level text DEFAULT NULL,
   multiple_check_values_on_same_level text DEFAULT NULL,
+  occurrences_assign_level occurrences_assign_level DEFAULT NULL, -- 'all'
   data jsonb DEFAULT NULL, -- TODO: can not be defined in fields
   files_offline boolean DEFAULT NULL, -- FALSE,
   files_active_projects boolean DEFAULT NULL, -- TRUE,

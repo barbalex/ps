@@ -8,6 +8,7 @@ import { useCorbadoSession } from '@corbado/react'
 import { useElectric } from '../../ElectricProvider'
 import { TextField } from '../../components/shared/TextField'
 import { RadioGroupField } from '../../components/shared/RadioGroupField'
+import { RadioGroupFromOptions } from '../../components/shared/RadioGroupFromOptions'
 import { CheckboxField } from '../../components/shared/CheckboxField'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { LabelBy } from '../../components/shared/LabelBy'
@@ -18,6 +19,12 @@ const labelStyle = {
   color: 'grey',
   fontWeight: 700,
 }
+
+const occurrenceAssignLevelOptions = [
+  { value: 'places1', label: '1' },
+  { value: 'places2', label: '2' },
+  { value: 'placesAll', label: 'all' },
+]
 
 export const Design = () => {
   const { project_id } = useParams()
@@ -98,6 +105,13 @@ export const Design = () => {
         fieldsTable="places"
         id={project_id}
         valueArray={row.places_order_by ?? []}
+      />
+      <RadioGroupFromOptions
+        label="Enable assigning occurrences to place levels"
+        name="occurrences_assign_level"
+        options={occurrenceAssignLevelOptions}
+        value={row.occurrences_assign_level ?? ''}
+        onChange={onChange}
       />
       <Divider />
       <Label>{`Value(s) to use in reports when:`}</Label>
