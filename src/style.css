@@ -158,6 +158,20 @@ https://stackoverflow.com/a/21541021/712005 */
   }
 }
 
+/* titles should generally not be selectable thus focused */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  user-select: none;
+}
+/* labels should generally not be selectable thus focused */
+label {
+  user-select: none;
+}
+
 /* allotment */
 :root {
   --focus-border: rgba(55, 118, 28, 0.3);
