@@ -6,6 +6,7 @@ const rowStyle = {
   alignItems: 'center',
   justifyContent: 'space-between',
   columnGap: '10px',
+  userSelect: 'none',
 }
 
 export const TimeFields = memo(

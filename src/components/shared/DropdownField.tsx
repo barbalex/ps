@@ -9,6 +9,7 @@ const rowStyle = {
   alignItems: 'center',
   justifyContent: 'space-between',
   columnGap: '10px',
+  userSelect: 'none',
 }
 const ddStyle = {
   flexGrow: 1,

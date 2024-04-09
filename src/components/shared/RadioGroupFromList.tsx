@@ -8,6 +8,7 @@ const rowStyle = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
+  userSelect: 'none',
 }
 
 export const RadioGroupFromList = memo(
