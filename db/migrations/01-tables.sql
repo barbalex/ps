@@ -1712,6 +1712,10 @@ COMMENT ON COLUMN chart_subjects.fill IS 'Fill color of the chart';
 -- enable electric
 ALTER TABLE users ENABLE electric;
 
+-- this is not yet supported:
+-- electric assign 'user:chef' TO users.user_id;
+-- electric GRANT ALL ON users TO 'user:chef';
+-- electric GRANT ALL ON users TO ANYONE;
 ALTER TABLE accounts ENABLE electric;
 
 ALTER TABLE projects ENABLE electric;
