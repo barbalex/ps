@@ -52,16 +52,17 @@ export const WMTSOffline = ({ layer }: Props) => {
     const del = () => control.deleteTable(layer.id)
 
     setLocalMapValues({ id: layer.id, save, del })
-    db.app_states.update({
-      where: { user_id },
-      data: {
-        show_local_map: {
-          [layer.id]: {
-            show: true,
-          },
-        },
-      },
-    })
+    // TODO: get app_state_id, then activate
+    // db.app_states.update({
+    //   where: { app_state_id },
+    //   data: {
+    //     show_local_map: {
+    //       [layer.id]: {
+    //         show: true,
+    //       },
+    //     },
+    //   },
+    // })
 
     return () => {
       map.removeLayer(wmtsLayer)
