@@ -1156,7 +1156,11 @@ COMMENT ON COLUMN fields.level IS 'level of field if places or below: 1, 2';
 
 CREATE TABLE app_states(
   app_state_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  -- user_email can not be referenced to users, as it is not unique
+  -- because electric-sql does not support unique constraints
+  -- unless the column is a primary key
   user_email text DEFAULT NULL,
+  -- user_id is needed to ensure user_email can be updated when changed on users
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   designing boolean DEFAULT NULL, -- FALSE,
