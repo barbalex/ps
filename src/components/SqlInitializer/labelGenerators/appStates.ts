@@ -22,7 +22,7 @@ export const generateAppStatesLabel = async (db) => {
       CREATE TRIGGER IF NOT EXISTS ui_options_label_trigger_insert
         AFTER INSERT ON app_states
       BEGIN
-        UPDATE app_states SET label = NEW.user_id;
+        UPDATE app_states SET label = coalesce(new.user_email, new.app_state_id);
       END;`,
     })
   }
