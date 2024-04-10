@@ -1,5 +1,3 @@
-import { uuidv7 } from '@kripod/uuidv7'
-
 export const generateUserLabel = async (db) => {
   // remove index first, got some errors without
   const usersIndexList = await db.rawQuery({
@@ -63,6 +61,10 @@ export const generateUserLabel = async (db) => {
   //     result,
   //   )
   // }
+
+  const triggers = await db.rawQuery({
+    sql: `select name from sqlite_master where type = 'trigger';`,
+  })
 
   // if email is changed, label of account needs to be updated
   const usersAccountsLabelTriggerExists = triggers.some(
