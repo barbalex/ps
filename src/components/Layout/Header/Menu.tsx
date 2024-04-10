@@ -6,8 +6,6 @@ import { useNavigate } from 'react-router-dom'
 import { controls } from '../../../styles'
 import { css } from '../../../css'
 
-// TODO:
-// use overflow menu for tabs and app-state
 export const Menu = memo(() => {
   const navigate = useNavigate()
 
