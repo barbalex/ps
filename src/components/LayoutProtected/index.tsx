@@ -11,7 +11,7 @@ export const Layout = () => {
   const [searchParams] = useSearchParams()
   const onlyForm = searchParams.get('onlyForm')
 
-  console.log('hello Protected Layout', { onlyForm })
+  console.log('hello Protected Layout')
 
   return (
     <>

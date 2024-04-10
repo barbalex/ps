@@ -8,12 +8,16 @@ import { Layout } from './LayoutProtected'
 
 const CORBADO_PROJECT_ID = import.meta.env.ELECTRIC_CORBADO_PROJECT_ID
 
-export const AuthAndDb = () => (
-  <CorbadoProvider projectId={CORBADO_PROJECT_ID}>
-    <ElectricProvider>
-      <SqlInitializer />
-      <Syncer />
-      <Layout />
-    </ElectricProvider>
-  </CorbadoProvider>
-)
+export const AuthAndDb = () => {
+  console.log('hello AuthAndDb')
+
+  return (
+    <CorbadoProvider projectId={CORBADO_PROJECT_ID}>
+      <ElectricProvider>
+        <SqlInitializer />
+        <Syncer />
+        <Layout />
+      </ElectricProvider>
+    </CorbadoProvider>
+  )
+}
