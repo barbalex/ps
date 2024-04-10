@@ -4,19 +4,28 @@ import { Main } from './Main'
 import { Breadcrumbs } from './Breadcrumbs'
 import { Navs } from './Navs'
 import { Notifications } from '../Notifications'
+import { ProtectedRoute } from '../ProtectedRoute'
+import { Header } from './Header'
 
 export const Layout = () => {
   const [searchParams] = useSearchParams()
   const onlyForm = searchParams.get('onlyForm')
 
-  if (onlyForm) return <Main />
+  console.log('hello Protected Layout', { onlyForm })
 
   return (
     <>
-      <Breadcrumbs />
-      <Navs />
-      <Main />
-      <Notifications />
+      <Header />
+      {onlyForm !== true && (
+        <>
+          <Breadcrumbs />
+          <Navs />
+          <Notifications />
+        </>
+      )}
+      <ProtectedRoute>
+        <Main />
+      </ProtectedRoute>
     </>
   )
 }

@@ -1,7 +1,6 @@
 import { CorbadoProvider } from '@corbado/react'
 
 import { ElectricWrapper as ElectricProvider } from '../ElectricWrapper'
-import { ProtectedRoute } from './ProtectedRoute'
 import { SqlInitializer } from './SqlInitializer'
 import { Syncer } from './Syncer'
 
@@ -14,9 +13,7 @@ export const AuthAndDb = () => (
     <ElectricProvider>
       <SqlInitializer />
       <Syncer />
-      <ProtectedRoute>
-        <Layout />
-      </ProtectedRoute>
+      <Layout />
     </ElectricProvider>
   </CorbadoProvider>
 )
