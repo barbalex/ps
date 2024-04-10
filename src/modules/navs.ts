@@ -33,9 +33,11 @@ export const buildNavs = async ({
     placeLevel = placeLevels?.[0] ?? {}
   }
   // need project for it's settings
-  const project = await db?.projects?.findUnique({
-    where: { project_id: project_id ?? '99999999-9999-9999-9999-999999999999' },
-  })
+  const project = project_id
+    ? await db?.projects?.findUnique({
+        where: { project_id },
+      })
+    : {}
   const filesActiveProjects = project?.files_active_projects ?? false
   const filesActiveSubprojects = project?.files_active_subprojects ?? false
   const filesActivePlaces = project?.files_active_places ?? false
