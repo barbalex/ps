@@ -1,7 +1,6 @@
 import { placesChildren } from './placesChildren'
-import { buildNavs } from '../modules/navs'
 
-export const placesLevel2 = ({ db, authUser }) => ({
+export const placesLevel2 = () => ({
   path: 'places',
   element: null,
   handle: {
@@ -27,21 +26,17 @@ export const placesLevel2 = ({ db, authUser }) => ({
           level: 2,
           folder: false,
         }),
-        to: async (match) =>
-          await buildNavs({
-            table: `places`,
-            ...match.params,
-            db,
-            level: 2,
-            authUser,
-          }),
+        to: {
+          table: `places`,
+          level: 2,
+        },
       },
       children: [
         {
           index: true,
           lazy: () => import('../routes/place'),
         },
-        ...placesChildren({ db, level: 2, authUser }),
+        ...placesChildren({ level: 2 }),
       ],
     },
   ],

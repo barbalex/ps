@@ -2,12 +2,11 @@ import { createBrowserRouter } from 'react-router-dom'
 
 import { Layout } from '../components/Layout'
 import { ErrorPage } from '../routes/error'
-import { buildNavs } from '../modules/navs'
 import { placesChildren } from './placesChildren'
 import { placesLevel2 } from './placesLevel2'
 import { Editing as EditingProject } from '../components/Tree/Project/Editing'
 
-export const router = ({ db, authUser }) => {
+export const router = () => {
   // confirmed: this is called only once
   // console.log('router building')
 
@@ -25,13 +24,15 @@ export const router = ({ db, authUser }) => {
               table: 'root',
               folder: true,
             }),
-            to: async () => await buildNavs({ table: 'root', db, authUser }),
+            to: { table: 'root' },
           },
           children: [
             {
               index: true,
               lazy: () => import('../routes/home'),
             },
+            // add layout route for db and auth
+            { element: null, children: [] },
             // add auth page
             { path: 'auth', lazy: () => import('../routes/auth') },
             {
@@ -56,13 +57,9 @@ export const router = ({ db, authUser }) => {
                       folder: false,
                       sibling: <EditingProject />,
                     }),
-                    to: async (match) =>
-                      await buildNavs({
-                        table: `projects`,
-                        ...match.params,
-                        db,
-                        authUser,
-                      }),
+                    to: {
+                      table: `projects`,
+                    },
                   },
                   children: [
                     { index: true, lazy: () => import('../routes/project') },
@@ -90,13 +87,9 @@ export const router = ({ db, authUser }) => {
                               table: 'subprojects',
                               folder: false,
                             }),
-                            to: async (match) =>
-                              await buildNavs({
-                                table: `subprojects`,
-                                ...match.params,
-                                db,
-                                authUser,
-                              }),
+                            to: {
+                              table: `subprojects`,
+                            },
                           },
                           children: [
                             {
@@ -129,25 +122,17 @@ export const router = ({ db, authUser }) => {
                                       level: 1,
                                       folder: false,
                                     }),
-                                    to: async (match) =>
-                                      await buildNavs({
-                                        table: `places`,
-                                        ...match.params,
-                                        db,
-                                        authUser,
-                                      }),
+                                    to: {
+                                      table: `places`,
+                                    },
                                   },
                                   children: [
                                     {
                                       index: true,
                                       lazy: () => import('../routes/place'),
                                     },
-                                    placesLevel2({ db, authUser }),
-                                    ...placesChildren({
-                                      db,
-                                      level: 1,
-                                      authUser,
-                                    }),
+                                    placesLevel2(),
+                                    ...placesChildren({ level: 1 }),
                                   ],
                                 },
                               ],
@@ -335,13 +320,9 @@ export const router = ({ db, authUser }) => {
                                       table: 'goals',
                                       folder: false,
                                     }),
-                                    to: async (match) =>
-                                      await buildNavs({
-                                        table: `goals`,
-                                        ...match.params,
-                                        db,
-                                        authUser,
-                                      }),
+                                    to: {
+                                      table: `goals`,
+                                    },
                                   },
                                   children: [
                                     {
@@ -373,13 +354,9 @@ export const router = ({ db, authUser }) => {
                                               table: 'goal_reports',
                                               folder: false,
                                             }),
-                                            to: async (match) =>
-                                              await buildNavs({
-                                                table: `goal_reports`,
-                                                ...match.params,
-                                                db,
-                                                authUser,
-                                              }),
+                                            to: {
+                                              table: `goal_reports`,
+                                            },
                                           },
                                           children: [
                                             {
@@ -455,13 +432,9 @@ export const router = ({ db, authUser }) => {
                                       table: 'charts',
                                       folder: false,
                                     }),
-                                    to: async (match) =>
-                                      await buildNavs({
-                                        table: `charts`,
-                                        ...match.params,
-                                        db,
-                                        authUser,
-                                      }),
+                                    to: {
+                                      table: `charts`,
+                                    },
                                   },
                                   children: [
                                     {
@@ -495,13 +468,9 @@ export const router = ({ db, authUser }) => {
                                               table: 'chart_subjects',
                                               folder: false,
                                             }),
-                                            to: async (match) =>
-                                              await buildNavs({
-                                                table: `chart_subjects`,
-                                                ...match.params,
-                                                db,
-                                                authUser,
-                                              }),
+                                            to: {
+                                              table: `chart_subjects`,
+                                            },
                                           },
                                         },
                                       ],
@@ -588,13 +557,9 @@ export const router = ({ db, authUser }) => {
                               table: 'lists',
                               folder: false,
                             }),
-                            to: async (match) =>
-                              await buildNavs({
-                                table: `lists`,
-                                ...match.params,
-                                db,
-                                authUser,
-                              }),
+                            to: {
+                              table: `lists`,
+                            },
                           },
                           children: [
                             {
@@ -657,13 +622,9 @@ export const router = ({ db, authUser }) => {
                               table: 'taxonomies',
                               folder: false,
                             }),
-                            to: async (match) =>
-                              await buildNavs({
-                                table: `taxonomies`,
-                                ...match.params,
-                                db,
-                                authUser,
-                              }),
+                            to: {
+                              table: `taxonomies`,
+                            },
                           },
                           children: [
                             {
@@ -754,13 +715,9 @@ export const router = ({ db, authUser }) => {
                               table: 'vector_layers',
                               folder: false,
                             }),
-                            to: async (match) =>
-                              await buildNavs({
-                                table: `vector_layers`,
-                                ...match.params,
-                                db,
-                                authUser,
-                              }),
+                            to: {
+                              table: `vector_layers`,
+                            },
                           },
                           children: [
                             {

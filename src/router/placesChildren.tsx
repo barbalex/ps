@@ -1,6 +1,4 @@
-import { buildNavs } from '../modules/navs'
-
-export const placesChildren = ({ db, level, authUser }) => [
+export const placesChildren = ({ level }) => [
   {
     path: 'checks',
     element: null,
@@ -27,14 +25,10 @@ export const placesChildren = ({ db, level, authUser }) => [
             folder: false,
             level,
           }),
-          to: async (match) =>
-            await buildNavs({
-              table: `checks`,
-              ...match.params,
-              db,
-              level,
-              authUser,
-            }),
+          to: {
+            table: `checks`,
+            level,
+          },
         },
         children: [
           {
@@ -160,14 +154,10 @@ export const placesChildren = ({ db, level, authUser }) => [
             table: 'actions',
             folder: false,
           }),
-          to: async (match) =>
-            await buildNavs({
-              table: `actions`,
-              ...match.params,
-              db,
-              level,
-              authUser,
-            }),
+          to: {
+            table: `actions`,
+            level,
+          },
         },
         children: [
           {
@@ -226,14 +216,10 @@ export const placesChildren = ({ db, level, authUser }) => [
                     table: 'action_reports',
                     folder: false,
                   }),
-                  to: async (match) =>
-                    await buildNavs({
-                      table: `action_reports`,
-                      ...match.params,
-                      db,
-                      level,
-                      authUser,
-                    }),
+                  to: {
+                    table: `action_reports`,
+                    level,
+                  },
                 },
                 children: [
                   {
@@ -335,14 +321,10 @@ export const placesChildren = ({ db, level, authUser }) => [
             table: 'place_reports',
             folder: false,
           }),
-          to: async (match) =>
-            await buildNavs({
-              table: `place_reports`,
-              ...match.params,
-              db,
-              level,
-              authUser,
-            }),
+          to: {
+            table: `place_reports`,
+            level,
+          },
         },
         children: [
           {
