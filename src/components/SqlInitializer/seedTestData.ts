@@ -91,6 +91,8 @@ const seedChartSubjects = `INSERT INTO chart_subjects(account_id, chart_id, char
 ('018cf958-27e2-7000-90d3-59f024d467be', '018df502-138a-77bb-82b9-e5ab16c988ee', '018df97e-905e-79b2-80a2-0cb3207a4aad', 'actions', 1, 'Number of Actions', 'count_rows', 'monotone', '#008000', '#ffffff', true),
 ('018cf958-27e2-7000-90d3-59f024d467be', '018e0434-030d-7451-a1fe-b9bb917a8c4c', '018e0434-f652-7905-9872-345f9d53d164', 'places', 1, 'Number of Populations', 'count_rows', 'monotone', '#008000', '#008000', true),
 ('018cf958-27e2-7000-90d3-59f024d467be', '018e0a30-ce91-7899-8daf-4c3a4b4ff414', '018e0a31-c01d-7fe9-bd23-cd9085e60010', 'places', 2, 'Number of Subpopulations', 'count_rows', 'monotone', '#FF0000', '#FF0000', true);`
+const seedAppStates = `INSERT INTO app_states(app_state_id, user_id, user_email, designing, breadcrumbs_overflowing, navs_overflowing, tabs) VALUES
+('018ec37d-54b7-7d95-8bd9-a9117e1e7491', '018cf95a-d817-7000-92fa-bb3b2ad59dda', 'alex.barbalex@gmail.com', false, true, true, '["tree","data"]');`
 
 export const seedTestData = async (db) => {
   const users = await db.rawQuery({
@@ -99,6 +101,9 @@ export const seedTestData = async (db) => {
   if (users[0].count === 0) {
     await db.unsafeExec({
       sql: seedUsers,
+    })
+    await db.unsafeExec({
+      sql: seedAppStates,
     })
   }
   const accounts = await db.rawQuery({

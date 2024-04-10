@@ -1,7 +1,5 @@
 import { uuidv7 } from '@kripod/uuidv7'
 
-import { isMobilePhone } from './isMobilePhone'
-
 const getPresetData = async ({ db, project_id = null, table }) => {
   const fieldsWithPresets = await db.fields.findMany({
     where: {
@@ -141,9 +139,14 @@ export const createAccount = () => ({
   type: 'free',
 })
 
-export const createUser = () => ({
-  user_id: uuidv7(),
-})
+// users creates the db row to ensure creating the app_state too
+export const createUser = async ({ db }) => {
+  const data = { user_id: uuidv7() }
+  await db.users.create({ data })
+  await db.app_states.create({ data: { user_id: data.user_id } })
+
+  return data
+}
 
 export const createPerson = async ({ db, project_id }) => {
   // find fields with preset values on the data column
@@ -440,13 +443,13 @@ export const createMessage = () => ({
 
 // TODO: sync (most of) these with search params
 // this is not used. Instead: users_app_state_trigger creates app_state on user creation
-export const createAppState = ({ user_email, user_id }) => ({
-  user_email,
+export const createAppState = ({ user_id }) => ({
+  app_state_id: uuidv7(),
   user_id,
   designing: false,
   breadcrumbs_overflowing: true,
   navs_overflowing: true,
-  tabs: isMobilePhone() ? ['data'] : ['tree', 'data'],
+  tabs: ['tree', 'data'],
 })
 
 export const createTileLayer = ({ project_id }) => ({

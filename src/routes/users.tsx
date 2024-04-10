@@ -19,10 +19,10 @@ export const Component = () => {
   )
 
   const add = useCallback(async () => {
-    const data = createUser()
-    await db.users.create({ data })
+    const data = await createUser({ db })
+
     navigate({ pathname: data.user_id, search: searchParams.toString() })
-  }, [db.users, navigate, searchParams])
+  }, [db, navigate, searchParams])
 
   // console.log('hello users')
 
