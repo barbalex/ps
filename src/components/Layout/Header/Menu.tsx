@@ -78,6 +78,9 @@ export const Menu = memo(() => {
     tabs,
     authUserEmail: authUser?.email,
   })
+  // test if projects exist. NOPE
+  const { results: projects } = useLiveQuery(db.projects.liveMany())
+  console.log('hello Layout/Header/Menu.tsx, projects:', projects)
   const onChangeTabs = useCallback(
     (e, { checkedItems }) => {
       db.app_states.update({
