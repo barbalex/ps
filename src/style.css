@@ -182,6 +182,29 @@ button {
   user-select: none;
 }
 
+/* corbado */
+
+.cb-container .cb-button-primary {
+  background-color: rgba(38, 82, 37, 0.9);
+}
+
+.cb-container + div {
+  background-color: rgba(38, 82, 37, 0.9) !important;
+  display: none !important;
+}
+
+.cb-container label {
+  color: rgba(38, 82, 37, 0.9);
+}
+
+.cb-container .cb-link-secondary {
+  color: rgba(38, 82, 37, 0.9);
+}
+
+.cb-container .cb-form-input {
+  user-select: none;
+}
+
 /* scrollbars */
 
 .simplebar-scrollbar:before {
