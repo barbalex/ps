@@ -5,32 +5,37 @@ import { Electric, schema } from './generated/client'
 import { uniqueTabId } from 'electric-sql/util'
 import { LIB_VERSION } from 'electric-sql/version'
 import { ElectricConfig } from 'electric-sql/config'
+import { useCorbadoSession } from '@corbado/react'
 
 import { ElectricProvider } from './ElectricProvider'
 
 import { authToken } from './auth'
 
+// https://electric-sql.com/docs/api/clients/typescript#available-options
+const config: ElectricConfig = {
+  // Activate debug mode which logs the replication messages
+  // that are exchanged between the client and the sync service
+  debug: import.meta.env.DEV,
+  url: import.meta.env.ELECTRIC_SERVICE,
+}
+
 export const ElectricWrapper = ({ children }) => {
   const [electric, setElectric] = useState<Electric>()
+  const { shortSession } = useCorbadoSession()
+
+  console.log('hello ElectricWrapper, shortSession:', shortSession)
 
   useEffect(() => {
     let isMounted = true
 
     const init = async () => {
-      // https://electric-sql.com/docs/api/clients/typescript#available-options
-      const config: ElectricConfig = {
-        // Activate debug mode which logs the replication messages
-        // that are exchanged between the client and the sync service
-        debug: import.meta.env.DEV,
-        url: import.meta.env.ELECTRIC_SERVICE,
-      }
-
       const { tabId } = uniqueTabId()
       const scopedDbName = `basic-${LIB_VERSION}-${tabId}.db`
 
       const conn = await ElectricDatabase.init(scopedDbName)
       const electric = await electrify(conn, schema, config)
-      await electric.connect(authToken())
+      await electric.connect(authToken(shortSession))
+      // await electric.connect(shortSession)
 
       if (!isMounted) {
         return
@@ -43,7 +48,7 @@ export const ElectricWrapper = ({ children }) => {
     return () => {
       isMounted = false
     }
-  }, [])
+  }, [shortSession])
 
   if (electric === undefined) {
     return null
