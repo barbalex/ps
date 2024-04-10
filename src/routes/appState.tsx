@@ -27,7 +27,7 @@ export const Component = () => {
         data: { [name]: value },
       })
     },
-    [db.app_states],
+    [app_state_id, db.app_states],
   )
 
   if (!row) return <Loading />

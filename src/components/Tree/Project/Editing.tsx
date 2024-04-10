@@ -38,7 +38,7 @@ export const Editing = memo(() => {
         data: { designing: !designing },
       })
     },
-    [authUser?.email, db.app_states, designing],
+    [appState?.app_state_id, db.app_states, designing],
   )
 
   const { results: project } = useLiveQuery(

@@ -74,7 +74,7 @@ export const Menu = memo(() => {
         data: { tabs: checkedItems },
       })
     },
-    [authUser, db.app_states],
+    [appState?.app_state_id, db.app_states],
   )
 
   const onClickOptions = useCallback(() => {
@@ -84,7 +84,7 @@ export const Menu = memo(() => {
       pathname: `/app-state/${appState?.app_state_id}`,
       search: searchParams.toString(),
     })
-  }, [appState?.user_email, navigate, params.user_email, searchParams])
+  }, [appState?.app_state_id, navigate, params.user_email, searchParams])
 
   const onClickLogout = useCallback(() => logout(), [logout])
   const onClickEnter = useCallback(() => navigate('/projects'), [navigate])

@@ -22,7 +22,7 @@ export const DesigningButton = memo(() => {
       where: { app_state_id: appState?.app_state_id },
       data: { designing: !designing },
     })
-  }, [authUser?.email, db.app_states, designing])
+  }, [appState?.app_state_id, db.app_states, designing])
 
   const { results: project } = useLiveQuery(
     db.projects.liveUnique({
