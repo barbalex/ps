@@ -1,0 +1,119 @@
+.breadcrumbs__crumb {
+  background: #fff;
+  color: #333;
+  outline: none;
+  border-top: 1px solid #cbd2d9;
+  border-bottom: 1px solid #cbd2d9;
+  padding: 0 0 0 1.5em;
+  position: relative;
+  text-decoration: none;
+  transition: background 0.2s linear;
+  display: flex;
+  align-items: center;
+  min-height: 46px;
+}
+
+.breadcrumbs__crumb__menu-item {
+  color: #333;
+  outline: none;
+  padding: 0 0 0 1.5em;
+  text-decoration: none;
+  transition: background 0.2s linear;
+  display: flex;
+  align-items: center;
+}
+
+.menu-button svg {
+  height: 18px;
+  width: 18px;
+  top: -3px;
+  position: relative;
+}
+
+.breadcrumbs__crumb:first-of-type {
+  padding-left: 25px;
+}
+
+.breadcrumbs__crumb.link,
+.breadcrumbs__crumb__menu-item.link {
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: rgba(0, 0, 0, 0.3);
+}
+
+.breadcrumbs__crumb:hover:after,
+.breadcrumbs__crumb:hover {
+  background: rgba(237, 241, 245, 1);
+}
+
+.breadcrumbs__crumb:focus:after,
+.breadcrumbs__crumb:focus,
+.breadcrumbs__crumb.is-active:focus {
+  background: #323f4a;
+  color: #fff;
+}
+
+.resizable-area > button::after,
+.resizable-area > button::before,
+.breadcrumbs__crumb::after,
+.breadcrumbs__crumb::before {
+  background: white;
+  bottom: 0;
+  clip-path: polygon(50% 50%, -50% -50%, 0 100%);
+  content: '';
+  left: 100%;
+  position: absolute;
+  top: 0;
+  transition: background 0.2s linear;
+  width: 2em;
+  z-index: 1;
+}
+
+.breadcrumbs__crumb::before {
+  background: #cbd2d9;
+  margin-left: 1px;
+}
+
+.breadcrumbs__crumb.is-active,
+.breadcrumbs__crumb.is-active:after {
+  background: rgba(237, 241, 245, 1);
+}
+
+.breadcrumbs__crumb:last-child {
+  border-right: none;
+}
+
+.breadcrumbs__crumb > ul,
+.breadcrumbs__crumb__menu-item > ul {
+  --ant-menu-item-bg: transparent !important;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  border-bottom: none;
+}
+
+.breadcrumbs__crumb > ul > li,
+.breadcrumbs__crumb__menu-item > ul > li {
+  padding-inline-start: 10px !important;
+  padding-inline-end: 5px !important;
+}
+
+.breadcrumbs__crumb > ul > li > div > span,
+.breadcrumbs__crumb__menu-item > ul > li > div > span {
+  position: relative;
+  top: 4px;
+}
+
+.breadcrumbs__crumb > ul > li > div > span > svg,
+.breadcrumbs__crumb__menu-item > ul > li > div > span > svg {
+  font-size: large;
+}
+
+.menu-icon {
+  font-size: 1.2em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  cursor: pointer;
+  position: relative;
+  top: 0.1em;
+}

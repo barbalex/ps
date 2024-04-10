@@ -1,0 +1,29 @@
+.resizable-area {
+  display: flex;
+  flex-wrap: nowrap;
+  position: relative;
+  min-height: 47px;
+  margin-left: -1em;
+  background-color: rgba(103, 216, 101, 0.07);
+  border-top: 1px solid rgba(55, 118, 28, 0.5);
+  border-bottom: 1px solid rgba(55, 118, 28, 0.5);
+  align-items: stretch;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.matches-container {
+  width: 100%;
+}
+
+.breadcrumbs {
+  border-top: 1px solid rgba(55, 118, 28, 0.5);
+  border-bottom: 1px solid rgba(55, 118, 28, 0.5);
+  background-color: rgba(103, 216, 101, 0.07);
+  border-collapse: collapse;
+  display: flex;
+  flex-wrap: wrap;
+  user-select: none;
+  margin-left: -1em;
+  align-items: stretch;
+}
