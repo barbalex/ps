@@ -1,6 +1,6 @@
 import { CorbadoProvider } from '@corbado/react'
 
-import { ElectricWrapper as ElectricProvider } from '../ElectricWrapper'
+import { ElectricProvider } from '../ElectricWrapper'
 import { SqlInitializer } from './SqlInitializer'
 import { Syncer } from './Syncer'
 

@@ -7,7 +7,7 @@ import { LIB_VERSION } from 'electric-sql/version'
 import { ElectricConfig } from 'electric-sql/config'
 import { useCorbadoSession } from '@corbado/react'
 
-import { ElectricProvider } from './ElectricProvider'
+import { ElectricProvider as ElectricProviderComponent } from './ElectricProvider'
 
 import { authToken } from './auth'
 
@@ -19,11 +19,14 @@ const config: ElectricConfig = {
   url: import.meta.env.ELECTRIC_SERVICE,
 }
 
-export const ElectricWrapper = ({ children }) => {
+export const ElectricProvider = ({ children }) => {
   const [electric, setElectric] = useState<Electric>()
   const { shortSession } = useCorbadoSession()
 
-  console.log('hello ElectricWrapper, shortSession:', shortSession)
+  console.log('hello ElectricProvider', {
+    shortSession,
+    electric,
+  })
 
   useEffect(() => {
     let isMounted = true
@@ -50,9 +53,11 @@ export const ElectricWrapper = ({ children }) => {
     }
   }, [shortSession])
 
-  if (electric === undefined) {
-    return null
-  }
+  if (electric === undefined) return null
 
-  return <ElectricProvider db={electric}>{children}</ElectricProvider>
+  return (
+    <ElectricProviderComponent db={electric}>
+      {children}
+    </ElectricProviderComponent>
+  )
 }
