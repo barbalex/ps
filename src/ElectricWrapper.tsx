@@ -1,5 +1,5 @@
 // wrapper.tsx
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ElectricDatabase, electrify } from 'electric-sql/wa-sqlite'
 import { Electric, schema } from './generated/client'
 import { uniqueTabId } from 'electric-sql/util'
