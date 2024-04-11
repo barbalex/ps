@@ -5,14 +5,16 @@ import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { useQuery } from '@tanstack/react-query'
 import { arrayMoveImmutable } from 'array-move'
+import { useLiveQuery } from 'electric-sql/react'
 
 import exists from '../../../../modules/exists'
 import query from './query'
 import ErrorBoundary from '../../../shared/ErrorBoundary'
 import Error from '../../../shared/Error'
-import Spinner from '../../../shared/Spinner'
 import Beob from './Field'
 import storeContext from '../../../../storeContext'
+import { useElectric } from '../../../ElectricProvider'
+import {Spinner} from '../../../shared/Spinner'
 
 import './raw.css'
 
@@ -27,7 +29,8 @@ const explainerStyle = {
 }
 
 export const BeobsComponent = () => {
-  const { beobId: id } = useParams()
+  const { occurrence_id } = useParams()
+  const { db } = useElectric()!
   const client = useApolloClient()
 
   const store = useContext(storeContext)
@@ -57,6 +60,9 @@ export const BeobsComponent = () => {
     [sortedBeobFields],
   )
 
+  const { data: occurrence } = useLiveQuery(
+    db.occurrences.liveUnique({ where: { occurrence_id } }),
+  )
   const { data, isLoading, error } = useQuery({
     queryKey: ['beobByIdQueryForBeob', id],
     queryFn: async () =>
@@ -69,8 +75,7 @@ export const BeobsComponent = () => {
       }),
   })
 
-  const row = data?.data?.beobById ?? {}
-  const rowData = row.data ? JSON.parse(row.data) : {}
+  const rowData = occurrence?.data ? {}
   const fields = Object.entries(rowData)
     // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
     .filter(([key, value]) => exists(value))
@@ -121,10 +126,8 @@ export const BeobsComponent = () => {
     [moveField],
   )
 
-  if (!row) return null
+  if (!occurrence) return <Spinner />
   if (!fields || fields.length === 0) return null
-  if (isLoading) return <Spinner />
-  if (error) return <Error error={error} />
 
   // Issue: only one instance of HTML5Backend can be used at a time
   // https://github.com/react-dnd/react-dnd/issues/3178
