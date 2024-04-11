@@ -37,12 +37,10 @@ export const Main = () => {
   const tabs = useMemo(() => appState?.tabs ?? [], [appState?.tabs])
   const designing = appState?.designing ?? false
 
-  console.log('hello Main', { onlyForm, tabs, designing, appState, tabs, db })
+  console.log('hello Main', { tabs, designing, appState, tabs, db })
 
   if (onlyForm) return <Outlet />
 
-  // Allotment prevents the map from drawing correctly
-  // UNLESS: an empty div is rendered instead of a missing Map...???
   return (
     <div style={containerStyle}>
       <Allotment>
