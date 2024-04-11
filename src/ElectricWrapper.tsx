@@ -1,5 +1,4 @@
-// wrapper.tsx
-import { useEffect, useState } from 'react'
+import { useEffect, useState, memo } from 'react'
 import { ElectricDatabase, electrify } from 'electric-sql/wa-sqlite'
 import { Electric, schema } from './generated/client'
 import { uniqueTabId } from 'electric-sql/util'
@@ -19,7 +18,7 @@ const config: ElectricConfig = {
   url: import.meta.env.ELECTRIC_SERVICE,
 }
 
-export const ElectricProvider = ({ children }) => {
+export const ElectricProvider = memo(({ children }) => {
   const [electric, setElectric] = useState<Electric>()
   const { shortSession } = useCorbadoSession()
 
@@ -60,4 +59,4 @@ export const ElectricProvider = ({ children }) => {
       {children}
     </ElectricProviderComponent>
   )
-}
+})
