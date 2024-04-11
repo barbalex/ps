@@ -37,7 +37,6 @@ export const ElectricProvider = memo(({ children }) => {
       const conn = await ElectricDatabase.init(scopedDbName)
       const electric = await electrify(conn, schema, config)
       await electric.connect(authToken(shortSession))
-      // await electric.connect(shortSession)
 
       if (!isMounted) {
         return
