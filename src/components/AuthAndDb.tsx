@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { CorbadoProvider } from '@corbado/react'
 
 import { ElectricProvider } from '../ElectricWrapper'
@@ -8,7 +9,7 @@ import { Layout } from './LayoutProtected'
 
 const CORBADO_PROJECT_ID = import.meta.env.ELECTRIC_CORBADO_PROJECT_ID
 
-export const AuthAndDb = () => {
+export const AuthAndDb = memo(() => {
   console.log('hello AuthAndDb')
 
   return (
@@ -20,4 +21,4 @@ export const AuthAndDb = () => {
       </ElectricProvider>
     </CorbadoProvider>
   )
-}
+})
