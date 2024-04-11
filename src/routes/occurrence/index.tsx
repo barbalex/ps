@@ -38,6 +38,7 @@ export const Component = () => {
   // TODO:
   // - add place assigner
   // - add not to assign
+  // - add occurrence data
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
