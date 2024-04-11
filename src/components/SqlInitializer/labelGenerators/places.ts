@@ -2,11 +2,10 @@ export const generatePlaceLabel = async (db) => {
   const triggers = await db.rawQuery({
     sql: `select name from sqlite_master where type = 'trigger';`,
   })
-  const triggerExists = triggers.some(
+  const updateTriggerExists = triggers.some(
     (column) => column.name === 'places_label_trigger',
   )
-
-  if (!triggerExists) {
+  if (!updateTriggerExists) {
     // Wanted to build virtual field from projects.places_label_by, return that here
     // But: not possible because generated columns can only fetch from the same row/table
     // Alternative: use a trigger to update the label field
@@ -31,7 +30,12 @@ export const generatePlaceLabel = async (db) => {
       END;`,
     })
     console.log('LabelGenerator, places, result:', result)
-    // now to same on insert
+  }
+  // if no insert trigger exists, add it
+  const insertTriggerExists = triggers.some(
+    (column) => column.name === 'places_label_insert_trigger',
+  )
+  if (!insertTriggerExists) {
     const resultInsert = await db.unsafeExec({
       sql: `
       CREATE TRIGGER if not exists places_label_insert_trigger
@@ -51,19 +55,5 @@ export const generatePlaceLabel = async (db) => {
       END;`,
     })
     console.log('LabelGenerator, places, resultInsert:', resultInsert)
-    // const resultArray = await db.unsafeExec({
-    //   sql: `
-    //   CREATE TRIGGER if not exists places_label_array_trigger
-    //   AFTER UPDATE of data ON places
-    //   BEGIN
-    //     UPDATE places SET label_array = '$.' || group_concat(json_extract(NEW.data, projects.places_label_by_array), '.')
-    //     FROM (
-    //       SELECT places_label_by_array from projects
-    //       where project_id = (select project_id from subprojects where subproject_id = NEW.subproject_id)
-    //     ) as projects
-    //      WHERE places.place_id = NEW.place_id;
-    //   END`,
-    // })
-    // console.log('LabelGenerator, places, resultArray:', resultArray)
   }
 }
