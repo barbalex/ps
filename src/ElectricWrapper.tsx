@@ -22,10 +22,11 @@ export const ElectricProvider = memo(({ children }) => {
   const [electric, setElectric] = useState<Electric>()
   const { shortSession } = useCorbadoSession()
 
-  console.log('hello ElectricProvider', {
-    shortSession,
-    electric,
-  })
+  // TODO: this rerenders a bit to often
+  // console.log('hello ElectricProvider', {
+  //   shortSession,
+  //   electric,
+  // })
 
   useEffect(() => {
     let isMounted = true
