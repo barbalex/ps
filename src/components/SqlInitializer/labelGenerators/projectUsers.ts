@@ -16,7 +16,11 @@ export const generateProjectUserLabel = async (db) => {
       END;`,
     })
     console.log('TriggerGenerator, project_users, result:', result)
-    // same on insert
+  }
+  const projectUsersLabelInsertTriggerExists = triggers.some(
+    (column) => column.name === 'project_users_label_trigger_insert',
+  )
+  if (!projectUsersLabelInsertTriggerExists) {
     await db.unsafeExec({
       sql: `
       CREATE TRIGGER IF NOT EXISTS project_users_label_trigger_insert
