@@ -66,10 +66,10 @@ export const Menu = memo(() => {
       where: { user_email: authUser?.email },
     }),
   )
-  console.log('hello LayoutProtected Header Menu', {
-    appState,
-    authUserEmail: authUser?.email,
-  })
+  // console.log('hello LayoutProtected Header Menu', {
+  //   appState,
+  //   authUserEmail: authUser?.email,
+  // })
   // To debug not having any data: query all app_states
   const { results: appStates } = useLiveQuery(db.app_states.liveMany())
   console.log('hello LayoutProtected Header Menu appStates:', appStates)

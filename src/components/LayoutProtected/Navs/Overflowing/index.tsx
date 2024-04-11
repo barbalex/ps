@@ -123,12 +123,12 @@ export const NavsOverflowing = ({ designing }) => {
     refreshOptions: { leading: false, trailing: true },
   })
 
-  console.log('hello NavsOverflowing', {
-    matches,
-    tosToUse,
-    thisPathsMatches,
-    pathname: location.pathname,
-  })
+  // console.log('hello NavsOverflowing', {
+  //   matches,
+  //   tosToUse,
+  //   thisPathsMatches,
+  //   pathname: location.pathname,
+  // })
 
   if (tosToUse?.length) {
     return (
