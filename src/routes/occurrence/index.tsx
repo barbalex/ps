@@ -4,9 +4,7 @@ import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 
 import { useElectric } from '../../ElectricProvider'
-import { TextField } from '../../components/shared/TextField'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
-import { Jsonb } from '../../components/shared/Jsonb'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { Header } from './Header'
 import { Loading } from '../../components/shared/Loading'
@@ -36,25 +34,17 @@ export const Component = () => {
 
   if (!row) return <Loading />
 
+  // TODO:
+  // - add place assigner
+  // - add not to assign
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
-        <TextFieldInactive label="ID" name="occurrence_id" value={row.occurrence_id} />
-        <TextField
-          label="Email"
-          name="email"
-          type="email"
-          value={row.email ?? ''}
-          onChange={onChange}
-          autoFocus
-          ref={autoFocusRef}
-        />
-        <Jsonb
-          table="occurrences"
-          idField="occurrence_id"
-          id={row.occurrence_id}
-          data={row.data ?? {}}
+        <TextFieldInactive
+          label="ID"
+          name="occurrence_id"
+          value={row.occurrence_id}
         />
       </div>
     </div>

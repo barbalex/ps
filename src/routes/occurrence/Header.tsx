@@ -1,68 +1,54 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
-import { createPerson } from '../../modules/createRows'
 import { useElectric } from '../../ElectricProvider'
 import { FormHeader } from '../../components/FormHeader'
 
-export const Header = memo(({ autoFocusRef }) => {
-  const { project_id, person_id } = useParams()
+export const Header = memo(() => {
+  const { project_id, occurrence_id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
 
-  const addRow = useCallback(async () => {
-    const data = await createPerson({ db, project_id })
-    await db.persons.create({ data })
-    navigate({
-      pathname: `../${data.person_id}`,
-      search: searchParams.toString(),
-    })
-    autoFocusRef.current?.focus()
-  }, [autoFocusRef, db, navigate, project_id, searchParams])
-
-  const deleteRow = useCallback(async () => {
-    await db.persons.delete({ where: { person_id } })
-    navigate({ pathname: '..', search: searchParams.toString() })
-  }, [db.persons, navigate, person_id, searchParams])
-
   const toNext = useCallback(async () => {
-    const persons = await db.persons.findMany({
-      where: {  project_id },
+    const occurrences = await db.occurrences.findMany({
+      where: { project_id },
       orderBy: { label: 'asc' },
     })
-    const len = persons.length
-    const index = persons.findIndex((p) => p.person_id === person_id)
-    const next = persons[(index + 1) % len]
+    const len = occurrences.length
+    const index = occurrences.findIndex(
+      (p) => p.occurrence_id === occurrence_id,
+    )
+    const next = occurrences[(index + 1) % len]
     navigate({
-      pathname: `../${next.person_id}`,
+      pathname: `../${next.occurrence_id}`,
       search: searchParams.toString(),
     })
-  }, [db.persons, navigate, person_id, project_id, searchParams])
+  }, [db.occurrences, navigate, occurrence_id, project_id, searchParams])
 
   const toPrevious = useCallback(async () => {
-    const persons = await db.persons.findMany({
-      where: {  project_id },
+    const occurrences = await db.occurrences.findMany({
+      where: { project_id },
       orderBy: { label: 'asc' },
     })
-    const len = persons.length
-    const index = persons.findIndex((p) => p.person_id === person_id)
-    const previous = persons[(index + len - 1) % len]
+    const len = occurrences.length
+    const index = occurrences.findIndex(
+      (p) => p.occurrence_id === occurrence_id,
+    )
+    const previous = occurrences[(index + len - 1) % len]
     navigate({
-      pathname: `../${previous.person_id}`,
+      pathname: `../${previous.occurrence_id}`,
       search: searchParams.toString(),
     })
-  }, [db.persons, navigate, person_id, project_id, searchParams])
+  }, [db.occurrences, navigate, occurrence_id, project_id, searchParams])
 
   return (
     <FormHeader
-      title="Person"
-      addRow={addRow}
-      deleteRow={deleteRow}
+      title="Occurrence"
       toNext={toNext}
       toPrevious={toPrevious}
-      tableName="person"
+      tableName="occurrence"
     />
   )
 })
