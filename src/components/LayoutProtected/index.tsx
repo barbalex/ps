@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
 import { Main } from './Main'
@@ -8,7 +9,7 @@ import { ProtectedRoute } from '../ProtectedRoute'
 import { Header } from './Header'
 
 // memoizing this component creates error
-export const Layout = () => {
+export const Layout = memo(() => {
   // onlyForm is a query parameter that allows the user to view a form without the rest of the app
   // used for popups inside the map
   const [searchParams] = useSearchParams()
@@ -34,4 +35,4 @@ export const Layout = () => {
       </ProtectedRoute>
     </>
   )
-}
+})
