@@ -98,13 +98,26 @@ export const seedTestData = async (db) => {
   const users = await db.rawQuery({
     sql: `select count(*) as count from users;`,
   })
+  console.log('hello seedTestData users:', users)
   if (users[0].count === 0) {
     await db.unsafeExec({
       sql: seedUsers,
     })
-    await db.unsafeExec({
-      sql: seedAppStates,
-    })
+  }
+  // if no app_states, seed them
+  const appStates = await db.rawQuery({
+    sql: `select count(*) as count from app_states;`,
+  })
+  console.log('hello seedTestData appStates:', appStates)
+  if (appStates[0].count === 0) {
+    try {
+      const result = await db.unsafeExec({
+        sql: seedAppStates,
+      })
+      console.log('hello seedAppStates result:', result)
+    } catch (error) {
+      console.error('hello seedAppStates error:', error)
+    }
   }
   const accounts = await db.rawQuery({
     sql: `select count(*) as count from accounts;`,

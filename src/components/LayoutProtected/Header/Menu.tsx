@@ -66,15 +66,29 @@ export const Menu = memo(() => {
       where: { user_email: authUser?.email },
     }),
   )
+  console.log('hello LayoutProtected Header Menu', {
+    appState,
+    authUserEmail: authUser?.email,
+  })
+  // To debug not having any data: query all app_states
+  const { results: appStates } = useLiveQuery(db.app_states.liveMany())
+  console.log('hello LayoutProtected Header Menu appStates:', appStates)
+  // To debug not having any data: query all users
+  const { results: users } = useLiveQuery(db.users.liveMany())
+  console.log('hello LayoutProtected Header Menu users:', users)
   const tabs = useMemo(() => appState?.tabs ?? [], [appState?.tabs])
   const onChangeTabs = useCallback(
     (e, { checkedItems }) => {
+      console.log(
+        'hello LayoutProtected Header Menu onChangeTabs, appState:',
+        appState,
+      )
       db.app_states.update({
         where: { app_state_id: appState?.app_state_id },
         data: { tabs: checkedItems },
       })
     },
-    [appState?.app_state_id, db.app_states],
+    [appState, db.app_states],
   )
 
   const onClickOptions = useCallback(() => {
