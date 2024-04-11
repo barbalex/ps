@@ -1252,6 +1252,8 @@ CREATE TABLE occurrences(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   occurrence_import_id uuid DEFAULT NULL REFERENCES occurrence_imports(occurrence_import_id) ON DELETE CASCADE ON UPDATE CASCADE,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE setnull ON UPDATE CASCADE,
+  not_to_assign boolean DEFAULT NULL, -- FALSE, TODO: index?,
+  comment text DEFAULT NULL,
   data jsonb DEFAULT NULL,
   id_in_source text DEFAULT NULL, -- extracted from data using occurrence_import_id.id_field
   geometry jsonb DEFAULT NULL, -- extracted from data using occurrence_import_id.geometry_method and it's field(s)
