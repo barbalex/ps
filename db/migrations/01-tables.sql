@@ -1174,7 +1174,7 @@ CREATE TABLE app_states(
   editing_place_geometry uuid DEFAULT NULL,
   editing_check_geometry uuid DEFAULT NULL,
   editing_action_geometry uuid DEFAULT NULL,
-  occurrence_fields_sorter jsonb DEFAULT NULL, -- array of strings
+  occurrence_fields_sorted jsonb DEFAULT NULL, -- array of strings
   label text DEFAULT NULL
 );
 

@@ -8,6 +8,7 @@ import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { Header } from './Header'
 import { Loading } from '../../components/shared/Loading'
+import { OccurenceData } from './OccurrenceData'
 
 import '../../form.css'
 
@@ -47,6 +48,7 @@ export const Component = () => {
           value={row.occurrence_id}
         />
       </div>
+      <OccurenceData />
     </div>
   )
 }

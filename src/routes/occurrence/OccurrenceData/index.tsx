@@ -1,20 +1,16 @@
-import { useCallback, useContext, useEffect } from 'react'
-import { useApolloClient } from '@apollo/client'
+import { useCallback, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
-import { useQuery } from '@tanstack/react-query'
 import { arrayMoveImmutable } from 'array-move'
 import { useLiveQuery } from 'electric-sql/react'
+import { useCorbadoSession } from '@corbado/react'
 
 import exists from '../../../../modules/exists'
-import query from './query'
 import ErrorBoundary from '../../../shared/ErrorBoundary'
-import Error from '../../../shared/Error'
-import Beob from './Field'
-import storeContext from '../../../../storeContext'
+import { Field } from './Field'
 import { useElectric } from '../../../ElectricProvider'
-import {Spinner} from '../../../shared/Spinner'
+import { Spinner } from '../../../shared/Spinner'
 
 import './raw.css'
 
@@ -28,15 +24,15 @@ const explainerStyle = {
   color: 'rgba(0, 0, 0, 0.54)',
 }
 
-export const BeobsComponent = () => {
+export const OccurenceData = () => {
   const { occurrence_id } = useParams()
   const { db } = useElectric()!
-  const client = useApolloClient()
+  const { user: authUser } = useCorbadoSession()
 
-  const store = useContext(storeContext)
-  const { sortedBeobFields: sortedBeobFieldsPassed, setSortedBeobFields } =
-    store
-  const sortedBeobFields = sortedBeobFieldsPassed.slice()
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+  )
+  const sortedBeobFields = (appState?.occurrence_fields_sorted ?? []).slice()
 
   const sortFn = useCallback(
     (a, b) => {
@@ -60,27 +56,26 @@ export const BeobsComponent = () => {
     [sortedBeobFields],
   )
 
-  const { data: occurrence } = useLiveQuery(
+  const { results: occurrence } = useLiveQuery(
     db.occurrences.liveUnique({ where: { occurrence_id } }),
   )
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['beobByIdQueryForBeob', id],
-    queryFn: async () =>
-      client.query({
-        query,
-        variables: {
-          id,
-        },
-        fetchPolicy: 'no-cache',
-      }),
-  })
 
-  const rowData = occurrence?.data ? {}
+  const rowData = occurrence?.data ?? {}
   const fields = Object.entries(rowData)
     // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
     .filter(([key, value]) => exists(value))
     .sort(sortFn)
   const keys = fields.map((f) => f[0])
+
+  const setSortedBeobFields = useCallback(
+    (newArray) => {
+      db.app_states.update({
+        where: { app_state_id: appState.app_state_id },
+        data: { occurrence_fields_sorted: newArray },
+      })
+    },
+    [appState.app_state_id, db.app_states],
+  )
 
   useEffect(() => {
     // add missing keys to sortedBeobFields
@@ -91,6 +86,7 @@ export const BeobsComponent = () => {
       }
     }
     if (!additionalKeys.length) return
+
     setSortedBeobFields([...sortedBeobFields, ...additionalKeys])
   }, [keys, setSortedBeobFields, sortedBeobFields])
 
@@ -107,6 +103,7 @@ export const BeobsComponent = () => {
       if (fromIndex === toIndex) return
       if (fromIndex === -1) return
       if (toIndex === -1) return
+
       // move
       const newArray = arrayMoveImmutable(sortedBeobFields, fromIndex, toIndex)
       setSortedBeobFields(newArray)
@@ -115,7 +112,7 @@ export const BeobsComponent = () => {
   )
   const renderField = useCallback(
     (field, index) => (
-      <Beob
+      <Field
         key={field[0]}
         label={field[0]}
         value={field[1]}
