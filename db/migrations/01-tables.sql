@@ -1174,6 +1174,7 @@ CREATE TABLE app_states(
   editing_place_geometry uuid DEFAULT NULL,
   editing_check_geometry uuid DEFAULT NULL,
   editing_action_geometry uuid DEFAULT NULL,
+  occurrence_fields_sorter jsonb DEFAULT NULL, -- array of strings
   label text DEFAULT NULL
 );
 
@@ -1195,6 +1196,8 @@ COMMENT ON COLUMN app_states.editing_place_geometry IS 'The id of the place whos
 COMMENT ON COLUMN app_states.editing_check_geometry IS 'The id of the check whose geometry is currently being edited';
 
 COMMENT ON COLUMN app_states.editing_action_geometry IS 'The id of the action whose geometry is currently being edited';
+
+COMMENT ON COLUMN app_states.occurrence_fields_sorter IS 'The order of fields in the occurrence form. User can change it by drag and drop';
 
 CREATE TYPE occurrence_imports_previous_import_operation_enum AS enum(
   'update_and_extend',
