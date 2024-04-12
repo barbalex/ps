@@ -19,7 +19,7 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
   electric:
-    image: electricsql/electric
+    image: electricsql/electric:0.10.1
     depends_on:
       - pg
     networks:
