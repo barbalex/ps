@@ -16,7 +16,11 @@ export const generateAppStatesLabel = async (db) => {
       END;`,
     })
     console.log('TriggerGenerator, app_states, result:', result)
-    // same on insert
+  }
+  const uiOptionsLabelInsertTriggerExists = triggers.some(
+    (column) => column.name === 'ui_options_label_trigger_insert',
+  )
+  if (!uiOptionsLabelInsertTriggerExists) {
     await db.unsafeExec({
       sql: `
       CREATE TRIGGER IF NOT EXISTS ui_options_label_trigger_insert

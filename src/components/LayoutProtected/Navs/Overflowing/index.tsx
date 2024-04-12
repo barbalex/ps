@@ -4,6 +4,7 @@ import {
   useLocation,
   useNavigate,
   useSearchParams,
+  useParams,
 } from 'react-router-dom'
 import { BsCaretDown } from 'react-icons/bs'
 import {
@@ -21,6 +22,9 @@ import { useResizeDetector } from 'react-resize-detector'
 
 import { ToNavs } from '../ToNavs'
 import { DataNavsOverflowing } from './DataNavs'
+import { buildNavs } from '../../../../modules/navs'
+import { useElectric } from '../../../../ElectricProvider'
+import { useCorbadoSession } from '@corbado/react'
 
 const OverflowMenuItem: React.FC = ({ path, text }) => {
   const navigate = useNavigate()
@@ -81,20 +85,27 @@ export const OverflowMenu: React.FC = ({ tos }) => {
 export const NavsOverflowing = ({ designing }) => {
   const location = useLocation()
   const matches = useMatches()
+  const params = useParams()
+
+  const { db } = useElectric()!
+  const { user: authUser } = useCorbadoSession()
 
   const thisPathsMatches = matches.filter(
     (match) => match.pathname === location.pathname && match.handle,
   )
 
+  // TODO: tidy up tos <> navs
   const [tos, setTos] = useState([])
   useEffect(() => {
     const fetch = async () => {
       const tos = []
       for (const match of thisPathsMatches) {
-        const to = await match?.handle?.to?.(match)
+        const to = match?.handle?.to
         if (!to) continue
         if (!designing && to.showOnlyWhenDesigning) continue
-        tos.push(to)
+        // build tos
+        const nav = await buildNavs({ ...to, ...params, db, authUser })
+        tos.push(nav)
       }
 
       return setTos(tos.filter((to) => Boolean(to)))

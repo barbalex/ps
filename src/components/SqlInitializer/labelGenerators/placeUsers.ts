@@ -16,7 +16,11 @@ export const generatePlaceUserLabel = async (db) => {
       END;`,
     })
     console.log('TriggerGenerator, place_users, result:', result)
-    // same on insert
+  }
+  const placeUsersLabelInsertTriggerExists = triggers.some(
+    (column) => column.name === 'place_users_label_trigger_insert',
+  )
+  if (!placeUsersLabelInsertTriggerExists) {
     await db.unsafeExec({
       sql: `
       CREATE TRIGGER IF NOT EXISTS place_users_label_trigger_insert

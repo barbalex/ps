@@ -1,5 +1,4 @@
-// wrapper.tsx
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState, memo } from 'react'
 import { ElectricDatabase, electrify } from 'electric-sql/wa-sqlite'
 import { Electric, schema } from './generated/client'
 import { uniqueTabId } from 'electric-sql/util'
@@ -7,7 +6,7 @@ import { LIB_VERSION } from 'electric-sql/version'
 import { ElectricConfig } from 'electric-sql/config'
 import { useCorbadoSession } from '@corbado/react'
 
-import { ElectricProvider } from './ElectricProvider'
+import { ElectricProvider as ElectricProviderComponent } from './ElectricProvider'
 
 import { authToken } from './auth'
 
@@ -19,11 +18,15 @@ const config: ElectricConfig = {
   url: import.meta.env.ELECTRIC_SERVICE,
 }
 
-export const ElectricWrapper = ({ children }) => {
+export const ElectricProvider = memo(({ children }) => {
   const [electric, setElectric] = useState<Electric>()
   const { shortSession } = useCorbadoSession()
 
-  console.log('hello ElectricWrapper, shortSession:', shortSession)
+  // TODO: this rerenders a bit to often
+  // console.log('hello ElectricProvider', {
+  //   shortSession,
+  //   electric,
+  // })
 
   useEffect(() => {
     let isMounted = true
@@ -35,7 +38,6 @@ export const ElectricWrapper = ({ children }) => {
       const conn = await ElectricDatabase.init(scopedDbName)
       const electric = await electrify(conn, schema, config)
       await electric.connect(authToken(shortSession))
-      // await electric.connect(shortSession)
 
       if (!isMounted) {
         return
@@ -50,9 +52,11 @@ export const ElectricWrapper = ({ children }) => {
     }
   }, [shortSession])
 
-  if (electric === undefined) {
-    return null
-  }
+  if (electric === undefined) return null
 
-  return <ElectricProvider db={electric}>{children}</ElectricProvider>
-}
+  return (
+    <ElectricProviderComponent db={electric}>
+      {children}
+    </ElectricProviderComponent>
+  )
+})

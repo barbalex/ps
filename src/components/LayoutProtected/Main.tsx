@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
-import { Outlet, useSearchParams } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
+// import { useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import { Allotment } from 'allotment'
 import { useCorbadoSession } from '@corbado/react'
@@ -18,8 +19,15 @@ const containerStyle = {
 }
 
 export const Main = () => {
-  const [searchParams] = useSearchParams()
-  const onlyForm = searchParams.get('onlyForm')
+  // onlyForm is a query parameter that allows the user to view a form without the rest of the app
+  // used for popups inside the map
+  // TODO: this renders on every navigation!!! This temporarily disabled
+  // because of the searchParams? JES
+  // seems not solvable with react-router: https://github.com/remix-run/react-router/discussions/9851
+  // there is this pull request: https://github.com/remix-run/react-router/pull/10740
+  // const [searchParams] = useSearchParams()
+  // const onlyForm = searchParams.get('onlyForm')
+  const onlyForm = false
   const { user: authUser } = useCorbadoSession()
 
   const { db } = useElectric()!
@@ -29,10 +37,10 @@ export const Main = () => {
   const tabs = useMemo(() => appState?.tabs ?? [], [appState?.tabs])
   const designing = appState?.designing ?? false
 
+  console.log('hello Main', { tabs, designing, appState, tabs, db })
+
   if (onlyForm) return <Outlet />
 
-  // Allotment prevents the map from drawing correctly
-  // UNLESS: an empty div is rendered instead of a missing Map...???
   return (
     <div style={containerStyle}>
       <Allotment>

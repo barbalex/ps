@@ -1,0 +1,8 @@
+.container {
+  @container (min-width: 1020px) {
+    columns: 2;
+  }
+  @container (min-width: 1620px) {
+    columns: 3;
+  }
+}

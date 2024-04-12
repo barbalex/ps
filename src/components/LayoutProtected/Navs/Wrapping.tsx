@@ -1,12 +1,18 @@
 import { useEffect, useState } from 'react'
-import { useMatches, useLocation } from 'react-router-dom'
+import { useMatches, useLocation, useParams } from 'react-router-dom'
 
 import { DataNavs } from './DataNavs'
 import { ToNavs } from './ToNavs'
+import { buildNavs } from '../../../modules/navs'
+import { useElectric } from '../../../ElectricProvider'
+import { useCorbadoSession } from '@corbado/react'
 
 export const NavsWrapping = ({ designing }) => {
   const location = useLocation()
   const matches = useMatches()
+  const params = useParams()
+  const { db } = useElectric()!
+  const { user: authUser } = useCorbadoSession()
 
   const thisPathsMatches = matches.filter(
     (match) => match.pathname === location.pathname && match.handle,
@@ -17,10 +23,12 @@ export const NavsWrapping = ({ designing }) => {
     const fetch = async () => {
       const tos = []
       for (const match of thisPathsMatches) {
-        const to = await match?.handle?.to?.(match)
+        const to = match?.handle?.to
         if (!to) continue
         if (!designing && to.showOnlyWhenDesigning) continue
-        tos.push(to)
+        // build tos
+        const nav = await buildNavs({ ...to, ...params, db, authUser })
+        tos.push(nav)
       }
 
       return setTos(tos.filter((to) => Boolean(to)))
@@ -31,12 +39,12 @@ export const NavsWrapping = ({ designing }) => {
 
   const tosToUse = tos[0] ?? []
 
-  // console.log('Navs', {
-  //   matches,
-  //   tosToUse,
-  //   thisPathsMatches,
-  //   pathname: location.pathname,
-  // })
+  console.log('hello Navs', {
+    matches,
+    tosToUse,
+    thisPathsMatches,
+    pathname: location.pathname,
+  })
 
   return (
     <nav className="navs">

@@ -1174,6 +1174,7 @@ CREATE TABLE app_states(
   editing_place_geometry uuid DEFAULT NULL,
   editing_check_geometry uuid DEFAULT NULL,
   editing_action_geometry uuid DEFAULT NULL,
+  occurrence_fields_sorted jsonb DEFAULT NULL, -- array of strings
   label text DEFAULT NULL
 );
 
@@ -1195,6 +1196,8 @@ COMMENT ON COLUMN app_states.editing_place_geometry IS 'The id of the place whos
 COMMENT ON COLUMN app_states.editing_check_geometry IS 'The id of the check whose geometry is currently being edited';
 
 COMMENT ON COLUMN app_states.editing_action_geometry IS 'The id of the action whose geometry is currently being edited';
+
+COMMENT ON COLUMN app_states.occurrence_fields_sorter IS 'The order of fields in the occurrence form. User can change it by drag and drop';
 
 CREATE TYPE occurrence_imports_previous_import_operation_enum AS enum(
   'update_and_extend',
@@ -1251,6 +1254,9 @@ CREATE TABLE occurrences(
   occurrence_id uuid PRIMARY KEY DEFAULT NULL,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   occurrence_import_id uuid DEFAULT NULL REFERENCES occurrence_imports(occurrence_import_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE setnull ON UPDATE CASCADE,
+  not_to_assign boolean DEFAULT NULL, -- FALSE, TODO: index?,
+  comment text DEFAULT NULL,
   data jsonb DEFAULT NULL,
   id_in_source text DEFAULT NULL, -- extracted from data using occurrence_import_id.id_field
   geometry jsonb DEFAULT NULL, -- extracted from data using occurrence_import_id.geometry_method and it's field(s)
@@ -1262,10 +1268,14 @@ CREATE INDEX ON occurrences USING btree(account_id);
 
 CREATE INDEX ON occurrences USING btree(occurrence_import_id);
 
+CREATE INDEX ON occurrences USING btree(place_id);
+
 CREATE INDEX ON occurrences USING btree(label);
 
 -- CREATE INDEX ON occurrences USING gist(data); TODO: when supported by electric-sql
 COMMENT ON TABLE occurrences IS 'GBIF occurrences. Imported for subprojects (species projects) or projects (biotope projects).';
+
+COMMENT ON COLUMN occurrences.place_id IS 'The place this occurrence is assigned to.';
 
 COMMENT ON COLUMN occurrences.id_in_source IS 'Used to replace previously imported occurrences';
 

@@ -5,7 +5,6 @@ export const generateWidgetForFieldLabel = async (db) => {
   const triggerExists = triggers.some(
     (column) => column.name === 'widgets_for_fields_label_trigger',
   )
-
   if (!triggerExists) {
     // Wanted to build virtual field from projects.places_label_by, return that here
     // But: not possible because generated columns can only fetch from the same row/table
@@ -21,6 +20,11 @@ export const generateWidgetForFieldLabel = async (db) => {
       END`,
     })
     console.log('LabelGenerator, widgets for fields, result:', result)
+  }
+  const insertTriggerExists = triggers.some(
+    (column) => column.name === 'widgets_for_fields_label_insert_trigger',
+  )
+  if (!insertTriggerExists) {
     const resultInsert = await db.unsafeExec({
       sql: `
       CREATE TRIGGER if not exists widgets_for_fields_label_insert_trigger

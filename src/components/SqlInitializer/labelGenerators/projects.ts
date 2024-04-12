@@ -72,7 +72,11 @@ export const generateProjectLabel = async (db) => {
       END;`,
     })
     console.log('TriggerGenerator, projects_label_trigger, result:', result)
-    // if a new project is created, update its label
+  }
+  const projectsLabelInsertTriggerExists = triggers.some(
+    (column) => column.name === 'projects_label_trigger_insert',
+  )
+  if (!projectsLabelInsertTriggerExists) {
     await db.unsafeExec({
       sql: `
       CREATE TRIGGER IF NOT EXISTS projects_label_trigger_insert
