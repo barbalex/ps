@@ -1,14 +1,18 @@
 import { useEffect } from 'react'
+import { useCorbadoSession } from '@corbado/react'
 
 import { useElectric } from '../ElectricProvider'
 
 export const Syncer = () => {
   const { db } = useElectric()!
+  const { user: authUser } = useCorbadoSession()
+  console.log('hello Syncer', { db, authUser })
 
   useEffect(() => {
     const syncItems = async () => {
       // Resolves when the shape subscription has been established.
       const userShape = await db.users.sync({
+        where: { email: authUser?.email },
         include: {
           accounts: {
             include: {
@@ -226,7 +230,7 @@ export const Syncer = () => {
     }
 
     syncItems()
-  }, [db])
+  }, [authUser?.email, db])
 
   return null
 }
