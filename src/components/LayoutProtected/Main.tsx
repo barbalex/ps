@@ -1,4 +1,4 @@
-import { useMemo, memo } from 'react'
+import { useMemo, memo, useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
 // import { useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
@@ -31,11 +31,14 @@ export const Main = memo(() => {
   const { user: authUser } = useCorbadoSession()
 
   const { db } = useElectric()!
-  const { results: appState } = useLiveQuery(
+  const { results: appStateByEmail } = useLiveQuery(
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
-  const tabs = useMemo(() => appState?.tabs ?? [], [appState?.tabs])
-  const designing = appState?.designing ?? false
+  const tabs = useMemo(
+    () => appStateByEmail?.tabs ?? [],
+    [appStateByEmail?.tabs],
+  )
+  const designing = appStateByEmail?.designing ?? false
 
   // test querying
   const { results: appStateById } = useLiveQuery(
@@ -43,15 +46,59 @@ export const Main = memo(() => {
       where: { app_state_id: '018ec37d-54b7-7d95-8bd9-a9117e1e7491' },
     }),
   )
+  const { results: appStatesMany } = useLiveQuery(db.app_states.liveMany())
 
-  console.log('hello Main', {
-    tabs,
-    designing,
-    appState,
+  console.log('from render', {
+    appStateByEmail,
     appStateById,
     db,
     authUserEmail: authUser?.email,
+    appStatesMany,
   })
+
+  useEffect(() => {
+    const run = async () => {
+      const appStatesFromRawQuery = await db.rawQuery({
+        sql: `select * from app_states;`,
+      })
+      console.log(
+        'from useEffect, appStates from raw query:',
+        appStatesFromRawQuery,
+      )
+      try {
+        const appStatesFromFindMany = await db.app_states.findMany()
+        console.log(
+          'from useEffect, appStatesFromFindMany:',
+          appStatesFromFindMany,
+        )
+      } catch (error) {
+        console.error('from useEffect, appStatesFromFindMany error:', error)
+      }
+      try {
+        const appStatesFromFindUnique = await db.app_states.findUnique({
+          where: { app_state_id: '018ec37d-54b7-7d95-8bd9-a9117e1e7491' },
+        })
+        console.log(
+          'from useEffect, appStatesFromFindUnique:',
+          appStatesFromFindUnique,
+        )
+      } catch (error) {
+        console.error('from useEffect, appStatesFromFindUnique error:', error)
+      }
+      try {
+        const appStatesFromFindFirst = await db.app_states.findFirst({
+          where: { user_email: authUser?.email },
+        })
+        console.log(
+          'from useEffect, appStatesFromFindFirst:',
+          appStatesFromFindFirst,
+        )
+      } catch (error) {
+        console.error('from useEffect, appStatesFromFindFirst error:', error)
+      }
+    }
+    run()
+  }, [])
 
   if (onlyForm) return <Outlet />
 
