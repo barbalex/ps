@@ -12,7 +12,7 @@ export const Syncer = () => {
     const syncItems = async () => {
       // Resolves when the shape subscription has been established.
       const userShape = await db.users.sync({
-        where: { email: authUser?.email },
+        where: { email: authUser?.email ?? 'nope' },
         include: {
           accounts: {
             include: {
