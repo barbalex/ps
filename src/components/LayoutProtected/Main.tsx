@@ -37,7 +37,7 @@ export const Main = () => {
   const tabs = useMemo(() => appState?.tabs ?? [], [appState?.tabs])
   const designing = appState?.designing ?? false
 
-  console.log('hello Main', { tabs, designing, appState, tabs, db })
+  console.log('hello Main', { tabs, designing, appState, db })
 
   if (onlyForm) return <Outlet />
 
