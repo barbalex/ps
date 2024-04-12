@@ -47,6 +47,8 @@ export const Main = memo(() => {
     }),
   )
   const { results: appStatesMany } = useLiveQuery(db.app_states.liveMany())
+  // test querying projects
+  const { results: projects } = useLiveQuery(db.projects.liveMany())
 
   console.log('from render', {
     appStateByEmail,
@@ -54,6 +56,7 @@ export const Main = memo(() => {
     db,
     authUserEmail: authUser?.email,
     appStatesMany,
+    projects,
   })
 
   useEffect(() => {
