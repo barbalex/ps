@@ -1197,7 +1197,7 @@ COMMENT ON COLUMN app_states.editing_check_geometry IS 'The id of the check whos
 
 COMMENT ON COLUMN app_states.editing_action_geometry IS 'The id of the action whose geometry is currently being edited';
 
-COMMENT ON COLUMN app_states.occurrence_fields_sorter IS 'The order of fields in the occurrence form. User can change it by drag and drop';
+COMMENT ON COLUMN app_states.occurrence_fields_sorted IS 'The order of fields in the occurrence form. User can change it by drag and drop';
 
 CREATE TYPE occurrence_imports_previous_import_operation_enum AS enum(
   'update_and_extend',
