@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, memo } from 'react'
 import { Outlet } from 'react-router-dom'
 // import { useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
@@ -18,7 +18,7 @@ const containerStyle = {
   position: 'relative',
 }
 
-export const Main = () => {
+export const Main = memo(() => {
   // onlyForm is a query parameter that allows the user to view a form without the rest of the app
   // used for popups inside the map
   // TODO: this renders on every navigation!!! This temporarily disabled
@@ -37,10 +37,18 @@ export const Main = () => {
   const tabs = useMemo(() => appState?.tabs ?? [], [appState?.tabs])
   const designing = appState?.designing ?? false
 
+  // test querying
+  const { results: appStateById } = useLiveQuery(
+    db.app_states.liveUnique({
+      where: { app_state_id: '018ec37d-54b7-7d95-8bd9-a9117e1e7491' },
+    }),
+  )
+
   console.log('hello Main', {
     tabs,
     designing,
     appState,
+    appStateById,
     db,
     authUserEmail: authUser?.email,
   })
@@ -57,4 +65,4 @@ export const Main = () => {
       </Allotment>
     </div>
   )
-}
+})
