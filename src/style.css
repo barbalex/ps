@@ -193,8 +193,9 @@ button {
   display: none !important;
 }
 
-.cb-container label {
-  color: rgba(38, 82, 37, 0.9);
+.cb-container label,
+.cb-form-input label {
+  color: rgba(38, 82, 37, 0.9) !important;
 }
 
 .cb-container .cb-link-secondary {
