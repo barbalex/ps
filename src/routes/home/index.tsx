@@ -32,7 +32,7 @@ export const Component = () => (
         </div>
         <div className="card">
           <h3 className="card-title">Verantwortliche</h3>
-          organisieren, analysieren und berichten.
+          organisieren Massnahmen und Kontrollen, analysieren und berichten.
         </div>
         <div className="card">
           <h3 className="card-title">Räume</h3>
