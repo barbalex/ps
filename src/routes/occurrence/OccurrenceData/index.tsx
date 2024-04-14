@@ -6,11 +6,11 @@ import { arrayMoveImmutable } from 'array-move'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbadoSession } from '@corbado/react'
 
-import exists from '../../../../modules/exists'
-import ErrorBoundary from '../../../shared/ErrorBoundary'
+import { exists } from '../../../modules/exists'
+import { ErrorBoundary } from '../../../components/shared/ErrorBoundary'
 import { Field } from './Field'
 import { useElectric } from '../../../ElectricProvider'
-import { Spinner } from '../../../shared/Spinner'
+import { Loading } from '../../../components/shared/Loading'
 
 import './raw.css'
 
@@ -70,11 +70,11 @@ export const OccurenceData = () => {
   const setSortedBeobFields = useCallback(
     (newArray) => {
       db.app_states.update({
-        where: { app_state_id: appState.app_state_id },
+        where: { app_state_id: appState?.app_state_id },
         data: { occurrence_fields_sorted: newArray },
       })
     },
-    [appState.app_state_id, db.app_states],
+    [appState?.app_state_id, db.app_states],
   )
 
   useEffect(() => {
@@ -123,7 +123,7 @@ export const OccurenceData = () => {
     [moveField],
   )
 
-  if (!occurrence) return <Spinner />
+  if (!occurrence) return <Loading />
   if (!fields || fields.length === 0) return null
 
   // Issue: only one instance of HTML5Backend can be used at a time
