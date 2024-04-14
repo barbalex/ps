@@ -48,8 +48,8 @@ export const Component = () => {
           name="occurrence_id"
           value={row.occurrence_id}
         />
+        <OccurenceData />
       </div>
-      <OccurenceData />
     </div>
   )
 }
