@@ -1,4 +1,5 @@
 .container {
+  column-rule: solid 1px rgba(55, 118, 28, 0.3);
   @container (min-width: 1020px) {
     columns: 2;
   }
