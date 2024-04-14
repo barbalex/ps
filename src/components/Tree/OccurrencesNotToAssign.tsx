@@ -19,9 +19,19 @@ export const OccurrencesNotToAssignNode = memo(
     const [searchParams] = useSearchParams()
 
     const { db } = useElectric()!
+    const { results: occurrenceImports = [] } = useLiveQuery(
+      db.occurrence_imports.liveMany({
+        where: { subproject_id },
+      }),
+    )
     const { results: occurrences = [] } = useLiveQuery(
       db.occurrences.liveMany({
-        where: { subproject_id, not_to_assign: true },
+        where: {
+          occurrence_import_id: {
+            in: occurrenceImports.map((o) => o.occurrence_import_id),
+          },
+          not_to_assign: true,
+        },
         orderBy: { label: 'asc' },
       }),
     )

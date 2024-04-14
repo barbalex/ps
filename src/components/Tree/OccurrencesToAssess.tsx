@@ -19,9 +19,21 @@ export const OccurrencesToAssessNode = memo(
     const [searchParams] = useSearchParams()
 
     const { db } = useElectric()!
+    const { results: occurrenceImports = [] } = useLiveQuery(
+      db.occurrence_imports.liveMany({
+        where: { subproject_id },
+      }),
+    )
     const { results: occurrences = [] } = useLiveQuery(
       db.occurrences.liveMany({
-        where: { subproject_id, not_to_assign: false, place_id: null },
+        where: {
+          occurrence_import_id: {
+            in: occurrenceImports.map((o) => o.occurrence_import_id),
+          },
+          // TODO: also include false
+          not_to_assign: null,
+          place_id: null,
+        },
         orderBy: { label: 'asc' },
       }),
     )
