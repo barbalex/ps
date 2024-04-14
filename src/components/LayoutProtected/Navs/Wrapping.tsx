@@ -39,12 +39,12 @@ export const NavsWrapping = ({ designing }) => {
 
   const tosToUse = tos[0] ?? []
 
-  console.log('hello Navs', {
-    matches,
-    tosToUse,
-    thisPathsMatches,
-    pathname: location.pathname,
-  })
+  // console.log('hello Navs', {
+  //   matches,
+  //   tosToUse,
+  //   thisPathsMatches,
+  //   pathname: location.pathname,
+  // })
 
   return (
     <nav className="navs">

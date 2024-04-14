@@ -61,14 +61,16 @@ export const BreadcrumbForData = forwardRef(
         filterParams[parentIdName] = parentId
         filterParams.parent_id = null
       } else if (table === 'occurrences') {
+        // need to get the occurrence_import_id from the subproject_id
         filterParams.occurrence_import_id = {
           in: occurrenceImports.map((o) => o.occurrence_import_id),
         }
+        // there are three types of occurrences
         const lastPathElement = path[path.length - 1]
         if (lastPathElement === 'occurrences-to-assess') {
           filterParams.not_to_assign = null // TODO: catch false
           filterParams.place_id = null
-        } else if (lastPathElement === 'occurrences-to-assign') {
+        } else if (lastPathElement === 'occurrences-not-to-assign') {
           filterParams.not_to_assign = true
         } else if (lastPathElement === 'occurrences-assigned') {
           filterParams.place_id =
