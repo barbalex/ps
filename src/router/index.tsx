@@ -416,6 +416,9 @@ export const router = () => {
                               table: 'occurrences',
                               folder: true,
                             }),
+                            to: {
+                              table: `occurrences`,
+                            },
                           },
                           children: [
                             {
@@ -447,6 +450,9 @@ export const router = () => {
                               table: 'occurrences',
                               folder: true,
                             }),
+                            to: {
+                              table: `occurrences`,
+                            },
                           },
                           children: [
                             {

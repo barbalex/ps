@@ -31,6 +31,8 @@ export const BreadcrumbForData = forwardRef(
     const placesCount = path.filter((p) => p.includes('places')).length
     const levelWanted = placesCount < 2 ? 1 : 2
 
+    const [occurrenceImports, setOccurrenceImports] = useState([])
+
     const idField = idFieldFromTable(table)
     // filter by parents
     const filterParams = {}
@@ -58,6 +60,23 @@ export const BreadcrumbForData = forwardRef(
       } else if (table === 'places') {
         filterParams[parentIdName] = parentId
         filterParams.parent_id = null
+      } else if (table === 'occurrences') {
+        filterParams.occurrence_import_id = {
+          in: occurrenceImports.map((o) => o.occurrence_import_id),
+        }
+        const lastPathElement = path[path.length - 1]
+        if (lastPathElement === 'occurrences-to-assess') {
+          filterParams.not_to_assign = null // TODO: catch false
+          filterParams.place_id = null
+        } else if (lastPathElement === 'occurrences-to-assign') {
+          filterParams.not_to_assign = true
+        } else if (lastPathElement === 'occurrences-assigned') {
+          filterParams.place_id =
+            placesCountInPath === 1
+              ? match.params.place_id
+              : match.params.place_id2
+        }
+        // if last path element is
       } else {
         filterParams[parentIdName] = parentId
       }
@@ -125,6 +144,13 @@ export const BreadcrumbForData = forwardRef(
             setLabel(label)
             break
           }
+          case 'occurrences': {
+            const occurrenceImports = await db.occurrence_imports?.findMany({
+              where: { subproject_id: match.params.subproject_id },
+            })
+            setOccurrenceImports(occurrenceImports)
+            break
+          }
           default:
             break
         }
@@ -132,19 +158,19 @@ export const BreadcrumbForData = forwardRef(
       get()
     }, [db, levelWanted, match, match.params, match.params.project_id, table])
 
-    // console.log('BreadcrumbForData', {
-    //   table,
-    //   params: match.params,
-    //   text,
-    //   label,
-    //   results,
-    //   pathname: match.pathname,
-    //   filterParams,
-    //   idField,
-    //   path,
-    //   parentId,
-    //   parentIdName,
-    // })
+    console.log('BreadcrumbForData', {
+      table,
+      params: match.params,
+      text,
+      label,
+      results,
+      pathname: match.pathname,
+      filterParams,
+      idField,
+      path,
+      parentId,
+      parentIdName,
+    })
 
     return (
       <div
