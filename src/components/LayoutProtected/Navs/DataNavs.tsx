@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, useState, useEffect } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useLocation } from 'react-router-dom'
 
@@ -10,6 +10,7 @@ const isOdd = (num) => num % 2
 
 export const DataNavs = memo(({ matches }) => {
   const location = useLocation()
+  const { db } = useElectric()!
 
   const filteredMatches = matches.filter((match) => {
     const { table, folder } = match?.handle?.crumb?.(match) ?? {}
@@ -21,6 +22,25 @@ export const DataNavs = memo(({ matches }) => {
   const pathname = dataMatch?.pathname ?? ''
   const path = pathname.split('/').filter((path) => path !== '')
   const idField = idFieldFromTable(table)
+
+  const [occurrenceImports, setOccurrenceImports] = useState([])
+  useEffect(() => {
+    const get = async () => {
+      switch (table) {
+        case 'occurrences': {
+          if (!dataMatch?.params?.subproject_id) return
+          const occurrenceImports = await db.occurrence_imports?.findMany({
+            where: { subproject_id: dataMatch.params.subproject_id },
+          })
+          setOccurrenceImports(occurrenceImports)
+          break
+        }
+        default:
+          break
+      }
+    }
+    get()
+  }, [dataMatch?.params?.subproject_id, db.occurrence_imports, table])
 
   const filterParams = {}
   // Add only the last to the filter
@@ -46,6 +66,25 @@ export const DataNavs = memo(({ matches }) => {
     } else if (table === 'places') {
       filterParams[parentIdName] = parentId
       filterParams.parent_id = null
+    } else if (table === 'occurrences') {
+      // need to get the occurrence_import_id from the subproject_id
+      filterParams.occurrence_import_id = {
+        in: occurrenceImports.map((o) => o.occurrence_import_id),
+      }
+      // there are three types of occurrences
+      const lastPathElement = path[path.length - 1]
+      if (lastPathElement === 'occurrences-to-assess') {
+        filterParams.not_to_assign = null // TODO: catch false
+        filterParams.place_id = null
+      } else if (lastPathElement === 'occurrences-not-to-assign') {
+        filterParams.not_to_assign = true
+      } else if (lastPathElement === 'occurrences-assigned') {
+        filterParams.place_id =
+          placesCountInPath === 1
+            ? match.params.place_id
+            : match.params.place_id2
+      }
+      // if last path element is
     } else {
       filterParams[parentIdName] = parentId
     }
@@ -55,21 +94,25 @@ export const DataNavs = memo(({ matches }) => {
     filterParams.project_id = null
   }
 
-  const { db } = useElectric()!
+  // console.log('DataNavs', {
+  //   table,
+  //   idField,
+  //   pathname,
+  //   parentId,
+  //   filterParams,
+  //   matches,
+  //   filteredMatches,
+  // })
+
   const { results: tableResults = [] } = useLiveQuery(
     () =>
       db[table]?.liveMany({ where: filterParams, orderBy: { label: 'asc' } }),
     [db, location.pathname],
   )
 
-  // console.log('DataNavs', {
-  //   table,
-  //   idField,
-  //   pathname,
-  //   parentId,
-  //   tableResults,
-  //   filterParams,
-  // })
+  console.log('DataNavs', {
+    tableResults,
+  })
 
   if (!table) return null
 

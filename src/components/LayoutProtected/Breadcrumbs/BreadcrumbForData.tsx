@@ -147,6 +147,7 @@ export const BreadcrumbForData = forwardRef(
             break
           }
           case 'occurrences': {
+            if (!match.params.subproject_id) return
             const occurrenceImports = await db.occurrence_imports?.findMany({
               where: { subproject_id: match.params.subproject_id },
             })
