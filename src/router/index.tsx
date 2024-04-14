@@ -408,6 +408,68 @@ export const router = () => {
                           ],
                         },
                         {
+                          path: 'occurrences-to-assess',
+                          element: null,
+                          handle: {
+                            crumb: () => ({
+                              text: 'Occurrences to assess',
+                              table: 'occurrences',
+                              folder: true,
+                            }),
+                          },
+                          children: [
+                            {
+                              index: true,
+                              lazy: () => import('../routes/occurrences'),
+                            },
+                            {
+                              path: ':occurrence_id',
+                              lazy: () => import('../routes/occurrence'),
+                              handle: {
+                                crumb: (match) => ({
+                                  text: match.params.occurrence_id,
+                                  table: 'occurrences',
+                                  folder: false,
+                                }),
+                                to: {
+                                  table: `occurrences`,
+                                },
+                              },
+                            },
+                          ],
+                        },
+                        {
+                          path: 'occurrences-not-to-assign',
+                          element: null,
+                          handle: {
+                            crumb: () => ({
+                              text: 'Occurrences not to assign',
+                              table: 'occurrences',
+                              folder: true,
+                            }),
+                          },
+                          children: [
+                            {
+                              index: true,
+                              lazy: () => import('../routes/occurrences'),
+                            },
+                            {
+                              path: ':occurrence_id',
+                              lazy: () => import('../routes/occurrence'),
+                              handle: {
+                                crumb: (match) => ({
+                                  text: match.params.occurrence_id,
+                                  table: 'occurrences',
+                                  folder: false,
+                                }),
+                                to: {
+                                  table: `occurrences`,
+                                },
+                              },
+                            },
+                          ],
+                        },
+                        {
                           path: 'charts',
                           element: null,
                           handle: {

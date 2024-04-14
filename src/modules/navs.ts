@@ -165,6 +165,14 @@ export const buildNavs = async ({
           text: 'Goals',
         },
         {
+          path: `/projects/${project_id}/subprojects/${subproject_id}/occurrences-to-assess`,
+          text: 'Occurrences to assess',
+        },
+        {
+          path: `/projects/${project_id}/subprojects/${subproject_id}/occurrences-not-to-assign`,
+          text: 'Occurrences not to assign',
+        },
+        {
           path: `/projects/${project_id}/subprojects/${subproject_id}/taxa`,
           text: 'Taxa',
         },

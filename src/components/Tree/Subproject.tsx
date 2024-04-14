@@ -7,6 +7,8 @@ import { Subprojects as Subproject } from '../../../generated/client'
 import { PlacesNode } from './Places'
 import { SubprojectReportsNode } from './SubprojectReports'
 import { GoalsNode } from './Goals'
+import { OccurrencesToAssessNode } from './OccurrencesToAssess'
+import { OccurrencesNotToAssignNode } from './OccurrencesNotToAssign'
 import { SubprojectTaxaNode } from './SubprojectTaxa'
 import { SubprojectUsersNode } from './SubprojectUsers'
 import { OccurrenceImportsNode } from './OccurrenceImports'
@@ -76,6 +78,14 @@ export const SubprojectNode = memo(
               subproject_id={subproject.subproject_id}
             />
             <GoalsNode
+              project_id={project_id}
+              subproject_id={subproject.subproject_id}
+            />
+            <OccurrencesToAssessNode
+              project_id={project_id}
+              subproject_id={subproject.subproject_id}
+            />
+            <OccurrencesNotToAssignNode
               project_id={project_id}
               subproject_id={subproject.subproject_id}
             />
