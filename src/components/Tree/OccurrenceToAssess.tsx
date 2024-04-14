@@ -44,7 +44,7 @@ export const OccurrenceToAssessNode = memo(
           isOpen={isOpen}
           isInActiveNodeArray={isOpen}
           isActive={isActive}
-          childrenCount={10}
+          childrenCount={0}
           to={`${baseUrl}/${occurrence.occurrence_id}`}
           onClickButton={onClickButton}
         />
