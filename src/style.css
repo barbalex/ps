@@ -77,6 +77,7 @@ https://stackoverflow.com/a/21541021/712005 */
   white-space: nowrap;
   overflow: hidden;
   min-height: 38.7px;
+  user-select: none;
 }
 
 .navs {
@@ -89,6 +90,7 @@ https://stackoverflow.com/a/21541021/712005 */
   border-collapse: collapse;
   border-top: none;
   min-height: 38.7px;
+  user-select: none;
 }
 
 .navs a,
