@@ -18,8 +18,6 @@ export const Component = () => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  // TODO: get occurrence_import by subproject_id
-
   // get pathname from location
   const { pathname } = useLocation()
   const isToAssess = pathname.includes('to-assess')
@@ -29,12 +27,27 @@ export const Component = () => {
     : 'Occurrences not to assign'
 
   const { subproject_id } = useParams()
-  const where = {}
-  // const where = { subproject_id, place_id: null }
-  // if (isToAssess) where.not_to_assign = false
-  // if (isNotToAssign) where.not_to_assign = true
 
   const { db } = useElectric()!
+  // TODO: get occurrence_import by subproject_id
+  const { results: occurrence_imports = [] } = useLiveQuery(
+    db.occurrence_imports.liveMany({
+      where: { subproject_id },
+    }),
+  )
+  const where = {
+    occurrence_import_id: {
+      in: occurrence_imports.map((o) => o.occurrence_import_id),
+    },
+    place_id: null,
+  }
+  if (isToAssess) where.not_to_assign = null
+  // these three do not work, see: https://discord.com/channels/933657521581858818/1229057284395503817/1229057284395503817
+  // if (isToAssess) where.or = [{ not_to_assign: null }, { not_to_assign: false }]
+  // if (isToAssess) where.not_to_assign = { not: true }
+  // if (isToAssess) where.not = [{ not_to_assign: true }]
+  if (isNotToAssign) where.not_to_assign = true
+  console.log('hello where', where)
   const { results: occurrences = [] } = useLiveQuery(
     db.occurrences.liveMany({
       where,
