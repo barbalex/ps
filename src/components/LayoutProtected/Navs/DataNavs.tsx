@@ -81,8 +81,8 @@ export const DataNavs = memo(({ matches }) => {
         } else if (lastPathElement === 'occurrences-assigned') {
           filterParams.place_id =
             placesCountInPath === 1
-              ? match.params.place_id
-              : match.params.place_id2
+              ? dataMatch.params.place_id
+              : dataMatch.params.place_id2
         }
         // if last path element is
       } else {
