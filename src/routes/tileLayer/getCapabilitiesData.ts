@@ -102,12 +102,11 @@ export const getCapabilitiesData = async ({
   // const chunked = chunkArrayWithMinSize(layerOptions, 500)
   // for (const chunk of chunked) {
   //   try {
-  //     await db.layer_options.createMany({
-  //       data: chunk,
-  //     })
+  //     const chunkResult = await db.layer_options.createMany({ data: chunk })
+  //     console.log('hello, getCapabilitiesData 5a, chunkResult:', chunkResult)
   //   } catch (error) {
   //     // field value must be a string, number, boolean, null or one of the registered custom value types
-  //     console.error('hello, getCapabilitiesData 5, error:', { error, chunk })
+  //     console.error('hello, getCapabilitiesData 5b, error:', { error, chunk })
   //   }
   // }
 
