@@ -257,6 +257,12 @@ export const buildNavs = async ({
         {
           path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
             level === 2 ? `/places/${place_id2}` : ''
+          }/occurrences-assigned`,
+          text: 'Occurrences assigned',
+        },
+        {
+          path: `/projects/${project_id}/subprojects/${subproject_id}/places/${place_id}${
+            level === 2 ? `/places/${place_id2}` : ''
           }/users`,
           text: 'Users',
         },
