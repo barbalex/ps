@@ -1,5 +1,4 @@
 import { forwardRef, useState, useEffect, useMemo } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
 import { useLocation } from 'react-router-dom'
 import { OverflowItem, Overflow } from '@fluentui/react-components'
 
