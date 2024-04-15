@@ -36,8 +36,9 @@ export const generatePlaceLabel = async (db) => {
     (column) => column.name === 'places_label_insert_trigger',
   )
   if (!insertTriggerExists) {
-    const resultInsert = await db.unsafeExec({
-      sql: `
+    try {
+      const resultInsert = await db.unsafeExec({
+        sql: `
       CREATE TRIGGER if not exists places_label_insert_trigger
       AFTER INSERT ON places
       BEGIN
@@ -53,7 +54,10 @@ export const generatePlaceLabel = async (db) => {
         ) as projects
          WHERE places.place_id = NEW.place_id;
       END;`,
-    })
-    console.log('LabelGenerator, places, resultInsert:', resultInsert)
+      })
+      console.log('LabelGenerator, places, resultInsert:', resultInsert)
+    } catch (error) {
+      console.error('LabelGenerator, places, error:', error)
+    }
   }
 }
