@@ -27,9 +27,13 @@ export const Component = memo(() => {
   const onChange: InputProps['onChange'] = useCallback(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
+      // Issue: for not_to_assign, the value needs to be null instead of false
+      // because querying for null or false with electric-sql does not work
+      const valueToUse =
+        name === 'not_to_assign' ? (value ? true : null) : value
       db.occurrences.update({
         where: { occurrence_id },
-        data: { [name]: value },
+        data: { [name]: valueToUse },
       })
       if (name === 'not_to_assign') {
         navigate(
