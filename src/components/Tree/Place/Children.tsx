@@ -47,6 +47,7 @@ export const PlaceChildren = memo(
       placeLevel,
     })
 
+    // TODO: if placeLevel?.occurrences, show occurrences
     return (
       <>
         {!place_id && (
