@@ -364,6 +364,34 @@ export const placesChildren = ({ level }) => [
     ],
   },
   {
+    path: 'occurrences-assigned',
+    element: null,
+    handle: {
+      crumb: () => ({
+        text: 'Occurrences assigned',
+        table: 'occurrences',
+        folder: true,
+      }),
+    },
+    children: [
+      {
+        index: true,
+        lazy: () => import('../routes/occurrences'),
+      },
+      {
+        path: ':occurrence_id',
+        lazy: () => import('../routes/occurrence'),
+        handle: {
+          crumb: (match) => ({
+            text: match.params.occurrence_id,
+            table: 'occurrences',
+            folder: false,
+          }),
+        },
+      },
+    ],
+  },
+  {
     path: 'users',
     element: null,
     handle: {
