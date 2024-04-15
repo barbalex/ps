@@ -5,7 +5,7 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useElectric } from '../../ElectricProvider'
 import { Node } from './Node'
 import { Places as Place } from '../../../generated/client'
-import { PlaceReportNode } from './PlaceReport' 
+import { OccurrenceAssignedNode } from './OccurrenceAssigned'
 
 interface Props {
   project_id: string
@@ -15,23 +15,25 @@ interface Props {
   level?: number
 }
 
-export const PlaceReportsNode = memo(
+export const OccurrencesAssignedNode = memo(
   ({ project_id, subproject_id, place_id, place, level = 7 }: Props) => {
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
     const { db } = useElectric()!
-    const { results: placeReports = [] } = useLiveQuery(
-      db.place_reports.liveMany({
-        where: { place_id: place.place_id },
+    const { results: occurrences = [] } = useLiveQuery(
+      db.occurrences.liveMany({
+        where: {
+          place_id: place.place_id,
+        },
         orderBy: { label: 'asc' },
       }),
     )
 
-    const placeReportsNode = useMemo(
-      () => ({ label: `Reports (${placeReports.length})` }),
-      [placeReports.length],
+    const occurrencesNode = useMemo(
+      () => ({ label: `Occurrences assigned (${occurrences.length})` }),
+      [occurrences.length],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -46,8 +48,8 @@ export const PlaceReportsNode = memo(
       ? isOpenBase &&
         urlPath[6] === 'places' &&
         urlPath[7] === place.place_id &&
-        urlPath[8] === 'reports'
-      : isOpenBase && urlPath[6] === 'reports'
+        urlPath[8] === 'occurrences-assigned'
+      : isOpenBase && urlPath[6] === 'occurrences-assigned'
     const isActive = isOpen && urlPath.length === level
 
     const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/places/${
@@ -59,7 +61,7 @@ export const PlaceReportsNode = memo(
         return navigate({ pathname: baseUrl, search: searchParams.toString() })
       }
       navigate({
-        pathname: `${baseUrl}/reports`,
+        pathname: `${baseUrl}/occurrences-assigned`,
         search: searchParams.toString(),
       })
     }, [baseUrl, isOpen, navigate, searchParams])
@@ -67,24 +69,24 @@ export const PlaceReportsNode = memo(
     return (
       <>
         <Node
-          node={placeReportsNode}
+          node={occurrencesNode}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isOpen}
           isActive={isActive}
-          childrenCount={placeReports.length}
-          to={`${baseUrl}/reports`}
+          childrenCount={occurrences.length}
+          to={`${baseUrl}/occurrences-assigned`}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          placeReports.map((placeReport) => (
-            <PlaceReportNode
-              key={placeReport.place_report_id}
+          occurrences.map((occurrence) => (
+            <OccurrenceAssignedNode
+              key={occurrence.occurrence_id}
               project_id={project_id}
               subproject_id={subproject_id}
               place_id={place_id}
               place={place}
-              placeReport={placeReport}
+              occurrence={occurrence}
               level={level + 1}
             />
           ))}

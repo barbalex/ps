@@ -7,6 +7,7 @@ import { ActionsNode } from '../Actions'
 import { PlaceReportsNode } from '../PlaceReports'
 import { PlaceUsersNode } from '../PlaceUsers'
 import { PlacesNode } from '../Places'
+import { OccurrencesAssignedNode } from '../OccurrencesAssigned'
 import { useElectric } from '../../../ElectricProvider'
 import { FilesNode } from '../Files'
 
@@ -77,6 +78,15 @@ export const PlaceChildren = memo(
         )}
         {!!placeLevel?.reports && (
           <PlaceReportsNode
+            project_id={project_id}
+            subproject_id={subproject_id}
+            place_id={place_id}
+            place={place}
+            level={level + 1}
+          />
+        )}
+        {!!placeLevel?.occurrences && (
+          <OccurrencesAssignedNode
             project_id={project_id}
             subproject_id={subproject_id}
             place_id={place_id}
