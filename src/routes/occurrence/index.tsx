@@ -1,19 +1,21 @@
-import { useRef } from 'react'
+import { useRef, useCallback, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useParams } from 'react-router-dom'
-// import type { InputProps } from '@fluentui/react-components'
+import { useParams, useNavigate } from 'react-router-dom'
+import type { InputProps } from '@fluentui/react-components'
 
 import { useElectric } from '../../ElectricProvider'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
-// import { getValueFromChange } from '../../modules/getValueFromChange'
+import { SwitchField } from '../../components/shared/SwitchField'
+import { getValueFromChange } from '../../modules/getValueFromChange'
 import { Header } from './Header'
 import { Loading } from '../../components/shared/Loading'
 import { OccurenceData } from './OccurrenceData'
 
 import '../../form.css'
 
-export const Component = () => {
+export const Component = memo(() => {
   const { occurrence_id } = useParams()
+  const navigate = useNavigate()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -22,22 +24,28 @@ export const Component = () => {
     db.occurrences.liveUnique({ where: { occurrence_id } }),
   )
 
-  // const onChange: InputProps['onChange'] = useCallback(
-  //   (e, data) => {
-  //     const { name, value } = getValueFromChange(e, data)
-  //     db.occurrences.update({
-  //       where: { occurrence_id },
-  //       data: { [name]: value },
-  //     })
-  //   },
-  //   [db.occurrences, occurrence_id],
-  // )
+  const onChange: InputProps['onChange'] = useCallback(
+    (e, data) => {
+      const { name, value } = getValueFromChange(e, data)
+      db.occurrences.update({
+        where: { occurrence_id },
+        data: { [name]: value },
+      })
+      if (name === 'not_to_assign') {
+        navigate(
+          `../../${
+            value ? 'occurrences-not-to-assign' : 'occurrences-to-assess'
+          }/${occurrence_id}`,
+        )
+      }
+    },
+    [db.occurrences, navigate, occurrence_id],
+  )
 
   if (!row) return <Loading />
 
   // TODO:
   // - add place assigner
-  // - add not to assign
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
@@ -47,8 +55,14 @@ export const Component = () => {
           name="occurrence_id"
           value={row.occurrence_id}
         />
+        <SwitchField
+          label="Not to assign"
+          name="not_to_assign"
+          value={row.not_to_assign}
+          onChange={onChange}
+        />
         <OccurenceData />
       </div>
     </div>
   )
-}
+})
