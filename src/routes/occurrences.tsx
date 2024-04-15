@@ -11,16 +11,19 @@ import '../form.css'
 export const Component = memo(() => {
   // get pathname from location
   const { pathname } = useLocation()
-  const isToAssess = pathname.includes('to-assess')
-  const isNotToAssign = pathname.includes('not-to-assign')
-  const title = isToAssess
+  const isAssigned = pathname.includes('occurrences-assigned')
+  const isToAssess = pathname.includes('occurrences-to-assess')
+  const isNotToAssign = pathname.includes('occurrences-not-to-assign')
+  const title = isAssigned
+    ? 'Occurrences assigned'
+    : isToAssess
     ? 'Occurrences to assess'
     : 'Occurrences not to assign'
 
-  const { subproject_id } = useParams()
+  const { subproject_id, place_id, place_id2 } = useParams()
 
   const { db } = useElectric()!
-  // TODO: get occurrence_import by subproject_id
+  // get occurrence_imports by subproject_id
   const { results: occurrence_imports = [] } = useLiveQuery(
     db.occurrence_imports.liveMany({
       where: { subproject_id },
@@ -32,6 +35,7 @@ export const Component = memo(() => {
     },
     place_id: null,
   }
+  if (isAssigned) where.place_id = place_id2 ?? place_id
   if (isToAssess) where.not_to_assign = null
   // these three do not work, see: https://discord.com/channels/933657521581858818/1229057284395503817/1229057284395503817
   // if (isToAssess) where.or = [{ not_to_assign: null }, { not_to_assign: false }]
