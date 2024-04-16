@@ -20,7 +20,7 @@ export const FilteringComboboxOptions = memo(
       db[table]?.liveMany({
         where: {
           ...where,
-          label: { contains: filter },
+          ...(filter && { label: { contains: filter } }),
         },
         orderBy,
         include,
@@ -28,11 +28,13 @@ export const FilteringComboboxOptions = memo(
     )
     // labelFromResult allows passing in special data. Not in use yet.
     const options = results.map((o) => ({
-      text: labelFromResult ? labelFromResult(o) : o.label,
+      // catch cases where the label is not present
+      text:
+        (labelFromResult ? labelFromResult(o) : o.label) ?? o[idField ?? name],
       value: o[idField ?? name],
     }))
 
-    // console.log('FilteringComboboxOptions', {
+    // console.log('hello FilteringComboboxOptions', {
     //   name,
     //   table,
     //   where,
