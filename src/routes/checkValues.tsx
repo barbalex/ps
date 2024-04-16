@@ -44,7 +44,11 @@ export const Component = () => {
       />
       <div className="list-container">
         {checkValues.map(({ check_value_id, label }) => (
-          <Row key={check_value_id} label={label} to={check_value_id} />
+          <Row
+            key={check_value_id}
+            label={label ?? check_value_id}
+            to={check_value_id}
+          />
         ))}
       </div>
     </div>

@@ -43,7 +43,7 @@ export const Component = () => {
       />
       <div className="list-container">
         {checks.map(({ check_id, label }) => (
-          <Row key={check_id} label={label} to={check_id} />
+          <Row key={check_id} label={label ?? check_id} to={check_id} />
         ))}
       </div>
     </div>

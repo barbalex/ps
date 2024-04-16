@@ -44,7 +44,11 @@ export const Component = memo(() => {
       />
       <div className="list-container">
         {chartSubjects.map(({ chart_subject_id, label }) => (
-          <Row key={chart_subject_id} label={label} to={chart_subject_id} />
+          <Row
+            key={chart_subject_id}
+            label={label ?? chart_subject_id}
+            to={chart_subject_id}
+          />
         ))}
       </div>
     </div>

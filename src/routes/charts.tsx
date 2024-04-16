@@ -78,7 +78,7 @@ export const Component = () => {
       />
       <div className="list-container">
         {charts.map(({ chart_id, label }) => (
-          <Row key={chart_id} label={label} to={chart_id} />
+          <Row key={chart_id} label={label ?? chart_id} to={chart_id} />
         ))}
       </div>
     </div>
