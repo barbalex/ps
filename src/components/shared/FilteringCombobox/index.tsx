@@ -98,6 +98,7 @@ export const FilteringCombobox = memo(
             autoFocus={autoFocus}
             ref={ref}
             freeform
+            clearable
           >
             <FilteringComboboxOptions
               name={name}
