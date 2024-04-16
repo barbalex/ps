@@ -85,7 +85,9 @@ export const Node = memo(
           }}
         />
         {isActive ? (
-          <span style={labelSpanStyle}>{node.label}</span>
+          <span style={labelSpanStyle}>
+            {node.label ?? id ?? '(missing label)'}
+          </span>
         ) : (
           <Link
             style={css({
