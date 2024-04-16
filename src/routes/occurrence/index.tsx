@@ -32,12 +32,6 @@ export const Component = memo(() => {
       // because querying for null or false with electric-sql does not work
       const valueToUse =
         name === 'not_to_assign' ? (value ? true : null) : value
-      console.log('hello occurrence, onChange', {
-        value,
-        valueToUse,
-        name,
-        occurrence_id,
-      })
       db.occurrences.update({
         where: { occurrence_id },
         data: { [name]: valueToUse },
