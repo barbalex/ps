@@ -6,7 +6,7 @@ import { useElectric } from '../ElectricProvider'
 export const Syncer = () => {
   const { db } = useElectric()!
   const { user: authUser } = useCorbadoSession()
-  console.log('hello Syncer', { db, authUser })
+  // console.log('hello Syncer', { db, authUser })
 
   useEffect(() => {
     const syncItems = async () => {
