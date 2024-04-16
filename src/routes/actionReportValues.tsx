@@ -46,7 +46,7 @@ export const Component = () => {
         {actionReportValues.map(({ action_report_value_id, label }) => (
           <Row
             key={action_report_value_id}
-            label={label}
+            label={label ?? action_report_value_id}
             navigateTo={action_report_value_id}
           />
         ))}
