@@ -43,6 +43,7 @@ export const TaxonNode = memo(
     return (
       <Node
         node={taxon}
+        id={taxon.taxon_id}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isOpen}

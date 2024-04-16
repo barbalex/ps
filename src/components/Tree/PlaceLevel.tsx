@@ -39,6 +39,7 @@ export const PlaceLevelNode = memo(
     return (
       <Node
         node={placeLevel}
+        id={placeLevel.place_level_id}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isOpen}
