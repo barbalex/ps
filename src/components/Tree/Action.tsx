@@ -75,6 +75,7 @@ export const ActionNode = memo(
       <>
         <Node
           node={action}
+          id={action.action_id}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isOpen}

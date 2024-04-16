@@ -42,6 +42,7 @@ export const WidgetTypeNode = memo(({ widgetType, level = 2 }: Props) => {
   return (
     <Node
       node={widgetType}
+      id={widgetType.widget_type_id}
       level={level}
       isOpen={isOpen}
       isInActiveNodeArray={isOpen}

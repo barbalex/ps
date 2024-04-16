@@ -39,6 +39,7 @@ export const TileLayerNode = memo(
     return (
       <Node
         node={tileLayer}
+        id={tileLayer.tile_layer_id}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isOpen}
