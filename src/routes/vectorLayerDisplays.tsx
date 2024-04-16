@@ -8,7 +8,7 @@ import { Row } from '../components/shared/Row'
 import '../form.css'
 
 export const Component = () => {
-  const { project_id, vector_layer_id } = useParams()
+  const { vector_layer_id } = useParams()
 
   const { db } = useElectric()!
   const { results: vlds = [] } = useLiveQuery(
@@ -28,8 +28,8 @@ export const Component = () => {
         {vlds.map(({ vector_layer_display_id, label }) => (
           <Row
             key={vector_layer_display_id}
-            to={`/projects/${project_id}/vector-layers/${vector_layer_id}/vector-layer-displays/${vector_layer_display_id}`}
-            label={label}
+            to={vector_layer_display_id}
+            label={label ?? vector_layer_display_id}
           />
         ))}
       </div>

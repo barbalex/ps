@@ -43,7 +43,11 @@ export const Component = () => {
       />
       <div className="list-container">
         {actionReports.map(({ action_report_id, label }) => (
-          <Row key={action_report_id} label={label} to={action_report_id} />
+          <Row
+            key={action_report_id}
+            label={label ?? account_report_id}
+            to={action_report_id}
+          />
         ))}
       </div>
     </div>
