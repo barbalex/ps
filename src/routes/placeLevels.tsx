@@ -44,7 +44,11 @@ export const Component = () => {
       />
       <div className="list-container">
         {placeLevels.map(({ place_level_id, label }) => (
-          <Row key={place_level_id} to={place_level_id} label={label} />
+          <Row
+            key={place_level_id}
+            to={place_level_id}
+            label={label ?? place_level_id}
+          />
         ))}
       </div>
     </div>

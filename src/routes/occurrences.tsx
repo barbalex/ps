@@ -55,7 +55,11 @@ export const Component = memo(() => {
       <ListViewHeader title={title} tableName="occurrence" />
       <div className="list-container">
         {occurrences.map(({ occurrence_id, label }) => (
-          <Row key={occurrence_id} label={label} to={occurrence_id} />
+          <Row
+            key={occurrence_id}
+            label={label ?? occurrence_id}
+            to={occurrence_id}
+          />
         ))}
       </div>
     </div>
