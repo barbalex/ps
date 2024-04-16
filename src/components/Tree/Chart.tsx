@@ -88,6 +88,7 @@ export const ChartNode = ({
     <>
       <Node
         node={chart}
+        id={chart.chart_id}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isOpen}

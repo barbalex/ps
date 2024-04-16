@@ -41,6 +41,7 @@ export const MessageNode = memo(({ message, level = 2 }: Props) => {
   return (
     <Node
       node={message}
+      id={message.message_id}
       level={level}
       isOpen={isOpen}
       isInActiveNodeArray={isOpen}

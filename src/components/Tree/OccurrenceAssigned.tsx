@@ -62,6 +62,7 @@ export const OccurrenceAssignedNode = memo(
       <>
         <Node
           node={occurrence}
+          id={occurrence.occurrence_id}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isOpen}
