@@ -37,7 +37,7 @@ export const Component = () => {
       <ListViewHeader title="Units" addRow={add} tableName="unit" />
       <div className="list-container">
         {units.map(({ unit_id, label }) => (
-          <Row key={unit_id} label={label} to={unit_id} />
+          <Row key={unit_id} label={label ?? unit_id} to={unit_id} />
         ))}
       </div>
     </div>

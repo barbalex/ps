@@ -39,7 +39,11 @@ export const Component = () => {
       />
       <div className="list-container">
         {vectorLayers.map(({ vector_layer_id, label }) => (
-          <Row key={vector_layer_id} to={vector_layer_id} label={label} />
+          <Row
+            key={vector_layer_id}
+            to={vector_layer_id}
+            label={label ?? vector_layer_id}
+          />
         ))}
       </div>
     </div>
