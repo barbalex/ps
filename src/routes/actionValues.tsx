@@ -44,7 +44,11 @@ export const Component = () => {
       />
       <div className="list-container">
         {actionValues.map(({ action_value_id, label }) => (
-          <Row key={action_value_id} label={label} to={action_value_id} />
+          <Row
+            key={action_value_id}
+            label={label ?? action_value_id}
+            to={action_value_id}
+          />
         ))}
       </div>
     </div>
