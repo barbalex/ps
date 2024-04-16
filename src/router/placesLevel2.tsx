@@ -4,12 +4,12 @@ export const placesLevel2 = () => ({
   path: 'places',
   element: null,
   handle: {
-    crumb: () => ({
+    crumb: {
       text: 'Places',
       table: 'places',
       level: 2,
       folder: true,
-    }),
+    },
   },
   children: [
     {
@@ -20,11 +20,11 @@ export const placesLevel2 = () => ({
       path: ':place_id2',
       element: null,
       handle: {
-        crumb: () => ({
+        crumb: {
           table: 'places',
           level: 2,
           folder: false,
-        }),
+        },
         to: {
           table: `places`,
           level: 2,
