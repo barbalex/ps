@@ -8,7 +8,7 @@ import '../breadcrumbs.css'
 // solution: rerender after width changes
 export const Matches = ({ rerenderInteger, matches }) =>
   matches.map((match) => {
-    const { table, folder } = match?.handle?.crumb?.(match) ?? {}
+    const { table, folder } = match?.handle?.crumb ?? {}
 
     return (
       <OverflowItem key={`${match.id}/${rerenderInteger}`} id={match.id}>

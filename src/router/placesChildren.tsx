@@ -3,12 +3,12 @@ export const placesChildren = ({ level }) => [
     path: 'checks',
     element: null,
     handle: {
-      crumb: () => ({
+      crumb: {
         text: 'Checks',
         table: 'checks',
         folder: true,
         level,
-      }),
+      },
     },
     children: [
       {
@@ -19,11 +19,11 @@ export const placesChildren = ({ level }) => [
         path: ':check_id',
         element: null,
         handle: {
-          crumb: () => ({
+          crumb: {
             table: 'checks',
             folder: false,
             level,
-          }),
+          },
           to: {
             table: `checks`,
             level,
@@ -38,11 +38,11 @@ export const placesChildren = ({ level }) => [
             path: 'values',
             element: null,
             handle: {
-              crumb: () => ({
+              crumb: {
                 text: 'Values',
                 table: 'check_values',
                 folder: true,
-              }),
+              },
             },
             children: [
               {
@@ -53,10 +53,10 @@ export const placesChildren = ({ level }) => [
                 path: ':check_value_id',
                 lazy: () => import('../routes/checkValue'),
                 handle: {
-                  crumb: () => ({
+                  crumb: {
                     table: 'check_values',
                     folder: false,
-                  }),
+                  },
                 },
               },
             ],
@@ -65,11 +65,11 @@ export const placesChildren = ({ level }) => [
             path: 'taxa',
             element: null,
             handle: {
-              crumb: () => ({
+              crumb: {
                 text: 'Taxa',
                 table: 'check_taxa',
                 folder: true,
-              }),
+              },
             },
             children: [
               {
@@ -80,10 +80,10 @@ export const placesChildren = ({ level }) => [
                 path: ':check_taxon_id',
                 lazy: () => import('../routes/checkTaxon'),
                 handle: {
-                  crumb: () => ({
+                  crumb: {
                     table: 'check_taxa',
                     folder: false,
-                  }),
+                  },
                 },
               },
             ],
@@ -92,11 +92,11 @@ export const placesChildren = ({ level }) => [
             path: 'files',
             element: null,
             handle: {
-              crumb: () => ({
+              crumb: {
                 text: 'Files',
                 table: 'files',
                 folder: true,
-              }),
+              },
             },
             children: [
               { index: true, lazy: () => import('../routes/files') },
@@ -104,10 +104,10 @@ export const placesChildren = ({ level }) => [
                 path: ':file_id',
                 element: null,
                 handle: {
-                  crumb: () => ({
+                  crumb: {
                     table: 'files',
                     folder: false,
-                  }),
+                  },
                 },
                 children: [
                   {
@@ -130,11 +130,11 @@ export const placesChildren = ({ level }) => [
     path: 'actions',
     element: null,
     handle: {
-      crumb: () => ({
+      crumb: {
         text: 'Actions',
         table: 'actions',
         folder: true,
-      }),
+      },
     },
     children: [
       {
@@ -145,10 +145,10 @@ export const placesChildren = ({ level }) => [
         path: ':action_id',
         element: null,
         handle: {
-          crumb: () => ({
+          crumb: {
             table: 'actions',
             folder: false,
-          }),
+          },
           to: {
             table: `actions`,
             level,
@@ -163,11 +163,11 @@ export const placesChildren = ({ level }) => [
             path: 'values',
             element: null,
             handle: {
-              crumb: () => ({
+              crumb: {
                 text: 'Values',
                 table: 'action_values',
                 folder: true,
-              }),
+              },
             },
             children: [
               {
@@ -178,10 +178,10 @@ export const placesChildren = ({ level }) => [
                 path: ':action_value_id',
                 lazy: () => import('../routes/actionValue'),
                 handle: {
-                  crumb: () => ({
+                  crumb: {
                     table: 'action_values',
                     folder: false,
-                  }),
+                  },
                 },
               },
             ],
@@ -190,11 +190,11 @@ export const placesChildren = ({ level }) => [
             path: 'reports',
             element: null,
             handle: {
-              crumb: () => ({
+              crumb: {
                 text: 'Reports',
                 table: 'action_reports',
                 folder: true,
-              }),
+              },
             },
             children: [
               {
@@ -205,10 +205,10 @@ export const placesChildren = ({ level }) => [
                 path: ':action_report_id',
                 element: null,
                 handle: {
-                  crumb: () => ({
+                  crumb: {
                     table: 'action_reports',
                     folder: false,
-                  }),
+                  },
                   to: {
                     table: `action_reports`,
                     level,
@@ -223,11 +223,11 @@ export const placesChildren = ({ level }) => [
                     path: 'values',
                     element: null,
                     handle: {
-                      crumb: () => ({
+                      crumb: {
                         text: 'Values',
                         table: 'action_report_values',
                         folder: true,
-                      }),
+                      },
                     },
                     children: [
                       {
@@ -238,10 +238,10 @@ export const placesChildren = ({ level }) => [
                         path: ':action_report_value_id',
                         lazy: () => import('../routes/actionReportValue'),
                         handle: {
-                          crumb: () => ({
+                          crumb: {
                             table: 'action_report_values',
                             folder: false,
-                          }),
+                          },
                         },
                       },
                     ],
@@ -254,11 +254,11 @@ export const placesChildren = ({ level }) => [
             path: 'files',
             element: null,
             handle: {
-              crumb: () => ({
+              crumb: {
                 text: 'Files',
                 table: 'files',
                 folder: true,
-              }),
+              },
             },
             children: [
               { index: true, lazy: () => import('../routes/files') },
@@ -266,10 +266,10 @@ export const placesChildren = ({ level }) => [
                 path: ':file_id',
                 element: null,
                 handle: {
-                  crumb: () => ({
+                  crumb: {
                     table: 'files',
                     folder: false,
-                  }),
+                  },
                 },
                 children: [
                   {
@@ -292,11 +292,11 @@ export const placesChildren = ({ level }) => [
     path: 'reports',
     element: null,
     handle: {
-      crumb: () => ({
+      crumb: {
         text: 'Reports',
         table: 'place_reports',
         folder: true,
-      }),
+      },
     },
     children: [
       {
@@ -307,10 +307,10 @@ export const placesChildren = ({ level }) => [
         path: ':place_report_id',
         element: null,
         handle: {
-          crumb: () => ({
+          crumb: {
             table: 'place_reports',
             folder: false,
-          }),
+          },
           to: {
             table: `place_reports`,
             level,
@@ -325,11 +325,11 @@ export const placesChildren = ({ level }) => [
             path: 'values',
             element: null,
             handle: {
-              crumb: () => ({
+              crumb: {
                 text: 'Values',
                 table: 'place_report_values',
                 folder: true,
-              }),
+              },
             },
             children: [
               {
@@ -340,10 +340,10 @@ export const placesChildren = ({ level }) => [
                 path: ':place_report_value_id',
                 lazy: () => import('../routes/placeReportValue'),
                 handle: {
-                  crumb: () => ({
+                  crumb: {
                     table: 'place_report_values',
                     folder: false,
-                  }),
+                  },
                 },
               },
             ],
@@ -356,11 +356,11 @@ export const placesChildren = ({ level }) => [
     path: 'occurrences-assigned',
     element: null,
     handle: {
-      crumb: () => ({
+      crumb: {
         text: 'Occurrences assigned',
         table: 'occurrences',
         folder: true,
-      }),
+      },
     },
     children: [
       {
@@ -371,10 +371,10 @@ export const placesChildren = ({ level }) => [
         path: ':occurrence_id',
         lazy: () => import('../routes/occurrence'),
         handle: {
-          crumb: () => ({
+          crumb: {
             table: 'occurrences',
             folder: false,
-          }),
+          },
         },
       },
     ],
@@ -383,11 +383,11 @@ export const placesChildren = ({ level }) => [
     path: 'users',
     element: null,
     handle: {
-      crumb: () => ({
+      crumb: {
         text: 'Users',
         table: 'place_users',
         folder: true,
-      }),
+      },
     },
     children: [
       {
@@ -398,10 +398,10 @@ export const placesChildren = ({ level }) => [
         path: ':place_user_id',
         lazy: () => import('../routes/placeUser'),
         handle: {
-          crumb: () => ({
+          crumb: {
             table: 'place_users',
             folder: false,
-          }),
+          },
         },
       },
     ],
@@ -410,11 +410,11 @@ export const placesChildren = ({ level }) => [
     path: 'files',
     element: null,
     handle: {
-      crumb: () => ({
+      crumb: {
         text: 'Files',
         table: 'files',
         folder: true,
-      }),
+      },
     },
     children: [
       { index: true, lazy: () => import('../routes/files') },
@@ -422,10 +422,10 @@ export const placesChildren = ({ level }) => [
         path: ':file_id',
         element: null,
         handle: {
-          crumb: () => ({
+          crumb: {
             table: 'files',
             folder: false,
-          }),
+          },
         },
         children: [
           {

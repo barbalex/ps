@@ -29,7 +29,7 @@ const OverflowMenuItem: React.FC = ({ id, match, upRerenderInteger }) => {
     // somehow nav icon is not rendered without this
     upRerenderInteger()
   }, [match.pathname, navigate, searchParams, upRerenderInteger])
-  const { table, folder } = match?.handle?.crumb?.(match) ?? {}
+  const { table, folder } = match?.handle?.crumb ?? {}
 
   if (isVisible) {
     return null
