@@ -33,15 +33,22 @@ export const Component = memo(() => {
     occurrence_import_id: {
       in: occurrence_imports.map((o) => o.occurrence_import_id),
     },
-    place_id: null,
   }
-  if (isAssigned) where.place_id = place_id2 ?? place_id
-  if (isToAssess) where.not_to_assign = null
+  if (isAssigned) {
+    where.place_id = place_id2 ?? place_id
+  }
+  if (isToAssess) {
+    where.not_to_assign = null
+    where.place_id = null
+  }
   // these three do not work, see: https://discord.com/channels/933657521581858818/1229057284395503817/1229057284395503817
   // if (isToAssess) where.or = [{ not_to_assign: null }, { not_to_assign: false }]
   // if (isToAssess) where.not_to_assign = { not: true }
   // if (isToAssess) where.not = [{ not_to_assign: true }]
-  if (isNotToAssign) where.not_to_assign = true
+  if (isNotToAssign) {
+    where.not_to_assign = true
+    where.place_id = null
+  }
   const { results: occurrences = [] } = useLiveQuery(
     db.occurrences.liveMany({
       where,
@@ -49,6 +56,19 @@ export const Component = memo(() => {
       include: { occurrence_imports: true },
     }),
   )
+
+  // console.log('hello occurrences', {
+  //   isAssigned,
+  //   isToAssess,
+  //   isNotToAssign,
+  //   title,
+  //   subproject_id,
+  //   place_id,
+  //   place_id2,
+  //   occurrence_imports,
+  //   occurrences,
+  //   where,
+  // })
 
   return (
     <div className="list-view">
