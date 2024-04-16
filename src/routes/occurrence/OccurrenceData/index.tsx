@@ -16,12 +16,15 @@ import './raw.css'
 
 const outerContainerStyle = {
   containerType: 'inline-size',
-  padding: '0 10px 0 10px',
 }
 const explainerStyle = {
-  padding: '10px 5px',
+  padding: '10px 2px',
   margin: 0,
   color: 'rgba(0, 0, 0, 0.54)',
+}
+const h2Style = {
+  margin: 0,
+  fontSize: 'medium',
 }
 
 export const OccurenceData = () => {
@@ -133,9 +136,8 @@ export const OccurenceData = () => {
   return (
     <ErrorBoundary>
       <div style={outerContainerStyle}>
-        <p style={explainerStyle}>
-          Die Felder können beliebig sortiert werden (drag and drop).
-        </p>
+        <h2 style={h2Style}>Raw data</h2>
+        <p style={explainerStyle}>Sort fields by dragging and dropping.</p>
         <div className="container">
           <DndProvider backend={HTML5Backend} context={window}>
             {fields.map((field, i) => renderField(field, i))}
