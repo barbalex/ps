@@ -40,6 +40,7 @@ export const ListNode = memo(({ project_id, list, level = 4 }: Props) => {
     <>
       <Node
         node={list}
+        id={list.list_id}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isOpen}

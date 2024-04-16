@@ -42,6 +42,7 @@ export const ListValueNode = memo(
     return (
       <Node
         node={listValue}
+        id={listValue.list_value_id}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isOpen}

@@ -30,6 +30,7 @@ interface Props {
   isOpen: boolean
   level: number
   node: { label: string }
+  id: string
   childrenCount: number
   to: string
   onClickButton: () => void
@@ -43,6 +44,8 @@ export const Node = memo(
     isOpen,
     level,
     node,
+    // id is used as a backup in case the label trigger did not work
+    id,
     childrenCount,
     to,
     onClickButton,
@@ -101,7 +104,7 @@ export const Node = memo(
             })}
             to={{ pathname: to, search: searchParams.toString() }}
           >
-            {node.label}
+            {node.label ?? id ?? '(missing label)'}
           </Link>
         )}
         {!!sibling && <div style={siblingStyle}>{sibling}</div>}
