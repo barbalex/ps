@@ -36,7 +36,11 @@ export const Component = () => {
       />
       <div className="list-container">
         {goals.map(({ goal_report_id, label }) => (
-          <Row key={goal_report_id} label={label} to={goal_report_id} />
+          <Row
+            key={goal_report_id}
+            label={label ?? goal_report_id}
+            to={goal_report_id}
+          />
         ))}
       </div>
     </div>

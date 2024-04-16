@@ -31,7 +31,11 @@ export const Component = () => {
       <ListViewHeader title="Field Types" addRow={add} tableName="field type" />
       <div className="list-container">
         {fieldTypes.map(({ field_type_id, label }) => (
-          <Row key={field_type_id} label={label} to={field_type_id} />
+          <Row
+            key={field_type_id}
+            label={label ?? field_type_id}
+            to={field_type_id}
+          />
         ))}
       </div>
     </div>

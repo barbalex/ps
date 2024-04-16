@@ -83,7 +83,7 @@ export const Component = () => {
           return (
             <Row
               key={file_id}
-              label={label}
+              label={label ?? file_id}
               to={file_id}
               imgSrc={imgSrc}
               lastHasImages={true}
