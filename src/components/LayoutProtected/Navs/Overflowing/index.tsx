@@ -36,9 +36,7 @@ const OverflowMenuItem: React.FC = ({ path, text }) => {
     [navigate, path, searchParams],
   )
 
-  if (isVisible) {
-    return null
-  }
+  if (isVisible) return null
 
   return (
     <MenuItem className="nav-menu-item" onClick={onClick}>
