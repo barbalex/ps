@@ -41,6 +41,7 @@ export const TaxonomyNode = memo(
       <>
         <Node
           node={taxonomy}
+          id={taxonomy.taxonomy_id}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isOpen}

@@ -48,6 +48,7 @@ export const SubprojectTaxonNode = memo(
     return (
       <Node
         node={subprojectTaxon}
+        id={subprojectTaxon.subproject_taxon_id}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isOpen}
