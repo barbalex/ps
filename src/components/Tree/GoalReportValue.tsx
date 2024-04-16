@@ -61,6 +61,7 @@ export const GoalReportValueNode = memo(
     return (
       <Node
         node={goalReportValue}
+        id={goalReportValue.goal_report_value_id}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isOpen}

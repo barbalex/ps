@@ -138,6 +138,7 @@ export const FileNode = ({
   return (
     <Node
       node={file}
+      id={file.file_id}
       level={level}
       isOpen={isOpen}
       isInActiveNodeArray={isOpen}

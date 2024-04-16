@@ -42,6 +42,7 @@ export const FieldTypeNode = memo(({ fieldType, level = 2 }: Props) => {
   return (
     <Node
       node={fieldType}
+      id={fieldType.field_type_id}
       level={level}
       isOpen={isOpen}
       isInActiveNodeArray={isOpen}
