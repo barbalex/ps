@@ -82,6 +82,7 @@ export const Component = memo(() => {
           value={row.not_to_assign}
           onChange={onChange}
         />
+        {/* TODO: add distance from occurrence and sort by that ascending */}
         <FilteringCombobox
           label="Place"
           name="place_id"
