@@ -59,6 +59,7 @@ export const SubprojectNode = memo(
       <>
         <Node
           node={subproject}
+          id={subproject.subproject_id}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isOpen}

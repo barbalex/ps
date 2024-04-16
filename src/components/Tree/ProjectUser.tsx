@@ -39,6 +39,7 @@ export const ProjectUserNode = memo(
     return (
       <Node
         node={projectUser}
+        id={projectUser.project_user_id}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isOpen}
