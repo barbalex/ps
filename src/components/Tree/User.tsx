@@ -37,6 +37,7 @@ export const UserNode = memo(({ user, level = 2 }: Props) => {
   return (
     <Node
       node={user}
+      id={user.user_id}
       level={level}
       isOpen={isOpen}
       isInActiveNodeArray={isOpen}

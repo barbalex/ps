@@ -40,6 +40,7 @@ export const AccountNode = memo(({ account, level = 2 }: Props) => {
   return (
     <Node
       node={account}
+      id={account.account_id}
       level={level}
       isOpen={isOpen}
       isInActiveNodeArray={isOpen}
