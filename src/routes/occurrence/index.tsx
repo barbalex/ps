@@ -15,7 +15,7 @@ import { OccurenceData } from './OccurrenceData'
 import '../../form.css'
 
 export const Component = memo(() => {
-  const { occurrence_id } = useParams()
+  const { project_id, subproject_id, occurrence_id } = useParams()
   const navigate = useNavigate()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -26,7 +26,7 @@ export const Component = memo(() => {
   )
 
   const onChange: InputProps['onChange'] = useCallback(
-    (e, data) => {
+    async (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       // Issue: for not_to_assign, the value needs to be null instead of false
       // because querying for null or false with electric-sql does not work
@@ -42,15 +42,31 @@ export const Component = memo(() => {
         where: { occurrence_id },
         data: { [name]: valueToUse },
       })
-      if (name === 'not_to_assign') {
+      if (name === 'place_id' && !value) {
+        // navigate to the occurrences-to-assess page
         navigate(
-          `../../${
-            value ? 'occurrences-not-to-assign' : 'occurrences-to-assess'
-          }/${occurrence_id}`,
+          `/projects/${project_id}/subprojects/${subproject_id}/occurrences-to-assess/${occurrence_id}`,
         )
       }
+      if (name === 'place_id' && value) {
+        // navigate to the place's occurrences-assigned page
+        // this depends on the level of the place
+        const place = await db.places.findUnique({ where: { place_id: value } })
+        const parentPlaceId = place?.parent_id
+        const url = parentPlaceId
+          ? `/projects/${project_id}/subprojects/${subproject_id}/places/${parentPlaceId}/places/${value}/occurrences-assigned/${occurrence_id}`
+          : `/projects/${project_id}/subprojects/${subproject_id}/places/${value}/occurrences-assigned/${occurrence_id}`
+        navigate(url)
+      }
     },
-    [db.occurrences, navigate, occurrence_id],
+    [
+      db.occurrences,
+      db.places,
+      navigate,
+      occurrence_id,
+      project_id,
+      subproject_id,
+    ],
   )
 
   if (!row) return <Loading />
