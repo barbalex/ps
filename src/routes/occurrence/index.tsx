@@ -43,13 +43,13 @@ export const Component = memo(() => {
         data: { [name]: valueToUse },
       })
       if (name === 'place_id' && !value) {
-        // navigate to the occurrences-to-assess page
+        // navigate to the subproject's occurrences-to-assess list
         navigate(
           `/projects/${project_id}/subprojects/${subproject_id}/occurrences-to-assess/${occurrence_id}`,
         )
       }
       if (name === 'place_id' && value) {
-        // navigate to the place's occurrences-assigned page
+        // navigate to the place's occurrences-assigned list
         // this depends on the level of the place
         const place = await db.places.findUnique({ where: { place_id: value } })
         const parentPlaceId = place?.parent_id
