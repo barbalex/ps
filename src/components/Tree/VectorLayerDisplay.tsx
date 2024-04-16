@@ -48,6 +48,7 @@ export const VectorLayerDisplayNode = memo(
     return (
       <Node
         node={vectorLayerDisplay}
+        id={vectorLayerDisplay.vector_layer_display_id}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isOpen}

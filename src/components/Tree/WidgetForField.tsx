@@ -43,6 +43,7 @@ export const WidgetForFieldNode = memo(
     return (
       <Node
         node={widgetForField}
+        id={widgetForField.widget_for_field_id}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isOpen}

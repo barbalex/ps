@@ -41,6 +41,7 @@ export const VectorLayerNode = memo(
       <>
         <Node
           node={vectorLayer}
+          id={vectorLayer.vector_layer_id}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isOpen}
