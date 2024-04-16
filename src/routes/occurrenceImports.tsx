@@ -42,7 +42,7 @@ export const Component = () => {
         {occurrenceImports.map(({ occurrence_import_id, label }) => (
           <Row
             key={occurrence_import_id}
-            label={label}
+            label={label ?? occurrence_import_id}
             to={occurrence_import_id}
           />
         ))}
