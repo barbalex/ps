@@ -38,7 +38,7 @@ export const BreadcrumbForFolder = forwardRef(
 
     const { user: authUser } = useCorbadoSession()
 
-    const { text, table, sibling } = match?.handle?.crumb?.(match) ?? {}
+    const { text, table, sibling } = match?.handle?.crumb ?? {}
     const className =
       location.pathname === match.pathname
         ? `breadcrumbs__crumb${forOverflowMenu ? '__menu-item' : ''} is-active`

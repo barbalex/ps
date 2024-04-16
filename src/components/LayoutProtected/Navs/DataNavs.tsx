@@ -12,12 +12,12 @@ export const DataNavs = memo(({ matches }) => {
   const { db } = useElectric()!
 
   const filteredMatches = matches.filter((match) => {
-    const { table, folder } = match?.handle?.crumb?.(match) ?? {}
+    const { table, folder } = match?.handle?.crumb ?? {}
 
     return table !== 'root' && folder === true
   })
   const dataMatch = filteredMatches?.[0] ?? {}
-  const { table } = dataMatch?.handle?.crumb?.(dataMatch) ?? {}
+  const { table } = dataMatch?.handle?.crumb ?? {}
   const pathname = dataMatch?.pathname ?? ''
   const path = pathname.split('/').filter((path) => path !== '')
   const idField = idFieldFromTable(table)

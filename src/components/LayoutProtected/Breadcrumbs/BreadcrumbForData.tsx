@@ -21,7 +21,7 @@ export const BreadcrumbForData = forwardRef(
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const { text, table, sibling } = match?.handle?.crumb?.(match) ?? {}
+    const { text, table, sibling } = match?.handle?.crumb ?? {}
     const className =
       location.pathname === match.pathname
         ? `breadcrumbs__crumb${forOverflowMenu ? '__menu-item' : ''} is-active`
