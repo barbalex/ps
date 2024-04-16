@@ -71,6 +71,7 @@ export const CheckValueNode = memo(
     return (
       <Node
         node={checkValue}
+        id={checkValue.check_value_id}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isOpen}

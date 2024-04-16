@@ -75,6 +75,7 @@ export const ActionReportNode = memo(
       <>
         <Node
           node={actionReport}
+          id={actionReport.action_report_id}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isOpen}
