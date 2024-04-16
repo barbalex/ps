@@ -116,10 +116,9 @@ export const DataNavsOverflowing = memo(
       if (table === 'fields' && !parentId) {
         filterParams.project_id = null
       }
+
       return filterParams
-      // only using pathname prevents infinite loop
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [location.pathname])
+    }, [dataMatch?.params, occurrenceImportIds, path, table])
 
     // WARNING: if table is undefined, bad things will happen
     // Thus using effect and state instead of live query
