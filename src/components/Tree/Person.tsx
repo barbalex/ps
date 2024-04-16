@@ -38,6 +38,7 @@ export const PersonNode = memo(({ project_id, person, level = 4 }: Props) => {
   return (
     <Node
       node={person}
+      id={person.person_id}
       level={level}
       isOpen={isOpen}
       isInActiveNodeArray={isOpen}

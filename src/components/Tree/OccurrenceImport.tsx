@@ -48,6 +48,7 @@ export const OccurrenceImportNode = memo(
     return (
       <Node
         node={occurrenceImport}
+        id={occurrenceImport.occurrence_import_id}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isOpen}

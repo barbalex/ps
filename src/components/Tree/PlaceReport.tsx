@@ -67,6 +67,7 @@ export const PlaceReportNode = memo(
       <>
         <Node
           node={placeReport}
+          id={placeReport.place_report_id}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isOpen}
