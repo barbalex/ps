@@ -8,6 +8,7 @@ import { useCorbadoSession } from '@corbado/react'
 
 import { exists } from '../../../modules/exists'
 import { ErrorBoundary } from '../../../components/shared/ErrorBoundary'
+import { Section } from '../../../components/shared/Section'
 import { Field } from './Field'
 import { useElectric } from '../../../ElectricProvider'
 import { Loading } from '../../../components/shared/Loading'
@@ -18,13 +19,10 @@ const outerContainerStyle = {
   containerType: 'inline-size',
 }
 const explainerStyle = {
-  padding: '10px 2px',
+  padding: '5px 2px',
   margin: 0,
   color: 'rgba(0, 0, 0, 0.54)',
-}
-const h2Style = {
-  margin: 0,
-  fontSize: 'medium',
+  fontStyle: 'italic',
 }
 
 export const OccurenceData = () => {
@@ -135,13 +133,15 @@ export const OccurenceData = () => {
   // NEW: alternative solution: https://github.com/react-dnd/react-dnd/issues/3257#issuecomment-1239254032
   return (
     <ErrorBoundary>
-      <div style={outerContainerStyle}>
-        <h2 style={h2Style}>Raw data</h2>
-        <p style={explainerStyle}>Sort fields by dragging and dropping.</p>
-        <div className="container">
-          <DndProvider backend={HTML5Backend} context={window}>
-            {fields.map((field, i) => renderField(field, i))}
-          </DndProvider>
+      <div>
+        <Section title="Raw data" />
+        <p style={explainerStyle}>Sort fields by dragging and dropping</p>
+        <div style={outerContainerStyle}>
+          <div className="container">
+            <DndProvider backend={HTML5Backend} context={window}>
+              {fields.map((field, i) => renderField(field, i))}
+            </DndProvider>
+          </div>
         </div>
       </div>
     </ErrorBoundary>
