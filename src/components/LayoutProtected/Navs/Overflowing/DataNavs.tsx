@@ -31,9 +31,7 @@ export const DataNavsOverflowing = memo(
       delete dataMatch.handle
 
       return structuredClone(dataMatch)
-      // only using pathname prevents infinite loop
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [location.pathname])
+    }, [matches])
 
     const table = dataMatch?.crumb?.table
     const pathname = dataMatch?.pathname ?? ''
@@ -150,14 +148,13 @@ export const DataNavsOverflowing = memo(
       return { path, text }
     })
 
-    // console.log('hello DataNavsOverflowing', {
-    //   table,
-    //   idField,
-    //   pathname,
-    //   parentId,
-    //   tableResults,
-    //   filterParams,
-    // })
+    console.log('hello DataNavsOverflowing', {
+      table,
+      idField,
+      pathname,
+      tableResults,
+      filterParams,
+    })
 
     if (!table) return <div className="navs-resizable" />
     if (!tos.length) return <div className="navs-resizable" />
