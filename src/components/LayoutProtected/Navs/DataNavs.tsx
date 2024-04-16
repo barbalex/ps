@@ -130,7 +130,9 @@ export const DataNavs = memo(({ matches }) => {
         const value = result[idField]
         const label = result.label ?? value
 
-        return <Nav key={value} label={label} to={`${pathname}/${value}`} />
+        return (
+          <Nav key={value} label={label ?? value} to={`${pathname}/${value}`} />
+        )
       })}
     </nav>
   )

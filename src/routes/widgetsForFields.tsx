@@ -40,7 +40,7 @@ export const Component = () => {
         {widgetsForFields.map(({ widget_for_field_id, label }) => (
           <Row
             key={widget_for_field_id}
-            label={label}
+            label={label ?? widget_for_field_id}
             to={widget_for_field_id}
           />
         ))}
