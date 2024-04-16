@@ -20,8 +20,7 @@ export const placesLevel2 = () => ({
       path: ':place_id2',
       element: null,
       handle: {
-        crumb: (match) => ({
-          text: match.params.place_id2,
+        crumb: () => ({
           table: 'places',
           level: 2,
           folder: false,

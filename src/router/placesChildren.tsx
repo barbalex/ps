@@ -19,8 +19,7 @@ export const placesChildren = ({ level }) => [
         path: ':check_id',
         element: null,
         handle: {
-          crumb: (match) => ({
-            text: match.params.check_id,
+          crumb: () => ({
             table: 'checks',
             folder: false,
             level,
@@ -54,8 +53,7 @@ export const placesChildren = ({ level }) => [
                 path: ':check_value_id',
                 lazy: () => import('../routes/checkValue'),
                 handle: {
-                  crumb: (match) => ({
-                    text: match.params.check_value_id,
+                  crumb: () => ({
                     table: 'check_values',
                     folder: false,
                   }),
@@ -82,8 +80,7 @@ export const placesChildren = ({ level }) => [
                 path: ':check_taxon_id',
                 lazy: () => import('../routes/checkTaxon'),
                 handle: {
-                  crumb: (match) => ({
-                    text: match.params.check_taxon_id,
+                  crumb: () => ({
                     table: 'check_taxa',
                     folder: false,
                   }),
@@ -107,8 +104,7 @@ export const placesChildren = ({ level }) => [
                 path: ':file_id',
                 element: null,
                 handle: {
-                  crumb: (match) => ({
-                    text: match.params.file_id,
+                  crumb: () => ({
                     table: 'files',
                     folder: false,
                   }),
@@ -149,8 +145,7 @@ export const placesChildren = ({ level }) => [
         path: ':action_id',
         element: null,
         handle: {
-          crumb: (match) => ({
-            text: match.params.action_id,
+          crumb: () => ({
             table: 'actions',
             folder: false,
           }),
@@ -183,8 +178,7 @@ export const placesChildren = ({ level }) => [
                 path: ':action_value_id',
                 lazy: () => import('../routes/actionValue'),
                 handle: {
-                  crumb: (match) => ({
-                    text: match.params.action_value_id,
+                  crumb: () => ({
                     table: 'action_values',
                     folder: false,
                   }),
@@ -211,8 +205,7 @@ export const placesChildren = ({ level }) => [
                 path: ':action_report_id',
                 element: null,
                 handle: {
-                  crumb: (match) => ({
-                    text: match.params.action_report_id,
+                  crumb: () => ({
                     table: 'action_reports',
                     folder: false,
                   }),
@@ -245,8 +238,7 @@ export const placesChildren = ({ level }) => [
                         path: ':action_report_value_id',
                         lazy: () => import('../routes/actionReportValue'),
                         handle: {
-                          crumb: (match) => ({
-                            text: match.params.action_report_value_id,
+                          crumb: () => ({
                             table: 'action_report_values',
                             folder: false,
                           }),
@@ -274,8 +266,7 @@ export const placesChildren = ({ level }) => [
                 path: ':file_id',
                 element: null,
                 handle: {
-                  crumb: (match) => ({
-                    text: match.params.file_id,
+                  crumb: () => ({
                     table: 'files',
                     folder: false,
                   }),
@@ -316,8 +307,7 @@ export const placesChildren = ({ level }) => [
         path: ':place_report_id',
         element: null,
         handle: {
-          crumb: (match) => ({
-            text: match.params.place_report_id,
+          crumb: () => ({
             table: 'place_reports',
             folder: false,
           }),
@@ -350,8 +340,7 @@ export const placesChildren = ({ level }) => [
                 path: ':place_report_value_id',
                 lazy: () => import('../routes/placeReportValue'),
                 handle: {
-                  crumb: (match) => ({
-                    text: match.params.place_report_value_id,
+                  crumb: () => ({
                     table: 'place_report_values',
                     folder: false,
                   }),
@@ -382,8 +371,7 @@ export const placesChildren = ({ level }) => [
         path: ':occurrence_id',
         lazy: () => import('../routes/occurrence'),
         handle: {
-          crumb: (match) => ({
-            text: match.params.occurrence_id,
+          crumb: () => ({
             table: 'occurrences',
             folder: false,
           }),
@@ -410,8 +398,7 @@ export const placesChildren = ({ level }) => [
         path: ':place_user_id',
         lazy: () => import('../routes/placeUser'),
         handle: {
-          crumb: (match) => ({
-            text: match.params.place_user_id,
+          crumb: () => ({
             table: 'place_users',
             folder: false,
           }),
@@ -435,8 +422,7 @@ export const placesChildren = ({ level }) => [
         path: ':file_id',
         element: null,
         handle: {
-          crumb: (match) => ({
-            text: match.params.file_id,
+          crumb: () => ({
             table: 'files',
             folder: false,
           }),

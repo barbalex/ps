@@ -57,8 +57,7 @@ export const router = () => {
               path: ':project_id',
               element: null,
               handle: {
-                crumb: (match) => ({
-                  text: match.params.project_id,
+                crumb: () => ({
                   table: 'projects',
                   folder: false,
                   sibling: <EditingProject />,
@@ -91,8 +90,7 @@ export const router = () => {
                       path: ':subproject_id',
                       element: null,
                       handle: {
-                        crumb: (match) => ({
-                          text: match.params.subproject_id,
+                        crumb: () => ({
                           table: 'subprojects',
                           folder: false,
                         }),
@@ -124,9 +122,11 @@ export const router = () => {
                             {
                               path: ':place_id',
                               element: null,
+                              // TODO: seems that text is not used
+                              // thus match is not used
+                              // thus: RETURN ONLY AN OBJECT
                               handle: {
-                                crumb: (match) => ({
-                                  text: match.params.place_id,
+                                crumb: () => ({
                                   table: 'places',
                                   level: 1,
                                   folder: false,
@@ -165,8 +165,7 @@ export const router = () => {
                               path: ':subproject_user_id',
                               lazy: () => import('../routes/subprojectUser'),
                               handle: {
-                                crumb: (match) => ({
-                                  text: match.params.subproject_user_id,
+                                crumb: () => ({
                                   table: 'subproject_users',
                                   folder: false,
                                 }),
@@ -193,8 +192,7 @@ export const router = () => {
                               path: ':occurrence_import_id',
                               lazy: () => import('../routes/occurrenceImport'),
                               handle: {
-                                crumb: (match) => ({
-                                  text: match.params.occurrence_import_id,
+                                crumb: () => ({
                                   table: 'occurrence_imports',
                                   folder: false,
                                 }),
@@ -221,8 +219,7 @@ export const router = () => {
                               path: ':file_id',
                               element: null,
                               handle: {
-                                crumb: (match) => ({
-                                  text: match.params.file_id,
+                                crumb: () => ({
                                   table: 'files',
                                   folder: false,
                                 }),
@@ -259,8 +256,7 @@ export const router = () => {
                               path: ':subproject_taxon_id',
                               lazy: () => import('../routes/subprojectTaxon'),
                               handle: {
-                                crumb: (match) => ({
-                                  text: match.params.subproject_taxon_id,
+                                crumb: () => ({
                                   table: 'subproject_taxa',
                                   folder: false,
                                 }),
@@ -287,8 +283,7 @@ export const router = () => {
                               path: ':subproject_report_id',
                               lazy: () => import('../routes/subprojectReport'),
                               handle: {
-                                crumb: (match) => ({
-                                  text: match.params.subproject_report_id,
+                                crumb: () => ({
                                   table: 'subproject_reports',
                                   folder: false,
                                 }),
@@ -315,8 +310,7 @@ export const router = () => {
                               path: ':goal_id',
                               element: null,
                               handle: {
-                                crumb: (match) => ({
-                                  text: match.params.goal_id,
+                                crumb: () => ({
                                   table: 'goals',
                                   folder: false,
                                 }),
@@ -349,8 +343,7 @@ export const router = () => {
                                       path: ':goal_report_id',
                                       element: null,
                                       handle: {
-                                        crumb: (match) => ({
-                                          text: match.params.goal_report_id,
+                                        crumb: () => ({
                                           table: 'goal_reports',
                                           folder: false,
                                         }),
@@ -389,9 +382,7 @@ export const router = () => {
                                                   '../routes/goalReportValue'
                                                 ),
                                               handle: {
-                                                crumb: (match) => ({
-                                                  text: match.params
-                                                    .goal_report_value_id,
+                                                crumb: () => ({
                                                   table: 'goal_report_values',
                                                   folder: false,
                                                 }),
@@ -429,8 +420,7 @@ export const router = () => {
                               path: ':occurrence_id',
                               lazy: () => import('../routes/occurrence'),
                               handle: {
-                                crumb: (match) => ({
-                                  text: match.params.occurrence_id,
+                                crumb: () => ({
                                   table: 'occurrences',
                                   folder: false,
                                 }),
@@ -463,8 +453,7 @@ export const router = () => {
                               path: ':occurrence_id',
                               lazy: () => import('../routes/occurrence'),
                               handle: {
-                                crumb: (match) => ({
-                                  text: match.params.occurrence_id,
+                                crumb: () => ({
                                   table: 'occurrences',
                                   folder: false,
                                 }),
@@ -494,8 +483,7 @@ export const router = () => {
                               path: ':chart_id',
                               element: null,
                               handle: {
-                                crumb: (match) => ({
-                                  text: match.params.chart_id,
+                                crumb: () => ({
                                   table: 'charts',
                                   folder: false,
                                 }),
@@ -529,8 +517,7 @@ export const router = () => {
                                       lazy: () =>
                                         import('../routes/chartSubject'),
                                       handle: {
-                                        crumb: (match) => ({
-                                          text: match.params.chart_subject_id,
+                                        crumb: () => ({
                                           table: 'chart_subjects',
                                           folder: false,
                                         }),
@@ -568,8 +555,7 @@ export const router = () => {
                       path: ':place_level_id',
                       lazy: () => import('../routes/placeLevel'),
                       handle: {
-                        crumb: (match) => ({
-                          text: match.params.place_level_id,
+                        crumb: () => ({
                           table: 'place_levels',
                           folder: false,
                         }),
@@ -596,8 +582,7 @@ export const router = () => {
                       path: ':unit_id',
                       lazy: () => import('../routes/unit'),
                       handle: {
-                        crumb: (match) => ({
-                          text: match.params.unit_id,
+                        crumb: () => ({
                           table: 'units',
                           folder: false,
                         }),
@@ -624,8 +609,7 @@ export const router = () => {
                       path: ':list_id',
                       element: null,
                       handle: {
-                        crumb: (match) => ({
-                          text: match.params.list_id,
+                        crumb: () => ({
                           table: 'lists',
                           folder: false,
                         }),
@@ -657,8 +641,7 @@ export const router = () => {
                               path: ':list_value_id',
                               lazy: () => import('../routes/listValue'),
                               handle: {
-                                crumb: (match) => ({
-                                  text: match.params.list_value_id,
+                                crumb: () => ({
                                   table: 'list_values',
                                   folder: false,
                                 }),
@@ -689,8 +672,7 @@ export const router = () => {
                       path: ':taxonomy_id',
                       element: null,
                       handle: {
-                        crumb: (match) => ({
-                          text: match.params.taxonomy_id,
+                        crumb: () => ({
                           table: 'taxonomies',
                           folder: false,
                         }),
@@ -722,8 +704,7 @@ export const router = () => {
                               path: ':taxon_id',
                               lazy: () => import('../routes/taxon'),
                               handle: {
-                                crumb: (match) => ({
-                                  text: match.params.taxon_id,
+                                crumb: () => ({
                                   table: 'taxa',
                                   folder: false,
                                 }),
@@ -754,8 +735,7 @@ export const router = () => {
                       path: ':tile_layer_id',
                       lazy: () => import('../routes/tileLayer'),
                       handle: {
-                        crumb: (match) => ({
-                          text: match.params.tile_layer_id,
+                        crumb: () => ({
                           table: 'tile_layers',
                           folder: false,
                         }),
@@ -782,8 +762,7 @@ export const router = () => {
                       path: ':vector_layer_id',
                       element: null,
                       handle: {
-                        crumb: (match) => ({
-                          text: match.params.vector_layer_id,
+                        crumb: () => ({
                           table: 'vector_layers',
                           folder: false,
                         }),
@@ -817,8 +796,7 @@ export const router = () => {
                               lazy: () =>
                                 import('../routes/vectorLayerDisplay'),
                               handle: {
-                                crumb: (match) => ({
-                                  text: match.params.vector_layer_display_id,
+                                crumb: () => ({
                                   table: 'vector_layer_displays',
                                   folder: false,
                                 }),
@@ -849,8 +827,7 @@ export const router = () => {
                       path: ':project_user_id',
                       lazy: () => import('../routes/projectUser'),
                       handle: {
-                        crumb: (match) => ({
-                          text: match.params.project_user_id,
+                        crumb: () => ({
                           table: 'project_users',
                           folder: false,
                         }),
@@ -877,8 +854,7 @@ export const router = () => {
                       path: ':project_report_id',
                       lazy: () => import('../routes/projectReport'),
                       handle: {
-                        crumb: (match) => ({
-                          text: match.params.project_report_id,
+                        crumb: () => ({
                           table: 'project_reports',
                           folder: false,
                         }),
@@ -905,8 +881,7 @@ export const router = () => {
                       path: ':field_id',
                       lazy: () => import('../routes/field'),
                       handle: {
-                        crumb: (match) => ({
-                          text: match.params.field_id,
+                        crumb: () => ({
                           table: 'fields',
                           folder: false,
                         }),
@@ -933,8 +908,7 @@ export const router = () => {
                       path: ':person_id',
                       lazy: () => import('../routes/person'),
                       handle: {
-                        crumb: (match) => ({
-                          text: match.params.person_id,
+                        crumb: () => ({
                           table: 'persons',
                           folder: false,
                         }),
@@ -961,8 +935,7 @@ export const router = () => {
                       path: ':file_id',
                       element: null,
                       handle: {
-                        crumb: (match) => ({
-                          text: match.params.file_id,
+                        crumb: () => ({
                           table: 'files',
                           folder: false,
                         }),
@@ -1003,8 +976,7 @@ export const router = () => {
               path: ':user_id',
               lazy: () => import('../routes/user'),
               handle: {
-                crumb: (match) => ({
-                  text: match.params.user_id,
+                crumb: () => ({
                   table: 'users',
                   folder: false,
                 }),
@@ -1028,8 +1000,7 @@ export const router = () => {
               path: ':account_id',
               lazy: () => import('../routes/account'),
               handle: {
-                crumb: (match) => ({
-                  text: match.params.account_id,
+                crumb: () => ({
                   table: 'accounts',
                   folder: false,
                 }),
@@ -1053,8 +1024,7 @@ export const router = () => {
               path: ':field_type_id',
               lazy: () => import('../routes/fieldType'),
               handle: {
-                crumb: (match) => ({
-                  text: match.params.field_type_id,
+                crumb: () => ({
                   table: 'field_types',
                   folder: false,
                 }),
@@ -1081,8 +1051,7 @@ export const router = () => {
               path: ':widget_type_id',
               lazy: () => import('../routes/widgetType'),
               handle: {
-                crumb: (match) => ({
-                  text: match.params.widget_type_id,
+                crumb: () => ({
                   table: 'widget_types',
                   folder: false,
                 }),
@@ -1109,8 +1078,7 @@ export const router = () => {
               path: ':widget_for_field_id',
               lazy: () => import('../routes/widgetForField'),
               handle: {
-                crumb: (match) => ({
-                  text: match.params.widget_for_field_id,
+                crumb: () => ({
                   table: 'widgets_for_fields',
                   folder: false,
                 }),
@@ -1137,8 +1105,7 @@ export const router = () => {
               path: ':field_id',
               lazy: () => import('../routes/field'),
               handle: {
-                crumb: (match) => ({
-                  text: match.params.field_id,
+                crumb: () => ({
                   table: 'fields',
                   folder: false,
                 }),
@@ -1162,8 +1129,7 @@ export const router = () => {
               path: ':file_id',
               element: null,
               handle: {
-                crumb: (match) => ({
-                  text: match.params.file_id,
+                crumb: () => ({
                   table: 'files',
                   folder: false,
                 }),
@@ -1197,8 +1163,7 @@ export const router = () => {
               path: ':message_id',
               lazy: () => import('../routes/message'),
               handle: {
-                crumb: (match) => ({
-                  text: match.params.message_id,
+                crumb: () => ({
                   table: 'messages',
                   folder: false,
                 }),
@@ -1233,8 +1198,7 @@ export const router = () => {
               path: ':app_state_id',
               lazy: () => import('../routes/appState'),
               handle: {
-                crumb: (match) => ({
-                  text: match.params.app_state_id,
+                crumb: () => ({
                   table: 'app_states',
                   folder: false,
                 }),
