@@ -20,7 +20,7 @@ export const DataNavsOverflowing = memo(
     const dataMatch = useMemo(() => {
       const matchesWithCrumb = matches.map((match) => ({
         ...match,
-        crumb: match.handle?.crumb?.(match),
+        crumb: match.handle?.crumb,
       }))
       const dataMatches = matchesWithCrumb.filter(
         (match) =>

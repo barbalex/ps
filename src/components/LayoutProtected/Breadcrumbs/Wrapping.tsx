@@ -19,7 +19,7 @@ export const BreadcrumbsWrapping = () => {
   return (
     <nav key={location.pathname} className="breadcrumbs">
       {filteredMatches.map((match) => {
-        const { table, folder } = match?.handle?.crumb?.(match) ?? {}
+        const { table, folder } = match?.handle?.crumb ?? {}
 
         if (table === 'root' || folder === false) {
           return <BreadcrumbForFolder key={match.id} match={match} />
