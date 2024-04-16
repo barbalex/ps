@@ -71,6 +71,7 @@ export const CheckTaxonNode = memo(
     return (
       <Node
         node={checkTaxon}
+        id={checkTaxon.check_taxon_id}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isOpen}

@@ -96,6 +96,7 @@ export const ChartSubjectNode = ({
   return (
     <Node
       node={chartSubject}
+      id={chartSubject.chart_subject_id}
       level={level}
       isOpen={isOpen}
       isInActiveNodeArray={isOpen}
