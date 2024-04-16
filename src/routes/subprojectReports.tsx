@@ -46,7 +46,7 @@ export const Component = () => {
           <Row
             key={subproject_report_id}
             to={subproject_report_id}
-            label={label}
+            label={label ?? subproject_report_id}
           />
         ))}
       </div>

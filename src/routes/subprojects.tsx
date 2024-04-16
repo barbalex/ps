@@ -45,7 +45,7 @@ export const Component = () => {
         {subprojects.map(({ subproject_id, label }) => (
           <Row
             key={subproject_id}
-            label={label}
+            label={label ?? subproject_id}
             to={`/projects/${project_id}/subprojects/${subproject_id}`}
           />
         ))}

@@ -44,7 +44,11 @@ export const Component = () => {
       />
       <div className="list-container">
         {subprojectUsers.map(({ subproject_user_id, label }) => (
-          <Row key={subproject_user_id} to={subproject_user_id} label={label} />
+          <Row
+            key={subproject_user_id}
+            to={subproject_user_id}
+            label={label ?? subproject_user_id}
+          />
         ))}
       </div>
     </div>
