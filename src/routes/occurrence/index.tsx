@@ -6,6 +6,7 @@ import type { InputProps } from '@fluentui/react-components'
 import { useElectric } from '../../ElectricProvider'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { SwitchField } from '../../components/shared/SwitchField'
+import { FilteringCombobox } from '../../components/shared/FilteringCombobox'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { Header } from './Header'
 import { Loading } from '../../components/shared/Loading'
@@ -64,6 +65,17 @@ export const Component = memo(() => {
           name="not_to_assign"
           value={row.not_to_assign}
           onChange={onChange}
+        />
+        <FilteringCombobox
+          label="Place"
+          name="place_id"
+          table="places"
+          
+          // include={taxaInclude}
+          value={row.place_id ?? ''}
+          onChange={onChange}
+          autoFocus
+          ref={autoFocusRef}
         />
         <OccurenceData />
       </div>
