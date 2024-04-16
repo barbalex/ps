@@ -64,9 +64,7 @@ export const DataNavsOverflowing = memo(
         }
       }
       get()
-      // only using pathname prevents infinite loop
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [location.pathname])
+    }, [dataMatch?.params?.subproject_id, db.occurrence_imports, table])
 
     const filterParams = useMemo(() => {
       const filterParams = {}
