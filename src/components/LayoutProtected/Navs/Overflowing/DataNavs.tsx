@@ -133,9 +133,9 @@ export const DataNavsOverflowing = memo(
         setTableResults(results)
       }
       get()
-      // only using pathname prevents infinite loop
+      // including path or filterParams causes infinite loop
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [location.pathname])
+    }, [db, dataMatch?.params, occurrenceImportIds, table, location.pathname])
 
     const tos = tableResults.map((result) => {
       const value = result[idField]
@@ -145,13 +145,13 @@ export const DataNavsOverflowing = memo(
       return { path, text }
     })
 
-    console.log('hello DataNavsOverflowing', {
-      table,
-      idField,
-      pathname,
-      tableResults,
-      filterParams,
-    })
+    // console.log('hello DataNavsOverflowing', {
+    //   table,
+    //   idField,
+    //   pathname,
+    //   tableResults,
+    //   filterParams,
+    // })
 
     if (!table) return <div className="navs-resizable" />
     if (!tos.length) return <div className="navs-resizable" />
