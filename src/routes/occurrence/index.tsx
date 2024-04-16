@@ -70,8 +70,6 @@ export const Component = memo(() => {
           label="Place"
           name="place_id"
           table="places"
-          
-          // include={taxaInclude}
           value={row.place_id ?? ''}
           onChange={onChange}
           autoFocus
