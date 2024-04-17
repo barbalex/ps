@@ -12,13 +12,10 @@ import {
 export const TableLayersProvider = () => {
   // every project needs vector_layers and vector_layer_displays for the geometry tables
   const { db } = useElectric()!
-  const { results: projects = [] } = useLiveQuery(
-    // do not include vector_layers and vector_layer_displays here
-    // as the effect will run every time these tables change
-    db.projects.liveMany(),
-  )
+  // do not include vector_layers and vector_layer_displays in this query
+  // as the effect will run every time these tables change
+  const { results: projects = [] } = useLiveQuery(db.projects.liveMany())
   const { results: occurrences = [] } = useLiveQuery(db.occurrences.liveMany())
-  console.log('hello TableLayersProvider, projects:', projects)
 
   useEffect(() => {
     const run = async () => {
@@ -29,10 +26,6 @@ export const TableLayersProvider = () => {
         const vectorLayers = await db.vector_layers.findMany({
           where: { project_id: project.project_id },
           include: { vector_layer_displays: true },
-        })
-        console.log('hello TableLayersProvider effect 1', {
-          project,
-          vectorLayers,
         })
         // depending on place_levels, find what vectorLayerTables need vector layers
         const placeLevel1 = placeLevels?.find((pl) => pl.level === 1)
