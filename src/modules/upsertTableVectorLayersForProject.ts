@@ -9,7 +9,8 @@ export const vectorLayerTables = [
   'actions2',
   'checks1',
   'checks2',
-  'occurrences_assigned',
+  'occurrences_assigned1',
+  'occurrences_assigned2',
 ]
 
 export const upsertTableVectorLayersForProject = async ({ db, project_id }) => {
@@ -53,11 +54,21 @@ export const upsertTableVectorLayersForProject = async ({ db, project_id }) => {
   } else {
     vectorLayerTablesNotNeeded.push('checks2')
   }
-  const occurrencesAssignedIsNeeded = placeLevels.some((pl) => pl.occurrences)
-  if (occurrencesAssignedIsNeeded) {
-    vectorLayerTablesNeeded.push('occurrences_assigned')
+  const occurrencesAssigned1IsNeeded = placeLevels.some(
+    (pl) => pl.level === 1 && pl.occurrences,
+  )
+  if (occurrencesAssigned1IsNeeded) {
+    vectorLayerTablesNeeded.push('occurrences_assigned1')
   } else {
-    vectorLayerTablesNotNeeded.push('occurrences_assigned')
+    vectorLayerTablesNotNeeded.push('occurrences_assigned1')
+  }
+  const occurrencesAssigned2IsNeeded = placeLevels.some(
+    (pl) => pl.level === 2 && pl.occurrences,
+  )
+  if (occurrencesAssigned2IsNeeded) {
+    vectorLayerTablesNeeded.push('occurrences_assigned2')
+  } else {
+    vectorLayerTablesNotNeeded.push('occurrences_assigned2')
   }
 
   // 1. check if vector_layers exist for this project

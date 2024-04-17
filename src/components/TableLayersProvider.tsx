@@ -12,7 +12,9 @@ export const TableLayersProvider = () => {
     // as the effect will run every time these tables change
     db.projects.liveMany(),
   )
+  const { results: occurrences = [] } = useLiveQuery(db.occurrences.liveMany())
   console.log('hello TableLayersProvider, projects:', projects)
+  
   useEffect(() => {
     const run = async () => {
       for (const project of projects) {
@@ -27,7 +29,7 @@ export const TableLayersProvider = () => {
         // depending on place_levels, find what vectorLayerTables need vector layers
         const placeLevel1 = project.placeLevels?.find((pl) => pl.level === 1)
         const placeLevel2 = project.placeLevels?.find((pl) => pl.level === 2)
-        // tables: places1, places2, actions1, actions2, checks1, checks2, occurrences_assigned, occurrences_to_assess, occurrences_not_to_assign
+        // tables: places1, places2, actions1, actions2, checks1, checks2, occurrences_assigned1, occurrences_assigned2, occurrences_to_assess, occurrences_not_to_assign
         // 1. places1: is always needed
         const places1VectorLayer = vectorLayers?.find(
           (vl) => vl.type === 'places1',
@@ -113,12 +115,226 @@ export const TableLayersProvider = () => {
             await db.vector_layer_displays.create({ data: newVLD })
           }
         }
+        // 4. occurrences_assigned1: needed if occurrences exist and placeLevels1 has occurrences
+        if (placeLevel1?.occurrences && occurrences.length) {
+          const occurrencesAssigned1VectorLayer = vectorLayers?.find(
+            (vl) => vl.type === 'occurrences_assigned1',
+          )
+          if (!occurrencesAssigned1VectorLayer) {
+            const vectorLayer = createVectorLayer({
+              project_id: project.project_id,
+              type: 'occurrences_assigned1',
+              label: placeLevel1?.name_plural
+                ? `${placeLevel1.name_plural} occurrences assigned`
+                : 'Occurrences assigned',
+            })
+            const newVectorLayer = await db.vector_layers.create({
+              data: vectorLayer,
+            })
+            const newVLD = createVectorLayerDisplay({
+              vector_layer_id: newVectorLayer.vector_layer_id,
+            })
+            await db.vector_layer_displays.create({ data: newVLD })
+          } else {
+            const occurrencesAssigned1VectorLayerDisplay =
+              occurrencesAssigned1VectorLayer?.vector_layer_displays?.[0]
+            if (!occurrencesAssigned1VectorLayerDisplay) {
+              const newVLD = createVectorLayerDisplay({
+                vector_layer_id:
+                  occurrencesAssigned1VectorLayer.vector_layer_id,
+              })
+              await db.vector_layer_displays.create({ data: newVLD })
+            }
+          }
+        }
+        // occurrences_to_assess: needed if occurrences exist
+        if (occurrences.length) {
+          const occurrencesToAssessVectorLayer = vectorLayers?.find(
+            (vl) => vl.type === 'occurrences_to_assess',
+          )
+          if (!occurrencesToAssessVectorLayer) {
+            const vectorLayer = createVectorLayer({
+              project_id: project.project_id,
+              type: 'occurrences_to_assess',
+              label: 'Occurrences to assess',
+            })
+            const newVectorLayer = await db.vector_layers.create({
+              data: vectorLayer,
+            })
+            const newVLD = createVectorLayerDisplay({
+              vector_layer_id: newVectorLayer.vector_layer_id,
+            })
+            await db.vector_layer_displays.create({ data: newVLD })
+          } else {
+            const occurrencesToAssessVectorLayerDisplay =
+              occurrencesToAssessVectorLayer?.vector_layer_displays?.[0]
+            if (!occurrencesToAssessVectorLayerDisplay) {
+              const newVLD = createVectorLayerDisplay({
+                vector_layer_id: occurrencesToAssessVectorLayer.vector_layer_id,
+              })
+              await db.vector_layer_displays.create({ data: newVLD })
+            }
+          }
+        }
+        // occurrences_not_to_assign: needed if occurrences exist
+        if (occurrences.length) {
+          const occurrencesNotToAssignVectorLayer = vectorLayers?.find(
+            (vl) => vl.type === 'occurrences_not_to_assign',
+          )
+          if (!occurrencesNotToAssignVectorLayer) {
+            const vectorLayer = createVectorLayer({
+              project_id: project.project_id,
+              type: 'occurrences_not_to_assign',
+              label: 'Occurrences not to assign',
+            })
+            const newVectorLayer = await db.vector_layers.create({
+              data: vectorLayer,
+            })
+            const newVLD = createVectorLayerDisplay({
+              vector_layer_id: newVectorLayer.vector_layer_id,
+            })
+            await db.vector_layer_displays.create({ data: newVLD })
+          } else {
+            const occurrencesNotToAssignVectorLayerDisplay =
+              occurrencesNotToAssignVectorLayer?.vector_layer_displays?.[0]
+            if (!occurrencesNotToAssignVectorLayerDisplay) {
+              const newVLD = createVectorLayerDisplay({
+                vector_layer_id:
+                  occurrencesNotToAssignVectorLayer.vector_layer_id,
+              })
+              await db.vector_layer_displays.create({ data: newVLD })
+            }
+          }
+        }
+        // places2 needed if placeLevels2 exists
+        if (placeLevel2) {
+          const places2VectorLayer = vectorLayers?.find(
+            (vl) => vl.type === 'places2',
+          )
+          if (!places2VectorLayer) {
+            const vectorLayer = createVectorLayer({
+              project_id: project.project_id,
+              type: 'places2',
+              label: placeLevel2?.name_plural ?? 'Places',
+            })
+            const newVectorLayer = await db.vector_layers.create({
+              data: vectorLayer,
+            })
+            const newVLD = createVectorLayerDisplay({
+              vector_layer_id: newVectorLayer.vector_layer_id,
+            })
+            await db.vector_layer_displays.create({ data: newVLD })
+          } else {
+            const places2VectorLayerDisplay =
+              places2VectorLayer?.vector_layer_displays?.[0]
+            if (!places2VectorLayerDisplay) {
+              const newVLD = createVectorLayerDisplay({
+                vector_layer_id: places2VectorLayer.vector_layer_id,
+              })
+              await db.vector_layer_displays.create({ data: newVLD })
+            }
+          }
+        }
+        // actions2 needed if placeLevels2.actions exists
+        if (placeLevel2?.actions) {
+          const actions2VectorLayer = vectorLayers?.find(
+            (vl) => vl.type === 'actions2',
+          )
+          if (!actions2VectorLayer) {
+            const vectorLayer = createVectorLayer({
+              project_id: project.project_id,
+              type: 'actions2',
+              label: placeLevel2?.name_plural
+                ? `${placeLevel2.name_plural} actions`
+                : 'Actions',
+            })
+            const newVectorLayer = await db.vector_layers.create({
+              data: vectorLayer,
+            })
+            const newVLD = createVectorLayerDisplay({
+              vector_layer_id: newVectorLayer.vector_layer_id,
+            })
+            await db.vector_layer_displays.create({ data: newVLD })
+          } else {
+            const actions2VectorLayerDisplay =
+              actions2VectorLayer?.vector_layer_displays?.[0]
+            if (!actions2VectorLayerDisplay) {
+              const newVLD = createVectorLayerDisplay({
+                vector_layer_id: actions2VectorLayer.vector_layer_id,
+              })
+              await db.vector_layer_displays.create({ data: newVLD })
+            }
+          }
+        }
+        // checks2 needed if placeLevels2.checks exists
+        if (placeLevel2?.checks) {
+          const checks2VectorLayer = vectorLayers?.find(
+            (vl) => vl.type === 'checks2',
+          )
+          if (!checks2VectorLayer) {
+            const vectorLayer = createVectorLayer({
+              project_id: project.project_id,
+              type: 'checks2',
+              label: placeLevel2?.name_plural
+                ? `${placeLevel2.name_plural} checks`
+                : 'Checks',
+            })
+            const newVectorLayer = await db.vector_layers.create({
+              data: vectorLayer,
+            })
+            const newVLD = createVectorLayerDisplay({
+              vector_layer_id: newVectorLayer.vector_layer_id,
+            })
+            await db.vector_layer_displays.create({ data: newVLD })
+          } else {
+            const checks2VectorLayerDisplay =
+              checks2VectorLayer?.vector_layer_displays?.[0]
+            if (!checks2VectorLayerDisplay) {
+              const newVLD = createVectorLayerDisplay({
+                vector_layer_id: checks2VectorLayer.vector_layer_id,
+              })
+              await db.vector_layer_displays.create({ data: newVLD })
+            }
+          }
+        }
+        // occurrences_assigned2 needed if occurrences exist and placeLevels2 has occurrences
+        if (placeLevel2?.occurrences && occurrences.length) {
+          const occurrencesAssigned2VectorLayer = vectorLayers?.find(
+            (vl) => vl.type === 'occurrences_assigned2',
+          )
+          if (!occurrencesAssigned2VectorLayer) {
+            const vectorLayer = createVectorLayer({
+              project_id: project.project_id,
+              type: 'occurrences_assigned2',
+              label: placeLevel2?.name_plural
+                ? `${placeLevel2.name_plural} occurrences assigned`
+                : 'Occurrences assigned',
+            })
+            const newVectorLayer = await db.vector_layers.create({
+              data: vectorLayer,
+            })
+            const newVLD = createVectorLayerDisplay({
+              vector_layer_id: newVectorLayer.vector_layer_id,
+            })
+            await db.vector_layer_displays.create({ data: newVLD })
+          } else {
+            const occurrencesAssigned2VectorLayerDisplay =
+              occurrencesAssigned2VectorLayer?.vector_layer_displays?.[0]
+            if (!occurrencesAssigned2VectorLayerDisplay) {
+              const newVLD = createVectorLayerDisplay({
+                vector_layer_id:
+                  occurrencesAssigned2VectorLayer.vector_layer_id,
+              })
+              await db.vector_layer_displays.create({ data: newVLD })
+            }
+          }
+        }
       }
     }
     run()
     // use projects.length as dependency to run this effect only when projects change
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [db.vector_layer_displays, db.vector_layers, projects.length])
+  }, [projects.length])
 
   return null
 }
