@@ -50,6 +50,9 @@ export const Component = () => {
     })
     await db.places.create({ data })
     // need to create a corresponding vector layer and vector layer display
+    // TODO:
+    // 1. only of not yet exists
+    // 2. better via trigger so it also works on import / project creation
     const vectorLayer = createVectorLayer({
       project_id,
       type: place_id ? 'places2' : 'places1',

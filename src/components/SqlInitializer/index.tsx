@@ -42,6 +42,8 @@ import { generateVectorLayerDisplayLabel } from './labelGenerators/vectorLayerDi
 import { generateChartLabel } from './labelGenerators/charts'
 import { generateChartSubjectLabel } from './labelGenerators/chartSubjects'
 import { generateOccurrenceImportLabel } from './labelGenerators/occurrenceImports'
+// ISSUE: how to create v7 uuids? https://github.com/rhashimoto/wa-sqlite/discussions/169, https://github.com/craigpastro/sqlite-uuidv7/issues/3
+// import { generateVectorLayerTriggers } from './labelGenerators/vectorLayers'
 import { seedTestData } from './seedTestData'
 
 // how to get work:
@@ -138,6 +140,8 @@ export const SqlInitializer = () => {
       console.log('generated chart subject labels')
       await generateOccurrenceImportLabel(db)
       console.log('generated occurrence import labels')
+      // await generateVectorLayerTriggers(db)
+      // console.log('generated vector layer triggers')
       await seedTestData(db)
       console.log('seeded test data')
     }

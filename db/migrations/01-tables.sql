@@ -1341,8 +1341,9 @@ CREATE TYPE vector_layer_type_enum AS enum(
   'actions2',
   'checks1',
   'checks2',
-  'occurrences1',
-  'occurrences2'
+  'occurrences-assigned',
+  'occurrences-to-assess',
+  'occurrences-not-to-assign'
 );
 
 CREATE TABLE vector_layers(
@@ -1484,8 +1485,9 @@ CREATE TYPE vector_layer_table_enum AS enum(
   'actions2',
   'checks1',
   'checks2',
-  'occurrences1',
-  'occurrences2'
+  'occurrences-assigned',
+  'occurrences-to-assess',
+  'occurrences-not-to-assign'
 );
 
 -- CREATE TYPE line_join_enum AS enum(
