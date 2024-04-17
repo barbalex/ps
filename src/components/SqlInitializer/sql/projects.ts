@@ -101,7 +101,7 @@ export const generateProjectLabel = async (db) => {
     })
   }
   // when a project is inserted, vector_layers and vector_layer_displays need to be created
-  // for: places1, places2, actions1, actions2, checks1, checks2, occurrences-assigned, occurrences-to-assess, occurrences-not-to-assign
+  // for: places1, places2, actions1, actions2, checks1, checks2, occurrences_assigned, occurrences_to_assess, occurrences_not_to_assign
   // ISSUE: how to create v7 uuids? https://github.com/rhashimoto/wa-sqlite/discussions/169, https://github.com/craigpastro/sqlite-uuidv7/issues/3
   // TODO: solve
   // const projectsInsertTriggerExists = triggers.some(
@@ -121,9 +121,9 @@ export const generateProjectLabel = async (db) => {
   //         (NEW.project_id, 'actions2', 'Actions'),
   //         (NEW.project_id, 'checks1', 'Checks'),
   //         (NEW.project_id, 'checks2', 'Checks'),
-  //         (NEW.project_id, 'occurrences-assigned', 'Occurrences assigned'),
-  //         (NEW.project_id, 'occurrences-to-assess', 'Occurrences to assess'),
-  //         (NEW.project_id, 'occurrences-not-to-assign', 'Occurrences not to assign');
+  //         (NEW.project_id, 'occurrences_assigned', 'Occurrences assigned'),
+  //         (NEW.project_id, 'occurrences_to_assess', 'Occurrences to assess'),
+  //         (NEW.project_id, 'occurrences_not_to_assign', 'Occurrences not to assign');
   //       INSERT INTO vector_layer_displays (vector_layer_id)
   //       SELECT vector_layer_id
   //       FROM vector_layers

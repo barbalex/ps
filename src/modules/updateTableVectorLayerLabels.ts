@@ -31,7 +31,7 @@ export const updateTableVectorLayerLabels = async ({ db, project_id }) => {
           if (placeLevel.name_singular)
             label = `${placeLevel.name_singular} checks`
           break
-        case 'occurrences-assigned':
+        case 'occurrences_assigned':
           if (placeLevel.name_singular)
             label = `${placeLevel.name_singular} occurrences`
           break
