@@ -103,6 +103,7 @@ export const generateProjectLabel = async (db) => {
   // when a project is inserted, vector_layers and vector_layer_displays need to be created
   // for: places1, places2, actions1, actions2, checks1, checks2, occurrences-assigned, occurrences-to-assess, occurrences-not-to-assign
   // ISSUE: how to create v7 uuids? https://github.com/rhashimoto/wa-sqlite/discussions/169, https://github.com/craigpastro/sqlite-uuidv7/issues/3
+  // TODO: solve
   // const projectsInsertTriggerExists = triggers.some(
   //   (column) => column.name === 'projects_insert_trigger',
   // )
