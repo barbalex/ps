@@ -2,7 +2,10 @@ import { useEffect } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 
 import { useElectric } from '../ElectricProvider'
-import { createVectorLayer } from '../modules/createRows'
+import {
+  createVectorLayer,
+  createVectorLayerDisplay,
+} from '../modules/createRows'
 
 export const TableLayersProvider = () => {
   // every project needs vector_layers and vector_layer_displays for the geometry tables
@@ -14,21 +17,24 @@ export const TableLayersProvider = () => {
   )
   const { results: occurrences = [] } = useLiveQuery(db.occurrences.liveMany())
   console.log('hello TableLayersProvider, projects:', projects)
-  
+
   useEffect(() => {
     const run = async () => {
       for (const project of projects) {
+        const placeLevels = await db.place_levels.findMany({
+          where: { project_id: project.project_id },
+        })
         const vectorLayers = await db.vector_layers.findMany({
           where: { project_id: project.project_id },
           include: { vector_layer_displays: true },
         })
-        console.log(
-          'hello TableLayersProvider effect, vectorLayers:',
+        console.log('hello TableLayersProvider effect 1', {
+          project,
           vectorLayers,
-        )
+        })
         // depending on place_levels, find what vectorLayerTables need vector layers
-        const placeLevel1 = project.placeLevels?.find((pl) => pl.level === 1)
-        const placeLevel2 = project.placeLevels?.find((pl) => pl.level === 2)
+        const placeLevel1 = placeLevels?.find((pl) => pl.level === 1)
+        const placeLevel2 = placeLevels?.find((pl) => pl.level === 2)
         // tables: places1, places2, actions1, actions2, checks1, checks2, occurrences_assigned1, occurrences_assigned2, occurrences_to_assess, occurrences_not_to_assign
         // 1. places1: is always needed
         const places1VectorLayer = vectorLayers?.find(
@@ -65,8 +71,8 @@ export const TableLayersProvider = () => {
           const vectorLayer = createVectorLayer({
             project_id: project.project_id,
             type: 'actions1',
-            label: placeLevel1?.name_plural
-              ? `${placeLevel1.name_plural} actions`
+            label: placeLevel1?.name_singular
+              ? `${placeLevel1.name_singular} actions`
               : 'Actions',
           })
           const newVectorLayer = await db.vector_layers.create({
@@ -94,8 +100,8 @@ export const TableLayersProvider = () => {
           const vectorLayer = createVectorLayer({
             project_id: project.project_id,
             type: 'checks1',
-            label: placeLevel1?.name_plural
-              ? `${placeLevel1.name_plural} checks`
+            label: placeLevel1?.name_singular
+              ? `${placeLevel1.name_singular} checks`
               : 'Checks',
           })
           const newVectorLayer = await db.vector_layers.create({
@@ -124,8 +130,8 @@ export const TableLayersProvider = () => {
             const vectorLayer = createVectorLayer({
               project_id: project.project_id,
               type: 'occurrences_assigned1',
-              label: placeLevel1?.name_plural
-                ? `${placeLevel1.name_plural} occurrences assigned`
+              label: placeLevel1?.name_singular
+                ? `${placeLevel1.name_singular} occurrences assigned`
                 : 'Occurrences assigned',
             })
             const newVectorLayer = await db.vector_layers.create({
@@ -244,8 +250,8 @@ export const TableLayersProvider = () => {
             const vectorLayer = createVectorLayer({
               project_id: project.project_id,
               type: 'actions2',
-              label: placeLevel2?.name_plural
-                ? `${placeLevel2.name_plural} actions`
+              label: placeLevel2?.name_singular
+                ? `${placeLevel2.name_singular} actions`
                 : 'Actions',
             })
             const newVectorLayer = await db.vector_layers.create({
@@ -275,8 +281,8 @@ export const TableLayersProvider = () => {
             const vectorLayer = createVectorLayer({
               project_id: project.project_id,
               type: 'checks2',
-              label: placeLevel2?.name_plural
-                ? `${placeLevel2.name_plural} checks`
+              label: placeLevel2?.name_singular
+                ? `${placeLevel2.name_singular} checks`
                 : 'Checks',
             })
             const newVectorLayer = await db.vector_layers.create({
@@ -306,8 +312,8 @@ export const TableLayersProvider = () => {
             const vectorLayer = createVectorLayer({
               project_id: project.project_id,
               type: 'occurrences_assigned2',
-              label: placeLevel2?.name_plural
-                ? `${placeLevel2.name_plural} occurrences assigned`
+              label: placeLevel2?.name_singular
+                ? `${placeLevel2.name_singular} occurrences assigned`
                 : 'Occurrences assigned',
             })
             const newVectorLayer = await db.vector_layers.create({
