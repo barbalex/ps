@@ -7,6 +7,8 @@ import {
   createVectorLayerDisplay,
 } from '../modules/createRows'
 
+// it would be better to add vector_layers and their displays inside triggers on project creation
+// but as sqlite does not have functions to create uuid's, we need to do it here
 export const TableLayersProvider = () => {
   // every project needs vector_layers and vector_layer_displays for the geometry tables
   const { db } = useElectric()!
