@@ -26,25 +26,26 @@ export const Component = memo(() => {
   )
 
   const onChange: InputProps['onChange'] = useCallback(
-    async (e, data) => {
-      const { name, value } = getValueFromChange(e, data)
+    async (e, eData) => {
+      const { name, value } = getValueFromChange(e, eData)
       // Issue: for not_to_assign, the value needs to be null instead of false
       // because querying for null or false with electric-sql does not work
       const valueToUse =
         name === 'not_to_assign' ? (value ? true : null) : value
+      const data = { [name]: valueToUse }
+      // ensure that the combinations of not-to-assign and place_id make sense
+      if (name === 'not_to_assign' && value) {
+        data.place_id = null
+      }
+      if (name === 'place_id' && value) {
+        data.not_to_assign = null
+      }
       db.occurrences.update({
         where: { occurrence_id },
-        data: { [name]: valueToUse },
+        data,
       })
       // ensure that the combinations of not-to-assign and place_id make sense
       if (name === 'not_to_assign' && value) {
-        // ensure place_id is null
-        if (row?.place_id) {
-          await db.occurrences.update({
-            where: { occurrence_id },
-            data: { place_id: null },
-          })
-        }
         navigate(
           `/projects/${project_id}/subprojects/${subproject_id}/occurrences-not-to-assign/${occurrence_id}`,
         )
