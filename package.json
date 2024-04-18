@@ -62,7 +62,7 @@
     "wa-sqlite": "rhashimoto/wa-sqlite#semver:v0.9.13",
     "wms-capabilities": "0.6.0",
     "xlsx": "0.18.5",
-    "zod": "3.22.4"
+    "zod": "3.23.0-beta.0"
   },
   "devDependencies": {
     "@databases/pg-migrations": "5.0.3",
@@ -83,6 +83,6 @@
   },
   "devRemarks": {
     "eslint": "do not upgrade to 9.0.0. It fails hellishly: new configs, stuff not adequately documented, errors created...",
-    "zod": "dependency of electric-sql. Needed because: electric uses 3.21.4 which does not recognize v7 uuids, https://github.com/electric-sql/electric/issues/1153#issuecomment-2054014067"
+    "zod": "dependency of electric-sql. Needed because: electric uses 3.21.4 which does not recognize v7 uuids, https://github.com/electric-sql/electric/issues/1153#issuecomment-2054014067, https://github.com/colinhacks/zod/issues/2184#issuecomment-2063265267"
   }
 }
