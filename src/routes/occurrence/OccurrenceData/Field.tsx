@@ -85,10 +85,10 @@ export const Field = ({ label, value, index, moveField }) => {
   return (
     <div
       ref={ref}
-      style={{ opacity }}
       data-handler-id={handlerId}
       style={css({
         ...rowStyle,
+        opacity,
         on: ($) => [$('&:hover', { backgroundColor: 'rgba(0, 0, 0, 0.05)' })],
       })}
     >
