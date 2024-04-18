@@ -62,13 +62,6 @@ export const Component = memo(() => {
         )
       }
       if (name === 'place_id' && value) {
-        // ensure not to assign is false/null
-        if (row?.not_to_assign) {
-          await db.occurrences.update({
-            where: { occurrence_id },
-            data: { not_to_assign: null },
-          })
-        }
         // navigate to the place's occurrences-assigned list
         // this depends on the level of the place
         const place = await db.places.findUnique({ where: { place_id: value } })
@@ -85,8 +78,6 @@ export const Component = memo(() => {
       navigate,
       occurrence_id,
       project_id,
-      row?.not_to_assign,
-      row?.place_id,
       subproject_id,
     ],
   )
