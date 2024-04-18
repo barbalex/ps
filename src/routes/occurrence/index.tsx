@@ -36,6 +36,24 @@ export const Component = memo(() => {
         where: { occurrence_id },
         data: { [name]: valueToUse },
       })
+      // ensure that the combinations of not-to-assign and place_id make sense
+      if (name === 'not_to_assign' && value) {
+        // ensure place_id is null
+        if (row?.place_id) {
+          await db.occurrences.update({
+            where: { occurrence_id },
+            data: { place_id: null },
+          })
+        }
+        navigate(
+          `/projects/${project_id}/subprojects/${subproject_id}/occurrences-not-to-assign/${occurrence_id}`,
+        )
+      }
+      if (name === 'not_to_assign' && !value) {
+        navigate(
+          `/projects/${project_id}/subprojects/${subproject_id}/occurrences-to-assess/${occurrence_id}`,
+        )
+      }
       if (name === 'place_id' && !value) {
         // navigate to the subproject's occurrences-to-assess list
         navigate(
@@ -43,6 +61,13 @@ export const Component = memo(() => {
         )
       }
       if (name === 'place_id' && value) {
+        // ensure not to assign is false/null
+        if (row?.not_to_assign) {
+          await db.occurrences.update({
+            where: { occurrence_id },
+            data: { not_to_assign: null },
+          })
+        }
         // navigate to the place's occurrences-assigned list
         // this depends on the level of the place
         const place = await db.places.findUnique({ where: { place_id: value } })
@@ -59,6 +84,8 @@ export const Component = memo(() => {
       navigate,
       occurrence_id,
       project_id,
+      row?.not_to_assign,
+      row?.place_id,
       subproject_id,
     ],
   )
