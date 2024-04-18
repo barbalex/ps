@@ -45,8 +45,13 @@ VALUES ('018ca1aa-6fa6-7be5-b5f8-5caca1565687', '018ca19e-7a23-7bf4-8523-ff41e3b
 const seedUsers = `INSERT INTO users(user_id, email) values ('018cf95a-d817-7000-92fa-bb3b2ad59dda', 'alex.barbalex@gmail.com');`
 const seedAccounts = `INSERT INTO accounts(account_id, user_id, type) values ('018cf958-27e2-7000-90d3-59f024d467be', '018cf95a-d817-7000-92fa-bb3b2ad59dda', 'premium');`
 const seedProjects = `INSERT INTO 
-projects(project_id, account_id, name) values 
-('018cfcf7-6424-7000-a100-851c5cc2c878', '018cf958-27e2-7000-90d3-59f024d467be', 'Demo Project');`
+projects(project_id, account_id, name, places_label_by) values 
+('018cfcf7-6424-7000-a100-851c5cc2c878', '018cf958-27e2-7000-90d3-59f024d467be', 'Demo Project', 'name');`
+
+const seedFields = `INSERT INTO fields(account_id, project_id, field_id, table_name, level, name, field_label, field_type_id, widget_type_id) values
+('018cf958-27e2-7000-90d3-59f024d467be', '018cfcf7-6424-7000-a100-851c5cc2c878', '018ef0c8-46ac-7f14-80f8-57b2b361fd2c', 'places', 1, 'name', 'Name', '018ca19e-7a23-7bf4-8523-ff41e3b60807', '018ca1a0-f187-7fdf-955b-4eaadaa92553'),
+('018cf958-27e2-7000-90d3-59f024d467be', '018cfcf7-6424-7000-a100-851c5cc2c878', '018ef0c8-674e-7ebd-b6cc-e47ec256ac72', 'places', 2, 'name', 'Name', '018ca19e-7a23-7bf4-8523-ff41e3b60807', '018ca1a0-f187-7fdf-955b-4eaadaa92553');`
+
 const seedUnits = `INSERT INTO units(project_id, account_id, name, unit_id, use_for_action_values, use_for_action_report_values, use_for_check_values, use_for_place_report_values, use_for_goal_report_values, use_for_subproject_taxa, use_for_check_taxa) values 
 ('018cfcf7-6424-7000-a100-851c5cc2c878', '018cf958-27e2-7000-90d3-59f024d467be', 'Demo Unit 1', '018cff37-ece7-77b8-abe5-7cbe86b5dc88', true, true, true, true, true, true, true), ('018cfcf7-6424-7000-a100-851c5cc2c878', '018cf958-27e2-7000-90d3-59f024d467be', 'Demo Unit 2', '018cff39-fcdd-7046-aa4f-49532086eb69', true, true, true, true, true, true, true);`
 const seedProjectUsers = `INSERT INTO project_users(project_user_id, project_id, user_id, role) values 
@@ -62,19 +67,21 @@ const seedSubprojects = `INSERT INTO subprojects(subproject_id, project_id, name
 ('018cfd27-ee92-7000-b678-e75497d6c60e', '018cfcf7-6424-7000-a100-851c5cc2c878', 'Demo Subproject 1');`
 const seedSubprojectUsers = `INSERT INTO subproject_users(subproject_user_id, subproject_id, user_id, role) values 
 ('018cfd29-ccaa-7000-a686-8566a27eee45', '018cfd27-ee92-7000-b678-e75497d6c60e', '018cf95a-d817-7000-92fa-bb3b2ad59dda', 'manager');`
+
 const seedPlaces = `INSERT INTO 
-places(account_id, place_id, parent_id, subproject_id, level, since) values 
-('018cf958-27e2-7000-90d3-59f024d467be', '018df4fa-cfb3-739c-bca2-d55dfe876995', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f8-9e60-763a-9191-2613ef4f1a16', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2021),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f8-c707-7485-9ec9-84067c4623cf', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2022),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f8-e644-7f09-abf7-8ea0a178ce79', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2019),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-1133-7c91-8220-913c861b3339', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-323e-7753-aae1-37005b3f25cf', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2018),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-52e7-79a7-8e53-34c4558bfce5', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2021),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-6b13-72e0-8903-c23fa8f2acde', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e0a2f-3946-7918-80bb-69aba1c20f6d', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 2, 2020),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e0a2f-bc94-76d2-8e5f-2a3acf73649e', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 2, 2021),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e0a30-20f7-7b81-a322-5f9e7f985b78', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 2, 2021);`
+places(account_id, place_id, parent_id, subproject_id, level, since, data) values 
+('018cf958-27e2-7000-90d3-59f024d467be', '018df4fa-cfb3-739c-bca2-d55dfe876995', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020, '{"name":"01 first"}'),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f8-9e60-763a-9191-2613ef4f1a16', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2021, '{"name":"02 second"}'),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f8-c707-7485-9ec9-84067c4623cf', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2022, '{"name":"03 third"}'),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f8-e644-7f09-abf7-8ea0a178ce79', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2019, '{"name":"04 fourth"}'),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-1133-7c91-8220-913c861b3339', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020, '{"name":"05 fifth"}'),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-323e-7753-aae1-37005b3f25cf', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2018, '{"name":"06 sixth"}'),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-52e7-79a7-8e53-34c4558bfce5', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2021, '{"name":"07 seventh"}'),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-6b13-72e0-8903-c23fa8f2acde', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020, '{"name":"08 eighth"}'),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e0a2f-3946-7918-80bb-69aba1c20f6d', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 2, 2020, '{"name":"01.01 first.first"}'),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e0a2f-bc94-76d2-8e5f-2a3acf73649e', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 2, 2021, '{"name":"01.02 first.second"}'),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e0a30-20f7-7b81-a322-5f9e7f985b78', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 2, 2021, '{"name":"01.03 first.third"}');`
+
 const seedChecks = `INSERT INTO checks(account_id, check_id, place_id, date) values 
 ('018cf958-27e2-7000-90d3-59f024d467be', '018df4ff-9124-73f4-95c1-497387b995c0', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2024-03-03'),
 ('018cf958-27e2-7000-90d3-59f024d467be', '018df5da-6447-7bb9-944c-f824643a1b11', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2024-04-03'),
@@ -148,9 +155,22 @@ export const seedTestData = async (db) => {
     sql: `select count(*) as count from projects;`,
   })
   if (projects[0].count === 0) {
-    await db.unsafeExec({
-      sql: seedProjects,
-    })
+    try {
+      const result = await db.unsafeExec({
+        sql: seedProjects,
+      })
+      console.log('hello seedTestData, seedProjects result', result)
+    } catch (error) {
+      console.log('hello seedTestData, seedProjects error', error)
+    }
+    try {
+      const result = await db.unsafeExec({
+        sql: seedFields,
+      })
+      console.log('hello seedTestData, seedFields result', result)
+    } catch (error) {
+      console.log('hello seedTestData, seedFields error', error)
+    }
     await db.unsafeExec({
       sql: seedProjectUsers,
     })
@@ -160,9 +180,14 @@ export const seedTestData = async (db) => {
     await db.unsafeExec({
       sql: seedSubprojectUsers,
     })
-    await db.unsafeExec({
-      sql: seedPlaces,
-    })
+    try {
+      const result = await db.unsafeExec({
+        sql: seedPlaces,
+      })
+      console.log('hello seedTestData, seedPlaces result', result)
+    } catch (error) {
+      console.log('hello seedTestData, seedPlaces error', error)
+    }
     await db.unsafeExec({
       sql: seedChecks,
     })
