@@ -1,4 +1,15 @@
-import { vectorLayerTables } from './upsertTableVectorLayersForProject'
+export const vectorLayerTables = [
+  'places1',
+  'places2',
+  'actions1',
+  'actions2',
+  'checks1',
+  'checks2',
+  'occurrences_assigned1',
+  'occurrences_assigned2',
+  'occurrences_to_assess',
+  'occurrences_not_to_assign',
+]
 
 export const updateTableVectorLayerLabels = async ({ db, project_id }) => {
   const placeLevels = await db.place_levels.findMany({
@@ -34,7 +45,7 @@ export const updateTableVectorLayerLabels = async ({ db, project_id }) => {
         case 'occurrences_assigned1':
         case 'occurrences_assigned2':
           if (placeLevel.name_singular)
-            label = `${placeLevel.name_singular} occurrences`
+            label = `${placeLevel.name_singular} occurrences assigned`
           break
       }
       // if label is different, update it

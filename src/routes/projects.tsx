@@ -6,7 +6,6 @@ import { createProject } from '../modules/createRows'
 import { useElectric } from '../ElectricProvider'
 import { ListViewHeader } from '../components/ListViewHeader'
 import { Row } from '../components/shared/Row'
-import { upsertTableVectorLayersForProject } from '../modules/upsertTableVectorLayersForProject'
 
 import '../form.css'
 
@@ -25,8 +24,6 @@ export const Component = memo(() => {
   const add = useCallback(async () => {
     const data = await createProject({ db })
     await db.projects.create({ data })
-    // add vector_layers and vector_layer_displays for tables with geometry
-    await upsertTableVectorLayersForProject({ db, project_id: data.project_id })
     navigate({ pathname: data.project_id, search: searchParams.toString() })
   }, [db, navigate, searchParams])
 

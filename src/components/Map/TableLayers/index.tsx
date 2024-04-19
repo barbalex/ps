@@ -2,7 +2,7 @@ import { useLiveQuery } from 'electric-sql/react'
 
 import { useElectric } from '../../../ElectricProvider'
 import { Vector_layers as VectorLayer } from '../../../generated/client'
-import { vectorLayerTables } from '../../../modules/upsertTableVectorLayersForProject'
+import { vectorLayerTables } from '../../../modules/updateTableVectorLayerLabels'
 import { Places1 } from './Places1'
 import { Places2 } from './Places2'
 import { Checks1 } from './Checks1'

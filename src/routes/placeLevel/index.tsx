@@ -10,7 +10,7 @@ import { SwitchField } from '../../components/shared/SwitchField'
 import { RadioGroupField } from '../../components/shared/RadioGroupField'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { Header } from './Header'
-import { upsertTableVectorLayersForProject } from '../../modules/upsertTableVectorLayersForProject'
+import {updateTableVectorLayerLabels} from '../../modules/updateTableVectorLayerLabels'
 import { Loading } from '../../components/shared/Loading'
 
 import '../../form.css'
@@ -46,7 +46,7 @@ export const Component = () => {
         row.level &&
         row.project_id
       ) {
-        await upsertTableVectorLayersForProject({
+        await updateTableVectorLayerLabels({
           db,
           project_id: row.project_id,
         })
