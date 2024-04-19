@@ -335,7 +335,7 @@ export const TableLayersProvider = () => {
     run()
     // use projects.length as dependency to run this effect only when projects change
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [projects.length])
+  }, [projects.length, occurrences.length])
 
   return null
 }
