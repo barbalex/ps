@@ -1,4 +1,4 @@
-export const vectorLayerTables = [
+export const vectorLayerTypes = [
   'places1',
   'places2',
   'actions1',
@@ -18,7 +18,7 @@ export const updateTableVectorLayerLabels = async ({ db, project_id }) => {
   const tableVectorLayers = await db.vector_layers.findMany({
     where: {
       project_id,
-      type: { in: vectorLayerTables },
+      type: { in: vectorLayerTypes },
     },
   })
   // loop allVectorLayers and update label using placeLevels

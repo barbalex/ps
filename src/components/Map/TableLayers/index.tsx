@@ -2,7 +2,7 @@ import { useLiveQuery } from 'electric-sql/react'
 
 import { useElectric } from '../../../ElectricProvider'
 import { Vector_layers as VectorLayer } from '../../../generated/client'
-import { vectorLayerTables } from '../../../modules/updateTableVectorLayerLabels'
+import { vectorLayerTypes } from '../../../modules/updateTableVectorLayerLabels'
 import { Places1 } from './Places1'
 import { Places2 } from './Places2'
 import { Checks1 } from './Checks1'
@@ -24,7 +24,7 @@ export const TableLayers = () => {
 
   const { results = [] } = useLiveQuery(
     db.vector_layers.liveMany({
-      where: { active: true, type: { in: vectorLayerTables } },
+      where: { active: true, type: { in: vectorLayerTypes } },
       // TODO: does not work
       // include: { vector_layer_displays: true },
     }),
