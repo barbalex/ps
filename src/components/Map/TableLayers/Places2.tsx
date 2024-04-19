@@ -46,5 +46,5 @@ export const Places2 = ({ layer }: Props) => {
   if (!data?.length) return null
   if (!layer) return null
 
-  return <TableLayer data={data} type={layer} />
+  return <TableLayer data={data} layer={layer} />
 }
