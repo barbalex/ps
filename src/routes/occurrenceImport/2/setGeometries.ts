@@ -1,5 +1,5 @@
 import axios from 'redaxios'
-import { point, Point } from '@turf/helpers'
+import { point, Point, featureCollection } from '@turf/helpers'
 import proj4 from 'proj4'
 
 import {
@@ -55,7 +55,8 @@ export const setGeometries = async ({
     ]
     const position = proj4(occurrenceImport.crs, 'EPSG:4326', coordinates)
     // TODO: why is reversing needed? is it a bug?
-    const geometry: Point = point(position.reverse())
+    const myPoint: Point = point(position.reverse())
+    const geometry = featureCollection([myPoint])
     db.occurrences.update({
       where: { occurrence_id: o.occurrence_id },
       data: { geometry },
