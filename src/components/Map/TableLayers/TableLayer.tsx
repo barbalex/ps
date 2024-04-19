@@ -78,7 +78,7 @@ export const TableLayer = memo(({ data, layer }: Props) => {
 
           const IconComponent = icons[displayToUse.marker_symbol]
 
-          return IconComponent
+          const marker = IconComponent
             ? L.marker(latlng, {
                 icon: L.divIcon({
                   html: ReactDOMServer.renderToString(
@@ -90,8 +90,18 @@ export const TableLayer = memo(({ data, layer }: Props) => {
                     />,
                   ),
                 }),
+                draggable: true,
               })
             : L.marker(latlng)
+          marker.on('dragend', () => {
+            const position = marker.getLatLng()
+            console.log(
+              'hello TableLayer marker on dragend, position:',
+              position,
+            )
+          })
+
+          return marker
         }}
         onEachFeature={(feature, _layer) => {
           if (!feature) return
