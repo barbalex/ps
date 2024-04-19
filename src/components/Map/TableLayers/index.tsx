@@ -16,6 +16,7 @@ const layerToComponent = {
   checks2: Checks2,
   actions1: Actions1,
   actions2: Actions2,
+  // TODO: add 'occurrences_assigned1', 'occurrences_assigned2', 'occurrences_to_assess', 'occurrences_not_to_assign'
 }
 
 export const TableLayers = () => {
