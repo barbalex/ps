@@ -220,7 +220,7 @@ CREATE TABLE project_users(
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
   -- https://github.com/electric-sql/electric/issues/893
-  role user_role DEFAULT NULL,
+  ROLE user_role DEFAULT NULL,
   label text DEFAULT NULL
 );
 
@@ -245,7 +245,7 @@ CREATE TABLE subproject_users(
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
   -- https://github.com/electric-sql/electric/issues/893
-  role user_role DEFAULT NULL,
+  ROLE user_role DEFAULT NULL,
   label text DEFAULT NULL
 );
 
@@ -849,7 +849,7 @@ CREATE TABLE place_users(
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
   -- https://github.com/electric-sql/electric/issues/893
-  role user_role DEFAULT NULL,
+  ROLE user_role DEFAULT NULL,
   label text DEFAULT NULL
 );
 
@@ -1152,6 +1152,17 @@ COMMENT ON COLUMN fields.table_name IS 'table, on which this field is used insid
 
 COMMENT ON COLUMN fields.level IS 'level of field if places or below: 1, 2';
 
+CREATE TYPE draggable_layer_enum AS enum(
+  'occurrences_to_assess',
+  'occurrences_assigned_1',
+  'occurrences_assigned_2'
+);
+
+CREATE TYPE droppable_layer_enum AS enum(
+  'place1',
+  'place2'
+);
+
 CREATE TABLE app_states(
   app_state_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   -- user_email can not be referenced to users, as it is not unique
@@ -1172,6 +1183,8 @@ CREATE TABLE app_states(
   editing_place_geometry uuid DEFAULT NULL,
   editing_check_geometry uuid DEFAULT NULL,
   editing_action_geometry uuid DEFAULT NULL,
+  draggable_layer draggable_layer_enum DEFAULT NULL,
+  droppable_layer droppable_layer_enum DEFAULT NULL,
   occurrence_fields_sorted jsonb DEFAULT NULL, -- array of strings
   label text DEFAULT NULL
 );
@@ -1194,6 +1207,10 @@ COMMENT ON COLUMN app_states.editing_place_geometry IS 'The id of the place whos
 COMMENT ON COLUMN app_states.editing_check_geometry IS 'The id of the check whose geometry is currently being edited';
 
 COMMENT ON COLUMN app_states.editing_action_geometry IS 'The id of the action whose geometry is currently being edited';
+
+COMMENT ON COLUMN app_states.draggable_layer IS 'The layer that is currently draggable';
+
+COMMENT ON COLUMN app_states.droppable_layer IS 'The layer that is currently droppable';
 
 COMMENT ON COLUMN app_states.occurrence_fields_sorted IS 'The order of fields in the occurrence form. User can change it by drag and drop';
 
