@@ -9,7 +9,7 @@ interface Props {
   layer: VectorLayer
 }
 
-export const OccurrencesAssigned1 = ({ layer }: Props) => {
+export const OccurrencesAssigned2 = ({ layer }: Props) => {
   const { subproject_id } = useParams()
   const { db } = useElectric()!
 
@@ -20,7 +20,7 @@ export const OccurrencesAssigned1 = ({ layer }: Props) => {
     }),
   )
   const { results: places = [] } = useLiveQuery(
-    db.places.liveMany({ where: { parent_id: null } }),
+    db.places.liveMany({ where: { parent_id: { not: null } } }),
   )
   const { results: occurrences = [] } = useLiveQuery(
     db.occurrences.liveMany({

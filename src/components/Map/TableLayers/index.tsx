@@ -9,6 +9,9 @@ import { Checks2 } from './Checks2'
 import { Actions1 } from './Actions1'
 import { Actions2 } from './Actions2'
 import { OccurrencesAssigned1 } from './OccurrencesAssigned1'
+import { OccurrencesAssigned2 } from './OccurrencesAssigned2'
+import { OccurrencesToAssess } from './OccurrencesToAssess'
+import { OccurrencesNotToAssign } from './OccurrencesNotToAssign'
 
 const layerToComponent = {
   places1: Places1,
@@ -18,7 +21,9 @@ const layerToComponent = {
   actions1: Actions1,
   actions2: Actions2,
   occurrences_assigned1: OccurrencesAssigned1,
-  // TODO: add 'occurrences_assigned1', 'occurrences_assigned2', 'occurrences_to_assess', 'occurrences_not_to_assign'
+  occurrences_assigned2: OccurrencesAssigned2,
+  occurrences_to_assess: OccurrencesToAssess,
+  occurrences_not_to_assign: OccurrencesNotToAssign,
 }
 
 export const TableLayers = () => {
@@ -33,8 +38,6 @@ export const TableLayers = () => {
 
   return vectorLayers.map((l) => {
     const Component = layerToComponent[l.type]
-
-    console.log('hello TableLayers', { l, type: l.type, Component })
 
     return <Component key={l.vector_layer_id} layer={l} />
   })

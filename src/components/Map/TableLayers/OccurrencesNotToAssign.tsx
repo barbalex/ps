@@ -9,7 +9,7 @@ interface Props {
   layer: VectorLayer
 }
 
-export const OccurrencesAssigned1 = ({ layer }: Props) => {
+export const OccurrencesNotToAssign = ({ layer }: Props) => {
   const { subproject_id } = useParams()
   const { db } = useElectric()!
 
@@ -19,16 +19,14 @@ export const OccurrencesAssigned1 = ({ layer }: Props) => {
       where: { subproject_id: subproject_id },
     }),
   )
-  const { results: places = [] } = useLiveQuery(
-    db.places.liveMany({ where: { parent_id: null } }),
-  )
   const { results: occurrences = [] } = useLiveQuery(
     db.occurrences.liveMany({
       where: {
         occurrence_import_id: {
           in: occurrenceImports.map((oi) => oi.occurrence_import_id),
         },
-        place_id: { in: places.map((p) => p.place_id) },
+        place_id: null,
+        not_to_assign: true,
         geometry: { not: null },
       },
     }),
