@@ -78,6 +78,10 @@ export const TableLayer = memo(({ data, layer }: Props) => {
 
           const IconComponent = icons[displayToUse.marker_symbol]
 
+          // TODO:
+          // 1. add state for draggable layer and droppable layer
+          // 2. if draggable, set draggable to true
+          // 3. on dragend if draggable, assign to nearest droppable object
           const marker = IconComponent
             ? L.marker(latlng, {
                 icon: L.divIcon({
