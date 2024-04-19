@@ -135,7 +135,7 @@ export const OccurenceData = () => {
     <ErrorBoundary>
       <div>
         <Section title="Raw data" />
-        <p style={explainerStyle}>Sort fields by dragging and dropping</p>
+        <p style={explainerStyle}>Dragg and drop to sort fields</p>
         <div style={outerContainerStyle}>
           <div className="container">
             <DndProvider backend={HTML5Backend} context={window}>
