@@ -8,7 +8,7 @@ export const FormMenu = memo(
   ({ addRow, deleteRow, toNext, toPrevious, tableName, siblings }) => (
     <div style={controls}>
       {!!siblings && siblings}
-      {!!toPrevious && (
+      {!!toPrevious && ( 
         <Button
           size="medium"
           icon={<FaChevronLeft />}
