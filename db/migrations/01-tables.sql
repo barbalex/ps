@@ -208,19 +208,19 @@ COMMENT ON COLUMN subprojects.data IS 'Room for subproject specific data, define
 
 COMMENT ON TABLE subprojects IS 'Goal: manage subprojects. Will most often be a species that is promoted. Can also be a (class of) biotope(s).';
 
--- CREATE TYPE user_role AS enum(
---   'manager',
---   'editor',
---   'reader'
--- );
+CREATE TYPE user_role AS enum(
+  'manager',
+  'editor',
+  'reader'
+);
+
 CREATE TABLE project_users(
   project_user_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  role text DEFAULT NULL,
   -- https://github.com/electric-sql/electric/issues/893
-  -- role user_role DEFAULT NULL,
+  role user_role DEFAULT NULL,
   label text DEFAULT NULL
 );
 
@@ -244,9 +244,8 @@ CREATE TABLE subproject_users(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  role text DEFAULT NULL,
   -- https://github.com/electric-sql/electric/issues/893
-  -- role user_role DEFAULT NULL,
+  role user_role DEFAULT NULL,
   label text DEFAULT NULL
 );
 
@@ -849,9 +848,8 @@ CREATE TABLE place_users(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  role text DEFAULT NULL,
   -- https://github.com/electric-sql/electric/issues/893
-  -- role user_role DEFAULT NULL,
+  role user_role DEFAULT NULL,
   label text DEFAULT NULL
 );
 
