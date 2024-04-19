@@ -2,7 +2,6 @@ import { useState, memo, useCallback } from 'react'
 import { GeoJSON, useMapEvent } from 'react-leaflet'
 import * as ReactDOMServer from 'react-dom/server'
 import * as icons from 'react-icons/md'
-import { useLiveQuery } from 'electric-sql/react'
 
 import { vectorLayerDisplayToProperties } from '../../../modules/vectorLayerDisplayToProperties'
 import { Popup } from '../Popup'
@@ -13,7 +12,6 @@ import {
   Checks as Check,
   Occurrences as Occurrence,
 } from '../../../generated/client'
-import { useElectric } from '../../../ElectricProvider'
 import { ErrorBoundary } from '../MapErrorBoundary'
 
 interface Props {
@@ -23,20 +21,15 @@ interface Props {
 }
 
 export const TableLayer = memo(({ data, layer }: Props) => {
-  const { db } = useElectric()!
-  const { results: vectorLayerDisplays = [] } = useLiveQuery(
-    db.vector_layer_displays.liveMany({
-      where: { vector_layer_id: layer.vector_layer_id },
-    }),
-  )
   // adapt to multiple vector_layer_displays
-  const firstDisplay = vectorLayerDisplays[0]
+  const vectorLayerDisplays = layer.vector_layer_displays
+  const firstDisplay = vectorLayerDisplays?.[0]
 
   const displayFromFeature = useCallback(
     (feature) => {
       // display_by_property_field is _not_ under the data property
       // as passing the data object to feature.properties lead to errors
-      const displayToUse = vectorLayerDisplays.find(
+      const displayToUse = (vectorLayerDisplays ?? []).find(
         (vld) =>
           vld.display_property_value ===
           feature.properties?.[layer?.display_by_property_field],
