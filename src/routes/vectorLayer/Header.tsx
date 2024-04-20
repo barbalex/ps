@@ -1,4 +1,4 @@
-import { useCallback, memo } from 'react'
+import { useCallback, memo, useMemo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { Button } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
@@ -10,16 +10,6 @@ import { createVectorLayer } from '../../modules/createRows'
 import { useElectric } from '../../ElectricProvider'
 import { FormHeader } from '../../components/FormHeader'
 import { Vector_layers as VectorLayer } from '../../generated/client'
-
-const layerToLabel = {
-  'occurrences-to-assess': 'Occurrences to assess',
-  'occurrences-not-to-assign': 'Occurrences not to assign',
-  'occurrences-assigned-1': 'TODO: uups',
-  'occurrences-assigned-2': 'TODO: uups',
-}
-const labelToLayer = Object.fromEntries(
-  Object.entries(layerToLabel).map(([key, value]) => [value, key]),
-)
 
 // type props
 interface Props {
@@ -39,7 +29,10 @@ export const Header = memo(({ autoFocusRef, row }: Props) => {
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
   const droppableLayer = appState?.droppable_layer
-  const draggableLayers = appState?.draggable_layers ?? []
+  const draggableLayers = useMemo(
+    () => appState?.draggable_layers ?? [],
+    [appState?.draggable_layers],
+  )
 
   // need to:
   // 1. lowercase all
@@ -71,7 +64,7 @@ export const Header = memo(({ autoFocusRef, row }: Props) => {
       data: { draggable_layers: newDraggableLayers },
     })
   }, [
-    appState.app_state_id,
+    appState?.app_state_id,
     db.app_states,
     draggableLayers,
     isDraggable,
