@@ -3,7 +3,7 @@ import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbadoSession } from '@corbado/react'
 import TreasureMapLine from '../../images/treasure-map-line.svg?react'
-import TreasureMapLineCrossed from '../../images/treasure-map-line-crossed.svg?react'
+import TreasureMapLinePulsating from '../../images/treasure-map-line-pulsating.svg?react'
 import {
   Button,
   Menu,
@@ -35,7 +35,6 @@ export const Header = memo(({ autoFocusRef, row }: Props) => {
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
-  const droppableLayer = appState?.droppable_layer
   const draggableLayers = useMemo(
     () => appState?.draggable_layers ?? [],
     [appState?.draggable_layers],
@@ -46,13 +45,6 @@ export const Header = memo(({ autoFocusRef, row }: Props) => {
   // 2. replace all spaces with -
   const layerNameForState = row.label.replace(/ /g, '-').toLowerCase()
   const isDraggable = draggableLayers.includes(layerNameForState)
-
-  console.log('hello vectorLayer Header', {
-    droppableLayer,
-    draggableLayers,
-    isDraggable,
-    layerNameForState,
-  })
 
   const onClickToggleAssign = useCallback(() => {
     let newDraggableLayers = []
@@ -77,21 +69,57 @@ export const Header = memo(({ autoFocusRef, row }: Props) => {
     isDraggable,
     layerNameForState,
   ])
-
+  const onClickAssignToPlaces = useCallback(() => {
+    if (isDraggable) return
+    // map needs to be visible
+    if (!appState.tabs.includes('map')) {
+      db.app_states.update({
+        where: { app_state_id: appState.app_state_id },
+        data: { tabs: [...appState.tabs, 'map'] },
+      })
+    }
+    // this layer needs to be active
+    if (!row.active) {
+      db.vector_layers.update({
+        where: { vector_layer_id: row.vector_layer_id },
+        data: { active: true },
+      })
+    }
+  }, [
+    appState?.app_state_id,
+    appState?.tabs,
+    db.app_states,
+    db.vector_layers,
+    isDraggable,
+    row.active,
+    row.vector_layer_id,
+  ])
   const onClickAssignToPlaces1 = useCallback(() => {
     db.app_states.update({
       where: { app_state_id: appState.app_state_id },
       data: { droppable_layer: 'places1' },
     })
     onClickToggleAssign()
-  }, [appState?.app_state_id, db.app_states, onClickToggleAssign])
+    onClickAssignToPlaces()
+  }, [
+    appState?.app_state_id,
+    db.app_states,
+    onClickAssignToPlaces,
+    onClickToggleAssign,
+  ])
   const onClickAssignToPlaces2 = useCallback(() => {
     db.app_states.update({
       where: { app_state_id: appState.app_state_id },
       data: { droppable_layer: 'places2' },
     })
     onClickToggleAssign()
-  }, [appState?.app_state_id, db.app_states, onClickToggleAssign])
+    onClickAssignToPlaces()
+  }, [
+    appState?.app_state_id,
+    db.app_states,
+    onClickAssignToPlaces,
+    onClickToggleAssign,
+  ])
 
   const addRow = useCallback(async () => {
     const vectorLayer = createVectorLayer({ project_id })
@@ -152,7 +180,7 @@ export const Header = memo(({ autoFocusRef, row }: Props) => {
         isDraggable ? (
           <Button
             size="medium"
-            icon={<TreasureMapLineCrossed />}
+            icon={<TreasureMapLinePulsating />}
             onClick={onClickToggleAssign}
             title="Stop assigning"
           />
