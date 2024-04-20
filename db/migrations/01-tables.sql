@@ -1152,12 +1152,6 @@ COMMENT ON COLUMN fields.table_name IS 'table, on which this field is used insid
 
 COMMENT ON COLUMN fields.level IS 'level of field if places or below: 1, 2';
 
-CREATE TYPE draggable_layer_enum AS enum(
-  'occurrences_to_assess',
-  'occurrences_assigned_1',
-  'occurrences_assigned_2'
-);
-
 CREATE TYPE droppable_layer_enum AS enum(
   'place1',
   'place2'
@@ -1183,7 +1177,7 @@ CREATE TABLE app_states(
   editing_place_geometry uuid DEFAULT NULL,
   editing_check_geometry uuid DEFAULT NULL,
   editing_action_geometry uuid DEFAULT NULL,
-  draggable_layer draggable_layer_enum DEFAULT NULL,
+  draggable_layers jsonb DEFAULT NULL,
   droppable_layer droppable_layer_enum DEFAULT NULL,
   occurrence_fields_sorted jsonb DEFAULT NULL, -- array of strings
   label text DEFAULT NULL
@@ -1208,7 +1202,7 @@ COMMENT ON COLUMN app_states.editing_check_geometry IS 'The id of the check whos
 
 COMMENT ON COLUMN app_states.editing_action_geometry IS 'The id of the action whose geometry is currently being edited';
 
-COMMENT ON COLUMN app_states.draggable_layer IS 'The layer that is currently draggable';
+COMMENT ON COLUMN app_states.draggable_layers IS 'The layers that are currently draggable. Any of: occurrences-to-assess, occurrences-not-to-assign, occurrences-assigned-1, occurrences-assigned-2';
 
 COMMENT ON COLUMN app_states.droppable_layer IS 'The layer that is currently droppable';
 
