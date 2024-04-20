@@ -28,7 +28,6 @@ export const TableLayer = memo(({ data, layer }: Props) => {
   const { db } = useElectric()!
 
   const layerNameForState = layer?.label?.replace?.(/ /g, '-')?.toLowerCase?.()
-  // get appState.draggable_layers
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
@@ -38,16 +37,10 @@ export const TableLayer = memo(({ data, layer }: Props) => {
   )
   const isDraggable = draggableLayers.includes(layerNameForState)
   // const droppableLayer = appState?.droppable_layer
+
   // adapt to multiple vector_layer_displays
   const vectorLayerDisplays = layer.vector_layer_displays
   const firstDisplay = vectorLayerDisplays?.[0]
-
-  console.log('hello TableLayer', {
-    layer,
-    layerNameForState,
-    isDraggable,
-    draggableLayers,
-  })
 
   const displayFromFeature = useCallback(
     (feature) => {
@@ -75,6 +68,14 @@ export const TableLayer = memo(({ data, layer }: Props) => {
   if (layer.max_zoom !== undefined && zoom > layer.max_zoom) return null
   if (!data?.length) return null
 
+  console.log('hello TableLayer', {
+    layer,
+    layerNameForState,
+    isDraggable,
+    draggableLayers,
+    appState,
+  })
+
   const mapSize = map.getSize()
 
   return (
@@ -98,6 +99,7 @@ export const TableLayer = memo(({ data, layer }: Props) => {
             return L.circleMarker(latlng, {
               ...displayToUse,
               radius: displayToUse.circle_marker_radius ?? 8,
+              draggable: isDraggable,
             })
           }
 
