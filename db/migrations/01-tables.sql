@@ -1153,8 +1153,8 @@ COMMENT ON COLUMN fields.table_name IS 'table, on which this field is used insid
 COMMENT ON COLUMN fields.level IS 'level of field if places or below: 1, 2';
 
 CREATE TYPE droppable_layer_enum AS enum(
-  'place1',
-  'place2'
+  'places1',
+  'places2'
 );
 
 CREATE TABLE app_states(

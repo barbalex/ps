@@ -1,10 +1,17 @@
 import { useCallback, memo, useMemo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
-import { Button } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbadoSession } from '@corbado/react'
 import TreasureMapLine from '../../images/treasure-map-line.svg?react'
 import TreasureMapLineCrossed from '../../images/treasure-map-line-crossed.svg?react'
+import {
+  Button,
+  Menu,
+  MenuTrigger,
+  MenuList,
+  MenuItem,
+  MenuPopover,
+} from '@fluentui/react-components'
 
 import { createVectorLayer } from '../../modules/createRows'
 import { useElectric } from '../../ElectricProvider'
@@ -71,6 +78,21 @@ export const Header = memo(({ autoFocusRef, row }: Props) => {
     layerNameForState,
   ])
 
+  const onClickAssignToPlaces1 = useCallback(() => {
+    db.app_states.update({
+      where: { app_state_id: appState.app_state_id },
+      data: { droppable_layer: 'places1' },
+    })
+    onClickToggleAssign()
+  }, [appState?.app_state_id, db.app_states, onClickToggleAssign])
+  const onClickAssignToPlaces2 = useCallback(() => {
+    db.app_states.update({
+      where: { app_state_id: appState.app_state_id },
+      data: { droppable_layer: 'places2' },
+    })
+    onClickToggleAssign()
+  }, [appState?.app_state_id, db.app_states, onClickToggleAssign])
+
   const addRow = useCallback(async () => {
     const vectorLayer = createVectorLayer({ project_id })
     await db.vector_layers.create({ data: vectorLayer })
@@ -135,12 +157,21 @@ export const Header = memo(({ autoFocusRef, row }: Props) => {
             title="Stop assigning"
           />
         ) : (
-          <Button
-            size="medium"
-            icon={<TreasureMapLine />}
-            onClick={onClickToggleAssign}
-            title="Start assigning"
-          />
+          <Menu>
+            <MenuTrigger disableButtonEnhancement>
+              <Button
+                size="medium"
+                icon={<TreasureMapLine />}
+                title="Start assigning"
+              />
+            </MenuTrigger>
+            <MenuPopover>
+              <MenuList>
+                <MenuItem onClick={onClickAssignToPlaces1}>Places 1</MenuItem>
+                <MenuItem onClick={onClickAssignToPlaces2}>Places 2</MenuItem>
+              </MenuList>
+            </MenuPopover>
+          </Menu>
         )
       }
     />
