@@ -68,14 +68,6 @@ export const TableLayer = memo(({ data, layer }: Props) => {
   if (layer.max_zoom !== undefined && zoom > layer.max_zoom) return null
   if (!data?.length) return null
 
-  console.log('hello TableLayer', {
-    layer,
-    layerNameForState,
-    isDraggable,
-    draggableLayers,
-    appState,
-  })
-
   const mapSize = map.getSize()
 
   return (
@@ -101,6 +93,7 @@ export const TableLayer = memo(({ data, layer }: Props) => {
               radius: displayToUse.circle_marker_radius ?? 8,
               draggable: isDraggable,
             })
+            if (!isDraggable) return marker
             // Problem: circleMarker has not draggable property
             // see: https://stackoverflow.com/a/43417693/712005
 
@@ -111,14 +104,12 @@ export const TableLayer = memo(({ data, layer }: Props) => {
               marker.setLatLng(e.latlng)
             }
 
-            marker.on('mousedown', function (e) {
-              // e.preventDefault()
+            marker.on('mousedown', function () {
               map.dragging.disable()
               map.on('mousemove', trackCursor)
             })
 
-            map.on('mouseup', function (e) {
-              // e.preventDefault()
+            map.on('mouseup', function () {
               map.dragging.enable()
               map.off('mousemove', trackCursor)
             })
@@ -127,10 +118,9 @@ export const TableLayer = memo(({ data, layer }: Props) => {
 
           const IconComponent = icons[displayToUse.marker_symbol]
 
-          // TODO:
           // 1. add state for draggable layer and droppable layer
           // 2. if draggable, set draggable to true
-          // 3. on dragend if draggable, assign to nearest droppable object
+          // 3. TODO: on dragend if draggable, assign to nearest droppable object
           const marker = IconComponent
             ? L.marker(latlng, {
                 icon: L.divIcon({
@@ -160,6 +150,8 @@ export const TableLayer = memo(({ data, layer }: Props) => {
         }}
         onEachFeature={(feature, _layer) => {
           if (!feature) return
+          // draggable markers pop up on dragend (mouseup)
+          if (isDraggable) return
 
           const layersData = [
             {
