@@ -1,7 +1,9 @@
-import { useState, memo, useCallback } from 'react'
+import { useState, memo, useCallback, useMemo } from 'react'
 import { GeoJSON, useMapEvent } from 'react-leaflet'
 import * as ReactDOMServer from 'react-dom/server'
 import * as icons from 'react-icons/md'
+import { useLiveQuery } from 'electric-sql/react'
+import { useCorbadoSession } from '@corbado/react'
 
 import { vectorLayerDisplayToProperties } from '../../../modules/vectorLayerDisplayToProperties'
 import { Popup } from '../Popup'
@@ -13,6 +15,7 @@ import {
   Occurrences as Occurrence,
 } from '../../../generated/client'
 import { ErrorBoundary } from '../MapErrorBoundary'
+import { useElectric } from '../../../ElectricProvider'
 
 interface Props {
   data: Place[] | Action[] | Check[] | Occurrence[]
@@ -21,9 +24,30 @@ interface Props {
 }
 
 export const TableLayer = memo(({ data, layer }: Props) => {
+  const { user: authUser } = useCorbadoSession()
+  const { db } = useElectric()!
+
+  const layerNameForState = layer?.label?.replace?.(/ /g, '-')?.toLowerCase?.()
+  // get appState.draggable_layers
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+  )
+  const draggableLayers = useMemo(
+    () => appState?.draggable_layers ?? [],
+    [appState?.draggable_layers],
+  )
+  const isDraggable = draggableLayers.includes(layerNameForState)
+  // const droppableLayer = appState?.droppable_layer
   // adapt to multiple vector_layer_displays
   const vectorLayerDisplays = layer.vector_layer_displays
   const firstDisplay = vectorLayerDisplays?.[0]
+
+  console.log('hello TableLayer', {
+    layer,
+    layerNameForState,
+    isDraggable,
+    draggableLayers,
+  })
 
   const displayFromFeature = useCallback(
     (feature) => {
@@ -43,6 +67,7 @@ export const TableLayer = memo(({ data, layer }: Props) => {
   const map = useMapEvent('zoomend', () => setZoom(map.getZoom()))
   const [zoom, setZoom] = useState(map.getZoom())
 
+  if (!appState) return null
   if (!firstDisplay) return null
   if (!layer) return null
   // include only if zoom between min_zoom and max_zoom
@@ -94,9 +119,11 @@ export const TableLayer = memo(({ data, layer }: Props) => {
                     />,
                   ),
                 }),
-                draggable: true,
+                draggable: isDraggable,
               })
-            : L.marker(latlng)
+            : L.marker(latlng, {
+                draggable: isDraggable,
+              })
           marker.on('dragend', () => {
             const position = marker.getLatLng()
             console.log(
