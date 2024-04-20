@@ -1,15 +1,20 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
-import { RiTreasureMapLine } from 'react-icons/ri'
-import { TbMapOff } from 'react-icons/tb'
 import { Button } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbadoSession } from '@corbado/react'
-import { ReactComponent as TreasureMapLine } from '../../images/treasure-map-line.svg'
+import TreasureMapLine  from '../../images/treasure-map-line.svg?react'
 
 import { createVectorLayer } from '../../modules/createRows'
 import { useElectric } from '../../ElectricProvider'
 import { FormHeader } from '../../components/FormHeader'
+
+const draggableLayerToLabel = {
+  'occurrences-to-assess': 'Occurrences to assess',
+  'occurrences-not-to-assign': 'Occurrences not to assign',
+  'occurrences-assigned-1': '',
+  'occurrences-assigned-2': ''
+}
 
 export const Header = memo(({ autoFocusRef }) => {
   const { project_id, vector_layer_id } = useParams()
@@ -23,11 +28,13 @@ export const Header = memo(({ autoFocusRef }) => {
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
   const droppableLayer = appState?.droppable_layer
-  const draggableLayer = appState?.draggable_layer
+  const draggableLayers = appState?.draggable_layers
+
+  const isDraggable = draggableLayers?.length // TODO:
 
   console.log('hello vectorLayer Header', {
     droppableLayer,
-    draggableLayer,
+    draggableLayers,
     TreasureMapLine,
   })
 
