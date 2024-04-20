@@ -127,12 +127,21 @@ export const Header = memo(({ autoFocusRef, row }: Props) => {
       toPrevious={toPrevious}
       tableName="vector layer"
       siblings={
-        <Button
-          size="medium"
-          icon={isDraggable ? <TreasureMapLineCrossed /> : <TreasureMapLine />}
-          onClick={onClickToggleAssign}
-          title={isDraggable ? 'Disable assigning' : 'Enable assigning'}
-        />
+        isDraggable ? (
+          <Button
+            size="medium"
+            icon={<TreasureMapLineCrossed />}
+            onClick={onClickToggleAssign}
+            title="Stop assigning"
+          />
+        ) : (
+          <Button
+            size="medium"
+            icon={<TreasureMapLine />}
+            onClick={onClickToggleAssign}
+            title="Start assigning"
+          />
+        )
       }
     />
   )
