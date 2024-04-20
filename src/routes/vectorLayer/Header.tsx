@@ -3,20 +3,31 @@ import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { Button } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbadoSession } from '@corbado/react'
-import TreasureMapLine  from '../../images/treasure-map-line.svg?react'
+import TreasureMapLine from '../../images/treasure-map-line.svg?react'
+import TreasureMapLineCrossed from '../../images/treasure-map-line-crossed.svg?react'
 
 import { createVectorLayer } from '../../modules/createRows'
 import { useElectric } from '../../ElectricProvider'
 import { FormHeader } from '../../components/FormHeader'
+import { Vector_layers as VectorLayer } from '../../generated/client'
 
-const draggableLayerToLabel = {
+const layerToLabel = {
   'occurrences-to-assess': 'Occurrences to assess',
   'occurrences-not-to-assign': 'Occurrences not to assign',
-  'occurrences-assigned-1': '',
-  'occurrences-assigned-2': ''
+  'occurrences-assigned-1': 'TODO: uups',
+  'occurrences-assigned-2': 'TODO: uups',
+}
+const labelToLayer = Object.fromEntries(
+  Object.entries(layerToLabel).map(([key, value]) => [value, key]),
+)
+
+// type props
+interface Props {
+  autoFocusRef: React.RefObject<HTMLInputElement>
+  row: VectorLayer
 }
 
-export const Header = memo(({ autoFocusRef }) => {
+export const Header = memo(({ autoFocusRef, row }: Props) => {
   const { project_id, vector_layer_id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -36,7 +47,13 @@ export const Header = memo(({ autoFocusRef }) => {
     droppableLayer,
     draggableLayers,
     TreasureMapLine,
+    isDraggable,
+    labelToLayer,
   })
+
+  const onClickAssign = useCallback(() => {
+    // TODO:
+  }, [])
 
   const addRow = useCallback(async () => {
     const vectorLayer = createVectorLayer({ project_id })
@@ -96,9 +113,9 @@ export const Header = memo(({ autoFocusRef }) => {
       siblings={
         <Button
           size="medium"
-          icon={<TreasureMapLine />}
-          onClick={() => console.log('TODO:')}
-          title={'test'}
+          icon={isDraggable ? <TreasureMapLineCrossed /> : <TreasureMapLine />}
+          onClick={onClickAssign}
+          title={isDraggable ? 'Disable assigning' : 'Enable assigning'}
         />
       }
     />
