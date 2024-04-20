@@ -39,27 +39,44 @@ export const Header = memo(({ autoFocusRef, row }: Props) => {
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
   const droppableLayer = appState?.droppable_layer
-  const draggableLayers = appState?.draggable_layers
-
-  const isDraggable = draggableLayers?.length // TODO:
+  const draggableLayers = appState?.draggable_layers ?? []
 
   // need to:
-  // 1. underscrore all
+  // 1. lowercase all
   // 2. replace all spaces with -
   const layerNameForState = row.label.replace(/ /g, '-').toLowerCase()
+  const isDraggable = draggableLayers.includes(layerNameForState)
 
   console.log('hello vectorLayer Header', {
     droppableLayer,
     draggableLayers,
-    TreasureMapLine,
     isDraggable,
-    labelToLayer,
     layerNameForState,
   })
 
-  const onClickAssign = useCallback(() => {
-    // TODO:
-  }, [])
+  const onClickToggleAssign = useCallback(() => {
+    let newDraggableLayers = []
+    // 1. if isDraggable, remove from draggableLayers
+    if (isDraggable) {
+      // remove from draggableLayers
+      newDraggableLayers = draggableLayers?.filter(
+        (layer) => layer !== layerNameForState,
+      )
+    } else {
+      // add to draggableLayers
+      newDraggableLayers = [...draggableLayers, layerNameForState]
+    }
+    db.app_states.update({
+      where: { app_state_id: appState.app_state_id },
+      data: { draggable_layers: newDraggableLayers },
+    })
+  }, [
+    appState.app_state_id,
+    db.app_states,
+    draggableLayers,
+    isDraggable,
+    layerNameForState,
+  ])
 
   const addRow = useCallback(async () => {
     const vectorLayer = createVectorLayer({ project_id })
@@ -120,7 +137,7 @@ export const Header = memo(({ autoFocusRef, row }: Props) => {
         <Button
           size="medium"
           icon={isDraggable ? <TreasureMapLineCrossed /> : <TreasureMapLine />}
-          onClick={onClickAssign}
+          onClick={onClickToggleAssign}
           title={isDraggable ? 'Disable assigning' : 'Enable assigning'}
         />
       }
