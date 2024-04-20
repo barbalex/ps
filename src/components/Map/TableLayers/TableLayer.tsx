@@ -91,8 +91,8 @@ export const TableLayer = memo(({ data, layer }: Props) => {
             const marker = L.circleMarker(latlng, {
               ...displayToUse,
               radius: displayToUse.circle_marker_radius ?? 8,
-              draggable: isDraggable,
             })
+
             if (!isDraggable) return marker
             // Problem: circleMarker has not draggable property
             // see: https://stackoverflow.com/a/43417693/712005
@@ -105,13 +105,38 @@ export const TableLayer = memo(({ data, layer }: Props) => {
             }
 
             marker.on('mousedown', function () {
+              console.log('hello TableLayer circleMarker on mousedown')
               map.dragging.disable()
               map.on('mousemove', trackCursor)
             })
 
-            map.on('mouseup', function () {
+            // TODO: why does this not fire?
+            marker.on('mouseup', function (e) {
               map.dragging.enable()
               map.off('mousemove', trackCursor)
+              console.log(
+                'hello TableLayer circleMarker on marker mouseup, LatLng:',
+                e.target.getCenter(),
+              )
+            })
+
+            // TODO: this fires BUT as every marker sets this, there are as many listeners as markers!!!
+            map.on('mouseup', function (e) {
+              map.dragging.enable()
+              map.off('mousemove', trackCursor)
+              console.log(
+                'hello TableLayer circleMarker on map mouseup, LatLng:',
+                e.target.getCenter(),
+              )
+            })
+
+            marker.on('dragend', function (e) {
+              map.dragging.enable()
+              map.off('mousemove', trackCursor)
+              console.log(
+                'hello TableLayer circleMarker on dragend, LatLng:',
+                e.target.getCenter(),
+              )
             })
             return marker
           }
@@ -138,12 +163,13 @@ export const TableLayer = memo(({ data, layer }: Props) => {
             : L.marker(latlng, {
                 draggable: isDraggable,
               })
-          marker.on('dragend', () => {
+          marker.on('dragend', (e) => {
             const position = marker.getLatLng()
-            console.log(
-              'hello TableLayer marker on dragend, position:',
+            console.log('hello TableLayer marker on dragend', {
               position,
-            )
+              isDraggable,
+              centerFromEvent: e.target.getCenter(),
+            })
           })
 
           return marker
