@@ -43,12 +43,18 @@ export const Header = memo(({ autoFocusRef, row }: Props) => {
 
   const isDraggable = draggableLayers?.length // TODO:
 
+  // need to:
+  // 1. underscrore all
+  // 2. replace all spaces with -
+  const layerNameForState = row.label.replace(/ /g, '-').toLowerCase()
+
   console.log('hello vectorLayer Header', {
     droppableLayer,
     draggableLayers,
     TreasureMapLine,
     isDraggable,
     labelToLayer,
+    layerNameForState,
   })
 
   const onClickAssign = useCallback(() => {
