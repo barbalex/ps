@@ -96,11 +96,33 @@ export const TableLayer = memo(({ data, layer }: Props) => {
           const displayToUse = displayFromFeature(feature)
 
           if (displayToUse.marker_type === 'circle') {
-            return L.circleMarker(latlng, {
+            const marker = L.circleMarker(latlng, {
               ...displayToUse,
               radius: displayToUse.circle_marker_radius ?? 8,
               draggable: isDraggable,
             })
+            // Problem: circleMarker has not draggable property
+            // see: https://stackoverflow.com/a/43417693/712005
+
+            // extract trackCursor as a function so this specific
+            // "mousemove" listener can be removed on "mouseup" versus
+            // all listeners if we were to use map.off("mousemove")
+            const trackCursor = (e) => {
+              marker.setLatLng(e.latlng)
+            }
+
+            marker.on('mousedown', function (e) {
+              // e.preventDefault()
+              map.dragging.disable()
+              map.on('mousemove', trackCursor)
+            })
+
+            map.on('mouseup', function (e) {
+              // e.preventDefault()
+              map.dragging.enable()
+              map.off('mousemove', trackCursor)
+            })
+            return marker
           }
 
           const IconComponent = icons[displayToUse.marker_symbol]
