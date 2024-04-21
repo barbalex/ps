@@ -1,6 +1,7 @@
 import nearestPoint from '@turf/nearest-point' // https://turfjs.org/docs/#nearestPoint
 import pointsWithinPolygon from '@turf/points-within-polygon' // https://turfjs.org/docs/#pointsWithinPolygon
-import { featureCollection, point, points } from '@turf/helpers'
+import buffer from '@turf/buffer' // https://turfjs.org/docs/#buffer
+import { point, points } from '@turf/helpers'
 
 import {
   Electric,
@@ -69,23 +70,52 @@ export const assignToNearestDroppable = async ({
 
   // 3.2 find out if the latLng is inside a feature: https://turfjs.org/docs/#pointsWithinPolygon
   const placesCoveringLatLng = []
+  // for (const place of places) {
+  //   let pointsWithin
+  //   try {
+  //     pointsWithin = pointsWithinPolygon(latLngPoints, place.geometry)
+  //   } catch (error) {
+  //     // an error occurres if geometry is not polygon, so ignore
+  //   }
+  //   const isInside = pointsWithin?.features?.length > 0
+  //   console.log('hello assignToNearestDroppable', {
+  //     pointsWithin,
+  //     place,
+  //     isInside,
+  //   })
+  //   // if isInside, assign, then return
+  //   if (!isInside) continue
+  //   placesCoveringLatLng.push(place)
+  // }
+
+  // if (!placesCoveringLatLng.length) {
+  // So latLng is not inside a geometry of the place features. Maybe it is inside its buffer?
   for (const place of places) {
+    let bufferedPlace
+    try {
+      bufferedPlace = buffer(place.geometry, 0)
+    } catch (error) {
+      console.log('hello assignToNearestDroppable buffered', { error })
+    }
+    console.log('hello assignToNearestDroppable buffered', { bufferedPlace })
     let pointsWithin
     try {
-      pointsWithin = pointsWithinPolygon(latLngPoints, place.geometry)
+      pointsWithin = pointsWithinPolygon(latLngPoints, bufferedPlace)
     } catch (error) {
       // an error occurres if geometry is not polygon, so ignore
     }
     const isInside = pointsWithin?.features?.length > 0
-    console.log('hello assignToNearestDroppable', {
+    console.log('hello assignToNearestDroppable buffered', {
       pointsWithin,
       place,
       isInside,
     })
     // if isInside, assign, then return
     if (!isInside) continue
-    placesCoveringLatLng.push(place)
+    // placesCoveringLatLng.push(place) TODO: reinstate after testing
   }
+  // }
+
   if (placesCoveringLatLng.length) {
     if (placesCoveringLatLng.length === 1) {
       const place = placesCoveringLatLng[0]
@@ -101,5 +131,5 @@ export const assignToNearestDroppable = async ({
 
   // 3.3 if not, find the nearest feature
   // 3.3.1: find nearest center of mass? https://turfjs.org/docs/#centerOfMass, https://turfjs.org/docs/#nearestPoint
-  // 3.3.2: better but more work: create outline of all features, then find nearest outline? https://turfjs.org/docs/#pointToLineDistance
+  // 3.3.2: better but more work: create outline of all features (https://turfjs.org/docs/#buffer), create that to a line (https://turfjs.org/docs/#polygonToLine), then find nearest outline (https://turfjs.org/docs/#pointToLineDistance)?
 }
