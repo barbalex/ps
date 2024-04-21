@@ -123,6 +123,7 @@ export const TableLayer = memo(({ data, layer }: Props) => {
                 authUser,
                 layer,
                 latLng: e.latlng,
+                occurrenceId: marker.feature.properties?.occurrence_id,
               })
             })
 
@@ -163,6 +164,7 @@ export const TableLayer = memo(({ data, layer }: Props) => {
               authUser,
               layer,
               latLng: position,
+              occurrenceId: marker.feature.properties?.occurrence_id,
             })
           })
 

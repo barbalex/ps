@@ -13,6 +13,7 @@ interface Props {
   authUser: { email: string }
   layer: VectorLayer
   latLng: [number, number]
+  occurrenceId: uuid
 }
 
 export const assignToNearestDroppable = async ({
@@ -20,6 +21,7 @@ export const assignToNearestDroppable = async ({
   authUser,
   layer,
   latLng,
+  occurrenceId,
 }: Props) => {
   console.log('hello assignToNearestDroppable', { latLng })
   let latLngPoint
@@ -67,23 +69,37 @@ export const assignToNearestDroppable = async ({
   //   nearestPlace,
   // })
   // 3.2 find out if the latLng is inside a feature: https://turfjs.org/docs/#pointsWithinPolygon
+  const placesCoveringLatLng = []
   for (const place of places) {
-    if (!place.geometry?.features?.[0]?.geometry) {
-      continue
-    }
+    let pointsWithin
     try {
-      const pointsWithin = pointsWithinPolygon(
-        latLngPoints,
-        place.geometry?.features?.[0]?.geometry,
-      )
-      console.log('hello assignToNearestDroppable', {
-        pointsWithin,
-        place,
-      })
+      pointsWithin = pointsWithinPolygon(latLngPoints, place.geometry)
     } catch (error) {
-      console.log('hello assignToNearestDroppable', { error, place })
+      // an error occurres if geometry is not polygon, so ignore
     }
+    const isInside = pointsWithin?.features?.length > 0
+    console.log('hello assignToNearestDroppable', {
+      pointsWithin,
+      place,
+      isInside,
+    })
+    // if isInside, assign, then return
+    if (!isInside) continue
+    placesCoveringLatLng.push(place)
   }
+  if (placesCoveringLatLng.length) {
+    if (placesCoveringLatLng.length === 1) {
+      const place = placesCoveringLatLng[0]
+      // 3.2.1: assign to place
+      db.occurrences.update({
+        where: { occurrence_id: occurrenceId },
+        data: { place_id: place.place_id },
+      })
+    }
+    // TODO: multiple places cover the drop point
+    // TODO: need to ask user to choose
+  }
+
   // 3.3 if not, find the nearest feature
   // 3.3.1: find nearest center of mass? https://turfjs.org/docs/#centerOfMass, https://turfjs.org/docs/#nearestPoint
   // 3.3.2: better but more work: create outline of all features, then find nearest outline? https://turfjs.org/docs/#pointToLineDistance
