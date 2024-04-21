@@ -117,11 +117,14 @@ export const TableLayer = memo(({ data, layer }: Props) => {
                 'hello TableLayer circleMarker on marker mouseup, LatLng: ',
                 e.latlng,
               )
+              // only assign if the marker has moved
+              if (e.latlng.lat === latlng.lat && e.latlng.lng === latlng.lng) {
+                return
+              }
               // TODO: assign to nearest droppable object
               assignToNearestDroppable({
                 db,
                 authUser,
-                layer,
                 latLng: e.latlng,
                 occurrenceId: marker.feature.properties?.occurrence_id,
               })
@@ -162,7 +165,6 @@ export const TableLayer = memo(({ data, layer }: Props) => {
             assignToNearestDroppable({
               db,
               authUser,
-              layer,
               latLng: position,
               occurrenceId: marker.feature.properties?.occurrence_id,
             })

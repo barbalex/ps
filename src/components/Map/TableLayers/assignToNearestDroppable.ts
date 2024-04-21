@@ -19,7 +19,6 @@ interface Props {
 export const assignToNearestDroppable = async ({
   db,
   authUser,
-  layer,
   latLng,
   occurrenceId,
 }: Props) => {
@@ -53,7 +52,9 @@ export const assignToNearestDroppable = async ({
     },
   })
   console.log('hello assignToNearestDroppable', { places })
+
   // 3. get the nearest feature
+
   // 3.1 direct using nearestPoint
   // let nearestPlace
   // try {
@@ -65,9 +66,7 @@ export const assignToNearestDroppable = async ({
   //   // Error: coord must be GeoJSON Point or an Array of numbers
   //   console.log('hello assignToNearestDroppable', { error })
   // }
-  // console.log('hello assignToNearestDroppable', {
-  //   nearestPlace,
-  // })
+
   // 3.2 find out if the latLng is inside a feature: https://turfjs.org/docs/#pointsWithinPolygon
   const placesCoveringLatLng = []
   for (const place of places) {
@@ -93,7 +92,7 @@ export const assignToNearestDroppable = async ({
       // 3.2.1: assign to place
       db.occurrences.update({
         where: { occurrence_id: occurrenceId },
-        data: { place_id: place.place_id },
+        data: { place_id: place.place_id, not_to_assign: false },
       })
     }
     // TODO: multiple places cover the drop point
