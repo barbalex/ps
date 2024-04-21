@@ -16,6 +16,7 @@ import {
 } from '../../../generated/client'
 import { ErrorBoundary } from '../MapErrorBoundary'
 import { useElectric } from '../../../ElectricProvider'
+import { assignToNearestDroppable } from './assignToNearestDroppable'
 
 interface Props {
   data: Place[] | Action[] | Check[] | Occurrence[]
@@ -117,6 +118,12 @@ export const TableLayer = memo(({ data, layer }: Props) => {
                 e.latlng,
               )
               // TODO: assign to nearest droppable object
+              assignToNearestDroppable({
+                db,
+                authUser,
+                layer,
+                latLng: e.latlng,
+              })
             })
 
             return marker
@@ -124,9 +131,6 @@ export const TableLayer = memo(({ data, layer }: Props) => {
 
           const IconComponent = icons[displayToUse.marker_symbol]
 
-          // 1. add state for draggable layer and droppable layer
-          // 2. if draggable, set draggable to true
-          // 3. TODO: on dragend if draggable, assign to nearest droppable object
           const marker = IconComponent
             ? L.marker(latlng, {
                 icon: L.divIcon({
@@ -154,6 +158,12 @@ export const TableLayer = memo(({ data, layer }: Props) => {
               latlng: e?.target?.getLatLng(),
             })
             // TODO: assign to nearest droppable object
+            assignToNearestDroppable({
+              db,
+              authUser,
+              layer,
+              latLng: position,
+            })
           })
 
           return marker
