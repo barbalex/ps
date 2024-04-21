@@ -105,39 +105,20 @@ export const TableLayer = memo(({ data, layer }: Props) => {
             }
 
             marker.on('mousedown', function () {
-              console.log('hello TableLayer circleMarker on mousedown')
               map.dragging.disable()
               map.on('mousemove', trackCursor)
             })
 
-            // TODO: why does this not fire?
             marker.on('mouseup', function (e) {
               map.dragging.enable()
               map.off('mousemove', trackCursor)
               console.log(
-                'hello TableLayer circleMarker on marker mouseup, LatLng:',
-                e.target.getCenter(),
+                'hello TableLayer circleMarker on marker mouseup, LatLng: ',
+                e.latlng,
               )
+              // TODO: assign to nearest droppable object
             })
 
-            // TODO: this fires BUT as every marker sets this, there are as many listeners as markers!!!
-            map.on('mouseup', function (e) {
-              map.dragging.enable()
-              map.off('mousemove', trackCursor)
-              console.log(
-                'hello TableLayer circleMarker on map mouseup, LatLng:',
-                e.target.getCenter(),
-              )
-            })
-
-            marker.on('dragend', function (e) {
-              map.dragging.enable()
-              map.off('mousemove', trackCursor)
-              console.log(
-                'hello TableLayer circleMarker on dragend, LatLng:',
-                e.target.getCenter(),
-              )
-            })
             return marker
           }
 
@@ -163,13 +144,16 @@ export const TableLayer = memo(({ data, layer }: Props) => {
             : L.marker(latlng, {
                 draggable: isDraggable,
               })
+
           marker.on('dragend', (e) => {
             const position = marker.getLatLng()
             console.log('hello TableLayer marker on dragend', {
               position,
               isDraggable,
-              centerFromEvent: e.target.getCenter(),
+              e,
+              latlng: e?.target?.getLatLng(),
             })
+            // TODO: assign to nearest droppable object
           })
 
           return marker

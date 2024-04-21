@@ -1,5 +1,6 @@
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
+import { useCorbadoSession } from '@corbado/react'
 
 import { useElectric } from '../../../ElectricProvider'
 import { Vector_layers as VectorLayer } from '../../../generated/client'
@@ -10,6 +11,7 @@ interface Props {
 }
 
 export const OccurrencesAssigned2 = ({ layer }: Props) => {
+  const { user: authUser } = useCorbadoSession()
   const { subproject_id } = useParams()
   const { db } = useElectric()!
 
@@ -32,6 +34,9 @@ export const OccurrencesAssigned2 = ({ layer }: Props) => {
         geometry: { not: null },
       },
     }),
+  )
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
 
   // a geometry is built as FeatureCollection Object: https://datatracker.ietf.org/doc/html/rfc7946#section-3.3
@@ -61,5 +66,12 @@ export const OccurrencesAssigned2 = ({ layer }: Props) => {
   if (!data?.length) return null
   if (!layer) return null
 
-  return <TableLayer data={data} layer={layer} />
+  const isDraggable = appState?.draggable_layers?.includes?.(
+    layer?.label?.replace(/ /g, '-')?.toLowerCase(),
+  )
+
+  // popups pop on mouseup (=dragend)
+  // so they should not be bound when draggable or they will pop on dragend
+  // thus adding key={isDraggable} to re-render when draggable changes
+  return <TableLayer key={isDraggable} data={data} layer={layer} />
 }

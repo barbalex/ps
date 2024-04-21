@@ -68,8 +68,8 @@ export const OccurrencesToAssess = ({ layer }: Props) => {
     layer?.label?.replace(/ /g, '-')?.toLowerCase(),
   )
 
-  // isDraggable is key to re-render when draggable changes
-  // because only by rerendering can popups be bound to the map or not
-  // as they should not be bound when draggable or they will popp on dragend (mouseup)
+  // popups pop on mouseup (=dragend)
+  // so they should not be bound when draggable or they will pop on dragend
+  // thus adding key={isDraggable} to re-render when draggable changes
   return <TableLayer key={isDraggable} data={data} layer={layer} />
 }
