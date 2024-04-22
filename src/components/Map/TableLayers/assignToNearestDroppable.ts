@@ -1,5 +1,7 @@
 import pointsWithinPolygon from '@turf/points-within-polygon' // https://turfjs.org/docs/#pointsWithinPolygon
 import convex from '@turf/convex' // https://turfjs.org/docs/#convex
+import polygonToLine from '@turf/polygon-to-line' // https://turfjs.org/docs/#polygonToLine
+import pointToLineDistance from '@turf/point-to-line-distance'
 import { point, points } from '@turf/helpers'
 
 import {
@@ -107,4 +109,27 @@ export const assignToNearestDroppable = async ({
   //        for every occurrence find nearest outline (https://turfjs.org/docs/#pointToLineDistance)
   //        choose closest
   //        alternative solution: https://github.com/Turfjs/turf/issues/1743
+  const distances = places.map((place) => {
+    let convexedPlace
+    try {
+      convexedPlace = convex(place.geometry)
+    } catch (error) {
+      console.log('hello assignToNearestDroppable distance', { error })
+    }
+    let hullLine
+    try {
+      hullLine = polygonToLine(convexedPlace)
+    } catch (error) {
+      console.log('hello assignToNearestDroppable distance', { error })
+    }
+    console.log('hello assignToNearestDroppable distance', { hullLine })
+    let distance
+    try {
+      distance = pointToLineDistance(latLngPoint, hullLine)
+    } catch (error) {
+      console.log('hello assignToNearestDroppable distance', { error })
+    }
+    return { place_id: place.place_id, distance }
+  })
+  console.log('hello assignToNearestDroppable distance', { distances })
 }
