@@ -22,4 +22,9 @@ export const OccurrenceAssignChooser = () => {
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
+  const placesToAssignTo = appState?.places_to_assign_occurrence_to
+
+  if (!placesToAssignTo) return null
+
+  // return dialog
 }
