@@ -7,7 +7,7 @@ export const LocationMarker = () => {
   const map = useMapEvents({
     locationfound(e) {
       setPosition(e.latlng)
-      map.flyTo(e.latlng, map.getZoom())
+      // map.flyTo(e.latlng, map.getZoom()) TODO: reenable?
     },
   })
 
@@ -21,4 +21,3 @@ export const LocationMarker = () => {
     </Marker>
   )
 }
-
