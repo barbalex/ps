@@ -1179,6 +1179,7 @@ CREATE TABLE app_states(
   editing_action_geometry uuid DEFAULT NULL,
   draggable_layers jsonb DEFAULT NULL,
   droppable_layer droppable_layer_enum DEFAULT NULL,
+  places_to_assign_occurrence_to jsonb DEFAULT NULL,
   occurrence_fields_sorted jsonb DEFAULT NULL, -- array of strings
   label text DEFAULT NULL
 );
@@ -1205,6 +1206,8 @@ COMMENT ON COLUMN app_states.editing_action_geometry IS 'The id of the action wh
 COMMENT ON COLUMN app_states.draggable_layers IS 'The layers that are currently draggable. Any of: occurrences-to-assess, occurrences-not-to-assign, occurrences-assigned-1, occurrences-assigned-2';
 
 COMMENT ON COLUMN app_states.droppable_layer IS 'The layer that is currently droppable';
+
+COMMENT ON COLUMN app_states.places_to_assign_occurrence_to IS 'If multiple places are close to the dropped location, the user can choose one of them. This state opens a dialog. Field contains: Object with: occurrence_id, places. Places is array with: place_id, label, distance';
 
 COMMENT ON COLUMN app_states.occurrence_fields_sorted IS 'The order of fields in the occurrence form. User can change it by drag and drop';
 

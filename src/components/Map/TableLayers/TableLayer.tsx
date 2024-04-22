@@ -5,6 +5,16 @@ import * as ReactDOMServer from 'react-dom/server'
 import * as icons from 'react-icons/md'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbadoSession } from '@corbado/react'
+import {
+  Dialog,
+  DialogTrigger,
+  DialogSurface,
+  DialogTitle,
+  DialogContent,
+  DialogBody,
+  DialogActions,
+  Button,
+} from "@fluentui/react-components";
 
 import { vectorLayerDisplayToProperties } from '../../../modules/vectorLayerDisplayToProperties'
 import { Popup } from '../Popup'
@@ -61,6 +71,11 @@ export const TableLayer = memo(({ data, layer }: Props) => {
 
   const map: Map = useMapEvent('zoomend', () => setZoom(map.getZoom()))
   const [zoom, setZoom] = useState(map.getZoom())
+
+  // if multiple places are close to the dropped location, 
+  // assignToNearestDroppable will set an array of: place_id's, labels and distances
+  // if so, a dialog will open to choose the place to assign
+  const [placesToAssign, setPlacesToAssign] = useState([])
 
   if (!appState) return null
   if (!firstDisplay) return null
@@ -122,7 +137,6 @@ export const TableLayer = memo(({ data, layer }: Props) => {
               if (e.latlng.lat === latlng.lat && e.latlng.lng === latlng.lng) {
                 return
               }
-              // TODO: assign to nearest droppable object
               assignToNearestDroppable({
                 db,
                 authUser,
@@ -163,7 +177,6 @@ export const TableLayer = memo(({ data, layer }: Props) => {
               e,
               latlng: e?.target?.getLatLng(),
             })
-            // TODO: assign to nearest droppable object
             assignToNearestDroppable({
               db,
               authUser,
