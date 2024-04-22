@@ -28,6 +28,7 @@
     "@shopify/react-web-worker": "5.0.15",
     "@turf/bbox": "6.5.0",
     "@turf/buffer": "6.5.0",
+    "@turf/convex": "6.5.0",
     "@turf/helpers": "6.5.0",
     "@turf/nearest-point": "6.5.0",
     "@turf/points-within-polygon": "6.5.0",

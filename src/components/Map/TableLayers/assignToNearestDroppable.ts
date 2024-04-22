@@ -1,6 +1,7 @@
 import nearestPoint from '@turf/nearest-point' // https://turfjs.org/docs/#nearestPoint
 import pointsWithinPolygon from '@turf/points-within-polygon' // https://turfjs.org/docs/#pointsWithinPolygon
 import buffer from '@turf/buffer' // https://turfjs.org/docs/#buffer
+import convex from '@turf/convex' // https://turfjs.org/docs/#convex
 import { point, points } from '@turf/helpers'
 
 import {
@@ -89,11 +90,12 @@ export const assignToNearestDroppable = async ({
   // }
 
   // if (!placesCoveringLatLng.length) {
-  // So latLng is not inside a geometry of the place features. Maybe it is inside its buffer?
+  // So latLng is not inside a geometry of the place features. Maybe it is inside its convex hull?
+  // https://turfjs.org/docs/#convex
   for (const place of places) {
     let bufferedPlace
     try {
-      bufferedPlace = buffer(place.geometry, 0)
+      bufferedPlace = convex(place.geometry)
     } catch (error) {
       console.log('hello assignToNearestDroppable buffered', { error })
     }
