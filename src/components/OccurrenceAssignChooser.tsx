@@ -7,6 +7,8 @@ import {
   DialogBody,
   DialogActions,
   Button,
+  MenuList,
+  MenuItem,
 } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbadoSession } from '@corbado/react'
@@ -35,13 +37,24 @@ export const OccurrenceAssignChooser = memo(() => {
 
   return (
     <Dialog open={true}>
-      <DialogSurface>
-        <DialogBody>
+      <DialogSurface style={{ maxWidth: 'fit-content' }}>
+        <DialogBody
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
           <DialogTitle>Choose where to assign</DialogTitle>
           <DialogContent>
-            {JSON.stringify(placesToAssignTo, null, 2)}
+            <MenuList>
+              {placesToAssignTo.places.map((place) => (
+                <MenuItem key={place.place_id}>{`${place.label} (${
+                  place.distance * 1000
+                }m)`}</MenuItem>
+              ))}
+            </MenuList>
           </DialogContent>
-          <DialogActions>
+          <DialogActions style={{ alignSelf: 'flex-end' }}>
             <Button onClick={onClickCancel} appearance="secondary">
               Close
             </Button>
