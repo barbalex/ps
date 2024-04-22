@@ -62,7 +62,7 @@ export const assignToNearestDroppable = async ({
 
   // 3.2 find out if the latLng is inside a feature: https://turfjs.org/docs/#pointsWithinPolygon
   //     Because of featureCollection, use the convex hull: https://turfjs.org/docs/#convex
-  const placesContainingLatLng = []
+  const idsOfPlacesContainingLatLng = []
   for (const place of places) {
     let convexedPlace
     try {
@@ -83,23 +83,22 @@ export const assignToNearestDroppable = async ({
     })
     // if isInside, assign, then return
     if (!isInside) continue
-    // placesCoveringLatLng.push(place) TODO: reinstate after testing
+    idsOfPlacesContainingLatLng.push(place.place_id)
   }
-  // }
 
-  if (placesContainingLatLng.length) {
-    if (placesContainingLatLng.length === 1) {
-      const place = placesContainingLatLng[0]
-      // 3.2.1: assign to place
-      db.occurrences.update({
-        where: { occurrence_id: occurrenceId },
-        data: { place_id: place.place_id, not_to_assign: false },
-      })
-    }
-    // TODO: multiple places cover the drop point
-    // TODO: need to ask user to choose
-    // open dialog in middle of screen / map or at dragend position?
-  }
+  // if (idsOfPlacesContainingLatLng.length) {
+  //   if (idsOfPlacesContainingLatLng.length === 1) {
+  //     const place_id = idsOfPlacesContainingLatLng[0]
+  //     // 3.2.1: assign to place
+  //     db.occurrences.update({
+  //       where: { occurrence_id: occurrenceId },
+  //       data: { place_id, not_to_assign: false },
+  //     })
+  //   }
+  //   // TODO: multiple places cover the drop point
+  //   // TODO: need to ask user to choose
+  //   // open dialog in middle of screen / map or at dragend position?
+  // }
 
   // 3.3 if not, find the nearest feature
   // 3.3.1: find nearest center of mass? https://turfjs.org/docs/#centerOfMass, https://turfjs.org/docs/#nearestPoint
@@ -110,6 +109,13 @@ export const assignToNearestDroppable = async ({
   //        choose closest
   //        alternative solution: https://github.com/Turfjs/turf/issues/1743
   const distances = places.map((place) => {
+    const placeContainsOccurrence = idsOfPlacesContainingLatLng.includes(
+      place.place_id,
+    )
+    if (placeContainsOccurrence) {
+      return { place_id: place.place_id, distance: 0 }
+    }
+
     let convexedPlace
     try {
       convexedPlace = convex(place.geometry)
