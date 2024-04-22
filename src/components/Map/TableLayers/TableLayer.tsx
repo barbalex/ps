@@ -5,16 +5,6 @@ import * as ReactDOMServer from 'react-dom/server'
 import * as icons from 'react-icons/md'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbadoSession } from '@corbado/react'
-import {
-  Dialog,
-  DialogTrigger,
-  DialogSurface,
-  DialogTitle,
-  DialogContent,
-  DialogBody,
-  DialogActions,
-  Button,
-} from "@fluentui/react-components";
 
 import { vectorLayerDisplayToProperties } from '../../../modules/vectorLayerDisplayToProperties'
 import { Popup } from '../Popup'
@@ -72,10 +62,6 @@ export const TableLayer = memo(({ data, layer }: Props) => {
   const map: Map = useMapEvent('zoomend', () => setZoom(map.getZoom()))
   const [zoom, setZoom] = useState(map.getZoom())
 
-  // if multiple places are close to the dropped location, 
-  // assignToNearestDroppable will set an array of: place_id's, labels and distances
-  // if so, a dialog will open to choose the place to assign
-  const [placesToAssign, setPlacesToAssign] = useState([])
 
   if (!appState) return null
   if (!firstDisplay) return null
