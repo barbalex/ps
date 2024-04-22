@@ -52,6 +52,7 @@ export const OccurrenceAssignChooser = memo(() => {
                   key={place.place_id}
                   occurrenceId={placesToAssignTo.occurrenceId}
                   place={place}
+                  appStateId={appState.app_state_id}
                 />
               ))}
             </MenuList>
