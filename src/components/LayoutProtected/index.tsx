@@ -8,6 +8,7 @@ import { Notifications } from '../Notifications'
 import { ProtectedRoute } from '../ProtectedRoute'
 import { Header } from './Header'
 import { TableLayersProvider } from '../TableLayersProvider'
+import { OccurrenceAssignChooser } from '../OccurrenceAssignChooser'
 
 // memoizing this component creates error
 export const Layout = memo(() => {
@@ -38,6 +39,7 @@ export const Layout = memo(() => {
       )}
       <ProtectedRoute>
         <TableLayersProvider />
+        <OccurrenceAssignChooser />
         <Main />
       </ProtectedRoute>
     </>

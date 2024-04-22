@@ -166,4 +166,15 @@ export const assignToNearestDroppable = async ({
   // TODO: multiple places cover the drop point
   // TODO: need to ask user to choose
   // open dialog in middle of screen / map or at dragend position?
+  const placesToAssignOccurrenceTo = {
+    occurrence_id: occurrenceId,
+    places: placeIdsWithMinDistances.map((p) => ({
+      ...p,
+      label: places.find((place) => place.place_id === p.place_id)?.label,
+    })),
+  }
+  db.app_states.update({
+    where: { app_state_id: appState?.app_state_id },
+    data: { places_to_assign_occurrence_to: placesToAssignOccurrenceTo },
+  })
 }
