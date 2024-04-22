@@ -2,7 +2,9 @@ import pointsWithinPolygon from '@turf/points-within-polygon' // https://turfjs.
 import convex from '@turf/convex' // https://turfjs.org/docs/#convex
 import polygonToLine from '@turf/polygon-to-line' // https://turfjs.org/docs/#polygonToLine
 import pointToLineDistance from '@turf/point-to-line-distance'
+import distance from '@turf/distance'
 import { point, points } from '@turf/helpers'
+import { Map } from '@types/leaflet'
 
 import {
   Electric,
@@ -16,6 +18,7 @@ interface Props {
   layer: VectorLayer
   latLng: [number, number]
   occurrenceId: uuid
+  map: Map
 }
 
 export const assignToNearestDroppable = async ({
@@ -23,8 +26,8 @@ export const assignToNearestDroppable = async ({
   authUser,
   latLng,
   occurrenceId,
+  map,
 }: Props) => {
-  console.log('hello assignToNearestDroppable', { latLng })
   let latLngPoint
   try {
     latLngPoint = point([latLng.lng, latLng.lat])
@@ -86,19 +89,6 @@ export const assignToNearestDroppable = async ({
     idsOfPlacesContainingLatLng.push(place.place_id)
   }
 
-  // if (idsOfPlacesContainingLatLng.length) {
-  //   if (idsOfPlacesContainingLatLng.length === 1) {
-  //     const place_id = idsOfPlacesContainingLatLng[0]
-  //     // 3.2.1: assign to place
-  //     db.occurrences.update({
-  //       where: { occurrence_id: occurrenceId },
-  //       data: { place_id, not_to_assign: false },
-  //     })
-  //   }
-  //   // TODO: multiple places cover the drop point
-  //   // TODO: need to ask user to choose
-  //   // open dialog in middle of screen / map or at dragend position?
-  // }
 
   // 3.3 if not, find the nearest feature
   // 3.3.1: find nearest center of mass? https://turfjs.org/docs/#centerOfMass, https://turfjs.org/docs/#nearestPoint
@@ -128,7 +118,6 @@ export const assignToNearestDroppable = async ({
     } catch (error) {
       console.log('hello assignToNearestDroppable distance', { error })
     }
-    console.log('hello assignToNearestDroppable distance', { hullLine })
     let distance
     try {
       distance = pointToLineDistance(latLngPoint, hullLine)
@@ -138,4 +127,34 @@ export const assignToNearestDroppable = async ({
     return { place_id: place.place_id, distance }
   })
   console.log('hello assignToNearestDroppable distance', { distances })
+  // get width of map in kilometres
+  const mapBounds = map.getBounds()
+  const mapNorthEast = mapBounds.getNorthEast()
+  const mapNorthWest = mapBounds.getNorthWest()
+  const mapWidth = distance(
+    point([mapNorthEast.lng, mapNorthEast.lat]),
+    point([mapNorthWest.lng, mapNorthWest.lat]),
+  )
+  const minDistance = mapWidth / 15
+  const minDistances = distances.filter((d) => d.distance < minDistance)
+  console.log('hello assignToNearestDroppable distance', {
+    mapWidth,
+    minDistance,
+    minDistances,
+    distances,
+  })
+
+  // if (idsOfPlacesContainingLatLng.length) {
+  //   if (idsOfPlacesContainingLatLng.length === 1) {
+  //     const place_id = idsOfPlacesContainingLatLng[0]
+  //     // 3.2.1: assign to place
+  //     db.occurrences.update({
+  //       where: { occurrence_id: occurrenceId },
+  //       data: { place_id, not_to_assign: false },
+  //     })
+  //   }
+  //   // TODO: multiple places cover the drop point
+  //   // TODO: need to ask user to choose
+  //   // open dialog in middle of screen / map or at dragend position?
+  // }
 }

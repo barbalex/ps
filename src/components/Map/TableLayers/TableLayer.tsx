@@ -1,5 +1,6 @@
 import { useState, memo, useCallback, useMemo } from 'react'
 import { GeoJSON, useMapEvent } from 'react-leaflet'
+import { Map } from '@types/leaflet'
 import * as ReactDOMServer from 'react-dom/server'
 import * as icons from 'react-icons/md'
 import { useLiveQuery } from 'electric-sql/react'
@@ -58,7 +59,7 @@ export const TableLayer = memo(({ data, layer }: Props) => {
     [firstDisplay, layer?.display_by_property_field, vectorLayerDisplays],
   )
 
-  const map = useMapEvent('zoomend', () => setZoom(map.getZoom()))
+  const map: Map = useMapEvent('zoomend', () => setZoom(map.getZoom()))
   const [zoom, setZoom] = useState(map.getZoom())
 
   if (!appState) return null
@@ -127,6 +128,7 @@ export const TableLayer = memo(({ data, layer }: Props) => {
                 authUser,
                 latLng: e.latlng,
                 occurrenceId: marker.feature.properties?.occurrence_id,
+                map,
               })
             })
 
@@ -167,6 +169,7 @@ export const TableLayer = memo(({ data, layer }: Props) => {
               authUser,
               latLng: position,
               occurrenceId: marker.feature.properties?.occurrence_id,
+              map,
             })
           })
 
