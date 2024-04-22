@@ -8,12 +8,12 @@ import {
   DialogActions,
   Button,
   MenuList,
-  MenuItem,
 } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbadoSession } from '@corbado/react'
 
-import { useElectric } from '../ElectricProvider'
+import { useElectric } from '../../ElectricProvider'
+import { Item } from './Item'
 
 export const OccurrenceAssignChooser = memo(() => {
   // if multiple places are close to the dropped location,
@@ -48,9 +48,11 @@ export const OccurrenceAssignChooser = memo(() => {
           <DialogContent>
             <MenuList>
               {placesToAssignTo.places.map((place) => (
-                <MenuItem key={place.place_id}>{`${place.label} (${
-                  place.distance * 1000
-                }m)`}</MenuItem>
+                <Item
+                  key={place.place_id}
+                  occurrenceId={placesToAssignTo.occurrenceId}
+                  place={place}
+                />
               ))}
             </MenuList>
           </DialogContent>
