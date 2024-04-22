@@ -56,57 +56,26 @@ export const assignToNearestDroppable = async ({
   // 3. get the nearest feature
 
   // 3.1 direct using nearestPoint
-  // let nearestPlace
-  // try {
-  //   nearestPlace = nearestPoint(
-  //     latLngPoint,
-  //     featureCollection(places.map((p) => p.geometry)),
-  //   )
-  // } catch (error) {
-  //   // Error: coord must be GeoJSON Point or an Array of numbers
-  //   console.log('hello assignToNearestDroppable', { error })
-  // }
+  //     does not work because of the error: coord must be GeoJSON Point or an Array of numbers
 
   // 3.2 find out if the latLng is inside a feature: https://turfjs.org/docs/#pointsWithinPolygon
-  const placesCoveringLatLng = []
-  // for (const place of places) {
-  //   let pointsWithin
-  //   try {
-  //     pointsWithin = pointsWithinPolygon(latLngPoints, place.geometry)
-  //   } catch (error) {
-  //     // an error occurres if geometry is not polygon, so ignore
-  //   }
-  //   const isInside = pointsWithin?.features?.length > 0
-  //   console.log('hello assignToNearestDroppable', {
-  //     pointsWithin,
-  //     place,
-  //     isInside,
-  //   })
-  //   // if isInside, assign, then return
-  //   if (!isInside) continue
-  //   placesCoveringLatLng.push(place)
-  // }
-
-  // if (!placesCoveringLatLng.length) {
-  // So latLng is not inside a geometry of the place features. Maybe it is inside its convex hull?
-  // https://turfjs.org/docs/#convex
+  //     Because of featureCollection, use the convex hull: https://turfjs.org/docs/#convex
+  const placesContainingLatLng = []
   for (const place of places) {
-    let bufferedPlace
+    let convexedPlace
     try {
-      bufferedPlace = convex(place.geometry)
+      convexedPlace = convex(place.geometry)
     } catch (error) {
-      console.log('hello assignToNearestDroppable buffered', { error })
+      console.log('hello assignToNearestDroppable convexed', { error })
     }
-    console.log('hello assignToNearestDroppable buffered', { bufferedPlace })
     let pointsWithin
     try {
-      pointsWithin = pointsWithinPolygon(latLngPoints, bufferedPlace)
+      pointsWithin = pointsWithinPolygon(latLngPoints, convexedPlace)
     } catch (error) {
       // an error occurres if geometry is not polygon, so ignore
     }
     const isInside = pointsWithin?.features?.length > 0
-    console.log('hello assignToNearestDroppable buffered', {
-      pointsWithin,
+    console.log('hello assignToNearestDroppable convexed', {
       place,
       isInside,
     })
@@ -116,9 +85,9 @@ export const assignToNearestDroppable = async ({
   }
   // }
 
-  if (placesCoveringLatLng.length) {
-    if (placesCoveringLatLng.length === 1) {
-      const place = placesCoveringLatLng[0]
+  if (placesContainingLatLng.length) {
+    if (placesContainingLatLng.length === 1) {
+      const place = placesContainingLatLng[0]
       // 3.2.1: assign to place
       db.occurrences.update({
         where: { occurrence_id: occurrenceId },
@@ -127,9 +96,15 @@ export const assignToNearestDroppable = async ({
     }
     // TODO: multiple places cover the drop point
     // TODO: need to ask user to choose
+    // open dialog in middle of screen / map or at dragend position?
   }
 
   // 3.3 if not, find the nearest feature
   // 3.3.1: find nearest center of mass? https://turfjs.org/docs/#centerOfMass, https://turfjs.org/docs/#nearestPoint
-  // 3.3.2: better but more work: create outline of all features (https://turfjs.org/docs/#buffer), create that to a line (https://turfjs.org/docs/#polygonToLine), then find nearest outline (https://turfjs.org/docs/#pointToLineDistance)?
+  // 3.3.2: better but more work:
+  //        create convex outline of all places (https://turfjs.org/docs/#convex),
+  //        convert that to a line (https://turfjs.org/docs/#polygonToLine),
+  //        for every occurrence find nearest outline (https://turfjs.org/docs/#pointToLineDistance)
+  //        choose closest
+  //        alternative solution: https://github.com/Turfjs/turf/issues/1743
 }
