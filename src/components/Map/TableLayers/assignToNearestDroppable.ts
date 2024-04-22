@@ -89,7 +89,6 @@ export const assignToNearestDroppable = async ({
     idsOfPlacesContainingLatLng.push(place.place_id)
   }
 
-
   // 3.3 if not, find the nearest feature
   // 3.3.1: find nearest center of mass? https://turfjs.org/docs/#centerOfMass, https://turfjs.org/docs/#nearestPoint
   // 3.3.2: better but more work:
@@ -98,7 +97,7 @@ export const assignToNearestDroppable = async ({
   //        for every occurrence find nearest outline (https://turfjs.org/docs/#pointToLineDistance)
   //        choose closest
   //        alternative solution: https://github.com/Turfjs/turf/issues/1743
-  const distances = places.map((place) => {
+  const placeIdsWithDistance = places.map((place) => {
     const placeContainsOccurrence = idsOfPlacesContainingLatLng.includes(
       place.place_id,
     )
@@ -126,7 +125,9 @@ export const assignToNearestDroppable = async ({
     }
     return { place_id: place.place_id, distance }
   })
-  console.log('hello assignToNearestDroppable distance', { distances })
+  console.log('hello assignToNearestDroppable distance', {
+    distances: placeIdsWithDistance,
+  })
   // get width of map in kilometres
   const mapBounds = map.getBounds()
   const mapNorthEast = mapBounds.getNorthEast()
@@ -136,25 +137,33 @@ export const assignToNearestDroppable = async ({
     point([mapNorthWest.lng, mapNorthWest.lat]),
   )
   const minDistance = mapWidth / 15
-  const minDistances = distances.filter((d) => d.distance < minDistance)
+  const placeIdsWithMinDistances = placeIdsWithDistance.filter(
+    (d) => d.distance < minDistance,
+  )
   console.log('hello assignToNearestDroppable distance', {
     mapWidth,
     minDistance,
-    minDistances,
-    distances,
+    placeIdsWithMinDistances,
+    placeIdsWithDistance,
   })
 
-  // if (idsOfPlacesContainingLatLng.length) {
-  //   if (idsOfPlacesContainingLatLng.length === 1) {
-  //     const place_id = idsOfPlacesContainingLatLng[0]
-  //     // 3.2.1: assign to place
-  //     db.occurrences.update({
-  //       where: { occurrence_id: occurrenceId },
-  //       data: { place_id, not_to_assign: false },
-  //     })
-  //   }
-  //   // TODO: multiple places cover the drop point
-  //   // TODO: need to ask user to choose
-  //   // open dialog in middle of screen / map or at dragend position?
-  // }
+  if (!placeIdsWithMinDistances.length) {
+    // TODO: tell user no place found to assign to
+    return console.log('no places found to assign to')
+  }
+
+  if (placeIdsWithMinDistances.length === 1) {
+    console.log(
+      'hello assignToNearestDroppable, assigning as single place found inside min distance',
+    )
+    const place_id = placeIdsWithMinDistances[0]?.place_id
+    // 3.2.1: assign to place
+    db.occurrences.update({
+      where: { occurrence_id: occurrenceId },
+      data: { place_id, not_to_assign: false },
+    })
+  }
+  // TODO: multiple places cover the drop point
+  // TODO: need to ask user to choose
+  // open dialog in middle of screen / map or at dragend position?
 }
