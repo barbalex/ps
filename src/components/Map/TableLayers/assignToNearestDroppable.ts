@@ -1,4 +1,3 @@
-import nearestPoint from '@turf/nearest-point' // https://turfjs.org/docs/#nearestPoint
 import pointsWithinPolygon from '@turf/points-within-polygon' // https://turfjs.org/docs/#pointsWithinPolygon
 import convex from '@turf/convex' // https://turfjs.org/docs/#convex
 import { point, points } from '@turf/helpers'

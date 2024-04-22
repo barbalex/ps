@@ -30,7 +30,6 @@
     "@turf/buffer": "6.5.0",
     "@turf/convex": "6.5.0",
     "@turf/helpers": "6.5.0",
-    "@turf/nearest-point": "6.5.0",
     "@turf/points-within-polygon": "6.5.0",
     "@uploadcare/blocks": "0.37.0",
     "allotment": "1.20.0",
