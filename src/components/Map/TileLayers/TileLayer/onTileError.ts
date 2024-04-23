@@ -1,9 +1,9 @@
 // TODO: need to debounce
 import axios from 'redaxios'
-import { uuidv7 } from '@kripod/uuidv7'
 
 import { Tile_layers as TileLayer } from '../../../../generated/client'
 import { xmlToJson } from '../../../../modules/xmlToJson'
+import { createNotification } from '../../../../modules/createRows'
 
 export const onTileError = async (db, map, layer: TileLayer, ignore) => {
   console.log('hello onTileError', { ignore, map, layer, db })
@@ -35,14 +35,12 @@ export const onTileError = async (db, map, layer: TileLayer, ignore) => {
   const errorMessage =
     data?.HTML?.BODY?.SERVICEEXCEPTIONREPORT?.SERVICEEXCEPTION?.['#text']
   // console.log(`onTileError errorMessage:`, errorMessage)
-  db.notifications.create({
-    data: {
-      title: `Fehler beim Laden der Bild-Karte '${layer.label}'. Der WMS-Server meldet`,
-      body: errorMessage,
-      intent: 'error', // 'success' | 'error' | 'warning' | 'info'
-      notification_id: uuidv7(),
-    },
+  const data = createNotification({
+    title: `Fehler beim Laden der Bild-Karte '${layer.label}'. Der WMS-Server meldet`,
+    body: errorMessage,
+    intent: 'error',
   })
+  db.notifications.create({ data })
 }
 
 export default onTileError
