@@ -82,20 +82,12 @@ export const assignToNearestDroppable = async ({
     } catch (error) {
       console.log('hello assignToNearestDroppable 3', { error })
     }
-    console.log(
-      'hello assignToNearestDroppable distance 4, bufferedGeometry:',
-      bufferedGeometry,
-    )
     let convexedGeometry
     try {
       convexedGeometry = convex(bufferedGeometry)
     } catch (error) {
       console.log('hello assignToNearestDroppable 5', { error })
     }
-    console.log(
-      'hello assignToNearestDroppable distance 5, convexedGeometry:',
-      convexedGeometry,
-    )
     let pointsWithin
     try {
       pointsWithin = pointsWithinPolygon(latLngPoints, convexedGeometry)
@@ -103,10 +95,6 @@ export const assignToNearestDroppable = async ({
       // an error occurres if geometry is not polygon, so ignore
       console.log('hello assignToNearestDroppable 6', { error })
     }
-    console.log(
-      'hello assignToNearestDroppable distance 7, pointsWithin:',
-      pointsWithin,
-    )
     const isInside = pointsWithin?.features?.length > 0
     // if isInside, assign, then return
     if (!isInside) continue
@@ -121,7 +109,7 @@ export const assignToNearestDroppable = async ({
   //        for every occurrence find nearest outline (https://turfjs.org/docs/#pointToLineDistance)
   //        choose closest
   //        ISSUE: convex does not work for points are straight lines (https://github.com/Turfjs/turf/issues/2449)
-  //        Solution: buffer the feature collection before convexing
+  //        Solution: buffer the feature collection by a millimetre before convexing
   //        alternative solution: https://github.com/Turfjs/turf/issues/1743
   const placeIdsWithDistance = places.map((place) => {
     const placeContainsOccurrence = idsOfPlacesContainingLatLng.includes(
@@ -137,40 +125,24 @@ export const assignToNearestDroppable = async ({
     } catch (error) {
       console.log('hello assignToNearestDroppable 8', { error })
     }
-    console.log(
-      'hello assignToNearestDroppable distance 9, bufferedGeometry:',
-      bufferedGeometry,
-    )
     let convexedGeometry
     try {
       convexedGeometry = convex(bufferedGeometry)
     } catch (error) {
       console.log('hello assignToNearestDroppable 10', { error })
     }
-    console.log(
-      'hello assignToNearestDroppable distance 11, convexedGeometry:',
-      convexedGeometry,
-    )
     let hullLine
     try {
       hullLine = polygonToLine(convexedGeometry)
     } catch (error) {
       console.log('hello assignToNearestDroppable distance 12', { error })
     }
-    console.log(
-      'hello assignToNearestDroppable distance 13, hullLine:',
-      hullLine,
-    )
     let distance
     try {
       distance = pointToLineDistance(latLngPoint, hullLine)
     } catch (error) {
       console.log('hello assignToNearestDroppable distance 14', { error })
     }
-    console.log(
-      'hello assignToNearestDroppable distance 15, distance:',
-      distance,
-    )
     return { place_id: place.place_id, distance }
   })
   // get width of map in kilometres
@@ -181,18 +153,25 @@ export const assignToNearestDroppable = async ({
     point([mapNorthEast.lng, mapNorthEast.lat]),
     point([mapNorthWest.lng, mapNorthWest.lat]),
   )
-  const minDistance = mapWidth / 15
+
+  const minDistance = mapWidth / 2
   const placeIdsWithMinDistances = placeIdsWithDistance.filter(
     (d) => d.distance < minDistance,
   )
+  // sort by distance
+  const placeIdsWithMinDistancesSortedByDistance = [...placeIdsWithMinDistances]
+    .sort((a, b) => a.distance - b.distance)
+    // and take the first 5
+    .slice(0, 5)
   console.log('hello assignToNearestDroppable distance 14', {
     mapWidth,
     minDistance,
     placeIdsWithMinDistances,
     placeIdsWithDistance,
+    placeIdsWithMinDistancesSortedByDistance,
   })
 
-  if (!placeIdsWithMinDistances.length) {
+  if (!placeIdsWithMinDistancesSortedByDistance.length) {
     // tell user no place found to assign to
     const data = createNotification({
       message: 'No place found to assign to',
@@ -203,13 +182,13 @@ export const assignToNearestDroppable = async ({
 
   // TODO: really? Maybe better to always confirm?
   if (
-    placeIdsWithMinDistances.length === 1 &&
+    placeIdsWithMinDistancesSortedByDistance.length === 1 &&
     !appState.confirm_assigning_to_single_target
   ) {
     console.log(
       'hello assignToNearestDroppable 15, assigning as single place found inside min distance',
     )
-    const place_id = placeIdsWithMinDistances[0]?.place_id
+    const place_id = placeIdsWithMinDistancesSortedByDistance[0]?.place_id
     // 3.2.1: assign to place
     db.occurrences.update({
       where: { occurrence_id: occurrenceId },
@@ -224,7 +203,7 @@ export const assignToNearestDroppable = async ({
   // need to ask user to choose
   const placesToAssignOccurrenceTo = {
     occurrence_id: occurrenceId,
-    places: placeIdsWithMinDistances.map((p) => ({
+    places: placeIdsWithMinDistancesSortedByDistance.map((p) => ({
       ...p,
       label: places.find((place) => place.place_id === p.place_id)?.label,
     })),
