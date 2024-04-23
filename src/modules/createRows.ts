@@ -547,3 +547,19 @@ export const createOccurrence = ({ occurrence_import_id, data = null }) => ({
   occurrence_import_id,
   data,
 })
+
+export const createNotification = ({
+  user_id,
+  title = null,
+  body = null,
+  // 'success' | 'error' | 'warning' | 'info'
+  intent = 'info',
+  timeout = 10000,
+}) => ({
+  notification_id: uuidv7(),
+  user_id,
+  title,
+  body,
+  intent,
+  timeout,
+})
