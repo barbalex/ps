@@ -11,6 +11,7 @@ import {
   Vector_layers as VectorLayer,
   Places as Place,
 } from '../../../generated/client'
+import { createNotification } from '../../../modules/createRows'
 
 interface Props {
   db: Electric
@@ -149,7 +150,12 @@ export const assignToNearestDroppable = async ({
 
   if (!placeIdsWithMinDistances.length) {
     // TODO: tell user no place found to assign to
-    return console.log('no places found to assign to')
+    const data = createNotification({
+      user_email: authUser?.email,
+      message: 'No place found to assign to',
+      type: 'error',
+    })
+    db.notifications.create({ data })
   }
 
   if (placeIdsWithMinDistances.length === 1) {
