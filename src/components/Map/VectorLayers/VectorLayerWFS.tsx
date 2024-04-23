@@ -8,7 +8,6 @@ import XMLViewer from 'react-xml-viewer'
 import { MdClose } from 'react-icons/md'
 import * as ReactDOMServer from 'react-dom/server'
 import { useDebouncedCallback } from 'use-debounce'
-import { uuidv7 } from '@kripod/uuidv7'
 import * as icons from 'react-icons/md'
 
 import {
@@ -28,6 +27,7 @@ import {
   Vector_layers as VectorLayer,
   Vector_layer_displays as VectorLayerDisplay,
 } from '../../../generated/client'
+import { createNotification } from '../../../modules/createRows'
 
 const xmlViewerStyle = {
   fontSize: 'small',
@@ -65,16 +65,16 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
     async (/*{ bounds }*/) => {
       // const mapSize = map.getSize()
       removeNotifs()
-      const notification_id = uuidv7()
-      await db.notifications.create({
-        data: {
-          notification_id,
-          title: `Lade Vektor-Karte '${layer.label}'...`,
-          intent: 'info',
-          timeout: 100000,
-        },
+      const data = createNotification({
+        title: `Lade Vektor-Karte '${layer.label}'...`,
+        intent: 'info',
+        timeout: 100000,
       })
-      notificationIds.current = [notification_id, ...notificationIds.current]
+      await db.notifications.create({ data })
+      notificationIds.current = [
+        data.notification_id,
+        ...notificationIds.current,
+      ]
       let res
       const params = {
         service: 'WFS',
@@ -99,7 +99,7 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
         })
       } catch (error) {
         await db.notifications.delete({
-          where: { notification_id },
+          where: { notification_id: data.notification_id },
         })
         console.error('VectorLayerWFS, error:', {
           url: error?.url,
@@ -111,12 +111,11 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
         })
         setError(error.data)
         return await db.notifications.create({
-          data: {
-            notification_id: uuidv7(),
+          data: createNotification({
             title: `Fehler beim Laden der Geometrien für ${layer.label}`,
             body: error.message,
             intent: 'error',
-          },
+          }),
         })
       }
       removeNotifs()
@@ -147,21 +146,16 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
     data?.length >= (layer.max_features ?? 1000) &&
     !notificationIds.current.length
   ) {
-    const notification_id = uuidv7()
-    db.notifications.create({
-      data: {
-        notification_id,
-        title: `Zuviele Geometrien`,
-        body: `Die maximale Anzahl Features von ${
-          layer.max_features ?? 1000
-        } für Vektor-Karte '${
-          layer.label
-        }' wurde geladen. Zoomen sie näher ran`,
-        intent: 'warning',
-        timeout: 10000,
-      },
+    const data = createNotification({
+      title: `Zuviele Geometrien`,
+      body: `Die maximale Anzahl Features von ${
+        layer.max_features ?? 1000
+      } für Vektor-Karte '${layer.label}' wurde geladen. Zoomen sie näher ran`,
+      intent: 'warning',
+      timeout: 10000,
     })
-    notificationIds.current = [notification_id, ...notificationIds.current]
+    db.notifications.create({ data })
+    notificationIds.current = [data.notification_id, ...notificationIds.current]
   }
 
   const mapSize = map.getSize()
