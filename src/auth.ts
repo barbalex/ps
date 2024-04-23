@@ -12,7 +12,6 @@ export const authToken = (shortSession) => {
     sub = genUUID()
     // window.sessionStorage.setItem(subKey, sub)
     const subToUse = shortSession ? shortSession : sub
-    console.log('hello authToken, subToUse:', subToUse)
     window.sessionStorage.setItem(subKey, subToUse)
   }
   const claims = { sub }
