@@ -40,14 +40,6 @@ export const PlaceChildren = memo(
     )
     const showFiles = project?.files_active_places ?? false
 
-    console.log('PlaceChildren', {
-      project_id,
-      subproject_id,
-      place_id,
-      place,
-      placeLevel,
-    })
-
     // TODO: if placeLevel?.occurrences, show occurrences
     return (
       <>
