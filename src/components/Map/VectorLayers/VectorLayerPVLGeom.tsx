@@ -51,12 +51,13 @@ export const VectorLayerPVLGeom = ({ layer, display }: Props) => {
     async ({ bounds }) => {
       // console.log('VectorLayerPVLGeom fetching data')
       removeNotifs()
-      const data = createNotification({
-        title: `Lade Vektor-Karte '${layer.label}'...`,
-        intent: 'info',
-        timeout: 100000,
+      db.notifications.create({
+        data: createNotification({
+          title: `Lade Vektor-Karte '${layer.label}'...`,
+          intent: 'info',
+          timeout: 100000,
+        }),
       })
-      db.notifications.create({ data })
       notificationIds.current = [
         data.notification_id,
         ...notificationIds.current,
