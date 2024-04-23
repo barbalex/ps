@@ -3,7 +3,6 @@ import { GeoJSON, useMapEvent, useMap } from 'react-leaflet'
 import * as ReactDOMServer from 'react-dom/server'
 import { useDebouncedCallback } from 'use-debounce'
 import * as icons from 'react-icons/md'
-import { uuidv7 } from '@kripod/uuidv7'
 
 import {
   Vector_layer_geoms as VectorLayerGeom,
@@ -15,6 +14,7 @@ import { vectorLayerDisplayToProperties } from '../../../modules/vectorLayerDisp
 import { Popup } from '../Popup'
 import { ErrorBoundary } from '../MapErrorBoundary'
 import { useElectric } from '../../../ElectricProvider'
+import { createNotification } from '../../../modules/createRows'
 
 // const bboxBuffer = 0.01
 
@@ -51,16 +51,16 @@ export const VectorLayerPVLGeom = ({ layer, display }: Props) => {
     async ({ bounds }) => {
       // console.log('VectorLayerPVLGeom fetching data')
       removeNotifs()
-      const notification_id = uuidv7()
-      db.notifications.create({
-        data: {
-          notification_id,
-          title: `Lade Vektor-Karte '${layer.label}'...`,
-          intent: 'info',
-          timeout: 100000,
-        },
+      const data = createNotification({
+        title: `Lade Vektor-Karte '${layer.label}'...`,
+        intent: 'info',
+        timeout: 100000,
       })
-      notificationIds.current = [notification_id, ...notificationIds.current]
+      db.notifications.create({ data })
+      notificationIds.current = [
+        data.notification_id,
+        ...notificationIds.current,
+      ]
 
       const { results: vectorLayerGeoms = [] }: { results: VectorLayerGeom[] } =
         await db.vector_layer_geoms.findMany({
@@ -119,21 +119,16 @@ export const VectorLayerPVLGeom = ({ layer, display }: Props) => {
     data?.length === (layer.max_features ?? 1000) &&
     !notificationIds.current.length
   ) {
-    const notification_id = uuidv7()
-    db.notifications.create({
-      data: {
-        notification_id,
-        title: `Zuviele Geometrien`,
-        body: `Die maximale Anzahl Features von ${
-          layer.max_features ?? 1000
-        } für Vektor-Karte '${
-          layer.label
-        }' wurde geladen. Zoomen sie näher ran`,
-        intent: 'warning',
-        timeout: 10000,
-      },
+    const data = createNotification({
+      title: `Zuviele Geometrien`,
+      body: `Die maximale Anzahl Features von ${
+        layer.max_features ?? 1000
+      } für Vektor-Karte '${layer.label}' wurde geladen. Zoomen sie näher ran`,
+      intent: 'warning',
+      timeout: 10000,
     })
-    notificationIds.current = [notification_id, ...notificationIds.current]
+    db.notifications.create({ data })
+    notificationIds.current = [data.notification_id, ...notificationIds.current]
   }
 
   if (!data?.length) return null
