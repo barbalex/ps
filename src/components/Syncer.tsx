@@ -167,7 +167,8 @@ export const Syncer = () => {
           project_users: true,
           subproject_users: true,
           place_users: true,
-          notifications: true,
+          // do not sync notifications - thus no need to include user_id and asynchroneously fetch it
+          // notifications: true,
         },
       })
       const messagesShape = await db.messages.sync({
