@@ -68,19 +68,90 @@ const seedSubprojects = `INSERT INTO subprojects(subproject_id, project_id, name
 const seedSubprojectUsers = `INSERT INTO subproject_users(subproject_user_id, subproject_id, user_id, role) values 
 ('018cfd29-ccaa-7000-a686-8566a27eee45', '018cfd27-ee92-7000-b678-e75497d6c60e', '018cf95a-d817-7000-92fa-bb3b2ad59dda', 'manager');`
 
+const geometry01 = {
+  type: 'FeatureCollection',
+  features: [
+    {
+      type: 'Feature',
+      geometry: {
+        type: 'Polygon',
+        coordinates: [
+          [
+            [8.578262, 47.558992],
+            [8.504105, 47.515888],
+            [8.572769, 47.516816],
+            [8.578262, 47.558992],
+          ],
+        ],
+      },
+      properties: {},
+    },
+    {
+      type: 'Feature',
+      geometry: {
+        type: 'LineString',
+        coordinates: [
+          [8.622894, 47.519134],
+          [8.604355, 47.472749],
+        ],
+      },
+      properties: {},
+    },
+  ],
+}
+const geometry02 = {
+  type: 'FeatureCollection',
+  features: [
+    {
+      type: 'Feature',
+      geometry: {
+        type: 'Polygon',
+        coordinates: [
+          [
+            [8.615341, 47.541394],
+            [8.54805, 47.526562],
+            [8.54805, 47.503842],
+            [8.598862, 47.519608],
+            [8.615341, 47.541394],
+          ],
+        ],
+      },
+      properties: {},
+    },
+  ],
+}
+const geometry03 = {
+  type: 'FeatureCollection',
+  features: [
+    {
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: [8.596802, 47.544638],
+      },
+      properties: {},
+    },
+  ],
+}
 const seedPlaces = `INSERT INTO 
-places(account_id, place_id, parent_id, subproject_id, level, since, data) values 
-('018cf958-27e2-7000-90d3-59f024d467be', '018df4fa-cfb3-739c-bca2-d55dfe876995', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020, '{"name":"01 first"}'),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f8-9e60-763a-9191-2613ef4f1a16', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2021, '{"name":"02 second"}'),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f8-c707-7485-9ec9-84067c4623cf', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2022, '{"name":"03 third"}'),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f8-e644-7f09-abf7-8ea0a178ce79', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2019, '{"name":"04 fourth"}'),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-1133-7c91-8220-913c861b3339', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020, '{"name":"05 fifth"}'),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-323e-7753-aae1-37005b3f25cf', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2018, '{"name":"06 sixth"}'),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-52e7-79a7-8e53-34c4558bfce5', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2021, '{"name":"07 seventh"}'),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-6b13-72e0-8903-c23fa8f2acde', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020, '{"name":"08 eighth"}'),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e0a2f-3946-7918-80bb-69aba1c20f6d', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 2, 2020, '{"name":"01.01 first.first"}'),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e0a2f-bc94-76d2-8e5f-2a3acf73649e', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 2, 2021, '{"name":"01.02 first.second"}'),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e0a30-20f7-7b81-a322-5f9e7f985b78', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 2, 2021, '{"name":"01.03 first.third"}');`
+places(account_id, place_id, parent_id, subproject_id, level, since, data, geometry) values 
+('018cf958-27e2-7000-90d3-59f024d467be', '018df4fa-cfb3-739c-bca2-d55dfe876995', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020, '{"name":"01 first"}', '${JSON.stringify(
+  geometry01,
+)}'),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f8-9e60-763a-9191-2613ef4f1a16', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2021, '{"name":"02 second"}', '${JSON.stringify(
+  geometry02,
+)}'),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f8-c707-7485-9ec9-84067c4623cf', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2022, '{"name":"03 third"}', '${JSON.stringify(
+  geometry03,
+)}'),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f8-e644-7f09-abf7-8ea0a178ce79', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2019, '{"name":"04 fourth"}', null),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-1133-7c91-8220-913c861b3339', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020, '{"name":"05 fifth"}', null),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-323e-7753-aae1-37005b3f25cf', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2018, '{"name":"06 sixth"}', null),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-52e7-79a7-8e53-34c4558bfce5', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2021, '{"name":"07 seventh"}', null),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-6b13-72e0-8903-c23fa8f2acde', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020, '{"name":"08 eighth"}', null),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e0a2f-3946-7918-80bb-69aba1c20f6d', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 2, 2020, '{"name":"01.01 first.first"}', null),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e0a2f-bc94-76d2-8e5f-2a3acf73649e', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 2, 2021, '{"name":"01.02 first.second"}', null),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e0a30-20f7-7b81-a322-5f9e7f985b78', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 2, 2021, '{"name":"01.03 first.third"}', null);`
 
 const seedChecks = `INSERT INTO checks(account_id, check_id, place_id, date) values 
 ('018cf958-27e2-7000-90d3-59f024d467be', '018df4ff-9124-73f4-95c1-497387b995c0', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2024-03-03'),
