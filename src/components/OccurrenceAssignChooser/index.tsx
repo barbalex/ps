@@ -69,8 +69,6 @@ export const OccurrenceAssignChooser = memo(() => {
 
   if (!placesToAssignTo) return null
 
-  console.log('hello OccurrenceAssignChooser 1', { placesToAssignTo })
-
   return (
     <Dialog open={true}>
       <DialogSurface style={{ maxWidth: 'fit-content' }}>
