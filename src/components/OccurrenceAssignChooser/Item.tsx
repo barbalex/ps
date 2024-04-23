@@ -25,7 +25,7 @@ export const Item = memo(({ place, occurrenceId, appStateId }: Props) => {
       where: { app_state_id: appStateId },
       data: { places_to_assign_occurrence_to: null },
     })
-  }, [appStateId, db.app_states, db.occurrences, occurrenceId, place.place_id])
+  }, [appStateId, db.app_states, db.occurrences, occurrenceId, place])
 
   return (
     <MenuItem onClick={onClick}>{`${
