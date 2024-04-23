@@ -18,7 +18,7 @@ export const Item = memo(({ place, occurrenceId, appStateId }: Props) => {
   const onClick = useCallback(async () => {
     await db.occurrences.update({
       where: { occurrence_id: occurrenceId },
-      data: { place_id: place.place_id, not_to_assign: false },
+      data: { place_id: place.place_id, not_to_assign: null },
     })
     // reset state
     db.app_states.update({
