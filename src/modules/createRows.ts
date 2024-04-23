@@ -549,7 +549,6 @@ export const createOccurrence = ({ occurrence_import_id, data = null }) => ({
 })
 
 export const createNotification = ({
-  user_id,
   title = null,
   body = null,
   // 'success' | 'error' | 'warning' | 'info'
@@ -557,7 +556,6 @@ export const createNotification = ({
   timeout = 10000,
 }) => ({
   notification_id: uuidv7(),
-  user_id,
   title,
   body,
   intent,
