@@ -3,7 +3,6 @@ import convex from '@turf/convex' // https://turfjs.org/docs/#convex
 import polygonToLine from '@turf/polygon-to-line' // https://turfjs.org/docs/#polygonToLine
 import pointToLineDistance from '@turf/point-to-line-distance'
 import distance from '@turf/distance'
-import { getType } from '@turf/invariant'
 import buffer from '@turf/buffer'
 import { point, points } from '@turf/helpers'
 import { Map } from '@types/leaflet'
