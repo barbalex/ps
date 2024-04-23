@@ -162,6 +162,9 @@ export const assignToNearestDroppable = async ({
     })
     return
   }
+  // TODO: why is point not found?
+  // TODO: why does circle tool create a point?
+  // TODO: add option to assign without asking
   // multiple places cover the drop point
   // need to ask user to choose
   const placesToAssignOccurrenceTo = {
