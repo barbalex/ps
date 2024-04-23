@@ -8,12 +8,32 @@ import {
   DialogActions,
   Button,
   MenuList,
+  Checkbox,
 } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbadoSession } from '@corbado/react'
+import { Dismiss24Regular } from '@fluentui/react-icons'
 
 import { useElectric } from '../../ElectricProvider'
 import { Item } from './Item'
+
+const titleRowStyle = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  columnGap: '1rem',
+}
+const titleCommentStyle = {
+  fontSize: '0.8rem',
+}
+const bodyStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  columnGap: '1rem',
+  rowGap: '0.2rem',
+}
+const actionsStyle = {
+  alignSelf: 'flex-end',
+}
 
 export const OccurrenceAssignChooser = memo(() => {
   // if multiple places are close to the dropped location,
@@ -33,34 +53,58 @@ export const OccurrenceAssignChooser = memo(() => {
     })
   }, [appState?.app_state_id, db.app_states])
 
+  const onClickSingleTarget = useCallback(() => {
+    db.app_states.update({
+      where: { app_state_id: appState?.app_state_id },
+      data: {
+        confirm_assigning_to_single_target:
+          !appState.confirm_assigning_to_single_target,
+      },
+    })
+  }, [
+    appState?.app_state_id,
+    appState?.confirm_assigning_to_single_target,
+    db.app_states,
+  ])
+
   if (!placesToAssignTo) return null
+
+  console.log('hello OccurrenceAssignChooser 1', { placesToAssignTo })
 
   return (
     <Dialog open={true}>
       <DialogSurface style={{ maxWidth: 'fit-content' }}>
-        <DialogBody
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          <DialogTitle>Choose where to assign</DialogTitle>
+        <DialogBody style={bodyStyle}>
+          <div style={titleRowStyle}>
+            <DialogTitle>Choose place to assign</DialogTitle>
+            <Button
+              appearance="subtle"
+              aria-label="close"
+              icon={<Dismiss24Regular />}
+              onClick={onClickCancel}
+            />
+          </div>
+          {placesToAssignTo.places.length > 4 && (
+            <div style={titleCommentStyle}>The 5 closest are shown</div>
+          )}
           <DialogContent>
             <MenuList>
               {placesToAssignTo.places.map((place) => (
                 <Item
                   key={place.place_id}
-                  occurrenceId={placesToAssignTo.occurrenceId}
+                  occurrenceId={placesToAssignTo.occurrence_id}
                   place={place}
                   appStateId={appState.app_state_id}
                 />
               ))}
             </MenuList>
           </DialogContent>
-          <DialogActions style={{ alignSelf: 'flex-end' }}>
-            <Button onClick={onClickCancel} appearance="secondary">
-              Close
-            </Button>
+          <DialogActions style={actionsStyle}>
+            <Checkbox
+              label="Auto-assign when single place found"
+              checked={!appState?.confirm_assigning_to_single_target}
+              onChange={onClickSingleTarget}
+            />
           </DialogActions>
         </DialogBody>
       </DialogSurface>
