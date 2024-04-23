@@ -192,7 +192,7 @@ export const assignToNearestDroppable = async ({
     // 3.2.1: assign to place
     db.occurrences.update({
       where: { occurrence_id: occurrenceId },
-      data: { place_id, not_to_assign: false },
+      data: { place_id, not_to_assign: null },
     })
     return
   }
