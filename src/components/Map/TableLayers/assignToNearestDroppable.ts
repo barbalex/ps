@@ -65,14 +65,14 @@ export const assignToNearestDroppable = async ({
   //     Because of featureCollection, use the convex hull: https://turfjs.org/docs/#convex
   const idsOfPlacesContainingLatLng = []
   for (const place of places) {
-    console.log(
-      'hello assignToNearestDroppable distance 1, place label:',
-      place.label,
-    )
-    console.log(
-      'hello assignToNearestDroppable distance 2, geometry:',
-      place.geometry,
-    )
+    // console.log(
+    //   'hello assignToNearestDroppable distance 1, place label:',
+    //   place.label,
+    // )
+    // console.log(
+    //   'hello assignToNearestDroppable distance 2, geometry:',
+    //   place.geometry,
+    // )
     // TODO: convexed only works for polygons
     // so buffer the geometry by a small value first
     let bufferedGeometry
@@ -162,13 +162,14 @@ export const assignToNearestDroppable = async ({
     .sort((a, b) => a.distance - b.distance)
     // and take the first 5
     .slice(0, 5)
-  console.log('hello assignToNearestDroppable distance 14', {
-    mapWidth,
-    minDistance,
-    placeIdsWithMinDistances,
-    placeIdsWithDistance,
-    placeIdsWithMinDistancesSortedByDistance,
-  })
+
+  // console.log('hello assignToNearestDroppable distance 14', {
+  //   mapWidth,
+  //   minDistance,
+  //   placeIdsWithMinDistances,
+  //   placeIdsWithDistance,
+  //   placeIdsWithMinDistancesSortedByDistance,
+  // })
 
   if (!placeIdsWithMinDistancesSortedByDistance.length) {
     // tell user no place found to assign to
@@ -184,9 +185,9 @@ export const assignToNearestDroppable = async ({
     placeIdsWithMinDistancesSortedByDistance.length === 1 &&
     !appState.confirm_assigning_to_single_target
   ) {
-    console.log(
-      'hello assignToNearestDroppable 15, assigning as single place found inside min distance',
-    )
+    // console.log(
+    //   'hello assignToNearestDroppable 15, assigning as single place found inside min distance',
+    // )
     const place_id = placeIdsWithMinDistancesSortedByDistance[0]?.place_id
     // 3.2.1: assign to place
     db.occurrences.update({
