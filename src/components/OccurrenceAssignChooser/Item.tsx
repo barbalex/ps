@@ -15,8 +15,8 @@ export const Item = memo(({ place, occurrenceId, appStateId }: Props) => {
   // if so, a dialog will open to choose the place to assign
   const { db } = useElectric()!
 
-  const onClick = useCallback(() => {
-    db.occurrences.update({
+  const onClick = useCallback(async () => {
+    await db.occurrences.update({
       where: { occurrence_id: occurrenceId },
       data: { place_id: place.place_id, not_to_assign: false },
     })
