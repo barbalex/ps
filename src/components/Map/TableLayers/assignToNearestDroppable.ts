@@ -35,11 +35,9 @@ export const assignToNearestDroppable = async ({
   } catch (error) {
     console.log('hello assignToNearestDroppable', { error })
   }
-  console.log('hello assignToNearestDroppable', { latLngPoint })
   let latLngPoints
   try {
     latLngPoints = points([[latLng.lng, latLng.lat]])
-    console.log('hello assignToNearestDroppable', { latLngPoints })
   } catch (error) {
     console.log('hello assignToNearestDroppable', { error })
   }
@@ -49,7 +47,6 @@ export const assignToNearestDroppable = async ({
     where: { user_email: authUser?.email },
   })
   const droppableLayer = appState?.droppable_layer
-  console.log('hello assignToNearestDroppable', { appState, droppableLayer })
   // 2. get all features from droppable layer
   const places: Place[] = await db.places.findMany({
     where: {
@@ -57,7 +54,6 @@ export const assignToNearestDroppable = async ({
       geometry: { not: null },
     },
   })
-  console.log('hello assignToNearestDroppable', { places })
 
   // 3. get the nearest feature
 
@@ -81,10 +77,6 @@ export const assignToNearestDroppable = async ({
       // an error occurres if geometry is not polygon, so ignore
     }
     const isInside = pointsWithin?.features?.length > 0
-    console.log('hello assignToNearestDroppable convexed', {
-      place,
-      isInside,
-    })
     // if isInside, assign, then return
     if (!isInside) continue
     idsOfPlacesContainingLatLng.push(place.place_id)
@@ -126,9 +118,6 @@ export const assignToNearestDroppable = async ({
     }
     return { place_id: place.place_id, distance }
   })
-  console.log('hello assignToNearestDroppable distance', {
-    distances: placeIdsWithDistance,
-  })
   // get width of map in kilometres
   const mapBounds = map.getBounds()
   const mapNorthEast = mapBounds.getNorthEast()
@@ -149,7 +138,7 @@ export const assignToNearestDroppable = async ({
   })
 
   if (!placeIdsWithMinDistances.length) {
-    // TODO: tell user no place found to assign to
+    // tell user no place found to assign to
     const data = createNotification({
       message: 'No place found to assign to',
       type: 'error',
@@ -157,6 +146,7 @@ export const assignToNearestDroppable = async ({
     db.notifications.create({ data })
   }
 
+  // TODO: really? Maybe better to always confirm?
   if (placeIdsWithMinDistances.length === 1) {
     console.log(
       'hello assignToNearestDroppable, assigning as single place found inside min distance',
