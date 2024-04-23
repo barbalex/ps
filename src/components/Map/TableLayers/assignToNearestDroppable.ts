@@ -147,7 +147,10 @@ export const assignToNearestDroppable = async ({
   }
 
   // TODO: really? Maybe better to always confirm?
-  if (placeIdsWithMinDistances.length === 1) {
+  if (
+    placeIdsWithMinDistances.length === 1 &&
+    !appState.confirm_assigning_to_single_target
+  ) {
     console.log(
       'hello assignToNearestDroppable, assigning as single place found inside min distance',
     )
@@ -157,6 +160,7 @@ export const assignToNearestDroppable = async ({
       where: { occurrence_id: occurrenceId },
       data: { place_id, not_to_assign: false },
     })
+    return
   }
   // multiple places cover the drop point
   // need to ask user to choose
