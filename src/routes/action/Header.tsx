@@ -4,13 +4,13 @@ import { TbZoomScan } from 'react-icons/tb'
 import { Button } from '@fluentui/react-button'
 import bbox from '@turf/bbox'
 import buffer from '@turf/buffer'
-import { uuidv7 } from '@kripod/uuidv7'
 import { useCorbadoSession } from '@corbado/react'
 
 import { createAction } from '../../modules/createRows'
 import { useElectric } from '../../ElectricProvider'
 import { FormHeader } from '../../components/FormHeader'
 import { boundsFromBbox } from '../../modules/boundsFromBbox'
+import { createNotification } from '../../modules/createRows'
 
 export const Header = memo(({ autoFocusRef }) => {
   const { project_id, place_id, place_id2, action_id } = useParams()
@@ -77,14 +77,12 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [action_id, db.actions, navigate, place_id, place_id2, searchParams])
 
   const alertNoGeometry = useCallback(async () => {
-    await db.notifications.create({
-      data: {
-        notification_id: uuidv7(),
-        title: 'No geometry',
-        body: `To zoom to an action, create it's geometry first`,
-        intent: 'error',
-      },
+    const data = createNotification({
+      title: 'No geometry',
+      body: `To zoom to an action, create it's geometry first`,
+      intent: 'error',
     })
+    await db.notifications.create({ data })
   }, [db.notifications])
 
   const onClickZoomTo = useCallback(async () => {
