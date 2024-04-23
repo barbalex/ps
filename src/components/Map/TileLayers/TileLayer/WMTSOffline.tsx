@@ -1,11 +1,11 @@
 import { useEffect, useContext } from 'react'
 import { useMap } from 'react-leaflet'
-import { uuidv7 } from '@kripod/uuidv7'
 
 import { TileLayer as TileLayerType } from '../../../../dexieClient'
 import storeContext from '../../../../storeContext'
 import { IStore } from '../../../../store'
 import { useElectric } from '../../../../ElectricProvider'
+import { createNotification } from '../../../../modules/createRows'
 
 interface Props {
   layer: TileLayerType
@@ -39,14 +39,12 @@ export const WMTSOffline = ({ layer }: Props) => {
       try {
         control.saveMap({ layer, store, map })
       } catch (error) {
-        db.notifications.create({
-          data: {
-            notification_id: uuidv7(),
-            title: `Fehler beim Laden der Karten für ${layer.label}`,
-            body: error.message,
-            intent: 'error', // 'success' | 'error' | 'warning' | 'info'
-          },
+        const data = createNotification({
+          title: `Fehler beim Speichern der Karten für ${layer.label}`,
+          body: error.message,
+          intent: 'error',
         })
+        db.notifications.create({ data })
       }
     }
     const del = () => control.deleteTable(layer.id)
