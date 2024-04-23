@@ -151,7 +151,6 @@ export const assignToNearestDroppable = async ({
   if (!placeIdsWithMinDistances.length) {
     // TODO: tell user no place found to assign to
     const data = createNotification({
-      user_email: authUser?.email,
       message: 'No place found to assign to',
       type: 'error',
     })
