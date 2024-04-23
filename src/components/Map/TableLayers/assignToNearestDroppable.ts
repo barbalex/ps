@@ -3,6 +3,8 @@ import convex from '@turf/convex' // https://turfjs.org/docs/#convex
 import polygonToLine from '@turf/polygon-to-line' // https://turfjs.org/docs/#polygonToLine
 import pointToLineDistance from '@turf/point-to-line-distance'
 import distance from '@turf/distance'
+import { getType } from '@turf/invariant'
+import buffer from '@turf/buffer'
 import { point, points } from '@turf/helpers'
 import { Map } from '@types/leaflet'
 
@@ -64,18 +66,47 @@ export const assignToNearestDroppable = async ({
   //     Because of featureCollection, use the convex hull: https://turfjs.org/docs/#convex
   const idsOfPlacesContainingLatLng = []
   for (const place of places) {
-    let convexedPlace
+    console.log(
+      'hello assignToNearestDroppable distance 1, place label:',
+      place.label,
+    )
+    console.log(
+      'hello assignToNearestDroppable distance 2, geometry:',
+      place.geometry,
+    )
+    // TODO: convexed only works for polygons
+    // so buffer the geometry by a small value first
+    let bufferedGeometry
     try {
-      convexedPlace = convex(place.geometry)
+      bufferedGeometry = buffer(place.geometry, 0.000001)
     } catch (error) {
-      console.log('hello assignToNearestDroppable convexed', { error })
+      console.log('hello assignToNearestDroppable 3', { error })
     }
+    console.log(
+      'hello assignToNearestDroppable distance 4, bufferedGeometry:',
+      bufferedGeometry,
+    )
+    let convexedGeometry
+    try {
+      convexedGeometry = convex(bufferedGeometry)
+    } catch (error) {
+      console.log('hello assignToNearestDroppable 5', { error })
+    }
+    console.log(
+      'hello assignToNearestDroppable distance 5, convexedGeometry:',
+      convexedGeometry,
+    )
     let pointsWithin
     try {
-      pointsWithin = pointsWithinPolygon(latLngPoints, convexedPlace)
+      pointsWithin = pointsWithinPolygon(latLngPoints, convexedGeometry)
     } catch (error) {
       // an error occurres if geometry is not polygon, so ignore
+      console.log('hello assignToNearestDroppable 6', { error })
     }
+    console.log(
+      'hello assignToNearestDroppable distance 7, pointsWithin:',
+      pointsWithin,
+    )
     const isInside = pointsWithin?.features?.length > 0
     // if isInside, assign, then return
     if (!isInside) continue
@@ -89,6 +120,8 @@ export const assignToNearestDroppable = async ({
   //        convert that to a line (https://turfjs.org/docs/#polygonToLine),
   //        for every occurrence find nearest outline (https://turfjs.org/docs/#pointToLineDistance)
   //        choose closest
+  //        ISSUE: convex does not work for points are straight lines (https://github.com/Turfjs/turf/issues/2449)
+  //        Solution: buffer the feature collection before convexing
   //        alternative solution: https://github.com/Turfjs/turf/issues/1743
   const placeIdsWithDistance = places.map((place) => {
     const placeContainsOccurrence = idsOfPlacesContainingLatLng.includes(
@@ -98,24 +131,46 @@ export const assignToNearestDroppable = async ({
       return { place_id: place.place_id, distance: 0 }
     }
 
-    let convexedPlace
+    let bufferedGeometry
     try {
-      convexedPlace = convex(place.geometry)
+      bufferedGeometry = buffer(place.geometry, 0.000001)
     } catch (error) {
-      console.log('hello assignToNearestDroppable distance', { error })
+      console.log('hello assignToNearestDroppable 8', { error })
     }
+    console.log(
+      'hello assignToNearestDroppable distance 9, bufferedGeometry:',
+      bufferedGeometry,
+    )
+    let convexedGeometry
+    try {
+      convexedGeometry = convex(bufferedGeometry)
+    } catch (error) {
+      console.log('hello assignToNearestDroppable 10', { error })
+    }
+    console.log(
+      'hello assignToNearestDroppable distance 11, convexedGeometry:',
+      convexedGeometry,
+    )
     let hullLine
     try {
-      hullLine = polygonToLine(convexedPlace)
+      hullLine = polygonToLine(convexedGeometry)
     } catch (error) {
-      console.log('hello assignToNearestDroppable distance', { error })
+      console.log('hello assignToNearestDroppable distance 12', { error })
     }
+    console.log(
+      'hello assignToNearestDroppable distance 13, hullLine:',
+      hullLine,
+    )
     let distance
     try {
       distance = pointToLineDistance(latLngPoint, hullLine)
     } catch (error) {
-      console.log('hello assignToNearestDroppable distance', { error })
+      console.log('hello assignToNearestDroppable distance 14', { error })
     }
+    console.log(
+      'hello assignToNearestDroppable distance 15, distance:',
+      distance,
+    )
     return { place_id: place.place_id, distance }
   })
   // get width of map in kilometres
@@ -130,7 +185,7 @@ export const assignToNearestDroppable = async ({
   const placeIdsWithMinDistances = placeIdsWithDistance.filter(
     (d) => d.distance < minDistance,
   )
-  console.log('hello assignToNearestDroppable distance', {
+  console.log('hello assignToNearestDroppable distance 14', {
     mapWidth,
     minDistance,
     placeIdsWithMinDistances,
@@ -152,7 +207,7 @@ export const assignToNearestDroppable = async ({
     !appState.confirm_assigning_to_single_target
   ) {
     console.log(
-      'hello assignToNearestDroppable, assigning as single place found inside min distance',
+      'hello assignToNearestDroppable 15, assigning as single place found inside min distance',
     )
     const place_id = placeIdsWithMinDistances[0]?.place_id
     // 3.2.1: assign to place
