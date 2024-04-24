@@ -30,13 +30,14 @@ export const OccurrencesToAssessNode = memo(
           occurrence_import_id: {
             in: occurrenceImports.map((o) => o.occurrence_import_id),
           },
-          // TODO: also include false
-          not_to_assign: null,
+          OR: [{ not_to_assign: null }, { not_to_assign: false }],
+          // NOT: [{ not_to_assign: true }], // this does not work
           place_id: null,
         },
         orderBy: { label: 'asc' },
       }),
     )
+    console.log('hello OccurrencesToAssessNode', { occurrences })
 
     const occurrencesNode = useMemo(
       () => ({ label: `Occurrences to assess (${occurrences.length})` }),
