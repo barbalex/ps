@@ -38,13 +38,12 @@ export const Component = memo(() => {
     where.place_id = place_id2 ?? place_id
   }
   if (isToAssess) {
-    where.not_to_assign = null
+  // two of these three do not work, see: https://discord.com/channels/933657521581858818/1229057284395503817/1229057284395503817
+    where.OR = [{ not_to_assign: null }, { not_to_assign: false }]
+    // where.NOT = [{ not_to_assign: true }] // this does not work
+    // where.not_to_assign = { NOT: true } // this does not work
     where.place_id = null
   }
-  // these three do not work, see: https://discord.com/channels/933657521581858818/1229057284395503817/1229057284395503817
-  // if (isToAssess) where.or = [{ not_to_assign: null }, { not_to_assign: false }]
-  // if (isToAssess) where.not_to_assign = { not: true }
-  // if (isToAssess) where.not = [{ not_to_assign: true }]
   if (isNotToAssign) {
     where.not_to_assign = true
     where.place_id = null
