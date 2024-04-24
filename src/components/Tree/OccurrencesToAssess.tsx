@@ -37,7 +37,6 @@ export const OccurrencesToAssessNode = memo(
         orderBy: { label: 'asc' },
       }),
     )
-    console.log('hello OccurrencesToAssessNode', { occurrences })
 
     const occurrencesNode = useMemo(
       () => ({ label: `Occurrences to assess (${occurrences.length})` }),
