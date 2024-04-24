@@ -1358,7 +1358,9 @@ CREATE TYPE vector_layer_type_enum AS enum(
   'checks2',
   -- cant use occurrences-assigned due to electric-sql naming restrictions
   'occurrences_assigned1',
+  'occurrences_assigned1_lines',
   'occurrences_assigned2',
+  'occurrences_assigned2_lines',
   'occurrences_to_assess',
   'occurrences_not_to_assign'
 );
@@ -1504,7 +1506,9 @@ CREATE TYPE vector_layer_table_enum AS enum(
   'checks2',
   -- cant use occurrences-assigned due to electric-sql naming restrictions
   'occurrences_assigned1',
+  'occurrences_assigned1_lines',
   'occurrences_assigned2',
+  'occurrences_assigned2_lines',
   'occurrences_to_assess',
   'occurrences_not_to_assign'
 );

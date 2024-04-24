@@ -116,7 +116,8 @@ export const TableLayersProvider = () => {
             await db.vector_layer_displays.create({ data: newVLD })
           }
         }
-        // 4. occurrences_assigned1: needed if occurrences exist and placeLevels1 has occurrences
+        // 4. occurrences_assigned1 and occurrences_assigned1_lines: needed if occurrences exist and placeLevels1 has occurrences
+        // TODO: add occurrences_assigned1_lines
         if (placeLevel1?.occurrences && occurrences.length) {
           const occurrencesAssigned1VectorLayer = vectorLayers?.find(
             (vl) => vl.type === 'occurrences_assigned1',
