@@ -28,7 +28,8 @@ export const OccurrencesToAssess = ({ layer }: Props) => {
           in: occurrenceImports.map((oi) => oi.occurrence_import_id),
         },
         place_id: null,
-        not_to_assign: null, // TODO: catch true values
+        OR: [{ not_to_assign: null }, { not_to_assign: false }],
+        // not_to_assign: null,
         geometry: { not: null },
       },
     }),
