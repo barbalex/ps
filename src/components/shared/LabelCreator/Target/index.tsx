@@ -2,8 +2,8 @@ import { memo, useState, useEffect, useCallback } from 'react'
 import { Droppable } from 'react-beautiful-dnd'
 import { Button, Spinner } from '@fluentui/react-components'
 
-import { TargetElements } from './TargetElements'
-import { LabelElement } from '..'
+import { TargetElements } from './TargetElements.tsx'
+import { LabelElement } from '../index.tsx'
 
 const containerStyle = {
   margin: 0,
@@ -81,7 +81,7 @@ export const Target = memo(
     }, [saveToDb])
     useEffect(() => {
       if (changing && !labelChanged) setChanging(false)
-    }, [changing, labelChanged]) 
+    }, [changing, labelChanged])
 
     return (
       <div style={containerStyle}>

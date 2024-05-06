@@ -15,7 +15,7 @@ import { useCorbadoSession } from '@corbado/react'
 import { Dismiss24Regular } from '@fluentui/react-icons'
 
 import { useElectric } from '../../ElectricProvider.tsx'
-import { Item } from './Item'
+import { Item } from './Item.tsx'
 
 const titleRowStyle = {
   display: 'flex',

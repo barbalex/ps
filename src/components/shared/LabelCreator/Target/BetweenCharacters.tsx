@@ -1,8 +1,8 @@
 import { useCallback, memo } from 'react'
 import { Input } from '@fluentui/react-components'
 
-import { TargetElement } from './TargetElements'
-import { LabelElement } from '..'
+import { TargetElement } from './TargetElements.tsx'
+import { LabelElement } from '../index.tsx'
 
 const containerStyle = {
   position: 'relative',

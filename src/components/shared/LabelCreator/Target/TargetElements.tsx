@@ -2,8 +2,8 @@ import { memo } from 'react'
 import { Draggable } from 'react-beautiful-dnd'
 import { BsArrowsMove } from 'react-icons/bs'
 
-import { BetweenCharacters } from './BetweenCharacters'
-import { LabelElement } from '..'
+import { BetweenCharacters } from './BetweenCharacters.tsx'
+import { LabelElement } from '../index.tsx'
 
 const targetContainerStyle = {
   display: 'flex',
