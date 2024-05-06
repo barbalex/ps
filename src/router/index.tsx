@@ -924,11 +924,11 @@ export const router = () => {
                   children: [
                     {
                       index: true,
-                      lazy: () => import('../routes/persons'),
+                      lazy: () => import('../routes/persons.tsx'),
                     },
                     {
                       path: ':person_id',
-                      lazy: () => import('../routes/person'),
+                      lazy: () => import('../routes/person/index.tsx'),
                       handle: {
                         crumb: {
                           table: 'persons',
@@ -951,7 +951,7 @@ export const router = () => {
                   children: [
                     {
                       index: true,
-                      lazy: () => import('../routes/files'),
+                      lazy: () => import('../routes/files.tsx'),
                     },
                     {
                       path: ':file_id',
@@ -965,11 +965,11 @@ export const router = () => {
                       children: [
                         {
                           index: true,
-                          lazy: () => import('../routes/file'),
+                          lazy: () => import('../routes/file/index.tsx'),
                         },
                         {
                           path: 'preview',
-                          lazy: () => import('../routes/filePreview'),
+                          lazy: () => import('../routes/filePreview/index.tsx'),
                         },
                       ],
                     },
@@ -992,11 +992,11 @@ export const router = () => {
           children: [
             {
               index: true,
-              lazy: () => import('../routes/users'),
+              lazy: () => import('../routes/users.tsx'),
             },
             {
               path: ':user_id',
-              lazy: () => import('../routes/user'),
+              lazy: () => import('../routes/user/index.tsx'),
               handle: {
                 crumb: {
                   table: 'users',
@@ -1017,10 +1017,10 @@ export const router = () => {
             },
           },
           children: [
-            { index: true, lazy: () => import('../routes/accounts') },
+            { index: true, lazy: () => import('../routes/accounts.tsx') },
             {
               path: ':account_id',
-              lazy: () => import('../routes/account'),
+              lazy: () => import('../routes/account/index.tsx'),
               handle: {
                 crumb: {
                   table: 'accounts',
@@ -1041,10 +1041,10 @@ export const router = () => {
             },
           },
           children: [
-            { index: true, lazy: () => import('../routes/fieldTypes') },
+            { index: true, lazy: () => import('../routes/fieldTypes.tsx') },
             {
               path: ':field_type_id',
-              lazy: () => import('../routes/fieldType'),
+              lazy: () => import('../routes/fieldType/index.tsx'),
               handle: {
                 crumb: {
                   table: 'field_types',
@@ -1067,11 +1067,11 @@ export const router = () => {
           children: [
             {
               index: true,
-              lazy: () => import('../routes/widgetTypes'),
+              lazy: () => import('../routes/widgetTypes.tsx'),
             },
             {
               path: ':widget_type_id',
-              lazy: () => import('../routes/widgetType'),
+              lazy: () => import('../routes/widgetType/index.tsx'),
               handle: {
                 crumb: {
                   table: 'widget_types',
