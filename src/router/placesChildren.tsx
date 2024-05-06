@@ -13,7 +13,7 @@ export const placesChildren = ({ level }) => [
     children: [
       {
         index: true,
-        lazy: () => import('../routes/checks'),
+        lazy: () => import('../routes/checks.tsx'),
       },
       {
         path: ':check_id',
@@ -32,7 +32,7 @@ export const placesChildren = ({ level }) => [
         children: [
           {
             index: true,
-            lazy: () => import('../routes/check'),
+            lazy: () => import('../routes/check/index.tsx'),
           },
           {
             path: 'values',
@@ -47,11 +47,11 @@ export const placesChildren = ({ level }) => [
             children: [
               {
                 index: true,
-                lazy: () => import('../routes/checkValues'),
+                lazy: () => import('../routes/checkValues.tsx'),
               },
               {
                 path: ':check_value_id',
-                lazy: () => import('../routes/checkValue'),
+                lazy: () => import('../routes/checkValue/index.tsx'),
                 handle: {
                   crumb: {
                     table: 'check_values',
@@ -74,11 +74,11 @@ export const placesChildren = ({ level }) => [
             children: [
               {
                 index: true,
-                lazy: () => import('../routes/checkTaxa'),
+                lazy: () => import('../routes/checkTaxa.tsx'),
               },
               {
                 path: ':check_taxon_id',
-                lazy: () => import('../routes/checkTaxon'),
+                lazy: () => import('../routes/checkTaxon/index.tsx'),
                 handle: {
                   crumb: {
                     table: 'check_taxa',
@@ -99,7 +99,7 @@ export const placesChildren = ({ level }) => [
               },
             },
             children: [
-              { index: true, lazy: () => import('../routes/files') },
+              { index: true, lazy: () => import('../routes/files.tsx') },
               {
                 path: ':file_id',
                 element: null,
@@ -112,11 +112,11 @@ export const placesChildren = ({ level }) => [
                 children: [
                   {
                     index: true,
-                    lazy: () => import('../routes/file'),
+                    lazy: () => import('../routes/file/index.tsx'),
                   },
                   {
                     path: 'preview',
-                    lazy: () => import('../routes/filePreview'),
+                    lazy: () => import('../routes/filePreview/index.tsx'),
                   },
                 ],
               },
@@ -139,7 +139,7 @@ export const placesChildren = ({ level }) => [
     children: [
       {
         index: true,
-        lazy: () => import('../routes/actions'),
+        lazy: () => import('../routes/actions.tsx'),
       },
       {
         path: ':action_id',
@@ -157,7 +157,7 @@ export const placesChildren = ({ level }) => [
         children: [
           {
             index: true,
-            lazy: () => import('../routes/action'),
+            lazy: () => import('../routes/action/index.tsx'),
           },
           {
             path: 'values',
@@ -172,11 +172,11 @@ export const placesChildren = ({ level }) => [
             children: [
               {
                 index: true,
-                lazy: () => import('../routes/actionValues'),
+                lazy: () => import('../routes/actionValues.tsx'),
               },
               {
                 path: ':action_value_id',
-                lazy: () => import('../routes/actionValue'),
+                lazy: () => import('../routes/actionValue/index.tsx'),
                 handle: {
                   crumb: {
                     table: 'action_values',
@@ -199,7 +199,7 @@ export const placesChildren = ({ level }) => [
             children: [
               {
                 index: true,
-                lazy: () => import('../routes/actionReports'),
+                lazy: () => import('../routes/actionReports.tsx'),
               },
               {
                 path: ':action_report_id',
@@ -217,7 +217,7 @@ export const placesChildren = ({ level }) => [
                 children: [
                   {
                     index: true,
-                    lazy: () => import('../routes/actionReport'),
+                    lazy: () => import('../routes/actionReport/index.tsx'),
                   },
                   {
                     path: 'values',
@@ -232,11 +232,12 @@ export const placesChildren = ({ level }) => [
                     children: [
                       {
                         index: true,
-                        lazy: () => import('../routes/actionReportValues'),
+                        lazy: () => import('../routes/actionReportValues.tsx'),
                       },
                       {
                         path: ':action_report_value_id',
-                        lazy: () => import('../routes/actionReportValue'),
+                        lazy: () =>
+                          import('../routes/actionReportValue/index.tsx'),
                         handle: {
                           crumb: {
                             table: 'action_report_values',
