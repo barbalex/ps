@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 import type { InputProps } from '@fluentui/react-components'
 
-import { css } from '../../../css'
+import { css } from '../../../css.ts'
 
 interface Props {
   Component: React.ReactElement

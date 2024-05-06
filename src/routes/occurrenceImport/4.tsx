@@ -5,7 +5,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions.tsx'
-import { DropdownFieldOptions } from '../../components/shared/DropdownFieldOptions'
+import { DropdownFieldOptions } from '../../components/shared/DropdownFieldOptions.tsx'
 
 export const Four = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
   const { occurrence_import_id, subproject_id } = useParams()

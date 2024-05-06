@@ -11,7 +11,7 @@ import { SliderField } from '../../components/shared/SliderField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { DropdownFieldFromLayerOptions } from '../../components/shared/DropdownFieldFromLayerOptions.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
-import { BaseUrl } from './BaseUrl'
+import { BaseUrl } from './BaseUrl.tsx'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 

@@ -6,7 +6,9 @@ import { useElectric } from '../../ElectricProvider.tsx'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { createNotification } from '../../modules/createRows.ts'
 
-const createWorker = createWorkerFactory(() => import('./getCapabilitiesData'))
+const createWorker = createWorkerFactory(
+  () => import('./getCapabilitiesData.ts'),
+)
 
 export const Url = memo(
   ({ onChange, row }: { onChange: () => void; row: VectorLayer }) => {

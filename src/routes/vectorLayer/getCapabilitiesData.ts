@@ -1,5 +1,4 @@
-import { Electric } from './../../generated/client/index'
-import { getCapabilities } from '../../modules/getCapabilities'
+import { getCapabilities } from '../../modules/getCapabilities.ts'
 import {
   Vector_layers as VectorLayer,
   Electric,
