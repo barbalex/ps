@@ -1,4 +1,4 @@
-import { processPlaces as countPlacesRows } from './countPlacesRows'
+import { processPlaces as countPlacesRows } from './countPlacesRows.ts'
 
 export const buildData = async ({
   chart_id,

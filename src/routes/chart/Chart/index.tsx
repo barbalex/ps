@@ -3,8 +3,8 @@ import { useParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
-import { buildData } from './buildData'
-import { SingleChart } from './Chart'
+import { buildData } from './buildData/index.ts'
+import { SingleChart } from './Chart.tsx'
 
 const titleRowStyle = {
   display: 'flex',
