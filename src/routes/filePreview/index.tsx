@@ -5,8 +5,8 @@ import { useResizeDetector } from 'react-resize-detector'
 import DocViewer, { DocViewerRenderers } from '@cyntler/react-doc-viewer'
 
 import { useElectric } from '../../ElectricProvider.tsx'
-import { Header } from '../file/Header'
-import { Uploader } from '../file/Uploader'
+import { Header } from '../file/Header.tsx'
+import { Uploader } from '../file/Uploader.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'

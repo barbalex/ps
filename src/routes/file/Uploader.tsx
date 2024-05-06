@@ -10,7 +10,7 @@ import axios from 'redaxios'
 
 import { createFile } from '../../modules/createRows.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
-import { UploaderContext } from '../../UploaderContext'
+import { UploaderContext } from '../../UploaderContext.ts'
 
 import '../../form.css'
 

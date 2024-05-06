@@ -10,7 +10,7 @@ import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { Header } from './Header.tsx'
-import { Uploader } from './Uploader'
+import { Uploader } from './Uploader.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'

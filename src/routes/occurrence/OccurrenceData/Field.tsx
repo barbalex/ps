@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
 import Linkify from 'react-linkify'
 
-import { css } from '../../../css'
+import { css } from '../../../css.ts'
 
 const rowStyle = {
   display: 'flex',

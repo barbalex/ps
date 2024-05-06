@@ -6,7 +6,7 @@ import { arrayMoveImmutable } from 'array-move'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbadoSession } from '@corbado/react'
 
-import { exists } from '../../../modules/exists'
+import { exists } from '../../../modules/exists.ts'
 import { ErrorBoundary } from '../../../components/shared/ErrorBoundary'
 import { Section } from '../../../components/shared/Section.tsx'
 import { Field } from './Field'

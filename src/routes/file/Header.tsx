@@ -11,7 +11,7 @@ import { MdPreview, MdEditNote } from 'react-icons/md'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { Files as File } from '../../generated/client/index.ts'
-import { UploaderContext } from '../../UploaderContext'
+import { UploaderContext } from '../../UploaderContext.ts'
 
 interface Props {
   row: File
