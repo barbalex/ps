@@ -8,7 +8,7 @@ import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx
 import { TextField } from '../../components/shared/TextField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { SliderField } from '../../components/shared/SliderField'
-import { SwitchField } from '../../components/shared/SwitchField'
+import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { MarkerSymbolPicker } from './MarkerSymbolPicker'
 import { Header } from './Header.tsx'

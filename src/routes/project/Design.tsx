@@ -13,7 +13,7 @@ import { CheckboxField } from '../../components/shared/CheckboxField'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { LabelBy } from '../../components/shared/LabelBy'
 import { FieldList } from '../../components/shared/FieldList'
-import { SwitchField } from '../../components/shared/SwitchField'
+import { SwitchField } from '../../components/shared/SwitchField.tsx'
 
 const labelStyle = {
   color: 'grey',

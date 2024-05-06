@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 
 import { useElectric } from '../ElectricProvider.tsx'
-import { SwitchField } from '../components/shared/SwitchField'
+import { SwitchField } from '../components/shared/SwitchField.tsx'
 import { getValueFromChange } from '../modules/getValueFromChange.ts'
 import { FormHeader } from '../components/FormHeader/index.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
