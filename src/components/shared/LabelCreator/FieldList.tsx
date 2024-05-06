@@ -2,7 +2,7 @@ import { memo } from 'react'
 import { Draggable, Droppable } from 'react-beautiful-dnd'
 import { BsArrowsMove } from 'react-icons/bs'
 
-import { LabelElement } from '..'
+import { LabelElement } from './index.tsx'
 
 const containerStyle = {
   margin: 0,

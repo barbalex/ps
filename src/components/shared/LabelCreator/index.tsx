@@ -4,8 +4,8 @@ import { arrayMoveImmutable } from 'array-move'
 import { uuidv7 } from '@kripod/uuidv7'
 import isEqual from 'lodash/isEqual'
 
-import { FieldList } from './FieldList'
-import { Target } from './Target'
+import { FieldList } from './FieldList.tsx'
+import { Target } from './Target/index.tsx'
 
 const containerStyle = {
   outline: '1px solid lightgrey',

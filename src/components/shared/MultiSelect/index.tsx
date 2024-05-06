@@ -3,8 +3,8 @@ import { Field, TagGroup, Tag } from '@fluentui/react-components'
 import type { InputProps } from '@fluentui/react-components'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
-import { DropdownField } from './DropdownField'
-import { idFieldFromTable } from '../../../modules/idFieldFromTable'
+import { DropdownField } from './DropdownField.tsx'
+import { idFieldFromTable } from '../../../modules/idFieldFromTable.ts'
 
 const tabGroupStyle = { flexWrap: 'wrap', rowGap: 5 }
 

@@ -2,8 +2,8 @@ import { memo, useMemo, useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 
 import { useElectric } from '../../ElectricProvider.tsx'
-import { MultiSelect } from './MultiSelect'
-import { idFieldFromTable } from '../../modules/idFieldFromTable'
+import { MultiSelect } from './MultiSelect/index.tsx'
+import { idFieldFromTable } from '../../modules/idFieldFromTable.ts'
 
 interface Props {
   name: string
