@@ -4,7 +4,7 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Node } from './Node.tsx'
-import { ProjectUserNode } from './ProjectUser'
+import { ProjectUserNode } from './ProjectUser.tsx'
 
 interface Props {
   project_id: string
