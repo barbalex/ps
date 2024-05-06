@@ -8,7 +8,7 @@ import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx
 import { TextField } from '../../components/shared/TextField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField'
 import { SliderField } from '../../components/shared/SliderField'
-import { RadioGroupField } from '../../components/shared/RadioGroupField'
+import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { DropdownFieldFromLayerOptions } from '../../components/shared/DropdownFieldFromLayerOptions'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { BaseUrl } from './BaseUrl'

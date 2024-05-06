@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { TextField } from '../../components/shared/TextField.tsx'
-import { RadioGroupField } from '../../components/shared/RadioGroupField'
+import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField'
 import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'

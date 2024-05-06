@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 
 import { useElectric } from '../../ElectricProvider.tsx'
-import { RadioGroupField } from '../../components/shared/RadioGroupField'
+import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'

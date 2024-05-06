@@ -3,8 +3,8 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useCorbadoSession } from '@corbado/react'
 
 import { Header } from './Header.tsx'
-import { Form } from './Form'
-import { Chart } from './Chart'
+import { Form } from './Form.tsx'
+import { Chart } from './Chart/index.tsx'
 import { useElectric } from '../../ElectricProvider.tsx'
 
 import '../../form.css'
