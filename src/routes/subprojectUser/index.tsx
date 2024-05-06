@@ -5,7 +5,7 @@ import type { InputProps } from '@fluentui/react-components'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
-import { DropdownField } from '../../components/shared/DropdownField'
+import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header'
