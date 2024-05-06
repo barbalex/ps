@@ -1,7 +1,7 @@
 import { memo, useCallback, useState } from 'react'
 import axios from 'redaxios'
 
-import { TextField } from '../../../components/shared/TextField'
+import { TextField } from '../../../components/shared/TextField.tsx'
 
 const notificationStyle = {
   color: 'red',

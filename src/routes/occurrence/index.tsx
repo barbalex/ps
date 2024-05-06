@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 
 import { useElectric } from '../../ElectricProvider.tsx'
-import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
+import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { SwitchField } from '../../components/shared/SwitchField'
 import { FilteringCombobox } from '../../components/shared/FilteringCombobox'
 import { getValueFromChange } from '../../modules/getValueFromChange'

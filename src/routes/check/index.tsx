@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 
 import { useElectric } from '../../ElectricProvider.tsx'
-import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
+import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { DateField } from '../../components/shared/DateField'
 import { SwitchField } from '../../components/shared/SwitchField'
 import { Jsonb } from '../../components/shared/Jsonb'

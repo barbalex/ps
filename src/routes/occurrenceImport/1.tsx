@@ -1,7 +1,7 @@
 import { memo } from 'react'
 import { MdDone } from 'react-icons/md'
 
-import { TextField } from '../../components/shared/TextField'
+import { TextField } from '../../components/shared/TextField.tsx'
 import { TextArea } from '../../components/shared/TextArea'
 import { UploadButton } from '../../components/shared/UploadButton'
 import { processData } from './processData'

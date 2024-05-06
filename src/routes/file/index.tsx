@@ -5,7 +5,7 @@ import type { InputProps } from '@fluentui/react-components'
 import { useResizeDetector } from 'react-resize-detector'
 
 import { useElectric } from '../../ElectricProvider.tsx'
-import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
+import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { Jsonb } from '../../components/shared/Jsonb'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { DropdownField } from '../../components/shared/DropdownField'

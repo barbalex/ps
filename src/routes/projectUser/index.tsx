@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 
 import { useElectric } from '../../ElectricProvider.tsx'
-import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
+import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { DropdownField } from '../../components/shared/DropdownField'
 import { RadioGroupField } from '../../components/shared/RadioGroupField'
 import { getValueFromChange } from '../../modules/getValueFromChange'

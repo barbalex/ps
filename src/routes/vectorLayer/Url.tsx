@@ -3,7 +3,7 @@ import { createWorkerFactory, useWorker } from '@shopify/react-web-worker'
 
 import { Vector_layers as VectorLayer } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider.tsx'
-import { TextField } from '../../components/shared/TextField'
+import { TextField } from '../../components/shared/TextField.tsx'
 import { createNotification } from '../../modules/createRows'
 
 const createWorker = createWorkerFactory(() => import('./getCapabilitiesData'))

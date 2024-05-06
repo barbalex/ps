@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider.tsx'
-import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
+import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { Jsonb } from '../../components/shared/Jsonb'
 import { Header } from './Header'
 import { Loading } from '../../components/shared/Loading'
