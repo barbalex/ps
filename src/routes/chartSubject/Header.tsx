@@ -4,8 +4,8 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useCorbadoSession } from '@corbado/react'
 
 import { useElectric } from '../../ElectricProvider.tsx'
-import { createChartSubject } from '../../modules/createRows'
-import { FormHeader } from '../../components/FormHeader'
+import { createChartSubject } from '../../modules/createRows.ts'
+import { FormHeader } from '../../components/FormHeader/index.tsx'
 
 // TODO: if not editing, hide add and remove buttons
 export const Header = memo(({ autoFocusRef }) => {

@@ -5,7 +5,7 @@ import { TileLayer as TileLayerType } from '../../../../dexieClient'
 import storeContext from '../../../../storeContext'
 import { IStore } from '../../../../store'
 import { useElectric } from '../../../../ElectricProvider.tsx'
-import { createNotification } from '../../../../modules/createRows'
+import { createNotification } from '../../../../modules/createRows.ts'
 
 interface Props {
   layer: TileLayerType

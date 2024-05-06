@@ -27,7 +27,7 @@ import {
   Vector_layers as VectorLayer,
   Vector_layer_displays as VectorLayerDisplay,
 } from '../../../generated/client'
-import { createNotification } from '../../../modules/createRows'
+import { createNotification } from '../../../modules/createRows.ts'
 
 const xmlViewerStyle = {
   fontSize: 'small',

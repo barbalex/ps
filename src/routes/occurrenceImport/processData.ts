@@ -1,6 +1,6 @@
 import { read, utils } from 'xlsx'
 import { chunkArrayWithMinSize } from '../../modules/chunkArrayWithMinSize'
-import { createOccurrence } from '../../modules/createRows'
+import { createOccurrence } from '../../modules/createRows.ts'
 
 export const processData = async ({ file, additionalData, db }) => {
   if (!file) return

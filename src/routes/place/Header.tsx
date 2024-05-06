@@ -12,9 +12,9 @@ import {
   createVectorLayer,
   createVectorLayerDisplay,
   createNotification,
-} from '../../modules/createRows'
+} from '../../modules/createRows.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
-import { FormHeader } from '../../components/FormHeader'
+import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { boundsFromBbox } from '../../modules/boundsFromBbox'
 
 interface Props {

@@ -14,7 +14,7 @@ import { vectorLayerDisplayToProperties } from '../../../modules/vectorLayerDisp
 import { Popup } from '../Popup'
 import { ErrorBoundary } from '../MapErrorBoundary'
 import { useElectric } from '../../../ElectricProvider.tsx'
-import { createNotification } from '../../../modules/createRows'
+import { createNotification } from '../../../modules/createRows.ts'
 
 // const bboxBuffer = 0.01
 

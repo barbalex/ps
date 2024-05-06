@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
-import { createAccount } from '../modules/createRows'
+import { createAccount } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader'
 import { Row } from '../components/shared/Row'
 import { useElectric } from '../ElectricProvider.tsx'

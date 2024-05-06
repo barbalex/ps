@@ -6,7 +6,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useCorbadoSession } from '@corbado/react'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
-import { createField } from '../../../modules/createRows'
+import { createField } from '../../../modules/createRows.ts'
 import { accountTables } from '../../../routes/field/Form'
 
 const buttonStyle = {

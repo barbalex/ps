@@ -2,8 +2,8 @@ import { useCallback, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider.tsx'
-import { createList } from '../../modules/createRows'
-import { FormHeader } from '../../components/FormHeader'
+import { createList } from '../../modules/createRows.ts'
+import { FormHeader } from '../../components/FormHeader/index.tsx'
 
 export const Header = memo(({ autoFocusRef }) => {
   const { project_id, list_id } = useParams()

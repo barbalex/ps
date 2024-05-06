@@ -4,8 +4,8 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useCorbadoSession } from '@corbado/react'
 
 import { useElectric } from '../../ElectricProvider.tsx'
-import { createChart } from '../../modules/createRows'
-import { FormHeader } from '../../components/FormHeader'
+import { createChart } from '../../modules/createRows.ts'
+import { FormHeader } from '../../components/FormHeader/index.tsx'
 
 export const Header = memo(({ autoFocusRef }) => {
   const { project_id, subproject_id, place_id, place_id2, chart_id } =

@@ -8,7 +8,7 @@ import {
 import { useDebouncedCallback } from 'use-debounce'
 import axios from 'redaxios'
 
-import { createFile } from '../../modules/createRows'
+import { createFile } from '../../modules/createRows.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { UploaderContext } from '../../UploaderContext'
 

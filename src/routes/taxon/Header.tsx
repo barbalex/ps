@@ -1,9 +1,9 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
-import { createTaxon } from '../../modules/createRows'
+import { createTaxon } from '../../modules/createRows.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
-import { FormHeader } from '../../components/FormHeader'
+import { FormHeader } from '../../components/FormHeader/index.tsx'
 
 export const Header = memo(({ autoFocusRef }) => {
   const { taxonomy_id, taxon_id } = useParams()

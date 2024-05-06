@@ -5,7 +5,7 @@ import { useCorbadoSession } from '@corbado/react'
 
 import { ListViewHeader } from '../components/ListViewHeader'
 import { Row } from '../components/shared/Row'
-import { createChart } from '../modules/createRows'
+import { createChart } from '../modules/createRows.ts'
 
 import '../form.css'
 

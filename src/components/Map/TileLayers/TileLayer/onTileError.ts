@@ -3,7 +3,7 @@ import axios from 'redaxios'
 
 import { Tile_layers as TileLayer } from '../../../../generated/client'
 import { xmlToJson } from '../../../../modules/xmlToJson'
-import { createNotification } from '../../../../modules/createRows'
+import { createNotification } from '../../../../modules/createRows.ts'
 
 export const onTileError = async (db, map, layer: TileLayer, ignore) => {
   console.log('hello onTileError', { ignore, map, layer, db })

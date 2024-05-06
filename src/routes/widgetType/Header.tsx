@@ -1,9 +1,9 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
-import { createWidgetType } from '../../modules/createRows'
+import { createWidgetType } from '../../modules/createRows.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
-import { FormHeader } from '../../components/FormHeader'
+import { FormHeader } from '../../components/FormHeader/index.tsx'
 
 export const Header = memo(({ autoFocusRef }) => {
   const { widget_type_id } = useParams<{ widget_type_id: string }>()

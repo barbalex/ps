@@ -6,7 +6,7 @@ import {
   createPlace,
   createVectorLayer,
   createVectorLayerDisplay,
-} from '../modules/createRows'
+} from '../modules/createRows.ts'
 import { useElectric } from '../ElectricProvider.tsx'
 import { ListViewHeader } from '../components/ListViewHeader'
 import { Row } from '../components/shared/Row'

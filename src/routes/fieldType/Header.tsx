@@ -1,9 +1,9 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
-import { createFieldType } from '../../modules/createRows'
+import { createFieldType } from '../../modules/createRows.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
-import { FormHeader } from '../../components/FormHeader'
+import { FormHeader } from '../../components/FormHeader/index.tsx'
 
 export const Header = memo(({ autoFocusRef }) => {
   const { field_type_id } = useParams()

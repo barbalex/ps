@@ -3,7 +3,7 @@ import { ErrorBoundary as ErrorBoundaryComponent } from 'react-error-boundary'
 
 import { TileLayer } from '../../dexieClient'
 import { useElectric } from '../../ElectricProvider.tsx'
-import { createNotification } from '../../modules/createRows'
+import { createNotification } from '../../modules/createRows.ts'
 
 const onReload = () => {
   window.location.reload(true)

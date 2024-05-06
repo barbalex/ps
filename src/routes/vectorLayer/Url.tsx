@@ -4,7 +4,7 @@ import { createWorkerFactory, useWorker } from '@shopify/react-web-worker'
 import { Vector_layers as VectorLayer } from '../../../generated/client'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { TextField } from '../../components/shared/TextField.tsx'
-import { createNotification } from '../../modules/createRows'
+import { createNotification } from '../../modules/createRows.ts'
 
 const createWorker = createWorkerFactory(() => import('./getCapabilitiesData'))
 

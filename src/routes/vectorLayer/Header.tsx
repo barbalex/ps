@@ -13,9 +13,9 @@ import {
   MenuPopover,
 } from '@fluentui/react-components'
 
-import { createVectorLayer } from '../../modules/createRows'
+import { createVectorLayer } from '../../modules/createRows.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
-import { FormHeader } from '../../components/FormHeader'
+import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { Vector_layers as VectorLayer } from '../../generated/client'
 
 // type props

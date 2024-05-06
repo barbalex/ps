@@ -2,8 +2,8 @@ import { useCallback, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider.tsx'
-import { createPlaceUser } from '../../modules/createRows'
-import { FormHeader } from '../../components/FormHeader'
+import { createPlaceUser } from '../../modules/createRows.ts'
+import { FormHeader } from '../../components/FormHeader/index.tsx'
 
 export const Header = memo(({ autoFocusRef }) => {
   const { place_id, place_id2, place_user_id } = useParams()

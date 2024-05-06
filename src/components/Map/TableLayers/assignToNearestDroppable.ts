@@ -12,7 +12,7 @@ import {
   Vector_layers as VectorLayer,
   Places as Place,
 } from '../../../generated/client'
-import { createNotification } from '../../../modules/createRows'
+import { createNotification } from '../../../modules/createRows.ts'
 
 interface Props {
   db: Electric

@@ -2,9 +2,9 @@ import { useCallback, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { Button } from '@fluentui/react-components'
 
-import { createOccurrenceImport } from '../../modules/createRows'
+import { createOccurrenceImport } from '../../modules/createRows.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
-import { FormHeader } from '../../components/FormHeader'
+import { FormHeader } from '../../components/FormHeader/index.tsx'
 
 interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
