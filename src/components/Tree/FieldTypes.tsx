@@ -3,8 +3,8 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider.tsx'
-import { Node } from './Node'
-import { FieldTypeNode } from './FieldType'
+import { Node } from './Node.tsx'
+import { FieldTypeNode } from './FieldType.tsx'
 
 export const FieldTypesNode = memo(() => {
   const location = useLocation()
