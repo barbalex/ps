@@ -1,11 +1,11 @@
 import { useEffect } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 
-import { useElectric } from '../ElectricProvider'
+import { useElectric } from '../ElectricProvider.tsx'
 import {
   createVectorLayer,
   createVectorLayerDisplay,
-} from '../modules/createRows'
+} from '../modules/createRows.ts'
 
 // it would be better to add vector_layers and their displays inside triggers on project creation
 // but as sqlite does not have functions to create uuid's, we need to do it here

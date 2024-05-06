@@ -1,7 +1,7 @@
 import WMSCapabilities from 'wms-capabilities'
 import axios from 'redaxios'
 
-import { xmlToJson } from './xmlToJson'
+import { xmlToJson } from './xmlToJson.ts'
 
 interface Props {
   url: string
