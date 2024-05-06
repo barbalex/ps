@@ -1,5 +1,6 @@
 import { memo } from 'react'
-import { FormMenu } from './FormMenu'
+
+import { FormMenu } from './FormMenu.tsx'
 
 export const FormHeader = memo(
   ({ title, addRow, deleteRow, toNext, toPrevious, tableName, siblings }) => {

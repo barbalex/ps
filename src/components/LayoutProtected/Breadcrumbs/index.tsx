@@ -1,8 +1,8 @@
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbadoSession } from '@corbado/react'
 
-import { BreadcrumbsWrapping } from './Wrapping'
-import { BreadcrumbsOverflowing } from './Overflowing'
+import { BreadcrumbsWrapping } from './Wrapping.tsx'
+import { BreadcrumbsOverflowing } from './Overflowing/index.tsx'
 import { useElectric } from '../../../ElectricProvider.tsx'
 
 export const Breadcrumbs = () => {

@@ -15,8 +15,8 @@ import {
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado, useCorbadoSession } from '@corbado/react'
 
-import { controls } from '../../../styles'
-import { css } from '../../../css'
+import { controls } from '../../../styles.ts'
+import { css } from '../../../css.ts'
 import { useElectric } from '../../../ElectricProvider.tsx'
 
 const buildButtonStyle = ({ prevIsActive, nextIsActive, selfIsActive }) => {

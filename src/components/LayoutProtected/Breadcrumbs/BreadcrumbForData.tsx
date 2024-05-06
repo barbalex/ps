@@ -4,8 +4,8 @@ import { useLiveQuery } from 'electric-sql/react'
 
 import './breadcrumb.css'
 import { useElectric } from '../../../ElectricProvider.tsx'
-import { idFieldFromTable } from '../../../modules/idFieldFromTable'
-import { Menu } from './Menu'
+import { idFieldFromTable } from '../../../modules/idFieldFromTable.ts'
+import { Menu } from './Menu/index.tsx'
 
 const isOdd = (num) => num % 2
 

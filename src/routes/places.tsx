@@ -10,7 +10,7 @@ import {
 import { useElectric } from '../ElectricProvider.tsx'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
-import { LayerMenu } from '../components/shared/LayerMenu'
+import { LayerMenu } from '../components/shared/LayerMenu.tsx'
 
 import '../form.css'
 

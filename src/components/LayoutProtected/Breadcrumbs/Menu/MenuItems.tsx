@@ -1,4 +1,4 @@
-import { MenuItem } from './MenuItem'
+import { MenuItem } from './MenuItem.tsx'
 
 export const MenuItems = ({ navs }) => {
   return navs.map(({ path, text }) => (

@@ -5,9 +5,9 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useCorbadoSession } from '@corbado/react'
 
 import './breadcrumb.css'
-import { buildNavs } from '../../../modules/navs'
-import { idFieldFromTable } from '../../../modules/idFieldFromTable'
-import { Menu } from './Menu'
+import { buildNavs } from '../../../modules/navs.ts'
+import { idFieldFromTable } from '../../../modules/idFieldFromTable.ts'
+import { Menu } from './Menu/index.tsx'
 
 const siblingStyle = {
   marginLeft: 7,

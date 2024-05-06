@@ -2,13 +2,13 @@ import { memo } from 'react'
 import { Button } from '@fluentui/react-components'
 import { FaPlus, FaMinus, FaChevronRight, FaChevronLeft } from 'react-icons/fa'
 
-import { controls } from '../../styles'
+import { controls } from '../../styles.ts'
 
 export const FormMenu = memo(
   ({ addRow, deleteRow, toNext, toPrevious, tableName, siblings }) => (
     <div style={controls}>
       {!!siblings && siblings}
-      {!!toPrevious && ( 
+      {!!toPrevious && (
         <Button
           size="medium"
           icon={<FaChevronLeft />}

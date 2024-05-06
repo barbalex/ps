@@ -4,8 +4,8 @@ import { useMatches, useLocation } from 'react-router-dom'
 // create two different breadcrumb components
 // one that queries data and one that only uses navs
 import './breadcrumbs.css'
-import { BreadcrumbForData } from './BreadcrumbForData'
-import { BreadcrumbForFolder } from './BreadcrumbForFolder'
+import { BreadcrumbForData } from './BreadcrumbForData.tsx'
+import { BreadcrumbForFolder } from './BreadcrumbForFolder.tsx'
 
 // TODO: if overflowing, show single line
 export const BreadcrumbsWrapping = () => {

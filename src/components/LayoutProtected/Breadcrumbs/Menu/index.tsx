@@ -7,7 +7,7 @@ import {
 } from '@fluentui/react-components'
 import { BsCaretDown } from 'react-icons/bs'
 
-import { MenuItems } from './MenuItems'
+import { MenuItems } from './MenuItems.tsx'
 
 const CustomMenuTrigger = forwardRef((props, ref) => (
   <div ref={ref} className="menu-icon" {...props}>

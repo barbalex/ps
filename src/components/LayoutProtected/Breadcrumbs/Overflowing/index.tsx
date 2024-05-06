@@ -14,9 +14,9 @@ import { useMatches, useNavigate, useSearchParams } from 'react-router-dom'
 import { useResizeDetector } from 'react-resize-detector'
 import { BsCaretDown } from 'react-icons/bs'
 
-import { BreadcrumbForData } from '../BreadcrumbForData'
-import { BreadcrumbForFolder } from '../BreadcrumbForFolder'
-import { Matches } from './Matches'
+import { BreadcrumbForData } from '../BreadcrumbForData.tsx'
+import { BreadcrumbForFolder } from '../BreadcrumbForFolder.tsx'
+import { Matches } from './Matches.tsx'
 import '../breadcrumbs.css'
 
 const OverflowMenuItem: React.FC = ({ id, match, upRerenderInteger }) => {

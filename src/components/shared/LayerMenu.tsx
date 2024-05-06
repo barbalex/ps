@@ -18,7 +18,7 @@ import {
   Checks as Check,
   Occurrences as Occurrence,
 } from '../../generated/client/index.ts'
-import { boundsFromBbox } from '../../modules/boundsFromBbox'
+import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
 
 interface Props {
   table: string

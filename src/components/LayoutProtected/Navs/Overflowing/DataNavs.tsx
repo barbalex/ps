@@ -3,9 +3,9 @@ import { useLocation } from 'react-router-dom'
 import { OverflowItem, Overflow } from '@fluentui/react-components'
 
 import { useElectric } from '../../../../ElectricProvider.tsx'
-import { idFieldFromTable } from '../../../../modules/idFieldFromTable'
-import { Nav } from '../Nav'
-import { OverflowMenu } from '.'
+import { idFieldFromTable } from '../../../../modules/idFieldFromTable.ts'
+import { Nav } from '../Nav.tsx'
+import { OverflowMenu } from './index.tsx'
 
 const isOdd = (num) => num % 2
 

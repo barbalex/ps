@@ -6,8 +6,8 @@ import { FaPlus } from 'react-icons/fa'
 
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
-import { Uploader } from './file/Uploader'
-import { UploaderContext } from '../UploaderContext'
+import { Uploader } from './file/Uploader.tsx'
+import { UploaderContext } from '../UploaderContext.ts'
 
 import '../form.css'
 

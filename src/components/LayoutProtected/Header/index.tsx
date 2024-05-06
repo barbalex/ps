@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
-import { css } from '../../../css'
+import { css } from '../../../css.ts'
 
-import { Menu } from './Menu'
+import { Menu } from './Menu.tsx'
 
 import './header.css'
 
