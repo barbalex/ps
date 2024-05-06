@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 
 import { Header } from './Header.tsx'
-import { ChartSubjectForm } from './Form'
+import { ChartSubjectForm } from './Form.tsx'
 
 import '../../form.css'
 

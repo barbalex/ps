@@ -10,7 +10,7 @@ import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
-import { EditingGeometry } from '../../components/shared/EditingGeometry'
+import { EditingGeometry } from '../../components/shared/EditingGeometry.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'
