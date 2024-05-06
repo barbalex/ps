@@ -7,9 +7,9 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useCorbadoSession } from '@corbado/react'
 
 import { exists } from '../../../modules/exists.ts'
-import { ErrorBoundary } from '../../../components/shared/ErrorBoundary'
+import { ErrorBoundary } from '../../../components/shared/ErrorBoundary.tsx'
 import { Section } from '../../../components/shared/Section.tsx'
-import { Field } from './Field'
+import { Field } from './Field.tsx'
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { Loading } from '../../../components/shared/Loading.tsx'
 

@@ -12,7 +12,7 @@ import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { MarkerSymbolPicker } from './MarkerSymbolPicker'
 import { Header } from './Header.tsx'
-import { ErrorBoundary } from '../../components/shared/ErrorBoundary'
+import { ErrorBoundary } from '../../components/shared/ErrorBoundary.tsx'
 import { ColorPicker } from '../../components/shared/ColorPicker'
 import { Loading } from '../../components/shared/Loading.tsx'
 

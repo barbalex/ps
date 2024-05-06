@@ -15,7 +15,7 @@ import {
 } from '../../modules/createRows.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
-import { boundsFromBbox } from '../../modules/boundsFromBbox'
+import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
 
 interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>

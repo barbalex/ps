@@ -10,7 +10,7 @@ import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
-import {updateTableVectorLayerLabels} from '../../modules/updateTableVectorLayerLabels'
+import { updateTableVectorLayerLabels } from '../../modules/updateTableVectorLayerLabels.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'

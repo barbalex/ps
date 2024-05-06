@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
 import { Header } from './Header.tsx'
-import { PlaceForm } from './Form'
+import { PlaceForm } from './Form.tsx'
 
 import '../../form.css'
 

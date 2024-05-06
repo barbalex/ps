@@ -21,7 +21,7 @@ import { TableLayers } from './TableLayers'
 import { BoundsListener } from './BoundsListener'
 // import { Control } from './Control'
 // import { OwnControls } from './OwnControls'
-import { ErrorBoundary } from '../shared/ErrorBoundary'
+import { ErrorBoundary } from '../shared/ErrorBoundary.tsx'
 
 const mapContainerStyle = {
   width: '100%',

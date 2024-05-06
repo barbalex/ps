@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import { useMap } from 'react-leaflet'
 
-import { ErrorBoundary } from '../../shared/ErrorBoundary'
+import { ErrorBoundary } from '../../shared/ErrorBoundary.tsx'
 import { Tile_layers as TileLayer } from '../../../generated/client/index.ts'
 import { useElectric } from '../../../ElectricProvider.tsx'
 

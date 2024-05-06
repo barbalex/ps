@@ -4,7 +4,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { MdDone } from 'react-icons/md'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
-import { setGeometries } from './setGeometries'
+import { setGeometries } from './setGeometries.ts'
 
 const spinnerStyle = {
   paddingRight: 8,

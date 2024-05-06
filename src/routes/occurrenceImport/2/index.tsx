@@ -2,8 +2,8 @@ import { memo } from 'react'
 
 import { RadioGroupField } from '../../../components/shared/RadioGroupField.tsx'
 import { DropdownFieldSimpleOptions } from '../../../components/shared/DropdownFieldSimpleOptions.tsx'
-import { Crs } from './Crs'
-import { Set } from './Set'
+import { Crs } from './Crs.tsx'
+import { Set } from './Set.tsx'
 import { Occurrence_imports } from '../../../generated/client/index.ts'
 
 interface Props {
