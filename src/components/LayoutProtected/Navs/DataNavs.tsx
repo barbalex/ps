@@ -2,8 +2,8 @@ import { memo, useState, useEffect, useMemo } from 'react'
 import { useLocation } from 'react-router-dom'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
-import { idFieldFromTable } from '../../../modules/idFieldFromTable'
-import { Nav } from './Nav'
+import { idFieldFromTable } from '../../../modules/idFieldFromTable.ts'
+import { Nav } from './Nav.tsx'
 
 const isOdd = (num) => num % 2
 

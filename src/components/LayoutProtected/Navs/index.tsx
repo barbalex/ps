@@ -1,8 +1,8 @@
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbadoSession } from '@corbado/react'
 
-import { NavsWrapping } from './Wrapping'
-import { NavsOverflowing } from './Overflowing'
+import { NavsWrapping } from './Wrapping.tsx'
+import { NavsOverflowing } from './Overflowing/index.tsx'
 import { useElectric } from '../../../ElectricProvider.tsx'
 
 export const Navs = () => {

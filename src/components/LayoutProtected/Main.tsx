@@ -6,9 +6,9 @@ import { Allotment } from 'allotment'
 import { useCorbadoSession } from '@corbado/react'
 
 import { useElectric } from '../../ElectricProvider.tsx'
-import { Tree } from '../Tree'
-import { Filter } from '../Filter'
-import { Map } from '../Map'
+import { Tree } from '../Tree/index.tsx'
+import { Filter } from '../Filter/index.tsx'
+import { Map } from '../Map/index.tsx'
 
 const containerStyle = {
   display: 'flex',

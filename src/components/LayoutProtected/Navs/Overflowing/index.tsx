@@ -20,9 +20,9 @@ import {
 } from '@fluentui/react-components'
 import { useResizeDetector } from 'react-resize-detector'
 
-import { ToNavs } from '../ToNavs'
-import { DataNavsOverflowing } from './DataNavs'
-import { buildNavs } from '../../../../modules/navs'
+import { ToNavs } from '../ToNavs.tsx'
+import { DataNavsOverflowing } from './DataNavs.tsx'
+import { buildNavs } from '../../../../modules/navs.ts'
 import { useElectric } from '../../../../ElectricProvider.tsx'
 import { useCorbadoSession } from '@corbado/react'
 

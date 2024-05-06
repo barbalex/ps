@@ -1,14 +1,14 @@
 import { memo } from 'react'
 // import { useSearchParams } from 'react-router-dom'
 
-import { Main } from './Main'
-import { Breadcrumbs } from './Breadcrumbs'
-import { Navs } from './Navs'
-import { Notifications } from '../Notifications'
-import { ProtectedRoute } from '../ProtectedRoute'
-import { Header } from './Header/index'
-import { TableLayersProvider } from '../TableLayersProvider'
-import { OccurrenceAssignChooser } from '../OccurrenceAssignChooser'
+import { Main } from './Main.tsx'
+import { Breadcrumbs } from './Breadcrumbs/index.tsx'
+import { Navs } from './Navs/index.tsx'
+import { Notifications } from '../Notifications/index.tsx'
+import { ProtectedRoute } from '../ProtectedRoute.tsx'
+import { Header } from './Header/index.tsx'
+import { TableLayersProvider } from '../TableLayersProvider.tsx'
+import { OccurrenceAssignChooser } from '../OccurrenceAssignChooser/index.tsx'
 
 // memoizing this component creates error
 export const Layout = memo(() => {

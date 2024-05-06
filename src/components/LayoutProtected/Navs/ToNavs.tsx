@@ -1,7 +1,7 @@
 import { memo } from 'react'
 import { OverflowItem } from '@fluentui/react-components'
 
-import { Nav } from './Nav'
+import { Nav } from './Nav.tsx'
 
 export const ToNavs = memo(({ tos }) =>
   tos.map((to) => (

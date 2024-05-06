@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useMatches, useLocation, useParams } from 'react-router-dom'
 
-import { DataNavs } from './DataNavs'
-import { ToNavs } from './ToNavs'
-import { buildNavs } from '../../../modules/navs'
+import { DataNavs } from './DataNavs.tsx'
+import { ToNavs } from './ToNavs.tsx'
+import { buildNavs } from '../../../modules/navs.ts'
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { useCorbadoSession } from '@corbado/react'
 
