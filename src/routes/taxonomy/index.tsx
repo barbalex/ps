@@ -9,7 +9,7 @@ import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
 import { SwitchField } from '../../components/shared/SwitchField'
 import { RadioGroupField } from '../../components/shared/RadioGroupField'
-import { getValueFromChange } from '../../modules/getValueFromChange'
+import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header'
 import { Loading } from '../../components/shared/Loading'
 

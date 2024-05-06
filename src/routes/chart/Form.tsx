@@ -8,7 +8,7 @@ import { TextField } from '../../components/shared/TextField.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions'
 import { SwitchField } from '../../components/shared/SwitchField'
-import { getValueFromChange } from '../../modules/getValueFromChange'
+import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Section } from '../../components/shared/Section'
 import { Loading } from '../../components/shared/Loading'
 

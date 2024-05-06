@@ -7,7 +7,7 @@ import { useElectric } from '../../ElectricProvider.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { DropdownField } from '../../components/shared/DropdownField'
 import { RadioGroupField } from '../../components/shared/RadioGroupField'
-import { getValueFromChange } from '../../modules/getValueFromChange'
+import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header'
 import { Loading } from '../../components/shared/Loading'
 

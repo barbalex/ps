@@ -10,7 +10,7 @@ import type { InputProps } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
-import { getValueFromChange } from '../../../modules/getValueFromChange'
+import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
 import { TextField } from '../TextField'
 // import { TimeFieldMasked } from './TimeFieldMasked'
 import { TextArea } from '../TextArea'

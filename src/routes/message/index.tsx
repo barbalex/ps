@@ -7,7 +7,7 @@ import { useElectric } from '../../ElectricProvider.tsx'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { DateField } from '../../components/shared/DateField'
-import { getValueFromChange } from '../../modules/getValueFromChange'
+import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header'
 import { Loading } from '../../components/shared/Loading'
 

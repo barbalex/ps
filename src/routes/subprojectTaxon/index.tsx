@@ -6,7 +6,7 @@ import type { InputProps } from '@fluentui/react-components'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { FilteringCombobox } from '../../components/shared/FilteringCombobox'
-import { getValueFromChange } from '../../modules/getValueFromChange'
+import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header'
 import { Loading } from '../../components/shared/Loading'
 

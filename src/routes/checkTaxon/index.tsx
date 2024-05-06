@@ -7,7 +7,7 @@ import { useElectric } from '../../ElectricProvider.tsx'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { DropdownField } from '../../components/shared/DropdownField'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
-import { getValueFromChange } from '../../modules/getValueFromChange'
+import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header'
 import { Loading } from '../../components/shared/Loading'
 

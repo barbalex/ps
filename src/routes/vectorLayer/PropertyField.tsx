@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Vector_layers as VectorLayer } from '../../generated/client'
 import { DropdownFieldOptions } from '../../components/shared/DropdownFieldOptions'
-import { getValueFromChange } from '../../modules/getValueFromChange'
+import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { upsertVectorLayerDisplaysForVectorLayer } from '../../modules/upsertVectorLayerDisplaysForVectorLayer'
 
 interface Props {

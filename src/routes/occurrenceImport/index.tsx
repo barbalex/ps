@@ -4,7 +4,7 @@ import { useParams, useSearchParams } from 'react-router-dom'
 import { Tab, TabList, InputProps } from '@fluentui/react-components'
 
 import { useElectric } from '../../ElectricProvider.tsx'
-import { getValueFromChange } from '../../modules/getValueFromChange'
+import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header'
 import { One } from './1'
 import { Two } from './2'

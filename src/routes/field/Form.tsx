@@ -10,7 +10,7 @@ import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx
 import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions'
 import { DropdownField } from '../../components/shared/DropdownField'
 import { SwitchField } from '../../components/shared/SwitchField'
-import { getValueFromChange } from '../../modules/getValueFromChange'
+import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { WidgetType } from './WidgetType'
 import { Loading } from '../../components/shared/Loading'
 
