@@ -11,7 +11,7 @@ import { Two } from './2'
 import { Three } from './3'
 import { Four } from './4'
 import { Preview } from './Preview'
-import { Loading } from '../../components/shared/Loading'
+import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'
 

@@ -13,7 +13,7 @@ import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Url } from './Url'
 import { PropertyField } from './PropertyField'
-import { Loading } from '../../components/shared/Loading'
+import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'
 

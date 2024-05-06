@@ -12,7 +12,7 @@ import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { WidgetType } from './WidgetType'
-import { Loading } from '../../components/shared/Loading'
+import { Loading } from '../../components/shared/Loading.tsx'
 
 export const accountTables = ['projects', 'files']
 

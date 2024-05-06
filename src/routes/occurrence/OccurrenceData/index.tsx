@@ -11,7 +11,7 @@ import { ErrorBoundary } from '../../../components/shared/ErrorBoundary'
 import { Section } from '../../../components/shared/Section'
 import { Field } from './Field'
 import { useElectric } from '../../../ElectricProvider.tsx'
-import { Loading } from '../../../components/shared/Loading'
+import { Loading } from '../../../components/shared/Loading.tsx'
 
 import './raw.css'
 

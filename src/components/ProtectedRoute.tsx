@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import { useCorbado } from '@corbado/react'
-import { Loading } from './shared/Loading'
+import { Loading } from './shared/Loading.tsx'
 
 import { Auth } from './Auth'
 

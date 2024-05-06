@@ -9,7 +9,7 @@ import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
-import { Loading } from '../../components/shared/Loading'
+import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'
 

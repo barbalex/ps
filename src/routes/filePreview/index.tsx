@@ -7,7 +7,7 @@ import DocViewer, { DocViewerRenderers } from '@cyntler/react-doc-viewer'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Header } from '../file/Header'
 import { Uploader } from '../file/Uploader'
-import { Loading } from '../../components/shared/Loading'
+import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'
 import './style.css'

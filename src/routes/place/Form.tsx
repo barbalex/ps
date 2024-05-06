@@ -11,7 +11,7 @@ import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { EditingGeometry } from '../../components/shared/EditingGeometry'
-import { Loading } from '../../components/shared/Loading'
+import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'
 

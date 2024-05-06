@@ -11,7 +11,7 @@ import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { Header } from './Header.tsx'
 import { Uploader } from './Uploader'
-import { Loading } from '../../components/shared/Loading'
+import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'
 

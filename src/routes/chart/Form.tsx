@@ -10,7 +10,7 @@ import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFiel
 import { SwitchField } from '../../components/shared/SwitchField'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Section } from '../../components/shared/Section'
-import { Loading } from '../../components/shared/Loading'
+import { Loading } from '../../components/shared/Loading.tsx'
 
 const chartTypes = ['Pie', 'Radar', 'Area']
 

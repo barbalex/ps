@@ -13,7 +13,7 @@ import { DropdownFieldFromLayerOptions } from '../../components/shared/DropdownF
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { BaseUrl } from './BaseUrl'
 import { Header } from './Header.tsx'
-import { Loading } from '../../components/shared/Loading'
+import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'
 
