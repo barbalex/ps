@@ -749,11 +749,11 @@ export const router = () => {
                   children: [
                     {
                       index: true,
-                      lazy: () => import('../routes/tileLayers'),
+                      lazy: () => import('../routes/tileLayers.tsx'),
                     },
                     {
                       path: ':tile_layer_id',
-                      lazy: () => import('../routes/tileLayer'),
+                      lazy: () => import('../routes/tileLayer/index.tsx'),
                       handle: {
                         crumb: {
                           table: 'tile_layers',
@@ -776,7 +776,7 @@ export const router = () => {
                   children: [
                     {
                       index: true,
-                      lazy: () => import('../routes/vectorLayers'),
+                      lazy: () => import('../routes/vectorLayers.tsx'),
                     },
                     {
                       path: ':vector_layer_id',
@@ -793,7 +793,7 @@ export const router = () => {
                       children: [
                         {
                           index: true,
-                          lazy: () => import('../routes/vectorLayer'),
+                          lazy: () => import('../routes/vectorLayer/index.tsx'),
                         },
                         {
                           path: 'vector-layer-displays',
@@ -809,12 +809,14 @@ export const router = () => {
                             {
                               index: true,
                               lazy: () =>
-                                import('../routes/vectorLayerDisplays'),
+                                import('../routes/vectorLayerDisplays.tsx'),
                             },
                             {
                               path: ':vector_layer_display_id',
                               lazy: () =>
-                                import('../routes/vectorLayerDisplay'),
+                                import(
+                                  '../routes/vectorLayerDisplay/index.tsx'
+                                ),
                               handle: {
                                 crumb: {
                                   table: 'vector_layer_displays',
@@ -841,11 +843,11 @@ export const router = () => {
                   children: [
                     {
                       index: true,
-                      lazy: () => import('../routes/projectUsers'),
+                      lazy: () => import('../routes/projectUsers.tsx'),
                     },
                     {
                       path: ':project_user_id',
-                      lazy: () => import('../routes/projectUser'),
+                      lazy: () => import('../routes/projectUser/index.tsx'),
                       handle: {
                         crumb: {
                           table: 'project_users',
@@ -868,11 +870,11 @@ export const router = () => {
                   children: [
                     {
                       index: true,
-                      lazy: () => import('../routes/projectReports'),
+                      lazy: () => import('../routes/projectReports.tsx'),
                     },
                     {
                       path: ':project_report_id',
-                      lazy: () => import('../routes/projectReport'),
+                      lazy: () => import('../routes/projectReport/index.tsx'),
                       handle: {
                         crumb: {
                           table: 'project_reports',
@@ -895,11 +897,11 @@ export const router = () => {
                   children: [
                     {
                       index: true,
-                      lazy: () => import('../routes/fields'),
+                      lazy: () => import('../routes/fields.tsx'),
                     },
                     {
                       path: ':field_id',
-                      lazy: () => import('../routes/field'),
+                      lazy: () => import('../routes/field/index.tsx'),
                       handle: {
                         crumb: {
                           table: 'fields',
