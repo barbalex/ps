@@ -1,7 +1,10 @@
 // import axios from 'redaxios'
 
-import { getCapabilities } from '../../modules/getCapabilities'
-import { Tile_layers as TileLayer, Electric } from '../../generated/client/index.ts'
+import { getCapabilities } from '../../modules/getCapabilities.ts'
+import {
+  Tile_layers as TileLayer,
+  Electric,
+} from '../../generated/client/index.ts'
 // import { chunkArrayWithMinSize } from '../../modules/chunkArrayWithMinSize'
 
 interface Props {

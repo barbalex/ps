@@ -7,7 +7,9 @@ import { TextField } from '../../components/shared/TextField.tsx'
 import { createNotification } from '../../modules/createRows.ts'
 
 import '../../form.css'
-const createWorker = createWorkerFactory(() => import('./getCapabilitiesData'))
+const createWorker = createWorkerFactory(
+  () => import('./getCapabilitiesData.ts'),
+)
 
 export const BaseUrl = memo(
   ({ onChange, row }: { onChange: () => void; row: TileLayer }) => {

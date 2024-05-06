@@ -4,7 +4,7 @@ import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { createProject } from '../../modules/createRows.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
-import { DesigningButton } from './DesigningButton'
+import { DesigningButton } from './DesigningButton.tsx'
 
 interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>

@@ -6,8 +6,8 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useCorbadoSession } from '@corbado/react'
 
 import { Header } from './Header.tsx'
-import { Form } from './Form'
-import { Design } from './Design'
+import { Form } from './Form.tsx'
+import { Design } from './Design.tsx'
 import { useElectric } from '../../ElectricProvider.tsx'
 
 import '../../form.css'
