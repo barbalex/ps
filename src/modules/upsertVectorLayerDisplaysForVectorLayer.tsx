@@ -1,4 +1,4 @@
-import { Vector_layers as VectorLayer, Electric } from '../generated/client'
+import { Vector_layers as VectorLayer, Electric } from '../generated/client/index.ts'
 import { createVectorLayerDisplay } from './createRows'
 
 interface Props {

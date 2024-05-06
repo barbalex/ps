@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom'
 
 import { Node } from './Node'
-import { FieldTypes as FieldType } from '../../../generated/client'
+import { FieldTypes as FieldType } from '../../../generated/client/index.ts'
 
 interface Props {
   fieldType: FieldType

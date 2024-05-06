@@ -1,7 +1,7 @@
 import { useCallback, memo } from 'react'
 import { createWorkerFactory, useWorker } from '@shopify/react-web-worker'
 
-import { Vector_layers as VectorLayer } from '../../../generated/client'
+import { Vector_layers as VectorLayer } from '../../../generated/client/index.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { createNotification } from '../../modules/createRows.ts'

@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import { useCorbadoSession } from '@corbado/react'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
-import { Vector_layers as VectorLayer } from '../../../generated/client'
+import { Vector_layers as VectorLayer } from '../../../generated/client/index.ts'
 import { TableLayer } from './TableLayer'
 
 interface Props {

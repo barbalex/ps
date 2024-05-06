@@ -5,7 +5,7 @@ import { Node } from './Node'
 import {
   Occurrences as Occurrence,
   Places as Place,
-} from '../../../generated/client'
+} from '../../../generated/client/index.ts'
 interface Props {
   project_id: string
   subproject_id: string

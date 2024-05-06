@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom'
 
 import { Node } from './Node'
-import { Messages as Message } from '../../../generated/client'
+import { Messages as Message } from '../../../generated/client/index.ts'
 
 interface Props {
   message: Message

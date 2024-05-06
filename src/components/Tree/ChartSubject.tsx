@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom'
 
 import { Node } from './Node'
-import { Chart_subjects as ChartSubject } from '../../../generated/client'
+import { Chart_subjects as ChartSubject } from '../../../generated/client/index.ts'
 
 interface Props {
   project_id?: string

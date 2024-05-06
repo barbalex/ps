@@ -5,7 +5,7 @@ import { Node } from './Node'
 import {
   PlaceUsers as PlaceUser,
   Places as Place,
-} from '../../../generated/client'
+} from '../../../generated/client/index.ts'
 
 interface Props {
   project_id: string

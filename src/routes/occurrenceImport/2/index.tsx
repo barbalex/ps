@@ -4,7 +4,7 @@ import { RadioGroupField } from '../../../components/shared/RadioGroupField.tsx'
 import { DropdownFieldSimpleOptions } from '../../../components/shared/DropdownFieldSimpleOptions.tsx'
 import { Crs } from './Crs'
 import { Set } from './Set'
-import { Occurrence_imports } from '../../../generated/client'
+import { Occurrence_imports } from '../../../generated/client/index.ts'
 
 interface Props {
   occurrenceImport: Occurrence_imports

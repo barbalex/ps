@@ -3,7 +3,7 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 
 import { Node } from './Node'
-import { Actions as Action, Places as Place } from '../../../generated/client'
+import { Actions as Action, Places as Place } from '../../../generated/client/index.ts'
 import { ActionValuesNode } from './ActionsValues'
 import { ActionReportsNode } from './ActionsReports'
 import { FilesNode } from './Files'

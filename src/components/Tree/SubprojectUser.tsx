@@ -2,7 +2,7 @@ import { useCallback, memo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { Node } from './Node'
-import { SubprojectUsers as SubprojectUser } from '../../../generated/client'
+import { SubprojectUsers as SubprojectUser } from '../../../generated/client/index.ts'
 
 interface Props {
   project_id: string

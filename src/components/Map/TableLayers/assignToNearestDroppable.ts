@@ -11,7 +11,7 @@ import {
   Electric,
   Vector_layers as VectorLayer,
   Places as Place,
-} from '../../../generated/client'
+} from '../../../generated/client/index.ts'
 import { createNotification } from '../../../modules/createRows.ts'
 
 interface Props {

@@ -17,7 +17,7 @@ import {
   Actions as Action,
   Checks as Check,
   Occurrences as Occurrence,
-} from '../../generated/client'
+} from '../../generated/client/index.ts'
 import { boundsFromBbox } from '../../modules/boundsFromBbox'
 
 interface Props {

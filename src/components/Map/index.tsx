@@ -10,7 +10,7 @@ import { useCorbadoSession } from '@corbado/react'
 import 'leaflet/dist/leaflet.css'
 // import 'leaflet-draw/dist/leaflet.draw.css'
 
-import { App_states as AppState } from '../../../generated/client'
+import { App_states as AppState } from '../../../generated/client/index.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { TileLayers } from './TileLayers'
 import { VectorLayers } from './VectorLayers'

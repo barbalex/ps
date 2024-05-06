@@ -2,7 +2,7 @@ import { useCallback, memo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { Node } from '../Node'
-import { Places as Place } from '../../../generated/client'
+import { Places as Place } from '../../../generated/client/index.ts'
 import { PlaceChildren } from './Children'
 
 interface Props {

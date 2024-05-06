@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider.tsx'
-import { Vector_layers as VectorLayer } from '../../generated/client'
+import { Vector_layers as VectorLayer } from '../../generated/client/index.ts'
 import { DropdownFieldOptions } from '../../components/shared/DropdownFieldOptions'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { upsertVectorLayerDisplaysForVectorLayer } from '../../modules/upsertVectorLayerDisplaysForVectorLayer'

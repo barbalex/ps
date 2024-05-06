@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom'
 
 import { Node } from './Node'
-import { WidgetsForFields as WidgetForField } from '../../../generated/client'
+import { WidgetsForFields as WidgetForField } from '../../../generated/client/index.ts'
 
 interface Props {
   widgetForField: WidgetForField

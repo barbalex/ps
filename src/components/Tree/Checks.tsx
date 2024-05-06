@@ -5,7 +5,7 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Node } from './Node'
 import { CheckNode } from './Check'
-import { Places as Place } from '../../generated/client'
+import { Places as Place } from '../../generated/client/index.ts'
 
 interface Props {
   project_id: string

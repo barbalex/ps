@@ -26,7 +26,7 @@ import { useElectric } from '../../../ElectricProvider.tsx'
 import {
   Vector_layers as VectorLayer,
   Vector_layer_displays as VectorLayerDisplay,
-} from '../../../generated/client'
+} from '../../../generated/client/index.ts'
 import { createNotification } from '../../../modules/createRows.ts'
 
 const xmlViewerStyle = {

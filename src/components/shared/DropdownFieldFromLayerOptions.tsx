@@ -4,7 +4,7 @@ import { useLiveQuery } from 'electric-sql/react'
 // import axios from 'redaxios'
 
 import { useElectric } from '../../ElectricProvider.tsx'
-import { Layer_options as LayerOption } from '../../generated/client'
+import { Layer_options as LayerOption } from '../../generated/client/index.ts'
 
 export const DropdownFieldFromLayerOptions = memo(
   ({

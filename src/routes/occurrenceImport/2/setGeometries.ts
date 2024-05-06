@@ -5,7 +5,7 @@ import proj4 from 'proj4'
 import {
   Occurrence_imports as OccurrenceImport,
   Electric,
-} from '../../../generated/client'
+} from '../../../generated/client/index.ts'
 
 interface Props {
   occurrenceImport: OccurrenceImport

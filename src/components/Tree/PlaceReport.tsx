@@ -5,7 +5,7 @@ import { Node } from './Node'
 import {
   PlaceReports as PlaceReport,
   Places as Place,
-} from '../../../generated/client'
+} from '../../../generated/client/index.ts'
 import { PlaceReportValuesNode } from './PlaceReportValues'
 
 interface Props {

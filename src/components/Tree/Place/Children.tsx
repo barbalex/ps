@@ -1,7 +1,7 @@
 import { memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 
-import { Places as Place } from '../../../generated/client'
+import { Places as Place } from '../../../generated/client/index.ts'
 import { ChecksNode } from '../Checks'
 import { ActionsNode } from '../Actions'
 import { PlaceReportsNode } from '../PlaceReports'

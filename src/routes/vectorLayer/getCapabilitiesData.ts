@@ -3,7 +3,7 @@ import { getCapabilities } from '../../modules/getCapabilities'
 import {
   Vector_layers as VectorLayer,
   Electric,
-} from '../../../generated/client'
+} from '../../../generated/client/index.ts'
 
 interface Props {
   row: VectorLayer

@@ -6,7 +6,7 @@ import { VectorLayerChooser } from './VectorLayerChooser'
 import {
   Vector_layers as VectorLayer,
   Vector_layer_displays as VectorLayerDisplay,
-} from '../../../generated/client'
+} from '../../../generated/client/index.ts'
 import { useElectric } from '../../../ElectricProvider.tsx'
 
 export const VectorLayers = () => {

@@ -1,6 +1,6 @@
 import { memo } from 'react'
 
-import { Occurrences as Occurrence } from '../../generated/client'
+import { Occurrences as Occurrence } from '../../generated/client/index.ts'
 
 const emptyContainerStyle = {
   display: 'flex',

@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom'
 
 import { Node } from './Node'
-import { Files as File } from '../../../generated/client'
+import { Files as File } from '../../../generated/client/index.ts'
 
 interface Props {
   project_id?: string

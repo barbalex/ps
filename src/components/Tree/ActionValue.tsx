@@ -5,7 +5,7 @@ import { Node } from './Node'
 import {
   Places as Place,
   Actions_values as ActionValue,
-} from '../../generated/client'
+} from '../../generated/client/index.ts'
 
 interface Props {
   project_id: string

@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
-import { PlaceReports as PlaceReport } from '../../../generated/client'
+import { PlaceReports as PlaceReport } from '../../../generated/client/index.ts'
 import { useElectric } from '../ElectricProvider.tsx'
 import { createPlaceReport } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader'

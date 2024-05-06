@@ -6,7 +6,7 @@ import { useElectric } from '../../../ElectricProvider.tsx'
 import {
   Vector_layers as VectorLayer,
   Vector_layer_displays as VectorLayerDisplay,
-} from '../../../generated/client'
+} from '../../../generated/client/index.ts'
 
 /**
  * This component chooses whether to render

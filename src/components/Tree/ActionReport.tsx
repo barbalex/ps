@@ -6,7 +6,7 @@ import { ActionReportValuesNode } from './ActionsReportValues'
 import {
   Places as Place,
   Actions_reports as ActionReport,
-} from '../../generated/client'
+} from '../../generated/client/index.ts'
 
 interface Props {
   project_id: string

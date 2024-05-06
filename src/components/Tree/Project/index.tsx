@@ -9,7 +9,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useCorbadoSession } from '@corbado/react'
 
 import { Node } from '../Node'
-import { Projects as Project } from '../../../generated/client'
+import { Projects as Project } from '../../../generated/client/index.ts'
 import { SubprojectsNode } from '../Subprojects'
 import { ProjectReportsNode } from '../ProjectReports'
 import { PersonsNode } from '../Persons'

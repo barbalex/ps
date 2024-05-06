@@ -2,7 +2,7 @@ import { useCallback, memo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { Node } from './Node'
-import { Lists as List } from '../../../generated/client'
+import { Lists as List } from '../../../generated/client/index.ts'
 import { ListValuesNode } from './ListValues'
 
 interface Props {

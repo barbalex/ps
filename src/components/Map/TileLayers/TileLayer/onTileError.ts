@@ -1,7 +1,7 @@
 // TODO: need to debounce
 import axios from 'redaxios'
 
-import { Tile_layers as TileLayer } from '../../../../generated/client'
+import { Tile_layers as TileLayer } from '../../../../generated/client/index.ts'
 import { xmlToJson } from '../../../../modules/xmlToJson'
 import { createNotification } from '../../../../modules/createRows.ts'
 

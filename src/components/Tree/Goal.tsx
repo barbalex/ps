@@ -2,7 +2,7 @@ import { useCallback, memo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { Node } from './Node'
-import { Goals as Goal } from '../../../generated/client'
+import { Goals as Goal } from '../../../generated/client/index.ts'
 import { GoalReportsNode } from './GoalReports'
 
 interface Props {

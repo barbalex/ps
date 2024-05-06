@@ -2,7 +2,7 @@ import { memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbadoSession } from '@corbado/react'
 
-import { Tile_layers as TileLayer } from '../../../../generated/client'
+import { Tile_layers as TileLayer } from '../../../../generated/client/index.ts'
 import { WMS } from './WMS'
 // import { WMTSOffline } from './WMTSOffline'
 import { LocalMap } from './LocalMap'

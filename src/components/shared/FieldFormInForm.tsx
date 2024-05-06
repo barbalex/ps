@@ -13,7 +13,7 @@ import {
 import { useSearchParams } from 'react-router-dom'
 
 import { FieldForm } from '../../routes/field/Form'
-import { Fields as Field } from '../../generated/client'
+import { Fields as Field } from '../../generated/client/index.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
 
 const containerStyle = {

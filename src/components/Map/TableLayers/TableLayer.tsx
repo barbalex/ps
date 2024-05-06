@@ -14,7 +14,7 @@ import {
   Actions as Action,
   Checks as Check,
   Occurrences as Occurrence,
-} from '../../../generated/client'
+} from '../../../generated/client/index.ts'
 import { ErrorBoundary } from '../MapErrorBoundary'
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { assignToNearestDroppable } from './assignToNearestDroppable'

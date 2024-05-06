@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom'
 
 import { Node } from './Node'
-import { Fields as Field } from '../../../generated/client'
+import { Fields as Field } from '../../../generated/client/index.ts'
 
 interface Props {
   project_id?: string

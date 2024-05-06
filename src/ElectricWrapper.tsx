@@ -1,6 +1,6 @@
 import { useEffect, useState, memo } from 'react'
 import { ElectricDatabase, electrify } from 'electric-sql/wa-sqlite'
-import { Electric, schema } from './generated/client'
+import { Electric, schema } from './generated/client/index.ts'
 import { uniqueTabId } from 'electric-sql/util'
 import { LIB_VERSION } from 'electric-sql/version'
 import { ElectricConfig } from 'electric-sql/config'

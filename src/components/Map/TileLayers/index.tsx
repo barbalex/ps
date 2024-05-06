@@ -1,7 +1,7 @@
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 
-import { Tile_layers as TileLayer } from '../../../generated/client'
+import { Tile_layers as TileLayer } from '../../../generated/client/index.ts'
 import { TileLayerComponent } from './TileLayer'
 import { OsmColor } from '../layers/OsmColor'
 import { useElectric } from '../../../ElectricProvider.tsx'

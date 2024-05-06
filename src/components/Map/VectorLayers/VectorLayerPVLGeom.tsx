@@ -8,7 +8,7 @@ import {
   Vector_layer_geoms as VectorLayerGeom,
   Vector_layers as VectorLayer,
   Vector_layer_displays as VectorLayerDisplay,
-} from '../../../generated/client'
+} from '../../../generated/client/index.ts'
 
 import { vectorLayerDisplayToProperties } from '../../../modules/vectorLayerDisplayToProperties'
 import { Popup } from '../Popup'

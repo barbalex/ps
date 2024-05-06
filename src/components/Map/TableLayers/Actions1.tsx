@@ -1,7 +1,7 @@
 import { useLiveQuery } from 'electric-sql/react'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
-import { Vector_layers as VectorLayer } from '../../../generated/client'
+import { Vector_layers as VectorLayer } from '../../../generated/client/index.ts'
 import { TableLayer } from './TableLayer'
 
 interface Props {

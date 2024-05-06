@@ -5,7 +5,7 @@ import { useLiveQuery } from 'electric-sql/react'
 // import { uuidv7 } from '@kripod/uuidv7'
 
 import { useElectric } from '../../ElectricProvider.tsx'
-import { Notifications as Notification } from '../../generated/client'
+import { Notifications as Notification } from '../../generated/client/index.ts'
 import { Notification as NotificationComponent } from './Notification'
 
 // z-index needs to cover map, thus so hight

@@ -3,7 +3,7 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 
 import { Node } from './Node'
-import { Checks as Check, Places as Place } from '../../../generated/client'
+import { Checks as Check, Places as Place } from '../../../generated/client/index.ts'
 import { CheckValuesNode } from './CheckValues'
 import { CheckTaxaNode } from './CheckTaxa'
 import { FilesNode } from './Files'

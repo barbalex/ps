@@ -2,7 +2,7 @@ import { useCallback, memo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { Node } from './Node'
-import { Vector_layers as VectorLayer } from '../../../generated/client'
+import { Vector_layers as VectorLayer } from '../../../generated/client/index.ts'
 import { VectorLayerDisplaysNode } from './VectorLayerDisplays'
 
 interface Props {

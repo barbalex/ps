@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom'
 
 import { Node } from './Node'
-import { Accounts as Account } from '../../../generated/client'
+import { Accounts as Account } from '../../../generated/client/index.ts'
 
 interface Props {
   account: Account

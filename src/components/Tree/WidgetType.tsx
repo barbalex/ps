@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom'
 
 import { Node } from './Node'
-import { WidgetTypes as WidgetType } from '../../../generated/client'
+import { WidgetTypes as WidgetType } from '../../../generated/client/index.ts'
 
 interface Props {
   widgetType: WidgetType
