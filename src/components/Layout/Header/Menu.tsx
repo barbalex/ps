@@ -3,8 +3,8 @@ import { Button } from '@fluentui/react-components'
 import { MdLogin } from 'react-icons/md'
 import { useNavigate } from 'react-router-dom'
 
-import { controls } from '../../../styles'
-import { css } from '../../../css'
+import { controls } from '../../../styles.ts'
+import { css } from '../../../css.ts'
 
 export const Menu = memo(() => {
   const navigate = useNavigate()
