@@ -1,6 +1,5 @@
 import { memo } from 'react'
-import { 
-  Checkbox, } from '@fluentui/react-components'
+import { Checkbox } from '@fluentui/react-components'
 
 export const CheckboxField = memo(
   ({

@@ -2,7 +2,7 @@ import React from 'react'
 import { ErrorBoundary as ErrorBoundaryComponent } from 'react-error-boundary'
 import { Button } from '@fluentui/react-components'
 
-import { css } from '../../css'
+import { css } from '../../css.ts'
 
 const containerStyle = {
   padding: 15,

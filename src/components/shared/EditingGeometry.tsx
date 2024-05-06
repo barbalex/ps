@@ -4,7 +4,7 @@ import { Field, Textarea } from '@fluentui/react-components'
 import { useCorbadoSession } from '@corbado/react'
 
 import { useElectric } from '../../ElectricProvider.tsx'
-import { SwitchField } from './SwitchField'
+import { SwitchField } from './SwitchField.tsx'
 // TODO:
 // maybe generalize this component for all geometry editing
 // and move it to the shared folder

@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider.tsx'
-import { DropdownFieldSimpleOptions } from './DropdownFieldSimpleOptions'
+import { DropdownFieldSimpleOptions } from './DropdownFieldSimpleOptions.tsx'
 
 import '../../form.css'
 

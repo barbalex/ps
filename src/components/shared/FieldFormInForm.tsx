@@ -12,7 +12,7 @@ import {
 } from '@fluentui/react-components'
 import { useSearchParams } from 'react-router-dom'
 
-import { FieldForm } from '../../routes/field/Form'
+import { FieldForm } from '../../routes/field/Form.tsx'
 import { Fields as Field } from '../../generated/client/index.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
 
