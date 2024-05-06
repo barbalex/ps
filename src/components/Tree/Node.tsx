@@ -7,7 +7,7 @@ import { HiMiniMinusSmall as NoChildrenIcon } from 'react-icons/hi2'
 import { Button } from '@fluentui/react-components'
 import { Link, useSearchParams } from 'react-router-dom'
 
-import { css } from '../../css'
+import { css } from '../../css.ts'
 
 const buttonStyle = {
   borderRadius: 20,
