@@ -1,4 +1,4 @@
-import { LegendsControl } from './LegendsControl'
+import { LegendsControl } from './LegendsControl/index.tsx'
 
 const containerStyle = {
   // float children right

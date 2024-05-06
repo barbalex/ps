@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { Menu } from './Menu'
+import { Menu } from './Menu.tsx'
 
 export const ListViewHeader = memo(({ title, addRow, tableName, menus }) => (
   <div className="list-view-header">
