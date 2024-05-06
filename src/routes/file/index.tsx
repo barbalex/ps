@@ -6,7 +6,7 @@ import { useResizeDetector } from 'react-resize-detector'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
-import { Jsonb } from '../../components/shared/Jsonb'
+import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange'
 import { DropdownField } from '../../components/shared/DropdownField'
 import { Header } from './Header'
