@@ -5,7 +5,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { createProject } from '../modules/createRows.ts'
 import { useElectric } from '../ElectricProvider.tsx'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
-import { Row } from '../components/shared/Row'
+import { Row } from '../components/shared/Row.tsx'
 
 import '../form.css'
 

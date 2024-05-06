@@ -4,7 +4,7 @@ import { useLocation, useParams } from 'react-router-dom'
 
 import { useElectric } from '../ElectricProvider.tsx'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
-import { Row } from '../components/shared/Row'
+import { Row } from '../components/shared/Row.tsx'
 
 import '../form.css'
 

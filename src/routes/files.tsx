@@ -5,7 +5,7 @@ import { Button } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
 
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
-import { Row } from '../components/shared/Row'
+import { Row } from '../components/shared/Row.tsx'
 import { Uploader } from './file/Uploader'
 import { UploaderContext } from '../UploaderContext'
 

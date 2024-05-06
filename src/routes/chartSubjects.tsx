@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
-import { Row } from '../components/shared/Row'
+import { Row } from '../components/shared/Row.tsx'
 import { createChartSubject } from '../modules/createRows.ts'
 
 import '../form.css'

@@ -6,7 +6,7 @@ import { PlaceReports as PlaceReport } from '../../../generated/client/index.ts'
 import { useElectric } from '../ElectricProvider.tsx'
 import { createPlaceReport } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
-import { Row } from '../components/shared/Row'
+import { Row } from '../components/shared/Row.tsx'
 import '../form.css'
 
 interface PlaceReportResult {

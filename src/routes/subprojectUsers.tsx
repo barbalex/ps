@@ -6,7 +6,7 @@ import { useElectric } from '../ElectricProvider.tsx'
 import { createSubprojectUser } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import '../form.css'
-import { Row } from '../components/shared/Row'
+import { Row } from '../components/shared/Row.tsx'
 
 export const Component = () => {
   const { subproject_id } = useParams()
