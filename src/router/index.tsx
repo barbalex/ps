@@ -52,7 +52,7 @@ export const router = () => {
             },
           },
           children: [
-            { index: true, lazy: () => import('../routes/projects') },
+            { index: true, lazy: () => import('../routes/projects.tsx') },
             {
               path: ':project_id',
               element: null,
@@ -69,7 +69,7 @@ export const router = () => {
               children: [
                 {
                   index: true,
-                  lazy: () => import('../routes/project'),
+                  lazy: () => import('../routes/projects.tsx'),
                 },
                 {
                   path: 'subprojects',
@@ -84,7 +84,7 @@ export const router = () => {
                   children: [
                     {
                       index: true,
-                      lazy: () => import('../routes/subprojects'),
+                      lazy: () => import('../routes/subprojects.tsx'),
                     },
                     {
                       path: ':subproject_id',
@@ -101,7 +101,7 @@ export const router = () => {
                       children: [
                         {
                           index: true,
-                          lazy: () => import('../routes/subproject'),
+                          lazy: () => import('../routes/subproject/index.tsx'),
                         },
                         {
                           path: 'places',
@@ -117,7 +117,7 @@ export const router = () => {
                           children: [
                             {
                               index: true,
-                              lazy: () => import('../routes/places'),
+                              lazy: () => import('../routes/places.tsx'),
                             },
                             {
                               path: ':place_id',
@@ -138,7 +138,8 @@ export const router = () => {
                               children: [
                                 {
                                   index: true,
-                                  lazy: () => import('../routes/place'),
+                                  lazy: () =>
+                                    import('../routes/place/index.tsx'),
                                 },
                                 placesLevel2(),
                                 ...placesChildren({ level: 1 }),
@@ -159,11 +160,13 @@ export const router = () => {
                           children: [
                             {
                               index: true,
-                              lazy: () => import('../routes/subprojectUsers'),
+                              lazy: () =>
+                                import('../routes/subprojectUsers.tsx'),
                             },
                             {
                               path: ':subproject_user_id',
-                              lazy: () => import('../routes/subprojectUser'),
+                              lazy: () =>
+                                import('../routes/subprojectUser/index.tsx'),
                               handle: {
                                 crumb: {
                                   table: 'subproject_users',
@@ -186,11 +189,13 @@ export const router = () => {
                           children: [
                             {
                               index: true,
-                              lazy: () => import('../routes/occurrenceImports'),
+                              lazy: () =>
+                                import('../routes/occurrenceImports.tsx'),
                             },
                             {
                               path: ':occurrence_import_id',
-                              lazy: () => import('../routes/occurrenceImport'),
+                              lazy: () =>
+                                import('../routes/occurrenceImport/index.tsx'),
                               handle: {
                                 crumb: {
                                   table: 'occurrence_imports',
@@ -213,7 +218,7 @@ export const router = () => {
                           children: [
                             {
                               index: true,
-                              lazy: () => import('../routes/files'),
+                              lazy: () => import('../routes/files.tsx'),
                             },
                             {
                               path: ':file_id',
@@ -227,11 +232,13 @@ export const router = () => {
                               children: [
                                 {
                                   index: true,
-                                  lazy: () => import('../routes/file'),
+                                  lazy: () =>
+                                    import('../routes/file/index.tsx'),
                                 },
                                 {
                                   path: 'preview',
-                                  lazy: () => import('../routes/filePreview'),
+                                  lazy: () =>
+                                    import('../routes/filePreview/index.tsx'),
                                 },
                               ],
                             },
@@ -250,11 +257,13 @@ export const router = () => {
                           children: [
                             {
                               index: true,
-                              lazy: () => import('../routes/subprojectTaxa'),
+                              lazy: () =>
+                                import('../routes/subprojectTaxa.tsx'),
                             },
                             {
                               path: ':subproject_taxon_id',
-                              lazy: () => import('../routes/subprojectTaxon'),
+                              lazy: () =>
+                                import('../routes/subprojectTaxon/index.tsx'),
                               handle: {
                                 crumb: {
                                   table: 'subproject_taxa',
@@ -277,11 +286,13 @@ export const router = () => {
                           children: [
                             {
                               index: true,
-                              lazy: () => import('../routes/subprojectReports'),
+                              lazy: () =>
+                                import('../routes/subprojectReports.tsx'),
                             },
                             {
                               path: ':subproject_report_id',
-                              lazy: () => import('../routes/subprojectReport'),
+                              lazy: () =>
+                                import('../routes/subprojectReport/index.tsx'),
                               handle: {
                                 crumb: {
                                   table: 'subproject_reports',
@@ -304,7 +315,7 @@ export const router = () => {
                           children: [
                             {
                               index: true,
-                              lazy: () => import('../routes/goals'),
+                              lazy: () => import('../routes/goals.tsx'),
                             },
                             {
                               path: ':goal_id',
@@ -321,7 +332,8 @@ export const router = () => {
                               children: [
                                 {
                                   index: true,
-                                  lazy: () => import('../routes/goal'),
+                                  lazy: () =>
+                                    import('../routes/goal/index.tsx'),
                                 },
                                 {
                                   path: 'reports',
@@ -337,7 +349,7 @@ export const router = () => {
                                     {
                                       index: true,
                                       lazy: () =>
-                                        import('../routes/goalReports'),
+                                        import('../routes/goalReports.tsx'),
                                     },
                                     {
                                       path: ':goal_report_id',
@@ -355,7 +367,9 @@ export const router = () => {
                                         {
                                           index: true,
                                           lazy: () =>
-                                            import('../routes/goalReport'),
+                                            import(
+                                              '../routes/goalReport/index.tsx'
+                                            ),
                                         },
                                         {
                                           path: 'values',
@@ -372,14 +386,14 @@ export const router = () => {
                                               index: true,
                                               lazy: () =>
                                                 import(
-                                                  '../routes/goalReportValues'
+                                                  '../routes/goalReportValues.tsx'
                                                 ),
                                             },
                                             {
                                               path: ':goal_report_value_id',
                                               lazy: () =>
                                                 import(
-                                                  '../routes/goalReportValue'
+                                                  '../routes/goalReportValue/index.tsx'
                                                 ),
                                               handle: {
                                                 crumb: {
@@ -414,11 +428,12 @@ export const router = () => {
                           children: [
                             {
                               index: true,
-                              lazy: () => import('../routes/occurrences'),
+                              lazy: () => import('../routes/occurrences.tsx'),
                             },
                             {
                               path: ':occurrence_id',
-                              lazy: () => import('../routes/occurrence'),
+                              lazy: () =>
+                                import('../routes/occurrence/index.tsx'),
                               handle: {
                                 crumb: {
                                   table: 'occurrences',
@@ -447,11 +462,12 @@ export const router = () => {
                           children: [
                             {
                               index: true,
-                              lazy: () => import('../routes/occurrences'),
+                              lazy: () => import('../routes/occurrences.tsx'),
                             },
                             {
                               path: ':occurrence_id',
-                              lazy: () => import('../routes/occurrence'),
+                              lazy: () =>
+                                import('../routes/occurrence/index.tsx'),
                               handle: {
                                 crumb: {
                                   table: 'occurrences',
