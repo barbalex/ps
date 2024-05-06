@@ -3,8 +3,8 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider.tsx'
-import { Node } from './Node'
-import { GoalReportNode } from './GoalReport'
+import { Node } from './Node.tsx'
+import { GoalReportNode } from './GoalReport.tsx'
 
 interface Props {
   project_id: string

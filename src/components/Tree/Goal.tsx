@@ -1,9 +1,9 @@
 import { useCallback, memo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
-import { Node } from './Node'
+import { Node } from './Node.tsx'
 import { Goals as Goal } from '../../../generated/client/index.ts'
-import { GoalReportsNode } from './GoalReports'
+import { GoalReportsNode } from './GoalReports.tsx'
 
 interface Props {
   project_id: string
