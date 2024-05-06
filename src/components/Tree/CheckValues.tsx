@@ -3,9 +3,9 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider.tsx'
-import { Node } from './Node'
+import { Node } from './Node.tsx'
 import { Places as Place } from '../../../generated/client/index.ts'
-import { CheckValueNode } from './CheckValue'
+import { CheckValueNode } from './CheckValue.tsx'
 
 interface Props {
   project_id: string
