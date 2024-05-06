@@ -2,7 +2,7 @@ import { Rectangle } from 'react-leaflet/Rectangle'
 import { Tooltip } from 'react-leaflet/Tooltip'
 
 import { Tile_layers as TileLayer } from '../../../../generated/client/index.ts'
-import { ErrorBoundary } from '../../MapErrorBoundary'
+import { ErrorBoundary } from '../../MapErrorBoundary.tsx'
 
 interface Props {
   layer: TileLayer

@@ -3,9 +3,9 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useCorbadoSession } from '@corbado/react'
 
 import { Tile_layers as TileLayer } from '../../../../generated/client/index.ts'
-import { WMS } from './WMS'
+import { WMS } from './WMS.tsx'
 // import { WMTSOffline } from './WMTSOffline'
-import { LocalMap } from './LocalMap'
+import { LocalMap } from './LocalMap.tsx'
 import { useElectric } from '../../../../ElectricProvider.tsx'
 
 interface Props {

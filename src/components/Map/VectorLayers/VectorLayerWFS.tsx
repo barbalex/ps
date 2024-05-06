@@ -20,8 +20,8 @@ import {
   Button,
 } from '@fluentui/react-components'
 
-import { vectorLayerDisplayToProperties } from '../../../modules/vectorLayerDisplayToProperties'
-import { Popup } from '../Popup'
+import { vectorLayerDisplayToProperties } from '../../../modules/vectorLayerDisplayToProperties.ts'
+import { Popup } from '../Popup.tsx'
 import { useElectric } from '../../../ElectricProvider.tsx'
 import {
   Vector_layers as VectorLayer,

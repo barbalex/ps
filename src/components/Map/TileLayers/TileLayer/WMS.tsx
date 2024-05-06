@@ -5,11 +5,11 @@ import axios from 'redaxios'
 import * as ReactDOMServer from 'react-dom/server'
 import { useDebouncedCallback } from 'use-debounce'
 
-import { xmlToLayersData } from '../../../../modules/xmlToLayersData'
-import { Popup } from '../../Popup'
-import { onTileError } from './onTileError'
+import { xmlToLayersData } from '../../../../modules/xmlToLayersData.ts'
+import { Popup } from '../../Popup.tsx'
+import { onTileError } from './onTileError.ts'
 import { useElectric } from '../../../../ElectricProvider.tsx'
-import { css } from '../../../../css'
+import { css } from '../../../../css.ts'
 
 const popupContentStyle = {
   whiteSpace: 'pre',
