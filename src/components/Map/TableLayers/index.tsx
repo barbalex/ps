@@ -1,17 +1,17 @@
 import { useLiveQuery } from 'electric-sql/react'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
-import { vectorLayerTypes } from '../../../modules/updateTableVectorLayerLabels'
-import { Places1 } from './Places1'
-import { Places2 } from './Places2'
-import { Checks1 } from './Checks1'
-import { Checks2 } from './Checks2'
-import { Actions1 } from './Actions1'
-import { Actions2 } from './Actions2'
-import { OccurrencesAssigned1 } from './OccurrencesAssigned1'
-import { OccurrencesAssigned2 } from './OccurrencesAssigned2'
-import { OccurrencesToAssess } from './OccurrencesToAssess'
-import { OccurrencesNotToAssign } from './OccurrencesNotToAssign'
+import { vectorLayerTypes } from '../../../modules/updateTableVectorLayerLabels.ts'
+import { Places1 } from './Places1.tsx'
+import { Places2 } from './Places2.tsx'
+import { Checks1 } from './Checks1.tsx'
+import { Checks2 } from './Checks2.tsx'
+import { Actions1 } from './Actions1.tsx'
+import { Actions2 } from './Actions2.tsx'
+import { OccurrencesAssigned1 } from './OccurrencesAssigned1.tsx'
+import { OccurrencesAssigned2 } from './OccurrencesAssigned2.tsx'
+import { OccurrencesToAssess } from './OccurrencesToAssess.tsx'
+import { OccurrencesNotToAssign } from './OccurrencesNotToAssign.tsx'
 
 const layerToComponent = {
   places1: Places1,

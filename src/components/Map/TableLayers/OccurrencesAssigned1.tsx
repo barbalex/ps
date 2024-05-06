@@ -4,7 +4,7 @@ import { useCorbadoSession } from '@corbado/react'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { Vector_layers as VectorLayer } from '../../../generated/client/index.ts'
-import { TableLayer } from './TableLayer'
+import { TableLayer } from './TableLayer.tsx'
 
 interface Props {
   layer: VectorLayer
