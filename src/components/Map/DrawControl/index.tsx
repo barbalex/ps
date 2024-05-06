@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useCorbadoSession } from '@corbado/react'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
-import { DrawControlComponent } from './DrawControl'
+import { DrawControlComponent } from './DrawControl.tsx'
 
 // need to decide whether to show the draw control
 // show it if:
