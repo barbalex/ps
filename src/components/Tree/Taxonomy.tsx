@@ -1,7 +1,7 @@
 import { useCallback, memo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
-import { Node } from './Node'
+import { Node } from './Node.tsx'
 import { Taxonomies as Taxonomy } from '../../../generated/client/index.ts'
 import { TaxaNode } from './Taxa'
 

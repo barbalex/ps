@@ -6,7 +6,7 @@ import {
   useSearchParams,
 } from 'react-router-dom'
 
-import { Node } from './Node'
+import { Node } from './Node.tsx'
 import { Users as User } from '../../../generated/client/index.ts'
 
 interface Props {

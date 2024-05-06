@@ -6,7 +6,7 @@ import {
   useSearchParams,
 } from 'react-router-dom'
 
-import { Node } from './Node'
+import { Node } from './Node.tsx'
 import { WidgetsForFields as WidgetForField } from '../../../generated/client/index.ts'
 
 interface Props {

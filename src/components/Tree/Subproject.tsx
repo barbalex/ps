@@ -2,7 +2,7 @@ import { useCallback, memo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 
-import { Node } from './Node'
+import { Node } from './Node.tsx'
 import { Subprojects as Subproject } from '../../../generated/client/index.ts'
 import { PlacesNode } from './Places'
 import { SubprojectReportsNode } from './SubprojectReports'
