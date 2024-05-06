@@ -1,9 +1,9 @@
 import { useCallback, memo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
-import { Node } from './Node'
+import { Node } from './Node.tsx'
 import { Lists as List } from '../../../generated/client/index.ts'
-import { ListValuesNode } from './ListValues'
+import { ListValuesNode } from './ListValues.tsx'
 
 interface Props {
   project_id: string

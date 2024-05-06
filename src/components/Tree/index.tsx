@@ -1,13 +1,13 @@
 import { memo } from 'react'
 
-import { ProjectsNode } from './Projects'
-import { UsersNode } from './Users'
-import { AccountsNode } from './Accounts'
-import { FieldTypesNode } from './FieldTypes'
-import { WidgetTypesNode } from './WidgetTypes'
-import { WidgetsForFieldsNode } from './WidgetsForFields'
-import { FieldsNode } from './Fields'
-import { MessagesNode } from './Messages'
+import { ProjectsNode } from './Projects.tsx'
+import { UsersNode } from './Users.tsx'
+import { AccountsNode } from './Accounts.tsx'
+import { FieldTypesNode } from './FieldTypes.tsx'
+import { WidgetTypesNode } from './WidgetTypes.tsx'
+import { WidgetsForFieldsNode } from './WidgetsForFields.tsx'
+import { FieldsNode } from './Fields.tsx'
+import { MessagesNode } from './Messages.tsx'
 
 const containerStyle = {
   height: '100%',
