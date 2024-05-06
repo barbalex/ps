@@ -2,11 +2,14 @@ import { useCallback, memo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 
-import { Node } from './Node'
-import { Actions as Action, Places as Place } from '../../../generated/client/index.ts'
-import { ActionValuesNode } from './ActionsValues'
-import { ActionReportsNode } from './ActionsReports'
-import { FilesNode } from './Files'
+import { Node } from './Node.tsx'
+import {
+  Actions as Action,
+  Places as Place,
+} from '../../../generated/client/index.ts'
+import { ActionValuesNode } from './ActionsValues.tsx'
+import { ActionReportsNode } from './ActionsReports.tsx'
+import { FilesNode } from './Files.tsx'
 import { useElectric } from '../../ElectricProvider.tsx'
 
 interface Props {

@@ -3,8 +3,8 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider.tsx'
-import { Node } from './Node'
-import { ActionReportNode } from './ActionReport'
+import { Node } from './Node.tsx'
+import { ActionReportNode } from './ActionReport.tsx'
 import { Places as Place } from '../../generated/client/index.ts'
 
 interface Props {

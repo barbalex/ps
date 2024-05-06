@@ -1,8 +1,8 @@
 import { useCallback, memo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
-import { Node } from './Node'
-import { ActionReportValuesNode } from './ActionsReportValues'
+import { Node } from './Node.tsx'
+import { ActionReportValuesNode } from './ActionsReportValues.tsx'
 import {
   Places as Place,
   Actions_reports as ActionReport,
