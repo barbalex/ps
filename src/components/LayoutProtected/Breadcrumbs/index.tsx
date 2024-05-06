@@ -3,7 +3,7 @@ import { useCorbadoSession } from '@corbado/react'
 
 import { BreadcrumbsWrapping } from './Wrapping'
 import { BreadcrumbsOverflowing } from './Overflowing'
-import { useElectric } from '../../../ElectricProvider'
+import { useElectric } from '../../../ElectricProvider.tsx'
 
 export const Breadcrumbs = () => {
   const { user: authUser } = useCorbadoSession()

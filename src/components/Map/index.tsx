@@ -11,7 +11,7 @@ import 'leaflet/dist/leaflet.css'
 // import 'leaflet-draw/dist/leaflet.draw.css'
 
 import { App_states as AppState } from '../../../generated/client'
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../../ElectricProvider.tsx'
 import { TileLayers } from './TileLayers'
 import { VectorLayers } from './VectorLayers'
 import { LocationMarker } from './LocationMarker'

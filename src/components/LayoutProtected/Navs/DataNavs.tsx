@@ -1,7 +1,7 @@
 import { memo, useState, useEffect, useMemo } from 'react'
 import { useLocation } from 'react-router-dom'
 
-import { useElectric } from '../../../ElectricProvider'
+import { useElectric } from '../../../ElectricProvider.tsx'
 import { idFieldFromTable } from '../../../modules/idFieldFromTable'
 import { Nav } from './Nav'
 

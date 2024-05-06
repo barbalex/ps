@@ -13,7 +13,7 @@ import {
 import { vectorLayerDisplayToProperties } from '../../../modules/vectorLayerDisplayToProperties'
 import { Popup } from '../Popup'
 import { ErrorBoundary } from '../MapErrorBoundary'
-import { useElectric } from '../../../ElectricProvider'
+import { useElectric } from '../../../ElectricProvider.tsx'
 import { createNotification } from '../../../modules/createRows'
 
 // const bboxBuffer = 0.01

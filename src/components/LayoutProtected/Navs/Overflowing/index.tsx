@@ -23,7 +23,7 @@ import { useResizeDetector } from 'react-resize-detector'
 import { ToNavs } from '../ToNavs'
 import { DataNavsOverflowing } from './DataNavs'
 import { buildNavs } from '../../../../modules/navs'
-import { useElectric } from '../../../../ElectricProvider'
+import { useElectric } from '../../../../ElectricProvider.tsx'
 import { useCorbadoSession } from '@corbado/react'
 
 const OverflowMenuItem: React.FC = ({ path, text }) => {

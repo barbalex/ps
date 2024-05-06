@@ -4,7 +4,7 @@ import { useMap } from 'react-leaflet'
 import { TileLayer as TileLayerType } from '../../../../dexieClient'
 import storeContext from '../../../../storeContext'
 import { IStore } from '../../../../store'
-import { useElectric } from '../../../../ElectricProvider'
+import { useElectric } from '../../../../ElectricProvider.tsx'
 import { createNotification } from '../../../../modules/createRows'
 
 interface Props {

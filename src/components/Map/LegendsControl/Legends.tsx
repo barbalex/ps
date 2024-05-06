@@ -5,7 +5,7 @@ import { useMap } from 'react-leaflet'
 
 import { ErrorBoundary } from '../../shared/ErrorBoundary'
 import { Tile_layers as TileLayer } from '../../../generated/client'
-import { useElectric } from '../../../ElectricProvider'
+import { useElectric } from '../../../ElectricProvider.tsx'
 
 const labelStyle = {
   cursor: 'text',

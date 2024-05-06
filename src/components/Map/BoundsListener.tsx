@@ -3,7 +3,7 @@ import { useMap } from 'react-leaflet'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbadoSession } from '@corbado/react'
 
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../../ElectricProvider.tsx'
 
 // Problem: when setting bounds from a form query, map is not available
 // Solution: use BoundsListener to set bounds from here where map is available

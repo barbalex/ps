@@ -8,7 +8,7 @@ import { useDebouncedCallback } from 'use-debounce'
 import { xmlToLayersData } from '../../../../modules/xmlToLayersData'
 import { Popup } from '../../Popup'
 import { onTileError } from './onTileError'
-import { useElectric } from '../../../../ElectricProvider'
+import { useElectric } from '../../../../ElectricProvider.tsx'
 import { css } from '../../../../css'
 
 const popupContentStyle = {

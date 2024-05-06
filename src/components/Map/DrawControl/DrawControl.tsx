@@ -5,7 +5,7 @@ import 'leaflet-draw/dist/leaflet.draw.css'
 import { useMap } from 'react-leaflet'
 import getBbox from '@turf/bbox'
 
-import { useElectric } from '../../../ElectricProvider'
+import { useElectric } from '../../../ElectricProvider.tsx'
 
 export const DrawControlComponent = ({
   editingPlace,

@@ -2,7 +2,7 @@ import { PropsWithChildren } from 'react'
 import { ErrorBoundary as ErrorBoundaryComponent } from 'react-error-boundary'
 
 import { TileLayer } from '../../dexieClient'
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../../ElectricProvider.tsx'
 import { createNotification } from '../../modules/createRows'
 
 const onReload = () => {

@@ -7,7 +7,7 @@ import {
   Vector_layers as VectorLayer,
   Vector_layer_displays as VectorLayerDisplay,
 } from '../../../generated/client'
-import { useElectric } from '../../../ElectricProvider'
+import { useElectric } from '../../../ElectricProvider.tsx'
 
 export const VectorLayers = () => {
   const { project_id } = useParams()

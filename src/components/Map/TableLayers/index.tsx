@@ -1,6 +1,6 @@
 import { useLiveQuery } from 'electric-sql/react'
 
-import { useElectric } from '../../../ElectricProvider'
+import { useElectric } from '../../../ElectricProvider.tsx'
 import { vectorLayerTypes } from '../../../modules/updateTableVectorLayerLabels'
 import { Places1 } from './Places1'
 import { Places2 } from './Places2'

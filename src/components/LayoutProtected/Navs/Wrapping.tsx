@@ -4,7 +4,7 @@ import { useMatches, useLocation, useParams } from 'react-router-dom'
 import { DataNavs } from './DataNavs'
 import { ToNavs } from './ToNavs'
 import { buildNavs } from '../../../modules/navs'
-import { useElectric } from '../../../ElectricProvider'
+import { useElectric } from '../../../ElectricProvider.tsx'
 import { useCorbadoSession } from '@corbado/react'
 
 export const NavsWrapping = ({ designing }) => {

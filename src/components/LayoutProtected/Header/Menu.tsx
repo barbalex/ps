@@ -17,7 +17,7 @@ import { useCorbado, useCorbadoSession } from '@corbado/react'
 
 import { controls } from '../../../styles'
 import { css } from '../../../css'
-import { useElectric } from '../../../ElectricProvider'
+import { useElectric } from '../../../ElectricProvider.tsx'
 
 const buildButtonStyle = ({ prevIsActive, nextIsActive, selfIsActive }) => {
   if (!selfIsActive) {

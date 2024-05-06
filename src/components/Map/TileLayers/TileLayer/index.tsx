@@ -6,7 +6,7 @@ import { Tile_layers as TileLayer } from '../../../../generated/client'
 import { WMS } from './WMS'
 // import { WMTSOffline } from './WMTSOffline'
 import { LocalMap } from './LocalMap'
-import { useElectric } from '../../../../ElectricProvider'
+import { useElectric } from '../../../../ElectricProvider.tsx'
 
 interface Props {
   layer: TileLayer

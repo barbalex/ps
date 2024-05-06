@@ -3,7 +3,7 @@ import { useCorbadoSession } from '@corbado/react'
 
 import { NavsWrapping } from './Wrapping'
 import { NavsOverflowing } from './Overflowing'
-import { useElectric } from '../../../ElectricProvider'
+import { useElectric } from '../../../ElectricProvider.tsx'
 
 export const Navs = () => {
   const { user: authUser } = useCorbadoSession()

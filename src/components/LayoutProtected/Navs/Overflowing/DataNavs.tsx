@@ -2,7 +2,7 @@ import { forwardRef, useState, useEffect, useMemo, memo } from 'react'
 import { useLocation } from 'react-router-dom'
 import { OverflowItem, Overflow } from '@fluentui/react-components'
 
-import { useElectric } from '../../../../ElectricProvider'
+import { useElectric } from '../../../../ElectricProvider.tsx'
 import { idFieldFromTable } from '../../../../modules/idFieldFromTable'
 import { Nav } from '../Nav'
 import { OverflowMenu } from '.'

@@ -16,7 +16,7 @@ import {
   Occurrences as Occurrence,
 } from '../../../generated/client'
 import { ErrorBoundary } from '../MapErrorBoundary'
-import { useElectric } from '../../../ElectricProvider'
+import { useElectric } from '../../../ElectricProvider.tsx'
 import { assignToNearestDroppable } from './assignToNearestDroppable'
 
 interface Props {
