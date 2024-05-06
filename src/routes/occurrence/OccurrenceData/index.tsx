@@ -8,7 +8,7 @@ import { useCorbadoSession } from '@corbado/react'
 
 import { exists } from '../../../modules/exists'
 import { ErrorBoundary } from '../../../components/shared/ErrorBoundary'
-import { Section } from '../../../components/shared/Section'
+import { Section } from '../../../components/shared/Section.tsx'
 import { Field } from './Field'
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { Loading } from '../../../components/shared/Loading.tsx'

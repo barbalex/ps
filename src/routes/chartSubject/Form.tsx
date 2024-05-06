@@ -9,7 +9,7 @@ import { RadioGroupField } from '../../components/shared/RadioGroupField'
 import { SwitchField } from '../../components/shared/SwitchField'
 import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
-import { Section } from '../../components/shared/Section'
+import { Section } from '../../components/shared/Section.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 
 const chartTables = [
