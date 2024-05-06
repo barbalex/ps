@@ -262,7 +262,7 @@ export const placesChildren = ({ level }) => [
               },
             },
             children: [
-              { index: true, lazy: () => import('../routes/files') },
+              { index: true, lazy: () => import('../routes/files.tsx') },
               {
                 path: ':file_id',
                 element: null,
@@ -275,11 +275,11 @@ export const placesChildren = ({ level }) => [
                 children: [
                   {
                     index: true,
-                    lazy: () => import('../routes/file'),
+                    lazy: () => import('../routes/file/index.tsx'),
                   },
                   {
                     path: 'preview',
-                    lazy: () => import('../routes/filePreview'),
+                    lazy: () => import('../routes/filePreview/index.tsx'),
                   },
                 ],
               },
@@ -302,7 +302,7 @@ export const placesChildren = ({ level }) => [
     children: [
       {
         index: true,
-        lazy: () => import('../routes/placeReports'),
+        lazy: () => import('../routes/placeReports.tsx'),
       },
       {
         path: ':place_report_id',
@@ -320,7 +320,7 @@ export const placesChildren = ({ level }) => [
         children: [
           {
             index: true,
-            lazy: () => import('../routes/placeReport'),
+            lazy: () => import('../routes/placeReport/index.tsx'),
           },
           {
             path: 'values',
@@ -335,11 +335,11 @@ export const placesChildren = ({ level }) => [
             children: [
               {
                 index: true,
-                lazy: () => import('../routes/placeReportValues'),
+                lazy: () => import('../routes/placeReportValues.tsx'),
               },
               {
                 path: ':place_report_value_id',
-                lazy: () => import('../routes/placeReportValue'),
+                lazy: () => import('../routes/placeReportValue/index.tsx'),
                 handle: {
                   crumb: {
                     table: 'place_report_values',
@@ -366,11 +366,11 @@ export const placesChildren = ({ level }) => [
     children: [
       {
         index: true,
-        lazy: () => import('../routes/occurrences'),
+        lazy: () => import('../routes/occurrences.tsx'),
       },
       {
         path: ':occurrence_id',
-        lazy: () => import('../routes/occurrence'),
+        lazy: () => import('../routes/occurrence/index.tsx'),
         handle: {
           crumb: {
             table: 'occurrences',
@@ -393,11 +393,11 @@ export const placesChildren = ({ level }) => [
     children: [
       {
         index: true,
-        lazy: () => import('../routes/placeUsers'),
+        lazy: () => import('../routes/placeUsers.tsx'),
       },
       {
         path: ':place_user_id',
-        lazy: () => import('../routes/placeUser'),
+        lazy: () => import('../routes/placeUser/index.tsx'),
         handle: {
           crumb: {
             table: 'place_users',
@@ -418,7 +418,7 @@ export const placesChildren = ({ level }) => [
       },
     },
     children: [
-      { index: true, lazy: () => import('../routes/files') },
+      { index: true, lazy: () => import('../routes/files.tsx') },
       {
         path: ':file_id',
         element: null,
@@ -431,11 +431,11 @@ export const placesChildren = ({ level }) => [
         children: [
           {
             index: true,
-            lazy: () => import('../routes/file'),
+            lazy: () => import('../routes/file/index.tsx'),
           },
           {
             path: 'preview',
-            lazy: () => import('../routes/filePreview'),
+            lazy: () => import('../routes/filePreview/index.tsx'),
           },
         ],
       },
