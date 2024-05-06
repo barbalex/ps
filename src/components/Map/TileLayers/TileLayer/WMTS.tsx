@@ -1,6 +1,6 @@
 import { TileLayer } from 'react-leaflet'
 
-import { TileLayer as TileLayerType } from '../../../../dexieClient'
+import { TileLayer as TileLayerType } from '../../../../generated/client/index.ts'
 
 interface Props {
   layer: TileLayerType

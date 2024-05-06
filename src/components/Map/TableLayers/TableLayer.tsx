@@ -6,8 +6,8 @@ import * as icons from 'react-icons/md'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbadoSession } from '@corbado/react'
 
-import { vectorLayerDisplayToProperties } from '../../../modules/vectorLayerDisplayToProperties'
-import { Popup } from '../Popup'
+import { vectorLayerDisplayToProperties } from '../../../modules/vectorLayerDisplayToProperties.ts'
+import { Popup } from '../Popup.tsx'
 import {
   vector_layers as VectorLayer,
   Places as Place,
@@ -15,9 +15,9 @@ import {
   Checks as Check,
   Occurrences as Occurrence,
 } from '../../../generated/client/index.ts'
-import { ErrorBoundary } from '../MapErrorBoundary'
+import { ErrorBoundary } from '../MapErrorBoundary.tsx'
 import { useElectric } from '../../../ElectricProvider.tsx'
-import { assignToNearestDroppable } from './assignToNearestDroppable'
+import { assignToNearestDroppable } from './assignToNearestDroppable.ts'
 
 interface Props {
   data: Place[] | Action[] | Check[] | Occurrence[]
@@ -61,7 +61,6 @@ export const TableLayer = memo(({ data, layer }: Props) => {
 
   const map: Map = useMapEvent('zoomend', () => setZoom(map.getZoom()))
   const [zoom, setZoom] = useState(map.getZoom())
-
 
   if (!appState) return null
   if (!firstDisplay) return null

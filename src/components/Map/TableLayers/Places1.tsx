@@ -2,7 +2,7 @@ import { useLiveQuery } from 'electric-sql/react'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { Vector_layers as VectorLayer } from '../../../generated/client/index.ts'
-import { TableLayer } from './TableLayer'
+import { TableLayer } from './TableLayer.tsx'
 
 interface Props {
   layer: VectorLayer
@@ -43,5 +43,5 @@ export const Places1 = ({ layer }: Props) => {
   if (!data?.length) return null
   if (!layer) return null
 
-  return <TableLayer data={data} layer={layer} /> 
+  return <TableLayer data={data} layer={layer} />
 }
