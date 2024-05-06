@@ -2,7 +2,7 @@ import { memo } from 'react'
 import { useCorbado } from '@corbado/react'
 import { Loading } from './shared/Loading.tsx'
 
-import { Auth } from './Auth'
+import { Auth } from './Auth.tsx'
 
 // https://www.robinwieruch.de/react-router-authentication/
 export const ProtectedRoute = memo(({ children }) => {

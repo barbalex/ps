@@ -4,7 +4,7 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Node } from './Node.tsx'
-import { UserNode } from './User'
+import { UserNode } from './User.tsx'
 
 export const UsersNode = memo(() => {
   const location = useLocation()

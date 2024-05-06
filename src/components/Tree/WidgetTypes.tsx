@@ -4,7 +4,7 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Node } from './Node.tsx'
-import { WidgetTypeNode } from './WidgetType'
+import { WidgetTypeNode } from './WidgetType.tsx'
 
 export const WidgetTypesNode = memo(() => {
   const location = useLocation()

@@ -4,7 +4,7 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Node } from './Node.tsx'
-import { SubprojectUserNode } from './SubprojectUser'
+import { SubprojectUserNode } from './SubprojectUser.tsx'
 
 interface Props {
   project_id: string

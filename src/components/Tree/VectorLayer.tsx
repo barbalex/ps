@@ -3,7 +3,7 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { Node } from './Node.tsx'
 import { Vector_layers as VectorLayer } from '../../../generated/client/index.ts'
-import { VectorLayerDisplaysNode } from './VectorLayerDisplays'
+import { VectorLayerDisplaysNode } from './VectorLayerDisplays.tsx'
 
 interface Props {
   project_id: string
