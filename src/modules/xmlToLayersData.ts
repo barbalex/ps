@@ -6,7 +6,7 @@
  * - layer title
  * - properties
  */
-import { xmlToJson } from './xmlToJson'
+import { xmlToJson } from './xmlToJson.ts'
 
 export const xmlToLayersData = (xml: Document) => {
   const obj = xmlToJson(xml)

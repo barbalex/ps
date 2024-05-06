@@ -1,11 +1,11 @@
 import { createBrowserRouter } from 'react-router-dom'
 
-import { Layout } from '../components/Layout'
-import { ErrorPage } from '../routes/error'
-import { placesChildren } from './placesChildren'
-import { placesLevel2 } from './placesLevel2'
-import { Editing as EditingProject } from '../components/Tree/Project/Editing'
-import { AuthAndDb } from '../components/AuthAndDb'
+import { Layout } from '../components/Layout/index.tsx'
+import { ErrorPage } from '../routes/error.tsx'
+import { placesChildren } from './placesChildren.tsx'
+import { placesLevel2 } from './placesLevel2.tsx'
+import { Editing as EditingProject } from '../components/Tree/Project/Editing.tsx'
+import { AuthAndDb } from '../components/AuthAndDb.tsx'
 
 export const router = () => {
   // confirmed: this is called only once
@@ -30,7 +30,7 @@ export const router = () => {
           children: [
             {
               index: true,
-              lazy: () => import('../routes/home'),
+              lazy: () => import('../routes/home/index.tsx'),
             },
           ],
         },
@@ -40,7 +40,7 @@ export const router = () => {
       element: <AuthAndDb />,
       children: [
         // add auth page
-        { path: 'auth', lazy: () => import('../routes/auth') },
+        { path: 'auth', lazy: () => import('../routes/auth.tsx') },
         {
           path: 'projects',
           element: null,
