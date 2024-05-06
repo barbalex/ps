@@ -2,7 +2,7 @@ import { memo } from 'react'
 import { Field, RadioGroup, Radio } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../../ElectricProvider.tsx'
 
 const rowStyle = {
   display: 'flex',

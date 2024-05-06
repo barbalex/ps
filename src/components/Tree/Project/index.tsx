@@ -23,7 +23,7 @@ import { PlaceLevelsNode } from '../PlaceLevels'
 import { FieldsNode } from '../Fields'
 import { FilesNode } from '../Files'
 import { Editing } from './Editing'
-import { useElectric } from '../../../ElectricProvider'
+import { useElectric } from '../../../ElectricProvider.tsx'
 
 interface Props {
   project: Project

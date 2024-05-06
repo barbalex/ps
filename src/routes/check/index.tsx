@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../../ElectricProvider.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { DateField } from '../../components/shared/DateField'
 import { SwitchField } from '../../components/shared/SwitchField'

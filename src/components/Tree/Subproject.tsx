@@ -14,7 +14,7 @@ import { SubprojectUsersNode } from './SubprojectUsers'
 import { OccurrenceImportsNode } from './OccurrenceImports'
 import { FilesNode } from './Files'
 import { ChartsNode } from './Charts'
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../../ElectricProvider.tsx'
 
 interface Props {
   project_id: string

@@ -14,7 +14,7 @@ import {
 } from '@fluentui/react-components'
 
 import { createVectorLayer } from '../../modules/createRows'
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader'
 import { Vector_layers as VectorLayer } from '../../generated/client'
 

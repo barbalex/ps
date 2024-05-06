@@ -3,7 +3,7 @@ import { Dropdown, Field, Option } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 // import axios from 'redaxios'
 
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../../ElectricProvider.tsx'
 import { Layer_options as LayerOption } from '../../generated/client'
 
 export const DropdownFieldFromLayerOptions = memo(

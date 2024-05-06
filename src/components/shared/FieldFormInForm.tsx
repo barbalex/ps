@@ -14,7 +14,7 @@ import { useSearchParams } from 'react-router-dom'
 
 import { FieldForm } from '../../routes/field/Form'
 import { Fields as Field } from '../../generated/client'
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../../ElectricProvider.tsx'
 
 const containerStyle = {
   padding: '0px -10px',

@@ -8,7 +8,7 @@ import { useCorbadoSession } from '@corbado/react'
 import { Header } from './Header'
 import { Form } from './Form'
 import { Design } from './Design'
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../../ElectricProvider.tsx'
 
 import '../../form.css'
 

@@ -7,7 +7,7 @@ import { Checks as Check, Places as Place } from '../../../generated/client'
 import { CheckValuesNode } from './CheckValues'
 import { CheckTaxaNode } from './CheckTaxa'
 import { FilesNode } from './Files'
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../../ElectricProvider.tsx'
 
 interface Props {
   project_id: string

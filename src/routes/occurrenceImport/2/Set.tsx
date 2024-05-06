@@ -3,7 +3,7 @@ import { Button, Spinner } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 import { MdDone } from 'react-icons/md'
 
-import { useElectric } from '../../../ElectricProvider'
+import { useElectric } from '../../../ElectricProvider.tsx'
 import { setGeometries } from './setGeometries'
 
 const spinnerStyle = {

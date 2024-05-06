@@ -1,7 +1,7 @@
 import { memo, useCallback } from 'react'
 import { MenuItem } from '@fluentui/react-components'
 
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../../ElectricProvider.tsx'
 
 interface Props {
   place: { place_id: string; label: string; distance: number }

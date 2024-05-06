@@ -7,7 +7,7 @@ import buffer from '@turf/buffer'
 import { useCorbadoSession } from '@corbado/react'
 
 import { createCheck } from '../../modules/createRows'
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader'
 import { boundsFromBbox } from '../../modules/boundsFromBbox'
 import { createNotification } from '../../modules/createRows'

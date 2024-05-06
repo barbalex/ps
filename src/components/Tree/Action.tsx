@@ -7,7 +7,7 @@ import { Actions as Action, Places as Place } from '../../../generated/client'
 import { ActionValuesNode } from './ActionsValues'
 import { ActionReportsNode } from './ActionsReports'
 import { FilesNode } from './Files'
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../../ElectricProvider.tsx'
 
 interface Props {
   project_id: string

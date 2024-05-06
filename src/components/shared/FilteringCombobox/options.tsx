@@ -2,7 +2,7 @@ import { memo } from 'react'
 import { Option } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 
-import { useElectric } from '../../../ElectricProvider'
+import { useElectric } from '../../../ElectricProvider.tsx'
 
 export const FilteringComboboxOptions = memo(
   ({

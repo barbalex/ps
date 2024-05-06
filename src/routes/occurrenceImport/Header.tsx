@@ -3,7 +3,7 @@ import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { Button } from '@fluentui/react-components'
 
 import { createOccurrenceImport } from '../../modules/createRows'
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader'
 
 interface Props {

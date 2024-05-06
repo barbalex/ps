@@ -9,7 +9,7 @@ import {
 import { Combobox, Field } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 
-import { useElectric } from '../../../ElectricProvider'
+import { useElectric } from '../../../ElectricProvider.tsx'
 import { FilteringComboboxOptions } from './options'
 
 export const FilteringCombobox = memo(

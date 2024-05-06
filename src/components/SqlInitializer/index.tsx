@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../../ElectricProvider.tsx'
 import { generateProjectLabel } from './sql/projects'
 import { generateSubprojectLabel } from './sql/subprojects'
 import { generateUserLabel } from './sql/users'

@@ -9,7 +9,7 @@ import { createChart } from '../modules/createRows'
 
 import '../form.css'
 
-import { useElectric } from '../ElectricProvider'
+import { useElectric } from '../ElectricProvider.tsx'
 
 export const Component = () => {
   const { project_id, subproject_id, place_id, place_id2 } = useParams()

@@ -2,7 +2,7 @@ import { memo, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../../ElectricProvider.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField'
 import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions'
 import { DropdownFieldOptions } from '../../components/shared/DropdownFieldOptions'

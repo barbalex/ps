@@ -7,7 +7,7 @@ import {
   MdWarning as WarningIcon,
 } from 'react-icons/md'
 
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../../ElectricProvider.tsx'
 
 const containerStyle = {
   display: 'flex',

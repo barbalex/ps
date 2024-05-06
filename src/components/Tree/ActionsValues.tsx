@@ -2,7 +2,7 @@ import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../../ElectricProvider.tsx'
 import { Node } from './Node'
 import { ActionValueNode } from './ActionValue'
 import { Places as Place } from '../../generated/client'

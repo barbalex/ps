@@ -2,7 +2,7 @@ import { memo, useMemo, useCallback } from 'react'
 import { Field, TagGroup, Tag } from '@fluentui/react-components'
 import type { InputProps } from '@fluentui/react-components'
 
-import { useElectric } from '../../../ElectricProvider'
+import { useElectric } from '../../../ElectricProvider.tsx'
 import { DropdownField } from './DropdownField'
 import { idFieldFromTable } from '../../../modules/idFieldFromTable'
 

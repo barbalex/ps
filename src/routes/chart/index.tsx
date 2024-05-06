@@ -5,7 +5,7 @@ import { useCorbadoSession } from '@corbado/react'
 import { Header } from './Header'
 import { Form } from './Form'
 import { Chart } from './Chart'
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../../ElectricProvider.tsx'
 
 import '../../form.css'
 

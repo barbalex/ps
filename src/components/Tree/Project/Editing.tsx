@@ -5,7 +5,7 @@ import { Button } from '@fluentui/react-components'
 import { useParams } from 'react-router-dom'
 import { useCorbadoSession } from '@corbado/react'
 
-import { useElectric } from '../../../ElectricProvider'
+import { useElectric } from '../../../ElectricProvider.tsx'
 import { css } from '../../../css'
 
 const buttonStyle = {

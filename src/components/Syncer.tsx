@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useCorbadoSession } from '@corbado/react'
 
-import { useElectric } from '../ElectricProvider'
+import { useElectric } from '../ElectricProvider.tsx'
 
 export const Syncer = () => {
   const { db } = useElectric()!

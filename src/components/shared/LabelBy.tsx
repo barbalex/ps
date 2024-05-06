@@ -2,7 +2,7 @@ import { useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../../ElectricProvider.tsx'
 import { DropdownFieldSimpleOptions } from './DropdownFieldSimpleOptions'
 
 import '../../form.css'

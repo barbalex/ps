@@ -14,7 +14,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useCorbadoSession } from '@corbado/react'
 import { Dismiss24Regular } from '@fluentui/react-icons'
 
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../../ElectricProvider.tsx'
 import { Item } from './Item'
 
 const titleRowStyle = {

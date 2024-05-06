@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { Field, Textarea } from '@fluentui/react-components'
 import { useCorbadoSession } from '@corbado/react'
 
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../../ElectricProvider.tsx'
 import { SwitchField } from './SwitchField'
 // TODO:
 // maybe generalize this component for all geometry editing

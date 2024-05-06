@@ -1,7 +1,7 @@
 import { memo, useMemo, useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../../ElectricProvider.tsx'
 import { MultiSelect } from './MultiSelect'
 import { idFieldFromTable } from '../../modules/idFieldFromTable'
 

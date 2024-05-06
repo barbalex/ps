@@ -6,7 +6,7 @@ import { LIB_VERSION } from 'electric-sql/version'
 import { ElectricConfig } from 'electric-sql/config'
 import { useCorbadoSession } from '@corbado/react'
 
-import { ElectricProvider as ElectricProviderComponent } from './ElectricProvider'
+import { ElectricProvider as ElectricProviderComponent } from './ElectricProvider.tsx'
 
 import { authToken } from './auth'
 

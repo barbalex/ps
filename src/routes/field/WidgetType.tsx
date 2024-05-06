@@ -1,7 +1,7 @@
 import { useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../../ElectricProvider.tsx'
 import { DropdownField } from '../../components/shared/DropdownField'
 
 import '../../form.css'

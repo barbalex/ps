@@ -4,7 +4,7 @@ import { MdClose as CloseIcon } from 'react-icons/md'
 import { useLiveQuery } from 'electric-sql/react'
 // import { uuidv7 } from '@kripod/uuidv7'
 
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../../ElectricProvider.tsx'
 import { Notifications as Notification } from '../../generated/client'
 import { Notification as NotificationComponent } from './Notification'
 

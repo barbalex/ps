@@ -5,7 +5,7 @@ import { ToggleButton } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbadoSession } from '@corbado/react'
 
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../../ElectricProvider.tsx'
 
 export const DesigningButton = memo(() => {
   const { project_id } = useParams()

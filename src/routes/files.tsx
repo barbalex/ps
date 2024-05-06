@@ -11,7 +11,7 @@ import { UploaderContext } from '../UploaderContext'
 
 import '../form.css'
 
-import { useElectric } from '../ElectricProvider'
+import { useElectric } from '../ElectricProvider.tsx'
 
 export const Component = () => {
   const {

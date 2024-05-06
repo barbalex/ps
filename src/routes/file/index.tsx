@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 import { useResizeDetector } from 'react-resize-detector'
 
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../../ElectricProvider.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive'
 import { Jsonb } from '../../components/shared/Jsonb'
 import { getValueFromChange } from '../../modules/getValueFromChange'

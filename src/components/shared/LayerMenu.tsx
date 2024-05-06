@@ -10,7 +10,7 @@ import buffer from '@turf/buffer'
 import { featureCollection } from '@turf/helpers'
 import { useCorbadoSession } from '@corbado/react'
 
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../../ElectricProvider.tsx'
 import {
   Vector_layers as VectorLayer,
   Places as Place,

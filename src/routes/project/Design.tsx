@@ -5,7 +5,7 @@ import { Label, Divider } from '@fluentui/react-components'
 import type { InputProps } from '@fluentui/react-components'
 import { useCorbadoSession } from '@corbado/react'
 
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../../ElectricProvider.tsx'
 import { TextField } from '../../components/shared/TextField'
 import { RadioGroupField } from '../../components/shared/RadioGroupField'
 import { RadioGroupFromOptions } from '../../components/shared/RadioGroupFromOptions'

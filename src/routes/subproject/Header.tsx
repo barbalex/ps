@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { createSubproject } from '../../modules/createRows'
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader'
 
 export const Header = memo(({ autoFocusRef }) => {

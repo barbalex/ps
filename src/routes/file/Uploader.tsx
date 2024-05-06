@@ -9,7 +9,7 @@ import { useDebouncedCallback } from 'use-debounce'
 import axios from 'redaxios'
 
 import { createFile } from '../../modules/createRows'
-import { useElectric } from '../../ElectricProvider'
+import { useElectric } from '../../ElectricProvider.tsx'
 import { UploaderContext } from '../../UploaderContext'
 
 import '../../form.css'

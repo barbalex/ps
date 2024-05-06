@@ -2,7 +2,7 @@ import { memo, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 
-import { useElectric } from '../../../ElectricProvider'
+import { useElectric } from '../../../ElectricProvider.tsx'
 import { buildData } from './buildData'
 import { SingleChart } from './Chart'
 

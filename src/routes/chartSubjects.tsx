@@ -8,7 +8,7 @@ import { createChartSubject } from '../modules/createRows'
 
 import '../form.css'
 
-import { useElectric } from '../ElectricProvider'
+import { useElectric } from '../ElectricProvider.tsx'
 
 export const Component = memo(() => {
   const { chart_id } = useParams()

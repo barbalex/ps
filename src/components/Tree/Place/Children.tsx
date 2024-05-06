@@ -8,7 +8,7 @@ import { PlaceReportsNode } from '../PlaceReports'
 import { PlaceUsersNode } from '../PlaceUsers'
 import { PlacesNode } from '../Places'
 import { OccurrencesAssignedNode } from '../OccurrencesAssigned'
-import { useElectric } from '../../../ElectricProvider'
+import { useElectric } from '../../../ElectricProvider.tsx'
 import { FilesNode } from '../Files'
 
 interface Props {

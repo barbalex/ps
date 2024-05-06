@@ -11,7 +11,7 @@ import {
 } from 'recharts'
 import { useLiveQuery } from 'electric-sql/react'
 
-import { useElectric } from '../../../ElectricProvider'
+import { useElectric } from '../../../ElectricProvider.tsx'
 
 const toPercent = (decimal) => `${(decimal * 100).toFixed(0)}%`
 

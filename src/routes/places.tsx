@@ -7,7 +7,7 @@ import {
   createVectorLayer,
   createVectorLayerDisplay,
 } from '../modules/createRows'
-import { useElectric } from '../ElectricProvider'
+import { useElectric } from '../ElectricProvider.tsx'
 import { ListViewHeader } from '../components/ListViewHeader'
 import { Row } from '../components/shared/Row'
 import { LayerMenu } from '../components/shared/LayerMenu'
