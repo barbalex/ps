@@ -1,7 +1,7 @@
 import { useEffect, useContext } from 'react'
 import { useMap } from 'react-leaflet'
 
-import { TileLayer as TileLayerType } from '../../../../dexieClient'
+import { TileLayer as TileLayerType } from '../../../../generated/client/index.ts'
 import storeContext from '../../../../storeContext'
 import { IStore } from '../../../../store'
 import { useElectric } from '../../../../ElectricProvider.tsx'

@@ -1,7 +1,7 @@
 import { useLiveQuery } from 'electric-sql/react'
 
-import { VectorLayerWFS } from './VectorLayerWFS'
-import { VectorLayerPVLGeom } from './VectorLayerPVLGeom'
+import { VectorLayerWFS } from './VectorLayerWFS.tsx'
+import { VectorLayerPVLGeom } from './VectorLayerPVLGeom.tsx'
 import { useElectric } from '../../../ElectricProvider.tsx'
 import {
   Vector_layers as VectorLayer,

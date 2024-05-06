@@ -10,9 +10,9 @@ import {
   Vector_layer_displays as VectorLayerDisplay,
 } from '../../../generated/client/index.ts'
 
-import { vectorLayerDisplayToProperties } from '../../../modules/vectorLayerDisplayToProperties'
-import { Popup } from '../Popup'
-import { ErrorBoundary } from '../MapErrorBoundary'
+import { vectorLayerDisplayToProperties } from '../../../modules/vectorLayerDisplayToProperties.ts'
+import { Popup } from '../Popup.tsx'
+import { ErrorBoundary } from '../MapErrorBoundary.tsx'
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { createNotification } from '../../../modules/createRows.ts'
 

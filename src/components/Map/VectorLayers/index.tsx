@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 
-import { VectorLayerChooser } from './VectorLayerChooser'
+import { VectorLayerChooser } from './VectorLayerChooser.tsx'
 import {
   Vector_layers as VectorLayer,
   Vector_layer_displays as VectorLayerDisplay,

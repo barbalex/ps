@@ -6,7 +6,7 @@ import { useLiveQuery } from 'electric-sql/react'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Notifications as Notification } from '../../generated/client/index.ts'
-import { Notification as NotificationComponent } from './Notification'
+import { Notification as NotificationComponent } from './Notification.tsx'
 
 // z-index needs to cover map, thus so hight
 const containerStyle = {
