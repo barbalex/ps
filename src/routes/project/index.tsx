@@ -5,7 +5,7 @@ import type { SelectTabData, SelectTabEvent } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbadoSession } from '@corbado/react'
 
-import { Header } from './Header'
+import { Header } from './Header.tsx'
 import { Form } from './Form'
 import { Design } from './Design'
 import { useElectric } from '../../ElectricProvider.tsx'

@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { useParams } from 'react-router-dom'
 
-import { Header } from './Header'
+import { Header } from './Header.tsx'
 import { FieldForm } from './Form'
 
 import '../../form.css'

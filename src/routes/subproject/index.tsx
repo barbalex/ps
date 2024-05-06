@@ -1,6 +1,6 @@
 import { useRef, memo } from 'react'
 
-import { Header } from './Header'
+import { Header } from './Header.tsx'
 import { SubprojectForm } from './Form'
 
 import '../../form.css'

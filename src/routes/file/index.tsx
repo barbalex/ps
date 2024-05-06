@@ -9,7 +9,7 @@ import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
-import { Header } from './Header'
+import { Header } from './Header.tsx'
 import { Uploader } from './Uploader'
 import { Loading } from '../../components/shared/Loading'
 

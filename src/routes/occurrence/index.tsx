@@ -8,7 +8,7 @@ import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx
 import { SwitchField } from '../../components/shared/SwitchField'
 import { FilteringCombobox } from '../../components/shared/FilteringCombobox'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
-import { Header } from './Header'
+import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading'
 import { OccurenceData } from './OccurrenceData'
 

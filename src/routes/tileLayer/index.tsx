@@ -12,7 +12,7 @@ import { RadioGroupField } from '../../components/shared/RadioGroupField'
 import { DropdownFieldFromLayerOptions } from '../../components/shared/DropdownFieldFromLayerOptions'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { BaseUrl } from './BaseUrl'
-import { Header } from './Header'
+import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading'
 
 import '../../form.css'

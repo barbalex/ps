@@ -8,7 +8,7 @@ import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
-import { Header } from './Header'
+import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading'
 
 import '../../form.css'

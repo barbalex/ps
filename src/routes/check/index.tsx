@@ -10,7 +10,7 @@ import { SwitchField } from '../../components/shared/SwitchField'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { EditingGeometry } from '../../components/shared/EditingGeometry'
-import { Header } from './Header'
+import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading'
 
 import '../../form.css'

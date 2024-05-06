@@ -6,7 +6,7 @@ import { Breadcrumbs } from './Breadcrumbs'
 import { Navs } from './Navs'
 import { Notifications } from '../Notifications'
 import { ProtectedRoute } from '../ProtectedRoute'
-import { Header } from './Header'
+import { Header } from './Header/index'
 import { TableLayersProvider } from '../TableLayersProvider'
 import { OccurrenceAssignChooser } from '../OccurrenceAssignChooser'
 

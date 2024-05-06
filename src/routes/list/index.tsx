@@ -9,7 +9,7 @@ import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx
 import { SwitchField } from '../../components/shared/SwitchField'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
-import { Header } from './Header'
+import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading'
 
 import '../../form.css'

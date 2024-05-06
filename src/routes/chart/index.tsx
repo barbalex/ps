@@ -2,7 +2,7 @@ import { useRef, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbadoSession } from '@corbado/react'
 
-import { Header } from './Header'
+import { Header } from './Header.tsx'
 import { Form } from './Form'
 import { Chart } from './Chart'
 import { useElectric } from '../../ElectricProvider.tsx'

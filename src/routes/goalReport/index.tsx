@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
-import { Header } from './Header'
+import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading'
 
 import '../../form.css'

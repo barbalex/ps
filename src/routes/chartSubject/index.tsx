@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 
-import { Header } from './Header'
+import { Header } from './Header.tsx'
 import { ChartSubjectForm } from './Form'
 
 import '../../form.css'
