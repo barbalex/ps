@@ -6,9 +6,9 @@ import {
   useSearchParams,
 } from 'react-router-dom'
 
-import { Node } from './Node'
+import { Node } from './Node.tsx'
 import { Charts as Chart } from '../../../generated/client/index.ts'
-import { ChartSubjectsNode } from './ChartSubjects'
+import { ChartSubjectsNode } from './ChartSubjects.tsx'
 
 interface Props {
   project_id?: string
