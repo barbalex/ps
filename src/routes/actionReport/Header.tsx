@@ -1,9 +1,9 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
-import { createActionReport } from '../../modules/createRows'
-import { useElectric } from '../../ElectricProvider'
-import { FormHeader } from '../../components/FormHeader'
+import { createActionReport } from '../../modules/createRows.ts'
+import { useElectric } from '../../ElectricProvider.tsx'
+import { FormHeader } from '../../components/FormHeader/index.tsx'
 
 export const Header = memo(({ autoFocusRef }) => {
   const { project_id, action_id, action_report_id } = useParams()
@@ -37,7 +37,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toNext = useCallback(async () => {
     const actionReports = await db.action_reports.findMany({
-      where: {  action_id },
+      where: { action_id },
       orderBy: { label: 'asc' },
     })
     const len = actionReports.length
@@ -53,7 +53,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toPrevious = useCallback(async () => {
     const actionReports = await db.action_reports.findMany({
-      where: {  action_id },
+      where: { action_id },
       orderBy: { label: 'asc' },
     })
     const len = actionReports.length

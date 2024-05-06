@@ -6,11 +6,11 @@ import bbox from '@turf/bbox'
 import buffer from '@turf/buffer'
 import { useCorbadoSession } from '@corbado/react'
 
-import { createAction } from '../../modules/createRows'
-import { useElectric } from '../../ElectricProvider'
-import { FormHeader } from '../../components/FormHeader'
-import { boundsFromBbox } from '../../modules/boundsFromBbox'
-import { createNotification } from '../../modules/createRows'
+import { createAction } from '../../modules/createRows.ts'
+import { useElectric } from '../../ElectricProvider.tsx'
+import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
+import { createNotification } from '../../modules/createRows.ts'
 
 export const Header = memo(({ autoFocusRef }) => {
   const { project_id, place_id, place_id2, action_id } = useParams()

@@ -1,4 +1,4 @@
-import { placesChildren } from './placesChildren'
+import { placesChildren } from './placesChildren.tsx'
 
 export const placesLevel2 = () => ({
   path: 'places',
@@ -14,7 +14,7 @@ export const placesLevel2 = () => ({
   children: [
     {
       index: true,
-      lazy: () => import('../routes/places'),
+      lazy: () => import('../routes/places.tsx'),
     },
     {
       path: ':place_id2',
@@ -33,7 +33,7 @@ export const placesLevel2 = () => ({
       children: [
         {
           index: true,
-          lazy: () => import('../routes/place'),
+          lazy: () => import('../routes/place/index.tsx'),
         },
         ...placesChildren({ level: 2 }),
       ],
