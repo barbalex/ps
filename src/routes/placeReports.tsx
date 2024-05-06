@@ -5,7 +5,7 @@ import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { PlaceReports as PlaceReport } from '../../../generated/client/index.ts'
 import { useElectric } from '../ElectricProvider.tsx'
 import { createPlaceReport } from '../modules/createRows.ts'
-import { ListViewHeader } from '../components/ListViewHeader'
+import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row'
 import '../form.css'
 

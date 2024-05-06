@@ -4,7 +4,7 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 
 import { createOccurrenceImport } from '../modules/createRows.ts'
 import { useElectric } from '../ElectricProvider.tsx'
-import { ListViewHeader } from '../components/ListViewHeader'
+import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row'
 
 import '../form.css'

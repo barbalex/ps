@@ -2,7 +2,7 @@ import { useCallback, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
-import { ListViewHeader } from '../components/ListViewHeader'
+import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row'
 import { createChartSubject } from '../modules/createRows.ts'
 

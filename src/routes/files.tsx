@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 import { Button } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
 
-import { ListViewHeader } from '../components/ListViewHeader'
+import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row'
 import { Uploader } from './file/Uploader'
 import { UploaderContext } from '../UploaderContext'
