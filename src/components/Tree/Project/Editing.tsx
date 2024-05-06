@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom'
 import { useCorbadoSession } from '@corbado/react'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
-import { css } from '../../../css'
+import { css } from '../../../css.ts'
 
 const buttonStyle = {
   borderRadius: 20,

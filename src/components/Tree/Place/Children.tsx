@@ -2,14 +2,14 @@ import { memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 
 import { Places as Place } from '../../../generated/client/index.ts'
-import { ChecksNode } from '../Checks'
-import { ActionsNode } from '../Actions'
-import { PlaceReportsNode } from '../PlaceReports'
-import { PlaceUsersNode } from '../PlaceUsers'
-import { PlacesNode } from '../Places'
-import { OccurrencesAssignedNode } from '../OccurrencesAssigned'
+import { ChecksNode } from '../Checks.tsx'
+import { ActionsNode } from '../Actions.tsx'
+import { PlaceReportsNode } from '../PlaceReports.tsx'
+import { PlaceUsersNode } from '../PlaceUsers.tsx'
+import { PlacesNode } from '../Places.tsx'
+import { OccurrencesAssignedNode } from '../OccurrencesAssigned.tsx'
 import { useElectric } from '../../../ElectricProvider.tsx'
-import { FilesNode } from '../Files'
+import { FilesNode } from '../Files.tsx'
 
 interface Props {
   project_id: string

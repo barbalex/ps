@@ -1,9 +1,9 @@
 import { useCallback, memo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
-import { Node } from '../Node'
+import { Node } from '../Node.tsx'
 import { Places as Place } from '../../../generated/client/index.ts'
-import { PlaceChildren } from './Children'
+import { PlaceChildren } from './Children.tsx'
 
 interface Props {
   project_id: string
