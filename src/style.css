@@ -271,6 +271,11 @@ html {
       display: none !important;
     }
   }
+
+  /* ensure draggable elements show move cursor */
+  .draggable.leaflet-interactive {
+    cursor: move;
+  }
 }
 
 /* uploadcare */

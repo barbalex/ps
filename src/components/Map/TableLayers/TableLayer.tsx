@@ -93,6 +93,7 @@ export const TableLayer = memo(({ data, layer }: Props) => {
             const marker = L.circleMarker(latlng, {
               ...displayToUse,
               radius: displayToUse.circle_marker_radius ?? 8,
+              ...(isDraggable ? { className: 'draggable' } : {}),
             })
 
             if (!isDraggable) return marker
@@ -147,11 +148,13 @@ export const TableLayer = memo(({ data, layer }: Props) => {
                       }}
                     />,
                   ),
+                  ...(isDraggable ? { className: 'draggable' } : {}),
                 }),
                 draggable: isDraggable,
               })
             : L.marker(latlng, {
                 draggable: isDraggable,
+                ...(isDraggable ? { className: 'draggable' } : {}),
               })
 
           marker.on('dragend', (e) => {
