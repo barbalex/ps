@@ -7,7 +7,7 @@ export const generateProjectLabel = async (db) => {
     (column) => column.name === 'projects_places_label_trigger',
   )
   if (!projectsPlacesLabelTriggerExists) {
-    const result = await db.unsafeExec({
+    await db.unsafeExec({
       sql: `CREATE TRIGGER IF NOT EXISTS projects_places_label_trigger
               AFTER UPDATE OF places_label_by ON projects
             BEGIN
@@ -18,10 +18,7 @@ export const generateProjectLabel = async (db) => {
               end;
             END;`,
     })
-    console.log(
-      'TriggerGenerator, projects_places_label_trigger, result:',
-      result,
-    )
+    console.log('generated project labels')
   }
 
   // if goals_label_by is changed, need to update all labels of goals
@@ -29,7 +26,7 @@ export const generateProjectLabel = async (db) => {
     (column) => column.name === 'projects_goals_label_trigger',
   )
   if (!projectsGoalsLabelTriggerExists) {
-    const result = await db.unsafeExec({
+    await db.unsafeExec({
       sql: `CREATE TRIGGER IF NOT EXISTS projects_goals_label_trigger
               AFTER UPDATE OF goals_label_by ON projects
             BEGIN
@@ -39,10 +36,6 @@ export const generateProjectLabel = async (db) => {
               end;
             END;`,
     })
-    console.log(
-      'TriggerGenerator, projects_goals_label_trigger, result:',
-      result,
-    )
   }
 
   // if anything in projects is changed, update its label
@@ -50,7 +43,7 @@ export const generateProjectLabel = async (db) => {
     (column) => column.name === 'projects_label_trigger',
   )
   if (!projectsLabelTriggerExists) {
-    const result = await db.unsafeExec({
+    await db.unsafeExec({
       sql: `
       CREATE TRIGGER IF NOT EXISTS projects_label_trigger
         AFTER UPDATE OF name, data ON projects
@@ -71,7 +64,6 @@ export const generateProjectLabel = async (db) => {
         projects.project_id = NEW.project_id;
       END;`,
     })
-    console.log('TriggerGenerator, projects_label_trigger, result:', result)
   }
   const projectsLabelInsertTriggerExists = triggers.some(
     (column) => column.name === 'projects_label_trigger_insert',

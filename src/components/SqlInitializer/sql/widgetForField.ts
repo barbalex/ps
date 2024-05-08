@@ -10,7 +10,7 @@ export const generateWidgetForFieldLabel = async (db) => {
     // But: not possible because generated columns can only fetch from the same row/table
     // Alternative: use a trigger to update the label field
     // TODO: enable using an array of column names
-    const result = await db.unsafeExec({
+    await db.unsafeExec({
       sql: `
       CREATE TRIGGER if not exists widgets_for_fields_label_trigger
       AFTER UPDATE of field_type_id, widget_type_id ON widgets_for_fields
@@ -19,13 +19,13 @@ export const generateWidgetForFieldLabel = async (db) => {
          WHERE widgets_for_fields.widget_for_field_id = NEW.widget_for_field_id;
       END`,
     })
-    console.log('LabelGenerator, widgets for fields, result:', result)
+    console.log('generated widget for field labels')
   }
   const insertTriggerExists = triggers.some(
     (column) => column.name === 'widgets_for_fields_label_insert_trigger',
   )
   if (!insertTriggerExists) {
-    const resultInsert = await db.unsafeExec({
+    await db.unsafeExec({
       sql: `
       CREATE TRIGGER if not exists widgets_for_fields_label_insert_trigger
       AFTER insert ON widgets_for_fields
@@ -34,9 +34,5 @@ export const generateWidgetForFieldLabel = async (db) => {
          WHERE widgets_for_fields.widget_for_field_id = NEW.widget_for_field_id;
       END`,
     })
-    console.log(
-      'LabelGenerator, widgets for fields, resultInsert:',
-      resultInsert,
-    )
   }
 }
