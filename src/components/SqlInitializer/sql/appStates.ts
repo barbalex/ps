@@ -7,7 +7,7 @@ export const generateAppStatesLabel = async (db) => {
     (column) => column.name === 'ui_options_label_trigger',
   )
   if (!uiOptionsLabelTriggerExists) {
-    const result = await db.unsafeExec({
+    await db.unsafeExec({
       sql: `
       CREATE TRIGGER IF NOT EXISTS ui_options_label_trigger
         AFTER UPDATE OF user_id ON app_states
@@ -15,7 +15,7 @@ export const generateAppStatesLabel = async (db) => {
         UPDATE app_states SET label = (SELECT email FROM users WHERE user_id = NEW.user_id);
       END;`,
     })
-    console.log('TriggerGenerator, app_states, result:', result)
+    console.log('generated app state labels')
   }
   const uiOptionsLabelInsertTriggerExists = triggers.some(
     (column) => column.name === 'ui_options_label_trigger_insert',

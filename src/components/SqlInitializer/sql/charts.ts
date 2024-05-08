@@ -11,5 +11,6 @@ export const generateChartLabel = async (db) => {
     await db.unsafeExec({
       sql: 'CREATE INDEX IF NOT EXISTS charts_label_idx ON charts(label)',
     })
+    console.log('generated chart labels')
   }
 }
