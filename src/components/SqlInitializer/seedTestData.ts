@@ -185,6 +185,7 @@ export const seedTestData = async (db) => {
     await db.unsafeExec({
       sql: seedUsers,
     })
+    console.log('seeding test data')
   }
   const accounts = await db.rawQuery({
     sql: `select count(*) as count from accounts;`,

@@ -7,7 +7,7 @@ export const generateActionValueLabel = async (db) => {
     (column) => column.name === 'action_values_label_trigger',
   )
   if (!actionValuesLabelTriggerExists) {
-    const result = await db.unsafeExec({
+    await db.unsafeExec({
       sql: `
       CREATE TRIGGER IF NOT EXISTS action_values_label_trigger
         AFTER UPDATE ON action_values
@@ -32,13 +32,13 @@ export const generateActionValueLabel = async (db) => {
           action_values.action_value_id = NEW.action_value_id;
       END;`,
     })
-    console.log('TriggerGenerator, action_values, result:', result)
+    console.log('generated action value labels')
   }
   const actionValuesLabelInsertTriggerExists = triggers.some(
     (column) => column.name === 'action_values_label_insert_trigger',
   )
   if (!actionValuesLabelInsertTriggerExists) {
-    const result = await db.unsafeExec({
+    await db.unsafeExec({
       sql: `
       CREATE TRIGGER IF NOT EXISTS action_values_label_insert_trigger
         AFTER insert ON action_values
@@ -46,6 +46,5 @@ export const generateActionValueLabel = async (db) => {
         UPDATE action_values SET label = NEW.action_value_id;
       END;`,
     })
-    console.log('TriggerGenerator, action_values_insert, result:', result)
   }
 }

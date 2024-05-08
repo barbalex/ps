@@ -11,5 +11,6 @@ export const generatePlaceReportLabel = async (db) => {
     await db.unsafeExec({
       sql: 'CREATE INDEX IF NOT EXISTS place_reports_label_idx ON place_reports(label)',
     })
+    console.log('generated place report labels')
   }
 }
