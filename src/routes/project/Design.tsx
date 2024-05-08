@@ -14,6 +14,7 @@ import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { LabelBy } from '../../components/shared/LabelBy.tsx'
 import { FieldList } from '../../components/shared/FieldList/index.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
+import { project_typeSchema as projectTypeSchema } from '../../generated/client/index.ts'
 
 const labelStyle = {
   color: 'grey',
@@ -48,13 +49,19 @@ export const Design = () => {
   if (!row) return null
   if (!designing) return null
 
+  console.log('hello project Design', {
+    projectTypeSchema,
+    enum: projectTypeSchema?.enum,
+    options: projectTypeSchema?.options,
+  })
+
   return (
     <div className="form-container" role="tabpanel" aria-labelledby="design">
       <Label style={labelStyle}>Project configuration</Label>
       <RadioGroupField
         label="Type"
         name="type"
-        list={['species', 'biotope']}
+        list={projectTypeSchema?.options ?? []}
         value={row.type ?? ''}
         onChange={onChange}
       />
