@@ -11,8 +11,7 @@ import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Section } from '../../components/shared/Section.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
-
-const chartTypes = ['Pie', 'Radar', 'Area']
+import { chart_typeSchema as chartTypeSchema } from '../../generated/client/index.ts'
 
 // seperate from the route because it is also used inside other forms
 export const Form = memo(({ autoFocusRef }) => {
@@ -138,7 +137,7 @@ export const Form = memo(({ autoFocusRef }) => {
           name="chart_type"
           value={row.chart_type ?? ''}
           onChange={onChange}
-          options={chartTypes}
+          options={chartTypeSchema?.options ?? []}
           autoFocus
           ref={autoFocusRef}
           validationMessage="Choose what type of chart you want to display"
