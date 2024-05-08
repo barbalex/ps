@@ -11,5 +11,6 @@ export const generateProjectReportLabel = async (db) => {
     await db.unsafeExec({
       sql: 'CREATE INDEX IF NOT EXISTS project_reports_label_idx ON project_reports(label)',
     })
+    console.log('generated project report labels')
   }
 }

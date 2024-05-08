@@ -11,5 +11,6 @@ export const generateFileLabel = async (db) => {
     await db.unsafeExec({
       sql: 'CREATE INDEX IF NOT EXISTS files_label_idx ON files(label)',
     })
+    console.log('generated file labels')
   }
 }
