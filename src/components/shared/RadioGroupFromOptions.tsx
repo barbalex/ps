@@ -14,7 +14,7 @@ export const RadioGroupFromOptions = memo(
       validationState = 'none',
       autoFocus,
       disabled = false,
-      replaceUnderscoreInLabel = false,
+      // replaceUnderscoreInLabel = false,
     } = props
 
     const { width, ref: widthRef } = useResizeDetector({
