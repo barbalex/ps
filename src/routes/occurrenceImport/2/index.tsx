@@ -5,6 +5,7 @@ import { DropdownFieldSimpleOptions } from '../../../components/shared/DropdownF
 import { Crs } from './Crs.tsx'
 import { Set } from './Set.tsx'
 import { Occurrence_imports } from '../../../generated/client/index.ts'
+import { occurrence_imports_geometry_method_enumSchema as geoetryMethodSchema } from '../../../generated/client/index.ts'
 
 interface Props {
   occurrenceImport: Occurrence_imports
@@ -19,7 +20,7 @@ export const Two = memo(
         <RadioGroupField
           label="How are the geometries contained in the data?"
           name="geometry_method"
-          list={['coordinates', 'geojson']}
+          list={geoetryMethodSchema.options ?? []}
           value={occurrenceImport.geometry_method ?? ''}
           onChange={onChange}
           validationMessage="GeoJSON and Coordinate Fields are supported"
