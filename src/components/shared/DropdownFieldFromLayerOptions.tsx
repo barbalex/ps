@@ -1,7 +1,7 @@
 import { memo, useMemo, useCallback } from 'react'
 import { Dropdown, Field, Option } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
-// import axios from 'redaxios'
+import axios from 'redaxios'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Layer_options as LayerOption } from '../../generated/client/index.ts'
@@ -47,6 +47,9 @@ export const DropdownFieldFromLayerOptions = memo(
             value: { label: data.optionText, value: data.optionValue },
           },
         })
+
+        if (name !== 'wms_layer') return
+
         // set the label too
         if (row) {
           onChange({
@@ -56,53 +59,37 @@ export const DropdownFieldFromLayerOptions = memo(
             },
           })
         }
-        // download the legend image
-        // 1. get the legend_url from the layer_options
-        const legendUrl = layerOptions.find(
-          (option) => option.value === data.optionValue,
-        )?.legend_url
-        console.log('hello DropdownFieldFromLayerOptions, onOptionSelect', {
-          legendUrl,
-          layerOptions,
-          data,
-          option: layerOptions.find(
-            (option) => option.value === data.optionValue,
-          ),
-        })
-        if (!legendUrl) return
-        // 2. download the legend image
-        // TODO:
-        // this fails because electric-sql does not support binary data yet
-        // When support is added:
-        // check if it works
-        // show legend in vector_layer form, maybe map?
-        // TODO: deactivated because electric-sql does not support binary data yet, reactivate when it does
-        // let res
-        // try {
-        //   res = await axios.get(legendUrl, { responseType: 'blob' })
-        // } catch (error) {
-        //   // error can also be caused by timeout
-        //   console.error(
-        //     `hello error fetching legend for layer '${data.optionText}':`,
-        //     error,
-        //   )
-        //   return false
-        // }
-        // console.log(
-        //   'hello DropdownFieldFromLayerOptions, onOptionSelect, blob data:',
-        //   res.data,
-        // )
-        // // 3. store it in tile_layers.wms_legend
-        // if (res.data) {
-        //   onChange({
-        //     target: {
-        //       name: 'wms_legend',
-        //       value: res.data,
-        //     },
-        //   })
-        // }
+
+        // get the legend image
+        let res
+        try {
+          res = await axios.get(
+            `${row.wms_base_url}?language=eng&version=1.3.0&service=WMS&request=GetLegendGraphic&sld_version=1.1.0&layer=${row.wms_layer?.value}&format=image/png&STYLE=default&&TRANSPARENT=true`,
+            { responseType: 'blob' },
+          )
+        } catch (error) {
+          // error can also be caused by timeout
+          console.error(
+            `hello error fetching legend for layer '${data.optionText}':`,
+            error,
+          )
+          return false
+        }
+        console.log(
+          'hello DropdownFieldFromLayerOptions, onOptionSelect, blob data:',
+          res.data,
+        )
+        // 3. store it in tile_layers.wms_legend
+        if (res.data) {
+          onChange({
+            target: {
+              name: 'wms_legend',
+              value: res.data,
+            },
+          })
+        }
       },
-      [layerOptions, name, onChange, row],
+      [name, onChange, row],
     )
 
     const labelWithCount = label

@@ -73,7 +73,11 @@ export const getCapabilitiesData = async ({
   const layers = (capabilities?.Capability?.Layer?.Layer ?? []).filter((v) =>
     v?.CRS?.includes('EPSG:4326'),
   )
-  console.log('hello, getCapabilitiesData 1, layers:', layers)
+  // console.log('hello, getCapabilitiesData 1, layers:', layers)
+  console.log(
+    'hello, getCapabilitiesData 2, layer swisstopo pixel farbe:',
+    layers.find((l) => l.Name === 'ch.swisstopo.pixelkarte-farbe'),
+  )
   // TODO: because upsert errors and single creates are slow
   // https://github.com/electric-sql/electric/issues/916
   // Deleting may not be good because other layers might use the same layer_option_id
@@ -100,7 +104,7 @@ export const getCapabilitiesData = async ({
     queryable: l.queryable,
     legend_url: l.Style?.[0]?.LegendURL?.[0]?.OnlineResource,
   }))
-  console.log('hello, getCapabilitiesData 4, layerOptions:', layerOptions)
+  // console.log('hello, getCapabilitiesData 4, layerOptions:', layerOptions)
   // sadly, creating many this errors
   // const chunked = chunkArrayWithMinSize(layerOptions, 500)
   // for (const chunk of chunked) {
@@ -162,9 +166,9 @@ export const getCapabilitiesData = async ({
   //   if (res.data) _legendBlobs.push([lUrl.title, res.data])
   // }
 
-  // TODO: these are blobs. How to save in sqlite?
-  // TODO: solve this problem, then set the wms_legend
-  // add legends into row to reduce network activity and make them offline available
+  // // TODO: these are blobs. How to save in sqlite?
+  // // TODO: solve this problem, then set the wms_legend
+  // // add legends into row to reduce network activity and make them offline available
   // values.wms_legend = _legendBlobs.length ? _legendBlobs : undefined
 
   // use capabilities.Capability?.Request?.GetFeatureInfo?.Format
