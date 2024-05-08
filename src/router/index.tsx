@@ -69,7 +69,7 @@ export const router = () => {
               children: [
                 {
                   index: true,
-                  lazy: () => import('../routes/projects.tsx'),
+                  lazy: () => import('../routes/project/index.tsx'),
                 },
                 {
                   path: 'subprojects',
