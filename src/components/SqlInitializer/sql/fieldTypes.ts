@@ -11,5 +11,6 @@ export const generateFieldTypeLabel = async (db) => {
     await db.unsafeExec({
       sql: 'CREATE INDEX IF NOT EXISTS field_types_label_idx ON field_types(label)',
     })
+    console.log('generated field type labels')
   }
 }

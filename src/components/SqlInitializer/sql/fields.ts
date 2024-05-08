@@ -11,5 +11,6 @@ export const generateFieldLabel = async (db) => {
     await db.unsafeExec({
       sql: 'CREATE INDEX IF NOT EXISTS fields_label_idx ON fields(label)',
     })
+    console.log('generated field labels')
   }
 }

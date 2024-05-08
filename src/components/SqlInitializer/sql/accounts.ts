@@ -7,7 +7,7 @@ export const generateAccountLabel = async (db) => {
     (column) => column.name === 'accounts_projects_label_trigger',
   )
   if (!accountsProjectsLabeltriggerExists) {
-    const result = await db.unsafeExec({
+    await db.unsafeExec({
       sql: `
       CREATE TRIGGER IF NOT EXISTS accounts_projects_label_trigger
         AFTER UPDATE OF projects_label_by ON accounts
@@ -19,7 +19,7 @@ export const generateAccountLabel = async (db) => {
         END;
       END;`,
     })
-    console.log('TriggerGenerator, accounts, result:', result)
+    console.log('generated account labels')
   }
   // own label is updated when user_id or type is changed
   // plus on insert. TODO: what if select is empty?
@@ -27,7 +27,7 @@ export const generateAccountLabel = async (db) => {
     (column) => column.name === 'accounts_label_trigger',
   )
   if (!accountsUpdateLabelTriggerExists) {
-    const result = await db.unsafeExec({
+    await db.unsafeExec({
       sql: `
       CREATE TRIGGER IF NOT EXISTS accounts_label_trigger
         AFTER UPDATE OF user_id, type ON accounts
@@ -35,13 +35,12 @@ export const generateAccountLabel = async (db) => {
         UPDATE accounts SET label = (SELECT email FROM users WHERE user_id = NEW.user_id) || ' (' || NEW.type || ')';
       END;`,
     })
-    console.log('TriggerGenerator, accounts, result:', result)
   }
   const accountsInsertLabelTriggerExists = triggers.some(
     (column) => column.name === 'accounts_label_insert_trigger',
   )
   if (!accountsInsertLabelTriggerExists) {
-    const resultInsert = await db.unsafeExec({
+    await db.unsafeExec({
       sql: `
       CREATE TRIGGER IF NOT EXISTS accounts_label_insert_trigger
         AFTER insert ON accounts
@@ -49,6 +48,5 @@ export const generateAccountLabel = async (db) => {
         UPDATE accounts SET label = coalesce((SELECT email FROM users WHERE user_id = NEW.user_id), '(no user)') || ' (' || coalesce(NEW.type, 'no type') || ')';
       END;`,
     })
-    console.log('TriggerGenerator, insert accounts, result:', resultInsert)
   }
 }

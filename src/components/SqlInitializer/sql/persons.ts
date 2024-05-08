@@ -11,5 +11,6 @@ export const generatePersonLabel = async (db) => {
     await db.unsafeExec({
       sql: 'CREATE INDEX IF NOT EXISTS persons_label_idx ON persons(label)',
     })
+    console.log('generated person labels')
   }
 }
