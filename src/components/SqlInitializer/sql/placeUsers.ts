@@ -7,7 +7,7 @@ export const generatePlaceUserLabel = async (db) => {
     (column) => column.name === 'place_users_label_trigger',
   )
   if (!placeUsersLabelTriggerExists) {
-    const result = await db.unsafeExec({
+    await db.unsafeExec({
       sql: `
       CREATE TRIGGER IF NOT EXISTS place_users_label_trigger
         AFTER UPDATE OF user_id, role ON place_users
@@ -15,7 +15,7 @@ export const generatePlaceUserLabel = async (db) => {
         UPDATE place_users SET label = (SELECT email FROM users WHERE user_id = NEW.user_id) || ' (' || NEW.role || ')';
       END;`,
     })
-    console.log('TriggerGenerator, place_users, result:', result)
+    console.log('generated place user labels')
   }
   const placeUsersLabelInsertTriggerExists = triggers.some(
     (column) => column.name === 'place_users_label_trigger_insert',

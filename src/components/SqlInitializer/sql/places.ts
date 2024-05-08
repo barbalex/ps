@@ -10,7 +10,7 @@ export const generatePlaceLabel = async (db) => {
     // But: not possible because generated columns can only fetch from the same row/table
     // Alternative: use a trigger to update the label field
     // TODO: enable using an array of column names
-    const result = await db.unsafeExec({
+    await db.unsafeExec({
       sql: `
       CREATE TRIGGER if not exists places_label_trigger
       AFTER UPDATE of level, data ON places
@@ -29,7 +29,7 @@ export const generatePlaceLabel = async (db) => {
          WHERE places.place_id = NEW.place_id;
       END;`,
     })
-    console.log('LabelGenerator, places, result:', result)
+    console.log('generated place labels')
   }
   // if no insert trigger exists, add it
   const insertTriggerExists = triggers.some(
@@ -37,7 +37,7 @@ export const generatePlaceLabel = async (db) => {
   )
   if (!insertTriggerExists) {
     try {
-      const resultInsert = await db.unsafeExec({
+      await db.unsafeExec({
         sql: `
       CREATE TRIGGER if not exists places_label_insert_trigger
       AFTER INSERT ON places
@@ -55,7 +55,6 @@ export const generatePlaceLabel = async (db) => {
          WHERE places.place_id = NEW.place_id;
       END;`,
       })
-      console.log('LabelGenerator, places, resultInsert:', resultInsert)
     } catch (error) {
       console.error('LabelGenerator, places, error:', error)
     }
