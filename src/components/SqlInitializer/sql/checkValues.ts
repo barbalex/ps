@@ -7,7 +7,7 @@ export const generateCheckValueLabel = async (db) => {
     (column) => column.name === 'check_values_label_trigger',
   )
   if (!checkValuesLabelTriggerExists) {
-    const result = await db.unsafeExec({
+    await db.unsafeExec({
       sql: `
       CREATE TRIGGER IF NOT EXISTS check_values_label_trigger
         AFTER UPDATE ON check_values
@@ -32,14 +32,14 @@ export const generateCheckValueLabel = async (db) => {
           check_values.check_value_id = NEW.check_value_id;
       END;`,
     })
-    console.log('TriggerGenerator, check_values, result:', result)
+    console.log('generated check value labels')
   }
   // same on insert
   const checkValuesLabelInsertTriggerExists = triggers.some(
     (column) => column.name === 'check_values_label_insert_trigger',
   )
   if (!checkValuesLabelInsertTriggerExists) {
-    const result = await db.unsafeExec({
+    await db.unsafeExec({
       sql: `
       CREATE TRIGGER IF NOT EXISTS check_values_label_insert_trigger
         AFTER INSERT ON check_values
@@ -47,6 +47,5 @@ export const generateCheckValueLabel = async (db) => {
         UPDATE check_values SET label = NEW.check_value_id;
       END;`,
     })
-    console.log('TriggerGenerator, check_values_insert, result:', result)
   }
 }

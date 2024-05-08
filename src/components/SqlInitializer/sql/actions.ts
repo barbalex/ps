@@ -11,5 +11,6 @@ export const generateActionLabel = async (db) => {
     await db.unsafeExec({
       sql: 'CREATE INDEX IF NOT EXISTS actions_label_idx ON actions(label)',
     })
+    console.log('generated action labels')
   }
 }
