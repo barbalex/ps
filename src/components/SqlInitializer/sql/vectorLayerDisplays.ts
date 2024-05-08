@@ -11,5 +11,6 @@ export const generateVectorLayerDisplayLabel = async (db) => {
     await db.unsafeExec({
       sql: 'CREATE INDEX IF NOT EXISTS vector_layer_displays_label_idx ON vector_layer_displays(label)',
     })
+    console.log('generated vector layer display labels')
   }
 }

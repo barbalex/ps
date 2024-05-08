@@ -7,7 +7,7 @@ export const generatePlaceReportValueLabel = async (db) => {
     (column) => column.name === 'place_report_values_label_trigger',
   )
   if (!placeReportValuesLabelTriggerExists) {
-    const result = await db.unsafeExec({
+    await db.unsafeExec({
       sql: `
       CREATE TRIGGER IF NOT EXISTS place_report_values_label_trigger
         AFTER UPDATE ON place_report_values
@@ -32,13 +32,13 @@ export const generatePlaceReportValueLabel = async (db) => {
           place_report_values.place_report_value_id = NEW.place_report_value_id;
       END;`,
     })
-    console.log('TriggerGenerator, place_report_values, result:', result)
+    console.log('generated place report value labels')
   }
   const placeReportValuesLabelInsertTriggerExists = triggers.some(
     (column) => column.name === 'place_report_values_label_insert_trigger',
   )
   if (!placeReportValuesLabelInsertTriggerExists) {
-    const result = await db.unsafeExec({
+    await db.unsafeExec({
       sql: `
       CREATE TRIGGER IF NOT EXISTS place_report_values_label_insert_trigger
         AFTER insert ON place_report_values
@@ -46,6 +46,5 @@ export const generatePlaceReportValueLabel = async (db) => {
         UPDATE place_report_values SET label = NEW.place_report_value_id;
       END;`,
     })
-    console.log('TriggerGenerator, place_report_values_insert, result:', result)
   }
 }

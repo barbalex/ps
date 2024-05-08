@@ -7,7 +7,7 @@ export const generateSubprojectTaxonLabel = async (db) => {
     (column) => column.name === 'subproject_taxon_label_trigger',
   )
   if (!subprojectTaxonLabelTriggerExists) {
-    const result = await db.unsafeExec({
+    await db.unsafeExec({
       sql: `
       CREATE TRIGGER IF NOT EXISTS subproject_taxon_label_trigger
         AFTER UPDATE OF taxon_id ON subproject_taxa
@@ -23,7 +23,7 @@ export const generateSubprojectTaxonLabel = async (db) => {
         );
       END;`,
     })
-    console.log('TriggerGenerator, subproject_taxa, result:', result)
+    console.log('generated subproject taxon labels')
   }
   const subprojectTaxonLabelInsertTriggerExists = triggers.some(
     (column) => column.name === 'subproject_taxon_label_trigger_insert',
