@@ -14,6 +14,7 @@ import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { BaseUrl } from './BaseUrl.tsx'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
+import { tile_layer_type_enumSchema as typeSchema } from '../../generated/client/index.ts'
 
 import '../../form.css'
 
@@ -54,7 +55,7 @@ export const Component = () => {
         <RadioGroupField
           label="Type"
           name="type"
-          list={['wms', 'wmts']}
+          list={typeSchema?.options ?? []}
           value={row.type ?? ''}
           onChange={onChange}
           autoFocus
