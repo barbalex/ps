@@ -15,6 +15,11 @@ import { Header } from './Header.tsx'
 import { ErrorBoundary } from '../../components/shared/ErrorBoundary.tsx'
 import { ColorPicker } from '../../components/shared/ColorPicker.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
+import {
+  marker_type_enumSchema as markerTypeSchema,
+  line_cap_enumSchema as lineCapSchema,
+  fill_rule_enumSchema as fillRuleSchema,
+} from '../../generated/client/index.ts'
 
 import '../../form.css'
 
@@ -24,10 +29,8 @@ import '../../form.css'
 //   marker: 'Symbol',
 // }
 
-const lineCapValues = ['butt', 'round', 'square']
+// not imported from schema as miter-clip not supported by electric-sql
 const lineJoinValues = ['arcs', 'bevel', 'miter', 'miter-clip', 'round']
-const fillRuleValues = ['nonzero', 'evenodd']
-const markerTypeValues = ['circle', 'marker']
 
 export const Component = () => {
   const { vector_layer_display_id } = useParams()
@@ -74,7 +77,7 @@ export const Component = () => {
           <RadioGroupField
             name="marker_type"
             label="Punkt-Typ"
-            list={markerTypeValues}
+            list={markerTypeSchema?.options ?? []}
             value={row.marker_type}
             onChange={onChange}
           />
@@ -129,7 +132,7 @@ export const Component = () => {
             name="line_cap"
             value={row.line_cap}
             label="Linien: Abschluss"
-            list={lineCapValues}
+            list={lineCapSchema?.options ?? []}
             onChange={onChange}
           />
           <RadioGroupField
@@ -183,7 +186,7 @@ export const Component = () => {
             name="fill_rule"
             value={row.fill_rule}
             label="Füllung: Regel, um den Inhalt von Flächen zu bestimmen"
-            list={fillRuleValues}
+            list={fillRuleSchema?.options ?? []}
             onChange={onChange}
           />
         </div>
