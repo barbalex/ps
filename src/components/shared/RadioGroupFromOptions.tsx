@@ -33,7 +33,7 @@ export const RadioGroupFromOptions = memo(
         }
         onChangePassed(fakeEvent)
       },
-      [onChangePassed],
+      [name, onChangePassed],
     )
 
     return (
