@@ -1,12 +1,12 @@
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbadoSession } from '@corbado/react'
+import { useCorbado } from '@corbado/react'
 
 import { NavsWrapping } from './Wrapping.tsx'
 import { NavsOverflowing } from './Overflowing/index.tsx'
 import { useElectric } from '../../../ElectricProvider.tsx'
 
 export const Navs = () => {
-  const { user: authUser } = useCorbadoSession()
+  const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
   // get app_states.navs_overflowing

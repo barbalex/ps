@@ -5,7 +5,7 @@ import { TbZoomScan } from 'react-icons/tb'
 import { Button } from '@fluentui/react-button'
 import bbox from '@turf/bbox'
 import buffer from '@turf/buffer'
-import { useCorbadoSession } from '@corbado/react'
+import { useCorbado } from '@corbado/react'
 
 import {
   createPlace,
@@ -25,7 +25,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
   const [searchParams] = useSearchParams()
   const { project_id, subproject_id, place_id, place_id2 } = useParams()
 
-  const { user: authUser } = useCorbadoSession()
+  const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
   const { results: placeLevels } = useLiveQuery(

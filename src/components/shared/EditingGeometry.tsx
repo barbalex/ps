@@ -1,7 +1,7 @@
 import { useCallback, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { Field, Textarea } from '@fluentui/react-components'
-import { useCorbadoSession } from '@corbado/react'
+import { useCorbado } from '@corbado/react'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { SwitchField } from './SwitchField.tsx'
@@ -27,7 +27,7 @@ export const EditingGeometry = memo(({ row, table }) => {
       ? 'editing_action_geometry'
       : null
 
-  const { user: authUser } = useCorbadoSession()
+  const { user: authUser } = useCorbado()
   const { db } = useElectric()!
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),

@@ -2,7 +2,7 @@ import { useEffect, useState, forwardRef } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbadoSession } from '@corbado/react'
+import { useCorbado } from '@corbado/react'
 
 import './breadcrumb.css'
 import { buildNavs } from '../../../modules/navs.ts'
@@ -36,7 +36,7 @@ export const BreadcrumbForFolder = forwardRef(
       taxonomy_id,
     } = match.params
 
-    const { user: authUser } = useCorbadoSession()
+    const { user: authUser } = useCorbado()
 
     const { text, table, sibling } = match?.handle?.crumb ?? {}
     const className =

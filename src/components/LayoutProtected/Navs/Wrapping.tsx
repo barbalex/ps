@@ -5,14 +5,14 @@ import { DataNavs } from './DataNavs.tsx'
 import { ToNavs } from './ToNavs.tsx'
 import { buildNavs } from '../../../modules/navs.ts'
 import { useElectric } from '../../../ElectricProvider.tsx'
-import { useCorbadoSession } from '@corbado/react'
+import { useCorbado } from '@corbado/react'
 
 export const NavsWrapping = ({ designing }) => {
   const location = useLocation()
   const matches = useMatches()
   const params = useParams()
   const { db } = useElectric()!
-  const { user: authUser } = useCorbadoSession()
+  const { user: authUser } = useCorbado()
 
   const thisPathsMatches = matches.filter(
     (match) => match.pathname === location.pathname && match.handle,

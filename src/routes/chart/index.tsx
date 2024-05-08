@@ -1,6 +1,6 @@
 import { useRef, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbadoSession } from '@corbado/react'
+import { useCorbado } from '@corbado/react'
 
 import { Header } from './Header.tsx'
 import { Form } from './Form.tsx'
@@ -14,7 +14,7 @@ import '../../form.css'
 export const Component = memo(() => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const { user: authUser } = useCorbadoSession()
+  const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
   const { results: appState } = useLiveQuery(

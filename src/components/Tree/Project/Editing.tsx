@@ -3,7 +3,7 @@ import { MdEdit, MdEditOff } from 'react-icons/md'
 import { useLiveQuery } from 'electric-sql/react'
 import { Button } from '@fluentui/react-components'
 import { useParams } from 'react-router-dom'
-import { useCorbadoSession } from '@corbado/react'
+import { useCorbado } from '@corbado/react'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { css } from '../../../css.ts'
@@ -22,7 +22,7 @@ const svgStyle = {
 export const Editing = memo(() => {
   const { project_id } = useParams()
 
-  const { user: authUser } = useCorbadoSession()
+  const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
   const { results: appState } = useLiveQuery(

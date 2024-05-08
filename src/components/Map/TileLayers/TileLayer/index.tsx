@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbadoSession } from '@corbado/react'
+import { useCorbado } from '@corbado/react'
 
 import { Tile_layers as TileLayer } from '../../../../generated/client/index.ts'
 import { WMS } from './WMS.tsx'
@@ -13,7 +13,7 @@ interface Props {
 }
 
 export const TileLayerComponent = memo(({ layer }: Props) => {
-  const { user: authUser } = useCorbadoSession()
+  const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
   const { results: appState } = useLiveQuery(

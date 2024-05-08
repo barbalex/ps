@@ -4,7 +4,7 @@ import { TbZoomScan } from 'react-icons/tb'
 import { Button } from '@fluentui/react-button'
 import bbox from '@turf/bbox'
 import buffer from '@turf/buffer'
-import { useCorbadoSession } from '@corbado/react'
+import { useCorbado } from '@corbado/react'
 
 import { createCheck } from '../../modules/createRows.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
@@ -17,7 +17,7 @@ export const Header = memo(({ autoFocusRef }) => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const { user: authUser } = useCorbadoSession()
+  const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
 

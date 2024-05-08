@@ -1,12 +1,12 @@
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbadoSession } from '@corbado/react'
+import { useCorbado } from '@corbado/react'
 
 import { BreadcrumbsWrapping } from './Wrapping.tsx'
 import { BreadcrumbsOverflowing } from './Overflowing/index.tsx'
 import { useElectric } from '../../../ElectricProvider.tsx'
 
 export const Breadcrumbs = () => {
-  const { user: authUser } = useCorbadoSession()
+  const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
   const { results: appState } = useLiveQuery(

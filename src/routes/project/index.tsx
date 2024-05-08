@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import { Tab, TabList } from '@fluentui/react-components'
 import type { SelectTabData, SelectTabEvent } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbadoSession } from '@corbado/react'
+import { useCorbado } from '@corbado/react'
 
 import { Header } from './Header.tsx'
 import { Form } from './Form.tsx'
@@ -15,7 +15,7 @@ import '../../form.css'
 export const Component = () => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const { user: authUser } = useCorbadoSession()
+  const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
 

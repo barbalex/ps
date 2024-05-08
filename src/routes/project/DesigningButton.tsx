@@ -3,14 +3,14 @@ import { useParams } from 'react-router-dom'
 import { MdEdit, MdEditOff } from 'react-icons/md'
 import { ToggleButton } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbadoSession } from '@corbado/react'
+import { useCorbado } from '@corbado/react'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 
 export const DesigningButton = memo(() => {
   const { project_id } = useParams()
 
-  const { user: authUser } = useCorbadoSession()
+  const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
   const { results: appState } = useLiveQuery(

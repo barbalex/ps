@@ -1,6 +1,6 @@
 import { useLocation } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbadoSession } from '@corbado/react'
+import { useCorbado } from '@corbado/react'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { DrawControlComponent } from './DrawControl.tsx'
@@ -12,7 +12,7 @@ import { DrawControlComponent } from './DrawControl.tsx'
 // - the active table is actions AND app_states.editing_action_geometry is the id of the active action
 // - maybe later more cases
 export const DrawControl = () => {
-  const { user: authUser } = useCorbadoSession()
+  const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
   const { results: appState } = useLiveQuery(

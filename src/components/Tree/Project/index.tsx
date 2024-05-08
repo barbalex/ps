@@ -6,7 +6,7 @@ import {
   useSearchParams,
 } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbadoSession } from '@corbado/react'
+import { useCorbado } from '@corbado/react'
 
 import { Node } from '../Node.tsx'
 import { Projects as Project } from '../../../generated/client/index.ts'
@@ -36,7 +36,7 @@ export const ProjectNode = memo(({ project, level = 2 }: Props) => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const { user: authUser } = useCorbadoSession()
+  const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
   const { results: appState } = useLiveQuery(

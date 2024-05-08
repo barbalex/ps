@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useMap } from 'react-leaflet'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbadoSession } from '@corbado/react'
+import { useCorbado } from '@corbado/react'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 
@@ -10,7 +10,7 @@ import { useElectric } from '../../ElectricProvider.tsx'
 export const BoundsListener = () => {
   const map = useMap()
 
-  const { user: authUser } = useCorbadoSession()
+  const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
   const { results: appState } = useLiveQuery(

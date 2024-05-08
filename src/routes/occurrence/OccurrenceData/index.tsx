@@ -4,7 +4,7 @@ import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { arrayMoveImmutable } from 'array-move'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbadoSession } from '@corbado/react'
+import { useCorbado } from '@corbado/react'
 
 import { exists } from '../../../modules/exists.ts'
 import { ErrorBoundary } from '../../../components/shared/ErrorBoundary.tsx'
@@ -28,7 +28,7 @@ const explainerStyle = {
 export const OccurenceData = () => {
   const { occurrence_id } = useParams()
   const { db } = useElectric()!
-  const { user: authUser } = useCorbadoSession()
+  const { user: authUser } = useCorbado()
 
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),

@@ -5,7 +5,7 @@ import 'proj4leaflet'
 import { MapContainer } from 'react-leaflet'
 import { useResizeDetector } from 'react-resize-detector'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbadoSession } from '@corbado/react'
+import { useCorbado } from '@corbado/react'
 
 import 'leaflet/dist/leaflet.css'
 // import 'leaflet-draw/dist/leaflet.draw.css'
@@ -29,7 +29,7 @@ const mapContainerStyle = {
 }
 
 export const Map = () => {
-  const { user: authUser } = useCorbadoSession()
+  const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
   const { results } = useLiveQuery(

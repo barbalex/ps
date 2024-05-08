@@ -13,7 +13,7 @@ import {
   useLocation,
 } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado, useCorbadoSession } from '@corbado/react'
+import { useCorbado } from '@corbado/react'
 
 import { controls } from '../../../styles.ts'
 import { css } from '../../../css.ts'
@@ -58,7 +58,7 @@ export const Menu = memo(() => {
   const isHome = pathname === '/'
 
   const { isAuthenticated, logout } = useCorbado()
-  const { user: authUser } = useCorbadoSession()
+  const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
   const { results: appState } = useLiveQuery(

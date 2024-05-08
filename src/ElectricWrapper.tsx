@@ -4,7 +4,7 @@ import { Electric, schema } from './generated/client/index.ts'
 import { uniqueTabId } from 'electric-sql/util'
 import { LIB_VERSION } from 'electric-sql/version'
 import { ElectricConfig } from 'electric-sql/config'
-import { useCorbadoSession } from '@corbado/react'
+import { useCorbado } from '@corbado/react'
 
 import { ElectricProvider as ElectricProviderComponent } from './ElectricProvider.tsx'
 
@@ -20,7 +20,7 @@ const config: ElectricConfig = {
 
 export const ElectricProvider = memo(({ children }) => {
   const [electric, setElectric] = useState<Electric>()
-  const { shortSession } = useCorbadoSession()
+  const { shortSession } = useCorbado()
 
   // TODO: this rerenders a bit to often
   // console.log('hello ElectricProvider', {

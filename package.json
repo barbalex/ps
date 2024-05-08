@@ -14,7 +14,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@corbado/react": "1.1.14",
+    "@corbado/react": "2.6.0",
     "@css-hooks/react": "2.0.4",
     "@css-hooks/recommended": "2.0.4",
     "@cyntler/react-doc-viewer": "1.14.1",

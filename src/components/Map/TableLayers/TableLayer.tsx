@@ -4,7 +4,7 @@ import { Map } from '@types/leaflet'
 import * as ReactDOMServer from 'react-dom/server'
 import * as icons from 'react-icons/md'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbadoSession } from '@corbado/react'
+import { useCorbado } from '@corbado/react'
 
 import { vectorLayerDisplayToProperties } from '../../../modules/vectorLayerDisplayToProperties.ts'
 import { Popup } from '../Popup.tsx'
@@ -26,7 +26,7 @@ interface Props {
 }
 
 export const TableLayer = memo(({ data, layer }: Props) => {
-  const { user: authUser } = useCorbadoSession()
+  const { user: authUser } = useCorbado()
   const { db } = useElectric()!
 
   const layerNameForState = layer?.label?.replace?.(/ /g, '-')?.toLowerCase?.()

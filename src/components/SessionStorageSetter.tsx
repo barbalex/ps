@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
-import { useCorbadoSession } from '@corbado/react'
+import { useCorbado } from '@corbado/react'
 
 import { subKey } from '../auth.ts'
 
 export const SessionStorageSetter = () => {
-  const { shortSession } = useCorbadoSession()
+  const { shortSession } = useCorbado()
 
   useEffect(() => {
     if (!shortSession) return

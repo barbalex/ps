@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom'
 // import { useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import { Allotment } from 'allotment'
-import { useCorbadoSession } from '@corbado/react'
+import { useCorbado } from '@corbado/react'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Tree } from '../Tree/index.tsx'
@@ -28,7 +28,7 @@ export const Main = memo(() => {
   // const [searchParams] = useSearchParams()
   // const onlyForm = searchParams.get('onlyForm')
   const onlyForm = false
-  const { user: authUser } = useCorbadoSession()
+  const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
   const { results: appStateByEmail } = useLiveQuery(

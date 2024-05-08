@@ -1,11 +1,11 @@
 import { useEffect } from 'react'
-import { useCorbadoSession } from '@corbado/react'
+import { useCorbado } from '@corbado/react'
 
 import { useElectric } from '../ElectricProvider.tsx'
 
 export const Syncer = () => {
   const { db } = useElectric()!
-  const { user: authUser } = useCorbadoSession()
+  const { user: authUser } = useCorbado()
   // console.log('hello Syncer', { db, authUser })
 
   useEffect(() => {

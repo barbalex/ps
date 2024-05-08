@@ -3,7 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import { Label, Divider } from '@fluentui/react-components'
 import type { InputProps } from '@fluentui/react-components'
-import { useCorbadoSession } from '@corbado/react'
+import { useCorbado } from '@corbado/react'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { TextField } from '../../components/shared/TextField.tsx'
@@ -23,7 +23,7 @@ const labelStyle = {
 export const Design = () => {
   const { project_id } = useParams()
 
-  const { user: authUser } = useCorbadoSession()
+  const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
   const { results: row } = useLiveQuery(

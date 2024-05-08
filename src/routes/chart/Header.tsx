@@ -1,7 +1,7 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbadoSession } from '@corbado/react'
+import { useCorbado } from '@corbado/react'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { createChart } from '../../modules/createRows.ts'
@@ -13,7 +13,7 @@ export const Header = memo(({ autoFocusRef }) => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const { user: authUser } = useCorbadoSession()
+  const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
   const { results: appState } = useLiveQuery(
