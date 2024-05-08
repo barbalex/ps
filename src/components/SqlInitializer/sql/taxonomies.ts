@@ -11,5 +11,6 @@ export const generateTaxonomyLabel = async (db) => {
     await db.unsafeExec({
       sql: 'CREATE INDEX IF NOT EXISTS taxonomies_label_idx ON taxonomies(label)',
     })
+    console.log('generated taxonomy labels')
   }
 }

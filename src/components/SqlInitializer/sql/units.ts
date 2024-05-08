@@ -11,5 +11,6 @@ export const generateUnitLabel = async (db) => {
     await db.unsafeExec({
       sql: 'CREATE INDEX IF NOT EXISTS units_label_idx ON units(label)',
     })
+    console.log('generated unit labels')
   }
 }

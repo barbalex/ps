@@ -11,5 +11,6 @@ export const generateWidgetTypeLabel = async (db) => {
     await db.unsafeExec({
       sql: 'CREATE INDEX IF NOT EXISTS widget_types_label_idx ON widget_types(label)',
     })
+    console.log('generated widget type labels')
   }
 }

@@ -11,6 +11,7 @@ export const generateUserLabel = async (db) => {
     await db.unsafeExec({
       sql: 'CREATE INDEX IF NOT EXISTS users_label_idx ON users(label)',
     })
+    console.log('generated user labels')
   }
 
   // on insert an app_state needs to be created
@@ -47,7 +48,7 @@ export const generateUserLabel = async (db) => {
     (column) => column.name === 'users_accounts_label_trigger',
   )
   if (!usersAccountsLabelTriggerExists) {
-    const result = await db.unsafeExec({
+    await db.unsafeExec({
       sql: `
       CREATE TRIGGER IF NOT EXISTS users_accounts_label_trigger
         AFTER UPDATE OF email ON users
@@ -56,10 +57,6 @@ export const generateUserLabel = async (db) => {
         WHERE user_id = NEW.user_id;
       END;`,
     })
-    console.log(
-      'TriggerGenerator, users_accounts_label_trigger, result:',
-      result,
-    )
   }
   // if email is changed, app_states.user_email needs to be updated
   // TODO: this causes error when user is changed
@@ -87,7 +84,7 @@ export const generateUserLabel = async (db) => {
     (column) => column.name === 'users_project_users_label_trigger',
   )
   if (!usersProjectUsersLabelTriggerExists) {
-    const result = await db.unsafeExec({
+    await db.unsafeExec({
       sql: `
       CREATE TRIGGER IF NOT EXISTS users_project_users_label_trigger
         AFTER UPDATE OF email ON users
@@ -96,10 +93,6 @@ export const generateUserLabel = async (db) => {
         WHERE user_id = NEW.user_id;
       END;`,
     })
-    console.log(
-      'TriggerGenerator, users_project_users_label_trigger, result:',
-      result,
-    )
   }
 
   // if email is changed, label of subproject_user needs to be updated
