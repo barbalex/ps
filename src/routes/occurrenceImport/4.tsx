@@ -6,6 +6,7 @@ import { useElectric } from '../../ElectricProvider.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions.tsx'
 import { DropdownFieldOptions } from '../../components/shared/DropdownFieldOptions.tsx'
+import { occurrence_imports_previous_import_operation_enumSchema as previousImportOperationSchema } from '../../generated/client/index.ts'
 
 export const Four = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
   const { occurrence_import_id, subproject_id } = useParams()
@@ -58,7 +59,7 @@ export const Four = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
           <RadioGroupField
             label="How to deal with a previous import"
             name="previous_import_operation"
-            list={['update_and_extend', 'replace']}
+            list={previousImportOperationSchema?.options ?? []}
             value={occurrenceImport.previous_import_operation ?? ''}
             onChange={onChange}
           />
