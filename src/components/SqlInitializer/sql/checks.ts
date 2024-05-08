@@ -11,5 +11,6 @@ export const generateCheckLabel = async (db) => {
     await db.unsafeExec({
       sql: 'CREATE INDEX IF NOT EXISTS checks_label_idx ON checks(label)',
     })
+    console.log('generated check labels')
   }
 }

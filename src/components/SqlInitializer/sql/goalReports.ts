@@ -7,7 +7,7 @@ export const generateGoalReportLabel = async (db) => {
     (column) => column.name === 'goal_reports_label_trigger',
   )
   if (!goalReportsLabelTriggerExists) {
-    const result = await db.unsafeExec({
+    await db.unsafeExec({
       sql: `
       CREATE TRIGGER IF NOT EXISTS goal_reports_label_trigger
         AFTER UPDATE OF data ON goal_reports
@@ -41,14 +41,14 @@ export const generateGoalReportLabel = async (db) => {
         goal_reports.goal_report_id = NEW.goal_report_id;
       END;`,
     })
-    console.log('TriggerGenerator, goal_reports, result:', result)
+    console.log('generated goal report labels')
   }
   // TODO: add insert trigger, remember to use id of no data
   const goalReportsLabelInsertTriggerExists = triggers.some(
     (column) => column.name === 'goal_reports_label_insert_trigger',
   )
   if (!goalReportsLabelInsertTriggerExists) {
-    const result = await db.unsafeExec({
+    await db.unsafeExec({
       sql: `
       CREATE TRIGGER IF NOT EXISTS goal_reports_label_insert_trigger
         AFTER INSERT ON goal_reports
@@ -81,6 +81,5 @@ export const generateGoalReportLabel = async (db) => {
         goal_reports.goal_report_id = NEW.goal_report_id;
       END;`,
     })
-    console.log('TriggerGenerator, goal_reports_insert, result:', result)
   }
 }

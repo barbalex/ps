@@ -35,5 +35,6 @@ export const generateChartSubjectLabel = async (db) => {
     await db.unsafeExec({
       sql: 'CREATE INDEX IF NOT EXISTS chart_subjects_label_idx ON chart_subjects(label)',
     })
+    console.log('generated chart subject labels')
   }
 }

@@ -7,7 +7,7 @@ export const generateCheckTaxonLabel = async (db) => {
     (column) => column.name === 'check_taxon_label_trigger',
   )
   if (!checkTaxonLabelTriggerExists) {
-    const result = await db.unsafeExec({
+    await db.unsafeExec({
       sql: `
       CREATE TRIGGER IF NOT EXISTS check_taxon_label_trigger
         AFTER UPDATE OF taxon_id ON check_taxa
@@ -23,7 +23,7 @@ export const generateCheckTaxonLabel = async (db) => {
         );
       END;`,
     })
-    console.log('TriggerGenerator, check_taxa, result:', result)
+    console.log('generated check taxon labels')
   }
   const checkTaxonLabelInsertTriggerExists = triggers.some(
     (column) => column.name === 'check_taxon_label_trigger_insert',
