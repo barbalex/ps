@@ -431,7 +431,7 @@ CREATE TABLE units(
   name text DEFAULT NULL,
   summable boolean DEFAULT NULL, -- FALSE,
   sort integer DEFAULT NULL,
-  type unit_type DEFAULT NULL,
+  type unit_type DEFAULT NULL, -- TODO: not in use?
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE NO action ON UPDATE CASCADE,
   label_replace_by_generated_column text DEFAULT NULL
 );
