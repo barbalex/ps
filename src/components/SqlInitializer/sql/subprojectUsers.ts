@@ -7,7 +7,7 @@ export const generateSubprojectUserLabel = async (db) => {
     (column) => column.name === 'subproject_users_label_trigger',
   )
   if (!subprojectUsersLabelTriggerExists) {
-    const result = await db.unsafeExec({
+    await db.unsafeExec({
       sql: `
       CREATE TRIGGER IF NOT EXISTS subproject_users_label_trigger
         AFTER UPDATE OF user_id, role ON subproject_users
@@ -15,7 +15,7 @@ export const generateSubprojectUserLabel = async (db) => {
         UPDATE subproject_users SET label = (SELECT email FROM users WHERE user_id = NEW.user_id) || ' (' || NEW.role || ')';
       END;`,
     })
-    console.log('TriggerGenerator, subproject_users, result:', result)
+    console.log('generated subproject user labels')
   }
   const subprojectUsersLabelInsertTriggerExists = triggers.some(
     (column) => column.name === 'subproject_users_label_trigger_insert',

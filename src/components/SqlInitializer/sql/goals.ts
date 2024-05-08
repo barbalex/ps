@@ -11,5 +11,6 @@ export const generateGoalLabel = async (db) => {
     await db.unsafeExec({
       sql: 'CREATE INDEX IF NOT EXISTS goals_label_idx ON goals(label)',
     })
+    console.log('generated goal labels')
   }
 }

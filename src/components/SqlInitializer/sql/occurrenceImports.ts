@@ -11,6 +11,7 @@ export const generateOccurrenceImportLabel = async (db) => {
     await db.unsafeExec({
       sql: 'CREATE INDEX IF NOT EXISTS occurrence_imports_label_idx ON occurrence_imports(label)',
     })
+    console.log('generated occurrence import labels')
   }
   // when label_creation is changed, update occurrences.label
   const triggers = await db.rawQuery({
