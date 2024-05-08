@@ -1497,6 +1497,7 @@ CREATE TYPE line_cap_enum AS enum(
   'square'
 );
 
+-- TODO: not in use?
 CREATE TYPE vector_layer_table_enum AS enum(
   'places1',
   'places2',
