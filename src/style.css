@@ -187,22 +187,21 @@ button {
 }
 
 /* corbado */
+.corbado-theme {
+  --cb-primary-color: rgba(38, 82, 37, 0.9);
+  --cb-primary-color-hover: rgba(38, 82, 37, 0.7);
+  --cb-secondary-link-color: rgba(38, 82, 37, 0.9);
 
-:root {
-  --cb-primary-color: rgba(38, 82, 37, 0.9) !important;
-  --cb-primary-color-hover: rgba(38, 82, 37, 0.7) !important;
-  --cb-secondary-link-color: rgba(38, 82, 37, 0.9) !important;
-}
+  /* corbado mention */
+  .cb-container + div {
+    user-select: none;
+    background-color: rgba(55, 118, 28, 0.4) !important;
+  }
 
-/* hide corbado mention */
-/* TODO: this is a dick move. Reconsider before launch */
-.cb-container + div {
-  display: none !important;
-}
-
-/* prevent focus on header */
-.cb-container-body {
-  user-select: none;
+  /* prevent focus on header */
+  .cb-container-body {
+    user-select: none;
+  }
 }
 
 /* scrollbars */

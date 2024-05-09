@@ -13,7 +13,7 @@ export const AuthAndDb = memo(() => {
   // console.log('hello AuthAndDb')
 
   return (
-    <CorbadoProvider projectId={CORBADO_PROJECT_ID}>
+    <CorbadoProvider projectId={CORBADO_PROJECT_ID} theme="corbado-theme">
       <ElectricProvider>
         <SqlInitializer />
         <Syncer />
