@@ -13,13 +13,13 @@ LR.FileUploaderRegular.shadowStyles = /* CSS */ `
 `
 LR.registerBlocks(LR)
 
-import { styleSheet } from './css'
+import { styleSheet } from './css.ts'
 import 'allotment/dist/style.css'
 import './style.css'
 
-import { lightTheme } from './modules/theme'
-import { router } from './router'
-import { UploaderContext } from './UploaderContext'
+import { lightTheme } from './modules/theme.ts'
+import { router } from './router/index.tsx'
+import { UploaderContext } from './UploaderContext.ts'
 
 const routerContainerStyle = {
   display: 'flex',
