@@ -25,8 +25,9 @@ services:
     networks:
       - network
     environment:
+      # see: https://electric-sql.com/docs/deployment/docker
       DATABASE_URL: postgresql://postgres:${ELECTRIC_DATABASE_PASSWORD}@pg/postgres
-      DATABASE_REQUIRE_SSL: false
+      # DATABASE_REQUIRE_SSL: false
       LOGICAL_PUBLISHER_HOST: electric
       PG_PROXY_PASSWORD: ${ELECTRIC_PG_PROXY_PASSWORD}
       AUTH_MODE: insecure
