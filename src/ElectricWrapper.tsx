@@ -8,7 +8,7 @@ import { useCorbado } from '@corbado/react'
 
 import { ElectricProvider as ElectricProviderComponent } from './ElectricProvider.tsx'
 
-import { authToken } from './auth'
+import { authToken } from './auth.ts'
 
 // https://electric-sql.com/docs/api/clients/typescript#available-options
 const config: ElectricConfig = {
