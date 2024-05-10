@@ -22,41 +22,36 @@ export const Component = () => (
           <h3 className="card-title">Arten oder Biotope</h3>
           Seltene und gefährdete Arten oder Biotope werden überwacht und
           gefördert.
-          <br />
-          <br />
-          Arten und Biotoptypen werden in eigenen Teilprojekten erfasst.
         </div>
         <div className="card">
           <h3 className="card-title">Ziele</h3>
-          beschreiben, wie sich Populationen und Biotope entwickeln sollen.
-        </div>
-        <div className="card">
-          <h3 className="card-title">Verantwortliche</h3>
-          organisieren Massnahmen und Kontrollen, analysieren und berichten.
+          beschreiben die gewünschte Entwicklung.
         </div>
         <div className="card">
           <h3 className="card-title">Räume</h3>
-          beschreiben einzelne Populationen und Biotope.
+          Arten werden in Populationen gegliedert, Biotope in Flächen.
         </div>
         <div className="card">
           <h3 className="card-title">Zweistufige Räume</h3>
-          Populationen können in Teil&shy;populationen, Biotope in Teilflächen
-          gegliedert werden.
+          Populationen und Biotopflächen können weiter unterteilt werden.
         </div>
         <div className="card">
-          <h3 className="card-title">Massnahmen</h3>
-          verbessern den Zustand einer Art oder eines Biotops.
+          <h3 className="card-title">Verantwortliche</h3>
+          beschreiben Räume, organisieren Kontrollen und Massnahmen, analysieren
+          und berichten.
         </div>
         <div className="card">
           <h3 className="card-title">Kontrollen</h3>
-          erfassen den aktuellen Zustand von Populationen und Biotopen sowie die
-          Wirkung von Massnahmen.
+          erfassen den Zustand von (Teil-)Räumen und die Wirkung von Massnahmen.
+        </div>
+        <div className="card">
+          <h3 className="card-title">Massnahmen</h3>
+          verbessern den Zustand einer Art oder eines Biotops (hoffentlich).
         </div>
         <div className="card">
           <h3 className="card-title">Berichte</h3>
-          Verantwortliche berichten über die Entwick&shy;lung der Populationen
-          und Biotope, den Erfolg der Massnahmen und die Errei&shy;chung der
-          Ziele.
+          beschreiben die Entwick&shy;lung, Massnahmen und ihren Erfolg sowie
+          die Errei&shy;chung der Ziele.
         </div>
         <div className="card">
           <h3 className="card-title">Beobachtungen</h3>
@@ -86,7 +81,8 @@ export const Component = () => (
         <div className="card">
           <h3 className="card-title">Einfaches Onboarding</h3>
           Erfassen Sie neue Mitarbeitende mit deren Email. Ergänzen Sie diese
-          Person bei allen Teilprojekten, in denen sie mitarbeiten soll. Fertig!
+          Person bei allen Arten und Biotopen, in denen sie mitarbeiten soll.
+          Fertig!
         </div>
         <div className="card">
           <h3 className="card-title">Teamwork</h3>
@@ -101,7 +97,7 @@ export const Component = () => (
         <div className="card">
           <h3 className="card-title">Ihre Daten gehören Ihnen</h3>
           100% Ihrer Daten werden auf Ihr Gerät synchronisiert. Sie können
-          jederzeit exportiert werden. TODO:
+          jederzeit exportiert werden.
         </div>
       </div>
     </div>
