@@ -19,7 +19,7 @@ export const Component = () => (
       <h6 className="page-title">Bedrohte Arten und Biotope fördern</h6>
       <div className="card-container">
         <div className="card">
-          <h3 className="card-title">Arten oder Biotope</h3>
+          <h3 className="card-title">Arten und Biotope</h3>
           Seltene und gefährdete Arten oder Biotope werden überwacht und
           gefördert.
         </div>
@@ -75,8 +75,8 @@ export const Component = () => (
         </div>
         <div className="card">
           <h3 className="card-title">Flexible Konfiguration</h3>
-          Sie können Ihr Projekt individuell Ihren Bedürfnissen anpassen.
-          Vermissen Sie eine Funktion? Wir sind interessiert!
+          Sie können Ihr Projekt Ihren eigenen Bedürfnissen anpassen. Vermissen
+          Sie eine Funktion? Wir sind interessiert!
         </div>
         <div className="card">
           <h3 className="card-title">Einfaches Onboarding</h3>
@@ -88,11 +88,15 @@ export const Component = () => (
           <h3 className="card-title">Teamwork</h3>
           Da die Daten laufend synchronisiert werden, können mehrere
           Mitarbeitende effizient gleichzeitig arbeiten.
+        </div>
+        <div className="card">
+          <h3 className="card-title">Zeitmaschine</h3>
+          Mehrere Mitarbeitende haben aus versehen offline die gleichen Daten
+          geändert?
           <br />
           <br />
-          Aus versehen offline die gleichen Daten geändert? Nach der nächsten
-          Synchro&shy;ni&shy;sie&shy;rung kann das bereinigt werden. Sie sehen,
-          wer wann was geändert hat.
+          Das lässt sich einfach korrigieren. Sie sehen, wer was wann geändert
+          hat.
         </div>
         <div className="card">
           <h3 className="card-title">Ihre Daten gehören Ihnen</h3>
