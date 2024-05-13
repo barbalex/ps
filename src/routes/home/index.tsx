@@ -91,8 +91,8 @@ export const Component = () => (
           <br />
           <br />
           Aus versehen offline die gleichen Daten geändert? Nach der nächsten
-          Synchronisierung kann das bereinigt werden. Sie sehen, wer wann was
-          geändert hat.
+          Synchro&shy;ni&shy;sie&shy;rung kann das bereinigt werden. Sie sehen,
+          wer wann was geändert hat.
         </div>
         <div className="card">
           <h3 className="card-title">Ihre Daten gehören Ihnen</h3>
