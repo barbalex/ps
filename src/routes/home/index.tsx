@@ -103,6 +103,16 @@ export const Component = () => (
           100% Ihrer Daten werden auf Ihr Gerät synchronisiert. Sie können
           jederzeit exportiert werden.
         </div>
+        <div className="card">
+          <h3 className="card-title">
+            Wer zahlt, befiehlt. Wer befiehlt, zahlt...
+          </h3>
+          Es zahlt, wer Projekte konfiguriert.
+          <br />
+          Testen ist gratis.
+          <br />
+          Mitarbeitende zahlen nicht.
+        </div>
       </div>
     </div>
   </div>
