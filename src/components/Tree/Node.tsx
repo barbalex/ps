@@ -15,8 +15,10 @@ const containerStyle = {
   gridTemplateAreas: `'spacer toggle content'`,
   // do not layout offscreen content while allowing search
   // https://developer.mozilla.org/en-US/docs/Web/CSS/content-visibility
-  contentVisibility: 'auto',
-  containIntrinsicSize: 'auto 22px',
+  // UUPS: this prevents horizontal scrolling!
+  // see: https://stackoverflow.com/a/76597041/712005
+  // contentVisibility: 'auto',
+  // containIntrinsicSize: 'auto 22px',
 }
 const toggleStyle = {
   borderRadius: 20,
@@ -32,11 +34,12 @@ const contentStyle = {
   gridArea: 'content',
   paddingLeft: 4,
   whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
 }
 const contentLinkStyle = {
   fontSize: '1em',
   lineHeight: '1.5em',
-  whiteSpace: 'nowrap',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   textDecoration: 'none',
