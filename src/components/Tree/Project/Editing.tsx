@@ -68,7 +68,7 @@ export const Editing = memo(() => {
       style={css({
         ...buttonStyle,
         on: ($) => [
-          $('&:hover', { filter: 'brightness(0.8)', backgroundColor: 'white' }),
+          $('&:hover', { filter: 'brightness(0.9)', backgroundColor: 'white' }),
         ],
       })}
       title={
