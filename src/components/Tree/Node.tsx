@@ -28,7 +28,11 @@ const toggleStyle = {
   minWidth: 22,
   height: 22,
 }
-const contentStyle = { gridArea: 'content', paddingLeft: 4 }
+const contentStyle = {
+  gridArea: 'content',
+  paddingLeft: 4,
+  whiteSpace: 'nowrap',
+}
 const contentLinkStyle = {
   fontSize: '1em',
   lineHeight: '1.5em',
