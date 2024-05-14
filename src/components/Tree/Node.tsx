@@ -13,7 +13,7 @@ const containerStyle = {
   display: 'grid',
   userSelect: 'none',
   gridTemplateAreas: `'spacer toggle content'`,
-  // save the browser the layouting of offscreen content
+  // do not layout offscreen content while allowing search
   // https://developer.mozilla.org/en-US/docs/Web/CSS/content-visibility
   contentVisibility: 'auto',
   containIntrinsicSize: 'auto 22px',
