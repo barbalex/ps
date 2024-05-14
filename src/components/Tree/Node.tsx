@@ -13,6 +13,10 @@ const containerStyle = {
   display: 'grid',
   userSelect: 'none',
   gridTemplateAreas: `'spacer toggle content'`,
+  // save the browser the layouting of offscreen content
+  // https://developer.mozilla.org/en-US/docs/Web/CSS/content-visibility
+  contentVisibility: 'auto',
+  containIntrinsicSize: 'auto 22px',
 }
 const toggleStyle = {
   borderRadius: 20,
