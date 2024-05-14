@@ -17,9 +17,9 @@ const containerStyle = {
   // https://developer.mozilla.org/en-US/docs/Web/CSS/content-visibility
   // UUPS: this prevents horizontal scrolling!
   // see: https://stackoverflow.com/a/76597041/712005
-  // using contain: 'paint layout' on parent instead
-  // contentVisibility: 'auto',
-  // containIntrinsicSize: 'auto 22px',
+  // using contain: 'paint layout' on parent also
+  contentVisibility: 'auto',
+  containIntrinsicSize: 'auto 22px',
 }
 const toggleStyle = {
   borderRadius: 20,
