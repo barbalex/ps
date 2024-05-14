@@ -9,20 +9,40 @@ import { Link, useSearchParams } from 'react-router-dom'
 
 import { css } from '../../css.ts'
 
-const buttonStyle = {
+const containerStyle = {
+  display: 'grid',
+  userSelect: 'none',
+  gridTemplateAreas: `'spacer toggle content'`,
+}
+const toggleStyle = {
   borderRadius: 20,
   border: 'none',
   backgroundColor: 'transparent',
   color: 'rgb(51, 51, 51) !important',
+  gridArea: 'toggle',
+  display: 'inline',
+  minWidth: 22,
+  height: 22,
 }
-const siblingStyle = {
+const contentStyle = { gridArea: 'content', paddingLeft: 4 }
+const contentLinkStyle = {
+  fontSize: '1em',
+  lineHeight: '1.5em',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  textDecoration: 'none',
+  color: 'rgb(51, 51, 51)',
+}
+const contentSiblingStyle = {
   marginLeft: 5,
+  display: 'inline',
 }
 const svgStyle = {
   color: 'rgb(51, 51, 51)',
 }
 
-const labelSpanStyle = { cursor: 'default', userSelect: 'none' }
+const contentLabelStyle = { cursor: 'default', userSelect: 'none' }
 
 interface Props {
   isInActiveNodeArray: boolean
@@ -52,19 +72,18 @@ export const Node = memo(
     sibling,
   }: Props) => {
     const [searchParams] = useSearchParams()
+    console.log('hello level:', level)
 
     return (
       <div
         style={{
-          display: 'flex',
-          alignItems: 'center',
+          ...containerStyle,
           fontWeight: isInActiveNodeArray ? 'bold' : 'normal',
           ...(isActive && { color: 'red' }),
-          marginLeft: level * 20 - 15,
-          justifyContent: 'flex-start',
-          userSelect: 'none',
+          gridTemplateColumns: `${(level - 1) * 20 + 5}px 20px 1fr`,
         }}
       >
+        <div style={{ gridArea: 'spacer' }} />
         <Button
           aria-label="toggle"
           size="small"
@@ -80,36 +99,32 @@ export const Node = memo(
           onClick={onClickButton}
           disabled={!childrenCount}
           style={{
-            ...buttonStyle,
+            ...toggleStyle,
             ...(!childrenCount && { cursor: 'default' }),
           }}
         />
-        {isActive ? (
-          <span style={labelSpanStyle}>
-            {node.label ?? id ?? '(missing label)'}
-          </span>
-        ) : (
-          <Link
-            style={css({
-              fontSize: '1em',
-              lineHeight: '1.5em',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              textDecoration: 'none',
-              color: 'rgb(51, 51, 51)',
-              on: ($) => [
-                $('&:hover', {
-                  fontWeight: 'bold',
-                }),
-              ],
-            })}
-            to={{ pathname: to, search: searchParams.toString() }}
-          >
-            {node.label ?? id ?? '(missing label)'}
-          </Link>
-        )}
-        {!!sibling && <div style={siblingStyle}>{sibling}</div>}
+        <div style={contentStyle}>
+          {isActive ? (
+            <span style={contentLabelStyle}>
+              {node.label ?? id ?? '(missing label)'}
+            </span>
+          ) : (
+            <Link
+              style={css({
+                ...contentLinkStyle,
+                on: ($) => [
+                  $('&:hover', {
+                    fontWeight: 'bold',
+                  }),
+                ],
+              })}
+              to={{ pathname: to, search: searchParams.toString() }}
+            >
+              {node.label ?? id ?? '(missing label)'}
+            </Link>
+          )}
+          {!!sibling && <div style={contentSiblingStyle}>{sibling}</div>}
+        </div>
       </div>
     )
   },
