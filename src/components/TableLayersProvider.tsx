@@ -44,6 +44,10 @@ export const TableLayersProvider = () => {
           const newVectorLayer = await db.vector_layers.create({
             data: vectorLayer,
           })
+          console.error(
+            'TableLayersProvider, new places 1 vector layer:',
+            newVectorLayer,
+          )
           const newVLD = createVectorLayerDisplay({
             vector_layer_id: newVectorLayer.vector_layer_id,
           })
