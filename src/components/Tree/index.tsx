@@ -15,7 +15,7 @@ const containerStyle = {
   overflow: 'auto',
   scrollbarWidth: 'thin',
   // do not layout offscreen content while allowing search
-  contain: 'paint layout',
+  contain: 'paint layout style',
 }
 
 export const Tree = memo(({ designing }) => (
