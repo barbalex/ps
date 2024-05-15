@@ -6,6 +6,7 @@ import {
   createVectorLayer,
   createVectorLayerDisplay,
 } from '../modules/createRows.ts'
+import { useFirstRender } from '../modules/useFirstRender.ts'
 
 // it would be better to add vector_layers and their displays inside triggers on project creation
 // but as sqlite does not have functions to create uuid's, we need to do it here
@@ -17,7 +18,12 @@ export const TableLayersProvider = () => {
   const { results: projects = [] } = useLiveQuery(db.projects.liveMany())
   const { results: occurrences = [] } = useLiveQuery(db.occurrences.liveMany())
 
+  const firstRender = useFirstRender()
+
   useEffect(() => {
+    // if this runs on first render it can race with triggers
+    if (firstRender) return
+
     const run = async () => {
       for (const project of projects) {
         const placeLevels = await db.place_levels.findMany({
