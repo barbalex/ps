@@ -11,8 +11,8 @@ import { css } from '../../css.ts'
 
 const containerStyle = {
   display: 'grid',
-  userSelect: 'none',
   gridTemplateAreas: `'spacer toggle content'`,
+  userSelect: 'none',
   // do not layout offscreen content while allowing search
   // https://developer.mozilla.org/en-US/docs/Web/CSS/content-visibility
   // UUPS: this prevents horizontal scrolling!
@@ -20,6 +20,9 @@ const containerStyle = {
   // using contain: 'paint layout' on parent also
   contentVisibility: 'auto',
   containIntrinsicSize: 'auto 22px',
+}
+const spacerStyle = {
+  gridArea: 'spacer',
 }
 const toggleStyle = {
   borderRadius: 20,
@@ -84,7 +87,7 @@ export const Node = memo(
     sibling,
   }: Props) => {
     const [searchParams] = useSearchParams()
-    console.log('hello level:', level)
+    // console.log('hello level:', level)
 
     return (
       <div
@@ -95,7 +98,7 @@ export const Node = memo(
           gridTemplateColumns: `${(level - 1) * 20 + 5}px 20px 1fr`,
         }}
       >
-        <div style={{ gridArea: 'spacer' }} />
+        <div style={spacerStyle} />
         <Button
           aria-label="toggle"
           size="small"
