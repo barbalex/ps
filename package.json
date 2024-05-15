@@ -34,7 +34,7 @@
     "@turf/point-to-line-distance": "6.5.0",
     "@turf/points-within-polygon": "6.5.0",
     "@turf/polygon-to-line": "6.5.0",
-    "@uploadcare/blocks": "0.39.0",
+    "@uploadcare/blocks": "0.39.1",
     "allotment": "1.20.1",
     "array-move": "4.0.0",
     "dayjs": "1.11.11",
