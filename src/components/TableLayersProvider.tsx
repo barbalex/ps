@@ -21,7 +21,7 @@ export const TableLayersProvider = () => {
   const firstRender = useFirstRender()
 
   useEffect(() => {
-    // if this runs on first render it can race with triggers
+    // if this runs on first render it can race with triggers and lead to multiple vector_layers
     if (firstRender) return
 
     const run = async () => {
