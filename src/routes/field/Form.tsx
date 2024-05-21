@@ -13,8 +13,7 @@ import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { WidgetType } from './WidgetType.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
-
-export const accountTables = ['projects', 'files']
+import { accountTables } from './accountTables.ts'
 
 const projectTables = [
   'action_reports',

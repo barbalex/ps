@@ -63,7 +63,7 @@ export const OccurenceData = () => {
 
   const rowData = occurrence?.data ?? {}
   const fields = Object.entries(rowData)
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     .filter(([key, value]) => exists(value))
     .sort(sortFn)
   const keys = fields.map((f) => f[0])

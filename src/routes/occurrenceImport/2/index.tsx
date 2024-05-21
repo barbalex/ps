@@ -10,7 +10,7 @@ import { occurrence_imports_geometry_method_enumSchema as geoetryMethodSchema } 
 interface Props {
   occurrenceImport: Occurrence_imports
   occurrenceFields: string[]
-  onChange: (e: React.ChangeEvent<HTMLInputElement>, data: any) => void
+  onChange: (e: React.ChangeEvent<HTMLInputElement>, data: unknown) => void
 }
 
 export const Two = memo(

@@ -2,9 +2,9 @@ import { memo } from 'react'
 import { MdDone } from 'react-icons/md'
 
 import { TextField } from '../../components/shared/TextField.tsx'
-import { TextArea } from '../../components/shared/TextArea'
-import { UploadButton } from '../../components/shared/UploadButton'
-import { processData } from './processData'
+import { TextArea } from '../../components/shared/TextArea.tsx'
+import { UploadButton } from '../../components/shared/UploadButton.tsx'
+import { processData } from './processData.ts'
 
 const occurrencesImportedStyle = {
   color: 'rgba(38, 82, 37, 0.9)',

@@ -7,7 +7,7 @@ import { useCorbado } from '@corbado/react'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { createField } from '../../../modules/createRows.ts'
-import { accountTables } from '../../../routes/field/Form.tsx'
+import { accountTables } from '../../../routes/field/accountTables.ts'
 
 const buttonStyle = {
   minHeight: 32,
