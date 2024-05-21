@@ -5,8 +5,8 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
-import { DropdownField } from './DropdownField'
-import { idFieldFromTable } from '../../../modules/idFieldFromTable'
+import { DropdownField } from './DropdownField.tsx'
+import { idFieldFromTable } from '../../../modules/idFieldFromTable.ts'
 
 interface Props {
   name: string
