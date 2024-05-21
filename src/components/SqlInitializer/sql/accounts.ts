@@ -32,7 +32,7 @@ export const generateAccountLabel = async (db) => {
       CREATE TRIGGER IF NOT EXISTS accounts_label_trigger
         AFTER UPDATE OF user_id, type ON accounts
       BEGIN
-        UPDATE accounts SET label = (SELECT email FROM users WHERE user_id = NEW.user_id) || ' (' || NEW.type || ')';
+        UPDATE accounts SET label = coalesce((SELECT email FROM users WHERE user_id = NEW.user_id) || ' (' || NEW.type || ')', (SELECT email FROM users WHERE user_id = NEW.user_id), NEW.account_id);
       END;`,
     })
   }
