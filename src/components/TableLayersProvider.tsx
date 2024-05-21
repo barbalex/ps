@@ -8,6 +8,8 @@ import {
 } from '../modules/createRows.ts'
 import { useFirstRender } from '../modules/useFirstRender.ts'
 
+// TODO: if this runs BEFORE data was synced with the server, it will create duplicate vector_layers
+// How to know if data was synced with the server?
 // it would be better to add vector_layers and their displays inside triggers on project creation
 // but as sqlite does not have functions to create uuid's, we need to do it here
 export const TableLayersProvider = () => {
@@ -51,7 +53,7 @@ export const TableLayersProvider = () => {
             data: vectorLayer,
           })
           console.error(
-            'TableLayersProvider, new places 1 vector layer:',
+            'hello TableLayersProvider, new places 1 vector layer:',
             newVectorLayer,
           )
           const newVLD = createVectorLayerDisplay({

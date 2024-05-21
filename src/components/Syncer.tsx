@@ -9,6 +9,7 @@ export const Syncer = () => {
   // console.log('hello Syncer', { db, authUser })
 
   useEffect(() => {
+    console.log('hello Syncer, syncing data for user:', authUser?.email)
     const syncItems = async () => {
       // Resolves when the shape subscription has been established.
       const userShape = await db.users.sync({
@@ -229,6 +230,7 @@ export const Syncer = () => {
       await messagesShape.synced
       await fieldTypesShape.synced
       await widgetTypesShape.synced
+      console.log('hello Syncer, data synced')
     }
 
     syncItems()

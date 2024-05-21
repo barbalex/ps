@@ -201,10 +201,9 @@ export const seedTestData = async (db) => {
   })
   if (appStatesCount[0].count === 0) {
     try {
-      const result = await db.unsafeExec({
+      await db.unsafeExec({
         sql: seedAppStates,
       })
-      console.log('hello seedTestData, seedAppStates result', result)
     } catch (e) {
       console.error('hello seedTestData, seedAppStates error', e)
     }
