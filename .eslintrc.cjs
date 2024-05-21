@@ -7,7 +7,13 @@ module.exports = {
     'plugin:@typescript-eslint/stylistic',
     'plugin:react-hooks/recommended',
   ],
-  ignorePatterns: ['dist', '.eslintrc.cjs'],
+  ignorePatterns: [
+    'dist',
+    'src/generated',
+    '.eslintrc.cjs',
+    'src/components/Map/TileLayers/TileLayer/WMTS.tsx',
+    'src/components/Map/TileLayers/TileLayer/WMTSOffline.tsx',
+  ],
   parser: '@typescript-eslint/parser',
   plugins: ['react-refresh', 'import'],
   rules: {

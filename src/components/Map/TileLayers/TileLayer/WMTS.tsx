@@ -6,7 +6,7 @@ interface Props {
   layer: TileLayerType
 }
 
-const WMTS = ({ layer }: Props) => {
+export const WMTS = ({ layer }: Props) => {
   return (
     <TileLayer
       url={layer.wmts_url_template}
@@ -17,5 +17,3 @@ const WMTS = ({ layer }: Props) => {
     />
   )
 }
-
-export default WMTS
