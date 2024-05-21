@@ -227,18 +227,16 @@ export const seedTestData = async (db) => {
   })
   if (projects[0].count === 0) {
     try {
-      const result = await db.unsafeExec({
+      await db.unsafeExec({
         sql: seedProjects,
       })
-      console.log('hello seedTestData, seedProjects result', result)
     } catch (error) {
       console.log('hello seedTestData, seedProjects error', error)
     }
     try {
-      const result = await db.unsafeExec({
+      await db.unsafeExec({
         sql: seedFields,
       })
-      console.log('hello seedTestData, seedFields result', result)
     } catch (error) {
       console.log('hello seedTestData, seedFields error', error)
     }
