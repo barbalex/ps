@@ -11,6 +11,10 @@ export const Syncer = () => {
   useEffect(() => {
     console.log('hello Syncer, syncing data for user:', authUser?.email)
     const syncItems = async () => {
+      await db.app_states.update({
+        where: { user_email: authUser?.email },
+        data: { syncing: true },
+      })
       // Resolves when the shape subscription has been established.
       const userShape = await db.users.sync({
         // do not pass undefined to where clause in shape
@@ -230,6 +234,10 @@ export const Syncer = () => {
       await messagesShape.synced
       await fieldTypesShape.synced
       await widgetTypesShape.synced
+      await db.app_states.update({
+        where: { user_email: authUser?.email },
+        data: { syncing: false },
+      })
       console.log('hello Syncer, data synced')
     }
 
