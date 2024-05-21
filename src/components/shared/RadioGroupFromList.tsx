@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, useCallback } from 'react'
 import { Field, RadioGroup, Radio } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 
@@ -17,7 +17,7 @@ export const RadioGroupFromList = memo(
     label,
     list_id,
     value: rowValue,
-    onChange,
+    onChange: onChangePassed,
     validationMessage,
     validationState,
     button,
@@ -25,6 +25,18 @@ export const RadioGroupFromList = memo(
     const { db } = useElectric()!
     const { results: listValues = [] } = useLiveQuery(
       db.list_values.liveMany({ where: { list_id } }),
+    )
+
+    const onClick = useCallback(
+      (e) => {
+        const valueChoosen = e.target.value
+        // if valueChoosen equals rowValue, set rowValue to null
+        // else set rowValue to valueChoosen
+        onChangePassed(e, {
+          value: valueChoosen === rowValue ? null : valueChoosen,
+        })
+      },
+      [onChangePassed, rowValue],
     )
 
     return (
@@ -38,12 +50,16 @@ export const RadioGroupFromList = memo(
             layout="horizontal"
             name={name}
             value={rowValue}
-            onChange={onChange}
             appearance="underline"
           >
             {listValues.map(({ value: listValue }) => {
               return (
-                <Radio key={listValue} label={listValue} value={listValue} />
+                <Radio
+                  key={listValue}
+                  label={listValue}
+                  value={listValue}
+                  onClick={onClick}
+                />
               )
             })}
           </RadioGroup>
