@@ -26,6 +26,9 @@ export const RadioGroupFromOptions = memo(
 
     const verticalLayout = !!width && width < 500
 
+    // TODO: enable nulling when clicking on the selected radio
+    // as in other RedioGroup components
+    // do this when this component is actually used (not used now)
     const onChange = useCallback(
       (e, data) => {
         const fakeEvent = {
