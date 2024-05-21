@@ -1,4 +1,4 @@
-import { memo, forwardRef } from 'react'
+import { memo, forwardRef, useCallback } from 'react'
 import { Field, RadioGroup, Radio } from '@fluentui/react-components'
 import { useResizeDetector } from 'react-resize-detector'
 
@@ -9,7 +9,7 @@ export const RadioGroupField = memo(
       label,
       list = [],
       value,
-      onChange,
+      onChange: onChangePassed,
       validationMessage,
       validationState = 'none',
       autoFocus,
@@ -26,6 +26,18 @@ export const RadioGroupField = memo(
 
     const verticalLayout = !!width && width < 500
 
+    const onClick = useCallback(
+      (e) => {
+        const valueChoosen = e.target.value
+        // if valueChoosen equals value, set value to null
+        // else set value to valueChoosen
+        onChangePassed(e, {
+          value: valueChoosen === value ? null : valueChoosen,
+        })
+      },
+      [onChangePassed, value],
+    )
+
     return (
       <Field
         label={label ?? '(no label provided)'}
@@ -37,7 +49,6 @@ export const RadioGroupField = memo(
           layout={verticalLayout ? 'vertical' : 'horizontal'}
           name={name}
           value={value}
-          onChange={onChange}
           appearance="underline"
           disabled={disabled}
         >
@@ -46,6 +57,7 @@ export const RadioGroupField = memo(
               key={val}
               label={replaceUnderscoreInLabel ? val.replaceAll('_', ' ') : val}
               value={val}
+              onClick={onClick}
               autoFocus={index === 0 && autoFocus}
               ref={index === 0 ? ref : undefined}
             />
