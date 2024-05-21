@@ -1,12 +1,6 @@
 import { processPlaces as countPlacesRows } from './countPlacesRows.ts'
 
-export const buildData = async ({
-  chart_id,
-  db,
-  chart,
-  subjects,
-  subproject_id,
-}) => {
+export const buildData = async ({ db, chart, subjects, subproject_id }) => {
   const names = subjects.map((subject) => subject.name)
 
   const dataPerSubject = {}

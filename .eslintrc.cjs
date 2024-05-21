@@ -18,6 +18,7 @@ module.exports = {
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
     '@typescript-eslint/no-unused-vars': ['error'],
+    '@typescript-eslint/consistent-type-definitions': 'off',
     'no-empty': ['error', { allowEmptyCatch: true }],
     'react/react-in-jsx-scope': 'off',
     'react-refresh/only-export-components': [

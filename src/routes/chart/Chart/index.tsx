@@ -37,7 +37,6 @@ export const Chart = memo(() => {
     if (!subjects) return
     const run = async () => {
       const data = await buildData({
-        chart_id,
         db,
         chart,
         subjects,
