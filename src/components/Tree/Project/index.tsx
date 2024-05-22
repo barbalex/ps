@@ -24,96 +24,79 @@ import { FieldsNode } from '../Fields.tsx'
 import { FilesNode } from '../Files.tsx'
 import { Editing } from './Editing.tsx'
 import { useElectric } from '../../../ElectricProvider.tsx'
-import { addOpenNodes } from '../../../modules/tree/addOpenNodes.ts'
-import { removeOpenNodes } from '../../../modules/tree/removeOpenNodes.ts'
 
 interface Props {
   project: Project
   level?: number
-  openNodes: string[][]
-  userEmail: string
 }
 
-export const ProjectNode = memo(
-  ({ project, level = 2, openNodes, userEmail }: Props) => {
-    const params = useParams()
-    const location = useLocation()
-    const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
+export const ProjectNode = memo(({ project, level = 2 }: Props) => {
+  const params = useParams()
+  const location = useLocation()
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const { user: authUser } = useCorbado()
 
-    const { db } = useElectric()!
-    const { results: appState } = useLiveQuery(
-      db.app_states.liveFirst({ where: { user_email: userEmail } }),
-    )
-    const designing = appState?.designing ?? false
+  const { db } = useElectric()!
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+  )
+  const designing = appState?.designing ?? false
 
-    const showFiles = project.files_active_projects ?? false
+  const showFiles = project.files_active_projects ?? false
 
-    const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isOpen =
-      urlPath[0] === 'projects' && params.project_id === project.project_id
-    const isActive = isOpen && urlPath.length === 2
+  const urlPath = location.pathname.split('/').filter((p) => p !== '')
+  const isOpen =
+    urlPath[0] === 'projects' && params.project_id === project.project_id
+  const isActive = isOpen && urlPath.length === 2
 
-    const onClickButton = useCallback(() => {
-      if (isOpen) {
-        removeOpenNodes({
-          nodes: [['projects', project.project_id]],
-          db,
-          userEmail,
-        })
-        return navigate({
-          pathname: '/projects',
-          search: searchParams.toString(),
-        })
-      }
-      addOpenNodes({
-        nodes: [['projects', project.project_id]],
-        db,
-        userEmail,
-      })
-      navigate({
-        pathname: `/projects/${project.project_id}`,
+  const onClickButton = useCallback(() => {
+    if (isOpen) {
+      return navigate({
+        pathname: '/projects',
         search: searchParams.toString(),
       })
-    }, [db, isOpen, navigate, project.project_id, searchParams, userEmail])
+    }
+    navigate({
+      pathname: `/projects/${project.project_id}`,
+      search: searchParams.toString(),
+    })
+  }, [isOpen, navigate, project.project_id, searchParams])
 
-    return (
-      <>
-        <Node
-          node={project}
-          id={project.project_id}
-          level={level}
-          isOpen={isOpen}
-          isInActiveNodeArray={isOpen}
-          isActive={isActive}
-          childrenCount={10}
-          to={`/projects/${project.project_id}`}
-          onClickButton={onClickButton}
-          sibling={<Editing />}
-        />
-        {isOpen && (
-          <>
-            <SubprojectsNode project_id={project.project_id} />
-            <ProjectReportsNode project_id={project.project_id} />
-            <PersonsNode project_id={project.project_id} />
-            <TileLayersNode project_id={project.project_id} />
-            <VectorLayersNode project_id={project.project_id} />
-            {showFiles && (
-              <FilesNode project_id={project.project_id} level={3} />
-            )}
-            {designing && (
-              <>
-                <ProjectUsersNode project_id={project.project_id} />
-                <ListsNode project_id={project.project_id} />
-                <TaxonomiesNode project_id={project.project_id} />
-                <UnitsNode project_id={project.project_id} />
-                <PlaceLevelsNode project_id={project.project_id} />
-                <FieldsNode project_id={project.project_id} />
-              </>
-            )}
-          </>
-        )}
-      </>
-    )
-  },
-)
+  return (
+    <>
+      <Node
+        node={project}
+        id={project.project_id}
+        level={level}
+        isOpen={isOpen}
+        isInActiveNodeArray={isOpen}
+        isActive={isActive}
+        childrenCount={10}
+        to={`/projects/${project.project_id}`}
+        onClickButton={onClickButton}
+        sibling={<Editing />}
+      />
+      {isOpen && (
+        <>
+          <SubprojectsNode project_id={project.project_id} />
+          <ProjectReportsNode project_id={project.project_id} />
+          <PersonsNode project_id={project.project_id} />
+          <TileLayersNode project_id={project.project_id} />
+          <VectorLayersNode project_id={project.project_id} />
+          {showFiles && <FilesNode project_id={project.project_id} level={3} />}
+          {designing && (
+            <>
+              <ProjectUsersNode project_id={project.project_id} />
+              <ListsNode project_id={project.project_id} />
+              <TaxonomiesNode project_id={project.project_id} />
+              <UnitsNode project_id={project.project_id} />
+              <PlaceLevelsNode project_id={project.project_id} />
+              <FieldsNode project_id={project.project_id} />
+            </>
+          )}
+        </>
+      )}
+    </>
+  )
+})
