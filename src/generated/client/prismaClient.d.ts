@@ -191,6 +191,8 @@ export type App_states = {
   confirm_assigning_to_single_target: boolean | null
   places_to_assign_occurrence_to: Prisma.JsonValue | null
   occurrence_fields_sorted: Prisma.JsonValue | null
+  syncing: boolean | null
+  tree_open_nodes: Prisma.JsonValue | null
   label: string | null
 }
 
@@ -10634,6 +10636,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     editing_action_geometry: string | null
     droppable_layer: droppable_layer_enum | null
     confirm_assigning_to_single_target: boolean | null
+    syncing: boolean | null
     label: string | null
   }
 
@@ -10652,6 +10655,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     editing_action_geometry: string | null
     droppable_layer: droppable_layer_enum | null
     confirm_assigning_to_single_target: boolean | null
+    syncing: boolean | null
     label: string | null
   }
 
@@ -10676,6 +10680,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     confirm_assigning_to_single_target: number
     places_to_assign_occurrence_to: number
     occurrence_fields_sorted: number
+    syncing: number
+    tree_open_nodes: number
     label: number
     _all: number
   }
@@ -10696,6 +10702,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     editing_action_geometry?: true
     droppable_layer?: true
     confirm_assigning_to_single_target?: true
+    syncing?: true
     label?: true
   }
 
@@ -10714,6 +10721,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     editing_action_geometry?: true
     droppable_layer?: true
     confirm_assigning_to_single_target?: true
+    syncing?: true
     label?: true
   }
 
@@ -10738,6 +10746,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     confirm_assigning_to_single_target?: true
     places_to_assign_occurrence_to?: true
     occurrence_fields_sorted?: true
+    syncing?: true
+    tree_open_nodes?: true
     label?: true
     _all?: true
   }
@@ -10841,6 +10851,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     confirm_assigning_to_single_target: boolean | null
     places_to_assign_occurrence_to: JsonValue | null
     occurrence_fields_sorted: JsonValue | null
+    syncing: boolean | null
+    tree_open_nodes: JsonValue | null
     label: string | null
     _count: App_statesCountAggregateOutputType | null
     _min: App_statesMinAggregateOutputType | null
@@ -10882,6 +10894,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     confirm_assigning_to_single_target?: boolean
     places_to_assign_occurrence_to?: boolean
     occurrence_fields_sorted?: boolean
+    syncing?: boolean
+    tree_open_nodes?: boolean
     label?: boolean
     accounts?: boolean | AccountsArgs
     users?: boolean | UsersArgs
@@ -58051,6 +58065,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     confirm_assigning_to_single_target: 'confirm_assigning_to_single_target',
     places_to_assign_occurrence_to: 'places_to_assign_occurrence_to',
     occurrence_fields_sorted: 'occurrence_fields_sorted',
+    syncing: 'syncing',
+    tree_open_nodes: 'tree_open_nodes',
     label: 'label'
   };
 
@@ -59197,6 +59213,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     confirm_assigning_to_single_target?: BoolNullableFilter | boolean | null
     places_to_assign_occurrence_to?: JsonNullableFilter
     occurrence_fields_sorted?: JsonNullableFilter
+    syncing?: BoolNullableFilter | boolean | null
+    tree_open_nodes?: JsonNullableFilter
     label?: StringNullableFilter | string | null
     accounts?: XOR<AccountsRelationFilter, AccountsWhereInput> | null
     users?: XOR<UsersRelationFilter, UsersWhereInput> | null
@@ -59223,6 +59241,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     confirm_assigning_to_single_target?: SortOrder
     places_to_assign_occurrence_to?: SortOrder
     occurrence_fields_sorted?: SortOrder
+    syncing?: SortOrder
+    tree_open_nodes?: SortOrder
     label?: SortOrder
     accounts?: AccountsOrderByWithRelationInput
     users?: UsersOrderByWithRelationInput
@@ -59253,6 +59273,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     confirm_assigning_to_single_target?: SortOrder
     places_to_assign_occurrence_to?: SortOrder
     occurrence_fields_sorted?: SortOrder
+    syncing?: SortOrder
+    tree_open_nodes?: SortOrder
     label?: SortOrder
     _count?: App_statesCountOrderByAggregateInput
     _max?: App_statesMaxOrderByAggregateInput
@@ -59283,6 +59305,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     confirm_assigning_to_single_target?: BoolNullableWithAggregatesFilter | boolean | null
     places_to_assign_occurrence_to?: JsonNullableWithAggregatesFilter
     occurrence_fields_sorted?: JsonNullableWithAggregatesFilter
+    syncing?: BoolNullableWithAggregatesFilter | boolean | null
+    tree_open_nodes?: JsonNullableWithAggregatesFilter
     label?: StringNullableWithAggregatesFilter | string | null
   }
 
@@ -62955,6 +62979,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     confirm_assigning_to_single_target?: boolean | null
     places_to_assign_occurrence_to?: NullableJsonNullValueInput | InputJsonValue
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
+    syncing?: boolean | null
+    tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
     label?: string | null
     accounts?: AccountsCreateNestedOneWithoutApp_statesInput
     users?: UsersCreateNestedOneWithoutApp_statesInput
@@ -62981,6 +63007,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     confirm_assigning_to_single_target?: boolean | null
     places_to_assign_occurrence_to?: NullableJsonNullValueInput | InputJsonValue
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
+    syncing?: boolean | null
+    tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
     label?: string | null
   }
 
@@ -63003,6 +63031,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     confirm_assigning_to_single_target?: NullableBoolFieldUpdateOperationsInput | boolean | null
     places_to_assign_occurrence_to?: NullableJsonNullValueInput | InputJsonValue
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
+    syncing?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
     label?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountsUpdateOneWithoutApp_statesNestedInput
     users?: UsersUpdateOneWithoutApp_statesNestedInput
@@ -63029,6 +63059,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     confirm_assigning_to_single_target?: NullableBoolFieldUpdateOperationsInput | boolean | null
     places_to_assign_occurrence_to?: NullableJsonNullValueInput | InputJsonValue
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
+    syncing?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
     label?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -63053,6 +63085,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     confirm_assigning_to_single_target?: boolean | null
     places_to_assign_occurrence_to?: NullableJsonNullValueInput | InputJsonValue
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
+    syncing?: boolean | null
+    tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
     label?: string | null
   }
 
@@ -63075,6 +63109,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     confirm_assigning_to_single_target?: NullableBoolFieldUpdateOperationsInput | boolean | null
     places_to_assign_occurrence_to?: NullableJsonNullValueInput | InputJsonValue
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
+    syncing?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
     label?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -63099,6 +63135,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     confirm_assigning_to_single_target?: NullableBoolFieldUpdateOperationsInput | boolean | null
     places_to_assign_occurrence_to?: NullableJsonNullValueInput | InputJsonValue
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
+    syncing?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
     label?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -67970,6 +68008,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     confirm_assigning_to_single_target?: SortOrder
     places_to_assign_occurrence_to?: SortOrder
     occurrence_fields_sorted?: SortOrder
+    syncing?: SortOrder
+    tree_open_nodes?: SortOrder
     label?: SortOrder
   }
 
@@ -67988,6 +68028,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     editing_action_geometry?: SortOrder
     droppable_layer?: SortOrder
     confirm_assigning_to_single_target?: SortOrder
+    syncing?: SortOrder
     label?: SortOrder
   }
 
@@ -68006,6 +68047,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     editing_action_geometry?: SortOrder
     droppable_layer?: SortOrder
     confirm_assigning_to_single_target?: SortOrder
+    syncing?: SortOrder
     label?: SortOrder
   }
 
@@ -77615,6 +77657,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     confirm_assigning_to_single_target?: boolean | null
     places_to_assign_occurrence_to?: NullableJsonNullValueInput | InputJsonValue
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
+    syncing?: boolean | null
+    tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
     label?: string | null
     users?: UsersCreateNestedOneWithoutApp_statesInput
   }
@@ -77639,6 +77683,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     confirm_assigning_to_single_target?: boolean | null
     places_to_assign_occurrence_to?: NullableJsonNullValueInput | InputJsonValue
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
+    syncing?: boolean | null
+    tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
     label?: string | null
   }
 
@@ -79236,6 +79282,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     confirm_assigning_to_single_target?: BoolNullableFilter | boolean | null
     places_to_assign_occurrence_to?: JsonNullableFilter
     occurrence_fields_sorted?: JsonNullableFilter
+    syncing?: BoolNullableFilter | boolean | null
+    tree_open_nodes?: JsonNullableFilter
     label?: StringNullableFilter | string | null
   }
 
@@ -97836,6 +97884,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     confirm_assigning_to_single_target?: boolean | null
     places_to_assign_occurrence_to?: NullableJsonNullValueInput | InputJsonValue
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
+    syncing?: boolean | null
+    tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
     label?: string | null
     accounts?: AccountsCreateNestedOneWithoutApp_statesInput
   }
@@ -97860,6 +97910,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     confirm_assigning_to_single_target?: boolean | null
     places_to_assign_occurrence_to?: NullableJsonNullValueInput | InputJsonValue
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
+    syncing?: boolean | null
+    tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
     label?: string | null
   }
 
@@ -99515,6 +99567,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     confirm_assigning_to_single_target?: boolean | null
     places_to_assign_occurrence_to?: NullableJsonNullValueInput | InputJsonValue
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
+    syncing?: boolean | null
+    tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
     label?: string | null
   }
 
@@ -100126,6 +100180,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     confirm_assigning_to_single_target?: NullableBoolFieldUpdateOperationsInput | boolean | null
     places_to_assign_occurrence_to?: NullableJsonNullValueInput | InputJsonValue
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
+    syncing?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
     label?: NullableStringFieldUpdateOperationsInput | string | null
     users?: UsersUpdateOneWithoutApp_statesNestedInput
   }
@@ -100150,6 +100206,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     confirm_assigning_to_single_target?: NullableBoolFieldUpdateOperationsInput | boolean | null
     places_to_assign_occurrence_to?: NullableJsonNullValueInput | InputJsonValue
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
+    syncing?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
     label?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -100173,6 +100231,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     confirm_assigning_to_single_target?: NullableBoolFieldUpdateOperationsInput | boolean | null
     places_to_assign_occurrence_to?: NullableJsonNullValueInput | InputJsonValue
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
+    syncing?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
     label?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -104151,6 +104211,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     confirm_assigning_to_single_target?: boolean | null
     places_to_assign_occurrence_to?: NullableJsonNullValueInput | InputJsonValue
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
+    syncing?: boolean | null
+    tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
     label?: string | null
   }
 
@@ -104314,6 +104376,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     confirm_assigning_to_single_target?: NullableBoolFieldUpdateOperationsInput | boolean | null
     places_to_assign_occurrence_to?: NullableJsonNullValueInput | InputJsonValue
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
+    syncing?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
     label?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountsUpdateOneWithoutApp_statesNestedInput
   }
@@ -104338,6 +104402,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     confirm_assigning_to_single_target?: NullableBoolFieldUpdateOperationsInput | boolean | null
     places_to_assign_occurrence_to?: NullableJsonNullValueInput | InputJsonValue
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
+    syncing?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
     label?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
