@@ -5,8 +5,15 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Node } from './Node.tsx'
 import { ProjectNode } from './Project/index.tsx'
+import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import { removeOpenNodes } from '../../modules/tree/removeOpenNodes.ts'
 
-export const ProjectsNode = memo(() => {
+type Props = {
+  openNodes: string[][]
+  userEmail: string
+}
+
+export const ProjectsNode = memo(({ openNodes, userEmail }: Props) => {
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -29,10 +36,20 @@ export const ProjectsNode = memo(() => {
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
+      removeOpenNodes({
+        nodes: [['projects']],
+        db,
+        userEmail,
+      })
       return navigate({ pathname: '/', search: searchParams.toString() })
     }
+    addOpenNodes({
+      nodes: [['projects']],
+      db,
+      userEmail,
+    })
     navigate({ pathname: '/projects', search: searchParams.toString() })
-  }, [isOpen, navigate, searchParams])
+  }, [db, isOpen, navigate, searchParams, userEmail])
 
   return (
     <>
@@ -48,7 +65,12 @@ export const ProjectsNode = memo(() => {
       />
       {isOpen &&
         projects.map((project) => (
-          <ProjectNode key={project.project_id} project={project} />
+          <ProjectNode
+            key={project.project_id}
+            project={project}
+            openNodes={openNodes}
+            userEmail={userEmail}
+          />
         ))}
     </>
   )

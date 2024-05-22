@@ -31,21 +31,25 @@ export const Tree = memo(({ designing }) => {
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
   const openNodes = appState?.tree_open_nodes || []
+  console.log('hello Tree, openNodes:', openNodes)
 
   return (
     <div style={containerStyle}>
-      <ProjectsNode openNodes={openNodes} />
-      <UsersNode openNodes={openNodes} />
-      <AccountsNode openNodes={openNodes} />
+      <ProjectsNode openNodes={openNodes} userEmail={authUser?.email} />
+      <UsersNode openNodes={openNodes} userEmail={authUser?.email} />
+      <AccountsNode openNodes={openNodes} userEmail={authUser?.email} />
       {designing && (
         <>
-          <FieldTypesNode openNodes={openNodes} />
-          <WidgetTypesNode openNodes={openNodes} />
-          <WidgetsForFieldsNode openNodes={openNodes} />
-          <FieldsNode openNodes={openNodes} />
+          <FieldTypesNode openNodes={openNodes} userEmail={authUser?.email} />
+          <WidgetTypesNode openNodes={openNodes} userEmail={authUser?.email} />
+          <WidgetsForFieldsNode
+            openNodes={openNodes}
+            userEmail={authUser?.email}
+          />
+          <FieldsNode openNodes={openNodes} userEmail={authUser?.email} />
         </>
       )}
-      <MessagesNode openNodes={openNodes} />
+      <MessagesNode openNodes={openNodes} userEmail={authUser?.email} />
     </div>
   )
 })
