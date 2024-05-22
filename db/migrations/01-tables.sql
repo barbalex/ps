@@ -1183,6 +1183,7 @@ CREATE TABLE app_states(
   places_to_assign_occurrence_to jsonb DEFAULT NULL,
   occurrence_fields_sorted jsonb DEFAULT NULL, -- array of strings
   syncing boolean DEFAULT NULL,
+  tree_open_nodes jsonb DEFAULT NULL, -- array of strings
   label text DEFAULT NULL
 );
 
