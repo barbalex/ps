@@ -47,19 +47,42 @@ export const PlaceNode = memo(
       : isOpenBase && urlPath[5] === place.place_id
     const isActive = isOpen && urlPath.length === level
 
-    const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/places${
-      place_id2 ? `/${place_id1}/places` : ''
-    }`
+    const baseArray = useMemo(
+      () => [
+        'projects',
+        project_id,
+        'subprojects',
+        subproject_id,
+        'places',
+        ...(place_id2 ? [place_id1, 'places'] : []),
+      ],
+      [place_id1, place_id2, project_id, subproject_id],
+    )
+    const baseUrl = baseArray.join('/')
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
+        removeChildNodes({
+          node: [...baseArray, place.place_id],
+          db,
+          appStateId: appState?.app_state_id,
+        })
         return navigate({ pathname: baseUrl, search: searchParams.toString() })
       }
       navigate({
         pathname: `${baseUrl}/${place.place_id}`,
         search: searchParams.toString(),
       })
-    }, [baseUrl, isOpen, navigate, place.place_id, searchParams])
+    }, [
+      appState?.app_state_id,
+      baseArray,
+      baseUrl,
+      db,
+      isOpen,
+      navigate,
+      place.place_id,
+      searchParams,
+    ])
 
     return (
       <>
