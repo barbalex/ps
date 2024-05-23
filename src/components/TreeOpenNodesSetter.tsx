@@ -1,4 +1,4 @@
-import { useEffect, useRef, useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useCorbado } from '@corbado/react'
 import { useLocation } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
