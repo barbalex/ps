@@ -1,6 +1,7 @@
-import { useCallback, memo } from 'react'
+import { useCallback, memo, useMemo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
+import { useCorbado } from '@corbado/react'
 
 import { Node } from './Node.tsx'
 import {
@@ -11,6 +12,7 @@ import { ActionValuesNode } from './ActionsValues.tsx'
 import { ActionReportsNode } from './ActionsReports.tsx'
 import { FilesNode } from './Files.tsx'
 import { useElectric } from '../../ElectricProvider.tsx'
+import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 
 interface Props {
   project_id: string
@@ -33,6 +35,7 @@ export const ActionNode = memo(
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
+    const { user: authUser } = useCorbado()
 
     // need project to know whether to show files
     const { db } = useElectric()!
@@ -40,6 +43,9 @@ export const ActionNode = memo(
       db.projects.liveUnique({ where: { project_id } }),
     )
     const showFiles = project?.files_active_actions ?? false
+    const { results: appState } = useLiveQuery(
+      db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+    )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isOpenBase =
@@ -60,19 +66,44 @@ export const ActionNode = memo(
         urlPath[7] === action.action_id
     const isActive = isOpen && urlPath.length === level
 
-    const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/places/${
-      place_id ?? place.place_id
-    }${place_id ? `/places/${place.place_id}` : ''}/actions`
+    const baseArray = useMemo(
+      () => [
+        'projects',
+        project_id,
+        'subprojects',
+        subproject_id,
+        'places',
+        place_id ?? place.place_id,
+        ...(place_id ? ['places', place.place_id] : []),
+        'actions',
+      ],
+      [place.place_id, place_id, project_id, subproject_id],
+    )
+    const baseUrl = baseArray.join('/')
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
+        removeChildNodes({
+          node: baseArray,
+          db,
+          appStateId: appState?.app_state_id,
+        })
         return navigate({ pathname: baseUrl, search: searchParams.toString() })
       }
       navigate({
         pathname: `${baseUrl}/${action.action_id}`,
         search: searchParams.toString(),
       })
-    }, [isOpen, navigate, baseUrl, action.action_id, searchParams])
+    }, [
+      isOpen,
+      navigate,
+      baseUrl,
+      action.action_id,
+      searchParams,
+      baseArray,
+      db,
+      appState?.app_state_id,
+    ])
 
     return (
       <>
