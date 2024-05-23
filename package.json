@@ -10,7 +10,7 @@
     "db:migrate": "npx electric-sql with-config \"npx pg-migrations apply --database {{ELECTRIC_PROXY}} --directory ./db/migrations\"",
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint": "eslint . --max-warnings 0",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -71,6 +71,9 @@
   },
   "devDependencies": {
     "@databases/pg-migrations": "5.0.3",
+    "@eslint/compat": "^1.0.1",
+    "@eslint/eslintrc": "^3.1.0",
+    "@eslint/js": "^9.3.0",
     "@types/leaflet": "1.9.12",
     "@types/leaflet-draw": "1.0.11",
     "@types/proj4": "2.5.5",
@@ -80,10 +83,11 @@
     "@typescript-eslint/eslint-plugin": "7.10.0",
     "@typescript-eslint/parser": "7.10.0",
     "@vitejs/plugin-react": "4.2.1",
-    "eslint": "8.57.0",
+    "eslint": "^9.3.0",
     "eslint-plugin-import": "2.29.1",
     "eslint-plugin-react-hooks": "4.6.2",
     "eslint-plugin-react-refresh": "0.4.7",
+    "globals": "^15.3.0",
     "typescript": "5.4.5",
     "vite": "5.2.11",
     "vite-plugin-svgr": "4.2.0"
