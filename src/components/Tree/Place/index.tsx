@@ -1,4 +1,4 @@
-import { useCallback, memo } from 'react'
+import { useCallback, memo, useMemo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
@@ -6,7 +6,7 @@ import { useCorbado } from '@corbado/react'
 import { Node } from '../Node.tsx'
 import { Places as Place } from '../../../generated/client/index.ts'
 import { PlaceChildren } from './Children.tsx'
-import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
+import { removeChildNodes } from '../../../modules/tree/removeChildNodes.ts'
 import { useElectric } from '../../../ElectricProvider.tsx'
 
 interface Props {

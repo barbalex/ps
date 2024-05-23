@@ -6,7 +6,6 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Node } from './Node.tsx'
 import { WidgetTypeNode } from './WidgetType.tsx'
-import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 
 export const WidgetTypesNode = memo(() => {
   const location = useLocation()
@@ -35,15 +34,13 @@ export const WidgetTypesNode = memo(() => {
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
-      removeChildNodes({
-        node: ['widget-types'],
-        db,
-        appStateId: appState?.app_state_id,
+      return navigate({
+        pathname: '/projects',
+        search: searchParams.toString(),
       })
-      return navigate({ pathname: '/', search: searchParams.toString() })
     }
     navigate({ pathname: '/widget-types', search: searchParams.toString() })
-  }, [appState?.app_state_id, db, isOpen, navigate, searchParams])
+  }, [isOpen, navigate, searchParams])
 
   return (
     <>

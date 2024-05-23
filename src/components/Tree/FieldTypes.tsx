@@ -1,27 +1,21 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Node } from './Node.tsx'
 import { FieldTypeNode } from './FieldType.tsx'
-import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 
 export const FieldTypesNode = memo(() => {
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
   const { results: fieldTypes = [] } = useLiveQuery(
     db.field_types.liveMany({
       orderBy: { label: 'asc' },
     }),
-  )
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
 
   const fieldTypesNode = useMemo(
@@ -35,7 +29,10 @@ export const FieldTypesNode = memo(() => {
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
-      return navigate({ pathname: '/', search: searchParams.toString() })
+      return navigate({
+        pathname: '/projects',
+        search: searchParams.toString(),
+      })
     }
     navigate({ pathname: '/field-types', search: searchParams.toString() })
   }, [isOpen, navigate, searchParams])

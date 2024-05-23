@@ -50,7 +50,10 @@ export const FieldsNode = memo(({ project_id }: Props) => {
           search: searchParams.toString(),
         })
       }
-      return navigate({ pathname: '/', search: searchParams.toString() })
+      return navigate({
+        pathname: '/projects',
+        search: searchParams.toString(),
+      })
     }
     if (project_id) {
       return navigate({

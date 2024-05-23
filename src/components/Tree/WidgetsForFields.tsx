@@ -35,7 +35,10 @@ export const WidgetsForFieldsNode = memo(() => {
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
-      return navigate({ pathname: '/', search: searchParams.toString() })
+      return navigate({
+        pathname: '/projects',
+        search: searchParams.toString(),
+      })
     }
     navigate({
       pathname: '/widgets-for-fields',
