@@ -1,11 +1,13 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { useCorbado } from '@corbado/react'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Node } from './Node.tsx'
 import { ActionNode } from './Action.tsx'
 import { Places as Place } from '../../generated/client/index.ts'
+import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 
 interface Props {
   project_id: string
@@ -20,6 +22,7 @@ export const ActionsNode = memo(
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
+    const { user: authUser } = useCorbado()
 
     const { db } = useElectric()!
     const { results: actions = [] } = useLiveQuery(
@@ -27,6 +30,9 @@ export const ActionsNode = memo(
         where: { place_id: place.place_id },
         orderBy: { label: 'asc' },
       }),
+    )
+    const { results: appState } = useLiveQuery(
+      db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
     )
 
     const actionsNode = useMemo(
@@ -50,19 +56,42 @@ export const ActionsNode = memo(
       : isOpenBase && urlPath[6] === 'actions'
     const isActive = isOpen && urlPath.length === level
 
-    const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/places/${
-      place_id ?? place.place_id
-    }${place_id ? `/places/${place.place_id}` : ''}`
+    const baseArray = useMemo(
+      () => [
+        'projects',
+        project_id,
+        'subprojects',
+        subproject_id,
+        'places',
+        place_id ?? place.place_id,
+        ...(place_id ? ['places', place.place_id] : []),
+      ],
+      [project_id, place_id, place.place_id, subproject_id],
+    )
+    const baseUrl = baseArray.join('/')
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
+        removeChildNodes({
+          node: [...baseArray, 'actions'],
+          db,
+          appStateId: appState?.app_state_id,
+        })
         return navigate({ pathname: baseUrl, search: searchParams.toString() })
       }
       navigate({
         pathname: `${baseUrl}/actions`,
         search: searchParams.toString(),
       })
-    }, [baseUrl, isOpen, navigate, searchParams])
+    }, [
+      appState?.app_state_id,
+      baseArray,
+      baseUrl,
+      db,
+      isOpen,
+      navigate,
+      searchParams,
+    ])
 
     return (
       <>
