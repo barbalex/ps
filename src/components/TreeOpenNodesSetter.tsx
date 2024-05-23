@@ -28,6 +28,7 @@ export const TreeOpenNodesSetter = () => {
   // closing of nodes happens when the tree button is clicked
   useEffect(() => {
     const go = async () => {
+      if (!appState?.app_state_id) return
       // create a list of arrays composed of all parts of urlPath
       const nodes = urlPath.reduce((acc, _, i) => {
         const node = urlPath.slice(0, i + 1)
