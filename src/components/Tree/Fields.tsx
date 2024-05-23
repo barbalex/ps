@@ -25,6 +25,9 @@ export const FieldsNode = memo(({ project_id }: Props) => {
       orderBy: { label: 'asc' },
     }),
   )
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+  )
 
   const fieldsNode = useMemo(
     () => ({ label: `Fields (${fields.length})` }),

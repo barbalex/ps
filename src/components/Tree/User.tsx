@@ -11,6 +11,7 @@ import { useCorbado } from '@corbado/react'
 import { Node } from './Node.tsx'
 import { Users as User } from '../../../generated/client/index.ts'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
+import { useElectric } from '../../ElectricProvider.tsx'
 
 interface Props {
   user: User
@@ -23,6 +24,11 @@ export const UserNode = memo(({ user, level = 2 }: Props) => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { user: authUser } = useCorbado()
+
+  const { db } = useElectric()!
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+  )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isOpen = urlPath[0] === 'users' && params.user_id === user.user_id

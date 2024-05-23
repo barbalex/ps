@@ -28,6 +28,9 @@ export const VectorLayerDisplaysNode = memo(
         orderBy: { label: 'asc' },
       }),
     )
+    const { results: appState } = useLiveQuery(
+      db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+    )
 
     const vectorLayerDisplaysNode = useMemo(
       () => ({ label: `Displays (${vlds.length})` }),

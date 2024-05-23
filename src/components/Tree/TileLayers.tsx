@@ -26,6 +26,9 @@ export const TileLayersNode = memo(({ project_id, level = 3 }: Props) => {
       orderBy: [{ sort: 'asc' }, { label: 'asc' }],
     }),
   )
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+  )
 
   const tileLayersNode = useMemo(
     () => ({ label: `Tile Layers (${tileLayers.length})` }),

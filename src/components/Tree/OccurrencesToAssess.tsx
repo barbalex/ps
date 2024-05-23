@@ -40,6 +40,9 @@ export const OccurrencesToAssessNode = memo(
         orderBy: { label: 'asc' },
       }),
     )
+    const { results: appState } = useLiveQuery(
+      db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+    )
 
     const occurrencesNode = useMemo(
       () => ({ label: `Occurrences to assess (${occurrences.length})` }),

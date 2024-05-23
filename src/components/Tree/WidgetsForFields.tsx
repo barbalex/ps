@@ -20,6 +20,9 @@ export const WidgetsForFieldsNode = memo(() => {
       orderBy: { label: 'asc' },
     }),
   )
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+  )
 
   const widgetsForFieldsNode = useMemo(
     () => ({ label: `Widgets For Fields (${widgetsForFields.length})` }),

@@ -36,6 +36,9 @@ export const GoalReportValuesNode = memo(
         orderBy: { label: 'asc' },
       }),
     )
+    const { results: appState } = useLiveQuery(
+      db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+    )
 
     const goalReportValuesNode = useMemo(
       () => ({ label: `Values (${goalReportValues.length})` }),

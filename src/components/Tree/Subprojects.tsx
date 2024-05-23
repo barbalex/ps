@@ -26,6 +26,9 @@ export const SubprojectsNode = memo(({ project_id, level = 3 }: Props) => {
       orderBy: { label: 'asc' },
     }),
   )
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+  )
 
   // get projects.subproject_name_plural to name the table
   // can't include projects in subprojects query because there will be no result before subprojects are created

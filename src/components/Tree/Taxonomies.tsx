@@ -26,6 +26,9 @@ export const TaxonomiesNode = memo(({ project_id, level = 3 }: Props) => {
       orderBy: { label: 'asc' },
     }),
   )
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+  )
 
   const taxonomiesNode = useMemo(
     () => ({ label: `Taxonomies (${taxonomies.length})` }),

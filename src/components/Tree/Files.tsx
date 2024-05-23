@@ -34,6 +34,9 @@ export const FilesNode = memo(
     const { user: authUser } = useCorbado()
 
     const { db } = useElectric()!
+    const { results: appState } = useLiveQuery(
+      db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+    )
 
     const where = useMemo(() => {
       const where = {}

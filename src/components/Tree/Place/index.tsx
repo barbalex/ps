@@ -7,6 +7,7 @@ import { Node } from '../Node.tsx'
 import { Places as Place } from '../../../generated/client/index.ts'
 import { PlaceChildren } from './Children.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
+import { useElectric } from '../../../ElectricProvider.tsx'
 
 interface Props {
   project_id: string
@@ -21,6 +22,11 @@ export const PlaceNode = memo(
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
     const { user: authUser } = useCorbado()
+
+    const { db } = useElectric()!
+    const { results: appState } = useLiveQuery(
+      db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+    )
 
     const level = place_id ? 8 : 6
     const place_id1 = place_id ?? place.place_id

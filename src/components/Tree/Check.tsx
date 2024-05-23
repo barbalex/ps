@@ -35,6 +35,9 @@ export const CheckNode = memo(
     const { results: project } = useLiveQuery(
       db.projects.liveUnique({ where: { project_id } }),
     )
+    const { results: appState } = useLiveQuery(
+      db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+    )
     const showFiles = project?.files_active_checks ?? false
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')

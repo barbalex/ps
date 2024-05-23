@@ -11,6 +11,7 @@ import { useCorbado } from '@corbado/react'
 import { Node } from './Node.tsx'
 import { Chart_subjects as ChartSubject } from '../../../generated/client/index.ts'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
+import { useElectric } from '../../ElectricProvider.tsx'
 
 interface Props {
   project_id?: string
@@ -36,6 +37,11 @@ export const ChartSubjectNode = ({
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { user: authUser } = useCorbado()
+
+  const { db } = useElectric()!
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+  )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isOpen = place_id2

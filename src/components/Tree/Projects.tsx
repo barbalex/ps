@@ -20,6 +20,9 @@ export const ProjectsNode = memo(() => {
       orderBy: { label: 'asc' },
     }),
   )
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+  )
 
   const projectsNode = useMemo(
     () => ({ label: `Projects (${projects.length})` }),

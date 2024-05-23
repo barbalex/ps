@@ -33,6 +33,9 @@ export const OccurrencesAssignedNode = memo(
         orderBy: { label: 'asc' },
       }),
     )
+    const { results: appState } = useLiveQuery(
+      db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+    )
 
     const occurrencesNode = useMemo(
       () => ({ label: `Occurrences assigned (${occurrences.length})` }),

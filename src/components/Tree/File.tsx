@@ -11,6 +11,7 @@ import { useCorbado } from '@corbado/react'
 import { Node } from './Node.tsx'
 import { Files as File } from '../../../generated/client/index.ts'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
+import { useElectric } from '../../ElectricProvider.tsx'
 
 interface Props {
   project_id?: string
@@ -34,6 +35,11 @@ export const FileNode = ({
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { user: authUser } = useCorbado()
+
+  const { db } = useElectric()!
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+  )
 
   const isPreview = location.pathname.endsWith('/preview')
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

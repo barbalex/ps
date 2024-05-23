@@ -37,6 +37,9 @@ export const SubprojectNode = memo(
       db.projects.liveUnique({ where: { project_id } }),
     )
     const showFiles = project?.files_active_subprojects ?? false
+    const { results: appState } = useLiveQuery(
+      db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+    )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isOpen =
