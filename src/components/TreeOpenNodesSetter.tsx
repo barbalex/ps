@@ -39,6 +39,8 @@ export const TreeOpenNodesSetter = () => {
   })
 
   // when urlPath changes, update app_states.tree_open_nodes
+  // TODO: this component ensures that when navigating the goal node and it's parents are opened
+  // TODO: closing happens when the tree button is clicked
   useEffect(() => {
     const go = async () => {
       // TODO:
