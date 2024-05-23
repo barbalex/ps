@@ -1,9 +1,12 @@
 import { useCallback, memo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { useLiveQuery } from 'electric-sql/react'
+import { useCorbado } from '@corbado/react'
 
 import { Node } from '../Node.tsx'
 import { Places as Place } from '../../../generated/client/index.ts'
 import { PlaceChildren } from './Children.tsx'
+import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 
 interface Props {
   project_id: string
@@ -17,6 +20,7 @@ export const PlaceNode = memo(
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
+    const { user: authUser } = useCorbado()
 
     const level = place_id ? 8 : 6
     const place_id1 = place_id ?? place.place_id

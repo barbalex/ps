@@ -5,9 +5,12 @@ import {
   useNavigate,
   useSearchParams,
 } from 'react-router-dom'
+import { useLiveQuery } from 'electric-sql/react'
+import { useCorbado } from '@corbado/react'
 
 import { Node } from './Node.tsx'
 import { Files as File } from '../../../generated/client/index.ts'
+import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 
 interface Props {
   project_id?: string
@@ -30,6 +33,7 @@ export const FileNode = ({
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
+  const { user: authUser } = useCorbado()
 
   const isPreview = location.pathname.endsWith('/preview')
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

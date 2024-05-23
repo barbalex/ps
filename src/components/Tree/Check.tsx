@@ -1,6 +1,7 @@
 import { useCallback, memo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
+import { useCorbado } from '@corbado/react'
 
 import { Node } from './Node.tsx'
 import {
@@ -11,6 +12,7 @@ import { CheckValuesNode } from './CheckValues.tsx'
 import { CheckTaxaNode } from './CheckTaxa.tsx'
 import { FilesNode } from './Files.tsx'
 import { useElectric } from '../../ElectricProvider.tsx'
+import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 
 interface Props {
   project_id: string
@@ -26,6 +28,7 @@ export const CheckNode = memo(
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
+    const { user: authUser } = useCorbado()
 
     // need project to know whether to show files
     const { db } = useElectric()!

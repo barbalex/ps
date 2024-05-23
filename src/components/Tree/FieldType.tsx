@@ -5,9 +5,12 @@ import {
   useNavigate,
   useSearchParams,
 } from 'react-router-dom'
+import { useLiveQuery } from 'electric-sql/react'
+import { useCorbado } from '@corbado/react'
 
 import { Node } from './Node.tsx'
 import { FieldTypes as FieldType } from '../../../generated/client/index.ts'
+import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 
 interface Props {
   fieldType: FieldType
@@ -19,6 +22,7 @@ export const FieldTypeNode = memo(({ fieldType, level = 2 }: Props) => {
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
+  const { user: authUser } = useCorbado()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isOpen =
