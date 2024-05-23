@@ -10,26 +10,22 @@ import { isNodeOpen } from '../modules/tree/isNodeOpen.ts'
 import { setOpenNodes } from '../modules/tree/setOpenNodes.ts'
 import { isStartOf } from '../modules/tree/isStartOf.ts'
 
-function usePrevious(value) {
-  const ref = useRef()
-  useEffect(() => {
-    ref.current = value
-  })
+// function usePrevious(value) {
+//   const ref = useRef()
+//   useEffect(() => {
+//     ref.current = value
+//   })
 
-  return ref.current
-}
+//   return ref.current
+// }
 
+// ensure all parts of urlPath are included in openNodes
 export const TreeOpenNodesSetter = () => {
   const { db } = useElectric()!
   const { user: authUser } = useCorbado()
   const { pathname } = useLocation()
   const urlPath = pathname.split('/').filter((p) => p !== '')
-  const previousUrlPath = usePrevious(urlPath)
-  console.log('hello TreeOpenNodesSetter', {
-    urlPath,
-    previousUrlPath,
-    authUserEmail: authUser?.email,
-  })
+  // const previousUrlPath = usePrevious(urlPath)
 
   // fetch app_states.tree_open_nodes
   const { results: appState } = useLiveQuery(
@@ -48,19 +44,13 @@ export const TreeOpenNodesSetter = () => {
   // TODO: closing happens when the tree button is clicked
   useEffect(() => {
     const go = async () => {
-      // TODO:
-      // ensure all parts of urlPath are included in openNodes
-      // 1. create a list of array composed of all parts of urlPath
+      // create a list of arrays composed of all parts of urlPath
       const nodes = urlPath.reduce((acc, _, i) => {
         const node = urlPath.slice(0, i + 1)
         return [...acc, node]
       }, [])
-      // .filter((node) => !isNodeOpen({ node, openNodes }))
 
-      // addOpenNodes:
-      // checks nodes.length
-      // checks existence of app_state_id
-      // only adds new nodes, not open yet
+      // addOpenNodes ensures only missing nodes are added
       await addOpenNodes({
         nodes,
         db,
