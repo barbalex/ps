@@ -53,7 +53,6 @@ export const ProjectNode = memo(({ project, level = 2 }: Props) => {
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
-      // remove closed child nodes from app_states.tree_open_nodes
       removeChildNodes({
         node: ['projects', project.project_id],
         db,
