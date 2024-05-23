@@ -25,45 +25,55 @@ export const TreeOpenNodesSetter = () => {
   const { pathname } = useLocation()
   const urlPath = pathname.split('/').filter((p) => p !== '')
   const previousUrlPath = usePrevious(urlPath)
-
-  // fetch app_states.tree_open_nodes
-  const appState = useLiveQuery(() =>
-    db.app_states.findFirst({
-      where: { user_email: authUser!.email },
-    }),
-  )
-  const openNodes = appState?.tree_open_nodes || []
   console.log('hello TreeOpenNodesSetter', {
     urlPath,
     previousUrlPath,
+    authUserEmail: authUser?.email,
   })
 
+  // fetch app_states.tree_open_nodes
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({
+      where: { user_email: authUser?.email },
+    }),
+  )
+  const openNodes = appState?.tree_open_nodes ?? []
+  console.log('hello TreeOpenNodesSetter, openNodes:', openNodes)
+
   // when urlPath changes, update app_states.tree_open_nodes
-  // TODO: this component ensures that when navigating the goal node and it's parents are opened
+  // TODO: this component ensures that when navigating the node corresponding to the url and it's parents are opened
   // TODO: closing happens when the tree button is clicked
   useEffect(() => {
     const go = async () => {
       // TODO:
-      // 1. user closed a node: urlPath is included in previousUrlPath (previousUrlPath is longer)
-      if (isStartOf({ node: urlPath, otherNode: previousUrlPath })) {
-        // remove all nodes longer than urlPath
-        const newOpenNodes = openNodes.filter(
-          (node) => !isStartOf({ node: urlPath, otherNode: node }),
-        )
-        return setOpenNodes({
-          nodes: newOpenNodes,
-          db,
-          userEmail: authUser!.email,
-        })
-      }
-      // 2. user opened a node: previousUrlPath is not included in urlPath
-      // if previousUrlPath is shorter than urlPath, remove the difference
-      // if previousUrlPath is longer than urlPath, add the difference
-      // if previousUrlPath is different than urlPath, remove previousUrlPath and add urlPath
+      // ensure all parts of urlPath are included in openNodes
+      // 1. create a list of array composed of all parts of urlPath
+      const nodes = urlPath.reduce((acc, _, i) => {
+        const node = urlPath.slice(0, i + 1)
+        return [...acc, node]
+      }, [])
+      console.log('hello TreeOpenNodesSetter, nodes of urlPath', nodes)
+      await addOpenNodes({
+        nodes,
+        db,
+        userEmail: authUser!.email,
+      })
+      // TODO: integrate this in tree Button
+      // if (isStartOf({ node: urlPath, otherNode: previousUrlPath })) {
+      //   // remove all nodes longer than urlPath
+      //   const newOpenNodes = openNodes.filter(
+      //     (node) => !isStartOf({ node: urlPath, otherNode: node }),
+      //   )
+      //   return setOpenNodes({
+      //     nodes: newOpenNodes,
+      //     db,
+      //     userEmail: authUser!.email,
+      //   })
+      // }
     }
 
     go()
-  }, [authUser?.email, db, urlPath])
+  }, [authUser, authUser?.email, db, urlPath])
 
   return null
 }

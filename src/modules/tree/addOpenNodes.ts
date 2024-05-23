@@ -17,6 +17,7 @@ export const addOpenNodes = async ({
   const existingNodes = appState?.tree_open_nodes || []
   // ensure contained arrays are unique
   const newNodes = Array.from(new Set([...existingNodes, ...nodes]))
+  console.log('hello addOpenNodes', { existingNodes, newNodes, nodes })
 
   return await db.app_states.update({
     where: { user_email: userEmail },
