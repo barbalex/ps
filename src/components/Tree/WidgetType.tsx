@@ -38,6 +38,11 @@ export const WidgetTypeNode = memo(({ widgetType, level = 2 }: Props) => {
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
+      removeChildNodes({
+        node: ['widget-types', widgetType.widget_type_id],
+        db,
+        appStateId: appState?.app_state_id,
+      })
       return navigate({
         pathname: '/widget-types',
         search: searchParams.toString(),
@@ -47,7 +52,14 @@ export const WidgetTypeNode = memo(({ widgetType, level = 2 }: Props) => {
       pathname: `/widget-types/${widgetType.widget_type_id}`,
       search: searchParams.toString(),
     })
-  }, [isOpen, navigate, searchParams, widgetType.widget_type_id])
+  }, [
+    appState?.app_state_id,
+    db,
+    isOpen,
+    navigate,
+    searchParams,
+    widgetType.widget_type_id,
+  ])
 
   return (
     <Node
