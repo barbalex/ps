@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useMemo } from 'react'
 import { useCorbado } from '@corbado/react'
 import { useLocation } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
@@ -37,7 +37,10 @@ export const TreeOpenNodesSetter = () => {
       where: { user_email: authUser?.email },
     }),
   )
-  const openNodes = appState?.tree_open_nodes ?? []
+  const openNodes = useMemo(
+    () => appState?.tree_open_nodes ?? [],
+    [appState?.tree_open_nodes],
+  )
   console.log('hello TreeOpenNodesSetter, openNodes:', openNodes)
 
   // when urlPath changes, update app_states.tree_open_nodes
@@ -52,11 +55,16 @@ export const TreeOpenNodesSetter = () => {
         const node = urlPath.slice(0, i + 1)
         return [...acc, node]
       }, [])
-      console.log('hello TreeOpenNodesSetter, nodes of urlPath', nodes)
+      // .filter((node) => !isNodeOpen({ node, openNodes }))
+
+      // addOpenNodes:
+      // checks nodes.length
+      // checks existence of app_state_id
+      // only adds new nodes, not open yet
       await addOpenNodes({
         nodes,
         db,
-        userEmail: authUser!.email,
+        appStateId: appState?.app_state_id,
       })
       // TODO: integrate this in tree Button
       // if (isStartOf({ node: urlPath, otherNode: previousUrlPath })) {
@@ -73,7 +81,14 @@ export const TreeOpenNodesSetter = () => {
     }
 
     go()
-  }, [authUser, authUser?.email, db, urlPath])
+  }, [
+    appState?.app_state_id,
+    authUser,
+    authUser?.email,
+    db,
+    openNodes,
+    urlPath,
+  ])
 
   return null
 }
