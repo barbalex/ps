@@ -22,7 +22,7 @@ export const Layout = memo(() => {
   // const onlyForm = searchParams.get('onlyForm')
   const onlyForm = false
 
-  console.log('hello Protected Layout')
+  // console.log('hello Protected Layout')
 
   // Breadcrumbs and Navs are not protected because:
   // - they are not (very) sensitive
