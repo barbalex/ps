@@ -35,10 +35,15 @@ export const WidgetTypesNode = memo(() => {
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
+      removeChildNodes({
+        node: ['widget-types'],
+        db,
+        appStateId: appState?.app_state_id,
+      })
       return navigate({ pathname: '/', search: searchParams.toString() })
     }
     navigate({ pathname: '/widget-types', search: searchParams.toString() })
-  }, [isOpen, navigate, searchParams])
+  }, [appState?.app_state_id, db, isOpen, navigate, searchParams])
 
   return (
     <>
