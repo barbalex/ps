@@ -1,21 +1,27 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { useCorbado } from '@corbado/react'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Node } from './Node.tsx'
 import { AccountNode } from './Account.tsx'
+import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 
 export const AccountsNode = memo(() => {
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
+  const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
   const { results: accounts = [] } = useLiveQuery(
     db.accounts.liveMany({
       orderBy: { label: 'asc' },
     }),
+  )
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
 
   const accountsNode = useMemo(
@@ -29,10 +35,15 @@ export const AccountsNode = memo(() => {
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
+      removeChildNodes({
+        node: ['accounts'],
+        db,
+        appStateId: appState?.app_state_id,
+      })
       return navigate({ pathname: '/', search: searchParams.toString() })
     }
     navigate({ pathname: '/accounts', search: searchParams.toString() })
-  }, [isOpen, navigate, searchParams])
+  }, [appState?.app_state_id, db, isOpen, navigate, searchParams])
 
   return (
     <>
