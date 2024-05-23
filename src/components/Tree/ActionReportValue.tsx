@@ -98,7 +98,7 @@ export const ActionReportValueNode = memo(
     const onClickButton = useCallback(() => {
       if (isOpen) {
         removeChildNodes({
-          node: baseArray,
+          node: [...baseArray, actionReportValue.action_report_value_id],
           db,
           appStateId: appState?.app_state_id,
         })
