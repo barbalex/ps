@@ -24,6 +24,7 @@ import { FieldsNode } from '../Fields.tsx'
 import { FilesNode } from '../Files.tsx'
 import { Editing } from './Editing.tsx'
 import { useElectric } from '../../../ElectricProvider.tsx'
+import { removeChildNodes } from '../../../modules/tree/removeChildNodes.ts'
 
 interface Props {
   project: Project
@@ -52,6 +53,12 @@ export const ProjectNode = memo(({ project, level = 2 }: Props) => {
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
+      // remove closed child nodes from app_states.tree_open_nodes
+      removeChildNodes({
+        node: ['projects', project.project_id],
+        db,
+        appStateId: appState?.app_state_id,
+      })
       return navigate({
         pathname: '/projects',
         search: searchParams.toString(),
@@ -61,7 +68,14 @@ export const ProjectNode = memo(({ project, level = 2 }: Props) => {
       pathname: `/projects/${project.project_id}`,
       search: searchParams.toString(),
     })
-  }, [isOpen, navigate, project.project_id, searchParams])
+  }, [
+    appState?.app_state_id,
+    db,
+    isOpen,
+    navigate,
+    project.project_id,
+    searchParams,
+  ])
 
   return (
     <>
