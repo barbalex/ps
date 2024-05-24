@@ -42,16 +42,21 @@ export const FieldsNode = memo(({ project_id }: Props) => {
     : urlPath[0] === 'fields'
   const isActive = isOpen && urlPath.length === (project_id ? 3 : 1)
 
+  const baseArray = useMemo(
+    () => ['projects', ...(project_id ? [project_id] : [])],
+    [project_id],
+  )
+  const baseUrl = baseArray.join('/')
+
   const onClickButton = useCallback(() => {
     if (isOpen) {
-      if (project_id) {
-        return navigate({
-          pathname: `/projects/${project_id}`,
-          search: searchParams.toString(),
-        })
-      }
+      removeChildNodes({
+        node: [...baseArray, 'fields'],
+        db,
+        appStateId: appState?.app_state_id,
+      })
       return navigate({
-        pathname: '/projects',
+        pathname: baseUrl,
         search: searchParams.toString(),
       })
     }
@@ -62,7 +67,16 @@ export const FieldsNode = memo(({ project_id }: Props) => {
       })
     }
     navigate({ pathname: '/fields', search: searchParams.toString() })
-  }, [isOpen, navigate, project_id, searchParams])
+  }, [
+    appState?.app_state_id,
+    baseArray,
+    baseUrl,
+    db,
+    isOpen,
+    navigate,
+    project_id,
+    searchParams,
+  ])
 
   return (
     <>
