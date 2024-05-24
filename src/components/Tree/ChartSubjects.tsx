@@ -88,21 +88,41 @@ export const ChartSubjectsNode = memo(
       : false
     const isActive = isOpen && urlPath.length === level
 
-    const baseUrl = `${project_id ? `/projects/${project_id}` : ''}${
-      subproject_id ? `/subprojects/${subproject_id}` : ''
-    }${place_id ? `/places/${place_id}` : ''}${
-      place_id2 ? `/places/${place_id2}` : ''
-    }/charts/${chart_id}`
+    const baseArray = useMemo(
+      () => [
+        ...(project_id ? ['projects', project_id] : []),
+        ...(subproject_id ? ['subprojects', subproject_id] : []),
+        ...(place_id ? ['places', place_id] : []),
+        ...(place_id2 ? ['places', place_id2] : []),
+        'charts',
+        chart_id,
+      ],
+      [chart_id, place_id, place_id2, project_id, subproject_id],
+    )
+    const baseUrl = baseArray.join('/')
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
+        removeChildNodes({
+          node: [...baseArray, 'subjects'],
+          db,
+          appStateId: appState?.app_state_id,
+        })
         return navigate({ pathname: baseUrl, search: searchParams.toString() })
       }
       navigate({
         pathname: `${baseUrl}/subjects`,
         search: searchParams.toString(),
       })
-    }, [baseUrl, isOpen, navigate, searchParams])
+    }, [
+      appState?.app_state_id,
+      baseArray,
+      baseUrl,
+      db,
+      isOpen,
+      navigate,
+      searchParams,
+    ])
 
     return (
       <>
