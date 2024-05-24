@@ -1,4 +1,4 @@
-import { useCallback, memo } from 'react'
+import { useCallback, memo, useMemo } from 'react'
 import {
   useLocation,
   useParams,
@@ -40,20 +40,38 @@ export const FieldNode = memo(({ project_id, field }: Props) => {
     : urlPath[0] === 'fields' && params.field_id === field.field_id
   const isActive = isOpen && urlPath.length === (project_id ? 4 : 2)
 
+  const baseArray = useMemo(
+    () => [...(project_id ? ['projects', project_id] : []), 'fields'],
+    [project_id],
+  )
+  const baseUrl = baseArray.join('/')
+
   const onClickButton = useCallback(() => {
     if (isOpen) {
+      removeChildNodes({
+        node: [...baseArray, field.field_id],
+        db,
+        appStateId: appState?.app_state_id,
+      })
       return navigate({
-        pathname: project_id ? `/projects/${project_id}/fields` : '/fields',
+        pathname: baseUrl,
         search: searchParams.toString(),
       })
     }
     navigate({
-      pathname: project_id
-        ? `/projects/${project_id}/fields/${field.field_id}`
-        : `/fields/${field.field_id}`,
+      pathname: `${baseUrl}/${field.field_id}`,
       search: searchParams.toString(),
     })
-  }, [isOpen, navigate, project_id, field.field_id, searchParams])
+  }, [
+    isOpen,
+    navigate,
+    baseUrl,
+    field.field_id,
+    searchParams,
+    baseArray,
+    db,
+    appState?.app_state_id,
+  ])
 
   return (
     <Node
@@ -64,11 +82,7 @@ export const FieldNode = memo(({ project_id, field }: Props) => {
       isInActiveNodeArray={isOpen}
       isActive={isActive}
       childrenCount={0}
-      to={
-        project_id
-          ? `/projects/${project_id}/fields/${field.field_id}`
-          : `/fields/${field.field_id}`
-      }
+      to={`${baseUrl}/${field.field_id}`}
       onClickButton={onClickButton}
     />
   )
