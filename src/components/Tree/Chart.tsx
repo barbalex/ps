@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import {
   useLocation,
   useParams,
@@ -78,21 +78,41 @@ export const ChartNode = ({
     : urlPath[0] === 'charts' && params.chart_id === chart.chart_id
   const isActive = isOpen && urlPath.length === level
 
-  const baseUrl = `${project_id ? `/projects/${project_id}` : ''}${
-    subproject_id ? `/subprojects/${subproject_id}` : ''
-  }${place_id ? `/places/${place_id}` : ''}${
-    place_id2 ? `/places/${place_id2}` : ''
-  }/charts`
+  const baseArray = useMemo(
+    () => [
+      ...(project_id ? ['projects', project_id] : []),
+      ...(subproject_id ? ['subprojects', subproject_id] : []),
+      ...(place_id ? ['places', place_id] : []),
+      ...(place_id2 ? ['places', place_id2] : []),
+      'charts',
+    ],
+    [place_id, place_id2, project_id, subproject_id],
+  )
+  const baseUrl = baseArray.join('/')
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
+      removeChildNodes({
+        node: [...baseArray, chart.chart_id],
+        db,
+        appStateId: appState?.app_state_id,
+      })
       return navigate({ pathname: baseUrl, search: searchParams.toString() })
     }
     navigate({
       pathname: `${baseUrl}/${chart.chart_id}`,
       search: searchParams.toString(),
     })
-  }, [isOpen, navigate, baseUrl, chart.chart_id, searchParams])
+  }, [
+    isOpen,
+    navigate,
+    baseUrl,
+    chart.chart_id,
+    searchParams,
+    baseArray,
+    db,
+    appState?.app_state_id,
+  ])
 
   return (
     <>
