@@ -145,23 +145,41 @@ export const FilesNode = memo(
         : urlPath[0] === 'files'
     const isActive = isOpen && urlPath.length === level
 
-    const baseUrl = `${project_id ? `/projects/${project_id}` : ''}${
-      subproject_id ? `/subprojects/${subproject_id}` : ''
-    }${place_id ? `/places/${place_id}` : ''}${
-      place_id2 ? `/places/${place_id2}` : ''
-    }${action_id ? `/actions/${action_id}` : ''}${
-      check_id ? `/checks/${check_id}` : ''
-    }`
+    const baseArray = useMemo(
+      () => [
+        ...(project_id ? ['projects', project_id] : []),
+        ...(subproject_id ? ['subprojects', subproject_id] : []),
+        ...(place_id ? ['places', place_id] : []),
+        ...(place_id2 ? ['places', place_id2] : []),
+        ...(action_id ? ['actions', action_id] : []),
+        ...(check_id ? ['checks', check_id] : []),
+      ],
+      [action_id, check_id, place_id, place_id2, project_id, subproject_id],
+    )
+    const baseUrl = baseArray.join('/')
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
+        removeChildNodes({
+          node: [...baseArray, 'files'],
+          db,
+          appStateId: appState?.app_state_id,
+        })
         return navigate({ pathname: baseUrl, search: searchParams.toString() })
       }
       navigate({
         pathname: `${baseUrl}/files`,
         search: searchParams.toString(),
       })
-    }, [baseUrl, isOpen, navigate, searchParams])
+    }, [
+      appState?.app_state_id,
+      baseArray,
+      baseUrl,
+      db,
+      isOpen,
+      navigate,
+      searchParams,
+    ])
 
     return (
       <>
