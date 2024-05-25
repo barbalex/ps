@@ -56,17 +56,34 @@ export const OccurrencesNotToAssignNode = memo(
       urlPath[4] === 'occurrences-not-to-assign'
     const isActive = isOpen && urlPath.length === level
 
-    const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}`
+    const baseArray = useMemo(
+      () => ['projects', project_id, 'subprojects', subproject_id],
+      [project_id, subproject_id],
+    )
+    const baseUrl = baseArray.join('/')
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
+        removeChildNodes({
+          node: [...baseArray, 'occurrences-not-to-assign'],
+          db,
+          appStateId: appState?.app_state_id,
+        })
         return navigate({ pathname: baseUrl, search: searchParams.toString() })
       }
       navigate({
         pathname: `${baseUrl}/occurrences-not-to-assign`,
         search: searchParams.toString(),
       })
-    }, [baseUrl, isOpen, navigate, searchParams])
+    }, [
+      appState?.app_state_id,
+      baseArray,
+      baseUrl,
+      db,
+      isOpen,
+      navigate,
+      searchParams,
+    ])
 
     return (
       <>
