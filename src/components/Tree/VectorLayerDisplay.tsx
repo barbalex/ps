@@ -1,4 +1,4 @@
-import { useCallback, memo } from 'react'
+import { useCallback, memo, useMemo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
@@ -37,10 +37,25 @@ export const VectorLayerDisplayNode = memo(
       urlPath[5] === vectorLayerDisplay.vector_layer_display_id
     const isActive = isOpen && urlPath.length === 6
 
-    const baseUrl = `/projects/${project_id}/vector-layers/${vector_layer_id}/vector-layer-displays`
+    const baseArray = useMemo(
+      () => [
+        'projects',
+        project_id,
+        'vector-layers',
+        vector_layer_id,
+        'vector-layer-displays',
+      ],
+      [project_id, vector_layer_id],
+    )
+    const baseUrl = baseArray.join('/')
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
+        removeChildNodes({
+          node: [...baseArray, vectorLayerDisplay.vector_layer_display_id],
+          db,
+          appStateId: appState?.app_state_id,
+        })
         return navigate({ pathname: baseUrl, search: searchParams.toString() })
       }
       navigate({
@@ -48,7 +63,10 @@ export const VectorLayerDisplayNode = memo(
         search: searchParams.toString(),
       })
     }, [
+      appState?.app_state_id,
+      baseArray,
       baseUrl,
+      db,
       isOpen,
       navigate,
       searchParams,
