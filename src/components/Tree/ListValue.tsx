@@ -1,4 +1,4 @@
-import { useCallback, memo } from 'react'
+import { useCallback, memo, useMemo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
@@ -37,17 +37,35 @@ export const ListValueNode = memo(
       urlPath[5] === listValue.list_value_id
     const isActive = isOpen && urlPath.length === level
 
-    const baseUrl = `/projects/${project_id}/lists/${list_id}/values`
+    const baseArray = useMemo(
+      () => ['projects', project_id, 'lists', list_id, 'values'],
+      [project_id, list_id],
+    )
+    const baseUrl = baseArray.join('/')
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
+        removeChildNodes({
+          node: [...baseArray, listValue.list_value_id],
+          db,
+          appStateId: appState?.app_state_id,
+        })
         return navigate({ pathname: baseUrl, search: searchParams.toString() })
       }
       navigate({
         pathname: `${baseUrl}/${listValue.list_value_id}`,
         search: searchParams.toString(),
       })
-    }, [isOpen, navigate, baseUrl, listValue.list_value_id, searchParams])
+    }, [
+      isOpen,
+      navigate,
+      baseUrl,
+      listValue.list_value_id,
+      searchParams,
+      baseArray,
+      db,
+      appState?.app_state_id,
+    ])
 
     return (
       <Node
