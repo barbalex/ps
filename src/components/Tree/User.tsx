@@ -36,13 +36,18 @@ export const UserNode = memo(({ user, level = 2 }: Props) => {
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
+      removeChildNodes({
+        node: ['users', user.user_id],
+        db,
+        appStateId: appState?.app_state_id,
+      })
       return navigate({ pathname: '/users', search: searchParams.toString() })
     }
     navigate({
       pathname: `/users/${user.user_id}`,
       search: searchParams.toString(),
     })
-  }, [isOpen, navigate, searchParams, user.user_id])
+  }, [appState?.app_state_id, db, isOpen, navigate, searchParams, user.user_id])
 
   return (
     <Node
