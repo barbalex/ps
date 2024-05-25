@@ -1,4 +1,4 @@
-import { useCallback, memo } from 'react'
+import { useCallback, memo, useMemo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
@@ -59,19 +59,44 @@ export const PlaceReportNode = memo(
         urlPath[7] === placeReport.place_report_id
     const isActive = isOpen && urlPath.length === level
 
-    const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/places/${
-      place_id ?? place.place_id
-    }${place_id ? `/places/${place.place_id}` : ''}/reports`
+    const baseArray = useMemo(
+      () => [
+        'projects',
+        project_id,
+        'subprojects',
+        subproject_id,
+        'places',
+        place_id ?? place.place_id,
+        ...(place_id ? ['places', place.place_id] : []),
+        'reports',
+      ],
+      [project_id, subproject_id, place_id, place.place_id],
+    )
+    const baseUrl = baseArray.join('/')
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
+        removeChildNodes({
+          node: [...baseArray, placeReport.place_report_id],
+          db,
+          appStateId: appState?.app_state_id,
+        })
         return navigate({ pathname: baseUrl, search: searchParams.toString() })
       }
       navigate({
         pathname: `${baseUrl}/${placeReport.place_report_id}`,
         search: searchParams.toString(),
       })
-    }, [baseUrl, isOpen, navigate, placeReport.place_report_id, searchParams])
+    }, [
+      appState?.app_state_id,
+      baseArray,
+      baseUrl,
+      db,
+      isOpen,
+      navigate,
+      placeReport.place_report_id,
+      searchParams,
+    ])
 
     return (
       <>
