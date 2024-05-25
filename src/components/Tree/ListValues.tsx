@@ -46,17 +46,34 @@ export const ListValuesNode = memo(
       urlPath[4] === 'values'
     const isActive = isOpen && urlPath.length === level
 
-    const baseUrl = `/projects/${project_id}/lists/${list_id}`
+    const baseArray = useMemo(
+      () => ['projects', project_id, 'lists', list_id],
+      [project_id, list_id],
+    )
+    const baseUrl = baseArray.join('/')
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
+        removeChildNodes({
+          node: [...baseArray, 'values'],
+          db,
+          appStateId: appState?.app_state_id,
+        })
         return navigate({ pathname: baseUrl, search: searchParams.toString() })
       }
       navigate({
         pathname: `${baseUrl}/values`,
         search: searchParams.toString(),
       })
-    }, [isOpen, navigate, baseUrl, searchParams])
+    }, [
+      isOpen,
+      navigate,
+      baseUrl,
+      searchParams,
+      baseArray,
+      db,
+      appState?.app_state_id,
+    ])
 
     return (
       <>
