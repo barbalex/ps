@@ -1,11 +1,11 @@
-import { useCallback, memo } from 'react'
+import { useCallback, memo, useMemo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 
 import { Node } from './Node.tsx'
 import { SubprojectReports as SubprojectReport } from '../../../generated/client/index.ts'
-import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts' 
+import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
 
 interface Props {
@@ -37,10 +37,19 @@ export const SubprojectReportNode = memo(
       urlPath[5] === subprojectReport.subproject_report_id
     const isActive = isOpen && urlPath.length === level
 
-    const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/reports`
+    const baseArray = useMemo(
+      () => ['projects', project_id, 'subprojects', subproject_id, 'reports'],
+      [project_id, subproject_id],
+    )
+    const baseUrl = baseArray.join('/')
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
+        removeChildNodes({
+          node: [...baseArray, subprojectReport.subproject_report_id],
+          db,
+          appStateId: appState?.app_state_id,
+        })
         return navigate({ pathname: baseUrl, search: searchParams.toString() })
       }
       navigate({
@@ -53,6 +62,9 @@ export const SubprojectReportNode = memo(
       baseUrl,
       subprojectReport.subproject_report_id,
       searchParams,
+      baseArray,
+      db,
+      appState?.app_state_id,
     ])
 
     return (
