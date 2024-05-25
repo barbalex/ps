@@ -35,6 +35,11 @@ export const WidgetsForFieldsNode = memo(() => {
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
+      removeChildNodes({
+        node: ['widgets-for-fields'],
+        db,
+        appStateId: appState?.app_state_id,
+      })
       return navigate({
         pathname: '/projects',
         search: searchParams.toString(),
@@ -44,7 +49,7 @@ export const WidgetsForFieldsNode = memo(() => {
       pathname: '/widgets-for-fields',
       search: searchParams.toString(),
     })
-  }, [isOpen, navigate, searchParams])
+  }, [appState?.app_state_id, db, isOpen, navigate, searchParams])
 
   return (
     <>
