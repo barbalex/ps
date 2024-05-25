@@ -1,4 +1,4 @@
-import { useCallback, memo } from 'react'
+import { useCallback, memo, useMemo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
@@ -37,17 +37,35 @@ export const TaxonNode = memo(
       urlPath[5] === taxon.taxon_id
     const isActive = isOpen && urlPath.length === level
 
-    const baseUrl = `/projects/${project_id}/taxonomies/${taxonomy_id}/taxa`
+    const baseArray = useMemo(
+      () => ['projects', project_id, 'taxonomies', taxonomy_id, 'taxa'],
+      [project_id, taxonomy_id],
+    )
+    const baseUrl = baseArray.join('/')
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
+        removeChildNodes({
+          node: [...baseArray, taxon.taxon_id],
+          db,
+          appStateId: appState?.app_state_id,
+        })
         return navigate({ pathname: baseUrl, search: searchParams.toString() })
       }
       navigate({
         pathname: `${baseUrl}/${taxon.taxon_id}`,
         search: searchParams.toString(),
       })
-    }, [isOpen, navigate, baseUrl, taxon.taxon_id, searchParams])
+    }, [
+      isOpen,
+      navigate,
+      baseUrl,
+      taxon.taxon_id,
+      searchParams,
+      baseArray,
+      db,
+      appState?.app_state_id,
+    ])
 
     // TODO: childrenCount
     return (
