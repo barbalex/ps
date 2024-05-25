@@ -35,13 +35,18 @@ export const MessagesNode = memo(() => {
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
+      removeChildNodes({
+        node: ['messages'],
+        db,
+        appStateId: appState?.app_state_id,
+      })
       return navigate({
         pathname: '/projects',
         search: searchParams.toString(),
       })
     }
     navigate({ pathname: '/messages', search: searchParams.toString() })
-  }, [isOpen, navigate, searchParams])
+  }, [appState?.app_state_id, db, isOpen, navigate, searchParams])
 
   return (
     <>
