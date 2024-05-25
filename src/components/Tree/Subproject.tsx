@@ -49,17 +49,32 @@ export const SubprojectNode = memo(
       urlPath[3] === subproject.subproject_id
     const isActive = isOpen && urlPath.length === 4
 
-    const baseUrl = `/projects/${project_id}/subprojects`
+    const baseArray = ['projects', project_id, 'subprojects']
+    const baseUrl = baseArray.join('/')
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
+        removeChildNodes({
+          node: [...baseArray, subproject.subproject_id],
+          db,
+          appStateId: appState?.app_state_id,
+        })
         return navigate({ pathname: baseUrl, search: searchParams.toString() })
       }
       navigate({
         pathname: `${baseUrl}/${subproject.subproject_id}`,
         search: searchParams.toString(),
       })
-    }, [baseUrl, isOpen, navigate, searchParams, subproject.subproject_id])
+    }, [
+      appState?.app_state_id,
+      baseArray,
+      baseUrl,
+      db,
+      isOpen,
+      navigate,
+      searchParams,
+      subproject.subproject_id,
+    ])
 
     return (
       <>
