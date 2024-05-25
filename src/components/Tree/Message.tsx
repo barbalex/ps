@@ -37,6 +37,11 @@ export const MessageNode = memo(({ message, level = 2 }: Props) => {
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
+      removeChildNodes({
+        node: ['messages', message.message_id],
+        db,
+        appStateId: appState?.app_state_id,
+      })
       return navigate({
         pathname: '/messages',
         search: searchParams.toString(),
@@ -46,7 +51,14 @@ export const MessageNode = memo(({ message, level = 2 }: Props) => {
       pathname: `/messages/${message.message_id}`,
       search: searchParams.toString(),
     })
-  }, [isOpen, navigate, message.message_id, searchParams])
+  }, [
+    isOpen,
+    navigate,
+    message.message_id,
+    searchParams,
+    db,
+    appState?.app_state_id,
+  ])
 
   return (
     <Node
