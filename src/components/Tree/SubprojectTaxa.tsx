@@ -46,14 +46,31 @@ export const SubprojectTaxaNode = memo(
       urlPath[4] === 'taxa'
     const isActive = isOpen && urlPath.length === level
 
-    const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}`
+    const baseArray = useMemo(
+      () => ['projects', project_id, 'subprojects', subproject_id],
+      [project_id, subproject_id],
+    )
+    const baseUrl = baseArray.join('/')
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
+        removeChildNodes({
+          node: [...baseArray, 'taxa'],
+          db,
+          appStateId: appState?.app_state_id,
+        })
         return navigate({ pathname: baseUrl, search: searchParams.toString() })
       }
       navigate({ pathname: `${baseUrl}/taxa`, search: searchParams.toString() })
-    }, [baseUrl, isOpen, navigate, searchParams])
+    }, [
+      appState?.app_state_id,
+      baseArray,
+      baseUrl,
+      db,
+      isOpen,
+      navigate,
+      searchParams,
+    ])
 
     return (
       <>
