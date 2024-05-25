@@ -42,17 +42,31 @@ export const TileLayersNode = memo(({ project_id, level = 3 }: Props) => {
     urlPath[2] === 'tile-layers'
   const isActive = isOpen && urlPath.length === 3
 
-  const baseUrl = `/projects/${project_id}`
+  const baseArray = useMemo(() => ['projects', project_id], [project_id])
+  const baseUrl = baseArray.join('/')
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
+      removeChildNodes({
+        node: [...baseArray, 'tile-layers'],
+        db,
+        appStateId: appState?.app_state_id,
+      })
       return navigate({ pathname: baseUrl, search: searchParams.toString() })
     }
     navigate({
       pathname: `${baseUrl}/tile-layers`,
       search: searchParams.toString(),
     })
-  }, [baseUrl, isOpen, navigate, searchParams])
+  }, [
+    appState?.app_state_id,
+    baseArray,
+    baseUrl,
+    db,
+    isOpen,
+    navigate,
+    searchParams,
+  ])
 
   return (
     <>
