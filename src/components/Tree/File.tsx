@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo, memo } from 'react'
 import {
   useLocation,
   useParams,
@@ -20,142 +20,164 @@ interface Props {
   level: number
 }
 
-export const FileNode = ({
-  project_id,
-  subproject_id,
-  place_id,
-  place_id2,
-  check_id,
-  action_id,
-  file,
-  level = 2,
-}: Props) => {
-  const params = useParams()
-  const location = useLocation()
-  const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-  const { user: authUser } = useCorbado()
+export const FileNode = memo(
+  ({
+    project_id,
+    subproject_id,
+    place_id,
+    place_id2,
+    check_id,
+    action_id,
+    file,
+    level = 2,
+  }: Props) => {
+    const params = useParams()
+    const location = useLocation()
+    const navigate = useNavigate()
+    const [searchParams] = useSearchParams()
+    const { user: authUser } = useCorbado()
 
-  const { db } = useElectric()!
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
+    const { db } = useElectric()!
+    const { results: appState } = useLiveQuery(
+      db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+    )
 
-  const isPreview = location.pathname.endsWith('/preview')
-  const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const isOpen =
-    place_id2 && action_id
-      ? urlPath[0] === 'projects' &&
-        urlPath[1] === project_id &&
-        urlPath[2] === 'subprojects' &&
-        urlPath[3] === subproject_id &&
-        urlPath[4] === 'places' &&
-        urlPath[5] === place_id &&
-        urlPath[6] === 'places' &&
-        urlPath[7] === place_id2 &&
-        urlPath[8] === 'actions' &&
-        urlPath[9] === action_id &&
-        urlPath[10] === 'files' &&
-        params.file_id === file.file_id
-      : place_id2 && check_id
-      ? urlPath[0] === 'projects' &&
-        urlPath[1] === project_id &&
-        urlPath[2] === 'subprojects' &&
-        urlPath[3] === subproject_id &&
-        urlPath[4] === 'places' &&
-        urlPath[5] === place_id &&
-        urlPath[6] === 'places' &&
-        urlPath[7] === place_id2 &&
-        urlPath[8] === 'checks' &&
-        urlPath[9] === check_id &&
-        urlPath[10] === 'files' &&
-        params.file_id === file.file_id
-      : !place_id2 && action_id
-      ? urlPath[0] === 'projects' &&
-        urlPath[1] === project_id &&
-        urlPath[2] === 'subprojects' &&
-        urlPath[3] === subproject_id &&
-        urlPath[4] === 'places' &&
-        urlPath[5] === place_id &&
-        urlPath[6] === 'actions' &&
-        urlPath[7] === action_id &&
-        urlPath[8] === 'files' &&
-        params.file_id === file.file_id
-      : !place_id2 && check_id
-      ? urlPath[0] === 'projects' &&
-        urlPath[1] === project_id &&
-        urlPath[2] === 'subprojects' &&
-        urlPath[3] === subproject_id &&
-        urlPath[4] === 'places' &&
-        urlPath[5] === place_id &&
-        urlPath[6] === 'checks' &&
-        urlPath[7] === check_id &&
-        urlPath[8] === 'files' &&
-        params.file_id === file.file_id
-      : place_id2
-      ? urlPath[0] === 'projects' &&
-        urlPath[1] === project_id &&
-        urlPath[2] === 'subprojects' &&
-        urlPath[3] === subproject_id &&
-        urlPath[4] === 'places' &&
-        urlPath[5] === place_id &&
-        urlPath[6] === 'places' &&
-        urlPath[7] === place_id2 &&
-        urlPath[8] === 'files' &&
-        params.file_id === file.file_id
-      : place_id
-      ? urlPath[0] === 'projects' &&
-        urlPath[1] === project_id &&
-        urlPath[2] === 'subprojects' &&
-        urlPath[3] === subproject_id &&
-        urlPath[4] === 'places' &&
-        urlPath[5] === place_id &&
-        urlPath[6] === 'files' &&
-        params.file_id === file.file_id
-      : subproject_id
-      ? urlPath[0] === 'projects' &&
-        urlPath[1] === project_id &&
-        urlPath[2] === 'subprojects' &&
-        urlPath[3] === subproject_id &&
-        urlPath[4] === 'files' &&
-        params.file_id === file.file_id
-      : project_id
-      ? urlPath[0] === 'projects' &&
-        urlPath[1] === project_id &&
-        urlPath[2] === 'files' &&
-        params.file_id === file.file_id
-      : urlPath[0] === 'files' && params.file_id === file.file_id
-  const isActive = isOpen && urlPath.length === level
+    const isPreview = location.pathname.endsWith('/preview')
+    const urlPath = location.pathname.split('/').filter((p) => p !== '')
+    const isOpen =
+      place_id2 && action_id
+        ? urlPath[0] === 'projects' &&
+          urlPath[1] === project_id &&
+          urlPath[2] === 'subprojects' &&
+          urlPath[3] === subproject_id &&
+          urlPath[4] === 'places' &&
+          urlPath[5] === place_id &&
+          urlPath[6] === 'places' &&
+          urlPath[7] === place_id2 &&
+          urlPath[8] === 'actions' &&
+          urlPath[9] === action_id &&
+          urlPath[10] === 'files' &&
+          params.file_id === file.file_id
+        : place_id2 && check_id
+        ? urlPath[0] === 'projects' &&
+          urlPath[1] === project_id &&
+          urlPath[2] === 'subprojects' &&
+          urlPath[3] === subproject_id &&
+          urlPath[4] === 'places' &&
+          urlPath[5] === place_id &&
+          urlPath[6] === 'places' &&
+          urlPath[7] === place_id2 &&
+          urlPath[8] === 'checks' &&
+          urlPath[9] === check_id &&
+          urlPath[10] === 'files' &&
+          params.file_id === file.file_id
+        : !place_id2 && action_id
+        ? urlPath[0] === 'projects' &&
+          urlPath[1] === project_id &&
+          urlPath[2] === 'subprojects' &&
+          urlPath[3] === subproject_id &&
+          urlPath[4] === 'places' &&
+          urlPath[5] === place_id &&
+          urlPath[6] === 'actions' &&
+          urlPath[7] === action_id &&
+          urlPath[8] === 'files' &&
+          params.file_id === file.file_id
+        : !place_id2 && check_id
+        ? urlPath[0] === 'projects' &&
+          urlPath[1] === project_id &&
+          urlPath[2] === 'subprojects' &&
+          urlPath[3] === subproject_id &&
+          urlPath[4] === 'places' &&
+          urlPath[5] === place_id &&
+          urlPath[6] === 'checks' &&
+          urlPath[7] === check_id &&
+          urlPath[8] === 'files' &&
+          params.file_id === file.file_id
+        : place_id2
+        ? urlPath[0] === 'projects' &&
+          urlPath[1] === project_id &&
+          urlPath[2] === 'subprojects' &&
+          urlPath[3] === subproject_id &&
+          urlPath[4] === 'places' &&
+          urlPath[5] === place_id &&
+          urlPath[6] === 'places' &&
+          urlPath[7] === place_id2 &&
+          urlPath[8] === 'files' &&
+          params.file_id === file.file_id
+        : place_id
+        ? urlPath[0] === 'projects' &&
+          urlPath[1] === project_id &&
+          urlPath[2] === 'subprojects' &&
+          urlPath[3] === subproject_id &&
+          urlPath[4] === 'places' &&
+          urlPath[5] === place_id &&
+          urlPath[6] === 'files' &&
+          params.file_id === file.file_id
+        : subproject_id
+        ? urlPath[0] === 'projects' &&
+          urlPath[1] === project_id &&
+          urlPath[2] === 'subprojects' &&
+          urlPath[3] === subproject_id &&
+          urlPath[4] === 'files' &&
+          params.file_id === file.file_id
+        : project_id
+        ? urlPath[0] === 'projects' &&
+          urlPath[1] === project_id &&
+          urlPath[2] === 'files' &&
+          params.file_id === file.file_id
+        : urlPath[0] === 'files' && params.file_id === file.file_id
+    const isActive = isOpen && urlPath.length === level
 
-  const baseUrl = `${project_id ? `/projects/${project_id}` : ''}${
-    subproject_id ? `/subprojects/${subproject_id}` : ''
-  }${place_id ? `/places/${place_id}` : ''}${
-    place_id2 ? `/places/${place_id2}` : ''
-  }${action_id ? `/actions/${action_id}` : ''}${
-    check_id ? `/checks/${check_id}` : ''
-  }/files`
+    const baseArray = useMemo(
+      () => [
+        ...(project_id ? ['projects', project_id] : []),
+        ...(subproject_id ? ['subprojects', subproject_id] : []),
+        ...(place_id ? ['places', place_id] : []),
+        ...(place_id2 ? ['places', place_id2] : []),
+        ...(action_id ? ['actions', action_id] : []),
+        ...(check_id ? ['checks', check_id] : []),
+        'files',
+      ],
+      [action_id, check_id, place_id, place_id2, project_id, subproject_id],
+    )
+    const baseUrl = baseArray.join('/')
 
-  const onClickButton = useCallback(() => {
-    if (isOpen) {
-      return navigate({ pathname: baseUrl, search: searchParams.toString() })
-    }
-    navigate({
-      pathname: `${baseUrl}/${file.file_id}`,
-      search: searchParams.toString(),
-    })
-  }, [isOpen, navigate, baseUrl, file.file_id, searchParams])
+    const onClickButton = useCallback(() => {
+      if (isOpen) {
+        removeChildNodes({
+          node: [...baseArray, file.file_id],
+          db,
+          appStateId: appState?.app_state_id,
+        })
+        return navigate({ pathname: baseUrl, search: searchParams.toString() })
+      }
+      navigate({
+        pathname: `${baseUrl}/${file.file_id}`,
+        search: searchParams.toString(),
+      })
+    }, [
+      isOpen,
+      navigate,
+      baseUrl,
+      file.file_id,
+      searchParams,
+      baseArray,
+      db,
+      appState?.app_state_id,
+    ])
 
-  return (
-    <Node
-      node={file}
-      id={file.file_id}
-      level={level}
-      isOpen={isOpen}
-      isInActiveNodeArray={isOpen}
-      isActive={isActive}
-      childrenCount={0}
-      to={`${baseUrl}/${file.file_id}${isPreview ? '/preview' : ''}`}
-      onClickButton={onClickButton}
-    />
-  )
-}
+    return (
+      <Node
+        node={file}
+        id={file.file_id}
+        level={level}
+        isOpen={isOpen}
+        isInActiveNodeArray={isOpen}
+        isActive={isActive}
+        childrenCount={0}
+        to={`${baseUrl}/${file.file_id}${isPreview ? '/preview' : ''}`}
+        onClickButton={onClickButton}
+      />
+    )
+  },
+)
