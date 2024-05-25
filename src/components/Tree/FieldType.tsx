@@ -38,6 +38,11 @@ export const FieldTypeNode = memo(({ fieldType, level = 2 }: Props) => {
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
+      removeChildNodes({
+        node: ['field-types', fieldType.field_type_id],
+        db,
+        appStateId: appState?.app_state_id,
+      })
       return navigate({
         pathname: '/field-types',
         search: searchParams.toString(),
@@ -47,7 +52,14 @@ export const FieldTypeNode = memo(({ fieldType, level = 2 }: Props) => {
       pathname: `/field-types/${fieldType.field_type_id}`,
       search: searchParams.toString(),
     })
-  }, [isOpen, navigate, fieldType.field_type_id, searchParams])
+  }, [
+    isOpen,
+    navigate,
+    fieldType.field_type_id,
+    searchParams,
+    db,
+    appState?.app_state_id,
+  ])
 
   return (
     <Node
