@@ -10,6 +10,7 @@ import { useCorbado } from '@corbado/react'
 
 import { Node } from './Node.tsx'
 import { Accounts as Account } from '../../../generated/client/index.ts'
+import { useElectric } from '../../ElectricProvider.tsx'
 
 interface Props {
   account: Account
