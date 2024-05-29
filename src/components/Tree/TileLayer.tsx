@@ -28,10 +28,10 @@ export const TileLayerNode = memo(
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isOpen =
-      urlPath[0] === 'projects' &&
-      urlPath[1] === project_id &&
-      urlPath[2] === 'tile-layers' &&
-      urlPath[3] === tileLayer.tile_layer_id
+      urlPath[1] === 'projects' &&
+      urlPath[2] === project_id &&
+      urlPath[3] === 'tile-layers' &&
+      urlPath[4] === tileLayer.tile_layer_id
     const isActive = isOpen && urlPath.length === 4
 
     const baseArray = useMemo(
