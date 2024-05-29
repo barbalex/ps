@@ -39,8 +39,12 @@ export const AccountsNode = memo(() => {
         node: ['accounts'],
         db,
         appStateId: appState?.app_state_id,
+        isRoot: true,
       })
-      return navigate({ pathname: '/', search: searchParams.toString() })
+      return navigate({
+        pathname: '/projects',
+        search: searchParams.toString(),
+      })
     }
     navigate({ pathname: '/accounts', search: searchParams.toString() })
   }, [appState?.app_state_id, db, isOpen, navigate, searchParams])
