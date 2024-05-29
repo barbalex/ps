@@ -29,12 +29,12 @@ export const SubprojectTaxonNode = memo(
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isOpen =
-      urlPath[0] === 'projects' &&
-      urlPath[1] === project_id &&
-      urlPath[2] === 'subprojects' &&
-      urlPath[3] === subproject_id &&
-      urlPath[4] === 'taxa' &&
-      urlPath[5] === subprojectTaxon.subproject_taxon_id
+      urlPath[1] === 'projects' &&
+      urlPath[2] === project_id &&
+      urlPath[3] === 'subprojects' &&
+      urlPath[4] === subproject_id &&
+      urlPath[5] === 'taxa' &&
+      urlPath[6] === subprojectTaxon.subproject_taxon_id
     const isActive = isOpen && urlPath.length === level
 
     const baseArray = useMemo(
