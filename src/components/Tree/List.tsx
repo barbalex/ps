@@ -35,7 +35,7 @@ export const ListNode = memo(({ project_id, list, level = 4 }: Props) => {
   const isActive = isOpen && urlPath.length === 4
 
   const baseArray = useMemo(
-    () => ['projects', project_id, 'lists'],
+    () => ['data', 'projects', project_id, 'lists'],
     [project_id],
   )
   const baseUrl = baseArray.join('/')
