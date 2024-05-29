@@ -29,12 +29,12 @@ export const ListValueNode = memo(
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isOpen =
-      urlPath[0] === 'projects' &&
-      urlPath[1] === project_id &&
-      urlPath[2] === 'lists' &&
-      urlPath[3] === list_id &&
-      urlPath[4] === 'values' &&
-      urlPath[5] === listValue.list_value_id
+      urlPath[1] === 'projects' &&
+      urlPath[2] === project_id &&
+      urlPath[3] === 'lists' &&
+      urlPath[4] === list_id &&
+      urlPath[5] === 'values' &&
+      urlPath[6] === listValue.list_value_id
     const isActive = isOpen && urlPath.length === level
 
     const baseArray = useMemo(
