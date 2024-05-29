@@ -2,12 +2,14 @@ import { useCallback, memo, useMemo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
+import isEqual from 'lodash/isEqual'
 
 import { Node } from '../Node.tsx'
 import { Places as Place } from '../../../generated/client/index.ts'
 import { PlaceChildren } from './Children.tsx'
 import { removeChildNodes } from '../../../modules/tree/removeChildNodes.ts'
 import { useElectric } from '../../../ElectricProvider.tsx'
+import { addOpenNodes } from '../../../modules/tree/addOpenNodes.ts'
 
 interface Props {
   project_id: string
@@ -27,26 +29,16 @@ export const PlaceNode = memo(
     const { results: appState } = useLiveQuery(
       db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
     )
+    const openNodes = useMemo(
+      () => appState?.tree_open_nodes ?? [],
+      [appState?.tree_open_nodes],
+    )
 
     const level = place_id ? 8 : 6
     const place_id1 = place_id ?? place.place_id
     const place_id2 = place_id ? place.place_id : undefined
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isOpenBase =
-      urlPath[1] === 'projects' &&
-      urlPath[2] === project_id &&
-      urlPath[3] === 'subprojects' &&
-      urlPath[4] === subproject_id &&
-      urlPath[5] === 'places'
-    const isOpen = place_id
-      ? isOpenBase &&
-        urlPath[6] === place_id &&
-        urlPath[7] === 'places' &&
-        urlPath[8] === place.place_id
-      : isOpenBase && urlPath[6] === place.place_id
-    const isActive = isOpen && urlPath.length === level + 1
-
     const parentArray = useMemo(
       () => [
         'data',
@@ -59,12 +51,16 @@ export const PlaceNode = memo(
       ],
       [place_id1, place_id2, project_id, subproject_id],
     )
-    const baseUrl = parentArray.join('/')
+    const parentUrl = `/${parentArray.join('/')}`
     const ownArray = useMemo(
       () => [...parentArray, place.place_id],
       [parentArray, place.place_id],
     )
-    const ownUrl = ownArray.join('/')
+    const ownUrl = `/${ownArray.join('/')}`
+
+    // TODO: needs to work not only works for urlPath, for all opened paths!
+    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+    const isActive = isEqual(urlPath, ownArray)
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
@@ -73,21 +69,27 @@ export const PlaceNode = memo(
           db,
           appStateId: appState?.app_state_id,
         })
-        return navigate({ pathname: baseUrl, search: searchParams.toString() })
+        // only navigate if urlPath includes ownArray
+        if (ownArray.every((part, i) => urlPath[i] === part)) {
+          navigate({ pathname: parentUrl, search: searchParams.toString() })
+        }
+        return
       }
-      navigate({
-        pathname: ownUrl,
-        search: searchParams.toString(),
+      // add to openNodes without navigating
+      addOpenNodes({
+        nodes: [ownArray],
+        db,
+        appStateId: appState?.app_state_id,
       })
     }, [
       isOpen,
-      navigate,
-      ownUrl,
-      searchParams,
       ownArray,
       db,
       appState?.app_state_id,
-      baseUrl,
+      urlPath,
+      navigate,
+      parentUrl,
+      searchParams,
     ])
 
     return (
@@ -100,7 +102,7 @@ export const PlaceNode = memo(
           isInActiveNodeArray={isOpen}
           isActive={isActive}
           childrenCount={10}
-          to={`${baseUrl}/${place.place_id}`}
+          to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen && (

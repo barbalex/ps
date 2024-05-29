@@ -37,8 +37,9 @@ export const AccountsNode = memo(() => {
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const parentArray = useMemo(() => ['data'], [])
-  const parentUrl = parentArray.join('/')
+  const parentUrl = `/${parentArray.join('/')}`
   const ownArray = useMemo(() => [...parentArray, 'accounts'], [parentArray])
+  const ownUrl = `/${ownArray.join('/')}`
 
   // TODO: needs to work not only works for urlPath, for all opened paths!
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
@@ -55,7 +56,7 @@ export const AccountsNode = memo(() => {
       // TODO: only navigate if urlPath includes ownArray
       if (ownArray.every((part, i) => urlPath[i] === part)) {
         navigate({
-          pathname: `/${parentUrl}`,
+          pathname: parentUrl,
           search: searchParams.toString(),
         })
       }
@@ -88,7 +89,7 @@ export const AccountsNode = memo(() => {
         isInActiveNodeArray={isOpen}
         isActive={isActive}
         childrenCount={accounts.length}
-        to={`/data/accounts`}
+        to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen &&
