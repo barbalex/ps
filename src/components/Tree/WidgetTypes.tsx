@@ -40,11 +40,11 @@ export const WidgetTypesNode = memo(() => {
         appStateId: appState?.app_state_id,
       })
       return navigate({
-        pathname: '/projects',
+        pathname: '/data/projects',
         search: searchParams.toString(),
       })
     }
-    navigate({ pathname: '/widget-types', search: searchParams.toString() })
+    navigate({ pathname: '/data/widget-types', search: searchParams.toString() })
   }, [appState?.app_state_id, db, isOpen, navigate, searchParams])
 
   return (
@@ -56,7 +56,7 @@ export const WidgetTypesNode = memo(() => {
         isInActiveNodeArray={isOpen}
         isActive={isActive}
         childrenCount={widgetTypes.length}
-        to={`/widget-types`}
+        to={`/data/widget-types`}
         onClickButton={onClickButton}
       />
       {isOpen &&

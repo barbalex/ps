@@ -59,12 +59,12 @@ export const ProjectNode = memo(({ project, level = 2 }: Props) => {
         appStateId: appState?.app_state_id,
       })
       return navigate({
-        pathname: '/projects',
+        pathname: '/data/projects',
         search: searchParams.toString(),
       })
     }
     navigate({
-      pathname: `/projects/${project.project_id}`,
+      pathname: `/data/projects/${project.project_id}`,
       search: searchParams.toString(),
     })
   }, [
@@ -86,7 +86,7 @@ export const ProjectNode = memo(({ project, level = 2 }: Props) => {
         isInActiveNodeArray={isOpen}
         isActive={isActive}
         childrenCount={10}
-        to={`/projects/${project.project_id}`}
+        to={`/data/projects/${project.project_id}`}
         onClickButton={onClickButton}
         sibling={<Editing />}
       />
