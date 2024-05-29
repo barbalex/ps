@@ -47,7 +47,7 @@ export const VectorLayerDisplaysNode = memo(
     const isActive = isOpen && urlPath.length === 5
 
     const baseArray = useMemo(
-      () => ['projects', project_id, 'vector-layers', vector_layer_id],
+      () => ['data', 'projects', project_id, 'vector-layers', vector_layer_id],
       [project_id, vector_layer_id],
     )
     const baseUrl = baseArray.join('/')

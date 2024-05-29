@@ -45,12 +45,12 @@ export const WidgetForFieldNode = memo(
           appStateId: appState?.app_state_id,
         })
         return navigate({
-          pathname: '/widgets-for-fields',
+          pathname: '/data/widgets-for-fields',
           search: searchParams.toString(),
         })
       }
       navigate({
-        pathname: `/widgets-for-fields/${widgetForField.widget_for_field_id}`,
+        pathname: `/data/widgets-for-fields/${widgetForField.widget_for_field_id}`,
         search: searchParams.toString(),
       })
     }, [
@@ -71,7 +71,7 @@ export const WidgetForFieldNode = memo(
         isInActiveNodeArray={isOpen}
         isActive={isActive}
         childrenCount={0}
-        to={`/widgets-for-fields/${widgetForField.widget_for_field_id}`}
+        to={`/data/widgets-for-fields/${widgetForField.widget_for_field_id}`}
         onClickButton={onClickButton}
       />
     )

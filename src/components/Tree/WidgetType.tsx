@@ -44,12 +44,12 @@ export const WidgetTypeNode = memo(({ widgetType, level = 2 }: Props) => {
         appStateId: appState?.app_state_id,
       })
       return navigate({
-        pathname: '/widget-types',
+        pathname: '/data/widget-types',
         search: searchParams.toString(),
       })
     }
     navigate({
-      pathname: `/widget-types/${widgetType.widget_type_id}`,
+      pathname: `/data/widget-types/${widgetType.widget_type_id}`,
       search: searchParams.toString(),
     })
   }, [
@@ -70,7 +70,7 @@ export const WidgetTypeNode = memo(({ widgetType, level = 2 }: Props) => {
       isInActiveNodeArray={isOpen}
       isActive={isActive}
       childrenCount={0}
-      to={`/widget-types/${widgetType.widget_type_id}`}
+      to={`/data/widget-types/${widgetType.widget_type_id}`}
       onClickButton={onClickButton}
     />
   )

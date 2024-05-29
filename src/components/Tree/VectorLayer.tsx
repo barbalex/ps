@@ -25,7 +25,7 @@ export const VectorLayerNode = memo(
       urlPath[4] === vectorLayer.vector_layer_id
     const isActive = isOpen && urlPath.length === 4
 
-    const baseUrl = `/projects/${project_id}/vector-layers`
+    const baseUrl = `/data/projects/${project_id}/vector-layers`
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
