@@ -49,7 +49,7 @@ export const GoalNode = memo(
       ],
       [project_id, subproject_id],
     )
-    const baseUrl = baseUrl.join('/')
+    const baseUrl = baseArray.join('/')
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
