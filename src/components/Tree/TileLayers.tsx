@@ -42,7 +42,10 @@ export const TileLayersNode = memo(({ project_id, level = 3 }: Props) => {
     urlPath[3] === 'tile-layers'
   const isActive = isOpen && urlPath.length === 3
 
-  const baseArray = useMemo(() => ['projects', project_id], [project_id])
+  const baseArray = useMemo(
+    () => ['data', 'projects', project_id],
+    [project_id],
+  )
   const baseUrl = baseArray.join('/')
 
   const onClickButton = useCallback(() => {

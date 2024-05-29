@@ -39,6 +39,7 @@ export const VectorLayerDisplayNode = memo(
 
     const baseArray = useMemo(
       () => [
+        'data',
         'projects',
         project_id,
         'vector-layers',

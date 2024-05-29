@@ -41,10 +41,13 @@ export const UserNode = memo(({ user, level = 2 }: Props) => {
         db,
         appStateId: appState?.app_state_id,
       })
-      return navigate({ pathname: '/users', search: searchParams.toString() })
+      return navigate({
+        pathname: '/data/users',
+        search: searchParams.toString(),
+      })
     }
     navigate({
-      pathname: `/users/${user.user_id}`,
+      pathname: `/data/users/${user.user_id}`,
       search: searchParams.toString(),
     })
   }, [appState?.app_state_id, db, isOpen, navigate, searchParams, user.user_id])
@@ -58,7 +61,7 @@ export const UserNode = memo(({ user, level = 2 }: Props) => {
       isInActiveNodeArray={isOpen}
       isActive={isActive}
       childrenCount={0}
-      to={`/users/${user.user_id}`}
+      to={`/data/users/${user.user_id}`}
       onClickButton={onClickButton}
     />
   )

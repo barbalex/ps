@@ -40,7 +40,7 @@ export const TaxaNode = memo(
       urlPath[5] === 'taxa'
     const isActive = isOpen && urlPath.length === level
 
-    const baseUrl = `/projects/${project_id}/taxonomies/${taxonomy_id}`
+    const baseUrl = `/data/projects/${project_id}/taxonomies/${taxonomy_id}`
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
