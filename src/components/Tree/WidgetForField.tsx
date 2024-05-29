@@ -33,7 +33,7 @@ export const WidgetForFieldNode = memo(
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isOpen =
-      urlPath[0] === 'widgets-for-fields' &&
+      urlPath[1] === 'widgets-for-fields' &&
       params.widget_for_field_id === widgetForField.widget_for_field_id
     const isActive = isOpen && urlPath.length === 2
 

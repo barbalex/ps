@@ -32,7 +32,7 @@ export const WidgetTypeNode = memo(({ widgetType, level = 2 }: Props) => {
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isOpen =
-    urlPath[0] === 'widget-types' &&
+    urlPath[1] === 'widget-types' &&
     params.widget_type_id === widgetType.widget_type_id
   const isActive = isOpen && urlPath.length === 2
 

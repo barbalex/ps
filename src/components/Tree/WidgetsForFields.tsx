@@ -30,7 +30,7 @@ export const WidgetsForFieldsNode = memo(() => {
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const isOpen = urlPath[0] === 'widgets-for-fields'
+  const isOpen = urlPath[1] === 'widgets-for-fields'
   const isActive = isOpen && urlPath.length === 1
 
   const onClickButton = useCallback(() => {
