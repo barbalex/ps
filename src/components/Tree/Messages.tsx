@@ -39,6 +39,7 @@ export const MessagesNode = memo(() => {
         node: ['messages'],
         db,
         appStateId: appState?.app_state_id,
+        isRoot: true,
       })
       return navigate({
         pathname: '/projects',
