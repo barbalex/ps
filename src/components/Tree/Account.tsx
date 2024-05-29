@@ -31,7 +31,7 @@ export const AccountNode = memo(({ account, level = 2 }: Props) => {
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isOpen =
-    urlPath[0] === 'accounts' && params.account_id === account.account_id
+    urlPath[1] === 'accounts' && params.account_id === account.account_id
   const isActive = isOpen && urlPath.length === 2
 
   const onClickButton = useCallback(() => {

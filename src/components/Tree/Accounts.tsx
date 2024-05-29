@@ -30,7 +30,7 @@ export const AccountsNode = memo(() => {
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const isOpen = urlPath[0] === 'accounts'
+  const isOpen = urlPath[1] === 'accounts'
   const isActive = isOpen && urlPath.length === 1
 
   const onClickButton = useCallback(() => {
