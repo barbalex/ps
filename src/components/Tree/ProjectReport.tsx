@@ -28,10 +28,10 @@ export const ProjectReportNode = memo(
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isOpen =
-      urlPath[0] === 'projects' &&
-      urlPath[1] === project_id &&
-      urlPath[2] === 'reports' &&
-      urlPath[3] === projectReport.project_report_id
+      urlPath[1] === 'projects' &&
+      urlPath[2] === project_id &&
+      urlPath[3] === 'reports' &&
+      urlPath[4] === projectReport.project_report_id
     const isActive = isOpen && urlPath.length === 4
 
     const baseArray = useMemo(
