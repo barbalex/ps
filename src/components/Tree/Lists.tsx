@@ -37,9 +37,9 @@ export const ListsNode = memo(({ project_id, level = 3 }: Props) => {
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isOpen =
-    urlPath[0] === 'projects' &&
-    urlPath[1] === project_id &&
-    urlPath[2] === 'lists'
+    urlPath[1] === 'projects' &&
+    urlPath[2] === project_id &&
+    urlPath[3] === 'lists'
   const isActive = isOpen && urlPath.length === 3
 
   const baseArray = useMemo(() => ['projects', project_id], [project_id])
