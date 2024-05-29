@@ -19,12 +19,12 @@ export const OccurrenceNotToAssignNode = memo(
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isOpen =
-      urlPath[0] === 'projects' &&
-      urlPath[1] === project_id &&
-      urlPath[2] === 'subprojects' &&
-      urlPath[3] === subproject_id &&
-      urlPath[4] === 'occurrences-not-to-assign' &&
-      urlPath[5] === occurrence.occurrence_id
+      urlPath[1] === 'projects' &&
+      urlPath[2] === project_id &&
+      urlPath[3] === 'subprojects' &&
+      urlPath[4] === subproject_id &&
+      urlPath[5] === 'occurrences-not-to-assign' &&
+      urlPath[6] === occurrence.occurrence_id
     const isActive = isOpen && urlPath.length === level
 
     const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/occurrences-not-to-assign`
