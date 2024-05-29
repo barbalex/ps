@@ -34,6 +34,17 @@ export const router = () => {
             },
           ],
         },
+        {
+          path: 'docs',
+          lazy: () => import('../routes/docs.tsx'),
+          handle: {
+            crumb: {
+              text: 'Docs',
+              table: 'docs',
+              folder: true,
+            },
+          },
+        },
       ],
     },
     {
@@ -1192,17 +1203,6 @@ export const router = () => {
               },
             },
           ],
-        },
-        {
-          path: 'docs',
-          lazy: () => import('../routes/docs.tsx'),
-          handle: {
-            crumb: {
-              text: 'Docs',
-              table: 'docs',
-              folder: true,
-            },
-          },
         },
         {
           path: 'app-state',
