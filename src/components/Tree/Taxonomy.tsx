@@ -36,7 +36,7 @@ export const TaxonomyNode = memo(
     const isActive = isOpen && urlPath.length === 4
 
     const baseArray = useMemo(
-      () => ['projects', project_id, 'taxonomies'],
+      () => ['data', 'projects', project_id, 'taxonomies'],
       [project_id],
     )
     const baseUrl = baseArray.join('/')
