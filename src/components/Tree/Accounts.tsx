@@ -46,7 +46,7 @@ export const AccountsNode = memo(() => {
         search: searchParams.toString(),
       })
     }
-    navigate({ pathname: '/accounts', search: searchParams.toString() })
+    navigate({ pathname: '/data/accounts', search: searchParams.toString() })
   }, [appState?.app_state_id, db, isOpen, navigate, searchParams])
 
   return (
@@ -58,7 +58,7 @@ export const AccountsNode = memo(() => {
         isInActiveNodeArray={isOpen}
         isActive={isActive}
         childrenCount={accounts.length}
-        to={`/accounts`}
+        to={`/data/accounts`}
         onClickButton={onClickButton}
       />
       {isOpen &&

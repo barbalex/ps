@@ -31,7 +31,7 @@ export const UserNode = memo(({ user, level = 2 }: Props) => {
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const isOpen = urlPath[0] === 'users' && params.user_id === user.user_id
+  const isOpen = urlPath[1] === 'users' && params.user_id === user.user_id
   const isActive = isOpen && urlPath.length === 2
 
   const onClickButton = useCallback(() => {

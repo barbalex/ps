@@ -27,10 +27,10 @@ export const UnitNode = memo(({ project_id, unit, level = 4 }: Props) => {
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isOpen =
-    urlPath[0] === 'projects' &&
-    urlPath[1] === project_id &&
-    urlPath[2] === 'units' &&
-    urlPath[3] === unit.unit_id
+    urlPath[1] === 'projects' &&
+    urlPath[2] === project_id &&
+    urlPath[3] === 'units' &&
+    urlPath[4] === unit.unit_id
   const isActive = isOpen && urlPath.length === 4
 
   const baseArray = useMemo(
