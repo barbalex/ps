@@ -58,6 +58,7 @@ export const PlaceUsersNode = memo(
 
     const baseArray = useMemo(
       () => [
+        'data',
         'projects',
         project_id,
         'subprojects',
