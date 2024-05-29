@@ -42,12 +42,12 @@ export const AccountNode = memo(({ account, level = 2 }: Props) => {
         appStateId: appState?.app_state_id,
       })
       return navigate({
-        pathname: '/accounts',
+        pathname: '/data/accounts',
         search: searchParams.toString(),
       })
     }
     navigate({
-      pathname: `/accounts/${account.account_id}`,
+      pathname: `/data/accounts/${account.account_id}`,
       search: searchParams.toString(),
     })
   }, [
@@ -68,7 +68,7 @@ export const AccountNode = memo(({ account, level = 2 }: Props) => {
       isInActiveNodeArray={isOpen}
       isActive={isActive}
       childrenCount={0}
-      to={`/accounts/${account.account_id}`}
+      to={`/data/accounts/${account.account_id}`}
       onClickButton={onClickButton}
     />
   )
