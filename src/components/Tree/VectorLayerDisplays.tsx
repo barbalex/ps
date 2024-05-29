@@ -39,11 +39,11 @@ export const VectorLayerDisplaysNode = memo(
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isOpen =
-      urlPath[0] === 'projects' &&
-      urlPath[1] === project_id &&
-      urlPath[2] === 'vector-layers' &&
-      urlPath[3] === vector_layer_id &&
-      urlPath[4] === 'vector-layer-displays'
+      urlPath[1] === 'projects' &&
+      urlPath[2] === project_id &&
+      urlPath[3] === 'vector-layers' &&
+      urlPath[4] === vector_layer_id &&
+      urlPath[5] === 'vector-layer-displays'
     const isActive = isOpen && urlPath.length === 5
 
     const baseArray = useMemo(

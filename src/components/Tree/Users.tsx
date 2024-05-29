@@ -30,7 +30,7 @@ export const UsersNode = memo(() => {
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const isOpen = urlPath[0] === 'users'
+  const isOpen = urlPath[1] === 'users'
   const isActive = isOpen && urlPath.length === 1
 
   const onClickButton = useCallback(() => {
@@ -46,7 +46,7 @@ export const UsersNode = memo(() => {
         search: searchParams.toString(),
       })
     }
-    navigate({ pathname: '/users', search: searchParams.toString() })
+    navigate({ pathname: '/data/users', search: searchParams.toString() })
   }, [appState?.app_state_id, db, isOpen, navigate, searchParams])
 
   return (
@@ -58,7 +58,7 @@ export const UsersNode = memo(() => {
         isInActiveNodeArray={isOpen}
         isActive={isActive}
         childrenCount={users.length}
-        to={`/users`}
+        to={`/data/users`}
         onClickButton={onClickButton}
       />
       {isOpen &&

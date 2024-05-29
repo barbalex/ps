@@ -19,10 +19,10 @@ export const VectorLayerNode = memo(
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isOpen =
-      urlPath[0] === 'projects' &&
-      urlPath[1] === project_id &&
-      urlPath[2] === 'vector-layers' &&
-      urlPath[3] === vectorLayer.vector_layer_id
+      urlPath[1] === 'projects' &&
+      urlPath[2] === project_id &&
+      urlPath[3] === 'vector-layers' &&
+      urlPath[4] === vectorLayer.vector_layer_id
     const isActive = isOpen && urlPath.length === 4
 
     const baseUrl = `/projects/${project_id}/vector-layers`
