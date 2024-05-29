@@ -42,7 +42,7 @@ export const UsersNode = memo(() => {
         isRoot: true,
       })
       return navigate({
-        pathname: '/projects',
+        pathname: '..',
         search: searchParams.toString(),
       })
     }
