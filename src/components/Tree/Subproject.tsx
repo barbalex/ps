@@ -1,4 +1,4 @@
-import { useCallback, memo } from 'react'
+import { useCallback, memo, useMemo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
@@ -43,13 +43,16 @@ export const SubprojectNode = memo(
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isOpen =
-      urlPath[0] === 'projects' &&
-      urlPath[1] === project_id &&
-      urlPath[2] === 'subprojects' &&
-      urlPath[3] === subproject.subproject_id
+      urlPath[1] === 'projects' &&
+      urlPath[2] === project_id &&
+      urlPath[3] === 'subprojects' &&
+      urlPath[4] === subproject.subproject_id
     const isActive = isOpen && urlPath.length === 4
 
-    const baseArray = ['projects', project_id, 'subprojects']
+    const baseArray = useMemo(
+      () => ['projects', project_id, 'subprojects'],
+      [project_id],
+    )
     const baseUrl = baseArray.join('/')
 
     const onClickButton = useCallback(() => {
