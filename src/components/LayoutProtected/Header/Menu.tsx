@@ -88,7 +88,7 @@ export const Menu = memo(() => {
   }, [appState?.app_state_id, navigate, params.user_email, searchParams])
 
   const onClickLogout = useCallback(() => logout(), [logout])
-  const onClickEnter = useCallback(() => navigate('/projects'), [navigate])
+  const onClickEnter = useCallback(() => navigate('/data/projects'), [navigate])
 
   const treeIsActive = tabs.includes('tree')
   const dataIsActive = tabs.includes('data')

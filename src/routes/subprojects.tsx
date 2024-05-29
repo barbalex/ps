@@ -31,7 +31,7 @@ export const Component = () => {
   const add = useCallback(async () => {
     const data = await createSubproject({ db, project_id })
     await db.subprojects.create({ data })
-    Navigate(`/projects/${project_id}/subprojects/${data.subproject_id}`)
+    Navigate(`/data/projects/${project_id}/subprojects/${data.subproject_id}`)
   }, [Navigate, db, project_id])
 
   return (
@@ -46,7 +46,7 @@ export const Component = () => {
           <Row
             key={subproject_id}
             label={label ?? subproject_id}
-            to={`/projects/${project_id}/subprojects/${subproject_id}`}
+            to={`/data/projects/${project_id}/subprojects/${subproject_id}`}
           />
         ))}
       </div>

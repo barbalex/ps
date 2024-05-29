@@ -47,18 +47,18 @@ export const Component = memo(() => {
       // ensure that the combinations of not-to-assign and place_id make sense
       if (name === 'not_to_assign' && value) {
         navigate(
-          `/projects/${project_id}/subprojects/${subproject_id}/occurrences-not-to-assign/${occurrence_id}`,
+          `/data/projects/${project_id}/subprojects/${subproject_id}/occurrences-not-to-assign/${occurrence_id}`,
         )
       }
       if (name === 'not_to_assign' && !value) {
         navigate(
-          `/projects/${project_id}/subprojects/${subproject_id}/occurrences-to-assess/${occurrence_id}`,
+          `/data/projects/${project_id}/subprojects/${subproject_id}/occurrences-to-assess/${occurrence_id}`,
         )
       }
       if (name === 'place_id' && !value) {
         // navigate to the subproject's occurrences-to-assess list
         navigate(
-          `/projects/${project_id}/subprojects/${subproject_id}/occurrences-to-assess/${occurrence_id}`,
+          `/data/projects/${project_id}/subprojects/${subproject_id}/occurrences-to-assess/${occurrence_id}`,
         )
       }
       if (name === 'place_id' && value) {
@@ -67,8 +67,8 @@ export const Component = memo(() => {
         const place = await db.places.findUnique({ where: { place_id: value } })
         const parentPlaceId = place?.parent_id
         const url = parentPlaceId
-          ? `/projects/${project_id}/subprojects/${subproject_id}/places/${parentPlaceId}/places/${value}/occurrences-assigned/${occurrence_id}`
-          : `/projects/${project_id}/subprojects/${subproject_id}/places/${value}/occurrences-assigned/${occurrence_id}`
+          ? `/data/projects/${project_id}/subprojects/${subproject_id}/places/${parentPlaceId}/places/${value}/occurrences-assigned/${occurrence_id}`
+          : `/data/projects/${project_id}/subprojects/${subproject_id}/places/${value}/occurrences-assigned/${occurrence_id}`
         navigate(url)
       }
     },

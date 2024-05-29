@@ -5,7 +5,7 @@ export const Component = () => {
   const navigate = useNavigate()
 
   const onLoggedIn = () => {
-    navigate('/projects')
+    navigate('/data/projects')
   }
 
   return (
