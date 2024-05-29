@@ -28,7 +28,7 @@ export const Header = memo(
       const data = createOccurrenceImport({ subproject_id })
       await db.occurrence_imports.create({ data })
       navigate({
-        pathname: data.occurrence_import_id,
+        pathname: `../${data.occurrence_import_id}`,
         search: searchParams.toString(),
       })
       autoFocusRef.current?.focus()

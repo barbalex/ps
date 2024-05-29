@@ -43,7 +43,7 @@ export const Header = memo(({ autoFocusRef, row }: Props) => {
   // need to:
   // 1. lowercase all
   // 2. replace all spaces with -
-  const layerNameForState = row.label.replace(/ /g, '-').toLowerCase()
+  const layerNameForState = row.label?.replace?.(/ /g, '-')?.toLowerCase?.()
   const isDraggable = draggableLayers.includes(layerNameForState)
 
   const onClickToggleAssign = useCallback(() => {
