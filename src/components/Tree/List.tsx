@@ -32,7 +32,7 @@ export const ListNode = memo(({ project_id, list, level = 4 }: Props) => {
     urlPath[2] === project_id &&
     urlPath[3] === 'lists' &&
     urlPath[4] === list.list_id
-  const isActive = isOpen && urlPath.length === 4
+  const isActive = isOpen && urlPath.length === level + 1
 
   const baseArray = useMemo(
     () => ['data', 'projects', project_id, 'lists'],

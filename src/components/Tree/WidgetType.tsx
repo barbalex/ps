@@ -34,7 +34,7 @@ export const WidgetTypeNode = memo(({ widgetType, level = 2 }: Props) => {
   const isOpen =
     urlPath[1] === 'widget-types' &&
     params.widget_type_id === widgetType.widget_type_id
-  const isActive = isOpen && urlPath.length === 2
+  const isActive = isOpen && urlPath.length === level + 1
 
   const onClickButton = useCallback(() => {
     if (isOpen) {

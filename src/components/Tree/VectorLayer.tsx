@@ -23,7 +23,7 @@ export const VectorLayerNode = memo(
       urlPath[2] === project_id &&
       urlPath[3] === 'vector-layers' &&
       urlPath[4] === vectorLayer.vector_layer_id
-    const isActive = isOpen && urlPath.length === 4
+    const isActive = isOpen && urlPath.length === level + 1
 
     const baseUrl = `/data/projects/${project_id}/vector-layers`
 

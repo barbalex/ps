@@ -49,8 +49,7 @@ export const ProjectNode = memo(({ project, level = 2 }: Props) => {
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isOpen =
     urlPath[1] === 'projects' && params.project_id === project.project_id
-  const isActive = isOpen && urlPath.length === 2
-
+  const isActive = isOpen && urlPath.length === level + 1
   const onClickButton = useCallback(() => {
     if (isOpen) {
       removeChildNodes({

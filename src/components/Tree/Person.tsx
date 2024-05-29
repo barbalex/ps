@@ -31,7 +31,7 @@ export const PersonNode = memo(({ project_id, person, level = 4 }: Props) => {
     urlPath[2] === project_id &&
     urlPath[3] === 'persons' &&
     urlPath[4] === person.person_id
-  const isActive = isOpen && urlPath.length === 4
+  const isActive = isOpen && urlPath.length === level + 1
 
   const baseArray = useMemo(
     () => ['data', 'projects', project_id, 'persons'],

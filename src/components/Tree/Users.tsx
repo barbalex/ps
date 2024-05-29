@@ -8,7 +8,7 @@ import { Node } from './Node.tsx'
 import { UserNode } from './User.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 
-export const UsersNode = memo(() => {
+export const UsersNode = memo(({ level = 1 }) => {
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -31,7 +31,7 @@ export const UsersNode = memo(() => {
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isOpen = urlPath[1] === 'users'
-  const isActive = isOpen && urlPath.length === 1
+  const isActive = isOpen && urlPath.length === level + 1
 
   const onClickButton = useCallback(() => {
     if (isOpen) {

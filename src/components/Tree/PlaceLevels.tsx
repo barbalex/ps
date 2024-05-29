@@ -40,7 +40,7 @@ export const PlaceLevelsNode = memo(({ project_id, level = 3 }: Props) => {
     urlPath[1] === 'projects' &&
     urlPath[2] === project_id &&
     urlPath[3] === 'place-levels'
-  const isActive = isOpen && urlPath.length === 3
+  const isActive = isOpen && urlPath.length === level + 1
 
   const baseArray = useMemo(
     () => ['data', 'projects', project_id],

@@ -6,7 +6,7 @@ import { useElectric } from '../../ElectricProvider.tsx'
 import { Node } from './Node.tsx'
 import { FieldTypeNode } from './FieldType.tsx'
 
-export const FieldTypesNode = memo(() => {
+export const FieldTypesNode = memo(({ level = 1 }) => {
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -25,7 +25,7 @@ export const FieldTypesNode = memo(() => {
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isOpen = urlPath[1] === 'field-types'
-  const isActive = isOpen && urlPath.length === 1
+  const isActive = isOpen && urlPath.length === level + 1
 
   const onClickButton = useCallback(() => {
     if (isOpen) {

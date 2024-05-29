@@ -35,7 +35,7 @@ export const WidgetForFieldNode = memo(
     const isOpen =
       urlPath[1] === 'widgets-for-fields' &&
       params.widget_for_field_id === widgetForField.widget_for_field_id
-    const isActive = isOpen && urlPath.length === 2
+    const isActive = isOpen && urlPath.length === level + 1
 
     const onClickButton = useCallback(() => {
       if (isOpen) {

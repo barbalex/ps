@@ -38,7 +38,7 @@ export const FieldNode = memo(({ project_id, field }: Props) => {
       urlPath[3] === 'fields' &&
       urlPath[4] === field.field_id
     : urlPath[1] === 'fields' && params.field_id === field.field_id
-  const isActive = isOpen && urlPath.length === (project_id ? 4 : 2)
+  const isActive = isOpen && urlPath.length === (project_id ? 5 : 3)
 
   const baseArray = useMemo(
     () => ['data', ...(project_id ? ['projects', project_id] : []), 'fields'],

@@ -32,7 +32,7 @@ export const PlaceLevelNode = memo(
       urlPath[2] === project_id &&
       urlPath[3] === 'place-levels' &&
       urlPath[4] === placeLevel.place_level_id
-    const isActive = isOpen && urlPath.length === 4
+    const isActive = isOpen && urlPath.length === level + 1
 
     const baseArray = useMemo(
       () => ['data', 'projects', project_id, 'place-levels'],

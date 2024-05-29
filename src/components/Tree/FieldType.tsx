@@ -34,7 +34,7 @@ export const FieldTypeNode = memo(({ fieldType, level = 2 }: Props) => {
   const isOpen =
     urlPath[1] === 'field-types' &&
     params.field_type_id === fieldType.field_type_id
-  const isActive = isOpen && urlPath.length === 2
+  const isActive = isOpen && urlPath.length === level + 1
 
   const onClickButton = useCallback(() => {
     if (isOpen) {

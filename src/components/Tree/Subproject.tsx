@@ -47,7 +47,7 @@ export const SubprojectNode = memo(
       urlPath[2] === project_id &&
       urlPath[3] === 'subprojects' &&
       urlPath[4] === subproject.subproject_id
-    const isActive = isOpen && urlPath.length === 4
+    const isActive = isOpen && urlPath.length === level + 1
 
     const baseArray = useMemo(
       () => ['data', 'projects', project_id, 'subprojects'],

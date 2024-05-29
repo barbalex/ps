@@ -32,7 +32,7 @@ export const TileLayerNode = memo(
       urlPath[2] === project_id &&
       urlPath[3] === 'tile-layers' &&
       urlPath[4] === tileLayer.tile_layer_id
-    const isActive = isOpen && urlPath.length === 4
+    const isActive = isOpen && urlPath.length === level + 1
 
     const baseArray = useMemo(
       () => ['data', 'projects', project_id, 'tile-layers'],

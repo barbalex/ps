@@ -7,7 +7,7 @@ import { useElectric } from '../../ElectricProvider.tsx'
 import { Node } from './Node.tsx'
 import { WidgetTypeNode } from './WidgetType.tsx'
 
-export const WidgetTypesNode = memo(() => {
+export const WidgetTypesNode = memo(({ level = 1 }) => {
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -30,7 +30,7 @@ export const WidgetTypesNode = memo(() => {
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isOpen = urlPath[1] === 'widget-types'
-  const isActive = isOpen && urlPath.length === 1
+  const isActive = isOpen && urlPath.length === level + 1
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
@@ -44,7 +44,10 @@ export const WidgetTypesNode = memo(() => {
         search: searchParams.toString(),
       })
     }
-    navigate({ pathname: '/data/widget-types', search: searchParams.toString() })
+    navigate({
+      pathname: '/data/widget-types',
+      search: searchParams.toString(),
+    })
   }, [appState?.app_state_id, db, isOpen, navigate, searchParams])
 
   return (
