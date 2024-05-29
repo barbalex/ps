@@ -27,7 +27,7 @@ export const SubprojectUserNode = memo(
       urlPath[6] === subprojectUser.subproject_user_id
     const isActive = isOpen && urlPath.length === level
 
-    const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/users`
+    const baseUrl = `/data/projects/${project_id}/subprojects/${subproject_id}/users`
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
