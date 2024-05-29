@@ -45,44 +45,44 @@ export const ChartSubjectNode = ({
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isOpen = place_id2
-    ? urlPath[0] === 'projects' &&
-      urlPath[1] === project_id &&
-      urlPath[2] === 'subprojects' &&
-      urlPath[3] === subproject_id &&
-      urlPath[4] === 'places' &&
-      urlPath[5] === place_id &&
-      urlPath[6] === 'places' &&
-      urlPath[7] === place_id2 &&
-      urlPath[8] === 'charts' &&
-      urlPath[9] === chart_id &&
-      urlPath[10] === 'subjects' &&
+    ? urlPath[1] === 'projects' &&
+      urlPath[2] === project_id &&
+      urlPath[3] === 'subprojects' &&
+      urlPath[4] === subproject_id &&
+      urlPath[5] === 'places' &&
+      urlPath[6] === place_id &&
+      urlPath[7] === 'places' &&
+      urlPath[8] === place_id2 &&
+      urlPath[9] === 'charts' &&
+      urlPath[10] === chart_id &&
+      urlPath[11] === 'subjects' &&
       params.chart_subject_id === chartSubject.chart_subject_id
     : place_id
-    ? urlPath[0] === 'projects' &&
-      urlPath[1] === project_id &&
-      urlPath[2] === 'subprojects' &&
-      urlPath[3] === subproject_id &&
-      urlPath[4] === 'places' &&
-      urlPath[5] === place_id &&
-      urlPath[6] === 'charts' &&
-      urlPath[7] === chart_id &&
-      urlPath[8] === 'subjects' &&
+    ? urlPath[1] === 'projects' &&
+      urlPath[2] === project_id &&
+      urlPath[3] === 'subprojects' &&
+      urlPath[4] === subproject_id &&
+      urlPath[5] === 'places' &&
+      urlPath[6] === place_id &&
+      urlPath[7] === 'charts' &&
+      urlPath[8] === chart_id &&
+      urlPath[9] === 'subjects' &&
       params.chart_subject_id === chartSubject.chart_subject_id
     : subproject_id
-    ? urlPath[0] === 'projects' &&
-      urlPath[1] === project_id &&
-      urlPath[2] === 'subprojects' &&
-      urlPath[3] === subproject_id &&
-      urlPath[4] === 'charts' &&
-      urlPath[5] === chart_id &&
-      urlPath[6] === 'subjects' &&
+    ? urlPath[1] === 'projects' &&
+      urlPath[2] === project_id &&
+      urlPath[3] === 'subprojects' &&
+      urlPath[4] === subproject_id &&
+      urlPath[5] === 'charts' &&
+      urlPath[6] === chart_id &&
+      urlPath[7] === 'subjects' &&
       params.chart_subject_id === chartSubject.chart_subject_id
     : project_id
-    ? urlPath[0] === 'projects' &&
-      urlPath[1] === project_id &&
-      urlPath[2] === 'charts' &&
-      urlPath[3] === chart_id &&
-      urlPath[4] === 'subjects' &&
+    ? urlPath[1] === 'projects' &&
+      urlPath[2] === project_id &&
+      urlPath[3] === 'charts' &&
+      urlPath[4] === chart_id &&
+      urlPath[5] === 'subjects' &&
       params.chart_subject_id === chartSubject.chart_subject_id
     : false
   const isActive = isOpen && urlPath.length === level

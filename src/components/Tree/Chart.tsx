@@ -44,38 +44,38 @@ export const ChartNode = ({
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isOpen = place_id2
-    ? urlPath[0] === 'projects' &&
-      urlPath[1] === project_id &&
-      urlPath[2] === 'subprojects' &&
-      urlPath[3] === subproject_id &&
-      urlPath[4] === 'places' &&
-      urlPath[5] === place_id &&
-      urlPath[6] === 'places' &&
-      urlPath[7] === place_id2 &&
-      urlPath[8] === 'charts' &&
+    ? urlPath[1] === 'projects' &&
+      urlPath[2] === project_id &&
+      urlPath[3] === 'subprojects' &&
+      urlPath[4] === subproject_id &&
+      urlPath[5] === 'places' &&
+      urlPath[6] === place_id &&
+      urlPath[7] === 'places' &&
+      urlPath[8] === place_id2 &&
+      urlPath[9] === 'charts' &&
       params.chart_id === chart.chart_id
     : place_id
-    ? urlPath[0] === 'projects' &&
-      urlPath[1] === project_id &&
-      urlPath[2] === 'subprojects' &&
-      urlPath[3] === subproject_id &&
-      urlPath[4] === 'places' &&
-      urlPath[5] === place_id &&
-      urlPath[6] === 'charts' &&
+    ? urlPath[1] === 'projects' &&
+      urlPath[2] === project_id &&
+      urlPath[3] === 'subprojects' &&
+      urlPath[4] === subproject_id &&
+      urlPath[5] === 'places' &&
+      urlPath[6] === place_id &&
+      urlPath[7] === 'charts' &&
       params.chart_id === chart.chart_id
     : subproject_id
-    ? urlPath[0] === 'projects' &&
-      urlPath[1] === project_id &&
-      urlPath[2] === 'subprojects' &&
-      urlPath[3] === subproject_id &&
-      urlPath[4] === 'charts' &&
+    ? urlPath[1] === 'projects' &&
+      urlPath[2] === project_id &&
+      urlPath[3] === 'subprojects' &&
+      urlPath[4] === subproject_id &&
+      urlPath[5] === 'charts' &&
       params.chart_id === chart.chart_id
     : project_id
-    ? urlPath[0] === 'projects' &&
-      urlPath[1] === project_id &&
-      urlPath[2] === 'charts' &&
+    ? urlPath[1] === 'projects' &&
+      urlPath[2] === project_id &&
+      urlPath[3] === 'charts' &&
       params.chart_id === chart.chart_id
-    : urlPath[0] === 'charts' && params.chart_id === chart.chart_id
+    : urlPath[1] === 'charts' && params.chart_id === chart.chart_id
   const isActive = isOpen && urlPath.length === level
 
   const baseArray = useMemo(
