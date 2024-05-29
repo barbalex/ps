@@ -76,7 +76,7 @@ export const ChartNode = ({
       urlPath[3] === 'charts' &&
       params.chart_id === chart.chart_id
     : urlPath[1] === 'charts' && params.chart_id === chart.chart_id
-  const isActive = isOpen && urlPath.length === level
+  const isActive = isOpen && urlPath.length === level + 1
 
   const baseArray = useMemo(
     () => [

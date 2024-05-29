@@ -143,7 +143,7 @@ export const FilesNode = memo(
           urlPath[2] === project_id &&
           urlPath[3] === 'files'
         : urlPath[1] === 'files'
-    const isActive = isOpen && urlPath.length === level
+    const isActive = isOpen && urlPath.length === level + 1
 
     const baseArray = useMemo(
       () => [

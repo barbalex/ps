@@ -38,7 +38,7 @@ export const TaxaNode = memo(
       urlPath[3] === 'taxonomies' &&
       urlPath[4] === taxonomy_id &&
       urlPath[5] === 'taxa'
-    const isActive = isOpen && urlPath.length === level
+    const isActive = isOpen && urlPath.length === level + 1
 
     const baseUrl = `/data/projects/${project_id}/taxonomies/${taxonomy_id}`
 

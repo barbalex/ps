@@ -56,7 +56,7 @@ export const PlaceUserNode = memo(
       : isOpenBase &&
         urlPath[7] === 'users' &&
         urlPath[8] === placeUser.place_user_id
-    const isActive = isOpen && urlPath.length === level
+    const isActive = isOpen && urlPath.length === level + 1
 
     const baseArray = useMemo(
       () => [

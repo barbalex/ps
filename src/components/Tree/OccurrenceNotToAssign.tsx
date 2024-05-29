@@ -25,7 +25,7 @@ export const OccurrenceNotToAssignNode = memo(
       urlPath[4] === subproject_id &&
       urlPath[5] === 'occurrences-not-to-assign' &&
       urlPath[6] === occurrence.occurrence_id
-    const isActive = isOpen && urlPath.length === level
+    const isActive = isOpen && urlPath.length === level + 1
 
     const baseArray = [
       'data',

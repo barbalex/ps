@@ -35,7 +35,7 @@ export const SubprojectReportNode = memo(
       urlPath[4] === subproject_id &&
       urlPath[5] === 'reports' &&
       urlPath[6] === subprojectReport.subproject_report_id
-    const isActive = isOpen && urlPath.length === level
+    const isActive = isOpen && urlPath.length === level + 1
 
     const baseArray = useMemo(
       () => [

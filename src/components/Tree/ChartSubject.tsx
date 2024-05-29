@@ -85,7 +85,7 @@ export const ChartSubjectNode = ({
       urlPath[5] === 'subjects' &&
       params.chart_subject_id === chartSubject.chart_subject_id
     : false
-  const isActive = isOpen && urlPath.length === level
+  const isActive = isOpen && urlPath.length === level + 1
 
   const baseArray = useMemo(
     () => [

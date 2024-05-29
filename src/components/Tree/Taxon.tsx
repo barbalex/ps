@@ -35,7 +35,7 @@ export const TaxonNode = memo(
       urlPath[4] === taxonomy_id &&
       urlPath[5] === 'taxa' &&
       urlPath[6] === taxon.taxon_id
-    const isActive = isOpen && urlPath.length === level
+    const isActive = isOpen && urlPath.length === level + 1
 
     const baseArray = useMemo(
       () => ['data', 'projects', project_id, 'taxonomies', taxonomy_id, 'taxa'],

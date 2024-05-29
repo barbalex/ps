@@ -45,7 +45,7 @@ export const OccurrenceAssignedNode = memo(
       : isOpenBase &&
         urlPath[7] === 'occurrences-assigned' &&
         urlPath[8] === occurrence.occurrence_id
-    const isActive = isOpen && urlPath.length === level
+    const isActive = isOpen && urlPath.length === level + 1
 
     const baseArray = [
       'data',

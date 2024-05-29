@@ -25,7 +25,7 @@ export const SubprojectUserNode = memo(
       urlPath[4] === subproject_id &&
       urlPath[5] === 'users' &&
       urlPath[6] === subprojectUser.subproject_user_id
-    const isActive = isOpen && urlPath.length === level
+    const isActive = isOpen && urlPath.length === level + 1
 
     const baseUrl = `/data/projects/${project_id}/subprojects/${subproject_id}/users`
 

@@ -55,7 +55,7 @@ export const CheckNode = memo(
         urlPath[9] === 'checks' &&
         urlPath[10] === check.check_id
       : isOpenBase && urlPath[7] === 'checks' && urlPath[8] === check.check_id
-    const isActive = isOpen && urlPath.length === level
+    const isActive = isOpen && urlPath.length === level + 1
 
     const baseArray = useMemo(
       () => [

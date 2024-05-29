@@ -67,7 +67,7 @@ export const CheckTaxaNode = memo(
         urlPath[7] === 'checks' &&
         urlPath[8] === check_id &&
         urlPath[9] === 'taxa'
-    const isActive = isOpen && urlPath.length === level
+    const isActive = isOpen && urlPath.length === level + 1
 
     const baseArray = useMemo(
       () => [

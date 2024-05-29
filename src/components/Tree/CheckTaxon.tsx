@@ -62,7 +62,7 @@ export const CheckTaxonNode = memo(
         urlPath[8] === check_id &&
         urlPath[9] === 'taxa' &&
         urlPath[10] === checkTaxon.check_taxon_id
-    const isActive = isOpen && urlPath.length === level
+    const isActive = isOpen && urlPath.length === level + 1
 
     const baseArray = useMemo(
       () => [

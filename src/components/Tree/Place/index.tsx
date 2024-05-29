@@ -45,7 +45,7 @@ export const PlaceNode = memo(
         urlPath[7] === 'places' &&
         urlPath[8] === place.place_id
       : isOpenBase && urlPath[6] === place.place_id
-    const isActive = isOpen && urlPath.length === level
+    const isActive = isOpen && urlPath.length === level + 1
 
     const baseArray = useMemo(
       () => [

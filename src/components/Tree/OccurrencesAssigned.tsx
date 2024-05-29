@@ -56,7 +56,7 @@ export const OccurrencesAssignedNode = memo(
         urlPath[8] === place.place_id &&
         urlPath[9] === 'occurrences-assigned'
       : isOpenBase && urlPath[7] === 'occurrences-assigned'
-    const isActive = isOpen && urlPath.length === level
+    const isActive = isOpen && urlPath.length === level + 1
 
     const baseArray = useMemo(
       () => [

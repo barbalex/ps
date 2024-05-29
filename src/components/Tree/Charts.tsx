@@ -84,7 +84,7 @@ export const ChartsNode = memo(
         urlPath[2] === project_id &&
         urlPath[3] === 'charts'
       : urlPath[1] === 'charts'
-    const isActive = isOpen && urlPath.length === level
+    const isActive = isOpen && urlPath.length === level + 1
 
     const baseArray = useMemo(
       () => [

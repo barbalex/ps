@@ -57,7 +57,7 @@ export const PlaceReportNode = memo(
       : isOpenBase &&
         urlPath[7] === 'reports' &&
         urlPath[8] === placeReport.place_report_id
-    const isActive = isOpen && urlPath.length === level
+    const isActive = isOpen && urlPath.length === level + 1
 
     const baseArray = useMemo(
       () => [

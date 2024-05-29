@@ -66,16 +66,11 @@ export const PlacesNode = memo(
     const baseUrl = baseArray.join('/')
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isOpenBase =
-      urlPath[1] === 'projects' &&
-      urlPath[2] === project_id &&
-      urlPath[3] === 'subprojects' &&
-      urlPath[4] === subproject_id &&
-      urlPath[5] === 'places'
-    const isOpen = place_id
-      ? isOpenBase && urlPath[6] === place_id && urlPath[7] === 'places'
-      : isOpenBase
-    const isActive = isOpen && urlPath.length === level
+
+    // isOpen if urlPath includes the baseArray
+    const isOpen = baseArray.every((part, i) => urlPath[i] === part)
+
+    const isActive = isOpen && urlPath.length === level + 1
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
@@ -85,11 +80,14 @@ export const PlacesNode = memo(
           appStateId: appState?.app_state_id,
         })
         return navigate({
-          pathname: `/projects/${project_id}/subprojects/${subproject_id}`,
+          pathname: baseUrl,
           search: searchParams.toString(),
         })
       }
-      navigate({ pathname: baseUrl, search: searchParams.toString() })
+      navigate({
+        pathname: `${baseUrl}/places`,
+        search: searchParams.toString(),
+      })
     }, [
       appState?.app_state_id,
       baseArray,
@@ -97,9 +95,7 @@ export const PlacesNode = memo(
       db,
       isOpen,
       navigate,
-      project_id,
       searchParams,
-      subproject_id,
     ])
 
     return (

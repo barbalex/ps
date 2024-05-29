@@ -36,7 +36,7 @@ export const GoalNode = memo(
       urlPath[4] === subproject_id &&
       urlPath[5] === 'goals' &&
       urlPath[6] === goal.goal_id
-    const isActive = isOpen && urlPath.length === level
+    const isActive = isOpen && urlPath.length === level + 1
 
     const baseArray = useMemo(
       () => [

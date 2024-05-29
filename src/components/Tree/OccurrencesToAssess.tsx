@@ -56,7 +56,7 @@ export const OccurrencesToAssessNode = memo(
       urlPath[3] === 'subprojects' &&
       urlPath[4] === subproject_id &&
       urlPath[5] === 'occurrences-to-assess'
-    const isActive = isOpen && urlPath.length === level
+    const isActive = isOpen && urlPath.length === level + 1
 
     const baseArray = useMemo(
       () => ['data', 'projects', project_id, 'subprojects', subproject_id],

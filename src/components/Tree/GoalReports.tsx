@@ -47,7 +47,7 @@ export const GoalReportsNode = memo(
       urlPath[5] === 'goals' &&
       urlPath[6] === goal_id &&
       urlPath[7] === 'reports'
-    const isActive = isOpen && urlPath.length === level
+    const isActive = isOpen && urlPath.length === level + 1
 
     const baseArray = useMemo(
       () => [

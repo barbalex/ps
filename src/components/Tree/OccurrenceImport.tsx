@@ -35,7 +35,7 @@ export const OccurrenceImportNode = memo(
       urlPath[4] === subproject_id &&
       urlPath[5] === 'occurrence-imports' &&
       urlPath[6] === occurrenceImport.occurrence_import_id
-    const isActive = isOpen && urlPath.length === level
+    const isActive = isOpen && urlPath.length === level + 1
 
     const baseArray = useMemo(
       () => [

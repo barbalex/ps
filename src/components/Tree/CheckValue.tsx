@@ -62,7 +62,7 @@ export const CheckValueNode = memo(
         urlPath[8] === check_id &&
         urlPath[9] === 'values' &&
         urlPath[10] === checkValue.check_value_id
-    const isActive = isOpen && urlPath.length === level
+    const isActive = isOpen && urlPath.length === level + 1
 
     const baseArray = useMemo(
       () => [

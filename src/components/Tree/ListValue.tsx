@@ -35,7 +35,7 @@ export const ListValueNode = memo(
       urlPath[4] === list_id &&
       urlPath[5] === 'values' &&
       urlPath[6] === listValue.list_value_id
-    const isActive = isOpen && urlPath.length === level
+    const isActive = isOpen && urlPath.length === level + 1
 
     const baseArray = useMemo(
       () => ['data', 'projects', project_id, 'lists', list_id, 'values'],
