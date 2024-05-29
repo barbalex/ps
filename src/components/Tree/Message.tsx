@@ -43,12 +43,12 @@ export const MessageNode = memo(({ message, level = 2 }: Props) => {
         appStateId: appState?.app_state_id,
       })
       return navigate({
-        pathname: '/messages',
+        pathname: '/data/messages',
         search: searchParams.toString(),
       })
     }
     navigate({
-      pathname: `/messages/${message.message_id}`,
+      pathname: `/data/messages/${message.message_id}`,
       search: searchParams.toString(),
     })
   }, [
@@ -69,7 +69,7 @@ export const MessageNode = memo(({ message, level = 2 }: Props) => {
       isInActiveNodeArray={isOpen}
       isActive={isActive}
       childrenCount={0}
-      to={`/messages/${message.message_id}`}
+      to={`/data/messages/${message.message_id}`}
       onClickButton={onClickButton}
     />
   )

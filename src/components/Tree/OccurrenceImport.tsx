@@ -39,6 +39,7 @@ export const OccurrenceImportNode = memo(
 
     const baseArray = useMemo(
       () => [
+        'data',
         'projects',
         project_id,
         'subprojects',

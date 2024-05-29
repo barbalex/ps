@@ -47,9 +47,18 @@ export const OccurrenceAssignedNode = memo(
         urlPath[8] === occurrence.occurrence_id
     const isActive = isOpen && urlPath.length === level
 
-    const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/places/${
-      place_id ?? place.place_id
-    }${place_id ? `/places/${place.place_id}` : ''}/occurrences-assigned`
+    const baseArray = [
+      'data',
+      'projects',
+      project_id,
+      'subprojects',
+      subproject_id,
+      'places',
+      place_id ?? place.place_id,
+      ...(place_id ? ['places', place.place_id] : []),
+      'occurrences-assigned',
+    ]
+    const baseUrl = baseArray.join('/')
 
     const onClickButton = useCallback(() => {
       navigate({

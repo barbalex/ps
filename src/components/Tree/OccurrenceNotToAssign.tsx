@@ -27,7 +27,15 @@ export const OccurrenceNotToAssignNode = memo(
       urlPath[6] === occurrence.occurrence_id
     const isActive = isOpen && urlPath.length === level
 
-    const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/occurrences-not-to-assign`
+    const baseArray = [
+      'data',
+      'projects',
+      project_id,
+      'subprojects',
+      subproject_id,
+      'occurrences-not-to-assign',
+    ]
+    const baseUrl = baseArray.join('/')
 
     const onClickButton = useCallback(() => {
       navigate({
