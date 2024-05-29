@@ -43,7 +43,7 @@ export const FieldsNode = memo(({ project_id }: Props) => {
   const isActive = isOpen && urlPath.length === (project_id ? 3 : 1)
 
   const baseArray = useMemo(
-    () => ['projects', ...(project_id ? [project_id] : [])],
+    () => ['data', 'projects', ...(project_id ? [project_id] : [])],
     [project_id],
   )
   const baseUrl = baseArray.join('/')
@@ -62,11 +62,11 @@ export const FieldsNode = memo(({ project_id }: Props) => {
     }
     if (project_id) {
       return navigate({
-        pathname: `/projects/${project_id}/fields`,
+        pathname: `/data/projects/${project_id}/fields`,
         search: searchParams.toString(),
       })
     }
-    navigate({ pathname: '/fields', search: searchParams.toString() })
+    navigate({ pathname: '/data/fields', search: searchParams.toString() })
   }, [
     appState?.app_state_id,
     baseArray,
@@ -87,7 +87,7 @@ export const FieldsNode = memo(({ project_id }: Props) => {
         isInActiveNodeArray={isOpen}
         isActive={isActive}
         childrenCount={fields.length}
-        to={project_id ? `/projects/${project_id}/fields` : `/fields`}
+        to={project_id ? `/data/projects/${project_id}/fields` : `/data/fields`}
         onClickButton={onClickButton}
       />
       {isOpen &&

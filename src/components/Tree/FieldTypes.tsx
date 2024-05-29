@@ -30,11 +30,11 @@ export const FieldTypesNode = memo(() => {
   const onClickButton = useCallback(() => {
     if (isOpen) {
       return navigate({
-        pathname: '/projects',
+        pathname: '/data/projects',
         search: searchParams.toString(),
       })
     }
-    navigate({ pathname: '/field-types', search: searchParams.toString() })
+    navigate({ pathname: '/data/field-types', search: searchParams.toString() })
   }, [isOpen, navigate, searchParams])
 
   return (
@@ -46,7 +46,7 @@ export const FieldTypesNode = memo(() => {
         isInActiveNodeArray={isOpen}
         isActive={isActive}
         childrenCount={fieldTypes.length}
-        to={`/field-types`}
+        to={`/data/field-types`}
         onClickButton={onClickButton}
       />
       {isOpen &&
