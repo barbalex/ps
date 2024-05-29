@@ -50,52 +50,53 @@ export const PlacesNode = memo(
       [placeNamePlural, places.length],
     )
 
-    // TODO: test. This seems wrong
-    const baseArray = useMemo(
+    const parentArray = useMemo(
       () => [
         'data',
         'projects',
         project_id,
         'subprojects',
         subproject_id,
-        'places',
-        ...(place_id ? [place_id, 'places'] : []),
+        ...(place_id ? ['places', place_id] : []),
       ],
       [place_id, project_id, subproject_id],
     )
-    const baseUrl = baseArray.join('/')
+    const parentUrl = parentArray.join('/')
+    const ownArray = useMemo(() => [...parentArray, 'places'], [parentArray])
+    const ownUrl = ownArray.join('/')
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
 
-    // isOpen if urlPath includes the baseArray
-    const isOpen = baseArray.every((part, i) => urlPath[i] === part)
+    // isOpen if urlPath includes the parentArray
+    const isOpen = parentArray.every((part, i) => urlPath[i] === part)
 
     const isActive = isOpen && urlPath.length === level + 1
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
         removeChildNodes({
-          node: baseArray,
+          node: parentArray,
           db,
           appStateId: appState?.app_state_id,
         })
         return navigate({
-          pathname: baseUrl,
+          pathname: parentUrl,
           search: searchParams.toString(),
         })
       }
       navigate({
-        pathname: `${baseUrl}/places`,
+        pathname: ownUrl,
         search: searchParams.toString(),
       })
     }, [
-      appState?.app_state_id,
-      baseArray,
-      baseUrl,
-      db,
       isOpen,
       navigate,
+      ownUrl,
       searchParams,
+      parentArray,
+      db,
+      appState?.app_state_id,
+      parentUrl,
     ])
 
     return (
@@ -107,7 +108,7 @@ export const PlacesNode = memo(
           isInActiveNodeArray={isOpen}
           isActive={isActive}
           childrenCount={places.length}
-          to={baseUrl}
+          to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
