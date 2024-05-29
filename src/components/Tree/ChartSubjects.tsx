@@ -90,6 +90,7 @@ export const ChartSubjectsNode = memo(
 
     const baseArray = useMemo(
       () => [
+        'data',
         ...(project_id ? ['projects', project_id] : []),
         ...(subproject_id ? ['subprojects', subproject_id] : []),
         ...(place_id ? ['places', place_id] : []),
