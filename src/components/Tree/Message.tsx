@@ -32,7 +32,7 @@ export const MessageNode = memo(({ message, level = 2 }: Props) => {
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isOpen =
-    urlPath[0] === 'messages' && params.message_id === message.message_id
+    urlPath[1] === 'messages' && params.message_id === message.message_id
   const isActive = isOpen && urlPath.length === 2
 
   const onClickButton = useCallback(() => {

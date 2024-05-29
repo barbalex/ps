@@ -28,10 +28,10 @@ export const PlaceLevelNode = memo(
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isOpen =
-      urlPath[0] === 'projects' &&
-      urlPath[1] === project_id &&
-      urlPath[2] === 'place-levels' &&
-      urlPath[3] === placeLevel.place_level_id
+      urlPath[1] === 'projects' &&
+      urlPath[2] === project_id &&
+      urlPath[3] === 'place-levels' &&
+      urlPath[4] === placeLevel.place_level_id
     const isActive = isOpen && urlPath.length === 4
 
     const baseArray = useMemo(

@@ -27,10 +27,10 @@ export const PersonNode = memo(({ project_id, person, level = 4 }: Props) => {
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isOpen =
-    urlPath[0] === 'projects' &&
-    urlPath[1] === project_id &&
-    urlPath[2] === 'persons' &&
-    urlPath[3] === person.person_id
+    urlPath[1] === 'projects' &&
+    urlPath[2] === project_id &&
+    urlPath[3] === 'persons' &&
+    urlPath[4] === person.person_id
   const isActive = isOpen && urlPath.length === 4
 
   const baseArray = useMemo(
