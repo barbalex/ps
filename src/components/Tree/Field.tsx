@@ -41,7 +41,7 @@ export const FieldNode = memo(({ project_id, field }: Props) => {
   const isActive = isOpen && urlPath.length === (project_id ? 4 : 2)
 
   const baseArray = useMemo(
-    () => [...(project_id ? ['projects', project_id] : []), 'fields'],
+    () => ['data', ...(project_id ? ['projects', project_id] : []), 'fields'],
     [project_id],
   )
   const baseUrl = baseArray.join('/')

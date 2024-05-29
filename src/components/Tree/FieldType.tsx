@@ -44,12 +44,12 @@ export const FieldTypeNode = memo(({ fieldType, level = 2 }: Props) => {
         appStateId: appState?.app_state_id,
       })
       return navigate({
-        pathname: '/field-types',
+        pathname: '/data/field-types',
         search: searchParams.toString(),
       })
     }
     navigate({
-      pathname: `/field-types/${fieldType.field_type_id}`,
+      pathname: `/data/field-types/${fieldType.field_type_id}`,
       search: searchParams.toString(),
     })
   }, [
@@ -70,7 +70,7 @@ export const FieldTypeNode = memo(({ fieldType, level = 2 }: Props) => {
       isInActiveNodeArray={isOpen}
       isActive={isActive}
       childrenCount={0}
-      to={`/field-types/${fieldType.field_type_id}`}
+      to={`/data/field-types/${fieldType.field_type_id}`}
       onClickButton={onClickButton}
     />
   )
