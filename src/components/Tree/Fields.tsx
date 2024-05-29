@@ -36,10 +36,10 @@ export const FieldsNode = memo(({ project_id }: Props) => {
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isOpen = project_id
-    ? urlPath[0] === 'projects' &&
-      urlPath[1] === project_id &&
-      urlPath[2] === 'fields'
-    : urlPath[0] === 'fields'
+    ? urlPath[1] === 'projects' &&
+      urlPath[2] === project_id &&
+      urlPath[3] === 'fields'
+    : urlPath[1] === 'fields'
   const isActive = isOpen && urlPath.length === (project_id ? 3 : 1)
 
   const baseArray = useMemo(

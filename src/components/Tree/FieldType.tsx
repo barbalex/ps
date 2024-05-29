@@ -32,7 +32,7 @@ export const FieldTypeNode = memo(({ fieldType, level = 2 }: Props) => {
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isOpen =
-    urlPath[0] === 'field-types' &&
+    urlPath[1] === 'field-types' &&
     params.field_type_id === fieldType.field_type_id
   const isActive = isOpen && urlPath.length === 2
 

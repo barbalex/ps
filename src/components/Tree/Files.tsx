@@ -71,78 +71,78 @@ export const FilesNode = memo(
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const isOpen =
       place_id2 && action_id
-        ? urlPath[0] === 'projects' &&
-          urlPath[1] === project_id &&
-          urlPath[2] === 'subprojects' &&
-          urlPath[3] === subproject_id &&
-          urlPath[4] === 'places' &&
-          urlPath[5] === place_id &&
-          urlPath[6] === 'places' &&
-          urlPath[7] === place_id2 &&
-          urlPath[8] === 'actions' &&
-          urlPath[9] === action_id &&
-          urlPath[10] === 'files'
+        ? urlPath[1] === 'projects' &&
+          urlPath[2] === project_id &&
+          urlPath[3] === 'subprojects' &&
+          urlPath[4] === subproject_id &&
+          urlPath[5] === 'places' &&
+          urlPath[6] === place_id &&
+          urlPath[7] === 'places' &&
+          urlPath[8] === place_id2 &&
+          urlPath[9] === 'actions' &&
+          urlPath[10] === action_id &&
+          urlPath[11] === 'files'
         : place_id2 && check_id
-        ? urlPath[0] === 'projects' &&
-          urlPath[1] === project_id &&
-          urlPath[2] === 'subprojects' &&
-          urlPath[3] === subproject_id &&
-          urlPath[4] === 'places' &&
-          urlPath[5] === place_id &&
-          urlPath[6] === 'places' &&
-          urlPath[7] === place_id2 &&
-          urlPath[8] === 'checks' &&
-          urlPath[9] === check_id &&
-          urlPath[10] === 'files'
+        ? urlPath[1] === 'projects' &&
+          urlPath[2] === project_id &&
+          urlPath[3] === 'subprojects' &&
+          urlPath[4] === subproject_id &&
+          urlPath[5] === 'places' &&
+          urlPath[6] === place_id &&
+          urlPath[7] === 'places' &&
+          urlPath[8] === place_id2 &&
+          urlPath[9] === 'checks' &&
+          urlPath[10] === check_id &&
+          urlPath[11] === 'files'
         : !place_id2 && action_id
-        ? urlPath[0] === 'projects' &&
-          urlPath[1] === project_id &&
-          urlPath[2] === 'subprojects' &&
-          urlPath[3] === subproject_id &&
-          urlPath[4] === 'places' &&
-          urlPath[5] === place_id &&
-          urlPath[6] === 'actions' &&
-          urlPath[7] === action_id &&
-          urlPath[8] === 'files'
+        ? urlPath[1] === 'projects' &&
+          urlPath[2] === project_id &&
+          urlPath[3] === 'subprojects' &&
+          urlPath[4] === subproject_id &&
+          urlPath[5] === 'places' &&
+          urlPath[6] === place_id &&
+          urlPath[7] === 'actions' &&
+          urlPath[8] === action_id &&
+          urlPath[9] === 'files'
         : !place_id2 && check_id
-        ? urlPath[0] === 'projects' &&
-          urlPath[1] === project_id &&
-          urlPath[2] === 'subprojects' &&
-          urlPath[3] === subproject_id &&
-          urlPath[4] === 'places' &&
-          urlPath[5] === place_id &&
-          urlPath[6] === 'checks' &&
-          urlPath[7] === check_id &&
-          urlPath[8] === 'files'
+        ? urlPath[1] === 'projects' &&
+          urlPath[2] === project_id &&
+          urlPath[3] === 'subprojects' &&
+          urlPath[4] === subproject_id &&
+          urlPath[5] === 'places' &&
+          urlPath[6] === place_id &&
+          urlPath[7] === 'checks' &&
+          urlPath[8] === check_id &&
+          urlPath[9] === 'files'
         : place_id2
-        ? urlPath[0] === 'projects' &&
-          urlPath[1] === project_id &&
-          urlPath[2] === 'subprojects' &&
-          urlPath[3] === subproject_id &&
-          urlPath[4] === 'places' &&
-          urlPath[5] === place_id &&
-          urlPath[6] === 'places' &&
-          urlPath[7] === place_id2 &&
-          urlPath[8] === 'files'
+        ? urlPath[1] === 'projects' &&
+          urlPath[2] === project_id &&
+          urlPath[3] === 'subprojects' &&
+          urlPath[4] === subproject_id &&
+          urlPath[5] === 'places' &&
+          urlPath[6] === place_id &&
+          urlPath[7] === 'places' &&
+          urlPath[8] === place_id2 &&
+          urlPath[9] === 'files'
         : place_id
-        ? urlPath[0] === 'projects' &&
-          urlPath[1] === project_id &&
-          urlPath[2] === 'subprojects' &&
-          urlPath[3] === subproject_id &&
-          urlPath[4] === 'places' &&
-          urlPath[5] === place_id &&
-          urlPath[6] === 'files'
+        ? urlPath[1] === 'projects' &&
+          urlPath[2] === project_id &&
+          urlPath[3] === 'subprojects' &&
+          urlPath[4] === subproject_id &&
+          urlPath[5] === 'places' &&
+          urlPath[6] === place_id &&
+          urlPath[7] === 'files'
         : subproject_id
-        ? urlPath[0] === 'projects' &&
-          urlPath[1] === project_id &&
-          urlPath[2] === 'subprojects' &&
-          urlPath[3] === subproject_id &&
-          urlPath[4] === 'files'
+        ? urlPath[1] === 'projects' &&
+          urlPath[2] === project_id &&
+          urlPath[3] === 'subprojects' &&
+          urlPath[4] === subproject_id &&
+          urlPath[5] === 'files'
         : project_id
-        ? urlPath[0] === 'projects' &&
-          urlPath[1] === project_id &&
-          urlPath[2] === 'files'
-        : urlPath[0] === 'files'
+        ? urlPath[1] === 'projects' &&
+          urlPath[2] === project_id &&
+          urlPath[3] === 'files'
+        : urlPath[1] === 'files'
     const isActive = isOpen && urlPath.length === level
 
     const baseArray = useMemo(

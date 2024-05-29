@@ -24,7 +24,7 @@ export const FieldTypesNode = memo(() => {
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const isOpen = urlPath[0] === 'field-types'
+  const isOpen = urlPath[1] === 'field-types'
   const isActive = isOpen && urlPath.length === 1
 
   const onClickButton = useCallback(() => {
