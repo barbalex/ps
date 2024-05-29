@@ -10,7 +10,7 @@ import { AccountNode } from './Account.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 
-export const AccountsNode = memo(({ level = 1 }) => {
+export const AccountsNode = memo(() => {
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -39,8 +39,8 @@ export const AccountsNode = memo(({ level = 1 }) => {
   const parentArray = useMemo(() => ['data'], [])
   const parentUrl = parentArray.join('/')
   const ownArray = useMemo(() => [...parentArray, 'accounts'], [parentArray])
-  
-  // TODO: this only works for urlPath, not for other opened paths!
+
+  // TODO: needs to work not only works for urlPath, for all opened paths!
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
   const isActive = isEqual(urlPath, ownArray)
 
@@ -53,11 +53,13 @@ export const AccountsNode = memo(({ level = 1 }) => {
         isRoot: true,
       })
       // TODO: only navigate if urlPath includes ownArray
-      if (!isOpen) return
-      return navigate({
-        pathname: `/${parentUrl}`,
-        search: searchParams.toString(),
-      })
+      if (ownArray.every((part, i) => urlPath[i] === part)) {
+        navigate({
+          pathname: `/${parentUrl}`,
+          search: searchParams.toString(),
+        })
+      }
+      return
     }
     // TODO: add to openNodes without navigating
     addOpenNodes({
@@ -74,6 +76,7 @@ export const AccountsNode = memo(({ level = 1 }) => {
     ownArray,
     parentUrl,
     searchParams,
+    urlPath,
   ])
 
   return (

@@ -74,9 +74,9 @@ interface Props {
 
 export const Node = memo(
   ({
-    isInActiveNodeArray,
+    isInActiveNodeArray = false,
     isActive,
-    isOpen,
+    isOpen = false,
     level,
     node,
     // id is used as a backup in case the label trigger did not work
