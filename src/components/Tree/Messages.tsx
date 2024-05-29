@@ -30,7 +30,7 @@ export const MessagesNode = memo(() => {
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const isOpen = urlPath[0] === 'messages'
+  const isOpen = urlPath[1] === 'messages'
   const isActive = isOpen && urlPath.length === 1
 
   const onClickButton = useCallback(() => {
@@ -46,7 +46,7 @@ export const MessagesNode = memo(() => {
         search: searchParams.toString(),
       })
     }
-    navigate({ pathname: '/messages', search: searchParams.toString() })
+    navigate({ pathname: '/data/messages', search: searchParams.toString() })
   }, [appState?.app_state_id, db, isOpen, navigate, searchParams])
 
   return (
@@ -58,7 +58,7 @@ export const MessagesNode = memo(() => {
         isInActiveNodeArray={isOpen}
         isActive={isActive}
         childrenCount={messages.length}
-        to={`/messages`}
+        to={`/data/messages`}
         onClickButton={onClickButton}
       />
       {isOpen &&
