@@ -1,18 +1,9 @@
-import { useCallback, memo, useMemo } from 'react'
-import {
-  useLocation,
-  useParams,
-  useNavigate,
-  useSearchParams,
-} from 'react-router-dom'
-import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
+import { memo, useMemo } from 'react'
+import { useLocation } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
 import { Fields as Field } from '../../../generated/client/index.ts'
-import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
-import { useElectric } from '../../ElectricProvider.tsx'
 
 interface Props {
   project_id?: string
@@ -21,70 +12,32 @@ interface Props {
 
 export const FieldNode = memo(({ project_id, field }: Props) => {
   const level: number = project_id ? 4 : 2
-  const params = useParams()
   const location = useLocation()
-  const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-  const { user: authUser } = useCorbado()
-
-  const { db } = useElectric()!
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const isOpen = project_id
-    ? urlPath[1] === 'projects' &&
-      urlPath[2] === project_id &&
-      urlPath[3] === 'fields' &&
-      urlPath[4] === field.field_id
-    : urlPath[1] === 'fields' && params.field_id === field.field_id
-  const isActive = isOpen && urlPath.length === (project_id ? 5 : 3)
-
-  const baseArray = useMemo(
-    () => ['data', ...(project_id ? ['projects', project_id] : []), 'fields'],
-    [project_id],
+  const ownArray = useMemo(
+    () => [
+      'data',
+      ...(project_id ? ['projects', project_id] : []),
+      'fields',
+      field.field_id,
+    ],
+    [field.field_id, project_id],
   )
-  const baseUrl = baseArray.join('/')
+  const ownUrl = `/${ownArray.join('/')}`
 
-  const onClickButton = useCallback(() => {
-    if (isOpen) {
-      removeChildNodes({
-        node: [...baseArray, field.field_id],
-        db,
-        appStateId: appState?.app_state_id,
-      })
-      return navigate({
-        pathname: baseUrl,
-        search: searchParams.toString(),
-      })
-    }
-    navigate({
-      pathname: `${baseUrl}/${field.field_id}`,
-      search: searchParams.toString(),
-    })
-  }, [
-    isOpen,
-    navigate,
-    baseUrl,
-    field.field_id,
-    searchParams,
-    baseArray,
-    db,
-    appState?.app_state_id,
-  ])
+  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+  const isActive = isEqual(urlPath, ownArray)
 
   return (
     <Node
       node={field}
       id={field.field_id}
       level={level}
-      isOpen={isOpen}
-      isInActiveNodeArray={isOpen}
+      isInActiveNodeArray={isInActiveNodeArray}
       isActive={isActive}
       childrenCount={0}
-      to={`${baseUrl}/${field.field_id}`}
-      onClickButton={onClickButton}
+      to={ownUrl}
     />
   )
 })
