@@ -1,12 +1,8 @@
-import { useCallback, memo } from 'react'
-import {
-  useLocation,
-  useParams,
-  useNavigate,
-  useSearchParams,
-} from 'react-router-dom'
+import { useCallback, memo, useMemo } from 'react'
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
+import isEqual from 'lodash/isEqual'
 
 import { Node } from '../Node.tsx'
 import { Projects as Project } from '../../../generated/client/index.ts'
@@ -25,6 +21,7 @@ import { FilesNode } from '../Files.tsx'
 import { Editing } from './Editing.tsx'
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { removeChildNodes } from '../../../modules/tree/removeChildNodes.ts'
+import { addOpenNodes } from '../../../modules/tree/addOpenNodes.ts'
 
 interface Props {
   project: Project
@@ -32,47 +29,71 @@ interface Props {
 }
 
 export const ProjectNode = memo(({ project, level = 2 }: Props) => {
-  const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
+
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
   const designing = appState?.designing ?? false
+  const openNodes = useMemo(
+    () => appState?.tree_open_nodes ?? [],
+    [appState?.tree_open_nodes],
+  )
 
   const showFiles = project.files_active_projects ?? false
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const isOpen =
-    urlPath[1] === 'projects' && params.project_id === project.project_id
-  const isActive = isOpen && urlPath.length === level + 1
+  const parentArray = useMemo(() => ['data', 'projects'], [])
+  const parentUrl = `/${parentArray.join('/')}`
+  const ownArray = useMemo(
+    () => [...parentArray, project.project_id],
+    [parentArray, project.project_id],
+  )
+  const ownUrl = `/${ownArray.join('/')}`
+
+  // needs to work not only works for urlPath, for all opened paths!
+  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+  const isActive = isEqual(urlPath, ownArray)
+
   const onClickButton = useCallback(() => {
     if (isOpen) {
       removeChildNodes({
-        node: ['projects', project.project_id],
+        node: parentArray,
         db,
         appStateId: appState?.app_state_id,
       })
-      return navigate({
-        pathname: '/data/projects',
-        search: searchParams.toString(),
-      })
+      // TODO: only navigate if urlPath includes ownArray
+      if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
+        navigate({
+          pathname: parentUrl,
+          search: searchParams.toString(),
+        })
+      }
+      return
     }
-    navigate({
-      pathname: `/data/projects/${project.project_id}`,
-      search: searchParams.toString(),
+    // add to openNodes without navigating
+    addOpenNodes({
+      nodes: [ownArray],
+      db,
+      appStateId: appState?.app_state_id,
     })
   }, [
     appState?.app_state_id,
     db,
+    isInActiveNodeArray,
     isOpen,
     navigate,
-    project.project_id,
+    ownArray,
+    parentArray,
+    parentUrl,
     searchParams,
+    urlPath.length,
   ])
 
   return (
@@ -85,7 +106,7 @@ export const ProjectNode = memo(({ project, level = 2 }: Props) => {
         isInActiveNodeArray={isOpen}
         isActive={isActive}
         childrenCount={10}
-        to={`/data/projects/${project.project_id}`}
+        to={ownUrl}
         onClickButton={onClickButton}
         sibling={<Editing />}
       />

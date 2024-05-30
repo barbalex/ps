@@ -55,7 +55,7 @@ export const AccountsNode = memo(() => {
         isRoot: true,
       })
       // TODO: only navigate if urlPath includes ownArray
-      if (isInActiveNodeArray && ownArray.length < urlPath.length) {
+      if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
         navigate({
           pathname: parentUrl,
           search: searchParams.toString(),

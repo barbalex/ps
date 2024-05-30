@@ -64,11 +64,6 @@ export const PlaceNode = memo(
     const isActive = isEqual(urlPath, ownArray)
 
     const onClickButton = useCallback(() => {
-      console.log('hello PaceNode, onClickButton', {
-        isOpen,
-        ownArray,
-        isInActiveNodeArray,
-      })
       if (isOpen) {
         removeChildNodes({
           node: parentArray,
@@ -76,7 +71,7 @@ export const PlaceNode = memo(
           appStateId: appState?.app_state_id,
         })
         // only navigate if urlPath includes ownArray
-        if (isInActiveNodeArray && ownArray.length < urlPath.length) {
+        if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
           navigate({ pathname: parentUrl, search: searchParams.toString() })
         }
         return

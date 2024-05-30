@@ -86,7 +86,7 @@ export const PlacesNode = memo(
           appStateId: appState?.app_state_id,
         })
         // only navigate if urlPath includes ownArray
-        if (isInActiveNodeArray && ownArray.length < urlPath.length) {
+        if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
           navigate({
             pathname: parentUrl,
             search: searchParams.toString(),
