@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
+import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
 import { Files as File } from '../../../generated/client/index.ts'
