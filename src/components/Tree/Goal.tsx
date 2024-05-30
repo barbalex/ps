@@ -2,6 +2,8 @@ import { useCallback, memo, useMemo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
+import isEqual from 'lodash/isEqual'
+
 
 import { Node } from './Node.tsx'
 import { Goals as Goal } from '../../../generated/client/index.ts'
