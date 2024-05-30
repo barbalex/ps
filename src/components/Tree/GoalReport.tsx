@@ -36,18 +36,7 @@ export const GoalReportNode = memo(
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isOpen =
-      urlPath[1] === 'projects' &&
-      urlPath[2] === project_id &&
-      urlPath[3] === 'subprojects' &&
-      urlPath[4] === subproject_id &&
-      urlPath[5] === 'goals' &&
-      urlPath[6] === goal_id &&
-      urlPath[7] === 'reports' &&
-      urlPath[8] === goalReport.goal_report_id
-    const isActive = isOpen && urlPath.length === level + 1
-
-    const baseArray = useMemo(
+    const parentArray = useMemo(
       () => [
         'data',
         'projects',
@@ -60,30 +49,51 @@ export const GoalReportNode = memo(
       ],
       [goal_id, project_id, subproject_id],
     )
-    const baseUrl = baseArray.join('/')
+    const parentUrl = `/${parentArray.join('/')}`
+    const ownArray = useMemo(
+      () => [...parentArray, goalReport.goal_report_id],
+      [goalReport.goal_report_id, parentArray],
+    )
+    const ownUrl = `/${ownArray.join('/')}`
+
+    // needs to work not only works for urlPath, for all opened paths!
+    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+    const isActive = isEqual(urlPath, ownArray)
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
         removeChildNodes({
-          node: [...baseArray, goalReport.goal_report_id],
+          node: parentArray,
           db,
           appStateId: appState?.app_state_id,
         })
-        return navigate({ pathname: baseUrl, search: searchParams.toString() })
+        // only navigate if urlPath includes ownArray
+        if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
+          navigate({
+            pathname: parentUrl,
+            search: searchParams.toString(),
+          })
+        }
+        return
       }
-      navigate({
-        pathname: `${baseUrl}/${goalReport.goal_report_id}`,
-        search: searchParams.toString(),
+      // add to openNodes without navigating
+      addOpenNodes({
+        nodes: [ownArray],
+        db,
+        appStateId: appState?.app_state_id,
       })
     }, [
+      appState?.app_state_id,
+      db,
+      isInActiveNodeArray,
       isOpen,
       navigate,
-      baseUrl,
-      goalReport.goal_report_id,
+      ownArray,
+      parentArray,
+      parentUrl,
       searchParams,
-      baseArray,
-      db,
-      appState?.app_state_id,
+      urlPath.length,
     ])
 
     return (
@@ -93,10 +103,10 @@ export const GoalReportNode = memo(
           id={goalReport.goal_report_id}
           level={level}
           isOpen={isOpen}
-          isInActiveNodeArray={isOpen}
+          isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
           childrenCount={10}
-          to={`${baseUrl}/${goalReport.goal_report_id}`}
+          to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen && (
