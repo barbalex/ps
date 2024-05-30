@@ -40,7 +40,7 @@
     "dayjs": "1.11.11",
     "dotenv": "16.4.5",
     "electric-sql": "0.11.3",
-    "framer-motion": "11.2.8",
+    "framer-motion": "11.2.9",
     "is-uuid": "1.0.2",
     "leaflet": "1.9.4",
     "leaflet-draw": "1.0.4",
