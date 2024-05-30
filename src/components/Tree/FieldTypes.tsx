@@ -10,7 +10,7 @@ import { FieldTypeNode } from './FieldType.tsx'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 
-export const FieldTypesNode = memo(({ level = 1 }) => {
+export const FieldTypesNode = memo(() => {
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -37,18 +37,50 @@ export const FieldTypesNode = memo(({ level = 1 }) => {
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const isOpen = urlPath[1] === 'field-types'
-  const isActive = isOpen && urlPath.length === level + 1
+  const parentArray = useMemo(() => ['data'], [])
+  const parentUrl = `/${parentArray.join('/')}`
+  const ownArray = useMemo(() => [...parentArray, 'field-types'], [parentArray])
+  const ownUrl = `/${ownArray.join('/')}`
+
+  // needs to work not only works for urlPath, for all opened paths!
+  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+  const isActive = isEqual(urlPath, ownArray)
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
-      return navigate({
-        pathname: '/data/projects',
-        search: searchParams.toString(),
+      removeChildNodes({
+        node: parentArray,
+        db,
+        appStateId: appState?.app_state_id,
       })
+      // only navigate if urlPath includes ownArray
+      if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
+        navigate({
+          pathname: parentUrl,
+          search: searchParams.toString(),
+        })
+      }
+      return
     }
-    navigate({ pathname: '/data/field-types', search: searchParams.toString() })
-  }, [isOpen, navigate, searchParams])
+    // add to openNodes without navigating
+    addOpenNodes({
+      nodes: [ownArray],
+      db,
+      appStateId: appState?.app_state_id,
+    })
+  }, [
+    appState?.app_state_id,
+    db,
+    isInActiveNodeArray,
+    isOpen,
+    navigate,
+    ownArray,
+    parentArray,
+    parentUrl,
+    searchParams,
+    urlPath.length,
+  ])
 
   return (
     <>
@@ -56,10 +88,10 @@ export const FieldTypesNode = memo(({ level = 1 }) => {
         node={fieldTypesNode}
         level={1}
         isOpen={isOpen}
-        isInActiveNodeArray={isOpen}
+        isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
         childrenCount={fieldTypes.length}
-        to={`/data/field-types`}
+        to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen &&
