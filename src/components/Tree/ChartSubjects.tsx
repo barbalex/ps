@@ -72,7 +72,7 @@ export const ChartSubjectsNode = memo(
     const ownArray = useMemo(() => [...parentArray, 'subjects'], [parentArray])
     const ownUrl = `/${ownArray.join('/')}`
 
-    // TODO: needs to work not only works for urlPath, for all opened paths!
+    // needs to work not only works for urlPath, for all opened paths!
     const isOpen = openNodes.some((array) => isEqual(array, ownArray))
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)

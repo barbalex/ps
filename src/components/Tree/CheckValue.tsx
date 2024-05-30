@@ -1,15 +1,12 @@
-import { useCallback, memo, useMemo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
-import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
+import { memo, useMemo } from 'react'
+import { useLocation } from 'react-router-dom'
+import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
 import {
   Check_values as CheckValue,
   Places as Place,
 } from '../../generated/client/index.ts'
-import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
-import { useElectric } from '../../ElectricProvider.tsx'
 
 interface Props {
   project_id: string
@@ -32,39 +29,9 @@ export const CheckValueNode = memo(
     level = 10,
   }: Props) => {
     const location = useLocation()
-    const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
-    const { user: authUser } = useCorbado()
-
-    const { db } = useElectric()!
-    const { results: appState } = useLiveQuery(
-      db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-    )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isOpenBase =
-      urlPath[1] === 'projects' &&
-      urlPath[2] === project_id &&
-      urlPath[3] === 'subprojects' &&
-      urlPath[4] === subproject_id &&
-      urlPath[5] === 'places' &&
-      urlPath[6] === (place_id ?? place.place_id)
-    const isOpen = place_id
-      ? isOpenBase &&
-        urlPath[7] === 'places' &&
-        urlPath[8] === place.place_id &&
-        urlPath[9] === 'checks' &&
-        urlPath[10] === check_id &&
-        urlPath[11] === 'values' &&
-        urlPath[12] === checkValue.check_value_id
-      : isOpenBase &&
-        urlPath[7] === 'checks' &&
-        urlPath[8] === check_id &&
-        urlPath[9] === 'values' &&
-        urlPath[10] === checkValue.check_value_id
-    const isActive = isOpen && urlPath.length === level + 1
-
-    const baseArray = useMemo(
+    const ownArray = useMemo(
       () => [
         'data',
         'projects',
@@ -77,46 +44,31 @@ export const CheckValueNode = memo(
         'checks',
         check_id,
         'values',
+        checkValue.check_value_id,
       ],
-      [check_id, place.place_id, place_id, project_id, subproject_id],
+      [
+        checkValue.check_value_id,
+        check_id,
+        place.place_id,
+        place_id,
+        project_id,
+        subproject_id,
+      ],
     )
-    const baseUrl = baseArray.join('/')
+    const ownUrl = `/${ownArray.join('/')}`
 
-    const onClickButton = useCallback(() => {
-      if (isOpen) {
-        removeChildNodes({
-          node: [...baseArray, checkValue.check_value_id],
-          db,
-          appStateId: appState?.app_state_id,
-        })
-        return navigate({ pathname: baseUrl, search: searchParams.toString() })
-      }
-      navigate({
-        pathname: `${baseUrl}/${checkValue.check_value_id}`,
-        search: searchParams.toString(),
-      })
-    }, [
-      isOpen,
-      navigate,
-      baseUrl,
-      checkValue.check_value_id,
-      searchParams,
-      baseArray,
-      db,
-      appState?.app_state_id,
-    ])
+    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+    const isActive = isEqual(urlPath, ownArray)
 
     return (
       <Node
         node={checkValue}
         id={checkValue.check_value_id}
         level={level}
-        isOpen={isOpen}
-        isInActiveNodeArray={isOpen}
+        isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
         childrenCount={0}
-        to={`${baseUrl}/${checkValue.check_value_id}`}
-        onClickButton={onClickButton}
+        to={ownUrl}
       />
     )
   },
