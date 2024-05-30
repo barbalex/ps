@@ -62,7 +62,14 @@ export const CheckNode = memo(
       ],
       [place.place_id, place_id, project_id, subproject_id],
     )
-    const baseUrl = parentArray.join('/')
+    const parentUrl = `/${parentArray.join('/')}`
+    const ownArray = useMemo(() => [...parentArray, check.check_id], [check.check_id, parentArray])
+    const ownUrl = `/${ownArray.join('/')}`
+  
+    // needs to work not only works for urlPath, for all opened paths!
+    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+    const isActive = isEqual(urlPath, ownArray)
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
