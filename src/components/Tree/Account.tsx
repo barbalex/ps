@@ -18,7 +18,7 @@ export const AccountNode = memo(({ account, level = 2 }: Props) => {
     () => ['data', 'accounts', account.account_id],
     [account.account_id],
   )
-  const ownUrl = ownArray.join('/')
+  const ownUrl = `/${ownArray.join('/')}`
 
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)

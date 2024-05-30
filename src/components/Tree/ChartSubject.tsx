@@ -49,7 +49,7 @@ export const ChartSubjectNode = ({
       subproject_id,
     ],
   )
-  const ownUrl = ownArray.join('/')
+  const ownUrl = `/${ownArray.join('/')}`
 
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
