@@ -65,7 +65,7 @@ export const ChecksNode = memo(
     const parentUrl = `/${parentArray.join('/')}`
     const ownArray = useMemo(() => [...parentArray, 'checks'], [parentArray])
     const ownUrl = `/${ownArray.join('/')}`
-  
+
     // needs to work not only works for urlPath, for all opened paths!
     const isOpen = openNodes.some((array) => isEqual(array, ownArray))
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
@@ -74,24 +74,36 @@ export const ChecksNode = memo(
     const onClickButton = useCallback(() => {
       if (isOpen) {
         removeChildNodes({
-          node: [...parentArray, 'checks'],
+          node: parentArray,
           db,
           appStateId: appState?.app_state_id,
         })
-        return navigate({ pathname: baseUrl, search: searchParams.toString() })
+        // only navigate if urlPath includes ownArray
+        if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
+          navigate({
+            pathname: parentUrl,
+            search: searchParams.toString(),
+          })
+        }
+        return
       }
-      navigate({
-        pathname: `${baseUrl}/checks`,
-        search: searchParams.toString(),
+      // add to openNodes without navigating
+      addOpenNodes({
+        nodes: [ownArray],
+        db,
+        appStateId: appState?.app_state_id,
       })
     }, [
       appState?.app_state_id,
-      parentArray,
-      baseUrl,
       db,
+      isInActiveNodeArray,
       isOpen,
       navigate,
+      ownArray,
+      parentArray,
+      parentUrl,
       searchParams,
+      urlPath.length,
     ])
 
     return (
@@ -100,10 +112,10 @@ export const ChecksNode = memo(
           node={checksNode}
           level={level}
           isOpen={isOpen}
-          isInActiveNodeArray={isOpen}
+          isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
           childrenCount={checks.length}
-          to={`${baseUrl}/checks`}
+          to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&

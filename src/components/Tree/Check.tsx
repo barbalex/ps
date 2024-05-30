@@ -63,9 +63,12 @@ export const CheckNode = memo(
       [place.place_id, place_id, project_id, subproject_id],
     )
     const parentUrl = `/${parentArray.join('/')}`
-    const ownArray = useMemo(() => [...parentArray, check.check_id], [check.check_id, parentArray])
+    const ownArray = useMemo(
+      () => [...parentArray, check.check_id],
+      [check.check_id, parentArray],
+    )
     const ownUrl = `/${ownArray.join('/')}`
-  
+
     // needs to work not only works for urlPath, for all opened paths!
     const isOpen = openNodes.some((array) => isEqual(array, ownArray))
     const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
@@ -74,25 +77,36 @@ export const CheckNode = memo(
     const onClickButton = useCallback(() => {
       if (isOpen) {
         removeChildNodes({
-          node: [...parentArray, check.check_id],
+          node: parentArray,
           db,
           appStateId: appState?.app_state_id,
         })
-        return navigate({ pathname: baseUrl, search: searchParams.toString() })
+        // only navigate if urlPath includes ownArray
+        if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
+          navigate({
+            pathname: parentUrl,
+            search: searchParams.toString(),
+          })
+        }
+        return
       }
-      navigate({
-        pathname: `${baseUrl}/${check.check_id}`,
-        search: searchParams.toString(),
+      // add to openNodes without navigating
+      addOpenNodes({
+        nodes: [ownArray],
+        db,
+        appStateId: appState?.app_state_id,
       })
     }, [
+      appState?.app_state_id,
+      db,
+      isInActiveNodeArray,
       isOpen,
       navigate,
-      baseUrl,
-      check.check_id,
-      searchParams,
+      ownArray,
       parentArray,
-      db,
-      appState?.app_state_id,
+      parentUrl,
+      searchParams,
+      urlPath.length,
     ])
 
     return (
@@ -102,10 +116,10 @@ export const CheckNode = memo(
           id={check.check_id}
           level={level}
           isOpen={isOpen}
-          isInActiveNodeArray={isOpen}
+          isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
           childrenCount={10}
-          to={`${baseUrl}/${check.check_id}`}
+          to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen && (

@@ -83,24 +83,36 @@ export const CheckValuesNode = memo(
     const onClickButton = useCallback(() => {
       if (isOpen) {
         removeChildNodes({
-          node: [...parentArray, 'values'],
+          node: parentArray,
           db,
           appStateId: appState?.app_state_id,
         })
-        return navigate({ pathname: baseUrl, search: searchParams.toString() })
+        // only navigate if urlPath includes ownArray
+        if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
+          navigate({
+            pathname: parentUrl,
+            search: searchParams.toString(),
+          })
+        }
+        return
       }
-      navigate({
-        pathname: `${baseUrl}/values`,
-        search: searchParams.toString(),
+      // add to openNodes without navigating
+      addOpenNodes({
+        nodes: [ownArray],
+        db,
+        appStateId: appState?.app_state_id,
       })
     }, [
       appState?.app_state_id,
-      parentArray,
-      baseUrl,
       db,
+      isInActiveNodeArray,
       isOpen,
       navigate,
+      ownArray,
+      parentArray,
+      parentUrl,
       searchParams,
+      urlPath.length,
     ])
 
     return (
@@ -109,10 +121,10 @@ export const CheckValuesNode = memo(
           node={checkValuesNode}
           level={level}
           isOpen={isOpen}
-          isInActiveNodeArray={isOpen}
+          isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
           childrenCount={checkValues.length}
-          to={`${baseUrl}/values`}
+          to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
