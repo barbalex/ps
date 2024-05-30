@@ -43,18 +43,19 @@ export const AccountsNode = memo(() => {
 
   // TODO: needs to work not only works for urlPath, for all opened paths!
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
       removeChildNodes({
-        node: ownArray,
+        node: parentArray,
         db,
         appStateId: appState?.app_state_id,
         isRoot: true,
       })
       // TODO: only navigate if urlPath includes ownArray
-      if (ownArray.every((part, i) => urlPath[i] === part)) {
+      if (isInActiveNodeArray && ownArray.length < urlPath.length) {
         navigate({
           pathname: parentUrl,
           search: searchParams.toString(),
@@ -72,12 +73,14 @@ export const AccountsNode = memo(() => {
   }, [
     appState?.app_state_id,
     db,
+    isInActiveNodeArray,
     isOpen,
     navigate,
     ownArray,
+    parentArray,
     parentUrl,
     searchParams,
-    urlPath,
+    urlPath.length,
   ])
 
   return (
@@ -86,7 +89,7 @@ export const AccountsNode = memo(() => {
         node={accountsNode}
         level={1}
         isOpen={isOpen}
-        isInActiveNodeArray={isOpen}
+        isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
         childrenCount={accounts.length}
         to={ownUrl}

@@ -58,19 +58,25 @@ export const PlaceNode = memo(
     )
     const ownUrl = `/${ownArray.join('/')}`
 
-    // TODO: needs to work not only works for urlPath, for all opened paths!
+    // needs to work not only works for urlPath, for all opened paths!
     const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
     const isActive = isEqual(urlPath, ownArray)
 
     const onClickButton = useCallback(() => {
+      console.log('hello PaceNode, onClickButton', {
+        isOpen,
+        ownArray,
+        isInActiveNodeArray,
+      })
       if (isOpen) {
         removeChildNodes({
-          node: ownArray,
+          node: parentArray,
           db,
           appStateId: appState?.app_state_id,
         })
         // only navigate if urlPath includes ownArray
-        if (ownArray.every((part, i) => urlPath[i] === part)) {
+        if (isInActiveNodeArray && ownArray.length < urlPath.length) {
           navigate({ pathname: parentUrl, search: searchParams.toString() })
         }
         return
@@ -84,9 +90,11 @@ export const PlaceNode = memo(
     }, [
       isOpen,
       ownArray,
+      isInActiveNodeArray,
       db,
       appState?.app_state_id,
-      urlPath,
+      parentArray,
+      urlPath.length,
       navigate,
       parentUrl,
       searchParams,
@@ -99,7 +107,7 @@ export const PlaceNode = memo(
           id={place.place_id}
           level={level}
           isOpen={isOpen}
-          isInActiveNodeArray={isOpen}
+          isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
           childrenCount={10}
           to={ownUrl}
