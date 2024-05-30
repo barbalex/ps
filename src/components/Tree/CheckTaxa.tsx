@@ -9,6 +9,7 @@ import { Node } from './Node.tsx'
 import { CheckTaxonNode } from './CheckTaxon.tsx'
 import { Places as Place } from '../../generated/client/index.ts'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
+import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 
 interface Props {
   project_id: string
@@ -40,8 +41,13 @@ export const CheckTaxaNode = memo(
         orderBy: { label: 'asc' },
       }),
     )
+
     const { results: appState } = useLiveQuery(
       db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+    )
+    const openNodes = useMemo(
+      () => appState?.tree_open_nodes ?? [],
+      [appState?.tree_open_nodes],
     )
 
     const checkTaxaNode = useMemo(
@@ -50,27 +56,7 @@ export const CheckTaxaNode = memo(
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isOpenBase =
-      urlPath[1] === 'projects' &&
-      urlPath[2] === project_id &&
-      urlPath[3] === 'subprojects' &&
-      urlPath[4] === subproject_id &&
-      urlPath[5] === 'places' &&
-      urlPath[6] === (place_id ?? place.place_id)
-    const isOpen = place_id
-      ? isOpenBase &&
-        urlPath[7] === 'places' &&
-        urlPath[8] === place.place_id &&
-        urlPath[9] === 'checks' &&
-        urlPath[10] === check_id &&
-        urlPath[11] === 'taxa'
-      : isOpenBase &&
-        urlPath[7] === 'checks' &&
-        urlPath[8] === check_id &&
-        urlPath[9] === 'taxa'
-    const isActive = isOpen && urlPath.length === level + 1
-
-    const baseArray = useMemo(
+    const parentArray = useMemo(
       () => [
         'data',
         'projects',
@@ -85,12 +71,12 @@ export const CheckTaxaNode = memo(
       ],
       [check_id, place.place_id, place_id, project_id, subproject_id],
     )
-    const baseUrl = baseArray.join('/')
+    const baseUrl = parentArray.join('/')
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
         removeChildNodes({
-          node: [...baseArray, 'taxa'],
+          node: [...parentArray, 'taxa'],
           db,
           appStateId: appState?.app_state_id,
         })
@@ -99,7 +85,7 @@ export const CheckTaxaNode = memo(
       navigate({ pathname: `${baseUrl}/taxa`, search: searchParams.toString() })
     }, [
       appState?.app_state_id,
-      baseArray,
+      parentArray,
       baseUrl,
       db,
       isOpen,
