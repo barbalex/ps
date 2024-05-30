@@ -1,7 +1,5 @@
-import { useCallback, memo, useMemo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
-import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
+import { memo, useMemo } from 'react'
+import { useLocation } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
@@ -9,9 +7,6 @@ import {
   Action_report_values as ActionReportValue,
   Places as Place,
 } from '../../generated/client/index.ts'
-import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
-import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { useElectric } from '../../ElectricProvider.tsx'
 
 interface Props {
   project_id: string
@@ -36,47 +31,9 @@ export const ActionReportValueNode = memo(
     level = 12,
   }: Props) => {
     const location = useLocation()
-    const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
-    const { user: authUser } = useCorbado()
-
-    const { db } = useElectric()!
-    const { results: appState } = useLiveQuery(
-      db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-    )
-    const openNodes = useMemo(
-      () => appState?.tree_open_nodes ?? [],
-      [appState?.tree_open_nodes],
-    )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isOpenBase =
-      urlPath[1] === 'projects' &&
-      urlPath[2] === project_id &&
-      urlPath[3] === 'subprojects' &&
-      urlPath[4] === subproject_id &&
-      urlPath[5] === 'places' &&
-      urlPath[6] === (place_id ?? place.place_id)
-    const isOpen = place_id
-      ? isOpenBase &&
-        urlPath[7] === 'places' &&
-        urlPath[8] === place.place_id &&
-        urlPath[9] === 'actions' &&
-        urlPath[10] === action_id &&
-        urlPath[11] === 'reports' &&
-        urlPath[12] === action_report_id &&
-        urlPath[13] === 'values' &&
-        urlPath[14] === actionReportValue.action_report_value_id
-      : isOpenBase &&
-        urlPath[7] === 'actions' &&
-        urlPath[8] === action_id &&
-        urlPath[9] === 'reports' &&
-        urlPath[10] === action_report_id &&
-        urlPath[11] === 'values' &&
-        urlPath[12] === actionReportValue.action_report_value_id
-    const isActive = isOpen && urlPath.length === level + 1
-
-    const baseArray = useMemo(
+    const parentArray = useMemo(
       () => [
         'data',
         'projects',
@@ -101,43 +58,25 @@ export const ActionReportValueNode = memo(
         action_report_id,
       ],
     )
-    const baseUrl = baseArray.join('/')
+    const ownArray = useMemo(
+      () => [...parentArray, actionReportValue.action_report_value_id],
+      [actionReportValue.action_report_value_id, parentArray],
+    )
+    const ownUrl = `/${ownArray.join('/')}`
 
-    const onClickButton = useCallback(() => {
-      if (isOpen) {
-        removeChildNodes({
-          node: [...baseArray, actionReportValue.action_report_value_id],
-          db,
-          appStateId: appState?.app_state_id,
-        })
-        return navigate({ pathname: baseUrl, search: searchParams.toString() })
-      }
-      navigate({
-        pathname: `${baseUrl}/${actionReportValue.action_report_value_id}`,
-        search: searchParams.toString(),
-      })
-    }, [
-      isOpen,
-      navigate,
-      baseUrl,
-      actionReportValue.action_report_value_id,
-      searchParams,
-      baseArray,
-      db,
-      appState?.app_state_id,
-    ])
+    // needs to work not only works for urlPath, for all opened paths!
+    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+    const isActive = isEqual(urlPath, ownArray)
 
     return (
       <Node
         node={actionReportValue}
         id={actionReportValue.action_report_value_id}
         level={level}
-        isOpen={isOpen}
-        isInActiveNodeArray={isOpen}
+        isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
         childrenCount={0}
-        to={`${baseUrl}/${actionReportValue.action_report_value_id}`}
-        onClickButton={onClickButton}
+        to={ownUrl}
       />
     )
   },
