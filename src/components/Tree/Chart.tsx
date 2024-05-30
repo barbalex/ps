@@ -1,10 +1,5 @@
 import { useCallback, useMemo } from 'react'
-import {
-  useLocation,
-  useParams,
-  useNavigate,
-  useSearchParams,
-} from 'react-router-dom'
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 import isEqual from 'lodash/isEqual'
@@ -33,7 +28,6 @@ export const ChartNode = ({
   chart,
   level = 2,
 }: Props) => {
-  const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -49,42 +43,7 @@ export const ChartNode = ({
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const isOpen = place_id2
-    ? urlPath[1] === 'projects' &&
-      urlPath[2] === project_id &&
-      urlPath[3] === 'subprojects' &&
-      urlPath[4] === subproject_id &&
-      urlPath[5] === 'places' &&
-      urlPath[6] === place_id &&
-      urlPath[7] === 'places' &&
-      urlPath[8] === place_id2 &&
-      urlPath[9] === 'charts' &&
-      params.chart_id === chart.chart_id
-    : place_id
-    ? urlPath[1] === 'projects' &&
-      urlPath[2] === project_id &&
-      urlPath[3] === 'subprojects' &&
-      urlPath[4] === subproject_id &&
-      urlPath[5] === 'places' &&
-      urlPath[6] === place_id &&
-      urlPath[7] === 'charts' &&
-      params.chart_id === chart.chart_id
-    : subproject_id
-    ? urlPath[1] === 'projects' &&
-      urlPath[2] === project_id &&
-      urlPath[3] === 'subprojects' &&
-      urlPath[4] === subproject_id &&
-      urlPath[5] === 'charts' &&
-      params.chart_id === chart.chart_id
-    : project_id
-    ? urlPath[1] === 'projects' &&
-      urlPath[2] === project_id &&
-      urlPath[3] === 'charts' &&
-      params.chart_id === chart.chart_id
-    : urlPath[1] === 'charts' && params.chart_id === chart.chart_id
-  const isActive = isOpen && urlPath.length === level + 1
-
-  const baseArray = useMemo(
+  const parentArray = useMemo(
     () => [
       'data',
       ...(project_id ? ['projects', project_id] : []),
@@ -95,30 +54,51 @@ export const ChartNode = ({
     ],
     [place_id, place_id2, project_id, subproject_id],
   )
-  const baseUrl = baseArray.join('/')
+  const parentUrl = `/${parentArray.join('/')}`
+  const ownArray = useMemo(
+    () => [...parentArray, chart.chart_id],
+    [chart.chart_id, parentArray],
+  )
+  const ownUrl = `/${ownArray.join('/')}`
+
+  // needs to work not only works for urlPath, for all opened paths!
+  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+  const isActive = isEqual(urlPath, ownArray)
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
       removeChildNodes({
-        node: [...baseArray, chart.chart_id],
+        node: parentArray,
         db,
         appStateId: appState?.app_state_id,
       })
-      return navigate({ pathname: baseUrl, search: searchParams.toString() })
+      // only navigate if urlPath includes ownArray
+      if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
+        navigate({
+          pathname: parentUrl,
+          search: searchParams.toString(),
+        })
+      }
+      return
     }
-    navigate({
-      pathname: `${baseUrl}/${chart.chart_id}`,
-      search: searchParams.toString(),
+    // add to openNodes without navigating
+    addOpenNodes({
+      nodes: [ownArray],
+      db,
+      appStateId: appState?.app_state_id,
     })
   }, [
+    appState?.app_state_id,
+    db,
+    isInActiveNodeArray,
     isOpen,
     navigate,
-    baseUrl,
-    chart.chart_id,
+    ownArray,
+    parentArray,
+    parentUrl,
     searchParams,
-    baseArray,
-    db,
-    appState?.app_state_id,
+    urlPath.length,
   ])
 
   return (
@@ -128,10 +108,10 @@ export const ChartNode = ({
         id={chart.chart_id}
         level={level}
         isOpen={isOpen}
-        isInActiveNodeArray={isOpen}
+        isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
         childrenCount={0}
-        to={`${baseUrl}/${chart.chart_id}`}
+        to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen && (
