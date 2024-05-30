@@ -42,47 +42,52 @@ export const FieldsNode = memo(({ project_id }: Props) => {
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const isOpen = project_id
-    ? urlPath[1] === 'projects' &&
-      urlPath[2] === project_id &&
-      urlPath[3] === 'fields'
-    : urlPath[1] === 'fields'
-  const isActive = isOpen && urlPath.length === (project_id ? 4 : 2)
-
-  const baseArray = useMemo(
+  const parentArray = useMemo(
     () => ['data', 'projects', ...(project_id ? [project_id] : [])],
     [project_id],
   )
-  const baseUrl = baseArray.join('/')
+  const parentUrl = `/${parentArray.join('/')}`
+  const ownArray = useMemo(() => [...parentArray, 'fields'], [parentArray])
+  const ownUrl = `/${ownArray.join('/')}`
+
+  // needs to work not only works for urlPath, for all opened paths!
+  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+  const isActive = isEqual(urlPath, ownArray)
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
       removeChildNodes({
-        node: [...baseArray, 'fields'],
+        node: parentArray,
         db,
         appStateId: appState?.app_state_id,
       })
-      return navigate({
-        pathname: baseUrl,
-        search: searchParams.toString(),
-      })
+      // only navigate if urlPath includes ownArray
+      if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
+        navigate({
+          pathname: parentUrl,
+          search: searchParams.toString(),
+        })
+      }
+      return
     }
-    if (project_id) {
-      return navigate({
-        pathname: `/data/projects/${project_id}/fields`,
-        search: searchParams.toString(),
-      })
-    }
-    navigate({ pathname: '/data/fields', search: searchParams.toString() })
+    // add to openNodes without navigating
+    addOpenNodes({
+      nodes: [ownArray],
+      db,
+      appStateId: appState?.app_state_id,
+    })
   }, [
     appState?.app_state_id,
-    baseArray,
-    baseUrl,
     db,
+    isInActiveNodeArray,
     isOpen,
     navigate,
-    project_id,
+    ownArray,
+    parentArray,
+    parentUrl,
     searchParams,
+    urlPath.length,
   ])
 
   return (
@@ -91,10 +96,10 @@ export const FieldsNode = memo(({ project_id }: Props) => {
         node={fieldsNode}
         level={project_id ? 3 : 1}
         isOpen={isOpen}
-        isInActiveNodeArray={isOpen}
+        isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
         childrenCount={fields.length}
-        to={project_id ? `/data/projects/${project_id}/fields` : `/data/fields`}
+        to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen &&
