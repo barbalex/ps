@@ -65,7 +65,7 @@ export const ActionReportNode = memo(
       ],
       [project_id, subproject_id, place_id, place.place_id, action_id],
     )
-    const parentUrl = parentArray.join('/')
+    const parentUrl = `/${parentArray.join('/')}`
     const ownArray = useMemo(
       () => [...parentArray, actionReport.action_report_id],
       [actionReport.action_report_id, parentArray],
