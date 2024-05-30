@@ -41,7 +41,7 @@ export const ChartSubjectsNode = memo(
         orderBy: { label: 'asc' },
       }),
     )
-    
+
     const { results: appState } = useLiveQuery(
       db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
     )
@@ -56,46 +56,7 @@ export const ChartSubjectsNode = memo(
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isOpen = place_id2
-      ? urlPath[1] === 'projects' &&
-        urlPath[2] === project_id &&
-        urlPath[3] === 'subprojects' &&
-        urlPath[4] === subproject_id &&
-        urlPath[5] === 'places' &&
-        urlPath[6] === place_id &&
-        urlPath[7] === 'places' &&
-        urlPath[8] === place_id2 &&
-        urlPath[9] === 'charts' &&
-        urlPath[10] === chart_id &&
-        urlPath[11] === 'subjects'
-      : place_id
-      ? urlPath[1] === 'projects' &&
-        urlPath[2] === project_id &&
-        urlPath[3] === 'subprojects' &&
-        urlPath[4] === subproject_id &&
-        urlPath[5] === 'places' &&
-        urlPath[6] === place_id &&
-        urlPath[7] === 'charts' &&
-        urlPath[8] === chart_id &&
-        urlPath[9] === 'subjects'
-      : subproject_id
-      ? urlPath[1] === 'projects' &&
-        urlPath[2] === project_id &&
-        urlPath[3] === 'subprojects' &&
-        urlPath[4] === subproject_id &&
-        urlPath[5] === 'charts' &&
-        urlPath[6] === chart_id &&
-        urlPath[7] === 'subjects'
-      : project_id
-      ? urlPath[1] === 'projects' &&
-        urlPath[2] === project_id &&
-        urlPath[3] === 'charts' &&
-        urlPath[4] === chart_id &&
-        urlPath[8] === 'subjects'
-      : false
-    const isActive = isOpen && urlPath.length === level + 1
-
-    const baseArray = useMemo(
+    const parentArray = useMemo(
       () => [
         'data',
         ...(project_id ? ['projects', project_id] : []),
@@ -107,29 +68,48 @@ export const ChartSubjectsNode = memo(
       ],
       [chart_id, place_id, place_id2, project_id, subproject_id],
     )
-    const baseUrl = baseArray.join('/')
+    const parentUrl = `/${parentArray.join('/')}`
+    const ownArray = useMemo(() => [...parentArray, 'subjects'], [parentArray])
+    const ownUrl = `/${ownArray.join('/')}`
+
+    // TODO: needs to work not only works for urlPath, for all opened paths!
+    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+    const isActive = isEqual(urlPath, ownArray)
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
         removeChildNodes({
-          node: [...baseArray, 'subjects'],
+          node: parentArray,
           db,
           appStateId: appState?.app_state_id,
         })
-        return navigate({ pathname: baseUrl, search: searchParams.toString() })
+        // only navigate if urlPath includes ownArray
+        if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
+          navigate({
+            pathname: parentUrl,
+            search: searchParams.toString(),
+          })
+        }
+        return
       }
-      navigate({
-        pathname: `${baseUrl}/subjects`,
-        search: searchParams.toString(),
+      // add to openNodes without navigating
+      addOpenNodes({
+        nodes: [ownArray],
+        db,
+        appStateId: appState?.app_state_id,
       })
     }, [
       appState?.app_state_id,
-      baseArray,
-      baseUrl,
       db,
+      isInActiveNodeArray,
       isOpen,
       navigate,
+      ownArray,
+      parentArray,
+      parentUrl,
       searchParams,
+      urlPath.length,
     ])
 
     return (
@@ -138,10 +118,10 @@ export const ChartSubjectsNode = memo(
           node={chartSubjectsNode}
           level={level}
           isOpen={isOpen}
-          isInActiveNodeArray={isOpen}
+          isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
           childrenCount={chartSubjects.length}
-          to={`${baseUrl}/subjects`}
+          to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
