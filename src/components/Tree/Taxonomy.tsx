@@ -41,16 +41,16 @@ export const TaxonomyNode = memo(
       urlPath[4] === taxonomy.taxonomy_id
     const isActive = isOpen && urlPath.length === level + 1
 
-    const baseArray = useMemo(
+    const parentArray = useMemo(
       () => ['data', 'projects', project_id, 'taxonomies'],
       [project_id],
     )
-    const baseUrl = baseArray.join('/')
+    const baseUrl = parentArray.join('/')
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
         removeChildNodes({
-          node: [...baseArray, taxonomy.taxonomy_id],
+          node: [...parentArray, taxonomy.taxonomy_id],
           db,
           appStateId: appState?.app_state_id,
         })
@@ -62,7 +62,7 @@ export const TaxonomyNode = memo(
       })
     }, [
       appState?.app_state_id,
-      baseArray,
+      parentArray,
       baseUrl,
       db,
       isOpen,
