@@ -45,26 +45,53 @@ export const TaxaNode = memo(
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isOpen =
-      urlPath[1] === 'projects' &&
-      urlPath[2] === project_id &&
-      urlPath[3] === 'taxonomies' &&
-      urlPath[4] === taxonomy_id &&
-      urlPath[5] === 'taxa'
-    const isActive = isOpen && urlPath.length === level + 1
-
     const parentArray = useMemo(
       () => ['data', 'projects', project_id, 'taxonomies', taxonomy_id],
       [project_id, taxonomy_id],
     )
-    const baseUrl = `/data/projects/${project_id}/taxonomies/${taxonomy_id}`
+    const parentUrl = `/${parentArray.join('/')}`
+    const ownArray = useMemo(() => [...parentArray, 'taxa'], [parentArray])
+    const ownUrl = `/${ownArray.join('/')}`
+
+    // needs to work not only works for urlPath, for all opened paths!
+    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+    const isActive = isEqual(urlPath, ownArray)
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
-        return navigate({ pathname: baseUrl, search: searchParams.toString() })
+        removeChildNodes({
+          node: parentArray,
+          db,
+          appStateId: appState?.app_state_id,
+        })
+        // only navigate if urlPath includes ownArray
+        if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
+          navigate({
+            pathname: parentUrl,
+            search: searchParams.toString(),
+          })
+        }
+        return
       }
-      navigate({ pathname: `${baseUrl}/taxa`, search: searchParams.toString() })
-    }, [isOpen, navigate, baseUrl, searchParams])
+      // add to openNodes without navigating
+      addOpenNodes({
+        nodes: [ownArray],
+        db,
+        appStateId: appState?.app_state_id,
+      })
+    }, [
+      appState?.app_state_id,
+      db,
+      isInActiveNodeArray,
+      isOpen,
+      navigate,
+      ownArray,
+      parentArray,
+      parentUrl,
+      searchParams,
+      urlPath.length,
+    ])
 
     return (
       <>
@@ -72,10 +99,10 @@ export const TaxaNode = memo(
           node={taxaNode}
           level={level}
           isOpen={isOpen}
-          isInActiveNodeArray={isOpen}
+          isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
           childrenCount={taxa.length}
-          to={`${baseUrl}/taxa`}
+          to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
