@@ -1,17 +1,10 @@
-import { useCallback, memo } from 'react'
-import {
-  useLocation,
-  useParams,
-  useNavigate,
-  useSearchParams,
-} from 'react-router-dom'
-import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
+import { memo, useMemo } from 'react'
+import { useLocation } from 'react-router-dom'
+import isEqual from 'lodash/isEqual'
+
 
 import { Node } from './Node.tsx'
 import { WidgetsForFields as WidgetForField } from '../../../generated/client/index.ts'
-import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
-import { useElectric } from '../../ElectricProvider.tsx'
 
 interface Props {
   widgetForField: WidgetForField
@@ -20,59 +13,27 @@ interface Props {
 
 export const WidgetForFieldNode = memo(
   ({ widgetForField, level = 2 }: Props) => {
-    const params = useParams()
     const location = useLocation()
-    const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
-    const { user: authUser } = useCorbado()
-
-    const { db } = useElectric()!
-    const { results: appState } = useLiveQuery(
-      db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-    )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isOpen =
-      urlPath[1] === 'widgets-for-fields' &&
-      params.widget_for_field_id === widgetForField.widget_for_field_id
-    const isActive = isOpen && urlPath.length === level + 1
+    const ownArray = useMemo(
+      () => ['data', 'widgets-for-fields', widgetForField.widget_for_field_id],
+      [widgetForField.widget_for_field_id],
+    )
+    const ownUrl = `/${ownArray.join('/')}`
 
-    const onClickButton = useCallback(() => {
-      if (isOpen) {
-        removeChildNodes({
-          node: ['widgets-for-fields', widgetForField.widget_for_field_id],
-          db,
-          appStateId: appState?.app_state_id,
-        })
-        return navigate({
-          pathname: '/data/widgets-for-fields',
-          search: searchParams.toString(),
-        })
-      }
-      navigate({
-        pathname: `/data/widgets-for-fields/${widgetForField.widget_for_field_id}`,
-        search: searchParams.toString(),
-      })
-    }, [
-      appState?.app_state_id,
-      db,
-      isOpen,
-      navigate,
-      searchParams,
-      widgetForField.widget_for_field_id,
-    ])
+    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+    const isActive = isEqual(urlPath, ownArray)
 
     return (
       <Node
         node={widgetForField}
         id={widgetForField.widget_for_field_id}
         level={level}
-        isOpen={isOpen}
-        isInActiveNodeArray={isOpen}
+        isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
         childrenCount={0}
-        to={`/data/widgets-for-fields/${widgetForField.widget_for_field_id}`}
-        onClickButton={onClickButton}
+        to={ownUrl}
       />
     )
   },
