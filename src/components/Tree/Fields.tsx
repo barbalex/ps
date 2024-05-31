@@ -58,7 +58,7 @@ export const FieldsNode = memo(({ project_id }: Props) => {
   const onClickButton = useCallback(() => {
     if (isOpen) {
       removeChildNodes({
-        node: parentArray,
+        node: ownArray,
         db,
         appStateId: appState?.app_state_id,
         isRoot: true,
@@ -86,7 +86,6 @@ export const FieldsNode = memo(({ project_id }: Props) => {
     isOpen,
     navigate,
     ownArray,
-    parentArray,
     parentUrl,
     searchParams,
     urlPath.length,

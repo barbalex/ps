@@ -50,7 +50,7 @@ export const UsersNode = memo(() => {
   const onClickButton = useCallback(() => {
     if (isOpen) {
       removeChildNodes({
-        node: parentArray,
+        node: ownArray,
         db,
         appStateId: appState?.app_state_id,
         isRoot: true,
@@ -78,7 +78,6 @@ export const UsersNode = memo(() => {
     isOpen,
     navigate,
     ownArray,
-    parentArray,
     parentUrl,
     searchParams,
     urlPath.length,
