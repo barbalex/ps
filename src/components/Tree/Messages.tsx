@@ -37,24 +37,50 @@ export const MessagesNode = memo(({ level = 1 }) => {
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const isOpen = urlPath[1] === 'messages'
-  const isActive = isOpen && urlPath.length === level + 1
+  const parentArray = useMemo(() => ['data'], [])
+  const parentUrl = `/${parentArray.join('/')}`
+  const ownArray = useMemo(() => [...parentArray, 'messages'], [parentArray])
+  const ownUrl = `/${ownArray.join('/')}`
+
+  // needs to work not only works for urlPath, for all opened paths!
+  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+  const isActive = isEqual(urlPath, ownArray)
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
       removeChildNodes({
-        node: ['messages'],
+        node: parentArray,
         db,
         appStateId: appState?.app_state_id,
-        isRoot: true,
       })
-      return navigate({
-        pathname: '..',
-        search: searchParams.toString(),
-      })
+      // only navigate if urlPath includes ownArray
+      if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
+        navigate({
+          pathname: parentUrl,
+          search: searchParams.toString(),
+        })
+      }
+      return
     }
-    navigate({ pathname: '/data/messages', search: searchParams.toString() })
-  }, [appState?.app_state_id, db, isOpen, navigate, searchParams])
+    // add to openNodes without navigating
+    addOpenNodes({
+      nodes: [ownArray],
+      db,
+      appStateId: appState?.app_state_id,
+    })
+  }, [
+    appState?.app_state_id,
+    db,
+    isInActiveNodeArray,
+    isOpen,
+    navigate,
+    ownArray,
+    parentArray,
+    parentUrl,
+    searchParams,
+    urlPath.length,
+  ])
 
   return (
     <>
@@ -62,10 +88,10 @@ export const MessagesNode = memo(({ level = 1 }) => {
         node={messagesNode}
         level={1}
         isOpen={isOpen}
-        isInActiveNodeArray={isOpen}
+        isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
         childrenCount={messages.length}
-        to={`/data/messages`}
+        to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen &&
