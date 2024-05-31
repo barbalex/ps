@@ -8,8 +8,9 @@ import { useElectric } from '../../ElectricProvider.tsx'
 import { Node } from './Node.tsx'
 import { WidgetTypeNode } from './WidgetType.tsx'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 
-export const WidgetTypesNode = memo(({ level = 1 }) => {
+export const WidgetTypesNode = memo(() => {
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -36,26 +37,55 @@ export const WidgetTypesNode = memo(({ level = 1 }) => {
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const isOpen = urlPath[1] === 'widget-types'
-  const isActive = isOpen && urlPath.length === level + 1
+  const parentArray = useMemo(() => ['data'], [])
+  const parentUrl = `/${parentArray.join('/')}`
+  const ownArray = useMemo(
+    () => [...parentArray, 'widget-types'],
+    [parentArray],
+  )
+  const ownUrl = `/${ownArray.join('/')}`
+
+  // needs to work not only works for urlPath, for all opened paths!
+  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+  const isActive = isEqual(urlPath, ownArray)
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
       removeChildNodes({
-        node: ['widget-types'],
+        node: parentArray,
         db,
         appStateId: appState?.app_state_id,
+        isRoot: true,
       })
-      return navigate({
-        pathname: '/data/projects',
-        search: searchParams.toString(),
-      })
+      // only navigate if urlPath includes ownArray
+      if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
+        navigate({
+          pathname: parentUrl,
+          search: searchParams.toString(),
+        })
+      }
+      return
     }
-    navigate({
-      pathname: '/data/widget-types',
-      search: searchParams.toString(),
+    // add to openNodes without navigating
+    addOpenNodes({
+      nodes: [ownArray],
+      db,
+      appStateId: appState?.app_state_id,
+      isRoot: true,
     })
-  }, [appState?.app_state_id, db, isOpen, navigate, searchParams])
+  }, [
+    appState?.app_state_id,
+    db,
+    isInActiveNodeArray,
+    isOpen,
+    navigate,
+    ownArray,
+    parentArray,
+    parentUrl,
+    searchParams,
+    urlPath.length,
+  ])
 
   return (
     <>
@@ -63,10 +93,10 @@ export const WidgetTypesNode = memo(({ level = 1 }) => {
         node={widgetTypesNode}
         level={1}
         isOpen={isOpen}
-        isInActiveNodeArray={isOpen}
+        isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
         childrenCount={widgetTypes.length}
-        to={`/data/widget-types`}
+        to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen &&
