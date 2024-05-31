@@ -93,7 +93,6 @@
     "vite-plugin-svgr": "4.2.0"
   },
   "devRemarks": {
-    "eslint": "do not upgrade to 9.0.0. It fails hellishly: new configs, stuff not adequately documented, errors created...",
     "zod": "dependency of electric-sql. Needed because: electric uses 3.21.4 which does not recognize v7 uuids, https://github.com/electric-sql/electric/issues/1153#issuecomment-2054014067, https://github.com/colinhacks/zod/issues/2184#issuecomment-2063265267"
   }
 }
