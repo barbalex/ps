@@ -1,7 +1,6 @@
 import { memo, useMemo } from 'react'
-import { useLocation, useParams } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
-
 
 import { Node } from './Node.tsx'
 import { WidgetTypes as WidgetType } from '../../../generated/client/index.ts'
@@ -12,7 +11,6 @@ interface Props {
 }
 
 export const WidgetTypeNode = memo(({ widgetType, level = 2 }: Props) => {
-  const params = useParams()
   const location = useLocation()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -20,20 +18,20 @@ export const WidgetTypeNode = memo(({ widgetType, level = 2 }: Props) => {
     () => ['data', 'widget-types', widgetType.widget_type_id],
     [widgetType.widget_type_id],
   )
-  const isOpen =
-    urlPath[1] === 'widget-types' &&
-    params.widget_type_id === widgetType.widget_type_id
-  const isActive = isOpen && urlPath.length === level + 1
+  const ownUrl = `/${ownArray.join('/')}`
+
+  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+  const isActive = isEqual(urlPath, ownArray)
 
   return (
     <Node
       node={widgetType}
       id={widgetType.widget_type_id}
       level={level}
-      isInActiveNodeArray={isOpen}
+      isInActiveNodeArray={isInActiveNodeArray}
       isActive={isActive}
       childrenCount={0}
-      to={`/data/widget-types/${widgetType.widget_type_id}`}
+      to={ownUrl}
     />
   )
 })
