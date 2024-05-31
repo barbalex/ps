@@ -1,5 +1,6 @@
 import { useCallback, memo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
 import { SubprojectUsers as SubprojectUser } from '../../../generated/client/index.ts'
