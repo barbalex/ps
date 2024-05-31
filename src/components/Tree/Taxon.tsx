@@ -4,7 +4,6 @@ import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
 import { Taxa as Taxon } from '../../../generated/client/index.ts'
-import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 
 interface Props {
   project_id: string
@@ -18,31 +17,32 @@ export const TaxonNode = memo(
     const location = useLocation()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isOpen =
-      urlPath[1] === 'projects' &&
-      urlPath[2] === project_id &&
-      urlPath[3] === 'taxonomies' &&
-      urlPath[4] === taxonomy_id &&
-      urlPath[5] === 'taxa' &&
-      urlPath[6] === taxon.taxon_id
-    const isActive = isOpen && urlPath.length === level + 1
-
     const ownArray = useMemo(
-      () => ['data', 'projects', project_id, 'taxonomies', taxonomy_id, 'taxa'],
-      [project_id, taxonomy_id],
+      () => [
+        'data',
+        'projects',
+        project_id,
+        'taxonomies',
+        taxonomy_id,
+        'taxa',
+        taxon.taxon_id,
+      ],
+      [project_id, taxon.taxon_id, taxonomy_id],
     )
-    const baseUrl = ownArray.join('/')
+    const ownUrl = `/${ownArray.join('/')}`
 
-    // TODO: childrenCount
+    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+    const isActive = isEqual(urlPath, ownArray)
+
     return (
       <Node
         node={taxon}
         id={taxon.taxon_id}
         level={level}
-        isInActiveNodeArray={isOpen}
+        isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
         childrenCount={0}
-        to={`${baseUrl}/${taxon.taxon_id}`}
+        to={ownUrl}
       />
     )
   },

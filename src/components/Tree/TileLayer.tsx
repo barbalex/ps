@@ -4,7 +4,6 @@ import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
 import { Tile_layers as TileLayer } from '../../../generated/client/index.ts'
-import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 
 interface Props {
   project_id: string
@@ -17,28 +16,30 @@ export const TileLayerNode = memo(
     const location = useLocation()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isOpen =
-      urlPath[1] === 'projects' &&
-      urlPath[2] === project_id &&
-      urlPath[3] === 'tile-layers' &&
-      urlPath[4] === tileLayer.tile_layer_id
-    const isActive = isOpen && urlPath.length === level + 1
-
     const ownArray = useMemo(
-      () => ['data', 'projects', project_id, 'tile-layers'],
-      [project_id],
+      () => [
+        'data',
+        'projects',
+        project_id,
+        'tile-layers',
+        tileLayer.tile_layer_id,
+      ],
+      [project_id, tileLayer.tile_layer_id],
     )
-    const baseUrl = ownArray.join('/')
+    const ownUrl = `/${ownArray.join('/')}`
+
+    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+    const isActive = isEqual(urlPath, ownArray)
 
     return (
       <Node
         node={tileLayer}
         id={tileLayer.tile_layer_id}
         level={level}
-        isInActiveNodeArray={isOpen}
+        isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
         childrenCount={0}
-        to={`${baseUrl}/${tileLayer.tile_layer_id}`}
+        to={ownUrl}
       />
     )
   },
