@@ -2,6 +2,7 @@ import { useCallback, memo, useMemo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
+import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
 import {
@@ -10,6 +11,7 @@ import {
 } from '../../../generated/client/index.ts'
 import { PlaceReportValuesNode } from './PlaceReportValues.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
+import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
 
 interface Props {
@@ -39,27 +41,13 @@ export const PlaceReportNode = memo(
     const { results: appState } = useLiveQuery(
       db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
     )
+    const openNodes = useMemo(
+      () => appState?.tree_open_nodes ?? [],
+      [appState?.tree_open_nodes],
+    )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isOpenBase =
-      urlPath[1] === 'projects' &&
-      urlPath[2] === project_id &&
-      urlPath[3] === 'subprojects' &&
-      urlPath[4] === subproject_id &&
-      urlPath[5] === 'places' &&
-      urlPath[6] === (place_id ?? place.place_id)
-    const isOpen = place_id
-      ? isOpenBase &&
-        urlPath[7] === 'places' &&
-        urlPath[8] === place.place_id &&
-        urlPath[9] === 'reports' &&
-        urlPath[10] === placeReport.place_report_id
-      : isOpenBase &&
-        urlPath[7] === 'reports' &&
-        urlPath[8] === placeReport.place_report_id
-    const isActive = isOpen && urlPath.length === level + 1
-
-    const baseArray = useMemo(
+    const parentArray = useMemo(
       () => [
         'data',
         'projects',
@@ -73,30 +61,51 @@ export const PlaceReportNode = memo(
       ],
       [project_id, subproject_id, place_id, place.place_id],
     )
-    const baseUrl = baseArray.join('/')
+    const parentUrl = `/${parentArray.join('/')}`
+    const ownArray = useMemo(
+      () => [...parentArray, placeReport.place_report_id],
+      [parentArray, placeReport.place_report_id],
+    )
+    const ownUrl = `/${ownArray.join('/')}`
+
+    // needs to work not only works for urlPath, for all opened paths!
+    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+    const isActive = isEqual(urlPath, ownArray)
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
         removeChildNodes({
-          node: [...baseArray, placeReport.place_report_id],
+          node: parentArray,
           db,
           appStateId: appState?.app_state_id,
         })
-        return navigate({ pathname: baseUrl, search: searchParams.toString() })
+        // only navigate if urlPath includes ownArray
+        if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
+          navigate({
+            pathname: parentUrl,
+            search: searchParams.toString(),
+          })
+        }
+        return
       }
-      navigate({
-        pathname: `${baseUrl}/${placeReport.place_report_id}`,
-        search: searchParams.toString(),
+      // add to openNodes without navigating
+      addOpenNodes({
+        nodes: [ownArray],
+        db,
+        appStateId: appState?.app_state_id,
       })
     }, [
       appState?.app_state_id,
-      baseArray,
-      baseUrl,
       db,
+      isInActiveNodeArray,
       isOpen,
       navigate,
-      placeReport.place_report_id,
+      ownArray,
+      parentArray,
+      parentUrl,
       searchParams,
+      urlPath.length,
     ])
 
     return (
@@ -106,10 +115,10 @@ export const PlaceReportNode = memo(
           id={placeReport.place_report_id}
           level={level}
           isOpen={isOpen}
-          isInActiveNodeArray={isOpen}
+          isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
           childrenCount={10}
-          to={`${baseUrl}/${placeReport.place_report_id}`}
+          to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen && (
