@@ -1,8 +1,11 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import isEqual from 'lodash/isEqual'
 
 import { useElectric } from '../../ElectricProvider.tsx'
+import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { Node } from './Node.tsx'
 import { TaxonNode } from './Taxon.tsx'
 
@@ -26,6 +29,14 @@ export const TaxaNode = memo(
       }),
     )
 
+    const { results: appState } = useLiveQuery(
+      db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+    )
+    const openNodes = useMemo(
+      () => appState?.tree_open_nodes ?? [],
+      [appState?.tree_open_nodes],
+    )
+
     const taxaNode = useMemo(
       () => ({ label: `Taxa (${taxa.length})` }),
       [taxa.length],
@@ -40,6 +51,10 @@ export const TaxaNode = memo(
       urlPath[5] === 'taxa'
     const isActive = isOpen && urlPath.length === level + 1
 
+    const baseArray = useMemo(
+      () => ['data', 'projects', project_id, 'taxonomies', taxonomy_id],
+      [project_id, taxonomy_id],
+    )
     const baseUrl = `/data/projects/${project_id}/taxonomies/${taxonomy_id}`
 
     const onClickButton = useCallback(() => {
