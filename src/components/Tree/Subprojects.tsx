@@ -56,16 +56,16 @@ export const SubprojectsNode = memo(({ project_id, level = 3 }: Props) => {
     urlPath[3] === 'subprojects'
   const isActive = isOpen && urlPath.length === level + 1
 
-  const baseArray = useMemo(
+  const parentArray = useMemo(
     () => ['data', 'projects', project_id],
     [project_id],
   )
-  const baseUrl = baseArray.join('/')
+  const baseUrl = parentArray.join('/')
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
       removeChildNodes({
-        node: [...baseArray, 'subprojects'],
+        node: [...parentArray, 'subprojects'],
         db,
         appStateId: appState?.app_state_id,
       })
@@ -77,7 +77,7 @@ export const SubprojectsNode = memo(({ project_id, level = 3 }: Props) => {
     })
   }, [
     appState?.app_state_id,
-    baseArray,
+    parentArray,
     baseUrl,
     db,
     isOpen,
