@@ -1,5 +1,6 @@
 import { useCallback, memo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
 import { Occurrences as Occurrence } from '../../../generated/client/index.ts'
@@ -18,31 +19,19 @@ export const OccurrenceToAssessNode = memo(
     const [searchParams] = useSearchParams()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isOpen =
-      urlPath[1] === 'projects' &&
-      urlPath[2] === project_id &&
-      urlPath[3] === 'subprojects' &&
-      urlPath[4] === subproject_id &&
-      urlPath[5] === 'occurrences-to-assess' &&
-      urlPath[6] === occurrence.occurrence_id
-    const isActive = isOpen && urlPath.length === level + 1
-
-    const baseArray = [
+    const ownArray = [
       'data',
       'projects',
       project_id,
       'subprojects',
       subproject_id,
       'occurrences-to-assess',
+      occurrence.occurrence_id,
     ]
-    const baseUrl = baseArray.join('/')
+    const ownUrl = `/${ownArray.join('/')}`
 
-    const onClickButton = useCallback(() => {
-      navigate({
-        pathname: `${baseUrl}/${occurrence.occurrence_id}`,
-        search: searchParams.toString(),
-      })
-    }, [navigate, baseUrl, occurrence.occurrence_id, searchParams])
+    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+    const isActive = isEqual(urlPath, ownArray)
 
     return (
       <>
@@ -50,12 +39,10 @@ export const OccurrenceToAssessNode = memo(
           node={occurrence}
           id={occurrence.occurrence_id}
           level={level}
-          isOpen={isOpen}
-          isInActiveNodeArray={isOpen}
+          isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
           childrenCount={0}
-          to={`${baseUrl}/${occurrence.occurrence_id}`}
-          onClickButton={onClickButton}
+          to={ownUrl}
         />
       </>
     )

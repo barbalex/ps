@@ -1,5 +1,6 @@
 import { useCallback, memo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
 import {
@@ -29,25 +30,7 @@ export const OccurrenceAssignedNode = memo(
     const [searchParams] = useSearchParams()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isOpenBase =
-      urlPath[1] === 'projects' &&
-      urlPath[2] === project_id &&
-      urlPath[3] === 'subprojects' &&
-      urlPath[4] === subproject_id &&
-      urlPath[5] === 'places' &&
-      urlPath[6] === (place_id ?? place.place_id)
-    const isOpen = place_id
-      ? isOpenBase &&
-        urlPath[7] === 'places' &&
-        urlPath[8] === place.place_id &&
-        urlPath[9] === 'occurrences-assigned' &&
-        urlPath[10] === occurrence.occurrence_id
-      : isOpenBase &&
-        urlPath[7] === 'occurrences-assigned' &&
-        urlPath[8] === occurrence.occurrence_id
-    const isActive = isOpen && urlPath.length === level + 1
-
-    const baseArray = [
+    const ownArray = [
       'data',
       'projects',
       project_id,
@@ -57,15 +40,12 @@ export const OccurrenceAssignedNode = memo(
       place_id ?? place.place_id,
       ...(place_id ? ['places', place.place_id] : []),
       'occurrences-assigned',
+      occurrence.occurrence_id,
     ]
-    const baseUrl = baseArray.join('/')
+    const ownUrl = `/${ownArray.join('/')}`
 
-    const onClickButton = useCallback(() => {
-      navigate({
-        pathname: `${baseUrl}/${occurrence.occurrence_id}`,
-        search: searchParams.toString(),
-      })
-    }, [navigate, baseUrl, occurrence.occurrence_id, searchParams])
+    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+    const isActive = isEqual(urlPath, ownArray)
 
     return (
       <>
@@ -73,12 +53,10 @@ export const OccurrenceAssignedNode = memo(
           node={occurrence}
           id={occurrence.occurrence_id}
           level={level}
-          isOpen={isOpen}
-          isInActiveNodeArray={isOpen}
+          isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
           childrenCount={0}
-          to={`${baseUrl}/${occurrence.occurrence_id}`}
-          onClickButton={onClickButton}
+          to={ownUrl}
         />
       </>
     )
