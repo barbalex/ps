@@ -53,16 +53,16 @@ export const VectorLayerDisplaysNode = memo(
       urlPath[5] === 'vector-layer-displays'
     const isActive = isOpen && urlPath.length === level + 1
 
-    const baseArray = useMemo(
+    const parentArray = useMemo(
       () => ['data', 'projects', project_id, 'vector-layers', vector_layer_id],
       [project_id, vector_layer_id],
     )
-    const baseUrl = baseArray.join('/')
+    const baseUrl = parentArray.join('/')
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
         removeChildNodes({
-          node: [...baseArray, 'vector-layer-displays'],
+          node: [...parentArray, 'vector-layer-displays'],
           db,
           appStateId: appState?.app_state_id,
         })
@@ -74,7 +74,7 @@ export const VectorLayerDisplaysNode = memo(
       })
     }, [
       appState?.app_state_id,
-      baseArray,
+      parentArray,
       baseUrl,
       db,
       isOpen,

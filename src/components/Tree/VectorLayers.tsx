@@ -49,16 +49,16 @@ export const VectorLayersNode = memo(({ project_id, level = 3 }: Props) => {
     urlPath[3] === 'vector-layers'
   const isActive = isOpen && urlPath.length === level + 1
 
-  const baseArray = useMemo(
+  const parentArray = useMemo(
     () => ['data', 'projects', project_id],
     [project_id],
   )
-  const baseUrl = baseArray.join('/')
+  const baseUrl = parentArray.join('/')
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
       removeChildNodes({
-        node: [...baseArray, 'vector-layers'],
+        node: [...parentArray, 'vector-layers'],
         db,
         appStateId: appState?.app_state_id,
       })
@@ -70,7 +70,7 @@ export const VectorLayersNode = memo(({ project_id, level = 3 }: Props) => {
     })
   }, [
     appState?.app_state_id,
-    baseArray,
+    parentArray,
     baseUrl,
     db,
     isOpen,

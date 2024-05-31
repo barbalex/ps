@@ -37,6 +37,7 @@ export const UsersNode = memo(({ level = 1 }) => {
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
+  const parentArray = useMemo(() => ['data', 'users'], [])
   const isOpen = urlPath[1] === 'users'
   const isActive = isOpen && urlPath.length === level + 1
 

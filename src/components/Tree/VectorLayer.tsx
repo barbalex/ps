@@ -41,6 +41,10 @@ export const VectorLayerNode = memo(
       urlPath[4] === vectorLayer.vector_layer_id
     const isActive = isOpen && urlPath.length === level + 1
 
+    const parentArray = useMemo(
+      () => ['data', 'projects', project_id, 'vector-layers'],
+      [project_id],
+    )
     const baseUrl = `/data/projects/${project_id}/vector-layers`
 
     const onClickButton = useCallback(() => {
