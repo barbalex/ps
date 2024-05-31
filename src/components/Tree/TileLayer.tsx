@@ -1,5 +1,6 @@
-import { useCallback, memo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { memo, useMemo } from 'react'
+import { useLocation } from 'react-router-dom'
+import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
 import { Tile_layers as TileLayer } from '../../../generated/client/index.ts'
@@ -13,40 +14,32 @@ interface Props {
 export const TileLayerNode = memo(
   ({ project_id, tileLayer, level = 4 }: Props) => {
     const location = useLocation()
-    const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isOpen =
-      urlPath[0] === 'projects' &&
-      urlPath[1] === project_id &&
-      urlPath[2] === 'tile-layers' &&
-      urlPath[3] === tileLayer.tile_layer_id
-    const isActive = isOpen && urlPath.length === 4
+    const ownArray = useMemo(
+      () => [
+        'data',
+        'projects',
+        project_id,
+        'tile-layers',
+        tileLayer.tile_layer_id,
+      ],
+      [project_id, tileLayer.tile_layer_id],
+    )
+    const ownUrl = `/${ownArray.join('/')}`
 
-    const baseUrl = `/projects/${project_id}/tile-layers`
-
-    const onClickButton = useCallback(() => {
-      if (isOpen) {
-        return navigate({ pathname: baseUrl, search: searchParams.toString() })
-      }
-      navigate({
-        pathname: `${baseUrl}/${tileLayer.tile_layer_id}`,
-        search: searchParams.toString(),
-      })
-    }, [baseUrl, isOpen, navigate, searchParams, tileLayer.tile_layer_id])
+    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+    const isActive = isEqual(urlPath, ownArray)
 
     return (
       <Node
         node={tileLayer}
         id={tileLayer.tile_layer_id}
         level={level}
-        isOpen={isOpen}
-        isInActiveNodeArray={isOpen}
+        isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
         childrenCount={0}
-        to={`${baseUrl}/${tileLayer.tile_layer_id}`}
-        onClickButton={onClickButton}
+        to={ownUrl}
       />
     )
   },

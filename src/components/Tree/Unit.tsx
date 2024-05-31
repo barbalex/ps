@@ -1,5 +1,6 @@
-import { useCallback, memo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { memo, useMemo } from 'react'
+import { useLocation } from 'react-router-dom'
+import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
 import { Units as Unit } from '../../../generated/client/index.ts'
@@ -12,40 +13,26 @@ interface Props {
 
 export const UnitNode = memo(({ project_id, unit, level = 4 }: Props) => {
   const location = useLocation()
-  const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const isOpen =
-    urlPath[0] === 'projects' &&
-    urlPath[1] === project_id &&
-    urlPath[2] === 'units' &&
-    urlPath[3] === unit.unit_id
-  const isActive = isOpen && urlPath.length === 4
+  const ownArray = useMemo(
+    () => ['data', 'projects', project_id, 'units', unit.unit_id],
+    [project_id, unit.unit_id],
+  )
+  const ownUrl = `/${ownArray.join('/')}`
 
-  const baseUrl = `/projects/${project_id}/units`
-
-  const onClickButton = useCallback(() => {
-    if (isOpen) {
-      return navigate({ pathname: baseUrl, search: searchParams.toString() })
-    }
-    navigate({
-      pathname: `${baseUrl}/${unit.unit_id}`,
-      search: searchParams.toString(),
-    })
-  }, [baseUrl, isOpen, navigate, searchParams, unit.unit_id])
+  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+  const isActive = isEqual(urlPath, ownArray)
 
   return (
     <Node
       node={unit}
       id={unit.unit_id}
       level={level}
-      isOpen={isOpen}
-      isInActiveNodeArray={isOpen}
+      isInActiveNodeArray={isInActiveNodeArray}
       isActive={isActive}
       childrenCount={0}
-      to={`${baseUrl}/${unit.unit_id}`}
-      onClickButton={onClickButton}
+      to={ownUrl}
     />
   )
 })

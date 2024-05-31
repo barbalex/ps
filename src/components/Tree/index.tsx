@@ -18,6 +18,9 @@ const containerStyle = {
   contain: 'paint layout style',
 }
 
+// all nodes need app_states.tree_open_nodes
+// all nodes will rerender when app_states.tree_open_nodes changes
+// so query it here once and pass it down
 export const Tree = memo(({ designing }) => (
   <div style={containerStyle}>
     <ProjectsNode />

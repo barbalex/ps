@@ -9,7 +9,7 @@ import { css } from '../../../css.ts'
 export const Menu = memo(() => {
   const navigate = useNavigate()
 
-  const onClickEnter = useCallback(() => navigate('/projects'), [navigate])
+  const onClickEnter = useCallback(() => navigate('/data/projects'), [navigate])
 
   return (
     <div style={controls}>

@@ -1,10 +1,7 @@
-import { useCallback, memo } from 'react'
-import {
-  useLocation,
-  useParams,
-  useNavigate,
-  useSearchParams,
-} from 'react-router-dom'
+import { memo, useMemo } from 'react'
+import { useLocation } from 'react-router-dom'
+import isEqual from 'lodash/isEqual'
+
 
 import { Node } from './Node.tsx'
 import { WidgetsForFields as WidgetForField } from '../../../generated/client/index.ts'
@@ -16,41 +13,27 @@ interface Props {
 
 export const WidgetForFieldNode = memo(
   ({ widgetForField, level = 2 }: Props) => {
-    const params = useParams()
     const location = useLocation()
-    const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isOpen =
-      urlPath[0] === 'widgets-for-fields' &&
-      params.widget_for_field_id === widgetForField.widget_for_field_id
-    const isActive = isOpen && urlPath.length === 2
+    const ownArray = useMemo(
+      () => ['data', 'widgets-for-fields', widgetForField.widget_for_field_id],
+      [widgetForField.widget_for_field_id],
+    )
+    const ownUrl = `/${ownArray.join('/')}`
 
-    const onClickButton = useCallback(() => {
-      if (isOpen) {
-        return navigate({
-          pathname: '/widgets-for-fields',
-          search: searchParams.toString(),
-        })
-      }
-      navigate({
-        pathname: `/widgets-for-fields/${widgetForField.widget_for_field_id}`,
-        search: searchParams.toString(),
-      })
-    }, [isOpen, navigate, searchParams, widgetForField.widget_for_field_id])
+    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+    const isActive = isEqual(urlPath, ownArray)
 
     return (
       <Node
         node={widgetForField}
         id={widgetForField.widget_for_field_id}
         level={level}
-        isOpen={isOpen}
-        isInActiveNodeArray={isOpen}
+        isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
         childrenCount={0}
-        to={`/widgets-for-fields/${widgetForField.widget_for_field_id}`}
-        onClickButton={onClickButton}
+        to={ownUrl}
       />
     )
   },

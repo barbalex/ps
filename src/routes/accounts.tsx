@@ -33,7 +33,7 @@ export const Component = () => {
           <Row
             key={account_id}
             label={label ?? account_id}
-            to={`/accounts/${account_id}`}
+            to={`/data/accounts/${account_id}`}
           />
         ))}
       </div>

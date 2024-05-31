@@ -1,5 +1,6 @@
-import { useCallback, memo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { memo, useMemo } from 'react'
+import { useLocation } from 'react-router-dom'
+import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
 import { ListValues as ListValue } from '../../../generated/client/index.ts'
@@ -14,42 +15,34 @@ interface Props {
 export const ListValueNode = memo(
   ({ project_id, list_id, listValue, level = 6 }: Props) => {
     const location = useLocation()
-    const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isOpen =
-      urlPath[0] === 'projects' &&
-      urlPath[1] === project_id &&
-      urlPath[2] === 'lists' &&
-      urlPath[3] === list_id &&
-      urlPath[4] === 'values' &&
-      urlPath[5] === listValue.list_value_id
-    const isActive = isOpen && urlPath.length === level
+    const ownArray = useMemo(
+      () => [
+        'data',
+        'projects',
+        project_id,
+        'lists',
+        list_id,
+        'values',
+        listValue.list_value_id,
+      ],
+      [project_id, list_id, listValue.list_value_id],
+    )
+    const ownUrl = `/${ownArray.join('/')}`
 
-    const baseUrl = `/projects/${project_id}/lists/${list_id}/values`
-
-    const onClickButton = useCallback(() => {
-      if (isOpen) {
-        return navigate({ pathname: baseUrl, search: searchParams.toString() })
-      }
-      navigate({
-        pathname: `${baseUrl}/${listValue.list_value_id}`,
-        search: searchParams.toString(),
-      })
-    }, [isOpen, navigate, baseUrl, listValue.list_value_id, searchParams])
+    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+    const isActive = isEqual(urlPath, ownArray)
 
     return (
       <Node
         node={listValue}
         id={listValue.list_value_id}
         level={level}
-        isOpen={isOpen}
-        isInActiveNodeArray={isOpen}
+        isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
         childrenCount={0}
-        to={`${baseUrl}/${listValue.list_value_id}`}
-        onClickButton={onClickButton}
+        to={ownUrl}
       />
     )
   },

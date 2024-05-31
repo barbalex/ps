@@ -1,5 +1,6 @@
-import { useCallback, memo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { memo, useMemo } from 'react'
+import { useLocation } from 'react-router-dom'
+import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
 import { PlaceLevels as PlaceLevel } from '../../../generated/client/index.ts'
@@ -13,40 +14,31 @@ interface Props {
 export const PlaceLevelNode = memo(
   ({ project_id, placeLevel, level = 4 }: Props) => {
     const location = useLocation()
-    const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
-
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isOpen =
-      urlPath[0] === 'projects' &&
-      urlPath[1] === project_id &&
-      urlPath[2] === 'place-levels' &&
-      urlPath[3] === placeLevel.place_level_id
-    const isActive = isOpen && urlPath.length === 4
+    const ownArray = useMemo(
+      () => [
+        'data',
+        'projects',
+        project_id,
+        'place-levels',
+        placeLevel.place_level_id,
+      ],
+      [placeLevel.place_level_id, project_id],
+    )
+    const ownUrl = `/${ownArray.join('/')}`
 
-    const baseUrl = `/projects/${project_id}/place-levels`
-
-    const onClickButton = useCallback(() => {
-      if (isOpen) {
-        return navigate({ pathname: baseUrl, search: searchParams.toString() })
-      }
-      navigate({
-        pathname: `${baseUrl}/${placeLevel.place_level_id}`,
-        search: searchParams.toString(),
-      })
-    }, [isOpen, navigate, baseUrl, placeLevel.place_level_id, searchParams])
+    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+    const isActive = isEqual(urlPath, ownArray)
 
     return (
       <Node
         node={placeLevel}
         id={placeLevel.place_level_id}
         level={level}
-        isOpen={isOpen}
-        isInActiveNodeArray={isOpen}
+        isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
         childrenCount={0}
-        to={`${baseUrl}/${placeLevel.place_level_id}`}
-        onClickButton={onClickButton}
+        to={ownUrl}
       />
     )
   },

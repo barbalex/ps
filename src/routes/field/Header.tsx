@@ -16,7 +16,7 @@ export const Header = memo(({ autoFocusRef }) => {
     const data = createField({ project_id })
     await db.fields.create({ data })
     navigate({
-      pathname: `../${data.field_id}`,
+      pathname: `${data.field_id}`,
       search: searchParams.toString(),
     })
     autoFocusRef.current?.focus()
@@ -30,7 +30,6 @@ export const Header = memo(({ autoFocusRef }) => {
   const toNext = useCallback(async () => {
     const fields = await db.fields.findMany({
       where: {
-        
         project_id: project_id ?? null,
       },
       orderBy: { label: 'asc' },
@@ -47,7 +46,6 @@ export const Header = memo(({ autoFocusRef }) => {
   const toPrevious = useCallback(async () => {
     const fields = await db.fields.findMany({
       where: {
-        
         project_id: project_id ?? null,
       },
       orderBy: { label: 'asc' },

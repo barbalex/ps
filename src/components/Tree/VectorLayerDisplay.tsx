@@ -1,9 +1,9 @@
-import { useCallback, memo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { memo, useMemo } from 'react'
+import { useLocation } from 'react-router-dom'
+import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
 import { Vector_layer_displays as VectorLayerDisplay } from '../../../generated/client/index.ts'
-
 interface Props {
   project_id: string
   vector_layer_id: string
@@ -14,48 +14,34 @@ interface Props {
 export const VectorLayerDisplayNode = memo(
   ({ project_id, vector_layer_id, vectorLayerDisplay, level = 6 }: Props) => {
     const location = useLocation()
-    const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isOpen =
-      urlPath[0] === 'projects' &&
-      urlPath[1] === project_id &&
-      urlPath[2] === 'vector-layers' &&
-      urlPath[3] === vector_layer_id &&
-      urlPath[4] === 'vector-layer-displays' &&
-      urlPath[5] === vectorLayerDisplay.vector_layer_display_id
-    const isActive = isOpen && urlPath.length === 6
+    const ownArray = useMemo(
+      () => [
+        'data',
+        'projects',
+        project_id,
+        'vector-layers',
+        vector_layer_id,
+        'vector-layer-displays',
+        vectorLayerDisplay.vector_layer_display_id,
+      ],
+      [project_id, vectorLayerDisplay.vector_layer_display_id, vector_layer_id],
+    )
+    const ownUrl = `/${ownArray.join('/')}`
 
-    const baseUrl = `/projects/${project_id}/vector-layers/${vector_layer_id}/vector-layer-displays`
-
-    const onClickButton = useCallback(() => {
-      if (isOpen) {
-        return navigate({ pathname: baseUrl, search: searchParams.toString() })
-      }
-      navigate({
-        pathname: `${baseUrl}/${vectorLayerDisplay.vector_layer_display_id}`,
-        search: searchParams.toString(),
-      })
-    }, [
-      baseUrl,
-      isOpen,
-      navigate,
-      searchParams,
-      vectorLayerDisplay.vector_layer_display_id,
-    ])
+    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+    const isActive = isEqual(urlPath, ownArray)
 
     return (
       <Node
         node={vectorLayerDisplay}
         id={vectorLayerDisplay.vector_layer_display_id}
         level={level}
-        isOpen={isOpen}
-        isInActiveNodeArray={isOpen}
+        isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
         childrenCount={0}
-        to={`${baseUrl}/${vectorLayerDisplay.vector_layer_display_id}`}
-        onClickButton={onClickButton}
+        to={ownUrl}
       />
     )
   },

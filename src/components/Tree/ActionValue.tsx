@@ -1,5 +1,6 @@
-import { useCallback, memo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { memo, useMemo } from 'react'
+import { useLocation } from 'react-router-dom'
+import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
 import {
@@ -28,57 +29,46 @@ export const ActionValueNode = memo(
     level = 10,
   }: Props) => {
     const location = useLocation()
-    const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isOpenBase =
-      urlPath[0] === 'projects' &&
-      urlPath[1] === project_id &&
-      urlPath[2] === 'subprojects' &&
-      urlPath[3] === subproject_id &&
-      urlPath[4] === 'places' &&
-      urlPath[5] === (place_id ?? place.place_id)
-    const isOpen = place_id
-      ? isOpenBase &&
-        urlPath[6] === 'places' &&
-        urlPath[7] === place.place_id &&
-        urlPath[8] === 'actions' &&
-        urlPath[9] === action_id &&
-        urlPath[10] === 'values' &&
-        urlPath[11] === actionValue.action_value_id
-      : isOpenBase &&
-        urlPath[6] === 'actions' &&
-        urlPath[7] === action_id &&
-        urlPath[8] === 'values' &&
-        urlPath[9] === actionValue.action_value_id
-    const isActive = isOpen && urlPath.length === level
+    const ownArray = useMemo(
+      () => [
+        'data',
+        'projects',
+        project_id,
+        'subprojects',
+        subproject_id,
+        'places',
+        place_id ?? place.place_id,
+        ...(place_id ? ['places', place.place_id] : []),
+        'actions',
+        action_id,
+        'values',
+        actionValue.action_value_id,
+      ],
+      [
+        actionValue.action_value_id,
+        action_id,
+        place.place_id,
+        place_id,
+        project_id,
+        subproject_id,
+      ],
+    )
+    const ownUrl = `/${ownArray.join('/')}`
 
-    const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/places/${
-      place_id ?? place.place_id
-    }${place_id ? `/places/${place.place_id}` : ''}/actions/${action_id}/values`
-
-    const onClickButton = useCallback(() => {
-      if (isOpen) {
-        return navigate({ pathname: baseUrl, search: searchParams.toString() })
-      }
-      navigate({
-        pathname: `${baseUrl}/${actionValue.action_value_id}`,
-        search: searchParams.toString(),
-      })
-    }, [isOpen, navigate, baseUrl, actionValue.action_value_id, searchParams])
+    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+    const isActive = isEqual(urlPath, ownArray)
 
     return (
       <Node
         node={actionValue}
         id={actionValue.action_value_id}
         level={level}
-        isOpen={isOpen}
-        isInActiveNodeArray={isOpen}
+        isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
         childrenCount={0}
-        to={`${baseUrl}/${actionValue.action_value_id}`}
-        onClickButton={onClickButton}
+        to={ownUrl}
       />
     )
   },

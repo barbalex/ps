@@ -9,7 +9,7 @@ export const Syncer = () => {
   // console.log('hello Syncer', { db, authUser })
 
   useEffect(() => {
-    console.log('hello Syncer, syncing data for user:', authUser?.email)
+    // console.log('hello Syncer, syncing data for user:', authUser?.email)
     const syncItems = async () => {
       await db.app_states.update({
         where: { user_email: authUser?.email },
@@ -238,7 +238,7 @@ export const Syncer = () => {
         where: { user_email: authUser?.email },
         data: { syncing: false },
       })
-      console.log('hello Syncer, data synced')
+      // console.log('hello Syncer, data synced')
     }
 
     syncItems()

@@ -1,10 +1,6 @@
-import { useCallback, memo } from 'react'
-import {
-  useLocation,
-  useParams,
-  useNavigate,
-  useSearchParams,
-} from 'react-router-dom'
+import { memo, useMemo } from 'react'
+import { useLocation } from 'react-router-dom'
+import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
 import { WidgetTypes as WidgetType } from '../../../generated/client/index.ts'
@@ -15,41 +11,27 @@ interface Props {
 }
 
 export const WidgetTypeNode = memo(({ widgetType, level = 2 }: Props) => {
-  const params = useParams()
   const location = useLocation()
-  const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const isOpen =
-    urlPath[0] === 'widget-types' &&
-    params.widget_type_id === widgetType.widget_type_id
-  const isActive = isOpen && urlPath.length === 2
+  const ownArray = useMemo(
+    () => ['data', 'widget-types', widgetType.widget_type_id],
+    [widgetType.widget_type_id],
+  )
+  const ownUrl = `/${ownArray.join('/')}`
 
-  const onClickButton = useCallback(() => {
-    if (isOpen) {
-      return navigate({
-        pathname: '/widget-types',
-        search: searchParams.toString(),
-      })
-    }
-    navigate({
-      pathname: `/widget-types/${widgetType.widget_type_id}`,
-      search: searchParams.toString(),
-    })
-  }, [isOpen, navigate, searchParams, widgetType.widget_type_id])
+  const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+  const isActive = isEqual(urlPath, ownArray)
 
   return (
     <Node
       node={widgetType}
       id={widgetType.widget_type_id}
       level={level}
-      isOpen={isOpen}
-      isInActiveNodeArray={isOpen}
+      isInActiveNodeArray={isInActiveNodeArray}
       isActive={isActive}
       childrenCount={0}
-      to={`/widget-types/${widgetType.widget_type_id}`}
-      onClickButton={onClickButton}
+      to={ownUrl}
     />
   )
 })

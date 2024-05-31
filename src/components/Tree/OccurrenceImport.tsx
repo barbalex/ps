@@ -1,5 +1,6 @@
-import { useCallback, memo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { memo, useMemo } from 'react'
+import { useLocation } from 'react-router-dom'
+import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
 import { Occurrence_imports as OccurrenceImport } from '../../../generated/client/index.ts'
@@ -14,48 +15,34 @@ interface Props {
 export const OccurrenceImportNode = memo(
   ({ project_id, subproject_id, occurrenceImport, level = 6 }: Props) => {
     const location = useLocation()
-    const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isOpen =
-      urlPath[0] === 'projects' &&
-      urlPath[1] === project_id &&
-      urlPath[2] === 'subprojects' &&
-      urlPath[3] === subproject_id &&
-      urlPath[4] === 'occurrence-imports' &&
-      urlPath[5] === occurrenceImport.occurrence_import_id
-    const isActive = isOpen && urlPath.length === level
+    const ownArray = useMemo(
+      () => [
+        'data',
+        'projects',
+        project_id,
+        'subprojects',
+        subproject_id,
+        'occurrence-imports',
+        occurrenceImport.occurrence_import_id,
+      ],
+      [occurrenceImport.occurrence_import_id, project_id, subproject_id],
+    )
+    const ownUrl = `/${ownArray.join('/')}`
 
-    const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/occurrence-imports`
-
-    const onClickButton = useCallback(() => {
-      if (isOpen) {
-        return navigate({ pathname: baseUrl, search: searchParams.toString() })
-      }
-      navigate({
-        pathname: `${baseUrl}/${occurrenceImport.occurrence_import_id}`,
-        search: searchParams.toString(),
-      })
-    }, [
-      isOpen,
-      navigate,
-      baseUrl,
-      occurrenceImport.occurrence_import_id,
-      searchParams,
-    ])
+    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+    const isActive = isEqual(urlPath, ownArray)
 
     return (
       <Node
         node={occurrenceImport}
         id={occurrenceImport.occurrence_import_id}
         level={level}
-        isOpen={isOpen}
-        isInActiveNodeArray={isOpen}
+        isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
         childrenCount={0}
-        to={`${baseUrl}/${occurrenceImport.occurrence_import_id}`}
-        onClickButton={onClickButton}
+        to={ownUrl}
       />
     )
   },

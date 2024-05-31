@@ -1,10 +1,14 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
+import { useCorbado } from '@corbado/react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import isEqual from 'lodash/isEqual'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Node } from './Node.tsx'
 import { PlaceReportValueNode } from './PlaceReportValue.tsx'
+import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
+import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 
 interface Props {
   project_id: string
@@ -27,6 +31,7 @@ export const PlaceReportValuesNode = memo(
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
+    const { user: authUser } = useCorbado()
 
     const { db } = useElectric()!
     const { results: placeReportValues = [] } = useLiveQuery(
@@ -36,6 +41,14 @@ export const PlaceReportValuesNode = memo(
       }),
     )
 
+    const { results: appState } = useLiveQuery(
+      db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+    )
+    const openNodes = useMemo(
+      () => appState?.tree_open_nodes ?? [],
+      [appState?.tree_open_nodes],
+    )
+
     // TODO: get name by place_level
     const placeReportValuesNode = useMemo(
       () => ({ label: `Values (${placeReportValues.length})` }),
@@ -43,39 +56,64 @@ export const PlaceReportValuesNode = memo(
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isOpenBase =
-      urlPath[0] === 'projects' &&
-      urlPath[1] === project_id &&
-      urlPath[2] === 'subprojects' &&
-      urlPath[3] === subproject_id &&
-      urlPath[4] === 'places' &&
-      urlPath[5] === (place_id ?? place.place_id)
-    const isOpen = place_id
-      ? isOpenBase &&
-        urlPath[6] === 'places' &&
-        urlPath[7] === place.place_id &&
-        urlPath[8] === 'reports' &&
-        urlPath[9] === place_report_id &&
-        urlPath[10] === 'values'
-      : isOpenBase &&
-        urlPath[6] === 'reports' &&
-        urlPath[7] === place_report_id &&
-        urlPath[8] === 'values'
-    const isActive = isOpen && urlPath.length === level
+    const parentArray = useMemo(
+      () => [
+        'data',
+        'projects',
+        project_id,
+        'subprojects',
+        subproject_id,
+        'places',
+        place_id ?? place.place_id,
+        ...(place_id ? ['places', place.place_id] : []),
+        'reports',
+        place_report_id,
+      ],
+      [place.place_id, place_id, place_report_id, project_id, subproject_id],
+    )
+    const parentUrl = `/${parentArray.join('/')}`
+    const ownArray = useMemo(() => [...parentArray, 'values'], [parentArray])
+    const ownUrl = `/${ownArray.join('/')}`
 
-    const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/places/${
-      place_id ?? place.place_id
-    }${place_id ? `/places/${place.place_id}` : ''}/reports/${place_report_id}`
+    // needs to work not only works for urlPath, for all opened paths!
+    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+    const isActive = isEqual(urlPath, ownArray)
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
-        return navigate({ pathname: baseUrl, search: searchParams.toString() })
+        removeChildNodes({
+          node: parentArray,
+          db,
+          appStateId: appState?.app_state_id,
+        })
+        // only navigate if urlPath includes ownArray
+        if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
+          navigate({
+            pathname: parentUrl,
+            search: searchParams.toString(),
+          })
+        }
+        return
       }
-      navigate({
-        pathname: `${baseUrl}/values`,
-        search: searchParams.toString(),
+      // add to openNodes without navigating
+      addOpenNodes({
+        nodes: [ownArray],
+        db,
+        appStateId: appState?.app_state_id,
       })
-    }, [baseUrl, isOpen, navigate, searchParams])
+    }, [
+      appState?.app_state_id,
+      db,
+      isInActiveNodeArray,
+      isOpen,
+      navigate,
+      ownArray,
+      parentArray,
+      parentUrl,
+      searchParams,
+      urlPath.length,
+    ])
 
     return (
       <>
@@ -83,10 +121,10 @@ export const PlaceReportValuesNode = memo(
           node={placeReportValuesNode}
           level={level}
           isOpen={isOpen}
-          isInActiveNodeArray={isOpen}
+          isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
           childrenCount={placeReportValues.length}
-          to={`${baseUrl}/values`}
+          to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&

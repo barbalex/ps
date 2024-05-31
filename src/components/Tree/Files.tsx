@@ -1,10 +1,14 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
+import { useCorbado } from '@corbado/react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import isEqual from 'lodash/isEqual'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Node } from './Node.tsx'
 import { FileNode } from './File.tsx'
+import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
+import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 
 interface Props {
   project_id?: string
@@ -29,8 +33,16 @@ export const FilesNode = memo(
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
+    const { user: authUser } = useCorbado()
 
     const { db } = useElectric()!
+    const { results: appState } = useLiveQuery(
+      db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+    )
+    const openNodes = useMemo(
+      () => appState?.tree_open_nodes ?? [],
+      [appState?.tree_open_nodes],
+    )
 
     const where = useMemo(() => {
       const where = {}
@@ -63,99 +75,61 @@ export const FilesNode = memo(
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isOpen =
-      place_id2 && action_id
-        ? urlPath[0] === 'projects' &&
-          urlPath[1] === project_id &&
-          urlPath[2] === 'subprojects' &&
-          urlPath[3] === subproject_id &&
-          urlPath[4] === 'places' &&
-          urlPath[5] === place_id &&
-          urlPath[6] === 'places' &&
-          urlPath[7] === place_id2 &&
-          urlPath[8] === 'actions' &&
-          urlPath[9] === action_id &&
-          urlPath[10] === 'files'
-        : place_id2 && check_id
-        ? urlPath[0] === 'projects' &&
-          urlPath[1] === project_id &&
-          urlPath[2] === 'subprojects' &&
-          urlPath[3] === subproject_id &&
-          urlPath[4] === 'places' &&
-          urlPath[5] === place_id &&
-          urlPath[6] === 'places' &&
-          urlPath[7] === place_id2 &&
-          urlPath[8] === 'checks' &&
-          urlPath[9] === check_id &&
-          urlPath[10] === 'files'
-        : !place_id2 && action_id
-        ? urlPath[0] === 'projects' &&
-          urlPath[1] === project_id &&
-          urlPath[2] === 'subprojects' &&
-          urlPath[3] === subproject_id &&
-          urlPath[4] === 'places' &&
-          urlPath[5] === place_id &&
-          urlPath[6] === 'actions' &&
-          urlPath[7] === action_id &&
-          urlPath[8] === 'files'
-        : !place_id2 && check_id
-        ? urlPath[0] === 'projects' &&
-          urlPath[1] === project_id &&
-          urlPath[2] === 'subprojects' &&
-          urlPath[3] === subproject_id &&
-          urlPath[4] === 'places' &&
-          urlPath[5] === place_id &&
-          urlPath[6] === 'checks' &&
-          urlPath[7] === check_id &&
-          urlPath[8] === 'files'
-        : place_id2
-        ? urlPath[0] === 'projects' &&
-          urlPath[1] === project_id &&
-          urlPath[2] === 'subprojects' &&
-          urlPath[3] === subproject_id &&
-          urlPath[4] === 'places' &&
-          urlPath[5] === place_id &&
-          urlPath[6] === 'places' &&
-          urlPath[7] === place_id2 &&
-          urlPath[8] === 'files'
-        : place_id
-        ? urlPath[0] === 'projects' &&
-          urlPath[1] === project_id &&
-          urlPath[2] === 'subprojects' &&
-          urlPath[3] === subproject_id &&
-          urlPath[4] === 'places' &&
-          urlPath[5] === place_id &&
-          urlPath[6] === 'files'
-        : subproject_id
-        ? urlPath[0] === 'projects' &&
-          urlPath[1] === project_id &&
-          urlPath[2] === 'subprojects' &&
-          urlPath[3] === subproject_id &&
-          urlPath[4] === 'files'
-        : project_id
-        ? urlPath[0] === 'projects' &&
-          urlPath[1] === project_id &&
-          urlPath[2] === 'files'
-        : urlPath[0] === 'files'
-    const isActive = isOpen && urlPath.length === level
+    const parentArray = useMemo(
+      () => [
+        'data',
+        ...(project_id ? ['projects', project_id] : []),
+        ...(subproject_id ? ['subprojects', subproject_id] : []),
+        ...(place_id ? ['places', place_id] : []),
+        ...(place_id2 ? ['places', place_id2] : []),
+        ...(action_id ? ['actions', action_id] : []),
+        ...(check_id ? ['checks', check_id] : []),
+      ],
+      [action_id, check_id, place_id, place_id2, project_id, subproject_id],
+    )
+    const parentUrl = `/${parentArray.join('/')}`
+    const ownArray = useMemo(() => [...parentArray, 'files'], [parentArray])
+    const ownUrl = `/${ownArray.join('/')}`
 
-    const baseUrl = `${project_id ? `/projects/${project_id}` : ''}${
-      subproject_id ? `/subprojects/${subproject_id}` : ''
-    }${place_id ? `/places/${place_id}` : ''}${
-      place_id2 ? `/places/${place_id2}` : ''
-    }${action_id ? `/actions/${action_id}` : ''}${
-      check_id ? `/checks/${check_id}` : ''
-    }`
+    // TODO: needs to work not only works for urlPath, for all opened paths!
+    const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+    const isActive = isEqual(urlPath, ownArray)
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
-        return navigate({ pathname: baseUrl, search: searchParams.toString() })
+        removeChildNodes({
+          node: parentArray,
+          db,
+          appStateId: appState?.app_state_id,
+        })
+        // only navigate if urlPath includes ownArray
+        if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
+          navigate({
+            pathname: parentUrl,
+            search: searchParams.toString(),
+          })
+        }
+        return
       }
-      navigate({
-        pathname: `${baseUrl}/files`,
-        search: searchParams.toString(),
+      // add to openNodes without navigating
+      addOpenNodes({
+        nodes: [ownArray],
+        db,
+        appStateId: appState?.app_state_id,
       })
-    }, [baseUrl, isOpen, navigate, searchParams])
+    }, [
+      appState?.app_state_id,
+      db,
+      isInActiveNodeArray,
+      isOpen,
+      navigate,
+      ownArray,
+      parentArray,
+      parentUrl,
+      searchParams,
+      urlPath.length,
+    ])
 
     return (
       <>
@@ -163,10 +137,10 @@ export const FilesNode = memo(
           node={filesNode}
           level={level}
           isOpen={isOpen}
-          isInActiveNodeArray={isOpen}
+          isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
           childrenCount={files.length}
-          to={`${baseUrl}/files`}
+          to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&

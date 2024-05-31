@@ -1,5 +1,6 @@
-import { useCallback, memo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { memo, useMemo } from 'react'
+import { useLocation } from 'react-router-dom'
+import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
 import {
@@ -28,57 +29,46 @@ export const CheckTaxonNode = memo(
     level = 10,
   }: Props) => {
     const location = useLocation()
-    const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isOpenBase =
-      urlPath[0] === 'projects' &&
-      urlPath[1] === project_id &&
-      urlPath[2] === 'subprojects' &&
-      urlPath[3] === subproject_id &&
-      urlPath[4] === 'places' &&
-      urlPath[5] === (place_id ?? place.place_id)
-    const isOpen = place_id
-      ? isOpenBase &&
-        urlPath[6] === 'places' &&
-        urlPath[7] === place.place_id &&
-        urlPath[8] === 'checks' &&
-        urlPath[9] === check_id &&
-        urlPath[10] === 'taxa' &&
-        urlPath[11] === checkTaxon.check_taxon_id
-      : isOpenBase &&
-        urlPath[6] === 'checks' &&
-        urlPath[7] === check_id &&
-        urlPath[8] === 'taxa' &&
-        urlPath[9] === checkTaxon.check_taxon_id
-    const isActive = isOpen && urlPath.length === level
+    const ownArray = useMemo(
+      () => [
+        'data',
+        'projects',
+        project_id,
+        'subprojects',
+        subproject_id,
+        'places',
+        place_id ?? place.place_id,
+        ...(place_id ? ['places', place.place_id] : []),
+        'checks',
+        check_id,
+        'taxa',
+        checkTaxon.check_taxon_id,
+      ],
+      [
+        checkTaxon.check_taxon_id,
+        check_id,
+        place.place_id,
+        place_id,
+        project_id,
+        subproject_id,
+      ],
+    )
+    const ownUrl = `/${ownArray.join('/')}`
 
-    const baseUrl = `/projects/${project_id}/subprojects/${subproject_id}/places/${
-      place_id ?? place.place_id
-    }${place_id ? `/places/${place.place_id}` : ''}/checks/${check_id}/taxa`
-
-    const onClickButton = useCallback(() => {
-      if (isOpen) {
-        return navigate({ pathname: baseUrl, search: searchParams.toString() })
-      }
-      navigate({
-        pathname: `${baseUrl}/${checkTaxon.check_taxon_id}`,
-        search: searchParams.toString(),
-      })
-    }, [isOpen, navigate, baseUrl, checkTaxon.check_taxon_id, searchParams])
+    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+    const isActive = isEqual(urlPath, ownArray)
 
     return (
       <Node
         node={checkTaxon}
         id={checkTaxon.check_taxon_id}
         level={level}
-        isOpen={isOpen}
-        isInActiveNodeArray={isOpen}
+        isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
         childrenCount={0}
-        to={`${baseUrl}/${checkTaxon.check_taxon_id}`}
-        onClickButton={onClickButton}
+        to={ownUrl}
       />
     )
   },
