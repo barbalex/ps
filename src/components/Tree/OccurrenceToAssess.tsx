@@ -1,5 +1,5 @@
-import { useCallback, memo } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { memo } from 'react'
+import { useLocation } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
@@ -15,8 +15,6 @@ interface Props {
 export const OccurrenceToAssessNode = memo(
   ({ project_id, subproject_id, occurrence, level = 6 }: Props) => {
     const location = useLocation()
-    const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const ownArray = [

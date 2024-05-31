@@ -38,7 +38,10 @@ export const ListNode = memo(({ project_id, list, level = 4 }: Props) => {
     [project_id],
   )
   const parentUrl = `/${parentArray.join('/')}`
-  const ownArray = useMemo(() => [...parentArray, list.list_id], [parentArray])
+  const ownArray = useMemo(
+    () => [...parentArray, list.list_id],
+    [list.list_id, parentArray],
+  )
   const ownUrl = `/${ownArray.join('/')}`
 
   // needs to work not only works for urlPath, for all opened paths!
