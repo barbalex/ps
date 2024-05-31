@@ -63,7 +63,7 @@ export const PlaceUsersNode = memo(
       : isOpenBase && urlPath[7] === 'users'
     const isActive = isOpen && urlPath.length === level + 1
 
-    const baseArray = useMemo(
+    const parentArray = useMemo(
       () => [
         'data',
         'projects',
@@ -76,12 +76,12 @@ export const PlaceUsersNode = memo(
       ],
       [project_id, subproject_id, place_id, place.place_id],
     )
-    const baseUrl = baseArray.join('/')
+    const baseUrl = parentArray.join('/')
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
         removeChildNodes({
-          node: [...baseArray, 'users'],
+          node: [...parentArray, 'users'],
           db,
           appStateId: appState?.app_state_id,
         })
@@ -93,7 +93,7 @@ export const PlaceUsersNode = memo(
       })
     }, [
       appState?.app_state_id,
-      baseArray,
+      parentArray,
       baseUrl,
       db,
       isOpen,
