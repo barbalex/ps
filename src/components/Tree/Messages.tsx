@@ -8,6 +8,7 @@ import { useElectric } from '../../ElectricProvider.tsx'
 import { Node } from './Node.tsx'
 import { MessageNode } from './Message.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
+import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 
 export const MessagesNode = memo(({ level = 1 }) => {
   const location = useLocation()
@@ -21,8 +22,13 @@ export const MessagesNode = memo(({ level = 1 }) => {
       orderBy: { label: 'asc' },
     }),
   )
+
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+  )
+  const openNodes = useMemo(
+    () => appState?.tree_open_nodes ?? [],
+    [appState?.tree_open_nodes],
   )
 
   const messagesNode = useMemo(
