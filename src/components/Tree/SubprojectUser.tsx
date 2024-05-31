@@ -17,34 +17,32 @@ export const SubprojectUserNode = memo(
     const location = useLocation()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isOpen =
-      urlPath[1] === 'projects' &&
-      urlPath[2] === project_id &&
-      urlPath[3] === 'subprojects' &&
-      urlPath[4] === subproject_id &&
-      urlPath[5] === 'users' &&
-      urlPath[6] === subprojectUser.subproject_user_id
-    const isActive = isOpen && urlPath.length === level + 1
+    const ownArray = useMemo(
+      () => [
+        'data',
+        'projects',
+        project_id,
+        'subprojects',
+        subproject_id,
+        'users',
+        subprojectUser.subproject_user_id,
+      ],
+      [project_id, subprojectUser.subproject_user_id, subproject_id],
+    )
+    const ownUrl = `/${ownArray.join('/')}`
 
-    const baseArray = [
-      'data',
-      'projects',
-      project_id,
-      'subprojects',
-      subproject_id,
-      'users',
-    ]
-    const baseUrl = `/data/projects/${project_id}/subprojects/${subproject_id}/users`
+    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+    const isActive = isEqual(urlPath, ownArray)
 
     return (
       <Node
         node={subprojectUser}
         id={subprojectUser.subproject_user_id}
         level={level}
-        isInActiveNodeArray={isOpen}
+        isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
         childrenCount={0}
-        to={`${baseUrl}/${subprojectUser.subproject_user_id}`}
+        to={ownUrl}
       />
     )
   },

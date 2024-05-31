@@ -17,16 +17,7 @@ export const SubprojectTaxonNode = memo(
     const location = useLocation()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isOpen =
-      urlPath[1] === 'projects' &&
-      urlPath[2] === project_id &&
-      urlPath[3] === 'subprojects' &&
-      urlPath[4] === subproject_id &&
-      urlPath[5] === 'taxa' &&
-      urlPath[6] === subprojectTaxon.subproject_taxon_id
-    const isActive = isOpen && urlPath.length === level + 1
-
-    const baseArray = useMemo(
+    const ownArray = useMemo(
       () => [
         'data',
         'projects',
@@ -34,20 +25,24 @@ export const SubprojectTaxonNode = memo(
         'subprojects',
         subproject_id,
         'taxa',
+        subprojectTaxon.subproject_taxon_id,
       ],
-      [project_id, subproject_id],
+      [project_id, subprojectTaxon.subproject_taxon_id, subproject_id],
     )
-    const baseUrl = baseArray.join('/')
+    const ownUrl = `/${ownArray.join('/')}`
+
+    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+    const isActive = isEqual(urlPath, ownArray)
 
     return (
       <Node
         node={subprojectTaxon}
         id={subprojectTaxon.subproject_taxon_id}
         level={level}
-        isInActiveNodeArray={isOpen}
+        isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
         childrenCount={0}
-        to={`${baseUrl}/${subprojectTaxon.subproject_taxon_id}`}
+        to={ownUrl}
       />
     )
   },
