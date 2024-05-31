@@ -10,7 +10,7 @@ import { MessageNode } from './Message.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 
-export const MessagesNode = memo(({ level = 1 }) => {
+export const MessagesNode = memo(() => {
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -53,6 +53,7 @@ export const MessagesNode = memo(({ level = 1 }) => {
         node: parentArray,
         db,
         appStateId: appState?.app_state_id,
+        isRoot: true,
       })
       // only navigate if urlPath includes ownArray
       if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
@@ -68,6 +69,7 @@ export const MessagesNode = memo(({ level = 1 }) => {
       nodes: [ownArray],
       db,
       appStateId: appState?.app_state_id,
+      isRoot: true,
     })
   }, [
     appState?.app_state_id,

@@ -53,6 +53,7 @@ export const FieldTypesNode = memo(() => {
         node: parentArray,
         db,
         appStateId: appState?.app_state_id,
+        isRoot: true,
       })
       // only navigate if urlPath includes ownArray
       if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
@@ -68,6 +69,7 @@ export const FieldTypesNode = memo(() => {
       nodes: [ownArray],
       db,
       appStateId: appState?.app_state_id,
+      isRoot: true,
     })
   }, [
     appState?.app_state_id,
