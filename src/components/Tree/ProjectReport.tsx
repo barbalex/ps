@@ -16,28 +16,30 @@ export const ProjectReportNode = memo(
     const location = useLocation()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
-    const isOpen =
-      urlPath[1] === 'projects' &&
-      urlPath[2] === project_id &&
-      urlPath[3] === 'reports' &&
-      urlPath[4] === projectReport.project_report_id
-    const isActive = isOpen && urlPath.length === level + 1
-
-    const baseArray = useMemo(
-      () => ['data', 'projects', project_id, 'reports'],
-      [project_id],
+    const ownArray = useMemo(
+      () => [
+        'data',
+        'projects',
+        project_id,
+        'reports',
+        projectReport.project_report_id,
+      ],
+      [projectReport.project_report_id, project_id],
     )
-    const baseUrl = baseArray.join('/')
+    const ownUrl = `/${ownArray.join('/')}`
+
+    const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
+    const isActive = isEqual(urlPath, ownArray)
 
     return (
       <Node
         node={projectReport}
         id={projectReport.project_report_id}
         level={level}
-        isInActiveNodeArray={isOpen}
+        isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
         childrenCount={0}
-        to={`${baseUrl}/${projectReport.project_report_id}`}
+        to={ownUrl}
       />
     )
   },
