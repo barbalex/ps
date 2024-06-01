@@ -1184,6 +1184,49 @@ CREATE TABLE app_states(
   occurrence_fields_sorted jsonb DEFAULT NULL, -- array of strings
   syncing boolean DEFAULT NULL,
   tree_open_nodes jsonb DEFAULT NULL, -- array of strings
+  filter_projects jsonb DEFAULT NULL, -- a projects object with filter settings
+  filter_account_users jsonb DEFAULT NULL, -- a users object with filter settings
+  filter_field_types jsonb DEFAULT NULL, -- a field_types object with filter settings
+  filter_widgets_for_fields jsonb DEFAULT NULL, -- a fields object with filter settings
+  filter_account_fields jsonb DEFAULT NULL, -- a fields object with filter settings
+  filter_account_messages jsonb DEFAULT NULL, -- a messages object with filter settings
+  filter_project_reports jsonb DEFAULT NULL, -- a project_reports object with filter settings
+  filter_project_persons jsonb DEFAULT NULL, -- a persons object with filter settings
+  filter_tile_layers jsonb DEFAULT NULL, -- a tile_layers object with filter settings
+  filter_vector_layers jsonb DEFAULT NULL, -- a vector_layers object with filter settings
+  filter_vector_layer_displays jsonb DEFAULT NULL, -- a vector_layer_displays object with filter settings
+  filter_project_users jsonb DEFAULT NULL, -- a project_users object with filter settings
+  filter_lists jsonb DEFAULT NULL, -- a lists object with filter settings
+  filter_taxonomies jsonb DEFAULT NULL, -- a taxonomies object with filter settings
+  filter_units jsonb DEFAULT NULL, -- a units object with filter settings
+  filter_place_levels jsonb DEFAULT NULL, -- a place_levels object with filter settings
+  filter_project_fields jsonb DEFAULT NULL, -- a fields object with filter settings
+  filter_subprojects jsonb DEFAULT NULL, -- a subprojects object with filter settings
+  filter_subproject_reports jsonb DEFAULT NULL, -- a subproject_reports object with filter settings
+  filter_goals jsonb DEFAULT NULL, -- a goals object with filter settings
+  -- filter_taxa jsonb DEFAULT NULL, -- a taxa object with filter settings. TODO: what taxa tables exist?
+  filter_subproject_users jsonb DEFAULT NULL, -- a subproject_users object with filter settings
+  filter_occurrence_imports jsonb DEFAULT NULL, -- a occurrence_imports object with filter settings
+  filter_subproject_charts jsonb DEFAULT NULL, -- a charts object with filter settings
+  filter_subproject_chart_subjects jsonb DEFAULT NULL, -- a chart_subjects object with filter settings
+  filter_places_1 jsonb DEFAULT NULL, -- a places object with filter settings
+  filter_places_1_checks jsonb DEFAULT NULL, -- a checks object with filter settings
+  filter_places_1_check_values jsonb DEFAULT NULL, -- a check_values object with filter settings
+  filter_places_1_check_taxa jsonb DEFAULT NULL, -- a check_taxa object with filter settings
+  filter_places_1_actions jsonb DEFAULT NULL, -- a actions object with filter settings
+  filter_places_1_reports jsonb DEFAULT NULL, -- a place_reports object with filter settings
+  filter_places_1_users jsonb DEFAULT NULL, -- a place_users object with filter settings
+  filter_places_1_charts jsonb DEFAULT NULL, -- a charts object with filter settings
+  filter_places_1_chart_subjects jsonb DEFAULT NULL, -- a chart_subjects object with filter settings
+  filter_places_2 jsonb DEFAULT NULL, -- a places object with filter settings
+  filter_places_2_checks jsonb DEFAULT NULL, -- a checks object with filter settings
+  filter_places_2_check_values jsonb DEFAULT NULL, -- a check_values object with filter settings
+  filter_places_2_check_taxa jsonb DEFAULT NULL, -- a check_taxa object with filter settings
+  filter_places_2_actions jsonb DEFAULT NULL, -- a actions object with filter settings
+  filter_places_2_reports jsonb DEFAULT NULL, -- a place_reports object with filter settings
+  filter_places_2_users jsonb DEFAULT NULL, -- a place_users object with filter settings
+  filter_places_2_charts jsonb DEFAULT NULL, -- a charts object with filter settings
+  filter_places_2_chart_subjects jsonb DEFAULT NULL, -- a chart_subjects object with filter settings
   label text DEFAULT NULL
 );
 
