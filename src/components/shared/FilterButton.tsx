@@ -1,9 +1,9 @@
 import { useCallback, memo } from 'react'
 import { Button } from '@fluentui/react-button'
-// import { FaFilter } from 'react-icons/fa'
 import { MdFilterAlt, MdFilterAltOff } from 'react-icons/md'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 
@@ -14,6 +14,8 @@ interface Props {
 }
 export const FilterButton = memo(({ table, filterField }: Props) => {
   const { user: authUser } = useCorbado()
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
   const { results: appState } = useLiveQuery(
@@ -35,7 +37,11 @@ export const FilterButton = memo(({ table, filterField }: Props) => {
     // get all geometries from layer
     // first get all places with level
     // then get all actions/checks/occurrences with place_id
-  }, [])
+    navigate({
+      pathname: 'filter',
+      search: searchParams.toString(),
+    })
+  }, [navigate])
 
   return (
     <Button

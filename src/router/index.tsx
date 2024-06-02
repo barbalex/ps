@@ -813,6 +813,10 @@ export const router = () => {
                           lazy: () => import('../routes/vectorLayers.tsx'),
                         },
                         {
+                          path: 'filter',
+                          lazy: () => import('../routes/vectorLayer/index.tsx'),
+                        },
+                        {
                           path: ':vector_layer_id',
                           element: null,
                           handle: {
