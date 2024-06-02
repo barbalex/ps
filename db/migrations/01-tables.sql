@@ -1226,8 +1226,8 @@ CREATE TABLE app_states(
   -- using all filter fields returns error: too many arguments on function json_object
   -- reason: Maximum Number Of Arguments On A Function is 127
   -- https://www.sqlite.org/limits.html#Maximum%20Number%20Of%20Arguments:~:text=Maximum%20Number%20Of%20Arguments%20On%20A%20Function
-  -- filter_places_2_actions jsonb DEFAULT NULL, -- a actions object with filter settings
-  -- filter_places_2_reports jsonb DEFAULT NULL, -- a place_reports object with filter settings
+  filter_places_2_actions jsonb DEFAULT NULL, -- a actions object with filter settings
+  filter_places_2_reports jsonb DEFAULT NULL, -- a place_reports object with filter settings
   -- filter_places_2_users jsonb DEFAULT NULL, -- a place_users object with filter settings
   -- filter_places_2_charts jsonb DEFAULT NULL, -- a charts object with filter settings
   -- filter_places_2_chart_subjects jsonb DEFAULT NULL, -- a chart_subjects object with filter settings
