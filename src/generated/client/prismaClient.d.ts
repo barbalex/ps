@@ -193,6 +193,31 @@ export type App_states = {
   occurrence_fields_sorted: Prisma.JsonValue | null
   syncing: boolean | null
   tree_open_nodes: Prisma.JsonValue | null
+  filter_projects: Prisma.JsonValue | null
+  filter_account_users: Prisma.JsonValue | null
+  filter_field_types: Prisma.JsonValue | null
+  filter_widgets_for_fields: Prisma.JsonValue | null
+  filter_account_fields: Prisma.JsonValue | null
+  filter_account_messages: Prisma.JsonValue | null
+  filter_project_reports: Prisma.JsonValue | null
+  filter_project_persons: Prisma.JsonValue | null
+  filter_tile_layers: Prisma.JsonValue | null
+  filter_vector_layers: Prisma.JsonValue | null
+  filter_vector_layer_displays: Prisma.JsonValue | null
+  filter_project_users: Prisma.JsonValue | null
+  filter_lists: Prisma.JsonValue | null
+  filter_taxonomies: Prisma.JsonValue | null
+  filter_units: Prisma.JsonValue | null
+  filter_place_levels: Prisma.JsonValue | null
+  filter_project_fields: Prisma.JsonValue | null
+  filter_subprojects: Prisma.JsonValue | null
+  filter_subproject_reports: Prisma.JsonValue | null
+  filter_goals: Prisma.JsonValue | null
+  filter_subproject_users: Prisma.JsonValue | null
+  filter_occurrence_imports: Prisma.JsonValue | null
+  filter_subproject_charts: Prisma.JsonValue | null
+  filter_subproject_chart_subjects: Prisma.JsonValue | null
+  filter_places_1: Prisma.JsonValue | null
   label: string | null
 }
 
@@ -10682,6 +10707,31 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     occurrence_fields_sorted: number
     syncing: number
     tree_open_nodes: number
+    filter_projects: number
+    filter_account_users: number
+    filter_field_types: number
+    filter_widgets_for_fields: number
+    filter_account_fields: number
+    filter_account_messages: number
+    filter_project_reports: number
+    filter_project_persons: number
+    filter_tile_layers: number
+    filter_vector_layers: number
+    filter_vector_layer_displays: number
+    filter_project_users: number
+    filter_lists: number
+    filter_taxonomies: number
+    filter_units: number
+    filter_place_levels: number
+    filter_project_fields: number
+    filter_subprojects: number
+    filter_subproject_reports: number
+    filter_goals: number
+    filter_subproject_users: number
+    filter_occurrence_imports: number
+    filter_subproject_charts: number
+    filter_subproject_chart_subjects: number
+    filter_places_1: number
     label: number
     _all: number
   }
@@ -10748,6 +10798,31 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     occurrence_fields_sorted?: true
     syncing?: true
     tree_open_nodes?: true
+    filter_projects?: true
+    filter_account_users?: true
+    filter_field_types?: true
+    filter_widgets_for_fields?: true
+    filter_account_fields?: true
+    filter_account_messages?: true
+    filter_project_reports?: true
+    filter_project_persons?: true
+    filter_tile_layers?: true
+    filter_vector_layers?: true
+    filter_vector_layer_displays?: true
+    filter_project_users?: true
+    filter_lists?: true
+    filter_taxonomies?: true
+    filter_units?: true
+    filter_place_levels?: true
+    filter_project_fields?: true
+    filter_subprojects?: true
+    filter_subproject_reports?: true
+    filter_goals?: true
+    filter_subproject_users?: true
+    filter_occurrence_imports?: true
+    filter_subproject_charts?: true
+    filter_subproject_chart_subjects?: true
+    filter_places_1?: true
     label?: true
     _all?: true
   }
@@ -10853,6 +10928,31 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     occurrence_fields_sorted: JsonValue | null
     syncing: boolean | null
     tree_open_nodes: JsonValue | null
+    filter_projects: JsonValue | null
+    filter_account_users: JsonValue | null
+    filter_field_types: JsonValue | null
+    filter_widgets_for_fields: JsonValue | null
+    filter_account_fields: JsonValue | null
+    filter_account_messages: JsonValue | null
+    filter_project_reports: JsonValue | null
+    filter_project_persons: JsonValue | null
+    filter_tile_layers: JsonValue | null
+    filter_vector_layers: JsonValue | null
+    filter_vector_layer_displays: JsonValue | null
+    filter_project_users: JsonValue | null
+    filter_lists: JsonValue | null
+    filter_taxonomies: JsonValue | null
+    filter_units: JsonValue | null
+    filter_place_levels: JsonValue | null
+    filter_project_fields: JsonValue | null
+    filter_subprojects: JsonValue | null
+    filter_subproject_reports: JsonValue | null
+    filter_goals: JsonValue | null
+    filter_subproject_users: JsonValue | null
+    filter_occurrence_imports: JsonValue | null
+    filter_subproject_charts: JsonValue | null
+    filter_subproject_chart_subjects: JsonValue | null
+    filter_places_1: JsonValue | null
     label: string | null
     _count: App_statesCountAggregateOutputType | null
     _min: App_statesMinAggregateOutputType | null
@@ -10896,6 +10996,31 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     occurrence_fields_sorted?: boolean
     syncing?: boolean
     tree_open_nodes?: boolean
+    filter_projects?: boolean
+    filter_account_users?: boolean
+    filter_field_types?: boolean
+    filter_widgets_for_fields?: boolean
+    filter_account_fields?: boolean
+    filter_account_messages?: boolean
+    filter_project_reports?: boolean
+    filter_project_persons?: boolean
+    filter_tile_layers?: boolean
+    filter_vector_layers?: boolean
+    filter_vector_layer_displays?: boolean
+    filter_project_users?: boolean
+    filter_lists?: boolean
+    filter_taxonomies?: boolean
+    filter_units?: boolean
+    filter_place_levels?: boolean
+    filter_project_fields?: boolean
+    filter_subprojects?: boolean
+    filter_subproject_reports?: boolean
+    filter_goals?: boolean
+    filter_subproject_users?: boolean
+    filter_occurrence_imports?: boolean
+    filter_subproject_charts?: boolean
+    filter_subproject_chart_subjects?: boolean
+    filter_places_1?: boolean
     label?: boolean
     accounts?: boolean | AccountsArgs
     users?: boolean | UsersArgs
@@ -58067,6 +58192,31 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     occurrence_fields_sorted: 'occurrence_fields_sorted',
     syncing: 'syncing',
     tree_open_nodes: 'tree_open_nodes',
+    filter_projects: 'filter_projects',
+    filter_account_users: 'filter_account_users',
+    filter_field_types: 'filter_field_types',
+    filter_widgets_for_fields: 'filter_widgets_for_fields',
+    filter_account_fields: 'filter_account_fields',
+    filter_account_messages: 'filter_account_messages',
+    filter_project_reports: 'filter_project_reports',
+    filter_project_persons: 'filter_project_persons',
+    filter_tile_layers: 'filter_tile_layers',
+    filter_vector_layers: 'filter_vector_layers',
+    filter_vector_layer_displays: 'filter_vector_layer_displays',
+    filter_project_users: 'filter_project_users',
+    filter_lists: 'filter_lists',
+    filter_taxonomies: 'filter_taxonomies',
+    filter_units: 'filter_units',
+    filter_place_levels: 'filter_place_levels',
+    filter_project_fields: 'filter_project_fields',
+    filter_subprojects: 'filter_subprojects',
+    filter_subproject_reports: 'filter_subproject_reports',
+    filter_goals: 'filter_goals',
+    filter_subproject_users: 'filter_subproject_users',
+    filter_occurrence_imports: 'filter_occurrence_imports',
+    filter_subproject_charts: 'filter_subproject_charts',
+    filter_subproject_chart_subjects: 'filter_subproject_chart_subjects',
+    filter_places_1: 'filter_places_1',
     label: 'label'
   };
 
@@ -59215,6 +59365,31 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     occurrence_fields_sorted?: JsonNullableFilter
     syncing?: BoolNullableFilter | boolean | null
     tree_open_nodes?: JsonNullableFilter
+    filter_projects?: JsonNullableFilter
+    filter_account_users?: JsonNullableFilter
+    filter_field_types?: JsonNullableFilter
+    filter_widgets_for_fields?: JsonNullableFilter
+    filter_account_fields?: JsonNullableFilter
+    filter_account_messages?: JsonNullableFilter
+    filter_project_reports?: JsonNullableFilter
+    filter_project_persons?: JsonNullableFilter
+    filter_tile_layers?: JsonNullableFilter
+    filter_vector_layers?: JsonNullableFilter
+    filter_vector_layer_displays?: JsonNullableFilter
+    filter_project_users?: JsonNullableFilter
+    filter_lists?: JsonNullableFilter
+    filter_taxonomies?: JsonNullableFilter
+    filter_units?: JsonNullableFilter
+    filter_place_levels?: JsonNullableFilter
+    filter_project_fields?: JsonNullableFilter
+    filter_subprojects?: JsonNullableFilter
+    filter_subproject_reports?: JsonNullableFilter
+    filter_goals?: JsonNullableFilter
+    filter_subproject_users?: JsonNullableFilter
+    filter_occurrence_imports?: JsonNullableFilter
+    filter_subproject_charts?: JsonNullableFilter
+    filter_subproject_chart_subjects?: JsonNullableFilter
+    filter_places_1?: JsonNullableFilter
     label?: StringNullableFilter | string | null
     accounts?: XOR<AccountsRelationFilter, AccountsWhereInput> | null
     users?: XOR<UsersRelationFilter, UsersWhereInput> | null
@@ -59243,6 +59418,31 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     occurrence_fields_sorted?: SortOrder
     syncing?: SortOrder
     tree_open_nodes?: SortOrder
+    filter_projects?: SortOrder
+    filter_account_users?: SortOrder
+    filter_field_types?: SortOrder
+    filter_widgets_for_fields?: SortOrder
+    filter_account_fields?: SortOrder
+    filter_account_messages?: SortOrder
+    filter_project_reports?: SortOrder
+    filter_project_persons?: SortOrder
+    filter_tile_layers?: SortOrder
+    filter_vector_layers?: SortOrder
+    filter_vector_layer_displays?: SortOrder
+    filter_project_users?: SortOrder
+    filter_lists?: SortOrder
+    filter_taxonomies?: SortOrder
+    filter_units?: SortOrder
+    filter_place_levels?: SortOrder
+    filter_project_fields?: SortOrder
+    filter_subprojects?: SortOrder
+    filter_subproject_reports?: SortOrder
+    filter_goals?: SortOrder
+    filter_subproject_users?: SortOrder
+    filter_occurrence_imports?: SortOrder
+    filter_subproject_charts?: SortOrder
+    filter_subproject_chart_subjects?: SortOrder
+    filter_places_1?: SortOrder
     label?: SortOrder
     accounts?: AccountsOrderByWithRelationInput
     users?: UsersOrderByWithRelationInput
@@ -59275,6 +59475,31 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     occurrence_fields_sorted?: SortOrder
     syncing?: SortOrder
     tree_open_nodes?: SortOrder
+    filter_projects?: SortOrder
+    filter_account_users?: SortOrder
+    filter_field_types?: SortOrder
+    filter_widgets_for_fields?: SortOrder
+    filter_account_fields?: SortOrder
+    filter_account_messages?: SortOrder
+    filter_project_reports?: SortOrder
+    filter_project_persons?: SortOrder
+    filter_tile_layers?: SortOrder
+    filter_vector_layers?: SortOrder
+    filter_vector_layer_displays?: SortOrder
+    filter_project_users?: SortOrder
+    filter_lists?: SortOrder
+    filter_taxonomies?: SortOrder
+    filter_units?: SortOrder
+    filter_place_levels?: SortOrder
+    filter_project_fields?: SortOrder
+    filter_subprojects?: SortOrder
+    filter_subproject_reports?: SortOrder
+    filter_goals?: SortOrder
+    filter_subproject_users?: SortOrder
+    filter_occurrence_imports?: SortOrder
+    filter_subproject_charts?: SortOrder
+    filter_subproject_chart_subjects?: SortOrder
+    filter_places_1?: SortOrder
     label?: SortOrder
     _count?: App_statesCountOrderByAggregateInput
     _max?: App_statesMaxOrderByAggregateInput
@@ -59307,6 +59532,31 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     occurrence_fields_sorted?: JsonNullableWithAggregatesFilter
     syncing?: BoolNullableWithAggregatesFilter | boolean | null
     tree_open_nodes?: JsonNullableWithAggregatesFilter
+    filter_projects?: JsonNullableWithAggregatesFilter
+    filter_account_users?: JsonNullableWithAggregatesFilter
+    filter_field_types?: JsonNullableWithAggregatesFilter
+    filter_widgets_for_fields?: JsonNullableWithAggregatesFilter
+    filter_account_fields?: JsonNullableWithAggregatesFilter
+    filter_account_messages?: JsonNullableWithAggregatesFilter
+    filter_project_reports?: JsonNullableWithAggregatesFilter
+    filter_project_persons?: JsonNullableWithAggregatesFilter
+    filter_tile_layers?: JsonNullableWithAggregatesFilter
+    filter_vector_layers?: JsonNullableWithAggregatesFilter
+    filter_vector_layer_displays?: JsonNullableWithAggregatesFilter
+    filter_project_users?: JsonNullableWithAggregatesFilter
+    filter_lists?: JsonNullableWithAggregatesFilter
+    filter_taxonomies?: JsonNullableWithAggregatesFilter
+    filter_units?: JsonNullableWithAggregatesFilter
+    filter_place_levels?: JsonNullableWithAggregatesFilter
+    filter_project_fields?: JsonNullableWithAggregatesFilter
+    filter_subprojects?: JsonNullableWithAggregatesFilter
+    filter_subproject_reports?: JsonNullableWithAggregatesFilter
+    filter_goals?: JsonNullableWithAggregatesFilter
+    filter_subproject_users?: JsonNullableWithAggregatesFilter
+    filter_occurrence_imports?: JsonNullableWithAggregatesFilter
+    filter_subproject_charts?: JsonNullableWithAggregatesFilter
+    filter_subproject_chart_subjects?: JsonNullableWithAggregatesFilter
+    filter_places_1?: JsonNullableWithAggregatesFilter
     label?: StringNullableWithAggregatesFilter | string | null
   }
 
@@ -62981,6 +63231,31 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
     syncing?: boolean | null
     tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
+    filter_projects?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_field_types?: NullableJsonNullValueInput | InputJsonValue
+    filter_widgets_for_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layer_displays?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_lists?: NullableJsonNullValueInput | InputJsonValue
+    filter_taxonomies?: NullableJsonNullValueInput | InputJsonValue
+    filter_units?: NullableJsonNullValueInput | InputJsonValue
+    filter_place_levels?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_subprojects?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_goals?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_occurrence_imports?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_charts?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_chart_subjects?: NullableJsonNullValueInput | InputJsonValue
+    filter_places_1?: NullableJsonNullValueInput | InputJsonValue
     label?: string | null
     accounts?: AccountsCreateNestedOneWithoutApp_statesInput
     users?: UsersCreateNestedOneWithoutApp_statesInput
@@ -63009,6 +63284,31 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
     syncing?: boolean | null
     tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
+    filter_projects?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_field_types?: NullableJsonNullValueInput | InputJsonValue
+    filter_widgets_for_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layer_displays?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_lists?: NullableJsonNullValueInput | InputJsonValue
+    filter_taxonomies?: NullableJsonNullValueInput | InputJsonValue
+    filter_units?: NullableJsonNullValueInput | InputJsonValue
+    filter_place_levels?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_subprojects?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_goals?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_occurrence_imports?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_charts?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_chart_subjects?: NullableJsonNullValueInput | InputJsonValue
+    filter_places_1?: NullableJsonNullValueInput | InputJsonValue
     label?: string | null
   }
 
@@ -63033,6 +63333,31 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
     syncing?: NullableBoolFieldUpdateOperationsInput | boolean | null
     tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
+    filter_projects?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_field_types?: NullableJsonNullValueInput | InputJsonValue
+    filter_widgets_for_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layer_displays?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_lists?: NullableJsonNullValueInput | InputJsonValue
+    filter_taxonomies?: NullableJsonNullValueInput | InputJsonValue
+    filter_units?: NullableJsonNullValueInput | InputJsonValue
+    filter_place_levels?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_subprojects?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_goals?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_occurrence_imports?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_charts?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_chart_subjects?: NullableJsonNullValueInput | InputJsonValue
+    filter_places_1?: NullableJsonNullValueInput | InputJsonValue
     label?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountsUpdateOneWithoutApp_statesNestedInput
     users?: UsersUpdateOneWithoutApp_statesNestedInput
@@ -63061,6 +63386,31 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
     syncing?: NullableBoolFieldUpdateOperationsInput | boolean | null
     tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
+    filter_projects?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_field_types?: NullableJsonNullValueInput | InputJsonValue
+    filter_widgets_for_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layer_displays?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_lists?: NullableJsonNullValueInput | InputJsonValue
+    filter_taxonomies?: NullableJsonNullValueInput | InputJsonValue
+    filter_units?: NullableJsonNullValueInput | InputJsonValue
+    filter_place_levels?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_subprojects?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_goals?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_occurrence_imports?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_charts?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_chart_subjects?: NullableJsonNullValueInput | InputJsonValue
+    filter_places_1?: NullableJsonNullValueInput | InputJsonValue
     label?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -63087,6 +63437,31 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
     syncing?: boolean | null
     tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
+    filter_projects?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_field_types?: NullableJsonNullValueInput | InputJsonValue
+    filter_widgets_for_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layer_displays?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_lists?: NullableJsonNullValueInput | InputJsonValue
+    filter_taxonomies?: NullableJsonNullValueInput | InputJsonValue
+    filter_units?: NullableJsonNullValueInput | InputJsonValue
+    filter_place_levels?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_subprojects?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_goals?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_occurrence_imports?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_charts?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_chart_subjects?: NullableJsonNullValueInput | InputJsonValue
+    filter_places_1?: NullableJsonNullValueInput | InputJsonValue
     label?: string | null
   }
 
@@ -63111,6 +63486,31 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
     syncing?: NullableBoolFieldUpdateOperationsInput | boolean | null
     tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
+    filter_projects?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_field_types?: NullableJsonNullValueInput | InputJsonValue
+    filter_widgets_for_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layer_displays?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_lists?: NullableJsonNullValueInput | InputJsonValue
+    filter_taxonomies?: NullableJsonNullValueInput | InputJsonValue
+    filter_units?: NullableJsonNullValueInput | InputJsonValue
+    filter_place_levels?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_subprojects?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_goals?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_occurrence_imports?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_charts?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_chart_subjects?: NullableJsonNullValueInput | InputJsonValue
+    filter_places_1?: NullableJsonNullValueInput | InputJsonValue
     label?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -63137,6 +63537,31 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
     syncing?: NullableBoolFieldUpdateOperationsInput | boolean | null
     tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
+    filter_projects?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_field_types?: NullableJsonNullValueInput | InputJsonValue
+    filter_widgets_for_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layer_displays?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_lists?: NullableJsonNullValueInput | InputJsonValue
+    filter_taxonomies?: NullableJsonNullValueInput | InputJsonValue
+    filter_units?: NullableJsonNullValueInput | InputJsonValue
+    filter_place_levels?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_subprojects?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_goals?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_occurrence_imports?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_charts?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_chart_subjects?: NullableJsonNullValueInput | InputJsonValue
+    filter_places_1?: NullableJsonNullValueInput | InputJsonValue
     label?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -68010,6 +68435,31 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     occurrence_fields_sorted?: SortOrder
     syncing?: SortOrder
     tree_open_nodes?: SortOrder
+    filter_projects?: SortOrder
+    filter_account_users?: SortOrder
+    filter_field_types?: SortOrder
+    filter_widgets_for_fields?: SortOrder
+    filter_account_fields?: SortOrder
+    filter_account_messages?: SortOrder
+    filter_project_reports?: SortOrder
+    filter_project_persons?: SortOrder
+    filter_tile_layers?: SortOrder
+    filter_vector_layers?: SortOrder
+    filter_vector_layer_displays?: SortOrder
+    filter_project_users?: SortOrder
+    filter_lists?: SortOrder
+    filter_taxonomies?: SortOrder
+    filter_units?: SortOrder
+    filter_place_levels?: SortOrder
+    filter_project_fields?: SortOrder
+    filter_subprojects?: SortOrder
+    filter_subproject_reports?: SortOrder
+    filter_goals?: SortOrder
+    filter_subproject_users?: SortOrder
+    filter_occurrence_imports?: SortOrder
+    filter_subproject_charts?: SortOrder
+    filter_subproject_chart_subjects?: SortOrder
+    filter_places_1?: SortOrder
     label?: SortOrder
   }
 
@@ -77659,6 +78109,31 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
     syncing?: boolean | null
     tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
+    filter_projects?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_field_types?: NullableJsonNullValueInput | InputJsonValue
+    filter_widgets_for_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layer_displays?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_lists?: NullableJsonNullValueInput | InputJsonValue
+    filter_taxonomies?: NullableJsonNullValueInput | InputJsonValue
+    filter_units?: NullableJsonNullValueInput | InputJsonValue
+    filter_place_levels?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_subprojects?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_goals?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_occurrence_imports?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_charts?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_chart_subjects?: NullableJsonNullValueInput | InputJsonValue
+    filter_places_1?: NullableJsonNullValueInput | InputJsonValue
     label?: string | null
     users?: UsersCreateNestedOneWithoutApp_statesInput
   }
@@ -77685,6 +78160,31 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
     syncing?: boolean | null
     tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
+    filter_projects?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_field_types?: NullableJsonNullValueInput | InputJsonValue
+    filter_widgets_for_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layer_displays?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_lists?: NullableJsonNullValueInput | InputJsonValue
+    filter_taxonomies?: NullableJsonNullValueInput | InputJsonValue
+    filter_units?: NullableJsonNullValueInput | InputJsonValue
+    filter_place_levels?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_subprojects?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_goals?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_occurrence_imports?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_charts?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_chart_subjects?: NullableJsonNullValueInput | InputJsonValue
+    filter_places_1?: NullableJsonNullValueInput | InputJsonValue
     label?: string | null
   }
 
@@ -79284,6 +79784,31 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     occurrence_fields_sorted?: JsonNullableFilter
     syncing?: BoolNullableFilter | boolean | null
     tree_open_nodes?: JsonNullableFilter
+    filter_projects?: JsonNullableFilter
+    filter_account_users?: JsonNullableFilter
+    filter_field_types?: JsonNullableFilter
+    filter_widgets_for_fields?: JsonNullableFilter
+    filter_account_fields?: JsonNullableFilter
+    filter_account_messages?: JsonNullableFilter
+    filter_project_reports?: JsonNullableFilter
+    filter_project_persons?: JsonNullableFilter
+    filter_tile_layers?: JsonNullableFilter
+    filter_vector_layers?: JsonNullableFilter
+    filter_vector_layer_displays?: JsonNullableFilter
+    filter_project_users?: JsonNullableFilter
+    filter_lists?: JsonNullableFilter
+    filter_taxonomies?: JsonNullableFilter
+    filter_units?: JsonNullableFilter
+    filter_place_levels?: JsonNullableFilter
+    filter_project_fields?: JsonNullableFilter
+    filter_subprojects?: JsonNullableFilter
+    filter_subproject_reports?: JsonNullableFilter
+    filter_goals?: JsonNullableFilter
+    filter_subproject_users?: JsonNullableFilter
+    filter_occurrence_imports?: JsonNullableFilter
+    filter_subproject_charts?: JsonNullableFilter
+    filter_subproject_chart_subjects?: JsonNullableFilter
+    filter_places_1?: JsonNullableFilter
     label?: StringNullableFilter | string | null
   }
 
@@ -97886,6 +98411,31 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
     syncing?: boolean | null
     tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
+    filter_projects?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_field_types?: NullableJsonNullValueInput | InputJsonValue
+    filter_widgets_for_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layer_displays?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_lists?: NullableJsonNullValueInput | InputJsonValue
+    filter_taxonomies?: NullableJsonNullValueInput | InputJsonValue
+    filter_units?: NullableJsonNullValueInput | InputJsonValue
+    filter_place_levels?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_subprojects?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_goals?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_occurrence_imports?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_charts?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_chart_subjects?: NullableJsonNullValueInput | InputJsonValue
+    filter_places_1?: NullableJsonNullValueInput | InputJsonValue
     label?: string | null
     accounts?: AccountsCreateNestedOneWithoutApp_statesInput
   }
@@ -97912,6 +98462,31 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
     syncing?: boolean | null
     tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
+    filter_projects?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_field_types?: NullableJsonNullValueInput | InputJsonValue
+    filter_widgets_for_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layer_displays?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_lists?: NullableJsonNullValueInput | InputJsonValue
+    filter_taxonomies?: NullableJsonNullValueInput | InputJsonValue
+    filter_units?: NullableJsonNullValueInput | InputJsonValue
+    filter_place_levels?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_subprojects?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_goals?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_occurrence_imports?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_charts?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_chart_subjects?: NullableJsonNullValueInput | InputJsonValue
+    filter_places_1?: NullableJsonNullValueInput | InputJsonValue
     label?: string | null
   }
 
@@ -99569,6 +100144,31 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
     syncing?: boolean | null
     tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
+    filter_projects?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_field_types?: NullableJsonNullValueInput | InputJsonValue
+    filter_widgets_for_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layer_displays?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_lists?: NullableJsonNullValueInput | InputJsonValue
+    filter_taxonomies?: NullableJsonNullValueInput | InputJsonValue
+    filter_units?: NullableJsonNullValueInput | InputJsonValue
+    filter_place_levels?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_subprojects?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_goals?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_occurrence_imports?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_charts?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_chart_subjects?: NullableJsonNullValueInput | InputJsonValue
+    filter_places_1?: NullableJsonNullValueInput | InputJsonValue
     label?: string | null
   }
 
@@ -100182,6 +100782,31 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
     syncing?: NullableBoolFieldUpdateOperationsInput | boolean | null
     tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
+    filter_projects?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_field_types?: NullableJsonNullValueInput | InputJsonValue
+    filter_widgets_for_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layer_displays?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_lists?: NullableJsonNullValueInput | InputJsonValue
+    filter_taxonomies?: NullableJsonNullValueInput | InputJsonValue
+    filter_units?: NullableJsonNullValueInput | InputJsonValue
+    filter_place_levels?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_subprojects?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_goals?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_occurrence_imports?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_charts?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_chart_subjects?: NullableJsonNullValueInput | InputJsonValue
+    filter_places_1?: NullableJsonNullValueInput | InputJsonValue
     label?: NullableStringFieldUpdateOperationsInput | string | null
     users?: UsersUpdateOneWithoutApp_statesNestedInput
   }
@@ -100208,6 +100833,31 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
     syncing?: NullableBoolFieldUpdateOperationsInput | boolean | null
     tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
+    filter_projects?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_field_types?: NullableJsonNullValueInput | InputJsonValue
+    filter_widgets_for_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layer_displays?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_lists?: NullableJsonNullValueInput | InputJsonValue
+    filter_taxonomies?: NullableJsonNullValueInput | InputJsonValue
+    filter_units?: NullableJsonNullValueInput | InputJsonValue
+    filter_place_levels?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_subprojects?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_goals?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_occurrence_imports?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_charts?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_chart_subjects?: NullableJsonNullValueInput | InputJsonValue
+    filter_places_1?: NullableJsonNullValueInput | InputJsonValue
     label?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -100233,6 +100883,31 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
     syncing?: NullableBoolFieldUpdateOperationsInput | boolean | null
     tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
+    filter_projects?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_field_types?: NullableJsonNullValueInput | InputJsonValue
+    filter_widgets_for_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layer_displays?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_lists?: NullableJsonNullValueInput | InputJsonValue
+    filter_taxonomies?: NullableJsonNullValueInput | InputJsonValue
+    filter_units?: NullableJsonNullValueInput | InputJsonValue
+    filter_place_levels?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_subprojects?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_goals?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_occurrence_imports?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_charts?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_chart_subjects?: NullableJsonNullValueInput | InputJsonValue
+    filter_places_1?: NullableJsonNullValueInput | InputJsonValue
     label?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -104213,6 +104888,31 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
     syncing?: boolean | null
     tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
+    filter_projects?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_field_types?: NullableJsonNullValueInput | InputJsonValue
+    filter_widgets_for_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layer_displays?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_lists?: NullableJsonNullValueInput | InputJsonValue
+    filter_taxonomies?: NullableJsonNullValueInput | InputJsonValue
+    filter_units?: NullableJsonNullValueInput | InputJsonValue
+    filter_place_levels?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_subprojects?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_goals?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_occurrence_imports?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_charts?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_chart_subjects?: NullableJsonNullValueInput | InputJsonValue
+    filter_places_1?: NullableJsonNullValueInput | InputJsonValue
     label?: string | null
   }
 
@@ -104378,6 +105078,31 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
     syncing?: NullableBoolFieldUpdateOperationsInput | boolean | null
     tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
+    filter_projects?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_field_types?: NullableJsonNullValueInput | InputJsonValue
+    filter_widgets_for_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layer_displays?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_lists?: NullableJsonNullValueInput | InputJsonValue
+    filter_taxonomies?: NullableJsonNullValueInput | InputJsonValue
+    filter_units?: NullableJsonNullValueInput | InputJsonValue
+    filter_place_levels?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_subprojects?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_goals?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_occurrence_imports?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_charts?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_chart_subjects?: NullableJsonNullValueInput | InputJsonValue
+    filter_places_1?: NullableJsonNullValueInput | InputJsonValue
     label?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountsUpdateOneWithoutApp_statesNestedInput
   }
@@ -104404,6 +105129,31 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     occurrence_fields_sorted?: NullableJsonNullValueInput | InputJsonValue
     syncing?: NullableBoolFieldUpdateOperationsInput | boolean | null
     tree_open_nodes?: NullableJsonNullValueInput | InputJsonValue
+    filter_projects?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_field_types?: NullableJsonNullValueInput | InputJsonValue
+    filter_widgets_for_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
+    filter_vector_layer_displays?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_lists?: NullableJsonNullValueInput | InputJsonValue
+    filter_taxonomies?: NullableJsonNullValueInput | InputJsonValue
+    filter_units?: NullableJsonNullValueInput | InputJsonValue
+    filter_place_levels?: NullableJsonNullValueInput | InputJsonValue
+    filter_project_fields?: NullableJsonNullValueInput | InputJsonValue
+    filter_subprojects?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_reports?: NullableJsonNullValueInput | InputJsonValue
+    filter_goals?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_users?: NullableJsonNullValueInput | InputJsonValue
+    filter_occurrence_imports?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_charts?: NullableJsonNullValueInput | InputJsonValue
+    filter_subproject_chart_subjects?: NullableJsonNullValueInput | InputJsonValue
+    filter_places_1?: NullableJsonNullValueInput | InputJsonValue
     label?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
