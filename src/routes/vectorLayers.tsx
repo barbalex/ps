@@ -6,6 +6,7 @@ import { useElectric } from '../ElectricProvider.tsx'
 import { createVectorLayer } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
+import { FilterButton } from '../components/shared/FilterButton.tsx'
 import '../form.css'
 
 export const Component = () => {
@@ -36,6 +37,13 @@ export const Component = () => {
         title="Vector Layers"
         addRow={add}
         tableName="vector layer"
+        menus={[
+          <FilterButton
+            key="filter_vector_layers"
+            table="vector_layers"
+            filterField="filter_vector_layers"
+          />,
+        ]}
       />
       <div className="list-container">
         {vectorLayers.map(({ vector_layer_id, label }) => (
