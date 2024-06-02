@@ -1229,6 +1229,8 @@ CREATE TABLE app_states(
   -- activating an additional filter field returns error: too many arguments on function json_object
   -- reason: Maximum Number Of Arguments On A Function is 127
   -- https://www.sqlite.org/limits.html#Maximum%20Number%20Of%20Arguments:~:text=Maximum%20Number%20Of%20Arguments%20On%20A%20Function
+  -- https://github.com/electric-sql/electric/issues/1311
+  -- Solution: use postgres locally?
   -- filter_places_2_charts jsonb DEFAULT NULL, -- a charts object with filter settings
   -- filter_places_2_chart_subjects jsonb DEFAULT NULL, -- a chart_subjects object with filter settings
   label text DEFAULT NULL
