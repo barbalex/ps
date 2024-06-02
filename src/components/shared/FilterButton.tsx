@@ -41,7 +41,7 @@ export const FilterButton = memo(({ table, filterField }: Props) => {
       pathname: 'filter',
       search: searchParams.toString(),
     })
-  }, [navigate])
+  }, [navigate, searchParams])
 
   return (
     <Button

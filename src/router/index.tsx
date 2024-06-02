@@ -814,6 +814,7 @@ export const router = () => {
                         },
                         {
                           path: 'filter',
+                          // TODO: build own component
                           lazy: () => import('../routes/vectorLayer/index.tsx'),
                         },
                         {
