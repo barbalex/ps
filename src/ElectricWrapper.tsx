@@ -1,8 +1,7 @@
 import { useEffect, useState, memo } from 'react'
-import { ElectricDatabase, electrify } from 'electric-sql/wa-sqlite'
+import { PGlite } from '@electric-sql/pglite'
+import { electrify } from 'electric-sql/wa-sqlite'
 import { Electric, schema } from './generated/client/index.ts'
-import { uniqueTabId } from 'electric-sql/util'
-import { LIB_VERSION } from 'electric-sql/version'
 import { ElectricConfig } from 'electric-sql/config'
 import { useCorbado } from '@corbado/react'
 
@@ -14,7 +13,7 @@ import { authToken } from './auth.ts'
 const config: ElectricConfig = {
   // Activate debug mode which logs the replication messages
   // that are exchanged between the client and the sync service
-  debug: import.meta.env.DEV,
+  // debug: import.meta.env.DEV,
   url: import.meta.env.ELECTRIC_SERVICE,
 }
 
@@ -32,10 +31,16 @@ export const ElectricProvider = memo(({ children }) => {
     let isMounted = true
 
     const init = async () => {
-      const { tabId } = uniqueTabId()
-      const scopedDbName = `basic-${LIB_VERSION}-${tabId}.db`
-
-      const conn = await ElectricDatabase.init(scopedDbName)
+      // const { tabId } = uniqueTabId()
+      // const scopedDbName = `basic-${LIB_VERSION}-${tabId}.db`
+      // const conn = await ElectricDatabase.init(scopedDbName)
+      const conn = new PGlite('idb://electric.db', {
+        // You can optionally use the relaxed durability mode to
+        // improve responsiveness.
+        // This schedules a flush to indexedDB for after a query has
+        // returned.
+        relaxedDurability: true,
+      })
       const electric = await electrify(conn, schema, config)
       await electric.connect(authToken(shortSession))
 
