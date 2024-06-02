@@ -1204,7 +1204,6 @@ CREATE TABLE app_states(
   filter_subprojects jsonb DEFAULT NULL, -- a subprojects object with filter settings
   filter_subproject_reports jsonb DEFAULT NULL, -- a subproject_reports object with filter settings
   filter_goals jsonb DEFAULT NULL, -- a goals object with filter settings
-  -- filter_taxa jsonb DEFAULT NULL, -- a taxa object with filter settings. TODO: what taxa tables exist?
   filter_subproject_users jsonb DEFAULT NULL, -- a subproject_users object with filter settings
   filter_occurrence_imports jsonb DEFAULT NULL, -- a occurrence_imports object with filter settings
   filter_subproject_charts jsonb DEFAULT NULL, -- a charts object with filter settings
