@@ -80,7 +80,7 @@ export default [
         {
           js: 'never',
           jsx: 'never',
-          tsx: 'never',
+          // tsx: 'never',
         },
       ],
     },
