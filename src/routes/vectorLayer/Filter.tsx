@@ -1,23 +1,27 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
+import { useCorbado } from '@corbado/react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
-import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { VectorLayerForm } from './Form/index.tsx'
+import { FilterHeader } from '../../components/shared/FilterHeader.tsx'
 
 import '../../form.css'
 
 export const Component = () => {
   const { vector_layer_id } = useParams()
+  const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
   // TODO: load from app_state[filter_field] instead
-  const { results: row } = useLiveQuery(
-    db.vector_layers.liveUnique({ where: { vector_layer_id } }),
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({
+      where: { user_email: authUser?.email },
+    }),
   )
 
   const onChange: InputProps['onChange'] = useCallback(
@@ -32,18 +36,18 @@ export const Component = () => {
     [db.vector_layers, vector_layer_id],
   )
 
-  if (!row) return <Loading />
+  if (!appState) return <Loading />
 
   // console.log('hello VectorLayerForm, row:', row)
 
   return (
     <div className="form-outer-container">
       {/* TODO: need filter header */}
-      <Header row={row} />
+      <FilterHeader title="Vector Layer Filter" />
       {/* TODO: make filtering obvious */}
       <div className="form-container">
         {/* TODO: enable or filtering? */}
-        <VectorLayerForm onChange={onChange} row={row} />
+        <VectorLayerForm onChange={onChange} row={{ tod: 'TODO:' }} />
       </div>
     </div>
   )

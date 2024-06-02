@@ -62,6 +62,19 @@ https://stackoverflow.com/a/21541021/712005 */
     user-select: none;
   }
 }
+.filter-header {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  padding: 5px 10px;
+  background-color: rgba(216, 101, 109, 0.2);
+  h1 {
+    margin: 0;
+    font-size: medium;
+    line-height: 32px;
+    user-select: none;
+  }
+}
 
 .navs-resizable {
   display: flex;
