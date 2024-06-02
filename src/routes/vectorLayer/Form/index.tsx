@@ -1,14 +1,14 @@
 import { useParams } from 'react-router-dom'
 
-import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
-import { TextField } from '../../components/shared/TextField.tsx'
-import { SwitchField } from '../../components/shared/SwitchField.tsx'
-import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
-import { DropdownFieldFromLayerOptions } from '../../components/shared/DropdownFieldFromLayerOptions.tsx'
+import { TextFieldInactive } from '../../../components/shared/TextFieldInactive.tsx'
+import { TextField } from '../../../components/shared/TextField.tsx'
+import { SwitchField } from '../../../components/shared/SwitchField.tsx'
+import { RadioGroupField } from '../../../components/shared/RadioGroupField.tsx'
+import { DropdownFieldFromLayerOptions } from '../../../components/shared/DropdownFieldFromLayerOptions.tsx'
 import { Url } from './Url.tsx'
 import { PropertyField } from './PropertyField.tsx'
 
-import '../../form.css'
+import '../../../form.css'
 
 // this is just for presentation of data or filter values
 

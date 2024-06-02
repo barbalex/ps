@@ -1,4 +1,4 @@
-import { getCapabilities } from '../../modules/getCapabilities.ts'
+import { getCapabilities } from '../../../modules/getCapabilities.ts'
 import {
   Vector_layers as VectorLayer,
   Electric,
