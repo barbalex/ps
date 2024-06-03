@@ -7,7 +7,7 @@ import { useElectric } from '../../ElectricProvider.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { FilterHeader } from '../../components/shared/FilterHeader.tsx'
-import { Filter } from '../../components/shared/Filter.tsx'
+import { WidgetForFieldForm } from './Form.tsx'
 
 import '../../form.css'
 
@@ -35,6 +35,7 @@ export const Component = () => {
   const onChange: InputProps['onChange'] = useCallback((e, data) => {
     const { name, value } = getValueFromChange(e, data)
     // TODO: update app_state[filter_field] instead
+    console.log('hello widgets for fields filter', { name, value })
   }, [])
 
   if (!appState) return <Loading />
@@ -48,7 +49,7 @@ export const Component = () => {
       {/* TODO: make filtering obvious */}
       <div className="form-container">
         {/* TODO: enable or filtering? */}
-        <Filter table="widgets_for_fields" />
+        <WidgetForFieldForm onChange={onChange} row={{ tod: 'TODO:' }} />
       </div>
     </div>
   )
