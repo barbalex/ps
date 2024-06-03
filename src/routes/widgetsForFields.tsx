@@ -21,7 +21,6 @@ export const Component = () => {
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
 
-  // TODO: add app_states.filter_widgets_for_fields
   const { results: widgetsForFields = [] } = useLiveQuery(
     db.widgets_for_fields.liveMany({
       orderBy: { label: 'asc' },
