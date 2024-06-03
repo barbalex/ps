@@ -22,7 +22,7 @@ export const TreeOpenNodesSetter = () => {
     () => appState?.tree_open_nodes ?? [],
     [appState?.tree_open_nodes],
   )
-  console.log('hello TreeOpenNodesSetter, openNodes:', openNodes)
+  // console.log('hello TreeOpenNodesSetter, openNodes:', openNodes)
 
   // this component ensures that when navigating the node corresponding to the url and it's parents are opened
   // closing of nodes happens when the tree button is clicked
