@@ -20,13 +20,6 @@ export const Filter = memo(
   ({ filterName, filter, orIndex, appStateId }: Props) => {
     const { db } = useElectric()!
 
-    console.log('hello widgetForField Filter', {
-      filter,
-      orIndex,
-      filterName,
-      appStateId,
-    })
-
     const onChange: InputProps['onChange'] = useCallback(
       (e, data) => {
         const { name, value } = getValueFromChange(e, data)
@@ -44,13 +37,6 @@ export const Filter = memo(
               filter.or.map((f, i) => (i === orIndex ? newOrFilter : f))
             : // remove the existing or filter
               filter.or.filter((f, i) => i !== orIndex)
-        console.log('hello widgetForField Filter, onChange', {
-          filter,
-          orIndex,
-          newFilter,
-          existingOrFilter,
-          newOrFilter,
-        })
         db.app_states.update({
           where: { app_state_id: appStateId },
           data: { [filterName]: { or: newFilter } },
