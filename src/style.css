@@ -50,7 +50,7 @@ https://stackoverflow.com/a/21541021/712005 */
   }
 }
 .form-container.filter {
-  background-color: rgba(216, 101, 109, 0.1);
+  background-color: rgba(216, 101, 109, 0.08);
 }
 .form-header {
   display: flex;
@@ -65,18 +65,8 @@ https://stackoverflow.com/a/21541021/712005 */
     user-select: none;
   }
 }
-.filter-header {
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: space-between;
-  padding: 5px 10px;
-  background-color: rgba(216, 101, 109, 0.2);
-  h1 {
-    margin: 0;
-    font-size: medium;
-    line-height: 32px;
-    user-select: none;
-  }
+.form-header.filter {
+  background-color: rgba(216, 101, 109, 0.25);
 }
 
 .navs-resizable {
