@@ -138,9 +138,6 @@ export const router = () => {
                                 {
                                   path: ':place_id',
                                   element: null,
-                                  // TODO: seems that text is not used
-                                  // thus match is not used
-                                  // thus: RETURN ONLY AN OBJECT
                                   handle: {
                                     crumb: {
                                       table: 'places',
@@ -814,7 +811,6 @@ export const router = () => {
                         },
                         {
                           path: 'filter',
-                          // TODO: build own component
                           lazy: () =>
                             import('../routes/vectorLayer/Filter.tsx'),
                         },
@@ -1138,6 +1134,10 @@ export const router = () => {
                 {
                   index: true,
                   lazy: () => import('../routes/widgetsForFields.tsx'),
+                },
+                {
+                  path: 'filter',
+                  lazy: () => import('../routes/widgetForField/Filter.tsx'),
                 },
                 {
                   path: ':widget_for_field_id',
