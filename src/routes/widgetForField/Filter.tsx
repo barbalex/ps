@@ -21,26 +21,25 @@ export const Component = () => {
       where: { user_email: authUser?.email },
     }),
   )
-  const filter = appState?.filter_widgets_for_fields
+  const filter = appState?.filter_widgets_for_fields ?? {}
 
-  const [fields, setFields] = useState([])
-  useEffect(() => {
-    db.rawQuery({ sql: `PRAGMA table_info(widgets_for_fields)` }).then(
-      (fields) => {
-        setFields(fields)
-      },
-    )
-  }, [db])
-
-  const onChange: InputProps['onChange'] = useCallback((e, data) => {
-    const { name, value } = getValueFromChange(e, data)
-    // TODO: update app_state[filter_field] instead
-    console.log('hello widgets for fields filter', { name, value })
-  }, [])
+  const onChange: InputProps['onChange'] = useCallback(
+    (e, data) => {
+      const { name, value } = getValueFromChange(e, data)
+      // TODO: update app_state[filter_field] instead
+      console.log('hello widgets for fields filter, onChange', { name, value })
+      // TODO: in text fields, lowercase?
+      db.app_states.update({
+        where: { app_state_id: appState?.app_state_id },
+        data: { filter_widgets_for_fields: { ...filter, [name]: value } },
+      })
+    },
+    [appState?.app_state_id, db.app_states, filter],
+  )
 
   if (!appState) return <Loading />
 
-  console.log('hello widgets for fields filter', { fields })
+  console.log('hello widgets for fields filter', { filter })
 
   return (
     <div className="form-outer-container">
@@ -49,7 +48,7 @@ export const Component = () => {
       {/* TODO: make filtering obvious */}
       <div className="form-container">
         {/* TODO: enable or filtering? */}
-        <WidgetForFieldForm onChange={onChange} row={{ tod: 'TODO:' }} />
+        <WidgetForFieldForm onChange={onChange} row={filter} />
       </div>
     </div>
   )
