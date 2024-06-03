@@ -6,28 +6,25 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 
 type Props = {
   title: string
-  backTo: 'list' | 'form'
 }
 
-export const FilterHeader = memo(
-  ({ title = 'Filter', backTo = 'form' }: Props) => {
-    const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
-    const onClickBack = useCallback(() => {
-      navigate({ pathname: '..', search: searchParams.toString() })
-    }, [navigate, searchParams])
+export const FilterHeader = memo(({ title = 'Filter' }: Props) => {
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const onClickBack = useCallback(() => {
+    navigate({ pathname: '..', search: searchParams.toString() })
+  }, [navigate, searchParams])
 
-    return (
-      <div className="filter-header">
-        <h1>{title}</h1>
-        <ToggleButton
-          size="medium"
-          icon={<MdFilterAlt />}
-          onClick={onClickBack}
-          title={`Leave Filter Form`}
-          checked={true}
-        />
-      </div>
-    )
-  },
-)
+  return (
+    <div className="filter-header">
+      <h1>{title}</h1>
+      <ToggleButton
+        size="medium"
+        icon={<MdFilterAlt />}
+        onClick={onClickBack}
+        title="Leave Filter"
+        checked={true}
+      />
+    </div>
+  )
+})

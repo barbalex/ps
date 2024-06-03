@@ -20,6 +20,7 @@ export const Component = () => {
       where: { user_email: authUser?.email },
     }),
   )
+  const filter = appState?.filter_widgets_for_fields
 
   const onChange: InputProps['onChange'] = useCallback((e, data) => {
     const { name, value } = getValueFromChange(e, data)
