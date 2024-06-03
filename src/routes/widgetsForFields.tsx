@@ -6,6 +6,7 @@ import { createWidgetForField } from '../modules/createRows.ts'
 import { useElectric } from '../ElectricProvider.tsx'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
+import { FilterButton } from '../components/shared/FilterButton.tsx'
 
 import '../form.css'
 
@@ -35,6 +36,13 @@ export const Component = () => {
         title="Widgets for fields"
         addRow={add}
         tableName="widget for field"
+        menus={[
+          <FilterButton
+            key="filter_widgets_for_fields"
+            table="widgets_for_fields"
+            filterField="filter_widgets_for_fields"
+          />,
+        ]}
       />
       <div className="list-container">
         {widgetsForFields.map(({ widget_for_field_id, label }) => (
