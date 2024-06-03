@@ -11,7 +11,7 @@ import { WidgetForFieldForm } from './Form.tsx'
 
 import '../../form.css'
 
-export const Component = () => {
+export const Component = memo(() => {
   const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
@@ -70,4 +70,4 @@ export const Component = () => {
       </div>
     </div>
   )
-}
+})
