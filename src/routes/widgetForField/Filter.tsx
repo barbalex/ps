@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useState, useEffect } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 import type { InputProps } from '@fluentui/react-components'
@@ -23,6 +23,15 @@ export const Component = () => {
   )
   const filter = appState?.filter_widgets_for_fields
 
+  const [fields, setFields] = useState([])
+  useEffect(() => {
+    db.rawQuery({ sql: `PRAGMA table_info(widgets_for_fields)` }).then(
+      (fields) => {
+        setFields(fields)
+      },
+    )
+  }, [db])
+
   const onChange: InputProps['onChange'] = useCallback((e, data) => {
     const { name, value } = getValueFromChange(e, data)
     // TODO: update app_state[filter_field] instead
@@ -30,7 +39,7 @@ export const Component = () => {
 
   if (!appState) return <Loading />
 
-  // console.log('hello VectorLayerForm, row:', row)
+  console.log('hello widgets for fields filter', { fields })
 
   return (
     <div className="form-outer-container">
@@ -39,7 +48,7 @@ export const Component = () => {
       {/* TODO: make filtering obvious */}
       <div className="form-container">
         {/* TODO: enable or filtering? */}
-        <Filter />
+        <Filter table="widgets_for_fields" />
       </div>
     </div>
   )
