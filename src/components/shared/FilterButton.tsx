@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { Button } from '@fluentui/react-button'
+import { ToggleButton } from '@fluentui/react-button'
 import { MdFilterAlt, MdFilterAltOff } from 'react-icons/md'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
@@ -44,11 +44,12 @@ export const FilterButton = memo(({ table, filterField }: Props) => {
   }, [navigate, searchParams])
 
   return (
-    <Button
+    <ToggleButton
       size="medium"
       icon={isFiltered ? <MdFilterAltOff /> : <MdFilterAlt />}
       onClick={onClick}
-      title={isFiltered ? 'Clear filter' : 'Filter'}
+      title={isFiltered ? 'Clear filter' : 'Edit Filter'}
+      checked={false}
     />
   )
 })

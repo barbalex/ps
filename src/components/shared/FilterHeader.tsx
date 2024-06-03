@@ -1,6 +1,7 @@
 import { memo, useCallback } from 'react'
-import { Button } from '@fluentui/react-components'
+import { ToggleButton } from '@fluentui/react-components'
 import { FaChevronLeft } from 'react-icons/fa'
+import { MdFilterAlt, MdFilterAltOff } from 'react-icons/md'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
 type Props = {
@@ -19,11 +20,12 @@ export const FilterHeader = memo(
     return (
       <div className="filter-header">
         <h1>{title}</h1>
-        <Button
+        <ToggleButton
           size="medium"
-          icon={<FaChevronLeft />}
+          icon={<MdFilterAlt />}
           onClick={onClickBack}
-          title={`Back`}
+          title={`Leave Filter Form`}
+          checked={true}
         />
       </div>
     )
