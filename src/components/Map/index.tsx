@@ -10,7 +10,6 @@ import { useCorbado } from '@corbado/react'
 import 'leaflet/dist/leaflet.css'
 // import 'leaflet-draw/dist/leaflet.draw.css'
 
-import { App_states as AppState } from '../../../generated/client/index.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { TileLayers } from './TileLayers/index.tsx'
 import { VectorLayers } from './VectorLayers/index.tsx'
@@ -32,10 +31,9 @@ export const Map = () => {
   const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
-  const { results } = useLiveQuery(
+  const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
-  const appState: AppState = results
   const tileLayerSorter = appState?.tile_layer_sorter ?? ''
   const vectorLayerSorter = appState?.vector_layer_sorter ?? ''
 
