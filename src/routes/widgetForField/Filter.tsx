@@ -7,6 +7,7 @@ import { useElectric } from '../../ElectricProvider.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { FilterHeader } from '../../components/shared/FilterHeader.tsx'
+import { Filter } from '../../components/shared/Filter.tsx'
 
 import '../../form.css'
 
@@ -38,7 +39,7 @@ export const Component = () => {
       {/* TODO: make filtering obvious */}
       <div className="form-container">
         {/* TODO: enable or filtering? */}
-        here comes react query builder
+        <Filter />
       </div>
     </div>
   )
