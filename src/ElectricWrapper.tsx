@@ -14,7 +14,7 @@ import { authToken } from './auth.ts'
 const config: ElectricConfig = {
   // Activate debug mode which logs the replication messages
   // that are exchanged between the client and the sync service
-  debug: import.meta.env.DEV,
+  // debug: import.meta.env.DEV,
   url: import.meta.env.ELECTRIC_SERVICE,
 }
 
