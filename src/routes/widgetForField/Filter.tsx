@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from 'react'
+import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 import type { InputProps } from '@fluentui/react-components'
@@ -21,7 +21,10 @@ export const Component = () => {
       where: { user_email: authUser?.email },
     }),
   )
-  const filter = appState?.filter_widgets_for_fields ?? {}
+  const filter = useMemo(
+    () => appState?.filter_widgets_for_fields ?? {},
+    [appState?.filter_widgets_for_fields],
+  )
 
   const onChange: InputProps['onChange'] = useCallback(
     (e, data) => {
@@ -44,7 +47,7 @@ export const Component = () => {
   return (
     <div className="form-outer-container">
       {/* TODO: need filter header */}
-      <FilterHeader title="Widgets For Fields Filter" />
+      <FilterHeader title="Widgets For Fields Filter" filterName="filter_widgets_for_fields" filter={filter} />
       {/* TODO: make filtering obvious */}
       <div className="form-container">
         {/* TODO: enable or filtering? */}

@@ -1,30 +1,64 @@
 import { memo, useCallback } from 'react'
-import { ToggleButton } from '@fluentui/react-components'
+import { ToggleButton, Button } from '@fluentui/react-components'
 import { FaChevronLeft } from 'react-icons/fa'
 import { MdFilterAlt, MdFilterAltOff } from 'react-icons/md'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useCorbado } from '@corbado/react'
+import { useLiveQuery } from 'electric-sql/react'
+
+import { useElectric } from '../../ElectricProvider.tsx'
+import { controls } from '../../styles.ts'
 
 type Props = {
   title: string
+  filter: Record<string, unknown>
+  filterName: string
 }
 
-export const FilterHeader = memo(({ title = 'Filter' }: Props) => {
-  const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-  const onClickBack = useCallback(() => {
-    navigate({ pathname: '..', search: searchParams.toString() })
-  }, [navigate, searchParams])
+export const FilterHeader = memo(
+  ({ title = 'Filter', filter = {}, filterName }: Props) => {
+    const navigate = useNavigate()
+    const [searchParams] = useSearchParams()
+    const { user: authUser } = useCorbado()
 
-  return (
-    <div className="filter-header">
-      <h1>{title}</h1>
-      <ToggleButton
-        size="medium"
-        icon={<MdFilterAlt />}
-        onClick={onClickBack}
-        title="Leave Filter"
-        checked={true}
-      />
-    </div>
-  )
-})
+    const { db } = useElectric()!
+    const { results: appState } = useLiveQuery(
+      db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+    )
+
+    const onClickBack = useCallback(() => {
+      navigate({ pathname: '..', search: searchParams.toString() })
+    }, [navigate, searchParams])
+
+    const isFiltered = Object.keys(filter).length > 0
+    const onClickClearFilter = useCallback(() => {
+      db.app_states.update({
+        where: { app_state_id: appState?.app_state_id },
+        data: { [filterName]: null },
+      })
+    }, [appState?.app_state_id, db.app_states, filterName])
+
+    return (
+      <div className="filter-header">
+        <h1>{title}</h1>
+        <div style={controls}>
+          <ToggleButton
+            size="medium"
+            icon={<MdFilterAlt />}
+            onClick={onClickBack}
+            title="Leave Filter"
+            checked={true}
+          />
+          {isFiltered && (
+            <Button
+              size="medium"
+              icon={<MdFilterAltOff />}
+              onClick={onClickClearFilter}
+              title="Clear Filter"
+            />
+          )}
+        </div>
+      </div>
+    )
+  },
+)
