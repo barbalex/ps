@@ -26,15 +26,33 @@ export const Component = () => {
     [appState?.filter_widgets_for_fields],
   )
 
+  const { results: widgetsForFields = [] } = useLiveQuery(
+    db.widgets_for_fields.liveMany({
+      orderBy: { label: 'asc' },
+      where: { ...(appState?.filter_widgets_for_fields ?? {}) },
+    }),
+  )
+  const { results: widgetsForFieldsUnfiltered = [] } = useLiveQuery(
+    db.widgets_for_fields.liveMany({
+      orderBy: { label: 'asc' },
+    }),
+  )
+  const isFiltered =
+    widgetsForFields.length !== widgetsForFieldsUnfiltered.length
+
   const onChange: InputProps['onChange'] = useCallback(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
-      // TODO: update app_state[filter_field] instead
-      console.log('hello widgets for fields filter, onChange', { name, value })
       // TODO: in text fields, lowercase?
+      const newFilter = { ...filter }
+      if (value) {
+        newFilter[name] = value
+      } else {
+        delete newFilter[name]
+      }
       db.app_states.update({
         where: { app_state_id: appState?.app_state_id },
-        data: { filter_widgets_for_fields: { ...filter, [name]: value } },
+        data: { filter_widgets_for_fields: newFilter },
       })
     },
     [appState?.app_state_id, db.app_states, filter],
@@ -46,11 +64,13 @@ export const Component = () => {
 
   return (
     <div className="form-outer-container">
-      {/* TODO: need filter header */}
-      <FilterHeader title="Widgets For Fields Filter" filterName="filter_widgets_for_fields" filter={filter} />
-      {/* TODO: make filtering obvious */}
-      <div className="form-container">
-        {/* TODO: enable or filtering? */}
+      <FilterHeader
+        title={`Widgets For Fields Filter (${widgetsForFields.length}/${widgetsForFieldsUnfiltered.length})`}
+        filterName="filter_widgets_for_fields"
+        filter={filter}
+      />
+      <div className="form-container filter">
+        {/* TODO: enable or filtering */}
         <WidgetForFieldForm onChange={onChange} row={filter} />
       </div>
     </div>
