@@ -1,6 +1,5 @@
 import { memo, useCallback } from 'react'
 import { ToggleButton, Button } from '@fluentui/react-components'
-import { FaChevronLeft } from 'react-icons/fa'
 import { MdFilterAlt, MdFilterAltOff } from 'react-icons/md'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useCorbado } from '@corbado/react'
@@ -39,7 +38,7 @@ export const FilterHeader = memo(
     }, [appState?.app_state_id, db.app_states, filterName])
 
     return (
-      <div className="filter-header">
+      <div className="form-header filter">
         <h1>{title}</h1>
         <div style={controls}>
           <ToggleButton
