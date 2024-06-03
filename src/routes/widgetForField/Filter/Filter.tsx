@@ -15,7 +15,8 @@ type Props = {
   appStateId: string
 }
 
-// TODO: generalize and move this to a shared component
+// TODO: generalize and move this to a shared component,
+// padding in the child
 export const Filter = memo(
   ({ filterName, filter, orIndex, appStateId }: Props) => {
     const { db } = useElectric()!
