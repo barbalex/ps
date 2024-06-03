@@ -87,6 +87,7 @@ export const DropdownField = memo(
               autoFocus={autoFocus}
               ref={ref}
               style={ddStyle}
+              clearable
             >
               {options.map((params) => {
                 const { text, value } = params

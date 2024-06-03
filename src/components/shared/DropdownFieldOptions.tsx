@@ -40,6 +40,7 @@ export const DropdownFieldOptions = memo(
             appearance="underline"
             autoFocus={autoFocus}
             ref={ref}
+            clearable
           >
             {options.map((params) => {
               const { label, value } = params

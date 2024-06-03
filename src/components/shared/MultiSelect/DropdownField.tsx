@@ -14,6 +14,7 @@ export const DropdownField = memo(({ options, value, onChange }) => {
       onOptionSelect={(e, data) =>
         onChange({ value: data.optionValue, previousValue: value })
       }
+      clearable
     >
       {options.map((option) => (
         <Option key={option.value} value={option.value}>
