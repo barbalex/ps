@@ -57,8 +57,6 @@ export const Component = () => {
 
   if (!appState) return <Loading />
 
-  console.log('hello widgets for fields filter', { filter })
-
   return (
     <div className="form-outer-container">
       <FilterHeader
