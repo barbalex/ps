@@ -15,7 +15,6 @@ export const Component = () => {
   const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
-  // TODO: load from app_state[filter_field] instead
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({
       where: { user_email: authUser?.email },
@@ -37,8 +36,6 @@ export const Component = () => {
       orderBy: { label: 'asc' },
     }),
   )
-  const isFiltered =
-    widgetsForFields.length !== widgetsForFieldsUnfiltered.length
 
   const onChange: InputProps['onChange'] = useCallback(
     (e, data) => {
