@@ -11,6 +11,10 @@ import { FilterHeader } from './Header.tsx'
 import '../../../form.css'
 import { OrFilter } from './OrFilter.tsx'
 
+const tabListStyle = {
+  backgroundColor: 'rgba(255, 141, 2, 0.08)',
+  borderBottom: '1px solid #e0e0e0',
+}
 const tabStyle = {
   minWidth: 60,
 }
@@ -78,7 +82,11 @@ export const Filter = memo(() => {
         filterName={filterName}
         isFiltered={isFiltered}
       />
-      <TabList selectedValue={activeTab} onTabSelect={onTabSelect}>
+      <TabList
+        selectedValue={activeTab}
+        onTabSelect={onTabSelect}
+        style={tabListStyle}
+      >
         {orFiltersToUse.map((f, i) => {
           const label =
             i === orFiltersToUse.length - 1 && orFiltersToUse.length > 1

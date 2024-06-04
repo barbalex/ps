@@ -50,7 +50,7 @@ https://stackoverflow.com/a/21541021/712005 */
   }
 }
 .form-container.filter {
-  background-color: rgba(216, 101, 109, 0.08);
+  background-color: rgba(255, 141, 2, 0.08);
 }
 .form-header {
   display: flex;
@@ -66,7 +66,7 @@ https://stackoverflow.com/a/21541021/712005 */
   }
 }
 .form-header.filter {
-  background-color: rgba(216, 101, 109, 0.25);
+  background-color: rgba(255, 141, 2, 0.25);
 }
 
 .navs-resizable {
