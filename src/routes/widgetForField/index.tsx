@@ -8,7 +8,7 @@ import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
-import { Component as WidgetForFieldForm } from './Form.tsx'
+import { Component as Form } from './Form.tsx'
 
 import '../../form.css'
 
@@ -44,11 +44,7 @@ export const Component = () => {
           name="widget_for_field_id"
           value={row.widget_for_field_id}
         />
-        <WidgetForFieldForm
-          onChange={onChange}
-          row={row}
-          autoFocusRef={autoFocusRef}
-        />
+        <Form onChange={onChange} row={row} autoFocusRef={autoFocusRef} />
       </div>
     </div>
   )
