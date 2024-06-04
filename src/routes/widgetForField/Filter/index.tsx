@@ -28,22 +28,19 @@ export const Component = memo(() => {
   )
   const filter = useMemo(
     () =>
-      appState?.filter_widgets_for_fields?.length > 0
-        ? appState?.filter_widgets_for_fields.filter(
-            (f) => Object.keys(f).length > 0,
-          )
-        : [],
+      appState?.filter_widgets_for_fields?.filter(
+        (f) => Object.keys(f).length > 0,
+      ) ?? [],
     [appState?.filter_widgets_for_fields],
   )
 
-  const where = filter.length > 1 ? { or: filter } : filter[0]
+  const where = filter.length > 1 ? { OR: filter } : filter[0]
   const isFiltered = filter.length > 0
   const orFiltersToUse = isFiltered ? [...filter, {}] : [{}]
   // in or filters multiple filter objects are included in filter.or
   console.log('hello widgetForField index', {
     filter,
     isFiltered,
-    orFilters: filter,
     orFiltersToUse,
     where,
   })
@@ -71,7 +68,7 @@ export const Component = memo(() => {
       />
       <TabList selectedValue={activeTab} onTabSelect={onTabSelect}>
         {orFiltersToUse.map((f, i) => (
-          <Tab value={i + 1} style={tabStyle}>
+          <Tab key={i} value={i + 1} style={tabStyle}>
             {i + 1}
           </Tab>
         ))}

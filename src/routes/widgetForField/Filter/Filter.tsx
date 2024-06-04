@@ -52,7 +52,7 @@ export const Filter = memo(
 
     return (
       <div className="form-container filter">
-        <WidgetForFieldForm onChange={onChange} row={orFilters[orIndex]} />
+        <WidgetForFieldForm onChange={onChange} row={orFilters?.[orIndex]} />
       </div>
     )
   },
