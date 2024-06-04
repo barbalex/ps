@@ -26,6 +26,7 @@ export const Component = memo(() => {
       where: { user_email: authUser?.email },
     }),
   )
+
   const filter = useMemo(
     () =>
       appState?.filter_widgets_for_fields?.filter(
@@ -33,7 +34,6 @@ export const Component = memo(() => {
       ) ?? [],
     [appState?.filter_widgets_for_fields],
   )
-
   const where = filter.length > 1 ? { OR: filter } : filter[0]
   const isFiltered = filter.length > 0
   const orFiltersToUse = isFiltered ? [...filter, {}] : [{}]
