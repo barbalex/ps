@@ -1,3 +1,4 @@
+import React from 'react'
 import { createBrowserRouter } from 'react-router-dom'
 
 import { Layout } from '../components/Layout/index.tsx'
@@ -6,6 +7,9 @@ import { placesChildren } from './placesChildren.tsx'
 import { placesLevel2 } from './placesLevel2.tsx'
 import { Editing as EditingProject } from '../components/Tree/Project/Editing.tsx'
 import { AuthAndDb } from '../components/AuthAndDb.tsx'
+
+import { WidgetForFieldForm } from '../routes/widgetForField/Form.tsx'
+import { Filter } from '../components/shared/Filter/index.tsx'
 
 export const router = () => {
   // confirmed: this is called only once
@@ -1137,7 +1141,13 @@ export const router = () => {
                 },
                 {
                   path: 'filter',
-                  lazy: () => import('../routes/widgetForField/Filter.tsx'),
+                  element: <Filter />,
+                  children: [
+                    {
+                      index: true,
+                      lazy: () => import('../routes/widgetForField/Form.tsx'),
+                    },
+                  ],
                 },
                 {
                   path: ':widget_for_field_id',

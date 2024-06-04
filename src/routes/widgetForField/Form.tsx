@@ -1,10 +1,18 @@
 import { memo } from 'react'
+import { useOutletContext } from 'react-router-dom'
+
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 
 import '../../form.css'
 
-export const WidgetForFieldForm = memo(
-  ({ onChange, row = {}, autoFocusRef }) => {
+// this form is rendered from a parent or outlet
+export const Component = memo(
+  ({ onChange: onChangeFromProps, row: rowFromProps, autoFocusRef }) => {
+    // beware: contextFromOutlet is undefined if not inside an outlet
+    const outletContext = useOutletContext()
+    const onChange = onChangeFromProps ?? outletContext?.onChange
+    const row = rowFromProps ?? outletContext?.row ?? {}
+
     return (
       <>
         <DropdownField

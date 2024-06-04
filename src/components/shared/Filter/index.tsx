@@ -15,7 +15,7 @@ const tabStyle = {
   minWidth: 60,
 }
 
-export const Filter = memo(({ children }) => {
+export const Filter = memo(() => {
   const { user: authUser } = useCorbado()
   const location = useLocation()
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -31,7 +31,12 @@ export const Filter = memo(({ children }) => {
     .join(' ')
   const title = `${tableNameForTitle} Filter`
 
-  console.log('hello Filter', { urlPath, tableName, filterName, title })
+  console.log('hello Filter', {
+    urlPath,
+    tableName,
+    filterName,
+    title,
+  })
 
   const [activeTab, setActiveTab] = useState(1)
   const onTabSelect = useCallback((e, data) => setActiveTab(data.value), [])
@@ -81,7 +86,6 @@ export const Filter = memo(({ children }) => {
         ))}
       </TabList>
       <OrFilter
-        children={children}
         filterName={filterName}
         orFilters={orFiltersToUse}
         orIndex={activeTab - 1}

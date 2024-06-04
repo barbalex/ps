@@ -8,7 +8,7 @@ import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
-import { WidgetForFieldForm } from './Form.tsx'
+import { Component as WidgetForFieldForm } from './Form.tsx'
 
 import '../../form.css'
 

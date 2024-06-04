@@ -1,5 +1,6 @@
 import React, { useCallback, memo } from 'react'
 import type { InputProps } from '@fluentui/react-components'
+import { Outlet } from 'react-router-dom'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
@@ -17,7 +18,7 @@ type Props = {
 // TODO: generalize and move this to a shared component,
 // padding in the child
 export const OrFilter = memo(
-  ({ children, filterName, orFilters, orIndex, appStateId }: Props) => {
+  ({ filterName, orFilters, orIndex, appStateId }: Props) => {
     const { db } = useElectric()!
 
     const onChange: InputProps['onChange'] = useCallback(
@@ -49,19 +50,12 @@ export const OrFilter = memo(
       [appStateId, db.app_states, filterName, orFilters, orIndex],
     )
 
-    // https://stackoverflow.com/questions/32370994/how-to-pass-props-to-this-props-children
-    const childrenWithProps = React.Children.map(children, (child) => {
-      // Checking isValidElement is the safe way and avoids a
-      // typescript error too.
-      if (React.isValidElement(child)) {
-        return React.cloneElement(child, {
-          onChange,
-          row: orFilters?.[orIndex],
-        })
-      }
-      return child
-    })
+    const row = orFilters?.[orIndex]
 
-    return <div className="form-container filter">{childrenWithProps}</div>
+    return (
+      <div className="form-container filter">
+        <Outlet context={{ onChange, row }} />
+      </div>
+    )
   },
 )
