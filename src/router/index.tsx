@@ -1138,7 +1138,7 @@ export const router = () => {
                 {
                   path: 'filter',
                   lazy: () =>
-                    import('../routes/widgetForField/Filter/index.tsx'),
+                    import('../components/shared/Filter/index.tsx'),
                 },
                 {
                   path: ':widget_for_field_id',

@@ -8,7 +8,7 @@ import { useElectric } from '../../ElectricProvider.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { VectorLayerForm } from './Form/index.tsx'
-import { FilterHeader } from '../../components/shared/FilterHeader.tsx'
+import { FilterHeader } from '../../components/shared/Filter/Header.tsx'
 
 import '../../form.css'
 

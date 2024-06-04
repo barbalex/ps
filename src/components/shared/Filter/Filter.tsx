@@ -3,7 +3,7 @@ import type { InputProps } from '@fluentui/react-components'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
-import { WidgetForFieldForm } from '../Form.tsx'
+import { WidgetForFieldForm } from '../../../routes/widgetForField/Form.tsx'
 
 import '../../../form.css'
 

@@ -5,8 +5,8 @@ import { Tab, TabList } from '@fluentui/react-components'
 import { useLocation } from 'react-router-dom'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
-import { Loading } from '../../../components/shared/Loading.tsx'
-import { FilterHeader } from '../../../components/shared/FilterHeader.tsx'
+import { Loading } from '../Loading.tsx'
+import { FilterHeader } from './Header.tsx'
 
 import '../../../form.css'
 import { Filter } from './Filter.tsx'
@@ -21,8 +21,14 @@ export const Component = memo(() => {
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const tableName = urlPath[urlPath.length - 2].replaceAll('-', '_')
   const filterName = `filter_${tableName}`
+  // for tableNameForTitle: replace all underscores with spaces and uppercase all first letters
+  const tableNameForTitle = tableName
+    .split('_')
+    .map((w) => w[0].toUpperCase() + w.slice(1))
+    .join(' ')
+  const title = `${tableNameForTitle} Filter`
 
-  console.log('hello Filter', { urlPath, tableName, filterName })
+  console.log('hello Filter', { urlPath, tableName, filterName, title })
 
   const [activeTab, setActiveTab] = useState(1)
   const onTabSelect = useCallback((e, data) => setActiveTab(data.value), [])
@@ -60,7 +66,7 @@ export const Component = memo(() => {
   return (
     <div className="form-outer-container">
       <FilterHeader
-        title={`Widgets For Fields Filter (${widgetsForFields.length}/${widgetsForFieldsUnfiltered.length})`}
+        title={`${title} (${widgetsForFields.length}/${widgetsForFieldsUnfiltered.length})`}
         filterName={filterName}
         isFiltered={isFiltered}
       />

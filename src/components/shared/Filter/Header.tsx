@@ -5,8 +5,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useCorbado } from '@corbado/react'
 import { useLiveQuery } from 'electric-sql/react'
 
-import { useElectric } from '../../ElectricProvider.tsx'
-import { controls } from '../../styles.ts'
+import { useElectric } from '../../../ElectricProvider.tsx'
+import { controls } from '../../../styles.ts'
 
 type Props = {
   title: string
