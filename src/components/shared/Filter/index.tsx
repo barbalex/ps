@@ -31,13 +31,6 @@ export const Filter = memo(() => {
     .join(' ')
   const title = `${tableNameForTitle} Filter`
 
-  console.log('hello Filter', {
-    urlPath,
-    tableName,
-    filterName,
-    title,
-  })
-
   const [activeTab, setActiveTab] = useState(1)
   const onTabSelect = useCallback((e, data) => setActiveTab(data.value), [])
 
