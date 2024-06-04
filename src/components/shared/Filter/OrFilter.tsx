@@ -24,11 +24,15 @@ export const OrFilter = memo(
     const onChange: InputProps['onChange'] = useCallback(
       (e, data) => {
         const { name, value } = getValueFromChange(e, data)
+        const targetType = e.target.type
+        const isText = !['number', 'range', 'radio', 'checkbox'].includes(
+          targetType,
+        )
+        console.log('hello OrFilter', { targetType, name, value, isText })
         const existingOrFilter = orFilters[orIndex]
-        // TODO: in text fields, lowercase?
         const newOrFilter = { ...existingOrFilter }
         if (value) {
-          newOrFilter[name] = value
+          newOrFilter[name] = isText ? { contains: value } : value
         } else {
           delete newOrFilter[name]
         }
@@ -51,10 +55,15 @@ export const OrFilter = memo(
     )
 
     const row = orFilters?.[orIndex]
+    // some values are { contains: 'value' } - need to extract the value
+    const rowValues = Object.entries(row).reduce((acc, [k, v]) => {
+      const value = typeof v === 'object' ? v.contains : v
+      return { ...acc, [k]: value }
+    }, {})
 
     return (
       <div className="form-container filter">
-        <Outlet context={{ onChange, row }} />
+        <Outlet context={{ onChange, row: rowValues }} />
       </div>
     )
   },
