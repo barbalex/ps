@@ -2,6 +2,7 @@ import { useMemo, memo, useState, useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 import { Tab, TabList } from '@fluentui/react-components'
+import { useLocation } from 'react-router-dom'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { Loading } from '../../../components/shared/Loading.tsx'
@@ -16,6 +17,12 @@ const tabStyle = {
 
 export const Component = memo(() => {
   const { user: authUser } = useCorbado()
+  const location = useLocation()
+  const urlPath = location.pathname.split('/').filter((p) => p !== '')
+  const tableName = urlPath[urlPath.length - 2].replaceAll('-', '_')
+  const filterName = `filter_${tableName}`
+
+  console.log('hello Filter', { urlPath, tableName, filterName })
 
   const [activeTab, setActiveTab] = useState(1)
   const onTabSelect = useCallback((e, data) => setActiveTab(data.value), [])
@@ -29,23 +36,21 @@ export const Component = memo(() => {
 
   const filter = useMemo(
     () =>
-      appState?.filter_widgets_for_fields?.filter(
-        (f) => Object.keys(f).length > 0,
-      ) ?? [],
-    [appState?.filter_widgets_for_fields],
+      appState?.[filterName]?.filter((f) => Object.keys(f).length > 0) ?? [],
+    [appState, filterName],
   )
   const where = filter.length > 1 ? { OR: filter } : filter[0]
   const isFiltered = filter.length > 0
   const orFiltersToUse = isFiltered ? [...filter, {}] : [{}]
 
   const { results: widgetsForFields = [] } = useLiveQuery(
-    db.widgets_for_fields.liveMany({
+    db?.[tableName]?.liveMany({
       orderBy: { label: 'asc' },
       where,
     }),
   )
   const { results: widgetsForFieldsUnfiltered = [] } = useLiveQuery(
-    db.widgets_for_fields.liveMany({
+    db?.[tableName].liveMany({
       orderBy: { label: 'asc' },
     }),
   )
@@ -56,7 +61,7 @@ export const Component = memo(() => {
     <div className="form-outer-container">
       <FilterHeader
         title={`Widgets For Fields Filter (${widgetsForFields.length}/${widgetsForFieldsUnfiltered.length})`}
-        filterName="filter_widgets_for_fields"
+        filterName={filterName}
         isFiltered={isFiltered}
       />
       <TabList selectedValue={activeTab} onTabSelect={onTabSelect}>
@@ -67,7 +72,7 @@ export const Component = memo(() => {
         ))}
       </TabList>
       <Filter
-        filterName="filter_widgets_for_fields"
+        filterName={filterName}
         orFilters={orFiltersToUse}
         orIndex={activeTab - 1}
         appStateId={appState.app_state_id}
