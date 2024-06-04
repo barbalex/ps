@@ -1185,6 +1185,7 @@ CREATE TABLE app_states(
   syncing boolean DEFAULT NULL,
   tree_open_nodes jsonb DEFAULT NULL, -- array of strings
   filter_projects jsonb DEFAULT NULL, -- a projects object with filter settings
+  filter_fields jsonb DEFAULT NULL, -- a fields object with filter settings
   filter_account_users jsonb DEFAULT NULL, -- a users object with filter settings
   filter_field_types jsonb DEFAULT NULL, -- a field_types object with filter settings
   filter_widget_types jsonb DEFAULT NULL, -- a widget_types object with filter settings
@@ -1223,13 +1224,13 @@ CREATE TABLE app_states(
   filter_places_2_check_values jsonb DEFAULT NULL, -- a check_values object with filter settings
   filter_places_2_check_taxa jsonb DEFAULT NULL, -- a check_taxa object with filter settings
   filter_places_2_actions jsonb DEFAULT NULL, -- a actions object with filter settings
-  filter_places_2_reports jsonb DEFAULT NULL, -- a place_reports object with filter settings
   -- TODO:
   -- activating an additional filter field returns error: too many arguments on function json_object
   -- reason: Maximum Number Of Arguments On A Function is 127
   -- https://www.sqlite.org/limits.html#Maximum%20Number%20Of%20Arguments:~:text=Maximum%20Number%20Of%20Arguments%20On%20A%20Function
   -- https://github.com/electric-sql/electric/issues/1311
   -- Solution: use postgres locally?
+  -- filter_places_2_reports jsonb DEFAULT NULL, -- a place_reports object with filter settings
   -- filter_places_2_users jsonb DEFAULT NULL, -- a place_users object with filter settings
   -- filter_places_2_charts jsonb DEFAULT NULL, -- a charts object with filter settings
   -- filter_places_2_chart_subjects jsonb DEFAULT NULL, -- a chart_subjects object with filter settings
