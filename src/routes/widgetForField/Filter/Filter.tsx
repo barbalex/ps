@@ -18,13 +18,13 @@ type Props = {
 // TODO: generalize and move this to a shared component,
 // padding in the child
 export const Filter = memo(
-  ({ filterName, filter, orIndex, appStateId }: Props) => {
+  ({ filterName, orFilters, orIndex, appStateId }: Props) => {
     const { db } = useElectric()!
 
     const onChange: InputProps['onChange'] = useCallback(
       (e, data) => {
         const { name, value } = getValueFromChange(e, data)
-        const existingOrFilter = filter.or[orIndex]
+        const existingOrFilter = orFilters[orIndex]
         // TODO: in text fields, lowercase?
         const newOrFilter = { ...existingOrFilter }
         if (value) {
@@ -32,23 +32,27 @@ export const Filter = memo(
         } else {
           delete newOrFilter[name]
         }
-        const newFilter =
-          Object.keys(newOrFilter).length > 0
-            ? // replace the existing or filter
-              filter.or.map((f, i) => (i === orIndex ? newOrFilter : f))
-            : // remove the existing or filter
-              filter.or.filter((f, i) => i !== orIndex)
+        const newOrFilterIsEmpty = Object.keys(newOrFilter).length === 0
+
+        const newFilter = !newOrFilterIsEmpty
+          ? // replace the existing or filter
+            orFilters.map((f, i) => (i === orIndex ? newOrFilter : f))
+          : // remove the existing or filter
+            orFilters.filter((f, i) => i !== orIndex)
+
         db.app_states.update({
           where: { app_state_id: appStateId },
-          data: { [filterName]: { or: newFilter } },
+          data: {
+            [filterName]: newFilter.filter((f) => Object.keys(f).length > 0),
+          },
         })
       },
-      [appStateId, db.app_states, filter, filterName, orIndex],
+      [appStateId, db.app_states, filterName, orFilters, orIndex],
     )
 
     return (
       <div className="form-container filter">
-        <WidgetForFieldForm onChange={onChange} row={filter.or[orIndex]} />
+        <WidgetForFieldForm onChange={onChange} row={orFilters[orIndex]} />
       </div>
     )
   },

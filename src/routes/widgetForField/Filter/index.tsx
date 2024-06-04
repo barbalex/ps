@@ -1,4 +1,4 @@
-import { useMemo, memo } from 'react'
+import { useMemo, memo, useState, useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 import { Tab, TabList } from '@fluentui/react-components'
@@ -10,8 +10,15 @@ import { FilterHeader } from '../../../components/shared/FilterHeader.tsx'
 import '../../../form.css'
 import { Filter } from './Filter.tsx'
 
+const tabStyle = {
+  minWidth: 60,
+}
+
 export const Component = memo(() => {
   const { user: authUser } = useCorbado()
+
+  const [activeTab, setActiveTab] = useState(1)
+  const onTabSelect = useCallback((e, data) => setActiveTab(data.value), [])
 
   const { db } = useElectric()!
   const { results: appState } = useLiveQuery(
@@ -21,18 +28,30 @@ export const Component = memo(() => {
   )
   const filter = useMemo(
     () =>
-      appState?.filter_widgets_for_fields?.or?.length > 0
-        ? appState?.filter_widgets_for_fields
-        : { or: [{}] },
+      appState?.filter_widgets_for_fields?.length > 0
+        ? appState?.filter_widgets_for_fields.filter(
+            (f) => Object.keys(f).length > 0,
+          )
+        : [],
     [appState?.filter_widgets_for_fields],
   )
+
+  const where = filter.length > 1 ? { or: filter } : filter[0]
+  const isFiltered = filter.length > 0
+  const orFiltersToUse = isFiltered ? [...filter, {}] : [{}]
   // in or filters multiple filter objects are included in filter.or
-  console.log('hello widgetForField index', { filter })
+  console.log('hello widgetForField index', {
+    filter,
+    isFiltered,
+    orFilters: filter,
+    orFiltersToUse,
+    where,
+  })
 
   const { results: widgetsForFields = [] } = useLiveQuery(
     db.widgets_for_fields.liveMany({
       orderBy: { label: 'asc' },
-      where: { ...(appState?.filter_widgets_for_fields ?? {}) },
+      where,
     }),
   )
   const { results: widgetsForFieldsUnfiltered = [] } = useLiveQuery(
@@ -40,7 +59,6 @@ export const Component = memo(() => {
       orderBy: { label: 'asc' },
     }),
   )
-  const isFiltered = Object.keys(filter).length > 0
 
   if (!appState) return <Loading />
 
@@ -51,16 +69,19 @@ export const Component = memo(() => {
         filterName="filter_widgets_for_fields"
         isFiltered={isFiltered}
       />
-      {isFiltered && <TabList>TODO:</TabList>}
-      {filter.or.map((orFilter, i) => (
-        <Filter
-          key={i}
-          filterName="filter_widgets_for_fields"
-          filter={filter}
-          orIndex={i}
-          appStateId={appState.app_state_id}
-        />
-      ))}
+      <TabList selectedValue={activeTab} onTabSelect={onTabSelect}>
+        {orFiltersToUse.map((f, i) => (
+          <Tab value={i + 1} style={tabStyle}>
+            {i + 1}
+          </Tab>
+        ))}
+      </TabList>
+      <Filter
+        filterName="filter_widgets_for_fields"
+        orFilters={orFiltersToUse}
+        orIndex={activeTab - 1}
+        appStateId={appState.app_state_id}
+      />
     </div>
   )
 })
