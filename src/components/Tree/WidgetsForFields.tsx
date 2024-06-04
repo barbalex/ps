@@ -26,10 +26,18 @@ export const WidgetsForFieldsNode = memo(() => {
     [appState?.tree_open_nodes],
   )
 
+  const filter = useMemo(
+    () =>
+      appState?.filter_widgets_for_fields?.filter(
+        (f) => Object.keys(f).length > 0,
+      ) ?? [],
+    [appState?.filter_widgets_for_fields],
+  )
+  const where = filter.length > 1 ? { OR: filter } : filter[0]
   const { results: widgetsForFields = [] } = useLiveQuery(
     db.widgets_for_fields.liveMany({
       orderBy: { label: 'asc' },
-      where: { ...(appState?.filter_widgets_for_fields ?? {}) },
+      where,
     }),
   )
   const { results: widgetsForFieldsUnfiltered = [] } = useLiveQuery(

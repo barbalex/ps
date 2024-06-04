@@ -5,17 +5,17 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useCorbado } from '@corbado/react'
 import { useLiveQuery } from 'electric-sql/react'
 
-import { useElectric } from '../../ElectricProvider.tsx'
-import { controls } from '../../styles.ts'
+import { useElectric } from '../../../ElectricProvider.tsx'
+import { controls } from '../../../styles.ts'
 
 type Props = {
   title: string
-  filter: Record<string, unknown>
+  isFiltered: boolean
   filterName: string
 }
 
 export const FilterHeader = memo(
-  ({ title = 'Filter', filter = {}, filterName }: Props) => {
+  ({ title = 'Filter', isFiltered = false, filterName }: Props) => {
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
     const { user: authUser } = useCorbado()
@@ -29,7 +29,6 @@ export const FilterHeader = memo(
       navigate({ pathname: '..', search: searchParams.toString() })
     }, [navigate, searchParams])
 
-    const isFiltered = Object.keys(filter).length > 0
     const onClickClearFilter = useCallback(() => {
       db.app_states.update({
         where: { app_state_id: appState?.app_state_id },
