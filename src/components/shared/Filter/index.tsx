@@ -35,12 +35,12 @@ export const Filter = memo(() => {
     .join(' ')
   const title = `${tableNameForTitle} Filters`
 
-  console.log('hello Filter', {
-    tableName,
-    filterName,
-    tableNameForTitle,
-    title,
-  })
+  // console.log('hello Filter', {
+  //   tableName,
+  //   filterName,
+  //   tableNameForTitle,
+  //   title,
+  // })
 
   const [activeTab, setActiveTab] = useState(1)
   const onTabSelect = useCallback((e, data) => setActiveTab(data.value), [])

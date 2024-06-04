@@ -15,8 +15,6 @@ type Props = {
   appStateId: string
 }
 
-// TODO: generalize and move this to a shared component,
-// padding in the child
 export const OrFilter = memo(
   ({ filterName, orFilters, orIndex, appStateId }: Props) => {
     const { db } = useElectric()!
@@ -28,7 +26,7 @@ export const OrFilter = memo(
         const isText = !['number', 'range', 'radio', 'checkbox'].includes(
           targetType,
         )
-        console.log('hello OrFilter', { targetType, name, value, isText })
+        // console.log('hello OrFilter', { targetType, name, value, isText })
         const existingOrFilter = orFilters[orIndex]
         const newOrFilter = { ...existingOrFilter }
         if (value) {
