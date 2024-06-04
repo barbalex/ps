@@ -9,16 +9,19 @@ import { Loading } from '../Loading.tsx'
 import { FilterHeader } from './Header.tsx'
 
 import '../../../form.css'
-import { Filter } from './Filter.tsx'
+import { OrFilter } from './OrFilter.tsx'
 
 const tabStyle = {
   minWidth: 60,
 }
 
-export const Component = memo(() => {
+export const Filter = memo(({ children }) => {
   const { user: authUser } = useCorbado()
   const location = useLocation()
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
+
+  // reading these values from the url path
+  // if this fails in some situations, we can pass these as props
   const tableName = urlPath[urlPath.length - 2].replaceAll('-', '_')
   const filterName = `filter_${tableName}`
   // for tableNameForTitle: replace all underscores with spaces and uppercase all first letters
@@ -77,7 +80,8 @@ export const Component = memo(() => {
           </Tab>
         ))}
       </TabList>
-      <Filter
+      <OrFilter
+        children={children}
         filterName={filterName}
         orFilters={orFiltersToUse}
         orIndex={activeTab - 1}
