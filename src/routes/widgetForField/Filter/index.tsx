@@ -37,13 +37,6 @@ export const Component = memo(() => {
   const where = filter.length > 1 ? { OR: filter } : filter[0]
   const isFiltered = filter.length > 0
   const orFiltersToUse = isFiltered ? [...filter, {}] : [{}]
-  // in or filters multiple filter objects are included in filter.or
-  console.log('hello widgetForField index', {
-    filter,
-    isFiltered,
-    orFiltersToUse,
-    where,
-  })
 
   const { results: widgetsForFields = [] } = useLiveQuery(
     db.widgets_for_fields.liveMany({
