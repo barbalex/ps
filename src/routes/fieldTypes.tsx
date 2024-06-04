@@ -1,19 +1,26 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
+import { useCorbado } from '@corbado/react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
 import { createFieldType } from '../modules/createRows.ts'
 import { useElectric } from '../ElectricProvider.tsx'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
+import { FilterButton } from '../components/shared/FilterButton.tsx'
 
 import '../form.css'
 
 export const Component = () => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
+  const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+  )
+  
   const { results: fieldTypes = [] } = useLiveQuery(
     db.field_types.liveMany({
       orderBy: { label: 'asc' },

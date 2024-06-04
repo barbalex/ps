@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
+import { useCorbado } from '@corbado/react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../ElectricProvider.tsx'
@@ -13,8 +14,13 @@ export const Component = () => {
   const { project_id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
+  const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+  )
+  
   const { results: vectorLayers = [] } = useLiveQuery(
     db.vector_layers.liveMany({
       where: { project_id },

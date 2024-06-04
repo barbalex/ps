@@ -1,25 +1,46 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
+import { useCorbado } from '@corbado/react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../ElectricProvider.tsx'
 import { createUnit } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
+import { FilterButton } from '../components/shared/FilterButton.tsx'
 import '../form.css'
 
 export const Component = () => {
   const { project_id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
+  const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+  )
+
+  const filter = useMemo(
+    () =>
+      appState?.filter_units?.filter((f) => Object.keys(f).length > 0) ?? [],
+    [appState?.filter_units],
+  )
+  const where = filter.length > 1 ? { OR: filter } : filter[0]
+
   const { results: units = [] } = useLiveQuery(
+    db.units.liveMany({
+      where: { project_id, ...where },
+      orderBy: { label: 'asc' },
+    }),
+  )
+  const { results: unitsUnfiltered = [] } = useLiveQuery(
     db.units.liveMany({
       where: { project_id },
       orderBy: { label: 'asc' },
     }),
   )
+  const isFiltered = units.length !== unitsUnfiltered.length
 
   const add = useCallback(async () => {
     const unit = createUnit()
@@ -34,7 +55,22 @@ export const Component = () => {
 
   return (
     <div className="list-view">
-      <ListViewHeader title="Units" addRow={add} tableName="unit" />
+      <ListViewHeader
+        title={`Units (${
+          isFiltered
+            ? `${units.length}/${unitsUnfiltered.length}`
+            : units.length
+        })`}
+        addRow={add}
+        tableName="unit"
+        menus={[
+          <FilterButton
+            key="filter_units"
+            table="units"
+            filterField="filter_units"
+          />,
+        ]}
+      />
       <div className="list-container">
         {units.map(({ unit_id, label }) => (
           <Row key={unit_id} label={label ?? unit_id} to={unit_id} />
