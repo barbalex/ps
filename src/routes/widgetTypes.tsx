@@ -6,6 +6,7 @@ import { createWidgetType } from '../modules/createRows.ts'
 import { useElectric } from '../ElectricProvider.tsx'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
+import { FilterButton } from '../components/shared/FilterButton.tsx'
 
 import '../form.css'
 
@@ -32,6 +33,13 @@ export const Component = () => {
         title="Widget Types"
         addRow={add}
         tableName="widget type"
+        menus={[
+          <FilterButton
+            key="filter_widget_types"
+            table="widget_types"
+            filterField="filter_widget_types"
+          />,
+        ]}
       />
       <div className="list-container">
         {rows.map(({ widget_type_id, label }) => (

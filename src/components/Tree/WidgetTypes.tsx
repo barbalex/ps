@@ -17,11 +17,6 @@ export const WidgetTypesNode = memo(() => {
   const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
-  const { results: widgetTypes = [] } = useLiveQuery(
-    db.widget_types.liveMany({
-      orderBy: { label: 'asc' },
-    }),
-  )
 
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
@@ -31,9 +26,35 @@ export const WidgetTypesNode = memo(() => {
     [appState?.tree_open_nodes],
   )
 
+  const filter = useMemo(
+    () =>
+      appState?.filter_widget_types?.filter((f) => Object.keys(f).length > 0) ??
+      [],
+    [appState?.filter_widget_types],
+  )
+  const where = filter.length > 1 ? { OR: filter } : filter[0]
+  const { results: widgetTypes = [] } = useLiveQuery(
+    db.widget_types.liveMany({
+      orderBy: { label: 'asc' },
+      where,
+    }),
+  )
+  const { results: widgetTypesUnfiltered = [] } = useLiveQuery(
+    db.widget_types.liveMany({
+      orderBy: { label: 'asc' },
+    }),
+  )
+  const isFiltered = widgetTypes.length !== widgetTypesUnfiltered.length
+
   const widgetTypesNode = useMemo(
-    () => ({ label: `Widget Types (${widgetTypes.length})` }),
-    [widgetTypes.length],
+    () => ({
+      label: `Widget Types (${
+        isFiltered
+          ? `${widgetTypes.length}/${widgetTypesUnfiltered.length}`
+          : widgetTypes.length
+      })`,
+    }),
+    [isFiltered, widgetTypes.length, widgetTypesUnfiltered.length],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

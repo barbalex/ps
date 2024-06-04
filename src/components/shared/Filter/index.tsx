@@ -29,7 +29,14 @@ export const Filter = memo(() => {
     .split('_')
     .map((w) => w[0].toUpperCase() + w.slice(1))
     .join(' ')
-  const title = `${tableNameForTitle} Filter`
+  const title = `${tableNameForTitle} Filters`
+
+  console.log('hello Filter', {
+    tableName,
+    filterName,
+    tableNameForTitle,
+    title,
+  })
 
   const [activeTab, setActiveTab] = useState(1)
   const onTabSelect = useCallback((e, data) => setActiveTab(data.value), [])
@@ -72,11 +79,19 @@ export const Filter = memo(() => {
         isFiltered={isFiltered}
       />
       <TabList selectedValue={activeTab} onTabSelect={onTabSelect}>
-        {orFiltersToUse.map((f, i) => (
-          <Tab key={i} value={i + 1} style={tabStyle}>
-            {i + 1}
-          </Tab>
-        ))}
+        {orFiltersToUse.map((f, i) => {
+          const label =
+            i === orFiltersToUse.length - 1 && orFiltersToUse.length > 1
+              ? 'Or'
+              : i === 0
+              ? `Filter ${i + 1}`
+              : `Or filter ${i + 1}`
+          return (
+            <Tab key={i} value={i + 1} style={tabStyle}>
+              {label}
+            </Tab>
+          )
+        })}
       </TabList>
       <OrFilter
         filterName={filterName}

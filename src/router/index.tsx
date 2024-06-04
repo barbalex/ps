@@ -1113,6 +1113,16 @@ export const router = () => {
                   lazy: () => import('../routes/widgetTypes.tsx'),
                 },
                 {
+                  path: 'filter',
+                  element: <Filter />,
+                  children: [
+                    {
+                      index: true,
+                      lazy: () => import('../routes/widgetType/Form.tsx'),
+                    },
+                  ],
+                },
+                {
                   path: ':widget_type_id',
                   lazy: () => import('../routes/widgetType/index.tsx'),
                   handle: {
