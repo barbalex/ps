@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 import { useParams, useNavigate } from 'react-router-dom'
@@ -19,13 +19,27 @@ export const Component = () => {
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
-  
+
+  const filter = useMemo(
+    () =>
+      appState?.filter_subprojects?.filter((f) => Object.keys(f).length > 0) ??
+      [],
+    [appState?.filter_subprojects],
+  )
+  const where = filter.length > 1 ? { OR: filter } : filter[0]
   const { results: subprojects = [] } = useLiveQuery(
+    db.subprojects.liveMany({
+      where: { project_id, ...where },
+      orderBy: { label: 'asc' },
+    }),
+  )
+  const { results: subprojectsUnfiltered = [] } = useLiveQuery(
     db.subprojects.liveMany({
       where: { project_id },
       orderBy: { label: 'asc' },
     }),
   )
+  const isFiltered = subprojects.length !== subprojectsUnfiltered.length
 
   // get projects.subproject_name_plural to name the table
   const { results: project } = useLiveQuery(
@@ -44,9 +58,20 @@ export const Component = () => {
   return (
     <div className="list-view">
       <ListViewHeader
-        title={namePlural}
+        title={`${namePlural} (${
+          isFiltered
+            ? `${subprojects.length}/${subprojectsUnfiltered.length}`
+            : subprojects.length
+        })`}
         addRow={add}
         tableName={nameSingularLower}
+        menus={[
+          <FilterButton
+            key="filter_subprojects"
+            table="subprojects"
+            filterField="filter_subprojects"
+          />,
+        ]}
       />
       <div className="list-container">
         {subprojects.map(({ subproject_id, label }) => (
