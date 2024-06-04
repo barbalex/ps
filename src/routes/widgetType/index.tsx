@@ -10,6 +10,7 @@ import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
+import { Component as Form } from './Form.tsx'
 
 import '../../form.css'
 
@@ -45,33 +46,7 @@ export const Component = () => {
           name="widget_type_id"
           value={row.widget_type_id}
         />
-        <TextField
-          label="Name"
-          name="name"
-          value={row.name ?? ''}
-          onChange={onChange}
-          autoFocus
-          ref={autoFocusRef}
-        />
-        <SwitchField
-          label="Needs a list"
-          name="needs_list"
-          value={row.needs_list ?? false}
-          onChange={onChange}
-        />
-        <TextField
-          label="Sort value"
-          name="sort"
-          value={row.sort ?? ''}
-          type="number"
-          onChange={onChange}
-        />
-        <TextField
-          label="Comment"
-          name="comment"
-          value={row.comment ?? ''}
-          onChange={onChange}
-        />
+        <Form onChange={onChange} row={row} autoFocusRef={autoFocusRef} />
       </div>
     </div>
   )
