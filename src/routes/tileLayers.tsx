@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
@@ -20,13 +20,28 @@ export const Component = () => {
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
-  
+
+  const filter = useMemo(
+    () =>
+      appState?.filter_tile_layers?.filter((f) => Object.keys(f).length > 0) ??
+      [],
+    [appState?.filter_tile_layers],
+  )
+  const where = filter.length > 1 ? { OR: filter } : filter[0]
+
   const { results: tileLayers = [] } = useLiveQuery(
+    db.tile_layers.liveMany({
+      where: { project_id, ...where },
+      orderBy: [{ sort: 'asc' }, { label: 'asc' }],
+    }),
+  )
+  const { results: tileLayersUnfiltered = [] } = useLiveQuery(
     db.tile_layers.liveMany({
       where: { project_id },
       orderBy: [{ sort: 'asc' }, { label: 'asc' }],
     }),
   )
+  const isFiltered = tileLayers.length !== tileLayersUnfiltered.length
 
   const add = useCallback(async () => {
     const tileLayer = createTileLayer({ project_id })
@@ -39,7 +54,22 @@ export const Component = () => {
 
   return (
     <div className="list-view">
-      <ListViewHeader title="Tile Layers" addRow={add} tableName="tile layer" />
+      <ListViewHeader
+        title={`Tile Layers (${
+          isFiltered
+            ? `${tileLayers.length}/${tileLayersUnfiltered.length}`
+            : tileLayers.length
+        })`}
+        addRow={add}
+        tableName="tile layer"
+        menus={[
+          <FilterButton
+            key="filter_tile_layers"
+            table="tile_layers"
+            filterField="filter_tile_layers"
+          />,
+        ]}
+      />
       <div className="list-container">
         {tileLayers.map(({ tile_layer_id, label }) => (
           <Row
