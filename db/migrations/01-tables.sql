@@ -1204,26 +1204,26 @@ CREATE TABLE app_states(
   filter_place_levels jsonb DEFAULT NULL, -- a place_levels object with filter settings
   filter_project_fields jsonb DEFAULT NULL, -- a fields object with filter settings
   filter_subprojects jsonb DEFAULT NULL, -- a subprojects object with filter settings
-  filter_subproject_reports jsonb DEFAULT NULL, -- a subproject_reports object with filter settings
-  filter_goals jsonb DEFAULT NULL, -- a goals object with filter settings
-  filter_subproject_users jsonb DEFAULT NULL, -- a subproject_users object with filter settings
-  filter_occurrence_imports jsonb DEFAULT NULL, -- a occurrence_imports object with filter settings
-  filter_subproject_charts jsonb DEFAULT NULL, -- a charts object with filter settings
-  filter_subproject_chart_subjects jsonb DEFAULT NULL, -- a chart_subjects object with filter settings
-  filter_places_1 jsonb DEFAULT NULL, -- a places object with filter settings
-  filter_places_1_checks jsonb DEFAULT NULL, -- a checks object with filter settings
-  filter_places_1_check_values jsonb DEFAULT NULL, -- a check_values object with filter settings
-  filter_places_1_check_taxa jsonb DEFAULT NULL, -- a check_taxa object with filter settings
-  filter_places_1_actions jsonb DEFAULT NULL, -- a actions object with filter settings
-  filter_places_1_reports jsonb DEFAULT NULL, -- a place_reports object with filter settings
-  filter_places_1_users jsonb DEFAULT NULL, -- a place_users object with filter settings
-  filter_places_1_charts jsonb DEFAULT NULL, -- a charts object with filter settings
-  filter_places_1_chart_subjects jsonb DEFAULT NULL, -- a chart_subjects object with filter settings
-  filter_places_2 jsonb DEFAULT NULL, -- a places object with filter settings
-  filter_places_2_checks jsonb DEFAULT NULL, -- a checks object with filter settings
-  filter_places_2_check_values jsonb DEFAULT NULL, -- a check_values object with filter settings
-  filter_places_2_check_taxa jsonb DEFAULT NULL, -- a check_taxa object with filter settings
-  filter_places_2_actions jsonb DEFAULT NULL, -- a actions object with filter settings
+  -- filter_subproject_reports jsonb DEFAULT NULL, -- a subproject_reports object with filter settings
+  -- filter_goals jsonb DEFAULT NULL, -- a goals object with filter settings
+  -- filter_subproject_users jsonb DEFAULT NULL, -- a subproject_users object with filter settings
+  -- filter_occurrence_imports jsonb DEFAULT NULL, -- a occurrence_imports object with filter settings
+  -- filter_subproject_charts jsonb DEFAULT NULL, -- a charts object with filter settings
+  -- filter_subproject_chart_subjects jsonb DEFAULT NULL, -- a chart_subjects object with filter settings
+  -- filter_places_1 jsonb DEFAULT NULL, -- a places object with filter settings
+  -- filter_places_1_checks jsonb DEFAULT NULL, -- a checks object with filter settings
+  -- filter_places_1_check_values jsonb DEFAULT NULL, -- a check_values object with filter settings
+  -- filter_places_1_check_taxa jsonb DEFAULT NULL, -- a check_taxa object with filter settings
+  -- filter_places_1_actions jsonb DEFAULT NULL, -- a actions object with filter settings
+  -- filter_places_1_reports jsonb DEFAULT NULL, -- a place_reports object with filter settings
+  -- filter_places_1_users jsonb DEFAULT NULL, -- a place_users object with filter settings
+  -- filter_places_1_charts jsonb DEFAULT NULL, -- a charts object with filter settings
+  -- filter_places_1_chart_subjects jsonb DEFAULT NULL, -- a chart_subjects object with filter settings
+  -- filter_places_2 jsonb DEFAULT NULL, -- a places object with filter settings
+  -- filter_places_2_checks jsonb DEFAULT NULL, -- a checks object with filter settings
+  -- filter_places_2_check_values jsonb DEFAULT NULL, -- a check_values object with filter settings
+  -- filter_places_2_check_taxa jsonb DEFAULT NULL, -- a check_taxa object with filter settings
+  -- filter_places_2_actions jsonb DEFAULT NULL, -- a actions object with filter settings
   -- TODO:
   -- activating an additional filter field returns error: too many arguments on function json_object
   -- reason: Maximum Number Of Arguments On A Function is 127
