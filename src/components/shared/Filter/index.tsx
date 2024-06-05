@@ -19,7 +19,7 @@ const tabStyle = {
   minWidth: 60,
 }
 
-export const Filter = memo(() => {
+export const Filter = memo(({ level }) => {
   const { user: authUser } = useCorbado()
   const location = useLocation()
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -28,20 +28,13 @@ export const Filter = memo(() => {
   // if this fails in some situations, we can pass these as props
   const tableName = urlPath[urlPath.length - 2].replaceAll('-', '_')
   // TODO: detect _1 and _2 when below subproject_id
-  const filterName = `filter_${tableName}`
+  const filterName = `filter_${tableName}${level ? `_${level}` : ''}`
   // for tableNameForTitle: replace all underscores with spaces and uppercase all first letters
   const tableNameForTitle = tableName
     .split('_')
     .map((w) => w[0].toUpperCase() + w.slice(1))
     .join(' ')
   const title = `${tableNameForTitle} Filters`
-
-  // console.log('hello Filter', {
-  //   tableName,
-  //   filterName,
-  //   tableNameForTitle,
-  //   title,
-  // })
 
   const [activeTab, setActiveTab] = useState(1)
   const onTabSelect = useCallback((e, data) => setActiveTab(data.value), [])
@@ -63,24 +56,36 @@ export const Filter = memo(() => {
   const isFiltered = filter.length > 0
   const orFiltersToUse = isFiltered ? [...filter, {}] : [{}]
 
-  const { results: widgetsForFields = [] } = useLiveQuery(
+  const { results = [] } = useLiveQuery(
     db?.[tableName]?.liveMany({
       orderBy: { label: 'asc' },
       where,
     }),
   )
-  const { results: widgetsForFieldsUnfiltered = [] } = useLiveQuery(
+  const { results: resultsUnfiltered = [] } = useLiveQuery(
     db?.[tableName].liveMany({
       orderBy: { label: 'asc' },
     }),
   )
+
+  console.log('hello Filter', {
+    tableName,
+    filterName,
+    tableNameForTitle,
+    title,
+    level,
+    results,
+    resultsUnfiltered,
+    where,
+    filter,
+  })
 
   if (!appState) return <Loading />
 
   return (
     <div className="form-outer-container">
       <FilterHeader
-        title={`${title} (${widgetsForFields.length}/${widgetsForFieldsUnfiltered.length})`}
+        title={`${title} (${results.length}/${resultsUnfiltered.length})`}
         filterName={filterName}
         isFiltered={isFiltered}
       />

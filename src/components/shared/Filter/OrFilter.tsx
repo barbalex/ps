@@ -42,12 +42,20 @@ export const OrFilter = memo(
           : // remove the existing or filter
             orFilters.filter((f, i) => i !== orIndex)
 
-        db.app_states.update({
-          where: { app_state_id: appStateId },
-          data: {
-            [filterName]: newFilter.filter((f) => Object.keys(f).length > 0),
-          },
+        console.log('OrFilter, newFilter:', {
+          newFilter: newFilter.filter((f) => Object.keys(f).length > 0),
+          filterName,
         })
+        try {
+          db.app_states.update({
+            where: { app_state_id: appStateId },
+            data: {
+              [filterName]: newFilter.filter((f) => Object.keys(f).length > 0),
+            },
+          })
+        } catch (error) {
+          console.log('OrFilter, error updating app state:', error)
+        }
       },
       [appStateId, db.app_states, filterName, orFilters, orIndex],
     )

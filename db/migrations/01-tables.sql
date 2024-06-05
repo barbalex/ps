@@ -1207,12 +1207,12 @@ CREATE TABLE app_states(
   filter_subproject_users jsonb DEFAULT NULL, -- a subproject_users object with filter settings
   filter_places_1 jsonb DEFAULT NULL, -- a places object with filter settings
   filter_checks_1 jsonb DEFAULT NULL, -- a checks object with filter settings
-  filter_place_actions_1 jsonb DEFAULT NULL, -- a actions object with filter settings
+  filter_actions_1 jsonb DEFAULT NULL, -- a actions object with filter settings
   filter_place_reports_1 jsonb DEFAULT NULL, -- a place_reports object with filter settings
   filter_places_2 jsonb DEFAULT NULL, -- a places object with filter settings
   filter_place_reports_2 jsonb DEFAULT NULL, -- a place_reports object with filter settings
   filter_place_checks_2 jsonb DEFAULT NULL, -- a checks object with filter settings
-  filter_place_actions_2 jsonb DEFAULT NULL, -- a actions object with filter settings
+  filter_actions_2 jsonb DEFAULT NULL, -- a actions object with filter settings
   -- TODO:
   -- activating an additional filter field returns error: too many arguments on function json_object
   -- reason: Maximum Number Of Arguments On A Function is 127
