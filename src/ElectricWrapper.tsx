@@ -1,6 +1,6 @@
 import { useEffect, useState, memo } from 'react'
 import { PGlite } from '@electric-sql/pglite'
-import { electrify } from 'electric-sql/wa-sqlite'
+import { electrify } from 'electric-sql/pglite'
 import { Electric, schema } from './generated/client/index.ts'
 import { ElectricConfig } from 'electric-sql/config'
 import { useCorbado } from '@corbado/react'
