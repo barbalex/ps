@@ -20,14 +20,7 @@ export const SubprojectsNode = memo(({ project_id, level = 3 }: Props) => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { user: authUser } = useCorbado()
-
   const { db } = useElectric()!
-  const { results: subprojects = [] } = useLiveQuery(
-    db.subprojects.liveMany({
-      where: { project_id },
-      orderBy: { label: 'asc' },
-    }),
-  )
 
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
@@ -37,6 +30,27 @@ export const SubprojectsNode = memo(({ project_id, level = 3 }: Props) => {
     [appState?.tree_open_nodes],
   )
 
+  const filter = useMemo(
+    () =>
+      appState?.filter_subprojects?.filter((f) => Object.keys(f).length > 0) ??
+      [],
+    [appState?.filter_subprojects],
+  )
+  const where = filter.length > 1 ? { OR: filter } : filter[0]
+  const { results: subprojects = [] } = useLiveQuery(
+    db.subprojects.liveMany({
+      where: { project_id, ...where },
+      orderBy: { label: 'asc' },
+    }),
+  )
+  const { results: subprojectsUnfiltered = [] } = useLiveQuery(
+    db.subprojects.liveMany({
+      where: { project_id },
+      orderBy: { label: 'asc' },
+    }),
+  )
+  const isFiltered = subprojects.length !== subprojectsUnfiltered.length
+
   // get projects.subproject_name_plural to name the table
   // can't include projects in subprojects query because there will be no result before subprojects are created
   const { results: project } = useLiveQuery(
@@ -45,8 +59,14 @@ export const SubprojectsNode = memo(({ project_id, level = 3 }: Props) => {
   const namePlural = project?.subproject_name_plural ?? 'Subprojects'
 
   const subprojectsNode = useMemo(
-    () => ({ label: `${namePlural} (${subprojects.length})` }),
-    [namePlural, subprojects.length],
+    () => ({
+      label: `${namePlural} (${
+        isFiltered
+          ? `${subprojects.length}/${subprojectsUnfiltered.length}`
+          : subprojects.length
+      })`,
+    }),
+    [isFiltered, namePlural, subprojects.length, subprojectsUnfiltered.length],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
