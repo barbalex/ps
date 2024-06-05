@@ -1,30 +1,47 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
+import { useCorbado } from '@corbado/react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
-import { PlaceReports as PlaceReport } from '../../../generated/client/index.ts'
 import { useElectric } from '../ElectricProvider.tsx'
 import { createPlaceReport } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
+import { FilterButton } from '../components/shared/FilterButton.tsx'
 import '../form.css'
 
-interface PlaceReportResult {
-  results: PlaceReport[]
-}
-
-export const Component = () => {
+export const Component = memo(() => {
   const { project_id, place_id, place_id2 } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
+  const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
-  const { results: placeReports = [] }: PlaceReportResult = useLiveQuery(
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+  )
+
+  const filter = useMemo(
+    () =>
+      appState?.filter_place_reports?.filter(
+        (f) => Object.keys(f).length > 0,
+      ) ?? [],
+    [appState?.filter_place_reports],
+  )
+  const where = filter.length > 1 ? { OR: filter } : filter[0]
+  const { results: placeReports = [] } = useLiveQuery(
+    db.place_reports.liveMany({
+      where: { place_id: place_id2 ?? place_id, ...where },
+      orderBy: { label: 'asc' },
+    }),
+  )
+  const { results: placeReportsUnfiltered = [] } = useLiveQuery(
     db.place_reports.liveMany({
       where: { place_id: place_id2 ?? place_id },
       orderBy: { label: 'asc' },
     }),
   )
+  const isFiltered = placeReports.length !== placeReportsUnfiltered.length
 
   const add = useCallback(async () => {
     const data = await createPlaceReport({
@@ -41,7 +58,22 @@ export const Component = () => {
 
   return (
     <div className="list-view">
-      <ListViewHeader title="Reports" addRow={add} tableName="report" />
+      <ListViewHeader
+        title={`Place Reports (${
+          isFiltered
+            ? `${placeReports.length}/${placeReportsUnfiltered.length}`
+            : placeReports.length
+        })`}
+        addRow={add}
+        tableName="report"
+        menus={[
+          <FilterButton
+            key="filter_place_reports"
+            table="place_reports"
+            filterField="filter_place_reports"
+          />,
+        ]}
+      />
       <div className="list-container">
         {placeReports.map(({ place_report_id, label }) => (
           <Row
@@ -53,4 +85,4 @@ export const Component = () => {
       </div>
     </div>
   )
-}
+})

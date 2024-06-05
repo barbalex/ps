@@ -1,5 +1,6 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
+import { useCorbado } from '@corbado/react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import {
@@ -11,15 +12,20 @@ import { useElectric } from '../ElectricProvider.tsx'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { LayerMenu } from '../components/shared/LayerMenu.tsx'
+import { FilterButton } from '../components/shared/FilterButton.tsx'
 
 import '../form.css'
 
-export const Component = () => {
+export const Component = memo(() => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { project_id, subproject_id, place_id } = useParams()
+  const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+  )
 
   const { results: places = [] } = useLiveQuery(
     db.places.liveMany({
@@ -96,3 +102,4 @@ export const Component = () => {
     </div>
   )
 }
+)
