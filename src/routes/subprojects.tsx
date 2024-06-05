@@ -65,13 +65,9 @@ export const Component = () => {
         })`}
         addRow={add}
         tableName={nameSingularLower}
-        menus={[
-          <FilterButton
-            key="filter_subprojects"
-            table="subprojects"
-            filterField="filter_subprojects"
-          />,
-        ]}
+        menus={
+          <FilterButton table="subprojects" filterField="filter_subprojects" />
+        }
       />
       <div className="list-container">
         {subprojects.map(({ subproject_id, label }) => (

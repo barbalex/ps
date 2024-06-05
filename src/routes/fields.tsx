@@ -57,13 +57,7 @@ export const Component = memo(() => {
         })`}
         addRow={add}
         tableName="field"
-        menus={[
-          <FilterButton
-            key="filter_fields"
-            table="fields"
-            filterField="filter_fields"
-          />,
-        ]}
+        menus={<FilterButton table="fields" filterField="filter_fields" />}
       />
       <div className="list-container">
         {fields.map(({ field_id, label }) => (
