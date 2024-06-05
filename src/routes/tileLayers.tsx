@@ -62,13 +62,9 @@ export const Component = () => {
         })`}
         addRow={add}
         tableName="tile layer"
-        menus={[
-          <FilterButton
-            key="filter_tile_layers"
-            table="tile_layers"
-            filterField="filter_tile_layers"
-          />,
-        ]}
+        menus={
+          <FilterButton table="tile_layers" filterField="filter_tile_layers" />
+        }
       />
       <div className="list-container">
         {tileLayers.map(({ tile_layer_id, label }) => (

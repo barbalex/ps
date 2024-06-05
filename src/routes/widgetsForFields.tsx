@@ -62,13 +62,12 @@ export const Component = () => {
         })`}
         addRow={add}
         tableName="widget for field"
-        menus={[
+        menus={
           <FilterButton
-            key="filter_widgets_for_fields"
             table="widgets_for_fields"
             filterField="filter_widgets_for_fields"
-          />,
-        ]}
+          />
+        }
       />
       <div className="list-container">
         {widgetsForFields.map(({ widget_for_field_id, label }) => (
