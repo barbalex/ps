@@ -145,7 +145,7 @@ export const placesChildren = ({ level }) => [
       },
       {
         path: 'filter',
-        element: <Filter />,
+        element: <Filter level={level} />,
         children: [
           {
             index: true,
