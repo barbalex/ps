@@ -22,11 +22,12 @@ export const Component = memo(() => {
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
+  const filterField = place_id2 ? 'filter_checks_2' : 'filter_checks_1'
 
   const filter = useMemo(
     () =>
-      appState?.filter_checks?.filter((f) => Object.keys(f).length > 0) ?? [],
-    [appState?.filter_checks],
+      appState?.[filterField]?.filter((f) => Object.keys(f).length > 0) ?? [],
+    [appState, filterField],
   )
   const where = filter.length > 1 ? { OR: filter } : filter[0]
   const { results: checks = [] } = useLiveQuery(
@@ -66,10 +67,7 @@ export const Component = memo(() => {
         menus={
           <>
             <LayerMenu table="checks" level={place_id2 ? 2 : 1} />
-            <FilterButton
-              table="checks"
-              filterField="filter_checks"
-              />
+            <FilterButton table="checks" filterField={filterField} />
           </>
         }
       />

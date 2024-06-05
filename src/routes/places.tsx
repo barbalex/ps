@@ -26,13 +26,27 @@ export const Component = memo(() => {
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
+  const filterField = place_id ? 'filter_places_2' : 'filter_places_1'
 
+  const filter = useMemo(
+    () =>
+      appState?.[filterField]?.filter((f) => Object.keys(f).length > 0) ?? [],
+    [appState, filterField],
+  )
+  const where = filter.length > 1 ? { OR: filter } : filter[0]
   const { results: places = [] } = useLiveQuery(
+    db.places.liveMany({
+      where: { parent_id: place_id ?? null, subproject_id, ...where },
+      orderBy: { label: 'asc' },
+    }),
+  )
+  const { results: placesUnfiltered = [] } = useLiveQuery(
     db.places.liveMany({
       where: { parent_id: place_id ?? null, subproject_id },
       orderBy: { label: 'asc' },
     }),
   )
+  const isFiltered = places.length !== placesUnfiltered.length
 
   const { results: placeLevel } = useLiveQuery(
     db.place_levels.liveFirst({
@@ -83,15 +97,22 @@ export const Component = memo(() => {
   return (
     <div className="list-view">
       <ListViewHeader
-        title={placeNamePlural}
+        title={`${placeNamePlural} (${
+          isFiltered
+            ? `${places.length}/${placesUnfiltered.length}`
+            : places.length
+        })`}
         addRow={add}
         tableName={placeNameSingular}
         menus={
-          <LayerMenu
-            table="places"
-            level={place_id ? 2 : 1}
-            placeNamePlural={placeNamePlural}
-          />
+          <>
+            <LayerMenu
+              table="places"
+              level={place_id ? 2 : 1}
+              placeNamePlural={placeNamePlural}
+            />
+            <FilterButton table="places" filterField={filterField} />
+          </>
         }
       />
       <div className="list-container">
@@ -101,5 +122,4 @@ export const Component = memo(() => {
       </div>
     </div>
   )
-}
-)
+})
