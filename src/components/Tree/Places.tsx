@@ -25,12 +25,6 @@ export const PlacesNode = memo(
     const { user: authUser } = useCorbado()
 
     const { db } = useElectric()!
-    const { results: places = [] } = useLiveQuery(
-      db.places.liveMany({
-        where: { parent_id: place_id ?? null, subproject_id },
-        orderBy: { label: 'asc' },
-      }),
-    )
 
     const { results: appState } = useLiveQuery(
       db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
@@ -39,6 +33,27 @@ export const PlacesNode = memo(
       () => appState?.tree_open_nodes ?? [],
       [appState?.tree_open_nodes],
     )
+    const filterField = place_id ? 'filter_places_2' : 'filter_places_1'
+
+    const filter = useMemo(
+      () =>
+        appState?.[filterField]?.filter((f) => Object.keys(f).length > 0) ?? [],
+      [appState, filterField],
+    )
+    const where = filter.length > 1 ? { OR: filter } : filter[0]
+    const { results: places = [] } = useLiveQuery(
+      db.places.liveMany({
+        where: { parent_id: place_id ?? null, subproject_id, ...where },
+        orderBy: { label: 'asc' },
+      }),
+    )
+    const { results: placesUnfiltered = [] } = useLiveQuery(
+      db.places.liveMany({
+        where: { parent_id: place_id ?? null, subproject_id },
+        orderBy: { label: 'asc' },
+      }),
+    )
+    const isFiltered = places.length !== placesUnfiltered.length
 
     const { results: placeLevels } = useLiveQuery(
       db.place_levels.liveMany({
@@ -53,8 +68,14 @@ export const PlacesNode = memo(
 
     // get name by place_level
     const placesNode = useMemo(
-      () => ({ label: `${placeNamePlural} (${places.length})` }),
-      [placeNamePlural, places.length],
+      () => ({
+        label: `${placeNamePlural} (${
+          isFiltered
+            ? `${places.length}/${placesUnfiltered.length}`
+            : places.length
+        })`,
+      }),
+      [isFiltered, placeNamePlural, places.length, placesUnfiltered.length],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
