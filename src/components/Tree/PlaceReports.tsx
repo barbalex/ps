@@ -27,12 +27,6 @@ export const PlaceReportsNode = memo(
     const { user: authUser } = useCorbado()
 
     const { db } = useElectric()!
-    const { results: placeReports = [] } = useLiveQuery(
-      db.place_reports.liveMany({
-        where: { place_id: place.place_id },
-        orderBy: { label: 'asc' },
-      }),
-    )
 
     const { results: appState } = useLiveQuery(
       db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
@@ -41,10 +35,39 @@ export const PlaceReportsNode = memo(
       () => appState?.tree_open_nodes ?? [],
       [appState?.tree_open_nodes],
     )
+    const filterField = place_id
+      ? 'filter_place_reports_2'
+      : 'filter_place_reports_1'
+
+    const filter = useMemo(
+      () =>
+        appState?.[filterField]?.filter((f) => Object.keys(f).length > 0) ?? [],
+      [appState, filterField],
+    )
+    const where = filter.length > 1 ? { OR: filter } : filter[0]
+    const { results: placeReports = [] } = useLiveQuery(
+      db.place_reports.liveMany({
+        where: { place_id: place.place_id, ...where },
+        orderBy: { label: 'asc' },
+      }),
+    )
+    const { results: placeReportsUnfiltered = [] } = useLiveQuery(
+      db.place_reports.liveMany({
+        where: { place_id: place.place_id },
+        orderBy: { label: 'asc' },
+      }),
+    )
+    const isFiltered = placeReports.length !== placeReportsUnfiltered.length
 
     const placeReportsNode = useMemo(
-      () => ({ label: `Reports (${placeReports.length})` }),
-      [placeReports.length],
+      () => ({
+        label: `Reports (${
+          isFiltered
+            ? `${placeReports.length}/${placeReportsUnfiltered.length}`
+            : placeReports.length
+        })`,
+      }),
+      [isFiltered, placeReports.length, placeReportsUnfiltered.length],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')

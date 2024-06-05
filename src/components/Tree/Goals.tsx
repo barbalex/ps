@@ -24,12 +24,6 @@ export const GoalsNode = memo(
     const { user: authUser } = useCorbado()
 
     const { db } = useElectric()!
-    const { results: goals = [] } = useLiveQuery(
-      db.goals.liveMany({
-        where: { subproject_id },
-        orderBy: { label: 'asc' },
-      }),
-    )
 
     const { results: appState } = useLiveQuery(
       db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
@@ -39,9 +33,35 @@ export const GoalsNode = memo(
       [appState?.tree_open_nodes],
     )
 
+    const filter = useMemo(
+      () =>
+        appState?.filter_goals?.filter((f) => Object.keys(f).length > 0) ?? [],
+      [appState?.filter_goals],
+    )
+    const where = filter.length > 1 ? { OR: filter } : filter[0]
+    const { results: goals = [] } = useLiveQuery(
+      db.goals.liveMany({
+        where: { subproject_id, ...where },
+        orderBy: { label: 'asc' },
+      }),
+    )
+    const { results: goalsUnfiltered = [] } = useLiveQuery(
+      db.goals.liveMany({
+        where: { subproject_id },
+        orderBy: { label: 'asc' },
+      }),
+    )
+    const isFiltered = goals.length !== goalsUnfiltered.length
+
     const goalsNode = useMemo(
-      () => ({ label: `Goals (${goals.length})` }),
-      [goals.length],
+      () => ({
+        label: `Goals (${
+          isFiltered
+            ? `${goals.length}/${goalsUnfiltered.length}`
+            : goals.length
+        })`,
+      }),
+      [goals.length, goalsUnfiltered.length, isFiltered],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
