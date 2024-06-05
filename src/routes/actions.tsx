@@ -23,12 +23,25 @@ export const Component = memo(() => {
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
 
+  const filter = useMemo(
+    () =>
+      appState?.filter_actions?.filter((f) => Object.keys(f).length > 0) ?? [],
+    [appState?.filter_actions],
+  )
+  const where = filter.length > 1 ? { OR: filter } : filter[0]
   const { results: actions = [] } = useLiveQuery(
+    db.actions.liveMany({
+      where: { place_id: place_id2 ?? place_id, ...where },
+      orderBy: { label: 'asc' },
+    }),
+  )
+  const { results: actionsUnfiltered = [] } = useLiveQuery(
     db.actions.liveMany({
       where: { place_id: place_id2 ?? place_id },
       orderBy: { label: 'asc' },
     }),
   )
+  const isFiltered = actions.length !== actionsUnfiltered.length
 
   const add = useCallback(async () => {
     const data = await createAction({
@@ -43,10 +56,23 @@ export const Component = memo(() => {
   return (
     <div className="list-view">
       <ListViewHeader
-        title="Actions"
+        title={`Actions (${
+          isFiltered
+            ? `${actions.length}/${actionsUnfiltered.length}`
+            : actions.length
+        })`}
         addRow={add}
         tableName="action"
-        menus={<LayerMenu table="actions" level={place_id2 ? 2 : 1} />}
+        menus={
+          <>
+            <LayerMenu table="actions" level={place_id2 ? 2 : 1} />
+            <FilterButton
+              key="filter_actions"
+              table="actions"
+              filterField="filter_actions"
+            />
+          </>
+        }
       />
       <div className="list-container">
         {actions.map(({ action_id, label }) => (
@@ -55,5 +81,4 @@ export const Component = memo(() => {
       </div>
     </div>
   )
-}
-)
+})
