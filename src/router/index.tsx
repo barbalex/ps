@@ -1,3 +1,4 @@
+import React from 'react'
 import { createBrowserRouter } from 'react-router-dom'
 
 import { Layout } from '../components/Layout/index.tsx'
@@ -6,6 +7,9 @@ import { placesChildren } from './placesChildren.tsx'
 import { placesLevel2 } from './placesLevel2.tsx'
 import { Editing as EditingProject } from '../components/Tree/Project/Editing.tsx'
 import { AuthAndDb } from '../components/AuthAndDb.tsx'
+
+import { WidgetForFieldForm } from '../routes/widgetForField/Form.tsx'
+import { Filter } from '../components/shared/Filter/index.tsx'
 
 export const router = () => {
   // confirmed: this is called only once
@@ -138,9 +142,6 @@ export const router = () => {
                                 {
                                   path: ':place_id',
                                   element: null,
-                                  // TODO: seems that text is not used
-                                  // thus match is not used
-                                  // thus: RETURN ONLY AN OBJECT
                                   handle: {
                                     crumb: {
                                       table: 'places',
@@ -813,6 +814,11 @@ export const router = () => {
                           lazy: () => import('../routes/vectorLayers.tsx'),
                         },
                         {
+                          path: 'filter',
+                          lazy: () =>
+                            import('../routes/vectorLayer/Filter.tsx'),
+                        },
+                        {
                           path: ':vector_layer_id',
                           element: null,
                           handle: {
@@ -1107,6 +1113,16 @@ export const router = () => {
                   lazy: () => import('../routes/widgetTypes.tsx'),
                 },
                 {
+                  path: 'filter',
+                  element: <Filter />,
+                  children: [
+                    {
+                      index: true,
+                      lazy: () => import('../routes/widgetType/Form.tsx'),
+                    },
+                  ],
+                },
+                {
                   path: ':widget_type_id',
                   lazy: () => import('../routes/widgetType/index.tsx'),
                   handle: {
@@ -1132,6 +1148,16 @@ export const router = () => {
                 {
                   index: true,
                   lazy: () => import('../routes/widgetsForFields.tsx'),
+                },
+                {
+                  path: 'filter',
+                  element: <Filter />,
+                  children: [
+                    {
+                      index: true,
+                      lazy: () => import('../routes/widgetForField/Form.tsx'),
+                    },
+                  ],
                 },
                 {
                   path: ':widget_for_field_id',

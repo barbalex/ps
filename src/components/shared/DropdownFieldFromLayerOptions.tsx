@@ -110,6 +110,7 @@ export const DropdownFieldFromLayerOptions = memo(
           selectedOptions={selectedOptions}
           onOptionSelect={onOptionSelect}
           appearance="underline"
+          clearable
         >
           {options.map((option) => {
             return (

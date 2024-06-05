@@ -66,6 +66,7 @@ export const DropdownFieldFromList = memo(
             }
             appearance="underline"
             style={ddStyle}
+            clearable
           >
             {options.map((option) => {
               return <Option key={option}>{option}</Option>

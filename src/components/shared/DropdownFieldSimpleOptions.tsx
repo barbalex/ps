@@ -35,6 +35,7 @@ export const DropdownFieldSimpleOptions = memo(
             }
             appearance="underline"
             ref={ref}
+            clearable
           >
             {options.map((option) => (
               <Option key={option}>{option}</Option>

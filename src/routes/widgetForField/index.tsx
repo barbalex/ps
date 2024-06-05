@@ -5,10 +5,10 @@ import type { InputProps } from '@fluentui/react-components'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
-import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
+import { Component as Form } from './Form.tsx'
 
 import '../../form.css'
 
@@ -44,22 +44,7 @@ export const Component = () => {
           name="widget_for_field_id"
           value={row.widget_for_field_id}
         />
-        <DropdownField
-          label="Field type"
-          name="field_type_id"
-          table="field_types"
-          value={row.field_type_id ?? ''}
-          onChange={onChange}
-          autoFocus
-          ref={autoFocusRef}
-        />
-        <DropdownField
-          label="Widget type"
-          name="widget_type_id"
-          table="widget_types"
-          value={row.widget_type_id ?? ''}
-          onChange={onChange}
-        />
+        <Form onChange={onChange} row={row} autoFocusRef={autoFocusRef} />
       </div>
     </div>
   )
