@@ -1,18 +1,15 @@
-import { useCallback, useMemo } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
-import type { InputProps } from '@fluentui/react-components'
-import { useParams } from 'react-router-dom'
+import { memo } from 'react'
+import { useOutletContext, useParams } from 'react-router-dom'
 
-import { useElectric } from '../../ElectricProvider.tsx'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions.tsx'
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
-import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { WidgetType } from './WidgetType.tsx'
-import { Loading } from '../../components/shared/Loading.tsx'
-import { accountTables } from './accountTables.ts'
+import { accountTables } from '../../routes/field/accountTables.ts'
+
+import '../../form.css'
 
 const projectTables = [
   'action_reports',
@@ -37,106 +34,100 @@ const widgetsNeedingList = [
 
 const fieldTypeOrderBy = [{ sort: 'asc' }, { name: 'asc' }]
 
-// separate from the route because it is also used inside other forms
-export const FieldForm = ({ field_id, autoFocusRef, isInForm = false }) => {
-  const { project_id } = useParams()
+// this form is rendered from a parent or outlet
+export const Component = memo(
+  ({
+    onChange: onChangeFromProps,
+    row: rowFromProps,
+    autoFocusRef,
+    isInForm = false,
+  }) => {
+    const { project_id } = useParams()
+    // beware: contextFromOutlet is undefined if not inside an outlet
+    const outletContext = useOutletContext()
+    const onChange = onChangeFromProps ?? outletContext?.onChange
+    const row = rowFromProps ?? outletContext?.row ?? {}
 
-  const { db } = useElectric()!
-  const { results: row } = useLiveQuery(
-    db.fields.liveUnique({ where: { field_id } }),
-  )
+    const widgetNeedsList = widgetsNeedingList.includes(row?.widget_type_id)
 
-  const onChange: InputProps['onChange'] = useCallback(
-    (e, data) => {
-      const { name, value } = getValueFromChange(e, data)
-      db.fields.update({
-        where: { field_id },
-        data: { [name]: value },
-      })
-    },
-    [db.fields, field_id],
-  )
-
-  const widgetNeedsList = useMemo(
-    () => widgetsNeedingList.includes(row?.widget_type_id),
-    [row],
-  )
-
-  if (!row) return <Loading />
-
-  return (
-    <div className="form-container">
-      {!isInForm && (
-        <>
-          <TextFieldInactive label="ID" name="field_id" value={row.field_id} />
-          <DropdownFieldSimpleOptions
-            label="Table"
-            name="table_name"
-            value={row.table_name ?? ''}
-            onChange={onChange}
-            options={project_id ? projectTables : accountTables}
-            autoFocus
-            ref={autoFocusRef}
-            validationMessage={row.table_name ? undefined : 'Required'}
-          />
-          <TextField
-            label="Level"
-            name="level"
-            value={row.level}
-            type="number"
-            onChange={onChange}
-          />
-        </>
-      )}
-      <TextField
-        label="Name"
-        name="name"
-        value={row.name ?? ''}
-        onChange={onChange}
-        validationMessage={row.name ? undefined : 'Required'}
-      />
-      <TextField
-        label="Label"
-        name="field_label"
-        value={row.field_label ?? ''}
-        onChange={onChange}
-      />
-      <DropdownField
-        label="Type"
-        name="field_type_id"
-        table="field_types"
-        orderBy={fieldTypeOrderBy}
-        value={row.field_type_id ?? ''}
-        onChange={onChange}
-        validationMessage={row.field_type_id ? undefined : 'Required'}
-      />
-      <WidgetType
-        onChange={onChange}
-        field_type_id={row.field_type_id}
-        value={row.widget_type_id}
-      />
-      {widgetNeedsList && (
-        <DropdownField
-          label="List"
-          name="list_id"
-          table="lists"
-          value={row.list_id ?? ''}
+    return (
+      <>
+        {!isInForm && (
+          <>
+            <TextFieldInactive
+              label="ID"
+              name="field_id"
+              value={row.field_id}
+            />
+            <DropdownFieldSimpleOptions
+              label="Table"
+              name="table_name"
+              value={row.table_name ?? ''}
+              onChange={onChange}
+              options={project_id ? projectTables : accountTables}
+              autoFocus
+              ref={autoFocusRef}
+              validationMessage={row.table_name ? undefined : 'Required'}
+            />
+            <TextField
+              label="Level"
+              name="level"
+              value={row.level}
+              type="number"
+              onChange={onChange}
+            />
+          </>
+        )}
+        <TextField
+          label="Name"
+          name="name"
+          value={row.name ?? ''}
+          onChange={onChange}
+          validationMessage={row.name ? undefined : 'Required'}
+        />
+        <TextField
+          label="Label"
+          name="field_label"
+          value={row.field_label ?? ''}
           onChange={onChange}
         />
-      )}
-      <TextField
-        label="Preset value"
-        name="preset"
-        value={row.preset ?? ''}
-        onChange={onChange}
-      />
-      <SwitchField
-        label="Obsolete"
-        name="obsolete"
-        value={row.obsolete ?? false}
-        onChange={onChange}
-        validationMessage="If obsolete, existing data is shown but this field will not be available for new records"
-      />
-    </div>
-  )
-}
+        <DropdownField
+          label="Type"
+          name="field_type_id"
+          table="field_types"
+          orderBy={fieldTypeOrderBy}
+          value={row.field_type_id ?? ''}
+          onChange={onChange}
+          validationMessage={row.field_type_id ? undefined : 'Required'}
+        />
+        <WidgetType
+          onChange={onChange}
+          field_type_id={row.field_type_id}
+          value={row.widget_type_id}
+        />
+        {widgetNeedsList && (
+          <DropdownField
+            label="List"
+            name="list_id"
+            table="lists"
+            value={row.list_id ?? ''}
+            onChange={onChange}
+          />
+        )}
+        <TextField
+          label="Preset value"
+          name="preset"
+          value={row.preset ?? ''}
+          onChange={onChange}
+        />
+        <SwitchField
+          label="Obsolete"
+          name="obsolete"
+          value={row.obsolete ?? false}
+          onChange={onChange}
+          validationMessage="If obsolete, existing data is shown but this field will not be available for new records"
+        />
+      </>
+    )
+  },
+)
