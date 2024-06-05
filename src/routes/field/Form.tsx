@@ -3,7 +3,6 @@ import { useLiveQuery } from 'electric-sql/react'
 import type { InputProps } from '@fluentui/react-components'
 import { useParams } from 'react-router-dom'
 
-import { Fields as Field } from '../../../generated/client/index.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
@@ -38,16 +37,14 @@ const widgetsNeedingList = [
 
 const fieldTypeOrderBy = [{ sort: 'asc' }, { name: 'asc' }]
 
-// seperate from the route because it is also used inside other forms
+// separate from the route because it is also used inside other forms
 export const FieldForm = ({ field_id, autoFocusRef, isInForm = false }) => {
   const { project_id } = useParams()
 
   const { db } = useElectric()!
-  const { results } = useLiveQuery(
+  const { results: row } = useLiveQuery(
     db.fields.liveUnique({ where: { field_id } }),
   )
-
-  const row: Field = results
 
   const onChange: InputProps['onChange'] = useCallback(
     (e, data) => {
