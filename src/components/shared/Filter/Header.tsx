@@ -46,15 +46,17 @@ export const FilterHeader = memo(
             onClick={onClickBack}
             title="Leave Filter"
             checked={true}
+            style={{
+              ...(isFiltered ? { color: 'rgba(255, 141, 2, 1' } : {}),
+            }}
           />
-          {isFiltered && (
-            <Button
-              size="medium"
-              icon={<MdFilterAltOff />}
-              onClick={onClickClearFilter}
-              title="Clear Filter"
-            />
-          )}
+          <Button
+            size="medium"
+            icon={<MdFilterAltOff />}
+            onClick={onClickClearFilter}
+            title="Clear Filter"
+            disabled={!isFiltered}
+          />
         </div>
       </div>
     )

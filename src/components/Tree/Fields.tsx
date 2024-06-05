@@ -63,7 +63,7 @@ export const FieldsNode = memo(({ project_id }: Props) => {
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const parentArray = useMemo(
-    () => ['data', 'projects', ...(project_id ? [project_id] : [])],
+    () => ['data', ...(project_id ? ['projects', project_id] : [])],
     [project_id],
   )
   const parentUrl = `/${parentArray.join('/')}`
