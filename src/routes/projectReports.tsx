@@ -63,13 +63,12 @@ export const Component = () => {
         })`}
         addRow={add}
         tableName="project report"
-        menus={[
+        menus={
           <FilterButton
-            key="filter_project_reports"
             table="project_reports"
             filterField="filter_project_reports"
-          />,
-        ]}
+          />
+        }
       />
       <div className="list-container">
         {projectReports.map(({ project_report_id, label }) => (

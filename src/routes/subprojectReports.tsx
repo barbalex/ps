@@ -21,12 +21,28 @@ export const Component = memo(() => {
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
 
+  const filter = useMemo(
+    () =>
+      appState?.filter_subproject_reports?.filter(
+        (f) => Object.keys(f).length > 0,
+      ) ?? [],
+    [appState?.filter_subproject_reports],
+  )
+  const where = filter.length > 1 ? { OR: filter } : filter[0]
   const { results: subprojectReports = [] } = useLiveQuery(
+    db.subproject_reports.liveMany({
+      where: { subproject_id, ...where },
+      orderBy: { label: 'asc' },
+    }),
+  )
+  const { results: subprojectReportsUnfiltered = [] } = useLiveQuery(
     db.subproject_reports.liveMany({
       where: { subproject_id },
       orderBy: { label: 'asc' },
     }),
   )
+  const isFiltered =
+    subprojectReports.length !== subprojectReportsUnfiltered.length
 
   const add = useCallback(async () => {
     const data = await createSubprojectReport({
@@ -44,9 +60,19 @@ export const Component = memo(() => {
   return (
     <div className="list-view">
       <ListViewHeader
-        title="Subproject Reports"
+        title={`Subproject Reports (${
+          isFiltered
+            ? `${subprojectReports.length}/${subprojectReportsUnfiltered.length}`
+            : subprojectReports.length
+        })`}
         addRow={add}
         tableName="subproject report"
+        menus={
+          <FilterButton
+            table="subproject_reports"
+            filterField="filter_subproject_reports"
+          />
+        }
       />
       <div className="list-container">
         {subprojectReports.map(({ subproject_report_id, label }) => (
@@ -59,5 +85,4 @@ export const Component = memo(() => {
       </div>
     </div>
   )
-}
-)
+})

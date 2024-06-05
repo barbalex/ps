@@ -63,13 +63,12 @@ export const Component = () => {
         })`}
         addRow={add}
         tableName="vector layer"
-        menus={[
+        menus={
           <FilterButton
-            key="filter_vector_layers"
             table="vector_layers"
             filterField="filter_vector_layers"
-          />,
-        ]}
+          />
+        }
       />
       <div className="list-container">
         {vectorLayers.map(({ vector_layer_id, label }) => (
