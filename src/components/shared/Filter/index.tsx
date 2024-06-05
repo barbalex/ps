@@ -27,6 +27,7 @@ export const Filter = memo(() => {
   // reading these values from the url path
   // if this fails in some situations, we can pass these as props
   const tableName = urlPath[urlPath.length - 2].replaceAll('-', '_')
+  // TODO: detect _1 and _2 when below subproject_id
   const filterName = `filter_${tableName}`
   // for tableNameForTitle: replace all underscores with spaces and uppercase all first letters
   const tableNameForTitle = tableName
@@ -58,6 +59,7 @@ export const Filter = memo(() => {
     [appState, filterName],
   )
   const where = filter.length > 1 ? { OR: filter } : filter[0]
+  // TODO: need to add parent_id when below place_id/place_id2
   const isFiltered = filter.length > 0
   const orFiltersToUse = isFiltered ? [...filter, {}] : [{}]
 

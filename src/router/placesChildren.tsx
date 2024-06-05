@@ -1,3 +1,5 @@
+import { Filter } from '../components/shared/Filter/index.tsx'
+
 export const placesChildren = ({ level }) => [
   {
     path: 'checks',
@@ -140,6 +142,16 @@ export const placesChildren = ({ level }) => [
       {
         index: true,
         lazy: () => import('../routes/actions.tsx'),
+      },
+      {
+        path: 'filter',
+        element: <Filter />,
+        children: [
+          {
+            index: true,
+            lazy: () => import('../routes/action/Form.tsx'),
+          },
+        ],
       },
       {
         path: ':action_id',
