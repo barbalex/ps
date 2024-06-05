@@ -8,7 +8,6 @@ import { placesLevel2 } from './placesLevel2.tsx'
 import { Editing as EditingProject } from '../components/Tree/Project/Editing.tsx'
 import { AuthAndDb } from '../components/AuthAndDb.tsx'
 
-import { WidgetForFieldForm } from '../routes/widgetForField/Form.tsx'
 import { Filter } from '../components/shared/Filter/index.tsx'
 
 export const router = () => {
@@ -1185,6 +1184,16 @@ export const router = () => {
                 {
                   index: true,
                   lazy: () => import('../routes/fields.tsx'),
+                },
+                {
+                  path: 'filter',
+                  element: <Filter />,
+                  children: [
+                    {
+                      index: true,
+                      lazy: () => import('../routes/field/Form.tsx'),
+                    },
+                  ],
                 },
                 {
                   path: ':field_id',
