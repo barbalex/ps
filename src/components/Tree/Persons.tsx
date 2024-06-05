@@ -22,12 +22,6 @@ export const PersonsNode = memo(({ project_id, level = 3 }: Props) => {
   const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
-  const { results: persons = [] } = useLiveQuery(
-    db.persons.liveMany({
-      where: { project_id },
-      orderBy: { label: 'asc' },
-    }),
-  )
 
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
@@ -37,9 +31,35 @@ export const PersonsNode = memo(({ project_id, level = 3 }: Props) => {
     [appState?.tree_open_nodes],
   )
 
+  const filter = useMemo(
+    () =>
+      appState?.filter_persons?.filter((f) => Object.keys(f).length > 0) ?? [],
+    [appState?.filter_persons],
+  )
+  const where = filter.length > 1 ? { OR: filter } : filter[0]
+  const { results: persons = [] } = useLiveQuery(
+    db.persons.liveMany({
+      where: { project_id, ...where },
+      orderBy: { label: 'asc' },
+    }),
+  )
+  const { results: personsUnfiltered = [] } = useLiveQuery(
+    db.persons.liveMany({
+      where: { project_id },
+      orderBy: { label: 'asc' },
+    }),
+  )
+  const isFiltered = persons.length !== personsUnfiltered.length
+
   const personsNode = useMemo(
-    () => ({ label: `Persons (${persons.length})` }),
-    [persons.length],
+    () => ({
+      label: `Persons (${
+        isFiltered
+          ? `${persons.length}/${personsUnfiltered.length}`
+          : persons.length
+      })`,
+    }),
+    [isFiltered, persons.length, personsUnfiltered.length],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
