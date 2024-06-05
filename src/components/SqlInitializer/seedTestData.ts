@@ -206,6 +206,7 @@ export const seedTestData = async (db) => {
       })
     } catch (e) {
       console.error('hello seedTestData, seedAppStates error', e)
+      // seedTestData.ts:208 hello seedTestData, seedAppStates error error: cannot pass more than 100 arguments to a function
     }
   }
   const fieldTypes = await db.rawQuery({
