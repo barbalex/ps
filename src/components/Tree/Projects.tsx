@@ -15,13 +15,7 @@ export const ProjectsNode = memo(() => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { user: authUser } = useCorbado()
-
   const { db } = useElectric()!
-  const { results: projects = [] } = useLiveQuery(
-    db.projects.liveMany({
-      orderBy: { label: 'asc' },
-    }),
-  )
 
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
@@ -31,9 +25,34 @@ export const ProjectsNode = memo(() => {
     [appState?.tree_open_nodes],
   )
 
+  const filter = useMemo(
+    () =>
+      appState?.filter_projects?.filter((f) => Object.keys(f).length > 0) ?? [],
+    [appState?.filter_projects],
+  )
+  const where = filter.length > 1 ? { OR: filter } : filter[0]
+  const { results: projects = [] } = useLiveQuery(
+    db.projects.liveMany({
+      where,
+      orderBy: { label: 'asc' },
+    }),
+  )
+  const { results: projectsUnfiltered = [] } = useLiveQuery(
+    db.projects.liveMany({
+      orderBy: { label: 'asc' },
+    }),
+  )
+  const isFiltered = projects.length !== projectsUnfiltered.length
+
   const projectsNode = useMemo(
-    () => ({ label: `Projects (${projects.length})` }),
-    [projects.length],
+    () => ({
+      label: `Projects (${
+        isFiltered
+          ? `${projects.length}/${projectsUnfiltered.length}`
+          : projects.length
+      })`,
+    }),
+    [isFiltered, projects.length, projectsUnfiltered.length],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
