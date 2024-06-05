@@ -57,13 +57,12 @@ export const Component = memo(() => {
         })`}
         addRow={add}
         tableName="widget type"
-        menus={[
+        menus={
           <FilterButton
-            key="filter_widget_types"
             table="widget_types"
             filterField="filter_widget_types"
-          />,
-        ]}
+          />
+        }
       />
       <div className="list-container">
         {widgetTypes.map(({ widget_type_id, label }) => (
@@ -76,5 +75,4 @@ export const Component = memo(() => {
       </div>
     </div>
   )
-}
-)
+})

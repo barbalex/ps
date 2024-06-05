@@ -23,12 +23,25 @@ export const Component = memo(() => {
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
 
+  const filter = useMemo(
+    () =>
+      appState?.filter_checks?.filter((f) => Object.keys(f).length > 0) ?? [],
+    [appState?.filter_checks],
+  )
+  const where = filter.length > 1 ? { OR: filter } : filter[0]
   const { results: checks = [] } = useLiveQuery(
+    db.checks.liveMany({
+      where: { place_id: place_id2 ?? place_id, ...where },
+      orderBy: { label: 'asc' },
+    }),
+  )
+  const { results: checksUnfiltered = [] } = useLiveQuery(
     db.checks.liveMany({
       where: { place_id: place_id2 ?? place_id },
       orderBy: { label: 'asc' },
     }),
   )
+  const isFiltered = checks.length !== checksUnfiltered.length
 
   const add = useCallback(async () => {
     const data = await createCheck({
@@ -43,10 +56,22 @@ export const Component = memo(() => {
   return (
     <div className="list-view">
       <ListViewHeader
-        title="Checks"
+        title={`Checks (${
+          isFiltered
+            ? `${checks.length}/${checksUnfiltered.length}`
+            : checks.length
+        })`}
         addRow={add}
         tableName="check"
-        menus={<LayerMenu table="checks" level={place_id2 ? 2 : 1} />}
+        menus={
+          <>
+            <LayerMenu table="checks" level={place_id2 ? 2 : 1} />
+            <FilterButton
+              table="checks"
+              filterField="filter_checks"
+              />
+          </>
+        }
       />
       <div className="list-container">
         {checks.map(({ check_id, label }) => (
@@ -55,5 +80,4 @@ export const Component = memo(() => {
       </div>
     </div>
   )
-}
-)
+})
