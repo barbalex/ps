@@ -13,6 +13,8 @@ export const generateActionReportLabel = async (db) => {
         sql: `ALTER TABLE action_reports ADD COLUMN label text GENERATED ALWAYS AS (coalesce(year::text, action_report_id::text)) stored;`,
       })
     } catch (e) {
+      // error when generating label: error: expected one dependency record for TOAST table, found 4
+      // https://github.com/electric-sql/pglite/issues/83#issuecomment-2149608677
       return console.error(
         'SqlInitializer: generateActionReportLabel error when generating label:',
         e,
