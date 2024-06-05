@@ -27,12 +27,6 @@ export const ChecksNode = memo(
     const { user: authUser } = useCorbado()
 
     const { db } = useElectric()!
-    const { results: checks = [] } = useLiveQuery(
-      db.checks.liveMany({
-        where: { place_id: place.place_id },
-        orderBy: { label: 'asc' },
-      }),
-    )
 
     const { results: appState } = useLiveQuery(
       db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
@@ -41,11 +35,38 @@ export const ChecksNode = memo(
       () => appState?.tree_open_nodes ?? [],
       [appState?.tree_open_nodes],
     )
+    const filterField = place_id ? 'filter_checks_1' : 'filter_checks_2'
+
+    const filter = useMemo(
+      () =>
+        appState?.[filterField]?.filter((f) => Object.keys(f).length > 0) ?? [],
+      [appState, filterField],
+    )
+    const where = filter.length > 1 ? { OR: filter } : filter[0]
+    const { results: checks = [] } = useLiveQuery(
+      db.checks.liveMany({
+        where: { place_id: place.place_id, ...where },
+        orderBy: { label: 'asc' },
+      }),
+    )
+    const { results: checksUnfiltered = [] } = useLiveQuery(
+      db.checks.liveMany({
+        where: { place_id: place.place_id },
+        orderBy: { label: 'asc' },
+      }),
+    )
+    const isFiltered = checks.length !== checksUnfiltered.length
 
     // TODO: get name by place_level
     const checksNode = useMemo(
-      () => ({ label: `Checks (${checks.length})` }),
-      [checks.length],
+      () => ({
+        label: `Checks (${
+          isFiltered
+            ? `${checks.length}/${checksUnfiltered.length}`
+            : checks.length
+        })`,
+      }),
+      [checks.length, checksUnfiltered.length, isFiltered],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')

@@ -44,7 +44,13 @@ export const FilesNode = memo(
       [appState?.tree_open_nodes],
     )
 
-    const where = useMemo(() => {
+    const filter = useMemo(
+      () =>
+        appState?.filter_files?.filter((f) => Object.keys(f).length > 0) ?? [],
+      [appState?.filter_files],
+    )
+    const where = filter.length > 1 ? { OR: filter } : filter[0]
+    const hierarchyWhere = useMemo(() => {
       const where = {}
       if (action_id) {
         where.action_id = action_id
@@ -64,14 +70,27 @@ export const FilesNode = memo(
 
     const { results: files = [] } = useLiveQuery(
       db.files.liveMany({
-        where,
+        where: { hierarchyWhere, ...where },
         orderBy: { label: 'asc' },
       }),
     )
+    const { results: filesUnfiltered = [] } = useLiveQuery(
+      db.files.liveMany({
+        where: hierarchyWhere,
+        orderBy: { label: 'asc' },
+      }),
+    )
+    const isFiltered = files.length !== filesUnfiltered.length
 
     const filesNode = useMemo(
-      () => ({ label: `Files (${files.length})` }),
-      [files.length],
+      () => ({
+        label: `Files (${
+          isFiltered
+            ? `${files.length}/${filesUnfiltered.length}`
+            : files.length
+        })`,
+      }),
+      [files.length, filesUnfiltered.length, isFiltered],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
