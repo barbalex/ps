@@ -11,6 +11,7 @@ import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
+import { Component as Form } from './Form.tsx'
 
 import '../../form.css'
 
@@ -42,26 +43,7 @@ export const Component = () => {
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
         <TextFieldInactive label="ID" name="list_id" value={row.list_id} />
-        <TextField
-          label="Name"
-          name="name"
-          value={row.name ?? ''}
-          onChange={onChange}
-          autoFocus
-          ref={autoFocusRef}
-        />
-        <Jsonb
-          table="lists"
-          idField="list_id"
-          id={row.list_id}
-          data={row.data ?? {}}
-        />
-        <SwitchField
-          label="Obsolete"
-          name="obsolete"
-          value={row.obsolete}
-          onChange={onChange}
-        />
+        <Form onChange={onChange} row={row} autoFocusRef={autoFocusRef} />
       </div>
     </div>
   )
