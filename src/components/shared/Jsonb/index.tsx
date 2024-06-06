@@ -86,10 +86,23 @@ export const Jsonb = memo(
             // in json need to save date as iso string
             val[name] = isDate ? value.toISOString() : value
           }
-          db[table].update({
-            where: { [idField]: id },
-            data: { [jsonFieldName]: val },
+
+          console.log('Jsonb, onChange:', {
+            name,
+            value,
+            val,
+            table,
+            idField,
+            id,
           })
+          try {
+            db[table].update({
+              where: { [idField]: id },
+              data: { [jsonFieldName]: val },
+            })
+          } catch (error) {
+            console.log('Jsonb, error updating:', error)
+          }
         },
         [db, id, idField, jsonFieldName, data, table],
       )
