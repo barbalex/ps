@@ -52,19 +52,19 @@ export const Filter = memo(({ level }) => {
       appState?.[filterName]?.filter((f) => Object.keys(f).length > 0) ?? [],
     [appState, filterName],
   )
-  if (tableName === 'places') {
-    filter.forEach((f) => {
-      f.level = level
-    })
-  }
   let where = {}
   const whereUnfiltered = {}
 
-  // TODO: add parent_id for all tables below subprojects
+  // add parent_id for all filterable tables below subprojects
   if (tableName === 'places') {
     where.parent_id = place_id ?? null
     whereUnfiltered.parent_id = place_id ?? null
   }
+  if (['actions', 'checks', 'place_reports'].includes(tableName)) {
+    where.place_id = place_id2 ?? place_id
+    whereUnfiltered.place_id = place_id2 ?? place_id
+  }
+  // in case of multiple or filters, use: OR: [{...}, {...}]
   if (filter.length > 1) {
     where.OR = filter
   } else if (filter.length === 1) {
