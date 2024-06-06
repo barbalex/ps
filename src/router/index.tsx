@@ -139,6 +139,17 @@ export const router = () => {
                                   lazy: () => import('../routes/places.tsx'),
                                 },
                                 {
+                                  path: 'filter',
+                                  element: <Filter level={1} />,
+                                  children: [
+                                    {
+                                      index: true,
+                                      lazy: () =>
+                                        import('../routes/place/Form.tsx'),
+                                    },
+                                  ],
+                                },
+                                {
                                   path: ':place_id',
                                   element: null,
                                   handle: {
@@ -156,6 +167,17 @@ export const router = () => {
                                       index: true,
                                       lazy: () =>
                                         import('../routes/place/index.tsx'),
+                                    },
+                                    {
+                                      path: 'filter',
+                                      element: <Filter level={2} />,
+                                      children: [
+                                        {
+                                          index: true,
+                                          lazy: () =>
+                                            import('../routes/place/Form.tsx'),
+                                        },
+                                      ],
                                     },
                                     placesLevel2(),
                                     ...placesChildren({ level: 1 }),
