@@ -1,4 +1,5 @@
 import { placesChildren } from './placesChildren.tsx'
+import { Filter } from '../components/shared/Filter/index.tsx'
 
 export const placesLevel2 = () => ({
   path: 'places',
@@ -15,6 +16,16 @@ export const placesLevel2 = () => ({
     {
       index: true,
       lazy: () => import('../routes/places.tsx'),
+    },
+    {
+      path: 'filter',
+      element: <Filter level={2} />,
+      children: [
+        {
+          index: true,
+          lazy: () => import('../routes/place/Form.tsx'),
+        },
+      ],
     },
     {
       path: ':place_id2',

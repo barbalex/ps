@@ -2,7 +2,7 @@ import { useMemo, memo, useState, useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 import { Tab, TabList } from '@fluentui/react-components'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { Loading } from '../Loading.tsx'
@@ -21,6 +21,7 @@ const tabStyle = {
 
 export const Filter = memo(({ level }) => {
   const { user: authUser } = useCorbado()
+  const { place_id, place_id2 } = useParams()
   const location = useLocation()
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
 
@@ -51,7 +52,24 @@ export const Filter = memo(({ level }) => {
       appState?.[filterName]?.filter((f) => Object.keys(f).length > 0) ?? [],
     [appState, filterName],
   )
-  const where = filter.length > 1 ? { OR: filter } : filter[0]
+  if (tableName === 'places') {
+    filter.forEach((f) => {
+      f.level = level
+    })
+  }
+  let where = {}
+  const whereUnfiltered = {}
+
+  // TODO: add parent_id for all tables below subprojects
+  if (tableName === 'places') {
+    where.parent_id = place_id ?? null
+    whereUnfiltered.parent_id = place_id ?? null
+  }
+  if (filter.length > 1) {
+    where.OR = filter
+  } else if (filter.length === 1) {
+    where = { ...where, ...filter[0] }
+  }
   // TODO: need to add parent_id when below place_id/place_id2
   const isFiltered = filter.length > 0
   const orFiltersToUse = isFiltered ? [...filter, {}] : [{}]
@@ -63,7 +81,9 @@ export const Filter = memo(({ level }) => {
     title,
     level,
     where,
+    whereUnfiltered,
     filter,
+    place_id,
   })
 
   const { results = [] } = useLiveQuery(
@@ -74,6 +94,7 @@ export const Filter = memo(({ level }) => {
   )
   const { results: resultsUnfiltered = [] } = useLiveQuery(
     db?.[tableName].liveMany({
+      where: whereUnfiltered,
       orderBy: { label: 'asc' },
     }),
   )
