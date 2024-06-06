@@ -1095,6 +1095,16 @@ export const router = () => {
               children: [
                 { index: true, lazy: () => import('../routes/fieldTypes.tsx') },
                 {
+                  path: 'filter',
+                  element: <Filter />,
+                  children: [
+                    {
+                      index: true,
+                      lazy: () => import('../routes/fieldType/Form.tsx'),
+                    },
+                  ],
+                },
+                {
                   path: ':field_type_id',
                   lazy: () => import('../routes/fieldType/index.tsx'),
                   handle: {
