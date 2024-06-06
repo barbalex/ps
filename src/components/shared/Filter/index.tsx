@@ -56,6 +56,16 @@ export const Filter = memo(({ level }) => {
   const isFiltered = filter.length > 0
   const orFiltersToUse = isFiltered ? [...filter, {}] : [{}]
 
+  console.log('hello Filter', {
+    tableName,
+    filterName,
+    tableNameForTitle,
+    title,
+    level,
+    where,
+    filter,
+  })
+
   const { results = [] } = useLiveQuery(
     db?.[tableName]?.liveMany({
       orderBy: { label: 'asc' },
@@ -69,15 +79,8 @@ export const Filter = memo(({ level }) => {
   )
 
   console.log('hello Filter', {
-    tableName,
-    filterName,
-    tableNameForTitle,
-    title,
-    level,
     results,
     resultsUnfiltered,
-    where,
-    filter,
   })
 
   if (!appState) return <Loading />
