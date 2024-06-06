@@ -75,17 +75,20 @@ export const OrFilter = memo(
     const rowValues = Object.entries(row ?? {}).reduce((acc, [k, v]) => {
       let value = typeof v === 'object' ? v.contains : v
       // parse iso date if is or form will error
-      let parsedDate
-      try {
-        parsedDate = Date.parse(value)
-      } catch (error) {
-        console.log('OrFilter, error parsing date:', error)
-      }
-      if (!isNaN(parsedDate)) {
+      // need to exclude numbers
+      if (isNaN(value)) {
+        let parsedDate
         try {
-          value = new Date(parsedDate)
+          parsedDate = Date.parse(value)
         } catch (error) {
-          console.log('OrFilter, error creating date:', error)
+          console.log('OrFilter, error parsing date:', error)
+        }
+        if (!isNaN(parsedDate)) {
+          try {
+            value = new Date(parsedDate)
+          } catch (error) {
+            console.log('OrFilter, error creating date:', error)
+          }
         }
       }
       return { ...acc, [k]: value }

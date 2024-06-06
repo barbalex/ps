@@ -50,6 +50,8 @@ export const Component = memo(
 
     const widgetNeedsList = widgetsNeedingList.includes(row?.widget_type_id)
 
+    console.log('hello FieldForm, row:', row)
+
     return (
       <>
         {!isInForm && (
