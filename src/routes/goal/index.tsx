@@ -4,12 +4,11 @@ import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 
 import { useElectric } from '../../ElectricProvider.tsx'
-import { TextField } from '../../components/shared/TextField.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
-import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
+import { Component as Form } from './Form.tsx'
 
 import '../../form.css'
 
@@ -45,27 +44,7 @@ export const Component = () => {
           name="goal_id"
           value={row.goal_id ?? ''}
         />
-        <TextField
-          label="Year"
-          name="year"
-          value={row.year ?? ''}
-          type="number"
-          onChange={onChange}
-        />
-        <TextField
-          label="Name"
-          name="name"
-          value={row.name ?? ''}
-          onChange={onChange}
-          autoFocus
-          ref={autoFocusRef}
-        />
-        <Jsonb
-          table="goals"
-          idField="goal_id"
-          id={row.goal_id}
-          data={row.data ?? {}}
-        />
+        <Form onChange={onChange} row={row} autoFocusRef={autoFocusRef} />
       </div>
     </div>
   )

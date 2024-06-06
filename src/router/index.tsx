@@ -344,6 +344,17 @@ export const router = () => {
                                   lazy: () => import('../routes/goals.tsx'),
                                 },
                                 {
+                                  path: 'filter',
+                                  element: <Filter />,
+                                  children: [
+                                    {
+                                      index: true,
+                                      lazy: () =>
+                                        import('../routes/goal/Form.tsx'),
+                                    },
+                                  ],
+                                },
+                                {
                                   path: ':goal_id',
                                   element: null,
                                   handle: {
