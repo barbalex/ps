@@ -1,7 +1,7 @@
 import { useCallback, memo } from 'react'
 import { Button } from '@fluentui/react-components'
 import { MdEdit } from 'react-icons/md'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams, useLocation } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 
@@ -10,6 +10,7 @@ import { useElectric } from '../../../ElectricProvider.tsx'
 export const EditField = memo(({ field_id }) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchParams, setSearchParams] = useSearchParams()
+  const { pathname } = useLocation()
 
   const { user: authUser } = useCorbado()
 
@@ -25,6 +26,7 @@ export const EditField = memo(({ field_id }) => {
   )
 
   if (!designing) return null
+  if (pathname.endsWith('filter')) return null
 
   return (
     <Button
