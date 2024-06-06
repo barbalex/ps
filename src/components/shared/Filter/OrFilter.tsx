@@ -1,4 +1,4 @@
-import React, { useCallback, memo } from 'react'
+import React, { useCallback, memo, useMemo } from 'react'
 import type { InputProps } from '@fluentui/react-components'
 import { Outlet } from 'react-router-dom'
 
@@ -68,14 +68,25 @@ export const OrFilter = memo(
       [appStateId, db.app_states, filterName, orFilters, orIndex],
     )
 
-    const row = orFilters?.[orIndex]
+    // when emptying an or filter, row is undefined - catch this
+    const row = useMemo(() => orFilters?.[orIndex] ?? {}, [orFilters, orIndex])
+
     // some values are { contains: 'value' } - need to extract the value
-    const rowValues = Object.entries(row).reduce((acc, [k, v]) => {
+    const rowValues = Object.entries(row ?? {}).reduce((acc, [k, v]) => {
       let value = typeof v === 'object' ? v.contains : v
       // parse iso date if is or form will error
-      const parsedDate = Date.parse(value)
+      let parsedDate
+      try {
+        parsedDate = Date.parse(value)
+      } catch (error) {
+        console.log('OrFilter, error parsing date:', error)
+      }
       if (!isNaN(parsedDate)) {
-        value = new Date(parsedDate)
+        try {
+          value = new Date(parsedDate)
+        } catch (error) {
+          console.log('OrFilter, error creating date:', error)
+        }
       }
       return { ...acc, [k]: value }
     }, {})

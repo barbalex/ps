@@ -35,7 +35,7 @@ export const ChecksNode = memo(
       () => appState?.tree_open_nodes ?? [],
       [appState?.tree_open_nodes],
     )
-    const filterField = place_id ? 'filter_checks_1' : 'filter_checks_2'
+    const filterField = place_id ? 'filter_checks_2' : 'filter_checks_1'
 
     const filter = useMemo(
       () =>

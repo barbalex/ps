@@ -18,6 +18,16 @@ export const placesChildren = ({ level }) => [
         lazy: () => import('../routes/checks.tsx'),
       },
       {
+        path: 'filter',
+        element: <Filter level={level} />,
+        children: [
+          {
+            index: true,
+            lazy: () => import('../routes/check/Form.tsx'),
+          },
+        ],
+      },
+      {
         path: ':check_id',
         element: null,
         handle: {

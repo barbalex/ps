@@ -57,15 +57,6 @@ export const ActionsNode = memo(
     )
     const isFiltered = actions.length !== actionsUnfiltered.length
 
-    console.log('hello Tree ActionsNode', {
-      appState,
-      filterField,
-      filter,
-      where,
-      place_id,
-      whereWithPlaceId: { place_id: place.place_id, ...where },
-    })
-
     const actionsNode = useMemo(
       () => ({
         label: `Actions (${
