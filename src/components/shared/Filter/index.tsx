@@ -27,7 +27,7 @@ export const Filter = memo(({ level }) => {
   // reading these values from the url path
   // if this fails in some situations, we can pass these as props
   const tableName = urlPath[urlPath.length - 2].replaceAll('-', '_')
-  // TODO: detect _1 and _2 when below subproject_id
+  // add _1 and _2 when below subproject_id
   const filterName = `filter_${tableName}${level ? `_${level}` : ''}`
   // for tableNameForTitle: replace all underscores with spaces and uppercase all first letters
   const tableNameForTitle = tableName

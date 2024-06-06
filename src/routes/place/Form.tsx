@@ -1,5 +1,5 @@
 import { useMemo, memo } from 'react'
-import { useParams, useOutletContext } from 'react-router-dom'
+import { useParams, useOutletContext, useLocation } from 'react-router-dom'
 
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { TextField } from '../../components/shared/TextField.tsx'
@@ -12,6 +12,8 @@ import '../../form.css'
 export const Component = memo(
   ({ onChange: onChangeFromProps, row: rowFromProps, autoFocusRef }) => {
     const { subproject_id } = useParams()
+    const { pathname } = useLocation()
+    const isFilter = pathname.endsWith('filter')
 
     // beware: contextFromOutlet is undefined if not inside an outlet
     const outletContext = useOutletContext()
@@ -26,25 +28,29 @@ export const Component = memo(
 
     return (
       <div className="form-container">
-        <RadioGroupField
-          label="Level"
-          name="level"
-          list={[1, 2]}
-          value={row.level ?? ''}
-          onChange={onChange}
-        />
-        {row.level === 2 && (
-          <DropdownField
-            label="Parent Place"
-            name="parent_id"
-            idField="place_id"
-            table="places"
-            where={parentPlaceWhere}
-            value={row.parent_id ?? ''}
-            onChange={onChange}
-            autoFocus
-            ref={autoFocusRef}
-          />
+        {!isFilter && (
+          <>
+            <RadioGroupField
+              label="Level"
+              name="level"
+              list={[1, 2]}
+              value={row.level ?? ''}
+              onChange={onChange}
+            />
+            {row.level === 2 && (
+              <DropdownField
+                label="Parent Place"
+                name="parent_id"
+                idField="place_id"
+                table="places"
+                where={parentPlaceWhere}
+                value={row.parent_id ?? ''}
+                onChange={onChange}
+                autoFocus
+                ref={autoFocusRef}
+              />
+            )}
+          </>
         )}
         <TextField
           label="Since when does this place exist? (year)"
