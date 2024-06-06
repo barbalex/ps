@@ -10,6 +10,8 @@ import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx
 
 import '../../form.css'
 
+const fieldsStyle = { padding: 10 }
+
 export const Component = memo(() => {
   const { place_id, place_id2 } = useParams()
 
@@ -45,7 +47,9 @@ export const Component = memo(() => {
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
-      <TextFieldInactive label="ID" name="place_id" value={row.place_id} />
+      <div style={fieldsStyle}>
+        <TextFieldInactive label="ID" name="place_id" value={row.place_id} />
+      </div>
       <Form row={row} onChange={onChange} autoFocusRef={autoFocusRef} />
     </div>
   )
