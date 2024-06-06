@@ -35,7 +35,7 @@ export const ActionsNode = memo(
       () => appState?.tree_open_nodes ?? [],
       [appState?.tree_open_nodes],
     )
-    const filterField = place_id ? 'filter_actions_1' : 'filter_actions_2'
+    const filterField = place_id ? 'filter_actions_2' : 'filter_actions_1'
 
     const filter = useMemo(
       () =>
@@ -56,6 +56,15 @@ export const ActionsNode = memo(
       }),
     )
     const isFiltered = actions.length !== actionsUnfiltered.length
+
+    console.log('hello Tree ActionsNode', {
+      appState,
+      filterField,
+      filter,
+      where,
+      place_id,
+      whereWithPlaceId: { place_id: place.place_id, ...where },
+    })
 
     const actionsNode = useMemo(
       () => ({

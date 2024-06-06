@@ -35,6 +35,8 @@ export const Component = () => {
 
   if (!row) return <Loading />
 
+  console.log('hello Action, row:', row)
+
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />

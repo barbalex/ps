@@ -23,14 +23,21 @@ export const OrFilter = memo(
       (e, data) => {
         const { name, value } = getValueFromChange(e, data)
         const targetType = e.target.type
-        const isText = !['number', 'range', 'radio', 'checkbox'].includes(
-          targetType,
-        )
+        // const isText = !['number', 'range', 'radio', 'checkbox'].includes(
+        //   targetType,
+        // )
+        const isText = targetType === 'text'
         // console.log('hello OrFilter', { targetType, name, value, isText })
         const existingOrFilter = orFilters[orIndex]
         const newOrFilter = { ...existingOrFilter }
-        if (value) {
-          newOrFilter[name] = isText ? { contains: value } : value
+        if (value !== undefined && value !== null && value !== '') {
+          const isDate = value instanceof Date
+          newOrFilter[name] = isText
+            ? { contains: value }
+            : // dates need to be converted to iso strings
+            isDate
+            ? value.toISOString()
+            : value
         } else {
           delete newOrFilter[name]
         }
@@ -45,6 +52,7 @@ export const OrFilter = memo(
         console.log('OrFilter, newFilter:', {
           newFilter: newFilter.filter((f) => Object.keys(f).length > 0),
           filterName,
+          targetType,
         })
         try {
           db.app_states.update({
@@ -63,7 +71,12 @@ export const OrFilter = memo(
     const row = orFilters?.[orIndex]
     // some values are { contains: 'value' } - need to extract the value
     const rowValues = Object.entries(row).reduce((acc, [k, v]) => {
-      const value = typeof v === 'object' ? v.contains : v
+      let value = typeof v === 'object' ? v.contains : v
+      // parse iso date if is or form will error
+      const parsedDate = Date.parse(value)
+      if (!isNaN(parsedDate)) {
+        value = new Date(parsedDate)
+      }
       return { ...acc, [k]: value }
     }, {})
 
