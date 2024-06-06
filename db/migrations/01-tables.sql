@@ -1193,7 +1193,7 @@ CREATE TABLE app_states(
   filter_account_fields jsonb DEFAULT NULL, -- a fields object with filter settings
   filter_account_messages jsonb DEFAULT NULL, -- a messages object with filter settings
   filter_project_reports jsonb DEFAULT NULL, -- a project_reports object with filter settings
-  filter_project_persons jsonb DEFAULT NULL, -- a persons object with filter settings
+  filter_persons jsonb DEFAULT NULL, -- a persons object with filter settings
   filter_tile_layers jsonb DEFAULT NULL, -- a tile_layers object with filter settings
   filter_vector_layers jsonb DEFAULT NULL, -- a vector_layers object with filter settings
   filter_project_users jsonb DEFAULT NULL, -- a project_users object with filter settings

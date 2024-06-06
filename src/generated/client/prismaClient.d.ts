@@ -202,7 +202,7 @@ export type App_states = {
   filter_account_fields: Prisma.JsonValue | null
   filter_account_messages: Prisma.JsonValue | null
   filter_project_reports: Prisma.JsonValue | null
-  filter_project_persons: Prisma.JsonValue | null
+  filter_persons: Prisma.JsonValue | null
   filter_tile_layers: Prisma.JsonValue | null
   filter_vector_layers: Prisma.JsonValue | null
   filter_project_users: Prisma.JsonValue | null
@@ -10720,7 +10720,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     filter_account_fields: number
     filter_account_messages: number
     filter_project_reports: number
-    filter_project_persons: number
+    filter_persons: number
     filter_tile_layers: number
     filter_vector_layers: number
     filter_project_users: number
@@ -10815,7 +10815,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     filter_account_fields?: true
     filter_account_messages?: true
     filter_project_reports?: true
-    filter_project_persons?: true
+    filter_persons?: true
     filter_tile_layers?: true
     filter_vector_layers?: true
     filter_project_users?: true
@@ -10949,7 +10949,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     filter_account_fields: JsonValue | null
     filter_account_messages: JsonValue | null
     filter_project_reports: JsonValue | null
-    filter_project_persons: JsonValue | null
+    filter_persons: JsonValue | null
     filter_tile_layers: JsonValue | null
     filter_vector_layers: JsonValue | null
     filter_project_users: JsonValue | null
@@ -11021,7 +11021,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     filter_account_fields?: boolean
     filter_account_messages?: boolean
     filter_project_reports?: boolean
-    filter_project_persons?: boolean
+    filter_persons?: boolean
     filter_tile_layers?: boolean
     filter_vector_layers?: boolean
     filter_project_users?: boolean
@@ -58221,7 +58221,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     filter_account_fields: 'filter_account_fields',
     filter_account_messages: 'filter_account_messages',
     filter_project_reports: 'filter_project_reports',
-    filter_project_persons: 'filter_project_persons',
+    filter_persons: 'filter_persons',
     filter_tile_layers: 'filter_tile_layers',
     filter_vector_layers: 'filter_vector_layers',
     filter_project_users: 'filter_project_users',
@@ -59398,7 +59398,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     filter_account_fields?: JsonNullableFilter
     filter_account_messages?: JsonNullableFilter
     filter_project_reports?: JsonNullableFilter
-    filter_project_persons?: JsonNullableFilter
+    filter_persons?: JsonNullableFilter
     filter_tile_layers?: JsonNullableFilter
     filter_vector_layers?: JsonNullableFilter
     filter_project_users?: JsonNullableFilter
@@ -59455,7 +59455,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     filter_account_fields?: SortOrder
     filter_account_messages?: SortOrder
     filter_project_reports?: SortOrder
-    filter_project_persons?: SortOrder
+    filter_persons?: SortOrder
     filter_tile_layers?: SortOrder
     filter_vector_layers?: SortOrder
     filter_project_users?: SortOrder
@@ -59516,7 +59516,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     filter_account_fields?: SortOrder
     filter_account_messages?: SortOrder
     filter_project_reports?: SortOrder
-    filter_project_persons?: SortOrder
+    filter_persons?: SortOrder
     filter_tile_layers?: SortOrder
     filter_vector_layers?: SortOrder
     filter_project_users?: SortOrder
@@ -59577,7 +59577,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     filter_account_fields?: JsonNullableWithAggregatesFilter
     filter_account_messages?: JsonNullableWithAggregatesFilter
     filter_project_reports?: JsonNullableWithAggregatesFilter
-    filter_project_persons?: JsonNullableWithAggregatesFilter
+    filter_persons?: JsonNullableWithAggregatesFilter
     filter_tile_layers?: JsonNullableWithAggregatesFilter
     filter_vector_layers?: JsonNullableWithAggregatesFilter
     filter_project_users?: JsonNullableWithAggregatesFilter
@@ -63280,7 +63280,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
     filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
     filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
-    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_persons?: NullableJsonNullValueInput | InputJsonValue
     filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_project_users?: NullableJsonNullValueInput | InputJsonValue
@@ -63337,7 +63337,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
     filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
     filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
-    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_persons?: NullableJsonNullValueInput | InputJsonValue
     filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_project_users?: NullableJsonNullValueInput | InputJsonValue
@@ -63390,7 +63390,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
     filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
     filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
-    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_persons?: NullableJsonNullValueInput | InputJsonValue
     filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_project_users?: NullableJsonNullValueInput | InputJsonValue
@@ -63447,7 +63447,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
     filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
     filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
-    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_persons?: NullableJsonNullValueInput | InputJsonValue
     filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_project_users?: NullableJsonNullValueInput | InputJsonValue
@@ -63502,7 +63502,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
     filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
     filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
-    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_persons?: NullableJsonNullValueInput | InputJsonValue
     filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_project_users?: NullableJsonNullValueInput | InputJsonValue
@@ -63555,7 +63555,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
     filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
     filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
-    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_persons?: NullableJsonNullValueInput | InputJsonValue
     filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_project_users?: NullableJsonNullValueInput | InputJsonValue
@@ -63610,7 +63610,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
     filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
     filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
-    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_persons?: NullableJsonNullValueInput | InputJsonValue
     filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_project_users?: NullableJsonNullValueInput | InputJsonValue
@@ -68512,7 +68512,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     filter_account_fields?: SortOrder
     filter_account_messages?: SortOrder
     filter_project_reports?: SortOrder
-    filter_project_persons?: SortOrder
+    filter_persons?: SortOrder
     filter_tile_layers?: SortOrder
     filter_vector_layers?: SortOrder
     filter_project_users?: SortOrder
@@ -78190,7 +78190,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
     filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
     filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
-    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_persons?: NullableJsonNullValueInput | InputJsonValue
     filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_project_users?: NullableJsonNullValueInput | InputJsonValue
@@ -78245,7 +78245,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
     filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
     filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
-    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_persons?: NullableJsonNullValueInput | InputJsonValue
     filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_project_users?: NullableJsonNullValueInput | InputJsonValue
@@ -79873,7 +79873,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     filter_account_fields?: JsonNullableFilter
     filter_account_messages?: JsonNullableFilter
     filter_project_reports?: JsonNullableFilter
-    filter_project_persons?: JsonNullableFilter
+    filter_persons?: JsonNullableFilter
     filter_tile_layers?: JsonNullableFilter
     filter_vector_layers?: JsonNullableFilter
     filter_project_users?: JsonNullableFilter
@@ -98504,7 +98504,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
     filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
     filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
-    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_persons?: NullableJsonNullValueInput | InputJsonValue
     filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_project_users?: NullableJsonNullValueInput | InputJsonValue
@@ -98559,7 +98559,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
     filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
     filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
-    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_persons?: NullableJsonNullValueInput | InputJsonValue
     filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_project_users?: NullableJsonNullValueInput | InputJsonValue
@@ -100245,7 +100245,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
     filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
     filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
-    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_persons?: NullableJsonNullValueInput | InputJsonValue
     filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_project_users?: NullableJsonNullValueInput | InputJsonValue
@@ -100887,7 +100887,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
     filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
     filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
-    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_persons?: NullableJsonNullValueInput | InputJsonValue
     filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_project_users?: NullableJsonNullValueInput | InputJsonValue
@@ -100942,7 +100942,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
     filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
     filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
-    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_persons?: NullableJsonNullValueInput | InputJsonValue
     filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_project_users?: NullableJsonNullValueInput | InputJsonValue
@@ -100996,7 +100996,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
     filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
     filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
-    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_persons?: NullableJsonNullValueInput | InputJsonValue
     filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_project_users?: NullableJsonNullValueInput | InputJsonValue
@@ -105005,7 +105005,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
     filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
     filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
-    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_persons?: NullableJsonNullValueInput | InputJsonValue
     filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_project_users?: NullableJsonNullValueInput | InputJsonValue
@@ -105199,7 +105199,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
     filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
     filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
-    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_persons?: NullableJsonNullValueInput | InputJsonValue
     filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_project_users?: NullableJsonNullValueInput | InputJsonValue
@@ -105254,7 +105254,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     filter_account_fields?: NullableJsonNullValueInput | InputJsonValue
     filter_account_messages?: NullableJsonNullValueInput | InputJsonValue
     filter_project_reports?: NullableJsonNullValueInput | InputJsonValue
-    filter_project_persons?: NullableJsonNullValueInput | InputJsonValue
+    filter_persons?: NullableJsonNullValueInput | InputJsonValue
     filter_tile_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_vector_layers?: NullableJsonNullValueInput | InputJsonValue
     filter_project_users?: NullableJsonNullValueInput | InputJsonValue

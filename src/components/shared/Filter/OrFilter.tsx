@@ -23,10 +23,7 @@ export const OrFilter = memo(
       (e, data) => {
         const { name, value } = getValueFromChange(e, data)
         const targetType = e.target.type
-        // const isText = !['number', 'range', 'radio', 'checkbox'].includes(
-        //   targetType,
-        // )
-        const isText = targetType === 'text'
+        const isText = ['text', 'email'].includes(targetType)
         // console.log('hello OrFilter', { targetType, name, value, isText })
         const existingOrFilter = orFilters[orIndex]
         const newOrFilter = { ...existingOrFilter }
