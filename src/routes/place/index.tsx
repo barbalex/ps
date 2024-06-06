@@ -6,6 +6,7 @@ import { Header } from './Header.tsx'
 import { Component as Form } from './Form.tsx'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
+import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 
 import '../../form.css'
 
@@ -44,6 +45,7 @@ export const Component = memo(() => {
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
+      <TextFieldInactive label="ID" name="place_id" value={row.place_id} />
       <Form row={row} onChange={onChange} autoFocusRef={autoFocusRef} />
     </div>
   )

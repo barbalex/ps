@@ -3,7 +3,6 @@ import { useParams, useOutletContext } from 'react-router-dom'
 
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { TextField } from '../../components/shared/TextField.tsx'
-import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { EditingGeometry } from '../../components/shared/EditingGeometry.tsx'
@@ -27,7 +26,6 @@ export const Component = memo(
 
     return (
       <div className="form-container">
-        <TextFieldInactive label="ID" name="place_id" value={row.place_id} />
         <RadioGroupField
           label="Level"
           name="level"
