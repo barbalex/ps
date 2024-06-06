@@ -31,6 +31,10 @@ export const OrFilter = memo(
           const isDate = value instanceof Date
           newOrFilter[name] = isText
             ? { contains: value }
+            : // numbers get passed as string when coming from options
+            // need to convert them back to numbers
+            !isNaN(value)
+            ? parseFloat(value)
             : // dates need to be converted to iso strings
             isDate
             ? value.toISOString()
@@ -88,6 +92,7 @@ export const OrFilter = memo(
           }
         }
       }
+
       return { ...acc, [k]: value }
     }, {})
 
