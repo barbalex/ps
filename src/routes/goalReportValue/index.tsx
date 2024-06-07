@@ -33,12 +33,7 @@ export const Component = () => {
       const { name, value } = getValueFromChange(e, data)
       db.goal_report_values.update({
         where: { goal_report_value_id },
-        data: {
-          [name]:
-            isNaN(value) && ['value_integer', 'value_numeric'].includes(name)
-              ? null
-              : value,
-        },
+        data: { [name]: value },
       })
     },
     [db.goal_report_values, goal_report_value_id],

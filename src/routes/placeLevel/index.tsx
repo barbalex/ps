@@ -28,10 +28,9 @@ export const Component = () => {
   const onChange: InputProps['onChange'] = useCallback(
     async (e, data) => {
       const { name, value } = getValueFromChange(e, data)
-      const valueToUse = name === 'level' ? +value : value
       db.place_levels.update({
         where: { place_level_id },
-        data: { [name]: valueToUse },
+        data: { [name]: value },
       })
       // if name_plural was changed, need to update the label of corresponding vector layers
       if (

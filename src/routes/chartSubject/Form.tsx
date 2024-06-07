@@ -16,7 +16,7 @@ import {
   chart_subject_value_sourceSchema as valueSourceSchema,
 } from '../../generated/client/index.ts'
 
-// seperate from the route because it is also used inside other forms
+// separate from the route because it is also used inside other forms
 export const ChartSubjectForm = memo(({ autoFocusRef }) => {
   const { chart_subject_id } = useParams()
 
@@ -28,10 +28,9 @@ export const ChartSubjectForm = memo(({ autoFocusRef }) => {
   const onChange: InputProps['onChange'] = useCallback(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
-      const valueToUse = name === 'table_level' ? +value : value
       db.chart_subjects.update({
         where: { chart_subject_id },
-        data: { [name]: valueToUse },
+        data: { [name]: value },
       })
     },
     [db.chart_subjects, chart_subject_id],

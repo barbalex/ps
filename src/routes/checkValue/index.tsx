@@ -33,10 +33,7 @@ export const Component = () => {
       db.check_values.update({
         where: { check_value_id },
         data: {
-          [name]:
-            isNaN(value) && ['value_integer', 'value_numeric'].includes(name)
-              ? null
-              : value,
+          [name]: value,
         },
       })
     },
