@@ -1,4 +1,5 @@
-import { useLiveQuery, memo } from 'electric-sql/react'
+import { memo } from 'react'
+import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 
 import { useElectric } from '../ElectricProvider.tsx'
