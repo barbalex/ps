@@ -27,7 +27,7 @@ export const Component = () => {
 
   // console.log('PlaceReportValue, row:', row)
 
-  const onChange: InputProps['onChange'] = useCallback(
+  const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       db.place_report_values.update({

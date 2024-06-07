@@ -26,7 +26,7 @@ export const Component = () => {
     db.taxonomies.liveUnique({ where: { taxonomy_id } }),
   )
 
-  const onChange: InputProps['onChange'] = useCallback(
+  const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       db.taxonomies.update({

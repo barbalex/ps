@@ -26,7 +26,7 @@ export const Component = () => {
 
   // console.log('ActionReport', { row, results })
 
-  const onChange: InputProps['onChange'] = useCallback(
+  const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       db.action_reports.update({

@@ -25,7 +25,7 @@ export const Component = () => {
     db.place_levels.liveUnique({ where: { place_level_id } }),
   )
 
-  const onChange: InputProps['onChange'] = useCallback(
+  const onChange = useCallback<InputProps['onChange']>(
     async (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       db.place_levels.update({

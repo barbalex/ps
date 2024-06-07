@@ -25,7 +25,7 @@ export const Component = () => {
 
   const unitWhere = useMemo(() => ({ use_for_action_report_values: true }), [])
 
-  const onChange: InputProps['onChange'] = useCallback(
+  const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       db.action_report_values.update({

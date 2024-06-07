@@ -23,7 +23,7 @@ export const Component = () => {
     db.files.liveUnique({ where: { file_id } }),
   )
 
-  const onChange: InputProps['onChange'] = useCallback(
+  const onChange = useCallback<InputProps['onChange']>(
     (e, dataIn) => {
       const { name, value } = getValueFromChange(e, dataIn)
       const data = { [name]: value }

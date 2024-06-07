@@ -22,7 +22,7 @@ export const Component = () => {
     db.field_types.liveUnique({ where: { field_type_id } }),
   )
 
-  const onChange: InputProps['onChange'] = useCallback(
+  const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       db.field_types.update({

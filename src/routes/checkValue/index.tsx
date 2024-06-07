@@ -27,7 +27,7 @@ export const Component = () => {
 
   // console.log('CheckValue', { row, results })
 
-  const onChange: InputProps['onChange'] = useCallback(
+  const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       db.check_values.update({

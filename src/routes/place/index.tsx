@@ -26,7 +26,7 @@ export const Component = memo(() => {
     db.places.liveUnique({ where: { place_id: place_id2 ?? place_id } }),
   )
 
-  const onChange: InputProps['onChange'] = useCallback(
+  const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
 

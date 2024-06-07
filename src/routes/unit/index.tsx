@@ -23,7 +23,7 @@ export const Component = () => {
     db.units.liveUnique({ where: { unit_id } }),
   )
 
-  const onChange: InputProps['onChange'] = useCallback(
+  const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       db.units.update({

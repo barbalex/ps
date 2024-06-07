@@ -28,7 +28,7 @@ export const Component = () => {
     db.tile_layers.liveUnique({ where: { tile_layer_id } }),
   )
 
-  const onChange: InputProps['onChange'] = useCallback(
+  const onChange = useCallback<InputProps['onChange']>(
     async (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       try {

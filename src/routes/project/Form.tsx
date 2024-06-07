@@ -18,7 +18,7 @@ export const Form = memo(({ autoFocusRef }) => {
     db.projects.liveUnique({ where: { project_id } }),
   )
 
-  const onChange: InputProps['onChange'] = useCallback(
+  const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       db.projects.update({

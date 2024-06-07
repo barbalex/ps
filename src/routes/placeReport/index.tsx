@@ -23,7 +23,7 @@ export const Component = () => {
     db.place_reports.liveUnique({ where: { place_report_id } }),
   )
 
-  const onChange: InputProps['onChange'] = useCallback(
+  const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       db.place_reports.update({

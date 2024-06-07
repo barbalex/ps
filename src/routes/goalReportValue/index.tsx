@@ -28,7 +28,7 @@ export const Component = () => {
 
   // console.log('GoalReportValue', { row, results })
 
-  const onChange: InputProps['onChange'] = useCallback(
+  const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       db.goal_report_values.update({

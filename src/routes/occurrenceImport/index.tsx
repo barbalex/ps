@@ -55,7 +55,7 @@ export const Component = () => {
   )
   const occurrenceFields = Object.keys(occurrences?.[0]?.data ?? {})
 
-  const onChange: InputProps['onChange'] = useCallback(
+  const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       db.occurrence_imports.update({

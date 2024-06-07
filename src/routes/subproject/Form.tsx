@@ -18,7 +18,7 @@ export const SubprojectForm = memo(({ autoFocusRef }) => {
     db.subprojects.liveUnique({ where: { subproject_id } }),
   )
 
-  const onChange: InputProps['onChange'] = useCallback(
+  const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       db.subprojects.update({

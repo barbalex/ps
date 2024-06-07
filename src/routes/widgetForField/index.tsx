@@ -22,7 +22,7 @@ export const Component = () => {
     db.widgets_for_fields.liveUnique({ where: { widget_for_field_id } }),
   )
 
-  const onChange: InputProps['onChange'] = useCallback(
+  const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       db.widgets_for_fields.update({

@@ -21,7 +21,7 @@ export const Component = () => {
     db.messages.liveUnique({ where: { message_id } }),
   )
 
-  const onChange: InputProps['onChange'] = useCallback(
+  const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       db.messages.update({

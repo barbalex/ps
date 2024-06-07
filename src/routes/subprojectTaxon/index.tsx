@@ -24,7 +24,7 @@ export const Component = () => {
     db.subproject_taxa.liveUnique({ where: { subproject_taxon_id } }),
   )
 
-  const onChange: InputProps['onChange'] = useCallback(
+  const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       db.subproject_taxa.update({

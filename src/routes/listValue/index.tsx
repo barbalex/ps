@@ -23,7 +23,7 @@ export const Component = () => {
     db.list_values.liveUnique({ where: { list_value_id } }),
   )
 
-  const onChange: InputProps['onChange'] = useCallback(
+  const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       db.list_values.update({

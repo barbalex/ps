@@ -24,7 +24,7 @@ export const Component = () => {
     }),
   )
 
-  const onChange: InputProps['onChange'] = useCallback(
+  const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       // TODO: update app_state[filter_field] instead

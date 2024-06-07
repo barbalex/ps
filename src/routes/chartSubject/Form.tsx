@@ -25,7 +25,7 @@ export const ChartSubjectForm = memo(({ autoFocusRef }) => {
     db.chart_subjects.liveUnique({ where: { chart_subject_id } }),
   )
 
-  const onChange: InputProps['onChange'] = useCallback(
+  const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       db.chart_subjects.update({

@@ -25,7 +25,7 @@ export const Component = () => {
 
   // console.log('CheckTaxon', { row, results })
 
-  const onChange: InputProps['onChange'] = useCallback(
+  const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       db.check_taxa.update({

@@ -15,7 +15,7 @@ export const FieldFormFetchingOwnData = memo(
       db.fields.liveUnique({ where: { field_id } }),
     )
 
-    const onChange: InputProps['onChange'] = useCallback(
+    const onChange = useCallback<InputProps['onChange']>(
       (e, data) => {
         const { name, value } = getValueFromChange(e, data)
         db.fields.update({

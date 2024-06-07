@@ -22,7 +22,7 @@ export const Component = () => {
     db.users.liveUnique({ where: { user_id } }),
   )
 
-  const onChange: InputProps['onChange'] = useCallback(
+  const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       db.users.update({
