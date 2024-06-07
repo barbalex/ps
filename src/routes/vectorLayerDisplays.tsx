@@ -1,4 +1,4 @@
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery, memo } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 
 import { useElectric } from '../ElectricProvider.tsx'
@@ -7,7 +7,7 @@ import { Row } from '../components/shared/Row.tsx'
 
 import '../form.css'
 
-export const Component = () => {
+export const Component = memo(() => {
   const { vector_layer_id } = useParams()
 
   const { db } = useElectric()!
@@ -35,4 +35,4 @@ export const Component = () => {
       </div>
     </div>
   )
-}
+})
