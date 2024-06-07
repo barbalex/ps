@@ -1,7 +1,8 @@
+import { memo } from 'react'
 import { CorbadoAuth } from '@corbado/react'
 import { useNavigate } from 'react-router-dom'
 
-export const Component = () => {
+export const Component = memo(() => {
   const navigate = useNavigate()
 
   const onLoggedIn = () => {
@@ -14,4 +15,4 @@ export const Component = () => {
       customerSupportEmail="alex@gabriel-software.ch"
     />
   )
-}
+})
