@@ -75,7 +75,7 @@ export const Jsonb = memo(
       )
 
       const onChange: InputProps['onChange'] = useCallback(
-        (e, dataReturned) => {
+        async (e, dataReturned) => {
           const { name, value } = getValueFromChange(e, dataReturned)
           const isDate = value instanceof Date
           const val = { ...data }
@@ -95,11 +95,16 @@ export const Jsonb = memo(
             idField,
             id,
           })
+          // TODO:
+          // this errors because when filtering no id is passed for the row
+          // thus: instead of updating the table, the filter needs to be updated
+          // solution: pass in a filterField - if that exists, update app_states[filterField]
           try {
-            db[table].update({
+            const res = await db[table].update({
               where: { [idField]: id },
               data: { [jsonFieldName]: val },
             })
+            console.log('Jsonb, onChange, res:', res)
           } catch (error) {
             console.log('Jsonb, error updating:', error)
           }
