@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 
@@ -10,7 +10,7 @@ import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'
 
-export const Component = () => {
+export const Component = memo(() => {
   const { goal_report_id } = useParams()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -42,4 +42,4 @@ export const Component = () => {
       </div>
     </div>
   )
-}
+})
