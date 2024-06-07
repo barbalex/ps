@@ -1,16 +1,11 @@
-import { useCallback } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
+import { memo } from 'react'
 import { useParams } from 'react-router-dom'
 import { Label, Divider } from '@fluentui/react-components'
-import type { InputProps } from '@fluentui/react-components'
-import { useCorbado } from '@corbado/react'
 
-import { useElectric } from '../../ElectricProvider.tsx'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 // import { RadioGroupFromOptions } from '../../components/shared/RadioGroupFromOptions'
 import { CheckboxField } from '../../components/shared/CheckboxField.tsx'
-import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { LabelBy } from '../../components/shared/LabelBy.tsx'
 import { FieldList } from '../../components/shared/FieldList/index.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
@@ -21,39 +16,8 @@ const labelStyle = {
   fontWeight: 700,
 }
 
-export const Design = () => {
+export const Design = memo(({ onChange, row }) => {
   const { project_id } = useParams()
-
-  const { user: authUser } = useCorbado()
-
-  const { db } = useElectric()!
-  const { results: row } = useLiveQuery(
-    db.projects.liveUnique({ where: { project_id } }),
-  )
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
-  const designing = appState?.designing ?? false
-
-  const onChange = useCallback<InputProps['onChange']>(
-    (e, data) => {
-      const { name, value } = getValueFromChange(e, data)
-      db.projects.update({
-        where: { project_id },
-        data: { [name]: value },
-      })
-    },
-    [db.projects, project_id],
-  )
-
-  if (!row) return null
-  if (!designing) return null
-
-  console.log('hello project Design', {
-    projectTypeSchema,
-    enum: projectTypeSchema?.enum,
-    options: projectTypeSchema?.options,
-  })
 
   return (
     <div className="form-container" role="tabpanel" aria-labelledby="design">
@@ -172,4 +136,4 @@ export const Design = () => {
       </div>
     </div>
   )
-}
+})
