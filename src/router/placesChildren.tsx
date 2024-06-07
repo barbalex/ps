@@ -327,6 +327,16 @@ export const placesChildren = ({ level }) => [
         lazy: () => import('../routes/placeReports.tsx'),
       },
       {
+        path: 'filter',
+        element: <Filter level={level} />,
+        children: [
+          {
+            index: true,
+            lazy: () => import('../routes/placeReport/Form.tsx'),
+          },
+        ],
+      },
+      {
         path: ':place_report_id',
         element: null,
         handle: {

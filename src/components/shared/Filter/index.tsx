@@ -27,7 +27,15 @@ export const Filter = memo(({ level }) => {
 
   // reading these values from the url path
   // if this fails in some situations, we can pass these as props
-  const tableName = urlPath[urlPath.length - 2].replaceAll('-', '_')
+  let tableName = urlPath[urlPath.length - 2].replaceAll('-', '_')
+  // TODO: if tableName is 'reports', need to specify whether: action, place, goal, subproject, project
+  if (tableName === 'reports') {
+    // reports can be of multiple types: action, place, goal, subproject, project
+    // need to specify the type of report
+    const grandParent = urlPath[urlPath.length - 4]
+    // the prefix to the tableName is the grandParent without its last character (s)
+    tableName = `${grandParent.slice(0, -1)}_${tableName}`
+  }
   // add _1 and _2 when below subproject_id
   const filterName = `filter_${tableName}${level ? `_${level}` : ''}`
   // for tableNameForTitle: replace all underscores with spaces and uppercase all first letters
