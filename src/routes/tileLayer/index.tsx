@@ -30,9 +30,7 @@ export const Component = () => {
 
   const onChange: InputProps['onChange'] = useCallback(
     async (e, data) => {
-      console.log('hello TileLayer, onChange:', { e, data })
       const { name, value } = getValueFromChange(e, data)
-      console.log('hello TileLayer, onChange, name, value:', { name, value })
       try {
         await db.tile_layers.update({
           where: { tile_layer_id },

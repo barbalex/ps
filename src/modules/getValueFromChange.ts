@@ -1,4 +1,9 @@
-export const getValueFromChange = (e, data) => {
+import type { InputOnChangeData } from '@fluentui/react-components'
+
+export const getValueFromChange = (
+  e: React.ChangeEvent<HTMLInputElement>,
+  data: InputOnChangeData,
+) => {
   const targetType = e.target.type
   const name = e.target.name
 
