@@ -852,6 +852,17 @@ export const router = () => {
                           lazy: () => import('../routes/tileLayers.tsx'),
                         },
                         {
+                          path: 'filter',
+                          element: <Filter />,
+                          children: [
+                            {
+                              index: true,
+                              lazy: () =>
+                                import('../routes/tileLayer/Form.tsx'),
+                            },
+                          ],
+                        },
+                        {
                           path: ':tile_layer_id',
                           lazy: () => import('../routes/tileLayer/index.tsx'),
                           handle: {
