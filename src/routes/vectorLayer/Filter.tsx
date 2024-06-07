@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 import { useParams } from 'react-router-dom'
@@ -12,7 +12,7 @@ import { FilterHeader } from '../../components/shared/Filter/Header.tsx'
 
 import '../../form.css'
 
-export const Component = () => {
+export const Component = memo(() => {
   const { vector_layer_id } = useParams()
   const { user: authUser } = useCorbado()
 
@@ -51,4 +51,4 @@ export const Component = () => {
       </div>
     </div>
   )
-}
+})
