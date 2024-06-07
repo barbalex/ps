@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
@@ -8,7 +8,7 @@ import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import '../form.css'
 
-export const Component = () => {
+export const Component = memo(() => {
   const { project_id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -41,4 +41,4 @@ export const Component = () => {
       </div>
     </div>
   )
-}
+})
