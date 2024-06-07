@@ -1,4 +1,4 @@
-import React from 'react'
+import { memo } from 'react'
 
 const labelStyle = {
   marginTop: '10px',
@@ -11,6 +11,6 @@ const labelStyle = {
 }
 
 // TODO: use fluent ui label
-export const Label = ({ label }: { label: string }) => (
+export const Label = memo(({ label }: { label: string }) => (
   <div style={labelStyle}>{label}</div>
-)
+))

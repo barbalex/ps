@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, memo } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
 const imgStyle = {
@@ -15,7 +15,7 @@ const labelStyle = {
   flexGrow: 1,
 }
 
-export const Row = ({ label, to, imgSrc, lastHasImages = false }) => {
+export const Row = memo(({ label, to, imgSrc, lastHasImages = false }) => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
@@ -50,4 +50,4 @@ export const Row = ({ label, to, imgSrc, lastHasImages = false }) => {
       </div>
     </div>
   )
-}
+})
