@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
@@ -13,7 +13,7 @@ import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'
 
-export const Component = () => {
+export const Component = memo(() => {
   const { message_id } = useParams()
 
   const { db } = useElectric()!
@@ -59,4 +59,4 @@ export const Component = () => {
       </div>
     </div>
   )
-}
+})

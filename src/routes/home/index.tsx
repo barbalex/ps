@@ -1,6 +1,8 @@
+import { memo } from 'react'
+
 import './index.css'
 
-export const Component = () => (
+export const Component = memo(() => (
   <div style={{ height: '100%' }}>
     <picture>
       <source
@@ -116,4 +118,4 @@ export const Component = () => (
       </div>
     </div>
   </div>
-)
+))
