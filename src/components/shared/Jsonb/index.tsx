@@ -151,6 +151,7 @@ export const Jsonb = memo(
           idField,
           id,
           db,
+          authUser?.email,
           jsonFieldName,
         ],
       )
