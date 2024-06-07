@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from 'react'
+import { useCallback, useMemo, useRef, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
@@ -13,7 +13,7 @@ import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'
 
-export const Component = () => {
+export const Component = memo(() => {
   const { action_report_value_id } = useParams()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -82,4 +82,4 @@ export const Component = () => {
       </div>
     </div>
   )
-}
+})
