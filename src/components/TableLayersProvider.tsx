@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 
@@ -13,7 +13,7 @@ import { useFirstRender } from '../modules/useFirstRender.ts'
 // How to know if data was synced with the server?
 // it would be better to add vector_layers and their displays inside triggers on project creation
 // but as sqlite does not have functions to create uuid's, we need to do it here
-export const TableLayersProvider = () => {
+export const TableLayersProvider = memo(() => {
   // every project needs vector_layers and vector_layer_displays for the geometry tables
   const { db } = useElectric()!
   const { user: authUser } = useCorbado()
@@ -358,4 +358,4 @@ export const TableLayersProvider = () => {
   }, [projects.length, occurrences.length])
 
   return null
-}
+})
