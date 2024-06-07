@@ -5,9 +5,10 @@
 // 3. loop through fields
 // 4. build input depending on field properties
 import { memo, useCallback, forwardRef } from 'react'
-import { useParams, useSearchParams } from 'react-router-dom'
+import { useParams, useSearchParams, useLocation } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
+import { useCorbado } from '@corbado/react'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
@@ -42,11 +43,18 @@ export const Jsonb = memo(
       ref,
     ) => {
       const isAccountTable = accountTables.includes(table)
-      const { project_id, place_id2 } = useParams()
+      const { project_id, place_id, place_id2 } = useParams()
       const [searchParams] = useSearchParams()
+      const { pathname } = useLocation()
       const editingField = searchParams.get('editingField')
+      const { user: authUser } = useCorbado()
 
       const { db } = useElectric()!
+
+      const { results: appState } = useLiveQuery(
+        db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+      )
+
       const { results: fields = [] } = useLiveQuery(
         db.fields.liveMany({
           where: {
@@ -87,6 +95,11 @@ export const Jsonb = memo(
             val[name] = isDate ? value.toISOString() : value
           }
 
+          const isFilter = pathname.endsWith('filter')
+          const level =
+            table === 'places' ? (place_id ? 2 : 1) : place_id2 ? 2 : 1
+          const filterField = `filter_${table}${level ? `_${level}` : ''}`
+
           console.log('Jsonb, onChange:', {
             name,
             value,
@@ -94,11 +107,28 @@ export const Jsonb = memo(
             table,
             idField,
             id,
+            isFilter,
+            level,
+            filterField,
           })
           // TODO:
           // this errors because when filtering no id is passed for the row
           // thus: instead of updating the table, the filter needs to be updated
           // solution: pass in a filterField - if that exists, update app_states[filterField]
+          // TODO: next problem: how to filter on jsonb fields?
+          // example from electric-sql discord: https://discord.com/channels/933657521581858818/1246045111478124645
+          // where: { [jsonbFieldName]: { path: ["is_admin"], equals: true } },
+          if (isFilter) {
+            // TODO: update app_states[filterField]
+            db.app_states.update({
+              where: { user_email: authUser?.email },
+              data: {
+                [filterField]: val,
+              },
+            })
+
+            return
+          }
           try {
             const res = await db[table].update({
               where: { [idField]: id },
@@ -109,7 +139,17 @@ export const Jsonb = memo(
             console.log('Jsonb, error updating:', error)
           }
         },
-        [db, id, idField, jsonFieldName, data, table],
+        [
+          data,
+          pathname,
+          table,
+          place_id,
+          place_id2,
+          idField,
+          id,
+          db,
+          jsonFieldName,
+        ],
       )
 
       // What if data contains keys not existing in fields? > show but warn

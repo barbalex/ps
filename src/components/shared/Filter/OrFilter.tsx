@@ -25,6 +25,11 @@ export const OrFilter = memo(
         const targetType = e.target.type
         const isText = ['text', 'email'].includes(targetType)
         // console.log('hello OrFilter', { targetType, name, value, isText })
+
+        // TODO: how to filter on jsonb fields?
+        // example from electric-sql discord: https://discord.com/channels/933657521581858818/1246045111478124645
+        // where: { [jsonbFieldName]: { path: ["is_admin"], equals: true } },
+
         const existingOrFilter = orFilters[orIndex]
         const newOrFilter = { ...existingOrFilter }
         if (value !== undefined && value !== null && value !== '') {
