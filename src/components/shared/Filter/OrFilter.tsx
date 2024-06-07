@@ -19,7 +19,7 @@ export const OrFilter = memo(
   ({ filterName, orFilters, orIndex, appStateId }: Props) => {
     const { db } = useElectric()!
 
-    const onChange: InputProps['onChange'] = useCallback(
+    const onChange = useCallback<InputProps['onChange']>(
       (e, data) => {
         const { name, value } = getValueFromChange(e, data)
         const targetType = e.target.type

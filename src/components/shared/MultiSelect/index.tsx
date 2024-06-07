@@ -41,7 +41,7 @@ export const MultiSelect = memo(
       [db, id, name, table, valueArray],
     )
 
-    const onChange: InputProps['onChange'] = useCallback(
+    const onChange = useCallback<InputProps['onChange']>(
       ({ value, previousValue }) => {
         const option = options.find((o) => o.value === value)
         let val = [...valueArray]

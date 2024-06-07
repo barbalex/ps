@@ -82,7 +82,7 @@ export const Jsonb = memo(
         }),
       )
 
-      const onChange: InputProps['onChange'] = useCallback(
+      const onChange = useCallback<InputProps['onChange']>(
         async (e, dataReturned) => {
           const { name, value } = getValueFromChange(e, dataReturned)
           const isDate = value instanceof Date

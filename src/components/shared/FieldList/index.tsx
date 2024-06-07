@@ -47,7 +47,7 @@ export const FieldList = memo(
       [db, id, name, table, valueArray],
     )
 
-    const onChange: InputProps['onChange'] = useCallback(
+    const onChange = useCallback<InputProps['onChange']>(
       ({ value, previousValue }) => {
         let val = [...valueArray]
         if (!value) {
