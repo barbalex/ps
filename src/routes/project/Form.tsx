@@ -2,7 +2,6 @@ import { memo } from 'react'
 import { useOutletContext } from 'react-router-dom'
 
 import { TextField } from '../../components/shared/TextField.tsx'
-import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
 import '../../form.css'
 
@@ -15,11 +14,6 @@ export const Component = memo(
 
     return (
       <div className="form-container" role="tabpanel" aria-labelledby="form">
-        <TextFieldInactive
-          label="ID"
-          name="project_id"
-          value={row.project_id}
-        />
         <TextField
           label="Name"
           name="name"

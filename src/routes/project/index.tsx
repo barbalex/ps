@@ -10,6 +10,7 @@ import { Component as Form } from './Form.tsx'
 import { Design } from './Design.tsx'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
+import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 
 import '../../form.css'
 
@@ -67,7 +68,14 @@ export const Component = memo(() => {
         </Tab>
       </TabList>
       {tab === 'form' && (
-        <Form row={row} onChange={onChange} autoFocusRef={autoFocusRef} />
+        <div className="form-container" role="tabpanel" aria-labelledby="form">
+          <TextFieldInactive
+            label="ID"
+            name="project_id"
+            value={row.project_id}
+          />
+          <Form row={row} onChange={onChange} autoFocusRef={autoFocusRef} />
+        </div>
       )}
       {tab === 'design' && designing && (
         <Design onChange={onChange} row={row} />
