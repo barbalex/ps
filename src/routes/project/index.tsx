@@ -1,4 +1,4 @@
-import { useRef, useCallback } from 'react'
+import { useRef, useCallback, memo } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Tab, TabList } from '@fluentui/react-components'
 import type { SelectTabData, SelectTabEvent } from '@fluentui/react-components'
@@ -12,7 +12,7 @@ import { useElectric } from '../../ElectricProvider.tsx'
 
 import '../../form.css'
 
-export const Component = () => {
+export const Component = memo(() => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const { user: authUser } = useCorbado()
@@ -61,4 +61,4 @@ export const Component = () => {
       )}
     </div>
   )
-}
+})
