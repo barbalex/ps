@@ -48,10 +48,9 @@ const buildButtonStyle = ({ prevIsActive, nextIsActive, selfIsActive }) => {
 }
 
 // TODO:
-// use overflow menu for tabs and app-state
+// use overflow menu for tabs and app-states
 export const Menu = memo(() => {
   const navigate = useNavigate()
-  const params = useParams()
   const [searchParams] = useSearchParams()
 
   const { pathname } = useLocation()
@@ -59,6 +58,8 @@ export const Menu = memo(() => {
 
   const { isAuthenticated, logout } = useCorbado()
   const { user: authUser } = useCorbado()
+
+  const isAppStates = pathname.includes('app-states')
 
   const { db } = useElectric()!
   const { results: appState } = useLiveQuery(
@@ -79,13 +80,13 @@ export const Menu = memo(() => {
   )
 
   const onClickOptions = useCallback(() => {
-    if (params.user_email) return navigate(-1)
+    if (isAppStates) return navigate(-1)
 
     navigate({
-      pathname: `/app-state/${appState?.app_state_id}`,
+      pathname: `/data/app-states/${appState?.app_state_id}`,
       search: searchParams.toString(),
     })
-  }, [appState?.app_state_id, navigate, params.user_email, searchParams])
+  }, [appState?.app_state_id, isAppStates, navigate, searchParams])
 
   const onClickLogout = useCallback(() => logout(), [logout])
   const onClickEnter = useCallback(() => navigate('/data/projects'), [navigate])
@@ -168,7 +169,7 @@ export const Menu = memo(() => {
           size="medium"
           icon={<FaCog />}
           onClick={onClickOptions}
-          title="Options"
+          title={isAppStates ? 'Back' : 'Options'}
           style={css({
             backgroundColor: 'rgba(38, 82, 37, 0)',
             border: 'none',
