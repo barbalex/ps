@@ -31,10 +31,7 @@ export const Component = () => {
       db.action_report_values.update({
         where: { action_report_value_id },
         data: {
-          [name]:
-            isNaN(value) && ['value_integer', 'value_numeric'].includes(name)
-              ? null
-              : value,
+          [name]: value,
         },
       })
     },
