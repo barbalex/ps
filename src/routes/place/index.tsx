@@ -7,6 +7,7 @@ import { Component as Form } from './Form.tsx'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
+import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 
 import '../../form.css'
 
@@ -28,11 +29,10 @@ export const Component = memo(() => {
   const onChange: InputProps['onChange'] = useCallback(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
-      const valueToUse = name === 'level' ? +value : value
 
       db.places.update({
         where: { place_id },
-        data: { [name]: valueToUse },
+        data: { [name]: value },
       })
     },
     [db.places, place_id],

@@ -5,8 +5,13 @@ export const getValueFromChange = (e, data) => {
   switch (targetType) {
     case 'checkbox':
       return { value: data?.checked, name }
-    case 'radio':
-      return { value: data?.value, name }
+    case 'radio': {
+      // numbers need to be converted to numbers
+      return {
+        value: !isNaN(data?.value) ? parseFloat(data?.value) : data?.value,
+        name,
+      }
+    }
     case 'change':
       return { value: data?.value, name }
     case 'number':
