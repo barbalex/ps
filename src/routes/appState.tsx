@@ -34,7 +34,7 @@ export const Component = () => {
 
   return (
     <div className="form-outer-container">
-      <FormHeader title="Options" tableName="app-state" />
+      <FormHeader title="Options" />
       <div className="form-container">
         <SwitchField
           label="Breadcrumbs overflowing"

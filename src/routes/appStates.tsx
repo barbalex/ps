@@ -19,7 +19,10 @@ export const Component = () => {
     <div className="list-view">
       <ListViewHeader title="Options" tableName="option" />
       <div className="list-container">
-        <Row label={appState?.label} to={`/app-state/${authUser?.email}`} />
+        <Row
+          label={appState?.label}
+          to={`/data/app-states/${authUser?.email}`}
+        />
       </div>
     </div>
   )

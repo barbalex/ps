@@ -1328,7 +1328,7 @@ export const router = () => {
               ],
             },
             {
-              path: 'app-state',
+              path: 'app-states',
               element: null,
               handle: {
                 crumb: {
