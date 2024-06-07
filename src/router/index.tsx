@@ -955,6 +955,16 @@ export const router = () => {
                           lazy: () => import('../routes/projectReports.tsx'),
                         },
                         {
+                          path: 'filter',
+                          element: <Filter />,
+                          children: [
+                            {
+                              index: true,
+                              lazy: () => import('../routes/projectReport/Form.tsx'),
+                            },
+                          ],
+                        },
+                        {
                           path: ':project_report_id',
                           lazy: () =>
                             import('../routes/projectReport/index.tsx'),
