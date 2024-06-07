@@ -111,13 +111,16 @@ export const Jsonb = memo(
             level,
             filterField,
           })
+
           // TODO:
           // this errors because when filtering no id is passed for the row
           // thus: instead of updating the table, the filter needs to be updated
           // solution: pass in a filterField - if that exists, update app_states[filterField]
+
           // TODO: next problem: how to filter on jsonb fields?
           // example from electric-sql discord: https://discord.com/channels/933657521581858818/1246045111478124645
           // where: { [jsonbFieldName]: { path: ["is_admin"], equals: true } },
+
           if (isFilter) {
             // TODO: update app_states[filterField]
             db.app_states.update({
