@@ -1,1 +1,5 @@
-export const Component = () => <div className="form-outer-container">Docs</div>
+import { memo } from 'react'
+
+export const Component = memo(() => (
+  <div className="form-outer-container">Docs</div>
+))
