@@ -1,4 +1,4 @@
-import { useParams, useOutletContext, useLocation } from 'react-router-dom'
+import { useParams, useOutletContext } from 'react-router-dom'
 
 import { TextFieldInactive } from '../../../components/shared/TextFieldInactive.tsx'
 import { TextField } from '../../../components/shared/TextField.tsx'
@@ -23,10 +23,6 @@ export const Component = ({
   const row = rowFromProps ?? outletContext?.row ?? {}
 
   const { vector_layer_id } = useParams()
-  const { pathname } = useLocation()
-  const isFilter = pathname.endsWith('/filter')
-
-  console.log('VectorLayerForm', { row, isFilter })
 
   return (
     <>
