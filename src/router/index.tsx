@@ -56,6 +56,14 @@ export const router = () => {
         {
           path: 'data',
           element: null,
+          handle: {
+            crumb: {
+              text: 'Root',
+              table: 'root',
+              folder: true,
+            },
+            // to: { table: 'root' },
+          },
           children: [
             // add auth page
             { path: 'auth', lazy: () => import('../routes/auth.tsx') },
