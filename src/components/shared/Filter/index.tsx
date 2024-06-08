@@ -72,9 +72,11 @@ export const Filter = memo(({ level }) => {
     }),
   )
 
+  console.log('hello Filter 1', { tableName, filterName, appState })
+
   const filter = useMemo(
     () =>
-      appState?.[filterName]?.filter((f) => Object.keys(f).length > 0) ?? [],
+      appState?.[filterName]?.filter?.((f) => Object.keys(f).length > 0) ?? [],
     [appState, filterName],
   )
   let where = {}
@@ -99,7 +101,7 @@ export const Filter = memo(({ level }) => {
   const isFiltered = filter.length > 0
   const orFiltersToUse = isFiltered ? [...filter, {}] : [{}]
 
-  console.log('hello Filter', {
+  console.log('hello Filter 2', {
     tableName,
     filterName,
     tableNameForTitle,
@@ -124,7 +126,7 @@ export const Filter = memo(({ level }) => {
     }),
   )
 
-  console.log('hello Filter', {
+  console.log('hello Filter 3', {
     results,
     resultsUnfiltered,
   })

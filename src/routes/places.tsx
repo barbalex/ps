@@ -30,7 +30,7 @@ export const Component = memo(() => {
 
   const filter = useMemo(
     () =>
-      appState?.[filterField]?.filter((f) => Object.keys(f).length > 0) ?? [],
+      appState?.[filterField]?.filter?.((f) => Object.keys(f).length > 0) ?? [],
     [appState, filterField],
   )
   const where = filter.length > 1 ? { OR: filter } : filter[0]

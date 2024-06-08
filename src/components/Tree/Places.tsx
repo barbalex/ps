@@ -37,13 +37,28 @@ export const PlacesNode = memo(
 
     const filter = useMemo(
       () =>
-        appState?.[filterField]?.filter((f) => Object.keys(f).length > 0) ?? [],
+        appState?.[filterField]?.filter?.((f) => Object.keys(f).length > 0) ??
+        [],
       [appState, filterField],
     )
     const where = filter.length > 1 ? { OR: filter } : filter[0]
+    console.log('hello Tree PlacesNode', {
+      where,
+      filter,
+      filterField,
+      whereApplied: {
+        parent_id: place_id ?? null,
+        subproject_id,
+        ...(where?.path ? [where] : where),
+      },
+    })
     const { results: places = [] } = useLiveQuery(
       db.places.liveMany({
-        where: { parent_id: place_id ?? null, subproject_id, ...where },
+        where: {
+          parent_id: place_id ?? null,
+          subproject_id,
+          ...(where?.path ? [where] : where),
+        },
         orderBy: { label: 'asc' },
       }),
     )
