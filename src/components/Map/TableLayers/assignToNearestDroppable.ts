@@ -1,9 +1,9 @@
-import pointsWithinPolygon from '@turf/points-within-polygon' // https://turfjs.org/docs/#pointsWithinPolygon
-import convex from '@turf/convex' // https://turfjs.org/docs/#convex
-import polygonToLine from '@turf/polygon-to-line' // https://turfjs.org/docs/#polygonToLine
-import pointToLineDistance from '@turf/point-to-line-distance'
-import distance from '@turf/distance'
-import buffer from '@turf/buffer'
+import { pointsWithinPolygon } from '@turf/points-within-polygon' // https://turfjs.org/docs/#pointsWithinPolygon
+import { convex } from '@turf/convex' // https://turfjs.org/docs/#convex
+import { polygonToLine } from '@turf/polygon-to-line' // https://turfjs.org/docs/#polygonToLine
+import { pointToLineDistance } from '@turf/point-to-line-distance'
+import { distance } from '@turf/distance'
+import { buffer } from '@turf/buffer'
 import { point, points } from '@turf/helpers'
 import { Map } from '@types/leaflet'
 

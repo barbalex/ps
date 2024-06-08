@@ -3,8 +3,8 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { TbZoomScan } from 'react-icons/tb'
 import { Button } from '@fluentui/react-button'
-import bbox from '@turf/bbox'
-import buffer from '@turf/buffer'
+import { bbox } from '@turf/bbox'
+import { buffer } from '@turf/buffer'
 import { useCorbado } from '@corbado/react'
 
 import {

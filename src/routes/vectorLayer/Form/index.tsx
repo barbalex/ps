@@ -26,6 +26,8 @@ export const VectorLayerForm = ({
   const { pathname } = useLocation()
   const isFilter = pathname.endsWith('/filter')
 
+  console.log('VectorLayerForm', { row, isFilter })
+
   return (
     <>
       {['wfs', 'upload'].includes(row.type) && (
@@ -67,57 +69,56 @@ export const VectorLayerForm = ({
       {!['wfs', 'upload'].includes(row.type) && (
         <TextFieldInactive label="Label" name="label" value={row.label} />
       )}
-      {(row?.type === 'wfs' && row?.wfs_url && row.wfs_layer) ||
-        !['wfs', 'upload'].includes(row.type) ||
-        (isFilter && (
-          <>
-            {/* TODO: add display by property field */}
-            <PropertyField vectorLayer={row} />
-            <TextField
-              label="Sort"
-              name="sort"
-              value={row.sort ?? ''}
-              onChange={onChange}
-              type="number"
-              validationMessage="Add a sorting order here if sorting by label is not desired"
-            />
-            <SwitchField
-              label="active"
-              name="active"
-              value={row.active}
-              onChange={onChange}
-            />
-            <TextField
-              label="Max Zoom"
-              name="max_zoom"
-              value={row.max_zoom ?? ''}
-              onChange={onChange}
-              type="number"
-              max={19}
-              min={0}
-              validationMessage="Zoom can be between 0 and 19"
-            />
-            <TextField
-              label="Min Zoom"
-              name="min_zoom"
-              value={row.min_zoom ?? ''}
-              onChange={onChange}
-              type="number"
-              max={19}
-              min={0}
-              validationMessage="Zoom can be between 0 and 19"
-            />
-            <TextField
-              label="Max number of features"
-              name="max_features"
-              value={row.max_features ?? ''}
-              onChange={onChange}
-              type="number"
-              validationMessage="Drawing too many features can crash the app. Your mileage may vary"
-            />
-            {/* <VectorLayerDisplay row={row} /> */}
-          </>
-        ))}
+      {((row?.type === 'wfs' && row?.wfs_url && row.wfs_layer) ||
+        !['wfs', 'upload'].includes(row.type)) && (
+        <>
+          {/* TODO: add display by property field */}
+          <PropertyField vectorLayer={row} />
+          <TextField
+            label="Sort"
+            name="sort"
+            value={row.sort ?? ''}
+            onChange={onChange}
+            type="number"
+            validationMessage="Add a sorting order here if sorting by label is not desired"
+          />
+          <SwitchField
+            label="active"
+            name="active"
+            value={row.active}
+            onChange={onChange}
+          />
+          <TextField
+            label="Max Zoom"
+            name="max_zoom"
+            value={row.max_zoom ?? ''}
+            onChange={onChange}
+            type="number"
+            max={19}
+            min={0}
+            validationMessage="Zoom can be between 0 and 19"
+          />
+          <TextField
+            label="Min Zoom"
+            name="min_zoom"
+            value={row.min_zoom ?? ''}
+            onChange={onChange}
+            type="number"
+            max={19}
+            min={0}
+            validationMessage="Zoom can be between 0 and 19"
+          />
+          <TextField
+            label="Max number of features"
+            name="max_features"
+            value={row.max_features ?? ''}
+            onChange={onChange}
+            type="number"
+            validationMessage="Drawing too many features can crash the app. Your mileage may vary"
+          />
+          {/* <VectorLayerDisplay row={row} /> */}
+        </>
+      )}
       {row?.type === 'upload' && (
         <>
           <TextFieldInactive
