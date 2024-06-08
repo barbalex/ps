@@ -11,6 +11,7 @@ import { Design } from './Design.tsx'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
+import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 
 import '../../form.css'
 

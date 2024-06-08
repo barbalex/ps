@@ -24,7 +24,7 @@ export const OrFilter = memo(
         const { name, value } = getValueFromChange(e, data)
         const targetType = e.target.type
         const isText = ['text', 'email'].includes(targetType)
-        // console.log('hello OrFilter', { targetType, name, value, isText })
+        console.log('hello OrFilter', { targetType, name, value, isText })
 
         // TODO: how to filter on jsonb fields?
         // example from electric-sql discord: https://discord.com/channels/933657521581858818/1246045111478124645
