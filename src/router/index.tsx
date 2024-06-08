@@ -901,8 +901,14 @@ export const router = () => {
                         },
                         {
                           path: 'filter',
-                          lazy: () =>
-                            import('../routes/vectorLayer/Filter.tsx'),
+                          element: <Filter />,
+                          children: [
+                            {
+                              index: true,
+                              lazy: () =>
+                                import('../routes/vectorLayer/Form/index.tsx'),
+                            },
+                          ],
                         },
                         {
                           path: ':vector_layer_id',

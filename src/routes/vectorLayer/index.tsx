@@ -8,7 +8,7 @@ import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
-import { VectorLayerForm } from './Form/index.tsx'
+import { Component as VectorLayerForm } from './Form/index.tsx'
 
 import '../../form.css'
 

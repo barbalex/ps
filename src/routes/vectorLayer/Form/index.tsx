@@ -12,7 +12,7 @@ import '../../../form.css'
 
 // this is just for presentation of data or filter values
 
-export const VectorLayerForm = ({
+export const Component = ({
   onChange: onChangeFromProps,
   row: rowFromProps,
   autoFocusRef,
