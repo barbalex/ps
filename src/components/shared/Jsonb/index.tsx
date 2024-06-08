@@ -116,17 +116,20 @@ export const Jsonb = memo(
           if (isFilter) {
             // when filtering no id is passed for the row
             // how to filter on jsonb fields?
+            // https://discord.com/channels/933657521581858818/1248997155448819775/1248997155448819775
             // example from electric-sql discord: https://discord.com/channels/933657521581858818/1246045111478124645
             // where: { [jsonbFieldName]: { path: ["is_admin"], equals: true } },
 
             console.log('Jsonb, onChange 2:', {
-              data: { [filterField]: [{ path: [jsonFieldName], equals: val }] },
+              data: {
+                [filterField]: [{ path: [jsonFieldName], contains: val }],
+              },
             })
             try {
               await db.app_states.update({
                 where: { app_state_id: appState?.app_state_id },
                 data: {
-                  [filterField]: [{ path: [jsonFieldName], equals: val }],
+                  [filterField]: [{ path: [jsonFieldName], contains: val }],
                 },
               })
             } catch (error) {
