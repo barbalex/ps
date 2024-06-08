@@ -62,7 +62,7 @@ export const router = () => {
               table: 'root',
               folder: true,
             },
-            // to: { table: 'root' },
+            to: { table: 'root' },
           },
           children: [
             // add auth page
