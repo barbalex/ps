@@ -21,9 +21,10 @@ const tabStyle = {
 
 export const Filter = memo(({ level }) => {
   const { user: authUser } = useCorbado()
-  const { place_id, place_id2 } = useParams()
+  const { project_id, place_id, place_id2 } = useParams()
   const location = useLocation()
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
+  const { db } = useElectric()!
 
   // reading these values from the url path
   // if this fails in some situations, we can pass these as props
@@ -39,16 +40,32 @@ export const Filter = memo(({ level }) => {
   // add _1 and _2 when below subproject_id
   const filterName = `filter_${tableName}${level ? `_${level}` : ''}`
   // for tableNameForTitle: replace all underscores with spaces and uppercase all first letters
-  const tableNameForTitle = tableName
-    .split('_')
-    .map((w) => w[0].toUpperCase() + w.slice(1))
-    .join(' ')
+
+  const { results: placeLevel } = useLiveQuery(
+    db.place_levels.liveFirst({
+      where: {
+        project_id,
+        level: place_id ? 2 : 1,
+      },
+      orderBy: { label: 'asc' },
+    }),
+  )
+  // const placeNameSingular = placeLevel?.name_singular ?? 'Place'
+  const placeNamePlural = placeLevel?.name_plural ?? 'Places'
+
+  const tableNameForTitle =
+    tableName === 'places'
+      ? placeNamePlural
+      : tableName
+          .split('_')
+          .map((w) => w[0].toUpperCase() + w.slice(1))
+          .join(' ')
+
   const title = `${tableNameForTitle} Filters`
 
   const [activeTab, setActiveTab] = useState(1)
   const onTabSelect = useCallback((e, data) => setActiveTab(data.value), [])
 
-  const { db } = useElectric()!
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({
       where: { user_email: authUser?.email },
