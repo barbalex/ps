@@ -100,17 +100,17 @@ export const Jsonb = memo(
             table === 'places' ? (place_id ? 2 : 1) : place_id2 ? 2 : 1
           const filterField = `filter_${table}${level ? `_${level}` : ''}`
 
-          console.log('Jsonb, onChange:', {
-            name,
-            value,
-            val,
-            table,
-            idField,
-            id,
-            isFilter,
-            level,
-            filterField,
-          })
+          // console.log('Jsonb, onChange:', {
+          //   name,
+          //   value,
+          //   val,
+          //   table,
+          //   idField,
+          //   id,
+          //   isFilter,
+          //   level,
+          //   filterField,
+          // })
 
           if (isFilter) {
             // when filtering no id is passed for the row
@@ -119,7 +119,7 @@ export const Jsonb = memo(
             // where: { [jsonbFieldName]: { path: ["is_admin"], equals: true } },
             try {
               await db.app_states.update({
-                where: { user_email: authUser?.email },
+                where: { app_state_id: appState?.app_state_id },
                 data: {
                   [jsonFieldName]: { path: [filterField], equals: val },
                 },
@@ -130,11 +130,10 @@ export const Jsonb = memo(
             return
           }
           try {
-            const res = await db[table].update({
+            await db[table].update({
               where: { [idField]: id },
               data: { [jsonFieldName]: val },
             })
-            console.log('Jsonb, onChange, res:', res)
           } catch (error) {
             console.log('Jsonb, error updating:', error)
           }
@@ -145,11 +144,11 @@ export const Jsonb = memo(
           table,
           place_id,
           place_id2,
+          db,
+          appState?.app_state_id,
+          jsonFieldName,
           idField,
           id,
-          db,
-          authUser?.email,
-          jsonFieldName,
         ],
       )
 
