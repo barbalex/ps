@@ -59,6 +59,8 @@ export const Jsonb = memo(
         db.fields.liveMany({
           where: {
             table_name: table,
+            // TODO: need to filter by level
+            level: table === 'places' ? (place_id ? 2 : 1) : place_id2 ? 2 : 1,
             project_id: isAccountTable ? null : project_id,
           },
         }),
