@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { Spinner } from '@fluentui/react-components'
 
 const containerStyle = {
@@ -8,8 +9,8 @@ const containerStyle = {
   width: '100%',
 }
 
-export const Loading = ({ label }) => (
+export const Loading = memo(({ label }) => (
   <div style={containerStyle}>
     <Spinner labelPosition="below" label={label} />
   </div>
-)
+))

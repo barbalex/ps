@@ -1,12 +1,12 @@
-import { useRef } from 'react'
+import { useRef, memo } from 'react'
 import { useParams } from 'react-router-dom'
 
 import { Header } from './Header.tsx'
-import { FieldForm } from './Form.tsx'
+import { FieldFormFetchingOwnData } from './FormFetchingOwnData.tsx'
 
 import '../../form.css'
 
-export const Component = () => {
+export const Component = memo(() => {
   const { field_id } = useParams()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -14,7 +14,10 @@ export const Component = () => {
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
-      <FieldForm field_id={field_id} autoFocusRef={autoFocusRef} />
+      <FieldFormFetchingOwnData
+        field_id={field_id}
+        autoFocusRef={autoFocusRef}
+      />
     </div>
   )
-}
+})

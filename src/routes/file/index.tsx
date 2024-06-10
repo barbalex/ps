@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
@@ -15,7 +15,7 @@ import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'
 
-export const Component = () => {
+export const Component = memo(() => {
   const { file_id } = useParams()
 
   const { db } = useElectric()!
@@ -23,7 +23,7 @@ export const Component = () => {
     db.files.liveUnique({ where: { file_id } }),
   )
 
-  const onChange: InputProps['onChange'] = useCallback(
+  const onChange = useCallback<InputProps['onChange']>(
     (e, dataIn) => {
       const { name, value } = getValueFromChange(e, dataIn)
       const data = { [name]: value }
@@ -156,4 +156,4 @@ export const Component = () => {
       </div>
     </div>
   )
-}
+})

@@ -1193,47 +1193,47 @@ CREATE TABLE app_states(
   filter_account_fields jsonb DEFAULT NULL, -- a fields object with filter settings
   filter_account_messages jsonb DEFAULT NULL, -- a messages object with filter settings
   filter_project_reports jsonb DEFAULT NULL, -- a project_reports object with filter settings
-  filter_project_persons jsonb DEFAULT NULL, -- a persons object with filter settings
+  filter_persons jsonb DEFAULT NULL, -- a persons object with filter settings
   filter_tile_layers jsonb DEFAULT NULL, -- a tile_layers object with filter settings
   filter_vector_layers jsonb DEFAULT NULL, -- a vector_layers object with filter settings
-  filter_vector_layer_displays jsonb DEFAULT NULL, -- a vector_layer_displays object with filter settings
   filter_project_users jsonb DEFAULT NULL, -- a project_users object with filter settings
   filter_lists jsonb DEFAULT NULL, -- a lists object with filter settings
-  filter_taxonomies jsonb DEFAULT NULL, -- a taxonomies object with filter settings
   filter_units jsonb DEFAULT NULL, -- a units object with filter settings
   filter_place_levels jsonb DEFAULT NULL, -- a place_levels object with filter settings
   filter_project_fields jsonb DEFAULT NULL, -- a fields object with filter settings
   filter_subprojects jsonb DEFAULT NULL, -- a subprojects object with filter settings
-  -- filter_subproject_reports jsonb DEFAULT NULL, -- a subproject_reports object with filter settings
-  -- filter_goals jsonb DEFAULT NULL, -- a goals object with filter settings
-  -- filter_subproject_users jsonb DEFAULT NULL, -- a subproject_users object with filter settings
-  -- filter_occurrence_imports jsonb DEFAULT NULL, -- a occurrence_imports object with filter settings
-  -- filter_subproject_charts jsonb DEFAULT NULL, -- a charts object with filter settings
-  -- filter_subproject_chart_subjects jsonb DEFAULT NULL, -- a chart_subjects object with filter settings
-  -- filter_places_1 jsonb DEFAULT NULL, -- a places object with filter settings
-  -- filter_places_1_checks jsonb DEFAULT NULL, -- a checks object with filter settings
-  -- filter_places_1_check_values jsonb DEFAULT NULL, -- a check_values object with filter settings
-  -- filter_places_1_check_taxa jsonb DEFAULT NULL, -- a check_taxa object with filter settings
-  -- filter_places_1_actions jsonb DEFAULT NULL, -- a actions object with filter settings
-  -- filter_places_1_reports jsonb DEFAULT NULL, -- a place_reports object with filter settings
-  -- filter_places_1_users jsonb DEFAULT NULL, -- a place_users object with filter settings
-  -- filter_places_1_charts jsonb DEFAULT NULL, -- a charts object with filter settings
-  -- filter_places_1_chart_subjects jsonb DEFAULT NULL, -- a chart_subjects object with filter settings
-  -- filter_places_2 jsonb DEFAULT NULL, -- a places object with filter settings
-  -- filter_places_2_checks jsonb DEFAULT NULL, -- a checks object with filter settings
-  -- filter_places_2_check_values jsonb DEFAULT NULL, -- a check_values object with filter settings
-  -- filter_places_2_check_taxa jsonb DEFAULT NULL, -- a check_taxa object with filter settings
-  -- filter_places_2_actions jsonb DEFAULT NULL, -- a actions object with filter settings
+  filter_subproject_reports jsonb DEFAULT NULL, -- a subproject_reports object with filter settings
+  filter_goals jsonb DEFAULT NULL, -- a goals object with filter settings
+  filter_subproject_users jsonb DEFAULT NULL, -- a subproject_users object with filter settings
+  filter_places_1 jsonb DEFAULT NULL, -- a places object with filter settings
+  filter_checks_1 jsonb DEFAULT NULL, -- a checks object with filter settings
+  filter_actions_1 jsonb DEFAULT NULL, -- a actions object with filter settings
+  filter_place_reports_1 jsonb DEFAULT NULL, -- a place_reports object with filter settings
+  filter_places_2 jsonb DEFAULT NULL, -- a places object with filter settings
+  filter_place_reports_2 jsonb DEFAULT NULL, -- a place_reports object with filter settings
+  filter_place_checks_2 jsonb DEFAULT NULL, -- a checks object with filter settings
+  filter_actions_2 jsonb DEFAULT NULL, -- a actions object with filter settings
   -- TODO:
   -- activating an additional filter field returns error: too many arguments on function json_object
   -- reason: Maximum Number Of Arguments On A Function is 127
   -- https://www.sqlite.org/limits.html#Maximum%20Number%20Of%20Arguments:~:text=Maximum%20Number%20Of%20Arguments%20On%20A%20Function
   -- https://github.com/electric-sql/electric/issues/1311
   -- Solution: use postgres locally?
-  -- filter_places_2_reports jsonb DEFAULT NULL, -- a place_reports object with filter settings
-  -- filter_places_2_users jsonb DEFAULT NULL, -- a place_users object with filter settings
-  -- filter_places_2_charts jsonb DEFAULT NULL, -- a charts object with filter settings
-  -- filter_places_2_chart_subjects jsonb DEFAULT NULL, -- a chart_subjects object with filter settings
+  -- filter_vector_layer_displays jsonb DEFAULT NULL, -- a vector_layer_displays object with filter settings
+  -- filter_taxonomies jsonb DEFAULT NULL, -- a taxonomies object with filter settings
+  -- filter_occurrence_imports jsonb DEFAULT NULL, -- a occurrence_imports object with filter settings
+  -- filter_subproject_charts jsonb DEFAULT NULL, -- a charts object with filter settings
+  -- filter_subproject_chart_subjects jsonb DEFAULT NULL, -- a chart_subjects object with filter settings
+  -- filter_place_check_taxa_1 jsonb DEFAULT NULL, -- a check_taxa object with filter settings
+  -- filter_place_users_1 jsonb DEFAULT NULL, -- a place_users object with filter settings
+  -- filter_place_charts_1 jsonb DEFAULT NULL, -- a charts object with filter settings
+  -- filter_place_chart_subjects_1 jsonb DEFAULT NULL, -- a chart_subjects object with filter settings
+  -- filter_check_values_1 jsonb DEFAULT NULL, -- a check_values object with filter settings
+  -- filter_check_values_2 jsonb DEFAULT NULL, -- a check_values object with filter settings
+  -- filter_place_check_taxa_2 jsonb DEFAULT NULL, -- a check_taxa object with filter settings
+  -- filter_place_users_2 jsonb DEFAULT NULL, -- a place_users object with filter settings
+  -- filter_place_charts_2 jsonb DEFAULT NULL, -- a charts object with filter settings
+  -- filter_place_chart_subjects_2 jsonb DEFAULT NULL, -- a chart_subjects object with filter settings
   label text DEFAULT NULL
 );
 

@@ -5,9 +5,10 @@
 // 3. loop through fields
 // 4. build input depending on field properties
 import { memo, useCallback, forwardRef } from 'react'
-import { useParams, useSearchParams } from 'react-router-dom'
+import { useParams, useSearchParams, useLocation } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
+import { useCorbado } from '@corbado/react'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
@@ -42,15 +43,24 @@ export const Jsonb = memo(
       ref,
     ) => {
       const isAccountTable = accountTables.includes(table)
-      const { project_id, place_id2 } = useParams()
+      const { project_id, place_id, place_id2 } = useParams()
       const [searchParams] = useSearchParams()
+      const { pathname } = useLocation()
       const editingField = searchParams.get('editingField')
+      const { user: authUser } = useCorbado()
 
       const { db } = useElectric()!
+
+      const { results: appState } = useLiveQuery(
+        db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+      )
+
       const { results: fields = [] } = useLiveQuery(
         db.fields.liveMany({
           where: {
             table_name: table,
+            // TODO: need to filter by level
+            level: table === 'places' ? (place_id ? 2 : 1) : place_id2 ? 2 : 1,
             project_id: isAccountTable ? null : project_id,
           },
         }),
@@ -74,8 +84,8 @@ export const Jsonb = memo(
         }),
       )
 
-      const onChange: InputProps['onChange'] = useCallback(
-        (e, dataReturned) => {
+      const onChange = useCallback<InputProps['onChange']>(
+        async (e, dataReturned) => {
           const { name, value } = getValueFromChange(e, dataReturned)
           const isDate = value instanceof Date
           const val = { ...data }
@@ -86,12 +96,70 @@ export const Jsonb = memo(
             // in json need to save date as iso string
             val[name] = isDate ? value.toISOString() : value
           }
-          db[table].update({
-            where: { [idField]: id },
-            data: { [jsonFieldName]: val },
+
+          const isFilter = pathname.endsWith('filter')
+          const level =
+            table === 'places' ? (place_id ? 2 : 1) : place_id2 ? 2 : 1
+          const filterField = `filter_${table}${level ? `_${level}` : ''}`
+
+          console.log('Jsonb, onChange 1:', {
+            name,
+            value,
+            val,
+            table,
+            idField,
+            id,
+            isFilter,
+            level,
+            filterField,
+            jsonFieldName,
           })
+
+          if (isFilter) {
+            // when filtering no id is passed for the row
+            // how to filter on jsonb fields?
+            // https://discord.com/channels/933657521581858818/1248997155448819775/1248997155448819775
+            // example from electric-sql discord: https://discord.com/channels/933657521581858818/1246045111478124645
+            // where: { [jsonbFieldName]: { path: ["is_admin"], equals: true } },
+
+            console.log('Jsonb, onChange 2:', {
+              data: {
+                [filterField]: [{ path: [jsonFieldName], contains: val }],
+              },
+            })
+            try {
+              await db.app_states.update({
+                where: { app_state_id: appState?.app_state_id },
+                data: {
+                  [filterField]: [{ path: [jsonFieldName], contains: val }],
+                },
+              })
+            } catch (error) {
+              console.log('Jsonb, error updating:', error)
+            }
+            return
+          }
+          try {
+            await db[table].update({
+              where: { [idField]: id },
+              data: { [jsonFieldName]: val },
+            })
+          } catch (error) {
+            console.log('Jsonb, error updating:', error)
+          }
         },
-        [db, id, idField, jsonFieldName, data, table],
+        [
+          data,
+          pathname,
+          table,
+          place_id,
+          place_id2,
+          db,
+          appState?.app_state_id,
+          jsonFieldName,
+          idField,
+          id,
+        ],
       )
 
       // What if data contains keys not existing in fields? > show but warn

@@ -25,7 +25,7 @@ export const Component = memo(() => {
     db.occurrences.liveUnique({ where: { occurrence_id } }),
   )
 
-  const onChange: InputProps['onChange'] = useCallback(
+  const onChange = useCallback<InputProps['onChange']>(
     async (e, eData) => {
       const { name, value } = getValueFromChange(e, eData)
       // Issue: for not_to_assign, the value needs to be null instead of false

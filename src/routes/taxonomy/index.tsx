@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
@@ -16,7 +16,7 @@ import { taxonomy_typeSchema as taxonomyTypeSchema } from '../../generated/clien
 
 import '../../form.css'
 
-export const Component = () => {
+export const Component = memo(() => {
   const { taxonomy_id } = useParams()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -26,7 +26,7 @@ export const Component = () => {
     db.taxonomies.liveUnique({ where: { taxonomy_id } }),
   )
 
-  const onChange: InputProps['onChange'] = useCallback(
+  const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       db.taxonomies.update({
@@ -85,4 +85,4 @@ export const Component = () => {
       </div>
     </div>
   )
-}
+})

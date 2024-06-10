@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
@@ -11,7 +11,7 @@ import { Loading } from '../components/shared/Loading.tsx'
 
 import '../form.css'
 
-export const Component = () => {
+export const Component = memo(() => {
   const { app_state_id } = useParams()
 
   const { db } = useElectric()!
@@ -19,7 +19,7 @@ export const Component = () => {
     db.app_states.liveUnique({ where: { app_state_id } }),
   )
 
-  const onChange: InputProps['onChange'] = useCallback(
+  const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       db.app_states.update({
@@ -34,7 +34,7 @@ export const Component = () => {
 
   return (
     <div className="form-outer-container">
-      <FormHeader title="Options" tableName="app-state" />
+      <FormHeader title="Options" />
       <div className="form-container">
         <SwitchField
           label="Breadcrumbs overflowing"
@@ -54,4 +54,4 @@ export const Component = () => {
       </div>
     </div>
   )
-}
+})

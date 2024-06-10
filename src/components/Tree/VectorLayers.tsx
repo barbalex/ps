@@ -20,14 +20,7 @@ export const VectorLayersNode = memo(({ project_id, level = 3 }: Props) => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { user: authUser } = useCorbado()
-
   const { db } = useElectric()!
-  const { results: vectorLayers = [] } = useLiveQuery(
-    db.vector_layers.liveMany({
-      where: { project_id },
-      orderBy: [{ sort: 'asc' }, { label: 'asc' }],
-    }),
-  )
 
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
@@ -37,9 +30,37 @@ export const VectorLayersNode = memo(({ project_id, level = 3 }: Props) => {
     [appState?.tree_open_nodes],
   )
 
+  const filter = useMemo(
+    () =>
+      appState?.filter_vector_layers?.filter(
+        (f) => Object.keys(f).length > 0,
+      ) ?? [],
+    [appState?.filter_vector_layers],
+  )
+  const where = filter.length > 1 ? { OR: filter } : filter[0]
+  const { results: vectorLayers = [] } = useLiveQuery(
+    db.vector_layers.liveMany({
+      where: { project_id, ...where },
+      orderBy: [{ sort: 'asc' }, { label: 'asc' }],
+    }),
+  )
+  const { results: vectorLayersUnfiltered = [] } = useLiveQuery(
+    db.vector_layers.liveMany({
+      where: { project_id },
+      orderBy: [{ sort: 'asc' }, { label: 'asc' }],
+    }),
+  )
+  const isFiltered = vectorLayers.length !== vectorLayersUnfiltered.length
+
   const vectorLayersNode = useMemo(
-    () => ({ label: `Vector Layers (${vectorLayers.length})` }),
-    [vectorLayers.length],
+    () => ({
+      label: `Vector Layers (${
+        isFiltered
+          ? `${vectorLayers.length}/${vectorLayersUnfiltered.length}`
+          : vectorLayers.length
+      })`,
+    }),
+    [isFiltered, vectorLayers.length, vectorLayersUnfiltered.length],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

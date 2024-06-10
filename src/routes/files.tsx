@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useContext } from 'react'
+import { useCallback, useMemo, useContext, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import { Button } from '@fluentui/react-components'
@@ -13,7 +13,7 @@ import '../form.css'
 
 import { useElectric } from '../ElectricProvider.tsx'
 
-export const Component = () => {
+export const Component = memo(() => {
   const {
     project_id,
     subproject_id,
@@ -93,4 +93,4 @@ export const Component = () => {
       </div>
     </div>
   )
-}
+})

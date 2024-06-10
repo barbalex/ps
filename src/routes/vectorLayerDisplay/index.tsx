@@ -44,7 +44,7 @@ export const Component = () => {
 
   // console.log('hello vectorLayerDisplay, row:', row)
 
-  const onChange: InputProps['onChange'] = useCallback(
+  const onChange = useCallback<InputProps['onChange']>(
     (e: React.ChangeEvent<HTMLInputElement>, data) => {
       const { name, value } = getValueFromChange(e, data)
       db.vector_layer_displays.update({

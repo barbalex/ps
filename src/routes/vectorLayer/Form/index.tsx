@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom'
+import { useParams, useOutletContext } from 'react-router-dom'
 
 import { TextFieldInactive } from '../../../components/shared/TextFieldInactive.tsx'
 import { TextField } from '../../../components/shared/TextField.tsx'
@@ -12,7 +12,16 @@ import '../../../form.css'
 
 // this is just for presentation of data or filter values
 
-export const VectorLayerForm = ({ onChange, row, autoFocusRef }) => {
+export const Component = ({
+  onChange: onChangeFromProps,
+  row: rowFromProps,
+  autoFocusRef,
+}) => {
+  // beware: contextFromOutlet is undefined if not inside an outlet
+  const outletContext = useOutletContext()
+  const onChange = onChangeFromProps ?? outletContext?.onChange
+  const row = rowFromProps ?? outletContext?.row ?? {}
+
   const { vector_layer_id } = useParams()
 
   return (

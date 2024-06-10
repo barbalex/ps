@@ -1,4 +1,4 @@
-import { useCallback, useRef, useMemo, useState } from 'react'
+import { useCallback, useRef, useMemo, useState, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useSearchParams } from 'react-router-dom'
 import { Tab, TabList, InputProps } from '@fluentui/react-components'
@@ -28,7 +28,7 @@ const tabNumberStyle = {
   lineHeight: '19px',
 }
 
-export const Component = () => {
+export const Component = memo(() => {
   const { occurrence_import_id } = useParams()
   const [searchParams, setSearchParams] = useSearchParams()
   const tabString = searchParams.get('occurrence-import-tab')
@@ -55,10 +55,9 @@ export const Component = () => {
   )
   const occurrenceFields = Object.keys(occurrences?.[0]?.data ?? {})
 
-  const onChange: InputProps['onChange'] = useCallback(
+  const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
-      console.log('occurrenceImport, onChange', { name, value })
       db.occurrence_imports.update({
         where: { occurrence_import_id },
         data: { [name]: value },
@@ -216,4 +215,4 @@ export const Component = () => {
       </div>
     </div>
   )
-}
+})

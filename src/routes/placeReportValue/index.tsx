@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
@@ -15,7 +15,7 @@ import '../../form.css'
 
 const unitWhere = { use_for_place_report_values: true }
 
-export const Component = () => {
+export const Component = memo(() => {
   const { place_report_value_id } = useParams()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -27,17 +27,12 @@ export const Component = () => {
 
   // console.log('PlaceReportValue, row:', row)
 
-  const onChange: InputProps['onChange'] = useCallback(
+  const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       db.place_report_values.update({
         where: { place_report_value_id },
-        data: {
-          [name]:
-            isNaN(value) && ['value_integer', 'value_numeric'].includes(name)
-              ? null
-              : value,
-        },
+        data: { [name]: value },
       })
     },
     [db.place_report_values, place_report_value_id],
@@ -87,4 +82,4 @@ export const Component = () => {
       </div>
     </div>
   )
-}
+})

@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useCorbado } from '@corbado/react'
@@ -11,7 +11,7 @@ import '../form.css'
 
 import { useElectric } from '../ElectricProvider.tsx'
 
-export const Component = () => {
+export const Component = memo(() => {
   const { project_id, subproject_id, place_id, place_id2 } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -83,4 +83,4 @@ export const Component = () => {
       </div>
     </div>
   )
-}
+})

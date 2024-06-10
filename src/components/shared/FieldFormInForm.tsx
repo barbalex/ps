@@ -12,7 +12,7 @@ import {
 } from '@fluentui/react-components'
 import { useSearchParams } from 'react-router-dom'
 
-import { FieldForm } from '../../routes/field/Form.tsx'
+import { FieldFormFetchingOwnData } from '../../routes/field/FormFetchingOwnData.tsx'
 import { Fields as Field } from '../../generated/client/index.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
 
@@ -92,7 +92,7 @@ export const FieldFormInForm = memo(({ field }: Props) => {
           />
         </div>
       </div>
-      <FieldForm field_id={field.field_id} isInForm={true} />
+      <FieldFormFetchingOwnData field_id={field.field_id} isInForm={true} />
     </div>
   )
 })

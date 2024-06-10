@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
@@ -10,7 +10,7 @@ import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
 import '../form.css'
 
-export const Component = () => {
+export const Component = memo(() => {
   const { project_id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -63,13 +63,12 @@ export const Component = () => {
         })`}
         addRow={add}
         tableName="vector layer"
-        menus={[
+        menus={
           <FilterButton
-            key="filter_vector_layers"
             table="vector_layers"
             filterField="filter_vector_layers"
-          />,
-        ]}
+          />
+        }
       />
       <div className="list-container">
         {vectorLayers.map(({ vector_layer_id, label }) => (
@@ -82,4 +81,4 @@ export const Component = () => {
       </div>
     </div>
   )
-}
+})

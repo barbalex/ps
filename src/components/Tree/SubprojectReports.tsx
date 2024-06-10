@@ -22,14 +22,7 @@ export const SubprojectReportsNode = memo(
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
     const { user: authUser } = useCorbado()
-
     const { db } = useElectric()!
-    const { results: subprojectReports = [] } = useLiveQuery(
-      db.subproject_reports.liveMany({
-        where: { subproject_id },
-        orderBy: { label: 'asc' },
-      }),
-    )
 
     const { results: appState } = useLiveQuery(
       db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
@@ -39,9 +32,42 @@ export const SubprojectReportsNode = memo(
       [appState?.tree_open_nodes],
     )
 
+    const filter = useMemo(
+      () =>
+        appState?.filter_subproject_reports?.filter(
+          (f) => Object.keys(f).length > 0,
+        ) ?? [],
+      [appState?.filter_subproject_reports],
+    )
+    const where = filter.length > 1 ? { OR: filter } : filter[0]
+    const { results: subprojectReports = [] } = useLiveQuery(
+      db.subproject_reports.liveMany({
+        where: { subproject_id, ...where },
+        orderBy: { label: 'asc' },
+      }),
+    )
+    const { results: subprojectReportsUnfiltered = [] } = useLiveQuery(
+      db.subproject_reports.liveMany({
+        where: { subproject_id },
+        orderBy: { label: 'asc' },
+      }),
+    )
+    const isFiltered =
+      subprojectReports.length !== subprojectReportsUnfiltered.length
+
     const subprojectReportsNode = useMemo(
-      () => ({ label: `Reports (${subprojectReports.length})` }),
-      [subprojectReports.length],
+      () => ({
+        label: `Reports (${
+          isFiltered
+            ? `${subprojectReports.length}/${subprojectReportsUnfiltered.length}`
+            : subprojectReports.length
+        })`,
+      }),
+      [
+        isFiltered,
+        subprojectReports.length,
+        subprojectReportsUnfiltered.length,
+      ],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')

@@ -1,4 +1,4 @@
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery, memo } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 
 import { useElectric } from '../ElectricProvider.tsx'
@@ -7,7 +7,7 @@ import { Row } from '../components/shared/Row.tsx'
 
 import '../form.css'
 
-export const Component = () => {
+export const Component = memo(() => {
   const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
@@ -19,8 +19,11 @@ export const Component = () => {
     <div className="list-view">
       <ListViewHeader title="Options" tableName="option" />
       <div className="list-container">
-        <Row label={appState?.label} to={`/app-state/${authUser?.email}`} />
+        <Row
+          label={appState?.label}
+          to={`/data/app-states/${authUser?.email}`}
+        />
       </div>
     </div>
   )
-}
+})

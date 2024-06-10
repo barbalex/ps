@@ -1,6 +1,8 @@
+import { memo } from 'react'
+
 import './index.css'
 
-export const Component = () => (
+export const Component = memo(() => (
   <div style={{ height: '100%' }}>
     <picture>
       <source
@@ -46,12 +48,12 @@ export const Component = () => (
         </div>
         <div className="card">
           <h3 className="card-title">Massnahmen</h3>
-          verbessern den Zustand einer Art oder eines Biotops (hoffentlich).
+          verbessern den Zustand einer Art oder eines Biotops.
         </div>
         <div className="card">
           <h3 className="card-title">Berichte</h3>
-          beschreiben die Entwick&shy;lung, Massnahmen und ihren Erfolg sowie
-          die Errei&shy;chung der Ziele.
+          beschreiben die Entwick&shy;lung von Populationen, den Erfolg der
+          Massnahmen und die Errei&shy;chung der Ziele.
         </div>
         <div className="card">
           <h3 className="card-title">Beobachtungen</h3>
@@ -116,4 +118,4 @@ export const Component = () => (
       </div>
     </div>
   </div>
-)
+))

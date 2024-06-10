@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
@@ -11,7 +11,7 @@ import { FilterButton } from '../components/shared/FilterButton.tsx'
 
 import '../form.css'
 
-export const Component = () => {
+export const Component = memo(() => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { user: authUser } = useCorbado()
@@ -57,13 +57,12 @@ export const Component = () => {
         })`}
         addRow={add}
         tableName="widget type"
-        menus={[
+        menus={
           <FilterButton
-            key="filter_widget_types"
             table="widget_types"
             filterField="filter_widget_types"
-          />,
-        ]}
+          />
+        }
       />
       <div className="list-container">
         {widgetTypes.map(({ widget_type_id, label }) => (
@@ -76,4 +75,4 @@ export const Component = () => {
       </div>
     </div>
   )
-}
+})

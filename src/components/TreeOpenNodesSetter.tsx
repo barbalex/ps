@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, memo } from 'react'
 import { useCorbado } from '@corbado/react'
 import { useLocation } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
@@ -7,7 +7,7 @@ import { useElectric } from '../ElectricProvider.tsx'
 import { addOpenNodes } from '../modules/tree/addOpenNodes.ts'
 
 // ensure all parts of urlPath are included in openNodes
-export const TreeOpenNodesSetter = () => {
+export const TreeOpenNodesSetter = memo(() => {
   const { db } = useElectric()!
   const { user: authUser } = useCorbado()
   const { pathname } = useLocation()
@@ -54,4 +54,4 @@ export const TreeOpenNodesSetter = () => {
   ])
 
   return null
-}
+})

@@ -8,7 +8,6 @@ import { placesLevel2 } from './placesLevel2.tsx'
 import { Editing as EditingProject } from '../components/Tree/Project/Editing.tsx'
 import { AuthAndDb } from '../components/AuthAndDb.tsx'
 
-import { WidgetForFieldForm } from '../routes/widgetForField/Form.tsx'
 import { Filter } from '../components/shared/Filter/index.tsx'
 
 export const router = () => {
@@ -57,6 +56,14 @@ export const router = () => {
         {
           path: 'data',
           element: null,
+          handle: {
+            crumb: {
+              text: 'Root',
+              table: 'root',
+              folder: true,
+            },
+            to: { table: 'root' },
+          },
           children: [
             // add auth page
             { path: 'auth', lazy: () => import('../routes/auth.tsx') },
@@ -72,6 +79,16 @@ export const router = () => {
               },
               children: [
                 { index: true, lazy: () => import('../routes/projects.tsx') },
+                {
+                  path: 'filter',
+                  element: <Filter />,
+                  children: [
+                    {
+                      index: true,
+                      lazy: () => import('../routes/project/Form.tsx'),
+                    },
+                  ],
+                },
                 {
                   path: ':project_id',
                   element: null,
@@ -106,6 +123,17 @@ export const router = () => {
                           lazy: () => import('../routes/subprojects.tsx'),
                         },
                         {
+                          path: 'filter',
+                          element: <Filter />,
+                          children: [
+                            {
+                              index: true,
+                              lazy: () =>
+                                import('../routes/subproject/Form.tsx'),
+                            },
+                          ],
+                        },
+                        {
                           path: ':subproject_id',
                           element: null,
                           handle: {
@@ -138,6 +166,17 @@ export const router = () => {
                                 {
                                   index: true,
                                   lazy: () => import('../routes/places.tsx'),
+                                },
+                                {
+                                  path: 'filter',
+                                  element: <Filter level={1} />,
+                                  children: [
+                                    {
+                                      index: true,
+                                      lazy: () =>
+                                        import('../routes/place/Form.tsx'),
+                                    },
+                                  ],
                                 },
                                 {
                                   path: ':place_id',
@@ -315,6 +354,19 @@ export const router = () => {
                                     import('../routes/subprojectReports.tsx'),
                                 },
                                 {
+                                  path: 'filter',
+                                  element: <Filter />,
+                                  children: [
+                                    {
+                                      index: true,
+                                      lazy: () =>
+                                        import(
+                                          '../routes/subprojectReport/Form.tsx'
+                                        ),
+                                    },
+                                  ],
+                                },
+                                {
                                   path: ':subproject_report_id',
                                   lazy: () =>
                                     import(
@@ -343,6 +395,17 @@ export const router = () => {
                                 {
                                   index: true,
                                   lazy: () => import('../routes/goals.tsx'),
+                                },
+                                {
+                                  path: 'filter',
+                                  element: <Filter />,
+                                  children: [
+                                    {
+                                      index: true,
+                                      lazy: () =>
+                                        import('../routes/goal/Form.tsx'),
+                                    },
+                                  ],
                                 },
                                 {
                                   path: ':goal_id',
@@ -630,6 +693,16 @@ export const router = () => {
                           lazy: () => import('../routes/units.tsx'),
                         },
                         {
+                          path: 'filter',
+                          element: <Filter />,
+                          children: [
+                            {
+                              index: true,
+                              lazy: () => import('../routes/unit/Form.tsx'),
+                            },
+                          ],
+                        },
+                        {
                           path: ':unit_id',
                           lazy: () => import('../routes/unit/index.tsx'),
                           handle: {
@@ -655,6 +728,16 @@ export const router = () => {
                         {
                           index: true,
                           lazy: () => import('../routes/lists.tsx'),
+                        },
+                        {
+                          path: 'filter',
+                          element: <Filter />,
+                          children: [
+                            {
+                              index: true,
+                              lazy: () => import('../routes/list/Form.tsx'),
+                            },
+                          ],
                         },
                         {
                           path: ':list_id',
@@ -787,6 +870,17 @@ export const router = () => {
                           lazy: () => import('../routes/tileLayers.tsx'),
                         },
                         {
+                          path: 'filter',
+                          element: <Filter />,
+                          children: [
+                            {
+                              index: true,
+                              lazy: () =>
+                                import('../routes/tileLayer/Form.tsx'),
+                            },
+                          ],
+                        },
+                        {
                           path: ':tile_layer_id',
                           lazy: () => import('../routes/tileLayer/index.tsx'),
                           handle: {
@@ -815,8 +909,14 @@ export const router = () => {
                         },
                         {
                           path: 'filter',
-                          lazy: () =>
-                            import('../routes/vectorLayer/Filter.tsx'),
+                          element: <Filter />,
+                          children: [
+                            {
+                              index: true,
+                              lazy: () =>
+                                import('../routes/vectorLayer/Form/index.tsx'),
+                            },
+                          ],
                         },
                         {
                           path: ':vector_layer_id',
@@ -914,6 +1014,17 @@ export const router = () => {
                           lazy: () => import('../routes/projectReports.tsx'),
                         },
                         {
+                          path: 'filter',
+                          element: <Filter />,
+                          children: [
+                            {
+                              index: true,
+                              lazy: () =>
+                                import('../routes/projectReport/Form.tsx'),
+                            },
+                          ],
+                        },
+                        {
                           path: ':project_report_id',
                           lazy: () =>
                             import('../routes/projectReport/index.tsx'),
@@ -942,6 +1053,16 @@ export const router = () => {
                           lazy: () => import('../routes/fields.tsx'),
                         },
                         {
+                          path: 'filter',
+                          element: <Filter />,
+                          children: [
+                            {
+                              index: true,
+                              lazy: () => import('../routes/field/Form.tsx'),
+                            },
+                          ],
+                        },
+                        {
                           path: ':field_id',
                           lazy: () => import('../routes/field/index.tsx'),
                           handle: {
@@ -967,6 +1088,16 @@ export const router = () => {
                         {
                           index: true,
                           lazy: () => import('../routes/persons.tsx'),
+                        },
+                        {
+                          path: 'filter',
+                          element: <Filter />,
+                          children: [
+                            {
+                              index: true,
+                              lazy: () => import('../routes/person/Form.tsx'),
+                            },
+                          ],
                         },
                         {
                           path: ':person_id',
@@ -1086,6 +1217,16 @@ export const router = () => {
               children: [
                 { index: true, lazy: () => import('../routes/fieldTypes.tsx') },
                 {
+                  path: 'filter',
+                  element: <Filter />,
+                  children: [
+                    {
+                      index: true,
+                      lazy: () => import('../routes/fieldType/Form.tsx'),
+                    },
+                  ],
+                },
+                {
                   path: ':field_type_id',
                   lazy: () => import('../routes/fieldType/index.tsx'),
                   handle: {
@@ -1187,6 +1328,16 @@ export const router = () => {
                   lazy: () => import('../routes/fields.tsx'),
                 },
                 {
+                  path: 'filter',
+                  element: <Filter />,
+                  children: [
+                    {
+                      index: true,
+                      lazy: () => import('../routes/field/Form.tsx'),
+                    },
+                  ],
+                },
+                {
                   path: ':field_id',
                   lazy: () => import('../routes/field/index.tsx'),
                   handle: {
@@ -1257,7 +1408,7 @@ export const router = () => {
               ],
             },
             {
-              path: 'app-state',
+              path: 'app-states',
               element: null,
               handle: {
                 crumb: {

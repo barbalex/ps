@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, memo } from 'react'
 import { Button } from '@fluentui/react-components'
 import { MdClose as CloseIcon } from 'react-icons/md'
 import { useLiveQuery } from 'electric-sql/react'
@@ -20,7 +20,7 @@ const buttonStyle = {
   marginLeft: 5,
 }
 
-export const Notifications: React.FC = () => {
+export const Notifications: React.FC = memo(() => {
   const { db } = useElectric()!
   // get the oldest four notification first
   const { results = [] } = useLiveQuery(
@@ -74,4 +74,4 @@ export const Notifications: React.FC = () => {
       </Button> */}
     </>
   )
-}
+})

@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
@@ -15,7 +15,7 @@ import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'
 
-export const Component = () => {
+export const Component = memo(() => {
   const { place_level_id } = useParams()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -25,13 +25,12 @@ export const Component = () => {
     db.place_levels.liveUnique({ where: { place_level_id } }),
   )
 
-  const onChange: InputProps['onChange'] = useCallback(
+  const onChange = useCallback<InputProps['onChange']>(
     async (e, data) => {
       const { name, value } = getValueFromChange(e, data)
-      const valueToUse = name === 'level' ? +value : value
       db.place_levels.update({
         where: { place_level_id },
-        data: { [name]: valueToUse },
+        data: { [name]: value },
       })
       // if name_plural was changed, need to update the label of corresponding vector layers
       if (
@@ -152,4 +151,4 @@ export const Component = () => {
       </div>
     </div>
   )
-}
+})

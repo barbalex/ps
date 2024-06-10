@@ -17,11 +17,6 @@ export const FieldTypesNode = memo(() => {
   const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
-  const { results: fieldTypes = [] } = useLiveQuery(
-    db.field_types.liveMany({
-      orderBy: { label: 'asc' },
-    }),
-  )
 
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
@@ -31,9 +26,35 @@ export const FieldTypesNode = memo(() => {
     [appState?.tree_open_nodes],
   )
 
+  const filter = useMemo(
+    () =>
+      appState?.filter_field_types?.filter((f) => Object.keys(f).length > 0) ??
+      [],
+    [appState?.filter_field_types],
+  )
+  const where = filter.length > 1 ? { OR: filter } : filter[0]
+  const { results: fieldTypes = [] } = useLiveQuery(
+    db.field_types.liveMany({
+      where,
+      orderBy: { label: 'asc' },
+    }),
+  )
+  const { results: fieldTypesUnfiltered = [] } = useLiveQuery(
+    db.field_types.liveMany({
+      orderBy: { label: 'asc' },
+    }),
+  )
+  const isFiltered = fieldTypes.length !== fieldTypesUnfiltered.length
+
   const fieldTypesNode = useMemo(
-    () => ({ label: `Field Types (${fieldTypes.length})` }),
-    [fieldTypes.length],
+    () => ({
+      label: `Field Types (${
+        isFiltered
+          ? `${fieldTypes.length}/${fieldTypesUnfiltered.length}`
+          : fieldTypes.length
+      })`,
+    }),
+    [fieldTypes.length, fieldTypesUnfiltered.length, isFiltered],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

@@ -1,9 +1,9 @@
-import { useEffect } from 'react'
+import { useEffect, memo } from 'react'
 import { useCorbado } from '@corbado/react'
 
 import { useElectric } from '../ElectricProvider.tsx'
 
-export const Syncer = () => {
+export const Syncer = memo(() => {
   const { db } = useElectric()!
   const { user: authUser } = useCorbado()
   // console.log('hello Syncer', { db, authUser })
@@ -245,4 +245,4 @@ export const Syncer = () => {
   }, [authUser?.email, db])
 
   return null
-}
+})

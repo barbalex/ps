@@ -3,7 +3,7 @@ import { ToggleButton } from '@fluentui/react-button'
 import { MdFilterAlt } from 'react-icons/md'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
-export const FilterButton = memo(() => {
+export const FilterButton = memo(({ isFiltered = false }) => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
@@ -23,6 +23,9 @@ export const FilterButton = memo(() => {
       onClick={onClick}
       title="Edit Filter"
       checked={false}
+      style={{
+        ...(isFiltered ? { color: 'rgba(255, 141, 2, 1)' } : {}),
+      }}
     />
   )
 })

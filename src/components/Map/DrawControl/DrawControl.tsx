@@ -3,7 +3,7 @@ import 'leaflet'
 import 'leaflet-draw'
 import 'leaflet-draw/dist/leaflet.draw.css'
 import { useMap } from 'react-leaflet'
-import getBbox from '@turf/bbox'
+import { bbox as getBbox } from '@turf/bbox'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
 

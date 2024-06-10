@@ -101,6 +101,11 @@ export const BreadcrumbsOverflowing = () => {
     refreshOptions: { leading: false, trailing: true },
   })
 
+  // console.log('hello BreadcrumbsOverflowing, matches:', {
+  //   matches,
+  //   unfilteredMatches,
+  // })
+
   return (
     <Overflow ref={ref} overflowDirection="start" padding={20}>
       <div className="resizable-area">

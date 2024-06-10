@@ -1,23 +1,30 @@
-import { useRef, useCallback } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useRef, useCallback, memo } from 'react'
+import { useSearchParams, useParams } from 'react-router-dom'
 import { Tab, TabList } from '@fluentui/react-components'
 import type { SelectTabData, SelectTabEvent } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 
 import { Header } from './Header.tsx'
-import { Form } from './Form.tsx'
+import { Component as Form } from './Form.tsx'
 import { Design } from './Design.tsx'
 import { useElectric } from '../../ElectricProvider.tsx'
+import { Loading } from '../../components/shared/Loading.tsx'
+import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
+import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 
 import '../../form.css'
 
-export const Component = () => {
+export const Component = memo(() => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
-
+  const { project_id } = useParams()
   const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
+
+  const { results: row } = useLiveQuery(
+    db.projects.liveUnique({ where: { project_id } }),
+  )
 
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
@@ -31,6 +38,19 @@ export const Component = () => {
       setSearchParams({ projectTab: data.value }),
     [setSearchParams],
   )
+
+  const onChange = useCallback<InputProps['onChange']>(
+    (e, data) => {
+      const { name, value } = getValueFromChange(e, data)
+      db.projects.update({
+        where: { project_id },
+        data: { [name]: value },
+      })
+    },
+    [db.projects, project_id],
+  )
+
+  if (!row) return <Loading />
 
   return (
     <div className="form-outer-container">
@@ -48,8 +68,19 @@ export const Component = () => {
           Charts
         </Tab>
       </TabList>
-      {tab === 'form' && <Form autoFocusRef={autoFocusRef} />}
-      {tab === 'design' && designing && <Design />}
+      {tab === 'form' && (
+        <div className="form-container" role="tabpanel" aria-labelledby="form">
+          <TextFieldInactive
+            label="ID"
+            name="project_id"
+            value={row.project_id}
+          />
+          <Form row={row} onChange={onChange} autoFocusRef={autoFocusRef} />
+        </div>
+      )}
+      {tab === 'design' && designing && (
+        <Design onChange={onChange} row={row} />
+      )}
       {tab === 'charts' && (
         <div
           role="tabpanel"
@@ -61,4 +92,4 @@ export const Component = () => {
       )}
     </div>
   )
-}
+})

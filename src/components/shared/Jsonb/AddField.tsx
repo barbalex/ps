@@ -1,7 +1,7 @@
 import { useCallback, memo } from 'react'
 import { Button } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
-import { useParams, useSearchParams } from 'react-router-dom'
+import { useParams, useSearchParams, useLocation } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 
@@ -25,6 +25,7 @@ export const AddField = memo(({ tableName, level }) => {
   const { project_id } = useParams()
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchParams, setSearchParams] = useSearchParams()
+  const { pathname } = useLocation()
 
   const { user: authUser } = useCorbado()
 
@@ -44,6 +45,8 @@ export const AddField = memo(({ tableName, level }) => {
   }, [db.fields, level, project_id, setSearchParams, tableName])
 
   if (!designing) return null
+  // do not show the button on the filter page
+  if (pathname.endsWith('/filter')) return null
 
   return (
     <Button

@@ -1,12 +1,22 @@
-export const getValueFromChange = (e, data) => {
+import type { InputOnChangeData } from '@fluentui/react-components'
+
+export const getValueFromChange = (
+  e: React.ChangeEvent<HTMLInputElement>,
+  data: InputOnChangeData,
+) => {
   const targetType = e.target.type
   const name = e.target.name
 
   switch (targetType) {
     case 'checkbox':
       return { value: data?.checked, name }
-    case 'radio':
-      return { value: data?.value, name }
+    case 'radio': {
+      // numbers need to be converted to numbers
+      return {
+        value: !isNaN(data?.value) ? parseFloat(data?.value) : data?.value,
+        name,
+      }
+    }
     case 'change':
       return { value: data?.value, name }
     case 'number':

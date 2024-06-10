@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from 'react'
+import { useCallback, useMemo, useRef, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
@@ -13,7 +13,7 @@ import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'
 
-export const Component = () => {
+export const Component = memo(() => {
   const { check_value_id } = useParams()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -27,16 +27,13 @@ export const Component = () => {
 
   // console.log('CheckValue', { row, results })
 
-  const onChange: InputProps['onChange'] = useCallback(
+  const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       db.check_values.update({
         where: { check_value_id },
         data: {
-          [name]:
-            isNaN(value) && ['value_integer', 'value_numeric'].includes(name)
-              ? null
-              : value,
+          [name]: value,
         },
       })
     },
@@ -87,4 +84,4 @@ export const Component = () => {
       </div>
     </div>
   )
-}
+})

@@ -123,6 +123,7 @@ export const NavsOverflowing = ({ designing }) => {
 
   // console.log('hello NavsOverflowing', {
   //   matches,
+  //   tos,
   //   tosToUse,
   //   thisPathsMatches,
   //   pathname: location.pathname,

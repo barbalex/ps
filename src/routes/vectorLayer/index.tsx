@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
@@ -8,11 +8,11 @@ import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
-import { VectorLayerForm } from './Form/index.tsx'
+import { Component as VectorLayerForm } from './Form/index.tsx'
 
 import '../../form.css'
 
-export const Component = () => {
+export const Component = memo(() => {
   const { vector_layer_id } = useParams()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -22,7 +22,7 @@ export const Component = () => {
     db.vector_layers.liveUnique({ where: { vector_layer_id } }),
   )
 
-  const onChange: InputProps['onChange'] = useCallback(
+  const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       db.vector_layers.update({
@@ -54,4 +54,4 @@ export const Component = () => {
       </div>
     </div>
   )
-}
+})

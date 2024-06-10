@@ -1,3 +1,5 @@
+import { Filter } from '../components/shared/Filter/index.tsx'
+
 export const placesChildren = ({ level }) => [
   {
     path: 'checks',
@@ -14,6 +16,16 @@ export const placesChildren = ({ level }) => [
       {
         index: true,
         lazy: () => import('../routes/checks.tsx'),
+      },
+      {
+        path: 'filter',
+        element: <Filter level={level} />,
+        children: [
+          {
+            index: true,
+            lazy: () => import('../routes/check/Form.tsx'),
+          },
+        ],
       },
       {
         path: ':check_id',
@@ -140,6 +152,16 @@ export const placesChildren = ({ level }) => [
       {
         index: true,
         lazy: () => import('../routes/actions.tsx'),
+      },
+      {
+        path: 'filter',
+        element: <Filter level={level} />,
+        children: [
+          {
+            index: true,
+            lazy: () => import('../routes/action/Form.tsx'),
+          },
+        ],
       },
       {
         path: ':action_id',
@@ -303,6 +325,16 @@ export const placesChildren = ({ level }) => [
       {
         index: true,
         lazy: () => import('../routes/placeReports.tsx'),
+      },
+      {
+        path: 'filter',
+        element: <Filter level={level} />,
+        children: [
+          {
+            index: true,
+            lazy: () => import('../routes/placeReport/Form.tsx'),
+          },
+        ],
       },
       {
         path: ':place_report_id',
