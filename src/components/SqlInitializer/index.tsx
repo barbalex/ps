@@ -58,7 +58,7 @@ export const SqlInitializer = () => {
   useEffect(() => {
     const generate = async () => {
       // seems that these can't be run in migrations
-      // await generateUserLabel(db)
+      await generateUserLabel(db)
       // await generateAccountLabel(db)
       // await generateProjectLabel(db)
       // await generateSubprojectLabel(db)
@@ -89,7 +89,7 @@ export const SqlInitializer = () => {
       // await generateCheckTaxonLabel(db)
       // await generateActionLabel(db)
       // await generateActionValueLabel(db)
-      await generateActionReportLabel(db)
+      // await generateActionReportLabel(db)
       // await generateActionReportValueLabel(db)
       // await generatePlaceReportLabel(db)
       // await generatePlaceReportValueLabel(db)

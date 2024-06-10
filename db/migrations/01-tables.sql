@@ -1184,35 +1184,36 @@ CREATE TABLE app_states(
   occurrence_fields_sorted jsonb DEFAULT NULL, -- array of strings
   syncing boolean DEFAULT NULL,
   tree_open_nodes jsonb DEFAULT NULL, -- array of strings
-  filter_projects jsonb DEFAULT NULL, -- a projects object with filter settings
-  filter_fields jsonb DEFAULT NULL, -- a fields object with filter settings
-  filter_account_users jsonb DEFAULT NULL, -- a users object with filter settings
-  filter_field_types jsonb DEFAULT NULL, -- a field_types object with filter settings
-  filter_widget_types jsonb DEFAULT NULL, -- a widget_types object with filter settings
-  filter_widgets_for_fields jsonb DEFAULT NULL, -- a fields object with filter settings
-  filter_account_fields jsonb DEFAULT NULL, -- a fields object with filter settings
-  filter_account_messages jsonb DEFAULT NULL, -- a messages object with filter settings
-  filter_project_reports jsonb DEFAULT NULL, -- a project_reports object with filter settings
-  filter_persons jsonb DEFAULT NULL, -- a persons object with filter settings
-  filter_tile_layers jsonb DEFAULT NULL, -- a tile_layers object with filter settings
-  filter_vector_layers jsonb DEFAULT NULL, -- a vector_layers object with filter settings
-  filter_project_users jsonb DEFAULT NULL, -- a project_users object with filter settings
-  filter_lists jsonb DEFAULT NULL, -- a lists object with filter settings
-  filter_units jsonb DEFAULT NULL, -- a units object with filter settings
-  filter_place_levels jsonb DEFAULT NULL, -- a place_levels object with filter settings
-  filter_project_fields jsonb DEFAULT NULL, -- a fields object with filter settings
-  filter_subprojects jsonb DEFAULT NULL, -- a subprojects object with filter settings
-  filter_subproject_reports jsonb DEFAULT NULL, -- a subproject_reports object with filter settings
-  filter_goals jsonb DEFAULT NULL, -- a goals object with filter settings
-  filter_subproject_users jsonb DEFAULT NULL, -- a subproject_users object with filter settings
-  filter_places_1 jsonb DEFAULT NULL, -- a places object with filter settings
-  filter_checks_1 jsonb DEFAULT NULL, -- a checks object with filter settings
-  filter_actions_1 jsonb DEFAULT NULL, -- a actions object with filter settings
-  filter_place_reports_1 jsonb DEFAULT NULL, -- a place_reports object with filter settings
-  filter_places_2 jsonb DEFAULT NULL, -- a places object with filter settings
-  filter_place_reports_2 jsonb DEFAULT NULL, -- a place_reports object with filter settings
-  filter_place_checks_2 jsonb DEFAULT NULL, -- a checks object with filter settings
-  filter_actions_2 jsonb DEFAULT NULL, -- a actions object with filter settings
+  -- TODO: turning off these fields because of weird errors
+  -- filter_projects jsonb DEFAULT NULL, -- a projects object with filter settings
+  -- filter_fields jsonb DEFAULT NULL, -- a fields object with filter settings
+  -- filter_account_users jsonb DEFAULT NULL, -- a users object with filter settings
+  -- filter_field_types jsonb DEFAULT NULL, -- a field_types object with filter settings
+  -- filter_widget_types jsonb DEFAULT NULL, -- a widget_types object with filter settings
+  -- filter_widgets_for_fields jsonb DEFAULT NULL, -- a fields object with filter settings
+  -- filter_account_fields jsonb DEFAULT NULL, -- a fields object with filter settings
+  -- filter_account_messages jsonb DEFAULT NULL, -- a messages object with filter settings
+  -- filter_project_reports jsonb DEFAULT NULL, -- a project_reports object with filter settings
+  -- filter_persons jsonb DEFAULT NULL, -- a persons object with filter settings
+  -- filter_tile_layers jsonb DEFAULT NULL, -- a tile_layers object with filter settings
+  -- filter_vector_layers jsonb DEFAULT NULL, -- a vector_layers object with filter settings
+  -- filter_project_users jsonb DEFAULT NULL, -- a project_users object with filter settings
+  -- filter_lists jsonb DEFAULT NULL, -- a lists object with filter settings
+  -- filter_units jsonb DEFAULT NULL, -- a units object with filter settings
+  -- filter_place_levels jsonb DEFAULT NULL, -- a place_levels object with filter settings
+  -- filter_project_fields jsonb DEFAULT NULL, -- a fields object with filter settings
+  -- filter_subprojects jsonb DEFAULT NULL, -- a subprojects object with filter settings
+  -- filter_subproject_reports jsonb DEFAULT NULL, -- a subproject_reports object with filter settings
+  -- filter_goals jsonb DEFAULT NULL, -- a goals object with filter settings
+  -- filter_subproject_users jsonb DEFAULT NULL, -- a subproject_users object with filter settings
+  -- filter_places_1 jsonb DEFAULT NULL, -- a places object with filter settings
+  -- filter_checks_1 jsonb DEFAULT NULL, -- a checks object with filter settings
+  -- filter_actions_1 jsonb DEFAULT NULL, -- a actions object with filter settings
+  -- filter_place_reports_1 jsonb DEFAULT NULL, -- a place_reports object with filter settings
+  -- filter_places_2 jsonb DEFAULT NULL, -- a places object with filter settings
+  -- filter_place_reports_2 jsonb DEFAULT NULL, -- a place_reports object with filter settings
+  -- filter_place_checks_2 jsonb DEFAULT NULL, -- a checks object with filter settings
+  -- filter_actions_2 jsonb DEFAULT NULL, -- a actions object with filter settings
   -- TODO:
   -- activating an additional filter field returns error: too many arguments on function json_object
   -- reason: Maximum Number Of Arguments On A Function is 127
