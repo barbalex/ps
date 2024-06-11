@@ -5,16 +5,16 @@ import { TextField } from '../../components/shared/TextField.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { SliderField } from '../../components/shared/SliderField.tsx'
-import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
+// import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { DropdownFieldFromLayerOptions } from '../../components/shared/DropdownFieldFromLayerOptions.tsx'
-import { tile_layer_type_enumSchema as typeSchema } from '../../generated/client/index.ts'
+// import { tile_layer_type_enumSchema as typeSchema } from '../../generated/client/index.ts'
 import { BaseUrl } from './BaseUrl.tsx'
 
 import '../../form.css'
 
 // this form is rendered from a parent or outlet
 export const Component = memo(
-  ({ onChange: onChangeFromProps, row: rowFromProps, autoFocusRef }) => {
+  ({ onChange: onChangeFromProps, row: rowFromProps }) => {
     // beware: contextFromOutlet is undefined if not inside an outlet
     const outletContext = useOutletContext()
     const onChange = onChangeFromProps ?? outletContext?.onChange
@@ -24,9 +24,12 @@ export const Component = memo(
     const { pathname } = useLocation()
     const isFilter = pathname.endsWith('filter')
 
+    // TODO: implement later
+    const isOffline = false
+
     return (
       <>
-        <RadioGroupField
+        {/* <RadioGroupField
           label="Type"
           name="type"
           list={typeSchema?.options.filter((t) => t === 'wms') ?? []}
@@ -36,23 +39,18 @@ export const Component = memo(
           ref={autoFocusRef}
           // disabled as for now only WMS is supported
           disabled
-        />
-        {row?.type === 'wms' && (
-          <>
-            <BaseUrl row={row} onChange={onChange} />
-            {row?.wms_base_url ||
-              (isFilter && (
-                <DropdownFieldFromLayerOptions
-                  label="Layer"
-                  name="wms_layer"
-                  value={row.wms_layer ?? ''}
-                  tile_layer_id={tile_layer_id}
-                  onChange={onChange}
-                  validationMessage={row.wms_layer ? '' : 'Select a layer'}
-                  row={row}
-                />
-              ))}
-          </>
+        /> */}
+        <BaseUrl row={row} onChange={onChange} autoFocus={true} />
+        {(row?.wms_base_url || isFilter) && (
+          <DropdownFieldFromLayerOptions
+            label="Layer"
+            name="wms_layer"
+            value={row.wms_layer ?? ''}
+            tile_layer_id={tile_layer_id}
+            onChange={onChange}
+            validationMessage={row.wms_layer ? '' : 'Select a layer'}
+            row={row}
+          />
         )}
         {row?.type === 'wmts' && (
           <>
@@ -182,17 +180,21 @@ export const Component = memo(
               value={row.grayscale}
               onChange={onChange}
             />
-            <div>TODO: show the following only if loaded for offline</div>
-            <TextFieldInactive
-              label="Local Data Size"
-              name="local_data_size"
-              value={row.local_data_size}
-            />
-            <TextFieldInactive
-              label="Local Data Bounds"
-              name="local_data_bounds"
-              value={row.local_data_bounds}
-            />
+            {isOffline && (
+              <>
+                <div>TODO: show the following only if loaded for offline</div>
+                <TextFieldInactive
+                  label="Local Data Size"
+                  name="local_data_size"
+                  value={row.local_data_size}
+                />
+                <TextFieldInactive
+                  label="Local Data Bounds"
+                  name="local_data_bounds"
+                  value={row.local_data_bounds}
+                />
+              </>
+            )}
           </>
         )}
       </>

@@ -1,4 +1,4 @@
-import { useCallback, memo } from 'react'
+import { useCallback, memo, forwardRef } from 'react'
 import { createWorkerFactory, useWorker } from '@shopify/react-web-worker'
 
 import { Tile_layers as TileLayer } from '../../../generated/client/index.ts'
@@ -11,8 +11,14 @@ const createWorker = createWorkerFactory(
   () => import('./getCapabilitiesData.ts'),
 )
 
+type Props = {
+  onChange: () => void
+  row: TileLayer
+  autoFocus: boolean
+}
+
 export const BaseUrl = memo(
-  ({ onChange, row }: { onChange: () => void; row: TileLayer }) => {
+  forwardRef(({ onChange, row, autoFocus }, ref) => {
     const { db } = useElectric()!
     const worker = useWorker(createWorker)
 
@@ -47,7 +53,9 @@ export const BaseUrl = memo(
         value={row.wms_base_url ?? ''}
         onChange={onChange}
         onBlur={onBlur}
+        autoFocus={autoFocus}
+        ref={ref}
       />
     )
-  },
+  }),
 )

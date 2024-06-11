@@ -20,11 +20,11 @@ export const getCapabilitiesData = async ({
 }: Props) => {
   if (!row?.wms_base_url) return undefined
 
-  // console.log('hello getting capabilities data for Tile Layer', {
-  //   label: row.label,
-  //   id: row.tile_layer_id,
-  //   db,
-  // })
+  console.log('getCapabilitiesData 1', {
+    label: row.label,
+    id: row.tile_layer_id,
+    db,
+  })
 
   const values = {}
 
@@ -33,7 +33,7 @@ export const getCapabilitiesData = async ({
     service: 'WMS',
   })
 
-  // console.log('hello, getCapabilitiesData, capabilities:', capabilities)
+  console.log('getCapabilitiesData 2, capabilities:', capabilities)
 
   if (!capabilities) return undefined
 
@@ -75,7 +75,7 @@ export const getCapabilitiesData = async ({
   )
   // console.log('hello, getCapabilitiesData 1, layers:', layers)
   console.log(
-    'hello, getCapabilitiesData 2, layer swisstopo pixel farbe:',
+    'getCapabilitiesData 3, layer swisstopo pixel farbe:',
     layers.find((l) => l.Name === 'ch.swisstopo.pixelkarte-farbe'),
   )
   // TODO: because upsert errors and single creates are slow
