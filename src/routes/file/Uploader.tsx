@@ -67,7 +67,7 @@ export const Uploader = () => {
       const data = await createFile(fileInput)
       await db.files.create({ data })
       navigate({
-        pathname: `../${data.file_id}${isPreview ? '/preview' : ''}`,
+        pathname: `./${data.file_id}${isPreview ? '/preview' : ''}`,
         search: searchParams.toString(),
       })
       // close the uploader or it will be open when navigating to the list
