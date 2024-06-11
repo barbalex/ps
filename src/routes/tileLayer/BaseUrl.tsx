@@ -18,7 +18,7 @@ type Props = {
 }
 
 export const BaseUrl = memo(
-  forwardRef(({ onChange, row, autoFocus }, ref) => {
+  forwardRef(({ onChange, row, autoFocus }: Props, ref) => {
     const { db } = useElectric()!
     const worker = useWorker(createWorker)
 
