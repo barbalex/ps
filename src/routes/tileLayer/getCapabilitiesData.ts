@@ -20,7 +20,7 @@ export const getCapabilitiesData = async ({
 }: Props) => {
   if (!row?.wms_base_url) return undefined
 
-  // console.log('hello getting capabilites data for Tile Layer', {
+  // console.log('hello getting capabilities data for Tile Layer', {
   //   label: row.label,
   //   id: row.tile_layer_id,
   //   db,
