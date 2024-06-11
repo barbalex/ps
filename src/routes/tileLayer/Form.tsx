@@ -29,11 +29,13 @@ export const Component = memo(
         <RadioGroupField
           label="Type"
           name="type"
-          list={typeSchema?.options ?? []}
+          list={typeSchema?.options.filter((t) => t === 'wms') ?? []}
           value={row.type ?? ''}
           onChange={onChange}
           autoFocus
           ref={autoFocusRef}
+          // disabled as for now only WMS is supported
+          disabled
         />
         {row?.type === 'wms' && (
           <>
