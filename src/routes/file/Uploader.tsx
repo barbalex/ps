@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useContext } from 'react'
+import { useCallback, useEffect } from 'react'
 import {
   useNavigate,
   useParams,
@@ -10,7 +10,6 @@ import axios from 'redaxios'
 
 import { createFile } from '../../modules/createRows.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
-import { UploaderContext } from '../../UploaderContext.ts'
 
 import '../../form.css'
 
@@ -30,7 +29,7 @@ export const Uploader = () => {
   const isPreview = pathname.endsWith('preview')
 
   const { db } = useElectric()!
-  const uploaderCtx = useContext(UploaderContext)
+  const uploaderCtx = {} // TODO: migrate
 
   // ISSUE: the event is called THREE times
   // Solution: query files with the uuid and only create if it doesn't exist
@@ -67,7 +66,7 @@ export const Uploader = () => {
       const data = await createFile(fileInput)
       await db.files.create({ data })
       navigate({
-        pathname: `../${data.file_id}${isPreview ? '/preview' : ''}`,
+        pathname: `./${data.file_id}${isPreview ? '/preview' : ''}`,
         search: searchParams.toString(),
       })
       // close the uploader or it will be open when navigating to the list
@@ -147,28 +146,32 @@ export const Uploader = () => {
   )
 
   useEffect(() => {
-    const ctx = uploaderCtx.current
-    ctx.addEventListener('file-upload-success', onUploadSuccessDebounced)
-    ctx.addEventListener('file-upload-failed', onUploadFailed)
+    const ctx = uploaderCtx?.current
+    ctx?.addEventListener?.('file-upload-success', onUploadSuccessDebounced)
+    ctx?.addEventListener?.('file-upload-failed', onUploadFailed)
     return () => {
-      ctx.removeEventListener('file-upload-success', onUploadSuccessDebounced)
-      ctx.removeEventListener('file-upload-failed', onUploadFailed)
+      ctx?.removeEventListener?.(
+        'file-upload-success',
+        onUploadSuccessDebounced,
+      )
+      ctx?.removeEventListener?.('file-upload-failed', onUploadFailed)
     }
   }, [onUploadFailed, onUploadSuccessDebounced, uploaderCtx])
 
   // docs: https://uploadcare.com/docs/file-uploader
   // TODO: get uploader css locally if it should be possible to upload files
-  // offline to sqlite
+  // offline to SQLite
   return (
-    <lr-file-uploader-regular
-      css-src="https://cdn.jsdelivr.net/npm/@uploadcare/blocks@0.32.4/web/lr-file-uploader-regular.min.css"
-      ctx-name="uploadcare-uploader"
-      class="uploadcare-uploader-config"
-    >
-      <lr-data-output
+    <>
+      <lr-file-uploader-regular
         ctx-name="uploadcare-uploader"
-        ref={uploaderCtx.current}
-      ></lr-data-output>
-    </lr-file-uploader-regular>
+        class="uploadcare-uploader-config"
+      >
+        <lr-data-output
+          ctx-name="uploadcare-uploader"
+          ref={uploaderCtx.current}
+        ></lr-data-output>
+      </lr-file-uploader-regular>
+    </>
   )
 }

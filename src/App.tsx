@@ -1,6 +1,9 @@
 import React, { createRef } from 'react'
 import { RouterProvider } from 'react-router-dom'
 import { FluentProvider } from '@fluentui/react-components'
+import {
+  UploadCtxProvider
+} from "@uploadcare/react-uploader";
 
 import * as LR from '@uploadcare/blocks'
 LR.FileUploaderRegular.shadowStyles = /* CSS */ `

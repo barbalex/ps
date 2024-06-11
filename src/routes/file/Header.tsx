@@ -1,4 +1,4 @@
-import { useCallback, memo, useMemo, useContext } from 'react'
+import { useCallback, memo, useMemo } from 'react'
 import {
   useParams,
   useNavigate,
@@ -11,7 +11,6 @@ import { MdPreview, MdEditNote } from 'react-icons/md'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { Files as File } from '../../generated/client/index.ts'
-import { UploaderContext } from '../../UploaderContext.ts'
 
 interface Props {
   row: File
@@ -50,9 +49,9 @@ export const Header = memo(({ row }: Props) => {
 
   // TODO: if is preview, add preview to the url
 
-  const uploaderCtx = useContext(UploaderContext)
+  const uploaderCtx = {} // TODO: migrate
   const addRow = useCallback(
-    async () => uploaderCtx.current.initFlow(),
+    async () => uploaderCtx?.current?.initFlow?.(),
     [uploaderCtx],
   )
 

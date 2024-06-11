@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useContext, memo } from 'react'
+import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import { Button } from '@fluentui/react-components'
@@ -7,7 +7,6 @@ import { FaPlus } from 'react-icons/fa'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { Uploader } from './file/Uploader.tsx'
-import { UploaderContext } from '../UploaderContext.ts'
 
 import '../form.css'
 
@@ -49,9 +48,9 @@ export const Component = memo(() => {
     }),
   )
 
-  const uploaderCtx = useContext(UploaderContext)
+  const uploaderCtx = {} // TODO: migrate
   const onClickAdd = useCallback(
-    () => uploaderCtx.current.initFlow(),
+    () => uploaderCtx?.current?.initFlow(),
     [uploaderCtx],
   )
 
