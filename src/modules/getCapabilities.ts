@@ -12,7 +12,7 @@ export const getCapabilities = async ({
   url,
   service = 'WFS',
 }: Props): object | undefined => {
-  // Exaple url to get: https://wms.zh.ch/FnsSVOZHWMS?service=WMS&request=GetCapabilities
+  // Example url to get: https://wms.zh.ch/FnsSVOZHWMS?service=WMS&request=GetCapabilities
   let res
   try {
     // Issue: only the error logged with line 19 informs well when invalid url is used, i.e.: net::ERR_NAME_NOT_RESOLVED
