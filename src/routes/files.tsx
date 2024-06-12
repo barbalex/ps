@@ -56,7 +56,7 @@ export const Component = memo(() => {
   )
 
   // TODO: get uploader css locally if it should be possible to upload files
-  // offline to sqlite
+  // offline to SQLite
   return (
     <div className="list-view">
       <ListViewHeader

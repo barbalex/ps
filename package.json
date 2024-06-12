@@ -14,7 +14,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@corbado/react": "2.8.0",
+    "@corbado/react": "2.9.0",
     "@css-hooks/react": "2.0.4",
     "@css-hooks/recommended": "2.0.4",
     "@cyntler/react-doc-viewer": "1.16.3",
@@ -26,7 +26,7 @@
     "@formkit/tempo": "0.1.1",
     "@kripod/uuidv7": "0.3.4",
     "@react-leaflet/core": "2.1.0",
-    "@shopify/react-web-worker": "5.0.17",
+    "@shopify/react-web-worker": "5.1.0",
     "@turf/bbox": "7.0.0",
     "@turf/buffer": "7.0.0",
     "@turf/convex": "7.0.0",
@@ -35,12 +35,12 @@
     "@turf/point-to-line-distance": "7.0.0",
     "@turf/points-within-polygon": "7.0.0",
     "@turf/polygon-to-line": "7.0.0",
-    "@uploadcare/blocks": "0.42.1",
+    "@uploadcare/blocks": "0.38.3",
     "allotment": "1.20.2",
     "array-move": "4.0.0",
     "dayjs": "1.11.11",
     "dotenv": "16.4.5",
-    "electric-sql": "0.11.3",
+    "electric-sql": "0.12.0",
     "framer-motion": "11.2.10",
     "is-uuid": "1.0.2",
     "leaflet": "1.9.4",
@@ -59,7 +59,7 @@
     "react-imask": "7.6.1",
     "react-leaflet": "4.2.1",
     "react-linkify": "1.0.0-alpha",
-    "react-resize-detector": "10.0.1",
+    "react-resize-detector": "11.0.1",
     "react-router-dom": "6.23.1",
     "react-xml-viewer": "2.0.1",
     "recharts": "2.12.7",
@@ -80,9 +80,9 @@
     "@types/proj4leaflet": "1.0.10",
     "@types/react": "18.3.3",
     "@types/react-dom": "18.3.0",
-    "@typescript-eslint/eslint-plugin": "7.12.0",
-    "@typescript-eslint/parser": "7.12.0",
-    "@vitejs/plugin-react": "4.3.0",
+    "@typescript-eslint/eslint-plugin": "7.13.0",
+    "@typescript-eslint/parser": "7.13.0",
+    "@vitejs/plugin-react": "4.3.1",
     "eslint": "9.4.0",
     "eslint-plugin-import": "2.29.1",
     "eslint-plugin-react-hooks": "4.6.2",
@@ -93,6 +93,7 @@
     "vite-plugin-svgr": "4.2.0"
   },
   "devRemarks": {
-    "zod": "dependency of electric-sql. Needed because: electric uses 3.21.4 which does not recognize v7 uuids, https://github.com/electric-sql/electric/issues/1153#issuecomment-2054014067, https://github.com/colinhacks/zod/issues/2184#issuecomment-2063265267"
+    "zod": "dependency of electric-sql. Needed because: electric uses 3.21.4 which does not recognize v7 uuids, https://github.com/electric-sql/electric/issues/1153#issuecomment-2054014067, https://github.com/colinhacks/zod/issues/2184#issuecomment-2063265267",
+    "@uploadcare/blocks": "DO NOT UPGRADE BEYOND 0.38.3. See: https://github.com/uploadcare/react-components/issues/33"
   }
 }

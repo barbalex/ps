@@ -19,7 +19,7 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
   electric:
-    image: electricsql/electric:0.11.1
+    image: electricsql/electric:0.12.0
     depends_on:
       - pg
     networks:
@@ -31,29 +31,31 @@ services:
       LOGICAL_PUBLISHER_HOST: electric
       PG_PROXY_PASSWORD: ${ELECTRIC_PG_PROXY_PASSWORD}
       AUTH_MODE: insecure
+      # TODO: deactivate for production
+      DATABASE_REQUIRE_SSL: false
     ports:
       - 5133:5133
       - 65432:65432
     restart: always
-  gbif:
-    container_name: ps-gbif-1
-    build:
-      context: ./gbif
-    depends_on:
-      - pg
-    networks:
-      - network
-    restart: always
-    env_file:
-      - ./.env
-    expose:
-      - '7000'
-    ports:
-      - '7000:7000'
-    volumes:
-      - gbif_data:/gbif_data
+  # gbif:
+  #   container_name: ps-gbif-1
+  #   build:
+  #     context: ./gbif
+  #   depends_on:
+  #     - pg
+  #   networks:
+  #     - network
+  #   restart: always
+  #   env_file:
+  #     - ./.env
+  #   expose:
+  #     - '7000'
+  #   ports:
+  #     - '7000:7000'
+  #   volumes:
+  #     - gbif_data:/gbif_data
 volumes:
-  gbif_data:
+  # gbif_data:
   pg_data:
 networks:
   network:
