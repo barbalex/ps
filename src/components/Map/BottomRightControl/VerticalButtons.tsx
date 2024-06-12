@@ -5,6 +5,9 @@ const verticalbuttonsStyle = {
   backgroundColor: 'white',
   margin: 0,
   cursor: 'auto',
+  position: 'relative',
+  pointerEvents: 'auto',
+  userSelect: 'none',
 }
 
 export const VerticalButtons = memo(() => {

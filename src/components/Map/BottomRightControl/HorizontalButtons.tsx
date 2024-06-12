@@ -5,6 +5,9 @@ const horizontalbuttonsStyle = {
   backgroundColor: 'white',
   margin: 0,
   cursor: 'auto',
+  position: 'relative',
+  pointerEvents: 'auto',
+  userSelect: 'none',
 }
 
 export const HorizontalButtons = memo(() => {

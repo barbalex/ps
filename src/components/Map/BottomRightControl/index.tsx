@@ -20,7 +20,6 @@ const containerStyle = {
   gap: 5,
   justifyItems: 'center',
   alignItems: 'stretch',
-  userSelect: 'none !important',
 }
 
 // TODO: only prevent click propagation in active grid areas
