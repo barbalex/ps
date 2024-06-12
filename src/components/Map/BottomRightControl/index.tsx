@@ -4,10 +4,16 @@ import { UiButton } from './UiButton.tsx'
 import { VerticalButtons } from './VerticalButtons.tsx'
 import { HorizontalButtons } from './HorizontalButtons.tsx'
 
+const containerStyle = {
+  position: 'absolute',
+  zIndex: 1000,
+  pointerEvents: 'none',
+  right: 10,
+  bottom: 10,
+}
 const innerDivStyle = {
   border: 'none !important',
   boxShadow: 'none !important',
-  // float children right
   display: 'grid',
   gridTemplateColumns: '1fr 50px',
   gridTemplateRows: '1fr 50px',
@@ -16,6 +22,8 @@ const innerDivStyle = {
     'horizontalbuttons uibutton'
   `,
   gap: 5,
+  justifyItems: 'center',
+  userSelect: 'none !important',
 }
 
 // TODO: only prevent click propagation in active grid areas
@@ -29,13 +37,11 @@ export const BottomRightControl = memo(() => {
   }, [])
 
   return (
-    <div className="leaflet-control-container first" ref={ref}>
-      <div className="leaflet-bottom leaflet-right">
-        <div style={innerDivStyle} className="leaflet-control leaflet-bar">
-          <VerticalButtons />
-          <HorizontalButtons />
-          <UiButton />
-        </div>
+    <div style={containerStyle} ref={ref}>
+      <div style={innerDivStyle}>
+        <VerticalButtons />
+        <HorizontalButtons />
+        <UiButton />
       </div>
     </div>
   )

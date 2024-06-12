@@ -3,6 +3,7 @@ import { useRef, useEffect, memo } from 'react'
 const verticalbuttonsStyle = {
   gridArea: 'verticalbuttons',
   backgroundColor: 'white',
+  margin: 0,
 }
 
 export const VerticalButtons = memo(() => {
@@ -15,7 +16,7 @@ export const VerticalButtons = memo(() => {
   }, [])
 
   return (
-    <div style={verticalbuttonsStyle} ref={ref}>
+    <div style={verticalbuttonsStyle} className="leaflet-control" ref={ref}>
       vertical buttons
     </div>
   )

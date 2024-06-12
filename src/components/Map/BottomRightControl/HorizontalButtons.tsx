@@ -3,6 +3,7 @@ import { useRef, useEffect, memo } from 'react'
 const horizontalbuttonsStyle = {
   gridArea: 'horizontalbuttons',
   backgroundColor: 'white',
+  margin: 0,
 }
 
 export const HorizontalButtons = memo(() => {
@@ -15,7 +16,7 @@ export const HorizontalButtons = memo(() => {
   }, [])
 
   return (
-    <div style={horizontalbuttonsStyle} ref={ref}>
+    <div style={horizontalbuttonsStyle} className="leaflet-control" ref={ref}>
       horizontal buttons
     </div>
   )

@@ -3,6 +3,7 @@ import { useRef, useEffect, memo } from 'react'
 const uibuttonStyle = {
   gridArea: 'uibutton',
   backgroundColor: 'white',
+  margin: 0,
 }
 
 export const UiButton = memo(() => {
@@ -15,7 +16,7 @@ export const UiButton = memo(() => {
   }, [])
 
   return (
-    <div style={uibuttonStyle} ref={ref}>
+    <div style={uibuttonStyle} className="leaflet-control" ref={ref}>
       uibotton
     </div>
   )
