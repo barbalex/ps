@@ -172,6 +172,7 @@ export type App_states = {
   tabs: Prisma.JsonValue | null
   map_bounds: Prisma.JsonValue | null
   show_local_map: Prisma.JsonValue | null
+  map_maximized: boolean | null
   tile_layer_sorter: string | null
   vector_layer_sorter: string | null
   /**
@@ -10658,6 +10659,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     designing: boolean | null
     breadcrumbs_overflowing: boolean | null
     navs_overflowing: boolean | null
+    map_maximized: boolean | null
     tile_layer_sorter: string | null
     vector_layer_sorter: string | null
     editing_place_geometry: string | null
@@ -10677,6 +10679,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     designing: boolean | null
     breadcrumbs_overflowing: boolean | null
     navs_overflowing: boolean | null
+    map_maximized: boolean | null
     tile_layer_sorter: string | null
     vector_layer_sorter: string | null
     editing_place_geometry: string | null
@@ -10699,6 +10702,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     tabs: number
     map_bounds: number
     show_local_map: number
+    map_maximized: number
     tile_layer_sorter: number
     vector_layer_sorter: number
     editing_place_geometry: number
@@ -10753,6 +10757,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     designing?: true
     breadcrumbs_overflowing?: true
     navs_overflowing?: true
+    map_maximized?: true
     tile_layer_sorter?: true
     vector_layer_sorter?: true
     editing_place_geometry?: true
@@ -10772,6 +10777,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     designing?: true
     breadcrumbs_overflowing?: true
     navs_overflowing?: true
+    map_maximized?: true
     tile_layer_sorter?: true
     vector_layer_sorter?: true
     editing_place_geometry?: true
@@ -10794,6 +10800,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     tabs?: true
     map_bounds?: true
     show_local_map?: true
+    map_maximized?: true
     tile_layer_sorter?: true
     vector_layer_sorter?: true
     editing_place_geometry?: true
@@ -10928,6 +10935,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     tabs: JsonValue | null
     map_bounds: JsonValue | null
     show_local_map: JsonValue | null
+    map_maximized: boolean | null
     tile_layer_sorter: string | null
     vector_layer_sorter: string | null
     editing_place_geometry: string | null
@@ -11000,6 +11008,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     tabs?: boolean
     map_bounds?: boolean
     show_local_map?: boolean
+    map_maximized?: boolean
     tile_layer_sorter?: boolean
     vector_layer_sorter?: boolean
     editing_place_geometry?: boolean
@@ -58200,6 +58209,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     tabs: 'tabs',
     map_bounds: 'map_bounds',
     show_local_map: 'show_local_map',
+    map_maximized: 'map_maximized',
     tile_layer_sorter: 'tile_layer_sorter',
     vector_layer_sorter: 'vector_layer_sorter',
     editing_place_geometry: 'editing_place_geometry',
@@ -59377,6 +59387,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     tabs?: JsonNullableFilter
     map_bounds?: JsonNullableFilter
     show_local_map?: JsonNullableFilter
+    map_maximized?: BoolNullableFilter | boolean | null
     tile_layer_sorter?: StringNullableFilter | string | null
     vector_layer_sorter?: StringNullableFilter | string | null
     editing_place_geometry?: UuidNullableFilter | string | null
@@ -59434,6 +59445,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     tabs?: SortOrder
     map_bounds?: SortOrder
     show_local_map?: SortOrder
+    map_maximized?: SortOrder
     tile_layer_sorter?: SortOrder
     vector_layer_sorter?: SortOrder
     editing_place_geometry?: SortOrder
@@ -59495,6 +59507,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     tabs?: SortOrder
     map_bounds?: SortOrder
     show_local_map?: SortOrder
+    map_maximized?: SortOrder
     tile_layer_sorter?: SortOrder
     vector_layer_sorter?: SortOrder
     editing_place_geometry?: SortOrder
@@ -59556,6 +59569,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     tabs?: JsonNullableWithAggregatesFilter
     map_bounds?: JsonNullableWithAggregatesFilter
     show_local_map?: JsonNullableWithAggregatesFilter
+    map_maximized?: BoolNullableWithAggregatesFilter | boolean | null
     tile_layer_sorter?: StringNullableWithAggregatesFilter | string | null
     vector_layer_sorter?: StringNullableWithAggregatesFilter | string | null
     editing_place_geometry?: UuidNullableWithAggregatesFilter | string | null
@@ -63259,6 +63273,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     tabs?: NullableJsonNullValueInput | InputJsonValue
     map_bounds?: NullableJsonNullValueInput | InputJsonValue
     show_local_map?: NullableJsonNullValueInput | InputJsonValue
+    map_maximized?: boolean | null
     tile_layer_sorter?: string | null
     vector_layer_sorter?: string | null
     editing_place_geometry?: string | null
@@ -63316,6 +63331,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     tabs?: NullableJsonNullValueInput | InputJsonValue
     map_bounds?: NullableJsonNullValueInput | InputJsonValue
     show_local_map?: NullableJsonNullValueInput | InputJsonValue
+    map_maximized?: boolean | null
     tile_layer_sorter?: string | null
     vector_layer_sorter?: string | null
     editing_place_geometry?: string | null
@@ -63369,6 +63385,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     tabs?: NullableJsonNullValueInput | InputJsonValue
     map_bounds?: NullableJsonNullValueInput | InputJsonValue
     show_local_map?: NullableJsonNullValueInput | InputJsonValue
+    map_maximized?: NullableBoolFieldUpdateOperationsInput | boolean | null
     tile_layer_sorter?: NullableStringFieldUpdateOperationsInput | string | null
     vector_layer_sorter?: NullableStringFieldUpdateOperationsInput | string | null
     editing_place_geometry?: NullableStringFieldUpdateOperationsInput | string | null
@@ -63426,6 +63443,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     tabs?: NullableJsonNullValueInput | InputJsonValue
     map_bounds?: NullableJsonNullValueInput | InputJsonValue
     show_local_map?: NullableJsonNullValueInput | InputJsonValue
+    map_maximized?: NullableBoolFieldUpdateOperationsInput | boolean | null
     tile_layer_sorter?: NullableStringFieldUpdateOperationsInput | string | null
     vector_layer_sorter?: NullableStringFieldUpdateOperationsInput | string | null
     editing_place_geometry?: NullableStringFieldUpdateOperationsInput | string | null
@@ -63481,6 +63499,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     tabs?: NullableJsonNullValueInput | InputJsonValue
     map_bounds?: NullableJsonNullValueInput | InputJsonValue
     show_local_map?: NullableJsonNullValueInput | InputJsonValue
+    map_maximized?: boolean | null
     tile_layer_sorter?: string | null
     vector_layer_sorter?: string | null
     editing_place_geometry?: string | null
@@ -63534,6 +63553,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     tabs?: NullableJsonNullValueInput | InputJsonValue
     map_bounds?: NullableJsonNullValueInput | InputJsonValue
     show_local_map?: NullableJsonNullValueInput | InputJsonValue
+    map_maximized?: NullableBoolFieldUpdateOperationsInput | boolean | null
     tile_layer_sorter?: NullableStringFieldUpdateOperationsInput | string | null
     vector_layer_sorter?: NullableStringFieldUpdateOperationsInput | string | null
     editing_place_geometry?: NullableStringFieldUpdateOperationsInput | string | null
@@ -63589,6 +63609,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     tabs?: NullableJsonNullValueInput | InputJsonValue
     map_bounds?: NullableJsonNullValueInput | InputJsonValue
     show_local_map?: NullableJsonNullValueInput | InputJsonValue
+    map_maximized?: NullableBoolFieldUpdateOperationsInput | boolean | null
     tile_layer_sorter?: NullableStringFieldUpdateOperationsInput | string | null
     vector_layer_sorter?: NullableStringFieldUpdateOperationsInput | string | null
     editing_place_geometry?: NullableStringFieldUpdateOperationsInput | string | null
@@ -68491,6 +68512,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     tabs?: SortOrder
     map_bounds?: SortOrder
     show_local_map?: SortOrder
+    map_maximized?: SortOrder
     tile_layer_sorter?: SortOrder
     vector_layer_sorter?: SortOrder
     editing_place_geometry?: SortOrder
@@ -68543,6 +68565,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     designing?: SortOrder
     breadcrumbs_overflowing?: SortOrder
     navs_overflowing?: SortOrder
+    map_maximized?: SortOrder
     tile_layer_sorter?: SortOrder
     vector_layer_sorter?: SortOrder
     editing_place_geometry?: SortOrder
@@ -68562,6 +68585,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     designing?: SortOrder
     breadcrumbs_overflowing?: SortOrder
     navs_overflowing?: SortOrder
+    map_maximized?: SortOrder
     tile_layer_sorter?: SortOrder
     vector_layer_sorter?: SortOrder
     editing_place_geometry?: SortOrder
@@ -78169,6 +78193,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     tabs?: NullableJsonNullValueInput | InputJsonValue
     map_bounds?: NullableJsonNullValueInput | InputJsonValue
     show_local_map?: NullableJsonNullValueInput | InputJsonValue
+    map_maximized?: boolean | null
     tile_layer_sorter?: string | null
     vector_layer_sorter?: string | null
     editing_place_geometry?: string | null
@@ -78224,6 +78249,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     tabs?: NullableJsonNullValueInput | InputJsonValue
     map_bounds?: NullableJsonNullValueInput | InputJsonValue
     show_local_map?: NullableJsonNullValueInput | InputJsonValue
+    map_maximized?: boolean | null
     tile_layer_sorter?: string | null
     vector_layer_sorter?: string | null
     editing_place_geometry?: string | null
@@ -79852,6 +79878,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     tabs?: JsonNullableFilter
     map_bounds?: JsonNullableFilter
     show_local_map?: JsonNullableFilter
+    map_maximized?: BoolNullableFilter | boolean | null
     tile_layer_sorter?: StringNullableFilter | string | null
     vector_layer_sorter?: StringNullableFilter | string | null
     editing_place_geometry?: UuidNullableFilter | string | null
@@ -98483,6 +98510,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     tabs?: NullableJsonNullValueInput | InputJsonValue
     map_bounds?: NullableJsonNullValueInput | InputJsonValue
     show_local_map?: NullableJsonNullValueInput | InputJsonValue
+    map_maximized?: boolean | null
     tile_layer_sorter?: string | null
     vector_layer_sorter?: string | null
     editing_place_geometry?: string | null
@@ -98538,6 +98566,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     tabs?: NullableJsonNullValueInput | InputJsonValue
     map_bounds?: NullableJsonNullValueInput | InputJsonValue
     show_local_map?: NullableJsonNullValueInput | InputJsonValue
+    map_maximized?: boolean | null
     tile_layer_sorter?: string | null
     vector_layer_sorter?: string | null
     editing_place_geometry?: string | null
@@ -100224,6 +100253,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     tabs?: NullableJsonNullValueInput | InputJsonValue
     map_bounds?: NullableJsonNullValueInput | InputJsonValue
     show_local_map?: NullableJsonNullValueInput | InputJsonValue
+    map_maximized?: boolean | null
     tile_layer_sorter?: string | null
     vector_layer_sorter?: string | null
     editing_place_geometry?: string | null
@@ -100866,6 +100896,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     tabs?: NullableJsonNullValueInput | InputJsonValue
     map_bounds?: NullableJsonNullValueInput | InputJsonValue
     show_local_map?: NullableJsonNullValueInput | InputJsonValue
+    map_maximized?: NullableBoolFieldUpdateOperationsInput | boolean | null
     tile_layer_sorter?: NullableStringFieldUpdateOperationsInput | string | null
     vector_layer_sorter?: NullableStringFieldUpdateOperationsInput | string | null
     editing_place_geometry?: NullableStringFieldUpdateOperationsInput | string | null
@@ -100921,6 +100952,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     tabs?: NullableJsonNullValueInput | InputJsonValue
     map_bounds?: NullableJsonNullValueInput | InputJsonValue
     show_local_map?: NullableJsonNullValueInput | InputJsonValue
+    map_maximized?: NullableBoolFieldUpdateOperationsInput | boolean | null
     tile_layer_sorter?: NullableStringFieldUpdateOperationsInput | string | null
     vector_layer_sorter?: NullableStringFieldUpdateOperationsInput | string | null
     editing_place_geometry?: NullableStringFieldUpdateOperationsInput | string | null
@@ -100975,6 +101007,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     tabs?: NullableJsonNullValueInput | InputJsonValue
     map_bounds?: NullableJsonNullValueInput | InputJsonValue
     show_local_map?: NullableJsonNullValueInput | InputJsonValue
+    map_maximized?: NullableBoolFieldUpdateOperationsInput | boolean | null
     tile_layer_sorter?: NullableStringFieldUpdateOperationsInput | string | null
     vector_layer_sorter?: NullableStringFieldUpdateOperationsInput | string | null
     editing_place_geometry?: NullableStringFieldUpdateOperationsInput | string | null
@@ -104984,6 +105017,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     tabs?: NullableJsonNullValueInput | InputJsonValue
     map_bounds?: NullableJsonNullValueInput | InputJsonValue
     show_local_map?: NullableJsonNullValueInput | InputJsonValue
+    map_maximized?: boolean | null
     tile_layer_sorter?: string | null
     vector_layer_sorter?: string | null
     editing_place_geometry?: string | null
@@ -105178,6 +105212,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     tabs?: NullableJsonNullValueInput | InputJsonValue
     map_bounds?: NullableJsonNullValueInput | InputJsonValue
     show_local_map?: NullableJsonNullValueInput | InputJsonValue
+    map_maximized?: NullableBoolFieldUpdateOperationsInput | boolean | null
     tile_layer_sorter?: NullableStringFieldUpdateOperationsInput | string | null
     vector_layer_sorter?: NullableStringFieldUpdateOperationsInput | string | null
     editing_place_geometry?: NullableStringFieldUpdateOperationsInput | string | null
@@ -105233,6 +105268,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     tabs?: NullableJsonNullValueInput | InputJsonValue
     map_bounds?: NullableJsonNullValueInput | InputJsonValue
     show_local_map?: NullableJsonNullValueInput | InputJsonValue
+    map_maximized?: NullableBoolFieldUpdateOperationsInput | boolean | null
     tile_layer_sorter?: NullableStringFieldUpdateOperationsInput | string | null
     vector_layer_sorter?: NullableStringFieldUpdateOperationsInput | string | null
     editing_place_geometry?: NullableStringFieldUpdateOperationsInput | string | null
