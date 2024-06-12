@@ -1,12 +1,12 @@
 import { useRef, useEffect, memo } from 'react'
 
-const uibuttonStyle = {
-  gridArea: 'uibutton',
+const verticalbuttonsStyle = {
+  gridArea: 'verticalbuttons',
   backgroundColor: 'white',
 }
 
 // TODO: only prevent click propagation in active grid areas
-export const UiButton = memo(() => {
+export const VerticalButtons = memo(() => {
   // prevent click propagation on to map
   // https://stackoverflow.com/a/57013052/712005
   const ref = useRef()
@@ -16,8 +16,8 @@ export const UiButton = memo(() => {
   }, [])
 
   return (
-    <div style={uibuttonStyle} ref={ref}>
-      uibotton
+    <div style={verticalbuttonsStyle} ref={ref}>
+      vertical buttons
     </div>
   )
 })
