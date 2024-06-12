@@ -19,7 +19,7 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
   electric:
-    image: electricsql/electric:0.11.1
+    image: electricsql/electric:0.12.0
     depends_on:
       - pg
     networks:
@@ -31,6 +31,7 @@ services:
       LOGICAL_PUBLISHER_HOST: electric
       PG_PROXY_PASSWORD: ${ELECTRIC_PG_PROXY_PASSWORD}
       AUTH_MODE: insecure
+      DATABASE_REQUIRE_SSL: false
     ports:
       - 5133:5133
       - 65432:65432
