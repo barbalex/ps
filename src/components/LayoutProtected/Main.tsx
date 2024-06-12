@@ -31,23 +31,23 @@ export const Main = memo(() => {
   const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
-  const { results: appStateByEmail } = useLiveQuery(
+  const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
-  const tabs = useMemo(
-    () => appStateByEmail?.tabs ?? [],
-    [appStateByEmail?.tabs],
-  )
-  const designing = appStateByEmail?.designing ?? false
+  const tabs = useMemo(() => appState?.tabs ?? [], [appState?.tabs])
+  const designing = appState?.designing ?? false
+  const mapMaximized = appState?.mapMaximized ?? false
 
   if (onlyForm) return <Outlet />
 
   return (
     <div style={containerStyle}>
       <Allotment>
-        {tabs.includes('tree') && <Tree designing={designing} />}
-        {tabs.includes('data') && <Outlet />}
-        {tabs.includes('filter') && <Filter />}
+        {!mapMaximized && tabs.includes('tree') && (
+          <Tree designing={designing} />
+        )}
+        {!mapMaximized && tabs.includes('data') && <Outlet />}
+        {!mapMaximized && tabs.includes('filter') && <Filter />}
         {tabs.includes('map') && <Map />}
       </Allotment>
     </div>
