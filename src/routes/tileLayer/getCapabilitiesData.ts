@@ -20,11 +20,11 @@ export const getCapabilitiesData = async ({
 }: Props) => {
   if (!row?.wms_base_url) return undefined
 
-  console.log('getCapabilitiesData 1', {
-    label: row.label,
-    id: row.tile_layer_id,
-    db,
-  })
+  // console.log('getCapabilitiesData 1', {
+  //   label: row.label,
+  //   id: row.tile_layer_id,
+  //   db,
+  // })
 
   const values = {}
 
@@ -33,7 +33,7 @@ export const getCapabilitiesData = async ({
     service: 'WMS',
   })
 
-  console.log('getCapabilitiesData 2, capabilities:', capabilities)
+  // console.log('getCapabilitiesData 2, capabilities:', capabilities)
 
   if (!capabilities) return undefined
 
@@ -74,10 +74,10 @@ export const getCapabilitiesData = async ({
     v?.CRS?.includes('EPSG:4326'),
   )
   // console.log('hello, getCapabilitiesData 1, layers:', layers)
-  console.log(
-    'getCapabilitiesData 3, layer swisstopo pixel farbe:',
-    layers.find((l) => l.Name === 'ch.swisstopo.pixelkarte-farbe'),
-  )
+  // console.log(
+  //   'getCapabilitiesData 3, layer swisstopo pixel farbe:',
+  //   layers.find((l) => l.Name === 'ch.swisstopo.pixelkarte-farbe'),
+  // )
   // TODO: because upsert errors and single creates are slow
   // https://github.com/electric-sql/electric/issues/916
   // Deleting may not be good because other layers might use the same layer_option_id
