@@ -8,6 +8,10 @@ const uibuttonStyle = {
   position: 'relative',
   pointerEvents: 'auto',
   userSelect: 'none',
+  display: 'flex',
+  flexWrap: 'nowrap',
+  flexDirection: 'row',
+  alignItems: 'center',
 }
 
 export const UiButton = memo(() => {

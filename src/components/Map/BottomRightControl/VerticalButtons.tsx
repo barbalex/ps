@@ -8,6 +8,12 @@ const verticalbuttonsStyle = {
   position: 'relative',
   pointerEvents: 'auto',
   userSelect: 'none',
+  display: 'flex',
+  flexWrap: 'nowrap',
+  flexDirection: 'column',
+  justifyItems: 'center',
+  justifyContent: 'center',
+  alignItems: 'center',
 }
 
 export const VerticalButtons = memo(() => {

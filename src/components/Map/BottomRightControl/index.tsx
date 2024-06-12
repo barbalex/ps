@@ -18,7 +18,7 @@ const containerStyle = {
     'horizontalbuttons uibutton'
   `,
   gap: 5,
-  justifyItems: 'center',
+  justifyItems: 'stretch',
   alignItems: 'stretch',
 }
 

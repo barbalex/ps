@@ -8,6 +8,10 @@ const horizontalbuttonsStyle = {
   position: 'relative',
   pointerEvents: 'auto',
   userSelect: 'none',
+  display: 'flex',
+  flexWrap: 'nowrap',
+  flexDirection: 'row',
+  alignItems: 'center',
 }
 
 export const HorizontalButtons = memo(() => {
