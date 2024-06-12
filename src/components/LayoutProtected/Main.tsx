@@ -7,7 +7,6 @@ import { useCorbado } from '@corbado/react'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Tree } from '../Tree/index.tsx'
-import { Filter } from '../Filter/index.tsx'
 import { Map } from '../Map/index.tsx'
 
 const containerStyle = {
@@ -47,7 +46,6 @@ export const Main = memo(() => {
           <Tree designing={designing} />
         )}
         {!mapMaximized && tabs.includes('data') && <Outlet />}
-        {!mapMaximized && tabs.includes('filter') && <Filter />}
         {tabs.includes('map') && <Map />}
       </Allotment>
     </div>

@@ -93,7 +93,6 @@ export const Menu = memo(() => {
 
   const treeIsActive = tabs.includes('tree')
   const dataIsActive = tabs.includes('data')
-  const filterIsActive = tabs.includes('filter')
   const mapIsActive = tabs.includes('map')
 
   return (
@@ -126,7 +125,7 @@ export const Menu = memo(() => {
               style={css(
                 buildButtonStyle({
                   prevIsActive: treeIsActive,
-                  nextIsActive: filterIsActive,
+                  nextIsActive: mapIsActive,
                   selfIsActive: dataIsActive,
                 }),
               )}
@@ -134,26 +133,12 @@ export const Menu = memo(() => {
               Data
             </ToolbarToggleButton>
             <ToolbarToggleButton
-              aria-label="Filter"
-              name="tabs"
-              value="filter"
-              style={css(
-                buildButtonStyle({
-                  prevIsActive: dataIsActive,
-                  nextIsActive: mapIsActive,
-                  selfIsActive: filterIsActive,
-                }),
-              )}
-            >
-              Filter
-            </ToolbarToggleButton>
-            <ToolbarToggleButton
               aria-label="Map"
               name="tabs"
               value="map"
               style={css(
                 buildButtonStyle({
-                  prevIsActive: filterIsActive,
+                  prevIsActive: dataIsActive,
                   nextIsActive: false,
                   selfIsActive: mapIsActive,
                 }),
