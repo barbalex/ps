@@ -18,6 +18,7 @@ const horizontalbuttonsStyle = {
   alignItems: 'center',
 }
 
+// TODO: add: ruler, scale, coordinates
 export const HorizontalButtons = memo(() => {
   const { user: authUser } = useCorbado()
 
@@ -26,7 +27,7 @@ export const HorizontalButtons = memo(() => {
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
   const hideMapUi = appState?.map_hide_ui ?? false
-  
+
   // prevent click propagation on to map
   // https://stackoverflow.com/a/57013052/712005
   const ref = useRef()

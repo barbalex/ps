@@ -11,8 +11,8 @@ const containerStyle = {
   right: 10,
   bottom: 10,
   display: 'grid',
-  gridTemplateColumns: '1fr 50px',
-  gridTemplateRows: '1fr 50px',
+  gridTemplateColumns: '1fr 40px',
+  gridTemplateRows: '1fr 40px',
   gridTemplateAreas: `
     '. verticalbuttons'
     'horizontalbuttons uibutton'

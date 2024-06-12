@@ -4,6 +4,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
+import './uiButton.css'
 
 const uibuttonStyle = {
   gridArea: 'uibutton',
@@ -18,6 +19,13 @@ const uibuttonStyle = {
   flexDirection: 'row',
   alignItems: 'center',
   justifyContent: 'center',
+}
+const switchStyle = {
+  width: 40,
+  height: 40,
+  backgroundColor: 'white',
+  border: '0.666667px solid rgb(209, 209, 209)',
+  borderRadius: 4,
 }
 
 export const UiButton = memo(() => {
@@ -50,6 +58,7 @@ export const UiButton = memo(() => {
         title={hideMapUi ? 'Show UI' : 'Hide UI'}
         checked={hideMapUi}
         onChange={onChange}
+        style={switchStyle}
       />
     </div>
   )
