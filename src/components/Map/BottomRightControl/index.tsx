@@ -1,5 +1,7 @@
 import { useRef, useEffect, memo } from 'react'
 
+import { UiButton } from './UiButton.tsx'
+
 const innerDivStyle = {
   border: 'none !important',
   boxShadow: 'none !important',
@@ -14,10 +16,6 @@ const innerDivStyle = {
   gap: 5,
 }
 
-const uibuttonStyle = {
-  gridArea: 'uibutton',
-  backgroundColor: 'white',
-}
 const verticalbuttonsStyle = {
   gridArea: 'verticalbuttons',
   backgroundColor: 'white',
@@ -43,7 +41,7 @@ export const BottomRightControl = memo(() => {
         <div style={innerDivStyle} className="leaflet-control leaflet-bar">
           <div style={verticalbuttonsStyle}>vertical buttons</div>
           <div style={horizontalbuttonsStyle}>horizontal buttons</div>
-          <div style={uibuttonStyle}>uibotton</div>
+          <UiButton />
         </div>
       </div>
     </div>
