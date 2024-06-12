@@ -31,6 +31,7 @@ services:
       LOGICAL_PUBLISHER_HOST: electric
       PG_PROXY_PASSWORD: ${ELECTRIC_PG_PROXY_PASSWORD}
       AUTH_MODE: insecure
+      # TODO: deactivate for production
       DATABASE_REQUIRE_SSL: false
     ports:
       - 5133:5133
