@@ -5,13 +5,9 @@ import {
   ToolbarToggleButton,
 } from '@fluentui/react-components'
 import { FaCog } from 'react-icons/fa'
+import { TbArrowsMaximize, TbArrowsMinimize } from 'react-icons/tb'
 import { MdLogout, MdLogin } from 'react-icons/md'
-import {
-  useNavigate,
-  useParams,
-  useSearchParams,
-  useLocation,
-} from 'react-router-dom'
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 
@@ -67,6 +63,7 @@ export const Menu = memo(() => {
       where: { user_email: authUser?.email },
     }),
   )
+  const mapIsMaximized = appState?.map_maximized ?? false
   // To debug not having any data: query all users
   const tabs = useMemo(() => appState?.tabs ?? [], [appState?.tabs])
   const onChangeTabs = useCallback(
@@ -90,6 +87,28 @@ export const Menu = memo(() => {
 
   const onClickLogout = useCallback(() => logout(), [logout])
   const onClickEnter = useCallback(() => navigate('/data/projects'), [navigate])
+
+  const onClickMapView = useCallback(
+    (e) => {
+      // prevent toggling map tab
+      e.stopPropagation()
+
+      // if map is not included in app_sate.tabs, add it
+      if (!tabs.includes('map')) {
+        db.app_states.update({
+          where: { app_state_id: appState?.app_state_id },
+          data: { tabs: [...tabs, 'map'] },
+        })
+      }
+
+      // toggle map maximized
+      db.app_states.update({
+        where: { app_state_id: appState?.app_state_id },
+        data: { map_maximized: !mapIsMaximized },
+      })
+    },
+    [appState?.app_state_id, db.app_states, mapIsMaximized, tabs],
+  )
 
   const treeIsActive = tabs.includes('tree')
   const dataIsActive = tabs.includes('data')
@@ -133,6 +152,20 @@ export const Menu = memo(() => {
               Data
             </ToolbarToggleButton>
             <ToolbarToggleButton
+              icon={
+                mapIsMaximized ? (
+                  <TbArrowsMinimize
+                    onClick={onClickMapView}
+                    title={mapIsMaximized ? 'Resize Map' : 'Maximize Map'}
+                  />
+                ) : (
+                  <TbArrowsMaximize
+                    onClick={onClickMapView}
+                    title={mapIsMaximized ? 'Resize Map' : 'Maximize Map'}
+                  />
+                )
+              }
+              iconPosition="after"
               aria-label="Map"
               name="tabs"
               value="map"
@@ -143,6 +176,7 @@ export const Menu = memo(() => {
                   selfIsActive: mapIsActive,
                 }),
               )}
+              title={tabs.includes('map') ? 'Hide Map' : 'Show Map'}
             >
               Map
             </ToolbarToggleButton>

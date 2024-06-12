@@ -35,7 +35,8 @@ export const Main = memo(() => {
   )
   const tabs = useMemo(() => appState?.tabs ?? [], [appState?.tabs])
   const designing = appState?.designing ?? false
-  const mapMaximized = appState?.mapMaximized ?? false
+  const mapMaximized =
+    (appState?.map_maximized && tabs.includes('map')) ?? false
 
   if (onlyForm) return <Outlet />
 
