@@ -4,6 +4,7 @@ const uibuttonStyle = {
   gridArea: 'uibutton',
   backgroundColor: 'white',
   margin: 0,
+  cursor: 'auto',
 }
 
 export const UiButton = memo(() => {
@@ -16,7 +17,7 @@ export const UiButton = memo(() => {
   }, [])
 
   return (
-    <div style={uibuttonStyle} className="leaflet-control" ref={ref}>
+    <div style={uibuttonStyle} ref={ref}>
       uibotton
     </div>
   )

@@ -10,10 +10,6 @@ const containerStyle = {
   pointerEvents: 'none',
   right: 10,
   bottom: 10,
-}
-const innerDivStyle = {
-  border: 'none !important',
-  boxShadow: 'none !important',
   display: 'grid',
   gridTemplateColumns: '1fr 50px',
   gridTemplateRows: '1fr 50px',
@@ -23,6 +19,7 @@ const innerDivStyle = {
   `,
   gap: 5,
   justifyItems: 'center',
+  alignItems: 'stretch',
   userSelect: 'none !important',
 }
 
@@ -38,11 +35,9 @@ export const BottomRightControl = memo(() => {
 
   return (
     <div style={containerStyle} ref={ref}>
-      <div style={innerDivStyle}>
-        <VerticalButtons />
-        <HorizontalButtons />
-        <UiButton />
-      </div>
+      <VerticalButtons />
+      <HorizontalButtons />
+      <UiButton />
     </div>
   )
 })

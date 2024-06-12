@@ -4,6 +4,7 @@ const verticalbuttonsStyle = {
   gridArea: 'verticalbuttons',
   backgroundColor: 'white',
   margin: 0,
+  cursor: 'auto',
 }
 
 export const VerticalButtons = memo(() => {
@@ -16,7 +17,7 @@ export const VerticalButtons = memo(() => {
   }, [])
 
   return (
-    <div style={verticalbuttonsStyle} className="leaflet-control" ref={ref}>
+    <div style={verticalbuttonsStyle} ref={ref}>
       vertical buttons
     </div>
   )

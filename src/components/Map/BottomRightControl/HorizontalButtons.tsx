@@ -4,6 +4,7 @@ const horizontalbuttonsStyle = {
   gridArea: 'horizontalbuttons',
   backgroundColor: 'white',
   margin: 0,
+  cursor: 'auto',
 }
 
 export const HorizontalButtons = memo(() => {
@@ -16,7 +17,7 @@ export const HorizontalButtons = memo(() => {
   }, [])
 
   return (
-    <div style={horizontalbuttonsStyle} className="leaflet-control" ref={ref}>
+    <div style={horizontalbuttonsStyle} ref={ref}>
       horizontal buttons
     </div>
   )
