@@ -2,6 +2,7 @@ import { useRef, useEffect, memo } from 'react'
 
 import { UiButton } from './UiButton.tsx'
 import { VerticalButtons } from './VerticalButtons.tsx'
+import { HorizontalButtons } from './HorizontalButtons.tsx'
 
 const innerDivStyle = {
   border: 'none !important',
@@ -15,11 +16,6 @@ const innerDivStyle = {
     'horizontalbuttons uibutton'
   `,
   gap: 5,
-}
-
-const horizontalbuttonsStyle = {
-  gridArea: 'horizontalbuttons',
-  backgroundColor: 'white',
 }
 
 // TODO: only prevent click propagation in active grid areas
@@ -37,7 +33,7 @@ export const BottomRightControl = memo(() => {
       <div className="leaflet-bottom leaflet-right">
         <div style={innerDivStyle} className="leaflet-control leaflet-bar">
           <VerticalButtons />
-          <div style={horizontalbuttonsStyle}>horizontal buttons</div>
+          <HorizontalButtons />
           <UiButton />
         </div>
       </div>

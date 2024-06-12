@@ -1,11 +1,11 @@
 import { useRef, useEffect, memo } from 'react'
 
-const uibuttonStyle = {
-  gridArea: 'uibutton',
+const horizontalbuttonsStyle = {
+  gridArea: 'horizontalbuttons',
   backgroundColor: 'white',
 }
 
-export const UiButton = memo(() => {
+export const HorizontalButtons = memo(() => {
   // prevent click propagation on to map
   // https://stackoverflow.com/a/57013052/712005
   const ref = useRef()
@@ -15,8 +15,8 @@ export const UiButton = memo(() => {
   }, [])
 
   return (
-    <div style={uibuttonStyle} ref={ref}>
-      uibotton
+    <div style={horizontalbuttonsStyle} ref={ref}>
+      horizontal buttons
     </div>
   )
 })

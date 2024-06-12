@@ -5,7 +5,6 @@ const verticalbuttonsStyle = {
   backgroundColor: 'white',
 }
 
-// TODO: only prevent click propagation in active grid areas
 export const VerticalButtons = memo(() => {
   // prevent click propagation on to map
   // https://stackoverflow.com/a/57013052/712005
