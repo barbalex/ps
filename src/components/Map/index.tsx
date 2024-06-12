@@ -18,7 +18,8 @@ import { tableNameFromIdField } from '../../modules/tableNameFromIdField.ts'
 import { DrawControl } from './DrawControl/index.tsx'
 import { TableLayers } from './TableLayers/index.tsx'
 import { BoundsListener } from './BoundsListener.tsx'
-// import { Control } from './Control'
+// import { Control } from './Control.tsx'
+import { BottomRightControl } from './BottomRightControl/index.tsx'
 // import { OwnControls } from './OwnControls'
 import { ErrorBoundary } from '../shared/ErrorBoundary.tsx'
 
@@ -88,9 +89,7 @@ export const Map = () => {
           <TileLayers key={`${tileLayerSorter}/tileLayers`} />
           <TableLayers />
           <VectorLayers key={`${vectorLayerSorter}/vectorLayers`} />
-          {/* <Control position="topright" visible={true}>
-          <OwnControls />
-        </Control> */}
+          <BottomRightControl position="bottomright" visible={true} />
           <BoundsListener />
         </MapContainer>
       </div>
