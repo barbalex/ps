@@ -157,12 +157,12 @@ export const Menu = memo(() => {
                 mapIsMaximized ? (
                   <TbArrowsMinimize
                     onClick={onClickMapView}
-                    title={mapIsMaximized ? 'Resize Map' : 'Maximize Map'}
+                    title="Shrink Map"
                   />
                 ) : (
                   <TbArrowsMaximize
                     onClick={onClickMapView}
-                    title={mapIsMaximized ? 'Resize Map' : 'Maximize Map'}
+                    title="Maximize Map"
                   />
                 )
               }
