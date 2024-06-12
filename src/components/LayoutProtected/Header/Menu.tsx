@@ -52,8 +52,7 @@ export const Menu = memo(() => {
   const { pathname } = useLocation()
   const isHome = pathname === '/'
 
-  const { isAuthenticated, logout } = useCorbado()
-  const { user: authUser } = useCorbado()
+  const { isAuthenticated, logout, user: authUser } = useCorbado()
 
   const isAppStates = pathname.includes('app-states')
 
@@ -134,6 +133,7 @@ export const Menu = memo(() => {
                   selfIsActive: treeIsActive,
                 }),
               )}
+              disabled={mapIsMaximized}
             >
               Tree
             </ToolbarToggleButton>
@@ -148,6 +148,7 @@ export const Menu = memo(() => {
                   selfIsActive: dataIsActive,
                 }),
               )}
+              disabled={mapIsMaximized}
             >
               Data
             </ToolbarToggleButton>
@@ -195,6 +196,7 @@ export const Menu = memo(() => {
             color: 'white',
             on: ($) => [$('&:hover', { filter: 'brightness(85%)' })],
           })}
+          disabled={mapIsMaximized}
         />
       )}
       <Button
