@@ -77,6 +77,7 @@ export const Map = () => {
       <div style={mapContainerStyle} ref={resizeRef}>
         <MapContainer
           className="map-container"
+          zoomControl={false}
           style={mapContainerStyle}
           // maxZoom={22}
           // minZoom={0}
