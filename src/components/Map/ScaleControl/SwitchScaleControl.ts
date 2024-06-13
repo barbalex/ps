@@ -178,6 +178,7 @@ export const SwitchScaleControl = L.Control.extend({
 
     scales.forEach(this._addScale.bind(this))
 
+    // deactivated customScaleInput because: not working as expected
     // var customScaleInput = L.DomUtil.create(
     //   'input',
     //   className + '-custom-scale',
