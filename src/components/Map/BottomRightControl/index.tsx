@@ -1,7 +1,7 @@
 import { memo } from 'react'
 
 import { UiButton } from './UiButton.tsx'
-import { VerticalButtons } from './VerticalButtons.tsx'
+import { VerticalButtons } from './VerticalButtons/index.tsx'
 import { HorizontalButtons } from './HorizontalButtons.tsx'
 
 const containerStyle = {

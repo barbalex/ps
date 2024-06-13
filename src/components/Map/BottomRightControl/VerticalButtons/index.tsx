@@ -8,9 +8,9 @@ import {
 } from '@fluentui/react-components'
 import { IoMdLocate } from 'react-icons/io'
 import { FaMinus, FaPlus } from 'react-icons/fa'
-import { useMap, useMapEvent } from 'react-leaflet'
+import { useMap } from 'react-leaflet'
 
-import { useElectric } from '../../../ElectricProvider.tsx'
+import { useElectric } from '../../../../ElectricProvider.tsx'
 
 const verticalbuttonsStyle = {
   gridArea: 'verticalbuttons',
@@ -73,7 +73,6 @@ export const VerticalButtons = memo(() => {
   if (hideMapUi) return null
 
   // TODO: add: zoom to project bounds
-  // TODO: add locating
   return (
     <div style={verticalbuttonsStyle} ref={ref}>
       <Toolbar vertical aria-label="vertical toolbar">
