@@ -22,6 +22,7 @@ import { BoundsListener } from './BoundsListener.tsx'
 import { BottomRightControl } from './BottomRightControl/index.tsx'
 // import { OwnControls } from './OwnControls'
 import { ErrorBoundary } from '../shared/ErrorBoundary.tsx'
+import { ScaleControl } from './ScaleControl/index.tsx'
 
 const mapContainerStyle = {
   width: '100%',
@@ -87,6 +88,7 @@ export const Map = () => {
           ref={mapRef}
         >
           {mapIsLocating && <LocationMarker />}
+          <ScaleControl imperial={false} />
           <DrawControl />
           <TileLayers key={`${tileLayerSorter}/tileLayers`} />
           <TableLayers />

@@ -50,6 +50,8 @@ CREATE TYPE project_type AS enum(
   'biotope'
 );
 
+-- TODO: add crs for presentation
+-- TODO: add geometry
 CREATE TABLE projects(
   project_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
