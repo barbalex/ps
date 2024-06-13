@@ -1,8 +1,11 @@
 import { memo } from 'react'
+import { useLiveQuery } from 'electric-sql/react'
+import { useCorbado } from '@corbado/react'
 
 import { UiButton } from './UiButton.tsx'
 import { VerticalButtons } from './VerticalButtons/index.tsx'
 import { HorizontalButtons } from './HorizontalButtons.tsx'
+import { useElectric } from '../../../ElectricProvider.tsx'
 
 const containerStyle = {
   position: 'absolute',
@@ -20,10 +23,24 @@ const containerStyle = {
   alignItems: 'stretch',
 }
 
-export const BottomRightControl = memo(() => (
-  <div style={containerStyle}>
-    <VerticalButtons />
-    <HorizontalButtons />
-    <UiButton />
-  </div>
-))
+export const BottomRightControl = memo(() => {
+  const { user: authUser } = useCorbado()
+
+  const { db } = useElectric()!
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+  )
+  const hideMapUi = appState?.map_hide_ui ?? false
+
+  return (
+    <div style={containerStyle}>
+      {!hideMapUi && (
+        <>
+          <VerticalButtons />
+          <HorizontalButtons />
+        </>
+      )}
+      <UiButton />
+    </div>
+  )
+})
