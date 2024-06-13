@@ -37,6 +37,7 @@ export const Map = () => {
   )
   const tileLayerSorter = appState?.tile_layer_sorter ?? ''
   const vectorLayerSorter = appState?.vector_layer_sorter ?? ''
+  const mapIsLocating = appState?.map_locate ?? false
 
   const mapRef = useRef()
 
@@ -84,7 +85,7 @@ export const Map = () => {
           zoom={13}
           ref={mapRef}
         >
-          <LocationMarker />
+          {mapIsLocating && <LocationMarker />}
           <DrawControl />
           <TileLayers key={`${tileLayerSorter}/tileLayers`} />
           <TableLayers />

@@ -1174,6 +1174,7 @@ CREATE TABLE app_states(
   show_local_map jsonb DEFAULT NULL, -- map of id (layer.id, key) and show boolean
   map_maximized boolean DEFAULT NULL, -- FALSE
   map_hide_ui boolean DEFAULT NULL, -- FALSE
+  map_locate boolean DEFAULT NULL, -- FALSE
   tile_layer_sorter text DEFAULT NULL,
   vector_layer_sorter text DEFAULT NULL,
   editing_place_geometry uuid DEFAULT NULL,
