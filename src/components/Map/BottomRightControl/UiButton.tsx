@@ -8,7 +8,6 @@ import './uiButton.css'
 
 const uibuttonStyle = {
   gridArea: 'uibutton',
-  backgroundColor: 'white',
   margin: 0,
   cursor: 'auto',
   position: 'relative',
@@ -55,7 +54,7 @@ export const UiButton = memo(() => {
   return (
     <div style={uibuttonStyle} ref={ref}>
       <Switch
-        title={hideMapUi ? 'Show UI' : 'Hide UI'}
+        title={hideMapUi ? 'Show Map UI' : 'Hide Map UI'}
         checked={hideMapUi}
         onChange={onChange}
         style={switchStyle}
