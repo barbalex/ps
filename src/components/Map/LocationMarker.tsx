@@ -12,7 +12,7 @@ export const LocationMarker = () => {
   })
 
   useEffect(() => {
-    map && map.locate()
+    map && map.locate({ watch: false, enableHighAccuracy: true })
   }, [map])
 
   return position === null ? null : (
