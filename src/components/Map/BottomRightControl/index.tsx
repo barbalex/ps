@@ -6,8 +6,6 @@ import { HorizontalButtons } from './HorizontalButtons.tsx'
 
 const containerStyle = {
   position: 'absolute',
-  zIndex: 1000,
-  pointerEvents: 'none',
   right: 10,
   bottom: 10,
   display: 'grid',

@@ -14,7 +14,7 @@ import { useElectric } from '../../../ElectricProvider.tsx'
 
 const verticalbuttonsStyle = {
   gridArea: 'verticalbuttons',
-  // backgroundColor: 'white',
+  zIndex: 1000,
   margin: 0,
   cursor: 'auto',
   position: 'relative',

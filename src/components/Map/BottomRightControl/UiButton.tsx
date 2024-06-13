@@ -8,6 +8,7 @@ import './uiButton.css'
 
 const uibuttonStyle = {
   gridArea: 'uibutton',
+  zIndex: 1000,
   margin: 0,
   cursor: 'auto',
   position: 'relative',

@@ -6,6 +6,7 @@ import { useElectric } from '../../../ElectricProvider.tsx'
 
 const horizontalbuttonsStyle = {
   gridArea: 'horizontalbuttons',
+  zIndex: 1000,
   backgroundColor: 'white',
   margin: 0,
   cursor: 'auto',
