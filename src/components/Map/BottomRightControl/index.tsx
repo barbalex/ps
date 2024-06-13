@@ -9,8 +9,8 @@ import { useElectric } from '../../../ElectricProvider.tsx'
 
 const containerStyle = {
   position: 'absolute',
-  right: 10,
-  bottom: 10,
+  right: 5,
+  bottom: 20,
   display: 'grid',
   gridTemplateColumns: '1fr 40px',
   gridTemplateRows: '1fr 40px',
