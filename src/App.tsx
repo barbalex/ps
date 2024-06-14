@@ -32,7 +32,7 @@ export default function App() {
   const uploaderRef = createRef<HTMLElement | null>(null)
 
   return (
-    <FluentProvider theme={lightTheme} id="style-provider">
+    <FluentProvider theme={lightTheme}>
       <lr-upload-ctx-provider
         ref={uploaderRef}
         ctx-name="uploadcare-uploader"

@@ -32,7 +32,7 @@ export const HorizontalButtons = memo(() => {
   }, [])
 
   return (
-    <div style={horizontalbuttonsStyle} ref={ref} id="horizontal-buttons">
+    <div style={horizontalbuttonsStyle} ref={ref}>
       <ScaleControl />
       <ScaleSwitchControl />
     </div>

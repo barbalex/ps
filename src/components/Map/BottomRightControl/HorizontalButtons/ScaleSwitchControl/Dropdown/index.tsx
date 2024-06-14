@@ -52,6 +52,7 @@ export const Dropdown = memo(
           />
         ))}
       </div>,
+      // insert below root to get all the style configs (font-family etc.)
       document.getElementById('router-container'),
     )
   },

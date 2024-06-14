@@ -27,6 +27,7 @@ export const ScaleControl = memo(() => {
   const [width, setWidth] = useState(0)
 
   const update = useCallback(() => {
+    console.log('ScaleControl.update 1')
     if (!map.getSize().y > 0) return
 
     const y = map.getSize().y / 2
