@@ -7,21 +7,21 @@ export const SwitchScaleControl = L.Control.extend({
     position: 'bottomleft',
     dropdownDirection: 'upward',
     className: 'map-control-scalebar',
-    updateWhenIdle: false,
+    updateWhenIdle: true,
     ratio: true,
-    ratioPrefix: '1:',
-    ratioCustomItemText: '1: другой...',
-    customScaleTitle: 'Задайте свой масштаб и нажмите Enter',
+    ratioPrefix: '1: ',
+    ratioCustomItemText: '1: type to set...',
+    customScaleTitle: 'Choose Scale',
     ratioMenu: true,
 
     // If recalcOnZoomChange is false, then recalcOnPositionChange is always false.
-    recalcOnPositionChange: false,
-    recalcOnZoomChange: false,
+    recalcOnPositionChange: true,
+    recalcOnZoomChange: true,
     scales: [
-      500, 1000, 2000, 5000, 10000, 25000, 50000, 100000, 200000, 500000,
+      2000, 5000, 10000, 25000, 50000, 100000, 200000, 500000,
       1000000, 2500000, 5000000, 10000000,
     ],
-    roundScales: null,
+    roundScales: undefined,
     adjustScales: false,
 
     // Returns pixels per meter; needed if ratio: true.
@@ -41,23 +41,7 @@ export const SwitchScaleControl = L.Control.extend({
     },
 
     render: function (ratio) {
-      var scaleRatioText = ratio.toString()
-      // 1500000 -> 1'500'000
-      if (scaleRatioText.length > 3) {
-        var joinerChar = "'"
-        scaleRatioText = scaleRatioText
-          .split('')
-          .reverse()
-          .join('')
-          .replace(/([0-9]{3})/g, '$1' + joinerChar)
-        if (scaleRatioText[scaleRatioText.length - 1] === joinerChar) {
-          scaleRatioText = scaleRatioText.slice(0, -1)
-        }
-
-        scaleRatioText = scaleRatioText.split('').reverse().join('')
-      }
-
-      return this.options.ratioPrefix + scaleRatioText
+      return '1 : ' + ratio?.toLocaleString('de-ch')
     },
   },
 
@@ -94,6 +78,8 @@ export const SwitchScaleControl = L.Control.extend({
     )
 
     L.DomEvent.disableClickPropagation(container)
+
+    console.log('SwitchScaleControl.onAdd, container:', container)
 
     return container
   },
@@ -179,51 +165,6 @@ export const SwitchScaleControl = L.Control.extend({
     scales.forEach(this._addScale.bind(this))
 
     // deactivated customScaleInput because: not working as expected
-    // var customScaleInput = L.DomUtil.create(
-    //   'input',
-    //   className + '-custom-scale',
-    //   this.dropdown,
-    // )
-    // customScaleInput.type = 'text'
-    // customScaleInput.setAttribute('value', options.ratioCustomItemText)
-    // customScaleInput.addEventListener('focus', function (e) {
-    //   if (this.value === options.ratioCustomItemText) {
-    //     this.value = options.ratioPrefix
-
-    //     // IE fix.
-    //     if (this.createTextRange) {
-    //       var r = this.createTextRange()
-    //       r.moveStart('character', this.value.length)
-    //       r.select()
-    //     }
-    //   }
-
-    //   e.stopPropagation()
-    // })
-
-    // customScaleInput.addEventListener('keydown', function (e) {
-    //   if (e.which !== 13) return
-
-    //   var scaleRatioFound = this.value
-    //     .replace(' ', '')
-    //     .replace("'", '')
-    //     .match(/^(1:){0,1}([0-9]*)$/)
-    //   if (scaleRatioFound && scaleRatioFound[2]) {
-    //     var maxScale = Math.max(scales)
-
-    //     if (_this.options.adjustScales && scaleRatioFound[2] > maxScale) {
-    //       _this._setScale.call(_this, scales[scales.length - 1])
-    //     } else {
-    //       _this._setScale.call(_this, scaleRatioFound[2])
-    //     }
-    //   }
-
-    //   e.preventDefault()
-    // })
-
-    // customScaleInput.addEventListener('keypress', function (e) {
-    //   if (e.charCode && (e.charCode < 48 || e.charCode > 57)) e.preventDefault()
-    // })
   },
 
   _updateRound: function () {
