@@ -54,7 +54,9 @@ export const ScaleControl = memo(() => {
   const map = useMap()
 
   const [scale, setScale] = useState(1)
+
   const [open, setOpen] = useState(false)
+  const close = useCallback(() => setOpen(false), [])
 
   // pixels per meter are needed if ratio: true.
   const [pixelsInMeterWidth, setPixelsInMeterWidth] = useState(0)
@@ -110,6 +112,8 @@ export const ScaleControl = memo(() => {
         open={open}
         boundingRect={ref.current?.getBoundingClientRect?.()}
         width={width}
+        close={close}
+        pixelsInMeterWidth={pixelsInMeterWidth}
       />
       <div style={textStyle} onClick={onClick} ref={ref}>
         {`1 : ${scale?.toLocaleString('de-ch')}`}

@@ -23,6 +23,7 @@ export const Dropdown = memo(
     open,
     boundingRect,
     width,
+    close,pixelsInMeterWidth
   }) => {
     if (!open) return null
     if (!boundingRect) return null
@@ -49,7 +50,7 @@ export const Dropdown = memo(
         }}
       >
         {scales.map((scale) => (
-          <Item key={scale} scale={scale} />
+          <Item key={scale} scale={scale} close={close} pixelsInMeterWidth={pixelsInMeterWidth} />
         ))}
       </div>,
       document.getElementById('router-container'),
