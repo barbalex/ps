@@ -50,7 +50,7 @@ const textStyle = {
   minWidth: 72,
 }
 
-export const ScaleControl = memo(() => {
+export const ScaleSwitchControl = memo(() => {
   const map = useMap()
 
   const [scale, setScale] = useState(1)

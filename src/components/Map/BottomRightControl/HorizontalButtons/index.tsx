@@ -1,7 +1,7 @@
 import { useRef, useEffect, memo } from 'react'
 import { ScaleControl } from 'react-leaflet'
 
-import { ScaleControl as ScaleSwitchControl } from '../../ScaleControl/index.tsx'
+import { ScaleSwitchControl } from './ScaleControl/index.tsx'
 
 const horizontalbuttonsStyle = {
   gridArea: 'horizontalbuttons',
