@@ -4,7 +4,7 @@ import { useCorbado } from '@corbado/react'
 
 import { UiButton } from './UiButton.tsx'
 import { VerticalButtons } from './VerticalButtons/index.tsx'
-import { HorizontalButtons } from './HorizontalButtons.tsx'
+import { HorizontalButtons } from './HorizontalButtons/index.tsx'
 import { useElectric } from '../../../ElectricProvider.tsx'
 
 const containerStyle = {
