@@ -75,7 +75,7 @@ export const Map = () => {
 
   return (
     <ErrorBoundary>
-      <div style={mapContainerStyle} ref={resizeRef}>
+      <div style={mapContainerStyle} ref={resizeRef} id="map">
         <MapContainer
           className="map-container"
           zoomControl={false}

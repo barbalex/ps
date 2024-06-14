@@ -1,5 +1,7 @@
-import { useState, useEffect, memo, useCallback } from 'react'
+import { useState, useEffect, memo, useCallback, useRef } from 'react'
 import { useMap } from 'react-leaflet'
+
+import { Dropdown } from './Dropdown.tsx'
 
 const options = {
   position: 'bottomleft',
@@ -27,6 +29,11 @@ const options = {
 const getMapWidthForLanInMeters = (currentLan) =>
   6378137 * 2 * Math.PI * Math.cos((currentLan * Math.PI) / 180)
 
+const containerStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'flex-end',
+}
 const textStyle = {
   cursor: 'pointer',
   height: 20,
@@ -46,6 +53,9 @@ export const ScaleControl = memo(() => {
   const map = useMap()
 
   const [scale, setScale] = useState(1)
+  const [open, setOpen] = useState(false)
+
+  const textRef = useRef()
 
   // pixels per meter are needed if ratio: true.
   const [pixelsInMeterWidth, setPixelsInMeterWidth] = useState(0)
@@ -83,7 +93,20 @@ export const ScaleControl = memo(() => {
     }
   }, [map, scale, updateScale])
 
+  const onClick = useCallback(() => setOpen(!open), [open])
+
   console.log('ScaleControl', { scale, pixelsInMeterWidth })
 
-  return <div style={textStyle}>{`1 : ${scale?.toLocaleString('de-ch')}`}</div>
+  return (
+    <div style={containerStyle}>
+      <Dropdown
+        scales={options.scales}
+        open={open}
+        boundingRect={textRef.current?.getBoundingClientRect?.()}
+      />
+      <div style={textStyle} onClick={onClick} ref={textRef}>
+        {`1 : ${scale?.toLocaleString('de-ch')}`}
+      </div>
+    </div>
+  )
 })
