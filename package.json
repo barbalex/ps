@@ -44,7 +44,6 @@
     "is-uuid": "1.0.2",
     "leaflet": "1.9.4",
     "leaflet-draw": "1.0.4",
-    "leaflet-switch-scale-control": "https://github.com/victorzinho/leaflet-switch-scale-control",
     "lodash": "4.17.21",
     "proj4": "2.11.0",
     "proj4leaflet": "1.0.2",
