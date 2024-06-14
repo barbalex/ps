@@ -19,7 +19,7 @@ const horizontalbuttonsStyle = {
   alignItems: 'center',
 }
 
-// TODO: add: ruler, scale, coordinates
+// TODO: add: ruler, coordinates
 export const HorizontalButtons = memo(() => {
   // prevent click propagation on to map
   // https://stackoverflow.com/a/57013052/712005
