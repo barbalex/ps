@@ -1,8 +1,7 @@
 import { memo } from 'react'
 import { createPortal } from 'react-dom'
 
-import { css } from '../../../css.ts'
-import { z } from 'zod'
+import { Item } from './Item.tsx'
 
 const dropdownStyle = {
   borderBottom: 'none',
@@ -11,12 +10,8 @@ const dropdownStyle = {
   overflowY: 'hidden',
   transition: 'max-height 0.2s ease-in-out',
   position: 'absolute',
+  width: 100,
   zIndex: 1000,
-}
-
-const itemStyle = {
-  cursor: 'pointer',
-  padding: '2px 5px',
 }
 
 export const Dropdown = memo(
@@ -45,27 +40,17 @@ export const Dropdown = memo(
         style={{
           ...dropdownStyle,
           maxHeight: open ? `${scales.length * 2}em` : 0,
-          border: open ? '2px solid #777' : 'none',
-          bottom: rootHeight - boundingRect.y,
+          border: open ? '1.5px solid #777' : 'none',
+          borderBottom: 'none',
+          bottom: rootHeight - boundingRect.y - 1,
           left: boundingRect.x,
         }}
       >
         {scales.map((scale) => (
-          <div
-            key={scale}
-            style={css({
-              ...itemStyle,
-              on: ($) => [$('&:hover', { backgroundColor: 'lightgray' })],
-            })}
-            onClick={() => {
-              // TODO: set scale
-            }}
-          >
-            {scale.toLocaleString('de-ch')}
-          </div>
+          <Item key={scale} scale={scale} />
         ))}
       </div>,
-      document.getElementById('root'),
+      document.getElementById('router-container'),
     )
   },
 )

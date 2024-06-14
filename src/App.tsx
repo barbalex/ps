@@ -32,13 +32,13 @@ export default function App() {
   const uploaderRef = createRef<HTMLElement | null>(null)
 
   return (
-    <FluentProvider theme={lightTheme}>
+    <FluentProvider theme={lightTheme} id="style-provider">
       <lr-upload-ctx-provider
         ref={uploaderRef}
         ctx-name="uploadcare-uploader"
       ></lr-upload-ctx-provider>
       <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
-      <div style={routerContainerStyle}>
+      <div style={routerContainerStyle} id="router-container">
         <UploaderContext.Provider value={uploaderRef}>
           <RouterProvider
             router={router()}

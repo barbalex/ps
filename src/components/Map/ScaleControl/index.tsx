@@ -1,7 +1,7 @@
 import { useState, useEffect, memo, useCallback, useRef } from 'react'
 import { useMap } from 'react-leaflet'
 
-import { Dropdown } from './Dropdown.tsx'
+import { Dropdown } from './Dropdown/index.tsx'
 
 const options = {
   position: 'bottomleft',
@@ -33,16 +33,17 @@ const containerStyle = {
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'flex-end',
+  fontSize: '1em',
 }
 const textStyle = {
   cursor: 'pointer',
   height: 20,
-  border: '2px solid #777',
-  padding: '2px 5px 1px',
+  border: '1.5px solid #777',
+  padding: '2px 5px',
   background: 'rgba(255, 255, 255, 0.7)',
   textAlign: 'center',
   // same width as dropdown
-  width: '7em',
+  width: 100,
   // ensure text always fits in the box
   whiteSpace: 'nowrap',
   overflow: 'hidden',
