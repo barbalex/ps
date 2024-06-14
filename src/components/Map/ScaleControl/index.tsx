@@ -27,7 +27,20 @@ const options = {
 const getMapWidthForLanInMeters = (currentLan) =>
   6378137 * 2 * Math.PI * Math.cos((currentLan * Math.PI) / 180)
 
-const render = (ratio) => `1 : ${ratio?.toLocaleString('de-ch')}`
+const textStyle = {
+  cursor: 'pointer',
+  height: 20,
+  border: '2px solid #777',
+  padding: '2px 5px 1px',
+  background: 'rgba(255, 255, 255, 0.7)',
+  textAlign: 'center',
+  // same width as dropdown
+  width: '7em',
+  // ensure text always fits in the box
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+}
 
 export const ScaleControl = memo(() => {
   const map = useMap()
@@ -54,9 +67,9 @@ export const ScaleControl = memo(() => {
     const mapWidth = getMapWidthForLanInMeters(centerLat)
     const ratio =
       (pixelsInMeterWidth * mapWidth) / map.options.crs.scale(map.getZoom())
-    const scaleText = Math.round(ratio)
-    setScale(scaleText)
-  })
+    const scale = Math.round(ratio / 1000) * 1000
+    setScale(scale)
+  }, [map, pixelsInMeterWidth])
 
   useEffect(() => {
     const moveEvent = options.updateWhenIdle ? 'moveend' : 'move'
@@ -72,5 +85,5 @@ export const ScaleControl = memo(() => {
 
   console.log('ScaleControl', { scale, pixelsInMeterWidth })
 
-  return <div>ScaleControl</div>
+  return <div style={textStyle}>{`1 : ${scale?.toLocaleString('de-ch')}`}</div>
 })
