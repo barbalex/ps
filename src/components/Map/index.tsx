@@ -22,7 +22,7 @@ import { BoundsListener } from './BoundsListener.tsx'
 import { BottomRightControl } from './BottomRightControl/index.tsx'
 // import { OwnControls } from './OwnControls'
 import { ErrorBoundary } from '../shared/ErrorBoundary.tsx'
-import { ScaleControl } from './ScaleControl/index.tsx'
+import { ScaleControl } from './ScaleControlOrig/index.tsx'
 
 const mapContainerStyle = {
   width: '100%',

@@ -1,5 +1,7 @@
 import { useRef, useEffect, memo } from 'react'
 
+import { ScaleControl } from '../ScaleControl/index.tsx'
+
 const horizontalbuttonsStyle = {
   gridArea: 'horizontalbuttons',
   zIndex: 1000,
@@ -27,7 +29,7 @@ export const HorizontalButtons = memo(() => {
 
   return (
     <div style={horizontalbuttonsStyle} ref={ref}>
-      horizontal buttons
+      <ScaleControl />
     </div>
   )
 })
