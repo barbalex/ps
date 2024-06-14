@@ -22,24 +22,10 @@ export const Item = memo(({ scale, close, pixelsInMeterWidth }) => {
   const onClick = useCallback(() => {
     const bounds = map.getBounds()
     const centerLat = bounds.getCenter().lat
-    const currentZoom = map.getZoom()
     const mapWidth = getMapWidthForLanInMeters(centerLat)
-    const ratio =
-      (pixelsInMeterWidth * mapWidth) / map.options.crs.scale(currentZoom)
-    const crsScale = (pixelsInMeterWidth * mapWidth) / ratio
-    const zoom = map.options.crs.zoom(crsScale)
-    console.log('Item.onClick', {
-      scale,
-      ratio,
-      crsScale,
-      zoom,
-      mapWidth,
-      centerLat,
-      bounds,
-      currentZoom,
-      pixelsInMeterWidth,
-    })
-    map.setZoom(zoom)
+    const crsScale = (pixelsInMeterWidth * mapWidth) / scale
+    const newZoom = map.options.crs.zoom(crsScale)
+    map.setZoom(newZoom)
     close()
   }, [close, map, pixelsInMeterWidth, scale])
 

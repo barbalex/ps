@@ -88,7 +88,6 @@ export const Map = () => {
           ref={mapRef}
         >
           {mapIsLocating && <LocationMarker />}
-          <ScaleControl imperial={false} />
           <DrawControl />
           <TileLayers key={`${tileLayerSorter}/tileLayers`} />
           <TableLayers />

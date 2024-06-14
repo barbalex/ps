@@ -23,19 +23,13 @@ export const Dropdown = memo(
     open,
     boundingRect,
     width,
-    close,pixelsInMeterWidth
+    close,
+    pixelsInMeterWidth,
   }) => {
     if (!open) return null
     if (!boundingRect) return null
 
     const rootHeight = document.getElementById('root')?.clientHeight
-
-    console.log('boundingRect', {
-      boundingRect,
-      bottom: boundingRect.y + window.scrollY,
-      left: boundingRect.x,
-      rootHeight,
-    })
 
     return createPortal(
       <div
@@ -50,7 +44,12 @@ export const Dropdown = memo(
         }}
       >
         {scales.map((scale) => (
-          <Item key={scale} scale={scale} close={close} pixelsInMeterWidth={pixelsInMeterWidth} />
+          <Item
+            key={scale}
+            scale={scale}
+            close={close}
+            pixelsInMeterWidth={pixelsInMeterWidth}
+          />
         ))}
       </div>,
       document.getElementById('router-container'),

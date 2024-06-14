@@ -68,7 +68,7 @@ export const ScaleControl = memo(() => {
     const px = div.offsetWidth
     document.body.removeChild(div)
     setPixelsInMeterWidth(px)
-  }, [])
+  }, [scale])
 
   const updateScale = useCallback(() => {
     if (!(map.getSize().x > 0 && options.ratio)) return
@@ -102,8 +102,6 @@ export const ScaleControl = memo(() => {
     refreshRate: 100,
     refreshOptions: { leading: false, trailing: true },
   })
-
-  console.log('ScaleControl', { scale, pixelsInMeterWidth })
 
   return (
     <div style={containerStyle}>
