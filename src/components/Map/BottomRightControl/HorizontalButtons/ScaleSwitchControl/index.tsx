@@ -4,28 +4,6 @@ import { useResizeDetector } from 'react-resize-detector'
 
 import { Dropdown } from './Dropdown/index.tsx'
 
-const options = {
-  position: 'bottomleft',
-  dropdownDirection: 'upward',
-  className: 'map-control-scalebar',
-  updateWhenIdle: true,
-  ratio: true,
-  ratioPrefix: '1: ',
-  ratioCustomItemText: '1: type to set...',
-  customScaleTitle: 'Choose Scale',
-  ratioMenu: true,
-
-  // If recalcOnZoomChange is false, then recalcOnPositionChange is always false.
-  recalcOnPositionChange: true,
-  recalcOnZoomChange: true,
-  scales: [
-    2000, 5000, 10000, 25000, 50000, 100000, 200000, 500000, 1000000, 2500000,
-    5000000, 10000000,
-  ],
-  roundScales: undefined,
-  adjustScales: false,
-}
-
 // Returns width of map in meters on specified latitude
 const getMapWidthForLanInMeters = (currentLan) =>
   6378137 * 2 * Math.PI * Math.cos((currentLan * Math.PI) / 180)
@@ -73,7 +51,7 @@ export const ScaleSwitchControl = memo(() => {
   }, [scale])
 
   const updateScale = useCallback(() => {
-    if (!(map.getSize().x > 0 && options.ratio)) return
+    if (!(map.getSize().x > 0)) return
 
     const bounds = map.getBounds()
     const centerLat = bounds.getCenter().lat
@@ -85,17 +63,14 @@ export const ScaleSwitchControl = memo(() => {
   }, [map, pixelsInMeterWidth])
 
   useEffect(() => {
-    const moveEvent = options.updateWhenIdle ? 'moveend' : 'move'
-    map.on(moveEvent, updateScale)
-
-    const zoomEvent = options.updateWhenIdle ? 'zoomend' : 'zoom'
-    map.on(zoomEvent, updateScale)
+    map.on('moveend', updateScale)
+    map.on('zoomend', updateScale)
 
     map.whenReady(updateScale)
 
     return () => {
-      map.off(moveEvent)
-      map.off(zoomEvent)
+      map.off('moveend')
+      map.off('zoomend')
     }
   }, [map, scale, updateScale])
 
@@ -111,7 +86,6 @@ export const ScaleSwitchControl = memo(() => {
   return (
     <div style={containerStyle}>
       <Dropdown
-        scales={options.scales}
         open={open}
         boundingRect={ref.current?.getBoundingClientRect?.()}
         width={width}

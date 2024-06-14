@@ -27,6 +27,8 @@ export const ScaleControl = memo(() => {
   const [width, setWidth] = useState(0)
 
   const update = useCallback(() => {
+    if (!map.getSize().y > 0) return
+
     const y = map.getSize().y / 2
     const maxMeters = map.distance(
       map.containerPointToLatLng([0, y]),
