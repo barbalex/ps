@@ -1,7 +1,7 @@
 import { useRef, useEffect, memo } from 'react'
-import { ScaleControl } from 'react-leaflet'
 
-import { ScaleSwitchControl } from './ScaleControl/index.tsx'
+import { ScaleSwitchControl } from './ScaleSwitchControl/index.tsx'
+import { ScaleControl } from './ScaleControl.tsx'
 
 const horizontalbuttonsStyle = {
   gridArea: 'horizontalbuttons',
@@ -18,6 +18,7 @@ const horizontalbuttonsStyle = {
   flexWrap: 'nowrap',
   flexDirection: 'row',
   alignItems: 'center',
+  columnGap: 5,
 }
 
 // TODO: add: ruler, coordinates
@@ -30,12 +31,10 @@ export const HorizontalButtons = memo(() => {
     L.DomEvent.disableScrollPropagation(ref.current)
   }, [])
 
-  console.log('hello HorizontalButtons, ScaleControl:', ScaleControl)
-
   return (
-    <div style={horizontalbuttonsStyle} ref={ref}>
+    <div style={horizontalbuttonsStyle} ref={ref} id="horizontal-buttons">
+      <ScaleControl />
       <ScaleSwitchControl />
-      <div id="scale-container" />
     </div>
   )
 })

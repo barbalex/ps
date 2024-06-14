@@ -36,7 +36,7 @@ export const Dropdown = memo(
         style={{
           ...dropdownStyle,
           maxHeight: open ? `${scales.length * 2}em` : 0,
-          border: open ? '1.5px solid #777' : 'none',
+          border: open ? '1px solid black' : 'none',
           borderBottom: 'none',
           bottom: rootHeight - boundingRect.y - 1,
           left: boundingRect.x,

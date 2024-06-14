@@ -1,0 +1,56 @@
+import { useState, useEffect, memo, useCallback } from 'react'
+import { useMap } from 'react-leaflet'
+
+const maxWidth = 110
+
+const getRoundNum = (num) => {
+  const pow10 = Math.pow(10, `${Math.floor(num)}`.length - 1)
+  let d = num / pow10
+
+  d = d >= 10 ? 10 : d >= 5 ? 5 : d >= 3 ? 3 : d >= 2 ? 2 : 1
+
+  return pow10 * d
+}
+
+const style = {
+  border: '1px solid black',
+  borderTop: 'none',
+  display: 'flex',
+  justifyContent: 'center',
+  padding: '2px 0',
+}
+
+export const ScaleControl = memo(() => {
+  const map = useMap()
+
+  const [text, setText] = useState('')
+  const [width, setWidth] = useState(0)
+
+  const update = useCallback(() => {
+    const y = map.getSize().y / 2
+    const maxMeters = map.distance(
+      map.containerPointToLatLng([0, y]),
+      map.containerPointToLatLng([maxWidth, y]),
+    )
+    const meters = getRoundNum(maxMeters)
+
+    const text = meters < 1000 ? `${meters} m` : `${meters / 1000} km`
+    const width = Math.round((maxWidth * meters) / maxMeters)
+    console.log('ScaleControl.update', { text, width })
+    setText(text)
+    setWidth(width)
+  }, [map])
+
+  useEffect(() => {
+    map.on('moveend', update)
+    map.on('zoomend', update)
+    map.whenReady(update)
+
+    return () => {
+      map.off('moveend')
+      map.off('zoomend')
+    }
+  }, [map, update])
+
+  return <div style={{ ...style, width }}>{text}</div>
+})

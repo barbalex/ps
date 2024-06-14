@@ -37,10 +37,12 @@ const containerStyle = {
   fontSize: '1em',
 }
 const textStyle = {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
   cursor: 'pointer',
-  height: 20,
-  border: '1.5px solid #777',
-  padding: '2px 5px',
+  border: '1px solid black',
+  padding: '2px 4px',
   background: 'rgba(255, 255, 255, 0.7)',
   textAlign: 'center',
   // ensure text always fits in the box
@@ -85,8 +87,11 @@ export const ScaleSwitchControl = memo(() => {
   useEffect(() => {
     const moveEvent = options.updateWhenIdle ? 'moveend' : 'move'
     map.on(moveEvent, updateScale)
+
     const zoomEvent = options.updateWhenIdle ? 'zoomend' : 'zoom'
     map.on(zoomEvent, updateScale)
+
+    map.whenReady(updateScale)
 
     return () => {
       map.off(moveEvent)
