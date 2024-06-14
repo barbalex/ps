@@ -1,5 +1,6 @@
-import { useState, useEffect, memo, useCallback, useRef } from 'react'
+import { useState, useEffect, memo, useCallback } from 'react'
 import { useMap } from 'react-leaflet'
+import { useResizeDetector } from 'react-resize-detector'
 
 import { Dropdown } from './Dropdown/index.tsx'
 
@@ -42,12 +43,11 @@ const textStyle = {
   padding: '2px 5px',
   background: 'rgba(255, 255, 255, 0.7)',
   textAlign: 'center',
-  // same width as dropdown
-  width: 100,
   // ensure text always fits in the box
   whiteSpace: 'nowrap',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
+  minWidth: 72,
 }
 
 export const ScaleControl = memo(() => {
@@ -55,8 +55,6 @@ export const ScaleControl = memo(() => {
 
   const [scale, setScale] = useState(1)
   const [open, setOpen] = useState(false)
-
-  const textRef = useRef()
 
   // pixels per meter are needed if ratio: true.
   const [pixelsInMeterWidth, setPixelsInMeterWidth] = useState(0)
@@ -96,6 +94,13 @@ export const ScaleControl = memo(() => {
 
   const onClick = useCallback(() => setOpen(!open), [open])
 
+  const { width, ref } = useResizeDetector({
+    handleHeight: false,
+    refreshMode: 'debounce',
+    refreshRate: 100,
+    refreshOptions: { leading: false, trailing: true },
+  })
+
   console.log('ScaleControl', { scale, pixelsInMeterWidth })
 
   return (
@@ -103,9 +108,10 @@ export const ScaleControl = memo(() => {
       <Dropdown
         scales={options.scales}
         open={open}
-        boundingRect={textRef.current?.getBoundingClientRect?.()}
+        boundingRect={ref.current?.getBoundingClientRect?.()}
+        width={width}
       />
-      <div style={textStyle} onClick={onClick} ref={textRef}>
+      <div style={textStyle} onClick={onClick} ref={ref}>
         {`1 : ${scale?.toLocaleString('de-ch')}`}
       </div>
     </div>

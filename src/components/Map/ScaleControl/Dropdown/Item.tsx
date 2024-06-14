@@ -3,8 +3,11 @@ import { css } from '../../../../css.ts'
 
 const itemStyle = {
   cursor: 'pointer',
-  padding: '2px 5px',
-  fontSize: '1em',
+  padding: '2px 0',
+  fontSize: '0.9em',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
 }
 
 export const Item = memo(({ scale }) => {

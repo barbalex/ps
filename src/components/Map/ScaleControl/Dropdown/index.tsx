@@ -4,13 +4,13 @@ import { createPortal } from 'react-dom'
 import { Item } from './Item.tsx'
 
 const dropdownStyle = {
+  padding: '0 5px',
   borderBottom: 'none',
   background: 'white',
   maxHeight: '30em',
   overflowY: 'hidden',
   transition: 'max-height 0.2s ease-in-out',
   position: 'absolute',
-  width: 100,
   zIndex: 1000,
 }
 
@@ -22,6 +22,7 @@ export const Dropdown = memo(
     ],
     open,
     boundingRect,
+    width,
   }) => {
     if (!open) return null
     if (!boundingRect) return null
@@ -44,6 +45,7 @@ export const Dropdown = memo(
           borderBottom: 'none',
           bottom: rootHeight - boundingRect.y - 1,
           left: boundingRect.x,
+          width,
         }}
       >
         {scales.map((scale) => (
