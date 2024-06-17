@@ -69,8 +69,8 @@ export const ScaleSwitchControl = memo(() => {
     map.whenReady(updateScale)
 
     return () => {
-      map.off('moveend')
-      map.off('zoomend')
+      map.off('moveend', updateScale)
+      map.off('zoomend', updateScale)
     }
   }, [map, scale, updateScale])
 
