@@ -2,6 +2,7 @@ import { memo, useMemo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 import { useParams } from 'react-router-dom'
+import { useMapEvent } from 'react-leaflet/hooks'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
 
@@ -36,6 +37,8 @@ export const ClickListener = memo(() => {
     vectorLayers,
     vectorLayerTypes: vectorLayers.map((vl) => vl.type),
   })
+
+  // TODO: filter non-wfs layers by querying using ST_CONTAINS once postgis arrives in pglite
 
   return null
 })
