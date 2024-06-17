@@ -21,6 +21,7 @@ import { BoundsListener } from './BoundsListener.tsx'
 // import { Control } from './Control.tsx'
 import { BottomRightControl } from './BottomRightControl/index.tsx'
 // import { OwnControls } from './OwnControls'
+import { ClickListener } from './ClickListener/index.tsx'
 import { ErrorBoundary } from '../shared/ErrorBoundary.tsx'
 
 const mapContainerStyle = {
@@ -87,6 +88,7 @@ export const Map = () => {
           ref={mapRef}
         >
           {mapIsLocating && <LocationMarker />}
+          <ClickListener />
           <DrawControl />
           <TileLayers key={`${tileLayerSorter}/tileLayers`} />
           <TableLayers />
