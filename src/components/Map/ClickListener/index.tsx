@@ -6,6 +6,8 @@ import { useMapEvent, useMap } from 'react-leaflet/hooks'
 import axios from 'redaxios'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
+import { xmlToLayersData } from '../../../modules/xmlToLayersData.ts'
+import { createNotification } from '../../../modules/createRows.ts'
 
 export const ClickListener = memo(() => {
   const { project_id } = useParams()
@@ -72,28 +74,26 @@ export const ClickListener = memo(() => {
       console.log('Map ClickListener, onClick', { vectorLayers, where })
       // loop through vector layers and get infos
       for (const layer of vectorLayers) {
-        const { vector_layer_id, label, wfs_url, wfs_layer } = layer
-        const url = `${wfs_url}?service=WFS&version=1.0.0&request=GetFeature&typeName=${wfs_layer}&outputFormat=application/json&cql_filter=INTERSECTS(the_geom, POINT(${lng} ${lat}))`
-        console.log('Map ClickListener, onClick', { url })
+        const { wfs_version, wfs_url, wfs_layer } = layer
 
         let res
         const failedToFetch = false
         const params = {
           ...standardParams,
-          version: layer.wfs_version ?? standardParams.version,
-          layers: (wfs_layer ?? []).join(','),
-          query_layers: (wfs_layer ?? []).join(','),
+          version: wfs_version ?? standardParams.version,
+          layers: wfs_layer?.value,
+          query_layers: wfs_layer?.value,
         }
         try {
           res = await axios.get({
             method: 'get',
-            url: layer.wfs_url,
+            url: wfs_url,
             params,
           })
         } catch (error) {
           console.log({ error, errorToJSON: error?.toJSON?.(), res })
           if (error.status == 406) {
-            // user clicked where no massn exists
+            // user clicked where no feature exists
           } else if (error.response) {
             // The request was made and the server responded with a status code
             // that falls out of the range of 2xx
@@ -115,16 +115,17 @@ export const ClickListener = memo(() => {
           if (error.message?.toLowerCase()?.includes('failed to fetch')) {
             failedToFetch = true
           }
-          // TODO:
-          // failedToFetch &&
-          //   enqueNotification({
-          //     message: `Der GIS-Server, der die Massnahmen übermitteln soll, hat einen Fehler gemeldet. Informationen von Massnahmen werden daher nicht angezeigt, auch wenn eine Massnahme geklickt worden sein sollte`,
-          //     options: {
-          //       variant: 'info',
-          //     },
-          //   })
+          if (failedToFetch) {
+            const data = createNotification({
+              title: `Fehler beim Laden der Informationen für ${layer.label}`,
+              body: error.message,
+              intent: 'info',
+            })
+            db.notifications.create({ data })
+          }
         }
         if (!failedToFetch && res?.data) {
+          console.log('Map ClickListener, onClick, data:', res?.data)
           const parser = new window.DOMParser()
           const dataArray = xmlToLayersData(
             parser.parseFromString(res.data, 'text/html'),
@@ -136,9 +137,16 @@ export const ClickListener = memo(() => {
             })
           }
         }
+        console.log('Map ClickListener, onClick', { layersData })
       }
     },
-    [appState?.filter_vector_layers, db.vector_layers, map, project_id],
+    [
+      appState?.filter_vector_layers,
+      db.notifications,
+      db.vector_layers,
+      map,
+      project_id,
+    ],
   )
 
   useMapEvent('click', onClick)
