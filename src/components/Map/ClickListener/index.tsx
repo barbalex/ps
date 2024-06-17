@@ -18,6 +18,9 @@ export const ClickListener = memo(() => {
 
   const onClick = useCallback(
     async (event) => {
+      // vector layers are defined on projects
+      if (!project_id) return
+
       const { lat, lng } = event.latlng
       const zoom = map.getZoom()
       console.log('Map ClickListener, onClick', { lat, lng, zoom })
