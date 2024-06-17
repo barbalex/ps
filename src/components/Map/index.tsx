@@ -2,7 +2,7 @@ import { useCallback, useRef, useEffect } from 'react'
 import 'leaflet'
 import 'proj4'
 import 'proj4leaflet'
-import { MapContainer, ScaleControl } from 'react-leaflet'
+import { MapContainer } from 'react-leaflet'
 import { useResizeDetector } from 'react-resize-detector'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
@@ -92,7 +92,6 @@ export const Map = () => {
           <TableLayers />
           <VectorLayers key={`${vectorLayerSorter}/vectorLayers`} />
           <BottomRightControl position="bottomright" visible={true} />
-          <ScaleControl imperial={false} />
           <BoundsListener />
         </MapContainer>
       </div>
