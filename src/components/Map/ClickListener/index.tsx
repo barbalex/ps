@@ -24,6 +24,11 @@ export const ClickListener = memo(() => {
   )
   const where = filter.length > 1 ? { OR: filter } : filter[0]
 
+  // Three types of querying:
+  // 1. Vector Layers from own tables
+  // 2. Vector Layers from WFS with pre-downloaded data
+  // 3. Vector Layers from WFS with no pre-downloaded data
+
   const { results: vectorLayers = [] } = useLiveQuery(
     db.vector_layers.liveMany({
       where: { project_id, active: true, ...where },
@@ -38,7 +43,7 @@ export const ClickListener = memo(() => {
     vectorLayerTypes: vectorLayers.map((vl) => vl.type),
   })
 
-  // TODO: filter non-wfs layers by querying using ST_CONTAINS once postgis arrives in pglite
+  // TODO: filter non-wfs layers by querying db.vector_layer_geoms using ST_CONTAINS once postgis arrives in pglite
 
   return null
 })
