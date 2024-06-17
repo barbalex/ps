@@ -34,10 +34,9 @@ export const ClickListener = memo(() => {
         service: 'WMS',
         version: '1.3.0',
         request: 'GetFeatureInfo',
-        crs: 'EPSG:4326', // TODO:
+        crs: 'EPSG:4326',
         format: 'image/png',
         feature_count: 40,
-        query_layers: 'flaechen', // linien, punkte
         x: Math.round(event.containerPoint.x),
         y: Math.round(event.containerPoint.y),
         width: mapSize.x,
@@ -50,7 +49,6 @@ export const ClickListener = memo(() => {
         zoom,
         mapSize,
         bounds,
-        bbox,
       })
 
       const layersData = []
