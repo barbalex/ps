@@ -97,26 +97,27 @@ export const DrawControlComponent = ({
         featureGroup: drawLayer,
       },
     })
-
     map.addControl(drawControlFull)
-    map.on('draw:created', (e) => {
+
+    const onDrawCreated = (e) => {
       drawLayer.addLayer(e.layer)
       onEdit(drawLayer.toGeoJSON())
-    })
-    map.on('draw:edited', () => {
-      onEdit(drawLayer.toGeoJSON())
-    })
-    map.on('draw:deleted', () => {
-      onEdit(drawLayer.toGeoJSON())
-    })
+    }
+    map.on('draw:created', onDrawCreated)
+
+    const onDrawEdited = () => onEdit(drawLayer.toGeoJSON())
+    map.on('draw:edited', onDrawEdited)
+
+    const onDrawDeleted = () => onEdit(drawLayer.toGeoJSON())
+    map.on('draw:deleted', onDrawDeleted)
 
     return () => {
       map.removeLayer(drawLayer)
       map.removeControl(drawControlFull)
       // map.removeControl(drawControlEditOnly)
-      map.off('draw:created')
-      map.off('draw:edited')
-      map.off('draw:deleted')
+      map.off('draw:created', onDrawCreated)
+      map.off('draw:edited', onDrawEdited)
+      map.off('draw:deleted', onDrawDeleted)
     }
   }, [map, onEdit])
 
