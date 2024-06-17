@@ -27,7 +27,6 @@ export const ScaleControl = memo(() => {
   const [width, setWidth] = useState(0)
 
   const update = useCallback(() => {
-    console.log('ScaleControl.update 1')
     if (!map.getSize().y > 0) return
 
     const y = map.getSize().y / 2
@@ -39,7 +38,6 @@ export const ScaleControl = memo(() => {
 
     const text = meters < 1000 ? `${meters} m` : `${meters / 1000} km`
     const width = Math.round((maxWidth * meters) / maxMeters)
-    console.log('ScaleControl.update', { text, width })
     setText(text)
     setWidth(width)
   }, [map])
