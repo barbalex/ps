@@ -27,19 +27,22 @@ const buildButtonStyle = ({ prevIsActive, nextIsActive, selfIsActive }) => {
 
   const style = {
     backgroundColor: 'rgba(38, 82, 37, 0)',
-    border: '1px solid rgba(255, 255, 255, 0.7)',
+    borderTop: '1px solid rgba(255, 255, 255, 0.7)',
+    borderBottom: '1px solid rgba(255, 255, 255, 0.7)',
+    borderRight: '1px solid rgba(255, 255, 255, 0.7)',
+    borderLeft: prevIsActive ? 'none' : '1px solid rgba(255, 255, 255, 0.7)',
     color: 'white',
   }
 
   if (prevIsActive) {
     style.borderTopLeftRadius = 0
     style.borderBottomLeftRadius = 0
-    style.borderLeft = 'none'
   }
   if (nextIsActive) {
     style.borderTopRightRadius = 0
     style.borderBottomRightRadius = 0
   }
+
   return style
 }
 
