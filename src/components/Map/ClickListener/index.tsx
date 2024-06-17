@@ -29,13 +29,13 @@ export const ClickListener = memo(() => {
       const mapSize = map.getSize()
       const bounds = map.getBounds()
       const bbox = `${bounds._southWest.lat},${bounds._southWest.lng},${bounds._northEast.lat},${bounds._northEast.lng}`
+
       const standardParams = {
         service: 'WMS',
         version: '1.3.0',
         request: 'GetFeatureInfo',
         crs: 'EPSG:4326', // TODO:
         format: 'image/png',
-        info_format: 'application/vnd.ogc.gml',
         feature_count: 40,
         query_layers: 'flaechen', // linien, punkte
         x: Math.round(event.containerPoint.x),
@@ -44,7 +44,7 @@ export const ClickListener = memo(() => {
         height: mapSize.y,
         bbox,
       }
-      console.log('Map ClickListener, onClick', {
+      console.log('Map ClickListener, onClick 1', {
         lat,
         lng,
         zoom,
@@ -62,32 +62,37 @@ export const ClickListener = memo(() => {
       const where = filter.length > 1 ? { OR: filter } : filter[0]
 
       // Three types of querying:
-      // 1. Vector Layers from own tables (type !== 'wfs')
-      // 2. Vector Layers from WFS with pre-downloaded data
-      // 3. Vector Layers from WFS with no pre-downloaded data
-      // TODO: filter own layers and layers with pre-downloaded data
+      // 1. Tile Layers
+      // 2. Vector Layers from own tables (type !== 'wfs')
+      // 3. Vector Layers from WFS with downloaded data
+      // 4. Vector Layers from WFS with no downloaded data
+      // TODO: filter own layers and layers with downloaded data
       // by querying db.vector_layer_geoms using ST_CONTAINS once postgis arrives in pglite
-      const vectorLayers = await db.vector_layers.findMany({
-        where: { project_id, active: true, type: 'wfs', ...where },
+      const tileLayers = await db.tile_layers.findMany({
+        where: { project_id, active: true, ...where },
         orderBy: [{ sort: 'asc' }, { label: 'asc' }],
       })
-      console.log('Map ClickListener, onClick', { vectorLayers, where })
+      console.log('Map ClickListener, onClick 2', {
+        vectorLayers: tileLayers,
+        where,
+      })
       // loop through vector layers and get infos
-      for (const layer of vectorLayers) {
-        const { wfs_version, wfs_url, wfs_layer } = layer
+      for (const layer of tileLayers) {
+        const { wms_version, wms_base_url, wms_layer, wms_info_format } = layer
 
         let res
         const failedToFetch = false
         const params = {
           ...standardParams,
-          version: wfs_version ?? standardParams.version,
-          layers: wfs_layer?.value,
-          query_layers: wfs_layer?.value,
+          version: wms_version ?? standardParams.version,
+          layers: wms_layer?.value,
+          query_layers: wms_layer?.value,
+          info_format: wms_info_format?.value ?? 'application/vnd.ogc.gml',
         }
         try {
           res = await axios.get({
             method: 'get',
-            url: wfs_url,
+            url: wms_base_url,
             params,
           })
         } catch (error) {
@@ -125,7 +130,7 @@ export const ClickListener = memo(() => {
           }
         }
         if (!failedToFetch && res?.data) {
-          console.log('Map ClickListener, onClick, data:', res?.data)
+          console.log('Map ClickListener, onClick 3, data:', res?.data)
           const parser = new window.DOMParser()
           const dataArray = xmlToLayersData(
             parser.parseFromString(res.data, 'text/html'),
@@ -137,13 +142,13 @@ export const ClickListener = memo(() => {
             })
           }
         }
-        console.log('Map ClickListener, onClick', { layersData })
+        console.log('Map ClickListener 4, onClick', { layersData })
       }
     },
     [
       appState?.filter_vector_layers,
       db.notifications,
-      db.vector_layers,
+      db.tile_layers,
       map,
       project_id,
     ],
