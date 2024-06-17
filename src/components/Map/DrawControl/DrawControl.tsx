@@ -7,6 +7,41 @@ import { bbox as getBbox } from '@turf/bbox'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
 
+L.drawLocal.draw.toolbar.buttons.polygon = 'Polygon(e) zeichnen, um zu filtern'
+L.drawLocal.draw.toolbar.buttons.rectangle =
+  'Rechteck(e) zeichnen, um zu filtern'
+L.drawLocal.draw.toolbar.actions.title = 'Zeichnen rückgängig machen'
+L.drawLocal.draw.toolbar.actions.text = 'rückgängig machen'
+L.drawLocal.draw.toolbar.finish.title = 'Zeichnen beenden'
+L.drawLocal.draw.toolbar.finish.text = 'beenden'
+L.drawLocal.draw.toolbar.undo.title = 'Zuletzt erfassten Punkt löschen'
+L.drawLocal.draw.toolbar.undo.text = 'letzten Punkt löschen'
+L.drawLocal.draw.handlers.polygon.tooltip.start =
+  'Klicken um Polygon zu beginnen'
+L.drawLocal.draw.handlers.polygon.tooltip.cont =
+  'Klicken um Polygon weiter zu zeichnen'
+L.drawLocal.draw.handlers.polygon.tooltip.end =
+  'ersten Punkt klicken, um Polygon zu beenden'
+L.drawLocal.draw.handlers.rectangle.tooltip.start =
+  'Klicken und ziehen, um Rechteck zu zeichnen'
+L.drawLocal.edit.toolbar.actions.save.title = 'Zeichnung speichern'
+L.drawLocal.edit.toolbar.actions.save.text = 'speichern'
+L.drawLocal.edit.toolbar.actions.cancel.title =
+  'Zeichnung abbrechen und verwerfen'
+L.drawLocal.edit.toolbar.actions.cancel.text = 'abbrechen'
+// L.drawLocal.edit.toolbar.actions.clearAll.title = 'alle Umrisse löschen'
+// L.drawLocal.edit.toolbar.actions.clearAll.text = 'alle löschen'
+L.drawLocal.edit.toolbar.buttons.edit = 'Umriss(e) ändern'
+L.drawLocal.edit.toolbar.buttons.editDisabled =
+  'Umriss(e) ändern (aktuell gibt es keine)'
+L.drawLocal.edit.toolbar.buttons.remove = 'Umriss(e) löschen'
+L.drawLocal.edit.toolbar.buttons.removeDisabled =
+  'Umriss(e) löschen (aktuell gibt es keine)'
+L.drawLocal.edit.handlers.edit.tooltip.text = `dann auf 'speichern' klicken`
+L.drawLocal.edit.handlers.edit.tooltip.subtext =
+  'Punkte ziehen, um Umriss(e) zu verändern'
+L.drawLocal.edit.handlers.remove.tooltip.text = `zum Löschen auf Umriss klicken, dann auf 'speichern'`
+
 export const DrawControlComponent = ({
   editingPlace,
   editingCheck,
@@ -45,42 +80,6 @@ export const DrawControlComponent = ({
   )
 
   useEffect(() => {
-    L.drawLocal.draw.toolbar.buttons.polygon =
-      'Polygon(e) zeichnen, um zu filtern'
-    L.drawLocal.draw.toolbar.buttons.rectangle =
-      'Rechteck(e) zeichnen, um zu filtern'
-    L.drawLocal.draw.toolbar.actions.title = 'Zeichnen rückgängig machen'
-    L.drawLocal.draw.toolbar.actions.text = 'rückgängig machen'
-    L.drawLocal.draw.toolbar.finish.title = 'Zeichnen beenden'
-    L.drawLocal.draw.toolbar.finish.text = 'beenden'
-    L.drawLocal.draw.toolbar.undo.title = 'Zuletzt erfassten Punkt löschen'
-    L.drawLocal.draw.toolbar.undo.text = 'letzten Punkt löschen'
-    L.drawLocal.draw.handlers.polygon.tooltip.start =
-      'Klicken um Polygon zu beginnen'
-    L.drawLocal.draw.handlers.polygon.tooltip.cont =
-      'Klicken um Polygon weiter zu zeichnen'
-    L.drawLocal.draw.handlers.polygon.tooltip.end =
-      'ersten Punkt klicken, um Polygon zu beenden'
-    L.drawLocal.draw.handlers.rectangle.tooltip.start =
-      'Klicken und ziehen, um Rechteck zu zeichnen'
-    L.drawLocal.edit.toolbar.actions.save.title = 'Zeichnung speichern'
-    L.drawLocal.edit.toolbar.actions.save.text = 'speichern'
-    L.drawLocal.edit.toolbar.actions.cancel.title =
-      'Zeichnung abbrechen und verwerfen'
-    L.drawLocal.edit.toolbar.actions.cancel.text = 'abbrechen'
-    // L.drawLocal.edit.toolbar.actions.clearAll.title = 'alle Umrisse löschen'
-    // L.drawLocal.edit.toolbar.actions.clearAll.text = 'alle löschen'
-    L.drawLocal.edit.toolbar.buttons.edit = 'Umriss(e) ändern'
-    L.drawLocal.edit.toolbar.buttons.editDisabled =
-      'Umriss(e) ändern (aktuell gibt es keine)'
-    L.drawLocal.edit.toolbar.buttons.remove = 'Umriss(e) löschen'
-    L.drawLocal.edit.toolbar.buttons.removeDisabled =
-      'Umriss(e) löschen (aktuell gibt es keine)'
-    L.drawLocal.edit.handlers.edit.tooltip.text = `dann auf 'speichern' klicken`
-    L.drawLocal.edit.handlers.edit.tooltip.subtext =
-      'Punkte ziehen, um Umriss(e) zu verändern'
-    L.drawLocal.edit.handlers.remove.tooltip.text = `zum Löschen auf Umriss klicken, dann auf 'speichern'`
-
     // solution to allow only one geometry to be drawn
     // see: https://github.com/Leaflet/Leaflet.draw/issues/315#issuecomment-500246272
     const drawLayer = new L.FeatureGroup()
