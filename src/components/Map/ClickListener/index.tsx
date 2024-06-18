@@ -140,11 +140,18 @@ export const ClickListener = memo(() => {
             })
           }
         }
-        console.log('Map ClickListener 4, onClick', { layersData })
+        console.log('Map ClickListener 4, onClick, layersData:', layersData)
+        // set app_state.map_info to layersData
+        db.app_states.update({
+          where: { app_state_id: appState?.app_state_id },
+          data: { map_info: layersData },
+        })
       }
     },
     [
+      appState?.app_state_id,
       appState?.filter_vector_layers,
+      db.app_states,
       db.notifications,
       db.tile_layers,
       map,

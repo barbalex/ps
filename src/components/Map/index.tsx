@@ -1,4 +1,4 @@
-import { useCallback, useRef, useEffect } from 'react'
+import { useCallback, useRef, useEffect, useState, FC } from 'react'
 import 'leaflet'
 import 'proj4'
 import 'proj4leaflet'
@@ -6,10 +6,16 @@ import { MapContainer } from 'react-leaflet'
 import { useResizeDetector } from 'react-resize-detector'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
+import {
+  DrawerBody,
+  DrawerHeader,
+  DrawerHeaderTitle,
+  InlineDrawer,
+} from '@fluentui/react-components'
 
 import 'leaflet/dist/leaflet.css'
-// import 'leaflet-draw/dist/leaflet.draw.css'
 
+import { css } from '../../css.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { TileLayers } from './TileLayers/index.tsx'
 import { VectorLayers } from './VectorLayers/index.tsx'
@@ -27,6 +33,23 @@ import { ErrorBoundary } from '../shared/ErrorBoundary.tsx'
 const mapContainerStyle = {
   width: '100%',
   height: '100%',
+  position: 'relative',
+  display: 'flex',
+}
+const drawerStyle = {
+  willChange: 'width',
+  transitionProperty: 'width',
+  transitionDuration: '16.666ms', // 60fps
+}
+const resizerStyle = {
+  borderRight: `1px solid black`,
+  width: '8px',
+  position: 'absolute',
+  top: 0,
+  right: 0,
+  bottom: 0,
+  cursor: 'col-resize',
+  resize: 'horizontal',
 }
 
 export const Map = () => {
@@ -39,6 +62,7 @@ export const Map = () => {
   const tileLayerSorter = appState?.tile_layer_sorter ?? ''
   const vectorLayerSorter = appState?.vector_layer_sorter ?? ''
   const mapIsLocating = appState?.map_locate ?? false
+  const mapInfo = appState?.map_info
 
   const mapRef = useRef()
 
@@ -71,7 +95,49 @@ export const Map = () => {
   // ]
   const position = [47.4, 8.65]
 
-  // console.log('hello Map, mapRef:', mapRef)
+  const animationFrame = useRef<number>(0)
+  const sidebarRef = useRef<HTMLDivElement>(null)
+  const [isResizing, setIsResizing] = useState(false)
+  const [sidebarWidth, setSidebarWidth] = useState(320)
+
+  const startResizing = useCallback(() => setIsResizing(true), [])
+  const stopResizing = useCallback(() => setIsResizing(false), [])
+
+  const resize = useCallback(
+    ({ clientX }) => {
+      animationFrame.current = requestAnimationFrame(() => {
+        if (isResizing && sidebarRef.current) {
+          setSidebarWidth(
+            clientX - sidebarRef.current.getBoundingClientRect().left,
+          )
+        }
+      })
+    },
+    [isResizing],
+  )
+
+  const ResizeComponent: FC = () => (
+    <div
+      style={css({
+        ...resizerStyle,
+        on: ($) => [$('&:hover', { borderRightWidth: 4 })],
+      })}
+      onMouseDown={startResizing}
+    />
+  )
+
+  useEffect(() => {
+    window.addEventListener('mousemove', resize)
+    window.addEventListener('mouseup', stopResizing)
+
+    return () => {
+      cancelAnimationFrame(animationFrame.current)
+      window.removeEventListener('mousemove', resize)
+      window.removeEventListener('mouseup', stopResizing)
+    }
+  }, [resize, stopResizing])
+
+  console.log('hello Map', { mapInfo, sidebarWidth, open: mapInfo?.length > 0 })
 
   return (
     <ErrorBoundary>
@@ -96,6 +162,20 @@ export const Map = () => {
           <BottomRightControl position="bottomright" visible={true} />
           <BoundsListener />
         </MapContainer>
+        <InlineDrawer
+          open={mapInfo?.length > 0}
+          ref={sidebarRef}
+          style={{ width: sidebarWidth, ...drawerStyle }}
+          onMouseDown={(e) => e.preventDefault()}
+        >
+          <DrawerHeader>
+            <DrawerHeaderTitle>Default Drawer</DrawerHeaderTitle>
+          </DrawerHeader>
+          <DrawerBody>
+            <p>Resizable content</p>
+          </DrawerBody>
+        </InlineDrawer>
+        <ResizeComponent />
       </div>
     </ErrorBoundary>
   )
