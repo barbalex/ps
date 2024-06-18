@@ -43,13 +43,13 @@ export const ClickListener = memo(() => {
         height: mapSize.y,
         bbox,
       }
-      console.log('Map ClickListener, onClick 1', {
-        lat,
-        lng,
-        zoom,
-        mapSize,
-        bounds,
-      })
+      // console.log('Map ClickListener, onClick 1', {
+      //   lat,
+      //   lng,
+      //   zoom,
+      //   mapSize,
+      //   bounds,
+      // })
 
       const layersData = []
 
@@ -70,10 +70,10 @@ export const ClickListener = memo(() => {
         where: { project_id, active: true, ...where },
         orderBy: [{ sort: 'asc' }, { label: 'asc' }],
       })
-      console.log('Map ClickListener, onClick 2', {
-        vectorLayers: tileLayers,
-        where,
-      })
+      // console.log('Map ClickListener, onClick 2', {
+      //   vectorLayers: tileLayers,
+      //   where,
+      // })
       // loop through vector layers and get infos
       for (const layer of tileLayers) {
         const { wms_version, wms_base_url, wms_layer, wms_info_format } = layer
@@ -128,7 +128,7 @@ export const ClickListener = memo(() => {
           }
         }
         if (!failedToFetch && res?.data) {
-          console.log('Map ClickListener, onClick 3, data:', res?.data)
+          // console.log('Map ClickListener, onClick 3, data:', res?.data)
           const parser = new window.DOMParser()
           const dataArray = xmlToLayersData(
             parser.parseFromString(res.data, 'text/html'),

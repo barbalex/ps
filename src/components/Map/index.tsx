@@ -30,9 +30,18 @@ import { BottomRightControl } from './BottomRightControl/index.tsx'
 import { ClickListener } from './ClickListener/index.tsx'
 import { ErrorBoundary } from '../shared/ErrorBoundary.tsx'
 
+const outerContainerStyle = {
+  width: '100%',
+  height: '100%',
+  position: 'relative',
+  display: 'flex',
+  overflow: 'hidden',
+}
 const mapContainerStyle = {
   width: '100%',
   height: '100%',
+}
+const drawerContainerStyle = {
   position: 'relative',
   display: 'flex',
 }
@@ -42,15 +51,34 @@ const drawerStyle = {
   transitionDuration: '16.666ms', // 60fps
 }
 const resizerStyle = {
-  borderRight: `1px solid black`,
+  borderLeftWidth: '1px',
+  borderLeft: 'solid',
+  borderLeftColor: 'grey',
   width: '8px',
   position: 'absolute',
   top: 0,
-  right: 0,
+  left: 0,
   bottom: 0,
   cursor: 'col-resize',
   resize: 'horizontal',
+  zIndex: 1,
 }
+
+const ResizeComponent: FC = ({ isResizing, startResizing }) => (
+  <div
+    style={css({
+      ...resizerStyle,
+      ...(isResizing
+        ? {
+            borderLeftWidth: 4,
+            borderLeftColor: 'black',
+          }
+        : {}),
+      on: ($) => [$('&:hover', { borderLeftWidth: 4 })],
+    })}
+    onMouseDown={startResizing}
+  />
+)
 
 export const Map = () => {
   const { user: authUser } = useCorbado()
@@ -104,26 +132,17 @@ export const Map = () => {
   const stopResizing = useCallback(() => setIsResizing(false), [])
 
   const resize = useCallback(
-    ({ clientX }) => {
+    (props) => {
+      const { clientX } = props
       animationFrame.current = requestAnimationFrame(() => {
         if (isResizing && sidebarRef.current) {
           setSidebarWidth(
-            clientX - sidebarRef.current.getBoundingClientRect().left,
+            sidebarRef.current.getBoundingClientRect().right - clientX,
           )
         }
       })
     },
     [isResizing],
-  )
-
-  const ResizeComponent: FC = () => (
-    <div
-      style={css({
-        ...resizerStyle,
-        on: ($) => [$('&:hover', { borderRightWidth: 4 })],
-      })}
-      onMouseDown={startResizing}
-    />
   )
 
   useEffect(() => {
@@ -137,11 +156,22 @@ export const Map = () => {
     }
   }, [resize, stopResizing])
 
-  console.log('hello Map', { mapInfo, sidebarWidth, open: mapInfo?.length > 0 })
+  console.log('hello Map', {
+    mapInfo,
+    sidebarWidth,
+    open: mapInfo?.length > 0,
+  })
 
   return (
     <ErrorBoundary>
-      <div style={mapContainerStyle} ref={resizeRef} id="map">
+      <div
+        style={{
+          ...outerContainerStyle,
+          userSelect: isResizing ? 'none' : 'auto',
+        }}
+        ref={resizeRef}
+        id="map"
+      >
         <MapContainer
           className="map-container"
           zoomControl={false}
@@ -162,20 +192,25 @@ export const Map = () => {
           <BottomRightControl position="bottomright" visible={true} />
           <BoundsListener />
         </MapContainer>
-        <InlineDrawer
-          open={mapInfo?.length > 0}
-          ref={sidebarRef}
-          style={{ width: sidebarWidth, ...drawerStyle }}
-          onMouseDown={(e) => e.preventDefault()}
-        >
-          <DrawerHeader>
-            <DrawerHeaderTitle>Default Drawer</DrawerHeaderTitle>
-          </DrawerHeader>
-          <DrawerBody>
-            <p>Resizable content</p>
-          </DrawerBody>
-        </InlineDrawer>
-        <ResizeComponent />
+        <div style={drawerContainerStyle}>
+          <InlineDrawer
+            open={mapInfo?.length > 0}
+            ref={sidebarRef}
+            style={{ width: sidebarWidth, ...drawerStyle }}
+            onMouseDown={(e) => e.preventDefault()}
+          >
+            <DrawerHeader>
+              <DrawerHeaderTitle>Default Drawer</DrawerHeaderTitle>
+            </DrawerHeader>
+            <DrawerBody>
+              <p>Resizable content</p>
+            </DrawerBody>
+          </InlineDrawer>
+          <ResizeComponent
+            isResizing={isResizing}
+            startResizing={startResizing}
+          />
+        </div>
       </div>
     </ErrorBoundary>
   )
