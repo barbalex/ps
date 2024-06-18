@@ -79,7 +79,7 @@ export const ClickListener = memo(() => {
         const { wms_version, wms_base_url, wms_layer, wms_info_format } = layer
 
         let res
-        const failedToFetch = false
+        let failedToFetch = false
         const params = {
           ...standardParams,
           version: wms_version ?? standardParams.version,
