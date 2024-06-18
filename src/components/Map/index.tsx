@@ -1,4 +1,4 @@
-import { useCallback, useRef, useEffect, useState, FC } from 'react'
+import { useCallback, useRef, useEffect, useState, FC, memo } from 'react'
 import 'leaflet'
 import 'proj4'
 import 'proj4leaflet'
@@ -64,7 +64,7 @@ const resizerStyle = {
   zIndex: 1,
 }
 
-const ResizeComponent: FC = ({ isResizing, startResizing }) => (
+const ResizeComponent: FC = memo(({ isResizing, startResizing }) => (
   <div
     style={css({
       ...resizerStyle,
@@ -78,9 +78,9 @@ const ResizeComponent: FC = ({ isResizing, startResizing }) => (
     })}
     onMouseDown={startResizing}
   />
-)
+))
 
-export const Map = () => {
+export const Map = memo(() => {
   const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
@@ -214,4 +214,4 @@ export const Map = () => {
       </div>
     </ErrorBoundary>
   )
-}
+})
