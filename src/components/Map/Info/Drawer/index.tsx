@@ -20,6 +20,7 @@ const drawerStyle = {
 const headerStyle = {
   padding: 0,
 }
+const bodyStyle = { padding: 0 }
 
 export const Drawer = memo(
   forwardRef(({ sidebarWidth }, ref) => {
@@ -46,7 +47,7 @@ export const Drawer = memo(
           <DrawerHeader style={headerStyle}>
             <FormHeader title="Info" />
           </DrawerHeader>
-          <DrawerBody>
+          <DrawerBody style={bodyStyle}>
             <Location location={location} />
           </DrawerBody>
         </InlineDrawer>
