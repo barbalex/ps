@@ -11,6 +11,7 @@ import {
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../shared/ErrorBoundary.tsx'
 import { Resize } from './Resize.tsx'
+import { Drawer } from './Drawer.tsx'
 
 const drawerContainerStyle = {
   position: 'relative',
@@ -53,19 +54,7 @@ export const Info = memo(({ redrawMap }) => {
     <ErrorBoundary>
       <div style={drawerContainerStyle}>
         <Resize resize={resize} />
-        <InlineDrawer
-          open={mapInfo?.length > 0}
-          ref={sidebarRef}
-          style={{ width: sidebarWidth, ...drawerStyle }}
-          onMouseDown={(e) => e.preventDefault()}
-        >
-          <DrawerHeader>
-            <DrawerHeaderTitle>Default Drawer</DrawerHeaderTitle>
-          </DrawerHeader>
-          <DrawerBody>
-            <p>Resizable content</p>
-          </DrawerBody>
-        </InlineDrawer>
+        <Drawer sidebarWidth={sidebarWidth} ref={sidebarRef} />
       </div>
     </ErrorBoundary>
   )
