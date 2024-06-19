@@ -47,6 +47,7 @@ export const Map = memo(() => {
   const tileLayerSorter = appState?.tile_layer_sorter ?? ''
   const vectorLayerSorter = appState?.vector_layer_sorter ?? ''
   const mapIsLocating = appState?.map_locate ?? false
+  const mapInfo = appState?.map_info
 
   const mapRef = useRef()
 
@@ -125,7 +126,7 @@ export const Map = memo(() => {
           <BottomRightControl position="bottomright" visible={true} />
           <BoundsListener />
         </MapContainer>
-        <Info redrawMap={redrawMap} />
+        {mapInfo?.length > 0 && <Info redrawMap={redrawMap} />}
       </div>
     </ErrorBoundary>
   )
