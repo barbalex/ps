@@ -19,7 +19,7 @@ const drawerContainerStyle = {
 const drawerStyle = {
   willChange: 'width',
   transitionProperty: 'width',
-  transitionDuration: '16.666ms', // 60fps
+  transitionDuration: 100,
 }
 
 export const Info = memo(({ redrawMap }) => {
@@ -34,29 +34,25 @@ export const Info = memo(({ redrawMap }) => {
   const animationFrame = useRef<number>(0)
   const sidebarRef = useRef<HTMLDivElement>(null)
   const [sidebarWidth, setSidebarWidth] = useState(320)
-
-  const [isResizing, setIsResizing] = useState(false)
-  const startResizing = useCallback(() => setIsResizing(true), [])
   const resize = useCallback(
     (props) => {
       const clientX = props?.location?.current?.input?.clientX
       animationFrame.current = requestAnimationFrame(() => {
-        if (isResizing && sidebarRef.current) {
+        if (sidebarRef.current) {
           setSidebarWidth(
             sidebarRef.current.getBoundingClientRect().right - clientX,
           )
-          redrawMap()
-          setIsResizing(false)
+          setTimeout(redrawMap, 200)
         }
       })
     },
-    [isResizing, redrawMap],
+    [redrawMap],
   )
 
   return (
     <ErrorBoundary>
       <div style={drawerContainerStyle}>
-        <Resize startResizing={startResizing} resize={resize} />
+        <Resize resize={resize} />
         <InlineDrawer
           open={mapInfo?.length > 0}
           ref={sidebarRef}

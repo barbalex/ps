@@ -16,17 +16,16 @@ const resizerStyle = {
 // the vertical line should only be dragged horizontally
 // but could not find a way to enforce this
 // on the other hand: this is MUCH faster than resizing the drawer while dragging
-export const Resize = memo(({ resize, startResizing }) => {
+export const Resize = memo(({ resize }) => {
   const ref = useRef<HTMLDivElement>(null)
   useEffect(() => {
     const cleanup = draggable({
       element: ref.current,
       onDrop: resize,
-      onDragStart: startResizing,
     })
 
     return cleanup
-  }, [resize, startResizing])
+  }, [resize])
 
   return (
     <div
