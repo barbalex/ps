@@ -49,8 +49,14 @@ export const Map = memo(() => {
 
   const mapRef = useRef()
 
-  const redrawMap = useCallback(() => mapRef.current?.invalidateSize(), [mapRef])
-  const { ref: resizeRef } = useResizeDetector({
+  const redrawMap = useCallback(
+    () => mapRef.current?.invalidateSize(),
+    [mapRef],
+  )
+
+  const resizeRef = useRef<HTMLDivElement>(null)
+  useResizeDetector({
+    targetRef: resizeRef,
     onResize: redrawMap,
     refreshMode: 'debounce',
     refreshRate: 300,

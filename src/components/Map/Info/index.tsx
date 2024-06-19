@@ -1,4 +1,4 @@
-import { useCallback, useRef, useEffect, useState, FC, memo } from 'react'
+import { useCallback, useRef,  useState,  memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 import {
