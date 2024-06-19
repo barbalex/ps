@@ -65,6 +65,7 @@ export const Map = memo(() => {
   })
 
   // set drop target for info drawer resizer
+  // if not, the 'none' cursor is shown while dragging
   useEffect(() => {
     const cleanup = dropTargetForElements({
       element: resizeRef.current,
