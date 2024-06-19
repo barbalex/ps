@@ -9,7 +9,6 @@ const resizerStyle = {
   borderLeftColor: 'grey',
   width: '8px',
   cursor: 'col-resize',
-  resize: 'horizontal',
   zIndex: 1,
 }
 

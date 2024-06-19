@@ -6,6 +6,7 @@ import { MapContainer } from 'react-leaflet'
 import { useResizeDetector } from 'react-resize-detector'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
+import { dropTargetForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
 
 import 'leaflet/dist/leaflet.css'
 
@@ -62,6 +63,15 @@ export const Map = memo(() => {
     refreshRate: 300,
     refreshOptions: { trailing: true },
   })
+
+  // set drop target for info drawer resizer
+  useEffect(() => {
+    const cleanup = dropTargetForElements({
+      element: resizeRef.current,
+    })
+
+    return cleanup
+  }, [])
 
   // Issue: map is not drawn correctly on first render
   // Solution: invalidateSize() after first render
