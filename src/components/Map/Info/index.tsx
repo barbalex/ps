@@ -22,17 +22,15 @@ export const Info = memo(({ redrawMap }) => {
     (props) => {
       const clientX = props?.location?.current?.input?.clientX
       animationFrame.current = requestAnimationFrame(async () => {
-        console.log('Map Info, resize, sidebarRef', sidebarRef.current)
         if (sidebarRef.current) {
           const newWidth =
             sidebarRef.current.getBoundingClientRect().right - clientX
-          console.log('Map Info, resize, newWidth', newWidth)
-          // TODO: if newWidth is less than 50, close the sidebar
           if (newWidth > 50) {
             setSidebarWidth(newWidth)
             setTimeout(redrawMap, 200)
             return
           }
+          // if newWidth is less than 50, close the sidebar
           const appState = await db.app_states.findFirst({
             where: { user_email: authUser?.email },
           })
