@@ -1,0 +1,80 @@
+import { memo, forwardRef, useCallback } from 'react'
+import { useLiveQuery } from 'electric-sql/react'
+import { useCorbado } from '@corbado/react'
+import {
+  Button,
+  DrawerBody,
+  DrawerHeader,
+  InlineDrawer,
+} from '@fluentui/react-components'
+import { MdClose } from 'react-icons/md'
+
+import { useElectric } from '../../../../ElectricProvider.tsx'
+import { ErrorBoundary } from '../../../shared/ErrorBoundary.tsx'
+import { FormHeader } from '../../../FormHeader/index.tsx'
+import { Location } from './Location.tsx'
+import { Layer } from './Layer.tsx'
+
+const drawerStyle = {
+  willChange: 'width',
+  transitionProperty: 'width',
+  transitionDuration: 100,
+}
+const headerStyle = {
+  padding: 0,
+}
+const bodyStyle = { padding: 0 }
+
+export const Drawer = memo(
+  forwardRef(({ sidebarWidth, redrawMap }, ref) => {
+    const { user: authUser } = useCorbado()
+
+    const { db } = useElectric()!
+    const { results: appState } = useLiveQuery(
+      db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+    )
+    const mapInfo = appState?.map_info
+
+    const [location, ...layersData] = mapInfo ?? []
+
+    const close = useCallback(() => {
+      db.app_states.update({
+        where: { app_state_id: appState?.app_state_id },
+        data: { map_info: null },
+      })
+      setTimeout(redrawMap, 200)
+    }, [appState?.app_state_id, db.app_states, redrawMap])
+
+    return (
+      <ErrorBoundary>
+        <InlineDrawer
+          id="drawer"
+          open={mapInfo?.length > 0}
+          ref={ref}
+          style={{ width: sidebarWidth, ...drawerStyle }}
+          onMouseDown={(e) => e.preventDefault()}
+        >
+          <DrawerHeader style={headerStyle}>
+            <FormHeader
+              title="Info"
+              siblings={[
+                <Button
+                  size="medium"
+                  icon={<MdClose />}
+                  onClick={close}
+                  title="Close"
+                />,
+              ]}
+            />
+          </DrawerHeader>
+          <DrawerBody style={bodyStyle}>
+            <Location location={location} />
+            {layersData.map((layerData, i) => (
+              <Layer key={`${i}/${layerData.label}`} layerData={layerData} />
+            ))}
+          </DrawerBody>
+        </InlineDrawer>
+      </ErrorBoundary>
+    )
+  }),
+)

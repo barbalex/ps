@@ -2,12 +2,16 @@ import { memo } from 'react'
 
 import { FormMenu } from './FormMenu.tsx'
 
+const titleStyle = {
+  color: 'black',
+}
+
 export const FormHeader = memo(
   ({ title, addRow, deleteRow, toNext, toPrevious, tableName, siblings }) => {
     return (
       <div className="form-header">
-        <h1>{title}</h1>
-        {(addRow || deleteRow || toNext || toPrevious) && (
+        <h1 style={titleStyle}>{title}</h1>
+        {(addRow || deleteRow || toNext || toPrevious || siblings) && (
           <FormMenu
             addRow={addRow}
             deleteRow={deleteRow}

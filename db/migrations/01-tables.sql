@@ -1177,6 +1177,7 @@ CREATE TABLE app_states(
   map_maximized boolean DEFAULT NULL, -- FALSE
   map_hide_ui boolean DEFAULT NULL, -- FALSE
   map_locate boolean DEFAULT NULL, -- FALSE
+  map_info jsonb DEFAULT NULL,
   tile_layer_sorter text DEFAULT NULL,
   vector_layer_sorter text DEFAULT NULL,
   editing_place_geometry uuid DEFAULT NULL,
@@ -1254,6 +1255,8 @@ COMMENT ON COLUMN app_states.user_email IS 'email of authenticated user. Exists 
 COMMENT ON TABLE app_states IS 'User interface settings (state saved in db)';
 
 COMMENT ON COLUMN app_states.designing IS 'Whether user is currently designing projects. Preset: false';
+
+COMMENT ON COLUMN app_states.map_info IS 'Information presented, when user clicks on a map. Array of: {label, properties} where properties is an array of [key, value]';
 
 COMMENT ON COLUMN app_states.editing_place_geometry IS 'The id of the place whose geometry is currently being edited';
 
@@ -1434,10 +1437,10 @@ CREATE TABLE vector_layers(
   max_zoom integer DEFAULT NULL, -- 19,
   min_zoom integer DEFAULT NULL, -- 0,
   max_features integer DEFAULT NULL, -- 1000
-  wfs_url text DEFAULT NULL, -- WFS url, for example https://maps.zh.ch/wfs/OGDZHWFS. TODO: rename wfs_url
+  wfs_url text DEFAULT NULL, -- WFS url, for example https://maps.zh.ch/wfs/OGDZHWFS.
   wfs_layer jsonb DEFAULT NULL, -- a single option
   wfs_version text DEFAULT NULL, -- often: 1.1.0 or 2.0.0
-  wfs_output_format jsonb DEFAULT NULL, --  a single option. TODO: rename wfs_output_format
+  wfs_output_format jsonb DEFAULT NULL, --  a single option
   feature_count integer DEFAULT NULL,
   point_count integer DEFAULT NULL,
   line_count integer DEFAULT NULL,

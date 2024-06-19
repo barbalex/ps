@@ -1,4 +1,4 @@
-import { useCallback, useRef, useEffect } from 'react'
+import { useCallback, useRef, useEffect, memo } from 'react'
 import 'leaflet'
 import 'proj4'
 import 'proj4leaflet'
@@ -6,9 +6,9 @@ import { MapContainer } from 'react-leaflet'
 import { useResizeDetector } from 'react-resize-detector'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
+import { dropTargetForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
 
 import 'leaflet/dist/leaflet.css'
-// import 'leaflet-draw/dist/leaflet.draw.css'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { TileLayers } from './TileLayers/index.tsx'
@@ -21,14 +21,23 @@ import { BoundsListener } from './BoundsListener.tsx'
 // import { Control } from './Control.tsx'
 import { BottomRightControl } from './BottomRightControl/index.tsx'
 // import { OwnControls } from './OwnControls'
+import { ClickListener } from './ClickListener/index.tsx'
 import { ErrorBoundary } from '../shared/ErrorBoundary.tsx'
+import { Info } from './Info/index.tsx'
 
+const outerContainerStyle = {
+  width: '100%',
+  height: '100%',
+  position: 'relative',
+  display: 'flex',
+  overflow: 'hidden',
+}
 const mapContainerStyle = {
   width: '100%',
   height: '100%',
 }
 
-export const Map = () => {
+export const Map = memo(() => {
   const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
@@ -38,16 +47,33 @@ export const Map = () => {
   const tileLayerSorter = appState?.tile_layer_sorter ?? ''
   const vectorLayerSorter = appState?.vector_layer_sorter ?? ''
   const mapIsLocating = appState?.map_locate ?? false
+  const mapInfo = appState?.map_info
 
   const mapRef = useRef()
 
-  const onResize = useCallback(() => mapRef.current?.invalidateSize(), [mapRef])
-  const { ref: resizeRef } = useResizeDetector({
-    onResize,
+  const redrawMap = useCallback(
+    () => mapRef.current?.invalidateSize(),
+    [mapRef],
+  )
+
+  const resizeRef = useRef<HTMLDivElement>(null)
+  useResizeDetector({
+    targetRef: resizeRef,
+    onResize: redrawMap,
     refreshMode: 'debounce',
     refreshRate: 300,
     refreshOptions: { trailing: true },
   })
+
+  // set drop target for info drawer resizer
+  // if not, the 'none' cursor is shown while dragging
+  useEffect(() => {
+    const cleanup = dropTargetForElements({
+      element: resizeRef.current,
+    })
+
+    return cleanup
+  }, [])
 
   // Issue: map is not drawn correctly on first render
   // Solution: invalidateSize() after first render
@@ -70,11 +96,16 @@ export const Map = () => {
   // ]
   const position = [47.4, 8.65]
 
-  // console.log('hello Map, mapRef:', mapRef)
-
   return (
     <ErrorBoundary>
-      <div style={mapContainerStyle} ref={resizeRef} id="map">
+      <div
+        style={{
+          ...outerContainerStyle,
+          // userSelect: isResizing ? 'none' : 'auto',
+        }}
+        ref={resizeRef}
+        id="map"
+      >
         <MapContainer
           className="map-container"
           zoomControl={false}
@@ -87,6 +118,7 @@ export const Map = () => {
           ref={mapRef}
         >
           {mapIsLocating && <LocationMarker />}
+          <ClickListener />
           <DrawControl />
           <TileLayers key={`${tileLayerSorter}/tileLayers`} />
           <TableLayers />
@@ -94,7 +126,8 @@ export const Map = () => {
           <BottomRightControl position="bottomright" visible={true} />
           <BoundsListener />
         </MapContainer>
+        {mapInfo?.length > 0 && <Info redrawMap={redrawMap} />}
       </div>
     </ErrorBoundary>
   )
-}
+})
