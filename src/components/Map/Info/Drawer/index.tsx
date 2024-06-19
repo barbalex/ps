@@ -10,6 +10,7 @@ import {
 import { useElectric } from '../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../shared/ErrorBoundary.tsx'
 import { FormHeader } from '../../../FormHeader/index.tsx'
+import { Location } from './Location.tsx'
 
 const drawerStyle = {
   willChange: 'width',
@@ -30,10 +31,8 @@ export const Drawer = memo(
     )
     const mapInfo = appState?.map_info
 
-    const [location, ...rest] = mapInfo ?? []
-    const lng = Math.round(location?.lng * 10000000) / 10000000
-    const lat = Math.round(location?.lat * 10000000) / 10000000
-    console.log('Map Info, Drawer', { location, rest })
+    const [location, ...layersData] = mapInfo ?? []
+    console.log('Map Info, Drawer', { location, layersData })
 
     return (
       <ErrorBoundary>
@@ -48,8 +47,7 @@ export const Drawer = memo(
             <FormHeader title="Info" />
           </DrawerHeader>
           <DrawerBody>
-            <h3>Location</h3>
-            <p>{`WGS84: ${lng} / ${lat}`}</p>
+            <Location location={location} />
           </DrawerBody>
         </InlineDrawer>
       </ErrorBoundary>
