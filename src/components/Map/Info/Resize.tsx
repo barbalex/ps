@@ -4,10 +4,8 @@ import { draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
 import { css } from '../../../css.ts'
 
 const resizerStyle = {
-  borderLeftWidth: '1px',
-  borderLeft: 'solid',
-  borderLeftColor: 'grey',
-  width: '8px',
+  backgroundColor: 'grey',
+  width: 1,
   cursor: 'col-resize',
   zIndex: 1,
 }
@@ -33,8 +31,8 @@ export const Resize = memo(({ resize }) => {
         ...resizerStyle,
         on: ($) => [
           $('&:hover', {
-            borderLeftWidth: 4,
-            borderLeftColor: 'rgba(38, 82, 37, 0.9)',
+            width: 8,
+            backgroundColor: 'rgba(38, 82, 37, 0.9)',
           }),
         ],
       })}
