@@ -49,9 +49,9 @@ export const Map = memo(() => {
 
   const mapRef = useRef()
 
-  const onResize = useCallback(() => mapRef.current?.invalidateSize(), [mapRef])
+  const redrawMap = useCallback(() => mapRef.current?.invalidateSize(), [mapRef])
   const { ref: resizeRef } = useResizeDetector({
-    onResize,
+    onResize: redrawMap,
     refreshMode: 'debounce',
     refreshRate: 300,
     refreshOptions: { trailing: true },
@@ -108,7 +108,7 @@ export const Map = memo(() => {
           <BottomRightControl position="bottomright" visible={true} />
           <BoundsListener />
         </MapContainer>
-        <Info />
+        <Info redrawMap={redrawMap} />
       </div>
     </ErrorBoundary>
   )

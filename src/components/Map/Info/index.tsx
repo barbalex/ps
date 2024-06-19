@@ -22,7 +22,7 @@ const drawerStyle = {
   transitionDuration: '16.666ms', // 60fps
 }
 
-export const Info = memo(() => {
+export const Info = memo(({ redrawMap }) => {
   const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
@@ -41,28 +41,28 @@ export const Info = memo(() => {
 
   const resize = useCallback(
     (props) => {
-      const { clientX } = props
+      const clientX = props?.location?.current?.input?.clientX
       animationFrame.current = requestAnimationFrame(() => {
         if (isResizing && sidebarRef.current) {
           setSidebarWidth(
             sidebarRef.current.getBoundingClientRect().right - clientX,
           )
+          redrawMap()
+          stopResizing()
         }
       })
     },
-    [isResizing],
+    [isResizing, redrawMap, stopResizing],
   )
 
-  useEffect(() => {
-    window.addEventListener('mousemove', resize)
-    window.addEventListener('mouseup', stopResizing)
+  // useEffect(() => {
+  //   window.addEventListener('mouseup', stopResizing)
 
-    return () => {
-      cancelAnimationFrame(animationFrame.current)
-      window.removeEventListener('mousemove', resize)
-      window.removeEventListener('mouseup', stopResizing)
-    }
-  }, [resize, stopResizing])
+  //   return () => {
+  //     cancelAnimationFrame(animationFrame.current)
+  //     window.removeEventListener('mouseup', stopResizing)
+  //   }
+  // }, [resize, stopResizing])
 
   console.log('hello Map Info', {
     mapInfo,
@@ -73,7 +73,11 @@ export const Info = memo(() => {
   return (
     <ErrorBoundary>
       <div style={drawerContainerStyle}>
-        <Resize isResizing={isResizing} startResizing={startResizing} />
+        <Resize
+          isResizing={isResizing}
+          startResizing={startResizing}
+          resize={resize}
+        />
         <InlineDrawer
           open={mapInfo?.length > 0}
           ref={sidebarRef}
