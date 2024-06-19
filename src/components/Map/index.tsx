@@ -12,6 +12,7 @@ import {
   DrawerHeaderTitle,
   InlineDrawer,
 } from '@fluentui/react-components'
+import { draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
 
 import 'leaflet/dist/leaflet.css'
 
@@ -55,10 +56,10 @@ const resizerStyle = {
   borderLeft: 'solid',
   borderLeftColor: 'grey',
   width: '8px',
-  position: 'absolute',
-  top: 0,
+  position: 'relative',
+  // top: 0,
   left: 0,
-  bottom: 0,
+  // bottom: 0,
   cursor: 'col-resize',
   resize: 'horizontal',
   zIndex: 1,
@@ -76,7 +77,9 @@ const ResizeComponent: FC = memo(({ isResizing, startResizing }) => (
         : {}),
       on: ($) => [$('&:hover', { borderLeftWidth: 4 })],
     })}
-    onMouseDown={startResizing}
+    onMouseDown={startResizing} // TODO: works but slow. Better to resize on dragend?
+    onMouseUp={() => console.log('mouse up, resize now?')}
+    onDragEnd={() => console.log('drag end, resize now?')}
   />
 ))
 
@@ -193,6 +196,10 @@ export const Map = memo(() => {
           <BoundsListener />
         </MapContainer>
         <div style={drawerContainerStyle}>
+          <ResizeComponent
+            isResizing={isResizing}
+            startResizing={startResizing}
+          />
           <InlineDrawer
             open={mapInfo?.length > 0}
             ref={sidebarRef}
@@ -206,10 +213,6 @@ export const Map = memo(() => {
               <p>Resizable content</p>
             </DrawerBody>
           </InlineDrawer>
-          <ResizeComponent
-            isResizing={isResizing}
-            startResizing={startResizing}
-          />
         </div>
       </div>
     </ErrorBoundary>
