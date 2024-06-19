@@ -27,6 +27,9 @@ export const Drawer = memo(
     )
     const mapInfo = appState?.map_info
 
+    const [locationData, ...rest] = mapInfo ?? []
+    console.log('Map Info, Drawer', { locationData, rest })
+
     return (
       <ErrorBoundary>
         <InlineDrawer
