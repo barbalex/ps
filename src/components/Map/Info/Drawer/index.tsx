@@ -11,6 +11,7 @@ import { useElectric } from '../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../shared/ErrorBoundary.tsx'
 import { FormHeader } from '../../../FormHeader/index.tsx'
 import { Location } from './Location.tsx'
+import { Layer } from './Layer.tsx'
 
 const drawerStyle = {
   willChange: 'width',
@@ -49,6 +50,9 @@ export const Drawer = memo(
           </DrawerHeader>
           <DrawerBody style={bodyStyle}>
             <Location location={location} />
+            {layersData.map((layerData, i) => (
+              <Layer key={`${i}/${layerData.label}`} layerData={layerData} />
+            ))}
           </DrawerBody>
         </InlineDrawer>
       </ErrorBoundary>
