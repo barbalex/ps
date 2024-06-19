@@ -4,7 +4,7 @@ import { useCorbado } from '@corbado/react'
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../shared/ErrorBoundary.tsx'
 import { Resize } from './Resize.tsx'
-import { Drawer } from './Drawer.tsx'
+import { Drawer } from './Drawer/index.tsx'
 
 const drawerContainerStyle = {
   position: 'relative',

@@ -4,13 +4,12 @@ import { useCorbado } from '@corbado/react'
 import {
   DrawerBody,
   DrawerHeader,
-  DrawerHeaderTitle,
   InlineDrawer,
 } from '@fluentui/react-components'
 
-import { useElectric } from '../../../ElectricProvider.tsx'
-import { ErrorBoundary } from '../../shared/ErrorBoundary.tsx'
-import { FormHeader } from '../../FormHeader/index.tsx'
+import { useElectric } from '../../../../ElectricProvider.tsx'
+import { ErrorBoundary } from '../../../shared/ErrorBoundary.tsx'
+import { FormHeader } from '../../../FormHeader/index.tsx'
 
 const drawerStyle = {
   willChange: 'width',
