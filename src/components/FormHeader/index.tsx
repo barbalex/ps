@@ -11,7 +11,7 @@ export const FormHeader = memo(
     return (
       <div className="form-header">
         <h1 style={titleStyle}>{title}</h1>
-        {(addRow || deleteRow || toNext || toPrevious) && (
+        {(addRow || deleteRow || toNext || toPrevious || siblings) && (
           <FormMenu
             addRow={addRow}
             deleteRow={deleteRow}

@@ -48,7 +48,7 @@ export const Info = memo(({ redrawMap }) => {
     <ErrorBoundary>
       <div style={drawerContainerStyle}>
         <Resize resize={resize} />
-        <Drawer sidebarWidth={sidebarWidth} ref={sidebarRef} />
+        <Drawer sidebarWidth={sidebarWidth} ref={sidebarRef} redrawMap={redrawMap} />
       </div>
     </ErrorBoundary>
   )

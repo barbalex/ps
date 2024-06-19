@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, Fragment } from 'react'
 
 const containerStyle = {
   borderBottom: '1px solid #ccc',
@@ -11,21 +11,42 @@ const titleStyle = {
 }
 const propertyListStyle = {
   display: 'grid',
-  gridTemplateColumns: '85px 1fr',
-  fontSize: 'x-small !important',
-  gap: 8,
+  gridTemplateColumns: 'minmax(100px, 30%) 1fr',
+  // gap: 5,
+}
+const textStyle = {
+  padding: 5,
+  fontSize: '0.9em',
+  lineHeight: '1.4em',
+  overflowWrap: 'anywhere',
+  color: 'black',
+}
+const labelStyle = {
+  ...textStyle,
+  fontWeight: 'bold',
+  color: 'rgba(0, 0, 0, 0.5)',
+  borderRight: '1px solid rgba(0, 0, 0, 0.2)',
 }
 
 export const Layer = memo(({ layerData }) => {
+  const { label, properties = [] } = layerData
+
   return (
     <div style={containerStyle}>
-      <div style={titleStyle}>{layerData.label}</div>
+      <div style={titleStyle}>{label}</div>
       <div style={propertyListStyle}>
-        {(layerData.properties ?? []).map((property, i) => (
-          <div key={`${i}/${property[0]}`}>
-            <div>{property[0]}</div>
-          </div>
-        ))}
+        {properties.map((p, i) => {
+          const key = p[0]
+          const value = p[1]
+          const backgroundColor = i % 2 === 0 ? 'rgba(0, 0, 0, 0.05)' : 'unset'
+
+          return (
+            <Fragment key={`${i}/${key}`}>
+              <div style={{ ...labelStyle, backgroundColor }}>{key}</div>
+              <div style={{ ...textStyle, backgroundColor }}>{value}</div>
+            </Fragment>
+          )
+        })}
       </div>
     </div>
   )

@@ -1,11 +1,13 @@
-import { memo, forwardRef } from 'react'
+import { memo, forwardRef, useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 import {
+  Button,
   DrawerBody,
   DrawerHeader,
   InlineDrawer,
 } from '@fluentui/react-components'
+import { MdClose } from 'react-icons/md'
 
 import { useElectric } from '../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../shared/ErrorBoundary.tsx'
@@ -24,7 +26,7 @@ const headerStyle = {
 const bodyStyle = { padding: 0 }
 
 export const Drawer = memo(
-  forwardRef(({ sidebarWidth }, ref) => {
+  forwardRef(({ sidebarWidth, redrawMap }, ref) => {
     const { user: authUser } = useCorbado()
 
     const { db } = useElectric()!
@@ -34,7 +36,14 @@ export const Drawer = memo(
     const mapInfo = appState?.map_info
 
     const [location, ...layersData] = mapInfo ?? []
-    console.log('Map Info, Drawer', { location, layersData })
+
+    const close = useCallback(() => {
+      db.app_states.update({
+        where: { app_state_id: appState?.app_state_id },
+        data: { map_info: null },
+      })
+      setTimeout(redrawMap, 200)
+    }, [appState?.app_state_id, db.app_states, redrawMap])
 
     return (
       <ErrorBoundary>
@@ -46,7 +55,17 @@ export const Drawer = memo(
           onMouseDown={(e) => e.preventDefault()}
         >
           <DrawerHeader style={headerStyle}>
-            <FormHeader title="Info" />
+            <FormHeader
+              title="Info"
+              siblings={[
+                <Button
+                  size="medium"
+                  icon={<MdClose />}
+                  onClick={close}
+                  title="Close"
+                />,
+              ]}
+            />
           </DrawerHeader>
           <DrawerBody style={bodyStyle}>
             <Location location={location} />

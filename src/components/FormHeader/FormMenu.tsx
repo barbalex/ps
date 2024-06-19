@@ -11,7 +11,7 @@ export const FormMenu = memo(
       {!!toPrevious && (
         <Button
           size="medium"
-          icon={<FaChevronLeft />}
+          icon={<FaChevronLeft />} 
           onClick={toPrevious}
           title={`Previous ${tableName}`}
         />
