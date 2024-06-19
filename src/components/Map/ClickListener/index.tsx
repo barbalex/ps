@@ -51,7 +51,7 @@ export const ClickListener = memo(() => {
       //   bounds,
       // })
 
-      const layersData = []
+      const layersData = [{ id: 'location', data: { lat, lng, zoom } }]
 
       const filter =
         appState?.filter_vector_layers?.filter(

@@ -1,4 +1,4 @@
-import { useCallback, useRef,  useState,  memo } from 'react'
+import { useCallback, useRef, useState, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 import {
@@ -33,12 +33,10 @@ export const Info = memo(({ redrawMap }) => {
 
   const animationFrame = useRef<number>(0)
   const sidebarRef = useRef<HTMLDivElement>(null)
-  const [isResizing, setIsResizing] = useState(false)
   const [sidebarWidth, setSidebarWidth] = useState(320)
 
+  const [isResizing, setIsResizing] = useState(false)
   const startResizing = useCallback(() => setIsResizing(true), [])
-  const stopResizing = useCallback(() => setIsResizing(false), [])
-
   const resize = useCallback(
     (props) => {
       const clientX = props?.location?.current?.input?.clientX
@@ -48,36 +46,17 @@ export const Info = memo(({ redrawMap }) => {
             sidebarRef.current.getBoundingClientRect().right - clientX,
           )
           redrawMap()
-          stopResizing()
+          setIsResizing(false)
         }
       })
     },
-    [isResizing, redrawMap, stopResizing],
+    [isResizing, redrawMap],
   )
-
-  // useEffect(() => {
-  //   window.addEventListener('mouseup', stopResizing)
-
-  //   return () => {
-  //     cancelAnimationFrame(animationFrame.current)
-  //     window.removeEventListener('mouseup', stopResizing)
-  //   }
-  // }, [resize, stopResizing])
-
-  console.log('hello Map Info', {
-    mapInfo,
-    sidebarWidth,
-    open: mapInfo?.length > 0,
-  })
 
   return (
     <ErrorBoundary>
       <div style={drawerContainerStyle}>
-        <Resize
-          isResizing={isResizing}
-          startResizing={startResizing}
-          resize={resize}
-        />
+        <Resize startResizing={startResizing} resize={resize} />
         <InlineDrawer
           open={mapInfo?.length > 0}
           ref={sidebarRef}
