@@ -25,6 +25,7 @@ import { BottomRightControl } from './BottomRightControl/index.tsx'
 import { ClickListener } from './ClickListener/index.tsx'
 import { ErrorBoundary } from '../shared/ErrorBoundary.tsx'
 import { Info } from './Info/index.tsx'
+import { InfoMarker } from './Info/Marker.tsx'
 
 const outerContainerStyle = {
   width: '100%',
@@ -130,6 +131,7 @@ export const Map = memo(() => {
           <VectorLayers key={`${vectorLayerSorter}/vectorLayers`} />
           <BottomRightControl position="bottomright" visible={true} />
           <BoundsListener />
+          {mapInfo?.length > 0 && <InfoMarker />}
         </MapContainer>
         {mapInfo?.length > 0 && (
           <Info redrawMap={redrawMap} isMobile={isMobile} />

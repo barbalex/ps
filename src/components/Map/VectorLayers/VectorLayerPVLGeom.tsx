@@ -175,6 +175,7 @@ export const VectorLayerPVLGeom = ({ layer, display }: Props) => {
                   style={{
                     color: display?.color,
                     fontSize: display?.marker_size ?? 16,
+                    filter: 'drop-shadow(0 0 2px rgb(0 0 0 / 1))',
                   }}
                 />,
               ),

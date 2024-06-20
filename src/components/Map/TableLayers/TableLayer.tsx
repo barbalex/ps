@@ -145,6 +145,7 @@ export const TableLayer = memo(({ data, layer }: Props) => {
                       style={{
                         color: displayToUse.color ?? '#cc756b',
                         fontSize: displayToUse.marker_size ?? 16,
+                        filter: 'drop-shadow(0 0 2px rgb(0 0 0 / 1))',
                       }}
                     />,
                   ),
