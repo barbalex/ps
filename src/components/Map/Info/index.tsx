@@ -11,22 +11,24 @@ const drawerContainerStyle = {
   display: 'flex',
 }
 
-export const Info = memo(({ redrawMap }) => {
+export const Info = memo(({ redrawMap, isMobile }) => {
   const { user: authUser } = useCorbado()
   const { db } = useElectric()!
 
   const animationFrame = useRef<number>(0)
   const sidebarRef = useRef<HTMLDivElement>(null)
-  const [sidebarWidth, setSidebarWidth] = useState(320)
+  const [sidebarSize, setSidebarSize] = useState(320)
   const resize = useCallback(
     (props) => {
       const clientX = props?.location?.current?.input?.clientX
+      const clientY = props?.location?.current?.input?.clientY
       animationFrame.current = requestAnimationFrame(async () => {
         if (sidebarRef.current) {
-          const newWidth =
-            sidebarRef.current.getBoundingClientRect().right - clientX
-          if (newWidth > 50) {
-            setSidebarWidth(newWidth)
+          const newSize = isMobile
+            ? sidebarRef.current.getBoundingClientRect().bottom - clientY
+            : sidebarRef.current.getBoundingClientRect().right - clientX
+          if (newSize > 50) {
+            setSidebarSize(newSize)
             setTimeout(redrawMap, 200)
             return
           }
@@ -41,14 +43,24 @@ export const Info = memo(({ redrawMap }) => {
         }
       })
     },
-    [authUser?.email, db.app_states, redrawMap],
+    [authUser?.email, db.app_states, isMobile, redrawMap],
   )
 
   return (
     <ErrorBoundary>
-      <div style={drawerContainerStyle}>
-        <Resize resize={resize} />
-        <Drawer sidebarWidth={sidebarWidth} ref={sidebarRef} redrawMap={redrawMap} />
+      <div
+        style={{
+          ...drawerContainerStyle,
+          ...(isMobile ? { flexDirection: 'column' } : {}),
+        }}
+      >
+        <Resize resize={resize} isMobile={isMobile} />
+        <Drawer
+          sidebarSize={sidebarSize}
+          ref={sidebarRef}
+          redrawMap={redrawMap}
+          isMobile={isMobile}
+        />
       </div>
     </ErrorBoundary>
   )

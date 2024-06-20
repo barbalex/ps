@@ -15,18 +15,13 @@ import { FormHeader } from '../../../FormHeader/index.tsx'
 import { Location } from './Location.tsx'
 import { Layer } from './Layer.tsx'
 
-const drawerStyle = {
-  willChange: 'width',
-  transitionProperty: 'width',
-  transitionDuration: 100,
-}
 const headerStyle = {
   padding: 0,
 }
 const bodyStyle = { padding: 0 }
 
 export const Drawer = memo(
-  forwardRef(({ sidebarWidth, redrawMap }, ref) => {
+  forwardRef(({ sidebarSize, redrawMap, isMobile }, ref) => {
     const { user: authUser } = useCorbado()
 
     const { db } = useElectric()!
@@ -48,11 +43,17 @@ export const Drawer = memo(
     return (
       <ErrorBoundary>
         <InlineDrawer
-          id="drawer"
           open={mapInfo?.length > 0}
           ref={ref}
-          style={{ width: sidebarWidth, ...drawerStyle }}
-          onMouseDown={(e) => e.preventDefault()}
+          style={{
+            // display: 'flex',
+            // flexDirection: isMobile ? 'column' : 'row',
+            width: '100%',
+            ...(isMobile ? { height: sidebarSize } : { width: sidebarSize }),
+            transitionProperty: isMobile ? 'height' : 'width',
+            willChange: isMobile ? 'height' : 'width',
+            transitionDuration: 100,
+          }}
         >
           <DrawerHeader style={headerStyle}>
             <FormHeader

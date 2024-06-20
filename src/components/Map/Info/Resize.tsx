@@ -5,8 +5,6 @@ import { css } from '../../../css.ts'
 
 const resizerStyle = {
   backgroundColor: 'grey',
-  width: 1,
-  cursor: 'col-resize',
   zIndex: 1,
 }
 
@@ -14,7 +12,7 @@ const resizerStyle = {
 // the vertical line should only be dragged horizontally
 // but could not find a way to enforce this
 // on the other hand: this is MUCH faster than resizing the drawer while dragging
-export const Resize = memo(({ resize }) => {
+export const Resize = memo(({ resize, isMobile }) => {
   const ref = useRef<HTMLDivElement>(null)
   useEffect(() => {
     const cleanup = draggable({
@@ -29,9 +27,11 @@ export const Resize = memo(({ resize }) => {
     <div
       style={css({
         ...resizerStyle,
+        cursor: isMobile ? 'row-resize' : 'col-resize',
+        ...(isMobile ? { height: 1 } : { width: 1 }),
         on: ($) => [
           $('&:hover', {
-            width: 8,
+            ...(isMobile ? { height: 8 } : { width: 8 }),
             backgroundColor: 'rgba(38, 82, 37, 0.9)',
           }),
         ],
