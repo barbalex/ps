@@ -16,8 +16,7 @@ export const InfoMarker = memo(() => {
   )
   const mapInfo = appState?.map_info
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [location, ...layersData] = mapInfo ?? []
+  const location = mapInfo?.[0]
 
   if (!location) return null
 
