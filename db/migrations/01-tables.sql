@@ -1045,7 +1045,6 @@ COMMENT ON COLUMN files.mimetype IS 'mimetype of file, used to know how to open 
 -- COMMENT ON COLUMN files.file IS 'file content';
 COMMENT ON COLUMN files.url IS 'URL of file, if it is saved on a web service';
 
--- TODO: this table causes a prisma error, see: https://github.com/electric-sql/electric/issues/716
 CREATE TABLE persons(
   person_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1806,6 +1805,29 @@ COMMENT ON COLUMN chart_subjects.value_unit IS 'Needed for action_values, check_
 COMMENT ON COLUMN chart_subjects.stroke IS 'Stroke color of the chart';
 
 COMMENT ON COLUMN chart_subjects.fill IS 'Fill color of the chart';
+
+CREATE TABLE crs(
+  crs_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  auth_name text DEFAULT NULL,
+  code text DEFAULT NULL,
+  name text DEFAULT NULL,
+  type text DEFAULT NULL,
+  area_of_use jsonb DEFAULT NULL,
+  projection_method_name text DEFAULT NULL,
+  proj4 text DEFAULT NULL,
+  label_replace_by_generated_column text DEFAULT NULL
+);
+
+-- CREATE INDEX ON crs USING btree(crs_id);
+CREATE INDEX ON crs USING btree(account_id);
+
+CREATE INDEX ON crs USING btree(project_id);
+
+COMMENT ON TABLE crs IS 'List of crs. Can be inserted when configuring a project. Do not download the entire list - only what the configurating person chooses';
+
+COMMENT ON COLUMN crs.proj4 IS 'proj4 string for the crs';
 
 -- enable electric
 ALTER TABLE users ENABLE electric;
