@@ -47,6 +47,8 @@ export const CoordinatesControl = memo(() => {
     // on start, set initial coordinates to map center
     const bounds = map.getBounds()
     const center = bounds.getCenter()
+    // TODO: depending on projects.map_presentation_crs convert coordinates to presentation crs
+    // const [x, y] = epsg4326to2056(e.latlng.lng, e.latlng.lat)
     setCoordinates({ x: round(center.lng), y: round(center.lat) })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -55,7 +57,7 @@ export const CoordinatesControl = memo(() => {
     (e) => {
       const name = e.target.name
       const value = parseFloat(e.target.value)
-      console.log('centerMap', { e, name, value })
+      // TODO: depending on projects.map_presentation_crs convert coordinates to wgs84
       const newCoordinates = { ...coordinates, [name]: value }
       setCoordinates(newCoordinates)
     },
