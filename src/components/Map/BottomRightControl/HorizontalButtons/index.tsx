@@ -18,7 +18,8 @@ const horizontalbuttonsStyle = {
   display: 'flex',
   flexWrap: 'nowrap',
   flexDirection: 'row',
-  alignItems: 'center',
+  alignItems: 'stretch',
+  padding: 5,
   columnGap: 5,
 }
 

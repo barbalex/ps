@@ -1,5 +1,5 @@
 import { useState, useEffect, memo, useCallback } from 'react'
-import { useMap } from 'react-leaflet'
+import { useMap, useMapEvents } from 'react-leaflet'
 
 const maxWidth = 110
 
@@ -17,6 +17,7 @@ const style = {
   borderTop: 'none',
   display: 'flex',
   justifyContent: 'center',
+  alignItems: 'center',
   padding: '2px 0',
 }
 
@@ -42,15 +43,13 @@ export const ScaleControl = memo(() => {
     setWidth(width)
   }, [map])
 
-  useEffect(() => {
-    map.on('moveend', update)
-    map.on('zoomend', update)
-    map.whenReady(update)
+  useMapEvents({
+    move: update,
+    zoom: update,
+  })
 
-    return () => {
-      map.off('moveend', update)
-      map.off('zoomend', update)
-    }
+  useEffect(() => {
+    map.whenReady(update)
   }, [map, update])
 
   return <div style={{ ...style, width }}>{text}</div>

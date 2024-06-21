@@ -1,5 +1,5 @@
 import { useState, useEffect, memo, useCallback } from 'react'
-import { useMap } from 'react-leaflet'
+import { useMap, useMapEvents } from 'react-leaflet'
 import { useResizeDetector } from 'react-resize-detector'
 
 import { Dropdown } from './Dropdown/index.tsx'
@@ -11,7 +11,7 @@ const getMapWidthForLanInMeters = (currentLan) =>
 const containerStyle = {
   display: 'flex',
   flexDirection: 'column',
-  justifyContent: 'flex-end',
+  justifyContent: 'center',
   fontSize: '1em',
 }
 const textStyle = {
@@ -28,6 +28,7 @@ const textStyle = {
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   minWidth: 72,
+  height: 30,
 }
 
 export const ScaleSwitchControl = memo(() => {
@@ -62,17 +63,10 @@ export const ScaleSwitchControl = memo(() => {
     setScale(scale)
   }, [map, pixelsInMeterWidth])
 
-  useEffect(() => {
-    map.on('moveend', updateScale)
-    map.on('zoomend', updateScale)
-
-    map.whenReady(updateScale)
-
-    return () => {
-      map.off('moveend', updateScale)
-      map.off('zoomend', updateScale)
-    }
-  }, [map, scale, updateScale])
+  useMapEvents({
+    moveend: updateScale,
+    zoomend: updateScale,
+  })
 
   const onClick = useCallback(() => setOpen(!open), [open])
 

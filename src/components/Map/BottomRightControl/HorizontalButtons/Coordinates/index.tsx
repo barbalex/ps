@@ -1,9 +1,8 @@
 import { useState, useEffect, memo, useCallback, useRef } from 'react'
-import { useMap, useMapEvents } from 'react-leaflet'
+import { useMap, useMapEvent } from 'react-leaflet'
 import { css } from '../../../../../css.ts'
 import { ToggleButton } from '@fluentui/react-components'
 import { MdCenterFocusWeak } from 'react-icons/md'
-import debounce from 'lodash/debounce'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 
@@ -31,6 +30,7 @@ const inputStyle = {
   textAlign: 'center',
   padding: 0,
   margin: 0,
+  fontSize: '0.75rem',
 }
 
 const round = (num) => Math.round(num * 10000000) / 10000000
@@ -53,10 +53,6 @@ export const CoordinatesControl = memo(() => {
     L.DomEvent.disableScrollPropagation(ref.current)
   }, [])
 
-  const [trackCoordinates, setTrackCoordinates] = useState(true)
-  const stopTracking = useCallback(() => setTrackCoordinates(false), [])
-  const startTracking = useCallback(() => setTrackCoordinates(true), [])
-
   const [coordinates, setCoordinates] = useState(null)
   useEffect(() => {
     // on start, set initial coordinates to map center
@@ -66,15 +62,12 @@ export const CoordinatesControl = memo(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const setMouseCoords = useCallback(
-    (e) => {
-      if (!trackCoordinates) return
-      // const [x, y] = epsg4326to2056(e.latlng.lng, e.latlng.lat)
-      setCoordinates({ x: round(e.latlng.lng), y: round(e.latlng.lat) })
-    },
-    [trackCoordinates],
-  )
-  const onMouseMove = debounce(setMouseCoords, 50)
+  const setCenterCoords = useCallback(() => {
+    // const [x, y] = epsg4326to2056(e.latlng.lng, e.latlng.lat)
+    const bounds = map.getBounds()
+    const center = bounds.getCenter()
+    setCoordinates({ x: round(center.lng), y: round(center.lat) })
+  }, [map])
 
   const onChange = useCallback(
     (e) => {
@@ -86,10 +79,10 @@ export const CoordinatesControl = memo(() => {
     },
     [coordinates],
   )
-  const onBlur = useCallback(() => {
-    map.setView([coordinates.y, coordinates.x])
-    startTracking()
-  }, [coordinates?.x, coordinates?.y, map, startTracking])
+  const onBlur = useCallback(
+    () => map.setView([coordinates.y, coordinates.x]),
+    [coordinates?.x, coordinates?.y, map],
+  )
   const onKeyDown = useCallback(
     (e) => {
       if (e.key === 'Enter') {
@@ -101,11 +94,7 @@ export const CoordinatesControl = memo(() => {
     [onBlur],
   )
 
-  useMapEvents({
-    mousemove(e) {
-      onMouseMove(e)
-    },
-  })
+  useMapEvent('dragend', setCenterCoords)
 
   const onClickShowMapCenter = useCallback(() => {
     db.app_states.update({
@@ -128,7 +117,6 @@ export const CoordinatesControl = memo(() => {
             }),
           ],
         })}
-        onFocus={stopTracking}
         onBlur={onBlur}
         onChange={onChange}
         onKeyDown={onKeyDown}
@@ -146,7 +134,6 @@ export const CoordinatesControl = memo(() => {
             }),
           ],
         })}
-        onFocus={stopTracking}
         onBlur={onBlur}
         onChange={onChange}
         onKeyDown={onKeyDown}
