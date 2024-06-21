@@ -1,6 +1,8 @@
 import { useState, useEffect, memo, useCallback, useRef } from 'react'
 import { useMap, useMapEvents } from 'react-leaflet'
 import { css } from '../../../../../css.ts'
+import { Button } from '@fluentui/react-components'
+import { MdCenterFocusWeak } from 'react-icons/md'
 import debounce from 'lodash/debounce'
 
 const containerStyle = {
@@ -40,6 +42,11 @@ export const CoordinatesControl = memo(() => {
     L.DomEvent.disableScrollPropagation(ref.current)
   }, [])
 
+  const [trackCoordinates, setTrackCoordinates] = useState(true)
+  const stopTracking = useCallback(() => setTrackCoordinates(false), [])
+  const startTracking = useCallback(() => setTrackCoordinates(true), [])
+
+  const [coordinates, setCoordinates] = useState(null)
   useEffect(() => {
     // on start, set initial coordinates to map center
     const bounds = map.getBounds()
@@ -48,15 +55,40 @@ export const CoordinatesControl = memo(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // const [controlType, setControlType] = useState('coordinates')
-  const [coordinates, setCoordinates] = useState(null)
-
-  const setMouseCoords = useCallback((e) => {
-    // const [x, y] = epsg4326to2056(e.latlng.lng, e.latlng.lat)
-    setCoordinates({ x: round(e.latlng.lng), y: round(e.latlng.lat) })
-  }, [])
-
+  const setMouseCoords = useCallback(
+    (e) => {
+      if (!trackCoordinates) return
+      // const [x, y] = epsg4326to2056(e.latlng.lng, e.latlng.lat)
+      setCoordinates({ x: round(e.latlng.lng), y: round(e.latlng.lat) })
+    },
+    [trackCoordinates],
+  )
   const onMouseMove = debounce(setMouseCoords, 50)
+
+  const onChange = useCallback(
+    (e) => {
+      const name = e.target.name
+      const value = parseFloat(e.target.value)
+      console.log('centerMap', { e, name, value })
+      const newCoordinates = { ...coordinates, [name]: value }
+      setCoordinates(newCoordinates)
+    },
+    [coordinates],
+  )
+  const onBlur = useCallback(() => {
+    map.setView([coordinates.y, coordinates.x])
+    startTracking()
+  }, [coordinates?.x, coordinates?.y, map, startTracking])
+  const onKeyDown = useCallback(
+    (e) => {
+      if (e.key === 'Enter') {
+        onBlur()
+        // unfocus input
+        e.target.blur()
+      }
+    },
+    [onBlur],
+  )
 
   useMapEvents({
     mousemove(e) {
@@ -68,6 +100,7 @@ export const CoordinatesControl = memo(() => {
     <div style={containerStyle} ref={ref}>
       <input
         type="text"
+        name="x"
         value={coordinates?.x ?? '...'}
         style={css({
           ...inputStyle,
@@ -77,10 +110,15 @@ export const CoordinatesControl = memo(() => {
             }),
           ],
         })}
+        onFocus={stopTracking}
+        onBlur={onBlur}
+        onChange={onChange}
+        onKeyDown={onKeyDown}
       />
       {` / `}
       <input
         type="text"
+        name="y"
         value={coordinates?.y ?? '...'}
         style={css({
           ...inputStyle,
@@ -90,6 +128,14 @@ export const CoordinatesControl = memo(() => {
             }),
           ],
         })}
+        onFocus={stopTracking}
+        onBlur={onBlur}
+        onChange={onChange}
+        onKeyDown={onKeyDown}
+      />
+      <Button
+        onClick={() => map.setView([coordinates.y, coordinates.x])}
+        icon={<MdCenterFocusWeak />}
       />
     </div>
   )
