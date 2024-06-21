@@ -26,6 +26,7 @@ import { ClickListener } from './ClickListener/index.tsx'
 import { ErrorBoundary } from '../shared/ErrorBoundary.tsx'
 import { Info } from './Info/index.tsx'
 import { InfoMarker } from './Info/Marker.tsx'
+import { CenterMarker } from './CenterMarker.tsx'
 
 const outerContainerStyle = {
   width: '100%',
@@ -50,6 +51,7 @@ export const Map = memo(() => {
   const vectorLayerSorter = appState?.vector_layer_sorter ?? ''
   const mapIsLocating = appState?.map_locate ?? false
   const mapInfo = appState?.map_info
+  const showMapCenter = appState?.map_show_center ?? false
 
   const mapRef = useRef()
 
@@ -132,6 +134,7 @@ export const Map = memo(() => {
           <BottomRightControl position="bottomright" visible={true} />
           <BoundsListener />
           {mapInfo?.length > 0 && <InfoMarker />}
+          {showMapCenter && <CenterMarker />}
         </MapContainer>
         {mapInfo?.length > 0 && (
           <Info redrawMap={redrawMap} isMobile={isMobile} />
