@@ -2,6 +2,7 @@ import { useRef, useEffect, memo } from 'react'
 
 import { ScaleSwitchControl } from './ScaleSwitchControl/index.tsx'
 import { ScaleControl } from './ScaleControl.tsx'
+import { CoordinatesControl } from './Coordinates/index.tsx'
 
 const horizontalbuttonsStyle = {
   gridArea: 'horizontalbuttons',
@@ -35,6 +36,7 @@ export const HorizontalButtons = memo(() => {
     <div style={horizontalbuttonsStyle} ref={ref}>
       <ScaleControl />
       <ScaleSwitchControl />
+      <CoordinatesControl />
     </div>
   )
 })
