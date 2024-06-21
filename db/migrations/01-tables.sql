@@ -78,7 +78,7 @@ CREATE TABLE projects(
   files_active_places boolean DEFAULT NULL, -- TRUE,
   files_active_actions boolean DEFAULT NULL, -- TRUE,
   files_active_checks boolean DEFAULT NULL, -- TRUE
-  map_presentation_crs text DEFAULT NULL,
+  map_presentation_crs text DEFAULT NULL
 );
 
 -- CREATE INDEX ON projects USING btree(project_id);
@@ -118,7 +118,7 @@ COMMENT ON COLUMN projects.files_active_actions IS 'Whether files are used in ta
 
 COMMENT ON COLUMN projects.files_active_checks IS 'Whether files are used in table checks. Preset: true';
 
-comment on column projects.map_presentation_crs is 'Coordinate Reference System for presentation of map. Preset: "EPSG:4326"';
+COMMENT ON COLUMN projects.map_presentation_crs IS 'Coordinate Reference System for presentation of map. Preset: "EPSG:4326"';
 
 COMMENT ON TABLE projects IS 'Goal: manage projects';
 
