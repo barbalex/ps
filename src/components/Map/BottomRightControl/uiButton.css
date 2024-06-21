@@ -1,4 +1,6 @@
 .fui-Switch__indicator {
   margin-left: -0.5px !important;
   transform: scale(0.8);
+  color: black !important;
+  border-color: black !important;
 }

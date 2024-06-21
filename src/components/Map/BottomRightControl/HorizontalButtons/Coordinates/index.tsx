@@ -142,6 +142,7 @@ export const CoordinatesControl = memo(() => {
         checked={showMapCenter}
         onClick={onClickShowMapCenter}
         icon={<MdCenterFocusWeak />}
+        aria-label={showMapCenter ? 'Hide map center' : 'Show map center'}
         title={showMapCenter ? 'Hide map center' : 'Show map center'}
         size="small"
       />
