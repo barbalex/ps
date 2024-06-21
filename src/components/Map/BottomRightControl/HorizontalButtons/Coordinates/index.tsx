@@ -1,12 +1,8 @@
 import { useState, useEffect, memo, useCallback, useRef } from 'react'
-import { useMap, useMapEvent } from 'react-leaflet'
+import { useMap } from 'react-leaflet'
 import { css } from '../../../../../css.ts'
-import { ToggleButton } from '@fluentui/react-components'
-import { MdCenterFocusWeak } from 'react-icons/md'
-import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
 
-import { useElectric } from '../../../../../ElectricProvider.tsx'
+import { ToggleMapCenter } from './ToggleMapCenter.tsx'
 
 const containerStyle = {
   display: 'flex',
@@ -37,13 +33,6 @@ const round = (num) => Math.round(num * 10000000) / 10000000
 
 export const CoordinatesControl = memo(() => {
   const map = useMap()
-  const { user: authUser } = useCorbado()
-
-  const { db } = useElectric()!
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
-  const showMapCenter = appState?.map_show_center ?? false
 
   // prevent click propagation on to map
   // https://stackoverflow.com/a/57013052/712005
@@ -61,13 +50,6 @@ export const CoordinatesControl = memo(() => {
     setCoordinates({ x: round(center.lng), y: round(center.lat) })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  const setCenterCoords = useCallback(() => {
-    // const [x, y] = epsg4326to2056(e.latlng.lng, e.latlng.lat)
-    const bounds = map.getBounds()
-    const center = bounds.getCenter()
-    setCoordinates({ x: round(center.lng), y: round(center.lat) })
-  }, [map])
 
   const onChange = useCallback(
     (e) => {
@@ -93,15 +75,6 @@ export const CoordinatesControl = memo(() => {
     },
     [onBlur],
   )
-
-  useMapEvent('dragend', setCenterCoords)
-
-  const onClickShowMapCenter = useCallback(() => {
-    db.app_states.update({
-      where: { app_state_id: appState?.app_state_id },
-      data: { map_show_center: !showMapCenter },
-    })
-  }, [db.app_states, appState?.app_state_id, showMapCenter])
 
   return (
     <div style={containerStyle} ref={ref}>
@@ -138,14 +111,7 @@ export const CoordinatesControl = memo(() => {
         onChange={onChange}
         onKeyDown={onKeyDown}
       />
-      <ToggleButton
-        checked={showMapCenter}
-        onClick={onClickShowMapCenter}
-        icon={<MdCenterFocusWeak />}
-        aria-label={showMapCenter ? 'Hide map center' : 'Show map center'}
-        title={showMapCenter ? 'Hide map center' : 'Show map center'}
-        size="small"
-      />
+      <ToggleMapCenter setCoordinates={setCoordinates} />
     </div>
   )
 })
