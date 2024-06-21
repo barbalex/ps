@@ -15,6 +15,7 @@ export const { styleSheet, css } = createHooks({
     'path:nth-of-type(2)': 'path:nth-of-type(2)',
     '&:before': '&:before',
     '&:first-of-type': '&:first-of-type',
+    '&:focus-visible': '&:focus-visible',
   },
 })
 
