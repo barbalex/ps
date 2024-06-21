@@ -1827,7 +1827,7 @@ CREATE INDEX ON crs USING btree(project_id);
 
 COMMENT ON TABLE crs IS 'List of crs. From: https://spatialreference.org/crslist.json. Can be inserted when configuring a project. Do not download the entire list - only what the configurating person chooses';
 
-COMMENT ON COLUMN crs.proj4 IS 'proj4 string for the crs';
+COMMENT ON COLUMN crs.proj4 IS 'proj4 string for the crs. From (example): https://spatialreference.org/ref/epsg/2056/proj4.txt';
 
 -- enable electric
 ALTER TABLE users ENABLE electric;
