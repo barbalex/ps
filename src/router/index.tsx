@@ -1112,6 +1112,43 @@ export const router = () => {
                       ],
                     },
                     {
+                      path: 'crs',
+                      element: null,
+                      handle: {
+                        crumb: {
+                          text: 'CRS',
+                          table: 'crs',
+                          folder: true,
+                        },
+                      },
+                      children: [
+                        {
+                          index: true,
+                          lazy: () => import('../routes/crss.tsx'),
+                        },
+                        {
+                          path: 'filter',
+                          element: <Filter />,
+                          children: [
+                            {
+                              index: true,
+                              lazy: () => import('../routes/crs/Form.tsx'),
+                            },
+                          ],
+                        },
+                        {
+                          path: ':crs_id',
+                          lazy: () => import('../routes/crs/index.tsx'),
+                          handle: {
+                            crumb: {
+                              table: 'crs',
+                              folder: false,
+                            },
+                          },
+                        },
+                      ],
+                    },
+                    {
                       path: 'files',
                       element: null,
                       handle: {
