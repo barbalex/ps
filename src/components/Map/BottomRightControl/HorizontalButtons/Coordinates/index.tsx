@@ -3,6 +3,7 @@ import { useMap } from 'react-leaflet'
 import { css } from '../../../../../css.ts'
 
 import { ToggleMapCenter } from './ToggleMapCenter.tsx'
+import { ChooseCrs } from './ChooseCrs.tsx'
 
 const containerStyle = {
   display: 'flex',
@@ -114,6 +115,7 @@ export const CoordinatesControl = memo(() => {
         onKeyDown={onKeyDown}
       />
       <ToggleMapCenter setCoordinates={setCoordinates} />
+      <ChooseCrs />
     </div>
   )
 })
