@@ -13,24 +13,24 @@ import { Component as Form } from './Form.tsx'
 import '../../form.css'
 
 export const Component = memo(() => {
-  const { person_id } = useParams()
+  const { crs_id } = useParams()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const { db } = useElectric()!
   const { results: row } = useLiveQuery(
-    db.persons.liveUnique({ where: { person_id } }),
+    db.crs.liveUnique({ where: { crs_id } }),
   )
 
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
-      db.persons.update({
-        where: { person_id },
+      db.crs.update({
+        where: { crs_id },
         data: { [name]: value },
       })
     },
-    [db.persons, person_id],
+    [db.crs, crs_id],
   )
 
   if (!row) return <Loading />
@@ -39,7 +39,7 @@ export const Component = memo(() => {
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
-        <TextFieldInactive label="ID" name="person_id" value={row.person_id} />
+        <TextFieldInactive label="ID" name="crs_id" value={row.crs_id} />
         <Form onChange={onChange} row={row} autoFocusRef={autoFocusRef} />
       </div>
     </div>

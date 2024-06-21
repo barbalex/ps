@@ -1,68 +1,70 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
-import { createPerson } from '../../modules/createRows.ts'
+import { createCrs } from '../../modules/createRows.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
 export const Header = memo(({ autoFocusRef }) => {
-  const { project_id, person_id } = useParams()
+  const { project_id, crs_id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
   const { db } = useElectric()!
 
+  // TODO:
   const addRow = useCallback(async () => {
-    const data = await createPerson({ db, project_id })
-    await db.persons.create({ data })
-    navigate({
-      pathname: `../${data.person_id}`,
-      search: searchParams.toString(),
-    })
-    autoFocusRef.current?.focus()
-  }, [autoFocusRef, db, navigate, project_id, searchParams])
+    console.log('TODO: fetch list, let user choose')
+    // const data = await createCrs({ db, project_id })
+    // await db.crs.create({ data })
+    // navigate({
+    //   pathname: `../${data.crs_id}`,
+    //   search: searchParams.toString(),
+    // })
+    // autoFocusRef.current?.focus()
+  }, [])
 
   const deleteRow = useCallback(async () => {
-    await db.persons.delete({ where: { person_id } })
+    await db.crs.delete({ where: { crs_id } })
     navigate({ pathname: '..', search: searchParams.toString() })
-  }, [db.persons, navigate, person_id, searchParams])
+  }, [db.crs, navigate, crs_id, searchParams])
 
   const toNext = useCallback(async () => {
-    const persons = await db.persons.findMany({
-      where: {  project_id },
+    const crs = await db.crs.findMany({
+      where: { project_id },
       orderBy: { label: 'asc' },
     })
-    const len = persons.length
-    const index = persons.findIndex((p) => p.person_id === person_id)
-    const next = persons[(index + 1) % len]
+    const len = crs.length
+    const index = crs.findIndex((p) => p.crs_id === crs_id)
+    const next = crs[(index + 1) % len]
     navigate({
-      pathname: `../${next.person_id}`,
+      pathname: `../${next.crs_id}`,
       search: searchParams.toString(),
     })
-  }, [db.persons, navigate, person_id, project_id, searchParams])
+  }, [db.crs, navigate, crs_id, project_id, searchParams])
 
   const toPrevious = useCallback(async () => {
-    const persons = await db.persons.findMany({
-      where: {  project_id },
+    const crs = await db.crs.findMany({
+      where: { project_id },
       orderBy: { label: 'asc' },
     })
-    const len = persons.length
-    const index = persons.findIndex((p) => p.person_id === person_id)
-    const previous = persons[(index + len - 1) % len]
+    const len = crs.length
+    const index = crs.findIndex((p) => p.crs_id === crs_id)
+    const previous = crs[(index + len - 1) % len]
     navigate({
-      pathname: `../${previous.person_id}`,
+      pathname: `../${previous.crs_id}`,
       search: searchParams.toString(),
     })
-  }, [db.persons, navigate, person_id, project_id, searchParams])
+  }, [db.crs, navigate, crs_id, project_id, searchParams])
 
   return (
     <FormHeader
-      title="Person"
+      title="CRS"
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
       toPrevious={toPrevious}
-      tableName="person"
+      tableName="crs"
     />
   )
 })
