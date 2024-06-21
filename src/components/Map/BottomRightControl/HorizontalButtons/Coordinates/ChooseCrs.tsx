@@ -22,7 +22,7 @@ export const ChooseCrs = memo(() => {
     // TODO:
     // 1. open dialog to choose CRS
     // 2. when choosen, set projects.map_presentation_crs
-    console.log('TODO: open dialog to choose CRS')
+    console.log('TODO: open dialog to choose CRS', crs)
   }, [])
 
   if (!project_id) return null
