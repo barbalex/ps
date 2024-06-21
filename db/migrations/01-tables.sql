@@ -1178,6 +1178,7 @@ CREATE TABLE app_states(
   map_hide_ui boolean DEFAULT NULL, -- FALSE
   map_locate boolean DEFAULT NULL, -- FALSE
   map_info jsonb DEFAULT NULL,
+  map_show_center boolean DEFAULT NULL, -- FALSE
   tile_layer_sorter text DEFAULT NULL,
   vector_layer_sorter text DEFAULT NULL,
   editing_place_geometry uuid DEFAULT NULL,
