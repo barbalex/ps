@@ -7,6 +7,8 @@ import { useParams } from 'react-router-dom'
 
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 
+const buttonStyle = { marginLeft: 5 }
+
 export const ChooseCrs = memo(() => {
   const { project_id = '99999999-9999-9999-9999-999999999999' } = useParams()
   const map = useMap()
@@ -20,11 +22,12 @@ export const ChooseCrs = memo(() => {
     // TODO:
     // 1. open dialog to choose CRS
     // 2. when choosen, set projects.map_presentation_crs
+    console.log('TODO: open dialog to choose CRS')
   }, [])
 
   if (!project_id) return null
   // no crs? no need to choose
-  if (!crs.length) return null
+  // if (!crs?.length) return null
 
   return (
     <Button
@@ -33,6 +36,7 @@ export const ChooseCrs = memo(() => {
       aria-label="Choose CRS (Coordinate Reference System)"
       title="Choose CRS (Coordinate Reference System)"
       size="small"
+      style={buttonStyle}
     />
   )
 })

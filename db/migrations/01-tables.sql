@@ -1929,3 +1929,5 @@ ALTER TABLE charts ENABLE electric;
 
 ALTER TABLE chart_subjects ENABLE ELECTRIC;
 
+ALTER TABLE crs ENABLE electric;
+
