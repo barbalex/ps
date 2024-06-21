@@ -9,7 +9,6 @@ const horizontalbuttonsStyle = {
   zIndex: 1000,
   backgroundColor: 'white',
   borderRadius: 4,
-  padding: '0 5px',
   margin: 0,
   cursor: 'auto',
   position: 'relative',
