@@ -2,6 +2,7 @@ import { memo } from 'react'
 import { useOutletContext } from 'react-router-dom'
 
 import { TextField } from '../../components/shared/TextField.tsx'
+import { TextArea } from '../../components/shared/TextArea.tsx'
 import { Choose } from './Choose.tsx'
 
 import '../../form.css'
@@ -35,20 +36,11 @@ export const Component = memo(
           autoFocus
           ref={autoFocusRef}
         />
-        <TextField
+        <TextArea
           label="Proj4 Value"
           name="proj4"
           type="proj4"
           value={row.proj4 ?? ''}
-          onChange={onChange}
-          autoFocus
-          ref={autoFocusRef}
-        />
-        <TextField
-          label="WKT Value"
-          name="wkt"
-          type="wkt"
-          value={row.wkt ?? ''}
           onChange={onChange}
           autoFocus
           ref={autoFocusRef}
