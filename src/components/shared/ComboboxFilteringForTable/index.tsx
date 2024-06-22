@@ -12,7 +12,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { FilteringComboboxOptions } from './options.tsx'
 
-export const FilteringCombobox = memo(
+export const ComboboxFilteringForTable = memo(
   forwardRef(
     (
       {

@@ -13,7 +13,6 @@ export const Header = memo(({ autoFocusRef }) => {
   const { db } = useElectric()!
 
   const addRow = useCallback(async () => {
-    console.log('TODO: fetch list, let user choose')
     const data = await createCrs({ project_id })
     await db.crs.create({ data })
     navigate({

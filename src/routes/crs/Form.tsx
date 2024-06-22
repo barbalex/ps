@@ -3,7 +3,9 @@ import { useOutletContext } from 'react-router-dom'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { TextArea } from '../../components/shared/TextArea.tsx'
+import { Combobox } from '../../components/shared/Combobox.tsx'
 import { Choose } from './Choose.tsx'
+import * as crsData from './crs.json'
 
 import '../../form.css'
 
@@ -15,9 +17,20 @@ export const Component = memo(
     const onChange = onChangeFromProps ?? outletContext?.onChange
     const row = rowFromProps ?? outletContext?.row ?? {}
 
+    console.log('CRS Form, crsData:', crsData.default)
+
     return (
       <>
         <Choose />
+        <Combobox
+          label="Code"
+          name="code"
+          options={crsData.default.map((d) => d.code)}
+          value={row.code ? [row.code] : []}
+          onChange={onChange}
+          autoFocus
+          ref={autoFocusRef}
+        />
         <TextField
           label="Code"
           name="code"
