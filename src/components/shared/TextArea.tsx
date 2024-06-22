@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, forwardRef } from 'react'
 import { Textarea, Field } from '@fluentui/react-components'
 import type { TextareaProps } from '@fluentui/react-components'
 
@@ -14,31 +14,34 @@ const textareaStyle = {
   flexGrow: 1,
 }
 
-export const TextArea = memo((props: Partial<TextareaProps>) => {
-  const {
-    label,
-    validationMessage,
-    validationState = 'none',
-    autoFocus,
-    button,
-  } = props
+export const TextArea = memo(
+  forwardRef((props: Partial<TextareaProps>, ref) => {
+    const {
+      label,
+      validationMessage,
+      validationState = 'none',
+      autoFocus,
+      button,
+    } = props
 
-  return (
-    <Field
-      label={label ?? '(no label provided)'}
-      validationMessage={validationMessage}
-      validationState={validationState}
-    >
-      <div style={rowStyle}>
-        <Textarea
-          {...props}
-          appearance="outline"
-          autoFocus={autoFocus}
-          resize="vertical"
-          style={textareaStyle}
-        />
-        {!!button && button}
-      </div>
-    </Field>
-  )
-})
+    return (
+      <Field
+        label={label ?? '(no label provided)'}
+        validationMessage={validationMessage}
+        validationState={validationState}
+      >
+        <div style={rowStyle}>
+          <Textarea
+            {...props}
+            appearance="outline"
+            autoFocus={autoFocus}
+            resize="vertical"
+            style={textareaStyle}
+            ref={ref}
+          />
+          {!!button && button}
+        </div>
+      </Field>
+    )
+  }),
+)
