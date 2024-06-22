@@ -1127,16 +1127,6 @@ export const router = () => {
                           lazy: () => import('../routes/crss.tsx'),
                         },
                         {
-                          path: 'filter',
-                          element: <Filter />,
-                          children: [
-                            {
-                              index: true,
-                              lazy: () => import('../routes/crs/Form.tsx'),
-                            },
-                          ],
-                        },
-                        {
                           path: ':crs_id',
                           lazy: () => import('../routes/crs/index.tsx'),
                           handle: {

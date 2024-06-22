@@ -12,6 +12,7 @@ import { PersonsNode } from '../Persons.tsx'
 import { ListsNode } from '../Lists.tsx'
 import { TaxonomiesNode } from '../Taxonomies.tsx'
 import { UnitsNode } from '../Units.tsx'
+import { CrssNode } from '../Crss.tsx'
 import { TileLayersNode } from '../TileLayers.tsx'
 import { VectorLayersNode } from '../VectorLayers.tsx'
 import { ProjectUsersNode } from '../ProjectUsers.tsx'
@@ -124,6 +125,7 @@ export const ProjectNode = memo(({ project, level = 2 }: Props) => {
               <ListsNode project_id={project.project_id} />
               <TaxonomiesNode project_id={project.project_id} />
               <UnitsNode project_id={project.project_id} />
+              <CrssNode project_id={project.project_id} />
               <PlaceLevelsNode project_id={project.project_id} />
               <FieldsNode project_id={project.project_id} />
             </>
