@@ -16,23 +16,24 @@ for await (const crs of crsArray) {
     crs.proj4 = null
   }
   // //epsg.io/2056.wkt
-  let wktResp
-  try {
-    wktResp = await fetch(`https://epsg.io/${crs.code}.wkt`)
-    crs.wkt = await wktResp.text()
-    if (!wktResp.ok) {
-      crs.wkt = null
-    }
-  } catch (error) {
-    crs.wkt = null
-  }
+  // not needed as nearly all have proj4, many more miss wkt
+  // let wktResp
+  // try {
+  //   wktResp = await fetch(`https://epsg.io/${crs.code}.wkt`)
+  //   crs.wkt = await wktResp.text()
+  //   if (!wktResp.ok) {
+  //     crs.wkt = null
+  //   }
+  // } catch (error) {
+  //   crs.wkt = null
+  // }
   crs.code = `${crs.auth_name}:${crs.code}`
   delete crs.auth_name
   delete crs.type
   delete crs.deprecated
   delete crs.area_of_use
   delete crs.projection_method_name
-  console.log(crs)
+  console.log(crs.code)
 }
 
 // write the new crsArray to a new file

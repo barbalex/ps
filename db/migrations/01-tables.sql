@@ -1816,7 +1816,6 @@ CREATE TABLE crs(
   code text DEFAULT NULL,
   name text DEFAULT NULL,
   proj4 text DEFAULT NULL,
-  wkt text DEFAULT NULL,
   label_replace_by_generated_column text DEFAULT NULL
 );
 
@@ -1828,8 +1827,6 @@ CREATE INDEX ON crs USING btree(project_id);
 COMMENT ON TABLE crs IS 'List of crs. From: https://spatialreference.org/crslist.json. Can be inserted when configuring a project. Do not download the entire list - only what the configurating person chooses';
 
 COMMENT ON COLUMN crs.proj4 IS 'proj4 string for the crs. From (example): https://epsg.io/4326.proj4';
-
-COMMENT ON COLUMN crs.wkt IS 'wkt string for the crs. From (example): https://epsg.io/4326.wkt';
 
 -- enable electric
 ALTER TABLE users ENABLE electric;
