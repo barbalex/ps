@@ -9,7 +9,11 @@ import '../../form.css'
 
 // this form is rendered from a parent or outlet
 export const Component = memo(
-  ({ onChange: onChangeFromProps, row: rowFromProps, autoFocusRef }) => {
+  ({
+    onChange: onChangeFromProps,
+    row: rowFromProps,
+    autoFocusRef,
+  }) => {
     // beware: contextFromOutlet is undefined if not inside an outlet
     const outletContext = useOutletContext()
     const onChange = onChangeFromProps ?? outletContext?.onChange
@@ -17,13 +21,7 @@ export const Component = memo(
 
     return (
       <>
-        <ComboboxFilteringOptions
-          name="code"
-          value={row.code}
-          onChange={onChange}
-          autoFocus
-          ref={autoFocusRef}
-        />
+        <ComboboxFilteringOptions autoFocus={!row.code} ref={autoFocusRef} />
         <TextField
           label="Code"
           name="code"

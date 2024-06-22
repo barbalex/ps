@@ -7,7 +7,7 @@ import { useElectric } from '../../../ElectricProvider.tsx'
 import * as crsDataImport from './crs.json'
 
 export const ComboboxFilteringOptions = memo(
-  forwardRef((props, ref) => {
+  forwardRef(({ autoFocus }, ref) => {
     const { db } = useElectric()!
     const { crs_id } = useParams()
 
@@ -34,8 +34,6 @@ export const ComboboxFilteringOptions = memo(
           },
         })
         setFilter('')
-        // TODO: set focus on the form
-
       },
       [crsData, crs_id, db.crs],
     )
@@ -63,7 +61,7 @@ export const ComboboxFilteringOptions = memo(
           onOptionSelect={onOptionSelect}
           onInput={onInput}
           appearance="underline"
-          autoFocus={true}
+          autoFocus={autoFocus}
           ref={ref}
           freeform
           clearable
