@@ -6,7 +6,7 @@ export const generateCrsLabel = async (db) => {
   if (!hasLabel) {
     await db.unsafeExec({
       sql: `
-        ALTER TABLE crs ADD COLUMN label text GENERATED ALWAYS AS (code);`,
+        ALTER TABLE crs ADD COLUMN label text GENERATED ALWAYS AS (coalesce(code, crs_id));`,
     })
     await db.unsafeExec({
       sql: 'CREATE INDEX IF NOT EXISTS crs_label_idx ON crs(label)',
