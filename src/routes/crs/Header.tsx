@@ -12,17 +12,16 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const { db } = useElectric()!
 
-  // TODO:
   const addRow = useCallback(async () => {
     console.log('TODO: fetch list, let user choose')
-    // const data = await createCrs({ db, project_id })
-    // await db.crs.create({ data })
-    // navigate({
-    //   pathname: `../${data.crs_id}`,
-    //   search: searchParams.toString(),
-    // })
-    // autoFocusRef.current?.focus()
-  }, [])
+    const data = await createCrs({ project_id })
+    await db.crs.create({ data })
+    navigate({
+      pathname: `../${data.crs_id}`,
+      search: searchParams.toString(),
+    })
+    autoFocusRef.current?.focus()
+  }, [autoFocusRef, db.crs, navigate, project_id, searchParams])
 
   const deleteRow = useCallback(async () => {
     await db.crs.delete({ where: { crs_id } })

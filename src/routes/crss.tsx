@@ -3,14 +3,14 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../ElectricProvider.tsx'
-// import { createCrs } from '../modules/createRows.ts'
+import { createCrs } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import '../form.css'
 
 export const Component = memo(() => {
-  // const navigate = useNavigate()
-  // const [searchParams] = useSearchParams()
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { project_id } = useParams()
 
   const { db } = useElectric()!
@@ -23,11 +23,10 @@ export const Component = memo(() => {
   )
 
   const add = useCallback(async () => {
-    console.log('TODO: fetch list, let user choose')
-    // const data = await createCrs({ db, project_id })
-    // await db.crs.create({ data })
-    // navigate({ pathname: data.crs_id, search: searchParams.toString() })
-  }, [])
+    const data = await createCrs({ project_id })
+    await db.crs.create({ data })
+    navigate({ pathname: data.crs_id, search: searchParams.toString() })
+  }, [db.crs, navigate, project_id, searchParams])
 
   return (
     <div className="list-view">
