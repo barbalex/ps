@@ -4,7 +4,16 @@ import * as fs from 'fs'
 const crsArray = JSON.parse(fs.readFileSync('crs-orig.json', 'utf8'))
 // loop all crsArray and delete the unwanted fields
 
-for await (const crs of crsArray) {
+// TODO: crslist.json contains loads of duplicate values :-(
+// remove all values where auth_name combined with code is not unique
+const crsArrayUnique = crsArray.filter(
+  (crs, index, self) =>
+    self.findIndex(
+      (t) => t.auth_name === crs.auth_name && t.code === crs.code,
+    ) === index,
+)
+
+for await (const crs of crsArrayUnique) {
   let proj4Resp
   try {
     proj4Resp = await fetch(`https://epsg.io/${crs.code}.proj4`)

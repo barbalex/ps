@@ -3,9 +3,8 @@ import { useOutletContext } from 'react-router-dom'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { TextArea } from '../../components/shared/TextArea.tsx'
-import { Combobox } from '../../components/shared/Combobox.tsx'
-import { Choose } from './Choose.tsx'
-import * as crsData from './crs.json'
+import { ComboboxFilteringOptions } from '../../components/shared/ComboboxFilteringOptions/index.tsx'
+import * as crsDataImport from './crs.json'
 
 import '../../form.css'
 
@@ -17,16 +16,20 @@ export const Component = memo(
     const onChange = onChangeFromProps ?? outletContext?.onChange
     const row = rowFromProps ?? outletContext?.row ?? {}
 
-    console.log('CRS Form, crsData:', crsData.default)
+    const crsData = crsDataImport.default
+
+    console.log('CRS Form, crsData:', crsData)
 
     return (
       <>
-        <Choose />
-        <Combobox
-          label="Code"
+        <ComboboxFilteringOptions
           name="code"
-          options={crsData.default.map((d) => d.code)}
-          value={row.code ? [row.code] : []}
+          label="Code"
+          options={crsData.map((d) => ({
+            label: d.name,
+            value: d.code,
+          }))}
+          value={row.code}
           onChange={onChange}
           autoFocus
           ref={autoFocusRef}
