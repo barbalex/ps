@@ -30,8 +30,6 @@ export const Component = memo(
           type="code"
           value={row.code ?? ''}
           onChange={onChange}
-          autoFocus
-          ref={autoFocusRef}
         />
         <TextField
           label="Name"
@@ -39,8 +37,6 @@ export const Component = memo(
           type="name"
           value={row.name ?? ''}
           onChange={onChange}
-          autoFocus
-          ref={autoFocusRef}
         />
         <TextArea
           label="Proj4 Value"
@@ -48,8 +44,6 @@ export const Component = memo(
           type="proj4"
           value={row.proj4 ?? ''}
           onChange={onChange}
-          autoFocus
-          ref={autoFocusRef}
         />
       </>
     )
