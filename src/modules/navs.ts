@@ -137,6 +137,11 @@ export const buildNavs = async ({
                 showOnlyWhenDesigning: true,
               },
               {
+                path: `/data/projects/${project_id}/crs`,
+                text: 'CRS',
+                showOnlyWhenDesigning: true,
+              },
+              {
                 path: `/data/projects/${project_id}/place-levels`,
                 text: 'Place Levels',
               },

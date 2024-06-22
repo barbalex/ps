@@ -1,4 +1,4 @@
-import { useCallback, useRef, useEffect } from 'react'
+import { useCallback, useRef, useEffect, memo } from 'react'
 import 'leaflet'
 import 'proj4'
 import 'proj4leaflet'
@@ -6,9 +6,10 @@ import { MapContainer } from 'react-leaflet'
 import { useResizeDetector } from 'react-resize-detector'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
+import { dropTargetForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
+import { isMobilePhone } from '../../modules/isMobilePhone.ts'
 
 import 'leaflet/dist/leaflet.css'
-// import 'leaflet-draw/dist/leaflet.draw.css'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { TileLayers } from './TileLayers/index.tsx'
@@ -18,16 +19,28 @@ import { tableNameFromIdField } from '../../modules/tableNameFromIdField.ts'
 import { DrawControl } from './DrawControl/index.tsx'
 import { TableLayers } from './TableLayers/index.tsx'
 import { BoundsListener } from './BoundsListener.tsx'
-// import { Control } from './Control'
+// import { Control } from './Control.tsx'
+import { BottomRightControl } from './BottomRightControl/index.tsx'
 // import { OwnControls } from './OwnControls'
+import { ClickListener } from './ClickListener/index.tsx'
 import { ErrorBoundary } from '../shared/ErrorBoundary.tsx'
+import { Info } from './Info/index.tsx'
+import { InfoMarker } from './Info/Marker.tsx'
+import { CenterMarker } from './CenterMarker.tsx'
 
+const outerContainerStyle = {
+  width: '100%',
+  height: '100%',
+  position: 'relative',
+  display: 'flex',
+  overflow: 'hidden',
+}
 const mapContainerStyle = {
   width: '100%',
   height: '100%',
 }
 
-export const Map = () => {
+export const Map = memo(() => {
   const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
@@ -36,16 +49,35 @@ export const Map = () => {
   )
   const tileLayerSorter = appState?.tile_layer_sorter ?? ''
   const vectorLayerSorter = appState?.vector_layer_sorter ?? ''
+  const mapIsLocating = appState?.map_locate ?? false
+  const mapInfo = appState?.map_info
+  const showMapCenter = appState?.map_show_center ?? false
 
   const mapRef = useRef()
 
-  const onResize = useCallback(() => mapRef.current?.invalidateSize(), [mapRef])
-  const { ref: resizeRef } = useResizeDetector({
-    onResize,
+  const redrawMap = useCallback(
+    () => mapRef.current?.invalidateSize(),
+    [mapRef],
+  )
+
+  const resizeRef = useRef<HTMLDivElement>(null)
+  useResizeDetector({
+    targetRef: resizeRef,
+    onResize: redrawMap,
     refreshMode: 'debounce',
     refreshRate: 300,
     refreshOptions: { trailing: true },
   })
+
+  // set drop target for info drawer resizer
+  // if not, the 'none' cursor is shown while dragging
+  useEffect(() => {
+    const cleanup = dropTargetForElements({
+      element: resizeRef.current,
+    })
+
+    return cleanup
+  }, [])
 
   // Issue: map is not drawn correctly on first render
   // Solution: invalidateSize() after first render
@@ -62,19 +94,29 @@ export const Map = () => {
     run()
   }, [db])
 
+  // TODO:
+  // const isMobile = true
+  const isMobile = isMobilePhone()
+
   // const bounds = [
   //   [47.159, 8.354],
   //   [47.696, 8.984],
   // ]
   const position = [47.4, 8.65]
 
-  // console.log('hello Map, mapRef:', mapRef)
-
   return (
     <ErrorBoundary>
-      <div style={mapContainerStyle} ref={resizeRef}>
+      <div
+        style={{
+          ...outerContainerStyle,
+          ...(isMobile ? { flexDirection: 'column' } : {}),
+        }}
+        ref={resizeRef}
+        id="map"
+      >
         <MapContainer
           className="map-container"
+          zoomControl={false}
           style={mapContainerStyle}
           // maxZoom={22}
           // minZoom={0}
@@ -83,17 +125,21 @@ export const Map = () => {
           zoom={13}
           ref={mapRef}
         >
-          <LocationMarker />
+          {mapIsLocating && <LocationMarker />}
+          <ClickListener />
           <DrawControl />
           <TileLayers key={`${tileLayerSorter}/tileLayers`} />
           <TableLayers />
           <VectorLayers key={`${vectorLayerSorter}/vectorLayers`} />
-          {/* <Control position="topright" visible={true}>
-          <OwnControls />
-        </Control> */}
+          <BottomRightControl position="bottomright" visible={true} />
           <BoundsListener />
+          {mapInfo?.length > 0 && <InfoMarker />}
+          {showMapCenter && <CenterMarker />}
         </MapContainer>
+        {mapInfo?.length > 0 && (
+          <Info redrawMap={redrawMap} isMobile={isMobile} />
+        )}
       </div>
     </ErrorBoundary>
   )
-}
+})

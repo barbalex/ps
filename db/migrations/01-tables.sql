@@ -50,6 +50,8 @@ CREATE TYPE project_type AS enum(
   'biotope'
 );
 
+-- TODO: add crs for presentation
+-- TODO: add geometry
 CREATE TABLE projects(
   project_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -75,7 +77,8 @@ CREATE TABLE projects(
   files_active_subprojects boolean DEFAULT NULL, -- TRUE,
   files_active_places boolean DEFAULT NULL, -- TRUE,
   files_active_actions boolean DEFAULT NULL, -- TRUE,
-  files_active_checks boolean DEFAULT NULL -- TRUE
+  files_active_checks boolean DEFAULT NULL, -- TRUE
+  map_presentation_crs text DEFAULT NULL
 );
 
 -- CREATE INDEX ON projects USING btree(project_id);
@@ -114,6 +117,8 @@ COMMENT ON COLUMN projects.files_active_places IS 'Whether files are used in tab
 COMMENT ON COLUMN projects.files_active_actions IS 'Whether files are used in table actions. Preset: true';
 
 COMMENT ON COLUMN projects.files_active_checks IS 'Whether files are used in table checks. Preset: true';
+
+COMMENT ON COLUMN projects.map_presentation_crs IS 'Coordinate Reference System for presentation of map. Preset: "EPSG:4326"';
 
 COMMENT ON TABLE projects IS 'Goal: manage projects';
 
@@ -1043,7 +1048,6 @@ COMMENT ON COLUMN files.mimetype IS 'mimetype of file, used to know how to open 
 -- COMMENT ON COLUMN files.file IS 'file content';
 COMMENT ON COLUMN files.url IS 'URL of file, if it is saved on a web service';
 
--- TODO: this table causes a prisma error, see: https://github.com/electric-sql/electric/issues/716
 CREATE TABLE persons(
   person_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1172,6 +1176,11 @@ CREATE TABLE app_states(
   tabs jsonb DEFAULT NULL, -- array of strings
   map_bounds jsonb DEFAULT NULL, -- [minx, miny, maxx, maxy]
   show_local_map jsonb DEFAULT NULL, -- map of id (layer.id, key) and show boolean
+  map_maximized boolean DEFAULT NULL, -- FALSE
+  map_hide_ui boolean DEFAULT NULL, -- FALSE
+  map_locate boolean DEFAULT NULL, -- FALSE
+  map_info jsonb DEFAULT NULL,
+  map_show_center boolean DEFAULT NULL, -- FALSE
   tile_layer_sorter text DEFAULT NULL,
   vector_layer_sorter text DEFAULT NULL,
   editing_place_geometry uuid DEFAULT NULL,
@@ -1250,6 +1259,8 @@ COMMENT ON COLUMN app_states.user_email IS 'email of authenticated user. Exists 
 COMMENT ON TABLE app_states IS 'User interface settings (state saved in db)';
 
 COMMENT ON COLUMN app_states.designing IS 'Whether user is currently designing projects. Preset: false';
+
+COMMENT ON COLUMN app_states.map_info IS 'Information presented, when user clicks on a map. Array of: {label, properties} where properties is an array of [key, value]';
 
 COMMENT ON COLUMN app_states.editing_place_geometry IS 'The id of the place whose geometry is currently being edited';
 
@@ -1430,10 +1441,10 @@ CREATE TABLE vector_layers(
   max_zoom integer DEFAULT NULL, -- 19,
   min_zoom integer DEFAULT NULL, -- 0,
   max_features integer DEFAULT NULL, -- 1000
-  wfs_url text DEFAULT NULL, -- WFS url, for example https://maps.zh.ch/wfs/OGDZHWFS. TODO: rename wfs_url
+  wfs_url text DEFAULT NULL, -- WFS url, for example https://maps.zh.ch/wfs/OGDZHWFS.
   wfs_layer jsonb DEFAULT NULL, -- a single option
   wfs_version text DEFAULT NULL, -- often: 1.1.0 or 2.0.0
-  wfs_output_format jsonb DEFAULT NULL, --  a single option. TODO: rename wfs_output_format
+  wfs_output_format jsonb DEFAULT NULL, --  a single option
   feature_count integer DEFAULT NULL,
   point_count integer DEFAULT NULL,
   line_count integer DEFAULT NULL,
@@ -1799,6 +1810,28 @@ COMMENT ON COLUMN chart_subjects.stroke IS 'Stroke color of the chart';
 
 COMMENT ON COLUMN chart_subjects.fill IS 'Fill color of the chart';
 
+CREATE TABLE crs(
+  crs_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  code text DEFAULT NULL,
+  name text DEFAULT NULL,
+  proj4 text DEFAULT NULL,
+  wkt text DEFAULT NULL,
+  label_replace_by_generated_column text DEFAULT NULL
+);
+
+-- CREATE INDEX ON crs USING btree(crs_id);
+CREATE INDEX ON crs USING btree(account_id);
+
+CREATE INDEX ON crs USING btree(project_id);
+
+COMMENT ON TABLE crs IS 'List of crs. From: https://spatialreference.org/crslist.json. Can be inserted when configuring a project. Do not download the entire list - only what the configurating person chooses';
+
+COMMENT ON COLUMN crs.proj4 IS 'proj4 string for the crs. From (example): https://epsg.io/4326.proj4';
+
+COMMENT ON COLUMN crs.wkt IS 'wkt string for the crs. From (example): https://epsg.io/4326.wkt';
+
 -- enable electric
 ALTER TABLE users ENABLE electric;
 
@@ -1895,4 +1928,6 @@ ALTER TABLE notifications ENABLE electric;
 ALTER TABLE charts ENABLE electric;
 
 ALTER TABLE chart_subjects ENABLE ELECTRIC;
+
+ALTER TABLE crs ENABLE electric;
 

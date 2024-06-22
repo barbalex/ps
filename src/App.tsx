@@ -38,7 +38,7 @@ export default function App() {
         ctx-name="uploadcare-uploader"
       ></lr-upload-ctx-provider>
       <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
-      <div style={routerContainerStyle}>
+      <div style={routerContainerStyle} id="router-container">
         <UploaderContext.Provider value={uploaderRef}>
           <RouterProvider
             router={router()}

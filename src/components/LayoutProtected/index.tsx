@@ -1,4 +1,6 @@
 import { memo } from 'react'
+import { useLiveQuery } from 'electric-sql/react'
+import { useCorbado } from '@corbado/react'
 // import { useSearchParams } from 'react-router-dom'
 
 import { Main } from './Main.tsx'
@@ -9,9 +11,19 @@ import { ProtectedRoute } from '../ProtectedRoute.tsx'
 import { Header } from './Header/index.tsx'
 import { TableLayersProvider } from '../TableLayersProvider.tsx'
 import { OccurrenceAssignChooser } from '../OccurrenceAssignChooser/index.tsx'
+import { useElectric } from '../../ElectricProvider.tsx'
 
 // memoizing this component creates error
 export const Layout = memo(() => {
+  const { user: authUser } = useCorbado()
+  const { db } = useElectric()!
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({
+      where: { user_email: authUser?.email },
+    }),
+  )
+  const mapIsMaximized = appState?.map_maximized ?? false
+
   // onlyForm is a query parameter that allows the user to view a form without the rest of the app
   // used for popups inside the map
   // TODO: this renders on every navigation!!! This temporarily disabled
@@ -32,8 +44,12 @@ export const Layout = memo(() => {
       {onlyForm !== true && (
         <>
           <Header />
-          <Breadcrumbs />
-          <Navs />
+          {!mapIsMaximized && (
+            <>
+              <Breadcrumbs />
+              <Navs />
+            </>
+          )}
           <Notifications />
         </>
       )}

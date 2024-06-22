@@ -5,13 +5,9 @@ import {
   ToolbarToggleButton,
 } from '@fluentui/react-components'
 import { FaCog } from 'react-icons/fa'
+import { TbArrowsMaximize, TbArrowsMinimize } from 'react-icons/tb'
 import { MdLogout, MdLogin } from 'react-icons/md'
-import {
-  useNavigate,
-  useParams,
-  useSearchParams,
-  useLocation,
-} from 'react-router-dom'
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 
@@ -31,19 +27,22 @@ const buildButtonStyle = ({ prevIsActive, nextIsActive, selfIsActive }) => {
 
   const style = {
     backgroundColor: 'rgba(38, 82, 37, 0)',
-    border: '1px solid rgba(255, 255, 255, 0.7)',
+    borderTop: '1px solid rgba(255, 255, 255, 0.7)',
+    borderBottom: '1px solid rgba(255, 255, 255, 0.7)',
+    borderRight: '1px solid rgba(255, 255, 255, 0.7)',
+    borderLeft: prevIsActive ? 'none' : '1px solid rgba(255, 255, 255, 0.7)',
     color: 'white',
   }
 
   if (prevIsActive) {
     style.borderTopLeftRadius = 0
     style.borderBottomLeftRadius = 0
-    style.borderLeft = 'none'
   }
   if (nextIsActive) {
     style.borderTopRightRadius = 0
     style.borderBottomRightRadius = 0
   }
+
   return style
 }
 
@@ -56,8 +55,7 @@ export const Menu = memo(() => {
   const { pathname } = useLocation()
   const isHome = pathname === '/'
 
-  const { isAuthenticated, logout } = useCorbado()
-  const { user: authUser } = useCorbado()
+  const { isAuthenticated, logout, user: authUser } = useCorbado()
 
   const isAppStates = pathname.includes('app-states')
 
@@ -67,6 +65,7 @@ export const Menu = memo(() => {
       where: { user_email: authUser?.email },
     }),
   )
+  const mapIsMaximized = appState?.map_maximized ?? false
   // To debug not having any data: query all users
   const tabs = useMemo(() => appState?.tabs ?? [], [appState?.tabs])
   const onChangeTabs = useCallback(
@@ -91,9 +90,30 @@ export const Menu = memo(() => {
   const onClickLogout = useCallback(() => logout(), [logout])
   const onClickEnter = useCallback(() => navigate('/data/projects'), [navigate])
 
+  const onClickMapView = useCallback(
+    (e) => {
+      // prevent toggling map tab
+      e.stopPropagation()
+
+      // if map is not included in app_sate.tabs, add it
+      if (!tabs.includes('map')) {
+        db.app_states.update({
+          where: { app_state_id: appState?.app_state_id },
+          data: { tabs: [...tabs, 'map'] },
+        })
+      }
+
+      // toggle map maximized
+      db.app_states.update({
+        where: { app_state_id: appState?.app_state_id },
+        data: { map_maximized: !mapIsMaximized },
+      })
+    },
+    [appState?.app_state_id, db.app_states, mapIsMaximized, tabs],
+  )
+
   const treeIsActive = tabs.includes('tree')
   const dataIsActive = tabs.includes('data')
-  const filterIsActive = tabs.includes('filter')
   const mapIsActive = tabs.includes('map')
 
   return (
@@ -116,6 +136,7 @@ export const Menu = memo(() => {
                   selfIsActive: treeIsActive,
                 }),
               )}
+              disabled={mapIsMaximized}
             >
               Tree
             </ToolbarToggleButton>
@@ -126,38 +147,40 @@ export const Menu = memo(() => {
               style={css(
                 buildButtonStyle({
                   prevIsActive: treeIsActive,
-                  nextIsActive: filterIsActive,
+                  nextIsActive: mapIsActive,
                   selfIsActive: dataIsActive,
                 }),
               )}
+              disabled={mapIsMaximized}
             >
               Data
             </ToolbarToggleButton>
             <ToolbarToggleButton
-              aria-label="Filter"
-              name="tabs"
-              value="filter"
-              style={css(
-                buildButtonStyle({
-                  prevIsActive: dataIsActive,
-                  nextIsActive: mapIsActive,
-                  selfIsActive: filterIsActive,
-                }),
-              )}
-            >
-              Filter
-            </ToolbarToggleButton>
-            <ToolbarToggleButton
+              icon={
+                mapIsMaximized ? (
+                  <TbArrowsMinimize
+                    onClick={onClickMapView}
+                    title="Shrink Map"
+                  />
+                ) : (
+                  <TbArrowsMaximize
+                    onClick={onClickMapView}
+                    title="Maximize Map"
+                  />
+                )
+              }
+              iconPosition="after"
               aria-label="Map"
               name="tabs"
               value="map"
               style={css(
                 buildButtonStyle({
-                  prevIsActive: filterIsActive,
+                  prevIsActive: dataIsActive,
                   nextIsActive: false,
                   selfIsActive: mapIsActive,
                 }),
               )}
+              title={tabs.includes('map') ? 'Hide Map' : 'Show Map'}
             >
               Map
             </ToolbarToggleButton>
@@ -176,6 +199,7 @@ export const Menu = memo(() => {
             color: 'white',
             on: ($) => [$('&:hover', { filter: 'brightness(85%)' })],
           })}
+          disabled={mapIsMaximized}
         />
       )}
       <Button

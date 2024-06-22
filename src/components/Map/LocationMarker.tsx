@@ -7,12 +7,12 @@ export const LocationMarker = () => {
   const map = useMapEvents({
     locationfound(e) {
       setPosition(e.latlng)
-      // map.flyTo(e.latlng, map.getZoom()) TODO: reenable?
+      map.flyTo(e.latlng, map.getZoom())
     },
   })
 
   useEffect(() => {
-    map && map.locate()
+    map && map.locate({ watch: false, enableHighAccuracy: true })
   }, [map])
 
   return position === null ? null : (

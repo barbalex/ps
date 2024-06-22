@@ -1,0 +1,27 @@
+import { memo } from 'react'
+
+const containerStyle = {
+  borderBottom: '1px solid #ccc',
+  padding: '10px 10px',
+}
+const titleStyle = {
+  margin: 0,
+  paddingBottom: 5,
+  fontSize: 'medium',
+}
+const pStyle = {
+  margin: 0,
+  fontSize: 'small',
+}
+
+export const Location = memo(({ location }) => {
+  const lng = Math.round(location?.lng * 10000000) / 10000000
+  const lat = Math.round(location?.lat * 10000000) / 10000000
+
+  return (
+    <div style={containerStyle}>
+      <h3 style={titleStyle}>Location</h3>
+      <p style={pStyle}>{`WGS84: ${lng} / ${lat}`}</p>
+    </div>
+  )
+})

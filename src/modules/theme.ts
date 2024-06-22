@@ -24,14 +24,12 @@ const brandRamp: BrandVariants = {
 // but: is different on different OSes
 export const lightTheme: Theme = {
   ...createLightTheme(brandRamp),
-  // fontFamilyBase: 'Roboto, Helvetica Neue, Helvetica, sans-serif',
   fontFamilyBase: 'system-ui, Helvetica Neue, Helvetica, sans-serif',
   // colorNeutralBackground1: 'transparent',
 }
 
 export const darkTheme: Theme = {
   ...createDarkTheme(brandRamp),
-  // fontFamilyBase: 'Roboto, Helvetica Neue, Helvetica, sans-serif',
   fontFamilyBase: 'system-ui, Helvetica Neue, Helvetica, sans-serif',
 }
 
