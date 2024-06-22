@@ -18,15 +18,6 @@ export const Component = memo(
       <>
         <Choose />
         <TextField
-          label="Auth Name"
-          name="auth_name"
-          type="auth_name"
-          value={row.auth_name ?? ''}
-          onChange={onChange}
-          autoFocus
-          ref={autoFocusRef}
-        />
-        <TextField
           label="Code"
           name="code"
           type="code"
@@ -45,37 +36,19 @@ export const Component = memo(
           ref={autoFocusRef}
         />
         <TextField
-          label="Type"
-          name="type"
-          type="type"
-          value={row.type ?? ''}
-          onChange={onChange}
-          autoFocus
-          ref={autoFocusRef}
-        />
-        <TextField
-          label="Area of Use"
-          name="area_of_use"
-          type="area_of_use"
-          value={row.area_of_use ?? ''}
-          onChange={onChange}
-          autoFocus
-          ref={autoFocusRef}
-        />
-        <TextField
-          label="Projection Method Name"
-          name="projection_method_name"
-          type="projection_method_name"
-          value={row.projection_method_name ?? ''}
-          onChange={onChange}
-          autoFocus
-          ref={autoFocusRef}
-        />
-        <TextField
           label="Proj4 Value"
           name="proj4"
           type="proj4"
           value={row.proj4 ?? ''}
+          onChange={onChange}
+          autoFocus
+          ref={autoFocusRef}
+        />
+        <TextField
+          label="WKT Value"
+          name="wkt"
+          type="wkt"
+          value={row.wkt ?? ''}
           onChange={onChange}
           autoFocus
           ref={autoFocusRef}
