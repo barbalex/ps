@@ -2,6 +2,7 @@ import { memo } from 'react'
 import { useOutletContext } from 'react-router-dom'
 
 import { TextField } from '../../components/shared/TextField.tsx'
+import { Choose } from './Choose.tsx'
 
 import '../../form.css'
 
@@ -15,6 +16,7 @@ export const Component = memo(
 
     return (
       <>
+        <Choose />
         <TextField
           label="Auth Name"
           name="auth_name"
