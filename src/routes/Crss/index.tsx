@@ -6,16 +6,8 @@ import { useElectric } from '../../ElectricProvider.tsx'
 import { createCrs } from '../../modules/createRows.ts'
 import { ListViewHeader } from '../../components/ListViewHeader/index.tsx'
 import { Row } from '../../components/shared/Row.tsx'
+import { Info } from './Info.tsx'
 import '../../form.css'
-
-const Info = memo(() => (
-  <div>
-    <p>You can add one or multiple CRS.</p>{' '}
-    <p>One of them can be set as the map presentation crs.</p>{' '}
-    <p>This one will be used to show coordinates in the map.</p>
-    <p>Users can choose inside the map from the CRSes you add here.</p>
-  </div>
-))
 
 export const Component = memo(() => {
   const navigate = useNavigate()
