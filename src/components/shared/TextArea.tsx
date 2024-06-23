@@ -2,6 +2,8 @@ import { memo, forwardRef } from 'react'
 import { Textarea, Field } from '@fluentui/react-components'
 import type { TextareaProps } from '@fluentui/react-components'
 
+import './textArea.css'
+
 const rowStyle = {
   display: 'flex',
   alignItems: 'center',
