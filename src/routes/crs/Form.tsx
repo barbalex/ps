@@ -57,6 +57,7 @@ export const Component = memo(({ autoFocusRef }) => {
         value={row.proj4 ?? ''}
         onChange={onChange}
       />
+      {/* TODO: add checkbox to set as projects.map_presentation_crs */}
     </>
   )
 })
