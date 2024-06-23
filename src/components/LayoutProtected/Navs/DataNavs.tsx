@@ -129,7 +129,6 @@ export const DataNavs = memo(({ matches }) => {
       {tableResults.map((result) => {
         const value = result[idField]
         const label = result.label ?? value
-        console.log('DataNavs', { value, label })
 
         return (
           <Nav key={value} label={label ?? value} to={`${pathname}/${value}`} />

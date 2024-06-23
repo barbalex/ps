@@ -29,8 +29,6 @@ export const Component = memo(() => {
     navigate({ pathname: data.crs_id, search: searchParams.toString() })
   }, [db.crs, navigate, project_id, searchParams])
 
-  console.log('crs', crs)
-
   return (
     <div className="list-view">
       <ListViewHeader
