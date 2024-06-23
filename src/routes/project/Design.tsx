@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import { Label, Divider } from '@fluentui/react-components'
 
 import { TextField } from '../../components/shared/TextField.tsx'
+import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 // import { RadioGroupFromOptions } from '../../components/shared/RadioGroupFromOptions'
 import { CheckboxField } from '../../components/shared/CheckboxField.tsx'
@@ -70,6 +71,12 @@ export const Design = memo(({ onChange, row }) => {
         fieldsTable="places"
         id={project_id}
         valueArray={row.places_order_by ?? []}
+      />
+      <TextFieldInactive
+        label="Map Presentation CRS"
+        name="map_presentation_crs"
+        value={row.map_presentation_crs ?? ''}
+        onChange={onChange}
       />
       <Divider />
       <Label>{`Value(s) to use in reports when:`}</Label>
