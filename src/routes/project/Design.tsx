@@ -75,8 +75,9 @@ export const Design = memo(({ onChange, row }) => {
       <TextFieldInactive
         label="Map Presentation CRS"
         name="map_presentation_crs"
-        value={row.map_presentation_crs ?? ''}
+        value={row.map_presentation_crs ?? 'EPSG:4326'}
         onChange={onChange}
+        validationMessage="Choose a CRS in the CRS List"
       />
       <Divider />
       <Label>{`Value(s) to use in reports when:`}</Label>

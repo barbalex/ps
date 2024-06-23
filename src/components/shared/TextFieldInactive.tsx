@@ -15,7 +15,11 @@ export const TextFieldInactive = memo((props: InputProps) => {
   const [changed, setChanged] = useState(false)
 
   return (
-    <Field label={props.label ?? '(no label provided)'}>
+    <Field
+      label={props.label ?? '(no label provided)'}
+      validationMessage={props.validationMessage}
+      validationState={props.validationState ?? 'none'}
+    >
       <Input
         appearance="underline"
         {...props}

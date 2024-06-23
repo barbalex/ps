@@ -2,11 +2,20 @@ import { useCallback, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
-import { useElectric } from '../ElectricProvider.tsx'
-import { createCrs } from '../modules/createRows.ts'
-import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
-import { Row } from '../components/shared/Row.tsx'
-import '../form.css'
+import { useElectric } from '../../ElectricProvider.tsx'
+import { createCrs } from '../../modules/createRows.ts'
+import { ListViewHeader } from '../../components/ListViewHeader/index.tsx'
+import { Row } from '../../components/shared/Row.tsx'
+import '../../form.css'
+
+const Info = memo(() => (
+  <div>
+    <p>You can add one or multiple CRS.</p>{' '}
+    <p>One of them can be set as the map presentation crs.</p>{' '}
+    <p>This one will be used to show coordinates in the map.</p>
+    <p>Users can choose inside the map from the CRSes you add here.</p>
+  </div>
+))
 
 export const Component = memo(() => {
   const navigate = useNavigate()
@@ -34,6 +43,7 @@ export const Component = memo(() => {
         title={`CRS: Coordinate Reference Systems (${crs.length})`}
         addRow={add}
         tableName="crs"
+        info={<Info />}
       />
       <div className="list-container">
         {crs.map(({ crs_id, label }) => (

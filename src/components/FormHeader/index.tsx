@@ -7,21 +7,31 @@ const titleStyle = {
 }
 
 export const FormHeader = memo(
-  ({ title, addRow, deleteRow, toNext, toPrevious, tableName, siblings }) => {
+  ({
+    title,
+    addRow,
+    deleteRow,
+    toNext,
+    toPrevious,
+    tableName,
+    siblings,
+  }) => {
     return (
-      <div className="form-header">
-        <h1 style={titleStyle}>{title}</h1>
-        {(addRow || deleteRow || toNext || toPrevious || siblings) && (
-          <FormMenu
-            addRow={addRow}
-            deleteRow={deleteRow}
-            toNext={toNext}
-            toPrevious={toPrevious}
-            tableName={tableName}
-            siblings={siblings}
-          />
-        )}
-      </div>
+      <>
+        <div className="form-header">
+          <h1 style={titleStyle}>{title}</h1>
+          {(addRow || deleteRow || toNext || toPrevious || siblings) && (
+            <FormMenu
+              addRow={addRow}
+              deleteRow={deleteRow}
+              toNext={toNext}
+              toPrevious={toPrevious}
+              tableName={tableName}
+              siblings={siblings}
+            />
+          )}
+        </div>
+      </>
     )
   },
 )

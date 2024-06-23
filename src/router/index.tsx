@@ -1124,7 +1124,7 @@ export const router = () => {
                       children: [
                         {
                           index: true,
-                          lazy: () => import('../routes/crss.tsx'),
+                          lazy: () => import('../routes/Crss/index.tsx'),
                         },
                         {
                           path: ':crs_id',
