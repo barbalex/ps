@@ -93,6 +93,8 @@ export const CrssNode = memo(({ project_id, level = 3 }: Props) => {
     urlPath.length,
   ])
 
+  console.log('Tree Crss, crs:', crs)
+
   return (
     <>
       <Node

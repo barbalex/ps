@@ -1,6 +1,8 @@
 export const idFieldFromTable = (table): string => {
   if (!table) return undefined
 
+  // TODO: this causes the warning:
+  // Warning: Encountered two children with the same key, `/data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/crs/undefined`. Keys should be unique...
   return table === 'app_states'
     ? 'user_id'
     : table.endsWith('taxa')
@@ -11,5 +13,7 @@ export const idFieldFromTable = (table): string => {
     ? 'widget_for_field_id'
     : table === 'root' // not important but seems nicer, else: roo_id
     ? 'root_id'
+    : table === 'crs'
+    ? 'crs_id'
     : `${table.slice(0, -1)}_id`
 }

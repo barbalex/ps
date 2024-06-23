@@ -4,9 +4,12 @@ import { OverflowItem } from '@fluentui/react-components'
 import { Nav } from './Nav.tsx'
 
 export const ToNavs = memo(({ tos }) =>
-  tos.map((to) => (
-    <OverflowItem key={to.path} id={to.path}>
-      <Nav to={to.path} label={to.text} />
-    </OverflowItem>
-  )),
+  tos.map((to) => {
+    console.log('ToNavs, to.path:', to.path)
+    return (
+      <OverflowItem key={to.path} id={to.path}>
+        <Nav to={to.path} label={to.text} />
+      </OverflowItem>
+    )
+  }),
 )

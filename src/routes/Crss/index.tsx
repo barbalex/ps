@@ -29,6 +29,8 @@ export const Component = memo(() => {
     navigate({ pathname: data.crs_id, search: searchParams.toString() })
   }, [db.crs, navigate, project_id, searchParams])
 
+  console.log('crs', crs)
+
   return (
     <div className="list-view">
       <ListViewHeader
@@ -38,8 +40,8 @@ export const Component = memo(() => {
         info={<Info />}
       />
       <div className="list-container">
-        {crs.map(({ crs_id, label }) => (
-          <Row key={crs_id} to={crs_id} label={label ?? crs_id} />
+        {crs.map((cr) => (
+          <Row key={cr.crs_id} to={cr.crs_id} label={cr.label ?? cr.crs_id} />
         ))}
       </div>
     </div>

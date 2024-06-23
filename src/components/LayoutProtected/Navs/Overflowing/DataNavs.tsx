@@ -145,13 +145,14 @@ export const DataNavsOverflowing = memo(
       return { path, text }
     })
 
-    // console.log('hello DataNavsOverflowing', {
-    //   table,
-    //   idField,
-    //   pathname,
-    //   tableResults,
-    //   filterParams,
-    // })
+    console.log('hello DataNavsOverflowing', {
+      table,
+      idField,
+      pathname,
+      tableResults,
+      filterParams,
+      tos,
+    })
 
     if (!table) return <div className="navs-resizable" />
     if (!tos.length) return <div className="navs-resizable" />
@@ -160,11 +161,14 @@ export const DataNavsOverflowing = memo(
       <Overflow overflowDirection="start" padding={20} ref={ref}>
         <nav className="navs-resizable">
           <OverflowMenu tos={tos} />
-          {tos.map(({ text, path }) => (
-            <OverflowItem key={path} id={path}>
-              <Nav label={text} to={path} />
-            </OverflowItem>
-          ))}
+          {tos.map(({ text, path }) => {
+            console.log('DataNavsOverflowing, to:', { text, path })
+            return (
+              <OverflowItem key={path} id={path}>
+                <Nav label={text} to={path} />
+              </OverflowItem>
+            )
+          })}
         </nav>
       </Overflow>
     )
