@@ -1,5 +1,5 @@
 import { memo, useCallback } from 'react'
-import { MenuItem as MenuItemComponent } from '@fluentui/react-components'
+import { MenuItemCheckbox } from '@fluentui/react-components'
 import { useParams } from 'react-router-dom'
 
 import { useElectric } from '../../../../../../ElectricProvider.tsx'
@@ -18,9 +18,14 @@ export const MenuItem = memo(({ crs }) => {
     })
   }, [crs, db.projects, project_id])
 
+  // TODO: show if this on is active
   return (
-    <MenuItemComponent onClick={onClick} secondaryContent={crs.name}>
+    <MenuItemCheckbox
+      onClick={onClick}
+      secondaryContent={crs.name}
+      value={crs.name}
+    >
       {crs.code}
-    </MenuItemComponent>
+    </MenuItemCheckbox>
   )
 })

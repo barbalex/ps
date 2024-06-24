@@ -22,6 +22,13 @@ export const ChooseCrs = memo(() => {
   const { results: crs = [] } = useLiveQuery(
     db.crs.liveMany({ where: { project_id } }),
   )
+  // fetch project.map_presentation_crs to show the active one
+  const { results: project } = useLiveQuery(
+    db.projects.liveUnique({ where: { project_id } }),
+  )
+  const checkedValues = project?.map_presentation_crs
+    ? [project.map_presentation_crs]
+    : []
 
   if (!project_id) return null
   // single crs: that will be chosen by default
@@ -30,7 +37,7 @@ export const ChooseCrs = memo(() => {
   if (crs.length < 2) return null
 
   return (
-    <Menu>
+    <Menu checkedValues={checkedValues}>
       <MenuTrigger disableButtonEnhancement>
         <Button
           icon={<BsGlobe2 />}
