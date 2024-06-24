@@ -1,5 +1,5 @@
 import { useState, useEffect, memo, useCallback, useRef } from 'react'
-import { useMap } from 'react-leaflet'
+import { useMap, useMapEvent } from 'react-leaflet'
 import { css } from '../../../../../css.ts'
 
 import { ToggleMapCenter } from './ToggleMapCenter.tsx'
@@ -44,12 +44,22 @@ export const CoordinatesControl = memo(() => {
   }, [])
 
   const [coordinates, setCoordinates] = useState(null)
+  const setCenterCoords = useCallback(() => {
+    // const [x, y] = epsg4326to2056(e.latlng.lng, e.latlng.lat)
+    const bounds = map.getBounds()
+    const center = bounds.getCenter()
+    // TODO: depending on projects.map_presentation_crs convert coordinates to wgs84
+    setCoordinates({ x: round(center.lng), y: round(center.lat) })
+  }, [map, setCoordinates])
+  useMapEvent('dragend', setCenterCoords)
+
   useEffect(() => {
     // on start, set initial coordinates to map center
     const bounds = map.getBounds()
     const center = bounds.getCenter()
     // TODO: depending on projects.map_presentation_crs convert coordinates to presentation crs
     // const [x, y] = epsg4326to2056(e.latlng.lng, e.latlng.lat)
+    console.log('setting initial coordinates to:', center)
     setCoordinates({ x: round(center.lng), y: round(center.lat) })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -78,6 +88,8 @@ export const CoordinatesControl = memo(() => {
     },
     [onBlur],
   )
+
+  console.log('rendering CoordinatesControl, coordinates:', coordinates)
 
   return (
     <div style={containerStyle} ref={ref}>

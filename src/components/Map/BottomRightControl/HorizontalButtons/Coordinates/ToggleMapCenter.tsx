@@ -1,5 +1,4 @@
 import { memo, useCallback } from 'react'
-import { useMap, useMapEvent } from 'react-leaflet'
 import { ToggleButton } from '@fluentui/react-components'
 import { MdCenterFocusWeak } from 'react-icons/md'
 import { useLiveQuery } from 'electric-sql/react'
@@ -7,10 +6,7 @@ import { useCorbado } from '@corbado/react'
 
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 
-const round = (num) => Math.round(num * 10000000) / 10000000
-
-export const ToggleMapCenter = memo(({ setCoordinates }) => {
-  const map = useMap()
+export const ToggleMapCenter = memo(() => {
   const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
@@ -18,15 +14,6 @@ export const ToggleMapCenter = memo(({ setCoordinates }) => {
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
   const showMapCenter = appState?.map_show_center ?? false
-
-  const setCenterCoords = useCallback(() => {
-    // const [x, y] = epsg4326to2056(e.latlng.lng, e.latlng.lat)
-    const bounds = map.getBounds()
-    const center = bounds.getCenter()
-    setCoordinates({ x: round(center.lng), y: round(center.lat) })
-  }, [map, setCoordinates])
-
-  useMapEvent('dragend', setCenterCoords)
 
   const onClickShowMapCenter = useCallback(() => {
     db.app_states.update({
