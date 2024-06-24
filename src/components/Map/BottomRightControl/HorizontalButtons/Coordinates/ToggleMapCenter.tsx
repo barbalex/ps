@@ -22,13 +22,15 @@ export const ToggleMapCenter = memo(() => {
     })
   }, [db.app_states, appState?.app_state_id, showMapCenter])
 
+  const title = showMapCenter ? 'Hide map center' : 'Show map center'
+
   return (
     <ToggleButton
       checked={showMapCenter}
       onClick={onClickShowMapCenter}
       icon={<MdCenterFocusWeak />}
-      aria-label={showMapCenter ? 'Hide map center' : 'Show map center'}
-      title={showMapCenter ? 'Hide map center' : 'Show map center'}
+      aria-label={title}
+      title={title}
       size="small"
     />
   )
