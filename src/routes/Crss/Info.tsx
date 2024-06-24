@@ -8,7 +8,7 @@ const containerStyle = {
 }
 
 export const Info = memo(() => (
-  <div style={containerStyle}>
+  <div style={containerStyle} tabIndex={-1}>
     <p>You can add multiple CRS.</p>
     <p>One of them can be set as the map presentation crs.</p>
     <p>It will be used to show coordinates in the map.</p>
