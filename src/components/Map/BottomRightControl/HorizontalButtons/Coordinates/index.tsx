@@ -3,7 +3,7 @@ import { useMap } from 'react-leaflet'
 import { css } from '../../../../../css.ts'
 
 import { ToggleMapCenter } from './ToggleMapCenter.tsx'
-import { ChooseCrs } from './ChooseCrs.tsx'
+import { ChooseCrs } from './ChooseCrs/index.tsx'
 
 const containerStyle = {
   display: 'flex',
