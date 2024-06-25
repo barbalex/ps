@@ -1,9 +1,13 @@
 import { useState, useEffect, memo, useCallback, useRef } from 'react'
 import { useMap, useMapEvent } from 'react-leaflet'
-import { css } from '../../../../../css.ts'
+import { useParams } from 'react-router-dom'
 
+import { css } from '../../../../../css.ts'
 import { ToggleMapCenter } from './ToggleMapCenter.tsx'
 import { ChooseCrs } from './ChooseCrs/index.tsx'
+import { epsgFrom4326 } from '../../../../../modules/epsgFrom4326.ts'
+import { epsgTo4326 } from '../../../../../modules/epsgTo4326.ts'
+import { useElectric } from '../../../../../ElectricProvider.tsx'
 
 const containerStyle = {
   display: 'flex',
@@ -34,6 +38,8 @@ const round = (num) => Math.round(num * 10000000) / 10000000
 
 export const CoordinatesControl = memo(() => {
   const map = useMap()
+  const { db } = useElectric()!
+  const { project_id } = useParams()
 
   // prevent click propagation on to map
   // https://stackoverflow.com/a/57013052/712005
@@ -48,9 +54,15 @@ export const CoordinatesControl = memo(() => {
     // const [x, y] = epsg4326to2056(e.latlng.lng, e.latlng.lat)
     const bounds = map.getBounds()
     const center = bounds.getCenter()
+    const [x, y] = epsgFrom4326({
+      x: center.lng,
+      y: center.lat,
+      db,
+      project_id,
+    })
     // TODO: depending on projects.map_presentation_crs convert coordinates to wgs84
-    setCoordinates({ x: round(center.lng), y: round(center.lat) })
-  }, [map, setCoordinates])
+    setCoordinates({ x: round(x), y: round(y) })
+  }, [db, map, project_id])
   useMapEvent('dragend', setCenterCoords)
 
   useEffect(() => {
@@ -59,8 +71,14 @@ export const CoordinatesControl = memo(() => {
     const center = bounds.getCenter()
     // TODO: depending on projects.map_presentation_crs convert coordinates to presentation crs
     // const [x, y] = epsg4326to2056(e.latlng.lng, e.latlng.lat)
+    const [x, y] = epsgFrom4326({
+      x: center.lng,
+      y: center.lat,
+      db,
+      project_id,
+    })
     console.log('setting initial coordinates to:', center)
-    setCoordinates({ x: round(center.lng), y: round(center.lat) })
+    setCoordinates({ x: round(x), y: round(y) })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -69,6 +87,7 @@ export const CoordinatesControl = memo(() => {
       const name = e.target.name
       const value = parseFloat(e.target.value)
       // TODO: depending on projects.map_presentation_crs convert coordinates to wgs84
+      // const [x, y] = epsgTo4326({ x: value, y: coordinates.y })
       const newCoordinates = { ...coordinates, [name]: value }
       setCoordinates(newCoordinates)
     },

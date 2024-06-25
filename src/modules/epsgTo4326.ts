@@ -5,15 +5,16 @@ proj4.defs(
 )
 proj4.defs('EPSG:4326', '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs')
 
-export const epsgTo4326 = ({ x, y, project_id, db }) => {
+export const epsgTo4326 = async ({ x, y, project_id, db }) => {
   // 1. get project.map_presentation_crs
-  const project = db.projects.findUnique({
+  const project = await db.projects.findUnique({
     where: { id: project_id },
     select: { map_presentation_crs: true },
   })
   const crsCode = project.map_presentation_crs
+  console.log('epsgTo4326, crsCode:', crsCode)
   // 2. get crs.proj4
-  const crs = db.crs.findFirst({
+  const crs = await db.crs.findFirst({
     where: { code: crsCode },
     select: { proj4: true },
   })
