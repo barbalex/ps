@@ -5,9 +5,19 @@ proj4.defs(
 )
 proj4.defs('EPSG:4326', '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs')
 
-const epsg2056to4326 = (x, y) =>
+export const epsgTo4326 = ({ x, y, project_id, db }) => {
+  // 1. get project.map_presentation_crs
+  const project = db.projects.findUnique({
+    where: { id: project_id },
+    select: { map_presentation_crs: true },
+  })
+  const crsCode = project.map_presentation_crs
+  // 2. get crs.proj4
+  const crs = db.crs.findFirst({
+    where: { code: crsCode },
+    select: { proj4: true },
+  })
   // no idea why but values have to be reversed
   // also: make sure to pass in numbers, not strings
-  proj4('EPSG:2056', 'EPSG:4326', [+x, +y]).reverse()
-
-export default epsg2056to4326
+  return proj4(crsCode, 'EPSG:4326', [+x, +y]).reverse()
+}
