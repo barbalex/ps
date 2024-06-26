@@ -68,22 +68,8 @@ export const CoordinatesControl = memo(() => {
   useMapEvent('dragend', setCenterCoords)
 
   useEffect(() => {
-    const run = async () => {
-      // on start, set initial coordinates to map center
-      const bounds = map.getBounds()
-      const center = bounds.getCenter()
-      // depending on projects.map_presentation_crs convert coordinates to presentation crs
-      const [x, y] = await epsgFrom4326({
-        x: center.lng,
-        y: center.lat,
-        db,
-        project_id,
-      })
-      setCoordinates({ x: round(x), y: round(y) })
-    }
-    run()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    setCenterCoords()
+  }, [setCenterCoords])
 
   const onChange = useCallback(
     (e) => {
