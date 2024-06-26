@@ -11,24 +11,27 @@ import { useElectric } from '../../../../../ElectricProvider.tsx'
 
 const containerStyle = {
   display: 'flex',
+  columnGap: 5,
+  flexWrap: 'nowrap',
   justifyContent: 'center',
   alignItems: 'center',
   cursor: 'pointer',
   border: '1px solid black',
   padding: '2px 4px',
   background: 'rgba(255, 255, 255, 0.7)',
-  textAlign: 'center',
   // ensure text always fits in the box
-  whiteSpace: 'nowrap',
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  minWidth: 72,
+  // whiteSpace: 'nowrap',
+  // overflow: 'hidden',
+  // textOverflow: 'ellipsis',
+  // minWidth: 72,
 }
 const inputStyle = {
+  flexBasis: 'content',
+  flexShrink: 1,
+  flexGrow: 0,
   border: 'none',
   background: 'transparent',
-  width: 80,
-  textAlign: 'center',
+  // width: 80,
   padding: 0,
   margin: 0,
   fontSize: '0.75rem',
@@ -51,16 +54,16 @@ export const CoordinatesControl = memo(() => {
 
   const [coordinates, setCoordinates] = useState(null)
   const setCenterCoords = useCallback(async () => {
-    // const [x, y] = epsg4326to2056(e.latlng.lng, e.latlng.lat)
     const bounds = map.getBounds()
     const center = bounds.getCenter()
+    console.log('Coordinates.setCenterCoords, center:', center)
     const [x, y] = await epsgFrom4326({
       x: center.lng,
       y: center.lat,
       db,
       project_id,
     })
-    // TODO: depending on projects.map_presentation_crs convert coordinates to wgs84
+    // depending on projects.map_presentation_crs convert coordinates to wgs84
     setCoordinates({ x: round(x), y: round(y) })
   }, [db, map, project_id])
   useMapEvent('dragend', setCenterCoords)
@@ -70,15 +73,14 @@ export const CoordinatesControl = memo(() => {
       // on start, set initial coordinates to map center
       const bounds = map.getBounds()
       const center = bounds.getCenter()
-      // TODO: depending on projects.map_presentation_crs convert coordinates to presentation crs
-      // const [x, y] = epsg4326to2056(e.latlng.lng, e.latlng.lat)
+      // depending on projects.map_presentation_crs convert coordinates to presentation crs
       const [x, y] = await epsgFrom4326({
         x: center.lng,
         y: center.lat,
         db,
         project_id,
       })
-      console.log('setting initial coordinates to:', center)
+      console.log('Coordinates.useEffect', { center, x, y })
       setCoordinates({ x: round(x), y: round(y) })
     }
     run()
@@ -121,6 +123,7 @@ export const CoordinatesControl = memo(() => {
         value={coordinates?.x ?? '...'}
         style={css({
           ...inputStyle,
+          textAlign: 'right',
           on: ($) => [
             $('&:focus-visible', {
               outline: 'none',
@@ -138,6 +141,7 @@ export const CoordinatesControl = memo(() => {
         value={coordinates?.y ?? '...'}
         style={css({
           ...inputStyle,
+          textAlign: 'left',
           on: ($) => [
             $('&:focus-visible', {
               outline: 'none',
