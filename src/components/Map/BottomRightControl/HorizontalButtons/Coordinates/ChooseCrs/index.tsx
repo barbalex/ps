@@ -5,7 +5,8 @@ import {
   MenuTrigger,
   MenuList,
   MenuPopover,
-  MenuItemCheckbox,MenuItemRadio 
+  MenuItemCheckbox,
+  MenuItemRadio,
 } from '@fluentui/react-components'
 import { BsGlobe2 } from 'react-icons/bs'
 import { useLiveQuery } from 'electric-sql/react'
@@ -31,12 +32,12 @@ export const ChooseCrs = memo(() => {
 
   const onChange = useCallback(
     (e, { name, checkedItems }) => {
-      console.log('Choose CRS, onChange', { e, name, checkedItems })
       // set projects.map_presentation_crs
       db.projects.update({
         where: { project_id },
         data: { map_presentation_crs: checkedItems?.[0] ?? null },
       })
+      // TODO: make coordinates update
     },
     [db.projects, project_id],
   )

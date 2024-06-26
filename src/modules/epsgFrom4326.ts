@@ -11,17 +11,17 @@ export const epsgFrom4326 = async ({
     where: { project_id },
     select: { map_presentation_crs: true },
   })
-  const mPCrsCode = project.map_presentation_crs
-  if (!mPCrsCode || mPCrsCode === 'EPSG:4326') {
+  const mPCrs = project.map_presentation_crs
+  if (!mPCrs || mPCrs === 'EPSG:4326') {
     return [xPassed, yPassed]
   }
   // 2. get crs.proj4
   const crs = await db.crs.findFirst({
-    where: { code: mPCrsCode },
+    where: { code: mPCrs },
   })
   crs.code && crs.proj4 && proj4.defs(crs.code, crs.proj4)
 
-  const [x, y] = proj4('EPSG:4326', mPCrsCode, [+xPassed, +yPassed])
+  const [x, y] = proj4('EPSG:4326', mPCrs, [+xPassed, +yPassed])
 
   return [x, y]
 }

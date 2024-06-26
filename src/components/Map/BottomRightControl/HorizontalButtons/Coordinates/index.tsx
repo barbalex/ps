@@ -41,7 +41,13 @@ const inputStyle = {
 export const CoordinatesControl = memo(() => {
   const map = useMap()
   const { db } = useElectric()!
-  const { project_id } = useParams()
+  const { project_id = '99999999-9999-9999-9999-999999999999' } = useParams()
+
+  const { result: project } = db.projects.liveUnique({
+    where: { project_id },
+    select: { map_presentation_crs: true },
+  })
+  const mPCrsCode = project?.map_presentation_crs
 
   // prevent click propagation on to map
   // https://stackoverflow.com/a/57013052/712005
@@ -64,7 +70,7 @@ export const CoordinatesControl = memo(() => {
     })
     // depending on projects.map_presentation_crs convert coordinates to wgs84
     setCoordinates({ x: round(x), y: round(y) })
-  }, [db, map, project_id])
+  }, [db, map, project_id, mPCrsCode])
   useMapEvent('dragend', setCenterCoords)
 
   useEffect(() => {
