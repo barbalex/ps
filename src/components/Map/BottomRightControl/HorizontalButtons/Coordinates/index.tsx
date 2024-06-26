@@ -47,7 +47,7 @@ export const CoordinatesControl = memo(() => {
     where: { project_id },
     select: { map_presentation_crs: true },
   })
-  const mPCrsCode = project?.map_presentation_crs
+  const projectMapPresentationCrs = project?.map_presentation_crs
 
   // prevent click propagation on to map
   // https://stackoverflow.com/a/57013052/712005
@@ -66,16 +66,14 @@ export const CoordinatesControl = memo(() => {
       x: center.lng,
       y: center.lat,
       db,
-      project_id,
+      projectMapPresentationCrs,
     })
     // depending on projects.map_presentation_crs convert coordinates to wgs84
     setCoordinates({ x: round(x), y: round(y) })
-  }, [db, map, project_id, mPCrsCode])
+  }, [map, db, projectMapPresentationCrs])
   useMapEvent('dragend', setCenterCoords)
 
-  useEffect(() => {
-    setCenterCoords()
-  }, [setCenterCoords])
+  useEffect(() => setCenterCoords(), [setCenterCoords])
 
   const onChange = useCallback(
     (e) => {
