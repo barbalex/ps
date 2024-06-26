@@ -4,16 +4,25 @@ import { useMap } from 'react-leaflet'
 import { css } from '../../../../../css.ts'
 import { epsgTo4326 } from '../../../../../modules/epsgTo4326.ts'
 
+const containerStyle = {
+  display: 'inline-flex',
+  flex: '1 1 auto',
+  columnGap: 5,
+  flexWrap: 'nowrap',
+  paddingLeft: 7,
+  paddingRight: 7,
+}
 const inputStyle = {
-  flexBasis: 'content',
-  flexShrink: 1,
-  flexGrow: 0,
+  // flexBasis: 'content',
+  // flexShrink: 1,
+  // flexGrow: 0,
   border: 'none',
   background: 'transparent',
   // width: 80,
   padding: 0,
   margin: 0,
   fontSize: '0.75rem',
+  fieldSizing: 'content',
 }
 
 export const Inputs = memo(
@@ -58,7 +67,7 @@ export const Inputs = memo(
     )
 
     return (
-      <>
+      <div style={containerStyle}>
         <input
           type="text"
           name="x"
@@ -94,7 +103,7 @@ export const Inputs = memo(
           onChange={onChange}
           onKeyDown={onKeyDown}
         />
-      </>
+      </div>
     )
   },
 )

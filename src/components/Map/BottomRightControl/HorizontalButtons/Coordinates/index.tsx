@@ -12,19 +12,14 @@ import { Inputs } from './Inputs.tsx'
 
 const containerStyle = {
   display: 'flex',
+  flex: '1 1 auto',
   columnGap: 5,
   flexWrap: 'nowrap',
   justifyContent: 'center',
   alignItems: 'center',
-  cursor: 'pointer',
   border: '1px solid black',
   padding: '2px 4px',
   background: 'rgba(255, 255, 255, 0.7)',
-  // ensure text always fits in the box
-  // whiteSpace: 'nowrap',
-  // overflow: 'hidden',
-  // textOverflow: 'ellipsis',
-  // minWidth: 72,
 }
 
 export const CoordinatesControl = memo(() => {
