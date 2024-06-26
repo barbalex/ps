@@ -11,7 +11,7 @@ import { BsGlobe2 } from 'react-icons/bs'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 
-import { useElectric } from '../../../../../../ElectricProvider.tsx'
+import { useElectric } from '../../../../../ElectricProvider.tsx'
 
 export const ChooseCrs = memo(() => {
   const { project_id = '99999999-9999-9999-9999-999999999999' } = useParams()

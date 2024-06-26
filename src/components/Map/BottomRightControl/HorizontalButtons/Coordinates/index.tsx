@@ -5,7 +5,7 @@ import { useLiveQuery } from 'electric-sql/react'
 
 import { css } from '../../../../../css.ts'
 import { ToggleMapCenter } from './ToggleMapCenter.tsx'
-import { ChooseCrs } from './ChooseCrs/index.tsx'
+import { ChooseCrs } from './ChooseCrs.tsx'
 import { epsgFrom4326 } from '../../../../../modules/epsgFrom4326.ts'
 import { epsgTo4326 } from '../../../../../modules/epsgTo4326.ts'
 import { useElectric } from '../../../../../ElectricProvider.tsx'
