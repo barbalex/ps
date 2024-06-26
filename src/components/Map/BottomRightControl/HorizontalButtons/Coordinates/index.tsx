@@ -1,4 +1,4 @@
-import { useState, useEffect, memo, useCallback, useRef, useMemo } from 'react'
+import { useState, memo, useCallback, useMemo } from 'react'
 import { useMap, useMapEvent } from 'react-leaflet'
 import { useParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
@@ -45,16 +45,9 @@ export const CoordinatesControl = memo(() => {
     db.crs.liveMany({ where: { project_id } }),
   )
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [renderCount, setRenderCount] = useState(0)
   const rerender = useCallback(() => setRenderCount((prev) => prev + 1), [])
-
-  // prevent click propagation on to map
-  // https://stackoverflow.com/a/57013052/712005
-  const ref = useRef()
-  useEffect(() => {
-    L.DomEvent.disableClickPropagation(ref.current)
-    L.DomEvent.disableScrollPropagation(ref.current)
-  }, [])
 
   const coordinates = useMemo(() => {
     if (!map) return null
@@ -70,15 +63,8 @@ export const CoordinatesControl = memo(() => {
 
   useMapEvent('dragend', rerender)
 
-  console.log('CoordinatesControl', {
-    coordinates,
-    center,
-    projectMapPresentationCrs,
-    crs,
-  })
-
   return (
-    <div style={containerStyle} ref={ref}>
+    <div style={containerStyle}>
       <Inputs
         coordinates={coordinates}
         projectMapPresentationCrs={projectMapPresentationCrs}

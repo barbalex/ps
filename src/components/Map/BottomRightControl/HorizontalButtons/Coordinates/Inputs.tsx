@@ -25,7 +25,6 @@ export const Inputs = memo(
     useEffect(() => {
       setCoordinates(coordsIn)
     }, [coordsIn])
-    console.log('Inputs', { coordinates, coordsIn })
 
     const onChange = useCallback(
       (e) => {
