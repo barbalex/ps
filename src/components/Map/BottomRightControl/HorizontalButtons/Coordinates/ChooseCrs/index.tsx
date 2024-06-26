@@ -5,6 +5,7 @@ import {
   MenuTrigger,
   MenuList,
   MenuPopover,
+  MenuItemCheckbox,MenuItemRadio 
 } from '@fluentui/react-components'
 import { BsGlobe2 } from 'react-icons/bs'
 import { useLiveQuery } from 'electric-sql/react'
@@ -25,8 +26,8 @@ export const ChooseCrs = memo(() => {
     db.projects.liveUnique({ where: { project_id } }),
   )
   const checkedValues = project?.map_presentation_crs
-    ? [project.map_presentation_crs]
-    : []
+    ? { mapPresentationCrs: [project.map_presentation_crs] }
+    : { mapPresentationCrs: [] }
 
   const onChange = useCallback(
     (e, { name, checkedItems }) => {
@@ -46,6 +47,8 @@ export const ChooseCrs = memo(() => {
   // so only show menu when there are at least 2 crs
   if (crs.length < 2) return null
 
+  console.log('ChooseCrs', { checkedValues, crs })
+
   return (
     <Menu checkedValues={checkedValues} onCheckedValueChange={onChange}>
       <MenuTrigger disableButtonEnhancement>
@@ -58,8 +61,15 @@ export const ChooseCrs = memo(() => {
       </MenuTrigger>
       <MenuPopover>
         <MenuList>
-          {crs.map((crs) => (
-            <MenuItem key={crs.crs_id} crs={crs} />
+          {crs.map((cr) => (
+            <MenuItemRadio
+              key={cr.crs_id}
+              name="mapPresentationCrs"
+              secondaryContent={cr.name}
+              value={cr.code}
+            >
+              {cr.code}
+            </MenuItemRadio>
           ))}
         </MenuList>
       </MenuPopover>
