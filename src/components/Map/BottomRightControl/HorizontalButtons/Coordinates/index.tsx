@@ -1,6 +1,7 @@
 import { useState, useEffect, memo, useCallback, useRef } from 'react'
 import { useMap, useMapEvent } from 'react-leaflet'
 import { useParams } from 'react-router-dom'
+import { useLiveQuery } from 'electric-sql/react'
 
 import { css } from '../../../../../css.ts'
 import { ToggleMapCenter } from './ToggleMapCenter.tsx'
@@ -43,10 +44,12 @@ export const CoordinatesControl = memo(() => {
   const { db } = useElectric()!
   const { project_id = '99999999-9999-9999-9999-999999999999' } = useParams()
 
-  const { result: project } = db.projects.liveUnique({
-    where: { project_id },
-    select: { map_presentation_crs: true },
-  })
+  const { results: project } = useLiveQuery(
+    db.projects.liveUnique({
+      where: { project_id },
+      select: { map_presentation_crs: true },
+    }),
+  )
   const projectMapPresentationCrs = project?.map_presentation_crs
 
   // prevent click propagation on to map
@@ -66,14 +69,20 @@ export const CoordinatesControl = memo(() => {
       x: center.lng,
       y: center.lat,
       db,
-      projectMapPresentationCrs,
+      project_id,
     })
     // depending on projects.map_presentation_crs convert coordinates to wgs84
     setCoordinates({ x: round(x), y: round(y) })
-  }, [map, db, projectMapPresentationCrs])
+  }, [map, db, project_id])
   useMapEvent('dragend', setCenterCoords)
+  // every time projectMapPresentationCrs changes, update coordinates
+  useEffect(() => {
+    setCenterCoords()
+  }, [projectMapPresentationCrs, setCenterCoords])
 
-  useEffect(() => setCenterCoords(), [setCenterCoords])
+  useEffect(() => {
+    setCenterCoords()
+  }, [setCenterCoords])
 
   const onChange = useCallback(
     (e) => {

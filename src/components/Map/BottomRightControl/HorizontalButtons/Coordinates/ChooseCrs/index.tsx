@@ -5,7 +5,6 @@ import {
   MenuTrigger,
   MenuList,
   MenuPopover,
-  MenuItemCheckbox,
   MenuItemRadio,
 } from '@fluentui/react-components'
 import { BsGlobe2 } from 'react-icons/bs'
@@ -13,7 +12,6 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 
 import { useElectric } from '../../../../../../ElectricProvider.tsx'
-import { MenuItem } from './MenuItem.tsx'
 
 export const ChooseCrs = memo(() => {
   const { project_id = '99999999-9999-9999-9999-999999999999' } = useParams()
@@ -27,15 +25,15 @@ export const ChooseCrs = memo(() => {
     db.projects.liveUnique({ where: { project_id } }),
   )
   const checkedValues = project?.map_presentation_crs
-    ? { mapPresentationCrs: [project.map_presentation_crs] }
-    : { mapPresentationCrs: [] }
+    ? { map_presentation_crs: [project.map_presentation_crs] }
+    : { map_presentation_crs: [] }
 
   const onChange = useCallback(
     (e, { name, checkedItems }) => {
       // set projects.map_presentation_crs
       db.projects.update({
         where: { project_id },
-        data: { map_presentation_crs: checkedItems?.[0] ?? null },
+        data: { [name]: checkedItems?.[0] ?? null },
       })
       // TODO: make coordinates update
     },
@@ -47,8 +45,6 @@ export const ChooseCrs = memo(() => {
   // no crs: wgs84 is chosen
   // so only show menu when there are at least 2 crs
   if (crs.length < 2) return null
-
-  console.log('ChooseCrs', { checkedValues, crs })
 
   return (
     <Menu checkedValues={checkedValues} onCheckedValueChange={onChange}>
@@ -65,7 +61,7 @@ export const ChooseCrs = memo(() => {
           {crs.map((cr) => (
             <MenuItemRadio
               key={cr.crs_id}
-              name="mapPresentationCrs"
+              name="map_presentation_crs"
               secondaryContent={cr.name}
               value={cr.code}
             >
