@@ -8,6 +8,7 @@ import { ChooseCrs } from './ChooseCrs/index.tsx'
 import { epsgFrom4326 } from '../../../../../modules/epsgFrom4326.ts'
 import { epsgTo4326 } from '../../../../../modules/epsgTo4326.ts'
 import { useElectric } from '../../../../../ElectricProvider.tsx'
+import { round } from '../../../../../modules/roundCoordinates.ts'
 
 const containerStyle = {
   display: 'flex',
@@ -36,8 +37,6 @@ const inputStyle = {
   margin: 0,
   fontSize: '0.75rem',
 }
-
-const round = (num) => Math.round(num * 10000000) / 10000000
 
 export const CoordinatesControl = memo(() => {
   const map = useMap()
@@ -80,7 +79,6 @@ export const CoordinatesControl = memo(() => {
         db,
         project_id,
       })
-      console.log('Coordinates.useEffect', { center, x, y })
       setCoordinates({ x: round(x), y: round(y) })
     }
     run()
