@@ -50,11 +50,11 @@ export const CoordinatesControl = memo(() => {
   }, [])
 
   const [coordinates, setCoordinates] = useState(null)
-  const setCenterCoords = useCallback(() => {
+  const setCenterCoords = useCallback(async () => {
     // const [x, y] = epsg4326to2056(e.latlng.lng, e.latlng.lat)
     const bounds = map.getBounds()
     const center = bounds.getCenter()
-    const [x, y] = epsgFrom4326({
+    const [x, y] = await epsgFrom4326({
       x: center.lng,
       y: center.lat,
       db,
@@ -66,19 +66,22 @@ export const CoordinatesControl = memo(() => {
   useMapEvent('dragend', setCenterCoords)
 
   useEffect(() => {
-    // on start, set initial coordinates to map center
-    const bounds = map.getBounds()
-    const center = bounds.getCenter()
-    // TODO: depending on projects.map_presentation_crs convert coordinates to presentation crs
-    // const [x, y] = epsg4326to2056(e.latlng.lng, e.latlng.lat)
-    const [x, y] = epsgFrom4326({
-      x: center.lng,
-      y: center.lat,
-      db,
-      project_id,
-    })
-    console.log('setting initial coordinates to:', center)
-    setCoordinates({ x: round(x), y: round(y) })
+    const run = async () => {
+      // on start, set initial coordinates to map center
+      const bounds = map.getBounds()
+      const center = bounds.getCenter()
+      // TODO: depending on projects.map_presentation_crs convert coordinates to presentation crs
+      // const [x, y] = epsg4326to2056(e.latlng.lng, e.latlng.lat)
+      const [x, y] = await epsgFrom4326({
+        x: center.lng,
+        y: center.lat,
+        db,
+        project_id,
+      })
+      console.log('setting initial coordinates to:', center)
+      setCoordinates({ x: round(x), y: round(y) })
+    }
+    run()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
