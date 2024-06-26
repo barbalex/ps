@@ -3,13 +3,12 @@ import { useMap, useMapEvent } from 'react-leaflet'
 import { useParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 
-import { css } from '../../../../../css.ts'
 import { ToggleMapCenter } from './ToggleMapCenter.tsx'
 import { ChooseCrs } from './ChooseCrs.tsx'
 import { epsgFrom4326 } from '../../../../../modules/epsgFrom4326.ts'
-import { epsgTo4326 } from '../../../../../modules/epsgTo4326.ts'
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { round } from '../../../../../modules/roundCoordinates.ts'
+import { Inputs } from './Inputs.tsx'
 
 const containerStyle = {
   display: 'flex',
@@ -26,17 +25,6 @@ const containerStyle = {
   // overflow: 'hidden',
   // textOverflow: 'ellipsis',
   // minWidth: 72,
-}
-const inputStyle = {
-  flexBasis: 'content',
-  flexShrink: 1,
-  flexGrow: 0,
-  border: 'none',
-  background: 'transparent',
-  // width: 80,
-  padding: 0,
-  margin: 0,
-  fontSize: '0.75rem',
 }
 
 export const CoordinatesControl = memo(() => {
@@ -82,34 +70,6 @@ export const CoordinatesControl = memo(() => {
 
   useMapEvent('dragend', rerender)
 
-  const onChange = useCallback(
-    (e) => {
-      const name = e.target.name
-      const value = parseFloat(e.target.value)
-      // TODO: depending on projects.map_presentation_crs convert coordinates to wgs84
-      // const [x, y] = epsgTo4326({ x: value, y: coordinates.y })
-      const newCoordinates = { ...coordinates, [name]: value }
-      // move map center to the new coordinates
-      map.setView([newCoordinates.y, newCoordinates.x])
-      // setCoordinates(newCoordinates)
-    },
-    [coordinates, map],
-  )
-  const onBlur = useCallback(
-    () => map.setView([coordinates.y, coordinates.x]),
-    [coordinates?.x, coordinates?.y, map],
-  )
-  const onKeyDown = useCallback(
-    (e) => {
-      if (e.key === 'Enter') {
-        onBlur()
-        // unfocus input
-        e.target.blur()
-      }
-    },
-    [onBlur],
-  )
-
   console.log('CoordinatesControl', {
     coordinates,
     center,
@@ -119,40 +79,9 @@ export const CoordinatesControl = memo(() => {
 
   return (
     <div style={containerStyle} ref={ref}>
-      <input
-        type="text"
-        name="x"
-        value={coordinates?.x ?? '...'}
-        style={css({
-          ...inputStyle,
-          textAlign: 'right',
-          on: ($) => [
-            $('&:focus-visible', {
-              outline: 'none',
-            }),
-          ],
-        })}
-        onBlur={onBlur}
-        onChange={onChange}
-        onKeyDown={onKeyDown}
-      />
-      {` / `}
-      <input
-        type="text"
-        name="y"
-        value={coordinates?.y ?? '...'}
-        style={css({
-          ...inputStyle,
-          textAlign: 'left',
-          on: ($) => [
-            $('&:focus-visible', {
-              outline: 'none',
-            }),
-          ],
-        })}
-        onBlur={onBlur}
-        onChange={onChange}
-        onKeyDown={onKeyDown}
+      <Inputs
+        coordinates={coordinates}
+        projectMapPresentationCrs={projectMapPresentationCrs}
       />
       <ToggleMapCenter />
       <ChooseCrs />
