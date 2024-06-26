@@ -1,4 +1,4 @@
-import { useState, useEffect, memo, useCallback, useRef } from 'react'
+import { useState, useEffect, memo, useCallback, useRef, useMemo } from 'react'
 import { useMap, useMapEvent } from 'react-leaflet'
 import { useParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
@@ -41,6 +41,8 @@ const inputStyle = {
 
 export const CoordinatesControl = memo(() => {
   const map = useMap()
+  const bounds = map.getBounds()
+  const center = bounds.getCenter()
   const { db } = useElectric()!
   const { project_id = '99999999-9999-9999-9999-999999999999' } = useParams()
 
@@ -51,6 +53,12 @@ export const CoordinatesControl = memo(() => {
     }),
   )
   const projectMapPresentationCrs = project?.map_presentation_crs
+  const { results: crs = [] } = useLiveQuery(
+    db.crs.liveMany({ where: { project_id } }),
+  )
+
+  const [renderCount, setRenderCount] = useState(0)
+  const rerender = useCallback(() => setRenderCount((prev) => prev + 1), [])
 
   // prevent click propagation on to map
   // https://stackoverflow.com/a/57013052/712005
@@ -60,29 +68,19 @@ export const CoordinatesControl = memo(() => {
     L.DomEvent.disableScrollPropagation(ref.current)
   }, [])
 
-  const [coordinates, setCoordinates] = useState(null)
-  const setCenterCoords = useCallback(async () => {
-    const bounds = map.getBounds()
-    const center = bounds.getCenter()
-    console.log('Coordinates.setCenterCoords, center:', center)
-    const [x, y] = await epsgFrom4326({
+  const coordinates = useMemo(() => {
+    if (!map) return null
+    if (!center) return null
+    const [x, y] = epsgFrom4326({
       x: center.lng,
       y: center.lat,
-      db,
-      project_id,
+      projectMapPresentationCrs,
+      crs: crs.find((cr) => cr.code === projectMapPresentationCrs),
     })
-    // depending on projects.map_presentation_crs convert coordinates to wgs84
-    setCoordinates({ x: round(x), y: round(y) })
-  }, [map, db, project_id])
-  useMapEvent('dragend', setCenterCoords)
-  // every time projectMapPresentationCrs changes, update coordinates
-  useEffect(() => {
-    setCenterCoords()
-  }, [projectMapPresentationCrs, setCenterCoords])
+    return { x: round(x), y: round(y) }
+  }, [center, crs, map, projectMapPresentationCrs])
 
-  useEffect(() => {
-    setCenterCoords()
-  }, [setCenterCoords])
+  useMapEvent('dragend', rerender)
 
   const onChange = useCallback(
     (e) => {
@@ -91,9 +89,11 @@ export const CoordinatesControl = memo(() => {
       // TODO: depending on projects.map_presentation_crs convert coordinates to wgs84
       // const [x, y] = epsgTo4326({ x: value, y: coordinates.y })
       const newCoordinates = { ...coordinates, [name]: value }
-      setCoordinates(newCoordinates)
+      // move map center to the new coordinates
+      map.setView([newCoordinates.y, newCoordinates.x])
+      // setCoordinates(newCoordinates)
     },
-    [coordinates],
+    [coordinates, map],
   )
   const onBlur = useCallback(
     () => map.setView([coordinates.y, coordinates.x]),
@@ -110,7 +110,12 @@ export const CoordinatesControl = memo(() => {
     [onBlur],
   )
 
-  console.log('rendering CoordinatesControl, coordinates:', coordinates)
+  console.log('CoordinatesControl', {
+    coordinates,
+    center,
+    projectMapPresentationCrs,
+    crs,
+  })
 
   return (
     <div style={containerStyle} ref={ref}>
@@ -149,7 +154,7 @@ export const CoordinatesControl = memo(() => {
         onChange={onChange}
         onKeyDown={onKeyDown}
       />
-      <ToggleMapCenter setCoordinates={setCoordinates} />
+      <ToggleMapCenter />
       <ChooseCrs />
     </div>
   )
