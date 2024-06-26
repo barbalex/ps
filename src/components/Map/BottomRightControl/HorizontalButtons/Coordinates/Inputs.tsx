@@ -5,22 +5,15 @@ import { css } from '../../../../../css.ts'
 import { epsgTo4326 } from '../../../../../modules/epsgTo4326.ts'
 
 const containerStyle = {
-  display: 'inline-flex',
-  flex: '1 1 auto',
-  columnGap: 5,
+  display: 'flex',
+  columnGap: 6,
   flexWrap: 'nowrap',
   paddingLeft: 7,
   paddingRight: 7,
 }
 const inputStyle = {
-  // flexBasis: 'content',
-  // flexShrink: 1,
-  // flexGrow: 0,
   border: 'none',
-  background: 'transparent',
-  // width: 80,
   padding: 0,
-  margin: 0,
   fontSize: '0.75rem',
   fieldSizing: 'content',
 }
@@ -39,15 +32,13 @@ export const Inputs = memo(
       (e) => {
         const name = e.target.name
         const value = parseFloat(e.target.value)
-        // TODO: depending on projects.map_presentation_crs convert coordinates to wgs84
-        // const [x, y] = epsgTo4326({ x: value, y: coordinates.y })
         const newCoordinates = { ...coordinates, [name]: value }
         setCoordinates(newCoordinates)
       },
       [coordinates],
     )
+
     const onBlur = useCallback(() => {
-      // depending on projects.map_presentation_crs convert coordinates to wgs84
       const [x, y] = epsgTo4326({
         x: coordinates.x,
         y: coordinates.y,
@@ -55,6 +46,7 @@ export const Inputs = memo(
       })
       map.setView([x, y])
     }, [coordinates.x, coordinates.y, map, projectMapPresentationCrs])
+
     const onKeyDown = useCallback(
       (e) => {
         if (e.key === 'Enter') {
@@ -85,7 +77,7 @@ export const Inputs = memo(
           onChange={onChange}
           onKeyDown={onKeyDown}
         />
-        {` / `}
+        {`/`}
         <input
           type="text"
           name="y"
