@@ -3,6 +3,7 @@ import { useMap } from 'react-leaflet'
 
 import { css } from '../../../../../css.ts'
 import { epsgTo4326 } from '../../../../../modules/epsgTo4326.ts'
+import './inputs.css'
 
 const containerStyle = {
   display: 'flex',
@@ -15,7 +16,10 @@ const inputStyle = {
   border: 'none',
   padding: 0,
   fontSize: '0.75rem',
-  fieldSizing: 'content',
+  // Need to set manual width for non-supporting browsers
+  // only supported on chromium-based browsers, June 2024
+  // only able to detect support in css, so using inputs.css for this
+  // fieldSizing: 'content',
 }
 
 export const Inputs = memo(
