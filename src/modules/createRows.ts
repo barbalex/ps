@@ -564,10 +564,12 @@ export const createNotification = ({
   // 'success' | 'error' | 'warning' | 'info'
   intent = 'info',
   timeout = 10000,
+  paused = null,
 }) => ({
   notification_id: uuidv7(),
   title,
   body,
   intent,
   timeout,
+  paused,
 })

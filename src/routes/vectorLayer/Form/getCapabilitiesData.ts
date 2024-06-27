@@ -65,24 +65,31 @@ export const getCapabilitiesData = async ({
     )[0] ??
     acceptableOutputFormats[0]
   for (const f of acceptableOutputFormats) {
-    await db.layer_options.upsert({
-      create: {
-        layer_option_id: `${row.wfs_url}/wfs_output_format/${f.value}`,
-        vector_layer_id: row.vector_layer_id,
-        field: 'wfs_output_format',
-        value: f.value,
-        label: f.label,
-      },
-      update: {
-        vector_layer_id: row.vector_layer_id,
-        field: 'wfs_output_format',
-        value: f.value,
-        label: f.label,
-      },
-      where: {
-        layer_option_id: `${row.wfs_url}/wfs_output_format/${f.value}`,
-      },
-    })
+    try {
+      await db.layer_options.upsert({
+        create: {
+          layer_option_id: `${row.wfs_url}/wfs_output_format/${f.value}`,
+          vector_layer_id: row.vector_layer_id,
+          field: 'wfs_output_format',
+          value: f.value,
+          label: f.label,
+        },
+        update: {
+          vector_layer_id: row.vector_layer_id,
+          field: 'wfs_output_format',
+          value: f.value,
+          label: f.label,
+        },
+        where: {
+          layer_option_id: `${row.wfs_url}/wfs_output_format/${f.value}`,
+        },
+      })
+    } catch (error) {
+      console.log(
+        'vector layers getCapabilitiesData, error when upserting acceptableOutputFormats to layer_options:',
+        error,
+      )
+    }
   }
   if (!row.wfs_output_format) {
     values.wfs_output_format = {
@@ -100,7 +107,7 @@ export const getCapabilitiesData = async ({
 
   // 4. layers
   let layers = capabilities?.FEATURETYPELIST?.FEATURETYPE ?? []
-  console.log('hello vector layers getCapabilitiesData', { layers })
+  // console.log('hello vector layers getCapabilitiesData, layers:', layers)
   // this value can be array OR object!!!
   if (!Array.isArray(layers)) layers = [layers]
   const layerOptions = layers
@@ -120,25 +127,36 @@ export const getCapabilitiesData = async ({
       label: v.TITLE?.['#text'] ?? v.NAME?.['#text'],
       value: v.NAME?.['#text'],
     }))
+  // console.log(
+  //   'hello vector layers getCapabilitiesData, layerOptions:',
+  //   layerOptions,
+  // )
   for (const o of layerOptions) {
-    await db.layer_options.upsert({
-      create: {
-        layer_option_id: `${row.wfs_url}/wfs_layer/${o.value}`,
-        vector_layer_id: row.vector_layer_id,
-        field: 'wfs_layer',
-        value: o.value,
-        label: o.label,
-      },
-      update: {
-        vector_layer_id: row.vector_layer_id,
-        field: 'wfs_layer',
-        value: o.value,
-        label: o.label,
-      },
-      where: {
-        layer_option_id: `${row.wfs_url}/wfs_layer/${o.value}`,
-      },
-    })
+    try {
+      await db.layer_options.upsert({
+        create: {
+          layer_option_id: `${row.wfs_url}/wfs_layer/${o.value}`,
+          vector_layer_id: row.vector_layer_id,
+          field: 'wfs_layer',
+          value: o.value,
+          label: o.label,
+        },
+        update: {
+          vector_layer_id: row.vector_layer_id,
+          field: 'wfs_layer',
+          value: o.value,
+          label: o.label,
+        },
+        where: {
+          layer_option_id: `${row.wfs_url}/wfs_layer/${o.value}`,
+        },
+      })
+    } catch (error) {
+      console.log(
+        'vector layers getCapabilitiesData, error when upserting layerOptions to layer_options:',
+        error,
+      )
+    }
   }
 
   // activate layer, if only one
@@ -160,8 +178,16 @@ export const getCapabilitiesData = async ({
   // enable updating in a single operation
   if (returnValue) return values
 
-  return db.vector_layers.update({
-    where: { vector_layer_id: row.vector_layer_id },
-    data: values,
-  })
+  try {
+    await db.vector_layers.update({
+      where: { vector_layer_id: row.vector_layer_id },
+      data: values,
+    })
+  } catch (error) {
+    console.log(
+      'vector layers getCapabilitiesData, error when updating vector_layers:',
+      error,
+    )
+  }
+  return
 }

@@ -30,15 +30,19 @@ export const Url = memo(
         await worker.getCapabilitiesData({ row, db })
       } catch (error) {
         console.error(
-          'hello Url, onBlur, error getting capabilities data:',
+          'Url, onBlur, error getting capabilities data:',
           error?.message ?? error,
         )
         // TODO: surface error to user
       }
-      await db.notifications.update({
-        where: { notification_id: data.notification_id },
-        data: { paused: false, timeout: 500 },
-      })
+      try {
+        await db.notifications.update({
+          where: { notification_id: data.notification_id },
+          data: { paused: false, timeout: 500 },
+        })
+      } catch (error) {
+        console.log('Url, onBlur, error updating notification:', error)
+      }
     }, [db, row, worker])
 
     return (
