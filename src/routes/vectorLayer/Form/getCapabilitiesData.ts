@@ -110,12 +110,13 @@ export const getCapabilitiesData = async ({
   // console.log('hello vector layers getCapabilitiesData, layers:', layers)
   // this value can be array OR object!!!
   if (!Array.isArray(layers)) layers = [layers]
+  // 4a DefaultCRS: get the first layer's
+  const defaultCRS = layers[0]?.DEFAULTCRS?.['#text']
+  if (!row.wfs_default_crs) {
+    values.wfs_default_crs = defaultCRS
+  }
   const layerOptions = layers
-    .filter(
-      (l) =>
-        l.OTHERCRS?.map((o) => o?.['#text']?.includes('EPSG:4326')) ||
-        l.DefaultCRS?.map((o) => o?.['#text']?.includes('EPSG:4326')),
-    )
+    .filter((l) => l.OTHERCRS?.map((o) => o?.['#text']?.includes('EPSG:4326')))
     .filter((l) =>
       preferredOutputFormat
         ? l.OUTPUTFORMATS?.FORMAT?.map((f) =>

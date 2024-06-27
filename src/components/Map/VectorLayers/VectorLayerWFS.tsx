@@ -3,6 +3,7 @@
  */
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { GeoJSON, useMapEvent } from 'react-leaflet'
+import { CRS } from 'leaflet'
 import axios from 'redaxios'
 import XMLViewer from 'react-xml-viewer'
 import { MdClose } from 'react-icons/md'
@@ -28,6 +29,7 @@ import {
   Vector_layer_displays as VectorLayerDisplay,
 } from '../../../generated/client/index.ts'
 import { createNotification } from '../../../modules/createRows.ts'
+// import { epsgFrom4326 } from '../../../modules/epsgFrom4326.ts'
 
 const xmlViewerStyle = {
   fontSize: 'small',
@@ -58,7 +60,25 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
   }, [db.notifications])
 
   const map = useMapEvent('zoomend', () => setZoom(map.getZoom()))
+  console.log('VectorLayerWFS, wfs_default_crs:', layer.wfs_default_crs)
+  console.log('VectorLayerWFS, CRS:', CRS)
+  console.log('VectorLayerWFS, mapCrs:', map.options.crs)
+  const defaultCrsMap = L.map('defaultCrsMap', { crs: 'EPSG:2056' })
+  console.log('VectorLayerWFS, defaultCrsMap:', defaultCrsMap)
+  // const defaultCrs = CRS[layer.wfs_default_crs ?? 'EPSG:4326']
+  const defaultCrs = CRS['EPSG:2056']
+  console.log('VectorLayerWFS, defaultCrs:', defaultCrs)
   const bounds = map.getBounds()
+  console.log('VectorLayerWFS, bounds:', bounds)
+  // get all four corners of the map
+  const nw = defaultCrs.project(bounds.getNorthWest())
+  const ne = defaultCrs.project(bounds.getNorthEast())
+  const se = defaultCrs.project(bounds.getSouthEast())
+  const sw = defaultCrs.project(bounds.getSouthWest())
+  console.log('VectorLayerWFS, nw, ne, se, sw:', { nw, ne, se, sw })
+  const bbox = L.bounds([nw, ne, sw, se]).toBBoxString()
+  console.log('VectorLayerWFS, bbox:', bbox)
+
   const [zoom, setZoom] = useState(map.getZoom())
 
   const [data, setData] = useState()
@@ -87,12 +107,11 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
         maxfeatures: layer.max_features ?? 1000,
         // bbox is NOT WORKING
         // always returning 0 features...
-        // BBOX: `${bounds.toBBoxString()},EPSG:4326`,
-        // BBOX: `${bounds.toBBoxString()},EPSG:4326`,
-        BBOX: `${bounds.toBBoxString()},urn:ogc:def:crs:EPSG::4326`,
-        // BBOX: bounds.toBBoxString(),
+        bbox,
+        // bbox: `${bounds.toBBoxString()},${
+        //   layer.wfs_default_crs ?? '"urn:ogc:def:crs:EPSG::4326'
+        // }`,
         // EX_GeographicBoundingBox: `${bounds.toBBoxString()},urn:ogc:def:crs:EPSG:4326`,
-        // extent: `${bounds.toBBoxString()},urn:ogc:def:crs:EPSG:4326`,
         // width: mapSize.x,
         // height: mapSize.y,
       }
@@ -154,8 +173,7 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
     layer,
     display,
     data,
-    // bbox: bounds.toBBoxString(),
-    bbox: `${bounds.toBBoxString()},EPSG:4326`,
+    bbox,
   })
 
   removeNotifs()

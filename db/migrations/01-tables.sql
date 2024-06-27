@@ -1813,8 +1813,8 @@ COMMENT ON COLUMN chart_subjects.stroke IS 'Stroke color of the chart';
 COMMENT ON COLUMN chart_subjects.fill IS 'Fill color of the chart';
 
 CREATE TABLE crs(
-  crs_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
-  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  crs_id uuid PRIMARY KEY DEFAULT NULL,
+  -- project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   code text DEFAULT NULL,
   name text DEFAULT NULL,
@@ -1830,6 +1830,25 @@ CREATE INDEX ON crs USING btree(project_id);
 COMMENT ON TABLE crs IS 'List of crs. From: https://spatialreference.org/crslist.json. Can be inserted when configuring a project. Do not download the entire list - only what the configurating person chooses';
 
 COMMENT ON COLUMN crs.proj4 IS 'proj4 string for the crs. From (example): https://epsg.io/4326.proj4';
+
+-- need additional table project_crs to store the crs used in a project
+-- same as crs - data will be copied from crs to project_crs
+CREATE TABLE project_crs(
+  project_crs_id uuid PRIMARY KEY DEFAULT NULL,
+  crs_id uuid REFERENCES crs(crs_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  code text DEFAULT NULL,
+  name text DEFAULT NULL,
+  proj4 text DEFAULT NULL,
+  label_replace_by_generated_column text DEFAULT NULL
+);
+
+CREATE INDEX ON project_crs USING btree(account_id);
+
+CREATE INDEX ON project_crs USING btree(project_id);
+
+COMMENT ON TABLE project_crs IS 'List of crs. From: https://spatialreference.org/crslist.json. Can be inserted when configuring a project. Do not download the entire list - only what the configurating person chooses';
 
 -- enable electric
 ALTER TABLE users ENABLE electric;
