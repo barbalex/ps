@@ -58,11 +58,12 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
   }, [db.notifications])
 
   const map = useMapEvent('zoomend', () => setZoom(map.getZoom()))
+  const bounds = map.getBounds()
   const [zoom, setZoom] = useState(map.getZoom())
 
   const [data, setData] = useState()
   const fetchData = useCallback(
-    async (/*{ bounds }*/) => {
+    async () => {
       // const mapSize = map.getSize()
       removeNotifs()
       const data = createNotification({
@@ -83,11 +84,15 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
         typeName: layer.wfs_layer?.value,
         srsName: 'EPSG:4326',
         outputFormat: layer.wfs_output_format?.value,
-        maxfeatures: 1000,
+        maxfeatures: layer.max_features ?? 1000,
         // bbox is NOT WORKING
         // always returning 0 features...
-        // bbox: `${bounds.toBBoxString()},EPSG:4326`,
-        // bbox: bounds.toBBoxString(),
+        // BBOX: `${bounds.toBBoxString()},EPSG:4326`,
+        // BBOX: `${bounds.toBBoxString()},EPSG:4326`,
+        BBOX: `${bounds.toBBoxString()},urn:ogc:def:crs:EPSG::4326`,
+        // BBOX: bounds.toBBoxString(),
+        // EX_GeographicBoundingBox: `${bounds.toBBoxString()},urn:ogc:def:crs:EPSG:4326`,
+        // extent: `${bounds.toBBoxString()},urn:ogc:def:crs:EPSG:4326`,
         // width: mapSize.x,
         // height: mapSize.y,
       }
@@ -140,6 +145,18 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
   // include only if zoom between min_zoom and max_zoom
   if (layer.min_zoom !== undefined && zoom < layer.min_zoom) return null
   if (layer.max_zoom !== undefined && zoom > layer.max_zoom) return null
+  if (!display) {
+    console.error('VectorLayerWFS, no display:', { layer, display })
+    return null
+  }
+
+  console.log('VectorLayerWFS', {
+    layer,
+    display,
+    data,
+    // bbox: bounds.toBBoxString(),
+    bbox: `${bounds.toBBoxString()},EPSG:4326`,
+  })
 
   removeNotifs()
   if (

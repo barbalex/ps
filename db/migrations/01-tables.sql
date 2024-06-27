@@ -1444,6 +1444,7 @@ CREATE TABLE vector_layers(
   wfs_layer jsonb DEFAULT NULL, -- a single option
   wfs_version text DEFAULT NULL, -- often: 1.1.0 or 2.0.0
   wfs_output_format jsonb DEFAULT NULL, --  a single option
+  wfs_default_crs text DEFAULT NULL, -- often: EPSG:4326
   feature_count integer DEFAULT NULL,
   point_count integer DEFAULT NULL,
   line_count integer DEFAULT NULL,
@@ -1463,6 +1464,8 @@ CREATE INDEX ON vector_layers USING btree(sort);
 COMMENT ON TABLE vector_layers IS 'Goal: Bring your own tile layers. Either from wfs or importing GeoJSON. Should only contain metadata, not data fetched from wms or wmts servers (that should only be saved locally on the client).';
 
 COMMENT ON COLUMN vector_layers.display_by_property_field IS 'Name of the field whose values is used to display the layer. If null, a single display is used.';
+
+COMMENT ON COLUMN vector_layers.wfs_default_crs IS 'It seems that this is the crs bbox calls have to be made in';
 
 COMMENT ON COLUMN vector_layers.feature_count IS 'Number of features. Set when downloaded features';
 
