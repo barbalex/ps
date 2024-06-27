@@ -3,6 +3,7 @@ import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { createVectorLayerDisplay } from '../../modules/createRows.ts'
 
 export const Header = memo(() => {
   const { vector_layer_id, vector_layer_display_id } = useParams()
@@ -11,9 +12,31 @@ export const Header = memo(() => {
 
   const { db } = useElectric()!
 
+  const addRow = useCallback(async () => {
+    const vectorLayerDisplay = createVectorLayerDisplay({ vector_layer_id })
+    await db.vector_layer_displays.create({ data: vectorLayerDisplay })
+    navigate({
+      pathname: `../${vectorLayerDisplay.vector_layer_display_id}`,
+      search: searchParams.toString(),
+    })
+    autoFocusRef.current?.focus()
+  }, [db.vector_layer_displays, navigate, searchParams, vector_layer_id])
+
+  const deleteRow = useCallback(async () => {
+    await db.vector_layer_displays.delete({
+      where: { vector_layer_display_id },
+    })
+    navigate({ pathname: '..', search: searchParams.toString() })
+  }, [
+    db.vector_layer_displays,
+    vector_layer_display_id,
+    navigate,
+    searchParams,
+  ])
+
   const toNext = useCallback(async () => {
     const vectorLayerDisplays = await db.vector_layer_displays.findMany({
-      where: {  vector_layer_id },
+      where: { vector_layer_id },
       orderBy: { label: 'asc' },
     })
     const len = vectorLayerDisplays.length
@@ -35,7 +58,7 @@ export const Header = memo(() => {
 
   const toPrevious = useCallback(async () => {
     const vectorLayerDisplays = await db.vector_layer_displays.findMany({
-      where: {  vector_layer_id },
+      where: { vector_layer_id },
       orderBy: { label: 'asc' },
     })
     const len = vectorLayerDisplays.length
@@ -58,6 +81,8 @@ export const Header = memo(() => {
   return (
     <FormHeader
       title="Vector Layer Display"
+      addRow={addRow}
+      deleteRow={deleteRow}
       toNext={toNext}
       toPrevious={toPrevious}
       tableName="vector layer display"
