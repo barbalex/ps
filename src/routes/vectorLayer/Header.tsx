@@ -13,7 +13,10 @@ import {
   MenuPopover,
 } from '@fluentui/react-components'
 
-import { createVectorLayer } from '../../modules/createRows.ts'
+import {
+  createVectorLayer,
+  createVectorLayerDisplay,
+} from '../../modules/createRows.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { Vector_layers as VectorLayer } from '../../generated/client/index.ts'
@@ -124,12 +127,24 @@ export const Header = memo(({ autoFocusRef, row }: Props) => {
   const addRow = useCallback(async () => {
     const vectorLayer = createVectorLayer({ project_id })
     await db.vector_layers.create({ data: vectorLayer })
+    // also add vector_layer_display
+    const vectorLayerDisplay = createVectorLayerDisplay({
+      vector_layer_id: vectorLayer.vector_layer_id,
+    })
+    await db.vector_layer_displays.create({ data: vectorLayerDisplay })
     navigate({
       pathname: `../${vectorLayer.vector_layer_id}`,
       search: searchParams.toString(),
     })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db.vector_layers, navigate, project_id, searchParams])
+  }, [
+    autoFocusRef,
+    db.vector_layer_displays,
+    db.vector_layers,
+    navigate,
+    project_id,
+    searchParams,
+  ])
 
   const deleteRow = useCallback(async () => {
     await db.vector_layers.delete({ where: { vector_layer_id } })
