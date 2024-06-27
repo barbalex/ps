@@ -1827,7 +1827,7 @@ CREATE INDEX ON crs USING btree(account_id);
 
 CREATE INDEX ON crs USING btree(project_id);
 
-COMMENT ON TABLE crs IS 'List of crs. From: https://spatialreference.org/crslist.json. Can be inserted when configuring a project. Do not download the entire list - only what the configurating person chooses';
+COMMENT ON TABLE crs IS 'List of crs. From: https://spatialreference.org/crslist.json. Can be inserted when configuring a project. We need the entire list because wfs/wms have a default crs that needs to be used for bbox calls. TODO: decide when to download the list.';
 
 COMMENT ON COLUMN crs.proj4 IS 'proj4 string for the crs. From (example): https://epsg.io/4326.proj4';
 
@@ -1835,20 +1835,21 @@ COMMENT ON COLUMN crs.proj4 IS 'proj4 string for the crs. From (example): https:
 -- same as crs - data will be copied from crs to project_crs
 CREATE TABLE project_crs(
   project_crs_id uuid PRIMARY KEY DEFAULT NULL,
-  crs_id uuid REFERENCES crs(crs_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  code text DEFAULT NULL,
-  name text DEFAULT NULL,
-  proj4 text DEFAULT NULL,
-  label_replace_by_generated_column text DEFAULT NULL
+  crs_id uuid REFERENCES crs(crs_id) ON DELETE
+    DO NOTHING ON UPDATE CASCADE,
+    project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    code text DEFAULT NULL,
+    name text DEFAULT NULL,
+    proj4 text DEFAULT NULL,
+    label_replace_by_generated_column text DEFAULT NULL
 );
 
 CREATE INDEX ON project_crs USING btree(account_id);
 
 CREATE INDEX ON project_crs USING btree(project_id);
 
-COMMENT ON TABLE project_crs IS 'List of crs. From: https://spatialreference.org/crslist.json. Can be inserted when configuring a project. Do not download the entire list - only what the configurating person chooses';
+COMMENT ON TABLE project_crs IS 'List of crs used in a project. Can be set when configuring a project. Values copied from crs table.';
 
 -- enable electric
 ALTER TABLE users ENABLE electric;
