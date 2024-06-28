@@ -9,9 +9,6 @@ const containerStyle = {
 
 export const Info = memo(() => (
   <div style={containerStyle} tabIndex={-1}>
-    <p>You can add multiple CRS.</p>
-    <p>One of them can be set as the map presentation crs.</p>
-    <p>It will be used to show coordinates in the map.</p>
-    <p>Users can choose in the map one of the CRS'es you add here.</p>
+    <p>These are the CRS you can add to a project.</p>
   </div>
 ))

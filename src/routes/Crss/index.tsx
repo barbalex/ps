@@ -1,6 +1,6 @@
 import { useCallback, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { createCrs } from '../../modules/createRows.ts'
@@ -12,22 +12,18 @@ import '../../form.css'
 export const Component = memo(() => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { project_id } = useParams()
 
   const { db } = useElectric()!
 
   const { results: crs = [] } = useLiveQuery(
-    db.crs.liveMany({
-      where: { project_id },
-      orderBy: { label: 'asc' },
-    }),
+    db.crs.liveMany({ orderBy: { label: 'asc' } }),
   )
 
   const add = useCallback(async () => {
-    const data = await createCrs({ project_id })
+    const data = await createCrs()
     await db.crs.create({ data })
     navigate({ pathname: data.crs_id, search: searchParams.toString() })
-  }, [db.crs, navigate, project_id, searchParams])
+  }, [db.crs, navigate, searchParams])
 
   return (
     <div className="list-view">
