@@ -10,7 +10,6 @@ import * as ReactDOMServer from 'react-dom/server'
 import { useDebouncedCallback } from 'use-debounce'
 import * as icons from 'react-icons/md'
 import proj4 from 'proj4'
-import { useLiveQuery } from 'electric-sql/react'
 
 import {
   Dialog,
@@ -44,6 +43,27 @@ const xmlTheme = {
   attributeValueColor: '#2ECC40',
 }
 
+const bboxFromBounds = ({ bounds, defaultCrs }) => {
+  let bbox
+  const ne = bounds.getNorthEast()
+  const sw = bounds.getSouthWest()
+  if (!defaultCrs || !defaultCrs.code === 'EPSG:4326') {
+    bbox = `${sw.lng},${sw.lat},${ne.lng},${ne.lat}`
+  } else {
+    const neReprojected = proj4('EPSG:4326', defaultCrs?.proj4, [
+      ne.lng,
+      ne.lat,
+    ])
+    const swReprojected = proj4('EPSG:4326', defaultCrs?.proj4, [
+      sw.lng,
+      sw.lat,
+    ])
+    bbox = `${swReprojected[0]},${swReprojected[1]},${neReprojected[0]},${neReprojected[1]}`
+  }
+  console.log('VectorLayerWFS.bboxFromBounds', { bbox, bounds, defaultCrs })
+  return bbox
+}
+
 interface Props {
   layer: VectorLayer
   display: VectorLayerDisplay
@@ -61,33 +81,12 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
   }, [db.notifications])
 
   const map = useMapEvent('zoomend', () => setZoom(map.getZoom()))
-  console.log('VectorLayerWFS, wfs_default_crs:', layer.wfs_default_crs)
   // wfs_default_crs is of the form: "urn:ogc:def:crs:EPSG::4326"
   // extract the relevant parts for db.crs.code:
   const wfsDefaultCrsArray = layer.wfs_default_crs?.split(':').slice(-3)
   const wfsDefaultCrsCode = [wfsDefaultCrsArray[0], wfsDefaultCrsArray[2]].join(
     ':',
   )
-  console.log('VectorLayerWFS, wfsDefaultCrsCode:', wfsDefaultCrsCode)
-
-  // TODO: need to fetch proj4 from db.crs with code wfsDefaultCrsCode
-  const { results: defaultCrs } = useLiveQuery(
-    db.crs.liveFirst({ where: { code: wfsDefaultCrsCode } }),
-  )
-  console.log('VectorLayerWFS, defaultCrs:', defaultCrs)
-
-  const bounds = map.getBounds()
-  const ne = bounds.getNorthEast()
-  const neReprojected = proj4('EPSG:4326', defaultCrs?.proj4, [ne.lng, ne.lat])
-  const sw = bounds.getSouthWest()
-  const swReprojected = proj4('EPSG:4326', defaultCrs?.proj4, [sw.lng, sw.lat])
-  console.log('VectorLayerWFS, bounds:', { ne, sw })
-  console.log('VectorLayerWFS, bounds reprojectd:', {
-    neReprojected,
-    swReprojected,
-  })
-  const bbox = `${swReprojected[0]},${swReprojected[1]},${neReprojected[0]},${neReprojected[1]}`
-  console.log('VectorLayerWFS, bbox:', bbox)
 
   const [zoom, setZoom] = useState(map.getZoom())
 
@@ -95,7 +94,18 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
   const fetchData = useCallback(
     async () => {
       // const mapSize = map.getSize()
+      const defaultCrs = await db.crs.findFirst({
+        where: { code: wfsDefaultCrsCode },
+      })
+      if (!defaultCrs)
+        return console.log('VectorLayerWFS.fetchData, no defaultCrs')
       removeNotifs()
+      const bbox = bboxFromBounds({ bounds: map.getBounds(), defaultCrs })
+      console.log('VectorLayerWFS.fetchData', {
+        bbox,
+        wfsDefaultCrsCode,
+        defaultCrs,
+      })
       const data = createNotification({
         title: `Lade Vektor-Karte '${layer.label}'...`,
         intent: 'info',
@@ -118,7 +128,6 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
         // bbox is NOT WORKING
         // always returning 0 features...
         bbox,
-        // EX_GeographicBoundingBox: `${bounds.toBBoxString()},urn:ogc:def:crs:EPSG:4326`,
         // width: mapSize.x,
         // height: mapSize.y,
       }
@@ -151,6 +160,7 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
       }
       removeNotifs()
       setData(res.data?.features)
+      console.log('VectorLayerWFS.fetchData, params:', params)
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
@@ -162,12 +172,12 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
       removeNotifs,
     ],
   )
+  useMapEvent('dragend zoomend', fetchData)
 
   const fetchDataDebounced = useDebouncedCallback(fetchData, 600)
   useEffect(() => {
-    if (!bbox) return
     fetchDataDebounced()
-  }, [fetchDataDebounced, bbox])
+  }, [fetchDataDebounced])
 
   // include only if zoom between min_zoom and max_zoom
   if (layer.min_zoom !== undefined && zoom < layer.min_zoom) return null
@@ -181,7 +191,6 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
   //   layer,
   //   display,
   //   data,
-  //   bbox,
   // })
 
   removeNotifs()
@@ -203,7 +212,7 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
 
   const mapSize = map.getSize()
 
-  // console.log('hello VectorLayerWFS, data:', data)
+  console.log('VectorLayerWFS, data:', data)
 
   return (
     <>
