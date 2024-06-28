@@ -66,21 +66,16 @@ export const ClickListener = memo(() => {
       // 3. Vector Layers from WFS with downloaded data
       // 4. Vector Layers from WFS with no downloaded data
       // TODO: filter own layers and layers with downloaded data
-      // by querying db.vector_layer_geoms using ST_CONTAINS once postgis arrives in pglite
+      // by querying db.vector_layer_geoms using ST_CONTAINS once PostGIS arrives in PgLite
+
+      // 1. Tile Layers
       const tileLayers = await db.tile_layers.findMany({
         where: { project_id, active: true, ...where },
         orderBy: [{ sort: 'asc' }, { label: 'asc' }],
       })
-      // console.log('Map ClickListener, onClick 2', {
-      //   vectorLayers: tileLayers,
-      //   where,
-      // })
       // loop through vector layers and get infos
       for await (const layer of tileLayers) {
         const { wms_version, wms_base_url, wms_layer, wms_info_format } = layer
-
-        let res
-        const failedToFetch = false
         const params = {
           ...standardParams,
           version: wms_version ?? standardParams.version,
@@ -88,18 +83,15 @@ export const ClickListener = memo(() => {
           query_layers: wms_layer?.value,
           info_format: wms_info_format?.value ?? 'application/vnd.ogc.gml',
         }
-        const data = await fetchData({ db, url: wms_base_url, params })
-        if (!failedToFetch && data) {
+        const requestData = await fetchData({ db, url: wms_base_url, params })
+        if (requestData) {
           layersDataFromRequestData({
             layersData,
-            requestData: res.data,
+            requestData,
             infoFormat: wms_info_format?.value,
           })
         }
       }
-      console.log('Map ClickListener, onClick, layersData:', layersData)
-      // TODO: mapInfo needs to deal with html and text data
-      // set app_state.map_info to layersData
       db.app_states.update({
         where: { app_state_id: appState?.app_state_id },
         data: { map_info: layersData },
