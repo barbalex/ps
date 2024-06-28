@@ -6,14 +6,13 @@ import type { InputProps } from '@fluentui/react-components'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { TextArea } from '../../components/shared/TextArea.tsx'
-import { ComboboxFilteringOptions } from './Combobox/index.tsx'
 
 import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'
 
 // this form is rendered from a parent or outlet
-export const Component = memo(({ autoFocusRef }) => {
+export const Component = memo(() => {
   const { crs_id } = useParams()
 
   const { db } = useElectric()!
@@ -36,7 +35,6 @@ export const Component = memo(({ autoFocusRef }) => {
 
   return (
     <>
-      <ComboboxFilteringOptions autoFocus={!row.code} ref={autoFocusRef} />
       <TextField
         label="Code"
         name="code"
