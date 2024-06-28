@@ -240,6 +240,7 @@ export const Syncer = memo(() => {
         where: { user_email: authUser?.email },
         data: { syncing: false },
       })
+      // TODO: crs not synced
       // console.log('hello Syncer, data synced')
     }
 
