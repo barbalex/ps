@@ -15,5 +15,7 @@ export const idFieldFromTable = (table): string => {
     ? 'root_id'
     : table === 'crs'
     ? 'crs_id'
+    : table === 'project_crs'
+    ? 'project_crs_id'
     : `${table.slice(0, -1)}_id`
 }

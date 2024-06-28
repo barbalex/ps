@@ -74,6 +74,11 @@ export const buildNavs = async ({
                 text: 'Fields',
                 showOnlyWhenDesigning: true,
               },
+              {
+                path: `/data/crs`,
+                text: 'CRS',
+                showOnlyWhenDesigning: true,
+              },
             ]
           : []),
       ]
@@ -137,7 +142,7 @@ export const buildNavs = async ({
                 showOnlyWhenDesigning: true,
               },
               {
-                path: `/data/projects/${project_id}/crs`,
+                path: `/data/projects/${project_id}/project-crs`,
                 text: 'CRS',
                 showOnlyWhenDesigning: true,
               },
