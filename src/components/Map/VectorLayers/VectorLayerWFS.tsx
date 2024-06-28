@@ -60,7 +60,7 @@ const bboxFromBounds = ({ bounds, defaultCrs }) => {
     ])
     bbox = `${swReprojected[0]},${swReprojected[1]},${neReprojected[0]},${neReprojected[1]}`
   }
-  console.log('VectorLayerWFS.bboxFromBounds', { bbox, bounds, defaultCrs })
+  // console.log('VectorLayerWFS.bboxFromBounds', { bbox, bounds, defaultCrs })
   return bbox
 }
 
@@ -97,15 +97,8 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
       const defaultCrs = await db.crs.findFirst({
         where: { code: wfsDefaultCrsCode },
       })
-      if (!defaultCrs)
-        return console.log('VectorLayerWFS.fetchData, no defaultCrs')
       removeNotifs()
       const bbox = bboxFromBounds({ bounds: map.getBounds(), defaultCrs })
-      console.log('VectorLayerWFS.fetchData', {
-        bbox,
-        wfsDefaultCrsCode,
-        defaultCrs,
-      })
       const data = createNotification({
         title: `Lade Vektor-Karte '${layer.label}'...`,
         intent: 'info',
@@ -122,11 +115,14 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
         version: layer.wfs_version,
         request: 'GetFeature',
         typeName: layer.wfs_layer?.value,
+        // ISSUE: The only way querying by bbox works is by using the layers default crs
+        // ONLY: the server returns the data in the layers default crs too...
         srsName: wfsDefaultCrsCode ?? 'EPSG:4326',
         outputFormat: layer.wfs_output_format?.value,
         maxfeatures: layer.max_features ?? 1000,
         // bbox is NOT WORKING
         // always returning 0 features...
+        // seems that bbox expects the layers default crs
         bbox,
         // width: mapSize.x,
         // height: mapSize.y,
@@ -160,7 +156,7 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
       }
       removeNotifs()
       setData(res.data?.features)
-      console.log('VectorLayerWFS.fetchData, params:', params)
+      // console.log('VectorLayerWFS.fetchData, params:', params)
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
@@ -180,18 +176,18 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
   }, [fetchDataDebounced])
 
   // include only if zoom between min_zoom and max_zoom
-  if (layer.min_zoom !== undefined && zoom < layer.min_zoom) return null
-  if (layer.max_zoom !== undefined && zoom > layer.max_zoom) return null
+  if (layer.min_zoom !== undefined && zoom < layer.min_zoom) {
+    console.log('VectorLayerWFS, zoom < layer.min_zoom:', { layer, zoom })
+    return null
+  }
+  if (layer.max_zoom !== undefined && zoom > layer.max_zoom) {
+    console.log('VectorLayerWFS, zoom > layer.max_zoom:', { layer, zoom })
+    return null
+  }
   if (!display) {
     console.error('VectorLayerWFS, no display:', { layer, display })
     return null
   }
-
-  // console.log('VectorLayerWFS', {
-  //   layer,
-  //   display,
-  //   data,
-  // })
 
   removeNotifs()
   if (
@@ -213,6 +209,11 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
   const mapSize = map.getSize()
 
   console.log('VectorLayerWFS, data:', data)
+
+  if (!data) {
+    console.log('VectorLayerWFS, no data, thus returning null')
+    return null
+  }
 
   return (
     <>
