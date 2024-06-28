@@ -7,9 +7,7 @@ import {
   useEffect,
 } from 'react'
 import { Combobox, Field } from '@fluentui/react-components'
-import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
-import debounce from 'lodash/debounce'
 import { useDebouncedCallback } from 'use-debounce'
 
 import { Options } from './options.tsx'
