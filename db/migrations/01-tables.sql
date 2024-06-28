@@ -1262,12 +1262,14 @@ COMMENT ON COLUMN app_states.designing IS 'Whether user is currently designing p
 -- TODO:
 -- new structure for map_info
 -- Goal: enable setting from onEachFeature for wfs layers and maybe own layers
--- object with keys:
+-- Array of objects with keys:
 -- - lat
 -- - lng
 -- - zoom
--- - layers
---   this is an array of objects with keys: label, properties
+-- - layers. This is an array of objects with keys: label, properties
+-- With this structure, wms and wfs can set their layer data into such an object, then add the object to the existing in app_states.map_info
+-- app_states.map_info is reset when user closes info window, so memory is not wasted
+-- the info drawer filters all the objects with correct lat, lng and zoom and shows them
 COMMENT ON COLUMN app_states.map_info IS 'Information presented, when user clicks on a map. Array of: {label, properties} where properties is an array of [key, value]';
 
 COMMENT ON COLUMN app_states.editing_place_geometry IS 'The id of the place whose geometry is currently being edited';
