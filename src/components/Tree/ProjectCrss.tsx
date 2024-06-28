@@ -6,15 +6,16 @@ import isEqual from 'lodash/isEqual'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Node } from './Node.tsx'
-import { CrsNode } from './Crs.tsx'
+import { ProjectCrsNode } from './ProjectCrs.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 
 interface Props {
+  project_id: string
   level?: number
 }
 
-export const CrssNode = memo(({ level = 1 }: Props) => {
+export const CrssNode = memo(({ project_id, level = 3 }: Props) => {
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -29,23 +30,27 @@ export const CrssNode = memo(({ level = 1 }: Props) => {
     [appState?.tree_open_nodes],
   )
 
-  const { results: crs = [] } = useLiveQuery(
-    db.crs.liveMany({
+  const { results: projectCrs = [] } = useLiveQuery(
+    db.project_crs.liveMany({
+      where: { project_id },
       orderBy: { label: 'asc' },
     }),
   )
 
-  const crsNode = useMemo(
+  const projectCrsNode = useMemo(
     () => ({
-      label: `CRS (${crs.length})`,
+      label: `CRS (${projectCrs.length})`,
     }),
-    [crs.length],
+    [projectCrs.length],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const parentArray = useMemo(() => ['data'], [])
+  const parentArray = useMemo(
+    () => ['data', 'projects', project_id],
+    [project_id],
+  )
   const parentUrl = `/${parentArray.join('/')}`
-  const ownArray = useMemo(() => [...parentArray, 'crs'], [parentArray])
+  const ownArray = useMemo(() => [...parentArray, 'project-crs'], [parentArray])
   const ownUrl = `/${ownArray.join('/')}`
 
   // needs to work not only works for urlPath, for all opened paths!
@@ -91,16 +96,23 @@ export const CrssNode = memo(({ level = 1 }: Props) => {
   return (
     <>
       <Node
-        node={crsNode}
+        node={projectCrsNode}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={crs.length}
+        childrenCount={projectCrs.length}
         to={ownUrl}
         onClickButton={onClickButton}
       />
-      {isOpen && crs.map((cr) => <CrsNode key={cr.crs_id} crs={cr} />)}
+      {isOpen &&
+        projectCrs.map((cr) => (
+          <ProjectCrsNode
+            key={cr.project_crs_id}
+            project_id={project_id}
+            project_crs={cr}
+          />
+        ))}
     </>
   )
 })
