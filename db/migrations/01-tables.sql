@@ -1259,6 +1259,15 @@ COMMENT ON TABLE app_states IS 'User interface settings (state saved in db)';
 
 COMMENT ON COLUMN app_states.designing IS 'Whether user is currently designing projects. Preset: false';
 
+-- TODO:
+-- new structure for map_info
+-- Goal: enable setting from onEachFeature for wfs layers and maybe own layers
+-- object with keys:
+-- - lat
+-- - lng
+-- - zoom
+-- - layers
+--   this is an array of objects with keys: label, properties
 COMMENT ON COLUMN app_states.map_info IS 'Information presented, when user clicks on a map. Array of: {label, properties} where properties is an array of [key, value]';
 
 COMMENT ON COLUMN app_states.editing_place_geometry IS 'The id of the place whose geometry is currently being edited';
