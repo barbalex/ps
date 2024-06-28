@@ -1,6 +1,20 @@
 // TODO: import from sql files?
 // import sql from '../../sql/gbif_occurrences_downloads_update_notification.sql?raw'
 
+import { uuidv7 } from '@kripod/uuidv7'
+import * as crsDataImport from './crs.json'
+const crsData = crsDataImport.default
+
+const crsDataWithCrsId = crsData.map((crs) => ({
+  ...crs,
+  crs_id: uuidv7(),
+}))
+const crsValuesString = crsDataWithCrsId
+  .map(
+    (crs) => `('${crs.crs_id}', '${crs.code}', '${crs.name}', '${crs.proj4}')`,
+  )
+  .join(',\n')
+
 const seedFieldTypes = `INSERT INTO field_types(field_type_id, name, sort, comment)
 VALUES ('018ca19e-7a23-7bf4-8523-ff41e3b60807', 'text', 1, 'Example: text'),
 ('018ca19f-2923-7ae5-9ae6-a5c81ab65042', 'boolean', 2, 'true or false'),
@@ -67,6 +81,7 @@ const seedSubprojects = `INSERT INTO subprojects(subproject_id, project_id, name
 ('018cfd27-ee92-7000-b678-e75497d6c60e', '018cfcf7-6424-7000-a100-851c5cc2c878', 'Demo Subproject 1');`
 const seedSubprojectUsers = `INSERT INTO subproject_users(subproject_user_id, subproject_id, user_id, role) values 
 ('018cfd29-ccaa-7000-a686-8566a27eee45', '018cfd27-ee92-7000-b678-e75497d6c60e', '018cf95a-d817-7000-92fa-bb3b2ad59dda', 'manager');`
+const seedCrs = `INSERT INTO crs(crs_id, code, name, proj4) values ${crsValuesString};`
 
 const geometry01 = {
   type: 'FeatureCollection',
@@ -249,6 +264,14 @@ export const seedTestData = async (db) => {
     await db.unsafeExec({
       sql: seedSubprojectUsers,
     })
+    try {
+      console.log('seedTestData, seedCrs:', seedCrs)
+      await db.unsafeExec({
+        sql: seedCrs,
+      })
+    } catch (error) {
+      console.log('seedTestData, seedCrs error', error)
+    }
     try {
       await db.unsafeExec({
         sql: seedPlaces,
