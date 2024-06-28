@@ -29,7 +29,35 @@ const labelStyle = {
 }
 
 export const Layer = memo(({ layerData }) => {
-  const { label, properties = [] } = layerData
+  const { label, properties = [], html, json, text } = layerData
+  console.log('Info Drawer Layer, layerData:', layerData)
+
+  if (text) {
+    return (
+      <div style={containerStyle}>
+        <div style={titleStyle}>{label}</div>
+        <div style={textStyle}>{text}</div>
+      </div>
+    )
+  }
+
+  if (json) {
+    return (
+      <div style={containerStyle}>
+        <div style={titleStyle}>{label}</div>
+        <pre style={textStyle}>{JSON.stringify(json, null, 2)}</pre>
+      </div>
+    )
+  }
+
+  if (html) {
+    return (
+      <div style={containerStyle}>
+        <div style={titleStyle}>{label}</div>
+        <div dangerouslySetInnerHTML={{ __html: html }} />
+      </div>
+    )
+  }
 
   return (
     <div style={containerStyle}>

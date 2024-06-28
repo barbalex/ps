@@ -8,8 +8,9 @@
  */
 import { xmlToJson } from './xmlToJson.ts'
 
-export const xmlToLayersData = (xml: Document) => {
+export const vndOgcGmlToLayersData = (xml: Document) => {
   const obj = xmlToJson(xml)
+  console.log('vndOgcGmlToLayersData, obj:', obj)
   // extract layers
   const output = obj?.HTML?.BODY?.MSGMLOUTPUT
   const layers = Object.entries(output ?? {})

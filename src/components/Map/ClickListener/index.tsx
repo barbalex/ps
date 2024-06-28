@@ -6,7 +6,8 @@ import { useMapEvent, useMap } from 'react-leaflet/hooks'
 import axios from 'redaxios'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
-import { xmlToLayersData } from '../../../modules/xmlToLayersData.ts'
+import { vndOgcGmlToLayersData } from '../../../modules/vndOgcGmlToLayersData.ts'
+import { textXmlToLayersData } from '../../../modules/textXmlToLayersData.ts'
 import { createNotification } from '../../../modules/createRows.ts'
 
 export const ClickListener = memo(() => {
@@ -129,24 +130,74 @@ export const ClickListener = memo(() => {
         }
         if (!failedToFetch && res?.data) {
           // console.log('Map ClickListener, onClick 3, data:', res?.data)
-          const parser = new window.DOMParser()
-          const dataArray = xmlToLayersData(
-            parser.parseFromString(res.data, 'text/html'),
-          )
-          // do not open empty popups
-          if (dataArray.length) {
-            dataArray.forEach((data) => {
-              layersData.push(data)
-            })
+          switch (wms_info_format?.value) {
+            case 'application/vnd.ogc.gml':
+            case 'application/vnd.ogc.gml/3.1.1':{
+              const parser = new window.DOMParser()
+              const dataArray = vndOgcGmlToLayersData(
+                parser.parseFromString(res.data, 'text/html'),
+              )
+              // do not open empty popups
+              if (dataArray.length) {
+                dataArray.forEach((data) => {
+                  layersData.push(data)
+                })
+              }
+              break
+            }
+            case 'text/xml': {
+              const parser = new window.DOMParser()
+              const dataArray = textXmlToLayersData(
+                parser.parseFromString(res.data, 'text/xml'),
+              )
+              // do not open empty popups
+              if (dataArray.length) {
+                dataArray.forEach((data) => {
+                  layersData.push(data)
+                })
+              }
+              break
+            }
+            // TODO: implement these
+            case 'text/html': {
+              layersData.push({ html: res.data })
+              break
+            }
+            // TODO: test
+            case 'application/json':
+            case 'text/javascript': {
+              // do not open empty popups
+              if (!res.data?.length) return
+              if (res.data.includes('no results')) return
+
+              layersData.push({ json: res.data })
+              break
+            }
+            case 'text/plain':
+            default: {
+              // do not open empty popups
+              if (!res.data?.length) return
+              if (res.data.includes('no results')) return
+
+              layersData.push({ text: res.data })
+
+              // popupContent = ReactDOMServer.renderToString(
+              //   <div style={popupContainerStyle}>
+              //     <div style={popupContentStyle}>{res.data}</div>
+              //   </div>,
+              // )
+              break
+            }
           }
         }
-        console.log('Map ClickListener 4, onClick, layersData:', layersData)
-        // set app_state.map_info to layersData
-        db.app_states.update({
-          where: { app_state_id: appState?.app_state_id },
-          data: { map_info: layersData },
-        })
       }
+      console.log('Map ClickListener, onClick, layersData:', layersData)
+      // TODO: mapInfo needs to deal with html and text data
+      // set app_state.map_info to layersData
+      db.app_states.update({
+        where: { app_state_id: appState?.app_state_id },
+        data: { map_info: layersData },
+      })
     },
     [
       appState?.app_state_id,
