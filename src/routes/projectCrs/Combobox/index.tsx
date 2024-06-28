@@ -1,31 +1,57 @@
-import { memo, forwardRef, useState, useCallback, useMemo } from 'react'
+import {
+  memo,
+  forwardRef,
+  useState,
+  useCallback,
+  useMemo,
+  useEffect,
+} from 'react'
 import { Combobox, Field } from '@fluentui/react-components'
+import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
+import debounce from 'lodash/debounce'
+import { useDebouncedCallback } from 'use-debounce'
 
 import { Options } from './options.tsx'
 import { useElectric } from '../../../ElectricProvider.tsx'
-// TODO: query from db.crs table
-import * as crsDataImport from './crs.json'
 
 export const ComboboxFilteringOptions = memo(
   forwardRef(({ autoFocus }, ref) => {
     const { db } = useElectric()!
     const { project_crs_id } = useParams()
 
-    const crsData = crsDataImport.default
-
     const [filter, setFilter] = useState('')
+    const [crs, setCrs] = useState([])
 
-    const onInput = useCallback((event) => {
-      const filter = event.target.value
-      setFilter(filter)
-    }, [])
+    const where = useMemo(() => {
+      if (!filter) return {}
+
+      return {
+        OR: [{ code: { contains: filter } }, { name: { contains: filter } }],
+      }
+    }, [filter])
+
+    const fetchData = useCallback(async () => {
+      const crs = await db.crs.findMany({ where })
+      setCrs(crs)
+    }, [db.crs, where])
+
+    const fetchDataDebounced = useDebouncedCallback(fetchData, 500, {
+      trailing: true,
+    })
+
+    useEffect(() => {
+      if (!filter || filter.length < 2) return setCrs([])
+      fetchDataDebounced()
+    }, [fetchDataDebounced, filter])
+
+    const onInput = useCallback((event) => setFilter(event.target.value), [])
 
     const onOptionSelect = useCallback(
       async (e, data) => {
         if (data.optionValue === 0) return setFilter('') // No options found
         // find the option in the crsData
-        const selectedOption = crsData.find((o) => o.code === data.optionValue)
+        const selectedOption = crs.find((o) => o.code === data.optionValue)
         db.project_crs.update({
           where: { project_crs_id },
           data: {
@@ -36,19 +62,7 @@ export const ComboboxFilteringOptions = memo(
         })
         setFilter('')
       },
-      [crsData, db.project_crs, project_crs_id],
-    )
-
-    const filteredOptions = useMemo(
-      () =>
-        filter.length > 1
-          ? crsData.filter(
-              (o) =>
-                o.code?.toLowerCase?.().includes(filter?.toLowerCase?.()) ||
-                o.name?.toLowerCase?.().includes(filter?.toLowerCase?.()),
-            )
-          : [],
-      [filter, crsData],
+      [crs, db.project_crs, project_crs_id],
     )
 
     return (
@@ -67,7 +81,7 @@ export const ComboboxFilteringOptions = memo(
           freeform
           clearable
         >
-          <Options filter={filter} optionsFiltered={filteredOptions} />
+          <Options filter={filter} optionsFiltered={crs} />
         </Combobox>
       </Field>
     )
