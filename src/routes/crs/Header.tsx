@@ -13,14 +13,14 @@ export const Header = memo(({ autoFocusRef }) => {
   const { db } = useElectric()!
 
   const addRow = useCallback(async () => {
-    const data = await createCrs({ project_id })
+    const data = createCrs()
     await db.crs.create({ data })
     navigate({
       pathname: `../${data.crs_id}`,
       search: searchParams.toString(),
     })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db.crs, navigate, project_id, searchParams])
+  }, [autoFocusRef, db.crs, navigate, searchParams])
 
   const deleteRow = useCallback(async () => {
     await db.crs.delete({ where: { crs_id } })
@@ -29,7 +29,6 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toNext = useCallback(async () => {
     const crs = await db.crs.findMany({
-      where: { project_id },
       orderBy: { label: 'asc' },
     })
     const len = crs.length
@@ -39,11 +38,10 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${next.crs_id}`,
       search: searchParams.toString(),
     })
-  }, [db.crs, navigate, crs_id, project_id, searchParams])
+  }, [db.crs, navigate, crs_id, searchParams])
 
   const toPrevious = useCallback(async () => {
     const crs = await db.crs.findMany({
-      where: { project_id },
       orderBy: { label: 'asc' },
     })
     const len = crs.length
@@ -53,7 +51,7 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${previous.crs_id}`,
       search: searchParams.toString(),
     })
-  }, [db.crs, navigate, crs_id, project_id, searchParams])
+  }, [db.crs, navigate, crs_id, searchParams])
 
   return (
     <FormHeader
