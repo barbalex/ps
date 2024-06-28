@@ -101,7 +101,7 @@ export const Syncer = memo(() => {
                     include: { taxa: { include: { subproject_taxa: true } } },
                   },
                   persons: true,
-                  crs: true,
+                  project_crs: true,
                   lists: {
                     include: {
                       list_values: true,
@@ -135,7 +135,7 @@ export const Syncer = memo(() => {
               taxonomies: true,
               taxa: true,
               persons: true,
-              crs: true,
+              project_crs: true,
               lists: true,
               occurrences: true,
               occurrence_imports: true,
@@ -174,7 +174,7 @@ export const Syncer = memo(() => {
           project_users: true,
           subproject_users: true,
           place_users: true,
-          // do not sync notifications - thus no need to include user_id and asynchroneously fetch it
+          // do not sync notifications - thus no need to include user_id and asynchronously fetch it
           // notifications: true,
         },
       })
