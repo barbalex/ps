@@ -10,7 +10,7 @@ import { Notification as NotificationComponent } from './Notification.tsx'
 // z-index needs to cover map, thus so hight
 const containerStyle = {
   padding: 5,
-  zIndex: 500,
+  zIndex: 99999,
   position: 'absolute',
   bottom: 10,
   left: 10,

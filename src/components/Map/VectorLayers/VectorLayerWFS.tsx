@@ -208,7 +208,7 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
         layer.max_features ?? 1000
       } für Vektor-Karte '${
         layer.label
-      }' wurde geladen. Zoomen sie näher ran, damit alle Features sichtbar sind.`,
+      }' wurde geladen. Zoomen sie näher ran, damit alle Features geladen werden können.`,
       intent: 'warning',
       timeout: 10000,
     })
