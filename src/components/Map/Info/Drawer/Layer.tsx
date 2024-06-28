@@ -29,7 +29,6 @@ const labelStyle = {
 
 export const Layer = memo(({ layerData }) => {
   const { label, properties, html, json, text } = layerData
-  console.log('Info Drawer Layer, layerData:', layerData)
 
   if (text) {
     return (

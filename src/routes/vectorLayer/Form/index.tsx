@@ -24,8 +24,6 @@ export const Component = ({
 
   const { vector_layer_id } = useParams()
 
-  console.log('VectorLayerForm', { row, vector_layer_id })
-
   return (
     <>
       {['wfs', 'upload'].includes(row.type) && (

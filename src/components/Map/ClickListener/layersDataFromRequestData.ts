@@ -19,7 +19,6 @@ export const layersDataFromRequestData = ({
           layersData.push(data)
         })
       }
-      console.log('layersDataFromRequestData, layersData:', layersData)
       break
     }
     case 'text/xml': {
