@@ -22,29 +22,34 @@ export const BaseUrl = memo(
     const { db } = useElectric()!
     const worker = useWorker(createWorker)
 
-    const onBlur = useCallback(async () => {
-      if (!row?.wms_base_url) return
-      // show loading indicator
-      const data = await createNotification({
-        title: `Loading capabilities data for ${row.wms_base_url}`,
-        intent: 'info',
-        paused: true,
-      })
-      await db.notifications.create({ data })
-      try {
-        await worker.getCapabilitiesData({ row, db })
-      } catch (error) {
-        console.error(
-          'hello WmsBaseUrl, onBlur, error getting capabilities data:',
-          error?.message ?? error,
-        )
-        // TODO: surface error to user
-      }
-      await db.notifications.update({
-        where: { notification_id: data.notification_id },
-        data: { paused: false, timeout: 500 },
-      })
-    }, [db, row, worker])
+    const onBlur = useCallback(
+      async (e) => {
+        if (!row?.wms_base_url) return
+        // only proceed if the value has changed
+        if (row.wms_base_url === e.target.value) return
+        // show loading indicator
+        const data = await createNotification({
+          title: `Loading capabilities data for ${row.wms_base_url}`,
+          intent: 'info',
+          paused: true,
+        })
+        await db.notifications.create({ data })
+        try {
+          await worker.getCapabilitiesData({ row, db })
+        } catch (error) {
+          console.error(
+            'hello WmsBaseUrl, onBlur, error getting capabilities data:',
+            error?.message ?? error,
+          )
+          // TODO: surface error to user
+        }
+        await db.notifications.update({
+          where: { notification_id: data.notification_id },
+          data: { paused: false, timeout: 500 },
+        })
+      },
+      [db, row, worker],
+    )
 
     return (
       <TextField

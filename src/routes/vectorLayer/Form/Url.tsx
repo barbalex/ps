@@ -15,35 +15,40 @@ export const Url = memo(
     const { db } = useElectric()!
     const worker = useWorker(createWorker)
 
-    const onBlur = useCallback(async () => {
-      if (!row?.wfs_url) return
-      // TODO: compare with old value and only update if changed
-      // show loading indicator
-      const data = createNotification({
-        title: `Loading capabilities data for ${row.wfs_url}`,
-        intent: 'info',
-        paused: true,
-      })
-      await db.notifications.create({ data })
-      try {
-        // await getCapabilitiesData({ row, db })
-        await worker.getCapabilitiesData({ row, db })
-      } catch (error) {
-        console.error(
-          'Url, onBlur, error getting capabilities data:',
-          error?.message ?? error,
-        )
-        // TODO: surface error to user
-      }
-      try {
-        await db.notifications.update({
-          where: { notification_id: data.notification_id },
-          data: { paused: false, timeout: 500 },
+    const onBlur = useCallback(
+      async (e) => {
+        if (!row?.wfs_url) return
+        // only proceed if the value has changed
+        if (row.wfs_url === e.target.value) return
+        // TODO: compare with old value and only update if changed
+        // show loading indicator
+        const data = createNotification({
+          title: `Loading capabilities data for ${row.wfs_url}`,
+          intent: 'info',
+          paused: true,
         })
-      } catch (error) {
-        console.log('Url, onBlur, error updating notification:', error)
-      }
-    }, [db, row, worker])
+        await db.notifications.create({ data })
+        try {
+          // await getCapabilitiesData({ row, db })
+          await worker.getCapabilitiesData({ row, db })
+        } catch (error) {
+          console.error(
+            'Url, onBlur, error getting capabilities data:',
+            error?.message ?? error,
+          )
+          // TODO: surface error to user
+        }
+        try {
+          await db.notifications.update({
+            where: { notification_id: data.notification_id },
+            data: { paused: false, timeout: 500 },
+          })
+        } catch (error) {
+          console.log('Url, onBlur, error updating notification:', error)
+        }
+      },
+      [db, row, worker],
+    )
 
     return (
       <TextField
