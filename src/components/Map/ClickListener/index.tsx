@@ -8,6 +8,7 @@ import axios from 'redaxios'
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { createNotification } from '../../../modules/createRows.ts'
 import { layersDataFromRequestData } from './layersDataFromRequestData.ts'
+import { fetchData } from './fetchData.ts'
 
 export const ClickListener = memo(() => {
   const { project_id } = useParams()
@@ -75,11 +76,11 @@ export const ClickListener = memo(() => {
       //   where,
       // })
       // loop through vector layers and get infos
-      for (const layer of tileLayers) {
+      for await (const layer of tileLayers) {
         const { wms_version, wms_base_url, wms_layer, wms_info_format } = layer
 
         let res
-        let failedToFetch = false
+        const failedToFetch = false
         const params = {
           ...standardParams,
           version: wms_version ?? standardParams.version,
@@ -87,47 +88,8 @@ export const ClickListener = memo(() => {
           query_layers: wms_layer?.value,
           info_format: wms_info_format?.value ?? 'application/vnd.ogc.gml',
         }
-        try {
-          res = await axios.get({
-            method: 'get',
-            url: wms_base_url,
-            params,
-          })
-        } catch (error) {
-          console.log({ error, errorToJSON: error?.toJSON?.(), res })
-          if (error.status == 406) {
-            // user clicked where no feature exists
-          } else if (error.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
-            console.error('error.response.data', error.response.data)
-            console.error('error.response.status', error.response.status)
-            console.error('error.response.headers', error.response.headers)
-            failedToFetch = true
-          } else if (error.request) {
-            // The request was made but no response was received
-            // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-            // http.ClientRequest in node.js
-            console.error('error.request:', error.request)
-            failedToFetch = true
-          } else {
-            // Something happened in setting up the request that triggered an Error
-            console.error('error.message', error.message)
-            failedToFetch = true
-          }
-          if (error.message?.toLowerCase()?.includes('failed to fetch')) {
-            failedToFetch = true
-          }
-          if (failedToFetch) {
-            const data = createNotification({
-              title: `Fehler beim Laden der Informationen für ${layer.label}`,
-              body: error.message,
-              intent: 'info',
-            })
-            db.notifications.create({ data })
-          }
-        }
-        if (!failedToFetch && res?.data) {
+        const data = await fetchData({ db, url: wms_base_url, params })
+        if (!failedToFetch && data) {
           layersDataFromRequestData({
             layersData,
             requestData: res.data,
@@ -146,9 +108,7 @@ export const ClickListener = memo(() => {
     [
       appState?.app_state_id,
       appState?.filter_vector_layers,
-      db.app_states,
-      db.notifications,
-      db.tile_layers,
+      db,
       map,
       project_id,
     ],
