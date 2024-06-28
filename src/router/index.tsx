@@ -1112,26 +1112,26 @@ export const router = () => {
                       ],
                     },
                     {
-                      path: 'crs',
+                      path: 'project-crs',
                       element: null,
                       handle: {
                         crumb: {
                           text: 'CRS',
-                          table: 'crs',
+                          table: 'project_crs',
                           folder: true,
                         },
                       },
                       children: [
                         {
                           index: true,
-                          lazy: () => import('../routes/Crss/index.tsx'),
+                          lazy: () => import('../routes/projectCrss/index.tsx'),
                         },
                         {
-                          path: ':crs_id',
-                          lazy: () => import('../routes/crs/index.tsx'),
+                          path: ':project_crs_id',
+                          lazy: () => import('../routes/projectCrs/index.tsx'),
                           handle: {
                             crumb: {
-                              table: 'crs',
+                              table: 'project_crs',
                               folder: false,
                             },
                           },
@@ -1370,6 +1370,33 @@ export const router = () => {
                   handle: {
                     crumb: {
                       table: 'fields',
+                      folder: false,
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              path: 'crs',
+              element: null,
+              handle: {
+                crumb: {
+                  text: 'CRS',
+                  table: 'crs',
+                  folder: true,
+                },
+              },
+              children: [
+                {
+                  index: true,
+                  lazy: () => import('../routes/crss/index.tsx'),
+                },
+                {
+                  path: ':crs_id',
+                  lazy: () => import('../routes/crs/index.tsx'),
+                  handle: {
+                    crumb: {
+                      table: 'crs',
                       folder: false,
                     },
                   },

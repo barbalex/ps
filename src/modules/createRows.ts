@@ -164,8 +164,13 @@ export const createPerson = async ({ db, project_id }) => {
   }
 }
 
-export const createCrs = ({ project_id, data = {} }) => ({
+export const createCrs = ({ data = {} }) => ({
   crs_id: uuidv7(),
+  ...data,
+})
+
+export const createProjectCrs = ({ project_id, data = {} }) => ({
+  project_crs_id: uuidv7(),
   project_id,
   ...data,
 })
