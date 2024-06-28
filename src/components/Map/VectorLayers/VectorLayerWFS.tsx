@@ -118,7 +118,7 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
         typeName: layer.wfs_layer?.value,
         srsName: wfsDefaultCrsCode ?? 'EPSG:4326',
         outputFormat: layer.wfs_output_format?.value,
-        maxfeatures: layer.max_features ?? 1000,
+        maxfeatures: layer.max_features ? layer.max_features : 1001,
         // bbox is NOT WORKING
         // always returning 0 features...
         // seems that bbox expects the layers default crs
@@ -198,14 +198,17 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
 
   removeNotifs()
   if (
-    data?.length >= (layer.max_features ?? 1000) &&
-    !notificationIds.current.length
+    data?.length + 1 >=
+    (layer.max_features ?? 1000)
+    // && !notificationIds.current.length
   ) {
     const data = createNotification({
       title: `Zuviele Geometrien`,
       body: `Die maximale Anzahl Features von ${
         layer.max_features ?? 1000
-      } für Vektor-Karte '${layer.label}' wurde geladen. Zoomen sie näher ran`,
+      } für Vektor-Karte '${
+        layer.label
+      }' wurde geladen. Zoomen sie näher ran, damit alle Features sichtbar sind.`,
       intent: 'warning',
       timeout: 10000,
     })
@@ -215,7 +218,7 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
 
   const mapSize = map.getSize()
 
-  // console.log('VectorLayerWFS, data:', data)
+  console.log('VectorLayerWFS, data.length:', data.length)
 
   if (!data) {
     console.log('VectorLayerWFS, no data, thus returning null')
