@@ -218,7 +218,7 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
 
   const mapSize = map.getSize()
 
-  console.log('VectorLayerWFS, data.length:', data.length)
+  console.log('VectorLayerWFS, data.length:', data?.length)
 
   if (!data) {
     console.log('VectorLayerWFS, no data, thus returning null')
