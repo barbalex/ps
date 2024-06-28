@@ -17,8 +17,8 @@ export const ChooseCrs = memo(() => {
   const { project_id = '99999999-9999-9999-9999-999999999999' } = useParams()
 
   const { db } = useElectric()!
-  const { results: crs = [] } = useLiveQuery(
-    db.crs.liveMany({ where: { project_id } }),
+  const { results: projectCrs = [] } = useLiveQuery(
+    db.project_crs.liveMany({ where: { project_id } }),
   )
   // fetch project.map_presentation_crs to show the active one
   const { results: project } = useLiveQuery(
@@ -41,10 +41,10 @@ export const ChooseCrs = memo(() => {
   )
 
   if (!project_id) return null
-  // single crs: that will be chosen by default
-  // no crs: wgs84 is chosen
-  // so only show menu when there are at least 2 crs
-  if (crs.length < 2) return null
+  // single projectCrs: that will be chosen by default
+  // no projectCrs: wgs84 is chosen
+  // so only show menu when there are at least 2 projectCrs
+  if (projectCrs.length < 2) return null
 
   return (
     <Menu checkedValues={checkedValues} onCheckedValueChange={onChange}>
@@ -58,9 +58,9 @@ export const ChooseCrs = memo(() => {
       </MenuTrigger>
       <MenuPopover>
         <MenuList>
-          {crs.map((cr) => (
+          {projectCrs.map((cr) => (
             <MenuItemRadio
-              key={cr.crs_id}
+              key={cr.project_crs_id}
               name="map_presentation_crs"
               secondaryContent={cr.name}
               value={cr.code}

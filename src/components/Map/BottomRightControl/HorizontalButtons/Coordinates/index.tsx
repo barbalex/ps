@@ -36,8 +36,8 @@ export const CoordinatesControl = memo(() => {
     }),
   )
   const projectMapPresentationCrs = project?.map_presentation_crs
-  const { results: crs = [] } = useLiveQuery(
-    db.crs.liveMany({ where: { project_id } }),
+  const { results: projectCrs = [] } = useLiveQuery(
+    db.project_crs.liveMany({ where: { project_id } }),
   )
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -51,10 +51,10 @@ export const CoordinatesControl = memo(() => {
       x: center.lng,
       y: center.lat,
       projectMapPresentationCrs,
-      crs: crs.find((cr) => cr.code === projectMapPresentationCrs),
+      crs: projectCrs.find((cr) => cr.code === projectMapPresentationCrs),
     })
     return { x: round(x), y: round(y) }
-  }, [center, crs, map, projectMapPresentationCrs])
+  }, [center, projectCrs, map, projectMapPresentationCrs])
 
   useMapEvent('dragend', rerender)
 
