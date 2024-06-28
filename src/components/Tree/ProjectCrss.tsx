@@ -15,7 +15,7 @@ interface Props {
   level?: number
 }
 
-export const CrssNode = memo(({ project_id, level = 3 }: Props) => {
+export const ProjectCrssNode = memo(({ project_id, level = 3 }: Props) => {
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -110,7 +110,7 @@ export const CrssNode = memo(({ project_id, level = 3 }: Props) => {
           <ProjectCrsNode
             key={cr.project_crs_id}
             project_id={project_id}
-            project_crs={cr}
+            projectCrs={cr}
           />
         ))}
     </>
