@@ -10,6 +10,7 @@ import * as ReactDOMServer from 'react-dom/server'
 import { useDebouncedCallback } from 'use-debounce'
 import * as icons from 'react-icons/md'
 import proj4 from 'proj4'
+import reproject from 'reproject'
 
 import {
   Dialog,
@@ -115,8 +116,6 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
         version: layer.wfs_version,
         request: 'GetFeature',
         typeName: layer.wfs_layer?.value,
-        // ISSUE: The only way querying by bbox works is by using the layers default crs
-        // ONLY: the server returns the data in the layers default crs too...
         srsName: wfsDefaultCrsCode ?? 'EPSG:4326',
         outputFormat: layer.wfs_output_format?.value,
         maxfeatures: layer.max_features ?? 1000,
@@ -155,7 +154,15 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
         })
       }
       removeNotifs()
-      setData(res.data?.features)
+      // ISSUE: The only way querying by bbox seems to work is by using the layers default crs
+      // BUT: the server returns the data in the layer's default crs too...
+      // SOLUTION: reproject the data to EPSG:4326
+      const reprojectedData = reproject.reproject(
+        res.data,
+        defaultCrs?.proj4,
+        '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs',
+      )
+      setData(reprojectedData.features)
       // console.log('VectorLayerWFS.fetchData, params:', params)
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -208,7 +215,7 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
 
   const mapSize = map.getSize()
 
-  console.log('VectorLayerWFS, data:', data)
+  // console.log('VectorLayerWFS, data:', data)
 
   if (!data) {
     console.log('VectorLayerWFS, no data, thus returning null')
