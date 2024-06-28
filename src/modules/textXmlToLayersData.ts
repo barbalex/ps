@@ -22,7 +22,7 @@ export const textXmlToLayersData = (xml: Document) => {
       .filter(([key]) => key !== 'ogr:geometryProperty')
       .map(([key, value]) => [key.replace('ogr:', ''), value?.['#text']])
 
-    return { label, properties }
+    return { label: label.replace('ogr:', ''), properties }
   })
 
   return layersData

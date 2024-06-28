@@ -2,7 +2,7 @@ import axios from 'redaxios'
 
 import { createNotification } from '../../../modules/createRows.ts'
 
-export const fetchData = ({ db, url, params }) => {
+export const fetchData = async ({ db, url, params }) => {
   let res
   let failedToFetch = false
   try {
