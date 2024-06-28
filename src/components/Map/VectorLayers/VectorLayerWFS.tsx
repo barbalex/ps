@@ -3,13 +3,14 @@
  */
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { GeoJSON, useMapEvent } from 'react-leaflet'
-import { CRS } from 'leaflet'
 import axios from 'redaxios'
 import XMLViewer from 'react-xml-viewer'
 import { MdClose } from 'react-icons/md'
 import * as ReactDOMServer from 'react-dom/server'
 import { useDebouncedCallback } from 'use-debounce'
 import * as icons from 'react-icons/md'
+import proj4 from 'proj4'
+import { useLiveQuery } from 'electric-sql/react'
 
 import {
   Dialog,
@@ -61,22 +62,31 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
 
   const map = useMapEvent('zoomend', () => setZoom(map.getZoom()))
   console.log('VectorLayerWFS, wfs_default_crs:', layer.wfs_default_crs)
-  console.log('VectorLayerWFS, CRS:', CRS)
-  console.log('VectorLayerWFS, mapCrs:', map.options.crs)
-  const defaultCrsMap = L.map('defaultCrsMap', { crs: 'EPSG:2056' })
-  console.log('VectorLayerWFS, defaultCrsMap:', defaultCrsMap)
-  // const defaultCrs = CRS[layer.wfs_default_crs ?? 'EPSG:4326']
-  const defaultCrs = CRS['EPSG:2056']
+  // wfs_default_crs is of the form: "urn:ogc:def:crs:EPSG::4326"
+  // extract the relevant parts for db.crs.code:
+  const wfsDefaultCrsArray = layer.wfs_default_crs?.split(':').slice(-3)
+  const wfsDefaultCrsCode = [wfsDefaultCrsArray[0], wfsDefaultCrsArray[2]].join(
+    ':',
+  )
+  console.log('VectorLayerWFS, wfsDefaultCrsCode:', wfsDefaultCrsCode)
+
+  // TODO: need to fetch proj4 from db.crs with code wfsDefaultCrsCode
+  const { results: defaultCrs } = useLiveQuery(
+    db.crs.liveFirst({ where: { code: wfsDefaultCrsCode } }),
+  )
   console.log('VectorLayerWFS, defaultCrs:', defaultCrs)
+
   const bounds = map.getBounds()
-  console.log('VectorLayerWFS, bounds:', bounds)
-  // get all four corners of the map
-  const nw = defaultCrs.project(bounds.getNorthWest())
-  const ne = defaultCrs.project(bounds.getNorthEast())
-  const se = defaultCrs.project(bounds.getSouthEast())
-  const sw = defaultCrs.project(bounds.getSouthWest())
-  console.log('VectorLayerWFS, nw, ne, se, sw:', { nw, ne, se, sw })
-  const bbox = L.bounds([nw, ne, sw, se]).toBBoxString()
+  const ne = bounds.getNorthEast()
+  const neReprojected = proj4('EPSG:4326', defaultCrs?.proj4, [ne.lng, ne.lat])
+  const sw = bounds.getSouthWest()
+  const swReprojected = proj4('EPSG:4326', defaultCrs?.proj4, [sw.lng, sw.lat])
+  console.log('VectorLayerWFS, bounds:', { ne, sw })
+  console.log('VectorLayerWFS, bounds reprojectd:', {
+    neReprojected,
+    swReprojected,
+  })
+  const bbox = `${swReprojected[0]},${swReprojected[1]},${neReprojected[0]},${neReprojected[1]}`
   console.log('VectorLayerWFS, bbox:', bbox)
 
   const [zoom, setZoom] = useState(map.getZoom())
@@ -102,15 +112,12 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
         version: layer.wfs_version,
         request: 'GetFeature',
         typeName: layer.wfs_layer?.value,
-        srsName: 'EPSG:4326',
+        srsName: wfsDefaultCrsCode ?? 'EPSG:4326',
         outputFormat: layer.wfs_output_format?.value,
         maxfeatures: layer.max_features ?? 1000,
         // bbox is NOT WORKING
         // always returning 0 features...
         bbox,
-        // bbox: `${bounds.toBBoxString()},${
-        //   layer.wfs_default_crs ?? '"urn:ogc:def:crs:EPSG::4326'
-        // }`,
         // EX_GeographicBoundingBox: `${bounds.toBBoxString()},urn:ogc:def:crs:EPSG:4326`,
         // width: mapSize.x,
         // height: mapSize.y,
@@ -158,8 +165,9 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
 
   const fetchDataDebounced = useDebouncedCallback(fetchData, 600)
   useEffect(() => {
-    fetchDataDebounced({ bounds: map.getBounds() })
-  }, [fetchDataDebounced, map])
+    if (!bbox) return
+    fetchDataDebounced()
+  }, [fetchDataDebounced, bbox])
 
   // include only if zoom between min_zoom and max_zoom
   if (layer.min_zoom !== undefined && zoom < layer.min_zoom) return null
@@ -169,12 +177,12 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
     return null
   }
 
-  console.log('VectorLayerWFS', {
-    layer,
-    display,
-    data,
-    bbox,
-  })
+  // console.log('VectorLayerWFS', {
+  //   layer,
+  //   display,
+  //   data,
+  //   bbox,
+  // })
 
   removeNotifs()
   if (

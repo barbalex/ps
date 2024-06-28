@@ -1825,6 +1825,8 @@ CREATE TABLE crs(
 -- CREATE INDEX ON crs USING btree(crs_id);
 CREATE INDEX ON crs USING btree(account_id);
 
+CREATE INDEX ON crs USING btree(code);
+
 COMMENT ON TABLE crs IS 'List of crs. From: https://spatialreference.org/crslist.json. Can be inserted when configuring a project. We need the entire list because wfs/wms have a default crs that needs to be used for bbox calls. TODO: decide when to download the list.';
 
 COMMENT ON COLUMN crs.proj4 IS 'proj4 string for the crs. From (example): https://epsg.io/4326.proj4';
