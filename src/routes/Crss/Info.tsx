@@ -9,6 +9,7 @@ const containerStyle = {
 
 export const Info = memo(() => (
   <div style={containerStyle} tabIndex={-1}>
-    <p>These are the CRS you can add to a project.</p>
+    <p>This is a (hopefully) complete list of all known CRS.</p>
+    <p>They can be added to projects.</p>
   </div>
 ))

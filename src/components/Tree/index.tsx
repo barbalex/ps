@@ -8,6 +8,7 @@ import { WidgetTypesNode } from './WidgetTypes.tsx'
 import { WidgetsForFieldsNode } from './WidgetsForFields.tsx'
 import { FieldsNode } from './Fields.tsx'
 import { MessagesNode } from './Messages.tsx'
+import { CrssNode } from './Crss.tsx'
 
 const containerStyle = {
   height: '100%',
@@ -32,6 +33,7 @@ export const Tree = memo(({ designing }) => (
         <WidgetTypesNode />
         <WidgetsForFieldsNode />
         <FieldsNode />
+        <CrssNode />
       </>
     )}
     <MessagesNode />
