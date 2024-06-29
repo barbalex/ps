@@ -69,9 +69,9 @@ export const Drawer = memo(
             />
           </DrawerHeader>
           <DrawerBody style={bodyStyle}>
-            <Location location={location} />
-            {layersData.map((layerData, i) => (
-              <Layer key={`${i}/${layerData.label}`} layerData={layerData} />
+            <Location mapInfo={mapInfo} />
+            {(mapInfo.layers ?? []).map((layer, i) => (
+              <Layer key={`${i}/${layer.label}`} layerData={layer} />
             ))}
           </DrawerBody>
         </InlineDrawer>

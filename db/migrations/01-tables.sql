@@ -1262,7 +1262,7 @@ COMMENT ON COLUMN app_states.designing IS 'Whether user is currently designing p
 -- TODO:
 -- new structure for map_info
 -- Goal: enable setting from onEachFeature for wfs layers and maybe own layers
--- Array of objects with keys:
+-- SINGLE object with keys:
 -- - lat
 -- - lng
 -- - zoom
