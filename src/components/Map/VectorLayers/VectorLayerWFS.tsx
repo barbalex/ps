@@ -11,7 +11,6 @@ import { useDebouncedCallback } from 'use-debounce'
 import * as icons from 'react-icons/md'
 import proj4 from 'proj4'
 import reproject from 'reproject'
-import { useCorbado } from '@corbado/react'
 
 import {
   Dialog,
@@ -24,7 +23,6 @@ import {
 } from '@fluentui/react-components'
 
 import { vectorLayerDisplayToProperties } from '../../../modules/vectorLayerDisplayToProperties.ts'
-import { Popup } from '../Popup.tsx'
 import { useElectric } from '../../../ElectricProvider.tsx'
 import {
   Vector_layers as VectorLayer,
@@ -71,7 +69,6 @@ interface Props {
   display: VectorLayerDisplay
 }
 export const VectorLayerWFS = ({ layer, display }: Props) => {
-  const { user: authUser } = useCorbado()
   const { db } = useElectric()!
   const [error, setError] = useState()
   const notificationIds = useRef([])
@@ -220,12 +217,12 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
 
   const mapSize = map.getSize()
 
-  console.log('VectorLayerWFS, data.length:', data?.length)
-
   if (!data) {
     console.log('VectorLayerWFS, no data, thus returning null')
     return null
   }
+
+  console.log('VectorLayerWFS, data.length:', data?.length)
 
   return (
     <>
@@ -262,34 +259,20 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
               })
             : L.marker(latlng)
         }}
-        onEachFeature={async (feature, _layer) => {
-          const layersData = [
-            {
-              label: layer.label,
-              properties: Object.entries(feature?.properties ?? {}),
-            },
-          ]
-          // TODO:
-          // 1. build mapInfo
-          // 2. "upsert" db.app_states.map_info:
-          // 2.1 look if mapInfo at this location exists.
-          const appState = await db.app_states.findFirst({
-            where: { user_email: authUser?.email },
-          })
-          const mapInfo = appState?.map_info
-          //     Yes? Add layerData to it
-          //     No? Create new mapInfo with layerData
-          console.log('VectorLayerWFS, onEachFeature:', {
-            feature,
-            _layer,
-            mapInfo,
-          })
+        // need to turn off popups or the click will not register in ClickListener
+        // onEachFeature={async (feature, _layer) => {
+        //   const layersData = [
+        //     {
+        //       label: layer.label,
+        //       properties: Object.entries(feature?.properties ?? {}),
+        //     },
+        //   ]
 
-          const popupContent = ReactDOMServer.renderToString(
-            <Popup layersData={layersData} mapSize={mapSize} />,
-          )
-          _layer.bindPopup(popupContent)
-        }}
+        //   const popupContent = ReactDOMServer.renderToString(
+        //     <Popup layersData={layersData} mapSize={mapSize} />,
+        //   )
+        //   _layer.bindPopup(popupContent)
+        // }}
       />
       <Dialog onOpenChange={() => setError(null)} open={!!error}>
         <DialogSurface>

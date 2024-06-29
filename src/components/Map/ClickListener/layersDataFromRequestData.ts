@@ -2,10 +2,15 @@ import { vndOgcGmlToLayersData } from '../../../modules/vndOgcGmlToLayersData.ts
 import { textXmlToLayersData } from '../../../modules/textXmlToLayersData.ts'
 
 export const layersDataFromRequestData = ({
-  layersData, 
+  layersData,
   requestData,
   infoFormat,
 }) => {
+  console.log('layersDataFromRequestData', {
+    layersData,
+    requestData,
+    infoFormat,
+  })
   switch (infoFormat) {
     case 'application/vnd.ogc.gml':
     case 'application/vnd.ogc.gml/3.1.1': {
@@ -41,6 +46,7 @@ export const layersDataFromRequestData = ({
     }
     // TODO: test
     case 'application/json':
+    case 'application/json; subtype=geojson':
     case 'text/javascript': {
       // do not open empty popups
       if (!requestData?.length) return

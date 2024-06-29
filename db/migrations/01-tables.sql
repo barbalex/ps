@@ -1454,6 +1454,7 @@ CREATE TABLE vector_layers(
   wfs_url text DEFAULT NULL, -- WFS url, for example https://maps.zh.ch/wfs/OGDZHWFS.
   wfs_layer jsonb DEFAULT NULL, -- a single option
   wfs_version text DEFAULT NULL, -- often: 1.1.0 or 2.0.0
+  wfs_output_formats jsonb DEFAULT NULL, -- TODO: array of text from the OutputFormats field. add, then read and set in getCapabilities, only show these in dropdown
   wfs_output_format jsonb DEFAULT NULL, --  a single option
   wfs_default_crs text DEFAULT NULL, -- often: EPSG:4326
   feature_count integer DEFAULT NULL,
