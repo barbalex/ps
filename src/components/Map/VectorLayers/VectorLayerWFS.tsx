@@ -215,8 +215,6 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
     notificationIds.current = [data.notification_id, ...notificationIds.current]
   }
 
-  const mapSize = map.getSize()
-
   if (!data) {
     console.log('VectorLayerWFS, no data, thus returning null')
     return null

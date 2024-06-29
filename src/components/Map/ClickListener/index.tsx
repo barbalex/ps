@@ -29,25 +29,6 @@ export const ClickListener = memo(() => {
       const mapSize = map.getSize()
       const bounds = map.getBounds()
 
-      const standardParams = {
-        version: '1.3.0',
-        request: 'GetFeatureInfo',
-        crs: 'EPSG:4326',
-        format: 'image/png',
-        feature_count: 40,
-        x: Math.round(event.containerPoint.x),
-        y: Math.round(event.containerPoint.y),
-        width: mapSize.x, // TODO: needed?
-        height: mapSize.y, // TODO: needed?
-      }
-      // console.log('Map ClickListener, onClick 1', {
-      //   lat,
-      //   lng,
-      //   zoom,
-      //   mapSize,
-      //   bounds,
-      // })
-
       const mapInfo = { lat, lng, zoom, layers: [] }
       const tileLayersFilter =
         appState?.filter_tile_layers?.filter(
@@ -75,12 +56,17 @@ export const ClickListener = memo(() => {
       for await (const layer of tileLayers) {
         const { wms_version, wms_base_url, wms_layer, wms_info_format } = layer
         const params = {
-          ...standardParams,
+          request: 'GetFeatureInfo',
           service: 'WMS',
-          version: wms_version ?? standardParams.version,
+          version: wms_version ?? '1.3.0',
+          crs: 'EPSG:4326',
           layers: wms_layer?.value,
           query_layers: wms_layer?.value,
           info_format: wms_info_format?.value ?? 'application/vnd.ogc.gml',
+          x: Math.round(event.containerPoint.x),
+          y: Math.round(event.containerPoint.y),
+          width: mapSize.x,
+          height: mapSize.y,
           bbox: `${bounds._southWest.lat},${bounds._southWest.lng},${bounds._northEast.lat},${bounds._northEast.lng}`,
         }
         const requestData = await fetchData({ db, url: wms_base_url, params })
@@ -109,13 +95,6 @@ export const ClickListener = memo(() => {
         },
         orderBy: [{ sort: 'asc' }, { label: 'asc' }],
       })
-      console.log('Map ClickListener.onClick', {
-        vectorLayers,
-        vectorLayersWhere,
-        vectorLayersFilter,
-        lat,
-        lng,
-      })
       // loop through vector layers and get infos
       for await (const layer of vectorLayers) {
         const {
@@ -127,7 +106,7 @@ export const ClickListener = memo(() => {
         } = layer
         // wfs_default_crs is of the form: "urn:ogc:def:crs:EPSG::4326"
         // extract the relevant parts for db.crs.code:
-        const wfsDefaultCrsArray = layer.wfs_default_crs?.split(':').slice(-3)
+        const wfsDefaultCrsArray = wfs_default_crs?.split(':').slice(-3)
         const wfsDefaultCrsCode = [
           wfsDefaultCrsArray[0],
           wfsDefaultCrsArray[2],
@@ -137,14 +116,13 @@ export const ClickListener = memo(() => {
         })
         const [x, y] = proj4('EPSG:4326', defaultCrs?.proj4, [lng, lat])
         const params = {
-          ...standardParams,
           service: 'WFS',
           request: 'GetFeature',
-          version: wfs_version ?? standardParams.version,
+          version: wfs_version ?? '1.3.0',
           layers: wfs_layer?.value,
           typeNames: wfs_layer?.value,
           outputFormat: wfs_output_format?.value ?? 'application/vnd.ogc.gml',
-          // TODO: bbox in wfs_default_crs:
+          // bbox needs to be in wfs_default_crs:
           bbox: `${x},${y},${x},${y}`,
           // cql_filter: `INTERSECTS(geom, POINT (${lng} ${lat}))`, // did not work
         }
@@ -152,21 +130,15 @@ export const ClickListener = memo(() => {
         const label = requestData?.name
         const features = requestData?.features.map((f) => ({
           label,
-          properties: f.properties,
+          properties: Object.entries(f.properties ?? {}),
         }))
-
-        console.log('Map ClickListener.onClick.vectorLayer', {
-          requestData,
-          features,
-        })
         if (requestData) {
           layersDataFromRequestData({
             layersData: mapInfo.layers,
             requestData: features,
-            infoFormat: wfs_output_format?.value,
+            infoFormat: 'labelPropertiesArray',
           })
         }
-        // TODO:
       }
 
       db.app_states.update({

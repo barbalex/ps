@@ -6,11 +6,6 @@ export const layersDataFromRequestData = ({
   requestData,
   infoFormat,
 }) => {
-  console.log('layersDataFromRequestData', {
-    layersData,
-    requestData,
-    infoFormat,
-  })
   switch (infoFormat) {
     case 'application/vnd.ogc.gml':
     case 'application/vnd.ogc.gml/3.1.1': {
@@ -37,6 +32,10 @@ export const layersDataFromRequestData = ({
           layersData.push(data)
         })
       }
+      break
+    }
+    case 'labelPropertiesArray': {
+      layersData.push(...requestData)
       break
     }
     // TODO: implement these
