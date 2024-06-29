@@ -3,10 +3,8 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 import { useParams } from 'react-router-dom'
 import { useMapEvent, useMap } from 'react-leaflet/hooks'
-import axios from 'redaxios'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
-import { createNotification } from '../../../modules/createRows.ts'
 import { layersDataFromRequestData } from './layersDataFromRequestData.ts'
 import { fetchData } from './fetchData.ts'
 
