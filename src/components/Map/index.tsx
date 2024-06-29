@@ -133,10 +133,10 @@ export const Map = memo(() => {
           <VectorLayers key={`${vectorLayerSorter}/vectorLayers`} />
           <BottomRightControl position="bottomright" visible={true} />
           <BoundsListener />
-          {mapInfo?.length > 0 && <InfoMarker />}
+          {!!mapInfo?.lat && <InfoMarker mapInfo={mapInfo} />}
           {showMapCenter && <CenterMarker />}
         </MapContainer>
-        {mapInfo?.length > 0 && (
+        {!!mapInfo?.lat && (
           <Info redrawMap={redrawMap} isMobile={isMobile} />
         )}
       </div>

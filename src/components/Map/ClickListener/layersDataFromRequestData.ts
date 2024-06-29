@@ -34,6 +34,10 @@ export const layersDataFromRequestData = ({
       }
       break
     }
+    case 'labelPropertiesArray': {
+      layersData.push(...requestData)
+      break
+    }
     // TODO: implement these
     case 'text/html': {
       layersData.push({ html: requestData })
@@ -41,6 +45,7 @@ export const layersDataFromRequestData = ({
     }
     // TODO: test
     case 'application/json':
+    case 'application/json; subtype=geojson':
     case 'text/javascript': {
       // do not open empty popups
       if (!requestData?.length) return

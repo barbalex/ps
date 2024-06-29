@@ -14,9 +14,9 @@ const pStyle = {
   fontSize: 'small',
 }
 
-export const Location = memo(({ location }) => {
-  const lng = Math.round(location?.lng * 10000000) / 10000000
-  const lat = Math.round(location?.lat * 10000000) / 10000000
+export const Location = memo(({ mapInfo }) => {
+  const lng = Math.round(mapInfo?.lng * 10000000) / 10000000
+  const lat = Math.round(mapInfo?.lat * 10000000) / 10000000
 
   return (
     <div style={containerStyle}>
