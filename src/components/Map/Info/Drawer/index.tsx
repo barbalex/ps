@@ -19,6 +19,10 @@ const headerStyle = {
   padding: 0,
 }
 const bodyStyle = { padding: 0 }
+const noDataStyle = {
+  padding: 10,
+  margin: 0,
+}
 
 export const Drawer = memo(
   forwardRef(({ sidebarSize, redrawMap, isMobile }, ref) => {
@@ -30,8 +34,6 @@ export const Drawer = memo(
     )
     const mapInfo = appState?.map_info
 
-    const [location, ...layersData] = mapInfo ?? []
-
     const close = useCallback(() => {
       db.app_states.update({
         where: { app_state_id: appState?.app_state_id },
@@ -40,14 +42,14 @@ export const Drawer = memo(
       setTimeout(redrawMap, 200)
     }, [appState?.app_state_id, db.app_states, redrawMap])
 
+    const layersExist = mapInfo?.layers?.length > 0
+
     return (
       <ErrorBoundary>
         <InlineDrawer
-          open={mapInfo?.length > 0}
+          open={!!mapInfo?.lat}
           ref={ref}
           style={{
-            // display: 'flex',
-            // flexDirection: isMobile ? 'column' : 'row',
             width: '100%',
             ...(isMobile ? { height: sidebarSize } : { width: sidebarSize }),
             transitionProperty: isMobile ? 'height' : 'width',
@@ -70,9 +72,13 @@ export const Drawer = memo(
           </DrawerHeader>
           <DrawerBody style={bodyStyle}>
             <Location mapInfo={mapInfo} />
-            {(mapInfo.layers ?? []).map((layer, i) => (
-              <Layer key={`${i}/${layer.label}`} layerData={layer} />
-            ))}
+            {layersExist ? (
+              (mapInfo?.layers ?? []).map((layer, i) => (
+                <Layer key={`${i}/${layer.label}`} layerData={layer} />
+              ))
+            ) : (
+              <p style={noDataStyle}>No Data found at this location</p>
+            )}
           </DrawerBody>
         </InlineDrawer>
       </ErrorBoundary>

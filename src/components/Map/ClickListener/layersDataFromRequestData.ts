@@ -2,7 +2,7 @@ import { vndOgcGmlToLayersData } from '../../../modules/vndOgcGmlToLayersData.ts
 import { textXmlToLayersData } from '../../../modules/textXmlToLayersData.ts'
 
 export const layersDataFromRequestData = ({
-  layersData,
+  layersData, 
   requestData,
   infoFormat,
 }) => {

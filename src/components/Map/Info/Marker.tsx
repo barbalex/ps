@@ -1,28 +1,14 @@
 import { memo } from 'react'
 import * as ReactDOMServer from 'react-dom/server'
 import { Marker } from 'react-leaflet'
-import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
 import { MdNotListedLocation } from 'react-icons/md'
 
-import { useElectric } from '../../../ElectricProvider.tsx'
-
-export const InfoMarker = memo(() => {
-  const { user: authUser } = useCorbado()
-
-  const { db } = useElectric()!
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
-  const mapInfo = appState?.map_info
-
-  const location = mapInfo?.[0]
-
-  if (!location) return null
+export const InfoMarker = memo(({ mapInfo }) => {
+  if (!mapInfo?.lat) return null
 
   return (
     <Marker
-      position={location}
+      position={{ lat: mapInfo.lat, lng: mapInfo.lng }}
       icon={L.divIcon({
         html: ReactDOMServer.renderToString(
           <MdNotListedLocation

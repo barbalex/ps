@@ -52,8 +52,7 @@ export const ClickListener = memo(() => {
       //   bounds,
       // })
 
-      const layersData = [{ lat, lng, zoom }]
-
+      const mapInfo = { lat, lng, zoom, layers: [] }
       const filter =
         appState?.filter_vector_layers?.filter(
           (f) => Object.keys(f).length > 0,
@@ -86,7 +85,7 @@ export const ClickListener = memo(() => {
         const requestData = await fetchData({ db, url: wms_base_url, params })
         if (requestData) {
           layersDataFromRequestData({
-            layersData,
+            layersData: mapInfo.layers,
             requestData,
             infoFormat: wms_info_format?.value,
           })
@@ -94,7 +93,7 @@ export const ClickListener = memo(() => {
       }
       db.app_states.update({
         where: { app_state_id: appState?.app_state_id },
-        data: { map_info: layersData },
+        data: { map_info: mapInfo },
       })
     },
     [
