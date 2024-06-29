@@ -257,20 +257,6 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
               })
             : L.marker(latlng)
         }}
-        // need to turn off popups or the click will not register in ClickListener
-        // onEachFeature={async (feature, _layer) => {
-        //   const layersData = [
-        //     {
-        //       label: layer.label,
-        //       properties: Object.entries(feature?.properties ?? {}),
-        //     },
-        //   ]
-
-        //   const popupContent = ReactDOMServer.renderToString(
-        //     <Popup layersData={layersData} mapSize={mapSize} />,
-        //   )
-        //   _layer.bindPopup(popupContent)
-        // }}
       />
       <Dialog onOpenChange={() => setError(null)} open={!!error}>
         <DialogSurface>
