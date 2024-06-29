@@ -11,6 +11,7 @@ import { useDebouncedCallback } from 'use-debounce'
 import * as icons from 'react-icons/md'
 import proj4 from 'proj4'
 import reproject from 'reproject'
+import { useCorbado } from '@corbado/react'
 
 import {
   Dialog,
@@ -70,6 +71,7 @@ interface Props {
   display: VectorLayerDisplay
 }
 export const VectorLayerWFS = ({ layer, display }: Props) => {
+  const { user: authUser } = useCorbado()
   const { db } = useElectric()!
   const [error, setError] = useState()
   const notificationIds = useRef([])
@@ -260,13 +262,29 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
               })
             : L.marker(latlng)
         }}
-        onEachFeature={(feature, _layer) => {
+        onEachFeature={async (feature, _layer) => {
           const layersData = [
             {
               label: layer.label,
               properties: Object.entries(feature?.properties ?? {}),
             },
           ]
+          // TODO:
+          // 1. build mapInfo
+          // 2. "upsert" db.app_states.map_info:
+          // 2.1 look if mapInfo at this location exists.
+          const appState = await db.app_states.findFirst({
+            where: { user_email: authUser?.email },
+          })
+          const mapInfo = appState?.map_info
+          //     Yes? Add layerData to it
+          //     No? Create new mapInfo with layerData
+          console.log('VectorLayerWFS, onEachFeature:', {
+            feature,
+            _layer,
+            mapInfo,
+          })
+
           const popupContent = ReactDOMServer.renderToString(
             <Popup layersData={layersData} mapSize={mapSize} />,
           )
