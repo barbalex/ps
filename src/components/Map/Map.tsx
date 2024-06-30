@@ -7,7 +7,6 @@ import { useResizeDetector } from 'react-resize-detector'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 import { dropTargetForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
-import { isMobilePhone } from '../../modules/isMobilePhone.ts'
 
 import 'leaflet/dist/leaflet.css'
 
@@ -93,9 +92,6 @@ export const Map = memo(() => {
     run()
   }, [db])
 
-  // const isMobile = true
-  const isMobile = isMobilePhone()
-
   // const bounds = [
   //   [47.159, 8.354],
   //   [47.696, 8.984],
@@ -104,14 +100,7 @@ export const Map = memo(() => {
 
   return (
     <ErrorBoundary>
-      <div
-        style={{
-          ...outerContainerStyle,
-          ...(isMobile ? { flexDirection: 'column' } : {}),
-        }}
-        ref={resizeRef}
-        id="map"
-      >
+      <div style={outerContainerStyle} ref={resizeRef} id="map">
         <MapContainer
           className="map-container"
           zoomControl={false}

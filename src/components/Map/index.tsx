@@ -16,7 +16,7 @@ export const MapContainer = memo(() => {
 
   return (
     <div style={containerStyle} ref={containerRef}>
-      <Map />
+      <Map  />
       <Info containerRef={containerRef} />
     </div>
   )

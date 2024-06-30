@@ -29,25 +29,25 @@ export const Info = memo(({ containerRef }) => {
     refreshRate: 100,
     refreshOptions: { leading: false, trailing: true },
   })
-  const isMobile = width < 700
-  console.log('Map Info', { width, isMobile })
+  const isNarrow = width < 700
+  console.log('Map Info', { width, isNarrow })
 
   const resize = useCallback(
-    ({ clientX }) => {
+    ({ clientX, clientY }) => {
       if (!isResizing) return
+      if (!sidebarRef.current) return
       console.log('Map Info.resize', {
         clientX,
+        clientY,
         isResizing,
         sidebarLeft: sidebarRef.current?.getBoundingClientRect().right,
         newSidebarWidth:
           sidebarRef.current.getBoundingClientRect().right - clientX,
       })
       animationFrame.current = requestAnimationFrame(() => {
-        if (isResizing && sidebarRef.current) {
-          setSidebarWidth(
-            sidebarRef.current.getBoundingClientRect().right - clientX,
-          )
-        }
+        setSidebarWidth(
+          sidebarRef.current.getBoundingClientRect().right - clientX,
+        )
       })
     },
     [isResizing],
@@ -72,7 +72,7 @@ export const Info = memo(({ containerRef }) => {
     >
       <Drawer
         ref={sidebarRef}
-        isMobile={isMobile}
+        isNarrow={isNarrow}
         sidebarWidth={sidebarWidth}
       />
       <Resizer startResizing={startResizing} />

@@ -1,13 +1,7 @@
 .map-info-resizer {
   background-color: white;
-  border-right: 1px solid rgba(55, 118, 28, 0.5);
-  border-left: 1px solid rgba(55, 118, 28, 0.5);
-  width: 4px;
   position: absolute;
-  top: 0;
-  bottom: 0;
   cursor: col-resize;
-  resize: horizontal;
   z-index: 1;
 }
 
@@ -15,22 +9,24 @@
   background-color: rgba(38, 82, 37, 0.9);
 }
 
-/* @container (width <= 700px) {
+@container (width <= 700px) {
   .map-info-resizer {
-    cursor: row-resize;
-    height: 1px;
-  }
-  .map-info-resizer:hover {
-    height: 8px;
+    left: 0;
+    right: 0;
+    border-top: 1px solid rgba(55, 118, 28, 0.5);
+    border-bottom: 1px solid rgba(55, 118, 28, 0.5);
+    height: 4px;
+    resize: vertical;
   }
 }
 
 @container (width > 700px) {
   .map-info-resizer {
-    cursor: col-resize;
-    width: 1px;
+    top: 0;
+    bottom: 0;
+    border-right: 1px solid rgba(55, 118, 28, 0.5);
+    border-left: 1px solid rgba(55, 118, 28, 0.5);
+    width: 4px;
+    resize: horizontal;
   }
-  .map-info-resizer:hover {
-    width: 8px;
-  }
-} */
+}
