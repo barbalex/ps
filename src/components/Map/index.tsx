@@ -136,9 +136,7 @@ export const Map = memo(() => {
           {!!mapInfo?.lat && <InfoMarker mapInfo={mapInfo} />}
           {showMapCenter && <CenterMarker />}
         </MapContainer>
-        {!!mapInfo?.lat && (
-          <Info redrawMap={redrawMap} isMobile={isMobile} />
-        )}
+        <Info redrawMap={redrawMap} isMobile={isMobile} />
       </div>
     </ErrorBoundary>
   )
