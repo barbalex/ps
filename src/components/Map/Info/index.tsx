@@ -35,6 +35,7 @@ export const Info = memo(({ containerRef }) => {
 
   const resize = useCallback(
     ({ clientX, clientY }) => {
+      console.log('resize')
       if (!isResizing) return
       if (!sidebarRef.current) return
 
@@ -42,9 +43,9 @@ export const Info = memo(({ containerRef }) => {
         ? window.innerHeight - clientY
         : sidebarRef.current.getBoundingClientRect().right - clientX
 
-      animationFrame.current = requestAnimationFrame(() => {
-        setSidebarSize(newSidebarSize)
-      })
+      animationFrame.current = requestAnimationFrame(() =>
+        setSidebarSize(newSidebarSize),
+      )
     },
     [isNarrow, isResizing],
   )
