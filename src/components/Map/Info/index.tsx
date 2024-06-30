@@ -17,20 +17,20 @@ export const Info = memo(({ containerRef }) => {
   const animationFrame = useRef<number>(0)
   const sidebarRef = useRef<HTMLDivElement>(null)
   const [isResizing, setIsResizing] = useState(false)
-  const [sidebarWidth, setSidebarWidth] = useState(320)
 
   const startResizing = useCallback(() => setIsResizing(true), [])
   const stopResizing = useCallback(() => setIsResizing(false), [])
 
-  const { width } = useResizeDetector({
+  const { width, height } = useResizeDetector({
     targetRef: containerRef,
-    handleHeight: false,
+    // handleHeight: false,
     refreshMode: 'debounce',
     refreshRate: 100,
     refreshOptions: { leading: false, trailing: true },
   })
   const isNarrow = width < 700
-  console.log('Map Info', { width, isNarrow })
+  const [sidebarSize, setSidebarSize] = useState(isNarrow ? 500 : 320)
+  console.log('Map Info', { width, height, isNarrow })
 
   const resize = useCallback(
     ({ clientX, clientY }) => {
@@ -39,18 +39,22 @@ export const Info = memo(({ containerRef }) => {
       console.log('Map Info.resize', {
         clientX,
         clientY,
-        isResizing,
-        sidebarLeft: sidebarRef.current?.getBoundingClientRect().right,
-        newSidebarWidth:
-          sidebarRef.current.getBoundingClientRect().right - clientX,
+        sidebarBoundingClientRect: sidebarRef.current.getBoundingClientRect(),
+        sidebarSize: isNarrow
+          ? sidebarRef.current.getBoundingClientRect().bottom - clientY
+          : sidebarRef.current.getBoundingClientRect().right - clientX,
+        sidebarBottom: sidebarRef.current.getBoundingClientRect().bottom,
+        sidebarTop: sidebarRef.current.getBoundingClientRect().top,
       })
       animationFrame.current = requestAnimationFrame(() => {
-        setSidebarWidth(
-          sidebarRef.current.getBoundingClientRect().right - clientX,
+        setSidebarSize(
+          isNarrow
+            ? window.innerHeight - clientY
+            : sidebarRef.current.getBoundingClientRect().right - clientX,
         )
       })
     },
-    [isResizing],
+    [isNarrow, isResizing],
   )
 
   useEffect(() => {
@@ -70,11 +74,7 @@ export const Info = memo(({ containerRef }) => {
       style={drawerContainerStyle}
       onMouseDown={startResizing}
     >
-      <Drawer
-        ref={sidebarRef}
-        isNarrow={isNarrow}
-        sidebarWidth={sidebarWidth}
-      />
+      <Drawer ref={sidebarRef} isNarrow={isNarrow} sidebarWidth={sidebarSize} />
       <Resizer startResizing={startResizing} />
     </div>
   )

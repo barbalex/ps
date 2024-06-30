@@ -1,18 +1,19 @@
 .map-info-drawer {
   transition-duration: 16.66666ms;
-  margin-left: 4px;
 }
 
 @container (width <= 700px) {
   .map-info-drawer {
-    width: 100%;
+    width: 100% !important;
     transition-property: height;
     will-change: height;
+    margin-top: 4px;
   }
 }
 @container (width > 700px) {
   .map-info-drawer {
     transition-property: width;
     will-change: width;
+    margin-left: 4px;
   }
 }
