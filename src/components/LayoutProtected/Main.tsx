@@ -9,7 +9,6 @@ import { useElectric } from '../../ElectricProvider.tsx'
 import { Tree } from '../Tree/index.tsx'
 import { Map } from '../Map/index.tsx'
 import { Info as MapInfo } from '../Map/Info/index.tsx'
-import { isMobilePhone } from '../../modules/isMobilePhone.ts'
 
 const containerStyle = {
   display: 'flex',
@@ -36,7 +35,6 @@ export const Main = memo(() => {
   // const onlyForm = searchParams.get('onlyForm')
   const onlyForm = false
   const { user: authUser } = useCorbado()
-  const isMobile = isMobilePhone()
 
   const { db } = useElectric()!
   const { results: appState } = useLiveQuery(
@@ -57,12 +55,7 @@ export const Main = memo(() => {
         )}
         {!mapMaximized && tabs.includes('data') && <Outlet />}
         {tabs.includes('map') && (
-          <div
-            style={{
-              ...mapContainerStyle,
-              ...(isMobile ? { flexDirection: 'column' } : {}),
-            }}
-          >
+          <div style={mapContainerStyle}>
             <Map />
             <MapInfo />
           </div>
