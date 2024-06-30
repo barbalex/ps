@@ -36,22 +36,19 @@ export const Info = memo(({ containerRef }) => {
     ({ clientX, clientY }) => {
       if (!isResizing) return
       if (!sidebarRef.current) return
+      const newSidebarSize = isNarrow
+        ? window.innerHeight - clientY
+        : sidebarRef.current.getBoundingClientRect().right - clientX
       console.log('Map Info.resize', {
         clientX,
         clientY,
         sidebarBoundingClientRect: sidebarRef.current.getBoundingClientRect(),
-        sidebarSize: isNarrow
-          ? sidebarRef.current.getBoundingClientRect().bottom - clientY
-          : sidebarRef.current.getBoundingClientRect().right - clientX,
+        newSidebarSize,
         sidebarBottom: sidebarRef.current.getBoundingClientRect().bottom,
         sidebarTop: sidebarRef.current.getBoundingClientRect().top,
       })
       animationFrame.current = requestAnimationFrame(() => {
-        setSidebarSize(
-          isNarrow
-            ? window.innerHeight - clientY
-            : sidebarRef.current.getBoundingClientRect().right - clientX,
-        )
+        setSidebarSize(newSidebarSize)
       })
     },
     [isNarrow, isResizing],
@@ -59,12 +56,14 @@ export const Info = memo(({ containerRef }) => {
 
   useEffect(() => {
     window.addEventListener('mousemove', resize)
-    window.addEventListener('mouseup mouseleave', stopResizing)
+    window.addEventListener('mouseup', stopResizing)
+    window.addEventListener('mouseleave', stopResizing)
 
     return () => {
       cancelAnimationFrame(animationFrame.current)
       window.removeEventListener('mousemove', resize)
-      window.removeEventListener('mouseup mouseleave', stopResizing)
+      window.removeEventListener('mouseup', stopResizing)
+      window.removeEventListener('mouseleave', stopResizing)
     }
   }, [resize, stopResizing])
 
@@ -77,7 +76,7 @@ export const Info = memo(({ containerRef }) => {
       }}
       onMouseDown={startResizing}
     >
-      <Drawer ref={sidebarRef} isNarrow={isNarrow} sidebarWidth={sidebarSize} />
+      <Drawer ref={sidebarRef} isNarrow={isNarrow} sidebarSize={sidebarSize} />
       <Resizer startResizing={startResizing} />
     </div>
   )
