@@ -118,12 +118,9 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
         srsName: wfsDefaultCrsCode ?? 'EPSG:4326',
         outputFormat: layer.wfs_output_format?.value,
         maxfeatures: layer.max_features ? layer.max_features : 1001,
-        // bbox is NOT WORKING
-        // always returning 0 features...
         // seems that bbox expects the layers default crs
+        // if not, returns 0 features
         bbox,
-        // width: mapSize.x,
-        // height: mapSize.y,
       }
       try {
         res = await axios({

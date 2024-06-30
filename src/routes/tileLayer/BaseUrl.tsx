@@ -1,6 +1,8 @@
 import { useCallback, memo, forwardRef, useState } from 'react'
 import { createWorkerFactory, useWorker } from '@shopify/react-web-worker'
 import { Button, Spinner } from '@fluentui/react-components'
+import { useLiveQuery } from 'electric-sql/react'
+import { useParams } from 'react-router-dom'
 
 import { Tile_layers as TileLayer } from '../../../generated/client/index.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
@@ -24,10 +26,21 @@ type Props = {
 
 export const BaseUrl = memo(
   forwardRef(({ onChange, row, autoFocus }: Props, ref) => {
+    const { tile_layer_id } = useParams()
     const { db } = useElectric()!
     const worker = useWorker(createWorker)
 
     const [fetching, setFetching] = useState(false)
+
+    const { results: layerOptions = [] } = useLiveQuery(
+      db.layer_options.liveMany({
+        where: {
+          ...(tile_layer_id ? { tile_layer_id } : {}),
+          field: 'wms_layer',
+        },
+        select: { layer_option_id: true },
+      }),
+    )
 
     const onFetchCapabilities = useCallback(async () => {
       if (!row?.wms_base_url) return
@@ -72,7 +85,7 @@ export const BaseUrl = memo(
           style={buttonStyle}
         >
           {fetching
-            ? `Loading capabilities for ${row.wms_base_url}`
+            ? `Loading capabilities for ${row.wms_base_url} (${layerOptions.length})`
             : `Fetch Capabilities (click to choose a layer)`}
         </Button>
       </>

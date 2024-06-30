@@ -41,7 +41,7 @@ export const Component = memo(
           disabled
         /> */}
         <BaseUrl row={row} onChange={onChange} autoFocus={true} />
-        {(row?.wms_base_url || isFilter) && (
+        {(row?.wms_version || isFilter) && (
           <DropdownFieldFromLayerOptions
             label="Layer"
             name="wms_layer"
@@ -70,7 +70,7 @@ export const Component = memo(
             />
           </>
         )}
-        {((row?.type === 'wms' && row?.wms_base_url) ||
+        {((row?.type === 'wms' && row?.wms_layer) ||
           (row?.type === 'wmts' && row?.wmts_url_template) ||
           isFilter) && (
           <>

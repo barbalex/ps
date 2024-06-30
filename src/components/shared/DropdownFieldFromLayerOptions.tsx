@@ -4,7 +4,6 @@ import { useLiveQuery } from 'electric-sql/react'
 import axios from 'redaxios'
 
 import { useElectric } from '../../ElectricProvider.tsx'
-import { Layer_options as LayerOption } from '../../generated/client/index.ts'
 
 export const DropdownFieldFromLayerOptions = memo(
   forwardRef(
@@ -24,7 +23,7 @@ export const DropdownFieldFromLayerOptions = memo(
       ref,
     ) => {
       const { db } = useElectric()!
-      const { results = [] } = useLiveQuery(
+      const { results: layerOptions = [] } = useLiveQuery(
         db.layer_options.liveMany({
           where: {
             ...(tile_layer_id ? { tile_layer_id } : {}),
@@ -34,7 +33,6 @@ export const DropdownFieldFromLayerOptions = memo(
           orderBy: { label: 'asc' },
         }),
       )
-      const layerOptions: LayerOption[] = results
       const options = useMemo(
         () => layerOptions.map(({ value, label }) => ({ value, label })),
         [layerOptions],
