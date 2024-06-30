@@ -11,13 +11,14 @@ const drawerContainerStyle = {
   display: 'flex',
 }
 
-export const Info = memo(({ redrawMap, isMobile }) => {
+export const Info = memo(({ redrawMap, isMobile, mapInfo }) => {
   const { user: authUser } = useCorbado()
   const { db } = useElectric()!
 
   const animationFrame = useRef<number>(0)
   const sidebarRef = useRef<HTMLDivElement>(null)
   const [sidebarSize, setSidebarSize] = useState(320)
+
   const resize = useCallback(
     (props) => {
       const clientX = props?.location?.current?.input?.clientX
@@ -54,7 +55,7 @@ export const Info = memo(({ redrawMap, isMobile }) => {
           ...(isMobile ? { flexDirection: 'column' } : {}),
         }}
       >
-        <Resize resize={resize} isMobile={isMobile} />
+        {!!mapInfo?.lat && <Resize resize={resize} isMobile={isMobile} />}
         <Drawer
           sidebarSize={sidebarSize}
           ref={sidebarRef}

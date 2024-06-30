@@ -50,11 +50,11 @@ export const Drawer = memo(
           open={!!mapInfo?.lat}
           ref={ref}
           style={{
-            width: '100%',
             ...(isMobile ? { height: sidebarSize } : { width: sidebarSize }),
+            ...(isMobile ? { width: '100%' } : {}),
             transitionProperty: isMobile ? 'height' : 'width',
-            willChange: isMobile ? 'height' : 'width',
             transitionDuration: 100,
+            willChange: isMobile ? 'height' : 'width',
           }}
         >
           <DrawerHeader style={headerStyle}>
