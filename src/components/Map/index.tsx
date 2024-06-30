@@ -10,11 +10,9 @@ const containerStyle = {
   overflow: 'hidden',
 }
 
-export const MapContainer = memo(() => {
-  return (
-    <div style={containerStyle}>
-      <Map />
-      <MapInfo />
-    </div>
-  )
-})
+export const MapContainer = memo(() => (
+  <div style={containerStyle}>
+    <Map />
+    <MapInfo />
+  </div>
+))

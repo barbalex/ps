@@ -7,8 +7,6 @@ import { useCorbado } from '@corbado/react'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Tree } from '../Tree/index.tsx'
-import { Map } from '../Map/Map.tsx'
-import { Info as MapInfo } from '../Map/Info/index.tsx'
 import { MapContainer } from '../Map/index.tsx'
 
 const containerStyle = {
@@ -17,12 +15,6 @@ const containerStyle = {
   flexGrow: 1,
   overflow: 'hidden',
   position: 'relative',
-}
-const mapContainerStyle = {
-  width: '100%',
-  height: '100%',
-  position: 'relative',
-  overflow: 'hidden',
 }
 
 export const Main = memo(() => {
