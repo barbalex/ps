@@ -11,7 +11,7 @@ const drawerContainerStyle = {
   display: 'flex',
 }
 
-export const Info = memo(({ redrawMap, isMobile, mapInfo }) => {
+export const Info = memo(({ isMobile, mapInfo }) => {
   const { user: authUser } = useCorbado()
   const { db } = useElectric()!
 
@@ -30,7 +30,6 @@ export const Info = memo(({ redrawMap, isMobile, mapInfo }) => {
             : sidebarRef.current.getBoundingClientRect().right - clientX
           if (newSize > 50) {
             setSidebarSize(newSize)
-            setTimeout(redrawMap, 200)
             return
           }
           // if newWidth is less than 50, close the sidebar
@@ -44,7 +43,7 @@ export const Info = memo(({ redrawMap, isMobile, mapInfo }) => {
         }
       })
     },
-    [authUser?.email, db.app_states, isMobile, redrawMap],
+    [authUser?.email, db.app_states, isMobile],
   )
 
   return (
@@ -59,7 +58,6 @@ export const Info = memo(({ redrawMap, isMobile, mapInfo }) => {
         <Drawer
           sidebarSize={sidebarSize}
           ref={sidebarRef}
-          redrawMap={redrawMap}
           isMobile={isMobile}
         />
       </div>

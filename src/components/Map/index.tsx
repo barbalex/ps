@@ -59,6 +59,13 @@ export const Map = memo(() => {
     () => mapRef.current?.invalidateSize(),
     [mapRef],
   )
+  // wen mapInfo.lat changes, redraw map
+  // wait until - what? animations done?
+  useEffect(() => {
+    setTimeout(() => {
+      redrawMap()
+    }, 400)
+  }, [mapInfo?.lat, redrawMap])
 
   const resizeRef = useRef<HTMLDivElement>(null)
   useResizeDetector({
@@ -94,7 +101,6 @@ export const Map = memo(() => {
     run()
   }, [db])
 
-  // TODO:
   // const isMobile = true
   const isMobile = isMobilePhone()
 
@@ -136,7 +142,7 @@ export const Map = memo(() => {
           {!!mapInfo?.lat && <InfoMarker mapInfo={mapInfo} />}
           {showMapCenter && <CenterMarker />}
         </MapContainer>
-        <Info redrawMap={redrawMap} isMobile={isMobile} mapInfo={mapInfo} />
+        <Info isMobile={isMobile} mapInfo={mapInfo} />
       </div>
     </ErrorBoundary>
   )

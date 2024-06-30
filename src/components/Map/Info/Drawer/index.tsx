@@ -25,7 +25,7 @@ const noDataStyle = {
 }
 
 export const Drawer = memo(
-  forwardRef(({ sidebarSize, redrawMap, isMobile }, ref) => {
+  forwardRef(({ sidebarSize, isMobile }, ref) => {
     const { user: authUser } = useCorbado()
 
     const { db } = useElectric()!
@@ -39,8 +39,7 @@ export const Drawer = memo(
         where: { app_state_id: appState?.app_state_id },
         data: { map_info: null },
       })
-      setTimeout(redrawMap, 200)
-    }, [appState?.app_state_id, db.app_states, redrawMap])
+    }, [appState?.app_state_id, db.app_states])
 
     const layersExist = mapInfo?.layers?.length > 0
 
