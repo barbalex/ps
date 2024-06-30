@@ -7,12 +7,12 @@ import { Resize } from './Resize.tsx'
 import { Drawer } from './Drawer/index.tsx'
 import { isMobilePhone } from '../../../modules/isMobilePhone.ts'
 import { useElectric } from '../../../ElectricProvider.tsx'
-import { z } from 'zod'
 
 const drawerContainerStyle = {
   position: 'absolute',
   display: 'flex',
   zIndex: 10000,
+  maxWidth: '100%',
 }
 
 export const Info = memo(() => {
@@ -55,8 +55,6 @@ export const Info = memo(() => {
     },
     [authUser?.email, db.app_states, isMobile],
   )
-
-  console.log('Info')
 
   return (
     <ErrorBoundary>
