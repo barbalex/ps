@@ -7,8 +7,9 @@ import { useCorbado } from '@corbado/react'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Tree } from '../Tree/index.tsx'
-import { Map } from '../Map/index.tsx'
+import { Map } from '../Map/Map.tsx'
 import { Info as MapInfo } from '../Map/Info/index.tsx'
+import { MapContainer } from '../Map/index.tsx'
 
 const containerStyle = {
   display: 'flex',
@@ -54,12 +55,7 @@ export const Main = memo(() => {
           <Tree designing={designing} />
         )}
         {!mapMaximized && tabs.includes('data') && <Outlet />}
-        {tabs.includes('map') && (
-          <div style={mapContainerStyle}>
-            <Map />
-            <MapInfo />
-          </div>
-        )}
+        {tabs.includes('map') && <MapContainer />}
       </Allotment>
     </div>
   )
