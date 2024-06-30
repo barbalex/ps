@@ -1,19 +1,29 @@
 import { useCallback, useRef, useState, memo } from 'react'
 import { useCorbado } from '@corbado/react'
+import { useLiveQuery } from 'electric-sql/react'
 
-import { useElectric } from '../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../shared/ErrorBoundary.tsx'
 import { Resize } from './Resize.tsx'
 import { Drawer } from './Drawer/index.tsx'
+import { isMobilePhone } from '../../../modules/isMobilePhone.ts'
+import { useElectric } from '../../../ElectricProvider.tsx'
+import { z } from 'zod'
 
 const drawerContainerStyle = {
-  position: 'relative',
+  position: 'absolute',
   display: 'flex',
+  zIndex: 10000,
 }
 
-export const Info = memo(({ isMobile, mapInfo }) => {
+export const Info = memo(() => {
   const { user: authUser } = useCorbado()
   const { db } = useElectric()!
+  const isMobile = isMobilePhone()
+
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+  )
+  const mapInfo = appState?.map_info
 
   const animationFrame = useRef<number>(0)
   const sidebarRef = useRef<HTMLDivElement>(null)
@@ -46,12 +56,15 @@ export const Info = memo(({ isMobile, mapInfo }) => {
     [authUser?.email, db.app_states, isMobile],
   )
 
+  console.log('Info')
+
   return (
     <ErrorBoundary>
       <div
         style={{
           ...drawerContainerStyle,
           ...(isMobile ? { flexDirection: 'column' } : {}),
+          ...(isMobile ? { bottom: 0 } : { right: 0, top: 0, height: '100%' }),
         }}
       >
         {!!mapInfo?.lat && <Resize resize={resize} isMobile={isMobile} />}

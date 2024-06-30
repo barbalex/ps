@@ -24,7 +24,6 @@ import { BottomRightControl } from './BottomRightControl/index.tsx'
 // import { OwnControls } from './OwnControls'
 import { ClickListener } from './ClickListener/index.tsx'
 import { ErrorBoundary } from '../shared/ErrorBoundary.tsx'
-import { Info } from './Info/index.tsx'
 import { InfoMarker } from './Info/Marker.tsx'
 import { CenterMarker } from './CenterMarker.tsx'
 
@@ -59,13 +58,6 @@ export const Map = memo(() => {
     () => mapRef.current?.invalidateSize(),
     [mapRef],
   )
-  // wen mapInfo.lat changes, redraw map
-  // wait until - what? animations done?
-  useEffect(() => {
-    setTimeout(() => {
-      redrawMap()
-    }, 400)
-  }, [mapInfo?.lat, redrawMap])
 
   const resizeRef = useRef<HTMLDivElement>(null)
   useResizeDetector({
@@ -142,7 +134,6 @@ export const Map = memo(() => {
           {!!mapInfo?.lat && <InfoMarker mapInfo={mapInfo} />}
           {showMapCenter && <CenterMarker />}
         </MapContainer>
-        <Info isMobile={isMobile} mapInfo={mapInfo} />
       </div>
     </ErrorBoundary>
   )

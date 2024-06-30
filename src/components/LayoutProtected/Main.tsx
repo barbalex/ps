@@ -8,6 +8,8 @@ import { useCorbado } from '@corbado/react'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Tree } from '../Tree/index.tsx'
 import { Map } from '../Map/index.tsx'
+import { Info as MapInfo } from '../Map/Info/index.tsx'
+import { isMobilePhone } from '../../modules/isMobilePhone.ts'
 
 const containerStyle = {
   display: 'flex',
@@ -15,6 +17,12 @@ const containerStyle = {
   flexGrow: 1,
   overflow: 'hidden',
   position: 'relative',
+}
+const mapContainerStyle = {
+  width: '100%',
+  height: '100%',
+  position: 'relative',
+  overflow: 'hidden',
 }
 
 export const Main = memo(() => {
@@ -28,6 +36,7 @@ export const Main = memo(() => {
   // const onlyForm = searchParams.get('onlyForm')
   const onlyForm = false
   const { user: authUser } = useCorbado()
+  const isMobile = isMobilePhone()
 
   const { db } = useElectric()!
   const { results: appState } = useLiveQuery(
@@ -47,7 +56,17 @@ export const Main = memo(() => {
           <Tree designing={designing} />
         )}
         {!mapMaximized && tabs.includes('data') && <Outlet />}
-        {tabs.includes('map') && <Map />}
+        {tabs.includes('map') && (
+          <div
+            style={{
+              ...mapContainerStyle,
+              ...(isMobile ? { flexDirection: 'column' } : {}),
+            }}
+          >
+            <Map />
+            <MapInfo />
+          </div>
+        )}
       </Allotment>
     </div>
   )
