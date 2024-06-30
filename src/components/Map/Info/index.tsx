@@ -8,6 +8,8 @@ import { Drawer } from './Drawer/index.tsx'
 import { isMobilePhone } from '../../../modules/isMobilePhone.ts'
 import { useElectric } from '../../../ElectricProvider.tsx'
 
+import './index.css'
+
 const drawerContainerStyle = {
   position: 'absolute',
   display: 'flex',
@@ -58,14 +60,8 @@ export const Info = memo(() => {
 
   return (
     <ErrorBoundary>
-      <div
-        style={{
-          ...drawerContainerStyle,
-          ...(isMobile ? { flexDirection: 'column' } : {}),
-          ...(isMobile ? { bottom: 0 } : { right: 0, top: 0, height: '100%' }),
-        }}
-      >
-        {!!mapInfo?.lat && <Resize resize={resize} isMobile={isMobile} />}
+      <div className="map-info-container" style={drawerContainerStyle}>
+        {!!mapInfo?.lat && <Resize resize={resize} />}
         <Drawer
           sidebarSize={sidebarSize}
           ref={sidebarRef}

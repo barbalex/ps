@@ -1,0 +1,14 @@
+@container (width <= 700px) {
+  .map-info-container {
+    flex-direction: column;
+    bottom: 0;
+    width: 100%;
+  }
+}
+@container (width > 700px) {
+  .map-info-container {
+    right: 0;
+    top: 0;
+    height: 100%;
+  }
+}

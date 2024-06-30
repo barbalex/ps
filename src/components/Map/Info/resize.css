@@ -1,0 +1,28 @@
+.map-info-resize {
+  background-color: grey;
+  z-index: 1;
+}
+
+.map-info-resize:hover {
+  background-color: rgba(38, 82, 37, 0.9);
+}
+
+@container (width <= 700px) {
+  .map-info-resize {
+    cursor: row-resize;
+    height: 1px;
+  }
+  .map-info-resize:hover {
+    height: 8px;
+  }
+}
+
+@container (width > 700px) {
+  .map-info-resize {
+    cursor: col-resize;
+    width: 1px;
+  }
+  .map-info-resize:hover {
+    width: 8px;
+  }
+}

@@ -15,6 +15,8 @@ import { FormHeader } from '../../../FormHeader/index.tsx'
 import { Location } from './Location.tsx'
 import { Layer } from './Layer.tsx'
 
+import './index.css'
+
 const headerStyle = {
   padding: 0,
 }
@@ -48,12 +50,9 @@ export const Drawer = memo(
         <InlineDrawer
           open={!!mapInfo?.lat}
           ref={ref}
+          className="map-info-drawer"
           style={{
             ...(isMobile ? { height: sidebarSize } : { width: sidebarSize }),
-            ...(isMobile ? { width: '100%' } : {}),
-            transitionProperty: isMobile ? 'height' : 'width',
-            transitionDuration: 100,
-            willChange: isMobile ? 'height' : 'width',
           }}
         >
           <DrawerHeader style={headerStyle}>
