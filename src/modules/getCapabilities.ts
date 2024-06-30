@@ -21,10 +21,6 @@ export const getCapabilities = async ({
     // How to catch this error? res is undefined...
     res = await axios.get(`${url}?service=${service}&request=GetCapabilities`)
   } catch (error) {
-    console.error(
-      `hello, getCapabilities, error fetching capabilities for ${url}`,
-      error,
-    )
     const data = createNotification({
       title: `Error loading capabilities for ${url}`,
       body: error?.message ?? error,
@@ -61,9 +57,15 @@ export const getCapabilities = async ({
     throw error
   }
 
-  if (!res) return undefined
-
-  if (!res?.data) return undefined
+  if (!res || !res?.data) {
+    const data = createNotification({
+      title: `Error loading capabilities for ${url}`,
+      body: 'No data returned from server',
+      intent: 'error',
+    })
+    db.notifications.create({ data })
+    return undefined
+  }
 
   if (service === 'WMS') return new WMSCapabilities().parse(res?.data)
 
