@@ -1,8 +1,13 @@
+.map-info-container {
+  position: relative;
+}
+
 @container (width <= 700px) {
   .map-info-container {
     flex-direction: column;
     bottom: 0;
     width: 100%;
+    resize: vertical;
   }
 }
 @container (width > 700px) {
@@ -10,5 +15,6 @@
     right: 0;
     top: 0;
     height: 100%;
+    resize: horizontal;
   }
 }

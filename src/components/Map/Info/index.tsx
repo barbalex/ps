@@ -1,12 +1,8 @@
-import { useCallback, useRef, useState, memo } from 'react'
-import { useCorbado } from '@corbado/react'
-import { useLiveQuery } from 'electric-sql/react'
+import { useCallback, useRef, memo, useState, useEffect } from 'react'
 
-import { ErrorBoundary } from '../../shared/ErrorBoundary.tsx'
-import { Resize } from './Resize.tsx'
 import { Drawer } from './Drawer/index.tsx'
 import { isMobilePhone } from '../../../modules/isMobilePhone.ts'
-import { useElectric } from '../../../ElectricProvider.tsx'
+import { Resizer } from './Resizer.tsx'
 
 import './index.css'
 
@@ -18,56 +14,61 @@ const drawerContainerStyle = {
 }
 
 export const Info = memo(() => {
-  const { user: authUser } = useCorbado()
-  const { db } = useElectric()!
   const isMobile = isMobilePhone()
-
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
-  const mapInfo = appState?.map_info
 
   const animationFrame = useRef<number>(0)
   const sidebarRef = useRef<HTMLDivElement>(null)
-  const [sidebarSize, setSidebarSize] = useState(320)
+  const [isResizing, setIsResizing] = useState(false)
+  const [sidebarWidth, setSidebarWidth] = useState(320)
+
+  const startResizing = useCallback(() => setIsResizing(true), [])
+  const stopResizing = useCallback(() => setIsResizing(false), [])
 
   const resize = useCallback(
-    (props) => {
-      const clientX = props?.location?.current?.input?.clientX
-      const clientY = props?.location?.current?.input?.clientY
-      animationFrame.current = requestAnimationFrame(async () => {
-        if (sidebarRef.current) {
-          const newSize = isMobile
-            ? sidebarRef.current.getBoundingClientRect().bottom - clientY
-            : sidebarRef.current.getBoundingClientRect().right - clientX
-          if (newSize > 50) {
-            setSidebarSize(newSize)
-            return
-          }
-          // if newWidth is less than 50, close the sidebar
-          const appState = await db.app_states.findFirst({
-            where: { user_email: authUser?.email },
-          })
-          db.app_states.update({
-            where: { app_state_id: appState?.app_state_id },
-            data: { map_info: null },
-          })
+    ({ clientX }) => {
+      if (!isResizing) return
+      console.log('Map Info.resize', {
+        clientX,
+        isResizing,
+        sidebarLeft: sidebarRef.current?.getBoundingClientRect().right,
+        newSidebarWidth:
+          sidebarRef.current.getBoundingClientRect().right - clientX,
+      })
+      animationFrame.current = requestAnimationFrame(() => {
+        if (isResizing && sidebarRef.current) {
+          setSidebarWidth(
+            sidebarRef.current.getBoundingClientRect().right - clientX,
+          )
         }
       })
     },
-    [authUser?.email, db.app_states, isMobile],
+    [isResizing],
   )
 
+  useEffect(() => {
+    window.addEventListener('mousemove', resize)
+    window.addEventListener('mouseup', stopResizing)
+
+    return () => {
+      cancelAnimationFrame(animationFrame.current)
+      window.removeEventListener('mousemove', resize)
+      window.removeEventListener('mouseup', stopResizing)
+    }
+  }, [resize, stopResizing])
+
   return (
-    <ErrorBoundary>
-      <div className="map-info-container" style={drawerContainerStyle}>
-        {!!mapInfo?.lat && <Resize resize={resize} />}
-        <Drawer
-          sidebarSize={sidebarSize}
-          ref={sidebarRef}
-          isMobile={isMobile}
-        />
-      </div>
-    </ErrorBoundary>
+    <div
+      className="map-info-container"
+      style={drawerContainerStyle}
+      onMouseDown={startResizing}
+      // style={{ ...(isResizing ? { userSelect: 'none' } : {}) }}
+    >
+      <Drawer
+        ref={sidebarRef}
+        isMobile={isMobile}
+        sidebarWidth={sidebarWidth}
+      />
+      <Resizer startResizing={startResizing} />
+    </div>
   )
 })

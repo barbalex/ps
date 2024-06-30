@@ -27,7 +27,7 @@ const noDataStyle = {
 }
 
 export const Drawer = memo(
-  forwardRef(({ sidebarSize, isMobile }, ref) => {
+  forwardRef(({ sidebarWidth }, ref) => {
     const { user: authUser } = useCorbado()
 
     const { db } = useElectric()!
@@ -51,9 +51,8 @@ export const Drawer = memo(
           open={!!mapInfo?.lat}
           ref={ref}
           className="map-info-drawer"
-          style={{
-            ...(isMobile ? { height: sidebarSize } : { width: sidebarSize }),
-          }}
+          style={{ width: sidebarWidth }}
+          onMouseDown={(e) => e.preventDefault()}
         >
           <DrawerHeader style={headerStyle}>
             <FormHeader

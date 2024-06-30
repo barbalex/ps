@@ -1,10 +1,6 @@
-
-/* ...(isMobile ? { height: sidebarSize } : { width: sidebarSize }),
-transitionDuration: 100,
-willChange: isMobile ? 'height' : 'width', */
-
-.map-info-drawer{
-  transition-duration: 100ms;
+.map-info-drawer {
+  transition-duration: 16.66666ms;
+  margin-left: 4px;
 }
 
 @container (width <= 700px) {
