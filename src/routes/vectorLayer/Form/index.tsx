@@ -40,7 +40,7 @@ export const Component = ({
       {row?.type === 'wfs' && (
         <>
           <Url onChange={onChange} row={row} />
-          {!!row?.wfs_url && (
+          {!!row?.wfs_version && (
             <DropdownFieldFromLayerOptions
               label="Layer"
               name="wfs_layer"

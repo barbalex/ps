@@ -59,13 +59,20 @@ export const BaseUrl = memo(
           'hello WmsBaseUrl, onBlur, error getting capabilities data:',
           error?.message ?? error,
         )
-        // TODO: surface error to user
+        // surface error to user
+        const data = await createNotification({
+          title: `Error loading capabilities for ${row.wms_base_url}`,
+          body: error?.message ?? error,
+          intent: 'error',
+          paused: false,
+        })
+        await db.notifications.create({ data })
       }
+      setFetching(false)
       await db.notifications.update({
         where: { notification_id: data.notification_id },
         data: { paused: false, timeout: 500 },
       })
-      setFetching(false)
     }, [db, row, worker])
 
     return (
@@ -77,17 +84,29 @@ export const BaseUrl = memo(
           onChange={onChange}
           autoFocus={autoFocus}
           ref={ref}
+          validationMessage={
+            row?.wms_url ? (
+              'The url of the service providing the WMS'
+            ) : (
+              <>
+                <p>Enter the url of the service providing the WMS.</p>
+                <p>Then capabilities can be loaded and a layer selected.</p>
+              </>
+            )
+          }
         />
-        <Button
-          icon={fetching ? <Spinner size="tiny" /> : undefined}
-          title="Refresh capabilities data"
-          onClick={onFetchCapabilities}
-          style={buttonStyle}
-        >
-          {fetching
-            ? `Loading capabilities for ${row.wms_base_url} (${layerOptions.length})`
-            : `Fetch Capabilities (click to choose a layer)`}
-        </Button>
+        {!!row?.wms_base_url && (
+          <Button
+            icon={fetching ? <Spinner size="tiny" /> : undefined}
+            title="Refresh capabilities data"
+            onClick={onFetchCapabilities}
+            style={buttonStyle}
+          >
+            {fetching
+              ? `Loading capabilities for ${row.wms_base_url} (${layerOptions.length})`
+              : `Fetch Capabilities`}
+          </Button>
+        )}
       </>
     )
   }),

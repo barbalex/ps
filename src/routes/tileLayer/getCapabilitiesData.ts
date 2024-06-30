@@ -31,6 +31,7 @@ export const getCapabilitiesData = async ({
   const capabilities = await getCapabilities({
     url: row.wms_base_url,
     service: 'WMS',
+    db
   })
 
   // console.log('getCapabilitiesData 2, capabilities:', capabilities)

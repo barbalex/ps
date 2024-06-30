@@ -2,6 +2,7 @@ import WMSCapabilities from 'wms-capabilities'
 import axios from 'redaxios'
 
 import { xmlToJson } from './xmlToJson.ts'
+import { createNotification } from './createRows.ts'
 
 interface Props {
   url: string
@@ -11,6 +12,7 @@ interface Props {
 export const getCapabilities = async ({
   url,
   service = 'WFS',
+  db,
 }: Props): object | undefined => {
   // Example url to get: https://wms.zh.ch/FnsSVOZHWMS?service=WMS&request=GetCapabilities
   let res
@@ -23,6 +25,12 @@ export const getCapabilities = async ({
       `hello, getCapabilities, error fetching capabilities for ${url}`,
       error,
     )
+    const data = createNotification({
+      title: `Error loading capabilities for ${url}`,
+      body: error?.message ?? error,
+      intent: 'error',
+    })
+    db.notifications.create({ data })
     if (error.response) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx

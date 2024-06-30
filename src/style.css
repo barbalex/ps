@@ -180,6 +180,11 @@ button {
   user-select: none;
 }
 
+/* enable breaking text validation messages */
+.fui-Field__validationMessage > p {
+  margin: 0;
+}
+
 /* allotment */
 :root {
   --focus-border: rgba(55, 118, 28, 0.3);

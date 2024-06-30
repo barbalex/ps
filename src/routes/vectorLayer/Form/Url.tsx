@@ -1,11 +1,14 @@
 import { useCallback, memo, useState } from 'react'
 import { createWorkerFactory, useWorker } from '@shopify/react-web-worker'
 import { Button, Spinner } from '@fluentui/react-components'
+import { useLiveQuery } from 'electric-sql/react'
+import { useParams } from 'react-router-dom'
 
 import { Vector_layers as VectorLayer } from '../../../../generated/client/index.ts'
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { TextField } from '../../../components/shared/TextField.tsx'
 import { createNotification } from '../../../modules/createRows.ts'
+import { isValidUrl } from '../../../modules/isValidUrl.ts'
 
 const createWorker = createWorkerFactory(
   () => import('./getCapabilitiesData.ts'),
@@ -17,8 +20,19 @@ const buttonStyle = {
 
 export const Url = memo(
   ({ onChange, row }: { onChange: () => void; row: VectorLayer }) => {
+    const { vector_layer_id } = useParams()
     const { db } = useElectric()!
     const worker = useWorker(createWorker)
+
+    const { results: layerOptions = [] } = useLiveQuery(
+      db.layer_options.liveMany({
+        where: {
+          ...(vector_layer_id ? { vector_layer_id } : {}),
+          field: 'wfs_layer',
+        },
+        select: { layer_option_id: true },
+      }),
+    )
 
     const [fetching, setFetching] = useState(false)
 
@@ -61,21 +75,28 @@ export const Url = memo(
           value={row.wfs_url ?? ''}
           onChange={onChange}
           validationMessage={
-            row?.wfs_url
-              ? 'The url of the service providing the wfs'
-              : 'Enter the url of the service providing the wfs. The capabilities will then be loaded and the layers available for selection'
+            row?.wfs_url ? (
+              'The url of the service providing the WFS'
+            ) : (
+              <>
+                <p>Enter the url of the service providing the WFS.</p>
+                <p>Then capabilities can be loaded and a layer selected.</p>
+              </>
+            )
           }
         />
-        <Button
-          icon={fetching ? <Spinner size="tiny" /> : undefined}
-          title="Refresh capabilities data"
-          onClick={onFetchCapabilities}
-          style={buttonStyle}
-        >
-          {fetching
-            ? `Loading capabilities for ${row.wfs_url}`
-            : `Fetch Capabilities (click to choose a layer)`}
-        </Button>
+        {!!row?.wfs_url && isValidUrl(row.wfs_url) && (
+          <Button
+            icon={fetching ? <Spinner size="tiny" /> : undefined}
+            title="Refresh capabilities data"
+            onClick={onFetchCapabilities}
+            style={buttonStyle}
+          >
+            {fetching
+              ? `Loading capabilities for ${row.wfs_url} (${layerOptions.length})`
+              : `Fetch Capabilities`}
+          </Button>
+        )}
       </>
     )
   },

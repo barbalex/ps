@@ -26,6 +26,7 @@ export const getCapabilitiesData = async ({
   const response = await getCapabilities({
     url: row?.wfs_url,
     service: 'WFS',
+    db,
   })
 
   const capabilities = response?.HTML?.BODY?.['WFS:WFS_CAPABILITIES']
