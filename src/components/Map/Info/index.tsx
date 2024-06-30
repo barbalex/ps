@@ -30,7 +30,7 @@ export const Info = memo(({ containerRef }) => {
   })
   const isNarrow = width < 700
   const [sidebarSize, setSidebarSize] = useState(isNarrow ? 500 : 320)
-  console.log('Map Info', { width, height, isNarrow })
+  console.log('Map Info', { width, height, isNarrow, isResizing })
 
   const resize = useCallback(
     ({ clientX, clientY }) => {
@@ -59,19 +59,22 @@ export const Info = memo(({ containerRef }) => {
 
   useEffect(() => {
     window.addEventListener('mousemove', resize)
-    window.addEventListener('mouseup', stopResizing)
+    window.addEventListener('mouseup mouseleave', stopResizing)
 
     return () => {
       cancelAnimationFrame(animationFrame.current)
       window.removeEventListener('mousemove', resize)
-      window.removeEventListener('mouseup', stopResizing)
+      window.removeEventListener('mouseup mouseleave', stopResizing)
     }
   }, [resize, stopResizing])
 
   return (
     <div
       className="map-info-container"
-      style={drawerContainerStyle}
+      style={{
+        ...drawerContainerStyle,
+        ...(isResizing ? { pointerEvents: 'none' } : {}),
+      }}
       onMouseDown={startResizing}
     >
       <Drawer ref={sidebarRef} isNarrow={isNarrow} sidebarWidth={sidebarSize} />
