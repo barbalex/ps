@@ -70,7 +70,6 @@ export const Info = memo(({ containerRef }) => {
         ...drawerContainerStyle,
         ...(isResizing ? { pointerEvents: 'none' } : {}),
       }}
-      onMouseDown={startResizing}
     >
       <Drawer ref={sidebarRef} isNarrow={isNarrow} sidebarSize={sidebarSize} />
       <Resizer startResizing={startResizing} />

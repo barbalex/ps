@@ -36,12 +36,17 @@ export const Drawer = memo(
     )
     const mapInfo = appState?.map_info
 
-    const close = useCallback(() => {
-      db.app_states.update({
-        where: { app_state_id: appState?.app_state_id },
-        data: { map_info: null },
-      })
-    }, [appState?.app_state_id, db.app_states])
+    const close = useCallback(
+      (e) => {
+        console.log('DrawerHeaderButton.onClick')
+        e.preventDefault()
+        db.app_states.update({
+          where: { app_state_id: appState?.app_state_id },
+          data: { map_info: null },
+        })
+      },
+      [appState?.app_state_id, db.app_states],
+    )
 
     const layersExist = mapInfo?.layers?.length > 0
 
