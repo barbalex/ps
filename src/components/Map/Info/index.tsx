@@ -11,6 +11,8 @@ const drawerContainerStyle = {
   display: 'flex',
   zIndex: 10000,
   maxWidth: '100%',
+  // without this when widening the window the sidebar's bottom will show the map behind it
+  backgroundColor: 'white',
 }
 
 export const Info = memo(({ containerRef }) => {
@@ -21,32 +23,25 @@ export const Info = memo(({ containerRef }) => {
   const startResizing = useCallback(() => setIsResizing(true), [])
   const stopResizing = useCallback(() => setIsResizing(false), [])
 
-  const { width, height } = useResizeDetector({
+  const { width } = useResizeDetector({
     targetRef: containerRef,
-    // handleHeight: false,
+    handleHeight: false,
     refreshMode: 'debounce',
     refreshRate: 100,
     refreshOptions: { leading: false, trailing: true },
   })
   const isNarrow = width < 700
   const [sidebarSize, setSidebarSize] = useState(isNarrow ? 500 : 320)
-  console.log('Map Info', { width, height, isNarrow, isResizing })
 
   const resize = useCallback(
     ({ clientX, clientY }) => {
       if (!isResizing) return
       if (!sidebarRef.current) return
+
       const newSidebarSize = isNarrow
         ? window.innerHeight - clientY
         : sidebarRef.current.getBoundingClientRect().right - clientX
-      console.log('Map Info.resize', {
-        clientX,
-        clientY,
-        sidebarBoundingClientRect: sidebarRef.current.getBoundingClientRect(),
-        newSidebarSize,
-        sidebarBottom: sidebarRef.current.getBoundingClientRect().bottom,
-        sidebarTop: sidebarRef.current.getBoundingClientRect().top,
-      })
+
       animationFrame.current = requestAnimationFrame(() => {
         setSidebarSize(newSidebarSize)
       })
@@ -56,6 +51,7 @@ export const Info = memo(({ containerRef }) => {
 
   useEffect(() => {
     window.addEventListener('mousemove', resize)
+    // for unknown reason these events cant be added to the resizer's events
     window.addEventListener('mouseup', stopResizing)
     window.addEventListener('mouseleave', stopResizing)
 
