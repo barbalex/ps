@@ -1,7 +1,7 @@
 import { useCallback, useRef, memo, useState, useEffect } from 'react'
+import { useResizeDetector } from 'react-resize-detector'
 
 import { Drawer } from './Drawer/index.tsx'
-import { isMobilePhone } from '../../../modules/isMobilePhone.ts'
 import { Resizer } from './Resizer.tsx'
 
 import './index.css'
@@ -13,9 +13,7 @@ const drawerContainerStyle = {
   maxWidth: '100%',
 }
 
-export const Info = memo(() => {
-  const isMobile = isMobilePhone()
-
+export const Info = memo(({ containerRef }) => {
   const animationFrame = useRef<number>(0)
   const sidebarRef = useRef<HTMLDivElement>(null)
   const [isResizing, setIsResizing] = useState(false)
@@ -23,6 +21,16 @@ export const Info = memo(() => {
 
   const startResizing = useCallback(() => setIsResizing(true), [])
   const stopResizing = useCallback(() => setIsResizing(false), [])
+
+  const { width } = useResizeDetector({
+    targetRef: containerRef,
+    handleHeight: false,
+    refreshMode: 'debounce',
+    refreshRate: 100,
+    refreshOptions: { leading: false, trailing: true },
+  })
+  const isMobile = width < 700
+  console.log('Map Info', { width, isMobile })
 
   const resize = useCallback(
     ({ clientX }) => {
@@ -61,7 +69,6 @@ export const Info = memo(() => {
       className="map-info-container"
       style={drawerContainerStyle}
       onMouseDown={startResizing}
-      // style={{ ...(isResizing ? { userSelect: 'none' } : {}) }}
     >
       <Drawer
         ref={sidebarRef}

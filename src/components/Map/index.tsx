@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, useRef } from 'react'
 
 import { Map } from './Map.tsx'
 import { Info } from './Info/index.tsx'
@@ -11,9 +11,13 @@ const containerStyle = {
   containerType: 'inline-size',
 }
 
-export const MapContainer = memo(() => (
-  <div style={containerStyle}>
-    <Map />
-    <Info />
-  </div>
-))
+export const MapContainer = memo(() => {
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  return (
+    <div style={containerStyle} ref={containerRef}>
+      <Map />
+      <Info containerRef={containerRef} />
+    </div>
+  )
+})
