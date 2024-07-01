@@ -38,7 +38,6 @@ export const Drawer = memo(
 
     const close = useCallback(
       (e) => {
-        console.log('DrawerHeaderButton.onClick')
         e.preventDefault()
         db.app_states.update({
           where: { app_state_id: appState?.app_state_id },
@@ -60,6 +59,7 @@ export const Drawer = memo(
             ...(isNarrow ? { height: sidebarSize } : { width: sidebarSize }),
           }}
           onMouseDown={(e) => e.preventDefault()}
+          position={isNarrow ? 'bottom' : 'end'}
         >
           <DrawerHeader style={headerStyle}>
             <FormHeader
