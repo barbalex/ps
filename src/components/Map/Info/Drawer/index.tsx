@@ -64,14 +64,14 @@ export const Drawer = memo(
           <DrawerHeader style={headerStyle}>
             <FormHeader
               title="Info"
-              siblings={[
+              siblings={
                 <Button
                   size="medium"
                   icon={<MdClose />}
                   onClick={close}
                   title="Close"
-                />,
-              ]}
+                />
+              }
             />
           </DrawerHeader>
           <DrawerBody style={bodyStyle}>
