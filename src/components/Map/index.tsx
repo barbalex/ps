@@ -2,6 +2,7 @@ import { memo, useRef } from 'react'
 
 import { Map } from './Map.tsx'
 import { InfoContainer } from './InfoContainer/index.tsx'
+import { LayersContainer } from './LayersContainer/index.tsx'
 
 const containerStyle = {
   width: '100%',
@@ -16,6 +17,7 @@ export const MapContainer = memo(() => {
 
   return (
     <div style={containerStyle} ref={containerRef}>
+      <LayersContainer containerRef={containerRef} />
       <Map />
       <InfoContainer containerRef={containerRef} />
     </div>
