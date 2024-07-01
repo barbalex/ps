@@ -22,7 +22,10 @@ export const Layers = memo(({ isNarrow }) => {
           ...(isNarrow ? { marginTop: 5 } : { marginRight: 5 }),
         }}
       >
-        <FormHeader title="Layers" />
+        <FormHeader
+          title="Layers"
+          titleMarginLeft={isNarrow ? 34 : undefined}
+        />
         layers
       </div>
     </ErrorBoundary>

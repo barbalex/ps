@@ -114,14 +114,27 @@ export const LayersContainer = memo(({ containerRef }) => {
           title={isOpen ? 'Close Layers' : 'Open Layers'}
           style={{
             position: 'absolute',
-            top: 5,
-            right: isOpen ? 5.5 : -26.5,
+            top: isNarrow ? (isOpen ? 11 : -26) : 5,
+            right: isNarrow ? 'unset' : isOpen ? 5.5 : -26.5,
+            left: isNarrow ? 5 : 'unset',
             marginRight: isOpen ? 5 : 0,
             zIndex: 100000000,
-            borderTopLeftRadius: isOpen ? 4 : 0,
-            borderBottomLeftRadius: isOpen ? 4 : 0,
-            borderTopRightRadius: isOpen ? 0 : 4,
-            borderBottomRightRadius: isOpen ? 0 : 4,
+            borderTopLeftRadius: isNarrow ? (isOpen ? 0 : 4) : isOpen ? 4 : 0,
+            borderBottomLeftRadius: isNarrow
+              ? isOpen
+                ? 4
+                : 0
+              : isOpen
+              ? 4
+              : 0,
+            borderTopRightRadius: isNarrow ? (isOpen ? 0 : 4) : isOpen ? 0 : 4,
+            borderBottomRightRadius: isNarrow
+              ? isOpen
+                ? 4
+                : 0
+              : isOpen
+              ? 0
+              : 4,
           }}
         />
       )}
