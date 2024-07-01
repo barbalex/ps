@@ -7,7 +7,6 @@
   transition-duration: 16.66666ms;
 }
 
-
 @container (width <= 700px) {
   .map-info-container {
     flex-direction: column;

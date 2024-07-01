@@ -93,7 +93,7 @@ export const Info = memo(({ containerRef }) => {
         position={isNarrow ? 'bottom' : 'end'}
         onMouseDown={(e) => e.preventDefault()}
       >
-        <Drawer isNarrow={isNarrow} sidebarSize={sidebarSize} />
+        <Drawer isNarrow={isNarrow} />
         <Resizer startResizing={startResizing} />
       </InlineDrawer>
     </div>

@@ -15,8 +15,6 @@ import { FormHeader } from '../../../FormHeader/index.tsx'
 import { Location } from './Location.tsx'
 import { Layer } from './Layer.tsx'
 
-import './index.css'
-
 const headerStyle = {
   padding: 0,
 }
@@ -27,7 +25,7 @@ const noDataStyle = {
 }
 
 export const Drawer = memo(
-  forwardRef(({ sidebarSize, isNarrow }, ref) => {
+  forwardRef(({ isNarrow }) => {
     const { user: authUser } = useCorbado()
 
     const { db } = useElectric()!
@@ -51,15 +49,10 @@ export const Drawer = memo(
 
     return (
       <ErrorBoundary>
-        <InlineDrawer
-          open={!!mapInfo?.lat}
-          ref={ref}
-          className="map-info-drawer"
+        <div
           style={{
-            ...(isNarrow ? { height: sidebarSize } : { width: sidebarSize }),
+            ...(isNarrow ? { marginTop: 4 } : { marginLeft: 4 }),
           }}
-          onMouseDown={(e) => e.preventDefault()}
-          position={isNarrow ? 'bottom' : 'end'}
         >
           <DrawerHeader style={headerStyle}>
             <FormHeader
@@ -84,7 +77,7 @@ export const Drawer = memo(
               <p style={noDataStyle}>No Data found at this location</p>
             )}
           </DrawerBody>
-        </InlineDrawer>
+        </div>
       </ErrorBoundary>
     )
   }),
