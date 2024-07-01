@@ -2,29 +2,38 @@ import { memo, Fragment } from 'react'
 
 const containerStyle = {
   borderBottom: '1px solid #ccc',
-  padding: '10px 10px',
+  padding: '10px 0',
 }
 const titleStyle = {
   margin: 0,
   paddingBottom: 5,
+  paddingLeft: 10,
+  paddingRight: 10,
   fontWeight: 'bold',
 }
 const propertyListStyle = {
   display: 'grid',
   gridTemplateColumns: 'minmax(100px, 30%) 1fr',
 }
-const textStyle = {
+
+const baseTextStyle = {
   padding: 5,
   fontSize: '0.9em',
   lineHeight: '1.4em',
   overflowWrap: 'anywhere',
   color: 'black',
 }
+const textStyle = {
+  ...baseTextStyle,
+  paddingRight: 10,
+}
 const labelStyle = {
-  ...textStyle,
+  ...baseTextStyle,
   fontWeight: 'bold',
   color: 'rgba(0, 0, 0, 0.5)',
   borderRight: '1px solid rgba(0, 0, 0, 0.2)',
+  paddingLeft: 10,
+  paddingRight: 5,
 }
 
 export const Layer = memo(({ layerData }) => {

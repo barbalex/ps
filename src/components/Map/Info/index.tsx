@@ -1,25 +1,28 @@
-import { useCallback, useRef, useState, memo } from 'react'
-import { useCorbado } from '@corbado/react'
+import { useCallback, useRef, memo, useState, useEffect } from 'react'
+import { useResizeDetector } from 'react-resize-detector'
+import { InlineDrawer } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
+import { useCorbado } from '@corbado/react'
 
-import { ErrorBoundary } from '../../shared/ErrorBoundary.tsx'
-import { Resize } from './Resize.tsx'
-import { Drawer } from './Drawer/index.tsx'
-import { isMobilePhone } from '../../../modules/isMobilePhone.ts'
+import { Info } from './Info/index.tsx'
+import { Resizer } from './Resizer.tsx'
 import { useElectric } from '../../../ElectricProvider.tsx'
+
+import './index.css'
 
 const drawerContainerStyle = {
   position: 'absolute',
   display: 'flex',
   zIndex: 10000,
   maxWidth: '100%',
+  // without this when widening the window the sidebar's bottom will show the map behind it
+  backgroundColor: 'white',
 }
 
-export const Info = memo(() => {
+export const InfoContainer = memo(({ containerRef }) => {
   const { user: authUser } = useCorbado()
-  const { db } = useElectric()!
-  const isMobile = isMobilePhone()
 
+  const { db } = useElectric()!
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
@@ -27,51 +30,72 @@ export const Info = memo(() => {
 
   const animationFrame = useRef<number>(0)
   const sidebarRef = useRef<HTMLDivElement>(null)
-  const [sidebarSize, setSidebarSize] = useState(320)
+  const [isResizing, setIsResizing] = useState(false)
+
+  const startResizing = useCallback(() => setIsResizing(true), [])
+  const stopResizing = useCallback(() => setIsResizing(false), [])
+
+  const { width } = useResizeDetector({
+    targetRef: containerRef,
+    handleHeight: false,
+    refreshMode: 'debounce',
+    refreshRate: 100,
+    refreshOptions: { leading: false, trailing: true },
+  })
+  const isNarrow = width < 700
+  const [sidebarSize, setSidebarSize] = useState(isNarrow ? 500 : 320)
 
   const resize = useCallback(
-    (props) => {
-      const clientX = props?.location?.current?.input?.clientX
-      const clientY = props?.location?.current?.input?.clientY
-      animationFrame.current = requestAnimationFrame(async () => {
-        if (sidebarRef.current) {
-          const newSize = isMobile
-            ? sidebarRef.current.getBoundingClientRect().bottom - clientY
-            : sidebarRef.current.getBoundingClientRect().right - clientX
-          if (newSize > 50) {
-            setSidebarSize(newSize)
-            return
-          }
-          // if newWidth is less than 50, close the sidebar
-          const appState = await db.app_states.findFirst({
-            where: { user_email: authUser?.email },
-          })
-          db.app_states.update({
-            where: { app_state_id: appState?.app_state_id },
-            data: { map_info: null },
-          })
-        }
-      })
+    ({ clientX, clientY }) => {
+      if (!isResizing) return
+      if (!sidebarRef.current) return
+
+      const newSidebarSize = isNarrow
+        ? window.innerHeight - clientY
+        : sidebarRef.current.getBoundingClientRect().right - clientX
+
+      animationFrame.current = requestAnimationFrame(() =>
+        setSidebarSize(newSidebarSize),
+      )
     },
-    [authUser?.email, db.app_states, isMobile],
+    [isNarrow, isResizing],
   )
 
+  useEffect(() => {
+    window.addEventListener('mousemove', resize)
+    // for unknown reason these events cant be added to the resizer's events
+    window.addEventListener('mouseup', stopResizing)
+    window.addEventListener('mouseleave', stopResizing)
+
+    return () => {
+      cancelAnimationFrame(animationFrame.current)
+      window.removeEventListener('mousemove', resize)
+      window.removeEventListener('mouseup', stopResizing)
+      window.removeEventListener('mouseleave', stopResizing)
+    }
+  }, [resize, stopResizing])
+
   return (
-    <ErrorBoundary>
-      <div
+    <div
+      className="map-info-container"
+      style={{
+        ...drawerContainerStyle,
+        ...(isResizing ? { pointerEvents: 'none' } : {}),
+      }}
+    >
+      <InlineDrawer
+        open={!!mapInfo?.lat}
+        ref={sidebarRef}
+        className="map-info-drawer"
         style={{
-          ...drawerContainerStyle,
-          ...(isMobile ? { flexDirection: 'column' } : {}),
-          ...(isMobile ? { bottom: 0 } : { right: 0, top: 0, height: '100%' }),
+          ...(isNarrow ? { height: sidebarSize } : { width: sidebarSize }),
         }}
+        position={isNarrow ? 'bottom' : 'end'}
+        onMouseDown={(e) => e.preventDefault()}
       >
-        {!!mapInfo?.lat && <Resize resize={resize} isMobile={isMobile} />}
-        <Drawer
-          sidebarSize={sidebarSize}
-          ref={sidebarRef}
-          isMobile={isMobile}
-        />
-      </div>
-    </ErrorBoundary>
+        <Info isNarrow={isNarrow} />
+        <Resizer startResizing={startResizing} isResizing={isResizing} />
+      </InlineDrawer>
+    </div>
   )
 })
