@@ -1669,6 +1669,31 @@ COMMENT ON COLUMN vector_layer_displays.fill_opacity_percent IS 'Fill opacity. h
 
 COMMENT ON COLUMN vector_layer_displays.fill_rule IS 'A string that defines how the inside of a shape is determined. https://leafletjs.com/reference.html#path-fillrule. https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-rule';
 
+-- need a table to manage layer presentation for all layers (tile and vector)
+CREATE TABLE layer_presentations(
+  layer_presentation_id uuid PRIMARY KEY DEFAULT NULL,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  tile_layer_id uuid DEFAULT NULL REFERENCES tile_layers(tile_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  active boolean DEFAULT NULL, -- false
+  sort smallint DEFAULT NULL, -- 0
+  opacity_percent integer DEFAULT NULL, -- 100
+  grayscale boolean DEFAULT NULL, -- false
+  label_replace_by_generated_column text DEFAULT NULL
+);
+
+CREATE INDEX ON layer_presentations USING btree(account_id);
+
+CREATE INDEX ON layer_presentations USING btree(tile_layer_id);
+
+CREATE INDEX ON layer_presentations USING btree(vector_layer_id);
+
+CREATE INDEX ON layer_presentations USING btree(active);
+
+CREATE INDEX ON layer_presentations USING btree(sort);
+
+COMMENT ON TABLE layer_presentations IS 'Goal: manage all presentation related properties of all layers (including tile and vector layers). Editable by all users.';
+
 CREATE TYPE notification_intent_enum AS enum(
   'success',
   'error',
