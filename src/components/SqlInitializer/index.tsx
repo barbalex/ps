@@ -46,6 +46,7 @@ import { generateChartSubjectLabel } from './sql/chartSubjects.ts'
 import { generateOccurrenceImportLabel } from './sql/occurrenceImports.ts'
 // ISSUE: how to create v7 uuids? https://github.com/rhashimoto/wa-sqlite/discussions/169, https://github.com/craigpastro/sqlite-uuidv7/issues/3
 // import { generateVectorLayerTriggers } from './labelGenerators/vectorLayers'
+// import { generateTileLayerTriggers } from './labelGenerators/tileLayers'
 import { seedTestData } from './seedTestData.ts'
 
 // how to get work:
@@ -104,6 +105,7 @@ export const SqlInitializer = () => {
       await generateChartSubjectLabel(db)
       await generateOccurrenceImportLabel(db)
       // await generateVectorLayerTriggers(db)
+      // await generateTileLayerTriggers(db)
       // console.log('generated vector layer triggers')
       await seedTestData(db)
     }
