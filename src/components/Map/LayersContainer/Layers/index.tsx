@@ -13,19 +13,25 @@ export const Layers = memo(({ isNarrow }) => {
 
   const { db } = useElectric()!
   // 1. list all layers (own, tile, vector)
+  const where = project_id ? { project_id } : {}
+  // TODO: when including layer_presentations, no results are returned
+  // unlike with vector_layer_displays. Maybe because no layer_presentations exist?
   const { results: tileLayers = [] } = useLiveQuery(
     db.tile_layers.liveMany({
-      where: { ...(project_id ? { project_id } : {}) },
+      where,
+      // include: { layer_presentations: true },
     }),
   )
   const { results: vectorLayers = [] } = useLiveQuery(
     db.vector_layers.liveMany({
-      where: { ...(project_id ? { project_id } : {}) },
+      where,
+      // include: { layer_presentations: true },
+      // include: { vector_layer_displays: true },
     }),
   )
   // 2. when one is set active, add layer_presentations for it
 
-  console.log('Map Layers:', { tileLayers, vectorLayers })
+  console.log('Map Layers:', { tileLayers, vectorLayers, where })
 
   return (
     <ErrorBoundary>
@@ -39,6 +45,7 @@ export const Layers = memo(({ isNarrow }) => {
           title="Layers"
           titleMarginLeft={isNarrow ? 34 : undefined}
         />
+        <h2>Active Layers</h2>
         <h2>Tile Layers</h2>
         {tileLayers?.map((l) => (
           <div key={l.tile_layer_id}>{l.label}</div>

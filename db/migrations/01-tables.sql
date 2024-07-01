@@ -1679,7 +1679,7 @@ CREATE TABLE layer_presentations(
   sort smallint DEFAULT NULL, -- 0
   opacity_percent integer DEFAULT NULL, -- 100
   grayscale boolean DEFAULT NULL, -- false
-  label_replace_by_generated_column text DEFAULT NULL
+  label_replace_by_generated_column text DEFAULT NULL -- TODO: not needed?
 );
 
 CREATE INDEX ON layer_presentations USING btree(account_id);
