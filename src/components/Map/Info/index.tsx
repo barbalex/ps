@@ -35,7 +35,6 @@ export const Info = memo(({ containerRef }) => {
 
   const resize = useCallback(
     ({ clientX, clientY }) => {
-      console.log('resize')
       if (!isResizing) return
       if (!sidebarRef.current) return
 
