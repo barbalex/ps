@@ -46,7 +46,7 @@ export const Info = memo(({ isNarrow }) => {
       <div
         style={{
           width: '100%',
-          ...(isNarrow ? { marginTop: 4 } : { marginLeft: 4 }),
+          ...(isNarrow ? { marginTop: 5 } : { marginLeft: 5 }),
         }}
       >
         <DrawerHeader style={headerStyle}>
