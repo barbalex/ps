@@ -5,6 +5,7 @@
 
 .map-info-drawer {
   transition-duration: 16.66666ms;
+  border: none !important;
 }
 
 @container (width <= 700px) {
