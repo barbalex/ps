@@ -52,7 +52,7 @@ export const LayersContainer = memo(({ containerRef }) => {
 
       const newSidebarSize = isNarrow
         ? window.innerHeight - clientY
-        : sidebarRef.current.getBoundingClientRect().right - clientX
+        : clientX - sidebarRef.current.getBoundingClientRect().left
 
       animationFrame.current = requestAnimationFrame(() =>
         setSidebarSize(newSidebarSize),
