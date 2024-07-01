@@ -4,6 +4,7 @@ import { useCorbado } from '@corbado/react'
 
 import { useElectric } from '../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../shared/ErrorBoundary.tsx'
+import { FormHeader } from '../../../FormHeader/index.tsx'
 
 export const Layers = memo(({ isNarrow }) => {
   const { user: authUser } = useCorbado()
@@ -21,6 +22,7 @@ export const Layers = memo(({ isNarrow }) => {
           ...(isNarrow ? { marginTop: 5 } : { marginRight: 5 }),
         }}
       >
+        <FormHeader title="Layers" />
         layers
       </div>
     </ErrorBoundary>

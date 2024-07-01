@@ -29,17 +29,6 @@ export const LayersContainer = memo(({ containerRef }) => {
   )
   const mapHideUi = appState?.map_hide_ui
 
-  const { width: ownWidth, ref: widthRef } = useResizeDetector({
-    handleHeight: false,
-    refreshMode: 'debounce',
-    refreshRate: 100,
-    refreshOptions: { leading: false, trailing: true },
-  })
-  // when width falls below 35, set sidebarSize to 5
-  useEffect(() => {
-    if (ownWidth < 40) setSidebarSize(5)
-  }, [ownWidth])
-
   const { width: containerWidth } = useResizeDetector({
     targetRef: containerRef,
     handleHeight: false,
@@ -48,7 +37,18 @@ export const LayersContainer = memo(({ containerRef }) => {
     refreshOptions: { leading: false, trailing: true },
   })
   const isNarrow = containerWidth < 700
+
+  const { width: ownWidth, ref: widthRef } = useResizeDetector({
+    handleHeight: false,
+    refreshMode: 'debounce',
+    refreshRate: 100,
+    refreshOptions: { leading: false, trailing: true },
+  })
   const [sidebarSize, setSidebarSize] = useState(isNarrow ? 500 : 320)
+  // when width falls below 35, set sidebarSize to 5
+  useEffect(() => {
+    if (!mapHideUi && ownWidth < 40) setSidebarSize(5)
+  }, [mapHideUi, ownWidth])
 
   const isOpen = useMemo(() => sidebarSize > 35, [sidebarSize])
   const toggleOpen = useCallback(
@@ -65,8 +65,6 @@ export const LayersContainer = memo(({ containerRef }) => {
 
   const startResizing = useCallback(() => setIsResizing(true), [])
   const stopResizing = useCallback(() => setIsResizing(false), [])
-
-  console.log('Map LayerContainer, width:', ownWidth)
 
   const resize = useCallback(
     ({ clientX, clientY }) => {
@@ -109,17 +107,24 @@ export const LayersContainer = memo(({ containerRef }) => {
       }}
       ref={widthRef}
     >
-      <Button
-        onClick={toggleOpen}
-        icon={isOpen ? <BiSolidLeftArrow /> : <BiSolidRightArrow />}
-        style={{
-          position: 'absolute',
-          top: 0,
-          right: isOpen ? 6 : -27,
-          marginRight: isOpen ? 5 : 0,
-          zIndex: 100000000,
-        }}
-      />
+      {!mapHideUi && (
+        <Button
+          onClick={toggleOpen}
+          icon={isOpen ? <BiSolidLeftArrow /> : <BiSolidRightArrow />}
+          title={isOpen ? 'Close Layers' : 'Open Layers'}
+          style={{
+            position: 'absolute',
+            top: 5,
+            right: isOpen ? 5.5 : -26.5,
+            marginRight: isOpen ? 5 : 0,
+            zIndex: 100000000,
+            borderTopLeftRadius: isOpen ? 4 : 0,
+            borderBottomLeftRadius: isOpen ? 4 : 0,
+            borderTopRightRadius: isOpen ? 0 : 4,
+            borderBottomRightRadius: isOpen ? 0 : 4,
+          }}
+        />
+      )}
       <InlineDrawer
         open={!mapHideUi}
         ref={sidebarRef}
