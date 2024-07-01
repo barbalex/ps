@@ -1,6 +1,12 @@
 .map-info-container {
   position: relative;
+  background-color: transparent !important;
 }
+
+.map-info-drawer {
+  transition-duration: 16.66666ms;
+}
+
 
 @container (width <= 700px) {
   .map-info-container {
@@ -9,6 +15,12 @@
     width: 100%;
     resize: vertical;
   }
+  .map-info-drawer {
+    width: 100% !important;
+    transition-property: height;
+    will-change: height;
+    margin-top: 4px;
+  }
 }
 @container (width > 700px) {
   .map-info-container {
@@ -16,5 +28,10 @@
     top: 0;
     height: 100%;
     resize: horizontal;
+  }
+  .map-info-drawer {
+    transition-property: width;
+    will-change: width;
+    margin-left: 4px;
   }
 }

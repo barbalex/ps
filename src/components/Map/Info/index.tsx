@@ -1,8 +1,12 @@
 import { useCallback, useRef, memo, useState, useEffect } from 'react'
 import { useResizeDetector } from 'react-resize-detector'
+import { InlineDrawer } from '@fluentui/react-components'
+import { useLiveQuery } from 'electric-sql/react'
+import { useCorbado } from '@corbado/react'
 
 import { Drawer } from './Drawer/index.tsx'
 import { Resizer } from './Resizer.tsx'
+import { useElectric } from '../../../ElectricProvider.tsx'
 
 import './index.css'
 
@@ -16,6 +20,14 @@ const drawerContainerStyle = {
 }
 
 export const Info = memo(({ containerRef }) => {
+  const { user: authUser } = useCorbado()
+
+  const { db } = useElectric()!
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+  )
+  const mapInfo = appState?.map_info
+
   const animationFrame = useRef<number>(0)
   const sidebarRef = useRef<HTMLDivElement>(null)
   const [isResizing, setIsResizing] = useState(false)
@@ -71,8 +83,19 @@ export const Info = memo(({ containerRef }) => {
         ...(isResizing ? { pointerEvents: 'none' } : {}),
       }}
     >
-      <Drawer ref={sidebarRef} isNarrow={isNarrow} sidebarSize={sidebarSize} />
-      <Resizer startResizing={startResizing} />
+      <InlineDrawer
+        open={!!mapInfo?.lat}
+        ref={sidebarRef}
+        className="map-info-drawer"
+        style={{
+          ...(isNarrow ? { height: sidebarSize } : { width: sidebarSize }),
+        }}
+        position={isNarrow ? 'bottom' : 'end'}
+        onMouseDown={(e) => e.preventDefault()}
+      >
+        <Drawer isNarrow={isNarrow} sidebarSize={sidebarSize} />
+        <Resizer startResizing={startResizing} />
+      </InlineDrawer>
     </div>
   )
 })
