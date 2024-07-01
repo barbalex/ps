@@ -10,7 +10,7 @@ import { useElectric } from '../../../ElectricProvider.tsx'
 
 import './index.css'
 
-const drawerContainerStyle = {
+const containerStyle = {
   position: 'absolute',
   display: 'flex',
   zIndex: 10000,
@@ -79,7 +79,8 @@ export const InfoContainer = memo(({ containerRef }) => {
     <div
       className="map-info-container"
       style={{
-        ...drawerContainerStyle,
+        ...containerStyle,
+        // dragging can mark text so we disable pointer events
         ...(isResizing ? { pointerEvents: 'none' } : {}),
       }}
     >
