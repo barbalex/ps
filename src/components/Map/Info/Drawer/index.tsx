@@ -1,12 +1,7 @@
-import { memo, forwardRef, useCallback } from 'react'
+import { memo, useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
-import {
-  Button,
-  DrawerBody,
-  DrawerHeader,
-  InlineDrawer,
-} from '@fluentui/react-components'
+import { Button, DrawerBody, DrawerHeader } from '@fluentui/react-components'
 import { MdClose } from 'react-icons/md'
 
 import { useElectric } from '../../../../ElectricProvider.tsx'
@@ -24,61 +19,59 @@ const noDataStyle = {
   margin: 0,
 }
 
-export const Drawer = memo(
-  forwardRef(({ isNarrow }) => {
-    const { user: authUser } = useCorbado()
+export const Drawer = memo(({ isNarrow }) => {
+  const { user: authUser } = useCorbado()
 
-    const { db } = useElectric()!
-    const { results: appState } = useLiveQuery(
-      db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-    )
-    const mapInfo = appState?.map_info
+  const { db } = useElectric()!
+  const { results: appState } = useLiveQuery(
+    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+  )
+  const mapInfo = appState?.map_info
 
-    const close = useCallback(
-      (e) => {
-        e.preventDefault()
-        db.app_states.update({
-          where: { app_state_id: appState?.app_state_id },
-          data: { map_info: null },
-        })
-      },
-      [appState?.app_state_id, db.app_states],
-    )
+  const close = useCallback(
+    (e) => {
+      e.preventDefault()
+      db.app_states.update({
+        where: { app_state_id: appState?.app_state_id },
+        data: { map_info: null },
+      })
+    },
+    [appState?.app_state_id, db.app_states],
+  )
 
-    const layersExist = mapInfo?.layers?.length > 0
+  const layersExist = mapInfo?.layers?.length > 0
 
-    return (
-      <ErrorBoundary>
-        <div
-          style={{
-            ...(isNarrow ? { marginTop: 4 } : { marginLeft: 4 }),
-          }}
-        >
-          <DrawerHeader style={headerStyle}>
-            <FormHeader
-              title="Info"
-              siblings={
-                <Button
-                  size="medium"
-                  icon={<MdClose />}
-                  onClick={close}
-                  title="Close"
-                />
-              }
-            />
-          </DrawerHeader>
-          <DrawerBody style={bodyStyle}>
-            <Location mapInfo={mapInfo} />
-            {layersExist ? (
-              (mapInfo?.layers ?? []).map((layer, i) => (
-                <Layer key={`${i}/${layer.label}`} layerData={layer} />
-              ))
-            ) : (
-              <p style={noDataStyle}>No Data found at this location</p>
-            )}
-          </DrawerBody>
-        </div>
-      </ErrorBoundary>
-    )
-  }),
-)
+  return (
+    <ErrorBoundary>
+      <div
+        style={{
+          ...(isNarrow ? { marginTop: 4 } : { marginLeft: 4 }),
+        }}
+      >
+        <DrawerHeader style={headerStyle}>
+          <FormHeader
+            title="Info"
+            siblings={
+              <Button
+                size="medium"
+                icon={<MdClose />}
+                onClick={close}
+                title="Close"
+              />
+            }
+          />
+        </DrawerHeader>
+        <DrawerBody style={bodyStyle}>
+          <Location mapInfo={mapInfo} />
+          {layersExist ? (
+            (mapInfo?.layers ?? []).map((layer, i) => (
+              <Layer key={`${i}/${layer.label}`} layerData={layer} />
+            ))
+          ) : (
+            <p style={noDataStyle}>No Data found at this location</p>
+          )}
+        </DrawerBody>
+      </div>
+    </ErrorBoundary>
+  )
+})
