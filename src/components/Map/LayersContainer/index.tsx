@@ -50,12 +50,12 @@ export const LayersContainer = memo(({ containerRef }) => {
   const [size, setSize] = useState(isNarrow ? 500 : 380)
   // when width falls below 40, set sidebarSize to 5
   useEffect(() => {
-    if ((isNarrow && ownHeight < 40) || (!isNarrow && ownWidth < 40)) {
+    if ((isNarrow && ownHeight <= 40) || (!isNarrow && ownWidth <= 40)) {
       setSize(5)
     }
   }, [isNarrow, ownHeight, ownWidth])
 
-  const isOpen = useMemo(() => size > 35, [size])
+  const isOpen = useMemo(() => size > 40, [size])
   const toggleOpen = useCallback(
     (e) => {
       e.stopPropagation()
