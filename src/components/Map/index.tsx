@@ -1,7 +1,7 @@
 import { memo, useRef } from 'react'
 
 import { Map } from './Map.tsx'
-import { InfoContainer } from './Info/index.tsx'
+import { InfoContainer } from './InfoContainer/index.tsx'
 
 const containerStyle = {
   width: '100%',
@@ -16,7 +16,7 @@ export const MapContainer = memo(() => {
 
   return (
     <div style={containerStyle} ref={containerRef}>
-      <Map  />
+      <Map />
       <InfoContainer containerRef={containerRef} />
     </div>
   )

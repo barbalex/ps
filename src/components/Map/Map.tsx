@@ -23,7 +23,7 @@ import { BottomRightControl } from './BottomRightControl/index.tsx'
 // import { OwnControls } from './OwnControls'
 import { ClickListener } from './ClickListener/index.tsx'
 import { ErrorBoundary } from '../shared/ErrorBoundary.tsx'
-import { InfoMarker } from './Info/Marker.tsx'
+import { InfoMarker } from './InfoContainer/Marker.tsx'
 import { CenterMarker } from './CenterMarker.tsx'
 
 const outerContainerStyle = {
