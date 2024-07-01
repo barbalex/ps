@@ -1990,3 +1990,5 @@ ALTER TABLE crs ENABLE electric;
 
 ALTER TABLE project_crs ENABLE electric;
 
+ALTER TABLE layer_presentations ENABLE electric;
+
