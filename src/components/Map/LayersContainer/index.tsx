@@ -19,7 +19,6 @@ const containerStyle = {
   // without this when widening the window the sidebar's bottom will show the map behind it
   backgroundColor: 'white',
 }
-const buttonStyle = { transform: 'rotate(270deg)' }
 
 export const LayersContainer = memo(({ containerRef }) => {
   const { user: authUser } = useCorbado()
@@ -39,23 +38,28 @@ export const LayersContainer = memo(({ containerRef }) => {
   })
   const isNarrow = containerWidth < 700
 
-  const { width: ownWidth, ref: widthRef } = useResizeDetector({
-    handleHeight: false,
+  const {
+    width: ownWidth,
+    height: ownHeight,
+    ref: widthRef,
+  } = useResizeDetector({
     refreshMode: 'debounce',
     refreshRate: 100,
     refreshOptions: { leading: false, trailing: true },
   })
-  const [sidebarSize, setSidebarSize] = useState(isNarrow ? 500 : 320)
-  // when width falls below 35, set sidebarSize to 5
+  const [size, setSize] = useState(isNarrow ? 500 : 320)
+  // when width falls below 40, set sidebarSize to 5
   useEffect(() => {
-    if (!mapHideUi && ownWidth < 40) setSidebarSize(5)
-  }, [mapHideUi, ownWidth])
+    if ((isNarrow && ownHeight < 40) || (!isNarrow && ownWidth < 40)) {
+      setSize(5)
+    }
+  }, [isNarrow, ownHeight, ownWidth])
 
-  const isOpen = useMemo(() => sidebarSize > 35, [sidebarSize])
+  const isOpen = useMemo(() => size > 35, [size])
   const toggleOpen = useCallback(
     (e) => {
       e.stopPropagation()
-      setSidebarSize(isOpen ? 5 : isNarrow ? 500 : 320)
+      setSize(isOpen ? 5 : isNarrow ? 500 : 320)
     },
     [isNarrow, isOpen],
   )
@@ -77,7 +81,7 @@ export const LayersContainer = memo(({ containerRef }) => {
         : clientX - sidebarRef.current.getBoundingClientRect().left
 
       animationFrame.current = requestAnimationFrame(() =>
-        setSidebarSize(newSidebarSize),
+        setSize(newSidebarSize),
       )
     },
     [isNarrow, isResizing],
@@ -113,9 +117,13 @@ export const LayersContainer = memo(({ containerRef }) => {
           onClick={toggleOpen}
           icon={
             isOpen ? (
-              <BiSolidLeftArrow style={buttonStyle} />
+              <BiSolidLeftArrow
+                style={{ transform: isNarrow ? 'rotate(270deg)' : 'unset' }}
+              />
             ) : (
-              <BiSolidRightArrow style={buttonStyle} />
+              <BiSolidRightArrow
+                style={{ transform: isNarrow ? 'rotate(270deg)' : 'unset' }}
+              />
             )
           }
           title={isOpen ? 'Close Layers' : 'Open Layers'}
@@ -150,7 +158,7 @@ export const LayersContainer = memo(({ containerRef }) => {
         ref={sidebarRef}
         className="map-layers-drawer"
         style={{
-          ...(isNarrow ? { height: sidebarSize } : { width: sidebarSize }),
+          ...(isNarrow ? { height: size } : { width: size }),
         }}
         position={isNarrow ? 'bottom' : 'start'}
         onMouseDown={(e) => e.preventDefault()}
