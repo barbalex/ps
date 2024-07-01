@@ -19,7 +19,7 @@ const noDataStyle = {
   margin: 0,
 }
 
-export const Drawer = memo(({ isNarrow }) => {
+export const Info = memo(({ isNarrow }) => {
   const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
@@ -45,6 +45,7 @@ export const Drawer = memo(({ isNarrow }) => {
     <ErrorBoundary>
       <div
         style={{
+          width: '100%',
           ...(isNarrow ? { marginTop: 4 } : { marginLeft: 4 }),
         }}
       >

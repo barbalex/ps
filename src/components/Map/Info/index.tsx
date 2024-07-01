@@ -4,7 +4,7 @@ import { InlineDrawer } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 
-import { Drawer } from './Drawer/index.tsx'
+import { Info } from './Info/index.tsx'
 import { Resizer } from './Resizer.tsx'
 import { useElectric } from '../../../ElectricProvider.tsx'
 
@@ -19,7 +19,7 @@ const drawerContainerStyle = {
   backgroundColor: 'white',
 }
 
-export const Info = memo(({ containerRef }) => {
+export const InfoContainer = memo(({ containerRef }) => {
   const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
@@ -93,8 +93,8 @@ export const Info = memo(({ containerRef }) => {
         position={isNarrow ? 'bottom' : 'end'}
         onMouseDown={(e) => e.preventDefault()}
       >
-        <Drawer isNarrow={isNarrow} />
-        <Resizer startResizing={startResizing} />
+        <Info isNarrow={isNarrow} />
+        <Resizer startResizing={startResizing} isResizing={isResizing} />
       </InlineDrawer>
     </div>
   )
