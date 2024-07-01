@@ -19,6 +19,7 @@ const containerStyle = {
   // without this when widening the window the sidebar's bottom will show the map behind it
   backgroundColor: 'white',
 }
+const buttonStyle = { transform: 'rotate(270deg)' }
 
 export const LayersContainer = memo(({ containerRef }) => {
   const { user: authUser } = useCorbado()
@@ -110,7 +111,13 @@ export const LayersContainer = memo(({ containerRef }) => {
       {!mapHideUi && (
         <Button
           onClick={toggleOpen}
-          icon={isOpen ? <BiSolidLeftArrow /> : <BiSolidRightArrow />}
+          icon={
+            isOpen ? (
+              <BiSolidLeftArrow style={buttonStyle} />
+            ) : (
+              <BiSolidRightArrow style={buttonStyle} />
+            )
+          }
           title={isOpen ? 'Close Layers' : 'Open Layers'}
           style={{
             position: 'absolute',
