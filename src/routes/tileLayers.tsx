@@ -4,7 +4,10 @@ import { useCorbado } from '@corbado/react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useElectric } from '../ElectricProvider.tsx'
-import { createTileLayer } from '../modules/createRows.ts'
+import {
+  createTileLayer,
+  createLayerPresentation,
+} from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
@@ -46,11 +49,22 @@ export const Component = memo(() => {
   const add = useCallback(async () => {
     const tileLayer = createTileLayer({ project_id })
     await db.tile_layers.create({ data: tileLayer })
+    // also add layer_presentation
+    const layerPresentation = createLayerPresentation({
+      layer_id: tileLayer.tile_layer_id,
+    })
+    await db.layer_presentations.create({ data: layerPresentation })
     navigate({
       pathname: tileLayer.tile_layer_id,
       search: searchParams.toString(),
     })
-  }, [db.tile_layers, navigate, project_id, searchParams])
+  }, [
+    db.layer_presentations,
+    db.tile_layers,
+    navigate,
+    project_id,
+    searchParams,
+  ])
 
   return (
     <div className="list-view">

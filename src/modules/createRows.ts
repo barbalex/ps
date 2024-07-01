@@ -523,6 +523,20 @@ export const createVectorLayerDisplay = ({
   fill_rule: 'evenodd',
 })
 
+export const createLayerPresentation = ({
+  vector_layer_id = null,
+  tile_layer_id = null,
+  account_id = null,
+}) => ({
+  layer_presentation_id: uuidv7(),
+  account_id,
+  vector_layer_id,
+  tile_layer_id,
+  active: false,
+  opacity_percent: 100,
+  grayscale: false,
+})
+
 export const createChart = ({
   project_id = null,
   subproject_id = null,
