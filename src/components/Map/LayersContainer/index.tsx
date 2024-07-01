@@ -1,8 +1,9 @@
-import { useCallback, useRef, memo, useState, useEffect } from 'react'
+import { useCallback, useRef, memo, useState, useEffect, useMemo } from 'react'
 import { useResizeDetector } from 'react-resize-detector'
-import { InlineDrawer } from '@fluentui/react-components'
+import { InlineDrawer, Button } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
+import { BiSolidLeftArrow, BiSolidRightArrow } from 'react-icons/bi'
 
 import { Layers } from './Layers/index.tsx'
 import { Resizer } from './Resizer.tsx'
@@ -28,6 +29,36 @@ export const LayersContainer = memo(({ containerRef }) => {
   )
   const mapHideUi = appState?.map_hide_ui
 
+  const { width: ownWidth, ref: widthRef } = useResizeDetector({
+    handleHeight: false,
+    refreshMode: 'debounce',
+    refreshRate: 100,
+    refreshOptions: { leading: false, trailing: true },
+  })
+  // when width falls below 35, set sidebarSize to 5
+  useEffect(() => {
+    if (ownWidth < 40) setSidebarSize(5)
+  }, [ownWidth])
+
+  const { width: containerWidth } = useResizeDetector({
+    targetRef: containerRef,
+    handleHeight: false,
+    refreshMode: 'debounce',
+    refreshRate: 100,
+    refreshOptions: { leading: false, trailing: true },
+  })
+  const isNarrow = containerWidth < 700
+  const [sidebarSize, setSidebarSize] = useState(isNarrow ? 500 : 320)
+
+  const isOpen = useMemo(() => sidebarSize > 35, [sidebarSize])
+  const toggleOpen = useCallback(
+    (e) => {
+      e.stopPropagation()
+      setSidebarSize(isOpen ? 5 : isNarrow ? 500 : 320)
+    },
+    [isNarrow, isOpen],
+  )
+
   const animationFrame = useRef<number>(0)
   const sidebarRef = useRef<HTMLDivElement>(null)
   const [isResizing, setIsResizing] = useState(false)
@@ -35,15 +66,7 @@ export const LayersContainer = memo(({ containerRef }) => {
   const startResizing = useCallback(() => setIsResizing(true), [])
   const stopResizing = useCallback(() => setIsResizing(false), [])
 
-  const { width } = useResizeDetector({
-    targetRef: containerRef,
-    handleHeight: false,
-    refreshMode: 'debounce',
-    refreshRate: 100,
-    refreshOptions: { leading: false, trailing: true },
-  })
-  const isNarrow = width < 700
-  const [sidebarSize, setSidebarSize] = useState(isNarrow ? 500 : 320)
+  console.log('Map LayerContainer, width:', ownWidth)
 
   const resize = useCallback(
     ({ clientX, clientY }) => {
@@ -84,7 +107,19 @@ export const LayersContainer = memo(({ containerRef }) => {
         // dragging can mark text so we disable pointer events
         ...(isResizing ? { pointerEvents: 'none' } : {}),
       }}
+      ref={widthRef}
     >
+      <Button
+        onClick={toggleOpen}
+        icon={isOpen ? <BiSolidLeftArrow /> : <BiSolidRightArrow />}
+        style={{
+          position: 'absolute',
+          top: 0,
+          right: isOpen ? 6 : -27,
+          marginRight: isOpen ? 5 : 0,
+          zIndex: 100000000,
+        }}
+      />
       <InlineDrawer
         open={!mapHideUi}
         ref={sidebarRef}
