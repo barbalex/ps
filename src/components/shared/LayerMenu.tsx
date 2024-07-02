@@ -40,14 +40,25 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }: Props) => {
       where: { project_id, type: `${table}${level}` },
     }),
   )
-
-  const showLayer = vectorLayer?.active ?? false
-  const onClickShowLayer = useCallback(() => {
-    db.vector_layers.update({
+  const { results: layerPresentation } = useLiveQuery(
+    db.layer_presentations.liveFirst({
       where: { vector_layer_id: vectorLayer?.vector_layer_id },
+    }),
+  )
+
+  const showLayer = layerPresentation?.active ?? false
+  const onClickShowLayer = useCallback(() => {
+    db.layer_presentations.update({
+      where: {
+        layer_presentation_id: layerPresentation?.layer_presentation_id,
+      },
       data: { active: !showLayer },
     })
-  }, [db.vector_layers, showLayer, vectorLayer?.vector_layer_id])
+  }, [
+    db.layer_presentations,
+    layerPresentation?.layer_presentation_id,
+    showLayer,
+  ])
 
   const onClickZoomToLayer = useCallback(async () => {
     // get all geometries from layer

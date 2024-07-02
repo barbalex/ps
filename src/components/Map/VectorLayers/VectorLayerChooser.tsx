@@ -31,8 +31,7 @@ export const VectorLayerChooser = ({ layer }: Props) => {
   )
   const geomCount: integer = vectorLayerGeoms.length
 
-  // TODO: only accept pre-downloaded layers because of
-  // problems filtering by bbox?
   if (!geomCount) return <VectorLayerWFS layer={layer} display={display} />
+  // TODO: what is this?
   return <VectorLayerPVLGeom layer={layer} display={display} />
 }
