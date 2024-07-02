@@ -95,8 +95,6 @@ export const Layers = memo(({ isNarrow }) => {
         ),
     )
 
-  console.log('Layers', { active, tiles, own, vectors, layerPresentations })
-
   const onChangeActive = useCallback(
     (layer) => {
       // update layer_presentations, set active = false
@@ -113,10 +111,11 @@ export const Layers = memo(({ isNarrow }) => {
         })
       }
       // if no presentation exists, create notification
-      createNotification({
-        message: 'Layer presentation not found',
+      const data = createNotification({
+        title: 'Layer presentation not found',
         type: 'warning',
       })
+      db.notifications.create({ data })
     },
     [db, layerPresentations],
   )
