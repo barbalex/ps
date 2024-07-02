@@ -1,0 +1,37 @@
+.map-layers-container {
+  position: relative;
+  background-color: transparent !important;
+}
+
+.map-layers-drawer {
+  transition-duration: 16.66666ms;
+  border: none !important;
+}
+
+@container (width <= 700px) {
+  .map-layers-container {
+    flex-direction: column;
+    bottom: 0;
+    width: 100%;
+    resize: vertical;
+  }
+  .map-layers-drawer {
+    width: 100% !important;
+    transition-property: height;
+    will-change: height;
+    margin-top: 5px;
+  }
+}
+@container (width > 700px) {
+  .map-layers-container {
+    left: 0;
+    top: 0;
+    height: 100%;
+    resize: horizontal;
+  }
+  .map-layers-drawer {
+    transition-property: width;
+    will-change: width;
+    margin-right: 5px;
+  }
+}

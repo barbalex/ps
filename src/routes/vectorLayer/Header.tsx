@@ -16,6 +16,7 @@ import {
 import {
   createVectorLayer,
   createVectorLayerDisplay,
+  createLayerPresentation,
 } from '../../modules/createRows.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -132,6 +133,11 @@ export const Header = memo(({ autoFocusRef, row }: Props) => {
       vector_layer_id: vectorLayer.vector_layer_id,
     })
     await db.vector_layer_displays.create({ data: vectorLayerDisplay })
+    // add layer_presentation
+    const layerPresentation = createLayerPresentation({
+      vector_layer_id: vectorLayer.vector_layer_id,
+    })
+    await db.layer_presentations.create({ data: layerPresentation })
     navigate({
       pathname: `../${vectorLayer.vector_layer_id}`,
       search: searchParams.toString(),
@@ -139,6 +145,7 @@ export const Header = memo(({ autoFocusRef, row }: Props) => {
     autoFocusRef.current?.focus()
   }, [
     autoFocusRef,
+    db.layer_presentations,
     db.vector_layer_displays,
     db.vector_layers,
     navigate,

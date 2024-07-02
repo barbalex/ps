@@ -30,3 +30,11 @@ CREATE INDEX IF NOT EXISTS vector_layers_active_idx ON vector_layers(active)
 WHERE
   active;
 
+CREATE INDEX IF NOT EXISTS layer_presentations_active_idx ON layer_presentations(active)
+WHERE
+  active;
+
+CREATE INDEX IF NOT EXISTS layer_presentations_grayscale_idx ON layer_presentations(grayscale)
+WHERE
+  grayscale;
+

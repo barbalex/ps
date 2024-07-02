@@ -7,6 +7,7 @@ import { useElectric } from '../ElectricProvider.tsx'
 import {
   createVectorLayer,
   createVectorLayerDisplay,
+  createLayerPresentation,
 } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
@@ -55,11 +56,17 @@ export const Component = memo(() => {
       vector_layer_id: vectorLayer.vector_layer_id,
     })
     await db.vector_layer_displays.create({ data: vectorLayerDisplay })
+    // also add layer_presentation
+    const layerPresentation = createLayerPresentation({
+      vector_layer_id: vectorLayer.vector_layer_id,
+    })
+    await db.layer_presentations.create({ data: layerPresentation })
     navigate({
       pathname: vectorLayer.vector_layer_id,
       search: searchParams.toString(),
     })
   }, [
+    db.layer_presentations,
     db.vector_layer_displays,
     db.vector_layers,
     navigate,
