@@ -2,7 +2,6 @@ import { useParams, useOutletContext } from 'react-router-dom'
 
 import { TextFieldInactive } from '../../../components/shared/TextFieldInactive.tsx'
 import { TextField } from '../../../components/shared/TextField.tsx'
-import { SwitchField } from '../../../components/shared/SwitchField.tsx'
 import { RadioGroupField } from '../../../components/shared/RadioGroupField.tsx'
 import { DropdownFieldFromLayerOptions } from '../../../components/shared/DropdownFieldFromLayerOptions.tsx'
 import { Url } from './Url.tsx'
@@ -77,12 +76,6 @@ export const Component = ({
             onChange={onChange}
             type="number"
             validationMessage="Add a sorting order here if sorting by label is not desired"
-          />
-          <SwitchField
-            label="active"
-            name="active"
-            value={row.active}
-            onChange={onChange}
           />
           <TextField
             label="Max Zoom"

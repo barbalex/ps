@@ -168,7 +168,15 @@ export const getCapabilitiesData = async ({
     layerOptions?.[0]?.value
   ) {
     values.wfs_layer = layerOptions?.[0]
-    values.active = true
+    const layerPresentation = await db.layer_presentations.findFirst({
+      where: { vector_layer_id: row.vector_layer_id },
+    })
+    db.layer_presentations.update({
+      where: {
+        layer_presentation_id: layerPresentation.layer_presentation_id,
+      },
+      data: { active: true },
+    })
   }
 
   // console.log('hello vector layers getCapabilitiesData', {

@@ -83,19 +83,23 @@ export const Header = memo(({ autoFocusRef, row }: Props) => {
       })
     }
     // this layer needs to be active
-    if (!row.active) {
-      db.vector_layers.update({
-        where: { vector_layer_id: row.vector_layer_id },
+    const layerPresentation = db.layer_presentations.findFirst({
+      where: { vector_layer_id: row.vector_layer_id },
+    })
+    if (!layerPresentation.active) {
+      db.layer_presentations.update({
+        where: {
+          layer_presentation_id: layerPresentation.layer_presentation_id,
+        },
         data: { active: true },
       })
     }
   }, [
-    appState?.app_state_id,
-    appState?.tabs,
+    appState.app_state_id,
+    appState.tabs,
     db.app_states,
-    db.vector_layers,
+    db.layer_presentations,
     isDraggable,
-    row.active,
     row.vector_layer_id,
   ])
   const onClickAssignToPlaces1 = useCallback(() => {
