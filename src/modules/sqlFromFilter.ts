@@ -1,13 +1,13 @@
-const sqlFromFilterObject = ({ filter, columnPrefix }) => {
+const sqlFromFilterObject = ({ filter, columnPrefix = '' }) => {
   let sql = ``
   for (const key in filter) {
     const value = filter[key]
     // value can be a basic value or an object using contains
     if (value?.contains) {
-      sql += `${columnPrefix ?? ''}${key} LIKE '%${value.contains}%'`
+      sql += `${columnPrefix}${key} LIKE '%${value.contains}%'`
       continue
     }
-    sql += `${columnPrefix ?? ''}${key} = ${value}`
+    sql += `${columnPrefix}${key} = ${value}`
   }
   return sql
 }
