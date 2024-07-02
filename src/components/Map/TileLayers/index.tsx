@@ -19,7 +19,6 @@ export const TileLayers = () => {
   const { results: layersResult = [] } = useLiveQuery(
     db.tile_layers.liveMany({
       where: {
-        active: true,
         type: { not: null },
         project_id,
         OR: [
@@ -33,19 +32,22 @@ export const TileLayers = () => {
           },
         ],
       },
+      include: { layer_presentations: true },
       // try not selecting label, to see if it helps with performance when label is changed
       // but: had no influence on performance
       orderBy: [{ sort: 'asc' }, { label: 'asc' }],
     }),
   )
-  const tileLayers: TileLayer[] = layersResult.map((l) => {
-    // need to convert opacity_percent to opacity
-    const { opacity_percent, ...rest } = l
-    return {
-      ...rest,
-      opacity: opacity_percent ? opacity_percent / 100 : 1,
-    }
-  })
+  const tileLayers: TileLayer[] = layersResult
+    .map((l) => {
+      // need to convert opacity_percent to opacity
+      const { opacity_percent, ...rest } = l
+      return {
+        ...rest,
+        opacity: opacity_percent ? opacity_percent / 100 : 1,
+      }
+    })
+    .filter((l) => l.layer_presentations.some((lp) => lp.active))
 
   // console.log('hello Map, TileLayers, tileLayers:', tileLayers)
 

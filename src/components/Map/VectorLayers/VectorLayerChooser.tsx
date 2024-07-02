@@ -15,11 +15,14 @@ import {
 
 interface Props {
   layer: VectorLayer
-  display: VectorLayerDisplay
 }
 
-export const VectorLayerChooser = ({ layer, display }: Props) => {
+export const VectorLayerChooser = ({ layer }: Props) => {
   const { db } = useElectric()!
+
+  const display = layer.vector_layer_displays.find(
+    (d) => d.vector_layer_id === layer.vector_layer_id,
+  )
 
   const { results: vectorLayerGeoms = [] } = useLiveQuery(
     db.vector_layer_geoms.liveMany({

@@ -31,12 +31,15 @@ export const TableLayers = () => {
 
   const { results: vectorLayers = [] } = useLiveQuery(
     db.vector_layers.liveMany({
-      where: { active: true, type: { in: vectorLayerTypes } },
-      include: { vector_layer_displays: true },
+      where: { type: { in: vectorLayerTypes } },
+      include: { vector_layer_displays: true, layer_presentations: true },
     }),
   )
+  const activeVectorLayers = vectorLayers.filter((l) =>
+    l.layer_presentations.some((lp) => lp.active),
+  )
 
-  return vectorLayers.map((l) => {
+  return activeVectorLayers.map((l) => {
     const Component = layerToComponent[l.type]
 
     return <Component key={l.vector_layer_id} layer={l} />
