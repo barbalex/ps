@@ -40,8 +40,6 @@ export const PlaceChildren = memo(
     )
     const showFiles = project?.files_active_places ?? false
 
-    console.log('hello PlaceChildren', { place_id })
-
     return (
       <>
         {!place_id && (
