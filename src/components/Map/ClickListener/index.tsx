@@ -8,6 +8,7 @@ import proj4 from 'proj4'
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { layersDataFromRequestData } from './layersDataFromRequestData.ts'
 import { fetchData } from './fetchData.ts'
+import { sqlFromFilter } from '../../../modules/sqlFromFilter.ts'
 
 export const ClickListener = memo(() => {
   const { project_id } = useParams()
@@ -48,13 +49,48 @@ export const ClickListener = memo(() => {
       // by querying db.vector_layer_geoms using ST_CONTAINS once PostGIS arrives in PgLite
 
       // 1. Tile Layers
-      const tileLayers = await db.tile_layers.findMany({
-        where: { project_id, active: true, ...tileLayersWhere },
-        orderBy: [{ sort: 'asc' }, { label: 'asc' }],
+      // using raw query because of the join with layer_presentations
+      // TODO: move sort to layer_presentations
+      const sqlFilter = sqlFromFilter({
+        filter: appState?.filter_tile_layers,
+        columnPrefix: 'tl.',
       })
+      const sqlToAddToWhere = sqlFilter ? ` AND ${sqlFilter}` : ''
+      console.log('ClickListener', {
+        sqlFilter,
+        sqlToAddToWhere,
+        filter: appState?.filter_tile_layers,
+      })
+      const tileLayers = await db.rawQuery({
+        sql: `select tl.*
+                from tile_layers tl inner join layer_presentations lp on lp.tile_layer_id = tl.tile_layer_id
+                where lp.active = true and tl.project_id = $1${sqlToAddToWhere} order by tl.sort, tl.label`,
+        args: [project_id],
+      })
+      // const tileLayers = await db.tile_layers.findMany({
+      //   where: {
+      //     project_id,
+      //     ...tileLayersWhere,
+      //   },
+      //   orderBy: [{ sort: 'asc' }, { label: 'asc' }],
+      // })
+      console.log('ClickListener, tileLayers', tileLayers)
       // loop through vector layers and get infos
       for await (const layer of tileLayers) {
-        const { wms_version, wms_base_url, wms_layer, wms_info_format } = layer
+        const {
+          wms_version,
+          wms_base_url,
+          wms_layer: wmsLayerJson,
+          wms_info_format: wmsInfoFormatJson,
+        } = layer
+        let wms_info_format = wmsInfoFormatJson
+        try {
+          wms_info_format = JSON.parse(wmsInfoFormatJson)
+        } catch {}
+        let wms_layer = wmsLayerJson
+        try {
+          wms_layer = JSON.parse(wmsLayerJson)
+        } catch {}
         const params = {
           request: 'GetFeatureInfo',
           service: 'WMS',
