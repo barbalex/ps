@@ -7,7 +7,10 @@ import { Checkbox } from '@fluentui/react-components'
 import { useElectric } from '../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../shared/ErrorBoundary.tsx'
 import { FormHeader } from '../../../FormHeader/index.tsx'
-import { createLayerPresentation } from '../../../../modules/createRows.ts'
+import {
+  createLayerPresentation,
+  createNotification,
+} from '../../../../modules/createRows.ts'
 
 const formStyle = {
   paddingLeft: 10,
@@ -92,6 +95,32 @@ export const Layers = memo(({ isNarrow }) => {
         ),
     )
 
+  console.log('Layers', { active, tiles, own, vectors, layerPresentations })
+
+  const onChangeActive = useCallback(
+    (layer) => {
+      // update layer_presentations, set active = false
+      const presentation = layerPresentations.find(
+        (lp) =>
+          (lp.tile_layer_id === layer.tile_layer_id ||
+            lp.vector_layer_id === layer.vector_layer_id) &&
+          lp.active,
+      )
+      if (presentation) {
+        return db.layer_presentations.update({
+          where: { layer_presentation_id: presentation.layer_presentation_id },
+          data: { active: false },
+        })
+      }
+      // if no presentation exists, create notification
+      createNotification({
+        message: 'Layer presentation not found',
+        type: 'warning',
+      })
+    },
+    [db, layerPresentations],
+  )
+
   const onChangeNonActive = useCallback(
     (layer) => {
       // 1. check if layer has a presentation
@@ -101,7 +130,6 @@ export const Layers = memo(({ isNarrow }) => {
             lp.vector_layer_id === layer.vector_layer_id) &&
           lp.active,
       )
-      console.log('Layers.onChangeNonActive', { layer, presentation })
       // 2. if not, create one
       if (!presentation) {
         const data = createLayerPresentation({
@@ -113,10 +141,6 @@ export const Layers = memo(({ isNarrow }) => {
             : {}),
           active: true,
         })
-        console.log(
-          'Layers.onChangeNonActive.createLayerPresentation, data:',
-          data,
-        )
         db.layer_presentations.create({ data })
       }
       // 3. if yes, update it
@@ -149,8 +173,21 @@ export const Layers = memo(({ isNarrow }) => {
           <h2>Active</h2>
           <div style={layerListStyle}>
             {active.length ? (
-              tileLayers?.map((l) => (
-                <Checkbox key={l.tile_layer_id} size="large" label={l.label} />
+              active?.map((l) => (
+                <Checkbox
+                  key={l.tile_layer_id}
+                  size="large"
+                  label={l.label}
+                  checked={
+                    !!layerPresentations.find(
+                      (lp) =>
+                        (lp.tile_layer_id === l.tile_layer_id ||
+                          lp.vector_layer_id === l.vector_layer_id) &&
+                        lp.active,
+                    )
+                  }
+                  onChange={() => onChangeActive(l)}
+                />
               ))
             ) : (
               <p>No active layers</p>
@@ -159,7 +196,7 @@ export const Layers = memo(({ isNarrow }) => {
           <h2>Tiled</h2>
           <div style={layerListStyle}>
             {tiles.length ? (
-              tileLayers?.map((l) => (
+              tiles?.map((l) => (
                 <Checkbox
                   key={l.tile_layer_id}
                   size="large"
