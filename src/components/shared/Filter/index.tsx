@@ -72,7 +72,7 @@ export const Filter = memo(({ level }) => {
     }),
   )
 
-  console.log('hello Filter 1', { tableName, filterName, appState })
+  // console.log('hello Filter 1', { tableName, filterName, appState })
 
   const filter = useMemo(
     () =>
@@ -101,17 +101,17 @@ export const Filter = memo(({ level }) => {
   const isFiltered = filter.length > 0
   const orFiltersToUse = isFiltered ? [...filter, {}] : [{}]
 
-  console.log('hello Filter 2', {
-    tableName,
-    filterName,
-    tableNameForTitle,
-    title,
-    level,
-    where,
-    whereUnfiltered,
-    filter,
-    place_id,
-  })
+  // console.log('hello Filter 2', {
+  //   tableName,
+  //   filterName,
+  //   tableNameForTitle,
+  //   title,
+  //   level,
+  //   where,
+  //   whereUnfiltered,
+  //   filter,
+  //   place_id,
+  // })
 
   const { results = [] } = useLiveQuery(
     db?.[tableName]?.liveMany({
@@ -126,10 +126,10 @@ export const Filter = memo(({ level }) => {
     }),
   )
 
-  console.log('hello Filter 3', {
-    results,
-    resultsUnfiltered,
-  })
+  // console.log('hello Filter 3', {
+  //   results,
+  //   resultsUnfiltered,
+  // })
 
   if (!appState) return <Loading />
 

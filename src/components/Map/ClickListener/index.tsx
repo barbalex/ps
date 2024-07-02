@@ -51,17 +51,22 @@ export const ClickListener = memo(() => {
       // 1. Tile Layers
       // using raw query because of the join with layer_presentations
       // TODO: move sort to layer_presentations
-      const sqlFilter = sqlFromFilter({
+      const [sqlFilter, additionalArgs] = sqlFromFilter({
         filter: appState?.filter_tile_layers,
         columnPrefix: 'tl.',
+        argsBeginAt: 2,
       })
       const sqlToAddToWhere = sqlFilter ? ` AND ${sqlFilter}` : ''
-      const tileLayers = await db.rawQuery({
-        sql: `select tl.*
-                from tile_layers tl inner join layer_presentations lp on lp.tile_layer_id = tl.tile_layer_id
-                where lp.active = true and tl.project_id = $1${sqlToAddToWhere} order by tl.sort, tl.label`,
-        args: [project_id],
+      const sql = `select tl.* from tile_layers tl inner join layer_presentations lp on lp.tile_layer_id = tl.tile_layer_id where lp.active = true and tl.project_id = $1${sqlToAddToWhere} order by tl.sort, tl.label`
+      const args = [project_id, ...additionalArgs]
+      console.log('ClickListener.onClick', {
+        sqlFilter,
+        additionalArgs,
+        sqlToAddToWhere,
+        sql,
+        args,
       })
+      const tileLayers = await db.rawQuery({ sql, args })
       // const tileLayers = await db.tile_layers.findMany({
       //   where: {
       //     project_id,
