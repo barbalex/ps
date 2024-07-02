@@ -31,14 +31,14 @@ export const ClickListener = memo(() => {
       const bounds = map.getBounds()
 
       const mapInfo = { lat, lng, zoom, layers: [] }
-      const tileLayersFilter =
-        appState?.filter_tile_layers?.filter(
-          (f) => Object.keys(f).length > 0,
-        ) ?? []
-      const tileLayersWhere =
-        tileLayersFilter.length > 1
-          ? { OR: tileLayersFilter }
-          : tileLayersFilter[0]
+      // const tileLayersFilter =
+      //   appState?.filter_tile_layers?.filter(
+      //     (f) => Object.keys(f).length > 0,
+      //   ) ?? []
+      // const tileLayersWhere =
+      //   tileLayersFilter.length > 1
+      //     ? { OR: tileLayersFilter }
+      //     : tileLayersFilter[0]
 
       // Three types of querying:
       // 1. Tile Layers
@@ -56,11 +56,6 @@ export const ClickListener = memo(() => {
         columnPrefix: 'tl.',
       })
       const sqlToAddToWhere = sqlFilter ? ` AND ${sqlFilter}` : ''
-      console.log('ClickListener', {
-        sqlFilter,
-        sqlToAddToWhere,
-        filter: appState?.filter_tile_layers,
-      })
       const tileLayers = await db.rawQuery({
         sql: `select tl.*
                 from tile_layers tl inner join layer_presentations lp on lp.tile_layer_id = tl.tile_layer_id
@@ -74,7 +69,6 @@ export const ClickListener = memo(() => {
       //   },
       //   orderBy: [{ sort: 'asc' }, { label: 'asc' }],
       // })
-      console.log('ClickListener, tileLayers', tileLayers)
       // loop through vector layers and get infos
       for await (const layer of tileLayers) {
         const {
@@ -83,6 +77,7 @@ export const ClickListener = memo(() => {
           wms_layer: wmsLayerJson,
           wms_info_format: wmsInfoFormatJson,
         } = layer
+        // in raw queries, jsonb columns need to be parsed
         let wms_info_format = wmsInfoFormatJson
         try {
           wms_info_format = JSON.parse(wmsInfoFormatJson)
