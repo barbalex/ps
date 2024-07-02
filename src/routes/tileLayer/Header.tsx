@@ -20,7 +20,7 @@ export const Header = memo(({ autoFocusRef }) => {
     await db.tile_layers.create({ data: tileLayer })
     // also add layer_presentation
     const layerPresentation = createLayerPresentation({
-      layer_id: tileLayer.tile_layer_id,
+      tile_layer_id: tileLayer.tile_layer_id,
     })
     await db.layer_presentations.create({ data: layerPresentation })
     navigate({
