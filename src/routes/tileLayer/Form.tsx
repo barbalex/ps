@@ -88,12 +88,6 @@ export const Component = memo(
               type="number"
               validationMessage="Add a sorting order here if alphabetically by label is not desired"
             />
-            <SwitchField
-              label="active"
-              name="active"
-              value={row.active}
-              onChange={onChange}
-            />
             {row?.type === 'wms' && row?.wms_base_url && (
               <>
                 <DropdownFieldFromLayerOptions
