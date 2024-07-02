@@ -41,6 +41,7 @@ import { generatePlaceReportValueLabel } from './sql/placeReportValues.ts'
 import { generateMessageLabel } from './sql/messages.ts'
 import { generateAppStatesLabel } from './sql/appStates.ts'
 import { generateVectorLayerDisplayLabel } from './sql/vectorLayerDisplays.ts'
+import {generateLayerPresentationLabel} from './sql/layerPresentations.ts'
 import { generateChartLabel } from './sql/charts.ts'
 import { generateChartSubjectLabel } from './sql/chartSubjects.ts'
 import { generateOccurrenceImportLabel } from './sql/occurrenceImports.ts'
@@ -101,6 +102,7 @@ export const SqlInitializer = () => {
       await generateMessageLabel(db)
       await generateAppStatesLabel(db)
       await generateVectorLayerDisplayLabel(db)
+      await generateLayerPresentationLabel(db)
       await generateChartLabel(db)
       await generateChartSubjectLabel(db)
       await generateOccurrenceImportLabel(db)

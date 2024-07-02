@@ -6,13 +6,14 @@ import { useElectric } from '../ElectricProvider.tsx'
 import {
   createVectorLayer,
   createVectorLayerDisplay,
+  createLayerPresentation,
 } from '../modules/createRows.ts'
 import { useFirstRender } from '../modules/useFirstRender.ts'
 
 // TODO: if this runs BEFORE data was synced with the server, it will create duplicate vector_layers
 // How to know if data was synced with the server?
 // it would be better to add vector_layers and their displays inside triggers on project creation
-// but as sqlite does not have functions to create uuid's, we need to do it here
+// but as SQLite does not have functions to create uuid's, we need to do it here
 export const TableLayersProvider = memo(() => {
   // every project needs vector_layers and vector_layer_displays for the geometry tables
   const { db } = useElectric()!
@@ -67,6 +68,10 @@ export const TableLayersProvider = memo(() => {
             vector_layer_id: newVectorLayer.vector_layer_id,
           })
           await db.vector_layer_displays.create({ data: newVLD })
+          const newLP = createLayerPresentation({
+            vector_layer_id: newVectorLayer.vector_layer_id,
+          })
+          await db.layer_presentations.create({ data: newLP })
         } else {
           const places1VectorLayerDisplay =
             places1VectorLayer?.vector_layer_displays?.[0]
@@ -96,6 +101,10 @@ export const TableLayersProvider = memo(() => {
             vector_layer_id: newVectorLayer.vector_layer_id,
           })
           await db.vector_layer_displays.create({ data: newVLD })
+          const newLP = createLayerPresentation({
+            vector_layer_id: newVectorLayer.vector_layer_id,
+          })
+          await db.layer_presentations.create({ data: newLP })
         } else {
           const actions1VectorLayerDisplay =
             actions1VectorLayer?.vector_layer_displays?.[0]
@@ -125,6 +134,10 @@ export const TableLayersProvider = memo(() => {
             vector_layer_id: newVectorLayer.vector_layer_id,
           })
           await db.vector_layer_displays.create({ data: newVLD })
+          const newLP = createLayerPresentation({
+            vector_layer_id: newVectorLayer.vector_layer_id,
+          })
+          await db.layer_presentations.create({ data: newLP })
         } else {
           const checks1VectorLayerDisplay =
             checks1VectorLayer?.vector_layer_displays?.[0]
@@ -156,6 +169,10 @@ export const TableLayersProvider = memo(() => {
               vector_layer_id: newVectorLayer.vector_layer_id,
             })
             await db.vector_layer_displays.create({ data: newVLD })
+            const newLP = createLayerPresentation({
+              vector_layer_id: newVectorLayer.vector_layer_id,
+            })
+            await db.layer_presentations.create({ data: newLP })
           } else {
             const occurrencesAssigned1VectorLayerDisplay =
               occurrencesAssigned1VectorLayer?.vector_layer_displays?.[0]
@@ -186,6 +203,10 @@ export const TableLayersProvider = memo(() => {
               vector_layer_id: newVectorLayer.vector_layer_id,
             })
             await db.vector_layer_displays.create({ data: newVLD })
+            const newLP = createLayerPresentation({
+              vector_layer_id: newVectorLayer.vector_layer_id,
+            })
+            await db.layer_presentations.create({ data: newLP })
           } else {
             const occurrencesToAssessVectorLayerDisplay =
               occurrencesToAssessVectorLayer?.vector_layer_displays?.[0]
@@ -215,6 +236,10 @@ export const TableLayersProvider = memo(() => {
               vector_layer_id: newVectorLayer.vector_layer_id,
             })
             await db.vector_layer_displays.create({ data: newVLD })
+            const newLP = createLayerPresentation({
+              vector_layer_id: newVectorLayer.vector_layer_id,
+            })
+            await db.layer_presentations.create({ data: newLP })
           } else {
             const occurrencesNotToAssignVectorLayerDisplay =
               occurrencesNotToAssignVectorLayer?.vector_layer_displays?.[0]
@@ -245,6 +270,10 @@ export const TableLayersProvider = memo(() => {
               vector_layer_id: newVectorLayer.vector_layer_id,
             })
             await db.vector_layer_displays.create({ data: newVLD })
+            const newLP = createLayerPresentation({
+              vector_layer_id: newVectorLayer.vector_layer_id,
+            })
+            await db.layer_presentations.create({ data: newLP })
           } else {
             const places2VectorLayerDisplay =
               places2VectorLayer?.vector_layer_displays?.[0]
@@ -276,6 +305,10 @@ export const TableLayersProvider = memo(() => {
               vector_layer_id: newVectorLayer.vector_layer_id,
             })
             await db.vector_layer_displays.create({ data: newVLD })
+            const newLP = createLayerPresentation({
+              vector_layer_id: newVectorLayer.vector_layer_id,
+            })
+            await db.layer_presentations.create({ data: newLP })
           } else {
             const actions2VectorLayerDisplay =
               actions2VectorLayer?.vector_layer_displays?.[0]
@@ -307,6 +340,10 @@ export const TableLayersProvider = memo(() => {
               vector_layer_id: newVectorLayer.vector_layer_id,
             })
             await db.vector_layer_displays.create({ data: newVLD })
+            const newLP = createLayerPresentation({
+              vector_layer_id: newVectorLayer.vector_layer_id,
+            })
+            await db.layer_presentations.create({ data: newLP })
           } else {
             const checks2VectorLayerDisplay =
               checks2VectorLayer?.vector_layer_displays?.[0]
@@ -338,6 +375,10 @@ export const TableLayersProvider = memo(() => {
               vector_layer_id: newVectorLayer.vector_layer_id,
             })
             await db.vector_layer_displays.create({ data: newVLD })
+            const newLP = createLayerPresentation({
+              vector_layer_id: newVectorLayer.vector_layer_id,
+            })
+            await db.layer_presentations.create({ data: newLP })
           } else {
             const occurrencesAssigned2VectorLayerDisplay =
               occurrencesAssigned2VectorLayer?.vector_layer_displays?.[0]
