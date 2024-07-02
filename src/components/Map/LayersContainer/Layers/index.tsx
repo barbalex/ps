@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 // import { useCorbado } from '@corbado/react'
 import { useParams } from 'react-router-dom'
@@ -7,6 +7,7 @@ import { Checkbox } from '@fluentui/react-components'
 import { useElectric } from '../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../shared/ErrorBoundary.tsx'
 import { FormHeader } from '../../../FormHeader/index.tsx'
+import { createLayerPresentation } from '../../../../modules/createRows.ts'
 
 const formStyle = {
   paddingLeft: 10,
@@ -60,12 +61,74 @@ export const Layers = memo(({ isNarrow }) => {
   )
   // 2. when one is set active, add layer_presentations for it
 
-  console.log('Map Layers:', {
-    tileLayers,
-    vectorLayers,
-    where,
-    layerPresentations,
-  })
+  const active = [...tileLayers, ...vectorLayers].filter((l) =>
+    layerPresentations.some(
+      (lp) =>
+        (lp.tile_layer_id === l.tile_layer_id ||
+          lp.vector_layer_id === l.vector_layer_id) &&
+        lp.active,
+    ),
+  )
+  const tiles = tileLayers.filter(
+    (l) =>
+      !layerPresentations.some(
+        (lp) => lp.tile_layer_id === l.tile_layer_id && lp.active,
+      ),
+  )
+  const own = vectorLayers
+    .filter((v) => v.type !== 'wfs')
+    .filter(
+      (l) =>
+        !layerPresentations.some(
+          (lp) => lp.vector_layer_id === l.vector_layer_id && lp.active,
+        ),
+    )
+  const vectors = vectorLayers
+    .filter((v) => v.type === 'wfs')
+    .filter(
+      (l) =>
+        !layerPresentations.some(
+          (lp) => lp.vector_layer_id === l.vector_layer_id && lp.active,
+        ),
+    )
+
+  const onChangeNonActive = useCallback(
+    (layer) => {
+      // 1. check if layer has a presentation
+      const presentation = layerPresentations.find(
+        (lp) =>
+          (lp.tile_layer_id === layer.tile_layer_id ||
+            lp.vector_layer_id === layer.vector_layer_id) &&
+          lp.active,
+      )
+      console.log('Layers.onChangeNonActive', { layer, presentation })
+      // 2. if not, create one
+      if (!presentation) {
+        const data = createLayerPresentation({
+          ...(layer.tile_layer_id
+            ? { tile_layer_id: layer.tile_layer_id }
+            : {}),
+          ...(layer.vector_layer_id
+            ? { vector_layer_id: layer.vector_layer_id }
+            : {}),
+          active: true,
+        })
+        console.log(
+          'Layers.onChangeNonActive.createLayerPresentation, data:',
+          data,
+        )
+        db.layer_presentations.create({ data })
+      }
+      // 3. if yes, update it
+      else {
+        db.layer_presentations.update({
+          where: { layer_presentation_id: presentation.layer_presentation_id },
+          data: { active: true },
+        })
+      }
+    },
+    [db, layerPresentations],
+  )
 
   return (
     <ErrorBoundary>
@@ -83,18 +146,80 @@ export const Layers = memo(({ isNarrow }) => {
           titleMarginLeft={isNarrow ? 34 : undefined}
         />
         <div style={formStyle}>
-          <h2>Active Layers</h2>
-          <h2>Tile Layers</h2>
+          <h2>Active</h2>
           <div style={layerListStyle}>
-            {tileLayers?.map((l) => (
-              <Checkbox key={l.tile_layer_id} size="large" label={l.label} />
-            ))}
+            {active.length ? (
+              tileLayers?.map((l) => (
+                <Checkbox key={l.tile_layer_id} size="large" label={l.label} />
+              ))
+            ) : (
+              <p>No active layers</p>
+            )}
           </div>
-          <h2>Vector Layers</h2>
+          <h2>Tiled</h2>
           <div style={layerListStyle}>
-            {vectorLayers?.map((l) => (
-              <Checkbox key={l.vector_layer_id} size="large" label={l.label} />
-            ))}
+            {tiles.length ? (
+              tileLayers?.map((l) => (
+                <Checkbox
+                  key={l.tile_layer_id}
+                  size="large"
+                  label={l.label}
+                  // checked if layer has an active presentation
+                  checked={
+                    !!layerPresentations.find(
+                      (lp) => lp.tile_layer_id === l.tile_layer_id && lp.active,
+                    )
+                  }
+                  onChange={() => onChangeNonActive(l)}
+                />
+              ))
+            ) : (
+              <p>No tile layers</p>
+            )}
+          </div>
+          <h2>Vectors</h2>
+          <div style={layerListStyle}>
+            {vectors.length ? (
+              vectors.map((l) => (
+                <Checkbox
+                  key={l.vector_layer_id}
+                  size="large"
+                  label={l.label}
+                  // checked if layer has an active presentation
+                  checked={
+                    !!layerPresentations.find(
+                      (lp) =>
+                        lp.vector_layer_id === l.vector_layer_id && lp.active,
+                    )
+                  }
+                  onChange={() => onChangeNonActive(l)}
+                />
+              ))
+            ) : (
+              <p>No vector layers</p>
+            )}
+          </div>
+          <h2>Own</h2>
+          <div style={layerListStyle}>
+            {own.length ? (
+              own.map((l) => (
+                <Checkbox
+                  key={l.vector_layer_id}
+                  size="large"
+                  label={l.label}
+                  // checked if layer has an active presentation
+                  checked={
+                    !!layerPresentations.find(
+                      (lp) =>
+                        lp.vector_layer_id === l.vector_layer_id && lp.active,
+                    )
+                  }
+                  onChange={() => onChangeNonActive(l)}
+                />
+              ))
+            ) : (
+              <p>No own layers</p>
+            )}
           </div>
         </div>
       </div>
