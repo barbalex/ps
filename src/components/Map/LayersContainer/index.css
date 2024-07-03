@@ -32,5 +32,6 @@
   .map-layers-drawer {
     transition-property: width;
     will-change: width;
+    height: 100% !important;
   }
 }
