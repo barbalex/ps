@@ -33,17 +33,7 @@ export const VectorLayers = () => {
     l.layer_presentations.some((lp) => lp.active),
   )
 
-  const { results: vectorLayerDisplays = [] } = useLiveQuery(
-    db.vector_layer_displays.liveMany({
-      where: {
-        vector_layer_id: {
-          in: activeVectorLayers.map((vl) => vl.vector_layer_id),
-        },
-      },
-    }),
-  )
-
-  if (!activeVectorLayers.length || !vectorLayerDisplays.length) return []
+  if (!activeVectorLayers.length) return []
 
   return activeVectorLayers.map((layer) => (
     <VectorLayerChooser key={layer.vector_layer_id} layer={layer} />
