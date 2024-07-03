@@ -1,6 +1,9 @@
 import { memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
+import {
+  Accordion
+} from '@fluentui/react-components'
 
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
@@ -54,16 +57,18 @@ export const ActiveLayers = memo(() => {
       <section style={sectionStyle}>
         <h2 style={titleStyle}>Active</h2>
         <div style={layerListStyle}>
-          {activeLayers.length ? (
-            activeLayers?.map((l) => (
-              <ActiveLayer
-                key={l.tile_layer_id ?? l.vector_layer_id}
-                layer={l}
-              />
-            ))
-          ) : (
-            <p>No active layers</p>
-          )}
+          <Accordion multiple>
+            {activeLayers.length ? (
+              activeLayers?.map((l) => (
+                <ActiveLayer
+                  key={l.tile_layer_id ?? l.vector_layer_id}
+                  layer={l}
+                />
+              ))
+            ) : (
+              <p>No active layers</p>
+            )}
+          </Accordion>
         </div>
       </section>
     </ErrorBoundary>

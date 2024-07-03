@@ -1273,6 +1273,8 @@ COMMENT ON COLUMN app_states.designing IS 'Whether user is currently designing p
 -- the info drawer filters all the objects with correct lat, lng and zoom and shows them
 COMMENT ON COLUMN app_states.map_info IS 'Information presented, when user clicks on a map. Array of: {label, properties} where properties is an array of [key, value]';
 
+COMMENT ON COLUMN app_states.map_layer_sorting IS 'The order of layers in the map. An array of layer_presentation_ids';
+
 COMMENT ON COLUMN app_states.editing_place_geometry IS 'The id of the place whose geometry is currently being edited';
 
 COMMENT ON COLUMN app_states.editing_check_geometry IS 'The id of the check whose geometry is currently being edited';

@@ -1,5 +1,10 @@
 import { memo, useCallback } from 'react'
 import { Checkbox } from '@fluentui/react-components'
+import {
+  AccordionHeader,
+  AccordionItem,
+  AccordionPanel,
+} from '@fluentui/react-components'
 
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
@@ -53,21 +58,29 @@ export const ActiveLayer = memo(({ layer }) => {
 
   return (
     <ErrorBoundary>
-      <div style={containerStyle}>
-        <Checkbox
-          size="large"
-          label={layer.label}
-          checked={layerPresentation.active}
-          onChange={() => onChangeActive(layer)}
-        />
-        <SliderField
-          label="Opacity (%)"
-          min={0}
-          max={100}
-          value={layerPresentation.opacity_percent}
-          onChange={(_, data) => onChangeOpacity(layerPresentation, data.value)}
-        />
-      </div>
+      <AccordionItem value={layer.vector_layer_id ?? layer.tile_layer_id}>
+        <div style={containerStyle}>
+          <AccordionHeader>
+            <Checkbox
+              size="large"
+              label={layer.label}
+              checked={layerPresentation.active}
+              onChange={() => onChangeActive(layer)}
+            />
+          </AccordionHeader>
+          <AccordionPanel>
+            <SliderField
+              label="Opacity (%)"
+              min={0}
+              max={100}
+              value={layerPresentation.opacity_percent}
+              onChange={(_, data) =>
+                onChangeOpacity(layerPresentation, data.value)
+              }
+            />
+          </AccordionPanel>
+        </div>
+      </AccordionItem>
     </ErrorBoundary>
   )
 })
