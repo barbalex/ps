@@ -152,8 +152,8 @@ export const LayersContainer = memo(({ containerRef }) => {
             title={isOpen ? 'Close Layers' : 'Open Layers'}
             style={{
               position: 'absolute',
-              top: isNarrow ? (isOpen ? 11 : -26) : 5,
-              right: isNarrow ? 'unset' : isOpen ? 5.5 : -26.5,
+              top: isNarrow ? (isOpen ? 6 : -31) : 5,
+              right: isNarrow ? 'unset' : isOpen ? 0.5 : -31.5,
               left: isNarrow ? 5 : 'unset',
               marginRight: isOpen ? 5 : 0,
               zIndex: 100000000,

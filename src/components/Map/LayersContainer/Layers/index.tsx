@@ -134,7 +134,12 @@ export const Layers = memo(({ isNarrow }) => {
 
   return (
     <ErrorBoundary>
-      <div style={containerStyle}>
+      <div
+        style={{
+          ...containerStyle,
+          ...(isNarrow ? { marginTop: 5 } : { marginRight: 5 }),
+        }}
+      >
         <FormHeader
           title="Layers"
           titleMarginLeft={isNarrow ? 34 : undefined}

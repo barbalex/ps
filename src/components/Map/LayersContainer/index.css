@@ -20,6 +20,7 @@
     width: 100% !important;
     transition-property: height;
     will-change: height;
+    /* margin-top: 5px; */
   }
 }
 @container (width > 700px) {
@@ -32,5 +33,6 @@
   .map-layers-drawer {
     transition-property: width;
     will-change: width;
+    /* margin-right: 5px; */
   }
 }
