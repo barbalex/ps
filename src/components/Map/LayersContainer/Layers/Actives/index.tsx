@@ -1,12 +1,9 @@
-import { memo, useCallback } from 'react'
+import { memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
-import { Checkbox, Slider, Field } from '@fluentui/react-components'
 
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
-import { createNotification } from '../../../../../modules/createRows.ts'
-import { SliderField } from '../../../../shared/SliderField.tsx'
 import { ActiveLayer } from './Active.tsx'
 
 const layerListStyle = {
@@ -46,38 +43,6 @@ export const ActiveLayers = memo(() => {
   )
 
   const activeLayers = [...activeTileLayers, ...activeVectorLayers]
-
-  const onChangeActive = useCallback(
-    (layer) => {
-      // update layer_presentations, set active = false
-      const presentation = layer.layer_presentations?.[0]
-      if (presentation) {
-        return db.layer_presentations.update({
-          where: { layer_presentation_id: presentation.layer_presentation_id },
-          data: { active: false },
-        })
-      }
-      // if no presentation exists, create notification
-      const data = createNotification({
-        title: 'Layer presentation not found',
-        type: 'warning',
-      })
-      db.notifications.create({ data })
-    },
-    [db],
-  )
-  const onChangeOpacity = useCallback(
-    (layerPresentation, value) => {
-      console.log('onChangeOpacity', { layerPresentation, value })
-      db.layer_presentations.update({
-        where: {
-          layer_presentation_id: layerPresentation.layer_presentation_id,
-        },
-        data: { opacity_percent: value },
-      })
-    },
-    [db.layer_presentations],
-  )
 
   return (
     <ErrorBoundary>
