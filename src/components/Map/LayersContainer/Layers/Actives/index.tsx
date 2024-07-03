@@ -6,6 +6,11 @@ import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { ActiveLayer } from './Active.tsx'
 
+const sectionStyle = {}
+const titleStyle = {
+  paddingLeft: 10,
+  paddingRight: 10,
+}
 const layerListStyle = {
   display: 'flex',
   flexDirection: 'column',
@@ -46,16 +51,21 @@ export const ActiveLayers = memo(() => {
 
   return (
     <ErrorBoundary>
-      <h2>Active</h2>
-      <div style={layerListStyle}>
-        {activeLayers.length ? (
-          activeLayers?.map((l) => (
-            <ActiveLayer key={l.tile_layer_id ?? l.vector_layer_id} layer={l} />
-          ))
-        ) : (
-          <p>No active layers</p>
-        )}
-      </div>
+      <section style={sectionStyle}>
+        <h2 style={titleStyle}>Active</h2>
+        <div style={layerListStyle}>
+          {activeLayers.length ? (
+            activeLayers?.map((l) => (
+              <ActiveLayer
+                key={l.tile_layer_id ?? l.vector_layer_id}
+                layer={l}
+              />
+            ))
+          ) : (
+            <p>No active layers</p>
+          )}
+        </div>
+      </section>
     </ErrorBoundary>
   )
 })

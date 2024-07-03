@@ -140,9 +140,7 @@ export const Layers = memo(({ isNarrow }) => {
           titleMarginLeft={isNarrow ? 34 : undefined}
         />
         <div style={formStyle}>
-          <section style={sectionStyle}>
-            <ActiveLayers />
-          </section>
+          <ActiveLayers />
           <section style={sectionStyle}>
             <h2>Tiled</h2>
             <div style={layerListStyle}>

@@ -9,6 +9,9 @@ import { SliderField } from '../../../../shared/SliderField.tsx'
 const containerStyle = {
   borderTop: '1px solid rgba(55, 118, 28, 0.5)',
   borderBottom: '1px solid rgba(55, 118, 28, 0.5)',
+  paddingLeft: 10,
+  paddingRight: 10,
+  paddingBottom: 10,
 }
 
 export const ActiveLayer = memo(({ layer }) => {
