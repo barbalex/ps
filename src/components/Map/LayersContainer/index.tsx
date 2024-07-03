@@ -59,6 +59,8 @@ export const LayersContainer = memo(({ containerRef }) => {
   const toggleOpen = useCallback(
     (e) => {
       e.stopPropagation()
+      console.log('toggling open')
+      // TODO: animate the change from open to close and versa
       setSize(isOpen ? 5 : isNarrow ? 500 : 380)
     },
     [isNarrow, isOpen],
