@@ -22,6 +22,8 @@ const containerStyle = {
 }
 const innerContainerStyle = {
   display: 'flex',
+  height: '100%',
+  backgroundColor: 'white',
 }
 
 export const LayersContainer = memo(({ containerRef }) => {
@@ -40,15 +42,6 @@ export const LayersContainer = memo(({ containerRef }) => {
     refreshOptions: { leading: false, trailing: true },
   })
   const isNarrow = containerWidth < 700
-
-  // animate opening and closing of the drawer
-  const [scope, animate] = useAnimate()
-  useEffect(() => {
-    // This "li" selector will only select children
-    // of the element that receives `scope`.
-    // isNarrow ? { height: size } : { width: size }
-    animate('.map-layers-drawer', isNarrow ? { height: size } : { width: size })
-  })
 
   const {
     width: ownWidth,
@@ -102,6 +95,16 @@ export const LayersContainer = memo(({ containerRef }) => {
     [isNarrow, isResizing],
   )
 
+  // animate opening and closing of the drawer
+  // const [scope, animate] = useAnimate()
+  // useEffect(() => {
+  //   if (isResizing) return
+  //   // This "li" selector will only select children
+  //   // of the element that receives `scope`.
+  //   // isNarrow ? { height: size } : { width: size }
+  //   animate('.map-layers-drawer', isNarrow ? { height: size } : { width: size })
+  // }, [animate, isNarrow, isResizing, size])
+
   useEffect(() => {
     window.addEventListener('mousemove', resize)
     // these events cant be added to the resizer's events
@@ -122,12 +125,16 @@ export const LayersContainer = memo(({ containerRef }) => {
       className="map-layers-container"
       style={{
         ...containerStyle,
+        ...(isNarrow ? {} : { height: '100%' }),
         // dragging can mark text so we disable pointer events
         ...(isResizing ? { pointerEvents: 'none' } : {}),
       }}
       ref={widthRef}
     >
-      <div style={innerContainerStyle} ref={scope}>
+      <div
+        style={innerContainerStyle}
+        // ref={scope}
+      >
         {!mapHideUi && (
           <Button
             onClick={toggleOpen}
