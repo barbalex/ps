@@ -95,8 +95,8 @@ export const Header = memo(({ autoFocusRef, row }: Props) => {
       })
     }
   }, [
-    appState.app_state_id,
-    appState.tabs,
+    appState?.app_state_id,
+    appState?.tabs,
     db.app_states,
     db.layer_presentations,
     isDraggable,
