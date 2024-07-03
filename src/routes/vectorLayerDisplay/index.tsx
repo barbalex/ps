@@ -7,7 +7,7 @@ import { useElectric } from '../../ElectricProvider.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
-import { SliderField } from '../../components/shared/SliderField.tsx'
+import { SliderFieldWithInput } from '../../components/shared/SliderFieldWithInput.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { MarkerSymbolPicker } from './MarkerSymbolPicker/index.tsx'
@@ -112,7 +112,7 @@ export const Component = () => {
             color={row.color}
             name="color"
           />
-          <SliderField
+          <SliderFieldWithInput
             label="Lines and Points: Opacity (%)"
             name="opacity_percent"
             value={row.opacity_percent ?? ''}
@@ -173,7 +173,7 @@ export const Component = () => {
             onChange={onChange}
             color={row.fill_color}
           />
-          <SliderField
+          <SliderFieldWithInput
             label="Fill: Opacity (%)"
             name="fill_opacity_percent"
             value={row.fill_opacity_percent ?? ''}

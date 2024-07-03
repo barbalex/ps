@@ -3,7 +3,7 @@ import { Field, Slider, Label, Input } from '@fluentui/react-components'
 import type { InputProps } from '@fluentui/react-components'
 import { useDebouncedCallback } from 'use-debounce'
 
-export const SliderField = memo(
+export const SliderFieldWithInput = memo(
   forwardRef((props: InputProps, ref) => {
     const {
       label,

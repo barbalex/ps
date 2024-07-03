@@ -1,7 +1,7 @@
 import { memo, useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
-import { Checkbox } from '@fluentui/react-components'
+import { Checkbox, Label, Slider, Field } from '@fluentui/react-components'
 
 import { useElectric } from '../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../shared/ErrorBoundary.tsx'
@@ -64,28 +64,54 @@ export const ActiveLayers = memo(() => {
     },
     [db],
   )
+  const onChangeOpacity = useCallback(
+    (layerPresentation, value) => {
+      console.log('onChangeOpacity', { layerPresentation, value })
+      db.layer_presentations.update({
+        where: {
+          layer_presentation_id: layerPresentation.layer_presentation_id,
+        },
+        data: { opacity_percent: value },
+      })
+    },
+    [db.layer_presentations],
+  )
 
   return (
     <ErrorBoundary>
       <h2>Active</h2>
       <div style={layerListStyle}>
         {activeLayers.length ? (
-          activeLayers?.map((l) => (
-            <Checkbox
-              key={l.tile_layer_id ?? l.vector_layer_id}
-              size="large"
-              label={l.label}
-              checked={
-                !!l.layer_presentations.find(
-                  (lp) =>
-                    (lp.tile_layer_id === l.tile_layer_id ||
-                      lp.vector_layer_id === l.vector_layer_id) &&
-                    lp.active,
-                )
-              }
-              onChange={() => onChangeActive(l)}
-            />
-          ))
+          activeLayers?.map((l) => {
+            const layerPresentation = l.layer_presentations?.[0]
+            console.log('Active', { l, layerPresentation })
+
+            return (
+              <div key={l.tile_layer_id ?? l.vector_layer_id}>
+                <Checkbox
+                  size="large"
+                  label={l.label}
+                  checked={layerPresentation.active}
+                  onChange={() => onChangeActive(l)}
+                />
+                <Field label="Opacity">
+                  <Slider
+                    min={0}
+                    max={100}
+                    value={layerPresentation.opacity_percent}
+                    onChange={(_, data) => {
+                      console.log('onChangeOpacity', {
+                        _,
+                        data,
+                        layerPresentation,
+                      })
+                      onChangeOpacity(layerPresentation, data.value)
+                    }}
+                  />
+                </Field>
+              </div>
+            )
+          })
         ) : (
           <p>No active layers</p>
         )}

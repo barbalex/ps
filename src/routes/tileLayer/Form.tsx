@@ -4,7 +4,7 @@ import { useOutletContext, useParams, useLocation } from 'react-router-dom'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
-import { SliderField } from '../../components/shared/SliderField.tsx'
+import { SliderFieldWithInput } from '../../components/shared/SliderFieldWithInput.tsx'
 // import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { DropdownFieldFromLayerOptions } from '../../components/shared/DropdownFieldFromLayerOptions.tsx'
 // import { tile_layer_type_enumSchema as typeSchema } from '../../generated/client/index.ts'
@@ -159,7 +159,7 @@ export const Component = memo(
               min={0}
               validationMessage="Zoom can be between 0 and 19"
             />
-            <SliderField
+            <SliderFieldWithInput
               label="Opacity (%)"
               name="opacity_percent"
               value={row.opacity_percent ?? ''}
