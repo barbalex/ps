@@ -11,6 +11,7 @@ import {
   createLayerPresentation,
   createNotification,
 } from '../../../../modules/createRows.ts'
+import { ActiveLayers } from './Active.tsx'
 
 const formStyle = {
   paddingLeft: 10,
@@ -169,29 +170,7 @@ export const Layers = memo(({ isNarrow }) => {
           titleMarginLeft={isNarrow ? 34 : undefined}
         />
         <div style={formStyle}>
-          <h2>Active</h2>
-          <div style={layerListStyle}>
-            {active.length ? (
-              active?.map((l) => (
-                <Checkbox
-                  key={l.tile_layer_id}
-                  size="large"
-                  label={l.label}
-                  checked={
-                    !!layerPresentations.find(
-                      (lp) =>
-                        (lp.tile_layer_id === l.tile_layer_id ||
-                          lp.vector_layer_id === l.vector_layer_id) &&
-                        lp.active,
-                    )
-                  }
-                  onChange={() => onChangeActive(l)}
-                />
-              ))
-            ) : (
-              <p>No active layers</p>
-            )}
-          </div>
+          <ActiveLayers />
           <h2>Tiled</h2>
           <div style={layerListStyle}>
             {tiles.length ? (
