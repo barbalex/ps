@@ -65,9 +65,10 @@ export const TableLayersProvider = memo(() => {
           )
         }
         // 1.2 places1VectorLayerDisplay: always needed
-        const places1VectorLayerDisplay = db.vector_layer_displays.findFirst({
-          where: { vector_layer_id: places1VectorLayer.vector_layer_id },
-        })
+        const places1VectorLayerDisplay =
+          await db.vector_layer_displays.findFirst({
+            where: { vector_layer_id: places1VectorLayer.vector_layer_id },
+          })
         if (!places1VectorLayerDisplay) {
           const newVLD = createVectorLayerDisplay({
             vector_layer_id: places1VectorLayer.vector_layer_id,
@@ -75,9 +76,11 @@ export const TableLayersProvider = memo(() => {
           await db.vector_layer_displays.create({ data: newVLD })
         }
         // 1.3 places1LayerPresentation: always needed
-        const places1LayerPresentation = db.layer_presentations.findFirst({
-          where: { vector_layer_id: places1VectorLayer.vector_layer_id },
-        })
+        const places1LayerPresentation = await db.layer_presentations.findFirst(
+          {
+            where: { vector_layer_id: places1VectorLayer.vector_layer_id },
+          },
+        )
         if (!places1LayerPresentation) {
           const newLP = createLayerPresentation({
             vector_layer_id: places1VectorLayer.vector_layer_id,
@@ -101,9 +104,10 @@ export const TableLayersProvider = memo(() => {
           })
         }
         // 2.2 actions1VectorLayerDisplay: always needed
-        const actions1VectorLayerDisplay = db.vector_layer_displays.findFirst({
-          where: { vector_layer_id: actions1VectorLayer.vector_layer_id },
-        })
+        const actions1VectorLayerDisplay =
+          await db.vector_layer_displays.findFirst({
+            where: { vector_layer_id: actions1VectorLayer.vector_layer_id },
+          })
         if (!actions1VectorLayerDisplay) {
           const newVLD = createVectorLayerDisplay({
             vector_layer_id: actions1VectorLayer.vector_layer_id,
@@ -111,9 +115,10 @@ export const TableLayersProvider = memo(() => {
           await db.vector_layer_displays.create({ data: newVLD })
         }
         // 2.3 actions1LayerPresentation: always needed
-        const actions1LayerPresentation = db.layer_presentations.findFirst({
-          where: { vector_layer_id: actions1VectorLayer.vector_layer_id },
-        })
+        const actions1LayerPresentation =
+          await db.layer_presentations.findFirst({
+            where: { vector_layer_id: actions1VectorLayer.vector_layer_id },
+          })
         if (!actions1LayerPresentation) {
           const newLP = createLayerPresentation({
             vector_layer_id: actions1VectorLayer.vector_layer_id,
@@ -137,9 +142,10 @@ export const TableLayersProvider = memo(() => {
           })
         }
         // 3.2 checks1VectorLayerDisplay: always needed
-        const checks1VectorLayerDisplay = db.vector_layer_displays.findFirst({
-          where: { vector_layer_id: checks1VectorLayer.vector_layer_id },
-        })
+        const checks1VectorLayerDisplay =
+          await db.vector_layer_displays.findFirst({
+            where: { vector_layer_id: checks1VectorLayer.vector_layer_id },
+          })
         if (!checks1VectorLayerDisplay) {
           const newVLD = createVectorLayerDisplay({
             vector_layer_id: checks1VectorLayer.vector_layer_id,
@@ -147,19 +153,21 @@ export const TableLayersProvider = memo(() => {
           await db.vector_layer_displays.create({ data: newVLD })
         }
         // 3.3 checks1LayerPresentation: always needed
-        const checks1LayerPresentation = db.layer_presentations.findFirst({
-          where: { vector_layer_id: checks1VectorLayer.vector_layer_id },
-        })
+        const checks1LayerPresentation = await db.layer_presentations.findFirst(
+          {
+            where: { vector_layer_id: checks1VectorLayer.vector_layer_id },
+          },
+        )
         if (!checks1LayerPresentation) {
           const newLP = createLayerPresentation({
             vector_layer_id: checks1VectorLayer.vector_layer_id,
           })
           await db.layer_presentations.create({ data: newLP })
         }
-        // 4. occurrences_assigned1 and occurrences_assigned1_lines: needed if occurrences exist and placeLevels1 has occurrences
+        // 4.1 occurrences_assigned1 and occurrences_assigned1_lines: needed if occurrences exist and placeLevels1 has occurrences
         // TODO: add occurrences_assigned1_lines
         if (placeLevel1?.occurrences && occurrences.length) {
-          const occurrencesAssigned1VectorLayer = vectorLayers?.find(
+          let occurrencesAssigned1VectorLayer = vectorLayers?.find(
             (vl) => vl.type === 'occurrences_assigned1',
           )
           if (!occurrencesAssigned1VectorLayer) {
@@ -170,32 +178,42 @@ export const TableLayersProvider = memo(() => {
                 ? `${placeLevel1.name_singular} occurrences assigned`
                 : 'Occurrences assigned',
             })
-            const newVectorLayer = await db.vector_layers.create({
+            occurrencesAssigned1VectorLayer = await db.vector_layers.create({
               data: vectorLayer,
             })
-            const newVLD = createVectorLayerDisplay({
-              vector_layer_id: newVectorLayer.vector_layer_id,
-            })
-            await db.vector_layer_displays.create({ data: newVLD })
-            const newLP = createLayerPresentation({
-              vector_layer_id: newVectorLayer.vector_layer_id,
-            })
-            await db.layer_presentations.create({ data: newLP })
-          } else {
-            const occurrencesAssigned1VectorLayerDisplay =
-              occurrencesAssigned1VectorLayer?.vector_layer_displays?.[0]
-            if (!occurrencesAssigned1VectorLayerDisplay) {
-              const newVLD = createVectorLayerDisplay({
+          }
+          // 4.2 occurrences_assigned1VectorLayerDisplay: always needed
+          const occurrencesAssigned1VectorLayerDisplay =
+            await db.vector_layer_displays.findFirst({
+              where: {
                 vector_layer_id:
                   occurrencesAssigned1VectorLayer.vector_layer_id,
-              })
-              await db.vector_layer_displays.create({ data: newVLD })
-            }
+              },
+            })
+          if (!occurrencesAssigned1VectorLayerDisplay) {
+            const newVLD = createVectorLayerDisplay({
+              vector_layer_id: occurrencesAssigned1VectorLayer.vector_layer_id,
+            })
+            await db.vector_layer_displays.create({ data: newVLD })
+          }
+          // 4.3 occurrences_assigned1LayerPresentation: always needed
+          const occurrencesAssigned1LayerPresentation =
+            await db.layer_presentations.findFirst({
+              where: {
+                vector_layer_id:
+                  occurrencesAssigned1VectorLayer.vector_layer_id,
+              },
+            })
+          if (!occurrencesAssigned1LayerPresentation) {
+            const newLP = createLayerPresentation({
+              vector_layer_id: occurrencesAssigned1VectorLayer.vector_layer_id,
+            })
+            await db.layer_presentations.create({ data: newLP })
           }
         }
-        // occurrences_to_assess: needed if occurrences exist
+        // 5.1 occurrences_to_assess: needed if occurrences exist
         if (occurrences.length) {
-          const occurrencesToAssessVectorLayer = vectorLayers?.find(
+          let occurrencesToAssessVectorLayer = vectorLayers?.find(
             (vl) => vl.type === 'occurrences_to_assess',
           )
           if (!occurrencesToAssessVectorLayer) {
@@ -204,31 +222,40 @@ export const TableLayersProvider = memo(() => {
               type: 'occurrences_to_assess',
               label: 'Occurrences to assess',
             })
-            const newVectorLayer = await db.vector_layers.create({
+            occurrencesToAssessVectorLayer = await db.vector_layers.create({
               data: vectorLayer,
             })
+          }
+          // 5.2 occurrencesToAssessVectorLayerDisplay: always needed
+          const occurrencesToAssessVectorLayerDisplay =
+            await db.vector_layer_displays.findFirst({
+              where: {
+                vector_layer_id: occurrencesToAssessVectorLayer.vector_layer_id,
+              },
+            })
+          if (!occurrencesToAssessVectorLayerDisplay) {
             const newVLD = createVectorLayerDisplay({
-              vector_layer_id: newVectorLayer.vector_layer_id,
+              vector_layer_id: occurrencesToAssessVectorLayer.vector_layer_id,
             })
             await db.vector_layer_displays.create({ data: newVLD })
+          }
+          // 5.3 occurrencesToAssessLayerPresentation: always needed
+          const occurrencesToAssessLayerPresentation =
+            await db.layer_presentations.findFirst({
+              where: {
+                vector_layer_id: occurrencesToAssessVectorLayer.vector_layer_id,
+              },
+            })
+          if (!occurrencesToAssessLayerPresentation) {
             const newLP = createLayerPresentation({
-              vector_layer_id: newVectorLayer.vector_layer_id,
+              vector_layer_id: occurrencesToAssessVectorLayer.vector_layer_id,
             })
             await db.layer_presentations.create({ data: newLP })
-          } else {
-            const occurrencesToAssessVectorLayerDisplay =
-              occurrencesToAssessVectorLayer?.vector_layer_displays?.[0]
-            if (!occurrencesToAssessVectorLayerDisplay) {
-              const newVLD = createVectorLayerDisplay({
-                vector_layer_id: occurrencesToAssessVectorLayer.vector_layer_id,
-              })
-              await db.vector_layer_displays.create({ data: newVLD })
-            }
           }
         }
-        // occurrences_not_to_assign: needed if occurrences exist
+        // 6.1 occurrences_not_to_assign: needed if occurrences exist
         if (occurrences.length) {
-          const occurrencesNotToAssignVectorLayer = vectorLayers?.find(
+          let occurrencesNotToAssignVectorLayer = vectorLayers?.find(
             (vl) => vl.type === 'occurrences_not_to_assign',
           )
           if (!occurrencesNotToAssignVectorLayer) {
@@ -237,32 +264,44 @@ export const TableLayersProvider = memo(() => {
               type: 'occurrences_not_to_assign',
               label: 'Occurrences not to assign',
             })
-            const newVectorLayer = await db.vector_layers.create({
+            occurrencesNotToAssignVectorLayer = await db.vector_layers.create({
               data: vectorLayer,
             })
-            const newVLD = createVectorLayerDisplay({
-              vector_layer_id: newVectorLayer.vector_layer_id,
-            })
-            await db.vector_layer_displays.create({ data: newVLD })
-            const newLP = createLayerPresentation({
-              vector_layer_id: newVectorLayer.vector_layer_id,
-            })
-            await db.layer_presentations.create({ data: newLP })
-          } else {
-            const occurrencesNotToAssignVectorLayerDisplay =
-              occurrencesNotToAssignVectorLayer?.vector_layer_displays?.[0]
-            if (!occurrencesNotToAssignVectorLayerDisplay) {
-              const newVLD = createVectorLayerDisplay({
+          }
+          // 6.2 occurrencesNotToAssignVectorLayerDisplay: always needed
+          const occurrencesNotToAssignVectorLayerDisplay =
+            await db.vector_layer_displays.findFirst({
+              where: {
                 vector_layer_id:
                   occurrencesNotToAssignVectorLayer.vector_layer_id,
-              })
-              await db.vector_layer_displays.create({ data: newVLD })
-            }
+              },
+            })
+          if (!occurrencesNotToAssignVectorLayerDisplay) {
+            const newVLD = createVectorLayerDisplay({
+              vector_layer_id:
+                occurrencesNotToAssignVectorLayer.vector_layer_id,
+            })
+            await db.vector_layer_displays.create({ data: newVLD })
+          }
+          // 6.3 occurrencesNotToAssignLayerPresentation: always needed
+          const occurrencesNotToAssignLayerPresentation =
+            await db.layer_presentations.findFirst({
+              where: {
+                vector_layer_id:
+                  occurrencesNotToAssignVectorLayer.vector_layer_id,
+              },
+            })
+          if (!occurrencesNotToAssignLayerPresentation) {
+            const newLP = createLayerPresentation({
+              vector_layer_id:
+                occurrencesNotToAssignVectorLayer.vector_layer_id,
+            })
+            await db.layer_presentations.create({ data: newLP })
           }
         }
-        // places2 needed if placeLevels2 exists
+        // 7.1 places2 needed if placeLevels2 exists
         if (placeLevel2) {
-          const places2VectorLayer = vectorLayers?.find(
+          let places2VectorLayer = vectorLayers?.find(
             (vl) => vl.type === 'places2',
           )
           if (!places2VectorLayer) {
@@ -271,31 +310,36 @@ export const TableLayersProvider = memo(() => {
               type: 'places2',
               label: placeLevel2?.name_plural ?? 'Places',
             })
-            const newVectorLayer = await db.vector_layers.create({
+            places2VectorLayer = await db.vector_layers.create({
               data: vectorLayer,
             })
+          }
+          // 7.2 places2VectorLayerDisplay: always needed
+          const places2VectorLayerDisplay =
+            await db.vector_layer_displays.findFirst({
+              where: { vector_layer_id: places2VectorLayer.vector_layer_id },
+            })
+          if (!places2VectorLayerDisplay) {
             const newVLD = createVectorLayerDisplay({
-              vector_layer_id: newVectorLayer.vector_layer_id,
+              vector_layer_id: places2VectorLayer.vector_layer_id,
             })
             await db.vector_layer_displays.create({ data: newVLD })
+          }
+          // 7.3 places2LayerPresentation: always needed
+          const places2LayerPresentation =
+            await db.layer_presentations.findFirst({
+              where: { vector_layer_id: places2VectorLayer.vector_layer_id },
+            })
+          if (!places2LayerPresentation) {
             const newLP = createLayerPresentation({
-              vector_layer_id: newVectorLayer.vector_layer_id,
+              vector_layer_id: places2VectorLayer.vector_layer_id,
             })
             await db.layer_presentations.create({ data: newLP })
-          } else {
-            const places2VectorLayerDisplay =
-              places2VectorLayer?.vector_layer_displays?.[0]
-            if (!places2VectorLayerDisplay) {
-              const newVLD = createVectorLayerDisplay({
-                vector_layer_id: places2VectorLayer.vector_layer_id,
-              })
-              await db.vector_layer_displays.create({ data: newVLD })
-            }
           }
         }
-        // actions2 needed if placeLevels2.actions exists
+        // 8.1 actions2 needed if placeLevels2.actions exists
         if (placeLevel2?.actions) {
-          const actions2VectorLayer = vectorLayers?.find(
+          let actions2VectorLayer = vectorLayers?.find(
             (vl) => vl.type === 'actions2',
           )
           if (!actions2VectorLayer) {
@@ -306,31 +350,36 @@ export const TableLayersProvider = memo(() => {
                 ? `${placeLevel2.name_singular} actions`
                 : 'Actions',
             })
-            const newVectorLayer = await db.vector_layers.create({
+            actions2VectorLayer = await db.vector_layers.create({
               data: vectorLayer,
             })
+          }
+          // 8.2 actions2VectorLayerDisplay: always needed
+          const actions2VectorLayerDisplay =
+            await db.vector_layer_displays.findFirst({
+              where: { vector_layer_id: actions2VectorLayer.vector_layer_id },
+            })
+          if (!actions2VectorLayerDisplay) {
             const newVLD = createVectorLayerDisplay({
-              vector_layer_id: newVectorLayer.vector_layer_id,
+              vector_layer_id: actions2VectorLayer.vector_layer_id,
             })
             await db.vector_layer_displays.create({ data: newVLD })
+          }
+          // 8.3 actions2LayerPresentation: always needed
+          const actions2LayerPresentation =
+            await db.layer_presentations.findFirst({
+              where: { vector_layer_id: actions2VectorLayer.vector_layer_id },
+            })
+          if (!actions2LayerPresentation) {
             const newLP = createLayerPresentation({
-              vector_layer_id: newVectorLayer.vector_layer_id,
+              vector_layer_id: actions2VectorLayer.vector_layer_id,
             })
             await db.layer_presentations.create({ data: newLP })
-          } else {
-            const actions2VectorLayerDisplay =
-              actions2VectorLayer?.vector_layer_displays?.[0]
-            if (!actions2VectorLayerDisplay) {
-              const newVLD = createVectorLayerDisplay({
-                vector_layer_id: actions2VectorLayer.vector_layer_id,
-              })
-              await db.vector_layer_displays.create({ data: newVLD })
-            }
           }
         }
-        // checks2 needed if placeLevels2.checks exists
+        // 9.1 checks2 needed if placeLevels2.checks exists
         if (placeLevel2?.checks) {
-          const checks2VectorLayer = vectorLayers?.find(
+          let checks2VectorLayer = vectorLayers?.find(
             (vl) => vl.type === 'checks2',
           )
           if (!checks2VectorLayer) {
@@ -341,31 +390,36 @@ export const TableLayersProvider = memo(() => {
                 ? `${placeLevel2.name_singular} checks`
                 : 'Checks',
             })
-            const newVectorLayer = await db.vector_layers.create({
+            checks2VectorLayer = await db.vector_layers.create({
               data: vectorLayer,
             })
+          }
+          // 9.2 checks2VectorLayerDisplay: always needed
+          const checks2VectorLayerDisplay =
+            await db.vector_layer_displays.findFirst({
+              where: { vector_layer_id: checks2VectorLayer.vector_layer_id },
+            })
+          if (!checks2VectorLayerDisplay) {
             const newVLD = createVectorLayerDisplay({
-              vector_layer_id: newVectorLayer.vector_layer_id,
+              vector_layer_id: checks2VectorLayer.vector_layer_id,
             })
             await db.vector_layer_displays.create({ data: newVLD })
+          }
+          // 9.3 checks2LayerPresentation: always needed
+          const checks2LayerPresentation =
+            await db.layer_presentations.findFirst({
+              where: { vector_layer_id: checks2VectorLayer.vector_layer_id },
+            })
+          if (!checks2LayerPresentation) {
             const newLP = createLayerPresentation({
-              vector_layer_id: newVectorLayer.vector_layer_id,
+              vector_layer_id: checks2VectorLayer.vector_layer_id,
             })
             await db.layer_presentations.create({ data: newLP })
-          } else {
-            const checks2VectorLayerDisplay =
-              checks2VectorLayer?.vector_layer_displays?.[0]
-            if (!checks2VectorLayerDisplay) {
-              const newVLD = createVectorLayerDisplay({
-                vector_layer_id: checks2VectorLayer.vector_layer_id,
-              })
-              await db.vector_layer_displays.create({ data: newVLD })
-            }
           }
         }
-        // occurrences_assigned2 needed if occurrences exist and placeLevels2 has occurrences
+        // 10.1 occurrences_assigned2 needed if occurrences exist and placeLevels2 has occurrences
         if (placeLevel2?.occurrences && occurrences.length) {
-          const occurrencesAssigned2VectorLayer = vectorLayers?.find(
+          let occurrencesAssigned2VectorLayer = vectorLayers?.find(
             (vl) => vl.type === 'occurrences_assigned2',
           )
           if (!occurrencesAssigned2VectorLayer) {
@@ -376,27 +430,37 @@ export const TableLayersProvider = memo(() => {
                 ? `${placeLevel2.name_singular} occurrences assigned`
                 : 'Occurrences assigned',
             })
-            const newVectorLayer = await db.vector_layers.create({
+            occurrencesAssigned2VectorLayer = await db.vector_layers.create({
               data: vectorLayer,
             })
-            const newVLD = createVectorLayerDisplay({
-              vector_layer_id: newVectorLayer.vector_layer_id,
-            })
-            await db.vector_layer_displays.create({ data: newVLD })
-            const newLP = createLayerPresentation({
-              vector_layer_id: newVectorLayer.vector_layer_id,
-            })
-            await db.layer_presentations.create({ data: newLP })
-          } else {
-            const occurrencesAssigned2VectorLayerDisplay =
-              occurrencesAssigned2VectorLayer?.vector_layer_displays?.[0]
-            if (!occurrencesAssigned2VectorLayerDisplay) {
-              const newVLD = createVectorLayerDisplay({
+          }
+          // 10.2 occurrences_assigned2VectorLayerDisplay: always needed
+          const occurrencesAssigned2VectorLayerDisplay =
+            await db.vector_layer_displays.findFirst({
+              where: {
                 vector_layer_id:
                   occurrencesAssigned2VectorLayer.vector_layer_id,
-              })
-              await db.vector_layer_displays.create({ data: newVLD })
-            }
+              },
+            })
+          if (!occurrencesAssigned2VectorLayerDisplay) {
+            const newVLD = createVectorLayerDisplay({
+              vector_layer_id: occurrencesAssigned2VectorLayer.vector_layer_id,
+            })
+            await db.vector_layer_displays.create({ data: newVLD })
+          }
+          // 10.3 occurrences_assigned2LayerPresentation: always needed
+          const occurrencesAssigned2LayerPresentation =
+            await db.layer_presentations.findFirst({
+              where: {
+                vector_layer_id:
+                  occurrencesAssigned2VectorLayer.vector_layer_id,
+              },
+            })
+          if (!occurrencesAssigned2LayerPresentation) {
+            const newLP = createLayerPresentation({
+              vector_layer_id: occurrencesAssigned2VectorLayer.vector_layer_id,
+            })
+            await db.layer_presentations.create({ data: newLP })
           }
         }
       }
