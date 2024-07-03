@@ -7,10 +7,7 @@ import { Checkbox } from '@fluentui/react-components'
 import { useElectric } from '../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../shared/ErrorBoundary.tsx'
 import { FormHeader } from '../../../FormHeader/index.tsx'
-import {
-  createLayerPresentation,
-  createNotification,
-} from '../../../../modules/createRows.ts'
+import { createLayerPresentation } from '../../../../modules/createRows.ts'
 import { ActiveLayers } from './Active.tsx'
 
 const formStyle = {
@@ -65,14 +62,6 @@ export const Layers = memo(({ isNarrow }) => {
   )
   // 2. when one is set active, add layer_presentations for it
 
-  const active = [...tileLayers, ...vectorLayers].filter((l) =>
-    layerPresentations.some(
-      (lp) =>
-        (lp.tile_layer_id === l.tile_layer_id ||
-          lp.vector_layer_id === l.vector_layer_id) &&
-        lp.active,
-    ),
-  )
   const tiles = tileLayers.filter(
     (l) =>
       !layerPresentations.some(
@@ -96,40 +85,19 @@ export const Layers = memo(({ isNarrow }) => {
         ),
     )
 
-  const onChangeActive = useCallback(
-    (layer) => {
-      // update layer_presentations, set active = false
-      const presentation = layerPresentations.find(
-        (lp) =>
-          (lp.tile_layer_id === layer.tile_layer_id ||
-            lp.vector_layer_id === layer.vector_layer_id) &&
-          lp.active,
-      )
-      if (presentation) {
-        return db.layer_presentations.update({
-          where: { layer_presentation_id: presentation.layer_presentation_id },
-          data: { active: false },
-        })
-      }
-      // if no presentation exists, create notification
-      const data = createNotification({
-        title: 'Layer presentation not found',
-        type: 'warning',
-      })
-      db.notifications.create({ data })
-    },
-    [db, layerPresentations],
-  )
-
   const onChangeNonActive = useCallback(
-    (layer) => {
+    async (layer) => {
       // 1. check if layer has a presentation
-      const presentation = layerPresentations.find(
-        (lp) =>
-          (lp.tile_layer_id === layer.tile_layer_id ||
-            lp.vector_layer_id === layer.vector_layer_id) &&
-          lp.active,
-      )
+      const presentation = await db.layer_presentations.findFirst({
+        where: {
+          ...(layer.tile_layer_id
+            ? { tile_layer_id: layer.tile_layer_id }
+            : {}),
+          ...(layer.vector_layer_id
+            ? { vector_layer_id: layer.vector_layer_id }
+            : {}),
+        },
+      })
       // 2. if not, create one
       if (!presentation) {
         const data = createLayerPresentation({
@@ -151,7 +119,7 @@ export const Layers = memo(({ isNarrow }) => {
         })
       }
     },
-    [db, layerPresentations],
+    [db],
   )
 
   return (
