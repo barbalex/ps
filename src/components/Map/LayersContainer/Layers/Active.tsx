@@ -1,6 +1,5 @@
 import { memo, useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-// import { useCorbado } from '@corbado/react'
 import { useParams } from 'react-router-dom'
 import { Checkbox } from '@fluentui/react-components'
 
@@ -16,7 +15,6 @@ const layerListStyle = {
 
 export const ActiveLayers = memo(() => {
   const { project_id } = useParams()
-  // const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
   const where = project_id ? { project_id } : {}
@@ -46,17 +44,9 @@ export const ActiveLayers = memo(() => {
   )
 
   const activeLayers = [...activeTileLayers, ...activeVectorLayers]
-  console.log('ActiveLayers', {
-    tileLayers,
-    activeTileLayers,
-    vectorLayers,
-    activeVectorLayers,
-    activeLayers,
-  })
 
   const onChangeActive = useCallback(
     (layer) => {
-      console.log('ActiveLayers.onChangeActive, layer:', layer)
       // update layer_presentations, set active = false
       const presentation = layer.layer_presentations?.[0]
       if (presentation) {
