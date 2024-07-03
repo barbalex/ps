@@ -112,15 +112,6 @@ export const Component = () => {
             color={row.color}
             name="color"
           />
-          <SliderFieldWithInput
-            label="Lines and Points: Opacity (%)"
-            name="opacity_percent"
-            value={row.opacity_percent ?? ''}
-            onChange={onChange}
-            max={100}
-            min={0}
-            step={5}
-          />
           <TextField
             name="weight"
             label="Linien: Breite (in Bild-Punkten)"

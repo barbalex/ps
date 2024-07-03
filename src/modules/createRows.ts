@@ -474,7 +474,6 @@ export const createTileLayer = ({ project_id }) => ({
   type: 'wms',
   max_zoom: 19,
   min_zoom: 0,
-  opacity_percent: 100,
   wms_transparent: false,
   grayscale: false,
 })
@@ -511,7 +510,6 @@ export const createVectorLayerDisplay = ({
   stroke: true,
   color: '#ff0000',
   weight: 3,
-  opacity_percent: 100,
   line_cap: 'round',
   line_join: 'round',
   fill: true,

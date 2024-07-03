@@ -27,6 +27,7 @@ import { useElectric } from '../../../ElectricProvider.tsx'
 import {
   Vector_layers as VectorLayer,
   Vector_layer_displays as VectorLayerDisplay,
+  Layer_presentations as LayerPresentation,
 } from '../../../generated/client/index.ts'
 import { createNotification } from '../../../modules/createRows.ts'
 // import { epsgFrom4326 } from '../../../modules/epsgFrom4326.ts'
@@ -66,12 +67,14 @@ const bboxFromBounds = ({ bounds, defaultCrs }) => {
 
 interface Props {
   layer: VectorLayer
-  display: VectorLayerDisplay
 }
-export const VectorLayerWFS = ({ layer, display }: Props) => {
+export const VectorLayerWFS = ({ layer }: Props) => {
   const { db } = useElectric()!
   const [error, setError] = useState()
   const notificationIds = useRef([])
+
+  const display: VectorLayerDisplay = layer.vector_layer_displays?.[0]
+  const presentation: LayerPresentation = layer.layer_presentations?.[0]
 
   const removeNotifs = useCallback(async () => {
     await db.notifications.deleteMany({
@@ -222,11 +225,11 @@ export const VectorLayerWFS = ({ layer, display }: Props) => {
   return (
     <>
       <GeoJSON
-        key={`${data?.length ?? 0}/${JSON.stringify(display)}`}
+        key={`${data?.length ?? 0}/${JSON.stringify(display)}/${JSON.stringify(presentation)}`}
         data={data}
         opacity={
-          // TODO: what is this for?
-          display.opacity_percent ? display.opacity_percent / 100 : 1
+          // opacity needs to be converted from percent to decimal
+          presentation.opacity_percent ? presentation.opacity_percent / 100 : 1
         }
         style={vectorLayerDisplayToProperties({ vectorLayerDisplay: display })}
         pointToLayer={(geoJsonPoint, latlng) => {

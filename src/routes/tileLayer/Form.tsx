@@ -159,15 +159,6 @@ export const Component = memo(
               min={0}
               validationMessage="Zoom can be between 0 and 19"
             />
-            <SliderFieldWithInput
-              label="Opacity (%)"
-              name="opacity_percent"
-              value={row.opacity_percent ?? ''}
-              onChange={onChange}
-              max={100}
-              min={0}
-              step={5}
-            />
             <SwitchField
               label="Grayscale"
               name="grayscale"

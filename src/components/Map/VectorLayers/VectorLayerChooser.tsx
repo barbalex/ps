@@ -3,10 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { VectorLayerWFS } from './VectorLayerWFS.tsx'
 import { VectorLayerPVLGeom } from './VectorLayerPVLGeom.tsx'
 import { useElectric } from '../../../ElectricProvider.tsx'
-import {
-  Vector_layers as VectorLayer,
-  Vector_layer_displays as VectorLayerDisplay,
-} from '../../../generated/client/index.ts'
+import { Vector_layers as VectorLayer } from '../../../generated/client/index.ts'
 
 /**
  * This component chooses whether to render
@@ -20,10 +17,6 @@ interface Props {
 export const VectorLayerChooser = ({ layer }: Props) => {
   const { db } = useElectric()!
 
-  const display = layer.vector_layer_displays.find(
-    (d) => d.vector_layer_id === layer.vector_layer_id,
-  )
-
   const { results: vectorLayerGeoms = [] } = useLiveQuery(
     db.vector_layer_geoms.liveMany({
       where: { vector_layer_id: layer.vector_layer_id },
@@ -31,7 +24,7 @@ export const VectorLayerChooser = ({ layer }: Props) => {
   )
   const geomCount: integer = vectorLayerGeoms.length
 
-  if (!geomCount) return <VectorLayerWFS layer={layer} display={display} />
+  if (!geomCount) return <VectorLayerWFS layer={layer} />
   // TODO: what is this?
-  return <VectorLayerPVLGeom layer={layer} display={display} />
+  return <VectorLayerPVLGeom layer={layer} />
 }
