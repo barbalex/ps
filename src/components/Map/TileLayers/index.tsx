@@ -16,7 +16,7 @@ export const TileLayers = () => {
    * - wmts_url_template has template
    * - wms has base-url and layers
    */
-  const { results: layersResult = [] } = useLiveQuery(
+  const { results: tileLayersResult = [] } = useLiveQuery(
     db.tile_layers.liveMany({
       where: {
         type: { not: null },
@@ -38,12 +38,12 @@ export const TileLayers = () => {
       orderBy: [{ sort: 'asc' }, { label: 'asc' }],
     }),
   )
-  const tileLayers: TileLayer[] = layersResult
+  const tileLayers = tileLayersResult
     .map((l) => {
       // need to convert opacity_percent to opacity
-      const { opacity_percent, ...rest } = l
+      const opacity_percent = l.layer_presentations?.[0]?.opacity_percent
       return {
-        ...rest,
+        ...l,
         opacity: opacity_percent ? opacity_percent / 100 : 1,
       }
     })
@@ -67,7 +67,7 @@ export const TileLayers = () => {
       wmts_url_template: layer.wmts_url_template,
       max_zoom: layer.max_zoom,
       min_zoom: layer.min_zoom,
-      opacity: layer.opacity,
+      opacity: layer.layer_presentations?.[0]?.opacity_percent,
       wms_base_url: layer.wms_base_url,
       wms_format: layer.wms_format?.value,
       wms_layer: layer.wms_layer?.value,
