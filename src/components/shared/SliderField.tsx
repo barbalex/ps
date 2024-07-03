@@ -1,4 +1,4 @@
-import { memo, useState, useCallback } from 'react'
+import { memo } from 'react'
 import { Field, Slider, Label } from '@fluentui/react-components'
 import type { InputProps } from '@fluentui/react-components'
 import { useDebouncedCallback } from 'use-debounce'
@@ -18,21 +18,16 @@ export const SliderField = memo((props: InputProps) => {
     name,
     min,
     max,
-    step = 1,
-    value: valueIn,
-    onChange: onChangeIn,
+    step,
+    value,
+    onChange,
     validationMessage,
     validationState = 'none',
   } = props
 
-  const [value, setValue] = useState(valueIn)
-
   // need to debounce changes when sliding or slider will not render correctly
   // do not use a small value or if slid slowly the user will loose the drag
-  // const onChangeSliderDebounced = useDebouncedCallback(onChange, 300)
-  const onChange = useCallback((_, data) => {
-    setValue(data.value)
-  }, [])
+  const onChangeSliderDebounced = useDebouncedCallback(onChange, 300)
 
   return (
     <Field
@@ -47,10 +42,9 @@ export const SliderField = memo((props: InputProps) => {
           name={name}
           min={min}
           max={max}
-          step={step}
+          step={step ?? undefined}
           defaultValue={value}
-          // onChange={onChangeSliderDebounced}
-          onChange={onChange}
+          onChange={onChangeSliderDebounced}
           style={sliderStyle}
         />
         <Label aria-hidden>{max}</Label>

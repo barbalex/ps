@@ -161,10 +161,14 @@ export const LayersContainer = memo(({ containerRef }) => {
           ...(isNarrow ? { height: size } : { width: size }),
         }}
         position={isNarrow ? 'bottom' : 'start'}
-        onMouseDown={(e) => e.preventDefault()}
+        onMouseDown={(e) => isResizing && e.preventDefault()}
       >
         <Layers isNarrow={isNarrow} />
-        <Resizer startResizing={startResizing} isResizing={isResizing} isOpen={isOpen} />
+        <Resizer
+          startResizing={startResizing}
+          isResizing={isResizing}
+          isOpen={isOpen}
+        />
       </InlineDrawer>
     </div>
   )

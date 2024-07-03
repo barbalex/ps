@@ -1,5 +1,5 @@
 import { memo, useCallback } from 'react'
-import { Checkbox, Slider, Field } from '@fluentui/react-components'
+import { Checkbox } from '@fluentui/react-components'
 
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
@@ -56,30 +56,8 @@ export const ActiveLayer = memo(({ layer }) => {
         min={0}
         max={100}
         value={layerPresentation.opacity_percent}
-        onChange={(_, data) => {
-          console.log('onChangeOpacity', {
-            _,
-            data,
-            layerPresentation,
-          })
-          onChangeOpacity(layerPresentation, data.value)
-        }}
+        onChange={(_, data) => onChangeOpacity(layerPresentation, data.value)}
       />
-      <Field label="Opacity">
-        <Slider
-          min={0}
-          max={100}
-          value={layerPresentation.opacity_percent}
-          onChange={(_, data) => {
-            console.log('onChangeOpacity', {
-              _,
-              data,
-              layerPresentation,
-            })
-            onChangeOpacity(layerPresentation, data.value)
-          }}
-        />
-      </Field>
     </ErrorBoundary>
   )
 })

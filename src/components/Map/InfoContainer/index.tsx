@@ -93,7 +93,7 @@ export const InfoContainer = memo(({ containerRef }) => {
           ...(isNarrow ? { height: sidebarSize } : { width: sidebarSize }),
         }}
         position={isNarrow ? 'bottom' : 'end'}
-        onMouseDown={(e) => e.preventDefault()}
+        onMouseDown={(e) => isResizing && e.preventDefault()}
       >
         <Info isNarrow={isNarrow} />
         <Resizer startResizing={startResizing} isResizing={isResizing} />
