@@ -6,6 +6,11 @@ import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createNotification } from '../../../../../modules/createRows.ts'
 import { SliderField } from '../../../../shared/SliderField.tsx'
 
+const containerStyle = {
+  borderTop: '1px solid rgba(55, 118, 28, 0.5)',
+  borderBottom: '1px solid rgba(55, 118, 28, 0.5)',
+}
+
 export const ActiveLayer = memo(({ layer }) => {
   const { db } = useElectric()!
 
@@ -45,19 +50,21 @@ export const ActiveLayer = memo(({ layer }) => {
 
   return (
     <ErrorBoundary>
-      <Checkbox
-        size="large"
-        label={layer.label}
-        checked={layerPresentation.active}
-        onChange={() => onChangeActive(layer)}
-      />
-      <SliderField
-        label="Opacity (%)"
-        min={0}
-        max={100}
-        value={layerPresentation.opacity_percent}
-        onChange={(_, data) => onChangeOpacity(layerPresentation, data.value)}
-      />
+      <div style={containerStyle}>
+        <Checkbox
+          size="large"
+          label={layer.label}
+          checked={layerPresentation.active}
+          onChange={() => onChangeActive(layer)}
+        />
+        <SliderField
+          label="Opacity (%)"
+          min={0}
+          max={100}
+          value={layerPresentation.opacity_percent}
+          onChange={(_, data) => onChangeOpacity(layerPresentation, data.value)}
+        />
+      </div>
     </ErrorBoundary>
   )
 })
