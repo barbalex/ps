@@ -4,6 +4,7 @@ import { InlineDrawer, Button } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 import { BiSolidLeftArrow, BiSolidRightArrow } from 'react-icons/bi'
+import { useAnimate } from 'framer-motion'
 
 import { Layers } from './Layers/index.tsx'
 import { Resizer } from './Resizer.tsx'
@@ -19,10 +20,12 @@ const containerStyle = {
   // without this when widening the window the sidebar's bottom will show the map behind it
   backgroundColor: 'white',
 }
+const innerContainerStyle = {
+  display: 'flex',
+}
 
 export const LayersContainer = memo(({ containerRef }) => {
   const { user: authUser } = useCorbado()
-
   const { db } = useElectric()!
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
@@ -37,6 +40,15 @@ export const LayersContainer = memo(({ containerRef }) => {
     refreshOptions: { leading: false, trailing: true },
   })
   const isNarrow = containerWidth < 700
+
+  // animate opening and closing of the drawer
+  const [scope, animate] = useAnimate()
+  useEffect(() => {
+    // This "li" selector will only select children
+    // of the element that receives `scope`.
+    // isNarrow ? { height: size } : { width: size }
+    animate('.map-layers-drawer', isNarrow ? { height: size } : { width: size })
+  })
 
   const {
     width: ownWidth,
@@ -61,7 +73,8 @@ export const LayersContainer = memo(({ containerRef }) => {
       e.stopPropagation()
       console.log('toggling open')
       // TODO: animate the change from open to close and versa
-      setSize(isOpen ? 5 : isNarrow ? 500 : 380)
+      const newValue = isOpen ? 5 : isNarrow ? 500 : 380
+      setSize(newValue)
     },
     [isNarrow, isOpen],
   )
@@ -114,64 +127,72 @@ export const LayersContainer = memo(({ containerRef }) => {
       }}
       ref={widthRef}
     >
-      {!mapHideUi && (
-        <Button
-          onClick={toggleOpen}
-          icon={
-            isOpen ? (
-              <BiSolidLeftArrow
-                style={{ transform: isNarrow ? 'rotate(270deg)' : 'unset' }}
-              />
-            ) : (
-              <BiSolidRightArrow
-                style={{ transform: isNarrow ? 'rotate(270deg)' : 'unset' }}
-              />
-            )
-          }
-          title={isOpen ? 'Close Layers' : 'Open Layers'}
+      <div style={innerContainerStyle} ref={scope}>
+        {!mapHideUi && (
+          <Button
+            onClick={toggleOpen}
+            icon={
+              isOpen ? (
+                <BiSolidLeftArrow
+                  style={{ transform: isNarrow ? 'rotate(270deg)' : 'unset' }}
+                />
+              ) : (
+                <BiSolidRightArrow
+                  style={{ transform: isNarrow ? 'rotate(270deg)' : 'unset' }}
+                />
+              )
+            }
+            title={isOpen ? 'Close Layers' : 'Open Layers'}
+            style={{
+              position: 'absolute',
+              top: isNarrow ? (isOpen ? 11 : -26) : 5,
+              right: isNarrow ? 'unset' : isOpen ? 5.5 : -26.5,
+              left: isNarrow ? 5 : 'unset',
+              marginRight: isOpen ? 5 : 0,
+              zIndex: 100000000,
+              borderTopLeftRadius: isNarrow ? (isOpen ? 0 : 4) : isOpen ? 4 : 0,
+              borderBottomLeftRadius: isNarrow
+                ? isOpen
+                  ? 4
+                  : 0
+                : isOpen
+                ? 4
+                : 0,
+              borderTopRightRadius: isNarrow
+                ? isOpen
+                  ? 0
+                  : 4
+                : isOpen
+                ? 0
+                : 4,
+              borderBottomRightRadius: isNarrow
+                ? isOpen
+                  ? 4
+                  : 0
+                : isOpen
+                ? 0
+                : 4,
+            }}
+          />
+        )}
+        <InlineDrawer
+          open={!mapHideUi}
+          ref={sidebarRef}
+          className="map-layers-drawer"
           style={{
-            position: 'absolute',
-            top: isNarrow ? (isOpen ? 11 : -26) : 5,
-            right: isNarrow ? 'unset' : isOpen ? 5.5 : -26.5,
-            left: isNarrow ? 5 : 'unset',
-            marginRight: isOpen ? 5 : 0,
-            zIndex: 100000000,
-            borderTopLeftRadius: isNarrow ? (isOpen ? 0 : 4) : isOpen ? 4 : 0,
-            borderBottomLeftRadius: isNarrow
-              ? isOpen
-                ? 4
-                : 0
-              : isOpen
-              ? 4
-              : 0,
-            borderTopRightRadius: isNarrow ? (isOpen ? 0 : 4) : isOpen ? 0 : 4,
-            borderBottomRightRadius: isNarrow
-              ? isOpen
-                ? 4
-                : 0
-              : isOpen
-              ? 0
-              : 4,
+            ...(isNarrow ? { height: size } : { width: size }),
           }}
-        />
-      )}
-      <InlineDrawer
-        open={!mapHideUi}
-        ref={sidebarRef}
-        className="map-layers-drawer"
-        style={{
-          ...(isNarrow ? { height: size } : { width: size }),
-        }}
-        position={isNarrow ? 'bottom' : 'start'}
-        onMouseDown={(e) => isResizing && e.preventDefault()}
-      >
-        <Layers isNarrow={isNarrow} />
-        <Resizer
-          startResizing={startResizing}
-          isResizing={isResizing}
-          isOpen={isOpen}
-        />
-      </InlineDrawer>
+          position={isNarrow ? 'bottom' : 'start'}
+          onMouseDown={(e) => isResizing && e.preventDefault()}
+        >
+          <Layers isNarrow={isNarrow} />
+          <Resizer
+            startResizing={startResizing}
+            isResizing={isResizing}
+            isOpen={isOpen}
+          />
+        </InlineDrawer>
+      </div>
     </div>
   )
 })
