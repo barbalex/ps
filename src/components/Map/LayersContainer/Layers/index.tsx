@@ -8,7 +8,7 @@ import { useElectric } from '../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../shared/ErrorBoundary.tsx'
 import { FormHeader } from '../../../FormHeader/index.tsx'
 import { createLayerPresentation } from '../../../../modules/createRows.ts'
-import { ActiveLayers } from './Active.tsx'
+import { ActiveLayers } from './Actives/index.tsx'
 
 const formStyle = {
   paddingLeft: 10,
