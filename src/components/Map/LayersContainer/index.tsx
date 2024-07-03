@@ -130,8 +130,6 @@ export const LayersContainer = memo(({ containerRef }) => {
     }
   }, [resize, stopResizing])
 
-  console.log('LayersContainer', { isNarrow, size })
-
   return (
     <div
       className="map-layers-container"
