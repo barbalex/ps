@@ -225,13 +225,18 @@ export const VectorLayerWFS = ({ layer }: Props) => {
   return (
     <>
       <GeoJSON
-        key={`${data?.length ?? 0}/${JSON.stringify(display)}/${JSON.stringify(presentation)}`}
+        key={`${data?.length ?? 0}/${JSON.stringify(display)}/${JSON.stringify(
+          presentation,
+        )}`}
         data={data}
         opacity={
           // opacity needs to be converted from percent to decimal
           presentation.opacity_percent ? presentation.opacity_percent / 100 : 1
         }
-        style={vectorLayerDisplayToProperties({ vectorLayerDisplay: display })}
+        style={vectorLayerDisplayToProperties({
+          vectorLayerDisplay: display,
+          presentation,
+        })}
         pointToLayer={(geoJsonPoint, latlng) => {
           if (display.marker_type === 'circle') {
             return L.circleMarker(latlng, {

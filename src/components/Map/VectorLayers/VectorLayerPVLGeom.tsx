@@ -146,7 +146,7 @@ export const VectorLayerPVLGeom = ({ layer, display }: Props) => {
         }`}
         data={data}
         opacity={display.opacity_percent ? display.opacity_percent / 100 : 0}
-        style={vectorLayerDisplayToProperties({ vectorLayerDisplay: display })}
+        style={vectorLayerDisplayToProperties({ vectorLayerDisplay: display, presentation: layer.layer_presentations?.[0]})}
         onEachFeature={(feature, _layer) => {
           const layersData = [
             {

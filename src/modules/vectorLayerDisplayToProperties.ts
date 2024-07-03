@@ -1,12 +1,17 @@
-import { Vector_layer_displays as VectorLayerDisplay } from '../generated/client/index.ts'
+import {
+  Vector_layer_displays as VectorLayerDisplay,
+  Layer_presentations as LayerPresentation,
+} from '../generated/client/index.ts'
 
 interface Props {
   vectorLayerDisplay: VectorLayerDisplay
+  presentation: LayerPresentation
   extraProps?: Record<string, unknown>
 }
 
 export const vectorLayerDisplayToProperties = ({
   vectorLayerDisplay: vld,
+  presentation,
   extraProps,
 }: Props): Record<string, unknown> => {
   if (!vld) return {}
@@ -16,8 +21,8 @@ export const vectorLayerDisplayToProperties = ({
     ...(typeof vld.stroke === 'number' && { stroke: vld.stroke === 1 }),
     ...(vld.color && { color: vld.color }),
     ...(typeof vld.weight === 'number' && { weight: vld.weight }),
-    ...(typeof vld.opacity_percent === 'number' && {
-      opacity: vld.opacity_percent / 100,
+    ...(typeof presentation.opacity_percent === 'number' && {
+      opacity: presentation.opacity_percent / 100,
     }),
     ...(vld.line_cap && { lineCap: vld.line_cap }),
     ...(vld.line_join && { lineJoin: vld.line_join }),

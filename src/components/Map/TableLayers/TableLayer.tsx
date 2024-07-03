@@ -84,6 +84,7 @@ export const TableLayer = memo(({ data, layer }: Props) => {
 
           return vectorLayerDisplayToProperties({
             vectorLayerDisplay: displayToUse,
+            presentation: layer.layer_presentations?.[0],
           })
         }}
         pointToLayer={(feature, latlng) => {
