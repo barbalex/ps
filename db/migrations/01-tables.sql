@@ -1403,7 +1403,6 @@ CREATE TABLE tile_layers(
   wms_legend bytea DEFAULT NULL,
   max_zoom integer DEFAULT NULL, -- 19
   min_zoom integer DEFAULT NULL, -- 0
-  opacity_percent integer DEFAULT NULL, -- 100. TODO: difference to wms_transparent?
   grayscale boolean DEFAULT NULL, -- false
   local_data_size integer DEFAULT NULL,
   local_data_bounds jsonb DEFAULT NULL
@@ -1418,8 +1417,6 @@ COMMENT ON TABLE tile_layers IS 'Goal: Bring your own tile layers. Not versioned
 COMMENT ON COLUMN tile_layers.local_data_size IS 'Size of locally saved image data';
 
 COMMENT ON COLUMN tile_layers.local_data_bounds IS 'Array of bounds and their size of locally saved image data';
-
-COMMENT ON COLUMN tile_layers.opacity_percent IS 'As numeric is not supported by electric-sql, we cant use values between 0 and 1 for opacity. So we use integer values between 0 and 100 and divide by 100 in the frontend.';
 
 CREATE TYPE vector_layer_type_enum AS enum(
   'wfs',
@@ -1619,7 +1616,6 @@ CREATE TABLE vector_layer_displays(
   stroke boolean DEFAULT NULL, -- true,
   color text DEFAULT NULL, -- '#3388ff',
   weight integer DEFAULT NULL, -- 3,
-  opacity_percent integer DEFAULT NULL, -- 100,
   line_cap line_cap_enum DEFAULT NULL, -- 'round',
   line_join text DEFAULT NULL, -- 'round',
   dash_array text DEFAULT NULL,
@@ -1650,8 +1646,6 @@ COMMENT ON COLUMN vector_layer_displays.stroke IS 'Whether to draw stroke along 
 COMMENT ON COLUMN vector_layer_displays.color IS 'Stroke color. https://leafletjs.com/reference.html#path-color';
 
 COMMENT ON COLUMN vector_layer_displays.weight IS 'Stroke width in pixels. https://leafletjs.com/reference.html#path-weight';
-
-COMMENT ON COLUMN vector_layer_displays.opacity_percent IS 'Stroke opacity. https://leafletjs.com/reference.html#path-opacity';
 
 COMMENT ON COLUMN vector_layer_displays.line_cap IS 'A string that defines shape to be used at the end of the stroke. https://leafletjs.com/reference.html#path-linecap. https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-linecap';
 
@@ -1693,6 +1687,8 @@ CREATE INDEX ON layer_presentations USING btree(active);
 CREATE INDEX ON layer_presentations USING btree(sort);
 
 COMMENT ON TABLE layer_presentations IS 'Goal: manage all presentation related properties of all layers (including tile and vector layers). Editable by all users.';
+
+COMMENT ON COLUMN layer_presentations.opacity_percent IS 'As numeric is not supported by electric-sql, we cant use values between 0 and 1 for opacity. So we use integer values between 0 and 100 and divide by 100 in the frontend.';
 
 CREATE TYPE notification_intent_enum AS enum(
   'success',
