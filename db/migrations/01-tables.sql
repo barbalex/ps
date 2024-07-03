@@ -1180,6 +1180,7 @@ CREATE TABLE app_states(
   map_hide_ui boolean DEFAULT NULL, -- FALSE
   map_locate boolean DEFAULT NULL, -- FALSE
   map_info jsonb DEFAULT NULL,
+  map_layer_sorting jsonb DEFAULT NULL,
   map_show_center boolean DEFAULT NULL, -- FALSE
   tile_layer_sorter text DEFAULT NULL,
   vector_layer_sorter text DEFAULT NULL,
@@ -1670,7 +1671,6 @@ CREATE TABLE layer_presentations(
   tile_layer_id uuid DEFAULT NULL REFERENCES tile_layers(tile_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
   active boolean DEFAULT NULL, -- false
-  sort smallint DEFAULT NULL, -- 0
   opacity_percent integer DEFAULT NULL, -- 100
   grayscale boolean DEFAULT NULL, -- false
   label_replace_by_generated_column text DEFAULT NULL -- TODO: not needed?
