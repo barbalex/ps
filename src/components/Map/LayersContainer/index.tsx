@@ -76,8 +76,17 @@ export const LayersContainer = memo(({ containerRef }) => {
   const sidebarRef = useRef<HTMLDivElement>(null)
   const [isResizing, setIsResizing] = useState(false)
 
-  const startResizing = useCallback(() => setIsResizing(true), [])
-  const stopResizing = useCallback(() => setIsResizing(false), [])
+  // why do we need wasResizing?
+  // without it, after resizing the drawer, the animation will run
+  const wasResizing = useRef(false)
+  const startResizing = useCallback(() => {
+    setIsResizing(true)
+    wasResizing.current = true
+  }, [])
+  const stopResizing = useCallback(() => {
+    setIsResizing(false)
+    setTimeout(() => (wasResizing.current = false), 500)
+  }, [])
 
   const resize = useCallback(
     ({ clientX, clientY }) => {
@@ -96,14 +105,15 @@ export const LayersContainer = memo(({ containerRef }) => {
   )
 
   // animate opening and closing of the drawer
-  // const [scope, animate] = useAnimate()
-  // useEffect(() => {
-  //   if (isResizing) return
-  //   // This "li" selector will only select children
-  //   // of the element that receives `scope`.
-  //   // isNarrow ? { height: size } : { width: size }
-  //   animate('.map-layers-drawer', isNarrow ? { height: size } : { width: size })
-  // }, [animate, isNarrow, isResizing, size])
+  const [scope, animate] = useAnimate()
+  useEffect(() => {
+    if (isResizing) return
+    if (wasResizing.current) return
+    // This "li" selector will only select children
+    // of the element that receives `scope`.
+    console.log('animating')
+    animate('.map-layers-drawer', isNarrow ? { height: size } : { width: size })
+  }, [animate, isNarrow, isResizing, size, wasResizing])
 
   useEffect(() => {
     window.addEventListener('mousemove', resize)
@@ -131,10 +141,7 @@ export const LayersContainer = memo(({ containerRef }) => {
       }}
       ref={widthRef}
     >
-      <div
-        style={innerContainerStyle}
-        // ref={scope}
-      >
+      <div style={innerContainerStyle} ref={scope}>
         {!mapHideUi && (
           <Button
             onClick={toggleOpen}
