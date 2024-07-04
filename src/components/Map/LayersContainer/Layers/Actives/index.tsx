@@ -120,12 +120,6 @@ export const ActiveLayers = memo(() => {
         ...layerSorting.filter((ls) => !removeLayerPresentations.includes(ls)),
         ...missingLayerPresentations,
       ]
-      console.log('Map.Layers.Actives.useEffect', {
-        layerPresentationIds,
-        missingLayerPresentations,
-        removeLayerPresentations,
-        newLayerSorting,
-      })
       await db.app_states.update({
         where: { app_state_id: appState?.app_state_id },
         data: {
