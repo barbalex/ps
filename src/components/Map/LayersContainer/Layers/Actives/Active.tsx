@@ -11,18 +11,27 @@ import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createNotification } from '../../../../../modules/createRows.ts'
 import { SliderField } from '../../../../shared/SliderField.tsx'
+import {
+  Vector_layers as VectorLayer,
+  Tile_layers as TileLayer,
+} from '../../../../../generated/client/index.ts'
+
+import './active.css'
+
+type Props = {
+  layer: VectorLayer | TileLayer
+  index: boolean
+}
 
 const containerStyle = {
   borderTop: '1px solid rgba(55, 118, 28, 0.5)',
-  borderBottom: '1px solid rgba(55, 118, 28, 0.5)',
-  paddingLeft: 10,
-  paddingRight: 10,
 }
 const panelStyle = {
   paddingBottom: 8,
 }
+const dragIconStyle = { fontSize: 'x-large', color: 'rgba(55, 118, 28, 0.6)' }
 
-export const ActiveLayer = memo(({ layer }) => {
+export const ActiveLayer = memo(({ layer, isLast }: Props) => {
   const { db } = useElectric()!
 
   const onChangeActive = useCallback(
@@ -62,9 +71,16 @@ export const ActiveLayer = memo(({ layer }) => {
   return (
     <ErrorBoundary>
       <AccordionItem value={layer.vector_layer_id ?? layer.tile_layer_id}>
-        <div style={containerStyle}>
+        <div
+          style={{
+            ...containerStyle,
+            ...(isLast
+              ? { borderBottom: '1px solid rgba(55, 118, 28, 0.5)' }
+              : {}),
+          }}
+        >
           <AccordionHeader expandIconPosition="end" size="extra-large">
-            <MdDragIndicator />
+            <MdDragIndicator style={dragIconStyle} />
             <Checkbox
               size="large"
               label={layer.label}

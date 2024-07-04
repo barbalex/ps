@@ -11,6 +11,7 @@ import { ActiveLayer } from './Active.tsx'
 const titleStyle = {
   paddingLeft: 10,
   paddingRight: 10,
+  fontSize: '1.2em',
 }
 const layerListStyle = {
   display: 'flex',
@@ -139,10 +140,11 @@ export const ActiveLayers = memo(() => {
         <div style={layerListStyle}>
           <Accordion multiple collapsible>
             {activeLayers.length ? (
-              activeLayers?.map((l) => (
+              activeLayers?.map((l, index) => (
                 <ActiveLayer
                   key={l.tile_layer_id ?? l.vector_layer_id}
                   layer={l}
+                  isLast={index === activeLayers.length - 1}
                 />
               ))
             ) : (

@@ -33,6 +33,12 @@ const layerListStyle = {
   flexDirection: 'column',
   justifyContent: 'space-between',
 }
+const titleStyle = {
+  fontSize: '1.2em',
+}
+const noneStyle = {
+  margin: 0,
+}
 
 export const Layers = memo(({ isNarrow }) => {
   const { project_id } = useParams()
@@ -147,7 +153,7 @@ export const Layers = memo(({ isNarrow }) => {
         <div style={formStyle}>
           <ActiveLayers />
           <section style={sectionStyle}>
-            <h2>Tiled</h2>
+            <h2 style={titleStyle}>Tiled</h2>
             <div style={layerListStyle}>
               {tiles.length ? (
                 tiles?.map((l) => (
@@ -166,12 +172,12 @@ export const Layers = memo(({ isNarrow }) => {
                   />
                 ))
               ) : (
-                <p>No tile layers</p>
+                <p style={noneStyle}>No inactive Tile Layers</p>
               )}
             </div>
           </section>
           <section style={sectionStyle}>
-            <h2>Vectors</h2>
+            <h2 style={titleStyle}>Vectors</h2>
             <div style={layerListStyle}>
               {vectors.length ? (
                 vectors.map((l) => (
@@ -190,12 +196,12 @@ export const Layers = memo(({ isNarrow }) => {
                   />
                 ))
               ) : (
-                <p>No vector layers</p>
+                <p style={noneStyle}>No inactive Vector Layers</p>
               )}
             </div>
           </section>
           <section style={sectionStyle}>
-            <h2>Own</h2>
+            <h2 style={titleStyle}>Own</h2>
             <div style={layerListStyle}>
               {own.length ? (
                 own.map((l) => (
@@ -214,7 +220,7 @@ export const Layers = memo(({ isNarrow }) => {
                   />
                 ))
               ) : (
-                <p>No own layers</p>
+                <p style={noneStyle}>No inactive Own Layers</p>
               )}
             </div>
           </section>
