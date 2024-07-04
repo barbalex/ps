@@ -82,6 +82,9 @@ export const ActiveLayer = memo(({ layer, isLast, layerCount }: Props) => {
       element: draggableRef.current,
       dragHandle: dragHandleRef.current,
       canDrag: () => layerCount > 1,
+      onDrop: (source, destination) => {
+        console.log('onDrop', { source, destination })
+      },
       getInitialData: () => ({
         layerPresentationId: layerPresentation.layer_presentation_id,
       }),
