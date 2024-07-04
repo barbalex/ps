@@ -60,6 +60,26 @@ export const InfoContainer = memo(({ containerRef }) => {
     },
     [isNarrow, isResizing],
   )
+  // while resizing, cursor needs to be:
+  // row-resize (narrow) or col-resize (wide)
+  // but it is: grab, because mouse leaves the resizer
+  useEffect(() => {
+    if (isResizing) {
+      document
+        .getElementsByClassName('map-container')[0]
+        .classList.add(isNarrow ? 'row-resize' : 'col-resize')
+    } else {
+      document
+        .getElementsByClassName('map-container')[0]
+        .classList.remove('row-resize', 'col-resize')
+    }
+
+    return () => {
+      document
+        .getElementsByClassName('map-container')[0]
+        .classList.remove('row-resize', 'col-resize')
+    }
+  }, [isResizing, isNarrow])
 
   useEffect(() => {
     window.addEventListener('mousemove', resize)

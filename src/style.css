@@ -283,6 +283,13 @@ html {
   }
 }
 
+.map-container.col-resize {
+  cursor: col-resize;
+}
+.map-container.row-resize {
+  cursor: row-resize;
+}
+
 /* uploadcare */
 .uploadcare-uploader-config {
   --darkmode: 0;
