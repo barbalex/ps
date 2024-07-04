@@ -29,7 +29,12 @@ const containerStyle = {
 const panelStyle = {
   paddingBottom: 8,
 }
-const dragIconStyle = { fontSize: 'x-large', color: 'rgba(55, 118, 28, 0.6)' }
+const dragIconStyle = {
+  fontSize: 'x-large',
+  color: 'rgba(55, 118, 28, 0.6)',
+  paddingRight: 5,
+  cursor: 'grab',
+}
 
 export const ActiveLayer = memo(({ layer, isLast }: Props) => {
   const { db } = useElectric()!
