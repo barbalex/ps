@@ -5,6 +5,7 @@ import {
   AccordionItem,
   AccordionPanel,
 } from '@fluentui/react-components'
+import { MdDragIndicator } from 'react-icons/md'
 
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
@@ -63,6 +64,7 @@ export const ActiveLayer = memo(({ layer }) => {
       <AccordionItem value={layer.vector_layer_id ?? layer.tile_layer_id}>
         <div style={containerStyle}>
           <AccordionHeader expandIconPosition="end" size="extra-large">
+            <MdDragIndicator />
             <Checkbox
               size="large"
               label={layer.label}
