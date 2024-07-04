@@ -96,7 +96,7 @@ export const TableLayersProvider = memo(() => {
             project_id: project.project_id,
             type: 'actions1',
             label: placeLevel1?.name_singular
-              ? `${placeLevel1.name_singular} actions`
+              ? `${placeLevel1.name_singular} Actions`
               : 'Actions',
           })
           actions1VectorLayer = await db.vector_layers.create({
@@ -134,7 +134,7 @@ export const TableLayersProvider = memo(() => {
             project_id: project.project_id,
             type: 'checks1',
             label: placeLevel1?.name_singular
-              ? `${placeLevel1.name_singular} checks`
+              ? `${placeLevel1.name_singular} Checks`
               : 'Checks',
           })
           checks1VectorLayer = await db.vector_layers.create({
@@ -175,7 +175,7 @@ export const TableLayersProvider = memo(() => {
               project_id: project.project_id,
               type: 'occurrences_assigned1',
               label: placeLevel1?.name_singular
-                ? `${placeLevel1.name_singular} occurrences assigned`
+                ? `${placeLevel1.name_singular} Occurrences assigned`
                 : 'Occurrences assigned',
             })
             occurrencesAssigned1VectorLayer = await db.vector_layers.create({
@@ -347,7 +347,7 @@ export const TableLayersProvider = memo(() => {
               project_id: project.project_id,
               type: 'actions2',
               label: placeLevel2?.name_singular
-                ? `${placeLevel2.name_singular} actions`
+                ? `${placeLevel2.name_singular} Actions`
                 : 'Actions',
             })
             actions2VectorLayer = await db.vector_layers.create({
@@ -387,7 +387,7 @@ export const TableLayersProvider = memo(() => {
               project_id: project.project_id,
               type: 'checks2',
               label: placeLevel2?.name_singular
-                ? `${placeLevel2.name_singular} checks`
+                ? `${placeLevel2.name_singular} Checks`
                 : 'Checks',
             })
             checks2VectorLayer = await db.vector_layers.create({
@@ -427,7 +427,7 @@ export const TableLayersProvider = memo(() => {
               project_id: project.project_id,
               type: 'occurrences_assigned2',
               label: placeLevel2?.name_singular
-                ? `${placeLevel2.name_singular} occurrences assigned`
+                ? `${placeLevel2.name_singular} Occurrences assigned`
                 : 'Occurrences assigned',
             })
             occurrencesAssigned2VectorLayer = await db.vector_layers.create({
