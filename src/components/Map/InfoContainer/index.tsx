@@ -60,6 +60,7 @@ export const InfoContainer = memo(({ containerRef }) => {
     },
     [isNarrow, isResizing],
   )
+
   // while resizing, cursor needs to be:
   // row-resize (narrow) or col-resize (wide)
   // but it is: grab, because mouse leaves the resizer
