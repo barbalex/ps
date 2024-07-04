@@ -64,8 +64,6 @@ export const LayersContainer = memo(({ containerRef }) => {
   const toggleOpen = useCallback(
     (e) => {
       e.stopPropagation()
-      console.log('toggling open')
-      // TODO: animate the change from open to close and versa
       const newValue = isOpen ? 5 : isNarrow ? 500 : 380
       setSize(newValue)
     },
@@ -132,7 +130,6 @@ export const LayersContainer = memo(({ containerRef }) => {
     if (wasResizing.current) return
     // This "li" selector will only select children
     // of the element that receives `scope`.
-    console.log('animating')
     animate('.map-layers-drawer', isNarrow ? { height: size } : { width: size })
   }, [animate, isNarrow, isResizing, size, wasResizing])
 
