@@ -1,15 +1,12 @@
 import { memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
-import {
-  Accordion
-} from '@fluentui/react-components'
+import { Accordion } from '@fluentui/react-components'
 
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { ActiveLayer } from './Active.tsx'
 
-const sectionStyle = {}
 const titleStyle = {
   paddingLeft: 10,
   paddingRight: 10,
@@ -18,6 +15,14 @@ const layerListStyle = {
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'space-between',
+}
+const noLayersStyle = {
+  // borderTop: '1px solid rgba(55, 118, 28, 0.5)',
+  // borderBottom: '1px solid rgba(55, 118, 28, 0.5)',
+  margin: 0,
+  paddingLeft: 10,
+  paddingRight: 10,
+  paddingBottom: 10,
 }
 
 export const ActiveLayers = memo(() => {
@@ -54,10 +59,10 @@ export const ActiveLayers = memo(() => {
 
   return (
     <ErrorBoundary>
-      <section style={sectionStyle}>
+      <section>
         <h2 style={titleStyle}>Active</h2>
         <div style={layerListStyle}>
-          <Accordion multiple>
+          <Accordion multiple collapsible>
             {activeLayers.length ? (
               activeLayers?.map((l) => (
                 <ActiveLayer
@@ -66,7 +71,7 @@ export const ActiveLayers = memo(() => {
                 />
               ))
             ) : (
-              <p>No active layers</p>
+              <p style={noLayersStyle}>No active layers</p>
             )}
           </Accordion>
         </div>

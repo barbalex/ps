@@ -16,7 +16,9 @@ const containerStyle = {
   borderBottom: '1px solid rgba(55, 118, 28, 0.5)',
   paddingLeft: 10,
   paddingRight: 10,
-  paddingBottom: 10,
+}
+const panelStyle = {
+  paddingBottom: 8,
 }
 
 export const ActiveLayer = memo(({ layer }) => {
@@ -60,7 +62,7 @@ export const ActiveLayer = memo(({ layer }) => {
     <ErrorBoundary>
       <AccordionItem value={layer.vector_layer_id ?? layer.tile_layer_id}>
         <div style={containerStyle}>
-          <AccordionHeader>
+          <AccordionHeader expandIconPosition="end" size="extra-large">
             <Checkbox
               size="large"
               label={layer.label}
@@ -68,7 +70,7 @@ export const ActiveLayer = memo(({ layer }) => {
               onChange={() => onChangeActive(layer)}
             />
           </AccordionHeader>
-          <AccordionPanel>
+          <AccordionPanel style={panelStyle}>
             <SliderField
               label="Opacity (%)"
               min={0}
