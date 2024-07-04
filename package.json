@@ -15,6 +15,8 @@
   },
   "dependencies": {
     "@atlaskit/pragmatic-drag-and-drop": "1.2.1",
+    "@atlaskit/pragmatic-drag-and-drop-hitbox": "1.0.3",
+    "@atlaskit/pragmatic-drag-and-drop-react-drop-indicator": "^1.1.1",
     "@corbado/react": "2.9.0",
     "@css-hooks/react": "2.0.4",
     "@css-hooks/recommended": "2.0.4",

@@ -1,4 +1,4 @@
-import { memo, useCallback, useRef, useEffect } from 'react'
+import { memo, useCallback, useRef, useEffect, useState } from 'react'
 import { Checkbox } from '@fluentui/react-components'
 import {
   AccordionHeader,
@@ -7,6 +7,17 @@ import {
 } from '@fluentui/react-components'
 import { MdDragIndicator } from 'react-icons/md'
 import { draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
+import { DropIndicator } from '@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/box'
+import {
+  attachClosestEdge,
+  type Edge,
+  extractClosestEdge,
+} from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
+import {
+  attachClosestEdge,
+  type Edge,
+  extractClosestEdge,
+} from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
 
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
@@ -75,13 +86,18 @@ export const ActiveLayer = memo(({ layer, isLast, layerCount }: Props) => {
 
   const layerPresentation = layer.layer_presentations?.[0]
 
+  const [closestEdge, setClosestEdge] = useState<Edge | null>(null)
   const draggableRef = useRef<HTMLDivElement>(null)
   const dragHandleRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
-    const cleanup = draggable({
+    // draggable returns its cleanup function
+    return draggable({
       element: draggableRef.current,
       dragHandle: dragHandleRef.current,
       canDrag: () => layerCount > 1,
+      onDrag: ({ self, source }) => {
+        // TODO:
+      },
       onDrop: (source, destination) => {
         console.log('onDrop', { source, destination })
       },
@@ -89,7 +105,6 @@ export const ActiveLayer = memo(({ layer, isLast, layerCount }: Props) => {
         layerPresentationId: layerPresentation.layer_presentation_id,
       }),
     })
-    return cleanup
   }, [layerCount, layerPresentation.layer_presentation_id])
 
   // TODO: drag and drop items by dragging the drag icon
