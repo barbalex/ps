@@ -1,4 +1,4 @@
-import { memo, useEffect } from 'react'
+import { memo, useEffect, useMemo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 import { useParams } from 'react-router-dom'
@@ -37,7 +37,10 @@ export const ActiveLayers = memo(() => {
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
-  const layerSorting = appState?.map_layer_sorting ?? []
+  const layerSorting = useMemo(
+    () => appState?.map_layer_sorting ?? [],
+    [appState],
+  )
 
   const where = project_id ? { project_id } : {}
 
