@@ -14,7 +14,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@atlaskit/pragmatic-drag-and-drop": "1.2.0",
+    "@atlaskit/pragmatic-drag-and-drop": "1.2.1",
     "@corbado/react": "2.9.0",
     "@css-hooks/react": "2.0.4",
     "@css-hooks/recommended": "2.0.4",
@@ -60,7 +60,7 @@
     "react-leaflet": "4.2.1",
     "react-linkify": "1.0.0-alpha",
     "react-resize-detector": "11.0.1",
-    "react-router-dom": "6.24.0",
+    "react-router-dom": "6.24.1",
     "react-xml-viewer": "2.0.1",
     "recharts": "2.12.7",
     "redaxios": "0.5.1",
