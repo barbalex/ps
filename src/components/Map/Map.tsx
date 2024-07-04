@@ -67,16 +67,6 @@ export const Map = memo(() => {
     refreshOptions: { trailing: true },
   })
 
-  // set drop target for info drawer resizer
-  // if not, the 'none' cursor is shown while dragging
-  useEffect(() => {
-    const cleanup = dropTargetForElements({
-      element: resizeRef.current,
-    })
-
-    return cleanup
-  }, [])
-
   // Issue: map is not drawn correctly on first render
   // Solution: invalidateSize() after first render
   useEffect(() => {
