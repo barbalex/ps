@@ -1,8 +1,12 @@
-import { memo, useEffect, useMemo } from 'react'
+import { memo, useEffect, useMemo, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 import { useParams } from 'react-router-dom'
 import { Accordion } from '@fluentui/react-components'
+import {
+  dropTargetForElements,
+  monitorForElements,
+} from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
 
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
@@ -130,11 +134,24 @@ export const ActiveLayers = memo(() => {
     run()
   }, [appState, db.app_states, layerPresentationIds, layerSorting])
 
+  // TODO: can the dropRef be set on the Accordion itself?
+  const dropRef = useRef<HTMLDivElement | null>(null)
+  useEffect(() => {
+    const el = dropRef.current
+    if (!el) {
+      throw new Error('ref not set correctly')
+    }
+
+    return dropTargetForElements({
+      element: el,
+    })
+  }, [])
+
   return (
     <ErrorBoundary>
       <section>
         <h2 style={titleStyle}>Active</h2>
-        <div style={layerListStyle}>
+        <div style={layerListStyle} ref={dropRef}>
           <Accordion multiple collapsible>
             {activeLayers.length ? (
               activeLayers?.map((l, index) => (

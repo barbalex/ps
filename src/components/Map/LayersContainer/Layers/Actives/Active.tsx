@@ -6,6 +6,11 @@ import {
   AccordionPanel,
 } from '@fluentui/react-components'
 import { MdDragIndicator } from 'react-icons/md'
+import {
+  dropTargetForElements,
+  monitorForElements,
+  draggable,
+} from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
 
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
