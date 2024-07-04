@@ -158,6 +158,7 @@ export const ActiveLayers = memo(() => {
                 <ActiveLayer
                   key={l.tile_layer_id ?? l.vector_layer_id}
                   layer={l}
+                  layerCount={activeLayers.length}
                   isLast={index === activeLayers.length - 1}
                 />
               ))

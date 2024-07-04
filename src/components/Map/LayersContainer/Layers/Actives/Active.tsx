@@ -1,4 +1,4 @@
-import { memo, useCallback } from 'react'
+import { memo, useCallback, useRef, useEffect } from 'react'
 import { Checkbox } from '@fluentui/react-components'
 import {
   AccordionHeader,
@@ -6,11 +6,7 @@ import {
   AccordionPanel,
 } from '@fluentui/react-components'
 import { MdDragIndicator } from 'react-icons/md'
-import {
-  dropTargetForElements,
-  monitorForElements,
-  draggable,
-} from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
+import { draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
 
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
@@ -26,6 +22,7 @@ import './active.css'
 type Props = {
   layer: VectorLayer | TileLayer
   index: boolean
+  layerCount: number
 }
 
 const containerStyle = {
@@ -41,7 +38,7 @@ const dragIconStyle = {
   cursor: 'grab',
 }
 
-export const ActiveLayer = memo(({ layer, isLast }: Props) => {
+export const ActiveLayer = memo(({ layer, isLast, layerCount }: Props) => {
   const { db } = useElectric()!
 
   const onChangeActive = useCallback(
@@ -78,11 +75,28 @@ export const ActiveLayer = memo(({ layer, isLast }: Props) => {
 
   const layerPresentation = layer.layer_presentations?.[0]
 
+  const draggableRef = useRef<HTMLDivElement>(null)
+  const dragHandleRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const cleanup = draggable({
+      element: draggableRef.current,
+      dragHandle: dragHandleRef.current,
+      canDrag: () => layerCount > 1,
+      getInitialData: () => ({
+        layerPresentationId: layerPresentation.layer_presentation_id,
+      }),
+    })
+    return cleanup
+  }, [layerCount, layerPresentation.layer_presentation_id])
+
   // TODO: drag and drop items by dragging the drag icon
   // https://atlassian.design/components/pragmatic-drag-and-drop/core-package
   return (
     <ErrorBoundary>
-      <AccordionItem value={layer.vector_layer_id ?? layer.tile_layer_id}>
+      <AccordionItem
+        value={layer.vector_layer_id ?? layer.tile_layer_id}
+        ref={draggableRef}
+      >
         <div
           style={{
             ...containerStyle,
@@ -92,7 +106,11 @@ export const ActiveLayer = memo(({ layer, isLast }: Props) => {
           }}
         >
           <AccordionHeader expandIconPosition="end" size="extra-large">
-            <MdDragIndicator style={dragIconStyle} />
+            <MdDragIndicator
+              style={dragIconStyle}
+              ref={dragHandleRef}
+              onClick={(e) => e.preventDefault()}
+            />
             <Checkbox
               size="large"
               label={layer.label}
