@@ -73,6 +73,8 @@ export const ActiveLayer = memo(({ layer, isLast }: Props) => {
 
   const layerPresentation = layer.layer_presentations?.[0]
 
+  // TODO: drag and drop items by dragging the drag icon
+  // https://atlassian.design/components/pragmatic-drag-and-drop/core-package
   return (
     <ErrorBoundary>
       <AccordionItem value={layer.vector_layer_id ?? layer.tile_layer_id}>
