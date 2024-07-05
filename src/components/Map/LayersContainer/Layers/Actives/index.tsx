@@ -18,6 +18,7 @@ import {
 import { reorder } from '@atlaskit/pragmatic-drag-and-drop/reorder'
 import * as liveRegion from '@atlaskit/pragmatic-drag-and-drop-live-region'
 import { triggerPostMoveFlash } from '@atlaskit/pragmatic-drag-and-drop-flourish/trigger-post-move-flash'
+import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index'
 
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
@@ -48,6 +49,12 @@ function isItemData(data: Record<string | symbol, unknown>): data is ItemData {
 }
 
 export const ListContext = createContext<ListContextValue | null>(null)
+
+type ReorderItemProps = {
+  startIndex: number
+  indexOfTarget: number
+  closestEdgeOfTarget: Edge | null
+}
 
 type LastCardMoved = {
   item: Item
@@ -148,11 +155,11 @@ export const ActiveLayers = memo(() => {
   const layerPresentationIds = activeLayers.map(
     (l) => l.layer_presentations?.[0]?.layer_presentation_id,
   )
-  // console.log('Map.Layers.Actives', {
-  //   layerSorting,
-  //   layerPresentationIds,
-  //   activeLayers,
-  // })
+  console.log('Map.Layers.Actives', {
+    layerSorting,
+    layerPresentationIds,
+    activeLayers,
+  })
 
   // when activeLayers changes, update app_state.map_layer_sorting:
   // add missing layer's layer_presentation_id's to app_state.map_layer_sorting
@@ -197,21 +204,19 @@ export const ActiveLayers = memo(() => {
   const [instanceId] = useState(() => Symbol('instance-id'))
 
   const reorderItem = useCallback(
-    ({
-      startIndex,
-      indexOfTarget,
-      closestEdgeOfTarget,
-    }: {
-      startIndex: number
-      indexOfTarget: number
-      closestEdgeOfTarget: Edge | null
-    }) => {
+    ({ startIndex, indexOfTarget, closestEdgeOfTarget }: ReorderItemProps) => {
+      console.log('reorderItem', {
+        startIndex,
+        indexOfTarget,
+        closestEdgeOfTarget,
+      })
       const finishIndex = getReorderDestinationIndex({
         startIndex,
         closestEdgeOfTarget,
         indexOfTarget,
         axis: 'vertical',
       })
+      console.log('reorderItem 2', { finishIndex, startIndex })
 
       if (finishIndex === startIndex) {
         // If there would be no change, we skip the update
@@ -223,6 +228,7 @@ export const ActiveLayers = memo(() => {
         startIndex,
         finishIndex,
       })
+      console.log('reorderItem 3, newLayerSorting:', newLayerSorting)
       db.app_states.update({
         where: { app_state_id: appState?.app_state_id },
         data: {

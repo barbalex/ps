@@ -109,6 +109,7 @@ const previewStyle = {
   backgroundColor: 'white',
   borderRadius: '0.25rem',
 }
+const draggableDivStyle = { display: 'flex', alignItems: 'center' }
 
 export const ActiveLayer = memo(
   ({ layer, index, isLast, layerCount }: Props) => {
@@ -270,7 +271,7 @@ export const ActiveLayer = memo(
             }}
           >
             <AccordionHeader expandIconPosition="end" size="extra-large">
-              <div ref={dragHandleRef}>
+              <div ref={dragHandleRef} style={draggableDivStyle}>
                 <MdDragIndicator
                   style={dragIconStyle}
                   onClick={(e) => e.preventDefault()}
