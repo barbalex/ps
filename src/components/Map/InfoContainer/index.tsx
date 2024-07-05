@@ -67,18 +67,18 @@ export const InfoContainer = memo(({ containerRef }) => {
   useEffect(() => {
     if (isResizing) {
       document
-        .getElementsByClassName('map-container')[0]
-        .classList.add(isNarrow ? 'row-resize' : 'col-resize')
+        ?.getElementsByClassName('map-container')?.[0]
+        ?.classList.add(isNarrow ? 'row-resize' : 'col-resize')
     } else {
       document
-        .getElementsByClassName('map-container')[0]
-        .classList.remove('row-resize', 'col-resize')
+        ?.getElementsByClassName('map-container')?.[0]
+        ?.classList.remove('row-resize', 'col-resize')
     }
 
     return () => {
       document
-        .getElementsByClassName('map-container')[0]
-        .classList.remove('row-resize', 'col-resize')
+        ?.getElementsByClassName('map-container')?.[0]
+        ?.classList.remove('row-resize', 'col-resize')
     }
   }, [isResizing, isNarrow])
 
