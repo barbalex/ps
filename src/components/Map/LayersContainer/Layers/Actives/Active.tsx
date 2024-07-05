@@ -151,7 +151,6 @@ export const ActiveLayer = memo(
     useEffect(() => {
       const element = ref.current
       const dragHandle = dragHandleRef.current
-      // if (!element || !dragHandle) return
       invariant(element)
       invariant(dragHandle)
 
