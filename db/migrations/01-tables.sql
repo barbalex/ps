@@ -1390,8 +1390,6 @@ CREATE TABLE tile_layers(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   label text DEFAULT NULL,
-  sort smallint DEFAULT NULL, -- 0
-  active boolean DEFAULT NULL, -- false
   type tile_layer_type_enum DEFAULT NULL, -- 'wmts'
   wmts_url_template text DEFAULT NULL,
   wmts_subdomains jsonb DEFAULT NULL, -- array of text
@@ -1412,8 +1410,6 @@ CREATE TABLE tile_layers(
 );
 
 CREATE INDEX ON tile_layers USING btree(account_id);
-
-CREATE INDEX ON tile_layers USING btree(sort);
 
 COMMENT ON TABLE tile_layers IS 'Goal: Bring your own tile layers. Not versioned (not recorded and only added by manager).';
 
@@ -1446,8 +1442,6 @@ CREATE TABLE vector_layers(
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   type vector_layer_type_enum DEFAULT NULL, -- 'wfs',
   display_by_property_field text DEFAULT NULL,
-  sort smallint DEFAULT NULL,
-  active boolean DEFAULT NULL,
   max_zoom integer DEFAULT NULL, -- 19,
   min_zoom integer DEFAULT NULL, -- 0,
   max_features integer DEFAULT NULL, -- 1000
@@ -1470,8 +1464,6 @@ CREATE INDEX ON vector_layers USING btree(label);
 CREATE INDEX ON vector_layers USING btree(project_id);
 
 CREATE INDEX ON vector_layers USING btree(type);
-
-CREATE INDEX ON vector_layers USING btree(sort);
 
 COMMENT ON TABLE vector_layers IS 'Goal: Bring your own tile layers. Either from wfs or importing GeoJSON. Should only contain metadata, not data fetched from wms or wmts servers (that should only be saved locally on the client).';
 
@@ -1685,8 +1677,6 @@ CREATE INDEX ON layer_presentations USING btree(tile_layer_id);
 CREATE INDEX ON layer_presentations USING btree(vector_layer_id);
 
 CREATE INDEX ON layer_presentations USING btree(active);
-
-CREATE INDEX ON layer_presentations USING btree(sort);
 
 COMMENT ON TABLE layer_presentations IS 'Goal: manage all presentation related properties of all layers (including tile and vector layers). Editable by all users.';
 

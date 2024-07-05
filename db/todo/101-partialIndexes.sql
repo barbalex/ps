@@ -26,10 +26,6 @@ CREATE INDEX IF NOT EXISTS fields_obsolete_idx ON fields(obsolete)
 WHERE
   obsolete;
 
-CREATE INDEX IF NOT EXISTS vector_layers_active_idx ON vector_layers(active)
-WHERE
-  active;
-
 CREATE INDEX IF NOT EXISTS layer_presentations_active_idx ON layer_presentations(active)
 WHERE
   active;
