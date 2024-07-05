@@ -162,7 +162,6 @@ export const ActiveLayer = memo(
           canDrag: () => layerCount > 1,
           getInitialData: () => data,
           onGenerateDragPreview({ nativeSetDragImage }) {
-            // works
             setCustomNativeDragPreview({
               nativeSetDragImage,
               getOffset: pointerOutsideOfPreview({ x: '16px', y: '8px' }),
@@ -174,22 +173,20 @@ export const ActiveLayer = memo(
             })
           },
           onDragStart() {
-            setDraggableState(draggingState) // works
+            setDraggableState(draggingState)
           },
           onDrop() {
-            setDraggableState(idleState) // works
+            setDraggableState(idleState)
           },
         }),
         dropTargetForElements({
           element,
           canDrop({ source }) {
-            // works
             return (
               isItemData(source.data) && source.data.instanceId === instanceId
             )
           },
           getData({ input }) {
-            // works
             return attachClosestEdge(data, {
               element,
               input,
@@ -197,9 +194,9 @@ export const ActiveLayer = memo(
             })
           },
           onDrag({ self, source }) {
-            // works
-            const isSource = source.element === element
-            // TODO: is always false: source.element is regular div, not div.fui-AccordionItem???
+            const isSource =
+              source.data.layer.layer_presentations?.[0]
+                .layer_presentation_id === element.dataset.presentationId
             if (isSource) {
               setClosestEdge(null)
               return
@@ -222,13 +219,13 @@ export const ActiveLayer = memo(
               return
             }
 
-            setClosestEdge(closestEdge) // works
+            setClosestEdge(closestEdge)
           },
           onDragLeave() {
-            setClosestEdge(null) // works
+            setClosestEdge(null)
           },
           onDrop() {
-            setClosestEdge(null) // works
+            setClosestEdge(null)
           },
         }),
       )
@@ -259,6 +256,9 @@ export const ActiveLayer = memo(
               ? { borderBottom: '1px solid rgba(55, 118, 28, 0.5)' }
               : {}),
           }}
+          data-presentation-id={
+            layer.layer_presentations?.[0]?.layer_presentation_id
+          }
         >
           <AccordionHeader expandIconPosition="end" size="extra-large">
             <div
