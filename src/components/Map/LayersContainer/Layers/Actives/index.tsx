@@ -101,7 +101,9 @@ export const ActiveLayers = memo(() => {
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({
       where: { user_email: authUser?.email },
-      select: { map_layer_sorting: true },
+      // TODO: adding this select leads to weird errors when adding layers:
+      // Argument `where` for query on app_states type requires at least one argument
+      // select: { map_layer_sorting: true },
     }),
   )
   const layerSorting = useMemo(
@@ -248,7 +250,7 @@ export const ActiveLayers = memo(() => {
           },
         })
       } catch (error) {
-        console.error('hello Actives.reorderItem', error)
+        console.error('Actives.reorderItem', error)
       }
 
       setLastCardMoved({

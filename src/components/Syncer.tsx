@@ -11,6 +11,8 @@ export const Syncer = memo(() => {
   useEffect(() => {
     // console.log('hello Syncer, syncing data for user:', authUser?.email)
     const syncItems = async () => {
+      if (!authUser?.email) return
+
       await db.app_states.update({
         where: { user_email: authUser?.email },
         data: { syncing: true },
