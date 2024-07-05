@@ -269,6 +269,7 @@ export const ActiveLayer = memo(
                 ...(layerCount <= 1 ? { cursor: 'not-allowed' } : {}),
               }}
               onClick={(e) => e.preventDefault()}
+              title="drag to reorder"
             >
               <MdDragIndicator
                 style={{
