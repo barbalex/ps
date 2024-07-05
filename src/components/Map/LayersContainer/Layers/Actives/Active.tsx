@@ -295,47 +295,44 @@ export const ActiveLayer = memo(
         <AccordionItem
           value={layer.vector_layer_id ?? layer.tile_layer_id}
           ref={ref}
+          style={{
+            ...containerStyle,
+            ...(isLast
+              ? { borderBottom: '1px solid rgba(55, 118, 28, 0.5)' }
+              : {}),
+          }}
         >
-          <div
-            style={{
-              ...containerStyle,
-              ...(isLast
-                ? { borderBottom: '1px solid rgba(55, 118, 28, 0.5)' }
-                : {}),
-            }}
-          >
-            <AccordionHeader expandIconPosition="end" size="extra-large">
-              <div ref={dragHandleRef} style={draggableDivStyle}>
-                <MdDragIndicator
-                  style={{
-                    ...dragIconStyle,
-                    ...(layerCount <= 1
-                      ? { cursor: 'not-allowed', color: '#b7b7b7' }
-                      : {}),
-                  }}
-                  onClick={(e) => e.preventDefault()}
-                />
-              </div>
-              <Checkbox
-                size="large"
-                label={layer.label}
-                checked={layerPresentation.active}
-                onChange={() => onChangeActive(layer)}
+          <AccordionHeader expandIconPosition="end" size="extra-large">
+            <div ref={dragHandleRef} style={draggableDivStyle}>
+              <MdDragIndicator
+                style={{
+                  ...dragIconStyle,
+                  ...(layerCount <= 1
+                    ? { cursor: 'not-allowed', color: '#b7b7b7' }
+                    : {}),
+                }}
+                onClick={(e) => e.preventDefault()}
               />
-            </AccordionHeader>
-            <AccordionPanel style={panelStyle}>
-              <SliderField
-                label="Opacity (%)"
-                min={0}
-                max={100}
-                value={layerPresentation.opacity_percent}
-                onChange={(_, data) =>
-                  onChangeOpacity(layerPresentation, data.value)
-                }
-              />
-            </AccordionPanel>
-            {closestEdge && <DropIndicator edge={closestEdge} gap="1px" />}
-          </div>
+            </div>
+            <Checkbox
+              size="large"
+              label={layer.label}
+              checked={layerPresentation.active}
+              onChange={() => onChangeActive(layer)}
+            />
+          </AccordionHeader>
+          <AccordionPanel style={panelStyle}>
+            <SliderField
+              label="Opacity (%)"
+              min={0}
+              max={100}
+              value={layerPresentation.opacity_percent}
+              onChange={(_, data) =>
+                onChangeOpacity(layerPresentation, data.value)
+              }
+            />
+          </AccordionPanel>
+          {closestEdge && <DropIndicator edge={closestEdge} gap="1px" />}
         </AccordionItem>
         {draggableState.type === 'preview' &&
           createPortal(
