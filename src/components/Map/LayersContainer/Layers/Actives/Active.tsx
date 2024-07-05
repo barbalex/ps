@@ -152,6 +152,7 @@ export const ActiveLayer = memo(
 
     const { registerItem, instanceId } = useListContext()
     const [closestEdge, setClosestEdge] = useState<Edge | null>(null)
+    console.log('Active.closestEdge:', closestEdge)
     const ref = useRef<HTMLDivElement>(null)
     const dragHandleRef = useRef<HTMLDivElement>(null)
     const [draggableState, setDraggableState] =
@@ -165,6 +166,7 @@ export const ActiveLayer = memo(
       invariant(dragHandle)
 
       const data = getItemData({ layer, index, instanceId })
+      console.log('Active.useEffect, data:', data)
 
       // draggable returns its cleanup function
       return combine(
@@ -177,6 +179,7 @@ export const ActiveLayer = memo(
           canDrag: () => layerCount > 1,
           getInitialData: () => data,
           onGenerateDragPreview({ nativeSetDragImage }) {
+            console.log('Active.draggable.onGenerateDragPreview')
             setCustomNativeDragPreview({
               nativeSetDragImage,
               getOffset: pointerOutsideOfPreview({
@@ -191,20 +194,36 @@ export const ActiveLayer = memo(
             })
           },
           onDragStart() {
+            console.log('Active.draggable.onDragStart')
             setDraggableState(draggingState)
           },
           onDrop() {
+            console.log('Active.draggable.onDrop')
             setDraggableState(idleState)
           },
         }),
         dropTargetForElements({
           element,
           canDrop({ source }) {
+            // console.log(
+            //   'Active.dropTargetForElements.canDrop',
+            //   isItemData(source.data) && source.data.instanceId === instanceId,
+            // )
+            // works
             return (
               isItemData(source.data) && source.data.instanceId === instanceId
             )
           },
           getData({ input }) {
+            // console.log(
+            //   'Active.dropTargetForElements.getData',
+            //   attachClosestEdge(data, {
+            //     element,
+            //     input,
+            //     allowedEdges: ['top', 'bottom'],
+            //   }),
+            // )
+            // works
             return attachClosestEdge(data, {
               element,
               input,
@@ -212,13 +231,26 @@ export const ActiveLayer = memo(
             })
           },
           onDrag({ self, source }) {
+            console.log('Active.dropTargetForElements.onDrag', {
+              element,
+              sourceElement: source.element,
+            })
             const isSource = source.element === element
+            console.log(
+              'Active.dropTargetForElements.onDrag, isSource:',
+              isSource,
+            )
             if (isSource) {
               setClosestEdge(null)
               return
             }
 
             const closestEdge = extractClosestEdge(self.data)
+            // console.log(
+            //   'Active.dropTargetForElements.onDrag, closestEdge:',
+            //   closestEdge,
+            // )
+            // works
 
             const sourceIndex = source.data.index
             invariant(typeof sourceIndex === 'number')
@@ -238,9 +270,11 @@ export const ActiveLayer = memo(
             setClosestEdge(closestEdge)
           },
           onDragLeave() {
+            console.log('Active.dropTargetForElements.onDragLeave')
             setClosestEdge(null)
           },
           onDrop() {
+            console.log('Active.dropTargetForElements.onDrop')
             setClosestEdge(null)
           },
         }),

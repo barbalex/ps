@@ -23,6 +23,10 @@ import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hi
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { ActiveLayer } from './Active.tsx'
+import {
+  Vector_layers as VectorLayer,
+  Tile_layers as TileLayer,
+} from '../../../../../generated/client/index.ts'
 
 type ItemEntry = { itemId: string; element: HTMLElement }
 
@@ -44,7 +48,10 @@ function getItemRegistry() {
   return { register, getElement }
 }
 const itemKey = Symbol('item')
-function isItemData(data: Record<string | symbol, unknown>): data is ItemData {
+function isItemData(
+  data: Record<string | symbol, unknown>,
+): data is VectorLayer | TileLayer {
+  console.log('isItemData', { data, itemKey, dataItem: data[itemKey] })
   return data[itemKey] === true
 }
 
@@ -250,9 +257,16 @@ export const ActiveLayers = memo(() => {
   useEffect(() => {
     return monitorForElements({
       canMonitor({ source }) {
+        console.log('Actives.canMonitor', {
+          source,
+          instanceId,
+          isItemData: isItemData(source.data),
+          instenceIdsAreEqual: source.data.instanceId === instanceId,
+        })
         return isItemData(source.data) && source.data.instanceId === instanceId
       },
       onDrop({ location, source }) {
+        console.log('Actives.onDrop')
         const target = location.current.dropTargets[0]
         if (!target) {
           return
