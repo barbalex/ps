@@ -13,6 +13,8 @@ import {
   type Edge,
   extractClosestEdge,
 } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
+import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine'
+import invariant from 'tiny-invariant'
 
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
@@ -85,21 +87,74 @@ export const ActiveLayer = memo(({ layer, isLast, layerCount }: Props) => {
   const draggableRef = useRef<HTMLDivElement>(null)
   const dragHandleRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
+    const element = draggableRef.current
+    invariant(element)
+    const dragHandle = dragHandleRef.current
+    invariant(dragHandle)
+
     // draggable returns its cleanup function
-    return draggable({
-      element: draggableRef.current,
-      dragHandle: dragHandleRef.current,
-      canDrag: () => layerCount > 1,
-      onDrag: ({ self, source }) => {
-        // TODO:
-      },
-      onDrop: (source, destination) => {
-        console.log('onDrop', { source, destination })
-      },
-      getInitialData: () => ({
-        layerPresentationId: layerPresentation.layer_presentation_id,
+    return combine(
+      draggable({
+        element: dragHandle,
+        canDrag: () => layerCount > 1,
+        onDrag: ({ self, source }) => {
+          // TODO:
+        },
+        onDrop: (source, destination) => {
+          console.log('onDrop', { source, destination })
+        },
+        getInitialData: () => ({
+          layerPresentationId: layerPresentation.layer_presentation_id,
+        }),
       }),
-    })
+      dropTargetForElements({
+        element,
+        canDrop({ source }) {
+          return (
+            isItemData(source.data) && source.data.instanceId === instanceId
+          )
+        },
+        getData({ input }) {
+          return attachClosestEdge(data, {
+            element,
+            input,
+            allowedEdges: ['top', 'bottom'],
+          })
+        },
+        onDrag({ self, source }) {
+          const isSource = source.element === element
+          if (isSource) {
+            setClosestEdge(null)
+            return
+          }
+
+          const closestEdge = extractClosestEdge(self.data)
+
+          const sourceIndex = source.data.index
+          invariant(typeof sourceIndex === 'number')
+
+          const isItemBeforeSource = index === sourceIndex - 1
+          const isItemAfterSource = index === sourceIndex + 1
+
+          const isDropIndicatorHidden =
+            (isItemBeforeSource && closestEdge === 'bottom') ||
+            (isItemAfterSource && closestEdge === 'top')
+
+          if (isDropIndicatorHidden) {
+            setClosestEdge(null)
+            return
+          }
+
+          setClosestEdge(closestEdge)
+        },
+        onDragLeave() {
+          setClosestEdge(null)
+        },
+        onDrop() {
+          setClosestEdge(null)
+        },
+      }),
+    )
   }, [layerCount, layerPresentation.layer_presentation_id])
 
   // TODO: drag and drop items by dragging the drag icon
