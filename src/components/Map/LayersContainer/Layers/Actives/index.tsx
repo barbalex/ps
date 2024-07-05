@@ -24,6 +24,7 @@ import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { ActiveLayer } from './Active.tsx'
 import { isItemData } from './shared.ts'
+import { px } from 'framer-motion'
 
 type ItemEntry = { itemId: string; element: HTMLElement }
 
@@ -91,7 +92,7 @@ const noLayersStyle = {
   paddingBottom: 10,
 }
 
-export const ActiveLayers = memo(() => {
+export const ActiveLayers = memo(({ isNarrow }) => {
   const { project_id } = useParams()
   const { user: authUser } = useCorbado()
 
@@ -327,7 +328,12 @@ export const ActiveLayers = memo(() => {
       <ListContext.Provider value={contextValue}>
         <section>
           <h2 style={titleStyle}>Active</h2>
-          <div style={layerListStyle}>
+          <div
+            style={{
+              ...layerListStyle,
+              ...(isNarrow ? {} : { width: 'calc(100% - 6px)' }),
+            }}
+          >
             <Accordion multiple collapsible>
               {activeLayers.length ? (
                 activeLayers?.map((l, index) => (
