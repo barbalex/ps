@@ -104,7 +104,6 @@ export const ActiveLayer = memo(
       (layer) => {
         // update layer_presentations, set active = false
         const presentation = layer.layer_presentations?.[0]
-        console.log('Active.onChangeActive', { presentation, layer })
         if (presentation) {
           return db.layer_presentations.update({
             where: {
