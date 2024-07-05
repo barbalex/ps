@@ -1,4 +1,12 @@
-import { memo, useCallback, useRef, useEffect, useState } from 'react'
+import {
+  memo,
+  useCallback,
+  useRef,
+  useEffect,
+  useState,
+  createContext,
+  useContext,
+} from 'react'
 import { Checkbox } from '@fluentui/react-components'
 import {
   AccordionHeader,
@@ -27,10 +35,92 @@ import {
 
 import './active.css'
 
+type ItemPosition = 'first' | 'last' | 'middle' | 'only'
+
+type CleanupFn = () => void
+
+type ItemEntry = { itemId: string; element: HTMLElement }
+
+type ListContextValue = {
+  getListLength: () => number
+  registerItem: (entry: ItemEntry) => CleanupFn
+  reorderItem: (args: {
+    startIndex: number
+    indexOfTarget: number
+    closestEdgeOfTarget: Edge | null
+  }) => void
+  instanceId: symbol
+}
+
+const ListContext = createContext<ListContextValue | null>(null)
+
 type Props = {
   layer: VectorLayer | TileLayer
   index: boolean
   layerCount: number
+}
+
+function useListContext() {
+  const listContext = useContext(ListContext)
+  invariant(listContext !== null)
+
+  return listContext
+}
+
+type Item = {
+  id: string
+  label: string
+}
+
+const itemKey = Symbol('item')
+type ItemData = {
+  [itemKey]: true
+  item: Item
+  index: number
+  instanceId: symbol
+}
+
+function getItemData({
+  item,
+  index,
+  instanceId,
+}: {
+  item: Item
+  index: number
+  instanceId: symbol
+}): ItemData {
+  return {
+    [itemKey]: true,
+    item,
+    index,
+    instanceId,
+  }
+}
+
+function isItemData(data: Record<string | symbol, unknown>): data is ItemData {
+  return data[itemKey] === true
+}
+
+function getItemPosition({
+  index,
+  items,
+}: {
+  index: number
+  items: Item[]
+}): ItemPosition {
+  if (items.length === 1) {
+    return 'only'
+  }
+
+  if (index === 0) {
+    return 'first'
+  }
+
+  if (index === items.length - 1) {
+    return 'last'
+  }
+
+  return 'middle'
 }
 
 const containerStyle = {
