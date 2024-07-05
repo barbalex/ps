@@ -4,7 +4,6 @@ import {
   useRef,
   useEffect,
   useState,
-  createContext,
   useContext,
 } from 'react'
 import { createPortal } from 'react-dom'
@@ -15,13 +14,18 @@ import {
   AccordionPanel,
 } from '@fluentui/react-components'
 import { MdDragIndicator } from 'react-icons/md'
-import { draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
 import { DropIndicator } from '@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/box'
+import { pointerOutsideOfPreview } from '@atlaskit/pragmatic-drag-and-drop/element/pointer-outside-of-preview'
+import { setCustomNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview'
 import {
   attachClosestEdge,
   type Edge,
   extractClosestEdge,
 } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
+import {
+  draggable,
+  dropTargetForElements,
+} from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
 import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine'
 import invariant from 'tiny-invariant'
 
@@ -33,33 +37,9 @@ import {
   Vector_layers as VectorLayer,
   Tile_layers as TileLayer,
 } from '../../../../../generated/client/index.ts'
+import { ListContext } from './index.tsx'
 
 import './active.css'
-
-type ItemPosition = 'first' | 'last' | 'middle' | 'only'
-
-type CleanupFn = () => void
-
-type ItemEntry = { itemId: string; element: HTMLElement }
-
-type ListContextValue = {
-  getListLength: () => number
-  registerItem: (entry: ItemEntry) => CleanupFn
-  reorderItem: (args: {
-    startIndex: number
-    indexOfTarget: number
-    closestEdgeOfTarget: Edge | null
-  }) => void
-  instanceId: symbol
-}
-
-const ListContext = createContext<ListContextValue | null>(null)
-
-type Props = {
-  layer: VectorLayer | TileLayer
-  index: boolean
-  layerCount: number
-}
 
 function useListContext() {
   const listContext = useContext(ListContext)
@@ -68,31 +48,32 @@ function useListContext() {
   return listContext
 }
 
-type Item = {
-  id: string
-  label: string
+type Props = {
+  layer: VectorLayer | TileLayer
+  index: boolean
+  layerCount: number
 }
 
 const itemKey = Symbol('item')
 type ItemData = {
   [itemKey]: true
-  item: Item
+  layer: VectorLayer | TileLayer
   index: number
   instanceId: symbol
 }
 
 function getItemData({
-  item,
+  layer,
   index,
   instanceId,
 }: {
-  item: Item
+  layer: VectorLayer | TileLayer
   index: number
   instanceId: symbol
 }): ItemData {
   return {
     [itemKey]: true,
-    item,
+    layer,
     index,
     instanceId,
   }
@@ -100,28 +81,6 @@ function getItemData({
 
 function isItemData(data: Record<string | symbol, unknown>): data is ItemData {
   return data[itemKey] === true
-}
-
-function getItemPosition({
-  index,
-  items,
-}: {
-  index: number
-  items: Item[]
-}): ItemPosition {
-  if (items.length === 1) {
-    return 'only'
-  }
-
-  if (index === 0) {
-    return 'first'
-  }
-
-  if (index === items.length - 1) {
-    return 'last'
-  }
-
-  return 'middle'
 }
 
 type DraggableState =
@@ -178,7 +137,6 @@ export const ActiveLayer = memo(
     )
     const onChangeOpacity = useCallback(
       (layerPresentation, value) => {
-        console.log('onChangeOpacity', { layerPresentation, value })
         db.layer_presentations.update({
           where: {
             layer_presentation_id: layerPresentation.layer_presentation_id,
@@ -193,32 +151,50 @@ export const ActiveLayer = memo(
 
     const { registerItem, instanceId } = useListContext()
     const [closestEdge, setClosestEdge] = useState<Edge | null>(null)
-    const draggableRef = useRef<HTMLDivElement>(null)
+    const ref = useRef<HTMLDivElement>(null)
     const dragHandleRef = useRef<HTMLDivElement>(null)
     const [draggableState, setDraggableState] =
       useState<DraggableState>(idleState)
+
     useEffect(() => {
-      const element = draggableRef.current
-      invariant(element)
+      const element = ref.current
       const dragHandle = dragHandleRef.current
+      // if (!element || !dragHandle) return
+      invariant(element)
       invariant(dragHandle)
 
-      const data = getItemData({ item: layer, index, instanceId })
+      const data = getItemData({ layer, index, instanceId })
 
       // draggable returns its cleanup function
       return combine(
+        registerItem({
+          itemId: layer.layer_presentations?.[0]?.layer_presentation_id,
+          element,
+        }),
         draggable({
           element: dragHandle,
           canDrag: () => layerCount > 1,
-          onDrag: ({ self, source }) => {
-            // TODO:
+          getInitialData: () => data,
+          onGenerateDragPreview({ nativeSetDragImage }) {
+            setCustomNativeDragPreview({
+              nativeSetDragImage,
+              getOffset: pointerOutsideOfPreview({
+                x: '16px',
+                y: '8px',
+              }),
+              render({ container }) {
+                setDraggableState({ type: 'preview', container })
+
+                return () => setDraggableState(draggingState)
+              },
+            })
           },
-          onDrop: (source, destination) => {
-            console.log('onDrop', { source, destination })
+          onDragStart() {
+            setDraggableState(draggingState)
           },
-          getInitialData: () => ({
-            layerPresentationId: layerPresentation.layer_presentation_id,
-          }),
+          onDrop() {
+            setDraggableState(idleState)
+          },
         }),
         dropTargetForElements({
           element,
@@ -268,7 +244,14 @@ export const ActiveLayer = memo(
           },
         }),
       )
-    }, [layerCount, layerPresentation.layer_presentation_id])
+    }, [
+      index,
+      instanceId,
+      layer,
+      layerCount,
+      layerPresentation.layer_presentation_id,
+      registerItem,
+    ])
 
     // TODO: drag and drop items by dragging the drag icon
     // https://atlassian.design/components/pragmatic-drag-and-drop/core-package
@@ -276,7 +259,7 @@ export const ActiveLayer = memo(
       <ErrorBoundary>
         <AccordionItem
           value={layer.vector_layer_id ?? layer.tile_layer_id}
-          ref={draggableRef}
+          ref={ref}
         >
           <div
             style={{
@@ -287,11 +270,12 @@ export const ActiveLayer = memo(
             }}
           >
             <AccordionHeader expandIconPosition="end" size="extra-large">
-              <MdDragIndicator
-                style={dragIconStyle}
-                ref={dragHandleRef}
-                onClick={(e) => e.preventDefault()}
-              />
+              <div ref={dragHandleRef}>
+                <MdDragIndicator
+                  style={dragIconStyle}
+                  onClick={(e) => e.preventDefault()}
+                />
+              </div>
               <Checkbox
                 size="large"
                 label={layer.label}
@@ -310,6 +294,7 @@ export const ActiveLayer = memo(
                 }
               />
             </AccordionPanel>
+            {closestEdge && <DropIndicator edge={closestEdge} gap="1px" />}
           </div>
         </AccordionItem>
         {draggableState.type === 'preview' &&
