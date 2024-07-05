@@ -138,7 +138,6 @@ export const ActiveLayer = memo(
 
     const { registerItem, instanceId } = useListContext()
     const [closestEdge, setClosestEdge] = useState<Edge | null>(null)
-    console.log('Active, closestEdge:', closestEdge)
     const ref = useRef<HTMLDivElement>(null)
     const dragHandleRef = useRef<HTMLDivElement>(null)
     const [draggableState, setDraggableState] =
@@ -151,7 +150,6 @@ export const ActiveLayer = memo(
       invariant(dragHandle)
 
       const data = getItemData({ layer, index, instanceId })
-      console.log('Active.useEffect, data:', data)
 
       // draggable returns its cleanup function
       return combine(
@@ -164,7 +162,6 @@ export const ActiveLayer = memo(
           canDrag: () => layerCount > 1,
           getInitialData: () => data,
           onGenerateDragPreview({ nativeSetDragImage }) {
-            // console.log('Active.draggable.onGenerateDragPreview')
             // works
             setCustomNativeDragPreview({
               nativeSetDragImage,
@@ -177,22 +174,15 @@ export const ActiveLayer = memo(
             })
           },
           onDragStart() {
-            // console.log('Active.draggable.onDragStart')
-            // works
-            setDraggableState(draggingState)
+            setDraggableState(draggingState) // works
           },
           onDrop() {
-            // console.log('Active.draggable.onDrop') works
-            setDraggableState(idleState)
+            setDraggableState(idleState) // works
           },
         }),
         dropTargetForElements({
           element,
           canDrop({ source }) {
-            // console.log(
-            //   'Active.dropTargetForElements.canDrop',
-            //   isItemData(source.data) && source.data.instanceId === instanceId,
-            // )
             // works
             return (
               isItemData(source.data) && source.data.instanceId === instanceId
