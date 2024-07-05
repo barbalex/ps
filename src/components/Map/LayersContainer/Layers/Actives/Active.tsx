@@ -91,17 +91,8 @@ type DraggableState =
 const idleState: DraggableState = { type: 'idle' }
 const draggingState: DraggableState = { type: 'dragging' }
 
-const containerStyle = {
-  borderTop: '1px solid rgba(55, 118, 28, 0.5)',
-}
 const panelStyle = {
   paddingBottom: 8,
-}
-const dragIconStyle = {
-  fontSize: 'x-large',
-  color: 'rgba(55, 118, 28, 0.6)',
-  paddingRight: 5,
-  cursor: 'grab',
 }
 const previewStyle = {
   border: '1px solid red',
@@ -109,7 +100,6 @@ const previewStyle = {
   backgroundColor: 'white',
   borderRadius: '0.25rem',
 }
-const draggableDivStyle = { display: 'flex', alignItems: 'center' }
 
 export const ActiveLayer = memo(
   ({ layer, index, isLast, layerCount }: Props) => {
@@ -296,7 +286,7 @@ export const ActiveLayer = memo(
           value={layer.vector_layer_id ?? layer.tile_layer_id}
           ref={ref}
           style={{
-            ...containerStyle,
+            borderTop: '1px solid rgba(55, 118, 28, 0.5)',
             ...(isLast
               ? { borderBottom: '1px solid rgba(55, 118, 28, 0.5)' }
               : {}),
@@ -306,14 +296,18 @@ export const ActiveLayer = memo(
             <div
               ref={dragHandleRef}
               style={{
-                ...draggableDivStyle,
+                display: 'flex',
+                alignItems: 'center',
                 ...(layerCount <= 1 ? { cursor: 'not-allowed' } : {}),
               }}
               onClick={(e) => e.preventDefault()}
             >
               <MdDragIndicator
                 style={{
-                  ...dragIconStyle,
+                  fontSize: 'x-large',
+                  color: 'rgba(55, 118, 28, 0.6)',
+                  paddingRight: 5,
+                  cursor: 'grab',
                   ...(layerCount <= 1 ? { color: '#b7b7b7' } : {}),
                 }}
               />
