@@ -41,7 +41,6 @@
     "@turf/polygon-to-line": "7.0.0",
     "@uploadcare/blocks": "0.38.3",
     "allotment": "1.20.2",
-    "array-move": "4.0.0",
     "dayjs": "1.11.11",
     "dotenv": "16.4.5",
     "electric-sql": "0.12.1",
