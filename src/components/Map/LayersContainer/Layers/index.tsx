@@ -110,9 +110,7 @@ export const Layers = memo(({ isNarrow }) => {
           ? { vector_layer_id: layer.vector_layer_id }
           : {}),
       }
-      console.log('Layers.onChangeNonActive', { layer, where })
       const presentation = await db.layer_presentations.findFirst({ where })
-      console.log('Layers.onChangeNonActive', { presentation })
       // 2. if not, create one
       if (!presentation) {
         const data = createLayerPresentation({

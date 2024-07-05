@@ -19,6 +19,7 @@ import { reorder } from '@atlaskit/pragmatic-drag-and-drop/reorder'
 import * as liveRegion from '@atlaskit/pragmatic-drag-and-drop-live-region'
 import { triggerPostMoveFlash } from '@atlaskit/pragmatic-drag-and-drop-flourish/trigger-post-move-flash'
 import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index'
+import { arrayMoveMutable } from 'array-move'
 
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
@@ -138,30 +139,44 @@ export const ActiveLayers = memo(() => {
   )
 
   // sort by app_states.map_layer_sorting
-  const activeLayers = [...activeTileLayers, ...activeVectorLayers].sort(
-    (a, b) => {
-      const aIndex = layerSorting.findIndex(
-        (ls) =>
-          ls.layer_presentations?.[0]?.layer_presentation_id ===
-          a.layer_presentations?.[0]?.layer_presentation_id,
+  const activeLayers = useMemo(() => {
+    const activeLayers = [...activeTileLayers, ...activeVectorLayers]
+    for (const [index, layer] of activeLayers.entries()) {
+      const newIndex = layerSorting.findIndex(
+        (ls) => ls === layer.layer_presentations?.[0]?.layer_presentation_id,
       )
-      const bIndex = layerSorting.findIndex(
-        (ls) =>
-          ls.layer_presentations?.[0]?.layer_presentation_id ===
-          b.layer_presentations?.[0]?.layer_presentation_id,
-      )
-      return aIndex - bIndex
-    },
-  )
+      if (index !== newIndex) {
+        arrayMoveMutable(activeLayers, index, newIndex)
+      }
+    }
+    return activeLayers
+  }, [activeTileLayers, activeVectorLayers, layerSorting])
+  // .sort(
+  //   (a, b) => {
+  //     const aIndex = layerSorting.findIndex(
+  //       (ls) =>
+  //         ls.layer_presentations?.[0]?.layer_presentation_id ===
+  //         a.layer_presentations?.[0]?.layer_presentation_id,
+  //     )
+  //     const bIndex = layerSorting.findIndex(
+  //       (ls) =>
+  //         ls.layer_presentations?.[0]?.layer_presentation_id ===
+  //         b.layer_presentations?.[0]?.layer_presentation_id,
+  //     )
+  //     return aIndex - bIndex
+  //   },
+  // )
+
   const layerPresentationIds = activeLayers.map(
     (l) => l.layer_presentations?.[0]?.layer_presentation_id,
   )
-  console.log('hello Actives', {
+  console.log('Actives', {
     layerSorting,
-    layerPresentationIds,
     activeLayers,
-    appState,
-    userEmail: authUser?.email,
+    layerPresentationIdsSorted: layerPresentationIds,
+    unsorted: [...activeTileLayers, ...activeVectorLayers].map(
+      (l) => l.layer_presentations?.[0]?.layer_presentation_id,
+    ),
   })
 
   // when activeLayers changes, update app_state.map_layer_sorting:
