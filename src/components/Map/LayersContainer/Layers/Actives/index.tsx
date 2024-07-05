@@ -99,7 +99,10 @@ export const ActiveLayers = memo(() => {
 
   // get app_state
   const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+    db.app_states.liveFirst({
+      where: { user_email: authUser?.email },
+      select: { map_layer_sorting: true },
+    }),
   )
   const layerSorting = useMemo(
     () => appState?.map_layer_sorting ?? [],
@@ -155,6 +158,8 @@ export const ActiveLayers = memo(() => {
     layerSorting,
     layerPresentationIds,
     activeLayers,
+    appState,
+    userEmail: authUser?.email,
   })
 
   // when activeLayers changes, update app_state.map_layer_sorting:
@@ -200,7 +205,11 @@ export const ActiveLayers = memo(() => {
   const [instanceId] = useState(() => Symbol('instance-id'))
 
   const reorderItem = useCallback(
-    ({ startIndex, indexOfTarget, closestEdgeOfTarget }: ReorderItemProps) => {
+    async ({
+      startIndex,
+      indexOfTarget,
+      closestEdgeOfTarget,
+    }: ReorderItemProps) => {
       const finishIndex = getReorderDestinationIndex({
         startIndex,
         closestEdgeOfTarget,
@@ -224,13 +233,18 @@ export const ActiveLayers = memo(() => {
         item,
         newLayerSorting,
         layerSorting,
+        app_state_id: appState?.app_state_id,
       })
-      db.app_states.update({
-        where: { app_state_id: appState?.app_state_id },
-        data: {
-          map_layer_sorting: newLayerSorting,
-        },
-      })
+      try {
+        await db.app_states.update({
+          where: { app_state_id: appState?.app_state_id },
+          data: {
+            map_layer_sorting: newLayerSorting,
+          },
+        })
+      } catch (error) {
+        console.error('hello Actives.reorderItem', error)
+      }
 
       setLastCardMoved({
         item,
