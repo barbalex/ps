@@ -262,7 +262,13 @@ export const ActiveLayers = memo(() => {
           instanceId,
           isItemData: isItemData(source.data),
           instenceIdsAreEqual: source.data.instanceId === instanceId,
+          canMonitor:
+            isItemData(source.data) && source.data.instanceId === instanceId,
         })
+        // console.log(
+        //   'Actives.canMonitor, canMonitor:',
+        //   isItemData(source.data) && source.data.instanceId === instanceId,
+        // )
         return isItemData(source.data) && source.data.instanceId === instanceId
       },
       onDrop({ location, source }) {

@@ -283,7 +283,7 @@ export const ActiveLayer = memo(
     return (
       <ErrorBoundary>
         <AccordionItem
-          value={layer.vector_layer_id ?? layer.tile_layer_id}
+          value={layer.layer_presentations?.[0]?.layer_presentation_id}
           ref={ref}
           style={{
             borderTop: '1px solid rgba(55, 118, 28, 0.5)',
