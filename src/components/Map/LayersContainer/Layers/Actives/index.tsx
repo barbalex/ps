@@ -210,6 +210,11 @@ export const ActiveLayers = memo(() => {
       indexOfTarget,
       closestEdgeOfTarget,
     }: ReorderItemProps) => {
+      if (!appState) {
+        return console.warn(
+          'Actives.reorderItem returning because appState is null',
+        )
+      }
       const finishIndex = getReorderDestinationIndex({
         startIndex,
         closestEdgeOfTarget,
@@ -253,13 +258,7 @@ export const ActiveLayers = memo(() => {
         numberOfItems: layerSorting.length,
       })
     },
-    [
-      activeLayers,
-      appState?.app_state_id,
-      db.app_states,
-      layerPresentationIds,
-      layerSorting,
-    ],
+    [activeLayers, appState, db.app_states, layerPresentationIds, layerSorting],
   )
 
   useEffect(() => {

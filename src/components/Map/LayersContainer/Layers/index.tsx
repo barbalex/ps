@@ -104,16 +104,15 @@ export const Layers = memo(({ isNarrow }) => {
   const onChangeNonActive = useCallback(
     async (layer) => {
       // 1. check if layer has a presentation
-      const presentation = await db.layer_presentations.findFirst({
-        where: {
-          ...(layer.tile_layer_id
-            ? { tile_layer_id: layer.tile_layer_id }
-            : {}),
-          ...(layer.vector_layer_id
-            ? { vector_layer_id: layer.vector_layer_id }
-            : {}),
-        },
-      })
+      const where = {
+        ...(layer.tile_layer_id ? { tile_layer_id: layer.tile_layer_id } : {}),
+        ...(layer.vector_layer_id
+          ? { vector_layer_id: layer.vector_layer_id }
+          : {}),
+      }
+      console.log('Layers.onChangeNonActive', { layer, where })
+      const presentation = await db.layer_presentations.findFirst({ where })
+      console.log('Layers.onChangeNonActive', { presentation })
       // 2. if not, create one
       if (!presentation) {
         const data = createLayerPresentation({
