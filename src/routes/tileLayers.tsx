@@ -35,13 +35,13 @@ export const Component = memo(() => {
   const { results: tileLayers = [] } = useLiveQuery(
     db.tile_layers.liveMany({
       where: { project_id, ...where },
-      orderBy: [{ sort: 'asc' }, { label: 'asc' }],
+      orderBy: { label: 'asc' },
     }),
   )
   const { results: tileLayersUnfiltered = [] } = useLiveQuery(
     db.tile_layers.liveMany({
       where: { project_id },
-      orderBy: [{ sort: 'asc' }, { label: 'asc' }],
+      orderBy: { label: 'asc' },
     }),
   )
   const isFiltered = tileLayers.length !== tileLayersUnfiltered.length

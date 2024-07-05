@@ -470,7 +470,6 @@ export const createAppState = ({ user_id }) => ({
 export const createTileLayer = ({ project_id }) => ({
   tile_layer_id: uuidv7(),
   project_id,
-  sort: 0,
   type: 'wms',
   max_zoom: 19,
   min_zoom: 0,
@@ -482,7 +481,6 @@ export const createVectorLayer = ({
   project_id,
   type = 'wfs',
   label = null,
-  sort = 0,
   max_zoom = 19,
   min_zoom = 0,
   max_features = 1000,
@@ -491,7 +489,6 @@ export const createVectorLayer = ({
   project_id,
   label,
   type,
-  sort,
   max_zoom,
   min_zoom,
   max_features,

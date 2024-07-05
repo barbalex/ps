@@ -38,9 +38,7 @@ export const Legends = () => {
       { active: true, project_id }
     : { active: true }
 
-  const { result } = useLiveQuery(
-    db.tile_layers.liveMany({ where, orderBy: { sort: 'asc' } }),
-  )
+  const { result } = useLiveQuery(db.tile_layers.liveMany({ where }))
   const tileLayers: TileLayer[] = result ?? []
   /**
    * Ensure needed data exists:

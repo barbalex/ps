@@ -41,13 +41,13 @@ export const VectorLayersNode = memo(({ project_id, level = 3 }: Props) => {
   const { results: vectorLayers = [] } = useLiveQuery(
     db.vector_layers.liveMany({
       where: { project_id, ...where },
-      orderBy: [{ sort: 'asc' }, { label: 'asc' }],
+      orderBy: { label: 'asc' },
     }),
   )
   const { results: vectorLayersUnfiltered = [] } = useLiveQuery(
     db.vector_layers.liveMany({
       where: { project_id },
-      orderBy: [{ sort: 'asc' }, { label: 'asc' }],
+      orderBy: { label: 'asc' },
     }),
   )
   const isFiltered = vectorLayers.length !== vectorLayersUnfiltered.length

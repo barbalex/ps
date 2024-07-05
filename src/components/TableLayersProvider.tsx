@@ -56,9 +56,11 @@ export const TableLayersProvider = memo(() => {
             type: 'places1',
             label: placeLevel1?.name_plural ?? 'Places',
           })
-          places1VectorLayer = await db.vector_layers.create({
-            data: vectorLayer,
-          })
+          try {
+            places1VectorLayer = await db.vector_layers.create({
+              data: vectorLayer,
+            })
+          } catch (error) {}
           console.warn(
             'hello TableLayersProvider, new places 1 vector layer:',
             places1VectorLayer,

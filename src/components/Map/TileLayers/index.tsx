@@ -33,9 +33,7 @@ export const TileLayers = () => {
         ],
       },
       include: { layer_presentations: true },
-      // try not selecting label, to see if it helps with performance when label is changed
-      // but: had no influence on performance
-      orderBy: [{ sort: 'asc' }, { label: 'asc' }],
+      orderBy: { label: 'asc' },
     }),
   )
   const tileLayers = tileLayersResult

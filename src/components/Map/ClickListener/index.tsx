@@ -59,7 +59,7 @@ export const ClickListener = memo(() => {
       const tileLayers = await db.rawQuery({
         sql: `select tl.*
                 from tile_layers tl inner join layer_presentations lp on lp.tile_layer_id = tl.tile_layer_id
-                where lp.active = true and tl.project_id = $1${sqlToAddToWhere} order by tl.sort, tl.label`,
+                where lp.active = true and tl.project_id = $1${sqlToAddToWhere} order by tl.label`,
         args: [project_id],
       })
       // const tileLayers = await db.tile_layers.findMany({
@@ -67,7 +67,7 @@ export const ClickListener = memo(() => {
       //     project_id,
       //     ...tileLayersWhere,
       //   },
-      //   orderBy: [{ sort: 'asc' }, { label: 'asc' }],
+      //   orderBy: { label: 'asc' },
       // })
       // loop through vector layers and get infos
       for await (const layer of tileLayers) {
@@ -124,7 +124,7 @@ export const ClickListener = memo(() => {
           active: true,
           ...(vectorLayersWhere ? vectorLayersWhere : {}),
         },
-        orderBy: [{ sort: 'asc' }, { label: 'asc' }],
+        orderBy: { label: 'asc' },
       })
       // loop through vector layers and get infos
       for await (const layer of vectorLayers) {
