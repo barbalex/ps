@@ -91,7 +91,6 @@ const panelStyle = {
   paddingBottom: 8,
 }
 const previewStyle = {
-  border: '1px solid red',
   padding: '0.5rem',
   backgroundColor: 'white',
   borderRadius: '0.25rem',
