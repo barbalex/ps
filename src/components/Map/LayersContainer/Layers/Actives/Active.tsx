@@ -171,10 +171,7 @@ export const ActiveLayer = memo(
             console.log('Active.draggable.onGenerateDragPreview')
             setCustomNativeDragPreview({
               nativeSetDragImage,
-              getOffset: pointerOutsideOfPreview({
-                x: '16px',
-                y: '8px',
-              }),
+              getOffset: pointerOutsideOfPreview({ x: '16px', y: '8px' }),
               render({ container }) {
                 setDraggableState({ type: 'preview', container })
 
