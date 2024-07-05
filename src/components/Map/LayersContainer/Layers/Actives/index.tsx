@@ -88,11 +88,11 @@ export const ActiveLayers = memo(() => {
   const layerPresentationIds = activeLayers.map(
     (l) => l.layer_presentations?.[0]?.layer_presentation_id,
   )
-  console.log('Map.Layers.Actives', {
-    layerSorting,
-    layerPresentationIds,
-    activeLayers,
-  })
+  // console.log('Map.Layers.Actives', {
+  //   layerSorting,
+  //   layerPresentationIds,
+  //   activeLayers,
+  // })
 
   // when activeLayers changes, update app_state.map_layer_sorting:
   // add missing layer's layer_presentation_id's to app_state.map_layer_sorting
