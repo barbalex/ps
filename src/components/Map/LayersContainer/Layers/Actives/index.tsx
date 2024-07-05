@@ -231,9 +231,7 @@ export const ActiveLayers = memo(({ isNarrow }) => {
       })
       await db.app_states.update({
         where: { app_state_id: appState?.app_state_id },
-        data: {
-          map_layer_sorting: newLayerSorting,
-        },
+        data: { map_layer_sorting: newLayerSorting },
       })
 
       setLastCardMoved({
