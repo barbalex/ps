@@ -47,8 +47,8 @@ function getItemRegistry() {
 
   return { register, getElement }
 }
-const itemKey = Symbol('item')
-function isItemData(
+export const itemKey = Symbol('item')
+export function isItemData(
   data: Record<string | symbol, unknown>,
 ): data is VectorLayer | TileLayer {
   console.log('isItemData', { data, itemKey, dataItem: data[itemKey] })
@@ -142,7 +142,6 @@ export const ActiveLayers = memo(() => {
     ),
   )
 
-  // TODO: test
   // sort by app_states.map_layer_sorting
   const activeLayers = [...activeTileLayers, ...activeVectorLayers].sort(
     (a, b) => {
@@ -212,7 +211,7 @@ export const ActiveLayers = memo(() => {
 
   const reorderItem = useCallback(
     ({ startIndex, indexOfTarget, closestEdgeOfTarget }: ReorderItemProps) => {
-      console.log('reorderItem', {
+      console.log('Actives.reorderItem', {
         startIndex,
         indexOfTarget,
         closestEdgeOfTarget,
@@ -242,13 +241,13 @@ export const ActiveLayers = memo(() => {
           map_layer_sorting: newLayerSorting,
         },
       })
-      const item = layerSorting.items[startIndex]
+      const item = layerSorting[startIndex]
 
       setLastCardMoved({
         item,
         previousIndex: startIndex,
         currentIndex: finishIndex,
-        numberOfItems: layerSorting.items.length,
+        numberOfItems: layerSorting.length,
       })
     },
     [appState?.app_state_id, db.app_states, layerSorting],
@@ -269,6 +268,7 @@ export const ActiveLayers = memo(() => {
         //   'Actives.canMonitor, canMonitor:',
         //   isItemData(source.data) && source.data.instanceId === instanceId,
         // )
+        // TODO: canMonitor is always false
         return isItemData(source.data) && source.data.instanceId === instanceId
       },
       onDrop({ location, source }) {
@@ -309,7 +309,9 @@ export const ActiveLayers = memo(() => {
     }
 
     const { item, previousIndex, currentIndex, numberOfItems } = lastCardMoved
+    console.log('Actives.useEffect, lastCardMoved:', lastCardMoved)
     const element = registry.getElement(item.id)
+    console.log('Actives.useEffect, element:', element)
     if (element) {
       triggerPostMoveFlash(element)
     }

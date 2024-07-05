@@ -37,7 +37,7 @@ import {
   Vector_layers as VectorLayer,
   Tile_layers as TileLayer,
 } from '../../../../../generated/client/index.ts'
-import { ListContext } from './index.tsx'
+import { ListContext, itemKey, isItemData } from './index.tsx'
 
 import './active.css'
 
@@ -54,7 +54,6 @@ type Props = {
   layerCount: number
 }
 
-const itemKey = Symbol('item')
 type ItemData = {
   [itemKey]: true
   layer: VectorLayer | TileLayer
@@ -77,10 +76,6 @@ function getItemData({
     index,
     instanceId,
   }
-}
-
-function isItemData(data: Record<string | symbol, unknown>): data is ItemData {
-  return data[itemKey] === true
 }
 
 type DraggableState =
@@ -141,8 +136,9 @@ export const ActiveLayer = memo(
     const layerPresentation = layer.layer_presentations?.[0]
 
     const { registerItem, instanceId } = useListContext()
+    console.log('Active, instanceId:', instanceId)
     const [closestEdge, setClosestEdge] = useState<Edge | null>(null)
-    console.log('Active.closestEdge:', closestEdge)
+    console.log('Active, closestEdge:', closestEdge)
     const ref = useRef<HTMLDivElement>(null)
     const dragHandleRef = useRef<HTMLDivElement>(null)
     const [draggableState, setDraggableState] =
@@ -168,7 +164,8 @@ export const ActiveLayer = memo(
           canDrag: () => layerCount > 1,
           getInitialData: () => data,
           onGenerateDragPreview({ nativeSetDragImage }) {
-            console.log('Active.draggable.onGenerateDragPreview')
+            // console.log('Active.draggable.onGenerateDragPreview')
+            // works
             setCustomNativeDragPreview({
               nativeSetDragImage,
               getOffset: pointerOutsideOfPreview({ x: '16px', y: '8px' }),
@@ -180,11 +177,12 @@ export const ActiveLayer = memo(
             })
           },
           onDragStart() {
-            console.log('Active.draggable.onDragStart')
+            // console.log('Active.draggable.onDragStart')
+            // works
             setDraggableState(draggingState)
           },
           onDrop() {
-            console.log('Active.draggable.onDrop')
+            // console.log('Active.draggable.onDrop') works
             setDraggableState(idleState)
           },
         }),
@@ -201,14 +199,6 @@ export const ActiveLayer = memo(
             )
           },
           getData({ input }) {
-            // console.log(
-            //   'Active.dropTargetForElements.getData',
-            //   attachClosestEdge(data, {
-            //     element,
-            //     input,
-            //     allowedEdges: ['top', 'bottom'],
-            //   }),
-            // )
             // works
             return attachClosestEdge(data, {
               element,
@@ -217,26 +207,15 @@ export const ActiveLayer = memo(
             })
           },
           onDrag({ self, source }) {
-            console.log('Active.dropTargetForElements.onDrag', {
-              element,
-              sourceElement: source.element,
-            })
+            // works
             const isSource = source.element === element
-            console.log(
-              'Active.dropTargetForElements.onDrag, isSource:',
-              isSource,
-            )
+            // TODO: is always false: source.element is regular div, not div.fui-AccordionItem???
             if (isSource) {
               setClosestEdge(null)
               return
             }
 
             const closestEdge = extractClosestEdge(self.data)
-            // console.log(
-            //   'Active.dropTargetForElements.onDrag, closestEdge:',
-            //   closestEdge,
-            // )
-            // works
 
             const sourceIndex = source.data.index
             invariant(typeof sourceIndex === 'number')
@@ -253,15 +232,13 @@ export const ActiveLayer = memo(
               return
             }
 
-            setClosestEdge(closestEdge)
+            setClosestEdge(closestEdge) // works
           },
           onDragLeave() {
-            console.log('Active.dropTargetForElements.onDragLeave')
-            setClosestEdge(null)
+            setClosestEdge(null) // works
           },
           onDrop() {
-            console.log('Active.dropTargetForElements.onDrop')
-            setClosestEdge(null)
+            setClosestEdge(null) // works
           },
         }),
       )
