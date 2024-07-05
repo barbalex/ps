@@ -228,22 +228,12 @@ export const ActiveLayers = memo(() => {
         startIndex,
         finishIndex,
       })
-      console.log('hello Actives.reorderItem', {
-        item,
-        newLayerSorting,
-        layerSorting,
-        app_state_id: appState?.app_state_id,
+      await db.app_states.update({
+        where: { app_state_id: appState?.app_state_id },
+        data: {
+          map_layer_sorting: newLayerSorting,
+        },
       })
-      try {
-        await db.app_states.update({
-          where: { app_state_id: appState?.app_state_id },
-          data: {
-            map_layer_sorting: newLayerSorting,
-          },
-        })
-      } catch (error) {
-        console.error('Actives.reorderItem', error)
-      }
 
       setLastCardMoved({
         item,

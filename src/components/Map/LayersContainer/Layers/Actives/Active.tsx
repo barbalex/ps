@@ -242,6 +242,9 @@ export const ActiveLayer = memo(
       registerItem,
     ])
 
+    closestEdge &&
+      console.log('ActiveLayer', { closestEdge, layer: layer.label })
+
     // TODO: drag and drop items by dragging the drag icon
     // https://atlassian.design/components/pragmatic-drag-and-drop/core-package
     return (
@@ -250,6 +253,8 @@ export const ActiveLayer = memo(
           value={layer.layer_presentations?.[0]?.layer_presentation_id}
           ref={ref}
           style={{
+            // needed for the drop indicator to appear
+            position: 'relative',
             borderTop: '1px solid rgba(55, 118, 28, 0.5)',
             ...(isLast
               ? { borderBottom: '1px solid rgba(55, 118, 28, 0.5)' }

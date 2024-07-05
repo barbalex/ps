@@ -190,6 +190,8 @@ button {
   --focus-border: rgba(55, 118, 28, 0.3);
   --separator-border: rgba(55, 118, 28, 0.1);
   --sash-hover-size: 8px;
+  /* pragmatic drag and drop */
+  --ds-border-selected: rgba(38, 82, 37, 0.9);
 }
 
 .sash {
