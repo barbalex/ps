@@ -303,15 +303,19 @@ export const ActiveLayer = memo(
           }}
         >
           <AccordionHeader expandIconPosition="end" size="extra-large">
-            <div ref={dragHandleRef} style={draggableDivStyle}>
+            <div
+              ref={dragHandleRef}
+              style={{
+                ...draggableDivStyle,
+                ...(layerCount <= 1 ? { cursor: 'not-allowed' } : {}),
+              }}
+              onClick={(e) => e.preventDefault()}
+            >
               <MdDragIndicator
                 style={{
                   ...dragIconStyle,
-                  ...(layerCount <= 1
-                    ? { cursor: 'not-allowed', color: '#b7b7b7' }
-                    : {}),
+                  ...(layerCount <= 1 ? { color: '#b7b7b7' } : {}),
                 }}
-                onClick={(e) => e.preventDefault()}
               />
             </div>
             <Checkbox
