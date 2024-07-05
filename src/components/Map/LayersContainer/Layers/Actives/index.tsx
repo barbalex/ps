@@ -23,10 +23,7 @@ import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hi
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { ActiveLayer } from './Active.tsx'
-import {
-  Vector_layers as VectorLayer,
-  Tile_layers as TileLayer,
-} from '../../../../../generated/client/index.ts'
+import { isItemData } from './shared.ts'
 
 type ItemEntry = { itemId: string; element: HTMLElement }
 
@@ -46,13 +43,6 @@ function getItemRegistry() {
   }
 
   return { register, getElement }
-}
-export const itemKey = Symbol('item')
-export function isItemData(
-  data: Record<string | symbol, unknown>,
-): data is VectorLayer | TileLayer {
-  console.log('isItemData', { data, itemKey, dataItem: data[itemKey] })
-  return data[itemKey] === true
 }
 
 export const ListContext = createContext<ListContextValue | null>(null)
@@ -211,37 +201,32 @@ export const ActiveLayers = memo(() => {
 
   const reorderItem = useCallback(
     ({ startIndex, indexOfTarget, closestEdgeOfTarget }: ReorderItemProps) => {
-      console.log('Actives.reorderItem', {
-        startIndex,
-        indexOfTarget,
-        closestEdgeOfTarget,
-      })
       const finishIndex = getReorderDestinationIndex({
         startIndex,
         closestEdgeOfTarget,
         indexOfTarget,
         axis: 'vertical',
       })
-      console.log('reorderItem 2', { finishIndex, startIndex })
 
       if (finishIndex === startIndex) {
         // If there would be no change, we skip the update
         return
       }
 
+      const item = activeLayers[startIndex]
+
       const newLayerSorting = reorder({
-        list: layerSorting,
+        list: layerPresentationIds,
         startIndex,
         finishIndex,
       })
-      console.log('reorderItem 3, newLayerSorting:', newLayerSorting)
+      console.log('reorderItem 4, newLayerSorting:', { item, newLayerSorting })
       db.app_states.update({
         where: { app_state_id: appState?.app_state_id },
         data: {
           map_layer_sorting: newLayerSorting,
         },
       })
-      const item = layerSorting[startIndex]
 
       setLastCardMoved({
         item,
@@ -250,29 +235,35 @@ export const ActiveLayers = memo(() => {
         numberOfItems: layerSorting.length,
       })
     },
-    [appState?.app_state_id, db.app_states, layerSorting],
+    [
+      activeLayers,
+      appState?.app_state_id,
+      db.app_states,
+      layerPresentationIds,
+      layerSorting,
+    ],
   )
 
   useEffect(() => {
     return monitorForElements({
       canMonitor({ source }) {
-        console.log('Actives.canMonitor', {
-          source,
-          instanceId,
-          isItemData: isItemData(source.data),
-          instenceIdsAreEqual: source.data.instanceId === instanceId,
-          canMonitor:
-            isItemData(source.data) && source.data.instanceId === instanceId,
-        })
-        // console.log(
-        //   'Actives.canMonitor, canMonitor:',
-        //   isItemData(source.data) && source.data.instanceId === instanceId,
-        // )
+        // console.log('Actives.canMonitor', {
+        //   source,
+        //   instanceId,
+        //   isItemData: isItemData(source.data),
+        //   instenceIdsAreEqual: source.data.instanceId === instanceId,
+        //   canMonitor:
+        //     isItemData(source.data) && source.data.instanceId === instanceId,
+        // })
+        console.log(
+          'Actives.canMonitor, canMonitor:',
+          isItemData(source.data) && source.data.instanceId === instanceId,
+        )
         // TODO: canMonitor is always false
         return isItemData(source.data) && source.data.instanceId === instanceId
       },
       onDrop({ location, source }) {
-        console.log('Actives.onDrop')
+        console.log('Actives.onDrop 1', { location, source })
         const target = location.current.dropTargets[0]
         if (!target) {
           return
@@ -280,18 +271,24 @@ export const ActiveLayers = memo(() => {
 
         const sourceData = source.data
         const targetData = target.data
+        console.log('Actives.onDrop 2', { sourceData, targetData })
         if (!isItemData(sourceData) || !isItemData(targetData)) {
           return
         }
 
-        const indexOfTarget = items.findIndex(
-          (item) => item.id === targetData.item.id,
+        // TODO: items is not defined!!!!????
+        const indexOfTarget = activeLayers.findIndex(
+          (layer) =>
+            layer.layer_presentations?.[0]?.layer_presentation_id ===
+            targetData.layer.layer_presentations?.[0]?.layer_presentation_id,
         )
+        console.log('Actives.onDrop 3', { indexOfTarget })
         if (indexOfTarget < 0) {
           return
         }
 
         const closestEdgeOfTarget = extractClosestEdge(targetData)
+        console.log('Actives.onDrop 4', { closestEdgeOfTarget })
 
         reorderItem({
           startIndex: sourceData.index,
@@ -300,7 +297,7 @@ export const ActiveLayers = memo(() => {
         })
       },
     })
-  }, [instanceId, reorderItem])
+  }, [activeLayers, instanceId, reorderItem])
 
   // once a drag is finished, we have some post drop actions to take
   useEffect(() => {

@@ -37,7 +37,8 @@ import {
   Vector_layers as VectorLayer,
   Tile_layers as TileLayer,
 } from '../../../../../generated/client/index.ts'
-import { ListContext, itemKey, isItemData } from './index.tsx'
+import { ListContext } from './index.tsx'
+import { itemKey, isItemData } from './shared.ts'
 
 import './active.css'
 
@@ -136,7 +137,6 @@ export const ActiveLayer = memo(
     const layerPresentation = layer.layer_presentations?.[0]
 
     const { registerItem, instanceId } = useListContext()
-    console.log('Active, instanceId:', instanceId)
     const [closestEdge, setClosestEdge] = useState<Edge | null>(null)
     console.log('Active, closestEdge:', closestEdge)
     const ref = useRef<HTMLDivElement>(null)
