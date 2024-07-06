@@ -8,7 +8,7 @@ import {
   Vector_layers as VectorLayer,
 } from '../../../generated/client/index.ts'
 import { OsmColor } from './OsmColor.tsx'
-import { TileLayerComponent } from '../TileLayers/TileLayer/index.tsx'
+import { TileLayerComponent } from './TileLayer/index.tsx'
 
 export const Layers = memo(() => {
   const { user: authUser } = useCorbado()

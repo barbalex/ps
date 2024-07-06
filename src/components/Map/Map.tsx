@@ -10,7 +10,6 @@ import { useCorbado } from '@corbado/react'
 import 'leaflet/dist/leaflet.css'
 
 import { useElectric } from '../../ElectricProvider.tsx'
-import { TileLayers } from './TileLayers/index.tsx'
 import { VectorLayers } from './VectorLayers/index.tsx'
 import { Layers } from './Layers/index.tsx'
 import { LocationMarker } from './LocationMarker.tsx'
@@ -106,8 +105,7 @@ export const Map = memo(() => {
           <ClickListener />
           <DrawControl />
           <Layers />
-          {/* <TileLayers key={`${tileLayerSorter}/tileLayers`} />
-          <TableLayers />
+          {/* <TableLayers />
           <VectorLayers key={`${vectorLayerSorter}/vectorLayers`} /> */}
           <BottomRightControl position="bottomright" visible={true} />
           <BoundsListener />
