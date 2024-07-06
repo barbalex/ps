@@ -10,7 +10,6 @@ import { useCorbado } from '@corbado/react'
 import 'leaflet/dist/leaflet.css'
 
 import { useElectric } from '../../ElectricProvider.tsx'
-import { VectorLayers } from './VectorLayers/index.tsx'
 import { Layers } from './Layers/index.tsx'
 import { LocationMarker } from './LocationMarker.tsx'
 import { tableNameFromIdField } from '../../modules/tableNameFromIdField.ts'
@@ -44,8 +43,6 @@ export const Map = memo(() => {
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
-  const tileLayerSorter = appState?.tile_layer_sorter ?? ''
-  const vectorLayerSorter = appState?.vector_layer_sorter ?? ''
   const mapIsLocating = appState?.map_locate ?? false
   const mapInfo = appState?.map_info
   const showMapCenter = appState?.map_show_center ?? false
@@ -105,8 +102,7 @@ export const Map = memo(() => {
           <ClickListener />
           <DrawControl />
           <Layers />
-          {/* <TableLayers /> */}
-          {/* <VectorLayers key={`${vectorLayerSorter}/vectorLayers`} /> */}
+          <TableLayers />
           <BottomRightControl position="bottomright" visible={true} />
           <BoundsListener />
           {!!mapInfo?.lat && <InfoMarker mapInfo={mapInfo} />}

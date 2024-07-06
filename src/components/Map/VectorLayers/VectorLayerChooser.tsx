@@ -28,11 +28,6 @@ export const VectorLayerChooser = ({ layer, layerPresentation }: Props) => {
   )
   const geomCount: integer = vectorLayerGeoms.length
 
-  console.log('VectorLayerChooser', {
-    layer,
-    geomCount,
-  })
-
   // TODO: pass layerPresentation only when vector layers are not shown directly in Map anymore
   if (!geomCount)
     return (
