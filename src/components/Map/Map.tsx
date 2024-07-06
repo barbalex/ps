@@ -12,6 +12,7 @@ import 'leaflet/dist/leaflet.css'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { TileLayers } from './TileLayers/index.tsx'
 import { VectorLayers } from './VectorLayers/index.tsx'
+import { Layers } from './Layers.tsx'
 import { LocationMarker } from './LocationMarker.tsx'
 import { tableNameFromIdField } from '../../modules/tableNameFromIdField.ts'
 import { DrawControl } from './DrawControl/index.tsx'
@@ -103,6 +104,7 @@ export const Map = memo(() => {
         >
           {mapIsLocating && <LocationMarker />}
           <ClickListener />
+          <Layers />
           <DrawControl />
           <TileLayers key={`${tileLayerSorter}/tileLayers`} />
           <TableLayers />
