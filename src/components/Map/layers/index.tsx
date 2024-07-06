@@ -44,7 +44,7 @@ export const Layers = memo(() => {
 
   // return an array of layerPresentations
   // for every one determine if is: tile, wfs, own (table)
-  return [...mapLayerSorting].reverse().map((layerPresentationId, index) => {
+  return mapLayerSorting.map((layerPresentationId, index) => {
     console.log('Layers rendering layerPresentation:', layerPresentationId)
     if (layerPresentationId === 'osm') return <OsmColor key="osm" />
 
@@ -80,9 +80,9 @@ export const Layers = memo(() => {
       }
       return (
         <Pane
-          key={`${index}/${layerPresentationId}/${mapLayerSorting.join()}`}
+          key={`${layerPresentationId}/${mapLayerSorting.join()}`}
           name={tileLayer.label}
-          style={{ zIndex: 200 + index }}
+          style={{ zIndex: 200 - index }}
         >
           <TileLayerComponent
             key={JSON.stringify(partsToRedrawOn)}
@@ -95,9 +95,9 @@ export const Layers = memo(() => {
     if (wfsLayer) {
       return (
         <Pane
-          key={`${index}/${layerPresentationId}/${mapLayerSorting.join()}`}
+          key={`${layerPresentationId}/${mapLayerSorting.join()}`}
           name={wfsLayer.label}
-          style={{ zIndex: 200 + index }}
+          style={{ zIndex: 200 - index }}
         >
           <VectorLayerChooser
             layerPresentation={layerPresentation}
