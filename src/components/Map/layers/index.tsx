@@ -63,12 +63,9 @@ export const Layers = memo(() => {
     mapLayerSorting.push('osm')
   }
 
-  console.log('Layers, mapLayerSorting:', mapLayerSorting)
-
   // return an array of layerPresentations
   // for every one determine if is: tile, wfs, own (table)
   return mapLayerSorting.map((layerPresentationId, index) => {
-    console.log('Layers rendering layerPresentation:', layerPresentationId)
     if (layerPresentationId === 'osm') return <OsmColor key="osm" />
 
     const layerPresentation = layerPresentations.find(

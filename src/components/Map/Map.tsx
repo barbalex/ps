@@ -14,7 +14,6 @@ import { Layers } from './Layers/index.tsx'
 import { LocationMarker } from './LocationMarker.tsx'
 import { tableNameFromIdField } from '../../modules/tableNameFromIdField.ts'
 import { DrawControl } from './DrawControl/index.tsx'
-import { TableLayers } from './TableLayers/index.tsx'
 import { BoundsListener } from './BoundsListener.tsx'
 // import { Control } from './Control.tsx'
 import { BottomRightControl } from './BottomRightControl/index.tsx'
@@ -102,7 +101,6 @@ export const Map = memo(() => {
           <ClickListener />
           <DrawControl />
           <Layers />
-          {/* <TableLayers /> */}
           <BottomRightControl position="bottomright" visible={true} />
           <BoundsListener />
           {!!mapInfo?.lat && <InfoMarker mapInfo={mapInfo} />}
