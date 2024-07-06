@@ -106,9 +106,9 @@ export const Map = memo(() => {
           <ClickListener />
           <DrawControl />
           <Layers />
-          <TileLayers key={`${tileLayerSorter}/tileLayers`} />
+          {/* <TileLayers key={`${tileLayerSorter}/tileLayers`} />
           <TableLayers />
-          <VectorLayers key={`${vectorLayerSorter}/vectorLayers`} />
+          <VectorLayers key={`${vectorLayerSorter}/vectorLayers`} /> */}
           <BottomRightControl position="bottomright" visible={true} />
           <BoundsListener />
           {!!mapInfo?.lat && <InfoMarker mapInfo={mapInfo} />}
