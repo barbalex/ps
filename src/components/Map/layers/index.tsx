@@ -1,6 +1,7 @@
 import { memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
+import { Pane } from 'react-leaflet'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
 import {
@@ -43,10 +44,9 @@ export const Layers = memo(() => {
 
   // return an array of layerPresentations
   // for every one determine if is: tile, wfs, own (table)
-
-  return mapLayerSorting.map((layerPresentationId, index) => {
+  return [...mapLayerSorting].reverse().map((layerPresentationId, index) => {
     console.log('Layers rendering layerPresentation:', layerPresentationId)
-    if (layerPresentationId === 'osm') return <OsmColor key={`${index}/osm`} />
+    if (layerPresentationId === 'osm') return <OsmColor key="osm" />
 
     const layerPresentation = layerPresentations.find(
       (lp) => lp.layer_presentation_id === layerPresentationId,
@@ -79,22 +79,31 @@ export const Layers = memo(() => {
         wms_version: tileLayer.wms_version,
       }
       return (
-        <TileLayerComponent
-          key={`${index}/${layerPresentationId}/${mapLayerSorting.join()}/${JSON.stringify(
-            partsToRedrawOn,
-          )}`}
-          layer={tileLayer}
-        />
+        <Pane
+          key={`${index}/${layerPresentationId}/${mapLayerSorting.join()}`}
+          name={tileLayer.label}
+          style={{ zIndex: 200 + index }}
+        >
+          <TileLayerComponent
+            key={JSON.stringify(partsToRedrawOn)}
+            layer={tileLayer}
+          />
+        </Pane>
       )
     }
 
     if (wfsLayer) {
       return (
-        <VectorLayerChooser
+        <Pane
           key={`${index}/${layerPresentationId}/${mapLayerSorting.join()}`}
-          layerPresentation={layerPresentation}
-          layer={wfsLayer}
-        />
+          name={wfsLayer.label}
+          style={{ zIndex: 200 + index }}
+        >
+          <VectorLayerChooser
+            layerPresentation={layerPresentation}
+            layer={wfsLayer}
+          />
+        </Pane>
       )
     }
 
