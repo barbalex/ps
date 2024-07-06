@@ -104,8 +104,8 @@ export const Map = memo(() => {
         >
           {mapIsLocating && <LocationMarker />}
           <ClickListener />
-          <Layers />
           <DrawControl />
+          <Layers />
           <TileLayers key={`${tileLayerSorter}/tileLayers`} />
           <TableLayers />
           <VectorLayers key={`${vectorLayerSorter}/vectorLayers`} />
