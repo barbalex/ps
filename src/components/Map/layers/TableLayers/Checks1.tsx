@@ -12,7 +12,7 @@ interface Props {
   layerPresentation: LayerPresentation
 }
 
-export const Checks1 = ({ layer }: Props) => {
+export const Checks1 = ({ layer, layerPresentation }: Props) => {
   const { db } = useElectric()!
 
   // need to query places1 because filtering by places in checks query does not work

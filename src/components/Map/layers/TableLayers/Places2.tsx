@@ -12,7 +12,7 @@ interface Props {
   layerPresentation: LayerPresentation
 }
 
-export const Places2 = ({ layer }: Props) => {
+export const Places2 = ({ layer, layerPresentation }: Props) => {
   const { db } = useElectric()!
 
   // TODO: query only inside current map bounds using places.bbox

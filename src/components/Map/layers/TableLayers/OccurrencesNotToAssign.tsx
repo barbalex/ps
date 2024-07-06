@@ -14,7 +14,7 @@ interface Props {
   layerPresentation: LayerPresentation
 }
 
-export const OccurrencesNotToAssign = ({ layer }: Props) => {
+export const OccurrencesNotToAssign = ({ layer, layerPresentation }: Props) => {
   const { user: authUser } = useCorbado()
   const { subproject_id } = useParams()
   const { db } = useElectric()!
