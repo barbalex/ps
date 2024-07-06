@@ -1,18 +1,14 @@
 import { useLiveQuery } from 'electric-sql/react'
 
 import { useElectric } from '../../../../ElectricProvider.tsx'
-import {
-  Vector_layers as VectorLayer,
-  Layer_presentations as LayerPresentation,
-} from '../../../../generated/client/index.ts'
+import { Layer_presentations as LayerPresentation } from '../../../../generated/client/index.ts'
 import { TableLayer } from './TableLayer.tsx'
 
 interface Props {
-  layer: VectorLayer
   layerPresentation: LayerPresentation
 }
 
-export const Checks1 = ({ layer, layerPresentation }: Props) => {
+export const Checks1 = ({ layerPresentation }: Props) => {
   const { db } = useElectric()!
 
   // need to query places1 because filtering by places in checks query does not work
@@ -58,7 +54,7 @@ export const Checks1 = ({ layer, layerPresentation }: Props) => {
   // console.log('hello Checks1, data:', data)
 
   if (!data?.length) return null
-  if (!layer) return null
+  if (!layerPresentation) return null
 
-  return <TableLayer data={data} layer={layer} />
+  return <TableLayer data={data} layerPresentation={layerPresentation} />
 }

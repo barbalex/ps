@@ -131,7 +131,7 @@ export const Layers = memo(() => {
     }
 
     if (tableLayer) {
-      // return <OwnLayerComponent key={layerPresentationId} layerPresentation={layerPresentation} />
+      // TODO: layer not shown
       const Component = tableLayerToComponent[tableLayer.type]
 
       return (
@@ -141,8 +141,7 @@ export const Layers = memo(() => {
           style={{ zIndex: 200 - index }}
         >
           <Component
-            key={tableLayer.vector_layer_id}
-            layer={tableLayer}
+            key={layerPresentationId}
             layerPresentation={layerPresentation}
           />
         </Pane>

@@ -3,18 +3,14 @@ import { useParams } from 'react-router-dom'
 import { useCorbado } from '@corbado/react'
 
 import { useElectric } from '../../../../ElectricProvider.tsx'
-import {
-  Vector_layers as VectorLayer,
-  Layer_presentations as LayerPresentation,
-} from '../../../../generated/client/index.ts'
+import { Layer_presentations as LayerPresentation } from '../../../../generated/client/index.ts'
 import { TableLayer } from './TableLayer.tsx'
 
 interface Props {
-  layer: VectorLayer
   layerPresentation: LayerPresentation
 }
 
-export const OccurrencesAssigned2 = ({ layer, layerPresentation }: Props) => {
+export const OccurrencesAssigned2 = ({ layerPresentation }: Props) => {
   const { user: authUser } = useCorbado()
   const { subproject_id } = useParams()
   const { db } = useElectric()!
@@ -68,8 +64,9 @@ export const OccurrencesAssigned2 = ({ layer, layerPresentation }: Props) => {
   })
 
   if (!data?.length) return null
-  if (!layer) return null
+  if (!layerPresentation) return null
 
+  const layer = layerPresentation.vector_layers
   const isDraggable = appState?.draggable_layers?.includes?.(
     layer?.label?.replace(/ /g, '-')?.toLowerCase(),
   )
@@ -77,5 +74,11 @@ export const OccurrencesAssigned2 = ({ layer, layerPresentation }: Props) => {
   // popups pop on mouseup (=dragend)
   // so they should not be bound when draggable or they will pop on dragend
   // thus adding key={isDraggable} to re-render when draggable changes
-  return <TableLayer key={isDraggable} data={data} layer={layer} />
+  return (
+    <TableLayer
+      key={isDraggable}
+      data={data}
+      layerPresentation={layerPresentation}
+    />
+  )
 }
