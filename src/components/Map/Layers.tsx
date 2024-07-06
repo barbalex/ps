@@ -8,6 +8,7 @@ import {
   Vector_layers as VectorLayer,
 } from '../../../generated/client/index.ts'
 import { OsmColor } from './layers/OsmColor.tsx'
+import { TileLayerComponent } from './TileLayers/TileLayer/index.tsx'
 
 export const Layers = memo(() => {
   const { user: authUser } = useCorbado()
@@ -55,8 +56,30 @@ export const Layers = memo(() => {
     const tableLayer =
       vectorLayer?.type && vectorLayer.type !== 'wfs' ? vectorLayer : null
 
+    // todo: add key, layerPresentationId
     if (tileLayer) {
-      // return <TileLayerComponent key={layerPresentationId} layerPresentation={layerPresentation} />
+      tileLayer.opacity = layerPresentation.opacity_percent
+        ? layerPresentation.opacity_percent / 100
+        : 1
+      const partsToRedrawOn = {
+        wmts_url_template: tileLayer.wmts_url_template,
+        max_zoom: tileLayer.max_zoom,
+        min_zoom: tileLayer.min_zoom,
+        opacity: tileLayer.layer_presentations?.[0]?.opacity_percent,
+        wms_base_url: tileLayer.wms_base_url,
+        wms_format: tileLayer.wms_format?.value,
+        wms_layer: tileLayer.wms_layer?.value,
+        wms_parameters: tileLayer.wms_parameters,
+        wms_styles: tileLayer.wms_styles,
+        wms_transparent: tileLayer.wms_transparent,
+        wms_version: tileLayer.wms_version,
+      }
+      return (
+        <TileLayerComponent
+          key={`${layerPresentationId}/${JSON.stringify(partsToRedrawOn)}`}
+          layer={tileLayer}
+        />
+      )
     }
 
     if (wfsLayer) {
