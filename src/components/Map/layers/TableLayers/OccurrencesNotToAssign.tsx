@@ -2,15 +2,19 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import { useCorbado } from '@corbado/react'
 
-import { useElectric } from '../../../ElectricProvider.tsx'
-import { Vector_layers as VectorLayer } from '../../../generated/client/index.ts'
+import { useElectric } from '../../../../ElectricProvider.tsx'
+import {
+  Vector_layers as VectorLayer,
+  Layer_presentations as LayerPresentation,
+} from '../../../../generated/client/index.ts'
 import { TableLayer } from './TableLayer.tsx'
 
 interface Props {
   layer: VectorLayer
+  layerPresentation: LayerPresentation
 }
 
-export const OccurrencesAssigned1 = ({ layer }: Props) => {
+export const OccurrencesNotToAssign = ({ layer }: Props) => {
   const { user: authUser } = useCorbado()
   const { subproject_id } = useParams()
   const { db } = useElectric()!
@@ -21,16 +25,14 @@ export const OccurrencesAssigned1 = ({ layer }: Props) => {
       where: { subproject_id: subproject_id },
     }),
   )
-  const { results: places = [] } = useLiveQuery(
-    db.places.liveMany({ where: { parent_id: null } }),
-  )
   const { results: occurrences = [] } = useLiveQuery(
     db.occurrences.liveMany({
       where: {
         occurrence_import_id: {
           in: occurrenceImports.map((oi) => oi.occurrence_import_id),
         },
-        place_id: { in: places.map((p) => p.place_id) },
+        place_id: null,
+        not_to_assign: true,
         geometry: { not: null },
       },
     }),

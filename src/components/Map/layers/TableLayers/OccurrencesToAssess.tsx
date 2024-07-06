@@ -2,15 +2,19 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import { useCorbado } from '@corbado/react'
 
-import { useElectric } from '../../../ElectricProvider.tsx'
-import { Vector_layers as VectorLayer } from '../../../generated/client/index.ts'
+import { useElectric } from '../../../../ElectricProvider.tsx'
+import {
+  Vector_layers as VectorLayer,
+  Layer_presentations as LayerPresentation,
+} from '../../../../generated/client/index.ts'
 import { TableLayer } from './TableLayer.tsx'
 
 interface Props {
   layer: VectorLayer
+  layerPresentation: LayerPresentation
 }
 
-export const OccurrencesNotToAssign = ({ layer }: Props) => {
+export const OccurrencesToAssess = ({ layer }: Props) => {
   const { user: authUser } = useCorbado()
   const { subproject_id } = useParams()
   const { db } = useElectric()!
@@ -28,7 +32,8 @@ export const OccurrencesNotToAssign = ({ layer }: Props) => {
           in: occurrenceImports.map((oi) => oi.occurrence_import_id),
         },
         place_id: null,
-        not_to_assign: true,
+        OR: [{ not_to_assign: null }, { not_to_assign: false }],
+        // not_to_assign: null,
         geometry: { not: null },
       },
     }),

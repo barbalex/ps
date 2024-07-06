@@ -102,7 +102,7 @@ export const Map = memo(() => {
           <ClickListener />
           <DrawControl />
           <Layers />
-          <TableLayers />
+          {/* <TableLayers /> */}
           <BottomRightControl position="bottomright" visible={true} />
           <BoundsListener />
           {!!mapInfo?.lat && <InfoMarker mapInfo={mapInfo} />}

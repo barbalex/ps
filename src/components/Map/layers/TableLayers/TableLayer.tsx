@@ -6,26 +6,27 @@ import * as icons from 'react-icons/md'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 
-import { vectorLayerDisplayToProperties } from '../../../modules/vectorLayerDisplayToProperties.ts'
-import { Popup } from '../Popup.tsx'
+import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
+import { Popup } from '../../Popup.tsx'
 import {
   vector_layers as VectorLayer,
   Places as Place,
   Actions as Action,
   Checks as Check,
   Occurrences as Occurrence,
-} from '../../../generated/client/index.ts'
-import { ErrorBoundary } from '../MapErrorBoundary.tsx'
-import { useElectric } from '../../../ElectricProvider.tsx'
+  Layer_presentations as LayerPresentation,
+} from '../../../../generated/client/index.ts'
+import { ErrorBoundary } from '../../MapErrorBoundary.tsx'
+import { useElectric } from '../../../../ElectricProvider.tsx'
 import { assignToNearestDroppable } from './assignToNearestDroppable.ts'
 
 interface Props {
   data: Place[] | Action[] | Check[] | Occurrence[]
   layer: VectorLayer
-  form?: React.FC
+  layerPresentation: LayerPresentation
 }
 
-export const TableLayer = memo(({ data, layer }: Props) => {
+export const TableLayer = memo(({ data, layer, layerPresentation }: Props) => {
   const { user: authUser } = useCorbado()
   const { db } = useElectric()!
 
@@ -81,10 +82,11 @@ export const TableLayer = memo(({ data, layer }: Props) => {
         style={(feature) => {
           // need to choose display to pass in
           const displayToUse = displayFromFeature(feature)
+          console.log('TableLayer.GeoJSON.style, layer: ', layer)
 
           return vectorLayerDisplayToProperties({
             vectorLayerDisplay: displayToUse,
-            presentation: layer.layer_presentations?.[0],
+            presentation: layer.layer_presentations,
           })
         }}
         pointToLayer={(feature, latlng) => {
