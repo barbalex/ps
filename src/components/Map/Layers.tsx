@@ -7,6 +7,7 @@ import {
   Tile_layers as TileLayer,
   Vector_layers as VectorLayer,
 } from '../../../generated/client/index.ts'
+import { OsmColor } from './layers/OsmColor.tsx'
 
 export const Layers = memo(() => {
   const { user: authUser } = useCorbado()
@@ -21,10 +22,15 @@ export const Layers = memo(() => {
   // for every layer_presentation_id in mapLayerSorting, get the layer_presentation
   const { results: layerPresentations = [] } = useLiveQuery(
     db.layer_presentations.liveMany({
-      where: { layer_presentation_id: { in: mapLayerSorting } },
+      where: { layer_presentation_id: { in: mapLayerSorting }, active: true },
       include: { vector_layers: true, tile_layers: true },
     }),
   )
+  const tileLayersCount = layerPresentations.filter(
+    (lp) => !!lp.tile_layers,
+  ).length
+  // if no tile layer is present, add osm
+  if (!tileLayersCount) mapLayerSorting.push('osm')
 
   console.log('Layers', {
     layerPresentations,
@@ -35,6 +41,8 @@ export const Layers = memo(() => {
   // for every one determine if is: tile, wfs, own (table)
 
   return mapLayerSorting.map((layerPresentationId) => {
+    if (layerPresentationId === 'osm') return <OsmColor key="osm" />
+
     const layerPresentation = layerPresentations.find(
       (lp) => lp.layer_presentation_id === layerPresentationId,
     )
