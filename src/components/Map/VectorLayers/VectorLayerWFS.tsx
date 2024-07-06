@@ -67,14 +67,16 @@ const bboxFromBounds = ({ bounds, defaultCrs }) => {
 
 interface Props {
   layer: VectorLayer
+  layerPresentation: LayerPresentation
 }
-export const VectorLayerWFS = ({ layer }: Props) => {
+
+export const VectorLayerWFS = ({ layer, layerPresentation }: Props) => {
   const { db } = useElectric()!
   const [error, setError] = useState()
   const notificationIds = useRef([])
 
+  // TODO: const layer = layerPresentation.vector_layers
   const display: VectorLayerDisplay = layer.vector_layer_displays?.[0]
-  const presentation: LayerPresentation = layer.layer_presentations?.[0]
 
   const removeNotifs = useCallback(async () => {
     await db.notifications.deleteMany({
@@ -226,16 +228,18 @@ export const VectorLayerWFS = ({ layer }: Props) => {
     <>
       <GeoJSON
         key={`${data?.length ?? 0}/${JSON.stringify(display)}/${JSON.stringify(
-          presentation,
+          layerPresentation,
         )}`}
         data={data}
         opacity={
           // opacity needs to be converted from percent to decimal
-          presentation.opacity_percent ? presentation.opacity_percent / 100 : 1
+          layerPresentation.opacity_percent
+            ? layerPresentation.opacity_percent / 100
+            : 1
         }
         style={vectorLayerDisplayToProperties({
           vectorLayerDisplay: display,
-          presentation,
+          presentation: layerPresentation,
         })}
         pointToLayer={(geoJsonPoint, latlng) => {
           if (display.marker_type === 'circle') {

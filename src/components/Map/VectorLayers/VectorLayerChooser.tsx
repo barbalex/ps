@@ -3,7 +3,10 @@ import { useLiveQuery } from 'electric-sql/react'
 import { VectorLayerWFS } from './VectorLayerWFS.tsx'
 import { VectorLayerPVLGeom } from './VectorLayerPVLGeom.tsx'
 import { useElectric } from '../../../ElectricProvider.tsx'
-import { Vector_layers as VectorLayer } from '../../../generated/client/index.ts'
+import {
+  Vector_layers as VectorLayer,
+  Layer_presentations as LayerPresentation,
+} from '../../../generated/client/index.ts'
 
 /**
  * This component chooses whether to render
@@ -12,9 +15,10 @@ import { Vector_layers as VectorLayer } from '../../../generated/client/index.ts
 
 interface Props {
   layer: VectorLayer
+  layerPresentation: LayerPresentation
 }
 
-export const VectorLayerChooser = ({ layer }: Props) => {
+export const VectorLayerChooser = ({ layer, layerPresentation }: Props) => {
   const { db } = useElectric()!
 
   const { results: vectorLayerGeoms = [] } = useLiveQuery(
@@ -24,7 +28,16 @@ export const VectorLayerChooser = ({ layer }: Props) => {
   )
   const geomCount: integer = vectorLayerGeoms.length
 
-  if (!geomCount) return <VectorLayerWFS layer={layer} />
-  // TODO: what is this?
+  console.log('VectorLayerChooser', {
+    layer,
+    geomCount,
+  })
+
+  // TODO: pass layerPresentation only when vector layers are not shown directly in Map anymore
+  if (!geomCount)
+    return (
+      <VectorLayerWFS layer={layer} layerPresentation={layerPresentation} />
+    )
+  // TODO: what is this? Local data / Offline version
   return <VectorLayerPVLGeom layer={layer} />
 }

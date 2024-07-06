@@ -9,6 +9,7 @@ import {
 } from '../../../generated/client/index.ts'
 import { OsmColor } from './OsmColor.tsx'
 import { TileLayerComponent } from './TileLayer/index.tsx'
+import { VectorLayerChooser } from '../VectorLayers/VectorLayerChooser.tsx'
 
 export const Layers = memo(() => {
   const { user: authUser } = useCorbado()
@@ -24,14 +25,19 @@ export const Layers = memo(() => {
   const { results: layerPresentations = [] } = useLiveQuery(
     db.layer_presentations.liveMany({
       where: { layer_presentation_id: { in: mapLayerSorting }, active: true },
-      include: { vector_layers: true, tile_layers: true },
+      include: {
+        vector_layers: { include: { vector_layer_displays: true } },
+        tile_layers: true,
+      },
     }),
   )
   const tileLayersCount = layerPresentations.filter(
     (lp) => !!lp.tile_layers,
   ).length
   // if no tile layer is present, add osm
-  if (!tileLayersCount) mapLayerSorting.push('osm')
+  if (!!appState && !tileLayersCount && !mapLayerSorting.includes('osm')) {
+    mapLayerSorting.push('osm')
+  }
 
   console.log('Layers', {
     layerPresentations,
@@ -83,7 +89,13 @@ export const Layers = memo(() => {
     }
 
     if (wfsLayer) {
-      // return <VectorLayerComponent key={layerPresentationId} layerPresentation={layerPresentation} />
+      return (
+        <VectorLayerChooser
+          key={layerPresentationId}
+          layerPresentation={layerPresentation}
+          layer={wfsLayer}
+        />
+      )
     }
 
     if (tableLayer) {
