@@ -2,13 +2,13 @@ import { memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 
-import { useElectric } from '../../ElectricProvider.tsx'
+import { useElectric } from '../../../ElectricProvider.tsx'
 import {
   Tile_layers as TileLayer,
   Vector_layers as VectorLayer,
 } from '../../../generated/client/index.ts'
-import { OsmColor } from './layers/OsmColor.tsx'
-import { TileLayerComponent } from './TileLayers/TileLayer/index.tsx'
+import { OsmColor } from './OsmColor.tsx'
+import { TileLayerComponent } from '../TileLayers/TileLayer/index.tsx'
 
 export const Layers = memo(() => {
   const { user: authUser } = useCorbado()

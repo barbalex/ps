@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 
 import { Tile_layers as TileLayer } from '../../../generated/client/index.ts'
 import { TileLayerComponent } from './TileLayer/index.tsx'
-import { OsmColor } from '../layers/OsmColor.tsx'
+import { OsmColor } from '../Layers/OsmColor.tsx'
 import { useElectric } from '../../../ElectricProvider.tsx' 
 
 export const TileLayers = () => {
