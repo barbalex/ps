@@ -94,20 +94,6 @@ export const Component = memo(
                       : `Empfehlung: 'image/png'. Ermöglicht transparenten Hintergrund`
                   }
                 />
-                <TextField
-                  label="Parameters"
-                  name="wms_parameters"
-                  value={row.wms_parameters ?? ''}
-                  onChange={onChange}
-                  validationMessage="TODO: is an array of values, needs building"
-                />
-                <TextField
-                  label="Styles"
-                  name="wms_styles"
-                  value={row.wms_styles ?? ''}
-                  onChange={onChange}
-                  validationMessage="TODO: is an array of strings, needs building"
-                />
                 <SwitchField
                   label="Transparent background"
                   name="wms_transparent"
