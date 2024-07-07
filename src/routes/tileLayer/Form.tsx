@@ -80,14 +80,6 @@ export const Component = memo(
               value={row.label ?? ''}
               onChange={onChange}
             />
-            <TextField
-              label="Sort"
-              name="sort"
-              value={row.sort ?? ''}
-              onChange={onChange}
-              type="number"
-              validationMessage="Add a sorting order here if alphabetically by label is not desired"
-            />
             {row?.type === 'wms' && row?.wms_base_url && (
               <>
                 <DropdownFieldFromLayerOptions
