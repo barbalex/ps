@@ -33,6 +33,9 @@ export const Component = memo(() => {
       } catch (error) {
         console.log('hello TileLayer, onChange, error:', error)
       }
+      // TODO:
+      // 1. if name is wms_layer, need to set tile_layers.queryable to layer_options.queryable of the wms_layer field
+      // 2. use tile_layers.queryable in the click listener for the info drawer
       return
     },
     [db, tile_layer_id],

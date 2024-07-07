@@ -1492,15 +1492,18 @@ CREATE TYPE layer_options_field_enum AS enum(
 
 CREATE TABLE layer_options(
   layer_option_id text PRIMARY KEY DEFAULT NULL,
+  service_url text DEFAULT NULL,
+  field layer_options_field_enum DEFAULT NULL,
+  value text DEFAULT NULL,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   tile_layer_id uuid DEFAULT NULL REFERENCES tile_layers(tile_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  field layer_options_field_enum DEFAULT NULL,
-  value text DEFAULT NULL,
   label text DEFAULT NULL,
   queryable boolean DEFAULT NULL,
   legend_url text DEFAULT NULL
 );
+
+CREATE INDEX ON layer_options(service_url);
 
 CREATE INDEX ON layer_options USING btree(account_id);
 
@@ -1516,7 +1519,11 @@ CREATE INDEX ON layer_options USING btree(label);
 
 COMMENT ON TABLE layer_options IS 'Goal: wms_layer options can be > 700, slowing down the tileLayer form. Solution: outsource them (and maybe later others) here. Also: there is no use in saving this data on the server or syncing it.';
 
+COMMENT ON COLUMN layer_options.service_url IS 'The base url of the wms or wfs server. Needed to reuse the same options for different layers. Redundant to vector_layers.wfs_url and tile_layers.wms_url but great to access easily.';
+
 COMMENT ON COLUMN layer_options.layer_option_id IS 'The base url of the wms server, combined with the field name whose data is stored and the value. Insures that we dont have duplicate entries.';
+
+comment on column layer_options.queryable is 'Whether the layer is queryable. Only relevant for field wms_layer';
 
 COMMENT ON COLUMN layer_options.legend_url IS 'The url to fetch the legend image from.';
 
