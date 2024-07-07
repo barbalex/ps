@@ -95,7 +95,7 @@ export const Component = memo(
                   }
                 />
                 <SwitchField
-                  label="Transparent background"
+                  label="Transparent Background"
                   name="wms_transparent"
                   value={row.wms_transparent}
                   onChange={onChange}
