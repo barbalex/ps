@@ -1,3 +1,8 @@
 .fui-AccordionHeader__button {
   padding-left: 6px !important;
 }
+
+/* ensure checkbox stays vertically centered when text breaks */
+.fui-Checkbox__indicator {
+  align-self: center !important;
+}
