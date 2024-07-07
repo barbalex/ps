@@ -4,16 +4,26 @@ import { useDebouncedCallback } from 'use-debounce'
 
 import { onTileError } from './onTileError.ts'
 import { useElectric } from '../../../../ElectricProvider.tsx'
+import { Layer_presentations as LayerPresentation } from '../../../../generated/client/index.ts'
 
-export const WMS = memo(({ layer }) => {
+type Props = {
+  layerPresentation: LayerPresentation
+}
+
+// TODO: add layer_presentation.greyscale
+export const WMS = memo(({ layerPresentation }: Props) => {
   const map = useMap()
 
   const { db } = useElectric()!
+
+  const layer = layerPresentation.tile_layers
 
   const onTileErrorDebounced = useDebouncedCallback(
     onTileError.bind(this, db, map, layer),
     600,
   )
+
+  console.log('WMS, layer:', { layer, layerPresentation })
 
   // TODO:
   // leaflet calls server internally
@@ -27,8 +37,8 @@ export const WMS = memo(({ layer }) => {
       format={layer.wms_format?.value}
       minZoom={layer.min_zoom}
       maxZoom={layer.max_zoom}
-      className={layer.grayscale ? 'grayscale' : ''}
-      opacity={layer.opacity}
+      className={layerPresentation.grayscale ? 'grayscale' : ''}
+      opacity={layer.opacity} // TODO: ?? seems this has been changed from layerPresentation.opacity_percent to layer.opacity
       transparent={layer.wms_transparent === true}
       // exceptions="inimage"
       eventHandlers={{

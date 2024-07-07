@@ -89,7 +89,7 @@ export const Layers = memo(() => {
         wmts_url_template: tileLayer.wmts_url_template,
         max_zoom: tileLayer.max_zoom,
         min_zoom: tileLayer.min_zoom,
-        opacity: tileLayer.layer_presentations?.[0]?.opacity_percent,
+        opacity: layerPresentation.opacity_percent,
         wms_base_url: tileLayer.wms_base_url,
         wms_format: tileLayer.wms_format?.value,
         wms_layer: tileLayer.wms_layer?.value,
@@ -97,6 +97,7 @@ export const Layers = memo(() => {
         wms_styles: tileLayer.wms_styles,
         wms_transparent: tileLayer.wms_transparent,
         wms_version: tileLayer.wms_version,
+        wms_greyscale: layerPresentation.grayscale,
       }
       return (
         <Pane
@@ -107,6 +108,7 @@ export const Layers = memo(() => {
           <TileLayerComponent
             key={JSON.stringify(partsToRedrawOn)}
             layer={tileLayer}
+            layerPresentation={layerPresentation}
           />
         </Pane>
       )

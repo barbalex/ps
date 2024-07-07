@@ -159,12 +159,6 @@ export const Component = memo(
               min={0}
               validationMessage="Zoom can be between 0 and 19"
             />
-            <SwitchField
-              label="Grayscale"
-              name="grayscale"
-              value={row.grayscale}
-              onChange={onChange}
-            />
             {isOffline && (
               <>
                 <div>TODO: show the following only if loaded for offline</div>
