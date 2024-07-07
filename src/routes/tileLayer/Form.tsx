@@ -4,11 +4,10 @@ import { useOutletContext, useParams, useLocation } from 'react-router-dom'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
-import { SliderFieldWithInput } from '../../components/shared/SliderFieldWithInput.tsx'
 // import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { DropdownFieldFromLayerOptions } from '../../components/shared/DropdownFieldFromLayerOptions.tsx'
 // import { tile_layer_type_enumSchema as typeSchema } from '../../generated/client/index.ts'
-import { BaseUrl } from './BaseUrl.tsx'
+import { Url } from './Url.tsx'
 
 import '../../form.css'
 
@@ -40,7 +39,7 @@ export const Component = memo(
           // disabled as for now only WMS is supported
           disabled
         /> */}
-        <BaseUrl row={row} onChange={onChange} autoFocus={true} />
+        <Url row={row} onChange={onChange} autoFocus={true} />
         {(row?.wms_version || isFilter) && (
           <DropdownFieldFromLayerOptions
             label="Layer"
@@ -80,7 +79,7 @@ export const Component = memo(
               value={row.label ?? ''}
               onChange={onChange}
             />
-            {row?.type === 'wms' && row?.wms_base_url && (
+            {row?.type === 'wms' && row?.wms_url && (
               <>
                 <DropdownFieldFromLayerOptions
                   label="(Image-)Format"

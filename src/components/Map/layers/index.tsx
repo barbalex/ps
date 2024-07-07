@@ -90,7 +90,7 @@ export const Layers = memo(() => {
         max_zoom: tileLayer.max_zoom,
         min_zoom: tileLayer.min_zoom,
         opacity: layerPresentation.opacity_percent,
-        wms_base_url: tileLayer.wms_base_url,
+        wms_url: tileLayer.wms_url,
         wms_format: tileLayer.wms_format?.value,
         wms_layer: tileLayer.wms_layer?.value,
         wms_parameters: tileLayer.wms_parameters,

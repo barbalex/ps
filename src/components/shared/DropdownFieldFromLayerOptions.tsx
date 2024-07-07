@@ -67,7 +67,7 @@ export const DropdownFieldFromLayerOptions = memo(
           let res
           try {
             res = await axios.get(
-              `${row.wms_base_url}?language=eng&version=1.3.0&service=WMS&request=GetLegendGraphic&sld_version=1.1.0&layer=${row.wms_layer?.value}&format=image/png&STYLE=default&&TRANSPARENT=true`,
+              `${row.wms_url}?language=eng&version=1.3.0&service=WMS&request=GetLegendGraphic&sld_version=1.1.0&layer=${row.wms_layer?.value}&format=image/png&STYLE=default&&TRANSPARENT=true`,
               { responseType: 'blob' },
             )
           } catch (error) {

@@ -10,7 +10,7 @@ type Props = {
   layerPresentation: LayerPresentation
 }
 
-// TODO: add layer_presentation.greyscale
+// TODO: add layer_presentation.grayscale
 export const WMS = memo(({ layerPresentation }: Props) => {
   const map = useMap()
 
@@ -31,7 +31,7 @@ export const WMS = memo(({ layerPresentation }: Props) => {
   // instead ALL WMS LAYERS FAIL!!!!!!!!
   return (
     <WMSTileLayer
-      url={layer.wms_base_url}
+      url={layer.wms_url}
       layers={layer.wms_layer?.value}
       version={layer.wms_version}
       format={layer.wms_format?.value}

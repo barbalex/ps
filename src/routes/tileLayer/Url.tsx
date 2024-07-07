@@ -24,7 +24,7 @@ type Props = {
   autoFocus: boolean
 }
 
-export const BaseUrl = memo(
+export const Url = memo(
   forwardRef(({ onChange, row, autoFocus }: Props, ref) => {
     const { tile_layer_id } = useParams()
     const { db } = useElectric()!
@@ -43,11 +43,11 @@ export const BaseUrl = memo(
     )
 
     const onFetchCapabilities = useCallback(async () => {
-      if (!row?.wms_base_url) return
+      if (!row?.wms_url) return
       // show loading indicator
       setFetching(true)
       const data = await createNotification({
-        title: `Loading capabilities for ${row.wms_base_url}`,
+        title: `Loading capabilities for ${row.wms_url}`,
         intent: 'info',
         paused: true,
       })
@@ -61,7 +61,7 @@ export const BaseUrl = memo(
         )
         // surface error to user
         const data = await createNotification({
-          title: `Error loading capabilities for ${row.wms_base_url}`,
+          title: `Error loading capabilities for ${row.wms_url}`,
           body: error?.message ?? error,
           intent: 'error',
           paused: false,
@@ -79,8 +79,8 @@ export const BaseUrl = memo(
       <>
         <TextField
           label="Base URL"
-          name="wms_base_url"
-          value={row.wms_base_url ?? ''}
+          name="wms_url"
+          value={row.wms_url ?? ''}
           onChange={onChange}
           autoFocus={autoFocus}
           ref={ref}
@@ -95,7 +95,7 @@ export const BaseUrl = memo(
             )
           }
         />
-        {!!row?.wms_base_url && (
+        {!!row?.wms_url && (
           <Button
             icon={fetching ? <Spinner size="tiny" /> : undefined}
             title="Refresh capabilities data"
@@ -103,7 +103,7 @@ export const BaseUrl = memo(
             style={buttonStyle}
           >
             {fetching
-              ? `Loading capabilities for ${row.wms_base_url} (${layerOptions.length})`
+              ? `Loading capabilities for ${row.wms_url} (${layerOptions.length})`
               : `Fetch Capabilities`}
           </Button>
         )}

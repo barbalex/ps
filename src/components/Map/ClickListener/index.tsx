@@ -73,7 +73,7 @@ export const ClickListener = memo(() => {
       for await (const layer of tileLayers) {
         const {
           wms_version,
-          wms_base_url,
+          wms_url,
           wms_layer: wmsLayerJson,
           wms_info_format: wmsInfoFormatJson,
         } = layer
@@ -100,7 +100,7 @@ export const ClickListener = memo(() => {
           height: mapSize.y,
           bbox: `${bounds._southWest.lat},${bounds._southWest.lng},${bounds._northEast.lat},${bounds._northEast.lng}`,
         }
-        const requestData = await fetchData({ db, url: wms_base_url, params })
+        const requestData = await fetchData({ db, url: wms_url, params })
         if (requestData) {
           layersDataFromRequestData({
             layersData: mapInfo.layers,

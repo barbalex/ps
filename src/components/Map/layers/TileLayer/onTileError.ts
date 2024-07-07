@@ -11,7 +11,7 @@ export const onTileError = async (db, map, layer: TileLayer, ignore) => {
   const bbox = map.getBounds().toBBoxString()
   const res = await axios({
     method: 'get',
-    url: layer.wms_base_url,
+    url: layer.wms_url,
     params: {
       service: 'WMS',
       request: 'GetMap',

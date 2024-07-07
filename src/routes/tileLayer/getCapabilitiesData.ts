@@ -18,7 +18,7 @@ export const getCapabilitiesData = async ({
   returnValue = false,
   db,
 }: Props) => {
-  if (!row?.wms_base_url) return undefined
+  if (!row?.wms_url) return undefined
 
   // console.log('getCapabilitiesData 1', {
   //   label: row.label,
@@ -29,9 +29,9 @@ export const getCapabilitiesData = async ({
   const values = {}
 
   const capabilities = await getCapabilities({
-    url: row.wms_base_url,
+    url: row.wms_url,
     service: 'WMS',
-    db
+    db,
   })
 
   // console.log('getCapabilitiesData 2, capabilities:', capabilities)
@@ -49,7 +49,7 @@ export const getCapabilitiesData = async ({
     for (const o of wmsFormatOptions) {
       await db.layer_options.upsert({
         create: {
-          layer_option_id: `${row.wms_base_url}/wms_format/${o.value}`,
+          layer_option_id: `${row.wms_url}/wms_format/${o.value}`,
           tile_layer_id: row.tile_layer_id,
           vector_layer_id: null,
           field: 'wms_format',
@@ -63,7 +63,7 @@ export const getCapabilitiesData = async ({
           label: o.label,
         },
         where: {
-          layer_option_id: `${row.wms_base_url}/wms_format/${o.value}`,
+          layer_option_id: `${row.wms_url}/wms_format/${o.value}`,
         },
       })
     }
@@ -83,9 +83,7 @@ export const getCapabilitiesData = async ({
   // https://github.com/electric-sql/electric/issues/916
   // Deleting may not be good because other layers might use the same layer_option_id
   // 1. deleteMany
-  const layerOptionIds = layers.map(
-    (l) => `${row.wms_base_url}/wms_layer/${l.Name}`,
-  )
+  const layerOptionIds = layers.map((l) => `${row.wms_url}/wms_layer/${l.Name}`)
   try {
     await db.layer_options.deleteMany({
       where: {
@@ -97,7 +95,7 @@ export const getCapabilitiesData = async ({
   }
   // 2. createMany
   const layerOptions = layers.map((l) => ({
-    layer_option_id: `${row.wms_base_url}/wms_layer/${l.Name}`,
+    layer_option_id: `${row.wms_url}/wms_layer/${l.Name}`,
     tile_layer_id: row.tile_layer_id,
     field: 'wms_layer',
     value: l.Name,
@@ -143,7 +141,7 @@ export const getCapabilitiesData = async ({
     }
   }
 
-  // TODO: should legends be saved in sqlite? can be 700!!!
+  // TODO: should legends be saved in SQLite? can be 700!!!
   // ensure only for layers with tile_layer
   // const wmsLayerValues = (row.wms_layer ?? []).map((l) => l.value)
 
@@ -167,7 +165,7 @@ export const getCapabilitiesData = async ({
   //   if (res.data) _legendBlobs.push([lUrl.title, res.data])
   // }
 
-  // // TODO: these are blobs. How to save in sqlite?
+  // // TODO: these are blobs. How to save in SQLite?
   // // TODO: solve this problem, then set the wms_legend
   // // add legends into row to reduce network activity and make them offline available
   // values.wms_legend = _legendBlobs.length ? _legendBlobs : undefined
@@ -184,7 +182,7 @@ export const getCapabilitiesData = async ({
     for (const o of wmsInfoFormatOptions) {
       await db.layer_options.upsert({
         create: {
-          layer_option_id: `${row.wms_base_url}/wms_info_format/${o.value}`,
+          layer_option_id: `${row.wms_url}/wms_info_format/${o.value}`,
           tile_layer_id: row.tile_layer_id,
           vector_layer_id: null,
           field: 'wms_info_format',
@@ -198,7 +196,7 @@ export const getCapabilitiesData = async ({
           label: o.label,
         },
         where: {
-          layer_option_id: `${row.wms_base_url}/wms_info_format/${o.value}`,
+          layer_option_id: `${row.wms_url}/wms_info_format/${o.value}`,
         },
       })
     }

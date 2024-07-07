@@ -1393,7 +1393,7 @@ CREATE TABLE tile_layers(
   type tile_layer_type_enum DEFAULT NULL, -- 'wmts'
   wmts_url_template text DEFAULT NULL,
   wmts_subdomains jsonb DEFAULT NULL, -- array of text
-  wms_base_url text DEFAULT NULL,
+  wms_url text DEFAULT NULL,
   wms_format jsonb DEFAULT NULL,
   wms_layer jsonb DEFAULT NULL,
   wms_parameters jsonb DEFAULT NULL, -- TODO: What is this for? Hidden until useful

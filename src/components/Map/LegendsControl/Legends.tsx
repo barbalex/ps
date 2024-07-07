@@ -50,7 +50,7 @@ export const Legends = () => {
     if (l.type === 'wmts') {
       if (!l.wmts_url_template) return false
     } else {
-      if (!l.wms_base_url) return false
+      if (!l.wms_url) return false
       if (!l.wms_layer) return false
       if (!l._wmsLegends?.length) return false
     }
