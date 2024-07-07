@@ -99,8 +99,6 @@ export const getCapabilitiesData = async ({
     }
   }
 
-  console.log('getCapabilitiesDataForVectorLayer, capabilities:', capabilities)
-
   // 3. label
   const label: string | undefined =
     capabilities?.['OWS:SERVICEIDENTIFICATION']?.['OWS:TITLE']?.['#text']
