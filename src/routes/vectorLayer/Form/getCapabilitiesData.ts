@@ -31,7 +31,8 @@ export const getCapabilitiesData = async ({
 
   const capabilities = response?.HTML?.BODY?.['WFS:WFS_CAPABILITIES']
 
-  // console.log('getCapabilitiesDataForVectorLayer, capabilities:', capabilities)
+  // TODO: see if can extract whether a layer is queryable
+  console.log('getCapabilitiesDataForVectorLayer, capabilities:', capabilities)
 
   // 1. wfs version
   if (!row.wfs_version) {
