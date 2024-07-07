@@ -6,9 +6,7 @@ import { useParams } from 'react-router-dom'
 
 import { Vector_layers as VectorLayer } from '../../../../generated/client/index.ts'
 import { useElectric } from '../../../ElectricProvider.tsx'
-import { TextField } from '../../../components/shared/TextField.tsx'
 import { createNotification } from '../../../modules/createRows.ts'
-import { isValidUrl } from '../../../modules/isValidUrl.ts'
 
 const createWorker = createWorkerFactory(
   () => import('./getCapabilitiesData.ts'),
@@ -19,11 +17,10 @@ const buttonStyle = {
 }
 
 type Props = {
-  onChange: () => void
   row: VectorLayer
 }
 
-export const Url = memo(({ onChange, row }: Props) => {
+export const FetchCapabilities = memo(({ row }: Props) => {
   const { vector_layer_id } = useParams()
   const { db } = useElectric()!
   const worker = useWorker(createWorker)
@@ -72,35 +69,15 @@ export const Url = memo(({ onChange, row }: Props) => {
   }, [db, row, worker])
 
   return (
-    <>
-      <TextField
-        label="Url"
-        name="wfs_url"
-        value={row.wfs_url ?? ''}
-        onChange={onChange}
-        validationMessage={
-          row?.wfs_url ? (
-            'The url of the service providing the WFS'
-          ) : (
-            <>
-              <p>Enter the url of the service providing the WFS.</p>
-              <p>Then capabilities can be loaded and a layer selected.</p>
-            </>
-          )
-        }
-      />
-      {!!row?.wfs_url && isValidUrl(row.wfs_url) && (
-        <Button
-          icon={fetching ? <Spinner size="tiny" /> : undefined}
-          title="Refresh capabilities data"
-          onClick={onFetchCapabilities}
-          style={buttonStyle}
-        >
-          {fetching
-            ? `Loading capabilities for ${row.wfs_url} (${layerOptions.length})`
-            : `Fetch Capabilities`}
-        </Button>
-      )}
-    </>
+    <Button
+      icon={fetching ? <Spinner size="tiny" /> : undefined}
+      title="Refresh capabilities data"
+      onClick={onFetchCapabilities}
+      style={buttonStyle}
+    >
+      {fetching
+        ? `Loading capabilities for ${row.wfs_url} (${layerOptions.length})`
+        : `Fetch Capabilities`}
+    </Button>
   )
 })

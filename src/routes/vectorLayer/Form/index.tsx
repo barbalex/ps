@@ -4,8 +4,9 @@ import { TextFieldInactive } from '../../../components/shared/TextFieldInactive.
 import { TextField } from '../../../components/shared/TextField.tsx'
 import { RadioGroupField } from '../../../components/shared/RadioGroupField.tsx'
 import { DropdownFieldFromLayerOptions } from '../../../components/shared/DropdownFieldFromLayerOptions.tsx'
-import { Url } from './Url.tsx'
 import { PropertyField } from './PropertyField.tsx'
+import { FetchCapabilities } from './FetchCapabilities.tsx'
+import { isValidUrl } from '../../../modules/isValidUrl.ts'
 
 import '../../../form.css'
 
@@ -38,7 +39,25 @@ export const Component = ({
       )}
       {row?.type === 'wfs' && (
         <>
-          <Url onChange={onChange} row={row} />
+          <TextField
+            label="Url"
+            name="wfs_url"
+            value={row.wfs_url ?? ''}
+            onChange={onChange}
+            validationMessage={
+              row?.wfs_url ? (
+                'The url of the service providing the WFS'
+              ) : (
+                <>
+                  <p>Enter the url of the service providing the WFS.</p>
+                  <p>Then capabilities can be loaded and a layer selected.</p>
+                </>
+              )
+            }
+          />
+          {!!row?.wfs_url && isValidUrl(row.wfs_url) && (
+            <FetchCapabilities row={row} />
+          )}
           {!!row?.wfs_version && (
             <DropdownFieldFromLayerOptions
               label="Layer"
