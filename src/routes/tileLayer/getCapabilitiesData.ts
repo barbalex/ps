@@ -1,5 +1,3 @@
-// import axios from 'redaxios'
-
 import { getCapabilities } from '../../modules/getCapabilities.ts'
 import {
   Tile_layers as TileLayer,
