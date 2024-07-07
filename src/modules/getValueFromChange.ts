@@ -26,7 +26,7 @@ export const getValueFromChange = (
       }
     case 'range':
       return {
-        value: isNaN(e.target.valueAsNumber) ? null : data?.valueAsNumber,
+        value: isNaN(e.target.valueAsNumber) ? null : e.target.valueAsNumber,
         name,
       }
     default:
