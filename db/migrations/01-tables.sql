@@ -1402,6 +1402,7 @@ CREATE TABLE tile_layers(
   wms_version text DEFAULT NULL, -- values: '1.1.1', '1.3.0'
   wms_info_format jsonb DEFAULT NULL,
   wms_legend bytea DEFAULT NULL,
+  wms_queryable boolean DEFAULT NULL, -- false
   max_zoom integer DEFAULT NULL, -- 19
   min_zoom integer DEFAULT NULL, -- 0
   local_data_size integer DEFAULT NULL,
@@ -1491,15 +1492,15 @@ CREATE TYPE layer_options_field_enum AS enum(
 );
 
 CREATE TABLE layer_options(
-  layer_option_id text PRIMARY KEY DEFAULT NULL,
+  layer_option_id text PRIMARY KEY DEFAULT NULL, -- TODO: change to uuid v7
   service_url text DEFAULT NULL,
   field layer_options_field_enum DEFAULT NULL,
   value text DEFAULT NULL,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   tile_layer_id uuid DEFAULT NULL REFERENCES tile_layers(tile_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  label text DEFAULT NULL,
-  queryable boolean DEFAULT NULL,
+  label text DEFAULT NULL, -- TODO: needed?
+  queryable boolean DEFAULT NULL, -- TODO: set when processing capabilities of wms and wfs
   legend_url text DEFAULT NULL
 );
 
@@ -1523,7 +1524,7 @@ COMMENT ON COLUMN layer_options.service_url IS 'The base url of the wms or wfs s
 
 COMMENT ON COLUMN layer_options.layer_option_id IS 'The base url of the wms server, combined with the field name whose data is stored and the value. Insures that we dont have duplicate entries.';
 
-comment on column layer_options.queryable is 'Whether the layer is queryable. Only relevant for field wms_layer';
+COMMENT ON COLUMN layer_options.queryable IS 'Whether the layer is queryable. Only relevant for field wms_layer. Maybe also for wfs_layer?';
 
 COMMENT ON COLUMN layer_options.legend_url IS 'The url to fetch the legend image from.';
 
