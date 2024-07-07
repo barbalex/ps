@@ -1,14 +1,14 @@
 import { useLiveQuery } from 'electric-sql/react'
 
-import { useElectric } from '../../../ElectricProvider.tsx'
-import { Vector_layers as VectorLayer } from '../../../generated/client/index.ts'
+import { useElectric } from '../../../../ElectricProvider.tsx'
+import { Layer_presentations as LayerPresentation } from '../../../../generated/client/index.ts'
 import { TableLayer } from './TableLayer.tsx'
 
 interface Props {
-  layer: VectorLayer
+  layerPresentation: LayerPresentation
 }
 
-export const Places2 = ({ layer }: Props) => {
+export const Places2 = ({ layerPresentation }: Props) => {
   const { db } = useElectric()!
 
   // TODO: query only inside current map bounds using places.bbox
@@ -44,7 +44,7 @@ export const Places2 = ({ layer }: Props) => {
   // console.log('hello Places2, data:', data)
 
   if (!data?.length) return null
-  if (!layer) return null
+  if (!layerPresentation) return null
 
-  return <TableLayer data={data} layer={layer} />
+  return <TableLayer data={data} layerPresentation={layerPresentation} />
 }

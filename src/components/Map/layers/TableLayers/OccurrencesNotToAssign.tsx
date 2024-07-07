@@ -2,15 +2,15 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import { useCorbado } from '@corbado/react'
 
-import { useElectric } from '../../../ElectricProvider.tsx'
-import { Vector_layers as VectorLayer } from '../../../generated/client/index.ts'
+import { useElectric } from '../../../../ElectricProvider.tsx'
+import { Layer_presentations as LayerPresentation } from '../../../../generated/client/index.ts'
 import { TableLayer } from './TableLayer.tsx'
 
 interface Props {
-  layer: VectorLayer
+  layerPresentation: LayerPresentation
 }
 
-export const OccurrencesToAssess = ({ layer }: Props) => {
+export const OccurrencesNotToAssign = ({ layerPresentation }: Props) => {
   const { user: authUser } = useCorbado()
   const { subproject_id } = useParams()
   const { db } = useElectric()!
@@ -28,8 +28,7 @@ export const OccurrencesToAssess = ({ layer }: Props) => {
           in: occurrenceImports.map((oi) => oi.occurrence_import_id),
         },
         place_id: null,
-        OR: [{ not_to_assign: null }, { not_to_assign: false }],
-        // not_to_assign: null,
+        not_to_assign: true,
         geometry: { not: null },
       },
     }),
@@ -63,8 +62,9 @@ export const OccurrencesToAssess = ({ layer }: Props) => {
   })
 
   if (!data?.length) return null
-  if (!layer) return null
+  if (!layerPresentation) return null
 
+  const layer = layerPresentation.vector_layers
   const isDraggable = appState?.draggable_layers?.includes?.(
     layer?.label?.replace(/ /g, '-')?.toLowerCase(),
   )
@@ -72,5 +72,11 @@ export const OccurrencesToAssess = ({ layer }: Props) => {
   // popups pop on mouseup (=dragend)
   // so they should not be bound when draggable or they will pop on dragend
   // thus adding key={isDraggable} to re-render when draggable changes
-  return <TableLayer key={isDraggable} data={data} layer={layer} />
+  return (
+    <TableLayer
+      key={isDraggable}
+      data={data}
+      layerPresentation={layerPresentation}
+    />
+  )
 }

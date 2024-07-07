@@ -2,18 +2,20 @@ import { memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 
-import { Tile_layers as TileLayer } from '../../../../generated/client/index.ts'
+import { Layer_presentations as LayerPresentation } from '../../../../generated/client/index.ts'
 import { WMS } from './WMS.tsx'
 // import { WMTSOffline } from './WMTSOffline'
 import { LocalMap } from './LocalMap.tsx'
 import { useElectric } from '../../../../ElectricProvider.tsx'
 
 interface Props {
-  layer: TileLayer
+  layerPresentation: LayerPresentation
 }
 
-export const TileLayerComponent = memo(({ layer }: Props) => {
+export const TileLayerComponent = memo(({ layerPresentation }: Props) => {
   const { user: authUser } = useCorbado()
+
+  const layer = layerPresentation.tile_layers
 
   const { db } = useElectric()!
   const { results: appState } = useLiveQuery(
@@ -24,12 +26,12 @@ export const TileLayerComponent = memo(({ layer }: Props) => {
   if (layer.type === 'wmts') {
     return (
       <>
-        {showLocalMap && <LocalMap layer={layer} />}
+        {showLocalMap && <LocalMap layerPresentation={layerPresentation} />}
         {/* TODO: get offline wmts to work */}
         {/* <WMTSOffline layer={layer} /> */}
       </>
     )
   } else {
-    return <WMS layer={layer} />
+    return <WMS layerPresentation={layerPresentation} />
   }
 })

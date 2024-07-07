@@ -6,28 +6,28 @@ import * as icons from 'react-icons/md'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 
-import { vectorLayerDisplayToProperties } from '../../../modules/vectorLayerDisplayToProperties.ts'
-import { Popup } from '../Popup.tsx'
+import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
+import { Popup } from '../../Popup.tsx'
 import {
-  vector_layers as VectorLayer,
   Places as Place,
   Actions as Action,
   Checks as Check,
   Occurrences as Occurrence,
-} from '../../../generated/client/index.ts'
-import { ErrorBoundary } from '../MapErrorBoundary.tsx'
-import { useElectric } from '../../../ElectricProvider.tsx'
+  Layer_presentations as LayerPresentation,
+} from '../../../../generated/client/index.ts'
+import { ErrorBoundary } from '../../MapErrorBoundary.tsx'
+import { useElectric } from '../../../../ElectricProvider.tsx'
 import { assignToNearestDroppable } from './assignToNearestDroppable.ts'
 
 interface Props {
   data: Place[] | Action[] | Check[] | Occurrence[]
-  layer: VectorLayer
-  form?: React.FC
+  layerPresentation: LayerPresentation
 }
 
-export const TableLayer = memo(({ data, layer }: Props) => {
+export const TableLayer = memo(({ data, layerPresentation }: Props) => {
   const { user: authUser } = useCorbado()
   const { db } = useElectric()!
+  const layer = layerPresentation.vector_layers
 
   const layerNameForState = layer?.label?.replace?.(/ /g, '-')?.toLowerCase?.()
   const { results: appState } = useLiveQuery(
@@ -84,7 +84,7 @@ export const TableLayer = memo(({ data, layer }: Props) => {
 
           return vectorLayerDisplayToProperties({
             vectorLayerDisplay: displayToUse,
-            presentation: layer.layer_presentations?.[0],
+            presentation: layerPresentation,
           })
         }}
         pointToLayer={(feature, latlng) => {
@@ -116,10 +116,6 @@ export const TableLayer = memo(({ data, layer }: Props) => {
             marker.on('mouseup', function (e) {
               map.dragging.enable()
               map.off('mousemove', trackCursor)
-              console.log(
-                'hello TableLayer circleMarker on marker mouseup, LatLng: ',
-                e.latlng,
-              )
               // only assign if the marker has moved
               if (e.latlng.lat === latlng.lat && e.latlng.lng === latlng.lng) {
                 return
@@ -161,12 +157,6 @@ export const TableLayer = memo(({ data, layer }: Props) => {
 
           marker.on('dragend', (e) => {
             const position = marker.getLatLng()
-            console.log('hello TableLayer marker on dragend', {
-              position,
-              isDraggable,
-              e,
-              latlng: e?.target?.getLatLng(),
-            })
             assignToNearestDroppable({
               db,
               authUser,

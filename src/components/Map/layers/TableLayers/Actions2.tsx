@@ -1,19 +1,19 @@
 import { useLiveQuery } from 'electric-sql/react'
 
-import { useElectric } from '../../../ElectricProvider.tsx'
-import { Vector_layers as VectorLayer } from '../../../generated/client/index.ts'
+import { useElectric } from '../../../../ElectricProvider.tsx'
+import { Layer_presentations as LayerPresentation } from '../../../../generated/client/index.ts'
 import { TableLayer } from './TableLayer.tsx'
 
 interface Props {
-  layer: VectorLayer
+  layerPresentation: LayerPresentation
 }
 
-export const Actions1 = ({ layer }: Props) => {
+export const Actions2 = ({ layerPresentation }: Props) => {
   const { db } = useElectric()!
 
   // need to query places1 because filtering by places in checks query does not work
-  const { results: places1 = [] } = useLiveQuery(
-    db.places.liveMany({ where: { parent_id: null } }),
+  const { results: places2 = [] } = useLiveQuery(
+    db.places.liveMany({ where: { parent_id: { not: null } } }),
   )
 
   // TODO: query only inside current map bounds using places.bbox
@@ -21,12 +21,12 @@ export const Actions1 = ({ layer }: Props) => {
     db.actions.liveMany({
       where: {
         // places: { parent_id: null }, // this returns no results
-        place_id: { in: places1.map((p) => p.place_id) },
+        place_id: { in: places2.map((p) => p.place_id) },
         geometry: { not: null },
       },
     }),
   )
-  // console.log('hello Actions1, checks:', checks)
+  // console.log('hello Actions2, checks:', checks)
 
   // a geometry is built as FeatureCollection Object: https://datatracker.ietf.org/doc/html/rfc7946#section-3.3
   // properties need to go into every feature
@@ -51,10 +51,10 @@ export const Actions1 = ({ layer }: Props) => {
 
     return geometry
   })
-  // console.log('hello Actions1, data:', data)
+  // console.log('hello Actions2, data:', data)
 
   if (!data?.length) return null
-  if (!layer) return null
+  if (!layerPresentation) return null
 
-  return <TableLayer data={data} layer={layer} />
+  return <TableLayer data={data} layerPresentation={layerPresentation} />
 }

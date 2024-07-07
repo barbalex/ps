@@ -33,12 +33,14 @@ import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createNotification } from '../../../../../modules/createRows.ts'
 import { SliderField } from '../../../../shared/SliderField.tsx'
+import { SwitchField } from '../../../../shared/SwitchField.tsx'
 import {
   Vector_layers as VectorLayer,
   Tile_layers as TileLayer,
 } from '../../../../../generated/client/index.ts'
 import { ListContext } from './index.tsx'
 import { itemKey, isItemData } from './shared.ts'
+import { getValueFromChange } from '../../../../../modules/getValueFromChange.ts'
 
 import './active.css'
 
@@ -100,40 +102,28 @@ export const ActiveLayer = memo(
   ({ layer, index, isLast, layerCount }: Props) => {
     const { db } = useElectric()!
 
-    const onChangeActive = useCallback(
-      (layer) => {
-        // update layer_presentations, set active = false
-        const presentation = layer.layer_presentations?.[0]
-        if (presentation) {
-          return db.layer_presentations.update({
-            where: {
-              layer_presentation_id: presentation.layer_presentation_id,
-            },
-            data: { active: false },
+    const layerPresentation = layer.layer_presentations?.[0]
+
+    const onChange = useCallback(
+      (e, data) => {
+        if (!layerPresentation) {
+          // if no presentation exists, create notification
+          const data = createNotification({
+            title: 'Layer presentation not found',
+            type: 'warning',
           })
+          return db.notifications.create({ data })
         }
-        // if no presentation exists, create notification
-        const data = createNotification({
-          title: 'Layer presentation not found',
-          type: 'warning',
-        })
-        db.notifications.create({ data })
-      },
-      [db],
-    )
-    const onChangeOpacity = useCallback(
-      (layerPresentation, value) => {
+        const { name, value } = getValueFromChange(e, data)
         db.layer_presentations.update({
           where: {
             layer_presentation_id: layerPresentation.layer_presentation_id,
           },
-          data: { opacity_percent: value },
+          data: { [name]: value },
         })
       },
-      [db.layer_presentations],
+      [db.layer_presentations, db.notifications, layerPresentation],
     )
-
-    const layerPresentation = layer.layer_presentations?.[0]
 
     const { registerItem, instanceId } = useListContext()
     const [closestEdge, setClosestEdge] = useState<Edge | null>(null)
@@ -279,21 +269,29 @@ export const ActiveLayer = memo(
             </div>
             <Checkbox
               size="large"
+              name="active"
               label={layer.label}
               checked={layerPresentation.active}
-              onChange={() => onChangeActive(layer)}
+              onChange={onChange}
             />
           </AccordionHeader>
           <AccordionPanel style={panelStyle}>
             <SliderField
               label="Opacity (%)"
+              name="opacity_percent"
               min={0}
               max={100}
               value={layerPresentation.opacity_percent}
-              onChange={(_, data) =>
-                onChangeOpacity(layerPresentation, data.value)
-              }
+              onChange={onChange}
             />
+            {layer.tile_layer_id && (
+              <SwitchField
+                label="Grayscale"
+                name="grayscale"
+                value={layerPresentation.grayscale}
+                onChange={onChange}
+              />
+            )}
           </AccordionPanel>
           {closestEdge && <DropIndicator edge={closestEdge} gap="1px" />}
         </AccordionItem>

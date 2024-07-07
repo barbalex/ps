@@ -1,27 +1,39 @@
 import { useLiveQuery } from 'electric-sql/react'
 
-import { useElectric } from '../../../ElectricProvider.tsx'
-import { Vector_layers as VectorLayer } from '../../../generated/client/index.ts'
+import { useElectric } from '../../../../ElectricProvider.tsx'
+import { Layer_presentations as LayerPresentation } from '../../../../generated/client/index.ts'
 import { TableLayer } from './TableLayer.tsx'
 
 interface Props {
-  layer: VectorLayer
+  layerPresentation: LayerPresentation
 }
 
-export const Places1 = ({ layer }: Props) => {
+export const Actions1 = ({ layerPresentation }: Props) => {
   const { db } = useElectric()!
 
-  // TODO: query only inside current map bounds using places.bbox
-  const { results: places = [] } = useLiveQuery(
-    db.places.liveMany({ where: { parent_id: null, geometry: { not: null } } }),
+  // need to query places1 because filtering by places in checks query does not work
+  const { results: places1 = [] } = useLiveQuery(
+    db.places.liveMany({ where: { parent_id: null } }),
   )
+
+  // TODO: query only inside current map bounds using places.bbox
+  const { results: actions = [] } = useLiveQuery(
+    db.actions.liveMany({
+      where: {
+        // places: { parent_id: null }, // this returns no results
+        place_id: { in: places1.map((p) => p.place_id) },
+        geometry: { not: null },
+      },
+    }),
+  )
+  // console.log('hello Actions1, checks:', checks)
 
   // a geometry is built as FeatureCollection Object: https://datatracker.ietf.org/doc/html/rfc7946#section-3.3
   // properties need to go into every feature
-  const data = places.map((p) => {
+  const data = actions.map((p) => {
     // add p's properties to all features:
+    // somehow there is a data property with empty object as value???
     // TODO: make properties more readable for user
-    // Idea: use iframe to open form, see TableLayer
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { geometry, bbox, data, ...properties } = p
     geometry.features.forEach((f) => {
@@ -39,9 +51,10 @@ export const Places1 = ({ layer }: Props) => {
 
     return geometry
   })
+  // console.log('hello Actions1, data:', data)
 
   if (!data?.length) return null
-  if (!layer) return null
+  if (!layerPresentation) return null
 
-  return <TableLayer data={data} layer={layer} />
+  return <TableLayer data={data} layerPresentation={layerPresentation} />
 }

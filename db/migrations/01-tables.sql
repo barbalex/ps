@@ -1404,7 +1404,6 @@ CREATE TABLE tile_layers(
   wms_legend bytea DEFAULT NULL,
   max_zoom integer DEFAULT NULL, -- 19
   min_zoom integer DEFAULT NULL, -- 0
-  grayscale boolean DEFAULT NULL, -- false
   local_data_size integer DEFAULT NULL,
   local_data_bounds jsonb DEFAULT NULL
 );

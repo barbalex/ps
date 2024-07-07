@@ -474,7 +474,6 @@ export const createTileLayer = ({ project_id }) => ({
   max_zoom: 19,
   min_zoom: 0,
   wms_transparent: false,
-  grayscale: false,
 })
 
 export const createVectorLayer = ({

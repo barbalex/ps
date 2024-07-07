@@ -70,14 +70,6 @@ export const Component = ({
           {/* TODO: add display by property field */}
           <PropertyField vectorLayer={row} />
           <TextField
-            label="Sort"
-            name="sort"
-            value={row.sort ?? ''}
-            onChange={onChange}
-            type="number"
-            validationMessage="Add a sorting order here if sorting by label is not desired"
-          />
-          <TextField
             label="Max Zoom"
             name="max_zoom"
             value={row.max_zoom ?? ''}
