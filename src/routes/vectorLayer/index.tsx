@@ -25,9 +25,16 @@ export const Component = memo(() => {
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
+      console.log('VectorLayerForm, onChange:', { name, value })
       db.vector_layers.update({
         where: { vector_layer_id },
         data: { [name]: value },
+      })
+      const newLabel = value?.label
+      if (!newLabel) return
+      db.vector_layers.update({
+        where: { vector_layer_id },
+        data: { label: newLabel },
       })
     },
     [db.vector_layers, vector_layer_id],
