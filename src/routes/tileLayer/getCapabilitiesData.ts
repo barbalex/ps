@@ -4,19 +4,18 @@ import {
   Electric,
 } from '../../generated/client/index.ts'
 // import { chunkArrayWithMinSize } from '../../modules/chunkArrayWithMinSize'
+import {
+  createWmsService,
+  createWmsServiceLayer,
+} from '../../modules/createRows.ts'
 
 interface Props {
-  row: TileLayer
-  returnValue: boolean
+  tileLayer: TileLayer
   db: Electric
 }
 
-export const getCapabilitiesData = async ({
-  row,
-  returnValue = false,
-  db,
-}: Props) => {
-  if (!row?.wms_url) return undefined
+export const getCapabilitiesData = async ({ tileLayer, db }: Props) => {
+  if (!tileLayer?.wms_url) return undefined
 
   // console.log('getCapabilitiesData 1', {
   //   label: row.label,
@@ -24,10 +23,10 @@ export const getCapabilitiesData = async ({
   //   db,
   // })
 
-  const values = {}
+  const serviceData = {}
 
   const capabilities = await getCapabilities({
-    url: row.wms_url,
+    url: tileLayer.wms_url,
     service: 'WMS',
     db,
   })
@@ -35,39 +34,6 @@ export const getCapabilitiesData = async ({
   // console.log('getCapabilitiesData 2, capabilities:', capabilities)
 
   if (!capabilities) return undefined
-
-  const wmsFormatOptions =
-    capabilities?.Capability?.Request?.GetMap?.Format?.filter((v) =>
-      v.toLowerCase().includes('image'),
-    ).map((v) => ({
-      label: v,
-      value: v,
-    }))
-  if (wmsFormatOptions?.length) {
-    for (const o of wmsFormatOptions) {
-      await db.layer_options.upsert({
-        create: {
-          layer_option_id: `${row.wms_url}/wms_format/${o.value}`,
-          service_url: row.wms_url,
-          field: 'wms_format',
-          value: o.value,
-          tile_layer_id: row.tile_layer_id,
-          vector_layer_id: null,
-          label: o.label,
-        },
-        update: {
-          service_url: row.wms_url,
-          field: 'wms_format',
-          value: o.value,
-          tile_layer_id: row.tile_layer_id,
-          label: o.label,
-        },
-        where: {
-          layer_option_id: `${row.wms_url}/wms_format/${o.value}`,
-        },
-      })
-    }
-  }
 
   // let user choose from layers
   // only layers with crs EPSG:4326
@@ -82,34 +48,92 @@ export const getCapabilitiesData = async ({
   // TODO: because upsert errors and single creates are slow
   // https://github.com/electric-sql/electric/issues/916
   // Deleting may not be good because other layers might use the same layer_option_id
-  // 1. deleteMany
-  const layerOptionIds = layers.map((l) => `${row.wms_url}/wms_layer/${l.Name}`)
-  try {
-    await db.layer_options.deleteMany({
+  // 1. delete existing service including its layers
+  if (tileLayer.wms_service_layer_name) {
+    // get the wms_service of the wms_service_layer with name = tileLayer.wms_service_layer_name
+    const wmsServiceLayer = await db.wms_service_layers.findFirst({
       where: {
-        layer_option_id: { in: layerOptionIds },
+        name: tileLayer.wms_service_layer_name,
       },
     })
-  } catch (error) {
-    console.error('hello, getCapabilitiesData 3, error:', error)
+    if (wmsServiceLayer) {
+      try {
+        await db.wms_services.delete({
+          where: {
+            wms_service_id: wmsServiceLayer.wms_service_id,
+          },
+        })
+      } catch (error) {
+        console.error('hello, getCapabilitiesData 3, error:', error)
+      }
+    }
   }
-  // 2. createMany
-  const layerOptions = layers.map((l) => ({
-    layer_option_id: `${row.wms_url}/wms_layer/${l.Name}`,
-    service_url: row.wms_url,
-    field: 'wms_layer',
+
+  const imageFormats = capabilities?.Capability?.Request?.GetMap?.Format.filter(
+    (v) => v.toLowerCase().includes('image'),
+  )
+  const preferedFormat =
+    imageFormats?.find((v) => v?.toLowerCase?.().includes('image/png')) ??
+    imageFormats?.find((v) => v?.toLowerCase?.().includes('png')) ??
+    imageFormats?.find((v) => v?.toLowerCase?.().includes('image/jpeg')) ??
+    imageFormats?.find((v) => v?.toLowerCase?.().includes('jpeg'))
+  if (preferedFormat) {
+    serviceData.image_format = preferedFormat
+  }
+  serviceData.image_formats = imageFormats
+
+  serviceData.wms_version = capabilities?.version
+
+  serviceData.info_formats =
+    capabilities?.Capability?.Request?.GetFeatureInfo?.Format ?? null
+
+  // set info_format if undefined
+  if (!tileLayer?.wms_info_format && serviceData.info_formats?.length) {
+    // for values see: https://docs.geoserver.org/stable/en/user/services/wms/reference.html#getfeatureinfo
+    const preferedFormat =
+      serviceData.info_formats.find(
+        (v) => v?.toLowerCase?.() === 'application/vnd.ogc.gml',
+      ) ??
+      serviceData.info_formats.find((v) =>
+        v?.toLowerCase?.().includes('application/vnd.ogc.gml'),
+      ) ??
+      serviceData.info_formats.find((v) =>
+        v?.toLowerCase?.().includes('text/plain'),
+      ) ??
+      serviceData.info_formats.find((v) =>
+        v?.toLowerCase?.().includes('application/json'),
+      ) ??
+      serviceData.info_formats.find((v) =>
+        v?.toLowerCase?.().includes('text/javascript'),
+      ) ??
+      serviceData.info_formats.find((v) =>
+        v?.toLowerCase?.().includes('text/html'),
+      )
+    if (preferedFormat) {
+      serviceData.info_format = preferedFormat
+    }
+  }
+
+  // console.log('hello, getCapabilitiesData, values added to tileLayer:', values)
+
+  const service = createWmsService(serviceData)
+
+  if (Object.keys(serviceData).length) {
+    await db.wms_services.create({ data: service })
+  }
+
+  const layersData = layers.map((l) => ({
     value: l.Name,
-    tile_layer_id: row.tile_layer_id,
     label: l.Title,
     queryable: l.queryable,
     legend_url: l.Style?.[0]?.LegendURL?.[0]?.OnlineResource,
   }))
-  // console.log('hello, getCapabilitiesData 4, layerOptions:', layerOptions)
+  // console.log('hello, getCapabilitiesData 4, layersData:', layersData)
   // sadly, creating many this errors
-  // const chunked = chunkArrayWithMinSize(layerOptions, 500)
+  // const chunked = chunkArrayWithMinSize(layersData, 500)
   // for (const chunk of chunked) {
   //   try {
-  //     const chunkResult = await db.layer_options.createMany({ data: chunk })
+  //     const chunkResult = await db.wms_service_layers.createMany({ data: chunk })
   //     console.log('hello, getCapabilitiesData 5a, chunkResult:', chunkResult)
   //   } catch (error) {
   //     // field value must be a string, number, boolean, null or one of the registered custom value types
@@ -117,23 +141,13 @@ export const getCapabilitiesData = async ({
   //   }
   // }
 
-  for (const l of layerOptions) {
-    // creating works
-    // try {
-    //   await db.layer_options.create({ data: l })
-    //   // console.log('hello, getCapabilitiesData 4, res from creating:', res)
-    // } catch (error) {
-    //   console.error('hello, getCapabilitiesData 5, error from creating:', error)
-    // }
-    // upserting
+  for (const layerData of layersData) {
+    const data = createWmsServiceLayer({
+      ...layerData,
+      wms_service_id: service.wms_service_id,
+    })
     try {
-      await db.layer_options.upsert({
-        create: l,
-        update: l,
-        where: {
-          layer_option_id: l.layer_option_id,
-        },
-      })
+      await db.wms_service_layers.create({ data })
     } catch (error) {
       console.error(
         'hello, getCapabilitiesData 5, error from upserting:',
@@ -171,102 +185,13 @@ export const getCapabilitiesData = async ({
   // // add legends into row to reduce network activity and make them offline available
   // values.wms_legend = _legendBlobs.length ? _legendBlobs : undefined
 
-  // use capabilities.Capability?.Request?.GetFeatureInfo?.Format
-  // to set wms_info_format
-  const infoFormats =
-    capabilities?.Capability?.Request?.GetFeatureInfo?.Format ?? []
-  const wmsInfoFormatOptions = infoFormats.map((l) => ({
-    label: l,
-    value: l,
-  }))
-  if (wmsInfoFormatOptions?.length) {
-    for (const o of wmsInfoFormatOptions) {
-      await db.layer_options.upsert({
-        create: {
-          layer_option_id: `${row.wms_url}/wms_info_format/${o.value}`,
-          service_url: row.wms_url,
-          field: 'wms_info_format',
-          value: o.value,
-          tile_layer_id: row.tile_layer_id,
-          vector_layer_id: null,
-          label: o.label,
-        },
-        update: {
-          service_url: row.wms_url,
-          field: 'wms_info_format',
-          value: o.value,
-          tile_layer_id: row.tile_layer_id,
-          label: o.label,
-        },
-        where: {
-          layer_option_id: `${row.wms_url}/wms_info_format/${o.value}`,
-        },
-      })
-    }
-  }
-  // console.log('TileLayerForm, cbData:', cbData)
-
-  // if wms_format is not yet set, set version with png or jpg
-  if (!row?.wms_format) {
-    const wmsFormatValues =
-      capabilities?.Capability?.Request?.GetMap?.Format.filter((v) =>
-        v.toLowerCase().includes('image'),
-      )
-    const preferedFormat =
-      wmsFormatValues?.find((v) => v?.toLowerCase?.().includes('image/png')) ??
-      wmsFormatValues?.find((v) => v?.toLowerCase?.().includes('png')) ??
-      wmsFormatValues?.find((v) => v?.toLowerCase?.().includes('image/jpeg')) ??
-      wmsFormatValues?.find((v) => v?.toLowerCase?.().includes('jpeg'))
-    if (preferedFormat) {
-      values.wms_format = { label: preferedFormat, value: preferedFormat }
-    }
-  }
-
-  const wmsVersion = capabilities?.version
-  if (wmsVersion) {
-    if (!row?.wms_version) {
-      values.wms_version = wmsVersion
-    }
-  }
-
   // activate layer, if not too many
-  if (!row?.wms_layer && layers?.length === 1) {
-    values.wms_layer = {
-      value: layers[0].Name,
-      label: layers[0].Title,
-    }
-  }
-
-  // set info_format if undefined
-  if (!row?.wms_info_format && infoFormats?.length) {
-    // for values see: https://docs.geoserver.org/stable/en/user/services/wms/reference.html#getfeatureinfo
-    const preferedFormat =
-      infoFormats.find(
-        (v) => v?.toLowerCase?.() === 'application/vnd.ogc.gml',
-      ) ??
-      infoFormats.find((v) =>
-        v?.toLowerCase?.().includes('application/vnd.ogc.gml'),
-      ) ??
-      infoFormats.find((v) => v?.toLowerCase?.().includes('text/plain')) ??
-      infoFormats.find((v) =>
-        v?.toLowerCase?.().includes('application/json'),
-      ) ??
-      infoFormats.find((v) => v?.toLowerCase?.().includes('text/javascript')) ??
-      infoFormats.find((v) => v?.toLowerCase?.().includes('text/html'))
-    if (preferedFormat) {
-      values.wms_info_format = { label: preferedFormat, value: preferedFormat }
-    }
-  }
-
-  // enable updating in a single operation
-  if (returnValue) return values
-
-  // console.log('hello, getCapabilitiesData, values added to tileLayer:', values)
-
-  if (Object.keys(values).length) {
-    await db.tile_layers.update({
-      where: { tile_layer_id: row.tile_layer_id },
-      data: values,
+  if (!tileLayer?.wms_service_layer_name && layers?.length === 1) {
+    db.tile_layers.update({
+      where: { tile_layer_id: tileLayer.tile_layer_id },
+      data: {
+        wms_service_layer_name: layers[0].Name,
+      },
     })
   }
 

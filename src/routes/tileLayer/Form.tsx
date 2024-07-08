@@ -3,7 +3,6 @@ import { useOutletContext, useParams, useLocation } from 'react-router-dom'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
-import { SwitchField } from '../../components/shared/SwitchField.tsx'
 // import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { DropdownFieldFromLayerOptions } from '../../components/shared/DropdownFieldFromLayerOptions.tsx'
 // import { tile_layer_type_enumSchema as typeSchema } from '../../generated/client/index.ts'

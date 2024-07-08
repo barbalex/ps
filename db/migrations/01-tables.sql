@@ -1395,17 +1395,18 @@ CREATE TABLE tile_layers(
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   label text DEFAULT NULL,
   type tile_layer_type_enum DEFAULT NULL, -- 'wms'
-  wmts_url_template text DEFAULT NULL,
-  wmts_subdomains jsonb DEFAULT NULL, -- array of text
-  wms_url text DEFAULT NULL, -- TODO: This is removed. A field in the form enables choosing from existing / adding new wms services
-  wms_format jsonb DEFAULT NULL, -- TODO: service property
-  wms_layer jsonb DEFAULT NULL,
-  wms_parameters jsonb DEFAULT NULL, -- TODO: What is this for? Hidden until useful
-  wms_styles jsonb DEFAULT NULL, -- array of text. TODO: what is this exactly? Hidden until useful
-  wms_version text DEFAULT NULL, -- values: '1.1.1', '1.3.0'. TODO: service property
-  wms_info_format jsonb DEFAULT NULL, -- TODO: service property
-  wms_legend bytea DEFAULT NULL, -- TODO: service property
-  wms_queryable boolean DEFAULT NULL, -- false
+  wms_service_layer_name text DEFAULT NULL, -- a name from wms_service_layers. NOT referenced because the uuid changes when the service is updated
+  -- wmts_url_template text DEFAULT NULL,
+  -- wmts_subdomains jsonb DEFAULT NULL, -- array of text
+  -- wms_url text DEFAULT NULL, -- TODO: This is removed. A field in the form enables choosing from existing / adding new wms services
+  -- wms_format jsonb DEFAULT NULL, -- TODO: service property
+  -- wms_layer jsonb DEFAULT NULL,
+  -- wms_parameters jsonb DEFAULT NULL, -- TODO: What is this for? Hidden until useful
+  -- wms_styles jsonb DEFAULT NULL, -- array of text. TODO: what is this exactly? Hidden until useful
+  -- wms_version text DEFAULT NULL, -- values: '1.1.1', '1.3.0'. TODO: service property
+  -- wms_info_format jsonb DEFAULT NULL, -- TODO: service property
+  -- wms_legend bytea DEFAULT NULL, -- TODO: service property
+  -- wms_queryable boolean DEFAULT NULL, -- false
   max_zoom integer DEFAULT NULL, -- 19
   min_zoom integer DEFAULT NULL, -- 0
   local_data_size integer DEFAULT NULL,
@@ -1414,6 +1415,10 @@ CREATE TABLE tile_layers(
 
 -- TODO: wms_services, wms_service_layers
 CREATE INDEX ON tile_layers USING btree(account_id);
+
+CREATE INDEX ON tile_layers USING btree(project_id);
+
+CREATE INDEX ON tile_layers USING btree(wms_service_id);
 
 COMMENT ON TABLE tile_layers IS 'Goal: Bring your own tile layers. Not versioned (not recorded and only added by manager).';
 
@@ -1426,7 +1431,6 @@ DROP TABLE IF EXISTS wms_services CASCADE;
 CREATE TABLE wms_services(
   wms_service_id uuid PRIMARY KEY DEFAULT NULL,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   url text DEFAULT NULL, -- was: tile_layers.wms_url
   image_formats jsonb DEFAULT NULL, -- available image formats. text array. was: layer_options.wms_format
   image_format text DEFAULT NULL, -- prefered image format. was: tile_layers.wms_format
@@ -1438,8 +1442,6 @@ CREATE TABLE wms_services(
 
 CREATE INDEX ON wms_services USING btree(account_id);
 
-CREATE INDEX ON wms_services USING btree(project_id);
-
 CREATE INDEX ON wms_services USING btree(url);
 
 DROP TABLE IF EXISTS wms_service_layers CASCADE;
@@ -1448,7 +1450,7 @@ CREATE TABLE wms_service_layers(
   wms_service_layer_id uuid PRIMARY KEY DEFAULT NULL,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   wms_service_id uuid DEFAULT NULL REFERENCES wms_services(wms_service_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  value text DEFAULT NULL,
+  name text DEFAULT NULL,
   label text DEFAULT NULL,
   queryable boolean DEFAULT NULL,
   legend_url text DEFAULT NULL, -- was: layer_options.legend_url
@@ -1458,6 +1460,8 @@ CREATE TABLE wms_service_layers(
 CREATE INDEX ON wms_service_layers USING btree(account_id);
 
 CREATE INDEX ON wms_service_layers USING btree(wms_service_id);
+
+CREATE INDEX ON wms_service_layers USING btree(name);
 
 CREATE TYPE vector_layer_type_enum AS enum(
   'wfs',

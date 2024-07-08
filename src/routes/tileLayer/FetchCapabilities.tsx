@@ -49,13 +49,13 @@ export const FetchCapabilities = memo(({ row }: Props) => {
     })
     await db.notifications.create({ data })
     // 1. check if layer_options exist for this wms_url
-    const existingLayerOptions = await db.layer_options.findMany({
-      where: { service_url: row.wms_url, field: 'wms_layer' },
-    })
+    // const existingLayerOptions = await db.layer_options.findMany({
+    //   where: { service_url: row.wms_url, field: 'wms_layer' },
+    // })
 
     // 2. if not, fetch capabilities
     try {
-      await worker.getCapabilitiesData({ row, db })
+      await worker.getCapabilitiesData({ tileLayer:row, db })
     } catch (error) {
       console.error(
         'hello WmsBaseUrl, onBlur, error getting capabilities data:',

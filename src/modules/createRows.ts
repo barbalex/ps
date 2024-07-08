@@ -530,6 +530,42 @@ export const createLayerPresentation = ({
   transparent,
 })
 
+export const createWmsService = ({
+  url = null,
+  imageFormats = null,
+  imageFormat = null,
+  version = null,
+  infoFormats = null,
+  infoFormat = null,
+  defaultCrs = null,
+}) => ({
+  wms_service_id: uuidv7(),
+  version,
+  url,
+  imageFormats,
+  imageFormat,
+  infoFormats,
+  infoFormat,
+  defaultCrs,
+})
+
+export const createWmsServiceLayer = ({
+  wms_service_id,
+  value = null,
+  label = null,
+  queryable = null,
+  legend_url = null,
+  legend_image = null,
+}) => ({
+  wms_service_layer_id: uuidv7(),
+  wms_service_id,
+  value,
+  label,
+  queryable,
+  legend_url,
+  legend_image,
+})
+
 export const createChart = ({
   project_id = null,
   subproject_id = null,
