@@ -48,16 +48,18 @@ export const getCapabilitiesData = async ({
       await db.layer_options.upsert({
         create: {
           layer_option_id: `${row.wms_url}/wms_format/${o.value}`,
-          tile_layer_id: row.tile_layer_id,
-          vector_layer_id: null,
+          service_url: row.wms_url,
           field: 'wms_format',
           value: o.value,
+          tile_layer_id: row.tile_layer_id,
+          vector_layer_id: null,
           label: o.label,
         },
         update: {
-          tile_layer_id: row.tile_layer_id,
+          service_url: row.wms_url,
           field: 'wms_format',
           value: o.value,
+          tile_layer_id: row.tile_layer_id,
           label: o.label,
         },
         where: {
@@ -94,9 +96,10 @@ export const getCapabilitiesData = async ({
   // 2. createMany
   const layerOptions = layers.map((l) => ({
     layer_option_id: `${row.wms_url}/wms_layer/${l.Name}`,
-    tile_layer_id: row.tile_layer_id,
+    service_url: row.wms_url,
     field: 'wms_layer',
     value: l.Name,
+    tile_layer_id: row.tile_layer_id,
     label: l.Title,
     queryable: l.queryable,
     legend_url: l.Style?.[0]?.LegendURL?.[0]?.OnlineResource,
@@ -181,16 +184,18 @@ export const getCapabilitiesData = async ({
       await db.layer_options.upsert({
         create: {
           layer_option_id: `${row.wms_url}/wms_info_format/${o.value}`,
-          tile_layer_id: row.tile_layer_id,
-          vector_layer_id: null,
+          service_url: row.wms_url,
           field: 'wms_info_format',
           value: o.value,
+          tile_layer_id: row.tile_layer_id,
+          vector_layer_id: null,
           label: o.label,
         },
         update: {
-          tile_layer_id: row.tile_layer_id,
+          service_url: row.wms_url,
           field: 'wms_info_format',
           value: o.value,
+          tile_layer_id: row.tile_layer_id,
           label: o.label,
         },
         where: {

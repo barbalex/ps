@@ -7,7 +7,7 @@ import { SwitchField } from '../../components/shared/SwitchField.tsx'
 // import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { DropdownFieldFromLayerOptions } from '../../components/shared/DropdownFieldFromLayerOptions.tsx'
 // import { tile_layer_type_enumSchema as typeSchema } from '../../generated/client/index.ts'
-import { Url } from './Url.tsx'
+import { FetchCapabilities } from './FetchCapabilities.tsx'
 
 import '../../form.css'
 
@@ -39,7 +39,25 @@ export const Component = memo(
           // disabled as for now only WMS is supported
           disabled
         /> */}
-        <Url row={row} onChange={onChange} autoFocus={true} />
+        <TextField
+          label="URL"
+          name="wms_url"
+          value={row.wms_url ?? ''}
+          onChange={onChange}
+          autoFocus={true}
+          // ref={ref}
+          validationMessage={
+            row?.wms_url ? (
+              'The base url of the service providing the WMS'
+            ) : (
+              <>
+                <p>Enter the base url of the service providing the WMS.</p>
+                <p>Then capabilities can be loaded and a layer selected.</p>
+              </>
+            )
+          }
+        />
+        {!!row?.wms_url && <FetchCapabilities row={row} />}
         {(row?.wms_version || isFilter) && (
           <DropdownFieldFromLayerOptions
             label="Layer"

@@ -71,15 +71,17 @@ export const getCapabilitiesData = async ({
       await db.layer_options.upsert({
         create: {
           layer_option_id: `${row.wfs_url}/wfs_output_format/${f.value}`,
-          vector_layer_id: row.vector_layer_id,
+          service_url: row.wfs_url,
           field: 'wfs_output_format',
           value: f.value,
+          vector_layer_id: row.vector_layer_id,
           label: f.label,
         },
         update: {
-          vector_layer_id: row.vector_layer_id,
+          service_url: row.wfs_url,
           field: 'wfs_output_format',
           value: f.value,
+          vector_layer_id: row.vector_layer_id,
           label: f.label,
         },
         where: {
@@ -139,15 +141,17 @@ export const getCapabilitiesData = async ({
       await db.layer_options.upsert({
         create: {
           layer_option_id: `${row.wfs_url}/wfs_layer/${o.value}`,
-          vector_layer_id: row.vector_layer_id,
+          service_url: row.wfs_url,
           field: 'wfs_layer',
           value: o.value,
+          vector_layer_id: row.vector_layer_id,
           label: o.label,
         },
         update: {
-          vector_layer_id: row.vector_layer_id,
+          service_url: row.wfs_url,
           field: 'wfs_layer',
           value: o.value,
+          vector_layer_id: row.vector_layer_id,
           label: o.label,
         },
         where: {

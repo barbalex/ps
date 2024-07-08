@@ -1492,7 +1492,7 @@ CREATE TYPE layer_options_field_enum AS enum(
 );
 
 CREATE TABLE layer_options(
-  layer_option_id text PRIMARY KEY DEFAULT NULL, -- TODO: change to uuid v7
+  layer_option_id text PRIMARY KEY DEFAULT NULL,
   service_url text DEFAULT NULL,
   field layer_options_field_enum DEFAULT NULL,
   value text DEFAULT NULL,
