@@ -1499,7 +1499,7 @@ CREATE TABLE layer_options(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   tile_layer_id uuid DEFAULT NULL REFERENCES tile_layers(tile_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  label text DEFAULT NULL, -- TODO: needed?
+  label text DEFAULT NULL, -- needed? Yes: service has title (label) and name (value)
   queryable boolean DEFAULT NULL, -- TODO: set when processing capabilities of wms and wfs
   legend_url text DEFAULT NULL
 );
@@ -1518,7 +1518,7 @@ CREATE INDEX ON layer_options USING btree(value);
 
 CREATE INDEX ON layer_options USING btree(label);
 
-COMMENT ON TABLE layer_options IS 'Goal: wms_layer options can be > 700, slowing down the tileLayer form. Solution: outsource them (and maybe later others) here. Also: there is no use in saving this data on the server or syncing it.';
+COMMENT ON TABLE layer_options IS 'Goals: 1. wms_layers of a service can be > 700, slowing down the tileLayer form when saved in a json field. Solution: outsource them here. 2. Enable fetching previously downloaded options directly from the db. 3. Prevent saving this data on the server or syncing it.';
 
 COMMENT ON COLUMN layer_options.service_url IS 'The base url of the wms or wfs server. Needed to reuse the same options for different layers. Redundant to vector_layers.wfs_url and tile_layers.wms_url but great to access easily.';
 
