@@ -13,7 +13,7 @@ import { ListsNode } from '../Lists.tsx'
 import { TaxonomiesNode } from '../Taxonomies.tsx'
 import { UnitsNode } from '../Units.tsx'
 import { ProjectCrssNode } from '../ProjectCrss.tsx'
-import { TileLayersNode } from '../TileLayers.tsx'
+import { WmsLayersNode } from '../WmsLayers.tsx'
 import { VectorLayersNode } from '../VectorLayers.tsx'
 import { ProjectUsersNode } from '../ProjectUsers.tsx'
 import { PlaceLevelsNode } from '../PlaceLevels.tsx'
@@ -116,7 +116,7 @@ export const ProjectNode = memo(({ project, level = 2 }: Props) => {
           <SubprojectsNode project_id={project.project_id} />
           <ProjectReportsNode project_id={project.project_id} />
           <PersonsNode project_id={project.project_id} />
-          <TileLayersNode project_id={project.project_id} />
+          <WmsLayersNode project_id={project.project_id} />
           <VectorLayersNode project_id={project.project_id} />
           {showFiles && <FilesNode project_id={project.project_id} level={3} />}
           {designing && (

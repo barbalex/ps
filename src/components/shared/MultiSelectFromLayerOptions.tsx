@@ -9,7 +9,7 @@ interface Props {
   name: string
   label: string
   table: string
-  tile_layer_id?: string
+  wms_layer_id?: string
   vector_layer_id?: string
   validationMessage?: string
   validationState?: 'none' | 'error'
@@ -22,7 +22,7 @@ export const MultiSelectFromLayerOptions = memo(
     name,
     label,
     table,
-    tile_layer_id,
+    wms_layer_id,
     vector_layer_id,
     validationMessage,
     validationState = 'none',
@@ -33,7 +33,7 @@ export const MultiSelectFromLayerOptions = memo(
     const { results: layerOptions = [] } = useLiveQuery(
       db.layer_options.liveMany({
         where: {
-          ...(tile_layer_id ? { tile_layer_id } : {}),
+          ...(wms_layer_id ? { wms_layer_id } : {}),
           ...(vector_layer_id ? { vector_layer_id } : {}),
           field: name,
         },
@@ -52,12 +52,12 @@ export const MultiSelectFromLayerOptions = memo(
         if (!!row && !row.label && options.length === 1) {
           const idField = idFieldFromTable(table)
           db[table].update({
-            where: { [idField]: tile_layer_id || vector_layer_id },
+            where: { [idField]: wms_layer_id || vector_layer_id },
             data: { label: options?.[0]?.label },
           })
         }
       },
-      [db, row, table, tile_layer_id, vector_layer_id],
+      [db, row, table, wms_layer_id, vector_layer_id],
     )
 
     return (
@@ -65,7 +65,7 @@ export const MultiSelectFromLayerOptions = memo(
         label={options?.length ? `${label} (${options.length})` : label}
         name={name}
         table={table}
-        id={tile_layer_id || vector_layer_id}
+        id={wms_layer_id || vector_layer_id}
         options={options}
         valueArray={valueArray}
         validationMessage={validationMessage}

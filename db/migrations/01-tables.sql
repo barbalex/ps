@@ -1182,7 +1182,7 @@ CREATE TABLE app_states(
   map_info jsonb DEFAULT NULL,
   map_layer_sorting jsonb DEFAULT NULL,
   map_show_center boolean DEFAULT NULL, -- FALSE
-  tile_layer_sorter text DEFAULT NULL,
+  wms_layer_sorter text DEFAULT NULL,
   vector_layer_sorter text DEFAULT NULL,
   editing_place_geometry uuid DEFAULT NULL,
   editing_check_geometry uuid DEFAULT NULL,
@@ -1204,7 +1204,7 @@ CREATE TABLE app_states(
   filter_account_messages jsonb DEFAULT NULL, -- a messages object with filter settings
   filter_project_reports jsonb DEFAULT NULL, -- a project_reports object with filter settings
   filter_persons jsonb DEFAULT NULL, -- a persons object with filter settings
-  filter_tile_layers jsonb DEFAULT NULL, -- a tile_layers object with filter settings
+  filter_wms_layers jsonb DEFAULT NULL, -- a wms_layers object with filter settings
   filter_vector_layers jsonb DEFAULT NULL, -- a vector_layers object with filter settings
   filter_project_users jsonb DEFAULT NULL, -- a project_users object with filter settings
   filter_lists jsonb DEFAULT NULL, -- a lists object with filter settings
@@ -1377,24 +1377,24 @@ COMMENT ON COLUMN occurrences.data IS 'data as received from GBIF';
 
 COMMENT ON COLUMN occurrences.label IS 'label of occurrence, used to show it in the UI. Created on import';
 
-CREATE TYPE tile_layer_type_enum AS enum(
+CREATE TYPE wms_layer_type_enum AS enum(
   'wms',
   'wmts'
   -- 'tms'
 );
 
-DROP TABLE IF EXISTS tile_layers CASCADE;
+DROP TABLE IF EXISTS wms_layers CASCADE;
 
 -- TODO:
 -- rename to wms_layers
 -- add wmts_layers to reserve for future use
 -- reference wms_layer to wms_service_layers
-CREATE TABLE tile_layers(
-  tile_layer_id uuid PRIMARY KEY DEFAULT NULL,
+CREATE TABLE wms_layers(
+  wms_layer_id uuid PRIMARY KEY DEFAULT NULL,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   label text DEFAULT NULL,
-  type tile_layer_type_enum DEFAULT NULL, -- 'wms'
+  type wms_layer_type_enum DEFAULT NULL, -- 'wms'
   wms_service_layer_name text DEFAULT NULL, -- a name from wms_service_layers. NOT referenced because the uuid changes when the service is updated
   -- wmts_url_template text DEFAULT NULL,
   -- wmts_subdomains jsonb DEFAULT NULL, -- array of text
@@ -1414,29 +1414,29 @@ CREATE TABLE tile_layers(
 );
 
 -- TODO: wms_services, wms_service_layers
-CREATE INDEX ON tile_layers USING btree(account_id);
+CREATE INDEX ON wms_layers USING btree(account_id);
 
-CREATE INDEX ON tile_layers USING btree(project_id);
+CREATE INDEX ON wms_layers USING btree(project_id);
 
-CREATE INDEX ON tile_layers USING btree(wms_service_id);
+CREATE INDEX ON wms_layers USING btree(wms_service_layer_name);
 
-COMMENT ON TABLE tile_layers IS 'Goal: Bring your own tile layers. Not versioned (not recorded and only added by manager).';
+COMMENT ON TABLE wms_layers IS 'Goal: Bring your own wms layers. Not versioned (not recorded and only added by manager).';
 
-COMMENT ON COLUMN tile_layers.local_data_size IS 'Size of locally saved image data';
+COMMENT ON COLUMN wms_layers.local_data_size IS 'Size of locally saved image data';
 
-COMMENT ON COLUMN tile_layers.local_data_bounds IS 'Array of bounds and their size of locally saved image data';
+COMMENT ON COLUMN wms_layers.local_data_bounds IS 'Array of bounds and their size of locally saved image data';
 
 DROP TABLE IF EXISTS wms_services CASCADE;
 
 CREATE TABLE wms_services(
   wms_service_id uuid PRIMARY KEY DEFAULT NULL,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  url text DEFAULT NULL, -- was: tile_layers.wms_url
+  url text DEFAULT NULL, -- was: wms_layers.wms_url
   image_formats jsonb DEFAULT NULL, -- available image formats. text array. was: layer_options.wms_format
-  image_format text DEFAULT NULL, -- prefered image format. was: tile_layers.wms_format
-  version text DEFAULT NULL, -- was: tile_layers.wms_version
+  image_format text DEFAULT NULL, -- prefered image format. was: wms_layers.wms_format
+  version text DEFAULT NULL, -- was: wms_layers.wms_version
   info_formats jsonb DEFAULT NULL, -- available info formats. text array. was: layer_options.wms_info_format
-  info_format text DEFAULT NULL, -- preferred info format. was: tile_layers.wms_info_format
+  info_format text DEFAULT NULL, -- preferred info format. was: wms_layers.wms_info_format
   default_crs text DEFAULT NULL -- TODO: does this exist in capabilities? if yes: use as in wfs. If not: remove
 );
 
@@ -1511,7 +1511,7 @@ CREATE INDEX ON vector_layers USING btree(project_id);
 
 CREATE INDEX ON vector_layers USING btree(type);
 
-COMMENT ON TABLE vector_layers IS 'Goal: Bring your own tile layers. Either from wfs or importing GeoJSON. Should only contain metadata, not data fetched from wms or wmts servers (that should only be saved locally on the client).';
+COMMENT ON TABLE vector_layers IS 'Goal: Bring your own wms layers. Either from wfs or importing GeoJSON. Should only contain metadata, not data fetched from wms or wmts servers (that should only be saved locally on the client).';
 
 COMMENT ON COLUMN vector_layers.display_by_property_field IS 'Name of the field whose values is used to display the layer. If null, a single display is used.';
 
@@ -1525,7 +1525,7 @@ COMMENT ON COLUMN vector_layers.line_count IS 'Number of line features. Used to 
 
 COMMENT ON COLUMN vector_layers.polygon_count IS 'Number of polygon features. Used to show styling for polygons - or not. Set when downloaded features';
 
--- Goal: wms_layer can be > 700, slowing down the tileLayer form
+-- Goal: wms_layer can be > 700, slowing down the wmsLayer form
 -- Solution: outsource them (and maybe later others) here
 -- This table is client side only, so we dont need a soft delete column
 -- Also: there is no use in saving this data on the server or syncing it
@@ -1543,7 +1543,7 @@ CREATE TABLE layer_options(
   field layer_options_field_enum DEFAULT NULL,
   value text DEFAULT NULL,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  tile_layer_id uuid DEFAULT NULL REFERENCES tile_layers(tile_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  wms_layer_id uuid DEFAULT NULL REFERENCES wms_layers(wms_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
   label text DEFAULT NULL, -- needed? Yes: service has title (label) and name (value)
   queryable boolean DEFAULT NULL, -- TODO: set when processing capabilities of wms and wfs
@@ -1554,7 +1554,7 @@ CREATE INDEX ON layer_options(service_url);
 
 CREATE INDEX ON layer_options USING btree(account_id);
 
-CREATE INDEX ON layer_options USING btree(tile_layer_id);
+CREATE INDEX ON layer_options USING btree(wms_layer_id);
 
 CREATE INDEX ON layer_options USING btree(vector_layer_id);
 
@@ -1564,9 +1564,9 @@ CREATE INDEX ON layer_options USING btree(value);
 
 CREATE INDEX ON layer_options USING btree(label);
 
-COMMENT ON TABLE layer_options IS 'Goals: 1. wms_layers of a service can be > 700, slowing down the tileLayer form when saved in a json field. Solution: outsource them here. 2. Enable fetching previously downloaded options directly from the db. 3. Prevent saving this data on the server or syncing it.';
+COMMENT ON TABLE layer_options IS 'Goals: 1. wms_layers of a service can be > 700, slowing down the wmsLayer form when saved in a json field. Solution: outsource them here. 2. Enable fetching previously downloaded options directly from the db. 3. Prevent saving this data on the server or syncing it.';
 
-COMMENT ON COLUMN layer_options.service_url IS 'The base url of the wms or wfs server. Needed to reuse the same options for different layers. Redundant to vector_layers.wfs_url and tile_layers.wms_url but great to access easily.';
+COMMENT ON COLUMN layer_options.service_url IS 'The base url of the wms or wfs server. Needed to reuse the same options for different layers. Redundant to vector_layers.wfs_url and wms_layers.wms_url but great to access easily.';
 
 COMMENT ON COLUMN layer_options.layer_option_id IS 'The base url of the wms server, combined with the field name whose data is stored and the value. Insures that we dont have duplicate entries.';
 
@@ -1711,11 +1711,11 @@ COMMENT ON COLUMN vector_layer_displays.fill_opacity_percent IS 'Fill opacity. h
 
 COMMENT ON COLUMN vector_layer_displays.fill_rule IS 'A string that defines how the inside of a shape is determined. https://leafletjs.com/reference.html#path-fillrule. https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-rule';
 
--- need a table to manage layer presentation for all layers (tile and vector)
+-- need a table to manage layer presentation for all layers (wms and vector)
 CREATE TABLE layer_presentations(
   layer_presentation_id uuid PRIMARY KEY DEFAULT NULL,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  tile_layer_id uuid DEFAULT NULL REFERENCES tile_layers(tile_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  wms_layer_id uuid DEFAULT NULL REFERENCES wms_layers(wms_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
   active boolean DEFAULT NULL, -- false
   opacity_percent integer DEFAULT NULL, -- 100
@@ -1726,13 +1726,13 @@ CREATE TABLE layer_presentations(
 
 CREATE INDEX ON layer_presentations USING btree(account_id);
 
-CREATE INDEX ON layer_presentations USING btree(tile_layer_id);
+CREATE INDEX ON layer_presentations USING btree(wms_layer_id);
 
 CREATE INDEX ON layer_presentations USING btree(vector_layer_id);
 
 CREATE INDEX ON layer_presentations USING btree(active);
 
-COMMENT ON TABLE layer_presentations IS 'Goal: manage all presentation related properties of all layers (including tile and vector layers). Editable by all users.';
+COMMENT ON TABLE layer_presentations IS 'Goal: manage all presentation related properties of all layers (including wms and vector layers). Editable by all users.';
 
 COMMENT ON COLUMN layer_presentations.opacity_percent IS 'As numeric is not supported by electric-sql, we cant use values between 0 and 1 for opacity. So we use integer values between 0 and 100 and divide by 100 in the frontend.';
 
@@ -2012,7 +2012,7 @@ ALTER TABLE occurrence_imports ENABLE electric;
 
 ALTER TABLE occurrences ENABLE electric;
 
-ALTER TABLE tile_layers ENABLE electric;
+ALTER TABLE wms_layers ENABLE electric;
 
 ALTER TABLE vector_layers ENABLE electric;
 
@@ -2033,4 +2033,8 @@ ALTER TABLE crs ENABLE electric;
 ALTER TABLE project_crs ENABLE electric;
 
 ALTER TABLE layer_presentations ENABLE electric;
+
+ALTER TABLE wms_services ENABLE electric;
+
+ALTER TABLE wms_service_layers ENABLE electric;
 

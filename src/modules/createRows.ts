@@ -467,8 +467,8 @@ export const createAppState = ({ user_id }) => ({
   tabs: ['tree', 'data'],
 })
 
-export const createTileLayer = ({ project_id }) => ({
-  tile_layer_id: uuidv7(),
+export const createWmsLayer = ({ project_id }) => ({
+  wms_layer_id: uuidv7(),
   project_id,
   type: 'wms',
   max_zoom: 19,
@@ -515,7 +515,7 @@ export const createVectorLayerDisplay = ({
 
 export const createLayerPresentation = ({
   vector_layer_id = null,
-  tile_layer_id = null,
+  wms_layer_id = null,
   account_id = null,
   active = false,
   transparent = false,
@@ -523,7 +523,7 @@ export const createLayerPresentation = ({
   layer_presentation_id: uuidv7(),
   account_id,
   vector_layer_id,
-  tile_layer_id,
+  wms_layer_id,
   active,
   opacity_percent: 100,
   grayscale: false,

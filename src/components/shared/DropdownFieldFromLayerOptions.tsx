@@ -11,7 +11,7 @@ export const DropdownFieldFromLayerOptions = memo(
       {
         name,
         label,
-        tile_layer_id,
+        wms_layer_id,
         vector_layer_id,
         value,
         onChange,
@@ -26,7 +26,7 @@ export const DropdownFieldFromLayerOptions = memo(
       const { results: layerOptions = [] } = useLiveQuery(
         db.layer_options.liveMany({
           where: {
-            ...(tile_layer_id ? { tile_layer_id } : {}),
+            ...(wms_layer_id ? { wms_layer_id } : {}),
             ...(vector_layer_id ? { vector_layer_id } : {}),
             field: name,
           },
@@ -82,7 +82,7 @@ export const DropdownFieldFromLayerOptions = memo(
             'hello DropdownFieldFromLayerOptions, onOptionSelect, blob data:',
             res.data,
           )
-          // 3. store it in tile_layers.wms_legend
+          // 3. store it in wms_layers.wms_legend
           if (res.data) {
             onChange({
               target: {

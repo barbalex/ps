@@ -31,46 +31,46 @@ export const ClickListener = memo(() => {
       const bounds = map.getBounds()
 
       const mapInfo = { lat, lng, zoom, layers: [] }
-      // const tileLayersFilter =
-      //   appState?.filter_tile_layers?.filter(
+      // const wmsLayersFilter =
+      //   appState?.filter_wms_layers?.filter(
       //     (f) => Object.keys(f).length > 0,
       //   ) ?? []
-      // const tileLayersWhere =
-      //   tileLayersFilter.length > 1
-      //     ? { OR: tileLayersFilter }
-      //     : tileLayersFilter[0]
+      // const wmsLayersWhere =
+      //   wmsLayersFilter.length > 1
+      //     ? { OR: wmsLayersFilter }
+      //     : wmsLayersFilter[0]
 
       // Three types of querying:
-      // 1. Tile Layers
+      // 1. WMS Layers
       // 2. Vector Layers from own tables (type !== 'wfs')
       // 3. Vector Layers from WFS with downloaded data
       // 4. Vector Layers from WFS with no downloaded data
       // TODO: filter own layers and layers with downloaded data
       // by querying db.vector_layer_geoms using ST_CONTAINS once PostGIS arrives in PgLite
 
-      // 1. Tile Layers
+      // 1. WMS Layers
       // using raw query because of the join with layer_presentations
       // TODO: move sort to layer_presentations
       const sqlFilter = sqlFromFilter({
-        filter: appState?.filter_tile_layers,
+        filter: appState?.filter_wms_layers,
         columnPrefix: 'tl.',
       })
       const sqlToAddToWhere = sqlFilter ? ` AND ${sqlFilter}` : ''
-      const tileLayers = await db.rawQuery({
+      const wmsLayers = await db.rawQuery({
         sql: `select tl.*
-                from tile_layers tl inner join layer_presentations lp on lp.tile_layer_id = tl.tile_layer_id
+                from wms_layers tl inner join layer_presentations lp on lp.wms_layer_id = tl.wms_layer_id
                 where lp.active = true and tl.project_id = $1${sqlToAddToWhere} order by tl.label`,
         args: [project_id],
       })
-      // const tileLayers = await db.tile_layers.findMany({
+      // const wmsLayers = await db.wms_layers.findMany({
       //   where: {
       //     project_id,
-      //     ...tileLayersWhere,
+      //     ...wmsLayersWhere,
       //   },
       //   orderBy: { label: 'asc' },
       // })
       // loop through vector layers and get infos
-      for await (const layer of tileLayers) {
+      for await (const layer of wmsLayers) {
         const {
           wms_version,
           wms_url,
@@ -179,7 +179,7 @@ export const ClickListener = memo(() => {
     },
     [
       appState?.app_state_id,
-      appState?.filter_tile_layers,
+      appState?.filter_wms_layers,
       appState?.filter_vector_layers,
       db,
       map,

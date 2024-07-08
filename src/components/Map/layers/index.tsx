@@ -5,11 +5,11 @@ import { Pane } from 'react-leaflet'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
 import {
-  Tile_layers as TileLayer,
+  Wms_layers as WmsLayer,
   Vector_layers as VectorLayer,
 } from '../../../generated/client/index.ts'
 import { OsmColor } from './OsmColor.tsx'
-import { TileLayerComponent } from './TileLayer/index.tsx'
+import { WmsLayerComponent } from './WmsLayer/index.tsx'
 import { VectorLayerChooser } from './VectorLayerChooser.tsx'
 import { Places1 } from './TableLayers/Places1.tsx'
 import { Places2 } from './TableLayers/Places2.tsx'
@@ -51,20 +51,20 @@ export const Layers = memo(() => {
       where: { layer_presentation_id: { in: mapLayerSorting }, active: true },
       include: {
         vector_layers: { include: { vector_layer_displays: true } },
-        tile_layers: true,
+        wms_layers: true,
       },
     }),
   )
-  const tileLayersCount = layerPresentations.filter(
-    (lp) => !!lp.tile_layers,
+  const wmsLayersCount = layerPresentations.filter(
+    (lp) => !!lp.wms_layers,
   ).length
-  // if no tile layer is present, add osm
-  if (!!appState && !tileLayersCount && !mapLayerSorting.includes('osm')) {
+  // if no wms layer is present, add osm
+  if (!!appState && !wmsLayersCount && !mapLayerSorting.includes('osm')) {
     mapLayerSorting.push('osm')
   }
 
   // return an array of layerPresentations
-  // for every one determine if is: tile, wfs, own (table)
+  // for every one determine if is: wms, wfs, own (table)
   return mapLayerSorting.map((layerPresentationId, index) => {
     if (layerPresentationId === 'osm') return <OsmColor key="osm" />
 
@@ -74,40 +74,40 @@ export const Layers = memo(() => {
 
     if (!layerPresentation) return null
 
-    const tileLayer: TileLayer | undefined = layerPresentation.tile_layers
+    const wmsLayer: WmsLayer | undefined = layerPresentation.wms_layers
     const vectorLayer: VectorLayer | undefined = layerPresentation.vector_layers
     const wfsLayer = vectorLayer?.type === 'wfs' ? vectorLayer : null
     const tableLayer =
       vectorLayer?.type && vectorLayer.type !== 'wfs' ? vectorLayer : null
 
     // todo: add key, layerPresentationId
-    if (tileLayer) {
-      tileLayer.opacity = layerPresentation.opacity_percent
+    if (wmsLayer) {
+      wmsLayer.opacity = layerPresentation.opacity_percent
         ? layerPresentation.opacity_percent / 100
         : 1
       const partsToRedrawOn = {
-        wmts_url_template: tileLayer.wmts_url_template,
-        max_zoom: tileLayer.max_zoom,
-        min_zoom: tileLayer.min_zoom,
+        wmts_url_template: wmsLayer.wmts_url_template,
+        max_zoom: wmsLayer.max_zoom,
+        min_zoom: wmsLayer.min_zoom,
         opacity: layerPresentation.opacity_percent,
-        wms_url: tileLayer.wms_url,
-        wms_format: tileLayer.wms_format?.value,
-        wms_layer: tileLayer.wms_layer?.value,
-        wms_parameters: tileLayer.wms_parameters,
-        wms_styles: tileLayer.wms_styles,
+        wms_url: wmsLayer.wms_url,
+        wms_format: wmsLayer.wms_format?.value,
+        wms_layer: wmsLayer.wms_layer?.value,
+        wms_parameters: wmsLayer.wms_parameters,
+        wms_styles: wmsLayer.wms_styles,
         transparent: layerPresentation.transparent,
-        wms_version: tileLayer.wms_version,
+        wms_version: wmsLayer.wms_version,
         grayscale: layerPresentation.grayscale,
       }
       return (
         <Pane
           key={`${layerPresentationId}/${mapLayerSorting.join()}`}
-          name={tileLayer.label}
+          name={wmsLayer.label}
           style={{ zIndex: 200 - index }}
         >
-          <TileLayerComponent
+          <WmsLayerComponent
             key={JSON.stringify(partsToRedrawOn)}
-            layer={tileLayer}
+            layer={wmsLayer}
             layerPresentation={layerPresentation}
           />
         </Pane>

@@ -114,15 +114,15 @@ export const ActiveLayers = memo(({ isNarrow }) => {
 
   const where = project_id ? { project_id } : {}
 
-  const { results: tileLayers = [] } = useLiveQuery(
-    db.tile_layers.liveMany({
+  const { results: wmsLayers = [] } = useLiveQuery(
+    db.wms_layers.liveMany({
       where,
       include: { layer_presentations: true },
     }),
   )
-  const activeTileLayers = tileLayers.filter((l) =>
+  const activeWmsLayers = wmsLayers.filter((l) =>
     l.layer_presentations.some(
-      (lp) => lp.tile_layer_id === l.tile_layer_id && lp.active,
+      (lp) => lp.wms_layer_id === l.wms_layer_id && lp.active,
     ),
   )
 
@@ -141,7 +141,7 @@ export const ActiveLayers = memo(({ isNarrow }) => {
   // sort by app_states.map_layer_sorting
   const activeLayers = useMemo(
     () =>
-      [...activeTileLayers, ...activeVectorLayers].sort((a, b) => {
+      [...activeWmsLayers, ...activeVectorLayers].sort((a, b) => {
         const aIndex = layerSorting.findIndex(
           (ls) => ls === a.layer_presentations?.[0]?.layer_presentation_id,
         )
@@ -150,7 +150,7 @@ export const ActiveLayers = memo(({ isNarrow }) => {
         )
         return aIndex - bIndex
       }),
-    [activeTileLayers, activeVectorLayers, layerSorting],
+    [activeWmsLayers, activeVectorLayers, layerSorting],
   )
 
   const layerPresentationIds = activeLayers.map(
@@ -336,7 +336,7 @@ export const ActiveLayers = memo(({ isNarrow }) => {
               {activeLayers.length ? (
                 activeLayers?.map((l, index) => (
                   <ActiveLayer
-                    key={l.tile_layer_id ?? l.vector_layer_id}
+                    key={l.wms_layer_id ?? l.vector_layer_id}
                     layer={l}
                     index={index}
                     layerCount={activeLayers.length}

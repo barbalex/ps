@@ -114,7 +114,7 @@ export const Syncer = memo(() => {
                     },
                   },
                   units: true,
-                  tile_layers: { include: { layer_options: true } },
+                  wms_layers: { include: { layer_options: true } },
                   vector_layers: {
                     include: {
                       layer_options: true,
@@ -148,7 +148,7 @@ export const Syncer = memo(() => {
               goals: true,
               goal_reports: true,
               goal_report_values: true,
-              tile_layers: true,
+              wms_layers: true,
               vector_layers: true,
               layer_options: true,
               project_reports: true,
