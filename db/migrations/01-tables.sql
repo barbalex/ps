@@ -1394,13 +1394,13 @@ CREATE TABLE tile_layers(
   wmts_url_template text DEFAULT NULL,
   wmts_subdomains jsonb DEFAULT NULL, -- array of text
   wms_url text DEFAULT NULL,
-  wms_format jsonb DEFAULT NULL,
+  wms_format jsonb DEFAULT NULL, -- TODO: service property
   wms_layer jsonb DEFAULT NULL,
   wms_parameters jsonb DEFAULT NULL, -- TODO: What is this for? Hidden until useful
   wms_styles jsonb DEFAULT NULL, -- array of text. TODO: what is this exactly? Hidden until useful
   wms_transparent boolean DEFAULT NULL, -- false. TODO: move to layer_presentations?
-  wms_version text DEFAULT NULL, -- values: '1.1.1', '1.3.0'
-  wms_info_format jsonb DEFAULT NULL,
+  wms_version text DEFAULT NULL, -- values: '1.1.1', '1.3.0'. TODO: service property
+  wms_info_format jsonb DEFAULT NULL, -- TODO: service property
   wms_legend bytea DEFAULT NULL,
   wms_queryable boolean DEFAULT NULL, -- false
   max_zoom integer DEFAULT NULL, -- 19

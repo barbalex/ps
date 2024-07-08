@@ -229,12 +229,6 @@ export const getCapabilitiesData = async ({
     }
   }
 
-  // set title as label if undefined
-  // nope: better to set layer title as label
-  // if (!row?.label && capabilities?.Service?.Title) {
-  //   values.label = capabilities?.Service?.Title
-  // }
-
   // activate layer, if not too many
   if (!row?.wms_layer && layers?.length === 1) {
     values.wms_layer = {

@@ -45,7 +45,6 @@ export const Component = memo(
           value={row.wms_url ?? ''}
           onChange={onChange}
           autoFocus={true}
-          // ref={ref}
           validationMessage={
             row?.wms_url ? (
               'The base url of the service providing the WMS'
