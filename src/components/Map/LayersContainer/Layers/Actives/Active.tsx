@@ -285,12 +285,20 @@ export const ActiveLayer = memo(
               onChange={onChange}
             />
             {layer.tile_layer_id && (
-              <SwitchField
-                label="Grayscale"
-                name="grayscale"
-                value={layerPresentation.grayscale}
-                onChange={onChange}
-              />
+              <>
+                <SwitchField
+                  label="Transparent"
+                  name="transparent"
+                  value={layerPresentation.transparent}
+                  onChange={onChange}
+                />
+                <SwitchField
+                  label="Grayscale"
+                  name="grayscale"
+                  value={layerPresentation.grayscale}
+                  onChange={onChange}
+                />
+              </>
             )}
           </AccordionPanel>
           {closestEdge && <DropIndicator edge={closestEdge} gap="1px" />}

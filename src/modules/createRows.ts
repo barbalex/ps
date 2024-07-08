@@ -473,7 +473,6 @@ export const createTileLayer = ({ project_id }) => ({
   type: 'wms',
   max_zoom: 19,
   min_zoom: 0,
-  wms_transparent: false,
 })
 
 export const createVectorLayer = ({
@@ -519,6 +518,7 @@ export const createLayerPresentation = ({
   tile_layer_id = null,
   account_id = null,
   active = false,
+  transparent = false,
 }) => ({
   layer_presentation_id: uuidv7(),
   account_id,
@@ -527,6 +527,7 @@ export const createLayerPresentation = ({
   active,
   opacity_percent: 100,
   grayscale: false,
+  transparent,
 })
 
 export const createChart = ({

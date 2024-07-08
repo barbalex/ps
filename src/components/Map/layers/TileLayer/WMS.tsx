@@ -39,7 +39,7 @@ export const WMS = memo(({ layerPresentation }: Props) => {
       maxZoom={layer.max_zoom}
       className={layerPresentation.grayscale ? 'grayscale' : ''}
       opacity={layer.opacity} // TODO: ?? seems this has been changed from layerPresentation.opacity_percent to layer.opacity
-      transparent={layer.wms_transparent === true}
+      transparent={layerPresentation.transparent === true}
       // exceptions="inimage"
       eventHandlers={{
         tileerror: onTileErrorDebounced,

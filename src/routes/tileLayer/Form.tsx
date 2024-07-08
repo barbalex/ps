@@ -110,12 +110,6 @@ export const Component = memo(
                       : `Empfehlung: 'image/png'. Ermöglicht transparenten Hintergrund`
                   }
                 />
-                <SwitchField
-                  label="Transparent Background"
-                  name="wms_transparent"
-                  value={row.wms_transparent}
-                  onChange={onChange}
-                />
                 <TextField
                   label="WMS Version"
                   name="wms_version"

@@ -95,9 +95,9 @@ export const Layers = memo(() => {
         wms_layer: tileLayer.wms_layer?.value,
         wms_parameters: tileLayer.wms_parameters,
         wms_styles: tileLayer.wms_styles,
-        wms_transparent: tileLayer.wms_transparent,
+        transparent: layerPresentation.transparent,
         wms_version: tileLayer.wms_version,
-        wms_greyscale: layerPresentation.grayscale,
+        grayscale: layerPresentation.grayscale,
       }
       return (
         <Pane
