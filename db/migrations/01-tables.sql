@@ -1401,13 +1401,14 @@ CREATE TABLE tile_layers(
   wms_transparent boolean DEFAULT NULL, -- false. TODO: move to layer_presentations?
   wms_version text DEFAULT NULL, -- values: '1.1.1', '1.3.0'. TODO: service property
   wms_info_format jsonb DEFAULT NULL, -- TODO: service property
-  wms_legend bytea DEFAULT NULL,
+  wms_legend bytea DEFAULT NULL, -- TODO: service property
   wms_queryable boolean DEFAULT NULL, -- false
   max_zoom integer DEFAULT NULL, -- 19
   min_zoom integer DEFAULT NULL, -- 0
   local_data_size integer DEFAULT NULL,
   local_data_bounds jsonb DEFAULT NULL
 );
+-- TODO: wms_services.layers
 
 CREATE INDEX ON tile_layers USING btree(account_id);
 
