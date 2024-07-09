@@ -86,13 +86,12 @@ export const Layers = memo(() => {
         ? layerPresentation.opacity_percent / 100
         : 1
       const partsToRedrawOn = {
-        wmts_url_template: wmsLayer.wmts_url_template,
         max_zoom: wmsLayer.max_zoom,
         min_zoom: wmsLayer.min_zoom,
         opacity: layerPresentation.opacity_percent,
-        wms_url: wmsLayer.wms_url,
+        url: wmsLayer.wms_services.url,
         wms_format: wmsLayer.wms_format?.value,
-        wms_layer: wmsLayer.wms_layer?.value,
+        wms_layer: wmsLayer.wms_service_layer_name,
         wms_parameters: wmsLayer.wms_parameters,
         wms_styles: wmsLayer.wms_styles,
         transparent: layerPresentation.transparent,

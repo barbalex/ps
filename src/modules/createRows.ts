@@ -470,7 +470,6 @@ export const createAppState = ({ user_id }) => ({
 export const createWmsLayer = ({ project_id }) => ({
   wms_layer_id: uuidv7(),
   project_id,
-  type: 'wms',
   max_zoom: 19,
   min_zoom: 0,
 })

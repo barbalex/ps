@@ -1405,7 +1405,7 @@ CREATE TABLE wms_service_layers(
   label text DEFAULT NULL,
   queryable boolean DEFAULT NULL,
   legend_url text DEFAULT NULL, -- was: layer_options.legend_url
-  legend_image bytea DEFAULT NULL -- was: wms_legend
+  legend_image bytea DEFAULT NULL
 );
 
 CREATE INDEX ON wms_service_layers USING btree(account_id);
@@ -1437,8 +1437,6 @@ CREATE TABLE wms_layers(
   -- wms_styles jsonb DEFAULT NULL, -- array of text. TODO: what is this exactly? Hidden until useful
   -- wms_version text DEFAULT NULL, -- values: '1.1.1', '1.3.0'. TODO: service property
   -- wms_info_format jsonb DEFAULT NULL, -- TODO: service property
-  -- wms_legend bytea DEFAULT NULL, -- TODO: service property
-  -- wms_queryable boolean DEFAULT NULL, -- false
   max_zoom integer DEFAULT NULL, -- 19
   min_zoom integer DEFAULT NULL, -- 0
   local_data_size integer DEFAULT NULL,

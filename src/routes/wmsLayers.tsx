@@ -48,11 +48,13 @@ export const Component = memo(() => {
 
   const add = useCallback(async () => {
     const wmsLayer = createWmsLayer({ project_id })
+    console.log('WmsLayers.add, wmsLayer:', wmsLayer)
     await db.wms_layers.create({ data: wmsLayer })
     // also add layer_presentation
     const layerPresentation = createLayerPresentation({
       wms_layer_id: wmsLayer.wms_layer_id,
     })
+    console.log('WmsLayers.add, layerPresentation:', layerPresentation)
     await db.layer_presentations.create({ data: layerPresentation })
     navigate({
       pathname: wmsLayer.wms_layer_id,

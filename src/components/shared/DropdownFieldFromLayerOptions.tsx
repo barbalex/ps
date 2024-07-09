@@ -50,49 +50,8 @@ export const DropdownFieldFromLayerOptions = memo(
               value: { label: data.optionText, value: data.optionValue },
             },
           })
-
-          if (name !== 'wms_layer') return
-
-          // set the label too
-          if (row) {
-            onChange({
-              target: {
-                name: 'label',
-                value: data.optionText,
-              },
-            })
-          }
-
-          // get the legend image
-          let res
-          try {
-            res = await axios.get(
-              `${row.wms_url}?language=eng&version=1.3.0&service=WMS&request=GetLegendGraphic&sld_version=1.1.0&layer=${row.wms_layer?.value}&format=image/png&STYLE=default&&TRANSPARENT=true`,
-              { responseType: 'blob' },
-            )
-          } catch (error) {
-            // error can also be caused by timeout
-            console.error(
-              `hello error fetching legend for layer '${data.optionText}':`,
-              error,
-            )
-            return false
-          }
-          console.log(
-            'hello DropdownFieldFromLayerOptions, onOptionSelect, blob data:',
-            res.data,
-          )
-          // 3. store it in wms_layers.wms_legend
-          if (res.data) {
-            onChange({
-              target: {
-                name: 'wms_legend',
-                value: res.data,
-              },
-            })
-          }
         },
-        [name, onChange, row],
+        [name, onChange],
       )
 
       const labelWithCount = label

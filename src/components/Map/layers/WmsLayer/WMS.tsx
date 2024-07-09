@@ -31,8 +31,8 @@ export const WMS = memo(({ layerPresentation }: Props) => {
   // instead ALL WMS LAYERS FAIL!!!!!!!!
   return (
     <WMSTileLayer
-      url={layer.wms_url}
-      layers={layer.wms_layer?.value}
+      url={layer.wms_services.url}
+      layers={layer.wms_service_layer_name}
       version={layer.wms_version}
       format={layer.wms_format?.value}
       minZoom={layer.min_zoom}
