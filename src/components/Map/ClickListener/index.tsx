@@ -53,59 +53,41 @@ export const ClickListener = memo(() => {
       // TODO: move sort to layer_presentations
       const sqlFilter = sqlFromFilter({
         filter: appState?.filter_wms_layers,
-        columnPrefix: 'tl.',
+        columnPrefix: 'wl.',
       })
       const sqlToAddToWhere = sqlFilter ? ` AND ${sqlFilter}` : ''
       const wmsLayers = await db.rawQuery({
-        sql: `select tl.*
-                from wms_layers tl inner join layer_presentations lp on lp.wms_layer_id = tl.wms_layer_id
-                where lp.active = true and tl.project_id = $1${sqlToAddToWhere} order by tl.label`,
+        sql: `select wl.wms_service_layer_name, ws.info_format, ws.version, ws.url
+                from wms_layers wl 
+                inner join layer_presentations lp on lp.wms_layer_id = wl.wms_layer_id
+                inner join wms_services ws on ws.wms_service_id = wl.wms_service_id
+                where lp.active = true and wl.project_id = $1${sqlToAddToWhere} order by wl.label`,
         args: [project_id],
       })
-      // const wmsLayers = await db.wms_layers.findMany({
-      //   where: {
-      //     project_id,
-      //     ...wmsLayersWhere,
-      //   },
-      //   orderBy: { label: 'asc' },
-      // })
       // loop through vector layers and get infos
       for await (const layer of wmsLayers) {
-        const {
-          wms_version,
-          wms_url,
-          wms_layer: wmsLayerJson,
-          wms_info_format: wmsInfoFormatJson,
-        } = layer
+        const { version, url, wms_service_layer_name, info_format } = layer
         // in raw queries, jsonb columns need to be parsed
-        let wms_info_format = wmsInfoFormatJson
-        try {
-          wms_info_format = JSON.parse(wmsInfoFormatJson)
-        } catch {}
-        let wms_layer = wmsLayerJson
-        try {
-          wms_layer = JSON.parse(wmsLayerJson)
-        } catch {}
         const params = {
           request: 'GetFeatureInfo',
           service: 'WMS',
-          version: wms_version ?? '1.3.0',
+          version: version ?? '1.3.0',
           crs: 'EPSG:4326',
-          layers: wms_layer?.value,
-          query_layers: wms_layer?.value,
-          info_format: wms_info_format?.value ?? 'application/vnd.ogc.gml',
+          layers: wms_service_layer_name,
+          query_layers: wms_service_layer_name,
+          info_format: info_format ?? 'application/vnd.ogc.gml',
           x: Math.round(event.containerPoint.x),
           y: Math.round(event.containerPoint.y),
           width: mapSize.x,
           height: mapSize.y,
           bbox: `${bounds._southWest.lat},${bounds._southWest.lng},${bounds._northEast.lat},${bounds._northEast.lng}`,
         }
-        const requestData = await fetchData({ db, url: wms_url, params })
+        const requestData = await fetchData({ db, url, params })
         if (requestData) {
           layersDataFromRequestData({
             layersData: mapInfo.layers,
             requestData,
-            infoFormat: wms_info_format?.value,
+            infoFormat: info_format,
           })
         }
       }

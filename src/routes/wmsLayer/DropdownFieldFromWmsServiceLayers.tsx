@@ -1,4 +1,4 @@
-import { memo, useMemo, useCallback,  } from 'react'
+import { memo, useMemo, useCallback } from 'react'
 import { Dropdown, Field, Option } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 import axios from 'redaxios'
@@ -6,7 +6,7 @@ import axios from 'redaxios'
 import { useElectric } from '../../ElectricProvider.tsx'
 
 export const DropdownFieldFromWmsServiceLayers = memo(
-  ({  wmsLayer, validationMessage }) => {
+  ({ wmsLayer, validationMessage }) => {
     const { db } = useElectric()!
     const { results: wmsServiceLayers = [] } = useLiveQuery(
       db.wms_service_layers.liveMany({
@@ -31,7 +31,10 @@ export const DropdownFieldFromWmsServiceLayers = memo(
       async (e, data) => {
         db.wms_layers.update({
           where: { wms_layer_id },
-          data: { wms_service_layer_name: data.optionValue },
+          data: {
+            wms_service_layer_name: data.optionValue,
+            label: data.optionText,
+          },
         })
 
         // get the legend image
@@ -78,8 +81,8 @@ export const DropdownFieldFromWmsServiceLayers = memo(
     )
 
     const labelWithCount = options?.length
-        ? `Layer (${options.length})`
-        : 'Layer'
+      ? `Layer (${options.length})`
+      : 'Layer'
 
     return (
       <Field

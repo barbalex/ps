@@ -67,7 +67,7 @@ export const getCapabilitiesData = async ({ wmsLayer, db, service }: Props) => {
     capabilities?.Capability?.Request?.GetFeatureInfo?.Format ?? null
 
   // set info_format if undefined
-  if (!wmsLayer?.wms_info_format && serviceData.info_formats?.length) {
+  if (!wmsLayer?.wms_services.info_format && serviceData.info_formats?.length) {
     // for values see: https://docs.geoserver.org/stable/en/user/services/wms/reference.html#getfeatureinfo
     const preferedFormat =
       serviceData.info_formats.find(
@@ -149,6 +149,7 @@ export const getCapabilitiesData = async ({ wmsLayer, db, service }: Props) => {
       where: { wms_layer_id: wmsLayer.wms_layer_id },
       data: {
         wms_service_layer_name: layers[0].Name,
+        label: layers[0].Title,
       },
     })
   }

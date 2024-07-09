@@ -1427,9 +1427,9 @@ CREATE TABLE wms_layers(
   wms_layer_id uuid PRIMARY KEY DEFAULT NULL,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  label text DEFAULT NULL,
   wms_service_id uuid DEFAULT NULL REFERENCES wms_services(wms_service_id) ON DELETE CASCADE ON UPDATE CASCADE,
   wms_service_layer_name text DEFAULT NULL, -- a name from wms_service_layers. NOT referenced because the uuid changes when the service is updated
+  label text DEFAULT NULL,
   -- wms_url text DEFAULT NULL, -- TODO: This is removed. A field in the form enables choosing from existing / adding new wms services
   -- wms_format jsonb DEFAULT NULL, -- TODO: service property
   -- wms_layer jsonb DEFAULT NULL,

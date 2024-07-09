@@ -53,7 +53,7 @@ export const Component = memo(
               value={wmsLayer.label ?? ''}
               onChange={onChange}
             />
-            {wmsLayer?.wms_service_id && (
+            {/* {wmsLayer?.wms_service_id && (
               <>
                 <DropdownFieldFromWmsServiceLayers
                   label="(Image-)Format"
@@ -83,7 +83,7 @@ export const Component = memo(
                   validationMessage="In what format the info is downloaded. Set automatically but can be changed"
                 />
               </>
-            )}
+            )} */}
             <TextField
               label="Max Zoom"
               name="max_zoom"
