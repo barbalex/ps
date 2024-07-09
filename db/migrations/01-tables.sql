@@ -1386,8 +1386,8 @@ CREATE TABLE wms_services(
   image_formats jsonb DEFAULT NULL, -- available image formats. text array. was: layer_options.wms_format
   image_format text DEFAULT NULL, -- prefered image format. was: wms_layers.wms_format
   version text DEFAULT NULL, -- was: wms_layers.wms_version
-  info_formats jsonb DEFAULT NULL, -- available info formats. text array. was: layer_options.wms_info_format
-  info_format text DEFAULT NULL, -- preferred info format. was: wms_layers.wms_info_format
+  info_formats jsonb DEFAULT NULL, -- available info formats. text array
+  info_format text DEFAULT NULL, -- preferred info format
   default_crs text DEFAULT NULL -- TODO: does this exist in capabilities? if yes: use as in wfs. If not: remove
 );
 
@@ -1436,7 +1436,6 @@ CREATE TABLE wms_layers(
   -- wms_parameters jsonb DEFAULT NULL, -- TODO: What is this for? Hidden until useful
   -- wms_styles jsonb DEFAULT NULL, -- array of text. TODO: what is this exactly? Hidden until useful
   -- wms_version text DEFAULT NULL, -- values: '1.1.1', '1.3.0'. TODO: service property
-  -- wms_info_format jsonb DEFAULT NULL, -- TODO: service property
   max_zoom integer DEFAULT NULL, -- 19
   min_zoom integer DEFAULT NULL, -- 0
   local_data_size integer DEFAULT NULL,
@@ -1525,7 +1524,6 @@ COMMENT ON COLUMN vector_layers.polygon_count IS 'Number of polygon features. Us
 CREATE TYPE layer_options_field_enum AS enum(
   'wms_format',
   'wms_layer',
-  'wms_info_format',
   'wfs_output_format',
   'wfs_layer'
 );
