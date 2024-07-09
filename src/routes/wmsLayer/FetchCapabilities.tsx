@@ -6,7 +6,10 @@ import { useParams } from 'react-router-dom'
 
 import { Wms_layers as WmsLayer } from '../../../generated/client/index.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
-import { createNotification } from '../../modules/createRows.ts'
+import {
+  createNotification,
+  createWmsService,
+} from '../../modules/createRows.ts'
 
 import '../../form.css'
 const createWorker = createWorkerFactory(
@@ -19,10 +22,10 @@ const buttonStyle = {
 
 type Props = {
   wmsLayer: WmsLayer
-  disabled: boolean
+  url: string
 }
 
-export const FetchCapabilities = memo(({ wmsLayer, disabled }: Props) => {
+export const FetchCapabilities = memo(({ wmsLayer, url }: Props) => {
   const { wms_layer_id } = useParams()
   const { db } = useElectric()!
   const worker = useWorker(createWorker)
@@ -41,16 +44,23 @@ export const FetchCapabilities = memo(({ wmsLayer, disabled }: Props) => {
 
   const onFetchCapabilities = useCallback(async () => {
     console.log('FetchCapabilities,onFetchCapabilities, row:', wmsLayer)
-    if (!wmsLayer?.wms_url) return
+    if (!url) return
+
+    const service = createWmsService({ url })
+    await db.wms_services.create({ data: service })
+    await db.wms_layers.update({
+      where: { wms_layer_id },
+      data: { wms_service_id: service.wms_service_id },
+    })
     // show loading indicator
     setFetching(true)
     const data = await createNotification({
-      title: `Loading capabilities for ${wmsLayer.wms_url}`,
+      title: `Loading capabilities for ${url}`,
       intent: 'info',
       paused: true,
     })
     await db.notifications.create({ data })
-    // 1. check if layer_options exist for this wms_url
+    // 1. check if layer_options exist for this url
     // const existingLayerOptions = await db.layer_options.findMany({
     //   where: { service_url: row.wms_url, field: 'wms_layer' },
     // })
@@ -60,7 +70,7 @@ export const FetchCapabilities = memo(({ wmsLayer, disabled }: Props) => {
       await worker.getCapabilitiesData({
         wmsLayer: wmsLayer,
         db,
-        wmsServiceId: wmsLayer.wms_service_id,
+        service,
       })
     } catch (error) {
       console.error(
@@ -69,7 +79,7 @@ export const FetchCapabilities = memo(({ wmsLayer, disabled }: Props) => {
       )
       // surface error to user
       const data = await createNotification({
-        title: `Error loading capabilities for ${wmsLayer.wms_url}`,
+        title: `Error loading capabilities for ${url}`,
         body: error?.message ?? error,
         intent: 'error',
         paused: false,
@@ -81,7 +91,7 @@ export const FetchCapabilities = memo(({ wmsLayer, disabled }: Props) => {
       where: { notification_id: data.notification_id },
       data: { paused: false, timeout: 500 },
     })
-  }, [db, wmsLayer, worker])
+  }, [db, url, wmsLayer, worker])
 
   return (
     <Button
@@ -89,10 +99,10 @@ export const FetchCapabilities = memo(({ wmsLayer, disabled }: Props) => {
       title="Refresh capabilities data"
       onClick={onFetchCapabilities}
       style={buttonStyle}
-      disabled={disabled}
+      disabled={!url}
     >
       {fetching
-        ? `Loading capabilities for ${wmsLayer.wms_url} (${layerOptions.length})`
+        ? `Loading capabilities for ${url} (${layerOptions.length})`
         : `Fetch Capabilities`}
     </Button>
   )

@@ -50,7 +50,7 @@ export const CreateWmsService = memo(({ wmsLayer }: Props) => {
           style={{ flexGrow: 1 }}
         >
           <Input
-            contentAfter={<FetchCapabilities wmsLayer={wmsLayer} disabled={!url} />}
+            contentAfter={<FetchCapabilities wmsLayer={wmsLayer} url={url} />}
             appearance="underline"
           />
         </Field>

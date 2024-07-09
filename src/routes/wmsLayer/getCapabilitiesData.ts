@@ -1,6 +1,7 @@
 import { getCapabilities } from '../../modules/getCapabilities.ts'
 import {
   Wms_layers as WmsLayer,
+  Wms_services as WmsService,
   Electric,
 } from '../../generated/client/index.ts'
 // import { chunkArrayWithMinSize } from '../../modules/chunkArrayWithMinSize'
@@ -12,16 +13,11 @@ import {
 interface Props {
   wmsLayer: WmsLayer
   db: Electric
-  wmsServiceId: string
+  service: WmsService
 }
 
-export const getCapabilitiesData = async ({
-  wmsLayer,
-  db,
-  wmsServiceId,
-}: Props) => {
-  const service = wmsLayer?.wms_services
-  if (!service.url) return undefined
+export const getCapabilitiesData = async ({ wmsLayer, db, service }: Props) => {
+  if (!service?.url) return undefined
 
   // console.log('getCapabilitiesData 1', {
   //   label: row.label,
@@ -41,31 +37,19 @@ export const getCapabilitiesData = async ({
 
   if (!capabilities) return undefined
 
-  // let user choose from layers
-  // only layers with crs EPSG:4326
-  const layers = (capabilities?.Capability?.Layer?.Layer ?? []).filter((v) =>
-    v?.CRS?.includes('EPSG:4326'),
-  )
-  // console.log('hello, getCapabilitiesData 1, layers:', layers)
-  // console.log(
-  //   'getCapabilitiesData 3, layer swisstopo pixel farbe:',
-  //   layers.find((l) => l.Name === 'ch.swisstopo.pixelkarte-farbe'),
-  // )
   // TODO: because upsert errors and single creates are slow
   // https://github.com/electric-sql/electric/issues/916
   // Deleting may not be good because other layers might use the same layer_option_id
   // 1. delete existing service including its layers
   if (wmsLayer.wms_service_layer_name) {
-    if (wmsServiceId) {
-      try {
-        await db.wms_service_layers.delete({
-          where: {
-            wms_service_id: wmsServiceId,
-          },
-        })
-      } catch (error) {
-        console.error('hello, getCapabilitiesData 3, error:', error)
-      }
+    try {
+      await db.wms_service_layers.delete({
+        where: {
+          wms_service_id: service.wms_service_id,
+        },
+      })
+    } catch (error) {
+      console.error('hello, getCapabilitiesData 3, error:', error)
     }
   }
 
@@ -129,13 +113,11 @@ export const getCapabilitiesData = async ({
       await db.wms_services.create({ data: service })
     }
   }
-  // update the wms_layer with the wms_service_id
-  await db.wms_layers.update({
-    where: { wms_layer_id: wmsLayer.wms_layer_id },
-    data: {
-      wms_service_id: service.wms_service_id,
-    },
-  })
+  // let user choose from layers
+  // only layers with crs EPSG:4326
+  const layers = (capabilities?.Capability?.Layer?.Layer ?? []).filter((v) =>
+    v?.CRS?.includes('EPSG:4326'),
+  )
 
   const layersData = layers.map((l) => ({
     value: l.Name,
