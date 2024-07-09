@@ -1382,6 +1382,7 @@ DROP TABLE IF EXISTS wms_services CASCADE;
 CREATE TABLE wms_services(
   wms_service_id uuid PRIMARY KEY DEFAULT NULL,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   url text DEFAULT NULL,
   image_formats jsonb DEFAULT NULL, -- available image formats. text array
   image_format text DEFAULT NULL, -- prefered image format
@@ -1392,6 +1393,8 @@ CREATE TABLE wms_services(
 );
 
 CREATE INDEX ON wms_services USING btree(account_id);
+
+CREATE INDEX ON wms_services USING btree(project_id);
 
 CREATE INDEX ON wms_services USING btree(url);
 
@@ -1453,6 +1456,7 @@ DROP TABLE IF EXISTS wfs_services CASCADE;
 CREATE TABLE wfs_services(
   wfs_service_id uuid PRIMARY KEY DEFAULT NULL,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   url text DEFAULT NULL,
   version text DEFAULT NULL,
   info_formats jsonb DEFAULT NULL, -- available info formats. text array
@@ -1461,6 +1465,8 @@ CREATE TABLE wfs_services(
 );
 
 CREATE INDEX ON wfs_services USING btree(account_id);
+
+CREATE INDEX ON wfs_services USING btree(project_id);
 
 CREATE INDEX ON wfs_services USING btree(url);
 
