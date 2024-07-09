@@ -60,10 +60,7 @@ export const FetchCapabilities = memo(({ wmsLayer, url }: Props) => {
       paused: true,
     })
     await db.notifications.create({ data })
-    // 1. check if layer_options exist for this url
-    // const existingLayerOptions = await db.layer_options.findMany({
-    //   where: { service_url: row.wms_url, field: 'wms_layer' },
-    // })
+    // TODO: 1. check if wms_layers exist for this service
 
     // 2. if not, fetch capabilities
     try {

@@ -29,7 +29,6 @@ export const CreateWmsService = memo(({ wmsLayer }: Props) => {
       <div style={rowStyle}>
         <Field
           label="URL"
-          name="wms_url"
           value={url}
           onChange={onChange}
           autoFocus={false}

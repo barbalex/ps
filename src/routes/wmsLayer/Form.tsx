@@ -6,8 +6,6 @@ import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 // import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { DropdownFieldFromLayerOptions } from '../../components/shared/DropdownFieldFromLayerOptions.tsx'
-// import { wms_layer_type_enumSchema as typeSchema } from '../../generated/client/index.ts'
-import { FetchCapabilities } from './FetchCapabilities.tsx'
 import { CreateWmsService } from './CreateWmsService.tsx'
 
 import '../../form.css'
@@ -29,17 +27,6 @@ export const Component = memo(
 
     return (
       <>
-        {/* <RadioGroupField
-          label="Type"
-          name="type"
-          list={typeSchema?.options.filter((t) => t === 'wms') ?? []}
-          value={row.type ?? ''}
-          onChange={onChange}
-          autoFocus
-          ref={autoFocusRef}
-          // disabled as for now only WMS is supported
-          disabled
-        /> */}
         <DropdownField
           label="WMS Service"
           name="wms_service_id"
@@ -51,7 +38,6 @@ export const Component = memo(
           validationMessage="Choose from a configured WMS service. If none exists, create one first."
         />
         <CreateWmsService wmsLayer={row} />
-        {!!row?.wms_url && <FetchCapabilities row={row} />}
         {(row?.wms_version || isFilter) && (
           <DropdownFieldFromLayerOptions
             label="Layer"
@@ -63,27 +49,7 @@ export const Component = memo(
             row={row}
           />
         )}
-        {row?.type === 'wmts' && (
-          <>
-            <TextField
-              label="URL Template"
-              name="wmts_url_template"
-              value={row.wmts_url_template ?? ''}
-              onChange={onChange}
-              multiLine={true}
-              validationMessage="ℹ Projektion muss 3857 oder 4326 sein. Beispiel (Server-abhängig): https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg"
-            />
-            <TextField
-              label="Subdomains TODO: array of strings"
-              name="wmts_subdomains"
-              value={row.wmts_subdomains ?? ''}
-              onChange={onChange}
-            />
-          </>
-        )}
-        {((row?.type === 'wms' && row?.wms_layer) ||
-          (row?.type === 'wmts' && row?.wmts_url_template) ||
-          isFilter) && (
+        {(row?.wms_service_layer_name || isFilter) && (
           <>
             <TextField
               label="Label"
@@ -91,7 +57,7 @@ export const Component = memo(
               value={row.label ?? ''}
               onChange={onChange}
             />
-            {row?.type === 'wms' && row?.wms_url && (
+            {row?.wms_service_id && (
               <>
                 <DropdownFieldFromLayerOptions
                   label="(Image-)Format"

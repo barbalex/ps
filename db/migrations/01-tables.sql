@@ -1377,12 +1377,6 @@ COMMENT ON COLUMN occurrences.data IS 'data as received from GBIF';
 
 COMMENT ON COLUMN occurrences.label IS 'label of occurrence, used to show it in the UI. Created on import';
 
-CREATE TYPE wms_layer_type_enum AS enum(
-  'wms',
-  'wmts'
-  -- 'tms'
-);
-
 DROP TABLE IF EXISTS wms_services CASCADE;
 
 CREATE TABLE wms_services(
@@ -1422,6 +1416,9 @@ CREATE INDEX ON wms_service_layers USING btree(name);
 
 DROP TABLE IF EXISTS wms_layers CASCADE;
 
+-- TODO: create table for wmts
+-- wmts_url_template text DEFAULT NULL,
+-- wmts_subdomains jsonb DEFAULT NULL, -- array of text
 -- TODO:
 -- rename to wms_layers
 -- add wmts_layers to reserve for future use
@@ -1431,11 +1428,8 @@ CREATE TABLE wms_layers(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   label text DEFAULT NULL,
-  type wms_layer_type_enum DEFAULT NULL, -- 'wms'
   wms_service_id uuid DEFAULT NULL REFERENCES wms_services(wms_service_id) ON DELETE CASCADE ON UPDATE CASCADE,
   wms_service_layer_name text DEFAULT NULL, -- a name from wms_service_layers. NOT referenced because the uuid changes when the service is updated
-  -- wmts_url_template text DEFAULT NULL,
-  -- wmts_subdomains jsonb DEFAULT NULL, -- array of text
   -- wms_url text DEFAULT NULL, -- TODO: This is removed. A field in the form enables choosing from existing / adding new wms services
   -- wms_format jsonb DEFAULT NULL, -- TODO: service property
   -- wms_layer jsonb DEFAULT NULL,
