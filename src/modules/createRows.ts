@@ -491,6 +491,34 @@ export const createVectorLayer = ({
   max_features,
 })
 
+export const createWfsService = ({
+  url = null,
+  version = null,
+  infoFormats = null,
+  infoFormat = null,
+  defaultCrs = null,
+}) => ({
+  wfs_service_id: uuidv7(),
+  version,
+  url,
+  infoFormats,
+  infoFormat,
+  defaultCrs,
+})
+
+export const createWfsServiceLayer = ({
+  wfs_service_id,
+  name = null,
+  label = null,
+  queryable = null,
+}) => ({
+  wfs_service_layer_id: uuidv7(),
+  wfs_service_id,
+  name,
+  label,
+  queryable,
+})
+
 export const createVectorLayerDisplay = ({
   vector_layer_id = null,
   display_property_value = null,
@@ -550,7 +578,7 @@ export const createWmsService = ({
 
 export const createWmsServiceLayer = ({
   wms_service_id,
-  value = null,
+  name = null,
   label = null,
   queryable = null,
   legend_url = null,
@@ -558,7 +586,7 @@ export const createWmsServiceLayer = ({
 }) => ({
   wms_service_layer_id: uuidv7(),
   wms_service_id,
-  value,
+  name,
   label,
   queryable,
   legend_url,
