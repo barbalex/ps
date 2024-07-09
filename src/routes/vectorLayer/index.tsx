@@ -19,7 +19,13 @@ export const Component = memo(() => {
 
   const { db } = useElectric()!
   const { results: row } = useLiveQuery(
-    db.vector_layers.liveUnique({ where: { vector_layer_id } }),
+    db.vector_layers.liveUnique({
+      where: { vector_layer_id },
+      include: {
+        layer_presentations: true,
+        wfs_services: { wfs_service_layers: true },
+      },
+    }),
   )
 
   const onChange = useCallback<InputProps['onChange']>(

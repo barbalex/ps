@@ -88,7 +88,7 @@ export const VectorLayerWFS = ({ layer, layerPresentation }: Props) => {
   }, [db.notifications])
 
   const map = useMapEvent('zoomend', () => setZoom(map.getZoom()))
-  // wfs_default_crs is of the form: "urn:ogc:def:crs:EPSG::4326"
+  // default_crs is of the form: "urn:ogc:def:crs:EPSG::4326"
   // extract the relevant parts for db.crs.code:
   const wfsDefaultCrsArray = wfsService.default_crs?.split(':').slice(-3)
   const wfsDefaultCrsCode = [wfsDefaultCrsArray[0], wfsDefaultCrsArray[2]].join(

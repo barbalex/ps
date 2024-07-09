@@ -56,7 +56,7 @@ export const Component = ({
             }
           />
           {!!row?.wfs_url && isValidUrl(row.wfs_url) && (
-            <FetchCapabilities row={row} />
+            <FetchCapabilities vectorLayer={row} />
           )}
           {!!row?.wfs_version && (
             <DropdownFieldFromWmsLayers

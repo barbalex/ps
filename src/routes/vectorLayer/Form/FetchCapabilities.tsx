@@ -4,7 +4,10 @@ import { Button, Spinner } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 
-import { Vector_layers as VectorLayer } from '../../../../generated/client/index.ts'
+import {
+  Vector_layers as VectorLayer,
+  Wfs_services as WfsService,
+} from '../../../../generated/client/index.ts'
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { createNotification } from '../../../modules/createRows.ts'
 
@@ -17,13 +20,15 @@ const buttonStyle = {
 }
 
 type Props = {
-  row: VectorLayer
+  vectorLayer: VectorLayer
 }
 
-export const FetchCapabilities = memo(({ row }: Props) => {
+export const FetchCapabilities = memo(({ vectorLayer }: Props) => {
   const { vector_layer_id } = useParams()
   const { db } = useElectric()!
   const worker = useWorker(createWorker)
+
+  const wfsService: WfsService | undefined = vectorLayer?.wms_services
 
   const { results: layerOptions = [] } = useLiveQuery(
     db.layer_options.liveMany({
@@ -38,18 +43,17 @@ export const FetchCapabilities = memo(({ row }: Props) => {
   const [fetching, setFetching] = useState(false)
 
   const onFetchCapabilities = useCallback(async () => {
-    if (!row?.wfs_url) return
+    if (!wfsService?.url) return
     // show loading indicator
     setFetching(true)
     const data = createNotification({
-      title: `Loading capabilities for ${row.wfs_url}`,
+      title: `Loading capabilities for ${wfsService.url}`,
       intent: 'info',
       paused: true,
     })
     await db.notifications.create({ data })
     try {
-      // await getCapabilitiesData({ row, db })
-      await worker.getCapabilitiesData({ row, db })
+      await worker.getCapabilitiesData({ vectorLayer, db })
     } catch (error) {
       console.error(
         'Url, onBlur, error getting capabilities data:',
@@ -66,7 +70,7 @@ export const FetchCapabilities = memo(({ row }: Props) => {
       console.log('Url, onBlur, error updating notification:', error)
     }
     setFetching(false)
-  }, [db, row, worker])
+  }, [db, vectorLayer, wfsService.url, worker])
 
   return (
     <Button
@@ -76,7 +80,7 @@ export const FetchCapabilities = memo(({ row }: Props) => {
       style={buttonStyle}
     >
       {fetching
-        ? `Loading capabilities for ${row.wfs_url} (${layerOptions.length})`
+        ? `Loading capabilities for ${wfsService.url} (${wfsService.wfs_service_layers.length})`
         : `Fetch Capabilities`}
     </Button>
   )

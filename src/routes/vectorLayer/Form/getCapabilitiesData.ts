@@ -1,22 +1,24 @@
 import { getCapabilities } from '../../../modules/getCapabilities.ts'
 import {
   Vector_layers as VectorLayer,
+  Wfs_services as WfsService,
   Electric,
 } from '../../../generated/client/index.ts'
 
 interface Props {
-  row: VectorLayer
+  vectorLayer: VectorLayer
   returnValue?: boolean
   db: Electric
 }
 
 export const getCapabilitiesData = async ({
-  row,
+  vectorLayer,
   returnValue = false,
   db,
 }: Props) => {
-  if (!row) throw new Error('row is required')
-  if (!row.wfs_url) throw new Error('row.wfs_url is required')
+  if (!vectorLayer) throw new Error('vector layer is required')
+  const wfsService: WfsService | undefined = vectorLayer?.wfs_services
+  if (!wfsService.url) throw new Error('wfs service url is required')
   if (!db) throw new Error('db is required')
 
   // console.log('getCapabilitiesDataForVectorLayer, row:', row)
@@ -24,7 +26,7 @@ export const getCapabilitiesData = async ({
   const values = {}
 
   const response = await getCapabilities({
-    url: row?.wfs_url,
+    url: wfsService?.url,
     service: 'WFS',
     db,
   })
@@ -35,7 +37,7 @@ export const getCapabilitiesData = async ({
   console.log('getCapabilitiesDataForVectorLayer, capabilities:', capabilities)
 
   // 1. wfs version
-  if (!row.wfs_version) {
+  if (!wfsService.version) {
     values.wfs_version = capabilities?.['@attributes']?.version
   }
 
@@ -70,22 +72,22 @@ export const getCapabilitiesData = async ({
     try {
       await db.layer_options.upsert({
         create: {
-          layer_option_id: `${row.wfs_url}/wfs_output_format/${f.value}`,
-          service_url: row.wfs_url,
+          layer_option_id: `${vectorLayer.wfs_url}/wfs_output_format/${f.value}`,
+          service_url: vectorLayer.wfs_url,
           field: 'wfs_output_format',
           value: f.value,
-          vector_layer_id: row.vector_layer_id,
+          vector_layer_id: vectorLayer.vector_layer_id,
           label: f.label,
         },
         update: {
-          service_url: row.wfs_url,
+          service_url: vectorLayer.wfs_url,
           field: 'wfs_output_format',
           value: f.value,
-          vector_layer_id: row.vector_layer_id,
+          vector_layer_id: vectorLayer.vector_layer_id,
           label: f.label,
         },
         where: {
-          layer_option_id: `${row.wfs_url}/wfs_output_format/${f.value}`,
+          layer_option_id: `${vectorLayer.wfs_url}/wfs_output_format/${f.value}`,
         },
       })
     } catch (error) {
@@ -95,7 +97,7 @@ export const getCapabilitiesData = async ({
       )
     }
   }
-  if (!row.wfs_output_format) {
+  if (!vectorLayer.wfs_output_format) {
     values.wfs_output_format = {
       label: preferredOutputFormat,
       value: preferredOutputFormat,
@@ -105,7 +107,7 @@ export const getCapabilitiesData = async ({
   // 3. label
   const label: string | undefined =
     capabilities?.['OWS:SERVICEIDENTIFICATION']?.['OWS:TITLE']?.['#text']
-  if (!row.label) {
+  if (!vectorLayer.label) {
     values.label = label
   }
 
@@ -116,7 +118,7 @@ export const getCapabilitiesData = async ({
   if (!Array.isArray(layers)) layers = [layers]
   // 4a DefaultCRS: get the first layer's
   const defaultCRS = layers[0]?.DEFAULTCRS?.['#text']
-  if (!row.wfs_default_crs) {
+  if (!vectorLayer.wfs_default_crs) {
     values.wfs_default_crs = defaultCRS
   }
   const layerOptions = layers
@@ -140,22 +142,22 @@ export const getCapabilitiesData = async ({
     try {
       await db.layer_options.upsert({
         create: {
-          layer_option_id: `${row.wfs_url}/wfs_layer/${o.value}`,
-          service_url: row.wfs_url,
+          layer_option_id: `${vectorLayer.wfs_url}/wfs_layer/${o.value}`,
+          service_url: vectorLayer.wfs_url,
           field: 'wfs_layer',
           value: o.value,
-          vector_layer_id: row.vector_layer_id,
+          vector_layer_id: vectorLayer.vector_layer_id,
           label: o.label,
         },
         update: {
-          service_url: row.wfs_url,
+          service_url: vectorLayer.wfs_url,
           field: 'wfs_layer',
           value: o.value,
-          vector_layer_id: row.vector_layer_id,
+          vector_layer_id: vectorLayer.vector_layer_id,
           label: o.label,
         },
         where: {
-          layer_option_id: `${row.wfs_url}/wfs_layer/${o.value}`,
+          layer_option_id: `${vectorLayer.wfs_url}/wfs_layer/${o.value}`,
         },
       })
     } catch (error) {
@@ -168,13 +170,13 @@ export const getCapabilitiesData = async ({
 
   // activate layer, if only one
   if (
-    !row?.wfs_layer &&
+    !vectorLayer?.wfs_layer &&
     layerOptions?.length === 1 &&
     layerOptions?.[0]?.value
   ) {
     values.wfs_layer = layerOptions?.[0]
     const layerPresentation = await db.layer_presentations.findFirst({
-      where: { vector_layer_id: row.vector_layer_id },
+      where: { vector_layer_id: vectorLayer.vector_layer_id },
     })
     db.layer_presentations.update({
       where: {
@@ -195,7 +197,7 @@ export const getCapabilitiesData = async ({
 
   try {
     await db.vector_layers.update({
-      where: { vector_layer_id: row.vector_layer_id },
+      where: { vector_layer_id: vectorLayer.vector_layer_id },
       data: values,
     })
   } catch (error) {
