@@ -50,8 +50,15 @@ export const Layers = memo(() => {
     db.layer_presentations.liveMany({
       where: { layer_presentation_id: { in: mapLayerSorting }, active: true },
       include: {
-        vector_layers: { include: { vector_layer_displays: true } },
-        wms_layers: true,
+        vector_layers: {
+          include: {
+            vector_layer_displays: true,
+            wms_services: { include: { wms_service_layers: true } },
+          },
+        },
+        wms_layers: {
+          include: { wms_services: { include: { wms_service_layers: true } } },
+        },
       },
     }),
   )

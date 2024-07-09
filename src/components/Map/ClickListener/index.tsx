@@ -103,23 +103,23 @@ export const ClickListener = memo(() => {
       const vectorLayers = await db.vector_layers.findMany({
         where: {
           project_id,
-          active: true,
           ...(vectorLayersWhere ? vectorLayersWhere : {}),
+        },
+        include: {
+          wfs_services: { include: { wfs_service_layers: true } },
+          layer_presentations: true,
         },
         orderBy: { label: 'asc' },
       })
+      const activeVectorLayers = vectorLayers.filter(
+        (l) => l.layer_presentations?.[0]?.active,
+      )
       // loop through vector layers and get infos
-      for await (const layer of vectorLayers) {
-        const {
-          wfs_version,
-          wfs_url,
-          wfs_layer,
-          wfs_output_format,
-          wfs_default_crs,
-        } = layer
-        // wfs_default_crs is of the form: "urn:ogc:def:crs:EPSG::4326"
+      for await (const layer of activeVectorLayers) {
+        const wfsService = layer.wfs_services
+        // default_crs is of the form: "urn:ogc:def:crs:EPSG::4326"
         // extract the relevant parts for db.crs.code:
-        const wfsDefaultCrsArray = wfs_default_crs?.split(':').slice(-3)
+        const wfsDefaultCrsArray = wfsService.default_crs?.split(':').slice(-3)
         const wfsDefaultCrsCode = [
           wfsDefaultCrsArray[0],
           wfsDefaultCrsArray[2],
@@ -131,15 +131,15 @@ export const ClickListener = memo(() => {
         const params = {
           service: 'WFS',
           request: 'GetFeature',
-          version: wfs_version ?? '1.3.0',
-          layers: wfs_layer?.value,
-          typeNames: wfs_layer?.value,
-          outputFormat: wfs_output_format?.value ?? 'application/vnd.ogc.gml',
-          // bbox needs to be in wfs_default_crs:
+          version: wfsService.version ?? '1.3.0',
+          layers: layer.wfs_service_layer_name,
+          typeNames: layer.wfs_service_layer_name,
+          outputFormat: wfsService.info_format ?? 'application/vnd.ogc.gml',
+          // bbox needs to be in default_crs:
           bbox: `${x},${y},${x},${y}`,
           // cql_filter: `INTERSECTS(geom, POINT (${lng} ${lat}))`, // did not work
         }
-        const requestData = await fetchData({ db, url: wfs_url, params })
+        const requestData = await fetchData({ db, url: wfsService.url, params })
         const label = requestData?.name
         const features = requestData?.features.map((f) => ({
           label,
