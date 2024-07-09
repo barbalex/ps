@@ -1414,6 +1414,8 @@ CREATE INDEX ON wms_service_layers USING btree(wms_service_id);
 
 CREATE INDEX ON wms_service_layers USING btree(name);
 
+CREATE INDEX ON wms_service_layers USING btree(label);
+
 DROP TABLE IF EXISTS wms_layers CASCADE;
 
 -- TODO: create table for wmts
@@ -1445,6 +1447,43 @@ COMMENT ON COLUMN wms_layers.local_data_size IS 'Size of locally saved image dat
 
 COMMENT ON COLUMN wms_layers.local_data_bounds IS 'Array of bounds and their size of locally saved image data';
 
+--------------------------------------------------------------
+DROP TABLE IF EXISTS wfs_services CASCADE;
+
+CREATE TABLE wfs_services(
+  wfs_service_id uuid PRIMARY KEY DEFAULT NULL,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  url text DEFAULT NULL,
+  version text DEFAULT NULL,
+  info_formats jsonb DEFAULT NULL, -- available info formats. text array
+  info_format text DEFAULT NULL, -- preferred info format
+  default_crs text DEFAULT NULL -- TODO: does this exist in capabilities? if yes: use as in wfs. If not: remove
+);
+
+CREATE INDEX ON wfs_services USING btree(account_id);
+
+CREATE INDEX ON wfs_services USING btree(url);
+
+DROP TABLE IF EXISTS wfs_service_layers CASCADE;
+
+CREATE TABLE wfs_service_layers(
+  wfs_service_layer_id uuid PRIMARY KEY DEFAULT NULL,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  wfs_service_id uuid DEFAULT NULL REFERENCES wfs_services(wfs_service_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  name text DEFAULT NULL,
+  label text DEFAULT NULL,
+  queryable boolean DEFAULT NULL
+);
+
+CREATE INDEX ON wfs_service_layers USING btree(account_id);
+
+CREATE INDEX ON wfs_service_layers USING btree(wfs_service_id);
+
+CREATE INDEX ON wfs_service_layers USING btree(name);
+
+CREATE INDEX ON wfs_service_layers USING btree(label);
+
+--------------------------------------------------------------
 CREATE TYPE vector_layer_type_enum AS enum(
   'wfs',
   'upload',
@@ -1473,12 +1512,14 @@ CREATE TABLE vector_layers(
   max_zoom integer DEFAULT NULL, -- 19,
   min_zoom integer DEFAULT NULL, -- 0,
   max_features integer DEFAULT NULL, -- 1000
-  wfs_url text DEFAULT NULL, -- WFS url, for example https://maps.zh.ch/wfs/OGDZHWFS.
-  wfs_layer jsonb DEFAULT NULL, -- a single option
-  wfs_version text DEFAULT NULL, -- often: 1.1.0 or 2.0.0
-  wfs_output_formats jsonb DEFAULT NULL, -- TODO: array of text from the OutputFormats field. add, then read and set in getCapabilities, only show these in dropdown
-  wfs_output_format jsonb DEFAULT NULL, --  a single option
-  wfs_default_crs text DEFAULT NULL, -- often: EPSG:4326
+  wfs_service_id uuid DEFAULT NULL REFERENCES wfs_services(wfs_service_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  wfs_service_layer_name text DEFAULT NULL, -- a name from wfs_service_layers. NOT referenced because the uuid changes when the service is updated
+  -- wfs_url text DEFAULT NULL, -- WFS url, for example https://maps.zh.ch/wfs/OGDZHWFS.
+  -- wfs_layer jsonb DEFAULT NULL, -- a single option
+  -- wfs_version text DEFAULT NULL, -- often: 1.1.0 or 2.0.0
+  -- wfs_output_formats jsonb DEFAULT NULL, -- TODO: array of text from the OutputFormats field. add, then read and set in getCapabilities, only show these in dropdown
+  -- wfs_output_format jsonb DEFAULT NULL, --  a single option
+  -- wfs_default_crs text DEFAULT NULL, -- often: EPSG:4326
   feature_count integer DEFAULT NULL,
   point_count integer DEFAULT NULL,
   line_count integer DEFAULT NULL,
