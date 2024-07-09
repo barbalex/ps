@@ -1395,6 +1395,7 @@ CREATE TABLE wms_layers(
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   label text DEFAULT NULL,
   type wms_layer_type_enum DEFAULT NULL, -- 'wms'
+  wms_service_id uuid DEFAULT NULL REFERENCES wms_services(wms_service_id) ON DELETE CASCADE ON UPDATE CASCADE,
   wms_service_layer_name text DEFAULT NULL, -- a name from wms_service_layers. NOT referenced because the uuid changes when the service is updated
   -- wmts_url_template text DEFAULT NULL,
   -- wmts_subdomains jsonb DEFAULT NULL, -- array of text

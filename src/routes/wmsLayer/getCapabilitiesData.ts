@@ -12,9 +12,14 @@ import {
 interface Props {
   wmsLayer: WmsLayer
   db: Electric
+  wmsServiceId: string
 }
 
-export const getCapabilitiesData = async ({ wmsLayer, db }: Props) => {
+export const getCapabilitiesData = async ({
+  wmsLayer,
+  db,
+  wmsServiceId,
+}: Props) => {
   if (!wmsLayer?.wms_url) return undefined
 
   // console.log('getCapabilitiesData 1', {
@@ -50,17 +55,11 @@ export const getCapabilitiesData = async ({ wmsLayer, db }: Props) => {
   // Deleting may not be good because other layers might use the same layer_option_id
   // 1. delete existing service including its layers
   if (wmsLayer.wms_service_layer_name) {
-    // get the wms_service of the wms_service_layer with name = wmsLayer.wms_service_layer_name
-    const wmsServiceLayer = await db.wms_service_layers.findFirst({
-      where: {
-        name: wmsLayer.wms_service_layer_name,
-      },
-    })
-    if (wmsServiceLayer) {
+    if (wmsServiceId) {
       try {
-        await db.wms_services.delete({
+        await db.wms_service_layers.delete({
           where: {
-            wms_service_id: wmsServiceLayer.wms_service_id,
+            wms_service_id: wmsServiceId,
           },
         })
       } catch (error) {
@@ -119,7 +118,15 @@ export const getCapabilitiesData = async ({ wmsLayer, db }: Props) => {
   const service = createWmsService(serviceData)
 
   if (Object.keys(serviceData).length) {
-    await db.wms_services.create({ data: service })
+    if (wmsServiceId) {
+      // update existing service
+      await db.wms_services.update({
+        where: { wms_service_id: wmsServiceId },
+        data: service,
+      })
+    } else {
+      await db.wms_services.create({ data: service })
+    }
   }
 
   const layersData = layers.map((l) => ({

@@ -55,7 +55,11 @@ export const FetchCapabilities = memo(({ row }: Props) => {
 
     // 2. if not, fetch capabilities
     try {
-      await worker.getCapabilitiesData({ wmsLayer: row, db })
+      await worker.getCapabilitiesData({
+        wmsLayer: row,
+        db,
+        wmsServiceId: row.wms_service_id,
+      })
     } catch (error) {
       console.error(
         'hello WmsBaseUrl, onBlur, error getting capabilities data:',
