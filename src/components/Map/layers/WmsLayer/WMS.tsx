@@ -33,8 +33,8 @@ export const WMS = memo(({ layerPresentation }: Props) => {
     <WMSTileLayer
       url={layer.wms_services.url}
       layers={layer.wms_service_layer_name}
-      version={layer.wms_version}
-      format={layer.wms_format?.value}
+      version={layer.wms_services.version}
+      format={layer.wms_services.image_format}
       minZoom={layer.min_zoom}
       maxZoom={layer.max_zoom}
       className={layerPresentation.grayscale ? 'grayscale' : ''}

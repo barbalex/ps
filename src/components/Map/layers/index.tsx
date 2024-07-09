@@ -90,12 +90,10 @@ export const Layers = memo(() => {
         min_zoom: wmsLayer.min_zoom,
         opacity: layerPresentation.opacity_percent,
         url: wmsLayer.wms_services.url,
-        wms_format: wmsLayer.wms_format?.value,
-        wms_layer: wmsLayer.wms_service_layer_name,
-        wms_parameters: wmsLayer.wms_parameters,
-        wms_styles: wmsLayer.wms_styles,
+        format: wmsLayer.wms_services.image_format,
+        layer: wmsLayer.wms_service_layer_name,
         transparent: layerPresentation.transparent,
-        wms_version: wmsLayer.wms_version,
+        version: wmsLayer.wms_services.version,
         grayscale: layerPresentation.grayscale,
       }
       return (

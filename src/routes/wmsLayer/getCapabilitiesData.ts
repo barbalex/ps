@@ -61,7 +61,7 @@ export const getCapabilitiesData = async ({ wmsLayer, db, service }: Props) => {
   }
   serviceData.image_formats = imageFormats
 
-  serviceData.wms_version = capabilities?.version
+  serviceData.version = capabilities?.version
 
   serviceData.info_formats =
     capabilities?.Capability?.Request?.GetFeatureInfo?.Format ?? null

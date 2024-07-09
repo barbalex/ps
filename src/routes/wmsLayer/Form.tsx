@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { useOutletContext, useParams, useLocation } from 'react-router-dom'
+import { useOutletContext, useLocation } from 'react-router-dom'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
@@ -18,7 +18,6 @@ export const Component = memo(
     const onChange = onChangeFromProps ?? outletContext?.onChange
     const wmsLayer = wmsLayerFromProps ?? outletContext?.row ?? {}
 
-    const { wms_layer_id } = useParams()
     const { pathname } = useLocation()
     const isFilter = pathname.endsWith('filter')
 
@@ -37,7 +36,7 @@ export const Component = memo(
           validationMessage="Choose from a configured WMS service. If none exists, create one first."
         />
         <CreateWmsService wmsLayer={wmsLayer} />
-        {(wmsLayer?.wms_version || isFilter) && (
+        {(wmsLayer?.wms_service_id || isFilter) && (
           <DropdownFieldFromWmsServiceLayers
             wmsLayer={wmsLayer}
             validationMessage={

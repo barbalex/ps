@@ -11,13 +11,13 @@ export const onTileError = async (db, map, layer: WmsLayer, ignore) => {
   const bbox = map.getBounds().toBBoxString()
   const res = await axios({
     method: 'get',
-    url: layer.wms_url,
+    url: layer.wms_services.url,
     params: {
       service: 'WMS',
       request: 'GetMap',
-      version: layer.wms_version,
-      layers: layer.wms_layer?.value,
-      format: layer.wms_format?.value,
+      version: layer.wms_services.version,
+      layers: layer.wms_service_layer_name,
+      format: layer.wms_services.info_format,
       crs: 'EPSG:4326',
       width: mapSize.x,
       height: mapSize.y,

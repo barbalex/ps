@@ -1382,10 +1382,10 @@ DROP TABLE IF EXISTS wms_services CASCADE;
 CREATE TABLE wms_services(
   wms_service_id uuid PRIMARY KEY DEFAULT NULL,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  url text DEFAULT NULL, -- was: wms_layers.wms_url
-  image_formats jsonb DEFAULT NULL, -- available image formats. text array. was: layer_options.wms_format
-  image_format text DEFAULT NULL, -- prefered image format. was: wms_layers.wms_format
-  version text DEFAULT NULL, -- was: wms_layers.wms_version
+  url text DEFAULT NULL,
+  image_formats jsonb DEFAULT NULL, -- available image formats. text array
+  image_format text DEFAULT NULL, -- prefered image format
+  version text DEFAULT NULL,
   info_formats jsonb DEFAULT NULL, -- available info formats. text array
   info_format text DEFAULT NULL, -- preferred info format
   default_crs text DEFAULT NULL -- TODO: does this exist in capabilities? if yes: use as in wfs. If not: remove
@@ -1419,10 +1419,6 @@ DROP TABLE IF EXISTS wms_layers CASCADE;
 -- TODO: create table for wmts
 -- wmts_url_template text DEFAULT NULL,
 -- wmts_subdomains jsonb DEFAULT NULL, -- array of text
--- TODO:
--- rename to wms_layers
--- add wmts_layers to reserve for future use
--- reference wms_layer to wms_service_layers
 CREATE TABLE wms_layers(
   wms_layer_id uuid PRIMARY KEY DEFAULT NULL,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1430,12 +1426,6 @@ CREATE TABLE wms_layers(
   wms_service_id uuid DEFAULT NULL REFERENCES wms_services(wms_service_id) ON DELETE CASCADE ON UPDATE CASCADE,
   wms_service_layer_name text DEFAULT NULL, -- a name from wms_service_layers. NOT referenced because the uuid changes when the service is updated
   label text DEFAULT NULL,
-  -- wms_url text DEFAULT NULL, -- TODO: This is removed. A field in the form enables choosing from existing / adding new wms services
-  -- wms_format jsonb DEFAULT NULL, -- TODO: service property
-  -- wms_layer jsonb DEFAULT NULL,
-  -- wms_parameters jsonb DEFAULT NULL, -- TODO: What is this for? Hidden until useful
-  -- wms_styles jsonb DEFAULT NULL, -- array of text. TODO: what is this exactly? Hidden until useful
-  -- wms_version text DEFAULT NULL, -- values: '1.1.1', '1.3.0'. TODO: service property
   max_zoom integer DEFAULT NULL, -- 19
   min_zoom integer DEFAULT NULL, -- 0
   local_data_size integer DEFAULT NULL,
@@ -1522,8 +1512,6 @@ COMMENT ON COLUMN vector_layers.polygon_count IS 'Number of polygon features. Us
 -- This table is client side only, so we dont need a soft delete column
 -- Also: there is no use in saving this data on the server or syncing it
 CREATE TYPE layer_options_field_enum AS enum(
-  'wms_format',
-  'wms_layer',
   'wfs_output_format',
   'wfs_layer'
 );
@@ -1561,7 +1549,7 @@ COMMENT ON COLUMN layer_options.service_url IS 'The base url of the wms or wfs s
 
 COMMENT ON COLUMN layer_options.layer_option_id IS 'The base url of the wms server, combined with the field name whose data is stored and the value. Insures that we dont have duplicate entries.';
 
-COMMENT ON COLUMN layer_options.queryable IS 'Whether the layer is queryable. Only relevant for field wms_layer. Maybe also for wfs_layer?';
+COMMENT ON COLUMN layer_options.queryable IS 'Whether the layer is queryable. Only relevant for field wms layer. Maybe also for wfs_layer?';
 
 COMMENT ON COLUMN layer_options.legend_url IS 'The url to fetch the legend image from.';
 
