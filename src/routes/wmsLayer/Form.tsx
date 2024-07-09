@@ -8,6 +8,7 @@ import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { DropdownFieldFromLayerOptions } from '../../components/shared/DropdownFieldFromLayerOptions.tsx'
 // import { wms_layer_type_enumSchema as typeSchema } from '../../generated/client/index.ts'
 import { FetchCapabilities } from './FetchCapabilities.tsx'
+import { CreateWmsService } from './CreateWmsService.tsx'
 
 import '../../form.css'
 
@@ -49,23 +50,7 @@ export const Component = memo(
           autoFocus={true}
           validationMessage="Choose from a configured WMS service. If none exists, create one first."
         />
-        <TextField
-          label="URL"
-          name="wms_url"
-          value={row.wms_url ?? ''}
-          onChange={onChange}
-          autoFocus={false}
-          validationMessage={
-            row?.wms_url ? (
-              'The base url of the service providing the WMS'
-            ) : (
-              <>
-                <p>Enter the base url of the service providing the WMS.</p>
-                <p>Then capabilities can be loaded and a layer selected.</p>
-              </>
-            )
-          }
-        />
+        <CreateWmsService />
         {!!row?.wms_url && <FetchCapabilities row={row} />}
         {(row?.wms_version || isFilter) && (
           <DropdownFieldFromLayerOptions
