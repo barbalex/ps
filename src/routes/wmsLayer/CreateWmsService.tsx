@@ -1,5 +1,5 @@
 import { memo, useCallback, useState } from 'react'
-import { Button, Field, Input } from '@fluentui/react-components'
+import { Field, Input } from '@fluentui/react-components'
 
 import { FetchCapabilities } from './FetchCapabilities.tsx'
 import { Wms_layers as WmsLayer } from '../../../generated/client/index.ts'
