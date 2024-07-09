@@ -18,7 +18,10 @@ export const Component = memo(() => {
 
   const { db } = useElectric()!
   const { results: row } = useLiveQuery(
-    db.wms_layers.liveUnique({ where: { wms_layer_id } }),
+    db.wms_layers.liveUnique({
+      where: { wms_layer_id },
+      include: { wms_services: true },
+    }),
   )
 
   const onChange = useCallback<InputProps['onChange']>(
@@ -39,6 +42,8 @@ export const Component = memo(() => {
     },
     [db, wms_layer_id],
   )
+
+  console.log('WmsLayer, row:', row)
 
   if (!row) return <Loading />
 

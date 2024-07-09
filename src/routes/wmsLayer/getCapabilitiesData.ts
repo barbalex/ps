@@ -20,7 +20,8 @@ export const getCapabilitiesData = async ({
   db,
   wmsServiceId,
 }: Props) => {
-  if (!wmsLayer?.wms_url) return undefined
+  const service = wmsLayer?.wms_services
+  if (!service.url) return undefined
 
   // console.log('getCapabilitiesData 1', {
   //   label: row.label,
@@ -31,7 +32,7 @@ export const getCapabilitiesData = async ({
   const serviceData = {}
 
   const capabilities = await getCapabilities({
-    url: wmsLayer.wms_url,
+    url: service.url,
     service: 'WMS',
     db,
   })
