@@ -14,14 +14,15 @@ const createWorker = createWorkerFactory(
 )
 
 const buttonStyle = {
-  minHeight: 32,
+  marginRight: -10,
 }
 
 type Props = {
-  row: WmsLayer
+  wmsLayer: WmsLayer
+  disabled: boolean
 }
 
-export const FetchCapabilities = memo(({ row }: Props) => {
+export const FetchCapabilities = memo(({ wmsLayer, disabled }: Props) => {
   const { wms_layer_id } = useParams()
   const { db } = useElectric()!
   const worker = useWorker(createWorker)
@@ -39,11 +40,12 @@ export const FetchCapabilities = memo(({ row }: Props) => {
   )
 
   const onFetchCapabilities = useCallback(async () => {
-    if (!row?.wms_url) return
+    console.log('FetchCapabilities,onFetchCapabilities, row:', wmsLayer)
+    if (!wmsLayer?.wms_url) return
     // show loading indicator
     setFetching(true)
     const data = await createNotification({
-      title: `Loading capabilities for ${row.wms_url}`,
+      title: `Loading capabilities for ${wmsLayer.wms_url}`,
       intent: 'info',
       paused: true,
     })
@@ -56,9 +58,9 @@ export const FetchCapabilities = memo(({ row }: Props) => {
     // 2. if not, fetch capabilities
     try {
       await worker.getCapabilitiesData({
-        wmsLayer: row,
+        wmsLayer: wmsLayer,
         db,
-        wmsServiceId: row.wms_service_id,
+        wmsServiceId: wmsLayer.wms_service_id,
       })
     } catch (error) {
       console.error(
@@ -67,7 +69,7 @@ export const FetchCapabilities = memo(({ row }: Props) => {
       )
       // surface error to user
       const data = await createNotification({
-        title: `Error loading capabilities for ${row.wms_url}`,
+        title: `Error loading capabilities for ${wmsLayer.wms_url}`,
         body: error?.message ?? error,
         intent: 'error',
         paused: false,
@@ -79,7 +81,7 @@ export const FetchCapabilities = memo(({ row }: Props) => {
       where: { notification_id: data.notification_id },
       data: { paused: false, timeout: 500 },
     })
-  }, [db, row, worker])
+  }, [db, wmsLayer, worker])
 
   return (
     <Button
@@ -87,9 +89,10 @@ export const FetchCapabilities = memo(({ row }: Props) => {
       title="Refresh capabilities data"
       onClick={onFetchCapabilities}
       style={buttonStyle}
+      disabled={disabled}
     >
       {fetching
-        ? `Loading capabilities for ${row.wms_url} (${layerOptions.length})`
+        ? `Loading capabilities for ${wmsLayer.wms_url} (${layerOptions.length})`
         : `Fetch Capabilities`}
     </Button>
   )

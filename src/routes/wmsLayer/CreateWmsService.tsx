@@ -1,6 +1,9 @@
 import { memo, useCallback, useState } from 'react'
 import { Button, Field, Input } from '@fluentui/react-components'
 
+import { FetchCapabilities } from './FetchCapabilities.tsx'
+import { Wms_layers as WmsLayer } from '../../../generated/client/index.ts'
+
 const titleStyle = { margin: 0, fontSize: '1rem' }
 const rowStyle = {
   display: 'flex',
@@ -10,7 +13,11 @@ const rowStyle = {
 }
 const hintPStyle = { margin: 0 }
 
-export const CreateWmsService = memo(() => {
+type Props = {
+  wmsLayer: WmsLayer
+}
+
+export const CreateWmsService = memo(({ wmsLayer }: Props) => {
   const [url, setUrl] = useState('')
   const onChange = useCallback((e) => setUrl(e.target.value), [])
 
@@ -43,11 +50,8 @@ export const CreateWmsService = memo(() => {
           style={{ flexGrow: 1 }}
         >
           <Input
-            contentAfter={
-              <Button disabled={!url} style={{ marginRight: '-10px' }}>
-                Create WMS Service
-              </Button>
-            }
+            contentAfter={<FetchCapabilities wmsLayer={wmsLayer} disabled={!url} />}
+            appearance="underline"
           />
         </Field>
       </div>

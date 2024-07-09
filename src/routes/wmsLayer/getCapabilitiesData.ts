@@ -129,6 +129,13 @@ export const getCapabilitiesData = async ({
       await db.wms_services.create({ data: service })
     }
   }
+  // update the wms_layer with the wms_service_id
+  await db.wms_layers.update({
+    where: { wms_layer_id: wmsLayer.wms_layer_id },
+    data: {
+      wms_service_id: service.wms_service_id,
+    },
+  })
 
   const layersData = layers.map((l) => ({
     value: l.Name,

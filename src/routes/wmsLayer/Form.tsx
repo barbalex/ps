@@ -50,7 +50,7 @@ export const Component = memo(
           autoFocus={true}
           validationMessage="Choose from a configured WMS service. If none exists, create one first."
         />
-        <CreateWmsService />
+        <CreateWmsService wmsLayer={row} />
         {!!row?.wms_url && <FetchCapabilities row={row} />}
         {(row?.wms_version || isFilter) && (
           <DropdownFieldFromLayerOptions
