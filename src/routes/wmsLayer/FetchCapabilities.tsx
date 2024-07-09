@@ -40,11 +40,13 @@ export const FetchCapabilities = memo(({ wmsLayer, url }: Props) => {
   )
 
   const onFetchCapabilities = useCallback(async () => {
-    console.log('FetchCapabilities.onFetchCapabilities, wmsLayer:', wmsLayer)
+    console.log('FetchCapabilities.onFetchCapabilities 1', { wmsLayer, url })
     if (!url) return
 
     const service = createWmsService({ url })
-    await db.wms_services.create({ data: service })
+    console.log('FetchCapabilities.onFetchCapabilities 2', { service })
+    const resp = await db.wms_services.create({ data: service })
+    console.log('FetchCapabilities.onFetchCapabilities 3', { resp })
     await db.wms_layers.update({
       where: { wms_layer_id },
       data: { wms_service_id: service.wms_service_id },
@@ -57,7 +59,7 @@ export const FetchCapabilities = memo(({ wmsLayer, url }: Props) => {
       paused: true,
     })
     await db.notifications.create({ data })
-    // TODO: 1. check if wms_layers exist for this service
+    // TODO: 1. check if wms_service_layers exist for this service
 
     // 2. if not, fetch capabilities
     try {
