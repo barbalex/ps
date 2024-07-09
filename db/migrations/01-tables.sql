@@ -1383,6 +1383,43 @@ CREATE TYPE wms_layer_type_enum AS enum(
   -- 'tms'
 );
 
+DROP TABLE IF EXISTS wms_services CASCADE;
+
+CREATE TABLE wms_services(
+  wms_service_id uuid PRIMARY KEY DEFAULT NULL,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  url text DEFAULT NULL, -- was: wms_layers.wms_url
+  image_formats jsonb DEFAULT NULL, -- available image formats. text array. was: layer_options.wms_format
+  image_format text DEFAULT NULL, -- prefered image format. was: wms_layers.wms_format
+  version text DEFAULT NULL, -- was: wms_layers.wms_version
+  info_formats jsonb DEFAULT NULL, -- available info formats. text array. was: layer_options.wms_info_format
+  info_format text DEFAULT NULL, -- preferred info format. was: wms_layers.wms_info_format
+  default_crs text DEFAULT NULL -- TODO: does this exist in capabilities? if yes: use as in wfs. If not: remove
+);
+
+CREATE INDEX ON wms_services USING btree(account_id);
+
+CREATE INDEX ON wms_services USING btree(url);
+
+DROP TABLE IF EXISTS wms_service_layers CASCADE;
+
+CREATE TABLE wms_service_layers(
+  wms_service_layer_id uuid PRIMARY KEY DEFAULT NULL,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  wms_service_id uuid DEFAULT NULL REFERENCES wms_services(wms_service_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  name text DEFAULT NULL,
+  label text DEFAULT NULL,
+  queryable boolean DEFAULT NULL,
+  legend_url text DEFAULT NULL, -- was: layer_options.legend_url
+  legend_image bytea DEFAULT NULL -- was: wms_legend
+);
+
+CREATE INDEX ON wms_service_layers USING btree(account_id);
+
+CREATE INDEX ON wms_service_layers USING btree(wms_service_id);
+
+CREATE INDEX ON wms_service_layers USING btree(name);
+
 DROP TABLE IF EXISTS wms_layers CASCADE;
 
 -- TODO:
@@ -1426,43 +1463,6 @@ COMMENT ON TABLE wms_layers IS 'Goal: Bring your own wms layers. Not versioned (
 COMMENT ON COLUMN wms_layers.local_data_size IS 'Size of locally saved image data';
 
 COMMENT ON COLUMN wms_layers.local_data_bounds IS 'Array of bounds and their size of locally saved image data';
-
-DROP TABLE IF EXISTS wms_services CASCADE;
-
-CREATE TABLE wms_services(
-  wms_service_id uuid PRIMARY KEY DEFAULT NULL,
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  url text DEFAULT NULL, -- was: wms_layers.wms_url
-  image_formats jsonb DEFAULT NULL, -- available image formats. text array. was: layer_options.wms_format
-  image_format text DEFAULT NULL, -- prefered image format. was: wms_layers.wms_format
-  version text DEFAULT NULL, -- was: wms_layers.wms_version
-  info_formats jsonb DEFAULT NULL, -- available info formats. text array. was: layer_options.wms_info_format
-  info_format text DEFAULT NULL, -- preferred info format. was: wms_layers.wms_info_format
-  default_crs text DEFAULT NULL -- TODO: does this exist in capabilities? if yes: use as in wfs. If not: remove
-);
-
-CREATE INDEX ON wms_services USING btree(account_id);
-
-CREATE INDEX ON wms_services USING btree(url);
-
-DROP TABLE IF EXISTS wms_service_layers CASCADE;
-
-CREATE TABLE wms_service_layers(
-  wms_service_layer_id uuid PRIMARY KEY DEFAULT NULL,
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  wms_service_id uuid DEFAULT NULL REFERENCES wms_services(wms_service_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  name text DEFAULT NULL,
-  label text DEFAULT NULL,
-  queryable boolean DEFAULT NULL,
-  legend_url text DEFAULT NULL, -- was: layer_options.legend_url
-  legend_image bytea DEFAULT NULL -- was: wms_legend
-);
-
-CREATE INDEX ON wms_service_layers USING btree(account_id);
-
-CREATE INDEX ON wms_service_layers USING btree(wms_service_id);
-
-CREATE INDEX ON wms_service_layers USING btree(name);
 
 CREATE TYPE vector_layer_type_enum AS enum(
   'wfs',
