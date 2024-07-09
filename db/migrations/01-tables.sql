@@ -1464,6 +1464,10 @@ CREATE INDEX ON wfs_services USING btree(account_id);
 
 CREATE INDEX ON wfs_services USING btree(url);
 
+COMMENT ON TABLE wfs_services IS 'A layer of a WFS service.';
+
+COMMENT ON COLUMN wfs_services.default_crs IS 'It seems that this is the crs bbox calls have to be made in';
+
 DROP TABLE IF EXISTS wfs_service_layers CASCADE;
 
 CREATE TABLE wfs_service_layers(
@@ -1537,8 +1541,6 @@ CREATE INDEX ON vector_layers USING btree(type);
 COMMENT ON TABLE vector_layers IS 'Goal: Bring your own wms layers. Either from wfs or importing GeoJSON. Should only contain metadata, not data fetched from wms or wmts servers (that should only be saved locally on the client).';
 
 COMMENT ON COLUMN vector_layers.display_by_property_field IS 'Name of the field whose values is used to display the layer. If null, a single display is used.';
-
-COMMENT ON COLUMN vector_layers.wfs_default_crs IS 'It seems that this is the crs bbox calls have to be made in';
 
 COMMENT ON COLUMN vector_layers.feature_count IS 'Number of features. Set when downloaded features';
 

@@ -18,7 +18,7 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
   electric:
-    image: electricsql/electric:0.12.0
+    image: electricsql/electric:0.12.1
     depends_on:
       - pg
     networks:
@@ -27,11 +27,13 @@ services:
       # see: https://electric-sql.com/docs/deployment/docker
       DATABASE_URL: postgresql://postgres:${ELECTRIC_DATABASE_PASSWORD}@pg/postgres
       # DATABASE_REQUIRE_SSL: false
-      LOGICAL_PUBLISHER_HOST: electric
+      # LOGICAL_PUBLISHER_HOST: electric
+      ELECTRIC_WRITE_TO_PG_MODE: direct_writes
       PG_PROXY_PASSWORD: ${ELECTRIC_PG_PROXY_PASSWORD}
       AUTH_MODE: insecure
       # TODO: deactivate for production
       DATABASE_REQUIRE_SSL: false
+      LOG_LEVEL: debug
     ports:
       - 5133:5133
       - 65432:65432
