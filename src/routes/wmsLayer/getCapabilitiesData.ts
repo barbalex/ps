@@ -17,13 +17,8 @@ interface Props {
 }
 
 export const getCapabilitiesData = async ({ wmsLayer, db, service }: Props) => {
+  console.log('getCapabilitiesData 1', { wmsLayer, db, service })
   if (!service?.url) return undefined
-
-  // console.log('getCapabilitiesData 1', {
-  //   label: row.label,
-  //   id: row.wms_layer_id,
-  //   db,
-  // })
 
   const serviceData = {}
 
@@ -98,20 +93,15 @@ export const getCapabilitiesData = async ({ wmsLayer, db, service }: Props) => {
     }
   }
 
-  // console.log('hello, getCapabilitiesData, values added to wmsLayer:', values)
+  const newServiceData = { ...service, ...serviceData }
 
-  const service = createWmsService(serviceData)
+  console.log('getCapabilitiesData 3', { serviceData, newServiceData })
 
   if (Object.keys(serviceData).length) {
-    if (wmsServiceId) {
-      // update existing service
-      await db.wms_services.update({
-        where: { wms_service_id: wmsServiceId },
-        data: service,
-      })
-    } else {
-      await db.wms_services.create({ data: service })
-    }
+    await db.wms_services.update({
+      where: { wms_service_id: service.wms_service_id },
+      data: newServiceData,
+    })
   }
   // let user choose from layers
   // only layers with crs EPSG:4326
@@ -152,35 +142,6 @@ export const getCapabilitiesData = async ({ wmsLayer, db, service }: Props) => {
       )
     }
   }
-
-  // TODO: should legends be saved in SQLite? can be 700!!!
-  // ensure only for layers with wms_layer
-  // const wmsLayerValues = (row.wms_layer ?? []).map((l) => l.value)
-
-  // const legendUrlsToUse = (wmsLayerOptions ?? []).filter((o) =>
-  //   wmsLayerValues.includes?.(o.value),
-  // )
-
-  // const _legendBlobs: [Blob, string] = []
-  // for (const lUrl of legendUrlsToUse) {
-  //   let res
-  //   try {
-  //     res = await axios.get(lUrl.url, {
-  //       responseType: 'blob',
-  //     })
-  //   } catch (error) {
-  //     // error can also be caused by timeout
-  //     console.error(`error fetching legend for layer '${lUrl.title}':`, error)
-  //     return false
-  //   }
-  //   // console.log('Legends, res.data:', res.data)
-  //   if (res.data) _legendBlobs.push([lUrl.title, res.data])
-  // }
-
-  // // TODO: these are blobs. How to save in SQLite?
-  // // TODO: solve this problem, then set the wms_legend
-  // // add legends into row to reduce network activity and make them offline available
-  // values.wms_legend = _legendBlobs.length ? _legendBlobs : undefined
 
   // activate layer, if not too many
   if (!wmsLayer?.wms_service_layer_name && layers?.length === 1) {

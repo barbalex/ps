@@ -32,18 +32,15 @@ export const FetchCapabilities = memo(({ wmsLayer, url }: Props) => {
 
   const [fetching, setFetching] = useState(false)
 
-  const { results: layerOptions = [] } = useLiveQuery(
-    db.layer_options.liveMany({
-      where: {
-        ...(wms_layer_id ? { wms_layer_id } : {}),
-        field: 'wms_layer',
-      },
-      select: { layer_option_id: true },
+  const { results: wmsServiceLayers = [] } = useLiveQuery(
+    db.wms_service_layers.liveMany({
+      where: { wms_service_id: wmsLayer.wms_service_id },
+      select: { wms_service_layer_id: true },
     }),
   )
 
   const onFetchCapabilities = useCallback(async () => {
-    console.log('FetchCapabilities,onFetchCapabilities, row:', wmsLayer)
+    console.log('FetchCapabilities.onFetchCapabilities, wmsLayer:', wmsLayer)
     if (!url) return
 
     const service = createWmsService({ url })
@@ -65,9 +62,9 @@ export const FetchCapabilities = memo(({ wmsLayer, url }: Props) => {
     // 2. if not, fetch capabilities
     try {
       await worker.getCapabilitiesData({
-        wmsLayer: wmsLayer,
-        db,
+        wmsLayer,
         service,
+        db,
       })
     } catch (error) {
       console.error(
@@ -88,7 +85,7 @@ export const FetchCapabilities = memo(({ wmsLayer, url }: Props) => {
       where: { notification_id: data.notification_id },
       data: { paused: false, timeout: 500 },
     })
-  }, [db, url, wmsLayer, worker])
+  }, [db, url, wmsLayer, wms_layer_id, worker])
 
   return (
     <Button
@@ -99,7 +96,7 @@ export const FetchCapabilities = memo(({ wmsLayer, url }: Props) => {
       disabled={!url}
     >
       {fetching
-        ? `Loading capabilities for ${url} (${layerOptions.length})`
+        ? `Loading capabilities for ${url} (${wmsServiceLayers.length})`
         : `Fetch Capabilities`}
     </Button>
   )
