@@ -2060,3 +2060,7 @@ ALTER TABLE wms_services ENABLE electric;
 
 ALTER TABLE wms_service_layers ENABLE electric;
 
+ALTER TABLE wfs_services ENABLE electric;
+
+ALTER TABLE wfs_service_layers ENABLE electric;
+
