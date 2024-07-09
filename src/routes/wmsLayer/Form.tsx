@@ -3,6 +3,7 @@ import { useOutletContext, useParams, useLocation } from 'react-router-dom'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
+import { DropdownField } from '../../components/shared/DropdownField.tsx'
 // import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { DropdownFieldFromLayerOptions } from '../../components/shared/DropdownFieldFromLayerOptions.tsx'
 // import { wms_layer_type_enumSchema as typeSchema } from '../../generated/client/index.ts'
@@ -38,12 +39,22 @@ export const Component = memo(
           // disabled as for now only WMS is supported
           disabled
         /> */}
+        <DropdownField
+          label="WMS Service"
+          name="wms_service_id"
+          table="wms_services"
+          orderBy={{ url: 'asc' }}
+          value={row.wms_service_id ?? ''}
+          onChange={onChange}
+          autoFocus={true}
+          validationMessage="Choose from a configured WMS service. If none exists, create one first."
+        />
         <TextField
           label="URL"
           name="wms_url"
           value={row.wms_url ?? ''}
           onChange={onChange}
-          autoFocus={true}
+          autoFocus={false}
           validationMessage={
             row?.wms_url ? (
               'The base url of the service providing the WMS'

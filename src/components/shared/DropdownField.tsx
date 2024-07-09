@@ -29,7 +29,7 @@ export const DropdownField = memo(
         onChange,
         autoFocus,
         validationMessage: validationMessageIn,
-        validationState: validationStateIn,
+        validationState: validationStateIn = 'none',
         button,
       },
       ref,
@@ -89,15 +89,21 @@ export const DropdownField = memo(
               style={ddStyle}
               clearable
             >
-              {options.map((params) => {
-                const { text, value } = params
+              {options.length ? (
+                options.map((params) => {
+                  const { text, value } = params
 
-                return (
-                  <Option key={value} value={value}>
-                    {text}
-                  </Option>
-                )
-              })}
+                  return (
+                    <Option key={value} value={value}>
+                      {text}
+                    </Option>
+                  )
+                })
+              ) : (
+                <Option value={''}>
+                  No WMS Services found. You need to create one.
+                </Option>
+              )}
             </Dropdown>
             {!!button && button}
           </div>
