@@ -3,7 +3,7 @@ import { useParams, useOutletContext } from 'react-router-dom'
 import { TextFieldInactive } from '../../../components/shared/TextFieldInactive.tsx'
 import { TextField } from '../../../components/shared/TextField.tsx'
 import { RadioGroupField } from '../../../components/shared/RadioGroupField.tsx'
-import { DropdownFieldFromLayerOptions } from '../../../components/shared/DropdownFieldFromLayerOptions.tsx'
+import { DropdownFieldFromWmsLayers } from '../../../components/shared/DropdownFieldFromWmsLayers.tsx'
 import { PropertyField } from './PropertyField.tsx'
 import { FetchCapabilities } from './FetchCapabilities.tsx'
 import { isValidUrl } from '../../../modules/isValidUrl.ts'
@@ -59,7 +59,7 @@ export const Component = ({
             <FetchCapabilities row={row} />
           )}
           {!!row?.wfs_version && (
-            <DropdownFieldFromLayerOptions
+            <DropdownFieldFromWmsLayers
               label="Layer"
               name="wfs_layer"
               value={row.wfs_layer ?? ''}

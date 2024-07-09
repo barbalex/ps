@@ -5,18 +5,18 @@ import { TextField } from '../../components/shared/TextField.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 // import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
-import { DropdownFieldFromLayerOptions } from '../../components/shared/DropdownFieldFromLayerOptions.tsx'
+import { DropdownFieldFromWmsServiceLayers } from './DropdownFieldFromWmsServiceLayers.tsx'
 import { CreateWmsService } from './CreateWmsService.tsx'
 
 import '../../form.css'
 
 // this form is rendered from a parent or outlet
 export const Component = memo(
-  ({ onChange: onChangeFromProps, row: rowFromProps }) => {
+  ({ onChange: onChangeFromProps, wmsLayer: wmsLayerFromProps }) => {
     // beware: contextFromOutlet is undefined if not inside an outlet
     const outletContext = useOutletContext()
     const onChange = onChangeFromProps ?? outletContext?.onChange
-    const row = rowFromProps ?? outletContext?.row ?? {}
+    const wmsLayer = wmsLayerFromProps ?? outletContext?.row ?? {}
 
     const { wms_layer_id } = useParams()
     const { pathname } = useLocation()
@@ -32,41 +32,41 @@ export const Component = memo(
           name="wms_service_id"
           table="wms_services"
           orderBy={{ url: 'asc' }}
-          value={row.wms_service_id ?? ''}
+          value={wmsLayer.wms_service_id ?? ''}
           onChange={onChange}
           autoFocus={true}
           validationMessage="Choose from a configured WMS service. If none exists, create one first."
         />
-        <CreateWmsService wmsLayer={row} />
-        {(row?.wms_version || isFilter) && (
-          <DropdownFieldFromLayerOptions
+        <CreateWmsService wmsLayer={wmsLayer} />
+        {(wmsLayer?.wms_version || isFilter) && (
+          <DropdownFieldFromWmsServiceLayers
             label="Layer"
             name="wms_layer"
-            value={row.wms_layer ?? ''}
+            value={wmsLayer.wms_layer ?? ''}
             wms_layer_id={wms_layer_id}
             onChange={onChange}
-            validationMessage={row.wms_layer ? '' : 'Select a layer'}
-            row={row}
+            validationMessage={wmsLayer.wms_layer ? '' : 'Select a layer'}
+            row={wmsLayer}
           />
         )}
-        {(row?.wms_service_layer_name || isFilter) && (
+        {(wmsLayer?.wms_service_layer_name || isFilter) && (
           <>
             <TextField
               label="Label"
               name="label"
-              value={row.label ?? ''}
+              value={wmsLayer.label ?? ''}
               onChange={onChange}
             />
-            {row?.wms_service_id && (
+            {wmsLayer?.wms_service_id && (
               <>
-                <DropdownFieldFromLayerOptions
+                <DropdownFieldFromWmsServiceLayers
                   label="(Image-)Format"
                   name="wms_format"
-                  value={row.wms_format ?? ''}
+                  value={wmsLayer.wms_format ?? ''}
                   wms_layer_id={wms_layer_id}
                   onChange={onChange}
                   validationMessage={
-                    row.wms_format === 'image/png'
+                    wmsLayer.wms_format === 'image/png'
                       ? ''
                       : `Empfehlung: 'image/png'. Ermöglicht transparenten Hintergrund`
                   }
@@ -74,14 +74,14 @@ export const Component = memo(
                 <TextField
                   label="WMS Version"
                   name="wms_version"
-                  value={row.wms_version ?? ''}
+                  value={wmsLayer.wms_version ?? ''}
                   onChange={onChange}
                   validationMessage="Examples: '1.1.1', '1.3.0'. Set automatically but can be changed"
                 />
-                <DropdownFieldFromLayerOptions
+                <DropdownFieldFromWmsServiceLayers
                   label="Info Format"
                   name="wms_info_format"
-                  value={row.wms_info_format ?? ''}
+                  value={wmsLayer.wms_info_format ?? ''}
                   wms_layer_id={wms_layer_id}
                   onChange={onChange}
                   validationMessage="In what format the info is downloaded. Set automatically but can be changed"
@@ -91,7 +91,7 @@ export const Component = memo(
             <TextField
               label="Max Zoom"
               name="max_zoom"
-              value={row.max_zoom ?? ''}
+              value={wmsLayer.max_zoom ?? ''}
               onChange={onChange}
               type="number"
               max={19}
@@ -101,7 +101,7 @@ export const Component = memo(
             <TextField
               label="Min Zoom"
               name="min_zoom"
-              value={row.min_zoom ?? ''}
+              value={wmsLayer.min_zoom ?? ''}
               onChange={onChange}
               type="number"
               max={19}
@@ -114,12 +114,12 @@ export const Component = memo(
                 <TextFieldInactive
                   label="Local Data Size"
                   name="local_data_size"
-                  value={row.local_data_size}
+                  value={wmsLayer.local_data_size}
                 />
                 <TextFieldInactive
                   label="Local Data Bounds"
                   name="local_data_bounds"
-                  value={row.local_data_bounds}
+                  value={wmsLayer.local_data_bounds}
                 />
               </>
             )}

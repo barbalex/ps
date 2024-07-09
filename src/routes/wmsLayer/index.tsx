@@ -17,7 +17,7 @@ export const Component = memo(() => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const { db } = useElectric()!
-  const { results: row } = useLiveQuery(
+  const { results: wmsLayer } = useLiveQuery(
     db.wms_layers.liveUnique({
       where: { wms_layer_id },
       include: { wms_services: true },
@@ -43,9 +43,9 @@ export const Component = memo(() => {
     [db, wms_layer_id],
   )
 
-  console.log('WmsLayer, row:', row)
+  console.log('WmsLayer, row:', wmsLayer)
 
-  if (!row) return <Loading />
+  if (!wmsLayer) return <Loading />
 
   // console.log('hello WmsLayer, row:', row)
 
@@ -53,7 +53,7 @@ export const Component = memo(() => {
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
-        <Form onChange={onChange} row={row} autoFocusRef={autoFocusRef} />
+        <Form onChange={onChange} wmsLayer={wmsLayer} autoFocusRef={autoFocusRef} />
       </div>
     </div>
   )
