@@ -32,7 +32,6 @@ export const Component = memo(
           name="wms_service_id"
           table="wms_services"
           orderBy={{ url: 'asc' }}
-          value={wmsLayer.wms_service_id ?? ''}
           onChange={onChange}
           autoFocus={true}
           validationMessage="Choose from a configured WMS service. If none exists, create one first."
@@ -40,13 +39,10 @@ export const Component = memo(
         <CreateWmsService wmsLayer={wmsLayer} />
         {(wmsLayer?.wms_version || isFilter) && (
           <DropdownFieldFromWmsServiceLayers
-            label="Layer"
-            name="wms_layer"
-            value={wmsLayer.wms_layer ?? ''}
-            wms_layer_id={wms_layer_id}
-            onChange={onChange}
-            validationMessage={wmsLayer.wms_layer ? '' : 'Select a layer'}
-            row={wmsLayer}
+            wmsLayer={wmsLayer}
+            validationMessage={
+              wmsLayer.wms_service_layer_name ? '' : 'Select a layer'
+            }
           />
         )}
         {(wmsLayer?.wms_service_layer_name || isFilter) && (
