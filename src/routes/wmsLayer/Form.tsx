@@ -40,6 +40,7 @@ export const Component = memo(
               ? ''
               : 'Choose from a configured WMS service. If none exists, create one.'
           }
+          noDataMessage='No WMS Services found. You need to create one.'
         />
         {!wmsLayer.wms_service_id && <CreateWmsService wmsLayer={wmsLayer} />}
         {(wmsLayer?.wms_service_id || isFilter) && (

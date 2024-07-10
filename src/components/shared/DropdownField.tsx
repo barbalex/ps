@@ -32,6 +32,7 @@ export const DropdownField = memo(
         validationMessage: validationMessageIn,
         validationState: validationStateIn = 'none',
         button,
+        noDataMessage = 'No data found',
       },
       ref,
     ) => {
@@ -101,9 +102,7 @@ export const DropdownField = memo(
                   )
                 })
               ) : (
-                <Option value={''}>
-                  No WMS Services found. You need to create one.
-                </Option>
+                <Option value={''}>{noDataMessage}</Option>
               )}
             </Dropdown>
             {!!button && button}

@@ -52,6 +52,7 @@ export const Component = ({
                 ? ''
                 : 'Choose from a configured WFS service. If none exists, create one.'
             }
+            noDataMessage="No WFS Services found. You need to create one."
           />
           <div>TODO: create wms service component</div>
           {!!wfsLayer?.wfs_url && isValidUrl(wfsLayer.wfs_url) && (

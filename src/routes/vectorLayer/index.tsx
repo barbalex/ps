@@ -23,7 +23,8 @@ export const Component = memo(() => {
       where: { vector_layer_id },
       include: {
         layer_presentations: true,
-        wfs_services: { wfs_service_layers: true },
+        // wfs_services: { wfs_service_layers: true }, // returns undefined
+        wfs_services: true,
       },
     }),
   )
