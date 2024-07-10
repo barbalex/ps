@@ -1411,13 +1411,7 @@ CREATE TABLE wms_service_layers(
   legend_image bytea DEFAULT NULL
 );
 
-CREATE INDEX ON wms_service_layers USING btree(account_id);
-
 CREATE INDEX ON wms_service_layers USING btree(wms_service_id);
-
-CREATE INDEX ON wms_service_layers USING btree(name);
-
-CREATE INDEX ON wms_service_layers USING btree(label);
 
 DROP TABLE IF EXISTS wms_layers CASCADE;
 
@@ -1481,17 +1475,10 @@ CREATE TABLE wfs_service_layers(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   wfs_service_id uuid DEFAULT NULL REFERENCES wfs_services(wfs_service_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
-  label text DEFAULT NULL,
-  queryable boolean DEFAULT NULL
+  label text DEFAULT NULL
 );
 
-CREATE INDEX ON wfs_service_layers USING btree(account_id);
-
 CREATE INDEX ON wfs_service_layers USING btree(wfs_service_id);
-
-CREATE INDEX ON wfs_service_layers USING btree(name);
-
-CREATE INDEX ON wfs_service_layers USING btree(label);
 
 --------------------------------------------------------------
 CREATE TYPE vector_layer_type_enum AS enum(

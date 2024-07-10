@@ -60,6 +60,7 @@ export const CreateWfsService = memo(({ vectorLayer }: Props) => {
               />
             }
             appearance="underline"
+            autoFocus={true}
           />
         </Field>
       </div>

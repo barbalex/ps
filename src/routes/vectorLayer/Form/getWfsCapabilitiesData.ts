@@ -37,7 +37,6 @@ export const getWfsCapabilitiesData = async ({
 
   const capabilities = capabilitiesData?.HTML?.BODY?.['WFS:WFS_CAPABILITIES']
 
-  // TODO: see if can extract whether a layer is queryable
   console.log('getWfsCapabilitiesData, capabilities:', capabilities)
 
   // 1. wfs version
@@ -89,8 +88,8 @@ export const getWfsCapabilitiesData = async ({
 
   // now update vectorLayer
   if (Object.keys(serviceData).length) {
-    await db.vector_layers.update({
-      where: { vector_layer_id: vectorLayer.vector_layer_id },
+    await db.wfs_services.update({
+      where: { wfs_service_id: service.wfs_service_id },
       data: serviceData,
     })
   }
@@ -109,9 +108,8 @@ export const getWfsCapabilitiesData = async ({
   console.log('getWfsCapabilitiesData, acceptableLayers:', acceptableLayers)
 
   const layersData = acceptableLayers.map((l) => ({
-    name: l.Name,
-    label: l.Title,
-    queryable: l.queryable, // TODO: check if queryable is correct
+    name: l.Name?.['#text'],
+    label: l.Title?.['#text'],
   }))
   console.log('getWfsCapabilitiesData, layersData:', layersData)
 

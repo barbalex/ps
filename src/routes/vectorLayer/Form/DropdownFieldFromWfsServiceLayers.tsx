@@ -6,12 +6,17 @@ import { useElectric } from '../../../ElectricProvider.tsx'
 
 export const DropdownFieldFromWfsServiceLayers = memo(
   ({ vectorLayer, validationMessage }) => {
+    console.log('DropdownFieldFromWfsServiceLayers, vectorLayer:', vectorLayer)
     const { db } = useElectric()!
     const { results: wfsServiceLayers = [] } = useLiveQuery(
       db.wfs_service_layers.liveMany({
         where: { wfs_service_id: vectorLayer.wfs_service_id },
         orderBy: { label: 'asc' },
       }),
+    )
+    console.log(
+      'DropdownFieldFromWfsServiceLayers, wfsServiceLayers:',
+      wfsServiceLayers,
     )
 
     const options = useMemo(
