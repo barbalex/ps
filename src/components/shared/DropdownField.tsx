@@ -21,6 +21,7 @@ export const DropdownField = memo(
       {
         name,
         label,
+        labelField = 'label',
         table,
         idField, // defaults to name, used for cases where the id field is not the same as the name field (?)
         where = {},
@@ -41,10 +42,12 @@ export const DropdownField = memo(
           orderBy,
         }),
       )
+      console.log('DropdownField, results:', results)
       const options = results.map((o) => ({
-        text: o.label,
+        text: o[labelField],
         value: o[idField ?? name],
       }))
+      console.log('DropdownField, options:', options)
       const selectedOptions = useMemo(
         () => options.filter(({ value: v }) => v === value),
         [options, value],

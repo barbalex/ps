@@ -29,6 +29,7 @@ export const Component = memo(
         <DropdownField
           label="WMS Service"
           name="wms_service_id"
+          labelField="url"
           table="wms_services"
           orderBy={{ url: 'asc' }}
           onChange={onChange}
