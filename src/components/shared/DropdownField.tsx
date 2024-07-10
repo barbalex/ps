@@ -33,6 +33,7 @@ export const DropdownField = memo(
         validationState: validationStateIn = 'none',
         button,
         noDataMessage = 'No data found',
+        hideWhenNoData = false,
       },
       ref,
     ) => {
@@ -70,6 +71,8 @@ export const DropdownField = memo(
             : undefined,
         [options?.length, table, validationMessageIn],
       )
+
+      if (hideWhenNoData && !options?.length) return null
 
       return (
         <Field

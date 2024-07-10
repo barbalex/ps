@@ -1458,7 +1458,7 @@ CREATE TABLE wfs_services(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   url text DEFAULT NULL,
-  version text DEFAULT NULL,
+  version text DEFAULT NULL, -- often: 1.1.0 or 2.0.0
   info_formats jsonb DEFAULT NULL, -- available info formats. text array
   info_format text DEFAULT NULL, -- preferred info format
   default_crs text DEFAULT NULL -- TODO: does this exist in capabilities? if yes: use as in wfs. If not: remove
@@ -1524,12 +1524,6 @@ CREATE TABLE vector_layers(
   max_features integer DEFAULT NULL, -- 1000
   wfs_service_id uuid DEFAULT NULL REFERENCES wfs_services(wfs_service_id) ON DELETE CASCADE ON UPDATE CASCADE,
   wfs_service_layer_name text DEFAULT NULL, -- a name from wfs_service_layers. NOT referenced because the uuid changes when the service is updated
-  -- wfs_url text DEFAULT NULL, -- WFS url, for example https://maps.zh.ch/wfs/OGDZHWFS.
-  -- wfs_layer jsonb DEFAULT NULL, -- a single option
-  -- wfs_version text DEFAULT NULL, -- often: 1.1.0 or 2.0.0
-  -- wfs_output_formats jsonb DEFAULT NULL, -- TODO: array of text from the OutputFormats field. add, then read and set in getCapabilities, only show these in dropdown
-  -- wfs_output_format jsonb DEFAULT NULL, --  a single option
-  -- wfs_default_crs text DEFAULT NULL, -- often: EPSG:4326
   feature_count integer DEFAULT NULL,
   point_count integer DEFAULT NULL,
   line_count integer DEFAULT NULL,
@@ -1555,52 +1549,6 @@ COMMENT ON COLUMN vector_layers.point_count IS 'Number of point features. Used t
 COMMENT ON COLUMN vector_layers.line_count IS 'Number of line features. Used to show styling for lines - or not. Set when downloaded features';
 
 COMMENT ON COLUMN vector_layers.polygon_count IS 'Number of polygon features. Used to show styling for polygons - or not. Set when downloaded features';
-
--- Goal: wms_layer can be > 700, slowing down the wmsLayer form
--- Solution: outsource them (and maybe later others) here
--- This table is client side only, so we dont need a soft delete column
--- Also: there is no use in saving this data on the server or syncing it
-CREATE TYPE layer_options_field_enum AS enum(
-  'wfs_output_format',
-  'wfs_layer'
-);
-
-CREATE TABLE layer_options(
-  layer_option_id text PRIMARY KEY DEFAULT NULL,
-  service_url text DEFAULT NULL,
-  field layer_options_field_enum DEFAULT NULL,
-  value text DEFAULT NULL,
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  wms_layer_id uuid DEFAULT NULL REFERENCES wms_layers(wms_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  label text DEFAULT NULL, -- needed? Yes: service has title (label) and name (value)
-  queryable boolean DEFAULT NULL, -- TODO: set when processing capabilities of wms and wfs
-  legend_url text DEFAULT NULL
-);
-
-CREATE INDEX ON layer_options(service_url);
-
-CREATE INDEX ON layer_options USING btree(account_id);
-
-CREATE INDEX ON layer_options USING btree(wms_layer_id);
-
-CREATE INDEX ON layer_options USING btree(vector_layer_id);
-
-CREATE INDEX ON layer_options USING btree(field);
-
-CREATE INDEX ON layer_options USING btree(value);
-
-CREATE INDEX ON layer_options USING btree(label);
-
-COMMENT ON TABLE layer_options IS 'Goals: 1. wms_layers of a service can be > 700, slowing down the wmsLayer form when saved in a json field. Solution: outsource them here. 2. Enable fetching previously downloaded options directly from the db. 3. Prevent saving this data on the server or syncing it.';
-
-COMMENT ON COLUMN layer_options.service_url IS 'The base url of the wms or wfs server. Needed to reuse the same options for different layers. Redundant to vector_layers.wfs_url and wms_layers.wms_url but great to access easily.';
-
-COMMENT ON COLUMN layer_options.layer_option_id IS 'The base url of the wms server, combined with the field name whose data is stored and the value. Insures that we dont have duplicate entries.';
-
-COMMENT ON COLUMN layer_options.queryable IS 'Whether the layer is queryable. Only relevant for field wms layer. Maybe also for wfs_layer?';
-
-COMMENT ON COLUMN layer_options.legend_url IS 'The url to fetch the legend image from.';
 
 DROP TABLE IF EXISTS vector_layer_geoms CASCADE;
 

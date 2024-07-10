@@ -6,8 +6,6 @@ import { RadioGroupField } from '../../../components/shared/RadioGroupField.tsx'
 import { DropdownFieldFromWfsServiceLayers } from './DropdownFieldFromWfsServiceLayers.tsx'
 import { DropdownField } from '../../../components/shared/DropdownField.tsx'
 import { PropertyField } from './PropertyField.tsx'
-import { FetchWfsCapabilities } from './FetchWfsCapabilities.tsx'
-import { isValidUrl } from '../../../modules/isValidUrl.ts'
 import { CreateWfsService } from './CreateWfsService.tsx'
 
 import '../../../form.css'
@@ -54,12 +52,10 @@ export const Component = ({
                 : 'Choose from a configured WFS. Or add a new one.'
             }
             noDataMessage="No WFS found. You can add one."
+            hideWhenNoData={true}
           />
           {!vectorLayer.wfs_service_id && (
             <CreateWfsService vectorLayer={vectorLayer} />
-          )}
-          {!!vectorLayer?.wfs_url && isValidUrl(vectorLayer.wfs_url) && (
-            <FetchWfsCapabilities vectorLayer={vectorLayer} />
           )}
           {!!vectorLayer?.wfs_service_id && (
             <DropdownFieldFromWfsServiceLayers
@@ -73,8 +69,8 @@ export const Component = ({
       )}
       {vectorLayer?.type === 'upload' && <div>TODO: Upload</div>}
       {vectorLayer?.type === 'wfs' &&
-        vectorLayer?.wfs_url &&
-        vectorLayer.wfs_layer && (
+        vectorLayer?.wfs_service_id &&
+        vectorLayer.wfs_service_layer_name && (
           <TextField
             label="Label"
             name="label"
@@ -90,8 +86,8 @@ export const Component = ({
         />
       )}
       {((vectorLayer?.type === 'wfs' &&
-        vectorLayer?.wfs_url &&
-        vectorLayer.wfs_layer) ||
+        vectorLayer?.wfs_service_id &&
+        vectorLayer.wfs_service_layer_name) ||
         !['wfs', 'upload'].includes(vectorLayer.type)) && (
         <>
           {/* TODO: add display by property field */}

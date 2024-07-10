@@ -3,6 +3,8 @@ import { Field, Input } from '@fluentui/react-components'
 
 import { FetchWfsCapabilities } from './FetchWfsCapabilities.tsx'
 import { Vector_layers as VectorLayer } from '../../../../generated/client/index.ts'
+// TODO: use this:
+import { isValidUrl } from '../../../../modules/isValidUrl.ts'
 
 const titleStyle = { margin: 0, fontSize: '1em' }
 const rowStyle = {
