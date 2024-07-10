@@ -27,7 +27,7 @@ export const Component = memo(
     return (
       <>
         <DropdownField
-          label="WMS Service"
+          label="Web Map Service (WMS)"
           name="wms_service_id"
           labelField="url"
           table="wms_services"
@@ -38,9 +38,9 @@ export const Component = memo(
           validationMessage={
             wmsLayer.wms_service_id
               ? ''
-              : 'Choose from a configured WMS service. If none exists, create one.'
+              : 'Choose from a configured WMS. Or add a new one.'
           }
-          noDataMessage='No WMS Services found. You need to create one.'
+          noDataMessage="No WMS found. You need to add one."
         />
         {!wmsLayer.wms_service_id && <CreateWmsService wmsLayer={wmsLayer} />}
         {(wmsLayer?.wms_service_id || isFilter) && (

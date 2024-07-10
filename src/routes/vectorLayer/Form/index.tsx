@@ -39,7 +39,7 @@ export const Component = ({
       {vectorLayer?.type === 'wfs' && (
         <>
           <DropdownField
-            label="WFS Service"
+            label="Web Feature Service (WFS)"
             name="wfs_service_id"
             labelField="url"
             table="wfs_services"
@@ -50,9 +50,9 @@ export const Component = ({
             validationMessage={
               vectorLayer.wfs_service_id
                 ? ''
-                : 'Choose from a configured WFS service. If none exists, create one.'
+                : 'Choose from a configured WFS. Or add a new one.'
             }
-            noDataMessage="No WFS Services found. You need to create one."
+            noDataMessage="No WFS found. You need to add one."
           />
           <div>TODO: create wms service component</div>
           {!!vectorLayer?.wfs_url && isValidUrl(vectorLayer.wfs_url) && (
@@ -69,18 +69,26 @@ export const Component = ({
         </>
       )}
       {vectorLayer?.type === 'upload' && <div>TODO: Upload</div>}
-      {vectorLayer?.type === 'wfs' && vectorLayer?.wfs_url && vectorLayer.wfs_layer && (
-        <TextField
+      {vectorLayer?.type === 'wfs' &&
+        vectorLayer?.wfs_url &&
+        vectorLayer.wfs_layer && (
+          <TextField
+            label="Label"
+            name="label"
+            value={vectorLayer.label ?? ''}
+            onChange={onChange}
+          />
+        )}
+      {!['wfs', 'upload'].includes(vectorLayer.type) && (
+        <TextFieldInactive
           label="Label"
           name="label"
-          value={vectorLayer.label ?? ''}
-          onChange={onChange}
+          value={vectorLayer.label}
         />
       )}
-      {!['wfs', 'upload'].includes(vectorLayer.type) && (
-        <TextFieldInactive label="Label" name="label" value={vectorLayer.label} />
-      )}
-      {((vectorLayer?.type === 'wfs' && vectorLayer?.wfs_url && vectorLayer.wfs_layer) ||
+      {((vectorLayer?.type === 'wfs' &&
+        vectorLayer?.wfs_url &&
+        vectorLayer.wfs_layer) ||
         !['wfs', 'upload'].includes(vectorLayer.type)) && (
         <>
           {/* TODO: add display by property field */}
