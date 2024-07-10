@@ -4,6 +4,7 @@ import {
   Wfs_services as WfsService,
   Electric,
 } from '../../../generated/client/index.ts'
+import { createWfsServiceLayer } from '../../../modules/createRows.ts'
 
 interface Props {
   vectorLayer: VectorLayer
@@ -16,40 +17,40 @@ export const getWfsCapabilitiesData = async ({
   service,
   db,
 }: Props) => {
-  console.log('getWfsCapabilitiesData', { vectorLayer, returnValue, db })
+  console.log('getWfsCapabilitiesData', { vectorLayer, service, db })
   if (!vectorLayer) throw new Error('vector layer is required')
-  const wfsService: WfsService | undefined = vectorLayer?.wfs_services
-  console.log('getWfsCapabilitiesData, wfsService:', wfsService)
-  if (!wfsService.url) throw new Error('wfs service url is required')
+  if (!service.url) throw new Error('wfs service url is required')
   if (!db) throw new Error('db is required')
 
   // console.log('getCapabilitiesDataForVectorLayer, row:', row)
 
-  const values = {}
+  const serviceData = {}
 
-  const response = await getCapabilities({
-    url: wfsService?.url,
+  const capabilities = await getCapabilities({
+    url: service?.url,
     service: 'WFS',
     db,
   })
 
-  const capabilities = response?.HTML?.BODY?.['WFS:WFS_CAPABILITIES']
+  if (!capabilities) return undefined
+
+  const capabilities = capabilities?.HTML?.BODY?.['WFS:WFS_CAPABILITIES']
 
   // TODO: see if can extract whether a layer is queryable
   console.log('getCapabilitiesDataForVectorLayer, capabilities:', capabilities)
 
   // 1. wfs version
-  if (!wfsService.version) {
-    values.wfs_version = capabilities?.['@attributes']?.version
+  if (!service.version) {
+    serviceData.version = capabilities?.['@attributes']?.version
   }
 
-  // 2. output formats
+  // 2. info formats
   const operations =
     capabilities?.['OWS:OPERATIONSMETADATA']?.['OWS:OPERATION'] ?? []
   const getFeatureOperation = operations.find(
     (o) => o?.['@attributes']?.name === 'GetFeature',
   )
-  const outputFormats = (
+  const infoFormats = (
     getFeatureOperation?.['OWS:PARAMETER']?.['OWS:ALLOWEDVALUES']?.[
       'OWS:VALUE'
     ] ?? []
@@ -57,85 +58,56 @@ export const getWfsCapabilitiesData = async ({
 
   // also accept gml
   // example: https://maps.zh.ch/wfs/VeloparkieranlagenZHWFS
-  const acceptableOutputFormats = outputFormats.filter(
+  const acceptableInfoFormats = infoFormats.filter(
     (v) =>
       v?.toLowerCase?.()?.includes('json') ||
       v?.toLowerCase?.()?.includes('gml'),
   )
-  const preferredOutputFormat =
-    acceptableOutputFormats.filter((v) =>
+  serviceData.info_formats = acceptableInfoFormats
+
+  const preferredInfoFormat =
+    acceptableInfoFormats.filter((v) =>
       v.toLowerCase().includes('geojson'),
     )[0] ??
-    acceptableOutputFormats.filter((v) =>
+    acceptableInfoFormats.filter((v) =>
       v.toLowerCase().includes('application/json'),
     )[0] ??
-    acceptableOutputFormats[0]
-  for (const f of acceptableOutputFormats) {
-    try {
-      await db.layer_options.upsert({
-        create: {
-          layer_option_id: `${vectorLayer.wfs_url}/wfs_output_format/${f.value}`,
-          service_url: vectorLayer.wfs_url,
-          field: 'wfs_output_format',
-          value: f.value,
-          vector_layer_id: vectorLayer.vector_layer_id,
-          label: f.label,
-        },
-        update: {
-          service_url: vectorLayer.wfs_url,
-          field: 'wfs_output_format',
-          value: f.value,
-          vector_layer_id: vectorLayer.vector_layer_id,
-          label: f.label,
-        },
-        where: {
-          layer_option_id: `${vectorLayer.wfs_url}/wfs_output_format/${f.value}`,
-        },
-      })
-    } catch (error) {
-      console.log(
-        'vector layers getCapabilitiesData, error when upserting acceptableOutputFormats to layer_options:',
-        error,
-      )
-    }
-  }
-  if (!vectorLayer.wfs_output_format) {
-    values.wfs_output_format = {
-      label: preferredOutputFormat,
-      value: preferredOutputFormat,
-    }
-  }
+    acceptableInfoFormats[0]
+  serviceData.info_format = preferredInfoFormat
 
-  // 3. label
-  const label: string | undefined =
-    capabilities?.['OWS:SERVICEIDENTIFICATION']?.['OWS:TITLE']?.['#text']
-  if (!vectorLayer.label) {
-    values.label = label
-  }
-
-  // 4. layers
+  // 3. layers
   let layers = capabilities?.FEATURETYPELIST?.FEATURETYPE ?? []
-  // console.log('hello vector layers getCapabilitiesData, layers:', layers)
   // this value can be array OR object!!!
   if (!Array.isArray(layers)) layers = [layers]
+
   // 4a DefaultCRS: get the first layer's
   const defaultCRS = layers[0]?.DEFAULTCRS?.['#text']
-  if (!vectorLayer.wfs_default_crs) {
-    values.wfs_default_crs = defaultCRS
+  serviceData.default_crs = defaultCRS
+
+  // now update vectorLayer
+  if (Object.keys(serviceData).length) {
+    await db.vector_layers.update({
+      where: { vector_layer_id: vectorLayer.vector_layer_id },
+      data: serviceData,
+    })
   }
-  const layerOptions = layers
+
+  const acceptableLayers = layers
+    // accept only layers with crs EPSG:4326
     .filter((l) => l.OTHERCRS?.map((o) => o?.['#text']?.includes('EPSG:4326')))
+    // accept only layers with acceptable info formats
     .filter((l) =>
-      preferredOutputFormat
+      preferredInfoFormat
         ? l.OUTPUTFORMATS?.FORMAT?.map((f) =>
-            acceptableOutputFormats.includes(f?.['#text']),
+            acceptableInfoFormats.includes(f?.['#text']),
           )
         : true,
     )
-    .map((v) => ({
-      label: v.TITLE?.['#text'] ?? v.NAME?.['#text'],
-      value: v.NAME?.['#text'],
-    }))
+
+  const layerOptions = acceptableLayers.map((v) => ({
+    label: v.TITLE?.['#text'] ?? v.NAME?.['#text'],
+    value: v.NAME?.['#text'],
+  }))
 
   for (const o of layerOptions) {
     try {
@@ -167,34 +139,15 @@ export const getWfsCapabilitiesData = async ({
     }
   }
 
-  // activate layer, if only one
-  if (
-    !vectorLayer?.wfs_layer &&
-    layerOptions?.length === 1 &&
-    layerOptions?.[0]?.value
-  ) {
-    values.wfs_layer = layerOptions?.[0]
-    const layerPresentation = await db.layer_presentations.findFirst({
+  // single layer? update vectorLayer
+  if (!vectorLayer?.wfs_service_layer_name && layers?.length === 1) {
+    db.vector_layers.update({
       where: { vector_layer_id: vectorLayer.vector_layer_id },
-    })
-    db.layer_presentations.update({
-      where: {
-        layer_presentation_id: layerPresentation.layer_presentation_id,
+      data: {
+        wfs_service_layer_name: layers[0].Name,
+        label: layers[0].Title,
       },
-      data: { active: true },
     })
-  }
-
-  try {
-    await db.vector_layers.update({
-      where: { vector_layer_id: vectorLayer.vector_layer_id },
-      data: values,
-    })
-  } catch (error) {
-    console.log(
-      'vector layers getCapabilitiesData, error when updating vector_layers:',
-      error,
-    )
   }
 
   return

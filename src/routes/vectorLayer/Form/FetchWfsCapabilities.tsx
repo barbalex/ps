@@ -113,7 +113,7 @@ export const FetchWfsCapabilities = memo(
         where: { notification_id: data.notification_id },
         data: { paused: false, timeout: 500 },
       })
-    }, [db, setFetching, url, wmsLayer, worker])
+    }, [db, setFetching, url, vectorLayer, worker])
 
     return (
       <Button

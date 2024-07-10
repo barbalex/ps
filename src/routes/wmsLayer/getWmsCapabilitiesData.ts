@@ -9,14 +9,14 @@ import { createWmsServiceLayer } from '../../modules/createRows.ts'
 
 interface Props {
   wmsLayer: WmsLayer
-  db: Electric
   service: WmsService
+  db: Electric
 }
 
 export const getWmsCapabilitiesData = async ({
   wmsLayer,
-  db,
   service,
+  db,
 }: Props) => {
   if (!service?.url) return undefined
 
@@ -30,25 +30,11 @@ export const getWmsCapabilitiesData = async ({
 
   if (!capabilities) return undefined
 
-  // TODO: because upsert errors and single creates are slow
-  // https://github.com/electric-sql/electric/issues/916
-  // Deleting may not be good because other layers might use the same layer_option_id
-  // 1. delete existing service including its layers
-  if (wmsLayer.wms_service_layer_name) {
-    try {
-      await db.wms_service_layers.delete({
-        where: {
-          wms_service_id: service.wms_service_id,
-        },
-      })
-    } catch (error) {
-      console.error('getCapabilitiesData 3, error:', error)
-    }
-  }
-
   const imageFormats = capabilities?.Capability?.Request?.GetMap?.Format.filter(
     (v) => v.toLowerCase().includes('image'),
   )
+  serviceData.image_formats = imageFormats
+
   const preferedFormat =
     imageFormats?.find((v) => v?.toLowerCase?.().includes('image/png')) ??
     imageFormats?.find((v) => v?.toLowerCase?.().includes('png')) ??
@@ -57,7 +43,6 @@ export const getWmsCapabilitiesData = async ({
   if (preferedFormat) {
     serviceData.image_format = preferedFormat
   }
-  serviceData.image_formats = imageFormats
 
   serviceData.version = capabilities?.version
 
@@ -139,7 +124,7 @@ export const getWmsCapabilitiesData = async ({
     }
   }
 
-  // activate layer, if not too many
+  // single layer? update wmsLayer
   if (!wmsLayer?.wms_service_layer_name && layers?.length === 1) {
     db.wms_layers.update({
       where: { wms_layer_id: wmsLayer.wms_layer_id },
