@@ -25,7 +25,7 @@ export const FetchWfsCapabilities = memo(({ vectorLayer }: Props) => {
   const { db } = useElectric()!
   const worker = useWorker(createWorker)
 
-  const wfsService: WfsService | undefined = vectorLayer?.wms_services
+  const wfsService: WfsService | undefined = vectorLayer?.wfs_services
 
   const [fetching, setFetching] = useState(false)
 
@@ -57,7 +57,7 @@ export const FetchWfsCapabilities = memo(({ vectorLayer }: Props) => {
       console.log('Url, onBlur, error updating notification:', error)
     }
     setFetching(false)
-  }, [db, vectorLayer, wfsService.url, worker])
+  }, [db, vectorLayer, wfsService?.url, worker])
 
   return (
     <Button

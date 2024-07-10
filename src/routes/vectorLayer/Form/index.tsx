@@ -8,6 +8,7 @@ import { DropdownField } from '../../../components/shared/DropdownField.tsx'
 import { PropertyField } from './PropertyField.tsx'
 import { FetchWfsCapabilities } from './FetchWfsCapabilities.tsx'
 import { isValidUrl } from '../../../modules/isValidUrl.ts'
+import { CreateWfsService } from './CreateWfsService.tsx'
 
 import '../../../form.css'
 
@@ -52,15 +53,17 @@ export const Component = ({
                 ? ''
                 : 'Choose from a configured WFS. Or add a new one.'
             }
-            noDataMessage="No WFS found. You need to add one."
+            noDataMessage="No WFS found. You can add one."
           />
-          <div>TODO: create wms service component</div>
+          {!vectorLayer.wfs_service_id && (
+            <CreateWfsService vectorLayer={vectorLayer} />
+          )}
           {!!vectorLayer?.wfs_url && isValidUrl(vectorLayer.wfs_url) && (
             <FetchWfsCapabilities vectorLayer={vectorLayer} />
           )}
           {!!vectorLayer?.wfs_service_id && (
             <DropdownFieldFromWfsServiceLayers
-              wfsLayer={vectorLayer}
+              vectorLayer={vectorLayer}
               validationMessage={
                 vectorLayer.wfs_service_layer_name ? '' : 'Select a layer'
               }
