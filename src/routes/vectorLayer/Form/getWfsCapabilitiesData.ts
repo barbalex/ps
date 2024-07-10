@@ -26,18 +26,19 @@ export const getWfsCapabilitiesData = async ({
 
   const serviceData = {}
 
-  const capabilities = await getCapabilities({
+  const capabilitiesData = await getCapabilities({
     url: service?.url,
     service: 'WFS',
     db,
   })
+  console.log('getWfsCapabilitiesData, capabilitiesData:', capabilitiesData)
 
-  if (!capabilities) return undefined
+  if (!capabilitiesData) return undefined
 
-  const capabilities = capabilities?.HTML?.BODY?.['WFS:WFS_CAPABILITIES']
+  const capabilities = capabilitiesData?.HTML?.BODY?.['WFS:WFS_CAPABILITIES']
 
   // TODO: see if can extract whether a layer is queryable
-  console.log('getCapabilitiesDataForVectorLayer, capabilities:', capabilities)
+  console.log('getWfsCapabilitiesData, capabilities:', capabilities)
 
   // 1. wfs version
   if (!service.version) {
@@ -77,12 +78,14 @@ export const getWfsCapabilitiesData = async ({
 
   // 3. layers
   let layers = capabilities?.FEATURETYPELIST?.FEATURETYPE ?? []
+  console.log('getWfsCapabilitiesData, layers:', layers)
   // this value can be array OR object!!!
   if (!Array.isArray(layers)) layers = [layers]
 
   // 4a DefaultCRS: get the first layer's
   const defaultCRS = layers[0]?.DEFAULTCRS?.['#text']
   serviceData.default_crs = defaultCRS
+  console.log('getWfsCapabilitiesData, serviceData:', serviceData)
 
   // now update vectorLayer
   if (Object.keys(serviceData).length) {
@@ -103,37 +106,26 @@ export const getWfsCapabilitiesData = async ({
           )
         : true,
     )
+  console.log('getWfsCapabilitiesData, acceptableLayers:', acceptableLayers)
 
-  const layerOptions = acceptableLayers.map((v) => ({
-    label: v.TITLE?.['#text'] ?? v.NAME?.['#text'],
-    value: v.NAME?.['#text'],
+  const layersData = acceptableLayers.map((l) => ({
+    name: l.Name,
+    label: l.Title,
+    queryable: l.queryable, // TODO: check if queryable is correct
   }))
+  console.log('getWfsCapabilitiesData, layersData:', layersData)
 
-  for (const o of layerOptions) {
+  // TODO: chunked createMany, see wms
+  for await (const layerData of layersData) {
+    const data = createWfsServiceLayer({
+      ...layerData,
+      wfs_service_id: service.wfs_service_id,
+    })
     try {
-      await db.layer_options.upsert({
-        create: {
-          layer_option_id: `${vectorLayer.wfs_url}/wfs_layer/${o.value}`,
-          service_url: vectorLayer.wfs_url,
-          field: 'wfs_layer',
-          value: o.value,
-          vector_layer_id: vectorLayer.vector_layer_id,
-          label: o.label,
-        },
-        update: {
-          service_url: vectorLayer.wfs_url,
-          field: 'wfs_layer',
-          value: o.value,
-          vector_layer_id: vectorLayer.vector_layer_id,
-          label: o.label,
-        },
-        where: {
-          layer_option_id: `${vectorLayer.wfs_url}/wfs_layer/${o.value}`,
-        },
-      })
+      await db.wfs_service_layers.create({ data })
     } catch (error) {
-      console.log(
-        'vector layers getCapabilitiesData, error when upserting layerOptions to layer_options:',
+      console.error(
+        'hello, getCapabilitiesData 5, error from upserting:',
         error,
       )
     }

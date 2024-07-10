@@ -63,7 +63,7 @@ export const FetchWfsCapabilities = memo(
         })
       } else {
         // 3. if not, create service, then update that
-        const serviceData = createWmsService({
+        const serviceData = createWfsService({
           url: urlTrimmed,
           project_id: vectorLayer.project_id,
         })
