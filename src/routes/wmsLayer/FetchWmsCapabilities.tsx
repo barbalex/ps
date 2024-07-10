@@ -2,7 +2,6 @@ import { useCallback, memo, useState } from 'react'
 import { createWorkerFactory, useWorker } from '@shopify/react-web-worker'
 import { Button, Spinner } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
-import { useParams } from 'react-router-dom'
 
 import { Wms_layers as WmsLayer } from '../../../generated/client/index.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
@@ -25,7 +24,6 @@ type Props = {
 }
 
 export const FetchWmsCapabilities = memo(({ wmsLayer, url }: Props) => {
-  const { wms_layer_id, project_id } = useParams()
   const { db } = useElectric()!
   const worker = useWorker(createWorker)
 
@@ -41,14 +39,14 @@ export const FetchWmsCapabilities = memo(({ wmsLayer, url }: Props) => {
   const onFetchCapabilities = useCallback(async () => {
     if (!url) return
 
-    const service = createWmsService({ url, project_id })
+    const service = createWmsService({ url, project_id: wmsLayer.project_id })
     try {
       await db.wms_services.create({ data: service })
     } catch (error) {
       console.error('FetchCapabilities.onFetchCapabilities 3', error)
     }
     await db.wms_layers.update({
-      where: { wms_layer_id },
+      where: { wms_layer_id: wmsLayer.wms_layer_id },
       data: { wms_service_id: service.wms_service_id },
     })
     // show loading indicator
@@ -87,7 +85,7 @@ export const FetchWmsCapabilities = memo(({ wmsLayer, url }: Props) => {
       where: { notification_id: data.notification_id },
       data: { paused: false, timeout: 500 },
     })
-  }, [db, project_id, url, wmsLayer, wms_layer_id, worker])
+  }, [db, url, wmsLayer, worker])
 
   return (
     <Button

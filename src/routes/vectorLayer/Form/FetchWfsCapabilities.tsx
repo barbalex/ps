@@ -7,7 +7,10 @@ import {
   Wfs_services as WfsService,
 } from '../../../../generated/client/index.ts'
 import { useElectric } from '../../../ElectricProvider.tsx'
-import { createNotification } from '../../../modules/createRows.ts'
+import {
+  createNotification,
+  createWfsService,
+} from '../../../modules/createRows.ts'
 
 const createWorker = createWorkerFactory(
   () => import('./getWfsCapabilitiesData.ts'),
@@ -19,9 +22,10 @@ const buttonStyle = {
 
 type Props = {
   vectorLayer: VectorLayer
+  url: string
 }
 
-export const FetchWfsCapabilities = memo(({ vectorLayer }: Props) => {
+export const FetchWfsCapabilities = memo(({ vectorLayer, url }: Props) => {
   const { db } = useElectric()!
   const worker = useWorker(createWorker)
 
@@ -30,6 +34,10 @@ export const FetchWfsCapabilities = memo(({ vectorLayer }: Props) => {
   const [fetching, setFetching] = useState(false)
 
   const onFetchCapabilities = useCallback(async () => {
+    console.log(
+      'FetchWfsCapabilities.onFetchCapabilities, wfsService:',
+      wfsService,
+    )
     if (!wfsService?.url) return
     // show loading indicator
     setFetching(true)
