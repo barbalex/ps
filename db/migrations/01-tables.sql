@@ -1407,7 +1407,7 @@ CREATE TABLE wms_service_layers(
   name text DEFAULT NULL,
   label text DEFAULT NULL,
   queryable boolean DEFAULT NULL,
-  legend_url text DEFAULT NULL, -- was: layer_options.legend_url
+  legend_url text DEFAULT NULL,
   legend_image bytea DEFAULT NULL
 );
 
@@ -1991,8 +1991,6 @@ ALTER TABLE occurrences ENABLE electric;
 ALTER TABLE wms_layers ENABLE electric;
 
 ALTER TABLE vector_layers ENABLE electric;
-
-ALTER TABLE layer_options ENABLE electric;
 
 ALTER TABLE vector_layer_geoms ENABLE electric;
 
