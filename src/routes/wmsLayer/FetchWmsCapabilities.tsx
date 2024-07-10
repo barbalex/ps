@@ -37,19 +37,32 @@ export const FetchWmsCapabilities = memo(({ wmsLayer, url }: Props) => {
   )
 
   const onFetchCapabilities = useCallback(async () => {
-    if (!url) return
+    const urlTrimmed = url?.trim?.()
+    if (!urlTrimmed) return
 
     // TODO:
     // 1. check if wms_service exists for this url
+    const existingService = await db.wms_services.findFirst({
+      where: { url: urlTrimmed },
+    })
     // 2. if so, update it and its layers
-    // 2. if not, create service
-
-    const service = createWmsService({ url, project_id: wmsLayer.project_id })
-    try {
-      await db.wms_services.create({ data: service })
-    } catch (error) {
-      console.error('FetchCapabilities.onFetchCapabilities 3', error)
+    let service
+    if (existingService) {
+      service = existingService
+    } else {
+      // 3. if not, create service, then update that
+      const serviceData = createWmsService({
+        url: urlTrimmed,
+        project_id: wmsLayer.project_id,
+      })
+      try {
+        service = await db.wms_services.create({ data: serviceData })
+      } catch (error) {
+        console.error('FetchCapabilities.onFetchCapabilities 3', error)
+      }
     }
+    // 4. TODO: remove all wms_service_layers before recreating
+
     await db.wms_layers.update({
       where: { wms_layer_id: wmsLayer.wms_layer_id },
       data: { wms_service_id: service.wms_service_id },
@@ -57,7 +70,7 @@ export const FetchWmsCapabilities = memo(({ wmsLayer, url }: Props) => {
     // show loading indicator
     setFetching(true)
     const data = await createNotification({
-      title: `Loading capabilities for ${url}`,
+      title: `Loading capabilities for ${urlTrimmed}`,
       intent: 'info',
       paused: true,
     })
@@ -78,7 +91,7 @@ export const FetchWmsCapabilities = memo(({ wmsLayer, url }: Props) => {
       )
       // surface error to user
       const data = await createNotification({
-        title: `Error loading capabilities for ${url}`,
+        title: `Error loading capabilities for ${urlTrimmed}`,
         body: error?.message ?? error,
         intent: 'error',
         paused: false,
