@@ -1,7 +1,7 @@
 import { memo, useCallback, useState } from 'react'
 import { Field, Input } from '@fluentui/react-components'
 
-import { FetchCapabilities } from './FetchCapabilities.tsx'
+import { FetchWmsCapabilities } from './FetchWmsCapabilities.tsx'
 import { Wms_layers as WmsLayer } from '../../../generated/client/index.ts'
 
 const titleStyle = { margin: 0, fontSize: '1em' }
@@ -49,7 +49,7 @@ export const CreateWmsService = memo(({ wmsLayer }: Props) => {
           style={{ flexGrow: 1 }}
         >
           <Input
-            contentAfter={<FetchCapabilities wmsLayer={wmsLayer} url={url} />}
+            contentAfter={<FetchWmsCapabilities wmsLayer={wmsLayer} url={url} />}
             appearance="underline"
           />
         </Field>

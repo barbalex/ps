@@ -25,7 +25,7 @@ type Props = {
   url: string
 }
 
-export const FetchCapabilities = memo(({ wmsLayer, url }: Props) => {
+export const FetchWmsCapabilities = memo(({ wmsLayer, url }: Props) => {
   const { wms_layer_id, project_id } = useParams()
   const { db } = useElectric()!
   const worker = useWorker(createWorker)
@@ -40,18 +40,14 @@ export const FetchCapabilities = memo(({ wmsLayer, url }: Props) => {
   )
 
   const onFetchCapabilities = useCallback(async () => {
-    console.log('FetchCapabilities.onFetchCapabilities 1', { wmsLayer, url })
     if (!url) return
 
     const service = createWmsService({ url, project_id })
-    console.log('FetchCapabilities.onFetchCapabilities 2', { service })
-    let resp
     try {
-      resp = await db.wms_services.create({ data: service })
+      await db.wms_services.create({ data: service })
     } catch (error) {
       console.error('FetchCapabilities.onFetchCapabilities 3', error)
     }
-    console.log('FetchCapabilities.onFetchCapabilities 3', { resp })
     await db.wms_layers.update({
       where: { wms_layer_id },
       data: { wms_service_id: service.wms_service_id },

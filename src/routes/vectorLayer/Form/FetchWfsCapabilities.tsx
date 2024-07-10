@@ -21,7 +21,7 @@ type Props = {
   vectorLayer: VectorLayer
 }
 
-export const FetchCapabilities = memo(({ vectorLayer }: Props) => {
+export const FetchWfsCapabilities = memo(({ vectorLayer }: Props) => {
   const { db } = useElectric()!
   const worker = useWorker(createWorker)
 

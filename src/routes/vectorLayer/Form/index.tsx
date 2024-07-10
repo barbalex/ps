@@ -5,7 +5,7 @@ import { TextField } from '../../../components/shared/TextField.tsx'
 import { RadioGroupField } from '../../../components/shared/RadioGroupField.tsx'
 import { DropdownFieldFromWmsLayers } from '../../../components/shared/DropdownFieldFromWmsLayers.tsx'
 import { PropertyField } from './PropertyField.tsx'
-import { FetchCapabilities } from './FetchCapabilities.tsx'
+import { FetchWfsCapabilities } from './FetchWfsCapabilities.tsx'
 import { isValidUrl } from '../../../modules/isValidUrl.ts'
 
 import '../../../form.css'
@@ -56,7 +56,7 @@ export const Component = ({
             }
           />
           {!!row?.wfs_url && isValidUrl(row.wfs_url) && (
-            <FetchCapabilities vectorLayer={row} />
+            <FetchWfsCapabilities vectorLayer={row} />
           )}
           {!!row?.wfs_version && (
             <DropdownFieldFromWmsLayers
