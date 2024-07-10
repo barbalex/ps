@@ -11,12 +11,11 @@ interface Props {
   db: Electric
 }
 
-export const getCapabilitiesData = async ({
+export const getWfsCapabilitiesData = async ({
   vectorLayer,
   returnValue = false,
   db,
 }: Props) => {
-  console.log('getCapabilitiesData, 1', { vectorLayer, returnValue, db })
   if (!vectorLayer) throw new Error('vector layer is required')
   const wfsService: WfsService | undefined = vectorLayer?.wfs_services
   if (!wfsService.url) throw new Error('wfs service url is required')
@@ -135,10 +134,7 @@ export const getCapabilitiesData = async ({
       label: v.TITLE?.['#text'] ?? v.NAME?.['#text'],
       value: v.NAME?.['#text'],
     }))
-  // console.log(
-  //   'hello vector layers getCapabilitiesData, layerOptions:',
-  //   layerOptions,
-  // )
+
   for (const o of layerOptions) {
     try {
       await db.layer_options.upsert({
@@ -187,15 +183,6 @@ export const getCapabilitiesData = async ({
     })
   }
 
-  // console.log('hello vector layers getCapabilitiesData', {
-  //   values,
-  //   layerOptions,
-  //   acceptableOutputFormats,
-  // })
-
-  // enable updating in a single operation
-  if (returnValue) return values
-
   try {
     await db.vector_layers.update({
       where: { vector_layer_id: vectorLayer.vector_layer_id },
@@ -207,5 +194,9 @@ export const getCapabilitiesData = async ({
       error,
     )
   }
+
+  // enable updating in a single operation
+  if (returnValue) return values
+
   return
 }

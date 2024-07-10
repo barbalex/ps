@@ -1,8 +1,6 @@
 import { useCallback, memo, useState } from 'react'
 import { createWorkerFactory, useWorker } from '@shopify/react-web-worker'
 import { Button, Spinner } from '@fluentui/react-components'
-import { useLiveQuery } from 'electric-sql/react'
-import { useParams } from 'react-router-dom'
 
 import {
   Vector_layers as VectorLayer,
@@ -12,7 +10,7 @@ import { useElectric } from '../../../ElectricProvider.tsx'
 import { createNotification } from '../../../modules/createRows.ts'
 
 const createWorker = createWorkerFactory(
-  () => import('./getCapabilitiesData.ts'),
+  () => import('./getWfsCapabilitiesData.ts'),
 )
 
 const buttonStyle = {
@@ -24,21 +22,10 @@ type Props = {
 }
 
 export const FetchCapabilities = memo(({ vectorLayer }: Props) => {
-  const { vector_layer_id } = useParams()
   const { db } = useElectric()!
   const worker = useWorker(createWorker)
 
   const wfsService: WfsService | undefined = vectorLayer?.wms_services
-
-  const { results: layerOptions = [] } = useLiveQuery(
-    db.layer_options.liveMany({
-      where: {
-        ...(vector_layer_id ? { vector_layer_id } : {}),
-        field: 'wfs_layer',
-      },
-      select: { layer_option_id: true },
-    }),
-  )
 
   const [fetching, setFetching] = useState(false)
 
@@ -53,7 +40,7 @@ export const FetchCapabilities = memo(({ vectorLayer }: Props) => {
     })
     await db.notifications.create({ data })
     try {
-      await worker.getCapabilitiesData({ vectorLayer, db })
+      await worker.getWfsCapabilitiesData({ vectorLayer, db })
     } catch (error) {
       console.error(
         'Url, onBlur, error getting capabilities data:',

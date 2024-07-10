@@ -13,7 +13,11 @@ interface Props {
   service: WmsService
 }
 
-export const getCapabilitiesData = async ({ wmsLayer, db, service }: Props) => {
+export const getWmsCapabilitiesData = async ({
+  wmsLayer,
+  db,
+  service,
+}: Props) => {
   if (!service?.url) return undefined
 
   const serviceData = {}

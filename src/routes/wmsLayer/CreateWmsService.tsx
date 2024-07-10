@@ -4,7 +4,7 @@ import { Field, Input } from '@fluentui/react-components'
 import { FetchCapabilities } from './FetchCapabilities.tsx'
 import { Wms_layers as WmsLayer } from '../../../generated/client/index.ts'
 
-const titleStyle = { margin: 0, fontSize: '1rem' }
+const titleStyle = { margin: 0, fontSize: '1em' }
 const rowStyle = {
   display: 'flex',
   flexWrap: 'wrap',
@@ -24,8 +24,8 @@ export const CreateWmsService = memo(({ wmsLayer }: Props) => {
   console.log('CreateWmsService, url:', url)
 
   return (
-    <>
-      <h2 style={titleStyle}>Create WMS Service</h2>
+    <div>
+      <h2 style={titleStyle}>Add WMS Service</h2>
       <div style={rowStyle}>
         <Field
           label="URL"
@@ -54,6 +54,6 @@ export const CreateWmsService = memo(({ wmsLayer }: Props) => {
           />
         </Field>
       </div>
-    </>
+    </div>
   )
 })

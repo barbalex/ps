@@ -13,7 +13,7 @@ import {
 
 import '../../form.css'
 const createWorker = createWorkerFactory(
-  () => import('./getCapabilitiesData.ts'),
+  () => import('./getWmsCapabilitiesData.ts'),
 )
 
 const buttonStyle = {
@@ -68,7 +68,7 @@ export const FetchCapabilities = memo(({ wmsLayer, url }: Props) => {
 
     // 2. if not, fetch capabilities
     try {
-      await worker.getCapabilitiesData({
+      await worker.getWmsCapabilitiesData({
         wmsLayer,
         service,
         db,

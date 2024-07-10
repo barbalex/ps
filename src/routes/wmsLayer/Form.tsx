@@ -41,7 +41,7 @@ export const Component = memo(
               : 'Choose from a configured WMS service. If none exists, create one first.'
           }
         />
-        <CreateWmsService wmsLayer={wmsLayer} />
+        {!wmsLayer.wms_service_id && <CreateWmsService wmsLayer={wmsLayer} />}
         {(wmsLayer?.wms_service_id || isFilter) && (
           <DropdownFieldFromWmsServiceLayers
             wmsLayer={wmsLayer}
@@ -50,7 +50,8 @@ export const Component = memo(
             }
           />
         )}
-        {(wmsLayer?.wms_service_layer_name || isFilter) && (
+        {((!!wmsLayer.wms_service_id && !!wmsLayer?.wms_service_layer_name) ||
+          isFilter) && (
           <>
             <TextField
               label="Label"
