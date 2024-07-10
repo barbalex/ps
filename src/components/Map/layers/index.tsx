@@ -43,7 +43,6 @@ export const Layers = memo(() => {
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
-  console.log('Layers, appState:', appState)
   const mapLayerSorting = appState?.map_layer_sorting ?? []
 
   // for every layer_presentation_id in mapLayerSorting, get the layer_presentation
@@ -63,7 +62,6 @@ export const Layers = memo(() => {
       },
     }),
   )
-  console.log('Layers, layerPresentations:', layerPresentations)
   const wmsLayersCount = layerPresentations.filter(
     (lp) => !!lp.wms_layers,
   ).length

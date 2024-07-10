@@ -31,10 +31,15 @@ export const Component = memo(
           name="wms_service_id"
           labelField="url"
           table="wms_services"
+          value={wmsLayer.wms_service_id ?? ''}
           orderBy={{ url: 'asc' }}
           onChange={onChange}
           autoFocus={true}
-          validationMessage="Choose from a configured WMS service. If none exists, create one first."
+          validationMessage={
+            wmsLayer.wms_service_id
+              ? ''
+              : 'Choose from a configured WMS service. If none exists, create one first.'
+          }
         />
         <CreateWmsService wmsLayer={wmsLayer} />
         {(wmsLayer?.wms_service_id || isFilter) && (
