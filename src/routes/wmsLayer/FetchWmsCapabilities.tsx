@@ -45,10 +45,15 @@ export const FetchWmsCapabilities = memo(({ wmsLayer, url }: Props) => {
     const existingService = await db.wms_services.findFirst({
       where: { url: urlTrimmed },
     })
-    // 2. if so, update it and its layers
     let service
     if (existingService) {
-      service = existingService
+      // 2. if so, update it
+      service = { ...existingService }
+      // and remove its layers to be recreated
+      // 4. TODO: remove all wms_service_layers before recreating
+      await db.wms_service_layers.deleteMany({
+        where: { wms_service_id: existingService.wms_service_id },
+      })
     } else {
       // 3. if not, create service, then update that
       const serviceData = createWmsService({
@@ -57,16 +62,15 @@ export const FetchWmsCapabilities = memo(({ wmsLayer, url }: Props) => {
       })
       try {
         service = await db.wms_services.create({ data: serviceData })
+        await db.wms_layers.update({
+          where: { wms_layer_id: wmsLayer.wms_layer_id },
+          data: { wms_service_id: service.wms_service_id },
+        })
       } catch (error) {
         console.error('FetchCapabilities.onFetchCapabilities 3', error)
       }
     }
-    // 4. TODO: remove all wms_service_layers before recreating
 
-    await db.wms_layers.update({
-      where: { wms_layer_id: wmsLayer.wms_layer_id },
-      data: { wms_service_id: service.wms_service_id },
-    })
     // show loading indicator
     setFetching(true)
     const data = await createNotification({
@@ -108,7 +112,6 @@ export const FetchWmsCapabilities = memo(({ wmsLayer, url }: Props) => {
   return (
     <Button
       icon={fetching ? <Spinner size="tiny" /> : undefined}
-      title="Refresh capabilities data"
       onClick={onFetchCapabilities}
       style={buttonStyle}
       disabled={!url}
