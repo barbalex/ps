@@ -7,7 +7,7 @@ import {
   Wfs_services as WfsService,
 } from '../../../../generated/client/index.ts'
 import { useElectric } from '../../../ElectricProvider.tsx'
-import { createNotification, createWfsService } from '../../../modules/createRows.ts'
+import { createNotification } from '../../../modules/createRows.ts'
 
 const createWorker = createWorkerFactory(
   () => import('./getWfsCapabilitiesData.ts'),

@@ -21,74 +21,74 @@ export const Component = ({
   // beware: contextFromOutlet is undefined if not inside an outlet
   const outletContext = useOutletContext()
   const onChange = onChangeFromProps ?? outletContext?.onChange
-  const wfsLayer = rowFromProps ?? outletContext?.row ?? {}
+  const vectorLayer = rowFromProps ?? outletContext?.row ?? {}
 
   return (
     <>
-      {['wfs', 'upload'].includes(wfsLayer.type) && (
+      {['wfs', 'upload'].includes(vectorLayer.type) && (
         <RadioGroupField
           label="Type"
           name="type"
           list={['wfs', 'upload']}
-          value={wfsLayer.type ?? ''}
+          value={vectorLayer.type ?? ''}
           onChange={onChange}
           autoFocus
           ref={autoFocusRef}
         />
       )}
-      {wfsLayer?.type === 'wfs' && (
+      {vectorLayer?.type === 'wfs' && (
         <>
           <DropdownField
             label="WFS Service"
             name="wfs_service_id"
             labelField="url"
             table="wfs_services"
-            value={wfsLayer.wfs_service_id ?? ''}
+            value={vectorLayer.wfs_service_id ?? ''}
             orderBy={{ url: 'asc' }}
             onChange={onChange}
             autoFocus={true}
             validationMessage={
-              wfsLayer.wfs_service_id
+              vectorLayer.wfs_service_id
                 ? ''
                 : 'Choose from a configured WFS service. If none exists, create one.'
             }
             noDataMessage="No WFS Services found. You need to create one."
           />
           <div>TODO: create wms service component</div>
-          {!!wfsLayer?.wfs_url && isValidUrl(wfsLayer.wfs_url) && (
-            <FetchWfsCapabilities vectorLayer={wfsLayer} />
+          {!!vectorLayer?.wfs_url && isValidUrl(vectorLayer.wfs_url) && (
+            <FetchWfsCapabilities vectorLayer={vectorLayer} />
           )}
-          {!!wfsLayer?.wfs_service_id && (
+          {!!vectorLayer?.wfs_service_id && (
             <DropdownFieldFromWfsServiceLayers
-              wfsLayer={wfsLayer}
+              wfsLayer={vectorLayer}
               validationMessage={
-                wfsLayer.wfs_service_layer_name ? '' : 'Select a layer'
+                vectorLayer.wfs_service_layer_name ? '' : 'Select a layer'
               }
             />
           )}
         </>
       )}
-      {wfsLayer?.type === 'upload' && <div>TODO: Upload</div>}
-      {wfsLayer?.type === 'wfs' && wfsLayer?.wfs_url && wfsLayer.wfs_layer && (
+      {vectorLayer?.type === 'upload' && <div>TODO: Upload</div>}
+      {vectorLayer?.type === 'wfs' && vectorLayer?.wfs_url && vectorLayer.wfs_layer && (
         <TextField
           label="Label"
           name="label"
-          value={wfsLayer.label ?? ''}
+          value={vectorLayer.label ?? ''}
           onChange={onChange}
         />
       )}
-      {!['wfs', 'upload'].includes(wfsLayer.type) && (
-        <TextFieldInactive label="Label" name="label" value={wfsLayer.label} />
+      {!['wfs', 'upload'].includes(vectorLayer.type) && (
+        <TextFieldInactive label="Label" name="label" value={vectorLayer.label} />
       )}
-      {((wfsLayer?.type === 'wfs' && wfsLayer?.wfs_url && wfsLayer.wfs_layer) ||
-        !['wfs', 'upload'].includes(wfsLayer.type)) && (
+      {((vectorLayer?.type === 'wfs' && vectorLayer?.wfs_url && vectorLayer.wfs_layer) ||
+        !['wfs', 'upload'].includes(vectorLayer.type)) && (
         <>
           {/* TODO: add display by property field */}
-          <PropertyField vectorLayer={wfsLayer} />
+          <PropertyField vectorLayer={vectorLayer} />
           <TextField
             label="Max Zoom"
             name="max_zoom"
-            value={wfsLayer.max_zoom ?? ''}
+            value={vectorLayer.max_zoom ?? ''}
             onChange={onChange}
             type="number"
             max={19}
@@ -98,7 +98,7 @@ export const Component = ({
           <TextField
             label="Min Zoom"
             name="min_zoom"
-            value={wfsLayer.min_zoom ?? ''}
+            value={vectorLayer.min_zoom ?? ''}
             onChange={onChange}
             type="number"
             max={19}
@@ -108,7 +108,7 @@ export const Component = ({
           <TextField
             label="Max number of features"
             name="max_features"
-            value={wfsLayer.max_features ?? ''}
+            value={vectorLayer.max_features ?? ''}
             onChange={onChange}
             type="number"
             validationMessage="Drawing too many features can crash the app. Your mileage may vary"
@@ -116,27 +116,27 @@ export const Component = ({
           {/* <VectorLayerDisplay row={row} /> */}
         </>
       )}
-      {wfsLayer?.type === 'upload' && (
+      {vectorLayer?.type === 'upload' && (
         <>
           <TextFieldInactive
             label="Feature count"
             name="feature_count"
-            value={wfsLayer.feature_count}
+            value={vectorLayer.feature_count}
           />
           <TextFieldInactive
             label="Point count"
             name="point_count"
-            value={wfsLayer.point_count}
+            value={vectorLayer.point_count}
           />
           <TextFieldInactive
             label="Line count"
             name="line_count"
-            value={wfsLayer.line_count}
+            value={vectorLayer.line_count}
           />
           <TextFieldInactive
             label="Polygon count"
             name="polygon_count"
-            value={wfsLayer.polygon_count}
+            value={vectorLayer.polygon_count}
           />
         </>
       )}

@@ -1,8 +1,8 @@
 import { memo, useCallback, useState } from 'react'
 import { Field, Input } from '@fluentui/react-components'
 
-import { FetchWmsCapabilities } from './FetchWmsCapabilities.tsx'
-import { Wms_layers as WmsLayer } from '../../../generated/client/index.ts'
+import { FetchWfsCapabilities } from './FetchWfsCapabilities.tsx'
+import { Vector_layers as VectorLayer } from '../../../../generated/client/index.ts'
 
 const titleStyle = { margin: 0, fontSize: '1em' }
 const rowStyle = {
@@ -14,18 +14,18 @@ const rowStyle = {
 const hintPStyle = { margin: 0 }
 
 type Props = {
-  wmsLayer: WmsLayer
+  vectorLayer: VectorLayer
 }
 
-export const CreateWmsService = memo(({ wmsLayer }: Props) => {
+export const CreateWfsService = memo(({ vectorLayer }: Props) => {
   const [url, setUrl] = useState('')
   const onChange = useCallback((e) => setUrl(e.target.value), [])
 
-  console.log('CreateWmsService, url:', url)
+  console.log('CreateWfsService, url:', url)
 
   return (
     <div>
-      <h2 style={titleStyle}>Add Web Map Service (WMS)</h2>
+      <h2 style={titleStyle}>Add Web Feature Service (WFS)</h2>
       <div style={rowStyle}>
         <Field
           label="URL"
@@ -34,10 +34,10 @@ export const CreateWmsService = memo(({ wmsLayer }: Props) => {
           autoFocus={false}
           hint={
             url ? (
-              'The base url of the WMS'
+              'The base url of the WFS'
             ) : (
               <>
-                <p style={hintPStyle}>Enter the base url of the WMS.</p>
+                <p style={hintPStyle}>Enter the base url of the WFS.</p>
                 <p style={hintPStyle}>
                   Then capabilities can be loaded and a layer selected.
                 </p>
@@ -48,7 +48,7 @@ export const CreateWmsService = memo(({ wmsLayer }: Props) => {
         >
           <Input
             contentAfter={
-              <FetchWmsCapabilities wmsLayer={wmsLayer} url={url} />
+              <FetchWfsCapabilities vectorLayer={vectorLayer} url={url} />
             }
             appearance="underline"
           />
