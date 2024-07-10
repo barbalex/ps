@@ -21,8 +21,6 @@ export const CreateWfsService = memo(({ vectorLayer }: Props) => {
   const [url, setUrl] = useState('')
   const onChange = useCallback((e) => setUrl(e.target.value), [])
 
-  console.log('CreateWfsService, url:', url)
-
   return (
     <div>
       <h2 style={titleStyle}>Add Web Feature Service (WFS)</h2>

@@ -39,6 +39,11 @@ export const FetchWmsCapabilities = memo(({ wmsLayer, url }: Props) => {
   const onFetchCapabilities = useCallback(async () => {
     if (!url) return
 
+    // TODO:
+    // 1. check if wms_service exists for this url
+    // 2. if so, update it and its layers
+    // 2. if not, create service
+
     const service = createWmsService({ url, project_id: wmsLayer.project_id })
     try {
       await db.wms_services.create({ data: service })
