@@ -43,6 +43,7 @@ export const Layers = memo(() => {
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
+  console.log('Layers, appState:', appState)
   const mapLayerSorting = appState?.map_layer_sorting ?? []
 
   // for every layer_presentation_id in mapLayerSorting, get the layer_presentation
@@ -53,7 +54,7 @@ export const Layers = memo(() => {
         vector_layers: {
           include: {
             vector_layer_displays: true,
-            wms_services: { include: { wms_service_layers: true } },
+            wfs_services: { include: { wfs_service_layers: true } },
           },
         },
         wms_layers: {
@@ -62,6 +63,7 @@ export const Layers = memo(() => {
       },
     }),
   )
+  console.log('Layers, layerPresentations:', layerPresentations)
   const wmsLayersCount = layerPresentations.filter(
     (lp) => !!lp.wms_layers,
   ).length

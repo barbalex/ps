@@ -16,14 +16,12 @@ export const WMS = memo(({ layerPresentation }: Props) => {
 
   const { db } = useElectric()!
 
-  const layer = layerPresentation.tile_layers
+  const layer = layerPresentation.wms_layers
 
   const onTileErrorDebounced = useDebouncedCallback(
     onTileError.bind(this, db, map, layer),
     600,
   )
-
-  console.log('WMS, layer:', { layer, layerPresentation })
 
   // TODO:
   // leaflet calls server internally
