@@ -1,4 +1,4 @@
-import { useCallback, memo, useState } from 'react'
+import { useCallback, memo } from 'react'
 import { createWorkerFactory, useWorker } from '@shopify/react-web-worker'
 import { Button, Spinner } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
@@ -24,65 +24,108 @@ const buttonStyle = {
 type Props = {
   vectorLayer: VectorLayer
   url: string
+  fetching: boolean
+  setFetching: (fetching: boolean) => void
 }
 
-export const FetchWfsCapabilities = memo(({ vectorLayer, url }: Props) => {
-  const { db } = useElectric()!
-  const worker = useWorker(createWorker)
+export const FetchWfsCapabilities = memo(
+  ({ vectorLayer, url, fetching, setFetching }: Props) => {
+    const { db } = useElectric()!
+    const worker = useWorker(createWorker)
 
-  const [fetching, setFetching] = useState(false)
+    const { results: wfsServiceLayers = [] } = useLiveQuery(
+      db.wfs_service_layers.liveMany({
+        where: { wfs_service_id: vectorLayer.wfs_service_id },
+        select: { wfs_service_layer_id: true },
+      }),
+    )
 
-  const { results: wfsServiceLayers = [] } = useLiveQuery(
-    db.wfs_service_layers.liveMany({
-      where: { wfs_service_id: vectorLayer.wfs_service_id },
-      select: { wfs_service_layer_id: true },
-    }),
-  )
+    const onFetchCapabilities = useCallback(async () => {
+      const urlTrimmed = url?.trim?.()
+      if (!urlTrimmed) return
 
-  const onFetchCapabilities = useCallback(async () => {
-    // console.log(
-    //   'FetchWfsCapabilities.onFetchCapabilities, wfsService:',
-    //   wfsService,
-    // )
-    // if (!wfsService?.url) return
-    // // show loading indicator
-    // setFetching(true)
-    // const data = createNotification({
-    //   title: `Loading capabilities for ${wfsService.url}`,
-    //   intent: 'info',
-    //   paused: true,
-    // })
-    // await db.notifications.create({ data })
-    // try {
-    //   await worker.getWfsCapabilitiesData({ vectorLayer, db })
-    // } catch (error) {
-    //   console.error(
-    //     'Url, onBlur, error getting capabilities data:',
-    //     error?.message ?? error,
-    //   )
-    //   // TODO: surface error to user
-    // }
-    // try {
-    //   await db.notifications.update({
-    //     where: { notification_id: data.notification_id },
-    //     data: { paused: false, timeout: 500 },
-    //   })
-    // } catch (error) {
-    //   console.log('Url, onBlur, error updating notification:', error)
-    // }
-    // setFetching(false)
-  }, [])
+      // 1. check if wfs_service exists for this url
+      const existingService = await db.wfs_services.findFirst({
+        where: { url: urlTrimmed },
+      })
+      let service
+      if (existingService) {
+        // 2. if so, update it
+        service = { ...existingService }
+        // and remove its layers to be recreated
+        await db.wfs_service_layers.deleteMany({
+          where: { wfs_service_id: service.wfs_service_id },
+        })
+        // ensure vectorLayer.wfs_service_id is set
+        await db.vector_layers.update({
+          where: { vector_layer_id: vectorLayer.vector_layer_id },
+          data: { wfs_service_id: service.wfs_service_id },
+        })
+      } else {
+        // 3. if not, create service, then update that
+        const serviceData = createWmsService({
+          url: urlTrimmed,
+          project_id: vectorLayer.project_id,
+        })
+        try {
+          service = await db.wfs_services.create({ data: serviceData })
+          await db.vector_layers.update({
+            where: { vector_layer_id: vectorLayer.vector_layer_id },
+            data: { wfs_service_id: serviceData.wfs_service_id },
+          })
+        } catch (error) {
+          console.error('FetchCapabilities.onFetchCapabilities 3', error)
+        }
+      }
 
-  return (
-    <Button
-      icon={fetching ? <Spinner size="tiny" /> : undefined}
-      onClick={onFetchCapabilities}
-      style={buttonStyle}
-      disabled={!url}
-    >
-      {fetching
-        ? `Loading Capabilities (${wfsServiceLayers.length})`
-        : `Fetch Capabilities`}
-    </Button>
-  )
-})
+      // show loading indicator
+      setFetching(true)
+      const data = await createNotification({
+        title: `Loading capabilities for ${urlTrimmed}`,
+        intent: 'info',
+        paused: true,
+      })
+      await db.notifications.create({ data })
+
+      // fetch capabilities
+      try {
+        await worker.getWfsCapabilitiesData({
+          vectorLayer,
+          service,
+          db,
+        })
+      } catch (error) {
+        console.error(
+          'hello WmsBaseUrl, onBlur, error getting capabilities data:',
+          error?.message ?? error,
+        )
+        // surface error to user
+        const data = await createNotification({
+          title: `Error loading capabilities for ${urlTrimmed}`,
+          body: error?.message ?? error,
+          intent: 'error',
+          paused: false,
+        })
+        await db.notifications.create({ data })
+      }
+      setFetching(false)
+      await db.notifications.update({
+        where: { notification_id: data.notification_id },
+        data: { paused: false, timeout: 500 },
+      })
+    }, [db, setFetching, url, wmsLayer, worker])
+
+    return (
+      <Button
+        icon={fetching ? <Spinner size="tiny" /> : undefined}
+        onClick={onFetchCapabilities}
+        style={buttonStyle}
+        disabled={!url}
+      >
+        {fetching
+          ? `Loading Capabilities (${wfsServiceLayers.length})`
+          : `Fetch Capabilities`}
+      </Button>
+    )
+  },
+)

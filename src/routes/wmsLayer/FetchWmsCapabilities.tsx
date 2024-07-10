@@ -83,9 +83,8 @@ export const FetchWmsCapabilities = memo(
         paused: true,
       })
       await db.notifications.create({ data })
-      // TODO: 1. check if wms_service_layers exist for this service
 
-      // 2. if not, fetch capabilities
+      // fetch capabilities
       try {
         await worker.getWmsCapabilitiesData({
           wmsLayer,
@@ -111,7 +110,7 @@ export const FetchWmsCapabilities = memo(
         where: { notification_id: data.notification_id },
         data: { paused: false, timeout: 500 },
       })
-    }, [db, url, wmsLayer, worker])
+    }, [db, setFetching, url, wmsLayer, worker])
 
     return (
       <Button

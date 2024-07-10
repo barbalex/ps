@@ -7,13 +7,13 @@ import {
 
 interface Props {
   vectorLayer: VectorLayer
-  returnValue?: boolean
+  service: WfsService
   db: Electric
 }
 
 export const getWfsCapabilitiesData = async ({
   vectorLayer,
-  returnValue = false,
+  service,
   db,
 }: Props) => {
   console.log('getWfsCapabilitiesData', { vectorLayer, returnValue, db })
@@ -196,9 +196,6 @@ export const getWfsCapabilitiesData = async ({
       error,
     )
   }
-
-  // enable updating in a single operation
-  if (returnValue) return values
 
   return
 }

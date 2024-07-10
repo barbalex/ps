@@ -21,6 +21,11 @@ export const CreateWfsService = memo(({ vectorLayer }: Props) => {
   const [url, setUrl] = useState('')
   const onChange = useCallback((e) => setUrl(e.target.value), [])
 
+  const [fetching, setFetching] = useState(false)
+  // TODO: when feching ends, set focus to DropdownFieldFromWmsServiceLayers
+
+  if (vectorLayer.wfs_service_id && !fetching) return null
+
   return (
     <div>
       <h2 style={titleStyle}>Add Web Feature Service (WFS)</h2>
@@ -29,7 +34,6 @@ export const CreateWfsService = memo(({ vectorLayer }: Props) => {
           label="URL"
           value={url}
           onChange={onChange}
-          autoFocus={false}
           hint={
             url ? (
               'The base url of the WFS'
@@ -46,7 +50,12 @@ export const CreateWfsService = memo(({ vectorLayer }: Props) => {
         >
           <Input
             contentAfter={
-              <FetchWfsCapabilities vectorLayer={vectorLayer} url={url} />
+              <FetchWfsCapabilities
+                vectorLayer={vectorLayer}
+                url={url}
+                fetching={fetching}
+                setFetching={setFetching}
+              />
             }
             appearance="underline"
           />
