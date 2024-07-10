@@ -11,7 +11,6 @@ import {
   createWmsService,
 } from '../../modules/createRows.ts'
 
-import '../../form.css'
 const createWorker = createWorkerFactory(
   () => import('./getWmsCapabilitiesData.ts'),
 )

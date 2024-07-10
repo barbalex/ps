@@ -1,9 +1,10 @@
-import { useParams, useOutletContext } from 'react-router-dom'
+import { useOutletContext } from 'react-router-dom'
 
 import { TextFieldInactive } from '../../../components/shared/TextFieldInactive.tsx'
 import { TextField } from '../../../components/shared/TextField.tsx'
 import { RadioGroupField } from '../../../components/shared/RadioGroupField.tsx'
-import { DropdownFieldFromWmsLayers } from '../../../components/shared/DropdownFieldFromWmsLayers.tsx'
+import { DropdownFieldFromWfsServiceLayers } from './DropdownFieldFromWfsServiceLayers.tsx'
+import { DropdownField } from '../../../components/shared/DropdownField.tsx'
 import { PropertyField } from './PropertyField.tsx'
 import { FetchWfsCapabilities } from './FetchWfsCapabilities.tsx'
 import { isValidUrl } from '../../../modules/isValidUrl.ts'
@@ -20,78 +21,73 @@ export const Component = ({
   // beware: contextFromOutlet is undefined if not inside an outlet
   const outletContext = useOutletContext()
   const onChange = onChangeFromProps ?? outletContext?.onChange
-  const row = rowFromProps ?? outletContext?.row ?? {}
-
-  const { vector_layer_id } = useParams()
+  const wfsLayer = rowFromProps ?? outletContext?.row ?? {}
 
   return (
     <>
-      {['wfs', 'upload'].includes(row.type) && (
+      {['wfs', 'upload'].includes(wfsLayer.type) && (
         <RadioGroupField
           label="Type"
           name="type"
           list={['wfs', 'upload']}
-          value={row.type ?? ''}
+          value={wfsLayer.type ?? ''}
           onChange={onChange}
           autoFocus
           ref={autoFocusRef}
         />
       )}
-      {row?.type === 'wfs' && (
+      {wfsLayer?.type === 'wfs' && (
         <>
-          <TextField
-            label="Url"
-            name="wfs_url"
-            value={row.wfs_url ?? ''}
+          <DropdownField
+            label="WFS Service"
+            name="wfs_service_id"
+            labelField="url"
+            table="wfs_services"
+            value={wfsLayer.wfs_service_id ?? ''}
+            orderBy={{ url: 'asc' }}
             onChange={onChange}
+            autoFocus={true}
             validationMessage={
-              row?.wfs_url ? (
-                'The url of the service providing the WFS'
-              ) : (
-                <>
-                  <p>Enter the url of the service providing the WFS.</p>
-                  <p>Then capabilities can be loaded and a layer selected.</p>
-                </>
-              )
+              wfsLayer.wfs_service_id
+                ? ''
+                : 'Choose from a configured WFS service. If none exists, create one.'
             }
           />
-          {!!row?.wfs_url && isValidUrl(row.wfs_url) && (
-            <FetchWfsCapabilities vectorLayer={row} />
+          <div>TODO: create wms service component</div>
+          {!!wfsLayer?.wfs_url && isValidUrl(wfsLayer.wfs_url) && (
+            <FetchWfsCapabilities vectorLayer={wfsLayer} />
           )}
-          {!!row?.wfs_version && (
-            <DropdownFieldFromWmsLayers
-              label="Layer"
-              name="wfs_layer"
-              value={row.wfs_layer ?? ''}
-              vector_layer_id={vector_layer_id}
-              onChange={onChange}
-              validationMessage={row.wfs_layer ? '' : 'Select a layer'}
-              row={row}
+          {!!wfsLayer?.wfs_service_id && (
+            <DropdownFieldFromWfsServiceLayers
+              wfsLayer={wfsLayer}
+              validationMessage={
+                wfsLayer.wfs_service_layer_name ? '' : 'Select a layer'
+              }
             />
           )}
         </>
       )}
-      {row?.type === 'upload' && <div>TODO: Upload</div>}
-      {row?.type === 'wfs' && row?.wfs_url && row.wfs_layer && (
+      {wfsLayer?.type === 'upload' && <div>TODO: Upload</div>}
+      {wfsLayer?.type === 'wfs' && wfsLayer?.wfs_url && wfsLayer.wfs_layer && (
         <TextField
           label="Label"
           name="label"
-          value={row.label ?? ''}
+          value={wfsLayer.label ?? ''}
           onChange={onChange}
         />
       )}
-      {!['wfs', 'upload'].includes(row.type) && (
-        <TextFieldInactive label="Label" name="label" value={row.label} />
+      {!['wfs', 'upload'].includes(wfsLayer.type) && (
+        <TextFieldInactive label="Label" name="label" value={wfsLayer.label} />
       )}
-      {((row?.type === 'wfs' && row?.wfs_url && row.wfs_layer) ||
-        !['wfs', 'upload'].includes(row.type)) && (
+      {((wfsLayer?.type === 'wfs' && wfsLayer?.wfs_url && wfsLayer.wfs_layer) ||
+        !['wfs', 'upload'].includes(wfsLayer.type)) && (
         <>
           {/* TODO: add display by property field */}
-          <PropertyField vectorLayer={row} />
+          <PropertyField vectorLayer={wfsLayer} />
           <TextField
             label="Max Zoom"
             name="max_zoom"
-            value={row.max_zoom ?? ''}
+            value={wfsLayer.max_zoom ?? ''}
             onChange={onChange}
             type="number"
             max={19}
@@ -101,7 +97,7 @@ export const Component = ({
           <TextField
             label="Min Zoom"
             name="min_zoom"
-            value={row.min_zoom ?? ''}
+            value={wfsLayer.min_zoom ?? ''}
             onChange={onChange}
             type="number"
             max={19}
@@ -111,7 +107,7 @@ export const Component = ({
           <TextField
             label="Max number of features"
             name="max_features"
-            value={row.max_features ?? ''}
+            value={wfsLayer.max_features ?? ''}
             onChange={onChange}
             type="number"
             validationMessage="Drawing too many features can crash the app. Your mileage may vary"
@@ -119,27 +115,27 @@ export const Component = ({
           {/* <VectorLayerDisplay row={row} /> */}
         </>
       )}
-      {row?.type === 'upload' && (
+      {wfsLayer?.type === 'upload' && (
         <>
           <TextFieldInactive
             label="Feature count"
             name="feature_count"
-            value={row.feature_count}
+            value={wfsLayer.feature_count}
           />
           <TextFieldInactive
             label="Point count"
             name="point_count"
-            value={row.point_count}
+            value={wfsLayer.point_count}
           />
           <TextFieldInactive
             label="Line count"
             name="line_count"
-            value={row.line_count}
+            value={wfsLayer.line_count}
           />
           <TextFieldInactive
             label="Polygon count"
             name="polygon_count"
-            value={row.polygon_count}
+            value={wfsLayer.polygon_count}
           />
         </>
       )}

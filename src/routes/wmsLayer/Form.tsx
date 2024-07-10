@@ -38,7 +38,7 @@ export const Component = memo(
           validationMessage={
             wmsLayer.wms_service_id
               ? ''
-              : 'Choose from a configured WMS service. If none exists, create one first.'
+              : 'Choose from a configured WMS service. If none exists, create one.'
           }
         />
         {!wmsLayer.wms_service_id && <CreateWmsService wmsLayer={wmsLayer} />}
