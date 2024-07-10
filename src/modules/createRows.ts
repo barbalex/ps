@@ -492,18 +492,20 @@ export const createVectorLayer = ({
 })
 
 export const createWfsService = ({
+  project_id = null,
   url = null,
   version = null,
-  infoFormats = null,
-  infoFormat = null,
-  defaultCrs = null,
+  info_formats = null,
+  info_format = null,
+  default_crs = null,
 }) => ({
   wfs_service_id: uuidv7(),
+  project_id,
   version,
   url,
-  infoFormats,
-  infoFormat,
-  defaultCrs,
+  info_formats,
+  info_format,
+  default_crs,
 })
 
 export const createWfsServiceLayer = ({
@@ -558,22 +560,24 @@ export const createLayerPresentation = ({
 })
 
 export const createWmsService = ({
+  project_id = null,
   url = null,
-  imageFormats = null,
-  imageFormat = null,
+  image_formats = null,
+  image_format = null,
   version = null,
-  infoFormats = null,
-  infoFormat = null,
-  defaultCrs = null,
+  info_formats = null,
+  info_format = null,
+  default_crs = null,
 }) => ({
   wms_service_id: uuidv7(),
+  project_id,
   version,
   url,
-  imageFormats,
-  imageFormat,
-  infoFormats,
-  infoFormat,
-  defaultCrs,
+  image_formats,
+  image_format,
+  info_formats,
+  info_format,
+  default_crs,
 })
 
 export const createWmsServiceLayer = ({

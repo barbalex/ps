@@ -25,7 +25,7 @@ export const getCapabilitiesData = async ({ wmsLayer, db, service }: Props) => {
     db,
   })
 
-  // console.log('getCapabilitiesData 2, capabilities:', capabilities)
+  console.log('getCapabilitiesData 2, capabilities:', capabilities)
 
   if (!capabilities) return undefined
 

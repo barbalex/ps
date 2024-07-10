@@ -97,7 +97,6 @@ export const DropdownFieldFromWmsServiceLayers = memo(
           onOptionSelect={onOptionSelect}
           appearance="underline"
           clearable
-          ref={ref}
         >
           {options.map((option) => {
             return (
