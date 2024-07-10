@@ -467,13 +467,11 @@ export const createAppState = ({ user_id }) => ({
   tabs: ['tree', 'data'],
 })
 
-export const createTileLayer = ({ project_id }) => ({
-  tile_layer_id: uuidv7(),
+export const createWmsLayer = ({ project_id }) => ({
+  wms_layer_id: uuidv7(),
   project_id,
-  type: 'wms',
   max_zoom: 19,
   min_zoom: 0,
-  wms_transparent: false,
 })
 
 export const createVectorLayer = ({
@@ -491,6 +489,36 @@ export const createVectorLayer = ({
   max_zoom,
   min_zoom,
   max_features,
+})
+
+export const createWfsService = ({
+  project_id = null,
+  url = null,
+  version = null,
+  info_formats = null,
+  info_format = null,
+  default_crs = null,
+}) => ({
+  wfs_service_id: uuidv7(),
+  project_id,
+  version,
+  url,
+  info_formats,
+  info_format,
+  default_crs,
+})
+
+export const createWfsServiceLayer = ({
+  wfs_service_id,
+  name = null,
+  label = null,
+  queryable = null,
+}) => ({
+  wfs_service_layer_id: uuidv7(),
+  wfs_service_id,
+  name,
+  label,
+  queryable,
 })
 
 export const createVectorLayerDisplay = ({
@@ -516,17 +544,57 @@ export const createVectorLayerDisplay = ({
 
 export const createLayerPresentation = ({
   vector_layer_id = null,
-  tile_layer_id = null,
+  wms_layer_id = null,
   account_id = null,
   active = false,
+  transparent = false,
 }) => ({
   layer_presentation_id: uuidv7(),
   account_id,
   vector_layer_id,
-  tile_layer_id,
+  wms_layer_id,
   active,
   opacity_percent: 100,
   grayscale: false,
+  transparent,
+})
+
+export const createWmsService = ({
+  project_id = null,
+  url = null,
+  image_formats = null,
+  image_format = null,
+  version = null,
+  info_formats = null,
+  info_format = null,
+  default_crs = null,
+}) => ({
+  wms_service_id: uuidv7(),
+  project_id,
+  version,
+  url,
+  image_formats,
+  image_format,
+  info_formats,
+  info_format,
+  default_crs,
+})
+
+export const createWmsServiceLayer = ({
+  wms_service_id,
+  name = null,
+  label = null,
+  queryable = null,
+  legend_url = null,
+  legend_image = null,
+}) => ({
+  wms_service_layer_id: uuidv7(),
+  wms_service_id,
+  name,
+  label,
+  queryable,
+  legend_url,
+  legend_image,
 })
 
 export const createChart = ({

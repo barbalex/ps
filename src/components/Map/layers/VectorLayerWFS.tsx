@@ -28,6 +28,7 @@ import {
   Vector_layers as VectorLayer,
   Vector_layer_displays as VectorLayerDisplay,
   Layer_presentations as LayerPresentation,
+  Wfs_services as WfsService,
 } from '../../../generated/client/index.ts'
 import { createNotification } from '../../../modules/createRows.ts'
 // import { epsgFrom4326 } from '../../../modules/epsgFrom4326.ts'
@@ -77,6 +78,7 @@ export const VectorLayerWFS = ({ layer, layerPresentation }: Props) => {
 
   // TODO: const layer = layerPresentation.vector_layers
   const display: VectorLayerDisplay = layer.vector_layer_displays?.[0]
+  const wfsService: WfsService = layer.wfs_services
 
   const removeNotifs = useCallback(async () => {
     await db.notifications.deleteMany({
@@ -86,9 +88,9 @@ export const VectorLayerWFS = ({ layer, layerPresentation }: Props) => {
   }, [db.notifications])
 
   const map = useMapEvent('zoomend', () => setZoom(map.getZoom()))
-  // wfs_default_crs is of the form: "urn:ogc:def:crs:EPSG::4326"
+  // default_crs is of the form: "urn:ogc:def:crs:EPSG::4326"
   // extract the relevant parts for db.crs.code:
-  const wfsDefaultCrsArray = layer.wfs_default_crs?.split(':').slice(-3)
+  const wfsDefaultCrsArray = wfsService.default_crs?.split(':').slice(-3)
   const wfsDefaultCrsCode = [wfsDefaultCrsArray[0], wfsDefaultCrsArray[2]].join(
     ':',
   )
@@ -117,11 +119,11 @@ export const VectorLayerWFS = ({ layer, layerPresentation }: Props) => {
       let res
       const params = {
         service: 'WFS',
-        version: layer.wfs_version,
+        version: wfsService.version,
         request: 'GetFeature',
-        typeName: layer.wfs_layer?.value,
+        typeName: layer.wfs_service_layer_name,
         srsName: wfsDefaultCrsCode ?? 'EPSG:4326',
-        outputFormat: layer.wfs_output_format?.value,
+        outputFormat: wfsService.info_format,
         maxfeatures: layer.max_features ? layer.max_features : 1001,
         // seems that bbox expects the layers default crs
         // if not, returns 0 features
@@ -130,7 +132,7 @@ export const VectorLayerWFS = ({ layer, layerPresentation }: Props) => {
       try {
         res = await axios({
           method: 'get',
-          url: layer.wfs_url,
+          url: wfsService.url,
           params,
         })
       } catch (error) {
@@ -169,10 +171,10 @@ export const VectorLayerWFS = ({ layer, layerPresentation }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       layer.label,
-      layer.wfs_layer,
-      layer.wfs_output_format,
-      layer.wfs_url,
-      layer.wfs_version,
+      layer.wfs_service_layer_name,
+      wfsService.info_format,
+      wfsService.url,
+      wfsService.version,
       removeNotifs,
     ],
   )

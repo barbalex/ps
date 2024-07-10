@@ -36,7 +36,7 @@ import { SliderField } from '../../../../shared/SliderField.tsx'
 import { SwitchField } from '../../../../shared/SwitchField.tsx'
 import {
   Vector_layers as VectorLayer,
-  Tile_layers as TileLayer,
+  Wms_layers as WmsLayer,
 } from '../../../../../generated/client/index.ts'
 import { ListContext } from './index.tsx'
 import { itemKey, isItemData } from './shared.ts'
@@ -52,14 +52,14 @@ function useListContext() {
 }
 
 type Props = {
-  layer: VectorLayer | TileLayer
+  layer: VectorLayer | WmsLayer
   index: boolean
   layerCount: number
 }
 
 type ItemData = {
   [itemKey]: true
-  layer: VectorLayer | TileLayer
+  layer: VectorLayer | WmsLayer
   index: number
   instanceId: symbol
 }
@@ -69,7 +69,7 @@ function getItemData({
   index,
   instanceId,
 }: {
-  layer: VectorLayer | TileLayer
+  layer: VectorLayer | WmsLayer
   index: number
   instanceId: symbol
 }): ItemData {
@@ -284,13 +284,21 @@ export const ActiveLayer = memo(
               value={layerPresentation.opacity_percent}
               onChange={onChange}
             />
-            {layer.tile_layer_id && (
-              <SwitchField
-                label="Grayscale"
-                name="grayscale"
-                value={layerPresentation.grayscale}
-                onChange={onChange}
-              />
+            {layer.wms_layer_id && (
+              <>
+                <SwitchField
+                  label="Transparent"
+                  name="transparent"
+                  value={layerPresentation.transparent}
+                  onChange={onChange}
+                />
+                <SwitchField
+                  label="Grayscale"
+                  name="grayscale"
+                  value={layerPresentation.grayscale}
+                  onChange={onChange}
+                />
+              </>
             )}
           </AccordionPanel>
           {closestEdge && <DropIndicator edge={closestEdge} gap="1px" />}

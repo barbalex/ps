@@ -45,12 +45,12 @@ export const Layers = memo(({ isNarrow }) => {
   // const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
-  // 1. list all layers (own, tile, vector)
+  // 1. list all layers (own, wms, vector)
   const where = project_id ? { project_id } : {}
   // TODO: when including layer_presentations, no results are returned
   // unlike with vector_layer_displays. Maybe because no layer_presentations exist?
-  const { results: tileLayers = [] } = useLiveQuery(
-    db.tile_layers.liveMany({
+  const { results: wmsLayers = [] } = useLiveQuery(
+    db.wms_layers.liveMany({
       where,
       // include: { layer_presentations: true },
     }),
@@ -71,17 +71,17 @@ export const Layers = memo(({ isNarrow }) => {
           {
             vector_layer_id: { in: vectorLayers.map((l) => l.vector_layer_id) },
           },
-          { tile_layer_id: { in: tileLayers.map((l) => l.tile_layer_id) } },
+          { wms_layer_id: { in: wmsLayers.map((l) => l.wms_layer_id) } },
         ],
       },
     }),
   )
   // 2. when one is set active, add layer_presentations for it
 
-  const tiles = tileLayers.filter(
+  const wms = wmsLayers.filter(
     (l) =>
       !layerPresentations.some(
-        (lp) => lp.tile_layer_id === l.tile_layer_id && lp.active,
+        (lp) => lp.wms_layer_id === l.wms_layer_id && lp.active,
       ),
   )
   const own = vectorLayers
@@ -105,7 +105,7 @@ export const Layers = memo(({ isNarrow }) => {
     async (layer) => {
       // 1. check if layer has a presentation
       const where = {
-        ...(layer.tile_layer_id ? { tile_layer_id: layer.tile_layer_id } : {}),
+        ...(layer.wms_layer_id ? { wms_layer_id: layer.wms_layer_id } : {}),
         ...(layer.vector_layer_id
           ? { vector_layer_id: layer.vector_layer_id }
           : {}),
@@ -114,9 +114,7 @@ export const Layers = memo(({ isNarrow }) => {
       // 2. if not, create one
       if (!presentation) {
         const data = createLayerPresentation({
-          ...(layer.tile_layer_id
-            ? { tile_layer_id: layer.tile_layer_id }
-            : {}),
+          ...(layer.wms_layer_id ? { wms_layer_id: layer.wms_layer_id } : {}),
           ...(layer.vector_layer_id
             ? { vector_layer_id: layer.vector_layer_id }
             : {}),
@@ -150,26 +148,25 @@ export const Layers = memo(({ isNarrow }) => {
         <div style={formStyle}>
           <ActiveLayers isNarrow={isNarrow} />
           <section style={sectionStyle}>
-            <h2 style={titleStyle}>Tiled</h2>
+            <h2 style={titleStyle}>WMS</h2>
             <div style={layerListStyle}>
-              {tiles.length ? (
-                tiles?.map((l) => (
+              {wms.length ? (
+                wms?.map((l) => (
                   <Checkbox
-                    key={l.tile_layer_id}
+                    key={l.wms_layer_id}
                     size="large"
                     label={l.label}
                     // checked if layer has an active presentation
                     checked={
                       !!layerPresentations.find(
-                        (lp) =>
-                          lp.tile_layer_id === l.tile_layer_id && lp.active,
+                        (lp) => lp.wms_layer_id === l.wms_layer_id && lp.active,
                       )
                     }
                     onChange={() => onChangeNonActive(l)}
                   />
                 ))
               ) : (
-                <p style={noneStyle}>No inactive Tile Layers</p>
+                <p style={noneStyle}>No inactive WMS Layers</p>
               )}
             </div>
           </section>

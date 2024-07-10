@@ -21,6 +21,7 @@ export const DropdownField = memo(
       {
         name,
         label,
+        labelField = 'label',
         table,
         idField, // defaults to name, used for cases where the id field is not the same as the name field (?)
         where = {},
@@ -29,8 +30,10 @@ export const DropdownField = memo(
         onChange,
         autoFocus,
         validationMessage: validationMessageIn,
-        validationState: validationStateIn,
+        validationState: validationStateIn = 'none',
         button,
+        noDataMessage = 'No data found',
+        hideWhenNoData = false,
       },
       ref,
     ) => {
@@ -42,7 +45,7 @@ export const DropdownField = memo(
         }),
       )
       const options = results.map((o) => ({
-        text: o.label,
+        text: o[labelField],
         value: o[idField ?? name],
       }))
       const selectedOptions = useMemo(
@@ -69,6 +72,8 @@ export const DropdownField = memo(
         [options?.length, table, validationMessageIn],
       )
 
+      if (hideWhenNoData && !options?.length) return null
+
       return (
         <Field
           label={label ?? '(no label provided)'}
@@ -89,15 +94,19 @@ export const DropdownField = memo(
               style={ddStyle}
               clearable
             >
-              {options.map((params) => {
-                const { text, value } = params
+              {options.length ? (
+                options.map((params) => {
+                  const { text, value } = params
 
-                return (
-                  <Option key={value} value={value}>
-                    {text}
-                  </Option>
-                )
-              })}
+                  return (
+                    <Option key={value} value={value}>
+                      {text}
+                    </Option>
+                  )
+                })
+              ) : (
+                <Option value={''}>{noDataMessage}</Option>
+              )}
             </Dropdown>
             {!!button && button}
           </div>

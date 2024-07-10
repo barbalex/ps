@@ -19,7 +19,14 @@ export const Component = memo(() => {
 
   const { db } = useElectric()!
   const { results: row } = useLiveQuery(
-    db.vector_layers.liveUnique({ where: { vector_layer_id } }),
+    db.vector_layers.liveUnique({
+      where: { vector_layer_id },
+      include: {
+        layer_presentations: true,
+        // wfs_services: { wfs_service_layers: true }, // returns undefined
+        wfs_services: true,
+      },
+    }),
   )
 
   const onChange = useCallback<InputProps['onChange']>(
@@ -40,9 +47,9 @@ export const Component = memo(() => {
     [db.vector_layers, vector_layer_id],
   )
 
-  if (!row) return <Loading />
+  console.log('hello VectorLayerForm, row:', row)
 
-  // console.log('hello VectorLayerForm, row:', row)
+  if (!row) return <Loading />
 
   return (
     <div className="form-outer-container">

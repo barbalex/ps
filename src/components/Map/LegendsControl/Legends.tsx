@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 import { useMap } from 'react-leaflet'
 
 import { ErrorBoundary } from '../../shared/ErrorBoundary.tsx'
-import { Tile_layers as TileLayer } from '../../../generated/client/index.ts'
+import { Wms_layers as WmsLayer } from '../../../generated/client/index.ts'
 import { useElectric } from '../../../ElectricProvider.tsx'
 
 const labelStyle = {
@@ -38,14 +38,14 @@ export const Legends = () => {
       { active: true, project_id }
     : { active: true }
 
-  const { result } = useLiveQuery(db.tile_layers.liveMany({ where }))
-  const tileLayers: TileLayer[] = result ?? []
+  const { result } = useLiveQuery(db.wms_layers.liveMany({ where }))
+  const wmsLayers: WmsLayer[] = result ?? []
   /**
    * Ensure needed data exists:
    * - wmts_url_template has template
    * - wms has base-url and layers
    */
-  const validTileLayers = tileLayers.filter((l) => {
+  const validWmsLayers = wmsLayers.filter((l) => {
     if (!l.type) return false
     if (l.type === 'wmts') {
       if (!l.wmts_url_template) return false
@@ -57,14 +57,12 @@ export const Legends = () => {
     return true
   })
 
-  // console.log('MapLegends, validTileLayers:', validTileLayers)
-
   const legends = useMemo(() => {
     const _legends = []
     // TODO:
     // add legends of tables
     // add legends of vector layers
-    for (const row of validTileLayers) {
+    for (const row of validWmsLayers) {
       for (const legend of row?._wmsLegends ?? []) {
         let objectUrl
         try {
@@ -82,7 +80,7 @@ export const Legends = () => {
       }
     }
     return _legends
-  }, [validTileLayers])
+  }, [validWmsLayers])
 
   return (
     <ErrorBoundary>

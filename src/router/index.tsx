@@ -855,19 +855,19 @@ export const router = () => {
                       ],
                     },
                     {
-                      path: 'tile-layers',
+                      path: 'wms-layers',
                       element: null,
                       handle: {
                         crumb: {
-                          text: 'Tile Layers',
-                          table: 'tile_layers',
+                          text: 'WMS Layers',
+                          table: 'wms_layers',
                           folder: true,
                         },
                       },
                       children: [
                         {
                           index: true,
-                          lazy: () => import('../routes/tileLayers.tsx'),
+                          lazy: () => import('../routes/wmsLayers.tsx'),
                         },
                         {
                           path: 'filter',
@@ -875,17 +875,16 @@ export const router = () => {
                           children: [
                             {
                               index: true,
-                              lazy: () =>
-                                import('../routes/tileLayer/Form.tsx'),
+                              lazy: () => import('../routes/wmsLayer/Form.tsx'),
                             },
                           ],
                         },
                         {
-                          path: ':tile_layer_id',
-                          lazy: () => import('../routes/tileLayer/index.tsx'),
+                          path: ':wms_layer_id',
+                          lazy: () => import('../routes/wmsLayer/index.tsx'),
                           handle: {
                             crumb: {
-                              table: 'tile_layers',
+                              table: 'wms_layers',
                               folder: false,
                             },
                           },

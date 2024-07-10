@@ -104,8 +104,8 @@ export const buildNavs = async ({
           text: 'Persons',
         },
         {
-          path: `/data/projects/${project_id}/tile-layers`,
-          text: 'Tile Layers',
+          path: `/data/projects/${project_id}/wms-layers`,
+          text: 'WMS Layers',
         },
         {
           path: `/data/projects/${project_id}/vector-layers`,

@@ -114,12 +114,18 @@ export const Syncer = memo(() => {
                     },
                   },
                   units: true,
-                  tile_layers: { include: { layer_options: true } },
+                  wms_layers: {
+                    include: {
+                      wms_services: { include: { wms_service_layers: true } },
+                    },
+                  },
+                  wms_services: { include: { wms_service_layers: true } },
+                  wfs_services: { include: { wfs_service_layers: true } },
                   vector_layers: {
                     include: {
-                      layer_options: true,
                       vector_layer_displays: true,
                       vector_layer_geoms: true,
+                      wfs_services: { include: { wfs_service_layers: true } },
                     },
                   },
                   project_reports: true,
@@ -148,9 +154,8 @@ export const Syncer = memo(() => {
               goals: true,
               goal_reports: true,
               goal_report_values: true,
-              tile_layers: true,
+              wms_layers: true,
               vector_layers: true,
-              layer_options: true,
               project_reports: true,
               subproject_reports: true,
               fields: true,
