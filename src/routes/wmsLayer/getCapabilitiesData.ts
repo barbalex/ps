@@ -5,10 +5,7 @@ import {
   Electric,
 } from '../../generated/client/index.ts'
 // import { chunkArrayWithMinSize } from '../../modules/chunkArrayWithMinSize'
-import {
-  createWmsService,
-  createWmsServiceLayer,
-} from '../../modules/createRows.ts'
+import { createWmsServiceLayer } from '../../modules/createRows.ts'
 
 interface Props {
   wmsLayer: WmsLayer
