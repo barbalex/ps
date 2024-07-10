@@ -42,9 +42,7 @@ export const Component = memo(
           }
           noDataMessage="No WMS found. You can add one."
         />
-        {!wmsLayer.wms_service_layer_name && (
-          <CreateWmsService wmsLayer={wmsLayer} />
-        )}
+        <CreateWmsService wmsLayer={wmsLayer} />
         {(wmsLayer?.wms_service_id || isFilter) && (
           <DropdownFieldFromWmsServiceLayers
             wmsLayer={wmsLayer}
