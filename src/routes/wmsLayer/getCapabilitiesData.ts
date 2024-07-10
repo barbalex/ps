@@ -14,7 +14,6 @@ interface Props {
 }
 
 export const getCapabilitiesData = async ({ wmsLayer, db, service }: Props) => {
-  console.log('getCapabilitiesData 1', { wmsLayer, db, service })
   if (!service?.url) return undefined
 
   const serviceData = {}
@@ -24,8 +23,6 @@ export const getCapabilitiesData = async ({ wmsLayer, db, service }: Props) => {
     service: 'WMS',
     db,
   })
-
-  console.log('getCapabilitiesData 2, capabilities:', capabilities)
 
   if (!capabilities) return undefined
 
@@ -41,7 +38,7 @@ export const getCapabilitiesData = async ({ wmsLayer, db, service }: Props) => {
         },
       })
     } catch (error) {
-      console.error('hello, getCapabilitiesData 3, error:', error)
+      console.error('getCapabilitiesData 3, error:', error)
     }
   }
 
@@ -64,7 +61,7 @@ export const getCapabilitiesData = async ({ wmsLayer, db, service }: Props) => {
     capabilities?.Capability?.Request?.GetFeatureInfo?.Format ?? null
 
   // set info_format if undefined
-  if (!wmsLayer?.wms_services.info_format && serviceData.info_formats?.length) {
+  if (!service.info_format && serviceData.info_formats?.length) {
     // for values see: https://docs.geoserver.org/stable/en/user/services/wms/reference.html#getfeatureinfo
     const preferedFormat =
       serviceData.info_formats.find(
@@ -92,8 +89,6 @@ export const getCapabilitiesData = async ({ wmsLayer, db, service }: Props) => {
 
   const newServiceData = { ...service, ...serviceData }
 
-  console.log('getCapabilitiesData 3', { serviceData, newServiceData })
-
   if (Object.keys(serviceData).length) {
     await db.wms_services.update({
       where: { wms_service_id: service.wms_service_id },
@@ -107,7 +102,7 @@ export const getCapabilitiesData = async ({ wmsLayer, db, service }: Props) => {
   )
 
   const layersData = layers.map((l) => ({
-    value: l.Name,
+    name: l.Name,
     label: l.Title,
     queryable: l.queryable,
     legend_url: l.Style?.[0]?.LegendURL?.[0]?.OnlineResource,
@@ -125,7 +120,7 @@ export const getCapabilitiesData = async ({ wmsLayer, db, service }: Props) => {
   //   }
   // }
 
-  for (const layerData of layersData) {
+  for await (const layerData of layersData) {
     const data = createWmsServiceLayer({
       ...layerData,
       wms_service_id: service.wms_service_id,

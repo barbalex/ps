@@ -92,7 +92,7 @@ export const FetchCapabilities = memo(({ wmsLayer, url }: Props) => {
       where: { notification_id: data.notification_id },
       data: { paused: false, timeout: 500 },
     })
-  }, [db, url, wmsLayer, wms_layer_id, worker])
+  }, [db, project_id, url, wmsLayer, wms_layer_id, worker])
 
   return (
     <Button
@@ -103,7 +103,7 @@ export const FetchCapabilities = memo(({ wmsLayer, url }: Props) => {
       disabled={!url}
     >
       {fetching
-        ? `Loading capabilities for ${url} (${wmsServiceLayers.length})`
+        ? `Loading Capabilities (${wmsServiceLayers.length})`
         : `Fetch Capabilities`}
     </Button>
   )

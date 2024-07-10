@@ -30,7 +30,7 @@ export const DropdownFieldFromWmsServiceLayers = memo(
     const onOptionSelect = useCallback(
       async (e, data) => {
         db.wms_layers.update({
-          where: { wms_layer_id },
+          where: { wms_layer_id: wmsLayer.wms_layer_id },
           data: {
             wms_service_layer_name: data.optionValue,
             label: data.optionText,
@@ -50,10 +50,6 @@ export const DropdownFieldFromWmsServiceLayers = memo(
           )
           return false
         }
-        console.log(
-          'hello DropdownFieldFromLayerOptions, onOptionSelect, blob data:',
-          res.data,
-        )
         // 3. store wms_service_layers.legend_image and legend_url
         if (res.data) {
           const wmsServiceLayer = wmsServiceLayers.find(
@@ -75,6 +71,7 @@ export const DropdownFieldFromWmsServiceLayers = memo(
       [
         db.wms_layers,
         db.wms_service_layers,
+        wmsLayer.wms_layer_id,
         wmsLayer.wms_services.url,
         wmsServiceLayers,
       ],
