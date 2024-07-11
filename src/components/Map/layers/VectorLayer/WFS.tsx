@@ -31,7 +31,6 @@ import {
   Wfs_services as WfsService,
 } from '../../../../generated/client/index.ts'
 import { createNotification } from '../../../../modules/createRows.ts'
-// import { epsgFrom4326 } from '../../../modules/epsgFrom4326.ts'
 
 const xmlViewerStyle = {
   fontSize: 'small',
@@ -76,7 +75,6 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
   const [error, setError] = useState()
   const notificationIds = useRef([])
 
-  // TODO: const layer = layerPresentation.vector_layers
   const display: VectorLayerDisplay = layer.vector_layer_displays?.[0]
   const wfsService: WfsService = layer.wfs_services
 
