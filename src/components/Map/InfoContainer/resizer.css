@@ -1,5 +1,6 @@
 .map-info-resizer {
-  background-color: white;
+  /* background-color: white; */
+  background-color: rgba(103, 216, 101, 0.2);
   position: absolute;
   z-index: 1;
 }

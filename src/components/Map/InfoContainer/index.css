@@ -26,7 +26,6 @@
   .map-info-container {
     right: 0;
     top: 0;
-    height: 100%;
     resize: horizontal;
   }
   .map-info-drawer {

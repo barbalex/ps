@@ -2,7 +2,7 @@ import { memo, Fragment } from 'react'
 
 const containerStyle = {
   borderBottom: '1px solid #ccc',
-  padding: '10px 0',
+  padding: '10px 0 0 0',
 }
 const titleStyle = {
   margin: 0,
