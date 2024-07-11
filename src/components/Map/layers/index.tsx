@@ -70,6 +70,8 @@ export const Layers = memo(() => {
     mapLayerSorting.push('osm')
   }
 
+  console.log('Layers', { layerPresentations, mapLayerSorting })
+
   // return an array of layerPresentations
   // for every one determine if is: wms, wfs, own (table)
   return mapLayerSorting.map((layerPresentationId, index) => {

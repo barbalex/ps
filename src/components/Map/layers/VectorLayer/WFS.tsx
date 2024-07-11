@@ -76,6 +76,8 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
   const [error, setError] = useState()
   const notificationIds = useRef([])
 
+  console.log('Layers.VectorLayer.WFS', layer)
+
   // TODO: const layer = layerPresentation.vector_layers
   const display: VectorLayerDisplay = layer.vector_layer_displays?.[0]
   const wfsService: WfsService = layer.wfs_services
@@ -225,6 +227,11 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
   }
 
   console.log('VectorLayerWFS, data.length:', data?.length)
+  console.log('VectorLayerWFS, layer 2:', layer)
+  // opacity needs to be converted from percent to decimal
+  const opacity = layerPresentation.opacity_percent
+    ? layerPresentation.opacity_percent / 100
+    : 1
 
   return (
     <>
@@ -233,12 +240,6 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
           layerPresentation,
         )}`}
         data={data}
-        opacity={
-          // opacity needs to be converted from percent to decimal
-          layerPresentation.opacity_percent
-            ? layerPresentation.opacity_percent / 100
-            : 1
-        }
         style={vectorLayerDisplayToProperties({
           vectorLayerDisplay: display,
           presentation: layerPresentation,
