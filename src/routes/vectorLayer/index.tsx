@@ -46,7 +46,7 @@ export const Component = memo(() => {
     [db.vector_layers, vector_layer_id],
   )
 
-  console.log('hello VectorLayerForm, row:', row)
+  // console.log('hello VectorLayerForm, row:', row)
 
   if (!row) return <Loading />
 
