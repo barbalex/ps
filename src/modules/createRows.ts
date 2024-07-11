@@ -512,13 +512,11 @@ export const createWfsServiceLayer = ({
   wfs_service_id,
   name = null,
   label = null,
-  queryable = null,
 }) => ({
   wfs_service_layer_id: uuidv7(),
   wfs_service_id,
   name,
   label,
-  queryable,
 })
 
 export const createVectorLayerDisplay = ({

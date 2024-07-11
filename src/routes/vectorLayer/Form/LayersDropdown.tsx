@@ -27,15 +27,15 @@ export const LayersDropdown = memo(({ vectorLayer, validationMessage }) => {
 
   const onOptionSelect = useCallback(
     async (e, data) => {
-      db.wfs_layers.update({
-        where: { wfs_layer_id: vectorLayer.wfs_layer_id },
+      db.vector_layers.update({
+        where: { vector_layer_id: vectorLayer.vector_layer_id },
         data: {
           wfs_service_layer_name: data.optionValue,
           label: data.optionText,
         },
       })
     },
-    [db.wfs_layers, vectorLayer.wfs_layer_id],
+    [db.vector_layers, vectorLayer.vector_layer_id],
   )
 
   const labelWithCount = options?.length ? `Layer (${options.length})` : 'Layer'

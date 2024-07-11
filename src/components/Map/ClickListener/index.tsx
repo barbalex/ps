@@ -114,6 +114,9 @@ export const ClickListener = memo(() => {
       const activeVectorLayers = vectorLayers.filter(
         (l) => l.layer_presentations?.[0]?.active,
       )
+      // need to buffer for points and polygons or it will be too hard to get their info
+      const bufferFraction = 0.00003
+      const buffer = bufferFraction + Math.abs(zoom - 19) * bufferFraction * 2
       // loop through vector layers and get infos
       for await (const layer of activeVectorLayers) {
         const wfsService = layer.wfs_services
@@ -127,7 +130,14 @@ export const ClickListener = memo(() => {
         const defaultCrs = await db.crs.findFirst({
           where: { code: wfsDefaultCrsCode },
         })
-        const [x, y] = proj4('EPSG:4326', defaultCrs?.proj4, [lng, lat])
+        const [x, y] = proj4('EPSG:4326', defaultCrs?.proj4, [
+          lng - buffer,
+          lat - buffer,
+        ])
+        const [x2, y2] = proj4('EPSG:4326', defaultCrs?.proj4, [
+          lng + buffer,
+          lat + buffer,
+        ])
         const params = {
           service: 'WFS',
           request: 'GetFeature',
@@ -136,7 +146,7 @@ export const ClickListener = memo(() => {
           typeNames: layer.wfs_service_layer_name,
           outputFormat: wfsService.info_format ?? 'application/vnd.ogc.gml',
           // bbox needs to be in default_crs:
-          bbox: `${x},${y},${x},${y}`,
+          bbox: `${x},${y},${x2},${y2}`,
           // cql_filter: `INTERSECTS(geom, POINT (${lng} ${lat}))`, // did not work
         }
         const requestData = await fetchData({ db, url: wfsService.url, params })

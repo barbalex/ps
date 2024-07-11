@@ -36,7 +36,6 @@ export const getWfsCapabilitiesData = async ({
   if (!capabilitiesData) return undefined
 
   const capabilities = capabilitiesData?.HTML?.BODY?.['WFS:WFS_CAPABILITIES']
-
   console.log('getWfsCapabilitiesData, capabilities:', capabilities)
 
   // 1. wfs version
@@ -108,8 +107,8 @@ export const getWfsCapabilitiesData = async ({
   console.log('getWfsCapabilitiesData, acceptableLayers:', acceptableLayers)
 
   const layersData = acceptableLayers.map((l) => ({
-    name: l.Name?.['#text'],
-    label: l.Title?.['#text'],
+    name: l.NAME?.['#text'],
+    label: l.TITLE?.['#text'],
   }))
   console.log('getWfsCapabilitiesData, layersData:', layersData)
 
