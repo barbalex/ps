@@ -10,7 +10,7 @@ import {
 } from '../../../generated/client/index.ts'
 import { OsmColor } from './OsmColor.tsx'
 import { WmsLayerComponent } from './WmsLayer/index.tsx'
-import { VectorLayerChooser } from './VectorLayerChooser.tsx'
+import { VectorLayerChooser } from './VectorLayer/index.tsx'
 import { Places1 } from './TableLayers/Places1.tsx'
 import { Places2 } from './TableLayers/Places2.tsx'
 import { Checks1 } from './TableLayers/Checks1.tsx'

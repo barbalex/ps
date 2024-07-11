@@ -8,13 +8,13 @@ import {
   Vector_layer_geoms as VectorLayerGeom,
   Vector_layers as VectorLayer,
   Vector_layer_displays as VectorLayerDisplay,
-} from '../../../generated/client/index.ts'
+} from '../../../../generated/client/index.ts'
 
-import { vectorLayerDisplayToProperties } from '../../../modules/vectorLayerDisplayToProperties.ts'
-import { Popup } from '../Popup.tsx'
-import { ErrorBoundary } from '../MapErrorBoundary.tsx'
-import { useElectric } from '../../../ElectricProvider.tsx'
-import { createNotification } from '../../../modules/createRows.ts'
+import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
+import { Popup } from '../../Popup.tsx'
+import { ErrorBoundary } from '../../MapErrorBoundary.tsx'
+import { useElectric } from '../../../../ElectricProvider.tsx'
+import { createNotification } from '../../../../modules/createRows.ts'
 
 // const bboxBuffer = 0.01
 

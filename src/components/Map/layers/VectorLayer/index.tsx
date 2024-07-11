@@ -2,11 +2,11 @@ import { useLiveQuery } from 'electric-sql/react'
 
 import { VectorLayerWFS } from './VectorLayerWFS.tsx'
 import { VectorLayerPVLGeom } from './VectorLayerPVLGeom.tsx'
-import { useElectric } from '../../../ElectricProvider.tsx'
+import { useElectric } from '../../../../ElectricProvider.tsx'
 import {
   Vector_layers as VectorLayer,
   Layer_presentations as LayerPresentation,
-} from '../../../generated/client/index.ts'
+} from '../../../../generated/client/index.ts'
 
 /**
  * This component chooses whether to render

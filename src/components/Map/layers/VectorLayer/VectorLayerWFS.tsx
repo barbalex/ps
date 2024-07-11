@@ -22,15 +22,15 @@ import {
   Button,
 } from '@fluentui/react-components'
 
-import { vectorLayerDisplayToProperties } from '../../../modules/vectorLayerDisplayToProperties.ts'
-import { useElectric } from '../../../ElectricProvider.tsx'
+import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
+import { useElectric } from '../../../../ElectricProvider.tsx'
 import {
   Vector_layers as VectorLayer,
   Vector_layer_displays as VectorLayerDisplay,
   Layer_presentations as LayerPresentation,
   Wfs_services as WfsService,
-} from '../../../generated/client/index.ts'
-import { createNotification } from '../../../modules/createRows.ts'
+} from '../../../../generated/client/index.ts'
+import { createNotification } from '../../../../modules/createRows.ts'
 // import { epsgFrom4326 } from '../../../modules/epsgFrom4326.ts'
 
 const xmlViewerStyle = {
