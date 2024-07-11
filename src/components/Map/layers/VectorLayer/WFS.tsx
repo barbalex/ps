@@ -71,7 +71,7 @@ interface Props {
   layerPresentation: LayerPresentation
 }
 
-export const VectorLayerWFS = ({ layer, layerPresentation }: Props) => {
+export const WFS = ({ layer, layerPresentation }: Props) => {
   const { db } = useElectric()!
   const [error, setError] = useState()
   const notificationIds = useRef([])

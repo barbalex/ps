@@ -1,7 +1,7 @@
 import { useLiveQuery } from 'electric-sql/react'
 
-import { VectorLayerWFS } from './VectorLayerWFS.tsx'
-import { VectorLayerPVLGeom } from './VectorLayerPVLGeom.tsx'
+import { WFS } from './WFS.tsx'
+import { PVLGeom } from './PVLGeom.tsx'
 import { useElectric } from '../../../../ElectricProvider.tsx'
 import {
   Vector_layers as VectorLayer,
@@ -31,8 +31,8 @@ export const VectorLayerChooser = ({ layer, layerPresentation }: Props) => {
   // TODO: pass layerPresentation only when vector layers are not shown directly in Map anymore
   if (!geomCount)
     return (
-      <VectorLayerWFS layer={layer} layerPresentation={layerPresentation} />
+      <WFS layer={layer} layerPresentation={layerPresentation} />
     )
   // TODO: what is this? Local data / Offline version
-  return <VectorLayerPVLGeom layer={layer} />
+  return <PVLGeom layer={layer} />
 }

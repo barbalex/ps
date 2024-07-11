@@ -23,7 +23,7 @@ interface Props {
   display: VectorLayerDisplay
 }
 
-export const VectorLayerPVLGeom = ({ layer, display }: Props) => {
+export const PVLGeom = ({ layer, display }: Props) => {
   const { db } = useElectric()!
 
   const [data, setData] = useState()
@@ -31,7 +31,6 @@ export const VectorLayerPVLGeom = ({ layer, display }: Props) => {
   const notificationIds = useRef([])
 
   const removeNotifs = useCallback(async () => {
-    // console.log('removing notifs')
     await db.notifications.deleteMany({
       where: { notification_id: { in: notificationIds.current } },
     })
@@ -43,13 +42,11 @@ export const VectorLayerPVLGeom = ({ layer, display }: Props) => {
   const [zoom, setZoom] = useState<number>(map.getZoom())
 
   useMapEvent('dragend zoomend ', () => {
-    // console.log('dragend zoomend ')
     fetchDataDebounced({ bounds: map.getBounds() })
   })
 
   const fetchData = useCallback(
     async ({ bounds }) => {
-      // console.log('VectorLayerPVLGeom fetching data')
       removeNotifs()
       const notificationData = createNotification({
         title: `Lade Vektor-Karte '${layer.label}'...`,
@@ -146,7 +143,10 @@ export const VectorLayerPVLGeom = ({ layer, display }: Props) => {
         }`}
         data={data}
         opacity={display.opacity_percent ? display.opacity_percent / 100 : 0}
-        style={vectorLayerDisplayToProperties({ vectorLayerDisplay: display, presentation: layer.layer_presentations?.[0]})}
+        style={vectorLayerDisplayToProperties({
+          vectorLayerDisplay: display,
+          presentation: layer.layer_presentations?.[0],
+        })}
         onEachFeature={(feature, _layer) => {
           const layersData = [
             {
