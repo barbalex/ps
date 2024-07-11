@@ -121,7 +121,7 @@ export const ActiveLayers = memo(({ isNarrow }) => {
     }),
   )
   const activeWmsLayers = wmsLayers.filter((l) =>
-    l.layer_presentations.some(
+    (l.layer_presentations ?? []).some(
       (lp) => lp.wms_layer_id === l.wms_layer_id && lp.active,
     ),
   )
@@ -133,7 +133,7 @@ export const ActiveLayers = memo(({ isNarrow }) => {
     }),
   )
   const activeVectorLayers = vectorLayers.filter((l) =>
-    l.layer_presentations.some(
+    (l.layer_presentations ?? []).some(
       (lp) => lp.vector_layer_id === l.vector_layer_id && lp.active,
     ),
   )
