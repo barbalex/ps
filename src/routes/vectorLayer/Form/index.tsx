@@ -3,7 +3,7 @@ import { useOutletContext } from 'react-router-dom'
 import { TextFieldInactive } from '../../../components/shared/TextFieldInactive.tsx'
 import { TextField } from '../../../components/shared/TextField.tsx'
 import { RadioGroupField } from '../../../components/shared/RadioGroupField.tsx'
-import { DropdownFieldFromWfsServiceLayers } from './DropdownFieldFromWfsServiceLayers.tsx'
+import { LayersDropdown } from './LayersDropdown.tsx'
 import { DropdownField } from '../../../components/shared/DropdownField.tsx'
 import { PropertyField } from './PropertyField.tsx'
 import { CreateWfsService } from './CreateWfsService.tsx'
@@ -56,7 +56,7 @@ export const Component = ({
             <CreateWfsService vectorLayer={vectorLayer} />
           )}
           {!!vectorLayer?.wfs_service_id && (
-            <DropdownFieldFromWfsServiceLayers
+            <LayersDropdown
               vectorLayer={vectorLayer}
               validationMessage={
                 vectorLayer.wfs_service_layer_name ? '' : 'Select a layer'

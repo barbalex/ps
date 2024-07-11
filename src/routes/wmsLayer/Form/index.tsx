@@ -5,7 +5,7 @@ import { TextField } from '../../../components/shared/TextField.tsx'
 import { TextFieldInactive } from '../../../components/shared/TextFieldInactive.tsx'
 import { DropdownField } from '../../../components/shared/DropdownField.tsx'
 // import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
-import { DropdownFieldFromWmsServiceLayers } from './DropdownFieldFromWmsServiceLayers.tsx'
+import { LayersDropdown } from './LayersDropdown.tsx'
 import { CreateWmsService } from './CreateWmsService/index.tsx'
 
 import '../../../form.css'
@@ -45,7 +45,7 @@ export const Component = memo(
         />
         <CreateWmsService wmsLayer={wmsLayer} />
         {(wmsLayer?.wms_service_id || isFilter) && (
-          <DropdownFieldFromWmsServiceLayers
+          <LayersDropdown
             wmsLayer={wmsLayer}
             validationMessage={
               wmsLayer.wms_service_layer_name ? '' : 'Select a layer'
