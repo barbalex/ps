@@ -31,8 +31,6 @@ export const Component = ({
           list={['wfs', 'upload']}
           value={vectorLayer.type ?? ''}
           onChange={onChange}
-          autoFocus
-          ref={autoFocusRef}
         />
       )}
       {vectorLayer?.type === 'wfs' && (
