@@ -41,15 +41,6 @@ export const vectorLayerDisplayToProperties = ({
     ...extraProps,
   }
 
-  console.log('vectorLayerDisplayToProperties', {
-    display,
-    presentation,
-    style,
-    lPOpacity,
-    vldFillOpacity: displayFillOpacity,
-    fillOpacity: displayFillOpacity * lPOpacity,
-  })
-
   // TODO: add missing styles for points?
   return style
 }

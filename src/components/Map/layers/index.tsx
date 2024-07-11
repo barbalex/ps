@@ -35,7 +35,7 @@ const tableLayerToComponent = {
   occurrences_not_to_assign: OccurrencesNotToAssign,
 }
 
-const paneBaseIndex = 400 // was: 200
+const paneBaseIndex = 400 // was: 200. then wfs layers covered lower ones
 
 export const Layers = memo(() => {
   const { user: authUser } = useCorbado()
@@ -123,8 +123,6 @@ export const Layers = memo(() => {
     }
 
     if (wfsLayer) {
-      // TODO: top level covers all lower levels
-      // UNLESS: a wms layer is present?????
       return (
         <Pane
           key={`${layerPresentationId}/${mapLayerSorting.join()}`}
