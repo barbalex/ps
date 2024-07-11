@@ -13,6 +13,7 @@ import './index.css'
 const containerStyle = {
   position: 'absolute',
   display: 'flex',
+  flexDirection: 'column',
   zIndex: 10000,
   maxWidth: '100%',
   // without this when widening the window the sidebar's bottom will show the map behind it

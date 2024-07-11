@@ -13,7 +13,12 @@ import { Layer } from './Layer.tsx'
 const headerStyle = {
   padding: 0,
 }
-const bodyStyle = { padding: 0 }
+const bodyStyle = {
+  padding: 0,
+  // enable vertical scrolling
+  overflowY: 'auto',
+  flexGrow: 1,
+}
 const noDataStyle = {
   padding: 10,
   margin: 0,
@@ -45,7 +50,10 @@ export const Info = memo(({ isNarrow }) => {
     <ErrorBoundary>
       <div
         style={{
+          display: 'flex',
+          flexDirection: 'column',
           width: '100%',
+          height: '100%',
           ...(isNarrow ? { marginTop: 5 } : { marginLeft: 5 }),
         }}
       >
