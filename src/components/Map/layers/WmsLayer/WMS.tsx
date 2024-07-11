@@ -10,7 +10,6 @@ type Props = {
   layerPresentation: LayerPresentation
 }
 
-// TODO: add layer_presentation.grayscale
 export const WMS = memo(({ layerPresentation }: Props) => {
   const map = useMap()
 

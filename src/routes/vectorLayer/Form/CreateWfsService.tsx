@@ -3,7 +3,6 @@ import { Field, Input } from '@fluentui/react-components'
 
 import { FetchWfsCapabilities } from './FetchWfsCapabilities.tsx'
 import { Vector_layers as VectorLayer } from '../../../../generated/client/index.ts'
-// TODO: use this:
 import { isValidUrl } from '../../../modules/isValidUrl.ts'
 
 const titleStyle = { margin: 0, fontSize: '1em' }
@@ -14,6 +13,7 @@ const rowStyle = {
   gap: 10,
 }
 const hintPStyle = { margin: 0 }
+const fieldStyle = { flexGrow: 1 }
 
 type Props = {
   vectorLayer: VectorLayer
@@ -54,7 +54,7 @@ export const CreateWfsService = memo(({ vectorLayer }: Props) => {
               </>
             )
           }
-          style={{ flexGrow: 1 }}
+          style={fieldStyle}
         >
           <Input
             contentAfter={
