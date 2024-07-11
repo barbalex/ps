@@ -1,11 +1,11 @@
 import { memo } from 'react'
 import { useOutletContext, useLocation } from 'react-router-dom'
 
-import { TextField } from '../../components/shared/TextField.tsx'
-import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
-import { DropdownField } from '../../components/shared/DropdownField.tsx'
+import { TextField } from '../../../components/shared/TextField.tsx'
+import { TextFieldInactive } from '../../../components/shared/TextFieldInactive.tsx'
+import { DropdownField } from '../../../components/shared/DropdownField.tsx'
 // import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
-import { DropdownFieldFromWmsServiceLayers } from './DropdownFieldFromWmsServiceLayers.tsx'
+import { DropdownFieldFromWmsServiceLayers } from '../DropdownFieldFromWmsServiceLayers.tsx'
 import { CreateWmsService } from './CreateWmsService.tsx'
 
 import '../../form.css'

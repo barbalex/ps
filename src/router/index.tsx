@@ -875,7 +875,7 @@ export const router = () => {
                           children: [
                             {
                               index: true,
-                              lazy: () => import('../routes/wmsLayer/Form.tsx'),
+                              lazy: () => import('../routes/wmsLayer/Form/index.tsx'),
                             },
                           ],
                         },

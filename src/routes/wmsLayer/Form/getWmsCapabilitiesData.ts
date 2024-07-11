@@ -1,11 +1,11 @@
-import { getCapabilities } from '../../modules/getCapabilities.ts'
+import { getCapabilities } from '../../../modules/getCapabilities.ts'
 import {
   Wms_layers as WmsLayer,
   Wms_services as WmsService,
   Electric,
-} from '../../generated/client/index.ts'
+} from '../../../generated/client/index.ts'
 // import { chunkArrayWithMinSize } from '../../modules/chunkArrayWithMinSize'
-import { createWmsServiceLayer } from '../../modules/createRows.ts'
+import { createWmsServiceLayer } from '../../../modules/createRows.ts'
 
 interface Props {
   wmsLayer: WmsLayer
