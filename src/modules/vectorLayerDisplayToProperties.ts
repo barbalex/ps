@@ -20,7 +20,7 @@ export const vectorLayerDisplayToProperties = ({
   const lPOpacity = presentation.opacity_percent
     ? presentation.opacity_percent / 100
     : 1
-  const vldFillOpacity = display.fill_opacity_percent
+  const displayFillOpacity = display.fill_opacity_percent
     ? display.fill_opacity_percent / 100
     : 1
 
@@ -36,7 +36,7 @@ export const vectorLayerDisplayToProperties = ({
     ...(typeof display.fill === 'number' && { fill: display.fill === 1 }),
     ...(display.fill_color && { fillColor: display.fill_color }),
     // opacity can be set both in presentation and display...
-    fillOpacity: vldFillOpacity * lPOpacity,
+    fillOpacity: displayFillOpacity * lPOpacity,
     ...(display.fill_rule && { fillRule: display.fill_rule }),
     ...extraProps,
   }
@@ -46,8 +46,8 @@ export const vectorLayerDisplayToProperties = ({
     presentation,
     style,
     lPOpacity,
-    vldFillOpacity,
-    fillOpacity: vldFillOpacity * lPOpacity,
+    vldFillOpacity: displayFillOpacity,
+    fillOpacity: displayFillOpacity * lPOpacity,
   })
 
   // TODO: add missing styles for points?
