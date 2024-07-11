@@ -4,7 +4,7 @@ import { Field, Input } from '@fluentui/react-components'
 import { FetchWfsCapabilities } from './FetchWfsCapabilities.tsx'
 import { Vector_layers as VectorLayer } from '../../../../generated/client/index.ts'
 // TODO: use this:
-import { isValidUrl } from '../../../../modules/isValidUrl.ts'
+import { isValidUrl } from '../../../modules/isValidUrl.ts'
 
 const titleStyle = { margin: 0, fontSize: '1em' }
 const rowStyle = {
@@ -28,6 +28,8 @@ export const CreateWfsService = memo(({ vectorLayer }: Props) => {
 
   if (vectorLayer.wfs_service_id && !fetching) return null
 
+  const urlIsInvalid = url && !isValidUrl(url)
+
   return (
     <div>
       <h2 style={titleStyle}>Add Web Feature Service (WFS)</h2>
@@ -36,8 +38,12 @@ export const CreateWfsService = memo(({ vectorLayer }: Props) => {
           label="URL"
           value={url}
           onChange={onChange}
+          validationMessage={urlIsInvalid ? 'Invalid URL' : ''}
+          validationState={urlIsInvalid ? 'warning' : 'none'}
           hint={
-            url ? (
+            urlIsInvalid ? (
+              ''
+            ) : url ? (
               'The base url of the WFS'
             ) : (
               <>
