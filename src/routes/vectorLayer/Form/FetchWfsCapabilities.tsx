@@ -48,7 +48,7 @@ export const FetchWfsCapabilities = memo(
       const existingService = await db.wfs_services.findFirst({
         where: { url: urlTrimmed },
       })
-      let service
+      let service: WfsService | undefined
       if (existingService) {
         // 2. if so, update it
         service = { ...existingService }

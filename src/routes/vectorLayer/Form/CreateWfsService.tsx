@@ -24,7 +24,7 @@ export const CreateWfsService = memo(({ vectorLayer }: Props) => {
   const onChange = useCallback((e) => setUrl(e.target.value), [])
 
   const [fetching, setFetching] = useState(false)
-  // TODO: when feching ends, set focus to DropdownFieldFromWmsServiceLayers
+  // TODO: when fetching ends, set focus to LayerDropdown
 
   if (vectorLayer.wfs_service_id && !fetching) return null
 
