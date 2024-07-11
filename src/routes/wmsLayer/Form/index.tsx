@@ -6,7 +6,7 @@ import { TextFieldInactive } from '../../../components/shared/TextFieldInactive.
 import { DropdownField } from '../../../components/shared/DropdownField.tsx'
 // import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { DropdownFieldFromWmsServiceLayers } from '../DropdownFieldFromWmsServiceLayers.tsx'
-import { CreateWmsService } from './CreateWmsService.tsx'
+import { CreateWmsService } from './CreateWmsService/index.tsx'
 
 import '../../form.css'
 
