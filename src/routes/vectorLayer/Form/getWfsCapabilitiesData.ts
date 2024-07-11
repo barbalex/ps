@@ -17,7 +17,7 @@ export const getWfsCapabilitiesData = async ({
   service,
   db,
 }: Props) => {
-  console.log('getWfsCapabilitiesData', { vectorLayer, service, db })
+  // console.log('getWfsCapabilitiesData', { vectorLayer, service, db })
   if (!vectorLayer) throw new Error('vector layer is required')
   if (!service.url) throw new Error('wfs service url is required')
   if (!db) throw new Error('db is required')
@@ -31,12 +31,12 @@ export const getWfsCapabilitiesData = async ({
     service: 'WFS',
     db,
   })
-  console.log('getWfsCapabilitiesData, capabilitiesData:', capabilitiesData)
+  // console.log('getWfsCapabilitiesData, capabilitiesData:', capabilitiesData)
 
   if (!capabilitiesData) return undefined
 
   const capabilities = capabilitiesData?.HTML?.BODY?.['WFS:WFS_CAPABILITIES']
-  console.log('getWfsCapabilitiesData, capabilities:', capabilities)
+  // console.log('getWfsCapabilitiesData, capabilities:', capabilities)
 
   // 1. wfs version
   if (!service.version) {
@@ -76,14 +76,14 @@ export const getWfsCapabilitiesData = async ({
 
   // 3. layers
   let layers = capabilities?.FEATURETYPELIST?.FEATURETYPE ?? []
-  console.log('getWfsCapabilitiesData, layers:', layers)
+  // console.log('getWfsCapabilitiesData, layers:', layers)
   // this value can be array OR object!!!
   if (!Array.isArray(layers)) layers = [layers]
 
   // 4a DefaultCRS: get the first layer's
   const defaultCRS = layers[0]?.DEFAULTCRS?.['#text']
   serviceData.default_crs = defaultCRS
-  console.log('getWfsCapabilitiesData, serviceData:', serviceData)
+  // console.log('getWfsCapabilitiesData, serviceData:', serviceData)
 
   // now update vectorLayer
   if (Object.keys(serviceData).length) {
@@ -104,13 +104,13 @@ export const getWfsCapabilitiesData = async ({
           )
         : true,
     )
-  console.log('getWfsCapabilitiesData, acceptableLayers:', acceptableLayers)
+  // console.log('getWfsCapabilitiesData, acceptableLayers:', acceptableLayers)
 
   const layersData = acceptableLayers.map((l) => ({
     name: l.NAME?.['#text'],
     label: l.TITLE?.['#text'],
   }))
-  console.log('getWfsCapabilitiesData, layersData:', layersData)
+  // console.log('getWfsCapabilitiesData, layersData:', layersData)
 
   // TODO: chunked createMany, see wms
   for await (const layerData of layersData) {
