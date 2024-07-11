@@ -35,6 +35,8 @@ const tableLayerToComponent = {
   occurrences_not_to_assign: OccurrencesNotToAssign,
 }
 
+const paneBaseIndex = 400 // was: 200
+
 export const Layers = memo(() => {
   const { user: authUser } = useCorbado()
 
@@ -109,7 +111,7 @@ export const Layers = memo(() => {
         <Pane
           key={`${layerPresentationId}/${mapLayerSorting.join()}`}
           name={wmsLayer.label}
-          style={{ zIndex: 200 - index }}
+          style={{ zIndex: paneBaseIndex - index }}
         >
           <WmsLayerComponent
             key={JSON.stringify(partsToRedrawOn)}
@@ -121,11 +123,13 @@ export const Layers = memo(() => {
     }
 
     if (wfsLayer) {
+      // TODO: top level covers all lower levels
+      // UNLESS: a wms layer is present?????
       return (
         <Pane
           key={`${layerPresentationId}/${mapLayerSorting.join()}`}
           name={wfsLayer.label}
-          style={{ zIndex: 200 - index }}
+          style={{ zIndex: paneBaseIndex - index }}
         >
           <VectorLayerChooser
             layerPresentation={layerPresentation}
@@ -136,14 +140,13 @@ export const Layers = memo(() => {
     }
 
     if (tableLayer) {
-      // TODO: layer not shown
       const Component = tableLayerToComponent[tableLayer.type]
 
       return (
         <Pane
           key={`${layerPresentationId}/${mapLayerSorting.join()}`}
           name={tableLayer.label}
-          style={{ zIndex: 200 - index }}
+          style={{ zIndex: paneBaseIndex - index }}
         >
           <Component
             key={layerPresentationId}
