@@ -3,7 +3,7 @@ import { Dropdown, Field, Option } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 import axios from 'redaxios'
 
-import { useElectric } from '../../ElectricProvider.tsx'
+import { useElectric } from '../../../ElectricProvider.tsx'
 
 export const DropdownFieldFromWmsServiceLayers = memo(
   ({ wmsLayer, validationMessage }) => {

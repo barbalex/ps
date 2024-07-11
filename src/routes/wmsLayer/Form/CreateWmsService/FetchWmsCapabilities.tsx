@@ -4,11 +4,11 @@ import { Button, Spinner } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 
 import { Wms_layers as WmsLayer } from '../../../../generated/client/index.ts'
-import { useElectric } from '../../ElectricProvider.tsx'
+import { useElectric } from '../../../../ElectricProvider.tsx'
 import {
   createNotification,
   createWmsService,
-} from '../../modules/createRows.ts'
+} from '../../../../modules/createRows.ts'
 
 const createWorker = createWorkerFactory(
   () => import('./getWmsCapabilitiesData.ts'),

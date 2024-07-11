@@ -5,10 +5,10 @@ import { TextField } from '../../../components/shared/TextField.tsx'
 import { TextFieldInactive } from '../../../components/shared/TextFieldInactive.tsx'
 import { DropdownField } from '../../../components/shared/DropdownField.tsx'
 // import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
-import { DropdownFieldFromWmsServiceLayers } from '../DropdownFieldFromWmsServiceLayers.tsx'
+import { DropdownFieldFromWmsServiceLayers } from './DropdownFieldFromWmsServiceLayers.tsx'
 import { CreateWmsService } from './CreateWmsService/index.tsx'
 
-import '../../form.css'
+import '../../../form.css'
 
 // this form is rendered from a parent or outlet
 export const Component = memo(
