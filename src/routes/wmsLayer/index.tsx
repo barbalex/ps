@@ -43,7 +43,7 @@ export const Component = memo(() => {
     [db, wms_layer_id],
   )
 
-  console.log('WmsLayer, row:', wmsLayer)
+  // console.log('WmsLayer, row:', wmsLayer)
 
   if (!wmsLayer) return <Loading />
 
@@ -53,7 +53,11 @@ export const Component = memo(() => {
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
-        <Form onChange={onChange} wmsLayer={wmsLayer} autoFocusRef={autoFocusRef} />
+        <Form
+          onChange={onChange}
+          wmsLayer={wmsLayer}
+          autoFocusRef={autoFocusRef}
+        />
       </div>
     </div>
   )
