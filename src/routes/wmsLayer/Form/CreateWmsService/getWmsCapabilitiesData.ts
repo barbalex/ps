@@ -99,28 +99,14 @@ export const getWmsCapabilitiesData = async ({
       legend_url: l.Style?.[0]?.LegendURL?.[0]?.OnlineResource,
     }),
   )
-  console.log('getWmsCapabilitiesData, layersData:', layersData)
   // sadly, creating many this errors
   const chunked = chunkArrayWithMinSize(layersData, 500)
-  console.log('getWmsCapabilitiesData, chunked:', chunked)
-  // for (const chunk of chunked) {
-  //   console.log('getWmsCapabilitiesData, chunk:', chunk)
-  //   try {
-  //     const chunkResult = await db.wms_service_layers.createMany({
-  //       data: chunk,
-  //     })
-  //     console.log('hello, getCapabilitiesData 5a, chunkResult:', chunkResult)
-  //   } catch (error) {
-  //     // field value must be a string, number, boolean, null or one of the registered custom value types
-  //     console.error('hello, getCapabilitiesData 5b, error:', { error, chunk })
-  //   }
-  // }
-
-  for await (const data of layersData) {
+  for (const data of chunked) {
     try {
-      await db.wms_service_layers.create({ data })
+      await db.wms_service_layers.createMany({ data })
     } catch (error) {
-      console.error('getWmsCapabilitiesData, error from creating:', error)
+      // field value must be a string, number, boolean, null or one of the registered custom value types
+      console.error('getWmsCapabilitiesData, error:', { error, data })
     }
   }
 
