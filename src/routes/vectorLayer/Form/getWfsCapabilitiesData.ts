@@ -4,6 +4,7 @@ import {
   Wfs_services as WfsService,
   Electric,
 } from '../../../generated/client/index.ts'
+import { chunkArrayWithMinSize } from '../../../modules/chunkArrayWithMinSize.ts'
 import { createWfsServiceLayer } from '../../../modules/createRows.ts'
 
 interface Props {
@@ -106,18 +107,17 @@ export const getWfsCapabilitiesData = async ({
     )
   // console.log('getWfsCapabilitiesData, acceptableLayers:', acceptableLayers)
 
-  const layersData = acceptableLayers.map((l) => ({
-    name: l.NAME?.['#text'],
-    label: l.TITLE?.['#text'],
-  }))
-  // console.log('getWfsCapabilitiesData, layersData:', layersData)
+  const layersData = acceptableLayers.map((l) =>
+    createWfsServiceLayer({
+      wfs_service_id: service.wfs_service_id,
+      name: l.NAME?.['#text'],
+      label: l.TITLE?.['#text'],
+    }),
+  )
+  // const chunked = chunkArrayWithMinSize(layersData, 500)
 
   // TODO: chunked createMany, see wms
-  for await (const layerData of layersData) {
-    const data = createWfsServiceLayer({
-      ...layerData,
-      wfs_service_id: service.wfs_service_id,
-    })
+  for await (const data of layersData) {
     try {
       await db.wfs_service_layers.create({ data })
     } catch (error) {

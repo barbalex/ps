@@ -99,7 +99,6 @@ export const getWmsCapabilitiesData = async ({
       legend_url: l.Style?.[0]?.LegendURL?.[0]?.OnlineResource,
     }),
   )
-  // sadly, creating many this errors
   const chunked = chunkArrayWithMinSize(layersData, 500)
   for (const data of chunked) {
     try {
