@@ -54,7 +54,6 @@ export const Component = memo(() => {
     const layerPresentation = createLayerPresentation({
       wms_layer_id: wmsLayer.wms_layer_id,
     })
-    console.log('WmsLayers.add, layerPresentation:', layerPresentation)
     await db.layer_presentations.create({ data: layerPresentation })
     navigate({
       pathname: wmsLayer.wms_layer_id,
