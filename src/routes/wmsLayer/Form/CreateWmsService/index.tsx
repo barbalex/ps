@@ -3,6 +3,7 @@ import { Field, Input } from '@fluentui/react-components'
 
 import { FetchWmsCapabilities } from './FetchWmsCapabilities.tsx'
 import { Wms_layers as WmsLayer } from '../../../../generated/client/index.ts'
+import { isValidUrl } from '../../../../modules/isValidUrl.ts'
 
 const titleStyle = { margin: 0, fontSize: '1em' }
 const rowStyle = {
@@ -26,6 +27,8 @@ export const CreateWmsService = memo(({ wmsLayer }: Props) => {
 
   if (wmsLayer.wms_service_id && !fetching) return null
 
+  const urlIsInvalid = url && !isValidUrl(url)
+
   return (
     <div>
       <h2 style={titleStyle}>Add Web Map Service (WMS)</h2>
@@ -34,8 +37,12 @@ export const CreateWmsService = memo(({ wmsLayer }: Props) => {
           label="URL"
           value={url}
           onChange={onChange}
+          validationMessage={urlIsInvalid ? 'Invalid URL' : ''}
+          validationState={urlIsInvalid ? 'warning' : 'none'}
           hint={
-            url ? (
+            urlIsInvalid ? (
+              ''
+            ) : url ? (
               'The base url of the WMS'
             ) : (
               <>
