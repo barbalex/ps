@@ -22,9 +22,7 @@ export const CreateWmsService = memo(({ wmsLayer }: Props) => {
   const onChange = useCallback((e) => setUrl(e.target.value), [])
 
   const [fetching, setFetching] = useState(false)
-  // TODO: when feching ends, set focus to DropdownFieldFromWmsServiceLayers
-
-  console.log('CreateWmsService, url:', url)
+  // TODO: when fetching ends, set focus to DropdownFieldFromWmsServiceLayers
 
   if (wmsLayer.wms_service_id && !fetching) return null
 
@@ -60,6 +58,7 @@ export const CreateWmsService = memo(({ wmsLayer }: Props) => {
               />
             }
             appearance="underline"
+            autoFocus={true}
           />
         </Field>
       </div>
