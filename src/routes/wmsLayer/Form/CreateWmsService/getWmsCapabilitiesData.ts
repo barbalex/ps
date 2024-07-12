@@ -4,7 +4,7 @@ import {
   Wms_services as WmsService,
   Electric,
 } from '../../../../generated/client/index.ts'
-// import { chunkArrayWithMinSize } from '../../modules/chunkArrayWithMinSize'
+import { chunkArrayWithMinSize } from '../../../../modules/chunkArrayWithMinSize.ts'
 import { createWmsServiceLayer } from '../../../../modules/createRows.ts'
 
 interface Props {
@@ -90,18 +90,25 @@ export const getWmsCapabilitiesData = async ({
     v?.CRS?.includes('EPSG:4326'),
   )
 
-  const layersData = layers.map((l) => ({
-    name: l.Name,
-    label: l.Title,
-    queryable: l.queryable,
-    legend_url: l.Style?.[0]?.LegendURL?.[0]?.OnlineResource,
-  }))
-  // console.log('hello, getCapabilitiesData 4, layersData:', layersData)
+  const layersData = layers.map((l) =>
+    createWmsServiceLayer({
+      wms_service_id: service.wms_service_id,
+      name: l.Name,
+      label: l.Title,
+      queryable: l.queryable,
+      legend_url: l.Style?.[0]?.LegendURL?.[0]?.OnlineResource,
+    }),
+  )
+  console.log('getWmsCapabilitiesData, layersData:', layersData)
   // sadly, creating many this errors
-  // const chunked = chunkArrayWithMinSize(layersData, 500)
+  const chunked = chunkArrayWithMinSize(layersData, 500)
+  console.log('getWmsCapabilitiesData, chunked:', chunked)
   // for (const chunk of chunked) {
+  //   console.log('getWmsCapabilitiesData, chunk:', chunk)
   //   try {
-  //     const chunkResult = await db.wms_service_layers.createMany({ data: chunk })
+  //     const chunkResult = await db.wms_service_layers.createMany({
+  //       data: chunk,
+  //     })
   //     console.log('hello, getCapabilitiesData 5a, chunkResult:', chunkResult)
   //   } catch (error) {
   //     // field value must be a string, number, boolean, null or one of the registered custom value types
@@ -109,18 +116,11 @@ export const getWmsCapabilitiesData = async ({
   //   }
   // }
 
-  for await (const layerData of layersData) {
-    const data = createWmsServiceLayer({
-      ...layerData,
-      wms_service_id: service.wms_service_id,
-    })
+  for await (const data of layersData) {
     try {
       await db.wms_service_layers.create({ data })
     } catch (error) {
-      console.error(
-        'hello, getCapabilitiesData 5, error from upserting:',
-        error,
-      )
+      console.error('getWmsCapabilitiesData, error from creating:', error)
     }
   }
 
