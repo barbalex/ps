@@ -18,12 +18,9 @@ export const getWfsCapabilitiesData = async ({
   service,
   db,
 }: Props) => {
-  // console.log('getWfsCapabilitiesData', { vectorLayer, service, db })
   if (!vectorLayer) throw new Error('vector layer is required')
   if (!service.url) throw new Error('wfs service url is required')
   if (!db) throw new Error('db is required')
-
-  // console.log('getCapabilitiesDataForVectorLayer, row:', row)
 
   const serviceData = {}
 
@@ -32,12 +29,10 @@ export const getWfsCapabilitiesData = async ({
     service: 'WFS',
     db,
   })
-  // console.log('getWfsCapabilitiesData, capabilitiesData:', capabilitiesData)
 
   if (!capabilitiesData) return undefined
 
   const capabilities = capabilitiesData?.HTML?.BODY?.['WFS:WFS_CAPABILITIES']
-  // console.log('getWfsCapabilitiesData, capabilities:', capabilities)
 
   // 1. wfs version
   if (!service.version) {
@@ -105,7 +100,6 @@ export const getWfsCapabilitiesData = async ({
           )
         : true,
     )
-  // console.log('getWfsCapabilitiesData, acceptableLayers:', acceptableLayers)
 
   const layersData = acceptableLayers.map((l) =>
     createWfsServiceLayer({
@@ -114,17 +108,12 @@ export const getWfsCapabilitiesData = async ({
       label: l.TITLE?.['#text'],
     }),
   )
-  // const chunked = chunkArrayWithMinSize(layersData, 500)
-
-  // TODO: chunked createMany, see wms
-  for await (const data of layersData) {
+  const chunked = chunkArrayWithMinSize(layersData, 500)
+  for (const data of chunked) {
     try {
-      await db.wfs_service_layers.create({ data })
+      await db.wfs_service_layers.createMany({ data })
     } catch (error) {
-      console.error(
-        'hello, getCapabilitiesData 5, error from upserting:',
-        error,
-      )
+      console.error('getWfsCapabilitiesData, error:', { error, data })
     }
   }
 
