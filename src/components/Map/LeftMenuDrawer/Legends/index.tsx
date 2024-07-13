@@ -64,12 +64,8 @@ export const Legends = memo(() => {
 
   return activeLayers.length ? (
     activeLayers?.map((l, index) => (
-      <div style={layerListStyle}>
-        <Legend
-          key={l.wms_layer_id}
-          layer={l}
-          isLast={index === activeLayers.length - 1}
-        />
+      <div key={l.wms_layer_id} style={layerListStyle}>
+        <Legend layer={l} isLast={index === activeLayers.length - 1} />
       </div>
     ))
   ) : (
