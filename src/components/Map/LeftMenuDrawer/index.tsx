@@ -229,7 +229,6 @@ export const LeftMenuDrawer = memo(({ containerRef }) => {
             <Resizer
               startResizing={startResizing}
               isResizing={isResizing}
-              isOpen={isOpen}
             />
           </InlineDrawer>
         </div>

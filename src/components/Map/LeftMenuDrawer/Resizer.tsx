@@ -2,7 +2,7 @@ import { memo } from 'react'
 
 import './resizer.css'
 
-export const Resizer = memo(({ startResizing, isResizing, isOpen }) => (
+export const Resizer = memo(({ startResizing, isResizing }) => (
   <div
     className="map-layers-resizer"
     onMouseDown={startResizing}
@@ -10,9 +10,7 @@ export const Resizer = memo(({ startResizing, isResizing, isOpen }) => (
     style={{
       backgroundColor: isResizing
         ? 'rgba(38, 82, 37, 0.9)'
-        : !isOpen
-        ? 'rgba(103, 216, 101, 0.2)'
-        : 'white',
+        : 'rgba(240, 255, 240, 1)',
     }}
   />
 ))

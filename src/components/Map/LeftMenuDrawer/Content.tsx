@@ -17,8 +17,7 @@ const containerStyle = {
 
 const formStyle = {
   // enable scrolling
-  overflowY: 'auto',
-  height: '100%',
+  overflow: 'auto',
 }
 
 export const Content = memo(() => {
@@ -36,14 +35,16 @@ export const Content = memo(() => {
       <div
         style={{
           ...containerStyle,
-          ...(isNarrow ? { marginTop: 5 } : { marginRight: 5 }),
+          ...(isNarrow
+            ? { height: 'calc(100% - 5px)' }
+            : { width: 'calc(100% - 5px)' }),
         }}
       >
         <TabList
           selectedValue={tab}
           onTabSelect={onTabSelect}
           style={{
-            marginLeft: isNarrow ? 34 : 'unset',
+            paddingLeft: isNarrow ? 34 : 'unset',
             backgroundColor: 'rgba(103, 216, 101, 0.2)',
           }}
         >

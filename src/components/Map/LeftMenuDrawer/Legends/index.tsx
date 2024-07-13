@@ -1,16 +1,13 @@
-import { memo, useMemo, useContext } from 'react'
+import { memo, useMemo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 import { useParams } from 'react-router-dom'
 
 import { useElectric } from '../../../../ElectricProvider.tsx'
-import { IsNarrowContext } from '../IsNarrowContext.ts'
 import { Legend } from './Legend.tsx'
 
 const layerListStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'space-between',
+  overflow: 'hidden',
 }
 const noLayersStyle = {
   margin: 0,
@@ -21,7 +18,6 @@ const noLayersStyle = {
 
 export const Legends = memo(() => {
   const { project_id } = useParams()
-  const isNarrow = useContext(IsNarrowContext)
 
   const { db } = useElectric()!
   const { user: authUser } = useCorbado()
@@ -70,17 +66,10 @@ export const Legends = memo(() => {
 
   return activeLayers.length ? (
     activeLayers?.map((l, index) => (
-      <div
-        style={{
-          ...layerListStyle,
-          ...(isNarrow ? {} : { width: 'calc(100% - 6px)' }),
-        }}
-      >
+      <div style={layerListStyle}>
         <Legend
           key={l.wms_layer_id}
           layer={l}
-          index={index}
-          layerCount={activeLayers.length}
           isLast={index === activeLayers.length - 1}
         />
       </div>

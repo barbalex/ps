@@ -5,9 +5,11 @@ import { useElectric } from '../../../../ElectricProvider.tsx'
 
 const containerStyle = {
   padding: 10,
+  overflow: 'hidden',
 }
 const titleStyle = {
   fontWeight: 'bold',
+  paddingBottom: 5,
 }
 
 export const Legend = memo(({ layer, isLast }) => {
@@ -18,7 +20,7 @@ export const Legend = memo(({ layer, isLast }) => {
       where: { name: layer.wms_service_layer_name },
     }),
   )
-  console.log('Legend', { layer, wmsServiceLayer })
+  // console.log('Legend', { layer, wmsServiceLayer })
 
   return (
     <section
