@@ -26,8 +26,6 @@ export const LayersDropdown = memo(({ wmsLayer, validationMessage }) => {
     [options, wmsLayer.wms_service_layer_name],
   )
 
-  console.log('LayersDropdown, wmsLayer:', wmsLayer)
-
   const onOptionSelect = useCallback(
     async (e, data) => {
       try {
@@ -57,10 +55,6 @@ export const LayersDropdown = memo(({ wmsLayer, validationMessage }) => {
           `hello DropdownFieldFromLayerOptions, onOptionSelect, wmsServiceLayer not found for layer '${data.optionText}'`,
         )
       }
-      console.log(
-        'LayersDropdown.onOptionSelect, wmsServiceLayer:',
-        wmsServiceLayer,
-      )
 
       // get the legend image
       let res

@@ -19,7 +19,6 @@ export const Legend = memo(({ layer, isLast }) => {
       where: { name: layer.wms_service_layer_name },
     }),
   )
-  // console.log('Legend', { layer, wmsServiceLayer })
 
   return (
     <section
@@ -30,7 +29,15 @@ export const Legend = memo(({ layer, isLast }) => {
       }}
     >
       <div style={titleStyle}>{layer.label}</div>
-      {wmsServiceLayer?.legend_url ? (
+      {wmsServiceLayer?.legend_image ? (
+        <img
+          src={`data:image/png;base64,${btoa(
+            String.fromCharCode(
+              ...new Uint8Array(wmsServiceLayer?.legend_image),
+            ),
+          )}`}
+        />
+      ) : wmsServiceLayer?.legend_url ? (
         <img src={wmsServiceLayer.legend_url} />
       ) : (
         'No legend available'
