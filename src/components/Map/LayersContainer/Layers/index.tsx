@@ -67,14 +67,6 @@ export const Layers = memo(({ isNarrow }) => {
           (lp) => lp.vector_layer_id === l.vector_layer_id && lp.active,
         ),
     )
-  const vectors = vectorLayers
-    .filter((v) => v.type === 'wfs')
-    .filter(
-      (l) =>
-        !layerPresentations.some(
-          (lp) => lp.vector_layer_id === l.vector_layer_id && lp.active,
-        ),
-    )
 
   const onChangeNonActive = useCallback(
     async (layer) => {
@@ -117,30 +109,6 @@ export const Layers = memo(({ isNarrow }) => {
           <ActiveLayers isNarrow={isNarrow} />
           <WmsLayers />
           <VectorLayers />
-          <section style={sectionStyle}>
-            <h2 style={titleStyle}>Vectors</h2>
-            <div style={layerListStyle}>
-              {vectors.length ? (
-                vectors.map((l) => (
-                  <Checkbox
-                    key={l.vector_layer_id}
-                    size="large"
-                    label={l.label}
-                    // checked if layer has an active presentation
-                    checked={
-                      !!layerPresentations.find(
-                        (lp) =>
-                          lp.vector_layer_id === l.vector_layer_id && lp.active,
-                      )
-                    }
-                    onChange={() => onChangeNonActive(l)}
-                  />
-                ))
-              ) : (
-                <p style={noneStyle}>No inactive Vector Layers</p>
-              )}
-            </div>
-          </section>
           <section style={sectionStyle}>
             <h2 style={titleStyle}>Own</h2>
             <div style={layerListStyle}>
