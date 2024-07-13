@@ -82,12 +82,15 @@ export const LayersDropdown = memo(({ wmsLayer, validationMessage }) => {
       const fileReader = new FileReader()
       fileReader.readAsDataURL(blob)
       const file = new File([blob], 'legend.png', { type: 'image/png' })
+      // convert res.data to byte array
+      const byteArray = new Uint8Array(arrayBuffer)
       console.log('LayersDropdown.onOptionSelect', {
         res,
         resData: res.data,
         blob,
         arrayBuffer,
         file,
+        byteArray,
       })
       // 3. store wms_service_layers.legend_image and legend_url
       if (res.data) {
@@ -96,7 +99,7 @@ export const LayersDropdown = memo(({ wmsLayer, validationMessage }) => {
             where: {
               wms_service_layer_id: wmsServiceLayer.wms_service_layer_id,
             },
-            data: { legend_image: blob },
+            data: { legend_image: byteArray },
           })
         } catch (error) {
           console.log('LayersDropdown.onOptionSelect, error:', error)
