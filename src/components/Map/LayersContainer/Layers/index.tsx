@@ -9,6 +9,13 @@ import { ErrorBoundary } from '../../../shared/ErrorBoundary.tsx'
 import { FormHeader } from '../../../FormHeader/index.tsx'
 import { createLayerPresentation } from '../../../../modules/createRows.ts'
 import { ActiveLayers } from './Actives/index.tsx'
+import { WmsLayers } from './WMS.tsx'
+import {
+  sectionStyle,
+  layerListStyle,
+  titleStyle,
+  noneStyle,
+} from './styles.ts'
 
 const containerStyle = {
   width: '100%',
@@ -23,22 +30,6 @@ const formStyle = {
   overflowY: 'auto',
   height: '100%',
 }
-const sectionStyle = {
-  paddingLeft: 10,
-  paddingRight: 10,
-  paddingBottom: 10,
-}
-const layerListStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'space-between',
-}
-const titleStyle = {
-  fontSize: '1.2em',
-}
-const noneStyle = {
-  margin: 0,
-}
 
 export const Layers = memo(({ isNarrow }) => {
   const { project_id } = useParams()
@@ -49,12 +40,6 @@ export const Layers = memo(({ isNarrow }) => {
   const where = project_id ? { project_id } : {}
   // TODO: when including layer_presentations, no results are returned
   // unlike with vector_layer_displays. Maybe because no layer_presentations exist?
-  const { results: wmsLayers = [] } = useLiveQuery(
-    db.wms_layers.liveMany({
-      where,
-      // include: { layer_presentations: true },
-    }),
-  )
   const { results: vectorLayers = [] } = useLiveQuery(
     db.vector_layers.liveMany({
       where,
@@ -67,23 +52,12 @@ export const Layers = memo(({ isNarrow }) => {
   const { results: layerPresentations = [] } = useLiveQuery(
     db.layer_presentations.liveMany({
       where: {
-        OR: [
-          {
-            vector_layer_id: { in: vectorLayers.map((l) => l.vector_layer_id) },
-          },
-          { wms_layer_id: { in: wmsLayers.map((l) => l.wms_layer_id) } },
-        ],
+        vector_layer_id: { in: vectorLayers.map((l) => l.vector_layer_id) },
       },
     }),
   )
   // 2. when one is set active, add layer_presentations for it
 
-  const wms = wmsLayers.filter(
-    (l) =>
-      !layerPresentations.some(
-        (lp) => lp.wms_layer_id === l.wms_layer_id && lp.active,
-      ),
-  )
   const own = vectorLayers
     .filter((v) => v.type !== 'wfs')
     .filter(
@@ -104,20 +78,13 @@ export const Layers = memo(({ isNarrow }) => {
   const onChangeNonActive = useCallback(
     async (layer) => {
       // 1. check if layer has a presentation
-      const where = {
-        ...(layer.wms_layer_id ? { wms_layer_id: layer.wms_layer_id } : {}),
-        ...(layer.vector_layer_id
-          ? { vector_layer_id: layer.vector_layer_id }
-          : {}),
-      }
-      const presentation = await db.layer_presentations.findFirst({ where })
+      const presentation = await db.layer_presentations.findFirst({
+        where: { vector_layer_id: layer.vector_layer_id },
+      })
       // 2. if not, create one
       if (!presentation) {
         const data = createLayerPresentation({
-          ...(layer.wms_layer_id ? { wms_layer_id: layer.wms_layer_id } : {}),
-          ...(layer.vector_layer_id
-            ? { vector_layer_id: layer.vector_layer_id }
-            : {}),
+          vector_layer_id: layer.vector_layer_id,
           active: true,
         })
         db.layer_presentations.create({ data })
@@ -147,29 +114,7 @@ export const Layers = memo(({ isNarrow }) => {
         />
         <div style={formStyle}>
           <ActiveLayers isNarrow={isNarrow} />
-          <section style={sectionStyle}>
-            <h2 style={titleStyle}>WMS</h2>
-            <div style={layerListStyle}>
-              {wms.length ? (
-                wms?.map((l) => (
-                  <Checkbox
-                    key={l.wms_layer_id}
-                    size="large"
-                    label={l.label}
-                    // checked if layer has an active presentation
-                    checked={
-                      !!layerPresentations.find(
-                        (lp) => lp.wms_layer_id === l.wms_layer_id && lp.active,
-                      )
-                    }
-                    onChange={() => onChangeNonActive(l)}
-                  />
-                ))
-              ) : (
-                <p style={noneStyle}>No inactive WMS Layers</p>
-              )}
-            </div>
-          </section>
+          <WmsLayers />
           <section style={sectionStyle}>
             <h2 style={titleStyle}>Vectors</h2>
             <div style={layerListStyle}>
