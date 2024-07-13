@@ -13,17 +13,16 @@ import {
   noneStyle,
 } from './styles.ts'
 
-export const VectorLayers = memo(() => {
+export const OwnLayers = memo(() => {
   const { project_id } = useParams()
 
   const { db } = useElectric()!
-
   // TODO: when including layer_presentations, no results are returned
   // unlike with vector_layer_displays. Maybe because no layer_presentations exist?
   const { results: vectorLayers = [] } = useLiveQuery(
     db.vector_layers.liveMany({
       where: {
-        type: { in: ['wfs', 'upload'] },
+        type: { notIn: ['wfs', 'upload'] },
         ...(project_id ? { project_id } : {}),
       },
       // TODO: this only returns vector layers that have a presentation
@@ -31,7 +30,6 @@ export const VectorLayers = memo(() => {
       // include: { layer_presentations: true },
     }),
   )
-
   // fetch all layer_presentations for the vector layers
   const { results: layerPresentations = [] } = useLiveQuery(
     db.layer_presentations.liveMany({
@@ -40,8 +38,9 @@ export const VectorLayers = memo(() => {
       },
     }),
   )
+
   // 2. when one is set active, add layer_presentations for it
-  const vectors = vectorLayers.filter(
+  const own = vectorLayers.filter(
     (l) =>
       !layerPresentations.some(
         (lp) => lp.vector_layer_id === l.vector_layer_id && lp.active,
@@ -76,10 +75,10 @@ export const VectorLayers = memo(() => {
   return (
     <ErrorBoundary>
       <section style={sectionStyle}>
-        <h2 style={titleStyle}>Vectors</h2>
+        <h2 style={titleStyle}>Own</h2>
         <div style={layerListStyle}>
-          {vectors.length ? (
-            vectors.map((l) => (
+          {own.length ? (
+            own.map((l) => (
               <Checkbox
                 key={l.vector_layer_id}
                 size="large"
@@ -95,7 +94,7 @@ export const VectorLayers = memo(() => {
               />
             ))
           ) : (
-            <p style={noneStyle}>No inactive Vector Layers</p>
+            <p style={noneStyle}>No inactive Own Layers</p>
           )}
         </div>
       </section>
