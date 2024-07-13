@@ -10,6 +10,7 @@ import { FormHeader } from '../../../FormHeader/index.tsx'
 import { createLayerPresentation } from '../../../../modules/createRows.ts'
 import { ActiveLayers } from './Actives/index.tsx'
 import { WmsLayers } from './WMS.tsx'
+import { VectorLayers } from './Vector.tsx'
 import {
   sectionStyle,
   layerListStyle,
@@ -115,6 +116,7 @@ export const Layers = memo(({ isNarrow }) => {
         <div style={formStyle}>
           <ActiveLayers isNarrow={isNarrow} />
           <WmsLayers />
+          <VectorLayers />
           <section style={sectionStyle}>
             <h2 style={titleStyle}>Vectors</h2>
             <div style={layerListStyle}>
