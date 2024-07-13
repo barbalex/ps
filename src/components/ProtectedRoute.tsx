@@ -9,9 +9,9 @@ export const ProtectedRoute = memo(({ children }) => {
   const { loading, isAuthenticated } = useCorbado()
   // console.log('hello ProtectedRoute', { loading, isAuthenticated })
 
-  // if (loading) return <Loading label="Authenticating" />
+  if (loading) return <Loading label="Authenticating" />
 
-  // if (!isAuthenticated) return <Auth />
+  if (!isAuthenticated) return <Auth />
 
   return children
 })
