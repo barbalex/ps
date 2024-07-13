@@ -41,7 +41,10 @@ export const Legends = memo(() => {
   const { results: wmsLayers = [] } = useLiveQuery(
     db.wms_layers.liveMany({
       where,
-      include: { layer_presentations: true },
+      include: {
+        layer_presentations: true,
+        // wms_services: { include: { wms_service_layers: true } },
+      },
     }),
   )
   const activeWmsLayers = wmsLayers.filter((l) =>

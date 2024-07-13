@@ -12,7 +12,6 @@ import { useCorbado } from '@corbado/react'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import {
-  Vector_layers as VectorLayer,
   Places as Place,
   Actions as Action,
   Checks as Check,
@@ -25,9 +24,7 @@ interface Props {
   level: integer
   placeNamePlural?: string
 }
-interface vlResultsType {
-  results: VectorLayer
-}
+
 type GeometryType = Place[] | Action[] | Check[] | Occurrence[]
 
 export const LayerMenu = memo(({ table, level, placeNamePlural }: Props) => {
@@ -35,7 +32,7 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }: Props) => {
   const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
-  const { results: vectorLayer }: vlResultsType = useLiveQuery(
+  const { results: vectorLayer } = useLiveQuery(
     db.vector_layers.liveFirst({
       where: { project_id, type: `${table}${level}` },
     }),
