@@ -47,22 +47,21 @@ export const OwnLayers = memo(() => {
       ),
   )
 
-  const onChangeNonActive = useCallback(
+  const onChange = useCallback(
     async (layer) => {
       // 1. check if layer has a presentation
       const presentation = await db.layer_presentations.findFirst({
         where: { vector_layer_id: layer.vector_layer_id },
       })
-      // 2. if not, create one
       if (!presentation) {
+        // 2. if not, create one
         const data = createLayerPresentation({
           vector_layer_id: layer.vector_layer_id,
           active: true,
         })
         db.layer_presentations.create({ data })
-      }
-      // 3. if yes, update it
-      else {
+      } else {
+        // 3. if yes, update it
         db.layer_presentations.update({
           where: { layer_presentation_id: presentation.layer_presentation_id },
           data: { active: true },
@@ -90,7 +89,7 @@ export const OwnLayers = memo(() => {
                       lp.vector_layer_id === l.vector_layer_id && lp.active,
                   )
                 }
-                onChange={() => onChangeNonActive(l)}
+                onChange={() => onChange(l)}
               />
             ))
           ) : (
