@@ -4,6 +4,7 @@ import { useSearchParams } from 'react-router-dom'
 
 import { ErrorBoundary } from '../../shared/ErrorBoundary.tsx'
 import { Layers } from './Layers/index.tsx'
+import { Legends } from './Legends/index.tsx'
 import { IsNarrowContext } from './IsNarrowContext.ts'
 
 const containerStyle = {
@@ -50,7 +51,7 @@ export const Content = memo(() => {
           <Tab value="legends">Legends</Tab>
         </TabList>
         <div style={formStyle}>
-          {tab === 'layers' ? <Layers /> : <div>Legends</div>}
+          {tab === 'layers' ? <Layers /> : <Legends />}
         </div>
       </div>
     </ErrorBoundary>

@@ -85,8 +85,6 @@ const layerListStyle = {
   justifyContent: 'space-between',
 }
 const noLayersStyle = {
-  // borderTop: '1px solid rgba(55, 118, 28, 0.5)',
-  // borderBottom: '1px solid rgba(55, 118, 28, 0.5)',
   margin: 0,
   paddingLeft: 10,
   paddingRight: 10,
