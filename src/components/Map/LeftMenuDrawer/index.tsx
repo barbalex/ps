@@ -7,6 +7,7 @@ import { BiSolidLeftArrow, BiSolidRightArrow } from 'react-icons/bi'
 import { useAnimate } from 'framer-motion'
 
 import { Layers } from './Layers/index.tsx'
+import { Content } from './Content.tsx'
 import { Resizer } from './Resizer.tsx'
 import { useElectric } from '../../../ElectricProvider.tsx'
 
@@ -174,7 +175,7 @@ export const LeftMenuDrawer = memo(({ containerRef }) => {
                 />
               )
             }
-            title={isOpen ? 'Close Layers' : 'Open Layers'}
+            title={isOpen ? 'Close Layer Menu' : 'Open Layer Menu'}
             style={{
               position: 'absolute',
               top: isNarrow ? (isOpen ? 6 : -31) : 5,
@@ -217,7 +218,7 @@ export const LeftMenuDrawer = memo(({ containerRef }) => {
           position={isNarrow ? 'bottom' : 'start'}
           onMouseDown={(e) => isResizing && e.preventDefault()}
         >
-          <Layers isNarrow={isNarrow} />
+          <Content isNarrow={isNarrow} />
           <Resizer
             startResizing={startResizing}
             isResizing={isResizing}
