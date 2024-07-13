@@ -26,7 +26,7 @@ const innerContainerStyle = {
   backgroundColor: 'white',
 }
 
-export const LayersContainer = memo(({ containerRef }) => {
+export const LeftMenuDrawer = memo(({ containerRef }) => {
   const { user: authUser } = useCorbado()
   const { db } = useElectric()!
   const { results: appState } = useLiveQuery(

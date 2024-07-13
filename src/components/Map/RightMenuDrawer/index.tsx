@@ -20,7 +20,7 @@ const containerStyle = {
   backgroundColor: 'white',
 }
 
-export const InfoContainer = memo(({ containerRef }) => {
+export const RightMenuDrawer = memo(({ containerRef }) => {
   const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
