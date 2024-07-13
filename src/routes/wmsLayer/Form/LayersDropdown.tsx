@@ -26,21 +26,48 @@ export const LayersDropdown = memo(({ wmsLayer, validationMessage }) => {
     [options, wmsLayer.wms_service_layer_name],
   )
 
+  console.log('LayersDropdown, wmsLayer:', wmsLayer)
+
   const onOptionSelect = useCallback(
     async (e, data) => {
-      db.wms_layers.update({
-        where: { wms_layer_id: wmsLayer.wms_layer_id },
-        data: {
-          wms_service_layer_name: data.optionValue,
-          label: data.optionText,
-        },
-      })
+      try {
+        db.wms_layers.update({
+          where: { wms_layer_id: wmsLayer.wms_layer_id },
+          data: {
+            wms_service_layer_name: data.optionValue ?? null,
+            label: data.optionText ?? null,
+          },
+        })
+      } catch (error) {
+        console.log(
+          'LayersDropdown.onOptionSelect, error updating wms layer:',
+          error,
+        )
+      }
+      // return if no value was chosen
+      if (!data.optionValue) {
+        return
+      }
+
+      const wmsServiceLayer = wmsServiceLayers.find(
+        (l) => l.name === data.optionValue,
+      )
+      if (!wmsServiceLayer) {
+        return console.error(
+          `hello DropdownFieldFromLayerOptions, onOptionSelect, wmsServiceLayer not found for layer '${data.optionText}'`,
+        )
+      }
+      console.log(
+        'LayersDropdown.onOptionSelect, wmsServiceLayer:',
+        wmsServiceLayer,
+      )
 
       // get the legend image
       let res
-      const legendUrl = `${wmsLayer.wms_services.url}?language=eng&version=1.3.0&service=WMS&request=GetLegendGraphic&sld_version=1.1.0&layer=${data.optionValue}&format=image/png&STYLE=default&&TRANSPARENT=true`
       try {
-        res = await axios.get(legendUrl, { responseType: 'blob' })
+        res = await axios.get(wmsServiceLayer.legend_url, {
+          responseType: 'blob',
+        })
       } catch (error) {
         // error can also be caused by timeout
         console.error(
@@ -49,29 +76,48 @@ export const LayersDropdown = memo(({ wmsLayer, validationMessage }) => {
         )
         return false
       }
+      const blob = new Blob([res.data], { type: 'image/png' })
+      // create an array buffer
+      const arrayBuffer = await new Response(blob).arrayBuffer()
+      const fileReader = new FileReader()
+      fileReader.readAsDataURL(blob)
+      const file = new File([blob], 'legend.png', { type: 'image/png' })
+      console.log('LayersDropdown.onOptionSelect', {
+        res,
+        resData: res.data,
+        blob,
+        arrayBuffer,
+        file,
+      })
       // 3. store wms_service_layers.legend_image and legend_url
       if (res.data) {
-        const wmsServiceLayer = wmsServiceLayers.find(
-          (l) => l.name === data.optionValue,
-        )
-        if (!wmsServiceLayer) {
-          return console.error(
-            `hello DropdownFieldFromLayerOptions, onOptionSelect, wmsServiceLayer not found for layer '${data.optionText}'`,
-          )
+        try {
+          await db.wms_service_layers.update({
+            where: {
+              wms_service_layer_id: wmsServiceLayer.wms_service_layer_id,
+            },
+            data: { legend_image: blob },
+          })
+        } catch (error) {
+          console.log('LayersDropdown.onOptionSelect, error:', error)
+          // TODO: this throws:
+          // ZodError
+          //   at get error (index.mjs:587:31)
+          //   at _ZodObject.parse (index.mjs:692:22)
+          //   at validate (validation.ts:15:31)
+          //   at Table._update (table.ts:1314:7)
+          //   at table.ts:353:12
+          //   at executor.ts:51:7
+          //   at Promise.catch._run.sql (adapter.ts:56:7)
+          //   at new Promise (<anonymous>)
+          //   at DatabaseAdapter2._transaction (adapter.ts:53:12)
         }
-        db.wms_service_layers.update({
-          where: {
-            wms_service_layer_id: wmsServiceLayer.wms_service_layer_id,
-          },
-          data: { legend_image: res.data, legend_url: legendUrl },
-        })
       }
     },
     [
       db.wms_layers,
       db.wms_service_layers,
       wmsLayer.wms_layer_id,
-      wmsLayer.wms_services.url,
       wmsServiceLayers,
     ],
   )
@@ -86,7 +132,7 @@ export const LayersDropdown = memo(({ wmsLayer, validationMessage }) => {
     >
       <Dropdown
         name="wms_service_layer_name"
-        value={selectedOptions?.[0]?.label ?? ''}
+        value={selectedOptions?.[0]?.label ?? null}
         selectedOptions={selectedOptions}
         onOptionSelect={onOptionSelect}
         appearance="underline"
