@@ -1,9 +1,10 @@
-import { memo, useCallback } from 'react'
+import { memo, useCallback, useContext } from 'react'
 import { Tab, TabList } from '@fluentui/react-components'
 import { useSearchParams } from 'react-router-dom'
 
 import { ErrorBoundary } from '../../shared/ErrorBoundary.tsx'
 import { Layers } from './Layers/index.tsx'
+import { IsNarrowContext } from './IsNarrowContext.ts'
 
 const containerStyle = {
   width: '100%',
@@ -19,7 +20,8 @@ const formStyle = {
   height: '100%',
 }
 
-export const Content = memo(({ isNarrow }) => {
+export const Content = memo(() => {
+  const isNarrow = useContext(IsNarrowContext)
   const [searchParams, setSearchParams] = useSearchParams()
   const tab = searchParams.get('leftMapDrawerTab') ?? 'layers'
   const onTabSelect = useCallback(
@@ -48,11 +50,7 @@ export const Content = memo(({ isNarrow }) => {
           <Tab value="legends">Legends</Tab>
         </TabList>
         <div style={formStyle}>
-          {tab === 'layers' ? (
-            <Layers isNarrow={isNarrow} />
-          ) : (
-            <div>Legends</div>
-          )}
+          {tab === 'layers' ? <Layers /> : <div>Legends</div>}
         </div>
       </div>
     </ErrorBoundary>

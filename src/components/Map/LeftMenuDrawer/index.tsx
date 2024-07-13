@@ -6,10 +6,10 @@ import { useCorbado } from '@corbado/react'
 import { BiSolidLeftArrow, BiSolidRightArrow } from 'react-icons/bi'
 import { useAnimate } from 'framer-motion'
 
-import { Layers } from './Layers/index.tsx'
 import { Content } from './Content.tsx'
 import { Resizer } from './Resizer.tsx'
 import { useElectric } from '../../../ElectricProvider.tsx'
+import { IsNarrowContext } from './IsNarrowContext.ts'
 
 import './index.css'
 
@@ -150,82 +150,90 @@ export const LeftMenuDrawer = memo(({ containerRef }) => {
   }, [resize, stopResizing])
 
   return (
-    <div
-      className="map-layers-container"
-      style={{
-        ...containerStyle,
-        ...(isNarrow ? {} : { height: '100%' }),
-        // dragging can mark text so we disable pointer events
-        ...(isResizing ? { pointerEvents: 'none' } : {}),
-      }}
-      ref={widthRef}
-    >
-      <div style={innerContainerStyle} ref={scope}>
-        {!mapHideUi && (
-          <Button
-            onClick={toggleOpen}
-            icon={
-              isOpen ? (
-                <BiSolidLeftArrow
-                  style={{ transform: isNarrow ? 'rotate(270deg)' : 'unset' }}
-                />
-              ) : (
-                <BiSolidRightArrow
-                  style={{ transform: isNarrow ? 'rotate(270deg)' : 'unset' }}
-                />
-              )
-            }
-            title={isOpen ? 'Close Layer Menu' : 'Open Layer Menu'}
-            style={{
-              position: 'absolute',
-              top: isNarrow ? (isOpen ? 6 : -31) : 5,
-              right: isNarrow ? 'unset' : isOpen ? 0.5 : -31.5,
-              left: isNarrow ? 5 : 'unset',
-              marginRight: isOpen ? 5 : 0,
-              zIndex: 100000000,
-              borderTopLeftRadius: isNarrow ? (isOpen ? 0 : 4) : isOpen ? 4 : 0,
-              borderBottomLeftRadius: isNarrow
-                ? isOpen
+    <IsNarrowContext.Provider value={isNarrow}>
+      <div
+        className="map-layers-container"
+        style={{
+          ...containerStyle,
+          ...(isNarrow ? {} : { height: '100%' }),
+          // dragging can mark text so we disable pointer events
+          ...(isResizing ? { pointerEvents: 'none' } : {}),
+        }}
+        ref={widthRef}
+      >
+        <div style={innerContainerStyle} ref={scope}>
+          {!mapHideUi && (
+            <Button
+              onClick={toggleOpen}
+              icon={
+                isOpen ? (
+                  <BiSolidLeftArrow
+                    style={{ transform: isNarrow ? 'rotate(270deg)' : 'unset' }}
+                  />
+                ) : (
+                  <BiSolidRightArrow
+                    style={{ transform: isNarrow ? 'rotate(270deg)' : 'unset' }}
+                  />
+                )
+              }
+              title={isOpen ? 'Close Layer Menu' : 'Open Layer Menu'}
+              style={{
+                position: 'absolute',
+                top: isNarrow ? (isOpen ? 6 : -31) : 5,
+                right: isNarrow ? 'unset' : isOpen ? 0.5 : -31.5,
+                left: isNarrow ? 5 : 'unset',
+                marginRight: isOpen ? 5 : 0,
+                zIndex: 100000000,
+                borderTopLeftRadius: isNarrow
+                  ? isOpen
+                    ? 0
+                    : 4
+                  : isOpen
                   ? 4
-                  : 0
-                : isOpen
-                ? 4
-                : 0,
-              borderTopRightRadius: isNarrow
-                ? isOpen
+                  : 0,
+                borderBottomLeftRadius: isNarrow
+                  ? isOpen
+                    ? 4
+                    : 0
+                  : isOpen
+                  ? 4
+                  : 0,
+                borderTopRightRadius: isNarrow
+                  ? isOpen
+                    ? 0
+                    : 4
+                  : isOpen
                   ? 0
-                  : 4
-                : isOpen
-                ? 0
-                : 4,
-              borderBottomRightRadius: isNarrow
-                ? isOpen
-                  ? 4
-                  : 0
-                : isOpen
-                ? 0
-                : 4,
+                  : 4,
+                borderBottomRightRadius: isNarrow
+                  ? isOpen
+                    ? 4
+                    : 0
+                  : isOpen
+                  ? 0
+                  : 4,
+              }}
+            />
+          )}
+          <InlineDrawer
+            open={!mapHideUi}
+            ref={sidebarRef}
+            className="map-layers-drawer"
+            style={{
+              ...(isNarrow ? { height: size } : { width: size }),
             }}
-          />
-        )}
-        <InlineDrawer
-          open={!mapHideUi}
-          ref={sidebarRef}
-          className="map-layers-drawer"
-          style={{
-            ...(isNarrow ? { height: size } : { width: size }),
-          }}
-          position={isNarrow ? 'bottom' : 'start'}
-          onMouseDown={(e) => isResizing && e.preventDefault()}
-        >
-          <Content isNarrow={isNarrow} />
-          <Resizer
-            startResizing={startResizing}
-            isResizing={isResizing}
-            isOpen={isOpen}
-          />
-        </InlineDrawer>
+            position={isNarrow ? 'bottom' : 'start'}
+            onMouseDown={(e) => isResizing && e.preventDefault()}
+          >
+            <Content />
+            <Resizer
+              startResizing={startResizing}
+              isResizing={isResizing}
+              isOpen={isOpen}
+            />
+          </InlineDrawer>
+        </div>
       </div>
-    </div>
+    </IsNarrowContext.Provider>
   )
 })

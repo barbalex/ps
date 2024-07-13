@@ -5,9 +5,9 @@ import { WmsLayers } from './WMS.tsx'
 import { VectorLayers } from './Vector.tsx'
 import { OwnLayers } from './Own.tsx'
 
-export const Layers = memo(({ isNarrow }) => (
+export const Layers = memo(() => (
   <>
-    <ActiveLayers isNarrow={isNarrow} />
+    <ActiveLayers />
     <WmsLayers />
     <VectorLayers />
     <OwnLayers />

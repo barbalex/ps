@@ -5,6 +5,7 @@ import {
   useState,
   useCallback,
   createContext,
+  useContext,
 } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
@@ -24,7 +25,7 @@ import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { ActiveLayer } from './Active.tsx'
 import { isItemData } from './shared.ts'
-import { px } from 'framer-motion'
+import { IsNarrowContext } from '../../IsNarrowContext.ts'
 
 type ItemEntry = { itemId: string; element: HTMLElement }
 
@@ -92,9 +93,10 @@ const noLayersStyle = {
   paddingBottom: 10,
 }
 
-export const ActiveLayers = memo(({ isNarrow }) => {
+export const ActiveLayers = memo(() => {
   const { project_id } = useParams()
   const { user: authUser } = useCorbado()
+  const isNarrow = useContext(IsNarrowContext)
 
   const { db } = useElectric()!
 
