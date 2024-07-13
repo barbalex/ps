@@ -12,6 +12,7 @@ import {
   createVectorLayer,
   createVectorLayerDisplay,
   createNotification,
+  createLayerPresentation,
 } from '../../modules/createRows.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -48,6 +49,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
       level: place_id2 ? 2 : 1,
     })
     await db.places.create({ data })
+
     // need to create a corresponding vector layer and vector layer display
     const vectorLayer = createVectorLayer({
       project_id,
@@ -55,10 +57,16 @@ export const Header = memo(({ autoFocusRef }: Props) => {
       label: placeNamePlural,
     })
     const newVectorLayer = await db.vector_layers.create({ data: vectorLayer })
+
     const newVLD = createVectorLayerDisplay({
       vector_layer_id: newVectorLayer.vector_layer_id,
     })
     db.vector_layer_displays.create({ data: newVLD })
+
+    const newLP = createLayerPresentation({
+      vector_layer_id: newVectorLayer.vector_layer_id,
+    })
+    db.layer_presentations.create({ data: newLP })
 
     navigate({
       pathname: `../${data.place_id}`,
