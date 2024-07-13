@@ -1,7 +1,8 @@
-import { memo } from 'react'
+import { memo, useCallback } from 'react'
+import { Tab, TabList } from '@fluentui/react-components'
+import { useSearchParams } from 'react-router-dom'
 
 import { ErrorBoundary } from '../../../shared/ErrorBoundary.tsx'
-import { FormHeader } from '../../../FormHeader/index.tsx'
 import { ActiveLayers } from './Actives/index.tsx'
 import { WmsLayers } from './WMS.tsx'
 import { VectorLayers } from './Vector.tsx'
@@ -21,8 +22,15 @@ const formStyle = {
   height: '100%',
 }
 
-// TODO: add tabs for: Layers, Legends
 export const Layers = memo(({ isNarrow }) => {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const tab = searchParams.get('leftMapDrawerTab') ?? 'layers'
+  const onTabSelect = useCallback(
+    (event: SelectTabEvent, data: SelectTabData) =>
+      setSearchParams({ leftMapDrawerTab: data.value }),
+    [setSearchParams],
+  )
+
   return (
     <ErrorBoundary>
       <div
@@ -31,15 +39,28 @@ export const Layers = memo(({ isNarrow }) => {
           ...(isNarrow ? { marginTop: 5 } : { marginRight: 5 }),
         }}
       >
-        <FormHeader
-          title="Layers"
-          titleMarginLeft={isNarrow ? 34 : undefined}
-        />
+        <TabList
+          selectedValue={tab}
+          onTabSelect={onTabSelect}
+          style={{
+            marginLeft: isNarrow ? 34 : 'unset',
+            backgroundColor: 'rgba(103, 216, 101, 0.2)',
+          }}
+        >
+          <Tab value="layers">Layers</Tab>
+          <Tab value="legends">Legends</Tab>
+        </TabList>
         <div style={formStyle}>
-          <ActiveLayers isNarrow={isNarrow} />
-          <WmsLayers />
-          <VectorLayers />
-          <OwnLayers />
+          {tab === 'layers' ? (
+            <>
+              <ActiveLayers isNarrow={isNarrow} />
+              <WmsLayers />
+              <VectorLayers />
+              <OwnLayers />
+            </>
+          ) : (
+            <div>Legends</div>
+          )}
         </div>
       </div>
     </ErrorBoundary>
