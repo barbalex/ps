@@ -76,22 +76,12 @@ export const LayersDropdown = memo(({ wmsLayer, validationMessage }) => {
         )
         return false
       }
-      const blob = new Blob([res.data], { type: 'image/png' })
+      // it seems a byte array is needed to store the image in the database
       // create an array buffer
-      const arrayBuffer = await new Response(blob).arrayBuffer()
-      const fileReader = new FileReader()
-      fileReader.readAsDataURL(blob)
-      const file = new File([blob], 'legend.png', { type: 'image/png' })
-      // convert res.data to byte array
+      const arrayBuffer = await new Response(res.data).arrayBuffer()
+      // convert to byte array
       const byteArray = new Uint8Array(arrayBuffer)
-      console.log('LayersDropdown.onOptionSelect', {
-        res,
-        resData: res.data,
-        blob,
-        arrayBuffer,
-        file,
-        byteArray,
-      })
+      // TODO: show using base64: https://stackoverflow.com/a/20756091/712005
       // 3. store wms_service_layers.legend_image and legend_url
       if (res.data) {
         try {
@@ -103,17 +93,6 @@ export const LayersDropdown = memo(({ wmsLayer, validationMessage }) => {
           })
         } catch (error) {
           console.log('LayersDropdown.onOptionSelect, error:', error)
-          // TODO: this throws:
-          // ZodError
-          //   at get error (index.mjs:587:31)
-          //   at _ZodObject.parse (index.mjs:692:22)
-          //   at validate (validation.ts:15:31)
-          //   at Table._update (table.ts:1314:7)
-          //   at table.ts:353:12
-          //   at executor.ts:51:7
-          //   at Promise.catch._run.sql (adapter.ts:56:7)
-          //   at new Promise (<anonymous>)
-          //   at DatabaseAdapter2._transaction (adapter.ts:53:12)
         }
       }
     },
