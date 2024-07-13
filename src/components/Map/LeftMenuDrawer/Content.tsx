@@ -18,6 +18,8 @@ const containerStyle = {
 const formStyle = {
   // enable scrolling
   overflow: 'auto',
+  height: '100%',
+  width: '100%',
 }
 
 export const Content = memo(() => {
@@ -32,14 +34,7 @@ export const Content = memo(() => {
 
   return (
     <ErrorBoundary>
-      <div
-        style={{
-          ...containerStyle,
-          ...(isNarrow
-            ? { height: 'calc(100% - 5px)' }
-            : { width: 'calc(100% - 5px)' }),
-        }}
-      >
+      <div style={containerStyle}>
         <TabList
           selectedValue={tab}
           onTabSelect={onTabSelect}

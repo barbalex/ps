@@ -6,9 +6,7 @@ import { useParams } from 'react-router-dom'
 import { useElectric } from '../../../../ElectricProvider.tsx'
 import { Legend } from './Legend.tsx'
 
-const layerListStyle = {
-  overflow: 'hidden',
-}
+const layerListStyle = {}
 const noLayersStyle = {
   margin: 0,
   paddingLeft: 10,

@@ -5,7 +5,6 @@ import { useElectric } from '../../../../ElectricProvider.tsx'
 
 const containerStyle = {
   padding: 10,
-  overflow: 'hidden',
 }
 const titleStyle = {
   fontWeight: 'bold',
