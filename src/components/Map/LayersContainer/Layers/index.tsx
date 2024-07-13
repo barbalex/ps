@@ -21,6 +21,7 @@ const formStyle = {
   height: '100%',
 }
 
+// TODO: add tabs for: Layers, Legends
 export const Layers = memo(({ isNarrow }) => {
   return (
     <ErrorBoundary>
