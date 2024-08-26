@@ -10,7 +10,7 @@ import { useCorbado } from '@corbado/react'
 import 'leaflet/dist/leaflet.css'
 
 import { useElectric } from '../../ElectricProvider.tsx'
-import { Layers } from './Layers/index.tsx'
+import { Layers } from './layers/index.tsx'
 import { LocationMarker } from './LocationMarker.tsx'
 import { tableNameFromIdField } from '../../modules/tableNameFromIdField.ts'
 import { DrawControl } from './DrawControl/index.tsx'
