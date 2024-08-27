@@ -13,8 +13,14 @@ export const Syncer = memo(() => {
     const syncItems = async () => {
       if (!authUser?.email) return
 
-      await db.app_states.update({
+      // get app_state_id for user
+      const appState = await db.app_states.findFirst({
         where: { user_email: authUser?.email },
+      })
+
+      // could it be that this does not work?
+      await db.app_states.update({
+        where: { app_state_id: appState?.app_state_id },
         data: { syncing: true },
       })
       // Resolves when the shape subscription has been established.
@@ -244,7 +250,7 @@ export const Syncer = memo(() => {
       await fieldTypesShape.synced
       await widgetTypesShape.synced
       await db.app_states.update({
-        where: { user_email: authUser?.email },
+        where: { app_state_id: appState?.app_state_id },
         data: { syncing: false },
       })
       // TODO: crs not synced
