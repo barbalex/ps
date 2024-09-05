@@ -12,6 +12,10 @@
   overflow: hidden;
 }
 
+.resizable-area > button {
+  border-radius: 0;
+}
+
 .matches-container {
   width: 100%;
 }

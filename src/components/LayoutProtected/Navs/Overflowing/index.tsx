@@ -39,7 +39,10 @@ const OverflowMenuItem: React.FC = ({ path, text }) => {
   if (isVisible) return null
 
   return (
-    <MenuItem className="nav-menu-item" onClick={onClick}>
+    <MenuItem
+      className="nav-menu-item"
+      onClick={onClick}
+    >
       {text}
     </MenuItem>
   )
@@ -131,10 +134,17 @@ export const NavsOverflowing = ({ designing }) => {
 
   if (tosToUse?.length) {
     return (
-      <Overflow ref={widthMeasureRef} overflowDirection="start" padding={20}>
+      <Overflow
+        ref={widthMeasureRef}
+        overflowDirection="start"
+        padding={20}
+      >
         <nav className="navs-resizable">
           <OverflowMenu tos={tosToUse} />
-          <ToNavs tos={tosToUse} width={width} />
+          <ToNavs
+            tos={tosToUse}
+            width={width}
+          />
         </nav>
       </Overflow>
     )

@@ -71,8 +71,10 @@ https://stackoverflow.com/a/21541021/712005 */
 
 .navs-resizable {
   display: flex;
+  flex-basis: auto;
   flex-wrap: nowrap;
   position: relative;
+  margin-left: -1em;
   column-gap: 0;
   row-gap: 0;
   background-color: rgba(103, 216, 101, 0.07);
@@ -86,6 +88,10 @@ https://stackoverflow.com/a/21541021/712005 */
   user-select: none;
 }
 
+.navs-resizable > button {
+  border-radius: 0;
+}
+
 .navs {
   background-color: rgba(103, 216, 101, 0.07);
   display: flex;
@@ -95,6 +101,7 @@ https://stackoverflow.com/a/21541021/712005 */
   border-bottom: 1px solid rgba(55, 118, 28, 0.5);
   border-collapse: collapse;
   border-top: none;
+  padding-left: 2px;
   min-height: 38.7px;
   user-select: none;
 }
@@ -102,19 +109,23 @@ https://stackoverflow.com/a/21541021/712005 */
 .navs a,
 .navs-resizable a {
   margin: 0;
-  padding: 7px;
+  padding: 7px 9px;
   color: rgb(51, 51, 51);
   text-decoration-color: rgba(0, 0, 0, 0.3);
 }
 
-.navs a:before,
+.navs-resizable a:first-child {
+  margin-left: 15px;
+}
+
+/* .navs a:before,
 .navs-resizable a:before {
   content: url(./images/caret-right.svg);
   display: inline-block;
   vertical-align: middle;
   margin-top: 2px;
   filter: opacity(0.4);
-}
+} */
 
 .list-view {
   display: flex;
