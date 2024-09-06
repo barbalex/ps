@@ -4,16 +4,12 @@
   position: relative;
   min-height: 47px;
   margin-left: -1em;
-  background-color: rgba(103, 216, 101, 0.07);
+  background-color: fff;
   border-top: 1px solid rgba(55, 118, 28, 0.5);
   border-bottom: 1px solid rgba(55, 118, 28, 0.5);
   align-items: stretch;
   white-space: nowrap;
   overflow: hidden;
-}
-
-.resizable-area > button {
-  border-radius: 0;
 }
 
 .matches-container {

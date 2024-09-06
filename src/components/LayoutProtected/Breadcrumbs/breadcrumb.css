@@ -72,6 +72,10 @@
   color: #fff;
 }
 
+.resizable-area > button {
+  border-radius: 0;
+}
+
 .resizable-area > button::after,
 .resizable-area > button::before,
 .breadcrumbs__crumb::after,
