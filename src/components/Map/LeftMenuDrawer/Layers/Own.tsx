@@ -33,7 +33,7 @@ export const OwnLayers = memo(() => {
   // 2. when one is set active, add layer_presentations for it
   const own = vectorLayers.filter(
     (l) =>
-      !l.layer_presentations.some(
+      !(l.layer_presentations ?? []).some(
         (lp) => lp.vector_layer_id === l.vector_layer_id && lp.active,
       ),
   )
@@ -64,7 +64,7 @@ export const OwnLayers = memo(() => {
                 label={l.label}
                 // checked if layer has an active presentation
                 checked={
-                  !!l.layer_presentations.find(
+                  !!(l.layer_presentations ?? []).find(
                     (lp) =>
                       lp.vector_layer_id === l.vector_layer_id && lp.active,
                   )
