@@ -41,9 +41,33 @@
   text-decoration-color: rgba(0, 0, 0, 0.3);
 }
 
-.breadcrumbs__crumb:hover:after,
-.breadcrumbs__crumb:hover {
+.breadcrumbs__crumb:hover:not(:has(.menu-icon:hover)):after,
+.breadcrumbs__crumb:hover:not(:has(.menu-icon:hover)) {
   background: rgba(237, 241, 245, 1);
+}
+
+.menu-icon {
+  display: flex;
+  align-items: center;
+  font-size: 1.2em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  cursor: pointer;
+  position: relative;
+  top: 0.1em;
+  border: 1px solid rgba(237, 241, 245, 1);
+  border-radius: 20px;
+  height: 33px;
+}
+.menu-icon:hover {
+  background: rgba(237, 241, 245, 1);
+}
+.breadcrumbs__crumb.is-active .menu-icon {
+  border: 1px solid rgb(222, 225, 227);
+}
+.breadcrumbs__crumb.is-active > .menu-icon:hover {
+  background: white;
+  border: 1px solid white;
 }
 
 .breadcrumbs__crumb:focus:after,
@@ -107,13 +131,4 @@
 .breadcrumbs__crumb > ul > li > div > span > svg,
 .breadcrumbs__crumb__menu-item > ul > li > div > span > svg {
   font-size: large;
-}
-
-.menu-icon {
-  font-size: 1.2em;
-  padding-left: 0.5em;
-  padding-right: 0.5em;
-  cursor: pointer;
-  position: relative;
-  top: 0.1em;
 }

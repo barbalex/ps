@@ -10,9 +10,9 @@ import { Menu } from './Menu/index.tsx'
 const isOdd = (num) => num % 2
 
 const siblingStyle = {
-  marginLeft: 7,
+  marginLeft: 5,
 }
-const labelStyle = { userSelect: 'none' }
+const labelStyle = { userSelect: 'none', marginRight: 5 }
 
 // forwarding refs is crucial for the overflow menu to work
 // https://github.com/microsoft/fluentui/issues/27652#issuecomment-1520447241
