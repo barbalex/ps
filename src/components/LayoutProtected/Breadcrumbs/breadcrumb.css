@@ -47,6 +47,8 @@
     :has(.designing-button:hover)
   ) {
   background: rgba(237, 241, 245, 1);
+  text-decoration: underline;
+  text-decoration-color: rgba(0, 0, 0, 0.3);
 }
 
 .menu-icon {
@@ -73,6 +75,7 @@
   border: 1px solid white;
 }
 
+/* what is this for? */
 .breadcrumbs__crumb:focus:after,
 .breadcrumbs__crumb:focus,
 .breadcrumbs__crumb.is-active:focus {
@@ -101,9 +104,8 @@
   margin-left: 1px;
 }
 
-.breadcrumbs__crumb.is-active,
-.breadcrumbs__crumb.is-active:after {
-  background: rgba(237, 241, 245, 1);
+.breadcrumbs__crumb.is-active {
+  font-weight: bold;
 }
 
 .breadcrumbs__crumb:last-child {
