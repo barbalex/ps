@@ -1,13 +1,18 @@
 .breadcrumbs {
   border-top: 1px solid rgba(55, 118, 28, 0.5);
   border-bottom: 1px solid rgba(55, 118, 28, 0.5);
-  background-color: rgba(103, 216, 101, 0.07);
+  background-color: white;
   border-collapse: collapse;
   display: flex;
   flex-wrap: wrap;
   user-select: none;
   margin-left: -1em;
   align-items: stretch;
+}
+
+/* needed to thicken the right arrowed clip path in :after */
+.breadcrumbs__crumb_container {
+  position: relative;
 }
 
 .breadcrumbs__crumb {
@@ -25,17 +30,6 @@
   display: flex;
   align-items: center;
   min-height: 46px;
-}
-
-.breadcrumbs__crumb_container {
-  background: red;
-  border-collapse: collapse;
-  /* padding: 0 0 0 1.5em; */
-  position: relative;
-  transition: background 0.2s linear;
-  /* display: flex; */
-  /* align-items: center; */
-  /* min-height: 46px; */
 }
 
 .breadcrumbs__crumb__menu-item {
@@ -103,7 +97,7 @@
   position: relative;
   min-height: 47px;
   margin-left: -1em;
-  background-color: fff;
+  background-color: #fff;
   border-top: 1px solid rgba(55, 118, 28, 0.5);
   border-bottom: 1px solid rgba(55, 118, 28, 0.5);
   align-items: stretch;
@@ -138,7 +132,7 @@
   left: calc(100% + 1.2px);
   position: absolute;
   top: 0;
-  /* transition: background 0.2s linear; */
+  transition: background 0.2s linear;
   width: 2em;
   z-index: 1;
 }
