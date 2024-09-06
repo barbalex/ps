@@ -7,8 +7,6 @@ import { idFieldFromTable } from '../../../../modules/idFieldFromTable.ts'
 import { Nav } from '../Nav.tsx'
 import { OverflowMenu } from './index.tsx'
 
-const isOdd = (num) => num % 2
-
 // TODO: extract crumbs immediately in all other data nav components
 // Datanavas need to query db
 // so need to be in a separate component
