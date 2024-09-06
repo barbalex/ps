@@ -118,15 +118,6 @@ https://stackoverflow.com/a/21541021/712005 */
   margin-left: 15px;
 }
 
-/* .navs a:before,
-.navs-resizable a:before {
-  content: url(./images/caret-right.svg);
-  display: inline-block;
-  vertical-align: middle;
-  margin-top: 2px;
-  filter: opacity(0.4);
-} */
-
 .list-view {
   display: flex;
   flex-direction: column;
