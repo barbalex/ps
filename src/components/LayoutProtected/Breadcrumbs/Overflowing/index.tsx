@@ -16,7 +16,6 @@ import { useResizeDetector } from 'react-resize-detector'
 import { BreadcrumbForData } from '../BreadcrumbForData.tsx'
 import { BreadcrumbForFolder } from '../BreadcrumbForFolder.tsx'
 import { Matches } from './Matches.tsx'
-import '../breadcrumbs.css'
 
 const OverflowMenuItem: React.FC = ({ id, match, upRerenderInteger }) => {
   const navigate = useNavigate()

@@ -4,6 +4,7 @@ import { useCorbado } from '@corbado/react'
 import { BreadcrumbsWrapping } from './Wrapping.tsx'
 import { BreadcrumbsOverflowing } from './Overflowing/index.tsx'
 import { useElectric } from '../../../ElectricProvider.tsx'
+import './breadcrumb.css'
 
 export const Breadcrumbs = () => {
   const { user: authUser } = useCorbado()

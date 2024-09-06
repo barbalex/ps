@@ -2,7 +2,6 @@ import { useEffect, useState, forwardRef, useMemo } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 
-import './breadcrumb.css'
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { idFieldFromTable } from '../../../modules/idFieldFromTable.ts'
 import { Menu } from './Menu/index.tsx'

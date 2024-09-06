@@ -1,3 +1,15 @@
+.breadcrumbs {
+  border-top: 1px solid rgba(55, 118, 28, 0.5);
+  border-bottom: 1px solid rgba(55, 118, 28, 0.5);
+  background-color: rgba(103, 216, 101, 0.07);
+  border-collapse: collapse;
+  display: flex;
+  flex-wrap: wrap;
+  user-select: none;
+  margin-left: -1em;
+  align-items: stretch;
+}
+
 .breadcrumbs__crumb {
   background: #fff;
   color: #333;
@@ -70,6 +82,20 @@
 .breadcrumbs__crumb.is-active:focus {
   background: #323f4a;
   color: #fff;
+}
+
+.resizable-area {
+  display: flex;
+  flex-wrap: nowrap;
+  position: relative;
+  min-height: 47px;
+  margin-left: -1em;
+  background-color: fff;
+  border-top: 1px solid rgba(55, 118, 28, 0.5);
+  border-bottom: 1px solid rgba(55, 118, 28, 0.5);
+  align-items: stretch;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .resizable-area > button {

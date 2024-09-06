@@ -4,7 +4,6 @@ import { useElectric } from '../../../ElectricProvider.tsx'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 
-import './breadcrumb.css'
 import { buildNavs } from '../../../modules/navs.ts'
 import { idFieldFromTable } from '../../../modules/idFieldFromTable.ts'
 import { Menu } from './Menu/index.tsx'
