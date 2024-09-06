@@ -37,11 +37,12 @@
 .breadcrumbs__crumb.link,
 .breadcrumbs__crumb__menu-item.link {
   cursor: pointer;
-  text-decoration: underline;
   text-decoration-color: rgba(0, 0, 0, 0.3);
 }
 
-.breadcrumbs__crumb:hover:not(:has(.menu-icon:hover)):after,
+.breadcrumbs__crumb:hover:not(:has(.menu-icon:hover)):not(
+    :has(.designing-button:hover)
+  ):after,
 .breadcrumbs__crumb:hover:not(:has(.menu-icon:hover)):not(
     :has(.designing-button:hover)
   ) {
