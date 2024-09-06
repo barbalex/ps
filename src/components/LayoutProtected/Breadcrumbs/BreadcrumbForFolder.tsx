@@ -130,21 +130,23 @@ export const BreadcrumbForFolder = forwardRef(
     // })
 
     return (
-      <div
-        className={className}
-        onClick={() =>
-          navigate({
-            pathname: match.pathname,
-            search: searchParams.toString(),
-          })
-        }
-        ref={ref}
-      >
-        <div style={labelStyle}>{label}</div>
-        {!!sibling && !forOverflowMenu && (
-          <div style={siblingStyle}>{sibling}</div>
-        )}
-        {!forOverflowMenu && <Menu navs={navs} />}
+      <div className="breadcrumbs__crumb_container">
+        <div
+          className={className}
+          onClick={() =>
+            navigate({
+              pathname: match.pathname,
+              search: searchParams.toString(),
+            })
+          }
+          ref={ref}
+        >
+          <div style={labelStyle}>{label}</div>
+          {!!sibling && !forOverflowMenu && (
+            <div style={siblingStyle}>{sibling}</div>
+          )}
+          {!forOverflowMenu && <Menu navs={navs} />}
+        </div>
       </div>
     )
   },
