@@ -14,8 +14,10 @@
   background: #fff;
   color: #333;
   outline: none;
+  /* only needed when breaking? */
   border-top: 1px solid #cbd2d9;
   border-bottom: 1px solid #cbd2d9;
+  border-collapse: collapse;
   padding: 0 0 0 1.5em;
   position: relative;
   text-decoration: none;
