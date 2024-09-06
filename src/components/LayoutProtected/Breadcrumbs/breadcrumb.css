@@ -124,7 +124,8 @@
 }
 
 .breadcrumbs__crumb.is-active {
-  font-weight: bold;
+  /* font-weight: bold; */
+  text-shadow: black 0 0 1px;
 }
 
 .breadcrumbs__crumb:last-child {
