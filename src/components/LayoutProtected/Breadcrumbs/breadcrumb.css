@@ -107,6 +107,11 @@
   border-radius: 0;
 }
 
+.resizable-area > button {
+  border-right-width: 1.4px;
+  border-right-color: rgba(55, 118, 28, 0.4) !important;
+}
+
 .breadcrumbs__crumb_container::after,
 .breadcrumbs__crumb_container::before {
   background: white;
