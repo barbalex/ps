@@ -8,7 +8,7 @@ import { Nav } from '../Nav.tsx'
 import { OverflowMenu } from './index.tsx'
 
 // TODO: extract crumbs immediately in all other data nav components
-// Datanavas need to query db
+// DataNavs need to query db
 // so need to be in a separate component
 export const DataNavsOverflowing = memo(
   forwardRef(({ matches }, ref) => {
