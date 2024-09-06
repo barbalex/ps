@@ -161,7 +161,7 @@ export const DataNavsOverflowing = memo(
 
     return (
       <Overflow
-        overflowDirection="start"
+        overflowDirection="end"
         padding={20}
         ref={ref}
       >

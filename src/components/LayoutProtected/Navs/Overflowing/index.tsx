@@ -136,7 +136,7 @@ export const NavsOverflowing = ({ designing }) => {
     return (
       <Overflow
         ref={widthMeasureRef}
-        overflowDirection="start"
+        overflowDirection="end"
         padding={20}
       >
         <nav className="navs-resizable">
