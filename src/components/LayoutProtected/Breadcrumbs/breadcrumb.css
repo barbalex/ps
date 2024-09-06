@@ -42,7 +42,9 @@
 }
 
 .breadcrumbs__crumb:hover:not(:has(.menu-icon:hover)):after,
-.breadcrumbs__crumb:hover:not(:has(.menu-icon:hover)) {
+.breadcrumbs__crumb:hover:not(:has(.menu-icon:hover)):not(
+    :has(.designing-button:hover)
+  ) {
   background: rgba(237, 241, 245, 1);
 }
 

@@ -151,11 +151,11 @@ export const NavsOverflowing = ({ designing }) => {
         padding={20}
       >
         <nav className="navs-resizable">
-          <OverflowMenu tos={tosToUse} />
           <ToNavs
             tos={tosToUse}
             width={width}
           />
+          <OverflowMenu tos={tosToUse} />
         </nav>
       </Overflow>
     )

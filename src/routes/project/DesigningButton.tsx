@@ -49,6 +49,7 @@ export const DesigningButton = memo(() => {
       }
       icon={designing ? <MdEdit /> : <MdEditOff />}
       onClick={onClickDesigning}
+      className='designing-button'
     />
   )
 })

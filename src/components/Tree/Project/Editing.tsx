@@ -74,6 +74,7 @@ export const Editing = memo(() => {
       title={
         designing ? 'Designing this project. Click to stop' : 'Start designing'
       }
+      className="designing-button"
     />
   )
 })
