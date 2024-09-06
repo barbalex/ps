@@ -102,8 +102,6 @@
   border-radius: 0;
 }
 
-.resizable-area > button::after,
-.resizable-area > button::before,
 .breadcrumbs__crumb::after,
 .breadcrumbs__crumb::before {
   background: white;
