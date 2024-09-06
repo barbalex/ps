@@ -25,10 +25,7 @@ export const Menu = memo(({ navs }) => {
   if (!navs?.length) return null
 
   return (
-    <MenuComponent
-      // openOnHover
-      onOpenChange={onOpenChange}
-    >
+    <MenuComponent onOpenChange={onOpenChange}>
       <MenuTrigger>
         <CustomMenuTrigger />
       </MenuTrigger>

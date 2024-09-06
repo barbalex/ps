@@ -166,7 +166,6 @@ export const DataNavsOverflowing = memo(
         ref={ref}
       >
         <nav className="navs-resizable">
-          <OverflowMenu tos={tos} />
           {tos.map(({ text, path }) => (
             <OverflowItem
               key={path}
@@ -178,6 +177,7 @@ export const DataNavsOverflowing = memo(
               />
             </OverflowItem>
           ))}
+          <OverflowMenu tos={tos} />
         </nav>
       </Overflow>
     )

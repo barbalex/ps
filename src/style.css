@@ -88,10 +88,6 @@ https://stackoverflow.com/a/21541021/712005 */
   user-select: none;
 }
 
-.navs-resizable > button {
-  border-radius: 0;
-}
-
 .navs {
   background-color: rgba(103, 216, 101, 0.07);
   display: flex;
@@ -115,7 +111,7 @@ https://stackoverflow.com/a/21541021/712005 */
 }
 
 .navs-resizable a:first-child {
-  margin-left: 15px;
+  margin-left: 20px;
 }
 
 .list-view {

@@ -54,7 +54,7 @@ const OverflowMenu: React.FC = ({ matches, upRerenderInteger }) => {
   }
 
   return (
-    <Menu openOnHover>
+    <Menu>
       <MenuTrigger>
         <MenuButton
           className="menu-button"

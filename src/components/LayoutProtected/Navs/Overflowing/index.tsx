@@ -26,6 +26,16 @@ import { buildNavs } from '../../../../modules/navs.ts'
 import { useElectric } from '../../../../ElectricProvider.tsx'
 import { useCorbado } from '@corbado/react'
 
+const menuStyle = {
+  backgroundColor: 'transparent',
+  minWidth: 'auto',
+  borderRadius: 0,
+  borderTop: 'none',
+  borderBottom: 'none',
+  borderRight: 'none',
+  marginLeft: 'auto',
+}
+
 const OverflowMenuItem: React.FC = ({ path, text }) => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -56,12 +66,13 @@ export const OverflowMenu: React.FC = ({ tos }) => {
   }
 
   return (
-    <Menu openOnHover>
+    <Menu>
       <MenuTrigger>
         <MenuButton
           className="menu-button"
           ref={ref}
           menuIcon={<BsCaretDown />}
+          style={menuStyle}
         >
           +{overflowCount}
         </MenuButton>
