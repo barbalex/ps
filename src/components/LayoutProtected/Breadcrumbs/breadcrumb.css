@@ -135,7 +135,7 @@
   bottom: 0;
   clip-path: polygon(50% 50%, -50% -50%, 0 100%);
   content: '';
-  left: calc(100% + 1px);
+  left: calc(100% + 1.2px);
   position: absolute;
   top: 0;
   /* transition: background 0.2s linear; */
@@ -149,8 +149,7 @@
 }
 
 .breadcrumbs__crumb.is-active {
-  /* font-weight: bold; */
-  text-shadow: black 0 0 1px;
+  text-shadow: rgba(38, 82, 37, 1) 0 0 1px;
 }
 
 .breadcrumbs__crumb:last-child {
