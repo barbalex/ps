@@ -28,6 +28,7 @@ export const BreadcrumbsWrapping = () => {
             <BreadcrumbForFolder
               key={match.id}
               match={match}
+              wrapping={true}
             />
           )
         }
@@ -36,6 +37,7 @@ export const BreadcrumbsWrapping = () => {
           <BreadcrumbForData
             key={match.id}
             match={match}
+            wrapping={true}
           />
         )
       })}

@@ -19,7 +19,7 @@ const labelStyle = {
 // forwarding refs is crucial for the overflow menu to work
 // https://github.com/microsoft/fluentui/issues/27652#issuecomment-1520447241
 export const BreadcrumbForData = forwardRef(
-  ({ match, forOverflowMenu }, ref) => {
+  ({ match, forOverflowMenu, wrapping = false }, ref) => {
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
@@ -184,6 +184,12 @@ export const BreadcrumbForData = forwardRef(
       <div className="breadcrumbs__crumb_container">
         <div
           className={className}
+          style={{
+            borderBottom: wrapping
+              ? '1px solid rgba(55, 118, 28, 0.5) '
+              : 'none',
+            borderTop: wrapping ? '1px solid rgba(55, 118, 28, 0.5) ' : 'none',
+          }}
           onClick={() =>
             navigate({
               pathname: match.pathname,
