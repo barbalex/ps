@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { useMatches, useLocation, useParams } from 'react-router-dom'
 
 import { DataNavs } from './DataNavs.tsx'
@@ -7,6 +7,7 @@ import { buildNavs } from '../../../modules/navs.ts'
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { useCorbado } from '@corbado/react'
 
+// TODO: this component runs way too often
 export const NavsWrapping = ({ designing }) => {
   const location = useLocation()
   const matches = useMatches()
@@ -14,8 +15,15 @@ export const NavsWrapping = ({ designing }) => {
   const { db } = useElectric()!
   const { user: authUser } = useCorbado()
 
-  const thisPathsMatches = matches.filter(
-    (match) => match.pathname === location.pathname && match.handle,
+  console.log('Wrapping Navs', { matches, pathname: location.pathname })
+
+  const thisPathsMatches = useMemo(
+    () =>
+      matches.filter(
+        (match) => match.pathname === location.pathname && match.handle,
+      ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [location.pathname],
   )
 
   const [tos, setTos] = useState([])
@@ -39,11 +47,12 @@ export const NavsWrapping = ({ designing }) => {
 
   const tosToUse = tos[0] ?? []
 
-  // console.log('hello Navs', {
+  // console.log('Wrapping Navs', {
   //   matches,
   //   tosToUse,
   //   thisPathsMatches,
   //   pathname: location.pathname,
+  //   tosPaths: tos.map((to) => to.path),
   // })
 
   return (

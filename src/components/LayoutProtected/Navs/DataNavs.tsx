@@ -5,17 +5,20 @@ import { useElectric } from '../../../ElectricProvider.tsx'
 import { idFieldFromTable } from '../../../modules/idFieldFromTable.ts'
 import { Nav } from './Nav.tsx'
 
-const isOdd = (num) => num % 2
-
 export const DataNavs = memo(({ matches }) => {
   const location = useLocation()
   const { db } = useElectric()!
 
-  const filteredMatches = matches.filter((match) => {
-    const { table, folder } = match?.handle?.crumb ?? {}
+  const filteredMatches = useMemo(
+    () =>
+      matches.filter((match) => {
+        const { table, folder } = match?.handle?.crumb ?? {}
 
-    return table !== 'root' && folder === true
-  })
+        return table !== 'root' && folder === true
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [location.pathname],
+  )
   const dataMatch = filteredMatches?.[0] ?? {}
   const { table } = dataMatch?.handle?.crumb ?? {}
   const pathname = dataMatch?.pathname ?? ''
@@ -94,6 +97,8 @@ export const DataNavs = memo(({ matches }) => {
   useEffect(() => {
     const get = async () => {
       if (!table) return
+
+      console.log('DataNavs, effect, setting table results')
       setTableResults(
         await db[table]?.findMany({
           where: filterParams,
@@ -104,15 +109,15 @@ export const DataNavs = memo(({ matches }) => {
     get()
   }, [db, filterParams, table, location.pathname])
 
-  // console.log('DataNavs', {
-  //   table,
-  //   idField,
-  //   pathname,
-  //   filterParams,
-  //   matches,
-  //   filteredMatches,
-  //   tableResults,
-  // })
+  console.log('DataNavs', {
+    table,
+    idField,
+    pathname,
+    filterParams,
+    matches,
+    filteredMatches,
+    tableResults,
+  })
 
   if (!table) return null
 
@@ -121,6 +126,7 @@ export const DataNavs = memo(({ matches }) => {
       {tableResults.map((result) => {
         const value = result[idField]
         const label = result.label ?? value
+        // console.log('DataNavs', { value, label })
 
         return (
           <Nav key={value} label={label ?? value} to={`${pathname}/${value}`} />
