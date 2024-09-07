@@ -89,11 +89,10 @@ export const DataNavsOverflowing = memo(
       //   dataMatchParams: dataMatch.params,
       // })
       if (parentIdName && parentId) {
-        if (table === 'places' && isPlaces2) {
-          filterParams.parent_id = dataMatch?.params?.place_id
-        } else if (table === 'places') {
-          // filterParams[parentIdName] = parentId
-          filterParams.parent_id = null
+        if (table === 'places') {
+          filterParams.parent_id = isPlaces2
+            ? dataMatch?.params?.place_id
+            : null
         } else if (table === 'occurrences') {
           // need to get the occurrence_import_id from the subproject_id
           filterParams.occurrence_import_id = { in: occurrenceImportIds }
@@ -105,9 +104,9 @@ export const DataNavsOverflowing = memo(
           } else if (lastPathElement === 'occurrences-not-to-assign') {
             filterParams.not_to_assign = true
           } else if (lastPathElement === 'occurrences-assigned') {
-            filterParams.place_id = !isPlaces2
-              ? dataMatch.params.place_id
-              : dataMatch.params.place_id2
+            filterParams.place_id = isPlaces2
+              ? dataMatch.params.place_id2
+              : dataMatch.params.place_id
           }
           // if last path element is
         } else {
@@ -160,21 +159,11 @@ export const DataNavsOverflowing = memo(
     if (!tos.length) return <div className="navs-resizable" />
 
     return (
-      <Overflow
-        overflowDirection="end"
-        padding={20}
-        ref={ref}
-      >
+      <Overflow overflowDirection="end" padding={20} ref={ref}>
         <nav className="navs-resizable">
           {tos.map(({ text, path }) => (
-            <OverflowItem
-              key={path}
-              id={path}
-            >
-              <Nav
-                label={text}
-                to={path}
-              />
+            <OverflowItem key={path} id={path}>
+              <Nav label={text} to={path} />
             </OverflowItem>
           ))}
           <OverflowMenu tos={tos} />
