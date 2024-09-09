@@ -1,20 +1,14 @@
-import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
+import { useAtom } from 'jotai'
 
 import { BreadcrumbsWrapping } from './Wrapping.tsx'
 import { BreadcrumbsOverflowing } from './Overflowing/index.tsx'
-import { useElectric } from '../../../ElectricProvider.tsx'
+import { breadcrumbsOverflowingAtom } from '../../../store.ts'
 import './breadcrumb.css'
 
 export const Breadcrumbs = () => {
-  const { user: authUser } = useCorbado()
+  const [breadcrumbsOverflowing] = useAtom(breadcrumbsOverflowingAtom)
 
-  const { db } = useElectric()!
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
-
-  if (appState?.breadcrumbs_overflowing === false) {
+  if (!breadcrumbsOverflowing) {
     return <BreadcrumbsWrapping />
   }
 

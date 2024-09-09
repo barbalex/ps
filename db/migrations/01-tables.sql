@@ -1163,13 +1163,7 @@ CREATE TYPE droppable_layer_enum AS enum(
 
 CREATE TABLE app_states(
   app_state_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
-  -- user_email can not be referenced to users, as it is not unique
-  -- because electric-sql does not support unique constraints
-  -- unless the column is a primary key
-  user_email text DEFAULT NULL,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  breadcrumbs_overflowing boolean DEFAULT NULL, -- FALSE,
-  navs_overflowing boolean DEFAULT NULL, -- FALSE,
   tabs jsonb DEFAULT NULL, -- array of strings
   map_bounds jsonb DEFAULT NULL, -- [minx, miny, maxx, maxy]
   show_local_map jsonb DEFAULT NULL, -- map of id (layer.id, key) and show boolean
