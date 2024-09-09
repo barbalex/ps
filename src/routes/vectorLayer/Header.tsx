@@ -12,6 +12,7 @@ import {
   MenuItem,
   MenuPopover,
 } from '@fluentui/react-components'
+import { useAtom } from 'jotai'
 
 import {
   createVectorLayer,
@@ -21,6 +22,7 @@ import {
 import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { Vector_layers as VectorLayer } from '../../generated/client/index.ts'
+import { tabsAtom } from '../../store.ts'
 
 // type props
 interface Props {
@@ -29,6 +31,7 @@ interface Props {
 }
 
 export const Header = memo(({ autoFocusRef, row }: Props) => {
+  const [tabs, setTabs] = useAtom(tabsAtom)
   const { project_id, vector_layer_id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -76,11 +79,8 @@ export const Header = memo(({ autoFocusRef, row }: Props) => {
   const onClickAssignToPlaces = useCallback(() => {
     if (isDraggable) return
     // map needs to be visible
-    if (!appState.tabs.includes('map')) {
-      db.app_states.update({
-        where: { app_state_id: appState.app_state_id },
-        data: { tabs: [...appState.tabs, 'map'] },
-      })
+    if (!tabs.includes('map')) {
+      setTabs([...tabs, 'map'])
     }
     // this layer needs to be active
     const layerPresentation = db.layer_presentations.findFirst({
@@ -94,14 +94,7 @@ export const Header = memo(({ autoFocusRef, row }: Props) => {
         data: { active: true },
       })
     }
-  }, [
-    appState?.app_state_id,
-    appState?.tabs,
-    db.app_states,
-    db.layer_presentations,
-    isDraggable,
-    row.vector_layer_id,
-  ])
+  }, [db.layer_presentations, isDraggable, row.vector_layer_id, setTabs, tabs])
   const onClickAssignToPlaces1 = useCallback(() => {
     db.app_states.update({
       where: { app_state_id: appState.app_state_id },

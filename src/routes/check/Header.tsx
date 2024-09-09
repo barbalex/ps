@@ -5,14 +5,17 @@ import { Button } from '@fluentui/react-button'
 import { bbox } from '@turf/bbox'
 import { buffer } from '@turf/buffer'
 import { useCorbado } from '@corbado/react'
+import { useAtom } from 'jotai'
 
 import { createCheck } from '../../modules/createRows.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
 import { createNotification } from '../../modules/createRows.ts'
+import { tabsAtom } from '../../store.ts'
 
 export const Header = memo(({ autoFocusRef }) => {
+  const [tabs, setTabs] = useAtom(tabsAtom)
   const { project_id, place_id, place_id2, check_id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -96,12 +99,8 @@ export const Header = memo(({ autoFocusRef }) => {
     const appState = await db.app_states.findFirst({
       where: { user_email: authUser?.email },
     })
-    const tabs = appState?.tabs ?? []
     if (!tabs.includes('map')) {
-      await db.app_states.update({
-        where: { app_state_id: appState?.app_state_id },
-        data: { tabs: [...tabs, 'map'] },
-      })
+      setTabs([...tabs, 'map'])
     }
 
     // 2. zoom to place
@@ -113,7 +112,15 @@ export const Header = memo(({ autoFocusRef }) => {
       where: { app_state_id: appState?.app_state_id },
       data: { map_bounds: bounds },
     })
-  }, [db.checks, db.app_states, check_id, alertNoGeometry, authUser.email])
+  }, [
+    db.checks,
+    db.app_states,
+    check_id,
+    alertNoGeometry,
+    authUser?.email,
+    tabs,
+    setTabs,
+  ])
 
   return (
     <FormHeader
