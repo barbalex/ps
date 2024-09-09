@@ -108,16 +108,16 @@ export const DataNavs = memo(({ matches }) => {
     }
     get()
   }, [db, filterParams, table, location.pathname])
-
-  console.log('DataNavs', {
-    table,
-    idField,
-    pathname,
-    filterParams,
-    matches,
-    filteredMatches,
-    tableResults,
-  })
+  // console.log('DataNavs rendering')
+  // console.log('DataNavs', {
+  //   table,
+  //   idField,
+  //   pathname,
+  //   filterParams,
+  //   matches,
+  //   filteredMatches,
+  //   tableResults,
+  // })
 
   if (!table) return null
 
@@ -129,7 +129,11 @@ export const DataNavs = memo(({ matches }) => {
         // console.log('DataNavs', { value, label })
 
         return (
-          <Nav key={value} label={label ?? value} to={`${pathname}/${value}`} />
+          <Nav
+            key={value}
+            label={label ?? value}
+            to={`${pathname}/${value}`}
+          />
         )
       })}
     </nav>

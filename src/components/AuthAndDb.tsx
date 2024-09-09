@@ -11,10 +11,13 @@ import { Layout } from './LayoutProtected/index.tsx'
 const CORBADO_PROJECT_ID = import.meta.env.ELECTRIC_CORBADO_PROJECT_ID
 
 export const AuthAndDb = memo(() => {
-  // console.log('hello AuthAndDb')
+  console.log('AuthAndDb rendering')
 
   return (
-    <CorbadoProvider projectId={CORBADO_PROJECT_ID} theme="corbado-theme">
+    <CorbadoProvider
+      projectId={CORBADO_PROJECT_ID}
+      theme="corbado-theme"
+    >
       <ElectricProvider>
         <SqlInitializer />
         <Syncer />

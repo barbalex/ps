@@ -142,6 +142,7 @@ export const NavsOverflowing = ({ designing }) => {
   //   thisPathsMatches,
   //   pathname: location.pathname,
   // })
+  // console.log('Navs Overflowing index rendering')
 
   if (tosToUse?.length) {
     return (

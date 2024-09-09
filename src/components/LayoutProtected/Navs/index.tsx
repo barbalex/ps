@@ -15,6 +15,8 @@ export const Navs = () => {
   )
   const designing = appState?.designing ?? false
 
+  // console.log('Navs index rendering, appState:', appState)
+
   if (appState?.navs_overflowing === undefined) {
     return <div className="navs" />
   }

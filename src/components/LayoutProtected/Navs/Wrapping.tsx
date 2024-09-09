@@ -15,7 +15,8 @@ export const NavsWrapping = ({ designing }) => {
   const { db } = useElectric()!
   const { user: authUser } = useCorbado()
 
-  console.log('Wrapping Navs', { matches, pathname: location.pathname })
+  console.log('Navs Wrapping rendering')
+  // console.log('Wrapping Navs', { matches, pathname: location.pathname })
 
   const thisPathsMatches = useMemo(
     () =>

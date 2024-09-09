@@ -22,6 +22,7 @@ export const Layout = memo(() => {
       where: { user_email: authUser?.email },
     }),
   )
+  // TODO: this query leads to way too many renders: 8 instead of 2, 6 when liveUnique by app_state_id
   const mapIsMaximized = appState?.map_maximized ?? false
 
   // onlyForm is a query parameter that allows the user to view a form without the rest of the app
@@ -34,7 +35,7 @@ export const Layout = memo(() => {
   // const onlyForm = searchParams.get('onlyForm')
   const onlyForm = false
 
-  // console.log('hello Protected Layout')
+  console.log('LayoutProtected rendering')
 
   // Breadcrumbs and Navs are not protected because:
   // - they are not (very) sensitive
