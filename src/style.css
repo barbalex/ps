@@ -102,13 +102,19 @@ https://stackoverflow.com/a/21541021/712005 */
   user-select: none;
 }
 
+.navs,
+.navs-resizable {
+  /* padding: 0 7px; */
+}
+
 .navs a,
 .navs-resizable a {
   margin: 0;
-  padding: 7px 9px;
+  padding: 7px 9px 7px 7px;
   color: rgb(51, 51, 51);
   text-decoration: none;
 }
+
 .navs a:hover,
 .navs-resizable a:hover {
   text-decoration: underline;
@@ -117,6 +123,19 @@ https://stackoverflow.com/a/21541021/712005 */
 
 .navs-resizable a:first-child {
   margin-left: 20px;
+}
+
+/* add vertical green line after every navs > a */
+/* except for the last */
+
+.navs a:not(:last-of-type):after,
+.navs-resizable a:not(:last-of-type):after {
+  content: '';
+  display: inline-block;
+  width: 1px;
+  height: 60%;
+  background-color: rgba(55, 118, 28, 0.5);
+  transform: translate(8.5px, 1px);
 }
 
 .list-view {
