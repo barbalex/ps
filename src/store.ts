@@ -5,8 +5,6 @@ export const userIdAtom = atomWithStorage('userIdAtom', null)
 
 export const userEmailAtom = atomWithStorage('userEmailAtom', null)
 
-export const mapMaximizedAtom = atomWithStorage('mapMaximizedAtom', false)
-
 export const designingAtom = atomWithStorage('designingAtom', false)
 
 export const navsOverflowingAtom = atomWithStorage('navsOverflowingAtom', false)
@@ -18,4 +16,8 @@ export const breadcrumbsOverflowingAtom = atomWithStorage(
 
 export const tabsAtom = atomWithStorage('tabsAtom', ['tree', 'data'])
 
-export const syncingAtom = atomWithStorage('syncingAtom', false) // TODO: update usage
+export const syncingAtom = atomWithStorage('syncingAtom', false)
+
+export const mapMaximizedAtom = atomWithStorage('mapMaximizedAtom', false)
+
+export const mapBoundsAtom = atomWithStorage('mapBoundsAtom', null)

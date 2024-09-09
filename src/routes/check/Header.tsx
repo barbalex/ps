@@ -4,7 +4,6 @@ import { TbZoomScan } from 'react-icons/tb'
 import { Button } from '@fluentui/react-button'
 import { bbox } from '@turf/bbox'
 import { buffer } from '@turf/buffer'
-import { useCorbado } from '@corbado/react'
 import { useAtom } from 'jotai'
 
 import { createCheck } from '../../modules/createRows.ts'
@@ -12,15 +11,14 @@ import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
 import { createNotification } from '../../modules/createRows.ts'
-import { tabsAtom } from '../../store.ts'
+import { tabsAtom, mapBoundsAtom } from '../../store.ts'
 
 export const Header = memo(({ autoFocusRef }) => {
   const [tabs, setTabs] = useAtom(tabsAtom)
+  const [, setMapBounds] = useAtom(mapBoundsAtom)
   const { project_id, place_id, place_id2, check_id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-
-  const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
 
@@ -96,31 +94,15 @@ export const Header = memo(({ autoFocusRef }) => {
     if (!geometry) return alertNoGeometry()
 
     // 1. show map if not happening
-    const appState = await db.app_states.findFirst({
-      where: { user_email: authUser?.email },
-    })
-    if (!tabs.includes('map')) {
-      setTabs([...tabs, 'map'])
-    }
+    if (!tabs.includes('map')) setTabs([...tabs, 'map'])
 
     // 2. zoom to place
     const buffered = buffer(geometry, 0.05)
     const newBbox = bbox(buffered)
     const bounds = boundsFromBbox(newBbox)
     if (!bounds) return alertNoGeometry()
-    db.app_states.update({
-      where: { app_state_id: appState?.app_state_id },
-      data: { map_bounds: bounds },
-    })
-  }, [
-    db.checks,
-    db.app_states,
-    check_id,
-    alertNoGeometry,
-    authUser?.email,
-    tabs,
-    setTabs,
-  ])
+    setMapBounds(bounds)
+  }, [db.checks, check_id, alertNoGeometry, tabs, setMapBounds, setTabs])
 
   return (
     <FormHeader
