@@ -2,13 +2,16 @@ import { useCallback, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { Field, Textarea } from '@fluentui/react-components'
 import { useCorbado } from '@corbado/react'
+import { useAtom } from 'jotai'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { SwitchField } from './SwitchField.tsx'
+import { tabsAtom } from '../../store.ts'
 // TODO:
 // maybe generalize this component for all geometry editing
 // and move it to the shared folder
 export const EditingGeometry = memo(({ row, table }) => {
+  const [tabs, setTabs] = useAtom(tabsAtom)
   const id =
     table === 'places'
       ? row.place_id
@@ -38,12 +41,8 @@ export const EditingGeometry = memo(({ row, table }) => {
     async (e, data) => {
       // 1. if checked, show map if not already shown
       if (data.checked) {
-        const tabs = appState?.tabs ?? []
         if (!tabs.includes('map')) {
-          await db.app_states.update({
-            where: { app_state_id: appState?.app_state_id },
-            data: { tabs: [...tabs, 'map'] },
-          })
+          setTabs([...tabs, 'map'])
         }
       }
       // 2. update the editing id
@@ -52,7 +51,7 @@ export const EditingGeometry = memo(({ row, table }) => {
         data: { [fieldName]: data.checked ? id : null },
       })
     },
-    [db.app_states, appState?.app_state_id, appState?.tabs, fieldName, id],
+    [db.app_states, appState?.app_state_id, fieldName, id, tabs, setTabs],
   )
 
   const value = row.geometry ? JSON.stringify(row.geometry, null, 3) : ''

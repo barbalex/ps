@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo } from 'react'
+import { memo, useCallback } from 'react'
 import {
   Button,
   Toolbar,
@@ -15,7 +15,7 @@ import { useAtom } from 'jotai'
 import { controls } from '../../../styles.ts'
 import { css } from '../../../css.ts'
 import { useElectric } from '../../../ElectricProvider.tsx'
-import { mapMaximizedAtom } from '../../../store.ts'
+import { mapMaximizedAtom, tabsAtom } from '../../../store.ts'
 
 const buildButtonStyle = ({ prevIsActive, nextIsActive, selfIsActive }) => {
   if (!selfIsActive) {
@@ -51,6 +51,7 @@ const buildButtonStyle = ({ prevIsActive, nextIsActive, selfIsActive }) => {
 // TODO:
 // use overflow menu for tabs and app-states
 export const Menu = memo(() => {
+  const [tabs, setTabs] = useAtom(tabsAtom)
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
@@ -68,21 +69,15 @@ export const Menu = memo(() => {
     }),
   )
   const [mapIsMaximized, setMapIsMaximized] = useAtom(mapMaximizedAtom)
-  // To debug not having any data: query all users
-  const tabs = useMemo(() => appState?.tabs ?? [], [appState?.tabs])
   const onChangeTabs = useCallback(
-    (e, { checkedItems }) => {
-      db.app_states.update({
-        where: { app_state_id: appState?.app_state_id },
-        data: { tabs: checkedItems },
-      })
-    },
-    [appState, db.app_states],
+    (e, { checkedItems }) => setTabs(checkedItems),
+    [setTabs],
   )
 
   const onClickOptions = useCallback(() => {
     if (isAppStates) return navigate(-1)
 
+    // TODO: change route to app-state
     navigate({
       pathname: `/data/app-states/${appState?.app_state_id}`,
       search: searchParams.toString(),
@@ -99,22 +94,13 @@ export const Menu = memo(() => {
 
       // if map is not included in app_sate.tabs, add it
       if (!tabs.includes('map')) {
-        db.app_states.update({
-          where: { app_state_id: appState?.app_state_id },
-          data: { tabs: [...tabs, 'map'] },
-        })
+        setTabs([...tabs, 'map'])
       }
 
       // toggle map maximized
       setMapIsMaximized(!mapIsMaximized)
     },
-    [
-      appState?.app_state_id,
-      db.app_states,
-      mapIsMaximized,
-      setMapIsMaximized,
-      tabs,
-    ],
+    [mapIsMaximized, setMapIsMaximized, setTabs, tabs],
   )
 
   const treeIsActive = tabs.includes('tree')
