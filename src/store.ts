@@ -1,3 +1,4 @@
-import { atom } from 'jotai'
+// import { atom } from 'jotai'
+import { atomWithStorage } from 'jotai/utils'
 
-export const mapMaximizedAtom = atom(false)
+export const mapMaximizedAtom = atomWithStorage('mapMaximizedAtom', false)
