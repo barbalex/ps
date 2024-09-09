@@ -1176,7 +1176,6 @@ CREATE TABLE app_states(
   tabs jsonb DEFAULT NULL, -- array of strings
   map_bounds jsonb DEFAULT NULL, -- [minx, miny, maxx, maxy]
   show_local_map jsonb DEFAULT NULL, -- map of id (layer.id, key) and show boolean
-  map_maximized boolean DEFAULT NULL, -- FALSE
   map_hide_ui boolean DEFAULT NULL, -- FALSE
   map_locate boolean DEFAULT NULL, -- FALSE
   map_info jsonb DEFAULT NULL,
