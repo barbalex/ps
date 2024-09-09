@@ -8,13 +8,11 @@ import { FaCog } from 'react-icons/fa'
 import { TbArrowsMaximize, TbArrowsMinimize } from 'react-icons/tb'
 import { MdLogout, MdLogin } from 'react-icons/md'
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom'
-import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 import { useAtom } from 'jotai'
 
 import { controls } from '../../../styles.ts'
 import { css } from '../../../css.ts'
-import { useElectric } from '../../../ElectricProvider.tsx'
 import { mapMaximizedAtom, tabsAtom } from '../../../store.ts'
 
 const buildButtonStyle = ({ prevIsActive, nextIsActive, selfIsActive }) => {
@@ -62,12 +60,6 @@ export const Menu = memo(() => {
 
   const isAppStates = pathname.includes('app-states')
 
-  const { db } = useElectric()!
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({
-      where: { user_email: authUser?.email },
-    }),
-  )
   const [mapIsMaximized, setMapIsMaximized] = useAtom(mapMaximizedAtom)
   const onChangeTabs = useCallback(
     (e, { checkedItems }) => setTabs(checkedItems),
@@ -79,10 +71,10 @@ export const Menu = memo(() => {
 
     // TODO: change route to app-state
     navigate({
-      pathname: `/data/app-states/${appState?.app_state_id}`,
+      pathname: `/data/app-states`,
       search: searchParams.toString(),
     })
-  }, [appState?.app_state_id, isAppStates, navigate, searchParams])
+  }, [isAppStates, navigate, searchParams])
 
   const onClickLogout = useCallback(() => logout(), [logout])
   const onClickEnter = useCallback(() => navigate('/data/projects'), [navigate])
