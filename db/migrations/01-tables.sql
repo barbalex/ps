@@ -1236,12 +1236,6 @@ CREATE TABLE app_states(
 -- CREATE INDEX ON app_states USING btree(user_id);
 CREATE INDEX ON app_states USING btree(account_id);
 
-CREATE INDEX ON app_states USING btree(user_id);
-
-CREATE INDEX ON app_states USING btree(user_email);
-
-COMMENT ON COLUMN app_states.user_email IS 'email of authenticated user. Exists in users but copied here for easier querying. Also: is returned by auth hooks, so available in the client without additional query';
-
 COMMENT ON TABLE app_states IS 'User interface settings (state saved in db)';
 
 
