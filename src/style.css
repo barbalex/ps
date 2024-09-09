@@ -102,11 +102,6 @@ https://stackoverflow.com/a/21541021/712005 */
   user-select: none;
 }
 
-.navs,
-.navs-resizable {
-  /* padding: 0 7px; */
-}
-
 .navs a,
 .navs-resizable a {
   margin: 0;
