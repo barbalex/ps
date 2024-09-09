@@ -18,3 +18,5 @@ export const breadcrumbsOverflowingAtom = atomWithStorage(
 )
 
 export const tabsAtom = atomWithStorage('tabsAtom', ['tree', 'data']) // TODO: update usage
+
+export const syncingAtom = atomWithStorage('syncingAtom', false) // TODO: update usage

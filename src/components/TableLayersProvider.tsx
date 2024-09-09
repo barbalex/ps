@@ -1,6 +1,6 @@
 import { useEffect, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
+import { useAtom } from 'jotai'
 
 import { useElectric } from '../ElectricProvider.tsx'
 import {
@@ -9,22 +9,20 @@ import {
   createLayerPresentation,
 } from '../modules/createRows.ts'
 import { useFirstRender } from '../modules/useFirstRender.ts'
+import { syncingAtom } from '../store.ts'
 
 // TODO: if this runs BEFORE data was synced with the server, it will create duplicate vector_layers
 // How to know if data was synced with the server?
 // it would be better to add vector_layers and their displays inside triggers on project creation
 // but as SQLite does not have functions to create uuid's, we need to do it here
 export const TableLayersProvider = memo(() => {
+  const [syncing] = useAtom(syncingAtom)
   // every project needs vector_layers and vector_layer_displays for the geometry tables
   const { db } = useElectric()!
-  const { user: authUser } = useCorbado()
   // do not include vector_layers and vector_layer_displays in this query
   // as the effect will run every time these tables change
   const { results: projects = [] } = useLiveQuery(db.projects.liveMany())
   const { results: occurrences = [] } = useLiveQuery(db.occurrences.liveMany())
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
 
   const firstRender = useFirstRender()
 
@@ -32,7 +30,7 @@ export const TableLayersProvider = memo(() => {
     // if this runs on first render it can race with triggers and lead to multiple vector_layers
     if (firstRender) return
     // only run after syncing is done
-    if (!appState?.syncing === false) return
+    if (syncing) return
 
     const run = async () => {
       for (const project of projects) {

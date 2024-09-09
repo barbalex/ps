@@ -1167,8 +1167,6 @@ CREATE TABLE app_states(
   -- because electric-sql does not support unique constraints
   -- unless the column is a primary key
   user_email text DEFAULT NULL,
-  -- user_id is needed to ensure user_email can be updated when changed on users
-  user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   breadcrumbs_overflowing boolean DEFAULT NULL, -- FALSE,
   navs_overflowing boolean DEFAULT NULL, -- FALSE,
