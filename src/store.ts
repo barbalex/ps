@@ -21,3 +21,8 @@ export const syncingAtom = atomWithStorage('syncingAtom', false)
 export const mapMaximizedAtom = atomWithStorage('mapMaximizedAtom', false)
 
 export const mapBoundsAtom = atomWithStorage('mapBoundsAtom', null)
+
+// map of id (layer.id, key) and show boolean
+export const showLocalMapAtom = atomWithStorage('showLocalMapAtom', false)
+
+export const localMapValuesAtom = atomWithStorage('localMapValuesAtom', {})
