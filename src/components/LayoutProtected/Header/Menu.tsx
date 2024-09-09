@@ -10,10 +10,12 @@ import { MdLogout, MdLogin } from 'react-icons/md'
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
+import { useAtom } from 'jotai'
 
 import { controls } from '../../../styles.ts'
 import { css } from '../../../css.ts'
 import { useElectric } from '../../../ElectricProvider.tsx'
+import { mapMaximizedAtom } from '../../../store.ts'
 
 const buildButtonStyle = ({ prevIsActive, nextIsActive, selfIsActive }) => {
   if (!selfIsActive) {
@@ -65,7 +67,7 @@ export const Menu = memo(() => {
       where: { user_email: authUser?.email },
     }),
   )
-  const mapIsMaximized = appState?.map_maximized ?? false
+  const [mapIsMaximized, setMapIsMaximized] = useAtom(mapMaximizedAtom)
   // To debug not having any data: query all users
   const tabs = useMemo(() => appState?.tabs ?? [], [appState?.tabs])
   const onChangeTabs = useCallback(
@@ -104,12 +106,15 @@ export const Menu = memo(() => {
       }
 
       // toggle map maximized
-      db.app_states.update({
-        where: { app_state_id: appState?.app_state_id },
-        data: { map_maximized: !mapIsMaximized },
-      })
+      setMapIsMaximized(!mapIsMaximized)
     },
-    [appState?.app_state_id, db.app_states, mapIsMaximized, tabs],
+    [
+      appState?.app_state_id,
+      db.app_states,
+      mapIsMaximized,
+      setMapIsMaximized,
+      tabs,
+    ],
   )
 
   const treeIsActive = tabs.includes('tree')

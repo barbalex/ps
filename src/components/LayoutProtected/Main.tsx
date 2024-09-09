@@ -4,10 +4,12 @@ import { Outlet } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import { Allotment } from 'allotment'
 import { useCorbado } from '@corbado/react'
+import { useAtom } from 'jotai'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Tree } from '../Tree/index.tsx'
 import { MapContainer } from '../Map/index.tsx'
+import { mapMaximizedAtom } from '../../store.ts'
 
 const containerStyle = {
   display: 'flex',
@@ -35,18 +37,18 @@ export const Main = memo(() => {
   )
   const tabs = useMemo(() => appState?.tabs ?? [], [appState?.tabs])
   const designing = appState?.designing ?? false
-  const mapMaximized =
-    (appState?.map_maximized && tabs.includes('map')) ?? false
+  const [mapMaximized] = useAtom(mapMaximizedAtom)
+  const mapMaximizedAndVisible = (mapMaximized && tabs.includes('map')) ?? false
 
   if (onlyForm) return <Outlet />
 
   return (
     <div style={containerStyle}>
       <Allotment>
-        {!mapMaximized && tabs.includes('tree') && (
+        {!mapMaximizedAndVisible && tabs.includes('tree') && (
           <Tree designing={designing} />
         )}
-        {!mapMaximized && tabs.includes('data') && <Outlet />}
+        {!mapMaximizedAndVisible && tabs.includes('data') && <Outlet />}
         {tabs.includes('map') && <MapContainer />}
       </Allotment>
     </div>
