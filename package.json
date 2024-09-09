@@ -47,6 +47,7 @@
     "electric-sql": "0.12.1",
     "framer-motion": "11.5.4",
     "is-uuid": "1.0.2",
+    "jotai": "2.9.3",
     "leaflet": "1.9.4",
     "leaflet-draw": "1.0.4",
     "lodash": "4.17.21",
