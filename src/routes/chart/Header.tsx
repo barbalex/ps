@@ -1,25 +1,20 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
-import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
+import { useAtom } from 'jotai'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { createChart } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { designingAtom } from '../../store.ts'
 
 export const Header = memo(({ autoFocusRef }) => {
+  const [designing] = useAtom(designingAtom)
   const { project_id, subproject_id, place_id, place_id2, chart_id } =
     useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const { user: authUser } = useCorbado()
-
   const { db } = useElectric()!
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
-  const designing = appState?.designing ?? false
 
   const addRow = useCallback(async () => {
     const idToAdd = place_id2

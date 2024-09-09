@@ -3,26 +3,21 @@ import { useParams } from 'react-router-dom'
 import { MdEdit, MdEditOff } from 'react-icons/md'
 import { ToggleButton } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
+import { useAtom } from 'jotai'
 
 import { useElectric } from '../../ElectricProvider.tsx'
+import { designingAtom, userIdAtom } from '../../store.ts'
 
 export const DesigningButton = memo(() => {
+  const [designing, setDesigning] = useAtom(designingAtom)
+  const [userId] = useAtom(userIdAtom)
   const { project_id } = useParams()
-
-  const { user: authUser } = useCorbado()
-
   const { db } = useElectric()!
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+
+  const onClickDesigning = useCallback(
+    () => setDesigning(!designing),
+    [designing, setDesigning],
   )
-  const designing = appState?.designing ?? false
-  const onClickDesigning = useCallback(() => {
-    db.app_states.update({
-      where: { app_state_id: appState?.app_state_id },
-      data: { designing: !designing },
-    })
-  }, [appState?.app_state_id, db.app_states, designing])
 
   const { results: project } = useLiveQuery(
     db.projects.liveUnique({
@@ -32,7 +27,7 @@ export const DesigningButton = memo(() => {
   )
   const userIsOwner = project?.account_id === project?.accounts?.account_id
   const projectUser = project?.project_users?.find(
-    (pu) => pu.user_id === appState?.user_id,
+    (pu) => pu.user_id === userId,
   )
   const userRole = projectUser?.role
   // console.log('hello project DesignButton', { projectUser, userRole })
@@ -49,7 +44,7 @@ export const DesigningButton = memo(() => {
       }
       icon={designing ? <MdEdit /> : <MdEditOff />}
       onClick={onClickDesigning}
-      className='designing-button'
+      className="designing-button"
     />
   )
 })

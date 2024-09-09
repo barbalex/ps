@@ -2,11 +2,12 @@ import { useEffect, useState, forwardRef } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
+import { useAtom } from 'jotai'
 
 import { buildNavs } from '../../../modules/navs.ts'
 import { idFieldFromTable } from '../../../modules/idFieldFromTable.ts'
 import { Menu } from './Menu/index.tsx'
+import { designingAtom } from '../../../store.ts'
 
 const siblingStyle = { marginRight: 5 }
 const labelStyle = {
@@ -18,6 +19,7 @@ const labelStyle = {
 // https://github.com/microsoft/fluentui/issues/27652#issuecomment-1520447241
 export const BreadcrumbForFolder = forwardRef(
   ({ match, forOverflowMenu, wrapping = false }, ref) => {
+    const [designing] = useAtom(designingAtom)
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
     const {
@@ -35,8 +37,6 @@ export const BreadcrumbForFolder = forwardRef(
       list_id,
       taxonomy_id,
     } = match.params
-
-    const { user: authUser } = useCorbado()
 
     const { text, table, sibling } = match?.handle?.crumb ?? {}
     const className =
@@ -58,10 +58,6 @@ export const BreadcrumbForFolder = forwardRef(
     const where = { [idField]: matchParam }
     const { results } = useLiveQuery(db[queryTable]?.liveMany?.({ where }))
     const row = results?.[0]
-    const { results: appState } = useLiveQuery(
-      db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-    )
-    const designing = appState?.designing ?? false
 
     const [navs, setNavs] = useState([])
     useEffect(() => {
@@ -83,7 +79,7 @@ export const BreadcrumbForFolder = forwardRef(
           check_id,
           db,
           level: levelWanted,
-          authUser,
+          designing,
         })
 
         return setNavs(navs)
@@ -107,7 +103,6 @@ export const BreadcrumbForFolder = forwardRef(
       table,
       levelWanted,
       designing,
-      authUser,
     ])
 
     let label = row?.label

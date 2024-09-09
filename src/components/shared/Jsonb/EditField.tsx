@@ -2,23 +2,15 @@ import { useCallback, memo } from 'react'
 import { Button } from '@fluentui/react-components'
 import { MdEdit } from 'react-icons/md'
 import { useSearchParams, useLocation } from 'react-router-dom'
-import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
+import { useAtom } from 'jotai'
 
-import { useElectric } from '../../../ElectricProvider.tsx'
+import { designingAtom } from '../../../store.ts'
 
 export const EditField = memo(({ field_id }) => {
+  const [designing] = useAtom(designingAtom)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchParams, setSearchParams] = useSearchParams()
   const { pathname } = useLocation()
-
-  const { user: authUser } = useCorbado()
-
-  const { db } = useElectric()!
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
-  const designing = appState?.designing
 
   const onClick = useCallback(
     async () => setSearchParams({ editingField: field_id }),

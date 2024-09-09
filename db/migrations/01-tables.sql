@@ -1170,7 +1170,6 @@ CREATE TABLE app_states(
   -- user_id is needed to ensure user_email can be updated when changed on users
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  designing boolean DEFAULT NULL, -- FALSE,
   breadcrumbs_overflowing boolean DEFAULT NULL, -- FALSE,
   navs_overflowing boolean DEFAULT NULL, -- FALSE,
   tabs jsonb DEFAULT NULL, -- array of strings
@@ -1257,7 +1256,6 @@ COMMENT ON COLUMN app_states.user_email IS 'email of authenticated user. Exists 
 
 COMMENT ON TABLE app_states IS 'User interface settings (state saved in db)';
 
-COMMENT ON COLUMN app_states.designing IS 'Whether user is currently designing projects. Preset: false';
 
 -- TODO:
 -- new structure for map_info

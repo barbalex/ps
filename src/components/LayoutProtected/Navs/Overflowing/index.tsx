@@ -19,12 +19,13 @@ import {
   useOverflowMenu,
 } from '@fluentui/react-components'
 import { useResizeDetector } from 'react-resize-detector'
+import { useAtom } from 'jotai'
 
 import { ToNavs } from '../ToNavs.tsx'
 import { DataNavsOverflowing } from './DataNavs.tsx'
 import { buildNavs } from '../../../../modules/navs.ts'
 import { useElectric } from '../../../../ElectricProvider.tsx'
-import { useCorbado } from '@corbado/react'
+import { designingAtom } from '../../../../store.ts'
 
 const menuStyle = {
   backgroundColor: 'transparent',
@@ -94,13 +95,13 @@ export const OverflowMenu: React.FC = ({ tos }) => {
   )
 }
 
-export const NavsOverflowing = ({ designing }) => {
+export const NavsOverflowing = () => {
+  const [designing] = useAtom(designingAtom)
   const location = useLocation()
   const matches = useMatches()
   const params = useParams()
 
   const { db } = useElectric()!
-  const { user: authUser } = useCorbado()
 
   const thisPathsMatches = matches.filter(
     (match) => match.pathname === location.pathname && match.handle,
@@ -116,7 +117,12 @@ export const NavsOverflowing = ({ designing }) => {
         if (!to) continue
         if (!designing && to.showOnlyWhenDesigning) continue
         // build tos
-        const nav = await buildNavs({ ...to, ...params, db, authUser })
+        const nav = await buildNavs({
+          ...to,
+          ...params,
+          db,
+          designing,
+        })
         tos.push(nav)
       }
 

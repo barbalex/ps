@@ -460,11 +460,6 @@ export const createMessage = () => ({
 // this is not used. Instead: users_app_state_trigger creates app_state on user creation
 export const createAppState = ({ user_id }) => ({
   app_state_id: uuidv7(),
-  user_id,
-  designing: false,
-  breadcrumbs_overflowing: true,
-  navs_overflowing: true,
-  tabs: ['tree', 'data'],
 })
 
 export const createWmsLayer = ({ project_id }) => ({

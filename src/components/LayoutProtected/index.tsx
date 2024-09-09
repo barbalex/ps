@@ -26,8 +26,6 @@ export const Layout = memo(() => {
   // const onlyForm = searchParams.get('onlyForm')
   const onlyForm = false
 
-  console.log('LayoutProtected rendering')
-
   // Breadcrumbs and Navs are not protected because:
   // - they are not (very) sensitive
   // - ui remains more consistent when logging in
