@@ -1164,7 +1164,6 @@ CREATE TYPE droppable_layer_enum AS enum(
 CREATE TABLE app_states(
   app_state_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  tabs jsonb DEFAULT NULL, -- array of strings
   map_bounds jsonb DEFAULT NULL, -- [minx, miny, maxx, maxy]
   show_local_map jsonb DEFAULT NULL, -- map of id (layer.id, key) and show boolean
   map_hide_ui boolean DEFAULT NULL, -- FALSE
@@ -1182,7 +1181,6 @@ CREATE TABLE app_states(
   confirm_assigning_to_single_target boolean DEFAULT NULL, -- true
   places_to_assign_occurrence_to jsonb DEFAULT NULL,
   occurrence_fields_sorted jsonb DEFAULT NULL, -- array of strings
-  syncing boolean DEFAULT NULL,
   tree_open_nodes jsonb DEFAULT NULL, -- array of strings
   filter_projects jsonb DEFAULT NULL, -- a projects object with filter settings
   filter_fields jsonb DEFAULT NULL, -- a fields object with filter settings
