@@ -1,11 +1,14 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
+import { useAtom } from 'jotai'
 
 import { createUser } from '../../modules/createRows.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { userIdAtom } from '../../store.ts'
 
 export const Header = memo(({ autoFocusRef }) => {
+  const [, setUserId] = useAtom(userIdAtom)
   const { user_id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -13,14 +16,14 @@ export const Header = memo(({ autoFocusRef }) => {
   const { db } = useElectric()!
 
   const addRow = useCallback(async () => {
-    const data = await createUser({ db })
+    const data = await createUser({ db, setUserId })
 
     navigate({
       pathname: `../${data.user_id}`,
       search: searchParams.toString(),
     })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db, navigate, searchParams])
+  }, [autoFocusRef, db, navigate, searchParams, setUserId])
 
   const deleteRow = useCallback(async () => {
     await db.users.delete({
