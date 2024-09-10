@@ -3,6 +3,7 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 import isEqual from 'lodash/isEqual'
+import { useAtom } from 'jotai'
 
 import { Node } from './Node.tsx'
 import { GoalReports as GoalReport } from '../../../generated/client/index.ts'
@@ -10,6 +11,7 @@ import { GoalReportValuesNode } from './GoalReportValues.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
+import { treeOpenNodesAtom } from '../../store.ts'
 
 interface Props {
   project_id: string
@@ -21,6 +23,7 @@ interface Props {
 
 export const GoalReportNode = memo(
   ({ project_id, subproject_id, goal_id, goalReport, level = 8 }: Props) => {
+    const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
@@ -29,10 +32,6 @@ export const GoalReportNode = memo(
     const { db } = useElectric()!
     const { results: appState } = useLiveQuery(
       db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-    )
-    const openNodes = useMemo(
-      () => appState?.tree_open_nodes ?? [],
-      [appState?.tree_open_nodes],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
