@@ -2,35 +2,22 @@
 import { atomWithStorage } from 'jotai/utils'
 
 export const userIdAtom = atomWithStorage('userIdAtom', null)
-
 export const userEmailAtom = atomWithStorage('userEmailAtom', null)
-
 export const designingAtom = atomWithStorage('designingAtom', false)
-
 export const navsOverflowingAtom = atomWithStorage('navsOverflowingAtom', false)
-
 export const breadcrumbsOverflowingAtom = atomWithStorage(
   'breadcrumbsOverflowingAtom',
   false,
 )
-
 export const tabsAtom = atomWithStorage('tabsAtom', ['tree', 'data'])
-
 export const syncingAtom = atomWithStorage('syncingAtom', false)
-
 export const mapMaximizedAtom = atomWithStorage('mapMaximizedAtom', false)
-
 export const mapBoundsAtom = atomWithStorage('mapBoundsAtom', null)
-
 // map of id (layer.id, key) and show boolean
 export const showLocalMapAtom = atomWithStorage('showLocalMapAtom', false)
-
 export const localMapValuesAtom = atomWithStorage('localMapValuesAtom', {})
-
 export const mapHideUiAtom = atomWithStorage('mapHideUiAtom', false)
-
 export const mapLocateAtom = atomWithStorage('mapLocateAtom', false)
-
 // TODO:
 // new structure for map_info
 // Goal: enable setting from onEachFeature for wfs layers and maybe own layers
@@ -44,8 +31,6 @@ export const mapLocateAtom = atomWithStorage('mapLocateAtom', false)
 // the info drawer filters all the objects with correct lat, lng and zoom and shows them
 // Information presented, when user clicks on a map. Array of: {label, properties} where properties is an array of [key, value]
 export const mapInfoAtom = atomWithStorage('mapInfoAtom', null)
-
 export const mapShowCenterAtom = atomWithStorage('mapShowCenterAtom', false)
-
 // The order of layers in the map. An array of layer_presentation_ids
 export const mapLayerSortingAtom = atomWithStorage('mapLayerSortingAtom', [])
