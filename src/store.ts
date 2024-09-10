@@ -68,3 +68,4 @@ export const occurrenceFieldsSortedAtom = atomWithStorage(
   'occurrenceFieldsSortedAtom',
   [],
 )
+export const treeOpenNodesAtom = atomWithStorage('treeOpenNodesAtom', [])

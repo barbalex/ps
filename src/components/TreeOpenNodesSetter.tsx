@@ -1,13 +1,17 @@
-import { useEffect, useMemo, memo } from 'react'
+import { useEffect, memo } from 'react'
 import { useCorbado } from '@corbado/react'
 import { useLocation } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
+import { useAtom } from 'jotai'
 
 import { useElectric } from '../ElectricProvider.tsx'
 import { addOpenNodes } from '../modules/tree/addOpenNodes.ts'
+import { treeOpenNodesAtom } from '../store.ts'
 
 // ensure all parts of urlPath are included in openNodes
 export const TreeOpenNodesSetter = memo(() => {
+  const [openNodes] = useAtom(treeOpenNodesAtom)
+
   const { db } = useElectric()!
   const { user: authUser } = useCorbado()
   const { pathname } = useLocation()
@@ -18,10 +22,7 @@ export const TreeOpenNodesSetter = memo(() => {
       where: { user_email: authUser?.email },
     }),
   )
-  const openNodes = useMemo(
-    () => appState?.tree_open_nodes ?? [],
-    [appState?.tree_open_nodes],
-  )
+
   // console.log('hello TreeOpenNodesSetter, openNodes:', openNodes)
 
   // this component ensures that when navigating the node corresponding to the url and it's parents are opened
