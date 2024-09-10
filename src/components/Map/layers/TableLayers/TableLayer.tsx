@@ -3,8 +3,7 @@ import { GeoJSON, useMapEvent } from 'react-leaflet'
 import { Map } from '@types/leaflet'
 import * as ReactDOMServer from 'react-dom/server'
 import * as icons from 'react-icons/md'
-import { useCorbado } from '@corbado/react'
-import { useAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
 
 import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
 import { Popup } from '../../Popup.tsx'
@@ -22,6 +21,7 @@ import {
   draggableLayersAtom,
   droppableLayerAtom,
   confirmAssigningToSingleTargetAtom,
+  placesToAssignOccurrenceToAtom,
 } from '../../../../store.ts'
 
 interface Props {
@@ -35,7 +35,10 @@ export const TableLayer = memo(({ data, layerPresentation }: Props) => {
   )
   const [droppableLayer] = useAtom(droppableLayerAtom)
   const [draggableLayers] = useAtom(draggableLayersAtom)
-  const { user: authUser } = useCorbado()
+  const setPlacesToAssignOccurrenceTo = useSetAtom(
+    placesToAssignOccurrenceToAtom,
+  )
+
   const { db } = useElectric()!
   const layer = layerPresentation.vector_layers
 
@@ -124,12 +127,12 @@ export const TableLayer = memo(({ data, layerPresentation }: Props) => {
               }
               assignToNearestDroppable({
                 db,
-                authUser,
                 latLng: e.latlng,
                 occurrenceId: marker.feature.properties?.occurrence_id,
                 map,
                 droppableLayer,
                 confirmAssigningToSingleTarget,
+                setPlacesToAssignOccurrenceTo,
               })
             })
 
@@ -163,12 +166,12 @@ export const TableLayer = memo(({ data, layerPresentation }: Props) => {
             const position = marker.getLatLng()
             assignToNearestDroppable({
               db,
-              authUser,
               latLng: position,
               occurrenceId: marker.feature.properties?.occurrence_id,
               map,
               droppableLayer,
               confirmAssigningToSingleTarget,
+              setPlacesToAssignOccurrenceTo,
             })
           })
 

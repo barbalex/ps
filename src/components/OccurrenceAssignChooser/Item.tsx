@@ -1,7 +1,9 @@
 import { memo, useCallback } from 'react'
 import { MenuItem } from '@fluentui/react-components'
+import { useSetAtom } from 'jotai'
 
 import { useElectric } from '../../ElectricProvider.tsx'
+import { placesToAssignOccurrenceToAtom } from '../../store.ts'
 
 interface Props {
   place: { place_id: string; label: string; distance: number }
@@ -10,6 +12,9 @@ interface Props {
 }
 
 export const Item = memo(({ place, occurrenceId, appStateId }: Props) => {
+  const setPlacesToAssignOccurrenceTo = useSetAtom(
+    placesToAssignOccurrenceToAtom,
+  )
   // if multiple places are close to the dropped location,
   // assignToNearestDroppable will set an array of: place_id's, labels and distances
   // if so, a dialog will open to choose the place to assign
@@ -21,11 +26,13 @@ export const Item = memo(({ place, occurrenceId, appStateId }: Props) => {
       data: { place_id: place.place_id, not_to_assign: null },
     })
     // reset state
-    db.app_states.update({
-      where: { app_state_id: appStateId },
-      data: { places_to_assign_occurrence_to: null },
-    })
-  }, [appStateId, db.app_states, db.occurrences, occurrenceId, place])
+    setPlacesToAssignOccurrenceTo(null)
+  }, [
+    db.occurrences,
+    occurrenceId,
+    place.place_id,
+    setPlacesToAssignOccurrenceTo,
+  ])
 
   return (
     <MenuItem onClick={onClick}>{`${

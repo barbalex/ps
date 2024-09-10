@@ -95,11 +95,11 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }: Props) => {
     // so we need to combine all features into a single featureCollection
     const features = []
     for (const geometry of geometries) {
-      if (geometry.features) {
+      if (geometry?.features) {
         for (const feature of geometry.features) {
           features.push(feature)
         }
-      } else {
+      } else if (geometry) {
         features.push(geometry)
       }
     }

@@ -58,3 +58,8 @@ export const confirmAssigningToSingleTargetAtom = atomWithStorage(
   'confirmAssigningToSingleTargetAtom',
   true,
 )
+// If multiple places are close to the dropped location, the user can choose one of them. This state opens a dialog. Field contains: Object with: occurrence_id, places. Places is array with: place_id, label, distance
+export const placesToAssignOccurrenceToAtom = atomWithStorage(
+  'placesToAssignOccurrenceToAtom',
+  null,
+)
