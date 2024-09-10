@@ -53,3 +53,8 @@ export const editingActionGeometryAtom = atomWithStorage(
 export const draggableLayersAtom = atomWithStorage('draggableLayersAtom', [])
 // The layer that is currently droppable (places1 or places2)
 export const droppableLayerAtom = atomWithStorage('droppableLayerAtom', null)
+// Whether to show a dialog to confirm assigning an occurrence to a single target. Preset: true
+export const confirmAssigningToSingleTargetAtom = atomWithStorage(
+  'confirmAssigningToSingleTargetAtom',
+  true,
+)

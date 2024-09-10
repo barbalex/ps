@@ -18,7 +18,11 @@ import {
 import { ErrorBoundary } from '../../MapErrorBoundary.tsx'
 import { useElectric } from '../../../../ElectricProvider.tsx'
 import { assignToNearestDroppable } from './assignToNearestDroppable.ts'
-import { draggableLayersAtom, droppableLayerAtom } from '../../../../store.ts'
+import {
+  draggableLayersAtom,
+  droppableLayerAtom,
+  confirmAssigningToSingleTargetAtom,
+} from '../../../../store.ts'
 
 interface Props {
   data: Place[] | Action[] | Check[] | Occurrence[]
@@ -26,6 +30,9 @@ interface Props {
 }
 
 export const TableLayer = memo(({ data, layerPresentation }: Props) => {
+  const [confirmAssigningToSingleTarget] = useAtom(
+    confirmAssigningToSingleTargetAtom,
+  )
   const [droppableLayer] = useAtom(droppableLayerAtom)
   const [draggableLayers] = useAtom(draggableLayersAtom)
   const { user: authUser } = useCorbado()
@@ -122,6 +129,7 @@ export const TableLayer = memo(({ data, layerPresentation }: Props) => {
                 occurrenceId: marker.feature.properties?.occurrence_id,
                 map,
                 droppableLayer,
+                confirmAssigningToSingleTarget,
               })
             })
 
@@ -160,6 +168,7 @@ export const TableLayer = memo(({ data, layerPresentation }: Props) => {
               occurrenceId: marker.feature.properties?.occurrence_id,
               map,
               droppableLayer,
+              confirmAssigningToSingleTarget,
             })
           })
 

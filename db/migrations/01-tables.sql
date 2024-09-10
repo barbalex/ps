@@ -1159,7 +1159,6 @@ COMMENT ON COLUMN fields.level IS 'level of field if places or below: 1, 2';
 CREATE TABLE app_states(
   app_state_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  confirm_assigning_to_single_target boolean DEFAULT NULL, -- true
   places_to_assign_occurrence_to jsonb DEFAULT NULL,
   occurrence_fields_sorted jsonb DEFAULT NULL, -- array of strings
   tree_open_nodes jsonb DEFAULT NULL, -- array of strings
@@ -1220,8 +1219,6 @@ CREATE TABLE app_states(
 CREATE INDEX ON app_states USING btree(account_id);
 
 COMMENT ON TABLE app_states IS 'User interface settings (state saved in db)';
-
-COMMENT ON COLUMN app_states.confirm_assigning_to_single_target IS 'Whether to show a dialog to confirm assigning an occurrence to a single target. Preset: true';
 
 COMMENT ON COLUMN app_states.places_to_assign_occurrence_to IS 'If multiple places are close to the dropped location, the user can choose one of them. This state opens a dialog. Field contains: Object with: occurrence_id, places. Places is array with: place_id, label, distance';
 

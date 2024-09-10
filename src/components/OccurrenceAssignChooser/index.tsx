@@ -13,9 +13,11 @@ import {
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 import { Dismiss24Regular } from '@fluentui/react-icons'
+import { useAtom } from 'jotai'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Item } from './Item.tsx'
+import { confirmAssigningToSingleTargetAtom } from '../../store.ts'
 
 const titleRowStyle = {
   display: 'flex',
@@ -36,6 +38,8 @@ const actionsStyle = {
 }
 
 export const OccurrenceAssignChooser = memo(() => {
+  const [confirmAssigningToSingleTarget, setConfirmAssigningToSingleTarget] =
+    useAtom(confirmAssigningToSingleTargetAtom)
   // if multiple places are close to the dropped location,
   // assignToNearestDroppable will set an array of: place_id's, labels and distances
   // if so, a dialog will open to choose the place to assign
@@ -53,19 +57,10 @@ export const OccurrenceAssignChooser = memo(() => {
     })
   }, [appState?.app_state_id, db.app_states])
 
-  const onClickSingleTarget = useCallback(() => {
-    db.app_states.update({
-      where: { app_state_id: appState?.app_state_id },
-      data: {
-        confirm_assigning_to_single_target:
-          !appState.confirm_assigning_to_single_target,
-      },
-    })
-  }, [
-    appState?.app_state_id,
-    appState?.confirm_assigning_to_single_target,
-    db.app_states,
-  ])
+  const onClickSingleTarget = useCallback(
+    () => setConfirmAssigningToSingleTarget(!confirmAssigningToSingleTarget),
+    [confirmAssigningToSingleTarget, setConfirmAssigningToSingleTarget],
+  )
 
   if (!placesToAssignTo) return null
 
@@ -100,7 +95,7 @@ export const OccurrenceAssignChooser = memo(() => {
           <DialogActions style={actionsStyle}>
             <Checkbox
               label="Auto-assign when single place found"
-              checked={!appState?.confirm_assigning_to_single_target}
+              checked={!confirmAssigningToSingleTarget}
               onChange={onClickSingleTarget}
             />
           </DialogActions>

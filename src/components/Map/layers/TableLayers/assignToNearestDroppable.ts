@@ -30,6 +30,7 @@ export const assignToNearestDroppable = async ({
   occurrenceId,
   map,
   droppableLayer,
+  confirmAssigningToSingleTarget,
 }: Props) => {
   let latLngPoint
   try {
@@ -183,7 +184,7 @@ export const assignToNearestDroppable = async ({
   // TODO: really? Maybe better to always confirm?
   if (
     placeIdsWithMinDistancesSortedByDistance.length === 1 &&
-    !appState.confirm_assigning_to_single_target
+    !confirmAssigningToSingleTarget
   ) {
     // console.log(
     //   'hello assignToNearestDroppable 15, assigning as single place found inside min distance',
