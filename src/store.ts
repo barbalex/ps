@@ -63,3 +63,8 @@ export const placesToAssignOccurrenceToAtom = atomWithStorage(
   'placesToAssignOccurrenceToAtom',
   null,
 )
+// The order of fields in the occurrence form. User can change it by drag and drop
+export const occurrenceFieldsSortedAtom = atomWithStorage(
+  'occurrenceFieldsSortedAtom',
+  [],
+)

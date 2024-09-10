@@ -1159,7 +1159,6 @@ COMMENT ON COLUMN fields.level IS 'level of field if places or below: 1, 2';
 CREATE TABLE app_states(
   app_state_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  occurrence_fields_sorted jsonb DEFAULT NULL, -- array of strings
   tree_open_nodes jsonb DEFAULT NULL, -- array of strings
   filter_projects jsonb DEFAULT NULL, -- a projects object with filter settings
   filter_fields jsonb DEFAULT NULL, -- a fields object with filter settings
@@ -1218,8 +1217,6 @@ CREATE TABLE app_states(
 CREATE INDEX ON app_states USING btree(account_id);
 
 COMMENT ON TABLE app_states IS 'User interface settings (state saved in db)';
-
-COMMENT ON COLUMN app_states.occurrence_fields_sorted IS 'The order of fields in the occurrence form. User can change it by drag and drop';
 
 CREATE TYPE occurrence_imports_previous_import_operation_enum AS enum(
   'update_and_extend',
