@@ -29,6 +29,7 @@ export const assignToNearestDroppable = async ({
   latLng,
   occurrenceId,
   map,
+  droppableLayer,
 }: Props) => {
   let latLngPoint
   try {
@@ -47,7 +48,6 @@ export const assignToNearestDroppable = async ({
   const appState = await db.app_states.findFirst({
     where: { user_email: authUser?.email },
   })
-  const droppableLayer = appState?.droppable_layer
   // 2. get all features from droppable layer
   const places: Place[] = await db.places.findMany({
     where: {

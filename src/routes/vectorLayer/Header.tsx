@@ -1,7 +1,5 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
-import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
 import TreasureMapLine from '../../images/treasure-map-line.svg?react'
 import TreasureMapLinePulsating from '../../images/treasure-map-line-pulsating.svg?react'
 import {
@@ -12,7 +10,7 @@ import {
   MenuItem,
   MenuPopover,
 } from '@fluentui/react-components'
-import { useAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
 
 import {
   createVectorLayer,
@@ -22,7 +20,11 @@ import {
 import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { Vector_layers as VectorLayer } from '../../generated/client/index.ts'
-import { tabsAtom, draggableLayersAtom } from '../../store.ts'
+import {
+  tabsAtom,
+  draggableLayersAtom,
+  droppableLayerAtom,
+} from '../../store.ts'
 
 // type props
 interface Props {
@@ -31,18 +33,14 @@ interface Props {
 }
 
 export const Header = memo(({ autoFocusRef, row }: Props) => {
+  const setDroppableLayer = useSetAtom(droppableLayerAtom)
   const [tabs, setTabs] = useAtom(tabsAtom)
   const [draggableLayers, setDraggableLayers] = useAtom(draggableLayersAtom)
   const { project_id, vector_layer_id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
-
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
 
   // need to:
   // 1. lowercase all
@@ -84,31 +82,15 @@ export const Header = memo(({ autoFocusRef, row }: Props) => {
     }
   }, [db.layer_presentations, isDraggable, row.vector_layer_id, setTabs, tabs])
   const onClickAssignToPlaces1 = useCallback(() => {
-    db.app_states.update({
-      where: { app_state_id: appState.app_state_id },
-      data: { droppable_layer: 'places1' },
-    })
+    setDroppableLayer('places1')
     onClickToggleAssign()
     onClickAssignToPlaces()
-  }, [
-    appState?.app_state_id,
-    db.app_states,
-    onClickAssignToPlaces,
-    onClickToggleAssign,
-  ])
+  }, [onClickAssignToPlaces, onClickToggleAssign, setDroppableLayer])
   const onClickAssignToPlaces2 = useCallback(() => {
-    db.app_states.update({
-      where: { app_state_id: appState.app_state_id },
-      data: { droppable_layer: 'places2' },
-    })
+    setDroppableLayer('places2')
     onClickToggleAssign()
     onClickAssignToPlaces()
-  }, [
-    appState?.app_state_id,
-    db.app_states,
-    onClickAssignToPlaces,
-    onClickToggleAssign,
-  ])
+  }, [onClickAssignToPlaces, onClickToggleAssign, setDroppableLayer])
 
   const addRow = useCallback(async () => {
     const vectorLayer = createVectorLayer({ project_id })

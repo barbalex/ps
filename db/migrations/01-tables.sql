@@ -1156,15 +1156,9 @@ COMMENT ON COLUMN fields.table_name IS 'table, on which this field is used insid
 
 COMMENT ON COLUMN fields.level IS 'level of field if places or below: 1, 2';
 
-CREATE TYPE droppable_layer_enum AS enum(
-  'places1',
-  'places2'
-);
-
 CREATE TABLE app_states(
   app_state_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  droppable_layer droppable_layer_enum DEFAULT NULL,
   confirm_assigning_to_single_target boolean DEFAULT NULL, -- true
   places_to_assign_occurrence_to jsonb DEFAULT NULL,
   occurrence_fields_sorted jsonb DEFAULT NULL, -- array of strings
@@ -1226,8 +1220,6 @@ CREATE TABLE app_states(
 CREATE INDEX ON app_states USING btree(account_id);
 
 COMMENT ON TABLE app_states IS 'User interface settings (state saved in db)';
-
-COMMENT ON COLUMN app_states.droppable_layer IS 'The layer that is currently droppable';
 
 COMMENT ON COLUMN app_states.confirm_assigning_to_single_target IS 'Whether to show a dialog to confirm assigning an occurrence to a single target. Preset: true';
 
