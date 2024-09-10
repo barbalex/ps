@@ -123,10 +123,12 @@ export const LeftMenuDrawer = memo(({ containerRef }) => {
   useEffect(() => {
     if (isResizing) return
     if (wasResizing.current) return
+    // if mapHideUi is true, we dont want to animate as the element does not exist
+    if (mapHideUi) return
     // This "li" selector will only select children
     // of the element that receives `scope`.
     animate('.map-layers-drawer', isNarrow ? { height: size } : { width: size })
-  }, [animate, isNarrow, isResizing, size, wasResizing])
+  }, [animate, isNarrow, isResizing, mapHideUi, size, wasResizing])
 
   useEffect(() => {
     window.addEventListener('mousemove', resize)
