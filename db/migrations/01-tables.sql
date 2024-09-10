@@ -1164,7 +1164,6 @@ CREATE TYPE droppable_layer_enum AS enum(
 CREATE TABLE app_states(
   app_state_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  map_locate boolean DEFAULT NULL, -- FALSE
   map_info jsonb DEFAULT NULL,
   map_layer_sorting jsonb DEFAULT NULL,
   map_show_center boolean DEFAULT NULL, -- FALSE

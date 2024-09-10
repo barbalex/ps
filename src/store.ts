@@ -28,3 +28,5 @@ export const showLocalMapAtom = atomWithStorage('showLocalMapAtom', false)
 export const localMapValuesAtom = atomWithStorage('localMapValuesAtom', {})
 
 export const mapHideUiAtom = atomWithStorage('mapHideUiAtom', false)
+
+export const mapLocateAtom = atomWithStorage('mapLocateAtom', false)
