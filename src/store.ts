@@ -49,3 +49,5 @@ export const editingActionGeometryAtom = atomWithStorage(
   'editingActionGeometryAtom',
   false,
 )
+// The layers that are currently draggable. Any of: occurrences-to-assess, occurrences-not-to-assign, occurrences-assigned-1, occurrences-assigned-2
+export const draggableLayersAtom = atomWithStorage('draggableLayersAtom', [])

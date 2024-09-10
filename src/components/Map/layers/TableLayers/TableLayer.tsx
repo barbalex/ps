@@ -1,10 +1,11 @@
-import { useState, memo, useCallback, useMemo } from 'react'
+import { useState, memo, useCallback } from 'react'
 import { GeoJSON, useMapEvent } from 'react-leaflet'
 import { Map } from '@types/leaflet'
 import * as ReactDOMServer from 'react-dom/server'
 import * as icons from 'react-icons/md'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
+import { useAtom } from 'jotai'
 
 import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
 import { Popup } from '../../Popup.tsx'
@@ -18,6 +19,7 @@ import {
 import { ErrorBoundary } from '../../MapErrorBoundary.tsx'
 import { useElectric } from '../../../../ElectricProvider.tsx'
 import { assignToNearestDroppable } from './assignToNearestDroppable.ts'
+import { draggableLayersAtom } from '../../../../store.ts'
 
 interface Props {
   data: Place[] | Action[] | Check[] | Occurrence[]
@@ -25,6 +27,7 @@ interface Props {
 }
 
 export const TableLayer = memo(({ data, layerPresentation }: Props) => {
+  const [draggableLayers] = useAtom(draggableLayersAtom)
   const { user: authUser } = useCorbado()
   const { db } = useElectric()!
   const layer = layerPresentation.vector_layers
@@ -33,10 +36,7 @@ export const TableLayer = memo(({ data, layerPresentation }: Props) => {
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
-  const draggableLayers = useMemo(
-    () => appState?.draggable_layers ?? [],
-    [appState?.draggable_layers],
-  )
+
   const isDraggable = draggableLayers.includes(layerNameForState)
   // const droppableLayer = appState?.droppable_layer
 

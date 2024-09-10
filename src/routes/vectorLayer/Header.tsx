@@ -1,4 +1,4 @@
-import { useCallback, memo, useMemo } from 'react'
+import { useCallback, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
@@ -22,7 +22,7 @@ import {
 import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { Vector_layers as VectorLayer } from '../../generated/client/index.ts'
-import { tabsAtom } from '../../store.ts'
+import { tabsAtom, draggableLayersAtom } from '../../store.ts'
 
 // type props
 interface Props {
@@ -32,6 +32,7 @@ interface Props {
 
 export const Header = memo(({ autoFocusRef, row }: Props) => {
   const [tabs, setTabs] = useAtom(tabsAtom)
+  const [draggableLayers, setDraggableLayers] = useAtom(draggableLayersAtom)
   const { project_id, vector_layer_id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -41,10 +42,6 @@ export const Header = memo(({ autoFocusRef, row }: Props) => {
 
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
-  const draggableLayers = useMemo(
-    () => appState?.draggable_layers ?? [],
-    [appState?.draggable_layers],
   )
 
   // need to:
@@ -65,17 +62,8 @@ export const Header = memo(({ autoFocusRef, row }: Props) => {
       // add to draggableLayers
       newDraggableLayers = [...draggableLayers, layerNameForState]
     }
-    db.app_states.update({
-      where: { app_state_id: appState.app_state_id },
-      data: { draggable_layers: newDraggableLayers },
-    })
-  }, [
-    appState?.app_state_id,
-    db.app_states,
-    draggableLayers,
-    isDraggable,
-    layerNameForState,
-  ])
+    setDraggableLayers(newDraggableLayers)
+  }, [draggableLayers, isDraggable, layerNameForState, setDraggableLayers])
   const onClickAssignToPlaces = useCallback(() => {
     if (isDraggable) return
     // map needs to be visible

@@ -1,17 +1,18 @@
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
-import { useCorbado } from '@corbado/react'
+import { useAtom } from 'jotai'
 
 import { useElectric } from '../../../../ElectricProvider.tsx'
 import { Layer_presentations as LayerPresentation } from '../../../../generated/client/index.ts'
 import { TableLayer } from './TableLayer.tsx'
+import { draggableLayersAtom } from '../../../../store.ts'
 
 interface Props {
   layerPresentation: LayerPresentation
 }
 
 export const OccurrencesAssigned2 = ({ layerPresentation }: Props) => {
-  const { user: authUser } = useCorbado()
+  const [draggableLayers] = useAtom(draggableLayersAtom)
   const { subproject_id } = useParams()
   const { db } = useElectric()!
 
@@ -34,9 +35,6 @@ export const OccurrencesAssigned2 = ({ layerPresentation }: Props) => {
         geometry: { not: null },
       },
     }),
-  )
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
 
   // a geometry is built as FeatureCollection Object: https://datatracker.ietf.org/doc/html/rfc7946#section-3.3
@@ -67,7 +65,7 @@ export const OccurrencesAssigned2 = ({ layerPresentation }: Props) => {
   if (!layerPresentation) return null
 
   const layer = layerPresentation.vector_layers
-  const isDraggable = appState?.draggable_layers?.includes?.(
+  const isDraggable = draggableLayers?.includes?.(
     layer?.label?.replace(/ /g, '-')?.toLowerCase(),
   )
 
