@@ -1,6 +1,5 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
@@ -35,7 +34,6 @@ export const CheckTaxaNode = memo(
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
-    const { user: authUser } = useCorbado()
 
     const { db } = useElectric()!
     const { results: checkTaxa = [] } = useLiveQuery(
@@ -43,10 +41,6 @@ export const CheckTaxaNode = memo(
         where: { check_id },
         orderBy: { label: 'asc' },
       }),
-    )
-
-    const { results: appState } = useLiveQuery(
-      db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
     )
 
     const checkTaxaNode = useMemo(
@@ -81,11 +75,7 @@ export const CheckTaxaNode = memo(
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
-        removeChildNodes({
-          node: parentArray,
-          db,
-          appStateId: appState?.app_state_id,
-        })
+        removeChildNodes({ node: parentArray })
         // only navigate if urlPath includes ownArray
         if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
           navigate({
@@ -96,14 +86,8 @@ export const CheckTaxaNode = memo(
         return
       }
       // add to openNodes without navigating
-      addOpenNodes({
-        nodes: [ownArray],
-        db,
-        appStateId: appState?.app_state_id,
-      })
+      addOpenNodes({ nodes: [ownArray] })
     }, [
-      appState?.app_state_id,
-      db,
       isInActiveNodeArray,
       isOpen,
       navigate,
