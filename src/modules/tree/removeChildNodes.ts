@@ -13,7 +13,6 @@ export const removeChildNodes = async ({
   isRoot = false,
 }: Props): void => {
   const openNodes = store.get(treeOpenNodesAtom)
-  // const openNodes = appState?.tree_open_nodes || []
 
   // remove all nodes that are children of the node
   const newNodes = openNodes.filter((openNode) => {

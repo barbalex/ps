@@ -1159,7 +1159,6 @@ COMMENT ON COLUMN fields.level IS 'level of field if places or below: 1, 2';
 CREATE TABLE app_states(
   app_state_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  tree_open_nodes jsonb DEFAULT NULL, -- array of strings
   filter_projects jsonb DEFAULT NULL, -- a projects object with filter settings
   filter_fields jsonb DEFAULT NULL, -- a fields object with filter settings
   filter_account_users jsonb DEFAULT NULL, -- a users object with filter settings

@@ -10,6 +10,7 @@ import { Places as Place } from '../../../generated/client/index.ts'
 import { PlaceUserNode } from './PlaceUser.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import { treeOpenNodesAtom } from '../../store.ts'
 
 interface Props {
   project_id: string
