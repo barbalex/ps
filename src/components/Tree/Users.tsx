@@ -3,14 +3,17 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
+import { useAtom } from 'jotai'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Node } from './Node.tsx'
 import { UserNode } from './User.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import { treeOpenNodesAtom } from '../../store.ts'
 
 export const UsersNode = memo(() => {
+  const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -25,10 +28,6 @@ export const UsersNode = memo(() => {
 
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
-  const openNodes = useMemo(
-    () => appState?.tree_open_nodes ?? [],
-    [appState?.tree_open_nodes],
   )
 
   const usersNode = useMemo(
@@ -96,7 +95,12 @@ export const UsersNode = memo(() => {
         onClickButton={onClickButton}
       />
       {isOpen &&
-        users.map((user) => <UserNode key={user.user_id} user={user} />)}
+        users.map((user) => (
+          <UserNode
+            key={user.user_id}
+            user={user}
+          />
+        ))}
     </>
   )
 })

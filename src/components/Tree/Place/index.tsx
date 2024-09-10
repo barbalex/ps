@@ -3,6 +3,7 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 import isEqual from 'lodash/isEqual'
+import { useAtom } from 'jotai'
 
 import { Node } from '../Node.tsx'
 import { Places as Place } from '../../../generated/client/index.ts'
@@ -10,6 +11,7 @@ import { PlaceChildren } from './Children.tsx'
 import { removeChildNodes } from '../../../modules/tree/removeChildNodes.ts'
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { addOpenNodes } from '../../../modules/tree/addOpenNodes.ts'
+import { treeOpenNodesAtom } from '../../../store.ts'
 
 interface Props {
   project_id: string
@@ -20,6 +22,7 @@ interface Props {
 
 export const PlaceNode = memo(
   ({ project_id, subproject_id, place_id, place }: Props) => {
+    const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
@@ -28,10 +31,6 @@ export const PlaceNode = memo(
     const { db } = useElectric()!
     const { results: appState } = useLiveQuery(
       db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-    )
-    const openNodes = useMemo(
-      () => appState?.tree_open_nodes ?? [],
-      [appState?.tree_open_nodes],
     )
 
     const level = place_id ? 8 : 6

@@ -24,7 +24,7 @@ import { Editing } from './Editing.tsx'
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { removeChildNodes } from '../../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../../modules/tree/addOpenNodes.ts'
-import { designingAtom } from '../../../store.ts'
+import { designingAtom, treeOpenNodesAtom } from '../../../store.ts'
 
 interface Props {
   project: Project
@@ -32,6 +32,7 @@ interface Props {
 }
 
 export const ProjectNode = memo(({ project, level = 2 }: Props) => {
+  const [openNodes] = useAtom(treeOpenNodesAtom)
   const [designing] = useAtom(designingAtom)
   const location = useLocation()
   const navigate = useNavigate()
@@ -41,10 +42,6 @@ export const ProjectNode = memo(({ project, level = 2 }: Props) => {
   const { db } = useElectric()!
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
-  const openNodes = useMemo(
-    () => appState?.tree_open_nodes ?? [],
-    [appState?.tree_open_nodes],
   )
 
   const showFiles = project.files_active_projects ?? false
