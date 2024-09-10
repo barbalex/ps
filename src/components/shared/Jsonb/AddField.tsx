@@ -2,12 +2,12 @@ import { useCallback, memo } from 'react'
 import { Button } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
 import { useParams, useSearchParams, useLocation } from 'react-router-dom'
-import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
+import { useAtom } from 'jotai'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { createField } from '../../../modules/createRows.ts'
 import { accountTables } from '../../../routes/field/accountTables.ts'
+import { designingAtom } from '../../../store.ts'
 
 const buttonStyle = {
   minHeight: 32,
@@ -22,18 +22,14 @@ const buttonStyle = {
 //    - a title and the necessary part of the field form
 //    - a search param in the url: editingField=fieldId
 export const AddField = memo(({ tableName, level }) => {
+  const [designing] = useAtom(designingAtom)
   const { project_id } = useParams()
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchParams, setSearchParams] = useSearchParams()
   const { pathname } = useLocation()
 
-  const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
-  const designing = appState?.designing
 
   const addRow = useCallback(async () => {
     const isAccountTable = accountTables.includes(tableName)

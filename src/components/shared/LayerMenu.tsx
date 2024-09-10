@@ -8,7 +8,7 @@ import { useParams } from 'react-router-dom'
 import { bbox } from '@turf/bbox'
 import { buffer } from '@turf/buffer'
 import { featureCollection } from '@turf/helpers'
-import { useCorbado } from '@corbado/react'
+import { useSetAtom } from 'jotai'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import {
@@ -18,6 +18,7 @@ import {
   Occurrences as Occurrence,
 } from '../../generated/client/index.ts'
 import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
+import { mapBoundsAtom } from '../../store.ts'
 
 interface Props {
   table: string
@@ -28,8 +29,8 @@ interface Props {
 type GeometryType = Place[] | Action[] | Check[] | Occurrence[]
 
 export const LayerMenu = memo(({ table, level, placeNamePlural }: Props) => {
+  const setMapBounds = useSetAtom(mapBoundsAtom)
   const { project_id, subproject_id } = useParams()
-  const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
   const { results: vectorLayer } = useLiveQuery(
@@ -94,11 +95,11 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }: Props) => {
     // so we need to combine all features into a single featureCollection
     const features = []
     for (const geometry of geometries) {
-      if (geometry.features) {
+      if (geometry?.features) {
         for (const feature of geometry.features) {
           features.push(feature)
         }
-      } else {
+      } else if (geometry) {
         features.push(geometry)
       }
     }
@@ -108,23 +109,16 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }: Props) => {
     const newBbox = bbox(bufferedFC)
     const newBounds = boundsFromBbox(newBbox)
 
-    const appState = await db.app_states.findFirst({
-      where: { user_email: authUser?.email },
-    })
-    db.app_states.update({
-      where: { app_state_id: appState?.app_state_id },
-      data: { map_bounds: newBounds },
-    })
+    setMapBounds(newBounds)
   }, [
     db.places,
-    db.app_states,
     db.actions,
     db.checks,
     db.occurrences,
     subproject_id,
     level,
     table,
-    authUser?.email,
+    setMapBounds,
   ])
 
   // TODO: implement onClickMapSettings

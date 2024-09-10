@@ -1,8 +1,7 @@
 import { useCallback, memo, useMemo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
-import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
 import isEqual from 'lodash/isEqual'
+import { useAtom } from 'jotai'
 
 import { Node } from '../Node.tsx'
 import { Projects as Project } from '../../../generated/client/index.ts'
@@ -20,9 +19,9 @@ import { PlaceLevelsNode } from '../PlaceLevels.tsx'
 import { FieldsNode } from '../Fields.tsx'
 import { FilesNode } from '../Files.tsx'
 import { Editing } from './Editing.tsx'
-import { useElectric } from '../../../ElectricProvider.tsx'
 import { removeChildNodes } from '../../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../../modules/tree/addOpenNodes.ts'
+import { designingAtom, treeOpenNodesAtom } from '../../../store.ts'
 
 interface Props {
   project: Project
@@ -30,21 +29,11 @@ interface Props {
 }
 
 export const ProjectNode = memo(({ project, level = 2 }: Props) => {
+  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [designing] = useAtom(designingAtom)
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { user: authUser } = useCorbado()
-
-  const { db } = useElectric()!
-
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
-  const designing = appState?.designing ?? false
-  const openNodes = useMemo(
-    () => appState?.tree_open_nodes ?? [],
-    [appState?.tree_open_nodes],
-  )
 
   const showFiles = project.files_active_projects ?? false
 
@@ -64,11 +53,7 @@ export const ProjectNode = memo(({ project, level = 2 }: Props) => {
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
-      removeChildNodes({
-        node: parentArray,
-        db,
-        appStateId: appState?.app_state_id,
-      })
+      removeChildNodes({ node: parentArray })
       // TODO: only navigate if urlPath includes ownArray
       if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
         navigate({
@@ -79,14 +64,8 @@ export const ProjectNode = memo(({ project, level = 2 }: Props) => {
       return
     }
     // add to openNodes without navigating
-    addOpenNodes({
-      nodes: [ownArray],
-      db,
-      appStateId: appState?.app_state_id,
-    })
+    addOpenNodes({ nodes: [ownArray] })
   }, [
-    appState?.app_state_id,
-    db,
     isInActiveNodeArray,
     isOpen,
     navigate,
@@ -118,7 +97,12 @@ export const ProjectNode = memo(({ project, level = 2 }: Props) => {
           <PersonsNode project_id={project.project_id} />
           <WmsLayersNode project_id={project.project_id} />
           <VectorLayersNode project_id={project.project_id} />
-          {showFiles && <FilesNode project_id={project.project_id} level={3} />}
+          {showFiles && (
+            <FilesNode
+              project_id={project.project_id}
+              level={3}
+            />
+          )}
           {designing && (
             <>
               <ProjectUsersNode project_id={project.project_id} />

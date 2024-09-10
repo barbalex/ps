@@ -1,28 +1,20 @@
-import { Electric } from '../../generated/client/index.ts'
+// seems not in use
+// BEWARE: uses obsolete app_states table
+// If reactivate, use atom store instead
 import { isNodeOpen } from './isNodeOpen.ts'
-
-interface Props {
-  nodes: string[]
-  db: Electric
-  appStateId: string
-}
 
 export const setOpenNodes = async ({
   nodes = [],
-  db,
-  appStateId,
-}: Props): void => {
+  treeOpenNodes,
+  setTreeOpenNodes,
+}): void => {
   // ensure contained arrays are unique
   const newNodes = [...new Set(nodes)]
   // ensure only not yet open nodes are added
   const newNodesToAdd = newNodes.filter(
-    (node) => !isNodeOpen({ node, openNodes }),
+    (node) => !isNodeOpen({ node, openNodes: treeOpenNodes }),
   )
 
   // console.log('hello setOpenNodes', { nodes, newNodes })
-
-  return await db.app_states.update({
-    where: { app_state_id: appStateId },
-    data: { tree_open_nodes: newNodesToAdd },
-  })
+  return setTreeOpenNodes(newNodesToAdd)
 }

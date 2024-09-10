@@ -1,27 +1,34 @@
-import { useLiveQuery, memo } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
+import { memo } from 'react'
+import { useAtom } from 'jotai'
 
-import { useElectric } from '../ElectricProvider.tsx'
-import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
-import { Row } from '../components/shared/Row.tsx'
+import { SwitchField } from '../components/shared/SwitchField.tsx'
+import { FormHeader } from '../components/FormHeader/index.tsx'
+import { breadcrumbsOverflowingAtom, navsOverflowingAtom } from '../store.ts'
 
 import '../form.css'
 
 export const Component = memo(() => {
-  const { user: authUser } = useCorbado()
-
-  const { db } = useElectric()!
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+  const [breadcrumbsOverflowing, setBreadcrumbsOverflowing] = useAtom(
+    breadcrumbsOverflowingAtom,
   )
+  const [navsOverflowing, setNavsOverflowing] = useAtom(navsOverflowingAtom)
 
   return (
-    <div className="list-view">
-      <ListViewHeader title="Options" tableName="option" />
-      <div className="list-container">
-        <Row
-          label={appState?.label}
-          to={`/data/app-states/${authUser?.email}`}
+    <div className="form-outer-container">
+      <FormHeader title="Options" />
+      <div className="form-container">
+        <SwitchField
+          label="Breadcrumbs overflowing"
+          value={breadcrumbsOverflowing}
+          onChange={() => setBreadcrumbsOverflowing(!breadcrumbsOverflowing)}
+          validationMessage="If true, breadcrumbs will only use a single line. When they overflow, the overflowing breadcrumbs will be collected in a menu on the left"
+          autoFocus
+        />
+        <SwitchField
+          label="Navs overflowing"
+          value={navsOverflowing}
+          onChange={() => setNavsOverflowing(!navsOverflowing)}
+          validationMessage="If true, navs will only use a single line. When they overflow, the overflowing navs will be collected in a menu on the left"
         />
       </div>
     </div>

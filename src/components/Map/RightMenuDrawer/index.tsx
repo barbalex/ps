@@ -1,12 +1,11 @@
 import { useCallback, useRef, memo, useState, useEffect } from 'react'
 import { useResizeDetector } from 'react-resize-detector'
 import { InlineDrawer } from '@fluentui/react-components'
-import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
+import { useAtom } from 'jotai'
 
 import { Info } from './Info/index.tsx'
 import { Resizer } from './Resizer.tsx'
-import { useElectric } from '../../../ElectricProvider.tsx'
+import { mapInfoAtom } from '../../../store.ts'
 
 import './index.css'
 
@@ -21,13 +20,7 @@ const containerStyle = {
 }
 
 export const RightMenuDrawer = memo(({ containerRef }) => {
-  const { user: authUser } = useCorbado()
-
-  const { db } = useElectric()!
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
-  const mapInfo = appState?.map_info
+  const [mapInfo] = useAtom(mapInfoAtom)
 
   const animationFrame = useRef<number>(0)
   const sidebarRef = useRef<HTMLDivElement>(null)
@@ -118,7 +111,10 @@ export const RightMenuDrawer = memo(({ containerRef }) => {
         onMouseDown={(e) => isResizing && e.preventDefault()}
       >
         <Info isNarrow={isNarrow} />
-        <Resizer startResizing={startResizing} isResizing={isResizing} />
+        <Resizer
+          startResizing={startResizing}
+          isResizing={isResizing}
+        />
       </InlineDrawer>
     </div>
   )

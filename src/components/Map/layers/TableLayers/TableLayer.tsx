@@ -1,10 +1,9 @@
-import { useState, memo, useCallback, useMemo } from 'react'
+import { useState, memo, useCallback } from 'react'
 import { GeoJSON, useMapEvent } from 'react-leaflet'
 import { Map } from '@types/leaflet'
 import * as ReactDOMServer from 'react-dom/server'
 import * as icons from 'react-icons/md'
-import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
+import { useAtom, useSetAtom } from 'jotai'
 
 import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
 import { Popup } from '../../Popup.tsx'
@@ -18,6 +17,12 @@ import {
 import { ErrorBoundary } from '../../MapErrorBoundary.tsx'
 import { useElectric } from '../../../../ElectricProvider.tsx'
 import { assignToNearestDroppable } from './assignToNearestDroppable.ts'
+import {
+  draggableLayersAtom,
+  droppableLayerAtom,
+  confirmAssigningToSingleTargetAtom,
+  placesToAssignOccurrenceToAtom,
+} from '../../../../store.ts'
 
 interface Props {
   data: Place[] | Action[] | Check[] | Occurrence[]
@@ -25,20 +30,21 @@ interface Props {
 }
 
 export const TableLayer = memo(({ data, layerPresentation }: Props) => {
-  const { user: authUser } = useCorbado()
+  const [confirmAssigningToSingleTarget] = useAtom(
+    confirmAssigningToSingleTargetAtom,
+  )
+  const [droppableLayer] = useAtom(droppableLayerAtom)
+  const [draggableLayers] = useAtom(draggableLayersAtom)
+  const setPlacesToAssignOccurrenceTo = useSetAtom(
+    placesToAssignOccurrenceToAtom,
+  )
+
   const { db } = useElectric()!
   const layer = layerPresentation.vector_layers
 
   const layerNameForState = layer?.label?.replace?.(/ /g, '-')?.toLowerCase?.()
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
-  const draggableLayers = useMemo(
-    () => appState?.draggable_layers ?? [],
-    [appState?.draggable_layers],
-  )
+
   const isDraggable = draggableLayers.includes(layerNameForState)
-  // const droppableLayer = appState?.droppable_layer
 
   // adapt to multiple vector_layer_displays
   const vectorLayerDisplays = layer.vector_layer_displays
@@ -62,7 +68,6 @@ export const TableLayer = memo(({ data, layerPresentation }: Props) => {
   const map: Map = useMapEvent('zoomend', () => setZoom(map.getZoom()))
   const [zoom, setZoom] = useState(map.getZoom())
 
-  if (!appState) return null
   if (!firstDisplay) return null
   if (!layer) return null
   // include only if zoom between min_zoom and max_zoom
@@ -122,10 +127,12 @@ export const TableLayer = memo(({ data, layerPresentation }: Props) => {
               }
               assignToNearestDroppable({
                 db,
-                authUser,
                 latLng: e.latlng,
                 occurrenceId: marker.feature.properties?.occurrence_id,
                 map,
+                droppableLayer,
+                confirmAssigningToSingleTarget,
+                setPlacesToAssignOccurrenceTo,
               })
             })
 
@@ -159,10 +166,12 @@ export const TableLayer = memo(({ data, layerPresentation }: Props) => {
             const position = marker.getLatLng()
             assignToNearestDroppable({
               db,
-              authUser,
               latLng: position,
               occurrenceId: marker.feature.properties?.occurrence_id,
               map,
+              droppableLayer,
+              confirmAssigningToSingleTarget,
+              setPlacesToAssignOccurrenceTo,
             })
           })
 

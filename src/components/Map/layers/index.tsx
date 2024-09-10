@@ -1,7 +1,7 @@
 import { memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
 import { Pane } from 'react-leaflet'
+import { useAtom } from 'jotai'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
 import {
@@ -21,6 +21,7 @@ import { OccurrencesAssigned1 } from './TableLayers/OccurrencesAssigned1.tsx'
 import { OccurrencesAssigned2 } from './TableLayers/OccurrencesAssigned2.tsx'
 import { OccurrencesToAssess } from './TableLayers/OccurrencesToAssess.tsx'
 import { OccurrencesNotToAssign } from './TableLayers/OccurrencesNotToAssign.tsx'
+import { mapLayerSortingAtom } from '../../../store.ts'
 
 const tableLayerToComponent = {
   places1: Places1,
@@ -38,14 +39,9 @@ const tableLayerToComponent = {
 const paneBaseIndex = 400 // was: 200. then wfs layers covered lower ones
 
 export const Layers = memo(() => {
-  const { user: authUser } = useCorbado()
+  const [mapLayerSorting] = useAtom(mapLayerSortingAtom)
 
   const { db } = useElectric()!
-
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
-  const mapLayerSorting = appState?.map_layer_sorting ?? []
 
   // for every layer_presentation_id in mapLayerSorting, get the layer_presentation
   const { results: layerPresentations = [] } = useLiveQuery(
@@ -68,7 +64,7 @@ export const Layers = memo(() => {
     (lp) => !!lp.wms_layers,
   ).length
   // if no wms layer is present, add osm
-  if (!!appState && !wmsLayersCount && !mapLayerSorting.includes('osm')) {
+  if (!wmsLayersCount && !mapLayerSorting.includes('osm')) {
     mapLayerSorting.push('osm')
   }
 

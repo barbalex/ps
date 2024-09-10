@@ -4,10 +4,12 @@ import { Outlet } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import { Allotment } from 'allotment'
 import { useCorbado } from '@corbado/react'
+import { useAtom } from 'jotai'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Tree } from '../Tree/index.tsx'
 import { MapContainer } from '../Map/index.tsx'
+import { mapMaximizedAtom, tabsAtom } from '../../store.ts'
 
 const containerStyle = {
   display: 'flex',
@@ -18,6 +20,9 @@ const containerStyle = {
 }
 
 export const Main = memo(() => {
+  const [mapMaximized] = useAtom(mapMaximizedAtom)
+  const [tabs] = useAtom(tabsAtom)
+
   // onlyForm is a query parameter that allows the user to view a form without the rest of the app
   // used for popups inside the map
   // TODO: this renders on every navigation!!! Thus temporarily disabled
@@ -27,26 +32,16 @@ export const Main = memo(() => {
   // const [searchParams] = useSearchParams()
   // const onlyForm = searchParams.get('onlyForm')
   const onlyForm = false
-  const { user: authUser } = useCorbado()
 
-  const { db } = useElectric()!
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
-  const tabs = useMemo(() => appState?.tabs ?? [], [appState?.tabs])
-  const designing = appState?.designing ?? false
-  const mapMaximized =
-    (appState?.map_maximized && tabs.includes('map')) ?? false
+  const mapMaximizedAndVisible = (mapMaximized && tabs.includes('map')) ?? false
 
   if (onlyForm) return <Outlet />
 
   return (
     <div style={containerStyle}>
       <Allotment>
-        {!mapMaximized && tabs.includes('tree') && (
-          <Tree designing={designing} />
-        )}
-        {!mapMaximized && tabs.includes('data') && <Outlet />}
+        {!mapMaximizedAndVisible && tabs.includes('tree') && <Tree />}
+        {!mapMaximizedAndVisible && tabs.includes('data') && <Outlet />}
         {tabs.includes('map') && <MapContainer />}
       </Allotment>
     </div>

@@ -1,21 +1,21 @@
 // TODO: not in use
-import { useEffect, useContext } from 'react'
+import { useEffect } from 'react'
 import { useMap } from 'react-leaflet'
+import { useAtom, useSetAtom } from 'jotai'
 
 import { Wms_layers as WmsLayerType } from '../../../../generated/client/index.ts'
-import storeContext from '../../../../storeContext'
-import { IStore } from '../../../../store'
 import { useElectric } from '../../../../ElectricProvider.tsx'
 import { createNotification } from '../../../../modules/createRows.ts'
+import { showLocalMapAtom, localMapValuesAtom } from '../../../../store.ts'
 
 interface Props {
   layer: WmsLayerType
 }
 
 export const WMTSOffline = ({ layer }: Props) => {
+  const [showLocalMap, setShowLocalMap] = useAtom(showLocalMapAtom)
+  const setLocalMapValues = useSetAtom(localMapValuesAtom)
   const map = useMap()
-  const store: IStore = useContext(storeContext)
-  const { setLocalMapValues } = store
 
   const { db } = useElectric()!
 
@@ -38,7 +38,7 @@ export const WMTSOffline = ({ layer }: Props) => {
 
     const save = () => {
       try {
-        control.saveMap({ layer, store, map })
+        control.saveMap({ layer, map })
       } catch (error) {
         const data = createNotification({
           title: `Fehler beim Speichern der Karten für ${layer.label}`,
@@ -51,17 +51,7 @@ export const WMTSOffline = ({ layer }: Props) => {
     const del = () => control.deleteTable(layer.id)
 
     setLocalMapValues({ id: layer.id, save, del })
-    // TODO: get app_state_id, then activate
-    // db.app_states.update({
-    //   where: { app_state_id },
-    //   data: {
-    //     show_local_map: {
-    //       [layer.id]: {
-    //         show: true,
-    //       },
-    //     },
-    //   },
-    // })
+    setShowLocalMap({ ...showLocalMap, [layer.id]: { show: true } })
 
     return () => {
       map.removeLayer(wmtsLayer)
@@ -80,7 +70,8 @@ export const WMTSOffline = ({ layer }: Props) => {
     layer.wmts_url_template,
     map,
     setLocalMapValues,
-    store,
+    setShowLocalMap,
+    showLocalMap,
   ])
 
   return null

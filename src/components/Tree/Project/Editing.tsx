@@ -3,10 +3,11 @@ import { MdEdit, MdEditOff } from 'react-icons/md'
 import { useLiveQuery } from 'electric-sql/react'
 import { Button } from '@fluentui/react-components'
 import { useParams } from 'react-router-dom'
-import { useCorbado } from '@corbado/react'
+import { useAtom } from 'jotai'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { css } from '../../../css.ts'
+import { designingAtom, userIdAtom } from '../../../store.ts'
 
 const buttonStyle = {
   borderRadius: 20,
@@ -20,25 +21,17 @@ const svgStyle = {
 }
 
 export const Editing = memo(() => {
+  const [designing, setDesigning] = useAtom(designingAtom)
+  const [userId] = useAtom(userIdAtom)
   const { project_id } = useParams()
-
-  const { user: authUser } = useCorbado()
-
   const { db } = useElectric()!
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
-  const designing = appState?.designing ?? false
 
   const onClick = useCallback(
     (e) => {
       e.stopPropagation()
-      db.app_states.update({
-        where: { app_state_id: appState?.app_state_id },
-        data: { designing: !designing },
-      })
+      setDesigning(!designing)
     },
-    [appState?.app_state_id, db.app_states, designing],
+    [designing, setDesigning],
   )
 
   const { results: project } = useLiveQuery(
@@ -49,7 +42,7 @@ export const Editing = memo(() => {
   )
   const userIsOwner = project?.account_id === project?.accounts?.account_id
   const projectUser = project?.project_users?.find(
-    (pu) => pu.user_id === appState?.user_id,
+    (pu) => pu.user_id === userId,
   )
   const userRole = projectUser?.role
   // console.log('hello Project Editing', { projectUser, userRole, project })

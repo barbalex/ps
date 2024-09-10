@@ -1156,44 +1156,9 @@ COMMENT ON COLUMN fields.table_name IS 'table, on which this field is used insid
 
 COMMENT ON COLUMN fields.level IS 'level of field if places or below: 1, 2';
 
-CREATE TYPE droppable_layer_enum AS enum(
-  'places1',
-  'places2'
-);
-
 CREATE TABLE app_states(
   app_state_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
-  -- user_email can not be referenced to users, as it is not unique
-  -- because electric-sql does not support unique constraints
-  -- unless the column is a primary key
-  user_email text DEFAULT NULL,
-  -- user_id is needed to ensure user_email can be updated when changed on users
-  user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  designing boolean DEFAULT NULL, -- FALSE,
-  breadcrumbs_overflowing boolean DEFAULT NULL, -- FALSE,
-  navs_overflowing boolean DEFAULT NULL, -- FALSE,
-  tabs jsonb DEFAULT NULL, -- array of strings
-  map_bounds jsonb DEFAULT NULL, -- [minx, miny, maxx, maxy]
-  show_local_map jsonb DEFAULT NULL, -- map of id (layer.id, key) and show boolean
-  map_maximized boolean DEFAULT NULL, -- FALSE
-  map_hide_ui boolean DEFAULT NULL, -- FALSE
-  map_locate boolean DEFAULT NULL, -- FALSE
-  map_info jsonb DEFAULT NULL,
-  map_layer_sorting jsonb DEFAULT NULL,
-  map_show_center boolean DEFAULT NULL, -- FALSE
-  wms_layer_sorter text DEFAULT NULL,
-  vector_layer_sorter text DEFAULT NULL,
-  editing_place_geometry uuid DEFAULT NULL,
-  editing_check_geometry uuid DEFAULT NULL,
-  editing_action_geometry uuid DEFAULT NULL,
-  draggable_layers jsonb DEFAULT NULL,
-  droppable_layer droppable_layer_enum DEFAULT NULL,
-  confirm_assigning_to_single_target boolean DEFAULT NULL, -- true
-  places_to_assign_occurrence_to jsonb DEFAULT NULL,
-  occurrence_fields_sorted jsonb DEFAULT NULL, -- array of strings
-  syncing boolean DEFAULT NULL,
-  tree_open_nodes jsonb DEFAULT NULL, -- array of strings
   filter_projects jsonb DEFAULT NULL, -- a projects object with filter settings
   filter_fields jsonb DEFAULT NULL, -- a fields object with filter settings
   filter_account_users jsonb DEFAULT NULL, -- a users object with filter settings
@@ -1250,46 +1215,7 @@ CREATE TABLE app_states(
 -- CREATE INDEX ON app_states USING btree(user_id);
 CREATE INDEX ON app_states USING btree(account_id);
 
-CREATE INDEX ON app_states USING btree(user_id);
-
-CREATE INDEX ON app_states USING btree(user_email);
-
-COMMENT ON COLUMN app_states.user_email IS 'email of authenticated user. Exists in users but copied here for easier querying. Also: is returned by auth hooks, so available in the client without additional query';
-
 COMMENT ON TABLE app_states IS 'User interface settings (state saved in db)';
-
-COMMENT ON COLUMN app_states.designing IS 'Whether user is currently designing projects. Preset: false';
-
--- TODO:
--- new structure for map_info
--- Goal: enable setting from onEachFeature for wfs layers and maybe own layers
--- SINGLE object with keys:
--- - lat
--- - lng
--- - zoom
--- - layers. This is an array of objects with keys: label, properties
--- With this structure, wms and wfs can set their layer data into such an object, then add the object to the existing in app_states.map_info
--- app_states.map_info is reset when user closes info window, so memory is not wasted
--- the info drawer filters all the objects with correct lat, lng and zoom and shows them
-COMMENT ON COLUMN app_states.map_info IS 'Information presented, when user clicks on a map. Array of: {label, properties} where properties is an array of [key, value]';
-
-COMMENT ON COLUMN app_states.map_layer_sorting IS 'The order of layers in the map. An array of layer_presentation_ids';
-
-COMMENT ON COLUMN app_states.editing_place_geometry IS 'The id of the place whose geometry is currently being edited';
-
-COMMENT ON COLUMN app_states.editing_check_geometry IS 'The id of the check whose geometry is currently being edited';
-
-COMMENT ON COLUMN app_states.editing_action_geometry IS 'The id of the action whose geometry is currently being edited';
-
-COMMENT ON COLUMN app_states.draggable_layers IS 'The layers that are currently draggable. Any of: occurrences-to-assess, occurrences-not-to-assign, occurrences-assigned-1, occurrences-assigned-2';
-
-COMMENT ON COLUMN app_states.droppable_layer IS 'The layer that is currently droppable';
-
-COMMENT ON COLUMN app_states.confirm_assigning_to_single_target IS 'Whether to show a dialog to confirm assigning an occurrence to a single target. Preset: true';
-
-COMMENT ON COLUMN app_states.places_to_assign_occurrence_to IS 'If multiple places are close to the dropped location, the user can choose one of them. This state opens a dialog. Field contains: Object with: occurrence_id, places. Places is array with: place_id, label, distance';
-
-COMMENT ON COLUMN app_states.occurrence_fields_sorted IS 'The order of fields in the occurrence form. User can change it by drag and drop';
 
 CREATE TYPE occurrence_imports_previous_import_operation_enum AS enum(
   'update_and_extend',

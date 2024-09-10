@@ -4,8 +4,7 @@ import 'proj4'
 import 'proj4leaflet'
 import { MapContainer } from 'react-leaflet'
 import { useResizeDetector } from 'react-resize-detector'
-import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
+import { useAtom } from 'jotai'
 
 import 'leaflet/dist/leaflet.css'
 
@@ -21,6 +20,7 @@ import { ClickListener } from './ClickListener/index.tsx'
 import { ErrorBoundary } from '../shared/ErrorBoundary.tsx'
 import { InfoMarker } from './RightMenuDrawer/Marker.tsx'
 import { CenterMarker } from './CenterMarker.tsx'
+import { mapLocateAtom, mapInfoAtom, mapShowCenterAtom } from '../../store.ts'
 
 const outerContainerStyle = {
   width: '100%',
@@ -35,15 +35,11 @@ const mapContainerStyle = {
 }
 
 export const Map = memo(() => {
-  const { user: authUser } = useCorbado()
+  const [mapShowCenter] = useAtom(mapShowCenterAtom)
+  const [mapIsLocating] = useAtom(mapLocateAtom)
+  const [mapInfo] = useAtom(mapInfoAtom)
 
   const { db } = useElectric()!
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
-  const mapIsLocating = appState?.map_locate ?? false
-  const mapInfo = appState?.map_info
-  const showMapCenter = appState?.map_show_center ?? false
 
   const mapRef = useRef()
 
@@ -84,7 +80,11 @@ export const Map = memo(() => {
 
   return (
     <ErrorBoundary>
-      <div style={outerContainerStyle} ref={resizeRef} id="map">
+      <div
+        style={outerContainerStyle}
+        ref={resizeRef}
+        id="map"
+      >
         <MapContainer
           className="map-container"
           zoomControl={false}
@@ -100,10 +100,13 @@ export const Map = memo(() => {
           <ClickListener />
           <DrawControl />
           <Layers />
-          <BottomRightControl position="bottomright" visible={true} />
+          <BottomRightControl
+            position="bottomright"
+            visible={true}
+          />
           <BoundsListener />
           {!!mapInfo?.lat && <InfoMarker mapInfo={mapInfo} />}
-          {showMapCenter && <CenterMarker />}
+          {mapShowCenter && <CenterMarker />}
         </MapContainer>
       </div>
     </ErrorBoundary>

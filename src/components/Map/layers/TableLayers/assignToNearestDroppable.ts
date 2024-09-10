@@ -25,10 +25,12 @@ interface Props {
 
 export const assignToNearestDroppable = async ({
   db,
-  authUser,
   latLng,
   occurrenceId,
   map,
+  droppableLayer,
+  confirmAssigningToSingleTarget,
+  setPlacesToAssignOccurrenceTo,
 }: Props) => {
   let latLngPoint
   try {
@@ -43,12 +45,7 @@ export const assignToNearestDroppable = async ({
     console.log('hello assignToNearestDroppable', { error })
   }
   // TODO: best would be to query using PostGIS functions...
-  // 1. get droppable layer
-  const appState = await db.app_states.findFirst({
-    where: { user_email: authUser?.email },
-  })
-  const droppableLayer = appState?.droppable_layer
-  // 2. get all features from droppable layer
+  // 1. get all features from droppable layer
   const places: Place[] = await db.places.findMany({
     where: {
       parent_id: droppableLayer === 'places1' ? null : { not: null },
@@ -56,12 +53,12 @@ export const assignToNearestDroppable = async ({
     },
   })
 
-  // 3. get the nearest feature
+  // 2. get the nearest feature
 
-  // 3.1 direct using nearestPoint
+  // 2.1 direct using nearestPoint
   //     does not work because of the error: coord must be GeoJSON Point or an Array of numbers
 
-  // 3.2 find out if the latLng is inside a feature: https://turfjs.org/docs/#pointsWithinPolygon
+  // 2.2 find out if the latLng is inside a feature: https://turfjs.org/docs/#pointsWithinPolygon
   //     Because of featureCollection, use the convex hull: https://turfjs.org/docs/#convex
   const idsOfPlacesContainingLatLng = []
   for (const place of places) {
@@ -91,7 +88,7 @@ export const assignToNearestDroppable = async ({
     try {
       pointsWithin = pointsWithinPolygon(latLngPoints, convexedGeometry)
     } catch (error) {
-      // an error occurres if geometry is not polygon, so ignore
+      // an error occurs if geometry is not polygon, so ignore
       console.log('hello assignToNearestDroppable 6', { error })
     }
     const isInside = pointsWithin?.features?.length > 0
@@ -100,9 +97,9 @@ export const assignToNearestDroppable = async ({
     idsOfPlacesContainingLatLng.push(place.place_id)
   }
 
-  // 3.3 if not, find the nearest feature
-  // 3.3.1: find nearest center of mass? https://turfjs.org/docs/#centerOfMass, https://turfjs.org/docs/#nearestPoint
-  // 3.3.2: better but more work:
+  // 2.3 if not, find the nearest feature
+  // 2.3.1: find nearest center of mass? https://turfjs.org/docs/#centerOfMass, https://turfjs.org/docs/#nearestPoint
+  // 2.3.2: better but more work:
   //        create convex outline of all places (https://turfjs.org/docs/#convex),
   //        convert that to a line (https://turfjs.org/docs/#polygonToLine),
   //        for every occurrence find nearest outline (https://turfjs.org/docs/#pointToLineDistance)
@@ -183,7 +180,7 @@ export const assignToNearestDroppable = async ({
   // TODO: really? Maybe better to always confirm?
   if (
     placeIdsWithMinDistancesSortedByDistance.length === 1 &&
-    !appState.confirm_assigning_to_single_target
+    !confirmAssigningToSingleTarget
   ) {
     // console.log(
     //   'hello assignToNearestDroppable 15, assigning as single place found inside min distance',
@@ -205,8 +202,5 @@ export const assignToNearestDroppable = async ({
       label: places.find((place) => place.place_id === p.place_id)?.label,
     })),
   }
-  db.app_states.update({
-    where: { app_state_id: appState?.app_state_id },
-    data: { places_to_assign_occurrence_to: placesToAssignOccurrenceTo },
-  })
+  setPlacesToAssignOccurrenceTo(placesToAssignOccurrenceTo)
 }

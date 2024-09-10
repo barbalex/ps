@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo } from 'react'
+import { memo, useCallback } from 'react'
 import {
   Button,
   Toolbar,
@@ -8,12 +8,12 @@ import { FaCog } from 'react-icons/fa'
 import { TbArrowsMaximize, TbArrowsMinimize } from 'react-icons/tb'
 import { MdLogout, MdLogin } from 'react-icons/md'
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom'
-import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
+import { useAtom } from 'jotai'
 
 import { controls } from '../../../styles.ts'
 import { css } from '../../../css.ts'
-import { useElectric } from '../../../ElectricProvider.tsx'
+import { mapMaximizedAtom, tabsAtom } from '../../../store.ts'
 
 const buildButtonStyle = ({ prevIsActive, nextIsActive, selfIsActive }) => {
   if (!selfIsActive) {
@@ -49,6 +49,7 @@ const buildButtonStyle = ({ prevIsActive, nextIsActive, selfIsActive }) => {
 // TODO:
 // use overflow menu for tabs and app-states
 export const Menu = memo(() => {
+  const [tabs, setTabs] = useAtom(tabsAtom)
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
@@ -59,33 +60,21 @@ export const Menu = memo(() => {
 
   const isAppStates = pathname.includes('app-states')
 
-  const { db } = useElectric()!
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({
-      where: { user_email: authUser?.email },
-    }),
-  )
-  const mapIsMaximized = appState?.map_maximized ?? false
-  // To debug not having any data: query all users
-  const tabs = useMemo(() => appState?.tabs ?? [], [appState?.tabs])
+  const [mapIsMaximized, setMapIsMaximized] = useAtom(mapMaximizedAtom)
   const onChangeTabs = useCallback(
-    (e, { checkedItems }) => {
-      db.app_states.update({
-        where: { app_state_id: appState?.app_state_id },
-        data: { tabs: checkedItems },
-      })
-    },
-    [appState, db.app_states],
+    (e, { checkedItems }) => setTabs(checkedItems),
+    [setTabs],
   )
 
   const onClickOptions = useCallback(() => {
     if (isAppStates) return navigate(-1)
 
+    // TODO: change route to app-state
     navigate({
-      pathname: `/data/app-states/${appState?.app_state_id}`,
+      pathname: `/data/app-states`,
       search: searchParams.toString(),
     })
-  }, [appState?.app_state_id, isAppStates, navigate, searchParams])
+  }, [isAppStates, navigate, searchParams])
 
   const onClickLogout = useCallback(() => logout(), [logout])
   const onClickEnter = useCallback(() => navigate('/data/projects'), [navigate])
@@ -97,19 +86,13 @@ export const Menu = memo(() => {
 
       // if map is not included in app_sate.tabs, add it
       if (!tabs.includes('map')) {
-        db.app_states.update({
-          where: { app_state_id: appState?.app_state_id },
-          data: { tabs: [...tabs, 'map'] },
-        })
+        setTabs([...tabs, 'map'])
       }
 
       // toggle map maximized
-      db.app_states.update({
-        where: { app_state_id: appState?.app_state_id },
-        data: { map_maximized: !mapIsMaximized },
-      })
+      setMapIsMaximized(!mapIsMaximized)
     },
-    [appState?.app_state_id, db.app_states, mapIsMaximized, tabs],
+    [mapIsMaximized, setMapIsMaximized, setTabs, tabs],
   )
 
   const treeIsActive = tabs.includes('tree')

@@ -140,10 +140,10 @@ export const createAccount = () => ({
 })
 
 // users creates the db row to ensure creating the app_state too
-export const createUser = async ({ db }) => {
+export const createUser = async ({ db, setUserId }) => {
   const data = { user_id: uuidv7() }
   await db.users.create({ data })
-  await db.app_states.create({ data: { user_id: data.user_id } })
+  setUserId(data.user_id)
 
   return data
 }
@@ -454,17 +454,6 @@ export const createPlaceReportValue = () => ({
 export const createMessage = () => ({
   message_id: uuidv7(),
   date: new Date(),
-})
-
-// TODO: sync (most of) these with search params
-// this is not used. Instead: users_app_state_trigger creates app_state on user creation
-export const createAppState = ({ user_id }) => ({
-  app_state_id: uuidv7(),
-  user_id,
-  designing: false,
-  breadcrumbs_overflowing: true,
-  navs_overflowing: true,
-  tabs: ['tree', 'data'],
 })
 
 export const createWmsLayer = ({ project_id }) => ({

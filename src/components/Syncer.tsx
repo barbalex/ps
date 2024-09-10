@@ -1,9 +1,12 @@
 import { useEffect, memo } from 'react'
 import { useCorbado } from '@corbado/react'
+import { useSetAtom } from 'jotai'
 
 import { useElectric } from '../ElectricProvider.tsx'
+import { syncingAtom } from '../store.ts'
 
 export const Syncer = memo(() => {
+  const setSyncing = useSetAtom(syncingAtom)
   const { db } = useElectric()!
   const { user: authUser } = useCorbado()
   // console.log('hello Syncer', { db, authUser })
@@ -13,16 +16,8 @@ export const Syncer = memo(() => {
     const syncItems = async () => {
       if (!authUser?.email) return
 
-      // get app_state_id for user
-      const appState = await db.app_states.findFirst({
-        where: { user_email: authUser?.email },
-      })
-
       // could it be that this does not work?
-      await db.app_states.update({
-        where: { app_state_id: appState?.app_state_id },
-        data: { syncing: true },
-      })
+      setSyncing(true)
       // Resolves when the shape subscription has been established.
       const userShape = await db.users.sync({
         // do not pass undefined to where clause in shape
@@ -249,10 +244,7 @@ export const Syncer = memo(() => {
       await messagesShape.synced
       await fieldTypesShape.synced
       await widgetTypesShape.synced
-      await db.app_states.update({
-        where: { app_state_id: appState?.app_state_id },
-        data: { syncing: false },
-      })
+      setSyncing(false)
       // TODO: crs not synced
       // console.log('hello Syncer, data synced')
     }

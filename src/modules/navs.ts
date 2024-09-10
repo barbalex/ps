@@ -17,12 +17,8 @@ export const buildNavs = async ({
   // chart_subject_id,
   db,
   level = 1,
-  authUser, // TODO: pass this is
+  designing,
 }) => {
-  const appState = await db?.app_states?.findFirst({
-    where: { user_email: authUser?.email },
-  })
-  const designing = appState?.designing ?? false
   // if table is places, get place_level for this level
   let placeLevel = {}
   if (table === 'places') {
