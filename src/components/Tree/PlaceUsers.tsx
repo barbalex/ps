@@ -3,6 +3,7 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
+import { useAtom } from 'jotai'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Node } from './Node.tsx'
@@ -21,6 +22,7 @@ interface Props {
 
 export const PlaceUsersNode = memo(
   ({ project_id, subproject_id, place_id, place, level = 7 }: Props) => {
+    const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
@@ -36,10 +38,6 @@ export const PlaceUsersNode = memo(
 
     const { results: appState } = useLiveQuery(
       db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-    )
-    const openNodes = useMemo(
-      () => appState?.tree_open_nodes ?? [],
-      [appState?.tree_open_nodes],
     )
 
     const placeUsersNode = useMemo(

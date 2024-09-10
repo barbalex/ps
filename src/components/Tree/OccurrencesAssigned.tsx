@@ -11,6 +11,7 @@ import { Places as Place } from '../../../generated/client/index.ts'
 import { OccurrenceAssignedNode } from './OccurrenceAssigned.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import { treeOpenNodesAtom } from '../../store.ts'
 
 interface Props {
   project_id: string
@@ -22,6 +23,7 @@ interface Props {
 
 export const OccurrencesAssignedNode = memo(
   ({ project_id, subproject_id, place_id, place, level = 7 }: Props) => {
+    const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
@@ -39,10 +41,6 @@ export const OccurrencesAssignedNode = memo(
 
     const { results: appState } = useLiveQuery(
       db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-    )
-    const openNodes = useMemo(
-      () => appState?.tree_open_nodes ?? [],
-      [appState?.tree_open_nodes],
     )
 
     const occurrencesNode = useMemo(

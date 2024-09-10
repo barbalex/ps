@@ -3,12 +3,14 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useCorbado } from '@corbado/react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
+import { useAtom } from 'jotai'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Node } from './Node.tsx'
 import { PlaceReportValueNode } from './PlaceReportValue.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import { treeOpenNodesAtom } from '../../store.ts'
 
 interface Props {
   project_id: string
@@ -28,6 +30,7 @@ export const PlaceReportValuesNode = memo(
     place_report_id,
     level = 9,
   }: Props) => {
+    const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
@@ -43,10 +46,6 @@ export const PlaceReportValuesNode = memo(
 
     const { results: appState } = useLiveQuery(
       db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-    )
-    const openNodes = useMemo(
-      () => appState?.tree_open_nodes ?? [],
-      [appState?.tree_open_nodes],
     )
 
     // TODO: get name by place_level

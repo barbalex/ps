@@ -10,6 +10,7 @@ import { Node } from './Node.tsx'
 import { ListNode } from './List.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import { treeOpenNodesAtom } from '../../store.ts'
 
 interface Props {
   project_id: string
@@ -17,19 +18,15 @@ interface Props {
 }
 
 export const ListsNode = memo(({ project_id, level = 3 }: Props) => {
+  const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
-
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
-  const openNodes = useMemo(
-    () => appState?.tree_open_nodes ?? [],
-    [appState?.tree_open_nodes],
   )
 
   const filter = useMemo(
@@ -124,7 +121,11 @@ export const ListsNode = memo(({ project_id, level = 3 }: Props) => {
       />
       {isOpen &&
         lists.map((list) => (
-          <ListNode key={list.list_id} project_id={project_id} list={list} />
+          <ListNode
+            key={list.list_id}
+            project_id={project_id}
+            list={list}
+          />
         ))}
     </>
   )
