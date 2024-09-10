@@ -1164,9 +1164,6 @@ CREATE TYPE droppable_layer_enum AS enum(
 CREATE TABLE app_states(
   app_state_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  editing_place_geometry uuid DEFAULT NULL,
-  editing_check_geometry uuid DEFAULT NULL,
-  editing_action_geometry uuid DEFAULT NULL,
   draggable_layers jsonb DEFAULT NULL,
   droppable_layer droppable_layer_enum DEFAULT NULL,
   confirm_assigning_to_single_target boolean DEFAULT NULL, -- true
@@ -1230,13 +1227,6 @@ CREATE TABLE app_states(
 CREATE INDEX ON app_states USING btree(account_id);
 
 COMMENT ON TABLE app_states IS 'User interface settings (state saved in db)';
-
-
-COMMENT ON COLUMN app_states.editing_place_geometry IS 'The id of the place whose geometry is currently being edited';
-
-COMMENT ON COLUMN app_states.editing_check_geometry IS 'The id of the check whose geometry is currently being edited';
-
-COMMENT ON COLUMN app_states.editing_action_geometry IS 'The id of the action whose geometry is currently being edited';
 
 COMMENT ON COLUMN app_states.draggable_layers IS 'The layers that are currently draggable. Any of: occurrences-to-assess, occurrences-not-to-assign, occurrences-assigned-1, occurrences-assigned-2';
 
