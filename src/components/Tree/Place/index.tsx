@@ -1,7 +1,5 @@
 import { useCallback, memo, useMemo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
-import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 
@@ -9,7 +7,6 @@ import { Node } from '../Node.tsx'
 import { Places as Place } from '../../../generated/client/index.ts'
 import { PlaceChildren } from './Children.tsx'
 import { removeChildNodes } from '../../../modules/tree/removeChildNodes.ts'
-import { useElectric } from '../../../ElectricProvider.tsx'
 import { addOpenNodes } from '../../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom } from '../../../store.ts'
 
@@ -26,12 +23,6 @@ export const PlaceNode = memo(
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
-    const { user: authUser } = useCorbado()
-
-    const { db } = useElectric()!
-    const { results: appState } = useLiveQuery(
-      db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-    )
 
     const level = place_id ? 8 : 6
     const place_id1 = place_id ?? place.place_id
@@ -64,11 +55,7 @@ export const PlaceNode = memo(
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
-        removeChildNodes({
-          node: parentArray,
-          db,
-          appStateId: appState?.app_state_id,
-        })
+        removeChildNodes({ node: parentArray })
         // only navigate if urlPath includes ownArray
         if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
           navigate({ pathname: parentUrl, search: searchParams.toString() })
@@ -76,17 +63,11 @@ export const PlaceNode = memo(
         return
       }
       // add to openNodes without navigating
-      addOpenNodes({
-        nodes: [ownArray],
-        db,
-        appStateId: appState?.app_state_id,
-      })
+      addOpenNodes({ nodes: [ownArray] })
     }, [
       isOpen,
       ownArray,
       isInActiveNodeArray,
-      db,
-      appState?.app_state_id,
       parentArray,
       urlPath.length,
       navigate,

@@ -1,7 +1,5 @@
 import { useCallback, memo, useMemo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
-import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 
@@ -21,7 +19,6 @@ import { PlaceLevelsNode } from '../PlaceLevels.tsx'
 import { FieldsNode } from '../Fields.tsx'
 import { FilesNode } from '../Files.tsx'
 import { Editing } from './Editing.tsx'
-import { useElectric } from '../../../ElectricProvider.tsx'
 import { removeChildNodes } from '../../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../../modules/tree/addOpenNodes.ts'
 import { designingAtom, treeOpenNodesAtom } from '../../../store.ts'
@@ -37,12 +34,6 @@ export const ProjectNode = memo(({ project, level = 2 }: Props) => {
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { user: authUser } = useCorbado()
-
-  const { db } = useElectric()!
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
 
   const showFiles = project.files_active_projects ?? false
 
@@ -62,11 +53,7 @@ export const ProjectNode = memo(({ project, level = 2 }: Props) => {
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
-      removeChildNodes({
-        node: parentArray,
-        db,
-        appStateId: appState?.app_state_id,
-      })
+      removeChildNodes({ node: parentArray })
       // TODO: only navigate if urlPath includes ownArray
       if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
         navigate({
@@ -77,14 +64,8 @@ export const ProjectNode = memo(({ project, level = 2 }: Props) => {
       return
     }
     // add to openNodes without navigating
-    addOpenNodes({
-      nodes: [ownArray],
-      db,
-      appStateId: appState?.app_state_id,
-    })
+    addOpenNodes({ nodes: [ownArray] })
   }, [
-    appState?.app_state_id,
-    db,
     isInActiveNodeArray,
     isOpen,
     navigate,
