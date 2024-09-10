@@ -84,11 +84,7 @@ export const SubprojectsNode = memo(({ project_id, level = 3 }: Props) => {
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
-      removeChildNodes({
-        node: parentArray,
-        db,
-        appStateId: appState?.app_state_id,
-      })
+      removeChildNodes({ node: parentArray })
       // only navigate if urlPath includes ownArray
       if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
         navigate({
@@ -99,14 +95,8 @@ export const SubprojectsNode = memo(({ project_id, level = 3 }: Props) => {
       return
     }
     // add to openNodes without navigating
-    addOpenNodes({
-      nodes: [ownArray],
-      db,
-      appStateId: appState?.app_state_id,
-    })
+    addOpenNodes({ nodes: [ownArray] })
   }, [
-    appState?.app_state_id,
-    db,
     isInActiveNodeArray,
     isOpen,
     navigate,
