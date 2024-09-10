@@ -1164,8 +1164,6 @@ CREATE TYPE droppable_layer_enum AS enum(
 CREATE TABLE app_states(
   app_state_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  wms_layer_sorter text DEFAULT NULL,
-  vector_layer_sorter text DEFAULT NULL,
   editing_place_geometry uuid DEFAULT NULL,
   editing_check_geometry uuid DEFAULT NULL,
   editing_action_geometry uuid DEFAULT NULL,
