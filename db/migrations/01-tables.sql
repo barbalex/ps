@@ -1165,7 +1165,6 @@ CREATE TABLE app_states(
   app_state_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   map_layer_sorting jsonb DEFAULT NULL,
-  map_show_center boolean DEFAULT NULL, -- FALSE
   wms_layer_sorter text DEFAULT NULL,
   vector_layer_sorter text DEFAULT NULL,
   editing_place_geometry uuid DEFAULT NULL,

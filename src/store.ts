@@ -44,3 +44,5 @@ export const mapLocateAtom = atomWithStorage('mapLocateAtom', false)
 // the info drawer filters all the objects with correct lat, lng and zoom and shows them
 // Information presented, when user clicks on a map. Array of: {label, properties} where properties is an array of [key, value]
 export const mapInfoAtom = atomWithStorage('mapInfoAtom', null)
+
+export const mapShowCenterAtom = atomWithStorage('mapShowCenterAtom', false)
