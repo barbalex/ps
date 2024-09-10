@@ -4,6 +4,7 @@ import { useCorbado } from '@corbado/react'
 import { useParams } from 'react-router-dom'
 import { useMapEvent, useMap } from 'react-leaflet/hooks'
 import proj4 from 'proj4'
+import { useSetAtom } from 'jotai'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { layersDataFromRequestData } from './layersDataFromRequestData.ts'
@@ -11,6 +12,7 @@ import { fetchData } from './fetchData.ts'
 import { sqlFromFilter } from '../../../modules/sqlFromFilter.ts'
 
 export const ClickListener = memo(() => {
+  const setMapInfo = useSetAtom(mapInfoAtom)
   const { project_id } = useParams()
   const { user: authUser } = useCorbado()
   const map = useMap()
@@ -164,18 +166,15 @@ export const ClickListener = memo(() => {
         }
       }
 
-      db.app_states.update({
-        where: { app_state_id: appState?.app_state_id },
-        data: { map_info: mapInfo },
-      })
+      setMapInfo(mapInfo)
     },
     [
-      appState?.app_state_id,
+      project_id,
+      map,
       appState?.filter_wms_layers,
       appState?.filter_vector_layers,
       db,
-      map,
-      project_id,
+      setMapInfo,
     ],
   )
 

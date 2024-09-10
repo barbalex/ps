@@ -22,7 +22,7 @@ import { ClickListener } from './ClickListener/index.tsx'
 import { ErrorBoundary } from '../shared/ErrorBoundary.tsx'
 import { InfoMarker } from './RightMenuDrawer/Marker.tsx'
 import { CenterMarker } from './CenterMarker.tsx'
-import { mapLocateAtom } from '../../store.ts'
+import { mapLocateAtom, mapInfoAtom } from '../../store.ts'
 
 const outerContainerStyle = {
   width: '100%',
@@ -38,13 +38,13 @@ const mapContainerStyle = {
 
 export const Map = memo(() => {
   const [mapIsLocating] = useAtom(mapLocateAtom)
+  const [mapInfo] = useAtom(mapInfoAtom)
   const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
   const { results: appState } = useLiveQuery(
     db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
   )
-  const mapInfo = appState?.map_info
   const showMapCenter = appState?.map_show_center ?? false
 
   const mapRef = useRef()

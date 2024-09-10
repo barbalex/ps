@@ -1164,7 +1164,6 @@ CREATE TYPE droppable_layer_enum AS enum(
 CREATE TABLE app_states(
   app_state_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  map_info jsonb DEFAULT NULL,
   map_layer_sorting jsonb DEFAULT NULL,
   map_show_center boolean DEFAULT NULL, -- FALSE
   wms_layer_sorter text DEFAULT NULL,
@@ -1237,18 +1236,6 @@ CREATE INDEX ON app_states USING btree(account_id);
 COMMENT ON TABLE app_states IS 'User interface settings (state saved in db)';
 
 
--- TODO:
--- new structure for map_info
--- Goal: enable setting from onEachFeature for wfs layers and maybe own layers
--- SINGLE object with keys:
--- - lat
--- - lng
--- - zoom
--- - layers. This is an array of objects with keys: label, properties
--- With this structure, wms and wfs can set their layer data into such an object, then add the object to the existing in app_states.map_info
--- app_states.map_info is reset when user closes info window, so memory is not wasted
--- the info drawer filters all the objects with correct lat, lng and zoom and shows them
-COMMENT ON COLUMN app_states.map_info IS 'Information presented, when user clicks on a map. Array of: {label, properties} where properties is an array of [key, value]';
 
 COMMENT ON COLUMN app_states.map_layer_sorting IS 'The order of layers in the map. An array of layer_presentation_ids';
 
