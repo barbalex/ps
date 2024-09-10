@@ -10,6 +10,7 @@ import { useElectric } from '../../../ElectricProvider.tsx'
 import { layersDataFromRequestData } from './layersDataFromRequestData.ts'
 import { fetchData } from './fetchData.ts'
 import { sqlFromFilter } from '../../../modules/sqlFromFilter.ts'
+import { mapInfoAtom } from '../../../store.ts'
 
 export const ClickListener = memo(() => {
   const setMapInfo = useSetAtom(mapInfoAtom)
