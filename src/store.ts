@@ -1,5 +1,7 @@
-// import { atom } from 'jotai'
+import { createStore } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
+
+export const store = createStore()
 
 export const userIdAtom = atomWithStorage('userIdAtom', null)
 export const userEmailAtom = atomWithStorage('userEmailAtom', null)

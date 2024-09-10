@@ -1,7 +1,6 @@
 import { useCallback, memo, useMemo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 
@@ -40,7 +39,6 @@ export const ActionNode = memo(
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
-    const { user: authUser } = useCorbado()
 
     // need project to know whether to show files
     const { db } = useElectric()!
@@ -48,10 +46,6 @@ export const ActionNode = memo(
       db.projects.liveUnique({ where: { project_id } }),
     )
     const showFiles = project?.files_active_actions ?? false
-
-    const { results: appState } = useLiveQuery(
-      db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-    )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const parentArray = useMemo(
@@ -82,11 +76,7 @@ export const ActionNode = memo(
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
-        removeChildNodes({
-          node: parentArray,
-          db,
-          appStateId: appState?.app_state_id,
-        })
+        removeChildNodes({ node: parentArray })
         // only navigate if urlPath includes ownArray
         if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
           navigate({
@@ -97,16 +87,10 @@ export const ActionNode = memo(
         return
       }
       // add to openNodes without navigating
-      addOpenNodes({
-        nodes: [ownArray],
-        db,
-        appStateId: appState?.app_state_id,
-      })
+      addOpenNodes({ nodes: [ownArray] })
     }, [
       isOpen,
       ownArray,
-      db,
-      appState?.app_state_id,
       parentArray,
       isInActiveNodeArray,
       urlPath.length,

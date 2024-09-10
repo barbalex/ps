@@ -1,24 +1,19 @@
 import isEqual from 'lodash/isEqual'
 
-import { Electric } from '../../generated/client/index.ts'
 import { isStartOf } from './isStartOf.ts'
+import { treeOpenNodesAtom, store } from '../../store.ts'
 
 interface Props {
   nodes: string[]
-  db: Electric
-  appStateId: string
+  isRoot: boolean
 }
 
 export const removeChildNodes = async ({
   node = [],
-  db,
-  appStateId,
   isRoot = false,
 }: Props): void => {
-  const appState = await db.app_states.findFirst({
-    where: { app_state_id: appStateId },
-  })
-  const openNodes = appState?.tree_open_nodes || []
+  const openNodes = store.get(treeOpenNodesAtom)
+  // const openNodes = appState?.tree_open_nodes || []
 
   // remove all nodes that are children of the node
   const newNodes = openNodes.filter((openNode) => {
@@ -32,8 +27,5 @@ export const removeChildNodes = async ({
     return !isEqual(openNode.slice(0, node.length), node)
   })
 
-  return await db.app_states.update({
-    where: { app_state_id: appStateId },
-    data: { tree_open_nodes: newNodes },
-  })
+  store.set(treeOpenNodesAtom, newNodes)
 }
