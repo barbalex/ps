@@ -13,9 +13,15 @@ import {
 // maybe generalize this component for all geometry editing
 // and move it to the shared folder
 export const EditingGeometry = memo(({ row, table }) => {
-  const setEditingPlaceGeometry = useSetAtom(editingPlaceGeometryAtom)
-  const setEditingCheckGeometry = useSetAtom(editingCheckGeometryAtom)
-  const setEditingActionGeometry = useSetAtom(editingActionGeometryAtom)
+  const [editingPlaceGeometry, setEditingPlaceGeometry] = useAtom(
+    editingPlaceGeometryAtom,
+  )
+  const [editingCheckGeometry, setEditingCheckGeometry] = useAtom(
+    editingCheckGeometryAtom,
+  )
+  const [editingActionGeometry, setEditingActionGeometry] = useAtom(
+    editingActionGeometryAtom,
+  )
   const [tabs, setTabs] = useAtom(tabsAtom)
 
   const onChange = useCallback(
@@ -55,10 +61,18 @@ export const EditingGeometry = memo(({ row, table }) => {
   const value = row.geometry ? JSON.stringify(row.geometry, null, 3) : ''
   const lineCount = value ? value.split(/\r\n|\r|\n/).length : 1
 
+  const switchFieldValue =
+    table === 'places'
+      ? row.place_id === editingPlaceGeometry
+      : table === 'checks'
+      ? row.check_id === editingCheckGeometry
+      : row.action_id === editingActionGeometry
+
   return (
     <Field label="Geometry">
       <SwitchField
         label="Edit"
+        value={switchFieldValue}
         onChange={onChange}
       />
       <Textarea
