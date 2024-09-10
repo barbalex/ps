@@ -1164,7 +1164,6 @@ CREATE TYPE droppable_layer_enum AS enum(
 CREATE TABLE app_states(
   app_state_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  map_layer_sorting jsonb DEFAULT NULL,
   wms_layer_sorter text DEFAULT NULL,
   vector_layer_sorter text DEFAULT NULL,
   editing_place_geometry uuid DEFAULT NULL,
@@ -1234,9 +1233,6 @@ CREATE INDEX ON app_states USING btree(account_id);
 
 COMMENT ON TABLE app_states IS 'User interface settings (state saved in db)';
 
-
-
-COMMENT ON COLUMN app_states.map_layer_sorting IS 'The order of layers in the map. An array of layer_presentation_ids';
 
 COMMENT ON COLUMN app_states.editing_place_geometry IS 'The id of the place whose geometry is currently being edited';
 

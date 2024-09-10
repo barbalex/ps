@@ -1,10 +1,11 @@
 import { memo, useMemo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
 import { useParams } from 'react-router-dom'
+import { useAtom } from 'jotai'
 
 import { useElectric } from '../../../../ElectricProvider.tsx'
 import { Legend } from './Legend.tsx'
+import { mapLayerSortingAtom } from '../../../../store.ts'
 
 const layerListStyle = {}
 const noLayersStyle = {
@@ -15,23 +16,12 @@ const noLayersStyle = {
 }
 
 export const Legends = memo(() => {
+  const [mapLayerSorting] = useAtom(mapLayerSortingAtom)
   const { project_id } = useParams()
 
   const { db } = useElectric()!
-  const { user: authUser } = useCorbado()
-
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({
-      where: { user_email: authUser?.email },
-    }),
-  )
-  const layerSorting = useMemo(
-    () => appState?.map_layer_sorting ?? [],
-    [appState],
-  )
 
   const where = project_id ? { project_id } : {}
-
   const { results: wmsLayers = [] } = useLiveQuery(
     db.wms_layers.liveMany({
       where,
@@ -47,25 +37,31 @@ export const Legends = memo(() => {
     ),
   )
 
-  // sort by app_states.map_layer_sorting
+  // sort by mapLayerSorting
   const activeLayers = useMemo(
     () =>
       [...activeWmsLayers].sort((a, b) => {
-        const aIndex = layerSorting.findIndex(
+        const aIndex = mapLayerSorting.findIndex(
           (ls) => ls === a.layer_presentations?.[0]?.layer_presentation_id,
         )
-        const bIndex = layerSorting.findIndex(
+        const bIndex = mapLayerSorting.findIndex(
           (ls) => ls === b.layer_presentations?.[0]?.layer_presentation_id,
         )
         return aIndex - bIndex
       }),
-    [activeWmsLayers, layerSorting],
+    [activeWmsLayers, mapLayerSorting],
   )
 
   return activeLayers.length ? (
     activeLayers?.map((l, index) => (
-      <div key={l.wms_layer_id} style={layerListStyle}>
-        <Legend layer={l} isLast={index === activeLayers.length - 1} />
+      <div
+        key={l.wms_layer_id}
+        style={layerListStyle}
+      >
+        <Legend
+          layer={l}
+          isLast={index === activeLayers.length - 1}
+        />
       </div>
     ))
   ) : (

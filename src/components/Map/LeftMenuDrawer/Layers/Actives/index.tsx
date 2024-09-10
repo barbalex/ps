@@ -20,12 +20,15 @@ import { reorder } from '@atlaskit/pragmatic-drag-and-drop/reorder'
 import * as liveRegion from '@atlaskit/pragmatic-drag-and-drop-live-region'
 import { triggerPostMoveFlash } from '@atlaskit/pragmatic-drag-and-drop-flourish/trigger-post-move-flash'
 import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index'
+import { useAtom } from 'jotai'
 
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { ActiveLayer } from './Active.tsx'
 import { isItemData } from './shared.ts'
 import { IsNarrowContext } from '../../IsNarrowContext.ts'
+import { mapLayerSortingAtom } from '../../../../../store.ts'
+import { set } from 'zod'
 
 type ItemEntry = { itemId: string; element: HTMLElement }
 
@@ -92,25 +95,11 @@ const noLayersStyle = {
 }
 
 export const ActiveLayers = memo(() => {
+  const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
   const { project_id } = useParams()
-  const { user: authUser } = useCorbado()
   const isNarrow = useContext(IsNarrowContext)
 
   const { db } = useElectric()!
-
-  // get app_state
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({
-      where: { user_email: authUser?.email },
-      // TODO: adding this select leads to weird errors when adding layers:
-      // Argument `where` for query on app_states type requires at least one argument
-      // select: { map_layer_sorting: true },
-    }),
-  )
-  const layerSorting = useMemo(
-    () => appState?.map_layer_sorting ?? [],
-    [appState],
-  )
 
   const where = project_id ? { project_id } : {}
 
@@ -138,37 +127,36 @@ export const ActiveLayers = memo(() => {
     ),
   )
 
-  // sort by app_states.map_layer_sorting
+  // sort by mapLayerSorting
   const activeLayers = useMemo(
     () =>
       [...activeWmsLayers, ...activeVectorLayers].sort((a, b) => {
-        const aIndex = layerSorting.findIndex(
+        const aIndex = mapLayerSorting.findIndex(
           (ls) => ls === a.layer_presentations?.[0]?.layer_presentation_id,
         )
-        const bIndex = layerSorting.findIndex(
+        const bIndex = mapLayerSorting.findIndex(
           (ls) => ls === b.layer_presentations?.[0]?.layer_presentation_id,
         )
         return aIndex - bIndex
       }),
-    [activeWmsLayers, activeVectorLayers, layerSorting],
+    [activeWmsLayers, activeVectorLayers, mapLayerSorting],
   )
 
   const layerPresentationIds = activeLayers.map(
     (l) => l.layer_presentations?.[0]?.layer_presentation_id,
   )
 
-  // when activeLayers changes, update app_state.map_layer_sorting:
-  // add missing layer's layer_presentation_id's to app_state.map_layer_sorting
+  // when activeLayers changes, update mapLayerSorting:
+  // add missing layer's layer_presentation_id's to mapLayerSorting
   // remove layer_presentation_id's that are not in activeLayers
   useEffect(() => {
     if (!layerPresentationIds.length) return
-    if (!appState) return
 
     const run = async () => {
       const missingLayerPresentations = layerPresentationIds.filter(
-        (lpId) => !layerSorting.includes(lpId),
+        (lpId) => !mapLayerSorting.includes(lpId),
       )
-      const removeLayerPresentations = layerSorting.filter(
+      const removeLayerPresentations = mapLayerSorting.filter(
         (lpId) => !layerPresentationIds.includes(lpId),
       )
       if (
@@ -180,18 +168,15 @@ export const ActiveLayers = memo(() => {
       }
 
       const newLayerSorting = [
-        ...layerSorting.filter((ls) => !removeLayerPresentations.includes(ls)),
+        ...mapLayerSorting.filter(
+          (ls) => !removeLayerPresentations.includes(ls),
+        ),
         ...missingLayerPresentations,
       ]
-      await db.app_states.update({
-        where: { app_state_id: appState?.app_state_id },
-        data: {
-          map_layer_sorting: newLayerSorting,
-        },
-      })
+      setMapLayerSorting(newLayerSorting)
     }
     run()
-  }, [appState, db.app_states, layerPresentationIds, layerSorting])
+  }, [db.app_states, layerPresentationIds, mapLayerSorting, setMapLayerSorting])
 
   const [registry] = useState(getItemRegistry)
   const [lastCardMoved, setLastCardMoved] = useState<LastCardMoved>(null)
@@ -205,11 +190,6 @@ export const ActiveLayers = memo(() => {
       indexOfTarget,
       closestEdgeOfTarget,
     }: ReorderItemProps) => {
-      if (!appState) {
-        return console.warn(
-          'Actives.reorderItem returning because appState is null',
-        )
-      }
       const finishIndex = getReorderDestinationIndex({
         startIndex,
         closestEdgeOfTarget,
@@ -229,19 +209,21 @@ export const ActiveLayers = memo(() => {
         startIndex,
         finishIndex,
       })
-      await db.app_states.update({
-        where: { app_state_id: appState?.app_state_id },
-        data: { map_layer_sorting: newLayerSorting },
-      })
+      setMapLayerSorting(newLayerSorting)
 
       setLastCardMoved({
         item,
         previousIndex: startIndex,
         currentIndex: finishIndex,
-        numberOfItems: layerSorting.length,
+        numberOfItems: mapLayerSorting.length,
       })
     },
-    [activeLayers, appState, db.app_states, layerPresentationIds, layerSorting],
+    [
+      activeLayers,
+      layerPresentationIds,
+      mapLayerSorting.length,
+      setMapLayerSorting,
+    ],
   )
 
   useEffect(() => {
@@ -332,7 +314,10 @@ export const ActiveLayers = memo(() => {
               ...(isNarrow ? {} : { width: 'calc(100% - 6px)' }),
             }}
           >
-            <Accordion multiple collapsible>
+            <Accordion
+              multiple
+              collapsible
+            >
               {activeLayers.length ? (
                 activeLayers?.map((l, index) => (
                   <ActiveLayer

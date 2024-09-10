@@ -46,3 +46,6 @@ export const mapLocateAtom = atomWithStorage('mapLocateAtom', false)
 export const mapInfoAtom = atomWithStorage('mapInfoAtom', null)
 
 export const mapShowCenterAtom = atomWithStorage('mapShowCenterAtom', false)
+
+// The order of layers in the map. An array of layer_presentation_ids
+export const mapLayerSortingAtom = atomWithStorage('mapLayerSortingAtom', [])
