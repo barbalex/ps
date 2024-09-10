@@ -77,8 +77,6 @@ export const FieldsNode = memo(({ project_id }: Props) => {
     if (isOpen) {
       removeChildNodes({
         node: ownArray,
-        db,
-        appStateId: appState?.app_state_id,
         isRoot: true,
       })
       // only navigate if urlPath includes ownArray
@@ -91,15 +89,8 @@ export const FieldsNode = memo(({ project_id }: Props) => {
       return
     }
     // add to openNodes without navigating
-    addOpenNodes({
-      nodes: [ownArray],
-      db,
-      appStateId: appState?.app_state_id,
-      isRoot: true,
-    })
+    addOpenNodes({ nodes: [ownArray] })
   }, [
-    appState?.app_state_id,
-    db,
     isInActiveNodeArray,
     isOpen,
     navigate,
