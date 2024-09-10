@@ -8,7 +8,7 @@ import { useParams } from 'react-router-dom'
 import { bbox } from '@turf/bbox'
 import { buffer } from '@turf/buffer'
 import { featureCollection } from '@turf/helpers'
-import { useAtom } from 'jotai'
+import { useSetAtom } from 'jotai'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import {
@@ -29,7 +29,7 @@ interface Props {
 type GeometryType = Place[] | Action[] | Check[] | Occurrence[]
 
 export const LayerMenu = memo(({ table, level, placeNamePlural }: Props) => {
-  const [, setMapBounds] = useAtom(mapBoundsAtom)
+  const setMapBounds = useSetAtom(mapBoundsAtom)
   const { project_id, subproject_id } = useParams()
 
   const { db } = useElectric()!

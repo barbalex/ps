@@ -1,15 +1,14 @@
 import { useCallback, useRef, memo, useState, useEffect, useMemo } from 'react'
 import { useResizeDetector } from 'react-resize-detector'
 import { InlineDrawer, Button } from '@fluentui/react-components'
-import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
 import { BiSolidLeftArrow, BiSolidRightArrow } from 'react-icons/bi'
 import { useAnimate } from 'framer-motion'
+import { useAtom } from 'jotai'
 
 import { Content } from './Content.tsx'
 import { Resizer } from './Resizer.tsx'
-import { useElectric } from '../../../ElectricProvider.tsx'
 import { IsNarrowContext } from './IsNarrowContext.ts'
+import { mapHideUiAtom } from '../../../store.ts'
 
 import './index.css'
 
@@ -28,12 +27,7 @@ const innerContainerStyle = {
 }
 
 export const LeftMenuDrawer = memo(({ containerRef }) => {
-  const { user: authUser } = useCorbado()
-  const { db } = useElectric()!
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
-  const mapHideUi = appState?.map_hide_ui
+  const [mapHideUi] = useAtom(mapHideUiAtom)
 
   const { width: containerWidth } = useResizeDetector({
     targetRef: containerRef,
@@ -161,7 +155,10 @@ export const LeftMenuDrawer = memo(({ containerRef }) => {
         }}
         ref={widthRef}
       >
-        <div style={innerContainerStyle} ref={scope}>
+        <div
+          style={innerContainerStyle}
+          ref={scope}
+        >
           {!mapHideUi && (
             <Button
               onClick={toggleOpen}

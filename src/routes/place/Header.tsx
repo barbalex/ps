@@ -5,7 +5,7 @@ import { TbZoomScan } from 'react-icons/tb'
 import { Button } from '@fluentui/react-button'
 import { bbox } from '@turf/bbox'
 import { buffer } from '@turf/buffer'
-import { useAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
 
 import {
   createPlace,
@@ -24,7 +24,7 @@ interface Props {
 }
 export const Header = memo(({ autoFocusRef }: Props) => {
   const [tabs, setTabs] = useAtom(tabsAtom)
-  const [, setMapBounds] = useAtom(mapBoundsAtom)
+  const setMapBounds = useSetAtom(mapBoundsAtom)
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { project_id, subproject_id, place_id, place_id2 } = useParams()

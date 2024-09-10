@@ -1,12 +1,12 @@
 import { useEffect, memo } from 'react'
 import { useCorbado } from '@corbado/react'
-import { useAtom } from 'jotai'
+import { useSetAtom } from 'jotai'
 
 import { useElectric } from '../ElectricProvider.tsx'
 import { syncingAtom } from '../store.ts'
 
 export const Syncer = memo(() => {
-  const [, setSyncing] = useAtom(syncingAtom)
+  const setSyncing = useSetAtom(syncingAtom)
   const { db } = useElectric()!
   const { user: authUser } = useCorbado()
   // console.log('hello Syncer', { db, authUser })

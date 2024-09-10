@@ -1,7 +1,7 @@
 import { useCallback, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { useAtom } from 'jotai'
+import { useSetAtom } from 'jotai'
 
 import { createUser } from '../modules/createRows.ts'
 import { useElectric } from '../ElectricProvider.tsx'
@@ -12,7 +12,7 @@ import { userIdAtom } from '../store.ts'
 import '../form.css'
 
 export const Component = memo(() => {
-  const [, setUserId] = useAtom(userIdAtom)
+  const setUserId = useSetAtom(userIdAtom)
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 

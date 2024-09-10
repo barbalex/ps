@@ -1,6 +1,6 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
-import { useAtom } from 'jotai'
+import { useSetAtom } from 'jotai'
 
 import { createUser } from '../../modules/createRows.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
@@ -8,7 +8,7 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { userIdAtom } from '../../store.ts'
 
 export const Header = memo(({ autoFocusRef }) => {
-  const [, setUserId] = useAtom(userIdAtom)
+  const setUserId = useSetAtom(userIdAtom)
   const { user_id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()

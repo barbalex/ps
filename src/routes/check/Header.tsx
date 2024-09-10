@@ -4,7 +4,7 @@ import { TbZoomScan } from 'react-icons/tb'
 import { Button } from '@fluentui/react-button'
 import { bbox } from '@turf/bbox'
 import { buffer } from '@turf/buffer'
-import { useAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
 
 import { createCheck } from '../../modules/createRows.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
@@ -15,7 +15,7 @@ import { tabsAtom, mapBoundsAtom } from '../../store.ts'
 
 export const Header = memo(({ autoFocusRef }) => {
   const [tabs, setTabs] = useAtom(tabsAtom)
-  const [, setMapBounds] = useAtom(mapBoundsAtom)
+  const setMapBounds = useSetAtom(mapBoundsAtom)
   const { project_id, place_id, place_id2, check_id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()

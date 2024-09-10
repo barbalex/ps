@@ -1,7 +1,7 @@
 // TODO: not in use
 import { useEffect } from 'react'
 import { useMap } from 'react-leaflet'
-import { useAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
 
 import { Wms_layers as WmsLayerType } from '../../../../generated/client/index.ts'
 import { useElectric } from '../../../../ElectricProvider.tsx'
@@ -14,7 +14,7 @@ interface Props {
 
 export const WMTSOffline = ({ layer }: Props) => {
   const [showLocalMap, setShowLocalMap] = useAtom(showLocalMapAtom)
-  const [, setLocalMapValues] = useAtom(localMapValuesAtom)
+  const setLocalMapValues = useSetAtom(localMapValuesAtom)
   const map = useMap()
 
   const { db } = useElectric()!
