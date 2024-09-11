@@ -1,6 +1,5 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
@@ -10,26 +9,18 @@ import { Node } from './Node.tsx'
 import { ProjectNode } from './Project/index.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { treeOpenNodesAtom } from '../../store.ts'
+import { treeOpenNodesAtom, projectsFilterAtom } from '../../store.ts'
 
 export const ProjectsNode = memo(() => {
+  const [projectsFilter] = useAtom(projectsFilterAtom)
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { user: authUser } = useCorbado()
   const { db } = useElectric()!
 
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
-
-  const filter = useMemo(
-    () =>
-      appState?.filter_projects?.filter((f) => Object.keys(f).length > 0) ?? [],
-    [appState?.filter_projects],
-  )
-  const where = filter.length > 1 ? { OR: filter } : filter[0]
+  const where =
+    projectsFilter.length > 1 ? { OR: projectsFilter } : projectsFilter[0]
   const { results: projects = [] } = useLiveQuery(
     db.projects.liveMany({
       where,

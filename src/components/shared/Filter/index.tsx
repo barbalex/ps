@@ -1,12 +1,12 @@
 import { useMemo, memo, useState, useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
 import { Tab, TabList } from '@fluentui/react-components'
 import { useLocation, useParams } from 'react-router-dom'
+import { useAtom } from 'jotai'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
-import { Loading } from '../Loading.tsx'
 import { FilterHeader } from './Header.tsx'
+import { projectsFilterAtom } from '../../../store.ts'
 
 import '../../../form.css'
 import { OrFilter } from './OrFilter.tsx'
@@ -20,7 +20,11 @@ const tabStyle = {
 }
 
 export const Filter = memo(({ level }) => {
-  const { user: authUser } = useCorbado()
+  const [projectsFilter, setProjectsFilter] = useAtom(projectsFilterAtom)
+  const filterObject = useMemo(
+    () => ({ projects: { filter: projectsFilter, set: setProjectsFilter } }),
+    [projectsFilter, setProjectsFilter],
+  )
   const { project_id, place_id, place_id2 } = useParams()
   const location = useLocation()
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -38,7 +42,7 @@ export const Filter = memo(({ level }) => {
     tableName = `${grandParent.slice(0, -1)}_${tableName}`
   }
   // add _1 and _2 when below subproject_id
-  const filterName = `filter_${tableName}${level ? `_${level}` : ''}`
+  const filterName = `${tableName}${level ? `${level}` : ''}`
   // for tableNameForTitle: replace all underscores with spaces and uppercase all first letters
 
   const { results: placeLevel } = useLiveQuery(
@@ -65,20 +69,16 @@ export const Filter = memo(({ level }) => {
 
   const [activeTab, setActiveTab] = useState(1)
   const onTabSelect = useCallback((e, data) => setActiveTab(data.value), [])
-
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({
-      where: { user_email: authUser?.email },
-    }),
-  )
-
-  console.log('hello Filter 1', { tableName, filterName, appState })
-
-  const filter = useMemo(
-    () =>
-      appState?.[filterName]?.filter?.((f) => Object.keys(f).length > 0) ?? [],
-    [appState, filterName],
-  )
+  // console.log('Filter 1', {
+  //   filterObject,
+  //   filterName,
+  //   tableName,
+  //   projectsFilter: filterObject.projects,
+  // })
+  const filter = filterObject[filterName]?.filter
+  // console.log('Filter 2', {
+  //   filter,
+  // })
   let where = {}
   const whereUnfiltered = {}
 
@@ -101,17 +101,17 @@ export const Filter = memo(({ level }) => {
   const isFiltered = filter.length > 0
   const orFiltersToUse = isFiltered ? [...filter, {}] : [{}]
 
-  console.log('hello Filter 2', {
-    tableName,
-    filterName,
-    tableNameForTitle,
-    title,
-    level,
-    where,
-    whereUnfiltered,
-    filter,
-    place_id,
-  })
+  // console.log('Filter 3', {
+  //   tableName,
+  //   filterName,
+  //   tableNameForTitle,
+  //   title,
+  //   level,
+  //   where,
+  //   whereUnfiltered,
+  //   filter,
+  //   place_id,
+  // })
 
   const { results = [] } = useLiveQuery(
     db?.[tableName]?.liveMany({
@@ -126,18 +126,16 @@ export const Filter = memo(({ level }) => {
     }),
   )
 
-  console.log('hello Filter 3', {
-    results,
-    resultsUnfiltered,
-  })
-
-  if (!appState) return <Loading />
+  // console.log('Filter 4', {
+  //   results,
+  //   resultsUnfiltered,
+  // })
 
   return (
     <div className="form-outer-container">
       <FilterHeader
         title={`${title} (${results.length}/${resultsUnfiltered.length})`}
-        filterName={filterName}
+        filterObject={filterObject[filterName]}
         isFiltered={isFiltered}
       />
       <TabList
@@ -153,17 +151,20 @@ export const Filter = memo(({ level }) => {
               ? `Filter ${i + 1}`
               : `Or filter ${i + 1}`
           return (
-            <Tab key={i} value={i + 1} style={tabStyle}>
+            <Tab
+              key={i}
+              value={i + 1}
+              style={tabStyle}
+            >
               {label}
             </Tab>
           )
         })}
       </TabList>
       <OrFilter
-        filterName={filterName}
+        filterObject={filterObject[filterName]}
         orFilters={orFiltersToUse}
         orIndex={activeTab - 1}
-        appStateId={appState.app_state_id}
       />
     </div>
   )
