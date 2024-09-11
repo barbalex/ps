@@ -1,31 +1,22 @@
-import { useCallback, useMemo, memo } from 'react'
+import { useCallback, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { useAtom } from 'jotai'
 
 import { createSubproject } from '../modules/createRows.ts'
 import { useElectric } from '../ElectricProvider.tsx'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
+import { subprojectsFilterAtom } from '../store.ts'
 import '../form.css'
 
 export const Component = memo(() => {
+  const [filter] = useAtom(subprojectsFilterAtom)
   const { project_id } = useParams()
   const Navigate = useNavigate()
-  const { user: authUser } = useCorbado()
-
   const { db } = useElectric()!
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
 
-  const filter = useMemo(
-    () =>
-      appState?.filter_subprojects?.filter((f) => Object.keys(f).length > 0) ??
-      [],
-    [appState?.filter_subprojects],
-  )
   const where = filter.length > 1 ? { OR: filter } : filter[0]
   const { results: subprojects = [] } = useLiveQuery(
     db.subprojects.liveMany({
