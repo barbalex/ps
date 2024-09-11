@@ -7,10 +7,11 @@ import { useAtom } from 'jotai'
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { FilterHeader } from './Header.tsx'
 import {
-  projectsFilterAtom,
-  fieldsFilterAtom,
   fieldTypesFilterAtom,
+  fieldsFilterAtom,
+  projectsFilterAtom,
   widgetTypesFilterAtom,
+  widgetsForFieldsFilterAtom,
 } from '../../../store.ts'
 import { snakeToCamel } from '../../../modules/snakeToCamel.ts'
 
@@ -26,24 +27,33 @@ const tabStyle = {
 }
 
 export const Filter = memo(({ level }) => {
-  const [projectsFilter, setProjectsFilter] = useAtom(projectsFilterAtom)
   const [fieldsFilter, setFieldsFilter] = useAtom(fieldsFilterAtom)
   const [fieldTypesFilter, setFieldTypesFilter] = useAtom(fieldTypesFilterAtom)
+  const [projectsFilter, setProjectsFilter] = useAtom(projectsFilterAtom)
+  const [widgetsForFieldsFilter, seWidgetsForFieldsFilter] = useAtom(
+    widgetsForFieldsFilterAtom,
+  )
   const [widgetTypesFilter, setWidgetTypesFilter] = useAtom(
     widgetTypesFilterAtom,
   )
 
   const filterObject = useMemo(
     () => ({
-      projects: { filter: projectsFilter, set: setProjectsFilter },
       fields: { filter: fieldsFilter, set: setFieldsFilter },
       fieldTypes: { filter: fieldTypesFilter, set: setFieldTypesFilter },
+      projects: { filter: projectsFilter, set: setProjectsFilter },
+      widgetsForFields: {
+        filter: widgetsForFieldsFilter,
+        set: seWidgetsForFieldsFilter,
+      },
       widgetTypes: { filter: widgetTypesFilter, set: setWidgetTypesFilter },
     }),
     [
       fieldTypesFilter,
       fieldsFilter,
+      widgetsForFieldsFilter,
       projectsFilter,
+      seWidgetsForFieldsFilter,
       setFieldTypesFilter,
       setFieldsFilter,
       setProjectsFilter,

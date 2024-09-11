@@ -79,3 +79,7 @@ export const widgetTypesFilterAtom = atomWithStorage(
   'widgetTypesFilterAtom',
   [],
 )
+export const widgetsForFieldsFilterAtom = atomWithStorage(
+  'widgetsForFieldsFilterAtom',
+  [],
+)

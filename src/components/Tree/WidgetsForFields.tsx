@@ -1,6 +1,5 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
@@ -10,28 +9,17 @@ import { Node } from './Node.tsx'
 import { WidgetForFieldNode } from './WidgetForField.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { treeOpenNodesAtom } from '../../store.ts'
+import { treeOpenNodesAtom, widgetsForFieldsFilterAtom } from '../../store.ts'
 
 export const WidgetsForFieldsNode = memo(() => {
+  const [filter] = useAtom(widgetsForFieldsFilterAtom)
   const [openNodes] = useAtom(treeOpenNodesAtom)
+
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { user: authUser } = useCorbado()
-
   const { db } = useElectric()!
 
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
-
-  const filter = useMemo(
-    () =>
-      appState?.filter_widgets_for_fields?.filter(
-        (f) => Object.keys(f).length > 0,
-      ) ?? [],
-    [appState?.filter_widgets_for_fields],
-  )
   const where = filter.length > 1 ? { OR: filter } : filter[0]
   const { results: widgetsForFields = [] } = useLiveQuery(
     db.widgets_for_fields.liveMany({
