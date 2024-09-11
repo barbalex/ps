@@ -74,3 +74,4 @@ export const treeOpenNodesAtom = atomWithStorage('treeOpenNodesAtom', [])
 // filters: array of objects of tables with filter settings
 export const projectsFilterAtom = atomWithStorage('projectsFilterAtom', [])
 export const fieldsFilterAtom = atomWithStorage('fieldsFilterAtom', [])
+export const fieldTypesFilterAtom = atomWithStorage('fieldTypesFilterAtom', [])

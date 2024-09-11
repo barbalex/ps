@@ -116,13 +116,17 @@ export const Component = memo(() => {
               level={place_id ? 2 : 1}
               placeNamePlural={placeNamePlural}
             />
-            <FilterButton table="places" filterField={filterField} />
+            <FilterButton isFiltered={isFiltered} />
           </>
         }
       />
       <div className="list-container">
         {places.map(({ place_id, label }) => (
-          <Row key={place_id} to={place_id} label={label ?? place_id} />
+          <Row
+            key={place_id}
+            to={place_id}
+            label={label ?? place_id}
+          />
         ))}
       </div>
     </div>

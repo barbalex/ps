@@ -84,12 +84,7 @@ export const Component = memo(() => {
         })`}
         addRow={add}
         tableName="vector layer"
-        menus={
-          <FilterButton
-            table="vector_layers"
-            filterField="filter_vector_layers"
-          />
-        }
+        menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
         {vectorLayers.map(({ vector_layer_id, label }) => (

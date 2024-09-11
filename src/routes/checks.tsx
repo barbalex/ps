@@ -66,14 +66,21 @@ export const Component = memo(() => {
         tableName="check"
         menus={
           <>
-            <LayerMenu table="checks" level={place_id2 ? 2 : 1} />
-            <FilterButton table="checks" filterField={filterField} />
+            <LayerMenu
+              table="checks"
+              level={place_id2 ? 2 : 1}
+            />
+            <FilterButton isFiltered={isFiltered} />
           </>
         }
       />
       <div className="list-container">
         {checks.map(({ check_id, label }) => (
-          <Row key={check_id} label={label ?? check_id} to={check_id} />
+          <Row
+            key={check_id}
+            label={label ?? check_id}
+            to={check_id}
+          />
         ))}
       </div>
     </div>

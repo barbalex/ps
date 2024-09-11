@@ -77,9 +77,7 @@ export const Component = memo(() => {
         })`}
         addRow={add}
         tableName="wms layer"
-        menus={
-          <FilterButton table="wms_layers" filterField="filter_wms_layers" />
-        }
+        menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
         {wmsLayers.map(({ wms_layer_id, label }) => (

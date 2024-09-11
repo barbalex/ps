@@ -67,7 +67,7 @@ export const Component = memo(() => {
         })`}
         addRow={add}
         tableName="report"
-        menus={<FilterButton table="place_reports" filterField={filterField} />}
+        menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
         {placeReports.map(({ place_report_id, label }) => (

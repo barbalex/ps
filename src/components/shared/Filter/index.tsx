@@ -6,7 +6,12 @@ import { useAtom } from 'jotai'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { FilterHeader } from './Header.tsx'
-import { projectsFilterAtom, fieldsFilterAtom } from '../../../store.ts'
+import {
+  projectsFilterAtom,
+  fieldsFilterAtom,
+  fieldTypesFilterAtom,
+} from '../../../store.ts'
+import { snakeToCamel } from '../../../modules/snakeToCamel.ts'
 
 import '../../../form.css'
 import { OrFilter } from './OrFilter.tsx'
@@ -22,12 +27,22 @@ const tabStyle = {
 export const Filter = memo(({ level }) => {
   const [projectsFilter, setProjectsFilter] = useAtom(projectsFilterAtom)
   const [fieldsFilter, setFieldsFilter] = useAtom(fieldsFilterAtom)
+  const [fieldTypesFilter, setFieldTypesFilter] = useAtom(fieldTypesFilterAtom)
+
   const filterObject = useMemo(
     () => ({
       projects: { filter: projectsFilter, set: setProjectsFilter },
       fields: { filter: fieldsFilter, set: setFieldsFilter },
+      fieldTypes: { filter: fieldTypesFilter, set: setFieldTypesFilter },
     }),
-    [fieldsFilter, projectsFilter, setFieldsFilter, setProjectsFilter],
+    [
+      fieldTypesFilter,
+      fieldsFilter,
+      projectsFilter,
+      setFieldTypesFilter,
+      setFieldsFilter,
+      setProjectsFilter,
+    ],
   )
   const { project_id, place_id, place_id2 } = useParams()
   const location = useLocation()
@@ -46,7 +61,7 @@ export const Filter = memo(({ level }) => {
     tableName = `${grandParent.slice(0, -1)}_${tableName}`
   }
   // add _1 and _2 when below subproject_id
-  const filterName = `${tableName}${level ? `${level}` : ''}`
+  const filterName = `${snakeToCamel(tableName)}${level ? `${level}` : ''}`
   // for tableNameForTitle: replace all underscores with spaces and uppercase all first letters
 
   const { results: placeLevel } = useLiveQuery(

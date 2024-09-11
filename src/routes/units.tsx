@@ -63,11 +63,15 @@ export const Component = memo(() => {
         })`}
         addRow={add}
         tableName="unit"
-        menus={<FilterButton table="units" filterField="filter_units" />}
+        menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
         {units.map(({ unit_id, label }) => (
-          <Row key={unit_id} label={label ?? unit_id} to={unit_id} />
+          <Row
+            key={unit_id}
+            label={label ?? unit_id}
+            to={unit_id}
+          />
         ))}
       </div>
     </div>

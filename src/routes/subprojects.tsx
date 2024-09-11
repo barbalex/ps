@@ -65,9 +65,7 @@ export const Component = memo(() => {
         })`}
         addRow={add}
         tableName={nameSingularLower}
-        menus={
-          <FilterButton table="subprojects" filterField="filter_subprojects" />
-        }
+        menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
         {subprojects.map(({ subproject_id, label }) => (
