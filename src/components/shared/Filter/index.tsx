@@ -13,6 +13,7 @@ import {
   personsFilterAtom,
   projectReportsFilterAtom,
   projectsFilterAtom,
+  unitsFilterAtom,
   widgetTypesFilterAtom,
   widgetsForFieldsFilterAtom,
   wmsLayersFilterAtom,
@@ -40,6 +41,7 @@ export const Filter = memo(({ level }) => {
     projectReportsFilterAtom,
   )
   const [projectsFilter, setProjectsFilter] = useAtom(projectsFilterAtom)
+  const [unitsFilter, setUnitsFilter] = useAtom(unitsFilterAtom)
   const [widgetsForFieldsFilter, seWidgetsForFieldsFilter] = useAtom(
     widgetsForFieldsFilterAtom,
   )
@@ -62,6 +64,7 @@ export const Filter = memo(({ level }) => {
         set: setProjectReportsFilter,
       },
       projects: { filter: projectsFilter, set: setProjectsFilter },
+      units: { filter: unitsFilter, set: setUnitsFilter },
       widgetsForFields: {
         filter: widgetsForFieldsFilter,
         set: seWidgetsForFieldsFilter,
@@ -83,6 +86,8 @@ export const Filter = memo(({ level }) => {
       setProjectReportsFilter,
       projectsFilter,
       setProjectsFilter,
+      unitsFilter,
+      setUnitsFilter,
       widgetsForFieldsFilter,
       seWidgetsForFieldsFilter,
       widgetTypesFilter,
