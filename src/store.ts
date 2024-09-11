@@ -87,3 +87,4 @@ export const projectReportsFilterAtom = atomWithStorage(
   'projectReportsFilterAtom',
   [],
 )
+export const personsFilterAtom = atomWithStorage('personsFilterAtom', [])
