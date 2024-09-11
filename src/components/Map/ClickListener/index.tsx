@@ -4,16 +4,18 @@ import { useCorbado } from '@corbado/react'
 import { useParams } from 'react-router-dom'
 import { useMapEvent, useMap } from 'react-leaflet/hooks'
 import proj4 from 'proj4'
-import { useSetAtom } from 'jotai'
+import { useSetAtom, useAtom } from 'jotai'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { layersDataFromRequestData } from './layersDataFromRequestData.ts'
 import { fetchData } from './fetchData.ts'
 import { sqlFromFilter } from '../../../modules/sqlFromFilter.ts'
-import { mapInfoAtom } from '../../../store.ts'
+import { mapInfoAtom, wmsLayersFilterAtom } from '../../../store.ts'
 
 export const ClickListener = memo(() => {
   const setMapInfo = useSetAtom(mapInfoAtom)
+  const [wmsLayersFilter] = useAtom(wmsLayersFilterAtom)
+
   const { project_id } = useParams()
   const { user: authUser } = useCorbado()
   const map = useMap()
@@ -34,14 +36,6 @@ export const ClickListener = memo(() => {
       const bounds = map.getBounds()
 
       const mapInfo = { lat, lng, zoom, layers: [] }
-      // const wmsLayersFilter =
-      //   appState?.filter_wms_layers?.filter(
-      //     (f) => Object.keys(f).length > 0,
-      //   ) ?? []
-      // const wmsLayersWhere =
-      //   wmsLayersFilter.length > 1
-      //     ? { OR: wmsLayersFilter }
-      //     : wmsLayersFilter[0]
 
       // Three types of querying:
       // 1. WMS Layers
@@ -55,7 +49,7 @@ export const ClickListener = memo(() => {
       // using raw query because of the join with layer_presentations
       // TODO: move sort to layer_presentations
       const sqlFilter = sqlFromFilter({
-        filter: appState?.filter_wms_layers,
+        filter: wmsLayersFilter,
         columnPrefix: 'wl.',
       })
       const sqlToAddToWhere = sqlFilter ? ` AND ${sqlFilter}` : ''
@@ -172,9 +166,9 @@ export const ClickListener = memo(() => {
     [
       project_id,
       map,
-      appState?.filter_wms_layers,
-      appState?.filter_vector_layers,
+      wmsLayersFilter,
       db,
+      appState?.filter_vector_layers,
       setMapInfo,
     ],
   )

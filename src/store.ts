@@ -88,3 +88,4 @@ export const projectReportsFilterAtom = atomWithStorage(
   [],
 )
 export const personsFilterAtom = atomWithStorage('personsFilterAtom', [])
+export const wmsLayersFilterAtom = atomWithStorage('wmsLayersFilterAtom', [])

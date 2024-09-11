@@ -12,12 +12,13 @@ const sqlFromFilterObject = ({ filter, columnPrefix = '' }) => {
   return sql
 }
 
-// receives a filter, for instance: appState?.filter_wms_layers
+// receives a filter, for instance: wmsLayersFilter
 // returns a sql string for a where clause
 // if this were a server, we would need to separate args and pass both the sql and the args back
 // but: the worst that can happen is that a malicious user hacks their own data...
 export const sqlFromFilter = ({ filter, columnPrefix }) => {
   if (!filter) return undefined
+  if (filter?.length === 0) return undefined
 
   if (filter?.label) {
     return sqlFromFilter(filter)
