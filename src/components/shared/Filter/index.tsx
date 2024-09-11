@@ -13,6 +13,7 @@ import {
   personsFilterAtom,
   projectReportsFilterAtom,
   projectsFilterAtom,
+  subprojectReportsFilterAtom,
   subprojectsFilterAtom,
   unitsFilterAtom,
   widgetTypesFilterAtom,
@@ -42,6 +43,9 @@ export const Filter = memo(({ level }) => {
     projectReportsFilterAtom,
   )
   const [projectsFilter, setProjectsFilter] = useAtom(projectsFilterAtom)
+  const [subprojectReportsFilter, setSubprojectReportsFilter] = useAtom(
+    subprojectReportsFilterAtom,
+  )
   const [subprojectsFilter, setSubprojectsFilter] = useAtom(
     subprojectsFilterAtom,
   )
@@ -68,6 +72,10 @@ export const Filter = memo(({ level }) => {
         set: setProjectReportsFilter,
       },
       projects: { filter: projectsFilter, set: setProjectsFilter },
+      subprojectReports: {
+        filter: subprojectReportsFilter,
+        set: setSubprojectReportsFilter,
+      },
       subprojects: { filter: subprojectsFilter, set: setSubprojectsFilter },
       units: { filter: unitsFilter, set: setUnitsFilter },
       widgetsForFields: {
@@ -91,6 +99,8 @@ export const Filter = memo(({ level }) => {
       setProjectReportsFilter,
       projectsFilter,
       setProjectsFilter,
+      subprojectReportsFilter,
+      setSubprojectReportsFilter,
       subprojectsFilter,
       setSubprojectsFilter,
       unitsFilter,

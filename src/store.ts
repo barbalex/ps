@@ -99,3 +99,7 @@ export const subprojectsFilterAtom = atomWithStorage(
   'subprojectsFilterAtom',
   [],
 )
+export const subprojectReportsFilterAtom = atomWithStorage(
+  'subprojectReportsFilterAtom',
+  [],
+)
