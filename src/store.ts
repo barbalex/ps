@@ -75,3 +75,7 @@ export const treeOpenNodesAtom = atomWithStorage('treeOpenNodesAtom', [])
 export const projectsFilterAtom = atomWithStorage('projectsFilterAtom', [])
 export const fieldsFilterAtom = atomWithStorage('fieldsFilterAtom', [])
 export const fieldTypesFilterAtom = atomWithStorage('fieldTypesFilterAtom', [])
+export const widgetTypesFilterAtom = atomWithStorage(
+  'widgetTypesFilterAtom',
+  [],
+)

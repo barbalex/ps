@@ -10,6 +10,7 @@ import {
   projectsFilterAtom,
   fieldsFilterAtom,
   fieldTypesFilterAtom,
+  widgetTypesFilterAtom,
 } from '../../../store.ts'
 import { snakeToCamel } from '../../../modules/snakeToCamel.ts'
 
@@ -28,12 +29,16 @@ export const Filter = memo(({ level }) => {
   const [projectsFilter, setProjectsFilter] = useAtom(projectsFilterAtom)
   const [fieldsFilter, setFieldsFilter] = useAtom(fieldsFilterAtom)
   const [fieldTypesFilter, setFieldTypesFilter] = useAtom(fieldTypesFilterAtom)
+  const [widgetTypesFilter, setWidgetTypesFilter] = useAtom(
+    widgetTypesFilterAtom,
+  )
 
   const filterObject = useMemo(
     () => ({
       projects: { filter: projectsFilter, set: setProjectsFilter },
       fields: { filter: fieldsFilter, set: setFieldsFilter },
       fieldTypes: { filter: fieldTypesFilter, set: setFieldTypesFilter },
+      widgetTypes: { filter: widgetTypesFilter, set: setWidgetTypesFilter },
     }),
     [
       fieldTypesFilter,
@@ -42,6 +47,8 @@ export const Filter = memo(({ level }) => {
       setFieldTypesFilter,
       setFieldsFilter,
       setProjectsFilter,
+      setWidgetTypesFilter,
+      widgetTypesFilter,
     ],
   )
   const { project_id, place_id, place_id2 } = useParams()
