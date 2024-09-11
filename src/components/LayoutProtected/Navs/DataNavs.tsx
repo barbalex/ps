@@ -98,7 +98,7 @@ export const DataNavs = memo(({ matches }) => {
     const get = async () => {
       if (!table) return
 
-      console.log('DataNavs, effect, setting table results')
+      // console.log('DataNavs, effect, setting table results')
       setTableResults(
         await db[table]?.findMany({
           where: filterParams,
