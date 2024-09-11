@@ -1158,7 +1158,6 @@ COMMENT ON COLUMN fields.level IS 'level of field if places or below: 1, 2';
 
 CREATE TABLE app_states(
   app_state_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7()
-  filter_goals jsonb DEFAULT NULL, -- a goals object with filter settings
   filter_subproject_users jsonb DEFAULT NULL, -- a subproject_users object with filter settings
   filter_places_1 jsonb DEFAULT NULL, -- a places object with filter settings
   filter_checks_1 jsonb DEFAULT NULL, -- a checks object with filter settings

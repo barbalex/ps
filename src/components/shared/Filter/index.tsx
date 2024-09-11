@@ -7,8 +7,9 @@ import { useAtom } from 'jotai'
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { FilterHeader } from './Header.tsx'
 import {
-  fieldTypesFilterAtom,
   fieldsFilterAtom,
+  fieldTypesFilterAtom,
+  goalsFilterAtom,
   listsFilterAtom,
   personsFilterAtom,
   projectReportsFilterAtom,
@@ -37,6 +38,7 @@ const tabStyle = {
 export const Filter = memo(({ level }) => {
   const [fieldsFilter, setFieldsFilter] = useAtom(fieldsFilterAtom)
   const [fieldTypesFilter, setFieldTypesFilter] = useAtom(fieldTypesFilterAtom)
+  const [goalsFilter, setGoalsFilter] = useAtom(goalsFilterAtom)
   const [listsFilter, setListsFilter] = useAtom(listsFilterAtom)
   const [personsFilter, setPersonsFilter] = useAtom(personsFilterAtom)
   const [projectReportsFilter, setProjectReportsFilter] = useAtom(
@@ -65,6 +67,7 @@ export const Filter = memo(({ level }) => {
     () => ({
       fields: { filter: fieldsFilter, set: setFieldsFilter },
       fieldTypes: { filter: fieldTypesFilter, set: setFieldTypesFilter },
+      goals: { filter: goalsFilter, set: setGoalsFilter },
       lists: { filter: listsFilter, set: setListsFilter },
       persons: { filter: personsFilter, set: setPersonsFilter },
       projectReports: {
@@ -91,6 +94,8 @@ export const Filter = memo(({ level }) => {
       setFieldsFilter,
       fieldTypesFilter,
       setFieldTypesFilter,
+      goalsFilter,
+      setGoalsFilter,
       listsFilter,
       setListsFilter,
       personsFilter,
