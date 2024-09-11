@@ -6,7 +6,7 @@ import { useAtom } from 'jotai'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { FilterHeader } from './Header.tsx'
-import { projectsFilterAtom } from '../../../store.ts'
+import { projectsFilterAtom, fieldsFilterAtom } from '../../../store.ts'
 
 import '../../../form.css'
 import { OrFilter } from './OrFilter.tsx'
@@ -21,9 +21,13 @@ const tabStyle = {
 
 export const Filter = memo(({ level }) => {
   const [projectsFilter, setProjectsFilter] = useAtom(projectsFilterAtom)
+  const [fieldsFilter, setFieldsFilter] = useAtom(fieldsFilterAtom)
   const filterObject = useMemo(
-    () => ({ projects: { filter: projectsFilter, set: setProjectsFilter } }),
-    [projectsFilter, setProjectsFilter],
+    () => ({
+      projects: { filter: projectsFilter, set: setProjectsFilter },
+      fields: { filter: fieldsFilter, set: setFieldsFilter },
+    }),
+    [fieldsFilter, projectsFilter, setFieldsFilter, setProjectsFilter],
   )
   const { project_id, place_id, place_id2 } = useParams()
   const location = useLocation()

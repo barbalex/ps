@@ -1,31 +1,24 @@
-import { useCallback, useMemo, memo } from 'react'
+import { useCallback, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
+import { useAtom } from 'jotai'
 
 import { useElectric } from '../ElectricProvider.tsx'
 import { createField } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
+import { fieldsFilterAtom } from '../store.ts'
 import '../form.css'
 
 export const Component = memo(() => {
+  const [filter] = useAtom(fieldsFilterAtom)
   const { project_id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
 
-  const filter = useMemo(
-    () =>
-      appState?.filter_fields?.filter((f) => Object.keys(f).length > 0) ?? [],
-    [appState?.filter_fields],
-  )
   const where = filter.length > 1 ? { OR: filter } : filter[0]
   const { results: fields = [] } = useLiveQuery(
     db.fields.liveMany({
@@ -57,11 +50,21 @@ export const Component = memo(() => {
         })`}
         addRow={add}
         tableName="field"
-        menus={<FilterButton table="fields" filterField="filter_fields" isFiltered={isFiltered} />}
+        menus={
+          <FilterButton
+            table="fields"
+            filterField="fieldsFilter"
+            isFiltered={isFiltered}
+          />
+        }
       />
       <div className="list-container">
         {fields.map(({ field_id, label }) => (
-          <Row key={field_id} label={label ?? field_id} to={field_id} />
+          <Row
+            key={field_id}
+            label={label ?? field_id}
+            to={field_id}
+          />
         ))}
       </div>
     </div>
