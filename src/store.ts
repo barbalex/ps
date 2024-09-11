@@ -104,3 +104,5 @@ export const subprojectReportsFilterAtom = atomWithStorage(
   [],
 )
 export const goalsFilterAtom = atomWithStorage('goalsFilterAtom', [])
+export const places1FilterAtom = atomWithStorage('places1FilterAtom', [])
+export const places2FilterAtom = atomWithStorage('places2FilterAtom', [])

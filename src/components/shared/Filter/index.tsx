@@ -12,6 +12,8 @@ import {
   goalsFilterAtom,
   listsFilterAtom,
   personsFilterAtom,
+  places1FilterAtom,
+  places2FilterAtom,
   projectReportsFilterAtom,
   projectsFilterAtom,
   subprojectReportsFilterAtom,
@@ -41,6 +43,8 @@ export const Filter = memo(({ level }) => {
   const [goalsFilter, setGoalsFilter] = useAtom(goalsFilterAtom)
   const [listsFilter, setListsFilter] = useAtom(listsFilterAtom)
   const [personsFilter, setPersonsFilter] = useAtom(personsFilterAtom)
+  const [places1Filter, setPlaces1Filter] = useAtom(places1FilterAtom)
+  const [places2Filter, setPlaces2Filter] = useAtom(places2FilterAtom)
   const [projectReportsFilter, setProjectReportsFilter] = useAtom(
     projectReportsFilterAtom,
   )
@@ -70,6 +74,8 @@ export const Filter = memo(({ level }) => {
       goals: { filter: goalsFilter, set: setGoalsFilter },
       lists: { filter: listsFilter, set: setListsFilter },
       persons: { filter: personsFilter, set: setPersonsFilter },
+      places1: { filter: places1Filter, set: setPlaces1Filter },
+      places2: { filter: places2Filter, set: setPlaces2Filter },
       projectReports: {
         filter: projectReportsFilter,
         set: setProjectReportsFilter,
@@ -100,6 +106,10 @@ export const Filter = memo(({ level }) => {
       setListsFilter,
       personsFilter,
       setPersonsFilter,
+      places1Filter,
+      setPlaces1Filter,
+      places2Filter,
+      setPlaces2Filter,
       projectReportsFilter,
       setProjectReportsFilter,
       projectsFilter,
