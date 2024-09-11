@@ -36,11 +36,19 @@
   align-items: center;
 }
 
+.menu-button span {
+  height: 28px;
+}
 .menu-button svg {
   height: 18px;
   width: 18px;
-  top: -3px;
   position: relative;
+  top: 4px;
+  left: -3px;
+}
+
+.resizable-area .menu-button svg {
+  height: 24px;
 }
 
 .breadcrumbs__crumb:first-of-type {

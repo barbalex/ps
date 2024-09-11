@@ -120,6 +120,13 @@ https://stackoverflow.com/a/21541021/712005 */
   margin-left: 20px;
 }
 
+.resizable-area > button {
+  align-items: center;
+}
+.navs-resizable > button {
+  align-items: baseline;
+}
+
 /* add vertical green line after every navs > a */
 /* except for the last */
 
@@ -130,7 +137,7 @@ https://stackoverflow.com/a/21541021/712005 */
   width: 1px;
   height: 60%;
   background-color: rgba(55, 118, 28, 0.5);
-  transform: translate(8.5px, 1px);
+  transform: translate(8.5px, 2px);
 }
 
 .list-view {

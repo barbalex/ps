@@ -10,6 +10,7 @@ import {
   useIsOverflowItemVisible,
   useOverflowMenu,
 } from '@fluentui/react-components'
+import { BsCaretDown } from 'react-icons/bs'
 import { useMatches, useNavigate, useSearchParams } from 'react-router-dom'
 import { useResizeDetector } from 'react-resize-detector'
 
@@ -62,6 +63,7 @@ const OverflowMenu: React.FC = ({ matches, upRerenderInteger }) => {
       <MenuTrigger>
         <MenuButton
           className="menu-button"
+          menuIcon={<BsCaretDown />}
           ref={ref}
         >
           +{overflowCount}
