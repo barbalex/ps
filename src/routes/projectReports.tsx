@@ -1,33 +1,23 @@
-import { useCallback, useMemo, memo } from 'react'
+import { useCallback, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
+import { useAtom } from 'jotai'
 
 import { useElectric } from '../ElectricProvider.tsx'
 import { createProjectReport } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Row } from '../components/shared/Row.tsx'
+import { projectReportsFilterAtom } from '../store.ts'
 import '../form.css'
 
 export const Component = memo(() => {
+  const [filter] = useAtom(projectReportsFilterAtom)
   const { project_id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { user: authUser } = useCorbado()
-
   const { db } = useElectric()!
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
 
-  const filter = useMemo(
-    () =>
-      appState?.filter_project_reports?.filter(
-        (f) => Object.keys(f).length > 0,
-      ) ?? [],
-    [appState?.filter_project_reports],
-  )
   const where = filter.length > 1 ? { OR: filter } : filter[0]
 
   const { results: projectReports = [] } = useLiveQuery(

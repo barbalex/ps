@@ -9,6 +9,7 @@ import { FilterHeader } from './Header.tsx'
 import {
   fieldTypesFilterAtom,
   fieldsFilterAtom,
+  projectReportsFilterAtom,
   projectsFilterAtom,
   widgetTypesFilterAtom,
   widgetsForFieldsFilterAtom,
@@ -29,6 +30,9 @@ const tabStyle = {
 export const Filter = memo(({ level }) => {
   const [fieldsFilter, setFieldsFilter] = useAtom(fieldsFilterAtom)
   const [fieldTypesFilter, setFieldTypesFilter] = useAtom(fieldTypesFilterAtom)
+  const [projectReportsFilter, setProjectReportsFilter] = useAtom(
+    projectReportsFilterAtom,
+  )
   const [projectsFilter, setProjectsFilter] = useAtom(projectsFilterAtom)
   const [widgetsForFieldsFilter, seWidgetsForFieldsFilter] = useAtom(
     widgetsForFieldsFilterAtom,
@@ -41,6 +45,10 @@ export const Filter = memo(({ level }) => {
     () => ({
       fields: { filter: fieldsFilter, set: setFieldsFilter },
       fieldTypes: { filter: fieldTypesFilter, set: setFieldTypesFilter },
+      projectReports: {
+        filter: projectReportsFilter,
+        set: setProjectReportsFilter,
+      },
       projects: { filter: projectsFilter, set: setProjectsFilter },
       widgetsForFields: {
         filter: widgetsForFieldsFilter,
@@ -49,16 +57,18 @@ export const Filter = memo(({ level }) => {
       widgetTypes: { filter: widgetTypesFilter, set: setWidgetTypesFilter },
     }),
     [
-      fieldTypesFilter,
       fieldsFilter,
-      widgetsForFieldsFilter,
-      projectsFilter,
-      seWidgetsForFieldsFilter,
-      setFieldTypesFilter,
       setFieldsFilter,
+      fieldTypesFilter,
+      setFieldTypesFilter,
+      projectReportsFilter,
+      setProjectReportsFilter,
+      projectsFilter,
       setProjectsFilter,
-      setWidgetTypesFilter,
+      widgetsForFieldsFilter,
+      seWidgetsForFieldsFilter,
       widgetTypesFilter,
+      setWidgetTypesFilter,
     ],
   )
   const { project_id, place_id, place_id2 } = useParams()
