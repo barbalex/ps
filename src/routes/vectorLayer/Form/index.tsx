@@ -1,4 +1,5 @@
 import { useOutletContext } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 import { TextFieldInactive } from '../../../components/shared/TextFieldInactive.tsx'
 import { TextField } from '../../../components/shared/TextField.tsx'
@@ -17,10 +18,12 @@ export const Component = ({
   row: rowFromProps,
   autoFocusRef,
 }) => {
+  const { pathname } = useLocation()
   // beware: contextFromOutlet is undefined if not inside an outlet
   const outletContext = useOutletContext()
   const onChange = onChangeFromProps ?? outletContext?.onChange
   const vectorLayer = rowFromProps ?? outletContext?.row ?? {}
+  const isFilter = pathname.endsWith('/filter')
 
   return (
     <>
@@ -77,11 +80,22 @@ export const Component = ({
           />
         )}
       {!['wfs', 'upload'].includes(vectorLayer.type) && (
-        <TextFieldInactive
-          label="Label"
-          name="label"
-          value={vectorLayer.label}
-        />
+        <>
+          {isFilter ? (
+            <TextField
+              label="Label"
+              name="label"
+              value={vectorLayer.label ?? ''}
+              onChange={onChange}
+            />
+          ) : (
+            <TextFieldInactive
+              label="Label"
+              name="label"
+              value={vectorLayer.label}
+            />
+          )}
+        </>
       )}
       {((vectorLayer?.type === 'wfs' &&
         vectorLayer?.wfs_service_id &&

@@ -15,6 +15,7 @@ import {
   widgetTypesFilterAtom,
   widgetsForFieldsFilterAtom,
   wmsLayersFilterAtom,
+  vectorLayersFilterAtom,
 } from '../../../store.ts'
 import { snakeToCamel } from '../../../modules/snakeToCamel.ts'
 
@@ -44,6 +45,9 @@ export const Filter = memo(({ level }) => {
     widgetTypesFilterAtom,
   )
   const [wmsLayersFilter, setWmsLayersFilter] = useAtom(wmsLayersFilterAtom)
+  const [vectorLayersFilter, setVectorLayersFilter] = useAtom(
+    vectorLayersFilterAtom,
+  )
 
   const filterObject = useMemo(
     () => ({
@@ -61,6 +65,7 @@ export const Filter = memo(({ level }) => {
       },
       widgetTypes: { filter: widgetTypesFilter, set: setWidgetTypesFilter },
       wmsLayers: { filter: wmsLayersFilter, set: setWmsLayersFilter },
+      vectorLayers: { filter: vectorLayersFilter, set: setVectorLayersFilter },
     }),
     [
       fieldsFilter,
@@ -79,6 +84,8 @@ export const Filter = memo(({ level }) => {
       setWidgetTypesFilter,
       wmsLayersFilter,
       setWmsLayersFilter,
+      vectorLayersFilter,
+      setVectorLayersFilter,
     ],
   )
   const { project_id, place_id, place_id2 } = useParams()

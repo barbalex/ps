@@ -1,6 +1,4 @@
 import { memo, useCallback } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
 import { useParams } from 'react-router-dom'
 import { useMapEvent, useMap } from 'react-leaflet/hooks'
 import proj4 from 'proj4'
@@ -10,20 +8,20 @@ import { useElectric } from '../../../ElectricProvider.tsx'
 import { layersDataFromRequestData } from './layersDataFromRequestData.ts'
 import { fetchData } from './fetchData.ts'
 import { sqlFromFilter } from '../../../modules/sqlFromFilter.ts'
-import { mapInfoAtom, wmsLayersFilterAtom } from '../../../store.ts'
+import {
+  mapInfoAtom,
+  wmsLayersFilterAtom,
+  vectorLayersFilterAtom,
+} from '../../../store.ts'
 
 export const ClickListener = memo(() => {
   const setMapInfo = useSetAtom(mapInfoAtom)
   const [wmsLayersFilter] = useAtom(wmsLayersFilterAtom)
+  const [vectorLayersFilter] = useAtom(vectorLayersFilterAtom)
 
   const { project_id } = useParams()
-  const { user: authUser } = useCorbado()
   const map = useMap()
-
   const { db } = useElectric()!
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
 
   const onClick = useCallback(
     async (event) => {
@@ -89,10 +87,6 @@ export const ClickListener = memo(() => {
         }
       }
       // 4. Vector Layers from WFS with no downloaded data
-      const vectorLayersFilter =
-        appState?.filter_vector_layers?.filter(
-          (f) => Object.keys(f).length > 0,
-        ) ?? []
       const vectorLayersWhere =
         vectorLayersFilter.length > 1
           ? { OR: vectorLayersFilter }
@@ -163,14 +157,7 @@ export const ClickListener = memo(() => {
 
       setMapInfo(mapInfo)
     },
-    [
-      project_id,
-      map,
-      wmsLayersFilter,
-      db,
-      appState?.filter_vector_layers,
-      setMapInfo,
-    ],
+    [project_id, map, wmsLayersFilter, db, vectorLayersFilter, setMapInfo],
   )
 
   useMapEvent('click', onClick)
