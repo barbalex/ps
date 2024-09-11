@@ -16,7 +16,6 @@ export const NavsWrapping = () => {
   const params = useParams()
   const { db } = useElectric()!
 
-  console.log('Navs Wrapping rendering')
   // console.log('Wrapping Navs', { matches, pathname: location.pathname })
 
   const thisPathsMatches = useMemo(
