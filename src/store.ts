@@ -93,3 +93,4 @@ export const vectorLayersFilterAtom = atomWithStorage(
   'vectorLayersFilterAtom',
   [],
 )
+export const listsFilterAtom = atomWithStorage('listsFilterAtom', [])

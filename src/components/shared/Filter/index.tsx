@@ -9,6 +9,7 @@ import { FilterHeader } from './Header.tsx'
 import {
   fieldTypesFilterAtom,
   fieldsFilterAtom,
+  listsFilterAtom,
   personsFilterAtom,
   projectReportsFilterAtom,
   projectsFilterAtom,
@@ -33,6 +34,7 @@ const tabStyle = {
 export const Filter = memo(({ level }) => {
   const [fieldsFilter, setFieldsFilter] = useAtom(fieldsFilterAtom)
   const [fieldTypesFilter, setFieldTypesFilter] = useAtom(fieldTypesFilterAtom)
+  const [listsFilter, setListsFilter] = useAtom(listsFilterAtom)
   const [personsFilter, setPersonsFilter] = useAtom(personsFilterAtom)
   const [projectReportsFilter, setProjectReportsFilter] = useAtom(
     projectReportsFilterAtom,
@@ -53,6 +55,7 @@ export const Filter = memo(({ level }) => {
     () => ({
       fields: { filter: fieldsFilter, set: setFieldsFilter },
       fieldTypes: { filter: fieldTypesFilter, set: setFieldTypesFilter },
+      lists: { filter: listsFilter, set: setListsFilter },
       persons: { filter: personsFilter, set: setPersonsFilter },
       projectReports: {
         filter: projectReportsFilter,
@@ -72,6 +75,8 @@ export const Filter = memo(({ level }) => {
       setFieldsFilter,
       fieldTypesFilter,
       setFieldTypesFilter,
+      listsFilter,
+      setListsFilter,
       personsFilter,
       setPersonsFilter,
       projectReportsFilter,

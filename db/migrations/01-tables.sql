@@ -1157,9 +1157,7 @@ COMMENT ON COLUMN fields.table_name IS 'table, on which this field is used insid
 COMMENT ON COLUMN fields.level IS 'level of field if places or below: 1, 2';
 
 CREATE TABLE app_states(
-  app_state_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),filter_field_types
-  filter_project_users jsonb DEFAULT NULL, -- a project_users object with filter settings
-  filter_lists jsonb DEFAULT NULL, -- a lists object with filter settings
+  app_state_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7()
   filter_units jsonb DEFAULT NULL, -- a units object with filter settings
   filter_place_levels jsonb DEFAULT NULL, -- a place_levels object with filter settings
   filter_project_fields jsonb DEFAULT NULL, -- a fields object with filter settings
