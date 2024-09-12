@@ -76,16 +76,6 @@ export const ProjectNode = memo(({ project, level = 2 }: Props) => {
     urlPath.length,
   ])
 
-  console.log('Tree ProjectNode', {
-    project,
-    level,
-    isOpen,
-    isActive,
-    ownUrl,
-    openNodes,
-    pathname,
-  })
-
   return (
     <>
       <Node
