@@ -1,12 +1,9 @@
-import { useMemo, memo } from 'react'
+import { memo } from 'react'
 import { Outlet } from 'react-router-dom'
 // import { useSearchParams } from 'react-router-dom'
-import { useLiveQuery } from 'electric-sql/react'
 import { Allotment } from 'allotment'
-import { useCorbado } from '@corbado/react'
 import { useAtom } from 'jotai'
 
-import { useElectric } from '../../ElectricProvider.tsx'
 import { Tree } from '../Tree/index.tsx'
 import { MapContainer } from '../Map/index.tsx'
 import { mapMaximizedAtom, tabsAtom } from '../../store.ts'
