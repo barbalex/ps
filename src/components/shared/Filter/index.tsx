@@ -174,16 +174,15 @@ export const Filter = memo(({ level }) => {
 
   const [activeTab, setActiveTab] = useState(1)
   const onTabSelect = useCallback((e, data) => setActiveTab(data.value), [])
-  // console.log('Filter 1', {
-  //   filterObject,
-  //   filterName,
-  //   tableName,
-  //   projectsFilter: filterObject.projects,
-  // })
+  console.log('Filter 1', {
+    filterObject,
+    filterName,
+    tableName,
+  })
   const filter = filterObject[filterName]?.filter
-  // console.log('Filter 2', {
-  //   filter,
-  // })
+  console.log('Filter 2', {
+    filter,
+  })
   let where = {}
   const whereUnfiltered = {}
 

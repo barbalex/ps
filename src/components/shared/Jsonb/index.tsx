@@ -8,7 +8,6 @@ import { memo, useCallback, forwardRef } from 'react'
 import { useParams, useSearchParams, useLocation } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
@@ -26,6 +25,8 @@ import { accountTables } from '../../../routes/field/accountTables.ts'
 import { FieldFormInForm } from '../FieldFormInForm.tsx'
 import { EditField } from './EditField.tsx'
 import { AddField } from './AddField.tsx'
+import { snakeToCamel } from '../../../modules/snakeToCamel.ts'
+import * as stores from '../../../store.ts'
 
 // TODO: if editing a field, show the field form
 // and focus the name field on first render?
@@ -47,13 +48,7 @@ export const Jsonb = memo(
       const [searchParams] = useSearchParams()
       const { pathname } = useLocation()
       const editingField = searchParams.get('editingField')
-      const { user: authUser } = useCorbado()
-
       const { db } = useElectric()!
-
-      const { results: appState } = useLiveQuery(
-        db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-      )
 
       const { results: fields = [] } = useLiveQuery(
         db.fields.liveMany({
@@ -100,7 +95,7 @@ export const Jsonb = memo(
           const isFilter = pathname.endsWith('filter')
           const level =
             table === 'places' ? (place_id ? 2 : 1) : place_id2 ? 2 : 1
-          const filterField = `filter_${table}${level ? `_${level}` : ''}`
+          const filterField = `${snakeToCamel(table)}${level ? `${level}` : ''}`
 
           console.log('Jsonb, onChange 1:', {
             name,
@@ -122,21 +117,27 @@ export const Jsonb = memo(
             // example from electric-sql discord: https://discord.com/channels/933657521581858818/1246045111478124645
             // where: { [jsonbFieldName]: { path: ["is_admin"], equals: true } },
 
-            console.log('Jsonb, onChange 2:', {
-              data: {
-                [filterField]: [{ path: [jsonFieldName], contains: val }],
-              },
-            })
-            try {
-              await db.app_states.update({
-                where: { app_state_id: appState?.app_state_id },
-                data: {
-                  [filterField]: [{ path: [jsonFieldName], contains: val }],
-                },
-              })
-            } catch (error) {
-              console.log('Jsonb, error updating:', error)
-            }
+            const filterAtom =
+              stores[
+                `${snakeToCamel(table)}${level ? `${level}` : ''}FilterAtom`
+              ]
+            console.log('Jsonb, onChange 3, filterUpdateFunction:', filterAtom)
+            const activeFilter = stores.store.get(filterAtom)
+            console.log('Jsonb, onChange 4, activeFilter:', activeFilter)
+            stores.store.set(filterAtom, [
+              ...activeFilter,
+              { path: [jsonFieldName], contains: val },
+            ])
+            // try {
+            //   await db.app_states.update({
+            //     where: { app_state_id: appState?.app_state_id },
+            //     data: {
+            //       [filterField]: [{ path: [jsonFieldName], contains: val }],
+            //     },
+            //   })
+            // } catch (error) {
+            //   console.log('Jsonb, error updating app_states:', error)
+            // }
             return
           }
           try {
@@ -145,7 +146,7 @@ export const Jsonb = memo(
               data: { [jsonFieldName]: val },
             })
           } catch (error) {
-            console.log('Jsonb, error updating:', error)
+            console.log(`Jsonb, error updating table '${table}':`, error)
           }
         },
         [
@@ -155,7 +156,6 @@ export const Jsonb = memo(
           place_id,
           place_id2,
           db,
-          appState?.app_state_id,
           jsonFieldName,
           idField,
           id,
@@ -171,7 +171,12 @@ export const Jsonb = memo(
 
       const widgetsFromDataFieldsDefined = fields.map((field, index) => {
         if (editingField === field.field_id) {
-          return <FieldFormInForm key={field.field_id} field={field} />
+          return (
+            <FieldFormInForm
+              key={field.field_id}
+              field={field}
+            />
+          )
         }
         const { name, field_label } = field
         const widgetType = widgetTypes.find(
@@ -349,7 +354,11 @@ export const Jsonb = memo(
       return [
         widgetsFromDataFieldsDefined,
         fieldsFromDataKeysNotDefined,
-        <AddField key="addField" tableName={table} level={place_id2 ? 2 : 1} />,
+        <AddField
+          key="addField"
+          tableName={table}
+          level={place_id2 ? 2 : 1}
+        />,
       ]
     },
   ),
