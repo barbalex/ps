@@ -1,29 +1,10 @@
-import { useMemo, memo, useState, useCallback } from 'react'
+import { memo, useState, useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { Tab, TabList } from '@fluentui/react-components'
 import { useLocation, useParams } from 'react-router-dom'
-import { useAtom } from 'jotai'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { FilterHeader } from './Header.tsx'
-import {
-  fieldsFilterAtom,
-  fieldTypesFilterAtom,
-  goalsFilterAtom,
-  listsFilterAtom,
-  personsFilterAtom,
-  places1FilterAtom,
-  places2FilterAtom,
-  projectReportsFilterAtom,
-  projectsFilterAtom,
-  subprojectReportsFilterAtom,
-  subprojectsFilterAtom,
-  unitsFilterAtom,
-  widgetTypesFilterAtom,
-  widgetsForFieldsFilterAtom,
-  wmsLayersFilterAtom,
-  vectorLayersFilterAtom,
-} from '../../../store.ts'
 import * as stores from '../../../store.ts'
 import { snakeToCamel } from '../../../modules/snakeToCamel.ts'
 
@@ -39,98 +20,6 @@ const tabStyle = {
 }
 
 export const Filter = memo(({ level }) => {
-  const [fieldsFilter, setFieldsFilter] = useAtom(fieldsFilterAtom)
-  const [fieldTypesFilter, setFieldTypesFilter] = useAtom(fieldTypesFilterAtom)
-  const [goalsFilter, setGoalsFilter] = useAtom(goalsFilterAtom)
-  const [listsFilter, setListsFilter] = useAtom(listsFilterAtom)
-  const [personsFilter, setPersonsFilter] = useAtom(personsFilterAtom)
-  const [places1Filter, setPlaces1Filter] = useAtom(places1FilterAtom)
-  const [places2Filter, setPlaces2Filter] = useAtom(places2FilterAtom)
-  const [projectReportsFilter, setProjectReportsFilter] = useAtom(
-    projectReportsFilterAtom,
-  )
-  const [projectsFilter, setProjectsFilter] = useAtom(projectsFilterAtom)
-  const [subprojectReportsFilter, setSubprojectReportsFilter] = useAtom(
-    subprojectReportsFilterAtom,
-  )
-  const [subprojectsFilter, setSubprojectsFilter] = useAtom(
-    subprojectsFilterAtom,
-  )
-  const [unitsFilter, setUnitsFilter] = useAtom(unitsFilterAtom)
-  const [widgetsForFieldsFilter, seWidgetsForFieldsFilter] = useAtom(
-    widgetsForFieldsFilterAtom,
-  )
-  const [widgetTypesFilter, setWidgetTypesFilter] = useAtom(
-    widgetTypesFilterAtom,
-  )
-  const [wmsLayersFilter, setWmsLayersFilter] = useAtom(wmsLayersFilterAtom)
-  const [vectorLayersFilter, setVectorLayersFilter] = useAtom(
-    vectorLayersFilterAtom,
-  )
-
-  const filterObject = useMemo(
-    () => ({
-      fields: { filter: fieldsFilter, set: setFieldsFilter },
-      fieldTypes: { filter: fieldTypesFilter, set: setFieldTypesFilter },
-      goals: { filter: goalsFilter, set: setGoalsFilter },
-      lists: { filter: listsFilter, set: setListsFilter },
-      persons: { filter: personsFilter, set: setPersonsFilter },
-      places1: { filter: places1Filter, set: setPlaces1Filter },
-      places2: { filter: places2Filter, set: setPlaces2Filter },
-      projectReports: {
-        filter: projectReportsFilter,
-        set: setProjectReportsFilter,
-      },
-      projects: { filter: projectsFilter, set: setProjectsFilter },
-      subprojectReports: {
-        filter: subprojectReportsFilter,
-        set: setSubprojectReportsFilter,
-      },
-      subprojects: { filter: subprojectsFilter, set: setSubprojectsFilter },
-      units: { filter: unitsFilter, set: setUnitsFilter },
-      widgetsForFields: {
-        filter: widgetsForFieldsFilter,
-        set: seWidgetsForFieldsFilter,
-      },
-      widgetTypes: { filter: widgetTypesFilter, set: setWidgetTypesFilter },
-      wmsLayers: { filter: wmsLayersFilter, set: setWmsLayersFilter },
-      vectorLayers: { filter: vectorLayersFilter, set: setVectorLayersFilter },
-    }),
-    [
-      fieldsFilter,
-      setFieldsFilter,
-      fieldTypesFilter,
-      setFieldTypesFilter,
-      goalsFilter,
-      setGoalsFilter,
-      listsFilter,
-      setListsFilter,
-      personsFilter,
-      setPersonsFilter,
-      places1Filter,
-      setPlaces1Filter,
-      places2Filter,
-      setPlaces2Filter,
-      projectReportsFilter,
-      setProjectReportsFilter,
-      projectsFilter,
-      setProjectsFilter,
-      subprojectReportsFilter,
-      setSubprojectReportsFilter,
-      subprojectsFilter,
-      setSubprojectsFilter,
-      unitsFilter,
-      setUnitsFilter,
-      widgetsForFieldsFilter,
-      seWidgetsForFieldsFilter,
-      widgetTypesFilter,
-      setWidgetTypesFilter,
-      wmsLayersFilter,
-      setWmsLayersFilter,
-      vectorLayersFilter,
-      setVectorLayersFilter,
-    ],
-  )
   const { project_id, place_id, place_id2 } = useParams()
   const location = useLocation()
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -177,19 +66,18 @@ export const Filter = memo(({ level }) => {
     level ? `${level}` : ''
   }FilterAtom`
   const onTabSelect = useCallback((e, data) => setActiveTab(data.value), [])
-  console.log('Filter 1', {
-    filterObject,
-    filterName,
-    tableName,
-  })
-  // TODO: use store
-  // const filter = filterObject[filterName]?.filter
+  // console.log('Filter 1', {
+  //   filterObject,
+  //   filterName,
+  //   tableName,
+  // })
+  const [, setRerenderCount] = useState(0)
+  const rerender = useCallback(() => setRerenderCount((c) => c + 1), [])
   const filterAtom = stores[filterName]
+  // ISSUE: as not using hook, need to manually subscribe to the store
+  // and enforce rerender when the store changes
+  stores.store.sub(filterAtom, rerender)
   const filter = stores?.store?.get?.(filterAtom) ?? []
-  console.log('Filter 1.1', { stores, filter })
-  console.log('Filter 2', {
-    filter,
-  })
   let where = {}
   const whereUnfiltered = {}
 

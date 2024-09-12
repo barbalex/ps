@@ -8,8 +8,8 @@ import * as stores from '../../../store.ts'
 
 type Props = {
   title: string
-  filterName: string
   isFiltered: boolean
+  filterName: string
 }
 
 export const FilterHeader = memo(
@@ -17,9 +17,10 @@ export const FilterHeader = memo(
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const onClickBack = useCallback(() => {
-      navigate({ pathname: '..', search: searchParams.toString() })
-    }, [navigate, searchParams])
+    const onClickBack = useCallback(
+      () => navigate({ pathname: '..', search: searchParams.toString() }),
+      [navigate, searchParams],
+    )
 
     const onClickClearFilter = useCallback(() => {
       const filterAtom = stores[filterName]
