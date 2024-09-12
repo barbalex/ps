@@ -12,19 +12,19 @@ export const removeChildNodes = async ({
   node = [],
   isRoot = false,
 }: Props): void => {
-  const openNodes = store.get(treeOpenNodesAtom)
+  store.set(treeOpenNodesAtom, (openNodes) => {
+    // remove all nodes that are children of the node
+    const newNodes = openNodes.filter((openNode) => {
+      if (isRoot) {
+        // if is root, need to remove root as well
+        return !isStartOf({ node, otherNode: openNode })
+      }
+      // if openNode isn't longer than node, it can't be a child
+      if (openNode.length <= node.length) return true
+      // check if openNode is a child of node i.e. if it starts with node
+      return !isEqual(openNode.slice(0, node.length), node)
+    })
 
-  // remove all nodes that are children of the node
-  const newNodes = openNodes.filter((openNode) => {
-    if (isRoot) {
-      // if is root, need to remove root as well
-      return !isStartOf({ node, otherNode: openNode })
-    }
-    // if openNode isn't longer than node, it can't be a child
-    if (openNode.length <= node.length) return true
-    // check if openNode is a child of node i.e. if it starts with node
-    return !isEqual(openNode.slice(0, node.length), node)
+    return newNodes
   })
-
-  store.set(treeOpenNodesAtom, newNodes)
 }
