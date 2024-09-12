@@ -1,7 +1,6 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
-import { useCorbado } from '@corbado/react'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 
@@ -11,7 +10,11 @@ import { ActionNode } from './Action.tsx'
 import { Places as Place } from '../../generated/client/index.ts'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { treeOpenNodesAtom } from '../../store.ts'
+import {
+  treeOpenNodesAtom,
+  actions1FilterAtom,
+  actions2FilterAtom,
+} from '../../store.ts'
 
 interface Props {
   project_id: string
@@ -24,24 +27,15 @@ interface Props {
 export const ActionsNode = memo(
   ({ project_id, subproject_id, place_id, place, level = 7 }: Props) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
+    const [filterActions1] = useAtom(actions1FilterAtom)
+    const [filterActions2] = useAtom(actions2FilterAtom)
+
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
-    const { user: authUser } = useCorbado()
-
     const { db } = useElectric()!
 
-    const { results: appState } = useLiveQuery(
-      db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-    )
-    const filterField = place_id ? 'filter_actions_2' : 'filter_actions_1'
-
-    const filter = useMemo(
-      () =>
-        appState?.[filterField]?.filter?.((f) => Object.keys(f).length > 0) ??
-        [],
-      [appState, filterField],
-    )
+    const filter = place_id ? filterActions2 : filterActions1
     const where = filter.length > 1 ? { OR: filter } : filter[0]
     const { results: actions = [] } = useLiveQuery(
       db.actions.liveMany({

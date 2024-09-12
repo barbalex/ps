@@ -1158,10 +1158,8 @@ COMMENT ON COLUMN fields.level IS 'level of field if places or below: 1, 2';
 
 CREATE TABLE app_states(
   app_state_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7()
-  filter_actions_1 jsonb DEFAULT NULL, -- a actions object with filter settings
   filter_place_reports_1 jsonb DEFAULT NULL, -- a place_reports object with filter settings
   filter_place_reports_2 jsonb DEFAULT NULL, -- a place_reports object with filter settings
-  filter_actions_2 jsonb DEFAULT NULL, -- a actions object with filter settings
   -- TODO:
   -- activating an additional filter field returns error: too many arguments on function json_object
   -- reason: Maximum Number Of Arguments On A Function is 127
