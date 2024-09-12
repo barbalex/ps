@@ -1,7 +1,5 @@
 import { useCallback, memo, useMemo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
-import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 
@@ -10,7 +8,6 @@ import { Goals as Goal } from '../../../generated/client/index.ts'
 import { GoalReportsNode } from './GoalReports.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { useElectric } from '../../ElectricProvider.tsx'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 interface Props {
@@ -26,12 +23,6 @@ export const GoalNode = memo(
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
-    const { user: authUser } = useCorbado()
-
-    const { db } = useElectric()!
-    const { results: appState } = useLiveQuery(
-      db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-    )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const parentArray = useMemo(

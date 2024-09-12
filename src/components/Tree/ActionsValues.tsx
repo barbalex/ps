@@ -1,7 +1,6 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
-import { useCorbado } from '@corbado/react'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 
@@ -35,7 +34,6 @@ export const ActionValuesNode = memo(
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
-    const { user: authUser } = useCorbado()
 
     const { db } = useElectric()!
     const { results: actionValues = [] } = useLiveQuery(
@@ -43,9 +41,6 @@ export const ActionValuesNode = memo(
         where: { action_id },
         orderBy: { label: 'asc' },
       }),
-    )
-    const { results: appState } = useLiveQuery(
-      db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
     )
 
     const actionValuesNode = useMemo(
