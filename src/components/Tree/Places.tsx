@@ -37,16 +37,15 @@ export const PlacesNode = memo(
     const filter = place_id ? places2Filter : places1Filter
 
     const where = filter.length > 1 ? { OR: filter } : filter[0]
-    // console.log('hello Tree PlacesNode', {
-    //   where,
-    //   filter,
-    //   filterField,
-    //   whereApplied: {
-    //     parent_id: place_id ?? null,
-    //     subproject_id,
-    //     ...(where?.path ? [where] : where),
-    //   },
-    // })
+    console.log('hello Tree PlacesNode', {
+      where,
+      filter,
+      whereApplied: {
+        parent_id: place_id ?? null,
+        subproject_id,
+        ...(where?.path ? [where] : where),
+      },
+    })
     const { results: places = [] } = useLiveQuery(
       db.places.liveMany({
         where: {

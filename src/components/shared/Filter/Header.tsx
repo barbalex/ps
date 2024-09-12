@@ -4,14 +4,16 @@ import { MdFilterAlt, MdFilterAltOff } from 'react-icons/md'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
 import { controls } from '../../../styles.ts'
+import * as stores from '../../../store.ts'
 
 type Props = {
   title: string
+  filterName: string
   isFiltered: boolean
 }
 
 export const FilterHeader = memo(
-  ({ title = 'Filter', isFiltered = false, filterObject }: Props) => {
+  ({ title = 'Filter', isFiltered = false, filterName }: Props) => {
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
@@ -19,10 +21,10 @@ export const FilterHeader = memo(
       navigate({ pathname: '..', search: searchParams.toString() })
     }, [navigate, searchParams])
 
-    const onClickClearFilter = useCallback(
-      () => filterObject.set([]),
-      [filterObject],
-    )
+    const onClickClearFilter = useCallback(() => {
+      const filterAtom = stores[filterName]
+      stores?.store?.set?.(filterAtom, [])
+    }, [filterName])
 
     return (
       <div className="form-header filter">

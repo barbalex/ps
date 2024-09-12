@@ -24,6 +24,7 @@ import {
   wmsLayersFilterAtom,
   vectorLayersFilterAtom,
 } from '../../../store.ts'
+import * as stores from '../../../store.ts'
 import { snakeToCamel } from '../../../modules/snakeToCamel.ts'
 
 import '../../../form.css'
@@ -146,8 +147,6 @@ export const Filter = memo(({ level }) => {
     // the prefix to the tableName is the grandParent without its last character (s)
     tableName = `${grandParent.slice(0, -1)}_${tableName}`
   }
-  // add _1 and _2 when below subproject_id
-  const filterName = `${snakeToCamel(tableName)}${level ? `${level}` : ''}`
   // for tableNameForTitle: replace all underscores with spaces and uppercase all first letters
 
   const { results: placeLevel } = useLiveQuery(
@@ -173,13 +172,21 @@ export const Filter = memo(({ level }) => {
   const title = `${tableNameForTitle} Filters`
 
   const [activeTab, setActiveTab] = useState(1)
+  // add 1 and 2 when below subproject_id
+  const filterName = `${snakeToCamel(tableName)}${
+    level ? `${level}` : ''
+  }FilterAtom`
   const onTabSelect = useCallback((e, data) => setActiveTab(data.value), [])
   console.log('Filter 1', {
     filterObject,
     filterName,
     tableName,
   })
-  const filter = filterObject[filterName]?.filter
+  // TODO: use store
+  // const filter = filterObject[filterName]?.filter
+  const filterAtom = stores[filterName]
+  const filter = stores?.store?.get?.(filterAtom) ?? []
+  console.log('Filter 1.1', { stores, filter })
   console.log('Filter 2', {
     filter,
   })
@@ -239,7 +246,7 @@ export const Filter = memo(({ level }) => {
     <div className="form-outer-container">
       <FilterHeader
         title={`${title} (${results.length}/${resultsUnfiltered.length})`}
-        filterObject={filterObject[filterName]}
+        filterName={filterName}
         isFiltered={isFiltered}
       />
       <TabList
@@ -266,7 +273,7 @@ export const Filter = memo(({ level }) => {
         })}
       </TabList>
       <OrFilter
-        filterObject={filterObject[filterName]}
+        filterName={filterName}
         orFilters={orFiltersToUse}
         orIndex={activeTab - 1}
       />
