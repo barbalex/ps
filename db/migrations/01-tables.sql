@@ -1156,26 +1156,6 @@ COMMENT ON COLUMN fields.table_name IS 'table, on which this field is used insid
 
 COMMENT ON COLUMN fields.level IS 'level of field if places or below: 1, 2';
 
--- TODO: add these filters to store
-CREATE TABLE app_states(
-  app_state_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7()
-  filter_vector_layer_displays jsonb DEFAULT NULL, -- a vector_layer_displays object with filter settings
-  filter_taxonomies jsonb DEFAULT NULL, -- a taxonomies object with filter settings
-  filter_occurrence_imports jsonb DEFAULT NULL, -- a occurrence_imports object with filter settings
-  filter_subproject_charts jsonb DEFAULT NULL, -- a charts object with filter settings
-  filter_subproject_chart_subjects jsonb DEFAULT NULL, -- a chart_subjects object with filter settings
-  filter_place_check_taxa_1 jsonb DEFAULT NULL, -- a check_taxa object with filter settings
-  filter_place_users_1 jsonb DEFAULT NULL, -- a place_users object with filter settings
-  filter_place_charts_1 jsonb DEFAULT NULL, -- a charts object with filter settings
-  filter_place_chart_subjects_1 jsonb DEFAULT NULL, -- a chart_subjects object with filter settings
-  filter_check_values_1 jsonb DEFAULT NULL, -- a check_values object with filter settings
-  filter_check_values_2 jsonb DEFAULT NULL, -- a check_values object with filter settings
-  filter_place_check_taxa_2 jsonb DEFAULT NULL, -- a check_taxa object with filter settings
-  filter_place_users_2 jsonb DEFAULT NULL, -- a place_users object with filter settings
-  filter_place_charts_2 jsonb DEFAULT NULL, -- a charts object with filter settings
-  filter_place_chart_subjects_2 jsonb DEFAULT NULL, -- a chart_subjects object with filter settings
-);
-
 
 CREATE TYPE occurrence_imports_previous_import_operation_enum AS enum(
   'update_and_extend',
