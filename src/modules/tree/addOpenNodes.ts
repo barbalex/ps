@@ -6,7 +6,7 @@ interface Props {
   setOpenNodes: (value: string[]) => void
 }
 
-export const addOpenNodes = ({ nodes = [], setOpenNodes }: Props): void => {
+export const addOpenNodes = ({ nodes = [] }: Props): void => {
   console.log('addOpenNodes 1, nodes passed in:', nodes)
   if (!nodes.length) return
 
@@ -19,9 +19,5 @@ export const addOpenNodes = ({ nodes = [], setOpenNodes }: Props): void => {
   const newNodes = [...openNodes, ...nodesToAdd]
   console.log('addOpenNodes 4, newNodes:', newNodes)
 
-  // if (setOpenNodes) {
-  //   setOpenNodes(newNodes)
-  //   return
-  // }
   store.set(treeOpenNodesAtom, (openNodes) => [...openNodes, ...nodesToAdd])
 }
