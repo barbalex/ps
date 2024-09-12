@@ -56,6 +56,19 @@ export const ProjectsNode = memo(() => {
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
 
+  console.log('Tree ProjectsNode', {
+    projects,
+    projectsFilter,
+    projectsNode,
+    openNodes,
+    urlPath,
+    parentArray,
+    ownArray,
+    isOpen,
+    isInActiveNodeArray,
+    isActive,
+  })
+
   const onClickButton = useCallback(() => {
     if (isOpen) {
       removeChildNodes({

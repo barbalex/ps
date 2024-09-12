@@ -27,22 +27,23 @@ interface Props {
   project: Project
   level?: number
 }
+const parentArray = ['data', 'projects']
 
 export const ProjectNode = memo(({ project, level = 2 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [designing] = useAtom(designingAtom)
-  const location = useLocation()
+
+  const { pathname } = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
   const showFiles = project.files_active_projects ?? false
 
-  const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const parentArray = useMemo(() => ['data', 'projects'], [])
+  const urlPath = pathname.split('/').filter((p) => p !== '')
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = useMemo(
     () => [...parentArray, project.project_id],
-    [parentArray, project.project_id],
+    [project.project_id],
   )
   const ownUrl = `/${ownArray.join('/')}`
 
@@ -70,11 +71,20 @@ export const ProjectNode = memo(({ project, level = 2 }: Props) => {
     isOpen,
     navigate,
     ownArray,
-    parentArray,
     parentUrl,
     searchParams,
     urlPath.length,
   ])
+
+  console.log('Tree ProjectNode', {
+    project,
+    level,
+    isOpen,
+    isActive,
+    ownUrl,
+    openNodes,
+    pathname,
+  })
 
   return (
     <>

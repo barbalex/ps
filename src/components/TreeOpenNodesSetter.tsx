@@ -7,10 +7,12 @@ import { treeOpenNodesAtom } from '../store.ts'
 
 // ensure all parts of urlPath are included in openNodes
 export const TreeOpenNodesSetter = memo(() => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodes, setOpenNodes] = useAtom(treeOpenNodesAtom)
+  console.log('TreeOpenNodesSetter, openNodes:', openNodes)
 
-  const { pathname } = useLocation()
-  const urlPath = pathname.split('/').filter((p) => p !== '')
+  const location = useLocation()
+  const urlPath = location.pathname.split('/').filter((p) => p !== '')
+  console.log('TreeOpenNodesSetter, urlPath:', urlPath)
 
   // console.log('hello TreeOpenNodesSetter, openNodes:', openNodes)
 
@@ -24,12 +26,13 @@ export const TreeOpenNodesSetter = memo(() => {
         return [...acc, node]
       }, [])
 
+      console.log('TreeOpenNodesSetter, effect, nodes:', nodes)
       // addOpenNodes ensures only missing nodes are added
-      await addOpenNodes({ nodes })
+      addOpenNodes({ nodes, setOpenNodes })
     }
 
     go()
-  }, [openNodes, urlPath])
+  }, [openNodes, location.pathname])
 
   return null
 })
