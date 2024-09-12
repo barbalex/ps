@@ -1,6 +1,5 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
@@ -10,7 +9,7 @@ import { Node } from './Node.tsx'
 import { FileNode } from './File.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { treeOpenNodesAtom } from '../../store.ts'
+import { treeOpenNodesAtom, filesFilterAtom } from '../../store.ts'
 
 interface Props {
   project_id?: string
@@ -33,21 +32,13 @@ export const FilesNode = memo(
     level,
   }: Props) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
+    const [filter] = useAtom(filesFilterAtom)
+
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
-    const { user: authUser } = useCorbado()
-
     const { db } = useElectric()!
-    const { results: appState } = useLiveQuery(
-      db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-    )
 
-    const filter = useMemo(
-      () =>
-        appState?.filter_files?.filter((f) => Object.keys(f).length > 0) ?? [],
-      [appState?.filter_files],
-    )
     const where = filter.length > 1 ? { OR: filter } : filter[0]
     const hierarchyWhere = useMemo(() => {
       const where = {}

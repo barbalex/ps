@@ -875,7 +875,8 @@ export const router = () => {
                           children: [
                             {
                               index: true,
-                              lazy: () => import('../routes/wmsLayer/Form/index.tsx'),
+                              lazy: () =>
+                                import('../routes/wmsLayer/Form/index.tsx'),
                             },
                           ],
                         },
@@ -1463,13 +1464,6 @@ export const router = () => {
             {
               path: 'app-states',
               lazy: () => import('../routes/appStates.tsx'),
-              handle: {
-                crumb: {
-                  text: 'Options',
-                  table: 'app_states',
-                  folder: false,
-                },
-              },
             },
           ],
         },
