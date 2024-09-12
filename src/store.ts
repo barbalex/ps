@@ -119,3 +119,19 @@ export const placeReports2FilterAtom = atomWithStorage(
   [],
 )
 export const filesFilterAtom = atomWithStorage('filesFilterAtom', [])
+// TODO: add more filters
+// filter_vector_layer_displays
+// filter_taxonomies
+// filter_occurrence_imports
+// filter_subproject_charts
+// filter_subproject_chart_subjects
+// filter_place_check_taxa_1
+// filter_place_users_1
+// filter_place_charts_1
+// filter_place_chart_subjects_1
+// filter_check_values_1
+// filter_check_values_2
+// filter_place_check_taxa_2
+// filter_place_users_2
+// filter_place_charts_2
+// filter_place_chart_subjects_2
