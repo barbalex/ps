@@ -1,6 +1,4 @@
 // seems not in use
-// BEWARE: uses obsolete app_states table
-// If reactivate, use atom store instead
 import { isNodeOpen } from './isNodeOpen.ts'
 
 export const setOpenNodes = async ({

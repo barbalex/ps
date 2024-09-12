@@ -8,7 +8,6 @@ import {
   useContext,
 } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
 import { useParams } from 'react-router-dom'
 import { Accordion } from '@fluentui/react-components'
 import { monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
@@ -28,7 +27,6 @@ import { ActiveLayer } from './Active.tsx'
 import { isItemData } from './shared.ts'
 import { IsNarrowContext } from '../../IsNarrowContext.ts'
 import { mapLayerSortingAtom } from '../../../../../store.ts'
-import { set } from 'zod'
 
 type ItemEntry = { itemId: string; element: HTMLElement }
 
@@ -176,7 +174,7 @@ export const ActiveLayers = memo(() => {
       setMapLayerSorting(newLayerSorting)
     }
     run()
-  }, [db.app_states, layerPresentationIds, mapLayerSorting, setMapLayerSorting])
+  }, [layerPresentationIds, mapLayerSorting, setMapLayerSorting])
 
   const [registry] = useState(getItemRegistry)
   const [lastCardMoved, setLastCardMoved] = useState<LastCardMoved>(null)
