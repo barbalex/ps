@@ -105,6 +105,11 @@ export const BreadcrumbForFolder = forwardRef(
       designing,
     ])
 
+    // console.log(
+    //   'BreadcrumbForFolder, nav-paths:',
+    //   navs.map((n) => n.path),
+    // )
+
     let label = row?.label
     if (table === 'root' || table === 'docs') label = text
 

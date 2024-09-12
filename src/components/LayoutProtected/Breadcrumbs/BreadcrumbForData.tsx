@@ -35,8 +35,6 @@ export const BreadcrumbForData = forwardRef(
 
     const [occurrenceImportIds, setOccurrenceImportIds] = useState([])
 
-    const idField = idFieldFromTable(table)
-
     const filterParams = useMemo(() => {
       // filter by parents
       const filterParams = {}
@@ -120,10 +118,17 @@ export const BreadcrumbForData = forwardRef(
 
     const { results } = useLiveQuery(db[queryTable]?.liveMany(queryParam))
 
+    const idField = idFieldFromTable(table)
     const navs = (results ?? []).map((result) => ({
       path: `${match.pathname}/${result[idField]}`,
       text: result.label ?? result[idField],
     }))
+
+    // console.log(
+    //   'BreadcrumbForData, nav-paths:',
+    //   navs.map((n) => n.path),
+    // )
+    // console.log('BreadcrumbForData, idField:', idField)
 
     const [label, setLabel] = useState(text)
     useEffect(() => {
