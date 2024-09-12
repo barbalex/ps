@@ -15,7 +15,7 @@ const containerStyle = {
   userSelect: 'none',
   // do not layout offscreen content while allowing search
   // https://developer.mozilla.org/en-US/docs/Web/CSS/content-visibility
-  // UUPS: this prevents horizontal scrolling!
+  // UPS: this prevents horizontal scrolling!
   // see: https://stackoverflow.com/a/76597041/712005
   // using contain: 'paint layout' on parent also
   contentVisibility: 'auto',
