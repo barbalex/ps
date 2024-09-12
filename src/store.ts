@@ -28,8 +28,8 @@ export const mapLocateAtom = atomWithStorage('mapLocateAtom', false)
 // - lng
 // - zoom
 // - layers. This is an array of objects with keys: label, properties
-// With this structure, wms and wfs can set their layer data into such an object, then add the object to the existing in app_states.map_info
-// app_states.map_info is reset when user closes info window, so memory is not wasted
+// With this structure, wms and wfs can set their layer data into such an object, then add the object to the existing in mapInfoAtom
+// mapInfoAtom is reset when user closes info window, so memory is not wasted
 // the info drawer filters all the objects with correct lat, lng and zoom and shows them
 // Information presented, when user clicks on a map. Array of: {label, properties} where properties is an array of [key, value]
 export const mapInfoAtom = atomWithStorage('mapInfoAtom', null)
@@ -110,3 +110,12 @@ export const checks1FilterAtom = atomWithStorage('checks1FilterAtom', [])
 export const checks2FilterAtom = atomWithStorage('checks2FilterAtom', [])
 export const actions1FilterAtom = atomWithStorage('actions1FilterAtom', [])
 export const actions2FilterAtom = atomWithStorage('actions2FilterAtom', [])
+export const placeReports1FilterAtom = atomWithStorage(
+  'placeReports1FilterAtom',
+  [],
+)
+export const placeReports2FilterAtom = atomWithStorage(
+  'placeReports2FilterAtom',
+  [],
+)
+export const filesFilterAtom = atomWithStorage('filesFilterAtom', [])

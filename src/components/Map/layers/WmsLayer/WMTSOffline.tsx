@@ -59,7 +59,6 @@ export const WMTSOffline = ({ layer }: Props) => {
     }
   }, [
     db.notifications,
-    db.app_states,
     layer,
     layer.grayscale,
     layer.id,

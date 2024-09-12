@@ -111,12 +111,12 @@ export const Jsonb = memo(
           })
 
           if (isFilter) {
+            // TODO: wait until new db and it's accessing lib. Then implement these queries
             // when filtering no id is passed for the row
             // how to filter on jsonb fields?
             // https://discord.com/channels/933657521581858818/1248997155448819775/1248997155448819775
             // example from electric-sql discord: https://discord.com/channels/933657521581858818/1246045111478124645
             // where: { [jsonbFieldName]: { path: ["is_admin"], equals: true } },
-
             const filterAtom =
               stores[
                 `${snakeToCamel(table)}${level ? `${level}` : ''}FilterAtom`
@@ -128,16 +128,6 @@ export const Jsonb = memo(
               ...activeFilter,
               { path: [jsonFieldName], contains: val },
             ])
-            // try {
-            //   await db.app_states.update({
-            //     where: { app_state_id: appState?.app_state_id },
-            //     data: {
-            //       [filterField]: [{ path: [jsonFieldName], contains: val }],
-            //     },
-            //   })
-            // } catch (error) {
-            //   console.log('Jsonb, error updating app_states:', error)
-            // }
             return
           }
           try {
