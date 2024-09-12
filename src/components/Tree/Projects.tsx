@@ -56,19 +56,6 @@ export const ProjectsNode = memo(() => {
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
 
-  console.log('Tree ProjectsNode', {
-    projects,
-    projectsFilter,
-    projectsNode,
-    openNodes,
-    urlPath,
-    parentArray,
-    ownArray,
-    isOpen,
-    isInActiveNodeArray,
-    isActive,
-  })
-
   const onClickButton = useCallback(() => {
     if (isOpen) {
       removeChildNodes({
@@ -79,6 +66,7 @@ export const ProjectsNode = memo(() => {
       if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
         navigate({ pathname: parentUrl, search: searchParams.toString() })
       }
+
       return
     }
     // add to openNodes without navigating
