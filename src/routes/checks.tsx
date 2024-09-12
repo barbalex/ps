@@ -1,7 +1,7 @@
-import { useCallback, useMemo, memo } from 'react'
+import { useCallback, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
+import { useAtom } from 'jotai'
 
 import { useElectric } from '../ElectricProvider.tsx'
 import { createCheck } from '../modules/createRows.ts'
@@ -9,26 +9,20 @@ import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { LayerMenu } from '../components/shared/LayerMenu.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
+import { checks1FilterAtom, checks2FilterAtom } from '../store.ts'
 
 import '../form.css'
 
 export const Component = memo(() => {
+  const [checks1Filter] = useAtom(checks1FilterAtom)
+  const [checks2Filter] = useAtom(checks2FilterAtom)
+
   const { project_id, place_id, place_id2 } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { user: authUser } = useCorbado()
-
   const { db } = useElectric()!
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
-  const filterField = place_id2 ? 'filter_checks_2' : 'filter_checks_1'
 
-  const filter = useMemo(
-    () =>
-      appState?.[filterField]?.filter?.((f) => Object.keys(f).length > 0) ?? [],
-    [appState, filterField],
-  )
+  const filter = place_id2 ? checks2Filter : checks1Filter
   const where = filter.length > 1 ? { OR: filter } : filter[0]
   const { results: checks = [] } = useLiveQuery(
     db.checks.liveMany({
