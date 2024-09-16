@@ -19,12 +19,23 @@ import {
   useOverflowMenu,
 } from '@fluentui/react-components'
 import { useResizeDetector } from 'react-resize-detector'
+import { useAtom } from 'jotai'
 
 import { ToNavs } from '../ToNavs.tsx'
 import { DataNavsOverflowing } from './DataNavs.tsx'
 import { buildNavs } from '../../../../modules/navs.ts'
 import { useElectric } from '../../../../ElectricProvider.tsx'
-import { useCorbado } from '@corbado/react'
+import { designingAtom } from '../../../../store.ts'
+
+const menuStyle = {
+  backgroundColor: 'transparent',
+  minWidth: 'auto',
+  borderRadius: 0,
+  borderTop: 'none',
+  borderBottom: 'none',
+  borderRight: 'none',
+  marginLeft: 'auto',
+}
 
 const OverflowMenuItem: React.FC = ({ path, text }) => {
   const navigate = useNavigate()
@@ -39,7 +50,10 @@ const OverflowMenuItem: React.FC = ({ path, text }) => {
   if (isVisible) return null
 
   return (
-    <MenuItem className="nav-menu-item" onClick={onClick}>
+    <MenuItem
+      className="nav-menu-item"
+      onClick={onClick}
+    >
       {text}
     </MenuItem>
   )
@@ -53,12 +67,13 @@ export const OverflowMenu: React.FC = ({ tos }) => {
   }
 
   return (
-    <Menu openOnHover>
+    <Menu>
       <MenuTrigger>
         <MenuButton
           className="menu-button"
           ref={ref}
           menuIcon={<BsCaretDown />}
+          style={menuStyle}
         >
           +{overflowCount}
         </MenuButton>
@@ -80,13 +95,13 @@ export const OverflowMenu: React.FC = ({ tos }) => {
   )
 }
 
-export const NavsOverflowing = ({ designing }) => {
+export const NavsOverflowing = () => {
+  const [designing] = useAtom(designingAtom)
   const location = useLocation()
   const matches = useMatches()
   const params = useParams()
 
   const { db } = useElectric()!
-  const { user: authUser } = useCorbado()
 
   const thisPathsMatches = matches.filter(
     (match) => match.pathname === location.pathname && match.handle,
@@ -102,7 +117,12 @@ export const NavsOverflowing = ({ designing }) => {
         if (!to) continue
         if (!designing && to.showOnlyWhenDesigning) continue
         // build tos
-        const nav = await buildNavs({ ...to, ...params, db, authUser })
+        const nav = await buildNavs({
+          ...to,
+          ...params,
+          db,
+          designing,
+        })
         tos.push(nav)
       }
 
@@ -128,13 +148,21 @@ export const NavsOverflowing = ({ designing }) => {
   //   thisPathsMatches,
   //   pathname: location.pathname,
   // })
+  // console.log('Navs Overflowing index rendering')
 
   if (tosToUse?.length) {
     return (
-      <Overflow ref={widthMeasureRef} overflowDirection="start" padding={20}>
+      <Overflow
+        ref={widthMeasureRef}
+        overflowDirection="end"
+        padding={20}
+      >
         <nav className="navs-resizable">
+          <ToNavs
+            tos={tosToUse}
+            width={width}
+          />
           <OverflowMenu tos={tosToUse} />
-          <ToNavs tos={tosToUse} width={width} />
         </nav>
       </Overflow>
     )

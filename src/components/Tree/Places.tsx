@@ -1,14 +1,19 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
+import { useAtom } from 'jotai'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Node } from './Node.tsx'
 import { PlaceNode } from './Place/index.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import {
+  treeOpenNodesAtom,
+  places1FilterAtom,
+  places2FilterAtom,
+} from '../../store.ts'
 
 interface Props {
   project_id: string
@@ -18,40 +23,29 @@ interface Props {
 
 export const PlacesNode = memo(
   ({ project_id, subproject_id, place_id }: Props) => {
-    const level = place_id ? 7 : 5
+    const [openNodes] = useAtom(treeOpenNodesAtom)
+    const [places1Filter] = useAtom(places1FilterAtom)
+    const [places2Filter] = useAtom(places2FilterAtom)
+
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
-    const { user: authUser } = useCorbado()
-
     const { db } = useElectric()!
 
-    const { results: appState } = useLiveQuery(
-      db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-    )
-    const openNodes = useMemo(
-      () => appState?.tree_open_nodes ?? [],
-      [appState?.tree_open_nodes],
-    )
-    const filterField = place_id ? 'filter_places_2' : 'filter_places_1'
+    const level = place_id ? 7 : 5
 
-    const filter = useMemo(
-      () =>
-        appState?.[filterField]?.filter?.((f) => Object.keys(f).length > 0) ??
-        [],
-      [appState, filterField],
-    )
+    const filter = place_id ? places2Filter : places1Filter
+
     const where = filter.length > 1 ? { OR: filter } : filter[0]
-    console.log('hello Tree PlacesNode', {
-      where,
-      filter,
-      filterField,
-      whereApplied: {
-        parent_id: place_id ?? null,
-        subproject_id,
-        ...(where?.path ? [where] : where),
-      },
-    })
+    // console.log('hello Tree PlacesNode', {
+    //   where,
+    //   filter,
+    //   whereApplied: {
+    //     parent_id: place_id ?? null,
+    //     subproject_id,
+    //     ...(where?.path ? [where] : where),
+    //   },
+    // })
     const { results: places = [] } = useLiveQuery(
       db.places.liveMany({
         where: {
@@ -116,11 +110,7 @@ export const PlacesNode = memo(
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
-        removeChildNodes({
-          node: parentArray,
-          db,
-          appStateId: appState?.app_state_id,
-        })
+        removeChildNodes({ node: parentArray })
         // only navigate if urlPath includes ownArray
         if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
           navigate({
@@ -131,16 +121,10 @@ export const PlacesNode = memo(
         return
       }
       // add to openNodes without navigating
-      addOpenNodes({
-        nodes: [ownArray],
-        db,
-        appStateId: appState?.app_state_id,
-      })
+      addOpenNodes({ nodes: [ownArray] })
     }, [
       isOpen,
       ownArray,
-      db,
-      appState?.app_state_id,
       parentArray,
       isInActiveNodeArray,
       urlPath.length,

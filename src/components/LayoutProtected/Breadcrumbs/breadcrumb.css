@@ -1,9 +1,23 @@
+.breadcrumbs {
+  border-top: 1px solid rgba(55, 118, 28, 0.5);
+  border-bottom: 1px solid rgba(55, 118, 28, 0.5);
+  background-color: white;
+  border-collapse: collapse;
+  display: flex;
+  flex-wrap: wrap;
+  user-select: none;
+  margin-left: -1em;
+  align-items: stretch;
+}
+
+/* needed to thicken the right arrowed clip path in :after */
+.breadcrumbs__crumb_container {
+  position: relative;
+}
+
 .breadcrumbs__crumb {
   background: #fff;
-  color: #333;
-  outline: none;
-  border-top: 1px solid #cbd2d9;
-  border-bottom: 1px solid #cbd2d9;
+  border-collapse: collapse;
   padding: 0 0 0 1.5em;
   position: relative;
   text-decoration: none;
@@ -15,7 +29,6 @@
 
 .breadcrumbs__crumb__menu-item {
   color: #333;
-  outline: none;
   padding: 0 0 0 1.5em;
   text-decoration: none;
   transition: background 0.2s linear;
@@ -23,11 +36,19 @@
   align-items: center;
 }
 
+.menu-button span {
+  height: 28px;
+}
 .menu-button svg {
   height: 18px;
   width: 18px;
-  top: -3px;
   position: relative;
+  top: 4px;
+  left: -3px;
+}
+
+.resizable-area .menu-button svg {
+  height: 24px;
 }
 
 .breadcrumbs__crumb:first-of-type {
@@ -37,15 +58,34 @@
 .breadcrumbs__crumb.link,
 .breadcrumbs__crumb__menu-item.link {
   cursor: pointer;
+  text-decoration-color: rgba(0, 0, 0, 0.3);
+}
+
+.breadcrumbs__crumb:not(.is-active):hover:not(:has(.menu-icon:hover)):not(
+    :has(.designing-button:hover)
+  ) {
   text-decoration: underline;
   text-decoration-color: rgba(0, 0, 0, 0.3);
 }
 
-.breadcrumbs__crumb:hover:after,
-.breadcrumbs__crumb:hover {
+.menu-icon {
+  display: flex;
+  align-items: center;
+  font-size: 1.2em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  cursor: pointer;
+  position: relative;
+  top: 0.1em;
+  border: 1px solid rgba(237, 241, 245, 1);
+  border-radius: 20px;
+  height: 33px;
+}
+.menu-icon:hover {
   background: rgba(237, 241, 245, 1);
 }
 
+/* what is this for? */
 .breadcrumbs__crumb:focus:after,
 .breadcrumbs__crumb:focus,
 .breadcrumbs__crumb.is-active:focus {
@@ -53,10 +93,35 @@
   color: #fff;
 }
 
-.resizable-area > button::after,
-.resizable-area > button::before,
-.breadcrumbs__crumb::after,
-.breadcrumbs__crumb::before {
+.resizable-area {
+  display: flex;
+  flex-wrap: nowrap;
+  position: relative;
+  min-height: 47px;
+  margin-left: -1em;
+  background-color: #fff;
+  border-top: 1px solid rgba(55, 118, 28, 0.5);
+  border-bottom: 1px solid rgba(55, 118, 28, 0.5);
+  align-items: stretch;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.resizable-area > button,
+.menu-button {
+  border-color: rgba(55, 118, 28, 0.5) !important;
+  border-bottom: none;
+  border-top: none;
+  border-radius: 0;
+}
+
+.resizable-area > button {
+  border-right-width: 1.4px;
+  border-right-color: rgba(55, 118, 28, 0.4) !important;
+}
+
+.breadcrumbs__crumb_container::after,
+.breadcrumbs__crumb_container::before {
   background: white;
   bottom: 0;
   clip-path: polygon(50% 50%, -50% -50%, 0 100%);
@@ -69,14 +134,27 @@
   z-index: 1;
 }
 
+.breadcrumbs__crumb::after,
+.breadcrumbs__crumb::before {
+  background: rgba(55, 118, 28, 0.5);
+  bottom: 0;
+  clip-path: polygon(50% 50%, -50% -50%, 0 100%);
+  content: '';
+  left: calc(100% + 0.8px);
+  position: absolute;
+  top: 1px;
+  transition: background 0.2s linear;
+  width: 2em;
+  z-index: 1;
+}
+
 .breadcrumbs__crumb::before {
   background: #cbd2d9;
   margin-left: 1px;
 }
 
-.breadcrumbs__crumb.is-active,
-.breadcrumbs__crumb.is-active:after {
-  background: rgba(237, 241, 245, 1);
+.breadcrumbs__crumb.is-active {
+  text-shadow: rgba(38, 82, 37, 1) 0 0 1px;
 }
 
 .breadcrumbs__crumb:last-child {
@@ -107,13 +185,4 @@
 .breadcrumbs__crumb > ul > li > div > span > svg,
 .breadcrumbs__crumb__menu-item > ul > li > div > span > svg {
   font-size: large;
-}
-
-.menu-icon {
-  font-size: 1.2em;
-  padding-left: 0.5em;
-  padding-right: 0.5em;
-  cursor: pointer;
-  position: relative;
-  top: 0.1em;
 }

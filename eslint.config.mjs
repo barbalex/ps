@@ -22,8 +22,8 @@ export default [
       '**/dist',
       '**/*.mjs',
       'src/generated',
-      'src/components/Map/TileLayers/TileLayer/WMTS.tsx',
-      'src/components/Map/TileLayers/TileLayer/WMTSOffline.tsx',
+      'src/components/Map/WmsLayers/WmsLayer/WMTS.tsx',
+      'src/components/Map/WmsLayers/WmsLayer/WMTSOffline.tsx',
     ],
   },
   ...fixupConfigRules(

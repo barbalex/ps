@@ -1,7 +1,7 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
-import { useCorbado } from '@corbado/react'
+import { useAtom } from 'jotai'
 
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
@@ -10,13 +10,13 @@ import { createChart } from '../modules/createRows.ts'
 import '../form.css'
 
 import { useElectric } from '../ElectricProvider.tsx'
+import { designingAtom } from '../store.ts'
 
 export const Component = memo(() => {
+  const [designing] = useAtom(designingAtom)
   const { project_id, subproject_id, place_id, place_id2 } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-
-  const { user: authUser } = useCorbado()
 
   const where = useMemo(() => {
     const where = {}
@@ -33,10 +33,6 @@ export const Component = memo(() => {
   }, [place_id, place_id2, project_id, subproject_id])
 
   const { db } = useElectric()!
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
-  const designing = appState?.designing ?? false
   const { results: charts = [] } = useLiveQuery(
     db.charts.liveMany({
       where,
@@ -78,7 +74,11 @@ export const Component = memo(() => {
       />
       <div className="list-container">
         {charts.map(({ chart_id, label }) => (
-          <Row key={chart_id} label={label ?? chart_id} to={chart_id} />
+          <Row
+            key={chart_id}
+            label={label ?? chart_id}
+            to={chart_id}
+          />
         ))}
       </div>
     </div>

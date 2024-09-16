@@ -16,6 +16,8 @@ export const generateVectorLayerTriggers = async (db) => {
       BEGIN
         INSERT INTO vector_layer_displays (vector_layer_id)
         VALUES (NEW.vector_layer_id);
+        INSERT INTO layer_presentations (vector_layer_id)
+        VALUES (NEW.vector_layer_id);
       END;`,
     })
   }

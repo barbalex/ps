@@ -20,6 +20,7 @@ import { generateProjectReportLabel } from './sql/projectReports.ts'
 import { generateFieldLabel } from './sql/fields.ts'
 import { generatePersonLabel } from './sql/persons.ts'
 import { generateCrsLabel } from './sql/crs.ts'
+import { generateProjectCrsLabel } from './sql/projectCrs.ts'
 import { generatePlaceLabel } from './sql/places.ts'
 import { generatePlaceUserLabel } from './sql/placeUsers.ts'
 import { generateSubprojectTaxonLabel } from './sql/subprojectTaxa.ts'
@@ -38,13 +39,14 @@ import { generateActionReportValueLabel } from './sql/actionReportValues.ts'
 import { generatePlaceReportLabel } from './sql/placeReports.ts'
 import { generatePlaceReportValueLabel } from './sql/placeReportValues.ts'
 import { generateMessageLabel } from './sql/messages.ts'
-import { generateAppStatesLabel } from './sql/appStates.ts'
 import { generateVectorLayerDisplayLabel } from './sql/vectorLayerDisplays.ts'
+import { generateLayerPresentationLabel } from './sql/layerPresentations.ts'
 import { generateChartLabel } from './sql/charts.ts'
 import { generateChartSubjectLabel } from './sql/chartSubjects.ts'
 import { generateOccurrenceImportLabel } from './sql/occurrenceImports.ts'
 // ISSUE: how to create v7 uuids? https://github.com/rhashimoto/wa-sqlite/discussions/169, https://github.com/craigpastro/sqlite-uuidv7/issues/3
 // import { generateVectorLayerTriggers } from './labelGenerators/vectorLayers'
+// import { generateWmsLayerTriggers } from './labelGenerators/wmsLayers'
 import { seedTestData } from './seedTestData.ts'
 
 // how to get work:
@@ -59,7 +61,7 @@ export const SqlInitializer = () => {
   useEffect(() => {
     const generate = async () => {
       // seems that these can't be run in migrations
-      await generateUserLabel(db)
+      // await generateUserLabel(db)
       // await generateAccountLabel(db)
       // await generateProjectLabel(db)
       // await generateSubprojectLabel(db)
@@ -78,6 +80,7 @@ export const SqlInitializer = () => {
       // await generateFieldLabel(db)
       // await generatePersonLabel(db)
       // await generateCrsLabel(db)
+      // await generateProjectCrsLabel(db)
       // await generatePlaceLabel(db)
       // await generatePlaceUserLabel(db)
       // await generateSubprojectTaxonLabel(db)
@@ -96,12 +99,13 @@ export const SqlInitializer = () => {
       // await generatePlaceReportLabel(db)
       // await generatePlaceReportValueLabel(db)
       // await generateMessageLabel(db)
-      // await generateAppStatesLabel(db)
       // await generateVectorLayerDisplayLabel(db)
+      // await generateLayerPresentationLabel(db)
       // await generateChartLabel(db)
       // await generateChartSubjectLabel(db)
       // await generateOccurrenceImportLabel(db)
       // await generateVectorLayerTriggers(db)
+      // await generateWmsLayerTriggers(db)
       // console.log('generated vector layer triggers')
       await seedTestData(db)
     }

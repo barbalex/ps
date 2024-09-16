@@ -5,27 +5,29 @@ import { TbZoomScan } from 'react-icons/tb'
 import { Button } from '@fluentui/react-button'
 import { bbox } from '@turf/bbox'
 import { buffer } from '@turf/buffer'
-import { useCorbado } from '@corbado/react'
+import { useAtom, useSetAtom } from 'jotai'
 
 import {
   createPlace,
   createVectorLayer,
   createVectorLayerDisplay,
   createNotification,
+  createLayerPresentation,
 } from '../../modules/createRows.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
+import { tabsAtom, mapBoundsAtom } from '../../store.ts'
 
 interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
 }
 export const Header = memo(({ autoFocusRef }: Props) => {
+  const [tabs, setTabs] = useAtom(tabsAtom)
+  const setMapBounds = useSetAtom(mapBoundsAtom)
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { project_id, subproject_id, place_id, place_id2 } = useParams()
-
-  const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
   const { results: placeLevels } = useLiveQuery(
@@ -48,6 +50,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
       level: place_id2 ? 2 : 1,
     })
     await db.places.create({ data })
+
     // need to create a corresponding vector layer and vector layer display
     const vectorLayer = createVectorLayer({
       project_id,
@@ -55,10 +58,16 @@ export const Header = memo(({ autoFocusRef }: Props) => {
       label: placeNamePlural,
     })
     const newVectorLayer = await db.vector_layers.create({ data: vectorLayer })
+
     const newVLD = createVectorLayerDisplay({
       vector_layer_id: newVectorLayer.vector_layer_id,
     })
     db.vector_layer_displays.create({ data: newVLD })
+
+    const newLP = createLayerPresentation({
+      vector_layer_id: newVectorLayer.vector_layer_id,
+    })
+    db.layer_presentations.create({ data: newLP })
 
     navigate({
       pathname: `../${data.place_id}`,
@@ -135,15 +144,8 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     }
 
     // 1. show map if not happening
-    const appState = await db.app_states.findFirst({
-      where: { user_email: authUser?.email },
-    })
-    const tabs = appState?.tabs ?? []
     if (!tabs.includes('map')) {
-      await db.app_states.update({
-        where: { app_state_id: appState?.app_state_id },
-        data: { tabs: [...tabs, 'map'] },
-      })
+      setTabs([...tabs, 'map'])
     }
 
     // 2. zoom to place
@@ -151,17 +153,15 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     const newBbox = bbox(buffered)
     const bounds = boundsFromBbox(newBbox)
     if (!bounds) return alertNoGeometry()
-    db.app_states.update({
-      where: { app_state_id: appState?.app_state_id },
-      data: { map_bounds: bounds },
-    })
+    setMapBounds(bounds)
   }, [
     db.places,
-    db.app_states,
     place_id2,
     place_id,
-    authUser.email,
+    tabs,
     alertNoGeometry,
+    setMapBounds,
+    setTabs,
   ])
 
   return (

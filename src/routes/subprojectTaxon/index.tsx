@@ -5,7 +5,7 @@ import type { InputProps } from '@fluentui/react-components'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
-import { FilteringCombobox } from '../../components/shared/FilteringCombobox/index.tsx'
+import { ComboboxFilteringForTable } from '../../components/shared/ComboboxFilteringForTable/index.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
@@ -46,7 +46,7 @@ export const Component = memo(() => {
           name="subproject_taxon_id"
           value={row.subproject_taxon_id}
         />
-        <FilteringCombobox
+        <ComboboxFilteringForTable
           label="Taxon"
           name="taxon_id"
           table="taxa"

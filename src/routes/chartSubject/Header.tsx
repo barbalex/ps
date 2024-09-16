@@ -1,25 +1,20 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
-import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
+import { useAtom } from 'jotai'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { createChartSubject } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { designingAtom } from '../../store.ts'
 
 // TODO: if not editing, hide add and remove buttons
 export const Header = memo(({ autoFocusRef }) => {
+  const [designing] = useAtom(designingAtom)
   const { chart_id, chart_subject_id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const { user: authUser } = useCorbado()
-
   const { db } = useElectric()!
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
-  const designing = appState?.designing ?? false
 
   const addRow = useCallback(async () => {
     const data = createChartSubject({ chart_id })

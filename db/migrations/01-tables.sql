@@ -1156,127 +1156,6 @@ COMMENT ON COLUMN fields.table_name IS 'table, on which this field is used insid
 
 COMMENT ON COLUMN fields.level IS 'level of field if places or below: 1, 2';
 
-CREATE TYPE droppable_layer_enum AS enum(
-  'places1',
-  'places2'
-);
-
-CREATE TABLE app_states(
-  app_state_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
-  -- user_email can not be referenced to users, as it is not unique
-  -- because electric-sql does not support unique constraints
-  -- unless the column is a primary key
-  user_email text DEFAULT NULL,
-  -- user_id is needed to ensure user_email can be updated when changed on users
-  user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  designing boolean DEFAULT NULL, -- FALSE,
-  breadcrumbs_overflowing boolean DEFAULT NULL, -- FALSE,
-  navs_overflowing boolean DEFAULT NULL, -- FALSE,
-  tabs jsonb DEFAULT NULL, -- array of strings
-  map_bounds jsonb DEFAULT NULL, -- [minx, miny, maxx, maxy]
-  show_local_map jsonb DEFAULT NULL, -- map of id (layer.id, key) and show boolean
-  map_maximized boolean DEFAULT NULL, -- FALSE
-  map_hide_ui boolean DEFAULT NULL, -- FALSE
-  map_locate boolean DEFAULT NULL, -- FALSE
-  map_info jsonb DEFAULT NULL,
-  map_show_center boolean DEFAULT NULL, -- FALSE
-  tile_layer_sorter text DEFAULT NULL,
-  vector_layer_sorter text DEFAULT NULL,
-  editing_place_geometry uuid DEFAULT NULL,
-  editing_check_geometry uuid DEFAULT NULL,
-  editing_action_geometry uuid DEFAULT NULL,
-  draggable_layers jsonb DEFAULT NULL,
-  droppable_layer droppable_layer_enum DEFAULT NULL,
-  confirm_assigning_to_single_target boolean DEFAULT NULL, -- true
-  places_to_assign_occurrence_to jsonb DEFAULT NULL,
-  occurrence_fields_sorted jsonb DEFAULT NULL, -- array of strings
-  syncing boolean DEFAULT NULL,
-  tree_open_nodes jsonb DEFAULT NULL, -- array of strings
-  -- TODO: turning off these fields because of weird errors
-  -- filter_projects jsonb DEFAULT NULL, -- a projects object with filter settings
-  -- filter_fields jsonb DEFAULT NULL, -- a fields object with filter settings
-  -- filter_account_users jsonb DEFAULT NULL, -- a users object with filter settings
-  -- filter_field_types jsonb DEFAULT NULL, -- a field_types object with filter settings
-  -- filter_widget_types jsonb DEFAULT NULL, -- a widget_types object with filter settings
-  -- filter_widgets_for_fields jsonb DEFAULT NULL, -- a fields object with filter settings
-  -- filter_account_fields jsonb DEFAULT NULL, -- a fields object with filter settings
-  -- filter_account_messages jsonb DEFAULT NULL, -- a messages object with filter settings
-  -- filter_project_reports jsonb DEFAULT NULL, -- a project_reports object with filter settings
-  -- filter_persons jsonb DEFAULT NULL, -- a persons object with filter settings
-  -- filter_tile_layers jsonb DEFAULT NULL, -- a tile_layers object with filter settings
-  -- filter_vector_layers jsonb DEFAULT NULL, -- a vector_layers object with filter settings
-  -- filter_project_users jsonb DEFAULT NULL, -- a project_users object with filter settings
-  -- filter_lists jsonb DEFAULT NULL, -- a lists object with filter settings
-  -- filter_units jsonb DEFAULT NULL, -- a units object with filter settings
-  -- filter_place_levels jsonb DEFAULT NULL, -- a place_levels object with filter settings
-  -- filter_project_fields jsonb DEFAULT NULL, -- a fields object with filter settings
-  -- filter_subprojects jsonb DEFAULT NULL, -- a subprojects object with filter settings
-  -- filter_subproject_reports jsonb DEFAULT NULL, -- a subproject_reports object with filter settings
-  -- filter_goals jsonb DEFAULT NULL, -- a goals object with filter settings
-  -- filter_subproject_users jsonb DEFAULT NULL, -- a subproject_users object with filter settings
-  -- filter_places_1 jsonb DEFAULT NULL, -- a places object with filter settings
-  -- filter_checks_1 jsonb DEFAULT NULL, -- a checks object with filter settings
-  -- filter_actions_1 jsonb DEFAULT NULL, -- a actions object with filter settings
-  -- filter_place_reports_1 jsonb DEFAULT NULL, -- a place_reports object with filter settings
-  -- filter_places_2 jsonb DEFAULT NULL, -- a places object with filter settings
-  -- filter_place_reports_2 jsonb DEFAULT NULL, -- a place_reports object with filter settings
-  -- filter_place_checks_2 jsonb DEFAULT NULL, -- a checks object with filter settings
-  -- filter_actions_2 jsonb DEFAULT NULL, -- a actions object with filter settings
-  -- TODO:
-  -- activating an additional filter field returns error: too many arguments on function json_object
-  -- reason: Maximum Number Of Arguments On A Function is 127
-  -- https://www.sqlite.org/limits.html#Maximum%20Number%20Of%20Arguments:~:text=Maximum%20Number%20Of%20Arguments%20On%20A%20Function
-  -- https://github.com/electric-sql/electric/issues/1311
-  -- Solution: use postgres locally?
-  -- filter_vector_layer_displays jsonb DEFAULT NULL, -- a vector_layer_displays object with filter settings
-  -- filter_taxonomies jsonb DEFAULT NULL, -- a taxonomies object with filter settings
-  -- filter_occurrence_imports jsonb DEFAULT NULL, -- a occurrence_imports object with filter settings
-  -- filter_subproject_charts jsonb DEFAULT NULL, -- a charts object with filter settings
-  -- filter_subproject_chart_subjects jsonb DEFAULT NULL, -- a chart_subjects object with filter settings
-  -- filter_place_check_taxa_1 jsonb DEFAULT NULL, -- a check_taxa object with filter settings
-  -- filter_place_users_1 jsonb DEFAULT NULL, -- a place_users object with filter settings
-  -- filter_place_charts_1 jsonb DEFAULT NULL, -- a charts object with filter settings
-  -- filter_place_chart_subjects_1 jsonb DEFAULT NULL, -- a chart_subjects object with filter settings
-  -- filter_check_values_1 jsonb DEFAULT NULL, -- a check_values object with filter settings
-  -- filter_check_values_2 jsonb DEFAULT NULL, -- a check_values object with filter settings
-  -- filter_place_check_taxa_2 jsonb DEFAULT NULL, -- a check_taxa object with filter settings
-  -- filter_place_users_2 jsonb DEFAULT NULL, -- a place_users object with filter settings
-  -- filter_place_charts_2 jsonb DEFAULT NULL, -- a charts object with filter settings
-  -- filter_place_chart_subjects_2 jsonb DEFAULT NULL, -- a chart_subjects object with filter settings
-  label text DEFAULT NULL
-);
-
--- CREATE INDEX ON app_states USING btree(user_id);
-CREATE INDEX ON app_states USING btree(account_id);
-
-CREATE INDEX ON app_states USING btree(user_id);
-
-CREATE INDEX ON app_states USING btree(user_email);
-
-COMMENT ON COLUMN app_states.user_email IS 'email of authenticated user. Exists in users but copied here for easier querying. Also: is returned by auth hooks, so available in the client without additional query';
-
-COMMENT ON TABLE app_states IS 'User interface settings (state saved in db)';
-
-COMMENT ON COLUMN app_states.designing IS 'Whether user is currently designing projects. Preset: false';
-
-COMMENT ON COLUMN app_states.map_info IS 'Information presented, when user clicks on a map. Array of: {label, properties} where properties is an array of [key, value]';
-
-COMMENT ON COLUMN app_states.editing_place_geometry IS 'The id of the place whose geometry is currently being edited';
-
-COMMENT ON COLUMN app_states.editing_check_geometry IS 'The id of the check whose geometry is currently being edited';
-
-COMMENT ON COLUMN app_states.editing_action_geometry IS 'The id of the action whose geometry is currently being edited';
-
-COMMENT ON COLUMN app_states.draggable_layers IS 'The layers that are currently draggable. Any of: occurrences-to-assess, occurrences-not-to-assign, occurrences-assigned-1, occurrences-assigned-2';
-
-COMMENT ON COLUMN app_states.droppable_layer IS 'The layer that is currently droppable';
-
-COMMENT ON COLUMN app_states.confirm_assigning_to_single_target IS 'Whether to show a dialog to confirm assigning an occurrence to a single target. Preset: true';
-
-COMMENT ON COLUMN app_states.places_to_assign_occurrence_to IS 'If multiple places are close to the dropped location, the user can choose one of them. This state opens a dialog. Field contains: Object with: occurrence_id, places. Places is array with: place_id, label, distance';
-
-COMMENT ON COLUMN app_states.occurrence_fields_sorted IS 'The order of fields in the occurrence form. User can change it by drag and drop';
 
 CREATE TYPE occurrence_imports_previous_import_operation_enum AS enum(
   'update_and_extend',
@@ -1364,53 +1243,110 @@ COMMENT ON COLUMN occurrences.data IS 'data as received from GBIF';
 
 COMMENT ON COLUMN occurrences.label IS 'label of occurrence, used to show it in the UI. Created on import';
 
-CREATE TYPE tile_layer_type_enum AS enum(
-  'wms',
-  'wmts'
-  -- 'tms'
-);
+DROP TABLE IF EXISTS wms_services CASCADE;
 
-DROP TABLE IF EXISTS tile_layers CASCADE;
-
-CREATE TABLE tile_layers(
-  tile_layer_id uuid PRIMARY KEY DEFAULT NULL,
+CREATE TABLE wms_services(
+  wms_service_id uuid PRIMARY KEY DEFAULT NULL,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  url text DEFAULT NULL,
+  image_formats jsonb DEFAULT NULL, -- available image formats. text array
+  image_format text DEFAULT NULL, -- prefered image format
+  version text DEFAULT NULL,
+  info_formats jsonb DEFAULT NULL, -- available info formats. text array
+  info_format text DEFAULT NULL, -- preferred info format
+  default_crs text DEFAULT NULL -- TODO: does this exist in capabilities? if yes: use as in wfs. If not: remove
+);
+
+CREATE INDEX ON wms_services USING btree(account_id);
+
+CREATE INDEX ON wms_services USING btree(project_id);
+
+CREATE INDEX ON wms_services USING btree(url);
+
+DROP TABLE IF EXISTS wms_service_layers CASCADE;
+
+CREATE TABLE wms_service_layers(
+  wms_service_layer_id uuid PRIMARY KEY DEFAULT NULL,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  wms_service_id uuid DEFAULT NULL REFERENCES wms_services(wms_service_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  name text DEFAULT NULL,
   label text DEFAULT NULL,
-  sort smallint DEFAULT NULL, -- 0
-  active boolean DEFAULT NULL, -- false
-  type tile_layer_type_enum DEFAULT NULL, -- 'wmts'
-  wmts_url_template text DEFAULT NULL,
-  wmts_subdomains jsonb DEFAULT NULL, -- array of text
-  wms_base_url text DEFAULT NULL,
-  wms_format jsonb DEFAULT NULL,
-  wms_layer jsonb DEFAULT NULL,
-  wms_parameters jsonb DEFAULT NULL,
-  wms_styles jsonb DEFAULT NULL, -- array of text. TODO: what is this exactly?
-  wms_transparent boolean DEFAULT NULL, -- false
-  wms_version text DEFAULT NULL, -- values: '1.1.1', '1.3.0'
-  wms_info_format jsonb DEFAULT NULL,
-  wms_legend bytea DEFAULT NULL,
+  queryable boolean DEFAULT NULL,
+  legend_url text DEFAULT NULL,
+  legend_image bytea DEFAULT NULL
+);
+
+CREATE INDEX ON wms_service_layers USING btree(wms_service_id);
+
+DROP TABLE IF EXISTS wms_layers CASCADE;
+
+-- TODO: create table for wmts
+-- wmts_url_template text DEFAULT NULL,
+-- wmts_subdomains jsonb DEFAULT NULL, -- array of text
+CREATE TABLE wms_layers(
+  wms_layer_id uuid PRIMARY KEY DEFAULT NULL,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  wms_service_id uuid DEFAULT NULL REFERENCES wms_services(wms_service_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  wms_service_layer_name text DEFAULT NULL, -- a name from wms_service_layers. NOT referenced because the uuid changes when the service is updated
+  label text DEFAULT NULL,
   max_zoom integer DEFAULT NULL, -- 19
   min_zoom integer DEFAULT NULL, -- 0
-  opacity_percent integer DEFAULT NULL, -- 100. TODO: difference to wms_transparent?
-  grayscale boolean DEFAULT NULL, -- false
   local_data_size integer DEFAULT NULL,
   local_data_bounds jsonb DEFAULT NULL
 );
 
-CREATE INDEX ON tile_layers USING btree(account_id);
+-- TODO: wms_services, wms_service_layers
+CREATE INDEX ON wms_layers USING btree(account_id);
 
-CREATE INDEX ON tile_layers USING btree(sort);
+CREATE INDEX ON wms_layers USING btree(project_id);
 
-COMMENT ON TABLE tile_layers IS 'Goal: Bring your own tile layers. Not versioned (not recorded and only added by manager).';
+CREATE INDEX ON wms_layers USING btree(wms_service_layer_name);
 
-COMMENT ON COLUMN tile_layers.local_data_size IS 'Size of locally saved image data';
+COMMENT ON TABLE wms_layers IS 'Goal: Bring your own wms layers. Not versioned (not recorded and only added by manager).';
 
-COMMENT ON COLUMN tile_layers.local_data_bounds IS 'Array of bounds and their size of locally saved image data';
+COMMENT ON COLUMN wms_layers.local_data_size IS 'Size of locally saved image data';
 
-COMMENT ON COLUMN tile_layers.opacity_percent IS 'As numeric is not supported by electric-sql, we cant use values between 0 and 1 for opacity. So we use integer values between 0 and 100 and divide by 100 in the frontend.';
+COMMENT ON COLUMN wms_layers.local_data_bounds IS 'Array of bounds and their size of locally saved image data';
 
+--------------------------------------------------------------
+DROP TABLE IF EXISTS wfs_services CASCADE;
+
+CREATE TABLE wfs_services(
+  wfs_service_id uuid PRIMARY KEY DEFAULT NULL,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  url text DEFAULT NULL,
+  version text DEFAULT NULL, -- often: 1.1.0 or 2.0.0
+  info_formats jsonb DEFAULT NULL, -- available info formats. text array
+  info_format text DEFAULT NULL, -- preferred info format
+  default_crs text DEFAULT NULL -- TODO: does this exist in capabilities? if yes: use as in wfs. If not: remove
+);
+
+CREATE INDEX ON wfs_services USING btree(account_id);
+
+CREATE INDEX ON wfs_services USING btree(project_id);
+
+CREATE INDEX ON wfs_services USING btree(url);
+
+COMMENT ON TABLE wfs_services IS 'A layer of a WFS service.';
+
+COMMENT ON COLUMN wfs_services.default_crs IS 'It seems that this is the crs bbox calls have to be made in';
+
+DROP TABLE IF EXISTS wfs_service_layers CASCADE;
+
+CREATE TABLE wfs_service_layers(
+  wfs_service_layer_id uuid PRIMARY KEY DEFAULT NULL,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  wfs_service_id uuid DEFAULT NULL REFERENCES wfs_services(wfs_service_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  name text DEFAULT NULL,
+  label text DEFAULT NULL
+);
+
+CREATE INDEX ON wfs_service_layers USING btree(wfs_service_id);
+
+--------------------------------------------------------------
 CREATE TYPE vector_layer_type_enum AS enum(
   'wfs',
   'upload',
@@ -1436,15 +1372,11 @@ CREATE TABLE vector_layers(
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   type vector_layer_type_enum DEFAULT NULL, -- 'wfs',
   display_by_property_field text DEFAULT NULL,
-  sort smallint DEFAULT NULL,
-  active boolean DEFAULT NULL,
   max_zoom integer DEFAULT NULL, -- 19,
   min_zoom integer DEFAULT NULL, -- 0,
   max_features integer DEFAULT NULL, -- 1000
-  wfs_url text DEFAULT NULL, -- WFS url, for example https://maps.zh.ch/wfs/OGDZHWFS.
-  wfs_layer jsonb DEFAULT NULL, -- a single option
-  wfs_version text DEFAULT NULL, -- often: 1.1.0 or 2.0.0
-  wfs_output_format jsonb DEFAULT NULL, --  a single option
+  wfs_service_id uuid DEFAULT NULL REFERENCES wfs_services(wfs_service_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  wfs_service_layer_name text DEFAULT NULL, -- a name from wfs_service_layers. NOT referenced because the uuid changes when the service is updated
   feature_count integer DEFAULT NULL,
   point_count integer DEFAULT NULL,
   line_count integer DEFAULT NULL,
@@ -1459,9 +1391,7 @@ CREATE INDEX ON vector_layers USING btree(project_id);
 
 CREATE INDEX ON vector_layers USING btree(type);
 
-CREATE INDEX ON vector_layers USING btree(sort);
-
-COMMENT ON TABLE vector_layers IS 'Goal: Bring your own tile layers. Either from wfs or importing GeoJSON. Should only contain metadata, not data fetched from wms or wmts servers (that should only be saved locally on the client).';
+COMMENT ON TABLE vector_layers IS 'Goal: Bring your own wms layers. Either from wfs or importing GeoJSON. Should only contain metadata, not data fetched from wms or wmts servers (that should only be saved locally on the client).';
 
 COMMENT ON COLUMN vector_layers.display_by_property_field IS 'Name of the field whose values is used to display the layer. If null, a single display is used.';
 
@@ -1472,48 +1402,6 @@ COMMENT ON COLUMN vector_layers.point_count IS 'Number of point features. Used t
 COMMENT ON COLUMN vector_layers.line_count IS 'Number of line features. Used to show styling for lines - or not. Set when downloaded features';
 
 COMMENT ON COLUMN vector_layers.polygon_count IS 'Number of polygon features. Used to show styling for polygons - or not. Set when downloaded features';
-
--- Goal: wms_layer can be > 700, slowing down the tileLayer form
--- Solution: outsource them (and maybe later others) here
--- This table is client side only, so we dont need a soft delete column
--- Also: there is no use in saving this data on the server or syncing it
-CREATE TYPE layer_options_field_enum AS enum(
-  'wms_format',
-  'wms_layer',
-  'wms_info_format',
-  'wfs_output_format',
-  'wfs_layer'
-);
-
-CREATE TABLE layer_options(
-  layer_option_id text PRIMARY KEY DEFAULT NULL,
-  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  tile_layer_id uuid DEFAULT NULL REFERENCES tile_layers(tile_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  field layer_options_field_enum DEFAULT NULL,
-  value text DEFAULT NULL,
-  label text DEFAULT NULL,
-  queryable boolean DEFAULT NULL,
-  legend_url text DEFAULT NULL
-);
-
-CREATE INDEX ON layer_options USING btree(account_id);
-
-CREATE INDEX ON layer_options USING btree(tile_layer_id);
-
-CREATE INDEX ON layer_options USING btree(vector_layer_id);
-
-CREATE INDEX ON layer_options USING btree(field);
-
-CREATE INDEX ON layer_options USING btree(value);
-
-CREATE INDEX ON layer_options USING btree(label);
-
-COMMENT ON TABLE layer_options IS 'Goal: wms_layer options can be > 700, slowing down the tileLayer form. Solution: outsource them (and maybe later others) here. Also: there is no use in saving this data on the server or syncing it.';
-
-COMMENT ON COLUMN layer_options.layer_option_id IS 'The base url of the wms server, combined with the field name whose data is stored and the value. Insures that we dont have duplicate entries.';
-
-COMMENT ON COLUMN layer_options.legend_url IS 'The url to fetch the legend image from.';
 
 DROP TABLE IF EXISTS vector_layer_geoms CASCADE;
 
@@ -1605,7 +1493,6 @@ CREATE TABLE vector_layer_displays(
   stroke boolean DEFAULT NULL, -- true,
   color text DEFAULT NULL, -- '#3388ff',
   weight integer DEFAULT NULL, -- 3,
-  opacity_percent integer DEFAULT NULL, -- 100,
   line_cap line_cap_enum DEFAULT NULL, -- 'round',
   line_join text DEFAULT NULL, -- 'round',
   dash_array text DEFAULT NULL,
@@ -1637,8 +1524,6 @@ COMMENT ON COLUMN vector_layer_displays.color IS 'Stroke color. https://leafletj
 
 COMMENT ON COLUMN vector_layer_displays.weight IS 'Stroke width in pixels. https://leafletjs.com/reference.html#path-weight';
 
-COMMENT ON COLUMN vector_layer_displays.opacity_percent IS 'Stroke opacity. https://leafletjs.com/reference.html#path-opacity';
-
 COMMENT ON COLUMN vector_layer_displays.line_cap IS 'A string that defines shape to be used at the end of the stroke. https://leafletjs.com/reference.html#path-linecap. https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-linecap';
 
 COMMENT ON COLUMN vector_layer_displays.line_join IS 'A string that defines shape to be used at the corners of the stroke. https://leafletjs.com/reference.html#path-linejoin, https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-linejoin#usage_context';
@@ -1654,6 +1539,31 @@ COMMENT ON COLUMN vector_layer_displays.fill_color IS 'Fill color. Defaults to t
 COMMENT ON COLUMN vector_layer_displays.fill_opacity_percent IS 'Fill opacity. https://leafletjs.com/reference.html#path-fillopacity';
 
 COMMENT ON COLUMN vector_layer_displays.fill_rule IS 'A string that defines how the inside of a shape is determined. https://leafletjs.com/reference.html#path-fillrule. https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-rule';
+
+-- need a table to manage layer presentation for all layers (wms and vector)
+CREATE TABLE layer_presentations(
+  layer_presentation_id uuid PRIMARY KEY DEFAULT NULL,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  wms_layer_id uuid DEFAULT NULL REFERENCES wms_layers(wms_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  active boolean DEFAULT NULL, -- false
+  opacity_percent integer DEFAULT NULL, -- 100
+  transparent boolean DEFAULT NULL, -- false
+  grayscale boolean DEFAULT NULL, -- false
+  label_replace_by_generated_column text DEFAULT NULL -- TODO: not needed?
+);
+
+CREATE INDEX ON layer_presentations USING btree(account_id);
+
+CREATE INDEX ON layer_presentations USING btree(wms_layer_id);
+
+CREATE INDEX ON layer_presentations USING btree(vector_layer_id);
+
+CREATE INDEX ON layer_presentations USING btree(active);
+
+COMMENT ON TABLE layer_presentations IS 'Goal: manage all presentation related properties of all layers (including wms and vector layers). Editable by all users.';
+
+COMMENT ON COLUMN layer_presentations.opacity_percent IS 'As numeric is not supported by electric-sql, we cant use values between 0 and 1 for opacity. So we use integer values between 0 and 100 and divide by 100 in the frontend.';
 
 CREATE TYPE notification_intent_enum AS enum(
   'success',
@@ -1811,26 +1721,44 @@ COMMENT ON COLUMN chart_subjects.stroke IS 'Stroke color of the chart';
 COMMENT ON COLUMN chart_subjects.fill IS 'Fill color of the chart';
 
 CREATE TABLE crs(
-  crs_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
-  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  crs_id uuid PRIMARY KEY DEFAULT NULL,
+  -- project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   code text DEFAULT NULL,
   name text DEFAULT NULL,
   proj4 text DEFAULT NULL,
-  wkt text DEFAULT NULL,
   label_replace_by_generated_column text DEFAULT NULL
 );
 
 -- CREATE INDEX ON crs USING btree(crs_id);
 CREATE INDEX ON crs USING btree(account_id);
 
-CREATE INDEX ON crs USING btree(project_id);
+CREATE INDEX ON crs USING btree(code);
 
-COMMENT ON TABLE crs IS 'List of crs. From: https://spatialreference.org/crslist.json. Can be inserted when configuring a project. Do not download the entire list - only what the configurating person chooses';
+COMMENT ON TABLE crs IS 'List of crs. From: https://spatialreference.org/crslist.json. Can be inserted when configuring a project. We need the entire list because wfs/wms have a default crs that needs to be used for bbox calls. TODO: decide when to download the list.';
 
 COMMENT ON COLUMN crs.proj4 IS 'proj4 string for the crs. From (example): https://epsg.io/4326.proj4';
 
-COMMENT ON COLUMN crs.wkt IS 'wkt string for the crs. From (example): https://epsg.io/4326.wkt';
+-- need additional table project_crs to store the crs used in a project
+-- same as crs - data will be copied from crs to project_crs
+CREATE TABLE project_crs(
+  project_crs_id uuid PRIMARY KEY DEFAULT NULL,
+  crs_id uuid REFERENCES crs(crs_id) ON DELETE NO action ON UPDATE CASCADE,
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  code text DEFAULT NULL,
+  name text DEFAULT NULL,
+  proj4 text DEFAULT NULL,
+  label_replace_by_generated_column text DEFAULT NULL
+);
+
+CREATE INDEX ON project_crs USING btree(account_id);
+
+CREATE INDEX ON project_crs USING btree(project_id);
+
+CREATE INDEX ON project_crs USING btree(code);
+
+COMMENT ON TABLE project_crs IS 'List of crs used in a project. Can be set when configuring a project. Values copied from crs table.';
 
 -- enable electric
 ALTER TABLE users ENABLE electric;
@@ -1907,17 +1835,13 @@ ALTER TABLE widgets_for_fields ENABLE electric;
 
 ALTER TABLE fields ENABLE electric;
 
-ALTER TABLE app_states ENABLE electric;
-
 ALTER TABLE occurrence_imports ENABLE electric;
 
 ALTER TABLE occurrences ENABLE electric;
 
-ALTER TABLE tile_layers ENABLE electric;
+ALTER TABLE wms_layers ENABLE electric;
 
 ALTER TABLE vector_layers ENABLE electric;
-
-ALTER TABLE layer_options ENABLE electric;
 
 ALTER TABLE vector_layer_geoms ENABLE electric;
 
@@ -1930,4 +1854,16 @@ ALTER TABLE charts ENABLE electric;
 ALTER TABLE chart_subjects ENABLE ELECTRIC;
 
 ALTER TABLE crs ENABLE electric;
+
+ALTER TABLE project_crs ENABLE electric;
+
+ALTER TABLE layer_presentations ENABLE electric;
+
+ALTER TABLE wms_services ENABLE electric;
+
+ALTER TABLE wms_service_layers ENABLE electric;
+
+ALTER TABLE wfs_services ENABLE electric;
+
+ALTER TABLE wfs_service_layers ENABLE electric;
 

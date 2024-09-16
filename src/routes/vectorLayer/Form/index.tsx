@@ -1,12 +1,13 @@
-import { useParams, useOutletContext } from 'react-router-dom'
+import { useOutletContext } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 import { TextFieldInactive } from '../../../components/shared/TextFieldInactive.tsx'
 import { TextField } from '../../../components/shared/TextField.tsx'
-import { SwitchField } from '../../../components/shared/SwitchField.tsx'
 import { RadioGroupField } from '../../../components/shared/RadioGroupField.tsx'
-import { DropdownFieldFromLayerOptions } from '../../../components/shared/DropdownFieldFromLayerOptions.tsx'
-import { Url } from './Url.tsx'
+import { LayersDropdown } from './LayersDropdown.tsx'
+import { DropdownField } from '../../../components/shared/DropdownField.tsx'
 import { PropertyField } from './PropertyField.tsx'
+import { CreateWfsService } from './CreateWfsService.tsx'
 
 import '../../../form.css'
 
@@ -17,77 +18,96 @@ export const Component = ({
   row: rowFromProps,
   autoFocusRef,
 }) => {
+  const { pathname } = useLocation()
   // beware: contextFromOutlet is undefined if not inside an outlet
   const outletContext = useOutletContext()
   const onChange = onChangeFromProps ?? outletContext?.onChange
-  const row = rowFromProps ?? outletContext?.row ?? {}
-
-  const { vector_layer_id } = useParams()
+  const vectorLayer = rowFromProps ?? outletContext?.row ?? {}
+  const isFilter = pathname.endsWith('/filter')
 
   return (
     <>
-      {['wfs', 'upload'].includes(row.type) && (
+      {['wfs', 'upload'].includes(vectorLayer.type) && (
         <RadioGroupField
           label="Type"
           name="type"
           list={['wfs', 'upload']}
-          value={row.type ?? ''}
+          value={vectorLayer.type ?? ''}
           onChange={onChange}
-          autoFocus
-          ref={autoFocusRef}
         />
       )}
-      {row?.type === 'wfs' && (
+      {vectorLayer?.type === 'wfs' && (
         <>
-          <Url onChange={onChange} row={row} />
-          {!!row?.wfs_url && (
-            <DropdownFieldFromLayerOptions
-              label="Layer"
-              name="wfs_layer"
-              value={row.wfs_layer ?? ''}
-              vector_layer_id={vector_layer_id}
-              onChange={onChange}
-              validationMessage={row.wfs_layer ? '' : 'Select a layer'}
-              row={row}
+          <DropdownField
+            label="Web Feature Service (WFS)"
+            name="wfs_service_id"
+            labelField="url"
+            table="wfs_services"
+            value={vectorLayer.wfs_service_id ?? ''}
+            orderBy={{ url: 'asc' }}
+            onChange={onChange}
+            autoFocus={true}
+            validationMessage={
+              vectorLayer.wfs_service_id
+                ? ''
+                : 'Choose from a configured WFS. Or add a new one.'
+            }
+            noDataMessage="No WFS found. You can add one."
+            hideWhenNoData={true}
+          />
+          {!vectorLayer.wfs_service_id && (
+            <CreateWfsService vectorLayer={vectorLayer} />
+          )}
+          {!!vectorLayer?.wfs_service_id && (
+            <LayersDropdown
+              vectorLayer={vectorLayer}
+              validationMessage={
+                vectorLayer.wfs_service_layer_name ? '' : 'Select a layer'
+              }
             />
           )}
         </>
       )}
-      {row?.type === 'upload' && <div>TODO: Upload</div>}
-      {row?.type === 'wfs' && row?.wfs_url && row.wfs_layer && (
-        <TextField
-          label="Label"
-          name="label"
-          value={row.label ?? ''}
-          onChange={onChange}
-        />
+      {vectorLayer?.type === 'upload' && <div>TODO: Upload</div>}
+      {vectorLayer?.type === 'wfs' &&
+        vectorLayer?.wfs_service_id &&
+        vectorLayer.wfs_service_layer_name && (
+          <TextField
+            label="Label"
+            name="label"
+            value={vectorLayer.label ?? ''}
+            onChange={onChange}
+          />
+        )}
+      {!['wfs', 'upload'].includes(vectorLayer.type) && (
+        <>
+          {isFilter ? (
+            <TextField
+              label="Label"
+              name="label"
+              value={vectorLayer.label ?? ''}
+              onChange={onChange}
+            />
+          ) : (
+            <TextFieldInactive
+              label="Label"
+              name="label"
+              value={vectorLayer.label}
+            />
+          )}
+        </>
       )}
-      {!['wfs', 'upload'].includes(row.type) && (
-        <TextFieldInactive label="Label" name="label" value={row.label} />
-      )}
-      {((row?.type === 'wfs' && row?.wfs_url && row.wfs_layer) ||
-        !['wfs', 'upload'].includes(row.type)) && (
+      {((vectorLayer?.type === 'wfs' &&
+        vectorLayer?.wfs_service_id &&
+        vectorLayer.wfs_service_layer_name) ||
+        !['wfs', 'upload'].includes(vectorLayer.type)) && (
         <>
           {/* TODO: add display by property field */}
-          <PropertyField vectorLayer={row} />
-          <TextField
-            label="Sort"
-            name="sort"
-            value={row.sort ?? ''}
-            onChange={onChange}
-            type="number"
-            validationMessage="Add a sorting order here if sorting by label is not desired"
-          />
-          <SwitchField
-            label="active"
-            name="active"
-            value={row.active}
-            onChange={onChange}
-          />
+          <PropertyField vectorLayer={vectorLayer} />
           <TextField
             label="Max Zoom"
             name="max_zoom"
-            value={row.max_zoom ?? ''}
+            value={vectorLayer.max_zoom ?? ''}
             onChange={onChange}
             type="number"
             max={19}
@@ -97,7 +117,7 @@ export const Component = ({
           <TextField
             label="Min Zoom"
             name="min_zoom"
-            value={row.min_zoom ?? ''}
+            value={vectorLayer.min_zoom ?? ''}
             onChange={onChange}
             type="number"
             max={19}
@@ -107,7 +127,7 @@ export const Component = ({
           <TextField
             label="Max number of features"
             name="max_features"
-            value={row.max_features ?? ''}
+            value={vectorLayer.max_features ?? ''}
             onChange={onChange}
             type="number"
             validationMessage="Drawing too many features can crash the app. Your mileage may vary"
@@ -115,27 +135,27 @@ export const Component = ({
           {/* <VectorLayerDisplay row={row} /> */}
         </>
       )}
-      {row?.type === 'upload' && (
+      {vectorLayer?.type === 'upload' && (
         <>
           <TextFieldInactive
             label="Feature count"
             name="feature_count"
-            value={row.feature_count}
+            value={vectorLayer.feature_count}
           />
           <TextFieldInactive
             label="Point count"
             name="point_count"
-            value={row.point_count}
+            value={vectorLayer.point_count}
           />
           <TextFieldInactive
             label="Line count"
             name="line_count"
-            value={row.line_count}
+            value={vectorLayer.line_count}
           />
           <TextFieldInactive
             label="Polygon count"
             name="polygon_count"
-            value={row.polygon_count}
+            value={vectorLayer.polygon_count}
           />
         </>
       )}

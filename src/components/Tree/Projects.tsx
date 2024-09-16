@@ -1,36 +1,26 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
+import { useAtom } from 'jotai'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Node } from './Node.tsx'
 import { ProjectNode } from './Project/index.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import { treeOpenNodesAtom, projectsFilterAtom } from '../../store.ts'
 
 export const ProjectsNode = memo(() => {
+  const [projectsFilter] = useAtom(projectsFilterAtom)
+  const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { user: authUser } = useCorbado()
   const { db } = useElectric()!
 
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
-  const openNodes = useMemo(
-    () => appState?.tree_open_nodes ?? [],
-    [appState?.tree_open_nodes],
-  )
-
-  const filter = useMemo(
-    () =>
-      appState?.filter_projects?.filter((f) => Object.keys(f).length > 0) ?? [],
-    [appState?.filter_projects],
-  )
-  const where = filter.length > 1 ? { OR: filter } : filter[0]
+  const where =
+    projectsFilter.length > 1 ? { OR: projectsFilter } : projectsFilter[0]
   const { results: projects = [] } = useLiveQuery(
     db.projects.liveMany({
       where,
@@ -70,26 +60,18 @@ export const ProjectsNode = memo(() => {
     if (isOpen) {
       removeChildNodes({
         node: ownArray,
-        db,
-        appStateId: appState?.app_state_id,
         isRoot: true,
       })
       // only navigate if urlPath includes ownArray
       if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
         navigate({ pathname: parentUrl, search: searchParams.toString() })
       }
+
       return
     }
     // add to openNodes without navigating
-    addOpenNodes({
-      nodes: [ownArray],
-      db,
-      appStateId: appState?.app_state_id,
-      isRoot: true,
-    })
+    addOpenNodes({ nodes: [ownArray] })
   }, [
-    appState?.app_state_id,
-    db,
     isInActiveNodeArray,
     isOpen,
     navigate,
@@ -113,7 +95,10 @@ export const ProjectsNode = memo(() => {
       />
       {isOpen &&
         projects.map((project) => (
-          <ProjectNode key={project.project_id} project={project} />
+          <ProjectNode
+            key={project.project_id}
+            project={project}
+          />
         ))}
     </>
   )

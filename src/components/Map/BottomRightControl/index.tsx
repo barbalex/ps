@@ -1,11 +1,10 @@
 import { memo } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
+import { useAtom } from 'jotai'
 
 import { UiButton } from './UiButton.tsx'
 import { VerticalButtons } from './VerticalButtons/index.tsx'
 import { HorizontalButtons } from './HorizontalButtons/index.tsx'
-import { useElectric } from '../../../ElectricProvider.tsx'
+import { mapHideUiAtom } from '../../../store.ts'
 
 const containerStyle = {
   position: 'absolute',
@@ -24,13 +23,7 @@ const containerStyle = {
 }
 
 export const BottomRightControl = memo(() => {
-  const { user: authUser } = useCorbado()
-
-  const { db } = useElectric()!
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
-  const hideMapUi = appState?.map_hide_ui ?? false
+  const [hideMapUi] = useAtom(mapHideUiAtom)
 
   return (
     <div style={containerStyle}>

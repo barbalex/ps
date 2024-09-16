@@ -1,14 +1,15 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
+import { useAtom } from 'jotai'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Node } from './Node.tsx'
 import { ListValueNode } from './ListValue.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import { treeOpenNodesAtom } from '../../store.ts'
 
 interface Props {
   project_id: string
@@ -18,25 +19,16 @@ interface Props {
 
 export const ListValuesNode = memo(
   ({ project_id, list_id, level = 5 }: Props) => {
+    const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
-    const { user: authUser } = useCorbado()
-
     const { db } = useElectric()!
     const { results: listValues = [] } = useLiveQuery(
       db.list_values.liveMany({
         where: { list_id },
         orderBy: { label: 'asc' },
       }),
-    )
-
-    const { results: appState } = useLiveQuery(
-      db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-    )
-    const openNodes = useMemo(
-      () => appState?.tree_open_nodes ?? [],
-      [appState?.tree_open_nodes],
     )
 
     const valuesNode = useMemo(
@@ -60,11 +52,7 @@ export const ListValuesNode = memo(
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
-        removeChildNodes({
-          node: parentArray,
-          db,
-          appStateId: appState?.app_state_id,
-        })
+        removeChildNodes({ node: parentArray })
         // only navigate if urlPath includes ownArray
         if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
           navigate({
@@ -75,14 +63,8 @@ export const ListValuesNode = memo(
         return
       }
       // add to openNodes without navigating
-      addOpenNodes({
-        nodes: [ownArray],
-        db,
-        appStateId: appState?.app_state_id,
-      })
+      addOpenNodes({ nodes: [ownArray] })
     }, [
-      appState?.app_state_id,
-      db,
       isInActiveNodeArray,
       isOpen,
       navigate,

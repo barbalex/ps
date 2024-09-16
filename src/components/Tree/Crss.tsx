@@ -1,38 +1,29 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
+import { useAtom } from 'jotai'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Node } from './Node.tsx'
 import { CrsNode } from './Crs.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import { treeOpenNodesAtom } from '../../store.ts'
 
 interface Props {
-  project_id: string
   level?: number
 }
 
-export const CrssNode = memo(({ project_id, level = 3 }: Props) => {
+export const CrssNode = memo(({ level = 1 }: Props) => {
+  const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { user: authUser } = useCorbado()
   const { db } = useElectric()!
-
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
-  const openNodes = useMemo(
-    () => appState?.tree_open_nodes ?? [],
-    [appState?.tree_open_nodes],
-  )
 
   const { results: crs = [] } = useLiveQuery(
     db.crs.liveMany({
-      where: { project_id },
       orderBy: { label: 'asc' },
     }),
   )
@@ -45,10 +36,7 @@ export const CrssNode = memo(({ project_id, level = 3 }: Props) => {
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const parentArray = useMemo(
-    () => ['data', 'projects', project_id],
-    [project_id],
-  )
+  const parentArray = useMemo(() => ['data'], [])
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = useMemo(() => [...parentArray, 'crs'], [parentArray])
   const ownUrl = `/${ownArray.join('/')}`
@@ -60,11 +48,7 @@ export const CrssNode = memo(({ project_id, level = 3 }: Props) => {
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
-      removeChildNodes({
-        node: parentArray,
-        db,
-        appStateId: appState?.app_state_id,
-      })
+      removeChildNodes({ node: parentArray })
       // only navigate if urlPath includes ownArray
       if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
         navigate({
@@ -75,14 +59,8 @@ export const CrssNode = memo(({ project_id, level = 3 }: Props) => {
       return
     }
     // add to openNodes without navigating
-    addOpenNodes({
-      nodes: [ownArray],
-      db,
-      appStateId: appState?.app_state_id,
-    })
+    addOpenNodes({ nodes: [ownArray] })
   }, [
-    appState?.app_state_id,
-    db,
     isInActiveNodeArray,
     isOpen,
     navigate,
@@ -107,7 +85,10 @@ export const CrssNode = memo(({ project_id, level = 3 }: Props) => {
       />
       {isOpen &&
         crs.map((cr) => (
-          <CrsNode key={cr.crs_id} project_id={project_id} crs={cr} />
+          <CrsNode
+            key={cr.crs_id}
+            crs={cr}
+          />
         ))}
     </>
   )

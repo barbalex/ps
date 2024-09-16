@@ -2,11 +2,9 @@ import { memo, useCallback } from 'react'
 import { ToggleButton, Button } from '@fluentui/react-components'
 import { MdFilterAlt, MdFilterAltOff } from 'react-icons/md'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { useCorbado } from '@corbado/react'
-import { useLiveQuery } from 'electric-sql/react'
 
-import { useElectric } from '../../../ElectricProvider.tsx'
 import { controls } from '../../../styles.ts'
+import * as stores from '../../../store.ts'
 
 type Props = {
   title: string
@@ -18,23 +16,16 @@ export const FilterHeader = memo(
   ({ title = 'Filter', isFiltered = false, filterName }: Props) => {
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
-    const { user: authUser } = useCorbado()
 
-    const { db } = useElectric()!
-    const { results: appState } = useLiveQuery(
-      db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+    const onClickBack = useCallback(
+      () => navigate({ pathname: '..', search: searchParams.toString() }),
+      [navigate, searchParams],
     )
 
-    const onClickBack = useCallback(() => {
-      navigate({ pathname: '..', search: searchParams.toString() })
-    }, [navigate, searchParams])
-
     const onClickClearFilter = useCallback(() => {
-      db.app_states.update({
-        where: { app_state_id: appState?.app_state_id },
-        data: { [filterName]: null },
-      })
-    }, [appState?.app_state_id, db.app_states, filterName])
+      const filterAtom = stores[filterName]
+      stores?.store?.set?.(filterAtom, [])
+    }, [filterName])
 
     return (
       <div className="form-header filter">

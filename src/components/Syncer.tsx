@@ -1,9 +1,12 @@
 import { useEffect, memo } from 'react'
 import { useCorbado } from '@corbado/react'
+import { useSetAtom } from 'jotai'
 
 import { useElectric } from '../ElectricProvider.tsx'
+import { syncingAtom } from '../store.ts'
 
 export const Syncer = memo(() => {
+  const setSyncing = useSetAtom(syncingAtom)
   const { db } = useElectric()!
   const { user: authUser } = useCorbado()
   // console.log('hello Syncer', { db, authUser })
@@ -11,10 +14,10 @@ export const Syncer = memo(() => {
   useEffect(() => {
     // console.log('hello Syncer, syncing data for user:', authUser?.email)
     const syncItems = async () => {
-      await db.app_states.update({
-        where: { user_email: authUser?.email },
-        data: { syncing: true },
-      })
+      if (!authUser?.email) return
+
+      // could it be that this does not work?
+      setSyncing(true)
       // Resolves when the shape subscription has been established.
       const userShape = await db.users.sync({
         // do not pass undefined to where clause in shape
@@ -101,7 +104,7 @@ export const Syncer = memo(() => {
                     include: { taxa: { include: { subproject_taxa: true } } },
                   },
                   persons: true,
-                  crs: true,
+                  project_crs: true,
                   lists: {
                     include: {
                       list_values: true,
@@ -112,12 +115,18 @@ export const Syncer = memo(() => {
                     },
                   },
                   units: true,
-                  tile_layers: { include: { layer_options: true } },
+                  wms_layers: {
+                    include: {
+                      wms_services: { include: { wms_service_layers: true } },
+                    },
+                  },
+                  wms_services: { include: { wms_service_layers: true } },
+                  wfs_services: { include: { wfs_service_layers: true } },
                   vector_layers: {
                     include: {
-                      layer_options: true,
                       vector_layer_displays: true,
                       vector_layer_geoms: true,
+                      wfs_services: { include: { wfs_service_layers: true } },
                     },
                   },
                   project_reports: true,
@@ -128,14 +137,13 @@ export const Syncer = memo(() => {
                   files: true,
                 },
               },
-              app_states: true,
               place_levels: true,
               subprojects: true,
               project_users: true,
               taxonomies: true,
               taxa: true,
               persons: true,
-              crs: true,
+              project_crs: true,
               lists: true,
               occurrences: true,
               occurrence_imports: true,
@@ -146,9 +154,8 @@ export const Syncer = memo(() => {
               goals: true,
               goal_reports: true,
               goal_report_values: true,
-              tile_layers: true,
+              wms_layers: true,
               vector_layers: true,
-              layer_options: true,
               project_reports: true,
               subproject_reports: true,
               fields: true,
@@ -170,11 +177,10 @@ export const Syncer = memo(() => {
               files: true,
             },
           },
-          app_states: true,
           project_users: true,
           subproject_users: true,
           place_users: true,
-          // do not sync notifications - thus no need to include user_id and asynchroneously fetch it
+          // do not sync notifications - thus no need to include user_id and asynchronously fetch it
           // notifications: true,
         },
       })
@@ -236,10 +242,8 @@ export const Syncer = memo(() => {
       await messagesShape.synced
       await fieldTypesShape.synced
       await widgetTypesShape.synced
-      await db.app_states.update({
-        where: { user_email: authUser?.email },
-        data: { syncing: false },
-      })
+      setSyncing(false)
+      // TODO: crs not synced
       // console.log('hello Syncer, data synced')
     }
 

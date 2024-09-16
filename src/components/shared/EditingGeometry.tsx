@@ -1,69 +1,78 @@
 import { useCallback, memo } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
 import { Field, Textarea } from '@fluentui/react-components'
-import { useCorbado } from '@corbado/react'
+import { useAtom, useSetAtom } from 'jotai'
 
-import { useElectric } from '../../ElectricProvider.tsx'
 import { SwitchField } from './SwitchField.tsx'
+import {
+  tabsAtom,
+  editingPlaceGeometryAtom,
+  editingActionGeometryAtom,
+  editingCheckGeometryAtom,
+} from '../../store.ts'
 // TODO:
 // maybe generalize this component for all geometry editing
 // and move it to the shared folder
 export const EditingGeometry = memo(({ row, table }) => {
-  const id =
-    table === 'places'
-      ? row.place_id
-      : table === 'checks'
-      ? row.check_id
-      : table === 'actions'
-      ? row.action_id
-      : null
-
-  const fieldName =
-    table === 'places'
-      ? 'editing_place_geometry'
-      : table === 'checks'
-      ? 'editing_check_geometry'
-      : table === 'actions'
-      ? 'editing_action_geometry'
-      : null
-
-  const { user: authUser } = useCorbado()
-  const { db } = useElectric()!
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+  const [editingPlaceGeometry, setEditingPlaceGeometry] = useAtom(
+    editingPlaceGeometryAtom,
   )
-  const editedId = appState?.[fieldName] ?? null
+  const [editingCheckGeometry, setEditingCheckGeometry] = useAtom(
+    editingCheckGeometryAtom,
+  )
+  const [editingActionGeometry, setEditingActionGeometry] = useAtom(
+    editingActionGeometryAtom,
+  )
+  const [tabs, setTabs] = useAtom(tabsAtom)
 
   const onChange = useCallback(
     async (e, data) => {
       // 1. if checked, show map if not already shown
       if (data.checked) {
-        const tabs = appState?.tabs ?? []
         if (!tabs.includes('map')) {
-          await db.app_states.update({
-            where: { app_state_id: appState?.app_state_id },
-            data: { tabs: [...tabs, 'map'] },
-          })
+          setTabs([...tabs, 'map'])
         }
       }
-      // 2. update the editing id
-      db.app_states.update({
-        where: { app_state_id: appState?.app_state_id },
-        data: { [fieldName]: data.checked ? id : null },
-      })
+      // 2. update the editing state
+      switch (table) {
+        case 'places':
+          setEditingPlaceGeometry(data.checked ? row.place_id : null)
+          break
+        case 'checks':
+          setEditingCheckGeometry(data.checked ? row.check_id : null)
+          break
+        case 'actions':
+          setEditingActionGeometry(data.checked ? row.action_id : null)
+          break
+      }
     },
-    [db.app_states, appState?.app_state_id, appState?.tabs, fieldName, id],
+    [
+      table,
+      tabs,
+      setTabs,
+      setEditingPlaceGeometry,
+      row.place_id,
+      row.check_id,
+      row.action_id,
+      setEditingCheckGeometry,
+      setEditingActionGeometry,
+    ],
   )
 
   const value = row.geometry ? JSON.stringify(row.geometry, null, 3) : ''
   const lineCount = value ? value.split(/\r\n|\r|\n/).length : 1
 
+  const switchFieldValue =
+    table === 'places'
+      ? row.place_id === editingPlaceGeometry
+      : table === 'checks'
+      ? row.check_id === editingCheckGeometry
+      : row.action_id === editingActionGeometry
+
   return (
     <Field label="Geometry">
       <SwitchField
         label="Edit"
-        name={fieldName}
-        value={id === editedId}
+        value={switchFieldValue}
         onChange={onChange}
       />
       <Textarea

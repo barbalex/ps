@@ -855,19 +855,19 @@ export const router = () => {
                       ],
                     },
                     {
-                      path: 'tile-layers',
+                      path: 'wms-layers',
                       element: null,
                       handle: {
                         crumb: {
-                          text: 'Tile Layers',
-                          table: 'tile_layers',
+                          text: 'WMS Layers',
+                          table: 'wms_layers',
                           folder: true,
                         },
                       },
                       children: [
                         {
                           index: true,
-                          lazy: () => import('../routes/tileLayers.tsx'),
+                          lazy: () => import('../routes/wmsLayers.tsx'),
                         },
                         {
                           path: 'filter',
@@ -876,16 +876,16 @@ export const router = () => {
                             {
                               index: true,
                               lazy: () =>
-                                import('../routes/tileLayer/Form.tsx'),
+                                import('../routes/wmsLayer/Form/index.tsx'),
                             },
                           ],
                         },
                         {
-                          path: ':tile_layer_id',
-                          lazy: () => import('../routes/tileLayer/index.tsx'),
+                          path: ':wms_layer_id',
+                          lazy: () => import('../routes/wmsLayer/index.tsx'),
                           handle: {
                             crumb: {
-                              table: 'tile_layers',
+                              table: 'wms_layers',
                               folder: false,
                             },
                           },
@@ -1112,26 +1112,26 @@ export const router = () => {
                       ],
                     },
                     {
-                      path: 'crs',
+                      path: 'project-crs',
                       element: null,
                       handle: {
                         crumb: {
                           text: 'CRS',
-                          table: 'crs',
+                          table: 'project_crs',
                           folder: true,
                         },
                       },
                       children: [
                         {
                           index: true,
-                          lazy: () => import('../routes/crss.tsx'),
+                          lazy: () => import('../routes/projectCrss/index.tsx'),
                         },
                         {
-                          path: ':crs_id',
-                          lazy: () => import('../routes/crs/index.tsx'),
+                          path: ':project_crs_id',
+                          lazy: () => import('../routes/projectCrs/index.tsx'),
                           handle: {
                             crumb: {
-                              table: 'crs',
+                              table: 'project_crs',
                               folder: false,
                             },
                           },
@@ -1377,6 +1377,33 @@ export const router = () => {
               ],
             },
             {
+              path: 'crs',
+              element: null,
+              handle: {
+                crumb: {
+                  text: 'CRS',
+                  table: 'crs',
+                  folder: true,
+                },
+              },
+              children: [
+                {
+                  index: true,
+                  lazy: () => import('../routes/crss/index.tsx'),
+                },
+                {
+                  path: ':crs_id',
+                  lazy: () => import('../routes/crs/index.tsx'),
+                  handle: {
+                    crumb: {
+                      table: 'crs',
+                      folder: false,
+                    },
+                  },
+                },
+              ],
+            },
+            {
               path: 'files',
               element: null,
               handle: {
@@ -1436,27 +1463,7 @@ export const router = () => {
             },
             {
               path: 'app-states',
-              element: null,
-              handle: {
-                crumb: {
-                  text: 'Options',
-                  table: 'app_states',
-                  folder: true,
-                },
-              },
-              children: [
-                { index: true, lazy: () => import('../routes/appStates.tsx') },
-                {
-                  path: ':app_state_id',
-                  lazy: () => import('../routes/appState.tsx'),
-                  handle: {
-                    crumb: {
-                      table: 'app_states',
-                      folder: false,
-                    },
-                  },
-                },
-              ],
+              lazy: () => import('../routes/appStates.tsx'),
             },
           ],
         },

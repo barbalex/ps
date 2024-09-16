@@ -17,12 +17,8 @@ export const buildNavs = async ({
   // chart_subject_id,
   db,
   level = 1,
-  authUser, // TODO: pass this is
+  designing,
 }) => {
-  const appState = await db?.app_states?.findFirst({
-    where: { user_email: authUser?.email },
-  })
-  const designing = appState?.designing ?? false
   // if table is places, get place_level for this level
   let placeLevel = {}
   if (table === 'places') {
@@ -74,6 +70,11 @@ export const buildNavs = async ({
                 text: 'Fields',
                 showOnlyWhenDesigning: true,
               },
+              {
+                path: `/data/crs`,
+                text: 'CRS',
+                showOnlyWhenDesigning: true,
+              },
             ]
           : []),
       ]
@@ -99,8 +100,8 @@ export const buildNavs = async ({
           text: 'Persons',
         },
         {
-          path: `/data/projects/${project_id}/tile-layers`,
-          text: 'Tile Layers',
+          path: `/data/projects/${project_id}/wms-layers`,
+          text: 'WMS Layers',
         },
         {
           path: `/data/projects/${project_id}/vector-layers`,
@@ -137,7 +138,7 @@ export const buildNavs = async ({
                 showOnlyWhenDesigning: true,
               },
               {
-                path: `/data/projects/${project_id}/crs`,
+                path: `/data/projects/${project_id}/project-crs`,
                 text: 'CRS',
                 showOnlyWhenDesigning: true,
               },

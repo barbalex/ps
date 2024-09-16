@@ -140,10 +140,10 @@ export const createAccount = () => ({
 })
 
 // users creates the db row to ensure creating the app_state too
-export const createUser = async ({ db }) => {
+export const createUser = async ({ db, setUserId }) => {
   const data = { user_id: uuidv7() }
   await db.users.create({ data })
-  await db.app_states.create({ data: { user_id: data.user_id } })
+  setUserId(data.user_id)
 
   return data
 }
@@ -164,8 +164,13 @@ export const createPerson = async ({ db, project_id }) => {
   }
 }
 
-export const createCrs = ({ project_id, data = {} }) => ({
+export const createCrs = ({ data = {} }) => ({
   crs_id: uuidv7(),
+  ...data,
+})
+
+export const createProjectCrs = ({ project_id, data = {} }) => ({
+  project_crs_id: uuidv7(),
   project_id,
   ...data,
 })
@@ -451,36 +456,17 @@ export const createMessage = () => ({
   date: new Date(),
 })
 
-// TODO: sync (most of) these with search params
-// this is not used. Instead: users_app_state_trigger creates app_state on user creation
-export const createAppState = ({ user_id }) => ({
-  app_state_id: uuidv7(),
-  user_id,
-  designing: false,
-  breadcrumbs_overflowing: true,
-  navs_overflowing: true,
-  tabs: ['tree', 'data'],
-})
-
-export const createTileLayer = ({ project_id }) => ({
-  tile_layer_id: uuidv7(),
+export const createWmsLayer = ({ project_id }) => ({
+  wms_layer_id: uuidv7(),
   project_id,
-  sort: 0,
-  active: false,
-  type: 'wms',
   max_zoom: 19,
   min_zoom: 0,
-  opacity_percent: 100,
-  wms_transparent: false,
-  grayscale: false,
 })
 
 export const createVectorLayer = ({
   project_id,
   type = 'wfs',
   label = null,
-  sort = 0,
-  active = false,
   max_zoom = 19,
   min_zoom = 0,
   max_features = 1000,
@@ -489,11 +475,37 @@ export const createVectorLayer = ({
   project_id,
   label,
   type,
-  sort,
-  active,
   max_zoom,
   min_zoom,
   max_features,
+})
+
+export const createWfsService = ({
+  project_id = null,
+  url = null,
+  version = null,
+  info_formats = null,
+  info_format = null,
+  default_crs = null,
+}) => ({
+  wfs_service_id: uuidv7(),
+  project_id,
+  version,
+  url,
+  info_formats,
+  info_format,
+  default_crs,
+})
+
+export const createWfsServiceLayer = ({
+  wfs_service_id,
+  name = null,
+  label = null,
+}) => ({
+  wfs_service_layer_id: uuidv7(),
+  wfs_service_id,
+  name,
+  label,
 })
 
 export const createVectorLayerDisplay = ({
@@ -509,13 +521,67 @@ export const createVectorLayerDisplay = ({
   stroke: true,
   color: '#ff0000',
   weight: 3,
-  opacity_percent: 100,
   line_cap: 'round',
   line_join: 'round',
   fill: true,
   fill_color: '#ff0000',
   fill_opacity_percent: 20,
   fill_rule: 'evenodd',
+})
+
+export const createLayerPresentation = ({
+  vector_layer_id = null,
+  wms_layer_id = null,
+  account_id = null,
+  active = false,
+  transparent = false,
+}) => ({
+  layer_presentation_id: uuidv7(),
+  account_id,
+  vector_layer_id,
+  wms_layer_id,
+  active,
+  opacity_percent: 100,
+  grayscale: false,
+  transparent,
+})
+
+export const createWmsService = ({
+  project_id = null,
+  url = null,
+  image_formats = null,
+  image_format = null,
+  version = null,
+  info_formats = null,
+  info_format = null,
+  default_crs = null,
+}) => ({
+  wms_service_id: uuidv7(),
+  project_id,
+  version,
+  url,
+  image_formats,
+  image_format,
+  info_formats,
+  info_format,
+  default_crs,
+})
+
+export const createWmsServiceLayer = ({
+  wms_service_id,
+  name = null,
+  label = null,
+  queryable = null,
+  legend_url = null,
+  legend_image = null,
+}) => ({
+  wms_service_layer_id: uuidv7(),
+  wms_service_id,
+  name,
+  label,
+  queryable,
+  legend_url,
+  legend_image,
 })
 
 export const createChart = ({
@@ -564,10 +630,12 @@ export const createNotification = ({
   // 'success' | 'error' | 'warning' | 'info'
   intent = 'info',
   timeout = 10000,
+  paused = null,
 }) => ({
   notification_id: uuidv7(),
   title,
   body,
   intent,
   timeout,
+  paused,
 })

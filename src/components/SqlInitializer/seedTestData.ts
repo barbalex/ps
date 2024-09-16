@@ -1,6 +1,20 @@
 // TODO: import from sql files?
 // import sql from '../../sql/gbif_occurrences_downloads_update_notification.sql?raw'
 
+import { uuidv7 } from '@kripod/uuidv7'
+import * as crsDataImport from './crs.json'
+const crsData = crsDataImport.default
+
+const crsDataWithCrsId = crsData.map((crs) => ({
+  ...crs,
+  crs_id: uuidv7(),
+}))
+const crsValuesString = crsDataWithCrsId
+  .map(
+    (crs) => `('${crs.crs_id}', '${crs.code}', '${crs.name}', '${crs.proj4}')`,
+  )
+  .join(',\n')
+
 const seedFieldTypes = `INSERT INTO field_types(field_type_id, name, sort, comment)
 VALUES ('018ca19e-7a23-7bf4-8523-ff41e3b60807', 'text', 1, 'Example: text'),
 ('018ca19f-2923-7ae5-9ae6-a5c81ab65042', 'boolean', 2, 'true or false'),
@@ -47,11 +61,9 @@ const seedAccounts = `INSERT INTO accounts(account_id, user_id, type) values ('0
 const seedProjects = `INSERT INTO 
 projects(project_id, account_id, name, places_label_by) values 
 ('018cfcf7-6424-7000-a100-851c5cc2c878', '018cf958-27e2-7000-90d3-59f024d467be', 'Demo Project', 'name');`
-
 const seedFields = `INSERT INTO fields(account_id, project_id, field_id, table_name, level, name, field_label, field_type_id, widget_type_id) values
 ('018cf958-27e2-7000-90d3-59f024d467be', '018cfcf7-6424-7000-a100-851c5cc2c878', '018ef0c8-46ac-7f14-80f8-57b2b361fd2c', 'places', 1, 'name', 'Name', '018ca19e-7a23-7bf4-8523-ff41e3b60807', '018ca1a0-f187-7fdf-955b-4eaadaa92553'),
 ('018cf958-27e2-7000-90d3-59f024d467be', '018cfcf7-6424-7000-a100-851c5cc2c878', '018ef0c8-674e-7ebd-b6cc-e47ec256ac72', 'places', 2, 'name', 'Name', '018ca19e-7a23-7bf4-8523-ff41e3b60807', '018ca1a0-f187-7fdf-955b-4eaadaa92553');`
-
 const seedUnits = `INSERT INTO units(project_id, account_id, name, unit_id, use_for_action_values, use_for_action_report_values, use_for_check_values, use_for_place_report_values, use_for_goal_report_values, use_for_subproject_taxa, use_for_check_taxa) values 
 ('018cfcf7-6424-7000-a100-851c5cc2c878', '018cf958-27e2-7000-90d3-59f024d467be', 'Demo Unit 1', '018cff37-ece7-77b8-abe5-7cbe86b5dc88', true, true, true, true, true, true, true), ('018cfcf7-6424-7000-a100-851c5cc2c878', '018cf958-27e2-7000-90d3-59f024d467be', 'Demo Unit 2', '018cff39-fcdd-7046-aa4f-49532086eb69', true, true, true, true, true, true, true);`
 const seedProjectUsers = `INSERT INTO project_users(project_user_id, project_id, user_id, role) values 
@@ -67,6 +79,7 @@ const seedSubprojects = `INSERT INTO subprojects(subproject_id, project_id, name
 ('018cfd27-ee92-7000-b678-e75497d6c60e', '018cfcf7-6424-7000-a100-851c5cc2c878', 'Demo Subproject 1');`
 const seedSubprojectUsers = `INSERT INTO subproject_users(subproject_user_id, subproject_id, user_id, role) values 
 ('018cfd29-ccaa-7000-a686-8566a27eee45', '018cfd27-ee92-7000-b678-e75497d6c60e', '018cf95a-d817-7000-92fa-bb3b2ad59dda', 'manager');`
+const seedCrs = `INSERT INTO crs(crs_id, code, name, proj4) values ${crsValuesString};`
 
 const geometry01 = {
   type: 'FeatureCollection',
@@ -152,7 +165,6 @@ places(account_id, place_id, parent_id, subproject_id, level, since, data, geome
 ('018cf958-27e2-7000-90d3-59f024d467be', '018e0a2f-3946-7918-80bb-69aba1c20f6d', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 2, 2020, '{"name":"01.01 first.first"}', null),
 ('018cf958-27e2-7000-90d3-59f024d467be', '018e0a2f-bc94-76d2-8e5f-2a3acf73649e', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 2, 2021, '{"name":"01.02 first.second"}', null),
 ('018cf958-27e2-7000-90d3-59f024d467be', '018e0a30-20f7-7b81-a322-5f9e7f985b78', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 2, 2021, '{"name":"01.03 first.third"}', null);`
-
 const seedChecks = `INSERT INTO checks(account_id, check_id, place_id, date) values 
 ('018cf958-27e2-7000-90d3-59f024d467be', '018df4ff-9124-73f4-95c1-497387b995c0', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2024-03-03'),
 ('018cf958-27e2-7000-90d3-59f024d467be', '018df5da-6447-7bb9-944c-f824643a1b11', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2024-04-03'),
@@ -172,10 +184,6 @@ const seedChartSubjects = `INSERT INTO chart_subjects(account_id, chart_id, char
 ('018cf958-27e2-7000-90d3-59f024d467be', '018df502-138a-77bb-82b9-e5ab16c988ee', '018df97e-905e-79b2-80a2-0cb3207a4aad', 'actions', 1, 'Number of Actions', 'count_rows', 'monotone', '#008000', '#ffffff', true),
 ('018cf958-27e2-7000-90d3-59f024d467be', '018e0434-030d-7451-a1fe-b9bb917a8c4c', '018e0434-f652-7905-9872-345f9d53d164', 'places', 1, 'Number of Populations', 'count_rows', 'monotone', '#008000', '#008000', true),
 ('018cf958-27e2-7000-90d3-59f024d467be', '018e0a30-ce91-7899-8daf-4c3a4b4ff414', '018e0a31-c01d-7fe9-bd23-cd9085e60010', 'places', 2, 'Number of Subpopulations', 'count_rows', 'monotone', '#FF0000', '#FF0000', true);`
-const seedAppStates = `INSERT INTO app_states
-(app_state_id, account_id, user_id, user_email, designing, breadcrumbs_overflowing, navs_overflowing, tabs, confirm_assigning_to_single_target) 
-VALUES
-('018ec37d-54b7-7d95-8bd9-a9117e1e7491', '018cf958-27e2-7000-90d3-59f024d467be', '018cf95a-d817-7000-92fa-bb3b2ad59dda', 'alex.barbalex@gmail.com', false, true, true, '["tree","data"]', true);`
 
 export const seedTestData = async (db) => {
   const users = await db.rawQuery({
@@ -194,20 +202,6 @@ export const seedTestData = async (db) => {
     await db.unsafeExec({
       sql: seedAccounts,
     })
-  }
-  // if no app_states, seed them
-  const appStatesCount = await db.rawQuery({
-    sql: `select count(*) as count from app_states;`,
-  })
-  if (appStatesCount[0].count === 0) {
-    try {
-      await db.unsafeExec({
-        sql: seedAppStates,
-      })
-    } catch (e) {
-      console.error('hello seedTestData, seedAppStates error', e)
-      // seedTestData.ts:208 hello seedTestData, seedAppStates error error: cannot pass more than 100 arguments to a function
-    }
   }
   const fieldTypes = await db.rawQuery({
     sql: `select count(*) as count from field_types;`,
@@ -250,6 +244,14 @@ export const seedTestData = async (db) => {
     await db.unsafeExec({
       sql: seedSubprojectUsers,
     })
+    try {
+      // console.log('seedTestData, seedCrs:', seedCrs)
+      await db.unsafeExec({
+        sql: seedCrs,
+      })
+    } catch (error) {
+      console.log('seedTestData, seedCrs error', error)
+    }
     try {
       await db.unsafeExec({
         sql: seedPlaces,

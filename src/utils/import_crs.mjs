@@ -4,7 +4,16 @@ import * as fs from 'fs'
 const crsArray = JSON.parse(fs.readFileSync('crs-orig.json', 'utf8'))
 // loop all crsArray and delete the unwanted fields
 
-for await (const crs of crsArray) {
+// TODO: crslist.json contains loads of duplicate values :-(
+// remove all values where auth_name combined with code is not unique
+const crsArrayUnique = crsArray.filter(
+  (crs, index, self) =>
+    self.findIndex(
+      (t) => t.auth_name === crs.auth_name && t.code === crs.code,
+    ) === index,
+)
+
+for await (const crs of crsArrayUnique) {
   let proj4Resp
   try {
     proj4Resp = await fetch(`https://epsg.io/${crs.code}.proj4`)
@@ -16,23 +25,24 @@ for await (const crs of crsArray) {
     crs.proj4 = null
   }
   // //epsg.io/2056.wkt
-  let wktResp
-  try {
-    wktResp = await fetch(`https://epsg.io/${crs.code}.wkt`)
-    crs.wkt = await wktResp.text()
-    if (!wktResp.ok) {
-      crs.wkt = null
-    }
-  } catch (error) {
-    crs.wkt = null
-  }
+  // not needed as nearly all have proj4, many more miss wkt
+  // let wktResp
+  // try {
+  //   wktResp = await fetch(`https://epsg.io/${crs.code}.wkt`)
+  //   crs.wkt = await wktResp.text()
+  //   if (!wktResp.ok) {
+  //     crs.wkt = null
+  //   }
+  // } catch (error) {
+  //   crs.wkt = null
+  // }
   crs.code = `${crs.auth_name}:${crs.code}`
   delete crs.auth_name
   delete crs.type
   delete crs.deprecated
   delete crs.area_of_use
   delete crs.projection_method_name
-  console.log(crs)
+  console.log(crs.code)
 }
 
 // write the new crsArray to a new file

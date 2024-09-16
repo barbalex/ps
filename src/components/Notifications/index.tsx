@@ -5,13 +5,12 @@ import { useLiveQuery } from 'electric-sql/react'
 // import { uuidv7 } from '@kripod/uuidv7'
 
 import { useElectric } from '../../ElectricProvider.tsx'
-import { Notifications as Notification } from '../../generated/client/index.ts'
 import { Notification as NotificationComponent } from './Notification.tsx'
 
 // z-index needs to cover map, thus so hight
 const containerStyle = {
   padding: 5,
-  zIndex: 500,
+  zIndex: 99999,
   position: 'absolute',
   bottom: 10,
   left: 10,
@@ -23,13 +22,12 @@ const buttonStyle = {
 export const Notifications: React.FC = memo(() => {
   const { db } = useElectric()!
   // get the oldest four notification first
-  const { results = [] } = useLiveQuery(
+  const { results: notifications = [] } = useLiveQuery(
     db.notifications.liveMany({
       orderBy: { notification_id: 'desc' },
       take: 4,
     }),
   )
-  const notifications: Notification[] = results
 
   const onClickClose = useCallback(() => {
     db.notifications.deleteMany()

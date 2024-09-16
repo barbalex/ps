@@ -3,6 +3,7 @@ import {
   Electric,
 } from '../generated/client/index.ts'
 import { createVectorLayerDisplay } from './createRows.ts'
+import { chunkArrayWithMinSize } from './chunkArrayWithMinSize.ts'
 
 interface Props {
   vector_layer_id: string
@@ -50,8 +51,8 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
       where: { vector_layer_id },
     })
 
-    const newVLD = createVectorLayerDisplay({ vector_layer_id })
-    return await db.vector_layer_displays.create({ data: newVLD })
+    const data = createVectorLayerDisplay({ vector_layer_id })
+    return await db.vector_layer_displays.create({ data })
   }
 
   // get field of displayByPropertyField
@@ -81,6 +82,9 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     const listValues = await db.list_values.findMany({
       where: { list_id: field.list_id },
     })
+    if (!listValues.length) {
+      throw new Error(`list_id ${field.list_id} has no values`)
+    }
     // remove all displays not in list
     await db.vector_layer_displays.deleteMany({
       where: {
@@ -96,6 +100,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
       },
     })
     // upsert displays in list
+    const vLDDataArray = []
     for (const listValue of listValues) {
       const existingVectorLayerDisplay =
         await db.vector_layer_displays.findFirst({
@@ -107,11 +112,15 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
       // leave existing VLD unchanged
       if (existingVectorLayerDisplay) return
 
-      const newVLD = createVectorLayerDisplay({
+      const data = createVectorLayerDisplay({
         vector_layer_id,
         display_property_value: listValue.value,
       })
-      await db.vector_layer_displays.create({ data: newVLD })
+      vLDDataArray.push(data)
+    }
+    const chunked = chunkArrayWithMinSize(vLDDataArray, 500)
+    for (const data of chunked) {
+      await db.vector_layer_displays.createMany({ data })
     }
     return
   }
@@ -131,6 +140,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   })
   const distinctValues = tableRows.map((row) => row[displayByPropertyField])
 
+  const vLDDataArray = []
   for (const value of distinctValues) {
     const existingVectorLayerDisplay = await db.vector_layer_displays.findFirst(
       {
@@ -143,11 +153,15 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     // leave existing VLD unchanged
     if (existingVectorLayerDisplay) return
 
-    const newVLD = createVectorLayerDisplay({
+    const data = createVectorLayerDisplay({
       vector_layer_id,
       display_property_value: value,
     })
-    await db.vector_layer_displays.create({ data: newVLD })
+    vLDDataArray.push(data)
+  }
+  const chunked = chunkArrayWithMinSize(vLDDataArray, 500)
+  for (const data of chunked) {
+    await db.vector_layer_displays.createMany({ data })
   }
   return
 }

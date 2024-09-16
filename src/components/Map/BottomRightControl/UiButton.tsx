@@ -1,9 +1,8 @@
 import { useRef, useEffect, useCallback, memo } from 'react'
 import { Switch } from '@fluentui/react-components'
-import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
+import { useAtom } from 'jotai'
 
-import { useElectric } from '../../../ElectricProvider.tsx'
+import { mapHideUiAtom } from '../../../store.ts'
 import './uiButton.css'
 
 const uibuttonStyle = {
@@ -29,13 +28,7 @@ const switchStyle = {
 }
 
 export const UiButton = memo(() => {
-  const { user: authUser } = useCorbado()
-
-  const { db } = useElectric()!
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
-  const hideMapUi = appState?.map_hide_ui ?? false
+  const [hideMapUi, setHideMapUi] = useAtom(mapHideUiAtom)
 
   // prevent click propagation on to map
   // https://stackoverflow.com/a/57013052/712005
@@ -45,15 +38,16 @@ export const UiButton = memo(() => {
     L.DomEvent.disableScrollPropagation(ref.current)
   }, [])
 
-  const onChange = useCallback(() => {
-    db.app_states.update({
-      where: { app_state_id: appState?.app_state_id },
-      data: { map_hide_ui: !hideMapUi },
-    })
-  }, [db.app_states, appState?.app_state_id, hideMapUi])
+  const onChange = useCallback(
+    () => setHideMapUi(!hideMapUi),
+    [setHideMapUi, hideMapUi],
+  )
 
   return (
-    <div style={uibuttonStyle} ref={ref}>
+    <div
+      style={uibuttonStyle}
+      ref={ref}
+    >
       <Switch
         title={hideMapUi ? 'Show Map UI' : 'Hide Map UI'}
         checked={hideMapUi}

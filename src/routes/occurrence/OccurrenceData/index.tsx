@@ -4,7 +4,7 @@ import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { arrayMoveImmutable } from 'array-move'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
+import { useAtom } from 'jotai'
 
 import { exists } from '../../../modules/exists.ts'
 import { ErrorBoundary } from '../../../components/shared/ErrorBoundary.tsx'
@@ -12,6 +12,7 @@ import { Section } from '../../../components/shared/Section.tsx'
 import { Field } from './Field.tsx'
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { Loading } from '../../../components/shared/Loading.tsx'
+import { occurrenceFieldsSortedAtom } from '../../../store.ts'
 
 import './raw.css'
 
@@ -26,14 +27,13 @@ const explainerStyle = {
 }
 
 export const OccurenceData = () => {
+  const [occurrenceFieldsSorted, setOccurrenceFieldsSorted] = useAtom(
+    occurrenceFieldsSortedAtom,
+  )
   const { occurrence_id } = useParams()
   const { db } = useElectric()!
-  const { user: authUser } = useCorbado()
 
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
-  const sortedBeobFields = (appState?.occurrence_fields_sorted ?? []).slice()
+  const sortedBeobFields = occurrenceFieldsSorted.slice()
 
   const sortFn = useCallback(
     (a, b) => {
@@ -69,13 +69,8 @@ export const OccurenceData = () => {
   const keys = fields.map((f) => f[0])
 
   const setSortedBeobFields = useCallback(
-    (newArray) => {
-      db.app_states.update({
-        where: { app_state_id: appState?.app_state_id },
-        data: { occurrence_fields_sorted: newArray },
-      })
-    },
-    [appState?.app_state_id, db.app_states],
+    (newArray) => setOccurrenceFieldsSorted(newArray),
+    [setOccurrenceFieldsSorted],
   )
 
   useEffect(() => {
@@ -138,7 +133,10 @@ export const OccurenceData = () => {
         <p style={explainerStyle}>Dragg and drop to sort fields</p>
         <div style={outerContainerStyle}>
           <div className="container">
-            <DndProvider backend={HTML5Backend} context={window}>
+            <DndProvider
+              backend={HTML5Backend}
+              context={window}
+            >
               {fields.map((field, i) => renderField(field, i))}
             </DndProvider>
           </div>

@@ -1,8 +1,7 @@
 import { useCallback, memo, useMemo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
-import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
 import isEqual from 'lodash/isEqual'
+import { useAtom } from 'jotai'
 
 import { Node } from '../Node.tsx'
 import { Projects as Project } from '../../../generated/client/index.ts'
@@ -12,48 +11,39 @@ import { PersonsNode } from '../Persons.tsx'
 import { ListsNode } from '../Lists.tsx'
 import { TaxonomiesNode } from '../Taxonomies.tsx'
 import { UnitsNode } from '../Units.tsx'
-import { CrssNode } from '../Crss.tsx'
-import { TileLayersNode } from '../TileLayers.tsx'
+import { ProjectCrssNode } from '../ProjectCrss.tsx'
+import { WmsLayersNode } from '../WmsLayers.tsx'
 import { VectorLayersNode } from '../VectorLayers.tsx'
 import { ProjectUsersNode } from '../ProjectUsers.tsx'
 import { PlaceLevelsNode } from '../PlaceLevels.tsx'
 import { FieldsNode } from '../Fields.tsx'
 import { FilesNode } from '../Files.tsx'
 import { Editing } from './Editing.tsx'
-import { useElectric } from '../../../ElectricProvider.tsx'
 import { removeChildNodes } from '../../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../../modules/tree/addOpenNodes.ts'
+import { designingAtom, treeOpenNodesAtom } from '../../../store.ts'
 
 interface Props {
   project: Project
   level?: number
 }
+const parentArray = ['data', 'projects']
 
 export const ProjectNode = memo(({ project, level = 2 }: Props) => {
-  const location = useLocation()
+  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [designing] = useAtom(designingAtom)
+
+  const { pathname } = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { user: authUser } = useCorbado()
-
-  const { db } = useElectric()!
-
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
-  const designing = appState?.designing ?? false
-  const openNodes = useMemo(
-    () => appState?.tree_open_nodes ?? [],
-    [appState?.tree_open_nodes],
-  )
 
   const showFiles = project.files_active_projects ?? false
 
-  const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const parentArray = useMemo(() => ['data', 'projects'], [])
+  const urlPath = pathname.split('/').filter((p) => p !== '')
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = useMemo(
     () => [...parentArray, project.project_id],
-    [parentArray, project.project_id],
+    [project.project_id],
   )
   const ownUrl = `/${ownArray.join('/')}`
 
@@ -64,11 +54,7 @@ export const ProjectNode = memo(({ project, level = 2 }: Props) => {
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
-      removeChildNodes({
-        node: parentArray,
-        db,
-        appStateId: appState?.app_state_id,
-      })
+      removeChildNodes({ node: parentArray })
       // TODO: only navigate if urlPath includes ownArray
       if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
         navigate({
@@ -79,19 +65,12 @@ export const ProjectNode = memo(({ project, level = 2 }: Props) => {
       return
     }
     // add to openNodes without navigating
-    addOpenNodes({
-      nodes: [ownArray],
-      db,
-      appStateId: appState?.app_state_id,
-    })
+    addOpenNodes({ nodes: [ownArray] })
   }, [
-    appState?.app_state_id,
-    db,
     isInActiveNodeArray,
     isOpen,
     navigate,
     ownArray,
-    parentArray,
     parentUrl,
     searchParams,
     urlPath.length,
@@ -116,16 +95,21 @@ export const ProjectNode = memo(({ project, level = 2 }: Props) => {
           <SubprojectsNode project_id={project.project_id} />
           <ProjectReportsNode project_id={project.project_id} />
           <PersonsNode project_id={project.project_id} />
-          <TileLayersNode project_id={project.project_id} />
+          <WmsLayersNode project_id={project.project_id} />
           <VectorLayersNode project_id={project.project_id} />
-          {showFiles && <FilesNode project_id={project.project_id} level={3} />}
+          {showFiles && (
+            <FilesNode
+              project_id={project.project_id}
+              level={3}
+            />
+          )}
           {designing && (
             <>
               <ProjectUsersNode project_id={project.project_id} />
               <ListsNode project_id={project.project_id} />
               <TaxonomiesNode project_id={project.project_id} />
               <UnitsNode project_id={project.project_id} />
-              <CrssNode project_id={project.project_id} />
+              <ProjectCrssNode project_id={project.project_id} />
               <PlaceLevelsNode project_id={project.project_id} />
               <FieldsNode project_id={project.project_id} />
             </>

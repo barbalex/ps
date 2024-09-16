@@ -10,12 +10,14 @@ import {
   MenuList,
   Checkbox,
 } from '@fluentui/react-components'
-import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
 import { Dismiss24Regular } from '@fluentui/react-icons'
+import { useAtom } from 'jotai'
 
-import { useElectric } from '../../ElectricProvider.tsx'
 import { Item } from './Item.tsx'
+import {
+  confirmAssigningToSingleTargetAtom,
+  placesToAssignOccurrenceToAtom,
+} from '../../store.ts'
 
 const titleRowStyle = {
   display: 'flex',
@@ -36,38 +38,25 @@ const actionsStyle = {
 }
 
 export const OccurrenceAssignChooser = memo(() => {
+  const [confirmAssigningToSingleTarget, setConfirmAssigningToSingleTarget] =
+    useAtom(confirmAssigningToSingleTargetAtom)
+  const [placesToAssignOccurrenceTo, setPlacesToAssignOccurrenceTo] = useAtom(
+    placesToAssignOccurrenceToAtom,
+  )
   // if multiple places are close to the dropped location,
   // assignToNearestDroppable will set an array of: place_id's, labels and distances
   // if so, a dialog will open to choose the place to assign
-  const { user: authUser } = useCorbado()
-  const { db } = useElectric()!
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
+  const onClickCancel = useCallback(
+    () => setPlacesToAssignOccurrenceTo(null),
+    [setPlacesToAssignOccurrenceTo],
   )
-  const placesToAssignTo = appState?.places_to_assign_occurrence_to
 
-  const onClickCancel = useCallback(() => {
-    db.app_states.update({
-      where: { app_state_id: appState?.app_state_id },
-      data: { places_to_assign_occurrence_to: null },
-    })
-  }, [appState?.app_state_id, db.app_states])
+  const onClickSingleTarget = useCallback(
+    () => setConfirmAssigningToSingleTarget(!confirmAssigningToSingleTarget),
+    [confirmAssigningToSingleTarget, setConfirmAssigningToSingleTarget],
+  )
 
-  const onClickSingleTarget = useCallback(() => {
-    db.app_states.update({
-      where: { app_state_id: appState?.app_state_id },
-      data: {
-        confirm_assigning_to_single_target:
-          !appState.confirm_assigning_to_single_target,
-      },
-    })
-  }, [
-    appState?.app_state_id,
-    appState?.confirm_assigning_to_single_target,
-    db.app_states,
-  ])
-
-  if (!placesToAssignTo) return null
+  if (!placesToAssignOccurrenceTo) return null
 
   return (
     <Dialog open={true}>
@@ -82,17 +71,16 @@ export const OccurrenceAssignChooser = memo(() => {
               onClick={onClickCancel}
             />
           </div>
-          {placesToAssignTo.places.length > 4 && (
+          {placesToAssignOccurrenceTo.places.length > 4 && (
             <div style={titleCommentStyle}>The 5 closest are shown</div>
           )}
           <DialogContent>
             <MenuList>
-              {placesToAssignTo.places.map((place) => (
+              {placesToAssignOccurrenceTo.places.map((place) => (
                 <Item
                   key={place.place_id}
-                  occurrenceId={placesToAssignTo.occurrence_id}
+                  occurrenceId={placesToAssignOccurrenceTo.occurrence_id}
                   place={place}
-                  appStateId={appState.app_state_id}
                 />
               ))}
             </MenuList>
@@ -100,7 +88,7 @@ export const OccurrenceAssignChooser = memo(() => {
           <DialogActions style={actionsStyle}>
             <Checkbox
               label="Auto-assign when single place found"
-              checked={!appState?.confirm_assigning_to_single_target}
+              checked={!confirmAssigningToSingleTarget}
               onChange={onClickSingleTarget}
             />
           </DialogActions>

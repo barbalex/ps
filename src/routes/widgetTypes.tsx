@@ -1,32 +1,23 @@
-import { useCallback, useMemo, memo } from 'react'
+import { useCallback, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useAtom } from 'jotai'
 
 import { createWidgetType } from '../modules/createRows.ts'
 import { useElectric } from '../ElectricProvider.tsx'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
+import { widgetTypesFilterAtom } from '../store.ts'
 
 import '../form.css'
 
 export const Component = memo(() => {
+  const [filter] = useAtom(widgetTypesFilterAtom)
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { user: authUser } = useCorbado()
-
   const { db } = useElectric()!
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
 
-  const filter = useMemo(
-    () =>
-      appState?.filter_widget_types?.filter((f) => Object.keys(f).length > 0) ??
-      [],
-    [appState?.filter_widget_types],
-  )
   const where = filter.length > 1 ? { OR: filter } : filter[0]
   const { results: widgetTypes = [] } = useLiveQuery(
     db.widget_types.liveMany({
@@ -57,12 +48,7 @@ export const Component = memo(() => {
         })`}
         addRow={add}
         tableName="widget type"
-        menus={
-          <FilterButton
-            table="widget_types"
-            filterField="filter_widget_types"
-          />
-        }
+        menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
         {widgetTypes.map(({ widget_type_id, label }) => (

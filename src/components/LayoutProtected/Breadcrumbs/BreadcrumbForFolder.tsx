@@ -2,22 +2,24 @@ import { useEffect, useState, forwardRef } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
+import { useAtom } from 'jotai'
 
-import './breadcrumb.css'
 import { buildNavs } from '../../../modules/navs.ts'
 import { idFieldFromTable } from '../../../modules/idFieldFromTable.ts'
 import { Menu } from './Menu/index.tsx'
+import { designingAtom } from '../../../store.ts'
 
-const siblingStyle = {
-  marginLeft: 7,
+const siblingStyle = { marginRight: 5 }
+const labelStyle = {
+  userSelect: 'none',
+  marginRight: 5,
 }
-const labelStyle = { userSelect: 'none' }
 
 // forwarding refs is crucial for the overflow menu to work
 // https://github.com/microsoft/fluentui/issues/27652#issuecomment-1520447241
 export const BreadcrumbForFolder = forwardRef(
-  ({ match, forOverflowMenu }, ref) => {
+  ({ match, forOverflowMenu, wrapping = false }, ref) => {
+    const [designing] = useAtom(designingAtom)
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
     const {
@@ -35,8 +37,6 @@ export const BreadcrumbForFolder = forwardRef(
       list_id,
       taxonomy_id,
     } = match.params
-
-    const { user: authUser } = useCorbado()
 
     const { text, table, sibling } = match?.handle?.crumb ?? {}
     const className =
@@ -58,10 +58,6 @@ export const BreadcrumbForFolder = forwardRef(
     const where = { [idField]: matchParam }
     const { results } = useLiveQuery(db[queryTable]?.liveMany?.({ where }))
     const row = results?.[0]
-    const { results: appState } = useLiveQuery(
-      db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-    )
-    const designing = appState?.designing ?? false
 
     const [navs, setNavs] = useState([])
     useEffect(() => {
@@ -83,7 +79,7 @@ export const BreadcrumbForFolder = forwardRef(
           check_id,
           db,
           level: levelWanted,
-          authUser,
+          designing,
         })
 
         return setNavs(navs)
@@ -107,8 +103,12 @@ export const BreadcrumbForFolder = forwardRef(
       table,
       levelWanted,
       designing,
-      authUser,
     ])
+
+    // console.log(
+    //   'BreadcrumbForFolder, nav-paths:',
+    //   navs.map((n) => n.path),
+    // )
 
     let label = row?.label
     if (table === 'root' || table === 'docs') label = text
@@ -130,19 +130,29 @@ export const BreadcrumbForFolder = forwardRef(
     // })
 
     return (
-      <div
-        className={className}
-        onClick={() =>
-          navigate({
-            pathname: match.pathname,
-            search: searchParams.toString(),
-          })
-        }
-        ref={ref}
-      >
-        <div style={labelStyle}>{label}</div>
-        {!!sibling && <div style={siblingStyle}>{sibling}</div>}
-        <Menu navs={navs} />
+      <div className="breadcrumbs__crumb_container">
+        <div
+          className={className}
+          onClick={() =>
+            navigate({
+              pathname: match.pathname,
+              search: searchParams.toString(),
+            })
+          }
+          ref={ref}
+          style={{
+            borderBottom: wrapping
+              ? '1px solid rgba(55, 118, 28, 0.5) '
+              : 'none',
+            borderTop: wrapping ? '1px solid rgba(55, 118, 28, 0.5) ' : 'none',
+          }}
+        >
+          <div style={labelStyle}>{label}</div>
+          {!!sibling && !forOverflowMenu && (
+            <div style={siblingStyle}>{sibling}</div>
+          )}
+          {!forOverflowMenu && <Menu navs={navs} />}
+        </div>
       </div>
     )
   },

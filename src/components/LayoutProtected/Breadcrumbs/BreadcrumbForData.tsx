@@ -2,7 +2,6 @@ import { useEffect, useState, forwardRef, useMemo } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 
-import './breadcrumb.css'
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { idFieldFromTable } from '../../../modules/idFieldFromTable.ts'
 import { Menu } from './Menu/index.tsx'
@@ -10,14 +9,17 @@ import { Menu } from './Menu/index.tsx'
 const isOdd = (num) => num % 2
 
 const siblingStyle = {
-  marginLeft: 7,
+  marginLeft: 5,
 }
-const labelStyle = { userSelect: 'none' }
+const labelStyle = {
+  userSelect: 'none',
+  marginRight: 5,
+}
 
 // forwarding refs is crucial for the overflow menu to work
 // https://github.com/microsoft/fluentui/issues/27652#issuecomment-1520447241
 export const BreadcrumbForData = forwardRef(
-  ({ match, forOverflowMenu }, ref) => {
+  ({ match, forOverflowMenu, wrapping = false }, ref) => {
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
@@ -32,8 +34,6 @@ export const BreadcrumbForData = forwardRef(
     const levelWanted = placesCount < 2 ? 1 : 2
 
     const [occurrenceImportIds, setOccurrenceImportIds] = useState([])
-
-    const idField = idFieldFromTable(table)
 
     const filterParams = useMemo(() => {
       // filter by parents
@@ -118,10 +118,17 @@ export const BreadcrumbForData = forwardRef(
 
     const { results } = useLiveQuery(db[queryTable]?.liveMany(queryParam))
 
+    const idField = idFieldFromTable(table)
     const navs = (results ?? []).map((result) => ({
       path: `${match.pathname}/${result[idField]}`,
       text: result.label ?? result[idField],
     }))
+
+    // console.log(
+    //   'BreadcrumbForData, nav-paths:',
+    //   navs.map((n) => n.path),
+    // )
+    // console.log('BreadcrumbForData, idField:', idField)
 
     const [label, setLabel] = useState(text)
     useEffect(() => {
@@ -179,19 +186,29 @@ export const BreadcrumbForData = forwardRef(
     // })
 
     return (
-      <div
-        className={className}
-        onClick={() =>
-          navigate({
-            pathname: match.pathname,
-            search: searchParams.toString(),
-          })
-        }
-        ref={ref}
-      >
-        <div style={labelStyle}>{label}</div>
-        {!!sibling && <div style={siblingStyle}>{sibling}</div>}
-        <Menu navs={navs} />
+      <div className="breadcrumbs__crumb_container">
+        <div
+          className={className}
+          style={{
+            borderBottom: wrapping
+              ? '1px solid rgba(55, 118, 28, 0.5) '
+              : 'none',
+            borderTop: wrapping ? '1px solid rgba(55, 118, 28, 0.5) ' : 'none',
+          }}
+          onClick={() =>
+            navigate({
+              pathname: match.pathname,
+              search: searchParams.toString(),
+            })
+          }
+          ref={ref}
+        >
+          <div style={labelStyle}>{label}</div>
+          {!!sibling && !forOverflowMenu && (
+            <div style={siblingStyle}>{sibling}</div>
+          )}
+          {!forOverflowMenu && <Menu navs={navs} />}
+        </div>
       </div>
     )
   },

@@ -1,0 +1,10 @@
+@supports not (field-sizing: content) {
+  input {
+    width: 63px;
+  }
+}
+@supports (field-sizing: content) {
+  input {
+    field-sizing: content;
+  }
+}

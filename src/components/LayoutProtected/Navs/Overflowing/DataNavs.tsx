@@ -7,10 +7,8 @@ import { idFieldFromTable } from '../../../../modules/idFieldFromTable.ts'
 import { Nav } from '../Nav.tsx'
 import { OverflowMenu } from './index.tsx'
 
-const isOdd = (num) => num % 2
-
 // TODO: extract crumbs immediately in all other data nav components
-// Datanavas need to query db
+// DataNavs need to query db
 // so need to be in a separate component
 export const DataNavsOverflowing = memo(
   forwardRef(({ matches }, ref) => {
@@ -71,26 +69,30 @@ export const DataNavsOverflowing = memo(
       // Add only the last to the filter
       // Wanted to get it from params. But not useable because also contains lower level ids!!!
       // so need to get it from path which does NOT contain lower levels
-      // if length is divisable by two, then it is a parent id
-      const indexOfParentId =
-        path.length > 1
-          ? isOdd(path.length)
-            ? path.length - 2
-            : path.length - 1
-          : undefined
+      // if length is dividable by two, then it is a parent id
+      const indexOfParentId = path.length - 2
       const parentId = indexOfParentId ? path[indexOfParentId] : undefined
       // need to get the name from the parents as in path is altered
       // for instance: place_report_values > values
       const parentIdName = Object.keys(dataMatch.params ?? {})
         .find((key) => dataMatch.params[key] === parentId)
         ?.replace('place_id2', 'place_id')
-      const placesCountInPath = path.filter((p) => p.includes('places')).length
+      const placesCountInPath = path.filter((p) => p === 'places').length
+      const isPlaces2 = placesCountInPath === 2
+      // console.log('DataNavsOverflowing 1', {
+      //   path,
+      //   indexOfParentId,
+      //   parentId,
+      //   parentIdName,
+      //   isPlaces2,
+      //   placesCountInPath,
+      //   dataMatchParams: dataMatch.params,
+      // })
       if (parentIdName && parentId) {
-        if (table === 'places' && placesCountInPath === 2) {
-          filterParams.parent_id = dataMatch?.params?.place_id
-        } else if (table === 'places') {
-          filterParams[parentIdName] = parentId
-          filterParams.parent_id = null
+        if (table === 'places') {
+          filterParams.parent_id = isPlaces2
+            ? dataMatch?.params?.place_id
+            : null
         } else if (table === 'occurrences') {
           // need to get the occurrence_import_id from the subproject_id
           filterParams.occurrence_import_id = { in: occurrenceImportIds }
@@ -102,10 +104,9 @@ export const DataNavsOverflowing = memo(
           } else if (lastPathElement === 'occurrences-not-to-assign') {
             filterParams.not_to_assign = true
           } else if (lastPathElement === 'occurrences-assigned') {
-            filterParams.place_id =
-              placesCountInPath === 1
-                ? dataMatch.params.place_id
-                : dataMatch.params.place_id2
+            filterParams.place_id = isPlaces2
+              ? dataMatch.params.place_id2
+              : dataMatch.params.place_id
           }
           // if last path element is
         } else {
@@ -145,26 +146,27 @@ export const DataNavsOverflowing = memo(
       return { path, text }
     })
 
-    // console.log('hello DataNavsOverflowing', {
+    // console.log('DataNavsOverflowing 2', {
     //   table,
     //   idField,
     //   pathname,
     //   tableResults,
     //   filterParams,
+    //   tos,
     // })
 
     if (!table) return <div className="navs-resizable" />
     if (!tos.length) return <div className="navs-resizable" />
 
     return (
-      <Overflow overflowDirection="start" padding={20} ref={ref}>
+      <Overflow overflowDirection="end" padding={20} ref={ref}>
         <nav className="navs-resizable">
-          <OverflowMenu tos={tos} />
           {tos.map(({ text, path }) => (
             <OverflowItem key={path} id={path}>
               <Nav label={text} to={path} />
             </OverflowItem>
           ))}
+          <OverflowMenu tos={tos} />
         </nav>
       </Overflow>
     )

@@ -6,7 +6,7 @@ import type { InputProps } from '@fluentui/react-components'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
-import { FilteringCombobox } from '../../components/shared/FilteringCombobox/index.tsx'
+import { ComboboxFilteringForTable } from '../../components/shared/ComboboxFilteringForTable/index.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
@@ -102,7 +102,7 @@ export const Component = memo(() => {
           onChange={onChange}
         />
         {/* TODO: add distance from occurrence and sort by that ascending */}
-        <FilteringCombobox
+        <ComboboxFilteringForTable
           label="Place"
           name="place_id"
           table="places"

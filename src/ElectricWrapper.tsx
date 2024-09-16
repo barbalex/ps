@@ -24,7 +24,6 @@ export const ElectricProvider = memo(({ children }) => {
   // TODO: this rerenders a bit to often
   // console.log('hello ElectricProvider', {
   //   shortSession,
-  //   electric,
   // })
 
   useEffect(() => {

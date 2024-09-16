@@ -2,15 +2,19 @@ import WMSCapabilities from 'wms-capabilities'
 import axios from 'redaxios'
 
 import { xmlToJson } from './xmlToJson.ts'
+import { createNotification } from './createRows.ts'
+import { Electric } from '../../generated/client/index.ts'
 
 interface Props {
   url: string
   service?: 'WMS' | 'WFS'
+  db: Electric
 }
 
 export const getCapabilities = async ({
   url,
   service = 'WFS',
+  db,
 }: Props): object | undefined => {
   // Example url to get: https://wms.zh.ch/FnsSVOZHWMS?service=WMS&request=GetCapabilities
   let res
@@ -19,10 +23,12 @@ export const getCapabilities = async ({
     // How to catch this error? res is undefined...
     res = await axios.get(`${url}?service=${service}&request=GetCapabilities`)
   } catch (error) {
-    console.error(
-      `hello, getCapabilities, error fetching capabilities for ${url}`,
-      error,
-    )
+    const data = createNotification({
+      title: `Error loading capabilities for ${url}`,
+      body: error?.message ?? error,
+      intent: 'error',
+    })
+    db.notifications.create({ data })
     if (error.response) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
@@ -53,9 +59,15 @@ export const getCapabilities = async ({
     throw error
   }
 
-  if (!res) return undefined
-
-  if (!res?.data) return undefined
+  if (!res || !res?.data) {
+    const data = createNotification({
+      title: `Error loading capabilities for ${url}`,
+      body: 'No data returned from server',
+      intent: 'error',
+    })
+    db.notifications.create({ data })
+    return undefined
+  }
 
   if (service === 'WMS') return new WMSCapabilities().parse(res?.data)
 

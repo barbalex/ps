@@ -1,8 +1,8 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
+import { useAtom } from 'jotai'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Node } from './Node.tsx'
@@ -10,6 +10,11 @@ import { Places as Place } from '../../../generated/client/index.ts'
 import { PlaceReportNode } from './PlaceReport.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import {
+  treeOpenNodesAtom,
+  placeReports1FilterAtom,
+  placeReports2FilterAtom,
+} from '../../store.ts'
 
 interface Props {
   project_id: string
@@ -21,29 +26,16 @@ interface Props {
 
 export const PlaceReportsNode = memo(
   ({ project_id, subproject_id, place_id, place, level = 7 }: Props) => {
+    const [openNodes] = useAtom(treeOpenNodesAtom)
+    const [placeReports1Filter] = useAtom(placeReports1FilterAtom)
+    const [placeReports2Filter] = useAtom(placeReports2FilterAtom)
+
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
-    const { user: authUser } = useCorbado()
-
     const { db } = useElectric()!
 
-    const { results: appState } = useLiveQuery(
-      db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-    )
-    const openNodes = useMemo(
-      () => appState?.tree_open_nodes ?? [],
-      [appState?.tree_open_nodes],
-    )
-    const filterField = place_id
-      ? 'filter_place_reports_2'
-      : 'filter_place_reports_1'
-
-    const filter = useMemo(
-      () =>
-        appState?.[filterField]?.filter?.((f) => Object.keys(f).length > 0) ?? [],
-      [appState, filterField],
-    )
+    const filter = place_id ? placeReports2Filter : placeReports1Filter
     const where = filter.length > 1 ? { OR: filter } : filter[0]
     const { results: placeReports = [] } = useLiveQuery(
       db.place_reports.liveMany({
@@ -95,11 +87,7 @@ export const PlaceReportsNode = memo(
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
-        removeChildNodes({
-          node: parentArray,
-          db,
-          appStateId: appState?.app_state_id,
-        })
+        removeChildNodes({ node: parentArray })
         // only navigate if urlPath includes ownArray
         if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
           navigate({
@@ -110,14 +98,8 @@ export const PlaceReportsNode = memo(
         return
       }
       // add to openNodes without navigating
-      addOpenNodes({
-        nodes: [ownArray],
-        db,
-        appStateId: appState?.app_state_id,
-      })
+      addOpenNodes({ nodes: [ownArray] })
     }, [
-      appState?.app_state_id,
-      db,
       isInActiveNodeArray,
       isOpen,
       navigate,

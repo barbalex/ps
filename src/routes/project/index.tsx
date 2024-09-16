@@ -3,7 +3,7 @@ import { useSearchParams, useParams } from 'react-router-dom'
 import { Tab, TabList } from '@fluentui/react-components'
 import type { SelectTabData, SelectTabEvent } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
+import { useAtom } from 'jotai'
 
 import { Header } from './Header.tsx'
 import { Component as Form } from './Form.tsx'
@@ -12,24 +12,20 @@ import { useElectric } from '../../ElectricProvider.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
+import { designingAtom } from '../../store.ts'
 
 import '../../form.css'
 
 export const Component = memo(() => {
+  const [designing] = useAtom(designingAtom)
   const autoFocusRef = useRef<HTMLInputElement>(null)
   const { project_id } = useParams()
-  const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
 
   const { results: row } = useLiveQuery(
     db.projects.liveUnique({ where: { project_id } }),
   )
-
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
-  const designing = appState?.designing ?? false
 
   const [searchParams, setSearchParams] = useSearchParams()
   const tab = searchParams.get('projectTab') ?? 'form'
@@ -55,31 +51,54 @@ export const Component = memo(() => {
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
-      <TabList selectedValue={tab} onTabSelect={onTabSelect}>
-        <Tab id="form" value="form">
+      <TabList
+        selectedValue={tab}
+        onTabSelect={onTabSelect}
+      >
+        <Tab
+          id="form"
+          value="form"
+        >
           Form
         </Tab>
         {designing && (
-          <Tab id="design" value="design">
+          <Tab
+            id="design"
+            value="design"
+          >
             Design
           </Tab>
         )}
-        <Tab id="charts" value="charts">
+        <Tab
+          id="charts"
+          value="charts"
+        >
           Charts
         </Tab>
       </TabList>
       {tab === 'form' && (
-        <div className="form-container" role="tabpanel" aria-labelledby="form">
+        <div
+          className="form-container"
+          role="tabpanel"
+          aria-labelledby="form"
+        >
           <TextFieldInactive
             label="ID"
             name="project_id"
             value={row.project_id}
           />
-          <Form row={row} onChange={onChange} autoFocusRef={autoFocusRef} />
+          <Form
+            row={row}
+            onChange={onChange}
+            autoFocusRef={autoFocusRef}
+          />
         </div>
       )}
       {tab === 'design' && designing && (
-        <Design onChange={onChange} row={row} />
+        <Design
+          onChange={onChange}
+          row={row}
+        />
       )}
       {tab === 'charts' && (
         <div

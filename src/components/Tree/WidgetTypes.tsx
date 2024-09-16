@@ -1,37 +1,26 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useCorbado } from '@corbado/react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
+import { useAtom } from 'jotai'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { Node } from './Node.tsx'
 import { WidgetTypeNode } from './WidgetType.tsx'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
+import { treeOpenNodesAtom, widgetTypesFilterAtom } from '../../store.ts'
 
 export const WidgetTypesNode = memo(() => {
+  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [filter] = useAtom(widgetTypesFilterAtom)
+
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
 
-  const { results: appState } = useLiveQuery(
-    db.app_states.liveFirst({ where: { user_email: authUser?.email } }),
-  )
-  const openNodes = useMemo(
-    () => appState?.tree_open_nodes ?? [],
-    [appState?.tree_open_nodes],
-  )
-
-  const filter = useMemo(
-    () =>
-      appState?.filter_widget_types?.filter((f) => Object.keys(f).length > 0) ??
-      [],
-    [appState?.filter_widget_types],
-  )
   const where = filter.length > 1 ? { OR: filter } : filter[0]
   const { results: widgetTypes = [] } = useLiveQuery(
     db.widget_types.liveMany({
@@ -75,8 +64,6 @@ export const WidgetTypesNode = memo(() => {
     if (isOpen) {
       removeChildNodes({
         node: ownArray,
-        db,
-        appStateId: appState?.app_state_id,
         isRoot: true,
       })
       // only navigate if urlPath includes ownArray
@@ -89,15 +76,8 @@ export const WidgetTypesNode = memo(() => {
       return
     }
     // add to openNodes without navigating
-    addOpenNodes({
-      nodes: [ownArray],
-      db,
-      appStateId: appState?.app_state_id,
-      isRoot: true,
-    })
+    addOpenNodes({ nodes: [ownArray] })
   }, [
-    appState?.app_state_id,
-    db,
     isInActiveNodeArray,
     isOpen,
     navigate,

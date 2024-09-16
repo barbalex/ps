@@ -10,14 +10,13 @@ import {
   useIsOverflowItemVisible,
   useOverflowMenu,
 } from '@fluentui/react-components'
+import { BsCaretDown } from 'react-icons/bs'
 import { useMatches, useNavigate, useSearchParams } from 'react-router-dom'
 import { useResizeDetector } from 'react-resize-detector'
-import { BsCaretDown } from 'react-icons/bs'
 
 import { BreadcrumbForData } from '../BreadcrumbForData.tsx'
 import { BreadcrumbForFolder } from '../BreadcrumbForFolder.tsx'
 import { Matches } from './Matches.tsx'
-import '../breadcrumbs.css'
 
 const OverflowMenuItem: React.FC = ({ id, match, upRerenderInteger }) => {
   const navigate = useNavigate()
@@ -38,9 +37,15 @@ const OverflowMenuItem: React.FC = ({ id, match, upRerenderInteger }) => {
   return (
     <MenuItem onClick={onClick}>
       {table === 'root' || folder === false ? (
-        <BreadcrumbForFolder match={match} forOverflowMenu />
+        <BreadcrumbForFolder
+          match={match}
+          forOverflowMenu
+        />
       ) : (
-        <BreadcrumbForData match={match} forOverflowMenu />
+        <BreadcrumbForData
+          match={match}
+          forOverflowMenu
+        />
       )}
     </MenuItem>
   )
@@ -54,12 +59,12 @@ const OverflowMenu: React.FC = ({ matches, upRerenderInteger }) => {
   }
 
   return (
-    <Menu openOnHover>
+    <Menu>
       <MenuTrigger>
         <MenuButton
           className="menu-button"
-          ref={ref}
           menuIcon={<BsCaretDown />}
+          ref={ref}
         >
           +{overflowCount}
         </MenuButton>
@@ -107,9 +112,16 @@ export const BreadcrumbsOverflowing = () => {
   // })
 
   return (
-    <Overflow ref={ref} overflowDirection="start" padding={20}>
+    <Overflow
+      ref={ref}
+      overflowDirection="start"
+      padding={20}
+    >
       <div className="resizable-area">
-        <OverflowMenu matches={matches} upRerenderInteger={upRerenderInteger} />
+        <OverflowMenu
+          matches={matches}
+          upRerenderInteger={upRerenderInteger}
+        />
         <Matches
           rerenderInteger={rerenderInteger}
           matches={matches}

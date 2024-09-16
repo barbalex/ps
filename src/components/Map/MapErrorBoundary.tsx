@@ -1,7 +1,7 @@
 import { PropsWithChildren } from 'react'
 import { ErrorBoundary as ErrorBoundaryComponent } from 'react-error-boundary'
 
-import { TileLayer } from '../../../generated/client/index.ts'
+import { Wms_layers as WmsLayer } from '../../../generated/client/index.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { createNotification } from '../../modules/createRows.ts'
 
@@ -21,7 +21,7 @@ const ErrorFallback = ({ error, db, layer }) => {
 }
 
 interface Props {
-  layer: TileLayer
+  layer: WmsLayer
 }
 
 export const ErrorBoundary = ({

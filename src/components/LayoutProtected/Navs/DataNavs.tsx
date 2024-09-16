@@ -5,17 +5,20 @@ import { useElectric } from '../../../ElectricProvider.tsx'
 import { idFieldFromTable } from '../../../modules/idFieldFromTable.ts'
 import { Nav } from './Nav.tsx'
 
-const isOdd = (num) => num % 2
-
 export const DataNavs = memo(({ matches }) => {
   const location = useLocation()
   const { db } = useElectric()!
 
-  const filteredMatches = matches.filter((match) => {
-    const { table, folder } = match?.handle?.crumb ?? {}
+  const filteredMatches = useMemo(
+    () =>
+      matches.filter((match) => {
+        const { table, folder } = match?.handle?.crumb ?? {}
 
-    return table !== 'root' && folder === true
-  })
+        return table !== 'root' && folder === true
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [location.pathname],
+  )
   const dataMatch = filteredMatches?.[0] ?? {}
   const { table } = dataMatch?.handle?.crumb ?? {}
   const pathname = dataMatch?.pathname ?? ''
@@ -49,25 +52,18 @@ export const DataNavs = memo(({ matches }) => {
     // Wanted to get it from params. But not useable because also contains lower level ids!!!
     // so need to get it from path which does NOT contain lower levels
     // if length is divisable by two, then it is a parent id
-    const indexOfParentId =
-      path.length > 1
-        ? isOdd(path.length)
-          ? path.length - 2
-          : path.length - 1
-        : undefined
+    const indexOfParentId = path.length - 2
     const parentId = indexOfParentId ? path[indexOfParentId] : undefined
     // need to get the name from the parents as in path is altered
     // for instance: place_report_values > values
     const parentIdName = Object.keys(dataMatch.params ?? {})
       .find((key) => dataMatch.params[key] === parentId)
       ?.replace('place_id2', 'place_id')
-    const placesCountInPath = path.filter((p) => p.includes('places')).length
+    const placesCountInPath = path.filter((p) => p === 'places').length
+    const isPlaces2 = placesCountInPath === 2
     if (parentIdName && parentId) {
-      if (table === 'places' && placesCountInPath === 2) {
-        filterParams.parent_id = dataMatch?.params?.place_id
-      } else if (table === 'places') {
-        filterParams[parentIdName] = parentId
-        filterParams.parent_id = null
+      if (table === 'places') {
+        filterParams.parent_id = isPlaces2 ? dataMatch?.params?.place_id : null
       } else if (table === 'occurrences') {
         // need to get the occurrence_import_id from the subproject_id
         filterParams.occurrence_import_id = { in: occurrenceImportIds }
@@ -79,10 +75,9 @@ export const DataNavs = memo(({ matches }) => {
         } else if (lastPathElement === 'occurrences-not-to-assign') {
           filterParams.not_to_assign = true
         } else if (lastPathElement === 'occurrences-assigned') {
-          filterParams.place_id =
-            placesCountInPath === 1
-              ? dataMatch.params.place_id
-              : dataMatch.params.place_id2
+          filterParams.place_id = isPlaces2
+            ? dataMatch.params.place_id2
+            : dataMatch.params.place_id
         }
         // if last path element is
       } else {
@@ -102,6 +97,8 @@ export const DataNavs = memo(({ matches }) => {
   useEffect(() => {
     const get = async () => {
       if (!table) return
+
+      // console.log('DataNavs, effect, setting table results')
       setTableResults(
         await db[table]?.findMany({
           where: filterParams,
@@ -111,7 +108,7 @@ export const DataNavs = memo(({ matches }) => {
     }
     get()
   }, [db, filterParams, table, location.pathname])
-
+  // console.log('DataNavs rendering')
   // console.log('DataNavs', {
   //   table,
   //   idField,
@@ -129,9 +126,14 @@ export const DataNavs = memo(({ matches }) => {
       {tableResults.map((result) => {
         const value = result[idField]
         const label = result.label ?? value
+        // console.log('DataNavs', { value, label })
 
         return (
-          <Nav key={value} label={label ?? value} to={`${pathname}/${value}`} />
+          <Nav
+            key={value}
+            label={label ?? value}
+            to={`${pathname}/${value}`}
+          />
         )
       })}
     </nav>

@@ -1,34 +1,46 @@
-import { Vector_layer_displays as VectorLayerDisplay } from '../generated/client/index.ts'
+import {
+  Vector_layer_displays as VectorLayerDisplay,
+  Layer_presentations as LayerPresentation,
+} from '../generated/client/index.ts'
 
 interface Props {
   vectorLayerDisplay: VectorLayerDisplay
+  presentation: LayerPresentation
   extraProps?: Record<string, unknown>
 }
 
 export const vectorLayerDisplayToProperties = ({
-  vectorLayerDisplay: vld,
+  vectorLayerDisplay: display,
+  presentation,
   extraProps,
 }: Props): Record<string, unknown> => {
-  if (!vld) return {}
+  if (!display) return {}
 
-  // TODO: add missing styles for points?
-  return {
-    ...(typeof vld.stroke === 'number' && { stroke: vld.stroke === 1 }),
-    ...(vld.color && { color: vld.color }),
-    ...(typeof vld.weight === 'number' && { weight: vld.weight }),
-    ...(typeof vld.opacity_percent === 'number' && {
-      opacity: vld.opacity_percent / 100,
-    }),
-    ...(vld.line_cap && { lineCap: vld.line_cap }),
-    ...(vld.line_join && { lineJoin: vld.line_join }),
-    ...(vld.dash_array && { dashArray: vld.dash_array }),
-    ...(vld.dash_offset && { dashOffset: vld.dash_offset }),
-    ...(typeof vld.fill === 'number' && { fill: vld.fill === 1 }),
-    ...(vld.fill_color && { fillColor: vld.fill_color }),
-    ...(typeof vld.fill_opacity_percent === 'number' && {
-      fillOpacity: vld.fill_opacity_percent / 100,
-    }),
-    ...(vld.fill_rule && { fillRule: vld.fill_rule }),
+  // opacity needs to be converted from percent to decimal
+  const lPOpacity = presentation.opacity_percent
+    ? presentation.opacity_percent / 100
+    : 1
+  const displayFillOpacity = display.fill_opacity_percent
+    ? display.fill_opacity_percent / 100
+    : 1
+
+  const style = {
+    ...(typeof display.stroke === 'number' && { stroke: display.stroke === 1 }),
+    ...(display.color && { color: display.color }),
+    ...(typeof display.weight === 'number' && { weight: display.weight }),
+    opacity: lPOpacity,
+    ...(display.line_cap && { lineCap: display.line_cap }),
+    ...(display.line_join && { lineJoin: display.line_join }),
+    ...(display.dash_array && { dashArray: display.dash_array }),
+    ...(display.dash_offset && { dashOffset: display.dash_offset }),
+    ...(typeof display.fill === 'number' && { fill: display.fill === 1 }),
+    ...(display.fill_color && { fillColor: display.fill_color }),
+    // opacity can be set both in presentation and display...
+    fillOpacity: displayFillOpacity * lPOpacity,
+    ...(display.fill_rule && { fillRule: display.fill_rule }),
     ...extraProps,
   }
+
+  // TODO: add missing styles for points?
+  return style
 }
