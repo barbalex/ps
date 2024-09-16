@@ -20,9 +20,15 @@ const verticalbuttonsStyle = {
   justifyContent: 'center',
   alignItems: 'center',
 }
+const toolbarStyle = {
+  paddingBottom: 0,
+}
 const toolbarButtonStyle = {
   backgroundColor: 'white',
   border: '0.666667px solid rgb(209, 209, 209)',
+  width: 40,
+  minWidth: 40,
+  height: 40,
 }
 
 export const VerticalButtons = memo(() => {
@@ -42,8 +48,15 @@ export const VerticalButtons = memo(() => {
 
   // TODO: add: zoom to project bounds
   return (
-    <div style={verticalbuttonsStyle} ref={ref}>
-      <Toolbar vertical aria-label="vertical toolbar">
+    <div
+      style={verticalbuttonsStyle}
+      ref={ref}
+    >
+      <Toolbar
+        vertical
+        aria-label="vertical toolbar"
+        style={toolbarStyle}
+      >
         <LocatingButton />
         <ToolbarButton
           name="zoom_in"
