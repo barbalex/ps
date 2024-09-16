@@ -111,6 +111,7 @@ export const ClickListener = memo(() => {
       // loop through vector layers and get infos
       for await (const layer of activeVectorLayers) {
         const wfsService = layer.wfs_services
+        if (!wfsService) continue
         // default_crs is of the form: "urn:ogc:def:crs:EPSG::4326"
         // extract the relevant parts for db.crs.code:
         const wfsDefaultCrsArray = wfsService.default_crs?.split(':').slice(-3)
