@@ -42,13 +42,8 @@ export const BreadcrumbForData = forwardRef(
       // Add only the last to the filter
       // Wanted to get it from params. But not useable because also contains lower level ids!!!
       // so need to get it from path which does NOT contain lower levels
-      // if length is divisable by two, then it is a parent id
-      const indexOfParentId =
-        path.length > 1
-          ? isOdd(path.length)
-            ? path.length - 2
-            : path.length - 1
-          : undefined
+      // if length is devisable by two, then it is a parent id
+      const indexOfParentId = path.length - 2
       const parentId = indexOfParentId ? path[indexOfParentId] : undefined
       // need to get the name from the parents as in path is altered
       // for instance: place_report_values > values
@@ -108,13 +103,13 @@ export const BreadcrumbForData = forwardRef(
     const { db } = useElectric()!
     const queryTable = table === 'root' || table === 'docs' ? 'projects' : table
 
-    // console.log('BreadcrumbForData', {
-    //   queryTable,
-    //   table,
-    //   filterParams,
-    //   queryParam,
-    //   db,
-    // })
+    console.log('BreadcrumbForData', {
+      queryTable,
+      table,
+      filterParams,
+      queryParam,
+      db,
+    })
 
     const { results } = useLiveQuery(db[queryTable]?.liveMany(queryParam))
 
