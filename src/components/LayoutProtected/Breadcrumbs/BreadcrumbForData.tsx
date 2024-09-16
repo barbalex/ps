@@ -6,8 +6,6 @@ import { useElectric } from '../../../ElectricProvider.tsx'
 import { idFieldFromTable } from '../../../modules/idFieldFromTable.ts'
 import { Menu } from './Menu/index.tsx'
 
-const isOdd = (num) => num % 2
-
 const siblingStyle = {
   marginLeft: 5,
 }
@@ -103,13 +101,13 @@ export const BreadcrumbForData = forwardRef(
     const { db } = useElectric()!
     const queryTable = table === 'root' || table === 'docs' ? 'projects' : table
 
-    console.log('BreadcrumbForData', {
-      queryTable,
-      table,
-      filterParams,
-      queryParam,
-      db,
-    })
+    // console.log('BreadcrumbForData', {
+    //   queryTable,
+    //   table,
+    //   filterParams,
+    //   queryParam,
+    //   db,
+    // })
 
     const { results } = useLiveQuery(db[queryTable]?.liveMany(queryParam))
 
