@@ -6,10 +6,10 @@ export const store = createStore()
 export const userIdAtom = atomWithStorage('userIdAtom', null)
 export const userEmailAtom = atomWithStorage('userEmailAtom', null)
 export const designingAtom = atomWithStorage('designingAtom', false)
-export const navsOverflowingAtom = atomWithStorage('navsOverflowingAtom', false)
+export const navsOverflowingAtom = atomWithStorage('navsOverflowingAtom', true)
 export const breadcrumbsOverflowingAtom = atomWithStorage(
   'breadcrumbsOverflowingAtom',
-  false,
+  true,
 )
 export const tabsAtom = atomWithStorage('tabsAtom', ['tree', 'data'])
 export const syncingAtom = atomWithStorage('syncingAtom', false)
