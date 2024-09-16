@@ -33,7 +33,7 @@ export const ElectricProvider = memo(({ children }) => {
       // const { tabId } = uniqueTabId()
       // const scopedDbName = `basic-${LIB_VERSION}-${tabId}.db`
       // const conn = await ElectricDatabase.init(scopedDbName)
-      const conn = new PGlite('idb://electric.db', {
+      const conn = new PGlite('idb://electric', {
         // You can optionally use the relaxed durability mode to
         // improve responsiveness.
         // This schedules a flush to indexedDB for after a query has
