@@ -7,6 +7,6 @@ export default defineConfig({
   plugins: [react(), svgr()],
   envPrefix: 'ELECTRIC_',
   optimizeDeps: {
-    exclude: ['wa-sqlite'],
+    exclude: ['@electric-sql/pglite'],
   },
 })
