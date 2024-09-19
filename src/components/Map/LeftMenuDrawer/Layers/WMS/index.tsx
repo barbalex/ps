@@ -1,8 +1,9 @@
 import { memo, useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { Button } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
+import { useAtom } from 'jotai'
 
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
@@ -17,11 +18,11 @@ import {
   createWmsLayer,
   createLayerPresentation,
 } from '../../../../../modules/createRows.ts'
+import { mapEditingWmsLayerAtom } from '../../../../../store.ts'
 
 export const WmsLayers = memo(() => {
+  const [, setEditingWmsLayer] = useAtom(mapEditingWmsLayerAtom)
   const { project_id } = useParams()
-  const navigate = useNavigate()
-  // const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
   // 1. list all layers (own, wms, vector)
@@ -58,11 +59,8 @@ export const WmsLayers = memo(() => {
       wms_layer_id: wmsLayer.wms_layer_id,
     })
     await db.layer_presentations.create({ data: layerPresentation })
-    navigate({
-      pathname: wmsLayer.wms_layer_id,
-      search: searchParams.toString(),
-    })
-  }, [db.layer_presentations, db.wms_layers, navigate, project_id])
+    setEditingWmsLayer(wmsLayer.wms_layer_id)
+  }, [db.layer_presentations, db.wms_layers, project_id, setEditingWmsLayer])
 
   return (
     <ErrorBoundary>
