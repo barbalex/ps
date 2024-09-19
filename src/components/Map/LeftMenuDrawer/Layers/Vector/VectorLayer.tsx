@@ -23,6 +23,9 @@ const titleContainerStyle = {
 const editingButtonStyle = {
   marginRight: '0.5em',
 }
+const editButtonIconStyle = {
+  fontSize: 'medium',
+}
 
 export const VectorLayer = memo(({ layer }) => {
   const [editingVectorLayer, setEditingVectorLayer] = useAtom(
@@ -75,9 +78,9 @@ export const VectorLayer = memo(({ layer }) => {
             size="small"
             icon={
               editing ? (
-                <MdEditOff style={{ fontSize: 'medium' }} />
+                <MdEditOff style={editButtonIconStyle} />
               ) : (
-                <MdEdit style={{ fontSize: 'medium' }} />
+                <MdEdit style={editButtonIconStyle} />
               )
             }
             onClick={onClickEdit}

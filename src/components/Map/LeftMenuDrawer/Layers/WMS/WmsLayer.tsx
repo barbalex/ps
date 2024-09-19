@@ -24,6 +24,9 @@ const titleContainerStyle = {
 const editingButtonStyle = {
   marginRight: '0.5em',
 }
+const editButtonIconStyle = {
+  fontSize: 'medium',
+}
 
 export const WmsLayer = memo(({ layer, layerPresentations }) => {
   const [editingWmsLayer, setEditingWmsLayer] = useAtom(mapEditingWmsLayerAtom)
@@ -80,9 +83,9 @@ export const WmsLayer = memo(({ layer, layerPresentations }) => {
             size="small"
             icon={
               editing ? (
-                <MdEditOff style={{ fontSize: 'medium' }} />
+                <MdEditOff style={editButtonIconStyle} />
               ) : (
-                <MdEdit style={{ fontSize: 'medium' }} />
+                <MdEdit style={editButtonIconStyle} />
               )
             }
             onClick={onClickEdit}
