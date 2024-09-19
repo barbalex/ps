@@ -1,7 +1,6 @@
-import { memo, useCallback } from 'react'
+import { memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
-import { Checkbox } from '@fluentui/react-components'
 
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
@@ -11,7 +10,7 @@ import {
   titleStyle,
   noneStyle,
 } from '../styles.ts'
-import { createLayerPresentation } from '../../../../../modules/createRows.ts'
+import { VectorLayer } from './VectorLayer.tsx'
 
 export const VectorLayers = memo(() => {
   const { project_id } = useParams()
@@ -40,28 +39,6 @@ export const VectorLayers = memo(() => {
       ),
   )
 
-  const onChange = useCallback(
-    async (layer) => {
-      if (!layer.layer_presentations?.[0]?.layer_presentation_id) {
-        // create the missing layer_presentation
-        const layerPresentation = createLayerPresentation({
-          vector_layer_id: layer.vector_layer_id,
-          active: true,
-        })
-        await db.layer_presentations.create({ data: layerPresentation })
-      } else {
-        db.layer_presentations.update({
-          where: {
-            layer_presentation_id:
-              layer.layer_presentations?.[0]?.layer_presentation_id,
-          },
-          data: { active: true },
-        })
-      }
-    },
-    [db],
-  )
-
   return (
     <ErrorBoundary>
       <section style={sectionStyle}>
@@ -69,14 +46,9 @@ export const VectorLayers = memo(() => {
         <div style={layerListStyle}>
           {vectors.length ? (
             vectors.map((l) => (
-              <Checkbox
+              <VectorLayer
+                layer={l}
                 key={l.vector_layer_id}
-                size="large"
-                label={l.label}
-                // checked if layer has an active presentation
-                // always false because of the filter
-                checked={false}
-                onChange={() => onChange(l)}
               />
             ))
           ) : (
