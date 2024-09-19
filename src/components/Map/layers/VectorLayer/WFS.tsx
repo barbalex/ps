@@ -157,6 +157,11 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
       // ISSUE: The only way querying by bbox seems to work is by using the layers default crs
       // BUT: the server returns the data in the layer's default crs too...
       // SOLUTION: reproject the data to EPSG:4326
+      console.log('VectorLayerWFS, fetchData', {
+        data: res.data,
+        defaultCrs,
+        wfsDefaultCrsCode,
+      })
       const reprojectedData = reproject.reproject(
         res.data,
         defaultCrs?.proj4,
