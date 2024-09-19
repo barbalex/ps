@@ -11,6 +11,7 @@ import {
   titleStyle,
   noneStyle,
 } from '../styles.ts'
+import { createLayerPresentation } from '../../../../../modules/createRows.ts'
 
 export const VectorLayers = memo(() => {
   const { project_id } = useParams()
@@ -41,15 +42,22 @@ export const VectorLayers = memo(() => {
 
   const onChange = useCallback(
     async (layer) => {
-      console.log('VectorLayers.onChange layer:', layer)
-      // 3. if yes, update it
-      db.layer_presentations.update({
-        where: {
-          layer_presentation_id:
-            layer.layer_presentations?.[0]?.layer_presentation_id,
-        },
-        data: { active: true },
-      })
+      if (!layer.layer_presentations?.[0]?.layer_presentation_id) {
+        // create the missing layer_presentation
+        const layerPresentation = createLayerPresentation({
+          vector_layer_id: layer.vector_layer_id,
+          active: true,
+        })
+        await db.layer_presentations.create({ data: layerPresentation })
+      } else {
+        db.layer_presentations.update({
+          where: {
+            layer_presentation_id:
+              layer.layer_presentations?.[0]?.layer_presentation_id,
+          },
+          data: { active: true },
+        })
+      }
     },
     [db],
   )
