@@ -8,7 +8,7 @@ import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createLayerPresentation } from '../../../../../modules/createRows.ts'
 import { mapEditingWmsLayerAtom } from '../../../../../store.ts'
-import { Component as WmsLayerForm } from '../../../../../routes/wmsLayer/Form/index.tsx'
+import { WmsLayerEditing } from './Editing.tsx'
 // container gets green shadow when editing
 const containerStyleEditing = {
   border: '1px solid green',
@@ -19,10 +19,6 @@ const titleContainerStyle = {
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
-}
-// inset form and give it green shadow
-const formContainerStyle = {
-  padding: '1em',
 }
 const editingButtonStyle = {
   marginRight: '0.5em',
@@ -93,11 +89,7 @@ export const WmsLayer = memo(({ layer, layerPresentations }) => {
             style={editingButtonStyle}
           />
         </div>
-        {editing && (
-          <div style={formContainerStyle}>
-            <WmsLayerForm wms_layer_id={layer.wms_layer_id} />
-          </div>
-        )}
+        {editing && <WmsLayerEditing layer={layer} />}
       </div>
     </ErrorBoundary>
   )
