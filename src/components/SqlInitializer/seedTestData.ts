@@ -218,6 +218,19 @@ export const seedTestData = async (db) => {
       sql: seedWidgetsForFields,
     })
   }
+  const crss = await db.rawQuery({
+    sql: `select count(*) as count from crs;`,
+  })
+  if (crss[0].count === 0) {
+    try {
+      console.log('seedTestData, seedCrs:', seedCrs)
+      await db.unsafeExec({
+        sql: seedCrs,
+      })
+    } catch (error) {
+      console.log('seedTestData, seedCrs error', error)
+    }
+  }
   const projects = await db.rawQuery({
     sql: `select count(*) as count from projects;`,
   })
@@ -245,14 +258,6 @@ export const seedTestData = async (db) => {
     await db.unsafeExec({
       sql: seedSubprojectUsers,
     })
-    try {
-      console.log('seedTestData, seedCrs:', seedCrs)
-      await db.unsafeExec({
-        sql: seedCrs,
-      })
-    } catch (error) {
-      console.log('seedTestData, seedCrs error', error)
-    }
     try {
       await db.unsafeExec({
         sql: seedPlaces,
