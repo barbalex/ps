@@ -9,7 +9,11 @@ import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createLayerPresentation } from '../../../../../modules/createRows.ts'
 import { mapEditingWmsLayerAtom } from '../../../../../store.ts'
 import { Component as WmsLayerForm } from '../../../../../routes/wmsLayer/Form/index.tsx'
-
+// container gets green shadow when editing
+const containerStyleEditing = {
+  border: '1px solid green',
+  borderRadius: '0.5em',
+}
 // inline Checkbox and the edit button
 const titleContainerStyle = {
   display: 'flex',
@@ -19,8 +23,9 @@ const titleContainerStyle = {
 // inset form and give it green shadow
 const formContainerStyle = {
   padding: '1em',
-  border: '1px solid green',
-  borderRadius: '0.5em',
+}
+const editingButtonStyle = {
+  marginRight: '0.5em',
 }
 
 export const WmsLayer = memo(({ layer, layerPresentations }) => {
@@ -56,42 +61,44 @@ export const WmsLayer = memo(({ layer, layerPresentations }) => {
       ),
     [layer.wms_layer_id, setEditingWmsLayer],
   )
+  const editing = editingWmsLayer === layer.wms_layer_id
 
   return (
     <ErrorBoundary>
-      <div style={titleContainerStyle}>
-        <Checkbox
-          key={layer.wms_layer_id}
-          size="large"
-          label={layer.label}
-          // checked if layer has an active presentation
-          checked={
-            !!layerPresentations.find(
-              (lp) => lp.wms_layer_id === layer.wms_layer_id && lp.active,
-            )
-          }
-          onChange={onChange}
-        />
-        <Button
-          size="small"
-          icon={
-            editingWmsLayer === layer.wms_layer_id ? (
-              <MdEditOff style={{ fontSize: 'medium' }} />
-            ) : (
-              <MdEdit style={{ fontSize: 'medium' }} />
-            )
-          }
-          onClick={onClickEdit}
-          title={
-            editingWmsLayer === layer.wms_layer_id ? 'Stop editing' : 'Edit'
-          }
-        />
-      </div>
-      {editingWmsLayer === layer.wms_layer_id && (
-        <div style={formContainerStyle}>
-          <WmsLayerForm wms_layer_id={layer.wms_layer_id} />
+      <div style={editing ? containerStyleEditing : {}}>
+        <div style={titleContainerStyle}>
+          <Checkbox
+            key={layer.wms_layer_id}
+            size="large"
+            label={layer.label}
+            // checked if layer has an active presentation
+            checked={
+              !!layerPresentations.find(
+                (lp) => lp.wms_layer_id === layer.wms_layer_id && lp.active,
+              )
+            }
+            onChange={onChange}
+          />
+          <Button
+            size="small"
+            icon={
+              editing ? (
+                <MdEditOff style={{ fontSize: 'medium' }} />
+              ) : (
+                <MdEdit style={{ fontSize: 'medium' }} />
+              )
+            }
+            onClick={onClickEdit}
+            title={editing ? 'Stop editing' : 'Edit'}
+            style={editingButtonStyle}
+          />
         </div>
-      )}
+        {editing && (
+          <div style={formContainerStyle}>
+            <WmsLayerForm wms_layer_id={layer.wms_layer_id} />
+          </div>
+        )}
+      </div>
     </ErrorBoundary>
   )
 })
