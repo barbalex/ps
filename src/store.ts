@@ -46,6 +46,11 @@ export const mapEditingVectorLayerAtom = atomWithStorage(
   'mapEditingVectorLayerAtom',
   null,
 )
+// the id of the own vector layer that is currently being edited in the left menu drawer
+export const mapEditingOwnVectorLayerAtom = atomWithStorage(
+  'mapEditingOwnVectorLayerAtom',
+  null,
+)
 // The id of the place whose geometry is currently being edited
 export const editingPlaceGeometryAtom = atomWithStorage(
   'editingPlaceGeometryAtom',

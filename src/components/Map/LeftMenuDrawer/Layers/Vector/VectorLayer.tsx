@@ -85,7 +85,7 @@ export const VectorLayer = memo(({ layer }) => {
               )
             }
             onClick={onClickEdit}
-            title={editing ? 'Stop editing' : 'Edit'}
+            title={editing ? 'Stop editing layer' : 'Edit layer'}
             style={editingButtonStyle}
           />
         </div>
