@@ -1,17 +1,16 @@
-import { memo, useCallback } from 'react'
+import { memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
-import { Checkbox } from '@fluentui/react-components'
 
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
-import { createLayerPresentation } from '../../../../../modules/createRows.ts'
 import {
   sectionStyle,
   layerListStyle,
   titleStyle,
   noneStyle,
 } from '../styles.ts'
+import { WmsLayer } from './WmsLayer.tsx'
 
 export const WmsLayers = memo(() => {
   const { project_id } = useParams()
@@ -43,31 +42,6 @@ export const WmsLayers = memo(() => {
       ),
   )
 
-  const onChange = useCallback(
-    async (layer) => {
-      // 1. check if layer has a presentation
-      const presentation = await db.layer_presentations.findFirst({
-        where: { wms_layer_id: layer.wms_layer_id },
-      })
-      // 2. if not, create one
-      if (!presentation) {
-        const data = createLayerPresentation({
-          wms_layer_id: layer.wms_layer_id,
-          active: true,
-        })
-        db.layer_presentations.create({ data })
-      }
-      // 3. if yes, update it
-      else {
-        db.layer_presentations.update({
-          where: { layer_presentation_id: presentation.layer_presentation_id },
-          data: { active: true },
-        })
-      }
-    },
-    [db],
-  )
-
   return (
     <ErrorBoundary>
       <section style={sectionStyle}>
@@ -75,17 +49,9 @@ export const WmsLayers = memo(() => {
         <div style={layerListStyle}>
           {wms.length ? (
             wms?.map((l) => (
-              <Checkbox
-                key={l.wms_layer_id}
-                size="large"
-                label={l.label}
-                // checked if layer has an active presentation
-                checked={
-                  !!layerPresentations.find(
-                    (lp) => lp.wms_layer_id === l.wms_layer_id && lp.active,
-                  )
-                }
-                onChange={() => onChange(l)}
+              <WmsLayer
+                layer={l}
+                layerPresentations={layerPresentations}
               />
             ))
           ) : (
