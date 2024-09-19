@@ -34,7 +34,7 @@ export const VectorLayers = memo(() => {
   // 2. when one is set active, add layer_presentations for it
   const vectors = vectorLayers.filter(
     (l) =>
-      !l.layer_presentations.some(
+      !(l.layer_presentations ?? []).some(
         (lp) => lp.vector_layer_id === l.vector_layer_id && lp.active,
       ),
   )
