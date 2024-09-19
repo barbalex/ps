@@ -9,6 +9,7 @@ import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createLayerPresentation } from '../../../../../modules/createRows.ts'
 import { mapEditingWmsLayerAtom } from '../../../../../store.ts'
 import { WmsLayerEditing } from './Editing.tsx'
+
 // container gets green shadow when editing
 const containerStyleEditing = {
   border: '1px solid green',
