@@ -70,6 +70,7 @@ export const WmsLayers = memo(() => {
           {wms.length ? (
             wms?.map((l) => (
               <WmsLayer
+                key={l.wms_layer_id}
                 layer={l}
                 layerPresentations={layerPresentations}
               />
