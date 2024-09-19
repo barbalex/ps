@@ -158,12 +158,12 @@ const seedPlaces = `INSERT INTO places(account_id, place_id, subproject_id, leve
 ('018cf958-27e2-7000-90d3-59f024d467be', '018e03f8-c707-7485-9ec9-84067c4623cf', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2022, '{"name":"003 third"}', '${JSON.stringify(
   geometry03,
 )}'),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f8-e644-7f09-abf7-8ea0a178ce79', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2019, '{"name":"004 fourth"}', null),
+('018cf958-27e2-7000-90d3-59f024d467be', '01920a75-74cb-793a-9eb3-0f8da9ab9c85', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020, '{"name":"004 fourth"}', null),
 ('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-1133-7c91-8220-913c861b3339', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020, '{"name":"005 fifth"}', null),
 ('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-323e-7753-aae1-37005b3f25cf', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2018, '{"name":"006 sixth"}', null),
 ('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-52e7-79a7-8e53-34c4558bfce5', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2021, '{"name":"007 seventh"}', null),
 ('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-6b13-72e0-8903-c23fa8f2acde', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020, '{"name":"008 eighth"}', null),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-6b13-72e0-8903-c23fa8f2acde', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2017, '{"name":"009 nineth"}', null);`
+('018cf958-27e2-7000-90d3-59f024d467be', '01920a75-c013-772c-acf0-43ffb65b44c8', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020, '{"name":"008 nineth"}', null);`
 
 const seedPlaces2 = `INSERT INTO 
 places(account_id, place_id, parent_id, subproject_id, level, since, data, geometry) values 
