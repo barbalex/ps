@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, useEffect } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { Pane } from 'react-leaflet'
 import { useAtom } from 'jotai'
@@ -39,7 +39,7 @@ const tableLayerToComponent = {
 const paneBaseIndex = 400 // was: 200. then wfs layers covered lower ones
 
 export const Layers = memo(() => {
-  const [mapLayerSorting] = useAtom(mapLayerSortingAtom)
+  const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
 
   const { db } = useElectric()!
 
@@ -60,13 +60,16 @@ export const Layers = memo(() => {
       },
     }),
   )
-  const wmsLayersCount = layerPresentations.filter(
-    (lp) => !!lp.wms_layers,
-  ).length
-  // if no wms layer is present, add osm
-  if (!wmsLayersCount && !mapLayerSorting.includes('osm')) {
-    mapLayerSorting.push('osm')
-  }
+
+  useEffect(() => {
+    const wmsLayersCount = layerPresentations.filter(
+      (lp) => !!lp.wms_layers,
+    ).length
+    // if no wms layer is present, add osm
+    if (!wmsLayersCount && !mapLayerSorting.includes('osm')) {
+      setMapLayerSorting([...mapLayerSorting, 'osm'])
+    }
+  }, [mapLayerSorting, layerPresentations, setMapLayerSorting])
 
   // return an array of layerPresentations
   // for every one determine if is: wms, wfs, own (table)

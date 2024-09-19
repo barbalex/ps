@@ -61,7 +61,7 @@ const bboxFromBounds = ({ bounds, defaultCrs }) => {
     ])
     bbox = `${swReprojected[0]},${swReprojected[1]},${neReprojected[0]},${neReprojected[1]}`
   }
-  // console.log('VectorLayerWFS.bboxFromBounds', { bbox, bounds, defaultCrs })
+
   return bbox
 }
 
@@ -98,20 +98,19 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
   const [data, setData] = useState()
   const fetchData = useCallback(
     async () => {
-      // const mapSize = map.getSize()
       const defaultCrs = await db.crs.findFirst({
         where: { code: wfsDefaultCrsCode },
       })
       removeNotifs()
       const bbox = bboxFromBounds({ bounds: map.getBounds(), defaultCrs })
-      const data = createNotification({
+      const notif = createNotification({
         title: `Lade Vektor-Karte '${layer.label}'...`,
         intent: 'info',
         timeout: 100000,
       })
-      await db.notifications.create({ data })
+      await db.notifications.create({ data: notif })
       notificationIds.current = [
-        data.notification_id,
+        notif.notification_id,
         ...notificationIds.current,
       ]
       let res
@@ -135,7 +134,7 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
         })
       } catch (error) {
         await db.notifications.delete({
-          where: { notification_id: data.notification_id },
+          where: { notification_id: notif.notification_id },
         })
         console.error('VectorLayerWFS, error:', {
           url: error?.url,
@@ -164,7 +163,6 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
         '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs',
       )
       setData(reprojectedData.features)
-      // console.log('VectorLayerWFS.fetchData, params:', params)
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
@@ -203,7 +201,7 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
     (layer.max_features ?? 1000)
     // && !notificationIds.current.length
   ) {
-    const data = createNotification({
+    const notif2 = createNotification({
       title: `Zuviele Geometrien`,
       body: `Die maximale Anzahl Features von ${
         layer.max_features ?? 1000
@@ -213,16 +211,17 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
       intent: 'warning',
       timeout: 10000,
     })
-    db.notifications.create({ data })
-    notificationIds.current = [data.notification_id, ...notificationIds.current]
+    db.notifications.create({ data: notif2 })
+    notificationIds.current = [
+      notif2.notification_id,
+      ...notificationIds.current,
+    ]
   }
 
   if (!data) {
-    console.log('VectorLayerWFS, no data, thus returning null')
+    // console.log('VectorLayerWFS, no data, thus returning null')
     return null
   }
-
-  console.log('VectorLayerWFS, data.length:', data?.length)
 
   return (
     <>
@@ -261,12 +260,19 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
             : L.marker(latlng)
         }}
       />
-      <Dialog onOpenChange={() => setError(null)} open={!!error}>
+      <Dialog
+        onOpenChange={() => setError(null)}
+        open={!!error}
+      >
         <DialogSurface>
           <DialogBody>
             <DialogTitle>Error fetching data for vector layer</DialogTitle>
             <DialogContent style={dialogContentStyle}>
-              <XMLViewer style={xmlViewerStyle} xml={error} theme={xmlTheme} />
+              <XMLViewer
+                style={xmlViewerStyle}
+                xml={error}
+                theme={xmlTheme}
+              />
             </DialogContent>
             <DialogActions>
               <Button

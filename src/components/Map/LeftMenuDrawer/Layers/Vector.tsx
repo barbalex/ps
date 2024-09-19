@@ -41,6 +41,7 @@ export const VectorLayers = memo(() => {
 
   const onChange = useCallback(
     async (layer) => {
+      console.log('VectorLayers.onChange layer:', layer)
       // 3. if yes, update it
       db.layer_presentations.update({
         where: {
@@ -65,12 +66,8 @@ export const VectorLayers = memo(() => {
                 size="large"
                 label={l.label}
                 // checked if layer has an active presentation
-                checked={
-                  !!l.layer_presentations.find(
-                    (lp) =>
-                      lp.vector_layer_id === l.vector_layer_id && lp.active,
-                  )
-                }
+                // always false because of the filter
+                checked={false}
                 onChange={() => onChange(l)}
               />
             ))

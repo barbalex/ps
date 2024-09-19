@@ -154,8 +154,9 @@ export const ActiveLayers = memo(() => {
       const missingLayerPresentations = layerPresentationIds.filter(
         (lpId) => !mapLayerSorting.includes(lpId),
       )
+      // don't remove osm: will lead to unlimited re-rendering
       const removeLayerPresentations = mapLayerSorting.filter(
-        (lpId) => !layerPresentationIds.includes(lpId),
+        (lpId) => !layerPresentationIds.includes(lpId) && lpId !== 'osm',
       )
       if (
         !missingLayerPresentations.length &&

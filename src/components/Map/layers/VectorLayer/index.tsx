@@ -31,7 +31,10 @@ export const VectorLayerChooser = ({ layer, layerPresentation }: Props) => {
   // TODO: pass layerPresentation only when vector layers are not shown directly in Map anymore
   if (!geomCount)
     return (
-      <WFS layer={layer} layerPresentation={layerPresentation} />
+      <WFS
+        layer={layer}
+        layerPresentation={layerPresentation}
+      />
     )
   // TODO: what is this? Local data / Offline version
   return <PVLGeom layer={layer} />
