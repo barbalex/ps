@@ -3,15 +3,15 @@ import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import { Checkbox } from '@fluentui/react-components'
 
-import { useElectric } from '../../../../ElectricProvider.tsx'
-import { ErrorBoundary } from '../../../shared/ErrorBoundary.tsx'
-import { createLayerPresentation } from '../../../../modules/createRows.ts'
+import { useElectric } from '../../../../../ElectricProvider.tsx'
+import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
+import { createLayerPresentation } from '../../../../../modules/createRows.ts'
 import {
   sectionStyle,
   layerListStyle,
   titleStyle,
   noneStyle,
-} from './styles.ts'
+} from '../styles.ts'
 
 export const WmsLayers = memo(() => {
   const { project_id } = useParams()
