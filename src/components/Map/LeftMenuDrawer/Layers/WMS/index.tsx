@@ -1,6 +1,8 @@
-import { memo } from 'react'
+import { memo, useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
+import { Button } from '@fluentui/react-components'
+import { FaPlus } from 'react-icons/fa'
 
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
@@ -11,9 +13,14 @@ import {
   noneStyle,
 } from '../styles.ts'
 import { WmsLayer } from './WmsLayer.tsx'
+import {
+  createWmsLayer,
+  createLayerPresentation,
+} from '../../../../../modules/createRows.ts'
 
 export const WmsLayers = memo(() => {
   const { project_id } = useParams()
+  const navigate = useNavigate()
   // const { user: authUser } = useCorbado()
 
   const { db } = useElectric()!
@@ -42,6 +49,21 @@ export const WmsLayers = memo(() => {
       ),
   )
 
+  const addRow = useCallback(async () => {
+    const wmsLayer = createWmsLayer({ project_id })
+    console.log('WmsLayers.add, wmsLayer:', wmsLayer)
+    await db.wms_layers.create({ data: wmsLayer })
+    // also add layer_presentation
+    const layerPresentation = createLayerPresentation({
+      wms_layer_id: wmsLayer.wms_layer_id,
+    })
+    await db.layer_presentations.create({ data: layerPresentation })
+    navigate({
+      pathname: wmsLayer.wms_layer_id,
+      search: searchParams.toString(),
+    })
+  }, [db.layer_presentations, db.wms_layers, navigate, project_id])
+
   return (
     <ErrorBoundary>
       <section style={sectionStyle}>
@@ -57,6 +79,12 @@ export const WmsLayers = memo(() => {
           ) : (
             <p style={noneStyle}>No inactive WMS Layers</p>
           )}
+          <Button
+            size="medium"
+            icon={<FaPlus />}
+            onClick={addRow}
+            title={`Add new WMS-Layer`}
+          />
         </div>
       </section>
     </ErrorBoundary>
