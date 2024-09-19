@@ -146,23 +146,27 @@ const geometry03 = {
     },
   ],
 }
-const seedPlaces = `INSERT INTO 
-places(account_id, place_id, parent_id, subproject_id, level, since, data, geometry) values 
-('018cf958-27e2-7000-90d3-59f024d467be', '018df4fa-cfb3-739c-bca2-d55dfe876995', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020, '{"name":"001 first"}', '${JSON.stringify(
+// seed places twice so we don't have to set null values in parent_id
+// reason: got unique constraint violation
+const seedPlaces = `INSERT INTO places(account_id, place_id, subproject_id, level, since, data, geometry) values 
+('018cf958-27e2-7000-90d3-59f024d467be', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020, '{"name":"001 first"}', '${JSON.stringify(
   geometry01,
 )}'),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f8-9e60-763a-9191-2613ef4f1a16', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2021, '{"name":"002 second"}', '${JSON.stringify(
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f8-9e60-763a-9191-2613ef4f1a16', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2021, '{"name":"002 second"}', '${JSON.stringify(
   geometry02,
 )}'),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f8-c707-7485-9ec9-84067c4623cf', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2022, '{"name":"003 third"}', '${JSON.stringify(
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f8-c707-7485-9ec9-84067c4623cf', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2022, '{"name":"003 third"}', '${JSON.stringify(
   geometry03,
 )}'),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f8-e644-7f09-abf7-8ea0a178ce79', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2019, '{"name":"004 fourth"}', null),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-1133-7c91-8220-913c861b3339', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020, '{"name":"005 fifth"}', null),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-323e-7753-aae1-37005b3f25cf', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2018, '{"name":"006 sixth"}', null),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-52e7-79a7-8e53-34c4558bfce5', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2021, '{"name":"007 seventh"}', null),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-6b13-72e0-8903-c23fa8f2acde', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020, '{"name":"008 eighth"}', null),
-('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-6b13-72e0-8903-c23fa8f2acde', null, '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2017, '{"name":"009 nineth"}', null),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f8-e644-7f09-abf7-8ea0a178ce79', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2019, '{"name":"004 fourth"}', null),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-1133-7c91-8220-913c861b3339', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020, '{"name":"005 fifth"}', null),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-323e-7753-aae1-37005b3f25cf', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2018, '{"name":"006 sixth"}', null),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-52e7-79a7-8e53-34c4558bfce5', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2021, '{"name":"007 seventh"}', null),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-6b13-72e0-8903-c23fa8f2acde', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2020, '{"name":"008 eighth"}', null),
+('018cf958-27e2-7000-90d3-59f024d467be', '018e03f9-6b13-72e0-8903-c23fa8f2acde', '018cfd27-ee92-7000-b678-e75497d6c60e', 1, 2017, '{"name":"009 nineth"}', null);`
+
+const seedPlaces2 = `INSERT INTO 
+places(account_id, place_id, parent_id, subproject_id, level, since, data, geometry) values 
 ('018cf958-27e2-7000-90d3-59f024d467be', '018e0a2f-3946-7918-80bb-69aba1c20f6d', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 2, 2020, '{"name":"01.01 first.first"}', null),
 ('018cf958-27e2-7000-90d3-59f024d467be', '018e0a2f-bc94-76d2-8e5f-2a3acf73649e', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 2, 2021, '{"name":"01.02 first.second"}', null),
 ('018cf958-27e2-7000-90d3-59f024d467be', '018e0a30-20f7-7b81-a322-5f9e7f985b78', '018df4fa-cfb3-739c-bca2-d55dfe876995', '018cfd27-ee92-7000-b678-e75497d6c60e', 2, 2021, '{"name":"01.03 first.third"}', null);`
@@ -223,7 +227,6 @@ export const seedTestData = async (db) => {
   })
   if (crss[0].count === 0) {
     try {
-      console.log('seedTestData, seedCrs:', seedCrs)
       await db.unsafeExec({
         sql: seedCrs,
       })
@@ -264,6 +267,13 @@ export const seedTestData = async (db) => {
       })
     } catch (error) {
       console.log('hello seedTestData, seedPlaces error', error)
+    }
+    try {
+      await db.unsafeExec({
+        sql: seedPlaces2,
+      })
+    } catch (error) {
+      console.log('hello seedTestData, seedPlaces2 error', error)
     }
     await db.unsafeExec({
       sql: seedChecks,
