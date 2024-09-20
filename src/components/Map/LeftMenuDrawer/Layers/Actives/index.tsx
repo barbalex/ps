@@ -315,6 +315,11 @@ export const ActiveLayers = memo(() => {
     )
   }
 
+  // TODO: Accordion should only toggle when it's button is clicked
+  // SOLUTION:
+  // use controlled accordion
+  // onToggle: wait 300ms before toggling
+  // do not toggle if that layers presentation is no more active
   return (
     <ErrorBoundary>
       <ListContext.Provider value={contextValue}>
