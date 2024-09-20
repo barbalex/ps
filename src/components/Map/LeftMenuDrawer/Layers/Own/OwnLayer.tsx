@@ -7,8 +7,7 @@ import { useAtom } from 'jotai'
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createLayerPresentation } from '../../../../../modules/createRows.ts'
-import { mapEditingVectorLayerAtom } from '../../../../../store.ts'
-import { VectorLayerEditing } from './Editing.tsx'
+import { mapEditingOwnLayerAtom } from '../../../../../store.ts'
 import {
   containerStyleEditing,
   titleContainerStyle,
@@ -16,10 +15,8 @@ import {
   editButtonIconStyle,
 } from '../styles.ts'
 
-export const VectorLayer = memo(({ layer }) => {
-  const [editingVectorLayer, setEditingVectorLayer] = useAtom(
-    mapEditingVectorLayerAtom,
-  )
+export const OwnLayer = memo(({ layer }) => {
+  const [editingOwnLayer, setEditingOwnLayer] = useAtom(mapEditingOwnLayerAtom)
   const { db } = useElectric()!
 
   const onChange = useCallback(async () => {
@@ -43,12 +40,12 @@ export const VectorLayer = memo(({ layer }) => {
 
   const onClickEdit = useCallback(
     () =>
-      setEditingVectorLayer((prev) =>
+      setEditingOwnLayer((prev) =>
         prev === layer.vector_layer_id ? null : layer.vector_layer_id,
       ),
-    [layer.vector_layer_id, setEditingVectorLayer],
+    [layer.vector_layer_id, setEditingOwnLayer],
   )
-  const editing = editingVectorLayer === layer.vector_layer_id
+  const editing = editingOwnLayer === layer.vector_layer_id
 
   return (
     <ErrorBoundary>
@@ -77,7 +74,6 @@ export const VectorLayer = memo(({ layer }) => {
             style={editingButtonStyle}
           />
         </div>
-        {editing && <VectorLayerEditing layer={layer} />}
       </div>
     </ErrorBoundary>
   )

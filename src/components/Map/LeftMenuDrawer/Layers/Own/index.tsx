@@ -5,6 +5,7 @@ import { Checkbox } from '@fluentui/react-components'
 
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
+import { OwnLayer } from './OwnLayer.tsx'
 import {
   sectionStyle,
   layerListStyle,
@@ -71,18 +72,10 @@ export const OwnLayers = memo(() => {
         <div style={layerListStyle}>
           {own.length ? (
             own.map((l) => (
-              <Checkbox
+              <OwnLayer
                 key={l.vector_layer_id}
-                size="large"
-                label={l.label}
-                // checked if layer has an active presentation
-                checked={
-                  !!(l.layer_presentations ?? []).find(
-                    (lp) =>
-                      lp.vector_layer_id === l.vector_layer_id && lp.active,
-                  )
-                }
-                onChange={() => onChange(l)}
+                layer={l}
+                onChange={onChange}
               />
             ))
           ) : (

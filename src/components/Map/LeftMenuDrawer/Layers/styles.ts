@@ -19,3 +19,22 @@ export const addButtonStyle = {
   marginLeft: 6,
   marginTop: 8,
 }
+
+
+// container gets green shadow when editing
+export const containerStyleEditing = {
+  border: '1px solid green',
+  borderRadius: '0.5em',
+}
+// inline Checkbox and the edit button
+export const titleContainerStyle = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+}
+export const editingButtonStyle = {
+  marginRight: '0.5em',
+}
+export const editButtonIconStyle = {
+  fontSize: 'medium',
+}

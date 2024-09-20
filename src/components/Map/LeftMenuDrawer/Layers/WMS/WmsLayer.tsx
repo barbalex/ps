@@ -9,24 +9,12 @@ import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createLayerPresentation } from '../../../../../modules/createRows.ts'
 import { mapEditingWmsLayerAtom } from '../../../../../store.ts'
 import { WmsLayerEditing } from './Editing.tsx'
-
-// container gets green shadow when editing
-const containerStyleEditing = {
-  border: '1px solid green',
-  borderRadius: '0.5em',
-}
-// inline Checkbox and the edit button
-const titleContainerStyle = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-}
-const editingButtonStyle = {
-  marginRight: '0.5em',
-}
-const editButtonIconStyle = {
-  fontSize: 'medium',
-}
+import {
+  containerStyleEditing,
+  titleContainerStyle,
+  editingButtonStyle,
+  editButtonIconStyle,
+} from '../styles.ts'
 
 export const WmsLayer = memo(({ layer, layerPresentations }) => {
   const [editingWmsLayer, setEditingWmsLayer] = useAtom(mapEditingWmsLayerAtom)
@@ -72,11 +60,8 @@ export const WmsLayer = memo(({ layer, layerPresentations }) => {
             size="large"
             label={layer.label}
             // checked if layer has an active presentation
-            checked={
-              !!layerPresentations.find(
-                (lp) => lp.wms_layer_id === layer.wms_layer_id && lp.active,
-              )
-            }
+            // always false because of the filter
+            checked={false}
             onChange={onChange}
           />
           <Button
