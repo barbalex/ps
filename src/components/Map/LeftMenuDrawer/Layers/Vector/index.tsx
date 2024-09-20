@@ -19,9 +19,13 @@ import {
   createVectorLayer,
   createLayerPresentation,
 } from '../../../../../modules/createRows.ts'
-import { mapEditingVectorLayerAtom } from '../../../../../store.ts'
+import {
+  mapEditingVectorLayerAtom,
+  designingAtom,
+} from '../../../../../store.ts'
 
 export const VectorLayers = memo(() => {
+  const [designing] = useAtom(designingAtom)
   const [, setEditingVectorLayer] = useAtom(mapEditingVectorLayerAtom)
   const { project_id } = useParams()
 
@@ -50,20 +54,15 @@ export const VectorLayers = memo(() => {
   )
 
   const addRow = useCallback(async () => {
-    console.log('project_id', project_id)
     const vectorLayer = createVectorLayer({ project_id })
-    console.log('vectorLayer', vectorLayer)
-    const res1 = await db.vector_layers.create({ data: vectorLayer })
-    console.log('res1', res1)
+    await db.vector_layers.create({ data: vectorLayer })
     // also add layer_presentation
     const layerPresentation = createLayerPresentation({
       vector_layer_id: vectorLayer.vector_layer_id,
     })
-    console.log('layerPresentation', layerPresentation)
-    const res2 = await db.layer_presentations.create({
+    await db.layer_presentations.create({
       data: layerPresentation,
     })
-    console.log('res2', res2)
     setEditingVectorLayer(vectorLayer.vector_layer_id)
   }, [
     db.layer_presentations,
@@ -100,13 +99,15 @@ export const VectorLayers = memo(() => {
           ) : (
             <p style={noneStyle}>No inactive Vector Layers</p>
           )}
-          <Button
-            size="small"
-            icon={<FaPlus />}
-            onClick={addRow}
-            title="Add vector layer"
-            style={addButtonStyle}
-          />
+          {designing && (
+            <Button
+              size="small"
+              icon={<FaPlus />}
+              onClick={addRow}
+              title="Add vector layer"
+              style={addButtonStyle}
+            />
+          )}
         </div>
       </section>
     </ErrorBoundary>

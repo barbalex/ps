@@ -7,7 +7,10 @@ import { useAtom } from 'jotai'
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createLayerPresentation } from '../../../../../modules/createRows.ts'
-import { mapEditingVectorLayerAtom } from '../../../../../store.ts'
+import {
+  mapEditingVectorLayerAtom,
+  designingAtom,
+} from '../../../../../store.ts'
 import { VectorLayerEditing } from './Editing.tsx'
 import {
   containerStyleEditing,
@@ -17,6 +20,7 @@ import {
 } from '../styles.ts'
 
 export const VectorLayer = memo(({ layer }) => {
+  const [designing] = useAtom(designingAtom)
   const [editingVectorLayer, setEditingVectorLayer] = useAtom(
     mapEditingVectorLayerAtom,
   )
@@ -63,19 +67,21 @@ export const VectorLayer = memo(({ layer }) => {
             checked={false}
             onChange={onChange}
           />
-          <Button
-            size="small"
-            icon={
-              editing ? (
-                <MdEditOff style={editButtonIconStyle} />
-              ) : (
-                <MdEdit style={editButtonIconStyle} />
-              )
-            }
-            onClick={onClickEdit}
-            title={editing ? 'Stop editing layer' : 'Edit layer'}
-            style={editingButtonStyle}
-          />
+          {designing && (
+            <Button
+              size="small"
+              icon={
+                editing ? (
+                  <MdEditOff style={editButtonIconStyle} />
+                ) : (
+                  <MdEdit style={editButtonIconStyle} />
+                )
+              }
+              onClick={onClickEdit}
+              title={editing ? 'Stop editing layer' : 'Edit layer'}
+              style={editingButtonStyle}
+            />
+          )}
         </div>
         {editing && <VectorLayerEditing layer={layer} />}
       </div>
