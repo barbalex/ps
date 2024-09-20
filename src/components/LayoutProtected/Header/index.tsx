@@ -12,15 +12,26 @@ const containerStyle = {
   backgroundColor: 'rgba(38, 82, 37, 0.9)',
   color: 'white',
 }
-const titleStyle = { fontSize: 'large', userSelect: 'none' }
+const titleStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  fontSize: 'large',
+  userSelect: 'none',
+  minHeight: 'var(--lineHeightBase300)',
+}
 const linkStyle = { color: 'white', textDecoration: 'none' }
 
 export const Header = () => {
   return (
-    <div className="header" style={containerStyle}>
+    <div
+      className="header"
+      style={containerStyle}
+    >
       <h1 style={titleStyle}>
         <Link
           to={'/'}
+          className="header__title__link"
           style={css({
             ...linkStyle,
             on: ($) => [
