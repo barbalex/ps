@@ -97,6 +97,12 @@ const previewStyle = {
   backgroundColor: 'white',
   borderRadius: '0.25rem',
 }
+const dragIndicatorStyle = {
+  fontSize: 'x-large',
+  color: 'rgba(55, 118, 28, 0.6)',
+  paddingRight: 5,
+  cursor: 'grab',
+}
 
 export const ActiveLayer = memo(
   ({ layer, index, isLast, layerCount }: Props) => {
@@ -227,6 +233,8 @@ export const ActiveLayer = memo(
       registerItem,
     ])
 
+    const canDrag = layerCount > 1
+
     // TODO: drag and drop items by dragging the drag icon
     // https://atlassian.design/components/pragmatic-drag-and-drop/core-package
     return (
@@ -246,26 +254,21 @@ export const ActiveLayer = memo(
             layer.layer_presentations?.[0]?.layer_presentation_id
           }
         >
-          <AccordionHeader expandIconPosition="end" size="extra-large">
+          <AccordionHeader
+            expandIconPosition="end"
+            size="extra-large"
+          >
             <div
               ref={dragHandleRef}
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                ...(layerCount <= 1 ? { cursor: 'not-allowed' } : {}),
+                ...(canDrag ? {} : { cursor: 'not-allowed' }),
               }}
               onClick={(e) => e.preventDefault()}
               title="drag to reorder"
             >
-              <MdDragIndicator
-                style={{
-                  fontSize: 'x-large',
-                  color: 'rgba(55, 118, 28, 0.6)',
-                  paddingRight: 5,
-                  cursor: 'grab',
-                  ...(layerCount <= 1 ? { color: '#b7b7b7' } : {}),
-                }}
-              />
+              {canDrag && <MdDragIndicator style={dragIndicatorStyle} />}
             </div>
             <Checkbox
               size="large"
@@ -301,7 +304,12 @@ export const ActiveLayer = memo(
               </>
             )}
           </AccordionPanel>
-          {closestEdge && <DropIndicator edge={closestEdge} gap="1px" />}
+          {closestEdge && (
+            <DropIndicator
+              edge={closestEdge}
+              gap="1px"
+            />
+          )}
         </AccordionItem>
         {draggableState.type === 'preview' &&
           createPortal(
