@@ -97,6 +97,10 @@ const previewStyle = {
   backgroundColor: 'white',
   borderRadius: '0.25rem',
 }
+const dragHandleStyle = {
+  display: 'flex',
+  alignItems: 'center',
+}
 const dragIndicatorStyle = {
   fontSize: 'x-large',
   color: 'rgba(55, 118, 28, 0.6)',
@@ -260,11 +264,7 @@ export const ActiveLayer = memo(
           >
             <div
               ref={dragHandleRef}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                ...(canDrag ? {} : { cursor: 'not-allowed' }),
-              }}
+              style={dragHandleStyle}
               onClick={(e) => e.preventDefault()}
               title="drag to reorder"
             >
