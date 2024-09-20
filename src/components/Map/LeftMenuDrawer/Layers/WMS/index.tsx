@@ -62,6 +62,20 @@ export const WmsLayers = memo(() => {
     setEditingWmsLayer(wmsLayer.wms_layer_id)
   }, [db.layer_presentations, db.wms_layers, project_id, setEditingWmsLayer])
 
+  if (!project_id) {
+    return (
+      <section style={sectionStyle}>
+        <h2 style={titleStyle}>WMS</h2>
+        <div style={layerListStyle}>
+          <div style={layerListStyle}></div>
+          <p style={noneStyle}>
+            WMS Layers are accessible when a project is active
+          </p>
+        </div>
+      </section>
+    )
+  }
+
   return (
     <ErrorBoundary>
       <section style={sectionStyle}>
