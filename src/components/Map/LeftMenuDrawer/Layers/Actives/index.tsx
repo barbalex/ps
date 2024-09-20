@@ -302,6 +302,19 @@ export const ActiveLayers = memo(() => {
     }
   }, [registry.register, reorderItem, instanceId, getListLength])
 
+  if (!project_id) {
+    return (
+      <section>
+        <h2 style={titleStyle}>Active</h2>
+        <div style={layerListStyle}>
+          <p style={noLayersStyle}>
+            Active layers are accessible when a project is active
+          </p>
+        </div>
+      </section>
+    )
+  }
+
   return (
     <ErrorBoundary>
       <ListContext.Provider value={contextValue}>

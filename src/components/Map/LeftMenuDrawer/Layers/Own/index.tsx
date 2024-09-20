@@ -51,6 +51,19 @@ export const OwnLayers = memo(() => {
     [db],
   )
 
+  if (!project_id) {
+    return (
+      <section style={sectionStyle}>
+        <h2 style={titleStyle}>Own</h2>
+        <div style={layerListStyle}>
+          <p style={noneStyle}>
+            Own Layers are accessible when a project is active
+          </p>
+        </div>
+      </section>
+    )
+  }
+
   return (
     <ErrorBoundary>
       <section style={sectionStyle}>
