@@ -34,6 +34,7 @@ import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createNotification } from '../../../../../modules/createRows.ts'
 import { SliderField } from '../../../../shared/SliderField.tsx'
 import { SwitchField } from '../../../../shared/SwitchField.tsx'
+import { TextField } from '../../../../shared/TextField.tsx'
 import {
   Vector_layers as VectorLayer,
   Wms_layers as WmsLayer,
@@ -303,6 +304,26 @@ export const ActiveLayer = memo(
                 />
               </>
             )}
+            <TextField
+              label="Max Zoom"
+              name="max_zoom"
+              value={layerPresentation.max_zoom ?? ''}
+              onChange={onChange}
+              type="number"
+              max={19}
+              min={0}
+              validationMessage="A number between 0 and 19"
+            />
+            <TextField
+              label="Min Zoom"
+              name="min_zoom"
+              value={layerPresentation.min_zoom ?? ''}
+              onChange={onChange}
+              type="number"
+              max={19}
+              min={0}
+              validationMessage="A number between 0 and 19"
+            />
           </AccordionPanel>
           {closestEdge && (
             <DropIndicator

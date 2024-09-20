@@ -105,26 +105,6 @@ export const Component = ({
           {/* TODO: add display by property field */}
           <PropertyField vectorLayer={vectorLayer} />
           <TextField
-            label="Max Zoom"
-            name="max_zoom"
-            value={vectorLayer.max_zoom ?? ''}
-            onChange={onChange}
-            type="number"
-            max={19}
-            min={0}
-            validationMessage="Zoom can be between 0 and 19"
-          />
-          <TextField
-            label="Min Zoom"
-            name="min_zoom"
-            value={vectorLayer.min_zoom ?? ''}
-            onChange={onChange}
-            type="number"
-            max={19}
-            min={0}
-            validationMessage="Zoom can be between 0 and 19"
-          />
-          <TextField
             label="Max number of features"
             name="max_features"
             value={vectorLayer.max_features ?? ''}

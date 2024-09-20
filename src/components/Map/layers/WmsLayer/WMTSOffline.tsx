@@ -16,6 +16,7 @@ export const WMTSOffline = ({ layer }: Props) => {
   const [showLocalMap, setShowLocalMap] = useAtom(showLocalMapAtom)
   const setLocalMapValues = useSetAtom(localMapValuesAtom)
   const map = useMap()
+  const layerPresentation = layer.layer_presentations?.[0]
 
   const { db } = useElectric()!
 
@@ -24,10 +25,12 @@ export const WMTSOffline = ({ layer }: Props) => {
   useEffect(() => {
     const wmtsLayer = L.tileLayer.offline(layer.wmts_url_template, {
       maxNativeZoom: 19,
-      minZoom: layer.min_zoom,
-      maxZoom: layer.max_zoom,
-      className: layer.grayscale ? 'grayscale' : '',
-      opacity: layer.opacity,
+      minZoom: layerPresentation.min_zoom,
+      maxZoom: layerPresentation.max_zoom,
+      className: layerPresentation.grayscale ? 'grayscale' : '',
+      opacity: layerPresentation.opacity_percent
+        ? layerPresentation.opacity_percent / 100
+        : 0,
     })
     wmtsLayer.addTo(map)
     const control = L.control.savetiles(wmtsLayer, {

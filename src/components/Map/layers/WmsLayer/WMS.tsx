@@ -32,8 +32,8 @@ export const WMS = memo(({ layerPresentation }: Props) => {
       layers={layer.wms_service_layer_name}
       version={layer.wms_services.version}
       format={layer.wms_services.image_format}
-      minZoom={layer.min_zoom}
-      maxZoom={layer.max_zoom}
+      minZoom={layerPresentation.min_zoom}
+      maxZoom={layerPresentation.max_zoom}
       className={layerPresentation.grayscale ? 'grayscale' : ''}
       opacity={layer.opacity} // TODO: ?? seems this has been changed from layerPresentation.opacity_percent to layer.opacity
       transparent={layerPresentation.transparent === true}

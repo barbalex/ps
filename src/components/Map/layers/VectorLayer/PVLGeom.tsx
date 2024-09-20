@@ -25,6 +25,7 @@ interface Props {
 
 export const PVLGeom = ({ layer, display }: Props) => {
   const { db } = useElectric()!
+  const layerPresentation = layer.layer_presentations?.[0]
 
   const [data, setData] = useState()
 
@@ -108,8 +109,8 @@ export const PVLGeom = ({ layer, display }: Props) => {
   }, [removeNotifs])
 
   // include only if zoom between min_zoom and max_zoom
-  if (layer.min_zoom !== undefined && zoom < layer.min_zoom) return null
-  if (layer.max_zoom !== undefined && zoom > layer.max_zoom) return null
+  if (layerPresentation.min_zoom !== undefined && zoom < layerPresentation.min_zoom) return null
+  if (layerPresentation.max_zoom !== undefined && zoom > layerPresentation.max_zoom) return null
 
   removeNotifs()
   if (

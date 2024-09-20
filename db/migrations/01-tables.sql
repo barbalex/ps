@@ -1291,8 +1291,6 @@ CREATE TABLE wms_layers(
   wms_service_id uuid DEFAULT NULL REFERENCES wms_services(wms_service_id) ON DELETE CASCADE ON UPDATE CASCADE,
   wms_service_layer_name text DEFAULT NULL, -- a name from wms_service_layers. NOT referenced because the uuid changes when the service is updated
   label text DEFAULT NULL,
-  max_zoom integer DEFAULT NULL, -- 19
-  min_zoom integer DEFAULT NULL, -- 0
   local_data_size integer DEFAULT NULL,
   local_data_bounds jsonb DEFAULT NULL
 );
@@ -1372,8 +1370,6 @@ CREATE TABLE vector_layers(
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   type vector_layer_type_enum DEFAULT NULL, -- 'wfs',
   display_by_property_field text DEFAULT NULL,
-  max_zoom integer DEFAULT NULL, -- 19,
-  min_zoom integer DEFAULT NULL, -- 0,
   max_features integer DEFAULT NULL, -- 1000
   wfs_service_id uuid DEFAULT NULL REFERENCES wfs_services(wfs_service_id) ON DELETE CASCADE ON UPDATE CASCADE,
   wfs_service_layer_name text DEFAULT NULL, -- a name from wfs_service_layers. NOT referenced because the uuid changes when the service is updated
@@ -1550,6 +1546,8 @@ CREATE TABLE layer_presentations(
   opacity_percent integer DEFAULT NULL, -- 100
   transparent boolean DEFAULT NULL, -- false
   grayscale boolean DEFAULT NULL, -- false
+  max_zoom integer DEFAULT NULL, -- 19,
+  min_zoom integer DEFAULT NULL, -- 0,
   label_replace_by_generated_column text DEFAULT NULL -- TODO: not needed?
 );
 

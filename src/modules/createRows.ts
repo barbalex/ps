@@ -458,24 +458,18 @@ export const createMessage = () => ({
 export const createWmsLayer = ({ project_id }) => ({
   wms_layer_id: uuidv7(),
   project_id,
-  max_zoom: 19,
-  min_zoom: 0,
 })
 
 export const createVectorLayer = ({
   project_id,
   type = 'wfs',
   label = null,
-  max_zoom = 19,
-  min_zoom = 0,
   max_features = 1000,
 }) => ({
   vector_layer_id: uuidv7(),
   project_id,
   label,
   type,
-  max_zoom,
-  min_zoom,
   max_features,
 })
 
@@ -543,6 +537,8 @@ export const createLayerPresentation = ({
   opacity_percent: 100,
   grayscale: false,
   transparent,
+  max_zoom: 19,
+  min_zoom: 0,
 })
 
 export const createWmsService = ({

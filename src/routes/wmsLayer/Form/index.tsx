@@ -92,26 +92,6 @@ export const Component = memo(
                 />
               </>
             )} */}
-            <TextField
-              label="Max Zoom"
-              name="max_zoom"
-              value={wmsLayer.max_zoom ?? ''}
-              onChange={onChange}
-              type="number"
-              max={19}
-              min={0}
-              validationMessage="Zoom can be between 0 and 19"
-            />
-            <TextField
-              label="Min Zoom"
-              name="min_zoom"
-              value={wmsLayer.min_zoom ?? ''}
-              onChange={onChange}
-              type="number"
-              max={19}
-              min={0}
-              validationMessage="Zoom can be between 0 and 19"
-            />
             {isOffline && (
               <>
                 <div>TODO: show the following only if loaded for offline</div>

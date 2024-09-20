@@ -94,8 +94,8 @@ export const Layers = memo(() => {
         ? layerPresentation.opacity_percent / 100
         : 1
       const partsToRedrawOn = {
-        max_zoom: wmsLayer.max_zoom,
-        min_zoom: wmsLayer.min_zoom,
+        max_zoom: layerPresentation.max_zoom,
+        min_zoom: layerPresentation.min_zoom,
         opacity: layerPresentation.opacity_percent,
         url: wmsLayer.wms_services.url,
         format: wmsLayer.wms_services.image_format,

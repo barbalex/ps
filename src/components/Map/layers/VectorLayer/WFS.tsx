@@ -187,12 +187,10 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
   }, [fetchDataDebounced])
 
   // include only if zoom between min_zoom and max_zoom
-  if (layer.min_zoom !== undefined && zoom < layer.min_zoom) {
-    console.log('VectorLayerWFS, zoom < layer.min_zoom:', { layer, zoom })
+  if (layerPresentation.min_zoom !== undefined && zoom < layerPresentation.min_zoom) {
     return null
   }
-  if (layer.max_zoom !== undefined && zoom > layer.max_zoom) {
-    console.log('VectorLayerWFS, zoom > layer.max_zoom:', { layer, zoom })
+  if (layerPresentation.max_zoom !== undefined && zoom > layerPresentation.max_zoom) {
     return null
   }
   if (!display) {

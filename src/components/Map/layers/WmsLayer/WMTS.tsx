@@ -11,8 +11,8 @@ export const WMTS = ({ layer }: Props) => {
     <TileLayer
       url={layer.wmts_url_template}
       maxNativeZoom={19}
-      minZoom={layer.min_zoom}
-      maxZoom={layer.max_zoom}
+      minZoom={layer?.layer_presentations?.[0]?.min_zoom}
+      maxZoom={layer?.layer_presentations?.[0]?.max_zoom}
       opacity={layer.opacity}
     />
   )
