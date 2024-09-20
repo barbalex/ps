@@ -7,11 +7,11 @@ import {
   useContext,
 } from 'react'
 import { createPortal } from 'react-dom'
-import { Checkbox } from '@fluentui/react-components'
 import {
   AccordionHeader,
   AccordionItem,
   AccordionPanel,
+  Checkbox,
 } from '@fluentui/react-components'
 import { MdDragIndicator } from 'react-icons/md'
 import { DropIndicator } from '@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/box'
@@ -32,9 +32,6 @@ import invariant from 'tiny-invariant'
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createNotification } from '../../../../../modules/createRows.ts'
-import { SliderField } from '../../../../shared/SliderField.tsx'
-import { SwitchField } from '../../../../shared/SwitchField.tsx'
-import { TextField } from '../../../../shared/TextField.tsx'
 import {
   Vector_layers as VectorLayer,
   Wms_layers as WmsLayer,
@@ -42,6 +39,7 @@ import {
 import { ListContext } from './index.tsx'
 import { itemKey, isItemData } from './shared.ts'
 import { getValueFromChange } from '../../../../../modules/getValueFromChange.ts'
+import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
 
 import './active.css'
 
@@ -280,50 +278,7 @@ export const ActiveLayer = memo(
             />
           </AccordionHeader>
           <AccordionPanel style={panelStyle}>
-            <SliderField
-              label="Opacity (%)"
-              name="opacity_percent"
-              min={0}
-              max={100}
-              value={layerPresentation.opacity_percent}
-              onChange={onChange}
-            />
-            {layer.wms_layer_id && (
-              <>
-                <SwitchField
-                  label="Transparent"
-                  name="transparent"
-                  value={layerPresentation.transparent}
-                  onChange={onChange}
-                />
-                <SwitchField
-                  label="Grayscale"
-                  name="grayscale"
-                  value={layerPresentation.grayscale}
-                  onChange={onChange}
-                />
-              </>
-            )}
-            <TextField
-              label="Max Zoom"
-              name="max_zoom"
-              value={layerPresentation.max_zoom ?? ''}
-              onChange={onChange}
-              type="number"
-              max={19}
-              min={0}
-              validationMessage="A number between 0 and 19"
-            />
-            <TextField
-              label="Min Zoom"
-              name="min_zoom"
-              value={layerPresentation.min_zoom ?? ''}
-              onChange={onChange}
-              type="number"
-              max={19}
-              min={0}
-              validationMessage="A number between 0 and 19"
-            />
+            <LayerPresentationForm layer={layer} />
           </AccordionPanel>
           {closestEdge && (
             <DropIndicator
