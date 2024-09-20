@@ -19,7 +19,7 @@ import { reorder } from '@atlaskit/pragmatic-drag-and-drop/reorder'
 import * as liveRegion from '@atlaskit/pragmatic-drag-and-drop-live-region'
 import { triggerPostMoveFlash } from '@atlaskit/pragmatic-drag-and-drop-flourish/trigger-post-move-flash'
 import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index'
-import { useAtom } from 'jotai'
+import { useAtom, atom } from 'jotai'
 
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
@@ -27,6 +27,10 @@ import { ActiveLayer } from './Active.tsx'
 import { isItemData } from './shared.ts'
 import { IsNarrowContext } from '../../IsNarrowContext.ts'
 import { mapLayerSortingAtom } from '../../../../../store.ts'
+
+// what accordion items are open
+// needs to be controlled to prevent opening when layer is deactivated
+const openItemsAtom = atom([])
 
 type ItemEntry = { itemId: string; element: HTMLElement }
 
@@ -94,6 +98,9 @@ const noLayersStyle = {
 
 export const ActiveLayers = memo(() => {
   const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
+  const [openItems, setOpenItems] = useAtom(openItemsAtom)
+  console.log('Actives, openItems:', openItems)
+
   const { project_id } = useParams()
   const isNarrow = useContext(IsNarrowContext)
 
@@ -302,6 +309,29 @@ export const ActiveLayers = memo(() => {
     }
   }, [registry.register, reorderItem, instanceId, getListLength])
 
+  const onToggleItem = useCallback(
+    (event, { value: layerPresentationId, openItems }) => {
+      // use setTimeout to let the child checkbox set the layers active status
+      setTimeout(async () => {
+        // fetch layerPresentation's active status
+        const layerPresentation = await db.layer_presentations.findFirst({
+          where: { layer_presentation_id: layerPresentationId },
+        })
+        const isActive = layerPresentation?.active
+        if (!isActive) {
+          // if not active, remove this item
+          const newOpenItems = openItems.filter(
+            (id) => id !== layerPresentationId,
+          )
+          setOpenItems(newOpenItems)
+          return
+        }
+        setOpenItems(openItems)
+      })
+    },
+    [db.layer_presentations, setOpenItems],
+  )
+
   if (!project_id) {
     return (
       <section>
@@ -315,10 +345,10 @@ export const ActiveLayers = memo(() => {
     )
   }
 
-  // TODO: Accordion should only toggle when it's button is clicked
-  // SOLUTION:
+  // Accordion should NOT toggle when the active-checkbox is clicked
+  // Solution:
   // use controlled accordion
-  // onToggle: wait 300ms before toggling
+  // onToggle: wait 0ms before toggling
   // do not toggle if that layers presentation is no more active
   return (
     <ErrorBoundary>
@@ -334,6 +364,8 @@ export const ActiveLayers = memo(() => {
             <Accordion
               multiple
               collapsible
+              openItems={openItems}
+              onToggle={onToggleItem}
             >
               {activeLayers.length ? (
                 activeLayers?.map((l, index) => (
