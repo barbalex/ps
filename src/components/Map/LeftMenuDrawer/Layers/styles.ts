@@ -14,3 +14,8 @@ export const titleStyle = {
 export const noneStyle = {
   margin: 0,
 }
+
+export const addButtonStyle = {
+  marginLeft: 6,
+  marginTop: 8,
+}

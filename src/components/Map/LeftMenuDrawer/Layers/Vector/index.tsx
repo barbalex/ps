@@ -1,6 +1,9 @@
-import { memo } from 'react'
+import { memo, useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
+import { Button } from '@fluentui/react-components'
+import { FaPlus } from 'react-icons/fa'
+import { useAtom } from 'jotai'
 
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
@@ -9,10 +12,17 @@ import {
   layerListStyle,
   titleStyle,
   noneStyle,
+  addButtonStyle,
 } from '../styles.ts'
 import { VectorLayer } from './VectorLayer.tsx'
+import {
+  createVectorLayer,
+  createLayerPresentation,
+} from '../../../../../modules/createRows.ts'
+import { mapEditingVectorLayerAtom } from '../../../../../store.ts'
 
 export const VectorLayers = memo(() => {
+  const [, setEditingVectorLayer] = useAtom(mapEditingVectorLayerAtom)
   const { project_id } = useParams()
 
   const { db } = useElectric()!
@@ -39,6 +49,17 @@ export const VectorLayers = memo(() => {
       ),
   )
 
+  const addRow = useCallback(async () => {
+    const vectorLayer = createVectorLayer({ project_id })
+    await db.wms_layers.create({ data: vectorLayer })
+    // also add layer_presentation
+    const layerPresentation = createLayerPresentation({
+      vector_layer_id: vectorLayer.vector_layer_id,
+    })
+    await db.layer_presentations.create({ data: layerPresentation })
+    setEditingVectorLayer(vectorLayer.vector_layer_id)
+  }, [db.layer_presentations, db.wms_layers, project_id, setEditingVectorLayer])
+
   return (
     <ErrorBoundary>
       <section style={sectionStyle}>
@@ -54,6 +75,13 @@ export const VectorLayers = memo(() => {
           ) : (
             <p style={noneStyle}>No inactive Vector Layers</p>
           )}
+          <Button
+            size="small"
+            icon={<FaPlus />}
+            onClick={addRow}
+            title="Add new WMS-Layer"
+            style={addButtonStyle}
+          />
         </div>
       </section>
     </ErrorBoundary>

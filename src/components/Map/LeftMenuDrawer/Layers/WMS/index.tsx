@@ -12,6 +12,7 @@ import {
   layerListStyle,
   titleStyle,
   noneStyle,
+  addButtonStyle,
 } from '../styles.ts'
 import { WmsLayer } from './WmsLayer.tsx'
 import {
@@ -78,10 +79,11 @@ export const WmsLayers = memo(() => {
             <p style={noneStyle}>No inactive WMS Layers</p>
           )}
           <Button
-            size="medium"
+            size="small"
             icon={<FaPlus />}
             onClick={addRow}
-            title={`Add new WMS-Layer`}
+            title="Add new WMS-Layer"
+            style={addButtonStyle}
           />
         </div>
       </section>
