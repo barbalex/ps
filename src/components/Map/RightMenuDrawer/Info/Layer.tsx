@@ -1,4 +1,5 @@
 import { memo, Fragment } from 'react'
+import Linkify from 'react-linkify'
 
 const containerStyle = {
   borderBottom: '1px solid #ccc',
@@ -79,7 +80,19 @@ export const Layer = memo(({ layerData }) => {
           return (
             <Fragment key={`${i}/${key}`}>
               <div style={{ ...labelStyle, backgroundColor }}>{key}</div>
-              <div style={{ ...textStyle, backgroundColor }}>{value}</div>
+              <Linkify
+                componentDecorator={(decoratedHref, decoratedText, key) => (
+                  <a
+                    target="blank"
+                    href={decoratedHref}
+                    key={key}
+                  >
+                    {decoratedText}
+                  </a>
+                )}
+              >
+                <div style={{ ...textStyle, backgroundColor }}>{value}</div>
+              </Linkify>
             </Fragment>
           )
         })}
