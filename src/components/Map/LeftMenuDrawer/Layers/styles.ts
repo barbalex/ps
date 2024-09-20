@@ -18,8 +18,8 @@ export const noneStyle = {
 export const addButtonStyle = {
   marginLeft: 6,
   marginTop: 8,
+  color: 'rgb(97, 97, 97)',
 }
-
 
 // container gets green shadow when editing
 export const containerStyleEditing = {
@@ -37,4 +37,5 @@ export const editingButtonStyle = {
 }
 export const editButtonIconStyle = {
   fontSize: 'medium',
+  color: 'rgb(97, 97, 97)',
 }
