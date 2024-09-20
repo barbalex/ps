@@ -8,6 +8,7 @@ import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createLayerPresentation } from '../../../../../modules/createRows.ts'
 import { mapEditingOwnLayerAtom } from '../../../../../store.ts'
+import { VectorLayerEditing } from '../Vector/Editing.tsx'
 import {
   containerStyleEditing,
   titleContainerStyle,
@@ -74,6 +75,7 @@ export const OwnLayer = memo(({ layer }) => {
             style={editingButtonStyle}
           />
         </div>
+        {editing && <VectorLayerEditing layer={layer} />}
       </div>
     </ErrorBoundary>
   )
