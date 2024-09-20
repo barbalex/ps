@@ -96,7 +96,7 @@ export const WmsLayers = memo(() => {
             size="small"
             icon={<FaPlus />}
             onClick={addRow}
-            title="Add new WMS-Layer"
+            title="Add WMS layer"
             style={addButtonStyle}
           />
         </div>
