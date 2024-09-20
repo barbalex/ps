@@ -99,7 +99,6 @@ const noLayersStyle = {
 export const ActiveLayers = memo(() => {
   const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
-  console.log('Actives, openItems:', openItems)
 
   const { project_id } = useParams()
   const isNarrow = useContext(IsNarrowContext)
