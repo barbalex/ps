@@ -50,15 +50,40 @@ export const VectorLayers = memo(() => {
   )
 
   const addRow = useCallback(async () => {
+    console.log('project_id', project_id)
     const vectorLayer = createVectorLayer({ project_id })
-    await db.wms_layers.create({ data: vectorLayer })
+    console.log('vectorLayer', vectorLayer)
+    const res1 = await db.vector_layers.create({ data: vectorLayer })
+    console.log('res1', res1)
     // also add layer_presentation
     const layerPresentation = createLayerPresentation({
       vector_layer_id: vectorLayer.vector_layer_id,
     })
-    await db.layer_presentations.create({ data: layerPresentation })
+    console.log('layerPresentation', layerPresentation)
+    const res2 = await db.layer_presentations.create({
+      data: layerPresentation,
+    })
+    console.log('res2', res2)
     setEditingVectorLayer(vectorLayer.vector_layer_id)
-  }, [db.layer_presentations, db.wms_layers, project_id, setEditingVectorLayer])
+  }, [
+    db.layer_presentations,
+    db.vector_layers,
+    project_id,
+    setEditingVectorLayer,
+  ])
+
+  if (!project_id) {
+    return (
+      <section style={sectionStyle}>
+        <h2 style={titleStyle}>Vectors</h2>
+        <div style={layerListStyle}>
+          <p style={noneStyle}>
+            Vector Layers are accessible when a project is active
+          </p>
+        </div>
+      </section>
+    )
+  }
 
   return (
     <ErrorBoundary>
