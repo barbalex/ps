@@ -7,7 +7,7 @@ import { useAtom } from 'jotai'
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createLayerPresentation } from '../../../../../modules/createRows.ts'
-import { mapEditingWmsLayerAtom } from '../../../../../store.ts'
+import { mapEditingWmsLayerAtom, designingAtom } from '../../../../../store.ts'
 import { WmsLayerEditing } from './Editing.tsx'
 import {
   containerStyleEditing,
@@ -16,7 +16,8 @@ import {
   editButtonIconStyle,
 } from '../styles.ts'
 
-export const WmsLayer = memo(({ layer, layerPresentations }) => {
+export const WmsLayer = memo(({ layer }) => {
+  const [designing] = useAtom(designingAtom)
   const [editingWmsLayer, setEditingWmsLayer] = useAtom(mapEditingWmsLayerAtom)
   const { db } = useElectric()!
 
@@ -64,19 +65,21 @@ export const WmsLayer = memo(({ layer, layerPresentations }) => {
             checked={false}
             onChange={onChange}
           />
-          <Button
-            size="small"
-            icon={
-              editing ? (
-                <MdEditOff style={editButtonIconStyle} />
-              ) : (
-                <MdEdit style={editButtonIconStyle} />
-              )
-            }
-            onClick={onClickEdit}
-            title={editing ? 'Stop editing layer' : 'Edit layer'}
-            style={editingButtonStyle}
-          />
+          {designing && (
+            <Button
+              size="small"
+              icon={
+                editing ? (
+                  <MdEditOff style={editButtonIconStyle} />
+                ) : (
+                  <MdEdit style={editButtonIconStyle} />
+                )
+              }
+              onClick={onClickEdit}
+              title={editing ? 'Stop editing layer' : 'Edit layer'}
+              style={editingButtonStyle}
+            />
+          )}
         </div>
         {editing && <WmsLayerEditing layer={layer} />}
       </div>

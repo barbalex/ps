@@ -19,9 +19,10 @@ import {
   createWmsLayer,
   createLayerPresentation,
 } from '../../../../../modules/createRows.ts'
-import { mapEditingWmsLayerAtom } from '../../../../../store.ts'
+import { mapEditingWmsLayerAtom, designingAtom } from '../../../../../store.ts'
 
 export const WmsLayers = memo(() => {
+  const [designing] = useAtom(designingAtom)
   const [, setEditingWmsLayer] = useAtom(mapEditingWmsLayerAtom)
   const { project_id } = useParams()
 
@@ -92,13 +93,15 @@ export const WmsLayers = memo(() => {
           ) : (
             <p style={noneStyle}>No inactive WMS Layers</p>
           )}
-          <Button
-            size="small"
-            icon={<FaPlus />}
-            onClick={addRow}
-            title="Add WMS layer"
-            style={addButtonStyle}
-          />
+          {designing && (
+            <Button
+              size="small"
+              icon={<FaPlus />}
+              onClick={addRow}
+              title="Add WMS layer"
+              style={addButtonStyle}
+            />
+          )}
         </div>
       </section>
     </ErrorBoundary>
