@@ -31,7 +31,6 @@ export const Component = memo(() => {
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
-      console.log('VectorLayerForm, onChange:', { name, value })
       db.vector_layers.update({
         where: { vector_layer_id },
         data: { [name]: value },
@@ -46,13 +45,14 @@ export const Component = memo(() => {
     [db.vector_layers, vector_layer_id],
   )
 
-  // console.log('hello VectorLayerForm, row:', row)
-
   if (!row) return <Loading />
 
   return (
     <div className="form-outer-container">
-      <Header row={row} autoFocusRef={autoFocusRef} />
+      <Header
+        row={row}
+        autoFocusRef={autoFocusRef}
+      />
       <div className="form-container">
         <VectorLayerForm
           onChange={onChange}
