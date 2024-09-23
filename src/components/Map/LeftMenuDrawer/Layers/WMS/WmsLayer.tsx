@@ -21,7 +21,12 @@ import {
   editButtonIconStyle,
 } from '../styles.ts'
 
-export const WmsLayer = memo(({ layer, isLast }) => {
+type Props = {
+  layer: WmsLayer
+  isLast: number
+}
+
+export const WmsLayer = memo(({ layer, isLast }: Props) => {
   const [designing] = useAtom(designingAtom)
   const [editingWmsLayer, setEditingWmsLayer] = useAtom(mapEditingWmsLayerAtom)
   const { db } = useElectric()!

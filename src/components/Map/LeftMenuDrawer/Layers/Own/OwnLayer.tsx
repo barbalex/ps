@@ -21,7 +21,12 @@ import {
   editButtonIconStyle,
 } from '../styles.ts'
 
-export const OwnLayer = memo(({ layer, isLast }) => {
+type Props = {
+  layer: VectorLayer
+  isLast: number
+}
+
+export const OwnLayer = memo(({ layer, isLast }: Props) => {
   const [designing] = useAtom(designingAtom)
   const [editingOwnLayer, setEditingOwnLayer] = useAtom(mapEditingOwnLayerAtom)
   const { db } = useElectric()!
