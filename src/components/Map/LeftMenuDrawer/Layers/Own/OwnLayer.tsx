@@ -1,7 +1,5 @@
 import { memo, useCallback } from 'react'
-import { MdEdit, MdEditOff } from 'react-icons/md'
 import {
-  Button,
   Checkbox,
   AccordionHeader,
   AccordionItem,
@@ -12,11 +10,9 @@ import { useAtom } from 'jotai'
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createLayerPresentation } from '../../../../../modules/createRows.ts'
-import { mapEditingOwnLayerAtom, designingAtom } from '../../../../../store.ts'
+import {  designingAtom } from '../../../../../store.ts'
 import { VectorLayerEditing } from '../Vector/Editing.tsx'
 import {
-  containerStyleEditing,
-  titleContainerStyle,
   panelStyle,
 } from '../styles.ts'
 
@@ -27,7 +23,6 @@ type Props = {
 
 export const OwnLayer = memo(({ layer, isLast }: Props) => {
   const [designing] = useAtom(designingAtom)
-  const [editingOwnLayer, setEditingOwnLayer] = useAtom(mapEditingOwnLayerAtom)
   const { db } = useElectric()!
 
   const onChange = useCallback(async () => {
@@ -49,7 +44,6 @@ export const OwnLayer = memo(({ layer, isLast }: Props) => {
     }
   }, [db.layer_presentations, layer.layer_presentations, layer.vector_layer_id])
 
-  const editing = editingOwnLayer === layer.vector_layer_id
 
   return (
     <ErrorBoundary>
@@ -67,19 +61,15 @@ export const OwnLayer = memo(({ layer, isLast }: Props) => {
           size="extra-large"
           expandIcon={designing ? undefined : null}
         >
-          <div style={editing ? containerStyleEditing : {}}>
-            <div style={titleContainerStyle}>
-              <Checkbox
-                key={layer.vector_layer_id}
-                size="large"
-                label={layer.label}
-                // checked if layer has an active presentation
-                // always false because of the filter
-                checked={false}
-                onChange={onChange}
-              />
-            </div>
-          </div>
+          <Checkbox
+            key={layer.vector_layer_id}
+            size="large"
+            label={layer.label}
+            // checked if layer has an active presentation
+            // always false because of the filter
+            checked={false}
+            onChange={onChange}
+          />
         </AccordionHeader>
         <AccordionPanel style={panelStyle}>
           <VectorLayerEditing layer={layer} />

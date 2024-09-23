@@ -19,7 +19,7 @@ import {
   createWmsLayer,
   createLayerPresentation,
 } from '../../../../../modules/createRows.ts'
-import { mapEditingWmsLayerAtom, designingAtom } from '../../../../../store.ts'
+import { designingAtom } from '../../../../../store.ts'
 
 // what accordion items are open
 // needs to be controlled to prevent opening when layer is deactivated
@@ -28,7 +28,6 @@ const openItemsAtom = atom([])
 export const WmsLayers = memo(() => {
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
   const [designing] = useAtom(designingAtom)
-  const [, setEditingWmsLayer] = useAtom(mapEditingWmsLayerAtom)
   const { project_id } = useParams()
 
   const { db } = useElectric()!
@@ -65,8 +64,8 @@ export const WmsLayers = memo(() => {
       wms_layer_id: wmsLayer.wms_layer_id,
     })
     await db.layer_presentations.create({ data: layerPresentation })
-    setEditingWmsLayer(wmsLayer.wms_layer_id)
-  }, [db.layer_presentations, db.wms_layers, project_id, setEditingWmsLayer])
+    setOpenItems((prev) => [...prev, wmsLayer.wms_layer_id])
+  }, [db.layer_presentations, db.wms_layers, project_id, setOpenItems])
 
   const onToggleItem = useCallback(
     (event, { openItems }) => setOpenItems(openItems),

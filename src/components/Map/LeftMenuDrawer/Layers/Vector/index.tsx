@@ -19,10 +19,7 @@ import {
   createVectorLayer,
   createLayerPresentation,
 } from '../../../../../modules/createRows.ts'
-import {
-  mapEditingVectorLayerAtom,
-  designingAtom,
-} from '../../../../../store.ts'
+import { designingAtom } from '../../../../../store.ts'
 
 // what accordion items are open
 // needs to be controlled to prevent opening when layer is deactivated
@@ -31,7 +28,6 @@ const openItemsAtom = atom([])
 export const VectorLayers = memo(() => {
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
   const [designing] = useAtom(designingAtom)
-  const [, setEditingVectorLayer] = useAtom(mapEditingVectorLayerAtom)
   const { project_id } = useParams()
 
   const { db } = useElectric()!
@@ -70,12 +66,13 @@ export const VectorLayers = memo(() => {
     await db.layer_presentations.create({
       data: layerPresentation,
     })
-    setEditingVectorLayer(vectorLayer.vector_layer_id)
+    setOpenItems([openItems, vectorLayer.vector_layer_id])
   }, [
     db.layer_presentations,
     db.vector_layers,
+    openItems,
     project_id,
-    setEditingVectorLayer,
+    setOpenItems,
   ])
 
   const onToggleItem = useCallback(

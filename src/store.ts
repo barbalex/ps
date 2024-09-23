@@ -36,21 +36,6 @@ export const mapInfoAtom = atomWithStorage('mapInfoAtom', null)
 export const mapShowCenterAtom = atomWithStorage('mapShowCenterAtom', false)
 // The order of layers in the map. An array of layer_presentation_ids
 export const mapLayerSortingAtom = atomWithStorage('mapLayerSortingAtom', [])
-// what wms layer is currently being edited in the left menu drawer
-export const mapEditingWmsLayerAtom = atomWithStorage(
-  'mapEditingWmsLayerAtom',
-  null,
-)
-// what vector layer is currently being edited in the left menu drawer
-export const mapEditingVectorLayerAtom = atomWithStorage(
-  'mapEditingVectorLayerAtom',
-  null,
-)
-// the id of the own vector layer that is currently being edited in the left menu drawer
-export const mapEditingOwnLayerAtom = atomWithStorage(
-  'mapEditingOwnLayerAtom',
-  null,
-)
 // The id of the place whose geometry is currently being edited
 export const editingPlaceGeometryAtom = atomWithStorage(
   'editingPlaceGeometryAtom',
