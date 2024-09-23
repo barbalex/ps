@@ -23,8 +23,6 @@ export const VectorLayer = memo(({ layer, isLast }: Props) => {
   const [designing] = useAtom(designingAtom)
   const { db } = useElectric()!
 
-  console.log('VectorLayer', { layer })
-
   const onChange = useCallback(async () => {
     if (!layer.layer_presentations?.[0]?.layer_presentation_id) {
       // create the missing layer_presentation
@@ -49,8 +47,6 @@ export const VectorLayer = memo(({ layer, isLast }: Props) => {
       <AccordionItem
         value={layer.vector_layer_id}
         style={{
-          // needed for the drop indicator to appear
-          position: 'relative',
           borderTop: '1px solid rgba(55, 118, 28, 0.5)',
           ...(isLast
             ? { borderBottom: '1px solid rgba(55, 118, 28, 0.5)' }

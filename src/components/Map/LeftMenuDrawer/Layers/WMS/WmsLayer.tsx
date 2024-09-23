@@ -50,8 +50,6 @@ export const WmsLayer = memo(({ layer, isLast }: Props) => {
       <AccordionItem
         value={layer.wms_layer_id}
         style={{
-          // needed for the drop indicator to appear
-          position: 'relative',
           borderTop: '1px solid rgba(55, 118, 28, 0.5)',
           ...(isLast
             ? { borderBottom: '1px solid rgba(55, 118, 28, 0.5)' }
