@@ -31,8 +31,6 @@ export const WmsLayers = memo(() => {
   const [, setEditingWmsLayer] = useAtom(mapEditingWmsLayerAtom)
   const { project_id } = useParams()
 
-  console.log('WMWLayers', { openItems })
-
   const { db } = useElectric()!
   // 1. list all layers (own, wms, vector)
   const where = project_id ? { project_id } : {}
