@@ -13,7 +13,7 @@ export const noneStyle = {
 }
 
 export const addButtonStyle = {
-  marginLeft: 6,
+  marginLeft: 12,
   marginTop: 8,
   color: 'rgb(97, 97, 97)',
 }
