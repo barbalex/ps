@@ -82,27 +82,25 @@ export const OwnLayers = memo(() => {
     <ErrorBoundary>
       <section style={sectionStyle}>
         <h2 style={titleStyle}>Own</h2>
-        <div style={layerListStyle}>
-          <Accordion
-            multiple
-            collapsible
-            openItems={openItems}
-            onToggle={onToggleItem}
-          >
-            {own.length ? (
-              own.map((l, index) => (
-                <OwnLayer
-                  key={l.vector_layer_id}
-                  layer={l}
-                  onChange={onChange}
-                  isLast={index === own.length - 1}
-                />
-              ))
-            ) : (
-              <p style={noneStyle}>No inactive Own Layers</p>
-            )}
-          </Accordion>
-        </div>
+        <Accordion
+          multiple
+          collapsible
+          openItems={openItems}
+          onToggle={onToggleItem}
+        >
+          {own.length ? (
+            own.map((l, index) => (
+              <OwnLayer
+                key={l.vector_layer_id}
+                layer={l}
+                onChange={onChange}
+                isLast={index === own.length - 1}
+              />
+            ))
+          ) : (
+            <p style={noneStyle}>No inactive Own Layers</p>
+          )}
+        </Accordion>
       </section>
     </ErrorBoundary>
   )

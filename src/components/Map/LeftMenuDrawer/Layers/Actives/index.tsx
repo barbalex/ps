@@ -338,7 +338,6 @@ export const ActiveLayers = memo(() => {
           <h2 style={titleStyle}>Active</h2>
           <div
             style={{
-              ...layerListStyle,
               ...(isNarrow ? {} : { width: 'calc(100% - 6px)' }),
             }}
           >

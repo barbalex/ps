@@ -19,7 +19,6 @@ import {
   createWmsLayer,
   createLayerPresentation,
 } from '../../../../../modules/createRows.ts'
-import { designingAtom } from '../../../../../store.ts'
 
 // what accordion items are open
 // needs to be controlled to prevent opening when layer is deactivated
@@ -27,7 +26,6 @@ const openItemsAtom = atom([])
 
 export const WmsLayers = memo(() => {
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
-  const [designing] = useAtom(designingAtom)
   const { project_id } = useParams()
 
   const { db } = useElectric()!
@@ -95,36 +93,32 @@ export const WmsLayers = memo(() => {
     <ErrorBoundary>
       <section style={sectionStyle}>
         <h2 style={titleStyle}>WMS</h2>
-        <div style={layerListStyle}>
-          <Accordion
-            multiple
-            collapsible
-            openItems={openItems}
-            onToggle={onToggleItem}
-          >
-            {wms.length ? (
-              wms?.map((l, index) => (
-                <WmsLayer
-                  key={l.wms_layer_id}
-                  layer={l}
-                  layerPresentations={layerPresentations}
-                  isLast={index === wms.length - 1}
-                />
-              ))
-            ) : (
-              <p style={noneStyle}>No inactive WMS Layers</p>
-            )}
-            {designing && (
-              <Button
-                size="small"
-                icon={<FaPlus />}
-                onClick={addRow}
-                title="Add WMS layer"
-                style={addButtonStyle}
+        <Accordion
+          multiple
+          collapsible
+          openItems={openItems}
+          onToggle={onToggleItem}
+        >
+          {wms.length ? (
+            wms?.map((l, index) => (
+              <WmsLayer
+                key={l.wms_layer_id}
+                layer={l}
+                layerPresentations={layerPresentations}
+                isLast={index === wms.length - 1}
               />
-            )}
-          </Accordion>
-        </div>
+            ))
+          ) : (
+            <p style={noneStyle}>No inactive WMS Layers</p>
+          )}
+          <Button
+            size="small"
+            icon={<FaPlus />}
+            onClick={addRow}
+            title="Add WMS layer"
+            style={addButtonStyle}
+          />
+        </Accordion>
       </section>
     </ErrorBoundary>
   )

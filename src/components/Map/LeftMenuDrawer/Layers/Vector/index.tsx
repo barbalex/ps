@@ -19,7 +19,6 @@ import {
   createVectorLayer,
   createLayerPresentation,
 } from '../../../../../modules/createRows.ts'
-import { designingAtom } from '../../../../../store.ts'
 
 // what accordion items are open
 // needs to be controlled to prevent opening when layer is deactivated
@@ -27,7 +26,6 @@ const openItemsAtom = atom([])
 
 export const VectorLayers = memo(() => {
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
-  const [designing] = useAtom(designingAtom)
   const { project_id } = useParams()
 
   const { db } = useElectric()!
@@ -119,15 +117,13 @@ export const VectorLayers = memo(() => {
           ) : (
             <p style={noneStyle}>No inactive Vector Layers</p>
           )}
-          {designing && (
-            <Button
-              size="small"
-              icon={<FaPlus />}
-              onClick={addRow}
-              title="Add vector layer"
-              style={addButtonStyle}
-            />
-          )}
+          <Button
+            size="small"
+            icon={<FaPlus />}
+            onClick={addRow}
+            title="Add vector layer"
+            style={addButtonStyle}
+          />
         </Accordion>
       </section>
     </ErrorBoundary>
