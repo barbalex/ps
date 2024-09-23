@@ -78,35 +78,40 @@ export const WmsLayer = memo(({ layer, isLast }: Props) => {
           layer.layer_presentations?.[0]?.layer_presentation_id
         }
       >
-        <div style={editing ? containerStyleEditing : {}}>
-          <div style={titleContainerStyle}>
-            <Checkbox
-              key={layer.wms_layer_id}
-              size="large"
-              label={layer.label}
-              // checked if layer has an active presentation
-              // always false because of the filter
-              checked={false}
-              onChange={onChange}
-            />
-            {designing && (
-              <Button
-                size="small"
-                icon={
-                  editing ? (
-                    <MdEditOff style={editButtonIconStyle} />
-                  ) : (
-                    <MdEdit style={editButtonIconStyle} />
-                  )
-                }
-                onClick={onClickEdit}
-                title={editing ? 'Stop editing layer' : 'Edit layer'}
-                style={editingButtonStyle}
+        <AccordionHeader
+          expandIconPosition="end"
+          size="extra-large"
+        >
+          <div style={editing ? containerStyleEditing : {}}>
+            <div style={titleContainerStyle}>
+              <Checkbox
+                key={layer.wms_layer_id}
+                size="large"
+                label={layer.label}
+                // checked if layer has an active presentation
+                // always false because of the filter
+                checked={false}
+                onChange={onChange}
               />
-            )}
+              {designing && (
+                <Button
+                  size="small"
+                  icon={
+                    editing ? (
+                      <MdEditOff style={editButtonIconStyle} />
+                    ) : (
+                      <MdEdit style={editButtonIconStyle} />
+                    )
+                  }
+                  onClick={onClickEdit}
+                  title={editing ? 'Stop editing layer' : 'Edit layer'}
+                  style={editingButtonStyle}
+                />
+              )}
+            </div>
+            {editing && <WmsLayerEditing layer={layer} />}
           </div>
-          {editing && <WmsLayerEditing layer={layer} />}
-        </div>
+        </AccordionHeader>
       </AccordionItem>
     </ErrorBoundary>
   )
