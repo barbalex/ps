@@ -1,7 +1,8 @@
 import { memo, useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
-import { Checkbox } from '@fluentui/react-components'
+import { Accordion } from '@fluentui/react-components'
+import { useAtom, atom } from 'jotai'
 
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
@@ -13,7 +14,12 @@ import {
   noneStyle,
 } from '../styles.ts'
 
+// what accordion items are open
+// needs to be controlled to prevent opening when layer is deactivated
+const openItemsAtom = atom([])
+
 export const OwnLayers = memo(() => {
+  const [openItems, setOpenItems] = useAtom(openItemsAtom)
   const { project_id } = useParams()
 
   const { db } = useElectric()!
@@ -52,6 +58,29 @@ export const OwnLayers = memo(() => {
     [db],
   )
 
+  const onToggleItem = useCallback(
+    (event, { value: layerPresentationId, openItems }) => {
+      // use setTimeout to let the child checkbox set the layers active status
+      setTimeout(async () => {
+        // fetch layerPresentation's active status
+        const layerPresentation = await db.layer_presentations.findFirst({
+          where: { layer_presentation_id: layerPresentationId },
+        })
+        const isActive = layerPresentation?.active
+        if (!isActive) {
+          // if not active, remove this item
+          const newOpenItems = openItems.filter(
+            (id) => id !== layerPresentationId,
+          )
+          setOpenItems(newOpenItems)
+          return
+        }
+        setOpenItems(openItems)
+      })
+    },
+    [db.layer_presentations, setOpenItems],
+  )
+
   if (!project_id) {
     return (
       <section style={sectionStyle}>
@@ -70,17 +99,25 @@ export const OwnLayers = memo(() => {
       <section style={sectionStyle}>
         <h2 style={titleStyle}>Own</h2>
         <div style={layerListStyle}>
-          {own.length ? (
-            own.map((l) => (
-              <OwnLayer
-                key={l.vector_layer_id}
-                layer={l}
-                onChange={onChange}
-              />
-            ))
-          ) : (
-            <p style={noneStyle}>No inactive Own Layers</p>
-          )}
+          <Accordion
+            multiple
+            collapsible
+            openItems={openItems}
+            onToggle={onToggleItem}
+          >
+            {own.length ? (
+              own.map((l, index) => (
+                <OwnLayer
+                  key={l.vector_layer_id}
+                  layer={l}
+                  onChange={onChange}
+                  isLast={index === own.length - 1}
+                />
+              ))
+            ) : (
+              <p style={noneStyle}>No inactive Own Layers</p>
+            )}
+          </Accordion>
         </div>
       </section>
     </ErrorBoundary>
