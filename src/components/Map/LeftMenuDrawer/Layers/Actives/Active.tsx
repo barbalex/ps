@@ -28,6 +28,7 @@ import {
 } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
 import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine'
 import invariant from 'tiny-invariant'
+import { useAtom } from 'jotai'
 
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
@@ -40,6 +41,8 @@ import { ListContext } from './index.tsx'
 import { itemKey, isItemData } from './shared.ts'
 import { getValueFromChange } from '../../../../../modules/getValueFromChange.ts'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
+import { panelStyle } from '../styles.ts'
+import { designingAtom } from '../../../../../store.ts'
 
 import './active.css'
 
@@ -88,9 +91,6 @@ type DraggableState =
 const idleState: DraggableState = { type: 'idle' }
 const draggingState: DraggableState = { type: 'dragging' }
 
-const panelStyle = {
-  paddingBottom: 8,
-}
 const previewStyle = {
   padding: '0.5rem',
   backgroundColor: 'white',
@@ -109,6 +109,7 @@ const dragIndicatorStyle = {
 
 export const ActiveLayer = memo(
   ({ layer, index, isLast, layerCount }: Props) => {
+    const [designing] = useAtom(designingAtom)
     const { db } = useElectric()!
 
     const layerPresentation = layer.layer_presentations?.[0]
@@ -260,6 +261,7 @@ export const ActiveLayer = memo(
           <AccordionHeader
             expandIconPosition="end"
             size="extra-large"
+            expandIcon={designing ? undefined : null}
           >
             <div
               ref={dragHandleRef}

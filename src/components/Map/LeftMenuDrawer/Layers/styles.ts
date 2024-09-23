@@ -39,3 +39,6 @@ export const editButtonIconStyle = {
   fontSize: 'medium',
   color: 'rgb(97, 97, 97)',
 }
+export const panelStyle = {
+  paddingBottom: 8,
+}

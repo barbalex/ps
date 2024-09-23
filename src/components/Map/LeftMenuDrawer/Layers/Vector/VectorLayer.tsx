@@ -17,12 +17,7 @@ import {
   designingAtom,
 } from '../../../../../store.ts'
 import { VectorLayerEditing } from './Editing.tsx'
-import {
-  containerStyleEditing,
-  titleContainerStyle,
-  editingButtonStyle,
-  editButtonIconStyle,
-} from '../styles.ts'
+import { editButtonIconStyle, panelStyle } from '../styles.ts'
 
 type Props = {
   layer: VectorLayer
@@ -55,14 +50,6 @@ export const VectorLayer = memo(({ layer, isLast }: Props) => {
     }
   }, [db.layer_presentations, layer.layer_presentations, layer.vector_layer_id])
 
-  const onClickEdit = useCallback(
-    () =>
-      setEditingVectorLayer((prev) =>
-        prev === layer.vector_layer_id ? null : layer.vector_layer_id,
-      ),
-    [layer.vector_layer_id, setEditingVectorLayer],
-  )
-  const editing = editingVectorLayer === layer.vector_layer_id
 
   return (
     <ErrorBoundary>
@@ -83,36 +70,20 @@ export const VectorLayer = memo(({ layer, isLast }: Props) => {
         <AccordionHeader
           expandIconPosition="end"
           size="extra-large"
+          expandIcon={designing ? undefined : null}
         >
-          <div style={editing ? containerStyleEditing : {}}>
-            <div style={titleContainerStyle}>
-              <Checkbox
-                key={layer.vector_layer_id}
-                size="large"
-                label={layer.label}
-                // checked if layer has an active presentation
-                // always false because of the filter
-                checked={false}
-                onChange={onChange}
-              />
-              {designing && (
-                <Button
-                  size="small"
-                  icon={
-                    editing ? (
-                      <MdEditOff style={editButtonIconStyle} />
-                    ) : (
-                      <MdEdit style={editButtonIconStyle} />
-                    )
-                  }
-                  onClick={onClickEdit}
-                  title={editing ? 'Stop editing layer' : 'Edit layer'}
-                  style={editingButtonStyle}
-                />
-              )}
-            </div>
-            {editing && <VectorLayerEditing layer={layer} />}
-          </div>
+          <Checkbox
+            key={layer.vector_layer_id}
+            size="large"
+            label={layer.label}
+            // checked if layer has an active presentation
+            // always false because of the filter
+            checked={false}
+            onChange={onChange}
+          />
+          <AccordionPanel style={panelStyle}>
+            <VectorLayerEditing layer={layer} />
+          </AccordionPanel>
         </AccordionHeader>
       </AccordionItem>
     </ErrorBoundary>

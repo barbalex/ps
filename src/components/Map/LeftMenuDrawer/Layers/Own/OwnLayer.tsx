@@ -78,6 +78,7 @@ export const OwnLayer = memo(({ layer, isLast }: Props) => {
         <AccordionHeader
           expandIconPosition="end"
           size="extra-large"
+          expandIcon={designing ? undefined : null}
         >
           <div style={editing ? containerStyleEditing : {}}>
             <div style={titleContainerStyle}>

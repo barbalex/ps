@@ -19,6 +19,7 @@ import {
   titleContainerStyle,
   editingButtonStyle,
   editButtonIconStyle,
+  panelStyle,
 } from '../styles.ts'
 
 type Props = {
@@ -81,37 +82,38 @@ export const WmsLayer = memo(({ layer, isLast }: Props) => {
         <AccordionHeader
           expandIconPosition="end"
           size="extra-large"
+          expandIcon={designing ? undefined : null}
         >
-          <div style={editing ? containerStyleEditing : {}}>
-            <div style={titleContainerStyle}>
-              <Checkbox
-                key={layer.wms_layer_id}
-                size="large"
-                label={layer.label}
-                // checked if layer has an active presentation
-                // always false because of the filter
-                checked={false}
-                onChange={onChange}
+          <div style={titleContainerStyle}>
+            <Checkbox
+              key={layer.wms_layer_id}
+              size="large"
+              label={layer.label}
+              // checked if layer has an active presentation
+              // always false because of the filter
+              checked={false}
+              onChange={onChange}
+            />
+            {designing && (
+              <Button
+                size="small"
+                icon={
+                  editing ? (
+                    <MdEditOff style={editButtonIconStyle} />
+                  ) : (
+                    <MdEdit style={editButtonIconStyle} />
+                  )
+                }
+                onClick={onClickEdit}
+                title={editing ? 'Stop editing layer' : 'Edit layer'}
+                style={editingButtonStyle}
               />
-              {designing && (
-                <Button
-                  size="small"
-                  icon={
-                    editing ? (
-                      <MdEditOff style={editButtonIconStyle} />
-                    ) : (
-                      <MdEdit style={editButtonIconStyle} />
-                    )
-                  }
-                  onClick={onClickEdit}
-                  title={editing ? 'Stop editing layer' : 'Edit layer'}
-                  style={editingButtonStyle}
-                />
-              )}
-            </div>
-            {editing && <WmsLayerEditing layer={layer} />}
+            )}
           </div>
         </AccordionHeader>
+        <AccordionPanel style={panelStyle}>
+          <WmsLayerEditing layer={layer} />
+        </AccordionPanel>
       </AccordionItem>
     </ErrorBoundary>
   )
