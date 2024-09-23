@@ -1,9 +1,9 @@
 import { memo, useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
-import { Button } from '@fluentui/react-components'
+import { Button, Accordion } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
-import { useAtom } from 'jotai'
+import { useAtom, atom } from 'jotai'
 
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
@@ -23,6 +23,10 @@ import {
   mapEditingVectorLayerAtom,
   designingAtom,
 } from '../../../../../store.ts'
+
+// what accordion items are open
+// needs to be controlled to prevent opening when layer is deactivated
+const openItemsAtom = atom([])
 
 export const VectorLayers = memo(() => {
   const [designing] = useAtom(designingAtom)
@@ -71,6 +75,29 @@ export const VectorLayers = memo(() => {
     setEditingVectorLayer,
   ])
 
+  const onToggleItem = useCallback(
+    (event, { value: layerPresentationId, openItems }) => {
+      // use setTimeout to let the child checkbox set the layers active status
+      setTimeout(async () => {
+        // fetch layerPresentation's active status
+        const layerPresentation = await db.layer_presentations.findFirst({
+          where: { layer_presentation_id: layerPresentationId },
+        })
+        const isActive = layerPresentation?.active
+        if (!isActive) {
+          // if not active, remove this item
+          const newOpenItems = openItems.filter(
+            (id) => id !== layerPresentationId,
+          )
+          setOpenItems(newOpenItems)
+          return
+        }
+        setOpenItems(openItems)
+      })
+    },
+    [db.layer_presentations],
+  )
+
   if (!project_id) {
     return (
       <section style={sectionStyle}>
@@ -84,6 +111,12 @@ export const VectorLayers = memo(() => {
     )
   }
 
+
+  // Accordion should NOT toggle when the active-checkbox is clicked
+  // Solution:
+  // use controlled accordion
+  // onToggle: wait 0ms before toggling
+  // do not toggle if that layers presentation is no more active
   return (
     <ErrorBoundary>
       <section style={sectionStyle}>
