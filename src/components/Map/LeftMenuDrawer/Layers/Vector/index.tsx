@@ -96,7 +96,7 @@ export const VectorLayers = memo(() => {
         setOpenItems(openItems)
       })
     },
-    [db.layer_presentations],
+    [db.layer_presentations, setOpenItems],
   )
 
   if (!project_id) {

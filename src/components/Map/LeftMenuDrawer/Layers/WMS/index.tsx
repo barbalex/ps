@@ -88,7 +88,7 @@ export const WmsLayers = memo(() => {
         setOpenItems(openItems)
       })
     },
-    [db.layer_presentations],
+    [db.layer_presentations, setOpenItems],
   )
 
   if (!project_id) {
@@ -115,26 +115,33 @@ export const WmsLayers = memo(() => {
       <section style={sectionStyle}>
         <h2 style={titleStyle}>WMS</h2>
         <div style={layerListStyle}>
-          {wms.length ? (
-            wms?.map((l) => (
-              <WmsLayer
-                key={l.wms_layer_id}
-                layer={l}
-                layerPresentations={layerPresentations}
+          <Accordion
+            multiple
+            collapsible
+            openItems={openItems}
+            onToggle={onToggleItem}
+          >
+            {wms.length ? (
+              wms?.map((l) => (
+                <WmsLayer
+                  key={l.wms_layer_id}
+                  layer={l}
+                  layerPresentations={layerPresentations}
+                />
+              ))
+            ) : (
+              <p style={noneStyle}>No inactive WMS Layers</p>
+            )}
+            {designing && (
+              <Button
+                size="small"
+                icon={<FaPlus />}
+                onClick={addRow}
+                title="Add WMS layer"
+                style={addButtonStyle}
               />
-            ))
-          ) : (
-            <p style={noneStyle}>No inactive WMS Layers</p>
-          )}
-          {designing && (
-            <Button
-              size="small"
-              icon={<FaPlus />}
-              onClick={addRow}
-              title="Add WMS layer"
-              style={addButtonStyle}
-            />
-          )}
+            )}
+          </Accordion>
         </div>
       </section>
     </ErrorBoundary>
