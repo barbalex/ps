@@ -37,7 +37,7 @@ export const WmsLayers = memo(() => {
   // TODO: when including layer_presentations, no results are returned
   // unlike with vector_layer_displays. Maybe because no layer_presentations exist?
   const { results: wmsLayers = [] } = useLiveQuery(
-    db.wms_layers.liveMany({ where }),
+    db.wms_layers.liveMany({ where, orderBy: { label: 'asc' } }),
   )
 
   // fetch all layer_presentations for the vector layers

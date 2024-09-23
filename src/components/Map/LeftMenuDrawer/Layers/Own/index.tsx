@@ -34,6 +34,8 @@ export const OwnLayers = memo(() => {
       // TODO: this only returns vector layers that have a presentation
       // https://github.com/electric-sql/electric/issues/1417
       include: { layer_presentations: true },
+      // order by label
+      orderBy: { label: 'asc' },
     }),
   )
 
