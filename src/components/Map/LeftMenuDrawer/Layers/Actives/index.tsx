@@ -27,6 +27,7 @@ import { ActiveLayer } from './Active.tsx'
 import { isItemData } from './shared.ts'
 import { IsNarrowContext } from '../../IsNarrowContext.ts'
 import { mapLayerSortingAtom } from '../../../../../store.ts'
+import { titleStyle } from '../styles.ts'
 
 // what accordion items are open
 // needs to be controlled to prevent opening when layer is deactivated
@@ -79,11 +80,6 @@ type ListContextValue = {
   instanceId: symbol
 }
 
-const titleStyle = {
-  paddingLeft: 10,
-  paddingRight: 10,
-  fontSize: '1.2em',
-}
 const layerListStyle = {
   display: 'flex',
   flexDirection: 'column',

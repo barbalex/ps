@@ -1,4 +1,4 @@
-import { memo, useCallback } from 'react'
+import { memo, useCallback, useContext } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import { Accordion } from '@fluentui/react-components'
@@ -7,12 +7,8 @@ import { useAtom, atom } from 'jotai'
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { OwnLayer } from './OwnLayer.tsx'
-import {
-  sectionStyle,
-  layerListStyle,
-  titleStyle,
-  noneStyle,
-} from '../styles.ts'
+import { layerListStyle, titleStyle, noneStyle } from '../styles.ts'
+import { IsNarrowContext } from '../../IsNarrowContext.ts'
 
 // what accordion items are open
 // needs to be controlled to prevent opening when layer is deactivated
@@ -21,6 +17,7 @@ const openItemsAtom = atom([])
 export const OwnLayers = memo(() => {
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
   const { project_id } = useParams()
+  const isNarrow = useContext(IsNarrowContext)
 
   const { db } = useElectric()!
   // TODO: when including layer_presentations, no results are returned
@@ -67,7 +64,7 @@ export const OwnLayers = memo(() => {
 
   if (!project_id) {
     return (
-      <section style={sectionStyle}>
+      <section>
         <h2 style={titleStyle}>Own</h2>
         <div style={layerListStyle}>
           <p style={noneStyle}>
@@ -80,7 +77,7 @@ export const OwnLayers = memo(() => {
 
   return (
     <ErrorBoundary>
-      <section style={sectionStyle}>
+      <section>
         <h2 style={titleStyle}>Own</h2>
         <Accordion
           multiple

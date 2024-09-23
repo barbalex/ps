@@ -1,14 +1,11 @@
-export const sectionStyle = {
-  paddingLeft: 10,
-  paddingRight: 10,
-  paddingBottom: 10,
-}
 export const layerListStyle = {
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'space-between',
 }
 export const titleStyle = {
+  paddingLeft: 10,
+  paddingRight: 10,
   fontSize: '1.2em',
 }
 export const noneStyle = {

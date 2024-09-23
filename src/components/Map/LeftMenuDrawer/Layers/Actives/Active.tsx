@@ -254,9 +254,6 @@ export const ActiveLayer = memo(
               ? { borderBottom: '1px solid rgba(55, 118, 28, 0.5)' }
               : {}),
           }}
-          data-presentation-id={
-            layer.layer_presentations?.[0]?.layer_presentation_id
-          }
         >
           <AccordionHeader
             expandIconPosition="end"

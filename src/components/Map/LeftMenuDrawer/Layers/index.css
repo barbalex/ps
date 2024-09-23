@@ -1,0 +1,7 @@
+section:first-of-type {
+  padding-top: 0;
+}
+
+section:not(first-of-type) {
+  padding-top: 10px;
+}
