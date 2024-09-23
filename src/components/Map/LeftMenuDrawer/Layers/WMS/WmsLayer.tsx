@@ -94,21 +94,6 @@ export const WmsLayer = memo(({ layer, isLast }: Props) => {
               checked={false}
               onChange={onChange}
             />
-            {designing && (
-              <Button
-                size="small"
-                icon={
-                  editing ? (
-                    <MdEditOff style={editButtonIconStyle} />
-                  ) : (
-                    <MdEdit style={editButtonIconStyle} />
-                  )
-                }
-                onClick={onClickEdit}
-                title={editing ? 'Stop editing layer' : 'Edit layer'}
-                style={editingButtonStyle}
-              />
-            )}
           </div>
         </AccordionHeader>
         <AccordionPanel style={panelStyle}>
