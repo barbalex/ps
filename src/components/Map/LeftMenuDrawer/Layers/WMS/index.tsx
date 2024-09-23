@@ -26,6 +26,7 @@ import { mapEditingWmsLayerAtom, designingAtom } from '../../../../../store.ts'
 const openItemsAtom = atom([])
 
 export const WmsLayers = memo(() => {
+  const [openItems, setOpenItems] = useAtom(openItemsAtom)
   const [designing] = useAtom(designingAtom)
   const [, setEditingWmsLayer] = useAtom(mapEditingWmsLayerAtom)
   const { project_id } = useParams()

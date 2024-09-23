@@ -29,6 +29,7 @@ import {
 const openItemsAtom = atom([])
 
 export const VectorLayers = memo(() => {
+  const [openItems, setOpenItems] = useAtom(openItemsAtom)
   const [designing] = useAtom(designingAtom)
   const [, setEditingVectorLayer] = useAtom(mapEditingVectorLayerAtom)
   const { project_id } = useParams()
@@ -111,7 +112,6 @@ export const VectorLayers = memo(() => {
     )
   }
 
-
   // Accordion should NOT toggle when the active-checkbox is clicked
   // Solution:
   // use controlled accordion
@@ -122,25 +122,32 @@ export const VectorLayers = memo(() => {
       <section style={sectionStyle}>
         <h2 style={titleStyle}>Vectors</h2>
         <div style={layerListStyle}>
-          {vectors.length ? (
-            vectors.map((l) => (
-              <VectorLayer
-                layer={l}
-                key={l.vector_layer_id}
+          <Accordion
+            multiple
+            collapsible
+            openItems={openItems}
+            onToggle={onToggleItem}
+          >
+            {vectors.length ? (
+              vectors.map((l) => (
+                <VectorLayer
+                  layer={l}
+                  key={l.vector_layer_id}
+                />
+              ))
+            ) : (
+              <p style={noneStyle}>No inactive Vector Layers</p>
+            )}
+            {designing && (
+              <Button
+                size="small"
+                icon={<FaPlus />}
+                onClick={addRow}
+                title="Add vector layer"
+                style={addButtonStyle}
               />
-            ))
-          ) : (
-            <p style={noneStyle}>No inactive Vector Layers</p>
-          )}
-          {designing && (
-            <Button
-              size="small"
-              icon={<FaPlus />}
-              onClick={addRow}
-              title="Add vector layer"
-              style={addButtonStyle}
-            />
-          )}
+            )}
+          </Accordion>
         </div>
       </section>
     </ErrorBoundary>
