@@ -1,7 +1,5 @@
 import { memo, useCallback } from 'react'
-import { MdEdit, MdEditOff } from 'react-icons/md'
 import {
-  Button,
   AccordionHeader,
   AccordionItem,
   AccordionPanel,
@@ -12,15 +10,9 @@ import { useAtom } from 'jotai'
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createLayerPresentation } from '../../../../../modules/createRows.ts'
-import { mapEditingWmsLayerAtom, designingAtom } from '../../../../../store.ts'
+import { designingAtom } from '../../../../../store.ts'
 import { WmsLayerEditing } from './Editing.tsx'
-import {
-  containerStyleEditing,
-  titleContainerStyle,
-  editingButtonStyle,
-  editButtonIconStyle,
-  panelStyle,
-} from '../styles.ts'
+import { panelStyle } from '../styles.ts'
 
 type Props = {
   layer: WmsLayer
@@ -29,7 +21,6 @@ type Props = {
 
 export const WmsLayer = memo(({ layer, isLast }: Props) => {
   const [designing] = useAtom(designingAtom)
-  const [editingWmsLayer, setEditingWmsLayer] = useAtom(mapEditingWmsLayerAtom)
   const { db } = useElectric()!
 
   const onChange = useCallback(async () => {
@@ -54,19 +45,10 @@ export const WmsLayer = memo(({ layer, isLast }: Props) => {
     }
   }, [db.layer_presentations, layer.wms_layer_id])
 
-  const onClickEdit = useCallback(
-    () =>
-      setEditingWmsLayer((prev) =>
-        prev === layer.wms_layer_id ? null : layer.wms_layer_id,
-      ),
-    [layer.wms_layer_id, setEditingWmsLayer],
-  )
-  const editing = editingWmsLayer === layer.wms_layer_id
-
   return (
     <ErrorBoundary>
       <AccordionItem
-        value={layer.layer_presentations?.[0]?.layer_presentation_id}
+        value={layer.wms_layer_id}
         style={{
           // needed for the drop indicator to appear
           position: 'relative',
@@ -75,26 +57,21 @@ export const WmsLayer = memo(({ layer, isLast }: Props) => {
             ? { borderBottom: '1px solid rgba(55, 118, 28, 0.5)' }
             : {}),
         }}
-        data-presentation-id={
-          layer.layer_presentations?.[0]?.layer_presentation_id
-        }
       >
         <AccordionHeader
           expandIconPosition="end"
           size="extra-large"
           expandIcon={designing ? undefined : null}
         >
-          <div style={titleContainerStyle}>
-            <Checkbox
-              key={layer.wms_layer_id}
-              size="large"
-              label={layer.label}
-              // checked if layer has an active presentation
-              // always false because of the filter
-              checked={false}
-              onChange={onChange}
-            />
-          </div>
+          <Checkbox
+            key={layer.wms_layer_id}
+            size="large"
+            label={layer.label}
+            // checked if layer has an active presentation
+            // always false because of the filter
+            checked={false}
+            onChange={onChange}
+          />
         </AccordionHeader>
         <AccordionPanel style={panelStyle}>
           <WmsLayerEditing layer={layer} />

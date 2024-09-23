@@ -31,6 +31,8 @@ export const WmsLayers = memo(() => {
   const [, setEditingWmsLayer] = useAtom(mapEditingWmsLayerAtom)
   const { project_id } = useParams()
 
+  console.log('WMWLayers', { openItems })
+
   const { db } = useElectric()!
   // 1. list all layers (own, wms, vector)
   const where = project_id ? { project_id } : {}
@@ -69,26 +71,8 @@ export const WmsLayers = memo(() => {
   }, [db.layer_presentations, db.wms_layers, project_id, setEditingWmsLayer])
 
   const onToggleItem = useCallback(
-    (event, { value: layerPresentationId, openItems }) => {
-      // use setTimeout to let the child checkbox set the layers active status
-      setTimeout(async () => {
-        // fetch layerPresentation's active status
-        const layerPresentation = await db.layer_presentations.findFirst({
-          where: { layer_presentation_id: layerPresentationId },
-        })
-        const isActive = layerPresentation?.active
-        if (!isActive) {
-          // if not active, remove this item
-          const newOpenItems = openItems.filter(
-            (id) => id !== layerPresentationId,
-          )
-          setOpenItems(newOpenItems)
-          return
-        }
-        setOpenItems(openItems)
-      })
-    },
-    [db.layer_presentations, setOpenItems],
+    (event, { openItems }) => setOpenItems(openItems),
+    [setOpenItems],
   )
 
   if (!project_id) {

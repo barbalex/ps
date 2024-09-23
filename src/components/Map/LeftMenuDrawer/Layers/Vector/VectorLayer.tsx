@@ -1,7 +1,5 @@
 import { memo, useCallback } from 'react'
-import { MdEdit, MdEditOff } from 'react-icons/md'
 import {
-  Button,
   AccordionHeader,
   AccordionItem,
   AccordionPanel,
@@ -12,12 +10,9 @@ import { useAtom } from 'jotai'
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createLayerPresentation } from '../../../../../modules/createRows.ts'
-import {
-  mapEditingVectorLayerAtom,
-  designingAtom,
-} from '../../../../../store.ts'
+import { designingAtom } from '../../../../../store.ts'
 import { VectorLayerEditing } from './Editing.tsx'
-import { editButtonIconStyle, panelStyle } from '../styles.ts'
+import { panelStyle } from '../styles.ts'
 
 type Props = {
   layer: VectorLayer
@@ -26,10 +21,9 @@ type Props = {
 
 export const VectorLayer = memo(({ layer, isLast }: Props) => {
   const [designing] = useAtom(designingAtom)
-  const [editingVectorLayer, setEditingVectorLayer] = useAtom(
-    mapEditingVectorLayerAtom,
-  )
   const { db } = useElectric()!
+
+  console.log('VectorLayer', { layer })
 
   const onChange = useCallback(async () => {
     if (!layer.layer_presentations?.[0]?.layer_presentation_id) {
@@ -50,11 +44,10 @@ export const VectorLayer = memo(({ layer, isLast }: Props) => {
     }
   }, [db.layer_presentations, layer.layer_presentations, layer.vector_layer_id])
 
-
   return (
     <ErrorBoundary>
       <AccordionItem
-        value={layer.layer_presentations?.[0]?.layer_presentation_id}
+        value={layer.vector_layer_id}
         style={{
           // needed for the drop indicator to appear
           position: 'relative',
@@ -63,9 +56,6 @@ export const VectorLayer = memo(({ layer, isLast }: Props) => {
             ? { borderBottom: '1px solid rgba(55, 118, 28, 0.5)' }
             : {}),
         }}
-        data-presentation-id={
-          layer.layer_presentations?.[0]?.layer_presentation_id
-        }
       >
         <AccordionHeader
           expandIconPosition="end"
@@ -81,10 +71,10 @@ export const VectorLayer = memo(({ layer, isLast }: Props) => {
             checked={false}
             onChange={onChange}
           />
-          <AccordionPanel style={panelStyle}>
-            <VectorLayerEditing layer={layer} />
-          </AccordionPanel>
         </AccordionHeader>
+        <AccordionPanel style={panelStyle}>
+          <VectorLayerEditing layer={layer} />
+        </AccordionPanel>
       </AccordionItem>
     </ErrorBoundary>
   )

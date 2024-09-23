@@ -79,26 +79,8 @@ export const VectorLayers = memo(() => {
   ])
 
   const onToggleItem = useCallback(
-    (event, { value: layerPresentationId, openItems }) => {
-      // use setTimeout to let the child checkbox set the layers active status
-      setTimeout(async () => {
-        // fetch layerPresentation's active status
-        const layerPresentation = await db.layer_presentations.findFirst({
-          where: { layer_presentation_id: layerPresentationId },
-        })
-        const isActive = layerPresentation?.active
-        if (!isActive) {
-          // if not active, remove this item
-          const newOpenItems = openItems.filter(
-            (id) => id !== layerPresentationId,
-          )
-          setOpenItems(newOpenItems)
-          return
-        }
-        setOpenItems(openItems)
-      })
-    },
-    [db.layer_presentations, setOpenItems],
+    (event, { openItems }) => setOpenItems(openItems),
+    [setOpenItems],
   )
 
   if (!project_id) {
@@ -123,35 +105,33 @@ export const VectorLayers = memo(() => {
     <ErrorBoundary>
       <section style={sectionStyle}>
         <h2 style={titleStyle}>Vectors</h2>
-        <div style={layerListStyle}>
-          <Accordion
-            multiple
-            collapsible
-            openItems={openItems}
-            onToggle={onToggleItem}
-          >
-            {vectors.length ? (
-              vectors.map((l, index) => (
-                <VectorLayer
-                  layer={l}
-                  key={l.vector_layer_id}
-                  isLast={index === vectors.length - 1}
-                />
-              ))
-            ) : (
-              <p style={noneStyle}>No inactive Vector Layers</p>
-            )}
-            {designing && (
-              <Button
-                size="small"
-                icon={<FaPlus />}
-                onClick={addRow}
-                title="Add vector layer"
-                style={addButtonStyle}
+        <Accordion
+          multiple
+          collapsible
+          openItems={openItems}
+          onToggle={onToggleItem}
+        >
+          {vectors.length ? (
+            vectors.map((l, index) => (
+              <VectorLayer
+                layer={l}
+                key={l.vector_layer_id}
+                isLast={index === vectors.length - 1}
               />
-            )}
-          </Accordion>
-        </div>
+            ))
+          ) : (
+            <p style={noneStyle}>No inactive Vector Layers</p>
+          )}
+          {designing && (
+            <Button
+              size="small"
+              icon={<FaPlus />}
+              onClick={addRow}
+              title="Add vector layer"
+              style={addButtonStyle}
+            />
+          )}
+        </Accordion>
       </section>
     </ErrorBoundary>
   )

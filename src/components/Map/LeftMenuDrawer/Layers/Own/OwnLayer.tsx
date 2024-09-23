@@ -17,8 +17,7 @@ import { VectorLayerEditing } from '../Vector/Editing.tsx'
 import {
   containerStyleEditing,
   titleContainerStyle,
-  editingButtonStyle,
-  editButtonIconStyle,
+  panelStyle,
 } from '../styles.ts'
 
 type Props = {
@@ -50,19 +49,12 @@ export const OwnLayer = memo(({ layer, isLast }: Props) => {
     }
   }, [db.layer_presentations, layer.layer_presentations, layer.vector_layer_id])
 
-  const onClickEdit = useCallback(
-    () =>
-      setEditingOwnLayer((prev) =>
-        prev === layer.vector_layer_id ? null : layer.vector_layer_id,
-      ),
-    [layer.vector_layer_id, setEditingOwnLayer],
-  )
   const editing = editingOwnLayer === layer.vector_layer_id
 
   return (
     <ErrorBoundary>
       <AccordionItem
-        value={layer.layer_presentations?.[0]?.layer_presentation_id}
+        value={layer.vector_layer_id}
         style={{
           // needed for the drop indicator to appear
           position: 'relative',
@@ -71,9 +63,6 @@ export const OwnLayer = memo(({ layer, isLast }: Props) => {
             ? { borderBottom: '1px solid rgba(55, 118, 28, 0.5)' }
             : {}),
         }}
-        data-presentation-id={
-          layer.layer_presentations?.[0]?.layer_presentation_id
-        }
       >
         <AccordionHeader
           expandIconPosition="end"
@@ -91,25 +80,12 @@ export const OwnLayer = memo(({ layer, isLast }: Props) => {
                 checked={false}
                 onChange={onChange}
               />
-              {designing && (
-                <Button
-                  size="small"
-                  icon={
-                    editing ? (
-                      <MdEditOff style={editButtonIconStyle} />
-                    ) : (
-                      <MdEdit style={editButtonIconStyle} />
-                    )
-                  }
-                  onClick={onClickEdit}
-                  title={editing ? 'Stop editing layer' : 'Edit layer'}
-                  style={editingButtonStyle}
-                />
-              )}
             </div>
-            {editing && <VectorLayerEditing layer={layer} />}
           </div>
         </AccordionHeader>
+        <AccordionPanel style={panelStyle}>
+          <VectorLayerEditing layer={layer} />
+        </AccordionPanel>
       </AccordionItem>
     </ErrorBoundary>
   )
