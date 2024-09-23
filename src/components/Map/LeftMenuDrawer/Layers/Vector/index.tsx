@@ -129,10 +129,11 @@ export const VectorLayers = memo(() => {
             onToggle={onToggleItem}
           >
             {vectors.length ? (
-              vectors.map((l) => (
+              vectors.map((l, index) => (
                 <VectorLayer
                   layer={l}
                   key={l.vector_layer_id}
+                  isLast={index === vectors.length - 1}
                 />
               ))
             ) : (

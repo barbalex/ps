@@ -122,11 +122,12 @@ export const WmsLayers = memo(() => {
             onToggle={onToggleItem}
           >
             {wms.length ? (
-              wms?.map((l) => (
+              wms?.map((l, index) => (
                 <WmsLayer
                   key={l.wms_layer_id}
                   layer={l}
                   layerPresentations={layerPresentations}
+                  isLast={index === wms.length - 1}
                 />
               ))
             ) : (
