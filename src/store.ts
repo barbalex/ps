@@ -36,23 +36,23 @@ export const mapInfoAtom = atomWithStorage('mapInfoAtom', null)
 export const mapShowCenterAtom = atomWithStorage('mapShowCenterAtom', false)
 // The order of layers in the map. An array of layer_presentation_ids
 export const mapLayerSortingAtom = atomWithStorage('mapLayerSortingAtom', [])
-export const mapLayersDrawerVectorLayerDisplayAtom = atomWithStorage(
-  'mapLayersDrawerVectorLayerDisplayAtom',
+export const mapDrawerVectorLayerDisplayAtom = atomWithStorage(
+  'mapDrawerVectorLayerDisplayAtom',
   null,
 )
 // TODO:
-export const mapLayersDrawerActiveLayerDisplayAtom = atomWithStorage(
-  'mapLayersDrawerActiveLayerDisplayAtom',
+export const mapDrawerActiveLayerDisplayAtom = atomWithStorage(
+  'mapDrawerActiveLayerDisplayAtom',
   null,
 )
 // TODO:
-export const mapLayersDrawerWmsLayerDisplayAtom = atomWithStorage(
-  'mapLayersDrawerWmsLayerDisplayAtom',
+export const mapDrawerWmsLayerDisplayAtom = atomWithStorage(
+  'mapDrawerWmsLayerDisplayAtom',
   null,
 )
 // TODO:
-export const mapLayersDrawerOwnLayerDisplayAtom = atomWithStorage(
-  'mapLayersDrawerOwnLayerDisplayAtom',
+export const mapDrawerOwnLayerDisplayAtom = atomWithStorage(
+  'mapDrawerOwnLayerDisplayAtom',
   null,
 )
 

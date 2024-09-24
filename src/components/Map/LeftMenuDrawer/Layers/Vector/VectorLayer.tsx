@@ -15,7 +15,7 @@ import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createLayerPresentation } from '../../../../../modules/createRows.ts'
 import {
   designingAtom,
-  mapLayersDrawerVectorLayerDisplayAtom,
+  mapDrawerVectorLayerDisplayAtom,
 } from '../../../../../store.ts'
 import { VectorLayerEditing } from './Editing.tsx'
 import { panelStyle, tabListStyle } from '../styles.ts'
@@ -34,7 +34,7 @@ type TabType = 'config' | 'overall-displays' | 'feature-displays'
 export const VectorLayer = memo(({ layer, isLast, isOpen }: Props) => {
   const [designing] = useAtom(designingAtom)
   const [vectorLayerDisplayId, setVectorLayerDisplayId] = useAtom(
-    mapLayersDrawerVectorLayerDisplayAtom,
+    mapDrawerVectorLayerDisplayAtom,
   )
 
   const { db } = useElectric()!

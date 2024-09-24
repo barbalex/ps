@@ -6,11 +6,11 @@ import { useSetAtom } from 'jotai'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { createVectorLayerDisplay } from '../../modules/createRows.ts'
-import { mapLayersDrawerVectorLayerDisplayAtom } from '../../store.ts'
+import { mapDrawerVectorLayerDisplayAtom } from '../../store.ts'
 
 export const Header = memo(({ vectorLayerDisplayId }) => {
   const setMapLayerDrawerVectorLayerDisplayId = useSetAtom(
-    mapLayersDrawerVectorLayerDisplayAtom,
+    mapDrawerVectorLayerDisplayAtom,
   )
   const { vector_layer_display_id: vectorLayerDisplayIdFromRouter } =
     useParams()
