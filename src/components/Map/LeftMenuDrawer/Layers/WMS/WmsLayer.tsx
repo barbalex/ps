@@ -17,6 +17,7 @@ import {
   designingAtom,
   mapDrawerWmsLayerDisplayAtom,
 } from '../../../../../store.ts'
+import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
 import { WmsLayerEditing } from './Editing.tsx'
 import { panelStyle, tabListStyle } from '../styles.ts'
 

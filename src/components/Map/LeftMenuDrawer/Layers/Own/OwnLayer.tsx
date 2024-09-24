@@ -18,6 +18,7 @@ import {
   mapDrawerOwnLayerDisplayAtom,
 } from '../../../../../store.ts'
 import { VectorLayerEditing } from '../Vector/Editing.tsx'
+import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
 import { panelStyle, tabListStyle } from '../styles.ts'
 
 type TabType = 'config' | 'overall-displays' | 'feature-displays'

@@ -45,6 +45,8 @@ import { itemKey, isItemData } from './shared.ts'
 import { getValueFromChange } from '../../../../../modules/getValueFromChange.ts'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
 import { panelStyle, tabListStyle } from '../styles.ts'
+import { VectorLayerEditing } from '../Vector/Editing.tsx'
+import { WmsLayerEditing } from '../WMS/Editing.tsx'
 import {
   designingAtom,
   mapDrawerActiveLayerDisplayAtom,
