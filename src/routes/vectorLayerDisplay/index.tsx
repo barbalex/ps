@@ -32,8 +32,11 @@ import '../../form.css'
 // not imported from schema as miter-clip not supported by electric-sql
 const lineJoinValues = ['arcs', 'bevel', 'miter', 'miter-clip', 'round']
 
-export const Component = () => {
-  const { vector_layer_display_id } = useParams()
+export const Component = ({ vectorLayerDisplayId }) => {
+  const { vector_layer_display_id: vectorLayerDisplayIdFromRouter } =
+    useParams()
+  const vector_layer_display_id =
+    vectorLayerDisplayId ?? vectorLayerDisplayIdFromRouter
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -42,7 +45,7 @@ export const Component = () => {
     db.vector_layer_displays.liveUnique({ where: { vector_layer_display_id } }),
   )
 
-  // console.log('hello vectorLayerDisplay, row:', row)
+  console.log('vectorLayerDisplay', { row, vector_layer_display_id })
 
   const onChange = useCallback<InputProps['onChange']>(
     (e: React.ChangeEvent<HTMLInputElement>, data) => {
@@ -67,7 +70,10 @@ export const Component = () => {
   return (
     <ErrorBoundary>
       <div className="form-outer-container">
-        <Header autoFocusRef={autoFocusRef} />
+        <Header
+          autoFocusRef={autoFocusRef}
+          vectorLayerDisplayId={vectorLayerDisplayId}
+        />
         <div className="form-container">
           <TextFieldInactive
             label="ID"

@@ -1,37 +1,71 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
+import { useLiveQuery } from 'electric-sql/react'
+import { useSetAtom } from 'jotai'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { createVectorLayerDisplay } from '../../modules/createRows.ts'
+import { mapLayersDrawerActiveVectorLayerDisplayAtom } from '../../store.ts'
 
-export const Header = memo(() => {
-  const { vector_layer_id, vector_layer_display_id } = useParams()
-  const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
+export const Header = memo(({ vectorLayerDisplayId }) => {
+  const setMapLayerDrawerActiveVectorLayerDisplayId = useSetAtom(
+    mapLayersDrawerActiveVectorLayerDisplayAtom,
+  )
+  const { vector_layer_display_id: vectorLayerDisplayIdFromRouter } =
+    useParams()
+  const vector_layer_display_id =
+    vectorLayerDisplayId ?? vectorLayerDisplayIdFromRouter
 
   const { db } = useElectric()!
+  // fetch the vector_layer_id from the db as params is not available in the map drawer
+  const { results: vectorLayerDisplay } = useLiveQuery(
+    db.vector_layer_displays.liveUnique({ where: { vector_layer_display_id } }),
+  )
+  const vector_layer_id = vectorLayerDisplay?.vector_layer_id
+
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const addRow = useCallback(async () => {
     const vectorLayerDisplay = createVectorLayerDisplay({ vector_layer_id })
     await db.vector_layer_displays.create({ data: vectorLayerDisplay })
+    if (vectorLayerDisplayId) {
+      setMapLayerDrawerActiveVectorLayerDisplayId(
+        vectorLayerDisplay.vector_layer_display_id,
+      )
+      return
+    }
     navigate({
       pathname: `../${vectorLayerDisplay.vector_layer_display_id}`,
       search: searchParams.toString(),
     })
     autoFocusRef.current?.focus()
-  }, [db.vector_layer_displays, navigate, searchParams, vector_layer_id])
+  }, [
+    db.vector_layer_displays,
+    navigate,
+    searchParams,
+    setMapLayerDrawerActiveVectorLayerDisplayId,
+    vectorLayerDisplayId,
+    vector_layer_id,
+  ])
 
   const deleteRow = useCallback(async () => {
     await db.vector_layer_displays.delete({
       where: { vector_layer_display_id },
     })
+    if (vectorLayerDisplayId) {
+      setMapLayerDrawerActiveVectorLayerDisplayId(null)
+      return
+    }
     navigate({ pathname: '..', search: searchParams.toString() })
   }, [
     db.vector_layer_displays,
     vector_layer_display_id,
+    vectorLayerDisplayId,
     navigate,
     searchParams,
+    setMapLayerDrawerActiveVectorLayerDisplayId,
   ])
 
   const toNext = useCallback(async () => {
@@ -44,6 +78,10 @@ export const Header = memo(() => {
       (p) => p.vector_layer_display_id === vector_layer_display_id,
     )
     const next = vectorLayerDisplays[(index + 1) % len]
+    if (vectorLayerDisplayId) {
+      setMapLayerDrawerActiveVectorLayerDisplayId(next.vector_layer_display_id)
+      return
+    }
     navigate({
       pathname: `../${next.vector_layer_display_id}`,
       search: searchParams.toString(),
@@ -52,6 +90,8 @@ export const Header = memo(() => {
     db.vector_layer_displays,
     navigate,
     searchParams,
+    setMapLayerDrawerActiveVectorLayerDisplayId,
+    vectorLayerDisplayId,
     vector_layer_display_id,
     vector_layer_id,
   ])
@@ -66,6 +106,12 @@ export const Header = memo(() => {
       (p) => p.vector_layer_display_id === vector_layer_display_id,
     )
     const previous = vectorLayerDisplays[(index + len - 1) % len]
+    if (vectorLayerDisplayId) {
+      setMapLayerDrawerActiveVectorLayerDisplayId(
+        previous.vector_layer_display_id,
+      )
+      return
+    }
     navigate({
       pathname: `../${previous.vector_layer_display_id}`,
       search: searchParams.toString(),
@@ -74,6 +120,8 @@ export const Header = memo(() => {
     db.vector_layer_displays,
     navigate,
     searchParams,
+    setMapLayerDrawerActiveVectorLayerDisplayId,
+    vectorLayerDisplayId,
     vector_layer_display_id,
     vector_layer_id,
   ])

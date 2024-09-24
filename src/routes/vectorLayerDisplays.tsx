@@ -53,6 +53,20 @@ export const Component = memo(({ vectorLayerId }) => {
     vector_layer_id,
   ])
 
+  const onClickRow = useCallback(
+    (vector_layer_display_id) => {
+      if (vectorLayerId) {
+        setVectorLayerDisplayId(vector_layer_display_id)
+        return
+      }
+      navigate({
+        pathname: vector_layer_display_id,
+        search: searchParams.toString(),
+      })
+    },
+    [navigate, searchParams, setVectorLayerDisplayId, vectorLayerId],
+  )
+
   return (
     <div className="list-view">
       <ListViewHeader
@@ -66,6 +80,7 @@ export const Component = memo(({ vectorLayerId }) => {
             key={vector_layer_display_id}
             to={vector_layer_display_id}
             label={label ?? vector_layer_display_id}
+            onClick={() => onClickRow(vector_layer_display_id)}
           />
         ))}
       </div>
