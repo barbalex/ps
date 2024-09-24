@@ -1,9 +1,13 @@
-import { memo, useCallback } from 'react'
+import { memo, useCallback, useState } from 'react'
 import {
   AccordionHeader,
   AccordionItem,
   AccordionPanel,
   Checkbox,
+  Tab,
+  TabList,
+  SelectTabEvent,
+  SelectTabData,
 } from '@fluentui/react-components'
 import { useAtom } from 'jotai'
 
@@ -13,15 +17,20 @@ import { createLayerPresentation } from '../../../../../modules/createRows.ts'
 import { designingAtom } from '../../../../../store.ts'
 import { VectorLayerEditing } from './Editing.tsx'
 import { panelStyle } from '../styles.ts'
+import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
 
 type Props = {
   layer: VectorLayer
   isLast: number
+  isOpen: boolean
 }
 
-export const VectorLayer = memo(({ layer, isLast }: Props) => {
+type TabType = 'config' | 'overall-displays' | 'feature-displays'
+
+export const VectorLayer = memo(({ layer, isLast, isOpen }: Props) => {
   const [designing] = useAtom(designingAtom)
   const { db } = useElectric()!
+  const [tab, setTab] = useState<TabType>('config')
 
   const onChange = useCallback(async () => {
     if (!layer.layer_presentations?.[0]?.layer_presentation_id) {
@@ -42,14 +51,22 @@ export const VectorLayer = memo(({ layer, isLast }: Props) => {
     }
   }, [db.layer_presentations, layer.layer_presentations, layer.vector_layer_id])
 
+  const onTabSelect = useCallback(
+    (event: SelectTabEvenmt, data: SelectTabData) => setTab(data.value),
+    [],
+  )
+
   return (
     <ErrorBoundary>
       <AccordionItem
         value={layer.vector_layer_id}
         style={{
-          borderTop: '1px solid rgba(55, 118, 28, 0.5)',
+          borderTop: `${isOpen ? 3 : 1}px solid rgba(55, 118, 28, 0.5)`,
           ...(isLast
             ? { borderBottom: '1px solid rgba(55, 118, 28, 0.5)' }
+            : {}),
+          ...(isOpen
+            ? { borderBottom: `3px solid rgba(55, 118, 28, 0.5)` }
             : {}),
         }}
       >
@@ -69,7 +86,20 @@ export const VectorLayer = memo(({ layer, isLast }: Props) => {
           />
         </AccordionHeader>
         <AccordionPanel style={panelStyle}>
-          <VectorLayerEditing layer={layer} />
+          <TabList
+            selectedValue={tab}
+            onTabSelect={onTabSelect}
+            style={{
+              backgroundColor: 'rgba(103, 216, 101, 0.1)',
+            }}
+          >
+            <Tab value="config">Config</Tab>
+            <Tab value="overall-displays">Overall Display</Tab>
+            <Tab value="feature-displays">Feature Displays</Tab>
+          </TabList>
+          {tab === 'config' && <VectorLayerEditing layer={layer} />}
+          {tab === 'overall-displays' && <p>TODO: overall-displays</p>}
+          {tab === 'feature-displays' && <p>TODO: feature-displays</p>}
         </AccordionPanel>
       </AccordionItem>
     </ErrorBoundary>

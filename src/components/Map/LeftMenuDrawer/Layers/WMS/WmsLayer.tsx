@@ -17,9 +17,10 @@ import { panelStyle } from '../styles.ts'
 type Props = {
   layer: WmsLayer
   isLast: number
+  isOpen: boolean
 }
 
-export const WmsLayer = memo(({ layer, isLast }: Props) => {
+export const WmsLayer = memo(({ layer, isLast, isOpen }: Props) => {
   const [designing] = useAtom(designingAtom)
   const { db } = useElectric()!
 
@@ -50,9 +51,12 @@ export const WmsLayer = memo(({ layer, isLast }: Props) => {
       <AccordionItem
         value={layer.wms_layer_id}
         style={{
-          borderTop: '1px solid rgba(55, 118, 28, 0.5)',
+          borderTop: `${isOpen ? 3 : 1}px solid rgba(55, 118, 28, 0.5)`,
           ...(isLast
             ? { borderBottom: '1px solid rgba(55, 118, 28, 0.5)' }
+            : {}),
+          ...(isOpen
+            ? { borderBottom: `3px solid rgba(55, 118, 28, 0.5)` }
             : {}),
         }}
       >

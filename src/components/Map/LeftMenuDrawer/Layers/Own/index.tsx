@@ -42,19 +42,6 @@ export const OwnLayers = memo(() => {
       ),
   )
 
-  const onChange = useCallback(
-    async (layer) => {
-      db.layer_presentations.update({
-        where: {
-          layer_presentation_id:
-            layer.layer_presentations?.[0]?.layer_presentation_id,
-        },
-        data: { active: true },
-      })
-    },
-    [db],
-  )
-
   const onToggleItem = useCallback(
     (event, { openItems }) => setOpenItems(openItems),
     [setOpenItems],
@@ -88,8 +75,8 @@ export const OwnLayers = memo(() => {
               <OwnLayer
                 key={l.vector_layer_id}
                 layer={l}
-                onChange={onChange}
                 isLast={index === own.length - 1}
+                isOpen={openItems.includes(l.vector_layer_id)}
               />
             ))
           ) : (

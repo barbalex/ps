@@ -105,6 +105,7 @@ export const WmsLayers = memo(() => {
                 layer={l}
                 layerPresentations={layerPresentations}
                 isLast={index === wms.length - 1}
+                isOpen={openItems.includes(l.wms_layer_id)}
               />
             ))
           ) : (

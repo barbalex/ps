@@ -5,3 +5,8 @@ section:first-of-type {
 section:not(first-of-type) {
   padding-top: 10px;
 }
+
+.fui-AccordionPanel {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}

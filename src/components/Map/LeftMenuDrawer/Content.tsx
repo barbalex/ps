@@ -1,5 +1,10 @@
 import { memo, useCallback, useContext } from 'react'
-import { Tab, TabList } from '@fluentui/react-components'
+import {
+  Tab,
+  TabList,
+  SelectTabEvent,
+  SelectTabData,
+} from '@fluentui/react-components'
 import { useSearchParams } from 'react-router-dom'
 
 import { ErrorBoundary } from '../../shared/ErrorBoundary.tsx'

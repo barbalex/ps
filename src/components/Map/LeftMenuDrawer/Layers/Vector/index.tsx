@@ -111,6 +111,7 @@ export const VectorLayers = memo(() => {
                 layer={l}
                 key={l.vector_layer_id}
                 isLast={index === vectors.length - 1}
+                isOpen={openItems.includes(l.vector_layer_id)}
               />
             ))
           ) : (

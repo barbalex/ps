@@ -10,18 +10,17 @@ import { useAtom } from 'jotai'
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createLayerPresentation } from '../../../../../modules/createRows.ts'
-import {  designingAtom } from '../../../../../store.ts'
+import { designingAtom } from '../../../../../store.ts'
 import { VectorLayerEditing } from '../Vector/Editing.tsx'
-import {
-  panelStyle,
-} from '../styles.ts'
+import { panelStyle } from '../styles.ts'
 
 type Props = {
   layer: VectorLayer
   isLast: number
+  isOpen: boolean
 }
 
-export const OwnLayer = memo(({ layer, isLast }: Props) => {
+export const OwnLayer = memo(({ layer, isLast, isOpen }: Props) => {
   const [designing] = useAtom(designingAtom)
   const { db } = useElectric()!
 
@@ -44,15 +43,17 @@ export const OwnLayer = memo(({ layer, isLast }: Props) => {
     }
   }, [db.layer_presentations, layer.layer_presentations, layer.vector_layer_id])
 
-
   return (
     <ErrorBoundary>
       <AccordionItem
         value={layer.vector_layer_id}
         style={{
-          borderTop: '1px solid rgba(55, 118, 28, 0.5)',
+          borderTop: `${isOpen ? 3 : 1}px solid rgba(55, 118, 28, 0.5)`,
           ...(isLast
             ? { borderBottom: '1px solid rgba(55, 118, 28, 0.5)' }
+            : {}),
+          ...(isOpen
+            ? { borderBottom: `3px solid rgba(55, 118, 28, 0.5)` }
             : {}),
         }}
       >
