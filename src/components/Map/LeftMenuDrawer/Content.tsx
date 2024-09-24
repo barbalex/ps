@@ -32,8 +32,6 @@ export const Content = memo(() => {
     [setSearchParams],
   )
 
-  console.log('Content, isNarrow:', isNarrow)
-
   return (
     <ErrorBoundary>
       <div style={containerStyle}>
