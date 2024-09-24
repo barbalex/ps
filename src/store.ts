@@ -41,18 +41,8 @@ export const mapDrawerVectorLayerDisplayAtom = atomWithStorage(
   null,
 )
 // TODO:
-export const mapDrawerActiveLayerDisplayAtom = atomWithStorage(
-  'mapDrawerActiveLayerDisplayAtom',
-  null,
-)
-// TODO:
 export const mapDrawerWmsLayerDisplayAtom = atomWithStorage(
   'mapDrawerWmsLayerDisplayAtom',
-  null,
-)
-// TODO:
-export const mapDrawerOwnLayerDisplayAtom = atomWithStorage(
-  'mapDrawerOwnLayerDisplayAtom',
   null,
 )
 

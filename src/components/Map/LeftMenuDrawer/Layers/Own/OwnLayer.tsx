@@ -1,4 +1,4 @@
-import { memo, useCallback } from 'react'
+import { memo, useCallback, useState } from 'react'
 import {
   Checkbox,
   AccordionHeader,
@@ -15,10 +15,12 @@ import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createLayerPresentation } from '../../../../../modules/createRows.ts'
 import {
   designingAtom,
-  mapDrawerOwnLayerDisplayAtom,
+  mapDrawerVectorLayerDisplayAtom,
 } from '../../../../../store.ts'
 import { VectorLayerEditing } from '../Vector/Editing.tsx'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
+import { Component as VectorLayerDisplays } from '../../../../../routes/vectorLayerDisplays.tsx'
+import { Component as VectorLayerDisplay } from '../../../../../routes/vectorLayerDisplay/index.tsx'
 import { panelStyle, tabListStyle } from '../styles.ts'
 
 type TabType = 'config' | 'overall-displays' | 'feature-displays'
@@ -31,10 +33,11 @@ type Props = {
 
 export const OwnLayer = memo(({ layer, isLast, isOpen }: Props) => {
   const [designing] = useAtom(designingAtom)
-  const [ownLayerDisplayId, setOwnLayerDisplayId] = useAtom(
-    mapDrawerOwnLayerDisplayAtom,
+  const [vectorLayerDisplayId, setVectorLayerDisplayId] = useAtom(
+    mapDrawerVectorLayerDisplayAtom,
   )
   const { db } = useElectric()!
+  const [tab, setTab] = useState<TabType>('config')
 
   const onChange = useCallback(async () => {
     if (!layer.layer_presentations?.[0]?.layer_presentation_id) {
@@ -61,8 +64,8 @@ export const OwnLayer = memo(({ layer, isLast, isOpen }: Props) => {
   )
 
   const onClickFeatureDisplays = useCallback(
-    () => setOwnLayerDisplayId(null),
-    [setOwnLayerDisplayId],
+    () => setVectorLayerDisplayId(null),
+    [setVectorLayerDisplayId],
   )
 
   return (
@@ -102,7 +105,35 @@ export const OwnLayer = memo(({ layer, isLast, isOpen }: Props) => {
           />
         </AccordionHeader>
         <AccordionPanel style={panelStyle}>
-          <VectorLayerEditing layer={layer} />
+          <TabList
+            selectedValue={tab}
+            onTabSelect={onTabSelect}
+            style={tabListStyle}
+          >
+            <Tab value="config">Config</Tab>
+            <Tab value="overall-displays">Overall Display</Tab>
+            <Tab
+              value="feature-displays"
+              onClick={onClickFeatureDisplays}
+            >
+              Feature Displays
+            </Tab>
+          </TabList>
+          {tab === 'config' && <VectorLayerEditing layer={layer} />}
+          {tab === 'overall-displays' && (
+            <LayerPresentationForm layer={layer} />
+          )}
+          {tab === 'feature-displays' && (
+            <>
+              {vectorLayerDisplayId ? (
+                <VectorLayerDisplay
+                  vectorLayerDisplayId={vectorLayerDisplayId}
+                />
+              ) : (
+                <VectorLayerDisplays vectorLayerId={layer.vector_layer_id} />
+              )}
+            </>
+          )}
         </AccordionPanel>
       </AccordionItem>
     </ErrorBoundary>

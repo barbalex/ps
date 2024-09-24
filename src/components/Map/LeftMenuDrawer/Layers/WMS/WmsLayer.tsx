@@ -1,4 +1,4 @@
-import { memo, useCallback } from 'react'
+import { memo, useCallback, useState } from 'react'
 import {
   AccordionHeader,
   AccordionItem,
@@ -35,6 +35,7 @@ export const WmsLayer = memo(({ layer, isLast, isOpen }: Props) => {
     mapDrawerWmsLayerDisplayAtom,
   )
   const { db } = useElectric()!
+  const [tab, setTab] = useState<TabType>('config')
 
   const onChange = useCallback(async () => {
     // 1. check if layer has a presentation

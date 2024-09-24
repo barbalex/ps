@@ -47,9 +47,11 @@ import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
 import { panelStyle, tabListStyle } from '../styles.ts'
 import { VectorLayerEditing } from '../Vector/Editing.tsx'
 import { WmsLayerEditing } from '../WMS/Editing.tsx'
+import { Component as VectorLayerDisplays } from '../../../../../routes/vectorLayerDisplays.tsx'
+import { Component as VectorLayerDisplay } from '../../../../../routes/vectorLayerDisplay/index.tsx'
 import {
   designingAtom,
-  mapDrawerActiveLayerDisplayAtom,
+  mapDrawerVectorLayerDisplayAtom,
 } from '../../../../../store.ts'
 
 import './active.css'
@@ -122,10 +124,13 @@ type Props = {
 export const ActiveLayer = memo(
   ({ layer, index, isLast, isOpen, layerCount }: Props) => {
     const [designing] = useAtom(designingAtom)
-    const [mapDrawerActiveLayerDisplay] = useAtom(
-      mapDrawerActiveLayerDisplayAtom,
+    const [vectorLayerDisplayId, setVectorLayerDisplayId] = useAtom(
+      mapDrawerVectorLayerDisplayAtom,
     )
     const { db } = useElectric()!
+    const [tab, setTab] = useState<TabType>('config')
+
+    const isVectorLayer = 'vector_layer_id' in layer
 
     const layerPresentation = layer.layer_presentations?.[0]
 
@@ -260,8 +265,8 @@ export const ActiveLayer = memo(
     )
 
     const onClickFeatureDisplays = useCallback(
-      () => setActiveLayerDisplayId(null),
-      [],
+      () => setVectorLayerDisplayId(null),
+      [setVectorLayerDisplayId],
     )
 
     // drag and drop items by dragging the drag icon
@@ -314,7 +319,42 @@ export const ActiveLayer = memo(
             />
           </AccordionHeader>
           <AccordionPanel style={panelStyle}>
-            <LayerPresentationForm layer={layer} />
+            <TabList
+              selectedValue={tab}
+              onTabSelect={onTabSelect}
+              style={tabListStyle}
+            >
+              <Tab value="config">Config</Tab>
+              <Tab value="overall-displays">Overall Display</Tab>
+              {isVectorLayer && (
+                <Tab
+                  value="feature-displays"
+                  onClick={onClickFeatureDisplays}
+                >
+                  Feature Displays
+                </Tab>
+              )}
+            </TabList>
+            {tab === 'config' &&
+              (isVectorLayer ? (
+                <VectorLayerEditing layer={layer} />
+              ) : (
+                <WmsLayerEditing layer={layer} />
+              ))}
+            {tab === 'overall-displays' && (
+              <LayerPresentationForm layer={layer} />
+            )}
+            {tab === 'feature-displays' && isVectorLayer && (
+              <>
+                {vectorLayerDisplayId ? (
+                  <VectorLayerDisplay
+                    vectorLayerDisplayId={vectorLayerDisplayId}
+                  />
+                ) : (
+                  <VectorLayerDisplays vectorLayerId={layer.vector_layer_id} />
+                )}
+              </>
+            )}
           </AccordionPanel>
           {closestEdge && (
             <DropIndicator
