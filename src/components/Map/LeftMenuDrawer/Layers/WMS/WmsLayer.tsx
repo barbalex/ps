@@ -13,11 +13,14 @@ import { useAtom } from 'jotai'
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createLayerPresentation } from '../../../../../modules/createRows.ts'
-import { designingAtom } from '../../../../../store.ts'
+import {
+  designingAtom,
+  mapDrawerWmsLayerDisplayAtom,
+} from '../../../../../store.ts'
 import { WmsLayerEditing } from './Editing.tsx'
-import { panelStyle } from '../styles.ts'
+import { panelStyle, tabListStyle } from '../styles.ts'
 
-type TabType = 'config' | 'overall-displays' 
+type TabType = 'config' | 'overall-displays'
 
 type Props = {
   layer: WmsLayer
@@ -27,6 +30,9 @@ type Props = {
 
 export const WmsLayer = memo(({ layer, isLast, isOpen }: Props) => {
   const [designing] = useAtom(designingAtom)
+  const [wmsLayerDisplayId, setWmsLayerDisplayId] = useAtom(
+    mapDrawerWmsLayerDisplayAtom,
+  )
   const { db } = useElectric()!
 
   const onChange = useCallback(async () => {
@@ -50,6 +56,11 @@ export const WmsLayer = memo(({ layer, isLast, isOpen }: Props) => {
       })
     }
   }, [db.layer_presentations, layer.wms_layer_id])
+
+  const onTabSelect = useCallback(
+    (event, data: SelectTabData) => setTab(data.value),
+    [],
+  )
 
   return (
     <ErrorBoundary>

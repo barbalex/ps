@@ -44,8 +44,11 @@ import { ListContext } from './index.tsx'
 import { itemKey, isItemData } from './shared.ts'
 import { getValueFromChange } from '../../../../../modules/getValueFromChange.ts'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
-import { panelStyle } from '../styles.ts'
-import { designingAtom } from '../../../../../store.ts'
+import { panelStyle, tabListStyle } from '../styles.ts'
+import {
+  designingAtom,
+  mapDrawerActiveLayerDisplayAtom,
+} from '../../../../../store.ts'
 
 import './active.css'
 
@@ -117,6 +120,9 @@ type Props = {
 export const ActiveLayer = memo(
   ({ layer, index, isLast, isOpen, layerCount }: Props) => {
     const [designing] = useAtom(designingAtom)
+    const [mapDrawerActiveLayerDisplay] = useAtom(
+      mapDrawerActiveLayerDisplayAtom,
+    )
     const { db } = useElectric()!
 
     const layerPresentation = layer.layer_presentations?.[0]
@@ -245,6 +251,16 @@ export const ActiveLayer = memo(
     ])
 
     const canDrag = layerCount > 1
+
+    const onTabSelect = useCallback(
+      (event, data: SelectTabData) => setTab(data.value),
+      [],
+    )
+
+    const onClickFeatureDisplays = useCallback(
+      () => setActiveLayerDisplayId(null),
+      [],
+    )
 
     // drag and drop items by dragging the drag icon
     // https://atlassian.design/components/pragmatic-drag-and-drop/core-package

@@ -13,9 +13,12 @@ import { useAtom } from 'jotai'
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createLayerPresentation } from '../../../../../modules/createRows.ts'
-import { designingAtom } from '../../../../../store.ts'
+import {
+  designingAtom,
+  mapDrawerOwnLayerDisplayAtom,
+} from '../../../../../store.ts'
 import { VectorLayerEditing } from '../Vector/Editing.tsx'
-import { panelStyle } from '../styles.ts'
+import { panelStyle, tabListStyle } from '../styles.ts'
 
 type TabType = 'config' | 'overall-displays' | 'feature-displays'
 
@@ -27,6 +30,9 @@ type Props = {
 
 export const OwnLayer = memo(({ layer, isLast, isOpen }: Props) => {
   const [designing] = useAtom(designingAtom)
+  const [ownLayerDisplayId, setOwnLayerDisplayId] = useAtom(
+    mapDrawerOwnLayerDisplayAtom,
+  )
   const { db } = useElectric()!
 
   const onChange = useCallback(async () => {
@@ -47,6 +53,16 @@ export const OwnLayer = memo(({ layer, isLast, isOpen }: Props) => {
       })
     }
   }, [db.layer_presentations, layer.layer_presentations, layer.vector_layer_id])
+
+  const onTabSelect = useCallback(
+    (event, data: SelectTabData) => setTab(data.value),
+    [],
+  )
+
+  const onClickFeatureDisplays = useCallback(
+    () => setOwnLayerDisplayId(null),
+    [setOwnLayerDisplayId],
+  )
 
   return (
     <ErrorBoundary>
