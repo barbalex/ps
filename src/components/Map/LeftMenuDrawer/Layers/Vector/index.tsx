@@ -17,6 +17,7 @@ import { VectorLayer } from './VectorLayer.tsx'
 import {
   createVectorLayer,
   createLayerPresentation,
+  createVectorLayerDisplay,
 } from '../../../../../modules/createRows.ts'
 
 // what accordion items are open
@@ -56,6 +57,11 @@ export const VectorLayers = memo(() => {
   const addRow = useCallback(async () => {
     const vectorLayer = createVectorLayer({ project_id })
     await db.vector_layers.create({ data: vectorLayer })
+    // also add vector_layer_display
+    const vectorLayerDisplay = createVectorLayerDisplay({
+      vector_layer_id: vectorLayer.vector_layer_id,
+    })
+    await db.vector_layer_displays.create({ data: vectorLayerDisplay })
     // also add layer_presentation
     const layerPresentation = createLayerPresentation({
       vector_layer_id: vectorLayer.vector_layer_id,
@@ -66,6 +72,7 @@ export const VectorLayers = memo(() => {
     setOpenItems([openItems, vectorLayer.vector_layer_id])
   }, [
     db.layer_presentations,
+    db.vector_layer_displays,
     db.vector_layers,
     openItems,
     project_id,
