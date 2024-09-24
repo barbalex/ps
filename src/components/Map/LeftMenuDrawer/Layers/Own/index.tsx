@@ -1,4 +1,4 @@
-import { memo, useCallback, useContext } from 'react'
+import { memo, useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import { Accordion } from '@fluentui/react-components'
@@ -8,7 +8,6 @@ import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { OwnLayer } from './OwnLayer.tsx'
 import { layerListStyle, titleStyle, noneStyle } from '../styles.ts'
-import { IsNarrowContext } from '../../IsNarrowContext.ts'
 
 // what accordion items are open
 // needs to be controlled to prevent opening when layer is deactivated
@@ -17,7 +16,6 @@ const openItemsAtom = atom([])
 export const OwnLayers = memo(() => {
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
   const { project_id } = useParams()
-  const isNarrow = useContext(IsNarrowContext)
 
   const { db } = useElectric()!
   // TODO: when including layer_presentations, no results are returned
