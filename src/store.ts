@@ -40,11 +40,6 @@ export const mapDrawerVectorLayerDisplayAtom = atomWithStorage(
   'mapDrawerVectorLayerDisplayAtom',
   null,
 )
-// TODO:
-export const mapDrawerWmsLayerDisplayAtom = atomWithStorage(
-  'mapDrawerWmsLayerDisplayAtom',
-  null,
-)
 
 // The id of the place whose geometry is currently being edited
 export const editingPlaceGeometryAtom = atomWithStorage(

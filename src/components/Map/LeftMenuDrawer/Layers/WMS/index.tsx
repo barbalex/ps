@@ -30,10 +30,12 @@ export const WmsLayers = memo(() => {
   const { db } = useElectric()!
   // 1. list all layers (own, wms, vector)
   const where = project_id ? { project_id } : {}
-  // TODO: when including layer_presentations, no results are returned
-  // unlike with vector_layer_displays. Maybe because no layer_presentations exist?
   const { results: wmsLayers = [] } = useLiveQuery(
-    db.wms_layers.liveMany({ where, orderBy: { label: 'asc' } }),
+    db.wms_layers.liveMany({
+      where,
+      include: { layer_presentations: true },
+      orderBy: { label: 'asc' },
+    }),
   )
 
   // fetch all layer_presentations for the vector layers

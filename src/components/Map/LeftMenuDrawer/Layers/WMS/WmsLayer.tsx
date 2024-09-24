@@ -15,7 +15,6 @@ import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createLayerPresentation } from '../../../../../modules/createRows.ts'
 import {
   designingAtom,
-  mapDrawerWmsLayerDisplayAtom,
 } from '../../../../../store.ts'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
 import { WmsLayerEditing } from './Editing.tsx'
@@ -31,9 +30,6 @@ type Props = {
 
 export const WmsLayer = memo(({ layer, isLast, isOpen }: Props) => {
   const [designing] = useAtom(designingAtom)
-  const [wmsLayerDisplayId, setWmsLayerDisplayId] = useAtom(
-    mapDrawerWmsLayerDisplayAtom,
-  )
   const { db } = useElectric()!
   const [tab, setTab] = useState<TabType>('config')
 
@@ -101,7 +97,18 @@ export const WmsLayer = memo(({ layer, isLast, isOpen }: Props) => {
           />
         </AccordionHeader>
         <AccordionPanel style={panelStyle}>
-          <WmsLayerEditing layer={layer} />
+          <TabList
+            selectedValue={tab}
+            onTabSelect={onTabSelect}
+            style={tabListStyle}
+          >
+            <Tab value="config">Config</Tab>
+            <Tab value="overall-displays">Overall Display</Tab>
+          </TabList>
+          {tab === 'config' && <WmsLayerEditing layer={layer} />}
+          {tab === 'overall-displays' && (
+            <LayerPresentationForm layer={layer} />
+          )}
         </AccordionPanel>
       </AccordionItem>
     </ErrorBoundary>
