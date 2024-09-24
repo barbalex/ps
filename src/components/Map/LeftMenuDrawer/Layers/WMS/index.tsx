@@ -1,4 +1,4 @@
-import { memo, useCallback, useContext } from 'react'
+import { memo, useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import { Button, Accordion } from '@fluentui/react-components'
@@ -18,7 +18,6 @@ import {
   createWmsLayer,
   createLayerPresentation,
 } from '../../../../../modules/createRows.ts'
-import { IsNarrowContext } from '../../IsNarrowContext.ts'
 
 // what accordion items are open
 // needs to be controlled to prevent opening when layer is deactivated
@@ -27,7 +26,6 @@ const openItemsAtom = atom([])
 export const WmsLayers = memo(() => {
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
   const { project_id } = useParams()
-  const isNarrow = useContext(IsNarrowContext)
 
   const { db } = useElectric()!
   // 1. list all layers (own, wms, vector)
@@ -73,7 +71,7 @@ export const WmsLayers = memo(() => {
 
   if (!project_id) {
     return (
-      <section >
+      <section>
         <h2 style={titleStyle}>WMS</h2>
         <div style={layerListStyle}>
           <div style={layerListStyle}></div>
@@ -92,7 +90,7 @@ export const WmsLayers = memo(() => {
   // do not toggle if that layers presentation is no more active
   return (
     <ErrorBoundary>
-      <section >
+      <section>
         <h2 style={titleStyle}>WMS</h2>
         <Accordion
           multiple

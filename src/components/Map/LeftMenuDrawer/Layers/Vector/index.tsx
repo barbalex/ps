@@ -1,4 +1,4 @@
-import { memo, useCallback, useContext } from 'react'
+import { memo, useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import { Button, Accordion } from '@fluentui/react-components'
@@ -18,7 +18,6 @@ import {
   createVectorLayer,
   createLayerPresentation,
 } from '../../../../../modules/createRows.ts'
-import { IsNarrowContext } from '../../IsNarrowContext.ts'
 
 // what accordion items are open
 // needs to be controlled to prevent opening when layer is deactivated
@@ -27,7 +26,6 @@ const openItemsAtom = atom([])
 export const VectorLayers = memo(() => {
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
   const { project_id } = useParams()
-  const isNarrow = useContext(IsNarrowContext)
 
   const { db } = useElectric()!
 
@@ -81,7 +79,7 @@ export const VectorLayers = memo(() => {
 
   if (!project_id) {
     return (
-      <section >
+      <section>
         <h2 style={titleStyle}>Vectors</h2>
         <div style={layerListStyle}>
           <p style={noneStyle}>
@@ -101,37 +99,31 @@ export const VectorLayers = memo(() => {
     <ErrorBoundary>
       <section>
         <h2 style={titleStyle}>Vectors</h2>
-        <div
-          style={{
-            ...(isNarrow ? {} : { width: 'calc(100% - 6px)' }),
-          }}
+        <Accordion
+          multiple
+          collapsible
+          openItems={openItems}
+          onToggle={onToggleItem}
         >
-          <Accordion
-            multiple
-            collapsible
-            openItems={openItems}
-            onToggle={onToggleItem}
-          >
-            {vectors.length ? (
-              vectors.map((l, index) => (
-                <VectorLayer
-                  layer={l}
-                  key={l.vector_layer_id}
-                  isLast={index === vectors.length - 1}
-                />
-              ))
-            ) : (
-              <p style={noneStyle}>No inactive Vector Layers</p>
-            )}
-            <Button
-              size="small"
-              icon={<FaPlus />}
-              onClick={addRow}
-              title="Add vector layer"
-              style={addButtonStyle}
-            />
-          </Accordion>
-        </div>
+          {vectors.length ? (
+            vectors.map((l, index) => (
+              <VectorLayer
+                layer={l}
+                key={l.vector_layer_id}
+                isLast={index === vectors.length - 1}
+              />
+            ))
+          ) : (
+            <p style={noneStyle}>No inactive Vector Layers</p>
+          )}
+          <Button
+            size="small"
+            icon={<FaPlus />}
+            onClick={addRow}
+            title="Add vector layer"
+            style={addButtonStyle}
+          />
+        </Accordion>
       </section>
     </ErrorBoundary>
   )
