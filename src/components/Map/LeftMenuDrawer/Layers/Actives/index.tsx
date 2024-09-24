@@ -5,7 +5,6 @@ import {
   useState,
   useCallback,
   createContext,
-  useContext,
 } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
@@ -25,7 +24,6 @@ import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { ActiveLayer } from './Active.tsx'
 import { isItemData } from './shared.ts'
-import { IsNarrowContext } from '../../IsNarrowContext.ts'
 import { mapLayerSortingAtom } from '../../../../../store.ts'
 import { titleStyle } from '../styles.ts'
 
@@ -97,7 +95,6 @@ export const ActiveLayers = memo(() => {
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
 
   const { project_id } = useParams()
-  const isNarrow = useContext(IsNarrowContext)
 
   const { db } = useElectric()!
 
@@ -332,35 +329,29 @@ export const ActiveLayers = memo(() => {
       <ListContext.Provider value={contextValue}>
         <section>
           <h2 style={titleStyle}>Active</h2>
-          <div
-            style={{
-              ...(isNarrow ? {} : { width: 'calc(100% - 6px)' }),
-            }}
+          <Accordion
+            multiple
+            collapsible
+            openItems={openItems}
+            onToggle={onToggleItem}
           >
-            <Accordion
-              multiple
-              collapsible
-              openItems={openItems}
-              onToggle={onToggleItem}
-            >
-              {activeLayers.length ? (
-                activeLayers?.map((l, index) => (
-                  <ActiveLayer
-                    key={l.wms_layer_id ?? l.vector_layer_id}
-                    layer={l}
-                    index={index}
-                    layerCount={activeLayers.length}
-                    isLast={index === activeLayers.length - 1}
-                    isOpen={openItems.includes(
-                      l.layer_presentations?.[0]?.layer_presentation_id,
-                    )}
-                  />
-                ))
-              ) : (
-                <p style={noLayersStyle}>No active layers</p>
-              )}
-            </Accordion>
-          </div>
+            {activeLayers.length ? (
+              activeLayers?.map((l, index) => (
+                <ActiveLayer
+                  key={l.wms_layer_id ?? l.vector_layer_id}
+                  layer={l}
+                  index={index}
+                  layerCount={activeLayers.length}
+                  isLast={index === activeLayers.length - 1}
+                  isOpen={openItems.includes(
+                    l.layer_presentations?.[0]?.layer_presentation_id,
+                  )}
+                />
+              ))
+            ) : (
+              <p style={noLayersStyle}>No active layers</p>
+            )}
+          </Accordion>
         </section>
       </ListContext.Provider>
     </ErrorBoundary>
