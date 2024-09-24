@@ -53,12 +53,6 @@ function useListContext() {
   return listContext
 }
 
-type Props = {
-  layer: VectorLayer | WmsLayer
-  index: boolean
-  layerCount: number
-}
-
 type ItemData = {
   [itemKey]: true
   layer: VectorLayer | WmsLayer
@@ -107,8 +101,16 @@ const dragIndicatorStyle = {
   cursor: 'grab',
 }
 
+type Props = {
+  layer: VectorLayer | WmsLayer
+  isLast: boolean
+  isOpen: boolean
+  index: boolean
+  layerCount: number
+}
+
 export const ActiveLayer = memo(
-  ({ layer, index, isLast, layerCount }: Props) => {
+  ({ layer, index, isLast, isOpen, layerCount }: Props) => {
     const [designing] = useAtom(designingAtom)
     const { db } = useElectric()!
 
@@ -239,7 +241,7 @@ export const ActiveLayer = memo(
 
     const canDrag = layerCount > 1
 
-    // TODO: drag and drop items by dragging the drag icon
+    // drag and drop items by dragging the drag icon
     // https://atlassian.design/components/pragmatic-drag-and-drop/core-package
     return (
       <ErrorBoundary>
@@ -249,9 +251,14 @@ export const ActiveLayer = memo(
           style={{
             // needed for the drop indicator to appear
             position: 'relative',
-            borderTop: '1px solid rgba(55, 118, 28, 0.5)',
+            borderTop: `${isOpen ? 3 : 1}px solid rgba(55, 118, 28, 0.5)`,
             ...(isLast
-              ? { borderBottom: '1px solid rgba(55, 118, 28, 0.5)' }
+              ? {
+                  borderBottom: `1px solid rgba(55, 118, 28, 0.5)`,
+                }
+              : {}),
+            ...(isOpen
+              ? { borderBottom: `3px solid rgba(55, 118, 28, 0.5)` }
               : {}),
           }}
         >

@@ -351,6 +351,9 @@ export const ActiveLayers = memo(() => {
                     index={index}
                     layerCount={activeLayers.length}
                     isLast={index === activeLayers.length - 1}
+                    isOpen={openItems.includes(
+                      l.layer_presentations?.[0]?.layer_presentation_id,
+                    )}
                   />
                 ))
               ) : (
