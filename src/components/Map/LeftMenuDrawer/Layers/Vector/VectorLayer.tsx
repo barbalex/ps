@@ -102,7 +102,9 @@ export const VectorLayer = memo(({ layer, isLast, isOpen }: Props) => {
             <Tab value="feature-displays">Feature Displays</Tab>
           </TabList>
           {tab === 'config' && <VectorLayerEditing layer={layer} />}
-          {tab === 'overall-displays' && <p>TODO: overall-displays</p>}
+          {tab === 'overall-displays' && (
+            <LayerPresentationForm layer={layer} />
+          )}
           {tab === 'feature-displays' && <p>TODO: feature-displays</p>}
         </AccordionPanel>
       </AccordionItem>

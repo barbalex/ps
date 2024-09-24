@@ -12,6 +12,10 @@ import {
 } from '../../../../generated/client/index.ts'
 import { getValueFromChange } from '../../../../modules/getValueFromChange.ts'
 
+const containerStyle = {
+  padding: '1rem',
+}
+
 type Props = {
   layer: VectorLayer | WmsLayer
 }
@@ -46,50 +50,52 @@ export const LayerPresentationForm = memo(({ layer }: Props) => {
   // https://atlassian.design/components/pragmatic-drag-and-drop/core-package
   return (
     <ErrorBoundary>
-      <SliderField
-        label="Opacity (%)"
-        name="opacity_percent"
-        min={0}
-        max={100}
-        value={layerPresentation.opacity_percent}
-        onChange={onChange}
-      />
-      {layer.wms_layer_id && (
-        <>
-          <SwitchField
-            label="Transparent"
-            name="transparent"
-            value={layerPresentation.transparent}
-            onChange={onChange}
-          />
-          <SwitchField
-            label="Grayscale"
-            name="grayscale"
-            value={layerPresentation.grayscale}
-            onChange={onChange}
-          />
-        </>
-      )}
-      <TextField
-        label="Max Zoom"
-        name="max_zoom"
-        value={layerPresentation.max_zoom ?? ''}
-        onChange={onChange}
-        type="number"
-        max={19}
-        min={0}
-        validationMessage="A number between 0 and 19"
-      />
-      <TextField
-        label="Min Zoom"
-        name="min_zoom"
-        value={layerPresentation.min_zoom ?? ''}
-        onChange={onChange}
-        type="number"
-        max={19}
-        min={0}
-        validationMessage="A number between 0 and 19"
-      />
+      <div style={containerStyle}>
+        <SliderField
+          label="Opacity (%)"
+          name="opacity_percent"
+          min={0}
+          max={100}
+          value={layerPresentation.opacity_percent}
+          onChange={onChange}
+        />
+        {layer.wms_layer_id && (
+          <>
+            <SwitchField
+              label="Transparent"
+              name="transparent"
+              value={layerPresentation.transparent}
+              onChange={onChange}
+            />
+            <SwitchField
+              label="Grayscale"
+              name="grayscale"
+              value={layerPresentation.grayscale}
+              onChange={onChange}
+            />
+          </>
+        )}
+        <TextField
+          label="Max Zoom"
+          name="max_zoom"
+          value={layerPresentation.max_zoom ?? ''}
+          onChange={onChange}
+          type="number"
+          max={19}
+          min={0}
+          validationMessage="A number between 0 and 19"
+        />
+        <TextField
+          label="Min Zoom"
+          name="min_zoom"
+          value={layerPresentation.min_zoom ?? ''}
+          onChange={onChange}
+          type="number"
+          max={19}
+          min={0}
+          validationMessage="A number between 0 and 19"
+        />
+      </div>
     </ErrorBoundary>
   )
 })
