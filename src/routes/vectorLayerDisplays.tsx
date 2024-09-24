@@ -7,7 +7,7 @@ import { useElectric } from '../ElectricProvider.tsx'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { createVectorLayerDisplay } from '../modules/createRows.ts'
-import { mapLayersDrawerActiveVectorLayerDisplayAtom } from '../store.ts'
+import { mapLayersDrawerVectorLayerDisplayAtom } from '../store.ts'
 
 import '../form.css'
 
@@ -15,7 +15,7 @@ import '../form.css'
 // map drawer passes the vector_layer_id as a prop
 export const Component = memo(({ vectorLayerId }) => {
   const setVectorLayerDisplayId = useSetAtom(
-    mapLayersDrawerActiveVectorLayerDisplayAtom,
+    mapLayersDrawerVectorLayerDisplayAtom,
   )
   const params = useParams()
   const vector_layer_id = vectorLayerId || params.vector_layer_id

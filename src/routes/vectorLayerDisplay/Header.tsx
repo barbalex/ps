@@ -6,11 +6,11 @@ import { useSetAtom } from 'jotai'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { createVectorLayerDisplay } from '../../modules/createRows.ts'
-import { mapLayersDrawerActiveVectorLayerDisplayAtom } from '../../store.ts'
+import { mapLayersDrawerVectorLayerDisplayAtom } from '../../store.ts'
 
 export const Header = memo(({ vectorLayerDisplayId }) => {
-  const setMapLayerDrawerActiveVectorLayerDisplayId = useSetAtom(
-    mapLayersDrawerActiveVectorLayerDisplayAtom,
+  const setMapLayerDrawerVectorLayerDisplayId = useSetAtom(
+    mapLayersDrawerVectorLayerDisplayAtom,
   )
   const { vector_layer_display_id: vectorLayerDisplayIdFromRouter } =
     useParams()
@@ -31,7 +31,7 @@ export const Header = memo(({ vectorLayerDisplayId }) => {
     const vectorLayerDisplay = createVectorLayerDisplay({ vector_layer_id })
     await db.vector_layer_displays.create({ data: vectorLayerDisplay })
     if (vectorLayerDisplayId) {
-      setMapLayerDrawerActiveVectorLayerDisplayId(
+      setMapLayerDrawerVectorLayerDisplayId(
         vectorLayerDisplay.vector_layer_display_id,
       )
       return
@@ -45,7 +45,7 @@ export const Header = memo(({ vectorLayerDisplayId }) => {
     db.vector_layer_displays,
     navigate,
     searchParams,
-    setMapLayerDrawerActiveVectorLayerDisplayId,
+    setMapLayerDrawerVectorLayerDisplayId,
     vectorLayerDisplayId,
     vector_layer_id,
   ])
@@ -55,7 +55,7 @@ export const Header = memo(({ vectorLayerDisplayId }) => {
       where: { vector_layer_display_id },
     })
     if (vectorLayerDisplayId) {
-      setMapLayerDrawerActiveVectorLayerDisplayId(null)
+      setMapLayerDrawerVectorLayerDisplayId(null)
       return
     }
     navigate({ pathname: '..', search: searchParams.toString() })
@@ -65,7 +65,7 @@ export const Header = memo(({ vectorLayerDisplayId }) => {
     vectorLayerDisplayId,
     navigate,
     searchParams,
-    setMapLayerDrawerActiveVectorLayerDisplayId,
+    setMapLayerDrawerVectorLayerDisplayId,
   ])
 
   const toNext = useCallback(async () => {
@@ -79,7 +79,7 @@ export const Header = memo(({ vectorLayerDisplayId }) => {
     )
     const next = vectorLayerDisplays[(index + 1) % len]
     if (vectorLayerDisplayId) {
-      setMapLayerDrawerActiveVectorLayerDisplayId(next.vector_layer_display_id)
+      setMapLayerDrawerVectorLayerDisplayId(next.vector_layer_display_id)
       return
     }
     navigate({
@@ -90,7 +90,7 @@ export const Header = memo(({ vectorLayerDisplayId }) => {
     db.vector_layer_displays,
     navigate,
     searchParams,
-    setMapLayerDrawerActiveVectorLayerDisplayId,
+    setMapLayerDrawerVectorLayerDisplayId,
     vectorLayerDisplayId,
     vector_layer_display_id,
     vector_layer_id,
@@ -107,9 +107,7 @@ export const Header = memo(({ vectorLayerDisplayId }) => {
     )
     const previous = vectorLayerDisplays[(index + len - 1) % len]
     if (vectorLayerDisplayId) {
-      setMapLayerDrawerActiveVectorLayerDisplayId(
-        previous.vector_layer_display_id,
-      )
+      setMapLayerDrawerVectorLayerDisplayId(previous.vector_layer_display_id)
       return
     }
     navigate({
@@ -120,7 +118,7 @@ export const Header = memo(({ vectorLayerDisplayId }) => {
     db.vector_layer_displays,
     navigate,
     searchParams,
-    setMapLayerDrawerActiveVectorLayerDisplayId,
+    setMapLayerDrawerVectorLayerDisplayId,
     vectorLayerDisplayId,
     vector_layer_display_id,
     vector_layer_id,

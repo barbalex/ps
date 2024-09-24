@@ -4,6 +4,9 @@ import {
   AccordionHeader,
   AccordionItem,
   AccordionPanel,
+  Tab,
+  TabList,
+  SelectTabData,
 } from '@fluentui/react-components'
 import { useAtom } from 'jotai'
 
@@ -13,6 +16,8 @@ import { createLayerPresentation } from '../../../../../modules/createRows.ts'
 import { designingAtom } from '../../../../../store.ts'
 import { VectorLayerEditing } from '../Vector/Editing.tsx'
 import { panelStyle } from '../styles.ts'
+
+type TabType = 'config' | 'overall-displays' | 'feature-displays'
 
 type Props = {
   layer: VectorLayer

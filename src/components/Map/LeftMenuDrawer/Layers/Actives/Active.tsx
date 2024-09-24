@@ -12,6 +12,9 @@ import {
   AccordionItem,
   AccordionPanel,
   Checkbox,
+  Tab,
+  TabList,
+  SelectTabData,
 } from '@fluentui/react-components'
 import { MdDragIndicator } from 'react-icons/md'
 import { DropIndicator } from '@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/box'
@@ -84,6 +87,8 @@ type DraggableState =
 
 const idleState: DraggableState = { type: 'idle' }
 const draggingState: DraggableState = { type: 'dragging' }
+
+type TabType = 'config' | 'overall-displays' | 'feature-displays'
 
 const previewStyle = {
   padding: '0.5rem',

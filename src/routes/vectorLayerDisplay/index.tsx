@@ -45,8 +45,6 @@ export const Component = ({ vectorLayerDisplayId }) => {
     db.vector_layer_displays.liveUnique({ where: { vector_layer_display_id } }),
   )
 
-  console.log('vectorLayerDisplay', { row, vector_layer_display_id })
-
   const onChange = useCallback<InputProps['onChange']>(
     (e: React.ChangeEvent<HTMLInputElement>, data) => {
       const { name, value } = getValueFromChange(e, data)

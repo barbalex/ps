@@ -15,7 +15,7 @@ import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createLayerPresentation } from '../../../../../modules/createRows.ts'
 import {
   designingAtom,
-  mapLayersDrawerActiveVectorLayerDisplayAtom,
+  mapLayersDrawerVectorLayerDisplayAtom,
 } from '../../../../../store.ts'
 import { VectorLayerEditing } from './Editing.tsx'
 import { panelStyle, tabListStyle } from '../styles.ts'
@@ -33,8 +33,8 @@ type TabType = 'config' | 'overall-displays' | 'feature-displays'
 
 export const VectorLayer = memo(({ layer, isLast, isOpen }: Props) => {
   const [designing] = useAtom(designingAtom)
-  const [activeVectorLayerDisplayId, setActiveVectorLayerDisplayId] = useAtom(
-    mapLayersDrawerActiveVectorLayerDisplayAtom,
+  const [vectorLayerDisplayId, setVectorLayerDisplayId] = useAtom(
+    mapLayersDrawerVectorLayerDisplayAtom,
   )
 
   const { db } = useElectric()!
@@ -65,8 +65,8 @@ export const VectorLayer = memo(({ layer, isLast, isOpen }: Props) => {
   )
 
   const onClickFeatureDisplays = useCallback(
-    () => setActiveVectorLayerDisplayId(null),
-    [setActiveVectorLayerDisplayId],
+    () => setVectorLayerDisplayId(null),
+    [setVectorLayerDisplayId],
   )
 
   return (
@@ -126,9 +126,9 @@ export const VectorLayer = memo(({ layer, isLast, isOpen }: Props) => {
           )}
           {tab === 'feature-displays' && (
             <>
-              {activeVectorLayerDisplayId ? (
+              {vectorLayerDisplayId ? (
                 <VectorLayerDisplay
-                  vectorLayerDisplayId={activeVectorLayerDisplayId}
+                  vectorLayerDisplayId={vectorLayerDisplayId}
                 />
               ) : (
                 <VectorLayerDisplays vectorLayerId={layer.vector_layer_id} />
