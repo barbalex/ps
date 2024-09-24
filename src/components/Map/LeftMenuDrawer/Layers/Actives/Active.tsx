@@ -266,6 +266,13 @@ export const ActiveLayer = memo(
             expandIconPosition="end"
             size="extra-large"
             expandIcon={designing ? undefined : null}
+            style={
+              isOpen
+                ? {
+                    backgroundColor: 'rgba(103, 216, 101, 0.1)',
+                  }
+                : {}
+            }
           >
             <div
               ref={dragHandleRef}

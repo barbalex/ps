@@ -39,3 +39,7 @@ export const editButtonIconStyle = {
 export const panelStyle = {
   paddingBottom: 8,
 }
+
+export const tabListStyle = {
+  backgroundColor: 'rgba(103, 216, 101, 0.05)',
+}

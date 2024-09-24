@@ -64,6 +64,13 @@ export const WmsLayer = memo(({ layer, isLast, isOpen }: Props) => {
           expandIconPosition="end"
           size="extra-large"
           expandIcon={designing ? undefined : null}
+          style={
+            isOpen
+              ? {
+                  backgroundColor: 'rgba(103, 216, 101, 0.1)',
+                }
+              : {}
+          }
         >
           <Checkbox
             key={layer.wms_layer_id}

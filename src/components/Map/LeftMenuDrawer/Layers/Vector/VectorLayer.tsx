@@ -6,7 +6,6 @@ import {
   Checkbox,
   Tab,
   TabList,
-  SelectTabEvent,
   SelectTabData,
 } from '@fluentui/react-components'
 import { useAtom } from 'jotai'
@@ -16,7 +15,7 @@ import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createLayerPresentation } from '../../../../../modules/createRows.ts'
 import { designingAtom } from '../../../../../store.ts'
 import { VectorLayerEditing } from './Editing.tsx'
-import { panelStyle } from '../styles.ts'
+import { panelStyle, tabListStyle } from '../styles.ts'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
 
 type Props = {
@@ -52,7 +51,7 @@ export const VectorLayer = memo(({ layer, isLast, isOpen }: Props) => {
   }, [db.layer_presentations, layer.layer_presentations, layer.vector_layer_id])
 
   const onTabSelect = useCallback(
-    (event: SelectTabEvenmt, data: SelectTabData) => setTab(data.value),
+    (event, data: SelectTabData) => setTab(data.value),
     [],
   )
 
@@ -74,6 +73,13 @@ export const VectorLayer = memo(({ layer, isLast, isOpen }: Props) => {
           expandIconPosition="end"
           size="extra-large"
           expandIcon={designing ? undefined : null}
+          style={
+            isOpen
+              ? {
+                  backgroundColor: 'rgba(103, 216, 101, 0.1)',
+                }
+              : {}
+          }
         >
           <Checkbox
             key={layer.vector_layer_id}
@@ -89,9 +95,7 @@ export const VectorLayer = memo(({ layer, isLast, isOpen }: Props) => {
           <TabList
             selectedValue={tab}
             onTabSelect={onTabSelect}
-            style={{
-              backgroundColor: 'rgba(103, 216, 101, 0.1)',
-            }}
+            style={tabListStyle}
           >
             <Tab value="config">Config</Tab>
             <Tab value="overall-displays">Overall Display</Tab>
