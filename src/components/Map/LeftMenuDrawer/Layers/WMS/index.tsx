@@ -75,12 +75,6 @@ export const WmsLayers = memo(() => {
           where: { wms_layer_id: wmsLayerId },
         })
         const isActive = layerPresentation?.active
-        console.log('WMS.onToggleItem', {
-          isActive,
-          wmsLayerId,
-          openItems,
-          layerPresentation,
-        })
         if (isActive) {
           // if not active, remove this item
           const newOpenItems = openItems.filter((id) => id !== wmsLayerId)
