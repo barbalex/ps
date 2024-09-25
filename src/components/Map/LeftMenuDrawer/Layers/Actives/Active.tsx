@@ -16,7 +16,7 @@ import {
   TabList,
   SelectTabData,
 } from '@fluentui/react-components'
-import { BsSquareFill } from 'react-icons/bs'
+import { BsCheckSquareFill } from 'react-icons/bs'
 import { MdDragIndicator } from 'react-icons/md'
 import { DropIndicator } from '@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/box'
 import { pointerOutsideOfPreview } from '@atlaskit/pragmatic-drag-and-drop/element/pointer-outside-of-preview'
@@ -315,13 +315,17 @@ export const ActiveLayer = memo(
             </div>
             <div style={headerContainerStyle}>
               <ToggleButton
-                icon={<BsSquareFill style={{}} />}
+                icon={
+                  <BsCheckSquareFill
+                    style={{ color: 'rgba(38, 82, 37, 0.9)' }}
+                  />
+                }
                 checked={layerPresentation.active}
                 onClick={onChangeActive}
                 style={css({
                   marginLeft: 2,
                   border: 'none',
-                  ...(isOpen ? { background: 'none' } : {}),
+                  backgroundColor: 'transparent',
                   on: ($) => [
                     $('&:hover', {
                       backgroundColor: 'var(--colorNeutralBackground1Hover)',
