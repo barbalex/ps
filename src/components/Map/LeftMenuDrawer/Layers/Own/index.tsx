@@ -58,7 +58,7 @@ export const OwnLayers = memo(() => {
           return
         }
         setOpenItems(openItems)
-      })
+      }, 200)
     },
     [db.layer_presentations, setOpenItems],
   )
