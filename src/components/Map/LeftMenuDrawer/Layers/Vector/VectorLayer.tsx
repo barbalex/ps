@@ -4,10 +4,12 @@ import {
   AccordionItem,
   AccordionPanel,
   Checkbox,
+  ToggleButton,
   Tab,
   TabList,
   SelectTabData,
 } from '@fluentui/react-components'
+import { BsSquare, BsSquareFill } from 'react-icons/bs'
 import { useAtom } from 'jotai'
 
 import { useElectric } from '../../../../../ElectricProvider.tsx'
@@ -95,7 +97,7 @@ export const VectorLayer = memo(({ layer, isLast, isOpen }: Props) => {
               : {}
           }
         >
-          <Checkbox
+          {/* <Checkbox
             key={layer.vector_layer_id}
             size="large"
             label={layer.label}
@@ -103,7 +105,25 @@ export const VectorLayer = memo(({ layer, isLast, isOpen }: Props) => {
             // always false because of the filter
             checked={false}
             onChange={onChange}
-          />
+          /> */}
+          <div style={{ display: 'flex' }}>
+            <ToggleButton
+              icon={<BsSquare style={{ color: 'rgb(150,150,150)' }} />}
+              checked={false}
+              onClick={onChange}
+              style={{ border: 'none', background: 'none' }}
+            />
+            <p
+              style={{
+                fontSize: 'var(--fontSizeBase300)',
+                color: 'rgb(97,97,97)',
+                paddingLeft: '0.5rem',
+                lineHeight: 'var(--lineHeightBase300)',
+              }}
+            >
+              {layer.label}
+            </p>
+          </div>
         </AccordionHeader>
         <AccordionPanel style={panelStyle}>
           <TabList
