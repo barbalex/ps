@@ -51,7 +51,7 @@ export const OwnLayers = memo(() => {
           where: { layer_presentation_id: layerPresentationId },
         })
         const isActive = layerPresentation?.active
-        if (!isActive) {
+        if (isActive) {
           // if not active, remove this item
           const newOpenItems = openItems.filter(
             (id) => id !== layerPresentationId,
