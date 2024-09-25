@@ -3,7 +3,7 @@ import {
   AccordionHeader,
   AccordionItem,
   AccordionPanel,
-  Checkbox,
+  ToggleButton,
   Tab,
   TabList,
   SelectTabData,
@@ -24,6 +24,7 @@ import {
   headerToggleIconStyle,
   headerLabelStyle,
 } from '../styles.ts'
+import { css } from '../../../../../css.ts'
 
 type TabType = 'config' | 'overall-displays'
 
@@ -91,15 +92,24 @@ export const WmsLayer = memo(({ layer, isLast, isOpen }: Props) => {
               : {}
           }
         >
-          <Checkbox
-            key={layer.wms_layer_id}
-            size="large"
-            label={layer.label}
-            // checked if layer has an active presentation
-            // always false because of the filter
-            checked={false}
-            onChange={onChange}
-          />
+          <div style={headerContainerStyle}>
+            <ToggleButton
+              icon={<BsSquare style={headerToggleIconStyle} />}
+              checked={false}
+              onClick={onChange}
+              style={css({
+                marginLeft: 2,
+                border: 'none',
+                ...(isOpen ? { background: 'none' } : {}),
+                on: ($) => [
+                  $('&:hover', {
+                    backgroundColor: 'var(--colorNeutralBackground1Hover)',
+                  }),
+                ],
+              })}
+            />
+            <p style={headerLabelStyle}>{layer.label}</p>
+          </div>
         </AccordionHeader>
         <AccordionPanel style={panelStyle}>
           <TabList
