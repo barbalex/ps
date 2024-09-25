@@ -1,5 +1,6 @@
 import { createStore } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
+// import { atom } from 'jotai'
 
 export const store = createStore()
 
@@ -12,6 +13,7 @@ export const breadcrumbsOverflowingAtom = atomWithStorage(
   true,
 )
 export const tabsAtom = atomWithStorage('tabsAtom', ['tree', 'data'])
+// export const tabsAtom = atom(['tree', 'data'])
 export const syncingAtom = atomWithStorage('syncingAtom', false)
 export const mapMaximizedAtom = atomWithStorage('mapMaximizedAtom', false)
 export const mapBoundsAtom = atomWithStorage('mapBoundsAtom', null)
