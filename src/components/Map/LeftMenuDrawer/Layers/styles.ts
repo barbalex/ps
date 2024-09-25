@@ -43,3 +43,18 @@ export const panelStyle = {
 export const tabListStyle = {
   backgroundColor: 'rgba(103, 216, 101, 0.05)',
 }
+
+export const headerContainerStyle = {
+  display: 'flex',
+}
+
+export const headerToggleIconStyle = {
+  color: 'rgb(164,164,164)',
+}
+
+export const headerLabelStyle = {
+  fontSize: 'var(--fontSizeBase300)',
+  color: 'var(--colorNeutralForeground1)',
+  paddingLeft: '0.5rem',
+  lineHeight: 'var(--lineHeightBase300)',
+}

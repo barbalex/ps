@@ -1,6 +1,6 @@
 import { memo, useCallback, useState } from 'react'
 import {
-  Checkbox,
+  ToggleButton,
   AccordionHeader,
   AccordionItem,
   AccordionPanel,
@@ -8,6 +8,7 @@ import {
   TabList,
   SelectTabData,
 } from '@fluentui/react-components'
+import { BsSquare } from 'react-icons/bs'
 import { useAtom } from 'jotai'
 
 import { useElectric } from '../../../../../ElectricProvider.tsx'
@@ -21,7 +22,14 @@ import { VectorLayerEditing } from '../Vector/Editing.tsx'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
 import { Component as VectorLayerDisplays } from '../../../../../routes/vectorLayerDisplays.tsx'
 import { Component as VectorLayerDisplay } from '../../../../../routes/vectorLayerDisplay/index.tsx'
-import { panelStyle, tabListStyle } from '../styles.ts'
+import {
+  panelStyle,
+  tabListStyle,
+  headerContainerStyle,
+  headerToggleIconStyle,
+  headerLabelStyle,
+} from '../styles.ts'
+import { css } from '../../../../../css.ts'
 
 type TabType = 'config' | 'overall-displays' | 'feature-displays'
 
@@ -94,15 +102,24 @@ export const OwnLayer = memo(({ layer, isLast, isOpen }: Props) => {
               : {}
           }
         >
-          <Checkbox
-            key={layer.vector_layer_id}
-            size="large"
-            label={layer.label}
-            // checked if layer has an active presentation
-            // always false because of the filter
-            checked={false}
-            onChange={onChange}
-          />
+          <div style={headerContainerStyle}>
+            <ToggleButton
+              icon={<BsSquare style={headerToggleIconStyle} />}
+              checked={false}
+              onClick={onChange}
+              style={css({
+                marginLeft: 2,
+                border: 'none',
+                ...(isOpen ? { background: 'none' } : {}),
+                on: ($) => [
+                  $('&:hover', {
+                    backgroundColor: 'var(--colorNeutralBackground1Hover)',
+                  }),
+                ],
+              })}
+            />
+            <p style={headerLabelStyle}>{layer.label}</p>
+          </div>
         </AccordionHeader>
         <AccordionPanel style={panelStyle}>
           <TabList

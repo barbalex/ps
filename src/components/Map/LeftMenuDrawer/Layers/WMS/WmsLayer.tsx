@@ -8,17 +8,22 @@ import {
   TabList,
   SelectTabData,
 } from '@fluentui/react-components'
+import { BsSquare } from 'react-icons/bs'
 import { useAtom } from 'jotai'
 
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createLayerPresentation } from '../../../../../modules/createRows.ts'
-import {
-  designingAtom,
-} from '../../../../../store.ts'
+import { designingAtom } from '../../../../../store.ts'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
 import { WmsLayerEditing } from './Editing.tsx'
-import { panelStyle, tabListStyle } from '../styles.ts'
+import {
+  panelStyle,
+  tabListStyle,
+  headerContainerStyle,
+  headerToggleIconStyle,
+  headerLabelStyle,
+} from '../styles.ts'
 
 type TabType = 'config' | 'overall-displays'
 

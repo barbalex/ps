@@ -3,13 +3,12 @@ import {
   AccordionHeader,
   AccordionItem,
   AccordionPanel,
-  Checkbox,
   ToggleButton,
   Tab,
   TabList,
   SelectTabData,
 } from '@fluentui/react-components'
-import { BsSquare, BsSquareFill } from 'react-icons/bs'
+import { BsSquare } from 'react-icons/bs'
 import { useAtom } from 'jotai'
 
 import { useElectric } from '../../../../../ElectricProvider.tsx'
@@ -20,7 +19,13 @@ import {
   mapDrawerVectorLayerDisplayAtom,
 } from '../../../../../store.ts'
 import { VectorLayerEditing } from './Editing.tsx'
-import { panelStyle, tabListStyle } from '../styles.ts'
+import {
+  panelStyle,
+  tabListStyle,
+  headerContainerStyle,
+  headerToggleIconStyle,
+  headerLabelStyle,
+} from '../styles.ts'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
 import { Component as VectorLayerDisplays } from '../../../../../routes/vectorLayerDisplays.tsx'
 import { Component as VectorLayerDisplay } from '../../../../../routes/vectorLayerDisplay/index.tsx'
@@ -98,9 +103,9 @@ export const VectorLayer = memo(({ layer, isLast, isOpen }: Props) => {
               : {}
           }
         >
-          <div style={{ display: 'flex' }}>
+          <div style={headerContainerStyle}>
             <ToggleButton
-              icon={<BsSquare style={{ color: 'rgb(150,150,150)' }} />}
+              icon={<BsSquare style={headerToggleIconStyle} />}
               checked={false}
               onClick={onChange}
               style={css({
@@ -114,16 +119,7 @@ export const VectorLayer = memo(({ layer, isLast, isOpen }: Props) => {
                 ],
               })}
             />
-            <p
-              style={{
-                fontSize: 'var(--fontSizeBase300)',
-                color: 'var(--colorNeutralForeground1)',
-                paddingLeft: '0.5rem',
-                lineHeight: 'var(--lineHeightBase300)',
-              }}
-            >
-              {layer.label}
-            </p>
+            <p style={headerLabelStyle}>{layer.label}</p>
           </div>
         </AccordionHeader>
         <AccordionPanel style={panelStyle}>

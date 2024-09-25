@@ -67,19 +67,17 @@ export const WmsLayers = memo(() => {
   }, [db.layer_presentations, db.wms_layers, project_id, setOpenItems])
 
   const onToggleItem = useCallback(
-    (event, { value: layerPresentationId, openItems }) => {
+    (event, { value: wmsLayerId, openItems }) => {
       // use setTimeout to let the child checkbox set the layers active status
       setTimeout(async () => {
         // fetch layerPresentation's active status
         const layerPresentation = await db.layer_presentations.findFirst({
-          where: { layer_presentation_id: layerPresentationId },
+          where: { wms_layer_id: wmsLayerId },
         })
         const isActive = layerPresentation?.active
         if (isActive) {
           // if not active, remove this item
-          const newOpenItems = openItems.filter(
-            (id) => id !== layerPresentationId,
-          )
+          const newOpenItems = openItems.filter((id) => id !== wmsLayerId)
           setOpenItems(newOpenItems)
           return
         }

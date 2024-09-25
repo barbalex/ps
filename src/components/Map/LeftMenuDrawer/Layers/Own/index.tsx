@@ -43,19 +43,17 @@ export const OwnLayers = memo(() => {
   )
 
   const onToggleItem = useCallback(
-    (event, { value: layerPresentationId, openItems }) => {
+    (event, { value: vectorLayerId, openItems }) => {
       // use setTimeout to let the child checkbox set the layers active status
       setTimeout(async () => {
         // fetch layerPresentation's active status
         const layerPresentation = await db.layer_presentations.findFirst({
-          where: { layer_presentation_id: layerPresentationId },
+          where: { vector_layer_id: vectorLayerId },
         })
         const isActive = layerPresentation?.active
         if (isActive) {
           // if not active, remove this item
-          const newOpenItems = openItems.filter(
-            (id) => id !== layerPresentationId,
-          )
+          const newOpenItems = openItems.filter((id) => id !== vectorLayerId)
           setOpenItems(newOpenItems)
           return
         }

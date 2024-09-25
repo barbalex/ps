@@ -16,6 +16,7 @@ import {
   TabList,
   SelectTabData,
 } from '@fluentui/react-components'
+import { BsSquareFill } from 'react-icons/bs'
 import { MdDragIndicator } from 'react-icons/md'
 import { DropIndicator } from '@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/box'
 import { pointerOutsideOfPreview } from '@atlaskit/pragmatic-drag-and-drop/element/pointer-outside-of-preview'
@@ -44,7 +45,13 @@ import { ListContext } from './index.tsx'
 import { itemKey, isItemData } from './shared.ts'
 import { getValueFromChange } from '../../../../../modules/getValueFromChange.ts'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
-import { panelStyle, tabListStyle } from '../styles.ts'
+import {
+  panelStyle,
+  tabListStyle,
+  headerContainerStyle,
+  headerToggleIconStyle,
+  headerLabelStyle,
+} from '../styles.ts'
 import { VectorLayerEditing } from '../Vector/Editing.tsx'
 import { WmsLayerEditing } from '../WMS/Editing.tsx'
 import { Component as VectorLayerDisplays } from '../../../../../routes/vectorLayerDisplays.tsx'
