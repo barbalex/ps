@@ -104,6 +104,7 @@ export const VectorLayer = memo(({ layer, isLast, isOpen }: Props) => {
               checked={false}
               onClick={onChange}
               style={css({
+                marginLeft: 2,
                 border: 'none',
                 ...(isOpen ? { background: 'none' } : {}),
                 on: ($) => [
@@ -116,7 +117,7 @@ export const VectorLayer = memo(({ layer, isLast, isOpen }: Props) => {
             <p
               style={{
                 fontSize: 'var(--fontSizeBase300)',
-                color: 'rgb(97,97,97)',
+                color: 'var(--colorNeutralForeground1)',
                 paddingLeft: '0.5rem',
                 lineHeight: 'var(--lineHeightBase300)',
               }}
