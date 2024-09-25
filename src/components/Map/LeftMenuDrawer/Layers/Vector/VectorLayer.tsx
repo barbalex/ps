@@ -24,6 +24,7 @@ import { panelStyle, tabListStyle } from '../styles.ts'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
 import { Component as VectorLayerDisplays } from '../../../../../routes/vectorLayerDisplays.tsx'
 import { Component as VectorLayerDisplay } from '../../../../../routes/vectorLayerDisplay/index.tsx'
+import { css } from '../../../../../css.ts'
 
 type Props = {
   layer: VectorLayer
@@ -97,21 +98,20 @@ export const VectorLayer = memo(({ layer, isLast, isOpen }: Props) => {
               : {}
           }
         >
-          {/* <Checkbox
-            key={layer.vector_layer_id}
-            size="large"
-            label={layer.label}
-            // checked if layer has an active presentation
-            // always false because of the filter
-            checked={false}
-            onChange={onChange}
-          /> */}
           <div style={{ display: 'flex' }}>
             <ToggleButton
               icon={<BsSquare style={{ color: 'rgb(150,150,150)' }} />}
               checked={false}
               onClick={onChange}
-              style={{ border: 'none', background: 'none' }}
+              style={css({
+                border: 'none',
+                ...(isOpen ? { background: 'none' } : {}),
+                on: ($) => [
+                  $('&:hover', {
+                    backgroundColor: 'var(--colorNeutralBackground1Hover)',
+                  }),
+                ],
+              })}
             />
             <p
               style={{
