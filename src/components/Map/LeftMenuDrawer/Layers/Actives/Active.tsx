@@ -11,7 +11,7 @@ import {
   AccordionHeader,
   AccordionItem,
   AccordionPanel,
-  Checkbox,
+  ToggleButton,
   Tab,
   TabList,
   SelectTabData,
@@ -43,7 +43,6 @@ import {
 } from '../../../../../generated/client/index.ts'
 import { ListContext } from './index.tsx'
 import { itemKey, isItemData } from './shared.ts'
-import { getValueFromChange } from '../../../../../modules/getValueFromChange.ts'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
 import {
   panelStyle,
@@ -60,6 +59,7 @@ import {
   designingAtom,
   mapDrawerVectorLayerDisplayAtom,
 } from '../../../../../store.ts'
+import { css } from '../../../../../css.ts'
 
 import './active.css'
 
@@ -141,26 +141,22 @@ export const ActiveLayer = memo(
 
     const layerPresentation = layer.layer_presentations?.[0]
 
-    const onChange = useCallback(
-      (e, data) => {
-        if (!layerPresentation) {
-          // if no presentation exists, create notification
-          const data = createNotification({
-            title: 'Layer presentation not found',
-            type: 'warning',
-          })
-          return db.notifications.create({ data })
-        }
-        const { name, value } = getValueFromChange(e, data)
-        db.layer_presentations.update({
-          where: {
-            layer_presentation_id: layerPresentation.layer_presentation_id,
-          },
-          data: { [name]: value },
+    const onChangeActive = useCallback(() => {
+      if (!layerPresentation) {
+        // if no presentation exists, create notification
+        const data = createNotification({
+          title: 'Layer presentation not found',
+          type: 'warning',
         })
-      },
-      [db.layer_presentations, db.notifications, layerPresentation],
-    )
+        return db.notifications.create({ data })
+      }
+      db.layer_presentations.update({
+        where: {
+          layer_presentation_id: layerPresentation.layer_presentation_id,
+        },
+        data: { active: false },
+      })
+    }, [db.layer_presentations, db.notifications, layerPresentation])
 
     const { registerItem, instanceId } = useListContext()
     const [closestEdge, setClosestEdge] = useState<Edge | null>(null)
@@ -317,13 +313,24 @@ export const ActiveLayer = memo(
             >
               {canDrag && <MdDragIndicator style={dragIndicatorStyle} />}
             </div>
-            <Checkbox
-              size="large"
-              name="active"
-              label={layer.label}
-              checked={layerPresentation.active}
-              onChange={onChange}
-            />
+            <div style={headerContainerStyle}>
+              <ToggleButton
+                icon={<BsSquareFill style={{}} />}
+                checked={layerPresentation.active}
+                onClick={onChangeActive}
+                style={css({
+                  marginLeft: 2,
+                  border: 'none',
+                  ...(isOpen ? { background: 'none' } : {}),
+                  on: ($) => [
+                    $('&:hover', {
+                      backgroundColor: 'var(--colorNeutralBackground1Hover)',
+                    }),
+                  ],
+                })}
+              />
+              <p style={headerLabelStyle}>{layer.label}</p>
+            </div>
           </AccordionHeader>
           <AccordionPanel style={panelStyle}>
             <TabList
