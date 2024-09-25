@@ -1,4 +1,4 @@
-import { memo, useCallback } from 'react'
+import { memo, useCallback, useMemo } from 'react'
 
 import { useElectric } from '../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../shared/ErrorBoundary.tsx'
@@ -23,7 +23,10 @@ type Props = {
 export const LayerPresentationForm = memo(({ layer }: Props) => {
   const { db } = useElectric()!
 
-  const layerPresentation = layer.layer_presentations?.[0]
+  const layerPresentation = useMemo(
+    () => layer.layer_presentations?.[0] ?? {},
+    [layer.layer_presentations],
+  )
 
   const onChange = useCallback(
     (e, data) => {
