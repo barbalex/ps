@@ -7,7 +7,7 @@ type Props = {
 }
 
 // idea: use a leaflet map to display: a rectangle, line and point
-// build map and pass in the objects
+// build map and pass geometries as data attribute to GeoJSON, using vectorLayerDisplayToProperties as in TableLayer.tsx
 export const Display = memo(({ display }: Props) => {
   return (
     <>
