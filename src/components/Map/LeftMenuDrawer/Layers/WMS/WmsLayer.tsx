@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from 'react'
+import { memo, useCallback, useState, useEffect } from 'react'
 import {
   AccordionHeader,
   AccordionItem,
@@ -47,6 +47,13 @@ export const WmsLayer = memo(({ layer, isLast, isOpen }: Props) => {
   const [designing] = useAtom(designingAtom)
   const { db } = useElectric()!
   const [tab, setTab] = useState<TabType>('overall-displays')
+
+  // effect: if layer has no wms_service_id or wms_service_layer_name: set tab to 'config'
+  useEffect(() => {
+    if (!layer.wms_service_id || !layer.wms_service_layer_name) {
+      setTab('config')
+    }
+  }, [layer.wms_service_id, layer.wms_service_layer_name])
 
   const onChange = useCallback(async () => {
     // 1. check if layer has a presentation
