@@ -40,3 +40,9 @@ export const headerLabelStyle = {
   paddingLeft: '0.5rem',
   lineHeight: 'var(--lineHeightBase300)',
 }
+
+export const deleteButtonStyle = {
+  marginLeft: 10,
+  height: 32,
+  alignSelf: 'center',
+}

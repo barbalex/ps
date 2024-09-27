@@ -3,12 +3,20 @@ import {
   AccordionHeader,
   AccordionItem,
   AccordionPanel,
+  Button,
+  Menu,
+  MenuItem,
+  MenuTrigger,
+  MenuPopover,
+  MenuList,
+  MenuGroupHeader,
   ToggleButton,
   Tab,
   TabList,
   SelectTabData,
 } from '@fluentui/react-components'
 import { BsSquare } from 'react-icons/bs'
+import { MdDeleteOutline } from 'react-icons/md'
 import { useAtom } from 'jotai'
 
 import { useElectric } from '../../../../../ElectricProvider.tsx'
@@ -23,6 +31,7 @@ import {
   headerContainerStyle,
   headerToggleIconStyle,
   headerLabelStyle,
+  deleteButtonStyle,
 } from '../styles.ts'
 import { css } from '../../../../../css.ts'
 
@@ -65,6 +74,10 @@ export const WmsLayer = memo(({ layer, isLast, isOpen }: Props) => {
     (event, data: SelectTabData) => setTab(data.value),
     [],
   )
+
+  const onDelete = useCallback(() => {
+    console.log('TODO: delete layer with all dependants')
+  }, [])
 
   return (
     <ErrorBoundary>
@@ -122,6 +135,24 @@ export const WmsLayer = memo(({ layer, isLast, isOpen }: Props) => {
           >
             <Tab value="overall-displays">Overall Display</Tab>
             <Tab value="config">Config</Tab>
+            <Menu>
+              <MenuTrigger disableButtonEnhancement>
+                <Button
+                  size="medium"
+                  icon={<MdDeleteOutline />}
+                  title={`Delete Layer '${layer.label}'`}
+                  style={deleteButtonStyle}
+                />
+              </MenuTrigger>
+
+              <MenuPopover>
+                <MenuList>
+                  <MenuGroupHeader>{`Delete Layer '${layer.label}'?`}</MenuGroupHeader>
+                  <MenuItem onClick={onDelete}>Yes</MenuItem>
+                  <MenuItem>Noooooo!</MenuItem>
+                </MenuList>
+              </MenuPopover>
+            </Menu>
           </TabList>
           {tab === 'config' && <WmsLayerEditing layer={layer} />}
           {tab === 'overall-displays' && (
