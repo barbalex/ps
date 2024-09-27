@@ -5,7 +5,9 @@ import { useAtom } from 'jotai'
 
 import { useElectric } from '../../../../ElectricProvider.tsx'
 import { WmsLegend } from './WmsLegend.tsx'
+import { VectorLegend } from './VectorLegend.tsx'
 import { mapLayerSortingAtom } from '../../../../store.ts'
+import { LegendContainer } from './LegendContainer.tsx'
 
 const noLayersStyle = {
   margin: 0,
@@ -62,24 +64,22 @@ export const Legends = memo(() => {
   )
 
   return activeLayers.length ? (
-    activeLayers?.map((l, index) => {
+    activeLayers?.map((layer, index) => {
       // display depends on layer type: wms / vector
-      const isVectorLayer = 'vector_layer_id' in l
-
-      if (isVectorLayer) {
-        // vector layer
-        return (
-          <p key={l.vector_layer_id}>{`TODO: Vector layer '${l.label}'`}</p>
-        )
-      }
+      const isVectorLayer = 'vector_layer_id' in layer
 
       return (
-        <div key={l.wms_layer_id}>
-          <WmsLegend
-            layer={l}
-            isLast={index === activeLayers.length - 1}
-          />
-        </div>
+        <LegendContainer
+          key={layer.wms_layer_id ?? layer.vector_layer_id}
+          layer={layer}
+          isLast={index === activeLayers.length - 1}
+        >
+          {isVectorLayer ? (
+            <VectorLegend layer={layer} />
+          ) : (
+            <WmsLegend layer={layer} />
+          )}
+        </LegendContainer>
       )
     })
   ) : (
