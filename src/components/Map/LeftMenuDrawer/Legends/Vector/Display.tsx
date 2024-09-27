@@ -8,6 +8,17 @@ import {
 import { vectorLayerDisplayToProperties } from '../../../../../modules/vectorLayerDisplayToProperties.ts'
 import './display.css'
 
+const containerStyle = {
+  display: 'flex',
+  alignItems: 'center',
+}
+const displayPropertyValueStyle = {
+  marginTop: 0,
+  marginBottom: 0,
+  marginLeft: 8,
+  fontWeight: 'bold',
+}
+
 type Props = {
   display: VectorLayerDisplay
   layerPresentation: LayerPresentation
@@ -17,11 +28,8 @@ type Props = {
 // build map and pass geometries as data attribute to GeoJSON, using vectorLayerDisplayToProperties as in TableLayer.tsx
 export const Display = memo(({ display, layerPresentation }: Props) => {
   return (
-    <>
+    <div style={containerStyle}>
       {/* if a display_property_value exists, display it */}
-      {display.display_property_value && (
-        <h3>{display.display_property_value}</h3>
-      )}
       <MapContainer
         crs={L.CRS.Simple}
         zoomControl={false}
@@ -50,6 +58,9 @@ export const Display = memo(({ display, layerPresentation }: Props) => {
           })}
         />
       </MapContainer>
-    </>
+      <p style={displayPropertyValueStyle}>
+        {display.display_property_value ?? ''}
+      </p>
+    </div>
   )
 })
