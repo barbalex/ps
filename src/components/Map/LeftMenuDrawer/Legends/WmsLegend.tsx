@@ -12,21 +12,17 @@ export const WmsLegend = memo(({ layer }) => {
     }),
   )
 
-  return (
-    <>
-      {wmsServiceLayer?.legend_image ? (
-        <img
-          src={`data:image/png;base64,${btoa(
-            String.fromCharCode(
-              ...new Uint8Array(wmsServiceLayer?.legend_image),
-            ),
-          )}`}
-        />
-      ) : wmsServiceLayer?.legend_url ? (
-        <img src={wmsServiceLayer.legend_url} />
-      ) : (
-        'No legend available'
-      )}
-    </>
-  )
+  if (wmsServiceLayer?.legend_image) {
+    return (
+      <img
+        src={`data:image/png;base64,${btoa(
+          String.fromCharCode(...new Uint8Array(wmsServiceLayer?.legend_image)),
+        )}`}
+      />
+    )
+  }
+  if (wmsServiceLayer?.legend_url) {
+    return <img src={wmsServiceLayer.legend_url} />
+  }
+  return 'No legend available'
 })
