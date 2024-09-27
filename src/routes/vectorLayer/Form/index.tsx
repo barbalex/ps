@@ -110,7 +110,7 @@ export const Component = ({
             value={vectorLayer.max_features ?? ''}
             onChange={onChange}
             type="number"
-            validationMessage="Drawing too many features can crash the app. Your mileage may vary"
+            validationMessage="Drawing too many features can crash the app"
           />
           {/* <VectorLayerDisplay row={row} /> */}
         </>
