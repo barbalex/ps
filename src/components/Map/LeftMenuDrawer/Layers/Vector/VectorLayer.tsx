@@ -1,14 +1,22 @@
-import { memo, useCallback, useState } from 'react'
+import { memo, useCallback, useState, useEffect } from 'react'
 import {
   AccordionHeader,
   AccordionItem,
   AccordionPanel,
+  Button,
+  Menu,
+  MenuItem,
+  MenuTrigger,
+  MenuPopover,
+  MenuList,
+  MenuGroupHeader,
   ToggleButton,
   Tab,
   TabList,
   SelectTabData,
 } from '@fluentui/react-components'
 import { BsSquare } from 'react-icons/bs'
+import { MdDeleteOutline } from 'react-icons/md'
 import { useAtom } from 'jotai'
 
 import { useElectric } from '../../../../../ElectricProvider.tsx'
@@ -25,6 +33,7 @@ import {
   headerContainerStyle,
   headerToggleIconStyle,
   headerLabelStyle,
+  deleteButtonStyle,
 } from '../styles.ts'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
 import { Component as VectorLayerDisplays } from '../../../../../routes/vectorLayerDisplays.tsx'
@@ -47,6 +56,13 @@ export const VectorLayer = memo(({ layer, isLast, isOpen }: Props) => {
 
   const { db } = useElectric()!
   const [tab, setTab] = useState<TabType>('overall-displays')
+
+  // effect: if layer has no wfs_service_id or wfs_service_layer_name: set tab to 'config'
+  useEffect(() => {
+    if (!layer.wfs_service_id || !layer.wfs_service_layer_name) {
+      setTab('config')
+    }
+  }, [layer.wfs_service_id, layer.wfs_service_layer_name])
 
   const onChange = useCallback(async () => {
     if (!layer.layer_presentations?.[0]?.layer_presentation_id) {
@@ -75,6 +91,14 @@ export const VectorLayer = memo(({ layer, isLast, isOpen }: Props) => {
   const onClickFeatureDisplays = useCallback(
     () => setVectorLayerDisplayId(null),
     [setVectorLayerDisplayId],
+  )
+
+  const onDelete = useCallback(
+    () =>
+      db.vector_layers.delete({
+        where: { vector_layer_id: layer.vector_layer_id },
+      }),
+    [db.vector_layers, layer.vector_layer_id],
   )
 
   return (
@@ -139,6 +163,24 @@ export const VectorLayer = memo(({ layer, isLast, isOpen }: Props) => {
               Feature Displays
             </Tab>
             <Tab value="config">Config</Tab>
+            <Menu>
+              <MenuTrigger disableButtonEnhancement>
+                <Button
+                  size="medium"
+                  icon={<MdDeleteOutline />}
+                  title={`Delete Layer '${layer.label}'`}
+                  style={deleteButtonStyle}
+                />
+              </MenuTrigger>
+
+              <MenuPopover>
+                <MenuList>
+                  <MenuGroupHeader>{`Delete Layer '${layer.label}'?`}</MenuGroupHeader>
+                  <MenuItem onClick={onDelete}>Yes</MenuItem>
+                  <MenuItem>Noooooo!</MenuItem>
+                </MenuList>
+              </MenuPopover>
+            </Menu>
           </TabList>
           {tab === 'overall-displays' && (
             <LayerPresentationForm layer={layer} />

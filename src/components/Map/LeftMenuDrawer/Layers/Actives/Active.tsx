@@ -11,13 +11,20 @@ import {
   AccordionHeader,
   AccordionItem,
   AccordionPanel,
+  Button,
+  Menu,
+  MenuItem,
+  MenuTrigger,
+  MenuPopover,
+  MenuList,
+  MenuGroupHeader,
   ToggleButton,
   Tab,
   TabList,
   SelectTabData,
 } from '@fluentui/react-components'
 import { BsCheckSquareFill } from 'react-icons/bs'
-import { MdDragIndicator } from 'react-icons/md'
+import { MdDragIndicator, MdDeleteOutline } from 'react-icons/md'
 import { DropIndicator } from '@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/box'
 import { pointerOutsideOfPreview } from '@atlaskit/pragmatic-drag-and-drop/element/pointer-outside-of-preview'
 import { setCustomNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview'
@@ -48,8 +55,8 @@ import {
   panelStyle,
   tabListStyle,
   headerContainerStyle,
-  headerToggleIconStyle,
   headerLabelStyle,
+  deleteButtonStyle,
 } from '../styles.ts'
 import { VectorLayerEditing } from '../Vector/Editing.tsx'
 import { WmsLayerEditing } from '../WMS/Editing.tsx'
@@ -138,6 +145,26 @@ export const ActiveLayer = memo(
     const [tab, setTab] = useState<TabType>('overall-displays')
 
     const isVectorLayer = 'vector_layer_id' in layer
+
+    // effect:
+    // if layer is wms and has no wms_service_id or wms_service_layer_name: set tab to 'config'
+    // if layer is wfs and has no wfs_service_id or wfs_service_layer_name: set tab to 'config'
+    useEffect(() => {
+      if (
+        (isVectorLayer &&
+          (!layer.wfs_service_id || !layer.wfs_service_layer_name)) ||
+        (!isVectorLayer &&
+          (!layer.wms_service_id || !layer.wms_service_layer_name))
+      ) {
+        setTab('config')
+      }
+    }, [
+      isVectorLayer,
+      layer.wfs_service_id,
+      layer.wfs_service_layer_name,
+      layer.wms_service_id,
+      layer.wms_service_layer_name,
+    ])
 
     const layerPresentation = layer.layer_presentations?.[0]
 
@@ -272,6 +299,22 @@ export const ActiveLayer = memo(
       [setVectorLayerDisplayId],
     )
 
+    const onDelete = useCallback(() => {
+      if (isVectorLayer) {
+        db.vector_layers.delete({
+          where: { vector_layer_id: layer.vector_layer_id },
+        })
+      } else {
+        db.wms_layers.delete({ where: { wms_layer_id: layer.wms_layer_id } })
+      }
+    }, [
+      db.vector_layers,
+      db.wms_layers,
+      isVectorLayer,
+      layer.vector_layer_id,
+      layer.wms_layer_id,
+    ])
+
     // drag and drop items by dragging the drag icon
     // https://atlassian.design/components/pragmatic-drag-and-drop/core-package
     return (
@@ -355,6 +398,24 @@ export const ActiveLayer = memo(
                 </Tab>
               )}
               <Tab value="config">Config</Tab>
+              <Menu>
+                <MenuTrigger disableButtonEnhancement>
+                  <Button
+                    size="medium"
+                    icon={<MdDeleteOutline />}
+                    title={`Delete Layer '${layer.label}'`}
+                    style={deleteButtonStyle}
+                  />
+                </MenuTrigger>
+
+                <MenuPopover>
+                  <MenuList>
+                    <MenuGroupHeader>{`Delete Layer '${layer.label}'?`}</MenuGroupHeader>
+                    <MenuItem onClick={onDelete}>Yes</MenuItem>
+                    <MenuItem>Noooooo!</MenuItem>
+                  </MenuList>
+                </MenuPopover>
+              </Menu>
             </TabList>
             {tab === 'config' &&
               (isVectorLayer ? (
