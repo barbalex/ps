@@ -7,6 +7,7 @@ type Props = {
 }
 
 // idea: use a leaflet map to display: a rectangle, line and point
+// build map and pass in the objects
 export const Display = memo(({ display }: Props) => {
   return (
     <>
