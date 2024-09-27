@@ -6,11 +6,15 @@ type Props = {
   display: VectorLayerDisplay
 }
 
-// idea:
-// fetch all vector_layer_displays for this layer
-// use a leaflet map to display for every vector_layer_display:
-// a rectangle, line, point
-
+// idea: use a leaflet map to display: a rectangle, line and point
 export const Display = memo(({ display }: Props) => {
-  return <>{`TODO: ${display.vector_layer_display_id}`}</>
+  return (
+    <>
+      {/* if a display_property_value exists, display it */}
+      {display.display_property_value && (
+        <h3>{display.display_property_value}</h3>
+      )}
+      {`TODO: ${display.vector_layer_display_id}`}
+    </>
+  )
 })
