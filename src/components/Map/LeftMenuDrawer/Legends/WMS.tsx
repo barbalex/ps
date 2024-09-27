@@ -2,8 +2,13 @@ import { memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 
 import { useElectric } from '../../../../ElectricProvider.tsx'
+import { Wms_layers as WmsLayer } from '../../../../generated/client/index.ts'
 
-export const WmsLegend = memo(({ layer }) => {
+type Props = {
+  layer: WmsLayer
+}
+
+export const WmsLegend = memo(({ layer }: Props) => {
   // need to fetch wms_service_layers with this layers wms_service_layer_name
   const { db } = useElectric()!
   const { results: wmsServiceLayer } = useLiveQuery(

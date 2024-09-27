@@ -4,10 +4,10 @@ import { useParams } from 'react-router-dom'
 import { useAtom } from 'jotai'
 
 import { useElectric } from '../../../../ElectricProvider.tsx'
-import { WmsLegend } from './WmsLegend.tsx'
-import { VectorLegend } from './VectorLegend.tsx'
+import { WmsLegend } from './WMS.tsx'
+import { VectorLegend } from './Vector/index.tsx'
 import { mapLayerSortingAtom } from '../../../../store.ts'
-import { LegendContainer } from './LegendContainer.tsx'
+import { Container } from './Container.tsx'
 
 const noLayersStyle = {
   margin: 0,
@@ -69,7 +69,7 @@ export const Legends = memo(() => {
       const isVectorLayer = 'vector_layer_id' in layer
 
       return (
-        <LegendContainer
+        <Container
           key={layer.wms_layer_id ?? layer.vector_layer_id}
           layer={layer}
           isLast={index === activeLayers.length - 1}
@@ -79,7 +79,7 @@ export const Legends = memo(() => {
           ) : (
             <WmsLegend layer={layer} />
           )}
-        </LegendContainer>
+        </Container>
       )
     })
   ) : (
