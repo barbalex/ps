@@ -11,7 +11,7 @@ const titleStyle = {
   paddingBottom: 5,
 }
 
-export const Legend = memo(({ layer, isLast }) => {
+export const WmsLegend = memo(({ layer, isLast }) => {
   // need to fetch wms_service_layers with this layers wms_service_layer_name
   const { db } = useElectric()!
   const { results: wmsServiceLayer } = useLiveQuery(
