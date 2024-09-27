@@ -23,6 +23,7 @@ export const VectorLegend = memo(({ layer }: Props) => {
       <Display
         key={display.vector_layer_display_id}
         display={display}
+        layerPresentation={layer?.layer_presentations?.[0]}
       />
     )
   })
