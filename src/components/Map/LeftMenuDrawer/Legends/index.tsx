@@ -24,10 +24,7 @@ export const Legends = memo(() => {
   const { results: wmsLayers = [] } = useLiveQuery(
     db.wms_layers.liveMany({
       where,
-      include: {
-        layer_presentations: true,
-        // wms_services: { include: { wms_service_layers: true } },
-      },
+      include: { layer_presentations: true },
     }),
   )
   const activeWmsLayers = wmsLayers.filter((l) =>
@@ -36,10 +33,23 @@ export const Legends = memo(() => {
     ),
   )
 
+  // same for vector layers
+  const { results: vectorLayers = [] } = useLiveQuery(
+    db.vector_layers.liveMany({
+      where,
+      include: { layer_presentations: true },
+    }),
+  )
+  const activeVectorLayers = vectorLayers.filter((l) =>
+    (l.layer_presentations ?? []).some(
+      (lp) => lp.vector_layer_id === l.vector_layer_id && lp.active,
+    ),
+  )
+
   // sort by mapLayerSorting
   const activeLayers = useMemo(
     () =>
-      [...activeWmsLayers].sort((a, b) => {
+      [...activeWmsLayers, ...activeVectorLayers].sort((a, b) => {
         const aIndex = mapLayerSorting.findIndex(
           (ls) => ls === a.layer_presentations?.[0]?.layer_presentation_id,
         )
@@ -48,14 +58,21 @@ export const Legends = memo(() => {
         )
         return aIndex - bIndex
       }),
-    [activeWmsLayers, mapLayerSorting],
+    [activeVectorLayers, activeWmsLayers, mapLayerSorting],
   )
 
   return activeLayers.length ? (
     activeLayers?.map((l, index) => {
       // display depends on layer type: wms / vector
       const isVectorLayer = 'vector_layer_id' in l
-      const isWmsLayer = 'wms_layer_id' in l
+
+      if (isVectorLayer) {
+        // vector layer
+        return (
+          <p key={l.vector_layer_id}>{`TODO: Vector layer '${l.label}'`}</p>
+        )
+      }
+
       return (
         <div key={l.wms_layer_id}>
           <WmsLegend
