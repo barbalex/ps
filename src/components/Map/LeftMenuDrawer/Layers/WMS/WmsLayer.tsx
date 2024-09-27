@@ -75,9 +75,10 @@ export const WmsLayer = memo(({ layer, isLast, isOpen }: Props) => {
     [],
   )
 
-  const onDelete = useCallback(() => {
-    console.log('TODO: delete layer with all dependants')
-  }, [])
+  const onDelete = useCallback(
+    () => db.wms_layers.delete({ where: { wms_layer_id: layer.wms_layer_id } }),
+    [db.wms_layers, layer.wms_layer_id],
+  )
 
   return (
     <ErrorBoundary>
