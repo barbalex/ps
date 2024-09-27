@@ -111,7 +111,7 @@ export const VectorLayer = memo(({ layer, isLast, isOpen }: Props) => {
               style={css({
                 marginLeft: 2,
                 border: 'none',
-                ...(isOpen ? { background: 'none' } : {}),
+                ...(isOpen ? { backgroundColor: 'none' } : {}),
                 on: ($) => [
                   $('&:hover', {
                     backgroundColor: 'var(--colorNeutralBackground1Hover)',
