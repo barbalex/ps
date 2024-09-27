@@ -30,6 +30,7 @@ import {
   headerLabelStyle,
 } from '../styles.ts'
 import { css } from '../../../../../css.ts'
+import { Vector_layers as VectorLayer } from '../../../../../generated/client/index.ts'
 
 type TabType = 'overall-displays' | 'feature-displays' | 'config'
 
