@@ -26,7 +26,7 @@ import {
 } from '../styles.ts'
 import { css } from '../../../../../css.ts'
 
-type TabType = 'config' | 'overall-displays'
+type TabType = 'overall-displays' | 'config'
 
 type Props = {
   layer: WmsLayer
@@ -37,7 +37,7 @@ type Props = {
 export const WmsLayer = memo(({ layer, isLast, isOpen }: Props) => {
   const [designing] = useAtom(designingAtom)
   const { db } = useElectric()!
-  const [tab, setTab] = useState<TabType>('config')
+  const [tab, setTab] = useState<TabType>('overall-displays')
 
   const onChange = useCallback(async () => {
     // 1. check if layer has a presentation
@@ -107,6 +107,9 @@ export const WmsLayer = memo(({ layer, isLast, isOpen }: Props) => {
                   }),
                 ],
               })}
+              // as the accordion header is a button, we need to set this as an a
+              // because nested buttons are not allowed
+              as="a"
             />
             <p style={headerLabelStyle}>{layer.label}</p>
           </div>
@@ -117,8 +120,8 @@ export const WmsLayer = memo(({ layer, isLast, isOpen }: Props) => {
             onTabSelect={onTabSelect}
             style={tabListStyle}
           >
-            <Tab value="config">Config</Tab>
             <Tab value="overall-displays">Overall Display</Tab>
+            <Tab value="config">Config</Tab>
           </TabList>
           {tab === 'config' && <WmsLayerEditing layer={layer} />}
           {tab === 'overall-displays' && (

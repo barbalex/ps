@@ -102,7 +102,7 @@ type DraggableState =
 const idleState: DraggableState = { type: 'idle' }
 const draggingState: DraggableState = { type: 'dragging' }
 
-type TabType = 'config' | 'overall-displays' | 'feature-displays'
+type TabType = 'overall-displays' | 'feature-displays' | 'config'
 
 const previewStyle = {
   padding: '0.5rem',
@@ -135,7 +135,7 @@ export const ActiveLayer = memo(
       mapDrawerVectorLayerDisplayAtom,
     )
     const { db } = useElectric()!
-    const [tab, setTab] = useState<TabType>('config')
+    const [tab, setTab] = useState<TabType>('overall-displays')
 
     const isVectorLayer = 'vector_layer_id' in layer
 
@@ -332,6 +332,9 @@ export const ActiveLayer = memo(
                     }),
                   ],
                 })}
+                // as the accordion header is a button, we need to set this as an a
+                // because nested buttons are not allowed
+                as="a"
               />
               <p style={headerLabelStyle}>{layer.label}</p>
             </div>
@@ -342,7 +345,6 @@ export const ActiveLayer = memo(
               onTabSelect={onTabSelect}
               style={tabListStyle}
             >
-              <Tab value="config">Config</Tab>
               <Tab value="overall-displays">Overall Display</Tab>
               {isVectorLayer && (
                 <Tab
@@ -352,6 +354,7 @@ export const ActiveLayer = memo(
                   Feature Displays
                 </Tab>
               )}
+              <Tab value="config">Config</Tab>
             </TabList>
             {tab === 'config' &&
               (isVectorLayer ? (

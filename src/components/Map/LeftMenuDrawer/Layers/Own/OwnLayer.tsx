@@ -31,7 +31,7 @@ import {
 } from '../styles.ts'
 import { css } from '../../../../../css.ts'
 
-type TabType = 'config' | 'overall-displays' | 'feature-displays'
+type TabType = 'overall-displays' | 'feature-displays' | 'config'
 
 type Props = {
   layer: VectorLayer
@@ -45,7 +45,7 @@ export const OwnLayer = memo(({ layer, isLast, isOpen }: Props) => {
     mapDrawerVectorLayerDisplayAtom,
   )
   const { db } = useElectric()!
-  const [tab, setTab] = useState<TabType>('config')
+  const [tab, setTab] = useState<TabType>('overall-displays')
 
   const onChange = useCallback(async () => {
     if (!layer.layer_presentations?.[0]?.layer_presentation_id) {
@@ -117,6 +117,9 @@ export const OwnLayer = memo(({ layer, isLast, isOpen }: Props) => {
                   }),
                 ],
               })}
+              // as the accordion header is a button, we need to set this as an a
+              // because nested buttons are not allowed
+              as="a"
             />
             <p style={headerLabelStyle}>{layer.label}</p>
           </div>
@@ -127,7 +130,6 @@ export const OwnLayer = memo(({ layer, isLast, isOpen }: Props) => {
             onTabSelect={onTabSelect}
             style={tabListStyle}
           >
-            <Tab value="config">Config</Tab>
             <Tab value="overall-displays">Overall Display</Tab>
             <Tab
               value="feature-displays"
@@ -135,6 +137,7 @@ export const OwnLayer = memo(({ layer, isLast, isOpen }: Props) => {
             >
               Feature Displays
             </Tab>
+            <Tab value="config">Config</Tab>
           </TabList>
           {tab === 'config' && <VectorLayerEditing layer={layer} />}
           {tab === 'overall-displays' && (
