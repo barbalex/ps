@@ -4,10 +4,9 @@ import { useParams } from 'react-router-dom'
 import { useAtom } from 'jotai'
 
 import { useElectric } from '../../../../ElectricProvider.tsx'
-import { Legend } from './Legend.tsx'
+import { WmsLegend } from './WmsLegend.tsx'
 import { mapLayerSortingAtom } from '../../../../store.ts'
 
-const layerListStyle = {}
 const noLayersStyle = {
   margin: 0,
   paddingLeft: 10,
@@ -53,17 +52,19 @@ export const Legends = memo(() => {
   )
 
   return activeLayers.length ? (
-    activeLayers?.map((l, index) => (
-      <div
-        key={l.wms_layer_id}
-        style={layerListStyle}
-      >
-        <Legend
-          layer={l}
-          isLast={index === activeLayers.length - 1}
-        />
-      </div>
-    ))
+    activeLayers?.map((l, index) => {
+      // display depends on layer type: wms / vector
+      const isVectorLayer = 'vector_layer_id' in l
+      const isWmsLayer = 'wms_layer_id' in l
+      return (
+        <div key={l.wms_layer_id}>
+          <WmsLegend
+            layer={l}
+            isLast={index === activeLayers.length - 1}
+          />
+        </div>
+      )
+    })
   ) : (
     <p style={noLayersStyle}>No active layers</p>
   )
