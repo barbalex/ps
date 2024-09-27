@@ -6,6 +6,7 @@ import {
   Layer_presentations as LayerPresentation,
 } from '../../../../../generated/client/index.ts'
 import { vectorLayerDisplayToProperties } from '../../../../../modules/vectorLayerDisplayToProperties.ts'
+import './display.css'
 
 type Props = {
   display: VectorLayerDisplay
@@ -21,24 +22,27 @@ export const Display = memo(({ display, layerPresentation }: Props) => {
       {display.display_property_value && (
         <h3>{display.display_property_value}</h3>
       )}
-      {`TODO: ${display.vector_layer_display_id}`}
       <MapContainer
+        crs={L.CRS.Simple}
         zoomControl={false}
         attributionControl={false}
         boxZoom={false}
         doubleClickZoom={false}
         scrollWheelZoom={false}
         dragging={false}
-        style={{ width: 100, height: 100 }}
+        style={{
+          width: 20,
+          height: 20,
+        }}
         bounds={[
-          [51.49, -0.08],
-          [51.5, -0.06],
+          [0, 0],
+          [20, 20],
         ]}
       >
         <Rectangle
           bounds={[
-            [51.487, -0.083],
-            [51.503, -0.057],
+            [1, 1],
+            [19, 19],
           ]}
           pathOptions={vectorLayerDisplayToProperties({
             vectorLayerDisplay: display,
