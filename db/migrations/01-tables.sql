@@ -1368,7 +1368,7 @@ CREATE TABLE vector_layers(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   label text DEFAULT NULL,
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  type vector_layer_type_enum DEFAULT NULL, -- 'wfs',
+  type vector_layer_type_enum DEFAULT NULL, 
   display_by_property_field text DEFAULT NULL,
   max_features integer DEFAULT NULL, -- 1000
   wfs_service_id uuid DEFAULT NULL REFERENCES wfs_services(wfs_service_id) ON DELETE CASCADE ON UPDATE CASCADE,
