@@ -97,24 +97,15 @@ export const Component = ({
           )}
         </>
       )}
-      {((vectorLayer?.type === 'wfs' &&
-        vectorLayer?.wfs_service_id &&
-        vectorLayer.wfs_service_layer_name) ||
-        !['wfs', 'upload'].includes(vectorLayer.type)) && (
-        <>
-          {/* TODO: add display by property field */}
-          <PropertyField vectorLayer={vectorLayer} />
-          <TextField
-            label="Max number of features"
-            name="max_features"
-            value={vectorLayer.max_features ?? ''}
-            onChange={onChange}
-            type="number"
-            validationMessage="Drawing too many features can crash the app"
-          />
-          {/* <VectorLayerDisplay row={row} /> */}
-        </>
-      )}
+      <PropertyField vectorLayer={vectorLayer} />
+      <TextField
+        label="Max number of features"
+        name="max_features"
+        value={vectorLayer.max_features ?? ''}
+        onChange={onChange}
+        type="number"
+        validationMessage="Drawing too many features can crash the app"
+      />
       {vectorLayer?.type === 'upload' && (
         <>
           <TextFieldInactive
