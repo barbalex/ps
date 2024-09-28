@@ -462,7 +462,7 @@ export const createWmsLayer = ({ project_id }) => ({
 
 export const createVectorLayer = ({
   project_id,
-  type = 'wfs',
+  type = null,
   label = null,
   max_features = 1000,
 }) => ({

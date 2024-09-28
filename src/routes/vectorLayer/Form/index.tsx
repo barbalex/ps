@@ -6,8 +6,12 @@ import { TextField } from '../../../components/shared/TextField.tsx'
 import { RadioGroupField } from '../../../components/shared/RadioGroupField.tsx'
 import { LayersDropdown } from './LayersDropdown.tsx'
 import { DropdownField } from '../../../components/shared/DropdownField.tsx'
+import { DropdownFieldFromList } from '../../../components/shared/DropdownFieldFromList.tsx'
+import { DropdownFieldSimpleOptions } from '../../../components/shared/DropdownFieldSimpleOptions.tsx'
 import { PropertyField } from './PropertyField.tsx'
 import { CreateWfsService } from './CreateWfsService.tsx'
+
+import { vector_layer_type_enumSchema as vectorLayerTypeSchema } from '../../../generated/client/index.ts'
 
 import '../../../form.css'
 
@@ -25,17 +29,20 @@ export const Component = ({
   const vectorLayer = rowFromProps ?? outletContext?.row ?? {}
   const isFilter = pathname.endsWith('/filter')
 
+  console.log(
+    'VectorLayerForm, vectorLayerTypeSchema:',
+    vectorLayerTypeSchema.options,
+  )
+
   return (
     <>
-      {['wfs', 'upload'].includes(vectorLayer.type) && (
-        <RadioGroupField
-          label="Type"
-          name="type"
-          list={['wfs', 'upload']}
-          value={vectorLayer.type ?? ''}
-          onChange={onChange}
-        />
-      )}
+      <DropdownFieldSimpleOptions
+        label="Type"
+        name="type"
+        options={vectorLayerTypeSchema.options}
+        value={vectorLayer.type ?? ''}
+        onChange={onChange}
+      />
       {vectorLayer?.type === 'wfs' && (
         <>
           <DropdownField

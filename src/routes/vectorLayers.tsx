@@ -39,7 +39,7 @@ export const Component = memo(() => {
   const isFiltered = vectorLayers.length !== vectorLayersUnfiltered.length
 
   const add = useCallback(async () => {
-    const vectorLayer = createVectorLayer({ project_id })
+    const vectorLayer = createVectorLayer({ project_id, type: 'wfs' })
     await db.vector_layers.create({ data: vectorLayer })
     // also add vector_layer_display
     const vectorLayerDisplay = createVectorLayerDisplay({

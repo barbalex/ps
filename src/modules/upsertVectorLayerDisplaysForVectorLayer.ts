@@ -23,6 +23,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   if (!vectorLayer.type) {
     throw new Error(`vector_layer_id ${vector_layer_id} has no type`)
   }
+  console.log('upsertVectorLayerDisplaysForVectorLayer', vectorLayer)
   // TODO: do this for wfs and upload
   if ([`wfs`, `upload`].includes(vectorLayer.type)) {
     throw new Error(
