@@ -34,7 +34,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   const table = vectorLayer.type.slice(0, -1)
   // level is last character of vectorLayer.type
   const level = parseInt(vectorLayer.type.slice(-1))
-  const displayByPropertyField = vectorLayer?.display_by_property_field ?? false
+  const displayByPropertyField = vectorLayer?.display_by_property_field
 
   if (!displayByPropertyField) {
     // create single display
