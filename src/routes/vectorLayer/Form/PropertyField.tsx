@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom'
 import { useElectric } from '../../../ElectricProvider.tsx'
 import { Vector_layers as VectorLayer } from '../../../generated/client/index.ts'
 import { DropdownFieldOptions } from '../../../components/shared/DropdownFieldOptions.tsx'
+import { TextField } from '../../../components/shared/TextField.tsx'
 import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
 import { upsertVectorLayerDisplaysForVectorLayer } from '../../../modules/upsertVectorLayerDisplaysForVectorLayer.ts'
 
@@ -50,7 +51,16 @@ export const PropertyField = memo(({ vectorLayer }: Props) => {
     [db, vector_layer_id],
   )
 
-  if (!fields.length) return null
+  console.log('VectorLayerForm.PropertyField, fields:', fields)
+  if (!fields.length)
+    return (
+      <TextField
+        label="Display by"
+        placeholder="no fields found"
+        hint="For every unique value of this field, a map display will be generated"
+        disabled
+      />
+    )
 
   return (
     <DropdownFieldOptions
