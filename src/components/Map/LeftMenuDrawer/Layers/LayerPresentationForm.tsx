@@ -53,7 +53,10 @@ export const LayerPresentationForm = memo(({ layer }: Props) => {
   // https://atlassian.design/components/pragmatic-drag-and-drop/core-package
   return (
     <ErrorBoundary>
-      <div style={containerStyle}>
+      <div
+        style={containerStyle}
+        className="form-container-embedded"
+      >
         <SliderField
           label="Opacity (%)"
           name="opacity_percent"

@@ -31,7 +31,10 @@ export const VectorLayerEditing = memo(({ layer }) => {
 
   return (
     <ErrorBoundary>
-      <div style={formContainerStyle}>
+      <div
+        style={formContainerStyle}
+        className="form-container-embedded"
+      >
         <VectorLayerForm
           onChange={onChange}
           row={layer}

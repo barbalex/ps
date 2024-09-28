@@ -52,7 +52,7 @@ export const PropertyField = memo(({ vectorLayer }: Props) => {
   )
 
   console.log('VectorLayerForm.PropertyField, fields:', fields)
-  if (!fields.length)
+  if (!fields.length) {
     return (
       <TextField
         label="Display by"
@@ -61,6 +61,7 @@ export const PropertyField = memo(({ vectorLayer }: Props) => {
         disabled
       />
     )
+  }
 
   return (
     <DropdownFieldOptions

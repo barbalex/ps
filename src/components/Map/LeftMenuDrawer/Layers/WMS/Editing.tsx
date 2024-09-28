@@ -31,7 +31,10 @@ export const WmsLayerEditing = memo(({ layer }) => {
 
   return (
     <ErrorBoundary>
-      <div style={formContainerStyle}>
+      <div
+        style={formContainerStyle}
+        className="form-container-embedded"
+      >
         <WmsLayerForm
           onChange={onChange}
           wmsLayer={layer}

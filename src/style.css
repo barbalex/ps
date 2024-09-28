@@ -49,6 +49,34 @@ https://stackoverflow.com/a/21541021/712005 */
     }
   }
 }
+
+
+
+.form-container-embedded {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  row-gap: 15px;
+  overflow: auto;
+  scrollbar-width: thin;
+  user-select: none;
+  [role='separator'] {
+    padding: 10px 0;
+    margin-left: -10px;
+    margin-right: -10px;
+    flex-grow: 0;
+    width: auto;
+    &:before {
+      border-top-width: 8px;
+      border-color: rgba(55, 118, 28, 0.3);
+    }
+    &:after {
+      border-top-width: 8px;
+      border-color: rgba(55, 118, 28, 0.3);
+    }
+  }
+}
+
 .form-container.filter {
   background-color: rgba(255, 141, 2, 0.08);
 }
