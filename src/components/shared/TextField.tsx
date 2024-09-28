@@ -14,8 +14,10 @@ export const TextField = memo(
   forwardRef((props: InputProps, ref) => {
     const {
       label,
+      hint,
       validationMessage,
       validationState = 'none',
+      placeholder,
       autoFocus,
       value,
       disabled = false,
@@ -29,11 +31,13 @@ export const TextField = memo(
         label={label ?? '(no label provided)'}
         validationMessage={validationMessage}
         validationState={validationState}
+        hint={hint}
       >
         <div style={rowStyle}>
           <Input
             {...props}
             value={value ?? ''}
+            placeholder={placeholder}
             appearance="underline"
             autoFocus={autoFocus}
             ref={ref}
