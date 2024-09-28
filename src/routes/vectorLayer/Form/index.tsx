@@ -3,10 +3,8 @@ import { useLocation } from 'react-router-dom'
 
 import { TextFieldInactive } from '../../../components/shared/TextFieldInactive.tsx'
 import { TextField } from '../../../components/shared/TextField.tsx'
-import { RadioGroupField } from '../../../components/shared/RadioGroupField.tsx'
 import { LayersDropdown } from './LayersDropdown.tsx'
 import { DropdownField } from '../../../components/shared/DropdownField.tsx'
-import { DropdownFieldFromList } from '../../../components/shared/DropdownFieldFromList.tsx'
 import { DropdownFieldSimpleOptions } from '../../../components/shared/DropdownFieldSimpleOptions.tsx'
 import { PropertyField } from './PropertyField.tsx'
 import { CreateWfsService } from './CreateWfsService.tsx'
@@ -28,11 +26,6 @@ export const Component = ({
   const onChange = onChangeFromProps ?? outletContext?.onChange
   const vectorLayer = rowFromProps ?? outletContext?.row ?? {}
   const isFilter = pathname.endsWith('/filter')
-
-  console.log(
-    'VectorLayerForm, vectorLayerTypeSchema:',
-    vectorLayerTypeSchema.options,
-  )
 
   return (
     <>

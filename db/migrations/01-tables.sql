@@ -1340,6 +1340,7 @@ CREATE TABLE wfs_service_layers(
   wfs_service_id uuid DEFAULT NULL REFERENCES wfs_services(wfs_service_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
   label text DEFAULT NULL
+  -- TODO: add list of fields? How to enable displaying by field values?
 );
 
 CREATE INDEX ON wfs_service_layers USING btree(wfs_service_id);
@@ -1373,6 +1374,7 @@ CREATE TABLE vector_layers(
   max_features integer DEFAULT NULL, -- 1000
   wfs_service_id uuid DEFAULT NULL REFERENCES wfs_services(wfs_service_id) ON DELETE CASCADE ON UPDATE CASCADE,
   wfs_service_layer_name text DEFAULT NULL, -- a name from wfs_service_layers. NOT referenced because the uuid changes when the service is updated
+  -- wfs_properties jsonb DEFAULT NULL, -- fields to display from wfs. Not used yet
   feature_count integer DEFAULT NULL,
   point_count integer DEFAULT NULL,
   line_count integer DEFAULT NULL,
@@ -1403,13 +1405,13 @@ DROP TABLE IF EXISTS vector_layer_geoms CASCADE;
 
 --
 -- seperate from vector_layers because vector_layers : vector_layer_geoms = 1 : n
--- this way bbox can be used to load only what is in view
 CREATE TABLE vector_layer_geoms(
   vector_layer_geom_id uuid PRIMARY KEY DEFAULT NULL,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
   geometry jsonb DEFAULT NULL, -- geometry(GeometryCollection, 4326),
   properties jsonb DEFAULT NULL,
+  -- bbox can be used to load only what is in view
   bbox_sw_lng real DEFAULT NULL,
   bbox_sw_lat real DEFAULT NULL,
   bbox_ne_lng real DEFAULT NULL,
@@ -1420,7 +1422,7 @@ CREATE INDEX ON vector_layer_geoms USING btree(account_id);
 
 CREATE INDEX ON vector_layer_geoms USING btree(vector_layer_id);
 
-COMMENT ON TABLE vector_layer_geoms IS 'Goal: Save vector layers client side for 1. offline usage 2. better filtering (to viewport). Data is downloaded when manager configures vector layer. Not versioned (not recorded and only added by manager).';
+COMMENT ON TABLE vector_layer_geoms IS 'Goal: Save vector layers client side for 1. offline usage 2. better filtering (to viewport) 3. enable displaying by field values. Data is downloaded when manager configures vector layer. Not versioned (not recorded and only added by manager).';
 
 COMMENT ON COLUMN vector_layer_geoms.geometry IS 'geometry-collection of this row';
 

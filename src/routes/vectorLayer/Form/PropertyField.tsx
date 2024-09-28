@@ -37,13 +37,14 @@ export const PropertyField = memo(({ vectorLayer }: Props) => {
       })),
     [fields],
   )
+  // TODO: get fields of wfs
 
   const onChange = useCallback(
     async (e, data) => {
-      const { name, value } = getValueFromChange(e, data)
+      const { value } = getValueFromChange(e, data)
       await db.vector_layers.update({
         where: { vector_layer_id },
-        data: { [name]: value },
+        data: { display_by_property_field: value },
       })
       // set vector_layer_displays
       upsertVectorLayerDisplaysForVectorLayer({ db, vector_layer_id })
@@ -52,6 +53,7 @@ export const PropertyField = memo(({ vectorLayer }: Props) => {
   )
 
   console.log('VectorLayerForm.PropertyField, fields:', fields)
+
   if (!fields.length) {
     return (
       <TextField
