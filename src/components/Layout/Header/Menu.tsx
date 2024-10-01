@@ -2,9 +2,10 @@ import { memo, useCallback } from 'react'
 import { Button } from '@fluentui/react-components'
 import { MdLogin } from 'react-icons/md'
 import { useNavigate } from 'react-router-dom'
+import { pipe } from 'remeda'
 
 import { controls } from '../../../styles.ts'
-import { css } from '../../../css.ts'
+import { on } from '../../../css.ts'
 
 export const Menu = memo(() => {
   const navigate = useNavigate()
@@ -18,12 +19,14 @@ export const Menu = memo(() => {
         icon={<MdLogin />}
         onClick={onClickEnter}
         title={'Enter'}
-        style={css({
-          backgroundColor: 'rgba(38, 82, 37, 0)',
-          border: 'none',
-          color: 'white',
-          on: ($) => [$('&:hover', { filter: 'brightness(85%)' })],
-        })}
+        style={pipe(
+          {
+            backgroundColor: 'rgba(38, 82, 37, 0)',
+            border: 'none',
+            color: 'white',
+          },
+          on('&:hover', { filter: 'brightness(85%)' }),
+        )}
       />
     </div>
   )
