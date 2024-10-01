@@ -4,8 +4,6 @@ import { pipe } from 'remeda'
 
 import { on } from '../../../../../css.ts'
 import { epsgTo4326 } from '../../../../../modules/epsgTo4326.ts'
-// TODO: test, then remove file
-// import './inputs.css'
 
 const containerStyle = {
   display: 'flex',
