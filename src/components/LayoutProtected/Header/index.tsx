@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
-import { css } from '../../../css.ts'
+import { pipe } from 'remeda'
 
+import { on } from '../../../css.ts'
 import { Menu } from './Menu.tsx'
 
 import './header.css'
@@ -32,15 +33,13 @@ export const Header = () => {
         <Link
           to={'/'}
           className="header__title__link"
-          style={css({
-            ...linkStyle,
-            on: ($) => [
-              $('&:hover', {
-                filter: 'brightness(85%)',
-                textDecoration: 'underline',
-              }),
-            ],
-          })}
+          style={pipe(
+            linkStyle,
+            on('&:hover', {
+              filter: 'brightness(85%)',
+              textDecoration: 'underline',
+            }),
+          )}
         >
           Promoting Species
         </Link>
