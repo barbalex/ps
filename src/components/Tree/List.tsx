@@ -41,7 +41,7 @@ export const ListNode = memo(({ project_id, list, level = 4 }: Props) => {
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
-      removeChildNodes({ node: parentArray })
+      removeChildNodes({ node: ownArray })
       // only navigate if urlPath includes ownArray
       if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
         navigate({

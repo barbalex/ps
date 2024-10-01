@@ -19,8 +19,6 @@ export const removeChildNodes = async ({
         // if is root, need to remove root as well
         return !isStartOf({ node, otherNode: openNode })
       }
-      // if openNode isn't longer than node, it can't be a child
-      if (openNode.length <= node.length) return true
       // check if openNode is a child of node i.e. if it starts with node
       return !isEqual(openNode.slice(0, node.length), node)
     })

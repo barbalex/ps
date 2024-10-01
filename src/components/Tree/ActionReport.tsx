@@ -69,7 +69,7 @@ export const ActionReportNode = memo(
 
     const onClickButton = useCallback(() => {
       if (isOpen) {
-        removeChildNodes({ node: parentArray })
+        removeChildNodes({ node: ownArray })
         // TODO: only navigate if urlPath includes ownArray
         if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
           navigate({

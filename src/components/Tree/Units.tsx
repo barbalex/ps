@@ -65,7 +65,7 @@ export const UnitsNode = memo(({ project_id, level = 3 }: Props) => {
 
   const onClickButton = useCallback(() => {
     if (isOpen) {
-      removeChildNodes({ node: parentArray })
+      removeChildNodes({ node: ownArray })
       // only navigate if urlPath includes ownArray
       if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
         navigate({
@@ -82,7 +82,6 @@ export const UnitsNode = memo(({ project_id, level = 3 }: Props) => {
     isOpen,
     navigate,
     ownArray,
-    parentArray,
     parentUrl,
     searchParams,
     urlPath.length,
