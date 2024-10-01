@@ -61,7 +61,7 @@ export const Popup = ({
           {ld.properties.map(([key, value], index) => (
             <div
               style={pipe(
-                ...rowStyle,
+                rowStyle,
                 on('&:nth-child(odd)', {
                   backgroundColor: 'rgba(0, 0, 0, 0.05)',
                   color: 'black',
