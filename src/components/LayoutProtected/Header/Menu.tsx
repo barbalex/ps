@@ -18,13 +18,13 @@ import { mapMaximizedAtom, tabsAtom } from '../../../store.ts'
 
 const buildButtonStyle = ({ prevIsActive, nextIsActive, selfIsActive }) => {
   if (!selfIsActive) {
-    return (
+    return pipe(
       {
         backgroundColor: 'rgba(38, 82, 37, 0)',
         border: 'none',
         color: 'rgba(255, 255, 255, 0.7)',
       },
-      on('&:hover', { color: 'white' })
+      on('&:hover', { color: 'white' }),
     )
   }
 
@@ -115,13 +115,11 @@ export const Menu = memo(() => {
               aria-label="Tree"
               name="tabs"
               value="tree"
-              style={pipe(
-                buildButtonStyle({
-                  prevIsActive: false,
-                  nextIsActive: dataIsActive,
-                  selfIsActive: treeIsActive,
-                }),
-              )}
+              style={buildButtonStyle({
+                prevIsActive: false,
+                nextIsActive: dataIsActive,
+                selfIsActive: treeIsActive,
+              })}
               disabled={mapIsMaximized}
             >
               Tree
@@ -130,13 +128,11 @@ export const Menu = memo(() => {
               aria-label="Data"
               name="tabs"
               value="data"
-              style={pipe(
-                buildButtonStyle({
-                  prevIsActive: treeIsActive,
-                  nextIsActive: mapIsActive,
-                  selfIsActive: dataIsActive,
-                }),
-              )}
+              style={buildButtonStyle({
+                prevIsActive: treeIsActive,
+                nextIsActive: mapIsActive,
+                selfIsActive: dataIsActive,
+              })}
               disabled={mapIsMaximized}
             >
               Data
@@ -159,13 +155,11 @@ export const Menu = memo(() => {
               aria-label="Map"
               name="tabs"
               value="map"
-              style={pipe(
-                buildButtonStyle({
-                  prevIsActive: dataIsActive,
-                  nextIsActive: false,
-                  selfIsActive: mapIsActive,
-                }),
-              )}
+              style={buildButtonStyle({
+                prevIsActive: dataIsActive,
+                nextIsActive: false,
+                selfIsActive: mapIsActive,
+              })}
               title={tabs.includes('map') ? 'Hide Map' : 'Show Map'}
             >
               Map
