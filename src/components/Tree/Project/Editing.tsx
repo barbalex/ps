@@ -4,9 +4,10 @@ import { useLiveQuery } from 'electric-sql/react'
 import { Button } from '@fluentui/react-components'
 import { useParams } from 'react-router-dom'
 import { useAtom } from 'jotai'
+import { pipe } from 'remeda'
 
 import { useElectric } from '../../../ElectricProvider.tsx'
-import { css } from '../../../css.ts'
+import { on } from '../../../css.ts'
 import { designingAtom, userIdAtom } from '../../../store.ts'
 
 const buttonStyle = {
@@ -58,12 +59,10 @@ export const Editing = memo(() => {
         designing ? <MdEdit style={svgStyle} /> : <MdEditOff style={svgStyle} />
       }
       onClick={onClick}
-      style={css({
-        ...buttonStyle,
-        on: ($) => [
-          $('&:hover', { filter: 'brightness(0.9)', backgroundColor: 'white' }),
-        ],
-      })}
+      style={pipe(
+        buttonStyle,
+        on('&:hover', { filter: 'brightness(0.9)', backgroundColor: 'white' }),
+      )}
       title={
         designing ? 'Designing this project. Click to stop' : 'Start designing'
       }

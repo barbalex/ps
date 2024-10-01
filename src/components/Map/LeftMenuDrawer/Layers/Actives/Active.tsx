@@ -40,6 +40,7 @@ import {
 import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine'
 import invariant from 'tiny-invariant'
 import { useAtom } from 'jotai'
+import { pipe } from 'remeda'
 
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
@@ -66,7 +67,7 @@ import {
   designingAtom,
   mapDrawerVectorLayerDisplayAtom,
 } from '../../../../../store.ts'
-import { css } from '../../../../../css.ts'
+import { on } from '../../../../../css.ts'
 
 import './active.css'
 
@@ -365,16 +366,16 @@ export const ActiveLayer = memo(
                 }
                 checked={layerPresentation.active}
                 onClick={onChangeActive}
-                style={css({
-                  marginLeft: 2,
-                  border: 'none',
-                  backgroundColor: 'transparent',
-                  on: ($) => [
-                    $('&:hover', {
-                      backgroundColor: 'var(--colorNeutralBackground1Hover)',
-                    }),
-                  ],
-                })}
+                style={pipe(
+                  {
+                    marginLeft: 2,
+                    border: 'none',
+                    backgroundColor: 'transparent',
+                  },
+                  on('&:hover', {
+                    backgroundColor: 'var(--colorNeutralBackground1Hover)',
+                  }),
+                )}
                 // as the accordion header is a button, we need to set this as an a
                 // because nested buttons are not allowed
                 as="a"

@@ -6,8 +6,9 @@ import {
 import { HiMiniMinusSmall as NoChildrenIcon } from 'react-icons/hi2'
 import { Button } from '@fluentui/react-components'
 import { Link, useSearchParams } from 'react-router-dom'
+import { pipe } from 'remeda'
 
-import { css } from '../../css.ts'
+import { on } from '../../css.ts'
 
 const containerStyle = {
   display: 'grid',
@@ -125,14 +126,12 @@ export const Node = memo(
             </span>
           ) : (
             <Link
-              style={css({
-                ...contentLinkStyle,
-                on: ($) => [
-                  $('&:hover', {
-                    fontWeight: 'bold',
-                  }),
-                ],
-              })}
+              style={pipe(
+                contentLinkStyle,
+                on('&:hover', {
+                  fontWeight: 'bold',
+                }),
+              )}
               to={{ pathname: to, search: searchParams.toString() }}
             >
               {node.label ?? id ?? '(missing label)'}

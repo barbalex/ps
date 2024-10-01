@@ -10,6 +10,7 @@ import {
 } from '@fluentui/react-components'
 import { BsSquare } from 'react-icons/bs'
 import { useAtom } from 'jotai'
+import { pipe } from 'remeda'
 
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
@@ -29,7 +30,7 @@ import {
   headerToggleIconStyle,
   headerLabelStyle,
 } from '../styles.ts'
-import { css } from '../../../../../css.ts'
+import { on } from '../../../../../css.ts'
 import { Vector_layers as VectorLayer } from '../../../../../generated/client/index.ts'
 
 type TabType = 'overall-displays' | 'feature-displays' | 'config'
@@ -108,16 +109,16 @@ export const OwnLayer = memo(({ layer, isLast, isOpen }: Props) => {
               icon={<BsSquare style={headerToggleIconStyle} />}
               checked={false}
               onClick={onChange}
-              style={css({
-                marginLeft: 2,
-                border: 'none',
-                ...(isOpen ? { backgroundColor: 'none' } : {}),
-                on: ($) => [
-                  $('&:hover', {
-                    backgroundColor: 'var(--colorNeutralBackground1Hover)',
-                  }),
-                ],
-              })}
+              style={pipe(
+                {
+                  marginLeft: 2,
+                  border: 'none',
+                  ...(isOpen ? { backgroundColor: 'none' } : {}),
+                },
+                on('&:hover', {
+                  backgroundColor: 'var(--colorNeutralBackground1Hover)',
+                }),
+              )}
               // as the accordion header is a button, we need to set this as an a
               // because nested buttons are not allowed
               as="a"

@@ -18,6 +18,7 @@ import {
 import { BsSquare } from 'react-icons/bs'
 import { MdDeleteOutline } from 'react-icons/md'
 import { useAtom } from 'jotai'
+import { pipe } from 'remeda'
 
 import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
@@ -38,7 +39,7 @@ import {
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
 import { Component as VectorLayerDisplays } from '../../../../../routes/vectorLayerDisplays.tsx'
 import { Component as VectorLayerDisplay } from '../../../../../routes/vectorLayerDisplay/index.tsx'
-import { css } from '../../../../../css.ts'
+import { on } from '../../../../../css.ts'
 
 type Props = {
   layer: VectorLayer
@@ -132,16 +133,16 @@ export const VectorLayer = memo(({ layer, isLast, isOpen }: Props) => {
               icon={<BsSquare style={headerToggleIconStyle} />}
               checked={false}
               onClick={onChange}
-              style={css({
-                marginLeft: 2,
-                border: 'none',
-                ...(isOpen ? { backgroundColor: 'none' } : {}),
-                on: ($) => [
-                  $('&:hover', {
-                    backgroundColor: 'var(--colorNeutralBackground1Hover)',
-                  }),
-                ],
-              })}
+              style={pipe(
+                {
+                  marginLeft: 2,
+                  border: 'none',
+                  ...(isOpen ? { backgroundColor: 'none' } : {}),
+                },
+                on('&:hover', {
+                  backgroundColor: 'var(--colorNeutralBackground1Hover)',
+                }),
+              )}
               // as the accordion header is a button, we need to set this as an a
               // because nested buttons are not allowed
               as="a"

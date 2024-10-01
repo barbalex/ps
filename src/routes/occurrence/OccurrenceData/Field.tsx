@@ -1,8 +1,9 @@
 import { useRef } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
 import Linkify from 'react-linkify'
+import { pipe } from 'remeda'
 
-import { css } from '../../../css.ts'
+import { on } from '../../../css.ts'
 
 const rowStyle = {
   display: 'flex',
@@ -86,11 +87,13 @@ export const Field = ({ label, value, index, moveField }) => {
     <div
       ref={ref}
       data-handler-id={handlerId}
-      style={css({
-        ...rowStyle,
-        opacity,
-        on: ($) => [$('&:hover', { backgroundColor: 'rgba(0, 0, 0, 0.05)' })],
-      })}
+      style={pipe(
+        {
+          ...rowStyle,
+          opacity,
+        },
+        on('&:hover', { backgroundColor: 'rgba(0, 0, 0, 0.05)' }),
+      )}
     >
       <div style={labelStyle}>{label}</div>
       <div style={valueStyle}>

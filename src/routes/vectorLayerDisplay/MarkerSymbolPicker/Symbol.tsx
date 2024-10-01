@@ -1,7 +1,8 @@
 import React, { useCallback } from 'react'
 import type { InputProps } from '@fluentui/react-components'
+import { pipe } from 'remeda'
 
-import { css } from '../../../css.ts'
+import { on } from '../../../css.ts'
 
 interface Props {
   Component: React.ReactElement
@@ -38,14 +39,12 @@ export const Symbol = ({ Component, name, onChange, active }: Props) => {
   return (
     <Component
       onClick={onClick}
-      style={css({
-        ...style,
-        on: ($) => [
-          $('&:hover', {
-            backgroundColor: 'rgba(74, 20, 140, 0.1)',
-          }),
-        ],
-      })}
+      style={pipe(
+        style,
+        on('&:hover', {
+          backgroundColor: 'rgba(74, 20, 140, 0.1)',
+        }),
+      )}
     />
   )
 }
