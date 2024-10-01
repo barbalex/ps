@@ -10,19 +10,22 @@ import { MdLogout, MdLogin } from 'react-icons/md'
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom'
 import { useCorbado } from '@corbado/react'
 import { useAtom } from 'jotai'
+import { pipe } from 'remeda'
 
 import { controls } from '../../../styles.ts'
-import { css } from '../../../css.ts'
+import { on } from '../../../css.ts'
 import { mapMaximizedAtom, tabsAtom } from '../../../store.ts'
 
 const buildButtonStyle = ({ prevIsActive, nextIsActive, selfIsActive }) => {
   if (!selfIsActive) {
-    return {
-      backgroundColor: 'rgba(38, 82, 37, 0)',
-      border: 'none',
-      color: 'rgba(255, 255, 255, 0.7)',
-      on: ($) => [$('&:hover', { color: 'white' })],
-    }
+    return (
+      {
+        backgroundColor: 'rgba(38, 82, 37, 0)',
+        border: 'none',
+        color: 'rgba(255, 255, 255, 0.7)',
+      },
+      on('&:hover', { color: 'white' })
+    )
   }
 
   const style = {
@@ -112,7 +115,7 @@ export const Menu = memo(() => {
               aria-label="Tree"
               name="tabs"
               value="tree"
-              style={css(
+              style={pipe(
                 buildButtonStyle({
                   prevIsActive: false,
                   nextIsActive: dataIsActive,
@@ -127,7 +130,7 @@ export const Menu = memo(() => {
               aria-label="Data"
               name="tabs"
               value="data"
-              style={css(
+              style={pipe(
                 buildButtonStyle({
                   prevIsActive: treeIsActive,
                   nextIsActive: mapIsActive,
@@ -156,7 +159,7 @@ export const Menu = memo(() => {
               aria-label="Map"
               name="tabs"
               value="map"
-              style={css(
+              style={pipe(
                 buildButtonStyle({
                   prevIsActive: dataIsActive,
                   nextIsActive: false,
@@ -176,12 +179,14 @@ export const Menu = memo(() => {
           icon={<FaCog />}
           onClick={onClickOptions}
           title={isAppStates ? 'Back' : 'Options'}
-          style={css({
-            backgroundColor: 'rgba(38, 82, 37, 0)',
-            border: 'none',
-            color: 'white',
-            on: ($) => [$('&:hover', { filter: 'brightness(85%)' })],
-          })}
+          style={pipe(
+            {
+              backgroundColor: 'rgba(38, 82, 37, 0)',
+              border: 'none',
+              color: 'white',
+            },
+            on('&:hover', { filter: 'brightness(85%)' }),
+          )}
           disabled={mapIsMaximized}
         />
       )}
@@ -196,12 +201,14 @@ export const Menu = memo(() => {
             ? 'Enter'
             : `Logout ${authUser?.email}`
         }
-        style={css({
-          backgroundColor: 'rgba(38, 82, 37, 0)',
-          border: 'none',
-          color: 'white',
-          on: ($) => [$('&:hover', { filter: 'brightness(85%)' })],
-        })}
+        style={pipe(
+          {
+            backgroundColor: 'rgba(38, 82, 37, 0)',
+            border: 'none',
+            color: 'white',
+          },
+          on('&:hover', { filter: 'brightness(85%)' }),
+        )}
       />
     </div>
   )
