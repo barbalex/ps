@@ -1,7 +1,8 @@
 import { memo, useCallback } from 'react'
 import { useMap } from 'react-leaflet'
+import { pipe } from 'remeda'
 
-import { css } from '../../../../../../css.ts'
+import { on } from '../../../../../../css.ts'
 
 const itemStyle = {
   cursor: 'pointer',
@@ -31,10 +32,7 @@ export const Item = memo(({ scale, close, pixelsInMeterWidth }) => {
 
   return (
     <div
-      style={css({
-        ...itemStyle,
-        on: ($) => [$('&:hover', { backgroundColor: 'lightgray' })],
-      })}
+      style={pipe(itemStyle, on('&:hover', { backgroundColor: 'lightgray' }))}
       onClick={onClick}
     >
       {`1 : ${scale.toLocaleString('de-ch')}`}
