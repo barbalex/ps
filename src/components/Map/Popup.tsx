@@ -1,6 +1,7 @@
 import Linkify from 'react-linkify'
+import { pipe } from 'remeda'
 
-import { css } from '../../css.ts'
+import { on } from '../../css.ts'
 
 const rowStyle = {
   display: 'grid',
@@ -48,34 +49,34 @@ export const Popup = ({
       {layersData.map((ld, index) => (
         <div key={`${ld.label}/${index}`}>
           <div
-            style={css({
-              ...titleStyle,
-              on: ($) => [
-                $('&:not(:first-of-type)', {
-                  marginTop: 8,
-                }),
-              ],
-            })}
+            style={pipe(
+              titleStyle,
+              on('&:not(:first-of-type)', {
+                marginTop: 8,
+              }),
+            )}
           >
             {ld.label}
           </div>
           {ld.properties.map(([key, value], index) => (
             <div
-              style={css({
+              style={pipe(
                 ...rowStyle,
-                on: ($) => [
-                  $('&:nth-child(odd)', {
-                    backgroundColor: 'rgba(0, 0, 0, 0.05)',
-                    color: 'black',
-                  }),
-                ],
-              })}
+                on('&:nth-child(odd)', {
+                  backgroundColor: 'rgba(0, 0, 0, 0.05)',
+                  color: 'black',
+                }),
+              )}
               key={`${key}/${index}`}
             >
               <div style={labelStyle}>{`${key}:`}</div>
               <Linkify
                 componentDecorator={(decoratedHref, decoratedText, key) => (
-                  <a target="blank" href={decoratedHref} key={key}>
+                  <a
+                    target="blank"
+                    href={decoratedHref}
+                    key={key}
+                  >
                     {decoratedText}
                   </a>
                 )}
