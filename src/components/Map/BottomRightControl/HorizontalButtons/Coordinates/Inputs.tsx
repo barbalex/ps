@@ -1,9 +1,11 @@
 import { useState, memo, useCallback, useEffect } from 'react'
 import { useMap } from 'react-leaflet'
+import { pipe } from 'remeda'
 
-import { css } from '../../../../../css.ts'
+import { on } from '../../../../../css.ts'
 import { epsgTo4326 } from '../../../../../modules/epsgTo4326.ts'
-import './inputs.css'
+// TODO: test, then remove file
+// import './inputs.css'
 
 const containerStyle = {
   display: 'flex',
@@ -68,15 +70,21 @@ export const Inputs = memo(
           type="text"
           name="x"
           value={coordinates?.x ?? '...'}
-          style={css({
-            ...inputStyle,
-            textAlign: 'right',
-            on: ($) => [
-              $('&:focus-visible', {
-                outline: 'none',
-              }),
-            ],
-          })}
+          style={pipe(
+            {
+              ...inputStyle,
+              textAlign: 'right',
+            },
+            on('&:focus-visible', {
+              outline: 'none',
+            }),
+            on('@supports not (field-sizing: content)', {
+              width: 63,
+            }),
+            on('@supports (field-sizing: content)', {
+              fieldSizing: 'content',
+            }),
+          )}
           onBlur={onBlur}
           onChange={onChange}
           onKeyDown={onKeyDown}
@@ -86,15 +94,21 @@ export const Inputs = memo(
           type="text"
           name="y"
           value={coordinates?.y ?? '...'}
-          style={css({
-            ...inputStyle,
-            textAlign: 'left',
-            on: ($) => [
-              $('&:focus-visible', {
-                outline: 'none',
-              }),
-            ],
-          })}
+          style={pipe(
+            {
+              ...inputStyle,
+              textAlign: 'left',
+            },
+            on('&:focus-visible', {
+              outline: 'none',
+            }),
+            on('@supports not (field-sizing: content)', {
+              width: 63,
+            }),
+            on('@supports (field-sizing: content)', {
+              fieldSizing: 'content',
+            }),
+          )}
           onBlur={onBlur}
           onChange={onChange}
           onKeyDown={onKeyDown}
