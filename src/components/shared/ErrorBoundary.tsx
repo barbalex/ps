@@ -1,8 +1,9 @@
 import React, { memo } from 'react'
 import { ErrorBoundary as ErrorBoundaryComponent } from 'react-error-boundary'
 import { Button } from '@fluentui/react-components'
+import { pipe } from 'remeda'
 
-import { css } from '../../css.ts'
+import { on } from '../../css.ts'
 
 const containerStyle = {
   padding: 15,
@@ -41,26 +42,32 @@ const ErrorFallback = ({
     <pre style={preWrappingStyle}>{error.message}</pre>
     <details style={detailsStyle}>
       <summary
-        style={css({
-          userSelect: 'none',
-          on: ($) => [
-            $('&:focus', {
-              outline: 'none !important',
-            }),
-          ],
-        })}
+        style={pipe(
+          {
+            userSelect: 'none',
+          },
+          on('&:focus', {
+            outline: 'none !important',
+          }),
+        )}
       >
         Mehr Informationen
       </summary>
       <pre style={preStyle}>{componentStack}</pre>
     </details>
     <div style={buttonContainerStyle}>
-      <Button appearance="primary" onClick={onReload}>
+      <Button
+        appearance="primary"
+        onClick={onReload}
+      >
         neu starten
       </Button>
     </div>
     <div style={buttonContainerStyle}>
-      <Button appearance="secondary" onClick={resetErrorBoundary}>
+      <Button
+        appearance="secondary"
+        onClick={resetErrorBoundary}
+      >
         Cache leeren und neu starten (neue Anmeldung nötig)
       </Button>
     </div>
@@ -68,7 +75,10 @@ const ErrorFallback = ({
 )
 
 export const ErrorBoundary = memo(({ children }) => (
-  <ErrorBoundaryComponent FallbackComponent={ErrorFallback} onReset={onReload}>
+  <ErrorBoundaryComponent
+    FallbackComponent={ErrorFallback}
+    onReset={onReload}
+  >
     {children}
   </ErrorBoundaryComponent>
 ))
