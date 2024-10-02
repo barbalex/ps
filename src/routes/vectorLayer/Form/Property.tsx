@@ -13,7 +13,7 @@ interface Props {
   vectorLayer: VectorLayer
 }
 
-export const PropertyField = memo(({ vectorLayer }: Props) => {
+export const Property = memo(({ vectorLayer }: Props) => {
   const { project_id, vector_layer_id } = useParams()
 
   // get table and level from vector_layer.type
@@ -44,7 +44,7 @@ export const PropertyField = memo(({ vectorLayer }: Props) => {
       const { value } = getValueFromChange(e, data)
       await db.vector_layers.update({
         where: { vector_layer_id },
-        data: { display_by_property_field: value },
+        data: { display_by_property: value },
       })
       // set vector_layer_displays
       upsertVectorLayerDisplaysForVectorLayer({ db, vector_layer_id })
@@ -68,8 +68,8 @@ export const PropertyField = memo(({ vectorLayer }: Props) => {
   return (
     <DropdownFieldOptions
       label="Display by"
-      name="display_by_property_field"
-      value={vectorLayer.display_by_property_field}
+      name="display_by_property"
+      value={vectorLayer.display_by_property}
       onChange={onChange}
       options={options}
       validationMessage="For every unique value of this field, a map display will be generated"

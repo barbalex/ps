@@ -6,7 +6,7 @@ import { TextField } from '../../../components/shared/TextField.tsx'
 import { LayersDropdown } from './LayersDropdown.tsx'
 import { DropdownField } from '../../../components/shared/DropdownField.tsx'
 import { DropdownFieldSimpleOptions } from '../../../components/shared/DropdownFieldSimpleOptions.tsx'
-import { PropertyField } from './PropertyField.tsx'
+import { Property } from './Property.tsx'
 import { CreateWfsService } from './CreateWfsService.tsx'
 
 import { vector_layer_type_enumSchema as vectorLayerTypeSchema } from '../../../generated/client/index.ts'
@@ -97,7 +97,7 @@ export const Component = ({
           )}
         </>
       )}
-      <PropertyField vectorLayer={vectorLayer} />
+      <Property vectorLayer={vectorLayer} />
       <TextField
         label="Max number of features"
         name="max_features"

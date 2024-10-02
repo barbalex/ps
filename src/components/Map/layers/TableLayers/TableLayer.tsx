@@ -52,17 +52,17 @@ export const TableLayer = memo(({ data, layerPresentation }: Props) => {
 
   const displayFromFeature = useCallback(
     (feature) => {
-      // display_by_property_field is _not_ under the data property
+      // display_by_property is _not_ under the data property
       // as passing the data object to feature.properties lead to errors
       const displayToUse = (vectorLayerDisplays ?? []).find(
         (vld) =>
           vld.display_property_value ===
-          feature.properties?.[layer?.display_by_property_field],
+          feature.properties?.[layer?.display_by_property],
       )
 
       return displayToUse ?? firstDisplay
     },
-    [firstDisplay, layer?.display_by_property_field, vectorLayerDisplays],
+    [firstDisplay, layer?.display_by_property, vectorLayerDisplays],
   )
 
   const map: Map = useMapEvent('zoomend', () => setZoom(map.getZoom()))

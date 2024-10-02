@@ -35,9 +35,9 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   const table = vectorLayer.type.slice(0, -1)
   // level is last character of vectorLayer.type
   const level = parseInt(vectorLayer.type.slice(-1))
-  const displayByPropertyField = vectorLayer?.display_by_property_field
+  const displayByProperty = vectorLayer?.display_by_property
 
-  if (!displayByPropertyField) {
+  if (!displayByProperty) {
     // create single display
     const existingVectorLayerDisplay = await db.vector_layer_displays.findFirst(
       {
@@ -59,7 +59,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   // get field of displayByPropertyField
   const field = await db.fields.findFirst({
     where: {
-      name: displayByPropertyField ?? '',
+      name: displayByProperty ?? '',
       table_name: table,
       level,
       project_id: vectorLayer.project_id,
@@ -69,7 +69,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   if (!field) {
     throw new Error(
       `field ${
-        displayByPropertyField ?? '(display_by_property_field missing)'
+        displayByProperty ?? '(display_by_property missing)'
       } not found in table ${table} level ${level}`,
     )
   }
@@ -139,9 +139,9 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   }
   const tableRows = await db[table]?.findMany?.({
     where,
-    distinct: [displayByPropertyField ?? ''],
+    distinct: [displayByProperty ?? ''],
   })
-  const distinctValues = tableRows.map((row) => row?.[displayByPropertyField])
+  const distinctValues = tableRows.map((row) => row?.[displayByProperty])
 
   const vLDDataArray = []
   for (const value of distinctValues) {
