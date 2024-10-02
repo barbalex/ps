@@ -1369,7 +1369,8 @@ CREATE TABLE vector_layers(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   label text DEFAULT NULL,
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  type vector_layer_type_enum DEFAULT NULL, 
+  type vector_layer_type_enum DEFAULT NULL,
+  property_fields jsonb DEFAULT NULL, -- fields to display from wfs. Not used yet 
   display_by_property_field text DEFAULT NULL,
   max_features integer DEFAULT NULL, -- 1000
   wfs_service_id uuid DEFAULT NULL REFERENCES wfs_services(wfs_service_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1390,6 +1391,8 @@ CREATE INDEX ON vector_layers USING btree(project_id);
 CREATE INDEX ON vector_layers USING btree(type);
 
 COMMENT ON TABLE vector_layers IS 'Goal: Bring your own wms layers. Either from wfs or importing GeoJSON. Should only contain metadata, not data fetched from wms or wmts servers (that should only be saved locally on the client).';
+
+comment on column vector_layers.property_fields IS 'data fields, originating from wfs or own table. Used to display by property field values.';
 
 COMMENT ON COLUMN vector_layers.display_by_property_field IS 'Name of the field whose values is used to display the layer. If null, a single display is used.';
 
