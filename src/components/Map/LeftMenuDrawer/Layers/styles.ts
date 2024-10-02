@@ -10,6 +10,7 @@ export const titleStyle = {
 }
 export const noneStyle = {
   margin: 0,
+  paddingLeft: 10,
 }
 
 export const addButtonStyle = {
