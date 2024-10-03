@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 
 import { useElectric } from '../../ElectricProvider.tsx'
-import { updateVectorLayerDisplaysForLayerAndPropertyValues } from './updateVectorLayerDisplaysForLayerAndPropertyValues.ts'
+import { completeVectorLayerDisplaysForLayerWithProperties } from './completeVectorLayerDisplaysForLayerWithProperties.ts'
 
 export const OwnVectorLayerPropertiesProvider = memo(() => {
   const { project_id = '99999999-9999-9999-9999-999999999999' } = useParams()
@@ -163,8 +163,8 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
           db.vector_layers.update({
             where: { vector_layer_id: vectorLayer.vector_layer_id },
             data: { properties: places1Properties },
-          })
-          updateVectorLayerDisplaysForLayerAndPropertyValues({
+          }))
+          completeVectorLayerDisplaysForLayerWithProperties({
             db,
             vectorLayerId: vectorLayer.vector_layer_id,
             properties: places1Properties,
@@ -181,7 +181,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
             where: { vector_layer_id: vectorLayer.vector_layer_id },
             data: { properties: places2Properties },
           })
-          updateVectorLayerDisplaysForLayerAndPropertyValues({
+          completeVectorLayerDisplaysForLayerWithProperties({
             db,
             vectorLayerId: vectorLayer.vector_layer_id,
             properties: places2Properties,
@@ -198,7 +198,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
             where: { vector_layer_id: vectorLayer.vector_layer_id },
             data: { properties: actions1Properties },
           })
-          updateVectorLayerDisplaysForLayerAndPropertyValues({
+          completeVectorLayerDisplaysForLayerWithProperties({
             db,
             vectorLayerId: vectorLayer.vector_layer_id,
             properties: actions1Properties,
@@ -215,7 +215,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
             where: { vector_layer_id: vectorLayer.vector_layer_id },
             data: { properties: actions2Properties },
           })
-          updateVectorLayerDisplaysForLayerAndPropertyValues({
+          completeVectorLayerDisplaysForLayerWithProperties({
             db,
             vectorLayerId: vectorLayer.vector_layer_id,
             properties: actions2Properties,
@@ -232,7 +232,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
             where: { vector_layer_id: vectorLayer.vector_layer_id },
             data: { properties: checks1Properties },
           })
-          updateVectorLayerDisplaysForLayerAndPropertyValues({
+          completeVectorLayerDisplaysForLayerWithProperties({
             db,
             vectorLayerId: vectorLayer.vector_layer_id,
             properties: checks1Properties,
@@ -249,7 +249,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
             where: { vector_layer_id: vectorLayer.vector_layer_id },
             data: { properties: checks2Properties },
           })
-          updateVectorLayerDisplaysForLayerAndPropertyValues({
+          completeVectorLayerDisplaysForLayerWithProperties({
             db,
             vectorLayerId: vectorLayer.vector_layer_id,
             properties: checks2Properties,
@@ -263,7 +263,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
             where: { vector_layer_id: vectorLayer.vector_layer_id },
             data: { properties: occurrencesAssignedFields },
           })
-          updateVectorLayerDisplaysForLayerAndPropertyValues({
+          completeVectorLayerDisplaysForLayerWithProperties({
             db,
             vectorLayerId: vectorLayer.vector_layer_id,
             properties: occurrencesAssignedFields,
@@ -277,7 +277,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
             where: { vector_layer_id: vectorLayer.vector_layer_id },
             data: { properties: occurrencesToAssessFields },
           })
-          updateVectorLayerDisplaysForLayerAndPropertyValues({
+          completeVectorLayerDisplaysForLayerWithProperties({
             db,
             vectorLayerId: vectorLayer.vector_layer_id,
             properties: occurrencesToAssessFields,

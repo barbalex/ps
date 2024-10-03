@@ -44,7 +44,7 @@ export const Property = memo(({ vectorLayer }: Props) => {
         data: { display_by_property: value },
       })
       // set vector_layer_displays
-      upsertVectorLayerDisplaysForVectorLayer({ db, vector_layer_id })
+      upsertVectorLayerDisplaysForVectorLayer({ db, vectorLayerId: vector_layer_id })
     },
     [db, vector_layer_id],
   )

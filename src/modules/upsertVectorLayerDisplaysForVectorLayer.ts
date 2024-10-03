@@ -6,42 +6,46 @@ import { createVectorLayerDisplay } from './createRows.ts'
 import { chunkArrayWithMinSize } from './chunkArrayWithMinSize.ts'
 
 interface Props {
-  vector_layer_id: string
+  vectorLayerId: string
   db: Electric
 }
 
 export const upsertVectorLayerDisplaysForVectorLayer = async ({
   db,
-  vector_layer_id,
+  vectorLayerId,
 }: Props) => {
   const vectorLayer: VectorLayer = await db.vector_layers.findUnique({
-    where: { vector_layer_id },
+    where: { vector_layer_id: vectorLayerId },
   })
   if (!vectorLayer) {
-    throw new Error(`vector_layer_id ${vector_layer_id} not found`)
+    throw new Error(`vector_layer_id ${vectorLayerId} not found`)
   }
   if (!vectorLayer.type) {
-    throw new Error(`vector_layer_id ${vector_layer_id} has no type`)
+    throw new Error(`vector_layer_id ${vectorLayerId} has no type`)
   }
   console.log('upsertVectorLayerDisplaysForVectorLayer', vectorLayer)
   // TODO: do this for wfs and upload
-  if ([`wfs`, `upload`].includes(vectorLayer.type)) {
+  if (vectorLayer.type !== 'own') {
     throw new Error(
       `creating vector_layer_displays for wfs and upload not implemented`,
     )
   }
   // get table and level from vector_layer.type
   // table is vectorLayer.type without last character
-  const table = vectorLayer.type.slice(0, -1)
+  const table = vectorLayer.own_table
   // level is last character of vectorLayer.type
-  const level = parseInt(vectorLayer.type.slice(-1))
+  const level = vectorLayer.own_table_level
   const displayByProperty = vectorLayer?.display_by_property
+
+  const existingVectorLayerDisplays = await db.vector_layer_displays.findMany({
+    where: { vector_layer_id: vectorLayerId },
+  })
 
   if (!displayByProperty) {
     // create single display
     const existingVectorLayerDisplay = await db.vector_layer_displays.findFirst(
       {
-        where: { vector_layer_id },
+        where: { vector_layer_id: vectorLayerId },
       },
     )
     // leave existing VLD unchanged
@@ -49,10 +53,10 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
 
     // remove all other displays
     await db.vector_layer_displays.deleteMany({
-      where: { vector_layer_id },
+      where: { vector_layer_id: vectorLayerId },
     })
 
-    const data = createVectorLayerDisplay({ vector_layer_id })
+    const data = createVectorLayerDisplay({ vector_layer_id: vectorLayerId })
     return await db.vector_layer_displays.create({ data })
   }
 
@@ -91,14 +95,14 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     // remove all displays not in list
     await db.vector_layer_displays.deleteMany({
       where: {
-        vector_layer_id,
+        vector_layer_id: vectorLayerId,
         display_property_value: { notIn: listValues.map((v) => v.value) },
       },
     })
     // above does not remove null values...
     await db.vector_layer_displays.deleteMany({
       where: {
-        vector_layer_id,
+        vector_layer_id: vectorLayerId,
         display_property_value: null,
       },
     })
@@ -108,7 +112,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
       const existingVectorLayerDisplay =
         await db.vector_layer_displays.findFirst({
           where: {
-            vector_layer_id,
+            vector_layer_id: vectorLayerId,
             display_property_value: listValue.value,
           },
         })
@@ -116,7 +120,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
       if (existingVectorLayerDisplay) return
 
       const data = createVectorLayerDisplay({
-        vector_layer_id,
+        vector_layer_id: vectorLayerId,
         display_property_value: listValue.value,
       })
       vLDDataArray.push(data)
@@ -148,7 +152,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     const existingVectorLayerDisplay = await db.vector_layer_displays.findFirst(
       {
         where: {
-          vector_layer_id,
+          vector_layer_id: vectorLayerId,
           display_property_value: value,
         },
       },
@@ -157,7 +161,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     if (existingVectorLayerDisplay) return
 
     const data = createVectorLayerDisplay({
-      vector_layer_id,
+      vector_layer_id: vectorLayerId,
       display_property_value: value,
     })
     vLDDataArray.push(data)

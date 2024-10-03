@@ -10,12 +10,12 @@ type Props = {
   db: Electric
 }
 
-export const updateVectorLayerDisplaysForLayerAndPropertyValues = async ({
+export const completeVectorLayerDisplaysForLayerWithProperties = async ({
   vectorLayerId,
   properties,
   db,
 }: Props) => {
-  console.log('updateVectorLayerDisplaysForLayerAndPropertyValues', {
+  console.log('completeVectorLayerDisplaysForLayerWithProperties', {
     vectorLayerId,
     properties,
   })
@@ -23,7 +23,12 @@ export const updateVectorLayerDisplaysForLayerAndPropertyValues = async ({
     where: { vector_layer_id: vectorLayerId },
   })
   console.log(
-    'updateVectorLayerDisplaysForLayerAndPropertyValues, vectorLayerDisplays:',
+    'completeVectorLayerDisplaysForLayerWithProperties, vectorLayerDisplays:',
     vectorLayerDisplays,
   )
+  // if !vectorLayer.display_by_property: ensure single display
+
+  // if vectorLayer.display_by_property:
+  // if vectorLayer.display_by_property in properties: ensure displays for all properties
+  // if not in properties: remove display and create single display
 }
