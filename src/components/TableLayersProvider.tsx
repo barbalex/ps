@@ -46,12 +46,17 @@ export const TableLayersProvider = memo(() => {
         // tables: places1, places2, actions1, actions2, checks1, checks2, occurrences_assigned1, occurrences_assigned2, occurrences_to_assess, occurrences_not_to_assign
         // 1.1 places1: is always needed
         let places1VectorLayer = vectorLayers?.find(
-          (vl) => vl.type === 'places1',
+          (vl) =>
+            vl.type === 'own' &&
+            vl.own_table === 'places' &&
+            vl.own_table_level === 1,
         )
         if (!places1VectorLayer) {
           const vectorLayer = createVectorLayer({
             project_id: project.project_id,
-            type: 'places1',
+            type: 'own',
+            own_table: 'places',
+            own_table_level: 1,
             label: placeLevel1?.name_plural ?? 'Places',
           })
           try {
@@ -89,12 +94,17 @@ export const TableLayersProvider = memo(() => {
         }
         // 2.1 actions1: always needed
         let actions1VectorLayer = vectorLayers?.find(
-          (vl) => vl.type === 'actions1',
+          (vl) =>
+            vl.type === 'own' &&
+            vl.own_table === 'actions' &&
+            vl.own_table_level === 1,
         )
         if (!actions1VectorLayer) {
           const vectorLayer = createVectorLayer({
             project_id: project.project_id,
-            type: 'actions1',
+            type: 'own',
+            own_table: 'actions',
+            own_table_level: 1,
             label: placeLevel1?.name_singular
               ? `${placeLevel1.name_singular} Actions`
               : 'Actions',
@@ -127,12 +137,17 @@ export const TableLayersProvider = memo(() => {
         }
         // 3.1 checks1: always needed
         let checks1VectorLayer = vectorLayers?.find(
-          (vl) => vl.type === 'checks1',
+          (vl) =>
+            vl.type === 'own' &&
+            vl.own_table === 'checks' &&
+            vl.own_table_level === 1,
         )
         if (!checks1VectorLayer) {
           const vectorLayer = createVectorLayer({
             project_id: project.project_id,
-            type: 'checks1',
+            type: 'own',
+            own_table: 'checks',
+            own_table_level: 1,
             label: placeLevel1?.name_singular
               ? `${placeLevel1.name_singular} Checks`
               : 'Checks',
@@ -164,16 +179,21 @@ export const TableLayersProvider = memo(() => {
           })
           await db.layer_presentations.create({ data: newLP })
         }
-        // 4.1 occurrences_assigned1 and occurrences_assigned1_lines: needed if occurrences exist and placeLevels1 has occurrences
-        // TODO: add occurrences_assigned1_lines
+        // 4.1 occurrences_assigned1 and occurrences_assigned_lines1: needed if occurrences exist and placeLevels1 has occurrences
+        // TODO: add occurrences_assigned_lines1
         if (placeLevel1?.occurrences && occurrences.length) {
           let occurrencesAssigned1VectorLayer = vectorLayers?.find(
-            (vl) => vl.type === 'occurrences_assigned1',
+            (vl) =>
+              vl.type === 'own' &&
+              vl.own_table === 'occurrences_assigned' &&
+              vl.own_table_level === 1,
           )
           if (!occurrencesAssigned1VectorLayer) {
             const vectorLayer = createVectorLayer({
               project_id: project.project_id,
-              type: 'occurrences_assigned1',
+              type: 'own',
+              own_table: 'occurrences_assigned',
+              own_table_level: 1,
               label: placeLevel1?.name_singular
                 ? `${placeLevel1.name_singular} Occurrences assigned`
                 : 'Occurrences assigned',
@@ -214,12 +234,14 @@ export const TableLayersProvider = memo(() => {
         // 5.1 occurrences_to_assess: needed if occurrences exist
         if (occurrences.length) {
           let occurrencesToAssessVectorLayer = vectorLayers?.find(
-            (vl) => vl.type === 'occurrences_to_assess',
+            (vl) =>
+              vl.type === 'own' && vl.own_table === 'occurrences_to_assess',
           )
           if (!occurrencesToAssessVectorLayer) {
             const vectorLayer = createVectorLayer({
               project_id: project.project_id,
-              type: 'occurrences_to_assess',
+              type: 'own',
+              own_table: 'occurrences_to_assess',
               label: 'Occurrences to assess',
             })
             occurrencesToAssessVectorLayer = await db.vector_layers.create({
@@ -256,12 +278,14 @@ export const TableLayersProvider = memo(() => {
         // 6.1 occurrences_not_to_assign: needed if occurrences exist
         if (occurrences.length) {
           let occurrencesNotToAssignVectorLayer = vectorLayers?.find(
-            (vl) => vl.type === 'occurrences_not_to_assign',
+            (vl) =>
+              vl.type === 'own' && vl.own_table === 'occurrences_not_to_assign',
           )
           if (!occurrencesNotToAssignVectorLayer) {
             const vectorLayer = createVectorLayer({
               project_id: project.project_id,
-              type: 'occurrences_not_to_assign',
+              type: 'own',
+              own_table: 'occurrences_not_to_assign',
               label: 'Occurrences not to assign',
             })
             occurrencesNotToAssignVectorLayer = await db.vector_layers.create({
@@ -302,12 +326,17 @@ export const TableLayersProvider = memo(() => {
         // 7.1 places2 needed if placeLevels2 exists
         if (placeLevel2) {
           let places2VectorLayer = vectorLayers?.find(
-            (vl) => vl.type === 'places2',
+            (vl) =>
+              vl.type === 'own' &&
+              vl.own_table === 'places' &&
+              vl.own_table_level === 2,
           )
           if (!places2VectorLayer) {
             const vectorLayer = createVectorLayer({
               project_id: project.project_id,
-              type: 'places2',
+              type: 'own',
+              own_table: 'places',
+              own_table_level: 2,
               label: placeLevel2?.name_plural ?? 'Places',
             })
             places2VectorLayer = await db.vector_layers.create({
@@ -340,12 +369,17 @@ export const TableLayersProvider = memo(() => {
         // 8.1 actions2 needed if placeLevels2.actions exists
         if (placeLevel2?.actions) {
           let actions2VectorLayer = vectorLayers?.find(
-            (vl) => vl.type === 'actions2',
+            (vl) =>
+              vl.type === 'own' &&
+              vl.own_table === 'actions' &&
+              vl.own_table_level === 2,
           )
           if (!actions2VectorLayer) {
             const vectorLayer = createVectorLayer({
               project_id: project.project_id,
-              type: 'actions2',
+              type: 'own',
+              own_table: 'actions',
+              own_table_level: 2,
               label: placeLevel2?.name_singular
                 ? `${placeLevel2.name_singular} Actions`
                 : 'Actions',
@@ -380,12 +414,17 @@ export const TableLayersProvider = memo(() => {
         // 9.1 checks2 needed if placeLevels2.checks exists
         if (placeLevel2?.checks) {
           let checks2VectorLayer = vectorLayers?.find(
-            (vl) => vl.type === 'checks2',
+            (vl) =>
+              vl.type === 'own' &&
+              vl.own_table === 'checks' &&
+              vl.own_table_level === 2,
           )
           if (!checks2VectorLayer) {
             const vectorLayer = createVectorLayer({
               project_id: project.project_id,
-              type: 'checks2',
+              type: 'own',
+              own_table: 'checks',
+              own_table_level: 2,
               label: placeLevel2?.name_singular
                 ? `${placeLevel2.name_singular} Checks`
                 : 'Checks',
@@ -420,12 +459,17 @@ export const TableLayersProvider = memo(() => {
         // 10.1 occurrences_assigned2 needed if occurrences exist and placeLevels2 has occurrences
         if (placeLevel2?.occurrences && occurrences.length) {
           let occurrencesAssigned2VectorLayer = vectorLayers?.find(
-            (vl) => vl.type === 'occurrences_assigned2',
+            (vl) =>
+              vl.type === 'own' &&
+              vl.own_table === 'occurrences_assigned' &&
+              vl.own_table_level === 2,
           )
           if (!occurrencesAssigned2VectorLayer) {
             const vectorLayer = createVectorLayer({
               project_id: project.project_id,
-              type: 'occurrences_assigned2',
+              type: 'own',
+              own_table: 'occurrences_assigned',
+              own_table_level: 2,
               label: placeLevel2?.name_singular
                 ? `${placeLevel2.name_singular} Occurrences assigned`
                 : 'Occurrences assigned',

@@ -70,7 +70,9 @@ export const Component = memo(() => {
     // 2. better via trigger so it also works on import / project creation
     const vectorLayer = createVectorLayer({
       project_id,
-      type: place_id ? 'places2' : 'places1',
+      type: 'own',
+      own_table: 'places',
+      own_table_level: place_id ? 2 : 1,
       label: placeNamePlural,
     })
     const newVectorLayer = await db.vector_layers.create({ data: vectorLayer })

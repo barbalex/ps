@@ -1,16 +1,3 @@
-export const vectorLayerTypes = [
-  'places1',
-  'places2',
-  'actions1',
-  'actions2',
-  'checks1',
-  'checks2',
-  'occurrences_assigned1',
-  'occurrences_assigned2',
-  'occurrences_to_assess',
-  'occurrences_not_to_assign',
-]
-
 export const updateTableVectorLayerLabels = async ({ db, project_id }) => {
   const placeLevels = await db.place_levels.findMany({
     where: { project_id },
@@ -18,7 +5,7 @@ export const updateTableVectorLayerLabels = async ({ db, project_id }) => {
   const tableVectorLayers = await db.vector_layers.findMany({
     where: {
       project_id,
-      type: { in: vectorLayerTypes },
+      type: 'own',
     },
   })
   // loop allVectorLayers and update label using placeLevels
@@ -27,23 +14,19 @@ export const updateTableVectorLayerLabels = async ({ db, project_id }) => {
     const placeLevel = placeLevels.find((pl) => pl.level == level)
     if (placeLevel) {
       let label
-      switch (vl.type) {
-        case 'places1':
-        case 'places2':
+      switch (vl.own_table) {
+        case 'places':
           label = placeLevel.name_plural
           break
-        case 'actions1':
-        case 'actions2':
+        case 'actions':
           if (placeLevel.name_singular)
             label = `${placeLevel.name_singular} actions`
           break
-        case 'checks1':
-        case 'checks2':
+        case 'checks':
           if (placeLevel.name_singular)
             label = `${placeLevel.name_singular} checks`
           break
-        case 'occurrences_assigned1':
-        case 'occurrences_assigned2':
+        case 'occurrences_assigned':
           if (placeLevel.name_singular)
             label = `${placeLevel.name_singular} occurrences assigned`
           break

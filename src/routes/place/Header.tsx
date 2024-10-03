@@ -54,7 +54,9 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     // need to create a corresponding vector layer and vector layer display
     const vectorLayer = createVectorLayer({
       project_id,
-      type: place_id2 ? 'places2' : 'places1',
+      type: 'own',
+      own_table: 'places',
+      own_table_level: place_id2 ? 2 : 1,
       label: placeNamePlural,
     })
     const newVectorLayer = await db.vector_layers.create({ data: vectorLayer })

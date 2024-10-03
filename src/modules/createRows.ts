@@ -463,6 +463,8 @@ export const createWmsLayer = ({ project_id }) => ({
 export const createVectorLayer = ({
   project_id,
   type = null,
+  own_table = null,
+  own_table_level = null,
   label = null,
   max_features = 1000,
 }) => ({
@@ -470,6 +472,8 @@ export const createVectorLayer = ({
   project_id,
   label,
   type,
+  own_table,
+  own_table_level,
   max_features,
 })
 

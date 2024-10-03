@@ -1349,17 +1349,28 @@ CREATE INDEX ON wfs_service_layers USING btree(wfs_service_id);
 CREATE TYPE vector_layer_type_enum AS enum(
   'wfs',
   'upload',
-  'places1',
-  'places2',
-  'actions1',
-  'actions2',
-  'checks1',
-  'checks2',
+  'own'
+  -- 'places1',
+  -- 'places2',
+  -- 'actions1',
+  -- 'actions2',
+  -- 'checks1',
+  -- 'checks2',
+  -- 'occurrences_assigned1',
+  -- 'occurrences_assigned_lines1',
+  -- 'occurrences_assigned2',
+  -- 'occurrences_assigned_lines2',
+  -- 'occurrences_to_assess',
+  -- 'occurrences_not_to_assign'
+);
+
+create type vector_layer_own_table_enum as enum(
+  'places',
+  'actions',
+  'checks',
   -- cant use occurrences-assigned due to electric-sql naming restrictions
-  'occurrences_assigned1',
-  'occurrences_assigned1_lines',
-  'occurrences_assigned2',
-  'occurrences_assigned2_lines',
+  'occurrences_assigned',
+  'occurrences_assigned_lines',
   'occurrences_to_assess',
   'occurrences_not_to_assign'
 );
@@ -1370,6 +1381,8 @@ CREATE TABLE vector_layers(
   label text DEFAULT NULL,
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   type vector_layer_type_enum DEFAULT NULL,
+  own_table vector_layer_own_table_enum DEFAULT NULL,
+  own_table_level integer DEFAULT NULL, -- 1 or 2,
   properties jsonb DEFAULT NULL,
   display_by_property text DEFAULT NULL,
   max_features integer DEFAULT NULL, -- 1000
@@ -1388,6 +1401,10 @@ CREATE INDEX ON vector_layers USING btree(label);
 CREATE INDEX ON vector_layers USING btree(project_id);
 
 CREATE INDEX ON vector_layers USING btree(type);
+
+CREATE INDEX ON vector_layers USING btree(own_table);
+
+CREATE INDEX ON vector_layers USING btree(own_table_level);
 
 COMMENT ON TABLE vector_layers IS 'Goal: Bring your own wms layers. Either from wfs or importing GeoJSON. Should only contain metadata, not data fetched from wms or wmts servers (that should only be saved locally on the client).';
 
@@ -1447,23 +1464,6 @@ CREATE TYPE line_cap_enum AS enum(
   'butt',
   'round',
   'square'
-);
-
--- TODO: not in use?
-CREATE TYPE vector_layer_table_enum AS enum(
-  'places1',
-  'places2',
-  'actions1',
-  'actions2',
-  'checks1',
-  'checks2',
-  -- cant use occurrences-assigned due to electric-sql naming restrictions
-  'occurrences_assigned1',
-  'occurrences_assigned1_lines',
-  'occurrences_assigned2',
-  'occurrences_assigned2_lines',
-  'occurrences_to_assess',
-  'occurrences_not_to_assign'
 );
 
 -- CREATE TYPE line_join_enum AS enum(
