@@ -32,6 +32,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
     [places1Fields],
   )
   // this is how to do when extracting properties from a json field:
+  // 1. get json data
   // const { results: places1Data = [] } = useLiveQuery(
   //   db.places.liveMany({
   //     where: {
@@ -43,6 +44,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
   //     select: { data: true },
   //   }),
   // )
+  // 2. extract keys from json data
   // const places1Properties = useMemo(() => {
   //   const keys = []
   //   for (const place of places1Data) {
@@ -53,8 +55,6 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
   //   }
   //   return keys
   // }, [places1Data])
-
-  // get vector_layers.properties
 
   console.log('VectorLayersPropertiesProvider', {
     vectorLayers,
