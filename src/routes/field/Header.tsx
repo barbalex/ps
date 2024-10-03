@@ -16,7 +16,7 @@ export const Header = memo(({ autoFocusRef }) => {
     const data = createField({ project_id })
     await db.fields.create({ data })
     navigate({
-      pathname: `${data.field_id}`,
+      pathname: `../${data.field_id}`,
       search: searchParams.toString(),
     })
     autoFocusRef.current?.focus()
