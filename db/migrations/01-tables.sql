@@ -1349,16 +1349,17 @@ CREATE INDEX ON wfs_service_layers USING btree(wfs_service_id);
 CREATE TYPE vector_layer_type_enum AS enum(
   'wfs',
   'upload',
-  'own',
+  'own'
+  -- 'places1',
   -- 'places2',
   -- 'actions1',
   -- 'actions2',
   -- 'checks1',
   -- 'checks2',
   -- 'occurrences_assigned1',
-  -- 'occurrences_assigned1_lines',
+  -- 'occurrences_assigned_lines1',
   -- 'occurrences_assigned2',
-  -- 'occurrences_assigned2_lines',
+  -- 'occurrences_assigned_lines2',
   -- 'occurrences_to_assess',
   -- 'occurrences_not_to_assign'
 );
@@ -1463,23 +1464,6 @@ CREATE TYPE line_cap_enum AS enum(
   'butt',
   'round',
   'square'
-);
-
--- TODO: not in use?
-CREATE TYPE vector_layer_table_enum AS enum(
-  'places1',
-  'places2',
-  'actions1',
-  'actions2',
-  'checks1',
-  'checks2',
-  -- cant use occurrences-assigned due to electric-sql naming restrictions
-  'occurrences_assigned1',
-  'occurrences_assigned1_lines',
-  'occurrences_assigned2',
-  'occurrences_assigned2_lines',
-  'occurrences_to_assess',
-  'occurrences_not_to_assign'
 );
 
 -- CREATE TYPE line_join_enum AS enum(

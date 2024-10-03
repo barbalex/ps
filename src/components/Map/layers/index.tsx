@@ -113,7 +113,10 @@ export const Layers = memo(() => {
     }
 
     if (tableLayer) {
-      const Component = tableLayerToComponent[tableLayer.type]
+      const Component =
+        tableLayerToComponent[
+          `${tableLayer.own_table}${tableLayer.own_table_level}`
+        ]
 
       return (
         <Pane
