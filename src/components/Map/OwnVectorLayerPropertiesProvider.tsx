@@ -5,15 +5,15 @@ import isEqual from 'lodash/isEqual'
 
 import { useElectric } from '../../ElectricProvider.tsx'
 
-export const VectorLayersPropertiesProvider = memo(() => {
+export const OwnVectorLayerPropertiesProvider = memo(() => {
   const { project_id = '99999999-9999-9999-9999-999999999999' } = useParams()
   const { db } = useElectric()!
 
   // get vector_layers
   const { results: vectorLayers = [] } = useLiveQuery(
     db.vector_layers.liveMany({
-      where: { project_id },
-      select: { vector_layer_id: true, properties: true, type: true },
+      where: { project_id, type: 'own' },
+      select: { vector_layer_id: true, properties: true, own_table: true },
     }),
   )
   const { results: subprojects = [] } = useLiveQuery(
@@ -21,34 +21,41 @@ export const VectorLayersPropertiesProvider = memo(() => {
       where: { project_id },
     }),
   )
-  const { results: placesData = [] } = useLiveQuery(
+  const { results: places1Data = [] } = useLiveQuery(
     db.places.liveMany({
       where: {
         subproject_id: {
           in: subprojects.map((subproject) => subproject.subproject_id),
         },
+        level: 1,
       },
       select: { data: true },
     }),
   )
+  const { results: placesFields = [] } = useLiveQuery(
+    db.fields.liveMany({
+      where: { table_name: 'places', level: 1, project_id },
+    }),
+  )
   const placesProperties = useMemo(() => {
     const keys = []
-    for (const place of placesData) {
+    for (const place of places1Data) {
       const myKeys = Object.keys(place.data)
       for (const key of myKeys) {
         if (!keys.includes(key)) keys.push(key)
       }
     }
     return keys
-  }, [placesData])
+  }, [places1Data])
 
   // get vector_layers.properties
 
   console.log('VectorLayersPropertiesProvider', {
     vectorLayers,
     subprojects,
-    placesData,
+    places1Data,
     placesProperties,
+    placesFields,
   })
 
   // when a key inside places.data changes, update vector_layers.properties:
@@ -59,7 +66,7 @@ export const VectorLayersPropertiesProvider = memo(() => {
     // if vector_layer.type includes 'places' and vector_layer.properties is not equal to placesProperties
     // update vector_layer.properties to placesProperties
     for (const vectorLayer of vectorLayers) {
-      if (vectorLayer.type.includes('places')) {
+      if (vectorLayer.own_table === 'places') {
         if (!isEqual(vectorLayer.properties, placesProperties)) {
           db.vector_layers.update({
             where: { vector_layer_id: vectorLayer.vector_layer_id },
