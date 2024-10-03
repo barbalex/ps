@@ -9,6 +9,7 @@ import { Notifications } from '../Notifications/index.tsx'
 import { ProtectedRoute } from '../ProtectedRoute.tsx'
 import { Header } from './Header/index.tsx'
 import { TableLayersProvider } from '../TableLayersProvider.tsx'
+import { VectorLayersPropertiesProvider } from '../Map/VectorLayersPropertiesProvider.tsx'
 import { OccurrenceAssignChooser } from '../OccurrenceAssignChooser/index.tsx'
 import { mapMaximizedAtom } from '../../store.ts'
 
@@ -45,6 +46,7 @@ export const Layout = memo(() => {
       )}
       <ProtectedRoute>
         <TableLayersProvider />
+        <VectorLayersPropertiesProvider />
         <OccurrenceAssignChooser />
         <Main />
       </ProtectedRoute>
