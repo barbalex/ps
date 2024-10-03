@@ -16,11 +16,8 @@ interface Props {
 export const Property = memo(({ vectorLayer }: Props) => {
   const { project_id, vector_layer_id } = useParams()
 
-  // get table and level from vector_layer.type
-  // table is vectorLayer.type without last character
-  const table = vectorLayer?.type?.slice(0, -1) ?? null
-  // level is last character of vectorLayer.type
-  const level = parseInt(vectorLayer?.type?.slice(-1)) ?? null
+  const table = vectorLayer?.own_table
+  const level = vectorLayer?.own_table_level
 
   const { db } = useElectric()!
   // get fields of table

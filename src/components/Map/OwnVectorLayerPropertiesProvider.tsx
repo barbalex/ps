@@ -16,11 +16,6 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
       select: { vector_layer_id: true, properties: true, own_table: true },
     }),
   )
-  const { results: subprojects = [] } = useLiveQuery(
-    db.subprojects.liveMany({
-      where: { project_id },
-    }),
-  )
   // places level 1
   const { results: places1Fields = [] } = useLiveQuery(
     db.fields.liveMany({
@@ -87,10 +82,40 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
     () => checks2Fields.map((field) => field.name),
     [checks2Fields],
   )
-  // occurrences-assigned level 1
-  const { results: occurrencesAssigned1Fields = [] } = useLiveQuery(
+  // occurrences-assigned
+  // TODO: level 1/2 i.e. query where place_id has level 1/2
+  const { results: occurrencesAssignedFields = [] } = useLiveQuery(
     db.fields.liveMany({
-      where: { table_name: 'occurrences-assigned', level: 1, project_id },
+      where: {
+        table_name: 'occurrences',
+        project_id,
+        // TODO: query where place_id has level 1
+        place_id: { not: null },
+      },
+      select: { name: true },
+    }),
+  )
+  // occurrences-to-assess
+  const { results: occurrencesToAssessFields = [] } = useLiveQuery(
+    db.fields.liveMany({
+      where: {
+        table_name: 'occurrences',
+        project_id,
+        place_id: null,
+        not_to_assign: { not: true },
+      },
+      select: { name: true },
+    }),
+  )
+  // occurrences-not-to-assign
+  const { results: occurrencesNotToAssignFields = [] } = useLiveQuery(
+    db.fields.liveMany({
+      where: {
+        table_name: 'occurrences',
+        project_id,
+        place_id: null,
+        not_to_assign: true,
+      },
       select: { name: true },
     }),
   )
@@ -121,17 +146,12 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
   //   return keys
   // }, [places1Data])
 
-  console.log('VectorLayersPropertiesProvider', {
-    vectorLayers,
-    subprojects,
-    places1Fields,
-  })
-
   useEffect(() => {
     if (!project_id) return
     // TODO: loop all vector_layers
     // if vector_layer.type includes 'places' and vector_layer.properties is not equal to placesProperties
     // update vector_layer.properties to placesProperties
+    console.log('VectorLayersPropertiesProvider providing properties')
     for (const vectorLayer of vectorLayers) {
       // places level 1
       if (
@@ -181,11 +201,67 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
           })
         }
       }
+      // checks level 1
+      if (
+        vectorLayer.own_table === 'checks' &&
+        vectorLayer.own_table_level === 1
+      ) {
+        if (!isEqual(vectorLayer.properties, checks1Properties)) {
+          db.vector_layers.update({
+            where: { vector_layer_id: vectorLayer.vector_layer_id },
+            data: { properties: checks1Properties },
+          })
+        }
+      }
+      // checks level 2
+      if (
+        vectorLayer.own_table === 'checks' &&
+        vectorLayer.own_table_level === 2
+      ) {
+        if (!isEqual(vectorLayer.properties, checks2Properties)) {
+          db.vector_layers.update({
+            where: { vector_layer_id: vectorLayer.vector_layer_id },
+            data: { properties: checks2Properties },
+          })
+        }
+      }
+      // occurrences-assigned
+      if (vectorLayer.own_table === 'occurrences_assigned') {
+        if (!isEqual(vectorLayer.properties, occurrencesAssignedFields)) {
+          db.vector_layers.update({
+            where: { vector_layer_id: vectorLayer.vector_layer_id },
+            data: { properties: occurrencesAssignedFields },
+          })
+        }
+      }
+      // occurrences-to-assess
+      if (vectorLayer.own_table === 'occurrences_to_assess') {
+        if (!isEqual(vectorLayer.properties, occurrencesToAssessFields)) {
+          db.vector_layers.update({
+            where: { vector_layer_id: vectorLayer.vector_layer_id },
+            data: { properties: occurrencesToAssessFields },
+          })
+        }
+      }
+      // occurrences-not-to-assign
+      if (vectorLayer.own_table === 'occurrences_not_to_assign') {
+        if (!isEqual(vectorLayer.properties, occurrencesNotToAssignFields)) {
+          db.vector_layers.update({
+            where: { vector_layer_id: vectorLayer.vector_layer_id },
+            data: { properties: occurrencesNotToAssignFields },
+          })
+        }
+      }
     }
   }, [
     actions1Properties,
     actions2Properties,
+    checks1Properties,
+    checks2Properties,
     db.vector_layers,
+    occurrencesAssignedFields,
+    occurrencesNotToAssignFields,
+    occurrencesToAssessFields,
     places1Properties,
     places2Properties,
     project_id,
