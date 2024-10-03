@@ -21,41 +21,45 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
       where: { project_id },
     }),
   )
-  const { results: places1Data = [] } = useLiveQuery(
-    db.places.liveMany({
-      where: {
-        subproject_id: {
-          in: subprojects.map((subproject) => subproject.subproject_id),
-        },
-        level: 1,
-      },
-      select: { data: true },
-    }),
-  )
-  const { results: placesFields = [] } = useLiveQuery(
+  const { results: places1Fields = [] } = useLiveQuery(
     db.fields.liveMany({
       where: { table_name: 'places', level: 1, project_id },
+      select: { name: true },
     }),
   )
-  const placesProperties = useMemo(() => {
-    const keys = []
-    for (const place of places1Data) {
-      const myKeys = Object.keys(place.data)
-      for (const key of myKeys) {
-        if (!keys.includes(key)) keys.push(key)
-      }
-    }
-    return keys
-  }, [places1Data])
+  const places1Properties = useMemo(
+    () => places1Fields.map((field) => field.name),
+    [places1Fields],
+  )
+  // this is how to do when extracting properties from a json field:
+  // const { results: places1Data = [] } = useLiveQuery(
+  //   db.places.liveMany({
+  //     where: {
+  //       subproject_id: {
+  //         in: subprojects.map((subproject) => subproject.subproject_id),
+  //       },
+  //       level: 1,
+  //     },
+  //     select: { data: true },
+  //   }),
+  // )
+  // const places1Properties = useMemo(() => {
+  //   const keys = []
+  //   for (const place of places1Data) {
+  //     const myKeys = Object.keys(place.data)
+  //     for (const key of myKeys) {
+  //       if (!keys.includes(key)) keys.push(key)
+  //     }
+  //   }
+  //   return keys
+  // }, [places1Data])
 
   // get vector_layers.properties
 
   console.log('VectorLayersPropertiesProvider', {
     vectorLayers,
     subprojects,
-    places1Data,
-    placesProperties,
-    placesFields,
+    places1Fields,
   })
 
   // when a key inside places.data changes, update vector_layers.properties:
@@ -67,15 +71,15 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
     // update vector_layer.properties to placesProperties
     for (const vectorLayer of vectorLayers) {
       if (vectorLayer.own_table === 'places') {
-        if (!isEqual(vectorLayer.properties, placesProperties)) {
+        if (!isEqual(vectorLayer.properties, places1Properties)) {
           db.vector_layers.update({
             where: { vector_layer_id: vectorLayer.vector_layer_id },
-            data: { properties: placesProperties },
+            data: { properties: places1Properties },
           })
         }
       }
     }
-  }, [db.vector_layers, placesProperties, project_id, vectorLayers])
+  }, [db.vector_layers, places1Properties, project_id, vectorLayers])
 
   return null
 })
