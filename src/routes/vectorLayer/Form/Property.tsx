@@ -7,7 +7,7 @@ import { Vector_layers as VectorLayer } from '../../../generated/client/index.ts
 import { DropdownFieldOptions } from '../../../components/shared/DropdownFieldOptions.tsx'
 import { TextField } from '../../../components/shared/TextField.tsx'
 import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
-import { upsertVectorLayerDisplaysForVectorLayer } from '../../../modules/upsertVectorLayerDisplaysForVectorLayer.ts'
+import { upsertVectorLayerDisplaysForVectorLayer } from './upsertVectorLayerDisplaysForVectorLayer.ts'
 
 interface Props {
   vectorLayer: VectorLayer
@@ -44,7 +44,10 @@ export const Property = memo(({ vectorLayer }: Props) => {
         data: { display_by_property: value },
       })
       // set vector_layer_displays
-      upsertVectorLayerDisplaysForVectorLayer({ db, vectorLayerId: vector_layer_id })
+      upsertVectorLayerDisplaysForVectorLayer({
+        db,
+        vectorLayerId: vector_layer_id,
+      })
     },
     [db, vector_layer_id],
   )

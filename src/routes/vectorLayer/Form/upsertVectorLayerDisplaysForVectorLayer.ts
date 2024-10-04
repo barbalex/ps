@@ -1,9 +1,9 @@
 import {
   Vector_layers as VectorLayer,
   Electric,
-} from '../generated/client/index.ts'
-import { createVectorLayerDisplay } from './createRows.ts'
-import { chunkArrayWithMinSize } from './chunkArrayWithMinSize.ts'
+} from '../../../generated/client/index.ts'
+import { createVectorLayerDisplay } from '../../../modules/createRows.ts'
+import { chunkArrayWithMinSize } from '../../../modules/chunkArrayWithMinSize.ts'
 
 interface Props {
   vectorLayerId: string
