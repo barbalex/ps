@@ -52,7 +52,7 @@ export const Property = memo(({ vectorLayer }: Props) => {
     [db, vector_layer_id],
   )
 
-  console.log('VectorLayerForm.PropertyField, fields:', fields)
+  // console.log('VectorLayerForm.PropertyField, fields:', fields)
 
   if (!fields.length) {
     return (

@@ -155,16 +155,16 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   const sqlByTable = {
     places: `SELECT DISTINCT ${
       propertyIsInData
-        ? `json_extract(data, '$.${displayByProperty}')`
+        ? `json_extract(places.data, '$.${displayByProperty}') as ${displayByProperty}`
         : `${displayByProperty}`
     } FROM places
     inner join subprojects on subprojects.subproject_id = places.subproject_id 
-    WHERE subprojects.project_id = '${projectId}' AND parent_id IS ${
+    WHERE subprojects.project_id = '${projectId}' AND places.parent_id IS ${
       level === 1 ? 'NULL' : 'NOT NULL'
     }`,
     actions: `SELECT DISTINCT ${
       propertyIsInData
-        ? `json_extract(data, '$.${displayByProperty}')`
+        ? `json_extract(actions.data, '$.${displayByProperty}') as ${displayByProperty}`
         : `${displayByProperty}`
     } FROM actions
     inner join places on places.place_id = actions.place_id 
@@ -172,7 +172,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     WHERE subprojects.project_id = '${projectId}'`,
     checks: `SELECT DISTINCT ${
       propertyIsInData
-        ? `json_extract(data, '$.${displayByProperty}')`
+        ? `json_extract(checks.data, '$.${displayByProperty}') as ${displayByProperty}`
         : `${displayByProperty}`
     } FROM checks 
     inner join places on places.place_id = checks.place_id 
@@ -180,7 +180,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     WHERE subprojects.project_id = '${projectId}'`,
     occurrences_assigned: `SELECT DISTINCT ${
       propertyIsInData
-        ? `json_extract(data, '$.${displayByProperty}')`
+        ? `json_extract(occurrences.data, '$.${displayByProperty}') as ${displayByProperty}`
         : `${displayByProperty}`
     } FROM occurrences 
     inner join places on places.place_id = occurrences.place_id 
@@ -188,7 +188,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     WHERE subprojects.project_id = '${projectId}'`,
     occurrences_assigned_lines: `SELECT DISTINCT ${
       propertyIsInData
-        ? `json_extract(data, '$.${displayByProperty}')`
+        ? `json_extract(occurrences.data, '$.${displayByProperty}') as ${displayByProperty}`
         : `${displayByProperty}`
     } FROM occurrences 
     inner join places on places.place_id = occurrences.place_id 
@@ -196,7 +196,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     WHERE subprojects.project_id = '${projectId}'`,
     occurrences_to_assess: `SELECT DISTINCT ${
       propertyIsInData
-        ? `json_extract(data, '$.${displayByProperty}')`
+        ? `json_extract(occurrences.data, '$.${displayByProperty}') as ${displayByProperty}`
         : `${displayByProperty}`
     } FROM occurrences 
     inner join occurrence_imports on occurrence_imports.occurrence_import_id = occurrences.occurrence_import_id 
@@ -204,7 +204,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     WHERE subprojects.project_id = '${projectId}' and occurrences.not_to_assign = false and occurrences.place_id IS NULL`,
     occurrences_not_to_assign: `SELECT DISTINCT ${
       propertyIsInData
-        ? `json_extract(data, '$.${displayByProperty}')`
+        ? `json_extract(occurrences.data, '$.${displayByProperty}') as ${displayByProperty}`
         : `${displayByProperty}`
     } FROM occurrences 
     inner join occurrence_imports on occurrence_imports.occurrence_import_id = occurrences.occurrence_import_id 
@@ -219,7 +219,10 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   // SOLUTION: Either use raw sql or wait until PGLite is implemented
   let tableRows
   const sql = sqlByTable[table]
-  console.log('upsertVectorLayerDisplaysForVectorLayer, sql:', sql)
+  console.log('upsertVectorLayerDisplaysForVectorLayer', {
+    sql,
+    displayByProperty,
+  })
   try {
     tableRows = await db.rawQuery({ sql })
   } catch (error) {
@@ -244,12 +247,12 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
       {
         where: {
           vector_layer_id: vectorLayerId,
-          display_property_value: value,
+          display_property_value: value ?? null,
         },
       },
     )
     // leave existing VLD unchanged
-    if (existingVectorLayerDisplay) return
+    if (existingVectorLayerDisplay) continue
 
     const data = createVectorLayerDisplay({
       vector_layer_id: vectorLayerId,
@@ -257,6 +260,9 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     })
     vLDDataArray.push(data)
   }
+  console.log('upsertVectorLayerDisplaysForVectorLayer', {
+    vLDDataArray,
+  })
   const chunked = chunkArrayWithMinSize(vLDDataArray, 500)
   for (const data of chunked) {
     await db.vector_layer_displays.createMany({ data })
