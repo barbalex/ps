@@ -51,6 +51,7 @@ export const Header = memo(({ row }: Props) => {
   // TODO: if is preview, add preview to the url
 
   const uploaderCtx = useContext(UploaderContext)
+  console.log('Header, uploaderCtx', uploaderCtx)
   const addRow = useCallback(
     async () => uploaderCtx.current.initFlow(),
     [uploaderCtx],

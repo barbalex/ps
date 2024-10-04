@@ -86,11 +86,9 @@ export const Jsonb = memo(
         level: place_id2 ? 2 : 1,
         project_id: isAccountTable ? null : project_id,
       }
-      console.log('Jsonb, where:', where)
       const { results: fields = [] } = useLiveQuery(
         db.fields.liveMany({ where }),
       )
-      console.log('Jsonb, fields:', fields)
       const { results: fieldTypes = [] } = useLiveQuery(
         db.field_types.liveMany({
           where: {
@@ -126,20 +124,6 @@ export const Jsonb = memo(
           const isFilter = pathname.endsWith('filter')
           const level =
             table === 'places' ? (place_id ? 2 : 1) : place_id2 ? 2 : 1
-          const filterField = `${snakeToCamel(table)}${level ? `${level}` : ''}`
-
-          console.log('Jsonb, onChange 1:', {
-            name,
-            value,
-            val,
-            table,
-            idField,
-            id,
-            isFilter,
-            level,
-            filterField,
-            jsonFieldName,
-          })
 
           if (isFilter) {
             // TODO: wait until new db and it's accessing lib. Then implement these queries
@@ -152,9 +136,7 @@ export const Jsonb = memo(
               stores[
                 `${snakeToCamel(table)}${level ? `${level}` : ''}FilterAtom`
               ]
-            console.log('Jsonb, onChange 3, filterUpdateFunction:', filterAtom)
             const activeFilter = stores.store.get(filterAtom)
-            console.log('Jsonb, onChange 4, activeFilter:', activeFilter)
             stores.store.set(filterAtom, [
               ...activeFilter,
               { path: [jsonFieldName], contains: val },
