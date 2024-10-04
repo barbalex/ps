@@ -36,7 +36,18 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   const level = vectorLayer.own_table_level
   const displayByProperty = vectorLayer.display_by_property
   const properties = vectorLayer.properties
-  const propertyIsInData = properties.includes(displayByProperty)
+  // TODO: this is not working. places1.third is not in properties?
+  // better: query fields for this table and check if displayByProperty is in there
+  const fields = await db.fields.findMany({
+    where: {
+      table_name: table,
+      level,
+      project_id: projectId,
+    },
+    select: { name: true },
+  })
+  const fieldNames = fields.map((f) => f.name)
+  const propertyIsInData = fieldNames.includes(displayByProperty)
 
   const existingVectorLayerDisplays = await db.vector_layer_displays.findMany({
     where: { vector_layer_id: vectorLayerId },
