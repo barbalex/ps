@@ -34,8 +34,9 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   const projectId = vectorLayer.project_id
   const table = vectorLayer.own_table
   const level = vectorLayer.own_table_level
-  const displayByProperty = vectorLayer?.display_by_property
-  const properties = vectorLayer?.properties
+  const displayByProperty = vectorLayer.display_by_property
+  const properties = vectorLayer.properties
+  const propertyIsInData = properties.includes(displayByProperty)
 
   const existingVectorLayerDisplays = await db.vector_layer_displays.findMany({
     where: { vector_layer_id: vectorLayerId },
@@ -150,17 +151,11 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   }
 
   // if this field has no list_id, get the unique values of this field in the table
-  // const where = { project_id: vectorLayer.project_id }
-  let where = `project_id = '${vectorLayer.project_id}'`
-  if (table === 'places') {
-    where = `${where} AND parent_id IS ${level === 1 ? 'NULL' : 'NOT NULL'}`
-  }
-
   // tables with data property, sql to get by project_id:
   const sqlByTable = {
     places: `SELECT DISTINCT ${
       propertyIsInData
-        ? `json_extract(data, $.${displayByProperty})`
+        ? `json_extract(data, '$.${displayByProperty}')`
         : `${displayByProperty}`
     } FROM places
     inner join subprojects on subprojects.subproject_id = places.subproject_id 
@@ -169,7 +164,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     }`,
     actions: `SELECT DISTINCT ${
       propertyIsInData
-        ? `json_extract(data, $.${displayByProperty})`
+        ? `json_extract(data, '$.${displayByProperty}')`
         : `${displayByProperty}`
     } FROM actions
     inner join places on places.place_id = actions.place_id 
@@ -177,7 +172,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     WHERE subprojects.project_id = '${projectId}'`,
     checks: `SELECT DISTINCT ${
       propertyIsInData
-        ? `json_extract(data, $.${displayByProperty})`
+        ? `json_extract(data, '$.${displayByProperty}')`
         : `${displayByProperty}`
     } FROM checks 
     inner join places on places.place_id = checks.place_id 
@@ -185,7 +180,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     WHERE subprojects.project_id = '${projectId}'`,
     occurrences_assigned: `SELECT DISTINCT ${
       propertyIsInData
-        ? `json_extract(data, $.${displayByProperty})`
+        ? `json_extract(data, '$.${displayByProperty}')`
         : `${displayByProperty}`
     } FROM occurrences 
     inner join places on places.place_id = occurrences.place_id 
@@ -193,7 +188,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     WHERE subprojects.project_id = '${projectId}'`,
     occurrences_assigned_lines: `SELECT DISTINCT ${
       propertyIsInData
-        ? `json_extract(data, $.${displayByProperty})`
+        ? `json_extract(data, '$.${displayByProperty}')`
         : `${displayByProperty}`
     } FROM occurrences 
     inner join places on places.place_id = occurrences.place_id 
@@ -201,7 +196,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     WHERE subprojects.project_id = '${projectId}'`,
     occurrences_to_assess: `SELECT DISTINCT ${
       propertyIsInData
-        ? `json_extract(data, $.${displayByProperty})`
+        ? `json_extract(data, '$.${displayByProperty}')`
         : `${displayByProperty}`
     } FROM occurrences 
     inner join occurrence_imports on occurrence_imports.occurrence_import_id = occurrences.occurrence_import_id 
@@ -209,7 +204,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     WHERE subprojects.project_id = '${projectId}' and occurrences.not_to_assign = false and occurrences.place_id IS NULL`,
     occurrences_not_to_assign: `SELECT DISTINCT ${
       propertyIsInData
-        ? `json_extract(data, $.${displayByProperty})`
+        ? `json_extract(data, '$.${displayByProperty}')`
         : `${displayByProperty}`
     } FROM occurrences 
     inner join occurrence_imports on occurrence_imports.occurrence_import_id = occurrences.occurrence_import_id 
