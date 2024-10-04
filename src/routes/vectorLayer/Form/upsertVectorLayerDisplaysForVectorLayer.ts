@@ -23,8 +23,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   if (!vectorLayer.type) {
     throw new Error(`vector_layer_id ${vectorLayerId} has no type`)
   }
-  console.log('upsertVectorLayerDisplaysForVectorLayer', vectorLayer)
-  // TODO: do this for wfs and upload
+  // TODO: add this for wfs and upload
   if (vectorLayer.type !== 'own') {
     throw new Error(
       `creating vector_layer_displays for wfs and upload not implemented`,
@@ -36,8 +35,6 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   const level = vectorLayer.own_table_level
   const displayByProperty = vectorLayer.display_by_property
   const properties = vectorLayer.properties
-  // TODO: this is not working. places1.third is not in properties?
-  // better: query fields for this table and check if displayByProperty is in there
   const fields = await db.fields.findMany({
     where: {
       table_name: table,
@@ -77,7 +74,6 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     existingVectorLayerDisplays.length
   ) {
     // remove all displays before creating new ones
-    console.log('upsertVectorLayerDisplaysForVectorLayer removing all displays')
     await db.vector_layer_displays.deleteMany({
       where: { vector_layer_id: vectorLayerId },
     })
@@ -95,8 +91,6 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     },
   })
 
-  console.log('upsertVectorLayerDisplaysForVectorLayer, field:', field)
-
   if (!field) {
     throw new Error(
       `field ${displayByProperty} not found in table ${table} level ${level}`,
@@ -104,11 +98,8 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   }
 
   // if this field has a list_id, get the list
+  // TODO: test this
   if (field?.list_id) {
-    console.log(
-      'upsertVectorLayerDisplaysForVectorLayer, field has list_id: ',
-      field.list_id,
-    )
     const list = await db.lists.findUnique({
       where: { list_id: field.list_id },
     })
@@ -163,6 +154,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
 
   // if this field has no list_id, get the unique values of this field in the table
   // tables with data property, sql to get by project_id:
+  // TODO: test all
   const sqlByTable = {
     places: `SELECT DISTINCT ${
       propertyIsInData
@@ -223,17 +215,12 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     WHERE subprojects.project_id = '${projectId}' and occurrences.not_to_assign = true`,
   }
 
-  // TODO:
   // ISSUE 1: Most fields will be on the data property. Some not, i.e. 'name'
   // SOLUTION: Use the properties array to check if the field is in there? If not, query the table directly
   // ISSUE 2: How to query by properties in the data property? Depends on the db and library used.
-  // SOLUTION: Either use raw sql or wait until PGLite is implemented
+  // SOLUTION: Either use raw sql
   let tableRows
   const sql = sqlByTable[table]
-  console.log('upsertVectorLayerDisplaysForVectorLayer', {
-    sql,
-    displayByProperty,
-  })
   try {
     tableRows = await db.rawQuery({ sql })
   } catch (error) {
@@ -246,11 +233,6 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     )
   }
   const distinctValues = tableRows?.map((row) => row?.[displayByProperty])
-
-  console.log('upsertVectorLayerDisplaysForVectorLayer', {
-    tableRows,
-    distinctValues,
-  })
 
   const vLDDataArray = []
   for (const value of distinctValues) {
@@ -271,9 +253,6 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     })
     vLDDataArray.push(data)
   }
-  console.log('upsertVectorLayerDisplaysForVectorLayer', {
-    vLDDataArray,
-  })
   const chunked = chunkArrayWithMinSize(vLDDataArray, 500)
   for (const data of chunked) {
     await db.vector_layer_displays.createMany({ data })
