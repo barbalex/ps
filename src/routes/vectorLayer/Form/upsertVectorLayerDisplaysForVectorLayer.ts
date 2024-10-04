@@ -149,18 +149,51 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   }
 
   // if this field has no list_id, get the unique values of this field in the table
-  const where = { project_id: vectorLayer.project_id }
+  // const where = { project_id: vectorLayer.project_id }
+  let where = `project_id = '${vectorLayer.project_id}'`
   if (table === 'places') {
-    where.parent_id = level === 1 ? null : { not: null }
+    where = `${where} AND parent_id IS ${level === 1 ? 'NULL' : 'NOT NULL'}`
   }
 
+  // tables with data property, sql to get by project_id:
+  const sqlToFilterByProjectId = {
+    projects: ``,
+    subprojects: ``,
+    taxonomies: ``,
+    taxa: ``,
+    lists: ``,
+    places: ``,
+    actions: ``,
+    action_reports: ``,
+    checks: ``,
+    place_reports: ``,
+    goals: ``,
+    goal_reports: ``,
+    subproject_reports: ``,
+    project_reports: ``,
+    files: ``,
+    persons: ``,
+    occurrences: ``,
+  }
+
+  // TODO:
+  // ISSUE 1: Most fields will be on the data property. Some not, i.e. 'name'
+  // SOLUTION: Use the properties array to check if the field is in there? If not, query the table directly
+  // ISSUE 2: How to query by properties in the data property? Depends on the db and library used.
+  // SOLUTION: Either use raw sql or wait until PGLite is implemented
   let tableRows
+  let sql
+  const propertyIsInData = properties.includes(displayByProperty)
+  if (propertyIsInData) {
+    // sql = `SELECT DISTINCT json_extract(data, $.${displayByProperty}) FROM ${table} WHERE ${where}`
+    sql = `SELECT DISTINCT label FROM ${table} WHERE ${where}`
+    // sql = `SELECT DISTINCT label FROM ${table}`
+  } else {
+    sql = `SELECT DISTINCT ${displayByProperty} FROM ${table} WHERE ${where}`
+  }
+  console.log('upsertVectorLayerDisplaysForVectorLayer, sql:', sql)
   try {
-    tableRows = await db[table]?.findMany?.({
-      where,
-      select: { [displayByProperty]: true },
-      distinct: [displayByProperty],
-    })
+    tableRows = await db.rawQuery({ sql })
   } catch (error) {
     console.error(
       'upsertVectorLayerDisplaysForVectorLayer, error fetching table rows',
