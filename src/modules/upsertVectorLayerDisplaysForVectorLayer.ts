@@ -59,33 +59,43 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     })
   }
 
-  if (!properties.includes(displayByProperty)) {
+  if (
+    !properties.includes(displayByProperty) &&
+    existingVectorLayerDisplays.length
+  ) {
     // remove all displays before creating new ones
+    console.log('upsertVectorLayerDisplaysForVectorLayer removing all displays')
     await db.vector_layer_displays.deleteMany({
       where: { vector_layer_id: vectorLayerId },
     })
   }
 
+  // TODO: do this for wfs and upload
+
   // get field of displayByPropertyField
   const field = await db.fields.findFirst({
     where: {
-      name: displayByProperty ?? '',
+      name: displayByProperty,
       table_name: table,
       level,
       project_id: vectorLayer.project_id,
     },
   })
 
+  console.log('upsertVectorLayerDisplaysForVectorLayer, field:', field)
+
   if (!field) {
     throw new Error(
-      `field ${
-        displayByProperty ?? '(display_by_property missing)'
-      } not found in table ${table} level ${level}`,
+      `field ${displayByProperty} not found in table ${table} level ${level}`,
     )
   }
 
   // if this field has a list_id, get the list
   if (field?.list_id) {
+    console.log(
+      'upsertVectorLayerDisplaysForVectorLayer, field has list_id: ',
+      field.list_id,
+    )
     const list = await db.lists.findUnique({
       where: { list_id: field.list_id },
     })
@@ -141,17 +151,31 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   // if this field has no list_id, get the unique values of this field in the table
   const where = { project_id: vectorLayer.project_id }
   if (table === 'places') {
-    if (level === 1) {
-      where.parent_id = null
-    } else {
-      where.parent_id = { not: null }
-    }
+    where.parent_id = level === 1 ? null : { not: null }
   }
-  const tableRows = await db[table]?.findMany?.({
-    where,
-    distinct: [displayByProperty ?? ''],
+
+  let tableRows
+  try {
+    tableRows = await db[table]?.findMany?.({
+      where,
+      select: [displayByProperty],
+      distinct: [displayByProperty],
+    })
+  } catch (error) {
+    console.error(
+      'upsertVectorLayerDisplaysForVectorLayer, error fetching table rows',
+      error,
+    )
+    throw new Error(
+      `error fetching table rows for table ${table}, level ${level}`,
+    )
+  }
+  const distinctValues = tableRows?.map((row) => row?.[displayByProperty])
+
+  console.log('upsertVectorLayerDisplaysForVectorLayer', {
+    tableRows,
+    distinctValues,
   })
-  const distinctValues = tableRows.map((row) => row?.[displayByProperty])
 
   const vLDDataArray = []
   for (const value of distinctValues) {
