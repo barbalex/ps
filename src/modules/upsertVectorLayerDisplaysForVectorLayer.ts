@@ -30,34 +30,40 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
       `creating vector_layer_displays for wfs and upload not implemented`,
     )
   }
-  // get table and level from vector_layer.type
-  // table is vectorLayer.type without last character
+
   const table = vectorLayer.own_table
-  // level is last character of vectorLayer.type
   const level = vectorLayer.own_table_level
   const displayByProperty = vectorLayer?.display_by_property
+  const properties = vectorLayer?.properties
 
   const existingVectorLayerDisplays = await db.vector_layer_displays.findMany({
     where: { vector_layer_id: vectorLayerId },
   })
 
   if (!displayByProperty) {
-    // create single display
-    const existingVectorLayerDisplay = await db.vector_layer_displays.findFirst(
-      {
-        where: { vector_layer_id: vectorLayerId },
-      },
-    )
-    // leave existing VLD unchanged
-    if (existingVectorLayerDisplay) return
+    const firstExistingVectorLayerDisplay = existingVectorLayerDisplays?.[0]
 
-    // remove all other displays
+    if (!firstExistingVectorLayerDisplay) {
+      // create single display, then return
+      const data = createVectorLayerDisplay({ vector_layer_id: vectorLayerId })
+      return await db.vector_layer_displays.create({ data })
+    }
+
+    // remove all other displays, then return
+    return await db.vector_layer_displays.deleteMany({
+      where: {
+        vector_layer_display_id: {
+          not: firstExistingVectorLayerDisplay.vector_layer_display_id,
+        },
+      },
+    })
+  }
+
+  if (!properties.includes(displayByProperty)) {
+    // remove all displays before creating new ones
     await db.vector_layer_displays.deleteMany({
       where: { vector_layer_id: vectorLayerId },
     })
-
-    const data = createVectorLayerDisplay({ vector_layer_id: vectorLayerId })
-    return await db.vector_layer_displays.create({ data })
   }
 
   // get field of displayByPropertyField
