@@ -158,7 +158,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   try {
     tableRows = await db[table]?.findMany?.({
       where,
-      select: [displayByProperty],
+      select: { [displayByProperty]: true },
       distinct: [displayByProperty],
     })
   } catch (error) {
