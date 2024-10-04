@@ -40,11 +40,15 @@ export default function App() {
   return (
     <JotaiProvider store={store}>
       <FluentProvider theme={lightTheme}>
-        <uc-upload-ctx-provider
-          id="uploaderctx"
-          ref={uploaderRef}
+        <uc-config
           ctx-name="uploadcare-uploader"
-        ></uc-upload-ctx-provider>
+          pubkey="db67c21b6d9964e195b8"
+          maxLocalFileSizeBytes="100000000"
+          multiple="false"
+          sourceList="local, camera, dropbox, gdrive, gphotos"
+          useCloudImageEditor="true"
+          ref={uploaderRef}
+        ></uc-config>
         <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
         <div
           style={routerContainerStyle}

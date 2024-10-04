@@ -52,10 +52,10 @@ export const Header = memo(({ row }: Props) => {
 
   const uploaderCtx = useContext(UploaderContext)
   console.log('Header, uploaderCtx', uploaderCtx)
-  const addRow = useCallback(
-    async () => uploaderCtx.current.initFlow(),
-    [uploaderCtx],
-  )
+  const addRow = useCallback(async () => {
+    uploaderCtx.current.initFlow()
+    // uploaderCtx.current.click()
+  }, [uploaderCtx])
 
   const deleteRow = useCallback(async () => {
     await db.files.delete({ where: { file_id } })

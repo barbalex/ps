@@ -187,10 +187,10 @@ export const Uploader = () => {
       ctx-name="uploadcare-uploader"
       css-src="https://cdn.jsdelivr.net/npm/@uploadcare/file-uploader@v1/web/uc-file-uploader-regular.min.css"
     >
-      {/* <uc-data-output
+      <uc-data-input
         ctx-name="uploadcare-uploader"
-        ref={uploaderCtx.current}
-      ></uc-data-output> */}
+        // ref={uploaderCtx.current}
+      ></uc-data-input>
     </uc-file-uploader-regular>
   )
 }
