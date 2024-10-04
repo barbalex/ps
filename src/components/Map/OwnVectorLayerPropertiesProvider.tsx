@@ -163,7 +163,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
           db.vector_layers.update({
             where: { vector_layer_id: vectorLayer.vector_layer_id },
             data: { properties: places1Properties },
-          }))
+          })
           completeVectorLayerDisplaysForLayerWithProperties({
             db,
             vectorLayerId: vectorLayer.vector_layer_id,
