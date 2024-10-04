@@ -1110,8 +1110,7 @@ CREATE INDEX ON widgets_for_fields(field_type_id);
 CREATE INDEX ON widgets_for_fields(widget_type_id);
 
 CREATE INDEX ON widgets_for_fields(label);
-
--- TODO: add level to places and all their child tables?
+-- TODO: add sort field to enable sorting of field widgets
 CREATE TABLE fields(
   field_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,

@@ -80,16 +80,17 @@ export const Jsonb = memo(
       const editingField = searchParams.get('editingField')
       const { db } = useElectric()!
 
+      const where = {
+        table_name: table,
+        // level: table === 'places' ? (place_id ? 2 : 1) : place_id2 ? 2 : 1,
+        level: place_id2 ? 2 : 1,
+        project_id: isAccountTable ? null : project_id,
+      }
+      console.log('Jsonb, where:', where)
       const { results: fields = [] } = useLiveQuery(
-        db.fields.liveMany({
-          where: {
-            table_name: table,
-            // TODO: need to filter by level
-            level: table === 'places' ? (place_id ? 2 : 1) : place_id2 ? 2 : 1,
-            project_id: isAccountTable ? null : project_id,
-          },
-        }),
+        db.fields.liveMany({ where }),
       )
+      console.log('Jsonb, fields:', fields)
       const { results: fieldTypes = [] } = useLiveQuery(
         db.field_types.liveMany({
           where: {
