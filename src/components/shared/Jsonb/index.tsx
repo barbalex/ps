@@ -28,6 +28,36 @@ import { AddField } from './AddField.tsx'
 import { snakeToCamel } from '../../../modules/snakeToCamel.ts'
 import * as stores from '../../../store.ts'
 
+// all tables that have configurable fields
+// import {
+//   Projects as Project,
+//   Subprojects as Subproject,
+//   Taxonomies as Taxonomy,
+//   Taxa as Taxon,
+//   Lists as List,
+//   Places as Place,
+//   Actions as Action,
+//   Action_reports as ActionReport,
+//   Checks as Check,
+//   Place_reports as PlaceReport,
+//   Goals as Goal,
+//   Goal_reports as GoalReport,
+//   Subproject_reports as SubprojectReport,
+//   Project_reports as ProjectReport,
+//   Files as File,
+//   Persons as Person,
+//   Occurrences as Occurrence,
+// } from '../../../generated/client/index.ts'
+
+type Props = {
+  table: string
+  name?: string
+  idField: string
+  id: string
+  data: Record<string, unknown>
+  autoFocus?: boolean
+}
+
 // TODO: if editing a field, show the field form
 // and focus the name field on first render?
 export const Jsonb = memo(
@@ -40,7 +70,7 @@ export const Jsonb = memo(
         id,
         data = {},
         autoFocus = false,
-      },
+      }: Props,
       ref,
     ) => {
       const isAccountTable = accountTables.includes(table)
@@ -131,7 +161,7 @@ export const Jsonb = memo(
             return
           }
           try {
-            await db[table].update({
+            await db[table]?.update({
               where: { [idField]: id },
               data: { [jsonFieldName]: val },
             })
