@@ -8,6 +8,12 @@ import {
 import { useDebouncedCallback } from 'use-debounce'
 import axios from 'redaxios'
 
+// css is needed
+// not using the rest of react-uploader though
+// https://www.npmjs.com/package/@uploadcare/react-uploader
+import '@uploadcare/react-uploader/core.css'
+import './uploader.css'
+
 import { createFile } from '../../modules/createRows.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
 import { UploaderContext } from '../../UploaderContext.ts'
@@ -28,9 +34,13 @@ export const Uploader = () => {
 
   const { pathname } = useLocation()
   const isPreview = pathname.endsWith('preview')
+  const isFileList = pathname.endsWith('files')
+
+  // const isFile = pathname.endsWith('file')
 
   const { db } = useElectric()!
   const uploaderCtx = useContext(UploaderContext)
+  const api = uploaderCtx?.current?.getAPI?.()
 
   // ISSUE: the event is called THREE times
   // Solution: query files with the uuid and only create if it doesn't exist
@@ -67,14 +77,15 @@ export const Uploader = () => {
       const data = await createFile(fileInput)
       await db.files.create({ data })
       navigate({
-        pathname: `./${data.file_id}${isPreview ? '/preview' : ''}`,
+        pathname: `${!isFileList ? '.' : ''}./${data.file_id}${
+          isPreview ? '/preview' : ''
+        }`,
         search: searchParams.toString(),
       })
       // close the uploader or it will be open when navigating to the list
-      uploaderCtx.current.doneFlow()
+      api?.doneFlow?.()
       // clear the uploader or it will show the last uploaded file when opened next time
-      // https://github.com/uploadcare/blocks/issues/219#issuecomment-1223881802
-      uploaderCtx.current.uploadCollection.clearAll()
+      api?.removeAllFiles?.()
 
       return
 
@@ -125,8 +136,10 @@ export const Uploader = () => {
     },
     [
       action_id,
+      api,
       check_id,
       db,
+      isFileList,
       isPreview,
       navigate,
       place_id,
@@ -134,7 +147,6 @@ export const Uploader = () => {
       project_id,
       searchParams,
       subproject_id,
-      uploaderCtx,
     ],
   )
 
@@ -147,7 +159,7 @@ export const Uploader = () => {
   )
 
   useEffect(() => {
-    const ctx = uploaderCtx.current
+    const ctx = uploaderCtx?.current
     ctx.addEventListener('file-upload-success', onUploadSuccessDebounced)
     ctx.addEventListener('file-upload-failed', onUploadFailed)
     return () => {
@@ -159,16 +171,14 @@ export const Uploader = () => {
   // docs: https://uploadcare.com/docs/file-uploader
   // TODO: get uploader css locally if it should be possible to upload files
   // offline to sqlite
+
   return (
-    <lr-file-uploader-regular
-      css-src="https://cdn.jsdelivr.net/npm/@uploadcare/blocks@0.32.4/web/lr-file-uploader-regular.min.css"
+    <uc-file-uploader-regular
       ctx-name="uploadcare-uploader"
-      class="uploadcare-uploader-config"
+      css-src="https://cdn.jsdelivr.net/npm/@uploadcare/file-uploader@v1/web/uc-file-uploader-regular.min.css"
+      id="uploader"
     >
-      <lr-data-output
-        ctx-name="uploadcare-uploader"
-        ref={uploaderCtx.current}
-      ></lr-data-output>
-    </lr-file-uploader-regular>
+      <uc-data-input ctx-name="uploadcare-uploader"></uc-data-input>
+    </uc-file-uploader-regular>
   )
 }
