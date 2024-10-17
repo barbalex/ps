@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useContext, useRef } from 'react'
+import { useCallback, useEffect, useContext } from 'react'
 import {
   useNavigate,
   useParams,
@@ -7,9 +7,9 @@ import {
 } from 'react-router-dom'
 import { useDebouncedCallback } from 'use-debounce'
 import axios from 'redaxios'
-import { FileUploaderRegular } from '@uploadcare/react-uploader'
 
 import '@uploadcare/react-uploader/core.css'
+import './uploader.css'
 
 import { createFile } from '../../modules/createRows.ts'
 import { useElectric } from '../../ElectricProvider.tsx'
@@ -31,23 +31,18 @@ export const Uploader = () => {
 
   const { pathname } = useLocation()
   const isPreview = pathname.endsWith('preview')
+  const isFileList = pathname.endsWith('files')
+
+  // const isFile = pathname.endsWith('file')
 
   const { db } = useElectric()!
   const uploaderCtx = useContext(UploaderContext)
-
-  const ref = useRef<HTMLElement | null>(null)
-  useEffect(() => {
-    console.log('Uploader, ref:', ref.current)
-  }, [])
+  const api = uploaderCtx?.current?.getAPI?.()
 
   // ISSUE: the event is called THREE times
   // Solution: query files with the uuid and only create if it doesn't exist
   const onUploadSuccess = useCallback(
     async (event: CustomEvent) => {
-      console.log('Uploader, onUploadSuccess', {
-        event,
-        uploaderCtx: uploaderCtx?.current,
-      })
       const { results: files = [] } = await db.files.findMany({
         where: { uuid: event.detail.uuid },
       })
@@ -79,14 +74,15 @@ export const Uploader = () => {
       const data = await createFile(fileInput)
       await db.files.create({ data })
       navigate({
-        pathname: `./${data.file_id}${isPreview ? '/preview' : ''}`,
+        pathname: `${!isFileList ? '.' : ''}./${data.file_id}${
+          isPreview ? '/preview' : ''
+        }`,
         search: searchParams.toString(),
       })
       // close the uploader or it will be open when navigating to the list
-      uploaderCtx?.current?.doneFlow?.()
+      api?.doneFlow?.()
       // clear the uploader or it will show the last uploaded file when opened next time
-      // https://github.com/uploadcare/blocks/issues/219#issuecomment-1223881802
-      uploaderCtx?.current?.uploadCollection?.clearAll?.()
+      api?.removeAllFiles?.()
 
       return
 
@@ -137,8 +133,10 @@ export const Uploader = () => {
     },
     [
       action_id,
+      api,
       check_id,
       db,
+      isFileList,
       isPreview,
       navigate,
       place_id,
@@ -146,7 +144,6 @@ export const Uploader = () => {
       project_id,
       searchParams,
       subproject_id,
-      uploaderCtx,
     ],
   )
 
@@ -171,26 +168,14 @@ export const Uploader = () => {
   // docs: https://uploadcare.com/docs/file-uploader
   // TODO: get uploader css locally if it should be possible to upload files
   // offline to sqlite
-  // return (
-  //   <FileUploaderRegular
-  //     sourceList="local, url, camera"
-  //     classNameUploader="uc-light"
-  //     pubkey="db67c21b6d9964e195b8"
-  //     onFileUploadSuccess={onUploadSuccessDebounced}
-  //     onFileUploadFailed={onUploadFailed}
-  //     ctxName="uploadcare-uploader"
-  //     ref={ref}
-  //   />
-  // )
+
   return (
     <uc-file-uploader-regular
       ctx-name="uploadcare-uploader"
       css-src="https://cdn.jsdelivr.net/npm/@uploadcare/file-uploader@v1/web/uc-file-uploader-regular.min.css"
+      id="uploader"
     >
-      <uc-data-input
-        ctx-name="uploadcare-uploader"
-        // ref={uploaderCtx.current}
-      ></uc-data-input>
+      <uc-data-input ctx-name="uploadcare-uploader"></uc-data-input>
     </uc-file-uploader-regular>
   )
 }

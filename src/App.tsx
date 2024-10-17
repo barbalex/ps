@@ -47,8 +47,12 @@ export default function App() {
           multiple="false"
           sourceList="local, camera, dropbox, gdrive, gphotos"
           useCloudImageEditor="true"
-          ref={uploaderRef}
         ></uc-config>
+        <uc-upload-ctx-provider
+          id="uploaderctx"
+          ctx-name="uploadcare-uploader"
+          ref={uploaderRef}
+        ></uc-upload-ctx-provider>
         <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
         <div
           style={routerContainerStyle}

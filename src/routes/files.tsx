@@ -50,10 +50,8 @@ export const Component = memo(() => {
   )
 
   const uploaderCtx = useContext(UploaderContext)
-  const onClickAdd = useCallback(
-    () => uploaderCtx.current.initFlow(),
-    [uploaderCtx],
-  )
+  const api = uploaderCtx?.current?.getAPI?.()
+  const onClickAdd = useCallback(() => api?.initFlow?.(), [api])
 
   // TODO: get uploader css locally if it should be possible to upload files
   // offline to SQLite

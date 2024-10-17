@@ -51,11 +51,9 @@ export const Header = memo(({ row }: Props) => {
   // TODO: if is preview, add preview to the url
 
   const uploaderCtx = useContext(UploaderContext)
-  console.log('Header, uploaderCtx', uploaderCtx)
-  const addRow = useCallback(async () => {
-    uploaderCtx.current.initFlow()
-    // uploaderCtx.current.click()
-  }, [uploaderCtx])
+  const api = uploaderCtx?.current?.getAPI?.()
+
+  const addRow = useCallback(async () => api.initFlow(), [api])
 
   const deleteRow = useCallback(async () => {
     await db.files.delete({ where: { file_id } })
