@@ -8,6 +8,9 @@ import {
 import { useDebouncedCallback } from 'use-debounce'
 import axios from 'redaxios'
 
+// css is needed
+// not using the rest of react-uploader though
+// https://www.npmjs.com/package/@uploadcare/react-uploader
 import '@uploadcare/react-uploader/core.css'
 import './uploader.css'
 

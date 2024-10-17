@@ -6,17 +6,6 @@ import { Provider as JotaiProvider } from 'jotai'
 // TODO: is this really needed?
 import * as UC from '@uploadcare/file-uploader'
 UC.defineComponents(UC)
-// TODO: remove previous version of uploader
-// import * as LR from '@uploadcare/blocks'
-// UC.FileUploaderRegular.shadowStyles = /* CSS */ `
-//   :host lr-copyright {
-//     display: none;
-//   }
-//   :host lr-simple-btn {
-//     display: none;
-//   }
-// `
-// LR.registerBlocks(LR)
 
 import { styleSheet } from './css.ts'
 import 'allotment/dist/style.css'
