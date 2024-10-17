@@ -1,3 +1,7 @@
 #uploader > uc-simple-btn {
   display: none;
 }
+
+uc-copyright {
+  display: none;
+}
