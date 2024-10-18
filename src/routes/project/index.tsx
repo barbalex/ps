@@ -78,15 +78,9 @@ export const Component = memo(() => {
       </TabList>
       {tab === 'form' && (
         <div
-          className="form-container"
           role="tabpanel"
           aria-labelledby="form"
         >
-          <TextFieldInactive
-            label="ID"
-            name="project_id"
-            value={row.project_id}
-          />
           <Form
             row={row}
             onChange={onChange}
