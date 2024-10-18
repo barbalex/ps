@@ -69,12 +69,6 @@ export const Component = memo(() => {
             Design
           </Tab>
         )}
-        <Tab
-          id="charts"
-          value="charts"
-        >
-          Charts
-        </Tab>
       </TabList>
       {tab === 'form' && (
         <div
@@ -93,15 +87,6 @@ export const Component = memo(() => {
           onChange={onChange}
           row={row}
         />
-      )}
-      {tab === 'charts' && (
-        <div
-          role="tabpanel"
-          aria-labelledby="charts"
-          className="form-container"
-        >
-          <div>charts</div>
-        </div>
       )}
     </div>
   )
