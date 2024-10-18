@@ -1111,7 +1111,9 @@ CREATE INDEX ON widgets_for_fields(widget_type_id);
 
 CREATE INDEX ON widgets_for_fields(label);
 --
--- TODO: add sort field to enable sorting of field widgets
+-- TODO: add order_by field to enable ordering of field widgets
+-- idea: use an integer that represents the index of the widget
+-- thus: set index for ALL widgets of a field after reordering 
 CREATE TABLE fields(
   field_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1125,6 +1127,7 @@ CREATE TABLE fields(
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE NO action ON UPDATE CASCADE,
   preset text DEFAULT NULL,
   obsolete boolean DEFAULT NULL, -- FALSE,
+  -- order_by integer DEFAULT NULL, -- should be numeric but not supported by electric-sql
   label_replace_by_generated_column text DEFAULT NULL
 );
 

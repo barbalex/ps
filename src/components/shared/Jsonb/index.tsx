@@ -173,6 +173,7 @@ export const Jsonb = memo(
         (dataKey) => !fieldNamesDefined.includes(dataKey),
       )
 
+      // TODO: drag and drop to order
       const widgetsFromDataFieldsDefined = fields.map((field, index) => {
         if (editingField === field.field_id) {
           return (
