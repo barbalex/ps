@@ -1127,6 +1127,7 @@ CREATE TABLE fields(
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE NO action ON UPDATE CASCADE,
   preset text DEFAULT NULL,
   obsolete boolean DEFAULT NULL, -- FALSE,
+  sort_index integer DEFAULT NULL,
   -- order_by integer DEFAULT NULL, -- should be numeric but not supported by electric-sql
   label_replace_by_generated_column text DEFAULT NULL
 );
@@ -1151,6 +1152,8 @@ CREATE INDEX ON fields USING btree(list_id);
 -- CREATE INDEX ON fields USING btree((1))
 -- WHERE
 --   obsolete;
+CREATE INDEX ON fields USING btree(sort_index);
+
 COMMENT ON TABLE fields IS 'Fields are used to define the data structure of data jsonb fields in other tables.';
 
 COMMENT ON COLUMN fields.account_id IS 'redundant account_id enhances data safety';
@@ -1158,6 +1161,8 @@ COMMENT ON COLUMN fields.account_id IS 'redundant account_id enhances data safet
 COMMENT ON COLUMN fields.table_name IS 'table, on which this field is used inside the jsob field "data"';
 
 COMMENT ON COLUMN fields.level IS 'level of field if places or below: 1, 2';
+
+comment on column fields.sort_index is 'Enables sorting of fields. Per table';
 
 
 CREATE TYPE occurrence_imports_previous_import_operation_enum AS enum(
