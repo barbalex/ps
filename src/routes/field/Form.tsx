@@ -123,6 +123,7 @@ export const Component = memo(
         <TextField
           label="Sort Index"
           name="sort_index"
+          type="number"
           value={row.sort_index ?? ''}
           onChange={onChange}
         />
