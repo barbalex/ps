@@ -120,10 +120,17 @@ export const Component = memo(
           value={row.preset ?? ''}
           onChange={onChange}
         />
+        <TextField
+          label="Sort Index"
+          name="sort_index"
+          value={row.sort_index ?? ''}
+          onChange={onChange}
+        />
         <SwitchField
           label="Obsolete"
           name="obsolete"
           value={row.obsolete ?? false}
+          type="number"
           onChange={onChange}
           validationMessage="If obsolete, existing data is shown but this field will not be available for new records"
         />
