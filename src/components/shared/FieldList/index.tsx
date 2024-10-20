@@ -28,6 +28,11 @@ export const FieldList = memo(
           table_name: fieldsTable,
           project_id,
         },
+        orderBy: [
+          { table_name: 'asc' },
+          { sort_index: 'asc' },
+          { label: 'asc' },
+        ],
       }),
     )
     const options = useMemo(() => fields.map(({ name }) => name), [fields])

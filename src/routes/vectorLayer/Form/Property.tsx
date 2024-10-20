@@ -24,6 +24,7 @@ export const Property = memo(({ vectorLayer }: Props) => {
   const { results: fields = [] } = useLiveQuery(
     db.fields.liveMany({
       where: { table_name: table, level, project_id },
+      orderBy: [{ sort_index: 'asc' }, { label: 'asc' }],
     }),
   )
   const options = useMemo(

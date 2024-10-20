@@ -23,7 +23,7 @@ export const Component = memo(() => {
   const { results: fields = [] } = useLiveQuery(
     db.fields.liveMany({
       where: { project_id: project_id ?? null, ...where },
-      orderBy: { label: 'asc' },
+      orderBy: [{ sort_index: 'asc' }, { label: 'asc' }],
     }),
   )
   const { results: fieldsUnfiltered = [] } = useLiveQuery(
