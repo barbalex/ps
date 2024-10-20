@@ -82,10 +82,9 @@ export const Jsonb = memo(
 
       const where = {
         table_name: table,
-        // level: table === 'places' ? (place_id ? 2 : 1) : place_id2 ? 2 : 1,
-        level: place_id2 ? 2 : 1,
         project_id: isAccountTable ? null : project_id,
       }
+      if (!isAccountTable) where.level = place_id2 ? 2 : 1
       // TODO: order by sort_index
       const { results: fields = [] } = useLiveQuery(
         db.fields.liveMany({
