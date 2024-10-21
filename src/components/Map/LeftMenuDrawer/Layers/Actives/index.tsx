@@ -57,13 +57,6 @@ type ReorderItemProps = {
   closestEdgeOfTarget: Edge | null
 }
 
-type LastCardMoved = {
-  item: Item
-  previousIndex: number
-  currentIndex: number
-  numberOfItems: number
-} | null
-
 type CleanupFn = () => void
 type ListContextValue = {
   getListLength: () => number
@@ -175,7 +168,6 @@ export const ActiveLayers = memo(() => {
   }, [layerPresentationIds, mapLayerSorting, setMapLayerSorting])
 
   const [registry] = useState(getItemRegistry)
-  const [lastCardMoved, setLastCardMoved] = useState<LastCardMoved>(null)
 
   // Isolated instances of this component from one another
   const [instanceId] = useState(() => Symbol('instance-id'))
@@ -198,28 +190,14 @@ export const ActiveLayers = memo(() => {
         return
       }
 
-      const item = activeLayers[startIndex]
-
       const newLayerSorting = reorder({
         list: layerPresentationIds,
         startIndex,
         finishIndex,
       })
       setMapLayerSorting(newLayerSorting)
-
-      setLastCardMoved({
-        item,
-        previousIndex: startIndex,
-        currentIndex: finishIndex,
-        numberOfItems: mapLayerSorting.length,
-      })
     },
-    [
-      activeLayers,
-      layerPresentationIds,
-      mapLayerSorting.length,
-      setMapLayerSorting,
-    ],
+    [layerPresentationIds, setMapLayerSorting],
   )
 
   useEffect(() => {
