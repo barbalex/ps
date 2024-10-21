@@ -5,16 +5,10 @@ import { useSearchParams, useLocation, useParams } from 'react-router-dom'
 import { useElectric } from '../../../../ElectricProvider.tsx'
 import { FieldFormInForm } from '../../FieldFormInForm.tsx'
 import { TextField } from '../../TextField.tsx'
-import { TextArea } from '../../TextArea.tsx'
-import { DropdownField } from '../../DropdownField.tsx'
-import { DropdownFieldFromList } from '../../DropdownFieldFromList.tsx'
-import { RadioGroupFromList } from '../../RadioGroupFromList.tsx'
-import { DateField } from '../../DateField.tsx'
-import { TimeFields } from '../../TimeFields.tsx'
-import { DateTimeField } from '../../DateTimeField.tsx'
 import { EditField } from './EditField.tsx'
 import { getValueFromChange } from '../../../../modules/getValueFromChange.ts'
 import { Fields as Field } from '../../../../generated/client/index.ts'
+import { Widget } from './Widget.tsx'
 
 type Props = {
   fields: Field[]
@@ -163,124 +157,23 @@ export const WidgetsFromDataFieldsDefined = memo(
           )
         }
 
-        switch (widgetType?.name) {
-          case 'text':
-            return (
-              <TextField
-                key={`${name}/${index}`}
-                label={field_label}
-                name={name}
-                value={value}
-                type={type ?? 'text'}
-                onChange={onChange}
-                autoFocus={autoFocus && index === 0}
-                ref={ref}
-                button={<EditField field_id={field.field_id} />}
-              />
-            )
-          case 'textarea':
-            return (
-              <TextArea
-                key={`${name}/${index}`}
-                label={field_label}
-                name={name}
-                value={value}
-                type={type ?? 'text'}
-                onChange={onChange}
-                autoFocus={autoFocus && index === 0}
-                button={<EditField field_id={field.field_id} />}
-              />
-            )
-          case 'dropdown':
-            return (
-              <DropdownField
-                key={`${name}/${index}`}
-                name={name}
-                value={value}
-                onChange={onChange}
-                autoFocus={autoFocus && index === 0}
-                ref={ref}
-                button={<EditField field_id={field.field_id} />}
-              />
-            )
-          case 'options-many':
-            return (
-              <DropdownFieldFromList
-                key={`${name}/${index}`}
-                name={name}
-                label={field_label}
-                list_id={field.list_id}
-                value={value}
-                onChange={onChange}
-                autoFocus={autoFocus && index === 0}
-                button={<EditField field_id={field.field_id} />}
-              />
-            )
-          case 'options-few':
-            return (
-              <RadioGroupFromList
-                key={`${name}/${index}`}
-                name={name}
-                label={field_label}
-                list_id={field.list_id}
-                value={value}
-                onChange={onChange}
-                autoFocus={autoFocus && index === 0}
-                button={<EditField field_id={field.field_id} />}
-              />
-            )
-          case 'datepicker':
-            return (
-              <DateField
-                key={`${name}/${index}`}
-                label={field_label}
-                name={name}
-                // in json date is saved as iso string
-                value={value ? new Date(value) : null}
-                onChange={onChange}
-                autoFocus={autoFocus && index === 0}
-                button={<EditField field_id={field.field_id} />}
-              />
-            )
-          case 'timepicker':
-            return (
-              <TimeFields
-                key={`${name}/${index}`}
-                label={field_label}
-                name={name}
-                value={value}
-                onChange={onChange}
-                autoFocus={autoFocus && index === 0}
-                button={<EditField field_id={field.field_id} />}
-              />
-            )
-          case 'datetimepicker':
-            return (
-              <DateTimeField
-                key={`${name}/${index}`}
-                label={field_label}
-                name={name}
-                value={value ? new Date(value) : null}
-                onChange={onChange}
-                autoFocus={autoFocus && index === 0}
-                button={<EditField field_id={field.field_id} />}
-              />
-            )
-          default:
-            return (
-              <TextField
-                key={`${name}/${index}`}
-                label={field_label}
-                name={name}
-                value={value}
-                type={type ?? 'text'}
-                onChange={onChange}
-                autoFocus={autoFocus && index === 0}
-                ref={ref}
-                button={<EditField field_id={field.field_id} />}
-              />
-            )
-        }
+        return (
+          <Widget
+            key={`${name}/${index}`}
+            name={name}
+            type={type}
+            field={field}
+            index={index}
+            data={data}
+            table={table}
+            jsonFieldName={jsonFieldName}
+            idField={idField}
+            id={id}
+            widgetType={widgetType}
+            autoFocus={autoFocus && index === 0}
+            ref={ref}
+          />
+        )
       })
     },
   ),
