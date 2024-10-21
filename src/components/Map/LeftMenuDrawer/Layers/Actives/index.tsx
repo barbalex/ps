@@ -15,8 +15,6 @@ import {
   extractClosestEdge,
 } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
 import { reorder } from '@atlaskit/pragmatic-drag-and-drop/reorder'
-import * as liveRegion from '@atlaskit/pragmatic-drag-and-drop-live-region'
-import { triggerPostMoveFlash } from '@atlaskit/pragmatic-drag-and-drop-flourish/trigger-post-move-flash'
 import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index'
 import { useAtom, atom } from 'jotai'
 
@@ -227,7 +225,7 @@ export const ActiveLayers = memo(() => {
   useEffect(() => {
     return monitorForElements({
       canMonitor({ source }) {
-        return isItemData(source.data) && source.data.instanceId === instanceId // works
+        return isItemData(source.data) && source.data.instanceId === instanceId
       },
       onDrop({ location, source }) {
         const target = location.current.dropTargets[0]
@@ -260,32 +258,6 @@ export const ActiveLayers = memo(() => {
       },
     })
   }, [activeLayers, instanceId, reorderItem])
-
-  // once a drag is finished, we have some post drop actions to take
-  useEffect(() => {
-    if (lastCardMoved === null) {
-      return
-    }
-
-    const { item, previousIndex, currentIndex, numberOfItems } = lastCardMoved
-    const element = registry.getElement(item.id)
-    if (element) {
-      triggerPostMoveFlash(element)
-    }
-
-    liveRegion.announce(
-      `You've moved ${item.label} from position ${
-        previousIndex + 1
-      } to position ${currentIndex + 1} of ${numberOfItems}.`,
-    )
-  }, [lastCardMoved, registry])
-
-  // cleanup the live region when this component is finished
-  useEffect(() => {
-    return function cleanup() {
-      liveRegion.cleanup()
-    }
-  }, [])
 
   const getListLength = useCallback(
     () => activeLayers.length,
