@@ -14,11 +14,30 @@ import { TimeFields } from '../../TimeFields.tsx'
 import { DateTimeField } from '../../DateTimeField.tsx'
 import { EditField } from './EditField.tsx'
 import { getValueFromChange } from '../../../../modules/getValueFromChange.ts'
+import { Fields as Field } from '../../../../generated/client/index.ts'
+
+type Props = {
+  fields: Field[]
+  table: string
+  jsonFieldName: string
+  idField: string
+  id: string
+  data: Record<string, unknown>
+  autoFocus?: boolean
+}
 
 export const WidgetsFromDataFieldsDefined = memo(
   forwardRef(
     (
-      { fields, data = {}, table, jsonFieldName, idField, id, autoFocus },
+      {
+        fields,
+        data = {},
+        table,
+        jsonFieldName,
+        idField,
+        id,
+        autoFocus,
+      }: Props,
       ref,
     ) => {
       const [searchParams] = useSearchParams()
