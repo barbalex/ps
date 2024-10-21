@@ -176,6 +176,8 @@ export const Jsonb = memo(
       )
 
       // TODO: drag and drop to order
+      // only if editing
+      // not if editingField
       const widgetsFromDataFieldsDefined = fields.map((field, index) => {
         if (editingField === field.field_id) {
           return (
