@@ -28,7 +28,6 @@ export const AddField = memo(({ tableName, level }) => {
   const [searchParams, setSearchParams] = useSearchParams()
   const { pathname } = useLocation()
 
-
   const { db } = useElectric()!
 
   const addRow = useCallback(async () => {

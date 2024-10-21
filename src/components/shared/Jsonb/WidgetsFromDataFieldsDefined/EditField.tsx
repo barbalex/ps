@@ -4,7 +4,7 @@ import { MdEdit } from 'react-icons/md'
 import { useSearchParams, useLocation } from 'react-router-dom'
 import { useAtom } from 'jotai'
 
-import { designingAtom } from '../../../store.ts'
+import { designingAtom } from '../../../../store.ts'
 
 export const EditField = memo(({ field_id }) => {
   const [designing] = useAtom(designingAtom)
