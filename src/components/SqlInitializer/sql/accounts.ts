@@ -26,6 +26,7 @@ export const generateAccountLabel = async (db) => {
   const accountsUpdateLabelTriggerExists = triggers.some(
     (column) => column.name === 'accounts_label_trigger',
   )
+  // TODO: migrate to PostgreSQL, do this before update? (1. create plpgsql? function returning trigger, 2. create trigger)
   if (!accountsUpdateLabelTriggerExists) {
     await db.unsafeExec({
       sql: `
