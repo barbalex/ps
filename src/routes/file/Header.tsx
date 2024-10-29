@@ -1,4 +1,4 @@
-import { useCallback, memo, useMemo, useContext } from 'react'
+import { useCallback, memo, useMemo, useContext, forwardRef } from 'react'
 import {
   useParams,
   useNavigate,
@@ -12,12 +12,13 @@ import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { Files as File } from '../../generated/client/index.ts'
 import { UploaderContext } from '../../UploaderContext.ts'
+import { FullscreenControl } from './FullscreenControl.tsx'
 
 interface Props {
   row: File
 }
 
-export const Header = memo(({ row }: Props) => {
+export const Header = memo(({ row, previewRef }: Props) => {
   const {
     project_id,
     subproject_id,
@@ -29,9 +30,9 @@ export const Header = memo(({ row }: Props) => {
   } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-
   const { pathname } = useLocation()
   const isPreview = pathname.endsWith('preview')
+
   const onClickPreview = useCallback(() => {
     if (isPreview) {
       navigate({
@@ -86,16 +87,6 @@ export const Header = memo(({ row }: Props) => {
     const len = files.length
     const index = files.findIndex((p) => p.file_id === file_id)
     const next = files[(index + 1) % len]
-    console.log('file.Header.toNext', {
-      files,
-      len,
-      index,
-      next,
-      isPreview,
-      pathname: `${isPreview ? '../' : ''}../${next.file_id}${
-        isPreview ? '/preview' : ''
-      }`,
-    })
     navigate({
       pathname: `${isPreview ? '../' : ''}../${next.file_id}${
         isPreview ? '/preview' : ''
@@ -129,11 +120,14 @@ export const Header = memo(({ row }: Props) => {
       toPrevious={toPrevious}
       tableName="file"
       siblings={
-        <Button
-          title={isPreview ? 'View form' : 'View file'}
-          icon={isPreview ? <MdEditNote /> : <MdPreview />}
-          onClick={onClickPreview}
-        />
+        <>
+          <Button
+            title={isPreview ? 'View form' : 'View file'}
+            icon={isPreview ? <MdEditNote /> : <MdPreview />}
+            onClick={onClickPreview}
+          />
+          {isPreview && <FullscreenControl previewRef={previewRef} />}
+        </>
       }
     />
   )

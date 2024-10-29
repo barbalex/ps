@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, useRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import { useResizeDetector } from 'react-resize-detector'
@@ -22,6 +22,7 @@ const fileStyle = {
   flexGrow: 1,
   display: 'flex',
   flexDirection: 'column',
+  backgroundColor: 'white',
 }
 const imageStyle = {
   objectFit: 'contain',
@@ -30,6 +31,7 @@ const textStyle = { alignSelf: 'center', paddingTop: '2em' }
 
 export const Component = memo(() => {
   const { file_id } = useParams()
+  const previewRef = useRef<HTMLDivElement>(null)
 
   const { db } = useElectric()!
   const { results: row } = useLiveQuery(
@@ -68,59 +70,69 @@ export const Component = memo(() => {
   const isNotViewable = !isImage && !isPdf && !isReactDocViewable
 
   return (
-    <div style={containerStyle}>
+    <>
       <Uploader />
-      <Header row={row} />
       <div
-        style={fileStyle}
-        ref={ref}
+        ref={previewRef}
+        style={containerStyle}
       >
-        {isImage && row.url && width && (
-          <img
-            src={`${row.url}-/preview/${Math.floor(width)}x${Math.floor(
-              height,
-            )}/-/format/auto/-/quality/smart/`}
-            alt={row.name}
-            width={width}
-            height={
-              row.width && row.height
-                ? (width / row.width) * row.height
-                : undefined
-            }
-            style={imageStyle}
-          />
-        )}
-        {isPdf && row.url && (
-          <object
-            data={row.url}
-            type="application/pdf"
-            style={{
-              width,
-              height: '100%',
-            }}
-          />
-        )}
-        {isReactDocViewable && (
-          <DocViewer
-            key={width}
-            documents={[
-              {
-                uri: row.url,
-                mimeType: row.mimetype,
-              },
-            ]}
-            renderers={DocViewerRenderers}
-            config={{ header: { disableHeader: true } }}
-            style={{ height: '100%' }}
-            className="doc-viewer"
-          />
-        )}
-        {isNotViewable && (
-          <div
-            style={textStyle}
-          >{`Files with mime type '${row.mimetype}' can't be previewed (yet)`}</div>
-        )}
+        <Header
+          row={row}
+          previewRef={previewRef}
+        />
+        <div
+          style={fileStyle}
+          ref={ref}
+        >
+          {isImage && row.url && width && (
+            <img
+              src={`${row.url}-/preview/${Math.floor(width)}x${Math.floor(
+                height,
+              )}/-/format/auto/-/quality/smart/`}
+              alt={row.name}
+              width={width}
+              height={
+                row.width && row.height
+                  ? (width / row.width) * row.height
+                  : undefined
+              }
+              style={imageStyle}
+            />
+          )}
+          {isPdf && row.url && (
+            <object
+              data={row.url}
+              type="application/pdf"
+              style={{
+                width,
+                height: '100%',
+              }}
+            />
+          )}
+          {isReactDocViewable && (
+            <div style={{ height: '100%' }}>
+              <DocViewer
+                key={width}
+                documents={[
+                  {
+                    uri: row.url,
+                    mimeType: row.mimetype,
+                  },
+                ]}
+                renderers={DocViewerRenderers}
+                config={{ header: { disableHeader: true } }}
+                style={{ height: '100%' }}
+                className="doc-viewer"
+              />
+            </div>
+          )}
+          {isNotViewable && (
+            <div
+              style={textStyle}
+            >{`Files with mime type '${row.mimetype}' can't be previewed (yet)`}</div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   )
 })

@@ -50,8 +50,6 @@ https://stackoverflow.com/a/21541021/712005 */
   }
 }
 
-
-
 .form-container-embedded {
   flex: 1;
   display: flex;
@@ -85,7 +83,8 @@ https://stackoverflow.com/a/21541021/712005 */
   flex-wrap: nowrap;
   justify-content: space-between;
   padding: 5px 10px;
-  background-color: rgba(103, 216, 101, 0.2);
+  /* background-color: rgba(103, 216, 101, 0.2); */
+  background-color: rgb(225, 247, 224);
   h1 {
     margin: 0;
     font-size: medium;
