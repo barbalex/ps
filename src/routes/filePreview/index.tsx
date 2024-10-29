@@ -11,6 +11,7 @@ import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'
 import './style.css'
+import '@cyntler/react-doc-viewer/dist/index.css'
 
 const containerStyle = {
   height: '100%',
@@ -70,7 +71,10 @@ export const Component = memo(() => {
     <div style={containerStyle}>
       <Uploader />
       <Header row={row} />
-      <div style={fileStyle} ref={ref}>
+      <div
+        style={fileStyle}
+        ref={ref}
+      >
         {isImage && row.url && width && (
           <img
             src={`${row.url}-/preview/${Math.floor(width)}x${Math.floor(
@@ -107,6 +111,8 @@ export const Component = memo(() => {
             ]}
             renderers={DocViewerRenderers}
             config={{ header: { disableHeader: true } }}
+            style={{ height: '100%' }}
+            className="doc-viewer"
           />
         )}
         {isNotViewable && (
