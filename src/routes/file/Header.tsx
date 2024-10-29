@@ -86,8 +86,20 @@ export const Header = memo(({ row }: Props) => {
     const len = files.length
     const index = files.findIndex((p) => p.file_id === file_id)
     const next = files[(index + 1) % len]
+    console.log('file.Header.toNext', {
+      files,
+      len,
+      index,
+      next,
+      isPreview,
+      pathname: `${isPreview ? '../' : ''}../${next.file_id}${
+        isPreview ? '/preview' : ''
+      }`,
+    })
     navigate({
-      pathname: `../${next.file_id}${isPreview ? '/preview' : ''}`,
+      pathname: `${isPreview ? '../' : ''}../${next.file_id}${
+        isPreview ? '/preview' : ''
+      }`,
       search: searchParams.toString(),
     })
   }, [db.files, where, navigate, isPreview, searchParams, file_id])
@@ -101,7 +113,9 @@ export const Header = memo(({ row }: Props) => {
     const index = files.findIndex((p) => p.file_id === file_id)
     const previous = files[(index + len - 1) % len]
     navigate({
-      pathname: `../${previous.file_id}${isPreview ? '/preview' : ''}`,
+      pathname: `${isPreview ? '../' : ''}../${previous.file_id}${
+        isPreview ? '/preview' : ''
+      }`,
       search: searchParams.toString(),
     })
   }, [db.files, where, navigate, isPreview, searchParams, file_id])
