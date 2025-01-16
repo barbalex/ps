@@ -2,6 +2,9 @@ import React, { createRef } from 'react'
 import { RouterProvider } from 'react-router-dom'
 import { FluentProvider } from '@fluentui/react-components'
 import { Provider as JotaiProvider } from 'jotai'
+import { PGlite } from '@electric-sql/pglite'
+import { live } from '@electric-sql/pglite/live'
+import { PGliteProvider } from '@electric-sql/pglite-react'
 
 // TODO: is this really needed?
 import * as UC from '@uploadcare/file-uploader'
@@ -16,45 +19,51 @@ import { router } from './router/index.tsx'
 import { UploaderContext } from './UploaderContext.ts'
 import { store } from './store.ts'
 
+const db = await PGlite.create({
+  extensions: { live },
+})
+
 const routerContainerStyle = {
   display: 'flex',
   flexDirection: 'column',
   height: '100dvh',
 }
 
-export default function App() {
+export const App = () => {
   // console.log('App, theme:', customLightTheme)
   const uploaderRef = createRef<HTMLElement | null>(null)
 
   return (
-    <JotaiProvider store={store}>
-      <FluentProvider theme={lightTheme}>
-        <uc-config
-          ctx-name="uploadcare-uploader"
-          pubkey="db67c21b6d9964e195b8"
-          maxLocalFileSizeBytes="100000000"
-          multiple="false"
-          sourceList="local, camera, dropbox, gdrive, gphotos"
-          useCloudImageEditor="true"
-        ></uc-config>
-        <uc-upload-ctx-provider
-          id="uploaderctx"
-          ctx-name="uploadcare-uploader"
-          ref={uploaderRef}
-        ></uc-upload-ctx-provider>
-        <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
-        <div
-          style={routerContainerStyle}
-          id="router-container"
-        >
-          <UploaderContext.Provider value={uploaderRef}>
-            <RouterProvider
-              router={router()}
-              future={{ v7_startTransition: true }}
-            />
-          </UploaderContext.Provider>
-        </div>
-      </FluentProvider>
-    </JotaiProvider>
+    <PGliteProvider db={db}>
+      <JotaiProvider store={store}>
+        <FluentProvider theme={lightTheme}>
+          <uc-config
+            ctx-name="uploadcare-uploader"
+            pubkey="db67c21b6d9964e195b8"
+            maxLocalFileSizeBytes="100000000"
+            multiple="false"
+            sourceList="local, camera, dropbox, gdrive, gphotos"
+            useCloudImageEditor="true"
+          ></uc-config>
+          <uc-upload-ctx-provider
+            id="uploaderctx"
+            ctx-name="uploadcare-uploader"
+            ref={uploaderRef}
+          ></uc-upload-ctx-provider>
+          <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
+          <div
+            style={routerContainerStyle}
+            id="router-container"
+          >
+            <UploaderContext.Provider value={uploaderRef}>
+              <RouterProvider
+                router={router()}
+                future={{ v7_startTransition: true }}
+              />
+            </UploaderContext.Provider>
+          </div>
+        </FluentProvider>
+      </JotaiProvider>
+    </PGliteProvider>
   )
 }
