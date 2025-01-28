@@ -1,8 +1,8 @@
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
 import { useAtom } from 'jotai'
+import { usePGlite } from "@electric-sql/pglite-react"
 
-import { useElectric } from '../../../../ElectricProvider.tsx'
 import { Layer_presentations as LayerPresentation } from '../../../../generated/client/index.ts'
 import { TableLayer } from './TableLayer.tsx'
 import { draggableLayersAtom } from '../../../../store.ts'
@@ -14,7 +14,7 @@ interface Props {
 export const OccurrencesNotToAssign = ({ layerPresentation }: Props) => {
   const [draggableLayers] = useAtom(draggableLayersAtom)
   const { subproject_id } = useParams()
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   // TODO: query only inside current map bounds using places.bbox
   const { results: occurrenceImports = [] } = useLiveQuery(
