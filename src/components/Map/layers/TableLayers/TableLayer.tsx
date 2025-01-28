@@ -8,13 +8,6 @@ import { usePGlite } from '@electric-sql/pglite-react'
 
 import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
 import { Popup } from '../../Popup.tsx'
-import {
-  Places as Place,
-  Actions as Action,
-  Checks as Check,
-  Occurrences as Occurrence,
-  Layer_presentations as LayerPresentation,
-} from '../../../../generated/client/index.ts'
 import { ErrorBoundary } from '../../MapErrorBoundary.tsx'
 import { assignToNearestDroppable } from './assignToNearestDroppable.ts'
 import {
@@ -23,11 +16,6 @@ import {
   confirmAssigningToSingleTargetAtom,
   placesToAssignOccurrenceToAtom,
 } from '../../../../store.ts'
-
-interface Props {
-  data: Place[] | Action[] | Check[] | Occurrence[]
-  layerPresentation: LayerPresentation
-}
 
 export const TableLayer = memo(({ data, layerPresentation }) => {
   const [confirmAssigningToSingleTarget] = useAtom(

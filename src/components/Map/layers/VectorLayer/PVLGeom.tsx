@@ -5,23 +5,12 @@ import { useDebouncedCallback } from 'use-debounce'
 import * as icons from 'react-icons/md'
 import { usePGlite } from '@electric-sql/pglite-react'
 
-import {
-  Vector_layer_geoms as VectorLayerGeom,
-  Vector_layers as VectorLayer,
-  Vector_layer_displays as VectorLayerDisplay,
-} from '../../../../generated/client/index.ts'
-
 import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
 import { Popup } from '../../Popup.tsx'
 import { ErrorBoundary } from '../../MapErrorBoundary.tsx'
 import { createNotification } from '../../../../modules/createRows.ts'
 
 // const bboxBuffer = 0.01
-
-interface Props {
-  layer: VectorLayer
-  display: VectorLayerDisplay
-}
 
 export const PVLGeom = ({ layer, display }) => {
   const db = usePGlite()
@@ -60,7 +49,7 @@ export const PVLGeom = ({ layer, display }) => {
         ...notificationIds.current,
       ]
 
-      const { results: vectorLayerGeoms = [] }: { results: VectorLayerGeom[] } =
+      const { results: vectorLayerGeoms = [] } =
         await db.vector_layer_geoms.findMany({
           where: {
             vector_layer_id: layer.vector_layer_id,

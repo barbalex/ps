@@ -1,15 +1,10 @@
 import { memo } from 'react'
 import { useAtom } from 'jotai'
 
-import { Layer_presentations as LayerPresentation } from '../../../../generated/client/index.ts'
 import { WMS } from './WMS.tsx'
 // import { WMTSOffline } from './WMTSOffline'
 import { LocalMap } from './LocalMap.tsx'
 import { showLocalMapAtom } from '../../../../store.ts'
-
-interface Props {
-  layerPresentation: LayerPresentation
-}
 
 export const WmsLayerComponent = memo(({ layerPresentation }) => {
   const [showLocalMap] = useAtom(showLocalMapAtom)

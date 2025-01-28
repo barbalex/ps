@@ -1,12 +1,7 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { usePGlite } from '@electric-sql/pglite-react'
 
-import { Layer_presentations as LayerPresentation } from '../../../../generated/client/index.ts'
 import { TableLayer } from './TableLayer.tsx'
-
-interface Props {
-  layerPresentation: LayerPresentation
-}
 
 export const Places1 = ({ layerPresentation }) => {
   const db = usePGlite()

@@ -3,20 +3,11 @@ import { usePGlite } from '@electric-sql/pglite-react'
 
 import { WFS } from './WFS.tsx'
 import { PVLGeom } from './PVLGeom.tsx'
-import {
-  Vector_layers as VectorLayer,
-  Layer_presentations as LayerPresentation,
-} from '../../../../generated/client/index.ts'
 
 /**
  * This component chooses whether to render
  * from WFS or PVLGeom
  */
-
-interface Props {
-  layer: VectorLayer
-  layerPresentation: LayerPresentation
-}
 
 export const VectorLayerChooser = ({ layer, layerPresentation }) => {
   const db = usePGlite()

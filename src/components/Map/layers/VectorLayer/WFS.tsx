@@ -24,12 +24,6 @@ import {
 } from '@fluentui/react-components'
 
 import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
-import {
-  Vector_layers as VectorLayer,
-  Vector_layer_displays as VectorLayerDisplay,
-  Layer_presentations as LayerPresentation,
-  Wfs_services as WfsService,
-} from '../../../../generated/client/index.ts'
 import { createNotification } from '../../../../modules/createRows.ts'
 
 const xmlViewerStyle = {
@@ -65,18 +59,13 @@ const bboxFromBounds = ({ bounds, defaultCrs }) => {
   return bbox
 }
 
-interface Props {
-  layer: VectorLayer
-  layerPresentation: LayerPresentation
-}
-
 export const WFS = ({ layer, layerPresentation }) => {
   const db = usePGlite()
   const [error, setError] = useState()
   const notificationIds = useRef([])
 
-  const display: VectorLayerDisplay = layer.vector_layer_displays?.[0]
-  const wfsService: WfsService = layer.wfs_services
+  const display = layer.vector_layer_displays?.[0]
+  const wfsService = layer.wfs_services
 
   const removeNotifs = useCallback(async () => {
     await db.notifications.deleteMany({
