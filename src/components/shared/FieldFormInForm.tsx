@@ -49,7 +49,7 @@ interface Props {
 
 export const FieldFormInForm = memo(({ field }: Props) => {
   const [searchParams, setSearchParams] = useSearchParams()
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const onClickDelete = useCallback(async () => {
     db.fields.delete({ where: { field_id: field.field_id } })

@@ -1,7 +1,7 @@
 import { memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../../../ElectricProvider.tsx'
 import { Wms_layers as WmsLayer } from '../../../../generated/client/index.ts'
 
 type Props = {
@@ -10,7 +10,7 @@ type Props = {
 
 export const WmsLegend = memo(({ layer }: Props) => {
   // need to fetch wms_service_layers with this layers wms_service_layer_name
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: wmsServiceLayer } = useLiveQuery(
     db.wms_service_layers.liveFirst({
       where: { name: layer.wms_service_layer_name },

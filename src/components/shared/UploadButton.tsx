@@ -10,7 +10,7 @@ export const UploadButton = memo(({ processData, additionalData = {} }) => {
   const uploadInputRef = useRef<HTMLInputElement>(null)
   const [isDragging, setIsDragging] = useState(false)
 
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const onUpload = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -32,7 +32,7 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }: Props) => {
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const { project_id, subproject_id } = useParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: vectorLayer } = useLiveQuery(
     db.vector_layers.liveFirst({
       where: { project_id, type: `${table}${level}` },

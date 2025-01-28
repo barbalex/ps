@@ -22,7 +22,7 @@ export const RadioGroupFromList = memo(
     validationState,
     button,
   }) => {
-    const { db } = useElectric()!
+    const db = usePGlite()
     const { results: listValues = [] } = useLiveQuery(
       db.list_values.liveMany({ where: { list_id } }),
     )
