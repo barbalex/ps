@@ -3,20 +3,6 @@ import { useLocation } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
-import {
-  PlaceReportValues as PlaceReportValue,
-  Places as Place,
-} from '../../../generated/client/index.ts'
-
-interface Props {
-  project_id: string
-  subproject_id: string
-  place_id: string
-  place: Place
-  place_report_id: string
-  placeReportValue: PlaceReportValue
-  level?: number
-}
 
 export const PlaceReportValueNode = memo(
   ({

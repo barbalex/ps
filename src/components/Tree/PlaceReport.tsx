@@ -4,33 +4,13 @@ import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 
 import { Node } from './Node.tsx'
-import {
-  PlaceReports as PlaceReport,
-  Places as Place,
-} from '../../../generated/client/index.ts'
 import { PlaceReportValuesNode } from './PlaceReportValues.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
-interface Props {
-  project_id: string
-  subproject_id: string
-  place_id?: string
-  place: Place
-  placeReport: PlaceReport
-  level?: number
-}
-
 export const PlaceReportNode = memo(
-  ({
-    project_id,
-    subproject_id,
-    place_id,
-    place,
-    placeReport,
-    level = 8,
-  }) => {
+  ({ project_id, subproject_id, place_id, place, placeReport, level = 8 }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
