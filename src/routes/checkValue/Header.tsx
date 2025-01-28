@@ -1,8 +1,8 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createCheckValue } from '../../modules/createRows.ts'
-import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
 export const Header = memo(({ autoFocusRef }) => {
@@ -36,7 +36,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toNext = useCallback(async () => {
     const checkValues = await db.check_values.findMany({
-      where: {  check_id },
+      where: { check_id },
       orderBy: { label: 'asc' },
     })
     const len = checkValues.length
@@ -52,7 +52,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toPrevious = useCallback(async () => {
     const checkValues = await db.check_values.findMany({
-      where: {  check_id },
+      where: { check_id },
       orderBy: { label: 'asc' },
     })
     const len = checkValues.length

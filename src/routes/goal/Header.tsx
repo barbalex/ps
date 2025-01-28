@@ -1,8 +1,8 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createGoal } from '../../modules/createRows.ts'
-import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
 export const Header = memo(({ autoFocusRef }) => {
@@ -29,7 +29,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toNext = useCallback(async () => {
     const goals = await db.goals.findMany({
-      where: {  subproject_id },
+      where: { subproject_id },
       orderBy: { label: 'asc' },
     })
     const len = goals.length
@@ -43,7 +43,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toPrevious = useCallback(async () => {
     const goals = await db.goals.findMany({
-      where: {  subproject_id },
+      where: { subproject_id },
       orderBy: { label: 'asc' },
     })
     const len = goals.length
