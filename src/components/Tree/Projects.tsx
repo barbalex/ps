@@ -17,7 +17,7 @@ export const ProjectsNode = memo(() => {
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const where =
     projectsFilter.length > 1 ? { OR: projectsFilter } : projectsFilter[0]

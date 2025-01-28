@@ -9,7 +9,7 @@ export const Header = memo(() => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const toNext = useCallback(async () => {
     const occurrences = await db.occurrences.findMany({

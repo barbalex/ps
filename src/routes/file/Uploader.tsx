@@ -38,7 +38,7 @@ export const Uploader = () => {
 
   // const isFile = pathname.endsWith('file')
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const uploaderCtx = useContext(UploaderContext)
   const api = uploaderCtx?.current?.getAPI?.()
 

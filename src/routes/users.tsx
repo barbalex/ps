@@ -16,7 +16,7 @@ export const Component = memo(() => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: users = [] } = useLiveQuery(
     db.users.liveMany({ orderBy: { label: 'asc' } }),
   )

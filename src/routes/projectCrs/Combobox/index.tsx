@@ -15,7 +15,7 @@ import { useElectric } from '../../../ElectricProvider.tsx'
 
 export const ComboboxFilteringOptions = memo(
   forwardRef(({ autoFocus }, ref) => {
-    const { db } = useElectric()!
+    const db = usePGlite()
     const { project_crs_id } = useParams()
 
     const [filter, setFilter] = useState('')

@@ -23,7 +23,7 @@ export const Component = memo(({ vectorLayerId }) => {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: vlds = [] } = useLiveQuery(
     db.vector_layer_displays.liveMany({
       where: { vector_layer_id },

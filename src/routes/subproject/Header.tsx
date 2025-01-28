@@ -11,7 +11,7 @@ export const Header = memo(({ autoFocusRef }) => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   // get projects.subproject_name_singular to name the table
   const { results: project = {} } = useLiveQuery(

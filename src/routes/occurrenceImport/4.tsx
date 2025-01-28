@@ -11,7 +11,7 @@ import { occurrence_imports_previous_import_operation_enumSchema as previousImpo
 export const Four = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
   const { occurrence_import_id, subproject_id } = useParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: occurrenceImports = [] } = useLiveQuery(
     db.occurrence_imports.liveMany({
       where: {

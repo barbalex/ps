@@ -22,7 +22,7 @@ export const ProjectUsersNode = memo(({ project_id, level = 3 }: Props) => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: projectUsers = [] } = useLiveQuery(
     db.project_users.liveMany({
       where: { project_id },

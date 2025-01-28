@@ -6,7 +6,7 @@ import axios from 'redaxios'
 import { useElectric } from '../../../ElectricProvider.tsx'
 
 export const LayersDropdown = memo(({ wmsLayer, validationMessage }) => {
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: wmsServiceLayers = [] } = useLiveQuery(
     db.wms_service_layers.liveMany({
       where: { wms_service_id: wmsLayer.wms_service_id },

@@ -31,7 +31,7 @@ export const OccurenceData = () => {
     occurrenceFieldsSortedAtom,
   )
   const { occurrence_id } = useParams()
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const sortedBeobFields = occurrenceFieldsSorted.slice()
 

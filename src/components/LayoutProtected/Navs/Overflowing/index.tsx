@@ -20,11 +20,11 @@ import {
 } from '@fluentui/react-components'
 import { useResizeDetector } from 'react-resize-detector'
 import { useAtom } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { ToNavs } from '../ToNavs.tsx'
 import { DataNavsOverflowing } from './DataNavs.tsx'
 import { buildNavs } from '../../../../modules/navs.ts'
-import { useElectric } from '../../../../ElectricProvider.tsx'
 import { designingAtom } from '../../../../store.ts'
 
 const menuStyle = {
@@ -101,7 +101,7 @@ export const NavsOverflowing = () => {
   const matches = useMatches()
   const params = useParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const thisPathsMatches = matches.filter(
     (match) => match.pathname === location.pathname && match.handle,

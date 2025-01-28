@@ -33,7 +33,7 @@ export const Component = memo(() => {
   const { file_id } = useParams()
   const previewRef = useRef<HTMLDivElement>(null)
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: row } = useLiveQuery(
     db.files.liveUnique({ where: { file_id } }),
   )

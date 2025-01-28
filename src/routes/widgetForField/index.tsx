@@ -17,7 +17,7 @@ export const Component = memo(() => {
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: row } = useLiveQuery(
     db.widgets_for_fields.liveUnique({ where: { widget_for_field_id } }),
   )

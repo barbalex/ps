@@ -1,8 +1,8 @@
 import { forwardRef, useState, useEffect, useMemo, memo } from 'react'
 import { useLocation } from 'react-router-dom'
 import { OverflowItem, Overflow } from '@fluentui/react-components'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../../../ElectricProvider.tsx'
 import { idFieldFromTable } from '../../../../modules/idFieldFromTable.ts'
 import { Nav } from '../Nav.tsx'
 import { OverflowMenu } from './index.tsx'
@@ -13,7 +13,7 @@ import { OverflowMenu } from './index.tsx'
 export const DataNavsOverflowing = memo(
   forwardRef(({ matches }, ref) => {
     const location = useLocation()
-    const { db } = useElectric()!
+    const db = usePGlite()
 
     const dataMatch = useMemo(() => {
       const matchesWithCrumb = matches.map((match) => ({
@@ -159,11 +159,21 @@ export const DataNavsOverflowing = memo(
     if (!tos.length) return <div className="navs-resizable" />
 
     return (
-      <Overflow overflowDirection="end" padding={20} ref={ref}>
+      <Overflow
+        overflowDirection="end"
+        padding={20}
+        ref={ref}
+      >
         <nav className="navs-resizable">
           {tos.map(({ text, path }) => (
-            <OverflowItem key={path} id={path}>
-              <Nav label={text} to={path} />
+            <OverflowItem
+              key={path}
+              id={path}
+            >
+              <Nav
+                label={text}
+                to={path}
+              />
             </OverflowItem>
           ))}
           <OverflowMenu tos={tos} />

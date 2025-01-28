@@ -23,7 +23,7 @@ export const SubprojectsNode = memo(({ project_id, level = 3 }: Props) => {
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const where = filter.length > 1 ? { OR: filter } : filter[0]
   const { results: subprojects = [] } = useLiveQuery(

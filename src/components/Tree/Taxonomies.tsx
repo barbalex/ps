@@ -22,7 +22,7 @@ export const TaxonomiesNode = memo(({ project_id, level = 3 }: Props) => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: taxonomies = [] } = useLiveQuery(
     db.taxonomies.liveMany({
       where: { project_id },

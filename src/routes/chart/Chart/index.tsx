@@ -17,7 +17,7 @@ const titleRowStyle = {
 export const Chart = memo(() => {
   const { project_id, subproject_id, chart_id } = useParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: chart } = useLiveQuery(
     db.charts.liveUnique({
       where: { chart_id },

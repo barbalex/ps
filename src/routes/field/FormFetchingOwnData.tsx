@@ -10,7 +10,7 @@ import { Component as Form } from './Form.tsx'
 // separate from the route because it is also used inside other forms
 export const FieldFormFetchingOwnData = memo(
   ({ field_id, autoFocusRef, isInForm = false }) => {
-    const { db } = useElectric()!
+    const db = usePGlite()
     const { results: row } = useLiveQuery(
       db.fields.liveUnique({ where: { field_id } }),
     )

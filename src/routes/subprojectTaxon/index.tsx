@@ -19,7 +19,7 @@ export const Component = memo(() => {
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: row } = useLiveQuery(
     db.subproject_taxa.liveUnique({ where: { subproject_taxon_id } }),
   )

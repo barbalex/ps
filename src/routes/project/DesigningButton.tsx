@@ -12,7 +12,7 @@ export const DesigningButton = memo(() => {
   const [designing, setDesigning] = useAtom(designingAtom)
   const [userId] = useAtom(userIdAtom)
   const { project_id } = useParams()
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const onClickDesigning = useCallback(
     () => setDesigning(!designing),

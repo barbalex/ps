@@ -13,7 +13,7 @@ export const Component = memo(() => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: projectUsers = [] } = useLiveQuery(
     db.project_users.liveMany({
       where: { project_id },

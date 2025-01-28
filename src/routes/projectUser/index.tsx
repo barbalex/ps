@@ -19,7 +19,7 @@ export const Component = memo(() => {
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: row } = useLiveQuery(
     db.project_users.liveUnique({ where: { project_user_id } }),
   )

@@ -34,7 +34,7 @@ export const PlaceReportValuesNode = memo(
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const { db } = useElectric()!
+    const db = usePGlite()
     const { results: placeReportValues = [] } = useLiveQuery(
       db.place_report_values.liveMany({
         where: { place_report_id },

@@ -18,7 +18,7 @@ export const Component = memo(() => {
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: row } = useLiveQuery(
     db.check_taxa.liveUnique({ where: { check_taxon_id } }),
   )

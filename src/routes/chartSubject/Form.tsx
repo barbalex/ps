@@ -20,7 +20,7 @@ import {
 export const ChartSubjectForm = memo(({ autoFocusRef }) => {
   const { chart_subject_id } = useParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: row } = useLiveQuery(
     db.chart_subjects.liveUnique({ where: { chart_subject_id } }),
   )

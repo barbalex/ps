@@ -17,7 +17,7 @@ export const Header = memo(({ vectorLayerDisplayId }) => {
   const vector_layer_display_id =
     vectorLayerDisplayId ?? vectorLayerDisplayIdFromRouter
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   // fetch the vector_layer_id from the db as params is not available in the map drawer
   const { results: vectorLayerDisplay } = useLiveQuery(
     db.vector_layer_displays.liveUnique({ where: { vector_layer_display_id } }),

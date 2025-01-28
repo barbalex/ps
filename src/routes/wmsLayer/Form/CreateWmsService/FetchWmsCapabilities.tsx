@@ -27,7 +27,7 @@ type Props = {
 
 export const FetchWmsCapabilities = memo(
   ({ wmsLayer, url, fetching, setFetching }: Props) => {
-    const { db } = useElectric()!
+    const db = usePGlite()
     const worker = useWorker(createWorker)
 
     const { results: wmsServiceLayers = [] } = useLiveQuery(

@@ -38,7 +38,7 @@ export const Component = memo(() => {
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: occurrenceImport } = useLiveQuery(
     db.occurrence_imports.liveUnique({
       where: { occurrence_import_id },

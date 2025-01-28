@@ -32,7 +32,7 @@ export const Component = memo(() => {
     return where
   }, [place_id, place_id2, project_id, subproject_id])
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: charts = [] } = useLiveQuery(
     db.charts.liveMany({
       where,

@@ -24,7 +24,7 @@ export const PersonsNode = memo(({ project_id, level = 3 }: Props) => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const where = filter.length > 1 ? { OR: filter } : filter[0]
   const { results: persons = [] } = useLiveQuery(

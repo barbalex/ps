@@ -14,7 +14,7 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
   const { project_id } = useParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const { results: projectCrs = [] } = useLiveQuery(
     db.project_crs.liveMany({

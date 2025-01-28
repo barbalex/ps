@@ -22,7 +22,7 @@ export const PlaceChildren = memo(
   ({ project_id, subproject_id, place_id, place }: Props) => {
     const level = place_id ? 8 : 6
 
-    const { db } = useElectric()!
+    const db = usePGlite()
     // query from place_level what children to show
     const { results: placeLevels } = useLiveQuery(
       db.place_levels.liveMany({

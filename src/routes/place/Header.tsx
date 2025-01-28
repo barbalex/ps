@@ -29,7 +29,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
   const [searchParams] = useSearchParams()
   const { project_id, subproject_id, place_id, place_id2 } = useParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: placeLevels } = useLiveQuery(
     db.place_levels.liveMany({
       where: {

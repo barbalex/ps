@@ -15,7 +15,7 @@ export const Component = memo(() => {
   const [filter] = useAtom(subprojectsFilterAtom)
   const { project_id } = useParams()
   const Navigate = useNavigate()
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const where = filter.length > 1 ? { OR: filter } : filter[0]
   const { results: subprojects = [] } = useLiveQuery(

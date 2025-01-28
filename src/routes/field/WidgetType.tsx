@@ -7,7 +7,7 @@ import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import '../../form.css'
 
 export const WidgetType = memo(({ onChange, field_type_id = '', value }) => {
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const { results = [] } = useLiveQuery(
     db.widgets_for_fields.liveMany({

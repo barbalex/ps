@@ -1,11 +1,11 @@
 import { useEffect, useState, useMemo } from 'react'
 import { useMatches, useLocation, useParams } from 'react-router-dom'
 import { useAtom } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { DataNavs } from './DataNavs.tsx'
 import { ToNavs } from './ToNavs.tsx'
 import { buildNavs } from '../../../modules/navs.ts'
-import { useElectric } from '../../../ElectricProvider.tsx'
 import { designingAtom } from '../../../store.ts'
 
 // TODO: this component runs way too often
@@ -14,7 +14,7 @@ export const NavsWrapping = () => {
   const location = useLocation()
   const matches = useMatches()
   const params = useParams()
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   // console.log('Wrapping Navs', { matches, pathname: location.pathname })
 

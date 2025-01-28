@@ -16,7 +16,7 @@ import '../../form.css'
 export const Component = memo(() => {
   const { message_id } = useParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: row } = useLiveQuery(
     db.messages.liveUnique({ where: { message_id } }),
   )

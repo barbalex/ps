@@ -30,7 +30,7 @@ export const PlacesNode = memo(
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
-    const { db } = useElectric()!
+    const db = usePGlite()
 
     const level = place_id ? 7 : 5
 

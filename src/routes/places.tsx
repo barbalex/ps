@@ -25,7 +25,7 @@ export const Component = memo(() => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { project_id, subproject_id, place_id } = useParams()
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const filter = place_id ? places2Filter : places1Filter
   const where = filter.length > 1 ? { OR: filter } : filter[0]

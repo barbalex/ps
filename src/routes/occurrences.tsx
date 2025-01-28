@@ -22,7 +22,7 @@ export const Component = memo(() => {
 
   const { subproject_id, place_id, place_id2 } = useParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   // get occurrence_imports by subproject_id
   const { results: occurrence_imports = [] } = useLiveQuery(
     db.occurrence_imports.liveMany({

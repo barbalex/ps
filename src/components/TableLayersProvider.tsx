@@ -1,8 +1,8 @@
 import { useEffect, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useAtom } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../ElectricProvider.tsx'
 import {
   createVectorLayer,
   createVectorLayerDisplay,
@@ -18,7 +18,7 @@ import { syncingAtom } from '../store.ts'
 export const TableLayersProvider = memo(() => {
   const [syncing] = useAtom(syncingAtom)
   // every project needs vector_layers and vector_layer_displays for the geometry tables
-  const { db } = useElectric()!
+  const db = usePGlite()
   // do not include vector_layers and vector_layer_displays in this query
   // as the effect will run every time these tables change
   const { results: projects = [] } = useLiveQuery(db.projects.liveMany())

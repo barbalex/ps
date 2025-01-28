@@ -13,7 +13,7 @@ export const Component = memo(() => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const { results: crs = [] } = useLiveQuery(
     db.crs.liveMany({ orderBy: { label: 'asc' } }),

@@ -21,7 +21,7 @@ export const ProjectCrssNode = memo(({ project_id, level = 3 }: Props) => {
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const { results: projectCrs = [] } = useLiveQuery(
     db.project_crs.liveMany({

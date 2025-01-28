@@ -10,7 +10,7 @@ export const Header = memo(() => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const addRow = useCallback(async () => {
     const data = createMessage()

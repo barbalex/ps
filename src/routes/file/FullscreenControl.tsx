@@ -7,7 +7,7 @@ import { useElectric } from '../../ElectricProvider.tsx'
 import { createNotification } from '../../modules/createRows.ts'
 
 export const FullscreenControl = memo(({ previewRef }) => {
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   if (!screenfull.isEnabled) {
     const data = createNotification({

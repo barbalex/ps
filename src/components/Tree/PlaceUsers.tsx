@@ -27,7 +27,7 @@ export const PlaceUsersNode = memo(
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const { db } = useElectric()!
+    const db = usePGlite()
     const { results: placeUsers = [] } = useLiveQuery(
       db.place_users.liveMany({
         where: { place_id: place.place_id },

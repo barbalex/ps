@@ -18,7 +18,7 @@ import '../../form.css'
 export const Component = memo(() => {
   const { file_id } = useParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: row } = useLiveQuery(
     db.files.liveUnique({ where: { file_id } }),
   )

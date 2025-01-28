@@ -21,7 +21,7 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
   const onlyForm = searchParams.get('onlyForm')
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: row } = useLiveQuery(
     db.places.liveUnique({ where: { place_id: place_id2 ?? place_id } }),
   )

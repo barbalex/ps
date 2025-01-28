@@ -40,7 +40,7 @@ export const Header = memo(({ autoFocusRef, row }: Props) => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   // need to:
   // 1. lowercase all

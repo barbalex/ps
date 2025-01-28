@@ -24,7 +24,7 @@ export const OccurrencesToAssessNode = memo(
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const { db } = useElectric()!
+    const db = usePGlite()
     const { results: occurrenceImports = [] } = useLiveQuery(
       db.occurrence_imports.liveMany({
         where: { subproject_id },

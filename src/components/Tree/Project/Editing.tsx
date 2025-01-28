@@ -25,7 +25,7 @@ export const Editing = memo(() => {
   const [designing, setDesigning] = useAtom(designingAtom)
   const [userId] = useAtom(userIdAtom)
   const { project_id } = useParams()
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const onClick = useCallback(
     (e) => {

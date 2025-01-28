@@ -30,7 +30,7 @@ type Props = {
 
 export const FetchWfsCapabilities = memo(
   ({ vectorLayer, url, fetching, setFetching }: Props) => {
-    const { db } = useElectric()!
+    const db = usePGlite()
     const worker = useWorker(createWorker)
 
     const { results: wfsServiceLayers = [] } = useLiveQuery(

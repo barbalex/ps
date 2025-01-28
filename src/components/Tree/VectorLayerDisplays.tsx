@@ -24,7 +24,7 @@ export const VectorLayerDisplaysNode = memo(
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const { db } = useElectric()!
+    const db = usePGlite()
     const { results: vlds = [] } = useLiveQuery(
       db.vector_layer_displays.liveMany({
         where: { vector_layer_id },

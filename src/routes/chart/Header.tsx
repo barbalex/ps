@@ -14,7 +14,7 @@ export const Header = memo(({ autoFocusRef }) => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const addRow = useCallback(async () => {
     const idToAdd = place_id2

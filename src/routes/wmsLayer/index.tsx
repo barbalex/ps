@@ -16,7 +16,7 @@ export const Component = memo(() => {
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: wmsLayer } = useLiveQuery(
     db.wms_layers.liveUnique({
       where: { wms_layer_id },

@@ -26,7 +26,7 @@ const doneIconStyle = {
 export const Set = memo(({ occurrenceImport }) => {
   const [notification, setNotification] = useState()
   const [settingGeometries, setSettingGeometries] = useState(false)
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: occurrences } = useLiveQuery(
     db.occurrences.liveMany({
       where: { occurrence_import_id: occurrenceImport?.occurrence_import_id },

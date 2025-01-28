@@ -24,7 +24,7 @@ export const SubprojectTaxaNode = memo(
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const { db } = useElectric()!
+    const db = usePGlite()
     const { results: subprojectTaxa = [] } = useLiveQuery(
       db.subproject_taxa.liveMany({
         where: { subproject_id },

@@ -17,7 +17,7 @@ import { chart_typeSchema as chartTypeSchema } from '../../generated/client/inde
 export const Form = memo(({ autoFocusRef }) => {
   const { chart_id } = useParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: row } = useLiveQuery(
     db.charts.liveUnique({ where: { chart_id } }),
   )

@@ -19,7 +19,7 @@ export const Property = memo(({ vectorLayer }: Props) => {
   const table = vectorLayer?.own_table
   const level = vectorLayer?.own_table_level
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   // get fields of table
   const { results: fields = [] } = useLiveQuery(
     db.fields.liveMany({

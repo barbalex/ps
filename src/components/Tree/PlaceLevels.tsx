@@ -22,7 +22,7 @@ export const PlaceLevelsNode = memo(({ project_id, level = 3 }: Props) => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: placeLevels = [] } = useLiveQuery(
     db.place_levels.liveMany({
       where: { project_id },

@@ -17,7 +17,7 @@ export const Component = memo(() => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const where = filter.length > 1 ? { OR: filter } : filter[0]
   const { results: fields = [] } = useLiveQuery(

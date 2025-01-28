@@ -27,7 +27,7 @@ export const OccurrencesAssignedNode = memo(
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const { db } = useElectric()!
+    const db = usePGlite()
     const { results: occurrences = [] } = useLiveQuery(
       db.occurrences.liveMany({
         where: {

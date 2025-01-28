@@ -47,7 +47,7 @@ export const Header = memo(({ row, previewRef }: Props) => {
     }
   }, [isPreview, navigate, pathname, searchParams])
 
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   // TODO: if is preview, add preview to the url
 

@@ -41,7 +41,7 @@ export const Component = memo(() => {
     return where
   }, [action_id, check_id, place_id, place_id2, project_id, subproject_id])
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: files = [] } = useLiveQuery(
     db.files.liveMany({
       where,

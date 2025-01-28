@@ -40,7 +40,7 @@ export const Component = ({ vectorLayerDisplayId }) => {
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: row } = useLiveQuery(
     db.vector_layer_displays.liveUnique({ where: { vector_layer_display_id } }),
   )
