@@ -2,12 +2,6 @@ import { memo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { usePGlite } from '@electric-sql/pglite-react'
 
-import { Wms_layers as WmsLayer } from '../../../../generated/client/index.ts'
-
-type Props = {
-  layer: WmsLayer
-}
-
 export const WmsLegend = memo(({ layer }) => {
   // need to fetch wms_service_layers with this layers wms_service_layer_name
   const db = usePGlite()

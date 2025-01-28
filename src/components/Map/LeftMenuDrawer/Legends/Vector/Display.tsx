@@ -1,10 +1,6 @@
 import { memo } from 'react'
 import { MapContainer, Rectangle } from 'react-leaflet'
 
-import {
-  Vector_layer_displays as VectorLayerDisplay,
-  Layer_presentations as LayerPresentation,
-} from '../../../../../generated/client/index.ts'
 import { vectorLayerDisplayToProperties } from '../../../../../modules/vectorLayerDisplayToProperties.ts'
 import './display.css'
 
@@ -17,11 +13,6 @@ const displayPropertyValueStyle = {
   marginBottom: 0,
   marginLeft: 8,
   fontWeight: 'bold',
-}
-
-type Props = {
-  display: VectorLayerDisplay
-  layerPresentation: LayerPresentation
 }
 
 // idea: use a leaflet map to display: a rectangle, line and point

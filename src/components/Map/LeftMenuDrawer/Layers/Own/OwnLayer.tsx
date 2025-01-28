@@ -31,15 +31,8 @@ import {
   headerLabelStyle,
 } from '../styles.ts'
 import { on } from '../../../../../css.ts'
-import { Vector_layers as VectorLayer } from '../../../../../generated/client/index.ts'
 
 type TabType = 'overall-displays' | 'feature-displays' | 'config'
-
-type Props = {
-  layer: VectorLayer
-  isLast: number
-  isOpen: boolean
-}
 
 export const OwnLayer = memo(({ layer, isLast, isOpen }) => {
   const [designing] = useAtom(designingAtom)

@@ -14,7 +14,6 @@ import { useSearchParams } from 'react-router-dom'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { FieldFormFetchingOwnData } from '../../routes/field/FormFetchingOwnData.tsx'
-import { Fields as Field } from '../../generated/client/index.ts'
 
 const containerStyle = {
   padding: '0px -10px',
@@ -41,10 +40,6 @@ const menuStyle = {
   display: 'flex',
   flexWrap: 'nowrap',
   columnGap: 5,
-}
-
-interface Props {
-  field: Field
 }
 
 export const FieldFormInForm = memo(({ field }) => {
