@@ -3,14 +3,6 @@ import { useLocation } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
-import { Taxa as Taxon } from '../../../generated/client/index.ts'
-
-interface Props {
-  project_id: string
-  taxonomy_id: string
-  taxon: Taxon
-  level?: number
-}
 
 export const TaxonNode = memo(
   ({ project_id, taxonomy_id, taxon, level = 6 }) => {

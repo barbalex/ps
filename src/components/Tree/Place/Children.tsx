@@ -2,7 +2,6 @@ import { memo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { usePGlite } from '@electric-sql/pglite-react'
 
-import { Places as Place } from '../../../generated/client/index.ts'
 import { ChecksNode } from '../Checks.tsx'
 import { ActionsNode } from '../Actions.tsx'
 import { PlaceReportsNode } from '../PlaceReports.tsx'
@@ -10,13 +9,6 @@ import { PlaceUsersNode } from '../PlaceUsers.tsx'
 import { PlacesNode } from '../Places.tsx'
 import { OccurrencesAssignedNode } from '../OccurrencesAssigned.tsx'
 import { FilesNode } from '../Files.tsx'
-
-interface Props {
-  project_id: string
-  subproject_id: string
-  place_id: string
-  place: Place
-}
 
 export const PlaceChildren = memo(
   ({ project_id, subproject_id, place_id, place }) => {

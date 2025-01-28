@@ -3,14 +3,6 @@ import { useLocation } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
-import { SubprojectUsers as SubprojectUser } from '../../../generated/client/index.ts'
-
-interface Props {
-  project_id: string
-  subproject_id: string
-  subprojectUser: SubprojectUser
-  level?: number
-}
 
 export const SubprojectUserNode = memo(
   ({ project_id, subproject_id, subprojectUser, level = 6 }) => {

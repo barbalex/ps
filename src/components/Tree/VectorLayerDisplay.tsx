@@ -3,13 +3,6 @@ import { useLocation } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
-import { Vector_layer_displays as VectorLayerDisplay } from '../../../generated/client/index.ts'
-interface Props {
-  project_id: string
-  vector_layer_id: string
-  vectorLayerDisplay: VectorLayerDisplay
-  level: number
-}
 
 export const VectorLayerDisplayNode = memo(
   ({ project_id, vector_layer_id, vectorLayerDisplay, level = 6 }) => {

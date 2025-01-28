@@ -3,12 +3,6 @@ import { useLocation } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
-import { Users as User } from '../../../generated/client/index.ts'
-
-interface Props {
-  user: User
-  level?: number
-}
 
 export const UserNode = memo(({ user, level = 2 }) => {
   const location = useLocation()

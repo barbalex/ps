@@ -3,14 +3,6 @@ import { useLocation } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
-import { SubprojectTaxa as SubprojectTaxon } from '../../../generated/client/index.ts'
-
-interface Props {
-  project_id: string
-  subproject_id: string
-  subprojectTaxon: SubprojectTaxon
-  level?: number
-}
 
 export const SubprojectTaxonNode = memo(
   ({ project_id, subproject_id, subprojectTaxon, level = 6 }) => {

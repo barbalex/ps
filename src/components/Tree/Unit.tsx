@@ -3,13 +3,6 @@ import { useLocation } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
-import { Units as Unit } from '../../../generated/client/index.ts'
-
-interface Props {
-  project_id: string
-  unit: Unit
-  level?: number
-}
 
 export const UnitNode = memo(({ project_id, unit, level = 4 }) => {
   const location = useLocation()

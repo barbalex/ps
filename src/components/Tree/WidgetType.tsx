@@ -3,12 +3,6 @@ import { useLocation } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
-import { WidgetTypes as WidgetType } from '../../../generated/client/index.ts'
-
-interface Props {
-  widgetType: WidgetType
-  level?: number
-}
 
 export const WidgetTypeNode = memo(({ widgetType, level = 2 }) => {
   const location = useLocation()
