@@ -35,7 +35,7 @@ export const CheckTaxaNode = memo(
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const { db } = useElectric()!
+    const db = usePGlite()
     const { results: checkTaxa = [] } = useLiveQuery(
       db.check_taxa.liveMany({
         where: { check_id },

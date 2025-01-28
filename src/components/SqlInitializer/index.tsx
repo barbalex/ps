@@ -56,7 +56,7 @@ import { seedTestData } from './seedTestData.ts'
 // 4. replace 'label_replace_by_generated_column' with 'label' in generated code (done by renameLabels.js script)
 
 export const SqlInitializer = () => {
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   useEffect(() => {
     const generate = async () => {

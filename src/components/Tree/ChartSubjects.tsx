@@ -34,7 +34,7 @@ export const ChartSubjectsNode = memo(
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const { db } = useElectric()!
+    const db = usePGlite()
 
     const { results: chartSubjects = [] } = useLiveQuery(
       db.chart_subjects.liveMany({

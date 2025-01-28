@@ -20,7 +20,7 @@ export const CrssNode = memo(({ level = 1 }: Props) => {
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const { results: crs = [] } = useLiveQuery(
     db.crs.liveMany({

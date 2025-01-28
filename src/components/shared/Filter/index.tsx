@@ -23,7 +23,7 @@ export const Filter = memo(({ level }) => {
   const { project_id, place_id, place_id2 } = useParams()
   const location = useLocation()
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   // reading these values from the url path
   // if this fails in some situations, we can pass these as props

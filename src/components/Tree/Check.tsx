@@ -34,7 +34,7 @@ export const CheckNode = memo(
     const [searchParams] = useSearchParams()
 
     // need project to know whether to show files
-    const { db } = useElectric()!
+    const db = usePGlite()
     const { results: project } = useLiveQuery(
       db.projects.liveUnique({ where: { project_id } }),
     )
