@@ -10,13 +10,13 @@ import {
 import { BsGlobe2 } from 'react-icons/bs'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
+import { usePGlite } from "@electric-sql/pglite-react"
 
-import { useElectric } from '../../../../../ElectricProvider.tsx'
 
 export const ChooseCrs = memo(() => {
   const { project_id = '99999999-9999-9999-9999-999999999999' } = useParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: projectCrs = [] } = useLiveQuery(
     db.project_crs.liveMany({ where: { project_id } }),
   )

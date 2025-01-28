@@ -1,8 +1,8 @@
 import { PropsWithChildren } from 'react'
 import { ErrorBoundary as ErrorBoundaryComponent } from 'react-error-boundary'
+import { usePGlite } from "@electric-sql/pglite-react"
 
 import { Wms_layers as WmsLayer } from '../../../generated/client/index.ts'
-import { useElectric } from '../../ElectricProvider.tsx'
 import { createNotification } from '../../modules/createRows.ts'
 
 const onReload = () => {
@@ -28,7 +28,7 @@ export const ErrorBoundary = ({
   children,
   layer,
 }): PropsWithChildren<Props> => {
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   return (
     <ErrorBoundaryComponent

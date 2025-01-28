@@ -32,7 +32,7 @@ export const ComboboxFilteringForTable = memo(
     ) => {
       const [filter, setFilter] = useState('')
 
-      const { db } = useElectric()!
+      const db = usePGlite()
       const whereForSelectedOption = useMemo(
         () => ({
           [idField ?? name]:

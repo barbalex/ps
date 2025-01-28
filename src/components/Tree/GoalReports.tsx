@@ -25,7 +25,7 @@ export const GoalReportsNode = memo(
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const { db } = useElectric()!
+    const db = usePGlite()
     const { results: goalReports = [] } = useLiveQuery(
       db.goal_reports.liveMany({
         where: { goal_id },

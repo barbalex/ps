@@ -25,7 +25,7 @@ export const GoalsNode = memo(
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
-    const { db } = useElectric()!
+    const db = usePGlite()
 
     const where = filter.length > 1 ? { OR: filter } : filter[0]
     const { results: goals = [] } = useLiveQuery(

@@ -11,8 +11,8 @@ import {
 import { BsSquare } from 'react-icons/bs'
 import { useAtom } from 'jotai'
 import { pipe } from 'remeda'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createLayerPresentation } from '../../../../../modules/createRows.ts'
 import {
@@ -46,7 +46,7 @@ export const OwnLayer = memo(({ layer, isLast, isOpen }: Props) => {
   const [vectorLayerDisplayId, setVectorLayerDisplayId] = useAtom(
     mapDrawerVectorLayerDisplayAtom,
   )
-  const { db } = useElectric()!
+  const db = usePGlite()
   const [tab, setTab] = useState<TabType>('overall-displays')
 
   const onChange = useCallback(async () => {

@@ -21,7 +21,7 @@ export const FieldList = memo(
   ({ name, label, table, fieldsTable, id, valueArray = [] }: Props) => {
     const { project_id } = useParams()
 
-    const { db } = useElectric()!
+    const db = usePGlite()
     const { results: fields = [] } = useLiveQuery(
       db.fields.liveMany({
         where: {
