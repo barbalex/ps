@@ -8,8 +8,8 @@ import {
 } from 'react'
 import { Combobox, Field } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../../ElectricProvider.tsx'
 import { FilteringComboboxOptions } from './options.tsx'
 
 export const ComboboxFilteringForTable = memo(

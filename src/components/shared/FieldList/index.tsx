@@ -3,8 +3,8 @@ import { Field, TagGroup, Tag } from '@fluentui/react-components'
 import type { InputProps } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../../ElectricProvider.tsx'
 import { DropdownField } from './DropdownField.tsx'
 import { idFieldFromTable } from '../../../modules/idFieldFromTable.ts'
 

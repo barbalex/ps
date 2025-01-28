@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState, memo } from 'react'
 import { Button, Field } from '@fluentui/react-components'
-import { useElectric } from '../../ElectricProvider.tsx'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 const uploadInputStyle = {
   display: 'none',

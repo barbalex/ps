@@ -1,8 +1,7 @@
 import { memo, useMemo } from 'react'
 import { Dropdown, Field, Option } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
-
-import { useElectric } from '../../ElectricProvider.tsx'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 const rowStyle = {
   display: 'flex',

@@ -1,8 +1,8 @@
 import { memo, useCallback, forwardRef } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useSearchParams, useLocation, useParams } from 'react-router-dom'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../../../ElectricProvider.tsx'
 import { FieldFormInForm } from '../../FieldFormInForm.tsx'
 import { TextField } from '../../TextField.tsx'
 import { EditField } from './EditField.tsx'

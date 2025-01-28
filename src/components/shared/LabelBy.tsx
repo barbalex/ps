@@ -1,8 +1,8 @@
 import { useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../ElectricProvider.tsx'
 import { DropdownFieldSimpleOptions } from './DropdownFieldSimpleOptions.tsx'
 
 import '../../form.css'

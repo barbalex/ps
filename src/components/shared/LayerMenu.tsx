@@ -9,8 +9,8 @@ import { bbox } from '@turf/bbox'
 import { buffer } from '@turf/buffer'
 import { featureCollection } from '@turf/helpers'
 import { useSetAtom } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../ElectricProvider.tsx'
 import {
   Places as Place,
   Actions as Action,
