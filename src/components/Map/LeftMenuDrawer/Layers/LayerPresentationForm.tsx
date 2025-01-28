@@ -6,18 +6,10 @@ import { createNotification } from '../../../../modules/createRows.ts'
 import { SliderField } from '../../../shared/SliderField.tsx'
 import { SwitchField } from '../../../shared/SwitchField.tsx'
 import { TextField } from '../../../shared/TextField.tsx'
-import {
-  Vector_layers as VectorLayer,
-  Wms_layers as WmsLayer,
-} from '../../../../generated/client/index.ts'
 import { getValueFromChange } from '../../../../modules/getValueFromChange.ts'
 
 const containerStyle = {
   padding: '1rem',
-}
-
-type Props = {
-  layer: VectorLayer | WmsLayer
 }
 
 export const LayerPresentationForm = memo(({ layer }) => {

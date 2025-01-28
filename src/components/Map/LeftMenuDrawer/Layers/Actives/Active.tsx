@@ -45,10 +45,6 @@ import { usePGlite } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createNotification } from '../../../../../modules/createRows.ts'
-import {
-  Vector_layers as VectorLayer,
-  Wms_layers as WmsLayer,
-} from '../../../../../generated/client/index.ts'
 import { ListContext } from './index.tsx'
 import { itemKey, isItemData } from './shared.ts'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
@@ -78,22 +74,7 @@ function useListContext() {
   return listContext
 }
 
-type ItemData = {
-  [itemKey]: true
-  layer: VectorLayer | WmsLayer
-  index: number
-  instanceId: symbol
-}
-
-function getItemData({
-  layer,
-  index,
-  instanceId,
-}: {
-  layer: VectorLayer | WmsLayer
-  index: number
-  instanceId: symbol
-}): ItemData {
+function getItemData({ layer, index, instanceId }) {
   return {
     [itemKey]: true,
     layer,
@@ -126,14 +107,6 @@ const dragIndicatorStyle = {
   color: 'rgba(55, 118, 28, 0.6)',
   paddingRight: 5,
   cursor: 'grab',
-}
-
-type Props = {
-  layer: VectorLayer | WmsLayer
-  isLast: boolean
-  isOpen: boolean
-  index: boolean
-  layerCount: number
 }
 
 export const ActiveLayer = memo(

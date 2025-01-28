@@ -1,11 +1,5 @@
 import { TileLayer } from 'react-leaflet'
 
-import { Wms_layers as WmsLayerType } from '../../../../generated/client/index.ts'
-
-interface Props {
-  layer: WmsLayerType
-}
-
 export const WMTS = ({ layer }) => {
   return (
     <TileLayer

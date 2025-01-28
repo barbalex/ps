@@ -4,11 +4,6 @@ import { useDebouncedCallback } from 'use-debounce'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { onTileError } from './onTileError.ts'
-import { Layer_presentations as LayerPresentation } from '../../../../generated/client/index.ts'
-
-type Props = {
-  layerPresentation: LayerPresentation
-}
 
 export const WMS = memo(({ layerPresentation }) => {
   const map = useMap()

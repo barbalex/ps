@@ -4,13 +4,8 @@ import { useMap } from 'react-leaflet'
 import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 
-import { Wms_layers as WmsLayerType } from '../../../../generated/client/index.ts'
 import { createNotification } from '../../../../modules/createRows.ts'
 import { showLocalMapAtom, localMapValuesAtom } from '../../../../store.ts'
-
-interface Props {
-  layer: WmsLayerType
-}
 
 export const WMTSOffline = ({ layer }) => {
   const [showLocalMap, setShowLocalMap] = useAtom(showLocalMapAtom)

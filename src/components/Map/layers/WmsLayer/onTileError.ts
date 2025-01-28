@@ -1,11 +1,10 @@
 // TODO: need to debounce
 import axios from 'redaxios'
 
-import { Wms_layers as WmsLayer } from '../../../../generated/client/index.ts'
 import { xmlToJson } from '../../../../modules/xmlToJson.ts'
 import { createNotification } from '../../../../modules/createRows.ts'
 
-export const onTileError = async (db, map, layer: WmsLayer, ignore) => {
+export const onTileError = async (db, map, layer, ignore) => {
   console.log('hello onTileError', { ignore, map, layer, db })
   const mapSize = map.getSize()
   const bbox = map.getBounds().toBBoxString()

@@ -1,12 +1,7 @@
 import { Rectangle } from 'react-leaflet/Rectangle'
 import { Tooltip } from 'react-leaflet/Tooltip'
 
-import { Layer_presentations as LayerPresentation } from '../../../../generated/client/index.ts'
 import { ErrorBoundary } from '../../MapErrorBoundary.tsx'
-
-interface Props {
-  layerPresentation: LayerPresentation
-}
 
 export const LocalMap = ({ layerPresentation }) => {
   const layer = layerPresentation.wms_layers
@@ -17,7 +12,10 @@ export const LocalMap = ({ layerPresentation }) => {
   return (
     <ErrorBoundary layer={layer}>
       {bounds.map((b, index) => (
-        <Rectangle key={index} bounds={b}>
+        <Rectangle
+          key={index}
+          bounds={b}
+        >
           <Tooltip>{layer.label}</Tooltip>
         </Rectangle>
       ))}

@@ -1,4 +1,3 @@
-import { PropsWithChildren } from 'react'
 import { ErrorBoundary as ErrorBoundaryComponent } from 'react-error-boundary'
 import { usePGlite } from '@electric-sql/pglite-react'
 
@@ -19,10 +18,7 @@ const ErrorFallback = ({ error, db, layer }) => {
   return null
 }
 
-export const ErrorBoundary = ({
-  children,
-  layer,
-})WithChildren<Props> => {
+export const ErrorBoundary = ({ children, layer }) => {
   const db = usePGlite()
 
   return (
