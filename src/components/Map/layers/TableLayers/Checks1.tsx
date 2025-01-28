@@ -1,4 +1,4 @@
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { usePGlite } from "@electric-sql/pglite-react"
 
 import { Layer_presentations as LayerPresentation } from '../../../../generated/client/index.ts'

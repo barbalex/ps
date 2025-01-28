@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { TbZoomScan } from 'react-icons/tb'
 import { Button } from '@fluentui/react-button'

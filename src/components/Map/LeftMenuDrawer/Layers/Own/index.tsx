@@ -1,5 +1,5 @@
 import { memo, useCallback } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import { Accordion } from '@fluentui/react-components'
 import { useAtom, atom } from 'jotai'

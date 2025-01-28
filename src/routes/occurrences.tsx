@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useParams } from 'react-router-dom'
 import { usePGlite } from '@electric-sql/pglite-react'
 

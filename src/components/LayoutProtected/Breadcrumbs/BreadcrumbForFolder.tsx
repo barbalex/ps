@@ -1,7 +1,7 @@
 import { useEffect, useState, forwardRef } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { usePGlite } from "@electric-sql/pglite-react"
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 
 import { buildNavs } from '../../../modules/navs.ts'

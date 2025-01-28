@@ -1,6 +1,6 @@
 import { useCallback, memo, useMemo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'

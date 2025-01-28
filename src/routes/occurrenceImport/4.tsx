@@ -1,6 +1,6 @@
 import { memo, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'

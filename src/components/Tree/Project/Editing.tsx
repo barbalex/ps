@@ -1,6 +1,6 @@
 import { useCallback, memo } from 'react'
 import { MdEdit, MdEditOff } from 'react-icons/md'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { Button } from '@fluentui/react-components'
 import { useParams } from 'react-router-dom'
 import { useAtom } from 'jotai'

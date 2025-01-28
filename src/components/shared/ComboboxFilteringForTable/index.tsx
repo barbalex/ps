@@ -7,7 +7,7 @@ import {
   useMemo,
 } from 'react'
 import { Combobox, Field } from '@fluentui/react-components'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { FilteringComboboxOptions } from './options.tsx'

@@ -1,7 +1,7 @@
 import { useCallback, memo } from 'react'
 import { Button } from '@fluentui/react-components'
 import { MdClose as CloseIcon } from 'react-icons/md'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { usePGlite } from '@electric-sql/pglite-react'
 // import { uuidv7 } from '@kripod/uuidv7'
 

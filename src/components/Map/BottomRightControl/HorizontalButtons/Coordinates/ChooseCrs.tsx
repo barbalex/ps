@@ -8,7 +8,7 @@ import {
   MenuItemRadio,
 } from '@fluentui/react-components'
 import { BsGlobe2 } from 'react-icons/bs'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import { usePGlite } from "@electric-sql/pglite-react"
 

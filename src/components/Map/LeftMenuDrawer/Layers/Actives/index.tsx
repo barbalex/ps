@@ -6,7 +6,7 @@ import {
   useCallback,
   createContext,
 } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import { Accordion } from '@fluentui/react-components'
 import { monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'

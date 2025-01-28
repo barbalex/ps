@@ -1,6 +1,6 @@
 import { memo, useCallback } from 'react'
 import { Field, RadioGroup, Radio } from '@fluentui/react-components'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 const rowStyle = {

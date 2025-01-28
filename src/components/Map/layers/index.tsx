@@ -1,5 +1,5 @@
 import { memo, useEffect } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { Pane } from 'react-leaflet'
 import { useAtom } from 'jotai'
 import { usePGlite } from "@electric-sql/pglite-react"

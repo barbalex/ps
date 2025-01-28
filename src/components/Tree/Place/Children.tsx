@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { Places as Place } from '../../../generated/client/index.ts'

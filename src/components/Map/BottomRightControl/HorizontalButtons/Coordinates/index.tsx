@@ -1,7 +1,7 @@
 import { useState, memo, useCallback, useMemo } from 'react'
 import { useMap, useMapEvent } from 'react-leaflet'
 import { useParams } from 'react-router-dom'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { usePGlite } from "@electric-sql/pglite-react"
 
 import { ToggleMapCenter } from './ToggleMapCenter.tsx'
