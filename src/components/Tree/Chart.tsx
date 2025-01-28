@@ -4,20 +4,10 @@ import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 
 import { Node } from './Node.tsx'
-import { Charts as Chart } from '../../../generated/client/index.ts'
 import { ChartSubjectsNode } from './ChartSubjects.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
-
-interface Props {
-  project_id?: string
-  subproject_id?: string
-  place_id?: string
-  place_id2?: string
-  chart: Chart
-  level: number
-}
 
 export const ChartNode = ({
   project_id,

@@ -3,20 +3,6 @@ import { useLocation } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
-import {
-  Places as Place,
-  Check_taxa as CheckTaxon,
-} from '../../generated/client/index.ts'
-
-interface Props {
-  project_id: string
-  subproject_id: string
-  place_id: string
-  place: Place
-  check_id: string
-  checkTaxon: CheckTaxon
-  level?: number
-}
 
 export const CheckTaxonNode = memo(
   ({

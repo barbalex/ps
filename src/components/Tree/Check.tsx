@@ -6,25 +6,12 @@ import { useAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
-import {
-  Checks as Check,
-  Places as Place,
-} from '../../../generated/client/index.ts'
 import { CheckValuesNode } from './CheckValues.tsx'
 import { CheckTaxaNode } from './CheckTaxa.tsx'
 import { FilesNode } from './Files.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
-
-interface Props {
-  project_id: string
-  subproject_id: string
-  place_id: string
-  check: Check
-  place: Place
-  level?: number
-}
 
 export const CheckNode = memo(
   ({ project_id, subproject_id, place_id, check, place, level = 8 }) => {

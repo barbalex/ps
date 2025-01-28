@@ -3,12 +3,6 @@ import { useLocation } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
-import { Crs } from '../../../generated/client/index.ts'
-
-interface Props {
-  crs: Crs
-  level?: number
-}
 
 export const CrsNode = memo(({ crs, level = 2 }) => {
   const location = useLocation()

@@ -3,17 +3,6 @@ import { useLocation } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
-import { Chart_subjects as ChartSubject } from '../../../generated/client/index.ts'
-
-interface Props {
-  project_id?: string
-  subproject_id?: string
-  place_id?: string
-  place_id2?: string
-  chart_id: string
-  chartSubject: ChartSubject
-  level: number
-}
 
 // not using memo because: "Component is not a function"
 export const ChartSubjectNode = ({

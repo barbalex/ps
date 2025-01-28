@@ -3,12 +3,6 @@ import { useLocation } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
-import { Fields as Field } from '../../../generated/client/index.ts'
-
-interface Props {
-  project_id?: string
-  field: Field
-}
 
 export const FieldNode = memo(({ project_id, field }) => {
   const level: number = project_id ? 4 : 2

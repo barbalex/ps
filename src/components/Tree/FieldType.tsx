@@ -3,12 +3,6 @@ import { useLocation } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
-import { FieldTypes as FieldType } from '../../../generated/client/index.ts'
-
-interface Props {
-  fieldType: FieldType
-  level?: number
-}
 
 export const FieldTypeNode = memo(({ fieldType, level = 2 }) => {
   const location = useLocation()
