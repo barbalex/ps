@@ -10,13 +10,8 @@ import { MdPreview, MdEditNote } from 'react-icons/md'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { FormHeader } from '../../components/FormHeader/index.tsx'
-import { Files as File } from '../../generated/client/index.ts'
 import { UploaderContext } from '../../UploaderContext.ts'
 import { FullscreenControl } from './FullscreenControl.tsx'
-
-interface Props {
-  row: File
-}
 
 export const Header = memo(({ row, previewRef }) => {
   const {

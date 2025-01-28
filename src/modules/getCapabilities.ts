@@ -3,13 +3,6 @@ import axios from 'redaxios'
 
 import { xmlToJson } from './xmlToJson.ts'
 import { createNotification } from './createRows.ts'
-import { Electric } from '../../generated/client/index.ts'
-
-interface Props {
-  url: string
-  service?: 'WMS' | 'WFS'
-  db: Electric
-}
 
 export const getCapabilities = async ({
   url,

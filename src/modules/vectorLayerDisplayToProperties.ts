@@ -1,14 +1,3 @@
-import {
-  Vector_layer_displays as VectorLayerDisplay,
-  Layer_presentations as LayerPresentation,
-} from '../generated/client/index.ts'
-
-interface Props {
-  vectorLayerDisplay: VectorLayerDisplay
-  presentation: LayerPresentation
-  extraProps?: Record<string, unknown>
-}
-
 export const vectorLayerDisplayToProperties = ({
   vectorLayerDisplay: display,
   presentation,

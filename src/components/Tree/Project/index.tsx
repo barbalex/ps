@@ -4,7 +4,6 @@ import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 
 import { Node } from '../Node.tsx'
-import { Projects as Project } from '../../../generated/client/index.ts'
 import { SubprojectsNode } from '../Subprojects.tsx'
 import { ProjectReportsNode } from '../ProjectReports.tsx'
 import { PersonsNode } from '../Persons.tsx'
@@ -23,10 +22,6 @@ import { removeChildNodes } from '../../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../../modules/tree/addOpenNodes.ts'
 import { designingAtom, treeOpenNodesAtom } from '../../../store.ts'
 
-interface Props {
-  project: Project
-  level?: number
-}
 const parentArray = ['data', 'projects']
 
 export const ProjectNode = memo(({ project, level = 2 }) => {

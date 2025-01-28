@@ -11,10 +11,20 @@ import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFiel
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Section } from '../../components/shared/Section.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
-import {
-  chart_subject_tableSchema as tableSchema,
-  chart_subject_value_sourceSchema as valueSourceSchema,
-} from '../../generated/client/index.ts'
+
+const chartSubjectTables = [
+  'subprojects',
+  'places',
+  'checks',
+  'check_values',
+  'actions',
+  'action_values',
+]
+const chartSubjectValueSources = [
+  'count_rows',
+  'count_rows_by_distinct_field_values',
+  'sum_values_of_field',
+]
 
 // separate from the route because it is also used inside other forms
 export const ChartSubjectForm = memo(({ autoFocusRef }) => {
@@ -57,7 +67,7 @@ export const ChartSubjectForm = memo(({ autoFocusRef }) => {
           name="table_name"
           value={row.table_name ?? ''}
           onChange={onChange}
-          options={tableSchema?.options ?? []}
+          options={chartSubjectTables}
           autoFocus
           ref={autoFocusRef}
           validationMessage="Choose what table to get the data from"
@@ -80,7 +90,7 @@ export const ChartSubjectForm = memo(({ autoFocusRef }) => {
         <RadioGroupField
           label="Value Source"
           name="value_source"
-          list={valueSourceSchema?.options ?? []}
+          list={chartSubjectValueSources}
           value={row.value_source ?? ''}
           onChange={onChange}
           replaceUnderscoreInLabel={true}

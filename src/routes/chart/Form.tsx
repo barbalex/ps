@@ -11,7 +11,8 @@ import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Section } from '../../components/shared/Section.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
-import { chart_typeSchema as chartTypeSchema } from '../../generated/client/index.ts'
+
+const chartTypes = ['Pie', 'Radar', 'Area']
 
 // seperate from the route because it is also used inside other forms
 export const Form = memo(({ autoFocusRef }) => {
@@ -130,14 +131,18 @@ export const Form = memo(({ autoFocusRef }) => {
 
   return (
     <div className="form-container">
-      <TextFieldInactive label="ID" name="chart_id" value={row.chart_id} />
+      <TextFieldInactive
+        label="ID"
+        name="chart_id"
+        value={row.chart_id}
+      />
       <Section title="General settings">
         <DropdownFieldSimpleOptions
           label="Chart Type"
           name="chart_type"
           value={row.chart_type ?? ''}
           onChange={onChange}
-          options={chartTypeSchema?.options ?? []}
+          options={chartTypes}
           autoFocus
           ref={autoFocusRef}
           validationMessage="Choose what type of chart you want to display"
