@@ -3,16 +3,6 @@ import { useLocation } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
-import { GoalReportValues as GoalReportValue } from '../../../generated/client/index.ts'
-
-interface Props {
-  project_id: string
-  subproject_id: string
-  goal_id: string
-  goal_report_id: string
-  goalReportValue: GoalReportValue
-  level?: number
-}
 
 export const GoalReportValueNode = memo(
   ({

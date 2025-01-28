@@ -3,14 +3,6 @@ import { useLocation } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
-import { ListValues as ListValue } from '../../../generated/client/index.ts'
-
-interface Props {
-  project_id: string
-  list_id: string
-  listValue: ListValue
-  level?: number
-}
 
 export const ListValueNode = memo(
   ({ project_id, list_id, listValue, level = 6 }) => {

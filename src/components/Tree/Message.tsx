@@ -3,12 +3,6 @@ import { useLocation } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
-import { Messages as Message } from '../../../generated/client/index.ts'
-
-interface Props {
-  message: Message
-  level?: number
-}
 
 export const MessageNode = memo(({ message, level = 2 }) => {
   const location = useLocation()

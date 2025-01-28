@@ -3,14 +3,6 @@ import { useLocation } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
-import { Occurrence_imports as OccurrenceImport } from '../../../generated/client/index.ts'
-
-interface Props {
-  project_id: string
-  subproject_id: string
-  occurrenceImport: OccurrenceImport
-  level?: number
-}
 
 export const OccurrenceImportNode = memo(
   ({ project_id, subproject_id, occurrenceImport, level = 6 }) => {

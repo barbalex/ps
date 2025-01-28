@@ -6,19 +6,10 @@ import { useAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
-import { Places as Place } from '../../../generated/client/index.ts'
 import { OccurrenceAssignedNode } from './OccurrenceAssigned.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
-
-interface Props {
-  project_id: string
-  subproject_id: string
-  place_id?: string
-  place: Place
-  level?: number
-}
 
 export const OccurrencesAssignedNode = memo(
   ({ project_id, subproject_id, place_id, place, level = 7 }) => {

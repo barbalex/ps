@@ -3,28 +3,9 @@ import { useLocation } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
-import {
-  Occurrences as Occurrence,
-  Places as Place,
-} from '../../../generated/client/index.ts'
-interface Props {
-  project_id: string
-  subproject_id: string
-  place_id?: string
-  place: Place
-  occurrence: Occurrence
-  level?: number
-}
 
 export const OccurrenceAssignedNode = memo(
-  ({
-    project_id,
-    subproject_id,
-    place_id,
-    place,
-    occurrence,
-    level = 8,
-  }) => {
+  ({ project_id, subproject_id, place_id, place, occurrence, level = 8 }) => {
     const location = useLocation()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')

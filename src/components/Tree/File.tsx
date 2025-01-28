@@ -3,14 +3,6 @@ import { useLocation } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 
 import { Node } from './Node.tsx'
-import { Files as File } from '../../../generated/client/index.ts'
-
-interface Props {
-  project_id?: string
-  subproject_id?: string
-  file: File
-  level: number
-}
 
 export const FileNode = memo(
   ({
