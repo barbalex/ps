@@ -10,8 +10,8 @@ import {
   Legend,
 } from 'recharts'
 import { useLiveQuery } from 'electric-sql/react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../../ElectricProvider.tsx'
 
 const toPercent = (decimal) => `${(decimal * 100).toFixed(0)}%`
 

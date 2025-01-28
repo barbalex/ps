@@ -2,8 +2,8 @@ import { memo, useCallback, useState } from 'react'
 import { Button, Spinner } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 import { MdDone } from 'react-icons/md'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../../ElectricProvider.tsx'
 import { setGeometries } from './setGeometries.ts'
 
 const spinnerStyle = {

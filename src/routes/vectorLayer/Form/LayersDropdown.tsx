@@ -1,8 +1,8 @@
 import { memo, useMemo, useCallback } from 'react'
 import { Dropdown, Field, Option } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../../ElectricProvider.tsx'
 
 export const LayersDropdown = memo(({ vectorLayer, validationMessage }) => {
   const db = usePGlite()

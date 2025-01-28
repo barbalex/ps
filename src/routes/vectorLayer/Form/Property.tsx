@@ -1,8 +1,8 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../../ElectricProvider.tsx'
 import { Vector_layers as VectorLayer } from '../../../generated/client/index.ts'
 import { DropdownFieldOptions } from '../../../components/shared/DropdownFieldOptions.tsx'
 import { TextField } from '../../../components/shared/TextField.tsx'

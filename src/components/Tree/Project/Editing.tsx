@@ -5,8 +5,8 @@ import { Button } from '@fluentui/react-components'
 import { useParams } from 'react-router-dom'
 import { useAtom } from 'jotai'
 import { pipe } from 'remeda'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../../ElectricProvider.tsx'
 import { on } from '../../../css.ts'
 import { designingAtom, userIdAtom } from '../../../store.ts'
 
