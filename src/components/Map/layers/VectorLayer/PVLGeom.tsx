@@ -3,6 +3,7 @@ import { GeoJSON, useMapEvent, useMap } from 'react-leaflet'
 import * as ReactDOMServer from 'react-dom/server'
 import { useDebouncedCallback } from 'use-debounce'
 import * as icons from 'react-icons/md'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import {
   Vector_layer_geoms as VectorLayerGeom,
@@ -13,7 +14,6 @@ import {
 import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
 import { Popup } from '../../Popup.tsx'
 import { ErrorBoundary } from '../../MapErrorBoundary.tsx'
-import { useElectric } from '../../../../ElectricProvider.tsx'
 import { createNotification } from '../../../../modules/createRows.ts'
 
 // const bboxBuffer = 0.01
@@ -24,7 +24,7 @@ interface Props {
 }
 
 export const PVLGeom = ({ layer, display }: Props) => {
-  const { db } = useElectric()!
+  const db = usePGlite()
   const layerPresentation = layer.layer_presentations?.[0]
 
   const [data, setData] = useState()
@@ -109,8 +109,16 @@ export const PVLGeom = ({ layer, display }: Props) => {
   }, [removeNotifs])
 
   // include only if zoom between min_zoom and max_zoom
-  if (layerPresentation.min_zoom !== undefined && zoom < layerPresentation.min_zoom) return null
-  if (layerPresentation.max_zoom !== undefined && zoom > layerPresentation.max_zoom) return null
+  if (
+    layerPresentation.min_zoom !== undefined &&
+    zoom < layerPresentation.min_zoom
+  )
+    return null
+  if (
+    layerPresentation.max_zoom !== undefined &&
+    zoom > layerPresentation.max_zoom
+  )
+    return null
 
   removeNotifs()
   if (
@@ -156,7 +164,10 @@ export const PVLGeom = ({ layer, display }: Props) => {
             },
           ]
           const popupContent = ReactDOMServer.renderToString(
-            <Popup layersData={layersData} mapSize={mapSize} />,
+            <Popup
+              layersData={layersData}
+              mapSize={mapSize}
+            />,
           )
           _layer.bindPopup(popupContent)
         }}

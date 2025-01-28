@@ -1,6 +1,6 @@
 import { useLiveQuery } from 'electric-sql/react'
+import { usePGlite } from "@electric-sql/pglite-react"
 
-import { useElectric } from '../../../../ElectricProvider.tsx'
 import { Layer_presentations as LayerPresentation } from '../../../../generated/client/index.ts'
 import { TableLayer } from './TableLayer.tsx'
 
@@ -9,7 +9,7 @@ interface Props {
 }
 
 export const Actions1 = ({ layerPresentation }: Props) => {
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   // need to query places1 because filtering by places in checks query does not work
   const { results: places1 = [] } = useLiveQuery(

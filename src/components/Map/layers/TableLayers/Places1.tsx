@@ -1,6 +1,6 @@
 import { useLiveQuery } from 'electric-sql/react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../../../ElectricProvider.tsx'
 import { Layer_presentations as LayerPresentation } from '../../../../generated/client/index.ts'
 import { TableLayer } from './TableLayer.tsx'
 
@@ -9,7 +9,7 @@ interface Props {
 }
 
 export const Places1 = ({ layerPresentation }: Props) => {
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   // TODO: query only inside current map bounds using places.bbox
   const { results: places = [] } = useLiveQuery(
@@ -43,5 +43,10 @@ export const Places1 = ({ layerPresentation }: Props) => {
   if (!data?.length) return null
   if (!layerPresentation) return null
 
-  return <TableLayer data={data} layerPresentation={layerPresentation} />
+  return (
+    <TableLayer
+      data={data}
+      layerPresentation={layerPresentation}
+    />
+  )
 }

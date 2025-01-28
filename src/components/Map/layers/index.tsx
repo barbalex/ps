@@ -2,8 +2,8 @@ import { memo, useEffect } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { Pane } from 'react-leaflet'
 import { useAtom } from 'jotai'
+import { usePGlite } from "@electric-sql/pglite-react"
 
-import { useElectric } from '../../../ElectricProvider.tsx'
 import {
   Wms_layers as WmsLayer,
   Vector_layers as VectorLayer,
@@ -19,7 +19,7 @@ const paneBaseIndex = 400 // was: 200. then wfs layers covered lower ones
 export const Layers = memo(() => {
   const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
 
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   // for every layer_presentation_id in mapLayerSorting, get the layer_presentation
   const { results: layerPresentations = [] } = useLiveQuery(

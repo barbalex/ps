@@ -1,8 +1,8 @@
 import { useLiveQuery } from 'electric-sql/react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { WFS } from './WFS.tsx'
 import { PVLGeom } from './PVLGeom.tsx'
-import { useElectric } from '../../../../ElectricProvider.tsx'
 import {
   Vector_layers as VectorLayer,
   Layer_presentations as LayerPresentation,
@@ -19,7 +19,7 @@ interface Props {
 }
 
 export const VectorLayerChooser = ({ layer, layerPresentation }: Props) => {
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const { results: vectorLayerGeoms = [] } = useLiveQuery(
     db.vector_layer_geoms.liveMany({

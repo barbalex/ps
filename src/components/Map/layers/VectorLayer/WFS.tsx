@@ -11,6 +11,7 @@ import { useDebouncedCallback } from 'use-debounce'
 import * as icons from 'react-icons/md'
 import proj4 from 'proj4'
 import reproject from 'reproject'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import {
   Dialog,
@@ -23,7 +24,6 @@ import {
 } from '@fluentui/react-components'
 
 import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
-import { useElectric } from '../../../../ElectricProvider.tsx'
 import {
   Vector_layers as VectorLayer,
   Vector_layer_displays as VectorLayerDisplay,
@@ -71,7 +71,7 @@ interface Props {
 }
 
 export const WFS = ({ layer, layerPresentation }: Props) => {
-  const { db } = useElectric()!
+  const db = usePGlite()
   const [error, setError] = useState()
   const notificationIds = useRef([])
 

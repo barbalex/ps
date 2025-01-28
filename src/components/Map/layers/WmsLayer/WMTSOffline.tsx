@@ -2,9 +2,9 @@
 import { useEffect } from 'react'
 import { useMap } from 'react-leaflet'
 import { useAtom, useSetAtom } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { Wms_layers as WmsLayerType } from '../../../../generated/client/index.ts'
-import { useElectric } from '../../../../ElectricProvider.tsx'
 import { createNotification } from '../../../../modules/createRows.ts'
 import { showLocalMapAtom, localMapValuesAtom } from '../../../../store.ts'
 
@@ -18,7 +18,7 @@ export const WMTSOffline = ({ layer }: Props) => {
   const map = useMap()
   const layerPresentation = layer.layer_presentations?.[0]
 
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   console.log('WMTSOffline, layer:', layer)
 

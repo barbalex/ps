@@ -4,6 +4,7 @@ import { Map } from '@types/leaflet'
 import * as ReactDOMServer from 'react-dom/server'
 import * as icons from 'react-icons/md'
 import { useAtom, useSetAtom } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
 import { Popup } from '../../Popup.tsx'
@@ -15,7 +16,6 @@ import {
   Layer_presentations as LayerPresentation,
 } from '../../../../generated/client/index.ts'
 import { ErrorBoundary } from '../../MapErrorBoundary.tsx'
-import { useElectric } from '../../../../ElectricProvider.tsx'
 import { assignToNearestDroppable } from './assignToNearestDroppable.ts'
 import {
   draggableLayersAtom,
@@ -39,7 +39,7 @@ export const TableLayer = memo(({ data, layerPresentation }: Props) => {
     placesToAssignOccurrenceToAtom,
   )
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const layer = layerPresentation.vector_layers
 
   const layerNameForState = layer?.label?.replace?.(/ /g, '-')?.toLowerCase?.()
@@ -71,8 +71,16 @@ export const TableLayer = memo(({ data, layerPresentation }: Props) => {
   if (!firstDisplay) return null
   if (!layer) return null
   // include only if zoom between min_zoom and max_zoom
-  if (layerPresentation.min_zoom !== undefined && zoom < layerPresentation.min_zoom) return null
-  if (layerPresentation.max_zoom !== undefined && zoom > layerPresentation.max_zoom) return null
+  if (
+    layerPresentation.min_zoom !== undefined &&
+    zoom < layerPresentation.min_zoom
+  )
+    return null
+  if (
+    layerPresentation.max_zoom !== undefined &&
+    zoom > layerPresentation.max_zoom
+  )
+    return null
   if (!data?.length) return null
 
   const mapSize = map.getSize()

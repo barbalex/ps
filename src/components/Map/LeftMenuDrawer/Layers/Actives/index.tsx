@@ -17,8 +17,8 @@ import {
 import { reorder } from '@atlaskit/pragmatic-drag-and-drop/reorder'
 import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index'
 import { useAtom, atom } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { ActiveLayer } from './Active.tsx'
 import { isItemData } from './shared.ts'
@@ -87,7 +87,7 @@ export const ActiveLayers = memo(() => {
 
   const { project_id } = useParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const where = project_id ? { project_id } : {}
 
