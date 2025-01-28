@@ -1,9 +1,9 @@
 import { useCallback, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createOccurrenceImport } from '../modules/createRows.ts'
-import { useElectric } from '../ElectricProvider.tsx'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
 

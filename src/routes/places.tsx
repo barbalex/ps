@@ -2,6 +2,7 @@ import { useCallback, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAtom } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import {
   createPlace,
@@ -9,7 +10,6 @@ import {
   createVectorLayerDisplay,
   createLayerPresentation,
 } from '../modules/createRows.ts'
-import { useElectric } from '../ElectricProvider.tsx'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { LayerMenu } from '../components/shared/LayerMenu.tsx'
