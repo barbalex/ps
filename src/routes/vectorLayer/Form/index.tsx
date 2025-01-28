@@ -9,9 +9,9 @@ import { DropdownFieldSimpleOptions } from '../../../components/shared/DropdownF
 import { Property } from './Property.tsx'
 import { CreateWfsService } from './CreateWfsService.tsx'
 
-import { vector_layer_type_enumSchema as vectorLayerTypeSchema } from '../../../generated/client/index.ts'
-
 import '../../../form.css'
+
+const vectorLayerTypes = ['wfs', 'upload', 'own']
 
 // this is just for presentation of data or filter values
 
@@ -32,7 +32,7 @@ export const Component = ({
       <DropdownFieldSimpleOptions
         label="Type"
         name="type"
-        options={vectorLayerTypeSchema.options}
+        options={vectorLayerTypes}
         value={vectorLayer.type ?? ''}
         onChange={onChange}
       />
