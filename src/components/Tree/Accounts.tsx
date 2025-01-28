@@ -17,7 +17,7 @@ export const AccountsNode = memo(() => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: accounts = [] } = useLiveQuery(
     db.accounts.liveMany({
       orderBy: { label: 'asc' },

@@ -33,7 +33,7 @@ export const ActionsNode = memo(
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
-    const { db } = useElectric()!
+    const db = usePGlite()
 
     const filter = place_id ? filterActions2 : filterActions1
     const where = filter.length > 1 ? { OR: filter } : filter[0]

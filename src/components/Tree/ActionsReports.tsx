@@ -35,7 +35,7 @@ export const ActionReportsNode = memo(
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const { db } = useElectric()!
+    const db = usePGlite()
     const { results: actionReports = [] } = useLiveQuery(
       db.action_reports.liveMany({
         where: { action_id },
