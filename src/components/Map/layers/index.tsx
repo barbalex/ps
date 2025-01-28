@@ -2,12 +2,8 @@ import { memo, useEffect } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { Pane } from 'react-leaflet'
 import { useAtom } from 'jotai'
-import { usePGlite } from "@electric-sql/pglite-react"
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import {
-  Wms_layers as WmsLayer,
-  Vector_layers as VectorLayer,
-} from '../../../generated/client/index.ts'
 import { OsmColor } from './OsmColor.tsx'
 import { WmsLayerComponent } from './WmsLayer/index.tsx'
 import { VectorLayerChooser } from './VectorLayer/index.tsx'
@@ -60,8 +56,8 @@ export const Layers = memo(() => {
 
     if (!layerPresentation) return null
 
-    const wmsLayer: WmsLayer | undefined = layerPresentation.wms_layers
-    const vectorLayer: VectorLayer | undefined = layerPresentation.vector_layers
+    const wmsLayer = layerPresentation.wms_layers
+    const vectorLayer = layerPresentation.vector_layers
     const wfsLayer = vectorLayer?.type === 'wfs' ? vectorLayer : null
     const tableLayer =
       vectorLayer?.type && vectorLayer.type !== 'wfs' ? vectorLayer : null
