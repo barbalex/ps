@@ -6,10 +6,6 @@ import { useAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
-import {
-  Actions as Action,
-  Places as Place,
-} from '../../../generated/client/index.ts'
 import { ActionValuesNode } from './ActionsValues.tsx'
 import { ActionReportsNode } from './ActionsReports.tsx'
 import { FilesNode } from './Files.tsx'
@@ -17,24 +13,8 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
-interface Props {
-  project_id: string
-  subproject_id: string
-  place_id: string
-  action: Action
-  place: Place
-  level?: number
-}
-
 export const ActionNode = memo(
-  ({
-    project_id,
-    subproject_id,
-    place_id,
-    action,
-    place,
-    level = 8,
-  }) => {
+  ({ project_id, subproject_id, place_id, action, place, level = 8 }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()

@@ -7,31 +7,12 @@ import { FieldFormInForm } from '../../FieldFormInForm.tsx'
 import { TextField } from '../../TextField.tsx'
 import { EditField } from './EditField.tsx'
 import { getValueFromChange } from '../../../../modules/getValueFromChange.ts'
-import { Fields as Field } from '../../../../generated/client/index.ts'
 import { Widget } from './Widget.tsx'
-
-type Props = {
-  fields: Field[]
-  table: string
-  jsonFieldName: string
-  idField: string
-  id: string
-  data: Record<string, unknown>
-  autoFocus?: boolean
-}
 
 export const WidgetsFromDataFieldsDefined = memo(
   forwardRef(
     (
-      {
-        fields,
-        data = {},
-        table,
-        jsonFieldName,
-        idField,
-        id,
-        autoFocus,
-      },
+      { fields, data = {}, table, jsonFieldName, idField, id, autoFocus },
       ref,
     ) => {
       const [searchParams] = useSearchParams()

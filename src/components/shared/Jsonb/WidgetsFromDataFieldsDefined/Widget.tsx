@@ -12,20 +12,6 @@ import { TimeFields } from '../../TimeFields.tsx'
 import { DateTimeField } from '../../DateTimeField.tsx'
 import { EditField } from './EditField.tsx'
 import { getValueFromChange } from '../../../../modules/getValueFromChange.ts'
-import { Fields as Field } from '../../../../generated/client/index.ts'
-
-type Props = {
-  name: string
-  type: string
-  field: Field
-  index: number
-  table: string
-  jsonFieldName: string
-  idField: string
-  id: string
-  data: Record<string, unknown>
-  autoFocus?: boolean
-}
 
 export const Widget = memo(
   forwardRef(

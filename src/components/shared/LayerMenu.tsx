@@ -11,22 +11,8 @@ import { featureCollection } from '@turf/helpers'
 import { useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 
-import {
-  Places as Place,
-  Actions as Action,
-  Checks as Check,
-  Occurrences as Occurrence,
-} from '../../generated/client/index.ts'
 import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
 import { mapBoundsAtom } from '../../store.ts'
-
-interface Props {
-  table: string
-  level: integer
-  placeNamePlural?: string
-}
-
-type GeometryType = Place[] | Action[] | Check[] | Occurrence[]
 
 export const LayerMenu = memo(({ table, level, placeNamePlural }) => {
   const setMapBounds = useSetAtom(mapBoundsAtom)
@@ -62,21 +48,21 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }) => {
     // get all geometries from layer
     // first get all places with level
     // then get all actions/checks/occurrences with place_id
-    let geometries: GeometryType = []
-    const places: Place[] = await db.places.findMany({
+    let geometries = []
+    const places = await db.places.findMany({
       where: { subproject_id, level },
     })
     if (table === 'places') {
       geometries = places.map((place) => place.geometry)
     } else if (table === 'actions') {
-      const actions: Action[] = await db.actions.findMany({
+      const actions = await db.actions.findMany({
         where: {
           place_id: { in: places.map((place) => place.place_id) },
         },
       })
       geometries = actions.map((action) => action.geometry)
     } else if (table === 'checks') {
-      const checks: Check[] = await db.checks.findMany({
+      const checks = await db.checks.findMany({
         where: {
           place_id: { in: places.map((place) => place.place_id) },
         },
