@@ -1,23 +1,8 @@
 import { getCapabilities } from '../../../modules/getCapabilities.ts'
-import {
-  Vector_layers as VectorLayer,
-  Wfs_services as WfsService,
-  Electric,
-} from '../../../generated/client/index.ts'
 import { chunkArrayWithMinSize } from '../../../modules/chunkArrayWithMinSize.ts'
 import { createWfsServiceLayer } from '../../../modules/createRows.ts'
 
-interface Props {
-  vectorLayer: VectorLayer
-  service: WfsService
-  db: Electric
-}
-
-export const getWfsCapabilitiesData = async ({
-  vectorLayer,
-  service,
-  db,
-}) => {
+export const getWfsCapabilitiesData = async ({ vectorLayer, service, db }) => {
   if (!vectorLayer) throw new Error('vector layer is required')
   if (!service.url) throw new Error('wfs service url is required')
   if (!db) throw new Error('db is required')

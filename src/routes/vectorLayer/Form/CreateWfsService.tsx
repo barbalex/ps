@@ -2,7 +2,6 @@ import { memo, useCallback, useState } from 'react'
 import { Field, Input } from '@fluentui/react-components'
 
 import { FetchWfsCapabilities } from './FetchWfsCapabilities.tsx'
-import { Vector_layers as VectorLayer } from '../../../../generated/client/index.ts'
 import { isValidUrl } from '../../../modules/isValidUrl.ts'
 
 const titleStyle = { margin: 0, fontSize: '1em' }
@@ -14,10 +13,6 @@ const rowStyle = {
 }
 const hintPStyle = { margin: 0 }
 const fieldStyle = { flexGrow: 1 }
-
-type Props = {
-  vectorLayer: VectorLayer
-}
 
 export const CreateWfsService = memo(({ vectorLayer }) => {
   const [url, setUrl] = useState('')

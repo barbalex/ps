@@ -1,20 +1,11 @@
-import {
-  Vector_layers as VectorLayer,
-  Electric,
-} from '../../../generated/client/index.ts'
 import { createVectorLayerDisplay } from '../../../modules/createRows.ts'
 import { chunkArrayWithMinSize } from '../../../modules/chunkArrayWithMinSize.ts'
-
-interface Props {
-  vectorLayerId: string
-  db: Electric
-}
 
 export const upsertVectorLayerDisplaysForVectorLayer = async ({
   db,
   vectorLayerId,
 }) => {
-  const vectorLayer: VectorLayer = await db.vector_layers.findUnique({
+  const vectorLayer = await db.vector_layers.findUnique({
     where: { vector_layer_id: vectorLayerId },
   })
   if (!vectorLayer) {

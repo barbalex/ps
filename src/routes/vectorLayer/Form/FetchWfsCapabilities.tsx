@@ -5,10 +5,6 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import {
-  Vector_layers as VectorLayer,
-  Wfs_services as WfsService,
-} from '../../../../generated/client/index.ts'
-import {
   createNotification,
   createWfsService,
 } from '../../../modules/createRows.ts'
@@ -19,13 +15,6 @@ const createWorker = createWorkerFactory(
 
 const buttonStyle = {
   minHeight: 32,
-}
-
-type Props = {
-  vectorLayer: VectorLayer
-  url: string
-  fetching: boolean
-  setFetching: (fetching: boolean) => void
 }
 
 export const FetchWfsCapabilities = memo(
@@ -48,7 +37,7 @@ export const FetchWfsCapabilities = memo(
       const existingService = await db.wfs_services.findFirst({
         where: { url: urlTrimmed },
       })
-      let service: WfsService | undefined
+      let service
       if (existingService) {
         // 2. if so, update it
         service = { ...existingService }

@@ -3,15 +3,10 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import { usePGlite } from '@electric-sql/pglite-react'
 
-import { Vector_layers as VectorLayer } from '../../../generated/client/index.ts'
 import { DropdownFieldOptions } from '../../../components/shared/DropdownFieldOptions.tsx'
 import { TextField } from '../../../components/shared/TextField.tsx'
 import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
 import { upsertVectorLayerDisplaysForVectorLayer } from './upsertVectorLayerDisplaysForVectorLayer.ts'
-
-interface Props {
-  vectorLayer: VectorLayer
-}
 
 export const Property = memo(({ vectorLayer }) => {
   const { project_id, vector_layer_id } = useParams()
