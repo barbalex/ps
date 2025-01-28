@@ -1,7 +1,5 @@
 import { memo } from 'react'
 
-import { Occurrences as Occurrence } from '../../generated/client/index.ts'
-
 const emptyContainerStyle = {
   display: 'flex',
   justifyContent: 'center',
@@ -49,11 +47,6 @@ const bocyCellStyle = {
   overflowWrap: 'anywhere',
 }
 
-interface Props {
-  occurrences: Occurrence[]
-  occurrenceFields: string[]
-}
-
 export const Preview = memo(({ occurrences, occurrenceFields }) => {
   if (!occurrences) {
     return <div style={emptyContainerStyle}>loading preview...</div>
@@ -73,7 +66,10 @@ export const Preview = memo(({ occurrences, occurrenceFields }) => {
         <thead style={headStyle}>
           <tr>
             {occurrenceFieldsWithLabel.map((f) => (
-              <th key={f} style={headerCellStyle}>
+              <th
+                key={f}
+                style={headerCellStyle}
+              >
                 {f}
               </th>
             ))}
@@ -83,7 +79,10 @@ export const Preview = memo(({ occurrences, occurrenceFields }) => {
           {occurrences.slice(0, 50).map((o) => (
             <tr key={o.occurrence_id}>
               {occurrenceFieldsWithLabel.map((f, i) => (
-                <td key={f} style={bocyCellStyle}>
+                <td
+                  key={f}
+                  style={bocyCellStyle}
+                >
                   {f === 'label' && i === 0 ? o.label : o.data[f]}
                 </td>
               ))}

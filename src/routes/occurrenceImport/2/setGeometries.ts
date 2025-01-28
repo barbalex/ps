@@ -2,17 +2,6 @@ import axios from 'redaxios'
 import { point, Point, featureCollection } from '@turf/helpers'
 import proj4 from 'proj4'
 
-import {
-  Occurrence_imports as OccurrenceImport,
-  Electric,
-} from '../../../generated/client/index.ts'
-
-interface Props {
-  occurrenceImport: OccurrenceImport
-  db: Electric
-  setNotification: (notification: string) => void
-}
-
 export const setGeometries = async ({
   occurrenceImport,
   db,
