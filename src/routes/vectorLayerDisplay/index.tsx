@@ -15,11 +15,10 @@ import { Header } from './Header.tsx'
 import { ErrorBoundary } from '../../components/shared/ErrorBoundary.tsx'
 import { ColorPicker } from '../../components/shared/ColorPicker.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
-import {
-  marker_type_enumSchema as markerTypeSchema,
-  line_cap_enumSchema as lineCapSchema,
-  fill_rule_enumSchema as fillRuleSchema,
-} from '../../generated/client/index.ts'
+
+const fillRules = ['nonzero', 'evenodd']
+const lineCaps = ['butt', 'round', 'square']
+const markerTypes = ['circle', 'marker']
 
 import '../../form.css'
 
@@ -81,7 +80,7 @@ export const Component = ({ vectorLayerDisplayId }) => {
           <RadioGroupField
             name="marker_type"
             label="Punkt-Typ"
-            list={markerTypeSchema?.options ?? []}
+            list={markerTypes}
             value={row.marker_type}
             onChange={onChange}
           />
@@ -127,7 +126,7 @@ export const Component = ({ vectorLayerDisplayId }) => {
             name="line_cap"
             value={row.line_cap}
             label="Linien: Abschluss"
-            list={lineCapSchema?.options ?? []}
+            list={lineCaps}
             onChange={onChange}
           />
           <RadioGroupField
@@ -181,7 +180,7 @@ export const Component = ({ vectorLayerDisplayId }) => {
             name="fill_rule"
             value={row.fill_rule}
             label="Füllung: Regel, um den Inhalt von Flächen zu bestimmen"
-            list={fillRuleSchema?.options ?? []}
+            list={fillRules}
             onChange={onChange}
           />
         </div>

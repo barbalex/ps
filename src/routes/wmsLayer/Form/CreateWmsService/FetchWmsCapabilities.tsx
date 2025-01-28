@@ -4,7 +4,6 @@ import { Button, Spinner } from '@fluentui/react-components'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { usePGlite } from '@electric-sql/pglite-react'
 
-import { Wms_layers as WmsLayer } from '../../../../generated/client/index.ts'
 import {
   createNotification,
   createWmsService,
@@ -16,13 +15,6 @@ const createWorker = createWorkerFactory(
 
 const buttonStyle = {
   marginRight: -10,
-}
-
-type Props = {
-  wmsLayer: WmsLayer
-  url: string
-  fetching: boolean
-  setFetching: (fetching: boolean) => void
 }
 
 export const FetchWmsCapabilities = memo(
