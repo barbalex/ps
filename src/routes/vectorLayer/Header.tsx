@@ -11,13 +11,13 @@ import {
   MenuPopover,
 } from '@fluentui/react-components'
 import { useAtom, useSetAtom } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import {
   createVectorLayer,
   createVectorLayerDisplay,
   createLayerPresentation,
 } from '../../modules/createRows.ts'
-import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { Vector_layers as VectorLayer } from '../../generated/client/index.ts'
 import {
