@@ -35,7 +35,7 @@ export const DropdownFieldFromList = memo(
     validationMessage,
     validationState,
     button,
-  }: Props) => {
+  }) => {
     const db = usePGlite()
     const { results: listValues = [] } = useLiveQuery(
       db.list_values.liveMany({ where: { list_id } }),

@@ -22,7 +22,7 @@ export const FileNode = memo(
     action_id,
     file,
     level = 2,
-  }: Props) => {
+  }) => {
     const location = useLocation()
 
     const isPreview = location.pathname.endsWith('/preview')

@@ -12,7 +12,7 @@ interface Props {
 }
 
 export const VectorLayerDisplayNode = memo(
-  ({ project_id, vector_layer_id, vectorLayerDisplay, level = 6 }: Props) => {
+  ({ project_id, vector_layer_id, vectorLayerDisplay, level = 6 }) => {
     const location = useLocation()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')

@@ -13,7 +13,7 @@ export const vectorLayerDisplayToProperties = ({
   vectorLayerDisplay: display,
   presentation,
   extraProps,
-}: Props): Record<string, unknown> => {
+}): Record<string, unknown> => {
   if (!display) return {}
 
   // opacity needs to be converted from percent to decimal

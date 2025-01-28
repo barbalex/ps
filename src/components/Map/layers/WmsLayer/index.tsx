@@ -11,7 +11,7 @@ interface Props {
   layerPresentation: LayerPresentation
 }
 
-export const WmsLayerComponent = memo(({ layerPresentation }: Props) => {
+export const WmsLayerComponent = memo(({ layerPresentation }) => {
   const [showLocalMap] = useAtom(showLocalMapAtom)
   const layer = layerPresentation.wms_layers
 

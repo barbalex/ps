@@ -60,7 +60,7 @@ export const Jsonb = memo(
         id,
         data = {},
         autoFocus = false,
-      }: Props,
+      },
       ref,
     ) => {
       const isAccountTable = accountTables.includes(table)

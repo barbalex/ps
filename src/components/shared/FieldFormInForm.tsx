@@ -47,7 +47,7 @@ interface Props {
   field: Field
 }
 
-export const FieldFormInForm = memo(({ field }: Props) => {
+export const FieldFormInForm = memo(({ field }) => {
   const [searchParams, setSearchParams] = useSearchParams()
   const db = usePGlite()
 

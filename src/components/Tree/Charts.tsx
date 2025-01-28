@@ -20,7 +20,7 @@ interface Props {
 }
 
 export const ChartsNode = memo(
-  ({ project_id, subproject_id, place_id, place_id2, level }: Props) => {
+  ({ project_id, subproject_id, place_id, place_id2, level }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()

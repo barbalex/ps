@@ -13,7 +13,7 @@ interface Props {
 }
 
 export const OccurrenceImportNode = memo(
-  ({ project_id, subproject_id, occurrenceImport, level = 6 }: Props) => {
+  ({ project_id, subproject_id, occurrenceImport, level = 6 }) => {
     const location = useLocation()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')

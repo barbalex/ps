@@ -20,7 +20,7 @@ type Props = {
   layer: VectorLayer | WmsLayer
 }
 
-export const LayerPresentationForm = memo(({ layer }: Props) => {
+export const LayerPresentationForm = memo(({ layer }) => {
   const db = usePGlite()
 
   const layerPresentation = useMemo(

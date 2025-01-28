@@ -12,7 +12,7 @@ interface Props {
   layer: WmsLayerType
 }
 
-export const WMTSOffline = ({ layer }: Props) => {
+export const WMTSOffline = ({ layer }) => {
   const [showLocalMap, setShowLocalMap] = useAtom(showLocalMapAtom)
   const setLocalMapValues = useSetAtom(localMapValuesAtom)
   const map = useMap()

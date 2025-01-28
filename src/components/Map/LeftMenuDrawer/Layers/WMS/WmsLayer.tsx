@@ -44,7 +44,7 @@ type Props = {
   isOpen: boolean
 }
 
-export const WmsLayer = memo(({ layer, isLast, isOpen }: Props) => {
+export const WmsLayer = memo(({ layer, isLast, isOpen }) => {
   const [designing] = useAtom(designingAtom)
   const db = usePGlite()
   const [tab, setTab] = useState<TabType>('overall-displays')

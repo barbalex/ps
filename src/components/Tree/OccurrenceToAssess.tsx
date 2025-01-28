@@ -13,7 +13,7 @@ interface Props {
 }
 
 export const OccurrenceToAssessNode = memo(
-  ({ project_id, subproject_id, occurrence, level = 6 }: Props) => {
+  ({ project_id, subproject_id, occurrence, level = 6 }) => {
     const location = useLocation()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')

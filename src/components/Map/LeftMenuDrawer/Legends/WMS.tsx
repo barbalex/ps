@@ -8,7 +8,7 @@ type Props = {
   layer: WmsLayer
 }
 
-export const WmsLegend = memo(({ layer }: Props) => {
+export const WmsLegend = memo(({ layer }) => {
   // need to fetch wms_service_layers with this layers wms_service_layer_name
   const db = usePGlite()
   const { results: wmsServiceLayer } = useLiveQuery(

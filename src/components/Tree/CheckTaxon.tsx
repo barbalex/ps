@@ -27,7 +27,7 @@ export const CheckTaxonNode = memo(
     check_id,
     checkTaxon,
     level = 10,
-  }: Props) => {
+  }) => {
     const location = useLocation()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')

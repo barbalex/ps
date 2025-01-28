@@ -30,7 +30,7 @@ export const FilesNode = memo(
     check_id,
     action_id,
     level,
-  }: Props) => {
+  }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const [filter] = useAtom(filesFilterAtom)
 

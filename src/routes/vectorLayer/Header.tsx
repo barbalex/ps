@@ -32,7 +32,7 @@ interface Props {
   row: VectorLayer
 }
 
-export const Header = memo(({ autoFocusRef, row }: Props) => {
+export const Header = memo(({ autoFocusRef, row }) => {
   const setDroppableLayer = useSetAtom(droppableLayerAtom)
   const [tabs, setTabs] = useAtom(tabsAtom)
   const [draggableLayers, setDraggableLayers] = useAtom(draggableLayersAtom)

@@ -18,7 +18,7 @@ interface Props {
   layerPresentation: LayerPresentation
 }
 
-export const VectorLayerChooser = ({ layer, layerPresentation }: Props) => {
+export const VectorLayerChooser = ({ layer, layerPresentation }) => {
   const db = usePGlite()
 
   const { results: vectorLayerGeoms = [] } = useLiveQuery(

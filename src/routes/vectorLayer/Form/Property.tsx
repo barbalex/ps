@@ -13,7 +13,7 @@ interface Props {
   vectorLayer: VectorLayer
 }
 
-export const Property = memo(({ vectorLayer }: Props) => {
+export const Property = memo(({ vectorLayer }) => {
   const { project_id, vector_layer_id } = useParams()
 
   const table = vectorLayer?.own_table

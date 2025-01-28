@@ -10,7 +10,7 @@ interface Props {
   field: Field
 }
 
-export const FieldNode = memo(({ project_id, field }: Props) => {
+export const FieldNode = memo(({ project_id, field }) => {
   const level: number = project_id ? 4 : 2
   const location = useLocation()
 

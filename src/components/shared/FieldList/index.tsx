@@ -18,7 +18,7 @@ interface Props {
 }
 
 export const FieldList = memo(
-  ({ name, label, table, fieldsTable, id, valueArray = [] }: Props) => {
+  ({ name, label, table, fieldsTable, id, valueArray = [] }) => {
     const { project_id } = useParams()
 
     const db = usePGlite()

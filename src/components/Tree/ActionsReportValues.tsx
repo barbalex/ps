@@ -31,7 +31,7 @@ export const ActionReportValuesNode = memo(
     action_id,
     action_report_id,
     level = 11,
-  }: Props) => {
+  }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()

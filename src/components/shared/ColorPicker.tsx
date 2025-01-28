@@ -21,7 +21,7 @@ interface Props {
 }
 
 export const ColorPicker = memo(
-  ({ color = '#ff0000', onChange, label, name, disabled }: Props) => {
+  ({ color = '#ff0000', onChange, label, name, disabled }) => {
     const [val, setVal] = useState<string>(color)
 
     // need to debounce changes when choosing

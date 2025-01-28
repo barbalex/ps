@@ -29,7 +29,7 @@ export const CheckTaxaNode = memo(
     place,
     check_id,
     level = 9,
-  }: Props) => {
+  }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()

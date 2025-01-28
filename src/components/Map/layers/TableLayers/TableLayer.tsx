@@ -29,7 +29,7 @@ interface Props {
   layerPresentation: LayerPresentation
 }
 
-export const TableLayer = memo(({ data, layerPresentation }: Props) => {
+export const TableLayer = memo(({ data, layerPresentation }) => {
   const [confirmAssigningToSingleTarget] = useAtom(
     confirmAssigningToSingleTargetAtom,
   )

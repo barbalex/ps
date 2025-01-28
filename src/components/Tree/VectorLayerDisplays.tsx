@@ -18,7 +18,7 @@ interface Props {
 }
 
 export const VectorLayerDisplaysNode = memo(
-  ({ project_id, vector_layer_id, level = 5 }: Props) => {
+  ({ project_id, vector_layer_id, level = 5 }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()

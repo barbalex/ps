@@ -41,7 +41,7 @@ type Props = {
   isOpen: boolean
 }
 
-export const OwnLayer = memo(({ layer, isLast, isOpen }: Props) => {
+export const OwnLayer = memo(({ layer, isLast, isOpen }) => {
   const [designing] = useAtom(designingAtom)
   const [vectorLayerDisplayId, setVectorLayerDisplayId] = useAtom(
     mapDrawerVectorLayerDisplayAtom,

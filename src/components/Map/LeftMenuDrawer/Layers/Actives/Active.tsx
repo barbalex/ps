@@ -137,7 +137,7 @@ type Props = {
 }
 
 export const ActiveLayer = memo(
-  ({ layer, index, isLast, isOpen, layerCount }: Props) => {
+  ({ layer, index, isLast, isOpen, layerCount }) => {
     const [designing] = useAtom(designingAtom)
     const [vectorLayerDisplayId, setVectorLayerDisplayId] = useAtom(
       mapDrawerVectorLayerDisplayAtom,

@@ -13,7 +13,7 @@ interface Props {
 }
 
 export const SubprojectTaxonNode = memo(
-  ({ project_id, subproject_id, subprojectTaxon, level = 6 }: Props) => {
+  ({ project_id, subproject_id, subprojectTaxon, level = 6 }) => {
     const location = useLocation()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')

@@ -10,7 +10,7 @@ interface Props {
   level?: number
 }
 
-export const AccountNode = memo(({ account, level = 2 }: Props) => {
+export const AccountNode = memo(({ account, level = 2 }) => {
   const location = useLocation()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

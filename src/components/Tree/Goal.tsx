@@ -18,7 +18,7 @@ interface Props {
 }
 
 export const GoalNode = memo(
-  ({ project_id, subproject_id, goal, level = 6 }: Props) => {
+  ({ project_id, subproject_id, goal, level = 6 }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()

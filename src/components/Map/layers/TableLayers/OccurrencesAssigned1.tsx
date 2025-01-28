@@ -1,17 +1,12 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import { useAtom } from 'jotai'
-import { usePGlite } from "@electric-sql/pglite-react"
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { Layer_presentations as LayerPresentation } from '../../../../generated/client/index.ts'
 import { TableLayer } from './TableLayer.tsx'
 import { draggableLayersAtom } from '../../../../store.ts'
 
-interface Props {
-  layerPresentation: LayerPresentation
-}
-
-export const OccurrencesAssigned1 = ({ layerPresentation }: Props) => {
+export const OccurrencesAssigned1 = ({ layerPresentation }) => {
   const [draggableLayers] = useAtom(draggableLayersAtom)
   const { subproject_id } = useParams()
   const db = usePGlite()

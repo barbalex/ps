@@ -24,7 +24,7 @@ export const OccurrenceAssignedNode = memo(
     place,
     occurrence,
     level = 8,
-  }: Props) => {
+  }) => {
     const location = useLocation()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')

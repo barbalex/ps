@@ -19,7 +19,7 @@ type Props = {
   vectorLayer: VectorLayer
 }
 
-export const CreateWfsService = memo(({ vectorLayer }: Props) => {
+export const CreateWfsService = memo(({ vectorLayer }) => {
   const [url, setUrl] = useState('')
   const onChange = useCallback((e) => setUrl(e.target.value), [])
 

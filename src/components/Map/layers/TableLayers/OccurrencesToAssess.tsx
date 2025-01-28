@@ -11,7 +11,7 @@ interface Props {
   layerPresentation: LayerPresentation
 }
 
-export const OccurrencesToAssess = ({ layerPresentation }: Props) => {
+export const OccurrencesToAssess = ({ layerPresentation }) => {
   const [draggableLayers] = useAtom(draggableLayersAtom)
   const { subproject_id } = useParams()
   const db = usePGlite()

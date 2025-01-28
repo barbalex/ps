@@ -23,7 +23,7 @@ export const TimeFieldMasked = memo((props: InputProps) => {
         onAccept={(value) => {
           if (value.includes('_')) return
           console.log('onAccept', { value })
-          onChange({ target: { name: props.name, value } })
+          onChange({ target: { name.name, value } })
         }}
         type="text"
       />

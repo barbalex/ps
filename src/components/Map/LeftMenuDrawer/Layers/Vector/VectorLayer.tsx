@@ -49,7 +49,7 @@ type Props = {
 
 type TabType = 'overall-displays' | 'feature-displays' | 'config'
 
-export const VectorLayer = memo(({ layer, isLast, isOpen }: Props) => {
+export const VectorLayer = memo(({ layer, isLast, isOpen }) => {
   const [designing] = useAtom(designingAtom)
   const [vectorLayerDisplayId, setVectorLayerDisplayId] = useAtom(
     mapDrawerVectorLayerDisplayAtom,

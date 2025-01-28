@@ -13,7 +13,7 @@ interface Props {
 }
 
 export const Header = memo(
-  ({ autoFocusRef, showPreview, setShowPreview }: Props) => {
+  ({ autoFocusRef, showPreview, setShowPreview }) => {
     const { subproject_id, occurrence_import_id } = useParams()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()

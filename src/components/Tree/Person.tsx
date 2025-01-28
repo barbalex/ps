@@ -11,7 +11,7 @@ interface Props {
   level?: number
 }
 
-export const PersonNode = memo(({ project_id, person, level = 4 }: Props) => {
+export const PersonNode = memo(({ project_id, person, level = 4 }) => {
   const location = useLocation()
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const ownArray = useMemo(

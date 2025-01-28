@@ -14,7 +14,7 @@ interface Props {
 }
 
 export const Two = memo(
-  ({ occurrenceImport, occurrenceFields, onChange }: Props) => {
+  ({ occurrenceImport, occurrenceFields, onChange }) => {
     return (
       <>
         <RadioGroupField

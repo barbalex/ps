@@ -29,7 +29,7 @@ export const ActionReportsNode = memo(
     place,
     action_id,
     level = 9,
-  }: Props) => {
+  }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()

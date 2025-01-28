@@ -25,7 +25,7 @@ interface Props {
 }
 
 export const PlaceReportsNode = memo(
-  ({ project_id, subproject_id, place_id, place, level = 7 }: Props) => {
+  ({ project_id, subproject_id, place_id, place, level = 7 }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const [placeReports1Filter] = useAtom(placeReports1FilterAtom)
     const [placeReports2Filter] = useAtom(placeReports2FilterAtom)

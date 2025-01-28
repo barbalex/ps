@@ -21,7 +21,7 @@ interface Props {
 }
 
 export const OccurrencesAssignedNode = memo(
-  ({ project_id, subproject_id, place_id, place, level = 7 }: Props) => {
+  ({ project_id, subproject_id, place_id, place, level = 7 }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()

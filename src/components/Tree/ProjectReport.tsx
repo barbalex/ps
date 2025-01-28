@@ -12,7 +12,7 @@ interface Props {
 }
 
 export const ProjectReportNode = memo(
-  ({ project_id, projectReport, level = 4 }: Props) => {
+  ({ project_id, projectReport, level = 4 }) => {
     const location = useLocation()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')

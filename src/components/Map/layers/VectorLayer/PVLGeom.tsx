@@ -23,7 +23,7 @@ interface Props {
   display: VectorLayerDisplay
 }
 
-export const PVLGeom = ({ layer, display }: Props) => {
+export const PVLGeom = ({ layer, display }) => {
   const db = usePGlite()
   const layerPresentation = layer.layer_presentations?.[0]
 

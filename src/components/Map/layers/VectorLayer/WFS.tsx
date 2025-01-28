@@ -70,7 +70,7 @@ interface Props {
   layerPresentation: LayerPresentation
 }
 
-export const WFS = ({ layer, layerPresentation }: Props) => {
+export const WFS = ({ layer, layerPresentation }) => {
   const db = usePGlite()
   const [error, setError] = useState()
   const notificationIds = useRef([])

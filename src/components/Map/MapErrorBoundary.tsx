@@ -22,7 +22,7 @@ const ErrorFallback = ({ error, db, layer }) => {
 export const ErrorBoundary = ({
   children,
   layer,
-}): PropsWithChildren<Props> => {
+})WithChildren<Props> => {
   const db = usePGlite()
 
   return (

@@ -27,7 +27,7 @@ export const CheckValueNode = memo(
     check_id,
     checkValue,
     level = 10,
-  }: Props) => {
+  }) => {
     const location = useLocation()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')

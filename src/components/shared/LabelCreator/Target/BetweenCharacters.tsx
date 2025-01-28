@@ -32,7 +32,7 @@ export const BetweenCharacters = memo(
     children,
     snapshot,
     provided,
-  }: Props): PropsWithChildren => {
+  })WithChildren => {
     const onBlur = useCallback(
       (event) => {
         const newLabel = [...label]

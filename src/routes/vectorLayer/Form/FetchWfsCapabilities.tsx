@@ -29,7 +29,7 @@ type Props = {
 }
 
 export const FetchWfsCapabilities = memo(
-  ({ vectorLayer, url, fetching, setFetching }: Props) => {
+  ({ vectorLayer, url, fetching, setFetching }) => {
     const db = usePGlite()
     const worker = useWorker(createWorker)
 

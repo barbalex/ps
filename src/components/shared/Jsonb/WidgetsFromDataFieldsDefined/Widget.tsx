@@ -42,7 +42,7 @@ export const Widget = memo(
         id,
         widgetType,
         autoFocus,
-      }: Props,
+      },
       ref,
     ) => {
       const { pathname } = useLocation()

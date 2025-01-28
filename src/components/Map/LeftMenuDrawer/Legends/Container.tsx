@@ -19,7 +19,7 @@ type Props = {
   isLast: boolean
 }
 
-export const Container = memo(({ children, layer, isLast }: Props) => (
+export const Container = memo(({ children, layer, isLast }) => (
   <section
     style={{
       ...containerStyle,

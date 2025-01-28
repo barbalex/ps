@@ -28,7 +28,7 @@ export const PlaceReportValuesNode = memo(
     place,
     place_report_id,
     level = 9,
-  }: Props) => {
+  }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()

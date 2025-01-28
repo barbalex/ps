@@ -29,7 +29,7 @@ interface Props {
 }
 const parentArray = ['data', 'projects']
 
-export const ProjectNode = memo(({ project, level = 2 }: Props) => {
+export const ProjectNode = memo(({ project, level = 2 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [designing] = useAtom(designingAtom)
 

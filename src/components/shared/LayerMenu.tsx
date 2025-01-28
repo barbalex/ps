@@ -28,7 +28,7 @@ interface Props {
 
 type GeometryType = Place[] | Action[] | Check[] | Occurrence[]
 
-export const LayerMenu = memo(({ table, level, placeNamePlural }: Props) => {
+export const LayerMenu = memo(({ table, level, placeNamePlural }) => {
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const { project_id, subproject_id } = useParams()
 

@@ -11,7 +11,7 @@ interface Props {
   appStateId: uuid
 }
 
-export const Item = memo(({ place, occurrenceId, appStateId }: Props) => {
+export const Item = memo(({ place, occurrenceId, appStateId }) => {
   const setPlacesToAssignOccurrenceTo = useSetAtom(
     placesToAssignOccurrenceToAtom,
   )

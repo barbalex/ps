@@ -15,7 +15,7 @@ interface Props {
   level?: number
 }
 
-export const CrssNode = memo(({ level = 1 }: Props) => {
+export const CrssNode = memo(({ level = 1 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()

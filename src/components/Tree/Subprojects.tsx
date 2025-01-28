@@ -16,7 +16,7 @@ interface Props {
   level?: number
 }
 
-export const SubprojectsNode = memo(({ project_id, level = 3 }: Props) => {
+export const SubprojectsNode = memo(({ project_id, level = 3 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [filter] = useAtom(subprojectsFilterAtom)
 

@@ -29,7 +29,7 @@ export const ActionReportValueNode = memo(
     action_report_id,
     actionReportValue,
     level = 12,
-  }: Props) => {
+  }) => {
     const location = useLocation()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')

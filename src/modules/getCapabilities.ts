@@ -15,7 +15,7 @@ export const getCapabilities = async ({
   url,
   service = 'WFS',
   db,
-}: Props): object | undefined => {
+}): object | undefined => {
   // Example url to get: https://wms.zh.ch/FnsSVOZHWMS?service=WMS&request=GetCapabilities
   let res
   try {

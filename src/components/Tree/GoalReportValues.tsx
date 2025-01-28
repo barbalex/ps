@@ -26,7 +26,7 @@ export const GoalReportValuesNode = memo(
     goal_id,
     goal_report_id,
     level = 9,
-  }: Props) => {
+  }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()

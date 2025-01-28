@@ -25,7 +25,7 @@ interface Props {
 }
 
 export const ChecksNode = memo(
-  ({ project_id, subproject_id, place_id, place, level = 7 }: Props) => {
+  ({ project_id, subproject_id, place_id, place, level = 7 }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const [filterChecks1] = useAtom(checks1FilterAtom)
     const [filterChecks2] = useAtom(checks2FilterAtom)

@@ -10,7 +10,7 @@ type Props = {
   layerPresentation: LayerPresentation
 }
 
-export const WMS = memo(({ layerPresentation }: Props) => {
+export const WMS = memo(({ layerPresentation }) => {
   const map = useMap()
 
   const db = usePGlite()

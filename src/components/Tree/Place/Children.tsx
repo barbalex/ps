@@ -19,7 +19,7 @@ interface Props {
 }
 
 export const PlaceChildren = memo(
-  ({ project_id, subproject_id, place_id, place }: Props) => {
+  ({ project_id, subproject_id, place_id, place }) => {
     const level = place_id ? 8 : 6
 
     const db = usePGlite()

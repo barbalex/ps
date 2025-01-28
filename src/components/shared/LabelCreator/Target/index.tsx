@@ -72,7 +72,7 @@ interface Props {
 }
 
 export const Target = memo(
-  ({ label, labelChanged, onChange, saveToDb }: Props) => {
+  ({ label, labelChanged, onChange, saveToDb }) => {
     // TODO: on apply changes: set loading until labelChanged is false
     const [changing, setChanging] = useState(false)
     const onClick = useCallback(() => {

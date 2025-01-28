@@ -28,7 +28,7 @@ export const ChartSubjectsNode = memo(
     place_id2,
     chart_id,
     level,
-  }: Props) => {
+  }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()

@@ -22,7 +22,7 @@ import { tabsAtom, mapBoundsAtom } from '../../store.ts'
 interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
 }
-export const Header = memo(({ autoFocusRef }: Props) => {
+export const Header = memo(({ autoFocusRef }) => {
   const [tabs, setTabs] = useAtom(tabsAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const navigate = useNavigate()

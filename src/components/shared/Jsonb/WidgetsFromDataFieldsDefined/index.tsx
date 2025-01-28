@@ -31,7 +31,7 @@ export const WidgetsFromDataFieldsDefined = memo(
         idField,
         id,
         autoFocus,
-      }: Props,
+      },
       ref,
     ) => {
       const [searchParams] = useSearchParams()

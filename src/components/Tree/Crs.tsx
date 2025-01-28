@@ -10,7 +10,7 @@ interface Props {
   level?: number
 }
 
-export const CrsNode = memo(({ crs, level = 2 }: Props) => {
+export const CrsNode = memo(({ crs, level = 2 }) => {
   const location = useLocation()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

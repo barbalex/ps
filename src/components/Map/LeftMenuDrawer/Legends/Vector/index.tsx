@@ -9,7 +9,7 @@ type Props = {
   layer: VectorLayer
 }
 
-export const VectorLegend = memo(({ layer }: Props) => {
+export const VectorLegend = memo(({ layer }) => {
   // fetch all vector_layer_displays for this layer
   const db = usePGlite()
   const { results: vectorLayerDisplays = [] } = useLiveQuery(

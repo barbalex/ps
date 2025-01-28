@@ -18,7 +18,7 @@ interface Props {
   row: File
 }
 
-export const Header = memo(({ row, previewRef }: Props) => {
+export const Header = memo(({ row, previewRef }) => {
   const {
     project_id,
     subproject_id,

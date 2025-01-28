@@ -1,14 +1,9 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { usePGlite } from "@electric-sql/pglite-react"
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { Layer_presentations as LayerPresentation } from '../../../../generated/client/index.ts'
 import { TableLayer } from './TableLayer.tsx'
 
-interface Props {
-  layerPresentation: LayerPresentation
-}
-
-export const Checks2 = ({ layerPresentation }: Props) => {
+export const Checks2 = ({ layerPresentation }) => {
   const db = usePGlite()
 
   // need to query places1 because filtering by places in checks query does not work
@@ -56,5 +51,10 @@ export const Checks2 = ({ layerPresentation }: Props) => {
   if (!data?.length) return null
   if (!layerPresentation) return null
 
-  return <TableLayer data={data} layerPresentation={layerPresentation} />
+  return (
+    <TableLayer
+      data={data}
+      layerPresentation={layerPresentation}
+    />
+  )
 }

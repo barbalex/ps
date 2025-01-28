@@ -54,7 +54,7 @@ interface Props {
   occurrenceFields: string[]
 }
 
-export const Preview = memo(({ occurrences, occurrenceFields }: Props) => {
+export const Preview = memo(({ occurrences, occurrenceFields }) => {
   if (!occurrences) {
     return <div style={emptyContainerStyle}>loading preview...</div>
   }

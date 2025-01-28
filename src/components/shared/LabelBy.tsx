@@ -17,7 +17,7 @@ interface Props {
 }
 
 export const LabelBy = memo(
-  ({ onChange, value, extraFieldNames = [], table, label, name }: Props) => {
+  ({ onChange, value, extraFieldNames = [], table, label, name }) => {
     const { project_id } = useParams()
 
     const db = usePGlite()

@@ -8,7 +8,7 @@ interface Props {
   layerPresentation: LayerPresentation
 }
 
-export const Places2 = ({ layerPresentation }: Props) => {
+export const Places2 = ({ layerPresentation }) => {
   const db = usePGlite()
 
   // TODO: query only inside current map bounds using places.bbox

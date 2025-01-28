@@ -8,7 +8,7 @@ interface Props {
   layerPresentation: LayerPresentation
 }
 
-export const LocalMap = ({ layerPresentation }: Props) => {
+export const LocalMap = ({ layerPresentation }) => {
   const layer = layerPresentation.wms_layers
   const bounds = (layer.local_data_bounds ?? []).map((b) =>
     L.latLngBounds(b._southWest, b._northEast),

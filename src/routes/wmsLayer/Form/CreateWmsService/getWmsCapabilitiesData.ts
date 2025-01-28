@@ -17,7 +17,7 @@ export const getWmsCapabilitiesData = async ({
   wmsLayer,
   service,
   db,
-}: Props) => {
+}) => {
   if (!service?.url) return undefined
 
   const serviceData = {}

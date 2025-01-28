@@ -15,7 +15,7 @@ interface Props {
   project_id?: string
 }
 
-export const FieldsNode = memo(({ project_id }: Props) => {
+export const FieldsNode = memo(({ project_id }) => {
   const [filter] = useAtom(fieldsFilterAtom)
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()

@@ -18,7 +18,7 @@ interface Props {
 }
 
 export const SubprojectTaxaNode = memo(
-  ({ project_id, subproject_id, level = 5 }: Props) => {
+  ({ project_id, subproject_id, level = 5 }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()

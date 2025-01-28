@@ -26,7 +26,7 @@ type Props = {
 }
 
 export const FetchWmsCapabilities = memo(
-  ({ wmsLayer, url, fetching, setFetching }: Props) => {
+  ({ wmsLayer, url, fetching, setFetching }) => {
     const db = usePGlite()
     const worker = useWorker(createWorker)
 
