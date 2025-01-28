@@ -10,8 +10,8 @@ import { Uploader } from './file/Uploader.tsx'
 import { UploaderContext } from '../UploaderContext.ts'
 
 import '../form.css'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../ElectricProvider.tsx'
 
 export const Component = memo(() => {
   const {

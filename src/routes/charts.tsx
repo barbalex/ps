@@ -8,8 +8,8 @@ import { Row } from '../components/shared/Row.tsx'
 import { createChart } from '../modules/createRows.ts'
 
 import '../form.css'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../ElectricProvider.tsx'
 import { designingAtom } from '../store.ts'
 
 export const Component = memo(() => {
