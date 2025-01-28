@@ -33,6 +33,8 @@ export const App = () => {
   // console.log('App, theme:', customLightTheme)
   const uploaderRef = createRef<HTMLElement | null>(null)
 
+  console.log('App', { db })
+
   return (
     <PGliteProvider db={db}>
       <JotaiProvider store={store}>

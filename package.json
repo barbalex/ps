@@ -4,10 +4,6 @@
   "author": "Alexander Gabriel",
   "type": "module",
   "scripts": {
-    "client:generate:debug": "npx electric-sql generate --debug",
-    "client:generate": "npx electric-sql generate && node renameLables.js",
-    "client:watch": "npx electric-sql generate --watch",
-    "db:migrate": "npx electric-sql with-config \"npx pg-migrations apply --database {{ELECTRIC_PROXY}} --directory ./db/migrations\"",
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint . --max-warnings 0",
