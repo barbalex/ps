@@ -28,7 +28,7 @@ export const AddField = memo(({ tableName, level }) => {
   const [searchParams, setSearchParams] = useSearchParams()
   const { pathname } = useLocation()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const addRow = useCallback(async () => {
     const isAccountTable = accountTables.includes(tableName)

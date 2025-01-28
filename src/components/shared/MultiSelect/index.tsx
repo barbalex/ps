@@ -24,7 +24,7 @@ export const MultiSelect = memo(
       () => valueArray.map((v) => v.value),
       [valueArray],
     )
-    const { db } = useElectric()!
+    const db = usePGlite()
     const unusedOptions = useMemo(
       () => options.filter((o) => !valueArrayValues.includes(o.value)),
       [options, valueArrayValues],

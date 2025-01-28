@@ -47,7 +47,7 @@ export const Widget = memo(
     ) => {
       const { pathname } = useLocation()
       const { place_id, place_id2 } = useParams()
-      const { db } = useElectric()!
+      const db = usePGlite()
 
       const onChange = useCallback<InputProps['onChange']>(
         async (e, dataReturned) => {

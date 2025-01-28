@@ -66,7 +66,7 @@ export const Jsonb = memo(
       const isAccountTable = accountTables.includes(table)
       const { project_id, place_id, place_id2 } = useParams()
       const { pathname } = useLocation()
-      const { db } = useElectric()!
+      const db = usePGlite()
 
       const where = {
         table_name: table,

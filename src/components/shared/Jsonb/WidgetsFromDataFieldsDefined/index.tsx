@@ -38,7 +38,7 @@ export const WidgetsFromDataFieldsDefined = memo(
       const { pathname } = useLocation()
       const { place_id, place_id2 } = useParams()
       const editingField = searchParams.get('editingField')
-      const { db } = useElectric()!
+      const db = usePGlite()
 
       const { results: fieldTypes = [] } = useLiveQuery(
         db.field_types.liveMany({
