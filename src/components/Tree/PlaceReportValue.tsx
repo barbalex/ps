@@ -27,7 +27,7 @@ export const PlaceReportValueNode = memo(
     place_report_id,
     placeReportValue,
     level = 10,
-  }: Props) => {
+  }) => {
     const location = useLocation()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')

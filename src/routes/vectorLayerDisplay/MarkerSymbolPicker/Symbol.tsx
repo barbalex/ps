@@ -22,7 +22,7 @@ const activeStyle = {
   backgroundColor: 'yellow',
 }
 
-export const Symbol = ({ Component, name, onChange, active }: Props) => {
+export const Symbol = ({ Component, name, onChange, active }) => {
   const onClick = useCallback(() => {
     onChange({
       target: {

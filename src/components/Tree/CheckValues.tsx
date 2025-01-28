@@ -1,10 +1,10 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../ElectricProvider.tsx'
 import { Node } from './Node.tsx'
 import { Places as Place } from '../../../generated/client/index.ts'
 import { CheckValueNode } from './CheckValue.tsx'
@@ -29,13 +29,13 @@ export const CheckValuesNode = memo(
     place,
     check_id,
     level = 9,
-  }: Props) => {
+  }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const { db } = useElectric()!
+    const db = usePGlite()
     const { results: checkValues = [] } = useLiveQuery(
       db.check_values.liveMany({
         where: { check_id },

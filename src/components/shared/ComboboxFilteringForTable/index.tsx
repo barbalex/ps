@@ -7,9 +7,9 @@ import {
   useMemo,
 } from 'react'
 import { Combobox, Field } from '@fluentui/react-components'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../../ElectricProvider.tsx'
 import { FilteringComboboxOptions } from './options.tsx'
 
 export const ComboboxFilteringForTable = memo(
@@ -32,7 +32,7 @@ export const ComboboxFilteringForTable = memo(
     ) => {
       const [filter, setFilter] = useState('')
 
-      const { db } = useElectric()!
+      const db = usePGlite()
       const whereForSelectedOption = useMemo(
         () => ({
           [idField ?? name]:

@@ -1,10 +1,10 @@
 import { useCallback, memo } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAtom } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createProject } from '../modules/createRows.ts'
-import { useElectric } from '../ElectricProvider.tsx'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
@@ -16,7 +16,7 @@ export const Component = memo(() => {
   const [projectsFilter] = useAtom(projectsFilterAtom)
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const where =
     projectsFilter.length > 1 ? { OR: projectsFilter } : projectsFilter[0]

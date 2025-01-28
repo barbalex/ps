@@ -1,9 +1,9 @@
 import { useCallback, memo } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import type { InputProps } from '@fluentui/react-components'
 import { useParams } from 'react-router-dom'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../ElectricProvider.tsx'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions.tsx'
@@ -17,7 +17,7 @@ import { chart_typeSchema as chartTypeSchema } from '../../generated/client/inde
 export const Form = memo(({ autoFocusRef }) => {
   const { chart_id } = useParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: row } = useLiveQuery(
     db.charts.liveUnique({ where: { chart_id } }),
   )

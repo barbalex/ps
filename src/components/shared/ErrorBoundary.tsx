@@ -36,7 +36,7 @@ const ErrorFallback = ({
   error,
   componentStack,
   resetErrorBoundary,
-}: Props) => (
+}) => (
   <div style={containerStyle}>
     <p>Sorry, ein Fehler ist aufgetreten:</p>
     <pre style={preWrappingStyle}>{error.message}</pre>

@@ -1,7 +1,7 @@
 import { memo, useCallback, forwardRef } from 'react'
 import { useLocation, useParams } from 'react-router-dom'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../../../ElectricProvider.tsx'
 import { TextField } from '../../TextField.tsx'
 import { TextArea } from '../../TextArea.tsx'
 import { DropdownField } from '../../DropdownField.tsx'
@@ -42,12 +42,12 @@ export const Widget = memo(
         id,
         widgetType,
         autoFocus,
-      }: Props,
+      },
       ref,
     ) => {
       const { pathname } = useLocation()
       const { place_id, place_id2 } = useParams()
-      const { db } = useElectric()!
+      const db = usePGlite()
 
       const onChange = useCallback<InputProps['onChange']>(
         async (e, dataReturned) => {

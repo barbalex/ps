@@ -1,8 +1,8 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../../ElectricProvider.tsx'
 import { Vector_layers as VectorLayer } from '../../../generated/client/index.ts'
 import { DropdownFieldOptions } from '../../../components/shared/DropdownFieldOptions.tsx'
 import { TextField } from '../../../components/shared/TextField.tsx'
@@ -13,13 +13,13 @@ interface Props {
   vectorLayer: VectorLayer
 }
 
-export const Property = memo(({ vectorLayer }: Props) => {
+export const Property = memo(({ vectorLayer }) => {
   const { project_id, vector_layer_id } = useParams()
 
   const table = vectorLayer?.own_table
   const level = vectorLayer?.own_table_level
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   // get fields of table
   const { results: fields = [] } = useLiveQuery(
     db.fields.liveMany({

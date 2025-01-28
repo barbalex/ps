@@ -2,17 +2,17 @@ import { useCallback, memo } from 'react'
 import { useParams } from 'react-router-dom'
 import { MdEdit, MdEditOff } from 'react-icons/md'
 import { ToggleButton } from '@fluentui/react-components'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../ElectricProvider.tsx'
 import { designingAtom, userIdAtom } from '../../store.ts'
 
 export const DesigningButton = memo(() => {
   const [designing, setDesigning] = useAtom(designingAtom)
   const [userId] = useAtom(userIdAtom)
   const { project_id } = useParams()
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const onClickDesigning = useCallback(
     () => setDesigning(!designing),

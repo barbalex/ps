@@ -1,19 +1,19 @@
 import { memo } from 'react'
 import { useMap, WMSTileLayer } from 'react-leaflet'
 import { useDebouncedCallback } from 'use-debounce'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { onTileError } from './onTileError.ts'
-import { useElectric } from '../../../../ElectricProvider.tsx'
 import { Layer_presentations as LayerPresentation } from '../../../../generated/client/index.ts'
 
 type Props = {
   layerPresentation: LayerPresentation
 }
 
-export const WMS = memo(({ layerPresentation }: Props) => {
+export const WMS = memo(({ layerPresentation }) => {
   const map = useMap()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const layer = layerPresentation.wms_layers
 

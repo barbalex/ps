@@ -24,7 +24,7 @@ export const ChartSubjectNode = ({
   chart_id,
   chartSubject,
   level = 2,
-}: Props) => {
+}) => {
   const location = useLocation()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

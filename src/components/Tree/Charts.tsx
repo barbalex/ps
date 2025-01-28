@@ -1,10 +1,10 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../ElectricProvider.tsx'
 import { Node } from './Node.tsx'
 import { ChartNode } from './Chart.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
@@ -20,13 +20,13 @@ interface Props {
 }
 
 export const ChartsNode = memo(
-  ({ project_id, subproject_id, place_id, place_id2, level }: Props) => {
+  ({ project_id, subproject_id, place_id, place_id2, level }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const { db } = useElectric()!
+    const db = usePGlite()
 
     const where = useMemo(() => {
       const where = {}

@@ -11,7 +11,7 @@ interface Props {
 export const removeChildNodes = async ({
   node = [],
   isRoot = false,
-}: Props): void => {
+}): void => {
   store.set(treeOpenNodesAtom, (openNodes) => {
     // remove all nodes that are children of the node
     const newNodes = openNodes.filter((openNode) => {

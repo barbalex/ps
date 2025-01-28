@@ -3,14 +3,14 @@ import { Button } from '@fluentui/react-button'
 import { MdLayers, MdLayersClear } from 'react-icons/md'
 import { TbZoomScan } from 'react-icons/tb'
 // import { TbMapCog } from 'react-icons/tb'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import { bbox } from '@turf/bbox'
 import { buffer } from '@turf/buffer'
 import { featureCollection } from '@turf/helpers'
 import { useSetAtom } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../ElectricProvider.tsx'
 import {
   Places as Place,
   Actions as Action,
@@ -28,11 +28,11 @@ interface Props {
 
 type GeometryType = Place[] | Action[] | Check[] | Occurrence[]
 
-export const LayerMenu = memo(({ table, level, placeNamePlural }: Props) => {
+export const LayerMenu = memo(({ table, level, placeNamePlural }) => {
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const { project_id, subproject_id } = useParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: vectorLayer } = useLiveQuery(
     db.vector_layers.liveFirst({
       where: { project_id, type: `${table}${level}` },

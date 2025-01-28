@@ -9,13 +9,13 @@ import {
 import { Combobox, Field } from '@fluentui/react-components'
 import { useParams } from 'react-router-dom'
 import { useDebouncedCallback } from 'use-debounce'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { Options } from './options.tsx'
-import { useElectric } from '../../../ElectricProvider.tsx'
 
 export const ComboboxFilteringOptions = memo(
   forwardRef(({ autoFocus }, ref) => {
-    const { db } = useElectric()!
+    const db = usePGlite()
     const { project_crs_id } = useParams()
 
     const [filter, setFilter] = useState('')
@@ -79,7 +79,10 @@ export const ComboboxFilteringOptions = memo(
           freeform
           clearable
         >
-          <Options filter={filter} optionsFiltered={crs} />
+          <Options
+            filter={filter}
+            optionsFiltered={crs}
+          />
         </Combobox>
       </Field>
     )

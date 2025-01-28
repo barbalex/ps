@@ -1,8 +1,8 @@
 import { useEffect, useState, forwardRef, useMemo } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from "@electric-sql/pglite-react"
 
-import { useElectric } from '../../../ElectricProvider.tsx'
 import { idFieldFromTable } from '../../../modules/idFieldFromTable.ts'
 import { Menu } from './Menu/index.tsx'
 
@@ -98,7 +98,7 @@ export const BreadcrumbForData = forwardRef(
     //   queryParam.include = { units: true }
     // }
 
-    const { db } = useElectric()!
+    const db = usePGlite()
     const queryTable = table === 'root' || table === 'docs' ? 'projects' : table
 
     // console.log('BreadcrumbForData', {

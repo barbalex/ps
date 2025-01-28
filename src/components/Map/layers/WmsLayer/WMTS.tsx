@@ -6,7 +6,7 @@ interface Props {
   layer: WmsLayerType
 }
 
-export const WMTS = ({ layer }: Props) => {
+export const WMTS = ({ layer }) => {
   return (
     <TileLayer
       url={layer.wmts_url_template}

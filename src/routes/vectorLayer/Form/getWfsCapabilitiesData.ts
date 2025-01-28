@@ -17,7 +17,7 @@ export const getWfsCapabilitiesData = async ({
   vectorLayer,
   service,
   db,
-}: Props) => {
+}) => {
   if (!vectorLayer) throw new Error('vector layer is required')
   if (!service.url) throw new Error('wfs service url is required')
   if (!db) throw new Error('db is required')

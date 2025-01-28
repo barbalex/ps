@@ -1,13 +1,13 @@
 import { useCallback, memo } from 'react'
 import { createWorkerFactory, useWorker } from '@shopify/react-web-worker'
 import { Button, Spinner } from '@fluentui/react-components'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import {
   Vector_layers as VectorLayer,
   Wfs_services as WfsService,
 } from '../../../../generated/client/index.ts'
-import { useElectric } from '../../../ElectricProvider.tsx'
 import {
   createNotification,
   createWfsService,
@@ -29,8 +29,8 @@ type Props = {
 }
 
 export const FetchWfsCapabilities = memo(
-  ({ vectorLayer, url, fetching, setFetching }: Props) => {
-    const { db } = useElectric()!
+  ({ vectorLayer, url, fetching, setFetching }) => {
+    const db = usePGlite()
     const worker = useWorker(createWorker)
 
     const { results: wfsServiceLayers = [] } = useLiveQuery(

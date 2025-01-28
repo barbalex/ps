@@ -4,10 +4,6 @@
   "author": "Alexander Gabriel",
   "type": "module",
   "scripts": {
-    "client:generate:debug": "npx electric-sql generate --debug",
-    "client:generate": "npx electric-sql generate && node renameLables.js",
-    "client:watch": "npx electric-sql generate --watch",
-    "db:migrate": "npx electric-sql with-config \"npx pg-migrations apply --database {{ELECTRIC_PROXY}} --directory ./db/migrations\"",
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint . --max-warnings 0",
@@ -22,6 +18,8 @@
     "@corbado/react": "2.18.0",
     "@css-hooks/react": "3.0.1",
     "@cyntler/react-doc-viewer": "1.17.0",
+    "@electric-sql/pglite": "0.2.15",
+    "@electric-sql/pglite-react": "0.2.15",
     "@fluentui/react-components": "9.55.1",
     "@fluentui/react-datepicker-compat": "0.4.53",
     "@fluentui/react-icons": "2.0.264",
@@ -43,7 +41,6 @@
     "allotment": "1.20.2",
     "array-move": "4.0.0",
     "dayjs": "1.11.13",
-    "electric-sql": "0.12.1",
     "framer-motion": "11.11.11",
     "is-uuid": "1.0.2",
     "jotai": "2.10.1",
@@ -74,8 +71,7 @@
     "tiny-invariant": "1.3.3",
     "use-debounce": "10.0.4",
     "wms-capabilities": "0.6.0",
-    "xlsx": "0.18.5",
-    "zod": "3.23.8"
+    "xlsx": "0.18.5"
   },
   "devDependencies": {
     "@databases/pg-migrations": "5.0.3",
@@ -101,6 +97,6 @@
     "vite-plugin-svgr": "4.3.0"
   },
   "devRemarks": {
-    "zod": "dependency of electric-sql. Needed because: electric uses 3.21.4 which does not recognize v7 uuids, https://github.com/electric-sql/electric/issues/1153#issuecomment-2054014067, https://github.com/colinhacks/zod/issues/2184#issuecomment-2063265267"
+    "nothing": "now"
   }
 }

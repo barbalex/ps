@@ -1,5 +1,6 @@
 import { memo } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { Places as Place } from '../../../generated/client/index.ts'
 import { ChecksNode } from '../Checks.tsx'
@@ -8,7 +9,6 @@ import { PlaceReportsNode } from '../PlaceReports.tsx'
 import { PlaceUsersNode } from '../PlaceUsers.tsx'
 import { PlacesNode } from '../Places.tsx'
 import { OccurrencesAssignedNode } from '../OccurrencesAssigned.tsx'
-import { useElectric } from '../../../ElectricProvider.tsx'
 import { FilesNode } from '../Files.tsx'
 
 interface Props {
@@ -19,10 +19,10 @@ interface Props {
 }
 
 export const PlaceChildren = memo(
-  ({ project_id, subproject_id, place_id, place }: Props) => {
+  ({ project_id, subproject_id, place_id, place }) => {
     const level = place_id ? 8 : 6
 
-    const { db } = useElectric()!
+    const db = usePGlite()
     // query from place_level what children to show
     const { results: placeLevels } = useLiveQuery(
       db.place_levels.liveMany({

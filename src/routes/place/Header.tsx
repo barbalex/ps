@@ -1,11 +1,12 @@
 import { useCallback, memo } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { TbZoomScan } from 'react-icons/tb'
 import { Button } from '@fluentui/react-button'
 import { bbox } from '@turf/bbox'
 import { buffer } from '@turf/buffer'
 import { useAtom, useSetAtom } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import {
   createPlace,
@@ -14,7 +15,6 @@ import {
   createNotification,
   createLayerPresentation,
 } from '../../modules/createRows.ts'
-import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
 import { tabsAtom, mapBoundsAtom } from '../../store.ts'
@@ -22,14 +22,14 @@ import { tabsAtom, mapBoundsAtom } from '../../store.ts'
 interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
 }
-export const Header = memo(({ autoFocusRef }: Props) => {
+export const Header = memo(({ autoFocusRef }) => {
   const [tabs, setTabs] = useAtom(tabsAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { project_id, subproject_id, place_id, place_id2 } = useParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: placeLevels } = useLiveQuery(
     db.place_levels.liveMany({
       where: {

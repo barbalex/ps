@@ -1,10 +1,10 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../ElectricProvider.tsx'
 import { Node } from './Node.tsx'
 import { CrsNode } from './Crs.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
@@ -15,12 +15,12 @@ interface Props {
   level?: number
 }
 
-export const CrssNode = memo(({ level = 1 }: Props) => {
+export const CrssNode = memo(({ level = 1 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const { results: crs = [] } = useLiveQuery(
     db.crs.liveMany({

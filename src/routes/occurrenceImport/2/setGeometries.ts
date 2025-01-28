@@ -17,7 +17,7 @@ export const setGeometries = async ({
   occurrenceImport,
   db,
   setNotification,
-}: Props) => {
+}) => {
   const system = occurrenceImport.crs?.split?.(':')?.[0]?.toLowerCase?.()
   const number = occurrenceImport.crs?.split?.(':')?.[1]
   // get proj4 definition from https://spatialreference.org/ref/${system}/${number}/proj4.txt

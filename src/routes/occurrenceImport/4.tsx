@@ -1,8 +1,8 @@
 import { memo, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../ElectricProvider.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions.tsx'
 import { DropdownFieldOptions } from '../../components/shared/DropdownFieldOptions.tsx'
@@ -11,7 +11,7 @@ import { occurrence_imports_previous_import_operation_enumSchema as previousImpo
 export const Four = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
   const { occurrence_import_id, subproject_id } = useParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: occurrenceImports = [] } = useLiveQuery(
     db.occurrence_imports.liveMany({
       where: {

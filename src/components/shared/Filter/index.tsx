@@ -1,9 +1,9 @@
 import { memo, useState, useCallback } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { Tab, TabList } from '@fluentui/react-components'
 import { useLocation, useParams } from 'react-router-dom'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../../ElectricProvider.tsx'
 import { FilterHeader } from './Header.tsx'
 import * as stores from '../../../store.ts'
 import { snakeToCamel } from '../../../modules/snakeToCamel.ts'
@@ -23,7 +23,7 @@ export const Filter = memo(({ level }) => {
   const { project_id, place_id, place_id2 } = useParams()
   const location = useLocation()
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   // reading these values from the url path
   // if this fails in some situations, we can pass these as props

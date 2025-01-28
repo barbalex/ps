@@ -1,8 +1,8 @@
 import { useMemo, memo } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../ElectricProvider.tsx'
 import { DropdownFieldSimpleOptions } from './DropdownFieldSimpleOptions.tsx'
 
 import '../../form.css'
@@ -17,10 +17,10 @@ interface Props {
 }
 
 export const LabelBy = memo(
-  ({ onChange, value, extraFieldNames = [], table, label, name }: Props) => {
+  ({ onChange, value, extraFieldNames = [], table, label, name }) => {
     const { project_id } = useParams()
 
-    const { db } = useElectric()!
+    const db = usePGlite()
     const { results: fields = [] } = useLiveQuery(
       db.fields.liveMany({
         where: {

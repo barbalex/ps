@@ -3,14 +3,14 @@ import { useParams } from 'react-router-dom'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { arrayMoveImmutable } from 'array-move'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { exists } from '../../../modules/exists.ts'
 import { ErrorBoundary } from '../../../components/shared/ErrorBoundary.tsx'
 import { Section } from '../../../components/shared/Section.tsx'
 import { Field } from './Field.tsx'
-import { useElectric } from '../../../ElectricProvider.tsx'
 import { Loading } from '../../../components/shared/Loading.tsx'
 import { occurrenceFieldsSortedAtom } from '../../../store.ts'
 
@@ -31,7 +31,7 @@ export const OccurenceData = () => {
     occurrenceFieldsSortedAtom,
   )
   const { occurrence_id } = useParams()
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const sortedBeobFields = occurrenceFieldsSorted.slice()
 

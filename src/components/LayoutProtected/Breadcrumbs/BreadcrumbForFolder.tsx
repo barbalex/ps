@@ -1,7 +1,7 @@
 import { useEffect, useState, forwardRef } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { useElectric } from '../../../ElectricProvider.tsx'
-import { useLiveQuery } from 'electric-sql/react'
+import { usePGlite } from "@electric-sql/pglite-react"
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 
 import { buildNavs } from '../../../modules/navs.ts'
@@ -50,7 +50,7 @@ export const BreadcrumbForFolder = forwardRef(
 
     const idField = idFieldFromTable(table)
     const queryTable = table === 'root' || table === 'docs' ? 'projects' : table
-    const { db } = useElectric()!
+    const db = usePGlite()
     const matchParam =
       table === 'places' && levelWanted === 2
         ? place_id2

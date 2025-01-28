@@ -1,5 +1,5 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAtom } from 'jotai'
 
@@ -8,8 +8,8 @@ import { Row } from '../components/shared/Row.tsx'
 import { createChart } from '../modules/createRows.ts'
 
 import '../form.css'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../ElectricProvider.tsx'
 import { designingAtom } from '../store.ts'
 
 export const Component = memo(() => {
@@ -32,7 +32,7 @@ export const Component = memo(() => {
     return where
   }, [place_id, place_id2, project_id, subproject_id])
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: charts = [] } = useLiveQuery(
     db.charts.liveMany({
       where,

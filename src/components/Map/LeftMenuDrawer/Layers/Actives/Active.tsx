@@ -41,8 +41,8 @@ import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine'
 import invariant from 'tiny-invariant'
 import { useAtom } from 'jotai'
 import { pipe } from 'remeda'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createNotification } from '../../../../../modules/createRows.ts'
 import {
@@ -137,12 +137,12 @@ type Props = {
 }
 
 export const ActiveLayer = memo(
-  ({ layer, index, isLast, isOpen, layerCount }: Props) => {
+  ({ layer, index, isLast, isOpen, layerCount }) => {
     const [designing] = useAtom(designingAtom)
     const [vectorLayerDisplayId, setVectorLayerDisplayId] = useAtom(
       mapDrawerVectorLayerDisplayAtom,
     )
-    const { db } = useElectric()!
+    const db = usePGlite()
     const [tab, setTab] = useState<TabType>('overall-displays')
 
     const isVectorLayer = 'vector_layer_id' in layer

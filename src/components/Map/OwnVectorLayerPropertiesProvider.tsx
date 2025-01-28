@@ -1,14 +1,14 @@
 import { memo, useEffect, useMemo } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../ElectricProvider.tsx'
 import { completeVectorLayerDisplaysForLayerWithProperties } from './completeVectorLayerDisplaysForLayerWithProperties.ts'
 
 export const OwnVectorLayerPropertiesProvider = memo(() => {
   const { project_id = '99999999-9999-9999-9999-999999999999' } = useParams()
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   // get vector_layers
   const { results: vectorLayers = [] } = useLiveQuery(

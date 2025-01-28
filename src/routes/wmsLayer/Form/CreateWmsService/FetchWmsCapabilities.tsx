@@ -1,10 +1,10 @@
 import { useCallback, memo } from 'react'
 import { createWorkerFactory, useWorker } from '@shopify/react-web-worker'
 import { Button, Spinner } from '@fluentui/react-components'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { Wms_layers as WmsLayer } from '../../../../generated/client/index.ts'
-import { useElectric } from '../../../../ElectricProvider.tsx'
 import {
   createNotification,
   createWmsService,
@@ -26,8 +26,8 @@ type Props = {
 }
 
 export const FetchWmsCapabilities = memo(
-  ({ wmsLayer, url, fetching, setFetching }: Props) => {
-    const { db } = useElectric()!
+  ({ wmsLayer, url, fetching, setFetching }) => {
+    const db = usePGlite()
     const worker = useWorker(createWorker)
 
     const { results: wmsServiceLayers = [] } = useLiveQuery(

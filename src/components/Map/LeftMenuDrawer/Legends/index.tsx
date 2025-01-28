@@ -1,9 +1,9 @@
 import { memo, useMemo } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import { useAtom } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../../../ElectricProvider.tsx'
 import { WmsLegend } from './WMS.tsx'
 import { VectorLegend } from './Vector/index.tsx'
 import { mapLayerSortingAtom } from '../../../../store.ts'
@@ -20,7 +20,7 @@ export const Legends = memo(() => {
   const [mapLayerSorting] = useAtom(mapLayerSortingAtom)
   const { project_id } = useParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const where = project_id ? { project_id } : {}
   const { results: wmsLayers = [] } = useLiveQuery(

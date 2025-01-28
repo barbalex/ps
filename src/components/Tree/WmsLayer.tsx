@@ -12,7 +12,7 @@ interface Props {
 }
 
 export const WmsLayerNode = memo(
-  ({ project_id, wmsLayer, level = 4 }: Props) => {
+  ({ project_id, wmsLayer, level = 4 }) => {
     const location = useLocation()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')

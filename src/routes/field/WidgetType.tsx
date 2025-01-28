@@ -1,13 +1,13 @@
 import { useMemo, memo } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../ElectricProvider.tsx'
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 
 import '../../form.css'
 
 export const WidgetType = memo(({ onChange, field_type_id = '', value }) => {
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const { results = [] } = useLiveQuery(
     db.widgets_for_fields.liveMany({

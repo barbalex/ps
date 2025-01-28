@@ -14,7 +14,7 @@ export const completeVectorLayerDisplaysForLayerWithProperties = async ({
   vectorLayerId,
   properties,
   db,
-}: Props) => {
+}) => {
   console.log('completeVectorLayerDisplaysForLayerWithProperties', {
     vectorLayerId,
     properties,

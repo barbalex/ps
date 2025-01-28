@@ -71,7 +71,7 @@ interface Props {
 
 // only show fields not yet added to label
 // TODO: build labelElements from fields
-export const FieldList = memo(({ fieldLabels }: Props) => (
+export const FieldList = memo(({ fieldLabels }) => (
   <div style={containerStyle}>
     <Droppable droppableId="fieldList">
       {(provided) => (

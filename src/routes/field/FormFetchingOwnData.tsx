@@ -1,8 +1,8 @@
 import { useCallback, memo } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import type { InputProps } from '@fluentui/react-components'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../ElectricProvider.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { Component as Form } from './Form.tsx'
@@ -10,7 +10,7 @@ import { Component as Form } from './Form.tsx'
 // separate from the route because it is also used inside other forms
 export const FieldFormFetchingOwnData = memo(
   ({ field_id, autoFocusRef, isInForm = false }) => {
-    const { db } = useElectric()!
+    const db = usePGlite()
     const { results: row } = useLiveQuery(
       db.fields.liveUnique({ where: { field_id } }),
     )

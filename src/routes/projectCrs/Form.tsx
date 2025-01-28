@@ -1,9 +1,9 @@
 import { memo, useCallback } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../ElectricProvider.tsx'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { TextArea } from '../../components/shared/TextArea.tsx'
 import { CheckboxField } from '../../components/shared/CheckboxField.tsx'
@@ -17,7 +17,7 @@ import '../../form.css'
 export const Component = memo(({ autoFocusRef }) => {
   const { project_crs_id, project_id } = useParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: row } = useLiveQuery(
     db.project_crs.liveUnique({ where: { project_crs_id } }),
   )

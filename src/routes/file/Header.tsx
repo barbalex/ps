@@ -7,8 +7,8 @@ import {
 } from 'react-router-dom'
 import { Button } from '@fluentui/react-components'
 import { MdPreview, MdEditNote } from 'react-icons/md'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { Files as File } from '../../generated/client/index.ts'
 import { UploaderContext } from '../../UploaderContext.ts'
@@ -18,7 +18,7 @@ interface Props {
   row: File
 }
 
-export const Header = memo(({ row, previewRef }: Props) => {
+export const Header = memo(({ row, previewRef }) => {
   const {
     project_id,
     subproject_id,
@@ -47,7 +47,7 @@ export const Header = memo(({ row, previewRef }: Props) => {
     }
   }, [isPreview, navigate, pathname, searchParams])
 
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   // TODO: if is preview, add preview to the url
 

@@ -1,10 +1,10 @@
 import { memo, useRef } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import { useResizeDetector } from 'react-resize-detector'
 import DocViewer, { DocViewerRenderers } from '@cyntler/react-doc-viewer'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../ElectricProvider.tsx'
 import { Header } from '../file/Header.tsx'
 import { Uploader } from '../file/Uploader.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
@@ -33,7 +33,7 @@ export const Component = memo(() => {
   const { file_id } = useParams()
   const previewRef = useRef<HTMLDivElement>(null)
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: row } = useLiveQuery(
     db.files.liveUnique({ where: { file_id } }),
   )

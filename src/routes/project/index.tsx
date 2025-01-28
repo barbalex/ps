@@ -2,15 +2,14 @@ import { useRef, useCallback, memo } from 'react'
 import { useSearchParams, useParams } from 'react-router-dom'
 import { Tab, TabList } from '@fluentui/react-components'
 import type { SelectTabData, SelectTabEvent } from '@fluentui/react-components'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { Header } from './Header.tsx'
 import { Component as Form } from './Form.tsx'
 import { Design } from './Design.tsx'
-import { useElectric } from '../../ElectricProvider.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
-import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { designingAtom } from '../../store.ts'
 
@@ -21,7 +20,7 @@ export const Component = memo(() => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
   const { project_id } = useParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const { results: row } = useLiveQuery(
     db.projects.liveUnique({ where: { project_id } }),

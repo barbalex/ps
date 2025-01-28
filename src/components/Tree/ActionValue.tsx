@@ -27,7 +27,7 @@ export const ActionValueNode = memo(
     action_id,
     actionValue,
     level = 10,
-  }: Props) => {
+  }) => {
     const location = useLocation()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')

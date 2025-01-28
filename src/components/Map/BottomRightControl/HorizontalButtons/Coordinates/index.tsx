@@ -1,12 +1,12 @@
 import { useState, memo, useCallback, useMemo } from 'react'
 import { useMap, useMapEvent } from 'react-leaflet'
 import { useParams } from 'react-router-dom'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from "@electric-sql/pglite-react"
 
 import { ToggleMapCenter } from './ToggleMapCenter.tsx'
 import { ChooseCrs } from './ChooseCrs.tsx'
 import { epsgFrom4326 } from '../../../../../modules/epsgFrom4326.ts'
-import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { round } from '../../../../../modules/roundCoordinates.ts'
 import { Inputs } from './Inputs.tsx'
 
@@ -26,7 +26,7 @@ export const CoordinatesControl = memo(() => {
   const map = useMap()
   const bounds = map.getBounds()
   const center = bounds.getCenter()
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { project_id = '99999999-9999-9999-9999-999999999999' } = useParams()
 
   const { results: project } = useLiveQuery(

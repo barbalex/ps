@@ -1,8 +1,9 @@
 import { useCallback, memo, useMemo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { Subprojects as Subproject } from '../../../generated/client/index.ts'
@@ -16,7 +17,6 @@ import { SubprojectUsersNode } from './SubprojectUsers.tsx'
 import { OccurrenceImportsNode } from './OccurrenceImports.tsx'
 import { FilesNode } from './Files.tsx'
 import { ChartsNode } from './Charts.tsx'
-import { useElectric } from '../../ElectricProvider.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
@@ -28,14 +28,14 @@ interface Props {
 }
 
 export const SubprojectNode = memo(
-  ({ project_id, subproject, level = 4 }: Props) => {
+  ({ project_id, subproject, level = 4 }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
     // need project to know whether to show files
-    const { db } = useElectric()!
+    const db = usePGlite()
     const { results: project } = useLiveQuery(
       db.projects.liveUnique({ where: { project_id } }),
     )

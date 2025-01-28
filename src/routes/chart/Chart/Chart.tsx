@@ -9,9 +9,9 @@ import {
   CartesianGrid,
   Legend,
 } from 'recharts'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../../ElectricProvider.tsx'
 
 const toPercent = (decimal) => `${(decimal * 100).toFixed(0)}%`
 
@@ -25,7 +25,7 @@ const formatNumber = (tickItem) =>
   tickItem && tickItem?.toLocaleString ? tickItem.toLocaleString('de-ch') : 0
 
 export const SingleChart = memo(({ chart, subjects, data, synchronized }) => {
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: firstSubjectsUnit } = useLiveQuery(
     db.units.liveUnique({
       where: {

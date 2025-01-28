@@ -1,8 +1,8 @@
 import { memo } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useParams } from 'react-router-dom'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../ElectricProvider.tsx'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
 
@@ -22,7 +22,7 @@ export const Component = memo(() => {
 
   const { subproject_id, place_id, place_id2 } = useParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   // get occurrence_imports by subproject_id
   const { results: occurrence_imports = [] } = useLiveQuery(
     db.occurrence_imports.liveMany({

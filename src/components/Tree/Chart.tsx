@@ -26,7 +26,7 @@ export const ChartNode = ({
   place_id2,
   chart,
   level = 2,
-}: Props) => {
+}) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()

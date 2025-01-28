@@ -19,8 +19,8 @@ import { BsSquare } from 'react-icons/bs'
 import { MdDeleteOutline } from 'react-icons/md'
 import { useAtom } from 'jotai'
 import { pipe } from 'remeda'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createLayerPresentation } from '../../../../../modules/createRows.ts'
 import { designingAtom } from '../../../../../store.ts'
@@ -44,9 +44,9 @@ type Props = {
   isOpen: boolean
 }
 
-export const WmsLayer = memo(({ layer, isLast, isOpen }: Props) => {
+export const WmsLayer = memo(({ layer, isLast, isOpen }) => {
   const [designing] = useAtom(designingAtom)
-  const { db } = useElectric()!
+  const db = usePGlite()
   const [tab, setTab] = useState<TabType>('overall-displays')
 
   // effect: if layer has no wms_service_id or wms_service_layer_name: set tab to 'config'

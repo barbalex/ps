@@ -1,10 +1,10 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../ElectricProvider.tsx'
 import { Node } from './Node.tsx'
 import { PlaceNode } from './Place/index.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
@@ -22,7 +22,7 @@ interface Props {
 }
 
 export const PlacesNode = memo(
-  ({ project_id, subproject_id, place_id }: Props) => {
+  ({ project_id, subproject_id, place_id }) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const [places1Filter] = useAtom(places1FilterAtom)
     const [places2Filter] = useAtom(places2FilterAtom)
@@ -30,7 +30,7 @@ export const PlacesNode = memo(
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
-    const { db } = useElectric()!
+    const db = usePGlite()
 
     const level = place_id ? 7 : 5
 

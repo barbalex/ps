@@ -1,6 +1,6 @@
 import { memo, useCallback, useMemo } from 'react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../shared/ErrorBoundary.tsx'
 import { createNotification } from '../../../../modules/createRows.ts'
 import { SliderField } from '../../../shared/SliderField.tsx'
@@ -20,8 +20,8 @@ type Props = {
   layer: VectorLayer | WmsLayer
 }
 
-export const LayerPresentationForm = memo(({ layer }: Props) => {
-  const { db } = useElectric()!
+export const LayerPresentationForm = memo(({ layer }) => {
+  const db = usePGlite()
 
   const layerPresentation = useMemo(
     () => layer.layer_presentations?.[0] ?? {},

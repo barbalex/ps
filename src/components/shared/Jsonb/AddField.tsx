@@ -3,8 +3,8 @@ import { Button } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
 import { useParams, useSearchParams, useLocation } from 'react-router-dom'
 import { useAtom } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../../ElectricProvider.tsx'
 import { createField } from '../../../modules/createRows.ts'
 import { accountTables } from '../../../routes/field/accountTables.ts'
 import { designingAtom } from '../../../store.ts'
@@ -28,7 +28,7 @@ export const AddField = memo(({ tableName, level }) => {
   const [searchParams, setSearchParams] = useSearchParams()
   const { pathname } = useLocation()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const addRow = useCallback(async () => {
     const isAccountTable = accountTables.includes(tableName)

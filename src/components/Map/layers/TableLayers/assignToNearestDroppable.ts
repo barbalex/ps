@@ -5,23 +5,8 @@ import { pointToLineDistance } from '@turf/point-to-line-distance'
 import { distance } from '@turf/distance'
 import { buffer } from '@turf/buffer'
 import { point, points } from '@turf/helpers'
-import { Map } from '@types/leaflet'
 
-import {
-  Electric,
-  Vector_layers as VectorLayer,
-  Places as Place,
-} from '../../../../generated/client/index.ts'
 import { createNotification } from '../../../../modules/createRows.ts'
-
-interface Props {
-  db: Electric
-  authUser: { email: string }
-  layer: VectorLayer
-  latLng: [number, number]
-  occurrenceId: uuid
-  map: Map
-}
 
 export const assignToNearestDroppable = async ({
   db,
@@ -31,7 +16,7 @@ export const assignToNearestDroppable = async ({
   droppableLayer,
   confirmAssigningToSingleTarget,
   setPlacesToAssignOccurrenceTo,
-}: Props) => {
+}) => {
   let latLngPoint
   try {
     latLngPoint = point([latLng.lng, latLng.lat])
@@ -46,7 +31,7 @@ export const assignToNearestDroppable = async ({
   }
   // TODO: best would be to query using PostGIS functions...
   // 1. get all features from droppable layer
-  const places: Place[] = await db.places.findMany({
+  const places = await db.places.findMany({
     where: {
       parent_id: droppableLayer === 'places1' ? null : { not: null },
       geometry: { not: null },

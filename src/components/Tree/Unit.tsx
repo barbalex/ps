@@ -11,7 +11,7 @@ interface Props {
   level?: number
 }
 
-export const UnitNode = memo(({ project_id, unit, level = 4 }: Props) => {
+export const UnitNode = memo(({ project_id, unit, level = 4 }) => {
   const location = useLocation()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

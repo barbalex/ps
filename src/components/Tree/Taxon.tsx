@@ -13,7 +13,7 @@ interface Props {
 }
 
 export const TaxonNode = memo(
-  ({ project_id, taxonomy_id, taxon, level = 6 }: Props) => {
+  ({ project_id, taxonomy_id, taxon, level = 6 }) => {
     const location = useLocation()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')

@@ -1,10 +1,10 @@
 import { useRef, useCallback, memo } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useSearchParams, useParams } from 'react-router-dom'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { Header } from './Header.tsx'
 import { Component as Form } from './Form.tsx'
-import { useElectric } from '../../ElectricProvider.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
@@ -21,7 +21,7 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
   const onlyForm = searchParams.get('onlyForm')
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: row } = useLiveQuery(
     db.places.liveUnique({ where: { place_id: place_id2 ?? place_id } }),
   )
@@ -41,16 +41,30 @@ export const Component = memo(() => {
   if (!row) return <Loading />
 
   if (onlyForm) {
-    return <Form row={row} onChange={onChange} autoFocusRef={autoFocusRef} />
+    return (
+      <Form
+        row={row}
+        onChange={onChange}
+        autoFocusRef={autoFocusRef}
+      />
+    )
   }
 
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
       <div style={fieldsStyle}>
-        <TextFieldInactive label="ID" name="place_id" value={row.place_id} />
+        <TextFieldInactive
+          label="ID"
+          name="place_id"
+          value={row.place_id}
+        />
       </div>
-      <Form row={row} onChange={onChange} autoFocusRef={autoFocusRef} />
+      <Form
+        row={row}
+        onChange={onChange}
+        autoFocusRef={autoFocusRef}
+      />
     </div>
   )
 })

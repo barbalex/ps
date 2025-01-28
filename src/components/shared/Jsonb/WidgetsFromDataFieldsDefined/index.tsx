@@ -1,8 +1,8 @@
 import { memo, useCallback, forwardRef } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useSearchParams, useLocation, useParams } from 'react-router-dom'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../../../ElectricProvider.tsx'
 import { FieldFormInForm } from '../../FieldFormInForm.tsx'
 import { TextField } from '../../TextField.tsx'
 import { EditField } from './EditField.tsx'
@@ -31,14 +31,14 @@ export const WidgetsFromDataFieldsDefined = memo(
         idField,
         id,
         autoFocus,
-      }: Props,
+      },
       ref,
     ) => {
       const [searchParams] = useSearchParams()
       const { pathname } = useLocation()
       const { place_id, place_id2 } = useParams()
       const editingField = searchParams.get('editingField')
-      const { db } = useElectric()!
+      const db = usePGlite()
 
       const { results: fieldTypes = [] } = useLiveQuery(
         db.field_types.liveMany({

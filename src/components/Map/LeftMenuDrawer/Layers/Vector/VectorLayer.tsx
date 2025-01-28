@@ -19,8 +19,8 @@ import { BsSquare } from 'react-icons/bs'
 import { MdDeleteOutline } from 'react-icons/md'
 import { useAtom } from 'jotai'
 import { pipe } from 'remeda'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createLayerPresentation } from '../../../../../modules/createRows.ts'
 import {
@@ -49,13 +49,13 @@ type Props = {
 
 type TabType = 'overall-displays' | 'feature-displays' | 'config'
 
-export const VectorLayer = memo(({ layer, isLast, isOpen }: Props) => {
+export const VectorLayer = memo(({ layer, isLast, isOpen }) => {
   const [designing] = useAtom(designingAtom)
   const [vectorLayerDisplayId, setVectorLayerDisplayId] = useAtom(
     mapDrawerVectorLayerDisplayAtom,
   )
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const [tab, setTab] = useState<TabType>('overall-displays')
 
   // effect: if layer has no wfs_service_id or wfs_service_layer_name: set tab to 'config'

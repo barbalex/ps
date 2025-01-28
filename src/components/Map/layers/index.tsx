@@ -1,13 +1,9 @@
 import { memo, useEffect } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { Pane } from 'react-leaflet'
 import { useAtom } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../../ElectricProvider.tsx'
-import {
-  Wms_layers as WmsLayer,
-  Vector_layers as VectorLayer,
-} from '../../../generated/client/index.ts'
 import { OsmColor } from './OsmColor.tsx'
 import { WmsLayerComponent } from './WmsLayer/index.tsx'
 import { VectorLayerChooser } from './VectorLayer/index.tsx'
@@ -19,7 +15,7 @@ const paneBaseIndex = 400 // was: 200. then wfs layers covered lower ones
 export const Layers = memo(() => {
   const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
 
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   // for every layer_presentation_id in mapLayerSorting, get the layer_presentation
   const { results: layerPresentations = [] } = useLiveQuery(
@@ -60,8 +56,8 @@ export const Layers = memo(() => {
 
     if (!layerPresentation) return null
 
-    const wmsLayer: WmsLayer | undefined = layerPresentation.wms_layers
-    const vectorLayer: VectorLayer | undefined = layerPresentation.vector_layers
+    const wmsLayer = layerPresentation.wms_layers
+    const vectorLayer = layerPresentation.vector_layers
     const wfsLayer = vectorLayer?.type === 'wfs' ? vectorLayer : null
     const tableLayer =
       vectorLayer?.type && vectorLayer.type !== 'wfs' ? vectorLayer : null

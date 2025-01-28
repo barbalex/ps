@@ -7,9 +7,9 @@
 import { memo, useCallback, forwardRef } from 'react'
 import { useParams, useLocation } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../../ElectricProvider.tsx'
 import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
 import { TextField } from '../TextField.tsx'
 import { accountTables } from '../../../routes/field/accountTables.ts'
@@ -60,13 +60,13 @@ export const Jsonb = memo(
         id,
         data = {},
         autoFocus = false,
-      }: Props,
+      },
       ref,
     ) => {
       const isAccountTable = accountTables.includes(table)
       const { project_id, place_id, place_id2 } = useParams()
       const { pathname } = useLocation()
-      const { db } = useElectric()!
+      const db = usePGlite()
 
       const where = {
         table_name: table,

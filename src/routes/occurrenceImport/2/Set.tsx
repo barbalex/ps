@@ -1,9 +1,9 @@
 import { memo, useCallback, useState } from 'react'
 import { Button, Spinner } from '@fluentui/react-components'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { MdDone } from 'react-icons/md'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../../ElectricProvider.tsx'
 import { setGeometries } from './setGeometries.ts'
 
 const spinnerStyle = {
@@ -26,7 +26,7 @@ const doneIconStyle = {
 export const Set = memo(({ occurrenceImport }) => {
   const [notification, setNotification] = useState()
   const [settingGeometries, setSettingGeometries] = useState(false)
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: occurrences } = useLiveQuery(
     db.occurrences.liveMany({
       where: { occurrence_import_id: occurrenceImport?.occurrence_import_id },

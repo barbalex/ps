@@ -1,8 +1,7 @@
 import { memo, useMemo, forwardRef } from 'react'
 import { Dropdown, Field, Option } from '@fluentui/react-components'
-import { useLiveQuery } from 'electric-sql/react'
-
-import { useElectric } from '../../ElectricProvider.tsx'
+import { useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 const rowStyle = {
   display: 'flex',
@@ -37,7 +36,7 @@ export const DropdownField = memo(
       },
       ref,
     ) => {
-      const { db } = useElectric()!
+      const db = usePGlite()
       const { results = [] } = useLiveQuery(
         db[table]?.liveMany({
           where,
@@ -99,7 +98,10 @@ export const DropdownField = memo(
                   const { text, value } = params
 
                   return (
-                    <Option key={value} value={value}>
+                    <Option
+                      key={value}
+                      value={value}
+                    >
                       {text}
                     </Option>
                   )

@@ -1,7 +1,8 @@
 import { useCallback, memo } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAtom } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import {
   createPlace,
@@ -9,7 +10,6 @@ import {
   createVectorLayerDisplay,
   createLayerPresentation,
 } from '../modules/createRows.ts'
-import { useElectric } from '../ElectricProvider.tsx'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { LayerMenu } from '../components/shared/LayerMenu.tsx'
@@ -25,7 +25,7 @@ export const Component = memo(() => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { project_id, subproject_id, place_id } = useParams()
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const filter = place_id ? places2Filter : places1Filter
   const where = filter.length > 1 ? { OR: filter } : filter[0]

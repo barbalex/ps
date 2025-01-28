@@ -2,42 +2,39 @@
 # name: ps
 services:
   pg:
-    image: postgres:16-alpine
+    image: postgis/postgis:17-3.5
     environment:
+      POSTGRES_DB: electric
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ${ELECTRIC_DATABASE_PASSWORD}
-    command:
-      - -c
-      - wal_level=logical
-    networks:
-      - network
     ports:
-      - 5432:5432
+      - 54321:5432
     expose:
       - 5432
+    tmpfs:
+      - /tmp
+    command:
+      - -c
+      - listen_addresses=*
+      - -c
+      - wal_level=logical
     restart: always
     volumes:
       - pg_data:/var/lib/postgresql/data
+    networks:
+      - network
   electric:
-    image: electricsql/electric:0.12.1
-    depends_on:
-      - pg
+    image: electricsql/electric
     networks:
       - network
     environment:
-      # see: https://electric-sql.com/docs/deployment/docker
       DATABASE_URL: postgresql://postgres:${ELECTRIC_DATABASE_PASSWORD}@pg/postgres
-      # LOGICAL_PUBLISHER_HOST: electric
-      ELECTRIC_WRITE_TO_PG_MODE: direct_writes
       PG_PROXY_PASSWORD: ${ELECTRIC_PG_PROXY_PASSWORD}
-      AUTH_MODE: insecure
-      # ERROR: The Compose file './docker-compose.yml' is invalid because: services.electric.environment.DATABASE_REQUIRE_SSL contains false, which is an invalid type, it should be a string, number, or a null
-      # TODO: deactivate for production
-      # DATABASE_REQUIRE_SSL: false
-      LOG_LEVEL: debug
     ports:
-      - 5133:5133
-      - 65432:65432
+      - '3000:3000'
     restart: always
+    depends_on:
+      - pg
   # gbif:
   #   container_name: ps-gbif-1
   #   build:

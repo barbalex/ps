@@ -6,8 +6,7 @@ import {
   MdCheckCircle as SuccessIcon,
   MdWarning as WarningIcon,
 } from 'react-icons/md'
-
-import { useElectric } from '../../ElectricProvider.tsx'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 const containerStyle = {
   display: 'flex',
@@ -54,7 +53,7 @@ const colorMap = {
 }
 
 export const Notification = memo(({ notification }) => {
-  const { db } = useElectric()!
+  const db = usePGlite()
   const {
     notification_id,
     title,

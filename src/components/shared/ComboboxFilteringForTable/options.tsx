@@ -1,8 +1,7 @@
 import { memo } from 'react'
 import { Option } from '@fluentui/react-components'
-import { useLiveQuery } from 'electric-sql/react'
-
-import { useElectric } from '../../../ElectricProvider.tsx'
+import { useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 export const FilteringComboboxOptions = memo(
   ({
@@ -15,7 +14,7 @@ export const FilteringComboboxOptions = memo(
     labelFromResult,
     filter,
   }) => {
-    const { db } = useElectric()!
+    const db = usePGlite()
     const { results = [] } = useLiveQuery(
       db[table]?.liveMany({
         where: {
@@ -55,7 +54,10 @@ export const FilteringComboboxOptions = memo(
     }
 
     return options.map(({ text, value }) => (
-      <Option key={value} value={value}>
+      <Option
+        key={value}
+        value={value}
+      >
         {text}
       </Option>
     ))

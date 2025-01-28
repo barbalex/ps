@@ -1,9 +1,9 @@
 import { useCallback, memo } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createSubproject } from '../../modules/createRows.ts'
-import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
 export const Header = memo(({ autoFocusRef }) => {
@@ -11,7 +11,7 @@ export const Header = memo(({ autoFocusRef }) => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   // get projects.subproject_name_singular to name the table
   const { results: project = {} } = useLiveQuery(
@@ -37,7 +37,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toNext = useCallback(async () => {
     const subprojects = await db.subprojects.findMany({
-      where: {  project_id },
+      where: { project_id },
       orderBy: { label: 'asc' },
     })
     const len = subprojects.length
@@ -53,7 +53,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toPrevious = useCallback(async () => {
     const subprojects = await db.subprojects.findMany({
-      where: {  project_id },
+      where: { project_id },
       orderBy: { label: 'asc' },
     })
     const len = subprojects.length

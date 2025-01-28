@@ -1,10 +1,10 @@
 import { useCallback, memo } from 'react'
 import { Button } from '@fluentui/react-components'
 import { MdClose as CloseIcon } from 'react-icons/md'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 // import { uuidv7 } from '@kripod/uuidv7'
 
-import { useElectric } from '../../ElectricProvider.tsx'
 import { Notification as NotificationComponent } from './Notification.tsx'
 
 // z-index needs to cover map, thus so hight
@@ -20,7 +20,7 @@ const buttonStyle = {
 }
 
 export const Notifications: React.FC = memo(() => {
-  const { db } = useElectric()!
+  const db = usePGlite()
   // get the oldest four notification first
   const { results: notifications = [] } = useLiveQuery(
     db.notifications.liveMany({
@@ -38,7 +38,10 @@ export const Notifications: React.FC = memo(() => {
       {notifications.length > 0 && (
         <div style={containerStyle}>
           {notifications.map((n) => (
-            <NotificationComponent key={n.notification_id} notification={n} />
+            <NotificationComponent
+              key={n.notification_id}
+              notification={n}
+            />
           ))}
           {notifications.length > 1 && (
             <Button

@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState, memo } from 'react'
 import { Button, Field } from '@fluentui/react-components'
-import { useElectric } from '../../ElectricProvider.tsx'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 const uploadInputStyle = {
   display: 'none',
@@ -10,7 +10,7 @@ export const UploadButton = memo(({ processData, additionalData = {} }) => {
   const uploadInputRef = useRef<HTMLInputElement>(null)
   const [isDragging, setIsDragging] = useState(false)
 
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const onUpload = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {

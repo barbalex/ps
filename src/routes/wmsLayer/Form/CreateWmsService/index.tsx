@@ -18,7 +18,7 @@ type Props = {
   wmsLayer: WmsLayer
 }
 
-export const CreateWmsService = memo(({ wmsLayer }: Props) => {
+export const CreateWmsService = memo(({ wmsLayer }) => {
   const [url, setUrl] = useState('')
   const onChange = useCallback((e) => setUrl(e.target.value), [])
 

@@ -11,10 +11,10 @@ import {
   MenuGroupHeader,
 } from '@fluentui/react-components'
 import { useSearchParams } from 'react-router-dom'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { FieldFormFetchingOwnData } from '../../routes/field/FormFetchingOwnData.tsx'
 import { Fields as Field } from '../../generated/client/index.ts'
-import { useElectric } from '../../ElectricProvider.tsx'
 
 const containerStyle = {
   padding: '0px -10px',
@@ -47,9 +47,9 @@ interface Props {
   field: Field
 }
 
-export const FieldFormInForm = memo(({ field }: Props) => {
+export const FieldFormInForm = memo(({ field }) => {
   const [searchParams, setSearchParams] = useSearchParams()
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const onClickDelete = useCallback(async () => {
     db.fields.delete({ where: { field_id: field.field_id } })
@@ -73,7 +73,11 @@ export const FieldFormInForm = memo(({ field }: Props) => {
         <div style={menuStyle}>
           <Menu>
             <MenuTrigger disableButtonEnhancement>
-              <Button size="medium" icon={<FaMinus />} title="Delete" />
+              <Button
+                size="medium"
+                icon={<FaMinus />}
+                title="Delete"
+              />
             </MenuTrigger>
 
             <MenuPopover>
@@ -92,7 +96,10 @@ export const FieldFormInForm = memo(({ field }: Props) => {
           />
         </div>
       </div>
-      <FieldFormFetchingOwnData field_id={field.field_id} isInForm={true} />
+      <FieldFormFetchingOwnData
+        field_id={field.field_id}
+        isInForm={true}
+      />
     </div>
   )
 })

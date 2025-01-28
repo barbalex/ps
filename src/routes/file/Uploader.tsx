@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom'
 import { useDebouncedCallback } from 'use-debounce'
 import axios from 'redaxios'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 // css is needed
 // not using the rest of react-uploader though
@@ -15,7 +16,6 @@ import '@uploadcare/react-uploader/core.css'
 import './uploader.css'
 
 import { createFile } from '../../modules/createRows.ts'
-import { useElectric } from '../../ElectricProvider.tsx'
 import { UploaderContext } from '../../UploaderContext.ts'
 
 import '../../form.css'
@@ -38,7 +38,7 @@ export const Uploader = () => {
 
   // const isFile = pathname.endsWith('file')
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const uploaderCtx = useContext(UploaderContext)
   const api = uploaderCtx?.current?.getAPI?.()
 

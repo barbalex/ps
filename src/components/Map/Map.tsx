@@ -5,10 +5,10 @@ import 'proj4leaflet'
 import { MapContainer } from 'react-leaflet'
 import { useResizeDetector } from 'react-resize-detector'
 import { useAtom } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import 'leaflet/dist/leaflet.css'
 
-import { useElectric } from '../../ElectricProvider.tsx'
 import { Layers } from './layers/index.tsx'
 import { LocationMarker } from './LocationMarker.tsx'
 import { tableNameFromIdField } from '../../modules/tableNameFromIdField.ts'
@@ -39,7 +39,7 @@ export const Map = memo(() => {
   const [mapIsLocating] = useAtom(mapLocateAtom)
   const [mapInfo] = useAtom(mapInfoAtom)
 
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const mapRef = useRef()
 

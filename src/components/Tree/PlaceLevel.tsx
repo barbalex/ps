@@ -12,7 +12,7 @@ interface Props {
 }
 
 export const PlaceLevelNode = memo(
-  ({ project_id, placeLevel, level = 4 }: Props) => {
+  ({ project_id, placeLevel, level = 4 }) => {
     const location = useLocation()
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
     const ownArray = useMemo(

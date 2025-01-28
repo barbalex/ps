@@ -1,11 +1,11 @@
 import { memo, useCallback } from 'react'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import { Button, Accordion } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
 import { useAtom, atom } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import {
   layerListStyle,
@@ -27,7 +27,7 @@ export const WmsLayers = memo(() => {
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
   const { project_id } = useParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   // 1. list all layers (own, wms, vector)
   const where = project_id ? { project_id } : {}
   const { results: wmsLayers = [] } = useLiveQuery(

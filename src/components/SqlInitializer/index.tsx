@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../ElectricProvider.tsx'
 import { generateProjectLabel } from './sql/projects.ts'
 import { generateSubprojectLabel } from './sql/subprojects.ts'
 import { generateUserLabel } from './sql/users.ts'
@@ -56,7 +56,7 @@ import { seedTestData } from './seedTestData.ts'
 // 4. replace 'label_replace_by_generated_column' with 'label' in generated code (done by renameLabels.js script)
 
 export const SqlInitializer = () => {
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   useEffect(() => {
     const generate = async () => {

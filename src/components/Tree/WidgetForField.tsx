@@ -12,7 +12,7 @@ interface Props {
 }
 
 export const WidgetForFieldNode = memo(
-  ({ widgetForField, level = 2 }: Props) => {
+  ({ widgetForField, level = 2 }) => {
     const location = useLocation()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')

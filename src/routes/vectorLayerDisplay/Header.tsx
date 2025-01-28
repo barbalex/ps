@@ -1,9 +1,9 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { createVectorLayerDisplay } from '../../modules/createRows.ts'
 import { mapDrawerVectorLayerDisplayAtom } from '../../store.ts'
@@ -17,7 +17,7 @@ export const Header = memo(({ vectorLayerDisplayId }) => {
   const vector_layer_display_id =
     vectorLayerDisplayId ?? vectorLayerDisplayIdFromRouter
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   // fetch the vector_layer_id from the db as params is not available in the map drawer
   const { results: vectorLayerDisplay } = useLiveQuery(
     db.vector_layer_displays.liveUnique({ where: { vector_layer_display_id } }),

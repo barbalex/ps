@@ -13,7 +13,7 @@ interface Props {
 export const upsertVectorLayerDisplaysForVectorLayer = async ({
   db,
   vectorLayerId,
-}: Props) => {
+}) => {
   const vectorLayer: VectorLayer = await db.vector_layers.findUnique({
     where: { vector_layer_id: vectorLayerId },
   })

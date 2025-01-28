@@ -1,8 +1,8 @@
 import { memo, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../../ElectricProvider.tsx'
 import { buildData } from './buildData/index.ts'
 import { SingleChart } from './Chart.tsx'
 
@@ -17,7 +17,7 @@ const titleRowStyle = {
 export const Chart = memo(() => {
   const { project_id, subproject_id, chart_id } = useParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: chart } = useLiveQuery(
     db.charts.liveUnique({
       where: { chart_id },

@@ -21,7 +21,7 @@ interface Props {
   value: string | undefined
 }
 
-export const MarkerSymbolPicker = ({ onChange, value }: Props) => {
+export const MarkerSymbolPicker = ({ onChange, value }) => {
   const wantedIconKeys = useMemo(
     () =>
       Object.keys(icons)

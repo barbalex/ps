@@ -64,7 +64,7 @@ interface Props {
  */
 
 export const TargetElements = memo(
-  ({ label, onChange, isDraggingOver, provided }: Props) => (
+  ({ label, onChange, isDraggingOver, provided }) => (
     <div
       style={{
         ...targetContainerStyle,

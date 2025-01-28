@@ -1,8 +1,8 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createPlaceReportValue } from '../../modules/createRows.ts'
-import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
 export const Header = memo(({ autoFocusRef }) => {
@@ -10,7 +10,7 @@ export const Header = memo(({ autoFocusRef }) => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const addRow = useCallback(async () => {
     const placeReportValue = createPlaceReportValue()
@@ -40,7 +40,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toNext = useCallback(async () => {
     const placeReportValues = await db.place_report_values.findMany({
-      where: {  place_report_id },
+      where: { place_report_id },
       orderBy: { label: 'asc' },
     })
     const len = placeReportValues.length
@@ -62,7 +62,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toPrevious = useCallback(async () => {
     const placeReportValues = await db.place_report_values.findMany({
-      where: {  place_report_id },
+      where: { place_report_id },
       orderBy: { label: 'asc' },
     })
     const len = placeReportValues.length

@@ -4,8 +4,8 @@ import 'leaflet-draw'
 import 'leaflet-draw/dist/leaflet.draw.css'
 import { useMap } from 'react-leaflet'
 import { bbox as getBbox } from '@turf/bbox'
+import { usePGlite } from "@electric-sql/pglite-react"
 
-import { useElectric } from '../../../ElectricProvider.tsx'
 
 L.drawLocal.draw.toolbar.buttons.polygon = 'Polygon(e) zeichnen, um zu filtern'
 L.drawLocal.draw.toolbar.buttons.rectangle =
@@ -49,7 +49,7 @@ export const DrawControlComponent = ({
 }) => {
   const map = useMap()
 
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const onEdit = useCallback(
     async (featureCollection) => {

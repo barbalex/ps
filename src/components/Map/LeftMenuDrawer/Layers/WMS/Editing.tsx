@@ -1,6 +1,6 @@
 import { memo, useCallback } from 'react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../../../../ElectricProvider.tsx'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { getValueFromChange } from '../../../../../modules/getValueFromChange.ts'
 import { Component as WmsLayerForm } from '../../../../../routes/wmsLayer/Form/index.tsx'
@@ -11,7 +11,7 @@ const formContainerStyle = {
 }
 
 export const WmsLayerEditing = memo(({ layer }) => {
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const onChange = useCallback(
     async (e, data) => {

@@ -2,12 +2,12 @@ import { useCallback, useEffect, useState, memo } from 'react'
 import { FaExpandArrowsAlt, FaCompressArrowsAlt } from 'react-icons/fa'
 import screenfull from 'screenfull'
 import { Button } from '@fluentui/react-components'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../ElectricProvider.tsx'
 import { createNotification } from '../../modules/createRows.ts'
 
 export const FullscreenControl = memo(({ previewRef }) => {
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   if (!screenfull.isEnabled) {
     const data = createNotification({

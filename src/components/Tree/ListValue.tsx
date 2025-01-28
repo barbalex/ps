@@ -13,7 +13,7 @@ interface Props {
 }
 
 export const ListValueNode = memo(
-  ({ project_id, list_id, listValue, level = 6 }: Props) => {
+  ({ project_id, list_id, listValue, level = 6 }) => {
     const location = useLocation()
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')

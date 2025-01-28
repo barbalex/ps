@@ -1,13 +1,13 @@
 import { memo, useState, useEffect, useMemo } from 'react'
 import { useLocation } from 'react-router-dom'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../../ElectricProvider.tsx'
 import { idFieldFromTable } from '../../../modules/idFieldFromTable.ts'
 import { Nav } from './Nav.tsx'
 
 export const DataNavs = memo(({ matches }) => {
   const location = useLocation()
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const filteredMatches = useMemo(
     () =>

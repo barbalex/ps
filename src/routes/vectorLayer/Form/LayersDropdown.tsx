@@ -1,11 +1,11 @@
 import { memo, useMemo, useCallback } from 'react'
 import { Dropdown, Field, Option } from '@fluentui/react-components'
-import { useLiveQuery } from 'electric-sql/react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../../ElectricProvider.tsx'
 
 export const LayersDropdown = memo(({ vectorLayer, validationMessage }) => {
-  const { db } = useElectric()!
+  const db = usePGlite()
   const { results: wfsServiceLayers = [] } = useLiveQuery(
     db.wfs_service_layers.liveMany({
       where: { wfs_service_id: vectorLayer.wfs_service_id },

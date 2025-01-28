@@ -3,8 +3,8 @@ import { useParams } from 'react-router-dom'
 import { useMapEvent, useMap } from 'react-leaflet/hooks'
 import proj4 from 'proj4'
 import { useSetAtom, useAtom } from 'jotai'
+import { usePGlite } from "@electric-sql/pglite-react"
 
-import { useElectric } from '../../../ElectricProvider.tsx'
 import { layersDataFromRequestData } from './layersDataFromRequestData.ts'
 import { fetchData } from './fetchData.ts'
 import { sqlFromFilter } from '../../../modules/sqlFromFilter.ts'
@@ -21,7 +21,7 @@ export const ClickListener = memo(() => {
 
   const { project_id } = useParams()
   const map = useMap()
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const onClick = useCallback(
     async (event) => {
