@@ -6,6 +6,7 @@ import { Button } from '@fluentui/react-button'
 import { bbox } from '@turf/bbox'
 import { buffer } from '@turf/buffer'
 import { useAtom, useSetAtom } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import {
   createPlace,
@@ -14,7 +15,6 @@ import {
   createNotification,
   createLayerPresentation,
 } from '../../modules/createRows.ts'
-import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
 import { tabsAtom, mapBoundsAtom } from '../../store.ts'
