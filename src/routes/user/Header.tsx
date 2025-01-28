@@ -1,9 +1,9 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useSetAtom } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createUser } from '../../modules/createRows.ts'
-import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { userIdAtom } from '../../store.ts'
 

@@ -1,8 +1,8 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createTaxon } from '../../modules/createRows.ts'
-import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
 export const Header = memo(({ autoFocusRef }) => {
@@ -29,7 +29,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toNext = useCallback(async () => {
     const taxa = await db.taxa.findMany({
-      where: {  taxonomy_id },
+      where: { taxonomy_id },
       orderBy: { label: 'asc' },
     })
     const len = taxa.length
@@ -43,7 +43,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toPrevious = useCallback(async () => {
     const taxa = await db.taxa.findMany({
-      where: {  taxonomy_id },
+      where: { taxonomy_id },
       orderBy: { label: 'asc' },
     })
     const len = taxa.length
