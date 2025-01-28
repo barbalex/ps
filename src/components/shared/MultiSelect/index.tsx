@@ -1,8 +1,8 @@
 import { memo, useMemo, useCallback } from 'react'
 import { Field, TagGroup, Tag } from '@fluentui/react-components'
 import type { InputProps } from '@fluentui/react-components'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../../ElectricProvider.tsx'
 import { DropdownField } from './DropdownField.tsx'
 import { idFieldFromTable } from '../../../modules/idFieldFromTable.ts'
 
@@ -75,7 +75,10 @@ export const MultiSelect = memo(
         validationState="none"
         validationMessage={validationMessage}
       >
-        <TagGroup onDismiss={removeItem} style={tabGroupStyle}>
+        <TagGroup
+          onDismiss={removeItem}
+          style={tabGroupStyle}
+        >
           {valueArray.map((value) => (
             <Tag
               key={value.value}

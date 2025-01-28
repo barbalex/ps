@@ -3,6 +3,7 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import {
@@ -12,7 +13,6 @@ import {
 import { ActionValuesNode } from './ActionsValues.tsx'
 import { ActionReportsNode } from './ActionsReports.tsx'
 import { FilesNode } from './Files.tsx'
-import { useElectric } from '../../ElectricProvider.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom } from '../../store.ts'

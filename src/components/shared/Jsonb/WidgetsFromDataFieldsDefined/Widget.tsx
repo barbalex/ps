@@ -1,7 +1,7 @@
 import { memo, useCallback, forwardRef } from 'react'
 import { useLocation, useParams } from 'react-router-dom'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../../../ElectricProvider.tsx'
 import { TextField } from '../../TextField.tsx'
 import { TextArea } from '../../TextArea.tsx'
 import { DropdownField } from '../../DropdownField.tsx'

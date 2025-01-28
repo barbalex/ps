@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../ElectricProvider.tsx'
 import { generateProjectLabel } from './sql/projects.ts'
 import { generateSubprojectLabel } from './sql/subprojects.ts'
 import { generateUserLabel } from './sql/users.ts'
