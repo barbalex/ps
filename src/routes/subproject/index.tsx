@@ -1,8 +1,8 @@
 import { useRef, memo, useCallback } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../ElectricProvider.tsx'
 import { Header } from './Header.tsx'
 import { Component as Form } from './Form.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'

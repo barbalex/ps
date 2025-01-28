@@ -1,7 +1,7 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../ElectricProvider.tsx'
 import { createField } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 

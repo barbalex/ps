@@ -1,8 +1,8 @@
 import { useRef, memo } from 'react'
 import { useLiveQuery } from 'electric-sql/react'
 import { useParams } from 'react-router-dom'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../ElectricProvider.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
 import { Header } from './Header.tsx'

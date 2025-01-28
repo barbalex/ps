@@ -1,8 +1,8 @@
 import { memo, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import { useLiveQuery } from 'electric-sql/react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../ElectricProvider.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions.tsx'
 import { DropdownFieldOptions } from '../../components/shared/DropdownFieldOptions.tsx'

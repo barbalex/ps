@@ -7,8 +7,8 @@ import {
 } from 'react-router-dom'
 import { Button } from '@fluentui/react-components'
 import { MdPreview, MdEditNote } from 'react-icons/md'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../ElectricProvider.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { Files as File } from '../../generated/client/index.ts'
 import { UploaderContext } from '../../UploaderContext.ts'

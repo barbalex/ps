@@ -4,8 +4,8 @@ import { MdEdit, MdEditOff } from 'react-icons/md'
 import { ToggleButton } from '@fluentui/react-components'
 import { useLiveQuery } from 'electric-sql/react'
 import { useAtom } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../ElectricProvider.tsx'
 import { designingAtom, userIdAtom } from '../../store.ts'
 
 export const DesigningButton = memo(() => {
