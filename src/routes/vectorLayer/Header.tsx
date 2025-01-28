@@ -19,7 +19,6 @@ import {
   createLayerPresentation,
 } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
-import { Vector_layers as VectorLayer } from '../../generated/client/index.ts'
 import {
   tabsAtom,
   draggableLayersAtom,
@@ -27,10 +26,6 @@ import {
 } from '../../store.ts'
 
 // type props
-interface Props {
-  autoFocusRef: React.RefObject<HTMLInputElement>
-  row: VectorLayer
-}
 
 export const Header = memo(({ autoFocusRef, row }) => {
   const setDroppableLayer = useSetAtom(droppableLayerAtom)

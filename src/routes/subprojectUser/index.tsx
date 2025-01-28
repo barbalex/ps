@@ -10,7 +10,8 @@ import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
-import { user_roleSchema as userRoleSchema } from '../../generated/client/index.ts'
+
+const userRoles = ['manager', 'editor', 'reader']
 
 import '../../form.css'
 
@@ -58,7 +59,7 @@ export const Component = memo(() => {
         <RadioGroupField
           label="Role"
           name="role"
-          list={userRoleSchema?.options ?? []}
+          list={userRoles}
           value={row.role ?? ''}
           onChange={onChange}
         />

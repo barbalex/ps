@@ -10,7 +10,8 @@ import { CheckboxField } from '../../components/shared/CheckboxField.tsx'
 import { LabelBy } from '../../components/shared/LabelBy.tsx'
 import { FieldList } from '../../components/shared/FieldList/index.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
-import { project_typeSchema as projectTypeSchema } from '../../generated/client/index.ts'
+
+const projectTypes = ['species', 'biotope']
 
 const labelStyle = {
   color: 'grey',
@@ -21,12 +22,16 @@ export const Design = memo(({ onChange, row }) => {
   const { project_id } = useParams()
 
   return (
-    <div className="form-container" role="tabpanel" aria-labelledby="design">
+    <div
+      className="form-container"
+      role="tabpanel"
+      aria-labelledby="design"
+    >
       <Label style={labelStyle}>Project configuration</Label>
       <RadioGroupField
         label="Type"
         name="type"
-        list={projectTypeSchema?.options ?? []}
+        list={projectTypes}
         value={row.type ?? ''}
         onChange={onChange}
       />

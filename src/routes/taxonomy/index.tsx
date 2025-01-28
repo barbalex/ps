@@ -12,7 +12,8 @@ import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
-import { taxonomy_typeSchema as taxonomyTypeSchema } from '../../generated/client/index.ts'
+
+const taxonomyTypes = ['species', 'biotope']
 
 import '../../form.css'
 
@@ -59,7 +60,7 @@ export const Component = memo(() => {
         <RadioGroupField
           label="Type"
           name="type"
-          list={taxonomyTypeSchema.options ?? []}
+          list={taxonomyTypes}
           value={row.type ?? ''}
           onChange={onChange}
         />
