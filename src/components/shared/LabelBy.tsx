@@ -20,7 +20,7 @@ export const LabelBy = memo(
   ({ onChange, value, extraFieldNames = [], table, label, name }: Props) => {
     const { project_id } = useParams()
 
-    const { db } = useElectric()!
+    const db = usePGlite()
     const { results: fields = [] } = useLiveQuery(
       db.fields.liveMany({
         where: {

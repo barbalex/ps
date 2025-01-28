@@ -1,8 +1,8 @@
 import { memo, useCallback } from 'react'
 import { MenuItem } from '@fluentui/react-components'
 import { useSetAtom } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { useElectric } from '../../ElectricProvider.tsx'
 import { placesToAssignOccurrenceToAtom } from '../../store.ts'
 
 interface Props {
@@ -18,7 +18,7 @@ export const Item = memo(({ place, occurrenceId, appStateId }: Props) => {
   // if multiple places are close to the dropped location,
   // assignToNearestDroppable will set an array of: place_id's, labels and distances
   // if so, a dialog will open to choose the place to assign
-  const { db } = useElectric()!
+  const db = usePGlite()
 
   const onClick = useCallback(async () => {
     await db.occurrences.update({
