@@ -9,6 +9,8 @@ services:
       POSTGRES_PASSWORD: ${ELECTRIC_DATABASE_PASSWORD}
     ports:
       - 54321:5432
+      # make the Postgres database accessible from outside the Docker container on port 5432
+      - '5432:5432'
     expose:
       - 5432
     tmpfs:
