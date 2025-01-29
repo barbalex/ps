@@ -18,19 +18,26 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
   const db = usePGlite()
 
-  const where =
-    projectsFilter.length > 1 ? { OR: projectsFilter } : projectsFilter[0]
-  const { results: projects = [] } = useLiveQuery(
-    db.projects.liveMany({
-      where,
-      orderBy: { label: 'asc' },
-    }),
+  // const where =
+  //   projectsFilter.length > 1 ? { OR: projectsFilter } : projectsFilter[0]
+  // const { results: projects = [] } = useLiveQuery(
+  //   db.projects.liveMany({
+  //     where,
+  //     orderBy: { label: 'asc' },
+  //   }),
+  // )
+  // TODO: filter
+  const projects = useLiveQuery(`SELECT * FROM projects order by label asc`)
+  const projectsUnfiltered = useLiveQuery(
+    `SELECT * FROM projects order by label asc`,
   )
-  const { results: projectsUnfiltered = [] } = useLiveQuery(
-    db.projects.liveMany({
-      orderBy: { label: 'asc' },
-    }),
-  )
+  // const { results: projectsUnfiltered = [] } = useLiveQuery(
+  //   db.projects.liveMany({
+  //     orderBy: { label: 'asc' },
+  //   }),
+  // )
+
+  console.log('projects', projects)
   const isFiltered = projects.length !== projectsUnfiltered.length
 
   const add = useCallback(async () => {

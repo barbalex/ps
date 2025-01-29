@@ -58,6 +58,8 @@ import { seedTestData } from './seedTestData.ts'
 export const SqlInitializer = () => {
   const db = usePGlite()
 
+  // TODO: test if table exists before building db
+
   useEffect(() => {
     const generate = async () => {
       // seems that these can't be run in migrations

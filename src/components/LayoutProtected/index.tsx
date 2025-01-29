@@ -30,7 +30,9 @@ export const Layout = memo(() => {
   // Breadcrumbs and Navs are not protected because:
   // - they are not (very) sensitive
   // - ui remains more consistent when logging in
+  // TODO: reenable below
   return <Main />
+
   return (
     <>
       {/* {onlyForm !== true && (
