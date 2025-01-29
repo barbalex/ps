@@ -13,15 +13,16 @@ const CORBADO_PROJECT_ID = import.meta.env.ELECTRIC_CORBADO_PROJECT_ID
 export const AuthAndDb = memo(() => {
   const db = usePGlite()
   console.log('AuthAndDb', { db })
+  
   return (
     <CorbadoProvider
       projectId={CORBADO_PROJECT_ID}
       theme="corbado-theme"
     >
-        <SqlInitializer />
+      {/* <SqlInitializer />
         <Syncer />
-        <TreeOpenNodesSetter />
-        <Layout />
+        <TreeOpenNodesSetter /> */}
+      <Layout />
     </CorbadoProvider>
   )
 })

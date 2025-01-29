@@ -30,9 +30,10 @@ export const Layout = memo(() => {
   // Breadcrumbs and Navs are not protected because:
   // - they are not (very) sensitive
   // - ui remains more consistent when logging in
+  return <Main />
   return (
     <>
-      {onlyForm !== true && (
+      {/* {onlyForm !== true && (
         <>
           <Header />
           {!mapIsMaximized && (
@@ -43,11 +44,11 @@ export const Layout = memo(() => {
           )}
           <Notifications />
         </>
-      )}
+      )} */}
       <ProtectedRoute>
-        <TableLayersProvider />
-        <OwnVectorLayerPropertiesProvider />
-        <OccurrenceAssignChooser />
+        {/* <TableLayersProvider /> */}
+        {/* <OwnVectorLayerPropertiesProvider /> */}
+        {/* <OccurrenceAssignChooser /> */}
         <Main />
       </ProtectedRoute>
     </>

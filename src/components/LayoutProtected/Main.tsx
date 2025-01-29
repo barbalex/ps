@@ -37,9 +37,9 @@ export const Main = memo(() => {
   return (
     <div style={containerStyle}>
       <Allotment>
-        {!mapMaximizedAndVisible && tabs.includes('tree') && <Tree />}
+        {/* {!mapMaximizedAndVisible && tabs.includes('tree') && <Tree />} */}
         {!mapMaximizedAndVisible && tabs.includes('data') && <Outlet />}
-        {tabs.includes('map') && <MapContainer />}
+        {/* {tabs.includes('map') && <MapContainer />} */}
       </Allotment>
     </div>
   )
