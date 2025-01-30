@@ -26,10 +26,14 @@ export const Component = memo(() => {
   //   }),
   // )
   // TODO: filter
-  const projects = useLiveQuery(`SELECT * FROM projects order by label asc`)
-  const projectsUnfiltered = useLiveQuery(
+  const projectsResult = useLiveQuery(
     `SELECT * FROM projects order by label asc`,
   )
+  const projects = projectsResult?.rows ?? []
+  const projectsUnfilteredResult = useLiveQuery(
+    `SELECT * FROM projects order by label asc`,
+  )
+  const projectsUnfiltered = projectsUnfilteredResult?.rows ?? []
   // const { results: projectsUnfiltered = [] } = useLiveQuery(
   //   db.projects.liveMany({
   //     orderBy: { label: 'asc' },
@@ -37,7 +41,7 @@ export const Component = memo(() => {
   // )
 
   console.log('projects', projects)
-  const isFiltered = projects?.length !== projectsUnfiltered?.length
+  const isFiltered = projects.length !== projectsUnfiltered.length
 
   const add = useCallback(async () => {
     const data = await createProject({ db })
@@ -50,15 +54,15 @@ export const Component = memo(() => {
       <ListViewHeader
         title={`Projects (${
           isFiltered
-            ? `${projects?.length}/${projectsUnfiltered?.length}`
-            : projects?.length
+            ? `${projects.length}/${projectsUnfiltered.length}`
+            : projects.length
         })`}
         addRow={add}
         tableName="project"
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {(projects ?? []).map((project) => (
+        {projects.map((project) => (
           <Row
             key={project.project_id}
             label={project.label}
