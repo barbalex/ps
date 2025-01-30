@@ -1591,13 +1591,13 @@ CREATE TABLE IF NOT EXISTS layer_presentations(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   wms_layer_id uuid DEFAULT NULL REFERENCES wms_layers(wms_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  active boolean DEFAULT NULL, -- false
-  opacity_percent integer DEFAULT NULL, -- 100
-  transparent boolean DEFAULT NULL, -- false
-  grayscale boolean DEFAULT NULL, -- false
-  max_zoom integer DEFAULT NULL, -- 19,
-  min_zoom integer DEFAULT NULL, -- 0,
-  label_replace_by_generated_column text DEFAULT NULL -- TODO: not needed?
+  active boolean DEFAULT FALSE,
+  opacity_percent integer DEFAULT 100,
+  transparent boolean DEFAULT FALSE,
+  grayscale boolean DEFAULT FALSE,
+  max_zoom integer DEFAULT 19,
+  min_zoom integer DEFAULT 0,
+  label text DEFAULT NULL -- TODO: not needed?
 );
 
 CREATE INDEX IF NOT EXISTS ON layer_presentations USING btree(account_id);
@@ -1607,6 +1607,8 @@ CREATE INDEX IF NOT EXISTS ON layer_presentations USING btree(wms_layer_id);
 CREATE INDEX IF NOT EXISTS ON layer_presentations USING btree(vector_layer_id);
 
 CREATE INDEX IF NOT EXISTS ON layer_presentations USING btree(active);
+
+CREATE INDEX IF NOT EXISTS ON layer_presentations USING btree(label);
 
 COMMENT ON TABLE layer_presentations IS 'Goal: manage all presentation related properties of all layers (including wms and vector layers). Editable by all users.';
 
@@ -1653,18 +1655,18 @@ CREATE TABLE IF NOT EXISTS charts(
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  years_current boolean DEFAULT NULL, -- DATE_PART('year', now()::date),
-  years_previous boolean DEFAULT NULL, -- DATE_PART('year', now()::date) - 1,
+  years_current boolean DEFAULT DATE_PART('year', now()::date),
+  years_previous boolean DEFAULT DATE_PART('year', now()::date) - 1,
   years_specific integer DEFAULT NULL,
   years_last_x integer DEFAULT NULL,
-  years_since integer DEFAULT NULL, -- DATE_PART('year', now()::date) - DATE_PART('year', start_date),
-  years_until integer DEFAULT NULL, -- DATE_PART('year', end_date) - DATE_PART('year', start_date),
-  chart_type chart_type DEFAULT NULL, -- 'SimpleLineChart'
+  years_since integer DEFAULT DATE_PART('year', now()::date) - DATE_PART('year', start_date),
+  years_until integer DEFAULT DATE_PART('year', end_date) - DATE_PART('year', start_date),
+  chart_type chart_type DEFAULT NULL'SimpleLineChart',
   title text DEFAULT NULL,
-  subjects_stacked boolean DEFAULT NULL, -- FALSE
-  subjects_single boolean DEFAULT NULL, -- FALSE
-  percent boolean DEFAULT NULL, -- FALSE
-  label_replace_by_generated_column text DEFAULT NULL -- title
+  subjects_stacked boolean DEFAULT FALSE,
+  subjects_single boolean DEFAULT FALSE,
+  percent boolean DEFAULT FALSE,
+  label text DEFAULT NULL -- title
 );
 
 CREATE INDEX IF NOT EXISTS ON charts USING btree(chart_id);
@@ -1676,6 +1678,8 @@ CREATE INDEX IF NOT EXISTS ON charts USING btree(project_id);
 CREATE INDEX IF NOT EXISTS ON charts USING btree(subproject_id);
 
 CREATE INDEX IF NOT EXISTS ON charts USING btree(place_id);
+
+CREATE INDEX IF NOT EXISTS ON charts USING btree(label);
 
 COMMENT ON TABLE charts IS 'Charts for projects, subprojects or places.';
 
@@ -1718,19 +1722,19 @@ CREATE TABLE IF NOT EXISTS chart_subjects(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   chart_id uuid DEFAULT NULL REFERENCES charts(chart_id) ON DELETE CASCADE ON UPDATE CASCADE,
   table_name chart_subject_table DEFAULT NULL, -- subprojects, places, checks, check_values, actions, action_values
-  table_level integer DEFAULT NULL, -- 1, 2 (not relevant for subprojects)
+  table_level integer DEFAULT 1, -- 1, 2 (not relevant for subprojects)
   table_filter jsonb DEFAULT NULL, -- save a filter that is applied to the table
   value_source chart_subject_value_source DEFAULT NULL, --how to source the value
   value_field text DEFAULT NULL, -- field to be used for value_source
   value_unit uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE CASCADE ON UPDATE CASCADE, -- needed for action_values, check_values
   name text DEFAULT NULL,
-  label_replace_by_generated_column text DEFAULT NULL, -- table, value_source, ?value_field, ?unit
+  label text DEFAULT NULL, -- table, value_source, ?value_field, ?unit
   type chart_subject_type DEFAULT NULL, -- linear, monotone
   stroke text DEFAULT NULL,
   fill text DEFAULT NULL,
-  fill_graded boolean DEFAULT NULL, -- TRUE
-  connect_nulls boolean DEFAULT NULL, -- TRUE
-  sort integer DEFAULT NULL -- 0
+  fill_graded boolean DEFAULT TRUE,
+  connect_nulls boolean DEFAULT TRUE,
+  sort integer DEFAULT 0
 );
 
 CREATE INDEX IF NOT EXISTS ON chart_subjects USING btree(chart_subject_id);
@@ -1746,6 +1750,8 @@ CREATE INDEX IF NOT EXISTS ON chart_subjects USING btree(table_level);
 CREATE INDEX IF NOT EXISTS ON chart_subjects USING btree(value_field);
 
 CREATE INDEX IF NOT EXISTS ON chart_subjects USING btree(value_unit);
+
+CREATE INDEX IF NOT EXISTS ON chart_subjects USING btree(label);
 
 COMMENT ON TABLE chart_subjects IS 'Subjects for charts. Or: what is shown in the chart';
 
@@ -1774,13 +1780,14 @@ CREATE TABLE IF NOT EXISTS crs(
   code text DEFAULT NULL,
   name text DEFAULT NULL,
   proj4 text DEFAULT NULL,
-  label_replace_by_generated_column text DEFAULT NULL
+  label text DEFAULT NULL
 );
 
--- CREATE INDEX IF NOT EXISTS ON crs USING btree(crs_id);
 CREATE INDEX IF NOT EXISTS ON crs USING btree(account_id);
 
 CREATE INDEX IF NOT EXISTS ON crs USING btree(code);
+
+CREATE INDEX IF NOT EXISTS ON crs USING btree(label);
 
 COMMENT ON TABLE crs IS 'List of crs. From: https://spatialreference.org/crslist.json. Can be inserted when configuring a project. We need the entire list because wfs/wms have a default crs that needs to be used for bbox calls. TODO: decide when to download the list.';
 
@@ -1796,7 +1803,7 @@ CREATE TABLE IF NOT EXISTS project_crs(
   code text DEFAULT NULL,
   name text DEFAULT NULL,
   proj4 text DEFAULT NULL,
-  label_replace_by_generated_column text DEFAULT NULL
+  label text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS ON project_crs USING btree(account_id);
@@ -1805,112 +1812,6 @@ CREATE INDEX IF NOT EXISTS ON project_crs USING btree(project_id);
 
 CREATE INDEX IF NOT EXISTS ON project_crs USING btree(code);
 
+CREATE INDEX IF NOT EXISTS ON project_crs USING btree(label);
+
 COMMENT ON TABLE project_crs IS 'List of crs used in a project. Can be set when configuring a project. Values copied from crs table.';
-
--- enable electric
-ALTER TABLE users ENABLE electric;
-
-ALTER TABLE accounts ENABLE electric;
-
-ALTER TABLE projects ENABLE electric;
-
-ALTER TABLE place_levels ENABLE electric;
-
-ALTER TABLE subprojects ENABLE electric;
-
-ALTER TABLE project_users ENABLE electric;
-
-ALTER TABLE subproject_users ENABLE electric;
-
-ALTER TABLE taxonomies ENABLE electric;
-
-ALTER TABLE taxa ENABLE electric;
-
-ALTER TABLE subproject_taxa ENABLE electric;
-
-ALTER TABLE lists ENABLE electric;
-
-ALTER TABLE list_values ENABLE electric;
-
-ALTER TABLE units ENABLE electric;
-
-ALTER TABLE places ENABLE electric;
-
-ALTER TABLE actions ENABLE electric;
-
-ALTER TABLE action_values ENABLE electric;
-
-ALTER TABLE action_reports ENABLE electric;
-
-ALTER TABLE action_report_values ENABLE electric;
-
-ALTER TABLE checks ENABLE electric;
-
-ALTER TABLE check_values ENABLE electric;
-
-ALTER TABLE check_taxa ENABLE electric;
-
-ALTER TABLE place_reports ENABLE electric;
-
-ALTER TABLE place_report_values ENABLE electric;
-
-ALTER TABLE messages ENABLE electric;
-
-ALTER TABLE user_messages ENABLE electric;
-
-ALTER TABLE place_users ENABLE electric;
-
-ALTER TABLE goals ENABLE electric;
-
-ALTER TABLE goal_reports ENABLE electric;
-
-ALTER TABLE goal_report_values ENABLE electric;
-
-ALTER TABLE subproject_reports ENABLE electric;
-
-ALTER TABLE project_reports ENABLE electric;
-
-ALTER TABLE files ENABLE electric;
-
-ALTER TABLE persons ENABLE electric;
-
-ALTER TABLE field_types ENABLE electric;
-
-ALTER TABLE widget_types ENABLE electric;
-
-ALTER TABLE widgets_for_fields ENABLE electric;
-
-ALTER TABLE fields ENABLE electric;
-
-ALTER TABLE occurrence_imports ENABLE electric;
-
-ALTER TABLE occurrences ENABLE electric;
-
-ALTER TABLE wms_layers ENABLE electric;
-
-ALTER TABLE vector_layers ENABLE electric;
-
-ALTER TABLE vector_layer_geoms ENABLE electric;
-
-ALTER TABLE vector_layer_displays ENABLE electric;
-
-ALTER TABLE notifications ENABLE electric;
-
-ALTER TABLE charts ENABLE electric;
-
-ALTER TABLE chart_subjects ENABLE ELECTRIC;
-
-ALTER TABLE crs ENABLE electric;
-
-ALTER TABLE project_crs ENABLE electric;
-
-ALTER TABLE layer_presentations ENABLE electric;
-
-ALTER TABLE wms_services ENABLE electric;
-
-ALTER TABLE wms_service_layers ENABLE electric;
-
-ALTER TABLE wfs_services ENABLE electric;
-
-ALTER TABLE wfs_service_layers ENABLE electric;
-
