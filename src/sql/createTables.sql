@@ -1380,8 +1380,7 @@ COMMENT ON COLUMN occurrences.label IS 'label of occurrence, used to show it in 
 --------------------------------------------------------------
 -- wms_services
 --
-DROP TABLE IF EXISTS wms_services CASCADE;
-
+-- DROP TABLE IF EXISTS wms_services CASCADE;
 CREATE TABLE IF NOT EXISTS wms_services(
   wms_service_id uuid PRIMARY KEY DEFAULT NULL,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1404,8 +1403,7 @@ CREATE INDEX IF NOT EXISTS wms_services_url_idx ON wms_services USING btree(url)
 --------------------------------------------------------------
 -- wms_service_layers
 --
-DROP TABLE IF EXISTS wms_service_layers CASCADE;
-
+-- DROP TABLE IF EXISTS wms_service_layers CASCADE;
 CREATE TABLE IF NOT EXISTS wms_service_layers(
   wms_service_layer_id uuid PRIMARY KEY DEFAULT NULL,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1422,8 +1420,7 @@ CREATE INDEX IF NOT EXISTS wms_service_layers_wms_service_id_idx ON wms_service_
 --------------------------------------------------------------
 -- wms_layers
 --
-DROP TABLE IF EXISTS wms_layers CASCADE;
-
+-- DROP TABLE IF EXISTS wms_layers CASCADE;
 -- TODO: create table for wmts
 -- wmts_url_template text DEFAULT NULL,
 -- wmts_subdomains jsonb DEFAULT NULL, -- array of text
@@ -1455,8 +1452,7 @@ COMMENT ON COLUMN wms_layers.local_data_bounds IS 'Array of bounds and their siz
 --------------------------------------------------------------
 -- wfs_services
 --
-DROP TABLE IF EXISTS wfs_services CASCADE;
-
+-- DROP TABLE IF EXISTS wfs_services CASCADE;
 CREATE TABLE IF NOT EXISTS wfs_services(
   wfs_service_id uuid PRIMARY KEY DEFAULT NULL,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1481,8 +1477,7 @@ COMMENT ON COLUMN wfs_services.default_crs IS 'It seems that this is the crs bbo
 --------------------------------------------------------------
 -- wfs_service_layers
 --
-DROP TABLE IF EXISTS wfs_service_layers CASCADE;
-
+-- DROP TABLE IF EXISTS wfs_service_layers CASCADE;
 CREATE TABLE IF NOT EXISTS wfs_service_layers(
   wfs_service_layer_id uuid PRIMARY KEY DEFAULT NULL,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1574,8 +1569,7 @@ COMMENT ON COLUMN vector_layers.polygon_count IS 'Number of polygon features. Us
 --------------------------------------------------------------
 -- vector_layer_geoms
 --
-DROP TABLE IF EXISTS vector_layer_geoms CASCADE;
-
+-- DROP TABLE IF EXISTS vector_layer_geoms CASCADE;
 --
 -- seperate from vector_layers because vector_layers : vector_layer_geoms = 1 : n
 CREATE TABLE IF NOT EXISTS vector_layer_geoms(
@@ -1638,8 +1632,7 @@ CREATE TYPE fill_rule_enum AS enum(
   'evenodd'
 );
 
-DROP TABLE IF EXISTS vector_layer_displays CASCADE;
-
+-- DROP TABLE IF EXISTS vector_layer_displays CASCADE;
 -- manage all map related properties here? For imported/wfs and also own tables?
 CREATE TABLE IF NOT EXISTS vector_layer_displays(
   vector_layer_display_id uuid PRIMARY KEY DEFAULT NULL,
@@ -1728,6 +1721,10 @@ CREATE INDEX IF NOT EXISTS layer_presentations_vector_layer_id_idx ON layer_pres
 
 CREATE INDEX IF NOT EXISTS layer_presentations_active_idx ON layer_presentations USING btree(active);
 
+CREATE INDEX IF NOT EXISTS layer_presentations_grayscale_idx ON layer_presentations(grayscale)
+WHERE
+  grayscale;
+
 CREATE INDEX IF NOT EXISTS layer_presentations_label_idx ON layer_presentations USING btree(label);
 
 COMMENT ON TABLE layer_presentations IS 'Goal: manage all presentation related properties of all layers (including wms and vector layers). Editable by all users.';
@@ -1744,8 +1741,7 @@ CREATE TYPE notification_intent_enum AS enum(
   'info'
 );
 
-DROP TABLE IF EXISTS notifications;
-
+-- DROP TABLE IF EXISTS notifications;
 CREATE TABLE IF NOT EXISTS notifications(
   notification_id uuid PRIMARY KEY DEFAULT NULL,
   -- user_id not needed as this table is not synced

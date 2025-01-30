@@ -1,5 +1,5 @@
-import { use } from 'react'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { use, useEffect } from 'react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { generateProjectLabel } from './sql/projects.ts'
 import { generateSubprojectLabel } from './sql/subprojects.ts'
@@ -58,21 +58,30 @@ import { seedTestData } from './seedTestData.ts'
 export const SqlInitializer = () => {
   const db = usePGlite()
 
-  // TODO: test if table projects exists before building db
-  const result = use(
-    db.query(
-      `
-      SELECT EXISTS (
-        SELECT FROM pg_tables
-        WHERE  schemaname = 'public'
-        AND    tablename  = 'projects'
+  useEffect(() => {
+    const run = async () => {
+      const resultProjectsTableExists = await db.query(
+        `
+          SELECT EXISTS (
+            SELECT FROM pg_tables
+            WHERE  schemaname = 'public'
+            AND    tablename  = 'projects'
+          )
+        `,
       )
-    `,
-    ),
-  )
-  const projectsTableExists = result?.rows[0]?.exists
 
-  console.log('SqlInitializer', { result, projectsTableExists })
+      const projectsTableExists = resultProjectsTableExists?.rows[0]?.exists
+
+      console.log('SqlInitializer, projectsTableExists:', projectsTableExists)
+      if (projectsTableExists) return
+      const createSql = (await import(`../../sql/createTables.sql?raw`)).default
+      // console.log('SqlInitializer, createSql:', createSql)
+      const createStatements = createSql.split(';').filter((s) => s !== '\n\n')
+      console.log('SqlInitializer, createStatements:', createStatements)
+    }
+
+    run()
+  }, [db])
 
   // useEffect(() => {
   //   const generate = async () => {
@@ -120,9 +129,8 @@ export const SqlInitializer = () => {
   //     await generateChartLabel(db)
   //     await generateChartSubjectLabel(db)
   //     await generateOccurrenceImportLabel(db)
-  //     // await generateVectorLayerTriggers(db)
-  //     // await generateWmsLayerTriggers(db)
-  //     // console.log('generated vector layer triggers')
+  //     await generateVectorLayerTriggers(db)
+  //     await generateWmsLayerTriggers(db)
   //     await seedTestData(db)
   //   }
   //   generate()
