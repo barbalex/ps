@@ -1281,11 +1281,11 @@ CREATE TABLE IF NOT EXISTS wms_services(
   default_crs text DEFAULT NULL -- TODO: does this exist in capabilities? if yes: use as in wfs. If not: remove
 );
 
-CREATE INDEX IF NOT EXISTS ON wms_services USING btree(account_id);
+CREATE INDEX IF NOT EXISTS wms_services_account_id_idx ON wms_services USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON wms_services USING btree(project_id);
+CREATE INDEX IF NOT EXISTS wms_services_project_id_idx ON wms_services USING btree(project_id);
 
-CREATE INDEX IF NOT EXISTS ON wms_services USING btree(url);
+CREATE INDEX IF NOT EXISTS wms_services_url_idx ON wms_services USING btree(url);
 
 DROP TABLE IF EXISTS wms_service_layers CASCADE;
 
@@ -1300,7 +1300,7 @@ CREATE TABLE IF NOT EXISTS wms_service_layers(
   legend_image bytea DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS ON wms_service_layers USING btree(wms_service_id);
+CREATE INDEX IF NOT EXISTS wms_service_layers_wms_service_id_idx ON wms_service_layers USING btree(wms_service_id);
 
 DROP TABLE IF EXISTS wms_layers CASCADE;
 
@@ -1318,12 +1318,13 @@ CREATE TABLE IF NOT EXISTS wms_layers(
   local_data_bounds jsonb DEFAULT NULL
 );
 
--- TODO: wms_services, wms_service_layers
-CREATE INDEX IF NOT EXISTS ON wms_layers USING btree(account_id);
+CREATE INDEX IF NOT EXISTS wms_layers_account_id_idx ON wms_layers USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON wms_layers USING btree(project_id);
+CREATE INDEX IF NOT EXISTS wms_layers_project_id_idx ON wms_layers USING btree(project_id);
 
-CREATE INDEX IF NOT EXISTS ON wms_layers USING btree(wms_service_layer_name);
+CREATE INDEX IF NOT EXISTS wms_layers_wms_service_id_idx ON wms_layers USING btree(wms_service_id);
+
+CREATE INDEX IF NOT EXISTS wms_layers_wms_service_layer_name_idx ON wms_layers USING btree(wms_service_layer_name);
 
 COMMENT ON TABLE wms_layers IS 'Goal: Bring your own wms layers. Not versioned (not recorded and only added by manager).';
 
