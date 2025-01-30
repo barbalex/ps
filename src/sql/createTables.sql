@@ -1,5 +1,5 @@
 --------------------------------------------------------------
--- users (tested)
+-- users
 --
 CREATE TABLE IF NOT EXISTS users(
   user_id uuid PRIMARY KEY DEFAULT NULL,
@@ -530,7 +530,6 @@ CREATE TABLE IF NOT EXISTS places(
   until integer DEFAULT NULL,
   data jsonb DEFAULT NULL,
   geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
-  geometry jsonb DEFAULT NULL,
   bbox jsonb DEFAULT NULL,
   label text DEFAULT NULL,
   files_active_places boolean DEFAULT TRUE
