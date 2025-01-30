@@ -14,22 +14,24 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
 
   const db = usePGlite()
-  const { results: chartSubjects = [] } = useLiveQuery(
-    db.chart_subjects.liveMany({
-      where: { chart_id },
-      orderBy: { label: 'asc' },
-    }),
+  const results = useLiveQuery(
+    `SELECT * FROM chart_subjects WHERE chart_id = ? ORDER BY label ASC`,
+    [chart_id],
   )
+  const chartSubjects = results?.rows ?? []
 
   const addRow = useCallback(async () => {
     const data = createChartSubject({ chart_id })
-    await db.chart_subjects.create({ data })
+    const columns = Object.keys(data)
+    const values = Object.values(data).join("','")
+    const sql = `INSERT INTO chart_subjects (${columns}) VALUES ('${values}')`
+    await db.query(sql)
     navigate({
       pathname: data.chart_subject_id,
       search: searchParams.toString(),
     })
     autoFocusRef.current?.focus()
-  }, [chart_id, db.chart_subjects, navigate, searchParams])
+  }, [chart_id, db, navigate, searchParams])
 
   // TODO: get uploader css locally if it should be possible to upload charts
   // offline to sqlite

@@ -18,26 +18,24 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
 
   const where = useMemo(() => {
-    const where = {}
+    let where = undefined
     if (place_id2) {
-      where.place_id2 = place_id2
+      where = `place_id2 = ${place_id2}`
     } else if (place_id) {
-      where.place_id = place_id
+      where = `place_id = ${place_id}`
     } else if (subproject_id) {
-      where.subproject_id = subproject_id
+      where = `subproject_id = ${subproject_id}`
     } else if (project_id) {
-      where.project_id = project_id
+      where = `project_id = ${project_id}`
     }
     return where
   }, [place_id, place_id2, project_id, subproject_id])
 
   const db = usePGlite()
-  const { results: charts = [] } = useLiveQuery(
-    db.charts.liveMany({
-      where,
-      orderBy: { label: 'asc' },
-    }),
+  const result = useLiveQuery(
+    `SELECT * FROM charts${where && ` WHERE ${where}`} ORDER BY label ASC`,
   )
+  const charts = result?.rows ?? []
 
   const add = useCallback(async () => {
     const idToAdd = place_id2
@@ -48,10 +46,13 @@ export const Component = memo(() => {
       ? { subproject_id }
       : { project_id }
     const data = createChart(idToAdd)
-    await db.charts.create({ data })
+    const columns = Object.keys(data)
+    const values = Object.values(data).join("','")
+    const sql = `INSERT INTO charts (${columns}) VALUES ('${values}')`
+    await db.query(sql)
     navigate({ pathname: data.chart_id, search: searchParams.toString() })
   }, [
-    db.charts,
+    db,
     navigate,
     place_id,
     place_id2,

@@ -13,26 +13,23 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
 
   const db = usePGlite()
-  const { results: actionValues = [] } = useLiveQuery(
-    db.action_values.liveMany({
-      where: { action_id },
-      orderBy: { label: 'asc' },
-    }),
+  const result = useLiveQuery(
+    `SELECT * FROM action_values WHERE action_id = $1 order by label asc`,
+    [action_id],
   )
+  const actionValues = result?.rows ?? []
 
   const add = useCallback(async () => {
-    const actionValue = createActionValue()
-    await db.action_values.create({
-      data: {
-        ...actionValue,
-        action_id,
-      },
-    })
+    const actionValue = { ...createActionValue(), action_id }
+    const columns = Object.keys(actionValue)
+    const values = Object.values(actionValue).join("','")
+    const sql = `insert into action_values (${columns}) values ('${values}')`
+    await db.query(sql)
     navigate({
       pathname: actionValue.action_value_id,
       search: searchParams.toString(),
     })
-  }, [action_id, db.action_values, navigate, searchParams])
+  }, [action_id, db, navigate, searchParams])
 
   return (
     <div className="list-view">
