@@ -1573,7 +1573,7 @@ COMMENT ON COLUMN vector_layers.polygon_count IS 'Number of polygon features. Us
 
 --------------------------------------------------------------
 -- vector_layer_geoms
--- TODO:
+--
 DROP TABLE IF EXISTS vector_layer_geoms CASCADE;
 
 --
@@ -1781,13 +1781,13 @@ CREATE TABLE IF NOT EXISTS charts(
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  years_current boolean DEFAULT DATE_PART('year', now()::date),
-  years_previous boolean DEFAULT DATE_PART('year', now()::date) - 1,
+  years_current boolean DEFAULT TRUE,
+  years_previous boolean DEFAULT FALSE,
   years_specific integer DEFAULT NULL,
   years_last_x integer DEFAULT NULL,
-  years_since integer DEFAULT DATE_PART('year', now()::date) - DATE_PART('year', start_date),
-  years_until integer DEFAULT DATE_PART('year', end_date) - DATE_PART('year', start_date),
-  chart_type chart_type DEFAULT NULL'SimpleLineChart',
+  years_since integer DEFAULT NULL,
+  years_until integer DEFAULT NULL,
+  chart_type chart_type DEFAULT 'Area',
   title text DEFAULT NULL,
   subjects_stacked boolean DEFAULT FALSE,
   subjects_single boolean DEFAULT FALSE,
