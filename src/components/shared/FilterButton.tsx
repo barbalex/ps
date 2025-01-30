@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { ToggleButton } from '@fluentui/react-button'
+import { ToggleButton } from '@fluentui/react-components'
 import { MdFilterAlt } from 'react-icons/md'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 

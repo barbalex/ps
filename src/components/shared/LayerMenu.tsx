@@ -1,5 +1,5 @@
 import { useCallback, memo } from 'react'
-import { Button } from '@fluentui/react-button'
+import { Button } from '@fluentui/react-components'
 import { MdLayers, MdLayersClear } from 'react-icons/md'
 import { TbZoomScan } from 'react-icons/tb'
 // import { TbMapCog } from 'react-icons/tb'
