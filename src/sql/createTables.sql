@@ -748,22 +748,21 @@ CREATE TABLE IF NOT EXISTS check_taxa(
   label text DEFAULT NULL
 );
 
--- CREATE INDEX IF NOT EXISTS ON check_taxa USING btree(check_taxon_id);
-CREATE INDEX IF NOT EXISTS ON check_taxa USING btree(account_id);
+CREATE INDEX IF NOT EXISTS check_taxa_account_id_idx ON check_taxa USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON check_taxa USING btree(check_id);
+CREATE INDEX IF NOT EXISTS check_taxa_check_id_idx ON check_taxa USING btree(check_id);
 
-CREATE INDEX IF NOT EXISTS ON check_taxa USING btree(taxon_id);
+CREATE INDEX IF NOT EXISTS check_taxa_taxon_id_idx ON check_taxa USING btree(taxon_id);
 
-CREATE INDEX IF NOT EXISTS ON check_taxa USING btree(unit_id);
+CREATE INDEX IF NOT EXISTS check_taxa_unit_id_idx ON check_taxa USING btree(unit_id);
 
-CREATE INDEX IF NOT EXISTS ON check_taxa USING btree(value_integer);
+CREATE INDEX IF NOT EXISTS check_taxa_value_integer_idx ON check_taxa USING btree(value_integer);
 
-CREATE INDEX IF NOT EXISTS ON check_taxa USING btree(value_numeric);
+CREATE INDEX IF NOT EXISTS check_taxa_value_numeric_idx ON check_taxa USING btree(value_numeric);
 
-CREATE INDEX IF NOT EXISTS ON check_taxa USING btree(value_text);
+CREATE INDEX IF NOT EXISTS check_taxa_value_text_idx ON check_taxa USING btree(value_text);
 
-CREATE INDEX IF NOT EXISTS ON check_taxa USING btree(label);
+CREATE INDEX IF NOT EXISTS check_taxa_label_idx ON check_taxa USING btree(label);
 
 COMMENT ON COLUMN check_taxa.account_id IS 'redundant account_id enhances data safety';
 
@@ -776,14 +775,13 @@ CREATE TABLE IF NOT EXISTS place_reports(
   label text DEFAULT NULL
 );
 
--- CREATE INDEX IF NOT EXISTS ON place_reports USING btree(place_report_id);
-CREATE INDEX IF NOT EXISTS ON place_reports USING btree(account_id);
+CREATE INDEX IF NOT EXISTS place_reports_account_id_idx ON place_reports USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON place_reports USING btree(place_id);
+CREATE INDEX IF NOT EXISTS place_reports_place_id_idx ON place_reports USING btree(place_id);
 
-CREATE INDEX IF NOT EXISTS ON place_reports USING btree(year);
+CREATE INDEX IF NOT EXISTS place_reports_year_idx ON place_reports USING btree(year);
 
-CREATE INDEX IF NOT EXISTS ON place_reports USING btree(label);
+CREATE INDEX IF NOT EXISTS place_reports_label_idx ON place_reports USING btree(label);
 
 COMMENT ON TABLE place_reports IS 'Reporting on the situation of the subproject in this place.';
 
@@ -804,20 +802,19 @@ CREATE TABLE IF NOT EXISTS place_report_values(
   label text DEFAULT NULL
 );
 
--- CREATE INDEX IF NOT EXISTS ON place_report_values USING btree(place_report_value_id);
-CREATE INDEX IF NOT EXISTS ON place_report_values USING btree(account_id);
+CREATE INDEX IF NOT EXISTS place_report_values_account_id_idx ON place_report_values USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON place_report_values USING btree(place_report_id);
+CREATE INDEX IF NOT EXISTS place_report_values_place_report_id_idx ON place_report_values USING btree(place_report_id);
 
-CREATE INDEX IF NOT EXISTS ON place_report_values USING btree(unit_id);
+CREATE INDEX IF NOT EXISTS place_report_values_unit_id_idx ON place_report_values USING btree(unit_id);
 
-CREATE INDEX IF NOT EXISTS ON place_report_values USING btree(value_integer);
+CREATE INDEX IF NOT EXISTS place_report_values_value_integer_idx ON place_report_values USING btree(value_integer);
 
-CREATE INDEX IF NOT EXISTS ON place_report_values USING btree(value_numeric);
+CREATE INDEX IF NOT EXISTS place_report_values_value_numeric_idx ON place_report_values USING btree(value_numeric);
 
-CREATE INDEX IF NOT EXISTS ON place_report_values USING btree(value_text);
+CREATE INDEX IF NOT EXISTS place_report_values_value_text_idx ON place_report_values USING btree(value_text);
 
-CREATE INDEX IF NOT EXISTS ON place_report_values USING btree(label);
+CREATE INDEX IF NOT EXISTS place_report_values_label_idx ON place_report_values USING btree(label);
 
 COMMENT ON TABLE place_report_values IS 'value-ing the situation of the subproject in this place';
 
@@ -836,9 +833,9 @@ CREATE TABLE IF NOT EXISTS messages(
   message text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS ON messages USING btree(date);
+CREATE INDEX IF NOT EXISTS messages_date_idx ON messages USING btree(date);
 
-CREATE INDEX IF NOT EXISTS ON messages USING btree(label);
+CREATE INDEX IF NOT EXISTS messages_label_idx ON messages USING btree(label);
 
 COMMENT ON TABLE messages IS 'messages for the user. Mostly informing about updates of';
 
