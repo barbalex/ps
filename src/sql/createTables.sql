@@ -1,28 +1,25 @@
+-- users (tested)
 CREATE TABLE IF NOT EXISTS users(
   user_id uuid PRIMARY KEY DEFAULT NULL,
-  email text DEFAULT NULL, -- TODO: email needs to be unique. But: not possible in electric-sql
-  label text GENERATED ALWAYS AS (coalesce(email, user_id)) STORED
+  email text UNIQUE DEFAULT NULL,
+  label text GENERATED ALWAYS AS (coalesce(email, user_id::text)) STORED
 );
 
-CREATE INDEX IF NOT EXISTS ON users USING btree(email);
+CREATE INDEX IF NOT EXISTS users_email_idx ON users USING btree(email);
 
-CREATE INDEX IF NOT EXISTS ON label USING btree(label);
+CREATE INDEX IF NOT EXISTS users_label_idx ON users USING btree(label);
 
 COMMENT ON COLUMN users.email IS 'email needs to be unique. project manager can list project user by email before this user creates an own login (thus has no user_id yet)';
 
 COMMENT ON TABLE users IS 'Goal: manage users and authorize them';
 
--- https://electric-sql.com/docs/api/ddlx#local-migrations
--- BUT: not implemented yet: https://discord.com/channels/933657521581858818/1208902100801560676/1209495997726851133
--- ELECTRIC SQLITE 'ALTER TABLE users ADD COLUMN label text GENERATED ALWAYS AS (coalesce(email, user_id))';
--- ELECTRIC SQLITE 'CREATE INDEX IF NOT EXISTS IF NOT EXISTS users_label_idx ON users(label)'
-DROP TABLE IF EXISTS accounts CASCADE;
-
+-- accounts
+-- DROP TABLE IF EXISTS accounts CASCADE;
 CREATE TABLE IF NOT EXISTS accounts(
-  account_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  account_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE NO action ON UPDATE NO action,
   type text DEFAULT NULL,
-  period_start date DEFAULT NULL,
+  period_start date DEFAULT CURRENT_DATE,
   period_end date DEFAULT NULL,
   projects_label_by text DEFAULT NULL,
   label text DEFAULT NULL
@@ -30,13 +27,13 @@ CREATE TABLE IF NOT EXISTS accounts(
 
 -- how to query if date is in range:
 -- where period @> '2023-11-01'::date
-CREATE INDEX IF NOT EXISTS ON accounts USING btree(user_id);
+CREATE INDEX IF NOT EXISTS accounts_user_id_idx ON accounts USING btree(user_id);
 
-CREATE INDEX IF NOT EXISTS ON accounts USING btree(period_start);
+CREATE INDEX IF NOT EXISTS accounts_period_start_idx ON accounts USING btree(period_start);
 
-CREATE INDEX IF NOT EXISTS ON accounts USING btree(period_end);
+CREATE INDEX IF NOT EXISTS accounts_preriod_end_idx ON accounts USING btree(period_end);
 
-CREATE INDEX IF NOT EXISTS ON accounts USING btree(label);
+CREATE INDEX IF NOT EXISTS accounts_label_idx ON accounts USING btree(label);
 
 COMMENT ON TABLE accounts IS 'Goal: earn money. Separate from users to allow for multiple accounts per user. Enables seeing the account history.';
 
@@ -46,6 +43,7 @@ COMMENT ON COLUMN accounts.type IS 'type of account: "free", "basic", "premium"?
 
 COMMENT ON COLUMN accounts.projects_label_by IS 'Used to label projects in lists. Either "name" or the name of a key in the data field. Assumed value if is null is "name"';
 
+-- projects
 CREATE TYPE project_type AS enum(
   'species',
   'biotope'
@@ -54,7 +52,7 @@ CREATE TYPE project_type AS enum(
 -- TODO: add crs for presentation
 -- TODO: add geometry
 CREATE TABLE IF NOT EXISTS projects(
-  project_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  project_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
   label text DEFAULT NULL,
@@ -82,11 +80,12 @@ CREATE TABLE IF NOT EXISTS projects(
   map_presentation_crs text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS ON projects USING btree(account_id);
+CREATE INDEX IF NOT EXISTS projects_account_id_idx ON projects USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON projects USING btree(name);
+-- TODO: needed?
+CREATE INDEX IF NOT EXISTS projects_name_idx ON projects USING btree(name);
 
-CREATE INDEX IF NOT EXISTS ON projects USING btree(label);
+CREATE INDEX IF NOT EXISTS projects_label_idx ON projects USING btree(label);
 
 COMMENT ON COLUMN projects.account_id IS 'redundant account_id enhances data safety';
 
@@ -123,7 +122,7 @@ COMMENT ON COLUMN projects.map_presentation_crs IS 'Coordinate Reference System 
 COMMENT ON TABLE projects IS 'Goal: manage projects';
 
 CREATE TABLE IF NOT EXISTS place_levels(
-  place_level_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  place_level_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   level integer DEFAULT NULL,
@@ -142,15 +141,16 @@ CREATE TABLE IF NOT EXISTS place_levels(
   label text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS ON place_levels USING btree(account_id);
+CREATE INDEX IF NOT EXISTS place_levels_account_id_idx ON place_levels USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON place_levels USING btree(project_id);
+CREATE INDEX IF NOT EXISTS place_levels_project_id_idx ON place_levels USING btree(project_id);
 
-CREATE INDEX IF NOT EXISTS ON place_levels USING btree(level);
+CREATE INDEX IF NOT EXISTS place_levels_level_idx ON place_levels USING btree(level);
 
-CREATE INDEX IF NOT EXISTS ON place_levels USING btree(name_singular);
+-- TODO: needed?
+CREATE INDEX IF NOT EXISTS place_levels_name_singular_idx ON place_levels USING btree(name_singular);
 
-CREATE INDEX IF NOT EXISTS ON place_levels USING btree(label);
+CREATE INDEX IF NOT EXISTS place_levels_label_idx ON place_levels USING btree(label);
 
 COMMENT ON COLUMN place_levels.account_id IS 'redundant account_id enhances data safety';
 
@@ -183,7 +183,7 @@ COMMENT ON COLUMN place_levels.occurrences IS 'Are occurrences used? Preset: tru
 COMMENT ON TABLE place_levels IS 'Goal: manage place levels. Enable working with one or two levels. Organize what features are used on which level.';
 
 CREATE TABLE IF NOT EXISTS subprojects(
-  subproject_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  subproject_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
@@ -222,7 +222,7 @@ CREATE TYPE user_role AS enum(
 );
 
 CREATE TABLE IF NOT EXISTS project_users(
-  project_user_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  project_user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -246,7 +246,7 @@ COMMENT ON COLUMN project_users.role IS 'TODO: One of: "manager", "editor", "rea
 COMMENT ON TABLE project_users IS 'A way to give users access to projects (without giving them access to the whole account).';
 
 CREATE TABLE IF NOT EXISTS subproject_users(
-  subproject_user_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  subproject_user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -275,7 +275,7 @@ CREATE TYPE taxonomy_type AS enum(
 );
 
 CREATE TABLE IF NOT EXISTS taxonomies(
-  taxonomy_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  taxonomy_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   type taxonomy_type DEFAULT NULL,
@@ -315,7 +315,7 @@ COMMENT ON COLUMN taxonomies.obsolete IS 'Is taxonomy obsolete? Preset: false';
 COMMENT ON COLUMN taxonomies.data IS 'Room for taxonomy specific data, defined in "fields" table';
 
 CREATE TABLE IF NOT EXISTS taxa(
-  taxon_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  taxon_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   taxonomy_id uuid DEFAULT NULL REFERENCES taxonomies(taxonomy_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
@@ -345,7 +345,7 @@ COMMENT ON COLUMN taxa.data IS 'Data as received from source';
 COMMENT ON COLUMN taxa.url IS 'URL of taxon, like "https://www.infoflora.ch/de/flora/pulsatilla-vulgaris.html"';
 
 CREATE TABLE IF NOT EXISTS subproject_taxa(
-  subproject_taxon_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  subproject_taxon_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   taxon_id uuid DEFAULT NULL REFERENCES taxa(taxon_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -368,7 +368,7 @@ COMMENT ON COLUMN subproject_taxa.account_id IS 'redundant account_id enhances d
 COMMENT ON COLUMN subproject_taxa.taxon_id IS 'taxons that are meant in this subproject. Can be multiple, for instance synonyms of a single taxonomy or of different taxonomies. A taxon should be used in only one subproject.';
 
 CREATE TABLE IF NOT EXISTS lists(
-  list_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  list_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
@@ -398,7 +398,7 @@ COMMENT ON COLUMN lists.name IS 'Name of list, like "Gefährdung"';
 COMMENT ON COLUMN lists.obsolete IS 'Is list obsolete? If so, show set values but dont let user pick one. Preset: false';
 
 CREATE TABLE IF NOT EXISTS list_values(
-  list_value_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  list_value_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE CASCADE ON UPDATE CASCADE,
   value text DEFAULT NULL,
@@ -429,7 +429,7 @@ CREATE TYPE unit_type AS enum(
 );
 
 CREATE TABLE IF NOT EXISTS units(
-  unit_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  unit_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   use_for_action_values boolean DEFAULT NULL, -- FALSE,
@@ -485,7 +485,7 @@ COMMENT ON COLUMN units.summable IS 'Whether values of this unit can be summed. 
 COMMENT ON COLUMN units.type IS 'One of: "integer", "numeric", "text". Preset: "integer"';
 
 CREATE TABLE IF NOT EXISTS places(
-  place_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  place_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   parent_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE NO action ON UPDATE CASCADE,
@@ -538,10 +538,10 @@ COMMENT ON COLUMN places.geometry IS 'geometry of place';
 COMMENT ON COLUMN places.bbox IS 'bbox of the geometry. Set client-side on every change of geometry. Used to filter geometries for viewport client-side';
 
 CREATE TABLE IF NOT EXISTS actions(
-  action_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  action_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  date date DEFAULT NULL, -- CURRENT_DATE,
+  date date DEFAULT CURRENT_DATE,
   data jsonb DEFAULT NULL,
   geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
   geometry jsonb DEFAULT NULL,
@@ -577,7 +577,7 @@ COMMENT ON COLUMN actions.bbox IS 'bbox of the geometry. Set client-side on ever
 COMMENT ON COLUMN actions.relevant_for_reports IS 'Whether action is relevant for reports. Preset: true';
 
 CREATE TABLE IF NOT EXISTS action_values(
-  action_value_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  action_value_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   action_id uuid DEFAULT NULL REFERENCES actions(action_id) ON DELETE CASCADE ON UPDATE CASCADE,
   unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE CASCADE,
@@ -613,7 +613,7 @@ COMMENT ON COLUMN action_values.value_numeric IS 'Used for numeric values';
 COMMENT ON COLUMN action_values.value_text IS 'Used for text values';
 
 CREATE TABLE IF NOT EXISTS action_reports(
-  action_report_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  action_report_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   action_id uuid DEFAULT NULL REFERENCES actions(action_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT DATE_PART('year', now()::date),
@@ -639,7 +639,7 @@ COMMENT ON COLUMN action_reports.year IS 'Year of report. Preset: current year';
 COMMENT ON COLUMN action_reports.data IS 'Room for action report specific data, defined in "fields" table';
 
 CREATE TABLE IF NOT EXISTS action_report_values(
-  action_report_value_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  action_report_value_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   action_report_id uuid DEFAULT NULL REFERENCES action_reports(action_report_id) ON DELETE CASCADE ON UPDATE CASCADE,
   unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE CASCADE,
@@ -675,7 +675,7 @@ COMMENT ON COLUMN action_report_values.value_numeric IS 'Used for numeric values
 COMMENT ON COLUMN action_report_values.value_text IS 'Used for text values';
 
 CREATE TABLE IF NOT EXISTS checks(
-  check_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  check_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   date date DEFAULT CURRENT_DATE,
@@ -710,7 +710,7 @@ COMMENT ON COLUMN checks.data IS 'Room for check specific data, defined in "fiel
 COMMENT ON COLUMN checks.bbox IS 'bbox of the geometry. Set client-side on every change of geometry. Used to filter geometries for viewport client-side';
 
 CREATE TABLE IF NOT EXISTS check_values(
-  check_value_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  check_value_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   check_id uuid DEFAULT NULL REFERENCES checks(check_id) ON DELETE CASCADE ON UPDATE CASCADE,
   unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE CASCADE,
@@ -746,7 +746,7 @@ COMMENT ON COLUMN check_values.value_numeric IS 'Used for numeric values';
 COMMENT ON COLUMN check_values.value_text IS 'Used for text values';
 
 CREATE TABLE IF NOT EXISTS check_taxa(
-  check_taxon_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  check_taxon_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   check_id uuid DEFAULT NULL REFERENCES checks(check_id) ON DELETE CASCADE ON UPDATE CASCADE,
   taxon_id uuid DEFAULT NULL REFERENCES taxa(taxon_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -777,7 +777,7 @@ CREATE INDEX IF NOT EXISTS ON check_taxa USING btree(label);
 COMMENT ON COLUMN check_taxa.account_id IS 'redundant account_id enhances data safety';
 
 CREATE TABLE IF NOT EXISTS place_reports(
-  place_report_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  place_report_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT DATE_PART('year', now()::date),
@@ -803,7 +803,7 @@ COMMENT ON COLUMN place_reports.year IS 'Year of report. Preset: current year';
 COMMENT ON COLUMN place_reports.data IS 'Room for place report specific data, defined in "fields" table';
 
 CREATE TABLE IF NOT EXISTS place_report_values(
-  place_report_value_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  place_report_value_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   place_report_id uuid DEFAULT NULL REFERENCES place_reports(place_report_id) ON DELETE CASCADE ON UPDATE CASCADE,
   unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE CASCADE,
@@ -839,7 +839,7 @@ COMMENT ON COLUMN place_report_values.value_numeric IS 'Used for numeric values'
 COMMENT ON COLUMN place_report_values.value_text IS 'Used for text values';
 
 CREATE TABLE IF NOT EXISTS messages(
-  message_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  message_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   label text DEFAULT NULL,
   date timestamp DEFAULT now(),
   message text DEFAULT NULL
@@ -852,7 +852,7 @@ CREATE INDEX IF NOT EXISTS ON messages USING btree(label);
 COMMENT ON TABLE messages IS 'messages for the user. Mostly informing about updates of';
 
 CREATE TABLE IF NOT EXISTS user_messages(
-  user_message_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  user_message_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
   message_id uuid DEFAULT NULL REFERENCES messages(message_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -866,7 +866,7 @@ CREATE INDEX IF NOT EXISTS ON user_messages USING btree(user_id);
 CREATE INDEX IF NOT EXISTS ON user_messages USING btree(message_id);
 
 CREATE TABLE IF NOT EXISTS place_users(
-  place_user_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  place_user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -891,7 +891,7 @@ COMMENT ON COLUMN place_users.account_id IS 'redundant account_id enhances data 
 COMMENT ON COLUMN place_users.role IS 'TODO: One of: "manager", "editor", "reader". Preset: "reader"';
 
 CREATE TABLE IF NOT EXISTS goals(
-  goal_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  goal_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT DATE_PART('year', now()::date),
@@ -914,7 +914,7 @@ COMMENT ON TABLE goals IS 'What is to be achieved in the subproject in this year
 COMMENT ON COLUMN goals.account_id IS 'redundant account_id enhances data safety';
 
 CREATE TABLE IF NOT EXISTS goal_reports(
-  goal_report_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  goal_report_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   goal_id uuid DEFAULT NULL REFERENCES goals(goal_id) ON DELETE CASCADE ON UPDATE CASCADE,
   data jsonb DEFAULT NULL,
@@ -935,7 +935,7 @@ COMMENT ON COLUMN goal_reports.account_id IS 'redundant account_id enhances data
 COMMENT ON COLUMN goal_reports.data IS 'Room for goal report specific data, defined in "fields" table';
 
 CREATE TABLE IF NOT EXISTS goal_report_values(
-  goal_report_value_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  goal_report_value_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   goal_report_id uuid DEFAULT NULL REFERENCES goal_reports(goal_report_id) ON DELETE CASCADE ON UPDATE CASCADE,
   unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE CASCADE,
@@ -971,7 +971,7 @@ COMMENT ON COLUMN goal_report_values.value_numeric IS 'Used for numeric values';
 COMMENT ON COLUMN goal_report_values.value_text IS 'Used for text values';
 
 CREATE TABLE IF NOT EXISTS subproject_reports(
-  subproject_report_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  subproject_report_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT DATE_PART('year', now()::date),
@@ -997,7 +997,7 @@ COMMENT ON COLUMN subproject_reports.year IS 'Year of report. Preset: current ye
 COMMENT ON COLUMN subproject_reports.data IS 'Room for subproject report specific data, defined in "fields" table';
 
 CREATE TABLE IF NOT EXISTS project_reports(
-  project_report_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  project_report_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT DATE_PART('year', now()::date),
@@ -1023,7 +1023,7 @@ COMMENT ON COLUMN project_reports.year IS 'Year of report. Preset: current year'
 COMMENT ON COLUMN project_reports.data IS 'Room for project report specific data, defined in "fields" table';
 
 CREATE TABLE IF NOT EXISTS files(
-  file_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  file_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1074,7 +1074,7 @@ COMMENT ON COLUMN files.mimetype IS 'mimetype of file, used to know how to open 
 COMMENT ON COLUMN files.url IS 'URL of file, if it is saved on a web service';
 
 CREATE TABLE IF NOT EXISTS persons(
-  person_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  person_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   email text DEFAULT NULL,
@@ -1129,7 +1129,7 @@ CREATE INDEX IF NOT EXISTS ON widget_types(sort);
 CREATE INDEX IF NOT EXISTS ON widget_types USING btree(label);
 
 CREATE TABLE IF NOT EXISTS widgets_for_fields(
-  widget_for_field_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  widget_for_field_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   field_type_id uuid DEFAULT NULL REFERENCES field_types(field_type_id) ON DELETE CASCADE ON UPDATE CASCADE,
   widget_type_id uuid DEFAULT NULL REFERENCES widget_types(widget_type_id) ON DELETE CASCADE ON UPDATE CASCADE,
   label text DEFAULT NULL
@@ -1147,7 +1147,7 @@ CREATE INDEX IF NOT EXISTS ON widgets_for_fields(label);
 -- idea: use an integer that represents the index of the widget
 -- thus: set index for ALL widgets of a field after reordering
 CREATE TABLE IF NOT EXISTS fields(
-  field_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  field_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   table_name text DEFAULT NULL,
@@ -1419,7 +1419,7 @@ CREATE TYPE vector_layer_own_table_enum AS enum(
 );
 
 CREATE TABLE IF NOT EXISTS vector_layers(
-  vector_layer_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  vector_layer_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   label text DEFAULT NULL,
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1650,7 +1650,7 @@ CREATE TYPE chart_type AS enum(
 );
 
 CREATE TABLE IF NOT EXISTS charts(
-  chart_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  chart_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1718,7 +1718,7 @@ CREATE TYPE chart_subject_type AS enum(
 );
 
 CREATE TABLE IF NOT EXISTS chart_subjects(
-  chart_subject_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
+  chart_subject_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   chart_id uuid DEFAULT NULL REFERENCES charts(chart_id) ON DELETE CASCADE ON UPDATE CASCADE,
   table_name chart_subject_table DEFAULT NULL, -- subprojects, places, checks, check_values, actions, action_values
@@ -1815,3 +1815,4 @@ CREATE INDEX IF NOT EXISTS ON project_crs USING btree(code);
 CREATE INDEX IF NOT EXISTS ON project_crs USING btree(label);
 
 COMMENT ON TABLE project_crs IS 'List of crs used in a project. Can be set when configuring a project. Values copied from crs table.';
+
