@@ -22,19 +22,19 @@ export const Component = memo(() => {
   const db = usePGlite()
 
   const filter = place_id2 ? actions2Filter : actions1Filter
-  const where = filter.length > 1 ? { OR: filter } : filter[0]
-  const { results: actions = [] } = useLiveQuery(
-    db.actions.liveMany({
-      where: { place_id: place_id2 ?? place_id, ...where },
-      orderBy: { label: 'asc' },
-    }),
+  const result = useLiveQuery(
+    `SELECT * FROM actions WHERE place_id = ?${
+      filter && ` AND (${filter})`
+    } order by label asc`,
+    [place_id2 ?? place_id],
   )
-  const { results: actionsUnfiltered = [] } = useLiveQuery(
-    db.actions.liveMany({
-      where: { place_id: place_id2 ?? place_id },
-      orderBy: { label: 'asc' },
-    }),
+  const actions = result?.rows ?? []
+  const resultUnfiltered = useLiveQuery(
+    `SELECT * FROM actions WHERE place_id = ? order by label asc`,
+    [place_id2 ?? place_id],
   )
+  const actionsUnfiltered = resultUnfiltered?.rows ?? []
+
   const isFiltered = actions.length !== actionsUnfiltered.length
 
   const add = useCallback(async () => {
@@ -43,7 +43,10 @@ export const Component = memo(() => {
       project_id,
       place_id: place_id2 ?? place_id,
     })
-    await db.actions.create({ data })
+    const columns = Object.keys(data)
+    const values = Object.values(data).join("','")
+    const sql = `insert into actions (${columns}) values ('${values}')`
+    await db.query(sql)
     navigate({ pathname: data.action_id, search: searchParams.toString() })
   }, [db, navigate, place_id, place_id2, project_id, searchParams])
 
