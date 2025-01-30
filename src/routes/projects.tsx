@@ -1,8 +1,7 @@
 import { useCallback, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { createProject } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
@@ -38,7 +37,7 @@ export const Component = memo(() => {
   // )
 
   console.log('projects', projects)
-  const isFiltered = projects.length !== projectsUnfiltered.length
+  const isFiltered = projects?.length !== projectsUnfiltered?.length
 
   const add = useCallback(async () => {
     const data = await createProject({ db })
@@ -51,15 +50,15 @@ export const Component = memo(() => {
       <ListViewHeader
         title={`Projects (${
           isFiltered
-            ? `${projects.length}/${projectsUnfiltered.length}`
-            : projects.length
+            ? `${projects?.length}/${projectsUnfiltered?.length}`
+            : projects?.length
         })`}
         addRow={add}
         tableName="project"
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {projects.map((project) => (
+        {(projects ?? []).map((project) => (
           <Row
             key={project.project_id}
             label={project.label}

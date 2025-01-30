@@ -3,7 +3,6 @@ import { Draggable } from 'react-beautiful-dnd'
 import { BsArrowsMove } from 'react-icons/bs'
 
 import { BetweenCharacters } from './BetweenCharacters.tsx'
-import { LabelElement } from '../index.tsx'
 
 const targetContainerStyle = {
   display: 'flex',
@@ -38,14 +37,6 @@ const fieldHandleStyle = {
 }
 const elementContainerStyle = {
   display: 'flex',
-}
-
-interface Props {
-  label: LabelElement[]
-  name: string
-  onChange: () => void
-  isDraggingOver: boolean
-  provided: DroppableProvided
 }
 
 /**

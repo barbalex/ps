@@ -24,15 +24,7 @@ interface Props {
 }
 
 export const BetweenCharacters = memo(
-  ({
-    el,
-    label,
-    onChange,
-    index,
-    children,
-    snapshot,
-    provided,
-  })WithChildren => {
+  ({ el, label, onChange, index, children, snapshot, provided }) => {
     const onBlur = useCallback(
       (event) => {
         const newLabel = [...label]

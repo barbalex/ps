@@ -1,5 +1,5 @@
-import { useEffect } from 'react'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { use } from 'react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { generateProjectLabel } from './sql/projects.ts'
 import { generateSubprojectLabel } from './sql/subprojects.ts'
@@ -58,61 +58,73 @@ import { seedTestData } from './seedTestData.ts'
 export const SqlInitializer = () => {
   const db = usePGlite()
 
-  // TODO: test if table exists before building db
+  // TODO: test if table projects exists before building db
+  const query = db.query(
+    `
+      SELECT EXISTS (
+        SELECT FROM pg_tables
+        WHERE  schemaname = 'public'
+        AND    tablename  = 'projects'
+      )
+    `,
+  )
+  const result = use(query)
 
-  useEffect(() => {
-    const generate = async () => {
-      // seems that these can't be run in migrations
-      await generateUserLabel(db)
-      await generateAccountLabel(db)
-      await generateProjectLabel(db)
-      await generateSubprojectLabel(db)
-      await generateFieldTypeLabel(db)
-      await generateWidgetTypeLabel(db)
-      await generateWidgetForFieldLabel(db)
-      await generateFileLabel(db)
-      await generatePlaceLevelLabel(db)
-      await generateUnitLabel(db)
-      await generateListLabel(db)
-      await generateListValueLabel(db)
-      await generateTaxonomyLabel(db)
-      await generateTaxonLabel(db)
-      await generateProjectUserLabel(db)
-      await generateProjectReportLabel(db)
-      await generateFieldLabel(db)
-      await generatePersonLabel(db)
-      await generateCrsLabel(db)
-      await generateProjectCrsLabel(db)
-      await generatePlaceLabel(db)
-      await generatePlaceUserLabel(db)
-      await generateSubprojectTaxonLabel(db)
-      await generateSubprojectReportLabel(db)
-      await generateGoalLabel(db)
-      await generateGoalReportLabel(db)
-      await generateGoalReportValueLabel(db)
-      await generateSubprojectUserLabel(db)
-      await generateCheckLabel(db)
-      await generateCheckValueLabel(db)
-      await generateCheckTaxonLabel(db)
-      await generateActionLabel(db)
-      await generateActionValueLabel(db)
-      await generateActionReportLabel(db)
-      await generateActionReportValueLabel(db)
-      await generatePlaceReportLabel(db)
-      await generatePlaceReportValueLabel(db)
-      await generateMessageLabel(db)
-      await generateVectorLayerDisplayLabel(db)
-      await generateLayerPresentationLabel(db)
-      await generateChartLabel(db)
-      await generateChartSubjectLabel(db)
-      await generateOccurrenceImportLabel(db)
-      // await generateVectorLayerTriggers(db)
-      // await generateWmsLayerTriggers(db)
-      // console.log('generated vector layer triggers')
-      await seedTestData(db)
-    }
-    generate()
-  }, [db])
+  console.log('SqlInitializer, result', result)
+
+  // useEffect(() => {
+  //   const generate = async () => {
+  //     // seems that these can't be run in migrations
+  //     await generateUserLabel(db)
+  //     await generateAccountLabel(db)
+  //     await generateProjectLabel(db)
+  //     await generateSubprojectLabel(db)
+  //     await generateFieldTypeLabel(db)
+  //     await generateWidgetTypeLabel(db)
+  //     await generateWidgetForFieldLabel(db)
+  //     await generateFileLabel(db)
+  //     await generatePlaceLevelLabel(db)
+  //     await generateUnitLabel(db)
+  //     await generateListLabel(db)
+  //     await generateListValueLabel(db)
+  //     await generateTaxonomyLabel(db)
+  //     await generateTaxonLabel(db)
+  //     await generateProjectUserLabel(db)
+  //     await generateProjectReportLabel(db)
+  //     await generateFieldLabel(db)
+  //     await generatePersonLabel(db)
+  //     await generateCrsLabel(db)
+  //     await generateProjectCrsLabel(db)
+  //     await generatePlaceLabel(db)
+  //     await generatePlaceUserLabel(db)
+  //     await generateSubprojectTaxonLabel(db)
+  //     await generateSubprojectReportLabel(db)
+  //     await generateGoalLabel(db)
+  //     await generateGoalReportLabel(db)
+  //     await generateGoalReportValueLabel(db)
+  //     await generateSubprojectUserLabel(db)
+  //     await generateCheckLabel(db)
+  //     await generateCheckValueLabel(db)
+  //     await generateCheckTaxonLabel(db)
+  //     await generateActionLabel(db)
+  //     await generateActionValueLabel(db)
+  //     await generateActionReportLabel(db)
+  //     await generateActionReportValueLabel(db)
+  //     await generatePlaceReportLabel(db)
+  //     await generatePlaceReportValueLabel(db)
+  //     await generateMessageLabel(db)
+  //     await generateVectorLayerDisplayLabel(db)
+  //     await generateLayerPresentationLabel(db)
+  //     await generateChartLabel(db)
+  //     await generateChartSubjectLabel(db)
+  //     await generateOccurrenceImportLabel(db)
+  //     // await generateVectorLayerTriggers(db)
+  //     // await generateWmsLayerTriggers(db)
+  //     // console.log('generated vector layer triggers')
+  //     await seedTestData(db)
+  //   }
+  //   generate()
+  // }, [db])
 
   return null
 }
