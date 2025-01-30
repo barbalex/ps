@@ -1210,15 +1210,15 @@ CREATE TABLE IF NOT EXISTS occurrence_imports(
   label text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS ON occurrence_imports USING btree(account_id);
+CREATE INDEX IF NOT EXISTS occurrence_imports_account_id_idx ON occurrence_imports USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON occurrence_imports USING btree(subproject_id);
+CREATE INDEX IF NOT EXISTS occurrence_imports_subproject_id_idx ON occurrence_imports USING btree(subproject_id);
 
-CREATE INDEX IF NOT EXISTS ON occurrence_imports USING btree(created_time);
+CREATE INDEX IF NOT EXISTS occurrence_imports_created_time_idx ON occurrence_imports USING btree(created_time);
 
-CREATE INDEX IF NOT EXISTS ON occurrence_imports USING btree(previous_import);
+CREATE INDEX IF NOT EXISTS occurrence_imports_previous_import_idx ON occurrence_imports USING btree(previous_import);
 
-CREATE INDEX IF NOT EXISTS ON occurrence_imports USING btree(label);
+CREATE INDEX IF NOT EXISTS occurrence_imports_label_idx ON occurrence_imports USING btree(label);
 
 COMMENT ON TABLE occurrence_imports IS 'occurrence imports. Used also for species (when from gbif, of an area, format: SPECIES_LIST). Is created in client, synced to server, executed by gbif backend server, written to db and synced back to client';
 
@@ -1234,7 +1234,7 @@ CREATE TABLE IF NOT EXISTS occurrences(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   occurrence_import_id uuid DEFAULT NULL REFERENCES occurrence_imports(occurrence_import_id) ON DELETE CASCADE ON UPDATE CASCADE,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE SET NULL ON UPDATE CASCADE,
-  not_to_assign boolean DEFAULT NULL, -- FALSE, TODO: index?,
+  not_to_assign boolean DEFAULT FALSE, -- TODO: index?,
   comment text DEFAULT NULL,
   data jsonb DEFAULT NULL,
   id_in_source text DEFAULT NULL, -- extracted from data using occurrence_import_id.id_field
@@ -1242,16 +1242,18 @@ CREATE TABLE IF NOT EXISTS occurrences(
   label text DEFAULT NULL
 );
 
--- CREATE INDEX IF NOT EXISTS ON occurrences USING btree(occurrence_id);
-CREATE INDEX IF NOT EXISTS ON occurrences USING btree(account_id);
+CREATE INDEX IF NOT EXISTS occurrences_account_id_idx ON occurrences USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON occurrences USING btree(occurrence_import_id);
+CREATE INDEX IF NOT EXISTS occurrences_occurrence_import_id_idx ON occurrences USING btree(occurrence_import_id);
 
-CREATE INDEX IF NOT EXISTS ON occurrences USING btree(place_id);
+CREATE INDEX IF NOT EXISTS occurrences_place_id_idx ON occurrences USING btree(place_id);
 
-CREATE INDEX IF NOT EXISTS ON occurrences USING btree(label);
+CREATE INDEX IF NOT EXISTS occurrences_label_idx ON occurrences USING btree(label);
 
--- CREATE INDEX IF NOT EXISTS ON occurrences USING gist(data); TODO: when supported by electric-sql
+CREATE INDEX IF NOT EXISTS occurrences_data_idx ON occurrences USING gist(data);
+
+CREATE INDEX IF NOT EXISTS occurrences_label_idx ON occurrences USING btree(label);
+
 COMMENT ON TABLE occurrences IS 'GBIF occurrences. Imported for subprojects (species projects) or projects (biotope projects).';
 
 COMMENT ON COLUMN occurrences.place_id IS 'The place this occurrence is assigned to.';
