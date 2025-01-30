@@ -139,7 +139,7 @@ CREATE TABLE IF NOT EXISTS place_levels(
   check_values boolean DEFAULT NULL, -- FALSE,
   check_taxa boolean DEFAULT NULL, -- FALSE,
   occurrences boolean DEFAULT NULL, -- FALSE,
-  label_replace_by_generated_column text DEFAULT NULL
+  label text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS ON place_levels USING btree(account_id);
@@ -149,6 +149,8 @@ CREATE INDEX IF NOT EXISTS ON place_levels USING btree(project_id);
 CREATE INDEX IF NOT EXISTS ON place_levels USING btree(level);
 
 CREATE INDEX IF NOT EXISTS ON place_levels USING btree(name_singular);
+
+CREATE INDEX IF NOT EXISTS ON place_levels USING btree(label);
 
 COMMENT ON COLUMN place_levels.account_id IS 'redundant account_id enhances data safety';
 
@@ -188,7 +190,7 @@ CREATE TABLE IF NOT EXISTS subprojects(
   start_year integer DEFAULT NULL,
   end_year integer DEFAULT NULL,
   data jsonb DEFAULT NULL,
-  label_replace_by_generated_column text DEFAULT NULL
+  label text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS ON subprojects USING btree(account_id);
@@ -198,6 +200,8 @@ CREATE INDEX IF NOT EXISTS ON subprojects USING btree(project_id);
 CREATE INDEX IF NOT EXISTS ON subprojects USING btree(name);
 
 CREATE INDEX IF NOT EXISTS ON subprojects USING btree(start_year);
+
+CREATE INDEX IF NOT EXISTS ON subprojects USING btree(label);
 
 COMMENT ON COLUMN subprojects.account_id IS 'redundant account_id enhances data safety';
 
@@ -277,9 +281,9 @@ CREATE TABLE IF NOT EXISTS taxonomies(
   type taxonomy_type DEFAULT NULL,
   name text DEFAULT NULL,
   url text DEFAULT NULL,
-  obsolete boolean DEFAULT NULL, -- FALSE,
+  obsolete boolean DEFAULT FALSE,
   data jsonb DEFAULT NULL,
-  label_replace_by_generated_column text DEFAULT NULL
+  label text DEFAULT NULL
 );
 
 -- CREATE INDEX IF NOT EXISTS ON taxonomies USING btree(taxonomy_id);
@@ -290,6 +294,8 @@ CREATE INDEX IF NOT EXISTS ON taxonomies USING btree(project_id);
 CREATE INDEX IF NOT EXISTS ON taxonomies USING btree(type);
 
 CREATE INDEX IF NOT EXISTS ON taxonomies USING btree(name);
+
+CREATE INDEX IF NOT EXISTS ON taxonomies USING btree(label);
 
 -- CREATE INDEX IF NOT EXISTS ON taxonomies((1))
 -- WHERE
@@ -367,8 +373,8 @@ CREATE TABLE IF NOT EXISTS lists(
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
   data jsonb DEFAULT NULL,
-  obsolete boolean DEFAULT NULL, -- FALSE,
-  label_replace_by_generated_column text DEFAULT NULL
+  obsolete boolean DEFAULT FALSE,
+  label text DEFAULT NULL
 );
 
 -- CREATE INDEX IF NOT EXISTS ON lists USING btree(list_id);
@@ -377,6 +383,8 @@ CREATE INDEX IF NOT EXISTS ON lists USING btree(account_id);
 CREATE INDEX IF NOT EXISTS ON lists USING btree(project_id);
 
 CREATE INDEX IF NOT EXISTS ON lists USING btree(name);
+
+CREATE INDEX IF NOT EXISTS ON lists USING btree(label);
 
 -- CREATE INDEX IF NOT EXISTS ON lists((1))
 -- WHERE
@@ -394,8 +402,8 @@ CREATE TABLE IF NOT EXISTS list_values(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE CASCADE ON UPDATE CASCADE,
   value text DEFAULT NULL,
-  obsolete boolean DEFAULT NULL, -- FALSE,
-  label_replace_by_generated_column text DEFAULT NULL
+  obsolete boolean DEFAULT FALSE,
+  label text DEFAULT NULL
 );
 
 -- CREATE INDEX IF NOT EXISTS ON list_values USING btree(list_value_id);
@@ -404,6 +412,8 @@ CREATE INDEX IF NOT EXISTS ON list_values USING btree(account_id);
 CREATE INDEX IF NOT EXISTS ON list_values USING btree(list_id);
 
 CREATE INDEX IF NOT EXISTS ON list_values USING btree(value);
+
+CREATE INDEX IF NOT EXISTS ON list_values USING btree(label);
 
 -- CREATE INDEX IF NOT EXISTS ON list_values((1))
 -- WHERE
@@ -434,7 +444,7 @@ CREATE TABLE IF NOT EXISTS units(
   sort integer DEFAULT NULL,
   type unit_type DEFAULT NULL, -- TODO: not in use?
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE NO action ON UPDATE CASCADE,
-  label_replace_by_generated_column text DEFAULT NULL
+  label text DEFAULT NULL
 );
 
 -- CREATE INDEX IF NOT EXISTS ON units USING btree(unit_id);
@@ -447,6 +457,8 @@ CREATE INDEX IF NOT EXISTS ON units USING btree(name);
 CREATE INDEX IF NOT EXISTS ON units USING btree(sort);
 
 CREATE INDEX IF NOT EXISTS ON units USING btree(list_id);
+
+CREATE INDEX IF NOT EXISTS ON units USING btree(label);
 
 COMMENT ON TABLE units IS 'Manage units of values. These units can then be used for values of actions, checks, reports, goals, taxa';
 
@@ -531,11 +543,11 @@ CREATE TABLE IF NOT EXISTS actions(
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   date date DEFAULT NULL, -- CURRENT_DATE,
   data jsonb DEFAULT NULL,
-  -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL, -- not supported by electic-sql
+  geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
   geometry jsonb DEFAULT NULL,
   bbox jsonb DEFAULT NULL,
-  relevant_for_reports boolean DEFAULT NULL, -- TRUE,
-  label_replace_by_generated_column text DEFAULT NULL
+  relevant_for_reports boolean DEFAULT TRUE,
+  label text DEFAULT NULL
 );
 
 -- CREATE INDEX IF NOT EXISTS ON actions USING btree(action_id);
@@ -544,6 +556,8 @@ CREATE INDEX IF NOT EXISTS ON actions USING btree(account_id);
 CREATE INDEX IF NOT EXISTS ON actions USING btree(place_id);
 
 CREATE INDEX IF NOT EXISTS ON actions USING btree(date);
+
+CREATE INDEX IF NOT EXISTS ON actions USING btree(label);
 
 -- CREATE INDEX IF NOT EXISTS ON actions USING gin(data); -- seems not to work with electric-sql
 -- CREATE INDEX IF NOT EXISTS ON actions USING gist(geometry);
@@ -602,9 +616,9 @@ CREATE TABLE IF NOT EXISTS action_reports(
   action_report_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   action_id uuid DEFAULT NULL REFERENCES actions(action_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  year integer DEFAULT NULL, -- DATE_PART('year', now()::date),
+  year integer DEFAULT DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
-  label_replace_by_generated_column text DEFAULT NULL
+  label text DEFAULT NULL
 );
 
 -- CREATE INDEX IF NOT EXISTS ON action_reports USING btree(action_report_id);
@@ -613,6 +627,8 @@ CREATE INDEX IF NOT EXISTS ON action_reports USING btree(account_id);
 CREATE INDEX IF NOT EXISTS ON action_reports USING btree(action_id);
 
 CREATE INDEX IF NOT EXISTS ON action_reports USING btree(year);
+
+CREATE INDEX IF NOT EXISTS ON action_reports USING btree(label);
 
 COMMENT ON TABLE action_reports IS 'Reporting on the success of actions.';
 
@@ -662,13 +678,13 @@ CREATE TABLE IF NOT EXISTS checks(
   check_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  date date DEFAULT NULL, -- CURRENT_DATE,
+  date date DEFAULT CURRENT_DATE,
   data jsonb DEFAULT NULL,
-  -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL, -- not supported by electic-sql
+  geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
   geometry jsonb DEFAULT NULL,
   bbox jsonb DEFAULT NULL,
-  relevant_for_reports boolean DEFAULT NULL, -- TRUE,
-  label_replace_by_generated_column text DEFAULT NULL
+  relevant_for_reports boolean DEFAULT TRUE,
+  label text DEFAULT NULL
 );
 
 -- CREATE INDEX IF NOT EXISTS ON checks USING btree(check_id);
@@ -677,6 +693,8 @@ CREATE INDEX IF NOT EXISTS ON checks USING btree(account_id);
 CREATE INDEX IF NOT EXISTS ON checks USING btree(place_id);
 
 CREATE INDEX IF NOT EXISTS ON checks USING btree(date);
+
+CREATE INDEX IF NOT EXISTS ON checks USING btree(label);
 
 -- CREATE INDEX IF NOT EXISTS ON checks USING gin(data); -- seems not to work with electric-sql
 -- CREATE INDEX IF NOT EXISTS ON checks USING gist(geometry);
@@ -1123,7 +1141,7 @@ CREATE TABLE IF NOT EXISTS fields(
   field_label text DEFAULT NULL,
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE NO action ON UPDATE CASCADE,
   preset text DEFAULT NULL,
-  obsolete boolean DEFAULT NULL, -- FALSE,
+  obsolete boolean DEFAULT FALSE,
   sort_index integer DEFAULT NULL,
   -- order_by integer DEFAULT NULL, -- should be numeric but not supported by electric-sql
   label_replace_by_generated_column text DEFAULT NULL
