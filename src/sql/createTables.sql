@@ -327,6 +327,8 @@ COMMENT ON COLUMN taxonomies.obsolete IS 'Is taxonomy obsolete? Preset: false';
 
 COMMENT ON COLUMN taxonomies.data IS 'Room for taxonomy specific data, defined in "fields" table';
 
+--------------------------------------------------------------
+-- taxa
 CREATE TABLE IF NOT EXISTS taxa(
   taxon_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -356,6 +358,8 @@ COMMENT ON COLUMN taxa.data IS 'Data as received from source';
 
 COMMENT ON COLUMN taxa.url IS 'URL of taxon, like "https://www.infoflora.ch/de/flora/pulsatilla-vulgaris.html"';
 
+--------------------------------------------------------------
+-- subproject_taxa
 CREATE TABLE IF NOT EXISTS subproject_taxa(
   subproject_taxon_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -378,6 +382,8 @@ COMMENT ON COLUMN subproject_taxa.account_id IS 'redundant account_id enhances d
 
 COMMENT ON COLUMN subproject_taxa.taxon_id IS 'taxons that are meant in this subproject. Can be multiple, for instance synonyms of a single taxonomy or of different taxonomies. A taxon should be used in only one subproject.';
 
+--------------------------------------------------------------
+-- lists
 CREATE TABLE IF NOT EXISTS lists(
   list_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -408,6 +414,8 @@ COMMENT ON COLUMN lists.name IS 'Name of list, like "Gefährdung"';
 
 COMMENT ON COLUMN lists.obsolete IS 'Is list obsolete? If so, show set values but dont let user pick one. Preset: false';
 
+--------------------------------------------------------------
+-- list_values
 CREATE TABLE IF NOT EXISTS list_values(
   list_value_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -433,6 +441,8 @@ COMMENT ON COLUMN list_values.value IS 'Value of list, like "Gefährdet", "5". I
 
 COMMENT ON COLUMN list_values.account_id IS 'redundant account_id enhances data safety';
 
+--------------------------------------------------------------
+-- units
 CREATE TYPE unit_type AS enum(
   'integer',
   'numeric',
@@ -494,6 +504,8 @@ COMMENT ON COLUMN units.summable IS 'Whether values of this unit can be summed. 
 
 COMMENT ON COLUMN units.type IS 'One of: "integer", "numeric", "text". Preset: "integer"';
 
+--------------------------------------------------------------
+-- places
 CREATE TABLE IF NOT EXISTS places(
   place_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -548,6 +560,8 @@ COMMENT ON COLUMN places.geometry IS 'geometry of place';
 
 COMMENT ON COLUMN places.bbox IS 'bbox of the geometry. Set client-side on every change of geometry. Used to filter geometries for viewport client-side';
 
+--------------------------------------------------------------
+-- actions
 CREATE TABLE IF NOT EXISTS actions(
   action_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -585,6 +599,8 @@ COMMENT ON COLUMN actions.bbox IS 'bbox of the geometry. Set client-side on ever
 
 COMMENT ON COLUMN actions.relevant_for_reports IS 'Whether action is relevant for reports. Preset: true';
 
+--------------------------------------------------------------
+-- action_values
 CREATE TABLE IF NOT EXISTS action_values(
   action_value_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -620,6 +636,8 @@ COMMENT ON COLUMN action_values.value_numeric IS 'Used for numeric values';
 
 COMMENT ON COLUMN action_values.value_text IS 'Used for text values';
 
+--------------------------------------------------------------
+-- action_reports
 CREATE TABLE IF NOT EXISTS action_reports(
   action_report_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -645,6 +663,8 @@ COMMENT ON COLUMN action_reports.year IS 'Year of report. Preset: current year';
 
 COMMENT ON COLUMN action_reports.data IS 'Room for action report specific data, defined in "fields" table';
 
+--------------------------------------------------------------
+-- action_report_values
 CREATE TABLE IF NOT EXISTS action_report_values(
   action_report_value_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -680,6 +700,8 @@ COMMENT ON COLUMN action_report_values.value_numeric IS 'Used for numeric values
 
 COMMENT ON COLUMN action_report_values.value_text IS 'Used for text values';
 
+--------------------------------------------------------------
+-- checks
 CREATE TABLE IF NOT EXISTS checks(
   check_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -713,6 +735,8 @@ COMMENT ON COLUMN checks.data IS 'Room for check specific data, defined in "fiel
 
 COMMENT ON COLUMN checks.bbox IS 'bbox of the geometry. Set client-side on every change of geometry. Used to filter geometries for viewport client-side';
 
+--------------------------------------------------------------
+-- check_values
 CREATE TABLE IF NOT EXISTS check_values(
   check_value_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -748,6 +772,8 @@ COMMENT ON COLUMN check_values.value_numeric IS 'Used for numeric values';
 
 COMMENT ON COLUMN check_values.value_text IS 'Used for text values';
 
+--------------------------------------------------------------
+-- check_taxa
 CREATE TABLE IF NOT EXISTS check_taxa(
   check_taxon_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -778,6 +804,8 @@ CREATE INDEX IF NOT EXISTS check_taxa_label_idx ON check_taxa USING btree(label)
 
 COMMENT ON COLUMN check_taxa.account_id IS 'redundant account_id enhances data safety';
 
+--------------------------------------------------------------
+-- place_reports
 CREATE TABLE IF NOT EXISTS place_reports(
   place_report_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -803,6 +831,8 @@ COMMENT ON COLUMN place_reports.year IS 'Year of report. Preset: current year';
 
 COMMENT ON COLUMN place_reports.data IS 'Room for place report specific data, defined in "fields" table';
 
+--------------------------------------------------------------
+-- place_report_values
 CREATE TABLE IF NOT EXISTS place_report_values(
   place_report_value_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -838,6 +868,8 @@ COMMENT ON COLUMN place_report_values.value_numeric IS 'Used for numeric values'
 
 COMMENT ON COLUMN place_report_values.value_text IS 'Used for text values';
 
+--------------------------------------------------------------
+-- messages
 CREATE TABLE IF NOT EXISTS messages(
   message_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   label text DEFAULT NULL,
@@ -851,6 +883,8 @@ CREATE INDEX IF NOT EXISTS messages_label_idx ON messages USING btree(label);
 
 COMMENT ON TABLE messages IS 'messages for the user. Mostly informing about updates of';
 
+--------------------------------------------------------------
+-- user_messages
 CREATE TABLE IF NOT EXISTS user_messages(
   user_message_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -864,6 +898,8 @@ CREATE INDEX IF NOT EXISTS user_messages_user_id_idx ON user_messages USING btre
 
 CREATE INDEX IF NOT EXISTS user_messages_message_id_idx ON user_messages USING btree(message_id);
 
+--------------------------------------------------------------
+-- place_users
 CREATE TABLE IF NOT EXISTS place_users(
   place_user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -887,6 +923,8 @@ COMMENT ON COLUMN place_users.account_id IS 'redundant account_id enhances data 
 
 COMMENT ON COLUMN place_users.role IS 'TODO: One of: "manager", "editor", "reader". Preset: "reader"';
 
+--------------------------------------------------------------
+-- goals
 CREATE TABLE IF NOT EXISTS goals(
   goal_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -909,6 +947,8 @@ COMMENT ON TABLE goals IS 'What is to be achieved in the subproject in this year
 
 COMMENT ON COLUMN goals.account_id IS 'redundant account_id enhances data safety';
 
+--------------------------------------------------------------
+-- goal_reports
 CREATE TABLE IF NOT EXISTS goal_reports(
   goal_report_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -929,6 +969,8 @@ COMMENT ON COLUMN goal_reports.account_id IS 'redundant account_id enhances data
 
 COMMENT ON COLUMN goal_reports.data IS 'Room for goal report specific data, defined in "fields" table';
 
+--------------------------------------------------------------
+-- goal_report_values
 CREATE TABLE IF NOT EXISTS goal_report_values(
   goal_report_value_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -964,6 +1006,8 @@ COMMENT ON COLUMN goal_report_values.value_numeric IS 'Used for numeric values';
 
 COMMENT ON COLUMN goal_report_values.value_text IS 'Used for text values';
 
+--------------------------------------------------------------
+-- subproject_reports
 CREATE TABLE IF NOT EXISTS subproject_reports(
   subproject_report_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -989,6 +1033,8 @@ COMMENT ON COLUMN subproject_reports.year IS 'Year of report. Preset: current ye
 
 COMMENT ON COLUMN subproject_reports.data IS 'Room for subproject report specific data, defined in "fields" table';
 
+--------------------------------------------------------------
+-- project_reports
 CREATE TABLE IF NOT EXISTS project_reports(
   project_report_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1014,6 +1060,8 @@ COMMENT ON COLUMN project_reports.year IS 'Year of report. Preset: current year'
 
 COMMENT ON COLUMN project_reports.data IS 'Room for project report specific data, defined in "fields" table';
 
+--------------------------------------------------------------
+-- files
 CREATE TABLE IF NOT EXISTS files(
   file_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1061,9 +1109,11 @@ COMMENT ON COLUMN files.data IS 'Room for file specific data, defined in "fields
 
 COMMENT ON COLUMN files.mimetype IS 'mimetype of file, used to know how to open or preview it';
 
--- COMMENT ON COLUMN files.file IS 'file content';
+COMMENT ON COLUMN files.file IS 'file content';
 COMMENT ON COLUMN files.url IS 'URL of file, if it is saved on a web service';
 
+--------------------------------------------------------------
+-- persons
 CREATE TABLE IF NOT EXISTS persons(
   person_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1087,6 +1137,8 @@ COMMENT ON COLUMN persons.account_id IS 'redundant account_id enhances data safe
 
 COMMENT ON COLUMN persons.data IS 'Room for person specific data, defined in "fields" table';
 
+--------------------------------------------------------------
+-- field_types
 CREATE TABLE IF NOT EXISTS field_types(
   field_type_id uuid PRIMARY KEY DEFAULT NULL,
   name text DEFAULT NULL,
@@ -1102,6 +1154,8 @@ CREATE INDEX IF NOT EXISTS field_types_sort_idx ON field_types USING btree(sort)
 
 CREATE INDEX IF NOT EXISTS field_types_label_idx ON field_types USING btree(label);
 
+--------------------------------------------------------------
+-- widget_types
 CREATE TABLE IF NOT EXISTS widget_types(
   widget_type_id uuid PRIMARY KEY DEFAULT NULL,
   name text DEFAULT NULL,
@@ -1118,6 +1172,8 @@ CREATE INDEX IF NOT EXISTS widget_types_sort_idx ON widget_types USING btree(sor
 
 CREATE INDEX IF NOT EXISTS widget_types_label_idx ON widget_types USING btree(label);
 
+--------------------------------------------------------------
+-- widgets_for_fields
 CREATE TABLE IF NOT EXISTS widgets_for_fields(
   widget_for_field_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   field_type_id uuid DEFAULT NULL REFERENCES field_types(field_type_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1131,6 +1187,8 @@ CREATE INDEX IF NOT EXISTS widgets_for_fields_widget_type_id_idx ON widgets_for_
 
 CREATE INDEX IF NOT EXISTS widgets_for_fields_label_idx ON widgets_for_fields(label);
 
+--------------------------------------------------------------
+-- fields
 --
 -- order_by field: to enable ordering of field widgets
 -- idea: use an integer that represents the index of the widget
@@ -1187,6 +1245,7 @@ COMMENT ON COLUMN fields.level IS 'level of field if places or below: 1, 2';
 
 COMMENT ON COLUMN fields.sort_index IS 'Enables sorting of fields. Per table';
 
+--------------------------------------------------------------
 --occurrence_imports
 CREATE TYPE occurrence_imports_previous_import_operation_enum AS enum(
   'update_and_extend',
@@ -1238,6 +1297,8 @@ COMMENT ON COLUMN occurrence_imports.previous_import IS 'What import does this o
 
 COMMENT ON COLUMN occurrence_imports.gbif_filters IS 'area, groups, speciesKeys...';
 
+--------------------------------------------------------------
+-- occurrences
 -- INSERT INTO occurrence_imports(occurrence_import_id, account_id, subproject_id, gbif_filters, created_time, gbif_download_key, gbif_error, inserted_count, attribution)
 --   VALUES ('018e1dc5-992e-7167-a294-434163a27d4b', '018cf958-27e2-7000-90d3-59f024d467be', '018cfd27-ee92-7000-b678-e75497d6c60e', '{"area": "POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))"}', '2020-01-01T00:00:00Z', '00000000-0000-0000-0000-000000000000', NULL, 0, NULL);
 -- TODO: need to add place_id. Either here or separate table place_occurrences
@@ -1278,6 +1339,8 @@ COMMENT ON COLUMN occurrences.data IS 'data as received from GBIF';
 
 COMMENT ON COLUMN occurrences.label IS 'label of occurrence, used to show it in the UI. Created on import';
 
+--------------------------------------------------------------
+-- wms_services
 DROP TABLE IF EXISTS wms_services CASCADE;
 
 CREATE TABLE IF NOT EXISTS wms_services(
@@ -1299,6 +1362,8 @@ CREATE INDEX IF NOT EXISTS wms_services_project_id_idx ON wms_services USING btr
 
 CREATE INDEX IF NOT EXISTS wms_services_url_idx ON wms_services USING btree(url);
 
+--------------------------------------------------------------
+-- wms_service_layers
 DROP TABLE IF EXISTS wms_service_layers CASCADE;
 
 CREATE TABLE IF NOT EXISTS wms_service_layers(
@@ -1314,6 +1379,8 @@ CREATE TABLE IF NOT EXISTS wms_service_layers(
 
 CREATE INDEX IF NOT EXISTS wms_service_layers_wms_service_id_idx ON wms_service_layers USING btree(wms_service_id);
 
+--------------------------------------------------------------
+-- wms_layers
 DROP TABLE IF EXISTS wms_layers CASCADE;
 
 -- TODO: create table for wmts
@@ -1345,6 +1412,7 @@ COMMENT ON COLUMN wms_layers.local_data_size IS 'Size of locally saved image dat
 COMMENT ON COLUMN wms_layers.local_data_bounds IS 'Array of bounds and their size of locally saved image data';
 
 --------------------------------------------------------------
+-- wfs_services
 DROP TABLE IF EXISTS wfs_services CASCADE;
 
 CREATE TABLE IF NOT EXISTS wfs_services(
@@ -1368,6 +1436,8 @@ COMMENT ON TABLE wfs_services IS 'A layer of a WFS service.';
 
 COMMENT ON COLUMN wfs_services.default_crs IS 'It seems that this is the crs bbox calls have to be made in';
 
+--------------------------------------------------------------
+-- wfs_service_layers
 DROP TABLE IF EXISTS wfs_service_layers CASCADE;
 
 CREATE TABLE IF NOT EXISTS wfs_service_layers(
@@ -1382,6 +1452,7 @@ CREATE TABLE IF NOT EXISTS wfs_service_layers(
 CREATE INDEX IF NOT EXISTS wfs_service_layers_wfs_service_id_idx ON wfs_service_layers USING btree(wfs_service_id);
 
 --------------------------------------------------------------
+-- vector_layers
 CREATE TYPE vector_layer_type_enum AS enum(
   'wfs',
   'upload',
@@ -1456,6 +1527,8 @@ COMMENT ON COLUMN vector_layers.line_count IS 'Number of line features. Used to 
 
 COMMENT ON COLUMN vector_layers.polygon_count IS 'Number of polygon features. Used to show styling for polygons - or not. Set when downloaded features';
 
+--------------------------------------------------------------
+-- vector_layer_geoms
 DROP TABLE IF EXISTS vector_layer_geoms CASCADE;
 
 --
@@ -1493,6 +1566,8 @@ COMMENT ON COLUMN vector_layer_geoms.bbox_ne_lng IS 'bbox of the geometry. Set c
 
 COMMENT ON COLUMN vector_layer_geoms.bbox_ne_lat IS 'bbox of the geometry. Set client-side on every change of geometry. Used to filter geometries client-side for viewport';
 
+--------------------------------------------------------------
+-- vector_layer_displays
 CREATE TYPE marker_type_enum AS enum(
   'circle',
   'marker'
@@ -1504,13 +1579,13 @@ CREATE TYPE line_cap_enum AS enum(
   'square'
 );
 
--- CREATE TYPE line_join_enum AS enum(
---   'arcs',
---   'bevel',
---   'miter',
---   'miter-clip', // NOT supported by electric-sql
---   'round'
--- );
+CREATE TYPE line_join_enum AS enum(
+  'arcs',
+  'bevel',
+  'miter',
+  'miter-clip',
+  'round'
+);
 CREATE TYPE fill_rule_enum AS enum(
   'nonzero',
   'evenodd'
@@ -1532,7 +1607,7 @@ CREATE TABLE IF NOT EXISTS vector_layer_displays(
   color text DEFAULT '#3388ff',
   weight integer DEFAULT 3,
   line_cap line_cap_enum DEFAULT 'round',
-  line_join text DEFAULT 'round',
+  line_join line_join_enum DEFAULT 'round',
   dash_array text DEFAULT NULL,
   dash_offset text DEFAULT NULL,
   fill boolean DEFAULT TRUE,
@@ -1580,6 +1655,8 @@ COMMENT ON COLUMN vector_layer_displays.fill_opacity_percent IS 'Fill opacity. h
 
 COMMENT ON COLUMN vector_layer_displays.fill_rule IS 'A string that defines how the inside of a shape is determined. https://leafletjs.com/reference.html#path-fillrule. https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-rule';
 
+--------------------------------------------------------------
+-- layer_presentations
 -- need a table to manage layer presentation for all layers (wms and vector)
 CREATE TABLE IF NOT EXISTS layer_presentations(
   layer_presentation_id uuid PRIMARY KEY DEFAULT NULL,
@@ -1608,6 +1685,9 @@ CREATE INDEX IF NOT EXISTS layer_presentations_label_idx ON layer_presentations 
 COMMENT ON TABLE layer_presentations IS 'Goal: manage all presentation related properties of all layers (including wms and vector layers). Editable by all users.';
 
 COMMENT ON COLUMN layer_presentations.opacity_percent IS 'As numeric is not supported by electric-sql, we cant use values between 0 and 1 for opacity. So we use integer values between 0 and 100 and divide by 100 in the frontend.';
+
+--------------------------------------------------------------
+-- notifications
 
 CREATE TYPE notification_intent_enum AS enum(
   'success',
@@ -1638,6 +1718,8 @@ COMMENT ON COLUMN notifications.paused IS 'If true, the notification is not dism
 
 COMMENT ON COLUMN notifications.progress_percent IS 'Progress of a long running task. Only passed, if progress can be measured. A progress bar is shown.';
 
+--------------------------------------------------------------
+-- charts
 CREATE TYPE chart_type AS enum(
   'Pie',
   'Radar',
@@ -1692,6 +1774,8 @@ COMMENT ON COLUMN charts.years_since IS 'If has value: the chart shows data sinc
 
 COMMENT ON COLUMN charts.years_until IS 'If has value: the chart shows data until the value specified. Can be the end date of the project, subproject or place';
 
+--------------------------------------------------------------
+-- chart_subjects
 CREATE TYPE chart_subject_table AS enum(
   'subprojects',
   'places',
@@ -1768,6 +1852,8 @@ COMMENT ON COLUMN chart_subjects.stroke IS 'Stroke color of the chart';
 
 COMMENT ON COLUMN chart_subjects.fill IS 'Fill color of the chart';
 
+--------------------------------------------------------------
+-- crs
 CREATE TABLE IF NOT EXISTS crs(
   crs_id uuid PRIMARY KEY DEFAULT NULL,
   -- project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1788,6 +1874,8 @@ COMMENT ON TABLE crs IS 'List of crs. From: https://spatialreference.org/crslist
 
 COMMENT ON COLUMN crs.proj4 IS 'proj4 string for the crs. From (example): https://epsg.io/4326.proj4';
 
+--------------------------------------------------------------
+-- project_crs
 -- need additional table project_crs to store the crs used in a project
 -- same as crs - data will be copied from crs to project_crs
 CREATE TABLE IF NOT EXISTS project_crs(
