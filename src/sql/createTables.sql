@@ -1061,14 +1061,13 @@ CREATE TABLE IF NOT EXISTS persons(
   label text DEFAULT NULL
 );
 
--- CREATE INDEX IF NOT EXISTS ON persons USING btree(person_id);
-CREATE INDEX IF NOT EXISTS ON persons USING btree(account_id);
+CREATE INDEX IF NOT EXISTS persons_account_id_idx ON persons USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON persons USING btree(project_id);
+CREATE INDEX IF NOT EXISTS persons_project_id_idx ON persons USING btree(project_id);
 
-CREATE INDEX IF NOT EXISTS ON persons USING btree(email);
+CREATE INDEX IF NOT EXISTS persons_email_idx ON persons USING btree(email);
 
-CREATE INDEX IF NOT EXISTS ON persons USING btree(label);
+CREATE INDEX IF NOT EXISTS persons_label_idx ON persons USING btree(label);
 
 COMMENT ON TABLE persons IS 'Persons are used to assign actions and checks to';
 
@@ -1085,27 +1084,27 @@ CREATE TABLE IF NOT EXISTS field_types(
   label text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS ON field_types(name);
+CREATE INDEX IF NOT EXISTS field_types_name_idx ON field_types USING btree(name);
 
-CREATE INDEX IF NOT EXISTS ON field_types(sort);
+CREATE INDEX IF NOT EXISTS field_types_sort_idx ON field_types USING btree(sort);
 
-CREATE INDEX IF NOT EXISTS ON field_types USING btree(label);
+CREATE INDEX IF NOT EXISTS field_types_label_idx ON field_types USING btree(label);
 
 CREATE TABLE IF NOT EXISTS widget_types(
   widget_type_id uuid PRIMARY KEY DEFAULT NULL,
   name text DEFAULT NULL,
   -- no account_id as field_types are predefined for all projects
-  needs_list boolean DEFAULT NULL, -- FALSE,
+  needs_list boolean DEFAULT FALSE,
   sort smallint DEFAULT NULL,
   comment text,
   label text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS ON widget_types(name);
+CREATE INDEX IF NOT EXISTS widget_types_name_idx ON widget_types USING btree(name);
 
-CREATE INDEX IF NOT EXISTS ON widget_types(sort);
+CREATE INDEX IF NOT EXISTS widget_types_sort_idx ON widget_types USING btree(sort);
 
-CREATE INDEX IF NOT EXISTS ON widget_types USING btree(label);
+CREATE INDEX IF NOT EXISTS widget_types_label_idx ON widget_types USING btree(label);
 
 CREATE TABLE IF NOT EXISTS widgets_for_fields(
   widget_for_field_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
@@ -1114,12 +1113,11 @@ CREATE TABLE IF NOT EXISTS widgets_for_fields(
   label text DEFAULT NULL
 );
 
--- CREATE INDEX IF NOT EXISTS ON widgets_for_fields(widget_for_field_id);
-CREATE INDEX IF NOT EXISTS ON widgets_for_fields(field_type_id);
+CREATE INDEX IF NOT EXISTS widgets_for_fields_field_type_id_idx ON widgets_for_fields(field_type_id);
 
-CREATE INDEX IF NOT EXISTS ON widgets_for_fields(widget_type_id);
+CREATE INDEX IF NOT EXISTS widgets_for_fields_widget_type_id_idx ON widgets_for_fields(widget_type_id);
 
-CREATE INDEX IF NOT EXISTS ON widgets_for_fields(label);
+CREATE INDEX IF NOT EXISTS widgets_for_fields_label_idx ON widgets_for_fields(label);
 
 --
 -- order_by field: to enable ordering of field widgets
@@ -1143,29 +1141,29 @@ CREATE TABLE IF NOT EXISTS fields(
   label text DEFAULT NULL
 );
 
--- CREATE INDEX IF NOT EXISTS ON fields USING btree(field_id);
-CREATE INDEX IF NOT EXISTS ON fields USING btree(project_id);
+CREATE INDEX IF NOT EXISTS fields_project_id_idx ON fields USING btree(project_id);
 
-CREATE INDEX IF NOT EXISTS ON fields USING btree(account_id);
+CREATE INDEX IF NOT EXISTS fields_account_id_idx ON fields USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON fields USING btree(table_name);
+CREATE INDEX IF NOT EXISTS fields_table_name_idx ON fields USING btree(table_name);
 
-CREATE INDEX IF NOT EXISTS ON fields USING btree(level);
+CREATE INDEX IF NOT EXISTS fields_level_idx ON fields USING btree(level);
 
-CREATE INDEX IF NOT EXISTS ON fields USING btree(field_type_id);
+CREATE INDEX IF NOT EXISTS fields_field_type_id_idx ON fields USING btree(field_type_id);
 
-CREATE INDEX IF NOT EXISTS ON fields USING btree(widget_type_id);
+CREATE INDEX IF NOT EXISTS fields_widget_type_id_idx ON fields USING btree(widget_type_id);
 
-CREATE INDEX IF NOT EXISTS ON fields USING btree(name);
+CREATE INDEX IF NOT EXISTS fields_name_idx ON fields USING btree(name);
 
-CREATE INDEX IF NOT EXISTS ON fields USING btree(list_id);
+CREATE INDEX IF NOT EXISTS fields_list_id_idx ON fields USING btree(list_id);
 
-CREATE INDEX IF NOT EXISTS ON fields USING btree(label);
+CREATE INDEX IF NOT EXISTS fields_label_idx ON fields USING btree(label);
 
--- CREATE INDEX IF NOT EXISTS ON fields USING btree((1))
--- WHERE
---   obsolete;
-CREATE INDEX IF NOT EXISTS ON fields USING btree(sort_index);
+CREATE INDEX IF NOT EXISTS fields_obsolete_idx ON fields USING btree((1))
+WHERE
+  obsolete;
+
+CREATE INDEX IF NOT EXISTS fields_sort_index_idx ON fields USING btree(sort_index);
 
 COMMENT ON TABLE fields IS 'Fields are used to define the data structure of data jsonb fields in other tables.';
 
@@ -1177,6 +1175,7 @@ COMMENT ON COLUMN fields.level IS 'level of field if places or below: 1, 2';
 
 COMMENT ON COLUMN fields.sort_index IS 'Enables sorting of fields. Per table';
 
+--occurrence_imports
 CREATE TYPE occurrence_imports_previous_import_operation_enum AS enum(
   'update_and_extend',
   'replace'
