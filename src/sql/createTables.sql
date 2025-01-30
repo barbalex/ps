@@ -1,3 +1,4 @@
+--------------------------------------------------------------
 -- users (tested)
 CREATE TABLE IF NOT EXISTS users(
   user_id uuid PRIMARY KEY DEFAULT NULL,
@@ -13,6 +14,7 @@ COMMENT ON COLUMN users.email IS 'email needs to be unique. project manager can 
 
 COMMENT ON TABLE users IS 'Goal: manage users and authorize them';
 
+--------------------------------------------------------------
 -- accounts
 -- DROP TABLE IF EXISTS accounts CASCADE;
 CREATE TABLE IF NOT EXISTS accounts(
@@ -43,6 +45,7 @@ COMMENT ON COLUMN accounts.type IS 'type of account: "free", "basic", "premium"?
 
 COMMENT ON COLUMN accounts.projects_label_by IS 'Used to label projects in lists. Either "name" or the name of a key in the data field. Assumed value if is null is "name"';
 
+--------------------------------------------------------------
 -- projects
 CREATE TYPE project_type AS enum(
   'species',
@@ -82,7 +85,6 @@ CREATE TABLE IF NOT EXISTS projects(
 
 CREATE INDEX IF NOT EXISTS projects_account_id_idx ON projects USING btree(account_id);
 
--- TODO: needed?
 CREATE INDEX IF NOT EXISTS projects_name_idx ON projects USING btree(name);
 
 CREATE INDEX IF NOT EXISTS projects_label_idx ON projects USING btree(label);
@@ -121,6 +123,8 @@ COMMENT ON COLUMN projects.map_presentation_crs IS 'Coordinate Reference System 
 
 COMMENT ON TABLE projects IS 'Goal: manage projects';
 
+--------------------------------------------------------------
+-- place_levels
 CREATE TABLE IF NOT EXISTS place_levels(
   place_level_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -182,6 +186,8 @@ COMMENT ON COLUMN place_levels.occurrences IS 'Are occurrences used? Preset: tru
 
 COMMENT ON TABLE place_levels IS 'Goal: manage place levels. Enable working with one or two levels. Organize what features are used on which level.';
 
+--------------------------------------------------------------
+-- subprojects
 CREATE TABLE IF NOT EXISTS subprojects(
   subproject_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -216,6 +222,8 @@ COMMENT ON COLUMN subprojects.data IS 'Room for subproject specific data, define
 
 COMMENT ON TABLE subprojects IS 'Goal: manage subprojects. Will most often be a species that is promoted. Can also be a (class of) biotope(s).';
 
+--------------------------------------------------------------
+-- project_users
 CREATE TYPE user_role AS enum(
   'manager',
   'editor',
@@ -246,6 +254,8 @@ COMMENT ON COLUMN project_users.role IS 'TODO: One of: "manager", "editor", "rea
 
 COMMENT ON TABLE project_users IS 'A way to give users access to projects (without giving them access to the whole account).';
 
+--------------------------------------------------------------
+-- subproject_users
 CREATE TABLE IF NOT EXISTS subproject_users(
   subproject_user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -270,6 +280,8 @@ COMMENT ON COLUMN subproject_users.role IS 'TODO: One of: "manager", "editor", "
 
 COMMENT ON TABLE subproject_users IS 'A way to give users access to subprojects (without giving them access to the whole project). TODO: define what data from the project the user can see.';
 
+--------------------------------------------------------------
+-- taxonomies
 CREATE TYPE taxonomy_type AS enum(
   'species',
   'biotope'
