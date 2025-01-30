@@ -844,33 +844,30 @@ CREATE TABLE IF NOT EXISTS user_messages(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
   message_id uuid DEFAULT NULL REFERENCES messages(message_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  label text DEFAULT NULL, -- TODO: column not generated yet. Needed?
+  label text DEFAULT NULL, -- TODO: Needed?
   read boolean DEFAULT FALSE
 );
 
--- CREATE INDEX IF NOT EXISTS ON user_messages USING btree(user_message_id);
-CREATE INDEX IF NOT EXISTS ON user_messages USING btree(user_id);
+CREATE INDEX IF NOT EXISTS user_messages_user_id_idx ON user_messages USING btree(user_id);
 
-CREATE INDEX IF NOT EXISTS ON user_messages USING btree(message_id);
+CREATE INDEX IF NOT EXISTS user_messages_message_id_idx ON user_messages USING btree(message_id);
 
 CREATE TABLE IF NOT EXISTS place_users(
   place_user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  -- https://github.com/electric-sql/electric/issues/893
-  ROLE user_role DEFAULT NULL,
+  "role" user_role DEFAULT 'reader',
   label text DEFAULT NULL
 );
 
--- CREATE INDEX IF NOT EXISTS ON place_users USING btree(place_user_id);
-CREATE INDEX IF NOT EXISTS ON place_users USING btree(account_id);
+CREATE INDEX IF NOT EXISTS place_users_account_id_idx ON place_users USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON place_users USING btree(place_id);
+CREATE INDEX IF NOT EXISTS place_users_place_id_idx ON place_users USING btree(place_id);
 
-CREATE INDEX IF NOT EXISTS ON place_users USING btree(user_id);
+CREATE INDEX IF NOT EXISTS place_users_user_id_idx ON place_users USING btree(user_id);
 
-CREATE INDEX IF NOT EXISTS ON place_users USING btree(label);
+CREATE INDEX IF NOT EXISTS place_users_label_idx ON place_users USING btree(label);
 
 COMMENT ON TABLE place_users IS 'A way to give users access to places without giving them access to the whole project or subproject.';
 
@@ -888,14 +885,13 @@ CREATE TABLE IF NOT EXISTS goals(
   label text DEFAULT NULL
 );
 
--- CREATE INDEX IF NOT EXISTS ON goals USING btree(goal_id);
-CREATE INDEX IF NOT EXISTS ON goals USING btree(account_id);
+CREATE INDEX IF NOT EXISTS goals_account_id_idx ON goals USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON goals USING btree(subproject_id);
+CREATE INDEX IF NOT EXISTS goals_subproject_id_idx ON goals USING btree(subproject_id);
 
-CREATE INDEX IF NOT EXISTS ON goals USING btree(year);
+CREATE INDEX IF NOT EXISTS goals_year_idx ON goals USING btree(year);
 
-CREATE INDEX IF NOT EXISTS ON goals USING btree(label);
+CREATE INDEX IF NOT EXISTS goals_label_idx ON goals USING btree(label);
 
 COMMENT ON TABLE goals IS 'What is to be achieved in the subproject in this year.';
 
@@ -909,12 +905,11 @@ CREATE TABLE IF NOT EXISTS goal_reports(
   label text DEFAULT NULL
 );
 
--- CREATE INDEX IF NOT EXISTS ON goal_reports USING btree(goal_report_id);
-CREATE INDEX IF NOT EXISTS ON goal_reports USING btree(account_id);
+CREATE INDEX IF NOT EXISTS goal_reports_account_id_idx ON goal_reports USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON goal_reports USING btree(goal_id);
+CREATE INDEX IF NOT EXISTS goal_reports_goal_id_idx ON goal_reports USING btree(goal_id);
 
-CREATE INDEX IF NOT EXISTS ON goal_reports USING btree(label);
+CREATE INDEX IF NOT EXISTS goal_reports_label_idx ON goal_reports USING btree(label);
 
 COMMENT ON TABLE goal_reports IS 'Reporting on the success of goals.';
 
