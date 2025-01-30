@@ -1346,11 +1346,11 @@ CREATE TABLE IF NOT EXISTS wfs_services(
   default_crs text DEFAULT NULL -- TODO: does this exist in capabilities? if yes: use as in wfs. If not: remove
 );
 
-CREATE INDEX IF NOT EXISTS ON wfs_services USING btree(account_id);
+CREATE INDEX IF NOT EXISTS wfs_services_account_id_idx ON wfs_services USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON wfs_services USING btree(project_id);
+CREATE INDEX IF NOT EXISTS wfs_services_project_id_idx ON wfs_services USING btree(project_id);
 
-CREATE INDEX IF NOT EXISTS ON wfs_services USING btree(url);
+CREATE INDEX IF NOT EXISTS wfs_services_url_idx ON wfs_services USING btree(url);
 
 COMMENT ON TABLE wfs_services IS 'A layer of a WFS service.';
 
@@ -1367,7 +1367,7 @@ CREATE TABLE IF NOT EXISTS wfs_service_layers(
   -- TODO: add list of fields? How to enable displaying by field values?
 );
 
-CREATE INDEX IF NOT EXISTS ON wfs_service_layers USING btree(wfs_service_id);
+CREATE INDEX IF NOT EXISTS wfs_service_layers_wfs_service_id_idx ON wfs_service_layers USING btree(wfs_service_id);
 
 --------------------------------------------------------------
 CREATE TYPE vector_layer_type_enum AS enum(
@@ -1406,10 +1406,10 @@ CREATE TABLE IF NOT EXISTS vector_layers(
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   type vector_layer_type_enum DEFAULT NULL,
   own_table vector_layer_own_table_enum DEFAULT NULL,
-  own_table_level integer DEFAULT NULL, -- 1 or 2,
+  own_table_level integer DEFAULT 1, -- 1 or 2,
   properties jsonb DEFAULT NULL,
   display_by_property text DEFAULT NULL,
-  max_features integer DEFAULT NULL, -- 1000
+  max_features integer DEFAULT 1000,
   wfs_service_id uuid DEFAULT NULL REFERENCES wfs_services(wfs_service_id) ON DELETE CASCADE ON UPDATE CASCADE,
   wfs_service_layer_name text DEFAULT NULL, -- a name from wfs_service_layers. NOT referenced because the uuid changes when the service is updated
   feature_count integer DEFAULT NULL,
@@ -1418,17 +1418,17 @@ CREATE TABLE IF NOT EXISTS vector_layers(
   polygon_count integer DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS ON vector_layers USING btree(account_id);
+CREATE INDEX IF NOT EXISTS vector_layers_account_id_idx ON vector_layers USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON vector_layers USING btree(label);
+CREATE INDEX IF NOT EXISTS vector_layers_label_idx ON vector_layers USING btree(label);
 
-CREATE INDEX IF NOT EXISTS ON vector_layers USING btree(project_id);
+CREATE INDEX IF NOT EXISTS vector_layers_project_id_idx ON vector_layers USING btree(project_id);
 
-CREATE INDEX IF NOT EXISTS ON vector_layers USING btree(type);
+CREATE INDEX IF NOT EXISTS vector_layers_type_idx ON vector_layers USING btree(type);
 
-CREATE INDEX IF NOT EXISTS ON vector_layers USING btree(own_table);
+CREATE INDEX IF NOT EXISTS vector_layers_own_table_idx ON vector_layers USING btree(own_table);
 
-CREATE INDEX IF NOT EXISTS ON vector_layers USING btree(own_table_level);
+CREATE INDEX IF NOT EXISTS vector_layers_own_table_level_idx ON vector_layers USING btree(own_table_level);
 
 COMMENT ON TABLE vector_layers IS 'Goal: Bring your own wms layers. Either from wfs or importing GeoJSON. Should only contain metadata, not data fetched from wms or wmts servers (that should only be saved locally on the client).';
 
@@ -1452,7 +1452,7 @@ CREATE TABLE IF NOT EXISTS vector_layer_geoms(
   vector_layer_geom_id uuid PRIMARY KEY DEFAULT NULL,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  geometry jsonb DEFAULT NULL, -- geometry(GeometryCollection, 4326),
+  geometry jsonb DEFAULT geometry(GeometryCollection, 4326),
   properties jsonb DEFAULT NULL,
   -- bbox can be used to load only what is in view
   bbox_sw_lng real DEFAULT NULL,
@@ -1461,9 +1461,11 @@ CREATE TABLE IF NOT EXISTS vector_layer_geoms(
   bbox_ne_lat real DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS ON vector_layer_geoms USING btree(account_id);
+CREATE INDEX IF NOT EXISTS vector_layer_geoms_account_id_idx ON vector_layer_geoms USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON vector_layer_geoms USING btree(vector_layer_id);
+CREATE INDEX IF NOT EXISTS vector_layer_geoms_vector_layer_id_idx ON vector_layer_geoms USING btree(vector_layer_id);
+
+CREATE INDEX IF NOT EXISTS vector_layer_geoms_geometry_idx ON vector_layer_geoms USING gist(geometry);
 
 COMMENT ON TABLE vector_layer_geoms IS 'Goal: Save vector layers client side for 1. offline usage 2. better filtering (to viewport) 3. enable displaying by field values. Data is downloaded when manager configures vector layer. Not versioned (not recorded and only added by manager).';
 
@@ -1528,13 +1530,13 @@ CREATE TABLE IF NOT EXISTS vector_layer_displays(
   label text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS ON vector_layer_displays(account_id);
+CREATE INDEX IF NOT EXISTS vector_layer_displays_account_id_idx ON vector_layer_displays USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON vector_layer_displays USING btree(vector_layer_id);
+CREATE INDEX IF NOT EXISTS vector_layer_displays_vector_layer_id_idx ON vector_layer_displays USING btree(vector_layer_id);
 
-CREATE INDEX IF NOT EXISTS ON vector_layer_displays USING btree(display_property_value);
+CREATE INDEX IF NOT EXISTS vector_layer_displays_display_property_value_idx ON vector_layer_displays USING btree(display_property_value);
 
-CREATE INDEX IF NOT EXISTS ON vector_layer_displays USING btree(label);
+CREATE INDEX IF NOT EXISTS vector_layer_displays_label_idx ON vector_layer_displays USING btree(label);
 
 COMMENT ON TABLE vector_layer_displays IS 'Goal: manage all map related properties of vector layers including places, actions, checks and occurrences';
 
@@ -1581,15 +1583,15 @@ CREATE TABLE IF NOT EXISTS layer_presentations(
   label text DEFAULT NULL -- TODO: not needed?
 );
 
-CREATE INDEX IF NOT EXISTS ON layer_presentations USING btree(account_id);
+CREATE INDEX IF NOT EXISTS layer_presentations_account_id_idx ON layer_presentations USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON layer_presentations USING btree(wms_layer_id);
+CREATE INDEX IF NOT EXISTS layer_presentations_wms_layer_id_idx ON layer_presentations USING btree(wms_layer_id);
 
-CREATE INDEX IF NOT EXISTS ON layer_presentations USING btree(vector_layer_id);
+CREATE INDEX IF NOT EXISTS layer_presentations_vector_layer_id_idx ON layer_presentations USING btree(vector_layer_id);
 
-CREATE INDEX IF NOT EXISTS ON layer_presentations USING btree(active);
+CREATE INDEX IF NOT EXISTS layer_presentations_active_idx ON layer_presentations USING btree(active);
 
-CREATE INDEX IF NOT EXISTS ON layer_presentations USING btree(label);
+CREATE INDEX IF NOT EXISTS layer_presentations_label_idx ON layer_presentations USING btree(label);
 
 COMMENT ON TABLE layer_presentations IS 'Goal: manage all presentation related properties of all layers (including wms and vector layers). Editable by all users.';
 
@@ -1650,17 +1652,17 @@ CREATE TABLE IF NOT EXISTS charts(
   label text DEFAULT NULL -- title
 );
 
-CREATE INDEX IF NOT EXISTS ON charts USING btree(chart_id);
+CREATE INDEX IF NOT EXISTS charts_chart_id_idx ON charts USING btree(chart_id);
 
-CREATE INDEX IF NOT EXISTS ON charts USING btree(account_id);
+CREATE INDEX IF NOT EXISTS charts_account_id_idx ON charts USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON charts USING btree(project_id);
+CREATE INDEX IF NOT EXISTS charts_project_id_idx ON charts USING btree(project_id);
 
-CREATE INDEX IF NOT EXISTS ON charts USING btree(subproject_id);
+CREATE INDEX IF NOT EXISTS charts_subproject_id_idx ON charts USING btree(subproject_id);
 
-CREATE INDEX IF NOT EXISTS ON charts USING btree(place_id);
+CREATE INDEX IF NOT EXISTS charts_place_id_idx ON charts USING btree(place_id);
 
-CREATE INDEX IF NOT EXISTS ON charts USING btree(label);
+CREATE INDEX IF NOT EXISTS charts_label_idx ON charts USING btree(label);
 
 COMMENT ON TABLE charts IS 'Charts for projects, subprojects or places.';
 
@@ -1718,21 +1720,21 @@ CREATE TABLE IF NOT EXISTS chart_subjects(
   sort integer DEFAULT 0
 );
 
-CREATE INDEX IF NOT EXISTS ON chart_subjects USING btree(chart_subject_id);
+CREATE INDEX IF NOT EXISTS chart_subjects_chart_subject_id_idx ON chart_subjects USING btree(chart_subject_id);
 
-CREATE INDEX IF NOT EXISTS ON chart_subjects USING btree(account_id);
+CREATE INDEX IF NOT EXISTS chart_subjects_account_id_idx ON chart_subjects USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON chart_subjects USING btree(chart_id);
+CREATE INDEX IF NOT EXISTS chart_subjects_chart_id_idx ON chart_subjects USING btree(chart_id);
 
-CREATE INDEX IF NOT EXISTS ON chart_subjects USING btree(table_name);
+CREATE INDEX IF NOT EXISTS chart_subjects_table_name_idx ON chart_subjects USING btree(table_name);
 
-CREATE INDEX IF NOT EXISTS ON chart_subjects USING btree(table_level);
+CREATE INDEX IF NOT EXISTS chart_subjects_table_level_idx ON chart_subjects USING btree(table_level);
 
-CREATE INDEX IF NOT EXISTS ON chart_subjects USING btree(value_field);
+CREATE INDEX IF NOT EXISTS chart_subjects_value_field_idx ON chart_subjects USING btree(value_field);
 
-CREATE INDEX IF NOT EXISTS ON chart_subjects USING btree(value_unit);
+CREATE INDEX IF NOT EXISTS chart_subjects_value_unit_idx ON chart_subjects USING btree(value_unit);
 
-CREATE INDEX IF NOT EXISTS ON chart_subjects USING btree(label);
+CREATE INDEX IF NOT EXISTS chart_subjects_label_idx ON chart_subjects USING btree(label);
 
 COMMENT ON TABLE chart_subjects IS 'Subjects for charts. Or: what is shown in the chart';
 
