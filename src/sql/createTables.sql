@@ -1573,7 +1573,7 @@ COMMENT ON COLUMN vector_layers.polygon_count IS 'Number of polygon features. Us
 
 --------------------------------------------------------------
 -- vector_layer_geoms
---
+-- TODO:
 DROP TABLE IF EXISTS vector_layer_geoms CASCADE;
 
 --
@@ -1582,7 +1582,7 @@ CREATE TABLE IF NOT EXISTS vector_layer_geoms(
   vector_layer_geom_id uuid PRIMARY KEY DEFAULT NULL,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  geometry jsonb DEFAULT geometry(GeometryCollection, 4326),
+  geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
   properties jsonb DEFAULT NULL,
   -- bbox can be used to load only what is in view
   bbox_sw_lng real DEFAULT NULL,
