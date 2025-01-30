@@ -39,8 +39,6 @@ export const Component = memo(() => {
     navigate({ pathname: data.project_id, search: searchParams.toString() })
   }, [db, navigate, searchParams])
 
-  console.log('projects', projects)
-
   return (
     <div className="list-view">
       <ListViewHeader

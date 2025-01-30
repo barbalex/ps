@@ -71,18 +71,18 @@ CREATE TABLE IF NOT EXISTS projects(
   persons_label_by jsonb DEFAULT NULL, -- TODO: jsonb array
   persons_order_by jsonb DEFAULT NULL, -- TODO: jsonb array
   goals_label_by jsonb DEFAULT NULL, -- TODO: jsonb array
-  goal_reports_label_by text DEFAULT NULL, -- TODO: jsonb array
-  goal_reports_order_by text DEFAULT NULL, -- TODO: jsonb array
+  goal_reports_label_by jsonb DEFAULT NULL, -- TODO: jsonb array
+  goal_reports_order_by jsonb DEFAULT NULL, -- TODO: jsonb array
   values_on_multiple_levels text DEFAULT NULL,
   multiple_action_values_on_same_level text DEFAULT NULL,
   multiple_check_values_on_same_level text DEFAULT NULL,
   data jsonb DEFAULT NULL,
-  files_offline boolean DEFAULT NULL, -- FALSE,
-  files_active_projects boolean DEFAULT NULL, -- TRUE,
-  files_active_subprojects boolean DEFAULT NULL, -- TRUE,
-  files_active_places boolean DEFAULT NULL, -- TRUE,
-  files_active_actions boolean DEFAULT NULL, -- TRUE,
-  files_active_checks boolean DEFAULT NULL, -- TRUE
+  files_offline boolean DEFAULT FALSE,
+  files_active_projects boolean DEFAULT TRUE,
+  files_active_subprojects boolean DEFAULT TRUE,
+  files_active_places boolean DEFAULT TRUE,
+  files_active_actions boolean DEFAULT TRUE,
+  files_active_checks boolean DEFAULT TRUE,
   map_presentation_crs text DEFAULT NULL
 );
 
@@ -137,15 +137,15 @@ CREATE TABLE IF NOT EXISTS place_levels(
   name_singular text DEFAULT NULL,
   name_plural text DEFAULT NULL,
   name_short text DEFAULT NULL,
-  reports boolean DEFAULT NULL, -- FALSE,
-  report_values boolean DEFAULT NULL, -- FALSE,
-  actions boolean DEFAULT NULL, -- FALSE,
-  action_values boolean DEFAULT NULL, -- FALSE,
-  action_reports boolean DEFAULT NULL, -- FALSE,
-  checks boolean DEFAULT NULL, -- FALSE,
-  check_values boolean DEFAULT NULL, -- FALSE,
-  check_taxa boolean DEFAULT NULL, -- FALSE,
-  occurrences boolean DEFAULT NULL, -- FALSE,
+  reports boolean DEFAULT FALSE,
+  report_values boolean DEFAULT FALSE,
+  actions boolean DEFAULT FALSE,
+  action_values boolean DEFAULT FALSE,
+  action_reports boolean DEFAULT FALSE,
+  checks boolean DEFAULT FALSE,
+  check_values boolean DEFAULT FALSE,
+  check_taxa boolean DEFAULT FALSE,
+  occurrences boolean DEFAULT FALSE,
   label text DEFAULT NULL
 );
 
@@ -241,8 +241,7 @@ CREATE TABLE IF NOT EXISTS project_users(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  -- https://github.com/electric-sql/electric/issues/893
-  ROLE user_role DEFAULT NULL,
+  "role" user_role DEFAULT NULL,
   label text DEFAULT NULL
 );
 
@@ -268,8 +267,7 @@ CREATE TABLE IF NOT EXISTS subproject_users(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  -- https://github.com/electric-sql/electric/issues/893
-  ROLE user_role DEFAULT NULL,
+  "role" user_role DEFAULT NULL,
   label text DEFAULT NULL
 );
 
@@ -466,15 +464,15 @@ CREATE TABLE IF NOT EXISTS units(
   unit_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  use_for_action_values boolean DEFAULT NULL, -- FALSE,
-  use_for_action_report_values boolean DEFAULT NULL, -- FALSE,
-  use_for_check_values boolean DEFAULT NULL, -- FALSE,
-  use_for_place_report_values boolean DEFAULT NULL, -- FALSE,
-  use_for_goal_report_values boolean DEFAULT NULL, -- FALSE,
-  use_for_subproject_taxa boolean DEFAULT NULL, -- FALSE,
-  use_for_check_taxa boolean DEFAULT NULL, -- FALSE,
+  use_for_action_values boolean DEFAULT FALSE,
+  use_for_action_report_values boolean DEFAULT FALSE,
+  use_for_check_values boolean DEFAULT FALSE,
+  use_for_place_report_values boolean DEFAULT FALSE,
+  use_for_goal_report_values boolean DEFAULT FALSE,
+  use_for_subproject_taxa boolean DEFAULT FALSE,
+  use_for_check_taxa boolean DEFAULT FALSE,
   name text DEFAULT NULL,
-  summable boolean DEFAULT NULL, -- FALSE,
+  summable boolean DEFAULT FALSE,
   sort integer DEFAULT NULL,
   type unit_type DEFAULT NULL, -- TODO: not in use?
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE NO action ON UPDATE CASCADE,
