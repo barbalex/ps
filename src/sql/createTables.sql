@@ -944,7 +944,7 @@ COMMENT ON TABLE place_users IS 'A way to give users access to places without gi
 
 COMMENT ON COLUMN place_users.account_id IS 'redundant account_id enhances data safety';
 
-COMMENT ON COLUMN place_users.role IS 'TODO: One of: "manager", "editor", "reader". Preset: "reader"';
+COMMENT ON COLUMN place_users.role IS 'One of: "manager", "editor", "reader". Preset: "reader"';
 
 --------------------------------------------------------------
 -- goals
@@ -1338,6 +1338,8 @@ COMMENT ON COLUMN occurrence_imports.gbif_filters IS 'area, groups, speciesKeys.
 -- INSERT INTO occurrence_imports(occurrence_import_id, account_id, subproject_id, gbif_filters, created_time, gbif_download_key, gbif_error, inserted_count, attribution)
 --   VALUES ('018e1dc5-992e-7167-a294-434163a27d4b', '018cf958-27e2-7000-90d3-59f024d467be', '018cfd27-ee92-7000-b678-e75497d6c60e', '{"area": "POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))"}', '2020-01-01T00:00:00Z', '00000000-0000-0000-0000-000000000000', NULL, 0, NULL);
 -- TODO: need to add place_id. Either here or separate table place_occurrences
+DROP TABLE IF EXISTS occurrences CASCADE;
+
 CREATE TABLE IF NOT EXISTS occurrences(
   occurrence_id uuid PRIMARY KEY DEFAULT NULL,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1347,7 +1349,7 @@ CREATE TABLE IF NOT EXISTS occurrences(
   comment text DEFAULT NULL,
   data jsonb DEFAULT NULL,
   id_in_source text DEFAULT NULL, -- extracted from data using occurrence_import_id.id_field
-  geometry jsonb DEFAULT NULL, -- extracted from data using occurrence_import_id.geometry_method and it's field(s)
+  geometry geometry(GeometryCollection, 4326) DEFAULT NULL, -- extracted from data using occurrence_import_id.geometry_method and it's field(s)
   label text DEFAULT NULL
 );
 
@@ -1359,9 +1361,9 @@ CREATE INDEX IF NOT EXISTS occurrences_place_id_idx ON occurrences USING btree(p
 
 CREATE INDEX IF NOT EXISTS occurrences_label_idx ON occurrences USING btree(label);
 
-CREATE INDEX IF NOT EXISTS occurrences_data_idx ON occurrences USING gist(data);
+CREATE INDEX IF NOT EXISTS occurrences_data_idx ON occurrences USING gin(data);
 
-CREATE INDEX IF NOT EXISTS occurrences_label_idx ON occurrences USING btree(label);
+CREATE INDEX occurrences_geometry_idx ON occurrences USING gist(geometry);
 
 COMMENT ON TABLE occurrences IS 'GBIF occurrences. Imported for subprojects (species projects) or projects (biotope projects).';
 
