@@ -928,20 +928,19 @@ CREATE TABLE IF NOT EXISTS goal_report_values(
   label text DEFAULT NULL
 );
 
--- CREATE INDEX IF NOT EXISTS ON goal_report_values USING btree(goal_report_value_id);
-CREATE INDEX IF NOT EXISTS ON goal_report_values USING btree(account_id);
+CREATE INDEX IF NOT EXISTS goal_report_values_account_id_idx ON goal_report_values USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON goal_report_values USING btree(goal_report_id);
+CREATE INDEX IF NOT EXISTS goal_report_values_goal_report_id_idx ON goal_report_values USING btree(goal_report_id);
 
-CREATE INDEX IF NOT EXISTS ON goal_report_values USING btree(unit_id);
+CREATE INDEX IF NOT EXISTS goal_report_values_unit_id_idx ON goal_report_values USING btree(unit_id);
 
-CREATE INDEX IF NOT EXISTS ON goal_report_values USING btree(value_integer);
+CREATE INDEX IF NOT EXISTS goal_report_values_value_integer_idx ON goal_report_values USING btree(value_integer);
 
-CREATE INDEX IF NOT EXISTS ON goal_report_values USING btree(value_numeric);
+CREATE INDEX IF NOT EXISTS goal_report_values_value_numeric_idx ON goal_report_values USING btree(value_numeric);
 
-CREATE INDEX IF NOT EXISTS ON goal_report_values USING btree(value_text);
+CREATE INDEX IF NOT EXISTS goal_report_values_value_text_idx ON goal_report_values USING btree(value_text);
 
-CREATE INDEX IF NOT EXISTS ON goal_report_values USING btree(label);
+CREATE INDEX IF NOT EXISTS goal_report_values_label_idx ON goal_report_values USING btree(label);
 
 COMMENT ON TABLE goal_report_values IS 'value-ing the success of goals';
 
@@ -962,14 +961,13 @@ CREATE TABLE IF NOT EXISTS subproject_reports(
   label text DEFAULT NULL
 );
 
--- CREATE INDEX IF NOT EXISTS ON subproject_reports USING btree(subproject_report_id);
-CREATE INDEX IF NOT EXISTS ON subproject_reports USING btree(account_id);
+CREATE INDEX IF NOT EXISTS subproject_reports_account_id_idx ON subproject_reports USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON subproject_reports USING btree(subproject_id);
+CREATE INDEX IF NOT EXISTS subproject_reports_subproject_id_idx ON subproject_reports USING btree(subproject_id);
 
-CREATE INDEX IF NOT EXISTS ON subproject_reports USING btree(year);
+CREATE INDEX IF NOT EXISTS subproject_reports_year_idx ON subproject_reports USING btree(year);
 
-CREATE INDEX IF NOT EXISTS ON subproject_reports USING btree(label);
+CREATE INDEX IF NOT EXISTS subproject_reports_label_idx ON subproject_reports USING btree(label);
 
 COMMENT ON TABLE subproject_reports IS 'Reporting on the success of subprojects.';
 
@@ -988,14 +986,13 @@ CREATE TABLE IF NOT EXISTS project_reports(
   label text DEFAULT NULL
 );
 
--- CREATE INDEX IF NOT EXISTS ON project_reports USING btree(project_report_id);
-CREATE INDEX IF NOT EXISTS ON project_reports USING btree(account_id);
+CREATE INDEX IF NOT EXISTS project_reports_account_id_idx ON project_reports USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON project_reports USING btree(project_id);
+CREATE INDEX IF NOT EXISTS project_reports_project_id_idx ON project_reports USING btree(project_id);
 
-CREATE INDEX IF NOT EXISTS ON project_reports USING btree(year);
+CREATE INDEX IF NOT EXISTS project_reports_year_idx ON project_reports USING btree(year);
 
-CREATE INDEX IF NOT EXISTS ON project_reports USING btree(label);
+CREATE INDEX IF NOT EXISTS project_reports_label_idx ON project_reports USING btree(label);
 
 COMMENT ON TABLE project_reports IS 'Reporting on the success of projects.';
 
@@ -1028,22 +1025,21 @@ CREATE TABLE IF NOT EXISTS files(
   preview_uuid uuid DEFAULT NULL -- https://uploadcare.com/docs/transformations/document-conversion/
 );
 
--- CREATE INDEX IF NOT EXISTS ON files USING btree(file_id);
-CREATE INDEX IF NOT EXISTS ON files USING btree(account_id);
+CREATE INDEX IF NOT EXISTS files_account_id_idx ON files USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON files USING btree(project_id);
+CREATE INDEX IF NOT EXISTS files_project_id_idx ON files USING btree(project_id);
 
-CREATE INDEX IF NOT EXISTS ON files USING btree(subproject_id);
+CREATE INDEX IF NOT EXISTS files_subproject_id_idx ON files USING btree(subproject_id);
 
-CREATE INDEX IF NOT EXISTS ON files USING btree(place_id);
+CREATE INDEX IF NOT EXISTS files_place_id_idx ON files USING btree(place_id);
 
-CREATE INDEX IF NOT EXISTS ON files USING btree(action_id);
+CREATE INDEX IF NOT EXISTS files_action_id_idx ON files USING btree(action_id);
 
-CREATE INDEX IF NOT EXISTS ON files USING btree(check_id);
+CREATE INDEX IF NOT EXISTS files_check_id_idx ON files USING btree(check_id);
 
-CREATE INDEX IF NOT EXISTS ON files USING btree(label);
+CREATE INDEX IF NOT EXISTS files_label_idx ON files USING btree(label);
 
-CREATE INDEX IF NOT EXISTS ON files USING btree(name);
+CREATE INDEX IF NOT EXISTS files_name_idx ON files USING btree(name);
 
 COMMENT ON TABLE files IS 'used to store files.';
 
