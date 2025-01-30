@@ -1,4 +1,4 @@
-import { use, useEffect } from 'react'
+import { useEffect } from 'react'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { generateProjectLabel } from './sql/projects.ts'
@@ -73,11 +73,25 @@ export const SqlInitializer = () => {
       const projectsTableExists = resultProjectsTableExists?.rows[0]?.exists
 
       console.log('SqlInitializer, projectsTableExists:', projectsTableExists)
+
       if (projectsTableExists) return
+
+      const uuidv7Sql = (await import(`../../sql/uuidv7.sql?raw`)).default
+      console.log('SqlInitializer, uuidv7Sql:', uuidv7Sql)
+      const uuidv7Result = await db.exec(uuidv7Sql)
+      console.log('SqlInitializer, uuidv7Result:', uuidv7Result)
       const createSql = (await import(`../../sql/createTables.sql?raw`)).default
+      const createRes = await db.exec(createSql)
+      console.log('SqlInitializer, createRes:', createRes)
       // console.log('SqlInitializer, createSql:', createSql)
-      const createStatements = createSql.split(';').filter((s) => s !== '\n\n')
-      console.log('SqlInitializer, createStatements:', createStatements)
+      // const createStatements = createSql.split(';').filter((s) => s !== '\n\n')
+      // const ress = []
+      // console.log('SqlInitializer, createStatements:', createStatements)
+      // for (const statement of createStatements) {
+      //   const res = await db.exec(statement)
+      //   ress.push(res)
+      // }
+      // console.log('SqlInitializer, ress:', ress)
     }
 
     run()

@@ -529,7 +529,8 @@ CREATE TABLE IF NOT EXISTS places(
   since integer DEFAULT NULL,
   until integer DEFAULT NULL,
   data jsonb DEFAULT NULL,
-  geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
+  -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
+  geometry jsonb DEFAULT NULL,
   bbox jsonb DEFAULT NULL,
   label text DEFAULT NULL,
   files_active_places boolean DEFAULT TRUE
@@ -547,7 +548,7 @@ CREATE INDEX IF NOT EXISTS places_label_idx ON places USING btree(label);
 
 CREATE INDEX IF NOT EXISTS places_data_idx ON places USING gin(data);
 
-CREATE INDEX IF NOT EXISTS places_geometry_idx ON places USING gist(geometry);
+CREATE INDEX IF NOT EXISTS places_geometry_idx ON places USING gin(geometry);
 
 COMMENT ON TABLE places IS 'Places are where actions and checks are done. They can be organized in a hierarchy of one or two levels.';
 
@@ -582,7 +583,8 @@ CREATE TABLE IF NOT EXISTS actions(
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   date date DEFAULT CURRENT_DATE,
   data jsonb DEFAULT NULL,
-  geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
+  -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
+  geometry jsonb DEFAULT NULL,
   bbox jsonb DEFAULT NULL,
   relevant_for_reports boolean DEFAULT TRUE,
   label text DEFAULT NULL
@@ -598,7 +600,7 @@ CREATE INDEX IF NOT EXISTS actions_label_idx ON actions USING btree(label);
 
 CREATE INDEX IF NOT EXISTS actions_data_idx ON actions USING gin(data);
 
-CREATE INDEX IF NOT EXISTS actions_geometry_idx ON actions USING gist(geometry);
+CREATE INDEX IF NOT EXISTS actions_geometry_idx ON actions USING gin(geometry);
 
 COMMENT ON TABLE actions IS 'Actions are what is done to improve the situation of (promote) the subproject in this place.';
 
@@ -725,7 +727,8 @@ CREATE TABLE IF NOT EXISTS checks(
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   date date DEFAULT CURRENT_DATE,
   data jsonb DEFAULT NULL,
-  geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
+  -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
+  geometry jsonb DEFAULT NULL,
   bbox jsonb DEFAULT NULL,
   relevant_for_reports boolean DEFAULT TRUE,
   label text DEFAULT NULL
@@ -741,7 +744,8 @@ CREATE INDEX IF NOT EXISTS checks_label_idx ON checks USING btree(label);
 
 CREATE INDEX IF NOT EXISTS checks_data_idx ON checks USING gin(data);
 
-CREATE INDEX IF NOT EXISTS checks_geometry_idx ON checks USING gist(geometry);
+-- CREATE INDEX IF NOT EXISTS checks_geometry_idx ON checks USING gist(geometry);
+CREATE INDEX checks_geometry_idx ON checks USING gin(geometry);
 
 COMMENT ON TABLE checks IS 'Checks describe the situation of the subproject in this place.';
 
@@ -1349,7 +1353,8 @@ CREATE TABLE IF NOT EXISTS occurrences(
   comment text DEFAULT NULL,
   data jsonb DEFAULT NULL,
   id_in_source text DEFAULT NULL, -- extracted from data using occurrence_import_id.id_field
-  geometry geometry(GeometryCollection, 4326) DEFAULT NULL, -- extracted from data using occurrence_import_id.geometry_method and it's field(s)
+  -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL, -- extracted from data using occurrence_import_id.geometry_method and it's field(s)
+  geometry jsonb DEFAULT NULL,
   label text DEFAULT NULL
 );
 
@@ -1363,7 +1368,8 @@ CREATE INDEX IF NOT EXISTS occurrences_label_idx ON occurrences USING btree(labe
 
 CREATE INDEX IF NOT EXISTS occurrences_data_idx ON occurrences USING gin(data);
 
-CREATE INDEX occurrences_geometry_idx ON occurrences USING gist(geometry);
+-- CREATE INDEX occurrences_geometry_idx ON occurrences USING gist(geometry);
+CREATE INDEX occurrences_geometry_idx ON occurrences USING gin(geometry);
 
 COMMENT ON TABLE occurrences IS 'GBIF occurrences. Imported for subprojects (species projects) or projects (biotope projects).';
 
@@ -1576,7 +1582,8 @@ CREATE TABLE IF NOT EXISTS vector_layer_geoms(
   vector_layer_geom_id uuid PRIMARY KEY DEFAULT NULL,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
+  -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
+  geometry jsonb DEFAULT NULL,
   properties jsonb DEFAULT NULL,
   -- bbox can be used to load only what is in view
   bbox_sw_lng real DEFAULT NULL,
@@ -1589,7 +1596,8 @@ CREATE INDEX IF NOT EXISTS vector_layer_geoms_account_id_idx ON vector_layer_geo
 
 CREATE INDEX IF NOT EXISTS vector_layer_geoms_vector_layer_id_idx ON vector_layer_geoms USING btree(vector_layer_id);
 
-CREATE INDEX IF NOT EXISTS vector_layer_geoms_geometry_idx ON vector_layer_geoms USING gist(geometry);
+-- CREATE INDEX IF NOT EXISTS vector_layer_geoms_geometry_idx ON vector_layer_geoms USING gist(geometry);
+CREATE INDEX vector_layer_geoms_geometry_idx ON vector_layer_geoms USING gin(geometry);
 
 COMMENT ON TABLE vector_layer_geoms IS 'Goal: Save vector layers client side for 1. offline usage 2. better filtering (to viewport) 3. enable displaying by field values. Data is downloaded when manager configures vector layer. Not versioned (not recorded and only added by manager).';
 

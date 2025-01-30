@@ -19,7 +19,7 @@ import { router } from './router/index.tsx'
 import { UploaderContext } from './UploaderContext.ts'
 import { store } from './store.ts'
 
-const db = await PGlite.create({
+const db = await PGlite.create('idb://ps', {
   extensions: { live },
 })
 
