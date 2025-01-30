@@ -19,7 +19,7 @@ export const Component = memo(() => {
 
   const result = useLiveQuery(
     `SELECT * FROM projects${
-      projectsFilter && ` ${projectsFilter}`
+      projectsFilter && ` WHERE ${projectsFilter}`
     } order by label asc`,
   )
   const projects = result?.rows ?? []

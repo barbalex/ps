@@ -78,7 +78,7 @@ export const occurrenceFieldsSortedAtom = atomWithStorage(
   [],
 )
 export const treeOpenNodesAtom = atomWithStorage('treeOpenNodesAtom', [])
-// filters: where clause including WHERE
+// filters: where clause excluding WHERE
 export const projectsFilterAtom = atomWithStorage('projectsFilterAtom', [])
 export const fieldsFilterAtom = atomWithStorage('fieldsFilterAtom', [])
 export const fieldTypesFilterAtom = atomWithStorage('fieldTypesFilterAtom', [])

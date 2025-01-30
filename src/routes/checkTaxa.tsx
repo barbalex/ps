@@ -13,26 +13,26 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
 
   const db = usePGlite()
-  const { results: checkTaxa = [] } = useLiveQuery(
-    db.check_taxa.liveMany({
-      where: { check_id },
-      orderBy: { label: 'asc' },
-    }),
+  const results = useLiveQuery(
+    `SELECT * FROM check_taxa WHERE check_id = $1 ORDER BY label ASC`,
+    [check_id],
   )
+  const checkTaxa = results?.rows ?? []
 
   const add = useCallback(async () => {
-    const checkTaxon = createCheckTaxon()
-    await db.check_taxa.create({
-      data: {
-        ...checkTaxon,
-        check_id,
-      },
-    })
+    const checkTaxon = {
+      ...createCheckTaxon(),
+      check_id,
+    }
+    const columns = Object.keys(checkTaxon)
+    const values = Object.values(checkTaxon).join("','")
+    const sql = `INSERT INTO check_taxa (${columns}) VALUES ('${values}')`
+    await db.query(sql)
     navigate({
       pathname: checkTaxon.check_taxon_id,
       search: searchParams.toString(),
     })
-  }, [check_id, db.check_taxa, navigate, searchParams])
+  }, [check_id, db, navigate, searchParams])
 
   return (
     <div className="list-view">
