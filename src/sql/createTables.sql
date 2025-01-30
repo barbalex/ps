@@ -193,15 +193,16 @@ CREATE TABLE IF NOT EXISTS subprojects(
   label text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS ON subprojects USING btree(account_id);
+CREATE INDEX IF NOT EXISTS subprojects_account_id_idx ON subprojects USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON subprojects USING btree(project_id);
+CREATE INDEX IF NOT EXISTS subprojects_project_id_idx ON subprojects USING btree(project_id);
 
-CREATE INDEX IF NOT EXISTS ON subprojects USING btree(name);
+-- TODO: needed?
+CREATE INDEX IF NOT EXISTS subprojects_name_idx ON subprojects USING btree(name);
 
-CREATE INDEX IF NOT EXISTS ON subprojects USING btree(start_year);
+CREATE INDEX IF NOT EXISTS subprojects_start_year_idx ON subprojects USING btree(start_year);
 
-CREATE INDEX IF NOT EXISTS ON subprojects USING btree(label);
+CREATE INDEX IF NOT EXISTS subprojects_label_idx ON subprojects USING btree(label);
 
 COMMENT ON COLUMN subprojects.account_id IS 'redundant account_id enhances data safety';
 
@@ -231,13 +232,13 @@ CREATE TABLE IF NOT EXISTS project_users(
   label text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS ON project_users USING btree(account_id);
+CREATE INDEX IF NOT EXISTS project_users_account_id_idx ON project_users USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON project_users USING btree(project_id);
+CREATE INDEX IF NOT EXISTS project_users_project_id_idx ON project_users USING btree(project_id);
 
-CREATE INDEX IF NOT EXISTS ON project_users USING btree(user_id);
+CREATE INDEX IF NOT EXISTS project_users_user_id_idx ON project_users USING btree(user_id);
 
-CREATE INDEX IF NOT EXISTS ON project_users USING btree(label);
+CREATE INDEX IF NOT EXISTS project_users_label_idx ON project_users USING btree(label);
 
 COMMENT ON COLUMN project_users.account_id IS 'redundant account_id enhances data safety';
 
@@ -255,13 +256,13 @@ CREATE TABLE IF NOT EXISTS subproject_users(
   label text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS ON subproject_users USING btree(account_id);
+CREATE INDEX IF NOT EXISTS subproject_users_account_id_idx ON subproject_users USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON subproject_users USING btree(subproject_id);
+CREATE INDEX IF NOT EXISTS subproject_users_subproject_id_idx ON subproject_users USING btree(subproject_id);
 
-CREATE INDEX IF NOT EXISTS ON subproject_users USING btree(user_id);
+CREATE INDEX IF NOT EXISTS subproject_users_user_id_idx ON subproject_users USING btree(user_id);
 
-CREATE INDEX IF NOT EXISTS ON subproject_users USING btree(label);
+CREATE INDEX IF NOT EXISTS subproject_users_label_idx ON subproject_users USING btree(label);
 
 COMMENT ON COLUMN subproject_users.account_id IS 'redundant account_id enhances data safety';
 
@@ -286,20 +287,20 @@ CREATE TABLE IF NOT EXISTS taxonomies(
   label text DEFAULT NULL
 );
 
--- CREATE INDEX IF NOT EXISTS ON taxonomies USING btree(taxonomy_id);
-CREATE INDEX IF NOT EXISTS ON taxonomies USING btree(account_id);
+CREATE INDEX IF NOT EXISTS taxonomies_account_id_idx ON taxonomies USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON taxonomies USING btree(project_id);
+CREATE INDEX IF NOT EXISTS taxonomies_project_id_idx ON taxonomies USING btree(project_id);
 
-CREATE INDEX IF NOT EXISTS ON taxonomies USING btree(type);
+CREATE INDEX IF NOT EXISTS taxonomies_type_idx ON taxonomies USING btree(type);
 
-CREATE INDEX IF NOT EXISTS ON taxonomies USING btree(name);
+CREATE INDEX IF NOT EXISTS taxonomies_name_idx ON taxonomies USING btree(name);
 
-CREATE INDEX IF NOT EXISTS ON taxonomies USING btree(label);
+CREATE INDEX IF NOT EXISTS taxonomies_label_idx ON taxonomies USING btree(label);
 
--- CREATE INDEX IF NOT EXISTS ON taxonomies((1))
--- WHERE
---   obsolete;
+CREATE INDEX IF NOT EXISTS taxonomies_obsolete_idx ON taxonomies((1))
+WHERE
+  obsolete;
+
 COMMENT ON TABLE taxonomies IS 'A taxonomy is a list of taxa (species or biotopes).';
 
 COMMENT ON COLUMN taxonomies.account_id IS 'redundant account_id enhances data safety';
