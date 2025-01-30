@@ -583,7 +583,6 @@ CREATE TABLE IF NOT EXISTS actions(
   date date DEFAULT CURRENT_DATE,
   data jsonb DEFAULT NULL,
   geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
-  geometry jsonb DEFAULT NULL,
   bbox jsonb DEFAULT NULL,
   relevant_for_reports boolean DEFAULT TRUE,
   label text DEFAULT NULL
@@ -727,7 +726,6 @@ CREATE TABLE IF NOT EXISTS checks(
   date date DEFAULT CURRENT_DATE,
   data jsonb DEFAULT NULL,
   geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
-  geometry jsonb DEFAULT NULL,
   bbox jsonb DEFAULT NULL,
   relevant_for_reports boolean DEFAULT TRUE,
   label text DEFAULT NULL
@@ -904,7 +902,7 @@ CREATE INDEX IF NOT EXISTS messages_date_idx ON messages USING btree(date);
 
 CREATE INDEX IF NOT EXISTS messages_label_idx ON messages USING btree(label);
 
-COMMENT ON TABLE messages IS 'messages for the user. Mostly informing about updates of';
+COMMENT ON TABLE messages IS 'messages for the user. Mostly informing about updates';
 
 --------------------------------------------------------------
 -- user_messages
