@@ -780,9 +780,9 @@ CREATE TABLE IF NOT EXISTS place_reports(
   place_report_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  year integer DEFAULT NULL, -- DATE_PART('year', now()::date),
+  year integer DEFAULT DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
-  label_replace_by_generated_column text DEFAULT NULL
+  label text DEFAULT NULL
 );
 
 -- CREATE INDEX IF NOT EXISTS ON place_reports USING btree(place_report_id);
@@ -791,6 +791,8 @@ CREATE INDEX IF NOT EXISTS ON place_reports USING btree(account_id);
 CREATE INDEX IF NOT EXISTS ON place_reports USING btree(place_id);
 
 CREATE INDEX IF NOT EXISTS ON place_reports USING btree(year);
+
+CREATE INDEX IF NOT EXISTS ON place_reports USING btree(label);
 
 COMMENT ON TABLE place_reports IS 'Reporting on the situation of the subproject in this place.';
 
@@ -838,13 +840,14 @@ COMMENT ON COLUMN place_report_values.value_text IS 'Used for text values';
 
 CREATE TABLE IF NOT EXISTS messages(
   message_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
-  label_replace_by_generated_column text DEFAULT NULL,
-  date timestamp DEFAULT NULL, -- now(),
+  label text DEFAULT NULL,
+  date timestamp DEFAULT now(),
   message text DEFAULT NULL
 );
 
--- CREATE INDEX IF NOT EXISTS ON messages USING btree(message_id);
 CREATE INDEX IF NOT EXISTS ON messages USING btree(date);
+
+CREATE INDEX IF NOT EXISTS ON messages USING btree(label);
 
 COMMENT ON TABLE messages IS 'messages for the user. Mostly informing about updates of';
 
@@ -853,8 +856,8 @@ CREATE TABLE IF NOT EXISTS user_messages(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
   message_id uuid DEFAULT NULL REFERENCES messages(message_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  label_replace_by_generated_column text DEFAULT NULL, -- TODO: column not generated yet. Needed?
-  read boolean DEFAULT NULL -- FALSE
+  label text DEFAULT NULL, -- TODO: column not generated yet. Needed?
+  read boolean DEFAULT FALSE
 );
 
 -- CREATE INDEX IF NOT EXISTS ON user_messages USING btree(user_message_id);
@@ -891,10 +894,10 @@ CREATE TABLE IF NOT EXISTS goals(
   goal_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  year integer DEFAULT NULL, -- DATE_PART('year', now()::date),
+  year integer DEFAULT DATE_PART('year', now()::date),
   name text DEFAULT NULL,
   data jsonb DEFAULT NULL,
-  label_replace_by_generated_column text DEFAULT NULL
+  label text DEFAULT NULL
 );
 
 -- CREATE INDEX IF NOT EXISTS ON goals USING btree(goal_id);
@@ -903,6 +906,8 @@ CREATE INDEX IF NOT EXISTS ON goals USING btree(account_id);
 CREATE INDEX IF NOT EXISTS ON goals USING btree(subproject_id);
 
 CREATE INDEX IF NOT EXISTS ON goals USING btree(year);
+
+CREATE INDEX IF NOT EXISTS ON goals USING btree(label);
 
 COMMENT ON TABLE goals IS 'What is to be achieved in the subproject in this year.';
 
@@ -969,9 +974,9 @@ CREATE TABLE IF NOT EXISTS subproject_reports(
   subproject_report_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  year integer DEFAULT NULL, -- DATE_PART('year', now()::date),
+  year integer DEFAULT DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
-  label_replace_by_generated_column text DEFAULT NULL
+  label text DEFAULT NULL
 );
 
 -- CREATE INDEX IF NOT EXISTS ON subproject_reports USING btree(subproject_report_id);
@@ -980,6 +985,8 @@ CREATE INDEX IF NOT EXISTS ON subproject_reports USING btree(account_id);
 CREATE INDEX IF NOT EXISTS ON subproject_reports USING btree(subproject_id);
 
 CREATE INDEX IF NOT EXISTS ON subproject_reports USING btree(year);
+
+CREATE INDEX IF NOT EXISTS ON subproject_reports USING btree(label);
 
 COMMENT ON TABLE subproject_reports IS 'Reporting on the success of subprojects.';
 
@@ -993,9 +1000,9 @@ CREATE TABLE IF NOT EXISTS project_reports(
   project_report_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  year integer DEFAULT NULL, -- DATE_PART('year', now()::date),
+  year integer DEFAULT DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
-  label_replace_by_generated_column text DEFAULT NULL
+  label text DEFAULT NULL
 );
 
 -- CREATE INDEX IF NOT EXISTS ON project_reports USING btree(project_report_id);
@@ -1004,6 +1011,8 @@ CREATE INDEX IF NOT EXISTS ON project_reports USING btree(account_id);
 CREATE INDEX IF NOT EXISTS ON project_reports USING btree(project_id);
 
 CREATE INDEX IF NOT EXISTS ON project_reports USING btree(year);
+
+CREATE INDEX IF NOT EXISTS ON project_reports USING btree(label);
 
 COMMENT ON TABLE project_reports IS 'Reporting on the success of projects.';
 
