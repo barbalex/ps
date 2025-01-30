@@ -376,18 +376,18 @@ CREATE TABLE IF NOT EXISTS lists(
   label text DEFAULT NULL
 );
 
--- CREATE INDEX IF NOT EXISTS ON lists USING btree(list_id);
-CREATE INDEX IF NOT EXISTS ON lists USING btree(account_id);
+CREATE INDEX IF NOT EXISTS lists_account_id_idx ON lists USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON lists USING btree(project_id);
+CREATE INDEX IF NOT EXISTS lists_project_id_idx ON lists USING btree(project_id);
 
-CREATE INDEX IF NOT EXISTS ON lists USING btree(name);
+CREATE INDEX IF NOT EXISTS lists_name_idx ON lists USING btree(name);
 
-CREATE INDEX IF NOT EXISTS ON lists USING btree(label);
+CREATE INDEX IF NOT EXISTS lists_label_idx ON lists USING btree(label);
 
--- CREATE INDEX IF NOT EXISTS ON lists((1))
--- WHERE
---   obsolete;
+CREATE INDEX IF NOT EXISTS lists_obsolete_idx ON lists((1))
+WHERE
+  obsolete;
+
 COMMENT ON TABLE lists IS 'Manage lists of values. These lists can then be used on option-lists or dropdown-lists';
 
 COMMENT ON COLUMN lists.account_id IS 'redundant account_id enhances data safety';
@@ -405,18 +405,18 @@ CREATE TABLE IF NOT EXISTS list_values(
   label text DEFAULT NULL
 );
 
--- CREATE INDEX IF NOT EXISTS ON list_values USING btree(list_value_id);
-CREATE INDEX IF NOT EXISTS ON list_values USING btree(account_id);
+CREATE INDEX IF NOT EXISTS list_values_account_id_idx ON list_values USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON list_values USING btree(list_id);
+CREATE INDEX IF NOT EXISTS list_values_list_id_idx ON list_values USING btree(list_id);
 
-CREATE INDEX IF NOT EXISTS ON list_values USING btree(value);
+CREATE INDEX IF NOT EXISTS list_values_value_idx ON list_values USING btree(value);
 
-CREATE INDEX IF NOT EXISTS ON list_values USING btree(label);
+CREATE INDEX IF NOT EXISTS list_values_label_idx ON list_values USING btree(label);
 
--- CREATE INDEX IF NOT EXISTS ON list_values((1))
--- WHERE
---   obsolete;
+CREATE INDEX IF NOT EXISTS list_values_obsolete_idx ON list_values((1))
+WHERE
+  obsolete;
+
 COMMENT ON COLUMN list_values.value IS 'Value of list, like "Gefährdet", "5". If is a number, will have to be coerced to number when used.';
 
 COMMENT ON COLUMN list_values.account_id IS 'redundant account_id enhances data safety';
@@ -446,18 +446,17 @@ CREATE TABLE IF NOT EXISTS units(
   label text DEFAULT NULL
 );
 
--- CREATE INDEX IF NOT EXISTS ON units USING btree(unit_id);
-CREATE INDEX IF NOT EXISTS ON units USING btree(account_id);
+CREATE INDEX IF NOT EXISTS units_account_id_idx ON units USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON units USING btree(project_id);
+CREATE INDEX IF NOT EXISTS units_project_id_idx ON units USING btree(project_id);
 
-CREATE INDEX IF NOT EXISTS ON units USING btree(name);
+CREATE INDEX IF NOT EXISTS units_name_idx ON units USING btree(name);
 
-CREATE INDEX IF NOT EXISTS ON units USING btree(sort);
+CREATE INDEX IF NOT EXISTS units_sort_idx ON units USING btree(sort);
 
-CREATE INDEX IF NOT EXISTS ON units USING btree(list_id);
+CREATE INDEX IF NOT EXISTS units_list_id_idx ON units USING btree(list_id);
 
-CREATE INDEX IF NOT EXISTS ON units USING btree(label);
+CREATE INDEX IF NOT EXISTS units_label_idx ON units USING btree(label);
 
 COMMENT ON TABLE units IS 'Manage units of values. These units can then be used for values of actions, checks, reports, goals, taxa';
 
@@ -499,19 +498,20 @@ CREATE TABLE IF NOT EXISTS places(
   files_active_places boolean DEFAULT NULL -- TRUE
 );
 
--- CREATE INDEX IF NOT EXISTS ON places USING btree(place_id);
-CREATE INDEX IF NOT EXISTS ON places USING btree(account_id);
+CREATE INDEX IF NOT EXISTS places_account_id_idx ON places USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON places USING btree(subproject_id);
+CREATE INDEX IF NOT EXISTS places_subproject_id_idx ON places USING btree(subproject_id);
 
-CREATE INDEX IF NOT EXISTS ON places USING btree(parent_id);
+CREATE INDEX IF NOT EXISTS places_parent_id_idx ON places USING btree(parent_id);
 
-CREATE INDEX IF NOT EXISTS ON places USING btree(level);
+CREATE INDEX IF NOT EXISTS places_level_idx ON places USING btree(level);
 
-CREATE INDEX IF NOT EXISTS ON places USING btree(label);
+CREATE INDEX IF NOT EXISTS places_label_idx ON places USING btree(label);
 
--- CREATE INDEX IF NOT EXISTS ON places USING gin(data); -- seems not to work with electric-sql
--- CREATE INDEX IF NOT EXISTS ON places USING gist(geometry);
+CREATE INDEX IF NOT EXISTS places_data_idx ON places USING gin(data);
+
+CREATE INDEX IF NOT EXISTS places_geometry_idx ON places USING gist(geometry);
+
 COMMENT ON TABLE places IS 'Places are where actions and checks are done. They can be organized in a hierarchy of one or two levels.';
 
 COMMENT ON COLUMN places.account_id IS 'redundant account_id enhances data safety';
