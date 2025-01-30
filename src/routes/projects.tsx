@@ -17,37 +17,29 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
   const db = usePGlite()
 
-  // const where =
-  //   projectsFilter.length > 1 ? { OR: projectsFilter } : projectsFilter[0]
-  // const { results: projects = [] } = useLiveQuery(
-  //   db.projects.liveMany({
-  //     where,
-  //     orderBy: { label: 'asc' },
-  //   }),
-  // )
-  // TODO: filter
   const projectsResult = useLiveQuery(
-    `SELECT * FROM projects order by label asc`,
+    `SELECT * FROM projects${
+      projectsFilter && ` ${projectsFilter}`
+    } order by label asc`,
   )
   const projects = projectsResult?.rows ?? []
   const projectsUnfilteredResult = useLiveQuery(
     `SELECT * FROM projects order by label asc`,
   )
   const projectsUnfiltered = projectsUnfilteredResult?.rows ?? []
-  // const { results: projectsUnfiltered = [] } = useLiveQuery(
-  //   db.projects.liveMany({
-  //     orderBy: { label: 'asc' },
-  //   }),
-  // )
 
-  console.log('projects', projects)
   const isFiltered = projects.length !== projectsUnfiltered.length
 
   const add = useCallback(async () => {
     const data = await createProject({ db })
-    await db.projects.create({ data })
+    const columns = Object.keys(data)
+    const values = Object.values(data).join("', '")
+    const sql = `insert into projects (${columns}) values ('${values}')`
+    await db.query(sql)
     navigate({ pathname: data.project_id, search: searchParams.toString() })
   }, [db, navigate, searchParams])
+
+  console.log('projects', projects)
 
   return (
     <div className="list-view">
