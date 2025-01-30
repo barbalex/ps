@@ -487,15 +487,15 @@ CREATE TABLE IF NOT EXISTS places(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   parent_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE NO action ON UPDATE CASCADE,
-  level integer DEFAULT NULL, -- 1,
+  level integer DEFAULT 1,
   since integer DEFAULT NULL,
   until integer DEFAULT NULL,
   data jsonb DEFAULT NULL,
-  -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL, -- not supported by electic-sql
+  geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
   geometry jsonb DEFAULT NULL,
   bbox jsonb DEFAULT NULL,
-  label text DEFAULT NULL, -- not generated, so no need to rename
-  files_active_places boolean DEFAULT NULL -- TRUE
+  label text DEFAULT NULL,
+  files_active_places boolean DEFAULT TRUE
 );
 
 CREATE INDEX IF NOT EXISTS places_account_id_idx ON places USING btree(account_id);
@@ -549,20 +549,22 @@ CREATE TABLE IF NOT EXISTS actions(
   label text DEFAULT NULL
 );
 
--- CREATE INDEX IF NOT EXISTS ON actions USING btree(action_id);
-CREATE INDEX IF NOT EXISTS ON actions USING btree(account_id);
+CREATE INDEX IF NOT EXISTS actions_account_id_idx ON actions USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON actions USING btree(place_id);
+CREATE INDEX IF NOT EXISTS actions_place_id_idx ON actions USING btree(place_id);
 
-CREATE INDEX IF NOT EXISTS ON actions USING btree(date);
+CREATE INDEX IF NOT EXISTS actions_date_idx ON actions USING btree(date);
 
-CREATE INDEX IF NOT EXISTS ON actions USING btree(label);
+CREATE INDEX IF NOT EXISTS actions_label_idx ON actions USING btree(label);
 
--- CREATE INDEX IF NOT EXISTS ON actions USING gin(data); -- seems not to work with electric-sql
--- CREATE INDEX IF NOT EXISTS ON actions USING gist(geometry);
--- CREATE INDEX IF NOT EXISTS ON actions((1))
--- WHERE
---   relevant_for_reports;
+CREATE INDEX IF NOT EXISTS actions_data_idx ON actions USING gin(data);
+
+CREATE INDEX IF NOT EXISTS actions_geometry_idx ON actions USING gist(geometry);
+
+CREATE INDEX IF NOT EXISTS actions_relevant_for_reports_idx ON actions((1))
+WHERE
+  relevant_for_reports;
+
 COMMENT ON TABLE actions IS 'Actions are what is done to improve the situation of (promote) the subproject in this place.';
 
 COMMENT ON COLUMN actions.account_id IS 'redundant account_id enhances data safety';
