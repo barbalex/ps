@@ -1,5 +1,5 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAtom } from 'jotai'
 
@@ -8,7 +8,6 @@ import { Row } from '../components/shared/Row.tsx'
 import { createChart } from '../modules/createRows.ts'
 
 import '../form.css'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { designingAtom } from '../store.ts'
 

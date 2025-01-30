@@ -1,7 +1,6 @@
 import { useCallback, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { createCheckValue } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
@@ -14,26 +13,27 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
 
   const db = usePGlite()
-  const { results: checkValues = [] } = useLiveQuery(
-    db.check_values.liveMany({
-      where: { check_id },
-      orderBy: { label: 'asc' },
-    }),
+  const results = useLiveQuery(
+    `SELECT * FROM check_values WHERE check_id = $1 ORDER BY label ASC`,
+    [check_id],
   )
+  const checkValues = results?.rows ?? []
 
   const add = useCallback(async () => {
-    const checkValue = createCheckValue()
-    await db.check_values.create({
-      data: {
-        ...checkValue,
-        check_id,
-      },
-    })
+    const rawCheckValue = createCheckValue()
+    const checkValue = {
+      ...rawCheckValue,
+      check_id,
+    }
+    const columns = Object.keys(checkValue)
+    const values = Object.values(checkValue).join("','")
+    const sql = `INSERT INTO check_values (${columns}) VALUES ('${values}')`
+    await db.query(sql)
     navigate({
       pathname: checkValue.check_value_id,
       search: searchParams.toString(),
     })
-  }, [check_id, db.check_values, navigate, searchParams])
+  }, [check_id, db, navigate, searchParams])
 
   return (
     <div className="list-view">

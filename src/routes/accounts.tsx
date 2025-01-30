@@ -1,7 +1,6 @@
 import { useCallback, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { createAccount } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
@@ -14,16 +13,20 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
 
   const db = usePGlite()
-  const { results: accounts = [] } = useLiveQuery(db.accounts.liveMany())
+  const results = useLiveQuery(`SELECT * FROM accounts`)
+  const accounts = results?.rows ?? []
 
   const add = useCallback(async () => {
     const data = createAccount()
-    await db.accounts.create({ data })
+    const columns = Object.keys(data)
+    const values = Object.values(data).join("','")
+    const sql = `insert into accounts (${columns}) values ('${values}')`
+    await db.query(sql)
     navigate({
       pathname: data.account_id,
       search: searchParams.toString(),
     })
-  }, [db.accounts, navigate, searchParams])
+  }, [db, navigate, searchParams])
 
   return (
     <div className="list-view">

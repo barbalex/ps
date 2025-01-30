@@ -17,16 +17,16 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
   const db = usePGlite()
 
-  const projectsResult = useLiveQuery(
+  const result = useLiveQuery(
     `SELECT * FROM projects${
       projectsFilter && ` ${projectsFilter}`
     } order by label asc`,
   )
-  const projects = projectsResult?.rows ?? []
-  const projectsUnfilteredResult = useLiveQuery(
+  const projects = result?.rows ?? []
+  const unfilteredResult = useLiveQuery(
     `SELECT * FROM projects order by label asc`,
   )
-  const projectsUnfiltered = projectsUnfilteredResult?.rows ?? []
+  const projectsUnfiltered = unfilteredResult?.rows ?? []
 
   const isFiltered = projects.length !== projectsUnfiltered.length
 
