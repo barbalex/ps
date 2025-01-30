@@ -561,10 +561,6 @@ CREATE INDEX IF NOT EXISTS actions_data_idx ON actions USING gin(data);
 
 CREATE INDEX IF NOT EXISTS actions_geometry_idx ON actions USING gist(geometry);
 
-CREATE INDEX IF NOT EXISTS actions_relevant_for_reports_idx ON actions((1))
-WHERE
-  relevant_for_reports;
-
 COMMENT ON TABLE actions IS 'Actions are what is done to improve the situation of (promote) the subproject in this place.';
 
 COMMENT ON COLUMN actions.account_id IS 'redundant account_id enhances data safety';
@@ -588,20 +584,19 @@ CREATE TABLE IF NOT EXISTS action_values(
   label text DEFAULT NULL
 );
 
--- CREATE INDEX IF NOT EXISTS ON action_values USING btree(action_value_id);
-CREATE INDEX IF NOT EXISTS ON action_values USING btree(account_id);
+CREATE INDEX IF NOT EXISTS action_values_account_id_idx ON action_values USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON action_values USING btree(action_id);
+CREATE INDEX IF NOT EXISTS action_values_action_id_idx ON action_values USING btree(action_id);
 
-CREATE INDEX IF NOT EXISTS ON action_values USING btree(unit_id);
+CREATE INDEX IF NOT EXISTS action_values_unit_id_idx ON action_values USING btree(unit_id);
 
-CREATE INDEX IF NOT EXISTS ON action_values USING btree(value_integer);
+CREATE INDEX IF NOT EXISTS action_values_value_integer_idx ON action_values USING btree(value_integer);
 
-CREATE INDEX IF NOT EXISTS ON action_values USING btree(value_numeric);
+CREATE INDEX IF NOT EXISTS action_values_value_numeric_idx ON action_values USING btree(value_numeric);
 
-CREATE INDEX IF NOT EXISTS ON action_values USING btree(value_text);
+CREATE INDEX IF NOT EXISTS action_values_value_text_idx ON action_values USING btree(value_text);
 
-CREATE INDEX IF NOT EXISTS ON action_values USING btree(label);
+CREATE INDEX IF NOT EXISTS action_values_label_idx ON action_values USING btree(label);
 
 COMMENT ON TABLE action_values IS 'value-ing actions. Measuring or assessing';
 
@@ -622,14 +617,13 @@ CREATE TABLE IF NOT EXISTS action_reports(
   label text DEFAULT NULL
 );
 
--- CREATE INDEX IF NOT EXISTS ON action_reports USING btree(action_report_id);
-CREATE INDEX IF NOT EXISTS ON action_reports USING btree(account_id);
+CREATE INDEX IF NOT EXISTS action_reports_account_id_idx ON action_reports USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON action_reports USING btree(action_id);
+CREATE INDEX IF NOT EXISTS action_reports_action_id_idx ON action_reports USING btree(action_id);
 
-CREATE INDEX IF NOT EXISTS ON action_reports USING btree(year);
+CREATE INDEX IF NOT EXISTS action_reports_year_idx ON action_reports USING btree(year);
 
-CREATE INDEX IF NOT EXISTS ON action_reports USING btree(label);
+CREATE INDEX IF NOT EXISTS action_reports_label_idx ON action_reports USING btree(label);
 
 COMMENT ON TABLE action_reports IS 'Reporting on the success of actions.';
 
@@ -650,20 +644,19 @@ CREATE TABLE IF NOT EXISTS action_report_values(
   label text DEFAULT NULL
 );
 
--- CREATE INDEX IF NOT EXISTS ON action_report_values USING btree(action_report_value_id);
-CREATE INDEX IF NOT EXISTS ON action_report_values USING btree(account_id);
+CREATE INDEX IF NOT EXISTS action_report_values_account_id_idx ON action_report_values USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON action_report_values USING btree(action_report_id);
+CREATE INDEX IF NOT EXISTS action_report_values_action_report_id_idx ON action_report_values USING btree(action_report_id);
 
-CREATE INDEX IF NOT EXISTS ON action_report_values USING btree(unit_id);
+CREATE INDEX IF NOT EXISTS action_report_values_unit_id_idx ON action_report_values USING btree(unit_id);
 
-CREATE INDEX IF NOT EXISTS ON action_report_values USING btree(value_integer);
+CREATE INDEX IF NOT EXISTS action_report_values_value_integer_idx ON action_report_values USING btree(value_integer);
 
-CREATE INDEX IF NOT EXISTS ON action_report_values USING btree(value_numeric);
+CREATE INDEX IF NOT EXISTS action_report_values_value_numeric_idx ON action_report_values USING btree(value_numeric);
 
-CREATE INDEX IF NOT EXISTS ON action_report_values USING btree(value_text);
+CREATE INDEX IF NOT EXISTS action_report_values_value_text_idx ON action_report_values USING btree(value_text);
 
-CREATE INDEX IF NOT EXISTS ON action_report_values USING btree(label);
+CREATE INDEX IF NOT EXISTS action_report_values_label_idx ON action_report_values USING btree(label);
 
 COMMENT ON TABLE action_report_values IS 'value-ing the success of actions';
 
@@ -688,20 +681,18 @@ CREATE TABLE IF NOT EXISTS checks(
   label text DEFAULT NULL
 );
 
--- CREATE INDEX IF NOT EXISTS ON checks USING btree(check_id);
-CREATE INDEX IF NOT EXISTS ON checks USING btree(account_id);
+CREATE INDEX IF NOT EXISTS checks_account_id_idx ON checks USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON checks USING btree(place_id);
+CREATE INDEX IF NOT EXISTS checks_place_id_idx ON checks USING btree(place_id);
 
-CREATE INDEX IF NOT EXISTS ON checks USING btree(date);
+CREATE INDEX IF NOT EXISTS checks_date_idx ON checks USING btree(date);
 
-CREATE INDEX IF NOT EXISTS ON checks USING btree(label);
+CREATE INDEX IF NOT EXISTS checks_label_idx ON checks USING btree(label);
 
--- CREATE INDEX IF NOT EXISTS ON checks USING gin(data); -- seems not to work with electric-sql
--- CREATE INDEX IF NOT EXISTS ON checks USING gist(geometry);
--- CREATE INDEX IF NOT EXISTS ON checks((1))
--- WHERE
---   relevant_for_reports;
+CREATE INDEX IF NOT EXISTS checks_data_idx ON checks USING gin(data);
+
+CREATE INDEX IF NOT EXISTS checks_geometry_idx ON checks USING gist(geometry);
+
 COMMENT ON TABLE checks IS 'Checks describe the situation of the subproject in this place.';
 
 COMMENT ON COLUMN checks.account_id IS 'redundant account_id enhances data safety';
@@ -721,20 +712,19 @@ CREATE TABLE IF NOT EXISTS check_values(
   label text DEFAULT NULL
 );
 
--- CREATE INDEX IF NOT EXISTS ON check_values USING btree(check_value_id);
-CREATE INDEX IF NOT EXISTS ON check_values USING btree(account_id);
+CREATE INDEX IF NOT EXISTS check_values_account_id_idx ON check_values USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON check_values USING btree(check_id);
+CREATE INDEX IF NOT EXISTS check_values_check_id_idx ON check_values USING btree(check_id);
 
-CREATE INDEX IF NOT EXISTS ON check_values USING btree(unit_id);
+CREATE INDEX IF NOT EXISTS check_values_unit_id_idx ON check_values USING btree(unit_id);
 
-CREATE INDEX IF NOT EXISTS ON check_values USING btree(value_integer);
+CREATE INDEX IF NOT EXISTS check_values_value_integer_idx ON check_values USING btree(value_integer);
 
-CREATE INDEX IF NOT EXISTS ON check_values USING btree(value_numeric);
+CREATE INDEX IF NOT EXISTS check_values_value_numeric_idx ON check_values USING btree(value_numeric);
 
-CREATE INDEX IF NOT EXISTS ON check_values USING btree(value_text);
+CREATE INDEX IF NOT EXISTS check_values_value_text_idx ON check_values USING btree(value_text);
 
-CREATE INDEX IF NOT EXISTS ON check_values USING btree(label);
+CREATE INDEX IF NOT EXISTS check_values_label_idx ON check_values USING btree(label);
 
 COMMENT ON TABLE check_values IS 'value-ing checks i.e. the situation of the subproject in this place';
 
