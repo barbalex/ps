@@ -1766,11 +1766,11 @@ CREATE TABLE IF NOT EXISTS crs(
   label text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS ON crs USING btree(account_id);
+CREATE INDEX IF NOT EXISTS crs_account_id_idx ON crs USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON crs USING btree(code);
+CREATE INDEX IF NOT EXISTS crs_code_idx ON crs USING btree(code);
 
-CREATE INDEX IF NOT EXISTS ON crs USING btree(label);
+CREATE INDEX IF NOT EXISTS crs_label_idx ON crs USING btree(label);
 
 COMMENT ON TABLE crs IS 'List of crs. From: https://spatialreference.org/crslist.json. Can be inserted when configuring a project. We need the entire list because wfs/wms have a default crs that needs to be used for bbox calls. TODO: decide when to download the list.';
 
@@ -1789,13 +1789,13 @@ CREATE TABLE IF NOT EXISTS project_crs(
   label text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS ON project_crs USING btree(account_id);
+CREATE INDEX IF NOT EXISTS project_crs_account_id_idx ON project_crs USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON project_crs USING btree(project_id);
+CREATE INDEX IF NOT EXISTS project_crs_project_id_idx ON project_crs USING btree(project_id);
 
-CREATE INDEX IF NOT EXISTS ON project_crs USING btree(code);
+CREATE INDEX IF NOT EXISTS project_crs_code_idx ON project_crs USING btree(code);
 
-CREATE INDEX IF NOT EXISTS ON project_crs USING btree(label);
+CREATE INDEX IF NOT EXISTS project_crs_label_idx ON project_crs USING btree(label);
 
 COMMENT ON TABLE project_crs IS 'List of crs used in a project. Can be set when configuring a project. Values copied from crs table.';
 
