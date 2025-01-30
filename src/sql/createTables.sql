@@ -326,14 +326,13 @@ CREATE TABLE IF NOT EXISTS taxa(
   label text DEFAULT NULL
 );
 
--- CREATE INDEX IF NOT EXISTS ON taxa USING btree(taxon_id);
-CREATE INDEX IF NOT EXISTS ON taxa USING btree(account_id);
+CREATE INDEX IF NOT EXISTS taxa_account_id_idx ON taxa USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON taxa USING btree(taxonomy_id);
+CREATE INDEX IF NOT EXISTS taxa_taxonomy_id_idx ON taxa USING btree(taxonomy_id);
 
-CREATE INDEX IF NOT EXISTS ON taxa USING btree(name);
+CREATE INDEX IF NOT EXISTS taxa_name_idx ON taxa USING btree(name);
 
-CREATE INDEX IF NOT EXISTS ON taxa USING btree(label);
+CREATE INDEX IF NOT EXISTS taxa_label_idx ON taxa USING btree(label);
 
 COMMENT ON COLUMN taxa.name IS 'Name of taxon, like "Pulsatilla vulgaris"';
 
@@ -353,14 +352,13 @@ CREATE TABLE IF NOT EXISTS subproject_taxa(
   label text DEFAULT NULL
 );
 
--- CREATE INDEX IF NOT EXISTS ON subproject_taxa USING btree(subproject_taxon_id);
-CREATE INDEX IF NOT EXISTS ON subproject_taxa USING btree(account_id);
+CREATE INDEX IF NOT EXISTS subproject_taxa_account_id_idx ON subproject_taxa USING btree(account_id);
 
-CREATE INDEX IF NOT EXISTS ON subproject_taxa USING btree(subproject_id);
+CREATE INDEX IF NOT EXISTS subproject_taxa_subproject_id_idx ON subproject_taxa USING btree(subproject_id);
 
-CREATE INDEX IF NOT EXISTS ON subproject_taxa USING btree(taxon_id);
+CREATE INDEX IF NOT EXISTS subproject_taxa_taxon_id_idx ON subproject_taxa USING btree(taxon_id);
 
-CREATE INDEX IF NOT EXISTS ON subproject_taxa USING btree(label);
+CREATE INDEX IF NOT EXISTS subproject_taxa_label_idx ON subproject_taxa USING btree(label);
 
 COMMENT ON TABLE subproject_taxa IS 'list wor what taxa data is managed in the subproject.';
 
