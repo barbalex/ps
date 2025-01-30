@@ -12,7 +12,7 @@ const getPresetData = async ({ db, project_id = null, table }) => {
     data[field.name] = field.preset
   })
 
-  return { data }
+  return data
 }
 
 // TODO: add account_id
@@ -139,7 +139,7 @@ export const createAccount = () => ({
 // users creates the db row to ensure creating the app_state too
 export const createUser = async ({ db, setUserId }) => {
   const data = { user_id: uuidv7() }
-  
+
   await db.users.create({ data })
   setUserId(data.user_id)
 
