@@ -59,18 +59,20 @@ export const SqlInitializer = () => {
   const db = usePGlite()
 
   // TODO: test if table projects exists before building db
-  const query = db.query(
-    `
+  const result = use(
+    db.query(
+      `
       SELECT EXISTS (
         SELECT FROM pg_tables
         WHERE  schemaname = 'public'
         AND    tablename  = 'projects'
       )
     `,
+    ),
   )
-  const result = use(query)
+  const projectsTableExists = result?.rows[0]?.exists
 
-  console.log('SqlInitializer, result', result)
+  console.log('SqlInitializer', { result, projectsTableExists })
 
   // useEffect(() => {
   //   const generate = async () => {
