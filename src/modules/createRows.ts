@@ -1,14 +1,11 @@
 import { uuidv7 } from '@kripod/uuidv7'
 
 const getPresetData = async ({ db, project_id = null, table }) => {
-  const fieldsWithPresets = await db.fields.findMany({
-    where: {
-      project_id,
-
-      table_name: table,
-      preset: { not: null },
-    },
-  })
+  const fieldsWithPresetsResult = await db.query(
+    `select * from fields where project_id = $1 and table_name = $2 and preset is not null`,
+    [project_id, table],
+  )
+  const fieldsWithPresets = fieldsWithPresetsResult.rows ?? []
   // TODO: include field_type to set correct data type
   const data = {}
   fieldsWithPresets.forEach((field) => {
@@ -142,6 +139,7 @@ export const createAccount = () => ({
 // users creates the db row to ensure creating the app_state too
 export const createUser = async ({ db, setUserId }) => {
   const data = { user_id: uuidv7() }
+  
   await db.users.create({ data })
   setUserId(data.user_id)
 

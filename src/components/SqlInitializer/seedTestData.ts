@@ -59,8 +59,8 @@ VALUES ('018ca1aa-6fa6-7be5-b5f8-5caca1565687', '018ca19e-7a23-7bf4-8523-ff41e3b
 const seedUsers = `INSERT INTO users(user_id, email) values ('018cf95a-d817-7000-92fa-bb3b2ad59dda', 'alex.barbalex@gmail.com');`
 const seedAccounts = `INSERT INTO accounts(account_id, user_id, type) values ('018cf958-27e2-7000-90d3-59f024d467be', '018cf95a-d817-7000-92fa-bb3b2ad59dda', 'premium');`
 const seedProjects = `INSERT INTO 
-projects(project_id, account_id, name, places_label_by) values 
-('018cfcf7-6424-7000-a100-851c5cc2c878', '018cf958-27e2-7000-90d3-59f024d467be', 'Demo Project', 'name');`
+projects(project_id, account_id, name, label, places_label_by) values 
+('018cfcf7-6424-7000-a100-851c5cc2c878', '018cf958-27e2-7000-90d3-59f024d467be', 'demo_project', 'Demo Project', 'name');`
 const seedFields = `INSERT INTO fields(account_id, project_id, field_id, table_name, level, name, field_label, field_type_id, widget_type_id) values
 ('018cf958-27e2-7000-90d3-59f024d467be', '018cfcf7-6424-7000-a100-851c5cc2c878', '018ef0c8-46ac-7f14-80f8-57b2b361fd2c', 'places', 1, 'name', 'Name', '018ca19e-7a23-7bf4-8523-ff41e3b60807', '018ca1a0-f187-7fdf-955b-4eaadaa92553'),
 ('018cf958-27e2-7000-90d3-59f024d467be', '018cfcf7-6424-7000-a100-851c5cc2c878', '018ef0c8-674e-7ebd-b6cc-e47ec256ac72', 'places', 2, 'name', 'Name', '018ca19e-7a23-7bf4-8523-ff41e3b60807', '018ca1a0-f187-7fdf-955b-4eaadaa92553');`
@@ -191,118 +191,46 @@ const seedChartSubjects = `INSERT INTO chart_subjects(account_id, chart_id, char
 ('018cf958-27e2-7000-90d3-59f024d467be', '018e0a30-ce91-7899-8daf-4c3a4b4ff414', '018e0a31-c01d-7fe9-bd23-cd9085e60010', 'places', 2, 'Number of Subpopulations', 'count_rows', 'monotone', '#FF0000', '#FF0000', true);`
 
 export const seedTestData = async (db) => {
-  const users = await db.rawQuery({
-    sql: `select count(*) as count from users;`,
-  })
-  if (users[0].count === 0) {
-    await db.unsafeExec({
-      sql: seedUsers,
-    })
-    console.log('seeding test data')
+  await db.exec(seedUsers)
+  await db.exec(seedAccounts)
+  await db.exec(seedFieldTypes)
+  await db.exec(seedWidgetTypes)
+  await db.exec(seedWidgetsForFields)
+  try {
+    await db.exec(seedCrs)
+  } catch (error) {
+    console.log('seedTestData, seedCrs error', error)
   }
-  const accounts = await db.rawQuery({
-    sql: `select count(*) as count from accounts;`,
-  })
-  if (accounts[0].count === 0) {
-    await db.unsafeExec({
-      sql: seedAccounts,
-    })
+  try {
+    await db.exec(seedProjects)
+  } catch (error) {
+    console.log('hello seedTestData, seedProjects error', error)
   }
-  const fieldTypes = await db.rawQuery({
-    sql: `select count(*) as count from field_types;`,
-  })
-  if (fieldTypes[0].count === 0) {
-    await db.unsafeExec({
-      sql: seedFieldTypes,
-    })
-    await db.unsafeExec({
-      sql: seedWidgetTypes,
-    })
-    await db.unsafeExec({
-      sql: seedWidgetsForFields,
-    })
+  try {
+    await db.exec(seedFields)
+  } catch (error) {
+    console.log('hello seedTestData, seedFields error', error)
   }
-  const crss = await db.rawQuery({
-    sql: `select count(*) as count from crs;`,
-  })
-  if (crss[0].count === 0) {
-    try {
-      await db.unsafeExec({
-        sql: seedCrs,
-      })
-    } catch (error) {
-      console.log('seedTestData, seedCrs error', error)
-    }
+  await db.exec(seedProjectUsers)
+  await db.exec(seedSubprojects)
+  await db.exec(seedSubprojectUsers)
+  try {
+    await db.exec(seedPlaces)
+  } catch (error) {
+    console.log('hello seedTestData, seedPlaces error', error)
   }
-  const projects = await db.rawQuery({
-    sql: `select count(*) as count from projects;`,
-  })
-  if (projects[0].count === 0) {
-    try {
-      await db.unsafeExec({
-        sql: seedProjects,
-      })
-    } catch (error) {
-      console.log('hello seedTestData, seedProjects error', error)
-    }
-    try {
-      await db.unsafeExec({
-        sql: seedFields,
-      })
-    } catch (error) {
-      console.log('hello seedTestData, seedFields error', error)
-    }
-    await db.unsafeExec({
-      sql: seedProjectUsers,
-    })
-    await db.unsafeExec({
-      sql: seedSubprojects,
-    })
-    await db.unsafeExec({
-      sql: seedSubprojectUsers,
-    })
-    try {
-      await db.unsafeExec({
-        sql: seedPlaces,
-      })
-    } catch (error) {
-      console.log('hello seedTestData, seedPlaces error', error)
-    }
-    try {
-      await db.unsafeExec({
-        sql: seedPlaces2,
-      })
-    } catch (error) {
-      console.log('hello seedTestData, seedPlaces2 error', error)
-    }
-    await db.unsafeExec({
-      sql: seedChecks,
-    })
-    await db.unsafeExec({
-      sql: seedActions,
-    })
-    await db.unsafeExec({
-      sql: seedCharts,
-    })
-    await db.unsafeExec({
-      sql: seedChartSubjects,
-    })
-    await db.unsafeExec({
-      sql: seedTaxonomies,
-    })
-    await db.unsafeExec({
-      sql: seedTaxons,
-    })
-    await db.unsafeExec({
-      sql: seedUnits,
-    })
+  try {
+    await db.exec(seedPlaces2)
+  } catch (error) {
+    console.log('hello seedTestData, seedPlaces2 error', error)
   }
-  const placeLevels = await db.rawQuery({
-    sql: `select count(*) as count from place_levels;`,
-  })
-  if (placeLevels[0].count === 0) {
-    await db.unsafeExec({
-      sql: seedPlaceLevels,
-    })
-  }
+  await db.exec(seedChecks)
+  await db.exec(seedActions)
+  await db.exec(seedCharts)
+  await db.exec(seedChartSubjects)
+  await db.exec(seedTaxonomies)
+  await db.exec(seedTaxons)
+  await db.exec(seedUnits)
+  await db.exec(seedPlaceLevels)
+  return
 }

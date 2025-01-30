@@ -58,6 +58,7 @@ import { seedTestData } from './seedTestData.ts'
 export const SqlInitializer = () => {
   const db = usePGlite()
 
+  // create tables
   useEffect(() => {
     const run = async () => {
       const resultProjectsTableExists = await db.query(
@@ -83,17 +84,26 @@ export const SqlInitializer = () => {
       const createSql = (await import(`../../sql/createTables.sql?raw`)).default
       const createRes = await db.exec(createSql)
       console.log('SqlInitializer, createRes:', createRes)
-      // console.log('SqlInitializer, createSql:', createSql)
-      // const createStatements = createSql.split(';').filter((s) => s !== '\n\n')
-      // const ress = []
-      // console.log('SqlInitializer, createStatements:', createStatements)
-      // for (const statement of createStatements) {
-      //   const res = await db.exec(statement)
-      //   ress.push(res)
-      // }
-      // console.log('SqlInitializer, ress:', ress)
+      const projectsResult = await db.query(`select * from projects`)
+      const projects = projectsResult?.rows ?? []
+      if (projects.length === 0) {
+        await seedTestData(db)
+      }
     }
 
+    run()
+  }, [db])
+
+  // this separate effect enables seeding after tables are created
+  useEffect(() => {
+    // seed data
+    const run = async () => {
+      const projectsResult = await db.query(`select * from projects`)
+      const projects = projectsResult?.rows ?? []
+      if (projects.length === 0) {
+        await seedTestData(db)
+      }
+    }
     run()
   }, [db])
 
