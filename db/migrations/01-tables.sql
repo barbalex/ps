@@ -1032,14 +1032,14 @@ CREATE TABLE IF NOT EXISTS files(
   check_id uuid DEFAULT NULL REFERENCES checks(check_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL, -- file-upload-success-event.detail.name
   size bigint DEFAULT NULL, -- file-upload-success-event.detail.size
-  label_replace_by_generated_column text DEFAULT NULL,
+  label text DEFAULT NULL,
   data jsonb DEFAULT NULL, -- TODO: not defineable in fields table!!
   mimetype text DEFAULT NULL, -- file-upload-success-event.detail.mimeType
   -- need width and height to get the aspect ratio of the image
   width integer DEFAULT NULL, -- file-upload-success-event.detail.fileInfo.image.width
   height integer DEFAULT NULL, -- file-upload-success-event.detail.fileInfo.image.height
-  -- file bytea DEFAULT NULL, -- TODO: not yet supported by electric-sql
-  -- preview bytea DEFAULT NULL, -- TODO: not yet supported by electric-sql
+  file bytea DEFAULT NULL,
+  preview bytea DEFAULT NULL,
   url text DEFAULT NULL, -- file-upload-success-event.detail.cdnUrl
   uuid uuid DEFAULT NULL, -- file-upload-success-event.detail.uuid
   preview_uuid uuid DEFAULT NULL -- https://uploadcare.com/docs/transformations/document-conversion/
@@ -1057,6 +1057,8 @@ CREATE INDEX IF NOT EXISTS ON files USING btree(place_id);
 CREATE INDEX IF NOT EXISTS ON files USING btree(action_id);
 
 CREATE INDEX IF NOT EXISTS ON files USING btree(check_id);
+
+CREATE INDEX IF NOT EXISTS ON files USING btree(label);
 
 CREATE INDEX IF NOT EXISTS ON files USING btree(name);
 
@@ -1077,7 +1079,7 @@ CREATE TABLE IF NOT EXISTS persons(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   email text DEFAULT NULL,
   data jsonb DEFAULT NULL,
-  label_replace_by_generated_column text DEFAULT NULL
+  label text DEFAULT NULL
 );
 
 -- CREATE INDEX IF NOT EXISTS ON persons USING btree(person_id);
@@ -1086,6 +1088,8 @@ CREATE INDEX IF NOT EXISTS ON persons USING btree(account_id);
 CREATE INDEX IF NOT EXISTS ON persons USING btree(project_id);
 
 CREATE INDEX IF NOT EXISTS ON persons USING btree(email);
+
+CREATE INDEX IF NOT EXISTS ON persons USING btree(label);
 
 COMMENT ON TABLE persons IS 'Persons are used to assign actions and checks to';
 
@@ -1099,12 +1103,14 @@ CREATE TABLE IF NOT EXISTS field_types(
   -- no account_id as field_types are predefined for all projects
   sort smallint DEFAULT NULL,
   comment text,
-  label_replace_by_generated_column text DEFAULT NULL
+  label text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS ON field_types(name);
 
 CREATE INDEX IF NOT EXISTS ON field_types(sort);
+
+CREATE INDEX IF NOT EXISTS ON field_types USING btree(label);
 
 CREATE TABLE IF NOT EXISTS widget_types(
   widget_type_id uuid PRIMARY KEY DEFAULT NULL,
@@ -1113,12 +1119,14 @@ CREATE TABLE IF NOT EXISTS widget_types(
   needs_list boolean DEFAULT NULL, -- FALSE,
   sort smallint DEFAULT NULL,
   comment text,
-  label_replace_by_generated_column text DEFAULT NULL
+  label text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS ON widget_types(name);
 
 CREATE INDEX IF NOT EXISTS ON widget_types(sort);
+
+CREATE INDEX IF NOT EXISTS ON widget_types USING btree(label);
 
 CREATE TABLE IF NOT EXISTS widgets_for_fields(
   widget_for_field_id uuid PRIMARY KEY DEFAULT NULL, -- public.uuid_generate_v7(),
@@ -1135,7 +1143,7 @@ CREATE INDEX IF NOT EXISTS ON widgets_for_fields(widget_type_id);
 CREATE INDEX IF NOT EXISTS ON widgets_for_fields(label);
 
 --
--- TODO: add order_by field to enable ordering of field widgets
+-- order_by field: to enable ordering of field widgets
 -- idea: use an integer that represents the index of the widget
 -- thus: set index for ALL widgets of a field after reordering
 CREATE TABLE IF NOT EXISTS fields(
@@ -1143,7 +1151,7 @@ CREATE TABLE IF NOT EXISTS fields(
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   table_name text DEFAULT NULL,
-  level integer DEFAULT NULL, -- 1,
+  level integer DEFAULT 1,
   field_type_id uuid DEFAULT NULL REFERENCES field_types(field_type_id) ON DELETE CASCADE ON UPDATE CASCADE,
   widget_type_id uuid DEFAULT NULL REFERENCES widget_types(widget_type_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
@@ -1152,8 +1160,8 @@ CREATE TABLE IF NOT EXISTS fields(
   preset text DEFAULT NULL,
   obsolete boolean DEFAULT FALSE,
   sort_index integer DEFAULT NULL,
-  -- order_by integer DEFAULT NULL, -- should be numeric but not supported by electric-sql
-  label_replace_by_generated_column text DEFAULT NULL
+  order_by integer DEFAULT NULL, -- enable ordering of field widgets
+  label text DEFAULT NULL
 );
 
 -- CREATE INDEX IF NOT EXISTS ON fields USING btree(field_id);
@@ -1172,6 +1180,8 @@ CREATE INDEX IF NOT EXISTS ON fields USING btree(widget_type_id);
 CREATE INDEX IF NOT EXISTS ON fields USING btree(name);
 
 CREATE INDEX IF NOT EXISTS ON fields USING btree(list_id);
+
+CREATE INDEX IF NOT EXISTS ON fields USING btree(label);
 
 -- CREATE INDEX IF NOT EXISTS ON fields USING btree((1))
 -- WHERE
@@ -1202,14 +1212,14 @@ CREATE TABLE IF NOT EXISTS occurrence_imports(
   occurrence_import_id uuid PRIMARY KEY DEFAULT NULL,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  created_time timestamptz DEFAULT NULL, -- now() not supported yet
+  created_time timestamptz DEFAULT now(),
   inserted_count integer DEFAULT NULL,
   id_field text DEFAULT NULL,
   geometry_method occurrence_imports_geometry_method_enum DEFAULT NULL,
   geojson_geometry_field text DEFAULT NULL,
   x_coordinate_field text DEFAULT NULL,
   y_coordinate_field text DEFAULT NULL,
-  crs text DEFAULT NULL, -- 4326
+  crs text DEFAULT 4326,
   label_creation jsonb DEFAULT NULL, -- Array of objects with keys: type (field, separator), value (fieldname, separating text), id (required by react-beautiful-dnd)
   name text DEFAULT NULL,
   attribution text DEFAULT NULL,
@@ -1219,7 +1229,7 @@ CREATE TABLE IF NOT EXISTS occurrence_imports(
   gbif_filters jsonb DEFAULT NULL, -- TODO: use project geometry to filter by area?
   gbif_download_key text DEFAULT NULL,
   gbif_error text DEFAULT NULL,
-  label_replace_by_generated_column text DEFAULT NULL
+  label text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS ON occurrence_imports USING btree(account_id);
@@ -1229,6 +1239,8 @@ CREATE INDEX IF NOT EXISTS ON occurrence_imports USING btree(subproject_id);
 CREATE INDEX IF NOT EXISTS ON occurrence_imports USING btree(created_time);
 
 CREATE INDEX IF NOT EXISTS ON occurrence_imports USING btree(previous_import);
+
+CREATE INDEX IF NOT EXISTS ON occurrence_imports USING btree(label);
 
 COMMENT ON TABLE occurrence_imports IS 'occurrence imports. Used also for species (when from gbif, of an area, format: SPECIES_LIST). Is created in client, synced to server, executed by gbif backend server, written to db and synced back to client';
 
@@ -1517,22 +1529,22 @@ CREATE TABLE IF NOT EXISTS vector_layer_displays(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
   display_property_value text DEFAULT NULL,
-  marker_type marker_type_enum DEFAULT NULL, -- 'circle',
-  circle_marker_radius integer DEFAULT NULL, -- 8,
+  marker_type marker_type_enum DEFAULT 'circle',
+  circle_marker_radius integer DEFAULT 8,
   marker_symbol text DEFAULT NULL,
-  marker_size integer DEFAULT NULL, -- 16,
-  stroke boolean DEFAULT NULL, -- true,
-  color text DEFAULT NULL, -- '#3388ff',
-  weight integer DEFAULT NULL, -- 3,
-  line_cap line_cap_enum DEFAULT NULL, -- 'round',
-  line_join text DEFAULT NULL, -- 'round',
+  marker_size integer DEFAULT 16,
+  stroke boolean DEFAULT TRUE,
+  color text DEFAULT '#3388ff',
+  weight integer DEFAULT 3,
+  line_cap line_cap_enum DEFAULT 'round',
+  line_join text DEFAULT 'round',
   dash_array text DEFAULT NULL,
   dash_offset text DEFAULT NULL,
-  fill boolean DEFAULT NULL, -- true,
+  fill boolean DEFAULT TRUE,
   fill_color text DEFAULT NULL,
-  fill_opacity_percent integer DEFAULT NULL, -- 100,
-  fill_rule fill_rule_enum DEFAULT NULL, -- 'evenodd',
-  label_replace_by_generated_column text DEFAULT NULL
+  fill_opacity_percent integer DEFAULT 100,
+  fill_rule fill_rule_enum DEFAULT 'evenodd',
+  label text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS ON vector_layer_displays(account_id);
@@ -1540,6 +1552,8 @@ CREATE INDEX IF NOT EXISTS ON vector_layer_displays(account_id);
 CREATE INDEX IF NOT EXISTS ON vector_layer_displays USING btree(vector_layer_id);
 
 CREATE INDEX IF NOT EXISTS ON vector_layer_displays USING btree(display_property_value);
+
+CREATE INDEX IF NOT EXISTS ON vector_layer_displays USING btree(label);
 
 COMMENT ON TABLE vector_layer_displays IS 'Goal: manage all map related properties of vector layers including places, actions, checks and occurrences';
 
