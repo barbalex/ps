@@ -12,48 +12,39 @@ import '../form.css'
 
 export const Component = memo(() => {
   const [filter] = useAtom(unitsFilterAtom)
+  const isFiltered = !!filter
+
   const { project_id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const db = usePGlite()
 
-  const where = filter.length > 1 ? { OR: filter } : filter[0]
-
-  const { results: units = [] } = useLiveQuery(
-    db.units.liveMany({
-      where: { project_id, ...where },
-      orderBy: { label: 'asc' },
-    }),
+  const result = useLiveQuery(
+    `SELECT * FROM units WHERE project_id = $1${
+      isFiltered ? ` AND(${filter})` : ''
+    } order by label asc`,
+    [project_id],
   )
-  const { results: unitsUnfiltered = [] } = useLiveQuery(
-    db.units.liveMany({
-      where: { project_id },
-      orderBy: { label: 'asc' },
-    }),
-  )
-  const isFiltered = units.length !== unitsUnfiltered.length
+  const units = result?.rows ?? []
 
   const add = useCallback(async () => {
-    const unit = createUnit()
-    await db.units.create({
-      data: {
-        ...unit,
-        project_id,
-      },
-    })
+    const unit = { ...createUnit(), project_id }
+    const columns = Object.keys(unit).join(',')
+    const values = Object.values(unit)
+    const sql = `insert into units (${columns}) values ($1)`
+    await db.query(sql, values)
     navigate({ pathname: unit.unit_id, search: searchParams.toString() })
-  }, [db.units, navigate, project_id, searchParams])
+  }, [db, navigate, project_id, searchParams])
 
   return (
     <div className="list-view">
       <ListViewHeader
-        title={`Units (${
-          isFiltered
-            ? `${units.length}/${unitsUnfiltered.length}`
-            : units.length
-        })`}
+        namePlural="Units"
+        nameSingular="Unit"
+        tableName="units"
+        isFiltered={isFiltered}
+        countFiltered={units.length}
         addRow={add}
-        tableName="unit"
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
