@@ -20,18 +20,18 @@ export const Component = memo(() => {
 
   const resultsFiltered = useLiveQuery(
     `SELECT * FROM fields WHERE project_id = $1${
-      filter && ` AND(${filter})`
+      filter?.length ? ` AND(${filter})` : ''
     } order by sort_index ASC, label ASC`,
     [project_id ?? null],
   )
   const fields = resultsFiltered?.rows ?? []
-  
+
   const resultsUnfiltered = useLiveQuery(
     `SELECT field_id FROM fields WHERE project_id = $1`,
     [project_id ?? null],
   )
   const fieldsUnfiltered = resultsUnfiltered?.rows ?? []
-  
+
   const isFiltered = fields.length !== fieldsUnfiltered.length
 
   const add = useCallback(async () => {

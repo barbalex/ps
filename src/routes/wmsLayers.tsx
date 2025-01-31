@@ -22,14 +22,14 @@ export const Component = memo(() => {
 
   const resultFiltered = useLiveQuery(
     `SELECT * FROM wms_layers WHERE project_id = $1${
-      filter && ` AND (${filter})`
+      filter?.length ? ` AND (${filter})` : ''
     } order by label ASC`,
     [project_id],
   )
   const wmsLayers = resultFiltered?.rows ?? []
 
   const resultUnfiltered = useLiveQuery(
-    `SELECT * FROM wms_layers WHERE project_id = $1 order by label ASC`,
+    `SELECT * FROM wms_layers WHERE project_id = $1`,
     [project_id],
   )
   const wmsLayersUnfiltered = resultUnfiltered?.rows ?? []

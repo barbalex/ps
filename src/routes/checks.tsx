@@ -24,13 +24,13 @@ export const Component = memo(() => {
   const filter = place_id2 ? checks2Filter : checks1Filter
   const results = useLiveQuery(
     `SELECT * FROM checks WHERE place_id = $1${
-      filter && ` AND (${filter})`
+      filter?.length ? ` AND (${filter})` : ''
     } order by label asc`,
     [place_id2 ?? place_id],
   )
   const checks = results?.rows ?? []
   const resultsInfiltered = useLiveQuery(
-    `SELECT * FROM checks WHERE place_id = $1 order by label asc`,
+    `SELECT * FROM checks WHERE place_id = $1`,
     [place_id2 ?? place_id],
   )
   const checksUnfiltered = resultsInfiltered?.rows ?? []

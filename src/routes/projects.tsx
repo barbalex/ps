@@ -12,23 +12,22 @@ import { projectsFilterAtom } from '../store.ts'
 import '../form.css'
 
 export const Component = memo(() => {
-  const [projectsFilter] = useAtom(projectsFilterAtom)
+  const [filter] = useAtom(projectsFilterAtom)
+  console.log('filter', filter)
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const db = usePGlite()
 
-  const result = useLiveQuery(
-    `SELECT * FROM projects${
-      projectsFilter && ` WHERE ${projectsFilter}`
-    } order by label asc`,
-  )
-  const projects = result?.rows ?? []
-  const unfilteredResult = useLiveQuery(
-    `SELECT * FROM projects order by label asc`,
-  )
-  const projectsUnfiltered = unfilteredResult?.rows ?? []
+  const sqlFiltered = `SELECT * FROM projects${
+    filter?.length ? ` WHERE ${filter}` : ''
+  } order by label asc`
+  const resultFiltered = useLiveQuery(sqlFiltered)
+  const projects = resultFiltered?.rows ?? []
 
-  const isFiltered = projects.length !== projectsUnfiltered.length
+  const countUnfilteredResult = useLiveQuery(`SELECT count(*) FROM projects`)
+  const countUnfiltered = countUnfilteredResult?.rows[0]?.count ?? 0
+
+  const isFiltered = projects.length !== countUnfiltered
 
   const add = useCallback(async () => {
     const data = await createProject({ db })
@@ -43,9 +42,7 @@ export const Component = memo(() => {
     <div className="list-view">
       <ListViewHeader
         title={`Projects (${
-          isFiltered
-            ? `${projects.length}/${projectsUnfiltered.length}`
-            : projects.length
+          isFiltered ? `${projects.length}/${countUnfiltered}` : projects.length
         })`}
         addRow={add}
         tableName="project"
