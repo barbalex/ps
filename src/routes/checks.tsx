@@ -29,13 +29,14 @@ export const Component = memo(() => {
     [place_id2 ?? place_id],
   )
   const checks = results?.rows ?? []
-  const resultsInfiltered = useLiveQuery(
-    `SELECT * FROM checks WHERE place_id = $1`,
+
+  const countUnfilteredResult = useLiveQuery(
+    `SELECT count(*) FROM checks WHERE place_id = $1`,
     [place_id2 ?? place_id],
   )
-  const checksUnfiltered = resultsInfiltered?.rows ?? []
+  const countUnfiltered = countUnfilteredResult?.rows[0]?.count ?? 0
 
-  const isFiltered = checks.length !== checksUnfiltered.length
+  const isFiltered = checks.length !== countUnfiltered
 
   const add = useCallback(async () => {
     const data = await createCheck({
@@ -54,9 +55,7 @@ export const Component = memo(() => {
     <div className="list-view">
       <ListViewHeader
         title={`Checks (${
-          isFiltered
-            ? `${checks.length}/${checksUnfiltered.length}`
-            : checks.length
+          isFiltered ? `${checks.length}/${countUnfiltered}` : checks.length
         })`}
         addRow={add}
         tableName="check"

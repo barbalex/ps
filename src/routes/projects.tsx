@@ -13,7 +13,6 @@ import '../form.css'
 
 export const Component = memo(() => {
   const [filter] = useAtom(projectsFilterAtom)
-  console.log('filter', filter)
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const db = usePGlite()
@@ -37,6 +36,8 @@ export const Component = memo(() => {
     await db.query(sql, values)
     navigate({ pathname: data.project_id, search: searchParams.toString() })
   }, [db, navigate, searchParams])
+
+  console.log('projects', { projects, countUnfiltered })
 
   return (
     <div className="list-view">

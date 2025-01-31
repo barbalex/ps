@@ -26,13 +26,13 @@ export const Component = memo(() => {
   )
   const fields = resultsFiltered?.rows ?? []
 
-  const resultsUnfiltered = useLiveQuery(
-    `SELECT field_id FROM fields WHERE project_id = $1`,
+  const countUnfilteredResult = useLiveQuery(
+    `SELECT count(*) FROM fields WHERE project_id = $1`,
     [project_id ?? null],
   )
-  const fieldsUnfiltered = resultsUnfiltered?.rows ?? []
+  const countUnfiltered = countUnfilteredResult?.rows[0]?.count ?? 0
 
-  const isFiltered = fields.length !== fieldsUnfiltered.length
+  const isFiltered = fields.length !== countUnfiltered
 
   const add = useCallback(async () => {
     const data = createField({ project_id })
@@ -45,7 +45,7 @@ export const Component = memo(() => {
       <ListViewHeader
         title={`Fields (${
           isFiltered
-            ? `${fields.length}/${fieldsUnfiltered.length}`
+            ? `${fields.length}/${countUnfiltered}`
             : fields.length
         })`}
         addRow={add}

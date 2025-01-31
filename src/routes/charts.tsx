@@ -33,7 +33,7 @@ export const Component = memo(() => {
 
   const db = usePGlite()
   const result = useLiveQuery(
-    `SELECT * FROM charts${where && ` WHERE ${where}`} ORDER BY label ASC`,
+    `SELECT * FROM charts${where ? ` WHERE ${where}` : ''} ORDER BY label ASC`,
   )
   const charts = result?.rows ?? []
 

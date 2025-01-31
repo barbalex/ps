@@ -29,13 +29,14 @@ export const Component = memo(() => {
     [place_id2 ?? place_id],
   )
   const actions = result?.rows ?? []
-  const resultUnfiltered = useLiveQuery(
-    `SELECT * FROM actions WHERE place_id = ? order by label asc`,
+
+  const countUnfilteredResult = useLiveQuery(
+    `SELECT count(*) FROM actions WHERE place_id = ?`,
     [place_id2 ?? place_id],
   )
-  const actionsUnfiltered = resultUnfiltered?.rows ?? []
+  const countUnfiltered = countUnfilteredResult?.rows[0]?.count ?? 0
 
-  const isFiltered = actions.length !== actionsUnfiltered.length
+  const isFiltered = actions.length !== countUnfiltered
 
   const add = useCallback(async () => {
     const data = await createAction({
@@ -54,9 +55,7 @@ export const Component = memo(() => {
     <div className="list-view">
       <ListViewHeader
         title={`Actions (${
-          isFiltered
-            ? `${actions.length}/${actionsUnfiltered.length}`
-            : actions.length
+          isFiltered ? `${actions.length}/${countUnfiltered}` : actions.length
         })`}
         addRow={add}
         tableName="action"
