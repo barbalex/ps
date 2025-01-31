@@ -7,8 +7,7 @@
 import { memo, useCallback, forwardRef } from 'react'
 import { useParams, useLocation } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
-import { useLiveQuery } from '@electric-sql/pglite-react'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
 import { TextField } from '../TextField.tsx'
@@ -38,18 +37,15 @@ export const Jsonb = memo(
       const { pathname } = useLocation()
       const db = usePGlite()
 
-      const where = {
-        table_name: table,
-        project_id: isAccountTable ? null : project_id,
-      }
-      if (!isAccountTable) where.level = place_id2 ? 2 : 1
-      // TODO: order by sort_index
-      const { results: fields = [] } = useLiveQuery(
-        db.fields.liveMany({
-          where,
-          orderBy: [{ sort_index: 'asc' }, { label: 'asc' }],
-        }),
-      )
+      const sql = isAccountTable
+        ? `SELECT * FROM fields WHERE table_name = $1 and project_id = $2 order by sort_index asc, label asc`
+        : `SELECT * FROM fields WHERE table_name = $1 and project_id = $2 and level = $3 order by sort_index asc, label asc`
+      const params = isAccountTable
+        ? [table, project_id]
+        : [table, project_id, place_id2 ? 2 : 1]
+      const result = useLiveQuery(sql, params)
+      const fields = result?.rows ?? []
+      console.log('Jsonb', { fields })
 
       const onChange = useCallback<InputProps['onChange']>(
         async (e, dataReturned) => {
@@ -86,11 +82,10 @@ export const Jsonb = memo(
             ])
             return
           }
+          // TODO: test
+          const sql = `UPDATE ${table} SET ${jsonFieldName} = $1 WHERE ${idField} = $2`
           try {
-            await db[table]?.update({
-              where: { [idField]: id },
-              data: { [jsonFieldName]: val },
-            })
+            await db.query(sql, [val, id])
           } catch (error) {
             console.log(`Jsonb, error updating table '${table}':`, error)
           }

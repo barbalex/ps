@@ -35,9 +35,12 @@ export const AddField = memo(({ tableName, level }) => {
     const newFieldParams = { table_name: tableName, level }
     if (!isAccountTable) newFieldParams.project_id = project_id
     const newField = createField(newFieldParams)
-    await db.fields.create({ data: newField })
+    const columns = Object.keys(newField).join(',')
+    const values = Object.values(newField)
+    const sql = `INSERT INTO fields (${columns}) VALUES ($1)`
+    await db.query(sql, values)
     setSearchParams({ editingField: newField.field_id })
-  }, [db.fields, level, project_id, setSearchParams, tableName])
+  }, [db, level, project_id, setSearchParams, tableName])
 
   if (!designing) return null
   // do not show the button on the filter page

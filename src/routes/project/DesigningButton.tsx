@@ -4,6 +4,7 @@ import { MdEdit, MdEditOff } from 'react-icons/md'
 import { ToggleButton } from '@fluentui/react-components'
 import { useAtom } from 'jotai'
 import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useCorbado } from '@corbado/react'
 
 import { designingAtom, userIdAtom } from '../../store.ts'
 
@@ -11,6 +12,7 @@ export const DesigningButton = memo(() => {
   const [designing, setDesigning] = useAtom(designingAtom)
   const [userId] = useAtom(userIdAtom)
   const { project_id } = useParams()
+  const { user } = useCorbado()
 
   const onClickDesigning = useCallback(
     () => setDesigning(!designing),
@@ -20,18 +22,19 @@ export const DesigningButton = memo(() => {
   const resultProject = useLiveQuery(
     `
       SELECT
-        a.user_id as account_user_id, 
-        pu.role as project_user_role
+        pu.role as project_user_role,
+        u.email as account_user_email
       FROM projects p 
         inner join accounts a on p.account_id = a.account_id 
-        inner join project_users pu on pu.project_id = p.project_id AND pu.user_id = $2 
+          inner join users u on u.user_id = a.user_id
+        inner join project_users pu on pu.project_id = p.project_id AND pu.user_id = $2
       WHERE 
-        project_id = $1
+        p.project_id = $1
     `,
     [project_id, userId],
   )
   const project = resultProject?.rows?.[0]
-  const userIsOwner = project?.account_user_id === user_id
+  const userIsOwner = project?.account_user_email === user?.email
   const userRole = project?.project_user_role
   // console.log('hello project DesignButton', { projectUser, userRole })
 

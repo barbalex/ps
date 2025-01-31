@@ -141,6 +141,7 @@ export const createUser = async ({ db, setUserId }) => {
   const data = { user_id: uuidv7() }
 
   await db.users.create({ data })
+  // TODO: why setUserId?
   setUserId(data.user_id)
 
   return data

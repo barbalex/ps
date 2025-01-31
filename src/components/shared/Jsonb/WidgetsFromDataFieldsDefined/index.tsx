@@ -1,7 +1,6 @@
 import { memo, useCallback, forwardRef } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useSearchParams, useLocation, useParams } from 'react-router-dom'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { FieldFormInForm } from '../../FieldFormInForm.tsx'
 import { TextField } from '../../TextField.tsx'
@@ -15,30 +14,27 @@ export const WidgetsFromDataFieldsDefined = memo(
       { fields, data = {}, table, jsonFieldName, idField, id, autoFocus },
       ref,
     ) => {
+      console.log('WidgetsFromDataFieldsDefined', { fields, data, table })
       const [searchParams] = useSearchParams()
       const { pathname } = useLocation()
       const { place_id, place_id2 } = useParams()
       const editingField = searchParams.get('editingField')
       const db = usePGlite()
 
-      const { results: fieldTypes = [] } = useLiveQuery(
-        db.field_types.liveMany({
-          where: {
-            field_type_id: {
-              in: fields.map((field) => field.field_type_id),
-            },
-          },
-        }),
+      // TODO: test
+      const resultFieldTypes = useLiveQuery(
+        `SELECT * FROM field_types where field_type_id in ($1)`,
+        [fields.map((field) => field.field_type_id)],
       )
-      const { results: widgetTypes = [] } = useLiveQuery(
-        db.widget_types.liveMany({
-          where: {
-            widget_type_id: {
-              in: fields.map((field) => field.widget_type_id),
-            },
-          },
-        }),
+      const fieldTypes = resultFieldTypes?.rows ?? []
+      console.log('WidgetsFromDataFieldsDefined', { fieldTypes })
+
+      const resultWidgetTypes = useLiveQuery(
+        `SELECT * FROM widget_types where widget_type_id in ($1)`,
+        [fields.map((field) => field.widget_type_id)],
       )
+      const widgetTypes = resultWidgetTypes?.rows ?? []
+      console.log('WidgetsFromDataFieldsDefined', { widgetTypes })
 
       const onChange = useCallback<InputProps['onChange']>(
         async (e, dataReturned) => {
@@ -75,11 +71,9 @@ export const WidgetsFromDataFieldsDefined = memo(
             ])
             return
           }
+          const sql = `UPDATE ${table} SET ${jsonFieldName} = $1 WHERE ${idField} = $2`
           try {
-            await db[table]?.update({
-              where: { [idField]: id },
-              data: { [jsonFieldName]: val },
-            })
+            await db.query(sql, [val, id])
           } catch (error) {
             console.log(`Jsonb, error updating table '${table}':`, error)
           }
