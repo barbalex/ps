@@ -21,10 +21,10 @@ export const Component = memo(() => {
 
   const add = useCallback(async () => {
     const actionValue = { ...createActionValue(), action_id }
-    const columns = Object.keys(actionValue)
-    const values = Object.values(actionValue).join("','")
-    const sql = `insert into action_values (${columns}) values ('${values}')`
-    await db.query(sql)
+    const columns = Object.keys(actionValue).join(',')
+    const values = Object.values(actionValue)
+    const sql = `insert into action_values (${columns}) values ($1)`
+    await db.query(sql, values)
     navigate({
       pathname: actionValue.action_value_id,
       search: searchParams.toString(),

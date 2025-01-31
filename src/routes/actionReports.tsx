@@ -13,12 +13,11 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
 
   const db = usePGlite()
-  const { results: actionReports = [] } = useLiveQuery(
-    db.action_reports.liveMany({
-      where: { action_id },
-      orderBy: { label: 'asc' },
-    }),
+  const result = useLiveQuery(
+    `SELECT * FROM action_reports WHERE action_id = $1 order by label asc`,
+    [action_id],
   )
+  const actionReports = result?.rows ?? []
 
   const add = useCallback(async () => {
     const data = await createActionReport({
@@ -26,7 +25,10 @@ export const Component = memo(() => {
       project_id,
       action_id,
     })
-    await db.action_reports.create({ data })
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+    const sql = `insert into action_reports (${columns}) values ($1)`
+    await db.query(sql, values)
     navigate({
       pathname: data.action_report_id,
       search: searchParams.toString(),

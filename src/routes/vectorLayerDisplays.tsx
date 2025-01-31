@@ -1,8 +1,7 @@
 import { memo, useCallback } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useSetAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
@@ -14,9 +13,7 @@ import '../form.css'
 // this form can be used from the router or inside the left map drawer
 // map drawer passes the vector_layer_id as a prop
 export const Component = memo(({ vectorLayerId }) => {
-  const setVectorLayerDisplayId = useSetAtom(
-    mapDrawerVectorLayerDisplayAtom,
-  )
+  const setVectorLayerDisplayId = useSetAtom(mapDrawerVectorLayerDisplayAtom)
   const params = useParams()
   const vector_layer_id = vectorLayerId || params.vector_layer_id
 

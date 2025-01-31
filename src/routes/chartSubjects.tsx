@@ -22,7 +22,7 @@ export const Component = memo(() => {
 
   const addRow = useCallback(async () => {
     const data = createChartSubject({ chart_id })
-    const columns = Object.keys(data)
+    const columns = Object.keys(data).join(',')
     const values = Object.values(data).join("','")
     const sql = `INSERT INTO chart_subjects (${columns}) VALUES ('${values}')`
     await db.query(sql)

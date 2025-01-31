@@ -24,8 +24,7 @@ export const Component = memo(() => {
     const checkValue = {
       ...rawCheckValue,
       check_id,
-    }
-    const columns = Object.keys(checkValue)
+    }.join(',')
     const values = Object.values(checkValue).join("','")
     const sql = `INSERT INTO check_values (${columns}) VALUES ('${values}')`
     await db.query(sql)

@@ -18,10 +18,10 @@ export const Component = memo(() => {
 
   const add = useCallback(async () => {
     const data = createAccount()
-    const columns = Object.keys(data)
-    const values = Object.values(data).join("','")
-    const sql = `insert into accounts (${columns}) values ('${values}')`
-    await db.query(sql)
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+    const sql = `insert into accounts (${columns}) values ($1)`
+    await db.query(sql, values)
     navigate({
       pathname: data.account_id,
       search: searchParams.toString(),

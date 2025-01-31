@@ -24,7 +24,7 @@ export const Component = memo(() => {
       ...createCheckTaxon(),
       check_id,
     }
-    const columns = Object.keys(checkTaxon)
+    const columns = Object.keys(checkTaxon).join(',')
     const values = Object.values(checkTaxon).join("','")
     const sql = `INSERT INTO check_taxa (${columns}) VALUES ('${values}')`
     await db.query(sql)

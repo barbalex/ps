@@ -32,10 +32,10 @@ export const Component = memo(() => {
 
   const add = useCallback(async () => {
     const data = await createProject({ db })
-    const columns = Object.keys(data)
-    const values = Object.values(data).join("','")
-    const sql = `insert into projects (${columns}) values ('${values}')`
-    await db.query(sql)
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+    const sql = `insert into projects (${columns}) values ($1)`
+    await db.query(sql, values)
     navigate({ pathname: data.project_id, search: searchParams.toString() })
   }, [db, navigate, searchParams])
 

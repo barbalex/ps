@@ -1,7 +1,6 @@
 import { useCallback, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { createMessage } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
@@ -26,10 +25,18 @@ export const Component = memo(() => {
 
   return (
     <div className="list-view">
-      <ListViewHeader title="Messages" addRow={add} tableName="message" />
+      <ListViewHeader
+        title="Messages"
+        addRow={add}
+        tableName="message"
+      />
       <div className="list-container">
         {messages.map(({ message_id, label }) => (
-          <Row key={message_id} to={message_id} label={label ?? message_id} />
+          <Row
+            key={message_id}
+            to={message_id}
+            label={label ?? message_id}
+          />
         ))}
       </div>
     </div>

@@ -1,8 +1,7 @@
 import { useCallback, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { createField } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
@@ -19,19 +18,20 @@ export const Component = memo(() => {
 
   const db = usePGlite()
 
-  const where = filter.length > 1 ? { OR: filter } : filter[0]
-  const { results: fields = [] } = useLiveQuery(
-    db.fields.liveMany({
-      where: { project_id: project_id ?? null, ...where },
-      orderBy: [{ sort_index: 'asc' }, { label: 'asc' }],
-    }),
+  const resultsFiltered = useLiveQuery(
+    `SELECT * FROM fields WHERE project_id = $1${
+      filter && ` AND(${filter})`
+    } order by sort_index ASC, label ASC`,
+    [project_id ?? null],
   )
-  const { results: fieldsUnfiltered = [] } = useLiveQuery(
-    db.fields.liveMany({
-      where: { project_id: project_id ?? null },
-      orderBy: { label: 'asc' },
-    }),
+  const fields = resultsFiltered?.rows ?? []
+  
+  const resultsUnfiltered = useLiveQuery(
+    `SELECT field_id FROM fields WHERE project_id = $1`,
+    [project_id ?? null],
   )
+  const fieldsUnfiltered = resultsUnfiltered?.rows ?? []
+  
   const isFiltered = fields.length !== fieldsUnfiltered.length
 
   const add = useCallback(async () => {

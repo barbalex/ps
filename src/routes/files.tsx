@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useContext, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import { Button } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
@@ -10,7 +10,6 @@ import { Uploader } from './file/Uploader.tsx'
 import { UploaderContext } from '../UploaderContext.ts'
 
 import '../form.css'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 
 export const Component = memo(() => {

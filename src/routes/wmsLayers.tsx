@@ -1,8 +1,7 @@
 import { useCallback, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import {
   createWmsLayer,
@@ -21,42 +20,42 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
   const db = usePGlite()
 
-  const where = filter.length > 1 ? { OR: filter } : filter[0]
+  const resultFiltered = useLiveQuery(
+    `SELECT * FROM wms_layers WHERE project_id = $1${
+      filter && ` AND (${filter})`
+    } order by label ASC`,
+    [project_id],
+  )
+  const wmsLayers = resultFiltered?.rows ?? []
 
-  const { results: wmsLayers = [] } = useLiveQuery(
-    db.wms_layers.liveMany({
-      where: { project_id, ...where },
-      orderBy: { label: 'asc' },
-    }),
+  const resultUnfiltered = useLiveQuery(
+    `SELECT * FROM wms_layers WHERE project_id = $1 order by label ASC`,
+    [project_id],
   )
-  const { results: wmsLayersUnfiltered = [] } = useLiveQuery(
-    db.wms_layers.liveMany({
-      where: { project_id },
-      orderBy: { label: 'asc' },
-    }),
-  )
+  const wmsLayersUnfiltered = resultUnfiltered?.rows ?? []
+
   const isFiltered = wmsLayers.length !== wmsLayersUnfiltered.length
 
   const add = useCallback(async () => {
     const wmsLayer = createWmsLayer({ project_id })
-    console.log('WmsLayers.add, wmsLayer:', wmsLayer)
-    await db.wms_layers.create({ data: wmsLayer })
+    const columns = Object.keys(wmsLayer).join(',')
+    const values = Object.values(wmsLayer)
+    const sql = `insert into wms_layers (${columns}) values ($1)`
+    await db.query(sql, values)
+
     // also add layer_presentation
     const layerPresentation = createLayerPresentation({
       wms_layer_id: wmsLayer.wms_layer_id,
     })
-    await db.layer_presentations.create({ data: layerPresentation })
+    const columnsLp = Object.keys(layerPresentation).join(',')
+    const valuesLp = Object.values(layerPresentation)
+    const sqlLp = `insert into layer_presentations (${columnsLp}) values ($1)`
+    await db.query(sqlLp, valuesLp)
     navigate({
       pathname: wmsLayer.wms_layer_id,
       search: searchParams.toString(),
     })
-  }, [
-    db.layer_presentations,
-    db.wms_layers,
-    navigate,
-    project_id,
-    searchParams,
-  ])
+  }, [db, navigate, project_id, searchParams])
 
   return (
     <div className="list-view">

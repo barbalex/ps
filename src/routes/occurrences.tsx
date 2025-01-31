@@ -1,7 +1,6 @@
 import { memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useParams } from 'react-router-dom'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
@@ -38,7 +37,7 @@ export const Component = memo(() => {
     where.place_id = place_id2 ?? place_id
   }
   if (isToAssess) {
-  // two of these three do not work, see: https://discord.com/channels/933657521581858818/1229057284395503817/1229057284395503817
+    // two of these three do not work, see: https://discord.com/channels/933657521581858818/1229057284395503817/1229057284395503817
     where.OR = [{ not_to_assign: null }, { not_to_assign: false }]
     // where.NOT = [{ not_to_assign: true }] // this does not work
     // where.not_to_assign = { NOT: true } // this does not work
@@ -71,7 +70,10 @@ export const Component = memo(() => {
 
   return (
     <div className="list-view">
-      <ListViewHeader title={title} tableName="occurrence" />
+      <ListViewHeader
+        title={title}
+        tableName="occurrence"
+      />
       <div className="list-container">
         {occurrences.map(({ occurrence_id, label }) => (
           <Row
