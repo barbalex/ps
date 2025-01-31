@@ -21,16 +21,19 @@ export const Component = memo(({ vectorLayerId }) => {
   const navigate = useNavigate()
 
   const db = usePGlite()
-  const { results: vlds = [] } = useLiveQuery(
-    db.vector_layer_displays.liveMany({
-      where: { vector_layer_id },
-      orderBy: { label: 'asc' },
-    }),
+
+  const result = useLiveQuery(
+    `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1 order by label asc`,
+    [vector_layer_id],
   )
+  const vlds = result?.rows ?? []
 
   const add = useCallback(async () => {
     const vectorLayerDisplay = createVectorLayerDisplay({ vector_layer_id })
-    await db.vector_layer_displays.create({ data: vectorLayerDisplay })
+    const columns = Object.keys(vectorLayerDisplay).join(',')
+    const values = Object.values(vectorLayerDisplay)
+    const sql = `insert into vector_layer_displays (${columns}) values ($1)`
+    await db.query(sql, values)
     if (vectorLayerId) {
       // we are in the map drawer
       setVectorLayerDisplayId(vectorLayerDisplay.vector_layer_display_id)
@@ -42,7 +45,7 @@ export const Component = memo(({ vectorLayerId }) => {
       search: searchParams.toString(),
     })
   }, [
-    db.vector_layer_displays,
+    db,
     navigate,
     searchParams,
     setVectorLayerDisplayId,
@@ -67,8 +70,11 @@ export const Component = memo(({ vectorLayerId }) => {
   return (
     <div className="list-view">
       <ListViewHeader
-        title="Vector Layer Displays"
-        tableName="vector layer display"
+        namePlural="Vector Layer Displays"
+        nameSingular="Vector Layer Display"
+        tableName="vector_layer_displays"
+        isFiltered={false}
+        countFiltered={vlds.length}
         addRow={add}
       />
       <div className="list-container">

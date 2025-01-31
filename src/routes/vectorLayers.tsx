@@ -16,63 +16,58 @@ import '../form.css'
 
 export const Component = memo(() => {
   const [filter] = useAtom(vectorLayersFilterAtom)
+  const isFiltered = !!filter
+
   const { project_id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const db = usePGlite()
 
-  const where = filter.length > 1 ? { OR: filter } : filter[0]
-
-  const { results: vectorLayers = [] } = useLiveQuery(
-    db.vector_layers.liveMany({
-      where: { project_id, ...where },
-      orderBy: { label: 'asc' },
-    }),
+  const result = useLiveQuery(
+    `SELECT * FROM vector_layers WHERE project_id = $1${
+      isFiltered ? ` AND(${filter})` : ''
+    } order by label ASC`,
+    [project_id],
   )
-  const { results: vectorLayersUnfiltered = [] } = useLiveQuery(
-    db.vector_layers.liveMany({
-      where: { project_id },
-      orderBy: { label: 'asc' },
-    }),
-  )
-  const isFiltered = vectorLayers.length !== vectorLayersUnfiltered.length
+  const vectorLayers = result?.rows ?? []
 
   const add = useCallback(async () => {
     const vectorLayer = createVectorLayer({ project_id, type: 'wfs' })
-    await db.vector_layers.create({ data: vectorLayer })
+    const vLColumns = Object.keys(vectorLayer).join(',')
+    const vLValues = Object.values(vectorLayer)
+    const vLSql = `insert into vector_layers (${vLColumns}) values ($1)`
+    await db.query(vLSql, vLValues)
     // also add vector_layer_display
     const vectorLayerDisplay = createVectorLayerDisplay({
       vector_layer_id: vectorLayer.vector_layer_id,
     })
-    await db.vector_layer_displays.create({ data: vectorLayerDisplay })
+    const vLDColumns = Object.keys(vectorLayerDisplay).join(',')
+    const vLDValues = Object.values(vectorLayerDisplay)
+    const vLDSql = `insert into vector_layer_displays (${vLDColumns}) values ($1)`
+    await db.query(vLDSql, vLDValues)
     // also add layer_presentation
     const layerPresentation = createLayerPresentation({
       vector_layer_id: vectorLayer.vector_layer_id,
     })
-    await db.layer_presentations.create({ data: layerPresentation })
+    const lPColumns = Object.keys(layerPresentation).join(',')
+    const lPValues = Object.values(layerPresentation)
+    const lPSql = `insert into layer_presentations (${lPColumns}) values ($1)`
+    await db.query(lPSql, lPValues)
     navigate({
       pathname: vectorLayer.vector_layer_id,
       search: searchParams.toString(),
     })
-  }, [
-    db.layer_presentations,
-    db.vector_layer_displays,
-    db.vector_layers,
-    navigate,
-    project_id,
-    searchParams,
-  ])
+  }, [db, navigate, project_id, searchParams])
 
   return (
     <div className="list-view">
       <ListViewHeader
-        title={`Vector Layers (${
-          isFiltered
-            ? `${vectorLayers.length}/${vectorLayersUnfiltered.length}`
-            : vectorLayers.length
-        })`}
+        namePlural="Vector Layers"
+        nameSingular="Vector Layer"
+        tableName="vector_layers"
+        isFiltered={isFiltered}
+        countFiltered={vectorLayers.length}
         addRow={add}
-        tableName="vector layer"
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
