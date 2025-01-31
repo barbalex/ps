@@ -12,42 +12,39 @@ import '../form.css'
 
 export const Component = memo(() => {
   const [filter] = useAtom(listsFilterAtom)
+  const isFiltered = !!filter
+
   const { project_id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const db = usePGlite()
 
-  const where = filter.length > 1 ? { OR: filter } : filter[0]
-  const { results: lists = [] } = useLiveQuery(
-    db.lists.liveMany({
-      where: { project_id, ...where },
-      orderBy: { label: 'asc' },
-    }),
+  const result = useLiveQuery(
+    `SELECT * FROM lists WHERE project_id = $1${
+      isFiltered ? ` AND(${filter})` : ''
+    } order by label asc`,
+    [project_id],
   )
-  const { results: listsUnfiltered = [] } = useLiveQuery(
-    db.lists.liveMany({
-      where: { project_id },
-      orderBy: { label: 'asc' },
-    }),
-  )
-  const isFiltered = lists.length !== listsUnfiltered.length
+  const lists = result?.rows ?? []
 
   const add = useCallback(async () => {
     const data = await createList({ db, project_id })
-    await db.lists.create({ data })
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+    const sql = `insert into lists (${columns}) values ($1)`
+    await db.query(sql, values)
     navigate({ pathname: data.list_id, search: searchParams.toString() })
   }, [db, navigate, project_id, searchParams])
 
   return (
     <div className="list-view">
       <ListViewHeader
-        title={`Lists (${
-          isFiltered
-            ? `${lists.length}/${listsUnfiltered.length}`
-            : lists.length
-        })`}
+        namePlural="Lists"
+        nameSingular="list"
+        tableName="lists"
+        isFiltered={isFiltered}
+        countFiltered={lists.length}
         addRow={add}
-        tableName="list"
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
