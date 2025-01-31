@@ -22,15 +22,14 @@ export const Component = memo(() => {
   const { subproject_id, place_id, place_id2 } = useParams()
 
   const db = usePGlite()
+
   // get occurrence_imports by subproject_id
-  const { results: occurrence_imports = [] } = useLiveQuery(
-    db.occurrence_imports.liveMany({
-      where: { subproject_id },
-    }),
-  )
+  const rusultOI = useLiveQuery(`SELECT * FROM occurrence_imports WHERE subproject_id = ${subproject_id}`)
+  const occurrenceImports = rusultOI.data ?? []
+  
   const where = {
     occurrence_import_id: {
-      in: occurrence_imports.map((o) => o.occurrence_import_id),
+      in: occurrenceImports.map((o) => o.occurrence_import_id),
     },
   }
   if (isAssigned) {
@@ -71,8 +70,10 @@ export const Component = memo(() => {
   return (
     <div className="list-view">
       <ListViewHeader
-        title={title}
-        tableName="occurrence"
+        namePlural={title}
+        nameSingular="occurrence"
+        isFiltered={false}
+        countFiltered={occurrences.length}
       />
       <div className="list-container">
         {occurrences.map(({ occurrence_id, label }) => (
