@@ -13,22 +13,31 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
 
   const db = usePGlite()
-  const { results: messages = [] } = useLiveQuery(
-    db.messages.liveMany({ orderBy: { label: 'asc' } }),
+
+  const result = useLiveQuery(
+    `SELECT message_id, label FROM messages order by label asc`,
+    [],
   )
+  const messages = result?.rows ?? []
 
   const add = useCallback(async () => {
     const data = createMessage()
-    await db.messages.create({ data })
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+    const sql = `insert into messages (${columns}) values ($1)`
+    await db.query(sql, values)
     navigate({ pathname: data.message_id, search: searchParams.toString() })
-  }, [db.messages, navigate, searchParams])
+  }, [db, navigate, searchParams])
 
   return (
     <div className="list-view">
       <ListViewHeader
-        title="Messages"
+        namePlural="Messages"
+        nameSingular="message"
+        tableName="messages"
+        isFiltered={false}
+        countFiltered={messages.length}
         addRow={add}
-        tableName="message"
       />
       <div className="list-container">
         {messages.map(({ message_id, label }) => (

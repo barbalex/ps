@@ -13,35 +13,34 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
 
   const db = usePGlite()
-  const { results } = useLiveQuery(
-    db.list_values.liveMany({
-      where: { list_id },
-      orderBy: { label: 'asc' },
-    }),
+
+  const result = useLiveQuery(
+    `SELECT * FROM list_values WHERE list_id = $1 order by label asc`,
+    [list_id],
   )
+  const listValues = result?.rows ?? []
 
   const add = useCallback(async () => {
-    const listValue = createListValue()
-    await db.list_values.create({
-      data: {
-        ...listValue,
-        list_id,
-      },
-    })
+    const data = { ...createListValue(), list_id }
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+    const sql = `insert into list_values (${columns}) values ($1)`
+    await db.query(sql, values)
     navigate({
-      pathname: listValue.list_value_id,
+      pathname: data.list_value_id,
       search: searchParams.toString(),
     })
-  }, [db.list_values, list_id, navigate, searchParams])
-
-  const listValues = results ?? []
+  }, [db, list_id, navigate, searchParams])
 
   return (
     <div className="list-view">
       <ListViewHeader
-        title="List Values"
+        namePlural="List Values"
+        nameSingular="list value"
+        tableName="list_values"
+        isFiltered={false}
+        countFiltered={listValues.length}
         addRow={add}
-        tableName="list value"
       />
       <div className="list-container">
         {listValues.map(({ list_value_id, label }) => (
