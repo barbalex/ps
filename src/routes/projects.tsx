@@ -7,12 +7,13 @@ import { createProject } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
+import { projectsFilterAtom } from '../store.ts'
 
 import '../form.css'
 
 export const Component = memo(() => {
-  // const [filter] = useAtom(projectsFilterAtom)
-  const filter = `name ilike '%demo%'`
+  const [filter] = useAtom(projectsFilterAtom)
+  // const filter = `name ilike '%demo%'`
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const db = usePGlite()
@@ -33,12 +34,6 @@ export const Component = memo(() => {
     await db.query(sql, values)
     navigate({ pathname: data.project_id, search: searchParams.toString() })
   }, [db, navigate, searchParams])
-
-  console.log('projects', {
-    projects,
-    resultFiltered,
-    sqlFiltered,
-  })
 
   return (
     <div className="list-view">

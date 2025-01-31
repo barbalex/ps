@@ -3,6 +3,17 @@ import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { Menu } from './Menu.tsx'
 
+interface Props {
+  namePlural: string
+  nameSingular: string
+  tableName: string
+  addRow: () => void
+  isFiltered: boolean
+  countFiltered: number
+  menus?: unknown[]
+  info?: unknown
+}
+
 export const ListViewHeader = memo(
   ({
     namePlural,
@@ -13,7 +24,7 @@ export const ListViewHeader = memo(
     countFiltered,
     menus,
     info,
-  }) => {
+  }: Props) => {
     // querying countUnfiltered here to reduce rerenders of parent
     const countSql = `SELECT count(*) FROM ${tableName}`
     const countUnfilteredResult = useLiveIncrementalQuery(countSql, [], 'count')

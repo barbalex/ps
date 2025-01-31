@@ -38,9 +38,12 @@ export const Component = memo(() => {
   return (
     <div className="list-view">
       <ListViewHeader
-        title="Action Reports"
+        namePlural="Action Reports"
+        nameSingular="action report"
+        tableName="action_reports"
+        isFiltered={false}
+        countFiltered={actionReports.length}
         addRow={add}
-        tableName="action report"
       />
       <div className="list-container">
         {actionReports.map(({ action_report_id, label }) => (
