@@ -12,24 +12,19 @@ import '../form.css'
 
 export const Component = memo(() => {
   const [filter] = useAtom(subprojectsFilterAtom)
+  const isFiltered = !!filter
+
   const { project_id } = useParams()
   const Navigate = useNavigate()
   const db = usePGlite()
 
-  const where = filter.length > 1 ? { OR: filter } : filter[0]
-  const { results: subprojects = [] } = useLiveQuery(
-    db.subprojects.liveMany({
-      where: { project_id, ...where },
-      orderBy: { label: 'asc' },
-    }),
+  const result = useLiveQuery(
+    `SELECT * FROM subprojects WHERE project_id = $1${
+      isFiltered ? ` AND(${filter})` : ''
+    } order by label asc`,
+    [project_id],
   )
-  const { results: subprojectsUnfiltered = [] } = useLiveQuery(
-    db.subprojects.liveMany({
-      where: { project_id },
-      orderBy: { label: 'asc' },
-    }),
-  )
-  const isFiltered = subprojects.length !== subprojectsUnfiltered.length
+  const subprojects = result?.rows ?? []
 
   // get projects.subproject_name_plural to name the table
   const { results: project } = useLiveQuery(
@@ -48,13 +43,12 @@ export const Component = memo(() => {
   return (
     <div className="list-view">
       <ListViewHeader
-        title={`${namePlural} (${
-          isFiltered
-            ? `${subprojects.length}/${subprojectsUnfiltered.length}`
-            : subprojects.length
-        })`}
+        namePlural={namePlural}
+        nameSingular={nameSingularLower}
+        tableName="subprojects"
+        isFiltered={isFiltered}
+        countFiltered={subprojects.length}
         addRow={add}
-        tableName={nameSingularLower}
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
