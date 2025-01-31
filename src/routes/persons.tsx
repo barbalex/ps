@@ -1,4 +1,4 @@
-import { useCallback, memo } from 'react'
+import { useCallback, memo, use } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
@@ -12,39 +12,39 @@ import '../form.css'
 
 export const Component = memo(() => {
   const [filter] = useAtom(personsFilterAtom)
+  const isFiltered = !!filter
+
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { project_id } = useParams()
   const db = usePGlite()
 
-  const where = filter.length > 1 ? { OR: filter } : filter[0]
-  const { results: persons = [] } = useLiveQuery(
-    db.persons.liveMany({
-      where: { project_id, ...where },
-      orderBy: { label: 'asc' },
-    }),
+  const result = useLiveQuery(
+    `SELECT * FROM persons WHERE project_id = $1${
+      isFiltered ? ` AND(${filter})` : ''
+    } ORDER BY label ASC`,
+    [project_id],
   )
-  const { results: personsUnfiltered = [] } = useLiveQuery(
-    db.persons.liveMany({ where: { project_id }, orderBy: { label: 'asc' } }),
-  )
-  const isFiltered = persons.length !== personsUnfiltered.length
+  const persons = result?.rows ?? []
 
   const add = useCallback(async () => {
     const data = await createPerson({ db, project_id })
-    await db.persons.create({ data })
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+    const sql = `INSERT INTO persons (${columns}) VALUES ($1)`
+    await db.query(sql, values)
     navigate({ pathname: data.person_id, search: searchParams.toString() })
   }, [db, navigate, project_id, searchParams])
 
   return (
     <div className="list-view">
       <ListViewHeader
-        title={`Persons (${
-          isFiltered
-            ? `${persons.length}/${personsUnfiltered.length}`
-            : persons.length
-        })`}
+        namePlural="Persons"
+        nameSingular="person"
+        tableName="persons"
+        ifFiltered={isFiltered}
+        countFiltered={persons.length}
         addRow={add}
-        tableName="person"
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
