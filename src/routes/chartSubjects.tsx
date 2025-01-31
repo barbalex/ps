@@ -38,8 +38,11 @@ export const Component = memo(() => {
   return (
     <div className="list-view">
       <ListViewHeader
-        title="Chart Subjects"
-        tableName="chart subject"
+        namePlural="Chart Subjects"
+        nameSingular="chart subject"
+        tableName="chart_subjects"
+        isFiltered={false}
+        countFiltered={chartSubjects.length}
         addRow={addRow}
       />
       <div className="list-container">

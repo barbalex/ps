@@ -68,8 +68,11 @@ export const Component = memo(() => {
   return (
     <div className="list-view">
       <ListViewHeader
-        title="Charts"
-        tableName="chart"
+        namePlural="Charts"
+        nameSingular="chart"
+        tableName="charts"
+        isFiltered={false}
+        countFiltered={charts.length}
         addRow={designing ? add : undefined}
       />
       <div className="list-container">
