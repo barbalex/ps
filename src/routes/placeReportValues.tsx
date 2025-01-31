@@ -13,33 +13,33 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
 
   const db = usePGlite()
-  const { results: placeReportValues = [] } = useLiveQuery(
-    db.place_report_values.liveMany({
-      where: { place_report_id },
-      orderBy: { label: 'asc' },
-    }),
+  const result = useLiveQuery(
+    `SELECT * FROM place_report_values WHERE place_report_id = $1 ORDER BY label ASC`,
+    [place_report_id],
   )
+  const placeReportValues = result.rows ?? []
 
   const add = useCallback(async () => {
-    const placeReportValue = createPlaceReportValue()
-    await db.place_report_values.create({
-      data: {
-        ...placeReportValue,
-        place_report_id,
-      },
-    })
+    const data = { ...createPlaceReportValue(), place_report_id }
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+    const sql = `INSERT INTO place_report_values (${columns}) VALUES ($1)`
+    await db.query(sql, values)
     navigate({
-      pathname: placeReportValue.place_report_value_id,
+      pathname: data.place_report_value_id,
       search: searchParams.toString(),
     })
-  }, [db.place_report_values, navigate, place_report_id, searchParams])
+  }, [db, navigate, place_report_id, searchParams])
 
   return (
     <div className="list-view">
       <ListViewHeader
-        title="Place Report Values"
+        namePlural="Place Report Values"
+        nameSingular="place report value"
+        tableName="place_report_values"
+        isFiltered={false}
+        countFiltered={placeReportValues.length}
         addRow={add}
-        tableName="place report value"
       />
       <div className="list-container">
         {placeReportValues.map(({ place_report_value_id, label }) => (
