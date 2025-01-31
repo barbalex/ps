@@ -13,40 +13,37 @@ import '../form.css'
 
 export const Component = memo(() => {
   const [filter] = useAtom(widgetTypesFilterAtom)
+  const isFiltered = !!filter
+
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const db = usePGlite()
 
-  const where = filter.length > 1 ? { OR: filter } : filter[0]
-  const { results: widgetTypes = [] } = useLiveQuery(
-    db.widget_types.liveMany({
-      orderBy: { label: 'asc' },
-      where,
-    }),
+  const result = useLiveQuery(
+    `SELECT * FROM widget_types${
+      isFiltered ? ` WHERE ${filter}` : ''
+    } order by label asc`,
   )
-  const { results: widgetTypesUnfiltered = [] } = useLiveQuery(
-    db.widget_types.liveMany({
-      orderBy: { label: 'asc' },
-    }),
-  )
-  const isFiltered = widgetTypes.length !== widgetTypesUnfiltered.length
+  const widgetTypes = result?.rows ?? []
 
   const add = useCallback(async () => {
     const data = createWidgetType()
-    await db.widget_types.create({ data })
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+    const sql = `insert into widget_types (${columns}) values ($1)`
+    await db.query(sql, values)
     navigate({ pathname: data.widget_type_id, search: searchParams.toString() })
-  }, [db.widget_types, navigate, searchParams])
+  }, [db, navigate, searchParams])
 
   return (
     <div className="list-view">
       <ListViewHeader
-        title={`Widget Types (${
-          isFiltered
-            ? `${widgetTypes.length}/${widgetTypesUnfiltered.length}`
-            : widgetTypes.length
-        })`}
+        namePlural="Widget Types"
+        nameSingular="Widget Type"
+        tableName="widget_types"
+        isFiltered={isFiltered}
+        countFiltered={widgetTypes.length}
         addRow={add}
-        tableName="widget type"
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
