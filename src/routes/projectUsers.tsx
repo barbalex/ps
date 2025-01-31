@@ -13,33 +13,33 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
 
   const db = usePGlite()
-  const { results: projectUsers = [] } = useLiveQuery(
-    db.project_users.liveMany({
-      where: { project_id },
-      orderBy: { label: 'asc' },
-    }),
+  const result = useLiveQuery(
+    `SELECT * FROM project_users WHERE project_id = $1 ORDER BY label ASC`,
+    [project_id],
   )
+  const projectUsers = result?.rows ?? []
 
   const add = useCallback(async () => {
-    const projectUser = createProjectUser()
-    await db.project_users.create({
-      data: {
-        ...projectUser,
-        project_id,
-      },
-    })
+    const data = { ...createProjectUser(), project_id }
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+    const sql = `INSERT INTO project_users (${columns}) VALUES ($1)`
+    await db.query(sql, values)
     navigate({
-      pathname: projectUser.project_user_id,
+      pathname: data.project_user_id,
       search: searchParams.toString(),
     })
-  }, [db.project_users, navigate, project_id, searchParams])
+  }, [db, navigate, project_id, searchParams])
 
   return (
     <div className="list-view">
       <ListViewHeader
-        title="Project Users"
+        namePlural="Project Users"
+        nameSingular="project user"
+        tableName="project_users"
+        isFiltered={false}
+        countFiltered={projectUsers.length}
         addRow={add}
-        tableName="project user"
       />
       <div className="list-container">
         {projectUsers.map(({ project_user_id, label }) => (
