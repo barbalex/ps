@@ -4,8 +4,8 @@ import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { createSubprojectUser } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
-import '../form.css'
 import { Row } from '../components/shared/Row.tsx'
+import '../form.css'
 
 export const Component = memo(() => {
   const { subproject_id } = useParams()
@@ -13,33 +13,33 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
 
   const db = usePGlite()
-  const { results: subprojectUsers = [] } = useLiveQuery(
-    db.subproject_users.liveMany({
-      where: { subproject_id },
-      orderBy: { label: 'asc' },
-    }),
+  const result = useLiveQuery(
+    `SELECT * FROM subproject_users WHERE subproject_id = $1 ORDER BY label ASC`,
+    [subproject_id],
   )
+  const subprojectUsers = result?.rows ?? []
 
   const add = useCallback(async () => {
-    const subprojectUser = createSubprojectUser()
-    await db.subproject_users.create({
-      data: {
-        ...subprojectUser,
-        subproject_id,
-      },
-    })
+    const data = { ...createSubprojectUser(), subproject_id }
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+    const sql = `INSERT INTO subproject_users (${columns}) VALUES ($1)`
+    await db.query(sql, values)
     navigate({
-      pathname: subprojectUser.subproject_user_id,
+      pathname: data.subproject_user_id,
       search: searchParams.toString(),
     })
-  }, [db.subproject_users, navigate, searchParams, subproject_id])
+  }, [db, navigate, searchParams, subproject_id])
 
   return (
     <div className="list-view">
       <ListViewHeader
-        title="Subproject Users"
+        namePlural="Subproject Users"
+        nameSingular="Subproject User"
+        tableName="subproject_users"
+        isFiltered={false}
+        countFiltered={subprojectUsers.length}
         addRow={add}
-        tableName="subproject user"
       />
       <div className="list-container">
         {subprojectUsers.map(({ subproject_user_id, label }) => (

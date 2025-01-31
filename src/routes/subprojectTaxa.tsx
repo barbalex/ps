@@ -13,33 +13,33 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
 
   const db = usePGlite()
-  const { results: subprojectTaxa = [] } = useLiveQuery(
-    db.subproject_taxa.liveMany({
-      where: { subproject_id },
-      orderBy: { label: 'asc' },
-    }),
+  const result = useLiveQuery(
+    `SELECT * FROM subproject_taxa WHERE subproject_id = $1 ORDER BY label ASC`,
+    [subproject_id],
   )
+  const subprojectTaxa = result?.rows ?? []
 
   const add = useCallback(async () => {
-    const subprojectTaxon = createSubprojectTaxon()
-    await db.subproject_taxa.create({
-      data: {
-        ...subprojectTaxon,
-        subproject_id,
-      },
-    })
+    const data = { ...createSubprojectTaxon(), subproject_id }
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+    const sql = `INSERT INTO subproject_taxa (${columns}) VALUES ($1)`
+    await db.query(sql, values)
     navigate({
-      pathname: subprojectTaxon.subproject_taxon_id,
+      pathname: data.subproject_taxon_id,
       search: searchParams.toString(),
     })
-  }, [db.subproject_taxa, navigate, searchParams, subproject_id])
+  }, [db, navigate, searchParams, subproject_id])
 
   return (
     <div className="list-view">
       <ListViewHeader
-        title="Subproject Taxa"
+        namePlural="Subproject Taxa"
+        nameSingular="Subproject Taxon"
+        tableName="subproject_taxa"
+        isFiltered={false}
+        countFiltered={subprojectTaxa.length}
         addRow={add}
-        tableName="subproject taxon"
       />
       <div className="list-container">
         {subprojectTaxa.map(({ subproject_taxon_id, label }) => (
