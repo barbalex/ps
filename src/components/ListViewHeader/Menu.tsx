@@ -6,11 +6,11 @@ import { controls } from '../../styles.ts'
 
 interface Props {
   addRow?: () => void
-  tableName: string
+  nameSingular: string
   menus?: unknown[]
 }
 
-export const Menu = memo(({ addRow, tableName, menus }: Props) => {
+export const Menu = memo(({ addRow, nameSingular, menus }: Props) => {
   if (!addRow && !menus) return null
 
   return (
@@ -21,7 +21,7 @@ export const Menu = memo(({ addRow, tableName, menus }: Props) => {
           size="medium"
           icon={<FaPlus />}
           onClick={addRow}
-          title={`Add new ${tableName}`}
+          title={`Add new ${nameSingular}`}
         />
       )}
     </div>

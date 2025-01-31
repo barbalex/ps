@@ -39,7 +39,7 @@ export const ListViewHeader = memo(
           <h1>{title}</h1>
           <Menu
             addRow={addRow}
-            tableName={nameSingular}
+            nameSingular={nameSingular}
             menus={menus}
           />
         </div>
