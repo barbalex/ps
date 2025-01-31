@@ -12,6 +12,8 @@ import '../form.css'
 
 export const Component = memo(() => {
   const [filter] = useAtom(fieldsFilterAtom)
+  const isFiltered = !!filter
+
   const { project_id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -20,19 +22,11 @@ export const Component = memo(() => {
 
   const resultsFiltered = useLiveQuery(
     `SELECT * FROM fields WHERE project_id = $1${
-      filter?.length ? ` AND(${filter})` : ''
+      isFiltered ? ` AND(${filter})` : ''
     } order by sort_index ASC, label ASC`,
     [project_id ?? null],
   )
   const fields = resultsFiltered?.rows ?? []
-
-  const countUnfilteredResult = useLiveQuery(
-    `SELECT count(*) FROM fields WHERE project_id = $1`,
-    [project_id ?? null],
-  )
-  const countUnfiltered = countUnfilteredResult?.rows[0]?.count ?? 0
-
-  const isFiltered = fields.length !== countUnfiltered
 
   const add = useCallback(async () => {
     const data = createField({ project_id })
@@ -43,13 +37,12 @@ export const Component = memo(() => {
   return (
     <div className="list-view">
       <ListViewHeader
-        title={`Fields (${
-          isFiltered
-            ? `${fields.length}/${countUnfiltered}`
-            : fields.length
-        })`}
+        namePlural="Fields"
+        nameSingular="Field"
+        tablename="fields"
+        isFiltered={isFiltered}
+        countFiltered={fields.length}
         addRow={add}
-        tableName="field"
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">

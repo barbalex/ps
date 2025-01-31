@@ -13,23 +13,18 @@ import '../form.css'
 
 export const Component = memo(() => {
   const [filter] = useAtom(fieldTypesFilterAtom)
+  const isFiltered = !!filter
+
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const db = usePGlite()
 
-  const where = filter.length > 1 ? { OR: filter } : filter[0]
-  const { results: fieldTypes = [] } = useLiveQuery(
-    db.field_types.liveMany({
-      where,
-      orderBy: { label: 'asc' },
-    }),
+  const resultFiltered = useLiveQuery(
+    `SELECT * FROM field_types${
+      isFiltered ? ` AND(${filter})` : ''
+    } order by label asc`,
   )
-  const { results: fieldTypesUnfiltered = [] } = useLiveQuery(
-    db.field_types.liveMany({
-      orderBy: { label: 'asc' },
-    }),
-  )
-  const isFiltered = fieldTypes.length !== fieldTypesUnfiltered.length
+  const fieldTypes = resultFiltered?.rows ?? []
 
   const add = useCallback(async () => {
     const data = createFieldType()
@@ -40,13 +35,12 @@ export const Component = memo(() => {
   return (
     <div className="list-view">
       <ListViewHeader
-        title={`Field Types (${
-          isFiltered
-            ? `${fieldTypes.length}/${fieldTypesUnfiltered.length}`
-            : fieldTypes.length
-        })`}
+        namePlural="Field Types"
+        nameSingular="Field Type"
+        tablename="field_types"
+        isFiltered={isFiltered}
+        countFiltered={fieldTypes.length}
         addRow={add}
-        tableName="field type"
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
