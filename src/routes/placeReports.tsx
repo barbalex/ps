@@ -11,29 +11,23 @@ import { placeReports1FilterAtom, placeReports2FilterAtom } from '../store.ts'
 import '../form.css'
 
 export const Component = memo(() => {
-  const [placeReports1Filter] = useAtom(placeReports1FilterAtom)
-  const [placeReports2Filter] = useAtom(placeReports2FilterAtom)
-
   const { project_id, place_id, place_id2 } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const db = usePGlite()
 
+  const [placeReports1Filter] = useAtom(placeReports1FilterAtom)
+  const [placeReports2Filter] = useAtom(placeReports2FilterAtom)
   const filter = place_id2 ? placeReports2Filter : placeReports1Filter
-  const where = filter.length > 1 ? { OR: filter } : filter[0]
-  const { results: placeReports = [] } = useLiveQuery(
-    db.place_reports.liveMany({
-      where: { place_id: place_id2 ?? place_id, ...where },
-      orderBy: { label: 'asc' },
-    }),
+  const isFiltered = !!filter
+
+  const result = useLiveQuery(
+    `SELECT * FROM place_reports WHERE place_id = $1${
+      isFiltered ? ` AND(${filter})` : ''
+    } order by label asc`,
+    [place_id2 ?? place_id],
   )
-  const { results: placeReportsUnfiltered = [] } = useLiveQuery(
-    db.place_reports.liveMany({
-      where: { place_id: place_id2 ?? place_id },
-      orderBy: { label: 'asc' },
-    }),
-  )
-  const isFiltered = placeReports.length !== placeReportsUnfiltered.length
+  const placeReports = result?.rows ?? []
 
   const add = useCallback(async () => {
     const data = await createPlaceReport({
@@ -41,7 +35,10 @@ export const Component = memo(() => {
       project_id,
       place_id: place_id2 ?? place_id,
     })
-    await db.place_reports.create({ data })
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+    const sql = `insert into place_reports (${columns}) values ($1)`
+    await db.query(sql, values)
     navigate({
       pathname: data.place_report_id,
       search: searchParams.toString(),
@@ -51,13 +48,12 @@ export const Component = memo(() => {
   return (
     <div className="list-view">
       <ListViewHeader
-        title={`Place Reports (${
-          isFiltered
-            ? `${placeReports.length}/${placeReportsUnfiltered.length}`
-            : placeReports.length
-        })`}
+        namePlural="Place Reports"
+        nameSingular="place report"
+        tableName="place_reports"
+        isFiltered={isFiltered}
+        countFiltered={placeReports.length}
         addRow={add}
-        tableName="report"
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
