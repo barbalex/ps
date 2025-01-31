@@ -12,26 +12,20 @@ import '../form.css'
 
 export const Component = memo(() => {
   const [filter] = useAtom(subprojectReportsFilterAtom)
+  const isFiltered = !!filter
+
   const { subproject_id, project_id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const db = usePGlite()
 
-  const where = filter.length > 1 ? { OR: filter } : filter[0]
-  const { results: subprojectReports = [] } = useLiveQuery(
-    db.subproject_reports.liveMany({
-      where: { subproject_id, ...where },
-      orderBy: { label: 'asc' },
-    }),
+  const result = useLiveQuery(
+    `SELECT * FROM subproject_reports WHERE subproject_id = $1${
+      isFiltered ? ` AND(${filter})` : ''
+    } order by label asc`,
+    [subproject_id],
   )
-  const { results: subprojectReportsUnfiltered = [] } = useLiveQuery(
-    db.subproject_reports.liveMany({
-      where: { subproject_id },
-      orderBy: { label: 'asc' },
-    }),
-  )
-  const isFiltered =
-    subprojectReports.length !== subprojectReportsUnfiltered.length
+  const subprojectReports = result?.rows ?? []
 
   const add = useCallback(async () => {
     const data = await createSubprojectReport({
@@ -39,7 +33,10 @@ export const Component = memo(() => {
       project_id,
       subproject_id,
     })
-    await db.subproject_reports.create({ data })
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+    const sql = `insert into subproject_reports (${columns}) values ($1)`
+    await db.query(sql, values)
     navigate({
       pathname: data.subproject_report_id,
       search: searchParams.toString(),
@@ -49,13 +46,12 @@ export const Component = memo(() => {
   return (
     <div className="list-view">
       <ListViewHeader
-        title={`Subproject Reports (${
-          isFiltered
-            ? `${subprojectReports.length}/${subprojectReportsUnfiltered.length}`
-            : subprojectReports.length
-        })`}
+        namePlural="Subproject Reports"
+        nameSingular="subproject report"
+        tableName="subproject_reports"
+        ifFiltered={isFiltered}
+        countFiltered={subprojectReports.length}
         addRow={add}
-        tableName="subproject report"
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
