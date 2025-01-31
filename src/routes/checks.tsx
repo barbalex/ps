@@ -13,15 +13,16 @@ import { checks1FilterAtom, checks2FilterAtom } from '../store.ts'
 import '../form.css'
 
 export const Component = memo(() => {
-  const [checks1Filter] = useAtom(checks1FilterAtom)
-  const [checks2Filter] = useAtom(checks2FilterAtom)
-
   const { project_id, place_id, place_id2 } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const db = usePGlite()
 
+  const [checks1Filter] = useAtom(checks1FilterAtom)
+  const [checks2Filter] = useAtom(checks2FilterAtom)
   const filter = place_id2 ? checks2Filter : checks1Filter
+  const isFiltered = !!filter
+
   const results = useLiveQuery(
     `SELECT * FROM checks WHERE place_id = $1${
       filter?.length ? ` AND (${filter})` : ''
@@ -29,14 +30,6 @@ export const Component = memo(() => {
     [place_id2 ?? place_id],
   )
   const checks = results?.rows ?? []
-
-  const countUnfilteredResult = useLiveQuery(
-    `SELECT count(*) FROM checks WHERE place_id = $1`,
-    [place_id2 ?? place_id],
-  )
-  const countUnfiltered = countUnfilteredResult?.rows[0]?.count ?? 0
-
-  const isFiltered = checks.length !== countUnfiltered
 
   const add = useCallback(async () => {
     const data = await createCheck({
@@ -54,11 +47,12 @@ export const Component = memo(() => {
   return (
     <div className="list-view">
       <ListViewHeader
-        title={`Checks (${
-          isFiltered ? `${checks.length}/${countUnfiltered}` : checks.length
-        })`}
+        namePlural="Checks"
+        nameSingular="check"
+        tableName="checks"
+        isFiltered={isFiltered}
+        countFiltered={checks.length}
         addRow={add}
-        tableName="check"
         menus={
           <>
             <LayerMenu

@@ -20,14 +20,14 @@ export const Component = memo(() => {
   const checkValues = results?.rows ?? []
 
   const add = useCallback(async () => {
-    const rawCheckValue = createCheckValue()
     const checkValue = {
-      ...rawCheckValue,
+      ...createCheckValue(),
       check_id,
-    }.join(',')
-    const values = Object.values(checkValue).join("','")
-    const sql = `INSERT INTO check_values (${columns}) VALUES ('${values}')`
-    await db.query(sql)
+    }
+    const columns = Object.keys(checkValue).join(',')
+    const values = Object.values(checkValue)
+    const sql = `INSERT INTO check_values (${columns}) VALUES ($1)`
+    await db.query(sql, values)
     navigate({
       pathname: checkValue.check_value_id,
       search: searchParams.toString(),
@@ -37,9 +37,12 @@ export const Component = memo(() => {
   return (
     <div className="list-view">
       <ListViewHeader
-        title="Check Values"
+        namePlural="Check Values"
+        nameSingular="check value"
+        tablename="check_values"
+        isFiltered={false}
+        countFiltered={checkValues.length}
         addRow={add}
-        tableName="check value"
       />
       <div className="list-container">
         {checkValues.map(({ check_value_id, label }) => (
