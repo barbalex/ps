@@ -12,42 +12,39 @@ import '../form.css'
 
 export const Component = memo(() => {
   const [filter] = useAtom(goalsFilterAtom)
+  const isFiltered = !!filter
+
   const { project_id, subproject_id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const db = usePGlite()
 
-  const where = filter.length > 1 ? { OR: filter } : filter[0]
-  const { results: goals = [] } = useLiveQuery(
-    db.goals.liveMany({
-      where: { subproject_id, ...where },
-      orderBy: { label: 'asc' },
-    }),
+  const result = useLiveQuery(
+    `SELECT * FROM goals WHERE subproject_id = $1${
+      isFiltered ? ` AND(${filter})` : ''
+    }`,
+    [subproject_id],
   )
-  const { results: goalsUnfiltered = [] } = useLiveQuery(
-    db.goals.liveMany({
-      where: { subproject_id },
-      orderBy: { label: 'asc' },
-    }),
-  )
-  const isFiltered = goals.length !== goalsUnfiltered.length
+  const goals = result?.rows ?? []
 
   const add = useCallback(async () => {
     const data = await createGoal({ db, project_id, subproject_id })
-    await db.goals.create({ data })
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+    const sql = `insert into goals (${columns}) values ($1)`
+    await db.query(sql, values)
     navigate({ pathname: data.goal_id, search: searchParams.toString() })
   }, [db, navigate, project_id, searchParams, subproject_id])
 
   return (
     <div className="list-view">
       <ListViewHeader
-        title={`Goals (${
-          isFiltered
-            ? `${goals.length}/${goalsUnfiltered.length}`
-            : goals.length
-        })`}
+        namePlural="Goals"
+        nameSingular="Goal"
+        tableName="goals"
+        isFiltered={isFiltered}
+        countFiltered={goals.length}
         addRow={add}
-        tableName="goal"
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
