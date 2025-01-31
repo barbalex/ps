@@ -13,25 +13,31 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
 
   const db = usePGlite()
-  const { results: goals = [] } = useLiveQuery(
-    db.goal_reports.liveMany({
-      where: { goal_id },
-      orderBy: { label: 'asc' },
-    }),
+
+  const result = useLiveQuery(
+    `SELECT * FROM goal_reports WHERE goal_id = $1 ORDER BY label ASC`,
+    [goal_id],
   )
+  const goals = result?.rows ?? []
 
   const add = useCallback(async () => {
     const data = await createGoalReport({ db, project_id, goal_id })
-    await db.goal_reports.create({ data })
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+    const sql = `INSERT INTO goal_reports (${columns}) VALUES ($1)`
+    await db.query(sql, values)
     navigate({ pathname: data.goal_report_id, search: searchParams.toString() })
   }, [db, goal_id, navigate, project_id, searchParams])
 
   return (
     <div className="list-view">
       <ListViewHeader
-        title="Goal Reports"
+        namePlural="Goal Reports"
+        nameSingular="Goal Report"
+        tableName="goal_reports"
+        isFiltered={false}
+        countFiltered={goals.length}
         addRow={add}
-        tableName="goal report"
       />
       <div className="list-container">
         {goals.map(({ goal_report_id, label }) => (
