@@ -7,7 +7,7 @@ interface Props {
   namePlural: string
   nameSingular: string
   tableName: string
-  addRow: () => void
+  addRow?: () => void
   isFiltered: boolean
   countFiltered: number
   menus?: unknown[]

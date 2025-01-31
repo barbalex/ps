@@ -4,7 +4,13 @@ import { FaPlus } from 'react-icons/fa'
 
 import { controls } from '../../styles.ts'
 
-export const Menu = memo(({ addRow, tableName, menus }) => {
+interface Props {
+  addRow?: () => void
+  tableName: string
+  menus?: unknown[]
+}
+
+export const Menu = memo(({ addRow, tableName, menus }: Props) => {
   if (!addRow && !menus) return null
 
   return (

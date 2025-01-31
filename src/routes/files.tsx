@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useContext, memo } from 'react'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import { Button } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
@@ -10,7 +10,6 @@ import { Uploader } from './file/Uploader.tsx'
 import { UploaderContext } from '../UploaderContext.ts'
 
 import '../form.css'
-
 
 export const Component = memo(() => {
   const {
@@ -23,30 +22,27 @@ export const Component = memo(() => {
   } = useParams()
 
   const where = useMemo(() => {
-    const where = {}
+    let where = ''
     if (action_id) {
-      where.action_id = action_id
+      where = `action_id = ${action_id}`
     } else if (check_id) {
-      where.check_id = check_id
+      where = `check_id = ${check_id}`
     } else if (place_id2) {
-      where.place_id2 = place_id2
+      where = `place_id2 = ${place_id2}`
     } else if (place_id) {
-      where.place_id = place_id
+      where = `place_id = ${place_id}`
     } else if (subproject_id) {
-      where.subproject_id = subproject_id
+      where = `subproject_id = ${subproject_id}`
     } else if (project_id) {
-      where.project_id = project_id
+      where = `project_id = ${project_id}`
     }
     return where
   }, [action_id, check_id, place_id, place_id2, project_id, subproject_id])
 
-  const db = usePGlite()
-  const { results: files = [] } = useLiveQuery(
-    db.files.liveMany({
-      where,
-      orderBy: { label: 'asc' },
-    }),
+  const result = useLiveQuery(
+    `SELECT * FROM files${where ? ` WHERE ${where}` : ''}`,
   )
+  const files = result?.rows ?? []
 
   const uploaderCtx = useContext(UploaderContext)
   const api = uploaderCtx?.current?.getAPI?.()
@@ -57,8 +53,11 @@ export const Component = memo(() => {
   return (
     <div className="list-view">
       <ListViewHeader
-        title="Files"
-        tableName="file"
+        namePlural="Files"
+        nameSingular="File"
+        tableName="files"
+        isFiltered={false}
+        countFiltered={files.length}
         menus={
           <Button
             size="medium"
