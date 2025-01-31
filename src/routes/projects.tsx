@@ -1,18 +1,18 @@
 import { useCallback, memo } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAtom } from 'jotai'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { createProject } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
-import { projectsFilterAtom } from '../store.ts'
 
 import '../form.css'
 
 export const Component = memo(() => {
-  const [filter] = useAtom(projectsFilterAtom)
+  // const [filter] = useAtom(projectsFilterAtom)
+  const filter = `name ilike '%demo%'`
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const db = usePGlite()
@@ -20,13 +20,10 @@ export const Component = memo(() => {
   const sqlFiltered = `SELECT * FROM projects${
     filter?.length ? ` WHERE ${filter}` : ''
   } order by label asc`
-  const resultFiltered = useLiveQuery(sqlFiltered)
+  const resultFiltered = useLiveIncrementalQuery(sqlFiltered, [], 'project_id')
   const projects = resultFiltered?.rows ?? []
 
-  const countUnfilteredResult = useLiveQuery(`SELECT count(*) FROM projects`)
-  const countUnfiltered = countUnfilteredResult?.rows[0]?.count ?? 0
-
-  const isFiltered = projects.length !== countUnfiltered
+  const isFiltered = !!filter
 
   const add = useCallback(async () => {
     const data = await createProject({ db })
@@ -37,16 +34,21 @@ export const Component = memo(() => {
     navigate({ pathname: data.project_id, search: searchParams.toString() })
   }, [db, navigate, searchParams])
 
-  console.log('projects', { projects, countUnfiltered })
+  console.log('projects', {
+    projects,
+    resultFiltered,
+    sqlFiltered,
+  })
 
   return (
     <div className="list-view">
       <ListViewHeader
-        title={`Projects (${
-          isFiltered ? `${projects.length}/${countUnfiltered}` : projects.length
-        })`}
+        namePlural="Projects"
+        nameSingular="project"
+        tableName="projects"
+        isFiltered={isFiltered}
+        countFiltered={projects.length}
         addRow={add}
-        tableName="project"
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
