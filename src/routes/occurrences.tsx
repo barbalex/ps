@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import { useLocation, useParams } from 'react-router-dom'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
@@ -21,38 +21,20 @@ export const Component = memo(() => {
 
   const { subproject_id, place_id, place_id2 } = useParams()
 
-  const db = usePGlite()
-
-  // get occurrence_imports by subproject_id
-  const rusultOI = useLiveQuery(`SELECT * FROM occurrence_imports WHERE subproject_id = ${subproject_id}`)
-  const occurrenceImports = rusultOI.data ?? []
-  
-  const where = {
-    occurrence_import_id: {
-      in: occurrenceImports.map((o) => o.occurrence_import_id),
-    },
-  }
+  let filter = `oi.subproject_id = '${subproject_id}'`
   if (isAssigned) {
-    where.place_id = place_id2 ?? place_id
+    filter += ` AND o.place_id = '${place_id2 ?? place_id}'`
   }
   if (isToAssess) {
-    // two of these three do not work, see: https://discord.com/channels/933657521581858818/1229057284395503817/1229057284395503817
-    where.OR = [{ not_to_assign: null }, { not_to_assign: false }]
-    // where.NOT = [{ not_to_assign: true }] // this does not work
-    // where.not_to_assign = { NOT: true } // this does not work
-    where.place_id = null
+    filter += ' AND o.not_to_assign is not true AND o.place_id is null'
   }
   if (isNotToAssign) {
-    where.not_to_assign = true
-    where.place_id = null
+    filter += ' AND o.not_to_assign is true AND o.place_id is null'
   }
-  const { results: occurrences = [] } = useLiveQuery(
-    db.occurrences.liveMany({
-      where,
-      orderBy: { label: 'asc' },
-      include: { occurrence_imports: true },
-    }),
+  const result = useLiveQuery(
+    `SELECT o.occurrence_id, o.label FROM occurrences o inner join occurrence_imports oi on o.occurrence_import_id = oi.occurrence_import_id WHERE ${filter} order by label asc`,
   )
+  const occurrences = result?.rows ?? []
 
   // console.log('hello occurrences', {
   //   isAssigned,
@@ -64,7 +46,7 @@ export const Component = memo(() => {
   //   place_id2,
   //   occurrence_imports,
   //   occurrences,
-  //   where,
+  //   filter,
   // })
 
   return (
