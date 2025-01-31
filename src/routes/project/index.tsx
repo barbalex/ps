@@ -2,9 +2,8 @@ import { useRef, useCallback, memo } from 'react'
 import { useSearchParams, useParams } from 'react-router-dom'
 import { Tab, TabList } from '@fluentui/react-components'
 import type { SelectTabData, SelectTabEvent } from '@fluentui/react-components'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Header } from './Header.tsx'
 import { Component as Form } from './Form.tsx'
@@ -22,9 +21,10 @@ export const Component = memo(() => {
 
   const db = usePGlite()
 
-  const { results: row } = useLiveQuery(
-    db.projects.liveUnique({ where: { project_id } }),
-  )
+  const result = useLiveQuery(`SELECT * FROM projects WHERE project_id = $1`, [
+    project_id,
+  ])
+  const row = result?.rows[0]
 
   const [searchParams, setSearchParams] = useSearchParams()
   const tab = searchParams.get('projectTab') ?? 'form'
@@ -37,12 +37,12 @@ export const Component = memo(() => {
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
-      db.projects.update({
-        where: { project_id },
-        data: { [name]: value },
-      })
+      db.execute(`UPDATE projects SET ${name} = $1 WHERE project_id = $2`, [
+        value,
+        project_id,
+      ])
     },
-    [db.projects, project_id],
+    [db, project_id],
   )
 
   if (!row) return <Loading />
