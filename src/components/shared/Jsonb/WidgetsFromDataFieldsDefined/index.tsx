@@ -8,6 +8,7 @@ import { EditField } from './EditField.tsx'
 import { getValueFromChange } from '../../../../modules/getValueFromChange.ts'
 import { Widget } from './Widget.tsx'
 
+// TODO: Uncaught (in promise) error: invalid input syntax for type uuid: ""
 export const WidgetsFromDataFieldsDefined = memo(
   forwardRef(
     (
@@ -20,6 +21,9 @@ export const WidgetsFromDataFieldsDefined = memo(
       const { place_id, place_id2 } = useParams()
       const editingField = searchParams.get('editingField')
       const db = usePGlite()
+
+      const fieldTypeIds = fields.map((field) => field.field_type_id)
+      console.log('WidgetsFromDataFieldsDefined', { fieldTypeIds })
 
       // TODO: test
       const resultFieldTypes = useLiveQuery(

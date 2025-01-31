@@ -111,41 +111,43 @@ export const Jsonb = memo(
       )
 
       const fieldsFromDataKeysNotDefined = dataKeysNotDefined.map(
-        (dataKey, index) => {
-          return (
-            <TextField
-              key={dataKey}
-              label={dataKey}
-              name={dataKey}
-              value={
-                data?.[dataKey]?.toLocaleDateString?.() ?? data?.[dataKey] ?? ''
-              }
-              onChange={(e, dataReturned) => {
-                // if value was removed, remove the key also
-                onChange(e, dataReturned, true)
-              }}
-              validationState="warning"
-              validationMessage={`This field is not defined for this ${
-                isAccountTable ? 'account' : 'project'
-              }`}
-              autoFocus={autoFocus && index === 0 && fields.length === 0}
-            />
-          )
-        },
+        (dataKey, index) => (
+          <TextField
+            key={dataKey}
+            label={dataKey}
+            name={dataKey}
+            value={
+              data?.[dataKey]?.toLocaleDateString?.() ?? data?.[dataKey] ?? ''
+            }
+            onChange={(e, dataReturned) => {
+              // if value was removed, remove the key also
+              onChange(e, dataReturned, true)
+            }}
+            validationState="warning"
+            validationMessage={`This field is not defined for this ${
+              isAccountTable ? 'account' : 'project'
+            }`}
+            autoFocus={autoFocus && index === 0 && fields.length === 0}
+          />
+        ),
       )
 
       return [
-        <WidgetsFromDataFieldsDefined
-          key="widgetsFromDataFieldsDefined"
-          fields={fields}
-          data={data}
-          table={table}
-          jsonFieldName={jsonFieldName}
-          idField={idField}
-          id={id}
-          autoFocus={autoFocus}
-          ref={ref}
-        />,
+        ...(fields.length
+          ? [
+              <WidgetsFromDataFieldsDefined
+                key="widgetsFromDataFieldsDefined"
+                fields={fields}
+                data={data}
+                table={table}
+                jsonFieldName={jsonFieldName}
+                idField={idField}
+                id={id}
+                autoFocus={autoFocus}
+                ref={ref}
+              />,
+            ]
+          : []),
         fieldsFromDataKeysNotDefined,
         <AddField
           key="addField"

@@ -13,7 +13,11 @@ export const Component = memo(
     const row = rowFromProps ?? outletContext?.row ?? {}
 
     return (
-      <div className="form-container" role="tabpanel" aria-labelledby="form">
+      <div
+        className="form-container"
+        role="tabpanel"
+        aria-labelledby="form"
+      >
         <TextField
           label="Name"
           name="name"
