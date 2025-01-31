@@ -12,30 +12,27 @@ import '../form.css'
 
 export const Component = memo(() => {
   const [filter] = useAtom(projectReportsFilterAtom)
+  const isFiltered = !!filter
+
   const { project_id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const db = usePGlite()
 
-  const where = filter.length > 1 ? { OR: filter } : filter[0]
-
-  const { results: projectReports = [] } = useLiveQuery(
-    db.project_reports.liveMany({
-      where: { project_id, ...where },
-      orderBy: { label: 'asc' },
-    }),
+  const result = useLiveQuery(
+    `SELECT * FROM project_reports WHERE project_id = $1${
+      isFiltered ? ` AND(${filter})` : ''
+    } order by label asc`,
+    [project_id],
   )
-  const { results: projectReportsUnfiltered = [] } = useLiveQuery(
-    db.project_reports.liveMany({
-      where: { project_id },
-      orderBy: { label: 'asc' },
-    }),
-  )
-  const isFiltered = projectReports.length !== projectReportsUnfiltered.length
+  const projectReports = result?.rows ?? []
 
   const add = useCallback(async () => {
     const data = await createProjectReport({ db, project_id })
-    await db.project_reports.create({ data })
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+    const sql = `insert into project_reports (${columns}) values ($1)`
+    await db.query(sql, values)
     navigate({
       pathname: data.project_report_id,
       search: searchParams.toString(),
@@ -45,13 +42,12 @@ export const Component = memo(() => {
   return (
     <div className="list-view">
       <ListViewHeader
-        title={`Project Reports (${
-          isFiltered
-            ? `${projectReports.length}/${projectReportsUnfiltered.length}`
-            : projectReports.length
-        })`}
+        namePlural="Project Reports"
+        nameSingular="project report"
+        tableName="project_reports"
+        isFiltered={isFiltered}
+        countFiltered={projectReports.length}
         addRow={add}
-        tableName="project report"
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
