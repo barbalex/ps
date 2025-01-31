@@ -13,25 +13,31 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
 
   const db = usePGlite()
-  const { results: taxonomies = [] } = useLiveQuery(
-    db.taxonomies.liveMany({
-      where: { project_id },
-      orderBy: { label: 'asc' },
-    }),
+
+  const result = useLiveQuery(
+    `SELECT * FROM taxonomies WHERE project_id = $1 ORDER BY label ASC`,
+    [project_id],
   )
+  const taxonomies = result?.rows ?? []
 
   const add = useCallback(async () => {
     const data = await createTaxonomy({ db, project_id })
-    await db.taxonomies.create({ data })
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+    const sql = `INSERT INTO taxonomies (${columns}) VALUES ($1)`
+    await db.query(sql, values)
     navigate({ pathname: data.taxonomy_id, search: searchParams.toString() })
   }, [db, navigate, project_id, searchParams])
 
   return (
     <div className="list-view">
       <ListViewHeader
-        title="Taxonomies"
+        namePlural="Taxonomies"
+        nameSingular="Taxonomy"
+        tableName="taxonomies"
+        isFiltered={false}
+        countFiltered={taxonomies.length}
         addRow={add}
-        tableName="taxonomy"
       />
       <div className="list-container">
         {taxonomies.map(({ taxonomy_id, label }) => (
