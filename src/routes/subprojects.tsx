@@ -18,25 +18,37 @@ export const Component = memo(() => {
   const Navigate = useNavigate()
   const db = usePGlite()
 
+  // TODO: ensure passing in filter works as expected (beware of joined table...)
   const result = useLiveQuery(
-    `SELECT * FROM subprojects WHERE project_id = $1${
-      isFiltered ? ` AND(${filter})` : ''
-    } order by label asc`,
+    `SELECT sp.subproject_id, sp.label, p.subproject_name_plural, p.subproject_name_singular 
+      FROM subprojects sp inner join projects p on p.project_id = sp.project_id 
+      WHERE sp.project_id = $1${
+        isFiltered ? ` AND(${filter})` : ''
+      } order by sp.label asc`,
     [project_id],
   )
   const subprojects = result?.rows ?? []
+  const namePlural = result?.rows[0]?.subproject_name_plural ?? 'Subprojects'
+  const nameSingular = result?.rows[0]?.subproject_name_singular ?? 'Subproject'
+  const nameSingularLower = nameSingular.toLowerCase()
 
   // get projects.subproject_name_plural to name the table
-  const { results: project } = useLiveQuery(
-    db.projects.liveUnique({ where: { project_id } }),
-  )
-  const namePlural = project?.subproject_name_plural ?? 'Subprojects'
-  const nameSingular = project?.subproject_name_singular ?? 'Subproject'
-  const nameSingularLower = nameSingular.toLowerCase()
+  // const resultProject = useLiveQuery(
+  //   `SELECT * FROM projects WHERE project_id = $1`,
+  //   [project_id],
+  // )
+  // const namePlural =
+  //   resultProject?.rows[0]?.subproject_name_plural ?? 'Subprojects'
+  // const nameSingular =
+  //   resultProject?.rows[0]?.subproject_name_singular ?? 'Subproject'
+  // const nameSingularLower = nameSingular.toLowerCase()
 
   const add = useCallback(async () => {
     const data = await createSubproject({ db, project_id })
-    await db.subprojects.create({ data })
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+    const sql = `insert into subprojects (${columns}) values ($1)`
+    await db.query(sql, values)
     Navigate(`/data/projects/${project_id}/subprojects/${data.subproject_id}`)
   }, [Navigate, db, project_id])
 
