@@ -13,33 +13,33 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
 
   const db = usePGlite()
-  const { results: placeUsers = [] } = useLiveQuery(
-    db.place_users.liveMany({
-      where: { place_id: place_id2 ?? place_id },
-      orderBy: { label: 'asc' },
-    }),
+  const result = useLiveQuery(
+    `SELECT * FROM place_users WHERE place_id = $1 ORDER BY label ASC`,
+    [place_id2 ?? place_id],
   )
+  const placeUsers = result?.rows ?? []
 
   const add = useCallback(async () => {
-    const placeUser = createPlaceUser()
-    await db.place_users.create({
-      data: {
-        ...placeUser,
-        place_id: place_id2 ?? place_id,
-      },
-    })
+    const data = { ...createPlaceUser(), place_id: place_id2 ?? place_id }
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+    const sql = `INSERT INTO place_users (${columns}) VALUES ($1)`
+    await db.query(sql, values)
     navigate({
-      pathname: placeUser.place_user_id,
+      pathname: data.place_user_id,
       search: searchParams.toString(),
     })
-  }, [db.place_users, navigate, place_id, place_id2, searchParams])
+  }, [db, navigate, place_id, place_id2, searchParams])
 
   return (
     <div className="list-view">
       <ListViewHeader
-        title="Users"
+        namePlural="Users"
+        nameSingular="user"
+        tableName="users"
+        isFiltered={false}
+        countFiltered={placeUsers.length}
         addRow={add}
-        tableName="user"
       />
       <div className="list-container">
         {placeUsers.map(({ place_user_id, label }) => (
