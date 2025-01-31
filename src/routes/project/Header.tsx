@@ -12,7 +12,7 @@ interface Props {
 
 // TODO: add button to enter design mode
 // add this only if user's account equals the account of the project
-export const Header = memo(({ autoFocusRef }) => {
+export const Header = memo(({ autoFocusRef }: Props) => {
   const { project_id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -21,7 +21,10 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const addRow = useCallback(async () => {
     const data = await createProject({ db })
-    await db.projects.create({ data })
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+    const sql = `INSERT INTO projects (${columns}) VALUES ($1)`
+    await db.query(sql, values)
 
     // TODO: add place_levels?
     // now navigate to the new project
@@ -33,16 +36,15 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [autoFocusRef, db, navigate, searchParams])
 
   const deleteRow = useCallback(async () => {
-    await db.projects.delete({
-      where: { project_id },
-    })
+    await db.query(`DELETE FROM projects WHERE project_id = $1`, [project_id])
     navigate({ pathname: `..`, search: searchParams.toString() })
-  }, [db.projects, navigate, project_id, searchParams])
+  }, [db, navigate, project_id, searchParams])
 
   const toNext = useCallback(async () => {
-    const projects = await db.projects.findMany({
-      orderBy: { label: 'asc' },
-    })
+    const result = await db.query(
+      `SELECT project_id FROM projects order by label asc`,
+    )
+    const projects = result.rows
     const len = projects.length
     const index = projects.findIndex((p) => p.project_id === project_id)
     const next = projects[(index + 1) % len]
@@ -50,12 +52,13 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${next.project_id}`,
       search: searchParams.toString(),
     })
-  }, [db.projects, navigate, project_id, searchParams])
+  }, [db, navigate, project_id, searchParams])
 
   const toPrevious = useCallback(async () => {
-    const projects = await db.projects.findMany({
-      orderBy: { label: 'asc' },
-    })
+    const result = await db.query(
+      `SELECT project_id FROM projects order by label asc`,
+    )
+    const projects = result.rows
     const len = projects.length
     const index = projects.findIndex((p) => p.project_id === project_id)
     const previous = projects[(index + len - 1) % len]
@@ -63,7 +66,7 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${previous.project_id}`,
       search: searchParams.toString(),
     })
-  }, [db.projects, navigate, project_id, searchParams])
+  }, [db, navigate, project_id, searchParams])
 
   return (
     <FormHeader

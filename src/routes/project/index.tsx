@@ -24,7 +24,7 @@ export const Component = memo(() => {
   const result = useLiveQuery(`SELECT * FROM projects WHERE project_id = $1`, [
     project_id,
   ])
-  const row = result?.rows[0]
+  const row = result?.rows?.[0]
 
   const [searchParams, setSearchParams] = useSearchParams()
   const tab = searchParams.get('projectTab') ?? 'form'
