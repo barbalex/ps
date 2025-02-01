@@ -1,9 +1,8 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { CrsNode } from './Crs.tsx'
@@ -15,18 +14,14 @@ interface Props {
   level?: number
 }
 
-export const CrssNode = memo(({ level = 1 }) => {
+export const CrssNode = memo(({ level = 1 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const db = usePGlite()
 
-  const { results: crs = [] } = useLiveQuery(
-    db.crs.liveMany({
-      orderBy: { label: 'asc' },
-    }),
-  )
+  const result = useLiveQuery(`SELECT * FROM crs order by label asc`)
+  const crs = result?.rows ?? []
 
   const crsNode = useMemo(
     () => ({
@@ -65,7 +60,6 @@ export const CrssNode = memo(({ level = 1 }) => {
     isOpen,
     navigate,
     ownArray,
-    parentArray,
     parentUrl,
     searchParams,
     urlPath.length,
