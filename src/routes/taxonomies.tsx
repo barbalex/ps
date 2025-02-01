@@ -24,7 +24,9 @@ export const Component = memo(() => {
     const data = await createTaxonomy({ db, project_id })
     const columns = Object.keys(data).join(',')
     const values = Object.values(data)
-    const sql = `INSERT INTO taxonomies (${columns}) VALUES ($1)`
+    const sql = `INSERT INTO taxonomies (${columns}) VALUES (${values
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
     await db.query(sql, values)
     navigate({ pathname: data.taxonomy_id, search: searchParams.toString() })
   }, [db, navigate, project_id, searchParams])

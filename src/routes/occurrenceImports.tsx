@@ -25,7 +25,9 @@ export const Component = memo(() => {
     const data = createOccurrenceImport({ subproject_id })
     const columns = Object.keys(data).join(',')
     const values = Object.values(data)
-    const sql = `insert into occurrence_imports (${columns}) values ($1)`
+    const sql = `insert into occurrence_imports (${columns}) values (${values
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
     await db.query(sql, values)
     navigate({
       pathname: data.occurrence_import_id,

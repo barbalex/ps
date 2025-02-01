@@ -32,7 +32,9 @@ export const Component = memo(({ vectorLayerId }) => {
     const vectorLayerDisplay = createVectorLayerDisplay({ vector_layer_id })
     const columns = Object.keys(vectorLayerDisplay).join(',')
     const values = Object.values(vectorLayerDisplay)
-    const sql = `insert into vector_layer_displays (${columns}) values ($1)`
+    const sql = `insert into vector_layer_displays (${columns}) values (${values
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
     await db.query(sql, values)
     if (vectorLayerId) {
       // we are in the map drawer

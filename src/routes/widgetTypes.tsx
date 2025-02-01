@@ -30,7 +30,9 @@ export const Component = memo(() => {
     const data = createWidgetType()
     const columns = Object.keys(data).join(',')
     const values = Object.values(data)
-    const sql = `insert into widget_types (${columns}) values ($1)`
+    const sql = `insert into widget_types (${columns}) values (${values
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
     await db.query(sql, values)
     navigate({ pathname: data.widget_type_id, search: searchParams.toString() })
   }, [db, navigate, searchParams])

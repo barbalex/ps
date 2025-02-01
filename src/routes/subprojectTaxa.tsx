@@ -23,7 +23,9 @@ export const Component = memo(() => {
     const data = { ...createSubprojectTaxon(), subproject_id }
     const columns = Object.keys(data).join(',')
     const values = Object.values(data)
-    const sql = `INSERT INTO subproject_taxa (${columns}) VALUES ($1)`
+    const sql = `INSERT INTO subproject_taxa (${columns}) VALUES (${values
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
     await db.query(sql, values)
     navigate({
       pathname: data.subproject_taxon_id,

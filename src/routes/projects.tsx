@@ -30,7 +30,9 @@ export const Component = memo(() => {
     const data = await createProject({ db })
     const columns = Object.keys(data).join(',')
     const values = Object.values(data)
-    const sql = `insert into projects (${columns}) values ($1)`
+    const sql = `insert into projects (${columns}) values (${values
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
     await db.query(sql, values)
     navigate({ pathname: data.project_id, search: searchParams.toString() })
   }, [db, navigate, searchParams])

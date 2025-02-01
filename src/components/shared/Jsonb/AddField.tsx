@@ -37,7 +37,9 @@ export const AddField = memo(({ tableName, level }) => {
     const newField = createField(newFieldParams)
     const columns = Object.keys(newField).join(',')
     const values = Object.values(newField)
-    const sql = `INSERT INTO fields (${columns}) VALUES ($1)`
+    const sql = `INSERT INTO fields (${columns}) VALUES (${values
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
     await db.query(sql, values)
     setSearchParams({ editingField: newField.field_id })
   }, [db, level, project_id, setSearchParams, tableName])

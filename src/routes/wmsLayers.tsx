@@ -40,7 +40,9 @@ export const Component = memo(() => {
     const wmsLayer = createWmsLayer({ project_id })
     const columns = Object.keys(wmsLayer).join(',')
     const values = Object.values(wmsLayer)
-    const sql = `insert into wms_layers (${columns}) values ($1)`
+    const sql = `insert into wms_layers (${columns}) values (${values
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
     await db.query(sql, values)
 
     // also add layer_presentation

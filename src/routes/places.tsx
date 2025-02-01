@@ -56,7 +56,9 @@ export const Component = memo(() => {
     })
     const columns = Object.keys(data).join(',')
     const values = Object.values(data)
-    const sql = `insert into places (${columns}) values ($1)`
+    const sql = `insert into places (${columns}) values (${values
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
     await db.query(sql, values)
     // need to create a corresponding vector layer and vector layer display
     // TODO:

@@ -26,7 +26,9 @@ export const Component = memo(() => {
     }
     const columns = Object.keys(checkValue).join(',')
     const values = Object.values(checkValue)
-    const sql = `INSERT INTO check_values (${columns}) VALUES ($1)`
+    const sql = `INSERT INTO check_values (${columns}) VALUES (${values
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
     await db.query(sql, values)
     navigate({
       pathname: checkValue.check_value_id,

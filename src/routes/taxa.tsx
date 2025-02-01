@@ -23,7 +23,9 @@ export const Component = memo(() => {
     const taxon = { ...createTaxon(), taxonomy_id }
     const columns = Object.keys(taxon).join(',')
     const values = Object.values(taxon)
-    const sql = `insert into taxa (${columns}) values ($1)`
+    const sql = `insert into taxa (${columns}) values (${values
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
     await db.query(sql, values)
     navigate({ pathname: taxon.taxon_id, search: searchParams.toString() })
   }, [db, navigate, searchParams, taxonomy_id])

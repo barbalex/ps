@@ -35,7 +35,9 @@ export const Component = memo(() => {
     const vectorLayer = createVectorLayer({ project_id, type: 'wfs' })
     const vLColumns = Object.keys(vectorLayer).join(',')
     const vLValues = Object.values(vectorLayer)
-    const vLSql = `insert into vector_layers (${vLColumns}) values ($1)`
+    const vLSql = `insert into vector_layers (${vLColumns}) values (${vLValues
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
     await db.query(vLSql, vLValues)
     // also add vector_layer_display
     const vectorLayerDisplay = createVectorLayerDisplay({
@@ -43,7 +45,9 @@ export const Component = memo(() => {
     })
     const vLDColumns = Object.keys(vectorLayerDisplay).join(',')
     const vLDValues = Object.values(vectorLayerDisplay)
-    const vLDSql = `insert into vector_layer_displays (${vLDColumns}) values ($1)`
+    const vLDSql = `insert into vector_layer_displays (${vLDColumns}) values (${vLDValues
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
     await db.query(vLDSql, vLDValues)
     // also add layer_presentation
     const layerPresentation = createLayerPresentation({
@@ -51,7 +55,9 @@ export const Component = memo(() => {
     })
     const lPColumns = Object.keys(layerPresentation).join(',')
     const lPValues = Object.values(layerPresentation)
-    const lPSql = `insert into layer_presentations (${lPColumns}) values ($1)`
+    const lPSql = `insert into layer_presentations (${lPColumns}) values (${lPValues
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
     await db.query(lPSql, lPValues)
     navigate({
       pathname: vectorLayer.vector_layer_id,

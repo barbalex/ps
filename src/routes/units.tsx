@@ -31,7 +31,9 @@ export const Component = memo(() => {
     const unit = { ...createUnit(), project_id }
     const columns = Object.keys(unit).join(',')
     const values = Object.values(unit)
-    const sql = `insert into units (${columns}) values ($1)`
+    const sql = `insert into units (${columns}) values (${values
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
     await db.query(sql, values)
     navigate({ pathname: unit.unit_id, search: searchParams.toString() })
   }, [db, navigate, project_id, searchParams])

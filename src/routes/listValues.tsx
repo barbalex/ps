@@ -24,7 +24,9 @@ export const Component = memo(() => {
     const data = { ...createListValue(), list_id }
     const columns = Object.keys(data).join(',')
     const values = Object.values(data)
-    const sql = `insert into list_values (${columns}) values ($1)`
+    const sql = `insert into list_values (${columns}) values (${values
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
     await db.query(sql, values)
     navigate({
       pathname: data.list_value_id,

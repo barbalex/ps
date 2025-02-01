@@ -23,7 +23,9 @@ export const Component = memo(() => {
     const data = { ...createPlaceReportValue(), place_report_id }
     const columns = Object.keys(data).join(',')
     const values = Object.values(data)
-    const sql = `INSERT INTO place_report_values (${columns}) VALUES ($1)`
+    const sql = `INSERT INTO place_report_values (${columns}) VALUES (${values
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
     await db.query(sql, values)
     navigate({
       pathname: data.place_report_value_id,

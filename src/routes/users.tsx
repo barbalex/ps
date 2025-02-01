@@ -24,7 +24,9 @@ export const Component = memo(() => {
     const data = await createUser({ db, setUserId })
     const columns = Object.keys(data).join(',')
     const values = Object.values(data)
-    const sql = `insert into users (${columns}) values ($1)`
+    const sql = `insert into users (${columns}) values (${values
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
     await db.query(sql, values)
     navigate({ pathname: data.user_id, search: searchParams.toString() })
   }, [db, navigate, searchParams, setUserId])

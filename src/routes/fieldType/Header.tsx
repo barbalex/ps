@@ -14,25 +14,31 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const addRow = useCallback(async () => {
     const data = createFieldType()
-    await db.field_types.create({ data })
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+    const sql = `INSERT INTO field_types (${columns}) VALUES (${values
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
+    await db.query(sql, values)
     navigate({
       pathname: `../${data.field_type_id}`,
       search: searchParams.toString(),
     })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db.field_types, navigate, searchParams])
+  }, [autoFocusRef, db, navigate, searchParams])
 
   const deleteRow = useCallback(async () => {
-    await db.field_types.delete({
-      where: { field_type_id },
-    })
+    await db.quey(`DELETE FROM field_types WHERE field_type_id = $1`, [
+      field_type_id,
+    ])
     navigate({ pathname: `..`, search: searchParams.toString() })
-  }, [db.field_types, field_type_id, navigate, searchParams])
+  }, [db, field_type_id, navigate, searchParams])
 
   const toNext = useCallback(async () => {
-    const fieldTypes = await db.field_types.findMany({
-      orderBy: { label: 'asc' },
-    })
+    const result = await db.query(
+      `SELECT * FROM field_types order by label asc`,
+    )
+    const fieldTypes = result.rows
     const len = fieldTypes.length
     const index = fieldTypes.findIndex((p) => p.field_type_id === field_type_id)
     const next = fieldTypes[(index + 1) % len]
@@ -40,12 +46,13 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${next.field_type_id}`,
       search: searchParams.toString(),
     })
-  }, [db.field_types, field_type_id, navigate, searchParams])
+  }, [db, field_type_id, navigate, searchParams])
 
   const toPrevious = useCallback(async () => {
-    const fieldTypes = await db.field_types.findMany({
-      orderBy: { label: 'asc' },
-    })
+    const result = await db.query(
+      `SELECT * FROM field_types order by label asc`,
+    )
+    const fieldTypes = result.rows
     const len = fieldTypes.length
     const index = fieldTypes.findIndex((p) => p.field_type_id === field_type_id)
     const previous = fieldTypes[(index + len - 1) % len]
@@ -53,7 +60,7 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${previous.field_type_id}`,
       search: searchParams.toString(),
     })
-  }, [db.field_types, field_type_id, navigate, searchParams])
+  }, [db, field_type_id, navigate, searchParams])
 
   return (
     <FormHeader

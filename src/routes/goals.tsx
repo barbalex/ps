@@ -31,7 +31,9 @@ export const Component = memo(() => {
     const data = await createGoal({ db, project_id, subproject_id })
     const columns = Object.keys(data).join(',')
     const values = Object.values(data)
-    const sql = `insert into goals (${columns}) values ($1)`
+    const sql = `insert into goals (${columns}) values (${values
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
     await db.query(sql, values)
     navigate({ pathname: data.goal_id, search: searchParams.toString() })
   }, [db, navigate, project_id, searchParams, subproject_id])

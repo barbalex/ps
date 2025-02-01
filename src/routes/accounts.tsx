@@ -20,7 +20,9 @@ export const Component = memo(() => {
     const data = createAccount()
     const columns = Object.keys(data).join(',')
     const values = Object.values(data)
-    const sql = `insert into accounts (${columns}) values ($1)`
+    const sql = `insert into accounts (${columns}) values (${values
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
     await db.query(sql, values)
     navigate({
       pathname: data.account_id,

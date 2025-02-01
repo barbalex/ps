@@ -1,8 +1,7 @@
 import { useCallback, useRef, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
@@ -18,19 +17,19 @@ export const Component = memo(() => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
-  const { results: row } = useLiveQuery(
-    db.field_types.liveUnique({ where: { field_type_id } }),
+  const result = useLiveQuery(
+    `SELECT * FROM field_types WHERE field_type_id = $1`,
+    [field_type_id],
   )
+  const row = result?.rows?.[0]
 
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
-      db.field_types.update({
-        where: { field_type_id },
-        data: { [name]: value },
-      })
+      const sql = `UPDATE field_types SET ${name} = $1 WHERE field_type_id = $2`
+      db.query(sql, [value, field_type_id])
     },
-    [db.field_types, field_type_id],
+    [db, field_type_id],
   )
 
   if (!row) return <Loading />
@@ -44,7 +43,11 @@ export const Component = memo(() => {
           name="field_type_id"
           value={row.field_type_id}
         />
-        <Form onChange={onChange} row={row} autoFocusRef={autoFocusRef} />
+        <Form
+          onChange={onChange}
+          row={row}
+          autoFocusRef={autoFocusRef}
+        />
       </div>
     </div>
   )

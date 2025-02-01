@@ -39,7 +39,9 @@ export const Component = memo(() => {
     })
     const columns = Object.keys(data).join(',')
     const values = Object.values(data)
-    const sql = `insert into checks (${columns}) values ($1)`
+    const sql = `insert into checks (${columns}) values (${values
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
     await db.query(sql, values)
     navigate({ pathname: data.check_id, search: searchParams.toString() })
   }, [db, navigate, place_id, place_id2, project_id, searchParams])

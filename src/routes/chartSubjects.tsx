@@ -24,8 +24,10 @@ export const Component = memo(() => {
     const data = createChartSubject({ chart_id })
     const columns = Object.keys(data).join(',')
     const values = Object.values(data).join("','")
-    const sql = `INSERT INTO chart_subjects (${columns}) VALUES ('${values}')`
-    await db.query(sql)
+    const sql = `INSERT INTO chart_subjects (${columns}) VALUES (${values
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
+    await db.query(sql, values)
     navigate({
       pathname: data.chart_subject_id,
       search: searchParams.toString(),

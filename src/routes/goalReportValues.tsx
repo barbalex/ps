@@ -23,7 +23,9 @@ export const Component = memo(() => {
     const newGoalReport = { ...createGoalReportValue(), goal_report_id }
     const columns = Object.keys(newGoalReport).join(',')
     const values = Object.values(newGoalReport)
-    const sql = `INSERT INTO goal_report_values (${columns}) VALUES ($1)`
+    const sql = `INSERT INTO goal_report_values (${columns}) VALUES (${values
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
     await db.query(sql, values)
     navigate({
       pathname: newGoalReport.goal_report_value_id,

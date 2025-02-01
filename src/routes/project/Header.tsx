@@ -23,7 +23,9 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     const data = await createProject({ db })
     const columns = Object.keys(data).join(',')
     const values = Object.values(data)
-    const sql = `INSERT INTO projects (${columns}) VALUES ($1)`
+    const sql = `INSERT INTO projects (${columns}) VALUES (${values
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
     await db.query(sql, values)
 
     // TODO: add place_levels?

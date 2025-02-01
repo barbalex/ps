@@ -26,8 +26,10 @@ export const Component = memo(() => {
     }
     const columns = Object.keys(checkTaxon).join(',')
     const values = Object.values(checkTaxon).join("','")
-    const sql = `INSERT INTO check_taxa (${columns}) VALUES ('${values}')`
-    await db.query(sql)
+    const sql = `INSERT INTO check_taxa (${columns}) VALUES (${values
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
+    await db.query(sql, values)
     navigate({
       pathname: checkTaxon.check_taxon_id,
       search: searchParams.toString(),

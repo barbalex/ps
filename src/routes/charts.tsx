@@ -47,9 +47,11 @@ export const Component = memo(() => {
       : { project_id }
     const data = createChart(idToAdd)
     const columns = Object.keys(data).join(',')
-    const values = Object.values(data).join("','")
-    const sql = `INSERT INTO charts (${columns}) VALUES ('${values}')`
-    await db.query(sql)
+    const values = Object.values(data)
+    const sql = `INSERT INTO charts (${columns}) VALUES (${values
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
+    await db.query(sql, values)
     navigate({ pathname: data.chart_id, search: searchParams.toString() })
   }, [
     db,
