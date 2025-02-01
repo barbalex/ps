@@ -34,21 +34,17 @@ export const Component = memo(() => {
     [setSearchParams],
   )
 
-  console.log('project', { row, tab, project_id })
-
   const onChange = useCallback<InputProps['onChange']>(
     async (e, data) => {
       const { name, value } = getValueFromChange(e, data)
-      console.log('project.onChange', { name, value, project_id })
       try {
-        await db.exec(
+        await db.query(
           `UPDATE projects SET ${name} = $1 WHERE project_id = $2`,
           [value, project_id],
         )
       } catch (error) {
         console.error('error updating project', error)
       }
-      console.log('project.onChange done')
     },
     [db, project_id],
   )
