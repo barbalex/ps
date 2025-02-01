@@ -14,23 +14,27 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const addRow = useCallback(async () => {
     const data = createCrs()
-    await db.crs.create({ data })
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+    const sql = `INSERT INTO crs (${columns}) VALUES (${values
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
+    await db.query(sql, values)
     navigate({
       pathname: `../${data.crs_id}`,
       search: searchParams.toString(),
     })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db.crs, navigate, searchParams])
+  }, [autoFocusRef, db, navigate, searchParams])
 
   const deleteRow = useCallback(async () => {
-    await db.crs.delete({ where: { crs_id } })
+    await db.query(`DELETE FROM crs WHERE crs_id = $1`, [crs_id])
     navigate({ pathname: '..', search: searchParams.toString() })
-  }, [db.crs, navigate, crs_id, searchParams])
+  }, [db, crs_id, navigate, searchParams])
 
   const toNext = useCallback(async () => {
-    const crs = await db.crs.findMany({
-      orderBy: { label: 'asc' },
-    })
+    const result = await db.query(`SELECT * FROM crs order by label asc`)
+    const crs = result.rows
     const len = crs.length
     const index = crs.findIndex((p) => p.crs_id === crs_id)
     const next = crs[(index + 1) % len]
@@ -38,12 +42,11 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${next.crs_id}`,
       search: searchParams.toString(),
     })
-  }, [db.crs, navigate, crs_id, searchParams])
+  }, [db, navigate, searchParams, crs_id])
 
   const toPrevious = useCallback(async () => {
-    const crs = await db.crs.findMany({
-      orderBy: { label: 'asc' },
-    })
+    const result = await db.query(`SELECT * FROM crs order by label asc`)
+    const crs = result.rows
     const len = crs.length
     const index = crs.findIndex((p) => p.crs_id === crs_id)
     const previous = crs[(index + len - 1) % len]
@@ -51,7 +54,7 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${previous.crs_id}`,
       search: searchParams.toString(),
     })
-  }, [db.crs, navigate, crs_id, searchParams])
+  }, [db, navigate, searchParams, crs_id])
 
   return (
     <FormHeader

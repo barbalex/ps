@@ -1,7 +1,6 @@
 import { useCallback, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { createCrs } from '../../modules/createRows.ts'
 import { ListViewHeader } from '../../components/ListViewHeader/index.tsx'
@@ -15,27 +14,38 @@ export const Component = memo(() => {
 
   const db = usePGlite()
 
-  const { results: crs = [] } = useLiveQuery(
-    db.crs.liveMany({ orderBy: { label: 'asc' } }),
-  )
+  const result = useLiveQuery(`SELECT * FROM crs order by label asc`)
+  const crs = result?.rows ?? []
 
   const add = useCallback(async () => {
     const data = await createCrs()
-    await db.crs.create({ data })
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+    const sql = `INSERT INTO crs (${columns}) VALUES (${values
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
+    await db.query(sql, values)
     navigate({ pathname: data.crs_id, search: searchParams.toString() })
-  }, [db.crs, navigate, searchParams])
+  }, [db, navigate, searchParams])
 
   return (
     <div className="list-view">
       <ListViewHeader
-        title={`CRS: Coordinate Reference Systems (${crs.length})`}
-        addRow={add}
+        namePlural="CRS: Coordinate Reference Systems"
+        nameSingular="crs"
         tableName="crs"
+        isFiltered={false}
+        countFiltered={crs.length}
+        addRow={add}
         info={<Info />}
       />
       <div className="list-container">
         {crs.map((cr) => (
-          <Row key={cr.crs_id} to={cr.crs_id} label={cr.label ?? cr.crs_id} />
+          <Row
+            key={cr.crs_id}
+            to={cr.crs_id}
+            label={cr.label ?? cr.crs_id}
+          />
         ))}
       </div>
     </div>

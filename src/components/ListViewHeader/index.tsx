@@ -14,6 +14,7 @@ interface Props {
   info?: unknown
 }
 
+// TODO: use locale set by user for toLocaleString
 export const ListViewHeader = memo(
   ({
     namePlural,
@@ -30,7 +31,11 @@ export const ListViewHeader = memo(
     const countUnfilteredResult = useLiveIncrementalQuery(countSql, [], 'count')
     const countUnfiltered = countUnfilteredResult?.rows[0]?.count ?? 0
     const title = `${namePlural} (${
-      isFiltered ? `${countFiltered}/${countUnfiltered}` : countFiltered
+      isFiltered
+        ? `${countFiltered?.toLocaleString?.(
+            'en-US',
+          )}/${countUnfiltered?.toLocaleString?.('en-US')}`
+        : countFiltered?.toLocaleString?.('en-US')
     })`
 
     return (

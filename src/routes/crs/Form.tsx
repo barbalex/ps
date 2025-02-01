@@ -1,8 +1,7 @@
 import { memo, useCallback } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { TextArea } from '../../components/shared/TextArea.tsx'
@@ -16,19 +15,15 @@ export const Component = memo(() => {
   const { crs_id } = useParams()
 
   const db = usePGlite()
-  const { results: row } = useLiveQuery(
-    db.crs.liveUnique({ where: { crs_id } }),
-  )
+  const result = useLiveQuery(`SELECT * FROM crs WHERE crs_id = $1`, [crs_id])
+  const row = result?.rows?.[0]
 
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
-      db.crs.update({
-        where: { crs_id },
-        data: { [name]: value },
-      })
+      db.query(`UPDATE crs SET ${name} = $1 WHERE crs_id = $2`, [value, crs_id])
     },
-    [db.crs, crs_id],
+    [db, crs_id],
   )
 
   if (!row) return <Loading />
