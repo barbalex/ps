@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, memo } from 'react'
+import { useCallback, useRef, memo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
@@ -22,8 +22,6 @@ export const Component = memo(() => {
   const { results: row } = useLiveQuery(
     db.goal_report_values.liveUnique({ where: { goal_report_value_id } }),
   )
-
-  const unitWhere = useMemo(() => ({ use_for_goal_report_values: true }), [])
 
   // console.log('GoalReportValue', { row, results })
 
@@ -53,7 +51,7 @@ export const Component = memo(() => {
           label="Unit"
           name="unit_id"
           table="units"
-          where={unitWhere}
+          where="use_for_goal_report_values is true"
           orderBy="sort asc, name asc"
           value={row.unit_id ?? ''}
           onChange={onChange}

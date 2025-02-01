@@ -13,8 +13,6 @@ import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'
 
-const unitWhere = { use_for_place_report_values: true }
-
 export const Component = memo(() => {
   const { place_report_value_id } = useParams()
 
@@ -53,7 +51,7 @@ export const Component = memo(() => {
           label="Unit"
           name="unit_id"
           table="units"
-          where={unitWhere}
+          where="use_for_place_report_values is true"
           value={row.unit_id ?? ''}
           onChange={onChange}
           autoFocus

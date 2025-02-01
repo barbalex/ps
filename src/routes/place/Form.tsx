@@ -22,7 +22,7 @@ export const Component = memo(
 
     // TODO: only show parent place if level 2 exists in place_levels
     const parentPlaceWhere = useMemo(
-      () => ({ level: 1, subproject_id }),
+      () => `level = 1 and subproject_id = '${subproject_id}'`,
       [subproject_id],
     )
 
@@ -74,7 +74,10 @@ export const Component = memo(
           autoFocus={row.level !== 2}
           ref={row.level !== 2 ? autoFocusRef : undefined}
         />
-        <EditingGeometry row={row} table="places" />
+        <EditingGeometry
+          row={row}
+          table="places"
+        />
       </div>
     )
   },

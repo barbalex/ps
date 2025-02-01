@@ -14,25 +14,26 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const addRow = useCallback(async () => {
     const data = createAccount()
-    await db.accounts.create({ data })
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+    const sql = `INSERT INTO accounts (${columns}) VALUES ($1)`
+    await db.query(sql, values)
     navigate({
       pathname: `../${data.account_id}`,
       search: searchParams.toString(),
     })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db.accounts, navigate, searchParams])
+  }, [autoFocusRef, db, navigate, searchParams])
 
   const deleteRow = useCallback(async () => {
-    await db.accounts.delete({
-      where: { account_id },
-    })
+    const sql = `DELETE FROM accounts WHERE account_id = $1`
+    await db.query(sql, [account_id])
     navigate({ pathname: `..`, search: searchParams.toString() })
-  }, [account_id, db.accounts, navigate, searchParams])
+  }, [account_id, db, navigate, searchParams])
 
   const toNext = useCallback(async () => {
-    const accounts = await db.accounts.findMany({
-      orderBy: { label: 'asc' },
-    })
+    const result = await db.query(`SELECT * FROM accounts order by label asc`)
+    const accounts = result.rows
     const len = accounts.length
     const index = accounts.findIndex((p) => p.account_id === account_id)
     const next = accounts[(index + 1) % len]
@@ -40,12 +41,11 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${next.account_id}`,
       search: searchParams.toString(),
     })
-  }, [account_id, db.accounts, navigate, searchParams])
+  }, [account_id, db, navigate, searchParams])
 
   const toPrevious = useCallback(async () => {
-    const accounts = await db.accounts.findMany({
-      orderBy: { label: 'asc' },
-    })
+    const result = await db.query(`SELECT * FROM accounts order by label asc`)
+    const accounts = result.rows
     const len = accounts.length
     const index = accounts.findIndex((p) => p.account_id === account_id)
     const previous = accounts[(index + len - 1) % len]
@@ -53,7 +53,7 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${previous.account_id}`,
       search: searchParams.toString(),
     })
-  }, [account_id, db.accounts, navigate, searchParams])
+  }, [account_id, db, navigate, searchParams])
 
   return (
     <FormHeader
