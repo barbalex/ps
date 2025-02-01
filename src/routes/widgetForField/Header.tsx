@@ -14,25 +14,30 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const addRow = useCallback(async () => {
     const data = createWidgetForField()
-    await db.widgets_for_fields.create({ data })
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+    const sql = `INSERT INTO widgets_for_fields (${columns}) VALUES (${values
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
+    await db.query(sql, values)
     navigate({
       pathname: `../${data.widget_for_field_id}`,
       search: searchParams.toString(),
     })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db.widgets_for_fields, navigate, searchParams])
+  }, [autoFocusRef, db, navigate, searchParams])
 
   const deleteRow = useCallback(async () => {
-    await db.widgets_for_fields.delete({
-      where: { widget_for_field_id },
-    })
+    const sql = `DELETE FROM widgets_for_fields WHERE widget_for_field_id = $1`
+    await db.query(sql, [widget_for_field_id])
     navigate({ pathname: `..`, search: searchParams.toString() })
-  }, [db.widgets_for_fields, navigate, widget_for_field_id, searchParams])
+  }, [db, widget_for_field_id, navigate, searchParams])
 
   const toNext = useCallback(async () => {
-    const widgetsForFields = await db.widgets_for_fields.findMany({
-      orderBy: { label: 'asc' },
-    })
+    const result = await db.query(
+      `SELECT * FROM widgets_for_fields ORDER BY label ASC`,
+    )
+    const widgetsForFields = result.rows
     const len = widgetsForFields.length
     const index = widgetsForFields.findIndex(
       (p) => p.widget_for_field_id === widget_for_field_id,
@@ -42,12 +47,13 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${next.widget_for_field_id}`,
       search: searchParams.toString(),
     })
-  }, [db.widgets_for_fields, navigate, widget_for_field_id, searchParams])
+  }, [db, navigate, searchParams, widget_for_field_id])
 
   const toPrevious = useCallback(async () => {
-    const widgetsForFields = await db.widgets_for_fields.findMany({
-      orderBy: { label: 'asc' },
-    })
+    const result = await db.query(
+      `SELECT * FROM widgets_for_fields ORDER BY label ASC`,
+    )
+    const widgetsForFields = result.rows
     const len = widgetsForFields.length
     const index = widgetsForFields.findIndex(
       (p) => p.widget_for_field_id === widget_for_field_id,
@@ -57,7 +63,7 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${previous.widget_for_field_id}`,
       search: searchParams.toString(),
     })
-  }, [db.widgets_for_fields, navigate, widget_for_field_id, searchParams])
+  }, [db, navigate, searchParams, widget_for_field_id])
 
   return (
     <FormHeader
