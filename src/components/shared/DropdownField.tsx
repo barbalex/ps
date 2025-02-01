@@ -39,7 +39,6 @@ export const DropdownField = memo(
         `SELECT * FROM ${table}${
           where ? ` WHERE ${where}` : ''
         } order by ${orderBy}`,
-        [value],
       )
       const results = result?.rows ?? []
       const options = results.map((o) => ({
