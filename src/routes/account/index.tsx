@@ -19,6 +19,7 @@ export const Component = memo(() => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
+  // TODO: Uncaught (in promise) error: could not determine data type of parameter $2
   const result = useLiveQuery(`SELECT * FROM accounts WHERE account_id = $1`, [
     account_id,
   ])
