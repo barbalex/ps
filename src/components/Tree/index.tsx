@@ -38,8 +38,8 @@ export const Tree = memo(() => {
           <FieldsNode />
           <CrssNode />
         </>
-      )}
-      <MessagesNode /> */}
+      )} */}
+      <MessagesNode />
     </div>
   )
 })
