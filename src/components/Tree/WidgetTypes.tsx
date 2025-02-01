@@ -1,9 +1,8 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { WidgetTypeNode } from './WidgetType.tsx'
@@ -14,36 +13,33 @@ import { treeOpenNodesAtom, widgetTypesFilterAtom } from '../../store.ts'
 export const WidgetTypesNode = memo(() => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [filter] = useAtom(widgetTypesFilterAtom)
+  const isFiltered = !!filter
 
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const db = usePGlite()
+  const resultFiltered = useLiveQuery(
+    `SELECT * FROM widget_types${
+      isFiltered ? ` WHERE ${filter}` : ''
+    } order by label asc`,
+  )
+  const widgetTypes = resultFiltered?.rows ?? []
 
-  const where = filter.length > 1 ? { OR: filter } : filter[0]
-  const { results: widgetTypes = [] } = useLiveQuery(
-    db.widget_types.liveMany({
-      orderBy: { label: 'asc' },
-      where,
-    }),
+  const resultCountUnfiltered = useLiveQuery(
+    `SELECT count(*) FROM widget_types`,
   )
-  const { results: widgetTypesUnfiltered = [] } = useLiveQuery(
-    db.widget_types.liveMany({
-      orderBy: { label: 'asc' },
-    }),
-  )
-  const isFiltered = widgetTypes.length !== widgetTypesUnfiltered.length
+  const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count
 
   const widgetTypesNode = useMemo(
     () => ({
       label: `Widget Types (${
         isFiltered
-          ? `${widgetTypes.length}/${widgetTypesUnfiltered.length}`
+          ? `${widgetTypes.length}/${countUnfiltered}`
           : widgetTypes.length
       })`,
     }),
-    [isFiltered, widgetTypes.length, widgetTypesUnfiltered.length],
+    [isFiltered, widgetTypes.length, countUnfiltered],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
