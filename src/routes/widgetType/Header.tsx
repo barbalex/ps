@@ -14,25 +14,30 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const addRow = useCallback(async () => {
     const data = createWidgetType()
-    await db.widget_types.create({ data })
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+    const sql = `INSERT INTO widget_types (${columns}) VALUES (${values
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
+    await db.query(sql, values)
     navigate({
       pathname: `../${data.widget_type_id}`,
       search: searchParams.toString(),
     })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db.widget_types, navigate, searchParams])
+  }, [autoFocusRef, db, navigate, searchParams])
 
   const deleteRow = useCallback(async () => {
-    await db.widget_types.delete({
-      where: { widget_type_id },
-    })
+    const sql = `DELETE FROM widget_types WHERE widget_type_id = $1`
+    await db.query(sql, [widget_type_id])
     navigate({ pathname: `..`, search: searchParams.toString() })
-  }, [db.widget_types, navigate, widget_type_id, searchParams])
+  }, [db, widget_type_id, navigate, searchParams])
 
   const toNext = useCallback(async () => {
-    const widgetTypes = await db.widget_types.findMany({
-      orderBy: { label: 'asc' },
-    })
+    const result = await db.query(
+      `SELECT * FROM widget_types order by label asc`,
+    )
+    const widgetTypes = result.rows
     const len = widgetTypes.length
     const index = widgetTypes.findIndex(
       (p) => p.widget_type_id === widget_type_id,
@@ -42,12 +47,13 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${next.widget_type_id}`,
       search: searchParams.toString(),
     })
-  }, [db.widget_types, navigate, widget_type_id, searchParams])
+  }, [db, navigate, searchParams, widget_type_id])
 
   const toPrevious = useCallback(async () => {
-    const widgetTypes = await db.widget_types.findMany({
-      orderBy: { label: 'asc' },
-    })
+    const result = await db.query(
+      `SELECT * FROM widget_types order by label asc`,
+    )
+    const widgetTypes = result.rows
     const len = widgetTypes.length
     const index = widgetTypes.findIndex(
       (p) => p.widget_type_id === widget_type_id,
@@ -57,7 +63,7 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${previous.widget_type_id}`,
       search: searchParams.toString(),
     })
-  }, [db.widget_types, navigate, widget_type_id, searchParams])
+  }, [db, navigate, searchParams, widget_type_id])
 
   return (
     <FormHeader
