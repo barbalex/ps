@@ -27,7 +27,7 @@ export const Tree = memo(() => {
 
   return (
     <div style={containerStyle}>
-      {/* <ProjectsNode /> */}
+      <ProjectsNode />
       <UsersNode />
       <AccountsNode />
       {designing && (
