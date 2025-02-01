@@ -1,9 +1,8 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { WidgetForFieldNode } from './WidgetForField.tsx'
@@ -13,37 +12,34 @@ import { treeOpenNodesAtom, widgetsForFieldsFilterAtom } from '../../store.ts'
 
 export const WidgetsForFieldsNode = memo(() => {
   const [filter] = useAtom(widgetsForFieldsFilterAtom)
+  const isFiltered = !!filter
   const [openNodes] = useAtom(treeOpenNodesAtom)
 
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const db = usePGlite()
 
-  const where = filter.length > 1 ? { OR: filter } : filter[0]
-  const { results: widgetsForFields = [] } = useLiveQuery(
-    db.widgets_for_fields.liveMany({
-      orderBy: { label: 'asc' },
-      where,
-    }),
+  const resultFiltered = useLiveQuery(
+    `SELECT * FROM widgets_for_fields${
+      isFiltered ? ` WHERE ${filter}` : ''
+    } order by label asc`,
   )
-  const { results: widgetsForFieldsUnfiltered = [] } = useLiveQuery(
-    db.widgets_for_fields.liveMany({
-      orderBy: { label: 'asc' },
-    }),
+  const widgetsForFields = resultFiltered?.rows ?? []
+
+  const resultCountUnfiltered = useLiveQuery(
+    `SELECT count(*) FROM widgets_for_fields`,
   )
-  const isFiltered =
-    widgetsForFields.length !== widgetsForFieldsUnfiltered.length
+  const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
 
   const widgetsForFieldsNode = useMemo(
     () => ({
       label: `Widgets For Fields (${
         isFiltered
-          ? `${widgetsForFields.length}/${widgetsForFieldsUnfiltered.length}`
+          ? `${widgetsForFields.length}/${countUnfiltered}`
           : widgetsForFields.length
       })`,
     }),
-    [isFiltered, widgetsForFields.length, widgetsForFieldsUnfiltered.length],
+    [isFiltered, widgetsForFields.length, countUnfiltered],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
