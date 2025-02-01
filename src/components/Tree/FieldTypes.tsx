@@ -1,9 +1,8 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { FieldTypeNode } from './FieldType.tsx'
@@ -13,36 +12,33 @@ import { treeOpenNodesAtom, fieldTypesFilterAtom } from '../../store.ts'
 
 export const FieldTypesNode = memo(() => {
   const [filter] = useAtom(fieldTypesFilterAtom)
+  const isFiltered = !!filter
+
   const [openNodes] = useAtom(treeOpenNodesAtom)
 
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const db = usePGlite()
 
-  const where = filter.length > 1 ? { OR: filter } : filter[0]
-  const { results: fieldTypes = [] } = useLiveQuery(
-    db.field_types.liveMany({
-      where,
-      orderBy: { label: 'asc' },
-    }),
+  const resultFiltered = useLiveQuery(
+    `SELECT * FROM field_types${
+      isFiltered ? ` WHERE ${filter}` : ''
+    } order by label asc`,
   )
-  const { results: fieldTypesUnfiltered = [] } = useLiveQuery(
-    db.field_types.liveMany({
-      orderBy: { label: 'asc' },
-    }),
-  )
-  const isFiltered = fieldTypes.length !== fieldTypesUnfiltered.length
+  const fieldTypes = resultFiltered?.rows ?? []
+
+  const countResultUnfiltered = useLiveQuery(`SELECT count(*) FROM field_types`)
+  const countUnfiltered = countResultUnfiltered?.rows?.[0]?.count ?? 0
 
   const fieldTypesNode = useMemo(
     () => ({
       label: `Field Types (${
         isFiltered
-          ? `${fieldTypes.length}/${fieldTypesUnfiltered.length}`
+          ? `${fieldTypes.length}/${countUnfiltered}`
           : fieldTypes.length
       })`,
     }),
-    [fieldTypes.length, fieldTypesUnfiltered.length, isFiltered],
+    [fieldTypes.length, countUnfiltered, isFiltered],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

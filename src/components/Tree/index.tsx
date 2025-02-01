@@ -30,15 +30,16 @@ export const Tree = memo(() => {
       {/* <ProjectsNode /> */}
       <UsersNode />
       <AccountsNode />
-      {/* {designing && (
-        <>
-          <FieldTypesNode />
-          <WidgetTypesNode />
-          <WidgetsForFieldsNode />
-          <FieldsNode />
-          <CrssNode />
-        </>
-      )} */}
+      {designing ||
+        (true && (
+          <>
+            <FieldTypesNode />
+            {/* <WidgetTypesNode /> */}
+            {/* <WidgetsForFieldsNode /> */}
+            {/* <FieldsNode /> */}
+            {/* <CrssNode /> */}
+          </>
+        ))}
       <MessagesNode />
     </div>
   )
