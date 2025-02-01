@@ -23,12 +23,17 @@ export const Component = memo(() => {
     account_id,
   ])
   const row = result?.rows?.[0]
+  console.log('Account, result:', result)
 
   const onChange = useCallback<InputProps['onChange']>(
-    (e, data) => {
+    async (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       const sql = `UPDATE accounts SET ${name} = $1 WHERE account_id = $2`
-      db.query(sql, [value, account_id])
+      try {
+        await db.query(sql, [value, account_id])
+      } catch (error) {
+        console.error('error changing account:', error)
+      }
     },
     [db, account_id],
   )
