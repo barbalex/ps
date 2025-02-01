@@ -14,26 +14,30 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const addRow = useCallback(async () => {
     const data = createField({ project_id })
-    await db.fields.create({ data })
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+    const sql = `INSERT INTO fields (${columns}) VALUES (${values
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
+    await db.query(sql, values)
     navigate({
       pathname: `../${data.field_id}`,
       search: searchParams.toString(),
     })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db.fields, navigate, project_id, searchParams])
+  }, [autoFocusRef, db, navigate, project_id, searchParams])
 
   const deleteRow = useCallback(async () => {
-    await db.fields.delete({ where: { field_id } })
+    await db.query(`DELETE FROM fields WHERE field_id = $1`, [field_id])
     navigate({ pathname: '..', search: searchParams.toString() })
-  }, [db.fields, field_id, navigate, searchParams])
+  }, [db, field_id, navigate, searchParams])
 
   const toNext = useCallback(async () => {
-    const fields = await db.fields.findMany({
-      where: {
-        project_id: project_id ?? null,
-      },
-      orderBy: { label: 'asc' },
-    })
+    const result = await db.query(
+      `SELECT * FROM fields WHERE project_id = $1 order by label asc`,
+      [project_id],
+    )
+    const fields = result.rows
     const len = fields.length
     const index = fields.findIndex((p) => p.field_id === field_id)
     const next = fields[(index + 1) % len]
@@ -41,15 +45,14 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${next.field_id}`,
       search: searchParams.toString(),
     })
-  }, [db.fields, project_id, navigate, searchParams, field_id])
+  }, [db, project_id, navigate, searchParams, field_id])
 
   const toPrevious = useCallback(async () => {
-    const fields = await db.fields.findMany({
-      where: {
-        project_id: project_id ?? null,
-      },
-      orderBy: { label: 'asc' },
-    })
+    const result = await db.query(
+      `SELECT * FROM fields WHERE project_id = $1 order by label asc`,
+      [project_id],
+    )
+    const fields = result.rows
     const len = fields.length
     const index = fields.findIndex((p) => p.field_id === field_id)
     const previous = fields[(index + len - 1) % len]
@@ -57,7 +60,7 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${previous.field_id}`,
       search: searchParams.toString(),
     })
-  }, [db.fields, project_id, navigate, searchParams, field_id])
+  }, [db, project_id, navigate, searchParams, field_id])
 
   return (
     <FormHeader

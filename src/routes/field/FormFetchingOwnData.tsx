@@ -1,7 +1,6 @@
 import { useCallback, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import type { InputProps } from '@fluentui/react-components'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
@@ -11,19 +10,20 @@ import { Component as Form } from './Form.tsx'
 export const FieldFormFetchingOwnData = memo(
   ({ field_id, autoFocusRef, isInForm = false }) => {
     const db = usePGlite()
-    const { results: row } = useLiveQuery(
-      db.fields.liveUnique({ where: { field_id } }),
-    )
+    const result = useLiveQuery(`SELECT * FROM fields WHERE field_id = $1`, [
+      field_id,
+    ])
+    const row = result?.rows?.[0]
 
     const onChange = useCallback<InputProps['onChange']>(
       (e, data) => {
         const { name, value } = getValueFromChange(e, data)
-        db.fields.update({
-          where: { field_id },
-          data: { [name]: value },
-        })
+        db.query(`UPDATE fields SET ${name} = $1 WHERE field_id = $2`, [
+          value,
+          field_id,
+        ])
       },
-      [db.fields, field_id],
+      [db, field_id],
     )
 
     if (!row) return <Loading />

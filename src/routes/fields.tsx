@@ -30,9 +30,14 @@ export const Component = memo(() => {
 
   const add = useCallback(async () => {
     const data = createField({ project_id })
-    await db.fields.create({ data })
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+    const sql = `INSERT INTO fields (${columns}) VALUES (${values
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
+    await db.query(sql, values)
     navigate({ pathname: data.field_id, search: searchParams.toString() })
-  }, [db.fields, navigate, project_id, searchParams])
+  }, [db, navigate, project_id, searchParams])
 
   return (
     <div className="list-view">
