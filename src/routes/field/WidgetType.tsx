@@ -15,11 +15,10 @@ export const WidgetType = memo(({ onChange, field_type_id = '', value }) => {
     }),
   )
   const widgetWhere = useMemo(
-    () => ({
-      widget_type_id: {
-        in: results?.map(({ widget_type_id }) => widget_type_id),
-      },
-    }),
+    () =>
+      `widget_type_id in('${results
+        ?.map(({ widget_type_id }) => widget_type_id)
+        .join("','")}')`,
     [results],
   )
 

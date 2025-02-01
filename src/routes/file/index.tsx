@@ -1,4 +1,4 @@
-import { useCallback, useMemo, memo } from 'react'
+import { useCallback, memo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
@@ -51,24 +51,6 @@ export const Component = memo(() => {
     [db.files, file_id],
   )
 
-  const subprojectWhere = useMemo(
-    () => ({
-      project_id: row?.project_id,
-    }),
-    [row?.project_id],
-  )
-  const placeWhere = useMemo(
-    () => ({
-      subproject_id: row?.subproject_id,
-    }),
-    [row?.subproject_id],
-  )
-  const actionWhere = useMemo(
-    () => ({
-      place_id: row?.place_id,
-    }),
-    [row?.place_id],
-  )
   const { width, ref } = useResizeDetector({
     handleHeight: false,
     refreshMode: 'debounce',
@@ -79,7 +61,10 @@ export const Component = memo(() => {
   if (!row) return <Loading />
 
   return (
-    <div className="form-outer-container" ref={ref}>
+    <div
+      className="form-outer-container"
+      ref={ref}
+    >
       <Uploader />
       <Header />
       <div className="form-container">
@@ -110,7 +95,7 @@ export const Component = memo(() => {
           label="Subproject"
           name="subproject_id"
           table="subprojects"
-          where={subprojectWhere}
+          where={`project_id = '${row?.project_id}'`}
           value={row.subproject_id ?? ''}
           onChange={onChange}
         />
@@ -118,7 +103,7 @@ export const Component = memo(() => {
           label="Place"
           name="place_id"
           table="places"
-          where={placeWhere}
+          where={`subproject_id = '${row?.subproject_id}'`}
           value={row.place_id ?? ''}
           onChange={onChange}
         />
@@ -126,7 +111,7 @@ export const Component = memo(() => {
           label="Action"
           name="action_id"
           table="actions"
-          where={actionWhere}
+          where={`place_id = '${row?.place_id}'`}
           value={row.action_id ?? ''}
           onChange={onChange}
         />
@@ -134,19 +119,35 @@ export const Component = memo(() => {
           label="Check"
           name="check_id"
           table="checks"
-          where={actionWhere}
+          where={`place_id = '${row?.place_id}'`}
           value={row.check_id ?? ''}
           onChange={onChange}
         />
-        <TextFieldInactive label="Name" name="name" value={row.name ?? ''} />
-        <TextFieldInactive label="Size" name="size" value={row.size ?? ''} />
+        <TextFieldInactive
+          label="Name"
+          name="name"
+          value={row.name ?? ''}
+        />
+        <TextFieldInactive
+          label="Size"
+          name="size"
+          value={row.size ?? ''}
+        />
         <TextFieldInactive
           label="Mimetype"
           name="mimetype"
           value={row.mimetype ?? ''}
         />
-        <TextFieldInactive label="Url" name="url" value={row.url ?? ''} />
-        <TextFieldInactive label="Uuid" name="uuid" value={row.uuid ?? ''} />
+        <TextFieldInactive
+          label="Url"
+          name="url"
+          value={row.url ?? ''}
+        />
+        <TextFieldInactive
+          label="Uuid"
+          name="uuid"
+          value={row.uuid ?? ''}
+        />
         <Jsonb
           table="files"
           idField="file_id"

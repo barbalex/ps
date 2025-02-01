@@ -6,7 +6,7 @@ interface Props {
   setOpenNodes: (value: string[]) => void
 }
 
-export const addOpenNodes = ({ nodes = [] }): void => {
+export const addOpenNodes = ({ nodes = [] }: Props): void => {
   if (!nodes.length) return
 
   const openNodes = store.get(treeOpenNodesAtom)

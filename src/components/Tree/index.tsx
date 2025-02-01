@@ -27,10 +27,10 @@ export const Tree = memo(() => {
 
   return (
     <div style={containerStyle}>
-      <ProjectsNode />
-      <UsersNode />
+      {/* <ProjectsNode /> */}
+      {/* <UsersNode /> */}
       <AccountsNode />
-      {designing && (
+      {/* {designing && (
         <>
           <FieldTypesNode />
           <WidgetTypesNode />
@@ -39,7 +39,7 @@ export const Tree = memo(() => {
           <CrssNode />
         </>
       )}
-      <MessagesNode />
+      <MessagesNode /> */}
     </div>
   )
 })

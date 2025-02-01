@@ -1,7 +1,6 @@
 import { memo, useMemo, forwardRef } from 'react'
 import { Dropdown, Field, Option } from '@fluentui/react-components'
-import { useLiveQuery } from '@electric-sql/pglite-react'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 const rowStyle = {
   display: 'flex',
@@ -24,7 +23,7 @@ export const DropdownField = memo(
         table,
         idField, // defaults to name, used for cases where the id field is not the same as the name field (?)
         where = {},
-        orderBy = { label: 'asc' },
+        orderBy = 'label asc' ,
         value,
         onChange,
         autoFocus,
@@ -37,6 +36,9 @@ export const DropdownField = memo(
       ref,
     ) => {
       const db = usePGlite()
+      const result = useLiveQuery(`SELECT * FROM ${table} order by ${orderBy}`, [
+        value,
+      ])
       const { results = [] } = useLiveQuery(
         db[table]?.liveMany({
           where,

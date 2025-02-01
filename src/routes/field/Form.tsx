@@ -32,8 +32,6 @@ const widgetsNeedingList = [
   '018ca1a1-c94b-7d29-b21c-42053ade0411',
 ] // options-few, options-many
 
-const fieldTypeOrderBy = [{ sort: 'asc' }, { name: 'asc' }]
-
 // this form is rendered from a parent or outlet
 export const Component = memo(
   ({
@@ -95,7 +93,7 @@ export const Component = memo(
           label="Type"
           name="field_type_id"
           table="field_types"
-          orderBy={fieldTypeOrderBy}
+          orderBy="sort asc, name asc"
           value={row.field_type_id ?? ''}
           onChange={onChange}
           validationMessage={row.field_type_id ? undefined : 'Required'}

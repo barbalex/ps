@@ -86,7 +86,7 @@ export const Node = memo(
     to,
     onClickButton,
     sibling,
-  }) => {
+  }: Props) => {
     const [searchParams] = useSearchParams()
     // console.log('hello level:', level)
 

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, memo } from 'react'
+import { useCallback, useRef, memo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
@@ -22,8 +22,6 @@ export const Component = memo(() => {
   const { results: row } = useLiveQuery(
     db.check_values.liveUnique({ where: { check_value_id } }),
   )
-
-  const unitWhere = useMemo(() => ({ use_for_check_values: true }), [])
 
   // console.log('CheckValue', { row, results })
 
@@ -55,7 +53,7 @@ export const Component = memo(() => {
           label="Unit"
           name="unit_id"
           table="units"
-          where={unitWhere}
+          where="use_for_check_values is true"
           value={row.unit_id ?? ''}
           onChange={onChange}
           autoFocus

@@ -24,7 +24,6 @@ export const Component = memo(() => {
   )
 
   const unitWhere = useMemo(() => ({ use_for_goal_report_values: true }), [])
-  const unitOrderBy = useMemo(() => [{ sort: 'asc' }, { name: 'asc' }], [])
 
   // console.log('GoalReportValue', { row, results })
 
@@ -55,7 +54,7 @@ export const Component = memo(() => {
           name="unit_id"
           table="units"
           where={unitWhere}
-          orderBy={unitOrderBy}
+          orderBy="sort asc, name asc"
           value={row.unit_id ?? ''}
           onChange={onChange}
           autoFocus

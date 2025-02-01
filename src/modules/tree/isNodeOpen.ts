@@ -5,5 +5,5 @@ interface Props {
   openNodes: string[][]
 }
 
-export const isNodeOpen = ({ node = [], openNodes = [] }): boolean =>
+export const isNodeOpen = ({ node = [], openNodes = [] }: Props): boolean =>
   openNodes.some((n) => isEqual(n, node))
