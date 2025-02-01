@@ -138,11 +138,12 @@ export const createAccount = () => ({
 
 // users creates the db row to ensure creating the app_state too
 export const createUser = async ({ db, setUserId }) => {
-  const data = { user_id: uuidv7() }
+  const user_id = uuidv7()
 
-  await db.users.create({ data })
+  const sql = `INSERT INTO users (user_id) VALUES ($1)`
+  await db.query(sql, [user_id])
   // TODO: why setUserId?
-  setUserId(data.user_id)
+  setUserId(user_id)
 
   return data
 }
