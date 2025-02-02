@@ -17,7 +17,7 @@ export const Component = memo(() => {
 
   const db = usePGlite()
   const result = useLiveQuery(
-    `SELECT * FROM subprojects WHERE subproject_id = $1`,
+    `SELECT subprojects.*, projects.subproject_name_singular FROM subprojects inner join projects on projects.project_id = subprojects.project_id WHERE subproject_id = $1`,
     [subproject_id],
   )
   const row = result?.rows?.[0]
@@ -37,7 +37,10 @@ export const Component = memo(() => {
 
   return (
     <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} />
+      <Header
+        autoFocusRef={autoFocusRef}
+        nameSingular={row.subproject_name_singular}
+      />
       <div
         className="form-container"
         role="tabpanel"

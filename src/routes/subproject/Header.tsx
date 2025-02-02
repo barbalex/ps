@@ -1,28 +1,27 @@
 import { useCallback, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { createSubproject } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
-export const Header = memo(({ autoFocusRef }) => {
+export const Header = memo(({ autoFocusRef, nameSingular = 'Subproject' }) => {
   const { project_id, subproject_id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
   const db = usePGlite()
 
-  // get projects.subproject_name_singular to name the table
-  const { results: project = {} } = useLiveQuery(
-    db.projects.liveUnique({ where: { project_id } }),
-  )
-  const nameSingular = project?.subproject_name_singular ?? 'Subproject'
   const nameSingularLower = nameSingular.toLowerCase()
 
   const addRow = useCallback(async () => {
     const data = await createSubproject({ db, project_id })
-    await db.subprojects.create({ data })
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+    const sql = `INSERT INTO subprojects (${columns}) VALUES (${values
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
+    await db.query(sql, values)
     navigate({
       pathname: `../${data.subproject_id}`,
       search: searchParams.toString(),
@@ -31,15 +30,18 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [autoFocusRef, db, navigate, project_id, searchParams])
 
   const deleteRow = useCallback(async () => {
-    await db.subprojects.delete({ where: { subproject_id } })
+    await db.queries(`DELETE FROM subprojects WHERE subproject_id = $1`, [
+      subproject_id,
+    ])
     navigate({ pathname: '..', search: searchParams.toString() })
-  }, [db.subprojects, navigate, subproject_id, searchParams])
+  }, [db, subproject_id, navigate, searchParams])
 
   const toNext = useCallback(async () => {
-    const subprojects = await db.subprojects.findMany({
-      where: { project_id },
-      orderBy: { label: 'asc' },
-    })
+    const result = await db.query(
+      `SELECT * FROM subprojects WHERE project_id = $1 order by label asc`,
+      [project_id],
+    )
+    const subprojects = result.rows
     const len = subprojects.length
     const index = subprojects.findIndex(
       (p) => p.subproject_id === subproject_id,
@@ -49,13 +51,14 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${next.subproject_id}`,
       search: searchParams.toString(),
     })
-  }, [db.subprojects, navigate, project_id, subproject_id, searchParams])
+  }, [db, project_id, navigate, searchParams, subproject_id])
 
   const toPrevious = useCallback(async () => {
-    const subprojects = await db.subprojects.findMany({
-      where: { project_id },
-      orderBy: { label: 'asc' },
-    })
+    const result = await db.query(
+      `SELECT * FROM subprojects WHERE project_id = $1 order by label asc`,
+      [project_id],
+    )
+    const subprojects = result.rows
     const len = subprojects.length
     const index = subprojects.findIndex(
       (p) => p.subproject_id === subproject_id,
@@ -65,7 +68,7 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${previous.subproject_id}`,
       search: searchParams.toString(),
     })
-  }, [db.subprojects, navigate, project_id, subproject_id, searchParams])
+  }, [db, project_id, navigate, searchParams, subproject_id])
 
   return (
     <FormHeader
