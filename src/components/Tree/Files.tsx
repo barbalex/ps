@@ -38,35 +38,42 @@ export const FilesNode = memo(
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const hierarchyFilter = useMemo(() => {
-      const where = ``
+    const { hField, hValue } = useMemo(() => {
+      let hField
+      let hValue
       if (action_id) {
-        where = `action_id = '${action_id}'`
+        hField = 'action_id'
+        hValue = action_id
       } else if (check_id) {
-        where = `check_id = '${check_id}'`
+        hField = 'check_id'
+        hValue = check_id
       } else if (place_id2) {
-        where = `place_id = '${place_id2}'`
+        hField = 'place_id'
+        hValue = place_id2
       } else if (place_id) {
-        where = `place_id = '${place_id}'`
+        hField = 'place_id'
+        hValue = place_id
       } else if (subproject_id) {
-        where = `subproject_id = '${subproject_id}'`
+        hField = 'subproject_id'
+        hValue = subproject_id
       } else if (project_id) {
-        where = `project_id = '${project_id}'`
+        hField = 'project_id'
+        hValue = project_id
       }
-      return where
+      return { hField, hValue }
     }, [action_id, check_id, place_id, place_id2, project_id, subproject_id])
 
     const resultFiltered = useLiveQuery(
-      `SELECT * FROM files WHERE ${hierarchyFilter ? hierarchyFilter : ''}${
+      `SELECT * FROM files WHERE ${hField} = $1 ${
         isFiltered ? ` AND (${filter})` : ''
       } order by label asc`,
+      [hValue],
     )
     const files = resultFiltered?.rows ?? []
 
     const resultCountUnfiltered = useLiveQuery(
-      `SELECT count(*) FROM files WHERE ${
-        hierarchyFilter ? hierarchyFilter : ''
-      }`,
+      `SELECT count(*) FROM files WHERE ${hField} = $1`,
+      [hValue],
     )
     const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
 

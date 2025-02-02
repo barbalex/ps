@@ -25,7 +25,12 @@ export const Header = memo(({ autoFocusRef }) => {
       ? { subproject_id }
       : { project_id }
     const data = createChart(idToAdd)
-    await db.charts.create({ data })
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+    const sql = `insert into charts (${columns}) values (${values
+      .map((_, i) => `$${i + 1}`)
+      .join(',')}) returning chart_id`
+    await db.query(sql, values)
     navigate({
       pathname: `../${data.chart_id}`,
       search: searchParams.toString(),
@@ -33,7 +38,7 @@ export const Header = memo(({ autoFocusRef }) => {
     autoFocusRef.current?.focus()
   }, [
     autoFocusRef,
-    db.charts,
+    db,
     navigate,
     place_id,
     place_id2,
@@ -43,29 +48,35 @@ export const Header = memo(({ autoFocusRef }) => {
   ])
 
   const deleteRow = useCallback(async () => {
-    await db.charts.delete({ where: { chart_id } })
+    await db.query(`delete from charts where chart_id = $1`, [chart_id])
     navigate({ pathname: '..', search: searchParams.toString() })
-  }, [db.charts, chart_id, navigate, searchParams])
+  }, [db, chart_id, navigate, searchParams])
 
-  const where = useMemo(() => {
-    const where = {}
+  const { filterField, filterValue } = useMemo(() => {
+    let filterField
+    let filterValue
     if (place_id2) {
-      where.place_id2 = place_id2
+      filterField = 'place_id2'
+      filterValue = place_id2
     } else if (place_id) {
-      where.place_id = place_id
+      filterField = 'place_id'
+      filterValue = place_id
     } else if (subproject_id) {
-      where.subproject_id = subproject_id
+      filterField = 'subproject_id'
+      filterValue = subproject_id
     } else if (project_id) {
-      where.project_id = project_id
+      filterField = 'project_id'
+      filterValue = project_id
     }
-    return where
+    return { filterField, filterValue }
   }, [place_id, place_id2, project_id, subproject_id])
 
   const toNext = useCallback(async () => {
-    const charts = await db.charts.findMany({
-      where,
-      orderBy: { label: 'asc' },
-    })
+    const result = await db.query(
+      `select * from charts where ${filterField} = $1 order by label asc`,
+      [filterValue],
+    )
+    const charts = result.rows
     const len = charts.length
     const index = charts.findIndex((p) => p.chart_id === chart_id)
     const next = charts[(index + 1) % len]
@@ -73,13 +84,14 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${next.chart_id}`,
       search: searchParams.toString(),
     })
-  }, [db.charts, where, navigate, searchParams, chart_id])
+  }, [db, filterField, filterValue, navigate, searchParams, chart_id])
 
   const toPrevious = useCallback(async () => {
-    const charts = await db.charts.findMany({
-      where,
-      orderBy: { label: 'asc' },
-    })
+    const result = await db.query(
+      `select * from charts where ${filterField} = $1 order by label asc`,
+      [filterValue],
+    )
+    const charts = result.rows
     const len = charts.length
     const index = charts.findIndex((p) => p.chart_id === chart_id)
     const previous = charts[(index + len - 1) % len]
@@ -87,7 +99,7 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${previous.chart_id}`,
       search: searchParams.toString(),
     })
-  }, [db.charts, where, navigate, searchParams, chart_id])
+  }, [db, filterField, filterValue, navigate, searchParams, chart_id])
 
   return (
     <FormHeader

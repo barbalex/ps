@@ -25,22 +25,41 @@ export const ChartsNode = memo(
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const filter = useMemo(() => {
-      let filter = ``
+    // const filter = useMemo(() => {
+    //   let filter = ``
+    //   if (place_id2) {
+    //     filter = `place_id = '${place_id2}'`
+    //   } else if (place_id) {
+    //     filter = `place_id = '${place_id}'`
+    //   } else if (subproject_id) {
+    //     filter = `subproject_id = '${subproject_id}'`
+    //   } else if (project_id) {
+    //     filter = `project_id = '${project_id}'`
+    //   }
+    //   return filter
+    // }, [place_id, place_id2, project_id, subproject_id])
+    const { field, value } = useMemo(() => {
+      let field
+      let value
       if (place_id2) {
-        filter = `place_id = '${place_id2}'`
+        field = 'place_id'
+        value = place_id2
       } else if (place_id) {
-        filter = `place_id = '${place_id}'`
+        field = 'place_id'
+        value = place_id
       } else if (subproject_id) {
-        filter = `subproject_id = '${subproject_id}'`
+        field = 'subproject_id'
+        value = subproject_id
       } else if (project_id) {
-        filter = `project_id = '${project_id}'`
+        field = 'project_id'
+        value = project_id
       }
-      return filter
+      return { field, value }
     }, [place_id, place_id2, project_id, subproject_id])
 
     const result = useLiveQuery(
-      `SELECT * FROM charts WHERE ${filter} order by label asc`,
+      `SELECT * FROM charts WHERE ${field} = $1 order by label asc`,
+      [value],
     )
     const charts = result?.rows ?? []
 
