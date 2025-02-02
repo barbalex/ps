@@ -1,9 +1,8 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { SubprojectReportNode } from './SubprojectReport.tsx'
@@ -18,44 +17,38 @@ interface Props {
 }
 
 export const SubprojectReportsNode = memo(
-  ({ project_id, subproject_id, level = 5 }) => {
+  ({ project_id, subproject_id, level = 5 }: Props) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const [filter] = useAtom(subprojectReportsFilterAtom)
+    const isFiltered = !!filter
 
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
-    const db = usePGlite()
 
-    const where = filter.length > 1 ? { OR: filter } : filter[0]
-    const { results: subprojectReports = [] } = useLiveQuery(
-      db.subproject_reports.liveMany({
-        where: { subproject_id, ...where },
-        orderBy: { label: 'asc' },
-      }),
+    const resultFiltered = useLiveQuery(
+      `SELECT * FROM subproject_reports WHERE subproject_id = $1${
+        isFiltered ? ` AND (${filter})` : ''
+      } order by label asc`,
+      [subproject_id],
     )
-    const { results: subprojectReportsUnfiltered = [] } = useLiveQuery(
-      db.subproject_reports.liveMany({
-        where: { subproject_id },
-        orderBy: { label: 'asc' },
-      }),
+    const subprojectReports = resultFiltered?.rows ?? []
+
+    const resultCountUnfiltered = useLiveQuery(
+      `SELECT count(*) FROM subproject_reports WHERE subproject_id = $1`,
+      [subproject_id],
     )
-    const isFiltered =
-      subprojectReports.length !== subprojectReportsUnfiltered.length
+    const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
 
     const subprojectReportsNode = useMemo(
       () => ({
         label: `Reports (${
           isFiltered
-            ? `${subprojectReports.length}/${subprojectReportsUnfiltered.length}`
+            ? `${subprojectReports.length}/${countUnfiltered}`
             : subprojectReports.length
         })`,
       }),
-      [
-        isFiltered,
-        subprojectReports.length,
-        subprojectReportsUnfiltered.length,
-      ],
+      [isFiltered, subprojectReports.length, countUnfiltered],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -91,7 +84,6 @@ export const SubprojectReportsNode = memo(
       isOpen,
       navigate,
       ownArray,
-      parentArray,
       parentUrl,
       searchParams,
       urlPath.length,

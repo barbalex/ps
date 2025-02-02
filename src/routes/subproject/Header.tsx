@@ -12,7 +12,7 @@ export const Header = memo(({ autoFocusRef, nameSingular = 'Subproject' }) => {
 
   const db = usePGlite()
 
-  const nameSingularLower = nameSingular.toLowerCase()
+  const nameSingularLower = nameSingular?.toLowerCase?.()
 
   const addRow = useCallback(async () => {
     const data = await createSubproject({ db, project_id })

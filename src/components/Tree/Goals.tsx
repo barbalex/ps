@@ -1,9 +1,8 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { GoalNode } from './Goal.tsx'
@@ -18,39 +17,36 @@ interface Props {
 }
 
 export const GoalsNode = memo(
-  ({ project_id, subproject_id, level = 5 }) => {
+  ({ project_id, subproject_id, level = 5 }: Props) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const [filter] = useAtom(goalsFilterAtom)
+    const isFiltered = !!filter
 
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
-    const db = usePGlite()
 
-    const where = filter.length > 1 ? { OR: filter } : filter[0]
-    const { results: goals = [] } = useLiveQuery(
-      db.goals.liveMany({
-        where: { subproject_id, ...where },
-        orderBy: { label: 'asc' },
-      }),
+    const resultFiltered = useLiveQuery(
+      `SELECT * FROM goals WHERE subproject_id = $1${
+        isFiltered ? ` AND (${filter})` : ''
+      } ORDER BY label ASC`,
+      [subproject_id],
     )
-    const { results: goalsUnfiltered = [] } = useLiveQuery(
-      db.goals.liveMany({
-        where: { subproject_id },
-        orderBy: { label: 'asc' },
-      }),
+    const goals = resultFiltered?.rows ?? []
+
+    const resultCountUnfiltered = useLiveQuery(
+      `SELECT count(*) FROM goals WHERE subproject_id = $1`,
+      [subproject_id],
     )
-    const isFiltered = goals.length !== goalsUnfiltered.length
+    const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
 
     const goalsNode = useMemo(
       () => ({
         label: `Goals (${
-          isFiltered
-            ? `${goals.length}/${goalsUnfiltered.length}`
-            : goals.length
+          isFiltered ? `${goals.length}/${countUnfiltered}` : goals.length
         })`,
       }),
-      [goals.length, goalsUnfiltered.length, isFiltered],
+      [goals.length, countUnfiltered, isFiltered],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
