@@ -1,9 +1,8 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { ChartNode } from './Chart.tsx'
@@ -20,34 +19,30 @@ interface Props {
 }
 
 export const ChartsNode = memo(
-  ({ project_id, subproject_id, place_id, place_id2, level }) => {
+  ({ project_id, subproject_id, place_id, place_id2, level }: Props) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const db = usePGlite()
-
-    const where = useMemo(() => {
-      const where = {}
+    const filter = useMemo(() => {
+      let filter = ``
       if (place_id2) {
-        where.place_id = place_id2
+        filter = `place_id = '${place_id2}'`
       } else if (place_id) {
-        where.place_id = place_id
+        filter = `place_id = '${place_id}'`
       } else if (subproject_id) {
-        where.subproject_id = subproject_id
+        filter = `subproject_id = '${subproject_id}'`
       } else if (project_id) {
-        where.project_id = project_id
+        filter = `project_id = '${project_id}'`
       }
-      return where
+      return filter
     }, [place_id, place_id2, project_id, subproject_id])
 
-    const { results: charts = [] } = useLiveQuery(
-      db.charts.liveMany({
-        where,
-        orderBy: { label: 'asc' },
-      }),
+    const result = useLiveQuery(
+      `SELECT * FROM charts WHERE ${filter} order by label asc`,
     )
+    const charts = result?.rows ?? []
 
     const chartsNode = useMemo(
       () => ({ label: `Charts (${charts.length})` }),
@@ -93,7 +88,6 @@ export const ChartsNode = memo(
       isOpen,
       navigate,
       ownArray,
-      parentArray,
       parentUrl,
       searchParams,
       urlPath.length,
