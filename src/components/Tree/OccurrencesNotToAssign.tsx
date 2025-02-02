@@ -1,9 +1,8 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { OccurrenceNotToAssignNode } from './OccurrenceNotToAssign.tsx'
@@ -18,29 +17,29 @@ interface Props {
 }
 
 export const OccurrencesNotToAssignNode = memo(
-  ({ project_id, subproject_id, level = 5 }) => {
+  ({ project_id, subproject_id, level = 5 }: Props) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const db = usePGlite()
-    const { results: occurrenceImports = [] } = useLiveQuery(
-      db.occurrence_imports.liveMany({
-        where: { subproject_id },
-      }),
+    const results = useLiveQuery(
+      `
+        SELECT 
+          o.* 
+        FROM 
+          occurrences o 
+          INNER JOIN occurrence_imports oi 
+            ON o.occurrence_import_id = oi.occurrence_import_id 
+        WHERE 
+          oi.subproject_id = $1
+          AND o.not_to_assign IS TRUE
+        ORDER BY 
+          o.label ASC
+      `,
+      [subproject_id],
     )
-    const { results: occurrences = [] } = useLiveQuery(
-      db.occurrences.liveMany({
-        where: {
-          occurrence_import_id: {
-            in: occurrenceImports.map((o) => o.occurrence_import_id),
-          },
-          not_to_assign: true,
-        },
-        orderBy: { label: 'asc' },
-      }),
-    )
+    const occurrences = results?.rows ?? []
 
     const occurrencesNode = useMemo(
       () => ({ label: `Occurrences not to assign (${occurrences.length})` }),
@@ -83,7 +82,6 @@ export const OccurrencesNotToAssignNode = memo(
       isOpen,
       navigate,
       ownArray,
-      parentArray,
       parentUrl,
       searchParams,
       urlPath.length,
