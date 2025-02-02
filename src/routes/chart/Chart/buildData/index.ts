@@ -12,22 +12,20 @@ export const buildData = async ({ db, chart, subjects, subproject_id }) => {
           case 'places': {
             switch (subject.table_level) {
               case 1: {
-                const places = await db.places.findMany({
-                  where: {
-                    subproject_id,
-                    parent_id: null,
-                  },
-                })
+                const result = await db.query(
+                  `SELECT * FROM places WHERE subproject_id = $1 AND parent_id IS NULL`,
+                  [subproject_id],
+                )
+                const places = result.rows
                 countPlacesRows({ dataPerSubject, places, subject })
                 break
               }
               case 2: {
-                const places = await db.places.findMany({
-                  where: {
-                    subproject_id,
-                    parent_id: { not: null },
-                  },
-                })
+                const result = await db.query(
+                  `SELECT * FROM places WHERE subproject_id = $1 and parent_id IS NOT NULL`,
+                  [subproject_id],
+                )
+                const places = result.rows
                 countPlacesRows({ dataPerSubject, places, subject })
                 break
               }
@@ -37,13 +35,17 @@ export const buildData = async ({ db, chart, subjects, subproject_id }) => {
             break
           }
           case 'checks': {
-            const places = await db.places.findMany({
-              where: { subproject_id },
-            })
-            const placeIds = places.map((place) => place.place_id)
-            const checks = await db.checks.findMany({
-              where: { place_id: { in: placeIds } },
-            })
+            const resultChecks = await db.query(
+              `
+                SELECT checks.date 
+                FROM 
+                  checks inner join places 
+                    on checks.place_id = places.place_id 
+                WHERE places.subproject_id = $1
+              `,
+              [subproject_id],
+            )
+            const checks = resultChecks.rows
             // use reduce to count checks per year
             const data = checks.reduce((acc, check) => {
               const year = check.date?.getFullYear?.()
@@ -56,13 +58,17 @@ export const buildData = async ({ db, chart, subjects, subproject_id }) => {
             break
           }
           case 'actions': {
-            const places = await db.places.findMany({
-              where: { subproject_id },
-            })
-            const placeIds = places.map((place) => place.place_id)
-            const actions = await db.actions.findMany({
-              where: { place_id: { in: placeIds } },
-            })
+            const result = await db.query(
+              `
+                SELECT actions.date 
+                FROM 
+                  actions inner join places 
+                    on actions.place_id = places.place_id 
+                WHERE places.subproject_id = $1
+              `,
+              [subproject_id],
+            )
+            const actions = result.rows
             // use reduce to count checks per year
             const data = actions.reduce((acc, check) => {
               const year = check.date?.getFullYear?.()

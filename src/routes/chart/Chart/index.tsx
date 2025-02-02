@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from 'react'
+import { memo, useEffect, useState, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { usePGlite } from '@electric-sql/pglite-react'
@@ -18,18 +18,18 @@ export const Chart = memo(() => {
   const { project_id, subproject_id, chart_id } = useParams()
 
   const db = usePGlite()
-  const { results: chart } = useLiveQuery(
-    db.charts.liveUnique({
-      where: { chart_id },
-      // include: { chart_subjects: true }, // NOT WORKING due to boolean value in subjects...
-    }),
+
+  // TODO: query subjects with charts
+  const resultChart = useLiveQuery(`SELECT * FROM charts WHERE chart_id = $1`, [
+    chart_id,
+  ])
+  const chart = resultChart?.rows?.[0]
+
+  const resultSubjects = useLiveQuery(
+    `SELECT * FROM chart_subjects WHERE chart_id = $1 order by sort asc, name asc`,
+    [chart_id],
   )
-  const { results: subjects } = useLiveQuery(
-    db.chart_subjects.liveMany({
-      where: { chart_id },
-      orderBy: [{ sort: 'asc' }, { name: 'asc' }],
-    }),
-  )
+  const subjects = useMemo(() => resultSubjects?.rows ?? [], [resultSubjects])
 
   const [data, setData] = useState({ data: [], names: [] })
 
@@ -66,7 +66,11 @@ export const Chart = memo(() => {
           />
         ))
       ) : (
-        <SingleChart chart={chart} subjects={subjects} data={data} />
+        <SingleChart
+          chart={chart}
+          subjects={subjects}
+          data={data}
+        />
       )}
     </>
   )

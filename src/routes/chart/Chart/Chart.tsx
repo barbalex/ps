@@ -10,8 +10,6 @@ import {
   Legend,
 } from 'recharts'
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { usePGlite } from '@electric-sql/pglite-react'
-
 
 const toPercent = (decimal) => `${(decimal * 100).toFixed(0)}%`
 
@@ -25,21 +23,19 @@ const formatNumber = (tickItem) =>
   tickItem && tickItem?.toLocaleString ? tickItem.toLocaleString('de-ch') : 0
 
 export const SingleChart = memo(({ chart, subjects, data, synchronized }) => {
-  const db = usePGlite()
-  const { results: firstSubjectsUnit } = useLiveQuery(
-    db.units.liveUnique({
-      where: {
-        unit_id:
-          subjects?.[0]?.value_unit ?? '99999999-9999-9999-9999-999999999999',
-      },
-    }),
-  )
+  const result = useLiveQuery(`SELECT * FROM units WHERE unit_id = $1`, [
+    subjects?.[0]?.value_unit ?? '99999999-9999-9999-9999-999999999999',
+  ])
+  const firstSubjectsUnit = result?.rows?.[0]
   if (!chart || !subjects) return null
 
   const unit = firstSubjectsUnit ?? 'Count'
 
   return (
-    <ResponsiveContainer width="99%" height={synchronized ? 200 : 400}>
+    <ResponsiveContainer
+      width="99%"
+      height={synchronized ? 200 : 400}
+    >
       <AreaChart
         width={600}
         height={300}
@@ -59,8 +55,16 @@ export const SingleChart = memo(({ chart, subjects, data, synchronized }) => {
                 x2="0"
                 y2="1"
               >
-                <stop offset="5%" stopColor={subject.fill} stopOpacity={0.8} />
-                <stop offset="95%" stopColor={subject.fill} stopOpacity={0} />
+                <stop
+                  offset="5%"
+                  stopColor={subject.fill}
+                  stopOpacity={0.8}
+                />
+                <stop
+                  offset="95%"
+                  stopColor={subject.fill}
+                  stopOpacity={0}
+                />
               </linearGradient>
             ) : (
               // this is needed for gradient to work without missing key warning
@@ -109,8 +113,14 @@ export const SingleChart = memo(({ chart, subjects, data, synchronized }) => {
           )
         })}
         <Tooltip />
-        <CartesianGrid strokeDasharray="3 3" horizontal={false} />
-        <Legend verticalAlign="bottom" height={36} />
+        <CartesianGrid
+          strokeDasharray="3 3"
+          horizontal={false}
+        />
+        <Legend
+          verticalAlign="bottom"
+          height={36}
+        />
       </AreaChart>
     </ResponsiveContainer>
   )
