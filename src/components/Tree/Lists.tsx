@@ -1,9 +1,8 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { ListNode } from './List.tsx'
@@ -16,37 +15,36 @@ interface Props {
   level?: number
 }
 
-export const ListsNode = memo(({ project_id, level = 3 }) => {
+export const ListsNode = memo(({ project_id, level = 3 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [filter] = useAtom(listsFilterAtom)
+  const isFiltered = !!filter
 
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const db = usePGlite()
 
-  const where = filter.length > 1 ? { OR: filter } : filter[0]
-  const { results: lists = [] } = useLiveQuery(
-    db.lists.liveMany({
-      where: { project_id, ...where },
-      orderBy: { label: 'asc' },
-    }),
+  const resultFiltered = useLiveQuery(
+    `SELECT * FROM lists WHERE project_id = $1${
+      isFiltered ? ` AND (${filter})` : ''
+    } order by label asc`,
+    [project_id],
   )
-  const { results: listsUnfiltered = [] } = useLiveQuery(
-    db.lists.liveMany({
-      where: { project_id },
-      orderBy: { label: 'asc' },
-    }),
+  const lists = resultFiltered?.rows || []
+
+  const resultCountUnfiltered = useLiveQuery(
+    `SELECT COUNT(*) FROM lists WHERE project_id = $1`,
+    [project_id],
   )
-  const isFiltered = lists.length !== listsUnfiltered.length
+  const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count || 0
 
   const listsNode = useMemo(
     () => ({
       label: `Lists (${
-        isFiltered ? `${lists.length}/${listsUnfiltered.length}` : lists.length
+        isFiltered ? `${lists.length}/${countUnfiltered}` : lists.length
       })`,
     }),
-    [isFiltered, lists.length, listsUnfiltered.length],
+    [isFiltered, lists.length, countUnfiltered],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -82,7 +80,6 @@ export const ListsNode = memo(({ project_id, level = 3 }) => {
     isOpen,
     navigate,
     ownArray,
-    parentArray,
     parentUrl,
     searchParams,
     urlPath.length,

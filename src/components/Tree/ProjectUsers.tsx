@@ -1,9 +1,8 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { ProjectUserNode } from './ProjectUser.tsx'
@@ -16,19 +15,17 @@ interface Props {
   level?: number
 }
 
-export const ProjectUsersNode = memo(({ project_id, level = 3 }) => {
+export const ProjectUsersNode = memo(({ project_id, level = 3 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const db = usePGlite()
-  const { results: projectUsers = [] } = useLiveQuery(
-    db.project_users.liveMany({
-      where: { project_id },
-      orderBy: { label: 'asc' },
-    }),
+  const result = useLiveQuery(
+    `SELECT * from project_users where project_id = $1 order by label asc`,
+    [project_id],
   )
+  const projectUsers = result?.rows ?? []
 
   const projectUsersNode = useMemo(
     () => ({ label: `Users (${projectUsers.length})` }),
@@ -68,7 +65,6 @@ export const ProjectUsersNode = memo(({ project_id, level = 3 }) => {
     isOpen,
     navigate,
     ownArray,
-    parentArray,
     parentUrl,
     searchParams,
     urlPath.length,
