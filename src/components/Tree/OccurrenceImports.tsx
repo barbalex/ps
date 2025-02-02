@@ -1,9 +1,8 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { OccurrenceImportNode } from './OccurrenceImport.tsx'
@@ -18,19 +17,17 @@ interface Props {
 }
 
 export const OccurrenceImportsNode = memo(
-  ({ project_id, subproject_id, level = 5 }) => {
+  ({ project_id, subproject_id, level = 5 }: Props) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const db = usePGlite()
-    const { results: occurrenceImports = [] } = useLiveQuery(
-      db.occurrence_imports.liveMany({
-        where: { subproject_id },
-        orderBy: { label: 'asc' },
-      }),
+    const result = useLiveQuery(
+      `SELECT * FROM occurrence_imports WHERE subproject_id = $1 order by label asc`,
+      [subproject_id],
     )
+    const occurrenceImports = result?.rows ?? []
 
     const node = useMemo(
       () => ({ label: `Occurrence Imports (${occurrenceImports.length})` }),
@@ -73,7 +70,6 @@ export const OccurrenceImportsNode = memo(
       isOpen,
       navigate,
       ownArray,
-      parentArray,
       parentUrl,
       searchParams,
       urlPath.length,
