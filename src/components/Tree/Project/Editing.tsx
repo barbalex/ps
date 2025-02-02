@@ -7,7 +7,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useCorbado } from '@corbado/react'
 
 import { on } from '../../../css.ts'
-import { designingAtom, userIdAtom } from '../../../store.ts'
+import { designingAtom } from '../../../store.ts'
 
 const buttonStyle = {
   borderRadius: 20,
