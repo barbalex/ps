@@ -1,11 +1,11 @@
 import { useCallback, memo } from 'react'
 import { MdEdit, MdEditOff } from 'react-icons/md'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { Button } from '@fluentui/react-components'
 import { useParams } from 'react-router-dom'
 import { useAtom } from 'jotai'
 import { pipe } from 'remeda'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useCorbado } from '@corbado/react'
 
 import { on } from '../../../css.ts'
 import { designingAtom, userIdAtom } from '../../../store.ts'
@@ -26,6 +26,7 @@ export const Editing = memo(() => {
   const [userId] = useAtom(userIdAtom)
   const { project_id } = useParams()
   const db = usePGlite()
+  const { user } = useCorbado()
 
   const onClick = useCallback(
     (e) => {
@@ -35,17 +36,24 @@ export const Editing = memo(() => {
     [designing, setDesigning],
   )
 
-  const { results: project } = useLiveQuery(
-    db.projects.liveUnique({
-      where: { project_id },
-      include: { accounts: true, project_users: true },
-    }),
+
+  const resultProject = useLiveQuery(
+    `
+      SELECT
+        pu.role as project_user_role,
+        u.email as account_user_email
+      FROM projects p 
+        inner join accounts a on p.account_id = a.account_id 
+          inner join users u on u.user_id = a.user_id
+        inner join project_users pu on pu.project_id = p.project_id AND pu.user_id = $2
+      WHERE 
+        p.project_id = $1
+    `,
+    [project_id, userId],
   )
-  const userIsOwner = project?.account_id === project?.accounts?.account_id
-  const projectUser = project?.project_users?.find(
-    (pu) => pu.user_id === userId,
-  )
-  const userRole = projectUser?.role
+  const project = resultProject?.rows?.[0]
+  const userIsOwner = project?.account_user_email === user?.email
+  const userRole = project?.project_user_role
   // console.log('hello Project Editing', { projectUser, userRole, project })
 
   const userMayDesign = userIsOwner || userRole === 'manager'

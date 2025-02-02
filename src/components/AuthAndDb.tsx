@@ -3,7 +3,7 @@ import { CorbadoProvider } from '@corbado/react'
 
 import { SqlInitializer } from './SqlInitializer/index.tsx'
 // import { Syncer } from './Syncer.tsx'
-// import { TreeOpenNodesSetter } from './TreeOpenNodesSetter.tsx'
+import { TreeOpenNodesSetter } from './TreeOpenNodesSetter.tsx'
 
 import { Layout } from './LayoutProtected/index.tsx'
 
@@ -19,7 +19,7 @@ export const AuthAndDb = memo(() => {
         <SqlInitializer />
       </Suspense>
       {/* <Syncer /> */}
-      {/* <TreeOpenNodesSetter /> */}
+      <TreeOpenNodesSetter />
       <Layout />
     </CorbadoProvider>
   )
