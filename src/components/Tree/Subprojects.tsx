@@ -1,9 +1,8 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { SubprojectNode } from './Subproject.tsx'
@@ -19,43 +18,42 @@ interface Props {
 export const SubprojectsNode = memo(({ project_id, level = 3 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [filter] = useAtom(subprojectsFilterAtom)
+  const isFiltered = !!filter
 
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const db = usePGlite()
 
-  const where = filter.length > 1 ? { OR: filter } : filter[0]
-  const { results: subprojects = [] } = useLiveQuery(
-    db.subprojects.liveMany({
-      where: { project_id, ...where },
-      orderBy: { label: 'asc' },
-    }),
+  const resultFiltered = useLiveQuery(
+    `
+      SELECT subprojects.*, project.subproject_name_plural 
+      FROM subprojects 
+        inner join projects on projects.project_id = subprojects.project_id 
+      WHERE project_id = $1${
+        isFiltered ? ` AND (${filter})` : ''
+      } order by label asc
+      `,
+    [project_id],
   )
-  const { results: subprojectsUnfiltered = [] } = useLiveQuery(
-    db.subprojects.liveMany({
-      where: { project_id },
-      orderBy: { label: 'asc' },
-    }),
-  )
-  const isFiltered = subprojects.length !== subprojectsUnfiltered.length
+  const subprojects = resultFiltered?.rows ?? []
 
-  // get projects.subproject_name_plural to name the table
-  // can't include projects in subprojects query because there will be no result before subprojects are created
-  const { results: project } = useLiveQuery(
-    db.projects.liveUnique({ where: { project_id } }),
+  const resultCountUnfiltered = useLiveQuery(
+    `SELECT count(*) FROM subprojects WHERE project_id = $1`,
+    [project_id],
   )
-  const namePlural = project?.subproject_name_plural ?? 'Subprojects'
+  const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
+
+  const namePlural = subprojects?.[0]?.subproject_name_plural ?? 'Subprojects'
 
   const subprojectsNode = useMemo(
     () => ({
       label: `${namePlural} (${
         isFiltered
-          ? `${subprojects.length}/${subprojectsUnfiltered.length}`
+          ? `${subprojects.length}/${countUnfiltered}`
           : subprojects.length
       })`,
     }),
-    [isFiltered, namePlural, subprojects.length, subprojectsUnfiltered.length],
+    [isFiltered, namePlural, subprojects.length, countUnfiltered],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -91,7 +89,6 @@ export const SubprojectsNode = memo(({ project_id, level = 3 }: Props) => {
     isOpen,
     navigate,
     ownArray,
-    parentArray,
     parentUrl,
     searchParams,
     urlPath.length,
