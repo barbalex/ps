@@ -1,9 +1,8 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { UnitNode } from './Unit.tsx'
@@ -16,37 +15,36 @@ interface Props {
   level?: number
 }
 
-export const UnitsNode = memo(({ project_id, level = 3 }) => {
+export const UnitsNode = memo(({ project_id, level = 3 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [filter] = useAtom(unitsFilterAtom)
+  const isFiltered = !!filter
 
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const db = usePGlite()
 
-  const where = filter.length > 1 ? { OR: filter } : filter[0]
-  const { results: units = [] } = useLiveQuery(
-    db.units.liveMany({
-      where: { project_id, ...where },
-      orderBy: { label: 'asc' },
-    }),
+  const resultFiltered = useLiveQuery(
+    `SELECT * FROM units WHERE project_id = $1${
+      isFiltered ? ` AND (${filter})` : ''
+    } order by label asc`,
+    [project_id],
   )
-  const { results: unitsUnfiltered = [] } = useLiveQuery(
-    db.units.liveMany({
-      where: { project_id },
-      orderBy: { label: 'asc' },
-    }),
+  const units = resultFiltered?.rows ?? []
+
+  const resultCountUnfiltered = useLiveQuery(
+    `SELECT count(*) FROM units WHERE project_id = $1`,
+    [project_id],
   )
-  const isFiltered = units.length !== unitsUnfiltered.length
+  const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
 
   const unitsNode = useMemo(
     () => ({
       label: `Units (${
-        isFiltered ? `${units.length}/${unitsUnfiltered.length}` : units.length
+        isFiltered ? `${units.length}/${countUnfiltered}` : units.length
       })`,
     }),
-    [isFiltered, units.length, unitsUnfiltered.length],
+    [isFiltered, units.length, countUnfiltered],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
