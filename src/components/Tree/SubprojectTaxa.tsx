@@ -1,9 +1,8 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { SubprojectTaxonNode } from './SubprojectTaxon.tsx'
@@ -18,19 +17,17 @@ interface Props {
 }
 
 export const SubprojectTaxaNode = memo(
-  ({ project_id, subproject_id, level = 5 }) => {
+  ({ project_id, subproject_id, level = 5 }: Props) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const db = usePGlite()
-    const { results: subprojectTaxa = [] } = useLiveQuery(
-      db.subproject_taxa.liveMany({
-        where: { subproject_id },
-        orderBy: { label: 'asc' },
-      }),
+    const result = useLiveQuery(
+      `SELECT * FROM subproject_taxa WHERE subproject_id = $1 order by label asc`,
+      [subproject_id],
     )
+    const subprojectTaxa = result?.rows ?? []
 
     const subprojectTaxaNode = useMemo(
       () => ({ label: `Taxa (${subprojectTaxa.length})` }),
@@ -70,7 +67,6 @@ export const SubprojectTaxaNode = memo(
       isOpen,
       navigate,
       ownArray,
-      parentArray,
       parentUrl,
       searchParams,
       urlPath.length,
