@@ -83,7 +83,7 @@ export const ProjectNode = memo(({ project, level = 2 }) => {
         childrenCount={10}
         to={ownUrl}
         onClickButton={onClickButton}
-        sibling={<Editing />}
+        sibling={<Editing projectId={project.project_id} />}
       />
       {isOpen && (
         <>

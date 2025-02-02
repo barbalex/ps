@@ -1,10 +1,9 @@
 import { useCallback, memo } from 'react'
 import { MdEdit, MdEditOff } from 'react-icons/md'
 import { Button } from '@fluentui/react-components'
-import { useParams } from 'react-router-dom'
 import { useAtom } from 'jotai'
 import { pipe } from 'remeda'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useCorbado } from '@corbado/react'
 
 import { on } from '../../../css.ts'
@@ -21,11 +20,8 @@ const svgStyle = {
   fontSize: 'medium',
 }
 
-export const Editing = memo(() => {
+export const Editing = memo(({ projectId }) => {
   const [designing, setDesigning] = useAtom(designingAtom)
-  const [userId] = useAtom(userIdAtom)
-  const { project_id } = useParams()
-  const db = usePGlite()
   const { user } = useCorbado()
 
   const onClick = useCallback(
@@ -36,7 +32,7 @@ export const Editing = memo(() => {
     [designing, setDesigning],
   )
 
-
+  // TODO: check if this works as intended (also: project.DesigningButton.tsx)
   const resultProject = useLiveQuery(
     `
       SELECT
@@ -44,17 +40,24 @@ export const Editing = memo(() => {
         u.email as account_user_email
       FROM projects p 
         inner join accounts a on p.account_id = a.account_id 
-          inner join users u on u.user_id = a.user_id
-        inner join project_users pu on pu.project_id = p.project_id AND pu.user_id = $2
+          inner join users u on u.user_id = a.user_id AND u.email = $2
+        inner join project_users pu on pu.project_id = p.project_id
       WHERE 
         p.project_id = $1
     `,
-    [project_id, userId],
+    [projectId, user?.email],
   )
   const project = resultProject?.rows?.[0]
   const userIsOwner = project?.account_user_email === user?.email
   const userRole = project?.project_user_role
-  // console.log('hello Project Editing', { projectUser, userRole, project })
+  // console.log('Tree.Project.Editing', {
+  //   project,
+  //   userRole,
+  //   userIsOwner,
+  //   resultProject,
+  //   project_id: projectId,
+  //   user,
+  // })
 
   const userMayDesign = userIsOwner || userRole === 'manager'
 

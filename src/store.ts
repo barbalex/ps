@@ -4,6 +4,7 @@ import { atomWithStorage } from 'jotai/utils'
 
 export const store = createStore()
 
+// TODO: check what this is good / used for. Seems no use now
 export const userIdAtom = atomWithStorage('userIdAtom', null)
 export const userEmailAtom = atomWithStorage('userEmailAtom', null)
 export const designingAtom = atomWithStorage('designingAtom', false)

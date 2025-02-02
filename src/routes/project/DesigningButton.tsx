@@ -6,11 +6,10 @@ import { useAtom } from 'jotai'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useCorbado } from '@corbado/react'
 
-import { designingAtom, userIdAtom } from '../../store.ts'
+import { designingAtom } from '../../store.ts'
 
 export const DesigningButton = memo(() => {
   const [designing, setDesigning] = useAtom(designingAtom)
-  const [userId] = useAtom(userIdAtom)
   const { project_id } = useParams()
   const { user } = useCorbado()
 
@@ -19,6 +18,7 @@ export const DesigningButton = memo(() => {
     [designing, setDesigning],
   )
 
+  // TODO: check if this works as intended (also: Tree.Project.Editing.tsx)
   const resultProject = useLiveQuery(
     `
       SELECT
@@ -26,12 +26,12 @@ export const DesigningButton = memo(() => {
         u.email as account_user_email
       FROM projects p 
         inner join accounts a on p.account_id = a.account_id 
-          inner join users u on u.user_id = a.user_id
-        inner join project_users pu on pu.project_id = p.project_id AND pu.user_id = $2
+          inner join users u on u.user_id = a.user_id AND u.email = $2
+        inner join project_users pu on pu.project_id = p.project_id
       WHERE 
         p.project_id = $1
     `,
-    [project_id, userId],
+    [project_id, user?.email],
   )
   const project = resultProject?.rows?.[0]
   const userIsOwner = project?.account_user_email === user?.email
