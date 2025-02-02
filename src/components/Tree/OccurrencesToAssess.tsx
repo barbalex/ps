@@ -1,9 +1,8 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { OccurrenceToAssessNode } from './OccurrenceToAssess.tsx'
@@ -18,31 +17,30 @@ interface Props {
 }
 
 export const OccurrencesToAssessNode = memo(
-  ({ project_id, subproject_id, level = 5 }) => {
+  ({ project_id, subproject_id, level = 5 }: Props) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const db = usePGlite()
-    const { results: occurrenceImports = [] } = useLiveQuery(
-      db.occurrence_imports.liveMany({
-        where: { subproject_id },
-      }),
+    const resultOccurrences = useLiveQuery(
+      `
+        SELECT 
+          o.* 
+        FROM 
+          occurrences o 
+          INNER JOIN occurrence_imports oi 
+            ON o.occurrence_import_id = oi.occurrence_import_id 
+        WHERE 
+          oi.subproject_id = $1
+          AND o.not_to_assign IS NOT TRUE 
+          AND o.place_id IS NULL
+        ORDER BY 
+          o.label ASC
+      `,
+      [subproject_id],
     )
-    const { results: occurrences = [] } = useLiveQuery(
-      db.occurrences.liveMany({
-        where: {
-          occurrence_import_id: {
-            in: occurrenceImports.map((o) => o.occurrence_import_id),
-          },
-          OR: [{ not_to_assign: null }, { not_to_assign: false }],
-          // NOT: [{ not_to_assign: true }], // this does not work
-          place_id: null,
-        },
-        orderBy: { label: 'asc' },
-      }),
-    )
+    const occurrences = resultOccurrences?.rows ?? []
 
     const occurrencesNode = useMemo(
       () => ({ label: `Occurrences to assess (${occurrences.length})` }),
@@ -85,7 +83,6 @@ export const OccurrencesToAssessNode = memo(
       isOpen,
       navigate,
       ownArray,
-      parentArray,
       parentUrl,
       searchParams,
       urlPath.length,
