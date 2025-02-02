@@ -26,10 +26,10 @@ export const SubprojectsNode = memo(({ project_id, level = 3 }: Props) => {
 
   const resultFiltered = useLiveQuery(
     `
-      SELECT subprojects.*, project.subproject_name_plural 
+      SELECT subprojects.*, projects.subproject_name_plural 
       FROM subprojects 
         inner join projects on projects.project_id = subprojects.project_id 
-      WHERE project_id = $1${
+      WHERE projects.project_id = $1${
         isFiltered ? ` AND (${filter})` : ''
       } order by label asc
       `,
