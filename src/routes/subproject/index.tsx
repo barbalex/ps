@@ -1,7 +1,6 @@
 import { useRef, memo, useCallback } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Header } from './Header.tsx'
 import { Component as Form } from './Form.tsx'
@@ -17,19 +16,21 @@ export const Component = memo(() => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
-  const { results: row } = useLiveQuery(
-    db.subprojects.liveUnique({ where: { subproject_id } }),
+  const result = useLiveQuery(
+    `SELECT * FROM subprojects WHERE subproject_id = $1`,
+    [subproject_id],
   )
+  const row = result?.rows?.[0]
 
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
-      db.subprojects.update({
-        where: { subproject_id },
-        data: { [name]: value },
-      })
+      db.query(`UPDATE subprojects SET ${name} = $1 WHERE subproject_id = $2`, [
+        value,
+        subproject_id,
+      ])
     },
-    [db.subprojects, subproject_id],
+    [db, subproject_id],
   )
 
   if (!row) return <Loading />
@@ -37,13 +38,21 @@ export const Component = memo(() => {
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
-      <div className="form-container" role="tabpanel" aria-labelledby="form">
+      <div
+        className="form-container"
+        role="tabpanel"
+        aria-labelledby="form"
+      >
         <TextFieldInactive
           label="ID"
           name="subproject_id"
           value={row.subproject_id ?? ''}
         />
-        <Form onChange={onChange} row={row} autoFocusRef={autoFocusRef} />
+        <Form
+          onChange={onChange}
+          row={row}
+          autoFocusRef={autoFocusRef}
+        />
       </div>
     </div>
   )

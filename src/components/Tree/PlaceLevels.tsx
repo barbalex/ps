@@ -1,9 +1,8 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { PlaceLevelNode } from './PlaceLevel.tsx'
@@ -16,19 +15,17 @@ interface Props {
   level?: number
 }
 
-export const PlaceLevelsNode = memo(({ project_id, level = 3 }) => {
+export const PlaceLevelsNode = memo(({ project_id, level = 3 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const db = usePGlite()
-  const { results: placeLevels = [] } = useLiveQuery(
-    db.place_levels.liveMany({
-      where: { project_id },
-      orderBy: { label: 'asc' },
-    }),
+  const result = useLiveQuery(
+    `SELECT * FROM place_levels WHERE project_id = $1 ORDER BY label ASC`,
+    [project_id],
   )
+  const placeLevels = result?.rows ?? []
 
   const placeLevelsNode = useMemo(
     () => ({ label: `Place Levels (${placeLevels.length})` }),
@@ -71,7 +68,6 @@ export const PlaceLevelsNode = memo(({ project_id, level = 3 }) => {
     isOpen,
     navigate,
     ownArray,
-    parentArray,
     parentUrl,
     searchParams,
     urlPath.length,
