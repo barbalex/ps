@@ -1,9 +1,8 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { FileNode } from './File.tsx'
@@ -30,57 +29,54 @@ export const FilesNode = memo(
     check_id,
     action_id,
     level,
-  }) => {
+  }: Props) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const [filter] = useAtom(filesFilterAtom)
+    const isFiltered = !!filter
 
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
-    const db = usePGlite()
 
-    const where = filter.length > 1 ? { OR: filter } : filter[0]
-    const hierarchyWhere = useMemo(() => {
-      const where = {}
+    const hierarchyFilter = useMemo(() => {
+      const where = ``
       if (action_id) {
-        where.action_id = action_id
+        where = `action_id = '${action_id}'`
       } else if (check_id) {
-        where.check_id = check_id
+        where = `check_id = '${check_id}'`
       } else if (place_id2) {
-        where.place_id = place_id2
+        where = `place_id = '${place_id2}'`
       } else if (place_id) {
-        where.place_id = place_id
+        where = `place_id = '${place_id}'`
       } else if (subproject_id) {
-        where.subproject_id = subproject_id
+        where = `subproject_id = '${subproject_id}'`
       } else if (project_id) {
-        where.project_id = project_id
+        where = `project_id = '${project_id}'`
       }
       return where
     }, [action_id, check_id, place_id, place_id2, project_id, subproject_id])
 
-    const { results: files = [] } = useLiveQuery(
-      db.files.liveMany({
-        where: { hierarchyWhere, ...where },
-        orderBy: { label: 'asc' },
-      }),
+    const resultFiltered = useLiveQuery(
+      `SELECT * FROM files WHERE ${hierarchyFilter ? hierarchyFilter : ''}${
+        isFiltered ? ` AND (${filter})` : ''
+      } order by label asc`,
     )
-    const { results: filesUnfiltered = [] } = useLiveQuery(
-      db.files.liveMany({
-        where: hierarchyWhere,
-        orderBy: { label: 'asc' },
-      }),
+    const files = resultFiltered?.rows ?? []
+
+    const resultCountUnfiltered = useLiveQuery(
+      `SELECT count(*) FROM files WHERE ${
+        hierarchyFilter ? hierarchyFilter : ''
+      }`,
     )
-    const isFiltered = files.length !== filesUnfiltered.length
+    const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
 
     const filesNode = useMemo(
       () => ({
         label: `Files (${
-          isFiltered
-            ? `${files.length}/${filesUnfiltered.length}`
-            : files.length
+          isFiltered ? `${files.length}/${countUnfiltered}` : files.length
         })`,
       }),
-      [files.length, filesUnfiltered.length, isFiltered],
+      [files.length, countUnfiltered, isFiltered],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -124,7 +120,6 @@ export const FilesNode = memo(
       isOpen,
       navigate,
       ownArray,
-      parentArray,
       parentUrl,
       searchParams,
       urlPath.length,
