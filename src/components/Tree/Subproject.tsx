@@ -1,9 +1,8 @@
 import { useCallback, memo, useMemo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { PlacesNode } from './Places.tsx'
@@ -27,10 +26,10 @@ export const SubprojectNode = memo(({ project_id, subproject, level = 4 }) => {
   const [searchParams] = useSearchParams()
 
   // need project to know whether to show files
-  const db = usePGlite()
-  const { results: project } = useLiveQuery(
-    db.projects.liveUnique({ where: { project_id } }),
-  )
+  const result = useLiveQuery(`SELECT * FROM projects WHERE project_id = $1`, [
+    project_id,
+  ])
+  const project = result?.rows?.[0]
   const showFiles = project?.files_active_subprojects ?? false
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -69,7 +68,6 @@ export const SubprojectNode = memo(({ project_id, subproject, level = 4 }) => {
     isOpen,
     navigate,
     ownArray,
-    parentArray,
     parentUrl,
     searchParams,
     urlPath.length,

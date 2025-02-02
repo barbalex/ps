@@ -1,9 +1,8 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { PlaceNode } from './Place/index.tsx'
@@ -22,69 +21,50 @@ interface Props {
 }
 
 export const PlacesNode = memo(
-  ({ project_id, subproject_id, place_id }) => {
+  ({ project_id, subproject_id, place_id }: Props) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const [places1Filter] = useAtom(places1FilterAtom)
     const [places2Filter] = useAtom(places2FilterAtom)
+    const filter = place_id ? places2Filter : places1Filter
+    const isFiltered = !!filter
 
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
-    const db = usePGlite()
 
     const level = place_id ? 7 : 5
 
-    const filter = place_id ? places2Filter : places1Filter
+    const result = useLiveQuery(
+      `SELECT * FROM places WHERE subproject_id = $1 and place_id ${
+        place_id ? `= $2` : `is null`
+      }${isFiltered ? ` AND (${filter})` : ''} order by label asc`,
+      [subproject_id, ...(place_id ? [place_id] : [])],
+    )
+    const places = result?.rows ?? []
 
-    const where = filter.length > 1 ? { OR: filter } : filter[0]
-    // console.log('hello Tree PlacesNode', {
-    //   where,
-    //   filter,
-    //   whereApplied: {
-    //     parent_id: place_id ?? null,
-    //     subproject_id,
-    //     ...(where?.path ? [where] : where),
-    //   },
-    // })
-    const { results: places = [] } = useLiveQuery(
-      db.places.liveMany({
-        where: {
-          parent_id: place_id ?? null,
-          subproject_id,
-          ...(where?.path ? [where] : where),
-        },
-        orderBy: { label: 'asc' },
-      }),
+    const resultCountUnfiltered = useLiveQuery(
+      `SELECT count(*) FROM places WHERE subproject_id = $1 and place_id ${
+        place_id ? `= $2` : `is null`
+      }`,
+      [subproject_id, ...(place_id ? [place_id] : [])],
     )
-    const { results: placesUnfiltered = [] } = useLiveQuery(
-      db.places.liveMany({
-        where: { parent_id: place_id ?? null, subproject_id },
-        orderBy: { label: 'asc' },
-      }),
-    )
-    const isFiltered = places.length !== placesUnfiltered.length
+    const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
 
-    const { results: placeLevels } = useLiveQuery(
-      db.place_levels.liveMany({
-        where: {
-          project_id,
-          level: place_id ? 2 : 1,
-        },
-        orderBy: { label: 'asc' },
-      }),
+    const resultPlaceLevels = useLiveQuery(
+      `SELECT * FROM place_levels WHERE project_id = $1 and level = $2 order by label asc`,
+      [project_id, place_id ? 2 : 1],
     )
+    const placeLevels = resultPlaceLevels?.rows ?? []
     const placeNamePlural = placeLevels?.[0]?.name_plural ?? 'Places'
 
     // get name by place_level
     const placesNode = useMemo(
       () => ({
         label: `${placeNamePlural} (${
-          isFiltered
-            ? `${places.length}/${placesUnfiltered.length}`
-            : places.length
+          isFiltered ? `${places.length}/${countUnfiltered}` : places.length
         })`,
       }),
-      [isFiltered, placeNamePlural, places.length, placesUnfiltered.length],
+      [isFiltered, placeNamePlural, places.length, countUnfiltered],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -125,7 +105,6 @@ export const PlacesNode = memo(
     }, [
       isOpen,
       ownArray,
-      parentArray,
       isInActiveNodeArray,
       urlPath.length,
       navigate,
