@@ -1,9 +1,8 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { PersonNode } from './Person.tsx'
@@ -16,40 +15,40 @@ interface Props {
   level?: number
 }
 
-export const PersonsNode = memo(({ project_id, level = 3 }) => {
+export const PersonsNode = memo(({ project_id, level = 3 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [filter] = useAtom(personsFilterAtom)
+  const isFiltered = !!filter
 
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const db = usePGlite()
+  const resultFiltered = useLiveQuery(
+    `
+      SELECT persons.* 
+      FROM persons 
+      WHERE project_id = $1${
+        isFiltered ? ` AND (${filter})` : ''
+      } order by label asc
+      `,
+    [project_id],
+  )
+  const persons = resultFiltered?.rows ?? []
 
-  const where = filter.length > 1 ? { OR: filter } : filter[0]
-  const { results: persons = [] } = useLiveQuery(
-    db.persons.liveMany({
-      where: { project_id, ...where },
-      orderBy: { label: 'asc' },
-    }),
+  const resultCountUnfiltered = useLiveQuery(
+    `SELECT count(*) FROM persons WHERE project_id = $1`,
+    [project_id],
   )
-  const { results: personsUnfiltered = [] } = useLiveQuery(
-    db.persons.liveMany({
-      where: { project_id },
-      orderBy: { label: 'asc' },
-    }),
-  )
-  const isFiltered = persons.length !== personsUnfiltered.length
+  const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
 
   const personsNode = useMemo(
     () => ({
       label: `Persons (${
-        isFiltered
-          ? `${persons.length}/${personsUnfiltered.length}`
-          : persons.length
+        isFiltered ? `${persons.length}/${countUnfiltered}` : persons.length
       })`,
     }),
-    [isFiltered, persons.length, personsUnfiltered.length],
+    [isFiltered, persons.length, countUnfiltered],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
