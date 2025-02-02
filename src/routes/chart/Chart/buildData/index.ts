@@ -104,26 +104,26 @@ export const buildData = async ({ db, chart, subjects, subproject_id }) => {
   )
 
   let minYear = Math.min(...years)
-  if (chart.years_since && chart.years_since > minYear) {
+  if (chart?.years_since && chart.years_since > minYear) {
     minYear = chart.years_since
   }
   let maxYear = Math.max(...years)
-  if (chart.years_until && chart.years_until < maxYear) {
+  if (chart?.years_until && chart.years_until < maxYear) {
     maxYear = chart.years_until
   }
   let yearRange = Array(maxYear - minYear + 1)
     .fill()
     .map((element, i) => minYear + i)
-  if (chart.years_last_x) {
+  if (chart?.years_last_x) {
     yearRange.splice(0, yearRange.length - chart.years_last_x)
   }
-  if (chart.years_specific) {
+  if (chart?.years_specific) {
     yearRange = yearRange.filter((year) => year === chart.years_specific)
   }
-  if (chart.years_current) {
+  if (chart?.years_current) {
     yearRange = yearRange.filter((year) => year === new Date().getFullYear())
   }
-  if (chart.years_previous) {
+  if (chart?.years_previous) {
     yearRange = yearRange.filter(
       (year) => year === new Date().getFullYear() - 1,
     )
