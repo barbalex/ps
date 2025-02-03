@@ -1,9 +1,8 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { ChartSubjectNode } from './ChartSubject.tsx'
@@ -28,20 +27,17 @@ export const ChartSubjectsNode = memo(
     place_id2,
     chart_id,
     level,
-  }) => {
+  }: Props) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const db = usePGlite()
-
-    const { results: chartSubjects = [] } = useLiveQuery(
-      db.chart_subjects.liveMany({
-        where: { chart_id },
-        orderBy: { label: 'asc' },
-      }),
+    const result = useLiveQuery(
+      `SELECT * FROM chart_subjects WHERE chart_id = $1 order by label asc`,
+      [chart_id],
     )
+    const chartSubjects = result?.rows ?? []
 
     const chartSubjectsNode = useMemo(
       () => ({ label: `Subjects (${chartSubjects.length})` }),
@@ -89,7 +85,6 @@ export const ChartSubjectsNode = memo(
       isOpen,
       navigate,
       ownArray,
-      parentArray,
       parentUrl,
       searchParams,
       urlPath.length,

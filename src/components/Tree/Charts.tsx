@@ -25,19 +25,6 @@ export const ChartsNode = memo(
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    // const filter = useMemo(() => {
-    //   let filter = ``
-    //   if (place_id2) {
-    //     filter = `place_id = '${place_id2}'`
-    //   } else if (place_id) {
-    //     filter = `place_id = '${place_id}'`
-    //   } else if (subproject_id) {
-    //     filter = `subproject_id = '${subproject_id}'`
-    //   } else if (project_id) {
-    //     filter = `project_id = '${project_id}'`
-    //   }
-    //   return filter
-    // }, [place_id, place_id2, project_id, subproject_id])
     const { field, value } = useMemo(() => {
       let field
       let value
