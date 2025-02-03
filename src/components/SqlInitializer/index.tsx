@@ -14,7 +14,6 @@ import { generateCrsLabel } from './sql/crs.ts'
 import { generatePlaceLabel } from './sql/places.ts'
 import { generatePlaceUserLabel } from './sql/placeUsers.ts'
 import { generateSubprojectTaxonLabel } from './sql/subprojectTaxa.ts'
-import { generateGoalLabel } from './sql/goals.ts'
 import { generateGoalReportLabel } from './sql/goalReports.ts'
 import { generateGoalReportValueLabel } from './sql/goalReportValues.ts'
 import { generateSubprojectUserLabel } from './sql/subprojectUsers.ts'
@@ -121,7 +120,6 @@ export const SqlInitializer = () => {
   //     await generatePlaceLabel(db)
   //     await generatePlaceUserLabel(db)
   //     await generateSubprojectTaxonLabel(db)
-  //     await generateGoalLabel(db)
   //     await generateGoalReportLabel(db)
   //     await generateGoalReportValueLabel(db)
   //     await generateSubprojectUserLabel(db)
