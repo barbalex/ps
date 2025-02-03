@@ -1940,7 +1940,7 @@ CREATE TABLE IF NOT EXISTS project_crs(
   code text DEFAULT NULL,
   name text DEFAULT NULL,
   proj4 text DEFAULT NULL,
-  label text DEFAULT NULL
+  label text GENERATED ALWAYS AS (coalesce(code, project_crs_id::text)) STORED
 );
 
 CREATE INDEX IF NOT EXISTS project_crs_account_id_idx ON project_crs USING btree(account_id);
