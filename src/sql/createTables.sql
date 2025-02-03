@@ -1327,7 +1327,7 @@ CREATE TABLE IF NOT EXISTS occurrence_imports(
   gbif_filters jsonb DEFAULT NULL, -- TODO: use project geometry to filter by area?
   gbif_download_key text DEFAULT NULL,
   gbif_error text DEFAULT NULL,
-  label text DEFAULT NULL
+  label text GENERATED ALWAYS AS (coalesce(name, occurrence_import_id::text)) STORED
 );
 
 CREATE INDEX IF NOT EXISTS occurrence_imports_account_id_idx ON occurrence_imports USING btree(account_id);

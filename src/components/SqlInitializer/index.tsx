@@ -32,7 +32,6 @@ import { generateMessageLabel } from './sql/messages.ts'
 import { generateLayerPresentationLabel } from './sql/layerPresentations.ts'
 import { generateChartLabel } from './sql/charts.ts'
 import { generateChartSubjectLabel } from './sql/chartSubjects.ts'
-import { generateOccurrenceImportLabel } from './sql/occurrenceImports.ts'
 // ISSUE: how to create v7 uuids? https://github.com/rhashimoto/wa-sqlite/discussions/169, https://github.com/craigpastro/sqlite-uuidv7/issues/3
 // import { generateVectorLayerTriggers } from './labelGenerators/vectorLayers'
 // import { generateWmsLayerTriggers } from './labelGenerators/wmsLayers'
@@ -62,17 +61,32 @@ export const SqlInitializer = () => {
 
       const projectsTableExists = resultProjectsTableExists?.rows[0]?.exists
 
-      console.log('SqlInitializer, projectsTableExists:', projectsTableExists)
-
       if (projectsTableExists) return
 
       const uuidv7Sql = (await import(`../../sql/uuidv7.sql?raw`)).default
-      const uuidv7Result = await db.exec(uuidv7Sql)
-      console.log('SqlInitializer, uuidv7Result:', uuidv7Result)
+      try {
+        await db.exec(uuidv7Sql)
+      } catch (error) {
+        console.error('SqlInitializer, error creating uuidv7:', error)
+      }
       const createSql = (await import(`../../sql/createTables.sql?raw`)).default
-      const createRes = await db.exec(createSql)
-      console.log('SqlInitializer, createRes:', createRes)
-      const projectsResult = await db.query(`select * from projects`)
+      try {
+        await db.exec(createSql)
+      } catch (error) {
+        console.error('SqlInitializer, error creating tables:', error)
+      }
+      const triggersSql = (await import(`../../sql/triggers.sql?raw`)).default
+      try {
+        await db.exec(triggersSql)
+      } catch (error) {
+        console.error('SqlInitializer, error creating triggers:', error)
+      }
+      let projectsResult
+      try {
+        projectsResult = await db.query(`select * from projects`)
+      } catch (error) {
+        console.error('SqlInitializer, error querying projects:', error)
+      }
       const projects = projectsResult?.rows ?? []
       if (projects.length === 0) {
         await seedTestData(db)
@@ -129,7 +143,6 @@ export const SqlInitializer = () => {
   //     await generateLayerPresentationLabel(db)
   //     await generateChartLabel(db)
   //     await generateChartSubjectLabel(db)
-  //     await generateOccurrenceImportLabel(db)
   //     await generateVectorLayerTriggers(db)
   //     await generateWmsLayerTriggers(db)
   //     await seedTestData(db)
