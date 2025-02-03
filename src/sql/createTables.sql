@@ -1261,7 +1261,16 @@ CREATE TABLE IF NOT EXISTS fields(
   obsolete boolean DEFAULT FALSE,
   sort_index integer DEFAULT NULL,
   order_by integer DEFAULT NULL, -- enable ordering of field widgets
-  label text DEFAULT NULL
+  -- label text DEFAULT NULL
+  -- label text GENERATED ALWAYS AS (iif(coalesce(table_name, name) is not null, table_name || '.' || name || iif(level is not null, ' ' || level, ''), field_id))
+  label text GENERATED ALWAYS AS (
+    CASE 
+      WHEN table_name is null then field_id::text 
+      WHEN name is null then table_name || '.' || field_id::text 
+      WHEN level is null then table_name || '.' || name
+      ELSE table_name || '.' || name || ' ' || level
+    END
+  ) STORED
 );
 
 CREATE INDEX IF NOT EXISTS fields_project_id_idx ON fields USING btree(project_id);
