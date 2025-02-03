@@ -833,7 +833,7 @@ CREATE TABLE IF NOT EXISTS place_reports(
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
-  label text DEFAULT NULL
+  label text GENERATED ALWAYS AS (coalesce(year, place_report_id::text)) STORED
 );
 
 CREATE INDEX IF NOT EXISTS place_reports_account_id_idx ON place_reports USING btree(account_id);
