@@ -8,7 +8,6 @@ import { generateFieldTypeLabel } from './sql/fieldTypes.ts'
 import { generateWidgetForFieldLabel } from './sql/widgetForField.ts'
 import { generateFileLabel } from './sql/files.ts'
 import { generatePlaceLevelLabel } from './sql/placeLevels.ts'
-import { generateUnitLabel } from './sql/units.ts'
 import { generateListLabel } from './sql/lists.ts'
 import { generateListValueLabel } from './sql/listValues.ts'
 import { generateTaxonomyLabel } from './sql/taxonomies.ts'
@@ -114,7 +113,6 @@ export const SqlInitializer = () => {
   //     await generateWidgetForFieldLabel(db)
   //     await generateFileLabel(db)
   //     await generatePlaceLevelLabel(db)
-  //     await generateUnitLabel(db)
   //     await generateListLabel(db)
   //     await generateListValueLabel(db)
   //     await generateTaxonomyLabel(db)

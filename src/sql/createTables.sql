@@ -476,7 +476,7 @@ CREATE TABLE IF NOT EXISTS units(
   sort integer DEFAULT NULL,
   type unit_type DEFAULT NULL, -- TODO: not in use?
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE NO action ON UPDATE CASCADE,
-  label text DEFAULT NULL
+  label text GENERATED ALWAYS AS (coalesce(name, unit_id::text)) STORED
 );
 
 CREATE INDEX IF NOT EXISTS units_account_id_idx ON units USING btree(account_id);
