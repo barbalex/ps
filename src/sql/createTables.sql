@@ -302,7 +302,7 @@ CREATE TABLE IF NOT EXISTS taxonomies(
   url text DEFAULT NULL,
   obsolete boolean DEFAULT FALSE,
   data jsonb DEFAULT NULL,
-  label text DEFAULT NULL
+  label text GENERATED ALWAYS AS (coalesce(concat(name, ' (', type, ')'), taxonomy_id::text)) STORED
 );
 
 CREATE INDEX IF NOT EXISTS taxonomies_account_id_idx ON taxonomies USING btree(account_id);

@@ -10,7 +10,6 @@ import { generateFileLabel } from './sql/files.ts'
 import { generatePlaceLevelLabel } from './sql/placeLevels.ts'
 import { generateListLabel } from './sql/lists.ts'
 import { generateListValueLabel } from './sql/listValues.ts'
-import { generateTaxonomyLabel } from './sql/taxonomies.ts'
 import { generateTaxonLabel } from './sql/taxa.ts'
 import { generateProjectUserLabel } from './sql/projectUsers.ts'
 import { generateProjectReportLabel } from './sql/projectReports.ts'
@@ -115,7 +114,6 @@ export const SqlInitializer = () => {
   //     await generatePlaceLevelLabel(db)
   //     await generateListLabel(db)
   //     await generateListValueLabel(db)
-  //     await generateTaxonomyLabel(db)
   //     await generateTaxonLabel(db)
   //     await generateProjectUserLabel(db)
   //     await generateProjectReportLabel(db)
