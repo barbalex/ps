@@ -1857,39 +1857,19 @@ COMMENT ON COLUMN charts.years_until IS 'If has value: the chart shows data unti
 --------------------------------------------------------------
 -- chart_subjects
 --
-CREATE TYPE chart_subject_table AS enum(
-  'subprojects',
-  'places',
-  'checks',
-  'check_values',
-  'actions',
-  'action_values'
-);
-
-CREATE TYPE chart_subject_value_source AS enum(
-  'count_rows',
-  'count_rows_by_distinct_field_values',
-  'sum_values_of_field'
-);
-
-CREATE TYPE chart_subject_type AS enum(
-  'linear',
-  'monotone'
-);
-
 CREATE TABLE IF NOT EXISTS chart_subjects(
   chart_subject_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   chart_id uuid DEFAULT NULL REFERENCES charts(chart_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  table_name chart_subject_table DEFAULT NULL, -- subprojects, places, checks, check_values, actions, action_values
-  table_level integer DEFAULT 1, -- 1, 2 (not relevant for subprojects)
+  table_name text DEFAULT NULL CHECK (table_name IN ('subprojects', 'places', 'checks', 'check_values', 'actions', 'action_values')),
+  table_level integer DEFAULT 1 CHECK (table_level IN (1, 2)), -- not relevant for subprojects 
   table_filter jsonb DEFAULT NULL, -- save a filter that is applied to the table
-  value_source chart_subject_value_source DEFAULT NULL, --how to source the value
+  value_source text DEFAULT NULL CHECK (value_source IN ('count_rows', 'count_rows_by_distinct_field_values', 'sum_values_of_field')), --how to source the value
   value_field text DEFAULT NULL, -- field to be used for value_source
   value_unit uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE CASCADE ON UPDATE CASCADE, -- needed for action_values, check_values
   name text DEFAULT NULL,
   label text DEFAULT NULL, -- table, value_source, ?value_field, ?unit
-  type chart_subject_type DEFAULT NULL, -- linear, monotone
+  type text DEFAULT NULL CHECK (type IN ('linear', 'monotone')),
   stroke text DEFAULT NULL,
   fill text DEFAULT NULL,
   fill_graded boolean DEFAULT TRUE,
