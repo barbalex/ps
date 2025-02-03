@@ -201,7 +201,7 @@ CREATE TABLE IF NOT EXISTS subprojects(
   start_year integer DEFAULT NULL,
   end_year integer DEFAULT NULL,
   data jsonb DEFAULT NULL,
-  label text DEFAULT NULL
+  label text GENERATED ALWAYS AS (coalesce(name, subproject_id::text)) STORED
 );
 
 CREATE INDEX IF NOT EXISTS subprojects_account_id_idx ON subprojects USING btree(account_id);

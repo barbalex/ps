@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { generateProjectLabel } from './sql/projects.ts'
-import { generateSubprojectLabel } from './sql/subprojects.ts'
 import { generateUserLabel } from './sql/users.ts'
 import { generateAccountLabel } from './sql/accounts.ts'
 import { generateFieldTypeLabel } from './sql/fieldTypes.ts'
@@ -78,7 +77,7 @@ export const SqlInitializer = () => {
       if (projectsTableExists) return
 
       const uuidv7Sql = (await import(`../../sql/uuidv7.sql?raw`)).default
-      console.log('SqlInitializer, uuidv7Sql:', uuidv7Sql)
+      // console.log('SqlInitializer, uuidv7Sql:', uuidv7Sql)
       const uuidv7Result = await db.exec(uuidv7Sql)
       console.log('SqlInitializer, uuidv7Result:', uuidv7Result)
       const createSql = (await import(`../../sql/createTables.sql?raw`)).default
@@ -113,7 +112,6 @@ export const SqlInitializer = () => {
   //     await generateUserLabel(db)
   //     await generateAccountLabel(db)
   //     await generateProjectLabel(db)
-  //     await generateSubprojectLabel(db)
   //     await generateFieldTypeLabel(db)
   //     await generateWidgetTypeLabel(db)
   //     await generateWidgetForFieldLabel(db)
