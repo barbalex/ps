@@ -1198,7 +1198,7 @@ CREATE TABLE IF NOT EXISTS widget_types(
   needs_list boolean DEFAULT FALSE,
   sort smallint DEFAULT NULL,
   comment text,
-  label text DEFAULT NULL
+  label text GENERATED ALWAYS AS (coalesce(name, widget_type_id::text)) STORED
 );
 
 CREATE INDEX IF NOT EXISTS widget_types_name_idx ON widget_types USING btree(name);
