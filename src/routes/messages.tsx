@@ -15,7 +15,7 @@ export const Component = memo(() => {
   const db = usePGlite()
 
   const result = useLiveQuery(
-    `SELECT message_id, label FROM messages order by label asc`,
+    `SELECT message_id, date as label FROM messages order by name asc`,
     [],
   )
   const messages = result?.rows ?? []

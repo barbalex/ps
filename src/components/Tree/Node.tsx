@@ -65,7 +65,7 @@ interface Props {
   isActive: boolean
   isOpen: boolean
   level: number
-  node: { label: string }
+  node: { label: string; name?: string }
   id: string
   childrenCount: number
   to: string
@@ -122,7 +122,7 @@ export const Node = memo(
         <div style={contentStyle}>
           {isActive ? (
             <span style={contentLabelStyle}>
-              {node.label ?? id ?? '(missing label)'}
+              {node.label ?? node?.name ?? id ?? '(missing label)'}
             </span>
           ) : (
             <Link
@@ -134,7 +134,7 @@ export const Node = memo(
               )}
               to={{ pathname: to, search: searchParams.toString() }}
             >
-              {node.label ?? id ?? '(missing label)'}
+              {node.label ?? node.name ?? id ?? '(missing label)'}
             </Link>
           )}
           {!!sibling && <div style={contentSiblingStyle}>{sibling}</div>}

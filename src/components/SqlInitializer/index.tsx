@@ -28,7 +28,6 @@ import { generateActionValueLabel } from './sql/actionValues.ts'
 import { generateActionReportLabel } from './sql/actionReports.ts'
 import { generateActionReportValueLabel } from './sql/actionReportValues.ts'
 import { generatePlaceReportValueLabel } from './sql/placeReportValues.ts'
-import { generateMessageLabel } from './sql/messages.ts'
 import { generateLayerPresentationLabel } from './sql/layerPresentations.ts'
 import { generateChartLabel } from './sql/charts.ts'
 import { generateChartSubjectLabel } from './sql/chartSubjects.ts'
@@ -139,7 +138,6 @@ export const SqlInitializer = () => {
   //     await generateActionReportLabel(db)
   //     await generateActionReportValueLabel(db)
   //     await generatePlaceReportValueLabel(db)
-  //     await generateMessageLabel(db)
   //     await generateLayerPresentationLabel(db)
   //     await generateChartLabel(db)
   //     await generateChartSubjectLabel(db)

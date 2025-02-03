@@ -907,14 +907,12 @@ COMMENT ON COLUMN place_report_values.value_text IS 'Used for text values';
 --
 CREATE TABLE IF NOT EXISTS messages(
   message_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  label text DEFAULT NULL,
   date timestamp DEFAULT now(),
   message text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS messages_date_idx ON messages USING btree(date);
 
-CREATE INDEX IF NOT EXISTS messages_label_idx ON messages USING btree(label);
 
 COMMENT ON TABLE messages IS 'messages for the user. Mostly informing about updates';
 
@@ -926,7 +924,6 @@ CREATE TABLE IF NOT EXISTS user_messages(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
   message_id uuid DEFAULT NULL REFERENCES messages(message_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  label text DEFAULT NULL, -- TODO: Needed?
   read boolean DEFAULT FALSE
 );
 

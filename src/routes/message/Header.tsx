@@ -14,12 +14,17 @@ export const Header = memo(() => {
 
   const addRow = useCallback(async () => {
     const data = createMessage()
-    await db.messages.create({ data })
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+    const sql = `INSERT INTO messages (${columns}) VALUES (${values
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
+    await db.query(sql, values)
     navigate({
       pathname: `../${data.message_id}`,
       search: searchParams.toString(),
     })
-  }, [db.messages, navigate, searchParams])
+  }, [db, navigate, searchParams])
 
   const deleteRow = useCallback(async () => {
     await db.messages.delete({

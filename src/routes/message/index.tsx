@@ -1,8 +1,8 @@
 import { useCallback, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
@@ -17,19 +17,20 @@ export const Component = memo(() => {
   const { message_id } = useParams()
 
   const db = usePGlite()
-  const { results: row } = useLiveQuery(
-    db.messages.liveUnique({ where: { message_id } }),
-  )
+  const result = useLiveQuery(`SELECT * FROM messages WHERE message_id = $1`, [
+    message_id,
+  ])
+  const row = result?.rows?.[0]
 
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
-      db.messages.update({
-        where: { message_id },
-        data: { [name]: value },
-      })
+      db.query(`UPDATE messages SET ${name} = $1 WHERE message_id = $2`, [
+        value,
+        message_id,
+      ])
     },
-    [db.messages, message_id],
+    [db, message_id],
   )
 
   if (!row) return <Loading />
