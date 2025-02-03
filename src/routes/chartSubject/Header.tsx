@@ -18,24 +18,32 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const addRow = useCallback(async () => {
     const data = createChartSubject({ chart_id })
-    await db.chart_subjects.create({ data })
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+    const sql = `INSERT INTO chart_subjects (${columns}) VALUES (${values
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
+    await db.query(sql, values)
     navigate({
       pathname: `../${data.chart_subject_id}`,
       search: searchParams.toString(),
     })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, chart_id, db.chart_subjects, navigate, searchParams])
+  }, [autoFocusRef, chart_id, db, navigate, searchParams])
 
   const deleteRow = useCallback(async () => {
-    await db.chart_subjects.delete({ where: { chart_subject_id } })
+    await db.query(`DELETE FROM chart_subjects WHERE chart_subject_id = $1`, [
+      chart_subject_id,
+    ])
     navigate({ pathname: '..', search: searchParams.toString() })
-  }, [db.chart_subjects, chart_subject_id, navigate, searchParams])
+  }, [db, chart_subject_id, navigate, searchParams])
 
   const toNext = useCallback(async () => {
-    const chartSubjects = await db.chart_subjects.findMany({
-      where: { chart_id },
-      orderBy: { label: 'asc' },
-    })
+    const result = await db.query(
+      `SELECT * FROM chart_subjects WHERE chart_id = $1 order by label asc`,
+      [chart_id],
+    )
+    const chartSubjects = result.rows
     const len = chartSubjects.length
     const index = chartSubjects.findIndex(
       (p) => p.chart_subject_id === chart_subject_id,
@@ -45,13 +53,14 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${next.chart_subject_id}`,
       search: searchParams.toString(),
     })
-  }, [db.chart_subjects, chart_id, navigate, searchParams, chart_subject_id])
+  }, [db, chart_id, navigate, searchParams, chart_subject_id])
 
   const toPrevious = useCallback(async () => {
-    const chartSubjects = await db.chart_subjects.findMany({
-      where: { chart_id },
-      orderBy: { label: 'asc' },
-    })
+    const result = await db.query(
+      `SELECT * FROM chart_subjects WHERE chart_id = $1 order by label asc`,
+      [chart_id],
+    )
+    const chartSubjects = result.rows
     const len = chartSubjects.length
     const index = chartSubjects.findIndex(
       (p) => p.chart_subject_id === chart_subject_id,
@@ -61,7 +70,7 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${previous.chart_subject_id}`,
       search: searchParams.toString(),
     })
-  }, [db.chart_subjects, chart_id, navigate, searchParams, chart_subject_id])
+  }, [db, chart_id, navigate, searchParams, chart_subject_id])
 
   return (
     <FormHeader

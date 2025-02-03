@@ -1,8 +1,8 @@
 import { useCallback, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import type { InputProps } from '@fluentui/react-components'
 import { useParams } from 'react-router-dom'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
@@ -26,24 +26,30 @@ const chartSubjectValueSources = [
   'sum_values_of_field',
 ]
 
+interface Props {
+  autoFocusRef: React.RefObject<HTMLInputElement>
+}
+
 // separate from the route because it is also used inside other forms
-export const ChartSubjectForm = memo(({ autoFocusRef }) => {
+export const ChartSubjectForm = memo(({ autoFocusRef }: Props) => {
   const { chart_subject_id } = useParams()
 
   const db = usePGlite()
-  const { results: row } = useLiveQuery(
-    db.chart_subjects.liveUnique({ where: { chart_subject_id } }),
+  const result = useLiveQuery(
+    `SELECT * FROM chart_subjects WHERE chart_subject_id = $1`,
+    [chart_subject_id],
   )
+  const row = result?.rows[0]
 
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
-      db.chart_subjects.update({
-        where: { chart_subject_id },
-        data: { [name]: value },
-      })
+      db.query(
+        `UPDATE chart_subjects SET ${name} = $1 WHERE chart_subject_id = $2`,
+        [value, chart_subject_id],
+      )
     },
-    [db.chart_subjects, chart_subject_id],
+    [db, chart_subject_id],
   )
 
   if (!row) return <Loading />
