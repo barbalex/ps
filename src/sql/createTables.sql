@@ -412,7 +412,7 @@ CREATE TABLE IF NOT EXISTS lists(
   name text DEFAULT NULL,
   data jsonb DEFAULT NULL,
   obsolete boolean DEFAULT FALSE,
-  label text DEFAULT NULL
+  label text GENERATED ALWAYS AS (coalesce(name, list_id::text)) STORED
 );
 
 CREATE INDEX IF NOT EXISTS lists_account_id_idx ON lists USING btree(account_id);
