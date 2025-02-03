@@ -444,7 +444,7 @@ CREATE TABLE IF NOT EXISTS list_values(
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE CASCADE ON UPDATE CASCADE,
   value text DEFAULT NULL,
   obsolete boolean DEFAULT FALSE,
-  label text DEFAULT NULL
+  label text GENERATED ALWAYS AS (coalesce(value, list_value_id::text)) STORED
 );
 
 CREATE INDEX IF NOT EXISTS list_values_account_id_idx ON list_values USING btree(account_id);
