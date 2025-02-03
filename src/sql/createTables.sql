@@ -146,7 +146,9 @@ CREATE TABLE IF NOT EXISTS place_levels(
   check_values boolean DEFAULT FALSE,
   check_taxa boolean DEFAULT FALSE,
   occurrences boolean DEFAULT FALSE,
-  label text GENERATED ALWAYS AS (coalesce(CAST(level AS varchar) || '.' || coalesce(name_short, name_plural, place_level_id::text), place_level_id::text)) STORED
+  -- TODO: label
+  -- label text GENERATED ALWAYS AS (coalesce(CAST(level AS varchar) || '.' || coalesce(name_short, name_plural, place_level_id::text), place_level_id::text)) STORED
+  label text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS place_levels_account_id_idx ON place_levels USING btree(account_id);
@@ -302,7 +304,9 @@ CREATE TABLE IF NOT EXISTS taxonomies(
   url text DEFAULT NULL,
   obsolete boolean DEFAULT FALSE,
   data jsonb DEFAULT NULL,
-  label text GENERATED ALWAYS AS (coalesce(concat(name, ' (', type, ')'), taxonomy_id::text)) STORED
+  -- TODO: label "generation expression is not immutable"
+  label text GENERATED ALWAYS AS (coalesce(concat(name, ' (', type::text, ')'), taxonomy_id::text)) STORED
+  -- label text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS taxonomies_account_id_idx ON taxonomies USING btree(account_id);
@@ -833,7 +837,7 @@ CREATE TABLE IF NOT EXISTS place_reports(
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
-  label text GENERATED ALWAYS AS (coalesce(year, place_report_id::text)) STORED
+  label text GENERATED ALWAYS AS (coalesce(year::text, place_report_id::text)) STORED
 );
 
 CREATE INDEX IF NOT EXISTS place_reports_account_id_idx ON place_reports USING btree(account_id);
@@ -1043,7 +1047,7 @@ CREATE TABLE IF NOT EXISTS subproject_reports(
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
-  label text GENERATED ALWAYS AS (coalesce(year, subproject_report_id::text)) STORED
+  label text GENERATED ALWAYS AS (coalesce(year::text, subproject_report_id::text)) STORED
 );
 
 CREATE INDEX IF NOT EXISTS subproject_reports_account_id_idx ON subproject_reports USING btree(account_id);
@@ -1071,7 +1075,7 @@ CREATE TABLE IF NOT EXISTS project_reports(
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   year integer DEFAULT DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
-  label text GENERATED ALWAYS AS (coalesce(year, project_report_id::text)) STORED
+  label text GENERATED ALWAYS AS (coalesce(year::text, project_report_id::text)) STORED
 );
 
 CREATE INDEX IF NOT EXISTS project_reports_account_id_idx ON project_reports USING btree(account_id);
@@ -1660,7 +1664,8 @@ CREATE TABLE IF NOT EXISTS vector_layer_displays(
   fill_color text DEFAULT NULL,
   fill_opacity_percent integer DEFAULT 100,
   fill_rule fill_rule_enum DEFAULT 'evenodd',
-  label text GENERATED ALWAYS AS (coalesce(display_property_value, 'Single Display'))
+  label text GENERATED ALWAYS AS (coalesce(display_property_value, 'Single Display')) STORED
+  -- label text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS vector_layer_displays_account_id_idx ON vector_layer_displays USING btree(account_id);
