@@ -23,7 +23,7 @@ export const Component = memo(() => {
 
   const filter = place_id2 ? actions2Filter : actions1Filter
   const result = useLiveQuery(
-    `SELECT * FROM actions WHERE place_id = ?${
+    `SELECT * FROM actions WHERE place_id = $1${
       filter && ` AND (${filter})`
     } order by label asc`,
     [place_id2 ?? place_id],

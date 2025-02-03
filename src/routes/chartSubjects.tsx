@@ -15,7 +15,7 @@ export const Component = memo(() => {
 
   const db = usePGlite()
   const results = useLiveQuery(
-    `SELECT * FROM chart_subjects WHERE chart_id = ? ORDER BY label ASC`,
+    `SELECT * FROM chart_subjects WHERE chart_id = $1 ORDER BY label ASC`,
     [chart_id],
   )
   const chartSubjects = results?.rows ?? []
