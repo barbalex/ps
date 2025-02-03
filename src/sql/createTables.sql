@@ -146,8 +146,6 @@ CREATE TABLE IF NOT EXISTS place_levels(
   check_values boolean DEFAULT FALSE,
   check_taxa boolean DEFAULT FALSE,
   occurrences boolean DEFAULT FALSE,
-  -- TODO: label
-  -- label text GENERATED ALWAYS AS (coalesce(CAST(level AS varchar) || '.' || coalesce(name_short, name_plural, place_level_id::text), place_level_id::text)) STORED
   label text generated always as (
     case
       when name_short is null and name_plural is null then place_level_id::text
@@ -156,7 +154,6 @@ CREATE TABLE IF NOT EXISTS place_levels(
       else place_level_id::text
     end
   ) stored
-  -- label text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS place_levels_account_id_idx ON place_levels USING btree(account_id);
