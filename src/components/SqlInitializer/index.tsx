@@ -13,7 +13,6 @@ import { generateSubprojectTaxonLabel } from './sql/subprojectTaxa.ts'
 import { generateGoalReportLabel } from './sql/goalReports.ts'
 import { generateGoalReportValueLabel } from './sql/goalReportValues.ts'
 import { generateSubprojectUserLabel } from './sql/subprojectUsers.ts'
-import { generateCheckLabel } from './sql/checks.ts'
 import { generateCheckValueLabel } from './sql/checkValues.ts'
 import { generateCheckTaxonLabel } from './sql/checkTaxa.ts'
 import { generateActionLabel } from './sql/actions.ts'
@@ -54,6 +53,13 @@ export const SqlInitializer = () => {
 
       if (projectsTableExists) return
 
+      const immutableDateSql = (await import(`../../sql/immutableDate.sql?raw`))
+        .default
+      try {
+        await db.exec(immutableDateSql)
+      } catch (error) {
+        console.error('SqlInitializer, error creating immutableDate:', error)
+      }
       const uuidv7Sql = (await import(`../../sql/uuidv7.sql?raw`)).default
       try {
         await db.exec(uuidv7Sql)
@@ -115,7 +121,6 @@ export const SqlInitializer = () => {
   //     await generateGoalReportLabel(db)
   //     await generateGoalReportValueLabel(db)
   //     await generateSubprojectUserLabel(db)
-  //     await generateCheckLabel(db)
   //     await generateCheckValueLabel(db)
   //     await generateCheckTaxonLabel(db)
   //     await generateActionLabel(db)

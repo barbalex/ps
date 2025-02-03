@@ -741,7 +741,9 @@ CREATE TABLE IF NOT EXISTS checks(
   geometry jsonb DEFAULT NULL,
   bbox jsonb DEFAULT NULL,
   relevant_for_reports boolean DEFAULT TRUE,
-  label text DEFAULT NULL
+  -- label text DEFAULT NULL
+  -- label text GENERATED ALWAYS AS (immutabledate(date)) STORED
+  label text GENERATED ALWAYS AS (coalesce(immutabledate(date), check_id::text)) STORED
 );
 
 CREATE INDEX IF NOT EXISTS checks_account_id_idx ON checks USING btree(account_id);
