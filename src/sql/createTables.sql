@@ -1726,7 +1726,7 @@ CREATE TABLE IF NOT EXISTS layer_presentations(
   grayscale boolean DEFAULT FALSE,
   max_zoom integer DEFAULT 19,
   min_zoom integer DEFAULT 0,
-  label text DEFAULT NULL -- TODO: not needed?
+  label text GENERATED ALWAYS AS (layer_presentation_id::text) STORED -- TODO: not needed?
 );
 
 CREATE INDEX IF NOT EXISTS layer_presentations_account_id_idx ON layer_presentations USING btree(account_id);
