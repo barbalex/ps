@@ -24,7 +24,6 @@ export const Chart = memo(() => {
     chart_id,
   ])
   const chart = resultChart?.rows?.[0]
-  console.log('chart', chart)
 
   const resultSubjects = useLiveQuery(
     `SELECT * FROM chart_subjects WHERE chart_id = $1 order by sort asc, name asc`,
@@ -36,6 +35,9 @@ export const Chart = memo(() => {
 
   useEffect(() => {
     if (!subjects) return
+    if (!chart) return
+    if (!subjects.length) return
+
     const run = async () => {
       const data = await buildData({
         db,
