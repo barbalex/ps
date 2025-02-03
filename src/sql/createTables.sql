@@ -133,7 +133,7 @@ CREATE TABLE IF NOT EXISTS place_levels(
   place_level_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  level integer DEFAULT NULL,
+  level integer DEFAULT 1,
   name_singular text DEFAULT NULL,
   name_plural text DEFAULT NULL,
   name_short text DEFAULT NULL,
@@ -148,7 +148,15 @@ CREATE TABLE IF NOT EXISTS place_levels(
   occurrences boolean DEFAULT FALSE,
   -- TODO: label
   -- label text GENERATED ALWAYS AS (coalesce(CAST(level AS varchar) || '.' || coalesce(name_short, name_plural, place_level_id::text), place_level_id::text)) STORED
-  label text DEFAULT NULL
+  label text generated always as (
+    case
+      when name_short is null and name_plural is null then place_level_id::text
+      when name_plural is null then level::text || '.' || name_short
+      when name_short is null then level::text || '.' || name_plural
+      else place_level_id::text
+    end
+  ) stored
+  -- label text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS place_levels_account_id_idx ON place_levels USING btree(account_id);
