@@ -1660,7 +1660,7 @@ CREATE TABLE IF NOT EXISTS vector_layer_displays(
   fill_color text DEFAULT NULL,
   fill_opacity_percent integer DEFAULT 100,
   fill_rule fill_rule_enum DEFAULT 'evenodd',
-  label text DEFAULT NULL
+  label text GENERATED ALWAYS AS (coalesce(display_property_value, 'Single Display'))
 );
 
 CREATE INDEX IF NOT EXISTS vector_layer_displays_account_id_idx ON vector_layer_displays USING btree(account_id);
