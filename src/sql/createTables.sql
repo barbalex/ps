@@ -146,7 +146,7 @@ CREATE TABLE IF NOT EXISTS place_levels(
   check_values boolean DEFAULT FALSE,
   check_taxa boolean DEFAULT FALSE,
   occurrences boolean DEFAULT FALSE,
-  label text DEFAULT NULL
+  label text GENERATED ALWAYS AS (coalesce(CAST(level AS varchar) || '.' || coalesce(name_short, name_plural, place_level_id::text), place_level_id::text)) STORED
 );
 
 CREATE INDEX IF NOT EXISTS place_levels_account_id_idx ON place_levels USING btree(account_id);

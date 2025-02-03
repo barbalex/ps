@@ -7,7 +7,6 @@ import { generateAccountLabel } from './sql/accounts.ts'
 import { generateFieldTypeLabel } from './sql/fieldTypes.ts'
 import { generateWidgetForFieldLabel } from './sql/widgetForField.ts'
 import { generateFileLabel } from './sql/files.ts'
-import { generatePlaceLevelLabel } from './sql/placeLevels.ts'
 import { generateListLabel } from './sql/lists.ts'
 import { generateListValueLabel } from './sql/listValues.ts'
 import { generateTaxonLabel } from './sql/taxa.ts'
@@ -107,7 +106,6 @@ export const SqlInitializer = () => {
   //     await generateFieldTypeLabel(db)
   //     await generateWidgetForFieldLabel(db)
   //     await generateFileLabel(db)
-  //     await generatePlaceLevelLabel(db)
   //     await generateListLabel(db)
   //     await generateListValueLabel(db)
   //     await generateTaxonLabel(db)
