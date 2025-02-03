@@ -1196,7 +1196,7 @@ CREATE TABLE IF NOT EXISTS field_types(
   -- no account_id as field_types are predefined for all projects
   sort smallint DEFAULT NULL,
   comment text,
-  label text DEFAULT NULL
+  label text GENERATED ALWAYS AS (coalesce(name, field_type_id::text)) STORED
 );
 
 CREATE INDEX IF NOT EXISTS field_types_name_idx ON field_types USING btree(name);

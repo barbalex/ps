@@ -4,7 +4,6 @@ import { usePGlite } from '@electric-sql/pglite-react'
 import { generateProjectLabel } from './sql/projects.ts'
 import { generateUserLabel } from './sql/users.ts'
 import { generateAccountLabel } from './sql/accounts.ts'
-import { generateFieldTypeLabel } from './sql/fieldTypes.ts'
 import { generateWidgetForFieldLabel } from './sql/widgetForField.ts'
 import { generateTaxonLabel } from './sql/taxa.ts'
 import { generateProjectUserLabel } from './sql/projectUsers.ts'
@@ -109,7 +108,6 @@ export const SqlInitializer = () => {
   //     await generateUserLabel(db)
   //     await generateAccountLabel(db)
   //     await generateProjectLabel(db)
-  //     await generateFieldTypeLabel(db)
   //     await generateWidgetForFieldLabel(db)
   //     await generateTaxonLabel(db)
   //     await generateProjectUserLabel(db)
