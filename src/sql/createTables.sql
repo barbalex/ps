@@ -1165,7 +1165,7 @@ CREATE TABLE IF NOT EXISTS persons(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   email text DEFAULT NULL,
   data jsonb DEFAULT NULL,
-  label text DEFAULT NULL
+  label text GENERATED ALWAYS AS (coalesce(email, person_id::text)) STORED
 );
 
 CREATE INDEX IF NOT EXISTS persons_account_id_idx ON persons USING btree(account_id);
