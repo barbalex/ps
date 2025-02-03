@@ -12,7 +12,6 @@ import { generateListLabel } from './sql/lists.ts'
 import { generateListValueLabel } from './sql/listValues.ts'
 import { generateTaxonLabel } from './sql/taxa.ts'
 import { generateProjectUserLabel } from './sql/projectUsers.ts'
-import { generateProjectReportLabel } from './sql/projectReports.ts'
 import { generateFieldLabel } from './sql/fields.ts'
 import { generatePersonLabel } from './sql/persons.ts'
 import { generateCrsLabel } from './sql/crs.ts'
@@ -115,7 +114,6 @@ export const SqlInitializer = () => {
   //     await generateListValueLabel(db)
   //     await generateTaxonLabel(db)
   //     await generateProjectUserLabel(db)
-  //     await generateProjectReportLabel(db)
   //     await generateFieldLabel(db)
   //     await generatePersonLabel(db)
   //     await generateCrsLabel(db)
