@@ -68,7 +68,6 @@ export const SqlInitializer = () => {
       if (projectsTableExists) return
 
       const uuidv7Sql = (await import(`../../sql/uuidv7.sql?raw`)).default
-      // console.log('SqlInitializer, uuidv7Sql:', uuidv7Sql)
       const uuidv7Result = await db.exec(uuidv7Sql)
       console.log('SqlInitializer, uuidv7Result:', uuidv7Result)
       const createSql = (await import(`../../sql/createTables.sql?raw`)).default

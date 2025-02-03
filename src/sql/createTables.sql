@@ -290,23 +290,26 @@ COMMENT ON TABLE subproject_users IS 'A way to give users access to subprojects 
 --------------------------------------------------------------
 -- taxonomies
 --
-CREATE TYPE taxonomy_type AS enum(
-  'species',
-  'biotope'
-);
-
+-- ISSUE: using type in generated label leads to "generation expression is not immutable" error
+-- CREATE TYPE taxonomy_type AS enum(
+--   'species',
+--   'biotope'
+-- );
 CREATE TABLE IF NOT EXISTS taxonomies(
   taxonomy_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  type taxonomy_type DEFAULT NULL,
+  type text CHECK (type IN ('species', 'biotope')),
   name text DEFAULT NULL,
   url text DEFAULT NULL,
   obsolete boolean DEFAULT FALSE,
   data jsonb DEFAULT NULL,
-  -- TODO: label "generation expression is not immutable"
-  label text GENERATED ALWAYS AS (coalesce(concat(name, ' (', type::text, ')'), taxonomy_id::text)) STORED
-  -- label text DEFAULT NULL
+  label text GENERATED ALWAYS AS ( CASE when name IS NULL THEN
+    taxonomy_id::text
+    WHEN type IS NULL THEN
+    taxonomy_id::text when name IS NULL THEN
+    taxonomy_id::text else name || ' (' || type || ')'
+  END) STORED
 );
 
 CREATE INDEX IF NOT EXISTS taxonomies_account_id_idx ON taxonomies USING btree(account_id);
