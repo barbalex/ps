@@ -1120,7 +1120,7 @@ CREATE TABLE IF NOT EXISTS files(
   check_id uuid DEFAULT NULL REFERENCES checks(check_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL, -- file-upload-success-event.detail.name
   size bigint DEFAULT NULL, -- file-upload-success-event.detail.size
-  label text DEFAULT NULL,
+  label text GENERATED ALWAYS AS (coalesce(name, file_id::text)) STORED,
   data jsonb DEFAULT NULL, -- TODO: not defineable in fields table!!
   mimetype text DEFAULT NULL, -- file-upload-success-event.detail.mimeType
   -- need width and height to get the aspect ratio of the image
