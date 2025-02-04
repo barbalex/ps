@@ -115,3 +115,23 @@ CREATE TRIGGER action_values_label_trigger
 AFTER UPDATE OR INSERT ON action_values
 FOR EACH ROW
 EXECUTE PROCEDURE action_values_label_trigger();
+
+-- check_taxa
+CREATE OR REPLACE FUNCTION check_taxon_label_trigger()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE check_taxa 
+    SET label = (
+      CASE 
+        WHEN taxa.name is null then NEW.check_taxon_id::text
+        WHEN taxa.taxon_id is null then NEW.check_taxon_id::text
+        ELSE (SELECT name FROM taxonomies where taxonomy_id = (select taxonomy_id from taxa where taxon_id = NEW.taxon_id)) || ': ' || (SELECT name FROM taxa WHERE taxon_id = NEW.taxon_id)
+      END
+    );
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER check_taxon_label_trigger
+AFTER UPDATE OR INSERT OF taxon_id ON check_taxa
+FOR EACH ROW
+EXECUTE PROCEDURE check_taxon_label_trigger();
