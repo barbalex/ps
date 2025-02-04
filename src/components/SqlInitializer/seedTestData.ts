@@ -191,11 +191,31 @@ const seedChartSubjects = `INSERT INTO chart_subjects(account_id, chart_id, char
 ('018cf958-27e2-7000-90d3-59f024d467be', '018e0a30-ce91-7899-8daf-4c3a4b4ff414', '018e0a31-c01d-7fe9-bd23-cd9085e60010', 'places', 2, 'Number of Subpopulations', 'count_rows', 'monotone', '#FF0000', '#FF0000', true);`
 
 export const seedTestData = async (db) => {
-  await db.exec(seedUsers)
-  await db.exec(seedAccounts)
-  await db.exec(seedFieldTypes)
-  await db.exec(seedWidgetTypes)
-  await db.exec(seedWidgetsForFields)
+  try {
+    await db.exec(seedUsers)
+  } catch (error) {
+    console.log('seedTestData, seedUsers error', error)
+  }
+  try {
+    await db.exec(seedAccounts)
+  } catch (error) {
+    console.log('seedTestData, seedAccounts error', error)
+  }
+  try {
+    await db.exec(seedFieldTypes)
+  } catch (error) {
+    console.log('seedTestData, seedFieldTypes error', error)
+  }
+  try {
+    await db.exec(seedWidgetTypes)
+  } catch (error) {
+    console.log('seedTestData, seedWidgetTypes error', error)
+  }
+  try {
+    await db.exec(seedWidgetsForFields)
+  } catch (error) {
+    console.log('seedTestData, seedWidgetsForFields error', error)
+  }
   try {
     await db.exec(seedCrs)
   } catch (error) {
@@ -204,33 +224,78 @@ export const seedTestData = async (db) => {
   try {
     await db.exec(seedProjects)
   } catch (error) {
-    console.log('hello seedTestData, seedProjects error', error)
+    console.log('seedTestData.seedProjects error', error)
   }
   try {
     await db.exec(seedFields)
   } catch (error) {
-    console.log('hello seedTestData, seedFields error', error)
+    console.log('seedTestData.seedFields error', error)
   }
-  await db.exec(seedProjectUsers)
-  await db.exec(seedSubprojects)
-  await db.exec(seedSubprojectUsers)
+  try {
+    await db.exec(seedProjectUsers)
+  } catch (error) {
+    console.log('seedTestData.seedProjectUsers error', error)
+  }
+  try {
+    await db.exec(seedSubprojects)
+  } catch (error) {
+    console.log('seedTestData.seedSubprojects error', error)
+  }
+  try {
+    await db.exec(seedSubprojectUsers)
+  } catch (error) {
+    console.log('seedTestData.seedSubprojectUsers error', error)
+  }
   try {
     await db.exec(seedPlaces)
   } catch (error) {
-    console.log('hello seedTestData, seedPlaces error', error)
+    console.log('seedTestData.seedPlaces error', error)
   }
   try {
     await db.exec(seedPlaces2)
   } catch (error) {
-    console.log('hello seedTestData, seedPlaces2 error', error)
+    console.log('seedTestData.seedPlaces2 error', error)
   }
-  await db.exec(seedChecks)
-  await db.exec(seedActions)
-  await db.exec(seedCharts)
-  await db.exec(seedChartSubjects)
-  await db.exec(seedTaxonomies)
-  await db.exec(seedTaxons)
-  await db.exec(seedUnits)
-  await db.exec(seedPlaceLevels)
+  try {
+    await db.exec(seedChecks)
+  } catch (error) {
+    console.log('seedTestData.seedChecks error', error)
+  }
+  try {
+    await db.exec(seedActions)
+  } catch (error) {
+    console.log('seedTestData.seedActions error', error)
+  }
+  try {
+    await db.exec(seedCharts)
+  } catch (error) {
+    console.log('seedTestData.seedCharts error', error)
+  }
+  try {
+    await db.exec(seedChartSubjects)
+  } catch (error) {
+    console.log('seedTestData.seedChartSubjects error', error)
+  }
+  try {
+    await db.exec(seedTaxonomies)
+  } catch (error) {
+    console.log('seedTestData.seedTaxonomies error', error)
+  }
+  try {
+    await db.exec(seedTaxons)
+  } catch (error) {
+    console.log('seedTestData.seedTaxons error', error)
+  }
+  try {
+    await db.exec(seedUnits)
+  } catch (error) {
+    console.log('seedTestData.seedUnits error', error)
+  }
+  try {
+    await db.exec(seedPlaceLevels)
+  } catch (error) {
+    console.log('seedTestData.seedPlaceLevels error', error)
+  }
+
   return
 }
