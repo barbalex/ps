@@ -597,7 +597,7 @@ CREATE TABLE IF NOT EXISTS actions(
   geometry jsonb DEFAULT NULL,
   bbox jsonb DEFAULT NULL,
   relevant_for_reports boolean DEFAULT TRUE,
-  label text DEFAULT NULL
+  label text GENERATED ALWAYS AS (coalesce(immutabledate(date), action_id::text)) STORED
 );
 
 CREATE INDEX IF NOT EXISTS actions_account_id_idx ON actions USING btree(account_id);

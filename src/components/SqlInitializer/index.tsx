@@ -15,7 +15,6 @@ import { generateGoalReportValueLabel } from './sql/goalReportValues.ts'
 import { generateSubprojectUserLabel } from './sql/subprojectUsers.ts'
 import { generateCheckValueLabel } from './sql/checkValues.ts'
 import { generateCheckTaxonLabel } from './sql/checkTaxa.ts'
-import { generateActionLabel } from './sql/actions.ts'
 import { generateActionValueLabel } from './sql/actionValues.ts'
 import { generateActionReportLabel } from './sql/actionReports.ts'
 import { generateActionReportValueLabel } from './sql/actionReportValues.ts'
@@ -122,7 +121,6 @@ export const SqlInitializer = () => {
   //     await generateSubprojectUserLabel(db)
   //     await generateCheckValueLabel(db)
   //     await generateCheckTaxonLabel(db)
-  //     await generateActionLabel(db)
   //     await generateActionValueLabel(db)
   //     await generateActionReportLabel(db)
   //     await generateActionReportValueLabel(db)
