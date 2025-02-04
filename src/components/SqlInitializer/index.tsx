@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import { usePGlite } from '@electric-sql/pglite-react'
 
-import { generateProjectLabel } from './sql/projects.ts'
 import { generateUserLabel } from './sql/users.ts'
 import { generateWidgetForFieldLabel } from './sql/widgetForField.ts'
 import { generateTaxonLabel } from './sql/taxa.ts'
@@ -78,7 +77,6 @@ export const SqlInitializer = () => {
   //   const generate = async () => {
   //     // seems that these can't be run in migrations
   //     await generateUserLabel(db)
-  //     await generateProjectLabel(db)
   //     await generateWidgetForFieldLabel(db)
   //     await generateTaxonLabel(db)
   //     await generateProjectUserLabel(db)

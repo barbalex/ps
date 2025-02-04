@@ -240,3 +240,23 @@ CREATE TRIGGER projects_goals_label_trigger
 AFTER UPDATE OF goals_label_by ON projects
 FOR EACH ROW
 EXECUTE PROCEDURE projects_goals_label_trigger();
+
+-- projects.label
+CREATE OR REPLACE FUNCTION projects_label_trigger()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE projects SET label = CASE
+    WHEN accounts.projects_label_by IS NULL THEN coalesce(name, project_id::text)
+    WHEN accounts.projects_label_by = 'name' THEN coalesce(name, project_id::text)
+    WHEN data ->> accounts.projects_label_by is null then coalesce(name, project_id::text)
+    else data ->> accounts.projects_label_by
+  END
+FROM (SELECT projects_label_by FROM accounts WHERE account_id = NEW.account_id) AS accounts
+WHERE projects.project_id = NEW.project_id;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER projects_label_trigger
+AFTER UPDATE OF name, data or insert ON projects
+FOR EACH ROW
+EXECUTE PROCEDURE projects_label_trigger();
