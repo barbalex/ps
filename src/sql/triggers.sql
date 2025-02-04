@@ -94,3 +94,24 @@ CREATE TRIGGER action_report_values_label_trigger
 AFTER UPDATE OR INSERT ON action_report_values
 FOR EACH ROW
 EXECUTE PROCEDURE action_report_values_label_trigger();
+
+-- action_values
+CREATE OR REPLACE FUNCTION action_values_label_trigger()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE action_values
+    SET label = (
+      CASE 
+        WHEN units.name is null then NEW.action_value_id::text
+        ELSE units.name || ': ' || coalesce(NEW.value_integer, NEW.value_numeric, NEW.value_text)
+      END
+    )
+  FROM (SELECT name FROM units WHERE unit_id = NEW.unit_id) AS units
+  WHERE action_values.action_value_id = NEW.action_value_id;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER action_values_label_trigger
+AFTER UPDATE OR INSERT ON action_values
+FOR EACH ROW
+EXECUTE PROCEDURE action_values_label_trigger();
