@@ -1823,7 +1823,7 @@ CREATE TABLE IF NOT EXISTS charts(
   subjects_stacked boolean DEFAULT FALSE,
   subjects_single boolean DEFAULT FALSE,
   percent boolean DEFAULT FALSE,
-  label text DEFAULT NULL -- title
+  label text GENERATED ALWAYS AS (coalesce(title, chart_id::text)) STORED
 );
 
 CREATE INDEX IF NOT EXISTS charts_chart_id_idx ON charts USING btree(chart_id);
