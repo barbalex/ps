@@ -203,3 +203,22 @@ CREATE TRIGGER goal_report_values_label_trigger
 AFTER UPDATE OR INSERT ON goal_report_values 
 FOR EACH ROW
 EXECUTE PROCEDURE goal_report_values_label_trigger();
+
+-- projects.places_label_by
+CREATE OR REPLACE FUNCTION projects_places_label_trigger()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE places SET label = case
+    when NEW.places_label_by = 'id' then place_id::text
+    when NEW.places_label_by = 'level' then level::text
+    when data ->> NEW.places_label_by is null then place_id::text
+    else data ->> NEW.places_label_by
+  end;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER projects_places_label_trigger
+AFTER UPDATE OF places_label_by ON projects
+FOR EACH ROW
+EXECUTE PROCEDURE projects_places_label_trigger();
