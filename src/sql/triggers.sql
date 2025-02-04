@@ -24,9 +24,9 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE TRIGGER occurrence_imports_label_creation_trigger
-  AFTER update OF label_creation ON occurrence_imports
-  FOR EACH ROW
-  EXECUTE PROCEDURE occurrence_imports_label_creation_trigger();
+AFTER update OF label_creation ON occurrence_imports
+FOR EACH ROW
+EXECUTE PROCEDURE occurrence_imports_label_creation_trigger();
 
 -- if accounts.projects_label_by is changed, need to update all labels of projects
 CREATE OR REPLACE FUNCTION accounts_projects_label_trigger()
@@ -41,6 +41,32 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE TRIGGER accounts_projects_label_trigger
-  AFTER UPDATE OF projects_label_by ON accounts
-  FOR EACH ROW
-  EXECUTE PROCEDURE accounts_projects_label_trigger();
+AFTER UPDATE OF projects_label_by ON accounts
+FOR EACH ROW
+EXECUTE PROCEDURE accounts_projects_label_trigger();
+
+
+-- if accounts.label is changed, need to update all labels of accounts
+create or replace function accounts_label_update_trigger()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE accounts SET label = coalesce((SELECT email FROM users WHERE user_id = NEW.user_id) || ' (' || NEW.type || ')', (SELECT email FROM users WHERE user_id = NEW.user_id), NEW.account_id::text);
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER accounts_label_update_trigger
+AFTER UPDATE OF projects_label_by ON accounts
+FOR EACH ROW
+EXECUTE PROCEDURE accounts_label_update_trigger();
+
+CREATE OR REPLACE FUNCTION accounts_label_insert_trigger()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE accounts SET label = coalesce((SELECT email FROM users WHERE user_id = NEW.user_id), '(no user)') || ' (' || coalesce(NEW.type, 'no type') || ')';
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER accounts_label_insert_trigger
+AFTER INSERT ON accounts
+FOR EACH ROW
+EXECUTE PROCEDURE accounts_label_insert_trigger();
