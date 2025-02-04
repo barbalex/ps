@@ -16,7 +16,6 @@ import { generateSubprojectUserLabel } from './sql/subprojectUsers.ts'
 import { generateCheckValueLabel } from './sql/checkValues.ts'
 import { generateCheckTaxonLabel } from './sql/checkTaxa.ts'
 import { generateActionValueLabel } from './sql/actionValues.ts'
-import { generateActionReportLabel } from './sql/actionReports.ts'
 import { generateActionReportValueLabel } from './sql/actionReportValues.ts'
 import { generatePlaceReportValueLabel } from './sql/placeReportValues.ts'
 import { generateChartSubjectLabel } from './sql/chartSubjects.ts'
@@ -122,7 +121,6 @@ export const SqlInitializer = () => {
   //     await generateCheckValueLabel(db)
   //     await generateCheckTaxonLabel(db)
   //     await generateActionValueLabel(db)
-  //     await generateActionReportLabel(db)
   //     await generateActionReportValueLabel(db)
   //     await generatePlaceReportValueLabel(db)
   //     await generateChartSubjectLabel(db)

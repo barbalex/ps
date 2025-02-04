@@ -1,5 +1,6 @@
 
 
+-- if occurrence_imports.label_creation is changed, need to update all labels of occurrences
 CREATE OR REPLACE FUNCTION occurrence_imports_label_creation_trigger ()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -26,3 +27,20 @@ CREATE OR REPLACE TRIGGER occurrence_imports_label_creation_trigger
   AFTER update OF label_creation ON occurrence_imports
   FOR EACH ROW
   EXECUTE PROCEDURE occurrence_imports_label_creation_trigger();
+
+-- if accounts.projects_label_by is changed, need to update all labels of projects
+CREATE OR REPLACE FUNCTION accounts_projects_label_trigger()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE projects SET label = CASE
+  WHEN NEW.projects_label_by is null THEN name
+  WHEN NEW.projects_label_by = 'name' THEN name
+  ELSE coalesce(data ->> NEW.projects_label_by, project_id::text)
+  END;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER IF NOT EXISTS accounts_projects_label_trigger
+  AFTER UPDATE OF projects_label_by ON accounts
+  FOR EACH ROW
+  EXECUTE PROCEDURE accounts_projects_label_trigger();
