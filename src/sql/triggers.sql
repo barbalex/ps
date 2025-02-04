@@ -7,17 +7,16 @@ BEGIN
   UPDATE occurrences
     SET
       label = (
-        SELECT
-          string_agg (
-            case when oi.label_creation ->> 'type' = 'separator' then oi.label_creation ->> 'value' else o.data ->> (oi.label_creation ->> 'value') end, ''
+        SELECT string_agg (
+            case 
+              when oi.label_creation ->> 'type' = 'separator' then oi.label_creation ->> 'value' 
+              else o.data ->> (oi.label_creation ->> 'value') 
+            end, 
+            ''
           )
-        FROM
-          occurrences o
-          INNER JOIN occurrence_imports oi ON o.occurrence_import_id = oi.occurrence_import_id
-        WHERE
-          o.occurrence_id = occurrences.occurrence_id
-        GROUP BY
-          o.occurrence_id)
+        FROM occurrences o INNER JOIN occurrence_imports oi ON o.occurrence_import_id = oi.occurrence_import_id
+        WHERE o.occurrence_id = occurrences.occurrence_id
+        GROUP BY o.occurrence_id)
     WHERE
       occurrences.occurrence_import_id = NEW.occurrence_import_id;
 END;
@@ -165,14 +164,13 @@ BEGIN
   CASE 
     WHEN projects.goal_reports_label_by IS NULL THEN goal_id::text
     WHEN projects.goal_reports_label_by = 'goal_id' THEN goal_id::text
-    WHEN NEW.data ->> projects.goal_reports_label_by IS NULL THEN goal_id::text
+    WHEN NEW.data -> projects.goal_reports_label_by IS NULL THEN goal_id::text
     ELSE NEW.data ->> projects.goal_reports_label_by
   END
 FROM (SELECT goal_reports_label_by FROM projects WHERE project_id =(
   SELECT project_id FROM subprojects WHERE subproject_id =(
     SELECT subproject_id FROM goals WHERE goal_id = NEW.goal_id))) AS projects
-WHERE
-  goal_reports.goal_report_id = NEW.goal_report_id;
+WHERE goal_reports.goal_report_id = NEW.goal_report_id;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -211,7 +209,7 @@ BEGIN
   UPDATE places SET label = case
     when NEW.places_label_by = 'id' then place_id::text
     when NEW.places_label_by = 'level' then level::text
-    when data ->> NEW.places_label_by is null then place_id::text
+    when data -> NEW.places_label_by is null then place_id::text
     else data ->> NEW.places_label_by
   end;
 END;
@@ -229,7 +227,7 @@ RETURNS TRIGGER AS $$
 BEGIN
   UPDATE goals SET label = case
     when NEW.goals_label_by = 'id' then goal_id::text
-    when data ->> NEW.goals_label_by is null then goal_id::text
+    when data -> NEW.goals_label_by is null then goal_id::text
     else data ->> NEW.goals_label_by
   end;
 END;
@@ -248,16 +246,18 @@ BEGIN
   UPDATE projects SET label = CASE
     WHEN accounts.projects_label_by IS NULL THEN coalesce(name, project_id::text)
     WHEN accounts.projects_label_by = 'name' THEN coalesce(name, project_id::text)
-    WHEN data ->> accounts.projects_label_by is null then coalesce(name, project_id::text)
+    WHEN data -> accounts.projects_label_by is null then coalesce(name, project_id::text)
     else data ->> accounts.projects_label_by
   END
-FROM (SELECT projects_label_by FROM accounts WHERE account_id = NEW.account_id) AS accounts
-WHERE projects.project_id = NEW.project_id;
+  FROM (SELECT projects_label_by FROM accounts WHERE account_id = NEW.account_id) AS accounts
+  WHERE projects.project_id = NEW.project_id;
 END;
 $$ LANGUAGE plpgsql;
 
--- TODO: add insert
 CREATE TRIGGER projects_label_trigger
-AFTER UPDATE OF name, data ON projects
+AFTER 
+  -- causes when seeding: error: control reached end of trigger procedure without RETURN
+  -- INSERT OR 
+  UPDATE OF name, data ON projects
 FOR EACH ROW
 EXECUTE PROCEDURE projects_label_trigger();
