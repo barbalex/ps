@@ -59,7 +59,8 @@ AFTER UPDATE OF projects_label_by ON accounts
 FOR EACH ROW
 EXECUTE PROCEDURE accounts_label_update_trigger();
 
--- chunk-QQ5ITYQ4.js?v=617ff979:1 Uncaught (in promise) error: control reached end of trigger procedure without RETURN
+-- TODO: Uncaught (in promise) error: control reached end of trigger procedure without RETURN
+-- event though these work on local db?
 -- CREATE OR REPLACE FUNCTION accounts_label_insert_trigger()
 -- RETURNS TRIGGER AS $$
 -- BEGIN
