@@ -75,16 +75,7 @@ export const SqlInitializer = () => {
       } catch (error) {
         console.error('SqlInitializer, error creating triggers:', error)
       }
-      let projectsResult
-      try {
-        projectsResult = await db.query(`select * from projects`)
-      } catch (error) {
-        console.error('SqlInitializer, error querying projects:', error)
-      }
-      const projects = projectsResult?.rows ?? []
-      if (projects.length === 0) {
-        await seedTestData(db)
-      }
+      await seedTestData(db)
     }
 
     run()
