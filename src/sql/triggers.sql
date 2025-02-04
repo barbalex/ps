@@ -156,3 +156,28 @@ CREATE TRIGGER check_values_label_trigger
 AFTER UPDATE OR INSERT ON check_values
 FOR EACH ROW
 EXECUTE PROCEDURE check_values_label_trigger();
+
+-- goal_reports
+CREATE OR REPLACE FUNCTION goal_reports_label_trigger()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE goal_reports SET label = 
+  CASE 
+    WHEN projects.goal_reports_label_by IS NULL THEN goal_id::text
+    WHEN projects.goal_reports_label_by = 'goal_id' THEN goal_id::text
+    WHEN NEW.data ->> projects.goal_reports_label_by IS NULL THEN goal_id::text
+    ELSE NEW.data ->> projects.goal_reports_label_by
+  END
+FROM (SELECT goal_reports_label_by FROM projects WHERE project_id =(
+  SELECT project_id FROM subprojects WHERE subproject_id =(
+    SELECT subproject_id FROM goals WHERE goal_id = NEW.goal_id))) AS projects
+WHERE
+  goal_reports.goal_report_id = NEW.goal_report_id;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER goal_reports_label_trigger
+AFTER UPDATE OF data OR INSERT ON goal_reports
+FOR EACH ROW
+EXECUTE PROCEDURE goal_reports_label_trigger();
