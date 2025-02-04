@@ -132,6 +132,27 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER check_taxon_label_trigger
-AFTER UPDATE OR INSERT OF taxon_id ON check_taxa
+AFTER UPDATE OF taxon_id OR INSERT ON check_taxa
 FOR EACH ROW
 EXECUTE PROCEDURE check_taxon_label_trigger();
+
+-- check_values
+CREATE OR REPLACE FUNCTION check_values_label_trigger()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE check_values 
+    SET label = (
+      CASE 
+        WHEN units.name is null then NEW.check_value_id::text
+        ELSE units.name || ': ' || coalesce(NEW.value_integer, NEW.value_numeric, NEW.value_text)
+      END
+    )
+  FROM (SELECT name FROM units WHERE unit_id = NEW.unit_id) AS units
+  WHERE check_values.check_value_id = NEW.check_value_id;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER check_values_label_trigger
+AFTER UPDATE OR INSERT ON check_values
+FOR EACH ROW
+EXECUTE PROCEDURE check_values_label_trigger();

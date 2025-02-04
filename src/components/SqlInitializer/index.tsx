@@ -12,7 +12,6 @@ import { generateSubprojectTaxonLabel } from './sql/subprojectTaxa.ts'
 import { generateGoalReportLabel } from './sql/goalReports.ts'
 import { generateGoalReportValueLabel } from './sql/goalReportValues.ts'
 import { generateSubprojectUserLabel } from './sql/subprojectUsers.ts'
-import { generateCheckValueLabel } from './sql/checkValues.ts'
 import { generatePlaceReportValueLabel } from './sql/placeReportValues.ts'
 import { generateChartSubjectLabel } from './sql/chartSubjects.ts'
 // ISSUE: how to create v7 uuids? https://github.com/rhashimoto/wa-sqlite/discussions/169, https://github.com/craigpastro/sqlite-uuidv7/issues/3
@@ -91,7 +90,6 @@ export const SqlInitializer = () => {
   //     await generateGoalReportLabel(db)
   //     await generateGoalReportValueLabel(db)
   //     await generateSubprojectUserLabel(db)
-  //     await generateCheckValueLabel(db)
   //     await generatePlaceReportValueLabel(db)
   //     await generateChartSubjectLabel(db)
   //     await generateVectorLayerTriggers(db)
