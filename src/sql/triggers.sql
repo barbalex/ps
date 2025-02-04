@@ -59,14 +59,15 @@ AFTER UPDATE OF projects_label_by ON accounts
 FOR EACH ROW
 EXECUTE PROCEDURE accounts_label_update_trigger();
 
-CREATE OR REPLACE FUNCTION accounts_label_insert_trigger()
-RETURNS TRIGGER AS $$
-BEGIN
-  UPDATE accounts SET label = coalesce((SELECT email FROM users WHERE user_id = NEW.user_id), '(no user)') || ' (' || coalesce(NEW.type, 'no type') || ')';
-END;
-$$ LANGUAGE plpgsql;
+-- chunk-QQ5ITYQ4.js?v=617ff979:1 Uncaught (in promise) error: control reached end of trigger procedure without RETURN
+-- CREATE OR REPLACE FUNCTION accounts_label_insert_trigger()
+-- RETURNS TRIGGER AS $$
+-- BEGIN
+--   UPDATE accounts SET label = coalesce((SELECT email FROM users WHERE user_id = NEW.user_id), '(no user)') || ' (' || coalesce(NEW.type, 'no type') || ')';
+-- END;
+-- $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER accounts_label_insert_trigger
-AFTER INSERT ON accounts
-FOR EACH ROW
-EXECUTE PROCEDURE accounts_label_insert_trigger();
+-- CREATE OR REPLACE TRIGGER accounts_label_insert_trigger
+-- AFTER INSERT ON accounts
+-- FOR EACH ROW
+-- EXECUTE PROCEDURE accounts_label_insert_trigger();
