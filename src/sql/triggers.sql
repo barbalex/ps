@@ -222,3 +222,21 @@ CREATE TRIGGER projects_places_label_trigger
 AFTER UPDATE OF places_label_by ON projects
 FOR EACH ROW
 EXECUTE PROCEDURE projects_places_label_trigger();
+
+-- projects.goals_label_by
+CREATE OR REPLACE FUNCTION projects_goals_label_trigger()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE goals SET label = case
+    when NEW.goals_label_by = 'id' then goal_id::text
+    when data ->> NEW.goals_label_by is null then goal_id::text
+    else data ->> NEW.goals_label_by
+  end;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER projects_goals_label_trigger
+AFTER UPDATE OF goals_label_by ON projects
+FOR EACH ROW
+EXECUTE PROCEDURE projects_goals_label_trigger();
