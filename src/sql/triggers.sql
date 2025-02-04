@@ -256,7 +256,8 @@ WHERE projects.project_id = NEW.project_id;
 END;
 $$ LANGUAGE plpgsql;
 
+-- TODO: add insert
 CREATE TRIGGER projects_label_trigger
-AFTER UPDATE OF name, data or insert ON projects
+AFTER UPDATE OF name, data ON projects
 FOR EACH ROW
 EXECUTE PROCEDURE projects_label_trigger();
