@@ -40,7 +40,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER IF NOT EXISTS accounts_projects_label_trigger
+CREATE OR REPLACE TRIGGER accounts_projects_label_trigger
   AFTER UPDATE OF projects_label_by ON accounts
   FOR EACH ROW
   EXECUTE PROCEDURE accounts_projects_label_trigger();
