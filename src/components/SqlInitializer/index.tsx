@@ -3,7 +3,6 @@ import { usePGlite } from '@electric-sql/pglite-react'
 
 import { generateProjectLabel } from './sql/projects.ts'
 import { generateUserLabel } from './sql/users.ts'
-import { generateAccountLabel } from './sql/accounts.ts'
 import { generateWidgetForFieldLabel } from './sql/widgetForField.ts'
 import { generateTaxonLabel } from './sql/taxa.ts'
 import { generateProjectUserLabel } from './sql/projectUsers.ts'
@@ -81,24 +80,10 @@ export const SqlInitializer = () => {
     run()
   }, [db])
 
-  // this separate effect enables seeding after tables are created
-  useEffect(() => {
-    // seed data
-    const run = async () => {
-      const projectsResult = await db.query(`select * from projects`)
-      const projects = projectsResult?.rows ?? []
-      if (projects.length === 0) {
-        await seedTestData(db)
-      }
-    }
-    run()
-  }, [db])
-
   // useEffect(() => {
   //   const generate = async () => {
   //     // seems that these can't be run in migrations
   //     await generateUserLabel(db)
-  //     await generateAccountLabel(db)
   //     await generateProjectLabel(db)
   //     await generateWidgetForFieldLabel(db)
   //     await generateTaxonLabel(db)
