@@ -181,3 +181,25 @@ CREATE TRIGGER goal_reports_label_trigger
 AFTER UPDATE OF data OR INSERT ON goal_reports
 FOR EACH ROW
 EXECUTE PROCEDURE goal_reports_label_trigger();
+
+-- goal_report_values
+CREATE OR REPLACE FUNCTION goal_report_values_label_trigger()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE goal_report_values 
+    SET label = (
+      CASE 
+        WHEN units.name is null then NEW.goal_report_value_id::text
+        ELSE units.name || ': ' || coalesce(NEW.value_integer, NEW.value_numeric, NEW.value_text)
+      END
+    )
+  FROM (SELECT name FROM units WHERE unit_id = NEW.unit_id) AS units
+  WHERE goal_report_values.goal_report_value_id = NEW.goal_report_value_id;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER goal_report_values_label_trigger
+AFTER UPDATE OR INSERT ON goal_report_values 
+FOR EACH ROW
+EXECUTE PROCEDURE goal_report_values_label_trigger();
