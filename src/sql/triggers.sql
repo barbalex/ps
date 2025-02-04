@@ -59,7 +59,8 @@ AFTER UPDATE OF projects_label_by ON accounts
 FOR EACH ROW
 EXECUTE PROCEDURE accounts_label_update_trigger();
 
--- TODO: Uncaught (in promise) error: control reached end of trigger procedure without RETURN
+-- TODO: 
+-- Uncaught (in promise) error: control reached end of trigger procedure without RETURN
 -- event though these work on local db?
 -- CREATE OR REPLACE FUNCTION accounts_label_insert_trigger()
 -- RETURNS TRIGGER AS $$
@@ -90,6 +91,6 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER action_report_values_label_trigger
-AFTER UPDATE ON action_report_values
+AFTER UPDATE OR INSERT ON action_report_values
 FOR EACH ROW
 EXECUTE PROCEDURE action_report_values_label_trigger();

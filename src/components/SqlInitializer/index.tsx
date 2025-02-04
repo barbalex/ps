@@ -15,7 +15,6 @@ import { generateSubprojectUserLabel } from './sql/subprojectUsers.ts'
 import { generateCheckValueLabel } from './sql/checkValues.ts'
 import { generateCheckTaxonLabel } from './sql/checkTaxa.ts'
 import { generateActionValueLabel } from './sql/actionValues.ts'
-import { generateActionReportValueLabel } from './sql/actionReportValues.ts'
 import { generatePlaceReportValueLabel } from './sql/placeReportValues.ts'
 import { generateChartSubjectLabel } from './sql/chartSubjects.ts'
 // ISSUE: how to create v7 uuids? https://github.com/rhashimoto/wa-sqlite/discussions/169, https://github.com/craigpastro/sqlite-uuidv7/issues/3
@@ -97,7 +96,6 @@ export const SqlInitializer = () => {
   //     await generateCheckValueLabel(db)
   //     await generateCheckTaxonLabel(db)
   //     await generateActionValueLabel(db)
-  //     await generateActionReportValueLabel(db)
   //     await generatePlaceReportValueLabel(db)
   //     await generateChartSubjectLabel(db)
   //     await generateVectorLayerTriggers(db)
