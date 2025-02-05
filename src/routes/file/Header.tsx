@@ -52,33 +52,32 @@ export const Header = memo(({ row, previewRef }) => {
   const addRow = useCallback(async () => api.initFlow(), [api])
 
   const deleteRow = useCallback(async () => {
-    await db.files.delete({ where: { file_id } })
+    await db.query(`DELETE FROM files WHERE file_id = $1`, [file_id])
     navigate({ pathname: '..', search: searchParams.toString() })
-  }, [db.files, file_id, navigate, searchParams])
+  }, [db, file_id, navigate, searchParams])
 
-  const where = useMemo(() => {
-    const where = {}
+  const { hFilterField, hFilterValue } = useMemo(() => {
     if (action_id) {
-      where.action_id = action_id
+      return { hFilterField: 'action_id', hFilterValue: action_id }
     } else if (check_id) {
-      where.check_id = check_id
+      return { hFilterField: 'check_id', hFilterValue: check_id }
     } else if (place_id2) {
-      where.place_id2 = place_id2
+      return { hFilterField: 'place_id2', hFilterValue: place_id2 }
     } else if (place_id) {
-      where.place_id = place_id
+      return { hFilterField: 'place_id', hFilterValue: place_id }
     } else if (subproject_id) {
-      where.subproject_id = subproject_id
+      return { hFilterField: 'subproject_id', hFilterValue: subproject_id }
     } else if (project_id) {
-      where.project_id = project_id
+      return { hFilterField: 'project_id', hFilterValue: project_id }
     }
-    return where
   }, [action_id, check_id, place_id, place_id2, project_id, subproject_id])
 
   const toNext = useCallback(async () => {
-    const files = await db.files.findMany({
-      where,
-      orderBy: { label: 'asc' },
-    })
+    const result = await db.query(
+      `SELECT * FROM files WHERE ${hFilterField} = $1 ORDER BY label ASC`,
+      [hFilterValue],
+    )
+    const files = result?.rows ?? []
     const len = files.length
     const index = files.findIndex((p) => p.file_id === file_id)
     const next = files[(index + 1) % len]
@@ -88,13 +87,22 @@ export const Header = memo(({ row, previewRef }) => {
       }`,
       search: searchParams.toString(),
     })
-  }, [db.files, where, navigate, isPreview, searchParams, file_id])
+  }, [
+    db,
+    hFilterField,
+    hFilterValue,
+    navigate,
+    isPreview,
+    searchParams,
+    file_id,
+  ])
 
   const toPrevious = useCallback(async () => {
-    const files = await db.files.findMany({
-      where,
-      orderBy: { label: 'asc' },
-    })
+    const result = await db.query(
+      `SELECT * FROM files WHERE ${hFilterField} = $1 ORDER BY label ASC`,
+      [hFilterValue],
+    )
+    const files = result?.rows ?? []
     const len = files.length
     const index = files.findIndex((p) => p.file_id === file_id)
     const previous = files[(index + len - 1) % len]
@@ -104,7 +112,15 @@ export const Header = memo(({ row, previewRef }) => {
       }`,
       search: searchParams.toString(),
     })
-  }, [db.files, where, navigate, isPreview, searchParams, file_id])
+  }, [
+    db,
+    hFilterField,
+    hFilterValue,
+    navigate,
+    isPreview,
+    searchParams,
+    file_id,
+  ])
 
   return (
     <FormHeader

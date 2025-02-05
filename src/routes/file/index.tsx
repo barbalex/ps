@@ -1,9 +1,9 @@
 import { useCallback, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 import { useResizeDetector } from 'react-resize-detector'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
@@ -17,11 +17,12 @@ import '../../form.css'
 
 export const Component = memo(() => {
   const { file_id } = useParams()
-
   const db = usePGlite()
-  const { results: row } = useLiveQuery(
-    db.files.liveUnique({ where: { file_id } }),
-  )
+
+  const result = useLiveQuery(`SELECT * FROM files WHERE file_id = $1`, [
+    file_id,
+  ])
+  const row = result?.rows[0]
 
   const onChange = useCallback<InputProps['onChange']>(
     (e, dataIn) => {
@@ -43,12 +44,19 @@ export const Component = memo(() => {
         data.action_id = null
         data.check_id = null
       }
-      db.files.update({
-        where: { file_id },
-        data,
-      })
+      const setsString = ''
+      Object.keys(data).map(
+        (key, i) =>
+          (setsString += `${key} = $${i + 2}${
+            i === Object.keys(data).length - 1 ? '' : ', '
+          }`),
+      )
+      db.query(`UPDATE files SET ${setsString} WHERE file_id = $1`, [
+        file_id,
+        ...Object.values(data),
+      ])
     },
-    [db.files, file_id],
+    [db, file_id],
   )
 
   const { width, ref } = useResizeDetector({

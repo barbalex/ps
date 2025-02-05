@@ -46,9 +46,10 @@ export const Uploader = () => {
   // Solution: query files with the uuid and only create if it doesn't exist
   const onUploadSuccess = useCallback(
     async (event: CustomEvent) => {
-      const { results: files = [] } = await db.files.findMany({
-        where: { uuid: event.detail.uuid },
-      })
+      const result = await db.query(`SELECT * FROM files WHERE uuid = $1`, [
+        event.detail.uuid,
+      ])
+      const files = result?.rows ?? []
       if (files.length) return
 
       const fileInput = {
@@ -75,7 +76,12 @@ export const Uploader = () => {
         fileInput.project_id = project_id
       }
       const data = await createFile(fileInput)
-      await db.files.create({ data })
+      const columns = Object.keys(data).join(',')
+      const values = Object.values(data)
+      const sql = `INSERT INTO files (${columns}) VALUES (${values
+        .map((_, i) => `$${i + 1}`)
+        .join(',')})`
+      await db.query(sql, values)
       navigate({
         pathname: `${!isFileList ? '.' : ''}./${data.file_id}${
           isPreview ? '/preview' : ''
