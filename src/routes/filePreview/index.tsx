@@ -1,9 +1,8 @@
 import { memo, useRef } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import { useResizeDetector } from 'react-resize-detector'
 import DocViewer, { DocViewerRenderers } from '@cyntler/react-doc-viewer'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Header } from '../file/Header.tsx'
 import { Uploader } from '../file/Uploader.tsx'
@@ -33,10 +32,10 @@ export const Component = memo(() => {
   const { file_id } = useParams()
   const previewRef = useRef<HTMLDivElement>(null)
 
-  const db = usePGlite()
-  const { results: row } = useLiveQuery(
-    db.files.liveUnique({ where: { file_id } }),
-  )
+  const result = useLiveQuery(`SELECT * FROM files WHERE file_id = $1`, [
+    file_id,
+  ])
+  const row = result?.rows?.[0]
 
   const { width, height, ref } = useResizeDetector({
     // handleHeight: false,
