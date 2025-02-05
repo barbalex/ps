@@ -174,10 +174,11 @@ BEGIN
     WHEN NEW.data -> projects.goal_reports_label_by IS NULL THEN goal_id::text
     ELSE NEW.data ->> projects.goal_reports_label_by
   END
-FROM (SELECT goal_reports_label_by FROM projects WHERE project_id =(
-  SELECT project_id FROM subprojects WHERE subproject_id =(
-    SELECT subproject_id FROM goals WHERE goal_id = NEW.goal_id))) AS projects
-WHERE goal_reports.goal_report_id = NEW.goal_report_id;
+  FROM (SELECT goal_reports_label_by FROM projects WHERE project_id =(
+    SELECT project_id FROM subprojects WHERE subproject_id =(
+      SELECT subproject_id FROM goals WHERE goal_id = NEW.goal_id))) AS projects
+  WHERE goal_reports.goal_report_id = NEW.goal_report_id;
+  RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -200,6 +201,7 @@ BEGIN
     )
   FROM (SELECT name FROM units WHERE unit_id = NEW.unit_id) AS units
   WHERE goal_report_values.goal_report_value_id = NEW.goal_report_value_id;
+  RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -219,6 +221,7 @@ BEGIN
     when data -> NEW.places_label_by is null then place_id::text
     else data ->> NEW.places_label_by
   end;
+  RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -237,6 +240,7 @@ BEGIN
     when data -> NEW.goals_label_by is null then goal_id::text
     else data ->> NEW.goals_label_by
   end;
+  RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -258,15 +262,12 @@ BEGIN
   END
   FROM (SELECT projects_label_by FROM accounts WHERE account_id = NEW.account_id) AS accounts
   WHERE projects.project_id = NEW.project_id;
+  RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER projects_label_trigger
-AFTER 
-  -- causes when seeding: error: control reached end of trigger procedure without RETURN
-  -- even though works on local db?
-  -- INSERT OR 
-  UPDATE OF name, data ON projects
+AFTER INSERT OR UPDATE OF name, data ON projects
 FOR EACH ROW
 EXECUTE PROCEDURE projects_label_trigger();
 
@@ -283,6 +284,7 @@ BEGIN
     )
   FROM (SELECT name FROM units WHERE unit_id = NEW.unit_id) AS units
   WHERE place_report_values.place_report_value_id = NEW.place_report_value_id;
+  RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
