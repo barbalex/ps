@@ -310,18 +310,14 @@ BEGIN
     SELECT places_label_by from projects 
     where project_id = (select project_id from subprojects where subproject_id = NEW.subproject_id)
   ) as projects
-    WHERE places.place_id = NEW.place_id;
+  WHERE places.place_id = NEW.place_id;
+  RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
 
 CREATE TRIGGER places_label_trigger
-AFTER
--- TODO:
-  -- causes when seeding: error: control reached end of trigger procedure without RETURN
-  -- even though works on local db?
-  -- INSERT OR 
-  UPDATE of level, data ON places
+AFTER INSERT OR UPDATE of level, data ON places
 FOR EACH ROW
 EXECUTE PROCEDURE places_label_trigger();
 
