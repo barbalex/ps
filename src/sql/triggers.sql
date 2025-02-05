@@ -328,13 +328,11 @@ BEGIN
       ELSE (SELECT email FROM users WHERE user_id = NEW.user_id) || ' (' || NEW.role || ')'
     END
   );
-  -- SET label = (SELECT email FROM users WHERE user_id = NEW.user_id) || ' (' || NEW.role || ')';
 END;
 $$ LANGUAGE plpgsql;
 
 
 CREATE TRIGGER place_users_label_trigger
--- TODO: add insert
-AFTER UPDATE OF user_id, role ON place_users
+AFTER INSERT OR UPDATE OF user_id, role ON place_users
 FOR EACH ROW
 EXECUTE PROCEDURE place_users_label_trigger();
