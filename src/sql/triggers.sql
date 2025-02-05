@@ -364,3 +364,27 @@ CREATE TRIGGER project_users_label_trigger
 AFTER INSERT OR UPDATE OF user_id, role ON project_users
 FOR EACH ROW
 EXECUTE PROCEDURE project_users_label_trigger();
+
+-- subproject_taxa.label
+CREATE OR REPLACE FUNCTION subproject_taxon_label_trigger()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE subproject_taxa 
+    SET label = (
+      CASE 
+        WHEN (SELECT name FROM taxa WHERE taxon_id = NEW.taxon_id) is null THEN NEW.subproject_taxon_id::text
+        ELSE 
+          (SELECT name FROM taxonomies where taxonomy_id = (select taxonomy_id from taxa where taxon_id = NEW.taxon_id)) ||
+          ': ' ||
+          (SELECT name FROM taxa WHERE taxon_id = NEW.taxon_id)
+        
+      END
+    );
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER subproject_taxon_label_trigger
+AFTER INSERT OR UPDATE OF taxon_id ON subproject_taxa
+FOR EACH ROW
+EXECUTE PROCEDURE subproject_taxon_label_trigger();
