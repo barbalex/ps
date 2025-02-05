@@ -4,7 +4,6 @@ import { usePGlite } from '@electric-sql/pglite-react'
 import { generateUserLabel } from './sql/users.ts'
 import { generateWidgetForFieldLabel } from './sql/widgetForField.ts'
 import { generateTaxonLabel } from './sql/taxa.ts'
-import { generateSubprojectUserLabel } from './sql/subprojectUsers.ts'
 import { generateChartSubjectLabel } from './sql/chartSubjects.ts'
 // ISSUE: how to create v7 uuids? https://github.com/rhashimoto/wa-sqlite/discussions/169, https://github.com/craigpastro/sqlite-uuidv7/issues/3
 // import { generateVectorLayerTriggers } from './labelGenerators/vectorLayers'
@@ -74,7 +73,6 @@ export const SqlInitializer = () => {
   //     await generateUserLabel(db)
   //     await generateWidgetForFieldLabel(db)
   //     await generateTaxonLabel(db)
-  //     await generateSubprojectUserLabel(db)
   //     await generateChartSubjectLabel(db)
   //     await generateVectorLayerTriggers(db)
   //     await generateWmsLayerTriggers(db)
