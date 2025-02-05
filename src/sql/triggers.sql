@@ -333,6 +333,7 @@ BEGIN
       ELSE (SELECT email FROM users WHERE user_id = NEW.user_id) || ' (' || NEW.role || ')'
     END
   );
+  RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
