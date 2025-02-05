@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import { usePGlite } from '@electric-sql/pglite-react'
 
-import { generateUserLabel } from './sql/users.ts'
 import { generateWidgetForFieldLabel } from './sql/widgetForField.ts'
 import { generateChartSubjectLabel } from './sql/chartSubjects.ts'
 // ISSUE: how to create v7 uuids? https://github.com/rhashimoto/wa-sqlite/discussions/169, https://github.com/craigpastro/sqlite-uuidv7/issues/3
@@ -69,7 +68,6 @@ export const SqlInitializer = () => {
   // useEffect(() => {
   //   const generate = async () => {
   //     // seems that these can't be run in migrations
-  //     await generateUserLabel(db)
   //     await generateWidgetForFieldLabel(db)
   //     await generateChartSubjectLabel(db)
   //     await generateVectorLayerTriggers(db)

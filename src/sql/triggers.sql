@@ -451,8 +451,29 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-
 CREATE TRIGGER users_project_users_label_trigger
 AFTER INSERT OR UPDATE OF email ON users
 FOR EACH ROW
 EXECUTE PROCEDURE users_project_users_label_trigger();
+
+-- if users.email is changed, subproject_users.label needs to be updated
+CREATE OR REPLACE FUNCTION users_subproject_users_label_trigger()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE subproject_users 
+  set label = (
+    CASE
+      WHEN NEW.email is null THEN subproject_user_id::text
+      WHEN subproject_users.role is null THEN NEW.email
+      ELSE NEW.email || ' (' || subproject_users.role || ')'
+    END
+  )
+  WHERE user_id = NEW.user_id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER users_subproject_users_label_trigger
+AFTER INSERT OR UPDATE OF email ON users
+FOR EACH ROW
+EXECUTE PROCEDURE users_subproject_users_label_trigger();
