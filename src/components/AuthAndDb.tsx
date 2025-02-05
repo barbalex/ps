@@ -2,6 +2,7 @@ import { memo, Suspense } from 'react'
 import { CorbadoProvider } from '@corbado/react'
 
 import { SqlInitializer } from './SqlInitializer/index.tsx'
+// TODO: sync with db IF user has an account
 // import { Syncer } from './Syncer.tsx'
 import { TreeOpenNodesSetter } from './TreeOpenNodesSetter.tsx'
 
