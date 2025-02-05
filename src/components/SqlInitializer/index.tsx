@@ -9,7 +9,6 @@ import { generatePlaceLabel } from './sql/places.ts'
 import { generatePlaceUserLabel } from './sql/placeUsers.ts'
 import { generateSubprojectTaxonLabel } from './sql/subprojectTaxa.ts'
 import { generateSubprojectUserLabel } from './sql/subprojectUsers.ts'
-import { generatePlaceReportValueLabel } from './sql/placeReportValues.ts'
 import { generateChartSubjectLabel } from './sql/chartSubjects.ts'
 // ISSUE: how to create v7 uuids? https://github.com/rhashimoto/wa-sqlite/discussions/169, https://github.com/craigpastro/sqlite-uuidv7/issues/3
 // import { generateVectorLayerTriggers } from './labelGenerators/vectorLayers'
@@ -84,7 +83,6 @@ export const SqlInitializer = () => {
   //     await generatePlaceUserLabel(db)
   //     await generateSubprojectTaxonLabel(db)
   //     await generateSubprojectUserLabel(db)
-  //     await generatePlaceReportValueLabel(db)
   //     await generateChartSubjectLabel(db)
   //     await generateVectorLayerTriggers(db)
   //     await generateWmsLayerTriggers(db)

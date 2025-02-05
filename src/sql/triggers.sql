@@ -257,7 +257,32 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER projects_label_trigger
 AFTER 
   -- causes when seeding: error: control reached end of trigger procedure without RETURN
+  -- even though works on local db?
   -- INSERT OR 
   UPDATE OF name, data ON projects
 FOR EACH ROW
 EXECUTE PROCEDURE projects_label_trigger();
+
+-- place_report_values
+CREATE OR REPLACE FUNCTION place_report_values_label_trigger()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE place_report_values 
+    SET label = (
+      CASE 
+        WHEN units.name is null then NEW.place_report_value_id::text
+        ELSE units.name || ': ' || coalesce(NEW.value_integer, NEW.value_numeric, NEW.value_text)
+      END
+    )
+  FROM (SELECT name FROM units WHERE unit_id = NEW.unit_id) AS units
+  WHERE place_report_values.place_report_value_id = NEW.place_report_value_id;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER place_report_values_label_trigger
+AFTER UPDATE ON place_report_values
+FOR EACH ROW
+EXECUTE PROCEDURE place_report_values_label_trigger();
+
+
