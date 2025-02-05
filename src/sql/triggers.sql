@@ -477,3 +477,20 @@ CREATE TRIGGER users_subproject_users_label_trigger
 AFTER INSERT OR UPDATE OF email ON users
 FOR EACH ROW
 EXECUTE PROCEDURE users_subproject_users_label_trigger();
+
+-- on insert vector_layers if type is in:
+-- places1, places2, actions1, actions2, checks1, checks2, occurrences_assigned1, occurrences_assigned2, occurrences_to_assess, occurrences_not_to_assign
+-- create a corresponding vector_layer_display
+CREATE OR REPLACE FUNCTION vector_layers_insert_trigger()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO vector_layer_displays (vector_layer_id) VALUES (NEW.vector_layer_id);
+  INSERT INTO layer_presentations (vector_layer_id) VALUES (NEW.vector_layer_id);
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER vector_layers_insert_trigger
+AFTER INSERT ON vector_layers
+FOR EACH ROW
+EXECUTE PROCEDURE vector_layers_insert_trigger();
