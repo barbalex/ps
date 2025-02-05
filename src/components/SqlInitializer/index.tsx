@@ -5,7 +5,6 @@ import { generateUserLabel } from './sql/users.ts'
 import { generateWidgetForFieldLabel } from './sql/widgetForField.ts'
 import { generateTaxonLabel } from './sql/taxa.ts'
 import { generateProjectUserLabel } from './sql/projectUsers.ts'
-import { generatePlaceLabel } from './sql/places.ts'
 import { generatePlaceUserLabel } from './sql/placeUsers.ts'
 import { generateSubprojectTaxonLabel } from './sql/subprojectTaxa.ts'
 import { generateSubprojectUserLabel } from './sql/subprojectUsers.ts'
@@ -79,7 +78,6 @@ export const SqlInitializer = () => {
   //     await generateWidgetForFieldLabel(db)
   //     await generateTaxonLabel(db)
   //     await generateProjectUserLabel(db)
-  //     await generatePlaceLabel(db)
   //     await generatePlaceUserLabel(db)
   //     await generateSubprojectTaxonLabel(db)
   //     await generateSubprojectUserLabel(db)
