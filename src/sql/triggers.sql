@@ -425,6 +425,7 @@ BEGIN
   )
   FROM (SELECT name, type from taxonomies where taxonomy_id = NEW.taxonomy_id) as taxonomies
   WHERE taxa.taxon_id = NEW.taxon_id;
+  RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -432,3 +433,26 @@ CREATE TRIGGER taxa_label_trigger
 AFTER INSERT OR UPDATE of taxonomy_id, name ON taxa
 FOR EACH ROW
 EXECUTE PROCEDURE taxa_label_trigger();
+
+-- if users.email is changed, update project_users.label
+CREATE OR REPLACE FUNCTION users_project_users_label_trigger()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE project_users 
+  set label = (
+    CASE
+      WHEN NEW.email is null THEN project_user_id::text
+      WHEN project_users.role is null THEN NEW.email
+      ELSE NEW.email || ' (' || project_users.role || ')'
+    END
+  )
+  WHERE user_id = NEW.user_id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER users_project_users_label_trigger
+AFTER INSERT OR UPDATE OF email ON users
+FOR EACH ROW
+EXECUTE PROCEDURE users_project_users_label_trigger();
