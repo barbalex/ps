@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { generateChartSubjectLabel } from './sql/chartSubjects.ts'
-// import { generateWmsLayerTriggers } from './labelGenerators/wmsLayers'
 import { seedTestData } from './seedTestData.ts'
 
 // how to get work:
@@ -66,7 +65,6 @@ export const SqlInitializer = () => {
   //   const generate = async () => {
   //     // seems that these can't be run in migrations
   //     await generateChartSubjectLabel(db)
-  //     await generateWmsLayerTriggers(db)
   //   }
   //   generate()
   // }, [db])

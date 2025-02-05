@@ -525,8 +525,25 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-
 CREATE TRIGGER widgets_for_fields_label_trigger
 AFTER INSERT OR UPDATE of field_type_id, widget_type_id ON widgets_for_fields
 FOR EACH ROW
 EXECUTE PROCEDURE widgets_for_fields_label_trigger();
+
+
+-- on insert wms_layers if type is in:
+-- places1, places2, actions1, actions2, checks1, checks2, occurrences_assigned1, occurrences_assigned2, occurrences_to_assess, occurrences_not_to_assign
+-- create a corresponding wms_layer_display
+CREATE OR REPLACE FUNCTION wms_layers_insert_trigger()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO layer_presentations (wms_layer_id) VALUES (NEW.wms_layer_id);
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER wms_layers_insert_trigger
+AFTER INSERT ON wms_layers
+FOR EACH ROW
+EXECUTE PROCEDURE wms_layers_insert_trigger();
