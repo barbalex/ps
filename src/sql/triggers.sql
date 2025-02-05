@@ -19,6 +19,7 @@ BEGIN
         GROUP BY o.occurrence_id)
     WHERE
       occurrences.occurrence_import_id = NEW.occurrence_import_id;
+  RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -36,6 +37,7 @@ BEGIN
   WHEN NEW.projects_label_by = 'name' THEN name
   ELSE coalesce(data ->> NEW.projects_label_by, project_id::text)
   END;
+  RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -50,6 +52,7 @@ create or replace function accounts_label_update_trigger()
 RETURNS TRIGGER AS $$
 BEGIN
   UPDATE accounts SET label = coalesce((SELECT email FROM users WHERE user_id = NEW.user_id) || ' (' || NEW.type || ')', (SELECT email FROM users WHERE user_id = NEW.user_id), NEW.account_id::text);
+  RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -86,6 +89,7 @@ BEGIN
     )
   FROM (SELECT name FROM units WHERE unit_id = NEW.unit_id) AS units
   WHERE action_report_values.action_report_value_id = NEW.action_report_value_id;
+  RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -107,6 +111,7 @@ BEGIN
     )
   FROM (SELECT name FROM units WHERE unit_id = NEW.unit_id) AS units
   WHERE action_values.action_value_id = NEW.action_value_id;
+  RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
