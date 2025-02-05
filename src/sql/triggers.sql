@@ -494,3 +494,39 @@ CREATE TRIGGER vector_layers_insert_trigger
 AFTER INSERT ON vector_layers
 FOR EACH ROW
 EXECUTE PROCEDURE vector_layers_insert_trigger();
+
+-- widgets_for_fields
+-- TODO: enable using an array of column names
+CREATE OR REPLACE FUNCTION widgets_for_fields_label_trigger()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE widgets_for_fields 
+  SET label = (
+    CASE 
+      WHEN NEW.field_type_id is null THEN widget_for_field_id::text
+      WHEN NEW.widget_type_id is null THEN (
+        CASE 
+          WHEN (SELECT field_types.name FROM field_types WHERE field_types.field_type_id = NEW.field_type_id) is null THEN widget_for_field_id::text
+          ELSE (SELECT field_types.name FROM field_types WHERE field_types.field_type_id = NEW.field_type_id) || ': (no widget)'
+        END
+      )
+      WHEN (SELECT field_types.name FROM field_types WHERE field_types.field_type_id = NEW.field_type_id) is null then (
+        CASE 
+          WHEN (SELECT widget_types.name FROM widget_types WHERE widget_types.widget_type_id = NEW.widget_type_id) is null THEN widget_for_field_id::text
+          ELSE (SELECT widget_types.name FROM widget_types WHERE widget_types.widget_type_id = NEW.widget_type_id) || ': (no widget)'
+        END
+      )
+      WHEN (SELECT widget_types.name FROM widget_types WHERE widget_types.widget_type_id = NEW.widget_type_id) is null then (SELECT field_types.name FROM field_types WHERE field_types.field_type_id = NEW.field_type_id) || ': (no widget)'
+      ELSE (SELECT field_types.name FROM field_types WHERE field_types.field_type_id = NEW.field_type_id) || ': ' || (SELECT widget_types.name FROM widget_types WHERE widget_types.widget_type_id = NEW.widget_type_id)
+    END
+  )
+  WHERE widgets_for_fields.widget_for_field_id = NEW.widget_for_field_id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER widgets_for_fields_label_trigger
+AFTER INSERT OR UPDATE of field_type_id, widget_type_id ON widgets_for_fields
+FOR EACH ROW
+EXECUTE PROCEDURE widgets_for_fields_label_trigger();
