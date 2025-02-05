@@ -132,6 +132,7 @@ BEGIN
         ELSE (SELECT name FROM taxonomies where taxonomy_id = (select taxonomy_id from taxa where taxon_id = NEW.taxon_id)) || ': ' || (SELECT name FROM taxa WHERE taxon_id = NEW.taxon_id)
       END
     );
+  RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -153,6 +154,7 @@ BEGIN
     )
   FROM (SELECT name FROM units WHERE unit_id = NEW.unit_id) AS units
   WHERE check_values.check_value_id = NEW.check_value_id;
+  RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
