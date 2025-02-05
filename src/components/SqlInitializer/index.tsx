@@ -1,19 +1,11 @@
 import { useEffect } from 'react'
 import { usePGlite } from '@electric-sql/pglite-react'
 
-import { generateChartSubjectLabel } from './sql/chartSubjects.ts'
 import { seedTestData } from './seedTestData.ts'
-
-// how to get work:
-// 1. Add label in labelGenerator's .tsx-filex, inside useEffect that only runs once if label column is not found
-// 2. add column 'label_replace_by_generated_column text DEFAULT NULL' to migration
-// 3. backend:down, backend:start, db:migrate, client:generate
-// 4. replace 'label_replace_by_generated_column' with 'label' in generated code (done by renameLabels.js script)
 
 export const SqlInitializer = () => {
   const db = usePGlite()
 
-  // create tables
   useEffect(() => {
     const run = async () => {
       const resultProjectsTableExists = await db.query(
@@ -29,6 +21,8 @@ export const SqlInitializer = () => {
       const projectsTableExists = resultProjectsTableExists?.rows[0]?.exists
 
       if (projectsTableExists) return
+
+      // insert needed functions, create tables, add triggers
 
       const immutableDateSql = (await import(`../../sql/immutableDate.sql?raw`))
         .default
@@ -60,14 +54,6 @@ export const SqlInitializer = () => {
 
     run()
   }, [db])
-
-  // useEffect(() => {
-  //   const generate = async () => {
-  //     // seems that these can't be run in migrations
-  //     await generateChartSubjectLabel(db)
-  //   }
-  //   generate()
-  // }, [db])
 
   return null
 }

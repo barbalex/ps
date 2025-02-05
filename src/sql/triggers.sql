@@ -542,8 +542,32 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-
 CREATE TRIGGER wms_layers_insert_trigger
 AFTER INSERT ON wms_layers
 FOR EACH ROW
 EXECUTE PROCEDURE wms_layers_insert_trigger();
+
+-- chart_subjects.label
+CREATE OR REPLACE FUNCTION chart_subjects_label_trigger()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE chart_subjects SET label = (
+    case 
+      when value_unit is null then coalesce(table_name, '(no table name)') || ', ' || coalesce(value_source, '(no source)') || ', ' || coalesce(value_field, '(no field)') || ', (no unit)'
+      when units.name is null then coalesce(table_name, '(no table name)') || ', ' || coalesce(value_source, '(no source)') || ', ' || coalesce(value_field, '(no field)') || ', (no unit)'
+      when value_field is null then coalesce(table_name, '(no table name)') || ', ' || coalesce(value_source, '(no source)') || ', (no field)' || ', ' || units.name
+      when value_source is null then coalesce(table_name, '(no table name)') || ', (no source)' || ', ' || value_field || ', ' || units.name
+      when table_name is null then '(no table name)' || ', ' || value_source || ', ' || value_field || ', ' || units.name
+      else table_name || ', ' || value_source || ', ' || value_field || ', ' || units.name
+    end
+  )
+  FROM (SELECT name FROM units WHERE unit_id = NEW.value_unit) AS units
+  WHERE chart_subjects.chart_subject_id = NEW.chart_subject_id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER chart_subjects_label_trigger
+AFTER INSERT OR UPDATE OF value_unit, value_field, value_source, table_name ON chart_subjects
+FOR EACH ROW
+EXECUTE PROCEDURE chart_subjects_label_trigger();
