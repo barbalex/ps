@@ -316,3 +316,25 @@ AFTER
 FOR EACH ROW
 EXECUTE PROCEDURE places_label_trigger();
 
+-- place_users
+CREATE OR REPLACE FUNCTION place_users_label_trigger()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE place_users 
+  SET label = (
+    CASE
+      WHEN NEW.role is null THEN NEW.place_user_id::text
+      WHEN (SELECT email FROM users WHERE user_id = NEW.user_id) is null THEN NEW.place_user_id::text
+      ELSE (SELECT email FROM users WHERE user_id = NEW.user_id) || ' (' || NEW.role || ')'
+    END
+  );
+  -- SET label = (SELECT email FROM users WHERE user_id = NEW.user_id) || ' (' || NEW.role || ')';
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER place_users_label_trigger
+-- TODO: add insert
+AFTER UPDATE OF user_id, role ON place_users
+FOR EACH ROW
+EXECUTE PROCEDURE place_users_label_trigger();
