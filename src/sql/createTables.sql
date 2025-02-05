@@ -1868,7 +1868,7 @@ CREATE TABLE IF NOT EXISTS chart_subjects(
   value_field text DEFAULT NULL, -- field to be used for value_source
   value_unit uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE CASCADE ON UPDATE CASCADE, -- needed for action_values, check_values
   name text DEFAULT NULL,
-  label text DEFAULT NULL, -- table, value_source, ?value_field, ?unit
+  label text DEFAULT NULL,
   type text DEFAULT NULL CHECK (type IN ('linear', 'monotone')),
   stroke text DEFAULT NULL,
   fill text DEFAULT NULL,

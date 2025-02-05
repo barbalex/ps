@@ -7,6 +7,7 @@ export const generateChartSubjectLabel = async (db) => {
     let res
     try {
       res = await db.unsafeExec({
+        // TODO: use trigger to fetch units.name for value_unit
         sql: `ALTER TABLE chart_subjects ADD COLUMN label text GENERATED ALWAYS AS (
                 iif(
                   name is not null, 
