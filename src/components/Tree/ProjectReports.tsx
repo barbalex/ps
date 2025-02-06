@@ -82,7 +82,6 @@ export const ProjectReportsNode = memo(({ project_id, level = 3 }: Props) => {
     isOpen,
     navigate,
     ownArray,
-    parentArray,
     parentUrl,
     searchParams,
     urlPath.length,

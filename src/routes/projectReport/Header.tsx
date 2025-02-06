@@ -14,7 +14,14 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const addRow = useCallback(async () => {
     const data = await createProjectReport({ db, project_id })
-    await db.project_reports.create({ data })
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+      .map((_, i) => `$${i + 1}`)
+      .join(',')
+    await db.query(
+      `INSERT INTO project_reports (${columns}) VALUES (${values})`,
+      Object.values(data),
+    )
     navigate({
       pathname: `../${data.project_report_id}`,
       search: searchParams.toString(),
@@ -23,15 +30,18 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [autoFocusRef, db, navigate, project_id, searchParams])
 
   const deleteRow = useCallback(async () => {
-    await db.project_reports.delete({ where: { project_report_id } })
+    await db.query(`DELETE FROM project_reports WHERE project_report_id = $1`, [
+      project_report_id,
+    ])
     navigate({ pathname: '..', search: searchParams.toString() })
-  }, [db.project_reports, navigate, project_report_id, searchParams])
+  }, [db, navigate, project_report_id, searchParams])
 
   const toNext = useCallback(async () => {
-    const projectReports = await db.project_reports.findMany({
-      where: { project_id },
-      orderBy: { label: 'asc' },
-    })
+    const result = await db.query(
+      `SELECT * FROM project_reports WHERE project_id = $1 ORDER BY label ASC`,
+      [project_id],
+    )
+    const projectReports = result.rows
     const len = projectReports.length
     const index = projectReports.findIndex(
       (p) => p.project_report_id === project_report_id,
@@ -41,19 +51,14 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${next.project_report_id}`,
       search: searchParams.toString(),
     })
-  }, [
-    db.project_reports,
-    navigate,
-    project_id,
-    project_report_id,
-    searchParams,
-  ])
+  }, [db, navigate, project_id, project_report_id, searchParams])
 
   const toPrevious = useCallback(async () => {
-    const projectReports = await db.project_reports.findMany({
-      where: { project_id },
-      orderBy: { label: 'asc' },
-    })
+    const result = await db.query(
+      `SELECT * FROM project_reports WHERE project_id = $1 ORDER BY label ASC`,
+      [project_id],
+    )
+    const projectReports = result.rows
     const len = projectReports.length
     const index = projectReports.findIndex(
       (p) => p.project_report_id === project_report_id,
@@ -63,13 +68,7 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${previous.project_report_id}`,
       search: searchParams.toString(),
     })
-  }, [
-    db.project_reports,
-    navigate,
-    project_id,
-    project_report_id,
-    searchParams,
-  ])
+  }, [db, navigate, project_id, project_report_id, searchParams])
 
   return (
     <FormHeader
