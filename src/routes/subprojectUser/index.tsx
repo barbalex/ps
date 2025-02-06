@@ -1,8 +1,8 @@
 import { useCallback, useRef, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
@@ -21,19 +21,22 @@ export const Component = memo(() => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
-  const { results: row } = useLiveQuery(
-    db.subproject_users.liveUnique({ where: { subproject_user_id } }),
+
+  const result = useLiveQuery(
+    `SELECT * FROM subproject_users WHERE subproject_user_id = $1`,
+    [subproject_user_id],
   )
+  const row = result?.rows?.[0]
 
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
-      db.subproject_users.update({
-        where: { subproject_user_id },
-        data: { [name]: value },
-      })
+      db.query(
+        `UPDATE subproject_users SET ${name} = $1 WHERE subproject_user_id = $2`,
+        [value, subproject_user_id],
+      )
     },
-    [db.subproject_users, subproject_user_id],
+    [db, subproject_user_id],
   )
 
   if (!row) return <Loading />
