@@ -17,23 +17,23 @@ export const Component = memo(() => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const where = useMemo(() => {
-    let where = undefined
+  const { hKey, hValue } = useMemo(() => {
     if (place_id2) {
-      where = `place_id2 = ${place_id2}`
+      return { hKey: 'place_id2', hValue: place_id2 }
     } else if (place_id) {
-      where = `place_id = ${place_id}`
+      return { hKey: 'place_id', hValue: place_id }
     } else if (subproject_id) {
-      where = `subproject_id = ${subproject_id}`
+      return { hKey: 'subproject_id', hValue: subproject_id }
     } else if (project_id) {
-      where = `project_id = ${project_id}`
+      return { hKey: 'project_id', hValue: project_id }
     }
     return where
   }, [place_id, place_id2, project_id, subproject_id])
 
   const db = usePGlite()
   const result = useLiveQuery(
-    `SELECT * FROM charts${where ? ` WHERE ${where}` : ''} ORDER BY label ASC`,
+    `SELECT * FROM charts WHERE ${hKey} = $1 ORDER BY label ASC`,
+    [hValue],
   )
   const charts = result?.rows ?? []
 

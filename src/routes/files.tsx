@@ -21,26 +21,25 @@ export const Component = memo(() => {
     check_id,
   } = useParams()
 
-  const where = useMemo(() => {
-    let where = ''
+  const { hKey, hValue } = useMemo(() => {
     if (action_id) {
-      where = `action_id = ${action_id}`
+      return { hKey: 'action_id', hValue: action_id }
     } else if (check_id) {
-      where = `check_id = ${check_id}`
+      return { hKey: 'check_id', hValue: check_id }
     } else if (place_id2) {
-      where = `place_id2 = ${place_id2}`
+      return { hKey: 'place_id2', hValue: place_id2 }
     } else if (place_id) {
-      where = `place_id = ${place_id}`
+      return { hKey: 'place_id', hValue: place_id }
     } else if (subproject_id) {
-      where = `subproject_id = ${subproject_id}`
+      return { hKey: 'subproject_id', hValue: subproject_id }
     } else if (project_id) {
-      where = `project_id = ${project_id}`
+      return { hKey: 'project_id', hValue: project_id }
     }
-    return where
   }, [action_id, check_id, place_id, place_id2, project_id, subproject_id])
 
   const result = useLiveQuery(
-    `SELECT * FROM files${where ? ` WHERE ${where}` : ''}`,
+    `SELECT * FROM files WHERE ${hKey} = $1 ORDER BY label ASC`,
+    [hValue],
   )
   const files = result?.rows ?? []
 
