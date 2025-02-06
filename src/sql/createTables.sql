@@ -2,7 +2,7 @@
 -- users
 --
 CREATE TABLE IF NOT EXISTS users(
-  user_id uuid PRIMARY KEY DEFAULT NULL,
+  user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   email text UNIQUE DEFAULT NULL,
   label text GENERATED ALWAYS AS (coalesce(email, user_id::text)) STORED
 );
@@ -1193,7 +1193,7 @@ COMMENT ON COLUMN persons.data IS 'Room for person specific data, defined in "fi
 -- field_types
 --
 CREATE TABLE IF NOT EXISTS field_types(
-  field_type_id uuid PRIMARY KEY DEFAULT NULL,
+  field_type_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   name text DEFAULT NULL,
   -- no account_id as field_types are predefined for all projects
   sort smallint DEFAULT NULL,
@@ -1211,7 +1211,7 @@ CREATE INDEX IF NOT EXISTS field_types_label_idx ON field_types USING btree(labe
 -- widget_types
 --
 CREATE TABLE IF NOT EXISTS widget_types(
-  widget_type_id uuid PRIMARY KEY DEFAULT NULL,
+  widget_type_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   name text DEFAULT NULL,
   -- no account_id as field_types are predefined for all projects
   needs_list boolean DEFAULT FALSE,
@@ -1323,7 +1323,7 @@ CREATE TYPE occurrence_imports_geometry_method_enum AS enum(
 );
 
 CREATE TABLE IF NOT EXISTS occurrence_imports(
-  occurrence_import_id uuid PRIMARY KEY DEFAULT NULL,
+  occurrence_import_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   created_time timestamptz DEFAULT now(),
@@ -1371,7 +1371,7 @@ COMMENT ON COLUMN occurrence_imports.gbif_filters IS 'area, groups, speciesKeys.
 DROP TABLE IF EXISTS occurrences CASCADE;
 
 CREATE TABLE IF NOT EXISTS occurrences(
-  occurrence_id uuid PRIMARY KEY DEFAULT NULL,
+  occurrence_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   occurrence_import_id uuid DEFAULT NULL REFERENCES occurrence_imports(occurrence_import_id) ON DELETE CASCADE ON UPDATE CASCADE,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -1414,7 +1414,7 @@ COMMENT ON COLUMN occurrences.label IS 'label of occurrence, used to show it in 
 --
 -- DROP TABLE IF EXISTS wms_services CASCADE;
 CREATE TABLE IF NOT EXISTS wms_services(
-  wms_service_id uuid PRIMARY KEY DEFAULT NULL,
+  wms_service_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   url text DEFAULT NULL,
@@ -1437,7 +1437,7 @@ CREATE INDEX IF NOT EXISTS wms_services_url_idx ON wms_services USING btree(url)
 --
 -- DROP TABLE IF EXISTS wms_service_layers CASCADE;
 CREATE TABLE IF NOT EXISTS wms_service_layers(
-  wms_service_layer_id uuid PRIMARY KEY DEFAULT NULL,
+  wms_service_layer_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   wms_service_id uuid DEFAULT NULL REFERENCES wms_services(wms_service_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
@@ -1457,7 +1457,7 @@ CREATE INDEX IF NOT EXISTS wms_service_layers_wms_service_id_idx ON wms_service_
 -- wmts_url_template text DEFAULT NULL,
 -- wmts_subdomains jsonb DEFAULT NULL, -- array of text
 CREATE TABLE IF NOT EXISTS wms_layers(
-  wms_layer_id uuid PRIMARY KEY DEFAULT NULL,
+  wms_layer_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   wms_service_id uuid DEFAULT NULL REFERENCES wms_services(wms_service_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1486,7 +1486,7 @@ COMMENT ON COLUMN wms_layers.local_data_bounds IS 'Array of bounds and their siz
 --
 -- DROP TABLE IF EXISTS wfs_services CASCADE;
 CREATE TABLE IF NOT EXISTS wfs_services(
-  wfs_service_id uuid PRIMARY KEY DEFAULT NULL,
+  wfs_service_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   url text DEFAULT NULL,
@@ -1511,7 +1511,7 @@ COMMENT ON COLUMN wfs_services.default_crs IS 'It seems that this is the crs bbo
 --
 -- DROP TABLE IF EXISTS wfs_service_layers CASCADE;
 CREATE TABLE IF NOT EXISTS wfs_service_layers(
-  wfs_service_layer_id uuid PRIMARY KEY DEFAULT NULL,
+  wfs_service_layer_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   wfs_service_id uuid DEFAULT NULL REFERENCES wfs_services(wfs_service_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
@@ -1605,7 +1605,7 @@ COMMENT ON COLUMN vector_layers.polygon_count IS 'Number of polygon features. Us
 --
 -- seperate from vector_layers because vector_layers : vector_layer_geoms = 1 : n
 CREATE TABLE IF NOT EXISTS vector_layer_geoms(
-  vector_layer_geom_id uuid PRIMARY KEY DEFAULT NULL,
+  vector_layer_geom_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
   -- geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
@@ -1669,7 +1669,7 @@ CREATE TYPE fill_rule_enum AS enum(
 -- DROP TABLE IF EXISTS vector_layer_displays CASCADE;
 -- manage all map related properties here? For imported/wfs and also own tables?
 CREATE TABLE IF NOT EXISTS vector_layer_displays(
-  vector_layer_display_id uuid PRIMARY KEY DEFAULT NULL,
+  vector_layer_display_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
   display_property_value text DEFAULT NULL,
@@ -1735,7 +1735,7 @@ COMMENT ON COLUMN vector_layer_displays.fill_rule IS 'A string that defines how 
 --
 -- need a table to manage layer presentation for all layers (wms and vector)
 CREATE TABLE IF NOT EXISTS layer_presentations(
-  layer_presentation_id uuid PRIMARY KEY DEFAULT NULL,
+  layer_presentation_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   wms_layer_id uuid DEFAULT NULL REFERENCES wms_layers(wms_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1778,7 +1778,7 @@ CREATE TYPE notification_intent_enum AS enum(
 
 -- DROP TABLE IF EXISTS notifications;
 CREATE TABLE IF NOT EXISTS notifications(
-  notification_id uuid PRIMARY KEY DEFAULT NULL,
+  notification_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   -- user_id not needed as this table is not synced
   -- user_id uuid REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE DEFAULT NULL,
   title text DEFAULT NULL,
@@ -1917,7 +1917,7 @@ COMMENT ON COLUMN chart_subjects.fill IS 'Fill color of the chart';
 -- crs
 --
 CREATE TABLE IF NOT EXISTS crs(
-  crs_id uuid PRIMARY KEY DEFAULT NULL,
+  crs_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   -- project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   code text DEFAULT NULL,
@@ -1942,7 +1942,7 @@ COMMENT ON COLUMN crs.proj4 IS 'proj4 string for the crs. From (example): https:
 -- need additional table project_crs to store the crs used in a project
 -- same as crs - data will be copied from crs to project_crs
 CREATE TABLE IF NOT EXISTS project_crs(
-  project_crs_id uuid PRIMARY KEY DEFAULT NULL,
+  project_crs_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   crs_id uuid REFERENCES crs(crs_id) ON DELETE NO action ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
