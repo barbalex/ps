@@ -22,12 +22,11 @@ export const FetchWmsCapabilities = memo(
     const db = usePGlite()
     const worker = useWorker(createWorker)
 
-    const { results: wmsServiceLayers = [] } = useLiveQuery(
-      db.wms_service_layers.liveMany({
-        where: { wms_service_id: wmsLayer.wms_service_id },
-        select: { wms_service_layer_id: true },
-      }),
+    const result = useLiveQuery(
+      `SELECT count(*) FROM wms_service_layers WHERE wms_service_id = $1`,
+      [wmsLayer.wms_service_id],
     )
+    const wmsServiceLayersCount = result?.rows?.[0]?.count
 
     const onFetchCapabilities = useCallback(async () => {
       const urlTrimmed = url?.trim?.()
@@ -112,7 +111,7 @@ export const FetchWmsCapabilities = memo(
         disabled={!url}
       >
         {fetching
-          ? `Loading Capabilities (${wmsServiceLayers.length})`
+          ? `Loading Capabilities (${wmsServiceLayersCount})`
           : `Fetch Capabilities`}
       </Button>
     )

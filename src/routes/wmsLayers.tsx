@@ -15,6 +15,7 @@ import '../form.css'
 
 export const Component = memo(() => {
   const [filter] = useAtom(wmsLayersFilterAtom)
+  const isFiltered = !!filter
   const { project_id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -28,31 +29,25 @@ export const Component = memo(() => {
   )
   const wmsLayers = resultFiltered?.rows ?? []
 
-  const resultUnfiltered = useLiveQuery(
-    `SELECT * FROM wms_layers WHERE project_id = $1`,
-    [project_id],
-  )
-  const wmsLayersUnfiltered = resultUnfiltered?.rows ?? []
-
-  const isFiltered = wmsLayers.length !== wmsLayersUnfiltered.length
-
   const add = useCallback(async () => {
     const wmsLayer = createWmsLayer({ project_id })
-    const columns = Object.keys(wmsLayer).join(',')
-    const values = Object.values(wmsLayer)
-    const sql = `insert into wms_layers (${columns}) values (${values
+    const wmsColumns = Object.keys(wmsLayer).join(',')
+    const wmsValues = Object.values(wmsLayer)
+    const wmsSql = `insert into wms_layers (${wmsColumns}) values (${wmsValues
       .map((_, i) => `$${i + 1}`)
       .join(',')})`
-    await db.query(sql, values)
+    await db.query(wmsSql, wmsValues)
 
     // also add layer_presentation
     const layerPresentation = createLayerPresentation({
       wms_layer_id: wmsLayer.wms_layer_id,
     })
-    const columnsLp = Object.keys(layerPresentation).join(',')
-    const valuesLp = Object.values(layerPresentation)
-    const sqlLp = `insert into layer_presentations (${columnsLp}) values ($1)`
-    await db.query(sqlLp, valuesLp)
+    const lPColumns = Object.keys(layerPresentation).join(',')
+    const lPValues = Object.values(layerPresentation)
+    const lPSql = `insert into layer_presentations (${lPColumns}) values (${lPValues
+      .map((_, i) => `$${i + 1}`)
+      .join(',')})`
+    await db.query(lPSql, lPValues)
     navigate({
       pathname: wmsLayer.wms_layer_id,
       search: searchParams.toString(),
@@ -62,13 +57,12 @@ export const Component = memo(() => {
   return (
     <div className="list-view">
       <ListViewHeader
-        title={`WMS Layers (${
-          isFiltered
-            ? `${wmsLayers.length}/${wmsLayersUnfiltered.length}`
-            : wmsLayers.length
-        })`}
+        namePlural="WMS Layers"
+        nameSingular="wms layer"
+        tableName="wms_layers"
+        isFiltered={isFiltered}
+        countFiltered={wmsLayers.length}
         addRow={add}
-        tableName="wms layer"
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
