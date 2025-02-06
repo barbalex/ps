@@ -1,7 +1,6 @@
 import { memo, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions.tsx'
@@ -11,24 +10,18 @@ const previousImportOperations = ['update_and_extend', 'replace']
 export const Four = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
   const { occurrence_import_id, subproject_id } = useParams()
 
-  const db = usePGlite()
-  const { results: occurrenceImports = [] } = useLiveQuery(
-    db.occurrence_imports.liveMany({
-      where: {
-        subproject_id,
-        occurrence_import_id: { not: occurrence_import_id },
-      },
-      orderBy: { label: 'asc' },
-    }),
+  const result = useLiveQuery(
+    `SELECT 
+        label, 
+        occurrence_import_id as value 
+      FROM occurrence_imports 
+      WHERE 
+        occurrence_import_id <> $1 
+        AND subproject_id = $2 
+      order by label asc`,
+    [occurrence_import_id, subproject_id],
   )
-  const occurrenceImportOptions = useMemo(
-    () =>
-      occurrenceImports.map((o) => ({
-        label: o.label,
-        value: o.occurrence_import_id,
-      })),
-    [occurrenceImports],
-  )
+  const occurrenceImportOptions = useMemo(() => result?.rows ?? [], [result])
 
   return (
     <>
@@ -46,7 +39,7 @@ export const Four = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
           </>
         }
       />
-      {!!occurrenceImports.length && (
+      {!!occurrenceImportOptions.length && (
         <>
           <DropdownFieldOptions
             label="Previous import"
