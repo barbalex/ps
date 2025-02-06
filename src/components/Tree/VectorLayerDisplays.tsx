@@ -1,9 +1,8 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { VectorLayerDisplayNode } from './VectorLayerDisplay.tsx'
@@ -18,19 +17,17 @@ interface Props {
 }
 
 export const VectorLayerDisplaysNode = memo(
-  ({ project_id, vector_layer_id, level = 5 }) => {
+  ({ project_id, vector_layer_id, level = 5 }: Props) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const db = usePGlite()
-    const { results: vlds = [] } = useLiveQuery(
-      db.vector_layer_displays.liveMany({
-        where: { vector_layer_id },
-        orderBy: { label: 'asc' },
-      }),
+    const result = useLiveQuery(
+      `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1 order by label asc`,
+      [vector_layer_id],
     )
+    const vlds = result?.rows ?? []
 
     const vectorLayerDisplaysNode = useMemo(
       () => ({ label: `Displays (${vlds.length})` }),
@@ -73,7 +70,6 @@ export const VectorLayerDisplaysNode = memo(
       isOpen,
       navigate,
       ownArray,
-      parentArray,
       parentUrl,
       searchParams,
       urlPath.length,

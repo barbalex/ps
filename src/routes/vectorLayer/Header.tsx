@@ -57,6 +57,7 @@ export const Header = memo(({ autoFocusRef, row }) => {
     }
     setDraggableLayers(newDraggableLayers)
   }, [draggableLayers, isDraggable, layerNameForState, setDraggableLayers])
+
   const onClickAssignToPlaces = useCallback(() => {
     if (isDraggable) return
     // map needs to be visible
@@ -64,23 +65,25 @@ export const Header = memo(({ autoFocusRef, row }) => {
       setTabs([...tabs, 'map'])
     }
     // this layer needs to be active
-    const layerPresentation = db.layer_presentations.findFirst({
-      where: { vector_layer_id: row.vector_layer_id },
-    })
+    const result = db.query(
+      `SELECT * FROM layer_presentations WHERE vector_layer_id = $1`,
+      [row.vector_layer_id],
+    )
+    const layerPresentation = result?.rows?.[0]
     if (!layerPresentation.active) {
-      db.layer_presentations.update({
-        where: {
-          layer_presentation_id: layerPresentation.layer_presentation_id,
-        },
-        data: { active: true },
-      })
+      db.query(
+        `UPDATE layer_presentations SET active = true WHERE layer_presentation_id = $1`,
+        [layerPresentation.layer_presentation_id],
+      )
     }
-  }, [db.layer_presentations, isDraggable, row.vector_layer_id, setTabs, tabs])
+  }, [db, isDraggable, row.vector_layer_id, setTabs, tabs])
+
   const onClickAssignToPlaces1 = useCallback(() => {
     setDroppableLayer('places1')
     onClickToggleAssign()
     onClickAssignToPlaces()
   }, [onClickAssignToPlaces, onClickToggleAssign, setDroppableLayer])
+
   const onClickAssignToPlaces2 = useCallback(() => {
     setDroppableLayer('places2')
     onClickToggleAssign()
@@ -89,42 +92,58 @@ export const Header = memo(({ autoFocusRef, row }) => {
 
   const addRow = useCallback(async () => {
     const vectorLayer = createVectorLayer({ project_id, type: 'wfs' })
-    await db.vector_layers.create({ data: vectorLayer })
+    const vLColumns = Object.keys(vectorLayer).join(',')
+    const vLValues = Object.values(vectorLayer)
+      .map((_, i) => `$${i + 1}`)
+      .join(',')
+    await db.query(
+      `INSERT INTO vector_layers (${vLColumns}) VALUES (${vLValues})`,
+      Object.values(vectorLayer),
+    )
     // also add vector_layer_display
     const vectorLayerDisplay = createVectorLayerDisplay({
       vector_layer_id: vectorLayer.vector_layer_id,
     })
-    await db.vector_layer_displays.create({ data: vectorLayerDisplay })
+    const vLDColumns = Object.keys(vectorLayerDisplay).join(',')
+    const vLDValues = Object.values(vectorLayerDisplay)
+      .map((_, i) => `$${i + 1}`)
+      .join(',')
+    await db.query(
+      `INSERT INTO vector_layer_displays (${vLDColumns}) VALUES (${vLDValues})`,
+      Object.values(vectorLayerDisplay),
+    )
     // add layer_presentation
     const layerPresentation = createLayerPresentation({
       vector_layer_id: vectorLayer.vector_layer_id,
     })
-    await db.layer_presentations.create({ data: layerPresentation })
+    const lPColumns = Object.keys(layerPresentation).join(',')
+    const lPValues = Object.values(layerPresentation)
+      .map((_, i) => `$${i + 1}`)
+      .join(',')
+    await db.query(
+      `INSERT INTO layer_presentations (${lPColumns}) VALUES (${lPValues})`,
+      Object.values(layerPresentation),
+    )
     navigate({
       pathname: `../${vectorLayer.vector_layer_id}`,
       search: searchParams.toString(),
     })
     autoFocusRef.current?.focus()
-  }, [
-    autoFocusRef,
-    db.layer_presentations,
-    db.vector_layer_displays,
-    db.vector_layers,
-    navigate,
-    project_id,
-    searchParams,
-  ])
+  }, [autoFocusRef, db, navigate, project_id, searchParams])
 
   const deleteRow = useCallback(async () => {
-    await db.vector_layers.delete({ where: { vector_layer_id } })
+    await db.query(`DELETE FROM vector_layers WHERE vector_layer_id = $1`, [
+      vector_layer_id,
+    ])
     navigate({ pathname: '..', search: searchParams.toString() })
-  }, [db.vector_layers, navigate, vector_layer_id, searchParams])
+  }, [db, vector_layer_id, navigate, searchParams])
 
   const toNext = useCallback(async () => {
-    const vectorLayers = await db.vector_layers.findMany({
-      where: { project_id },
-      orderBy: { label: 'asc' },
-    })
+    const result = await db.query(
+      `SELECT * FROM vector_layers WHERE project_id = $1 order by label asc`,
+      [project_id],
+    )
+    const vectorLayers = result?.rows
     const len = vectorLayers.length
     const index = vectorLayers.findIndex(
       (p) => p.vector_layer_id === vector_layer_id,
@@ -134,13 +153,14 @@ export const Header = memo(({ autoFocusRef, row }) => {
       pathname: `../${next.vector_layer_id}`,
       search: searchParams.toString(),
     })
-  }, [db.vector_layers, navigate, project_id, vector_layer_id, searchParams])
+  }, [db, project_id, navigate, searchParams, vector_layer_id])
 
   const toPrevious = useCallback(async () => {
-    const vectorLayers = await db.vector_layers.findMany({
-      where: { project_id },
-      orderBy: { label: 'asc' },
-    })
+    const result = await db.query(
+      `SELECT * FROM vector_layers WHERE project_id = $1 order by label asc`,
+      [project_id],
+    )
+    const vectorLayers = result?.rows
     const len = vectorLayers.length
     const index = vectorLayers.findIndex(
       (p) => p.vector_layer_id === vector_layer_id,
@@ -150,7 +170,7 @@ export const Header = memo(({ autoFocusRef, row }) => {
       pathname: `../${previous.vector_layer_id}`,
       search: searchParams.toString(),
     })
-  }, [db.vector_layers, navigate, project_id, vector_layer_id, searchParams])
+  }, [db, project_id, navigate, searchParams, vector_layer_id])
 
   return (
     <FormHeader

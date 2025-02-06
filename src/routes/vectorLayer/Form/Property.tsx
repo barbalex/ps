@@ -1,7 +1,7 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { DropdownFieldOptions } from '../../../components/shared/DropdownFieldOptions.tsx'
 import { TextField } from '../../../components/shared/TextField.tsx'
@@ -16,12 +16,11 @@ export const Property = memo(({ vectorLayer }) => {
 
   const db = usePGlite()
   // get fields of table
-  const { results: fields = [] } = useLiveQuery(
-    db.fields.liveMany({
-      where: { table_name: table, level, project_id },
-      orderBy: [{ sort_index: 'asc' }, { label: 'asc' }],
-    }),
+  const result = useLiveQuery(
+    `SELECT * FROM fields WHERE table_name = $1 and level = $2 and project_id = $3 order by sort_index asc, label asc`,
+    [table, level, project_id],
   )
+  const fields = useMemo(() => result?.rows ?? [], [result])
   const options = useMemo(
     () =>
       fields.map((field) => ({
@@ -30,15 +29,15 @@ export const Property = memo(({ vectorLayer }) => {
       })),
     [fields],
   )
-  // TODO: get fields of wfs
 
+  // TODO: get fields of wfs
   const onChange = useCallback(
     async (e, data) => {
       const { value } = getValueFromChange(e, data)
-      await db.vector_layers.update({
-        where: { vector_layer_id },
-        data: { display_by_property: value },
-      })
+      await db.query(
+        `UPDATE vector_layers SET display_by_property = $1 WHERE vector_layer_id = $2`,
+        [value, vector_layer_id],
+      )
       // set vector_layer_displays
       upsertVectorLayerDisplaysForVectorLayer({
         db,
