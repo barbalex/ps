@@ -13,7 +13,7 @@ interface Props {
 }
 
 export const Header = memo(
-  ({ autoFocusRef, showPreview, setShowPreview }) => {
+  ({ autoFocusRef, showPreview, setShowPreview }: Props) => {
     const { subproject_id, occurrence_import_id } = useParams()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
@@ -26,31 +26,34 @@ export const Header = memo(
 
     const addRow = useCallback(async () => {
       const data = createOccurrenceImport({ subproject_id })
-      await db.occurrence_imports.create({ data })
+      const columns = Object.keys(data).join(',')
+      const values = Object.values(data)
+        .map((_, i) => `$${i + 1}`)
+        .join(',')
+      await db.query(
+        `INSERT INTO occurrence_imports(${columns}) VALUES(${values})`,
+        Object.values(data),
+      )
       navigate({
         pathname: `../${data.occurrence_import_id}`,
         search: searchParams.toString(),
       })
       autoFocusRef.current?.focus()
-    }, [
-      autoFocusRef,
-      db.occurrence_imports,
-      navigate,
-      searchParams,
-      subproject_id,
-    ])
+    }, [autoFocusRef, db, navigate, searchParams, subproject_id])
 
     const deleteRow = useCallback(async () => {
-      await db.occurrence_imports.delete({
-        where: { occurrence_import_id },
-      })
+      await db.query(
+        `DELETE FROM occurrences WHERE occurrence_import_id = $1`,
+        [occurrence_import_id],
+      )
       navigate({ pathname: '..', search: searchParams.toString() })
-    }, [db.occurrence_imports, navigate, occurrence_import_id, searchParams])
+    }, [db, navigate, occurrence_import_id, searchParams])
 
     const toNext = useCallback(async () => {
-      const occurrenceImports = await db.occurrence_imports.findMany({
-        orderBy: { label: 'asc' },
-      })
+      const result = await db.query(
+        `SELECT * FROM occurrence_imports order by label asc`,
+      )
+      const occurrenceImports = result.rows
       const len = occurrenceImports.length
       const index = occurrenceImports.findIndex(
         (p) => p.occurrence_import_id === occurrence_import_id,
@@ -60,12 +63,13 @@ export const Header = memo(
         pathname: `../${next.occurrence_import_id}`,
         search: searchParams.toString(),
       })
-    }, [db.occurrence_imports, navigate, occurrence_import_id, searchParams])
+    }, [db, navigate, occurrence_import_id, searchParams])
 
     const toPrevious = useCallback(async () => {
-      const occurrenceImports = await db.occurrence_imports.findMany({
-        orderBy: { label: 'asc' },
-      })
+      const result = await db.query(
+        `SELECT * FROM occurrence_imports order by label asc`,
+      )
+      const occurrenceImports = result.rows
       const len = occurrenceImports.length
       const index = occurrenceImports.findIndex(
         (p) => p.occurrence_import_id === occurrence_import_id,
@@ -75,7 +79,7 @@ export const Header = memo(
         pathname: `../${previous.occurrence_import_id}`,
         search: searchParams.toString(),
       })
-    }, [db.occurrence_imports, navigate, occurrence_import_id, searchParams])
+    }, [db, navigate, occurrence_import_id, searchParams])
 
     return (
       <FormHeader
