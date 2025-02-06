@@ -49,7 +49,6 @@ export const ChartsNode = memo(
       [value],
     )
     const charts = result?.rows ?? []
-    console.log('charts', { charts, result, field, value })
 
     const chartsNode = useMemo(
       () => ({ label: `Charts (${charts.length})` }),
