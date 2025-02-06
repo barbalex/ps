@@ -1,8 +1,8 @@
 import { useCallback, useRef, useMemo, useState, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams, useSearchParams } from 'react-router-dom'
 import { Tab, TabList, InputProps } from '@fluentui/react-components'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
@@ -39,31 +39,37 @@ export const Component = memo(() => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
-  const { results: occurrenceImport } = useLiveQuery(
-    db.occurrence_imports.liveUnique({
-      where: { occurrence_import_id },
-      include: { occurrences: true },
-    }),
+
+  const oIResult = useLiveQuery(
+    `SELECT * FROM occurrence_imports WHERE occurrence_import_id = $1`,
+    [occurrence_import_id],
   )
-  const { results: occurrences } = useLiveQuery(
-    db.occurrences.liveMany({
-      where: { occurrence_import_id },
-    }),
+  const occurrenceImport = oIResult?.rows?.[0]
+
+  const oResult = useLiveQuery(
+    `SELECT * FROM occurrences WHERE occurrence_import_id = $1`,
+    [occurrence_import_id],
   )
-  const occurrencesWithoutGeometry = (occurrences ?? [])?.filter(
-    (o) => !o.geometry,
+  const occurrences = useMemo(() => oResult?.rows ?? [], [oResult])
+
+  const occurrencesWithoutGeometryCountResult = useLiveQuery(
+    `SELECT count(*) FROM occurrences WHERE occurrence_import_id = $1 AND geometry is null`,
+    [occurrence_import_id],
   )
+  const occurrencesWithoutGeometryCount =
+    occurrencesWithoutGeometryCountResult?.rows?.[0]?.count ?? 0
+
   const occurrenceFields = Object.keys(occurrences?.[0]?.data ?? {})
 
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
-      db.occurrence_imports.update({
-        where: { occurrence_import_id },
-        data: { [name]: value },
-      })
+      db.query(
+        `UPDATE occurrence_imports SET ${name} = $1 WHERE occurrence_import_id = $2`,
+        [value, occurrence_import_id],
+      )
     },
-    [db.occurrence_imports, occurrence_import_id],
+    [db, occurrence_import_id],
   )
 
   const onTabSelect = useCallback(
@@ -78,7 +84,7 @@ export const Component = memo(() => {
     () => ({
       ...tabNumberStyle,
       backgroundColor:
-        occurrenceImport?.name && (occurrences ?? []).length
+        occurrenceImport?.name && occurrences.length
           ? 'var(--colorCompoundBrandStrokeHover)'
           : tab === 1
           ? 'black'
@@ -92,7 +98,7 @@ export const Component = memo(() => {
       ...tabNumberStyle,
       backgroundColor:
         // green if all occurrences have geometry
-        (occurrences ?? []).length && !occurrencesWithoutGeometry?.length
+        occurrences.length && !occurrencesWithoutGeometryCount
           ? 'var(--colorCompoundBrandStrokeHover)'
           : // black if is current
           tab === 2
@@ -100,7 +106,7 @@ export const Component = memo(() => {
           : // grey if no occurrences or not current
             'grey',
     }),
-    [occurrences, occurrencesWithoutGeometry?.length, tab],
+    [occurrences, occurrencesWithoutGeometryCount, tab],
   )
 
   const tab3Style = useMemo(
@@ -158,22 +164,37 @@ export const Component = memo(() => {
           occurrenceFields={occurrenceFields}
         />
       )}
-      <TabList selectedValue={tab} onTabSelect={onTabSelect}>
-        <Tab id="1" value={1} icon={<div style={tab1Style}>1</div>}>
+      <TabList
+        selectedValue={tab}
+        onTabSelect={onTabSelect}
+      >
+        <Tab
+          id="1"
+          value={1}
+          icon={<div style={tab1Style}>1</div>}
+        >
           Data
         </Tab>
         <Tab
           id="2"
           value={2}
           icon={<div style={tab2Style}>2</div>}
-          disabled={!(occurrences ?? []).length}
+          disabled={!occurrences.length}
         >
           Geometry
         </Tab>
-        <Tab id="3" value={3} icon={<div style={tab3Style}>3</div>}>
+        <Tab
+          id="3"
+          value={3}
+          icon={<div style={tab3Style}>3</div>}
+        >
           Label
         </Tab>
-        <Tab id="4" value={4} icon={<div style={tab4Style}>4</div>}>
+        <Tab
+          id="4"
+          value={4}
+          icon={<div style={tab4Style}>4</div>}
+        >
           Identification
         </Tab>
       </TabList>
