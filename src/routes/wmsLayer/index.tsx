@@ -1,8 +1,8 @@
 import { useCallback, useRef, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
@@ -17,21 +17,21 @@ export const Component = memo(() => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
-  const { results: wmsLayer } = useLiveQuery(
-    db.wms_layers.liveUnique({
-      where: { wms_layer_id },
-      include: { wms_services: true },
-    }),
+
+  const result = useLiveQuery(
+    `SELECT * FROM wms_layers WHERE wms_layer_id = $1`,
+    [wms_layer_id],
   )
+  const wmsLayer = result?.rows?.[0]
 
   const onChange = useCallback<InputProps['onChange']>(
     async (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       try {
-        await db.wms_layers.update({
-          where: { wms_layer_id },
-          data: { [name]: value },
-        })
+        await db.query(
+          `UPDATE wms_layers SET ${name} = $1 WHERE wms_layer_id = $2`,
+          [value, wms_layer_id],
+        )
       } catch (error) {
         console.log('hello WmsLayer, onChange, error:', error)
       }
