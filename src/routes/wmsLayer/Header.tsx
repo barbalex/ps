@@ -17,36 +17,46 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const addRow = useCallback(async () => {
     const wmsLayer = createWmsLayer({ project_id })
-    await db.wms_layers.create({ data: wmsLayer })
+    const wmsColumns = Object.keys(wmsLayer).join(',')
+    const wmsValues = Object.values(wmsLayer)
+      .map((_, i) => `$${i + 1}`)
+      .join(',')
+    await db.query(
+      `INSERT INTO wms_layers (${wmsColumns}) VALUES (${wmsValues})`,
+      Object.values(wmsLayer),
+    )
     // also add layer_presentation
     const layerPresentation = createLayerPresentation({
       wms_layer_id: wmsLayer.wms_layer_id,
     })
-    await db.layer_presentations.create({ data: layerPresentation })
+    const lPColumns = Object.keys(layerPresentation).join(',')
+    const lPValues = Object.values(layerPresentation)
+      .map((_, i) => `$${i + 1}`)
+      .join(',')
+    await db.query(
+      `INSERT INTO layer_presentations (${lPColumns}) VALUES (${lPValues})`,
+      Object.values(layerPresentation),
+    )
     navigate({
       pathname: `../${wmsLayer.wms_layer_id}`,
       search: searchParams.toString(),
     })
     autoFocusRef.current?.focus()
-  }, [
-    autoFocusRef,
-    db.layer_presentations,
-    db.wms_layers,
-    navigate,
-    project_id,
-    searchParams,
-  ])
+  }, [autoFocusRef, db, navigate, project_id, searchParams])
 
   const deleteRow = useCallback(async () => {
-    await db.wms_layers.delete({ where: { wms_layer_id } })
+    await db.query(`DELETE FROM wms_layers WHERE wms_layer_id = $1`, [
+      wms_layer_id,
+    ])
     navigate({ pathname: '..', search: searchParams.toString() })
-  }, [db.wms_layers, navigate, wms_layer_id, searchParams])
+  }, [db, wms_layer_id, navigate, searchParams])
 
   const toNext = useCallback(async () => {
-    const wmsLayers = await db.wms_layers.findMany({
-      where: { project_id },
-      orderBy: { label: 'asc' },
-    })
+    const result = await db.query(
+      `SELECT * FROM wms_layers WHERE project_id = $1 ORDER BY label ASC`,
+      [project_id],
+    )
+    const wmsLayers = result.rows
     const len = wmsLayers.length
     const index = wmsLayers.findIndex((p) => p.wms_layer_id === wms_layer_id)
     const next = wmsLayers[(index + 1) % len]
@@ -54,13 +64,14 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${next.wms_layer_id}`,
       search: searchParams.toString(),
     })
-  }, [db.wms_layers, navigate, project_id, wms_layer_id, searchParams])
+  }, [db, project_id, navigate, searchParams, wms_layer_id])
 
   const toPrevious = useCallback(async () => {
-    const wmsLayers = await db.wms_layers.findMany({
-      where: { project_id },
-      orderBy: { label: 'asc' },
-    })
+    const result = await db.query(
+      `SELECT * FROM wms_layers WHERE project_id = $1 ORDER BY label ASC`,
+      [project_id],
+    )
+    const wmsLayers = result.rows
     const len = wmsLayers.length
     const index = wmsLayers.findIndex((p) => p.wms_layer_id === wms_layer_id)
     const previous = wmsLayers[(index + len - 1) % len]
@@ -68,7 +79,7 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${previous.wms_layer_id}`,
       search: searchParams.toString(),
     })
-  }, [db.wms_layers, navigate, project_id, wms_layer_id, searchParams])
+  }, [db, project_id, navigate, searchParams, wms_layer_id])
 
   return (
     <FormHeader

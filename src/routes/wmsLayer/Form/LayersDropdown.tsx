@@ -1,18 +1,17 @@
 import { memo, useMemo, useCallback } from 'react'
 import { Dropdown, Field, Option } from '@fluentui/react-components'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import axios from 'redaxios'
 import { usePGlite } from '@electric-sql/pglite-react'
-
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 export const LayersDropdown = memo(({ wmsLayer, validationMessage }) => {
   const db = usePGlite()
-  const { results: wmsServiceLayers = [] } = useLiveQuery(
-    db.wms_service_layers.liveMany({
-      where: { wms_service_id: wmsLayer.wms_service_id },
-      orderBy: { label: 'asc' },
-    }),
+
+  const result = useLiveQuery(
+    `SELECT * FROM wms_service_layers WHERE wms_service_id = $1 ORDER BY label ASC`,
+    [wmsLayer.wms_service_id],
   )
+  const wmsServiceLayers = useMemo(() => result?.rows ?? [], [result])
 
   const options = useMemo(
     () => wmsServiceLayers.map(({ name, label }) => ({ value: name, label })),
@@ -29,13 +28,14 @@ export const LayersDropdown = memo(({ wmsLayer, validationMessage }) => {
   const onOptionSelect = useCallback(
     async (e, data) => {
       try {
-        db.wms_layers.update({
-          where: { wms_layer_id: wmsLayer.wms_layer_id },
-          data: {
-            wms_service_layer_name: data.optionValue ?? null,
-            label: data.optionText ?? null,
-          },
-        })
+        db.query(
+          `UPDATE wms_layers SET wms_service_layer_name = $1, label = $2 WHERE wms_layer_id = $3`,
+          [
+            data.optionValue ?? null,
+            data.optionText ?? null,
+            wmsLayer.wms_layer_id,
+          ],
+        )
       } catch (error) {
         console.log(
           'LayersDropdown.onOptionSelect, error updating wms layer:',
@@ -79,23 +79,16 @@ export const LayersDropdown = memo(({ wmsLayer, validationMessage }) => {
       // 3. store wms_service_layers.legend_image and legend_url
       if (res.data) {
         try {
-          await db.wms_service_layers.update({
-            where: {
-              wms_service_layer_id: wmsServiceLayer.wms_service_layer_id,
-            },
-            data: { legend_image: byteArray },
-          })
+          await db.query(
+            `UPDATE wms_service_layers SET legend_image = $1 WHERE wms_service_layer_id = $2`,
+            [byteArray, wmsServiceLayer.wms_service_layer_id],
+          )
         } catch (error) {
           console.log('LayersDropdown.onOptionSelect, error:', error)
         }
       }
     },
-    [
-      db.wms_layers,
-      db.wms_service_layers,
-      wmsLayer.wms_layer_id,
-      wmsServiceLayers,
-    ],
+    [db, wmsLayer.wms_layer_id, wmsServiceLayers],
   )
 
   const labelWithCount = options?.length ? `Layer (${options.length})` : 'Layer'
@@ -116,7 +109,10 @@ export const LayersDropdown = memo(({ wmsLayer, validationMessage }) => {
       >
         {options.map((option) => {
           return (
-            <Option key={option.value} value={option.value}>
+            <Option
+              key={option.value}
+              value={option.value}
+            >
               {option.label}
             </Option>
           )
