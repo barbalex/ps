@@ -8,7 +8,6 @@ import {
 } from 'react'
 import { Combobox, Field } from '@fluentui/react-components'
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { FilteringComboboxOptions } from './options.tsx'
 
@@ -20,9 +19,6 @@ export const ComboboxFilteringForTable = memo(
         label,
         table,
         idField, // defaults to name, used for cases where the id field is not the same as the name field (?)
-        where: whereForOptions = {},
-        orderBy = { label: 'asc' },
-        include = {},
         labelFromResult, // allows passing in special data. Not in use yet.
         value,
         onChange,
@@ -32,19 +28,11 @@ export const ComboboxFilteringForTable = memo(
     ) => {
       const [filter, setFilter] = useState('')
 
-      const db = usePGlite()
-      const whereForSelectedOption = useMemo(
-        () => ({
-          [idField ?? name]:
-            value === '' ? '99999999-9999-9999-9999-999999999999' : value,
-        }),
-        [idField, name, value],
+      const res = useLiveQuery(
+        `SELECT * FROM ${table} WHERE ${idField ?? name} = $1`,
+        [value === '' ? '99999999-9999-9999-9999-999999999999' : value],
       )
-      const { results = [] } = useLiveQuery(
-        db[table]?.liveMany({
-          where: whereForSelectedOption,
-        }),
-      )
+      const results = useMemo(() => res?.rows ?? [], [res])
       const selectedOptions = useMemo(
         () =>
           results.map((o) => ({
@@ -83,7 +71,6 @@ export const ComboboxFilteringForTable = memo(
       //   results,
       //   idField,
       //   whereForSelectedOption,
-      //   whereForOptions,
       // })
 
       return (
@@ -104,9 +91,6 @@ export const ComboboxFilteringForTable = memo(
               name={name}
               table={table}
               idField={idField}
-              where={whereForOptions}
-              orderBy={orderBy}
-              include={include}
               labelFromResult={labelFromResult}
               filter={filter}
             />

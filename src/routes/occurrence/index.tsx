@@ -1,8 +1,8 @@
 import { useRef, useCallback, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams, useNavigate } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
@@ -21,9 +21,12 @@ export const Component = memo(() => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
-  const { results: row } = useLiveQuery(
-    db.occurrences.liveUnique({ where: { occurrence_id } }),
+
+  const result = useLiveQuery(
+    `SELECT * FROM occurrences WHERE occurrence_id = $1`,
+    [occurrence_id],
   )
+  const row = result?.rows?.[0]
 
   const onChange = useCallback<InputProps['onChange']>(
     async (e, eData) => {
@@ -40,10 +43,15 @@ export const Component = memo(() => {
       if (name === 'place_id' && value) {
         data.not_to_assign = null
       }
-      db.occurrences.update({
-        where: { occurrence_id },
-        data,
+      let sets = ''
+      const sets = Object.keys(data).map((key, i) => {
+        sets += `${key} = $${i + 2}${
+          i === Object.keys(data).length - 1 ? '' : ','
+        }`
       })
+      const vals = Object.values(data)
+      const sql = `UPDATE occurrences SET ${sets} WHERE occurrence_id = $1`
+      db.query(sql, [occurrence_id, ...vals])
       // ensure that the combinations of not-to-assign and place_id make sense
       if (name === 'not_to_assign' && value) {
         navigate(
@@ -64,22 +72,18 @@ export const Component = memo(() => {
       if (name === 'place_id' && value) {
         // navigate to the place's occurrences-assigned list
         // this depends on the level of the place
-        const place = await db.places.findUnique({ where: { place_id: value } })
-        const parentPlaceId = place?.parent_id
+        const res = await db.query(
+          `SELECT parent_id FROM places WHERE place_id = $1`,
+          [value],
+        )
+        const parentPlaceId = res?.rows?.[0]?.parent_id
         const url = parentPlaceId
           ? `/data/projects/${project_id}/subprojects/${subproject_id}/places/${parentPlaceId}/places/${value}/occurrences-assigned/${occurrence_id}`
           : `/data/projects/${project_id}/subprojects/${subproject_id}/places/${value}/occurrences-assigned/${occurrence_id}`
         navigate(url)
       }
     },
-    [
-      db.occurrences,
-      db.places,
-      navigate,
-      occurrence_id,
-      project_id,
-      subproject_id,
-    ],
+    [db, navigate, occurrence_id, project_id, subproject_id],
   )
 
   if (!row) return <Loading />

@@ -14,26 +14,35 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const addRow = useCallback(async () => {
     const subprojectTaxon = createSubprojectTaxon()
-    await db.subproject_taxa.create({
-      data: { ...subprojectTaxon, subproject_id },
-    })
+    const columns = Object.keys(subprojectTaxon).join(',')
+    const values = Object.values(subprojectTaxon)
+      .map((_, i) => `$${i + 1}`)
+      .join(',')
+    await db.query(
+      `INSERT INTO subproject_taxa (${columns}) VALUES (${values})`,
+      Object.values(subprojectTaxon),
+    )
     navigate({
       pathname: `../${subprojectTaxon.subproject_taxon_id}`,
       search: searchParams.toString(),
     })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db.subproject_taxa, navigate, subproject_id, searchParams])
+  }, [db, navigate, searchParams, autoFocusRef])
 
   const deleteRow = useCallback(async () => {
-    await db.subproject_taxa.delete({ where: { subproject_taxon_id } })
+    await db.query(
+      `DELETE FROM subproject_taxa WHERE subproject_taxon_id = $1`,
+      [subproject_taxon_id],
+    )
     navigate({ pathname: '..', search: searchParams.toString() })
-  }, [db.subproject_taxa, navigate, subproject_taxon_id, searchParams])
+  }, [db, subproject_taxon_id, navigate, searchParams])
 
   const toNext = useCallback(async () => {
-    const subprojectTaxa = await db.subproject_taxa.findMany({
-      where: { subproject_id },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      `SELECT * FROM subproject_taxa WHERE subproject_id = $1 order by label asc`,
+      [subproject_id],
+    )
+    const subprojectTaxa = res.rows
     const len = subprojectTaxa.length
     const index = subprojectTaxa.findIndex(
       (p) => p.subproject_taxon_id === subproject_taxon_id,
@@ -43,19 +52,14 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${next.subproject_taxon_id}`,
       search: searchParams.toString(),
     })
-  }, [
-    db.subproject_taxa,
-    navigate,
-    subproject_id,
-    subproject_taxon_id,
-    searchParams,
-  ])
+  }, [db, subproject_id, navigate, searchParams, subproject_taxon_id])
 
   const toPrevious = useCallback(async () => {
-    const subprojectTaxa = await db.subproject_taxa.findMany({
-      where: { subproject_id },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      `SELECT * FROM subproject_taxa WHERE subproject_id = $1 order by label asc`,
+      [subproject_id],
+    )
+    const subprojectTaxa = res.rows
     const len = subprojectTaxa.length
     const index = subprojectTaxa.findIndex(
       (p) => p.subproject_taxon_id === subproject_taxon_id,
@@ -65,13 +69,7 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${previous.subproject_taxon_id}`,
       search: searchParams.toString(),
     })
-  }, [
-    db.subproject_taxa,
-    navigate,
-    searchParams,
-    subproject_id,
-    subproject_taxon_id,
-  ])
+  }, [db, navigate, searchParams, subproject_id, subproject_taxon_id])
 
   return (
     <FormHeader

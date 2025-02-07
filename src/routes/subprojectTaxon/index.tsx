@@ -1,8 +1,8 @@
 import { useCallback, useRef, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { ComboboxFilteringForTable } from '../../components/shared/ComboboxFilteringForTable/index.tsx'
@@ -12,6 +12,7 @@ import { Loading } from '../../components/shared/Loading.tsx'
 
 import '../../form.css'
 
+// TODO: what was this for?
 const taxaInclude = { taxonomies: true }
 
 export const Component = memo(() => {
@@ -20,19 +21,22 @@ export const Component = memo(() => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
-  const { results: row } = useLiveQuery(
-    db.subproject_taxa.liveUnique({ where: { subproject_taxon_id } }),
+
+  const res = useLiveQuery(
+    `SELECT * FROM subproject_taxa WHERE subproject_taxon_id = $1`,
+    [subproject_taxon_id],
   )
+  const row = res?.rows?.[0]
 
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
-      db.subproject_taxa.update({
-        where: { subproject_taxon_id },
-        data: { [name]: value },
-      })
+      db.query(
+        `UPDATE subproject_taxa SET ${name} = $1 WHERE subproject_taxon_id = $2`,
+        [value, subproject_taxon_id],
+      )
     },
-    [db.subproject_taxa, subproject_taxon_id],
+    [db, subproject_taxon_id],
   )
 
   if (!row) return <Loading />
