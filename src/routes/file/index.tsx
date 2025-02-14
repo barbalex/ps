@@ -44,7 +44,7 @@ export const Component = memo(() => {
         data.action_id = null
         data.check_id = null
       }
-      const setsString = ''
+      let setsString = ''
       Object.keys(data).map(
         (key, i) =>
           (setsString += `${key} = $${i + 2}${
@@ -69,10 +69,7 @@ export const Component = memo(() => {
   if (!row) return <Loading />
 
   return (
-    <div
-      className="form-outer-container"
-      ref={ref}
-    >
+    <div className="form-outer-container" ref={ref}>
       <Uploader />
       <Header />
       <div className="form-container">
@@ -131,31 +128,15 @@ export const Component = memo(() => {
           value={row.check_id ?? ''}
           onChange={onChange}
         />
-        <TextFieldInactive
-          label="Name"
-          name="name"
-          value={row.name ?? ''}
-        />
-        <TextFieldInactive
-          label="Size"
-          name="size"
-          value={row.size ?? ''}
-        />
+        <TextFieldInactive label="Name" name="name" value={row.name ?? ''} />
+        <TextFieldInactive label="Size" name="size" value={row.size ?? ''} />
         <TextFieldInactive
           label="Mimetype"
           name="mimetype"
           value={row.mimetype ?? ''}
         />
-        <TextFieldInactive
-          label="Url"
-          name="url"
-          value={row.url ?? ''}
-        />
-        <TextFieldInactive
-          label="Uuid"
-          name="uuid"
-          value={row.uuid ?? ''}
-        />
+        <TextFieldInactive label="Url" name="url" value={row.url ?? ''} />
+        <TextFieldInactive label="Uuid" name="uuid" value={row.uuid ?? ''} />
         <Jsonb
           table="files"
           idField="file_id"
