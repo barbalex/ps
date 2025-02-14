@@ -1,7 +1,7 @@
 import { useEffect, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import {
   createVectorLayer,
@@ -21,8 +21,11 @@ export const TableLayersProvider = memo(() => {
   const db = usePGlite()
   // do not include vector_layers and vector_layer_displays in this query
   // as the effect will run every time these tables change
-  const { results: projects = [] } = useLiveQuery(db.projects.liveMany())
-  const { results: occurrences = [] } = useLiveQuery(db.occurrences.liveMany())
+  const projectsResult = useLiveQuery(`SELECT * FROM projects`)
+  const projects = projectsResult?.results ?? []
+
+  const occurrencesResult = useLiveQuery(`SELECT * FROM occurrences`)
+  const occurrences = occurrencesResult?.results ?? []
 
   const firstRender = useFirstRender()
 
@@ -34,12 +37,14 @@ export const TableLayersProvider = memo(() => {
 
     const run = async () => {
       for (const project of projects) {
-        const placeLevels = await db.place_levels.findMany({
-          where: { project_id: project.project_id },
-        })
-        const vectorLayers = await db.vector_layers.findMany({
-          where: { project_id: project.project_id },
-        })
+        const { rows: placeLevels } = await db.query(
+          `SELECT * FROM place_levels WHERE project_id = $1`,
+          [project.project_id],
+        )
+        const { rows: vectorLayers } = await db.query(
+          `SELECT * FROM vector_layers WHERE project_id = $1`,
+          [project.project_id],
+        )
         // depending on place_levels, find what vectorLayerTables need vector layers
         const placeLevel1 = placeLevels?.find((pl) => pl.level === 1)
         const placeLevel2 = placeLevels?.find((pl) => pl.level === 2)
@@ -59,10 +64,16 @@ export const TableLayersProvider = memo(() => {
             own_table_level: 1,
             label: placeLevel1?.name_plural ?? 'Places',
           })
+          const columns = Object.keys(vectorLayer).join(',')
+          const values = Object.values(vectorLayer)
+            .map((_, i) => `$${i + 1}`)
+            .join(',')
           try {
-            places1VectorLayer = await db.vector_layers.create({
-              data: vectorLayer,
-            })
+            const result = await db.query(
+              `INSERT INTO vector_layers (${columns}) VALUES (${values}) RETURNING *`,
+              Object.values(vectorLayer),
+            )
+            places1VectorLayer = result.rows?.[0]
           } catch {}
           console.warn(
             'hello TableLayersProvider, new places 1 vector layer:',
@@ -70,27 +81,42 @@ export const TableLayersProvider = memo(() => {
           )
         }
         // 1.2 places1VectorLayerDisplay: always needed
-        const places1VectorLayerDisplay =
-          await db.vector_layer_displays.findFirst({
-            where: { vector_layer_id: places1VectorLayer.vector_layer_id },
-          })
+        const { rows: places1VectorLayerDisplays } = await db.query(
+          `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1`,
+          [places1VectorLayer.vector_layer_id],
+        )
+        const places1VectorLayerDisplay = places1VectorLayerDisplays?.[0]
         if (!places1VectorLayerDisplay) {
           const newVLD = createVectorLayerDisplay({
             vector_layer_id: places1VectorLayer.vector_layer_id,
           })
-          await db.vector_layer_displays.create({ data: newVLD })
+          const columns = Object.keys(newVLD).join(',')
+          const values = Object.values(newVLD)
+            .map((_, i) => `$${i + 1}`)
+            .join(',')
+          await db.query(
+            `INSERT INTO vector_layer_displays (${columns}) VALUES (${values})`,
+            Object.values(newVLD),
+          )
         }
         // 1.3 places1LayerPresentation: always needed
-        const places1LayerPresentation = await db.layer_presentations.findFirst(
-          {
-            where: { vector_layer_id: places1VectorLayer.vector_layer_id },
-          },
+        const { rows: places1LayerPresentations } = await db.query(
+          `SELECT * FROM layer_presentations WHERE vector_layer_id = $1`,
+          [places1VectorLayer.vector_layer_id],
         )
+        const places1LayerPresentation = places1LayerPresentations?.[0]
         if (!places1LayerPresentation) {
           const newLP = createLayerPresentation({
             vector_layer_id: places1VectorLayer.vector_layer_id,
           })
-          await db.layer_presentations.create({ data: newLP })
+          const columns = Object.keys(newLP).join(',')
+          const values = Object.values(newLP)
+            .map((_, i) => `$${i + 1}`)
+            .join(',')
+          await db.query(
+            `INSERT INTO layer_presentations (${columns}) VALUES (${values})`,
+            Object.values(newLP),
+          )
         }
         // 2.1 actions1: always needed
         let actions1VectorLayer = vectorLayers?.find(
@@ -109,20 +135,34 @@ export const TableLayersProvider = memo(() => {
               ? `${placeLevel1.name_singular} Actions`
               : 'Actions',
           })
-          actions1VectorLayer = await db.vector_layers.create({
-            data: vectorLayer,
-          })
+          const columns = Object.keys(vectorLayer).join(',')
+          const values = Object.values(vectorLayer)
+            .map((_, i) => `$${i + 1}`)
+            .join(',')
+          const result = await db.query(
+            `INSERT INTO vector_layers (${columns}) VALUES (${values}) RETURNING *`,
+            Object.values(vectorLayer),
+          )
+          actions1VectorLayer = result.rows?.[0]
         }
         // 2.2 actions1VectorLayerDisplay: always needed
-        const actions1VectorLayerDisplay =
-          await db.vector_layer_displays.findFirst({
-            where: { vector_layer_id: actions1VectorLayer.vector_layer_id },
-          })
+        const { rows: actions1VectorLayerDisplays } = await db.query(
+          `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1`,
+          [actions1VectorLayer.vector_layer_id],
+        )
+        const actions1VectorLayerDisplay = actions1VectorLayerDisplays?.[0]
         if (!actions1VectorLayerDisplay) {
           const newVLD = createVectorLayerDisplay({
             vector_layer_id: actions1VectorLayer.vector_layer_id,
           })
-          await db.vector_layer_displays.create({ data: newVLD })
+          const columns = Object.keys(newVLD).join(',')
+          const values = Object.values(newVLD)
+            .map((_, i) => `$${i + 1}`)
+            .join(',')
+          await db.query(
+            `INSERT INTO vector_layer_displays (${columns}) VALUES (${values})`,
+            Object.values(newVLD),
+          )
         }
         // 2.3 actions1LayerPresentation: always needed
         const actions1LayerPresentation =
