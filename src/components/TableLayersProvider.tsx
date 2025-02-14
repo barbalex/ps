@@ -399,39 +399,59 @@ export const TableLayersProvider = memo(() => {
               own_table: 'occurrences_not_to_assign',
               label: 'Occurrences not to assign',
             })
-            occurrencesNotToAssignVectorLayer = await db.vector_layers.create({
-              data: vectorLayer,
-            })
+            const columns = Object.keys(vectorLayer).join(',')
+            const values = Object.values(vectorLayer)
+              .map((_, i) => `$${i + 1}`)
+              .join(',')
+            const result = await db.query(
+              `INSERT INTO vector_layers (${columns}) VALUES (${values}) RETURNING *`,
+              Object.values(vectorLayer),
+            )
+            occurrencesNotToAssignVectorLayer = result.rows?.[0]
           }
           // 6.2 occurrencesNotToAssignVectorLayerDisplay: always needed
+          const { rows: occurrencesNotToAssignVectorLayerDisplays } =
+            await db.query(
+              `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1`,
+              [occurrencesNotToAssignVectorLayer.vector_layer_id],
+            )
           const occurrencesNotToAssignVectorLayerDisplay =
-            await db.vector_layer_displays.findFirst({
-              where: {
-                vector_layer_id:
-                  occurrencesNotToAssignVectorLayer.vector_layer_id,
-              },
-            })
+            occurrencesNotToAssignVectorLayerDisplays?.[0]
           if (!occurrencesNotToAssignVectorLayerDisplay) {
             const newVLD = createVectorLayerDisplay({
               vector_layer_id:
                 occurrencesNotToAssignVectorLayer.vector_layer_id,
             })
-            await db.vector_layer_displays.create({ data: newVLD })
+            const columns = Object.keys(newVLD).join(',')
+            const values = Object.values(newVLD)
+              .map((_, i) => `$${i + 1}`)
+              .join(',')
+            await db.query(
+              `INSERT INTO vector_layer_displays (${columns}) VALUES (${values})`,
+              Object.values(newVLD),
+            )
           }
           // 6.3 occurrencesNotToAssignLayerPresentation: always needed
+          const { rows: occurrencesNotToAssignLayerPresentations } =
+            await db.query(
+              `SELECT * FROM layer_presentations WHERE vector_layer_id = $1`,
+              [occurrencesNotToAssignVectorLayer.vector_layer_id],
+            )
           const occurrencesNotToAssignLayerPresentation =
-            await db.layer_presentations.findFirst({
-              where: {
-                vector_layer_id:
-                  occurrencesNotToAssignVectorLayer.vector_layer_id,
-              },
-            })
+            occurrencesNotToAssignLayerPresentations?.[0]
           if (!occurrencesNotToAssignLayerPresentation) {
             const newLP = createLayerPresentation({
               vector_layer_id:
                 occurrencesNotToAssignVectorLayer.vector_layer_id,
             })
-            await db.layer_presentations.create({ data: newLP })
+            const columns = Object.keys(newLP).join(',')
+            const values = Object.values(newLP)
+              .map((_, i) => `$${i + 1}`)
+              .join(',')
+            await db.query(
+              `INSERT INTO layer_presentations (${columns}) VALUES (${values})`,
+              Object.values(newLP),
+            )
           }
         }
         // 7.1 places2 needed if placeLevels2 exists
@@ -450,31 +470,53 @@ export const TableLayersProvider = memo(() => {
               own_table_level: 2,
               label: placeLevel2?.name_plural ?? 'Places',
             })
-            places2VectorLayer = await db.vector_layers.create({
-              data: vectorLayer,
-            })
+            const columns = Object.keys(vectorLayer).join(',')
+            const values = Object.values(vectorLayer)
+              .map((_, i) => `$${i + 1}`)
+              .join(',')
+            const result = await db.query(
+              `INSERT INTO vector_layers (${columns}) VALUES (${values}) RETURNING *`,
+              Object.values(vectorLayer),
+            )
+            places2VectorLayer = result.rows?.[0]
           }
           // 7.2 places2VectorLayerDisplay: always needed
-          const places2VectorLayerDisplay =
-            await db.vector_layer_displays.findFirst({
-              where: { vector_layer_id: places2VectorLayer.vector_layer_id },
-            })
+          const { rows: places2VectorLayerDisplays } = await db.query(
+            `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1`,
+            [places2VectorLayer.vector_layer_id],
+          )
+          const places2VectorLayerDisplay = places2VectorLayerDisplays?.[0]
           if (!places2VectorLayerDisplay) {
             const newVLD = createVectorLayerDisplay({
               vector_layer_id: places2VectorLayer.vector_layer_id,
             })
-            await db.vector_layer_displays.create({ data: newVLD })
+            const columns = Object.keys(newVLD).join(',')
+            const values = Object.values(newVLD)
+              .map((_, i) => `$${i + 1}`)
+              .join(',')
+            await db.query(
+              `INSERT INTO vector_layer_displays (${columns}) VALUES (${values})`,
+              Object.values(newVLD),
+            )
           }
           // 7.3 places2LayerPresentation: always needed
-          const places2LayerPresentation =
-            await db.layer_presentations.findFirst({
-              where: { vector_layer_id: places2VectorLayer.vector_layer_id },
-            })
+          const { rows: places2LayerPresentations } = await db.query(
+            `SELECT * FROM layer_presentations WHERE vector_layer_id = $1`,
+            [places2VectorLayer.vector_layer_id],
+          )
+          const places2LayerPresentation = places2LayerPresentations?.[0]
           if (!places2LayerPresentation) {
             const newLP = createLayerPresentation({
               vector_layer_id: places2VectorLayer.vector_layer_id,
             })
-            await db.layer_presentations.create({ data: newLP })
+            const columns = Object.keys(newLP).join(',')
+            const values = Object.values(newLP)
+              .map((_, i) => `$${i + 1}`)
+              .join(',')
+            await db.query(
+              `INSERT INTO layer_presentations (${columns}) VALUES (${values})`,
+              Object.values(newLP),
+            )
           }
         }
         // 8.1 actions2 needed if placeLevels2.actions exists
