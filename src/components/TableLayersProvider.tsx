@@ -267,23 +267,36 @@ export const TableLayersProvider = memo(() => {
                 ? `${placeLevel1.name_singular} Occurrences assigned`
                 : 'Occurrences assigned',
             })
-            occurrencesAssigned1VectorLayer = await db.vector_layers.create({
-              data: vectorLayer,
-            })
+            const columns = Object.keys(vectorLayer).join(',')
+            const values = Object.values(vectorLayer)
+              .map((_, i) => `$${i + 1}`)
+              .join(',')
+            const result = await db.query(
+              `INSERT INTO vector_layers (${columns}) VALUES (${values}) RETURNING *`,
+              Object.values(vectorLayer),
+            )
+            occurrencesAssigned1VectorLayer = result.rows?.[0]
           }
           // 4.2 occurrences_assigned1VectorLayerDisplay: always needed
+          const { rows: occurrencesAssigned1VectorLayerDisplays } =
+            await db.query(
+              `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1`,
+              [occurrencesAssigned1VectorLayer.vector_layer_id],
+            )
           const occurrencesAssigned1VectorLayerDisplay =
-            await db.vector_layer_displays.findFirst({
-              where: {
-                vector_layer_id:
-                  occurrencesAssigned1VectorLayer.vector_layer_id,
-              },
-            })
+            occurrencesAssigned1VectorLayerDisplays?.[0]
           if (!occurrencesAssigned1VectorLayerDisplay) {
             const newVLD = createVectorLayerDisplay({
               vector_layer_id: occurrencesAssigned1VectorLayer.vector_layer_id,
             })
-            await db.vector_layer_displays.create({ data: newVLD })
+            const columns = Object.keys(newVLD).join(',')
+            const values = Object.values(newVLD)
+              .map((_, i) => `$${i + 1}`)
+              .join(',')
+            await db.query(
+              `INSERT INTO vector_layer_displays (${columns}) VALUES (${values})`,
+              Object.values(newVLD),
+            )
           }
           // 4.3 occurrences_assigned1LayerPresentation: always needed
           const occurrencesAssigned1LayerPresentation =
