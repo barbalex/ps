@@ -344,30 +344,46 @@ export const TableLayersProvider = memo(() => {
             occurrencesToAssessVectorLayer = result.rows?.[0]
           }
           // 5.2 occurrencesToAssessVectorLayerDisplay: always needed
+          const { rows: occurrencesToAssessVectorLayerDisplays } =
+            await db.query(
+              `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1`,
+              [occurrencesToAssessVectorLayer.vector_layer_id],
+            )
           const occurrencesToAssessVectorLayerDisplay =
-            await db.vector_layer_displays.findFirst({
-              where: {
-                vector_layer_id: occurrencesToAssessVectorLayer.vector_layer_id,
-              },
-            })
+            occurrencesToAssessVectorLayerDisplays?.[0]
           if (!occurrencesToAssessVectorLayerDisplay) {
             const newVLD = createVectorLayerDisplay({
               vector_layer_id: occurrencesToAssessVectorLayer.vector_layer_id,
             })
-            await db.vector_layer_displays.create({ data: newVLD })
+            const columns = Object.keys(newVLD).join(',')
+            const values = Object.values(newVLD)
+              .map((_, i) => `$${i + 1}`)
+              .join(',')
+            await db.query(
+              `INSERT INTO vector_layer_displays (${columns}) VALUES (${values})`,
+              Object.values(newVLD),
+            )
           }
           // 5.3 occurrencesToAssessLayerPresentation: always needed
+          const { rows: occurrencesToAssessLayerPresentations } =
+            await db.query(
+              `SELECT * FROM layer_presentations WHERE vector_layer_id = $1`,
+              [occurrencesToAssessVectorLayer.vector_layer_id],
+            )
           const occurrencesToAssessLayerPresentation =
-            await db.layer_presentations.findFirst({
-              where: {
-                vector_layer_id: occurrencesToAssessVectorLayer.vector_layer_id,
-              },
-            })
+            occurrencesToAssessLayerPresentations?.[0]
           if (!occurrencesToAssessLayerPresentation) {
             const newLP = createLayerPresentation({
               vector_layer_id: occurrencesToAssessVectorLayer.vector_layer_id,
             })
-            await db.layer_presentations.create({ data: newLP })
+            const columns = Object.keys(newLP).join(',')
+            const values = Object.values(newLP)
+              .map((_, i) => `$${i + 1}`)
+              .join(',')
+            await db.query(
+              `INSERT INTO layer_presentations (${columns}) VALUES (${values})`,
+              Object.values(newLP),
+            )
           }
         }
         // 6.1 occurrences_not_to_assign: needed if occurrences exist
