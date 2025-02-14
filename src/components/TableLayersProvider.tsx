@@ -165,15 +165,23 @@ export const TableLayersProvider = memo(() => {
           )
         }
         // 2.3 actions1LayerPresentation: always needed
-        const actions1LayerPresentation =
-          await db.layer_presentations.findFirst({
-            where: { vector_layer_id: actions1VectorLayer.vector_layer_id },
-          })
+        const { rows: actions1LayerPresentations } = await db.query(
+          `SELECT * FROM layer_presentations WHERE vector_layer_id = $1`,
+          [actions1VectorLayer.vector_layer_id],
+        )
+        const actions1LayerPresentation = actions1LayerPresentations?.[0]
         if (!actions1LayerPresentation) {
           const newLP = createLayerPresentation({
             vector_layer_id: actions1VectorLayer.vector_layer_id,
           })
-          await db.layer_presentations.create({ data: newLP })
+          const columns = Object.keys(newLP).join(',')
+          const values = Object.values(newLP)
+            .map((_, i) => `$${i + 1}`)
+            .join(',')
+          await db.query(
+            `INSERT INTO layer_presentations (${columns}) VALUES (${values})`,
+            Object.values(newLP),
+          )
         }
         // 3.1 checks1: always needed
         let checks1VectorLayer = vectorLayers?.find(
@@ -192,32 +200,53 @@ export const TableLayersProvider = memo(() => {
               ? `${placeLevel1.name_singular} Checks`
               : 'Checks',
           })
-          checks1VectorLayer = await db.vector_layers.create({
-            data: vectorLayer,
-          })
+          const columns = Object.keys(vectorLayer).join(',')
+          const values = Object.values(vectorLayer)
+            .map((_, i) => `$${i + 1}`)
+            .join(',')
+          const result = await db.query(
+            `INSERT INTO vector_layers (${columns}) VALUES (${values}) RETURNING *`,
+            Object.values(vectorLayer),
+          )
+          checks1VectorLayer = result.rows?.[0]
         }
         // 3.2 checks1VectorLayerDisplay: always needed
-        const checks1VectorLayerDisplay =
-          await db.vector_layer_displays.findFirst({
-            where: { vector_layer_id: checks1VectorLayer.vector_layer_id },
-          })
+        const { rows: checks1VectorLayerDisplays } = await db.query(
+          `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1`,
+          [checks1VectorLayer.vector_layer_id],
+        )
+        const checks1VectorLayerDisplay = checks1VectorLayerDisplays?.[0]
         if (!checks1VectorLayerDisplay) {
           const newVLD = createVectorLayerDisplay({
             vector_layer_id: checks1VectorLayer.vector_layer_id,
           })
-          await db.vector_layer_displays.create({ data: newVLD })
+          const columns = Object.keys(newVLD).join(',')
+          const values = Object.values(newVLD)
+            .map((_, i) => `$${i + 1}`)
+            .join(',')
+          await db.query(
+            `INSERT INTO vector_layer_displays (${columns}) VALUES (${values})`,
+            Object.values(newVLD),
+          )
         }
         // 3.3 checks1LayerPresentation: always needed
-        const checks1LayerPresentation = await db.layer_presentations.findFirst(
-          {
-            where: { vector_layer_id: checks1VectorLayer.vector_layer_id },
-          },
+        const { rows: checks1LayerPresentations } = await db.query(
+          `SELECT * FROM layer_presentations WHERE vector_layer_id = $1`,
+          [checks1VectorLayer.vector_layer_id],
         )
+        const checks1LayerPresentation = checks1LayerPresentations?.[0]
         if (!checks1LayerPresentation) {
           const newLP = createLayerPresentation({
             vector_layer_id: checks1VectorLayer.vector_layer_id,
           })
-          await db.layer_presentations.create({ data: newLP })
+          const columns = Object.keys(newLP).join(',')
+          const values = Object.values(newLP)
+            .map((_, i) => `$${i + 1}`)
+            .join(',')
+          await db.query(
+            `INSERT INTO layer_presentations (${columns}) VALUES (${values})`,
+            Object.values(newLP),
+          )
         }
         // 4.1 occurrences_assigned1 and occurrences_assigned_lines1: needed if occurrences exist and placeLevels1 has occurrences
         // TODO: add occurrences_assigned_lines1
