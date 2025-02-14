@@ -299,18 +299,25 @@ export const TableLayersProvider = memo(() => {
             )
           }
           // 4.3 occurrences_assigned1LayerPresentation: always needed
+          const { rows: occurrencesAssigned1LayerPresentations } =
+            await db.query(
+              `SELECT * FROM layer_presentations WHERE vector_layer_id = $1`,
+              [occurrencesAssigned1VectorLayer.vector_layer_id],
+            )
           const occurrencesAssigned1LayerPresentation =
-            await db.layer_presentations.findFirst({
-              where: {
-                vector_layer_id:
-                  occurrencesAssigned1VectorLayer.vector_layer_id,
-              },
-            })
+            occurrencesAssigned1LayerPresentations?.[0]
           if (!occurrencesAssigned1LayerPresentation) {
             const newLP = createLayerPresentation({
               vector_layer_id: occurrencesAssigned1VectorLayer.vector_layer_id,
             })
-            await db.layer_presentations.create({ data: newLP })
+            const columns = Object.keys(newLP).join(',')
+            const values = Object.values(newLP)
+              .map((_, i) => `$${i + 1}`)
+              .join(',')
+            await db.query(
+              `INSERT INTO layer_presentations (${columns}) VALUES (${values})`,
+              Object.values(newLP),
+            )
           }
         }
         // 5.1 occurrences_to_assess: needed if occurrences exist
@@ -326,9 +333,15 @@ export const TableLayersProvider = memo(() => {
               own_table: 'occurrences_to_assess',
               label: 'Occurrences to assess',
             })
-            occurrencesToAssessVectorLayer = await db.vector_layers.create({
-              data: vectorLayer,
-            })
+            const columns = Object.keys(vectorLayer).join(',')
+            const values = Object.values(vectorLayer)
+              .map((_, i) => `$${i + 1}`)
+              .join(',')
+            const result = await db.query(
+              `INSERT INTO vector_layers (${columns}) VALUES (${values}) RETURNING *`,
+              Object.values(vectorLayer),
+            )
+            occurrencesToAssessVectorLayer = result.rows?.[0]
           }
           // 5.2 occurrencesToAssessVectorLayerDisplay: always needed
           const occurrencesToAssessVectorLayerDisplay =
