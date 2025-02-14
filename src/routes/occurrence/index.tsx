@@ -44,7 +44,7 @@ export const Component = memo(() => {
         data.not_to_assign = null
       }
       let sets = ''
-      const sets = Object.keys(data).map((key, i) => {
+      Object.keys(data).map((key, i) => {
         sets += `${key} = $${i + 2}${
           i === Object.keys(data).length - 1 ? '' : ','
         }`
