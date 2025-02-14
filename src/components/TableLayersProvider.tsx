@@ -604,20 +604,34 @@ export const TableLayersProvider = memo(() => {
                 ? `${placeLevel2.name_singular} Checks`
                 : 'Checks',
             })
-            checks2VectorLayer = await db.vector_layers.create({
-              data: vectorLayer,
-            })
+            const columns = Object.keys(vectorLayer).join(',')
+            const values = Object.values(vectorLayer)
+              .map((_, i) => `$${i + 1}`)
+              .join(',')
+            const result = await db.query(
+              `INSERT INTO vector_layers (${columns}) VALUES (${values}) RETURNING *`,
+              Object.values(vectorLayer),
+            )
+            checks2VectorLayer = result.rows?.[0]
           }
           // 9.2 checks2VectorLayerDisplay: always needed
-          const checks2VectorLayerDisplay =
-            await db.vector_layer_displays.findFirst({
-              where: { vector_layer_id: checks2VectorLayer.vector_layer_id },
-            })
+          const { rows: checks2VectorLayerDisplays } = await db.query(
+            `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1`,
+            [checks2VectorLayer.vector_layer_id],
+          )
+          const checks2VectorLayerDisplay = checks2VectorLayerDisplays?.[0]
           if (!checks2VectorLayerDisplay) {
             const newVLD = createVectorLayerDisplay({
               vector_layer_id: checks2VectorLayer.vector_layer_id,
             })
-            await db.vector_layer_displays.create({ data: newVLD })
+            const columns = Object.keys(newVLD).join(',')
+            const values = Object.values(newVLD)
+              .map((_, i) => `$${i + 1}`)
+              .join(',')
+            await db.query(
+              `INSERT INTO vector_layer_displays (${columns}) VALUES (${values})`,
+              Object.values(newVLD),
+            )
           }
           // 9.3 checks2LayerPresentation: always needed
           const checks2LayerPresentation =
