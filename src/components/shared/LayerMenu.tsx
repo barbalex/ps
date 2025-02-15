@@ -3,13 +3,13 @@ import { Button } from '@fluentui/react-components'
 import { MdLayers, MdLayersClear } from 'react-icons/md'
 import { TbZoomScan } from 'react-icons/tb'
 // import { TbMapCog } from 'react-icons/tb'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import { bbox } from '@turf/bbox'
 import { buffer } from '@turf/buffer'
 import { featureCollection } from '@turf/helpers'
 import { useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
 import { mapBoundsAtom } from '../../store.ts'
@@ -19,30 +19,23 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }) => {
   const { project_id, subproject_id } = useParams()
 
   const db = usePGlite()
-  const { results: vectorLayer } = useLiveQuery(
-    db.vector_layers.liveFirst({
-      where: { project_id, type: `${table}${level}` },
-    }),
+
+  const result = useLiveQuery(
+    `SELECT lp.* 
+    FROM layer_presentations lp
+      inner join vector_layers vl on lp.vector_layer_id = vl.vector_layer_id
+    WHERE vl.project_id = $1 AND vl.type = $2`,
+    [project_id, `${table}${level}`],
   )
-  const { results: layerPresentation } = useLiveQuery(
-    db.layer_presentations.liveFirst({
-      where: { vector_layer_id: vectorLayer?.vector_layer_id },
-    }),
-  )
+  const layerPresentation = result?.rows?.[0]
 
   const showLayer = layerPresentation?.active ?? false
   const onClickShowLayer = useCallback(() => {
-    db.layer_presentations.update({
-      where: {
-        layer_presentation_id: layerPresentation?.layer_presentation_id,
-      },
-      data: { active: !showLayer },
-    })
-  }, [
-    db.layer_presentations,
-    layerPresentation?.layer_presentation_id,
-    showLayer,
-  ])
+    db.query(
+      `UPDATE layer_presentations SET active = $1 WHERE layer_presentation_id = $2`,
+      [!showLayer, layerPresentation?.layer_presentation_id],
+    )
+  }, [db, layerPresentation?.layer_presentation_id, showLayer])
 
   const onClickZoomToLayer = useCallback(async () => {
     // get all geometries from layer
