@@ -23,17 +23,19 @@ export const buildNavs = async ({
   let placeLevel = {}
   if (table === 'places') {
     // findUnique only works for primary keys
-    const placeLevels = await db?.place_levels?.findMany({
-      where: { project_id, level },
-    })
+    const res = await db.query(
+      `SELECT * FROM place_levels WHERE project_id = $1 AND level = $2`,
+      [project_id, level],
+    )
+    const placeLevels = res?.rows
     placeLevel = placeLevels?.[0] ?? {}
   }
   // need project for it's settings
-  const project = project_id
-    ? await db?.projects?.findUnique({
-        where: { project_id },
-      })
-    : {}
+  const projectRes = await db.query(
+    `SELECT * FROM projects WHERE project_id = $1`,
+    [project_id],
+  )
+  const project = projectRes?.rows?.[0] ?? {}
   const filesActiveProjects = project?.files_active_projects ?? false
   const filesActiveSubprojects = project?.files_active_subprojects ?? false
   const filesActivePlaces = project?.files_active_places ?? false
@@ -81,9 +83,11 @@ export const buildNavs = async ({
       break
     case `projects`: {
       // fetch projects.subproject_name_plural to name subprojects
-      const project = await db?.projects?.findUnique({
-        where: { project_id },
-      })
+      const projectRes = await db.query(
+        `SELECT * FROM projects WHERE project_id = $1`,
+        [project_id],
+      )
+      const project = projectRes?.rows?.[0]
       const subprojectName = project?.subproject_name_plural ?? 'Subprojects'
 
       return [
@@ -157,9 +161,11 @@ export const buildNavs = async ({
     }
     case 'subprojects': {
       // need to fetch how places are named
-      const placeLevels = await db?.place_levels?.findMany({
-        where: { project_id, level: 1 },
-      })
+      const plRes = await db.query(
+        `SELECT * FROM place_levels WHERE project_id = $1 AND level = 1`,
+        [project_id],
+      )
+      const placeLevels = plRes?.rows
       const placeLevel = placeLevels?.[0]
       const placeName =
         placeLevel?.name_plural ?? placeLevel?.name_short ?? 'Places'
@@ -220,9 +226,11 @@ export const buildNavs = async ({
       let placeName = 'Places'
       if (needToIncludeLevel2) {
         // findUnique only works for primary keys
-        const placeLevels = await db?.place_levels?.findMany({
-          where: { project_id, level: 2 },
-        })
+        const plRes = await db.query(
+          `SELECT * FROM place_levels WHERE project_id = $1 AND level = 2`,
+          [project_id],
+        )
+        const placeLevels = plRes?.rows
         const placeLevel2 = placeLevels?.[0]
         placeName =
           placeLevel2?.name_plural ?? placeLevel2?.name_short ?? 'Places'
