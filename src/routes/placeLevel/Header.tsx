@@ -5,7 +5,11 @@ import { usePGlite } from '@electric-sql/pglite-react'
 import { createPlaceLevel } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
-export const Header = memo(({ autoFocusRef }) => {
+interface Props {
+  autoFocusRef: React.RefObject<HTMLInputElement>
+}
+
+export const Header = memo(({ autoFocusRef }: Props) => {
   const { project_id, place_level_id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -14,28 +18,34 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const addRow = useCallback(async () => {
     const placeLevel = createPlaceLevel()
-    await db.place_levels.create({
-      data: { ...placeLevel, project_id },
-    })
+    const columns = Object.keys(placeLevel).join(',')
+    const values = Object.values(placeLevel)
+      .map((_, i) => `$${i + 1}`)
+      .join(',')
+    await db.query(
+      `INSERT INTO place_levels (${columns}) VALUES (${values})`,
+      Object.values(placeLevel),
+    )
     navigate({
       pathname: `../${placeLevel.place_level_id}`,
       search: searchParams.toString(),
     })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db.place_levels, navigate, project_id, searchParams])
+  }, [autoFocusRef, db, navigate, searchParams])
 
   const deleteRow = useCallback(async () => {
-    await db.place_levels.delete({
-      where: { place_level_id },
-    })
+    db.query(`DELETE FROM place_levels WHERE place_level_id = $1`, [
+      place_level_id,
+    ])
     navigate({ pathname: '..', search: searchParams.toString() })
-  }, [db.place_levels, navigate, place_level_id, searchParams])
+  }, [db, navigate, place_level_id, searchParams])
 
   const toNext = useCallback(async () => {
-    const placeLevels = await db.place_levels.findMany({
-      where: { project_id },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      `SELECT place_level_id FROM place_levels WHERE project_id = $1 ORDER BY label ASC`,
+      [project_id],
+    )
+    const placeLevels = res.rows
     const len = placeLevels.length
     const index = placeLevels.findIndex(
       (p) => p.place_level_id === place_level_id,
@@ -45,13 +55,14 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${next.place_level_id}`,
       search: searchParams.toString(),
     })
-  }, [db.place_levels, navigate, place_level_id, project_id, searchParams])
+  }, [db, navigate, place_level_id, project_id, searchParams])
 
   const toPrevious = useCallback(async () => {
-    const placeLevels = await db.place_levels.findMany({
-      where: { project_id },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      `SELECT place_level_id FROM place_levels WHERE project_id = $1 ORDER BY label ASC`,
+      [project_id],
+    )
+    const placeLevels = res.rows
     const len = placeLevels.length
     const index = placeLevels.findIndex(
       (p) => p.place_level_id === place_level_id,
@@ -61,7 +72,7 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${previous.place_level_id}`,
       search: searchParams.toString(),
     })
-  }, [db.place_levels, navigate, place_level_id, project_id, searchParams])
+  }, [db, navigate, place_level_id, project_id, searchParams])
 
   return (
     <FormHeader
