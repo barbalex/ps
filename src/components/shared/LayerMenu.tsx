@@ -42,31 +42,33 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }) => {
     // first get all places with level
     // then get all actions/checks/occurrences with place_id
     let geometries = []
-    const places = await db.places.findMany({
-      where: { subproject_id, level },
-    })
+    const placesResult = await db.query(
+      `SELECT place_id, geometry FROM places WHERE subproject_id = $1 AND level = $2`,
+      [subproject_id, level],
+    )
+    const places = placesResult?.rows
     if (table === 'places') {
       geometries = places.map((place) => place.geometry)
     } else if (table === 'actions') {
-      const actions = await db.actions.findMany({
-        where: {
-          place_id: { in: places.map((place) => place.place_id) },
-        },
-      })
+      const res = await db.query(
+        `SELECT action_id, geometry FROM actions WHERE place_id = ANY($1)`,
+        [places.map((place) => place.place_id)],
+      )
+      const actions = res?.rows
       geometries = actions.map((action) => action.geometry)
     } else if (table === 'checks') {
-      const checks = await db.checks.findMany({
-        where: {
-          place_id: { in: places.map((place) => place.place_id) },
-        },
-      })
+      const res = await db.query(
+        `SELECT check_id, geometry FROM checks WHERE place_id = ANY($1)`,
+        [places.map((place) => place.place_id)],
+      )
+      const checks = res?.rows
       geometries = checks.map((check) => check.geometry)
     } else if (table === 'occurrences') {
-      const occurrences = await db.occurrences.findMany({
-        where: {
-          place_id: { in: places.map((place) => place.place_id) },
-        },
-      })
+      const res = await db.query(
+        `SELECT occurrence_id, geometry FROM occurrences WHERE place_id = ANY($1)`,
+        [places.map((place) => place.place_id)],
+      )
+      const occurrences = res?.rows
       geometries = occurrences.map((o) => o.geometry)
     }
     // geometries are saved as featureCollections
@@ -89,16 +91,7 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }) => {
     const newBounds = boundsFromBbox(newBbox)
 
     setMapBounds(newBounds)
-  }, [
-    db.places,
-    db.actions,
-    db.checks,
-    db.occurrences,
-    subproject_id,
-    level,
-    table,
-    setMapBounds,
-  ])
+  }, [db, subproject_id, level, table, setMapBounds])
 
   // TODO: implement onClickMapSettings
   // They should get their own url
