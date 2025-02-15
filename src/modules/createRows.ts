@@ -1,5 +1,6 @@
 import { uuidv7 } from '@kripod/uuidv7'
 
+// TODO: run insert query?
 const getPresetData = async ({ db, project_id = null, table }) => {
   const fieldsWithPresetsResult = await db.query(
     `select * from fields where project_id = $1 and table_name = $2 and preset is not null`,

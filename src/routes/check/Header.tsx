@@ -28,7 +28,14 @@ export const Header = memo(({ autoFocusRef }) => {
       project_id,
       place_id: place_id2 ?? place_id,
     })
-    await db.checks.create({ data })
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+      .map((_, i) => `$${i + 1}`)
+      .join(',')
+    await db.query(
+      `INSERT INTO checks (${columns}) VALUES (${values})`,
+      Object.values(data),
+    )
     navigate({
       pathname: `../${data.check_id}`,
       search: searchParams.toString(),
@@ -45,17 +52,16 @@ export const Header = memo(({ autoFocusRef }) => {
   ])
 
   const deleteRow = useCallback(async () => {
-    await db.checks.delete({
-      where: { check_id },
-    })
+    await db.query(`DELETE FROM checks WHERE check_id = $1`, [check_id])
     navigate({ pathname: '..', search: searchParams.toString() })
-  }, [check_id, db.checks, navigate, searchParams])
+  }, [check_id, db, navigate, searchParams])
 
   const toNext = useCallback(async () => {
-    const checks = await db.checks.findMany({
-      where: { place_id: place_id2 ?? place_id },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      `SELECT check_id FROM checks WHERE place_id = $1 ORDER BY label ASC`,
+      [place_id2 ?? place_id],
+    )
+    const checks = res.rows
     const len = checks.length
     const index = checks.findIndex((p) => p.check_id === check_id)
     const next = checks[(index + 1) % len]
@@ -63,13 +69,14 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${next.check_id}`,
       search: searchParams.toString(),
     })
-  }, [check_id, db.checks, navigate, place_id, place_id2, searchParams])
+  }, [check_id, db, navigate, place_id, place_id2, searchParams])
 
   const toPrevious = useCallback(async () => {
-    const checks = await db.checks.findMany({
-      where: { place_id: place_id2 ?? place_id },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      `SELECT check_id FROM checks WHERE place_id = $1 ORDER BY label ASC`,
+      [place_id2 ?? place_id],
+    )
+    const checks = res.rows
     const len = checks.length
     const index = checks.findIndex((p) => p.check_id === check_id)
     const previous = checks[(index + len - 1) % len]
@@ -77,7 +84,7 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${previous.check_id}`,
       search: searchParams.toString(),
     })
-  }, [check_id, db.checks, navigate, place_id, place_id2, searchParams])
+  }, [check_id, db, navigate, place_id, place_id2, searchParams])
 
   const alertNoGeometry = useCallback(async () => {
     const data = createNotification({
@@ -85,11 +92,21 @@ export const Header = memo(({ autoFocusRef }) => {
       body: `To zoom to a check, create it's geometry first`,
       intent: 'error',
     })
-    await db.notifications.create({ data })
-  }, [db.notifications])
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+      .map((_, i) => `$${i + 1}`)
+      .join(',')
+    await db.query(
+      `INSERT INTO notifications (${columns}) VALUES (${values})`,
+      Object.values(data),
+    )
+  }, [db])
 
   const onClickZoomTo = useCallback(async () => {
-    const check = await db.checks.findUnique({ where: { check_id } })
+    const res = await db.query(`SELECT * FROM checks WHERE check_id = $1`, [
+      check_id,
+    ])
+    const check = res.rows[0]
     const geometry = check?.geometry
     if (!geometry) return alertNoGeometry()
 
@@ -102,7 +119,7 @@ export const Header = memo(({ autoFocusRef }) => {
     const bounds = boundsFromBbox(newBbox)
     if (!bounds) return alertNoGeometry()
     setMapBounds(bounds)
-  }, [db.checks, check_id, alertNoGeometry, tabs, setMapBounds, setTabs])
+  }, [db, check_id, alertNoGeometry, tabs, setTabs, setMapBounds])
 
   return (
     <FormHeader
