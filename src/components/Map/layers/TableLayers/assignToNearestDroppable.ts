@@ -31,12 +31,12 @@ export const assignToNearestDroppable = async ({
   }
   // TODO: best would be to query using PostGIS functions...
   // 1. get all features from droppable layer
-  const places = await db.places.findMany({
-    where: {
-      parent_id: droppableLayer === 'places1' ? null : { not: null },
-      geometry: { not: null },
-    },
-  })
+  const placesRes = await db.query(
+    `SELECT * FROM places WHERE geometry IS NOT NULL AND parent_id ${
+      droppableLayer === 'places1' ? ' is null' : 'is not null'
+    }`,
+  )
+  const places = placesRes.rows
 
   // 2. get the nearest feature
 
@@ -159,7 +159,14 @@ export const assignToNearestDroppable = async ({
       message: 'No place found to assign to',
       type: 'error',
     })
-    db.notifications.create({ data })
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+      .map((_, i) => `$${i + 1}`)
+      .join(',')
+    db.query(
+      `INSERT INTO notifications (${columns}) VALUES (${values})`,
+      Object.values(data),
+    )
   }
 
   // TODO: really? Maybe better to always confirm?
@@ -172,10 +179,10 @@ export const assignToNearestDroppable = async ({
     // )
     const place_id = placeIdsWithMinDistancesSortedByDistance[0]?.place_id
     // 3.2.1: assign to place
-    db.occurrences.update({
-      where: { occurrence_id: occurrenceId },
-      data: { place_id, not_to_assign: null },
-    })
+    db.query(
+      `UPDATE occurrences SET place_id = $1, not_to_assign = $2 WHERE occurrence_id = $3`,
+      [place_id, null, occurrenceId],
+    )
     return
   }
 
