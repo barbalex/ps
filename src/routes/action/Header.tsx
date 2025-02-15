@@ -28,7 +28,14 @@ export const Header = memo(({ autoFocusRef }) => {
       project_id,
       place_id: place_id2 ?? place_id,
     })
-    await db.actions.create({ data })
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+      .map((_, i) => `$${i + 1}`)
+      .join(',')
+    await db.query(
+      `INSERT INTO actions (${columns}) VALUES (${values})`,
+      Object.values(data),
+    )
     navigate({
       pathname: `../${data.action_id}`,
       search: searchParams.toString(),
@@ -45,15 +52,16 @@ export const Header = memo(({ autoFocusRef }) => {
   ])
 
   const deleteRow = useCallback(async () => {
-    await db.actions.delete({ where: { action_id } })
+    db.query('DELETE FROM actions WHERE action_id = $1', [action_id])
     navigate({ pathname: '..', search: searchParams.toString() })
-  }, [action_id, db.actions, navigate, searchParams])
+  }, [action_id, db, navigate, searchParams])
 
   const toNext = useCallback(async () => {
-    const actions = await db.actions.findMany({
-      where: { place_id: place_id2 ?? place_id },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      'SELECT action_id FROM actions WHERE place_id = $1 ORDER BY label ASC',
+      [place_id2 ?? place_id],
+    )
+    const actions = res.rows
     const len = actions.length
     const index = actions.findIndex((p) => p.action_id === action_id)
     const next = actions[(index + 1) % len]
@@ -61,13 +69,14 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${next.action_id}`,
       search: searchParams.toString(),
     })
-  }, [action_id, db.actions, navigate, place_id, place_id2, searchParams])
+  }, [action_id, db, navigate, place_id, place_id2, searchParams])
 
   const toPrevious = useCallback(async () => {
-    const actions = await db.actions.findMany({
-      where: { place_id: place_id2 ?? place_id },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      'SELECT action_id FROM actions WHERE place_id = $1 ORDER BY label ASC',
+      [place_id2 ?? place_id],
+    )
+    const actions = res.rows
     const len = actions.length
     const index = actions.findIndex((p) => p.action_id === action_id)
     const previous = actions[(index + len - 1) % len]
@@ -75,7 +84,7 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${previous.action_id}`,
       search: searchParams.toString(),
     })
-  }, [action_id, db.actions, navigate, place_id, place_id2, searchParams])
+  }, [action_id, db, navigate, place_id, place_id2, searchParams])
 
   const alertNoGeometry = useCallback(async () => {
     const data = createNotification({
@@ -83,13 +92,22 @@ export const Header = memo(({ autoFocusRef }) => {
       body: `To zoom to an action, create it's geometry first`,
       intent: 'error',
     })
-    await db.notifications.create({ data })
-  }, [db.notifications])
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+      .map((_, i) => `$${i + 1}`)
+      .join(',')
+    await db.query(
+      `INSERT INTO notifications (${columns}) VALUES (${values})`,
+      Object.values(data),
+    )
+  }, [db])
 
   const onClickZoomTo = useCallback(async () => {
-    const action = await db.actions.findUnique({
-      where: { action_id },
-    })
+    const res = await db.query(
+      'SELECT geometry FROM actions WHERE action_id = $1',
+      [action_id],
+    )
+    const action = res.rows[0]
     const geometry = action?.geometry
     if (!geometry) return alertNoGeometry()
 
@@ -104,7 +122,7 @@ export const Header = memo(({ autoFocusRef }) => {
     const bounds = boundsFromBbox(newBbox)
     if (!bounds) return alertNoGeometry()
     setMapBounds(bounds)
-  }, [action_id, alertNoGeometry, db.actions, setMapBounds, setTabs, tabs])
+  }, [action_id, alertNoGeometry, db, setMapBounds, setTabs, tabs])
 
   return (
     <FormHeader
