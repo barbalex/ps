@@ -18,7 +18,14 @@ export const Header = memo(({ autoFocusRef }) => {
       project_id,
       action_id,
     })
-    await db.action_reports.create({ data })
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+      .map((_, i) => `$${i + 1}`)
+      .join(',')
+    await db.query(
+      `INSERT INTO action_reports (${columns}) VALUES (${values})`,
+      Object.values(data),
+    )
     navigate({
       pathname: `../${data.action_report_id}`,
       search: searchParams.toString(),
@@ -27,19 +34,18 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [action_id, autoFocusRef, db, navigate, project_id, searchParams])
 
   const deleteRow = useCallback(async () => {
-    await db.action_reports.delete({
-      where: {
-        action_report_id,
-      },
-    })
+    db.query(`DELETE FROM action_reports WHERE action_report_id = $1`, [
+      action_report_id,
+    ])
     navigate({ pathname: '..', search: searchParams.toString() })
-  }, [action_report_id, db.action_reports, navigate, searchParams])
+  }, [action_report_id, db, navigate, searchParams])
 
   const toNext = useCallback(async () => {
-    const actionReports = await db.action_reports.findMany({
-      where: { action_id },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      `SELECT action_report_id FROM action_reports WHERE action_id = $1 ORDER BY label ASC`,
+      [action_id],
+    )
+    const actionReports = res.rows
     const len = actionReports.length
     const index = actionReports.findIndex(
       (p) => p.action_report_id === action_report_id,
@@ -49,13 +55,14 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${next.action_report_id}`,
       search: searchParams.toString(),
     })
-  }, [action_id, action_report_id, db.action_reports, navigate, searchParams])
+  }, [action_id, action_report_id, db, navigate, searchParams])
 
   const toPrevious = useCallback(async () => {
-    const actionReports = await db.action_reports.findMany({
-      where: { action_id },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      `SELECT action_report_id FROM action_reports WHERE action_id = $1 ORDER BY label ASC`,
+      [action_id],
+    )
+    const actionReports = res.rows
     const len = actionReports.length
     const index = actionReports.findIndex(
       (p) => p.action_report_id === action_report_id,
@@ -65,7 +72,7 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${previous.action_report_id}`,
       search: searchParams.toString(),
     })
-  }, [action_id, action_report_id, db.action_reports, navigate, searchParams])
+  }, [action_id, action_report_id, db, navigate, searchParams])
 
   return (
     <FormHeader
