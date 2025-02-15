@@ -2,26 +2,16 @@
 // fetches vector_layer_displays for vector_layer_id
 // removes no more needed vector_layer_displays
 // adds missing vector_layer_displays
-import { Electric } from '../../generated/client.ts'
-
-type Props = {
-  vectorLayerId: string
-  properties: string[]
-  db: Electric
-}
 
 export const completeVectorLayerDisplaysForLayerWithProperties = async ({
   vectorLayerId,
   properties,
   db,
 }) => {
-  console.log('completeVectorLayerDisplaysForLayerWithProperties', {
-    vectorLayerId,
-    properties,
-  })
-  const vectorLayerDisplays = await db.vector_layer_displays.findMany({
-    where: { vector_layer_id: vectorLayerId },
-  })
+  const vectorLayerDisplays = await db.query(
+    `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1`,
+    [vectorLayerId],
+  )
   console.log(
     'completeVectorLayerDisplaysForLayerWithProperties, vectorLayerDisplays:',
     vectorLayerDisplays,
