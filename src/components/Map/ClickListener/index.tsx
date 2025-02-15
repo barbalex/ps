@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import { useMapEvent, useMap } from 'react-leaflet/hooks'
 import proj4 from 'proj4'
 import { useSetAtom, useAtom } from 'jotai'
-import { usePGlite } from "@electric-sql/pglite-react"
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { layersDataFromRequestData } from './layersDataFromRequestData.ts'
 import { fetchData } from './fetchData.ts'
@@ -51,14 +51,18 @@ export const ClickListener = memo(() => {
         columnPrefix: 'wl.',
       })
       const sqlToAddToWhere = sqlFilter ? ` AND ${sqlFilter}` : ''
-      const wmsLayers = await db.rawQuery({
-        sql: `select wl.wms_service_layer_name, ws.info_format, ws.version, ws.url
-                from wms_layers wl 
-                inner join layer_presentations lp on lp.wms_layer_id = wl.wms_layer_id
-                inner join wms_services ws on ws.wms_service_id = wl.wms_service_id
-                where lp.active = true and wl.project_id = $1${sqlToAddToWhere} order by wl.label`,
-        args: [project_id],
-      })
+      const wmsLayers = await db.query(
+        `
+        select wl.wms_service_layer_name, ws.info_format, ws.version, ws.url
+        from wms_layers wl 
+          inner join layer_presentations lp on lp.wms_layer_id = wl.wms_layer_id
+          inner join wms_services ws on ws.wms_service_id = wl.wms_service_id
+        where lp.active = true and wl.project_id = $1${sqlToAddToWhere} 
+        order by wl.label
+      `,
+        [project_id],
+      )
+
       // loop through vector layers and get infos
       for await (const layer of wmsLayers) {
         const { version, url, wms_service_layer_name, info_format } = layer
@@ -87,30 +91,28 @@ export const ClickListener = memo(() => {
         }
       }
       // 4. Vector Layers from WFS with no downloaded data
-      const vectorLayersWhere =
-        vectorLayersFilter.length > 1
-          ? { OR: vectorLayersFilter }
-          : vectorLayersFilter[0]
-      const vectorLayers = await db.vector_layers.findMany({
-        where: {
-          project_id,
-          ...(vectorLayersWhere ? vectorLayersWhere : {}),
-        },
-        include: {
-          wfs_services: { include: { wfs_service_layers: true } },
-          layer_presentations: true,
-        },
-        orderBy: { label: 'asc' },
-      })
-      const activeVectorLayers = vectorLayers.filter(
-        (l) => l.layer_presentations?.[0]?.active,
+      const activeVectorLayers = await db.query(
+        `
+        SELECT vl.* 
+        FROM vector_layers vl
+          inner join layer_presentations lp on lp.vector_layer_id = vl.vector_layer_id and lp.active = true
+        WHERE project_id = $1${
+          vectorLayersFilter ? ` AND ${vectorLayersFilter}` : ''
+        } 
+        order by label
+      `,
+        [project_id],
       )
       // need to buffer for points and polygons or it will be too hard to get their info
       const bufferFraction = 0.00003
       const buffer = bufferFraction + Math.abs(zoom - 19) * bufferFraction * 2
       // loop through vector layers and get infos
       for await (const layer of activeVectorLayers) {
-        const wfsService = layer.wfs_services
+        const res = await db.query(
+          `SELECT * FROM wfs_services WHERE wfs_service_id = $1`,
+          [layer.wfs_service_id],
+        )
+        const wfsService = await res.rows?.[0]
         if (!wfsService) continue
         // default_crs is of the form: "urn:ogc:def:crs:EPSG::4326"
         // extract the relevant parts for db.crs.code:
@@ -119,9 +121,11 @@ export const ClickListener = memo(() => {
           wfsDefaultCrsArray[0],
           wfsDefaultCrsArray[2],
         ].join(':')
-        const defaultCrs = await db.crs.findFirst({
-          where: { code: wfsDefaultCrsCode },
-        })
+        const defaultCrsRes = await db.query(
+          `SELECT * FROM crs WHERE code = $1`,
+          [wfsDefaultCrsCode],
+        )
+        const defaultCrs = defaultCrsRes.rows?.[0]
         const [x, y] = proj4('EPSG:4326', defaultCrs?.proj4, [
           lng - buffer,
           lat - buffer,
