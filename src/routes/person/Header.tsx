@@ -5,7 +5,11 @@ import { usePGlite } from '@electric-sql/pglite-react'
 import { createPerson } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 
-export const Header = memo(({ autoFocusRef }) => {
+interface Props {
+  autoFocusRef: React.RefObject<HTMLInputElement>
+}
+
+export const Header = memo(({ autoFocusRef }: Props) => {
   const { project_id, person_id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -14,7 +18,14 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const addRow = useCallback(async () => {
     const data = await createPerson({ db, project_id })
-    await db.persons.create({ data })
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+      .map((_, i) => `$${i + 1}`)
+      .join(',')
+    await db.query(
+      `INSERT INTO persons (${columns}) VALUES (${values})`,
+      Object.values(data),
+    )
     navigate({
       pathname: `../${data.person_id}`,
       search: searchParams.toString(),
@@ -23,15 +34,16 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [autoFocusRef, db, navigate, project_id, searchParams])
 
   const deleteRow = useCallback(async () => {
-    await db.persons.delete({ where: { person_id } })
+    await db.query(`DELETE FROM persons WHERE person_id = $1`, [person_id])
     navigate({ pathname: '..', search: searchParams.toString() })
-  }, [db.persons, navigate, person_id, searchParams])
+  }, [db, navigate, person_id, searchParams])
 
   const toNext = useCallback(async () => {
-    const persons = await db.persons.findMany({
-      where: { project_id },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      `SELECT person_id FROM persons WHERE project_id = $1 ORDER BY label ASC`,
+      [project_id],
+    )
+    const persons = res.rows
     const len = persons.length
     const index = persons.findIndex((p) => p.person_id === person_id)
     const next = persons[(index + 1) % len]
@@ -39,13 +51,14 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${next.person_id}`,
       search: searchParams.toString(),
     })
-  }, [db.persons, navigate, person_id, project_id, searchParams])
+  }, [db, navigate, person_id, project_id, searchParams])
 
   const toPrevious = useCallback(async () => {
-    const persons = await db.persons.findMany({
-      where: { project_id },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      `SELECT person_id FROM persons WHERE project_id = $1 ORDER BY label ASC`,
+      [project_id],
+    )
+    const persons = res.rows
     const len = persons.length
     const index = persons.findIndex((p) => p.person_id === person_id)
     const previous = persons[(index + len - 1) % len]
@@ -53,7 +66,7 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${previous.person_id}`,
       search: searchParams.toString(),
     })
-  }, [db.persons, navigate, person_id, project_id, searchParams])
+  }, [db, navigate, person_id, project_id, searchParams])
 
   return (
     <FormHeader
