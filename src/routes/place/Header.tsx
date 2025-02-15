@@ -1,5 +1,4 @@
 import { useCallback, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { TbZoomScan } from 'react-icons/tb'
 import { Button } from '@fluentui/react-components'
@@ -7,6 +6,7 @@ import { bbox } from '@turf/bbox'
 import { buffer } from '@turf/buffer'
 import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import {
   createPlace,
@@ -22,7 +22,8 @@ import { tabsAtom, mapBoundsAtom } from '../../store.ts'
 interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
 }
-export const Header = memo(({ autoFocusRef }) => {
+
+export const Header = memo(({ autoFocusRef }: Props) => {
   const [tabs, setTabs] = useAtom(tabsAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const navigate = useNavigate()
@@ -30,14 +31,12 @@ export const Header = memo(({ autoFocusRef }) => {
   const { project_id, subproject_id, place_id, place_id2 } = useParams()
 
   const db = usePGlite()
-  const { results: placeLevels } = useLiveQuery(
-    db.place_levels.liveMany({
-      where: {
-        project_id,
-        level: place_id2 ? 2 : 1,
-      },
-    }),
+
+  const results = useLiveQuery(
+    `SELECT * FROM place_levels WHERE project_id = $1 AND level = $2`,
+    [project_id, place_id2 ? 2 : 1],
   )
+  const placeLevels = results?.rows ?? []
   const placeNameSingular = placeLevels?.[0]?.name_singular ?? 'Place'
   const placeNamePlural = placeLevels?.[0]?.name_plural ?? 'Places'
 
@@ -59,17 +58,39 @@ export const Header = memo(({ autoFocusRef }) => {
       own_table_level: place_id2 ? 2 : 1,
       label: placeNamePlural,
     })
-    const newVectorLayer = await db.vector_layers.create({ data: vectorLayer })
+    const columnsVL = Object.keys(vectorLayer).join(',')
+    const valuesVL = Object.values(vectorLayer)
+      .map((_, i) => `$${i + 1}`)
+      .join(',')
+    const resultVL = await db.query(
+      `INSERT INTO vector_layers (${columnsVL}) VALUES (${valuesVL}) RETURNING *`,
+      Object.values(vectorLayer),
+    )
+    const newVectorLayer = resultVL.rows?.[0]
 
     const newVLD = createVectorLayerDisplay({
       vector_layer_id: newVectorLayer.vector_layer_id,
     })
-    db.vector_layer_displays.create({ data: newVLD })
+    const columnsVLD = Object.keys(newVLD).join(',')
+    const valuesVLD = Object.values(newVLD)
+      .map((_, i) => `$${i + 1}`)
+      .join(',')
+    db.query(
+      `INSERT INTO vector_layer_displays (${columnsVLD}) VALUES (${valuesVLD})`,
+      Object.values(newVLD),
+    )
 
     const newLP = createLayerPresentation({
       vector_layer_id: newVectorLayer.vector_layer_id,
     })
-    db.layer_presentations.create({ data: newLP })
+    const columnsLP = Object.keys(newLP).join(',')
+    const valuesLP = Object.values(newLP)
+      .map((_, i) => `$${i + 1}`)
+      .join(',')
+    db.query(
+      `INSERT INTO layer_presentations (${columnsLP}) VALUES (${valuesLP})`,
+      Object.values(newLP),
+    )
 
     navigate({
       pathname: `../${data.place_id}`,
@@ -89,18 +110,16 @@ export const Header = memo(({ autoFocusRef }) => {
   ])
 
   const deleteRow = useCallback(async () => {
-    await db.places.delete({ where: { place_id } })
+    db.query(`DELETE FROM places WHERE place_id = $1`, [place_id])
     navigate({ pathname: '..', search: searchParams.toString() })
-  }, [db.places, navigate, place_id, searchParams])
+  }, [db, navigate, place_id, searchParams])
 
   const toNext = useCallback(async () => {
-    const places = await db.places.findMany({
-      where: {
-        parent_id: place_id2 ? place_id : null,
-        subproject_id,
-      },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      `SELECT * FROM places WHERE parent_id = $1 AND subproject_id = $2 ORDER BY label ASC`,
+      [place_id2 ? place_id : null, subproject_id],
+    )
+    const places = res.rows
     const len = places.length
     const index = places.findIndex((p) => p.place_id === place_id)
     const next = places[(index + 1) % len]
@@ -108,16 +127,14 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${next.place_id}`,
       search: searchParams.toString(),
     })
-  }, [db.places, navigate, place_id, place_id2, searchParams, subproject_id])
+  }, [db, navigate, place_id, place_id2, searchParams, subproject_id])
 
   const toPrevious = useCallback(async () => {
-    const places = await db.places.findMany({
-      where: {
-        parent_id: place_id2 ? place_id : null,
-        subproject_id,
-      },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      `SELECT * FROM places WHERE parent_id = $1 AND subproject_id = $2 ORDER BY label ASC`,
+      [place_id2 ? place_id : null, subproject_id],
+    )
+    const places = res.rows
     const len = places.length
     const index = places.findIndex((p) => p.place_id === place_id)
     const previous = places[(index + len - 1) % len]
@@ -125,7 +142,7 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${previous.place_id}`,
       search: searchParams.toString(),
     })
-  }, [db.places, navigate, place_id, place_id2, searchParams, subproject_id])
+  }, [db, navigate, place_id, place_id2, searchParams, subproject_id])
 
   const alertNoGeometry = useCallback(async () => {
     const data = await createNotification({
@@ -133,13 +150,21 @@ export const Header = memo(({ autoFocusRef }) => {
       body: `To zoom to a place, create it's geometry first`,
       intent: 'error',
     })
-    await db.notifications.create({ data })
-  }, [db.notifications])
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+      .map((_, i) => `$${i + 1}`)
+      .join(',')
+    db.query(
+      `INSERT INTO notifications (${columns}) VALUES (${values})`,
+      Object.values(data),
+    )
+  }, [db])
 
   const onClickZoomTo = useCallback(async () => {
-    const place: Place = await db.places.findUnique({
-      where: { place_id: place_id2 ?? place_id },
-    })
+    const res = await db.query(`SELECT * FROM places WHERE place_id = $1`, [
+      place_id2 ?? place_id,
+    ])
+    const place = res.rows?.[0]
     const geometry = place?.geometry
     if (!geometry) {
       return alertNoGeometry()
@@ -156,15 +181,7 @@ export const Header = memo(({ autoFocusRef }) => {
     const bounds = boundsFromBbox(newBbox)
     if (!bounds) return alertNoGeometry()
     setMapBounds(bounds)
-  }, [
-    db.places,
-    place_id2,
-    place_id,
-    tabs,
-    alertNoGeometry,
-    setMapBounds,
-    setTabs,
-  ])
+  }, [db, place_id2, place_id, tabs, alertNoGeometry, setMapBounds, setTabs])
 
   return (
     <FormHeader
