@@ -14,33 +14,36 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const addRow = useCallback(async () => {
     const actionValue = createActionValue()
-    await db.action_values.create({
-      data: {
-        ...actionValue,
-        action_id,
-      },
-    })
+    const columns = Object.keys(actionValue).join(',')
+    const values = Object.values(actionValue)
+      .map((_, i) => `$${i + 1}`)
+      .join(',')
+    await db.query(
+      `INSERT INTO action_values (${columns}, action_id) VALUES (${values}, $${
+        Object.values(actionValue).length + 1
+      })`,
+      [...Object.values(actionValue), action_id],
+    )
     navigate({
       pathname: `../${actionValue.action_value_id}`,
       search: searchParams.toString(),
     })
     autoFocusRef.current?.focus()
-  }, [action_id, autoFocusRef, db.action_values, navigate, searchParams])
+  }, [action_id, autoFocusRef, db, navigate, searchParams])
 
   const deleteRow = useCallback(async () => {
-    await db.action_values.delete({
-      where: {
-        action_value_id,
-      },
-    })
+    db.query('DELETE FROM action_values WHERE action_value_id = $1', [
+      action_value_id,
+    ])
     navigate({ pathname: '..', search: searchParams.toString() })
-  }, [action_value_id, db.action_values, navigate, searchParams])
+  }, [action_value_id, db, navigate, searchParams])
 
   const toNext = useCallback(async () => {
-    const actionValues = await db.action_values.findMany({
-      where: { action_id },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      'SELECT * FROM action_values WHERE action_id = $1 ORDER BY label ASC',
+      [action_id],
+    )
+    const actionValues = res.rows
     const len = actionValues.length
     const index = actionValues.findIndex(
       (p) => p.action_value_id === action_value_id,
@@ -50,13 +53,14 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${next.action_value_id}`,
       search: searchParams.toString(),
     })
-  }, [action_id, action_value_id, db.action_values, navigate, searchParams])
+  }, [action_id, action_value_id, db, navigate, searchParams])
 
   const toPrevious = useCallback(async () => {
-    const actionValues = await db.action_values.findMany({
-      where: { action_id },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      'SELECT * FROM action_values WHERE action_id = $1 ORDER BY label ASC',
+      [action_id],
+    )
+    const actionValues = res.rows
     const len = actionValues.length
     const index = actionValues.findIndex(
       (p) => p.action_value_id === action_value_id,
@@ -66,7 +70,7 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${previous.action_value_id}`,
       search: searchParams.toString(),
     })
-  }, [action_id, action_value_id, db.action_values, navigate, searchParams])
+  }, [action_id, action_value_id, db, navigate, searchParams])
 
   return (
     <FormHeader
