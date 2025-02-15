@@ -21,11 +21,12 @@ export const PVLGeom = ({ layer, display }) => {
   const notificationIds = useRef([])
 
   const removeNotifs = useCallback(async () => {
-    await db.notifications.deleteMany({
-      where: { notification_id: { in: notificationIds.current } },
-    })
+    await db.query(
+      `DELETE FROM notifications WHERE notification_id = ANY($1)`,
+      [notificationIds.current],
+    )
     notificationIds.current = []
-  }, [db.notifications])
+  }, [db])
 
   const map = useMap()
 
@@ -43,23 +44,42 @@ export const PVLGeom = ({ layer, display }) => {
         intent: 'info',
         timeout: 100000,
       })
-      db.notifications.create({ data: notificationData })
+      const columns = Object.keys(notificationData).join(',')
+      const values = Object.values(notificationData)
+        .map((_, i) => `$${i + 1}`)
+        .join(',')
+      db.query(
+        `INSERT INTO notifications (${columns}) VALUES (${values})`,
+        Object.values(notificationData),
+      )
       notificationIds.current = [
         notificationData.notification_id,
         ...notificationIds.current,
       ]
 
-      const { results: vectorLayerGeoms = [] } =
-        await db.vector_layer_geoms.findMany({
-          where: {
-            vector_layer_id: layer.vector_layer_id,
-            bbox_sw_lng: { gt: bounds._southWest.lng },
-            bbox_sw_lat: { gt: bounds._southWest.lat },
-            bbox_ne_lng: { lt: bounds._northEast.lng },
-            bbox_ne_lat: { lt: bounds._northEast.lat },
-          },
-          take: layer.max_features ?? 1000,
-        })
+      const { rows: vectorLayerGeoms = [] } = await db.query(
+        `
+        SELECT
+          geometry,
+          properties
+        FROM vector_layer_geoms
+        WHERE
+          vector_layer_id = $1
+          AND bbox_sw_lng > $2
+          AND bbox_sw_lat > $3
+          AND bbox_ne_lng < $4
+          AND bbox_ne_lat < $5
+        LIMIT $6
+      `,
+        [
+          layer.vector_layer_id,
+          bounds._southWest.lng,
+          bounds._southWest.lat,
+          bounds._northEast.lng,
+          bounds._northEast.lat,
+          layer.max_features ?? 1000,
+        ],
+      )
 
       const data = vectorLayerGeoms.map((pvlGeom) => ({
         ...pvlGeom.geometry,
@@ -72,11 +92,10 @@ export const PVLGeom = ({ layer, display }) => {
     },
     [
       removeNotifs,
-      db.notifications,
-      db.vector_layer_geoms,
       layer.label,
       layer.vector_layer_id,
       layer.max_features,
+      db,
       map,
     ],
   )
@@ -122,7 +141,14 @@ export const PVLGeom = ({ layer, display }) => {
       intent: 'warning',
       timeout: 10000,
     })
-    db.notifications.create({ data })
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+      .map((_, i) => `$${i + 1}`)
+      .join(',')
+    db.query(
+      `INSERT INTO notifications (${columns}) VALUES (${values})`,
+      Object.values(data),
+    )
     notificationIds.current = [data.notification_id, ...notificationIds.current]
   }
 
@@ -153,10 +179,7 @@ export const PVLGeom = ({ layer, display }) => {
             },
           ]
           const popupContent = ReactDOMServer.renderToString(
-            <Popup
-              layersData={layersData}
-              mapSize={mapSize}
-            />,
+            <Popup layersData={layersData} mapSize={mapSize} />,
           )
           _layer.bindPopup(popupContent)
         }}
