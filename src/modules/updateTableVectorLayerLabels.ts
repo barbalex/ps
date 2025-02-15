@@ -1,13 +1,14 @@
 export const updateTableVectorLayerLabels = async ({ db, project_id }) => {
-  const placeLevels = await db.place_levels.findMany({
-    where: { project_id },
-  })
-  const tableVectorLayers = await db.vector_layers.findMany({
-    where: {
-      project_id,
-      type: 'own',
-    },
-  })
+  const plRes = await db.query(
+    `SELECT * FROM place_levels WHERE project_id = $1`,
+    [project_id],
+  )
+  const placeLevels = plRes.rows
+  const tVLRes = await db.query(
+    `SELECT * FROM vector_layers WHERE project_id = $1 AND type = 'own'`,
+    [project_id],
+  )
+  const tableVectorLayers = tVLRes.rows
   // loop allVectorLayers and update label using placeLevels
   for (const vl of tableVectorLayers) {
     const level = vl.type.slice(-1)
@@ -33,10 +34,10 @@ export const updateTableVectorLayerLabels = async ({ db, project_id }) => {
       }
       // if label is different, update it
       if (label && label !== vl.label) {
-        await db.vector_layers.update({
-          where: { vector_layer_id: vl.vector_layer_id },
-          data: { label },
-        })
+        await db.query(
+          `UPDATE vector_layers SET label = $1 WHERE vector_layer_id = $2`,
+          [label, vl.vector_layer_id],
+        )
       }
     }
   }
