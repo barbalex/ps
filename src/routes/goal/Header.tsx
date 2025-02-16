@@ -14,7 +14,14 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const addRow = useCallback(async () => {
     const data = await createGoal({ db, project_id, subproject_id })
-    await db.goals.create({ data })
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+      .map((_, i) => `$${i + 1}`)
+      .join(',')
+    await db.query(
+      `INSERT INTO goals (${columns}) VALUES (${values})`,
+      Object.values(data),
+    )
     navigate({
       pathname: `../${data.goal_id}`,
       search: searchParams.toString(),
@@ -23,15 +30,16 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [autoFocusRef, db, navigate, project_id, subproject_id, searchParams])
 
   const deleteRow = useCallback(async () => {
-    await db.goals.delete({ where: { goal_id } })
+    await db.query(`DELETE FROM goals WHERE goal_id = $1`, [goal_id])
     navigate({ pathname: '..', search: searchParams.toString() })
-  }, [db.goals, goal_id, navigate, searchParams])
+  }, [db, goal_id, navigate, searchParams])
 
   const toNext = useCallback(async () => {
-    const goals = await db.goals.findMany({
-      where: { subproject_id },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      `Select * from goals where subproject_id = $1 order by label asc`,
+      [subproject_id],
+    )
+    const goals = res.rows
     const len = goals.length
     const index = goals.findIndex((p) => p.goal_id === goal_id)
     const next = goals[(index + 1) % len]
@@ -39,13 +47,14 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${next.goal_id}`,
       search: searchParams.toString(),
     })
-  }, [db.goals, goal_id, navigate, subproject_id, searchParams])
+  }, [db, subproject_id, navigate, searchParams, goal_id])
 
   const toPrevious = useCallback(async () => {
-    const goals = await db.goals.findMany({
-      where: { subproject_id },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      `Select * from goals where subproject_id = $1 order by label asc`,
+      [subproject_id],
+    )
+    const goals = res.rows
     const len = goals.length
     const index = goals.findIndex((p) => p.goal_id === goal_id)
     const previous = goals[(index + len - 1) % len]
@@ -53,7 +62,7 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${previous.goal_id}`,
       search: searchParams.toString(),
     })
-  }, [db.goals, goal_id, navigate, subproject_id, searchParams])
+  }, [db, subproject_id, navigate, searchParams, goal_id])
 
   return (
     <FormHeader
