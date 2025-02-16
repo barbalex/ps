@@ -14,7 +14,14 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const addRow = useCallback(async () => {
     const data = await createList({ db, project_id })
-    await db.lists.create({ data })
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+      .map((_, i) => `$${i + 1}`)
+      .join(',')
+    await db.query(
+      `INSERT INTO lists (${columns}) VALUES (${values})`,
+      Object.values(data),
+    )
     navigate({
       pathname: `../${data.list_id}`,
       search: searchParams.toString(),
@@ -23,15 +30,16 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [autoFocusRef, db, navigate, project_id, searchParams])
 
   const deleteRow = useCallback(async () => {
-    await db.lists.delete({ where: { list_id } })
+    db.query(`DELETE FROM lists WHERE list_id = $1`, [list_id])
     navigate({ pathname: '..', search: searchParams.toString() })
-  }, [db.lists, list_id, navigate, searchParams])
+  }, [db, list_id, navigate, searchParams])
 
   const toNext = useCallback(async () => {
-    const lists = await db.lists.findMany({
-      where: {  project_id },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      `SELECT list_id FROM lists WHERE project_id = $1 ORDER BY label ASC`,
+      [project_id],
+    )
+    const lists = res.rows
     const len = lists.length
     const index = lists.findIndex((p) => p.list_id === list_id)
     const next = lists[(index + 1) % len]
@@ -39,13 +47,14 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${next.list_id}`,
       search: searchParams.toString(),
     })
-  }, [db.lists, list_id, navigate, project_id, searchParams])
+  }, [db, list_id, navigate, project_id, searchParams])
 
   const toPrevious = useCallback(async () => {
-    const lists = await db.lists.findMany({
-      where: {  project_id },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      `SELECT list_id FROM lists WHERE project_id = $1 ORDER BY label ASC`,
+      [project_id],
+    )
+    const lists = res.rows
     const len = lists.length
     const index = lists.findIndex((p) => p.list_id === list_id)
     const previous = lists[(index + len - 1) % len]
@@ -53,7 +62,7 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${previous.list_id}`,
       search: searchParams.toString(),
     })
-  }, [db.lists, list_id, navigate, project_id, searchParams])
+  }, [db, list_id, navigate, project_id, searchParams])
 
   return (
     <FormHeader
