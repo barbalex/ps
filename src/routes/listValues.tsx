@@ -2,7 +2,7 @@ import { useCallback, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
-import { createListValue } from '../modules/createRows.ts'
+import { createList, createListValue } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import '../form.css'
@@ -21,15 +21,10 @@ export const Component = memo(() => {
   const listValues = result?.rows ?? []
 
   const add = useCallback(async () => {
-    const data = { ...createListValue(), list_id }
-    const columns = Object.keys(data).join(',')
-    const values = Object.values(data)
-    const sql = `insert into list_values (${columns}) values (${values
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(sql, values)
+    const res = await createListValue({ db, list_id })
+    const list_value_id = res.rows?.[0]?.list_value_id
     navigate({
-      pathname: data.list_value_id,
+      pathname: list_value_id,
       search: searchParams.toString(),
     })
   }, [db, list_id, navigate, searchParams])

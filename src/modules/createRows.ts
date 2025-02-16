@@ -277,17 +277,12 @@ export const createTaxon = () => ({
   taxon_id: uuidv7(),
 })
 
-export const createListValue = (val) => {
-  const value = val?.value ?? null
-  const list_id = val?.list_id ?? null
-  return {
-    list_value_id: uuidv7(),
-    account_id: '018cf958-27e2-7000-90d3-59f024d467be', // TODO: replace with auth data when implemented
-    list_id,
-    value,
-    obsolete: false,
-  }
-}
+export const createListValue = ({ list_id, db }) =>
+  db.query(
+    `insert into list_values (list_value_id, account_id, list_id, obsolete) values ($1, $2, $3, $4) 
+    returnning list_value_id`,
+    [uuidv7(), '018cf958-27e2-7000-90d3-59f024d467be', list_id, false],
+  )
 
 export const createGoal = async ({ db, project_id, subproject_id }) => {
   // find fields with preset values on the data column
