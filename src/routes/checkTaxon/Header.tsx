@@ -14,31 +14,36 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const addRow = useCallback(async () => {
     const checkTaxon = createCheckTaxon()
-    await db.check_taxa.create({
-      data: {
-        ...checkTaxon,
-        check_id,
-      },
-    })
+    const columns = Object.keys(checkTaxon).join(',')
+    const values = Object.values(checkTaxon)
+      .map((_, i) => `$${i + 1}`)
+      .join(',')
+    await db.query(
+      `INSERT INTO check_taxa (${columns}, check_id) VALUES (${values}, ${
+        Object.values(checkTaxon).length + 1
+      })`,
+      [...Object.values(checkTaxon), check_id],
+    )
     navigate({
       pathname: `../${checkTaxon.check_taxon_id}`,
       search: searchParams.toString(),
     })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, check_id, db.check_taxa, navigate, searchParams])
+  }, [autoFocusRef, check_id, db, navigate, searchParams])
 
   const deleteRow = useCallback(async () => {
-    await db.check_taxa.delete({
-      where: { check_taxon_id },
-    })
+    db.query('DELETE FROM check_taxa WHERE check_taxon_id = $1', [
+      check_taxon_id,
+    ])
     navigate({ pathname: '..', search: searchParams.toString() })
-  }, [check_taxon_id, db.check_taxa, navigate, searchParams])
+  }, [check_taxon_id, db, navigate, searchParams])
 
   const toNext = useCallback(async () => {
-    const checkTaxa = await db.check_taxa.findMany({
-      where: { check_id },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      'SELECT check_taxon_id FROM check_taxa WHERE check_id = $1 ORDER BY label ASC',
+      [check_id],
+    )
+    const checkTaxa = res.rows
     const len = checkTaxa.length
     const index = checkTaxa.findIndex(
       (p) => p.check_taxon_id === check_taxon_id,
@@ -48,13 +53,14 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${next.check_taxon_id}`,
       search: searchParams.toString(),
     })
-  }, [check_id, check_taxon_id, db.check_taxa, navigate, searchParams])
+  }, [check_id, check_taxon_id, db, navigate, searchParams])
 
   const toPrevious = useCallback(async () => {
-    const checkTaxa = await db.check_taxa.findMany({
-      where: { check_id },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      'SELECT check_taxon_id FROM check_taxa WHERE check_id = $1 ORDER BY label ASC',
+      [check_id],
+    )
+    const checkTaxa = res.rows
     const len = checkTaxa.length
     const index = checkTaxa.findIndex(
       (p) => p.check_taxon_id === check_taxon_id,
@@ -64,7 +70,7 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${previous.check_taxon_id}`,
       search: searchParams.toString(),
     })
-  }, [check_id, check_taxon_id, db.check_taxa, navigate, searchParams])
+  }, [check_id, check_taxon_id, db, navigate, searchParams])
 
   return (
     <FormHeader
