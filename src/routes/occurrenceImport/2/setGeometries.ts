@@ -32,10 +32,11 @@ export const setGeometries = async ({
   ])
 
   // const occurrences = occurrenceImport?.occurrences ?? []
-  const occurrences = await db.occurrences.findMany({
-    where: { occurrence_import_id: occurrenceImport?.occurrence_import_id },
-  })
-  const occurrencesWithoutGeometry = occurrences?.filter((o) => !o.geometry)
+  const res = await db.query(
+    `SELECT * FROM occurrences WHERE occurrence_import_id = $1 AND geometry IS NULL`,
+    [occurrenceImport?.occurrence_import_id],
+  )
+  const occurrencesWithoutGeometry = res?.rows
   // unfortunately, updateMany can only be used to update many with a same value
   for (const o of occurrencesWithoutGeometry) {
     const coordinates = [
@@ -46,9 +47,9 @@ export const setGeometries = async ({
     // TODO: why is reversing needed? is it a bug?
     const myPoint: Point = point(position.reverse())
     const geometry = featureCollection([myPoint])
-    db.occurrences.update({
-      where: { occurrence_id: o.occurrence_id },
-      data: { geometry },
-    })
+    db.query(`UPDATE occurrences SET geometry = $1 WHERE occurrence_id = $2`, [
+      geometry,
+      o.occurrence_id,
+    ])
   }
 }
