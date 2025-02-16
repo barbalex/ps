@@ -326,10 +326,11 @@ export const createSubprojectUser = () => ({
   role: 'reader',
 })
 
-export const createPlaceUser = () => ({
-  place_user_id: uuidv7(),
-  role: 'reader',
-})
+export const createPlaceUser = async ({ place_id, db }) =>
+  db.query(
+    `insert into place_users (place_user_id, place_id, role) values ($1, $2, $3) returning place_user_id`,
+    [uuidv7(), place_id, 'reader'],
+  )
 
 export const createSubprojectTaxon = () => ({
   subproject_taxon_id: uuidv7(),
@@ -449,7 +450,7 @@ export const createPlaceReport = async ({ db, project_id, place_id }) => {
   )
 }
 
-export const createPlaceReportValue = async({ place_report_id, db }) =>
+export const createPlaceReportValue = async ({ place_report_id, db }) =>
   db.query(
     `insert into place_report_values (place_report_value_id, place_report_id) values ($1, $2) returning place_report_value_id`,
     [uuidv7(), place_report_id],

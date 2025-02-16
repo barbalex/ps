@@ -20,15 +20,10 @@ export const Component = memo(() => {
   const placeUsers = result?.rows ?? []
 
   const add = useCallback(async () => {
-    const data = { ...createPlaceUser(), place_id: place_id2 ?? place_id }
-    const columns = Object.keys(data).join(',')
-    const values = Object.values(data)
-    const sql = `INSERT INTO place_users (${columns}) VALUES (${values
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(sql, values)
+    const res = createPlaceUser({ place_id: place_id2 ?? place_id, db })
+    const placeUser = res.rows[0]
     navigate({
-      pathname: data.place_user_id,
+      pathname: placeUser.place_user_id,
       search: searchParams.toString(),
     })
   }, [db, navigate, place_id, place_id2, searchParams])
