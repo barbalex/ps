@@ -169,11 +169,11 @@ export const createCrs = () => ({
   crs_id: uuidv7(),
 })
 
-export const createProjectCrs = ({ project_id, data = {} }) => ({
-  project_crs_id: uuidv7(),
-  project_id,
-  ...data,
-})
+export const createProjectCrs = async ({ project_id, db }) =>
+  db.query(
+    `insert into project_crs (project_crs_id, project_id) values ($1, $2) returning project_crs_id`,
+    [uuidv7(), project_id],
+  )
 
 export const createField = ({
   project_id = null,

@@ -1,7 +1,6 @@
 import { useCallback, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { createProjectCrs } from '../../modules/createRows.ts'
 import { ListViewHeader } from '../../components/ListViewHeader/index.tsx'
@@ -16,18 +15,19 @@ export const Component = memo(() => {
 
   const db = usePGlite()
 
-  const { results: projectCrs = [] } = useLiveQuery(
-    db.project_crs.liveMany({
-      where: { project_id },
-      orderBy: { label: 'asc' },
-    }),
+  const { rows: projectCrs = [] } = useLiveQuery(
+    `SELECT * FROM project_crs WHERE project_id = $1 ORDER BY label ASC`,
+    [project_id],
   )
 
   const add = useCallback(async () => {
-    const data = await createProjectCrs({ project_id })
-    await db.project_crs.create({ data })
-    navigate({ pathname: data.project_crs_id, search: searchParams.toString() })
-  }, [db.project_crs, navigate, project_id, searchParams])
+    const res = await createProjectCrs({ project_id, db })
+    const projectCrs = res.rows[0]
+    navigate({
+      pathname: projectCrs.project_crs_id,
+      search: searchParams.toString(),
+    })
+  }, [db, navigate, project_id, searchParams])
 
   return (
     <div className="list-view">
