@@ -433,13 +433,20 @@ export const createPlaceReport = async ({ db, project_id, place_id }) => {
     table: 'place_reports',
   })
 
-  return {
+  const data = {
     place_report_id: uuidv7(),
     place_id,
     year: new Date().getFullYear(),
-
     ...presetData,
   }
+  const columns = Object.keys(data).join(',')
+  const values = Object.values(data)
+    .map((_, i) => `$${i + 1}`)
+    .join(',')
+  return db.query(
+    `insert into place_reports (${columns}) values (${values}) returning place_report_id`,
+    Object.values(data),
+  )
 }
 
 export const createPlaceReportValue = () => ({
