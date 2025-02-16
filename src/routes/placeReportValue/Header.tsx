@@ -13,36 +13,29 @@ export const Header = memo(({ autoFocusRef }) => {
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const placeReportValue = createPlaceReportValue()
-    await db.place_report_values.create({
-      data: {
-        ...placeReportValue,
-        place_report_id,
-      },
-    })
+    const res = await createPlaceReportValue({ db, place_report_id })
+    const placeReportValue = res.rows[0]
     navigate({
       pathname: `../${placeReportValue.place_report_value_id}`,
       search: searchParams.toString(),
     })
     autoFocusRef.current?.focus()
-  }, [
-    autoFocusRef,
-    db.place_report_values,
-    navigate,
-    place_report_id,
-    searchParams,
-  ])
+  }, [autoFocusRef, db, navigate, place_report_id, searchParams])
 
   const deleteRow = useCallback(async () => {
-    await db.place_report_values.delete({ where: { place_report_value_id } })
+    db.query(
+      `DELETE FROM place_report_values WHERE place_report_value_id = $1`,
+      [place_report_value_id],
+    )
     navigate({ pathname: '..', search: searchParams.toString() })
-  }, [db.place_report_values, navigate, place_report_value_id, searchParams])
+  }, [db, navigate, place_report_value_id, searchParams])
 
   const toNext = useCallback(async () => {
-    const placeReportValues = await db.place_report_values.findMany({
-      where: { place_report_id },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      `SELECT * FROM place_report_values WHERE place_report_id = $1 ORDER BY label ASC`,
+      [place_report_id],
+    )
+    const placeReportValues = res.rows
     const len = placeReportValues.length
     const index = placeReportValues.findIndex(
       (p) => p.place_report_value_id === place_report_value_id,
@@ -52,19 +45,14 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${next.place_report_value_id}`,
       search: searchParams.toString(),
     })
-  }, [
-    db.place_report_values,
-    navigate,
-    place_report_id,
-    place_report_value_id,
-    searchParams,
-  ])
+  }, [db, navigate, place_report_id, place_report_value_id, searchParams])
 
   const toPrevious = useCallback(async () => {
-    const placeReportValues = await db.place_report_values.findMany({
-      where: { place_report_id },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      `SELECT place_report_value_id FROM place_report_values WHERE place_report_id = $1 ORDER BY label ASC`,
+      [place_report_id],
+    )
+    const placeReportValues = res.rows
     const len = placeReportValues.length
     const index = placeReportValues.findIndex(
       (p) => p.place_report_value_id === place_report_value_id,
@@ -74,13 +62,7 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${previous.place_report_value_id}`,
       search: searchParams.toString(),
     })
-  }, [
-    db.place_report_values,
-    navigate,
-    place_report_id,
-    place_report_value_id,
-    searchParams,
-  ])
+  }, [db, navigate, place_report_id, place_report_value_id, searchParams])
 
   return (
     <FormHeader

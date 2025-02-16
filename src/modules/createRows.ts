@@ -449,9 +449,11 @@ export const createPlaceReport = async ({ db, project_id, place_id }) => {
   )
 }
 
-export const createPlaceReportValue = () => ({
-  place_report_value_id: uuidv7(),
-})
+export const createPlaceReportValue = async({ place_report_id, db }) =>
+  db.query(
+    `insert into place_report_values (place_report_value_id, place_report_id) values ($1, $2) returning place_report_value_id`,
+    [uuidv7(), place_report_id],
+  )
 
 export const createMessage = () => ({
   message_id: uuidv7(),

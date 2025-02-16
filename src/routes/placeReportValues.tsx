@@ -20,15 +20,10 @@ export const Component = memo(() => {
   const placeReportValues = result.rows ?? []
 
   const add = useCallback(async () => {
-    const data = { ...createPlaceReportValue(), place_report_id }
-    const columns = Object.keys(data).join(',')
-    const values = Object.values(data)
-    const sql = `INSERT INTO place_report_values (${columns}) VALUES (${values
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(sql, values)
+    const res = await createPlaceReportValue({ place_report_id, db })
+    const placeReportValue = res.rows[0]
     navigate({
-      pathname: data.place_report_value_id,
+      pathname: placeReportValue.place_report_value_id,
       search: searchParams.toString(),
     })
   }, [db, navigate, place_report_id, searchParams])
