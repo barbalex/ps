@@ -12,10 +12,11 @@ export const Header = memo(() => {
   const db = usePGlite()
 
   const toNext = useCallback(async () => {
-    const occurrences = await db.occurrences.findMany({
-      where: { project_id },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      'SELECT occurrence_id FROM occurrences WHERE project_id = $1 ORDER BY label ASC',
+      [project_id],
+    )
+    const occurrences = res.rows
     const len = occurrences.length
     const index = occurrences.findIndex(
       (p) => p.occurrence_id === occurrence_id,
@@ -25,13 +26,14 @@ export const Header = memo(() => {
       pathname: `../${next.occurrence_id}`,
       search: searchParams.toString(),
     })
-  }, [db.occurrences, navigate, occurrence_id, project_id, searchParams])
+  }, [db, navigate, occurrence_id, project_id, searchParams])
 
   const toPrevious = useCallback(async () => {
-    const occurrences = await db.occurrences.findMany({
-      where: { project_id },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      'SELECT occurrence_id FROM occurrences WHERE project_id = $1 ORDER BY label ASC',
+      [project_id],
+    )
+    const occurrences = res.rows
     const len = occurrences.length
     const index = occurrences.findIndex(
       (p) => p.occurrence_id === occurrence_id,
@@ -41,7 +43,7 @@ export const Header = memo(() => {
       pathname: `../${previous.occurrence_id}`,
       search: searchParams.toString(),
     })
-  }, [db.occurrences, navigate, occurrence_id, project_id, searchParams])
+  }, [db, navigate, occurrence_id, project_id, searchParams])
 
   return (
     <FormHeader
