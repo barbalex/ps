@@ -14,7 +14,14 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const addRow = useCallback(async () => {
     const data = await createGoalReport({ db, project_id, goal_id })
-    await db.goal_reports.create({ data })
+    const columns = Object.keys(data).join(',')
+    const values = Object.values(data)
+      .map((_, i) => `$${i + 1}`)
+      .join(',')
+    await db.query(
+      `insert into goal_reports (${columns}) values (${values})`,
+      Object.values(data),
+    )
     navigate({
       pathname: `../${data.goal_report_id}`,
       search: searchParams.toString(),
@@ -23,15 +30,18 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [autoFocusRef, db, goal_id, navigate, project_id, searchParams])
 
   const deleteRow = useCallback(async () => {
-    await db.goal_reports.delete({ where: { goal_report_id } })
+    db.query(`DELETE FROM goal_reports WHERE goal_report_id = $1`, [
+      goal_report_id,
+    ])
     navigate({ pathname: '..', search: searchParams.toString() })
-  }, [db.goal_reports, goal_report_id, navigate, searchParams])
+  }, [db, goal_report_id, navigate, searchParams])
 
   const toNext = useCallback(async () => {
-    const goalReports = await db.goal_reports.findMany({
-      where: { goal_id },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      `SELECT goal_report_id FROM goal_reports WHERE goal_id = $1 ORDER BY label ASC`,
+      [goal_id],
+    )
+    const goalReports = res.rows
     const len = goalReports.length
     const index = goalReports.findIndex(
       (p) => p.goal_report_id === goal_report_id,
@@ -41,13 +51,14 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${next.goal_report_id}`,
       search: searchParams.toString(),
     })
-  }, [db.goal_reports, goal_id, goal_report_id, navigate, searchParams])
+  }, [db, goal_id, goal_report_id, navigate, searchParams])
 
   const toPrevious = useCallback(async () => {
-    const goalReports = await db.goal_reports.findMany({
-      where: { goal_id },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      `SELECT goal_report_id FROM goal_reports WHERE goal_id = $1 ORDER BY label ASC`,
+      [goal_id],
+    )
+    const goalReports = res.rows
     const len = goalReports.length
     const index = goalReports.findIndex(
       (p) => p.goal_report_id === goal_report_id,
@@ -57,7 +68,7 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${previous.goal_report_id}`,
       search: searchParams.toString(),
     })
-  }, [db.goal_reports, goal_id, goal_report_id, navigate, searchParams])
+  }, [db, goal_id, goal_report_id, navigate, searchParams])
 
   return (
     <FormHeader
