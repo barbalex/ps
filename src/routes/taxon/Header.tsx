@@ -13,25 +13,26 @@ export const Header = memo(({ autoFocusRef }) => {
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const taxon = createTaxon()
-    await db.taxa.create({ data: { ...taxon, taxonomy_id } })
+    const res = createTaxon({ taxonomy_id, db })
+    const taxon = res.rows[0]
     navigate({
       pathname: `../${taxon.taxon_id}`,
       search: searchParams.toString(),
     })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db.taxa, navigate, taxonomy_id, searchParams])
+  }, [autoFocusRef, db, navigate, taxonomy_id, searchParams])
 
   const deleteRow = useCallback(async () => {
-    await db.taxa.delete({ where: { taxon_id } })
+    db.query(`DELETE FROM taxa WHERE taxon_id = $1`, [taxon_id])
     navigate({ pathname: '..', search: searchParams.toString() })
-  }, [db.taxa, navigate, taxon_id, searchParams])
+  }, [db, navigate, taxon_id, searchParams])
 
   const toNext = useCallback(async () => {
-    const taxa = await db.taxa.findMany({
-      where: { taxonomy_id },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      `SELECT taxon_id FROM taxa WHERE taxonomy_id = $1 ORDER BY label ASC`,
+      [taxonomy_id],
+    )
+    const taxa = res.rows
     const len = taxa.length
     const index = taxa.findIndex((p) => p.taxon_id === taxon_id)
     const next = taxa[(index + 1) % len]
@@ -39,13 +40,14 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${next.taxon_id}`,
       search: searchParams.toString(),
     })
-  }, [db.taxa, navigate, taxon_id, taxonomy_id, searchParams])
+  }, [db, navigate, taxon_id, taxonomy_id, searchParams])
 
   const toPrevious = useCallback(async () => {
-    const taxa = await db.taxa.findMany({
-      where: { taxonomy_id },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      `SELECT taxon_id FROM taxa WHERE taxonomy_id = $1 ORDER BY label ASC`,
+      [taxonomy_id],
+    )
+    const taxa = res.rows
     const len = taxa.length
     const index = taxa.findIndex((p) => p.taxon_id === taxon_id)
     const previous = taxa[(index + len - 1) % len]
@@ -53,7 +55,7 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${previous.taxon_id}`,
       search: searchParams.toString(),
     })
-  }, [db.taxa, navigate, taxon_id, taxonomy_id, searchParams])
+  }, [db, navigate, taxon_id, taxonomy_id, searchParams])
 
   return (
     <FormHeader

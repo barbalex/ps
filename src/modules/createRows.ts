@@ -274,9 +274,11 @@ export const createPlaceLevel = () => ({
   occurrences: true,
 })
 
-export const createTaxon = () => ({
-  taxon_id: uuidv7(),
-})
+export const createTaxon = async ({ taxonomy_id, db }) =>
+  db.query(
+    `insert into taxa (taxon_id, taxonomy_id) values ($1, $2) returning taxon_id`,
+    [uuidv7(), taxonomy_id],
+  )
 
 export const createListValue = ({ list_id, db }) =>
   db.query(

@@ -20,13 +20,8 @@ export const Component = memo(() => {
   const taxa = result.rows ?? []
 
   const add = useCallback(async () => {
-    const taxon = { ...createTaxon(), taxonomy_id }
-    const columns = Object.keys(taxon).join(',')
-    const values = Object.values(taxon)
-    const sql = `insert into taxa (${columns}) values (${values
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(sql, values)
+    const res = await createTaxon({ taxonomy_id, db })
+    const taxon = res.rows[0]
     navigate({ pathname: taxon.taxon_id, search: searchParams.toString() })
   }, [db, navigate, searchParams, taxonomy_id])
 
@@ -42,11 +37,7 @@ export const Component = memo(() => {
       />
       <div className="list-container">
         {taxa.map(({ taxon_id, label }) => (
-          <Row
-            key={taxon_id}
-            label={label ?? taxon_id}
-            to={taxon_id}
-          />
+          <Row key={taxon_id} label={label ?? taxon_id} to={taxon_id} />
         ))}
       </div>
     </div>
