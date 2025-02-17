@@ -237,10 +237,11 @@ export const createTaxonomy = async ({ db, project_id }) => {
   }
 }
 
-export const createProjectUser = () => ({
-  project_user_id: uuidv7(),
-  role: 'reader',
-})
+export const createProjectUser = async ({ project_id, db }) =>
+  db.query(
+    `insert into project_users (project_user_id, project_id, role) values ($1, $2, $3) returning project_user_id`,
+    [uuidv7(), project_id, 'reader'],
+  )
 
 export const createProjectReport = async ({ db, project_id }) => {
   // find fields with preset values on the data column

@@ -13,27 +13,27 @@ export const Header = memo(({ autoFocusRef }) => {
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const projectUser = createProjectUser()
-    await db.project_users.create({
-      data: { ...projectUser, project_id },
-    })
+    const projectUser = await createProjectUser({ project_id, db })
     navigate({
       pathname: `../${projectUser.project_user_id}`,
       search: searchParams.toString(),
     })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db.project_users, navigate, project_id, searchParams])
+  }, [autoFocusRef, db, navigate, project_id, searchParams])
 
   const deleteRow = useCallback(async () => {
-    await db.project_users.delete({ where: { project_user_id } })
+    db.query(`DELETE FROM project_users WHERE project_user_id = $1`, [
+      project_user_id,
+    ])
     navigate({ pathname: '..', search: searchParams.toString() })
-  }, [db.project_users, navigate, project_user_id, searchParams])
+  }, [db, navigate, project_user_id, searchParams])
 
   const toNext = useCallback(async () => {
-    const projectUsers = await db.project_users.findMany({
-      where: { project_id },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      `SELECT project_user_id FROM project_users WHERE project_id = $1 ORDER BY label ASC`,
+      [project_id],
+    )
+    const projectUsers = res.rows
     const len = projectUsers.length
     const index = projectUsers.findIndex(
       (p) => p.project_user_id === project_user_id,
@@ -43,13 +43,14 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${next.project_user_id}`,
       search: searchParams.toString(),
     })
-  }, [db.project_users, navigate, project_id, project_user_id, searchParams])
+  }, [db, navigate, project_id, project_user_id, searchParams])
 
   const toPrevious = useCallback(async () => {
-    const projectUsers = await db.project_users.findMany({
-      where: { project_id },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      `SELECT project_user_id FROM project_users WHERE project_id = $1 ORDER BY label ASC`,
+      [project_id],
+    )
+    const projectUsers = res.rows
     const len = projectUsers.length
     const index = projectUsers.findIndex(
       (p) => p.project_user_id === project_user_id,
@@ -59,7 +60,7 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${previous.project_user_id}`,
       search: searchParams.toString(),
     })
-  }, [db.project_users, navigate, project_id, project_user_id, searchParams])
+  }, [db, navigate, project_id, project_user_id, searchParams])
 
   return (
     <FormHeader
