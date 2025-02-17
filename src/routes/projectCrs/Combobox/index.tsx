@@ -1,11 +1,4 @@
-import {
-  memo,
-  forwardRef,
-  useState,
-  useCallback,
-  useMemo,
-  useEffect,
-} from 'react'
+import { memo, forwardRef, useState, useCallback, useEffect } from 'react'
 import { Combobox, Field } from '@fluentui/react-components'
 import { useParams } from 'react-router-dom'
 import { useDebouncedCallback } from 'use-debounce'
@@ -21,18 +14,15 @@ export const ComboboxFilteringOptions = memo(
     const [filter, setFilter] = useState('')
     const [crs, setCrs] = useState([])
 
-    const where = useMemo(() => {
-      if (!filter) return {}
-
-      return {
-        OR: [{ code: { contains: filter } }, { name: { contains: filter } }],
-      }
-    }, [filter])
-
     const fetchData = useCallback(async () => {
-      const crs = await db.crs.findMany({ where })
+      const sql = filter
+        ? 'SELECT * FROM crs WHERE code ILIKE $1 OR name ILIKE $1'
+        : 'SELECT * FROM crs'
+      const vals = filter ? [`%${filter}%`] : []
+      const res = await db.query(sql, vals)
+      const crs = res.rows
       setCrs(crs)
-    }, [db.crs, where])
+    }, [db, filter])
 
     const fetchDataDebounced = useDebouncedCallback(fetchData, 500, {
       trailing: true,
@@ -50,17 +40,18 @@ export const ComboboxFilteringOptions = memo(
         if (data.optionValue === 0) return setFilter('') // No options found
         // find the option in the crsData
         const selectedOption = crs.find((o) => o.code === data.optionValue)
-        db.project_crs.update({
-          where: { project_crs_id },
-          data: {
-            code: selectedOption?.code ?? null,
-            name: selectedOption?.name ?? null,
-            proj4: selectedOption?.proj4 ?? null,
-          },
-        })
+        db.query(
+          `UPDATE project_crs SET code = $1, name = $2, proj4 = $3 WHERE project_crs_id = $4`,
+          [
+            selectedOption?.code ?? null,
+            selectedOption?.name ?? null,
+            selectedOption?.proj4 ?? null,
+            project_crs_id,
+          ],
+        )
         setFilter('')
       },
-      [crs, db.project_crs, project_crs_id],
+      [crs, db, project_crs_id],
     )
 
     return (
@@ -79,10 +70,7 @@ export const ComboboxFilteringOptions = memo(
           freeform
           clearable
         >
-          <Options
-            filter={filter}
-            optionsFiltered={crs}
-          />
+          <Options filter={filter} optionsFiltered={crs} />
         </Combobox>
       </Field>
     )
