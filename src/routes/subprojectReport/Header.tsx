@@ -13,32 +13,31 @@ export const Header = memo(({ autoFocusRef }) => {
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const data = await createSubprojectReport({
+    const subprojectReport = await createSubprojectReport({
       db,
       project_id,
       subproject_id,
     })
-    await db.subproject_reports.create({ data })
     navigate({
-      pathname: `../${data.subproject_report_id}`,
+      pathname: `../${subprojectReport.subproject_report_id}`,
       search: searchParams.toString(),
     })
     autoFocusRef.current?.focus()
   }, [autoFocusRef, db, navigate, project_id, searchParams, subproject_id])
 
   const deleteRow = useCallback(async () => {
-    await db.subproject_reports.delete({
-      where: {
-        subproject_report_id,
-      },
-    })
+    db.query(`DELETE FROM subproject_reports WHERE subproject_report_id = $1`, [
+      subproject_report_id,
+    ])
     navigate({ pathname: `..`, search: searchParams.toString() })
-  }, [db.subproject_reports, navigate, searchParams, subproject_report_id])
+  }, [db, navigate, searchParams, subproject_report_id])
 
   const toNext = useCallback(async () => {
-    const subprojectReports = await db.subproject_reports.findMany({
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      `SELECT * FROM subproject_reports WHERE project_id = $1 ORDER BY label ASC`,
+      [project_id],
+    )
+    const subprojectReports = res.rows
     const len = subprojectReports.length
     const index = subprojectReports.findIndex(
       (p) => p.subproject_report_id === subproject_report_id,
@@ -48,12 +47,14 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${next.subproject_report_id}`,
       search: searchParams.toString(),
     })
-  }, [db.subproject_reports, navigate, searchParams, subproject_report_id])
+  }, [db, navigate, searchParams, subproject_report_id])
 
   const toPrevious = useCallback(async () => {
-    const subprojectReports = await db.subproject_reports.findMany({
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      `SELECT * FROM subproject_reports WHERE project_id = $1 ORDER BY label ASC`,
+      [project_id],
+    )
+    const subprojectReports = res.rows
     const len = subprojectReports.length
     const index = subprojectReports.findIndex(
       (p) => p.subproject_report_id === subproject_report_id,
@@ -63,7 +64,7 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${previous.subproject_report_id}`,
       search: searchParams.toString(),
     })
-  }, [db.subproject_reports, navigate, searchParams, subproject_report_id])
+  }, [db, navigate, searchParams, subproject_report_id])
 
   return (
     <FormHeader

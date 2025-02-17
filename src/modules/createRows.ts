@@ -349,13 +349,22 @@ export const createSubprojectReport = async ({
     table: 'subproject_reports',
   })
 
-  return {
+  const data = {
     subproject_report_id: uuidv7(),
     subproject_id,
     year: new Date().getFullYear(),
-
     ...presetData,
   }
+
+  const columns = Object.keys(data).join(',')
+  const values = Object.values(data)
+    .map((_, i) => `$${i + 1}`)
+    .join(',')
+
+  return db.query(
+    `insert into subproject_reports (${columns}) values (${values}) returning subproject_report_id`,
+    Object.values(data),
+  )
 }
 
 export const createCheck = async ({ db, project_id, place_id }) => {
