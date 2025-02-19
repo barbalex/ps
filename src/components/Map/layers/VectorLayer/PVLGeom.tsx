@@ -39,19 +39,13 @@ export const PVLGeom = ({ layer, display }) => {
   const fetchData = useCallback(
     async ({ bounds }) => {
       removeNotifs()
-      const notificationData = createNotification({
+      const res = await createNotification({
         title: `Lade Vektor-Karte '${layer.label}'...`,
         intent: 'info',
         timeout: 100000,
+        db,
       })
-      const columns = Object.keys(notificationData).join(',')
-      const values = Object.values(notificationData)
-        .map((_, i) => `$${i + 1}`)
-        .join(',')
-      db.query(
-        `INSERT INTO notifications (${columns}) VALUES (${values})`,
-        Object.values(notificationData),
-      )
+      const notificationData = res.rows[0]
       notificationIds.current = [
         notificationData.notification_id,
         ...notificationIds.current,
@@ -129,27 +123,25 @@ export const PVLGeom = ({ layer, display }) => {
     return null
 
   removeNotifs()
+  // TODO: this can not work
   if (
     data?.length === (layer.max_features ?? 1000) &&
     !notificationIds.current.length
   ) {
-    const data = createNotification({
+    const res = await createNotification({
       title: `Zuviele Geometrien`,
       body: `Die maximale Anzahl Features von ${
         layer.max_features ?? 1000
       } für Vektor-Karte '${layer.label}' wurde geladen. Zoomen sie näher ran`,
       intent: 'warning',
       timeout: 10000,
+      db,
     })
-    const columns = Object.keys(data).join(',')
-    const values = Object.values(data)
-      .map((_, i) => `$${i + 1}`)
-      .join(',')
-    db.query(
-      `INSERT INTO notifications (${columns}) VALUES (${values})`,
-      Object.values(data),
-    )
-    notificationIds.current = [data.notification_id, ...notificationIds.current]
+    const notificationData = res.rows[0]
+    notificationIds.current = [
+      notificationData.notification_id,
+      ...notificationIds.current,
+    ]
   }
 
   if (!data?.length) return null

@@ -92,12 +92,13 @@ export const WFS = ({ layer, layerPresentation }) => {
       })
       removeNotifs()
       const bbox = bboxFromBounds({ bounds: map.getBounds(), defaultCrs })
-      const notif = createNotification({
+      const notifRes = await createNotification({
         title: `Lade Vektor-Karte '${layer.label}'...`,
         intent: 'info',
         timeout: 100000,
+        db,
       })
-      await db.notifications.create({ data: notif })
+      const notif = notifRes.rows[0]
       notificationIds.current = [
         notif.notification_id,
         ...notificationIds.current,
@@ -134,12 +135,11 @@ export const WFS = ({ layer, layerPresentation }) => {
           type: error?.type,
         })
         setError(error.data)
-        return await db.notifications.create({
-          data: createNotification({
-            title: `Fehler beim Laden der Geometrien für ${layer.label}`,
-            body: error.message,
-            intent: 'error',
-          }),
+        return await createNotification({
+          title: `Fehler beim Laden der Geometrien für ${layer.label}`,
+          body: error.message,
+          intent: 'error',
+          db,
         })
       }
       removeNotifs()
@@ -199,7 +199,7 @@ export const WFS = ({ layer, layerPresentation }) => {
     (layer.max_features ?? 1000)
     // && !notificationIds.current.length
   ) {
-    const notif2 = createNotification({
+    const notif2Res = await createNotification({
       title: `Zuviele Geometrien`,
       body: `Die maximale Anzahl Features von ${
         layer.max_features ?? 1000
@@ -208,8 +208,9 @@ export const WFS = ({ layer, layerPresentation }) => {
       }' wurde geladen. Zoomen sie näher ran, damit alle Features geladen werden können.`,
       intent: 'warning',
       timeout: 10000,
+      db,
     })
-    db.notifications.create({ data: notif2 })
+    const notif2 = notif2Res.rows[0]
     notificationIds.current = [
       notif2.notification_id,
       ...notificationIds.current,
@@ -258,19 +259,12 @@ export const WFS = ({ layer, layerPresentation }) => {
             : L.marker(latlng)
         }}
       />
-      <Dialog
-        onOpenChange={() => setError(null)}
-        open={!!error}
-      >
+      <Dialog onOpenChange={() => setError(null)} open={!!error}>
         <DialogSurface>
           <DialogBody>
             <DialogTitle>Error fetching data for vector layer</DialogTitle>
             <DialogContent style={dialogContentStyle}>
-              <XMLViewer
-                style={xmlViewerStyle}
-                xml={error}
-                theme={xmlTheme}
-              />
+              <XMLViewer style={xmlViewerStyle} xml={error} theme={xmlTheme} />
             </DialogContent>
             <DialogActions>
               <Button

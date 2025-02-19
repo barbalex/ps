@@ -690,6 +690,6 @@ export const createNotification = async ({
   db,
 }) =>
   db.query(
-    `INSERT INTO notifications (notification_id, title, body, intent, timeout, paused) VALUES ($1, $2, $3, $4, $5, $6)`,
+    `INSERT INTO notifications (notification_id, title, body, intent, timeout, paused) VALUES ($1, $2, $3, $4, $5, $6) returning notification_id`,
     [uuidv7(), title, body, intent, timeout, paused],
   )
