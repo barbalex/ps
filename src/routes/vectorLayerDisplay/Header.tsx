@@ -19,10 +19,11 @@ export const Header = memo(({ vectorLayerDisplayId }) => {
 
   const db = usePGlite()
   // fetch the vector_layer_id from the db as params is not available in the map drawer
-  const { results: vectorLayerDisplay } = useLiveQuery(
-    db.vector_layer_displays.liveUnique({ where: { vector_layer_display_id } }),
+  const { rows: vectorLayerDisplays } = useLiveQuery(
+    `SELECT vector_layer_id FROM vector_layer_displays WHERE vector_layer_display_id = $1`,
+    [vector_layer_display_id],
   )
-  const vector_layer_id = vectorLayerDisplay?.vector_layer_id
+  const vector_layer_id = vectorLayerDisplays?.[0]?.vector_layer_id
 
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
