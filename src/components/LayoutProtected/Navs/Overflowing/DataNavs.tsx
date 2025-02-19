@@ -49,9 +49,11 @@ export const DataNavsOverflowing = memo(
         switch (table) {
           case 'occurrences': {
             if (!dataMatch?.params?.subproject_id) return
-            const occurrenceImports = await db.occurrence_imports?.findMany({
-              where: { subproject_id: dataMatch.params.subproject_id },
-            })
+            const res = await db.query(
+              `SELECT occurrence_import_id FROM occurrence_imports WHERE subproject_id = $1`,
+              [dataMatch.params.subproject_id],
+            )
+            const occurrenceImports = res.rows
             setOccurrenceImportIds(
               occurrenceImports.map((o) => o.occurrence_import_id),
             )
@@ -62,7 +64,7 @@ export const DataNavsOverflowing = memo(
         }
       }
       get()
-    }, [dataMatch?.params?.subproject_id, db.occurrence_imports, table])
+    }, [dataMatch?.params?.subproject_id, db, table])
 
     const filterParams = useMemo(() => {
       const filterParams = {}
@@ -159,21 +161,11 @@ export const DataNavsOverflowing = memo(
     if (!tos.length) return <div className="navs-resizable" />
 
     return (
-      <Overflow
-        overflowDirection="end"
-        padding={20}
-        ref={ref}
-      >
+      <Overflow overflowDirection="end" padding={20} ref={ref}>
         <nav className="navs-resizable">
           {tos.map(({ text, path }) => (
-            <OverflowItem
-              key={path}
-              id={path}
-            >
-              <Nav
-                label={text}
-                to={path}
-              />
+            <OverflowItem key={path} id={path}>
+              <Nav label={text} to={path} />
             </OverflowItem>
           ))}
           <OverflowMenu tos={tos} />

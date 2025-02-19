@@ -98,35 +98,34 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     if (!list) {
       throw new Error(`list_id ${field.list_id} not found`)
     }
-    const listValues = await db.list_values.findMany({
-      where: { list_id: field.list_id },
-    })
+    const lVRes = await db.query(
+      `SELECT * FROM list_values WHERE list_id = $1`,
+      [field.list_id],
+    )
+    const listValues = lVRes.rows
     if (!listValues.length) {
       throw new Error(`list_id ${field.list_id} has no values`)
     }
     // remove all displays not in list
-    await db.vector_layer_displays.deleteMany({
-      where: {
-        vector_layer_id: vectorLayerId,
-        display_property_value: { notIn: listValues.map((v) => v.value) },
-      },
-    })
+    await db.query(
+      `DELETE FROM vector_layer_displays WHERE vector_layer_id = $1 AND display_property_value NOT IN (${listValues
+        .map((v) => v.value)
+        .map((v, i) => `$${i + 2}`)
+        .join(', ')})`,
+      [vectorLayerId, ...listValues.map((v) => v.value)],
+    )
     // above does not remove null values...
-    await db.vector_layer_displays.deleteMany({
-      where: {
-        vector_layer_id: vectorLayerId,
-        display_property_value: null,
-      },
-    })
+    await db.query(
+      `DELETE FROM vector_layer_displays WHERE vector_layer_id = $1 AND display_property_value IS NULL`,
+      [vectorLayerId],
+    )
     // upsert displays in list
     for (const listValue of listValues) {
-      const existingVectorLayerDisplay =
-        await db.vector_layer_displays.findFirst({
-          where: {
-            vector_layer_id: vectorLayerId,
-            display_property_value: listValue.value,
-          },
-        })
+      const res = await db.query(
+        `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1 AND display_property_value = $2`,
+        [vectorLayerId, listValue.value],
+      )
+      const existingVectorLayerDisplay = res.rows[0]
       // leave existing VLD unchanged
       if (existingVectorLayerDisplay) return
 
@@ -144,8 +143,8 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   const sqlByTable = {
     places: `SELECT DISTINCT ${
       propertyIsInData
-        ? `json_extract(places.data, '$.${displayByProperty}') as ${displayByProperty}`
-        : `${displayByProperty}`
+        ? `places.data ->> ${displayByProperty} as ${displayByProperty}`
+        : `places.${displayByProperty}`
     } FROM places
     inner join subprojects on subprojects.subproject_id = places.subproject_id 
     WHERE subprojects.project_id = '${projectId}' AND places.parent_id IS ${
@@ -153,48 +152,48 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     }`,
     actions: `SELECT DISTINCT ${
       propertyIsInData
-        ? `json_extract(actions.data, '$.${displayByProperty}') as ${displayByProperty}`
-        : `${displayByProperty}`
+        ? `actions.data ->> ${displayByProperty} as ${displayByProperty}`
+        : `actions.${displayByProperty}`
     } FROM actions
     inner join places on places.place_id = actions.place_id 
     inner join subprojects on subprojects.subproject_id = places.subproject_id 
     WHERE subprojects.project_id = '${projectId}'`,
     checks: `SELECT DISTINCT ${
       propertyIsInData
-        ? `json_extract(checks.data, '$.${displayByProperty}') as ${displayByProperty}`
-        : `${displayByProperty}`
+        ? `checks.data ->> ${displayByProperty} as ${displayByProperty}`
+        : `checks.${displayByProperty}`
     } FROM checks 
     inner join places on places.place_id = checks.place_id 
     inner join subprojects on subprojects.subproject_id = places.subproject_id 
     WHERE subprojects.project_id = '${projectId}'`,
     occurrences_assigned: `SELECT DISTINCT ${
       propertyIsInData
-        ? `json_extract(occurrences.data, '$.${displayByProperty}') as ${displayByProperty}`
-        : `${displayByProperty}`
+        ? `occurrences.data ->> ${displayByProperty} as ${displayByProperty}`
+        : `occurrences.${displayByProperty}`
     } FROM occurrences 
     inner join places on places.place_id = occurrences.place_id 
     inner join subprojects on subprojects.subproject_id = places.subproject_id 
     WHERE subprojects.project_id = '${projectId}'`,
     occurrences_assigned_lines: `SELECT DISTINCT ${
       propertyIsInData
-        ? `json_extract(occurrences.data, '$.${displayByProperty}') as ${displayByProperty}`
-        : `${displayByProperty}`
+        ? `occurrences.data ->> ${displayByProperty} as ${displayByProperty}`
+        : `occurrences.${displayByProperty}`
     } FROM occurrences 
     inner join places on places.place_id = occurrences.place_id 
     inner join subprojects on subprojects.subproject_id = places.subproject_id 
     WHERE subprojects.project_id = '${projectId}'`,
     occurrences_to_assess: `SELECT DISTINCT ${
       propertyIsInData
-        ? `json_extract(occurrences.data, '$.${displayByProperty}') as ${displayByProperty}`
-        : `${displayByProperty}`
+        ? `occurrences.data ->> ${displayByProperty} as ${displayByProperty}`
+        : `occurrences.${displayByProperty}`
     } FROM occurrences 
     inner join occurrence_imports on occurrence_imports.occurrence_import_id = occurrences.occurrence_import_id 
     inner join subprojects on subprojects.subproject_id = occurrence_imports.subproject_id 
     WHERE subprojects.project_id = '${projectId}' and occurrences.not_to_assign = false and occurrences.place_id IS NULL`,
     occurrences_not_to_assign: `SELECT DISTINCT ${
       propertyIsInData
-        ? `json_extract(occurrences.data, '$.${displayByProperty}') as ${displayByProperty}`
-        : `${displayByProperty}`
+        ? `occurrences.data ->> ${displayByProperty} as ${displayByProperty}`
+        : `occurrences.${displayByProperty}`
     } FROM occurrences 
     inner join occurrence_imports on occurrence_imports.occurrence_import_id = occurrences.occurrence_import_id 
     inner join subprojects on subprojects.subproject_id = occurrence_imports.subproject_id 
@@ -208,7 +207,8 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   let tableRows
   const sql = sqlByTable[table]
   try {
-    tableRows = await db.rawQuery({ sql })
+    const res = await db.query(sql)
+    tableRows = res.rows
   } catch (error) {
     console.error(
       'upsertVectorLayerDisplaysForVectorLayer, error fetching table rows',
@@ -221,14 +221,11 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   const distinctValues = tableRows?.map((row) => row?.[displayByProperty])
 
   for (const value of distinctValues) {
-    const existingVectorLayerDisplay = await db.vector_layer_displays.findFirst(
-      {
-        where: {
-          vector_layer_id: vectorLayerId,
-          display_property_value: value ?? null,
-        },
-      },
+    const res = await db.query(
+      `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1 AND display_property_value = $2`,
+      [vectorLayerId, value ?? null],
     )
+    const existingVectorLayerDisplay = res.rows?.[0]
     // leave existing VLD unchanged
     if (existingVectorLayerDisplay) continue
 
