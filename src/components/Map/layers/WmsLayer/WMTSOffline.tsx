@@ -38,12 +38,12 @@ export const WMTSOffline = ({ layer }) => {
       try {
         control.saveMap({ layer, map })
       } catch (error) {
-        const data = createNotification({
+        createNotification({
           title: `Fehler beim Speichern der Karten für ${layer.label}`,
           body: error.message,
           intent: 'error',
+          db,
         })
-        db.notifications.create({ data })
       }
     }
     const del = () => control.deleteTable(layer.id)

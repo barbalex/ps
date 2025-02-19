@@ -34,12 +34,11 @@ export const onTileError = async (db, map, layer, ignore) => {
   const errorMessage =
     data?.HTML?.BODY?.SERVICEEXCEPTIONREPORT?.SERVICEEXCEPTION?.['#text']
   // console.log(`onTileError errorMessage:`, errorMessage)
-  db.notifications.create({
-    data: createNotification({
-      title: `Fehler beim Laden der Bild-Karte '${layer.label}'. Der WMS-Server meldet`,
-      body: errorMessage,
-      intent: 'error',
-    }),
+  await createNotification({
+    title: `Fehler beim Laden der Bild-Karte '${layer.label}'. Der WMS-Server meldet`,
+    body: errorMessage,
+    intent: 'error',
+    db,
   })
 }
 

@@ -145,19 +145,17 @@ export const ActiveLayer = memo(
     const onChangeActive = useCallback(() => {
       if (!layerPresentation) {
         // if no presentation exists, create notification
-        const data = createNotification({
+        createNotification({
           title: 'Layer presentation not found',
           type: 'warning',
+          db,
         })
-        return db.notifications.create({ data })
       }
-      db.layer_presentations.update({
-        where: {
-          layer_presentation_id: layerPresentation.layer_presentation_id,
-        },
-        data: { active: false },
-      })
-    }, [db.layer_presentations, db.notifications, layerPresentation])
+      db.query(
+        `UPDATE layer_presentations SET active = false WHERE layer_presentation_id = $1`,
+        [layerPresentation.layer_presentation_id],
+      )
+    }, [db, layerPresentation])
 
     const { registerItem, instanceId } = useListContext()
     const [closestEdge, setClosestEdge] = useState<Edge | null>(null)
@@ -275,19 +273,15 @@ export const ActiveLayer = memo(
 
     const onDelete = useCallback(() => {
       if (isVectorLayer) {
-        db.vector_layers.delete({
-          where: { vector_layer_id: layer.vector_layer_id },
-        })
+        db.query(`DELETE FROM vector_layers WHERE vector_layer_id = $1`, [
+          layer.vector_layer_id,
+        ])
       } else {
-        db.wms_layers.delete({ where: { wms_layer_id: layer.wms_layer_id } })
+        db.query(`DELETE FROM wms_layers WHERE wms_layer_id = $1`, [
+          layer.wms_layer_id,
+        ])
       }
-    }, [
-      db.vector_layers,
-      db.wms_layers,
-      isVectorLayer,
-      layer.vector_layer_id,
-      layer.wms_layer_id,
-    ])
+    }, [db, isVectorLayer, layer.vector_layer_id, layer.wms_layer_id])
 
     // drag and drop items by dragging the drag icon
     // https://atlassian.design/components/pragmatic-drag-and-drop/core-package
@@ -364,10 +358,7 @@ export const ActiveLayer = memo(
             >
               <Tab value="overall-displays">Overall Display</Tab>
               {isVectorLayer && (
-                <Tab
-                  value="feature-displays"
-                  onClick={onClickFeatureDisplays}
-                >
+                <Tab value="feature-displays" onClick={onClickFeatureDisplays}>
                   Feature Displays
                 </Tab>
               )}
@@ -412,12 +403,7 @@ export const ActiveLayer = memo(
               </>
             )}
           </AccordionPanel>
-          {closestEdge && (
-            <DropIndicator
-              edge={closestEdge}
-              gap="1px"
-            />
-          )}
+          {closestEdge && <DropIndicator edge={closestEdge} gap="1px" />}
         </AccordionItem>
         {draggableState.type === 'preview' &&
           createPortal(

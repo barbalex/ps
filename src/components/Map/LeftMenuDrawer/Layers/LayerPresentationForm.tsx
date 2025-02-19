@@ -24,31 +24,26 @@ export const LayerPresentationForm = memo(({ layer }) => {
     (e, data) => {
       if (!layerPresentation) {
         // if no presentation exists, create notification
-        const data = createNotification({
+        createNotification({
           title: 'Layer presentation not found',
           type: 'warning',
+          db,
         })
-        return db.notifications.create({ data })
       }
       const { name, value } = getValueFromChange(e, data)
-      db.layer_presentations.update({
-        where: {
-          layer_presentation_id: layerPresentation.layer_presentation_id,
-        },
-        data: { [name]: value },
-      })
+      db.query(
+        `UPDATE layer_presentations SET ${name} = $1 WHERE layer_presentation_id = $2`,
+        [value, layerPresentation.layer_presentation_id],
+      )
     },
-    [db.layer_presentations, db.notifications, layerPresentation],
+    [db, layerPresentation],
   )
 
   // TODO: drag and drop items by dragging the drag icon
   // https://atlassian.design/components/pragmatic-drag-and-drop/core-package
   return (
     <ErrorBoundary>
-      <div
-        style={containerStyle}
-        className="form-container-embedded"
-      >
+      <div style={containerStyle} className="form-container-embedded">
         <SliderField
           label="Opacity (%)"
           name="opacity_percent"
