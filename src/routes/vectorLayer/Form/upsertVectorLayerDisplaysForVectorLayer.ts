@@ -1,5 +1,4 @@
 import { createVectorLayerDisplay } from '../../../modules/createRows.ts'
-import { chunkArrayWithMinSize } from '../../../modules/chunkArrayWithMinSize.ts'
 
 export const upsertVectorLayerDisplaysForVectorLayer = async ({
   db,
@@ -87,9 +86,10 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   // if this field has a list_id, get the list
   // TODO: test this
   if (field?.list_id) {
-    const list = await db.lists.findUnique({
-      where: { list_id: field.list_id },
-    })
+    const listRes = await db.query(`SELECT * FROM lists WHERE list_id = $1`, [
+      field.list_id,
+    ])
+    const list = listRes.rows?.[0]
     if (!list) {
       throw new Error(`list_id ${field.list_id} not found`)
     }
