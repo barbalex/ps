@@ -28,13 +28,8 @@ export const Component = memo(() => {
   const units = result?.rows ?? []
 
   const add = useCallback(async () => {
-    const unit = { ...createUnit(), project_id }
-    const columns = Object.keys(unit).join(',')
-    const values = Object.values(unit)
-    const sql = `insert into units (${columns}) values (${values
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(sql, values)
+    const res = await createUnit({ db, project_id })
+    const unit = res.rows[0]
     navigate({ pathname: unit.unit_id, search: searchParams.toString() })
   }, [db, navigate, project_id, searchParams])
 
@@ -51,11 +46,7 @@ export const Component = memo(() => {
       />
       <div className="list-container">
         {units.map(({ unit_id, label }) => (
-          <Row
-            key={unit_id}
-            label={label ?? unit_id}
-            to={unit_id}
-          />
+          <Row key={unit_id} label={label ?? unit_id} to={unit_id} />
         ))}
       </div>
     </div>

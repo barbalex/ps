@@ -188,19 +188,24 @@ export const createField = ({
   widget_type_id: '018ca1a0-f187-7fdf-955b-4eaadaa92553',
 })
 
-export const createUnit = () => ({
-  unit_id: uuidv7(),
-  use_for_action_values: true,
-  use_for_action_report_values: true,
-  use_for_check_values: true,
-  use_for_place_report_values: true,
-  use_for_goal_report_values: true,
-  use_for_subproject_taxa: true,
-  use_for_check_taxa: true,
-  summable: false,
-  sort: 0,
-  type: 'integer',
-})
+export const createUnit = async ({ project_id, db }) =>
+  db.query(
+    `INSERT INTO units (unit_id, project_id, use_for_action_values, use_for_action_report_values, use_for_check_values, use_for_place_report_values, use_for_goal_report_values, use_for_subproject_taxa, use_for_check_taxa, summable, sort, type) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) returning unit_id`,
+    [
+      uuidv7(),
+      project_id,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      false,
+      0,
+      'integer',
+    ],
+  )
 
 export const createList = async ({ db, project_id, name = null }) => {
   // find fields with preset values on the data column
