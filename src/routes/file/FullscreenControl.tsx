@@ -10,12 +10,12 @@ export const FullscreenControl = memo(({ previewRef }) => {
   const db = usePGlite()
 
   if (!screenfull.isEnabled) {
-    const data = createNotification({
+    createNotification({
       title: 'Fullscreen not supported',
       body: `Your browser or device does not support fullscreen mode (iPhones generally don't)`,
       intent: 'warning',
+      db,
     })
-    db.notifications.create({ data })
 
     return null
   }

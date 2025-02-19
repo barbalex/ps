@@ -122,20 +122,13 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     })
   }, [db, navigate, place_id, place_id2, searchParams, subproject_id])
 
-  const alertNoGeometry = useCallback(async () => {
-    const data = await createNotification({
+  const alertNoGeometry = useCallback(() => {
+    createNotification({
       title: 'No geometry',
       body: `To zoom to a place, create it's geometry first`,
       intent: 'error',
+      db,
     })
-    const columns = Object.keys(data).join(',')
-    const values = Object.values(data)
-      .map((_, i) => `$${i + 1}`)
-      .join(',')
-    db.query(
-      `INSERT INTO notifications (${columns}) VALUES (${values})`,
-      Object.values(data),
-    )
   }, [db])
 
   const onClickZoomTo = useCallback(async () => {
