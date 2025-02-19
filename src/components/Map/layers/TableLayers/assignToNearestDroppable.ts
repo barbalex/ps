@@ -155,18 +155,11 @@ export const assignToNearestDroppable = async ({
 
   if (!placeIdsWithMinDistancesSortedByDistance.length) {
     // tell user no place found to assign to
-    const data = createNotification({
+    createNotification({
       message: 'No place found to assign to',
       type: 'error',
+      db,
     })
-    const columns = Object.keys(data).join(',')
-    const values = Object.values(data)
-      .map((_, i) => `$${i + 1}`)
-      .join(',')
-    db.query(
-      `INSERT INTO notifications (${columns}) VALUES (${values})`,
-      Object.values(data),
-    )
   }
 
   // TODO: really? Maybe better to always confirm?

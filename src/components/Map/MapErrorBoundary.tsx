@@ -8,12 +8,12 @@ const onReload = () => {
 }
 
 const ErrorFallback = ({ error, db, layer }) => {
-  const data = createNotification({
+  createNotification({
     title: `Fehler in Vektor-Layer '${layer.label}'`,
     body: error.message,
     intent: 'error',
+    db,
   })
-  db.notifications.create({ data })
 
   return null
 }

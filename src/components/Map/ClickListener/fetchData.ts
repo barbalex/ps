@@ -37,12 +37,12 @@ export const fetchData = async ({ db, url, params }) => {
       failedToFetch = true
     }
     if (failedToFetch) {
-      const data = createNotification({
+      createNotification({
         title: `Fehler beim Laden der Informationen für ${layer.label}`,
         body: error.message,
         intent: 'info',
+        db,
       })
-      db.notifications.create({ data })
     }
   }
   if (!failedToFetch && res?.data) {

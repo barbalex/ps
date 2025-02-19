@@ -680,18 +680,16 @@ export const createOccurrence = ({ occurrence_import_id, data = null }) => ({
   data,
 })
 
-export const createNotification = ({
+export const createNotification = async ({
   title = null,
   body = null,
   // 'success' | 'error' | 'warning' | 'info'
   intent = 'info',
   timeout = 10000,
   paused = null,
-}) => ({
-  notification_id: uuidv7(),
-  title,
-  body,
-  intent,
-  timeout,
-  paused,
-})
+  db,
+}) =>
+  db.query(
+    `INSERT INTO notifications (notification_id, title, body, intent, timeout, paused) VALUES ($1, $2, $3, $4, $5, $6)`,
+    [uuidv7(), title, body, intent, timeout, paused],
+  )
