@@ -32,13 +32,8 @@ export const Component = memo(() => {
   const vectorLayers = result?.rows ?? []
 
   const add = useCallback(async () => {
-    const vectorLayer = createVectorLayer({ project_id, type: 'wfs' })
-    const vLColumns = Object.keys(vectorLayer).join(',')
-    const vLValues = Object.values(vectorLayer)
-    const vLSql = `insert into vector_layers (${vLColumns}) values (${vLValues
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(vLSql, vLValues)
+    const res = createVectorLayer({ project_id, type: 'wfs', db })
+    const vectorLayer = res.rows[0]
     // also add vector_layer_display
     await createVectorLayerDisplay({
       vector_layer_id: vectorLayer.vector_layer_id,

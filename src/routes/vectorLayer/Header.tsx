@@ -91,15 +91,8 @@ export const Header = memo(({ autoFocusRef, row }) => {
   }, [onClickAssignToPlaces, onClickToggleAssign, setDroppableLayer])
 
   const addRow = useCallback(async () => {
-    const vectorLayer = createVectorLayer({ project_id, type: 'wfs' })
-    const vLColumns = Object.keys(vectorLayer).join(',')
-    const vLValues = Object.values(vectorLayer)
-      .map((_, i) => `$${i + 1}`)
-      .join(',')
-    await db.query(
-      `INSERT INTO vector_layers (${vLColumns}) VALUES (${vLValues})`,
-      Object.values(vectorLayer),
-    )
+    const res = await createVectorLayer({ project_id, type: 'wfs', db })
+    const vectorLayer = res.rows[0]
     // also add vector_layer_display
     createVectorLayerDisplay({
       vector_layer_id: vectorLayer.vector_layer_id,

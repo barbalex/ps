@@ -51,22 +51,15 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     await db.places.create({ data })
 
     // need to create a corresponding vector layer and vector layer display
-    const vectorLayer = createVectorLayer({
+    const res = createVectorLayer({
       project_id,
       type: 'own',
       own_table: 'places',
       own_table_level: place_id2 ? 2 : 1,
       label: placeNamePlural,
+      db,
     })
-    const columnsVL = Object.keys(vectorLayer).join(',')
-    const valuesVL = Object.values(vectorLayer)
-      .map((_, i) => `$${i + 1}`)
-      .join(',')
-    const resultVL = await db.query(
-      `INSERT INTO vector_layers (${columnsVL}) VALUES (${valuesVL}) RETURNING *`,
-      Object.values(vectorLayer),
-    )
-    const newVectorLayer = resultVL.rows?.[0]
+    const newVectorLayer = res.rows?.[0]
 
     createVectorLayerDisplay({
       vector_layer_id: newVectorLayer.vector_layer_id,

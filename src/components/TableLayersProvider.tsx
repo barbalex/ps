@@ -57,24 +57,15 @@ export const TableLayersProvider = memo(() => {
             vl.own_table_level === 1,
         )
         if (!places1VectorLayer) {
-          const vectorLayer = createVectorLayer({
+          const res = await createVectorLayer({
             project_id: project.project_id,
             type: 'own',
             own_table: 'places',
             own_table_level: 1,
             label: placeLevel1?.name_plural ?? 'Places',
+            db,
           })
-          const columns = Object.keys(vectorLayer).join(',')
-          const values = Object.values(vectorLayer)
-            .map((_, i) => `$${i + 1}`)
-            .join(',')
-          try {
-            const result = await db.query(
-              `INSERT INTO vector_layers (${columns}) VALUES (${values}) RETURNING *`,
-              Object.values(vectorLayer),
-            )
-            places1VectorLayer = result.rows?.[0]
-          } catch {}
+          places1VectorLayer = res.rows?.[0]
           console.warn(
             'hello TableLayersProvider, new places 1 vector layer:',
             places1VectorLayer,
@@ -111,7 +102,7 @@ export const TableLayersProvider = memo(() => {
             vl.own_table_level === 1,
         )
         if (!actions1VectorLayer) {
-          const vectorLayer = createVectorLayer({
+          const res = await createVectorLayer({
             project_id: project.project_id,
             type: 'own',
             own_table: 'actions',
@@ -119,16 +110,9 @@ export const TableLayersProvider = memo(() => {
             label: placeLevel1?.name_singular
               ? `${placeLevel1.name_singular} Actions`
               : 'Actions',
+            db,
           })
-          const columns = Object.keys(vectorLayer).join(',')
-          const values = Object.values(vectorLayer)
-            .map((_, i) => `$${i + 1}`)
-            .join(',')
-          const result = await db.query(
-            `INSERT INTO vector_layers (${columns}) VALUES (${values}) RETURNING *`,
-            Object.values(vectorLayer),
-          )
-          actions1VectorLayer = result.rows?.[0]
+          actions1VectorLayer = res.rows?.[0]
         }
         // 2.2 actions1VectorLayerDisplay: always needed
         const { rows: actions1VectorLayerDisplays } = await db.query(
@@ -161,7 +145,7 @@ export const TableLayersProvider = memo(() => {
             vl.own_table_level === 1,
         )
         if (!checks1VectorLayer) {
-          const vectorLayer = createVectorLayer({
+          const res = await createVectorLayer({
             project_id: project.project_id,
             type: 'own',
             own_table: 'checks',
@@ -169,16 +153,9 @@ export const TableLayersProvider = memo(() => {
             label: placeLevel1?.name_singular
               ? `${placeLevel1.name_singular} Checks`
               : 'Checks',
+            db,
           })
-          const columns = Object.keys(vectorLayer).join(',')
-          const values = Object.values(vectorLayer)
-            .map((_, i) => `$${i + 1}`)
-            .join(',')
-          const result = await db.query(
-            `INSERT INTO vector_layers (${columns}) VALUES (${values}) RETURNING *`,
-            Object.values(vectorLayer),
-          )
-          checks1VectorLayer = result.rows?.[0]
+          checks1VectorLayer = res.rows?.[0]
         }
         // 3.2 checks1VectorLayerDisplay: always needed
         const { rows: checks1VectorLayerDisplays } = await db.query(
@@ -213,7 +190,7 @@ export const TableLayersProvider = memo(() => {
               vl.own_table_level === 1,
           )
           if (!occurrencesAssigned1VectorLayer) {
-            const vectorLayer = createVectorLayer({
+            const res = await createVectorLayer({
               project_id: project.project_id,
               type: 'own',
               own_table: 'occurrences_assigned',
@@ -221,16 +198,9 @@ export const TableLayersProvider = memo(() => {
               label: placeLevel1?.name_singular
                 ? `${placeLevel1.name_singular} Occurrences assigned`
                 : 'Occurrences assigned',
+              db,
             })
-            const columns = Object.keys(vectorLayer).join(',')
-            const values = Object.values(vectorLayer)
-              .map((_, i) => `$${i + 1}`)
-              .join(',')
-            const result = await db.query(
-              `INSERT INTO vector_layers (${columns}) VALUES (${values}) RETURNING *`,
-              Object.values(vectorLayer),
-            )
-            occurrencesAssigned1VectorLayer = result.rows?.[0]
+            occurrencesAssigned1VectorLayer = res.rows?.[0]
           }
           // 4.2 occurrences_assigned1VectorLayerDisplay: always needed
           const { rows: occurrencesAssigned1VectorLayerDisplays } =
@@ -267,21 +237,14 @@ export const TableLayersProvider = memo(() => {
               vl.type === 'own' && vl.own_table === 'occurrences_to_assess',
           )
           if (!occurrencesToAssessVectorLayer) {
-            const vectorLayer = createVectorLayer({
+            const res = await createVectorLayer({
               project_id: project.project_id,
               type: 'own',
               own_table: 'occurrences_to_assess',
               label: 'Occurrences to assess',
+              db,
             })
-            const columns = Object.keys(vectorLayer).join(',')
-            const values = Object.values(vectorLayer)
-              .map((_, i) => `$${i + 1}`)
-              .join(',')
-            const result = await db.query(
-              `INSERT INTO vector_layers (${columns}) VALUES (${values}) RETURNING *`,
-              Object.values(vectorLayer),
-            )
-            occurrencesToAssessVectorLayer = result.rows?.[0]
+            occurrencesToAssessVectorLayer = res.rows?.[0]
           }
           // 5.2 occurrencesToAssessVectorLayerDisplay: always needed
           const { rows: occurrencesToAssessVectorLayerDisplays } =
@@ -318,21 +281,14 @@ export const TableLayersProvider = memo(() => {
               vl.type === 'own' && vl.own_table === 'occurrences_not_to_assign',
           )
           if (!occurrencesNotToAssignVectorLayer) {
-            const vectorLayer = createVectorLayer({
+            const res = await createVectorLayer({
               project_id: project.project_id,
               type: 'own',
               own_table: 'occurrences_not_to_assign',
               label: 'Occurrences not to assign',
+              db,
             })
-            const columns = Object.keys(vectorLayer).join(',')
-            const values = Object.values(vectorLayer)
-              .map((_, i) => `$${i + 1}`)
-              .join(',')
-            const result = await db.query(
-              `INSERT INTO vector_layers (${columns}) VALUES (${values}) RETURNING *`,
-              Object.values(vectorLayer),
-            )
-            occurrencesNotToAssignVectorLayer = result.rows?.[0]
+            occurrencesNotToAssignVectorLayer = res.rows?.[0]
           }
           // 6.2 occurrencesNotToAssignVectorLayerDisplay: always needed
           const { rows: occurrencesNotToAssignVectorLayerDisplays } =
@@ -373,22 +329,15 @@ export const TableLayersProvider = memo(() => {
               vl.own_table_level === 2,
           )
           if (!places2VectorLayer) {
-            const vectorLayer = createVectorLayer({
+            const res = await createVectorLayer({
               project_id: project.project_id,
               type: 'own',
               own_table: 'places',
               own_table_level: 2,
               label: placeLevel2?.name_plural ?? 'Places',
+              db,
             })
-            const columns = Object.keys(vectorLayer).join(',')
-            const values = Object.values(vectorLayer)
-              .map((_, i) => `$${i + 1}`)
-              .join(',')
-            const result = await db.query(
-              `INSERT INTO vector_layers (${columns}) VALUES (${values}) RETURNING *`,
-              Object.values(vectorLayer),
-            )
-            places2VectorLayer = result.rows?.[0]
+            places2VectorLayer = res.rows?.[0]
           }
           // 7.2 places2VectorLayerDisplay: always needed
           const { rows: places2VectorLayerDisplays } = await db.query(
@@ -423,7 +372,7 @@ export const TableLayersProvider = memo(() => {
               vl.own_table_level === 2,
           )
           if (!actions2VectorLayer) {
-            const vectorLayer = createVectorLayer({
+            const res = await createVectorLayer({
               project_id: project.project_id,
               type: 'own',
               own_table: 'actions',
@@ -431,16 +380,9 @@ export const TableLayersProvider = memo(() => {
               label: placeLevel2?.name_singular
                 ? `${placeLevel2.name_singular} Actions`
                 : 'Actions',
+              db,
             })
-            const columns = Object.keys(vectorLayer).join(',')
-            const values = Object.values(vectorLayer)
-              .map((_, i) => `$${i + 1}`)
-              .join(',')
-            const result = await db.query(
-              `INSERT INTO vector_layers (${columns}) VALUES (${values}) RETURNING *`,
-              Object.values(vectorLayer),
-            )
-            actions2VectorLayer = result.rows?.[0]
+            actions2VectorLayer = res.rows?.[0]
           }
           // 8.2 actions2VectorLayerDisplay: always needed
           const { rows: actions2VectorLayerDisplays } = await db.query(
@@ -475,7 +417,7 @@ export const TableLayersProvider = memo(() => {
               vl.own_table_level === 2,
           )
           if (!checks2VectorLayer) {
-            const vectorLayer = createVectorLayer({
+            const res = await createVectorLayer({
               project_id: project.project_id,
               type: 'own',
               own_table: 'checks',
@@ -483,16 +425,9 @@ export const TableLayersProvider = memo(() => {
               label: placeLevel2?.name_singular
                 ? `${placeLevel2.name_singular} Checks`
                 : 'Checks',
+              db,
             })
-            const columns = Object.keys(vectorLayer).join(',')
-            const values = Object.values(vectorLayer)
-              .map((_, i) => `$${i + 1}`)
-              .join(',')
-            const result = await db.query(
-              `INSERT INTO vector_layers (${columns}) VALUES (${values}) RETURNING *`,
-              Object.values(vectorLayer),
-            )
-            checks2VectorLayer = result.rows?.[0]
+            checks2VectorLayer = res.rows?.[0]
           }
           // 9.2 checks2VectorLayerDisplay: always needed
           const { rows: checks2VectorLayerDisplays } = await db.query(
@@ -527,7 +462,7 @@ export const TableLayersProvider = memo(() => {
               vl.own_table_level === 2,
           )
           if (!occurrencesAssigned2VectorLayer) {
-            const vectorLayer = createVectorLayer({
+            const res = await createVectorLayer({
               project_id: project.project_id,
               type: 'own',
               own_table: 'occurrences_assigned',
@@ -535,16 +470,9 @@ export const TableLayersProvider = memo(() => {
               label: placeLevel2?.name_singular
                 ? `${placeLevel2.name_singular} Occurrences assigned`
                 : 'Occurrences assigned',
+              db,
             })
-            const columns = Object.keys(vectorLayer).join(',')
-            const values = Object.values(vectorLayer)
-              .map((_, i) => `$${i + 1}`)
-              .join(',')
-            const result = await db.query(
-              `INSERT INTO vector_layers (${columns}) VALUES (${values}) RETURNING *`,
-              Object.values(vectorLayer),
-            )
-            occurrencesAssigned2VectorLayer = result.rows?.[0]
+            occurrencesAssigned2VectorLayer = res.rows?.[0]
           }
           // 10.2 occurrences_assigned2VectorLayerDisplay: always needed
           const { rows: occurrencesAssigned2VectorLayerDisplays } =

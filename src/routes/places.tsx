@@ -64,17 +64,14 @@ export const Component = memo(() => {
     // TODO:
     // 1. only if not yet exists
     // 2. better via trigger so it also works on import / project creation
-    const vectorLayer = createVectorLayer({
+    await createVectorLayer({
       project_id,
       type: 'own',
       own_table: 'places',
       own_table_level: place_id ? 2 : 1,
       label: placeNamePlural,
+      db,
     })
-    const columnsVL = Object.keys(vectorLayer).join(',')
-    const valuesVL = Object.values(vectorLayer)
-    const sqlVL = `insert into vector_layers (${columnsVL}) values ($1)`
-    await db.query(sqlVL, valuesVL)
 
     await createVectorLayerDisplay({
       vector_layer_id: newVectorLayer.vector_layer_id,
