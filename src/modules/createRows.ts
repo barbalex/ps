@@ -228,13 +228,22 @@ export const createTaxonomy = async ({ db, project_id }) => {
     table: 'taxonomies',
   })
 
-  return {
+  const data = {
     taxonomy_id: uuidv7(),
     project_id,
     obsolete: false,
 
     ...presetData,
   }
+
+  const columns = Object.keys(data).join(',')
+  const values = Object.values(data)
+    .map((_, i) => `$${i + 1}`)
+    .join(',')
+  return db.query(
+    `insert into taxonomies (${columns}) values (${values}) returning taxonomy_id`,
+    Object.values(data),
+  )
 }
 
 export const createProjectUser = async ({ project_id, db }) =>

@@ -21,14 +21,12 @@ export const Component = memo(() => {
   const taxonomies = result?.rows ?? []
 
   const add = useCallback(async () => {
-    const data = await createTaxonomy({ db, project_id })
-    const columns = Object.keys(data).join(',')
-    const values = Object.values(data)
-    const sql = `INSERT INTO taxonomies (${columns}) VALUES (${values
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(sql, values)
-    navigate({ pathname: data.taxonomy_id, search: searchParams.toString() })
+    const res = await createTaxonomy({ db, project_id })
+    const taxonomy = res.rows[0]
+    navigate({
+      pathname: taxonomy.taxonomy_id,
+      search: searchParams.toString(),
+    })
   }, [db, navigate, project_id, searchParams])
 
   return (

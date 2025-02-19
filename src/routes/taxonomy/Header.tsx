@@ -13,25 +13,26 @@ export const Header = memo(({ autoFocusRef }) => {
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const data = await createTaxonomy({ db, project_id })
-    await db.taxonomies.create({ data })
+    const res = await createTaxonomy({ db, project_id })
+    const taxonomy = res.rows[0]
     navigate({
-      pathname: `../${data.taxonomy_id}`,
+      pathname: `../${taxonomy.taxonomy_id}`,
       search: searchParams.toString(),
     })
     autoFocusRef.current?.focus()
   }, [autoFocusRef, db, navigate, project_id, searchParams])
 
   const deleteRow = useCallback(async () => {
-    await db.taxonomies.delete({ where: { taxonomy_id } })
+    db.query(`DELETE FROM taxonomies WHERE taxonomy_id = $1`, [taxonomy_id])
     navigate({ pathname: '..', search: searchParams.toString() })
-  }, [db.taxonomies, navigate, taxonomy_id, searchParams])
+  }, [db, navigate, taxonomy_id, searchParams])
 
   const toNext = useCallback(async () => {
-    const taxonomies = await db.taxonomies.findMany({
-      where: {  project_id },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      `SELECT taxonomy_id FROM taxonomies WHERE project_id = $1 ORDER BY label ASC`,
+      [project_id],
+    )
+    const taxonomies = res.rows
     const len = taxonomies.length
     const index = taxonomies.findIndex((p) => p.taxonomy_id === taxonomy_id)
     const next = taxonomies[(index + 1) % len]
@@ -39,13 +40,14 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${next.taxonomy_id}`,
       search: searchParams.toString(),
     })
-  }, [db.taxonomies, navigate, project_id, taxonomy_id, searchParams])
+  }, [db, project_id, navigate, searchParams, taxonomy_id])
 
   const toPrevious = useCallback(async () => {
-    const taxonomies = await db.taxonomies.findMany({
-      where: {  project_id },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      `SELECT taxonomy_id FROM taxonomies WHERE project_id = $1 ORDER BY label ASC`,
+      [project_id],
+    )
+    const taxonomies = res.rows
     const len = taxonomies.length
     const index = taxonomies.findIndex((p) => p.taxonomy_id === taxonomy_id)
     const previous = taxonomies[(index + len - 1) % len]
@@ -53,7 +55,7 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${previous.taxonomy_id}`,
       search: searchParams.toString(),
     })
-  }, [db.taxonomies, navigate, project_id, taxonomy_id, searchParams])
+  }, [db, navigate, project_id, taxonomy_id, searchParams])
 
   return (
     <FormHeader
