@@ -16,12 +16,12 @@ export const getCapabilities = async ({
     // How to catch this error? res is undefined...
     res = await axios.get(`${url}?service=${service}&request=GetCapabilities`)
   } catch (error) {
-    const data = createNotification({
+    createNotification({
       title: `Error loading capabilities for ${url}`,
       body: error?.message ?? error,
       intent: 'error',
+      db,
     })
-    db.notifications.create({ data })
     if (error.response) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
@@ -53,12 +53,12 @@ export const getCapabilities = async ({
   }
 
   if (!res || !res?.data) {
-    const data = createNotification({
+    createNotification({
       title: `Error loading capabilities for ${url}`,
       body: 'No data returned from server',
       intent: 'error',
+      db,
     })
-    db.notifications.create({ data })
     return undefined
   }
 
