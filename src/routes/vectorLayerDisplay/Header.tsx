@@ -51,16 +51,17 @@ export const Header = memo(({ vectorLayerDisplayId }) => {
   ])
 
   const deleteRow = useCallback(async () => {
-    await db.vector_layer_displays.delete({
-      where: { vector_layer_display_id },
-    })
+    db.query(
+      `DELETE FROM vector_layer_displays WHERE vector_layer_display_id = $1`,
+      [vector_layer_display_id],
+    )
     if (vectorLayerDisplayId) {
       setMapLayerDrawerVectorLayerDisplayId(null)
       return
     }
     navigate({ pathname: '..', search: searchParams.toString() })
   }, [
-    db.vector_layer_displays,
+    db,
     vector_layer_display_id,
     vectorLayerDisplayId,
     navigate,
@@ -69,10 +70,11 @@ export const Header = memo(({ vectorLayerDisplayId }) => {
   ])
 
   const toNext = useCallback(async () => {
-    const vectorLayerDisplays = await db.vector_layer_displays.findMany({
-      where: { vector_layer_id },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      `SELECT vector_layer_display_id FROM vector_layer_displays WHERE vector_layer_id = $1 ORDER BY label ASC`,
+      [vector_layer_id],
+    )
+    const vectorLayerDisplays = res.rows
     const len = vectorLayerDisplays.length
     const index = vectorLayerDisplays.findIndex(
       (p) => p.vector_layer_display_id === vector_layer_display_id,
@@ -87,7 +89,7 @@ export const Header = memo(({ vectorLayerDisplayId }) => {
       search: searchParams.toString(),
     })
   }, [
-    db.vector_layer_displays,
+    db,
     navigate,
     searchParams,
     setMapLayerDrawerVectorLayerDisplayId,
@@ -97,10 +99,11 @@ export const Header = memo(({ vectorLayerDisplayId }) => {
   ])
 
   const toPrevious = useCallback(async () => {
-    const vectorLayerDisplays = await db.vector_layer_displays.findMany({
-      where: { vector_layer_id },
-      orderBy: { label: 'asc' },
-    })
+    const res = await db.query(
+      `SELECT vector_layer_display_id FROM vector_layer_displays WHERE vector_layer_id = $1 ORDER BY label ASC`,
+      [vector_layer_id],
+    )
+    const vectorLayerDisplays = res.rows
     const len = vectorLayerDisplays.length
     const index = vectorLayerDisplays.findIndex(
       (p) => p.vector_layer_display_id === vector_layer_display_id,
@@ -115,7 +118,7 @@ export const Header = memo(({ vectorLayerDisplayId }) => {
       search: searchParams.toString(),
     })
   }, [
-    db.vector_layer_displays,
+    db,
     navigate,
     searchParams,
     setMapLayerDrawerVectorLayerDisplayId,
