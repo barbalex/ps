@@ -33,22 +33,25 @@ export const FetchWfsCapabilities = memo(
       if (!urlTrimmed) return
 
       // 1. check if wfs_service exists for this url
-      const existingService = await db.wfs_services.findFirst({
-        where: { url: urlTrimmed },
-      })
+      const eSRes = await db.query(
+        `SELECT * FROM wfs_services WHERE url = $1`,
+        [urlTrimmed],
+      )
+      const existingService = eSRes.rows[0]
       let service
       if (existingService) {
         // 2. if so, update it
         service = { ...existingService }
         // and remove its layers to be recreated
-        await db.wfs_service_layers.deleteMany({
-          where: { wfs_service_id: service.wfs_service_id },
-        })
+        await db.query(
+          `DELETE FROM wfs_service_layers WHERE wfs_service_id = $1`,
+          [service.wfs_service_id],
+        )
         // ensure vectorLayer.wfs_service_id is set
-        await db.vector_layers.update({
-          where: { vector_layer_id: vectorLayer.vector_layer_id },
-          data: { wfs_service_id: service.wfs_service_id },
-        })
+        await db.query(
+          `UPDATE vector_layers SET wfs_service_id = $1 WHERE vector_layer_id = $2`,
+          [service.wfs_service_id, vectorLayer.vector_layer_id],
+        )
       } else {
         // 3. if not, create service, then update that
         const serviceData = createWfsService({
@@ -68,12 +71,13 @@ export const FetchWfsCapabilities = memo(
 
       // show loading indicator
       setFetching(true)
-      const data = await createNotification({
+      const res = await createNotification({
         title: `Loading capabilities for ${urlTrimmed}`,
         intent: 'info',
         paused: true,
+        db,
       })
-      await db.notifications.create({ data })
+      const notifData = res.rows[0]
 
       // fetch capabilities
       try {
@@ -88,19 +92,19 @@ export const FetchWfsCapabilities = memo(
           error?.message ?? error,
         )
         // surface error to user
-        const data = await createNotification({
+        await createNotification({
           title: `Error loading capabilities for ${urlTrimmed}`,
           body: error?.message ?? error,
           intent: 'error',
           paused: false,
+          db,
         })
-        await db.notifications.create({ data })
       }
       setFetching(false)
-      await db.notifications.update({
-        where: { notification_id: data.notification_id },
-        data: { paused: false, timeout: 500 },
-      })
+      await db.query(
+        `UPDATE notifications SET paused = false AND timeout = 500 WHERE notification_id = $1`,
+        [notifData.notification_id],
+      )
     }, [db, setFetching, url, vectorLayer, worker])
 
     return (

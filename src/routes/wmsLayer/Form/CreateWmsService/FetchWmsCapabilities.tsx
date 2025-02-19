@@ -68,12 +68,13 @@ export const FetchWmsCapabilities = memo(
 
       // show loading indicator
       setFetching(true)
-      const data = await createNotification({
+      const res = await createNotification({
         title: `Loading capabilities for ${urlTrimmed}`,
         intent: 'info',
         paused: true,
+        db,
       })
-      await db.notifications.create({ data })
+      const data = res.rows[0]
 
       // fetch capabilities
       try {
@@ -88,13 +89,13 @@ export const FetchWmsCapabilities = memo(
           error?.message ?? error,
         )
         // surface error to user
-        const data = await createNotification({
+        await createNotification({
           title: `Error loading capabilities for ${urlTrimmed}`,
           body: error?.message ?? error,
           intent: 'error',
           paused: false,
+          db,
         })
-        await db.notifications.create({ data })
       }
       setFetching(false)
       await db.notifications.update({
