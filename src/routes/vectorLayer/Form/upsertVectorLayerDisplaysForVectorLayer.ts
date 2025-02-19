@@ -52,13 +52,10 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     }
 
     // remove all other displays, then return
-    return await db.vector_layer_displays.deleteMany({
-      where: {
-        vector_layer_display_id: {
-          not: firstExistingVectorLayerDisplay.vector_layer_display_id,
-        },
-      },
-    })
+    return await db.query(
+      `DELETE FROM vector_layer_displays WHERE vector_layer_display_id != $1`,
+      [firstExistingVectorLayerDisplay.vector_layer_display_id],
+    )
   }
 
   if (
@@ -66,22 +63,20 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     existingVectorLayerDisplays.length
   ) {
     // remove all displays before creating new ones
-    await db.vector_layer_displays.deleteMany({
-      where: { vector_layer_id: vectorLayerId },
-    })
+    await db.query(
+      `DELETE FROM vector_layer_displays WHERE vector_layer_id = $1`,
+      [vectorLayerId],
+    )
   }
 
   // TODO: do this for wfs and upload
 
   // get field of displayByPropertyField
-  const field = await db.fields.findFirst({
-    where: {
-      name: displayByProperty,
-      table_name: table,
-      level,
-      project_id: vectorLayer.project_id,
-    },
-  })
+  const fieldRes = await db.query(
+    `SELECT * FROM fields WHERE name = $1 AND table_name = $2 AND level = $3 AND project_id = $4`,
+    [displayByProperty, table, level, projectId],
+  )
+  const field = fieldRes.rows[0]
 
   if (!field) {
     throw new Error(
