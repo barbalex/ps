@@ -5,9 +5,11 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   db,
   vectorLayerId,
 }) => {
-  const vectorLayer = await db.vector_layers.findUnique({
-    where: { vector_layer_id: vectorLayerId },
-  })
+  const resVL = await db.query(
+    `SELECT * FROM vector_layers WHERE vector_layer_id = $1`,
+    [vectorLayerId],
+  )
+  const vectorLayer = resVL.rows[0]
   if (!vectorLayer) {
     throw new Error(`vector_layer_id ${vectorLayerId} not found`)
   }
@@ -26,20 +28,20 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   const level = vectorLayer.own_table_level
   const displayByProperty = vectorLayer.display_by_property
   const properties = vectorLayer.properties
-  const fields = await db.fields.findMany({
-    where: {
-      table_name: table,
-      level,
-      project_id: projectId,
-    },
-    select: { name: true },
-  })
+
+  const resFields = await db.query(
+    `SELECT name FROM fields WHERE table_name = $1 AND level = $2 AND project_id = $3`,
+    [table, level, projectId],
+  )
+  const fields = resFields.rows
   const fieldNames = fields.map((f) => f.name)
   const propertyIsInData = fieldNames.includes(displayByProperty)
 
-  const existingVectorLayerDisplays = await db.vector_layer_displays.findMany({
-    where: { vector_layer_id: vectorLayerId },
-  })
+  const existingVLDRes = await db.query(
+    `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1`,
+    [vectorLayerId],
+  )
+  const existingVectorLayerDisplays = existingVLDRes.rows
 
   if (!displayByProperty) {
     const firstExistingVectorLayerDisplay = existingVectorLayerDisplays?.[0]
