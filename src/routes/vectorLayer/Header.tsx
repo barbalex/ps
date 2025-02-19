@@ -101,17 +101,9 @@ export const Header = memo(({ autoFocusRef, row }) => {
       Object.values(vectorLayer),
     )
     // also add vector_layer_display
-    const vectorLayerDisplay = createVectorLayerDisplay({
+    createVectorLayerDisplay({
       vector_layer_id: vectorLayer.vector_layer_id,
     })
-    const vLDColumns = Object.keys(vectorLayerDisplay).join(',')
-    const vLDValues = Object.values(vectorLayerDisplay)
-      .map((_, i) => `$${i + 1}`)
-      .join(',')
-    await db.query(
-      `INSERT INTO vector_layer_displays (${vLDColumns}) VALUES (${vLDValues})`,
-      Object.values(vectorLayerDisplay),
-    )
     // add layer_presentation
     const layerPresentation = createLayerPresentation({
       vector_layer_id: vectorLayer.vector_layer_id,

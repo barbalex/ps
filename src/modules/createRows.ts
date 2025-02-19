@@ -537,26 +537,36 @@ export const createWfsServiceLayer = ({
   label,
 })
 
-export const createVectorLayerDisplay = ({
+export const createVectorLayerDisplay = async ({
   vector_layer_id = null,
   display_property_value = null,
-}) => ({
-  vector_layer_display_id: uuidv7(),
-  display_property_value,
-  vector_layer_id,
-  marker_type: 'circle',
-  circle_marker_radius: 8,
-  marker_size: 16,
-  stroke: true,
-  color: '#ff0000',
-  weight: 3,
-  line_cap: 'round',
-  line_join: 'round',
-  fill: true,
-  fill_color: '#ff0000',
-  fill_opacity_percent: 20,
-  fill_rule: 'evenodd',
-})
+  db,
+}) =>
+  db.query(
+    `
+    insert into vector_layer_displays 
+    (vector_layer_display_id, vector_layer_id, display_property_value, marker_type, circle_marker_radius, marker_size, stroke, color, weight, line_cap, line_join, fill, fill_color, fill_opacity_percent, fill_rule)
+    values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+    returning vector_layer_display_id
+  `,
+    [
+      uuidv7(),
+      vector_layer_id,
+      display_property_value,
+      'circle',
+      8,
+      16,
+      true,
+      '#ff0000',
+      3,
+      'round',
+      'round',
+      true,
+      '#ff0000',
+      20,
+      'evenodd',
+    ],
+  )
 
 export const createLayerPresentation = ({
   vector_layer_id = null,

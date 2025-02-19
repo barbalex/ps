@@ -29,13 +29,8 @@ export const Component = memo(({ vectorLayerId }) => {
   const vlds = result?.rows ?? []
 
   const add = useCallback(async () => {
-    const vectorLayerDisplay = createVectorLayerDisplay({ vector_layer_id })
-    const columns = Object.keys(vectorLayerDisplay).join(',')
-    const values = Object.values(vectorLayerDisplay)
-    const sql = `insert into vector_layer_displays (${columns}) values (${values
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(sql, values)
+    const res = await createVectorLayerDisplay({ vector_layer_id })
+    const vectorLayerDisplay = res.rows[0]
     if (vectorLayerId) {
       // we are in the map drawer
       setVectorLayerDisplayId(vectorLayerDisplay.vector_layer_display_id)
@@ -47,7 +42,6 @@ export const Component = memo(({ vectorLayerId }) => {
       search: searchParams.toString(),
     })
   }, [
-    db,
     navigate,
     searchParams,
     setVectorLayerDisplayId,

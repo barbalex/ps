@@ -87,17 +87,9 @@ export const TableLayersProvider = memo(() => {
         )
         const places1VectorLayerDisplay = places1VectorLayerDisplays?.[0]
         if (!places1VectorLayerDisplay) {
-          const newVLD = createVectorLayerDisplay({
+          await createVectorLayerDisplay({
             vector_layer_id: places1VectorLayer.vector_layer_id,
           })
-          const columns = Object.keys(newVLD).join(',')
-          const values = Object.values(newVLD)
-            .map((_, i) => `$${i + 1}`)
-            .join(',')
-          await db.query(
-            `INSERT INTO vector_layer_displays (${columns}) VALUES (${values})`,
-            Object.values(newVLD),
-          )
         }
         // 1.3 places1LayerPresentation: always needed
         const { rows: places1LayerPresentations } = await db.query(
@@ -152,17 +144,9 @@ export const TableLayersProvider = memo(() => {
         )
         const actions1VectorLayerDisplay = actions1VectorLayerDisplays?.[0]
         if (!actions1VectorLayerDisplay) {
-          const newVLD = createVectorLayerDisplay({
+          await createVectorLayerDisplay({
             vector_layer_id: actions1VectorLayer.vector_layer_id,
           })
-          const columns = Object.keys(newVLD).join(',')
-          const values = Object.values(newVLD)
-            .map((_, i) => `$${i + 1}`)
-            .join(',')
-          await db.query(
-            `INSERT INTO vector_layer_displays (${columns}) VALUES (${values})`,
-            Object.values(newVLD),
-          )
         }
         // 2.3 actions1LayerPresentation: always needed
         const { rows: actions1LayerPresentations } = await db.query(
@@ -217,17 +201,9 @@ export const TableLayersProvider = memo(() => {
         )
         const checks1VectorLayerDisplay = checks1VectorLayerDisplays?.[0]
         if (!checks1VectorLayerDisplay) {
-          const newVLD = createVectorLayerDisplay({
+          await createVectorLayerDisplay({
             vector_layer_id: checks1VectorLayer.vector_layer_id,
           })
-          const columns = Object.keys(newVLD).join(',')
-          const values = Object.values(newVLD)
-            .map((_, i) => `$${i + 1}`)
-            .join(',')
-          await db.query(
-            `INSERT INTO vector_layer_displays (${columns}) VALUES (${values})`,
-            Object.values(newVLD),
-          )
         }
         // 3.3 checks1LayerPresentation: always needed
         const { rows: checks1LayerPresentations } = await db.query(
@@ -286,17 +262,9 @@ export const TableLayersProvider = memo(() => {
           const occurrencesAssigned1VectorLayerDisplay =
             occurrencesAssigned1VectorLayerDisplays?.[0]
           if (!occurrencesAssigned1VectorLayerDisplay) {
-            const newVLD = createVectorLayerDisplay({
+            await createVectorLayerDisplay({
               vector_layer_id: occurrencesAssigned1VectorLayer.vector_layer_id,
             })
-            const columns = Object.keys(newVLD).join(',')
-            const values = Object.values(newVLD)
-              .map((_, i) => `$${i + 1}`)
-              .join(',')
-            await db.query(
-              `INSERT INTO vector_layer_displays (${columns}) VALUES (${values})`,
-              Object.values(newVLD),
-            )
           }
           // 4.3 occurrences_assigned1LayerPresentation: always needed
           const { rows: occurrencesAssigned1LayerPresentations } =
@@ -352,17 +320,9 @@ export const TableLayersProvider = memo(() => {
           const occurrencesToAssessVectorLayerDisplay =
             occurrencesToAssessVectorLayerDisplays?.[0]
           if (!occurrencesToAssessVectorLayerDisplay) {
-            const newVLD = createVectorLayerDisplay({
+            await createVectorLayerDisplay({
               vector_layer_id: occurrencesToAssessVectorLayer.vector_layer_id,
             })
-            const columns = Object.keys(newVLD).join(',')
-            const values = Object.values(newVLD)
-              .map((_, i) => `$${i + 1}`)
-              .join(',')
-            await db.query(
-              `INSERT INTO vector_layer_displays (${columns}) VALUES (${values})`,
-              Object.values(newVLD),
-            )
           }
           // 5.3 occurrencesToAssessLayerPresentation: always needed
           const { rows: occurrencesToAssessLayerPresentations } =
@@ -418,18 +378,10 @@ export const TableLayersProvider = memo(() => {
           const occurrencesNotToAssignVectorLayerDisplay =
             occurrencesNotToAssignVectorLayerDisplays?.[0]
           if (!occurrencesNotToAssignVectorLayerDisplay) {
-            const newVLD = createVectorLayerDisplay({
+            await createVectorLayerDisplay({
               vector_layer_id:
                 occurrencesNotToAssignVectorLayer.vector_layer_id,
             })
-            const columns = Object.keys(newVLD).join(',')
-            const values = Object.values(newVLD)
-              .map((_, i) => `$${i + 1}`)
-              .join(',')
-            await db.query(
-              `INSERT INTO vector_layer_displays (${columns}) VALUES (${values})`,
-              Object.values(newVLD),
-            )
           }
           // 6.3 occurrencesNotToAssignLayerPresentation: always needed
           const { rows: occurrencesNotToAssignLayerPresentations } =
@@ -487,17 +439,9 @@ export const TableLayersProvider = memo(() => {
           )
           const places2VectorLayerDisplay = places2VectorLayerDisplays?.[0]
           if (!places2VectorLayerDisplay) {
-            const newVLD = createVectorLayerDisplay({
+            await createVectorLayerDisplay({
               vector_layer_id: places2VectorLayer.vector_layer_id,
             })
-            const columns = Object.keys(newVLD).join(',')
-            const values = Object.values(newVLD)
-              .map((_, i) => `$${i + 1}`)
-              .join(',')
-            await db.query(
-              `INSERT INTO vector_layer_displays (${columns}) VALUES (${values})`,
-              Object.values(newVLD),
-            )
           }
           // 7.3 places2LayerPresentation: always needed
           const { rows: places2LayerPresentations } = await db.query(
@@ -554,17 +498,9 @@ export const TableLayersProvider = memo(() => {
           )
           const actions2VectorLayerDisplay = actions2VectorLayerDisplays?.[0]
           if (!actions2VectorLayerDisplay) {
-            const newVLD = createVectorLayerDisplay({
+            await createVectorLayerDisplay({
               vector_layer_id: actions2VectorLayer.vector_layer_id,
             })
-            const columns = Object.keys(newVLD).join(',')
-            const values = Object.values(newVLD)
-              .map((_, i) => `$${i + 1}`)
-              .join(',')
-            await db.query(
-              `INSERT INTO vector_layer_displays (${columns}) VALUES (${values})`,
-              Object.values(newVLD),
-            )
           }
           // 8.3 actions2LayerPresentation: always needed
           const { rows: actions2LayerPresentations } = await db.query(
@@ -621,17 +557,9 @@ export const TableLayersProvider = memo(() => {
           )
           const checks2VectorLayerDisplay = checks2VectorLayerDisplays?.[0]
           if (!checks2VectorLayerDisplay) {
-            const newVLD = createVectorLayerDisplay({
+            await createVectorLayerDisplay({
               vector_layer_id: checks2VectorLayer.vector_layer_id,
             })
-            const columns = Object.keys(newVLD).join(',')
-            const values = Object.values(newVLD)
-              .map((_, i) => `$${i + 1}`)
-              .join(',')
-            await db.query(
-              `INSERT INTO vector_layer_displays (${columns}) VALUES (${values})`,
-              Object.values(newVLD),
-            )
           }
           // 9.3 checks2LayerPresentation: always needed
           const { rows: checks2LayerPresentations } = await db.query(
@@ -690,17 +618,9 @@ export const TableLayersProvider = memo(() => {
           const occurrencesAssigned2VectorLayerDisplay =
             occurrencesAssigned2VectorLayerDisplays?.[0]
           if (!occurrencesAssigned2VectorLayerDisplay) {
-            const newVLD = createVectorLayerDisplay({
+            await createVectorLayerDisplay({
               vector_layer_id: occurrencesAssigned2VectorLayer.vector_layer_id,
             })
-            const columns = Object.keys(newVLD).join(',')
-            const values = Object.values(newVLD)
-              .map((_, i) => `$${i + 1}`)
-              .join(',')
-            await db.query(
-              `INSERT INTO vector_layer_displays (${columns}) VALUES (${values})`,
-              Object.values(newVLD),
-            )
           }
           // 10.3 occurrences_assigned2LayerPresentation: always needed
           const { rows: occurrencesAssigned2LayerPresentations } =

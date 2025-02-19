@@ -40,15 +40,9 @@ export const Component = memo(() => {
       .join(',')})`
     await db.query(vLSql, vLValues)
     // also add vector_layer_display
-    const vectorLayerDisplay = createVectorLayerDisplay({
+    await createVectorLayerDisplay({
       vector_layer_id: vectorLayer.vector_layer_id,
     })
-    const vLDColumns = Object.keys(vectorLayerDisplay).join(',')
-    const vLDValues = Object.values(vectorLayerDisplay)
-    const vLDSql = `insert into vector_layer_displays (${vLDColumns}) values (${vLDValues
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(vLDSql, vLDValues)
     // also add layer_presentation
     const layerPresentation = createLayerPresentation({
       vector_layer_id: vectorLayer.vector_layer_id,

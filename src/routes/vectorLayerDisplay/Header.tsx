@@ -28,8 +28,8 @@ export const Header = memo(({ vectorLayerDisplayId }) => {
   const [searchParams] = useSearchParams()
 
   const addRow = useCallback(async () => {
-    const vectorLayerDisplay = createVectorLayerDisplay({ vector_layer_id })
-    await db.vector_layer_displays.create({ data: vectorLayerDisplay })
+    const res = createVectorLayerDisplay({ vector_layer_id })
+    const vectorLayerDisplay = res.rows[0]
     if (vectorLayerDisplayId) {
       setMapLayerDrawerVectorLayerDisplayId(
         vectorLayerDisplay.vector_layer_display_id,
@@ -42,7 +42,6 @@ export const Header = memo(({ vectorLayerDisplayId }) => {
     })
     autoFocusRef.current?.focus()
   }, [
-    db.vector_layer_displays,
     navigate,
     searchParams,
     setMapLayerDrawerVectorLayerDisplayId,

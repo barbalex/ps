@@ -76,13 +76,9 @@ export const Component = memo(() => {
     const sqlVL = `insert into vector_layers (${columnsVL}) values ($1)`
     await db.query(sqlVL, valuesVL)
 
-    const newVLD = createVectorLayerDisplay({
+    await createVectorLayerDisplay({
       vector_layer_id: newVectorLayer.vector_layer_id,
     })
-    const columnsVLD = Object.keys(newVLD).join(',')
-    const valuesVLD = Object.values(newVLD)
-    const sqlVLD = `insert into vector_layer_displays (${columnsVLD}) values ($1)`
-    await db.query(sqlVLD, valuesVLD)
 
     const newLP = createLayerPresentation({
       vector_layer_id: newVectorLayer.vector_layer_id,
@@ -124,11 +120,7 @@ export const Component = memo(() => {
       />
       <div className="list-container">
         {places.map(({ place_id, label }) => (
-          <Row
-            key={place_id}
-            to={place_id}
-            label={label ?? place_id}
-          />
+          <Row key={place_id} to={place_id} label={label ?? place_id} />
         ))}
       </div>
     </div>

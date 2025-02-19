@@ -48,8 +48,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
 
     if (!firstExistingVectorLayerDisplay) {
       // create single display, then return
-      const data = createVectorLayerDisplay({ vector_layer_id: vectorLayerId })
-      return await db.vector_layer_displays.create({ data })
+      return await createVectorLayerDisplay({ vector_layer_id: vectorLayerId })
     }
 
     // remove all other displays, then return
@@ -120,7 +119,6 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
       },
     })
     // upsert displays in list
-    const vLDDataArray = []
     for (const listValue of listValues) {
       const existingVectorLayerDisplay =
         await db.vector_layer_displays.findFirst({
@@ -132,15 +130,10 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
       // leave existing VLD unchanged
       if (existingVectorLayerDisplay) return
 
-      const data = createVectorLayerDisplay({
+      await createVectorLayerDisplay({
         vector_layer_id: vectorLayerId,
         display_property_value: listValue.value,
       })
-      vLDDataArray.push(data)
-    }
-    const chunked = chunkArrayWithMinSize(vLDDataArray, 500)
-    for (const data of chunked) {
-      await db.vector_layer_displays.createMany({ data })
     }
     return
   }
@@ -227,7 +220,6 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   }
   const distinctValues = tableRows?.map((row) => row?.[displayByProperty])
 
-  const vLDDataArray = []
   for (const value of distinctValues) {
     const existingVectorLayerDisplay = await db.vector_layer_displays.findFirst(
       {
@@ -240,15 +232,10 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     // leave existing VLD unchanged
     if (existingVectorLayerDisplay) continue
 
-    const data = createVectorLayerDisplay({
+    await createVectorLayerDisplay({
       vector_layer_id: vectorLayerId,
       display_property_value: value,
     })
-    vLDDataArray.push(data)
-  }
-  const chunked = chunkArrayWithMinSize(vLDDataArray, 500)
-  for (const data of chunked) {
-    await db.vector_layer_displays.createMany({ data })
   }
   return
 }
