@@ -29,7 +29,7 @@ export const Header = memo(({ vectorLayerDisplayId }) => {
   const [searchParams] = useSearchParams()
 
   const addRow = useCallback(async () => {
-    const res = createVectorLayerDisplay({ vector_layer_id })
+    const res = await createVectorLayerDisplay({ vector_layer_id })
     const vectorLayerDisplay = res.rows[0]
     if (vectorLayerDisplayId) {
       setMapLayerDrawerVectorLayerDisplayId(

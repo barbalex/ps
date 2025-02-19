@@ -59,12 +59,12 @@ export const WmsLayers = memo(() => {
     const wmsLayer = createWmsLayer({ project_id })
     await db.wms_layers.create({ data: wmsLayer })
     // also add layer_presentation
-    const layerPresentation = createLayerPresentation({
+    await createLayerPresentation({
       wms_layer_id: wmsLayer.wms_layer_id,
+      db,
     })
-    await db.layer_presentations.create({ data: layerPresentation })
     setOpenItems((prev) => [...prev, wmsLayer.wms_layer_id])
-  }, [db.layer_presentations, db.wms_layers, project_id, setOpenItems])
+  }, [db, project_id, setOpenItems])
 
   const onToggleItem = useCallback(
     (event, { value: wmsLayerId, openItems }) => {

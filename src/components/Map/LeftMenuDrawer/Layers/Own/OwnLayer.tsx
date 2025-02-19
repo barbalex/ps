@@ -45,21 +45,18 @@ export const OwnLayer = memo(({ layer, isLast, isOpen }) => {
   const onChange = useCallback(async () => {
     if (!layer.layer_presentations?.[0]?.layer_presentation_id) {
       // create the missing layer_presentation
-      const layerPresentation = createLayerPresentation({
+      await createLayerPresentation({
         vector_layer_id: layer.vector_layer_id,
         active: true,
+        db,
       })
-      await db.layer_presentations.create({ data: layerPresentation })
     } else {
-      db.layer_presentations.update({
-        where: {
-          layer_presentation_id:
-            layer.layer_presentations?.[0]?.layer_presentation_id,
-        },
-        data: { active: true },
-      })
+      db.query(
+        `UPDATE layer_presentations SET active = true WHERE layer_presentation_id = $1`,
+        [layer.layer_presentations?.[0]?.layer_presentation_id],
+      )
     }
-  }, [db.layer_presentations, layer.layer_presentations, layer.vector_layer_id])
+  }, [db, layer.layer_presentations, layer.vector_layer_id])
 
   const onTabSelect = useCallback(
     (event, data: SelectTabData) => setTab(data.value),
@@ -126,10 +123,7 @@ export const OwnLayer = memo(({ layer, isLast, isOpen }) => {
             style={tabListStyle}
           >
             <Tab value="overall-displays">Overall Display</Tab>
-            <Tab
-              value="feature-displays"
-              onClick={onClickFeatureDisplays}
-            >
+            <Tab value="feature-displays" onClick={onClickFeatureDisplays}>
               Feature Displays
             </Tab>
             <Tab value="config">Config</Tab>

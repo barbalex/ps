@@ -44,15 +44,10 @@ export const Component = memo(() => {
       vector_layer_id: vectorLayer.vector_layer_id,
     })
     // also add layer_presentation
-    const layerPresentation = createLayerPresentation({
+    await createLayerPresentation({
       vector_layer_id: vectorLayer.vector_layer_id,
+      db,
     })
-    const lPColumns = Object.keys(layerPresentation).join(',')
-    const lPValues = Object.values(layerPresentation)
-    const lPSql = `insert into layer_presentations (${lPColumns}) values (${lPValues
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(lPSql, lPValues)
     navigate({
       pathname: vectorLayer.vector_layer_id,
       search: searchParams.toString(),

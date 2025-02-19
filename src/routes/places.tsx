@@ -80,13 +80,10 @@ export const Component = memo(() => {
       vector_layer_id: newVectorLayer.vector_layer_id,
     })
 
-    const newLP = createLayerPresentation({
+    await createLayerPresentation({
       vector_layer_id: newVectorLayer.vector_layer_id,
+      db,
     })
-    const columnsLP = Object.keys(newLP).join(',')
-    const valuesLP = Object.values(newLP)
-    const sqlLP = `insert into layer_presentations (${columnsLP}) values ($1)`
-    await db.query(sqlLP, valuesLP)
 
     navigate({ pathname: data.place_id, search: searchParams.toString() })
   }, [

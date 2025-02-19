@@ -39,15 +39,10 @@ export const Component = memo(() => {
     await db.query(wmsSql, wmsValues)
 
     // also add layer_presentation
-    const layerPresentation = createLayerPresentation({
+    await createLayerPresentation({
       wms_layer_id: wmsLayer.wms_layer_id,
+      db,
     })
-    const lPColumns = Object.keys(layerPresentation).join(',')
-    const lPValues = Object.values(layerPresentation)
-    const lPSql = `insert into layer_presentations (${lPColumns}) values (${lPValues
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(lPSql, lPValues)
     navigate({
       pathname: wmsLayer.wms_layer_id,
       search: searchParams.toString(),

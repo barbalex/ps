@@ -568,24 +568,34 @@ export const createVectorLayerDisplay = async ({
     ],
   )
 
-export const createLayerPresentation = ({
+export const createLayerPresentation = async ({
   vector_layer_id = null,
   wms_layer_id = null,
   account_id = null,
   active = false,
   transparent = false,
-}) => ({
-  layer_presentation_id: uuidv7(),
-  account_id,
-  vector_layer_id,
-  wms_layer_id,
-  active,
-  opacity_percent: 100,
-  grayscale: false,
-  transparent,
-  max_zoom: 19,
-  min_zoom: 0,
-})
+  db,
+}) =>
+  db.query(
+    `
+    INSERT INTO layer_presentations
+    (layer_presentation_id, account_id, vector_layer_id, wms_layer_id, active, opacity_percent, grayscale, transparent, max_zoom, min_zoom)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+    RETURNING layer_presentation_id
+  `,
+    [
+      uuidv7(),
+      account_id,
+      vector_layer_id,
+      wms_layer_id,
+      active,
+      100,
+      false,
+      transparent,
+      19,
+      0,
+    ],
+  )
 
 export const createWmsService = ({
   project_id = null,

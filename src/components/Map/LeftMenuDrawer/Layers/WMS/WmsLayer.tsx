@@ -63,11 +63,11 @@ export const WmsLayer = memo(({ layer, isLast, isOpen }) => {
     })
     // 2. if not, create one
     if (!presentation) {
-      const data = createLayerPresentation({
+      await createLayerPresentation({
         wms_layer_id: layer.wms_layer_id,
         active: true,
+        db,
       })
-      db.layer_presentations.create({ data })
     }
     // 3. if yes, update it
     else {
@@ -76,7 +76,7 @@ export const WmsLayer = memo(({ layer, isLast, isOpen }) => {
         data: { active: true },
       })
     }
-  }, [db.layer_presentations, layer.wms_layer_id])
+  }, [db, layer.wms_layer_id])
 
   const onTabSelect = useCallback(
     (event, data: SelectTabData) => setTab(data.value),

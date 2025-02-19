@@ -72,17 +72,10 @@ export const Header = memo(({ autoFocusRef }: Props) => {
       vector_layer_id: newVectorLayer.vector_layer_id,
     })
 
-    const newLP = createLayerPresentation({
+    await createLayerPresentation({
       vector_layer_id: newVectorLayer.vector_layer_id,
+      db,
     })
-    const columnsLP = Object.keys(newLP).join(',')
-    const valuesLP = Object.values(newLP)
-      .map((_, i) => `$${i + 1}`)
-      .join(',')
-    db.query(
-      `INSERT INTO layer_presentations (${columnsLP}) VALUES (${valuesLP})`,
-      Object.values(newLP),
-    )
 
     navigate({
       pathname: `../${data.place_id}`,

@@ -62,20 +62,12 @@ export const VectorLayers = memo(() => {
       vector_layer_id: vectorLayer.vector_layer_id,
     })
     // also add layer_presentation
-    const layerPresentation = createLayerPresentation({
+    await createLayerPresentation({
       vector_layer_id: vectorLayer.vector_layer_id,
-    })
-    await db.layer_presentations.create({
-      data: layerPresentation,
+      db,
     })
     setOpenItems([openItems, vectorLayer.vector_layer_id])
-  }, [
-    db.layer_presentations,
-    db.vector_layers,
-    openItems,
-    project_id,
-    setOpenItems,
-  ])
+  }, [db, openItems, project_id, setOpenItems])
 
   const onToggleItem = useCallback(
     (event, { value: vectorLayerId, openItems }) => {

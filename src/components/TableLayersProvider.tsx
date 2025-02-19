@@ -98,17 +98,10 @@ export const TableLayersProvider = memo(() => {
         )
         const places1LayerPresentation = places1LayerPresentations?.[0]
         if (!places1LayerPresentation) {
-          const newLP = createLayerPresentation({
+          await createLayerPresentation({
             vector_layer_id: places1VectorLayer.vector_layer_id,
+            db,
           })
-          const columns = Object.keys(newLP).join(',')
-          const values = Object.values(newLP)
-            .map((_, i) => `$${i + 1}`)
-            .join(',')
-          await db.query(
-            `INSERT INTO layer_presentations (${columns}) VALUES (${values})`,
-            Object.values(newLP),
-          )
         }
         // 2.1 actions1: always needed
         let actions1VectorLayer = vectorLayers?.find(
@@ -155,17 +148,10 @@ export const TableLayersProvider = memo(() => {
         )
         const actions1LayerPresentation = actions1LayerPresentations?.[0]
         if (!actions1LayerPresentation) {
-          const newLP = createLayerPresentation({
+          await createLayerPresentation({
             vector_layer_id: actions1VectorLayer.vector_layer_id,
+            db,
           })
-          const columns = Object.keys(newLP).join(',')
-          const values = Object.values(newLP)
-            .map((_, i) => `$${i + 1}`)
-            .join(',')
-          await db.query(
-            `INSERT INTO layer_presentations (${columns}) VALUES (${values})`,
-            Object.values(newLP),
-          )
         }
         // 3.1 checks1: always needed
         let checks1VectorLayer = vectorLayers?.find(
@@ -212,17 +198,10 @@ export const TableLayersProvider = memo(() => {
         )
         const checks1LayerPresentation = checks1LayerPresentations?.[0]
         if (!checks1LayerPresentation) {
-          const newLP = createLayerPresentation({
+          await createLayerPresentation({
             vector_layer_id: checks1VectorLayer.vector_layer_id,
+            db,
           })
-          const columns = Object.keys(newLP).join(',')
-          const values = Object.values(newLP)
-            .map((_, i) => `$${i + 1}`)
-            .join(',')
-          await db.query(
-            `INSERT INTO layer_presentations (${columns}) VALUES (${values})`,
-            Object.values(newLP),
-          )
         }
         // 4.1 occurrences_assigned1 and occurrences_assigned_lines1: needed if occurrences exist and placeLevels1 has occurrences
         // TODO: add occurrences_assigned_lines1
@@ -275,17 +254,10 @@ export const TableLayersProvider = memo(() => {
           const occurrencesAssigned1LayerPresentation =
             occurrencesAssigned1LayerPresentations?.[0]
           if (!occurrencesAssigned1LayerPresentation) {
-            const newLP = createLayerPresentation({
+            await createLayerPresentation({
               vector_layer_id: occurrencesAssigned1VectorLayer.vector_layer_id,
+              db,
             })
-            const columns = Object.keys(newLP).join(',')
-            const values = Object.values(newLP)
-              .map((_, i) => `$${i + 1}`)
-              .join(',')
-            await db.query(
-              `INSERT INTO layer_presentations (${columns}) VALUES (${values})`,
-              Object.values(newLP),
-            )
           }
         }
         // 5.1 occurrences_to_assess: needed if occurrences exist
@@ -333,17 +305,10 @@ export const TableLayersProvider = memo(() => {
           const occurrencesToAssessLayerPresentation =
             occurrencesToAssessLayerPresentations?.[0]
           if (!occurrencesToAssessLayerPresentation) {
-            const newLP = createLayerPresentation({
+            await createLayerPresentation({
               vector_layer_id: occurrencesToAssessVectorLayer.vector_layer_id,
+              db,
             })
-            const columns = Object.keys(newLP).join(',')
-            const values = Object.values(newLP)
-              .map((_, i) => `$${i + 1}`)
-              .join(',')
-            await db.query(
-              `INSERT INTO layer_presentations (${columns}) VALUES (${values})`,
-              Object.values(newLP),
-            )
           }
         }
         // 6.1 occurrences_not_to_assign: needed if occurrences exist
@@ -392,18 +357,11 @@ export const TableLayersProvider = memo(() => {
           const occurrencesNotToAssignLayerPresentation =
             occurrencesNotToAssignLayerPresentations?.[0]
           if (!occurrencesNotToAssignLayerPresentation) {
-            const newLP = createLayerPresentation({
+            await createLayerPresentation({
               vector_layer_id:
                 occurrencesNotToAssignVectorLayer.vector_layer_id,
+              db,
             })
-            const columns = Object.keys(newLP).join(',')
-            const values = Object.values(newLP)
-              .map((_, i) => `$${i + 1}`)
-              .join(',')
-            await db.query(
-              `INSERT INTO layer_presentations (${columns}) VALUES (${values})`,
-              Object.values(newLP),
-            )
           }
         }
         // 7.1 places2 needed if placeLevels2 exists
@@ -450,17 +408,10 @@ export const TableLayersProvider = memo(() => {
           )
           const places2LayerPresentation = places2LayerPresentations?.[0]
           if (!places2LayerPresentation) {
-            const newLP = createLayerPresentation({
+            await createLayerPresentation({
               vector_layer_id: places2VectorLayer.vector_layer_id,
+              db,
             })
-            const columns = Object.keys(newLP).join(',')
-            const values = Object.values(newLP)
-              .map((_, i) => `$${i + 1}`)
-              .join(',')
-            await db.query(
-              `INSERT INTO layer_presentations (${columns}) VALUES (${values})`,
-              Object.values(newLP),
-            )
           }
         }
         // 8.1 actions2 needed if placeLevels2.actions exists
@@ -509,17 +460,10 @@ export const TableLayersProvider = memo(() => {
           )
           const actions2LayerPresentation = actions2LayerPresentations?.[0]
           if (!actions2LayerPresentation) {
-            const newLP = createLayerPresentation({
+            await createLayerPresentation({
               vector_layer_id: actions2VectorLayer.vector_layer_id,
+              db,
             })
-            const columns = Object.keys(newLP).join(',')
-            const values = Object.values(newLP)
-              .map((_, i) => `$${i + 1}`)
-              .join(',')
-            await db.query(
-              `INSERT INTO layer_presentations (${columns}) VALUES (${values})`,
-              Object.values(newLP),
-            )
           }
         }
         // 9.1 checks2 needed if placeLevels2.checks exists
@@ -568,17 +512,10 @@ export const TableLayersProvider = memo(() => {
           )
           const checks2LayerPresentation = checks2LayerPresentations?.[0]
           if (!checks2LayerPresentation) {
-            const newLP = createLayerPresentation({
+            await createLayerPresentation({
               vector_layer_id: checks2VectorLayer.vector_layer_id,
+              db,
             })
-            const columns = Object.keys(newLP).join(',')
-            const values = Object.values(newLP)
-              .map((_, i) => `$${i + 1}`)
-              .join(',')
-            await db.query(
-              `INSERT INTO layer_presentations (${columns}) VALUES (${values})`,
-              Object.values(newLP),
-            )
           }
         }
         // 10.1 occurrences_assigned2 needed if occurrences exist and placeLevels2 has occurrences
@@ -631,17 +568,10 @@ export const TableLayersProvider = memo(() => {
           const occurrencesAssigned2LayerPresentation =
             occurrencesAssigned2LayerPresentations?.[0]
           if (!occurrencesAssigned2LayerPresentation) {
-            const newLP = createLayerPresentation({
+            await createLayerPresentation({
               vector_layer_id: occurrencesAssigned2VectorLayer.vector_layer_id,
+              db,
             })
-            const columns = Object.keys(newLP).join(',')
-            const values = Object.values(newLP)
-              .map((_, i) => `$${i + 1}`)
-              .join(',')
-            await db.query(
-              `INSERT INTO layer_presentations (${columns}) VALUES (${values})`,
-              Object.values(newLP),
-            )
           }
         }
       }

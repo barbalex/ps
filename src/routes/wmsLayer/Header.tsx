@@ -26,17 +26,10 @@ export const Header = memo(({ autoFocusRef }) => {
       Object.values(wmsLayer),
     )
     // also add layer_presentation
-    const layerPresentation = createLayerPresentation({
+    await createLayerPresentation({
       wms_layer_id: wmsLayer.wms_layer_id,
+      db,
     })
-    const lPColumns = Object.keys(layerPresentation).join(',')
-    const lPValues = Object.values(layerPresentation)
-      .map((_, i) => `$${i + 1}`)
-      .join(',')
-    await db.query(
-      `INSERT INTO layer_presentations (${lPColumns}) VALUES (${lPValues})`,
-      Object.values(layerPresentation),
-    )
     navigate({
       pathname: `../${wmsLayer.wms_layer_id}`,
       search: searchParams.toString(),
