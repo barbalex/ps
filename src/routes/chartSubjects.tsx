@@ -21,13 +21,8 @@ export const Component = memo(() => {
   const chartSubjects = results?.rows ?? []
 
   const addRow = useCallback(async () => {
-    const data = createChartSubject({ chart_id })
-    const columns = Object.keys(data).join(',')
-    const values = Object.values(data).join("','")
-    const sql = `INSERT INTO chart_subjects (${columns}) VALUES (${values
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(sql, values)
+    const res = await createChartSubject({ chart_id, db })
+    const data = res.rows[0]
     navigate({
       pathname: data.chart_subject_id,
       search: searchParams.toString(),
