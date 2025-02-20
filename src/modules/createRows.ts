@@ -498,9 +498,11 @@ export const createCheck = async ({ db, project_id, place_id }) => {
   )
 }
 
-export const createCheckValue = () => ({
-  check_value_id: uuidv7(),
-})
+export const createCheckValue = async ({ db, check_id }) =>
+  db.query(
+    `insert into check_values (check_value_id, check_id) values ($1, $2) returning check_value_id`,
+    [uuidv7(), check_id],
+  )
 
 export const createCheckTaxon = () => ({
   check_taxon_id: uuidv7(),

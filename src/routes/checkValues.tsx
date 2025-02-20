@@ -20,16 +20,8 @@ export const Component = memo(() => {
   const checkValues = results?.rows ?? []
 
   const add = useCallback(async () => {
-    const checkValue = {
-      ...createCheckValue(),
-      check_id,
-    }
-    const columns = Object.keys(checkValue).join(',')
-    const values = Object.values(checkValue)
-    const sql = `INSERT INTO check_values (${columns}) VALUES (${values
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(sql, values)
+    const res = await createCheckValue({ check_id, db })
+    const checkValue = res.rows[0]
     navigate({
       pathname: checkValue.check_value_id,
       search: searchParams.toString(),

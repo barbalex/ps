@@ -13,15 +13,8 @@ export const Header = memo(({ autoFocusRef }) => {
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const checkValue = createCheckValue()
-    const columns = Object.keys(checkValue).join(',')
-    const values = Object.values(checkValue)
-      .map((_, i) => `$${i + 1}`)
-      .join(',')
-    await db.query(
-      `INSERT INTO check_values (${columns}) VALUES (${values}, check_id)`,
-      [...Object.values(checkValue), check_id],
-    )
+    const res = await createCheckValue({ check_id, db })
+    const checkValue = res.rows[0]
     navigate({
       pathname: `../${checkValue.check_value_id}`,
       search: searchParams.toString(),
