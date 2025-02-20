@@ -812,15 +812,19 @@ export const createChartSubject = async ({ chart_id, db }) =>
     ],
   )
 
-export const createOccurrenceImport = ({ subproject_id }) => ({
-  occurrence_import_id: uuidv7(),
-  account_id: '018cf958-27e2-7000-90d3-59f024d467be', // TODO: replace with auth data when implemented
-  subproject_id,
-  geometry_method: 'coordinates',
-  crs: 'EPSG:4326',
-  created_time: Date.now(),
-  download_from_gbif: false,
-})
+export const createOccurrenceImport = async ({ subproject_id, db }) =>
+  db.query(
+    `INSERT INTO occurrence_imports (occurrence_import_id, account_id, subproject_id, geometry_method, crs, created_time, download_from_gbif) VALUES ($1, $2, $3, $4, $5, $6, $7) returning occurrence_import_id`,
+    [
+      uuidv7(),
+      '018cf958-27e2-7000-90d3-59f024d467be',
+      subproject_id,
+      'coordinates',
+      'EPSG:4326',
+      Date.now(),
+      false,
+    ],
+  )
 
 export const createOccurrence = ({ occurrence_import_id, data = null }) => ({
   occurrence_id: uuidv7(),

@@ -22,13 +22,8 @@ export const Component = memo(() => {
   const occurrenceImports = result?.rows ?? []
 
   const add = useCallback(async () => {
-    const data = createOccurrenceImport({ subproject_id })
-    const columns = Object.keys(data).join(',')
-    const values = Object.values(data)
-    const sql = `insert into occurrence_imports (${columns}) values (${values
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(sql, values)
+    const res = await createOccurrenceImport({ subproject_id, db })
+    const data = res.rows[0]
     navigate({
       pathname: data.occurrence_import_id,
       search: searchParams.toString(),
