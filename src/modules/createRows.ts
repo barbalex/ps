@@ -107,7 +107,7 @@ export const createPlace = async ({
     table: 'places',
   })
 
-  return {
+  const data = {
     place_id: uuidv7(),
     subproject_id,
     parent_id,
@@ -115,6 +115,16 @@ export const createPlace = async ({
 
     ...presetData,
   }
+
+  const columns = Object.keys(data).join(',')
+  const values = Object.values(data)
+    .map((_, i) => `$${i + 1}`)
+    .join(',')
+
+  return db.query(
+    `insert into places (${columns}) values (${values}) returning place_id`,
+    Object.values(data),
+  )
 }
 
 export const createWidgetForField = () => ({

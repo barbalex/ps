@@ -47,19 +47,14 @@ export const Component = memo(() => {
   const placeNamePlural = placeLevel?.name_plural ?? 'Places'
 
   const add = useCallback(async () => {
-    const data = await createPlace({
+    const res = await createPlace({
       db,
       project_id,
       subproject_id,
       parent_id: place_id ?? null,
       level: place_id ? 2 : 1,
     })
-    const columns = Object.keys(data).join(',')
-    const values = Object.values(data)
-    const sql = `insert into places (${columns}) values (${values
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(sql, values)
+    const place = res.rows?.[0]
     // need to create a corresponding vector layer and vector layer display
     // TODO:
     // 1. only if not yet exists
@@ -82,7 +77,7 @@ export const Component = memo(() => {
       db,
     })
 
-    navigate({ pathname: data.place_id, search: searchParams.toString() })
+    navigate({ pathname: place.place_id, search: searchParams.toString() })
   }, [
     db,
     navigate,

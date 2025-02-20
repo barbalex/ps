@@ -41,14 +41,14 @@ export const Header = memo(({ autoFocusRef }: Props) => {
   const placeNamePlural = placeLevels?.[0]?.name_plural ?? 'Places'
 
   const addRow = useCallback(async () => {
-    const data = await createPlace({
+    const res = await createPlace({
       db,
       project_id,
       subproject_id,
       parent_id: place_id2 ? place_id : null,
       level: place_id2 ? 2 : 1,
     })
-    await db.places.create({ data })
+    const place = res.rows?.[0]
 
     // need to create a corresponding vector layer and vector layer display
     const res = createVectorLayer({
@@ -71,7 +71,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     })
 
     navigate({
-      pathname: `../${data.place_id}`,
+      pathname: `../${place.place_id}`,
       search: searchParams.toString(),
     })
     autoFocusRef.current?.focus()
