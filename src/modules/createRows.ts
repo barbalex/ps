@@ -551,13 +551,21 @@ export const createActionReport = async ({ db, project_id, action_id }) => {
     table: 'action_reports',
   })
 
-  return {
+  const data = {
     action_report_id: uuidv7(),
     action_id,
     year: new Date().getFullYear(),
-
     ...presetData,
   }
+  const columns = Object.keys(data).join(',')
+  const values = Object.values(data)
+    .map((_, i) => `$${i + 1}`)
+    .join(',')
+
+  return db.query(
+    `insert into action_reports (${columns}) values (${values}) returning action_report_id`,
+    Object.values(data),
+  )
 }
 
 export const createActionReportValue = () => ({
