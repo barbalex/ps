@@ -200,12 +200,22 @@ export const createPerson = async ({ db, project_id }) => {
     table: 'persons',
   })
 
-  return {
+  const data = {
     person_id: uuidv7(),
     project_id,
 
     ...presetData,
   }
+
+  const columns = Object.keys(data).join(',')
+  const values = Object.values(data)
+    .map((_, i) => `$${i + 1}`)
+    .join(',')
+
+  return db.query(
+    `insert into persons (${columns}) values (${values}) returning person_id`,
+    Object.values(data),
+  )
 }
 
 export const createCrs = () => ({

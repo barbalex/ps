@@ -17,15 +17,8 @@ export const Header = memo(({ autoFocusRef }: Props) => {
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const data = await createPerson({ db, project_id })
-    const columns = Object.keys(data).join(',')
-    const values = Object.values(data)
-      .map((_, i) => `$${i + 1}`)
-      .join(',')
-    await db.query(
-      `INSERT INTO persons (${columns}) VALUES (${values})`,
-      Object.values(data),
-    )
+    const res = await createPerson({ db, project_id })
+    const data = res.rows[0]
     navigate({
       pathname: `../${data.person_id}`,
       search: searchParams.toString(),
