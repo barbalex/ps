@@ -272,7 +272,7 @@ export const createList = async ({ db, project_id, name = null }) => {
     table: 'lists',
   })
 
-  return {
+  const data = {
     list_id: uuidv7(),
     project_id,
     name,
@@ -280,6 +280,15 @@ export const createList = async ({ db, project_id, name = null }) => {
 
     ...presetData,
   }
+  const columns = Object.keys(data).join(',')
+  const values = Object.values(data)
+    .map((_, i) => `$${i + 1}`)
+    .join(',')
+
+  return db.query(
+    `insert into lists (${columns}) values (${values}) returning list_id`,
+    Object.values(data),
+  )
 }
 
 export const createTaxonomy = async ({ db, project_id }) => {
