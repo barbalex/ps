@@ -661,16 +661,16 @@ export const createWfsService = async ({
     ],
   )
 
-export const createWfsServiceLayer = ({
+export const createWfsServiceLayer = async ({
   wfs_service_id,
   name = null,
   label = null,
-}) => ({
-  wfs_service_layer_id: uuidv7(),
-  wfs_service_id,
-  name,
-  label,
-})
+  db,
+}) =>
+  db.query(
+    `insert into wfs_service_layers (wfs_service_layer_id, wfs_service_id, name, label) values ($1, $2, $3, $4) returning wfs_service_layer_id`,
+    [uuidv7(), wfs_service_id, name, label],
+  )
 
 export const createVectorLayerDisplay = async ({
   vector_layer_id = null,

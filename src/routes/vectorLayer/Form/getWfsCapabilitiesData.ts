@@ -1,5 +1,4 @@
 import { getCapabilities } from '../../../modules/getCapabilities.ts'
-import { chunkArrayWithMinSize } from '../../../modules/chunkArrayWithMinSize.ts'
 import { createWfsServiceLayer } from '../../../modules/createRows.ts'
 
 export const getWfsCapabilitiesData = async ({ vectorLayer, service, db }) => {
@@ -86,20 +85,13 @@ export const getWfsCapabilitiesData = async ({ vectorLayer, service, db }) => {
         : true,
     )
 
-  const layersData = acceptableLayers.map((l) =>
-    createWfsServiceLayer({
+  for (const l of acceptableLayers) {
+    await createWfsServiceLayer({
       wfs_service_id: service.wfs_service_id,
       name: l.NAME?.['#text'],
       label: l.TITLE?.['#text'],
-    }),
-  )
-  const chunked = chunkArrayWithMinSize(layersData, 500)
-  for (const data of chunked) {
-    try {
-      await db.wfs_service_layers.createMany({ data })
-    } catch (error) {
-      console.error('getWfsCapabilitiesData, error:', { error, data })
-    }
+      db,
+    })
   }
 
   // single layer? update vectorLayer
