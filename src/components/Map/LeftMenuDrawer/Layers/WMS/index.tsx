@@ -68,9 +68,11 @@ export const WmsLayers = memo(() => {
       // use setTimeout to let the child checkbox set the layers active status
       setTimeout(async () => {
         // fetch layerPresentation's active status
-        const layerPresentation = await db.layer_presentations.findFirst({
-          where: { wms_layer_id: wmsLayerId },
-        })
+        const res = await db.query(
+          `SELECT active FROM layer_presentations WHERE wms_layer_id = $1`,
+          [wmsLayerId],
+        )
+        const layerPresentation = res.rows[0]
         const isActive = layerPresentation?.active
         if (isActive) {
           // if not active, remove this item
@@ -81,7 +83,7 @@ export const WmsLayers = memo(() => {
         setOpenItems(openItems)
       }, 200)
     },
-    [db.layer_presentations, setOpenItems],
+    [db, setOpenItems],
   )
 
   if (!project_id) {
