@@ -13,21 +13,14 @@ export const Header = memo(({ autoFocusRef }) => {
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const actionReportValue = createActionReportValue()
-    const columns = Object.keys(actionReportValue).join(',')
-    const values = Object.values(actionReportValue).map(
-      (_, i) => `$${i + 1}`,
-    ).join
-    await db.query(
-      `INSERT INTO action_report_values (${columns}) VALUES (${values})`,
-      Object.values(actionReportValue),
-    )
+    const res = await createActionReportValue({ db, action_report_id })
+    const actionReportValue = res.rows[0]
     navigate({
       pathname: `../${actionReportValue.action_report_value_id}`,
       search: searchParams.toString(),
     })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db, navigate, searchParams])
+  }, [action_report_id, autoFocusRef, db, navigate, searchParams])
 
   const deleteRow = useCallback(async () => {
     db.query(

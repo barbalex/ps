@@ -20,18 +20,13 @@ export const Component = memo(() => {
   const actionReportValues = result?.rows ?? []
 
   const add = useCallback(async () => {
-    const actionReportValue = {
-      ...createActionReportValue(),
+    const res = await createActionReportValue({
+      db,
       action_report_id,
-    }
-    const columns = Object.keys(actionReportValue).join(',')
-    const values = Object.values(actionReportValue)
-    const sql = `insert into action_report_values (${columns}) values (${values
-      .map((_, i) => `$${i + 1}`)
-      .join(',')});`
-    await db.query(sql, values)
+    })
+    const data = res.rows[0]
     navigate({
-      pathname: actionReportValue.action_report_value_id,
+      pathname: data.action_report_value_id,
       search: searchParams.toString(),
     })
   }, [action_report_id, db, navigate, searchParams])
