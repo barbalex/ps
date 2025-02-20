@@ -13,13 +13,8 @@ export const Header = memo(({ autoFocusRef }) => {
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const data = createWidgetType()
-    const columns = Object.keys(data).join(',')
-    const values = Object.values(data)
-    const sql = `INSERT INTO widget_types (${columns}) VALUES (${values
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(sql, values)
+    const res = createWidgetType({ db })
+    const data = res.rows[0]
     navigate({
       pathname: `../${data.widget_type_id}`,
       search: searchParams.toString(),

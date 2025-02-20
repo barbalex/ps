@@ -162,11 +162,11 @@ export const createWidgetForField = async ({ db }) =>
     [uuidv7()],
   )
 
-export const createWidgetType = () => ({
-  widget_type_id: uuidv7(),
-  needs_list: false,
-  sort: 0,
-})
+export const createWidgetType = async ({ db }) =>
+  db.query(
+    `insert into widget_types (widget_type_id, needs_list, sort) values ($1, $2, $3) returning widget_type_id`,
+    [uuidv7(), false, 0],
+  )
 
 export const createFieldType = async ({ db }) =>
   db.query(

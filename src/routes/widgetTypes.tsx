@@ -27,13 +27,8 @@ export const Component = memo(() => {
   const widgetTypes = result?.rows ?? []
 
   const add = useCallback(async () => {
-    const data = createWidgetType()
-    const columns = Object.keys(data).join(',')
-    const values = Object.values(data)
-    const sql = `insert into widget_types (${columns}) values (${values
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(sql, values)
+    const res = await createWidgetType({ db })
+    const data = res.rows[0]
     navigate({ pathname: data.widget_type_id, search: searchParams.toString() })
   }, [db, navigate, searchParams])
 
