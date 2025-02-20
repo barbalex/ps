@@ -20,13 +20,8 @@ export const Component = memo(() => {
   const subprojectTaxa = result?.rows ?? []
 
   const add = useCallback(async () => {
-    const data = { ...createSubprojectTaxon(), subproject_id }
-    const columns = Object.keys(data).join(',')
-    const values = Object.values(data)
-    const sql = `INSERT INTO subproject_taxa (${columns}) VALUES (${values
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(sql, values)
+    const res = await createSubprojectTaxon({ subproject_id, db })
+    const data = res.rows[0]
     navigate({
       pathname: data.subproject_taxon_id,
       search: searchParams.toString(),

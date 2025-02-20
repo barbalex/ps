@@ -13,21 +13,14 @@ export const Header = memo(({ autoFocusRef }) => {
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const subprojectTaxon = createSubprojectTaxon()
-    const columns = Object.keys(subprojectTaxon).join(',')
-    const values = Object.values(subprojectTaxon)
-      .map((_, i) => `$${i + 1}`)
-      .join(',')
-    await db.query(
-      `INSERT INTO subproject_taxa (${columns}) VALUES (${values})`,
-      Object.values(subprojectTaxon),
-    )
+    const res = await createSubprojectTaxon({ db, subproject_id })
+    const subprojectTaxon = res.rows[0]
     navigate({
       pathname: `../${subprojectTaxon.subproject_taxon_id}`,
       search: searchParams.toString(),
     })
     autoFocusRef.current?.focus()
-  }, [db, navigate, searchParams, autoFocusRef])
+  }, [db, subproject_id, navigate, searchParams, autoFocusRef])
 
   const deleteRow = useCallback(async () => {
     await db.query(
