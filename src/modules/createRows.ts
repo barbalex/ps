@@ -537,9 +537,11 @@ export const createAction = async ({ db, project_id, place_id }) => {
   )
 }
 
-export const createActionValue = () => ({
-  action_value_id: uuidv7(),
-})
+export const createActionValue = async ({ db, action_id }) =>
+  db.query(
+    `insert into action_values (action_value_id, action_id) values ($1, $2) returning action_value_id`,
+    [uuidv7(), action_id],
+  )
 
 export const createActionReport = async ({ db, project_id, action_id }) => {
   // find fields with preset values on the data column

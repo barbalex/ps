@@ -20,15 +20,13 @@ export const Component = memo(() => {
   const actionValues = result?.rows ?? []
 
   const add = useCallback(async () => {
-    const actionValue = { ...createActionValue(), action_id }
-    const columns = Object.keys(actionValue).join(',')
-    const values = Object.values(actionValue)
-    const sql = `insert into action_values (${columns}) values (${values
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(sql, values)
+    const res = await createActionValue({
+      db,
+      action_id,
+    })
+    const data = res.rows[0]
     navigate({
-      pathname: actionValue.action_value_id,
+      pathname: data.action_value_id,
       search: searchParams.toString(),
     })
   }, [action_id, db, navigate, searchParams])
