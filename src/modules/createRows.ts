@@ -602,7 +602,7 @@ export const createLayerPresentation = async ({
     ],
   )
 
-export const createWmsService = ({
+export const createWmsService = async ({
   project_id = null,
   url = null,
   image_formats = null,
@@ -611,34 +611,22 @@ export const createWmsService = ({
   info_formats = null,
   info_format = null,
   default_crs = null,
-}) => ({
-  wms_service_id: uuidv7(),
-  project_id,
-  version,
-  url,
-  image_formats,
-  image_format,
-  info_formats,
-  info_format,
-  default_crs,
-})
+  db
+}) => 
+  return db.query(`INSERT INTO wms_services (wms_service_id, project_id, version, url, image_formats, image_format, info_formats, info_format, default_crs) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) returning *`,
+  [uuidv7(), project_id, version, url, image_formats, image_format, info_formats, info_format, default_crs])
 
-export const createWmsServiceLayer = ({
+export const createWmsServiceLayer = async ({
   wms_service_id,
   name = null,
   label = null,
   queryable = null,
   legend_url = null,
   legend_image = null,
-}) => ({
-  wms_service_layer_id: uuidv7(),
-  wms_service_id,
-  name,
-  label,
-  queryable,
-  legend_url,
-  legend_image,
-})
+  db
+}) => 
+  db.query(`INSERT INTO wms_service_layers (wms_service_layer_id, wms_service_id, name, label, queryable, legend_url, legend_image) VALUES ($1, $2, $3, $4, $5, $6, $7) returning *`,
+  [uuidv7(), wms_service_id, name, label, queryable, legend_url, legend_image])
 
 export const createChart = ({
   project_id = null,

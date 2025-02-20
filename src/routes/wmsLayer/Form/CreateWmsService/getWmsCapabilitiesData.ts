@@ -1,5 +1,4 @@
 import { getCapabilities } from '../../../../modules/getCapabilities.ts'
-import { chunkArrayWithMinSize } from '../../../../modules/chunkArrayWithMinSize.ts'
 import { createWmsServiceLayer } from '../../../../modules/createRows.ts'
 
 export const getWmsCapabilitiesData = async ({ wmsLayer, service, db }) => {
@@ -63,11 +62,17 @@ export const getWmsCapabilitiesData = async ({ wmsLayer, service, db }) => {
 
   const newServiceData = { ...service, ...serviceData }
 
-  if (Object.keys(serviceData).length) {
-    await db.wms_services.update({
-      where: { wms_service_id: service.wms_service_id },
-      data: newServiceData,
-    })
+  if (Object.keys(newServiceData).length) {
+    const columns = Object.keys(newServiceData).join(',')
+    const values = Object.values(newServiceData)
+      .map((_, i) => `$${i + 1}`)
+      .join(',')
+    await db.query(
+      `UPDATE wms_services SET (${columns}) = (${values}) WHERE wms_service_id = $${
+        Object.values(newServiceData).length + 1
+      }`,
+      [...Object.values(newServiceData), service.wms_service_id],
+    )
   }
   // let user choose from layers
   // only layers with crs EPSG:4326
@@ -75,34 +80,23 @@ export const getWmsCapabilitiesData = async ({ wmsLayer, service, db }) => {
     v?.CRS?.includes('EPSG:4326'),
   )
 
-  const layersData = layers.map((l) =>
-    createWmsServiceLayer({
+  for (const l of layers) {
+    await createWmsServiceLayer({
       wms_service_id: service.wms_service_id,
       name: l.Name,
       label: l.Title,
       queryable: l.queryable,
       legend_url: l.Style?.[0]?.LegendURL?.[0]?.OnlineResource,
-    }),
-  )
-  const chunked = chunkArrayWithMinSize(layersData, 500)
-  for (const data of chunked) {
-    try {
-      await db.wms_service_layers.createMany({ data })
-    } catch (error) {
-      // field value must be a string, number, boolean, null or one of the registered custom value types
-      console.error('getWmsCapabilitiesData, error:', { error, data })
-    }
+      db,
+    })
   }
 
   // single layer? update wmsLayer
   if (!wmsLayer?.wms_service_layer_name && layers?.length === 1) {
-    db.wms_layers.update({
-      where: { wms_layer_id: wmsLayer.wms_layer_id },
-      data: {
-        wms_service_layer_name: layers[0].Name,
-        label: layers[0].Title,
-      },
-    })
+    db.query(
+      `UPDATE wms_layers SET wms_service_layer_name = $1, label = $2 WHERE wms_layer_id = $3`,
+      [layers[0].Name, layers[0].Title, wmsLayer.wms_layer_id],
+    )
   }
 
   return false

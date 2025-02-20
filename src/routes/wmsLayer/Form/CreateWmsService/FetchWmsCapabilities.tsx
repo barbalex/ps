@@ -33,34 +33,38 @@ export const FetchWmsCapabilities = memo(
       if (!urlTrimmed) return
 
       // 1. check if wms_service exists for this url
-      const existingService = await db.wms_services.findFirst({
-        where: { url: urlTrimmed },
-      })
+      const resES = await db.query(
+        `SELECT * FROM wms_services WHERE url = $1`,
+        [urlTrimmed],
+      )
+      const existingService = resES.rows[0]
       let service
       if (existingService) {
         // 2. if so, update it
         service = { ...existingService }
         // and remove its layers to be recreated
-        await db.wms_service_layers.deleteMany({
-          where: { wms_service_id: service.wms_service_id },
-        })
+        await db.query(
+          `DELETE FROM wms_service_layers WHERE wms_service_id = $1`,
+          [service.wms_service_id],
+        )
         // ensure wmsLayer.wms_service_id is set
-        await db.wms_layers.update({
-          where: { wms_layer_id: wmsLayer.wms_layer_id },
-          data: { wms_service_id: service.wms_service_id },
-        })
+        await db.query(
+          `UPDATE wms_layers SET wms_service_id = $1 WHERE wms_layer_id = $2`,
+          [service.wms_service_id, wmsLayer.wms_layer_id],
+        )
       } else {
         // 3. if not, create service, then update that
-        const serviceData = createWmsService({
+        const serviceData = await createWmsService({
           url: urlTrimmed,
           project_id: wmsLayer.project_id,
+          db,
         })
+        service = serviceData
         try {
-          service = await db.wms_services.create({ data: serviceData })
-          await db.wms_layers.update({
-            where: { wms_layer_id: wmsLayer.wms_layer_id },
-            data: { wms_service_id: serviceData.wms_service_id },
-          })
+          await db.query(
+            `UPDATE wms_layers SET wms_service_id = $1 WHERE wms_layer_id = $2`,
+            [serviceData.wms_service_id, wmsLayer.wms_layer_id],
+          )
         } catch (error) {
           console.error('FetchCapabilities.onFetchCapabilities 3', error)
         }
@@ -98,10 +102,10 @@ export const FetchWmsCapabilities = memo(
         })
       }
       setFetching(false)
-      await db.notifications.update({
-        where: { notification_id: data.notification_id },
-        data: { paused: false, timeout: 500 },
-      })
+      await db.query(
+        `UPDATE notifications SET paused = false AND timeout = 500 WHERE notification_id = $1`,
+        [data.notification_id],
+      )
     }, [db, setFetching, url, wmsLayer, worker])
 
     return (
