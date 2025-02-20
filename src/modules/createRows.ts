@@ -218,9 +218,8 @@ export const createPerson = async ({ db, project_id }) => {
   )
 }
 
-export const createCrs = () => ({
-  crs_id: uuidv7(),
-})
+export const createCrs = async ({ db }) =>
+  db.query(`insert into crs (crs_id) values ($1) returning crs_id`, [uuidv7()])
 
 export const createProjectCrs = async ({ project_id, db }) =>
   db.query(
