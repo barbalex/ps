@@ -275,19 +275,11 @@ export const createProjectReport = async ({ db, project_id }) => {
   }
 }
 
-export const createPlaceLevel = () => ({
-  place_level_id: uuidv7(),
-  level: 1,
-  reports: true,
-  report_values: true,
-  actions: true,
-  action_values: true,
-  action_reports: true,
-  checks: true,
-  check_values: true,
-  check_taxa: true,
-  occurrences: true,
-})
+export const createPlaceLevel = async ({ db }) =>
+  db.query(
+    `insert into place_levels (place_level_id, level, reports, report_values, actions, action_values, action_reports, checks, check_values, check_taxa, occurrences) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) returning place_level_id`,
+    [uuidv7(), 1, true, true, true, true, true, true, true, true, true],
+  )
 
 export const createTaxon = async ({ taxonomy_id, db }) =>
   db.query(

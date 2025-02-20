@@ -13,26 +13,20 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
 
   const db = usePGlite()
-  const { results: placeLevels = [] } = useLiveQuery(
-    db.place_levels.liveMany({
-      where: { project_id },
-      orderBy: { label: 'asc' },
-    }),
+
+  const { rows: placeLevels = [] } = useLiveQuery(
+    `SELECT * FROM place_levels WHERE project_id = $1 ORDER BY label ASC`,
+    [project_id],
   )
 
   const add = useCallback(async () => {
-    const placeLevel = createPlaceLevel()
-    await db.place_levels.create({
-      data: {
-        ...placeLevel,
-        project_id,
-      },
-    })
+    const res = await createPlaceLevel({ db, project_id })
+    const placeLevel = res.rows[0]
     navigate({
       pathname: placeLevel.place_level_id,
       search: searchParams.toString(),
     })
-  }, [db.place_levels, navigate, project_id, searchParams])
+  }, [db, navigate, project_id, searchParams])
 
   return (
     <div className="list-view">

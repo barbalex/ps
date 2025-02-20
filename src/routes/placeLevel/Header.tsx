@@ -17,21 +17,14 @@ export const Header = memo(({ autoFocusRef }: Props) => {
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const placeLevel = createPlaceLevel()
-    const columns = Object.keys(placeLevel).join(',')
-    const values = Object.values(placeLevel)
-      .map((_, i) => `$${i + 1}`)
-      .join(',')
-    await db.query(
-      `INSERT INTO place_levels (${columns}) VALUES (${values})`,
-      Object.values(placeLevel),
-    )
+    const res = await createPlaceLevel({ db, project_id })
+    const placeLevel = res.rows[0]
     navigate({
       pathname: `../${placeLevel.place_level_id}`,
       search: searchParams.toString(),
     })
     autoFocusRef.current?.focus()
-  }, [autoFocusRef, db, navigate, searchParams])
+  }, [autoFocusRef, db, navigate, project_id, searchParams])
 
   const deleteRow = useCallback(async () => {
     db.query(`DELETE FROM place_levels WHERE place_level_id = $1`, [
