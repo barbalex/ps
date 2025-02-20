@@ -21,13 +21,8 @@ export const Component = memo(() => {
   const goals = result?.rows ?? []
 
   const add = useCallback(async () => {
-    const data = await createGoalReport({ db, project_id, goal_id })
-    const columns = Object.keys(data).join(',')
-    const values = Object.values(data)
-    const sql = `INSERT INTO goal_reports (${columns}) VALUES (${values
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(sql, values)
+    const res = await createGoalReport({ db, project_id, goal_id })
+    const data = res.rows[0]
     navigate({ pathname: data.goal_report_id, search: searchParams.toString() })
   }, [db, goal_id, navigate, project_id, searchParams])
 

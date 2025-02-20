@@ -402,12 +402,20 @@ export const createGoalReport = async ({ db, project_id, goal_id }) => {
     table: 'goal_reports',
   })
 
-  return {
+  const data = {
     goal_report_id: uuidv7(),
     goal_id,
-
     ...presetData,
   }
+  const columns = Object.keys(data).join(',')
+  const values = Object.values(data)
+    .map((_, i) => `$${i + 1}`)
+    .join(',')
+
+  return db.query(
+    `insert into goal_reports (${columns}) values (${values}) returning goal_report_id`,
+    Object.values(data),
+  )
 }
 
 export const createGoalReportValue = () => ({
