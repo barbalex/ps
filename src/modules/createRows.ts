@@ -156,9 +156,11 @@ export const createPlace = async ({
   )
 }
 
-export const createWidgetForField = () => ({
-  widget_for_field_id: uuidv7(),
-})
+export const createWidgetForField = async ({ db }) =>
+  db.query(
+    `insert into widget_for_fields (widget_for_field_id) values ($1) returning widget_for_field_id`,
+    [uuidv7()],
+  )
 
 export const createWidgetType = () => ({
   widget_type_id: uuidv7(),

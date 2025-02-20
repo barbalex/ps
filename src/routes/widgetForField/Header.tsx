@@ -13,13 +13,8 @@ export const Header = memo(({ autoFocusRef }) => {
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const data = createWidgetForField()
-    const columns = Object.keys(data).join(',')
-    const values = Object.values(data)
-    const sql = `INSERT INTO widgets_for_fields (${columns}) VALUES (${values
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(sql, values)
+    const res = await createWidgetForField({ db })
+    const data = res.rows[0]
     navigate({
       pathname: `../${data.widget_for_field_id}`,
       search: searchParams.toString(),
