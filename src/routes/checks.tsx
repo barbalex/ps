@@ -32,17 +32,12 @@ export const Component = memo(() => {
   const checks = results?.rows ?? []
 
   const add = useCallback(async () => {
-    const data = await createCheck({
+    const res = await createCheck({
       db,
       project_id,
       place_id: place_id2 ?? place_id,
     })
-    const columns = Object.keys(data).join(',')
-    const values = Object.values(data)
-    const sql = `insert into checks (${columns}) values (${values
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(sql, values)
+    const data = res.rows[0]
     navigate({ pathname: data.check_id, search: searchParams.toString() })
   }, [db, navigate, place_id, place_id2, project_id, searchParams])
 
@@ -57,21 +52,14 @@ export const Component = memo(() => {
         addRow={add}
         menus={
           <>
-            <LayerMenu
-              table="checks"
-              level={place_id2 ? 2 : 1}
-            />
+            <LayerMenu table="checks" level={place_id2 ? 2 : 1} />
             <FilterButton isFiltered={isFiltered} />
           </>
         }
       />
       <div className="list-container">
         {checks.map(({ check_id, label }) => (
-          <Row
-            key={check_id}
-            label={label ?? check_id}
-            to={check_id}
-          />
+          <Row key={check_id} label={label ?? check_id} to={check_id} />
         ))}
       </div>
     </div>
