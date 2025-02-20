@@ -780,17 +780,22 @@ export const createWmsServiceLayer = async ({
     ],
   )
 
-export const createChart = ({
+export const createChart = async ({
   project_id = null,
   subproject_id = null,
   place_id = null,
-}) => ({
-  chart_id: uuidv7(),
-  account_id: '018cf958-27e2-7000-90d3-59f024d467be', // TODO: replace with auth data when implemented
-  project_id,
-  subproject_id,
-  place_id,
-})
+  db,
+}) =>
+  db.query(
+    `INSERT INTO charts (chart_id, account_id, project_id, subproject_id, place_id) VALUES ($1, $2, $3, $4, $5) returning chart_id`,
+    [
+      uuidv7(),
+      '018cf958-27e2-7000-90d3-59f024d467be',
+      project_id,
+      subproject_id,
+      place_id,
+    ],
+  )
 
 export const createChartSubject = ({ chart_id }) => ({
   chart_subject_id: uuidv7(),
