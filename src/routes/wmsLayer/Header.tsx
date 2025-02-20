@@ -16,15 +16,8 @@ export const Header = memo(({ autoFocusRef }) => {
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const wmsLayer = createWmsLayer({ project_id })
-    const wmsColumns = Object.keys(wmsLayer).join(',')
-    const wmsValues = Object.values(wmsLayer)
-      .map((_, i) => `$${i + 1}`)
-      .join(',')
-    await db.query(
-      `INSERT INTO wms_layers (${wmsColumns}) VALUES (${wmsValues})`,
-      Object.values(wmsLayer),
-    )
+    const res = await createWmsLayer({ project_id, db })
+    const wmsLayer = res.rows[0]
     // also add layer_presentation
     await createLayerPresentation({
       wms_layer_id: wmsLayer.wms_layer_id,

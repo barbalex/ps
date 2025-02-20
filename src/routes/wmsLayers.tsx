@@ -30,14 +30,8 @@ export const Component = memo(() => {
   const wmsLayers = resultFiltered?.rows ?? []
 
   const add = useCallback(async () => {
-    const wmsLayer = createWmsLayer({ project_id })
-    const wmsColumns = Object.keys(wmsLayer).join(',')
-    const wmsValues = Object.values(wmsLayer)
-    const wmsSql = `insert into wms_layers (${wmsColumns}) values (${wmsValues
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(wmsSql, wmsValues)
-
+    const res = await createWmsLayer({ project_id, db })
+    const wmsLayer = res.rows[0]
     // also add layer_presentation
     await createLayerPresentation({
       wms_layer_id: wmsLayer.wms_layer_id,

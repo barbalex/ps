@@ -487,10 +487,11 @@ export const createMessage = () => ({
   date: new Date(),
 })
 
-export const createWmsLayer = ({ project_id }) => ({
-  wms_layer_id: uuidv7(),
-  project_id,
-})
+export const createWmsLayer = async ({ project_id, db }) =>
+  db.query(
+    `INSERT INTO wms_layers (wms_layer_id, project_id) VALUES ($1, $2) returning wms_layer_id`,
+    [uuidv7(), project_id],
+  )
 
 export const createVectorLayer = ({
   project_id,

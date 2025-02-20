@@ -53,8 +53,8 @@ export const WmsLayers = memo(() => {
   )
 
   const addRow = useCallback(async () => {
-    const wmsLayer = createWmsLayer({ project_id })
-    await db.wms_layers.create({ data: wmsLayer })
+    const res = await createWmsLayer({ project_id, db })
+    const wmsLayer = res.rows[0]
     // also add layer_presentation
     await createLayerPresentation({
       wms_layer_id: wmsLayer.wms_layer_id,
