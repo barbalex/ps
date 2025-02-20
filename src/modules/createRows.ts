@@ -174,10 +174,11 @@ export const createFieldType = async ({ db }) =>
     [uuidv7(), 0],
   )
 
-export const createAccount = () => ({
-  account_id: uuidv7(),
-  type: 'free',
-})
+export const createAccount = async ({ db }) =>
+  db.query(
+    `insert into accounts (account_id, type) values ($1, $2) returning account_id`,
+    [uuidv7(), 'free'],
+  )
 
 // users creates the db row to ensure creating the app_state too
 export const createUser = async ({ db, setUserId }) => {
