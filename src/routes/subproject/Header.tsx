@@ -15,13 +15,8 @@ export const Header = memo(({ autoFocusRef, nameSingular = 'Subproject' }) => {
   const nameSingularLower = nameSingular?.toLowerCase?.()
 
   const addRow = useCallback(async () => {
-    const data = await createSubproject({ db, project_id })
-    const columns = Object.keys(data).join(',')
-    const values = Object.values(data)
-    const sql = `INSERT INTO subprojects (${columns}) VALUES (${values
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(sql, values)
+    const res = await createSubproject({ db, project_id })
+    const data = res.rows[0]
     navigate({
       pathname: `../${data.subproject_id}`,
       search: searchParams.toString(),

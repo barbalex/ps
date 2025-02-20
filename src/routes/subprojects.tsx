@@ -44,13 +44,8 @@ export const Component = memo(() => {
   // const nameSingularLower = nameSingular.toLowerCase()
 
   const add = useCallback(async () => {
-    const data = await createSubproject({ db, project_id })
-    const columns = Object.keys(data).join(',')
-    const values = Object.values(data)
-    const sql = `insert into subprojects (${columns}) values (${values
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(sql, values)
+    const res = await createSubproject({ db, project_id })
+    const data = res.rows[0]
     Navigate(`/data/projects/${project_id}/subprojects/${data.subproject_id}`)
   }, [Navigate, db, project_id])
 

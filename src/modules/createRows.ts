@@ -58,12 +58,21 @@ export const createSubproject = async ({ db, project_id }) => {
     table: 'subprojects',
   })
 
-  return {
+  const data = {
     subproject_id: uuidv7(),
     project_id,
 
     ...presetData,
   }
+
+  const columns = Object.keys(data).join(',')
+  const values = Object.values(data)
+    .map((_, i) => `$${i + 1}`)
+    .join(',')
+  return db.query(
+    `insert into subprojects (${columns}) values (${values}) returning subproject_id`,
+    Object.values(data),
+  )
 }
 
 export const createFile = async ({
