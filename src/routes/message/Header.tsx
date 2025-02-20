@@ -13,13 +13,8 @@ export const Header = memo(() => {
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const data = createMessage()
-    const columns = Object.keys(data).join(',')
-    const values = Object.values(data)
-    const sql = `INSERT INTO messages (${columns}) VALUES (${values
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(sql, values)
+    const res = await createMessage({ db })
+    const data = res.rows[0]
     navigate({
       pathname: `../${data.message_id}`,
       search: searchParams.toString(),

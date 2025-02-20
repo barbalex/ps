@@ -21,13 +21,8 @@ export const Component = memo(() => {
   const messages = result?.rows ?? []
 
   const add = useCallback(async () => {
-    const data = createMessage()
-    const columns = Object.keys(data).join(',')
-    const values = Object.values(data)
-    const sql = `insert into messages (${columns}) values (${values
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(sql, values)
+    const res = await createMessage({ db })
+    const data = res.rows[0]
     navigate({ pathname: data.message_id, search: searchParams.toString() })
   }, [db, navigate, searchParams])
 
@@ -43,11 +38,7 @@ export const Component = memo(() => {
       />
       <div className="list-container">
         {messages.map(({ message_id, label }) => (
-          <Row
-            key={message_id}
-            to={message_id}
-            label={label ?? message_id}
-          />
+          <Row key={message_id} to={message_id} label={label ?? message_id} />
         ))}
       </div>
     </div>

@@ -592,6 +592,7 @@ export const createPlaceReport = async ({ db, project_id, place_id }) => {
   const values = Object.values(data)
     .map((_, i) => `$${i + 1}`)
     .join(',')
+
   return db.query(
     `insert into place_reports (${columns}) values (${values}) returning place_report_id`,
     Object.values(data),
@@ -604,10 +605,11 @@ export const createPlaceReportValue = async ({ place_report_id, db }) =>
     [uuidv7(), place_report_id],
   )
 
-export const createMessage = () => ({
-  message_id: uuidv7(),
-  date: new Date(),
-})
+export const createMessage = async ({ db }) =>
+  db.query(
+    `insert into messages (message_id, date) values ($1, $2) returning message_id`,
+    [uuidv7(), new Date()],
+  )
 
 export const createWmsLayer = async ({ project_id, db }) =>
   db.query(
