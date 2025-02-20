@@ -21,7 +21,7 @@ export const createProject = async ({ db }) => {
   // find fields with preset values on the data column
   const presetData = await getPresetData({ db, table: 'projects' })
 
-  return {
+  const data = {
     project_id: uuidv7(),
     account_id: '018cf958-27e2-7000-90d3-59f024d467be', // TODO: replace with auth data when implemented
     type: 'species',
@@ -38,6 +38,16 @@ export const createProject = async ({ db }) => {
 
     ...presetData,
   }
+
+  const columns = Object.keys(data).join(',')
+  const values = Object.values(data)
+    .map((_, i) => `$${i + 1}`)
+    .join(',')
+
+  return db.query(
+    `insert into projects (${columns}) values (${values}) returning project_id`,
+    Object.values(data),
+  )
 }
 
 export const createSubproject = async ({ db, project_id }) => {

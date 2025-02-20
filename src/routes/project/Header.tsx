@@ -20,13 +20,8 @@ export const Header = memo(({ autoFocusRef }: Props) => {
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const data = await createProject({ db })
-    const columns = Object.keys(data).join(',')
-    const values = Object.values(data)
-    const sql = `INSERT INTO projects (${columns}) VALUES (${values
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(sql, values)
+    const res = await createProject({ db })
+    const data = res.rows[0]
 
     // TODO: add place_levels?
     // now navigate to the new project
@@ -38,7 +33,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
   }, [autoFocusRef, db, navigate, searchParams])
 
   const deleteRow = useCallback(async () => {
-    await db.query(`DELETE FROM projects WHERE project_id = $1`, [project_id])
+    db.query(`DELETE FROM projects WHERE project_id = $1`, [project_id])
     navigate({ pathname: `..`, search: searchParams.toString() })
   }, [db, navigate, project_id, searchParams])
 

@@ -27,13 +27,8 @@ export const Component = memo(() => {
   const isFiltered = !!filter
 
   const add = useCallback(async () => {
-    const data = await createProject({ db })
-    const columns = Object.keys(data).join(',')
-    const values = Object.values(data)
-    const sql = `insert into projects (${columns}) values (${values
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(sql, values)
+    const res = await createProject({ db })
+    const data = res.rows[0]
     navigate({ pathname: data.project_id, search: searchParams.toString() })
   }, [db, navigate, searchParams])
 
