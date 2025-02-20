@@ -184,12 +184,12 @@ export const createAccount = async ({ db }) =>
 export const createUser = async ({ db, setUserId }) => {
   const user_id = uuidv7()
 
-  const sql = `INSERT INTO users (user_id) VALUES ($1)`
-  await db.query(sql, [user_id])
   // TODO: why setUserId?
   setUserId(user_id)
 
-  return data
+  return db.query(`INSERT INTO users (user_id) VALUES ($1) returning user_id`, [
+    user_id,
+  ])
 }
 
 export const createPerson = async ({ db, project_id }) => {
