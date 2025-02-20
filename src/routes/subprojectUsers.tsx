@@ -20,13 +20,8 @@ export const Component = memo(() => {
   const subprojectUsers = result?.rows ?? []
 
   const add = useCallback(async () => {
-    const data = { ...createSubprojectUser(), subproject_id }
-    const columns = Object.keys(data).join(',')
-    const values = Object.values(data)
-    const sql = `INSERT INTO subproject_users (${columns}) VALUES (${values
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(sql, values)
+    const res = await createSubprojectUser({ subproject_id, db })
+    const data = res.rows[0]
     navigate({
       pathname: data.subproject_user_id,
       search: searchParams.toString(),

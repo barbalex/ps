@@ -13,27 +13,19 @@ export const Header = memo(({ autoFocusRef }) => {
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const subprojectUser = createSubprojectUser()
-    const columns = Object.keys(subprojectUser).join(',')
-    const values = Object.values(subprojectUser)
-      .map((_, i) => `$${i + 1}`)
-      .join(',')
-    await db.query(
-      `INSERT INTO subproject_users (${columns}) VALUES (${values})`,
-      Object.values(subprojectUser),
-    )
+    const res = createSubprojectUser({ subproject_id, db })
+    const subprojectUser = res.rows[0]
     navigate({
       pathname: `../${subprojectUser.subproject_user_id}`,
       search: searchParams.toString(),
     })
     autoFocusRef.current?.focus()
-  }, [db, navigate, searchParams, autoFocusRef])
+  }, [subproject_id, db, navigate, searchParams, autoFocusRef])
 
   const deleteRow = useCallback(async () => {
-    await db.query(
-      `DELETE FROM subproject_users WHERE subproject_user_id = $1`,
-      [subproject_user_id],
-    )
+    db.query(`DELETE FROM subproject_users WHERE subproject_user_id = $1`, [
+      subproject_user_id,
+    ])
     navigate({ pathname: '..', search: searchParams.toString() })
   }, [db, subproject_user_id, navigate, searchParams])
 
