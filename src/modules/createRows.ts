@@ -127,10 +127,11 @@ export const createWidgetType = () => ({
   sort: 0,
 })
 
-export const createFieldType = () => ({
-  field_type_id: uuidv7(),
-  sort: 0,
-})
+export const createFieldType = async ({ db }) =>
+  db.query(
+    `insert into field_types (field_type_id, sort) values ($1, $2, $3) returning field_type_id`,
+    [uuidv7(), 0],
+  )
 
 export const createAccount = () => ({
   account_id: uuidv7(),

@@ -27,10 +27,13 @@ export const Component = memo(() => {
   const fieldTypes = resultFiltered?.rows ?? []
 
   const add = useCallback(async () => {
-    const data = createFieldType()
-    await db.field_types.create({ data })
-    navigate({ pathname: data.field_type_id, search: searchParams.toString() })
-  }, [db.field_types, navigate, searchParams])
+    const res = await createFieldType({ db })
+    const fieldType = res.rows[0]
+    navigate({
+      pathname: fieldType.field_type_id,
+      search: searchParams.toString(),
+    })
+  }, [db, navigate, searchParams])
 
   return (
     <div className="list-view">

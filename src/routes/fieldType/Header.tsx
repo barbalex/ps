@@ -13,15 +13,10 @@ export const Header = memo(({ autoFocusRef }) => {
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const data = createFieldType()
-    const columns = Object.keys(data).join(',')
-    const values = Object.values(data)
-    const sql = `INSERT INTO field_types (${columns}) VALUES (${values
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(sql, values)
+    const res = await createFieldType({ db })
+    const fieldType = res.rows[0]
     navigate({
-      pathname: `../${data.field_type_id}`,
+      pathname: `../${fieldType.field_type_id}`,
       search: searchParams.toString(),
     })
     autoFocusRef.current?.focus()
