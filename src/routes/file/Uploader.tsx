@@ -75,13 +75,8 @@ export const Uploader = () => {
       } else if (project_id) {
         fileInput.project_id = project_id
       }
-      const data = await createFile(fileInput)
-      const columns = Object.keys(data).join(',')
-      const values = Object.values(data)
-      const sql = `INSERT INTO files (${columns}) VALUES (${values
-        .map((_, i) => `$${i + 1}`)
-        .join(',')})`
-      await db.query(sql, values)
+      const res = await createFile(fileInput)
+      const data = res?.rows?.[0]
       navigate({
         pathname: `${!isFileList ? '.' : ''}./${data.file_id}${
           isPreview ? '/preview' : ''
@@ -104,7 +99,7 @@ export const Uploader = () => {
       // - then update the file with preview_uuid
       let res
       try {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+         
         res = await axios({
           method: 'POST',
           url: 'https://api.uploadcare.com/convert/document/',

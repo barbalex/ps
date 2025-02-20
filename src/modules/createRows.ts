@@ -93,7 +93,7 @@ export const createFile = async ({
   // find fields with preset values on the data column
   const presetData = await getPresetData({ db, table: 'files' })
 
-  return {
+  const data = {
     file_id: uuidv7(),
     project_id,
     subproject_id,
@@ -110,6 +110,16 @@ export const createFile = async ({
     height,
     ...presetData,
   }
+
+  const columns = Object.keys(data).join(',')
+  const values = Object.values(data)
+    .map((_, i) => `$${i + 1}`)
+    .join(',')
+
+  return db.query(
+    `insert into files (${columns}) values (${values}) returning file_id`,
+    Object.values(data),
+  )
 }
 
 export const createPlace = async ({
