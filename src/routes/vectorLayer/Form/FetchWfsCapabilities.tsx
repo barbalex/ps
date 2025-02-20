@@ -54,16 +54,17 @@ export const FetchWfsCapabilities = memo(
         )
       } else {
         // 3. if not, create service, then update that
-        const serviceData = createWfsService({
+        const res = await createWfsService({
           url: urlTrimmed,
           project_id: vectorLayer.project_id,
+          db,
         })
+        const serviceData = res.rows[0]
         try {
-          service = await db.wfs_services.create({ data: serviceData })
-          await db.vector_layers.update({
-            where: { vector_layer_id: vectorLayer.vector_layer_id },
-            data: { wfs_service_id: serviceData.wfs_service_id },
-          })
+          await db.query(
+            `UPDATE vector_layers SET wfs_service_id = $1 WHERE vector_layer_id = $2`,
+            [serviceData.wfs_service_id, vectorLayer.vector_layer_id],
+          )
         } catch (error) {
           console.error('FetchCapabilities.onFetchCapabilities 3', error)
         }

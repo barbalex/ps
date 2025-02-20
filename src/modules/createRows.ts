@@ -514,22 +514,27 @@ export const createVectorLayer = ({
     ],
   )
 
-export const createWfsService = ({
+export const createWfsService = async ({
   project_id = null,
   url = null,
   version = null,
   info_formats = null,
   info_format = null,
   default_crs = null,
-}) => ({
-  wfs_service_id: uuidv7(),
-  project_id,
-  version,
-  url,
-  info_formats,
-  info_format,
-  default_crs,
-})
+  db,
+}) =>
+  db.query(
+    `insert into wfs_services (wfs_service_id, project_id, version, url, info_formats, info_format, default_crs) values ($1, $2, $3, $4, $5, $6, $7) returning wfs_service_id`,
+    [
+      uuidv7(),
+      project_id,
+      version,
+      url,
+      info_formats,
+      info_format,
+      default_crs,
+    ],
+  )
 
 export const createWfsServiceLayer = ({
   wfs_service_id,
