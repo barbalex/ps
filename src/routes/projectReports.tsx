@@ -28,13 +28,8 @@ export const Component = memo(() => {
   const projectReports = result?.rows ?? []
 
   const add = useCallback(async () => {
-    const data = await createProjectReport({ db, project_id })
-    const columns = Object.keys(data).join(',')
-    const values = Object.values(data)
-    const sql = `insert into project_reports (${columns}) values (${values
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(sql, values)
+    const res = await createProjectReport({ db, project_id })
+    const data = res.rows[0]
     navigate({
       pathname: data.project_report_id,
       search: searchParams.toString(),
