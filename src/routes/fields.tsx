@@ -29,13 +29,8 @@ export const Component = memo(() => {
   const fields = resultsFiltered?.rows ?? []
 
   const add = useCallback(async () => {
-    const data = createField({ project_id })
-    const columns = Object.keys(data).join(',')
-    const values = Object.values(data)
-    const sql = `INSERT INTO fields (${columns}) VALUES (${values
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(sql, values)
+    const res = await createField({ project_id, db })
+    const data = res.rows[0]
     navigate({ pathname: data.field_id, search: searchParams.toString() })
   }, [db, navigate, project_id, searchParams])
 
@@ -52,11 +47,7 @@ export const Component = memo(() => {
       />
       <div className="list-container">
         {fields.map(({ field_id, label }) => (
-          <Row
-            key={field_id}
-            label={label ?? field_id}
-            to={field_id}
-          />
+          <Row key={field_id} label={label ?? field_id} to={field_id} />
         ))}
       </div>
     </div>

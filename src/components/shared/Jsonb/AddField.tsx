@@ -32,15 +32,10 @@ export const AddField = memo(({ tableName, level }) => {
 
   const addRow = useCallback(async () => {
     const isAccountTable = accountTables.includes(tableName)
-    const newFieldParams = { table_name: tableName, level }
+    const newFieldParams = { table_name: tableName, level, db }
     if (!isAccountTable) newFieldParams.project_id = project_id
-    const newField = createField(newFieldParams)
-    const columns = Object.keys(newField).join(',')
-    const values = Object.values(newField)
-    const sql = `INSERT INTO fields (${columns}) VALUES (${values
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(sql, values)
+    const res = await createField(newFieldParams)
+    const newField = res.rows[0]
     setSearchParams({ editingField: newField.field_id })
   }, [db, level, project_id, setSearchParams, tableName])
 

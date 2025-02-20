@@ -227,18 +227,23 @@ export const createProjectCrs = async ({ project_id, db }) =>
     [uuidv7(), project_id],
   )
 
-export const createField = ({
+export const createField = async ({
   project_id = null,
   table_name = null,
   level = null,
-}) => ({
-  field_id: uuidv7(),
-  project_id,
-  table_name,
-  level,
-  field_type_id: '018ca19e-7a23-7bf4-8523-ff41e3b60807',
-  widget_type_id: '018ca1a0-f187-7fdf-955b-4eaadaa92553',
-})
+  db,
+}) =>
+  db.query(
+    `insert into fields (field_id, project_id, table_name, level, field_type_id, widget_type_id) values ($1, $2, $3, $4, $5, $6) returning field_id`,
+    [
+      uuidv7(),
+      project_id,
+      table_name,
+      level,
+      '018ca19e-7a23-7bf4-8523-ff41e3b60807',
+      '018ca1a0-f187-7fdf-955b-4eaadaa92553',
+    ],
+  )
 
 export const createUnit = async ({ project_id, db }) =>
   db.query(
