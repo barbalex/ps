@@ -518,14 +518,23 @@ export const createAction = async ({ db, project_id, place_id }) => {
     table: 'actions',
   })
 
-  return {
+  const data = {
     action_id: uuidv7(),
     place_id,
     date: new Date(),
     relevant_for_reports: true,
-
     ...presetData,
   }
+
+  const columns = Object.keys(data).join(',')
+  const values = Object.values(data)
+    .map((_, i) => `$${i + 1}`)
+    .join(',')
+
+  return db.query(
+    `insert into actions (${columns}) values (${values}) returning action_id`,
+    Object.values(data),
+  )
 }
 
 export const createActionValue = () => ({

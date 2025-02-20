@@ -33,17 +33,12 @@ export const Component = memo(() => {
   const isFiltered = !!filter
 
   const add = useCallback(async () => {
-    const data = await createAction({
+    const res = await createAction({
       db,
       project_id,
       place_id: place_id2 ?? place_id,
     })
-    const columns = Object.keys(data).join(',')
-    const values = Object.values(data)
-    const sql = `insert into actions (${columns}) values (${values
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(sql, values)
+    const data = res.rows[0]
     navigate({ pathname: data.action_id, search: searchParams.toString() })
   }, [db, navigate, place_id, place_id2, project_id, searchParams])
 
@@ -58,21 +53,14 @@ export const Component = memo(() => {
         addRow={add}
         menus={
           <>
-            <LayerMenu
-              table="actions"
-              level={place_id2 ? 2 : 1}
-            />
+            <LayerMenu table="actions" level={place_id2 ? 2 : 1} />
             <FilterButton isFiltered={isFiltered} />
           </>
         }
       />
       <div className="list-container">
         {actions.map(({ action_id, label }) => (
-          <Row
-            key={action_id}
-            label={label ?? action_id}
-            to={action_id}
-          />
+          <Row key={action_id} label={label ?? action_id} to={action_id} />
         ))}
       </div>
     </div>

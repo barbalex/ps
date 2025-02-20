@@ -23,19 +23,12 @@ export const Header = memo(({ autoFocusRef }) => {
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const data = await createAction({
+    const res = await createAction({
       db,
       project_id,
       place_id: place_id2 ?? place_id,
     })
-    const columns = Object.keys(data).join(',')
-    const values = Object.values(data)
-      .map((_, i) => `$${i + 1}`)
-      .join(',')
-    await db.query(
-      `INSERT INTO actions (${columns}) VALUES (${values})`,
-      Object.values(data),
-    )
+    const data = res.rows[0]
     navigate({
       pathname: `../${data.action_id}`,
       search: searchParams.toString(),
