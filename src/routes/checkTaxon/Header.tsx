@@ -13,17 +13,8 @@ export const Header = memo(({ autoFocusRef }) => {
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const checkTaxon = createCheckTaxon()
-    const columns = Object.keys(checkTaxon).join(',')
-    const values = Object.values(checkTaxon)
-      .map((_, i) => `$${i + 1}`)
-      .join(',')
-    await db.query(
-      `INSERT INTO check_taxa (${columns}, check_id) VALUES (${values}, ${
-        Object.values(checkTaxon).length + 1
-      })`,
-      [...Object.values(checkTaxon), check_id],
-    )
+    const res = await createCheckTaxon({ db, check_id })
+    const checkTaxon = res.rows[0]
     navigate({
       pathname: `../${checkTaxon.check_taxon_id}`,
       search: searchParams.toString(),

@@ -20,16 +20,8 @@ export const Component = memo(() => {
   const checkTaxa = results?.rows ?? []
 
   const add = useCallback(async () => {
-    const checkTaxon = {
-      ...createCheckTaxon(),
-      check_id,
-    }
-    const columns = Object.keys(checkTaxon).join(',')
-    const values = Object.values(checkTaxon).join("','")
-    const sql = `INSERT INTO check_taxa (${columns}) VALUES (${values
-      .map((_, i) => `$${i + 1}`)
-      .join(',')})`
-    await db.query(sql, values)
+    const res = await createCheckTaxon({ db, check_id })
+    const checkTaxon = res.rows[0]
     navigate({
       pathname: checkTaxon.check_taxon_id,
       search: searchParams.toString(),

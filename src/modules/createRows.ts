@@ -504,9 +504,11 @@ export const createCheckValue = async ({ db, check_id }) =>
     [uuidv7(), check_id],
   )
 
-export const createCheckTaxon = () => ({
-  check_taxon_id: uuidv7(),
-})
+export const createCheckTaxon = async ({ db, check_id }) =>
+  db.query(
+    `insert into check_taxa (check_taxon_id, check_id) values ($1, $2) returning check_taxon_id`,
+    [uuidv7(), check_id],
+  )
 
 export const createAction = async ({ db, project_id, place_id }) => {
   // find fields with preset values on the data column
