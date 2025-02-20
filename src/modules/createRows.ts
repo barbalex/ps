@@ -361,7 +361,7 @@ export const createTaxon = async ({ taxonomy_id, db }) =>
     [uuidv7(), taxonomy_id],
   )
 
-export const createListValue = ({ list_id, db }) =>
+export const createListValue = async ({ list_id, db }) =>
   db.query(
     `insert into list_values (list_value_id, account_id, list_id, obsolete) values ($1, $2, $3, $4) 
     returnning list_value_id`,
@@ -376,13 +376,22 @@ export const createGoal = async ({ db, project_id, subproject_id }) => {
     table: 'goals',
   })
 
-  return {
+  const data = {
     goal_id: uuidv7(),
     subproject_id,
     year: new Date().getFullYear(),
 
     ...presetData,
   }
+  const columns = Object.keys(data).join(',')
+  const values = Object.values(data)
+    .map((_, i) => `$${i + 1}`)
+    .join(',')
+
+  return db.query(
+    `insert into goals (${columns}) values (${values}) returning goal_id`,
+    Object.values(data),
+  )
 }
 
 export const createGoalReport = async ({ db, project_id, goal_id }) => {

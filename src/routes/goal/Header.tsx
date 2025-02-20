@@ -13,15 +13,8 @@ export const Header = memo(({ autoFocusRef }) => {
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const data = await createGoal({ db, project_id, subproject_id })
-    const columns = Object.keys(data).join(',')
-    const values = Object.values(data)
-      .map((_, i) => `$${i + 1}`)
-      .join(',')
-    await db.query(
-      `INSERT INTO goals (${columns}) VALUES (${values})`,
-      Object.values(data),
-    )
+    const res = await createGoal({ db, project_id, subproject_id })
+    const data = res.rows[0]
     navigate({
       pathname: `../${data.goal_id}`,
       search: searchParams.toString(),
