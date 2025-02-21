@@ -38,9 +38,17 @@ export const processData = async ({ file, additionalData, db }) => {
     // - create chunks of 500 rows
     const chunked = chunkArrayWithMinSize(occurrences, 500)
     for (const chunk of chunked) {
-      await db.occurrences.createMany({
-        data: chunk,
-      })
+      const values = chunk
+        .map(
+          (c) =>
+            `('${c.occurrence_import_id}', '${c.account_id}', '${
+              c.occurrence_import_id
+            }', '${JSON.stringify(c.data)}')`,
+        )
+        .join(',')
+      await db.query(
+        `INSERT INTO occurrences (occurrence_import_id, account_id, occurrence_import_id, data) VALUES ${values}`,
+      )
     }
     // - insert data into occurrences table
     // - set occurrence_imports.created_time
