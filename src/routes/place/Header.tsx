@@ -41,17 +41,17 @@ export const Header = memo(({ autoFocusRef }: Props) => {
   const placeNamePlural = placeLevels?.[0]?.name_plural ?? 'Places'
 
   const addRow = useCallback(async () => {
-    const res = await createPlace({
+    const resPlace = await createPlace({
       db,
       project_id,
       subproject_id,
       parent_id: place_id2 ? place_id : null,
       level: place_id2 ? 2 : 1,
     })
-    const place = res.rows?.[0]
+    const place = resPlace.rows?.[0]
 
     // need to create a corresponding vector layer and vector layer display
-    const res = createVectorLayer({
+    const resVL = createVectorLayer({
       project_id,
       type: 'own',
       own_table: 'places',
@@ -59,7 +59,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
       label: placeNamePlural,
       db,
     })
-    const newVectorLayer = res.rows?.[0]
+    const newVectorLayer = resVL.rows?.[0]
 
     createVectorLayerDisplay({
       vector_layer_id: newVectorLayer.vector_layer_id,
