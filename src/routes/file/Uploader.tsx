@@ -75,8 +75,8 @@ export const Uploader = () => {
       } else if (project_id) {
         fileInput.project_id = project_id
       }
-      const res = await createFile(fileInput)
-      const data = res?.rows?.[0]
+      const res1 = await createFile(fileInput)
+      const data = res1?.rows?.[0]
       navigate({
         pathname: `${!isFileList ? '.' : ''}./${data.file_id}${
           isPreview ? '/preview' : ''
@@ -99,7 +99,6 @@ export const Uploader = () => {
       // - then update the file with preview_uuid
       let res
       try {
-         
         res = await axios({
           method: 'POST',
           url: 'https://api.uploadcare.com/convert/document/',
