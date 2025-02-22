@@ -1,4 +1,4 @@
-import { memo, forwardRef, useState, useCallback } from 'react'
+import { memo, useState, useCallback } from 'react'
 import {
   Combobox as ComboboxComponent,
   Option,
@@ -6,7 +6,7 @@ import {
 } from '@fluentui/react-components'
 
 export const Combobox = memo(
-  forwardRef(({ name, label, options, value, onChange, autoFocus }, ref) => {
+  ({ name, label, options, value, onChange, autoFocus, ref }) => {
     const [filter, setFilter] = useState(value ?? '')
 
     const onInput = useCallback(
@@ -45,5 +45,5 @@ export const Combobox = memo(
         </ComboboxComponent>
       </Field>
     )
-  }),
+  },
 )
