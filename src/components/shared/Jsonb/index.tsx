@@ -4,7 +4,7 @@
 // 2. build own onChange to pass to the fields?
 // 3. loop through fields
 // 4. build input depending on field properties
-import { memo, useCallback, forwardRef } from 'react'
+import { memo, useCallback } from 'react'
 import { useParams, useLocation } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
@@ -20,140 +20,130 @@ import * as stores from '../../../store.ts'
 // TODO: if editing a field, show the field form
 // and focus the name field on first render?
 export const Jsonb = memo(
-  forwardRef(
-    (
-      {
+  ({
+    table,
+    name: jsonFieldName = 'data',
+    idField,
+    id,
+    data = {},
+    autoFocus = false,
+    ref,
+  }) => {
+    const isAccountTable = accountTables.includes(table)
+    const { project_id, place_id, place_id2 } = useParams()
+    const { pathname } = useLocation()
+    const db = usePGlite()
+
+    const sql = isAccountTable
+      ? `SELECT * FROM fields WHERE table_name = $1 and project_id = $2 order by sort_index asc, label asc`
+      : `SELECT * FROM fields WHERE table_name = $1 and project_id = $2 and level = $3 order by sort_index asc, label asc`
+    const params = isAccountTable
+      ? [table, project_id]
+      : [table, project_id, place_id2 ? 2 : 1]
+    const result = useLiveQuery(sql, params)
+    const fields = result?.rows ?? []
+
+    const onChange = useCallback<InputProps['onChange']>(
+      async (e, dataReturned) => {
+        const { name, value } = getValueFromChange(e, dataReturned)
+        const isDate = value instanceof Date
+        const val = { ...data }
+        if (value === undefined) {
+          // need to remove the key from the json object
+          delete val[name]
+        } else {
+          // in json need to save date as iso string
+          val[name] = isDate ? value.toISOString() : value
+        }
+
+        const isFilter = pathname.endsWith('filter')
+        const level =
+          table === 'places' ? (place_id ? 2 : 1) : place_id2 ? 2 : 1
+
+        if (isFilter) {
+          // TODO: wait until new db and it's accessing lib. Then implement these queries
+          // when filtering no id is passed for the row
+          // how to filter on jsonb fields?
+          // https://discord.com/channels/933657521581858818/1248997155448819775/1248997155448819775
+          // example from electric-sql discord: https://discord.com/channels/933657521581858818/1246045111478124645
+          // where: { [jsonbFieldName]: { path: ["is_admin"], equals: true } },
+          const filterAtom =
+            stores[`${snakeToCamel(table)}${level ? `${level}` : ''}FilterAtom`]
+          const activeFilter = stores.store.get(filterAtom)
+          stores.store.set(filterAtom, [
+            ...activeFilter,
+            { path: [jsonFieldName], contains: val },
+          ])
+          return
+        }
+        // TODO: test
+        const sql = `UPDATE ${table} SET ${jsonFieldName} = $1 WHERE ${idField} = $2`
+        try {
+          await db.query(sql, [val, id])
+        } catch (error) {
+          console.log(`Jsonb, error updating table '${table}':`, error)
+        }
+      },
+      [
+        data,
+        pathname,
         table,
-        name: jsonFieldName = 'data',
+        place_id,
+        place_id2,
+        db,
+        jsonFieldName,
         idField,
         id,
-        data = {},
-        autoFocus = false,
-      },
-      ref,
-    ) => {
-      const isAccountTable = accountTables.includes(table)
-      const { project_id, place_id, place_id2 } = useParams()
-      const { pathname } = useLocation()
-      const db = usePGlite()
+      ],
+    )
 
-      const sql = isAccountTable
-        ? `SELECT * FROM fields WHERE table_name = $1 and project_id = $2 order by sort_index asc, label asc`
-        : `SELECT * FROM fields WHERE table_name = $1 and project_id = $2 and level = $3 order by sort_index asc, label asc`
-      const params = isAccountTable
-        ? [table, project_id]
-        : [table, project_id, place_id2 ? 2 : 1]
-      const result = useLiveQuery(sql, params)
-      const fields = result?.rows ?? []
+    // What if data contains keys not existing in fields? > show but warn
+    const fieldNamesDefined = fields.map((field) => field.name)
+    const dataKeys = Object.keys(data)
+    const dataKeysNotDefined = dataKeys.filter(
+      (dataKey) => !fieldNamesDefined.includes(dataKey),
+    )
 
-      const onChange = useCallback<InputProps['onChange']>(
-        async (e, dataReturned) => {
-          const { name, value } = getValueFromChange(e, dataReturned)
-          const isDate = value instanceof Date
-          const val = { ...data }
-          if (value === undefined) {
-            // need to remove the key from the json object
-            delete val[name]
-          } else {
-            // in json need to save date as iso string
-            val[name] = isDate ? value.toISOString() : value
+    const fieldsFromDataKeysNotDefined = dataKeysNotDefined.map(
+      (dataKey, index) => (
+        <TextField
+          key={dataKey}
+          label={dataKey}
+          name={dataKey}
+          value={
+            data?.[dataKey]?.toLocaleDateString?.() ?? data?.[dataKey] ?? ''
           }
+          onChange={(e, dataReturned) => {
+            // if value was removed, remove the key also
+            onChange(e, dataReturned, true)
+          }}
+          validationState="warning"
+          validationMessage={`This field is not defined for this ${
+            isAccountTable ? 'account' : 'project'
+          }`}
+          autoFocus={autoFocus && index === 0 && fields.length === 0}
+        />
+      ),
+    )
 
-          const isFilter = pathname.endsWith('filter')
-          const level =
-            table === 'places' ? (place_id ? 2 : 1) : place_id2 ? 2 : 1
-
-          if (isFilter) {
-            // TODO: wait until new db and it's accessing lib. Then implement these queries
-            // when filtering no id is passed for the row
-            // how to filter on jsonb fields?
-            // https://discord.com/channels/933657521581858818/1248997155448819775/1248997155448819775
-            // example from electric-sql discord: https://discord.com/channels/933657521581858818/1246045111478124645
-            // where: { [jsonbFieldName]: { path: ["is_admin"], equals: true } },
-            const filterAtom =
-              stores[
-                `${snakeToCamel(table)}${level ? `${level}` : ''}FilterAtom`
-              ]
-            const activeFilter = stores.store.get(filterAtom)
-            stores.store.set(filterAtom, [
-              ...activeFilter,
-              { path: [jsonFieldName], contains: val },
-            ])
-            return
-          }
-          // TODO: test
-          const sql = `UPDATE ${table} SET ${jsonFieldName} = $1 WHERE ${idField} = $2`
-          try {
-            await db.query(sql, [val, id])
-          } catch (error) {
-            console.log(`Jsonb, error updating table '${table}':`, error)
-          }
-        },
-        [
-          data,
-          pathname,
-          table,
-          place_id,
-          place_id2,
-          db,
-          jsonFieldName,
-          idField,
-          id,
-        ],
-      )
-
-      // What if data contains keys not existing in fields? > show but warn
-      const fieldNamesDefined = fields.map((field) => field.name)
-      const dataKeys = Object.keys(data)
-      const dataKeysNotDefined = dataKeys.filter(
-        (dataKey) => !fieldNamesDefined.includes(dataKey),
-      )
-
-      const fieldsFromDataKeysNotDefined = dataKeysNotDefined.map(
-        (dataKey, index) => (
-          <TextField
-            key={dataKey}
-            label={dataKey}
-            name={dataKey}
-            value={
-              data?.[dataKey]?.toLocaleDateString?.() ?? data?.[dataKey] ?? ''
-            }
-            onChange={(e, dataReturned) => {
-              // if value was removed, remove the key also
-              onChange(e, dataReturned, true)
-            }}
-            validationState="warning"
-            validationMessage={`This field is not defined for this ${
-              isAccountTable ? 'account' : 'project'
-            }`}
-            autoFocus={autoFocus && index === 0 && fields.length === 0}
-          />
-        ),
-      )
-
-      return [
-        ...(fields.length
-          ? [
-              <WidgetsFromDataFieldsDefined
-                key="widgetsFromDataFieldsDefined"
-                fields={fields}
-                data={data}
-                table={table}
-                jsonFieldName={jsonFieldName}
-                idField={idField}
-                id={id}
-                autoFocus={autoFocus}
-                ref={ref}
-              />,
-            ]
-          : []),
-        fieldsFromDataKeysNotDefined,
-        <AddField
-          key="addField"
-          tableName={table}
-          level={place_id2 ? 2 : 1}
-        />,
-      ]
-    },
-  ),
+    return [
+      ...(fields.length
+        ? [
+            <WidgetsFromDataFieldsDefined
+              key="widgetsFromDataFieldsDefined"
+              fields={fields}
+              data={data}
+              table={table}
+              jsonFieldName={jsonFieldName}
+              idField={idField}
+              id={id}
+              autoFocus={autoFocus}
+              ref={ref}
+            />,
+          ]
+        : []),
+      fieldsFromDataKeysNotDefined,
+      <AddField key="addField" tableName={table} level={place_id2 ? 2 : 1} />,
+    ]
+  },
 )
