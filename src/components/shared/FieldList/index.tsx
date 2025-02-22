@@ -1,9 +1,8 @@
 import { memo, useMemo, useCallback } from 'react'
 import { Field, TagGroup, Tag } from '@fluentui/react-components'
 import type { InputProps } from '@fluentui/react-components'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { DropdownField } from './DropdownField.tsx'
 import { idFieldFromTable } from '../../../modules/idFieldFromTable.ts'
@@ -18,23 +17,18 @@ interface Props {
 }
 
 export const FieldList = memo(
-  ({ name, label, table, fieldsTable, id, valueArray = [] }) => {
+  ({ name, label, table, fieldsTable, id, valueArray = [] }: Props) => {
     const { project_id } = useParams()
 
     const db = usePGlite()
-    const { results: fields = [] } = useLiveQuery(
-      db.fields.liveMany({
-        where: {
-          table_name: fieldsTable,
-          project_id,
-        },
-        orderBy: [
-          { table_name: 'asc' },
-          { sort_index: 'asc' },
-          { label: 'asc' },
-        ],
-      }),
+    const res = useLiveQuery(
+      `
+      SELECT name FROM fields 
+      WHERE project_id = $1 AND table_name = $2 
+      ORDER BY table_name, sort_index, label`,
+      [project_id, fieldsTable],
     )
+    const fields = useMemo(() => res?.rows ?? [], [res])
     const options = useMemo(() => fields.map(({ name }) => name), [fields])
     const unusedOptions = useMemo(
       () => options.filter((o) => !valueArray.includes(o)),
@@ -44,10 +38,11 @@ export const FieldList = memo(
     const removeItem = useCallback(
       (e, { value }) => {
         const idField = idFieldFromTable(table)
-        db[table].update({
-          where: { [idField]: id },
-          data: { [name]: valueArray.filter((v) => v !== value) },
-        })
+        // TODO: test
+        db.query(
+          `UPDATE ${table} SET data = jsonb_set(data, '{${name}}', $1) WHERE ${idField} = $2`,
+          [valueArray.filter((v) => v !== value), id],
+        )
       },
       [db, id, name, table, valueArray],
     )
@@ -68,10 +63,10 @@ export const FieldList = memo(
           }
         }
         const idField = idFieldFromTable(table)
-        db[table].update({
-          where: { [idField]: id },
-          data: { [name]: val },
-        })
+        db.query(
+          `UPDATE ${table} SET data = jsonb_set(data, '{${name}}', $1) WHERE ${idField} = $2`,
+          [val, id],
+        )
       },
       [db, id, name, table, valueArray],
     )
