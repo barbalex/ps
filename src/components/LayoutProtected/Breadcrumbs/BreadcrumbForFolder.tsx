@@ -1,6 +1,6 @@
-import { useEffect, useState, forwardRef } from 'react'
+import { useEffect, useState, memo } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { usePGlite } from "@electric-sql/pglite-react"
+import { usePGlite } from '@electric-sql/pglite-react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 
@@ -17,8 +17,8 @@ const labelStyle = {
 
 // forwarding refs is crucial for the overflow menu to work
 // https://github.com/microsoft/fluentui/issues/27652#issuecomment-1520447241
-export const BreadcrumbForFolder = forwardRef(
-  ({ match, forOverflowMenu, wrapping = false }, ref) => {
+export const BreadcrumbForFolder = memo(
+  ({ match, forOverflowMenu, wrapping = false, ref }) => {
     const [designing] = useAtom(designingAtom)
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()

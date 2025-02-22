@@ -9,12 +9,9 @@ import { BsCaretDown } from 'react-icons/bs'
 
 import { MenuItems } from './MenuItems.tsx'
 
+// TODO: what is this ref used for?
 const CustomMenuTrigger = forwardRef((props, ref) => (
-  <div
-    ref={ref}
-    className="menu-icon"
-    {...props}
-  >
+  <div ref={ref} className="menu-icon" {...props}>
     <BsCaretDown />
   </div>
 ))
