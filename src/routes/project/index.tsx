@@ -3,7 +3,7 @@ import { useSearchParams, useParams } from 'react-router-dom'
 import { Tab, TabList } from '@fluentui/react-components'
 import type { SelectTabData, SelectTabEvent } from '@fluentui/react-components'
 import { useAtom } from 'jotai'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { Header } from './Header.tsx'
 import { Component as Form } from './Form.tsx'
@@ -21,9 +21,11 @@ export const Component = memo(() => {
 
   const db = usePGlite()
 
-  const result = useLiveQuery(`SELECT * FROM projects WHERE project_id = $1`, [
-    project_id,
-  ])
+  const result = useLiveIncrementalQuery(
+    `SELECT * FROM projects WHERE project_id = $1`,
+    [project_id],
+    'project_id',
+  )
   const row = result?.rows?.[0]
 
   const [searchParams, setSearchParams] = useSearchParams()
@@ -54,42 +56,23 @@ export const Component = memo(() => {
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
-      <TabList
-        selectedValue={tab}
-        onTabSelect={onTabSelect}
-      >
-        <Tab
-          id="form"
-          value="form"
-        >
+      <TabList selectedValue={tab} onTabSelect={onTabSelect}>
+        <Tab id="form" value="form">
           Form
         </Tab>
         {designing && (
-          <Tab
-            id="design"
-            value="design"
-          >
+          <Tab id="design" value="design">
             Design
           </Tab>
         )}
       </TabList>
       {tab === 'form' && (
-        <div
-          role="tabpanel"
-          aria-labelledby="form"
-        >
-          <Form
-            row={row}
-            onChange={onChange}
-            autoFocusRef={autoFocusRef}
-          />
+        <div role="tabpanel" aria-labelledby="form">
+          <Form row={row} onChange={onChange} autoFocusRef={autoFocusRef} />
         </div>
       )}
       {tab === 'design' && designing && (
-        <Design
-          onChange={onChange}
-          row={row}
-        />
+        <Design onChange={onChange} row={row} />
       )}
     </div>
   )
