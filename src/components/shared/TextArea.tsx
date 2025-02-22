@@ -1,4 +1,4 @@
-import { memo, forwardRef } from 'react'
+import { memo, useState, useCallback, useEffect } from 'react'
 import { Textarea, Field } from '@fluentui/react-components'
 import type { TextareaProps } from '@fluentui/react-components'
 
@@ -16,34 +16,58 @@ const textareaStyle = {
   flexGrow: 1,
 }
 
-export const TextArea = memo(
-  forwardRef((props: Partial<TextareaProps>, ref) => {
-    const {
-      label,
-      validationMessage,
-      validationState = 'none',
-      autoFocus,
-      button,
-    } = props
+export const TextArea = memo((props: Partial<TextareaProps>) => {
+  const {
+    label,
+    name,
+    validationMessage,
+    validationState = 'none',
+    autoFocus,
+    button,
+    onChange: onChangeIn,
+    value,
+    ref,
+  } = props
 
-    return (
-      <Field
-        label={label ?? '(no label provided)'}
-        validationMessage={validationMessage}
-        validationState={validationState}
-      >
-        <div style={rowStyle}>
-          <Textarea
-            {...props}
-            appearance="outline"
-            autoFocus={autoFocus}
-            resize="vertical"
-            style={textareaStyle}
-            ref={ref}
-          />
-          {!!button && button}
-        </div>
-      </Field>
-    )
-  }),
-)
+  const [stateValue, setStateValue] = useState(
+    value || value === 0 ? value : '',
+  )
+  const onChange = useCallback((event) => setStateValue(event.target.value), [])
+  useEffect(() => {
+    setStateValue(value || value === 0 ? value : '')
+  }, [value])
+
+  const onKeyPress = useCallback(
+    (event) => {
+      if (event.key === 'Enter') {
+        onChangeIn(event)
+      }
+    },
+    [onChangeIn],
+  )
+
+  return (
+    <Field
+      label={label ?? '(no label provided)'}
+      validationMessage={validationMessage}
+      validationState={validationState}
+    >
+      <div style={rowStyle}>
+        <Textarea
+          {...props}
+          name={name}
+          value={stateValue}
+          onChange={onChange}
+          onKeyPress={onKeyPress}
+          onBlur={onChangeIn}
+          appearance="outline"
+          autoFocus={autoFocus}
+          resize="vertical"
+          style={textareaStyle}
+          ref={ref}
+        />
+        {!!button && button}
+      </div>
+    </Field>
+  )
+})
