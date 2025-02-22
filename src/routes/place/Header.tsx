@@ -5,8 +5,7 @@ import { Button } from '@fluentui/react-components'
 import { bbox } from '@turf/bbox'
 import { buffer } from '@turf/buffer'
 import { useAtom, useSetAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import {
   createPlace,
