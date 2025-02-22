@@ -1,7 +1,7 @@
-import { useEffect, useState, forwardRef, useMemo } from 'react'
+import { useEffect, useState, useMemo, memo } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { usePGlite } from "@electric-sql/pglite-react"
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { idFieldFromTable } from '../../../modules/idFieldFromTable.ts'
 import { Menu } from './Menu/index.tsx'
@@ -16,8 +16,8 @@ const labelStyle = {
 
 // forwarding refs is crucial for the overflow menu to work
 // https://github.com/microsoft/fluentui/issues/27652#issuecomment-1520447241
-export const BreadcrumbForData = forwardRef(
-  ({ match, forOverflowMenu, wrapping = false }, ref) => {
+export const BreadcrumbForData = memo(
+  ({ match, forOverflowMenu, wrapping = false, ref }) => {
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
@@ -33,9 +33,9 @@ export const BreadcrumbForData = forwardRef(
 
     const [occurrenceImportIds, setOccurrenceImportIds] = useState([])
 
-    const filterParams = useMemo(() => {
+    const where = useMemo(() => {
       // filter by parents
-      const filterParams = {}
+      let where = ''
 
       // Add only the last to the filter
       // Wanted to get it from params. But not useable because also contains lower level ids!!!
@@ -51,39 +51,40 @@ export const BreadcrumbForData = forwardRef(
       const placesCountInPath = path.filter((p) => p.includes('places')).length
       if (parentIdName && parentId) {
         if (table === 'places' && placesCountInPath === 2) {
-          filterParams.parent_id = match.params.place_id
+          where += `parent_id = '${match.params.place_id}'`
         } else if (table === 'places') {
-          filterParams[parentIdName] = parentId
-          filterParams.parent_id = null
+          where += `${parentIdName} = '${parentId}' AND parent_id IS NULL`
         } else if (table === 'occurrences') {
           // need to get the occurrence_import_id from the subproject_id
-          filterParams.occurrence_import_id = { in: occurrenceImportIds }
+          // TODO:
+          where += `occurrence_import_id = ANY ({${occurrenceImportIds
+            .map((o) => `'${o}'`)
+            .join(',')}})`
           // there are three types of occurrences
           const lastPathElement = path[path.length - 1]
           if (lastPathElement === 'occurrences-to-assess') {
-            filterParams.not_to_assign = null // TODO: catch false
-            filterParams.place_id = null
+            where += ` AND not_to_assign IS NULL AND place_id IS NULL`
           } else if (lastPathElement === 'occurrences-not-to-assign') {
-            filterParams.not_to_assign = true
+            where += ` AND not_to_assign IS TRUE`
           } else if (lastPathElement === 'occurrences-assigned') {
-            filterParams.place_id =
+            where += ` AND place_id = '${
               placesCountInPath === 1
                 ? match.params.place_id
                 : match.params.place_id2
+            }'`
           }
           // if last path element is
         } else {
-          filterParams[parentIdName] = parentId
+          where += `${parentIdName} = '${parentId}'`
         }
       }
       // fields exist in root and in projects
       if (table === 'fields' && !parentId) {
-        filterParams.project_id = null
+        where += `${where ? ' AND ' : ''}project_id IS NULL`
       }
-      return filterParams
+      return where
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [match.params, occurrenceImportIds, path, table, location.pathname])
-    const queryParam = { where: filterParams, orderBy: { label: 'asc' } }
     // TODO: test including
     // if (table === 'projects') {
     //   queryParam.include = { subprojects: true }
@@ -109,10 +110,15 @@ export const BreadcrumbForData = forwardRef(
     //   db,
     // })
 
-    const { results } = useLiveQuery(db[queryTable]?.liveMany(queryParam))
+    const res = useLiveQuery(
+      `SELECT * FROM ${queryTable} ${
+        where ? ` WHERE ${where}` : ''
+      } order by label asc`,
+    )
+    const results = res?.rows ?? []
 
     const idField = idFieldFromTable(table)
-    const navs = (results ?? []).map((result) => ({
+    const navs = results.map((result) => ({
       path: `${match.pathname}/${result[idField]}`,
       text: result.label ?? result[idField],
     }))
@@ -128,13 +134,11 @@ export const BreadcrumbForData = forwardRef(
       const get = async () => {
         switch (table) {
           case 'places': {
-            const placeLevels =
-              (await db.place_levels?.findMany({
-                where: {
-                  project_id: match.params.project_id,
-                  level: levelWanted,
-                },
-              })) ?? []
+            const res = await db.query(
+              `SELECT * FROM place_levels WHERE project_id = $1 AND level = $2`,
+              [match.params.project_id, levelWanted],
+            )
+            const placeLevels = res?.rows ?? []
             const levelRow = placeLevels[0]
             const label =
               levelRow?.name_plural ?? levelRow?.name_short ?? 'Places'
@@ -142,18 +146,22 @@ export const BreadcrumbForData = forwardRef(
             break
           }
           case 'subprojects': {
-            const project = await db.projects?.findUnique({
-              where: { project_id: match.params.project_id },
-            })
+            const res = await db.query(
+              `SELECT * FROM projects WHERE project_id = $1`,
+              [match.params.project_id],
+            )
+            const project = res?.rows?.[0]
             const label = project?.subproject_name_plural ?? 'Subprojects'
             setLabel(label)
             break
           }
           case 'occurrences': {
             if (!match?.params?.subproject_id) return
-            const occurrenceImports = await db.occurrence_imports?.findMany({
-              where: { subproject_id: match.params.subproject_id },
-            })
+            const res = await db.query(
+              `SELECT * FROM occurrence_imports WHERE subproject_id = $1`,
+              [match.params.subproject_id],
+            )
+            const occurrenceImports = res?.rows ?? []
             setOccurrenceImportIds(
               occurrenceImports.map((o) => o.occurrence_import_id),
             )
