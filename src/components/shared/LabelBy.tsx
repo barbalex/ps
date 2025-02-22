@@ -1,7 +1,6 @@
 import { useMemo, memo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { DropdownFieldSimpleOptions } from './DropdownFieldSimpleOptions.tsx'
 
@@ -17,18 +16,14 @@ interface Props {
 }
 
 export const LabelBy = memo(
-  ({ onChange, value, extraFieldNames = [], table, label, name }) => {
+  ({ onChange, value, extraFieldNames = [], table, label, name }: Props) => {
     const { project_id } = useParams()
 
-    const db = usePGlite()
-    const { results: fields = [] } = useLiveQuery(
-      db.fields.liveMany({
-        where: {
-          table_name: table,
-          project_id: ['files', 'projects'].includes(table) ? null : project_id,
-        },
-      }),
+    const res = useLiveQuery(
+      `SELECT * FROM fields WHERE table_name = $1 AND project_id = $2`,
+      [table, ['files', 'projects'].includes(table) ? null : project_id],
     )
+    const fields = useMemo(() => res?.rows ?? [], [res])
     // Could add some fields from root here if needed
     const fieldNames = useMemo(
       () => [...fields.map(({ name }) => name), ...extraFieldNames].sort(),
