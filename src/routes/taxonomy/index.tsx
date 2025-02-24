@@ -1,8 +1,7 @@
 import { useCallback, useRef, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
@@ -19,23 +18,24 @@ import '../../form.css'
 
 export const Component = memo(() => {
   const { taxonomy_id } = useParams()
+  const db = usePGlite()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const db = usePGlite()
-  const { results: row } = useLiveQuery(
-    db.taxonomies.liveUnique({ where: { taxonomy_id } }),
-  )
+  const res = useLiveQuery(`SELECT * FROM taxonomies WHERE taxonomy_id = $1`, [
+    taxonomy_id,
+  ])
+  const row = res?.rows?.[0]
 
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
-      db.taxonomies.update({
-        where: { taxonomy_id },
-        data: { [name]: value },
-      })
+      db.query(`UPDATE taxonomies SET ${name} = $1 WHERE taxonomy_id = $2`, [
+        value,
+        taxonomy_id,
+      ])
     },
-    [db.taxonomies, taxonomy_id],
+    [db, taxonomy_id],
   )
 
   if (!row) return <Loading />
