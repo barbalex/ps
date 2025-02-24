@@ -1,8 +1,7 @@
 import { memo, useCallback } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { TextArea } from '../../components/shared/TextArea.tsx'
@@ -18,39 +17,46 @@ export const Component = memo(({ autoFocusRef }) => {
   const { project_crs_id, project_id } = useParams()
 
   const db = usePGlite()
-  const { results: row } = useLiveQuery(
-    db.project_crs.liveUnique({ where: { project_crs_id } }),
+  const resProjectCrs = useLiveQuery(
+    `SELECT * FROM project_crs WHERE project_crs_id = $1`,
+    [project_crs_id],
   )
+  const row = resProjectCrs?.rows?.[0]
 
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
-      db.project_crs.update({
-        where: { project_crs_id },
-        data: { [name]: value },
-      })
+      db.query(
+        `UPDATE project_crs SET ${name} = $1 WHERE project_crs_id = $2`,
+        [value, project_crs_id],
+      )
     },
-    [db.project_crs, project_crs_id],
+    [db, project_crs_id],
   )
 
-  const { results: project } = useLiveQuery(
-    db.projects.liveUnique({ where: { project_id } }),
+  const resProject = useLiveQuery(
+    `SELECT * FROM projects WHERE project_id = $1`,
+    [project_id],
   )
+  const project = resProject?.rows?.[0]
   const onChangeMapPresentation = useCallback<InputProps['onChange']>(
     (e, data) => {
-      db.projects.update({
-        where: { project_id },
-        data: { map_presentation_crs: data?.checked ? row?.code : null },
-      })
+      db.query(
+        `UPDATE projects SET map_presentation_crs = $1 WHERE project_id = $2`,
+        [data?.checked ? row?.code : null, project_id],
+      )
     },
-    [db.projects, project_id, row?.code],
+    [db, project_id, row?.code],
   )
 
   if (!row) return <Loading />
 
   return (
     <>
-      <ComboboxFilteringOptions autoFocus={!row.code} ref={autoFocusRef} />
+      <ComboboxFilteringOptions
+        autoFocus={!row.code}
+        ref={autoFocusRef}
+      />
       <TextField
         label="Code"
         name="code"
