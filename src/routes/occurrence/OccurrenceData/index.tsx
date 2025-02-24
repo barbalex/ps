@@ -5,7 +5,6 @@ import { HTML5Backend } from 'react-dnd-html5-backend'
 import { arrayMoveImmutable } from 'array-move'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { exists } from '../../../modules/exists.ts'
 import { ErrorBoundary } from '../../../components/shared/ErrorBoundary.tsx'
@@ -31,7 +30,6 @@ export const OccurenceData = () => {
     occurrenceFieldsSortedAtom,
   )
   const { occurrence_id } = useParams()
-  const db = usePGlite()
 
   const sortedBeobFields = occurrenceFieldsSorted.slice()
 
@@ -57,9 +55,11 @@ export const OccurenceData = () => {
     [sortedBeobFields],
   )
 
-  const { results: occurrence } = useLiveQuery(
-    db.occurrences.liveUnique({ where: { occurrence_id } }),
+  const res = useLiveQuery(
+    `SELECT * FROM occurrences WHERE occurrence_id = $1`,
+    [occurrence_id],
   )
+  const occurrence = res?.rows?.[0]
 
   const rowData = occurrence?.data ?? {}
   const fields = Object.entries(rowData)
