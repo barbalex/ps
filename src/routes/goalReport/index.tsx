@@ -1,7 +1,6 @@
 import { useRef, memo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
@@ -15,10 +14,11 @@ export const Component = memo(() => {
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const db = usePGlite()
-  const { results: row } = useLiveQuery(
-    db.goal_reports.liveUnique({ where: { goal_report_id } }),
+  const res = useLiveQuery(
+    `SELECT * FROM goal_reports WHERE goal_report_id = $1`,
+    [goal_report_id],
   )
+  const row = res?.rows?.[0]
 
   if (!row) return <Loading />
 
