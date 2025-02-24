@@ -3,7 +3,6 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { CheckValuesNode } from './CheckValues.tsx'
@@ -21,10 +20,11 @@ export const CheckNode = memo(
     const [searchParams] = useSearchParams()
 
     // need project to know whether to show files
-    const db = usePGlite()
-    const { results: project } = useLiveQuery(
-      db.projects.liveUnique({ where: { project_id } }),
+    const resProject = useLiveQuery(
+      `SELECT files_active_checks FROM projects WHERE project_id = $1`,
+      [project_id],
     )
+    const project = resProject?.rows?.[0]
     const showFiles = project?.files_active_checks ?? false
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -73,7 +73,6 @@ export const CheckNode = memo(
       isOpen,
       navigate,
       ownArray,
-      parentArray,
       parentUrl,
       searchParams,
       urlPath.length,
