@@ -1,7 +1,6 @@
 import { useRef, useCallback, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useSearchParams, useParams } from 'react-router-dom'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Header } from './Header.tsx'
 import { Component as Form } from './Form.tsx'
@@ -22,20 +21,20 @@ export const Component = memo(() => {
   const onlyForm = searchParams.get('onlyForm')
 
   const db = usePGlite()
-  const { results: row } = useLiveQuery(
-    db.places.liveUnique({ where: { place_id: place_id2 ?? place_id } }),
-  )
+  const res = useLiveQuery(`SELECT * FROM places WHERE place_id = $1`, [
+    place_id2 ?? place_id,
+  ])
+  const row = res?.rows?.[0]
 
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
-
-      db.places.update({
-        where: { place_id },
-        data: { [name]: value },
-      })
+      db.query(`UPDATE places SET ${name} = $1 WHERE place_id = $2`, [
+        value,
+        place_id,
+      ])
     },
-    [db.places, place_id],
+    [db, place_id],
   )
 
   if (!row) return <Loading />
