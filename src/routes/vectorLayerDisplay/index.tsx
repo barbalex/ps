@@ -1,8 +1,7 @@
 import { useRef, useCallback } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 // import type { InputProps } from '@fluentui/react-components'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { TextField } from '../../components/shared/TextField.tsx'
@@ -36,23 +35,25 @@ export const Component = ({ vectorLayerDisplayId }) => {
     useParams()
   const vector_layer_display_id =
     vectorLayerDisplayId ?? vectorLayerDisplayIdFromRouter
+  const db = usePGlite()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const db = usePGlite()
-  const { results: row } = useLiveQuery(
-    db.vector_layer_displays.liveUnique({ where: { vector_layer_display_id } }),
+  const res = useLiveQuery(
+    `SELECT * FROM vector_layer_displays WHERE vector_layer_display_id = $1`,
+    [vector_layer_display_id],
   )
+  const row = res?.rows?.[0]
 
   const onChange = useCallback<InputProps['onChange']>(
     (e: React.ChangeEvent<HTMLInputElement>, data) => {
       const { name, value } = getValueFromChange(e, data)
-      db.vector_layer_displays.update({
-        where: { vector_layer_display_id },
-        data: { [name]: value },
-      })
+      db.query(
+        `UPDATE vector_layer_displays SET ${name} = $1 WHERE vector_layer_display_id = $2`,
+        [value, vector_layer_display_id],
+      )
     },
-    [db.vector_layer_displays, vector_layer_display_id],
+    [db, vector_layer_display_id],
   )
 
   if (!row) return <Loading />
