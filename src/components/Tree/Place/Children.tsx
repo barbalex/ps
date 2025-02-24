@@ -16,20 +16,18 @@ export const PlaceChildren = memo(
 
     const db = usePGlite()
     // query from place_level what children to show
-    const { results: placeLevels } = useLiveQuery(
-      db.place_levels.liveMany({
-        where: {
-          project_id,
-          level: place_id ? 2 : 1,
-        },
-      }),
+    const resPlaceLevels = useLiveQuery(
+      `SELECT * FROM place_levels WHERE project_id = $1 AND level = $2`,
+      [project_id, place_id ? 2 : 1],
     )
-    const placeLevel = placeLevels?.[0]
+    const placeLevel = resPlaceLevels?.rows?.[0]
 
     // need project to know whether to show files
-    const { results: project } = useLiveQuery(
-      db.projects.liveUnique({ where: { project_id } }),
+    const resProject = useLiveQuery(
+      `SELECT files_active_places FROM projects WHERE project_id = $1`,
+      [project_id],
     )
+    const project = resProject?.rows?.[0]
     const showFiles = project?.files_active_places ?? false
 
     return (
