@@ -1,8 +1,7 @@
 import { useCallback, useRef, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
@@ -18,19 +17,20 @@ export const Component = memo(() => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
-  const { results: row } = useLiveQuery(
-    db.checks.liveUnique({ where: { check_id } }),
-  )
+  const res = useLiveQuery(`SELECT * FROM checks WHERE check_id = $1`, [
+    check_id,
+  ])
+  const row = res?.rows?.[0]
 
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
-      db.checks.update({
-        where: { check_id },
-        data: { [name]: value },
-      })
+      db.query(`UPDATE checks SET ${name} = $1 WHERE check_id = $2`, [
+        value,
+        check_id,
+      ])
     },
-    [db.checks, check_id],
+    [db, check_id],
   )
 
   if (!row) return <Loading />
@@ -39,8 +39,16 @@ export const Component = memo(() => {
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
-        <TextFieldInactive label="ID" name="check_id" value={row.check_id} />
-        <Form onChange={onChange} row={row} autoFocusRef={autoFocusRef} />
+        <TextFieldInactive
+          label="ID"
+          name="check_id"
+          value={row.check_id}
+        />
+        <Form
+          onChange={onChange}
+          row={row}
+          autoFocusRef={autoFocusRef}
+        />
       </div>
     </div>
   )
