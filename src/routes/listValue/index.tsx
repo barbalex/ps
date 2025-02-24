@@ -1,8 +1,7 @@
 import { useCallback, useRef, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
@@ -19,19 +18,21 @@ export const Component = memo(() => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
-  const { results: row } = useLiveQuery(
-    db.list_values.liveUnique({ where: { list_value_id } }),
+  const res = useLiveQuery(
+    `SELECT * FROM list_values WHERE list_value_id = $1`,
+    [list_value_id],
   )
+  const row = res?.rows?.[0]
 
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
-      db.list_values.update({
-        where: { list_value_id },
-        data: { [name]: value },
-      })
+      db.query(`UPDATE list_values SET ${name} = $1 WHERE list_value_id = $2`, [
+        value,
+        list_value_id,
+      ])
     },
-    [db.list_values, list_value_id],
+    [db, list_value_id],
   )
 
   if (!row) return <Loading />
