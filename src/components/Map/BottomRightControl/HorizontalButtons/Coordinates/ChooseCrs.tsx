@@ -8,22 +8,26 @@ import {
   MenuItemRadio,
 } from '@fluentui/react-components'
 import { BsGlobe2 } from 'react-icons/bs'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
-import { usePGlite } from "@electric-sql/pglite-react"
-
+import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 export const ChooseCrs = memo(() => {
   const { project_id = '99999999-9999-9999-9999-999999999999' } = useParams()
 
   const db = usePGlite()
-  const { results: projectCrs = [] } = useLiveQuery(
-    db.project_crs.liveMany({ where: { project_id } }),
+
+  const resProjectCrs = useLiveQuery(
+    `SELECT * FROM project_crs WHERE project_id = $1`,
+    [project_id],
   )
+  const projectCrs = resProjectCrs.results
   // fetch project.map_presentation_crs to show the active one
-  const { results: project } = useLiveQuery(
-    db.projects.liveUnique({ where: { project_id } }),
+  const resProject = useLiveQuery(
+    `SELECT map_presentation_crs FROM projects WHERE project_id = $1`,
+    [project_id],
   )
+  const project = resProject.rows?.[0]
   const checkedValues = project?.map_presentation_crs
     ? { map_presentation_crs: [project.map_presentation_crs] }
     : { map_presentation_crs: [] }
@@ -31,13 +35,13 @@ export const ChooseCrs = memo(() => {
   const onChange = useCallback(
     (e, { name, checkedItems }) => {
       // set projects.map_presentation_crs
-      db.projects.update({
-        where: { project_id },
-        data: { [name]: checkedItems?.[0] ?? null },
-      })
+      db.query(`UPDATE projects SET ${name} = $1 WHERE project_id = $2`, [
+        checkedItems?.[0] ?? null,
+        project_id,
+      ])
       // TODO: make coordinates update
     },
-    [db.projects, project_id],
+    [db, project_id],
   )
 
   if (!project_id) return null
@@ -47,7 +51,10 @@ export const ChooseCrs = memo(() => {
   if (projectCrs.length < 2) return null
 
   return (
-    <Menu checkedValues={checkedValues} onCheckedValueChange={onChange}>
+    <Menu
+      checkedValues={checkedValues}
+      onCheckedValueChange={onChange}
+    >
       <MenuTrigger disableButtonEnhancement>
         <Button
           icon={<BsGlobe2 />}
