@@ -2,7 +2,6 @@ import { useState, memo, useCallback, useMemo } from 'react'
 import { useMap, useMapEvent } from 'react-leaflet'
 import { useParams } from 'react-router-dom'
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { usePGlite } from "@electric-sql/pglite-react"
 
 import { ToggleMapCenter } from './ToggleMapCenter.tsx'
 import { ChooseCrs } from './ChooseCrs.tsx'
@@ -26,19 +25,20 @@ export const CoordinatesControl = memo(() => {
   const map = useMap()
   const bounds = map.getBounds()
   const center = bounds.getCenter()
-  const db = usePGlite()
   const { project_id = '99999999-9999-9999-9999-999999999999' } = useParams()
 
-  const { results: project } = useLiveQuery(
-    db.projects.liveUnique({
-      where: { project_id },
-      select: { map_presentation_crs: true },
-    }),
+  const resProject = useLiveQuery(
+    `SELECT map_presentation_crs FROM projects WHERE project_id = $1`,
+    [project_id],
   )
+  const project = resProject?.rows?.[0]
   const projectMapPresentationCrs = project?.map_presentation_crs
-  const { results: projectCrs = [] } = useLiveQuery(
-    db.project_crs.liveMany({ where: { project_id } }),
+
+  const resProjectCrs = useLiveQuery(
+    `SELECT code FROM project_crs WHERE project_id = $1`,
+    [project_id],
   )
+  const projectCrs = resProjectCrs?.rows
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [renderCount, setRenderCount] = useState(0)
