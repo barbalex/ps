@@ -1,8 +1,7 @@
 import { useCallback, useRef, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
@@ -19,23 +18,23 @@ export const Component = memo(() => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
-  const { results: row } = useLiveQuery(
-    db.check_values.liveUnique({ where: { check_value_id } }),
+  const res = useLiveQuery(
+    `SELECT * FROM check_values WHERE check_value_id = $1`,
+    [check_value_id],
   )
+  const row = res?.rows?.[0]
 
   // console.log('CheckValue', { row, results })
 
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
-      db.check_values.update({
-        where: { check_value_id },
-        data: {
-          [name]: value,
-        },
-      })
+      db.query(
+        `UPDATE check_values SET ${name} = $1 WHERE check_value_id = $2`,
+        [value, check_value_id],
+      )
     },
-    [db.check_values, check_value_id],
+    [db, check_value_id],
   )
 
   if (!row) return <Loading />
