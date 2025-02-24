@@ -1528,18 +1528,18 @@ CREATE TYPE vector_layer_type_enum AS enum(
   'wfs',
   'upload',
   'own'
-  -- 'places1',
-  -- 'places2',
-  -- 'actions1',
-  -- 'actions2',
-  -- 'checks1',
-  -- 'checks2',
-  -- 'occurrences_assigned1',
-  -- 'occurrences_assigned_lines1',
-  -- 'occurrences_assigned2',
-  -- 'occurrences_assigned_lines2',
-  -- 'occurrences_to_assess',
-  -- 'occurrences_not_to_assign'
+  'places1',
+  'places2',
+  'actions1',
+  'actions2',
+  'checks1',
+  'checks2',
+  'occurrences_assigned1',
+  'occurrences_assigned_lines1',
+  'occurrences_assigned2',
+  'occurrences_assigned_lines2',
+  'occurrences_to_assess',
+  'occurrences_not_to_assign'
 );
 
 CREATE TYPE vector_layer_own_table_enum AS enum(
