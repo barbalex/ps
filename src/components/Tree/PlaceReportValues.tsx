@@ -3,7 +3,6 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { PlaceReportValueNode } from './PlaceReportValue.tsx'
@@ -28,19 +27,17 @@ export const PlaceReportValuesNode = memo(
     place,
     place_report_id,
     level = 9,
-  }) => {
+  }: Props) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const db = usePGlite()
-    const { results: placeReportValues = [] } = useLiveQuery(
-      db.place_report_values.liveMany({
-        where: { place_report_id },
-        orderBy: { label: 'asc' },
-      }),
+    const res = useLiveQuery(
+      `SELECT * FROM place_report_values WHERE place_report_id = $1 ORDER BY label ASC`,
+      [place_report_id],
     )
+    const placeReportValues = res?.rows ?? []
 
     // TODO: get name by place_level
     const placeReportValuesNode = useMemo(
@@ -92,7 +89,6 @@ export const PlaceReportValuesNode = memo(
       isOpen,
       navigate,
       ownArray,
-      parentArray,
       parentUrl,
       searchParams,
       urlPath.length,
