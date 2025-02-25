@@ -33,6 +33,8 @@ export const Layout = memo(() => {
   // TODO: reenable below
   // return <Main />
 
+  // ignore Navs for now
+  // TODO: implement nav-lists to replace them
   return (
     <>
       {onlyForm !== true && (
