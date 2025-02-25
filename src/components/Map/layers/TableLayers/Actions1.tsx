@@ -1,26 +1,19 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { TableLayer } from './TableLayer.tsx'
 
 export const Actions1 = ({ layerPresentation }) => {
-  const db = usePGlite()
-
-  // need to query places1 because filtering by places in checks query does not work
-  const { results: places1 = [] } = useLiveQuery(
-    db.places.liveMany({ where: { parent_id: null } }),
-  )
-
   // TODO: query only inside current map bounds using places.bbox
-  const { results: actions = [] } = useLiveQuery(
-    db.actions.liveMany({
-      where: {
-        // places: { parent_id: null }, // this returns no results
-        place_id: { in: places1.map((p) => p.place_id) },
-        geometry: { not: null },
-      },
-    }),
+  const resActions = useLiveQuery(
+    `
+    SELECT actions.* 
+    FROM actions
+      INNER JOIN places ON actions.place_id = places.place_id
+    WHERE 
+      actions.geometry IS NOT NULL 
+      AND places.parent_id IS NULL`,
   )
+  const actions = resActions?.rows ?? []
   // console.log('hello Actions1, checks:', checks)
 
   // a geometry is built as FeatureCollection Object: https://datatracker.ietf.org/doc/html/rfc7946#section-3.3
