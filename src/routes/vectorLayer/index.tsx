@@ -1,8 +1,7 @@
 import { useCallback, useRef, memo } from 'react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
-import { usePGlite } from '@electric-sql/pglite-react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
@@ -33,10 +32,10 @@ export const Component = memo(() => {
       )
       const newLabel = value?.label
       if (!newLabel) return
-      db.vector_layers.update({
-        where: { vector_layer_id },
-        data: { label: newLabel },
-      })
+      db.query(
+        `UPDATE vector_layers SET label = $1 WHERE vector_layer_id = $2`,
+        [newLabel, vector_layer_id],
+      )
     },
     [db, vector_layer_id],
   )
