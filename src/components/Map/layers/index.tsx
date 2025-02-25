@@ -1,8 +1,7 @@
 import { memo, useEffect, useMemo, useState } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { Pane } from 'react-leaflet'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { OsmColor } from './OsmColor.tsx'
 import { WmsLayerComponent } from './WmsLayer/index.tsx'

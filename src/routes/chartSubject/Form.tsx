@@ -1,8 +1,7 @@
 import { useCallback, memo } from 'react'
 import type { InputProps } from '@fluentui/react-components'
 import { useParams } from 'react-router-dom'
-import { usePGlite } from '@electric-sql/pglite-react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'

@@ -1,7 +1,6 @@
 import { memo, useEffect, useState, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
-import { useLiveQuery } from '@electric-sql/pglite-react'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { buildData } from './buildData/index.ts'
 import { SingleChart } from './Chart.tsx'

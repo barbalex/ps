@@ -1,8 +1,7 @@
 import { memo, useEffect, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
-import { usePGlite } from '@electric-sql/pglite-react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { completeVectorLayerDisplaysForLayerWithProperties } from './completeVectorLayerDisplaysForLayerWithProperties.ts'
 

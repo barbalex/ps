@@ -1,6 +1,5 @@
 import { memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { ChecksNode } from '../Checks.tsx'
 import { ActionsNode } from '../Actions.tsx'

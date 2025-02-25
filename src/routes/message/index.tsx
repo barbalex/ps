@@ -1,8 +1,7 @@
 import { useCallback, memo } from 'react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
-import { usePGlite } from '@electric-sql/pglite-react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'

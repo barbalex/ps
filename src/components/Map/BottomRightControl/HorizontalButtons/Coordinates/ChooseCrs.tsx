@@ -9,8 +9,7 @@ import {
 } from '@fluentui/react-components'
 import { BsGlobe2 } from 'react-icons/bs'
 import { useParams } from 'react-router-dom'
-import { usePGlite } from '@electric-sql/pglite-react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 export const ChooseCrs = memo(() => {
   const { project_id = '99999999-9999-9999-9999-999999999999' } = useParams()

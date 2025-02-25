@@ -1,7 +1,6 @@
 import { useEffect, memo } from 'react'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import {
   createVectorLayer,
