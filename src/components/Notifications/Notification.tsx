@@ -65,31 +65,31 @@ export const Notification = memo(({ notification }) => {
   } = notification
 
   const onClickClose = useCallback(() => {
-    db.notifications.delete({
-      where: { notification_id },
-    })
-  }, [db.notifications, notification_id])
+    db.query(`DELETE FROM notifications WHERE notification_id = $1`, [
+      notification_id,
+    ])
+  }, [db, notification_id])
 
   useEffect(() => {
     let timeoutId
     if (progress_percent === 100 || paused === false) {
       timeoutId = setTimeout(() => {
-        db.notifications.delete({
-          where: { notification_id },
-        })
+        db.query(`DELETE FROM notifications WHERE notification_id = $1`, [
+          notification_id,
+        ])
       }, 500)
       return () => clearTimeout(timeoutId)
     } else if (timeout && paused === null) {
       timeoutId = setTimeout(() => {
-        db.notifications.delete({
-          where: { notification_id },
-        })
+        db.query(`DELETE FROM notifications WHERE notification_id = $1`, [
+          notification_id,
+        ])
       }, timeout)
     } else if (paused === true) {
       // do nothing - will do when notification is updated to paused === false
     }
     return () => timeoutId && clearTimeout(timeoutId)
-  }, [db.notifications, notification_id, paused, progress_percent, timeout])
+  }, [db, notification_id, paused, progress_percent, timeout])
 
   // TODO: add progress bar
   // https://react.fluentui.dev/?path=/docs/components-progressbar--default
