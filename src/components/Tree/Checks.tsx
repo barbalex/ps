@@ -3,7 +3,6 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { CheckNode } from './Check.tsx'
@@ -24,34 +23,43 @@ export const ChecksNode = memo(
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
-    const db = usePGlite()
 
     const filter = place_id ? filterChecks2 : filterChecks1
-    const where = filter.length > 1 ? { OR: filter } : filter[0]
-    const { results: checks = [] } = useLiveQuery(
-      db.checks.liveMany({
-        where: { place_id: place.place_id, ...where },
-        orderBy: { label: 'asc' },
-      }),
+
+    const resFiltered = useLiveQuery(
+      `
+      SELECT * 
+      FROM checks 
+      WHERE 
+        place_id = $1 
+        ${filter.length > 0 ? ` AND ${filter.join(' AND ')}` : ''}
+      ORDER BY label ASC`,
+      [place.place_id],
     )
-    const { results: checksUnfiltered = [] } = useLiveQuery(
-      db.checks.liveMany({
-        where: { place_id: place.place_id },
-        orderBy: { label: 'asc' },
-      }),
+    const checksFiltered = resFiltered?.rows ?? []
+
+    const resUnfiltered = useLiveQuery(
+      `
+      SELECT * 
+      FROM checks 
+      WHERE 
+        place_id = $1 
+      ORDER BY label ASC`,
+      [place.place_id],
     )
-    const isFiltered = checks.length !== checksUnfiltered.length
+    const checksUnfiltered = resUnfiltered?.rows ?? []
+    const isFiltered = checksFiltered.length !== checksUnfiltered.length
 
     // TODO: get name by place_level
     const checksNode = useMemo(
       () => ({
         label: `Checks (${
           isFiltered
-            ? `${checks.length}/${checksUnfiltered.length}`
-            : checks.length
+            ? `${checksFiltered.length}/${checksUnfiltered.length}`
+            : checksFiltered.length
         })`,
       }),
-      [checks.length, checksUnfiltered.length, isFiltered],
+      [checksFiltered.length, checksUnfiltered.length, isFiltered],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -96,7 +104,6 @@ export const ChecksNode = memo(
       isOpen,
       navigate,
       ownArray,
-      parentArray,
       parentUrl,
       searchParams,
       urlPath.length,
@@ -110,12 +117,12 @@ export const ChecksNode = memo(
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
-          childrenCount={checks.length}
+          childrenCount={checksFiltered.length}
           to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          checks.map((check) => (
+          checksFiltered.map((check) => (
             <CheckNode
               key={check.check_id}
               project_id={project_id}
