@@ -1,10 +1,9 @@
 import { memo, useCallback } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import { Button, Accordion } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
 import { useAtom, atom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import {
@@ -30,29 +29,23 @@ export const VectorLayers = memo(() => {
 
   const db = usePGlite()
 
-  // TODO: when including layer_presentations, no results are returned
-  // unlike with vector_layer_displays. Maybe because no layer_presentations exist?
-  const { results: vectorLayers = [] } = useLiveQuery(
-    db.vector_layers.liveMany({
-      where: {
-        type: { in: ['wfs', 'upload'] },
-        ...(project_id ? { project_id } : {}),
-      },
-      // TODO: this only returns vector layers that have a presentation
-      // https://github.com/electric-sql/electric/issues/1417
-      include: { layer_presentations: true },
-      // order by label
-      orderBy: { label: 'asc' },
-    }),
+  const res = useLiveQuery(
+    `
+    SELECT vector_layer_id 
+    FROM vector_layers
+    WHERE 
+      type = ANY($1) 
+      ${project_id ? ` AND project_id = $2 ` : ''} 
+      AND NOT EXISTS (
+        SELECT 1
+        FROM layer_presentations
+        WHERE layer_presentations.vector_layer_id = vector_layers.vector_layer_id
+        AND layer_presentations.active
+      )
+    order by label`,
+    [['wfs', 'upload'], ...(project_id ? [project_id] : [])],
   )
-
-  // 2. when one is set active, add layer_presentations for it
-  const vectors = vectorLayers.filter(
-    (l) =>
-      !(l.layer_presentations ?? []).some(
-        (lp) => lp.vector_layer_id === l.vector_layer_id && lp.active,
-      ),
-  )
+  const vectors = res?.rows ?? []
 
   const addRow = useCallback(async () => {
     const res = await createVectorLayer({ project_id, type: 'wfs', db })
@@ -74,10 +67,11 @@ export const VectorLayers = memo(() => {
       // use setTimeout to let the child checkbox set the layers active status
       setTimeout(async () => {
         // fetch layerPresentation's active status
-        const layerPresentation = await db.layer_presentations.findFirst({
-          where: { vector_layer_id: vectorLayerId },
-        })
-        const isActive = layerPresentation?.active
+        const res = await db.query(
+          `SELECT active FROM layer_presentations WHERE vector_layer_id = $1`,
+          [vectorLayerId],
+        )
+        const isActive = res.rows[0]?.active
         if (isActive) {
           // if not active, remove this item
           const newOpenItems = openItems.filter((id) => id !== vectorLayerId)
@@ -87,7 +81,7 @@ export const VectorLayers = memo(() => {
         setOpenItems(openItems)
       }, 200)
     },
-    [db.layer_presentations, setOpenItems],
+    [db, setOpenItems],
   )
 
   if (!project_id) {
