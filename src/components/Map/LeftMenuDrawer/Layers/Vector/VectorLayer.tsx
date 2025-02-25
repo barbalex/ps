@@ -41,11 +41,11 @@ import { Component as VectorLayerDisplays } from '../../../../../routes/vectorLa
 import { Component as VectorLayerDisplay } from '../../../../../routes/vectorLayerDisplay/index.tsx'
 import { on } from '../../../../../css.ts'
 
-type Props = {
-  layer: VectorLayer
-  isLast: number
-  isOpen: boolean
-}
+// type Props = {
+//   layer: VectorLayer
+//   isLast: number
+//   isOpen: boolean
+// }
 
 type TabType = 'overall-displays' | 'feature-displays' | 'config'
 
@@ -74,13 +74,10 @@ export const VectorLayer = memo(({ layer, isLast, isOpen }) => {
         db,
       })
     } else {
-      db.layer_presentations.update({
-        where: {
-          layer_presentation_id:
-            layer.layer_presentations?.[0]?.layer_presentation_id,
-        },
-        data: { active: true },
-      })
+      db.query(
+        `UPDATE layer_presentations SET active = TRUE WHERE layer_presentation_id = $1`,
+        [layer.layer_presentations?.[0]?.layer_presentation_id],
+      )
     }
   }, [db, layer.layer_presentations, layer.vector_layer_id])
 
@@ -96,10 +93,10 @@ export const VectorLayer = memo(({ layer, isLast, isOpen }) => {
 
   const onDelete = useCallback(
     () =>
-      db.vector_layers.delete({
-        where: { vector_layer_id: layer.vector_layer_id },
-      }),
-    [db.vector_layers, layer.vector_layer_id],
+      db.query(`DELETE FROM vector_layers WHERE vector_layer_id = $1`, [
+        layer.vector_layer_id,
+      ]),
+    [db, layer.vector_layer_id],
   )
 
   return (
@@ -157,7 +154,10 @@ export const VectorLayer = memo(({ layer, isLast, isOpen }) => {
             style={tabListStyle}
           >
             <Tab value="overall-displays">Overall Display</Tab>
-            <Tab value="feature-displays" onClick={onClickFeatureDisplays}>
+            <Tab
+              value="feature-displays"
+              onClick={onClickFeatureDisplays}
+            >
               Feature Displays
             </Tab>
             <Tab value="config">Config</Tab>
