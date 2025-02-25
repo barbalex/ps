@@ -194,28 +194,29 @@ export const WFS = ({ layer, layerPresentation }) => {
   }
 
   removeNotifs()
-  if (
-    data?.length + 1 >=
-    (layer.max_features ?? 1000)
-    // && !notificationIds.current.length
-  ) {
-    const notif2Res = await createNotification({
-      title: `Zuviele Geometrien`,
-      body: `Die maximale Anzahl Features von ${
-        layer.max_features ?? 1000
-      } für Vektor-Karte '${
-        layer.label
-      }' wurde geladen. Zoomen sie näher ran, damit alle Features geladen werden können.`,
-      intent: 'warning',
-      timeout: 10000,
-      db,
-    })
-    const notif2 = notif2Res.rows[0]
-    notificationIds.current = [
-      notif2.notification_id,
-      ...notificationIds.current,
-    ]
-  }
+  // TODO: await not possible here
+  // if (
+  //   data?.length + 1 >=
+  //   (layer.max_features ?? 1000)
+  //   // && !notificationIds.current.length
+  // ) {
+  //   const notif2Res = await createNotification({
+  //     title: `Zuviele Geometrien`,
+  //     body: `Die maximale Anzahl Features von ${
+  //       layer.max_features ?? 1000
+  //     } für Vektor-Karte '${
+  //       layer.label
+  //     }' wurde geladen. Zoomen sie näher ran, damit alle Features geladen werden können.`,
+  //     intent: 'warning',
+  //     timeout: 10000,
+  //     db,
+  //   })
+  //   const notif2 = notif2Res.rows[0]
+  //   notificationIds.current = [
+  //     notif2.notification_id,
+  //     ...notificationIds.current,
+  //   ]
+  // }
 
   if (!data) {
     // console.log('VectorLayerWFS, no data, thus returning null')
@@ -259,12 +260,19 @@ export const WFS = ({ layer, layerPresentation }) => {
             : L.marker(latlng)
         }}
       />
-      <Dialog onOpenChange={() => setError(null)} open={!!error}>
+      <Dialog
+        onOpenChange={() => setError(null)}
+        open={!!error}
+      >
         <DialogSurface>
           <DialogBody>
             <DialogTitle>Error fetching data for vector layer</DialogTitle>
             <DialogContent style={dialogContentStyle}>
-              <XMLViewer style={xmlViewerStyle} xml={error} theme={xmlTheme} />
+              <XMLViewer
+                style={xmlViewerStyle}
+                xml={error}
+                theme={xmlTheme}
+              />
             </DialogContent>
             <DialogActions>
               <Button

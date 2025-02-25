@@ -21,9 +21,10 @@ const buttonStyle = {
 export const Notifications: React.FC = memo(() => {
   const db = usePGlite()
   // get the oldest four notification first
-  const { rows: notifications = [] } = useLiveQuery(
+  const res = useLiveQuery(
     `SELECT * FROM notifications ORDER BY notification_id DESC LIMIT 4`,
   )
+  const notifications = res?.rows ?? []
 
   const onClickClose = useCallback(() => {
     db.query(`DELETE FROM notifications`)
@@ -34,7 +35,10 @@ export const Notifications: React.FC = memo(() => {
       {notifications.length > 0 && (
         <div style={containerStyle}>
           {notifications.map((n) => (
-            <NotificationComponent key={n.notification_id} notification={n} />
+            <NotificationComponent
+              key={n.notification_id}
+              notification={n}
+            />
           ))}
           {notifications.length > 1 && (
             <Button

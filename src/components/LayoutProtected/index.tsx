@@ -31,26 +31,26 @@ export const Layout = memo(() => {
   // - they are not (very) sensitive
   // - ui remains more consistent when logging in
   // TODO: reenable below
-  return <Main />
+  // return <Main />
 
   return (
     <>
-      {/* {onlyForm !== true && (
+      {onlyForm !== true && (
         <>
-          <Header />
+          {/* <Header />
           {!mapIsMaximized && (
             <>
               <Breadcrumbs />
               <Navs />
             </>
-          )}
+          )} */}
           <Notifications />
         </>
-      )} */}
+      )}
       <ProtectedRoute>
-        {/* <TableLayersProvider /> */}
-        {/* <OwnVectorLayerPropertiesProvider /> */}
-        {/* <OccurrenceAssignChooser /> */}
+        <TableLayersProvider />
+        <OwnVectorLayerPropertiesProvider />
+        <OccurrenceAssignChooser />
         <Main />
       </ProtectedRoute>
     </>

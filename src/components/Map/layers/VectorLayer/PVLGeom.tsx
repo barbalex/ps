@@ -124,25 +124,25 @@ export const PVLGeom = ({ layer, display }) => {
 
   removeNotifs()
   // TODO: this can not work
-  if (
-    data?.length === (layer.max_features ?? 1000) &&
-    !notificationIds.current.length
-  ) {
-    const res = await createNotification({
-      title: `Zuviele Geometrien`,
-      body: `Die maximale Anzahl Features von ${
-        layer.max_features ?? 1000
-      } für Vektor-Karte '${layer.label}' wurde geladen. Zoomen sie näher ran`,
-      intent: 'warning',
-      timeout: 10000,
-      db,
-    })
-    const notificationData = res.rows[0]
-    notificationIds.current = [
-      notificationData.notification_id,
-      ...notificationIds.current,
-    ]
-  }
+  // if (
+  //   data?.length === (layer.max_features ?? 1000) &&
+  //   !notificationIds.current.length
+  // ) {
+  //   const res = await createNotification({
+  //     title: `Zuviele Geometrien`,
+  //     body: `Die maximale Anzahl Features von ${
+  //       layer.max_features ?? 1000
+  //     } für Vektor-Karte '${layer.label}' wurde geladen. Zoomen sie näher ran`,
+  //     intent: 'warning',
+  //     timeout: 10000,
+  //     db,
+  //   })
+  //   const notificationData = res.rows[0]
+  //   notificationIds.current = [
+  //     notificationData.notification_id,
+  //     ...notificationIds.current,
+  //   ]
+  // }
 
   if (!data?.length) return null
   if (!display) return null
@@ -171,7 +171,10 @@ export const PVLGeom = ({ layer, display }) => {
             },
           ]
           const popupContent = ReactDOMServer.renderToString(
-            <Popup layersData={layersData} mapSize={mapSize} />,
+            <Popup
+              layersData={layersData}
+              mapSize={mapSize}
+            />,
           )
           _layer.bindPopup(popupContent)
         }}
