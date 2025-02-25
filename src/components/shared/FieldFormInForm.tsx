@@ -47,10 +47,10 @@ export const FieldFormInForm = memo(({ field }) => {
   const db = usePGlite()
 
   const onClickDelete = useCallback(async () => {
-    db.fields.delete({ where: { field_id: field.field_id } })
+    db.query(`DELETE FROM fields WHERE field_id = $1`, [field.field_id])
     searchParams.delete('editingField')
     setSearchParams(searchParams)
-  }, [db.fields, field.field_id, searchParams, setSearchParams])
+  }, [db, field.field_id, searchParams, setSearchParams])
 
   const onClickStopEditing = useCallback(async () => {
     searchParams.delete('editingField')
