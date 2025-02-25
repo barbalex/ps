@@ -148,10 +148,10 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
         vectorLayer.own_table_level === 1
       ) {
         if (!isEqual(vectorLayer.properties, places1Properties)) {
-          db.vector_layers.update({
-            where: { vector_layer_id: vectorLayer.vector_layer_id },
-            data: { properties: places1Properties },
-          })
+          db.query(
+            `UPDATE vector_layers SET properties = s1 WHERE vector_layer_id = s2`,
+            [places1Properties, vectorLayer.vector_layer_id],
+          )
           completeVectorLayerDisplaysForLayerWithProperties({
             db,
             vectorLayerId: vectorLayer.vector_layer_id,
@@ -165,10 +165,10 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
         vectorLayer.own_table_level === 2
       ) {
         if (!isEqual(vectorLayer.properties, places2Properties)) {
-          db.vector_layers.update({
-            where: { vector_layer_id: vectorLayer.vector_layer_id },
-            data: { properties: places2Properties },
-          })
+          db.query(
+            `UPDATE vector_layers SET properties = s1 WHERE vector_layer_id = s2`,
+            [places2Properties, vectorLayer.vector_layer_id],
+          )
           completeVectorLayerDisplaysForLayerWithProperties({
             db,
             vectorLayerId: vectorLayer.vector_layer_id,
@@ -182,10 +182,10 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
         vectorLayer.own_table_level === 1
       ) {
         if (!isEqual(vectorLayer.properties, actions1Properties)) {
-          db.vector_layers.update({
-            where: { vector_layer_id: vectorLayer.vector_layer_id },
-            data: { properties: actions1Properties },
-          })
+          db.query(
+            `UPDATE vector_layers SET properties = s1 WHERE vector_layer_id = s2`,
+            [actions1Properties, vectorLayer.vector_layer_id],
+          )
           completeVectorLayerDisplaysForLayerWithProperties({
             db,
             vectorLayerId: vectorLayer.vector_layer_id,
@@ -199,10 +199,10 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
         vectorLayer.own_table_level === 2
       ) {
         if (!isEqual(vectorLayer.properties, actions2Properties)) {
-          db.vector_layers.update({
-            where: { vector_layer_id: vectorLayer.vector_layer_id },
-            data: { properties: actions2Properties },
-          })
+          db.query(
+            `UPDATE vector_layers SET properties = s1 WHERE vector_layer_id = s2`,
+            [actions2Properties, vectorLayer.vector_layer_id],
+          )
           completeVectorLayerDisplaysForLayerWithProperties({
             db,
             vectorLayerId: vectorLayer.vector_layer_id,
@@ -216,10 +216,10 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
         vectorLayer.own_table_level === 1
       ) {
         if (!isEqual(vectorLayer.properties, checks1Properties)) {
-          db.vector_layers.update({
-            where: { vector_layer_id: vectorLayer.vector_layer_id },
-            data: { properties: checks1Properties },
-          })
+          db.query(
+            `UPDATE vector_layers SET properties = s1 WHERE vector_layer_id = s2`,
+            [checks1Properties, vectorLayer.vector_layer_id],
+          )
           completeVectorLayerDisplaysForLayerWithProperties({
             db,
             vectorLayerId: vectorLayer.vector_layer_id,
