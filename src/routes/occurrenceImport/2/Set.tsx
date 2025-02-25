@@ -1,8 +1,7 @@
 import { memo, useCallback, useState } from 'react'
 import { Button, Spinner } from '@fluentui/react-components'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { MdDone } from 'react-icons/md'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { setGeometries } from './setGeometries.ts'
 
