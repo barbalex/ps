@@ -78,26 +78,25 @@ export const Filter = memo(({ level }) => {
   // and enforce rerender when the store changes
   stores.store.sub(filterAtom, rerender)
   const filter = stores?.store?.get?.(filterAtom) ?? []
-  let where = {}
-  const whereUnfiltered = {}
+  let where = ''
+  let whereUnfiltered = ''
 
   // add parent_id for all filterable tables below subprojects
   if (tableName === 'places') {
-    where.parent_id = place_id ?? null
-    whereUnfiltered.parent_id = place_id ?? null
+    const flter = place_id ? `parent_id = '${place_id}'` : `parent_id is null`
+    where += flter
+    whereUnfiltered += flter
   }
   if (['actions', 'checks', 'place_reports'].includes(tableName)) {
-    where.place_id = place_id2 ?? place_id
-    whereUnfiltered.place_id = place_id2 ?? place_id
+    const flter = `place_id = '${place_id2 ?? place_id}'`
+    where += flter
+    whereUnfiltered += flter
   }
-  // in case of multiple or filters, use: OR: [{...}, {...}]
-  if (filter.length > 1) {
-    where.OR = filter
-  } else if (filter.length === 1) {
-    where = { ...where, ...filter[0] }
+  if (filter) {
+    where += ` AND ${filter}`
   }
   // TODO: need to add parent_id when below place_id/place_id2
-  const isFiltered = filter.length > 0
+  const isFiltered = !!filter
   const orFiltersToUse = isFiltered ? [...filter, {}] : [{}]
 
   // console.log('Filter 3', {
@@ -112,6 +111,7 @@ export const Filter = memo(({ level }) => {
   //   place_id,
   // })
 
+  const resFiltered = useLiveQuery(`SELECT * FROM ${tableName} WHERE ${where}`)
   const { results = [] } = useLiveQuery(
     db?.[tableName]?.liveMany({
       orderBy: { label: 'asc' },
