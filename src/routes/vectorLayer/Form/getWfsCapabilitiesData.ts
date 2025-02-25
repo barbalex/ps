@@ -67,10 +67,16 @@ export const getWfsCapabilitiesData = async ({ vectorLayer, service, db }) => {
 
   // now update vectorLayer
   if (Object.keys(serviceData).length) {
-    await db.wfs_services.update({
-      where: { wfs_service_id: service.wfs_service_id },
-      data: serviceData,
-    })
+    const columns = Object.keys(serviceData).join(',')
+    const values = Object.values(serviceData)
+      .map((_, i) => `$${i + 1}`)
+      .join(',')
+    await db.query(
+      `UPDATE wfs_services SET (${columns}) = (${values}) WHERE wfs_service_id = $${
+        Object.values(serviceData).length + 1
+      }`,
+      [...Object.values(serviceData), service.wfs_service_id],
+    )
   }
 
   const acceptableLayers = layers
@@ -96,13 +102,10 @@ export const getWfsCapabilitiesData = async ({ vectorLayer, service, db }) => {
 
   // single layer? update vectorLayer
   if (!vectorLayer?.wfs_service_layer_name && layers?.length === 1) {
-    db.vector_layers.update({
-      where: { vector_layer_id: vectorLayer.vector_layer_id },
-      data: {
-        wfs_service_layer_name: layers[0].Name,
-        label: layers[0].Title,
-      },
-    })
+    await db.query(
+      `UPDATE vector_layers SET wfs_service_layer_name = $1, label = $2 WHERE vector_layer_id = $3`,
+      [layers[0].Name, layers[0].Title, vectorLayer.vector_layer_id],
+    )
   }
 
   return
