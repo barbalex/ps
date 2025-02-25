@@ -3,7 +3,6 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { ActionNode } from './Action.tsx'
@@ -24,33 +23,43 @@ export const ActionsNode = memo(
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
-    const db = usePGlite()
 
     const filter = place_id ? filterActions2 : filterActions1
-    const where = filter.length > 1 ? { OR: filter } : filter[0]
-    const { results: actions = [] } = useLiveQuery(
-      db.actions.liveMany({
-        where: { place_id: place.place_id, ...where },
-        orderBy: { label: 'asc' },
-      }),
+    const resFiltered = useLiveQuery(
+      `
+      SELECT * 
+      FROM actions 
+      WHERE 
+        place_id = $1 
+        ${filter.length > 0 ? ' AND ' : ''} ${filter
+        .map((f) => f)
+        .join(' AND ')}
+      ORDER BY label ASC`,
+      [place.place_id],
     )
-    const { results: actionsUnfiltered = [] } = useLiveQuery(
-      db.actions.liveMany({
-        where: { place_id: place.place_id },
-        orderBy: { label: 'asc' },
-      }),
+    const actionsFiltered = resFiltered?.rows ?? []
+
+    const resUnfiltered = useLiveQuery(
+      `
+      SELECT * 
+      FROM actions 
+      WHERE 
+        place_id = $1
+      ORDER BY label ASC`,
+      [place.place_id],
     )
-    const isFiltered = actions.length !== actionsUnfiltered.length
+    const actionsUnfiltered = resUnfiltered?.rows ?? []
+    const isFiltered = actionsFiltered.length !== actionsUnfiltered.length
 
     const actionsNode = useMemo(
       () => ({
         label: `Actions (${
           isFiltered
-            ? `${actions.length}/${actionsUnfiltered.length}`
-            : actions.length
+            ? `${actionsFiltered.length}/${actionsUnfiltered.length}`
+            : actionsFiltered.length
         })`,
       }),
-      [actions.length, actionsUnfiltered.length, isFiltered],
+      [actionsFiltered.length, actionsUnfiltered.length, isFiltered],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -95,7 +104,6 @@ export const ActionsNode = memo(
       isOpen,
       navigate,
       ownArray,
-      parentArray,
       parentUrl,
       searchParams,
       urlPath.length,
@@ -109,12 +117,12 @@ export const ActionsNode = memo(
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
-          childrenCount={actions.length}
+          childrenCount={actionsFiltered.length}
           to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          actions.map((action) => (
+          actionsFiltered.map((action) => (
             <ActionNode
               key={action.action_id}
               project_id={project_id}
