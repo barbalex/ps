@@ -54,11 +54,7 @@ export const BreadcrumbForFolder = memo(
       table === 'places' && levelWanted === 2
         ? place_id2
         : match.params[idField]
-    console.log('BreadcrumbForFolder', {
-      matchParam,
-      idField,
-      queryTable,
-    })
+
     const res = useLiveQuery(
       `SELECT * FROM ${queryTable} WHERE ${idField} = $1`,
       [matchParam],
