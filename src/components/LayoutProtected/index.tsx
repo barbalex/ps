@@ -37,8 +37,8 @@ export const Layout = memo(() => {
     <>
       {onlyForm !== true && (
         <>
-          {/* <Header />
-          {!mapIsMaximized && (
+          <Header />
+          {/* {!mapIsMaximized && (
             <>
               <Breadcrumbs />
               <Navs />
