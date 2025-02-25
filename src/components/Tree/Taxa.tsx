@@ -3,7 +3,6 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
@@ -18,19 +17,17 @@ interface Props {
 }
 
 export const TaxaNode = memo(
-  ({ project_id, taxonomy_id, level = 5 }) => {
+  ({ project_id, taxonomy_id, level = 5 }: Props) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const db = usePGlite()
-    const { results: taxa = [] } = useLiveQuery(
-      db.taxa.liveMany({
-        where: { taxonomy_id },
-        orderBy: { label: 'asc' },
-      }),
+    const res = useLiveQuery(
+      `SELECT * FROM taxa WHERE taxonomy_id = $1 ORDER BY label ASC`,
+      [taxonomy_id],
     )
+    const taxa = res?.rows ?? []
 
     const taxaNode = useMemo(
       () => ({ label: `Taxa (${taxa.length})` }),
@@ -70,7 +67,6 @@ export const TaxaNode = memo(
       isOpen,
       navigate,
       ownArray,
-      parentArray,
       parentUrl,
       searchParams,
       urlPath.length,
