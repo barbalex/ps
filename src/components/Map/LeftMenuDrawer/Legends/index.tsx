@@ -2,7 +2,6 @@ import { memo, useMemo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { WmsLegend } from './WMS.tsx'
 import { VectorLegend } from './Vector/index.tsx'
@@ -20,32 +19,41 @@ export const Legends = memo(() => {
   const [mapLayerSorting] = useAtom(mapLayerSortingAtom)
   const { project_id } = useParams()
 
-  const db = usePGlite()
-
-  const where = project_id ? { project_id } : {}
-  const { results: wmsLayers = [] } = useLiveQuery(
-    db.wms_layers.liveMany({
-      where,
-      include: { layer_presentations: true },
-    }),
-  )
-  const activeWmsLayers = wmsLayers.filter((l) =>
-    (l.layer_presentations ?? []).some(
-      (lp) => lp.wms_layer_id === l.wms_layer_id && lp.active,
-    ),
+  const resWmsLayers = useLiveQuery(`
+    SELECT * 
+    FROM wms_layers 
+    WHERE 
+      EXISTS (
+        SELECT 1 
+        FROM layer_presentations lp 
+        WHERE 
+          wms_layers.wms_layer_id = lp.wms_layer_id 
+          AND lp.active = true
+      )
+      ${project_id ? `AND project_id = '${project_id}'` : ''}
+  `)
+  const activeWmsLayers = useMemo(
+    () => resWmsLayers?.rows ?? [],
+    [resWmsLayers],
   )
 
   // same for vector layers
-  const { results: vectorLayers = [] } = useLiveQuery(
-    db.vector_layers.liveMany({
-      where,
-      include: { layer_presentations: true },
-    }),
-  )
-  const activeVectorLayers = vectorLayers.filter((l) =>
-    (l.layer_presentations ?? []).some(
-      (lp) => lp.vector_layer_id === l.vector_layer_id && lp.active,
-    ),
+  const resVectorLayers = useLiveQuery(`
+    SELECT *
+    FROM vector_layers
+    WHERE 
+      EXISTS (
+        SELECT 1 
+        FROM layer_presentations lp 
+        WHERE 
+          vector_layers.vector_layer_id = lp.vector_layer_id 
+          AND lp.active = true
+      )
+      ${project_id ? `AND project_id = '${project_id}'` : ''}
+  `)
+  const activeVectorLayers = useMemo(
+    () => resVectorLayers?.rows ?? [],
+    [resVectorLayers],
   )
 
   // sort by mapLayerSorting
