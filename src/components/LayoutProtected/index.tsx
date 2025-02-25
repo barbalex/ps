@@ -38,12 +38,12 @@ export const Layout = memo(() => {
       {onlyForm !== true && (
         <>
           <Header />
-          {/* {!mapIsMaximized && (
+          {!mapIsMaximized && (
             <>
               <Breadcrumbs />
-              <Navs />
+              {/* <Navs /> */}
             </>
-          )} */}
+          )}
           <Notifications />
         </>
       )}

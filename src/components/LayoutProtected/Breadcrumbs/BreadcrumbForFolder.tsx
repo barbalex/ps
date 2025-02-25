@@ -1,7 +1,6 @@
 import { useEffect, useState, memo } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { usePGlite } from '@electric-sql/pglite-react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 
 import { buildNavs } from '../../../modules/navs.ts'
@@ -55,9 +54,16 @@ export const BreadcrumbForFolder = memo(
       table === 'places' && levelWanted === 2
         ? place_id2
         : match.params[idField]
-    const where = { [idField]: matchParam }
-    const { results } = useLiveQuery(db[queryTable]?.liveMany?.({ where }))
-    const row = results?.[0]
+    console.log('BreadcrumbForFolder', {
+      matchParam,
+      idField,
+      queryTable,
+    })
+    const res = useLiveQuery(
+      `SELECT * FROM ${queryTable} WHERE ${idField} = $1`,
+      [matchParam],
+    )
+    const row = res?.rows?.[0]
 
     const [navs, setNavs] = useState([])
     useEffect(() => {

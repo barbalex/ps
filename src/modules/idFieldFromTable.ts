@@ -11,7 +11,7 @@ export const idFieldFromTable = (table): string => {
     : table === 'widgets_for_fields'
     ? 'widget_for_field_id'
     : table === 'root' // not important but seems nicer, else: roo_id
-    ? 'root_id'
+    ? 'project_id'
     : table === 'crs'
     ? 'crs_id'
     : table === 'project_crs'

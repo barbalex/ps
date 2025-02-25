@@ -10,8 +10,6 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
   const { project_id = '99999999-9999-9999-9999-999999999999' } = useParams()
   const db = usePGlite()
 
-  console.log('OwnVectorLayerPropertiesProvider', { project_id })
-
   // get vector_layers
   const resVL = useLiveQuery(
     `SELECT * FROM vector_layers WHERE project_id = $1 and type = 'own'`,
@@ -80,9 +78,10 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
   )
 
   // occurrences-assigned
+  // TODO: how to distinguish assigned, to assess and not to assign? place_id or not_to_assign are on occurrences, not fields...
   // TODO: level 1/2 i.e. query where place_id has level 1/2
   const resOccurrencesAssignedFields = useLiveQuery(
-    `SELECT name FROM fields WHERE table_name = 'occurrences' AND project_id = $1 AND place_id IS NOT NULL`,
+    `SELECT name FROM fields WHERE table_name = 'occurrences' AND project_id = $1-- AND place_id IS NOT NULL`,
     [project_id],
   )
   const occurrencesAssignedFields = useMemo(
@@ -92,7 +91,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
 
   // occurrences-to-assess
   const resOccurrencesToAssessFields = useLiveQuery(
-    `SELECT name FROM fields WHERE table_name = 'occurrences' AND project_id = $1 AND place_id IS NULL AND not_to_assign IS NOT TRUE`,
+    `SELECT name FROM fields WHERE table_name = 'occurrences' AND project_id = $1-- AND place_id IS NULL AND not_to_assign IS NOT TRUE`,
     [project_id],
   )
   const occurrencesToAssessFields = useMemo(
@@ -102,7 +101,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
 
   // occurrences-not-to-assign
   const resOccurrencesNotToAssignFields = useLiveQuery(
-    `SELECT name FROM fields WHERE table_name = 'occurrences' AND project_id = $1 AND place_id IS NULL AND not_to_assign IS TRUE`,
+    `SELECT name FROM fields WHERE table_name = 'occurrences' AND project_id = $1-- AND place_id IS NULL AND not_to_assign IS TRUE`,
     [project_id],
   )
   const occurrencesNotToAssignFields = useMemo(
@@ -110,18 +109,6 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
       resOccurrencesNotToAssignFields?.rows?.map((field) => field.name) ?? [],
     [resOccurrencesNotToAssignFields],
   )
-
-  console.log('OwnVectorLayerPropertiesProvider', {
-    project_id,
-    resVL,
-    resActions1Fields,
-    resChecks1Fields,
-    resChecks2Fields,
-    resOccurrencesAssignedFields,
-    resOccurrencesToAssessFields,
-    resOccurrencesNotToAssignFields,
-    vectorLayers,
-  })
 
   // this is how to do when extracting properties from a json field:
   // BUT: for wfs only needed on import, no more changes after that!
@@ -154,23 +141,8 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
     // TODO: loop all vector_layers
     // if vector_layer.type includes 'places' and vector_layer.properties is not equal to placesProperties
     // update vector_layer.properties to placesProperties
-    console.log('VectorLayersPropertiesProvider providing properties', {
-      resVL,
-      places1Properties,
-      places2Properties,
-      actions1Properties,
-      actions2Properties,
-      checks1Properties,
-      checks2Properties,
-      occurrencesAssignedFields,
-      occurrencesToAssessFields,
-      occurrencesNotToAssignFields,
-      vectorLayers,
-    })
+
     for (const vectorLayer of vectorLayers) {
-      console.log('VectorLayersPropertiesProvider providing properties', {
-        vectorLayer,
-      })
       // places level 1
       if (
         vectorLayer.own_table === 'places' &&
