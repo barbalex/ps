@@ -71,10 +71,14 @@ export const WmsLayer = memo(({ layer, isLast, isOpen }) => {
     }
     // 3. if yes, update it
     else {
-      db.layer_presentations.update({
-        where: { layer_presentation_id: presentation.layer_presentation_id },
-        data: { active: true },
-      })
+      db.query(
+        `
+        UPDATE layer_presentations
+        SET active = TRUE
+        WHERE layer_presentation_id = $1
+      `,
+        [presentation.layer_presentation_id],
+      )
     }
   }, [db, layer.wms_layer_id])
 
@@ -84,8 +88,11 @@ export const WmsLayer = memo(({ layer, isLast, isOpen }) => {
   )
 
   const onDelete = useCallback(
-    () => db.wms_layers.delete({ where: { wms_layer_id: layer.wms_layer_id } }),
-    [db.wms_layers, layer.wms_layer_id],
+    () =>
+      db.query(`DELETE FROM wms_layers WHERE wms_layer_id = $1`, [
+        layer.wms_layer_id,
+      ]),
+    [db, layer.wms_layer_id],
   )
 
   return (
