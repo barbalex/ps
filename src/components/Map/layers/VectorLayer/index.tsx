@@ -1,5 +1,4 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { WFS } from './WFS.tsx'
 import { PVLGeom } from './PVLGeom.tsx'
@@ -10,14 +9,12 @@ import { PVLGeom } from './PVLGeom.tsx'
  */
 
 export const VectorLayerChooser = ({ layer, layerPresentation }) => {
-  const db = usePGlite()
-
-  const { results: vectorLayerGeoms = [] } = useLiveQuery(
-    db.vector_layer_geoms.liveMany({
-      where: { vector_layer_id: layer.vector_layer_id },
-    }),
+  const res = useLiveQuery(
+    `SELECT * FROM vector_layer_geoms WHERE vector_layer_id = $1`,
+    [layer.vector_layer_id],
   )
-  const geomCount: integer = vectorLayerGeoms.length
+  const vectorLayerGeoms = res.rows ?? []
+  const geomCount = vectorLayerGeoms.length
 
   // TODO: pass layerPresentation only when vector layers are not shown directly in Map anymore
   if (!geomCount)
