@@ -233,10 +233,10 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
         vectorLayer.own_table_level === 2
       ) {
         if (!isEqual(vectorLayer.properties, checks2Properties)) {
-          db.vector_layers.update({
-            where: { vector_layer_id: vectorLayer.vector_layer_id },
-            data: { properties: checks2Properties },
-          })
+          db.query(
+            `UPDATE vector_layers SET properties = s1 WHERE vector_layer_id = s2`,
+            [checks2Properties, vectorLayer.vector_layer_id],
+          )
           completeVectorLayerDisplaysForLayerWithProperties({
             db,
             vectorLayerId: vectorLayer.vector_layer_id,
@@ -247,10 +247,10 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
       // occurrences-assigned
       if (vectorLayer.own_table === 'occurrences_assigned') {
         if (!isEqual(vectorLayer.properties, occurrencesAssignedFields)) {
-          db.vector_layers.update({
-            where: { vector_layer_id: vectorLayer.vector_layer_id },
-            data: { properties: occurrencesAssignedFields },
-          })
+          db.query(
+            `UPDATE vector_layers SET properties = s1 WHERE vector_layer_id = s2`,
+            [occurrencesAssignedFields, vectorLayer.vector_layer_id],
+          )
           completeVectorLayerDisplaysForLayerWithProperties({
             db,
             vectorLayerId: vectorLayer.vector_layer_id,
@@ -261,10 +261,10 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
       // occurrences-to-assess
       if (vectorLayer.own_table === 'occurrences_to_assess') {
         if (!isEqual(vectorLayer.properties, occurrencesToAssessFields)) {
-          db.vector_layers.update({
-            where: { vector_layer_id: vectorLayer.vector_layer_id },
-            data: { properties: occurrencesToAssessFields },
-          })
+          db.query(
+            `UPDATE vector_layers SET properties = s1 WHERE vector_layer_id = s2`,
+            [occurrencesToAssessFields, vectorLayer.vector_layer_id],
+          )
           completeVectorLayerDisplaysForLayerWithProperties({
             db,
             vectorLayerId: vectorLayer.vector_layer_id,
@@ -275,10 +275,10 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
       // occurrences-not-to-assign
       if (vectorLayer.own_table === 'occurrences_not_to_assign') {
         if (!isEqual(vectorLayer.properties, occurrencesNotToAssignFields)) {
-          db.vector_layers.update({
-            where: { vector_layer_id: vectorLayer.vector_layer_id },
-            data: { properties: occurrencesNotToAssignFields },
-          })
+          db.query(
+            `UPDATE vector_layers SET properties = s1 WHERE vector_layer_id = s2`,
+            [occurrencesNotToAssignFields, vectorLayer.vector_layer_id],
+          )
         }
       }
     }
@@ -288,7 +288,6 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
     checks1Properties,
     checks2Properties,
     db,
-    db.vector_layers,
     occurrencesAssignedFields,
     occurrencesNotToAssignFields,
     occurrencesToAssessFields,
