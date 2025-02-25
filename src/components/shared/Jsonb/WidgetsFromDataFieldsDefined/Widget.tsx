@@ -66,14 +66,13 @@ export const Widget = memo(
           return
         }
         try {
-          await db.query(
-            `update ${table} jsonb_set(data, '{${jsonFieldName}}', $1) where ${idField} = $2`,
-            [val, id],
-          )
+          await db[table]?.update({
+            where: { [idField]: id },
+            data: { [jsonFieldName]: val },
+          })
         } catch (error) {
           console.log(`Jsonb, error updating table '${table}':`, error)
         }
-        return
       },
       [
         data,
