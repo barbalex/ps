@@ -1,17 +1,13 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { TableLayer } from './TableLayer.tsx'
 
 export const Places2 = ({ layerPresentation }) => {
-  const db = usePGlite()
-
   // TODO: query only inside current map bounds using places.bbox
-  const { results: places = [] } = useLiveQuery(
-    db.places.liveMany({
-      where: { parent_id: { not: null }, geometry: { not: null } },
-    }),
+  const res = useLiveQuery(
+    `SELECT * FROM places WHERE parent_id IS NOT NULL AND geometry IS NOT NULL`,
   )
+  const places = res?.rows ?? []
 
   // a geometry is built as FeatureCollection Object: https://datatracker.ietf.org/doc/html/rfc7946#section-3.3
   // properties need to go into every feature
