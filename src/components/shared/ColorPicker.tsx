@@ -21,7 +21,9 @@ interface Props {
 }
 
 export const ColorPicker = memo(
-  ({ color = '#ff0000', onChange, label, name, disabled }) => {
+  ({ color: colorIn, onChange, label, name, disabled = false }: Props) => {
+    const color = colorIn ?? '#ff0000'
+
     const [val, setVal] = useState<string>(color)
 
     // need to debounce changes when choosing
@@ -55,7 +57,10 @@ export const ColorPicker = memo(
 
     return (
       <Field label={label}>
-        <HexColorPicker color={val} onChange={onChangeColorPicker} />
+        <HexColorPicker
+          color={val}
+          onChange={onChangeColorPicker}
+        />
         <Field
           label="Hex-Wert"
           orientation="horizontal"
