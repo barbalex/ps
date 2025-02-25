@@ -26,16 +26,15 @@ const doneIconStyle = {
 export const Set = memo(({ occurrenceImport }) => {
   const [notification, setNotification] = useState()
   const [settingGeometries, setSettingGeometries] = useState(false)
-  const db = usePGlite()
-  const { results: occurrences } = useLiveQuery(
-    db.occurrences.liveMany({
-      where: { occurrence_import_id: occurrenceImport?.occurrence_import_id },
-    }),
-  )
 
-  const occurrencesWithoutGeometry = (occurrences ?? []).filter(
-    (o) => !o.geometry,
+  const db = usePGlite()
+  const res = useLiveQuery(
+    `SELECT * FROM occurrences WHERE occurrence_import_id = $1`,
+    [occurrenceImport?.occurrence_import_id],
   )
+  const occurrences = res?.rows ?? []
+
+  const occurrencesWithoutGeometry = occurrences.filter((o) => !o.geometry)
 
   const toSetCount = occurrencesWithoutGeometry?.length ?? 0
 
@@ -44,7 +43,7 @@ export const Set = memo(({ occurrenceImport }) => {
     setGeometries({ occurrenceImport, db, setNotification })
   }, [db, occurrenceImport])
 
-  if (!occurrences) return null
+  if (!occurrences.length) return null
 
   if (toSetCount === 0) {
     return (
@@ -61,7 +60,12 @@ export const Set = memo(({ occurrenceImport }) => {
     <Button
       onClick={onClick}
       icon={
-        settingGeometries ? <Spinner size="tiny" style={spinnerStyle} /> : null
+        settingGeometries ? (
+          <Spinner
+            size="tiny"
+            style={spinnerStyle}
+          />
+        ) : null
       }
     >
       <>
