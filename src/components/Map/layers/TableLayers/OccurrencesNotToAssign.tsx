@@ -1,7 +1,6 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { TableLayer } from './TableLayer.tsx'
 import { draggableLayersAtom } from '../../../../store.ts'
@@ -9,26 +8,20 @@ import { draggableLayersAtom } from '../../../../store.ts'
 export const OccurrencesNotToAssign = ({ layerPresentation }) => {
   const [draggableLayers] = useAtom(draggableLayersAtom)
   const { subproject_id } = useParams()
-  const db = usePGlite()
-
-  // TODO: query only inside current map bounds using places.bbox
-  const { results: occurrenceImports = [] } = useLiveQuery(
-    db.occurrence_imports.liveMany({
-      where: { subproject_id: subproject_id },
-    }),
+  const res = useLiveQuery(
+    `
+    SELECT o.*
+    FROM occurrences o
+      INNER JOIN occurrence_imports oi ON o.occurrence_import_id = oi.occurrence_import_id
+    WHERE 
+      oi.subproject_id = $1
+      AND o.place_id IS NULL
+      AND o.not_to_assign = true
+      AND o.geometry IS NOT NULL
+  `,
+    [subproject_id],
   )
-  const { results: occurrences = [] } = useLiveQuery(
-    db.occurrences.liveMany({
-      where: {
-        occurrence_import_id: {
-          in: occurrenceImports.map((oi) => oi.occurrence_import_id),
-        },
-        place_id: null,
-        not_to_assign: true,
-        geometry: { not: null },
-      },
-    }),
-  )
+  const occurrences = res?.rows ?? []
 
   // a geometry is built as FeatureCollection Object: https://datatracker.ietf.org/doc/html/rfc7946#section-3.3
   // properties need to go into every feature
