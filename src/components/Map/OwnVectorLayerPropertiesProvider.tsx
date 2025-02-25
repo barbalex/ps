@@ -48,27 +48,25 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
   )
 
   // actions level 2
-  const { results: actions2Fields = [] } = useLiveQuery(
-    db.fields.liveMany({
-      where: { table_name: 'actions', level: 2, project_id },
-      select: { name: true },
-    }),
+  const resActions2Fields = useLiveQuery(
+    `SELECT name FROM fields WHERE table_name = 'actions' AND level = 2 AND project_id = s1`,
+    [project_id],
   )
   const actions2Properties = useMemo(
-    () => actions2Fields.map((field) => field.name),
-    [actions2Fields],
+    () => resActions2Fields?.rows?.map((field) => field.name) ?? [],
+    [resActions2Fields],
   )
+
   // checks level 1
-  const { results: checks1Fields = [] } = useLiveQuery(
-    db.fields.liveMany({
-      where: { table_name: 'checks', level: 1, project_id },
-      select: { name: true },
-    }),
+  const resChecks1Fields = useLiveQuery(
+    `SELECT name FROM fields WHERE table_name = 'checks' AND level = 1 AND project_id = s1`,
+    [project_id],
   )
   const checks1Properties = useMemo(
-    () => checks1Fields.map((field) => field.name),
-    [checks1Fields],
+    () => resChecks1Fields?.rows?.map((field) => field.name) ?? [],
+    [resChecks1Fields],
   )
+
   // checks level 2
   const { results: checks2Fields = [] } = useLiveQuery(
     db.fields.liveMany({
