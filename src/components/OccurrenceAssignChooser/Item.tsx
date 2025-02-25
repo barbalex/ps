@@ -8,10 +8,9 @@ import { placesToAssignOccurrenceToAtom } from '../../store.ts'
 interface Props {
   place: { place_id: string; label: string; distance: number }
   occurrenceId: uuid
-  appStateId: uuid
 }
 
-export const Item = memo(({ place, occurrenceId, appStateId }) => {
+export const Item = memo(({ place, occurrenceId }: Props) => {
   const setPlacesToAssignOccurrenceTo = useSetAtom(
     placesToAssignOccurrenceToAtom,
   )
@@ -21,18 +20,13 @@ export const Item = memo(({ place, occurrenceId, appStateId }) => {
   const db = usePGlite()
 
   const onClick = useCallback(async () => {
-    await db.occurrences.update({
-      where: { occurrence_id: occurrenceId },
-      data: { place_id: place.place_id, not_to_assign: null },
-    })
+    db.query(
+      `UPDATE occurrences SET place_id = $1, not_to_assign = NULL WHERE occurrence_id = $2`,
+      [place.place_id, occurrenceId],
+    )
     // reset state
     setPlacesToAssignOccurrenceTo(null)
-  }, [
-    db.occurrences,
-    occurrenceId,
-    place.place_id,
-    setPlacesToAssignOccurrenceTo,
-  ])
+  }, [db, occurrenceId, place.place_id, setPlacesToAssignOccurrenceTo])
 
   return (
     <MenuItem onClick={onClick}>{`${
