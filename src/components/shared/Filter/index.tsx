@@ -2,7 +2,6 @@ import { memo, useState, useCallback } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { Tab, TabList } from '@fluentui/react-components'
 import { useLocation, useParams } from 'react-router-dom'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { FilterHeader } from './Header.tsx'
 import * as stores from '../../../store.ts'
@@ -23,7 +22,6 @@ export const Filter = memo(({ level }) => {
   const { project_id, place_id, place_id2 } = useParams()
   const location = useLocation()
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const db = usePGlite()
 
   // reading these values from the url path
   // if this fails in some situations, we can pass these as props
@@ -37,16 +35,11 @@ export const Filter = memo(({ level }) => {
     tableName = `${grandParent.slice(0, -1)}_${tableName}`
   }
   // for tableNameForTitle: replace all underscores with spaces and uppercase all first letters
-
-  const { results: placeLevel } = useLiveQuery(
-    db.place_levels.liveFirst({
-      where: {
-        project_id,
-        level: place_id ? 2 : 1,
-      },
-      orderBy: { label: 'asc' },
-    }),
+  const res = useLiveQuery(
+    `SELECT * FROM place_levels WHERE project_id = $1 and level = $2 order by label`,
+    [project_id, place_id ? 2 : 1],
   )
+  const placeLevel = res?.rows?.[0]
   // const placeNameSingular = placeLevel?.name_singular ?? 'Place'
   const placeNamePlural = placeLevel?.name_plural ?? 'Places'
 
