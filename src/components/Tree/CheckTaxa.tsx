@@ -3,7 +3,6 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { CheckTaxonNode } from './CheckTaxon.tsx'
@@ -18,13 +17,11 @@ export const CheckTaxaNode = memo(
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const db = usePGlite()
-    const { results: checkTaxa = [] } = useLiveQuery(
-      db.check_taxa.liveMany({
-        where: { check_id },
-        orderBy: { label: 'asc' },
-      }),
+    const res = useLiveQuery(
+      `SELECT * FROM check_taxa WHERE check_id = $1 ORDER BY label asc`,
+      [check_id],
     )
+    const checkTaxa = res?.rows ?? []
 
     const checkTaxaNode = useMemo(
       () => ({ label: `Taxa (${checkTaxa.length})` }),
