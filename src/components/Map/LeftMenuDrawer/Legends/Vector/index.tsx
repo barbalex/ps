@@ -1,17 +1,15 @@
 import { memo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { Display } from './Display.tsx'
 
 export const VectorLegend = memo(({ layer }) => {
   // fetch all vector_layer_displays for this layer
-  const db = usePGlite()
-  const { results: vectorLayerDisplays = [] } = useLiveQuery(
-    db.vector_layer_displays.liveMany({
-      where: { vector_layer_id: layer.vector_layer_id },
-    }),
+  const res = useLiveQuery(
+    `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1`,
+    [layer.vector_layer_id],
   )
+  const vectorLayerDisplays = res.rows ?? []
 
   return vectorLayerDisplays.map((display) => {
     return (
