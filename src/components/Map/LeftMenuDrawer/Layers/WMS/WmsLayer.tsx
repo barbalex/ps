@@ -38,11 +38,11 @@ import { on } from '../../../../../css.ts'
 
 type TabType = 'overall-displays' | 'config'
 
-type Props = {
-  layer: WmsLayer
-  isLast: number
-  isOpen: boolean
-}
+// type Props = {
+//   layer: WmsLayer
+//   isLast: number
+//   isOpen: boolean
+// }
 
 export const WmsLayer = memo(({ layer, isLast, isOpen }) => {
   const [designing] = useAtom(designingAtom)
@@ -58,9 +58,11 @@ export const WmsLayer = memo(({ layer, isLast, isOpen }) => {
 
   const onChange = useCallback(async () => {
     // 1. check if layer has a presentation
-    const presentation = await db.layer_presentations.findFirst({
-      where: { wms_layer_id: layer.wms_layer_id },
-    })
+    const res = await db.query(
+      `SELECT * FROM layer_presentations WHERE wms_layer_id = $1`,
+      [layer.wms_layer_id],
+    )
+    const presentation = res.rows[0]
     // 2. if not, create one
     if (!presentation) {
       await createLayerPresentation({
