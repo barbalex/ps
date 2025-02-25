@@ -3,7 +3,6 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { PlaceReportNode } from './PlaceReport.tsx'
@@ -24,33 +23,43 @@ export const PlaceReportsNode = memo(
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
-    const db = usePGlite()
 
     const filter = place_id ? placeReports2Filter : placeReports1Filter
-    const where = filter.length > 1 ? { OR: filter } : filter[0]
-    const { results: placeReports = [] } = useLiveQuery(
-      db.place_reports.liveMany({
-        where: { place_id: place.place_id, ...where },
-        orderBy: { label: 'asc' },
-      }),
+    const resFiltered = useLiveQuery(
+      `
+      SELECT * 
+      FROM place_reports 
+      WHERE 
+        place_id = $1 
+        ${filter.length > 0 ? ` AND ${filter.join(' AND ')}` : ``}
+      ORDER BY label ASC`,
+      [place.place_id],
     )
-    const { results: placeReportsUnfiltered = [] } = useLiveQuery(
-      db.place_reports.liveMany({
-        where: { place_id: place.place_id },
-        orderBy: { label: 'asc' },
-      }),
+    const placeReportsFiltered = resFiltered?.rows ?? []
+
+    const resUnfiltered = useLiveQuery(
+      `
+      SELECT * 
+      FROM place_reports 
+      WHERE 
+        place_id = $1 
+      ORDER BY label ASC`,
+      [place.place_id],
     )
-    const isFiltered = placeReports.length !== placeReportsUnfiltered.length
+    const placeReportsUnfiltered = resUnfiltered?.rows ?? []
+
+    const isFiltered =
+      placeReportsFiltered.length !== placeReportsUnfiltered.length
 
     const placeReportsNode = useMemo(
       () => ({
         label: `Reports (${
           isFiltered
-            ? `${placeReports.length}/${placeReportsUnfiltered.length}`
-            : placeReports.length
+            ? `${placeReportsFiltered.length}/${placeReportsUnfiltered.length}`
+            : placeReportsFiltered.length
         })`,
       }),
-      [isFiltered, placeReports.length, placeReportsUnfiltered.length],
+      [isFiltered, placeReportsFiltered.length, placeReportsUnfiltered.length],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -95,7 +104,6 @@ export const PlaceReportsNode = memo(
       isOpen,
       navigate,
       ownArray,
-      parentArray,
       parentUrl,
       searchParams,
       urlPath.length,
@@ -109,12 +117,12 @@ export const PlaceReportsNode = memo(
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
-          childrenCount={placeReports.length}
+          childrenCount={placeReportsFiltered.length}
           to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          placeReports.map((placeReport) => (
+          placeReportsFiltered.map((placeReport) => (
             <PlaceReportNode
               key={placeReport.place_report_id}
               project_id={project_id}
