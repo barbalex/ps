@@ -68,11 +68,12 @@ export const WFS = ({ layer, layerPresentation }) => {
   const wfsService = layer.wfs_services
 
   const removeNotifs = useCallback(async () => {
-    await db.notifications.deleteMany({
-      where: { notification_id: { in: notificationIds.current } },
-    })
+    await db.query(
+      `DELETE FROM notifications WHERE notification_id = ANY($1)`,
+      [notificationIds.current],
+    )
     notificationIds.current = []
-  }, [db.notifications])
+  }, [db])
 
   const map = useMapEvent('zoomend', () => setZoom(map.getZoom()))
   // default_crs is of the form: "urn:ogc:def:crs:EPSG::4326"
@@ -87,9 +88,10 @@ export const WFS = ({ layer, layerPresentation }) => {
   const [data, setData] = useState()
   const fetchData = useCallback(
     async () => {
-      const defaultCrs = await db.crs.findFirst({
-        where: { code: wfsDefaultCrsCode },
-      })
+      const res = await db.query(`SELECT * FROM crs WHERE code = $1`, [
+        wfsDefaultCrsCode,
+      ])
+      const defaultCrs = res.rows[0]
       removeNotifs()
       const bbox = bboxFromBounds({ bounds: map.getBounds(), defaultCrs })
       const notifRes = await createNotification({
@@ -123,9 +125,9 @@ export const WFS = ({ layer, layerPresentation }) => {
           params,
         })
       } catch (error) {
-        await db.notifications.delete({
-          where: { notification_id: notif.notification_id },
-        })
+        await db.query(`DELETE FROM notifications WHERE notification_id = $1`, [
+          notif.notification_id,
+        ])
         console.error('VectorLayerWFS, error:', {
           url: error?.url,
           error,
