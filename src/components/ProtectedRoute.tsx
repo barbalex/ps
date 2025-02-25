@@ -7,7 +7,7 @@ import { Auth } from './Auth.tsx'
 // https://www.robinwieruch.de/react-router-authentication/
 export const ProtectedRoute = memo(({ children }) => {
   const { loading, isAuthenticated } = useCorbado()
-  console.log('hello ProtectedRoute', { loading, isAuthenticated })
+  // console.log('hello ProtectedRoute', { loading, isAuthenticated })
 
   //TODO: get this working again
   // if (loading) return <Loading label="Authenticating" />

@@ -10,16 +10,18 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
   const { project_id = '99999999-9999-9999-9999-999999999999' } = useParams()
   const db = usePGlite()
 
+  console.log('OwnVectorLayerPropertiesProvider', { project_id })
+
   // get vector_layers
   const resVL = useLiveQuery(
-    `SELECT * FROM vector_layers WHERE project_id = s1 and type = 'own'`,
+    `SELECT * FROM vector_layers WHERE project_id = $1 and type = 'own'`,
     [project_id],
   )
   const vectorLayers = useMemo(() => resVL?.rows ?? [], [resVL])
 
   // places level 1
   const resPlaces1Fields = useLiveQuery(
-    `SELECT name FROM fields WHERE table_name = 'places' AND level = 1 AND project_id = s1`,
+    `SELECT name FROM fields WHERE table_name = 'places' AND level = 1 AND project_id = $1`,
     [project_id],
   )
   const places1Properties = useMemo(
@@ -29,7 +31,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
 
   // places level 2
   const resPlaces2Fields = useLiveQuery(
-    `SELECT name FROM fields WHERE table_name = 'places' AND level = 2 AND project_id = s1`,
+    `SELECT name FROM fields WHERE table_name = 'places' AND level = 2 AND project_id = $1`,
     [project_id],
   )
   const places2Properties = useMemo(
@@ -39,7 +41,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
 
   // actions level 1
   const resActions1Fields = useLiveQuery(
-    `SELECT name FROM fields WHERE table_name = 'actions' AND level = 1 AND project_id = s1`,
+    `SELECT name FROM fields WHERE table_name = 'actions' AND level = 1 AND project_id = $1`,
     [project_id],
   )
   const actions1Properties = useMemo(
@@ -49,7 +51,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
 
   // actions level 2
   const resActions2Fields = useLiveQuery(
-    `SELECT name FROM fields WHERE table_name = 'actions' AND level = 2 AND project_id = s1`,
+    `SELECT name FROM fields WHERE table_name = 'actions' AND level = 2 AND project_id = $1`,
     [project_id],
   )
   const actions2Properties = useMemo(
@@ -59,7 +61,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
 
   // checks level 1
   const resChecks1Fields = useLiveQuery(
-    `SELECT name FROM fields WHERE table_name = 'checks' AND level = 1 AND project_id = s1`,
+    `SELECT name FROM fields WHERE table_name = 'checks' AND level = 1 AND project_id = $1`,
     [project_id],
   )
   const checks1Properties = useMemo(
@@ -69,7 +71,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
 
   // checks level 2
   const resChecks2Fields = useLiveQuery(
-    `SELECT name FROM fields WHERE table_name = 'checks' AND level = 2 AND project_id = s1`,
+    `SELECT name FROM fields WHERE table_name = 'checks' AND level = 2 AND project_id = $1`,
     [project_id],
   )
   const checks2Properties = useMemo(
@@ -80,7 +82,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
   // occurrences-assigned
   // TODO: level 1/2 i.e. query where place_id has level 1/2
   const resOccurrencesAssignedFields = useLiveQuery(
-    `SELECT name FROM fields WHERE table_name = 'occurrences' AND project_id = s1 AND place_id IS NOT NULL`,
+    `SELECT name FROM fields WHERE table_name = 'occurrences' AND project_id = $1 AND place_id IS NOT NULL`,
     [project_id],
   )
   const occurrencesAssignedFields = useMemo(
@@ -90,7 +92,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
 
   // occurrences-to-assess
   const resOccurrencesToAssessFields = useLiveQuery(
-    `SELECT name FROM fields WHERE table_name = 'occurrences' AND project_id = s1 AND place_id IS NULL AND not_to_assign IS NOT TRUE`,
+    `SELECT name FROM fields WHERE table_name = 'occurrences' AND project_id = $1 AND place_id IS NULL AND not_to_assign IS NOT TRUE`,
     [project_id],
   )
   const occurrencesToAssessFields = useMemo(
@@ -100,7 +102,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
 
   // occurrences-not-to-assign
   const resOccurrencesNotToAssignFields = useLiveQuery(
-    `SELECT name FROM fields WHERE table_name = 'occurrences' AND project_id = s1 AND place_id IS NULL AND not_to_assign IS TRUE`,
+    `SELECT name FROM fields WHERE table_name = 'occurrences' AND project_id = $1 AND place_id IS NULL AND not_to_assign IS TRUE`,
     [project_id],
   )
   const occurrencesNotToAssignFields = useMemo(
@@ -108,6 +110,18 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
       resOccurrencesNotToAssignFields?.rows?.map((field) => field.name) ?? [],
     [resOccurrencesNotToAssignFields],
   )
+
+  console.log('OwnVectorLayerPropertiesProvider', {
+    project_id,
+    resVL,
+    resActions1Fields,
+    resChecks1Fields,
+    resChecks2Fields,
+    resOccurrencesAssignedFields,
+    resOccurrencesToAssessFields,
+    resOccurrencesNotToAssignFields,
+    vectorLayers,
+  })
 
   // this is how to do when extracting properties from a json field:
   // BUT: for wfs only needed on import, no more changes after that!
@@ -140,8 +154,23 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
     // TODO: loop all vector_layers
     // if vector_layer.type includes 'places' and vector_layer.properties is not equal to placesProperties
     // update vector_layer.properties to placesProperties
-    console.log('VectorLayersPropertiesProvider providing properties')
+    console.log('VectorLayersPropertiesProvider providing properties', {
+      resVL,
+      places1Properties,
+      places2Properties,
+      actions1Properties,
+      actions2Properties,
+      checks1Properties,
+      checks2Properties,
+      occurrencesAssignedFields,
+      occurrencesToAssessFields,
+      occurrencesNotToAssignFields,
+      vectorLayers,
+    })
     for (const vectorLayer of vectorLayers) {
+      console.log('VectorLayersPropertiesProvider providing properties', {
+        vectorLayer,
+      })
       // places level 1
       if (
         vectorLayer.own_table === 'places' &&
@@ -149,7 +178,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
       ) {
         if (!isEqual(vectorLayer.properties, places1Properties)) {
           db.query(
-            `UPDATE vector_layers SET properties = s1 WHERE vector_layer_id = s2`,
+            `UPDATE vector_layers SET properties = $1 WHERE vector_layer_id = $2`,
             [places1Properties, vectorLayer.vector_layer_id],
           )
           completeVectorLayerDisplaysForLayerWithProperties({
@@ -166,7 +195,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
       ) {
         if (!isEqual(vectorLayer.properties, places2Properties)) {
           db.query(
-            `UPDATE vector_layers SET properties = s1 WHERE vector_layer_id = s2`,
+            `UPDATE vector_layers SET properties = $1 WHERE vector_layer_id = $2`,
             [places2Properties, vectorLayer.vector_layer_id],
           )
           completeVectorLayerDisplaysForLayerWithProperties({
@@ -183,7 +212,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
       ) {
         if (!isEqual(vectorLayer.properties, actions1Properties)) {
           db.query(
-            `UPDATE vector_layers SET properties = s1 WHERE vector_layer_id = s2`,
+            `UPDATE vector_layers SET properties = $1 WHERE vector_layer_id = $2`,
             [actions1Properties, vectorLayer.vector_layer_id],
           )
           completeVectorLayerDisplaysForLayerWithProperties({
@@ -200,7 +229,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
       ) {
         if (!isEqual(vectorLayer.properties, actions2Properties)) {
           db.query(
-            `UPDATE vector_layers SET properties = s1 WHERE vector_layer_id = s2`,
+            `UPDATE vector_layers SET properties = $1 WHERE vector_layer_id = $2`,
             [actions2Properties, vectorLayer.vector_layer_id],
           )
           completeVectorLayerDisplaysForLayerWithProperties({
@@ -217,7 +246,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
       ) {
         if (!isEqual(vectorLayer.properties, checks1Properties)) {
           db.query(
-            `UPDATE vector_layers SET properties = s1 WHERE vector_layer_id = s2`,
+            `UPDATE vector_layers SET properties = $1 WHERE vector_layer_id = $2`,
             [checks1Properties, vectorLayer.vector_layer_id],
           )
           completeVectorLayerDisplaysForLayerWithProperties({
@@ -234,7 +263,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
       ) {
         if (!isEqual(vectorLayer.properties, checks2Properties)) {
           db.query(
-            `UPDATE vector_layers SET properties = s1 WHERE vector_layer_id = s2`,
+            `UPDATE vector_layers SET properties = $1 WHERE vector_layer_id = $2`,
             [checks2Properties, vectorLayer.vector_layer_id],
           )
           completeVectorLayerDisplaysForLayerWithProperties({
@@ -248,7 +277,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
       if (vectorLayer.own_table === 'occurrences_assigned') {
         if (!isEqual(vectorLayer.properties, occurrencesAssignedFields)) {
           db.query(
-            `UPDATE vector_layers SET properties = s1 WHERE vector_layer_id = s2`,
+            `UPDATE vector_layers SET properties = $1 WHERE vector_layer_id = $2`,
             [occurrencesAssignedFields, vectorLayer.vector_layer_id],
           )
           completeVectorLayerDisplaysForLayerWithProperties({
@@ -262,7 +291,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
       if (vectorLayer.own_table === 'occurrences_to_assess') {
         if (!isEqual(vectorLayer.properties, occurrencesToAssessFields)) {
           db.query(
-            `UPDATE vector_layers SET properties = s1 WHERE vector_layer_id = s2`,
+            `UPDATE vector_layers SET properties = $1 WHERE vector_layer_id = $2`,
             [occurrencesToAssessFields, vectorLayer.vector_layer_id],
           )
           completeVectorLayerDisplaysForLayerWithProperties({
@@ -276,7 +305,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
       if (vectorLayer.own_table === 'occurrences_not_to_assign') {
         if (!isEqual(vectorLayer.properties, occurrencesNotToAssignFields)) {
           db.query(
-            `UPDATE vector_layers SET properties = s1 WHERE vector_layer_id = s2`,
+            `UPDATE vector_layers SET properties = $1 WHERE vector_layer_id = $2`,
             [occurrencesNotToAssignFields, vectorLayer.vector_layer_id],
           )
         }
