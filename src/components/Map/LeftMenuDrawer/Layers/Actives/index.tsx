@@ -6,7 +6,6 @@ import {
   useCallback,
   createContext,
 } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import { Accordion } from '@fluentui/react-components'
 import { monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
@@ -17,7 +16,7 @@ import {
 import { reorder } from '@atlaskit/pragmatic-drag-and-drop/reorder'
 import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index'
 import { useAtom, atom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { ActiveLayer } from './Active.tsx'
@@ -89,30 +88,37 @@ export const ActiveLayers = memo(() => {
 
   const db = usePGlite()
 
-  const where = project_id ? { project_id } : {}
+  const resWmsLayers = useLiveQuery(
+    `SELECT * 
+    FROM wms_layers 
+    WHERE 
+      exists (
+        SELECT 1 FROM layer_presentations 
+        WHERE 
+          layer_presentations.wms_layer_id = wms_layers.wms_layer_id 
+          AND layer_presentations.active = true
+      )
+      ${project_id ? 'AND project_id = $1' : ''}`,
+    project_id ? [project_id] : [],
+  )
+  const activeWmsLayers = useMemo(() => resWmsLayers.rows ?? [], [resWmsLayers])
 
-  const { results: wmsLayers = [] } = useLiveQuery(
-    db.wms_layers.liveMany({
-      where,
-      include: { layer_presentations: true },
-    }),
+  const resVectorLayers = useLiveQuery(
+    `SELECT * 
+    FROM vector_layers 
+    WHERE 
+      exists (
+        SELECT 1 FROM layer_presentations 
+        WHERE 
+          layer_presentations.vector_layer_id = vector_layers.vector_layer_id 
+          AND layer_presentations.active = true
+      )
+      ${project_id ? 'AND project_id = $1' : ''}`,
+    project_id ? [project_id] : [],
   )
-  const activeWmsLayers = wmsLayers.filter((l) =>
-    (l.layer_presentations ?? []).some(
-      (lp) => lp.wms_layer_id === l.wms_layer_id && lp.active,
-    ),
-  )
-
-  const { results: vectorLayers = [] } = useLiveQuery(
-    db.vector_layers.liveMany({
-      where,
-      include: { layer_presentations: true },
-    }),
-  )
-  const activeVectorLayers = vectorLayers.filter((l) =>
-    (l.layer_presentations ?? []).some(
-      (lp) => lp.vector_layer_id === l.vector_layer_id && lp.active,
-    ),
+  const activeVectorLayers = useMemo(
+    () => resVectorLayers.rows ?? [],
+    [resVectorLayers],
   )
 
   // sort by mapLayerSorting
@@ -256,9 +262,11 @@ export const ActiveLayers = memo(() => {
       // use setTimeout to let the child checkbox set the layers active status
       setTimeout(async () => {
         // fetch layerPresentation's active status
-        const layerPresentation = await db.layer_presentations.findFirst({
-          where: { layer_presentation_id: layerPresentationId },
-        })
+        const res = await db.query(
+          `SELECT active FROM layer_presentations WHERE layer_presentation_id = $1`,
+          [layerPresentationId],
+        )
+        const layerPresentation = res.rows[0]
         const isActive = layerPresentation?.active
         if (!isActive) {
           // if not active, remove this item
@@ -271,7 +279,7 @@ export const ActiveLayers = memo(() => {
         setOpenItems(openItems)
       })
     },
-    [db.layer_presentations, setOpenItems],
+    [db, setOpenItems],
   )
 
   if (!project_id) {
