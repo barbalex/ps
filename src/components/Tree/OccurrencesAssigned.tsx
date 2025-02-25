@@ -3,7 +3,6 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { OccurrenceAssignedNode } from './OccurrenceAssigned.tsx'
@@ -18,15 +17,11 @@ export const OccurrencesAssignedNode = memo(
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const db = usePGlite()
-    const { results: occurrences = [] } = useLiveQuery(
-      db.occurrences.liveMany({
-        where: {
-          place_id: place.place_id,
-        },
-        orderBy: { label: 'asc' },
-      }),
+    const res = useLiveQuery(
+      `SELECT * FROM occurrences WHERE place_id = $1 ORDER BY label ASC`,
+      [place.place_id],
     )
+    const occurrences = res?.rows ?? []
 
     const occurrencesNode = useMemo(
       () => ({ label: `Occurrences assigned (${occurrences.length})` }),
@@ -78,7 +73,6 @@ export const OccurrencesAssignedNode = memo(
       isOpen,
       navigate,
       ownArray,
-      parentArray,
       parentUrl,
       searchParams,
       urlPath.length,
