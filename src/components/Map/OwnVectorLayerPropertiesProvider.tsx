@@ -79,40 +79,34 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
 
   // occurrences-assigned
   // TODO: level 1/2 i.e. query where place_id has level 1/2
-  const { results: occurrencesAssignedFields = [] } = useLiveQuery(
-    db.fields.liveMany({
-      where: {
-        table_name: 'occurrences',
-        project_id,
-        // TODO: query where place_id has level 1
-        place_id: { not: null },
-      },
-      select: { name: true },
-    }),
+  const resOccurrencesAssignedFields = useLiveQuery(
+    `SELECT name FROM fields WHERE table_name = 'occurrences' AND project_id = s1 AND place_id IS NOT NULL`,
+    [project_id],
   )
+  const occurrencesAssignedFields = useMemo(
+    () => resOccurrencesAssignedFields?.rows?.map((field) => field.name) ?? [],
+    [resOccurrencesAssignedFields],
+  )
+
   // occurrences-to-assess
-  const { results: occurrencesToAssessFields = [] } = useLiveQuery(
-    db.fields.liveMany({
-      where: {
-        table_name: 'occurrences',
-        project_id,
-        place_id: null,
-        not_to_assign: { not: true },
-      },
-      select: { name: true },
-    }),
+  const resOccurrencesToAssessFields = useLiveQuery(
+    `SELECT name FROM fields WHERE table_name = 'occurrences' AND project_id = s1 AND place_id IS NULL AND not_to_assign IS NOT TRUE`,
+    [project_id],
   )
+  const occurrencesToAssessFields = useMemo(
+    () => resOccurrencesToAssessFields?.rows?.map((field) => field.name) ?? [],
+    [resOccurrencesToAssessFields],
+  )
+
   // occurrences-not-to-assign
-  const { results: occurrencesNotToAssignFields = [] } = useLiveQuery(
-    db.fields.liveMany({
-      where: {
-        table_name: 'occurrences',
-        project_id,
-        place_id: null,
-        not_to_assign: true,
-      },
-      select: { name: true },
-    }),
+  const resOccurrencesNotToAssignFields = useLiveQuery(
+    `SELECT name FROM fields WHERE table_name = 'occurrences' AND project_id = s1 AND place_id IS NULL AND not_to_assign IS TRUE`,
+    [project_id],
+  )
+  const occurrencesNotToAssignFields = useMemo(
+    () =>
+      resOccurrencesNotToAssignFields?.rows?.map((field) => field.name) ?? [],
+    [resOccurrencesNotToAssignFields],
   )
 
   // this is how to do when extracting properties from a json field:
