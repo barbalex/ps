@@ -4,8 +4,7 @@ import 'leaflet-draw'
 import 'leaflet-draw/dist/leaflet.draw.css'
 import { useMap } from 'react-leaflet'
 import { bbox as getBbox } from '@turf/bbox'
-import { usePGlite } from "@electric-sql/pglite-react"
-
+import { usePGlite } from '@electric-sql/pglite-react'
 
 L.drawLocal.draw.toolbar.buttons.polygon = 'Polygon(e) zeichnen, um zu filtern'
 L.drawLocal.draw.toolbar.buttons.rectangle =
@@ -71,10 +70,10 @@ export const DrawControlComponent = ({
 
       const bbox = getBbox(featureCollection)
 
-      db[tableName].update({
-        where: { [activeIdName]: activeId },
-        data: { geometry: featureCollection, bbox },
-      })
+      db.query(
+        `UPDATE ${tableName} SET geometry = $1, bbox = $2 WHERE ${activeIdName} = $3`,
+        [featureCollection, bbox, activeId],
+      )
     },
     [db, editingAction, editingCheck, editingPlace],
   )
