@@ -3,7 +3,6 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { ActionValueNode } from './ActionValue.tsx'
@@ -18,13 +17,11 @@ export const ActionValuesNode = memo(
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const db = usePGlite()
-    const { results: actionValues = [] } = useLiveQuery(
-      db.action_values.liveMany({
-        where: { action_id },
-        orderBy: { label: 'asc' },
-      }),
+    const res = useLiveQuery(
+      `SELECT * FROM action_values WHERE action_id = $1 ORDER BY label`,
+      [action_id],
     )
+    const actionValues = res?.rows ?? []
 
     const actionValuesNode = useMemo(
       () => ({ label: `Action Values (${actionValues.length})` }),
