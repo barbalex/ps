@@ -1,3 +1,4 @@
+// TODO: seems this is not used for anything useful
 export const tableNameFromIdField = async ({ idField, db }): string => {
   const tables = await db.rawQuery({ sql: `PRAGMA table_list` })
   const tableNames = tables.map((row) => row.name)

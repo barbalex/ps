@@ -5,13 +5,12 @@ import 'proj4leaflet'
 import { MapContainer } from 'react-leaflet'
 import { useResizeDetector } from 'react-resize-detector'
 import { useAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
 
 import 'leaflet/dist/leaflet.css'
 
 import { Layers } from './layers/index.tsx'
 import { LocationMarker } from './LocationMarker.tsx'
-import { tableNameFromIdField } from '../../modules/tableNameFromIdField.ts'
+// import { tableNameFromIdField } from '../../modules/tableNameFromIdField.ts'
 import { DrawControl } from './DrawControl/index.tsx'
 import { BoundsListener } from './BoundsListener.tsx'
 // import { Control } from './Control.tsx'
@@ -39,8 +38,6 @@ export const Map = memo(() => {
   const [mapIsLocating] = useAtom(mapLocateAtom)
   const [mapInfo] = useAtom(mapInfoAtom)
 
-  const db = usePGlite()
-
   const mapRef = useRef()
 
   const redrawMap = useCallback(
@@ -64,13 +61,14 @@ export const Map = memo(() => {
     mapRef.current?.invalidateSize()
   }, [mapRef, mapRef.current?.invalidateSize])
 
-  useEffect(() => {
-    if (!db) return
-    const run = async () => {
-      await tableNameFromIdField({ idField: 'project_id', db })
-    }
-    run()
-  }, [db])
+  // TODO: this does not seem to do anything useful
+  // useEffect(() => {
+  //   if (!db) return
+  //   const run = async () => {
+  //     await tableNameFromIdField({ idField: 'project_id', db })
+  //   }
+  //   run()
+  // }, [db])
 
   // const bounds = [
   //   [47.159, 8.354],
