@@ -56,7 +56,7 @@ export const WMTSOffline = ({ layer }) => {
       map.removeControl(control)
     }
   }, [
-    db.notifications,
+    db,
     layer,
     layer.grayscale,
     layer.id,
@@ -65,6 +65,10 @@ export const WMTSOffline = ({ layer }) => {
     layer.min_zoom,
     layer.opacity,
     layer.wmts_url_template,
+    layerPresentation.grayscale,
+    layerPresentation.max_zoom,
+    layerPresentation.min_zoom,
+    layerPresentation.opacity_percent,
     map,
     setLocalMapValues,
     setShowLocalMap,
