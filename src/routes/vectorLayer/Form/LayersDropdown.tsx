@@ -1,21 +1,17 @@
 import { memo, useMemo, useCallback } from 'react'
 import { Dropdown, Field, Option } from '@fluentui/react-components'
-import { useLiveQuery } from '@electric-sql/pglite-react'
-import { usePGlite } from '@electric-sql/pglite-react'
-
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 export const LayersDropdown = memo(({ vectorLayer, validationMessage }) => {
   const db = usePGlite()
-  const { results: wfsServiceLayers = [] } = useLiveQuery(
-    db.wfs_service_layers.liveMany({
-      where: { wfs_service_id: vectorLayer.wfs_service_id },
-      orderBy: { label: 'asc' },
-    }),
-  )
 
+  const res = useLiveQuery(
+    `SELECT name, label FROM wfs_service_layers WHERE wfs_service_id = $1 order by label`,
+    [vectorLayer.wfs_service_id],
+  )
   const options = useMemo(
-    () => wfsServiceLayers.map(({ name, label }) => ({ value: name, label })),
-    [wfsServiceLayers],
+    () => (res?.rows ?? []).map(({ name, label }) => ({ value: name, label })),
+    [res],
   )
   const selectedOptions = useMemo(
     () =>
@@ -27,15 +23,12 @@ export const LayersDropdown = memo(({ vectorLayer, validationMessage }) => {
 
   const onOptionSelect = useCallback(
     async (e, data) => {
-      db.vector_layers.update({
-        where: { vector_layer_id: vectorLayer.vector_layer_id },
-        data: {
-          wfs_service_layer_name: data.optionValue,
-          label: data.optionText,
-        },
-      })
+      db.query(
+        `UPDATE vector_layers SET wfs_service_layer_name = $1, label = $2 WHERE vector_layer_id = $3`,
+        [data.optionValue, data.optionText, vectorLayer.vector_layer_id],
+      )
     },
-    [db.vector_layers, vectorLayer.vector_layer_id],
+    [db, vectorLayer.vector_layer_id],
   )
 
   const labelWithCount = options?.length ? `Layer (${options.length})` : 'Layer'
@@ -56,7 +49,10 @@ export const LayersDropdown = memo(({ vectorLayer, validationMessage }) => {
       >
         {options.map((option) => {
           return (
-            <Option key={option.value} value={option.value}>
+            <Option
+              key={option.value}
+              value={option.value}
+            >
               {option.label}
             </Option>
           )
