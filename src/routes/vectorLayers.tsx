@@ -32,11 +32,12 @@ export const Component = memo(() => {
   const vectorLayers = result?.rows ?? []
 
   const add = useCallback(async () => {
-    const res = createVectorLayer({ project_id, type: 'wfs', db })
-    const vectorLayer = res.rows[0]
+    const res = await createVectorLayer({ project_id, type: 'wfs', db })
+    const vectorLayer = res?.rows?.[0]
     // also add vector_layer_display
     await createVectorLayerDisplay({
       vector_layer_id: vectorLayer.vector_layer_id,
+      db,
     })
     // also add layer_presentation
     await createLayerPresentation({
