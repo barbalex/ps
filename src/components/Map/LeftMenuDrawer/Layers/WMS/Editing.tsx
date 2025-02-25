@@ -17,16 +17,15 @@ export const WmsLayerEditing = memo(({ layer }) => {
     async (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       try {
-        await db.wms_layers.update({
-          where: { wms_layer_id: layer.wms_layer_id },
-          data: { [name]: value },
-        })
+        await db.query(
+          `UPDATE wms_layers SET ${name} = $1 WHERE wms_layer_id = $2`,
+          [value, layer.wms_layer_id],
+        )
       } catch (error) {
         console.log('hello WmsLayer, onChange, error:', error)
       }
-      return
     },
-    [db.wms_layers, layer.wms_layer_id],
+    [db, layer.wms_layer_id],
   )
 
   return (
