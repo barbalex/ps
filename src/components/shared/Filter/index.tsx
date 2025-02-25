@@ -92,12 +92,11 @@ export const Filter = memo(({ level }) => {
     where += flter
     whereUnfiltered += flter
   }
-  if (filter) {
-    where += ` AND ${filter}`
+  if (filter.length > 0) {
+    where += ` AND ${filter.join(' AND ')}`
   }
   // TODO: need to add parent_id when below place_id/place_id2
-  const isFiltered = !!filter
-  const orFiltersToUse = isFiltered ? [...filter, {}] : [{}]
+  const isFiltered = filter.length > 0
 
   // console.log('Filter 3', {
   //   tableName,
@@ -111,19 +110,14 @@ export const Filter = memo(({ level }) => {
   //   place_id,
   // })
 
-  const resFiltered = useLiveQuery(`SELECT * FROM ${tableName} WHERE ${where}`)
-  const { results = [] } = useLiveQuery(
-    db?.[tableName]?.liveMany({
-      orderBy: { label: 'asc' },
-      where,
-    }),
+  const resFiltered = useLiveQuery(
+    `SELECT * FROM ${tableName} WHERE ${where} order by label asc`,
   )
-  const { results: resultsUnfiltered = [] } = useLiveQuery(
-    db?.[tableName].liveMany({
-      where: whereUnfiltered,
-      orderBy: { label: 'asc' },
-    }),
+  const results = resFiltered?.rows ?? []
+  const resUnfiltered = useLiveQuery(
+    `SELECT * FROM ${tableName} WHERE ${whereUnfiltered} order by label asc`,
   )
+  const resultsUnfiltered = resUnfiltered?.rows ?? []
 
   // console.log('Filter 4', {
   //   results,
@@ -142,9 +136,9 @@ export const Filter = memo(({ level }) => {
         onTabSelect={onTabSelect}
         style={tabListStyle}
       >
-        {orFiltersToUse.map((f, i) => {
+        {filter.map((f, i) => {
           const label =
-            i === orFiltersToUse.length - 1 && orFiltersToUse.length > 1
+            i === filter.length - 1 && filter.length > 1
               ? 'Or'
               : i === 0
               ? `Filter ${i + 1}`
@@ -162,7 +156,7 @@ export const Filter = memo(({ level }) => {
       </TabList>
       <OrFilter
         filterName={filterName}
-        orFilters={orFiltersToUse}
+        orFilters={filter}
         orIndex={activeTab - 1}
       />
     </div>
