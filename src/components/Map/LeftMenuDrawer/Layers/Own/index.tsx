@@ -1,9 +1,8 @@
 import { memo, useCallback } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import { Accordion } from '@fluentui/react-components'
 import { useAtom, atom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { OwnLayer } from './OwnLayer.tsx'
@@ -20,36 +19,33 @@ export const OwnLayers = memo(() => {
   const db = usePGlite()
   // TODO: when including layer_presentations, no results are returned
   // unlike with vector_layer_displays. Maybe because no layer_presentations exist?
-  const { results: vectorLayers = [] } = useLiveQuery(
-    db.vector_layers.liveMany({
-      where: {
-        type: { notIn: ['wfs', 'upload'] },
-        ...(project_id ? { project_id } : {}),
-      },
-      // TODO: this only returns vector layers that have a presentation
-      // https://github.com/electric-sql/electric/issues/1417
-      include: { layer_presentations: true },
-      // order by label
-      orderBy: { label: 'asc' },
-    }),
-  )
-
-  // 2. when one is set active, add layer_presentations for it
-  const own = vectorLayers.filter(
-    (l) =>
-      !(l.layer_presentations ?? []).some(
-        (lp) => lp.vector_layer_id === l.vector_layer_id && lp.active,
-      ),
-  )
+  const res = useLiveQuery(`
+    SELECT * 
+    FROM vector_layers 
+    WHERE
+      type NOT IN ('wfs', 'upload')
+      ${project_id ? `AND project_id = '${project_id}'` : ''}
+      AND EXISTS (
+        SELECT 1
+        FROM layer_presentations
+        WHERE 
+          layer_presentations.vector_layer_id = vector_layers.vector_layer_id
+          AND layer_presentations.active
+      )
+    ORDER BY label ASC
+  `)
+  const ownVectorLayers = res?.rows ?? []
 
   const onToggleItem = useCallback(
     (event, { value: vectorLayerId, openItems }) => {
       // use setTimeout to let the child checkbox set the layers active status
       setTimeout(async () => {
         // fetch layerPresentation's active status
-        const layerPresentation = await db.layer_presentations.findFirst({
-          where: { vector_layer_id: vectorLayerId },
-        })
+        const res = await db.query(
+          `SELECT active FROM layer_presentations WHERE vector_layer_id = $1`,
+          [vectorLayerId],
+        )
+        const layerPresentation = res.rows[0]
         const isActive = layerPresentation?.active
         if (isActive) {
           // if not active, remove this item
@@ -60,7 +56,7 @@ export const OwnLayers = memo(() => {
         setOpenItems(openItems)
       }, 200)
     },
-    [db.layer_presentations, setOpenItems],
+    [db, setOpenItems],
   )
 
   if (!project_id) {
@@ -86,12 +82,12 @@ export const OwnLayers = memo(() => {
           openItems={openItems}
           onToggle={onToggleItem}
         >
-          {own.length ? (
-            own.map((l, index) => (
+          {ownVectorLayers.length ? (
+            ownVectorLayers.map((l, index) => (
               <OwnLayer
                 key={l.vector_layer_id}
                 layer={l}
-                isLast={index === own.length - 1}
+                isLast={index === ownVectorLayers.length - 1}
                 isOpen={openItems.includes(l.vector_layer_id)}
               />
             ))
