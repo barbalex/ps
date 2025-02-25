@@ -1,8 +1,8 @@
 import { memo, useEffect, useMemo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { completeVectorLayerDisplaysForLayerWithProperties } from './completeVectorLayerDisplaysForLayerWithProperties.ts'
 
@@ -11,22 +11,20 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
   const db = usePGlite()
 
   // get vector_layers
-  const { results: vectorLayers = [] } = useLiveQuery(
-    db.vector_layers.liveMany({
-      where: { project_id, type: 'own' },
-      select: { vector_layer_id: true, properties: true, own_table: true },
-    }),
+  const resVL = useLiveQuery(
+    `SELECT * FROM vector_layers WHERE project_id = s1 and type = 'own'`,
+    [project_id],
   )
+  const vectorLayers = useMemo(() => resVL?.rows ?? [], [resVL])
+
   // places level 1
-  const { results: places1Fields = [] } = useLiveQuery(
-    db.fields.liveMany({
-      where: { table_name: 'places', level: 1, project_id },
-      select: { name: true },
-    }),
+  const resPlaces1Fields = useLiveQuery(
+    `SELECT name FROM fields WHERE table_name = 'places' AND level = 1 AND project_id = s1`,
+    [project_id],
   )
   const places1Properties = useMemo(
-    () => places1Fields.map((field) => field.name),
-    [places1Fields],
+    () => resPlaces1Fields?.rows.map((field) => field.name) ?? [],
+    [resPlaces1Fields],
   )
   // places level 2
   const { results: places2Fields = [] } = useLiveQuery(
