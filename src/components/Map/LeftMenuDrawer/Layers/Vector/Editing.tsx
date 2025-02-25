@@ -17,16 +17,16 @@ export const VectorLayerEditing = memo(({ layer }) => {
     async (e, data) => {
       const { name, value } = getValueFromChange(e, data)
       try {
-        await db.vector_layers.update({
-          where: { vector_layer_id: layer.vector_layer_id },
-          data: { [name]: value },
-        })
+        await db.query(
+          `UPDATE vector_layers SET ${name} = $1 WHERE vector_layer_id = $2`,
+          [value, layer.vector_layer_id],
+        )
       } catch (error) {
         console.log('hello VectorLayer, onChange, error:', error)
       }
       return
     },
-    [db.vector_layers, layer.vector_layer_id],
+    [db, layer.vector_layer_id],
   )
 
   return (
