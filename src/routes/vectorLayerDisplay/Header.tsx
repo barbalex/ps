@@ -19,10 +19,11 @@ export const Header = memo(({ vectorLayerDisplayId }) => {
 
   const db = usePGlite()
   // fetch the vector_layer_id from the db as params is not available in the map drawer
-  const { rows: vectorLayerDisplays } = useLiveQuery(
+  const res = useLiveQuery(
     `SELECT vector_layer_id FROM vector_layer_displays WHERE vector_layer_display_id = $1`,
     [vector_layer_display_id],
   )
+  const vectorLayerDisplays = res?.rows ?? []
   const vector_layer_id = vectorLayerDisplays?.[0]?.vector_layer_id
 
   const navigate = useNavigate()
