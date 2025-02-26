@@ -54,7 +54,7 @@ export const Header = memo(({ autoFocusRef }) => {
       'SELECT action_id FROM actions WHERE place_id = $1 ORDER BY label ASC',
       [place_id2 ?? place_id],
     )
-    const actions = res.rows
+    const actions = res?.rows
     const len = actions.length
     const index = actions.findIndex((p) => p.action_id === action_id)
     const next = actions[(index + 1) % len]
@@ -69,7 +69,7 @@ export const Header = memo(({ autoFocusRef }) => {
       'SELECT action_id FROM actions WHERE place_id = $1 ORDER BY label ASC',
       [place_id2 ?? place_id],
     )
-    const actions = res.rows
+    const actions = res?.rows
     const len = actions.length
     const index = actions.findIndex((p) => p.action_id === action_id)
     const previous = actions[(index + len - 1) % len]

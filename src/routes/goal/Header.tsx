@@ -32,7 +32,7 @@ export const Header = memo(({ autoFocusRef }) => {
       `Select * from goals where subproject_id = $1 order by label asc`,
       [subproject_id],
     )
-    const goals = res.rows
+    const goals = res?.rows
     const len = goals.length
     const index = goals.findIndex((p) => p.goal_id === goal_id)
     const next = goals[(index + 1) % len]
@@ -47,7 +47,7 @@ export const Header = memo(({ autoFocusRef }) => {
       `Select * from goals where subproject_id = $1 order by label asc`,
       [subproject_id],
     )
-    const goals = res.rows
+    const goals = res?.rows
     const len = goals.length
     const index = goals.findIndex((p) => p.goal_id === goal_id)
     const previous = goals[(index + len - 1) % len]

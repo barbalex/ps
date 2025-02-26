@@ -32,7 +32,7 @@ export const Header = memo(({ autoFocusRef }) => {
       `SELECT taxonomy_id FROM taxonomies WHERE project_id = $1 ORDER BY label ASC`,
       [project_id],
     )
-    const taxonomies = res.rows
+    const taxonomies = res?.rows
     const len = taxonomies.length
     const index = taxonomies.findIndex((p) => p.taxonomy_id === taxonomy_id)
     const next = taxonomies[(index + 1) % len]
@@ -47,7 +47,7 @@ export const Header = memo(({ autoFocusRef }) => {
       `SELECT taxonomy_id FROM taxonomies WHERE project_id = $1 ORDER BY label ASC`,
       [project_id],
     )
-    const taxonomies = res.rows
+    const taxonomies = res?.rows
     const len = taxonomies.length
     const index = taxonomies.findIndex((p) => p.taxonomy_id === taxonomy_id)
     const previous = taxonomies[(index + len - 1) % len]

@@ -16,7 +16,7 @@ export const Header = memo(() => {
       'SELECT occurrence_id FROM occurrences WHERE project_id = $1 ORDER BY label ASC',
       [project_id],
     )
-    const occurrences = res.rows
+    const occurrences = res?.rows
     const len = occurrences.length
     const index = occurrences.findIndex(
       (p) => p.occurrence_id === occurrence_id,
@@ -33,7 +33,7 @@ export const Header = memo(() => {
       'SELECT occurrence_id FROM occurrences WHERE project_id = $1 ORDER BY label ASC',
       [project_id],
     )
-    const occurrences = res.rows
+    const occurrences = res?.rows
     const len = occurrences.length
     const index = occurrences.findIndex(
       (p) => p.occurrence_id === occurrence_id,

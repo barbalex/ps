@@ -14,7 +14,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const addRow = useCallback(async () => {
     const res = await createListValue({ db, list_id })
-    const listValue = res.rows?.[0]
+    const listValue = res?.rows?.[0]
     navigate({
       pathname: `../${listValue.list_value_id}`,
       search: searchParams.toString(),
@@ -34,7 +34,7 @@ export const Header = memo(({ autoFocusRef }) => {
       `SELECT list_value_id FROM list_values WHERE list_id = $1 ORDER BY label ASC`,
       [list_id],
     )
-    const listValues = res.rows
+    const listValues = res?.rows
     const len = listValues.length
     const index = listValues.findIndex((p) => p.list_value_id === list_value_id)
     const next = listValues[(index + 1) % len]
@@ -49,7 +49,7 @@ export const Header = memo(({ autoFocusRef }) => {
       `SELECT list_value_id FROM list_values WHERE list_id = $1 ORDER BY label ASC`,
       [list_id],
     )
-    const listValues = res.rows
+    const listValues = res?.rows
     const len = listValues.length
     const index = listValues.findIndex((p) => p.list_value_id === list_value_id)
     const previous = listValues[(index + len - 1) % len]

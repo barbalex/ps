@@ -96,7 +96,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
       `SELECT * FROM places WHERE parent_id = $1 AND subproject_id = $2 ORDER BY label ASC`,
       [place_id2 ? place_id : null, subproject_id],
     )
-    const places = res.rows
+    const places = res?.rows
     const len = places.length
     const index = places.findIndex((p) => p.place_id === place_id)
     const next = places[(index + 1) % len]
@@ -111,7 +111,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
       `SELECT * FROM places WHERE parent_id = $1 AND subproject_id = $2 ORDER BY label ASC`,
       [place_id2 ? place_id : null, subproject_id],
     )
-    const places = res.rows
+    const places = res?.rows
     const len = places.length
     const index = places.findIndex((p) => p.place_id === place_id)
     const previous = places[(index + len - 1) % len]
@@ -134,7 +134,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
     const res = await db.query(`SELECT * FROM places WHERE place_id = $1`, [
       place_id2 ?? place_id,
     ])
-    const place = res.rows?.[0]
+    const place = res?.rows?.[0]
     const geometry = place?.geometry
     if (!geometry) {
       return alertNoGeometry()

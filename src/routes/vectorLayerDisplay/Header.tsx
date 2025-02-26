@@ -74,7 +74,7 @@ export const Header = memo(({ vectorLayerDisplayId }) => {
       `SELECT vector_layer_display_id FROM vector_layer_displays WHERE vector_layer_id = $1 ORDER BY label ASC`,
       [vector_layer_id],
     )
-    const vectorLayerDisplays = res.rows
+    const vectorLayerDisplays = res?.rows
     const len = vectorLayerDisplays.length
     const index = vectorLayerDisplays.findIndex(
       (p) => p.vector_layer_display_id === vector_layer_display_id,
@@ -103,7 +103,7 @@ export const Header = memo(({ vectorLayerDisplayId }) => {
       `SELECT vector_layer_display_id FROM vector_layer_displays WHERE vector_layer_id = $1 ORDER BY label ASC`,
       [vector_layer_id],
     )
-    const vectorLayerDisplays = res.rows
+    const vectorLayerDisplays = res?.rows
     const len = vectorLayerDisplays.length
     const index = vectorLayerDisplays.findIndex(
       (p) => p.vector_layer_display_id === vector_layer_display_id,

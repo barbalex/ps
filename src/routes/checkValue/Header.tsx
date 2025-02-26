@@ -34,7 +34,7 @@ export const Header = memo(({ autoFocusRef }) => {
       'SELECT check_value_id FROM check_values WHERE check_id = $1 ORDER BY label ASC',
       [check_id],
     )
-    const checkValues = res.rows
+    const checkValues = res?.rows
     const len = checkValues.length
     const index = checkValues.findIndex(
       (p) => p.check_value_id === check_value_id,
@@ -51,7 +51,7 @@ export const Header = memo(({ autoFocusRef }) => {
       'SELECT check_value_id FROM check_values WHERE check_id = $1 ORDER BY label ASC',
       [check_id],
     )
-    const checkValues = res.rows
+    const checkValues = res?.rows
     const len = checkValues.length
     const index = checkValues.findIndex(
       (p) => p.check_value_id === check_value_id,

@@ -39,8 +39,8 @@ export const DropdownFieldFromList = memo(
       list_id,
     ])
     const options = useMemo(
-      () => res.rows.map(({ value }) => value),
-      [res.rows],
+      () => res?.rows.map(({ value }) => value),
+      [res?.rows],
     )
     const selectedOptions = useMemo(
       () => options.filter((option) => option === value),

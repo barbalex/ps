@@ -38,7 +38,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
       `SELECT place_level_id FROM place_levels WHERE project_id = $1 ORDER BY label ASC`,
       [project_id],
     )
-    const placeLevels = res.rows
+    const placeLevels = res?.rows
     const len = placeLevels.length
     const index = placeLevels.findIndex(
       (p) => p.place_level_id === place_level_id,
@@ -55,7 +55,7 @@ export const Header = memo(({ autoFocusRef }: Props) => {
       `SELECT place_level_id FROM place_levels WHERE project_id = $1 ORDER BY label ASC`,
       [project_id],
     )
-    const placeLevels = res.rows
+    const placeLevels = res?.rows
     const len = placeLevels.length
     const index = placeLevels.findIndex(
       (p) => p.place_level_id === place_level_id,

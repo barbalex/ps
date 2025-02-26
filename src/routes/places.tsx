@@ -54,7 +54,7 @@ export const Component = memo(() => {
       parent_id: place_id ?? null,
       level: place_id ? 2 : 1,
     })
-    const place = res.rows?.[0]
+    const place = res?.rows?.[0]
     // need to create a corresponding vector layer and vector layer display
     // TODO:
     // 1. only if not yet exists

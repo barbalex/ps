@@ -203,7 +203,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   const sql = sqlByTable[table]
   try {
     const res = await db.query(sql)
-    tableRows = res.rows
+    tableRows = res?.rows
   } catch (error) {
     console.error(
       'upsertVectorLayerDisplaysForVectorLayer, error fetching table rows',
@@ -220,7 +220,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
       `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1 AND display_property_value = $2`,
       [vectorLayerId, value ?? null],
     )
-    const existingVectorLayerDisplay = res.rows?.[0]
+    const existingVectorLayerDisplay = res?.rows?.[0]
     // leave existing VLD unchanged
     if (existingVectorLayerDisplay) continue
 

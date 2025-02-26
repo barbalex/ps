@@ -117,7 +117,7 @@ export const TableLayersProvider = memo(() => {
               : 'Actions',
             db,
           })
-          actions1VectorLayer = res.rows?.[0]
+          actions1VectorLayer = res?.rows?.[0]
         }
 
         // 2.2 actions1VectorLayerDisplay: always needed
@@ -259,7 +259,7 @@ export const TableLayersProvider = memo(() => {
               label: 'Occurrences to assess',
               db,
             })
-            occurrencesToAssessVectorLayer = res.rows?.[0]
+            occurrencesToAssessVectorLayer = res?.rows?.[0]
           }
 
           // 5.2 occurrencesToAssessVectorLayerDisplay: always needed

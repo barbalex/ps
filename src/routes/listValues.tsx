@@ -22,7 +22,7 @@ export const Component = memo(() => {
 
   const add = useCallback(async () => {
     const res = await createListValue({ db, list_id })
-    const list_value_id = res.rows?.[0]?.list_value_id
+    const list_value_id = res?.rows?.[0]?.list_value_id
     navigate({
       pathname: list_value_id,
       search: searchParams.toString(),

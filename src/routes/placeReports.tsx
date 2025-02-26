@@ -35,7 +35,7 @@ export const Component = memo(() => {
       project_id,
       place_id: place_id2 ?? place_id,
     })
-    const placeReport = res.rows?.[0]
+    const placeReport = res?.rows?.[0]
     navigate({
       pathname: placeReport.place_report_id,
       search: searchParams.toString(),

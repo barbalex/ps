@@ -18,7 +18,7 @@ export const Header = memo(({ autoFocusRef }) => {
       project_id,
       place_id: place_id2 ?? place_id,
     })
-    const placeReport = res.rows?.[0]
+    const placeReport = res?.rows?.[0]
     navigate({
       pathname: `../${placeReport.place_report_id}`,
       search: searchParams.toString(),
@@ -46,7 +46,7 @@ export const Header = memo(({ autoFocusRef }) => {
       `SELECT place_report_id FROM place_reports WHERE place_id = $1 order by label asc`,
       [place_id2 ?? place_id],
     )
-    const placeReports = res.rows
+    const placeReports = res?.rows
     const len = placeReports.length
     const index = placeReports.findIndex(
       (p) => p.place_report_id === place_report_id,
@@ -63,7 +63,7 @@ export const Header = memo(({ autoFocusRef }) => {
       `SELECT place_report_id FROM place_reports WHERE place_id = $1 order by label asc`,
       [place_id2 ?? place_id],
     )
-    const placeReports = res.rows
+    const placeReports = res?.rows
     const len = placeReports.length
     const index = placeReports.findIndex(
       (p) => p.place_report_id === place_report_id,

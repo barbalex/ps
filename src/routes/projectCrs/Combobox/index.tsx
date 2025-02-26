@@ -19,7 +19,7 @@ export const ComboboxFilteringOptions = memo(({ autoFocus, ref }) => {
       : 'SELECT * FROM crs'
     const vals = filter ? [`%${filter}%`] : []
     const res = await db.query(sql, vals)
-    const crs = res.rows
+    const crs = res?.rows
     setCrs(crs)
   }, [db, filter])
 

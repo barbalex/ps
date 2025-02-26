@@ -21,7 +21,7 @@ export const Component = memo(() => {
     `SELECT * FROM action_reports WHERE action_report_id = $1`,
     [action_report_id],
   )
-  const row = res.rows?.[0]
+  const row = res?.rows?.[0]
 
   // console.log('ActionReport', { row, results })
 

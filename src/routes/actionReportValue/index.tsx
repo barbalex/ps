@@ -22,7 +22,7 @@ export const Component = memo(() => {
     `SELECT * FROM action_report_values WHERE action_report_value_id = $1`,
     [action_report_value_id],
   )
-  const row = res.rows?.[0]
+  const row = res?.rows?.[0]
 
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
