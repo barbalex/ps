@@ -6,11 +6,9 @@ import { mapLayerSortingAtom } from '../../../store.ts'
 import { Layer } from './Layer.tsx'
 
 // TODO: text
-// TODO: vite TypeError: Cannot read properties of undefined (reading 'ReactCurrentDispatcher')
 export const Layers = memo(() => {
   const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
   const db = usePGlite()
-  // console.log('Layers, mapLayerSorting:', mapLayerSorting)
 
   // for every layer_presentation_id in mapLayerSorting, get the layer_presentation
   // const where = `active = true
@@ -31,9 +29,7 @@ export const Layers = memo(() => {
     `SELECT * FROM layer_presentations WHERE ${where}`,
     [mapLayerSorting],
   )
-  // console.log('Layers, resLP:', resLP)
   const layerPresentations = useMemo(() => resLP?.rows ?? [], [resLP])
-  // console.log('Layers, layerPresentations:', layerPresentations)
 
   useEffect(() => {
     const run = async () => {
@@ -42,7 +38,6 @@ export const Layers = memo(() => {
         [mapLayerSorting],
       )
       const wmsLayersCount = res.rows[0].count
-      // console.log('Layers, wmsLayersCount:', wmsLayersCount)
       // if no wms layer is present, add osm
       if (
         !wmsLayersCount &&
@@ -57,10 +52,8 @@ export const Layers = memo(() => {
     run()
   }, [mapLayerSorting, layerPresentations, setMapLayerSorting, db])
 
-  // return null
-
   if (!mapLayerSorting.length) return null
-  // return null
+
   return mapLayerSorting.map((layerPresentationId, index) => (
     <Layer
       key={layerPresentationId}
