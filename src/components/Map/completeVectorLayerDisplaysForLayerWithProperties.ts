@@ -13,10 +13,10 @@ export const completeVectorLayerDisplaysForLayerWithProperties = async ({
     `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1`,
     [vectorLayerId],
   )
-  console.log(
-    'completeVectorLayerDisplaysForLayerWithProperties, vectorLayerDisplays:',
-    vectorLayerDisplays,
-  )
+  // console.log(
+  //   'completeVectorLayerDisplaysForLayerWithProperties, vectorLayerDisplays:',
+  //   vectorLayerDisplays,
+  // )
   // if !vectorLayer.display_by_property: ensure single display
 
   // if vectorLayer.display_by_property:

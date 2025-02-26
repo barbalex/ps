@@ -60,7 +60,7 @@ export const Layers = memo(() => {
   // return null
 
   if (!mapLayerSorting.length) return null
-
+  // return null
   return mapLayerSorting.map((layerPresentationId, index) => (
     <Layer
       key={layerPresentationId}
