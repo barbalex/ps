@@ -49,7 +49,7 @@ export const ActionsNode = memo(
       [place.place_id],
     )
     const actionsUnfiltered = resUnfiltered?.rows ?? []
-    const isFiltered = actionsFiltered.length !== actionsUnfiltered.length
+    const isFiltered = filter.length > 0
 
     const actionsNode = useMemo(
       () => ({
