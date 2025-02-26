@@ -104,46 +104,46 @@ export const Jsonb = memo(
       (dataKey) => !fieldNamesDefined.includes(dataKey),
     )
 
-    const fieldsFromDataKeysNotDefined = dataKeysNotDefined.map(
-      (dataKey, index) => (
-        <TextField
-          key={dataKey}
-          label={dataKey}
-          name={dataKey}
-          value={
-            data?.[dataKey]?.toLocaleDateString?.() ?? data?.[dataKey] ?? ''
-          }
-          onChange={(e, dataReturned) => {
-            // if value was removed, remove the key also
-            onChange(e, dataReturned, true)
-          }}
-          validationState="warning"
-          validationMessage={`This field is not defined for this ${
-            isAccountTable ? 'account' : 'project'
-          }`}
-          autoFocus={autoFocus && index === 0 && fields.length === 0}
+    return (
+      <>
+        {fields.length > 0 ? (
+          <WidgetsFromDataFieldsDefined
+            key="widgetsFromDataFieldsDefined"
+            fields={fields}
+            data={data}
+            table={table}
+            jsonFieldName={jsonFieldName}
+            idField={idField}
+            id={id}
+            autoFocus={autoFocus}
+            ref={ref}
+          />
+        ) : null}
+        {dataKeysNotDefined.map((dataKey, index) => (
+          <TextField
+            key={dataKey}
+            label={dataKey}
+            name={dataKey}
+            value={
+              data?.[dataKey]?.toLocaleDateString?.() ?? data?.[dataKey] ?? ''
+            }
+            onChange={(e, dataReturned) => {
+              // if value was removed, remove the key also
+              onChange(e, dataReturned, true)
+            }}
+            validationState="warning"
+            validationMessage={`This field is not defined for this ${
+              isAccountTable ? 'account' : 'project'
+            }`}
+            autoFocus={autoFocus && index === 0 && fields.length === 0}
+          />
+        ))}
+        <AddField
+          key="addField"
+          tableName={table}
+          level={place_id2 ? 2 : 1}
         />
-      ),
+      </>
     )
-
-    return [
-      ...(fields.length
-        ? [
-            <WidgetsFromDataFieldsDefined
-              key="widgetsFromDataFieldsDefined"
-              fields={fields}
-              data={data}
-              table={table}
-              jsonFieldName={jsonFieldName}
-              idField={idField}
-              id={id}
-              autoFocus={autoFocus}
-              ref={ref}
-            />,
-          ]
-        : []),
-      fieldsFromDataKeysNotDefined,
-      <AddField key="addField" tableName={table} level={place_id2 ? 2 : 1} />,
-    ]
   },
 )

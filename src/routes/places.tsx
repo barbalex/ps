@@ -60,7 +60,7 @@ export const Component = memo(() => {
     // TODO:
     // 1. only if not yet exists
     // 2. better via trigger so it also works on import / project creation
-    await createVectorLayer({
+    const resVL = await createVectorLayer({
       project_id,
       type: 'own',
       own_table: 'places',
@@ -68,9 +68,11 @@ export const Component = memo(() => {
       label: placeNamePlural,
       db,
     })
+    const newVectorLayer = resVL?.rows?.[0]
 
     await createVectorLayerDisplay({
       vector_layer_id: newVectorLayer.vector_layer_id,
+      db,
     })
 
     await createLayerPresentation({
