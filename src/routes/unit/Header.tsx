@@ -14,7 +14,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const addRow = useCallback(async () => {
     const res = await createUnit({ db, project_id })
-    const unit = res.rows[0]
+    const unit = res?.rows?.[0]
     navigate({
       pathname: `../${unit.unit_id}`,
       search: searchParams.toString(),

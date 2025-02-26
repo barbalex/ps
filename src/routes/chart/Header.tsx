@@ -25,7 +25,7 @@ export const Header = memo(({ autoFocusRef }) => {
       ? { subproject_id }
       : { project_id }
     const res = await createChart({ ...idToAdd, db })
-    const data = res.rows[0]
+    const data = res?.rows?.[0]
     navigate({
       pathname: `../${data.chart_id}`,
       search: searchParams.toString(),

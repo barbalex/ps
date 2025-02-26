@@ -36,7 +36,7 @@ export const FetchWfsCapabilities = memo(
         `SELECT * FROM wfs_services WHERE url = $1`,
         [urlTrimmed],
       )
-      const existingService = eSRes.rows[0]
+      const existingService = eSRes.rows?.[0]
       let service
       if (existingService) {
         // 2. if so, update it
@@ -58,7 +58,7 @@ export const FetchWfsCapabilities = memo(
           project_id: vectorLayer.project_id,
           db,
         })
-        const serviceData = res.rows[0]
+        const serviceData = res?.rows?.[0]
         try {
           await db.query(
             `UPDATE vector_layers SET wfs_service_id = $1 WHERE vector_layer_id = $2`,
@@ -77,7 +77,7 @@ export const FetchWfsCapabilities = memo(
         paused: true,
         db,
       })
-      const notifData = res.rows[0]
+      const notifData = res?.rows?.[0]
 
       // fetch capabilities
       try {

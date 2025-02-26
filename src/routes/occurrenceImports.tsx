@@ -23,7 +23,7 @@ export const Component = memo(() => {
 
   const add = useCallback(async () => {
     const res = await createOccurrenceImport({ subproject_id, db })
-    const data = res.rows[0]
+    const data = res?.rows?.[0]
     navigate({
       pathname: data.occurrence_import_id,
       search: searchParams.toString(),

@@ -29,7 +29,7 @@ export const ListViewHeader = memo(
     // querying countUnfiltered here to reduce rerenders of parent
     const countSql = `SELECT count(*) FROM ${tableName}`
     const countUnfilteredResult = useLiveIncrementalQuery(countSql, [], 'count')
-    const countUnfiltered = countUnfilteredResult?.rows[0]?.count ?? 0
+    const countUnfiltered = countUnfilteredResult?.rows?.[0]?.count ?? 0
     const title = `${namePlural} (${
       isFiltered
         ? `${countFiltered?.toLocaleString?.(

@@ -25,7 +25,7 @@ export const Component = memo(() => {
       project_id,
       action_id,
     })
-    const data = res.rows[0]
+    const data = res?.rows?.[0]
     navigate({
       pathname: data.action_report_id,
       search: searchParams.toString(),

@@ -28,8 +28,8 @@ export const Component = memo(() => {
     [project_id],
   )
   const subprojects = result?.rows ?? []
-  const namePlural = result?.rows[0]?.subproject_name_plural ?? 'Subprojects'
-  const nameSingular = result?.rows[0]?.subproject_name_singular ?? 'Subproject'
+  const namePlural = result?.rows?.[0]?.subproject_name_plural ?? 'Subprojects'
+  const nameSingular = result?.rows?.[0]?.subproject_name_singular ?? 'Subproject'
   const nameSingularLower = nameSingular.toLowerCase()
 
   // get projects.subproject_name_plural to name the table
@@ -38,14 +38,14 @@ export const Component = memo(() => {
   //   [project_id],
   // )
   // const namePlural =
-  //   resultProject?.rows[0]?.subproject_name_plural ?? 'Subprojects'
+  //   resultProject?.rows?.[0]?.subproject_name_plural ?? 'Subprojects'
   // const nameSingular =
-  //   resultProject?.rows[0]?.subproject_name_singular ?? 'Subproject'
+  //   resultProject?.rows?.[0]?.subproject_name_singular ?? 'Subproject'
   // const nameSingularLower = nameSingular.toLowerCase()
 
   const add = useCallback(async () => {
     const res = await createSubproject({ db, project_id })
-    const data = res.rows[0]
+    const data = res?.rows?.[0]
     Navigate(`/data/projects/${project_id}/subprojects/${data.subproject_id}`)
   }, [Navigate, db, project_id])
 

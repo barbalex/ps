@@ -14,7 +14,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const addRow = useCallback(async () => {
     const res = createTaxon({ taxonomy_id, db })
-    const taxon = res.rows[0]
+    const taxon = res?.rows?.[0]
     navigate({
       pathname: `../${taxon.taxon_id}`,
       search: searchParams.toString(),

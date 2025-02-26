@@ -14,7 +14,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const addRow = useCallback(async () => {
     const res = await createGoalReportValue({ db, goal_report_id })
-    const goalReportValue = res.rows[0]
+    const goalReportValue = res?.rows?.[0]
     navigate({
       pathname: `../${goalReportValue.goal_report_value_id}`,
       search: searchParams.toString(),

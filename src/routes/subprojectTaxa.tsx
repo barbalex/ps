@@ -21,7 +21,7 @@ export const Component = memo(() => {
 
   const add = useCallback(async () => {
     const res = await createSubprojectTaxon({ subproject_id, db })
-    const data = res.rows[0]
+    const data = res?.rows?.[0]
     navigate({
       pathname: data.subproject_taxon_id,
       search: searchParams.toString(),

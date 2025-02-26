@@ -28,7 +28,7 @@ export const Component = memo(() => {
 
   const add = useCallback(async () => {
     const res = await createProject({ db })
-    const data = res.rows[0]
+    const data = res?.rows?.[0]
     navigate({ pathname: data.project_id, search: searchParams.toString() })
   }, [db, navigate, searchParams])
 

@@ -30,7 +30,7 @@ export const Header = memo(({ vectorLayerDisplayId }) => {
 
   const addRow = useCallback(async () => {
     const res = await createVectorLayerDisplay({ vector_layer_id })
-    const vectorLayerDisplay = res.rows[0]
+    const vectorLayerDisplay = res?.rows?.[0]
     if (vectorLayerDisplayId) {
       setMapLayerDrawerVectorLayerDisplayId(
         vectorLayerDisplay.vector_layer_display_id,

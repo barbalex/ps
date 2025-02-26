@@ -23,7 +23,7 @@ export const Component = memo(() => {
 
   const add = useCallback(async () => {
     const res = await createProjectCrs({ project_id, db })
-    const projectCrs = res.rows[0]
+    const projectCrs = res?.rows?.[0]
     navigate({
       pathname: projectCrs.project_crs_id,
       search: searchParams.toString(),

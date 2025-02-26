@@ -14,7 +14,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const addRow = useCallback(async () => {
     const res = await createFieldType({ db })
-    const fieldType = res.rows[0]
+    const fieldType = res?.rows?.[0]
     navigate({
       pathname: `../${fieldType.field_type_id}`,
       search: searchParams.toString(),

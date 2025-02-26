@@ -3,12 +3,12 @@ export const updateTableVectorLayerLabels = async ({ db, project_id }) => {
     `SELECT * FROM place_levels WHERE project_id = $1`,
     [project_id],
   )
-  const placeLevels = plRes.rows
+  const placeLevels = plRes?.rows ?? []
   const tVLRes = await db.query(
     `SELECT * FROM vector_layers WHERE project_id = $1 AND type = 'own'`,
     [project_id],
   )
-  const tableVectorLayers = tVLRes.rows
+  const tableVectorLayers = tVLRes?.rows ?? []
   // loop allVectorLayers and update label using placeLevels
   for (const vl of tableVectorLayers) {
     const level = vl.type.slice(-1)

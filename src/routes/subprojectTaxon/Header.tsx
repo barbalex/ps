@@ -14,7 +14,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const addRow = useCallback(async () => {
     const res = await createSubprojectTaxon({ db, subproject_id })
-    const subprojectTaxon = res.rows[0]
+    const subprojectTaxon = res?.rows?.[0]
     navigate({
       pathname: `../${subprojectTaxon.subproject_taxon_id}`,
       search: searchParams.toString(),

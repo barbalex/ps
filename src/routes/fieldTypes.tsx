@@ -28,7 +28,7 @@ export const Component = memo(() => {
 
   const add = useCallback(async () => {
     const res = await createFieldType({ db })
-    const fieldType = res.rows[0]
+    const fieldType = res?.rows?.[0]
     navigate({
       pathname: fieldType.field_type_id,
       search: searchParams.toString(),

@@ -22,7 +22,7 @@ export const Component = memo(() => {
 
   const add = useCallback(async () => {
     const res = await createGoalReport({ db, project_id, goal_id })
-    const data = res.rows[0]
+    const data = res?.rows?.[0]
     navigate({ pathname: data.goal_report_id, search: searchParams.toString() })
   }, [db, goal_id, navigate, project_id, searchParams])
 

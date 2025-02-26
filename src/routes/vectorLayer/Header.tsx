@@ -92,7 +92,7 @@ export const Header = memo(({ autoFocusRef, row }) => {
 
   const addRow = useCallback(async () => {
     const res = await createVectorLayer({ project_id, type: 'wfs', db })
-    const vectorLayer = res.rows[0]
+    const vectorLayer = res?.rows?.[0]
     // also add vector_layer_display
     createVectorLayerDisplay({
       vector_layer_id: vectorLayer.vector_layer_id,

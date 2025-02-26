@@ -14,7 +14,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const addRow = useCallback(async () => {
     const res = createSubprojectUser({ subproject_id, db })
-    const subprojectUser = res.rows[0]
+    const subprojectUser = res?.rows?.[0]
     navigate({
       pathname: `../${subprojectUser.subproject_user_id}`,
       search: searchParams.toString(),

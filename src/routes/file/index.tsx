@@ -21,7 +21,7 @@ export const Component = memo(() => {
   const result = useLiveQuery(`SELECT * FROM files WHERE file_id = $1`, [
     file_id,
   ])
-  const row = result?.rows[0]
+  const row = result?.rows?.[0]
 
   const onChange = useCallback<InputProps['onChange']>(
     (e, dataIn) => {

@@ -14,7 +14,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const addRow = useCallback(async () => {
     const res = await createCheckValue({ check_id, db })
-    const checkValue = res.rows[0]
+    const checkValue = res?.rows?.[0]
     navigate({
       pathname: `../${checkValue.check_value_id}`,
       search: searchParams.toString(),

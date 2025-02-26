@@ -14,7 +14,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const addRow = useCallback(async () => {
     const res = await createCrs({ db })
-    const data = res.rows[0]
+    const data = res?.rows?.[0]
     navigate({
       pathname: `../${data.crs_id}`,
       search: searchParams.toString(),

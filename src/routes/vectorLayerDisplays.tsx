@@ -30,7 +30,7 @@ export const Component = memo(({ vectorLayerId }) => {
 
   const add = useCallback(async () => {
     const res = await createVectorLayerDisplay({ vector_layer_id })
-    const vectorLayerDisplay = res.rows[0]
+    const vectorLayerDisplay = res?.rows?.[0]
     if (vectorLayerId) {
       // we are in the map drawer
       setVectorLayerDisplayId(vectorLayerDisplay.vector_layer_display_id)

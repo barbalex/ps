@@ -14,7 +14,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const addRow = useCallback(async () => {
     const res = createWidgetType({ db })
-    const data = res.rows[0]
+    const data = res?.rows?.[0]
     navigate({
       pathname: `../${data.widget_type_id}`,
       search: searchParams.toString(),

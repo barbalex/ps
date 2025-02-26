@@ -28,7 +28,7 @@ export const Component = memo(() => {
 
   const add = useCallback(async () => {
     const res = await createWidgetForField({ db })
-    const data = res.rows[0]
+    const data = res?.rows?.[0]
     navigate({
       pathname: data.widget_for_field_id,
       search: searchParams.toString(),

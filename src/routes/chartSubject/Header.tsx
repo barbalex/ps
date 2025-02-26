@@ -18,7 +18,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const addRow = useCallback(async () => {
     const res = await createChartSubject({ chart_id, db })
-    const data = res.rows[0]
+    const data = res?.rows?.[0]
     navigate({
       pathname: `../${data.chart_subject_id}`,
       search: searchParams.toString(),

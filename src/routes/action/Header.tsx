@@ -28,7 +28,7 @@ export const Header = memo(({ autoFocusRef }) => {
       project_id,
       place_id: place_id2 ?? place_id,
     })
-    const data = res.rows[0]
+    const data = res?.rows?.[0]
     navigate({
       pathname: `../${data.action_id}`,
       search: searchParams.toString(),
@@ -93,7 +93,7 @@ export const Header = memo(({ autoFocusRef }) => {
       'SELECT geometry FROM actions WHERE action_id = $1',
       [action_id],
     )
-    const action = res.rows[0]
+    const action = res?.rows?.[0]
     const geometry = action?.geometry
     if (!geometry) return alertNoGeometry()
 

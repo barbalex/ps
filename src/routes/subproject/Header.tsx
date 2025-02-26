@@ -16,7 +16,7 @@ export const Header = memo(({ autoFocusRef, nameSingular = 'Subproject' }) => {
 
   const addRow = useCallback(async () => {
     const res = await createSubproject({ db, project_id })
-    const data = res.rows[0]
+    const data = res?.rows?.[0]
     navigate({
       pathname: `../${data.subproject_id}`,
       search: searchParams.toString(),

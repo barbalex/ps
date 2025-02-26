@@ -42,7 +42,7 @@ export const Component = memo(() => {
     `SELECT * FROM place_levels WHERE project_id = $1 AND level = $2 order by label asc`,
     [project_id, place_id ? 2 : 1],
   )
-  const placeLevel = resultPlaceLevel?.rows[0]
+  const placeLevel = resultPlaceLevel?.rows?.[0]
   const placeNameSingular = placeLevel?.name_singular ?? 'Place'
   const placeNamePlural = placeLevel?.name_plural ?? 'Places'
 
@@ -109,7 +109,11 @@ export const Component = memo(() => {
       />
       <div className="list-container">
         {places.map(({ place_id, label }) => (
-          <Row key={place_id} to={place_id} label={label ?? place_id} />
+          <Row
+            key={place_id}
+            to={place_id}
+            label={label ?? place_id}
+          />
         ))}
       </div>
     </div>

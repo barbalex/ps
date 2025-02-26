@@ -17,7 +17,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const addRow = useCallback(async () => {
     const res = await createUser({ db, setUserId })
-    const data = res.rows[0]
+    const data = res?.rows?.[0]
 
     navigate({
       pathname: `../${data.user_id}`,

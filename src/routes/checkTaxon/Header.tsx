@@ -14,7 +14,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const addRow = useCallback(async () => {
     const res = await createCheckTaxon({ db, check_id })
-    const checkTaxon = res.rows[0]
+    const checkTaxon = res?.rows?.[0]
     navigate({
       pathname: `../${checkTaxon.check_taxon_id}`,
       search: searchParams.toString(),

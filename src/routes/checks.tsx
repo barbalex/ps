@@ -37,7 +37,7 @@ export const Component = memo(() => {
       project_id,
       place_id: place_id2 ?? place_id,
     })
-    const data = res.rows[0]
+    const data = res?.rows?.[0]
     navigate({ pathname: data.check_id, search: searchParams.toString() })
   }, [db, navigate, place_id, place_id2, project_id, searchParams])
 

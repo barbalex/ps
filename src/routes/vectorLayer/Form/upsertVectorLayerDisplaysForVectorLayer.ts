@@ -8,7 +8,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     `SELECT * FROM vector_layers WHERE vector_layer_id = $1`,
     [vectorLayerId],
   )
-  const vectorLayer = resVL.rows[0]
+  const vectorLayer = resVL.rows?.[0]
   if (!vectorLayer) {
     throw new Error(`vector_layer_id ${vectorLayerId} not found`)
   }
@@ -75,7 +75,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     `SELECT * FROM fields WHERE name = $1 AND table_name = $2 AND level = $3 AND project_id = $4`,
     [displayByProperty, table, level, projectId],
   )
-  const field = fieldRes.rows[0]
+  const field = fieldRes.rows?.[0]
 
   if (!field) {
     throw new Error(
@@ -120,7 +120,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
         `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1 AND display_property_value = $2`,
         [vectorLayerId, listValue.value],
       )
-      const existingVectorLayerDisplay = res.rows[0]
+      const existingVectorLayerDisplay = res?.rows?.[0]
       // leave existing VLD unchanged
       if (existingVectorLayerDisplay) return
 

@@ -38,7 +38,7 @@ export const ChartSubjectForm = memo(({ autoFocusRef }: Props) => {
     `SELECT * FROM chart_subjects WHERE chart_subject_id = $1`,
     [chart_subject_id],
   )
-  const row = result?.rows[0]
+  const row = result?.rows?.[0]
 
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {

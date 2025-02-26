@@ -14,7 +14,7 @@ export const Header = memo(() => {
 
   const addRow = useCallback(async () => {
     const res = await createMessage({ db })
-    const data = res.rows[0]
+    const data = res?.rows?.[0]
     navigate({
       pathname: `../${data.message_id}`,
       search: searchParams.toString(),

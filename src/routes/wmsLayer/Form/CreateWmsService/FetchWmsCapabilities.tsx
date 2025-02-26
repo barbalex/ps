@@ -36,7 +36,7 @@ export const FetchWmsCapabilities = memo(
         `SELECT * FROM wms_services WHERE url = $1`,
         [urlTrimmed],
       )
-      const existingService = resES.rows[0]
+      const existingService = resES.rows?.[0]
       let service
       if (existingService) {
         // 2. if so, update it
@@ -77,7 +77,7 @@ export const FetchWmsCapabilities = memo(
         paused: true,
         db,
       })
-      const data = res.rows[0]
+      const data = res?.rows?.[0]
 
       // fetch capabilities
       try {
