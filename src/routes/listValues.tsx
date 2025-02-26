@@ -2,7 +2,7 @@ import { useCallback, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
-import { createList, createListValue } from '../modules/createRows.ts'
+import { createListValue } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import '../form.css'
