@@ -4,7 +4,6 @@ import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
-import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
@@ -63,11 +62,6 @@ export const Component = memo(() => {
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
-        <TextFieldInactive
-          label="ID"
-          name="place_level_id"
-          value={row.place_level_id}
-        />
         <RadioGroupField
           label="Level"
           name="level"

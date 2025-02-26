@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
-import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { ComboboxFilteringForTable } from '../../components/shared/ComboboxFilteringForTable/index.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
@@ -93,11 +92,6 @@ export const Component = memo(() => {
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
-        <TextFieldInactive
-          label="ID"
-          name="occurrence_id"
-          value={row.occurrence_id}
-        />
         <SwitchField
           label="Not to assign"
           name="not_to_assign"

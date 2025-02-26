@@ -4,7 +4,6 @@ import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
-import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { DateField } from '../../components/shared/DateField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
@@ -38,11 +37,6 @@ export const Component = memo(() => {
     <div className="form-outer-container">
       <Header />
       <div className="form-container">
-        <TextFieldInactive
-          label="ID"
-          name="message_id"
-          value={row.message_id ?? ''}
-        />
         <DateField
           label="Date"
           name="date"
