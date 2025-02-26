@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
-import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { ComboboxFilteringForTable } from '../../components/shared/ComboboxFilteringForTable/index.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
@@ -44,11 +43,6 @@ export const Component = memo(() => {
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
-        <TextFieldInactive
-          label="ID"
-          name="subproject_taxon_id"
-          value={row.subproject_taxon_id}
-        />
         <ComboboxFilteringForTable
           label="Taxon"
           name="taxon_id"

@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom'
 // import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
-import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { SliderFieldWithInput } from '../../components/shared/SliderFieldWithInput.tsx'
@@ -73,11 +72,6 @@ export const Component = ({ vectorLayerDisplayId }) => {
           vectorLayerDisplayId={vectorLayerDisplayId}
         />
         <div className="form-container">
-          <TextFieldInactive
-            label="ID"
-            name="vector_layer_display_id"
-            value={row.vector_layer_display_id}
-          />
           <RadioGroupField
             name="marker_type"
             label="Punkt-Typ"

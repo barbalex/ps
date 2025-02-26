@@ -85,11 +85,6 @@ export const Component = memo(() => {
               alt={row.name}
             />
           )}
-        <TextFieldInactive
-          label="ID"
-          name="file_id"
-          value={row.file_id ?? ''}
-        />
         {/* TODO: remove all id fields from form after implementing files everywhere */}
         <DropdownField
           label="Project"
