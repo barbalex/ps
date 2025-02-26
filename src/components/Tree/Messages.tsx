@@ -16,7 +16,9 @@ export const MessagesNode = memo(() => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const result = useLiveQuery(`SELECT * FROM messages order by date asc`)
+  const result = useLiveQuery(
+    `SELECT *, date as label FROM messages order by date asc`,
+  )
   const messages = result?.rows ?? []
 
   const messagesNode = useMemo(
