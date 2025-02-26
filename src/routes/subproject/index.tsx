@@ -5,7 +5,6 @@ import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { Header } from './Header.tsx'
 import { Component as Form } from './Form.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
-import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 
 import '../../form.css'
@@ -46,11 +45,6 @@ export const Component = memo(() => {
         role="tabpanel"
         aria-labelledby="form"
       >
-        <TextFieldInactive
-          label="ID"
-          name="subproject_id"
-          value={row.subproject_id ?? ''}
-        />
         <Form
           onChange={onChange}
           row={row}
