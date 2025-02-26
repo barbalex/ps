@@ -68,7 +68,7 @@ export const Layers = memo(() => {
       const wmsLayer = resWmsLayer?.rows?.[0]
 
       const resWfsLayer = await db.query(
-        `SELECT * FROM wfs_layers WHERE layer_presentation_id = $1 AND type = 'wfs'`,
+        `SELECT * FROM vector_layers WHERE layer_presentation_id = $1 AND type = 'wfs'`,
         [layerPresentationId],
       )
       const wfsLayer = resWfsLayer?.rows?.[0]
