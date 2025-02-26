@@ -40,7 +40,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1`,
     [vectorLayerId],
   )
-  const existingVectorLayerDisplays = existingVLDRes.rows
+  const existingVectorLayerDisplays = existingVLDRes?.rows ?? []
 
   if (!displayByProperty) {
     const firstExistingVectorLayerDisplay = existingVectorLayerDisplays?.[0]
@@ -75,7 +75,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     `SELECT * FROM fields WHERE name = $1 AND table_name = $2 AND level = $3 AND project_id = $4`,
     [displayByProperty, table, level, projectId],
   )
-  const field = fieldRes.rows?.[0]
+  const field = fieldRes?.rows?.[0]
 
   if (!field) {
     throw new Error(
@@ -89,7 +89,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     const listRes = await db.query(`SELECT * FROM lists WHERE list_id = $1`, [
       field.list_id,
     ])
-    const list = listRes.rows?.[0]
+    const list = listRes?.rows?.[0]
     if (!list) {
       throw new Error(`list_id ${field.list_id} not found`)
     }
@@ -97,7 +97,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
       `SELECT * FROM list_values WHERE list_id = $1`,
       [field.list_id],
     )
-    const listValues = lVRes.rows
+    const listValues = lVRes?.rows ?? []
     if (!listValues.length) {
       throw new Error(`list_id ${field.list_id} has no values`)
     }

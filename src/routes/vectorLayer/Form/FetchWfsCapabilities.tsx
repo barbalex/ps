@@ -36,7 +36,7 @@ export const FetchWfsCapabilities = memo(
         `SELECT * FROM wfs_services WHERE url = $1`,
         [urlTrimmed],
       )
-      const existingService = eSRes.rows?.[0]
+      const existingService = eSRes?.rows?.[0]
       let service
       if (existingService) {
         // 2. if so, update it
