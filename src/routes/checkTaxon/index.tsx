@@ -5,7 +5,6 @@ import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
-import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
@@ -43,11 +42,6 @@ export const Component = memo(() => {
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
-        <TextFieldInactive
-          label="ID"
-          name="check_taxon_id"
-          value={row.check_taxon_id ?? ''}
-        />
         <DropdownField
           label="Taxon"
           name="taxon_id"

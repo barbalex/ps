@@ -55,11 +55,6 @@ export const ChartSubjectForm = memo(({ autoFocusRef }: Props) => {
 
   return (
     <div className="form-container">
-      {/* <TextFieldInactive
-        label="ID"
-        name="chart_subject_id"
-        value={row.chart_subject_id}
-      /> */}
       <TextField
         label="Name"
         name="name"

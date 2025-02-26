@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
-import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
@@ -155,11 +154,6 @@ export const Form = memo(({ autoFocusRef }: Props) => {
 
   return (
     <div className="form-container">
-      <TextFieldInactive
-        label="ID"
-        name="chart_id"
-        value={row.chart_id}
-      />
       <Section title="General settings">
         <DropdownFieldSimpleOptions
           label="Chart Type"
