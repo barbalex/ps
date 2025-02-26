@@ -58,35 +58,35 @@ export const Layer = memo(({ layerPresentationId, index }) => {
   return null
 
   // // todo: add key, layerPresentationId
-  // if (wmsLayer) {
-  //   wmsLayer.opacity = layerPresentation.opacity_percent
-  //     ? layerPresentation.opacity_percent / 100
-  //     : 1
-  //   const partsToRedrawOn = {
-  //     max_zoom: layerPresentation.max_zoom,
-  //     min_zoom: layerPresentation.min_zoom,
-  //     opacity: layerPresentation.opacity_percent,
-  //     url: wmsLayer.wms_services.url,
-  //     format: wmsLayer.wms_services.image_format,
-  //     layer: wmsLayer.wms_service_layer_name,
-  //     transparent: layerPresentation.transparent,
-  //     version: wmsLayer.wms_services.version,
-  //     grayscale: layerPresentation.grayscale,
-  //   }
-  //   return (
-  //     <Pane
-  //       key={`${layerPresentationId}/${mapLayerSorting.join()}`}
-  //       name={wmsLayer.label}
-  //       style={{ zIndex: paneBaseIndex - index }}
-  //     >
-  //       <WmsLayerComponent
-  //         key={JSON.stringify(partsToRedrawOn)}
-  //         layer={wmsLayer}
-  //         layerPresentation={layerPresentation}
-  //       />
-  //     </Pane>
-  //   )
-  // }
+  if (wmsLayer) {
+    wmsLayer.opacity = layerPresentation.opacity_percent
+      ? layerPresentation.opacity_percent / 100
+      : 1
+    const partsToRedrawOn = {
+      max_zoom: layerPresentation.max_zoom,
+      min_zoom: layerPresentation.min_zoom,
+      opacity: layerPresentation.opacity_percent,
+      url: wmsLayer.wms_services.url,
+      format: wmsLayer.wms_services.image_format,
+      layer: wmsLayer.wms_service_layer_name,
+      transparent: layerPresentation.transparent,
+      version: wmsLayer.wms_services.version,
+      grayscale: layerPresentation.grayscale,
+    }
+    return (
+      <Pane
+        key={`${layerPresentationId}/${mapLayerSorting.join()}`}
+        name={wmsLayer.label}
+        style={{ zIndex: paneBaseIndex - index }}
+      >
+        <WmsLayerComponent
+          key={JSON.stringify(partsToRedrawOn)}
+          layer={wmsLayer}
+          layerPresentation={layerPresentation}
+        />
+      </Pane>
+    )
+  }
 
   // if (isWfsLayer) {
   //   return (
