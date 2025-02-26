@@ -88,6 +88,7 @@ export const Layer = memo(({ layerPresentationId, index }) => {
     )
   }
 
+  // [vite] TypeError: Cannot read properties of undefined (reading 'ReactCurrentDispatcher')
   // if (isWfsLayer) {
   //   return (
   //     <Pane
@@ -103,25 +104,25 @@ export const Layer = memo(({ layerPresentationId, index }) => {
   //   )
   // }
 
-  // if (isTableLayer) {
-  //   const Component =
-  //     tableLayerToComponent[
-  //       `${vectorLayer.own_table}${vectorLayer.own_table_level}`
-  //     ]
+  if (isTableLayer) {
+    const Component =
+      tableLayerToComponent[
+        `${vectorLayer.own_table}${vectorLayer.own_table_level}`
+      ]
 
-  //   return (
-  //     <Pane
-  //       key={`${layerPresentationId}/${mapLayerSorting.join()}`}
-  //       name={vectorLayer.label}
-  //       style={{ zIndex: paneBaseIndex - index }}
-  //     >
-  //       <Component
-  //         key={layerPresentationId}
-  //         layerPresentation={layerPresentation}
-  //       />
-  //     </Pane>
-  //   )
-  // }
+    return (
+      <Pane
+        key={`${layerPresentationId}/${mapLayerSorting.join()}`}
+        name={vectorLayer.label}
+        style={{ zIndex: paneBaseIndex - index }}
+      >
+        <Component
+          key={layerPresentationId}
+          layerPresentation={layerPresentation}
+        />
+      </Pane>
+    )
+  }
 
-  // return null
+  return null
 })
