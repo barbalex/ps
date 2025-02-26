@@ -12,6 +12,7 @@ import { mapLayerSortingAtom } from '../../../store.ts'
 const paneBaseIndex = 400 // was: 200. then wfs layers covered lower ones
 
 // TODO: text
+// TODO: vite TypeError: Cannot read properties of undefined (reading 'ReactCurrentDispatcher')
 export const Layers = memo(() => {
   const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
   console.log('Layers, mapLayerSorting:', mapLayerSorting)

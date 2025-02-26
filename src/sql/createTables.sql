@@ -50,10 +50,10 @@ COMMENT ON COLUMN accounts.projects_label_by IS 'Used to label projects in lists
 --------------------------------------------------------------
 -- projects
 --
-CREATE TYPE project_type AS enum(
-  'species',
-  'biotope'
+create table if not exists project_types (
+  type text primary key default null
 );
+insert into project_types (type) values ('species'), ('biotope');
 
 -- TODO: add crs for presentation
 -- TODO: add geometry
@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS projects(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   name text DEFAULT NULL,
   label text DEFAULT NULL,
-  type project_type DEFAULT NULL,
+  type text DEFAULT NULL references project_types(type) on delete no action on update cascade,
   subproject_name_singular text DEFAULT NULL,
   subproject_name_plural text DEFAULT NULL,
   subproject_order_by text DEFAULT NULL,
@@ -237,18 +237,17 @@ COMMENT ON TABLE subprojects IS 'Goal: manage subprojects. Will most often be a 
 --------------------------------------------------------------
 -- project_users
 --
-CREATE TYPE user_role AS enum(
-  'manager',
-  'editor',
-  'reader'
+create table if not exists user_roles (
+  "role" text primary key default null
 );
+insert into user_roles ("role") values ('manager'), ('editor'), ('reader');
 
 CREATE TABLE IF NOT EXISTS project_users(
   project_user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  "role" user_role DEFAULT NULL,
+  "role" text DEFAULT NULL references user_roles("role") on delete no action on update cascade,
   label text DEFAULT NULL
 );
 
@@ -274,7 +273,7 @@ CREATE TABLE IF NOT EXISTS subproject_users(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  "role" user_role DEFAULT NULL,
+  "role" text DEFAULT NULL references user_roles("role") on delete no action on update cascade,
   label text DEFAULT NULL
 );
 
@@ -941,7 +940,7 @@ CREATE TABLE IF NOT EXISTS place_users(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  "role" user_role DEFAULT 'reader',
+  "role" text DEFAULT 'reader' references user_roles("role") on delete no action on update cascade,
   label text DEFAULT NULL
 );
 

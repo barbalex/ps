@@ -51,7 +51,7 @@ export const ClickListener = memo(() => {
         columnPrefix: 'wl.',
       })
       const sqlToAddToWhere = sqlFilter ? ` AND ${sqlFilter}` : ''
-      const wmsLayers = await db.query(
+      const resWmsLayers = await db.query(
         `
         select wl.wms_service_layer_name, ws.info_format, ws.version, ws.url
         from wms_layers wl 
@@ -62,6 +62,7 @@ export const ClickListener = memo(() => {
       `,
         [project_id],
       )
+      const wmsLayers = resWmsLayers?.rows ?? []
 
       // loop through vector layers and get infos
       for await (const layer of wmsLayers) {
