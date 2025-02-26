@@ -67,17 +67,13 @@ export const Layers = memo(() => {
       )
       const wmsLayer = resWmsLayer?.rows?.[0]
 
-      const resWfsLayer = await db.query(
+      const resVectorLayer = await db.query(
         `SELECT * FROM vector_layers WHERE layer_presentation_id = $1 AND type = 'wfs'`,
         [layerPresentationId],
       )
-      const wfsLayer = resWfsLayer?.rows?.[0]
-
-      const resTableLayer = await db.query(
-        `SELECT * FROM vector_layers WHERE layer_presentation_id = $1 AND type != 'wfs'`,
-        [layerPresentationId],
-      )
-      const tableLayer = resTableLayer?.rows?.[0]
+      const vectorLayer = resVectorLayer?.rows?.[0]
+      const isWfsLayer = vectorLayer?.type === 'wfs'
+      const isTableLayer = vectorLayer?.type !== 'wfs'
 
       // todo: add key, layerPresentationId
       if (wmsLayer) {
@@ -110,31 +106,31 @@ export const Layers = memo(() => {
         )
       }
 
-      if (wfsLayer) {
+      if (isWfsLayer) {
         return setReturnVal(
           <Pane
             key={`${layerPresentationId}/${mapLayerSorting.join()}`}
-            name={wfsLayer.label}
+            name={vectorLayer.label}
             style={{ zIndex: paneBaseIndex - index }}
           >
             <VectorLayerChooser
               layerPresentation={layerPresentation}
-              layer={wfsLayer}
+              layer={vectorLayer}
             />
           </Pane>,
         )
       }
 
-      if (tableLayer) {
+      if (isTableLayer) {
         const Component =
           tableLayerToComponent[
-            `${tableLayer.own_table}${tableLayer.own_table_level}`
+            `${vectorLayer.own_table}${vectorLayer.own_table_level}`
           ]
 
         return (
           <Pane
             key={`${layerPresentationId}/${mapLayerSorting.join()}`}
-            name={tableLayer.label}
+            name={vectorLayer.label}
             style={{ zIndex: paneBaseIndex - index }}
           >
             <Component
