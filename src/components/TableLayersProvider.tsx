@@ -36,14 +36,16 @@ export const TableLayersProvider = memo(() => {
 
     const run = async () => {
       for (const project of projects) {
-        const { rows: placeLevels } = await db.query(
+        const resPL = await db.query(
           `SELECT * FROM place_levels WHERE project_id = $1`,
           [project.project_id],
         )
-        const { rows: vectorLayers } = await db.query(
+        const placeLevels = resPL?.rows
+        const resVL = await db.query(
           `SELECT * FROM vector_layers WHERE project_id = $1`,
           [project.project_id],
         )
+        const vectorLayers = resVL?.rows
         // depending on place_levels, find what vectorLayerTables need vector layers
         const placeLevel1 = placeLevels?.find((pl) => pl.level === 1)
         const placeLevel2 = placeLevels?.find((pl) => pl.level === 2)
@@ -70,29 +72,33 @@ export const TableLayersProvider = memo(() => {
             places1VectorLayer,
           )
         }
+
         // 1.2 places1VectorLayerDisplay: always needed
-        const { rows: places1VectorLayerDisplays } = await db.query(
+        const resPlaces1VectorLayerDisplays = await db.query(
           `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1`,
           [places1VectorLayer.vector_layer_id],
         )
-        const places1VectorLayerDisplay = places1VectorLayerDisplays?.[0]
+        const places1VectorLayerDisplay =
+          resPlaces1VectorLayerDisplays?.rows?.[0]
         if (!places1VectorLayerDisplay) {
           await createVectorLayerDisplay({
             vector_layer_id: places1VectorLayer.vector_layer_id,
           })
         }
+
         // 1.3 places1LayerPresentation: always needed
-        const { rows: places1LayerPresentations } = await db.query(
+        const resPlaces1LayerPresentations = await db.query(
           `SELECT * FROM layer_presentations WHERE vector_layer_id = $1`,
           [places1VectorLayer.vector_layer_id],
         )
-        const places1LayerPresentation = places1LayerPresentations?.[0]
+        const places1LayerPresentation = resPlaces1LayerPresentations?.rows?.[0]
         if (!places1LayerPresentation) {
           await createLayerPresentation({
             vector_layer_id: places1VectorLayer.vector_layer_id,
             db,
           })
         }
+
         // 2.1 actions1: always needed
         let actions1VectorLayer = vectorLayers?.find(
           (vl) =>
@@ -113,29 +119,34 @@ export const TableLayersProvider = memo(() => {
           })
           actions1VectorLayer = res.rows?.[0]
         }
+
         // 2.2 actions1VectorLayerDisplay: always needed
-        const { rows: actions1VectorLayerDisplays } = await db.query(
+        const resActions1VectorLayerDisplays = await db.query(
           `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1`,
           [actions1VectorLayer.vector_layer_id],
         )
-        const actions1VectorLayerDisplay = actions1VectorLayerDisplays?.[0]
+        const actions1VectorLayerDisplay =
+          resActions1VectorLayerDisplays?.rows?.[0]
         if (!actions1VectorLayerDisplay) {
           await createVectorLayerDisplay({
             vector_layer_id: actions1VectorLayer.vector_layer_id,
           })
         }
+
         // 2.3 actions1LayerPresentation: always needed
-        const { rows: actions1LayerPresentations } = await db.query(
+        const resActions1LayerPresentations = await db.query(
           `SELECT * FROM layer_presentations WHERE vector_layer_id = $1`,
           [actions1VectorLayer.vector_layer_id],
         )
-        const actions1LayerPresentation = actions1LayerPresentations?.[0]
+        const actions1LayerPresentation =
+          resActions1LayerPresentations?.rows?.[0]
         if (!actions1LayerPresentation) {
           await createLayerPresentation({
             vector_layer_id: actions1VectorLayer.vector_layer_id,
             db,
           })
         }
+
         // 3.1 checks1: always needed
         let checks1VectorLayer = vectorLayers?.find(
           (vl) =>
@@ -156,29 +167,33 @@ export const TableLayersProvider = memo(() => {
           })
           checks1VectorLayer = res.rows?.[0]
         }
+
         // 3.2 checks1VectorLayerDisplay: always needed
-        const { rows: checks1VectorLayerDisplays } = await db.query(
+        const resChecks1VectorLayerDisplays = await db.query(
           `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1`,
           [checks1VectorLayer.vector_layer_id],
         )
-        const checks1VectorLayerDisplay = checks1VectorLayerDisplays?.[0]
+        const checks1VectorLayerDisplay =
+          resChecks1VectorLayerDisplays?.rows?.[0]
         if (!checks1VectorLayerDisplay) {
           await createVectorLayerDisplay({
             vector_layer_id: checks1VectorLayer.vector_layer_id,
           })
         }
+
         // 3.3 checks1LayerPresentation: always needed
-        const { rows: checks1LayerPresentations } = await db.query(
+        const resChecks1LayerPresentations = await db.query(
           `SELECT * FROM layer_presentations WHERE vector_layer_id = $1`,
           [checks1VectorLayer.vector_layer_id],
         )
-        const checks1LayerPresentation = checks1LayerPresentations?.[0]
+        const checks1LayerPresentation = resChecks1LayerPresentations?.rows?.[0]
         if (!checks1LayerPresentation) {
           await createLayerPresentation({
             vector_layer_id: checks1VectorLayer.vector_layer_id,
             db,
           })
         }
+
         // 4.1 occurrences_assigned1 and occurrences_assigned_lines1: needed if occurrences exist and placeLevels1 has occurrences
         // TODO: add occurrences_assigned_lines1
         if (placeLevel1?.occurrences && occurrences.length) {
@@ -201,27 +216,27 @@ export const TableLayersProvider = memo(() => {
             })
             occurrencesAssigned1VectorLayer = res.rows?.[0]
           }
+
           // 4.2 occurrences_assigned1VectorLayerDisplay: always needed
-          const { rows: occurrencesAssigned1VectorLayerDisplays } =
-            await db.query(
-              `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1`,
-              [occurrencesAssigned1VectorLayer.vector_layer_id],
-            )
+          const resOccurrencesAssigned1VectorLayerDisplays = await db.query(
+            `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1`,
+            [occurrencesAssigned1VectorLayer.vector_layer_id],
+          )
           const occurrencesAssigned1VectorLayerDisplay =
-            occurrencesAssigned1VectorLayerDisplays?.[0]
+            resOccurrencesAssigned1VectorLayerDisplays?.rows?.[0]
           if (!occurrencesAssigned1VectorLayerDisplay) {
             await createVectorLayerDisplay({
               vector_layer_id: occurrencesAssigned1VectorLayer.vector_layer_id,
             })
           }
+
           // 4.3 occurrences_assigned1LayerPresentation: always needed
-          const { rows: occurrencesAssigned1LayerPresentations } =
-            await db.query(
-              `SELECT * FROM layer_presentations WHERE vector_layer_id = $1`,
-              [occurrencesAssigned1VectorLayer.vector_layer_id],
-            )
+          const resOccurrencesAssigned1LayerPresentations = await db.query(
+            `SELECT * FROM layer_presentations WHERE vector_layer_id = $1`,
+            [occurrencesAssigned1VectorLayer.vector_layer_id],
+          )
           const occurrencesAssigned1LayerPresentation =
-            occurrencesAssigned1LayerPresentations?.[0]
+            resOccurrencesAssigned1LayerPresentations?.rows?.[0]
           if (!occurrencesAssigned1LayerPresentation) {
             await createLayerPresentation({
               vector_layer_id: occurrencesAssigned1VectorLayer.vector_layer_id,
@@ -229,6 +244,7 @@ export const TableLayersProvider = memo(() => {
             })
           }
         }
+
         // 5.1 occurrences_to_assess: needed if occurrences exist
         if (occurrences.length) {
           let occurrencesToAssessVectorLayer = vectorLayers?.find(
@@ -245,6 +261,7 @@ export const TableLayersProvider = memo(() => {
             })
             occurrencesToAssessVectorLayer = res.rows?.[0]
           }
+
           // 5.2 occurrencesToAssessVectorLayerDisplay: always needed
           const { rows: occurrencesToAssessVectorLayerDisplays } =
             await db.query(
@@ -258,6 +275,7 @@ export const TableLayersProvider = memo(() => {
               vector_layer_id: occurrencesToAssessVectorLayer.vector_layer_id,
             })
           }
+
           // 5.3 occurrencesToAssessLayerPresentation: always needed
           const { rows: occurrencesToAssessLayerPresentations } =
             await db.query(
