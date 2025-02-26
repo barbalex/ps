@@ -30,7 +30,7 @@ export const Component = memo(() => {
   )
   const actions = result?.rows ?? []
 
-  const isFiltered = !!filter
+  const isFiltered = filter.length > 0
 
   const add = useCallback(async () => {
     const res = await createAction({

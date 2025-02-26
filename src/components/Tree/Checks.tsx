@@ -48,7 +48,7 @@ export const ChecksNode = memo(
       [place.place_id],
     )
     const checksUnfiltered = resUnfiltered?.rows ?? []
-    const isFiltered = checksFiltered.length !== checksUnfiltered.length
+    const isFiltered = filter.length > 0
 
     // TODO: get name by place_level
     const checksNode = useMemo(

@@ -21,7 +21,7 @@ export const Component = memo(() => {
   const [checks1Filter] = useAtom(checks1FilterAtom)
   const [checks2Filter] = useAtom(checks2FilterAtom)
   const filter = place_id2 ? checks2Filter : checks1Filter
-  const isFiltered = !!filter
+  const isFiltered = filter.length > 0
 
   const results = useLiveQuery(
     `SELECT * FROM checks WHERE place_id = $1${
