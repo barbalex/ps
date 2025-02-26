@@ -88,10 +88,10 @@ export const WFS = ({ layer, layerPresentation }) => {
   const [data, setData] = useState()
   const fetchData = useCallback(
     async () => {
-      const res = await db.query(`SELECT * FROM crs WHERE code = $1`, [
+      const resCrs = await db.query(`SELECT * FROM crs WHERE code = $1`, [
         wfsDefaultCrsCode,
       ])
-      const defaultCrs = res.rows[0]
+      const defaultCrs = resCrs.rows[0]
       removeNotifs()
       const bbox = bboxFromBounds({ bounds: map.getBounds(), defaultCrs })
       const notifRes = await createNotification({

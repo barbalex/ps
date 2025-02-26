@@ -16,7 +16,10 @@ export const MapContainer = memo(() => {
   const containerRef = useRef<HTMLDivElement>(null)
 
   return (
-    <div style={containerStyle} ref={containerRef}>
+    <div
+      style={containerStyle}
+      ref={containerRef}
+    >
       <LeftMenuDrawer containerRef={containerRef} />
       <Map />
       <RightMenuDrawer containerRef={containerRef} />

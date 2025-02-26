@@ -97,7 +97,7 @@ export const Map = memo(() => {
           {mapIsLocating && <LocationMarker />}
           <ClickListener />
           <DrawControl />
-          <Layers />
+          {/* <Layers /> */}
           <BottomRightControl
             position="bottomright"
             visible={true}
