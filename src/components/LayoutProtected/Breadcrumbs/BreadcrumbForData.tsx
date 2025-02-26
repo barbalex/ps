@@ -100,6 +100,7 @@ export const BreadcrumbForData = memo(
 
     const db = usePGlite()
     const queryTable = table === 'root' || table === 'docs' ? 'projects' : table
+    const orderBy = table === 'messages' ? 'date desc' : 'label asc'
 
     // console.log('BreadcrumbForData', {
     //   queryTable,
@@ -109,10 +110,11 @@ export const BreadcrumbForData = memo(
     //   db,
     // })
 
+    // TODO: messages have no label
     const res = useLiveQuery(
       `SELECT * FROM ${queryTable} ${
         where ? ` WHERE ${where}` : ''
-      } order by label asc`,
+      } order by ${orderBy}`,
     )
     const results = res?.rows ?? []
 
