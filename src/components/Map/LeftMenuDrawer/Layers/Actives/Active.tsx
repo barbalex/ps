@@ -41,7 +41,7 @@ import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine'
 import invariant from 'tiny-invariant'
 import { useAtom } from 'jotai'
 import { pipe } from 'remeda'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createNotification } from '../../../../../modules/createRows.ts'
@@ -140,12 +140,18 @@ export const ActiveLayer = memo(
       layer.wms_service_layer_name,
     ])
 
-    const layerPresentation = layer.layer_presentations?.[0]
+    const res = useLiveQuery(
+      `SELECT * FROM layer_presentations WHERE ${
+        isVectorLayer ? 'vector_layer_id' : 'wms_layer_id'
+      } = $1`,
+      [isVectorLayer ? layer.vector_layer_id : layer.wms_layer_id],
+    )
+    const layerPresentation = res?.rows?.[0]
 
     const onChangeActive = useCallback(() => {
       if (!layerPresentation) {
         // if no presentation exists, create notification
-        createNotification({
+        return createNotification({
           title: 'Layer presentation not found',
           type: 'warning',
           db,
@@ -255,7 +261,7 @@ export const ActiveLayer = memo(
       instanceId,
       layer,
       layerCount,
-      layerPresentation.layer_presentation_id,
+      layerPresentation?.layer_presentation_id,
       registerItem,
     ])
 
@@ -331,7 +337,7 @@ export const ActiveLayer = memo(
                     style={{ color: 'rgba(38, 82, 37, 0.9)' }}
                   />
                 }
-                checked={layerPresentation.active}
+                checked={layerPresentation?.active}
                 onClick={onChangeActive}
                 style={pipe(
                   {
@@ -358,7 +364,10 @@ export const ActiveLayer = memo(
             >
               <Tab value="overall-displays">Overall Display</Tab>
               {isVectorLayer && (
-                <Tab value="feature-displays" onClick={onClickFeatureDisplays}>
+                <Tab
+                  value="feature-displays"
+                  onClick={onClickFeatureDisplays}
+                >
                   Feature Displays
                 </Tab>
               )}
@@ -403,7 +412,12 @@ export const ActiveLayer = memo(
               </>
             )}
           </AccordionPanel>
-          {closestEdge && <DropIndicator edge={closestEdge} gap="1px" />}
+          {closestEdge && (
+            <DropIndicator
+              edge={closestEdge}
+              gap="1px"
+            />
+          )}
         </AccordionItem>
         {draggableState.type === 'preview' &&
           createPortal(

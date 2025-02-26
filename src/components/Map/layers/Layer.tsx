@@ -34,8 +34,15 @@ export const Layer = memo(({ layerPresentationId, index }) => {
   const isWfsLayer = vectorLayer?.type === 'wfs'
   const isTableLayer = !!vectorLayer?.type && vectorLayer?.type !== 'wfs'
 
+  const resLP = useLiveQuery(
+    `SELECT * FROM layer_presentations WHERE layer_presentation_id = $1`,
+    [layerPresentationId],
+  )
+  const layerPresentation = resLP?.rows?.[0]
+
   console.log('Layer', {
     layerPresentationId,
+    layerPresentation,
     index,
     resWms,
     wmsLayer,
@@ -49,17 +56,7 @@ export const Layer = memo(({ layerPresentationId, index }) => {
     return <OsmColor key="aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa" />
   }
 
-  const layerPresentation = layerPresentations.find(
-    (lp) => lp.layer_presentation_id === layerPresentationId,
-  )
-
-  console.log('Layer', {
-    layerPresentation,
-  })
-
   if (!layerPresentation) return null
-
-  return null
 
   // // todo: add key, layerPresentationId
   if (wmsLayer) {
