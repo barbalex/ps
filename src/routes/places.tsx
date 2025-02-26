@@ -1,7 +1,7 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAtom } from 'jotai'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import {
   createPlace,
@@ -26,21 +26,23 @@ export const Component = memo(() => {
   const [places1Filter] = useAtom(places1FilterAtom)
   const [places2Filter] = useAtom(places2FilterAtom)
   const filter = place_id ? places2Filter : places1Filter
-  const isFiltered = !!filter
+  const isFiltered = filter.length > 0
 
-  const result = useLiveQuery(
-    `SELECT place_id, label FROM places WHERE (parent_id = $1 AND subproject_id = $2)${
-      isFiltered ? ` AND(${filter})` : ''
-    } order by label asc`,
-    [place_id ?? null, subproject_id],
-  )
+  const sql = `SELECT place_id, label FROM places WHERE parent_id ${
+    place_id ? `= '${place_id}'` : `IS NULL`
+  } AND subproject_id = $1${
+    isFiltered ? ` AND ${filter.join(' AND ')}` : ''
+  } order by label asc`
+  const params = [subproject_id]
+  const result = useLiveIncrementalQuery(sql, params, 'place_id')
   const places = result?.rows ?? []
 
   // TODO: get names in above query by joining with place_levels
   // to save a render
-  const resultPlaceLevel = useLiveQuery(
+  const resultPlaceLevel = useLiveIncrementalQuery(
     `SELECT * FROM place_levels WHERE project_id = $1 AND level = $2 order by label asc`,
     [project_id, place_id ? 2 : 1],
+    'place_level_id',
   )
   const placeLevel = resultPlaceLevel?.rows?.[0]
   const placeNameSingular = placeLevel?.name_singular ?? 'Place'
