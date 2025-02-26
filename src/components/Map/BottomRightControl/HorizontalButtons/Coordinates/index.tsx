@@ -38,7 +38,7 @@ export const CoordinatesControl = memo(() => {
     `SELECT code FROM project_crs WHERE project_id = $1`,
     [project_id],
   )
-  const projectCrs = resProjectCrs?.rows
+  const projectCrs = useMemo(() => resProjectCrs?.rows ?? [], [resProjectCrs])
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [renderCount, setRenderCount] = useState(0)
