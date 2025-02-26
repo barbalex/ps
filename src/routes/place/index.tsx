@@ -24,7 +24,6 @@ export const Component = memo(() => {
     place_id2 ?? place_id,
   ])
   const row = res?.rows?.[0]
-  console.log('place, row:', row)
 
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {

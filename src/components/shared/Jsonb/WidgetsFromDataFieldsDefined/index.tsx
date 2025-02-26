@@ -1,12 +1,8 @@
 import { memo, useCallback } from 'react'
 import { useLocation, useParams } from 'react-router-dom'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
-import { FieldFormInForm } from '../../FieldFormInForm.tsx'
-import { TextField } from '../../TextField.tsx'
-import { EditField } from './EditField.tsx'
 import { getValueFromChange } from '../../../../modules/getValueFromChange.ts'
-import { Widget } from './Widget.tsx'
 import { Field } from './Field.tsx'
 
 // TODO: Uncaught (in promise) error: invalid input syntax for type uuid: ""
@@ -21,7 +17,6 @@ export const WidgetsFromDataFieldsDefined = memo(
     autoFocus,
     ref,
   }) => {
-    console.log('WidgetsFromDataFieldsDefined', { fields, data, table })
     const { pathname } = useLocation()
     const { place_id, place_id2 } = useParams()
     const db = usePGlite()
