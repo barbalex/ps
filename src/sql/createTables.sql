@@ -294,16 +294,16 @@ COMMENT ON TABLE subproject_users IS 'A way to give users access to subprojects 
 --------------------------------------------------------------
 -- taxonomies
 --
--- ISSUE: using type in generated label leads to "generation expression is not immutable" error
--- CREATE TYPE taxonomy_type AS enum(
---   'species',
---   'biotope'
--- );
+create table if not exists taxonomy_types (
+  type text primary key default null
+);
+insert into taxonomy_types (type) values ('species'), ('biotope');
+
 CREATE TABLE IF NOT EXISTS taxonomies(
   taxonomy_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  type text CHECK (type IN ('species', 'biotope')),
+  type text DEFAULT NULL references taxonomy_types(type) on delete no action on update cascade,
   name text DEFAULT NULL,
   url text DEFAULT NULL,
   obsolete boolean DEFAULT FALSE,
@@ -465,11 +465,10 @@ COMMENT ON COLUMN list_values.account_id IS 'redundant account_id enhances data 
 --------------------------------------------------------------
 -- units
 --
-CREATE TYPE unit_type AS enum(
-  'integer',
-  'numeric',
-  'text'
+create table if not exists unit_types (
+  type text primary key default null
 );
+insert into unit_types (type) values ('integer'), ('numeric'), ('text');
 
 CREATE TABLE IF NOT EXISTS units(
   unit_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
@@ -485,7 +484,7 @@ CREATE TABLE IF NOT EXISTS units(
   name text DEFAULT NULL,
   summable boolean DEFAULT FALSE,
   sort integer DEFAULT NULL,
-  type unit_type DEFAULT NULL, -- TODO: not in use?
+  type text DEFAULT null references unit_types(type) on delete no action on update cascade, -- TODO: not in use?
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE NO action ON UPDATE CASCADE,
   label text GENERATED ALWAYS AS (coalesce(name, unit_id::text)) STORED
 );
@@ -1311,15 +1310,15 @@ COMMENT ON COLUMN fields.sort_index IS 'Enables sorting of fields. Per table';
 --------------------------------------------------------------
 --occurrence_imports
 --
-CREATE TYPE occurrence_imports_previous_import_operation_enum AS enum(
-  'update_and_extend',
-  'replace'
+create table if not exists occurrence_import_previous_operations (
+  previous_import_operation text primary key
 );
+insert into occurrence_import_previous_operations values ('update_and_extend'), ('replace');
 
-CREATE TYPE occurrence_imports_geometry_method_enum AS enum(
-  'coordinates',
-  'geojson'
+create table if not exists occurrence_imports_geometry_methods (
+  geometry_method text primary key
 );
+insert into occurrence_imports_geometry_methods values ('coordinates'), ('geojson');
 
 CREATE TABLE IF NOT EXISTS occurrence_imports(
   occurrence_import_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
@@ -1328,7 +1327,7 @@ CREATE TABLE IF NOT EXISTS occurrence_imports(
   created_time timestamptz DEFAULT now(),
   inserted_count integer DEFAULT NULL,
   id_field text DEFAULT NULL,
-  geometry_method occurrence_imports_geometry_method_enum DEFAULT NULL,
+  geometry_method text DEFAULT NULL REFERENCES occurrence_imports_geometry_methods(geometry_method) ON DELETE NO action ON UPDATE CASCADE,
   geojson_geometry_field text DEFAULT NULL,
   x_coordinate_field text DEFAULT NULL,
   y_coordinate_field text DEFAULT NULL,
@@ -1337,7 +1336,7 @@ CREATE TABLE IF NOT EXISTS occurrence_imports(
   name text DEFAULT NULL,
   attribution text DEFAULT NULL,
   previous_import uuid DEFAULT NULL REFERENCES occurrence_imports(occurrence_import_id) ON DELETE NO action ON UPDATE CASCADE,
-  previous_import_operation occurrence_imports_previous_import_operation_enum DEFAULT NULL, -- 'update_and_extend'
+  previous_import_operation text DEFAULT 'update_and_extend' REFERENCES occurrence_import_previous_operations(previous_import_operation) ON DELETE NO action ON UPDATE CASCADE,
   download_from_gbif boolean DEFAULT NULL,
   gbif_filters jsonb DEFAULT NULL, -- TODO: use project geometry to filter by area?
   gbif_download_key text DEFAULT NULL,
@@ -1523,23 +1522,10 @@ CREATE INDEX IF NOT EXISTS wfs_service_layers_wfs_service_id_idx ON wfs_service_
 --------------------------------------------------------------
 -- vector_layers
 --
-CREATE TYPE vector_layer_type_enum AS enum(
-  'wfs',
-  'upload',
-  'own'
-  'places1',
-  'places2',
-  'actions1',
-  'actions2',
-  'checks1',
-  'checks2',
-  'occurrences_assigned1',
-  'occurrences_assigned_lines1',
-  'occurrences_assigned2',
-  'occurrences_assigned_lines2',
-  'occurrences_to_assess',
-  'occurrences_not_to_assign'
+create table if not exists vector_layer_types (
+  type text primary key
 );
+insert into vector_layer_types values ('wfs'), ('upload'), ('own'), ('places1'), ('places2'), ('actions1'), ('actions2'), ('checks1'), ('checks2'), ('occurrences_assigned1'), ('occurrences_assigned_lines1'), ('occurrences_assigned2'), ('occurrences_assigned_lines2'), ('occurrences_to_assess'), ('occurrences_not_to_assign');
 
 CREATE TYPE vector_layer_own_table_enum AS enum(
   'places',
@@ -1557,7 +1543,7 @@ CREATE TABLE IF NOT EXISTS vector_layers(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   label text DEFAULT NULL,
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  type vector_layer_type_enum DEFAULT NULL,
+  type text DEFAULT NULL REFERENCES vector_layer_types(type) ON DELETE NO action ON UPDATE CASCADE,
   own_table vector_layer_own_table_enum DEFAULT NULL,
   own_table_level integer DEFAULT 1, -- 1 or 2,
   properties jsonb DEFAULT NULL,
