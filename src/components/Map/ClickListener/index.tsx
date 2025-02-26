@@ -92,7 +92,7 @@ export const ClickListener = memo(() => {
         }
       }
       // 4. Vector Layers from WFS with no downloaded data
-      const activeVectorLayers = await db.query(
+      const resActiveVectorLayers = await db.query(
         `
         SELECT vl.* 
         FROM vector_layers vl
@@ -104,6 +104,7 @@ export const ClickListener = memo(() => {
       `,
         [project_id],
       )
+      const activeVectorLayers = resActiveVectorLayers?.rows ?? []
       // need to buffer for points and polygons or it will be too hard to get their info
       const bufferFraction = 0.00003
       const buffer = bufferFraction + Math.abs(zoom - 19) * bufferFraction * 2

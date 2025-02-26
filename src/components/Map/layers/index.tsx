@@ -57,15 +57,15 @@ export const Layers = memo(() => {
     run()
   }, [mapLayerSorting, layerPresentations, setMapLayerSorting, db])
 
-  return null
+  // return null
 
   if (!mapLayerSorting.length) return null
 
-  // return mapLayerSorting.map((layerPresentationId, index) => (
-  //   <Layer
-  //     key={layerPresentationId}
-  //     layerPresentationId={layerPresentationId}
-  //     index={index}
-  //   />
-  // ))
+  return mapLayerSorting.map((layerPresentationId, index) => (
+    <Layer
+      key={layerPresentationId}
+      layerPresentationId={layerPresentationId}
+      index={index}
+    />
+  ))
 })
