@@ -3,6 +3,7 @@
 // removes no more needed vector_layer_displays
 // adds missing vector_layer_displays
 
+// TODO: not done, needed?
 export const completeVectorLayerDisplaysForLayerWithProperties = async ({
   vectorLayerId,
   properties,
