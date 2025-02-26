@@ -23,7 +23,7 @@ export const RadioGroupFromList = memo(
     const res = useLiveQuery(`SELECT * FROM list_values WHERE list_id = $1`, [
       list_id,
     ])
-    const listValues = res.rows ?? []
+    const listValues = res?.rows ?? []
 
     const onClick = useCallback(
       (e) => {

@@ -18,7 +18,7 @@ export const SqlInitializer = () => {
         `,
       )
 
-      const projectsTableExists = resultProjectsTableExists?.rows[0]?.exists
+      const projectsTableExists = resultProjectsTableExists?.rows?.[0]?.exists
 
       if (projectsTableExists) return
 

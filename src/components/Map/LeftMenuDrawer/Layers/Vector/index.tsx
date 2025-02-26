@@ -49,7 +49,7 @@ export const VectorLayers = memo(() => {
 
   const addRow = useCallback(async () => {
     const res = await createVectorLayer({ project_id, type: 'wfs', db })
-    const vectorLayer = res.rows[0]
+    const vectorLayer = res?.rows?.[0]
     // also add vector_layer_display
     await createVectorLayerDisplay({
       vector_layer_id: vectorLayer.vector_layer_id,
@@ -71,7 +71,7 @@ export const VectorLayers = memo(() => {
           `SELECT active FROM layer_presentations WHERE vector_layer_id = $1`,
           [vectorLayerId],
         )
-        const isActive = res.rows[0]?.active
+        const isActive = res?.rows?.[0]?.active
         if (isActive) {
           // if not active, remove this item
           const newOpenItems = openItems.filter((id) => id !== vectorLayerId)

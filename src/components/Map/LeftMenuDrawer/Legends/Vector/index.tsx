@@ -9,7 +9,7 @@ export const VectorLegend = memo(({ layer }) => {
     `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1`,
     [layer.vector_layer_id],
   )
-  const vectorLayerDisplays = res.rows ?? []
+  const vectorLayerDisplays = res?.rows ?? []
 
   return vectorLayerDisplays.map((display) => {
     return (

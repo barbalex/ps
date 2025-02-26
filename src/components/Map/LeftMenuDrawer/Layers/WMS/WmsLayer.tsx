@@ -62,7 +62,7 @@ export const WmsLayer = memo(({ layer, isLast, isOpen }) => {
       `SELECT * FROM layer_presentations WHERE wms_layer_id = $1`,
       [layer.wms_layer_id],
     )
-    const presentation = res.rows[0]
+    const presentation = res?.rows?.[0]
     // 2. if not, create one
     if (!presentation) {
       await createLayerPresentation({

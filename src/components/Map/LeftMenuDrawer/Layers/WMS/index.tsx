@@ -56,7 +56,7 @@ export const WmsLayers = memo(() => {
 
   const addRow = useCallback(async () => {
     const res = await createWmsLayer({ project_id, db })
-    const wmsLayer = res.rows[0]
+    const wmsLayer = res?.rows?.[0]
     // also add layer_presentation
     await createLayerPresentation({
       wms_layer_id: wmsLayer.wms_layer_id,
@@ -74,7 +74,7 @@ export const WmsLayers = memo(() => {
           `SELECT active FROM layer_presentations WHERE wms_layer_id = $1`,
           [wmsLayerId],
         )
-        const layerPresentation = res.rows[0]
+        const layerPresentation = res?.rows?.[0]
         const isActive = layerPresentation?.active
         if (isActive) {
           // if not active, remove this item

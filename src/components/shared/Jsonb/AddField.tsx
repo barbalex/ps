@@ -35,7 +35,7 @@ export const AddField = memo(({ tableName, level }) => {
     const newFieldParams = { table_name: tableName, level, db }
     if (!isAccountTable) newFieldParams.project_id = project_id
     const res = await createField(newFieldParams)
-    const newField = res.rows[0]
+    const newField = res?.rows?.[0]
     setSearchParams({ editingField: newField.field_id })
   }, [db, level, project_id, setSearchParams, tableName])
 

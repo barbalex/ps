@@ -6,7 +6,7 @@ const getPresetData = async ({ db, project_id = null, table }) => {
     `select * from fields where project_id = $1 and table_name = $2 and preset is not null`,
     [project_id, table],
   )
-  const fieldsWithPresets = fieldsWithPresetsResult.rows ?? []
+  const fieldsWithPresets = fieldsWithPresetsResult?.rows ?? []
   // TODO: include field_type to set correct data type
   const data = {}
   fieldsWithPresets.forEach((field) => {
