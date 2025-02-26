@@ -1,7 +1,11 @@
 import { memo, useEffect, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import {
+  usePGlite,
+  useLiveQuery,
+  useLiveIncrementalQuery,
+} from '@electric-sql/pglite-react'
 
 import { completeVectorLayerDisplaysForLayerWithProperties } from './completeVectorLayerDisplaysForLayerWithProperties.ts'
 
@@ -10,16 +14,18 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
   const db = usePGlite()
 
   // get vector_layers
-  const resVL = useLiveQuery(
+  const resVL = useLiveIncrementalQuery(
     `SELECT * FROM vector_layers WHERE project_id = $1 and type = 'own'`,
     [project_id],
+    'vector_layer_id',
   )
   const vectorLayers = useMemo(() => resVL?.rows ?? [], [resVL])
 
   // places level 1
-  const resPlaces1Fields = useLiveQuery(
+  const resPlaces1Fields = useLiveIncrementalQuery(
     `SELECT name FROM fields WHERE table_name = 'places' AND level = 1 AND project_id = $1`,
     [project_id],
+    'field_id',
   )
   const places1Properties = useMemo(
     () => resPlaces1Fields?.rows?.map((field) => field.name) ?? [],
@@ -27,9 +33,10 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
   )
 
   // places level 2
-  const resPlaces2Fields = useLiveQuery(
+  const resPlaces2Fields = useLiveIncrementalQuery(
     `SELECT name FROM fields WHERE table_name = 'places' AND level = 2 AND project_id = $1`,
     [project_id],
+    'field_id',
   )
   const places2Properties = useMemo(
     () => resPlaces2Fields?.rows?.map((field) => field.name) ?? [],
@@ -37,9 +44,10 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
   )
 
   // actions level 1
-  const resActions1Fields = useLiveQuery(
+  const resActions1Fields = useLiveIncrementalQuery(
     `SELECT name FROM fields WHERE table_name = 'actions' AND level = 1 AND project_id = $1`,
     [project_id],
+    'field_id',
   )
   const actions1Properties = useMemo(
     () => resActions1Fields?.rows?.map((field) => field.name) ?? [],
@@ -47,9 +55,10 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
   )
 
   // actions level 2
-  const resActions2Fields = useLiveQuery(
+  const resActions2Fields = useLiveIncrementalQuery(
     `SELECT name FROM fields WHERE table_name = 'actions' AND level = 2 AND project_id = $1`,
     [project_id],
+    'field_id',
   )
   const actions2Properties = useMemo(
     () => resActions2Fields?.rows?.map((field) => field.name) ?? [],
