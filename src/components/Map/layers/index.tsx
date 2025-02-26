@@ -14,6 +14,7 @@ const paneBaseIndex = 400 // was: 200. then wfs layers covered lower ones
 // TODO: text
 export const Layers = memo(() => {
   const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
+  console.log('Layers, mapLayerSorting:', mapLayerSorting)
 
   const db = usePGlite()
 
@@ -31,6 +32,7 @@ export const Layers = memo(() => {
     mapLayerSorting,
   )
   const layerPresentations = useMemo(() => res?.rows ?? [], [res])
+  console.log('Layers, layerPresentations:', layerPresentations)
 
   useEffect(() => {
     const wmsLayersCount = layerPresentations.filter(
@@ -43,6 +45,8 @@ export const Layers = memo(() => {
   }, [mapLayerSorting, layerPresentations, setMapLayerSorting])
 
   const [returnVal, setReturnVal] = useState(null)
+
+  console.log('Layers, returnVal:', returnVal)
 
   useEffect(() => {
     const run = async () => {

@@ -101,7 +101,10 @@ export const ActiveLayers = memo(() => {
       ${project_id ? 'AND project_id = $1' : ''}`,
     project_id ? [project_id] : [],
   )
-  const activeWmsLayers = useMemo(() => resWmsLayers.rows ?? [], [resWmsLayers])
+  const activeWmsLayers = useMemo(
+    () => resWmsLayers?.rows ?? [],
+    [resWmsLayers],
+  )
 
   const resVectorLayers = useLiveQuery(
     `SELECT * 
@@ -117,7 +120,7 @@ export const ActiveLayers = memo(() => {
     project_id ? [project_id] : [],
   )
   const activeVectorLayers = useMemo(
-    () => resVectorLayers.rows ?? [],
+    () => resVectorLayers?.rows ?? [],
     [resVectorLayers],
   )
 

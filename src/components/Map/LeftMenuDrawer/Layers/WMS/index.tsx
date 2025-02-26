@@ -28,21 +28,24 @@ export const WmsLayers = memo(() => {
 
   const db = usePGlite()
   // 1. list all layers (own, wms, vector)
-  const { rows: wmsLayers = [] } = useLiveQuery(
+
+  const resWmsLayers = useLiveQuery(
     `SELECT * FROM wms_layers${
       project_id ? ` WHERE project_id = $1` : ''
     } ORDER BY label ASC`,
     [project_id],
   )
+  const wmsLayers = resWmsLayers?.rows ?? []
 
   // fetch all layer_presentations for the vector layers
-  const { rows: layerPresentations = [] } = useLiveQuery(
+  const resLP = useLiveQuery(
     `
     SELECT lp.* FROM layer_presentations lp
     JOIN wms_layers wms ON lp.wms_layer_id = wms.wms_layer_id
     ${project_id ? ` WHERE project_id = $1` : ''}`,
     [project_id],
   )
+  const layerPresentations = resLP?.rows ?? []
   // 2. when one is set active, add layer_presentations for it
   const wms = wmsLayers.filter(
     (l) =>
