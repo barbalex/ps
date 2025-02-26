@@ -55,6 +55,7 @@ export const Component = memo(() => {
       level: place_id ? 2 : 1,
     })
     const place = res?.rows?.[0]
+    console.log('add', { res, place })
     if (!place) return
     // need to create a corresponding vector layer and vector layer display
     // TODO:

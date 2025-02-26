@@ -42,6 +42,7 @@ export const Jsonb = memo(
       : [table, project_id, place_id2 ? 2 : 1]
     const result = useLiveQuery(sql, params)
     const fields = result?.rows ?? []
+    console.log('Jsonb', { fields, data, table })
 
     const onChange = useCallback<InputProps['onChange']>(
       async (e, dataReturned) => {
