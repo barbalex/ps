@@ -30,6 +30,7 @@ export const Component = memo(() => {
   const add = useCallback(async () => {
     const res = await createList({ db, project_id })
     const data = res?.rows?.[0]
+    if (!data) return
     navigate({ pathname: data.list_id, search: searchParams.toString() })
   }, [db, navigate, project_id, searchParams])
 
@@ -46,7 +47,11 @@ export const Component = memo(() => {
       />
       <div className="list-container">
         {lists.map(({ list_id, label }) => (
-          <Row key={list_id} to={list_id} label={label ?? list_id} />
+          <Row
+            key={list_id}
+            to={list_id}
+            label={label ?? list_id}
+          />
         ))}
       </div>
     </div>

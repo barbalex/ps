@@ -20,6 +20,7 @@ export const Component = memo(() => {
   const add = useCallback(async () => {
     const res = await createCrs({ db })
     const data = res?.rows?.[0]
+    if (!data) return
     navigate({ pathname: data.crs_id, search: searchParams.toString() })
   }, [db, navigate, searchParams])
 
@@ -36,7 +37,11 @@ export const Component = memo(() => {
       />
       <div className="list-container">
         {crs.map((cr) => (
-          <Row key={cr.crs_id} to={cr.crs_id} label={cr.label ?? cr.crs_id} />
+          <Row
+            key={cr.crs_id}
+            to={cr.crs_id}
+            label={cr.label ?? cr.crs_id}
+          />
         ))}
       </div>
     </div>

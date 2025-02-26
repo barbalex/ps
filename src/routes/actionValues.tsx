@@ -25,6 +25,7 @@ export const Component = memo(() => {
       action_id,
     })
     const data = res?.rows?.[0]
+    if (!data) return
     navigate({
       pathname: data.action_value_id,
       search: searchParams.toString(),

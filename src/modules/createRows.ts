@@ -401,21 +401,33 @@ export const createGoalReport = async ({ db, project_id, goal_id }) => {
     project_id,
     table: 'goal_reports',
   })
+  console.log('createGoalReport, presetData', presetData)
 
   const data = {
     goal_report_id: uuidv7(),
     goal_id,
     ...presetData,
   }
+  console.log('createGoalReport, data', data)
   const columns = Object.keys(data).join(',')
+  console.log('createGoalReport, columns', columns)
   const values = Object.values(data)
     .map((_, i) => `$${i + 1}`)
     .join(',')
+  console.log('createGoalReport, values', values)
+  console.log('createGoalReport, Object.values(data)', Object.values(data))
 
-  return db.query(
-    `insert into goal_reports (${columns}) values (${values}) returning goal_report_id`,
-    Object.values(data),
-  )
+  let res
+  try {
+    res = await db.query(
+      `insert into goal_reports (${columns}) values (${values}) returning goal_report_id`,
+      Object.values(data),
+    )
+  } catch (error) {
+    console.log('createGoalReport, error', error)
+  }
+
+  return res
 }
 
 export const createGoalReportValue = async ({ db, goal_report_id }) =>

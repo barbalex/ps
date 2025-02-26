@@ -22,9 +22,10 @@ export const Component = memo(() => {
 
   const add = useCallback(async () => {
     const res = await createTaxonomy({ db, project_id })
-    const taxonomy = res?.rows?.[0]
+    const data = res?.rows?.[0]
+    if (!data) return
     navigate({
-      pathname: taxonomy.taxonomy_id,
+      pathname: data.taxonomy_id,
       search: searchParams.toString(),
     })
   }, [db, navigate, project_id, searchParams])

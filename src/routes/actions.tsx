@@ -39,6 +39,7 @@ export const Component = memo(() => {
       place_id: place_id2 ?? place_id,
     })
     const data = res?.rows?.[0]
+    if (!data) return
     navigate({ pathname: data.action_id, search: searchParams.toString() })
   }, [db, navigate, place_id, place_id2, project_id, searchParams])
 
@@ -53,14 +54,21 @@ export const Component = memo(() => {
         addRow={add}
         menus={
           <>
-            <LayerMenu table="actions" level={place_id2 ? 2 : 1} />
+            <LayerMenu
+              table="actions"
+              level={place_id2 ? 2 : 1}
+            />
             <FilterButton isFiltered={isFiltered} />
           </>
         }
       />
       <div className="list-container">
         {actions.map(({ action_id, label }) => (
-          <Row key={action_id} label={label ?? action_id} to={action_id} />
+          <Row
+            key={action_id}
+            label={label ?? action_id}
+            to={action_id}
+          />
         ))}
       </div>
     </div>

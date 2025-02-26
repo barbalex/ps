@@ -22,9 +22,10 @@ export const Component = memo(() => {
 
   const add = useCallback(async () => {
     const res = await createPlaceLevel({ db, project_id })
-    const placeLevel = res?.rows?.[0]
+    const data = res?.rows?.[0]
+    if (!data) return
     navigate({
-      pathname: placeLevel.place_level_id,
+      pathname: data.place_level_id,
       search: searchParams.toString(),
     })
   }, [db, navigate, project_id, searchParams])

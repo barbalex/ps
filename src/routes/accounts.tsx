@@ -19,6 +19,7 @@ export const Component = memo(() => {
   const add = useCallback(async () => {
     const res = await createAccount({ db })
     const data = res?.rows?.[0]
+    if (!data) return
     navigate({
       pathname: data.account_id,
       search: searchParams.toString(),

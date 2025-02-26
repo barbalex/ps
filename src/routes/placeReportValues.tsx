@@ -21,9 +21,10 @@ export const Component = memo(() => {
 
   const add = useCallback(async () => {
     const res = await createPlaceReportValue({ place_report_id, db })
-    const placeReportValue = res?.rows?.[0]
+    const data = res?.rows?.[0]
+    if (!data) return
     navigate({
-      pathname: placeReportValue.place_report_value_id,
+      pathname: data.place_report_value_id,
       search: searchParams.toString(),
     })
   }, [db, navigate, place_report_id, searchParams])

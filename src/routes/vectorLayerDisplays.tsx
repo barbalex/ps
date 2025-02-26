@@ -30,15 +30,16 @@ export const Component = memo(({ vectorLayerId }) => {
 
   const add = useCallback(async () => {
     const res = await createVectorLayerDisplay({ vector_layer_id })
-    const vectorLayerDisplay = res?.rows?.[0]
+    const data = res?.rows?.[0]
+    if (!data) return
     if (vectorLayerId) {
       // we are in the map drawer
-      setVectorLayerDisplayId(vectorLayerDisplay.vector_layer_display_id)
+      setVectorLayerDisplayId(data.vector_layer_display_id)
       return
     }
     // we are in normal routing
     navigate({
-      pathname: vectorLayerDisplay.vector_layer_display_id,
+      pathname: data.vector_layer_display_id,
       search: searchParams.toString(),
     })
   }, [

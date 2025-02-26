@@ -21,9 +21,10 @@ export const Component = memo(() => {
 
   const add = useCallback(async () => {
     const res = await createCheckValue({ check_id, db })
-    const checkValue = res?.rows?.[0]
+    const data = res?.rows?.[0]
+    if (!data) return
     navigate({
-      pathname: checkValue.check_value_id,
+      pathname: data.check_value_id,
       search: searchParams.toString(),
     })
   }, [check_id, db, navigate, searchParams])

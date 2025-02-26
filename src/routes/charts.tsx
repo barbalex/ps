@@ -45,8 +45,9 @@ export const Component = memo(() => {
       : subproject_id
       ? { subproject_id }
       : { project_id }
-    const res = await createChart({...idToAdd, db})
+    const res = await createChart({ ...idToAdd, db })
     const data = res?.rows?.[0]
+    if (!data) return
     navigate({ pathname: data.chart_id, search: searchParams.toString() })
   }, [
     db,

@@ -30,6 +30,7 @@ export const Component = memo(() => {
   const add = useCallback(async () => {
     const res = await createPerson({ db, project_id })
     const data = res?.rows?.[0]
+    if (!data) return
     navigate({ pathname: data.person_id, search: searchParams.toString() })
   }, [db, navigate, project_id, searchParams])
 
@@ -46,7 +47,11 @@ export const Component = memo(() => {
       />
       <div className="list-container">
         {persons.map(({ person_id, label }) => (
-          <Row key={person_id} to={person_id} label={label ?? person_id} />
+          <Row
+            key={person_id}
+            to={person_id}
+            label={label ?? person_id}
+          />
         ))}
       </div>
     </div>

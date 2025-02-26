@@ -33,19 +33,20 @@ export const Component = memo(() => {
 
   const add = useCallback(async () => {
     const res = await createVectorLayer({ project_id, type: 'wfs', db })
-    const vectorLayer = res?.rows?.[0]
+    const data = res?.rows?.[0]
+    if (!data) return
     // also add vector_layer_display
     await createVectorLayerDisplay({
-      vector_layer_id: vectorLayer.vector_layer_id,
+      vector_layer_id: data.vector_layer_id,
       db,
     })
     // also add layer_presentation
     await createLayerPresentation({
-      vector_layer_id: vectorLayer.vector_layer_id,
+      vector_layer_id: data.vector_layer_id,
       db,
     })
     navigate({
-      pathname: vectorLayer.vector_layer_id,
+      pathname: data.vector_layer_id,
       search: searchParams.toString(),
     })
   }, [db, navigate, project_id, searchParams])

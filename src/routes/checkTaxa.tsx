@@ -21,9 +21,10 @@ export const Component = memo(() => {
 
   const add = useCallback(async () => {
     const res = await createCheckTaxon({ db, check_id })
-    const checkTaxon = res?.rows?.[0]
+    const data = res?.rows?.[0]
+    if (!data) return
     navigate({
-      pathname: checkTaxon.check_taxon_id,
+      pathname: data.check_taxon_id,
       search: searchParams.toString(),
     })
   }, [check_id, db, navigate, searchParams])

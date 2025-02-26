@@ -31,14 +31,15 @@ export const Component = memo(() => {
 
   const add = useCallback(async () => {
     const res = await createWmsLayer({ project_id, db })
-    const wmsLayer = res?.rows?.[0]
+    const data = res?.rows?.[0]
+    if (!data) return
     // also add layer_presentation
     await createLayerPresentation({
-      wms_layer_id: wmsLayer.wms_layer_id,
+      wms_layer_id: data.wms_layer_id,
       db,
     })
     navigate({
-      pathname: wmsLayer.wms_layer_id,
+      pathname: data.wms_layer_id,
       search: searchParams.toString(),
     })
   }, [db, navigate, project_id, searchParams])

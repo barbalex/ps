@@ -31,6 +31,7 @@ export const Component = memo(() => {
   const add = useCallback(async () => {
     const res = await createField({ project_id, db })
     const data = res?.rows?.[0]
+    if (!data) return
     navigate({ pathname: data.field_id, search: searchParams.toString() })
   }, [db, navigate, project_id, searchParams])
 
@@ -47,7 +48,11 @@ export const Component = memo(() => {
       />
       <div className="list-container">
         {fields.map(({ field_id, label }) => (
-          <Row key={field_id} label={label ?? field_id} to={field_id} />
+          <Row
+            key={field_id}
+            label={label ?? field_id}
+            to={field_id}
+          />
         ))}
       </div>
     </div>
