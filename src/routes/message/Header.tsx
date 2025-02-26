@@ -22,7 +22,7 @@ export const Header = memo(() => {
   }, [db, navigate, searchParams])
 
   const deleteRow = useCallback(async () => {
-    await db.query(`DELETE FROM messages WHERE message_id = $1`, [message_id])
+    db.query(`DELETE FROM messages WHERE message_id = $1`, [message_id])
     navigate({ pathname: `..`, search: searchParams.toString() })
   }, [db, message_id, navigate, searchParams])
 
