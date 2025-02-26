@@ -32,7 +32,18 @@ export const Layer = memo(({ layerPresentationId, index }) => {
   )
   const vectorLayer = useMemo(() => resVector?.rows?.[0], [resVector])
   const isWfsLayer = vectorLayer?.type === 'wfs'
-  const isTableLayer = vectorLayer?.type !== 'wfs'
+  const isTableLayer = !!vectorLayer?.type && vectorLayer?.type !== 'wfs'
+
+  console.log('Layer', {
+    layerPresentationId,
+    index,
+    resWms,
+    wmsLayer,
+    resVector,
+    vectorLayer,
+    isWfsLayer,
+    isTableLayer,
+  })
 
   if (layerPresentationId === 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa') {
     return <OsmColor key="aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa" />

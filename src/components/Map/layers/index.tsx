@@ -10,7 +10,7 @@ import { Layer } from './Layer.tsx'
 export const Layers = memo(() => {
   const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
   const db = usePGlite()
-  console.log('Layers, mapLayerSorting:', mapLayerSorting)
+  // console.log('Layers, mapLayerSorting:', mapLayerSorting)
 
   // for every layer_presentation_id in mapLayerSorting, get the layer_presentation
   // const where = `active = true
@@ -31,9 +31,9 @@ export const Layers = memo(() => {
     `SELECT * FROM layer_presentations WHERE ${where}`,
     [mapLayerSorting],
   )
-  console.log('Layers, resLP:', resLP)
+  // console.log('Layers, resLP:', resLP)
   const layerPresentations = useMemo(() => resLP?.rows ?? [], [resLP])
-  console.log('Layers, layerPresentations:', layerPresentations)
+  // console.log('Layers, layerPresentations:', layerPresentations)
 
   useEffect(() => {
     const run = async () => {
@@ -42,7 +42,7 @@ export const Layers = memo(() => {
         [mapLayerSorting],
       )
       const wmsLayersCount = res.rows[0].count
-      console.log('Layers, wmsLayersCount:', wmsLayersCount)
+      // console.log('Layers, wmsLayersCount:', wmsLayersCount)
       // if no wms layer is present, add osm
       if (
         !wmsLayersCount &&
