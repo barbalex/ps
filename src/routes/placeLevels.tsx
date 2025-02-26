@@ -14,10 +14,11 @@ export const Component = memo(() => {
 
   const db = usePGlite()
 
-  const { rows: placeLevels = [] } = useLiveQuery(
+  const resPlaceLevels = useLiveQuery(
     `SELECT * FROM place_levels WHERE project_id = $1 ORDER BY label ASC`,
     [project_id],
   )
+  const placeLevels = resPlaceLevels?.rows ?? []
 
   const add = useCallback(async () => {
     const res = await createPlaceLevel({ db, project_id })

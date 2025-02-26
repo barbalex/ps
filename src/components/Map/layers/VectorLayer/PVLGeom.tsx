@@ -51,7 +51,7 @@ export const PVLGeom = ({ layer, display }) => {
         ...notificationIds.current,
       ]
 
-      const { rows: vectorLayerGeoms = [] } = await db.query(
+      const resVectorLayerGeoms = await db.query(
         `
         SELECT
           geometry,
@@ -74,6 +74,7 @@ export const PVLGeom = ({ layer, display }) => {
           layer.max_features ?? 1000,
         ],
       )
+      const vectorLayerGeoms = resVectorLayerGeoms.rows ?? []
 
       const data = vectorLayerGeoms.map((pvlGeom) => ({
         ...pvlGeom.geometry,

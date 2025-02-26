@@ -15,10 +15,11 @@ export const Component = memo(() => {
 
   const db = usePGlite()
 
-  const { rows: projectCrs = [] } = useLiveQuery(
+  const resProjectCrs = useLiveQuery(
     `SELECT * FROM project_crs WHERE project_id = $1 ORDER BY label ASC`,
     [project_id],
   )
+  const projectCrs = resProjectCrs?.rows ?? []
 
   const add = useCallback(async () => {
     const res = await createProjectCrs({ project_id, db })
