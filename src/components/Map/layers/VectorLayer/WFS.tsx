@@ -91,7 +91,7 @@ export const WFS = ({ layer, layerPresentation }) => {
       const resCrs = await db.query(`SELECT * FROM crs WHERE code = $1`, [
         wfsDefaultCrsCode,
       ])
-      const defaultCrs = resCrs.rows[0]
+      const defaultCrs = resCrs?.rows?.[0]
       removeNotifs()
       const bbox = bboxFromBounds({ bounds: map.getBounds(), defaultCrs })
       const notifRes = await createNotification({
@@ -100,7 +100,7 @@ export const WFS = ({ layer, layerPresentation }) => {
         timeout: 100000,
         db,
       })
-      const notif = notifRes.rows[0]
+      const notif = notifRes?.rows?.[0]
       notificationIds.current = [
         notif.notification_id,
         ...notificationIds.current,
@@ -213,7 +213,7 @@ export const WFS = ({ layer, layerPresentation }) => {
   //     timeout: 10000,
   //     db,
   //   })
-  //   const notif2 = notif2Res.rows[0]
+  //   const notif2 = notif2Res?.rows?.[0]
   //   notificationIds.current = [
   //     notif2.notification_id,
   //     ...notificationIds.current,

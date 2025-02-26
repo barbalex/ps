@@ -21,10 +21,10 @@ export const TableLayersProvider = memo(() => {
   // do not include vector_layers and vector_layer_displays in this query
   // as the effect will run every time these tables change
   const projectsResult = useLiveQuery(`SELECT * FROM projects`)
-  const projects = projectsResult?.results ?? []
+  const projects = projectsResult?.rows ?? []
 
   const occurrencesResult = useLiveQuery(`SELECT * FROM occurrences`)
-  const occurrences = occurrencesResult?.results ?? []
+  const occurrences = occurrencesResult?.rows ?? []
 
   const firstRender = useFirstRender()
 
@@ -66,7 +66,7 @@ export const TableLayersProvider = memo(() => {
             label: placeLevel1?.name_plural ?? 'Places',
             db,
           })
-          places1VectorLayer = res.rows?.[0]
+          places1VectorLayer = res?.rows?.[0]
           console.warn(
             'hello TableLayersProvider, new places 1 vector layer:',
             places1VectorLayer,
@@ -165,7 +165,7 @@ export const TableLayersProvider = memo(() => {
               : 'Checks',
             db,
           })
-          checks1VectorLayer = res.rows?.[0]
+          checks1VectorLayer = res?.rows?.[0]
         }
 
         // 3.2 checks1VectorLayerDisplay: always needed
@@ -214,7 +214,7 @@ export const TableLayersProvider = memo(() => {
                 : 'Occurrences assigned',
               db,
             })
-            occurrencesAssigned1VectorLayer = res.rows?.[0]
+            occurrencesAssigned1VectorLayer = res?.rows?.[0]
           }
 
           // 4.2 occurrences_assigned1VectorLayerDisplay: always needed
@@ -304,7 +304,7 @@ export const TableLayersProvider = memo(() => {
               label: 'Occurrences not to assign',
               db,
             })
-            occurrencesNotToAssignVectorLayer = res.rows?.[0]
+            occurrencesNotToAssignVectorLayer = res?.rows?.[0]
           }
 
           // 6.2 occurrencesNotToAssignVectorLayerDisplay: always needed
@@ -354,7 +354,7 @@ export const TableLayersProvider = memo(() => {
               label: placeLevel2?.name_plural ?? 'Places',
               db,
             })
-            places2VectorLayer = res.rows?.[0]
+            places2VectorLayer = res?.rows?.[0]
           }
 
           // 7.2 places2VectorLayerDisplay: always needed
@@ -404,7 +404,7 @@ export const TableLayersProvider = memo(() => {
                 : 'Actions',
               db,
             })
-            actions2VectorLayer = res.rows?.[0]
+            actions2VectorLayer = res?.rows?.[0]
           }
 
           // 8.2 actions2VectorLayerDisplay: always needed
@@ -454,7 +454,7 @@ export const TableLayersProvider = memo(() => {
                 : 'Checks',
               db,
             })
-            checks2VectorLayer = res.rows?.[0]
+            checks2VectorLayer = res?.rows?.[0]
           }
 
           // 9.2 checks2VectorLayerDisplay: always needed
@@ -504,7 +504,7 @@ export const TableLayersProvider = memo(() => {
                 : 'Occurrences assigned',
               db,
             })
-            occurrencesAssigned2VectorLayer = res.rows?.[0]
+            occurrencesAssigned2VectorLayer = res?.rows?.[0]
           }
 
           // 10.2 occurrences_assigned2VectorLayerDisplay: always needed

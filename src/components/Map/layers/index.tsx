@@ -64,19 +64,19 @@ export const Layers = memo(() => {
         `SELECT * FROM wms_layers WHERE layer_presentation_id = $1`,
         [layerPresentationId],
       )
-      const wmsLayer = resWmsLayer.rows?.[0]
+      const wmsLayer = resWmsLayer?.rows?.[0]
 
       const resWfsLayer = await db.query(
         `SELECT * FROM wfs_layers WHERE layer_presentation_id = $1 AND type = 'wfs'`,
         [layerPresentationId],
       )
-      const wfsLayer = resWfsLayer.rows?.[0]
+      const wfsLayer = resWfsLayer?.rows?.[0]
 
       const resTableLayer = await db.query(
         `SELECT * FROM vector_layers WHERE layer_presentation_id = $1 AND type != 'wfs'`,
         [layerPresentationId],
       )
-      const tableLayer = resTableLayer.rows?.[0]
+      const tableLayer = resTableLayer?.rows?.[0]
 
       // todo: add key, layerPresentationId
       if (wmsLayer) {

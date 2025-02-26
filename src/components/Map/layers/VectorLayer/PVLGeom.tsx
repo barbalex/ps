@@ -45,7 +45,7 @@ export const PVLGeom = ({ layer, display }) => {
         timeout: 100000,
         db,
       })
-      const notificationData = res.rows[0]
+      const notificationData = res?.rows?.[0]
       notificationIds.current = [
         notificationData.notification_id,
         ...notificationIds.current,
@@ -74,7 +74,7 @@ export const PVLGeom = ({ layer, display }) => {
           layer.max_features ?? 1000,
         ],
       )
-      const vectorLayerGeoms = resVectorLayerGeoms.rows ?? []
+      const vectorLayerGeoms = resVectorLayerGeoms?.rows ?? []
 
       const data = vectorLayerGeoms.map((pvlGeom) => ({
         ...pvlGeom.geometry,
@@ -138,7 +138,7 @@ export const PVLGeom = ({ layer, display }) => {
   //     timeout: 10000,
   //     db,
   //   })
-  //   const notificationData = res.rows[0]
+  //   const notificationData = res?.rows?.[0]
   //   notificationIds.current = [
   //     notificationData.notification_id,
   //     ...notificationIds.current,

@@ -13,7 +13,7 @@ export const VectorLayerChooser = ({ layer, layerPresentation }) => {
     `SELECT * FROM vector_layer_geoms WHERE vector_layer_id = $1`,
     [layer.vector_layer_id],
   )
-  const vectorLayerGeoms = res.rows ?? []
+  const vectorLayerGeoms = res?.rows ?? []
   const geomCount = vectorLayerGeoms.length
 
   // TODO: pass layerPresentation only when vector layers are not shown directly in Map anymore

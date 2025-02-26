@@ -20,13 +20,13 @@ export const ChooseCrs = memo(() => {
     `SELECT * FROM project_crs WHERE project_id = $1`,
     [project_id],
   )
-  const projectCrs = resProjectCrs.results
+  const projectCrs = resProjectCrs?.rows ?? []
   // fetch project.map_presentation_crs to show the active one
   const resProject = useLiveQuery(
     `SELECT map_presentation_crs FROM projects WHERE project_id = $1`,
     [project_id],
   )
-  const project = resProject.rows?.[0]
+  const project = resProject?.rows?.[0]
   const checkedValues = project?.map_presentation_crs
     ? { map_presentation_crs: [project.map_presentation_crs] }
     : { map_presentation_crs: [] }

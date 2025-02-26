@@ -45,7 +45,7 @@ export const OwnLayers = memo(() => {
           `SELECT active FROM layer_presentations WHERE vector_layer_id = $1`,
           [vectorLayerId],
         )
-        const layerPresentation = res.rows[0]
+        const layerPresentation = res?.rows?.[0]
         const isActive = layerPresentation?.active
         if (isActive) {
           // if not active, remove this item

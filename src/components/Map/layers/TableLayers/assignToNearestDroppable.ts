@@ -36,7 +36,7 @@ export const assignToNearestDroppable = async ({
       droppableLayer === 'places1' ? ' is null' : 'is not null'
     }`,
   )
-  const places = placesRes.rows
+  const places = placesRes?.rows ?? []
 
   // 2. get the nearest feature
 

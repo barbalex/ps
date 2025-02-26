@@ -112,7 +112,7 @@ export const ClickListener = memo(() => {
           `SELECT * FROM wfs_services WHERE wfs_service_id = $1`,
           [layer.wfs_service_id],
         )
-        const wfsService = await res.rows?.[0]
+        const wfsService = await res?.rows?.[0]
         if (!wfsService) continue
         // default_crs is of the form: "urn:ogc:def:crs:EPSG::4326"
         // extract the relevant parts for db.crs.code:
@@ -125,7 +125,7 @@ export const ClickListener = memo(() => {
           `SELECT * FROM crs WHERE code = $1`,
           [wfsDefaultCrsCode],
         )
-        const defaultCrs = defaultCrsRes.rows?.[0]
+        const defaultCrs = defaultCrsRes?.rows?.[0]
         const [x, y] = proj4('EPSG:4326', defaultCrs?.proj4, [
           lng - buffer,
           lat - buffer,

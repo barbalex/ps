@@ -269,7 +269,7 @@ export const ActiveLayers = memo(() => {
           `SELECT active FROM layer_presentations WHERE layer_presentation_id = $1`,
           [layerPresentationId],
         )
-        const layerPresentation = res.rows[0]
+        const layerPresentation = res?.rows?.[0]
         const isActive = layerPresentation?.active
         if (!isActive) {
           // if not active, remove this item

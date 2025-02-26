@@ -22,7 +22,7 @@ export const OccurrencesAssigned1 = ({ layerPresentation }) => {
   `,
     [subproject_id],
   )
-  const occurrences = res?.results ?? []
+  const occurrences = res?.rows ?? []
 
   // a geometry is built as FeatureCollection Object: https://datatracker.ietf.org/doc/html/rfc7946#section-3.3
   // properties need to go into every feature
