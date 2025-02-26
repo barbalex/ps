@@ -415,16 +415,16 @@ export const createGoalReport = async ({ db, project_id, goal_id }) => {
     .map((_, i) => `$${i + 1}`)
     .join(',')
   console.log('createGoalReport, values', values)
-  console.log('createGoalReport, Object.values(data)', Object.values(data))
+  console.log('createGoalReport, Object.values', Object.values(data))
+  const sql = `insert into goal_reports (${columns}) values (${values}) returning goal_report_id`
+  console.log('createGoalReport, sql', sql)
 
+  // TODO: invalid input syntax for type json
   let res
   try {
-    res = await db.query(
-      `insert into goal_reports (${columns}) values (${values}) returning goal_report_id`,
-      Object.values(data),
-    )
+    res = await db.query(sql, Object.values(data))
   } catch (error) {
-    console.log('createGoalReport, error', error)
+    console.log('createGoalReport', error)
   }
 
   return res
