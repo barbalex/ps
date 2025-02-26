@@ -7,7 +7,6 @@ import { TextField } from '../../TextField.tsx'
 import { EditField } from './EditField.tsx'
 import { Widget } from './Widget.tsx'
 
-// TODO: Uncaught (in promise) error: invalid input syntax for type uuid: ""
 export const Field = memo(
   ({
     field,
@@ -53,6 +52,7 @@ export const Field = memo(
     if (!widgetType?.name && !widgetType?.text) {
       return null
     }
+
     const value = data?.[name] ?? ''
     if (!widgetType?.name) {
       return (
