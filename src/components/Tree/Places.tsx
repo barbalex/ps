@@ -26,7 +26,7 @@ export const PlacesNode = memo(
     const [places1Filter] = useAtom(places1FilterAtom)
     const [places2Filter] = useAtom(places2FilterAtom)
     const filter = place_id ? places2Filter : places1Filter
-    const isFiltered = !!filter
+    const isFiltered = filter.length > 0
 
     const location = useLocation()
     const navigate = useNavigate()
@@ -34,16 +34,25 @@ export const PlacesNode = memo(
 
     const level = place_id ? 7 : 5
 
-    const result = useLiveQuery(
-      `SELECT * FROM places WHERE subproject_id = $1 and place_id ${
-        place_id ? `= $2` : `is null`
-      }${isFiltered ? ` AND (${filter})` : ''} order by label asc`,
-      [subproject_id, ...(place_id ? [place_id] : [])],
-    )
-    const places = result?.rows ?? []
+    const sqlFiltered = `SELECT * FROM places WHERE subproject_id = $1 and parent_id ${
+      place_id ? `= $2` : `is null`
+    }${isFiltered ? ` AND (${filter})` : ''} order by label asc`
+    const paramsFiltered = [subproject_id, ...(place_id ? [place_id] : [])]
+    const resultFiltered = useLiveQuery(sqlFiltered, paramsFiltered)
+    const places = resultFiltered?.rows ?? []
+
+    console.log('Tree.PlacesNode', {
+      sqlFiltered,
+      paramsFiltered,
+      places,
+      resultFiltered,
+      places1Filter,
+      places2Filter,
+      filter,
+    })
 
     const resultCountUnfiltered = useLiveQuery(
-      `SELECT count(*) FROM places WHERE subproject_id = $1 and place_id ${
+      `SELECT count(*) FROM places WHERE subproject_id = $1 and parent_id ${
         place_id ? `= $2` : `is null`
       }`,
       [subproject_id, ...(place_id ? [place_id] : [])],
