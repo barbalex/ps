@@ -1744,12 +1744,10 @@ COMMENT ON COLUMN layer_presentations.opacity_percent IS 'As numeric is not supp
 --------------------------------------------------------------
 -- notifications
 --
-CREATE TYPE notification_intent_enum AS enum(
-  'success',
-  'error',
-  'warning',
-  'info'
+create table if not exists notification_intents (
+  intent text primary key
 );
+insert into notification_intents values ('success'), ('error'), ('warning'), ('info');
 
 -- DROP TABLE IF EXISTS notifications;
 CREATE TABLE IF NOT EXISTS notifications(
@@ -1758,7 +1756,7 @@ CREATE TABLE IF NOT EXISTS notifications(
   -- user_id uuid REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE DEFAULT NULL,
   title text DEFAULT NULL,
   body text DEFAULT NULL,
-  intent notification_intent_enum DEFAULT NULL,
+  intent text DEFAULT 'info' REFERENCES notification_intents(intent) ON DELETE NO action ON UPDATE CASCADE,
   timeout integer DEFAULT NULL,
   paused boolean DEFAULT NULL,
   progress_percent integer DEFAULT NULL
@@ -1775,11 +1773,10 @@ COMMENT ON COLUMN notifications.progress_percent IS 'Progress of a long running 
 --------------------------------------------------------------
 -- charts
 --
-CREATE TYPE chart_type AS enum(
-  'Pie',
-  'Radar',
-  'Area'
+create table if not exists chart_types (
+  chart_type text primary key
 );
+insert into chart_types values ('Pie'), ('Radar'), ('Area');
 
 CREATE TABLE IF NOT EXISTS charts(
   chart_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
@@ -1793,7 +1790,7 @@ CREATE TABLE IF NOT EXISTS charts(
   years_last_x integer DEFAULT NULL,
   years_since integer DEFAULT NULL,
   years_until integer DEFAULT NULL,
-  chart_type chart_type DEFAULT 'Area',
+  chart_type text DEFAULT 'Area' REFERENCES chart_types(chart_type) ON DELETE NO action ON UPDATE CASCADE,
   title text DEFAULT NULL,
   subjects_stacked boolean DEFAULT FALSE,
   subjects_single boolean DEFAULT FALSE,
@@ -1832,19 +1829,39 @@ COMMENT ON COLUMN charts.years_until IS 'If has value: the chart shows data unti
 --------------------------------------------------------------
 -- chart_subjects
 --
+create table if not exists chart_subject_table_names (
+  table_name text primary key
+);
+insert into chart_subject_table_names values ('subprojects'), ('places'), ('checks'), ('check_values'), ('actions'), ('action_values');
+
+create table if not exists chart_subject_table_levels (
+  level integer primary key
+);
+insert into chart_subject_table_levels values (1), (2);
+
+create table if not exists chart_subject_value_sources (
+  value_source text primary key
+);
+insert into chart_subject_value_sources values ('count_rows'), ('count_rows_by_distinct_field_values'), ('sum_values_of_field');
+
+create table if not exists chart_subject_types (
+  type text primary key
+);
+insert into chart_subject_types values ('linear'), ('monotone');
+
 CREATE TABLE IF NOT EXISTS chart_subjects(
   chart_subject_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   chart_id uuid DEFAULT NULL REFERENCES charts(chart_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  table_name text DEFAULT NULL CHECK (table_name IN ('subprojects', 'places', 'checks', 'check_values', 'actions', 'action_values')),
-  table_level integer DEFAULT 1 CHECK (table_level IN (1, 2)), -- not relevant for subprojects 
+  table_name text DEFAULT NULL REFERENCES chart_subject_table_names(table_name) ON DELETE NO action ON UPDATE CASCADE,
+  table_level integer DEFAULT 1 REFERENCES chart_subject_table_levels(level) ON DELETE NO action ON UPDATE CASCADE, -- not relevant for subprojects 
   table_filter jsonb DEFAULT NULL, -- save a filter that is applied to the table
-  value_source text DEFAULT NULL CHECK (value_source IN ('count_rows', 'count_rows_by_distinct_field_values', 'sum_values_of_field')), --how to source the value
+  value_source text DEFAULT NULL REFERENCES chart_subject_value_sources(value_source) ON DELETE NO action ON UPDATE CASCADE, --how to source the value
   value_field text DEFAULT NULL, -- field to be used for value_source
   value_unit uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE CASCADE ON UPDATE CASCADE, -- needed for action_values, check_values
   name text DEFAULT NULL,
   label text DEFAULT NULL,
-  type text DEFAULT NULL CHECK (type IN ('linear', 'monotone')),
+  type text DEFAULT NULL REFERENCES chart_subject_types(type) ON DELETE NO action ON UPDATE CASCADE,
   stroke text DEFAULT NULL,
   fill text DEFAULT NULL,
   fill_graded boolean DEFAULT TRUE,
