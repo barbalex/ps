@@ -1527,16 +1527,10 @@ create table if not exists vector_layer_types (
 );
 insert into vector_layer_types values ('wfs'), ('upload'), ('own'), ('places1'), ('places2'), ('actions1'), ('actions2'), ('checks1'), ('checks2'), ('occurrences_assigned1'), ('occurrences_assigned_lines1'), ('occurrences_assigned2'), ('occurrences_assigned_lines2'), ('occurrences_to_assess'), ('occurrences_not_to_assign');
 
-CREATE TYPE vector_layer_own_table_enum AS enum(
-  'places',
-  'actions',
-  'checks',
-  -- cant use occurrences-assigned due to electric-sql naming restrictions
-  'occurrences_assigned',
-  'occurrences_assigned_lines',
-  'occurrences_to_assess',
-  'occurrences_not_to_assign'
+create table if not exists vector_layer_own_tables (
+  own_table text primary key
 );
+insert into vector_layer_own_tables values ('places'), ('actions'), ('checks'), ('occurrences_assigned'), ('occurrences_assigned_lines'), ('occurrences_to_assess'), ('occurrences_not_to_assign');
 
 CREATE TABLE IF NOT EXISTS vector_layers(
   vector_layer_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
@@ -1544,7 +1538,7 @@ CREATE TABLE IF NOT EXISTS vector_layers(
   label text DEFAULT NULL,
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   type text DEFAULT NULL REFERENCES vector_layer_types(type) ON DELETE NO action ON UPDATE CASCADE,
-  own_table vector_layer_own_table_enum DEFAULT NULL,
+  own_table text DEFAULT NULL REFERENCES vector_layer_own_tables(own_table) ON DELETE NO action ON UPDATE CASCADE,
   own_table_level integer DEFAULT 1, -- 1 or 2,
   properties jsonb DEFAULT NULL,
   display_by_property text DEFAULT NULL,
@@ -1627,29 +1621,25 @@ COMMENT ON COLUMN vector_layer_geoms.bbox_ne_lat IS 'bbox of the geometry. Set c
 --------------------------------------------------------------
 -- vector_layer_displays
 --
-CREATE TYPE marker_type_enum AS enum(
-  'circle',
-  'marker'
+create table if not exists vector_layer_marker_types (
+  marker_type text primary key
 );
+insert into vector_layer_marker_types values ('circle'), ('marker');
 
-CREATE TYPE line_cap_enum AS enum(
-  'butt',
-  'round',
-  'square'
+create table if not exists vector_layer_line_caps (
+  line_cap text primary key
 );
+insert into vector_layer_line_caps values ('butt'), ('round'), ('square');
 
-CREATE TYPE line_join_enum AS enum(
-  'arcs',
-  'bevel',
-  'miter',
-  'miter-clip',
-  'round'
+create table if not exists vector_layer_line_joins (
+  line_join text primary key
 );
+insert into vector_layer_line_joins values ('arcs'), ('bevel'), ('miter'), ('miter-clip'), ('round');
 
-CREATE TYPE fill_rule_enum AS enum(
-  'nonzero',
-  'evenodd'
+create table if not exists vector_layer_fill_rules (
+  fill_rule text primary key
 );
+insert into vector_layer_fill_rules values ('nonzero'), ('evenodd');
 
 -- DROP TABLE IF EXISTS vector_layer_displays CASCADE;
 -- manage all map related properties here? For imported/wfs and also own tables?
@@ -1658,21 +1648,21 @@ CREATE TABLE IF NOT EXISTS vector_layer_displays(
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE,
   display_property_value text DEFAULT NULL,
-  marker_type marker_type_enum DEFAULT 'circle',
+  marker_type text DEFAULT 'circle' REFERENCES vector_layer_marker_types(marker_type) ON DELETE NO action ON UPDATE CASCADE,
   circle_marker_radius integer DEFAULT 8,
   marker_symbol text DEFAULT NULL,
   marker_size integer DEFAULT 16,
   stroke boolean DEFAULT TRUE,
   color text DEFAULT '#3388ff',
   weight integer DEFAULT 3,
-  line_cap line_cap_enum DEFAULT 'round',
-  line_join line_join_enum DEFAULT 'round',
+  line_cap text DEFAULT 'round' REFERENCES vector_layer_line_caps(line_cap) ON DELETE NO action ON UPDATE CASCADE,
+  line_join text DEFAULT 'round' REFERENCES vector_layer_line_joins(line_join) ON DELETE NO action ON UPDATE CASCADE,
   dash_array text DEFAULT NULL,
   dash_offset text DEFAULT NULL,
   fill boolean DEFAULT TRUE,
   fill_color text DEFAULT NULL,
   fill_opacity_percent integer DEFAULT 100,
-  fill_rule fill_rule_enum DEFAULT 'evenodd',
+  fill_rule text DEFAULT 'evenodd' REFERENCES vector_layer_fill_rules(fill_rule) ON DELETE NO action ON UPDATE CASCADE,
   label text GENERATED ALWAYS AS (coalesce(display_property_value, 'Single Display')) STORED
   -- label text DEFAULT NULL
 );
