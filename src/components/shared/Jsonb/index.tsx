@@ -17,7 +17,6 @@ import { WidgetsFromDataFieldsDefined } from './WidgetsFromDataFieldsDefined/ind
 import { snakeToCamel } from '../../../modules/snakeToCamel.ts'
 import * as stores from '../../../store.ts'
 
-// TODO: if editing a field, show the field form
 // and focus the name field on first render?
 export const Jsonb = memo(
   ({
