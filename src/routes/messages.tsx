@@ -15,7 +15,7 @@ export const Component = memo(() => {
   const db = usePGlite()
 
   const result = useLiveQuery(
-    `SELECT message_id, date as label FROM messages order by name asc`,
+    `SELECT message_id, date FROM messages order by date desc`,
     [],
   )
   const messages = result?.rows ?? []
@@ -37,8 +37,12 @@ export const Component = memo(() => {
         addRow={add}
       />
       <div className="list-container">
-        {messages.map(({ message_id, label }) => (
-          <Row key={message_id} to={message_id} label={label ?? message_id} />
+        {messages.map(({ message_id, date }) => (
+          <Row
+            key={message_id}
+            to={message_id}
+            label={date ?? message_id}
+          />
         ))}
       </div>
     </div>
