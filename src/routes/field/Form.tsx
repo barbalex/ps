@@ -2,7 +2,6 @@ import { memo } from 'react'
 import { useOutletContext, useParams } from 'react-router-dom'
 
 import { TextField } from '../../components/shared/TextField.tsx'
-import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions.tsx'
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
@@ -52,11 +51,6 @@ export const Component = memo(
       <>
         {!isInForm && (
           <>
-            <TextFieldInactive
-              label="ID"
-              name="field_id"
-              value={row.field_id}
-            />
             <DropdownFieldSimpleOptions
               label="Table"
               name="table_name"
