@@ -53,6 +53,10 @@ export const Layer = memo(({ layerPresentationId, index }) => {
     (lp) => lp.layer_presentation_id === layerPresentationId,
   )
 
+  console.log('Layer', {
+    layerPresentation,
+  })
+
   if (!layerPresentation) return null
 
   return null
@@ -88,21 +92,22 @@ export const Layer = memo(({ layerPresentationId, index }) => {
     )
   }
 
+  // TODO: Error when VectorLayerChooser is not commented out
   // [vite] TypeError: Cannot read properties of undefined (reading 'ReactCurrentDispatcher')
-  // if (isWfsLayer) {
-  //   return (
-  //     <Pane
-  //       key={`${layerPresentationId}/${mapLayerSorting.join()}`}
-  //       name={vectorLayer.label}
-  //       style={{ zIndex: paneBaseIndex - index }}
-  //     >
-  //       <VectorLayerChooser
-  //         layerPresentation={layerPresentation}
-  //         layer={vectorLayer}
-  //       />
-  //     </Pane>
-  //   )
-  // }
+  if (isWfsLayer) {
+    return (
+      <Pane
+        key={`${layerPresentationId}/${mapLayerSorting.join()}`}
+        name={vectorLayer.label}
+        style={{ zIndex: paneBaseIndex - index }}
+      >
+        {/* <VectorLayerChooser
+          layerPresentation={layerPresentation}
+          layer={vectorLayer}
+        /> */}
+      </Pane>
+    )
+  }
 
   if (isTableLayer) {
     const Component =

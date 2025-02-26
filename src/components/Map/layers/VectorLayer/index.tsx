@@ -8,13 +8,16 @@ import { PVLGeom } from './PVLGeom.tsx'
  * from WFS or PVLGeom
  */
 
+// [vite] TypeError: Cannot read properties of undefined (reading 'ReactCurrentDispatcher')
 export const VectorLayerChooser = ({ layer, layerPresentation }) => {
-  const res = useLiveQuery(
-    `SELECT * FROM vector_layer_geoms WHERE vector_layer_id = $1`,
-    [layer.vector_layer_id],
-  )
-  const vectorLayerGeoms = res?.rows ?? []
-  const geomCount = vectorLayerGeoms.length
+  // const res = useLiveQuery(
+  //   `SELECT * FROM vector_layer_geoms WHERE vector_layer_id = $1`,
+  //   [layer.vector_layer_id],
+  // )
+  // const vectorLayerGeoms = res?.rows ?? []
+  // const geomCount = vectorLayerGeoms.length
+
+  return null
 
   // TODO: pass layerPresentation only when vector layers are not shown directly in Map anymore
   if (!geomCount)
