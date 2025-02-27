@@ -2,7 +2,7 @@ import { useCallback, useMemo, memo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { CrsNode } from './Crs.tsx'
@@ -20,7 +20,11 @@ export const CrssNode = memo(({ level = 1 }: Props) => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const result = useLiveQuery(`SELECT * FROM crs order by label asc`)
+  const result = useLiveIncrementalQuery(
+    `SELECT * FROM crs order by label asc`,
+    undefined,
+    'crs_id',
+  )
   const crs = result?.rows ?? []
 
   const crsNode = useMemo(

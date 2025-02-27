@@ -2,7 +2,10 @@ import { useCallback, useMemo, memo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import {
+  useLiveQuery,
+  useLiveIncrementalQuery,
+} from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { FieldTypeNode } from './FieldType.tsx'
@@ -20,10 +23,12 @@ export const FieldTypesNode = memo(() => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const resultFiltered = useLiveQuery(
+  const resultFiltered = useLiveIncrementalQuery(
     `SELECT * FROM field_types${
       isFiltered ? ` WHERE ${filter}` : ''
     } order by label asc`,
+    undefined,
+    'field_type_id',
   )
   const fieldTypes = resultFiltered?.rows ?? []
 

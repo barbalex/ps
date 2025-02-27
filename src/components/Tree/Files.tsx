@@ -2,7 +2,10 @@ import { useCallback, useMemo, memo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import {
+  useLiveQuery,
+  useLiveIncrementalQuery,
+} from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { FileNode } from './File.tsx'
@@ -63,11 +66,12 @@ export const FilesNode = memo(
       return { hField, hValue }
     }, [action_id, check_id, place_id, place_id2, project_id, subproject_id])
 
-    const resultFiltered = useLiveQuery(
+    const resultFiltered = useLiveIncrementalQuery(
       `SELECT * FROM files WHERE ${hField} = $1 ${
         isFiltered ? ` AND (${filter})` : ''
       } order by label asc`,
       [hValue],
+      'file_id',
     )
     const files = resultFiltered?.rows ?? []
 
