@@ -1,6 +1,6 @@
 import { useCallback, memo, useMemo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
 
@@ -20,9 +20,10 @@ export const CheckNode = memo(
     const [searchParams] = useSearchParams()
 
     // need project to know whether to show files
-    const resProject = useLiveQuery(
-      `SELECT files_active_checks FROM projects WHERE project_id = $1`,
+    const resProject = useLiveIncrementalQuery(
+      `SELECT project_id, files_active_checks FROM projects WHERE project_id = $1`,
       [project_id],
+      'project_id',
     )
     const project = resProject?.rows?.[0]
     const showFiles = project?.files_active_checks ?? false

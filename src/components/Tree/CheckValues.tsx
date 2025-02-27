@@ -1,5 +1,5 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
@@ -17,9 +17,11 @@ export const CheckValuesNode = memo(
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const res = useLiveQuery(`SELECT * FROM check_values WHERE check_id = $1`, [
-      check_id,
-    ])
+    const res = useLiveIncrementalQuery(
+      `SELECT * FROM check_values WHERE check_id = $1`,
+      [check_id],
+      'check_value_id',
+    )
     const checkValues = res?.rows ?? []
 
     const checkValuesNode = useMemo(
