@@ -1,7 +1,7 @@
 import { useCallback, memo } from 'react'
 import type { InputProps } from '@fluentui/react-components'
 import { useParams } from 'react-router-dom'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
@@ -34,9 +34,10 @@ export const ChartSubjectForm = memo(({ autoFocusRef }: Props) => {
   const { chart_subject_id } = useParams()
 
   const db = usePGlite()
-  const result = useLiveQuery(
+  const result = useLiveIncrementalQuery(
     `SELECT * FROM chart_subjects WHERE chart_subject_id = $1`,
     [chart_subject_id],
+    'chart_subject_id',
   )
   const row = result?.rows?.[0]
 

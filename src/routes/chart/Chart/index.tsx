@@ -1,6 +1,6 @@
 import { memo, useEffect, useState, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { buildData } from './buildData/index.ts'
 import { SingleChart } from './Chart.tsx'
@@ -19,12 +19,14 @@ export const Chart = memo(() => {
   const db = usePGlite()
 
   // TODO: query subjects with charts
-  const resultChart = useLiveQuery(`SELECT * FROM charts WHERE chart_id = $1`, [
-    chart_id,
-  ])
+  const resultChart = useLiveIncrementalQuery(
+    `SELECT * FROM charts WHERE chart_id = $1`,
+    [chart_id],
+    'chart_id',
+  )
   const chart = resultChart?.rows?.[0]
 
-  const resultSubjects = useLiveQuery(
+  const resultSubjects = useLiveIncrementalQuery(
     `SELECT * FROM chart_subjects WHERE chart_id = $1 order by sort asc, name asc`,
     [chart_id],
   )
