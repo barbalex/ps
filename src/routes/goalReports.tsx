@@ -1,6 +1,6 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { createGoalReport } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
@@ -14,9 +14,10 @@ export const Component = memo(() => {
 
   const db = usePGlite()
 
-  const result = useLiveQuery(
-    `SELECT * FROM goal_reports WHERE goal_id = $1 ORDER BY label ASC`,
+  const result = useLiveIncrementalQuery(
+    `SELECT goal_report_id, label FROM goal_reports WHERE goal_id = $1 ORDER BY label ASC`,
     [goal_id],
+    'goal_report_id',
   )
   const goals = result?.rows ?? []
 

@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useContext, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import { Button } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
@@ -37,9 +37,10 @@ export const Component = memo(() => {
     }
   }, [action_id, check_id, place_id, place_id2, project_id, subproject_id])
 
-  const result = useLiveQuery(
-    `SELECT * FROM files WHERE ${hKey} = $1 ORDER BY label ASC`,
+  const result = useLiveIncrementalQuery(
+    `SELECT file_id, label, url, mimetype FROM files WHERE ${hKey} = $1 ORDER BY label ASC`,
     [hValue],
+    'file_id',
   )
   const files = result?.rows ?? []
 
@@ -68,8 +69,7 @@ export const Component = memo(() => {
       />
       <div className="list-container">
         <Uploader />
-        {files.map((file) => {
-          const { file_id, label, url, mimetype } = file
+        {files.map(({ file_id, label, url, mimetype }) => {
           let imgSrc = undefined
           if ((mimetype.includes('image') || mimetype.includes('pdf')) && url) {
             imgSrc = `${url}-/resize/x50/-/format/auto/-/quality/smart/`
