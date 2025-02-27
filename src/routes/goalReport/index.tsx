@@ -1,5 +1,5 @@
 import { useRef, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
@@ -13,9 +13,10 @@ export const Component = memo(() => {
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const res = useLiveQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT * FROM goal_reports WHERE goal_report_id = $1`,
     [goal_report_id],
+    'goal_report_id',
   )
   const row = res?.rows?.[0]
 
