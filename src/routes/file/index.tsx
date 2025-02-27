@@ -2,7 +2,7 @@ import { useCallback, memo } from 'react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
 import { useResizeDetector } from 'react-resize-detector'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
@@ -18,9 +18,11 @@ export const Component = memo(() => {
   const { file_id } = useParams()
   const db = usePGlite()
 
-  const result = useLiveQuery(`SELECT * FROM files WHERE file_id = $1`, [
-    file_id,
-  ])
+  const result = useLiveIncrementalQuery(
+    `SELECT * FROM files WHERE file_id = $1`,
+    [file_id],
+    'file_id',
+  )
   const row = result?.rows?.[0]
 
   const onChange = useCallback<InputProps['onChange']>(
