@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { FieldFormInForm } from '../../FieldFormInForm.tsx'
 import { TextField } from '../../TextField.tsx'
@@ -23,15 +23,17 @@ export const Field = memo(
     const [searchParams] = useSearchParams()
     const editingField = searchParams.get('editingField')
 
-    const resultFieldType = useLiveQuery(
+    const resultFieldType = useLiveIncrementalQuery(
       `SELECT * FROM field_types where field_type_id = $1`,
       [field.field_type_id],
+      'field_type_id',
     )
     const fieldType = resultFieldType?.rows?.[0]
 
-    const resultWidgetType = useLiveQuery(
+    const resultWidgetType = useLiveIncrementalQuery(
       `SELECT * FROM widget_types where widget_type_id = $1`,
       [field.widget_type_id],
+      'widget_type_id',
     )
     const widgetType = resultWidgetType?.rows?.[0]
 

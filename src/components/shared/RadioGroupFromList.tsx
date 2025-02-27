@@ -1,6 +1,6 @@
 import { memo, useCallback } from 'react'
 import { Field, RadioGroup, Radio } from '@fluentui/react-components'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 const rowStyle = {
   display: 'flex',
@@ -20,9 +20,11 @@ export const RadioGroupFromList = memo(
     validationState,
     button,
   }) => {
-    const res = useLiveQuery(`SELECT * FROM list_values WHERE list_id = $1`, [
-      list_id,
-    ])
+    const res = useLiveIncrementalQuery(
+      `SELECT * FROM list_values WHERE list_id = $1`,
+      [list_id],
+      'list_value_id',
+    )
     const listValues = res?.rows ?? []
 
     const onClick = useCallback(

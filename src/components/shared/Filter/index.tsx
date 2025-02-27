@@ -1,5 +1,8 @@
 import { memo, useState, useCallback } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import {
+  useLiveQuery,
+  useLiveIncrementalQuery,
+} from '@electric-sql/pglite-react'
 import { Tab, TabList } from '@fluentui/react-components'
 import { useLocation, useParams } from 'react-router-dom'
 
@@ -35,9 +38,10 @@ export const Filter = memo(({ level }) => {
     tableName = `${grandParent.slice(0, -1)}_${tableName}`
   }
   // for tableNameForTitle: replace all underscores with spaces and uppercase all first letters
-  const res = useLiveQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT * FROM place_levels WHERE project_id = $1 and level = $2 order by label`,
     [project_id, place_id ? 2 : 1],
+    'place_level_id',
   )
   const placeLevel = res?.rows?.[0]
   // const placeNameSingular = placeLevel?.name_singular ?? 'Place'

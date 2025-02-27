@@ -7,7 +7,7 @@
 import { memo, useCallback } from 'react'
 import { useParams, useLocation } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
 import { TextField } from '../TextField.tsx'
@@ -39,7 +39,7 @@ export const Jsonb = memo(
     const params = isAccountTable
       ? [table, project_id]
       : [table, project_id, place_id2 ? 2 : 1]
-    const result = useLiveQuery(sql, params)
+    const result = useLiveIncrementalQuery(sql, params, 'field_id')
     const fields = result?.rows ?? []
 
     const onChange = useCallback<InputProps['onChange']>(
