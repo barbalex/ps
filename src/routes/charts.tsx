@@ -1,5 +1,5 @@
 import { useCallback, useMemo, memo } from 'react'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAtom } from 'jotai'
 
@@ -31,9 +31,10 @@ export const Component = memo(() => {
   }, [place_id, place_id2, project_id, subproject_id])
 
   const db = usePGlite()
-  const result = useLiveQuery(
+  const result = useLiveIncrementalQuery(
     `SELECT * FROM charts WHERE ${hKey} = $1 ORDER BY label ASC`,
     [hValue],
+    'chart_id',
   )
   const charts = result?.rows ?? []
 

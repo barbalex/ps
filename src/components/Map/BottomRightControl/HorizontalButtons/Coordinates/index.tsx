@@ -1,7 +1,7 @@
 import { useState, memo, useCallback, useMemo } from 'react'
 import { useMap, useMapEvent } from 'react-leaflet'
 import { useParams } from 'react-router-dom'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { ToggleMapCenter } from './ToggleMapCenter.tsx'
 import { ChooseCrs } from './ChooseCrs.tsx'
@@ -27,16 +27,18 @@ export const CoordinatesControl = memo(() => {
   const center = bounds.getCenter()
   const { project_id = '99999999-9999-9999-9999-999999999999' } = useParams()
 
-  const resProject = useLiveQuery(
+  const resProject = useLiveIncrementalQuery(
     `SELECT map_presentation_crs FROM projects WHERE project_id = $1`,
     [project_id],
+    'project_id',
   )
   const project = resProject?.rows?.[0]
   const projectMapPresentationCrs = project?.map_presentation_crs
 
-  const resProjectCrs = useLiveQuery(
+  const resProjectCrs = useLiveIncrementalQuery(
     `SELECT code FROM project_crs WHERE project_id = $1`,
     [project_id],
+    'project_crs_id',
   )
   const projectCrs = useMemo(() => resProjectCrs?.rows ?? [], [resProjectCrs])
 

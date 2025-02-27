@@ -9,22 +9,24 @@ import {
 } from '@fluentui/react-components'
 import { BsGlobe2 } from 'react-icons/bs'
 import { useParams } from 'react-router-dom'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 export const ChooseCrs = memo(() => {
   const { project_id = '99999999-9999-9999-9999-999999999999' } = useParams()
 
   const db = usePGlite()
 
-  const resProjectCrs = useLiveQuery(
+  const resProjectCrs = useLiveIncrementalQuery(
     `SELECT * FROM project_crs WHERE project_id = $1`,
     [project_id],
+    'project_crs_id',
   )
   const projectCrs = resProjectCrs?.rows ?? []
   // fetch project.map_presentation_crs to show the active one
-  const resProject = useLiveQuery(
+  const resProject = useLiveIncrementalQuery(
     `SELECT map_presentation_crs FROM projects WHERE project_id = $1`,
     [project_id],
+    'project_id',
   )
   const project = resProject?.rows?.[0]
   const checkedValues = project?.map_presentation_crs
