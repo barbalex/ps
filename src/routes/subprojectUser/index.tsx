@@ -1,7 +1,7 @@
 import { useCallback, useRef, memo } from 'react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
@@ -20,9 +20,10 @@ export const Component = memo(() => {
 
   const db = usePGlite()
 
-  const result = useLiveQuery(
+  const result = useLiveIncrementalQuery(
     `SELECT * FROM subproject_users WHERE subproject_user_id = $1`,
     [subproject_user_id],
+    'subproject_user_id',
   )
   const row = result?.rows?.[0]
 

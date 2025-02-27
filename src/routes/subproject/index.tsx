@@ -1,6 +1,6 @@
 import { useRef, memo, useCallback } from 'react'
 import { useParams } from 'react-router-dom'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { Header } from './Header.tsx'
 import { Component as Form } from './Form.tsx'
@@ -15,9 +15,16 @@ export const Component = memo(() => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
-  const result = useLiveQuery(
-    `SELECT subprojects.*, projects.subproject_name_singular FROM subprojects inner join projects on projects.project_id = subprojects.project_id WHERE subproject_id = $1`,
+  const result = useLiveIncrementalQuery(
+    `SELECT 
+      subprojects.*, 
+      projects.subproject_name_singular 
+    FROM 
+      subprojects 
+        inner join projects on projects.project_id = subprojects.project_id 
+    WHERE subproject_id = $1`,
     [subproject_id],
+    'subproject_id',
   )
   const row = result?.rows?.[0]
 
