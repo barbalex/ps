@@ -1,16 +1,20 @@
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { TableLayer } from './TableLayer.tsx'
 
 export const Checks2 = ({ layerPresentation }) => {
   // TODO: query only inside current map bounds using places.bbox
-  const res = useLiveQuery(`
+  const res = useLiveIncrementalQuery(
+    `
     SELECT checks.* 
     FROM checks 
       INNER JOIN places ON checks.place_id = places.place_id
     WHERE 
       geometry IS NOT NULL
-      AND places.parent_id IS NOT NULL`)
+      AND places.parent_id IS NOT NULL`,
+    undefined,
+    'check_id',
+  )
   const checks = res?.rows ?? []
   // console.log('hello Checks1, checks:', checks)
 
