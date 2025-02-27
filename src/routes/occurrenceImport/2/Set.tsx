@@ -1,7 +1,7 @@
 import { memo, useCallback, useState } from 'react'
 import { Button, Spinner } from '@fluentui/react-components'
 import { MdDone } from 'react-icons/md'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { setGeometries } from './setGeometries.ts'
 
@@ -27,9 +27,10 @@ export const Set = memo(({ occurrenceImport }) => {
   const [settingGeometries, setSettingGeometries] = useState(false)
 
   const db = usePGlite()
-  const res = useLiveQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT * FROM occurrences WHERE occurrence_import_id = $1`,
     [occurrenceImport?.occurrence_import_id],
+    'occurrence_id',
   )
   const occurrences = res?.rows ?? []
 

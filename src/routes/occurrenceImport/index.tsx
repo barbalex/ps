@@ -1,7 +1,11 @@
 import { useCallback, useRef, useMemo, useState, memo } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
 import { Tab, TabList, InputProps } from '@fluentui/react-components'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import {
+  usePGlite,
+  useLiveQuery,
+  useLiveIncrementalQuery,
+} from '@electric-sql/pglite-react'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
@@ -39,15 +43,17 @@ export const Component = memo(() => {
 
   const db = usePGlite()
 
-  const oIResult = useLiveQuery(
+  const oIResult = useLiveIncrementalQuery(
     `SELECT * FROM occurrence_imports WHERE occurrence_import_id = $1`,
     [occurrence_import_id],
+    'occurrence_import_id',
   )
   const occurrenceImport = oIResult?.rows?.[0]
 
-  const oResult = useLiveQuery(
+  const oResult = useLiveIncrementalQuery(
     `SELECT * FROM occurrences WHERE occurrence_import_id = $1`,
     [occurrence_import_id],
+    'occurrence_id',
   )
   const occurrences = useMemo(() => oResult?.rows ?? [], [oResult])
 

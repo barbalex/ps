@@ -1,6 +1,6 @@
 import { memo, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions.tsx'
@@ -10,8 +10,9 @@ const previousImportOperations = ['update_and_extend', 'replace']
 export const Four = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
   const { occurrence_import_id, subproject_id } = useParams()
 
-  const result = useLiveQuery(
+  const result = useLiveIncrementalQuery(
     `SELECT 
+        occurrence_import_id,
         label, 
         occurrence_import_id as value 
       FROM occurrence_imports 
@@ -20,6 +21,7 @@ export const Four = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
         AND subproject_id = $2 
       order by label asc`,
     [occurrence_import_id, subproject_id],
+    'occurrence_import_id',
   )
   const occurrenceImportOptions = useMemo(() => result?.rows ?? [], [result])
 

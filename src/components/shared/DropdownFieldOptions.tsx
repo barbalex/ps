@@ -39,15 +39,14 @@ export const DropdownFieldOptions = memo(
           ref={ref}
           clearable
         >
-          {options.map((params) => {
-            const { label, value } = params
-
-            return (
-              <Option key={value} value={value}>
-                {label}
-              </Option>
-            )
-          })}
+          {options.map(({ label, value }) => (
+            <Option
+              key={value}
+              value={value}
+            >
+              {label}
+            </Option>
+          ))}
         </Dropdown>
       </Field>
     )
