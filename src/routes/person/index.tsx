@@ -1,7 +1,7 @@
 import { useCallback, useRef, memo } from 'react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
@@ -17,9 +17,11 @@ export const Component = memo(() => {
 
   const db = usePGlite()
 
-  const result = useLiveQuery(`SELECT * FROM persons WHERE person_id = $1`, [
-    person_id,
-  ])
+  const result = useLiveIncrementalQuery(
+    `SELECT * FROM persons WHERE person_id = $1`,
+    [person_id],
+    'person_id',
+  )
   const row = result?.rows?.[0]
 
   const onChange = useCallback<InputProps['onChange']>(

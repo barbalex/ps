@@ -1,6 +1,6 @@
 import { useRef, useCallback, memo } from 'react'
 import { useSearchParams, useParams } from 'react-router-dom'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { Header } from './Header.tsx'
 import { Component as Form } from './Form.tsx'
@@ -20,9 +20,11 @@ export const Component = memo(() => {
   const onlyForm = searchParams.get('onlyForm')
 
   const db = usePGlite()
-  const res = useLiveQuery(`SELECT * FROM places WHERE place_id = $1`, [
-    place_id2 ?? place_id,
-  ])
+  const res = useLiveIncrementalQuery(
+    `SELECT * FROM places WHERE place_id = $1`,
+    [place_id2 ?? place_id],
+    'place_id',
+  )
   const row = res?.rows?.[0]
 
   const onChange = useCallback<InputProps['onChange']>(

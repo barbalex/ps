@@ -5,7 +5,7 @@ import { Button } from '@fluentui/react-components'
 import { bbox } from '@turf/bbox'
 import { buffer } from '@turf/buffer'
 import { useAtom, useSetAtom } from 'jotai'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import {
   createPlace,
@@ -31,9 +31,18 @@ export const Header = memo(({ autoFocusRef }: Props) => {
 
   const db = usePGlite()
 
-  const results = useLiveQuery(
-    `SELECT * FROM place_levels WHERE project_id = $1 AND level = $2`,
+  const results = useLiveIncrementalQuery(
+    `
+    SELECT 
+      place_level_id, 
+      name_singular, 
+      name_plural 
+    FROM place_levels 
+    WHERE 
+      project_id = $1 
+      AND level = $2`,
     [project_id, place_id2 ? 2 : 1],
+    'place_level_id',
   )
   const placeLevels = results?.rows ?? []
   const placeNameSingular = placeLevels?.[0]?.name_singular ?? 'Place'

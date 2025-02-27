@@ -1,7 +1,7 @@
 import { useCallback, useRef, memo } from 'react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
@@ -19,9 +19,10 @@ export const Component = memo(() => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
-  const res = useLiveQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT * FROM place_levels WHERE place_level_id = $1`,
     [place_level_id],
+    'place_level_id',
   )
   const row = res?.rows?.[0]
 
