@@ -2,7 +2,7 @@ import { useCallback, useMemo, memo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { TaxonomyNode } from './Taxonomy.tsx'
@@ -21,9 +21,10 @@ export const TaxonomiesNode = memo(({ project_id, level = 3 }: Props) => {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
 
-  const result = useLiveQuery(
+  const result = useLiveIncrementalQuery(
     `SELECT * FROM taxonomies WHERE project_id = $1 order by label asc`,
     [project_id],
+    'taxonomy_id',
   )
   const taxonomies = result?.rows ?? []
 
