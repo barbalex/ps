@@ -1,7 +1,7 @@
 import { useCallback, useRef, memo } from 'react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
@@ -16,7 +16,11 @@ export const Component = memo(() => {
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const res = useLiveQuery(`SELECT * FROM units WHERE unit_id = $1`, [unit_id])
+  const res = useLiveIncrementalQuery(
+    `SELECT * FROM units WHERE unit_id = $1`,
+    [unit_id],
+    'unit_id',
+  )
   const row = res?.rows?.[0]
 
   const onChange = useCallback<InputProps['onChange']>(
