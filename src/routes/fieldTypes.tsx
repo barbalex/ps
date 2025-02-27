@@ -1,7 +1,7 @@
 import { useCallback, memo } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAtom } from 'jotai'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { createFieldType } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
@@ -19,10 +19,12 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
   const db = usePGlite()
 
-  const resultFiltered = useLiveQuery(
-    `SELECT * FROM field_types${
+  const resultFiltered = useLiveIncrementalQuery(
+    `SELECT field_type_id, label FROM field_types${
       isFiltered ? ` AND(${filter})` : ''
     } order by label asc`,
+    undefined,
+    'field_type_id',
   )
   const fieldTypes = resultFiltered?.rows ?? []
 
