@@ -2,7 +2,7 @@ import { useCallback, useMemo, memo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { OccurrenceNotToAssignNode } from './OccurrenceNotToAssign.tsx'
@@ -23,7 +23,7 @@ export const OccurrencesNotToAssignNode = memo(
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const results = useLiveQuery(
+    const results = useLiveIncrementalQuery(
       `
         SELECT 
           o.* 
@@ -38,6 +38,7 @@ export const OccurrencesNotToAssignNode = memo(
           o.label ASC
       `,
       [subproject_id],
+      'occurrence_id',
     )
     const occurrences = results?.rows ?? []
 

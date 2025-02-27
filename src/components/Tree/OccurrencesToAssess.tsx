@@ -2,7 +2,7 @@ import { useCallback, useMemo, memo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { OccurrenceToAssessNode } from './OccurrenceToAssess.tsx'
@@ -23,7 +23,7 @@ export const OccurrencesToAssessNode = memo(
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const resultOccurrences = useLiveQuery(
+    const resultOccurrences = useLiveIncrementalQuery(
       `
         SELECT 
           o.* 
@@ -39,6 +39,7 @@ export const OccurrencesToAssessNode = memo(
           o.label ASC
       `,
       [subproject_id],
+      'occurrence_id',
     )
     const occurrences = resultOccurrences?.rows ?? []
 
