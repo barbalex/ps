@@ -1,7 +1,7 @@
 import { useCallback, memo } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useSetAtom } from 'jotai'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { createUser } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
@@ -17,7 +17,11 @@ export const Component = memo(() => {
 
   const db = usePGlite()
 
-  const result = useLiveQuery(`SELECT * FROM users order by label asc`)
+  const result = useLiveIncrementalQuery(
+    `SELECT user_id, label FROM users order by label asc`,
+    undefined,
+    'user_id',
+  )
   const users = result?.rows ?? []
 
   const add = useCallback(async () => {

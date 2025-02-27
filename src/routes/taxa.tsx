@@ -1,6 +1,6 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { createTaxon } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
@@ -13,9 +13,10 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
 
   const db = usePGlite()
-  const result = useLiveQuery(
-    `SELECT * FROM taxa WHERE taxonomy_id = $1 order by label asc`,
+  const result = useLiveIncrementalQuery(
+    `SELECT taxon_id, label FROM taxa WHERE taxonomy_id = $1 order by label asc`,
     [taxonomy_id],
+    'taxon_id',
   )
   const taxa = result.rows ?? []
 
