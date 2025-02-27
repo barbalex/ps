@@ -1,6 +1,6 @@
 import { memo, useMemo } from 'react'
 import { Pane } from 'react-leaflet'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { OsmColor } from './OsmColor.tsx'
 import { WmsLayerComponent } from './WmsLayer/index.tsx'
@@ -12,31 +12,34 @@ const paneBaseIndex = 400 // was: 200. then wfs layers covered lower ones
 // TODO: text
 // layerPresentationId should be uuid for queries. Need to convert
 export const Layer = memo(({ layerPresentationId, index }) => {
-  const resWms = useLiveQuery(
+  const resWms = useLiveIncrementalQuery(
     `
     SELECT wms_layers.* 
     FROM wms_layers
       INNER JOIN layer_presentations lp ON wms_layers.wms_layer_id = lp.wms_layer_id 
     WHERE lp.layer_presentation_id = $1`,
     [layerPresentationId],
+    'wms_layer_id',
   )
   const wmsLayer = useMemo(() => resWms?.rows?.[0], [resWms])
 
-  const resVector = useLiveQuery(
+  const resVector = useLiveIncrementalQuery(
     `
     SELECT vector_layers.* 
     FROM vector_layers 
       INNER JOIN layer_presentations lp ON vector_layers.vector_layer_id = lp.vector_layer_id
     WHERE lp.layer_presentation_id = $1`,
     [layerPresentationId],
+    'vector_layer_id',
   )
   const vectorLayer = useMemo(() => resVector?.rows?.[0], [resVector])
   const isWfsLayer = vectorLayer?.type === 'wfs'
   const isTableLayer = !!vectorLayer?.type && vectorLayer?.type !== 'wfs'
 
-  const resLP = useLiveQuery(
+  const resLP = useLiveIncrementalQuery(
     `SELECT * FROM layer_presentations WHERE layer_presentation_id = $1`,
     [layerPresentationId],
+    'layer_presentation_id',
   )
   const layerPresentation = resLP?.rows?.[0]
 

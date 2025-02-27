@@ -19,7 +19,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
 
   // places level 1
   const resPlaces1Fields = useLiveIncrementalQuery(
-    `SELECT name FROM fields WHERE table_name = 'places' AND level = 1 AND project_id = $1`,
+    `SELECT field_id, name FROM fields WHERE table_name = 'places' AND level = 1 AND project_id = $1`,
     [project_id],
     'field_id',
   )
@@ -30,7 +30,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
 
   // places level 2
   const resPlaces2Fields = useLiveIncrementalQuery(
-    `SELECT name FROM fields WHERE table_name = 'places' AND level = 2 AND project_id = $1`,
+    `SELECT field_id, name FROM fields WHERE table_name = 'places' AND level = 2 AND project_id = $1`,
     [project_id],
     'field_id',
   )
@@ -41,7 +41,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
 
   // actions level 1
   const resActions1Fields = useLiveIncrementalQuery(
-    `SELECT name FROM fields WHERE table_name = 'actions' AND level = 1 AND project_id = $1`,
+    `SELECT field_id, name FROM fields WHERE table_name = 'actions' AND level = 1 AND project_id = $1`,
     [project_id],
     'field_id',
   )
@@ -52,7 +52,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
 
   // actions level 2
   const resActions2Fields = useLiveIncrementalQuery(
-    `SELECT name FROM fields WHERE table_name = 'actions' AND level = 2 AND project_id = $1`,
+    `SELECT field_id, name FROM fields WHERE table_name = 'actions' AND level = 2 AND project_id = $1`,
     [project_id],
     'field_id',
   )
@@ -63,7 +63,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
 
   // checks level 1
   const resChecks1Fields = useLiveIncrementalQuery(
-    `SELECT name FROM fields WHERE table_name = 'checks' AND level = 1 AND project_id = $1`,
+    `SELECT field_id, name FROM fields WHERE table_name = 'checks' AND level = 1 AND project_id = $1`,
     [project_id],
     'field_id',
   )
@@ -74,7 +74,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
 
   // checks level 2
   const resChecks2Fields = useLiveIncrementalQuery(
-    `SELECT name FROM fields WHERE table_name = 'checks' AND level = 2 AND project_id = $1`,
+    `SELECT field_id, name FROM fields WHERE table_name = 'checks' AND level = 2 AND project_id = $1`,
     [project_id],
     'field_id',
   )
@@ -87,7 +87,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
   // TODO: how to distinguish assigned, to assess and not to assign? place_id or not_to_assign are on occurrences, not fields...
   // TODO: level 1/2 i.e. query where place_id has level 1/2
   const resOccurrencesAssignedFields = useLiveIncrementalQuery(
-    `SELECT name FROM fields WHERE table_name = 'occurrences' AND project_id = $1-- AND place_id IS NOT NULL`,
+    `SELECT field_id, name FROM fields WHERE table_name = 'occurrences' AND project_id = $1-- AND place_id IS NOT NULL`,
     [project_id],
     'field_id',
   )
@@ -98,7 +98,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
 
   // occurrences-to-assess
   const resOccurrencesToAssessFields = useLiveIncrementalQuery(
-    `SELECT name FROM fields WHERE table_name = 'occurrences' AND project_id = $1-- AND place_id IS NULL AND not_to_assign IS NOT TRUE`,
+    `SELECT field_id, name FROM fields WHERE table_name = 'occurrences' AND project_id = $1-- AND place_id IS NULL AND not_to_assign IS NOT TRUE`,
     [project_id],
     'field_id',
   )
@@ -109,7 +109,7 @@ export const OwnVectorLayerPropertiesProvider = memo(() => {
 
   // occurrences-not-to-assign
   const resOccurrencesNotToAssignFields = useLiveIncrementalQuery(
-    `SELECT name FROM fields WHERE table_name = 'occurrences' AND project_id = $1-- AND place_id IS NULL AND not_to_assign IS TRUE`,
+    `SELECT field_id, name FROM fields WHERE table_name = 'occurrences' AND project_id = $1-- AND place_id IS NULL AND not_to_assign IS TRUE`,
     [project_id],
     'field_id',
   )

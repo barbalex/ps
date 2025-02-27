@@ -28,7 +28,7 @@ export const CoordinatesControl = memo(() => {
   const { project_id = '99999999-9999-9999-9999-999999999999' } = useParams()
 
   const resProject = useLiveIncrementalQuery(
-    `SELECT map_presentation_crs FROM projects WHERE project_id = $1`,
+    `SELECT project_id, map_presentation_crs FROM projects WHERE project_id = $1`,
     [project_id],
     'project_id',
   )
@@ -36,7 +36,7 @@ export const CoordinatesControl = memo(() => {
   const projectMapPresentationCrs = project?.map_presentation_crs
 
   const resProjectCrs = useLiveIncrementalQuery(
-    `SELECT code FROM project_crs WHERE project_id = $1`,
+    `SELECT project_crs_id,code FROM project_crs WHERE project_id = $1`,
     [project_id],
     'project_crs_id',
   )

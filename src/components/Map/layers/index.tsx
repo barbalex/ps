@@ -1,6 +1,6 @@
 import { memo, useEffect, useMemo } from 'react'
 import { useAtom } from 'jotai'
-import { useLiveQuery, usePGlite } from '@electric-sql/pglite-react'
+import { useLiveIncrementalQuery, usePGlite } from '@electric-sql/pglite-react'
 
 import { mapLayerSortingAtom } from '../../../store.ts'
 import { Layer } from './Layer.tsx'
@@ -25,9 +25,10 @@ export const Layers = memo(() => {
             ? ` AND layer_presentation_id = ANY($1)`
             : ''
         }`
-  const resLP = useLiveQuery(
+  const resLP = useLiveIncrementalQuery(
     `SELECT * FROM layer_presentations WHERE ${where}`,
     [mapLayerSorting],
+    'layer_presentation_id',
   )
   const layerPresentations = useMemo(() => resLP?.rows ?? [], [resLP])
 
