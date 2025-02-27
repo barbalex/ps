@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import { Button, Accordion } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
 import { useAtom, atom } from 'jotai'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import {
@@ -29,7 +29,7 @@ export const VectorLayers = memo(() => {
 
   const db = usePGlite()
 
-  const res = useLiveQuery(
+  const res = useLiveIncrementalQuery(
     `
     SELECT vector_layer_id 
     FROM vector_layers
@@ -44,6 +44,7 @@ export const VectorLayers = memo(() => {
       )
     order by label`,
     [['wfs', 'upload'], ...(project_id ? [project_id] : [])],
+    'vector_layer_id',
   )
   const vectors = res?.rows ?? []
 

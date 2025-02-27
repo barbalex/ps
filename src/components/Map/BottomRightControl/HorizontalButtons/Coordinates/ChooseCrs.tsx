@@ -24,7 +24,7 @@ export const ChooseCrs = memo(() => {
   const projectCrs = resProjectCrs?.rows ?? []
   // fetch project.map_presentation_crs to show the active one
   const resProject = useLiveIncrementalQuery(
-    `SELECT map_presentation_crs FROM projects WHERE project_id = $1`,
+    `SELECT project_id, map_presentation_crs FROM projects WHERE project_id = $1`,
     [project_id],
     'project_id',
   )

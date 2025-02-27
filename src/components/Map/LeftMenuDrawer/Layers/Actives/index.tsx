@@ -16,7 +16,7 @@ import {
 import { reorder } from '@atlaskit/pragmatic-drag-and-drop/reorder'
 import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index'
 import { useAtom, atom } from 'jotai'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { ActiveLayer } from './Active.tsx'
@@ -88,7 +88,7 @@ export const ActiveLayers = memo(() => {
 
   const db = usePGlite()
 
-  const resWmsLayers = useLiveQuery(
+  const resWmsLayers = useLiveIncrementalQuery(
     `SELECT * 
     FROM wms_layers 
     WHERE 
@@ -100,13 +100,14 @@ export const ActiveLayers = memo(() => {
       )
       ${project_id ? 'AND project_id = $1' : ''}`,
     project_id ? [project_id] : [],
+    'wms_layer_id',
   )
   const activeWmsLayers = useMemo(
     () => resWmsLayers?.rows ?? [],
     [resWmsLayers],
   )
 
-  const resVectorLayers = useLiveQuery(
+  const resVectorLayers = useLiveIncrementalQuery(
     `SELECT * 
     FROM vector_layers 
     WHERE 
@@ -118,6 +119,7 @@ export const ActiveLayers = memo(() => {
       )
       ${project_id ? 'AND project_id = $1' : ''}`,
     project_id ? [project_id] : [],
+    'vector_layer_id',
   )
   const activeVectorLayers = useMemo(
     () => resVectorLayers?.rows ?? [],

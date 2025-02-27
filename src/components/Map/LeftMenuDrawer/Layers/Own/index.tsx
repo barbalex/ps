@@ -2,7 +2,7 @@ import { memo, useCallback } from 'react'
 import { useParams } from 'react-router-dom'
 import { Accordion } from '@fluentui/react-components'
 import { useAtom, atom } from 'jotai'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { OwnLayer } from './OwnLayer.tsx'
@@ -19,7 +19,8 @@ export const OwnLayers = memo(() => {
   const db = usePGlite()
   // TODO: when including layer_presentations, no results are returned
   // unlike with vector_layer_displays. Maybe because no layer_presentations exist?
-  const res = useLiveQuery(`
+  const res = useLiveIncrementalQuery(
+    `
     SELECT * 
     FROM vector_layers 
     WHERE
@@ -33,7 +34,10 @@ export const OwnLayers = memo(() => {
           AND layer_presentations.active
       )
     ORDER BY label ASC
-  `)
+  `,
+    undefined,
+    'vector_layer_id',
+  )
   const ownVectorLayers = res?.rows ?? []
 
   const onToggleItem = useCallback(
