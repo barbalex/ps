@@ -47,7 +47,7 @@ export const processData = async ({ file, additionalData, db }) => {
         )
         .join(',')
       await db.query(
-        `INSERT INTO occurrences (occurrence_import_id, account_id, occurrence_import_id, data) VALUES ${values}`,
+        `INSERT INTO occurrences (occurrence_import_id, account_id, occurrence_id, data) VALUES ${values}`,
       )
     }
     // - insert data into occurrences table
