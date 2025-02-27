@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import { MdEdit, MdEditOff } from 'react-icons/md'
 import { ToggleButton } from '@fluentui/react-components'
 import { useAtom } from 'jotai'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import { useCorbado } from '@corbado/react'
 
 import { designingAtom } from '../../store.ts'
@@ -19,9 +19,10 @@ export const DesigningButton = memo(() => {
   )
 
   // TODO: check if this works as intended (also: Tree.Project.Editing.tsx)
-  const resultProject = useLiveQuery(
+  const resultProject = useLiveIncrementalQuery(
     `
       SELECT
+        p.project_id,
         pu.role as project_user_role,
         u.email as account_user_email
       FROM projects p 
@@ -32,6 +33,7 @@ export const DesigningButton = memo(() => {
         p.project_id = $1
     `,
     [project_id, user?.email],
+    'project_id',
   )
   const project = resultProject?.rows?.[0]
   const userIsOwner = project?.account_user_email === user?.email
