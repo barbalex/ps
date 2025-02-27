@@ -2,7 +2,10 @@ import { useCallback, useMemo, memo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import {
+  useLiveQuery,
+  useLiveIncrementalQuery,
+} from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { SubprojectNode } from './Subproject.tsx'
@@ -24,7 +27,7 @@ export const SubprojectsNode = memo(({ project_id, level = 3 }: Props) => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const resultFiltered = useLiveQuery(
+  const resultFiltered = useLiveIncrementalQuery(
     `
       SELECT subprojects.*, projects.subproject_name_plural 
       FROM subprojects 
@@ -34,6 +37,7 @@ export const SubprojectsNode = memo(({ project_id, level = 3 }: Props) => {
       } order by label asc
       `,
     [project_id],
+    'subproject_id',
   )
   const subprojects = resultFiltered?.rows ?? []
 

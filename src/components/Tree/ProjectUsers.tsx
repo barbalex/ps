@@ -2,7 +2,7 @@ import { useCallback, useMemo, memo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { ProjectUserNode } from './ProjectUser.tsx'
@@ -21,9 +21,10 @@ export const ProjectUsersNode = memo(({ project_id, level = 3 }: Props) => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const result = useLiveQuery(
+  const result = useLiveIncrementalQuery(
     `SELECT * from project_users where project_id = $1 order by label asc`,
     [project_id],
+    'project_user_id',
   )
   const projectUsers = result?.rows ?? []
 
