@@ -1,14 +1,25 @@
 import { memo, useMemo, useCallback } from 'react'
 import { Dropdown, Field, Option } from '@fluentui/react-components'
 import axios from 'redaxios'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 export const LayersDropdown = memo(({ wmsLayer, validationMessage }) => {
   const db = usePGlite()
 
-  const result = useLiveQuery(
-    `SELECT * FROM wms_service_layers WHERE wms_service_id = $1 ORDER BY label ASC`,
+  const result = useLiveIncrementalQuery(
+    `
+    SELECT 
+      wms_service_layer_id, 
+      name, 
+      label 
+    FROM 
+      wms_service_layers 
+    WHERE 
+      wms_service_id = $1 
+    ORDER BY 
+      label ASC`,
     [wmsLayer.wms_service_id],
+    'wms_service_layer_id',
   )
   const wmsServiceLayers = useMemo(() => result?.rows ?? [], [result])
 
