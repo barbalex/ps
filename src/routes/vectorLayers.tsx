@@ -1,7 +1,7 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAtom } from 'jotai'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import {
   createVectorLayer,
@@ -23,11 +23,17 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
   const db = usePGlite()
 
-  const result = useLiveQuery(
-    `SELECT * FROM vector_layers WHERE project_id = $1${
-      isFiltered ? ` AND(${filter})` : ''
-    } order by label ASC`,
+  const result = useLiveIncrementalQuery(
+    `
+    SELECT 
+      vector_layer_id, 
+      label 
+    FROM vector_layers 
+    WHERE project_id = $1
+      ${isFiltered ? ` AND(${filter})` : ''} 
+    ORDER BY label ASC`,
     [project_id],
+    'vector_layer_id',
   )
   const vectorLayers = result?.rows ?? []
 

@@ -1,7 +1,7 @@
 import { memo, useCallback } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useSetAtom } from 'jotai'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
@@ -20,11 +20,10 @@ export const Component = memo(({ vectorLayerId }) => {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
 
-  const db = usePGlite()
-
-  const result = useLiveQuery(
-    `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1 order by label asc`,
+  const result = useLiveIncrementalQuery(
+    `SELECT vector_layer_display_id, label FROM vector_layer_displays WHERE vector_layer_id = $1 order by label asc`,
     [vector_layer_id],
+    'vector_layer_display_id',
   )
   const vlds = result?.rows ?? []
 
