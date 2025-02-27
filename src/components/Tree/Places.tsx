@@ -2,7 +2,10 @@ import { useCallback, useMemo, memo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import {
+  useLiveQuery,
+  useLiveIncrementalQuery,
+} from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { PlaceNode } from './Place/index.tsx'
@@ -39,7 +42,11 @@ export const PlacesNode = memo(
       place_id ? `= $2` : `is null`
     }${isFiltered ? ` AND (${filter})` : ''} order by label asc`
     const paramsFiltered = [subproject_id, ...(place_id ? [place_id] : [])]
-    const resultFiltered = useLiveQuery(sqlFiltered, paramsFiltered)
+    const resultFiltered = useLiveIncrementalQuery(
+      sqlFiltered,
+      paramsFiltered,
+      'place_id',
+    )
     const places = resultFiltered?.rows ?? []
 
     // unfiltered count
@@ -51,9 +58,10 @@ export const PlacesNode = memo(
     )
     const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
 
-    const resultPlaceLevels = useLiveQuery(
+    const resultPlaceLevels = useLiveIncrementalQuery(
       `SELECT * FROM place_levels WHERE project_id = $1 and level = $2 order by label asc`,
       [project_id, place_id ? 2 : 1],
+      'place_level_id',
     )
     const placeLevels = resultPlaceLevels?.rows ?? []
     const placeNamePlural = placeLevels?.[0]?.name_plural ?? 'Places'

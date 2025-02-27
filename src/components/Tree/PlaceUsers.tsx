@@ -1,5 +1,5 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
@@ -17,9 +17,10 @@ export const PlaceUsersNode = memo(
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const res = useLiveQuery(
+    const res = useLiveIncrementalQuery(
       `SELECT * FROM place_users WHERE place_id = $1 ORDER BY label ASC`,
       [place.place_id],
+      'place_user_id',
     )
     const placeUsers = res?.rows ?? []
 
