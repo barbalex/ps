@@ -1,7 +1,7 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAtom } from 'jotai'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import {
   createWmsLayer,
@@ -21,11 +21,12 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
   const db = usePGlite()
 
-  const resultFiltered = useLiveQuery(
-    `SELECT * FROM wms_layers WHERE project_id = $1${
+  const resultFiltered = useLiveIncrementalQuery(
+    `SELECT wms_layer_id, label FROM wms_layers WHERE project_id = $1${
       filter?.length ? ` AND (${filter})` : ''
     } order by label ASC`,
     [project_id],
+    'wms_layer_id',
   )
   const wmsLayers = resultFiltered?.rows ?? []
 
