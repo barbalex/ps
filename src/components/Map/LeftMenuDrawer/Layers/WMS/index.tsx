@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import { Button, Accordion } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
 import { useAtom, atom } from 'jotai'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import {
@@ -29,21 +29,23 @@ export const WmsLayers = memo(() => {
   const db = usePGlite()
   // 1. list all layers (own, wms, vector)
 
-  const resWmsLayers = useLiveQuery(
+  const resWmsLayers = useLiveIncrementalQuery(
     `SELECT * FROM wms_layers${
       project_id ? ` WHERE project_id = $1` : ''
     } ORDER BY label ASC`,
     [project_id],
+    'wms_layer_id',
   )
   const wmsLayers = resWmsLayers?.rows ?? []
 
   // fetch all layer_presentations for the vector layers
-  const resLP = useLiveQuery(
+  const resLP = useLiveIncrementalQuery(
     `
     SELECT lp.* FROM layer_presentations lp
     JOIN wms_layers wms ON lp.wms_layer_id = wms.wms_layer_id
     ${project_id ? ` WHERE project_id = $1` : ''}`,
     [project_id],
+    'layer_presentation_id',
   )
   const layerPresentations = resLP?.rows ?? []
   // 2. when one is set active, add layer_presentations for it

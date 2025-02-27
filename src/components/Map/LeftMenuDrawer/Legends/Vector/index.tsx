@@ -1,13 +1,14 @@
 import { memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { Display } from './Display.tsx'
 
 export const VectorLegend = memo(({ layer }) => {
   // fetch all vector_layer_displays for this layer
-  const res = useLiveQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1`,
     [layer.vector_layer_id],
+    'vector_layer_display_id',
   )
   const vectorLayerDisplays = res?.rows ?? []
 

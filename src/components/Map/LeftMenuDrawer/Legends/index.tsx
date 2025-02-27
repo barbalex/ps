@@ -1,5 +1,5 @@
 import { memo, useMemo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import { useAtom } from 'jotai'
 
@@ -19,7 +19,8 @@ export const Legends = memo(() => {
   const [mapLayerSorting] = useAtom(mapLayerSortingAtom)
   const { project_id } = useParams()
 
-  const resWmsLayers = useLiveQuery(`
+  const resWmsLayers = useLiveIncrementalQuery(
+    `
     SELECT * 
     FROM wms_layers 
     WHERE 
@@ -31,14 +32,18 @@ export const Legends = memo(() => {
           AND lp.active = true
       )
       ${project_id ? `AND project_id = '${project_id}'` : ''}
-  `)
+  `,
+    undefined,
+    'wms_layer_id',
+  )
   const activeWmsLayers = useMemo(
     () => resWmsLayers?.rows ?? [],
     [resWmsLayers],
   )
 
   // same for vector layers
-  const resVectorLayers = useLiveQuery(`
+  const resVectorLayers = useLiveIncrementalQuery(
+    `
     SELECT *
     FROM vector_layers
     WHERE 
@@ -50,7 +55,10 @@ export const Legends = memo(() => {
           AND lp.active = true
       )
       ${project_id ? `AND project_id = '${project_id}'` : ''}
-  `)
+  `,
+    undefined,
+    'vector_layer_id',
+  )
   const activeVectorLayers = useMemo(
     () => resVectorLayers?.rows ?? [],
     [resVectorLayers],

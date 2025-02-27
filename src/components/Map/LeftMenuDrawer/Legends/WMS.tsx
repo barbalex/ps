@@ -1,11 +1,13 @@
 import { memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 export const WmsLegend = memo(({ layer }) => {
   // need to fetch wms_service_layers with this layers wms_service_layer_name
-  const res = useLiveQuery(`SELECT * FROM wms_service_layers WHERE name = $1`, [
-    layer.wms_service_layer_name,
-  ])
+  const res = useLiveIncrementalQuery(
+    `SELECT * FROM wms_service_layers WHERE name = $1`,
+    [layer.wms_service_layer_name],
+    'wms_service_layer_id',
+  )
   const wmsServiceLayer = res?.rows?.[0]
 
   if (wmsServiceLayer?.legend_image) {
