@@ -1,7 +1,7 @@
 import { useCallback, memo } from 'react'
 import { useParams } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { DateField } from '../../components/shared/DateField.tsx'
@@ -15,9 +15,11 @@ export const Component = memo(() => {
   const { message_id } = useParams()
 
   const db = usePGlite()
-  const result = useLiveQuery(`SELECT * FROM messages WHERE message_id = $1`, [
-    message_id,
-  ])
+  const result = useLiveIncrementalQuery(
+    `SELECT * FROM messages WHERE message_id = $1`,
+    [message_id],
+    'message_id',
+  )
   const row = result?.rows?.[0]
 
   const onChange = useCallback<InputProps['onChange']>(

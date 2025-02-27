@@ -1,7 +1,7 @@
 import { useRef, useCallback, memo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { ComboboxFilteringForTable } from '../../components/shared/ComboboxFilteringForTable/index.tsx'
@@ -20,9 +20,10 @@ export const Component = memo(() => {
 
   const db = usePGlite()
 
-  const result = useLiveQuery(
+  const result = useLiveIncrementalQuery(
     `SELECT * FROM occurrences WHERE occurrence_id = $1`,
     [occurrence_id],
+    'occurrence_id',
   )
   const row = result?.rows?.[0]
 

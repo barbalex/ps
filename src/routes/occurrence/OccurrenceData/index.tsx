@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { arrayMoveImmutable } from 'array-move'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 
 import { exists } from '../../../modules/exists.ts'
@@ -55,9 +55,10 @@ export const OccurenceData = () => {
     [sortedBeobFields],
   )
 
-  const res = useLiveQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT * FROM occurrences WHERE occurrence_id = $1`,
     [occurrence_id],
+    'occurrence_id',
   )
   const occurrence = res?.rows?.[0]
 
