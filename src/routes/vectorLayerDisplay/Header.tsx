@@ -1,7 +1,7 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useSetAtom } from 'jotai'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { createVectorLayerDisplay } from '../../modules/createRows.ts'
@@ -18,9 +18,10 @@ export const Header = memo(({ vectorLayerDisplayId }) => {
 
   const db = usePGlite()
   // fetch the vector_layer_id from the db as params is not available in the map drawer
-  const res = useLiveQuery(
-    `SELECT vector_layer_id FROM vector_layer_displays WHERE vector_layer_display_id = $1`,
+  const res = useLiveIncrementalQuery(
+    `SELECT vector_layer_display_id, vector_layer_id FROM vector_layer_displays WHERE vector_layer_display_id = $1`,
     [vector_layer_display_id],
+    'vector_layer_display_id',
   )
   const vectorLayerDisplays = res?.rows ?? []
   const vector_layer_id = vectorLayerDisplays?.[0]?.vector_layer_id

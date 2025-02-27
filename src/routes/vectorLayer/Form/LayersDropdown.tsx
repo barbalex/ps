@@ -1,13 +1,21 @@
 import { memo, useMemo, useCallback } from 'react'
 import { Dropdown, Field, Option } from '@fluentui/react-components'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 export const LayersDropdown = memo(({ vectorLayer, validationMessage }) => {
   const db = usePGlite()
 
-  const res = useLiveQuery(
-    `SELECT name, label FROM wfs_service_layers WHERE wfs_service_id = $1 order by label`,
+  const res = useLiveIncrementalQuery(
+    `
+    SELECT 
+      wfs_service_layer_id, 
+      name, 
+      label 
+    FROM wfs_service_layers 
+    WHERE wfs_service_id = $1 
+    ORDER BY label`,
     [vectorLayer.wfs_service_id],
+    'wfs_service_layer_id',
   )
   const options = useMemo(
     () => (res?.rows ?? []).map(({ name, label }) => ({ value: name, label })),

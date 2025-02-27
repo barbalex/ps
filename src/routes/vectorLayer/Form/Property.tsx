@@ -1,6 +1,6 @@
 import { useCallback, useMemo, memo } from 'react'
 import { useParams } from 'react-router-dom'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { DropdownFieldOptions } from '../../../components/shared/DropdownFieldOptions.tsx'
 import { TextField } from '../../../components/shared/TextField.tsx'
@@ -15,9 +15,20 @@ export const Property = memo(({ vectorLayer }) => {
 
   const db = usePGlite()
   // get fields of table
-  const result = useLiveQuery(
-    `SELECT * FROM fields WHERE table_name = $1 and level = $2 and project_id = $3 order by sort_index asc, label asc`,
+  const result = useLiveIncrementalQuery(
+    `
+    SELECT 
+      field_id, 
+      field_label, 
+      name 
+    FROM fields 
+    WHERE 
+      table_name = $1 
+      AND level = $2 
+      AND project_id = $3 
+    ORDER BY sort_index ASC, label ASC`,
     [table, level, project_id],
+    'field_id',
   )
   const fields = useMemo(() => result?.rows ?? [], [result])
   const options = useMemo(
