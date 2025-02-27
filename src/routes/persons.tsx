@@ -1,7 +1,7 @@
 import { useCallback, memo, use } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAtom } from 'jotai'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { createPerson } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
@@ -19,11 +19,12 @@ export const Component = memo(() => {
   const { project_id } = useParams()
   const db = usePGlite()
 
-  const result = useLiveQuery(
-    `SELECT * FROM persons WHERE project_id = $1${
+  const result = useLiveIncrementalQuery(
+    `SELECT person_id, label FROM persons WHERE project_id = $1${
       isFiltered ? ` AND(${filter})` : ''
     } ORDER BY label ASC`,
     [project_id],
+    'person_id',
   )
   const persons = result?.rows ?? []
 

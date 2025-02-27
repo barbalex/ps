@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import { useLocation, useParams } from 'react-router-dom'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
@@ -31,8 +31,17 @@ export const Component = memo(() => {
   if (isNotToAssign) {
     filter += ' AND o.not_to_assign is true AND o.place_id is null'
   }
-  const result = useLiveQuery(
-    `SELECT o.occurrence_id, o.label FROM occurrences o inner join occurrence_imports oi on o.occurrence_import_id = oi.occurrence_import_id WHERE ${filter} order by label asc`,
+  const result = useLiveIncrementalQuery(
+    `
+    SELECT 
+      o.occurrence_id, 
+      o.label 
+    FROM occurrences o 
+      inner join occurrence_imports oi on o.occurrence_import_id = oi.occurrence_import_id 
+    WHERE ${filter} 
+    ORDER BY label ASC`,
+    undefined,
+    'occurrence_id',
   )
   const occurrences = result?.rows ?? []
 
