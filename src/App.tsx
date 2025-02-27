@@ -2,7 +2,7 @@ import React, { createRef } from 'react'
 import { RouterProvider } from 'react-router-dom'
 import { FluentProvider } from '@fluentui/react-components'
 import { Provider as JotaiProvider } from 'jotai'
-import { PGlite } from '@electric-sql/pglite'
+import { PGliteWorker } from '@electric-sql/pglite/worker'
 import { live } from '@electric-sql/pglite/live'
 import { PGliteProvider } from '@electric-sql/pglite-react'
 
@@ -19,9 +19,16 @@ import { router } from './router/index.tsx'
 import { UploaderContext } from './UploaderContext.ts'
 import { store } from './store.ts'
 
-const db = await PGlite.create('idb://ps', {
-  extensions: { live },
-})
+const db = new PGliteWorker(
+  new Worker(new URL('./pglite-worker.ts', import.meta.url), {
+    type: 'module',
+  }),
+  {
+    extensions: {
+      live,
+    },
+  },
+)
 
 const routerContainerStyle = {
   display: 'flex',
