@@ -42,7 +42,7 @@ export const processData = async ({ file, additionalData, db }) => {
         .map(
           (c) =>
             `('${c.occurrence_import_id}', '${c.account_id}', '${
-              c.occurrence_import_id
+              c.occurrence_id
             }', '${JSON.stringify(c.data)}')`,
         )
         .join(',')
