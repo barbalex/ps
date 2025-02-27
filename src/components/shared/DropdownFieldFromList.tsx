@@ -1,6 +1,6 @@
 import { memo, useMemo } from 'react'
 import { Dropdown, Field, Option } from '@fluentui/react-components'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 const rowStyle = {
   display: 'flex',
@@ -35,9 +35,11 @@ export const DropdownFieldFromList = memo(
     validationState,
     button,
   }: Props) => {
-    const res = useLiveQuery(`SELECT * FROM list_values WHERE list_id = $1`, [
-      list_id,
-    ])
+    const res = useLiveIncrementalQuery(
+      `SELECT * FROM list_values WHERE list_id = $1`,
+      [list_id],
+      'list_id',
+    )
     const options = useMemo(
       () => res?.rows.map(({ value }) => value),
       [res?.rows],

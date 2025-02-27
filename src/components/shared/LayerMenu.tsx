@@ -8,7 +8,7 @@ import { bbox } from '@turf/bbox'
 import { buffer } from '@turf/buffer'
 import { featureCollection } from '@turf/helpers'
 import { useSetAtom } from 'jotai'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
 import { mapBoundsAtom } from '../../store.ts'
@@ -19,12 +19,13 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }) => {
 
   const db = usePGlite()
 
-  const result = useLiveQuery(
+  const result = useLiveIncrementalQuery(
     `SELECT lp.* 
     FROM layer_presentations lp
       inner join vector_layers vl on lp.vector_layer_id = vl.vector_layer_id
     WHERE vl.project_id = $1 AND vl.type = $2`,
     [project_id, `${table}${level}`],
+    'layer_presentation_id',
   )
   const layerPresentation = result?.rows?.[0]
 
