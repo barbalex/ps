@@ -1,7 +1,7 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAtom } from 'jotai'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { createAction } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
@@ -22,11 +22,12 @@ export const Component = memo(() => {
   const db = usePGlite()
 
   const filter = place_id2 ? actions2Filter : actions1Filter
-  const result = useLiveQuery(
-    `SELECT * FROM actions WHERE place_id = $1${
+  const result = useLiveIncrementalQuery(
+    `SELECT action_id, label FROM actions WHERE place_id = $1${
       filter && ` AND (${filter})`
     } order by label asc`,
     [place_id2 ?? place_id],
+    'action_id',
   )
   const actions = result?.rows ?? []
 
