@@ -1,7 +1,7 @@
 import { useRef, useCallback } from 'react'
 import { useParams } from 'react-router-dom'
 // import type { InputProps } from '@fluentui/react-components'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
@@ -38,9 +38,10 @@ export const Component = ({ vectorLayerDisplayId }) => {
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const res = useLiveQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT * FROM vector_layer_displays WHERE vector_layer_display_id = $1`,
     [vector_layer_display_id],
+    'vector_layer_display_id',
   )
   const row = res?.rows?.[0]
 
