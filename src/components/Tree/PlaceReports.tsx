@@ -1,5 +1,5 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
@@ -25,7 +25,7 @@ export const PlaceReportsNode = memo(
     const [searchParams] = useSearchParams()
 
     const filter = place_id ? placeReports2Filter : placeReports1Filter
-    const resFiltered = useLiveQuery(
+    const resFiltered = useLiveIncrementalQuery(
       `
       SELECT * 
       FROM place_reports 
@@ -34,10 +34,11 @@ export const PlaceReportsNode = memo(
         ${filter.length > 0 ? ` AND ${filter.join(' AND ')}` : ``}
       ORDER BY label ASC`,
       [place.place_id],
+      'place_report_id',
     )
     const placeReportsFiltered = resFiltered?.rows ?? []
 
-    const resUnfiltered = useLiveQuery(
+    const resUnfiltered = useLiveIncrementalQuery(
       `
       SELECT * 
       FROM place_reports 
@@ -45,6 +46,7 @@ export const PlaceReportsNode = memo(
         place_id = $1 
       ORDER BY label ASC`,
       [place.place_id],
+      'place_report_id',
     )
     const placeReportsUnfiltered = resUnfiltered?.rows ?? []
 
