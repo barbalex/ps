@@ -9,7 +9,7 @@ import {
   CartesianGrid,
   Legend,
 } from 'recharts'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 const toPercent = (decimal) => `${(decimal * 100).toFixed(0)}%`
 
@@ -23,9 +23,11 @@ const formatNumber = (tickItem) =>
   tickItem && tickItem?.toLocaleString ? tickItem.toLocaleString('de-ch') : 0
 
 export const SingleChart = memo(({ chart, subjects, data, synchronized }) => {
-  const result = useLiveQuery(`SELECT * FROM units WHERE unit_id = $1`, [
-    subjects?.[0]?.value_unit ?? '99999999-9999-9999-9999-999999999999',
-  ])
+  const result = useLiveIncrementalQuery(
+    `SELECT * FROM units WHERE unit_id = $1`,
+    [subjects?.[0]?.value_unit ?? '99999999-9999-9999-9999-999999999999'],
+    'unit_id',
+  )
   const firstSubjectsUnit = result?.rows?.[0]
   if (!chart || !subjects) return null
 

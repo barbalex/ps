@@ -1,7 +1,7 @@
 import { useCallback, memo } from 'react'
 import type { InputProps } from '@fluentui/react-components'
 import { useParams } from 'react-router-dom'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions.tsx'
@@ -21,9 +21,11 @@ export const Form = memo(({ autoFocusRef }: Props) => {
   const { chart_id } = useParams()
 
   const db = usePGlite()
-  const result = useLiveQuery(`SELECT * FROM charts WHERE chart_id = $1`, [
-    chart_id,
-  ])
+  const result = useLiveIncrementalQuery(
+    `SELECT * FROM charts WHERE chart_id = $1`,
+    [chart_id],
+    'chart_id',
+  )
   const row = result?.rows?.[0]
 
   const onChange = useCallback<InputProps['onChange']>(
