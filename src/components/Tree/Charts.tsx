@@ -2,7 +2,7 @@ import { useCallback, useMemo, memo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { ChartNode } from './Chart.tsx'
@@ -44,9 +44,10 @@ export const ChartsNode = memo(
       return { field, value }
     }, [place_id, place_id2, project_id, subproject_id])
 
-    const result = useLiveQuery(
+    const result = useLiveIncrementalQuery(
       `SELECT * FROM charts WHERE ${field} = $1 order by label asc`,
       [value],
+      'chart_id',
     )
     const charts = result?.rows ?? []
 

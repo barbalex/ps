@@ -2,7 +2,7 @@ import { useCallback, useMemo, memo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { ChartSubjectNode } from './ChartSubject.tsx'
@@ -33,9 +33,10 @@ export const ChartSubjectsNode = memo(
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const result = useLiveQuery(
+    const result = useLiveIncrementalQuery(
       `SELECT * FROM chart_subjects WHERE chart_id = $1 order by label asc`,
       [chart_id],
+      'chart_subject_id',
     )
     const chartSubjects = result?.rows ?? []
 
