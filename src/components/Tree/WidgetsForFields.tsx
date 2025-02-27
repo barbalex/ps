@@ -2,7 +2,10 @@ import { useCallback, useMemo, memo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import {
+  useLiveQuery,
+  useLiveIncrementalQuery,
+} from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { WidgetForFieldNode } from './WidgetForField.tsx'
@@ -19,10 +22,12 @@ export const WidgetsForFieldsNode = memo(() => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const resultFiltered = useLiveQuery(
+  const resultFiltered = useLiveIncrementalQuery(
     `SELECT * FROM widgets_for_fields${
       isFiltered ? ` WHERE ${filter}` : ''
     } order by label asc`,
+    undefined,
+    'widget_for_field_id',
   )
   const widgetsForFields = resultFiltered?.rows ?? []
 
