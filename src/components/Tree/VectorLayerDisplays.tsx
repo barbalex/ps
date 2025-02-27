@@ -2,7 +2,7 @@ import { useCallback, useMemo, memo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { VectorLayerDisplayNode } from './VectorLayerDisplay.tsx'
@@ -23,9 +23,10 @@ export const VectorLayerDisplaysNode = memo(
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const result = useLiveQuery(
+    const result = useLiveIncrementalQuery(
       `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1 order by label asc`,
       [vector_layer_id],
+      'vector_layer_display_id',
     )
     const vlds = result?.rows ?? []
 
