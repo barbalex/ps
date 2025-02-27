@@ -2,7 +2,10 @@ import { useCallback, useMemo, memo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import {
+  useLiveQuery,
+  useLiveIncrementalQuery,
+} from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { GoalNode } from './Goal.tsx'
@@ -26,11 +29,12 @@ export const GoalsNode = memo(
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const resultFiltered = useLiveQuery(
+    const resultFiltered = useLiveIncrementalQuery(
       `SELECT * FROM goals WHERE subproject_id = $1${
         isFiltered ? ` AND (${filter})` : ''
       } ORDER BY label ASC`,
       [subproject_id],
+      'goal_id',
     )
     const goals = resultFiltered?.rows ?? []
 

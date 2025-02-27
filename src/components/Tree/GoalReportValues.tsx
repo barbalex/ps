@@ -1,5 +1,5 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
@@ -31,9 +31,10 @@ export const GoalReportValuesNode = memo(
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const res = useLiveQuery(
+    const res = useLiveIncrementalQuery(
       `SELECT * FROM goal_report_values WHERE goal_report_id = $1 ORDER BY label asc`,
       [goal_report_id],
+      'goal_report_value_id',
     )
     const goalReportValues = res?.rows ?? []
 
