@@ -3,7 +3,7 @@ import { MdEdit, MdEditOff } from 'react-icons/md'
 import { Button } from '@fluentui/react-components'
 import { useAtom } from 'jotai'
 import { pipe } from 'remeda'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import { useCorbado } from '@corbado/react'
 
 import { on } from '../../../css.ts'
@@ -33,9 +33,10 @@ export const Editing = memo(({ projectId }) => {
   )
 
   // TODO: check if this works as intended (also: project.DesigningButton.tsx)
-  const resultProject = useLiveQuery(
+  const resultProject = useLiveIncrementalQuery(
     `
       SELECT
+        p.project_id,
         pu.role as project_user_role,
         u.email as account_user_email
       FROM projects p 
@@ -46,6 +47,7 @@ export const Editing = memo(({ projectId }) => {
         p.project_id = $1
     `,
     [projectId, user?.email],
+    'project_id',
   )
   const project = resultProject?.rows?.[0]
   const userIsOwner = project?.account_user_email === user?.email

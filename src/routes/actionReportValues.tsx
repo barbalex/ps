@@ -1,6 +1,6 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { createActionReportValue } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
@@ -13,9 +13,10 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
 
   const db = usePGlite()
-  const result = useLiveQuery(
-    `Select * from action_report_values where action_report_id = $1 order by label ASC;`,
+  const result = useLiveIncrementalQuery(
+    `Select action_report_value_id, label from action_report_values where action_report_id = $1 order by label ASC;`,
     [action_report_id],
+    'action_report_value_id',
   )
   const actionReportValues = result?.rows ?? []
 

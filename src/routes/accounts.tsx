@@ -1,6 +1,6 @@
 import { useCallback, memo } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { createAccount } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
@@ -13,7 +13,11 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
 
   const db = usePGlite()
-  const results = useLiveQuery(`SELECT * FROM accounts`)
+  const results = useLiveIncrementalQuery(
+    `SELECT account_id, label FROM accounts`,
+    undefined,
+    'account_id',
+  )
   const accounts = results?.rows ?? []
 
   const add = useCallback(async () => {
