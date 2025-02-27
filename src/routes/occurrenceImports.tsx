@@ -1,6 +1,6 @@
 import { useCallback, memo } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { createOccurrenceImport } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
@@ -15,9 +15,10 @@ export const Component = memo(() => {
 
   const db = usePGlite()
 
-  const result = useLiveQuery(
-    `SELECT * FROM occurrence_imports WHERE subproject_id = $1 order by label asc`,
+  const result = useLiveIncrementalQuery(
+    `SELECT occurrence_import_id, label FROM occurrence_imports WHERE subproject_id = $1 order by label asc`,
     [subproject_id],
+    'occurrence_import_id',
   )
   const occurrenceImports = result?.rows ?? []
 

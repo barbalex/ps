@@ -1,6 +1,6 @@
 import { useCallback, memo } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { createMessage } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
@@ -14,9 +14,10 @@ export const Component = memo(() => {
 
   const db = usePGlite()
 
-  const result = useLiveQuery(
+  const result = useLiveIncrementalQuery(
     `SELECT message_id, date FROM messages order by date desc`,
-    [],
+    undefined,
+    'message_id',
   )
   const messages = result?.rows ?? []
 
