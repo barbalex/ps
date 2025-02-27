@@ -41,7 +41,7 @@ import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine'
 import invariant from 'tiny-invariant'
 import { useAtom } from 'jotai'
 import { pipe } from 'remeda'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createNotification } from '../../../../../modules/createRows.ts'
@@ -140,11 +140,12 @@ export const ActiveLayer = memo(
       layer.wms_service_layer_name,
     ])
 
-    const res = useLiveQuery(
+    const res = useLiveIncrementalQuery(
       `SELECT * FROM layer_presentations WHERE ${
         isVectorLayer ? 'vector_layer_id' : 'wms_layer_id'
       } = $1`,
       [isVectorLayer ? layer.vector_layer_id : layer.wms_layer_id],
+      'layer_presentation_id',
     )
     const layerPresentation = res?.rows?.[0]
 

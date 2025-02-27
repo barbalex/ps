@@ -1,4 +1,4 @@
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import { useParams } from 'react-router-dom'
 import { useAtom } from 'jotai'
 
@@ -8,7 +8,7 @@ import { draggableLayersAtom } from '../../../../store.ts'
 export const OccurrencesToAssess = ({ layerPresentation }) => {
   const [draggableLayers] = useAtom(draggableLayersAtom)
   const { subproject_id } = useParams()
-  const res = useLiveQuery(
+  const res = useLiveIncrementalQuery(
     `
     SELECT o.*
     FROM occurrences o
@@ -20,6 +20,7 @@ export const OccurrencesToAssess = ({ layerPresentation }) => {
       AND o.geometry IS NOT NULL
   `,
     [subproject_id],
+    'occurrence_id',
   )
   const occurrences = res?.rows ?? []
 
