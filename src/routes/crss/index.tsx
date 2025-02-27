@@ -1,6 +1,6 @@
 import { useCallback, memo } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { createCrs } from '../../modules/createRows.ts'
 import { ListViewHeader } from '../../components/ListViewHeader/index.tsx'
@@ -14,7 +14,11 @@ export const Component = memo(() => {
 
   const db = usePGlite()
 
-  const result = useLiveQuery(`SELECT * FROM crs order by label asc`)
+  const result = useLiveIncrementalQuery(
+    `SELECT * FROM crs order by label asc`,
+    undefined,
+    'crs_id',
+  )
   const crs = result?.rows ?? []
 
   const add = useCallback(async () => {

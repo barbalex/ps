@@ -1,6 +1,6 @@
 import { useCallback, memo } from 'react'
 import type { InputProps } from '@fluentui/react-components'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
@@ -10,9 +10,11 @@ import { Component as Form } from './Form.tsx'
 export const FieldFormFetchingOwnData = memo(
   ({ field_id, autoFocusRef, isInForm = false }) => {
     const db = usePGlite()
-    const result = useLiveQuery(`SELECT * FROM fields WHERE field_id = $1`, [
-      field_id,
-    ])
+    const result = useLiveIncrementalQuery(
+      `SELECT * FROM fields WHERE field_id = $1`,
+      [field_id],
+      'field_id',
+    )
     const row = result?.rows?.[0]
 
     const onChange = useCallback<InputProps['onChange']>(
