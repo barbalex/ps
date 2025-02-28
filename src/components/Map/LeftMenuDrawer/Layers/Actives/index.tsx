@@ -99,7 +99,9 @@ export const ActiveLayers = memo(() => {
       layer_presentations.layer_presentation_id,
       layer_presentations.active as layer_presentation_active
     FROM wms_layers
-      inner join layer_presentations on wms_layers.wms_layer_id = layer_presentations.wms_layer_id and layer_presentations.active = true
+      INNER JOIN layer_presentations 
+        ON wms_layers.wms_layer_id = layer_presentations.wms_layer_id 
+        AND layer_presentations.active = TRUE
     ${project_id ? 'WHERE project_id = $1' : ''}`,
     project_id ? [project_id] : [],
     'wms_layer_id',
@@ -116,7 +118,9 @@ export const ActiveLayers = memo(() => {
       layer_presentations.layer_presentation_id,
       layer_presentations.active as layer_presentation_active
     FROM vector_layers 
-      inner join layer_presentations on vector_layers.vector_layer_id = layer_presentations.vector_layer_id and layer_presentations.active = true
+      INNER JOIN layer_presentations 
+        ON vector_layers.vector_layer_id = layer_presentations.vector_layer_id 
+        AND layer_presentations.active = TRUE
       ${project_id ? 'WHERE project_id = $1' : ''}`,
     project_id ? [project_id] : [],
     'vector_layer_id',
