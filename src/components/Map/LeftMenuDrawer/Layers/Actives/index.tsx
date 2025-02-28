@@ -132,8 +132,6 @@ export const ActiveLayers = memo(() => {
     [resVectorLayers],
   )
 
-  console.log('Layers.Actives, activeWmsLayers', activeWmsLayers)
-
   // sort by mapLayerSorting
   const activeLayers = useMemo(
     () =>
@@ -149,9 +147,9 @@ export const ActiveLayers = memo(() => {
     [activeWmsLayers, activeVectorLayers, mapLayerSorting],
   )
 
-  const layerPresentationIds = activeLayers.map(
-    (l) => l.layer_presentations?.[0]?.layer_presentation_id,
-  )
+  console.log('Layers.Actives, activeLayers', activeLayers)
+
+  const layerPresentationIds = activeLayers.map((l) => l.layer_presentation_id)
 
   // when activeLayers changes, update mapLayerSorting:
   // add missing layer's layer_presentation_id's to mapLayerSorting
@@ -240,8 +238,8 @@ export const ActiveLayers = memo(() => {
 
         const indexOfTarget = activeLayers.findIndex(
           (layer) =>
-            layer.layer_presentations?.[0]?.layer_presentation_id ===
-            targetData.layer.layer_presentations?.[0]?.layer_presentation_id,
+            layer.layer_presentation_id ===
+            targetData.layer.layer_presentation_id,
         )
         if (indexOfTarget < 0) {
           return
@@ -334,9 +332,7 @@ export const ActiveLayers = memo(() => {
                   index={index}
                   layerCount={activeLayers.length}
                   isLast={index === activeLayers.length - 1}
-                  isOpen={openItems.includes(
-                    l.layer_presentations?.[0]?.layer_presentation_id,
-                  )}
+                  isOpen={openItems.includes(l.layer_presentation_id)}
                 />
               ))
             ) : (

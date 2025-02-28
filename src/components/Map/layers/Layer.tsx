@@ -1,22 +1,30 @@
 import { memo, useMemo } from 'react'
 import { Pane } from 'react-leaflet'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { useAtom } from 'jotai'
 
 import { OsmColor } from './OsmColor.tsx'
 import { WmsLayerComponent } from './WmsLayer/index.tsx'
 import { VectorLayerChooser } from './VectorLayer/index.tsx'
 import { tableLayerToComponent } from './tableLayerToComponent.ts'
+import { mapLayerSortingAtom } from '../../../store.ts'
 
 const paneBaseIndex = 400 // was: 200. then wfs layers covered lower ones
 
 // TODO: text
 // layerPresentationId should be uuid for queries. Need to convert
 export const Layer = memo(({ layerPresentationId, index }) => {
+  const [mapLayerSorting] = useAtom(mapLayerSortingAtom)
   const resWms = useLiveIncrementalQuery(
     `
-    SELECT wms_layers.* 
+    SELECT 
+      wms_layers.*,
+      wms_services.url as wms_services_url,
+      wms_services.image_format as wms_services_image_format,
+      wms_services.version as wms_services_version 
     FROM wms_layers
-      INNER JOIN layer_presentations lp ON wms_layers.wms_layer_id = lp.wms_layer_id 
+      INNER JOIN layer_presentations lp ON wms_layers.wms_layer_id = lp.wms_layer_id
+      INNER JOIN wms_services ON wms_layers.wms_service_id = wms_services.wms_service_id
     WHERE lp.layer_presentation_id = $1`,
     [layerPresentationId],
     'wms_layer_id',
@@ -70,11 +78,11 @@ export const Layer = memo(({ layerPresentationId, index }) => {
       max_zoom: layerPresentation.max_zoom,
       min_zoom: layerPresentation.min_zoom,
       opacity: layerPresentation.opacity_percent,
-      url: wmsLayer.wms_services.url,
-      format: wmsLayer.wms_services.image_format,
+      url: wmsLayer.wms_services_url,
+      format: wmsLayer.wms_services_image_format,
       layer: wmsLayer.wms_service_layer_name,
       transparent: layerPresentation.transparent,
-      version: wmsLayer.wms_services.version,
+      version: wmsLayer.wms_services_version,
       grayscale: layerPresentation.grayscale,
     }
     return (
