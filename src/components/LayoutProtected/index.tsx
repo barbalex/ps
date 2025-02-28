@@ -35,6 +35,7 @@ export const Layout = memo(() => {
 
   // ignore Navs for now
   // TODO: implement nav-lists to replace them
+  // TODO: reactivate Breadcrumbs
   return (
     <>
       {onlyForm !== true && (
@@ -42,7 +43,7 @@ export const Layout = memo(() => {
           <Header />
           {!mapIsMaximized && (
             <>
-              <Breadcrumbs />
+              {/* <Breadcrumbs /> */}
               {/* <Navs /> */}
             </>
           )}

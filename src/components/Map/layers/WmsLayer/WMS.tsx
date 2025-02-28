@@ -5,12 +5,9 @@ import { usePGlite } from '@electric-sql/pglite-react'
 
 import { onTileError } from './onTileError.ts'
 
-export const WMS = memo(({ layerPresentation }) => {
+export const WMS = memo(({ layerPresentation, layer }) => {
   const map = useMap()
-
   const db = usePGlite()
-
-  const layer = layerPresentation.wms_layers
 
   const onTileErrorDebounced = useDebouncedCallback(
     onTileError.bind(this, db, map, layer),
@@ -23,10 +20,10 @@ export const WMS = memo(({ layerPresentation }) => {
   // instead ALL WMS LAYERS FAIL!!!!!!!!
   return (
     <WMSTileLayer
-      url={layer.wms_services.url}
+      url={layer.wms_services_url}
       layers={layer.wms_service_layer_name}
-      version={layer.wms_services.version}
-      format={layer.wms_services.image_format}
+      version={layer.wms_services_version}
+      format={layer.wms_services_image_format}
       minZoom={layerPresentation.min_zoom}
       maxZoom={layerPresentation.max_zoom}
       className={layerPresentation.grayscale ? 'grayscale' : ''}

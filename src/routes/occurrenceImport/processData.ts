@@ -42,12 +42,12 @@ export const processData = async ({ file, additionalData, db }) => {
         .map(
           (c) =>
             `('${c.occurrence_import_id}', '${c.account_id}', '${
-              c.occurrence_import_id
+              c.occurrence_id
             }', '${JSON.stringify(c.data)}')`,
         )
         .join(',')
       await db.query(
-        `INSERT INTO occurrences (occurrence_import_id, account_id, occurrence_import_id, data) VALUES ${values}`,
+        `INSERT INTO occurrences (occurrence_import_id, account_id, occurrence_id, data) VALUES ${values}`,
       )
     }
     // - insert data into occurrences table

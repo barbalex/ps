@@ -26,10 +26,10 @@ export const Component = memo(() => {
     filter += ` AND o.place_id = '${place_id2 ?? place_id}'`
   }
   if (isToAssess) {
-    filter += ' AND o.not_to_assign is not true AND o.place_id is null'
+    filter += ' AND o.not_to_assign IS NOT TRUE AND o.place_id IS NULL'
   }
   if (isNotToAssign) {
-    filter += ' AND o.not_to_assign is true AND o.place_id is null'
+    filter += ' AND o.not_to_assign IS TRUE AND o.place_id IS NULL'
   }
   const result = useLiveIncrementalQuery(
     `
@@ -37,7 +37,7 @@ export const Component = memo(() => {
       o.occurrence_id, 
       o.label 
     FROM occurrences o 
-      inner join occurrence_imports oi on o.occurrence_import_id = oi.occurrence_import_id 
+      INNER JOIN occurrence_imports oi on o.occurrence_import_id = oi.occurrence_import_id 
     WHERE ${filter} 
     ORDER BY label ASC`,
     undefined,

@@ -41,7 +41,7 @@ import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine'
 import invariant from 'tiny-invariant'
 import { useAtom } from 'jotai'
 import { pipe } from 'remeda'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createNotification } from '../../../../../modules/createRows.ts'
@@ -140,17 +140,8 @@ export const ActiveLayer = memo(
       layer.wms_service_layer_name,
     ])
 
-    const res = useLiveIncrementalQuery(
-      `SELECT * FROM layer_presentations WHERE ${
-        isVectorLayer ? 'vector_layer_id' : 'wms_layer_id'
-      } = $1`,
-      [isVectorLayer ? layer.vector_layer_id : layer.wms_layer_id],
-      'layer_presentation_id',
-    )
-    const layerPresentation = res?.rows?.[0]
-
     const onChangeActive = useCallback(() => {
-      if (!layerPresentation) {
+      if (!layer.layer_presentation_id) {
         // if no presentation exists, create notification
         return createNotification({
           title: 'Layer presentation not found',
@@ -160,9 +151,9 @@ export const ActiveLayer = memo(
       }
       db.query(
         `UPDATE layer_presentations SET active = false WHERE layer_presentation_id = $1`,
-        [layerPresentation.layer_presentation_id],
+        [layer.layer_presentation_id],
       )
-    }, [db, layerPresentation])
+    }, [db, layer.layer_presentation_id])
 
     const { registerItem, instanceId } = useListContext()
     const [closestEdge, setClosestEdge] = useState<Edge | null>(null)
@@ -182,7 +173,7 @@ export const ActiveLayer = memo(
       // draggable returns its cleanup function
       return combine(
         registerItem({
-          itemId: layer.layer_presentations?.[0]?.layer_presentation_id,
+          itemId: layer.layer_presentation_id,
           element,
         }),
         draggable({
@@ -223,8 +214,8 @@ export const ActiveLayer = memo(
           },
           onDrag({ self, source }) {
             const isSource =
-              source.data.layer.layer_presentations?.[0]
-                .layer_presentation_id === element.dataset.presentationId
+              source.data.layer.layer_presentation_id ===
+              element.dataset.presentationId
             if (isSource) {
               setClosestEdge(null)
               return
@@ -257,14 +248,7 @@ export const ActiveLayer = memo(
           },
         }),
       )
-    }, [
-      index,
-      instanceId,
-      layer,
-      layerCount,
-      layerPresentation?.layer_presentation_id,
-      registerItem,
-    ])
+    }, [index, instanceId, layer, layerCount, registerItem])
 
     const canDrag = layerCount > 1
 
@@ -295,7 +279,7 @@ export const ActiveLayer = memo(
     return (
       <ErrorBoundary>
         <AccordionItem
-          value={layer.layer_presentations?.[0]?.layer_presentation_id}
+          value={layer.layer_presentation_id}
           ref={ref}
           style={{
             // needed for the drop indicator to appear
@@ -338,7 +322,7 @@ export const ActiveLayer = memo(
                     style={{ color: 'rgba(38, 82, 37, 0.9)' }}
                   />
                 }
-                checked={layerPresentation?.active}
+                checked={layer.layer_presentation_active}
                 onClick={onChangeActive}
                 style={pipe(
                   {

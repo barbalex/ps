@@ -770,6 +770,7 @@ export const createWmsService = async ({
     ],
   )
 
+// not in use - multiple insert used instead
 export const createWmsServiceLayer = async ({
   wms_service_id,
   name = null,

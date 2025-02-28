@@ -16,7 +16,11 @@ import {
 import { reorder } from '@atlaskit/pragmatic-drag-and-drop/reorder'
 import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index'
 import { useAtom, atom } from 'jotai'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import {
+  usePGlite,
+  useLiveIncrementalQuery,
+  useLiveQuery,
+} from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { ActiveLayer } from './Active.tsx'
@@ -89,16 +93,16 @@ export const ActiveLayers = memo(() => {
   const db = usePGlite()
 
   const resWmsLayers = useLiveIncrementalQuery(
-    `SELECT * 
-    FROM wms_layers 
-    WHERE 
-      exists (
-        SELECT 1 FROM layer_presentations 
-        WHERE 
-          layer_presentations.wms_layer_id = wms_layers.wms_layer_id 
-          AND layer_presentations.active = true
-      )
-      ${project_id ? 'AND project_id = $1' : ''}`,
+    `
+    SELECT 
+      wms_layers.*, 
+      layer_presentations.layer_presentation_id,
+      layer_presentations.active as layer_presentation_active
+    FROM wms_layers
+      INNER JOIN layer_presentations 
+        ON wms_layers.wms_layer_id = layer_presentations.wms_layer_id 
+        AND layer_presentations.active = TRUE
+    ${project_id ? 'WHERE project_id = $1' : ''}`,
     project_id ? [project_id] : [],
     'wms_layer_id',
   )
@@ -108,16 +112,16 @@ export const ActiveLayers = memo(() => {
   )
 
   const resVectorLayers = useLiveIncrementalQuery(
-    `SELECT * 
+    `
+    SELECT 
+      vector_layers.*,
+      layer_presentations.layer_presentation_id,
+      layer_presentations.active as layer_presentation_active
     FROM vector_layers 
-    WHERE 
-      exists (
-        SELECT 1 FROM layer_presentations 
-        WHERE 
-          layer_presentations.vector_layer_id = vector_layers.vector_layer_id 
-          AND layer_presentations.active = true
-      )
-      ${project_id ? 'AND project_id = $1' : ''}`,
+      INNER JOIN layer_presentations 
+        ON vector_layers.vector_layer_id = layer_presentations.vector_layer_id 
+        AND layer_presentations.active = TRUE
+      ${project_id ? 'WHERE project_id = $1' : ''}`,
     project_id ? [project_id] : [],
     'vector_layer_id',
   )
@@ -131,19 +135,17 @@ export const ActiveLayers = memo(() => {
     () =>
       [...activeWmsLayers, ...activeVectorLayers].sort((a, b) => {
         const aIndex = mapLayerSorting.findIndex(
-          (ls) => ls === a.layer_presentations?.[0]?.layer_presentation_id,
+          (ls) => ls === a.layer_presentation_id,
         )
         const bIndex = mapLayerSorting.findIndex(
-          (ls) => ls === b.layer_presentations?.[0]?.layer_presentation_id,
+          (ls) => ls === b.layer_presentation_id,
         )
         return aIndex - bIndex
       }),
     [activeWmsLayers, activeVectorLayers, mapLayerSorting],
   )
 
-  const layerPresentationIds = activeLayers.map(
-    (l) => l.layer_presentations?.[0]?.layer_presentation_id,
-  )
+  const layerPresentationIds = activeLayers.map((l) => l.layer_presentation_id)
 
   // when activeLayers changes, update mapLayerSorting:
   // add missing layer's layer_presentation_id's to mapLayerSorting
@@ -232,8 +234,8 @@ export const ActiveLayers = memo(() => {
 
         const indexOfTarget = activeLayers.findIndex(
           (layer) =>
-            layer.layer_presentations?.[0]?.layer_presentation_id ===
-            targetData.layer.layer_presentations?.[0]?.layer_presentation_id,
+            layer.layer_presentation_id ===
+            targetData.layer.layer_presentation_id,
         )
         if (indexOfTarget < 0) {
           return
@@ -326,9 +328,7 @@ export const ActiveLayers = memo(() => {
                   index={index}
                   layerCount={activeLayers.length}
                   isLast={index === activeLayers.length - 1}
-                  isOpen={openItems.includes(
-                    l.layer_presentations?.[0]?.layer_presentation_id,
-                  )}
+                  isOpen={openItems.includes(l.layer_presentation_id)}
                 />
               ))
             ) : (

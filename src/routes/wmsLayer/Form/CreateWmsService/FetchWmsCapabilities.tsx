@@ -37,6 +37,7 @@ export const FetchWmsCapabilities = memo(
         [urlTrimmed],
       )
       const existingService = resES.rows?.[0]
+
       let service
       if (existingService) {
         // 2. if so, update it
@@ -58,7 +59,7 @@ export const FetchWmsCapabilities = memo(
           project_id: wmsLayer.project_id,
           db,
         })
-        service = serviceData
+        service = serviceData.rows[0]
         try {
           await db.query(
             `UPDATE wms_layers SET wms_service_id = $1 WHERE wms_layer_id = $2`,
