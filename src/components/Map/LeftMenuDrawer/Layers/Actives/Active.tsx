@@ -182,7 +182,7 @@ export const ActiveLayer = memo(
       // draggable returns its cleanup function
       return combine(
         registerItem({
-          itemId: layer.layer_presentations?.[0]?.layer_presentation_id,
+          itemId: layer.layer_presentation_id,
           element,
         }),
         draggable({
@@ -223,8 +223,8 @@ export const ActiveLayer = memo(
           },
           onDrag({ self, source }) {
             const isSource =
-              source.data.layer.layer_presentations?.[0]
-                .layer_presentation_id === element.dataset.presentationId
+              source.data.layer.layer_presentation_id ===
+              element.dataset.presentationId
             if (isSource) {
               setClosestEdge(null)
               return
@@ -295,7 +295,7 @@ export const ActiveLayer = memo(
     return (
       <ErrorBoundary>
         <AccordionItem
-          value={layer.layer_presentations?.[0]?.layer_presentation_id}
+          value={layer.layer_presentation_id}
           ref={ref}
           style={{
             // needed for the drop indicator to appear

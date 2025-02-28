@@ -31,8 +31,6 @@ export const Layers = memo(() => {
     run()
   }, [mapLayerSorting, setMapLayerSorting, db])
 
-  console.log('Layers', { mapLayerSorting })
-
   if (!mapLayerSorting.length) return null
 
   return mapLayerSorting.map((layerPresentationId, index) => (
