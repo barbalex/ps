@@ -1,6 +1,6 @@
-import { memo, useEffect, useMemo } from 'react'
+import { memo, useEffect } from 'react'
 import { useAtom } from 'jotai'
-import { useLiveIncrementalQuery, usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { mapLayerSortingAtom } from '../../../store.ts'
 import { Layer } from './Layer.tsx'
@@ -9,28 +9,6 @@ import { Layer } from './Layer.tsx'
 export const Layers = memo(() => {
   const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
   const db = usePGlite()
-
-  // for every layer_presentation_id in mapLayerSorting, get the layer_presentation
-  // const where = `active = true
-  //       ${
-  //         mapLayerSorting.length > 0
-  //           ? ` AND layer_presentation_id IN (${mapLayerSorting
-  //               .map((_, i) => `$${i + 1}`)
-  //               .join(', ')})`
-  //           : ''
-  //       }`
-  const where = `active = true
-        ${
-          mapLayerSorting.length > 0
-            ? ` AND layer_presentation_id = ANY($1)`
-            : ''
-        }`
-  const resLP = useLiveIncrementalQuery(
-    `SELECT * FROM layer_presentations WHERE ${where}`,
-    [mapLayerSorting],
-    'layer_presentation_id',
-  )
-  const layerPresentations = useMemo(() => resLP?.rows ?? [], [resLP])
 
   useEffect(() => {
     const run = async () => {
@@ -51,7 +29,9 @@ export const Layers = memo(() => {
       }
     }
     run()
-  }, [mapLayerSorting, layerPresentations, setMapLayerSorting, db])
+  }, [mapLayerSorting, setMapLayerSorting, db])
+
+  console.log('Layers', { mapLayerSorting })
 
   if (!mapLayerSorting.length) return null
 

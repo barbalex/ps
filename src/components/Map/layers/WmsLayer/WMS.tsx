@@ -17,6 +17,8 @@ export const WMS = memo(({ layerPresentation }) => {
     600,
   )
 
+  
+
   // TODO:
   // leaflet calls server internally
   // BUT: if call errors, leaflet does not surface the error

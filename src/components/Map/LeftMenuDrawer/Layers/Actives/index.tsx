@@ -89,7 +89,10 @@ export const ActiveLayers = memo(() => {
   const db = usePGlite()
 
   const resWmsLayers = useLiveIncrementalQuery(
-    `SELECT * 
+    `
+    SELECT 
+      *, 
+      (select layer_presentation_id from layer_presentations where wms_layer_id = wms_layers.wms_layer_id and active = true limit 1) as layer_presentation_id
     FROM wms_layers 
     WHERE 
       exists (
@@ -108,7 +111,10 @@ export const ActiveLayers = memo(() => {
   )
 
   const resVectorLayers = useLiveIncrementalQuery(
-    `SELECT * 
+    `
+    SELECT 
+      *,
+      (select layer_presentation_id from layer_presentations where vector_layer_id = vector_layers.vector_layer_id and active = true limit 1) as layer_presentation_id 
     FROM vector_layers 
     WHERE 
       exists (
@@ -126,15 +132,17 @@ export const ActiveLayers = memo(() => {
     [resVectorLayers],
   )
 
+  console.log('Layers.Actives, activeWmsLayers', activeWmsLayers)
+
   // sort by mapLayerSorting
   const activeLayers = useMemo(
     () =>
       [...activeWmsLayers, ...activeVectorLayers].sort((a, b) => {
         const aIndex = mapLayerSorting.findIndex(
-          (ls) => ls === a.layer_presentations?.[0]?.layer_presentation_id,
+          (ls) => ls === a.layer_presentation_id,
         )
         const bIndex = mapLayerSorting.findIndex(
-          (ls) => ls === b.layer_presentations?.[0]?.layer_presentation_id,
+          (ls) => ls === b.layer_presentation_id,
         )
         return aIndex - bIndex
       }),
