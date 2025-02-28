@@ -26,17 +26,18 @@ export const FieldsNode = memo(({ project_id }: Props) => {
   const [searchParams] = useSearchParams()
 
   const resultFiltered = useLiveIncrementalQuery(
-    `SELECT * FROM fields WHERE project_id = $1${
-      isFiltered ? ` AND(${filter})` : ''
-    } order by sort_index asc, label asc`,
-    [project_id],
+    `SELECT field_id, label FROM fields WHERE project_id ${
+      project_id ? `= '${project_id}'` : 'IS NULL'
+    }${isFiltered ? ` AND(${filter})` : ''} order by sort_index ASC, label ASC`,
+    undefined,
     'field_id',
   )
   const fields = resultFiltered?.rows ?? []
 
   const resultCountUnfiltered = useLiveQuery(
-    `SELECT count(*) FROM fields WHERE project_id = $1`,
-    [project_id],
+    `SELECT count(*) FROM fields WHERE project_id  ${
+      project_id ? `= '${project_id}'` : 'IS NULL'
+    }`,
   )
   const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
 
