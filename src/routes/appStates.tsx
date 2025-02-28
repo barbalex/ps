@@ -3,6 +3,7 @@ import { useAtom } from 'jotai'
 import { Button } from '@fluentui/react-components'
 import { pgDump } from '@electric-sql/pglite-tools/pg_dump'
 import { usePGlite } from '@electric-sql/pglite-react'
+import fileDownload from 'js-file-download'
 
 import { SwitchField } from '../components/shared/SwitchField.tsx'
 import { FormHeader } from '../components/FormHeader/index.tsx'
@@ -17,27 +18,24 @@ export const Component = memo(() => {
   const [navsOverflowing, setNavsOverflowing] = useAtom(navsOverflowingAtom)
   const db = usePGlite()
 
+  // TODO: second download fails: Error: pg_dump failed with exit code 1
   const downloadDump = useCallback(async () => {
     // TODO
     const dump = await pgDump({ pg: db })
     console.log('dump:', dump)
     // Create blob link to download
-    const url = URL.createObjectURL(dump)
+    // const url = URL.createObjectURL(dump)
 
-    const link = document.createElement('a')
-    link.href = url
-    link.download = dump.name
-    // link.setAttribute('download', `data.dump`)
-
-    // Append to html link element page
-    document.body.appendChild(link)
-
-    // Start download
-    link.click()
+    // const link = document.createElement('a')
+    // link.href = url
+    // link.download = dump.name
+    // document.body.appendChild(link)
+    // link.click()
+    fileDownload(dump, `dump.sql`)
 
     // Clean up and remove the link
     // link.parentNode.removeChild(link)
-    // url.revokeObjectUrl()
+    // URL.revokeObjectURL(url)
   }, [db])
 
   return (

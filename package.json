@@ -45,6 +45,7 @@
     "framer-motion": "12.4.7",
     "is-uuid": "1.0.2",
     "jotai": "2.12.1",
+    "js-file-download": "0.4.12",
     "leaflet": "1.9.4",
     "leaflet-draw": "1.0.4",
     "lodash": "4.17.21",
