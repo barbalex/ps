@@ -51,17 +51,16 @@ export const ComboboxFilteringForTable = memo(
       [name, onChange],
     )
 
-    // console.log('hello FilteringCombobox', {
-    //   name,
-    //   label,
-    //   table,
-    //   value,
-    //   filter,
-    //   selectedOptions,
-    //   results,
-    //   idField,
-    //   whereForSelectedOption,
-    // })
+    console.log('hello FilteringCombobox', {
+      name,
+      label,
+      table,
+      value,
+      filter,
+      selectedOptions,
+      results,
+      idField,
+    })
 
     return (
       <Field label={label ?? '(no label provided)'}>

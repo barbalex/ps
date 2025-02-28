@@ -1,8 +1,13 @@
+import { uuidv7 } from '@kripod/uuidv7'
+
 import { getCapabilities } from '../../../../modules/getCapabilities.ts'
-import { createWmsServiceLayer } from '../../../../modules/createRows.ts'
 
 export const getWmsCapabilitiesData = async ({ wmsLayer, service, db }) => {
-  if (!service?.url) return undefined
+  if (!service?.url) {
+    return console.warn(
+      'getWmsCapabilitiesData: returning due to missing service.url',
+    )
+  }
 
   const serviceData = {}
 
@@ -80,15 +85,28 @@ export const getWmsCapabilitiesData = async ({ wmsLayer, service, db }) => {
     v?.CRS?.includes('EPSG:4326'),
   )
 
-  for (const l of layers) {
-    await createWmsServiceLayer({
-      wms_service_id: service.wms_service_id,
-      name: l.Name,
-      label: l.Title,
-      queryable: l.queryable,
-      legend_url: l.Style?.[0]?.LegendURL?.[0]?.OnlineResource,
-      db,
-    })
+  const values = layers.map(
+    (l) =>
+      `(${[
+        `'${uuidv7()}'`,
+        `'${service.wms_service_id}'`,
+        l.Name ? `'${l.Name}'` : 'NULL',
+        l.Title ? `'${l.Title}'` : 'NULL',
+        l.queryable === true,
+        l.Style?.[0]?.LegendURL?.[0]?.OnlineResource
+          ? `'${l.Style?.[0]?.LegendURL?.[0]?.OnlineResource}'`
+          : 'NULL',
+      ].join(',')})`,
+  )
+  const sql = `INSERT INTO wms_service_layers (wms_service_layer_id, wms_service_id, name, label, queryable, legend_url) VALUES ${values.join(
+    ',',
+  )}`
+
+  // TODO: create wms_service_layers in one transaction
+  try {
+    await db.query(sql)
+  } catch (error) {
+    console.error('getWmsCapabilitiesData inserting wms_service_layers', error)
   }
 
   // single layer? update wmsLayer
