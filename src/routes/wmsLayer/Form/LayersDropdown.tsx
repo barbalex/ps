@@ -67,6 +67,11 @@ export const LayersDropdown = memo(({ wmsLayer, validationMessage }) => {
       }
 
       // get the legend image
+      if (!wmsServiceLayer.legend_url) {
+        return console.warn(
+          `DropdownFieldFromLayerOptions, onOptionSelect, no legend_url for layer '${data.optionText}', so not fetching the legend image`,
+        )
+      }
       let res
       try {
         res = await axios.get(wmsServiceLayer.legend_url, {
