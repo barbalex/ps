@@ -51,30 +51,48 @@ EXECUTE PROCEDURE accounts_projects_label_trigger();
 create or replace function accounts_label_update_trigger()
 RETURNS TRIGGER AS $$
 BEGIN
-  UPDATE accounts SET label = coalesce((SELECT email FROM users WHERE user_id = NEW.user_id) || ' (' || NEW.type || ')', (SELECT email FROM users WHERE user_id = NEW.user_id), NEW.account_id::text);
+  UPDATE accounts set label = CASE
+    WHEN NEW.type is null THEN coalesce((SELECT email FROM users WHERE user_id = NEW.user_id), NEW.account_id::text)
+    WHEN (SELECT email FROM users WHERE user_id = NEW.user_id) is null THEN NEW.account_id::text
+    ELSE (SELECT email FROM users WHERE user_id = NEW.user_id) || ' (' || NEW.type || ')'
+  END;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER accounts_label_update_trigger
-AFTER UPDATE OF projects_label_by ON accounts
+CREATE OR REPLACE TRIGGER accounts_label_update_trigger_from_type
+AFTER UPDATE OF type ON accounts
 FOR EACH ROW
 EXECUTE PROCEDURE accounts_label_update_trigger();
 
--- TODO: 
--- Uncaught (in promise) error: control reached end of trigger procedure without RETURN
--- event though these work on local db?
--- CREATE OR REPLACE FUNCTION accounts_label_insert_trigger()
--- RETURNS TRIGGER AS $$
--- BEGIN
---   UPDATE accounts SET label = coalesce((SELECT email FROM users WHERE user_id = NEW.user_id), '(no user)') || ' (' || coalesce(NEW.type, 'no type') || ')';
--- END;
--- $$ LANGUAGE plpgsql;
+CREATE OR REPLACE TRIGGER accounts_label_update_trigger_from_user_id
+AFTER UPDATE OF user_id ON accounts
+FOR EACH ROW
+EXECUTE PROCEDURE accounts_label_update_trigger();
 
--- CREATE OR REPLACE TRIGGER accounts_label_insert_trigger
--- AFTER INSERT ON accounts
--- FOR EACH ROW
--- EXECUTE PROCEDURE accounts_label_insert_trigger();
+CREATE OR REPLACE TRIGGER accounts_label_insert_trigger
+AFTER INSERT ON accounts
+FOR EACH ROW
+EXECUTE PROCEDURE accounts_label_update_trigger();
+
+-- if users.email is changed, need to update label of corresponding accounts
+create or replace function users_email_update_trigger()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE accounts SET label = CASE
+    WHEN accounts.type is null THEN coalesce(NEW.email, accounts.account_id::text)
+    WHEN NEW.email is null THEN accounts.account_id::text
+    ELSE NEW.email || ' (' || accounts.type || ')'
+  END
+  WHERE accounts.user_id = NEW.user_id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER users_email_update_trigger
+AFTER UPDATE OF email ON users
+FOR EACH ROW
+EXECUTE PROCEDURE users_email_update_trigger();
 
 -- action_report_values: when any data is changed, update label using units name
 CREATE OR REPLACE FUNCTION action_report_values_label_trigger()
