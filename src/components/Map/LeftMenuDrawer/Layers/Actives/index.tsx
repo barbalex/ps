@@ -16,7 +16,11 @@ import {
 import { reorder } from '@atlaskit/pragmatic-drag-and-drop/reorder'
 import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index'
 import { useAtom, atom } from 'jotai'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import {
+  usePGlite,
+  useLiveIncrementalQuery,
+  useLiveQuery,
+} from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { ActiveLayer } from './Active.tsx'
@@ -91,17 +95,11 @@ export const ActiveLayers = memo(() => {
   const resWmsLayers = useLiveIncrementalQuery(
     `
     SELECT 
-      *, 
-      (select layer_presentation_id from layer_presentations where wms_layer_id = wms_layers.wms_layer_id and active = true limit 1) as layer_presentation_id
-    FROM wms_layers 
-    WHERE 
-      exists (
-        SELECT 1 FROM layer_presentations 
-        WHERE 
-          layer_presentations.wms_layer_id = wms_layers.wms_layer_id 
-          AND layer_presentations.active = true
-      )
-      ${project_id ? 'AND project_id = $1' : ''}`,
+      wms_layers.*, 
+      layer_presentations.layer_presentation_id
+    FROM wms_layers
+      inner join layer_presentations on wms_layers.wms_layer_id = layer_presentations.wms_layer_id and layer_presentations.active = true
+    ${project_id ? 'WHERE project_id = $1' : ''}`,
     project_id ? [project_id] : [],
     'wms_layer_id',
   )
@@ -113,17 +111,11 @@ export const ActiveLayers = memo(() => {
   const resVectorLayers = useLiveIncrementalQuery(
     `
     SELECT 
-      *,
-      (select layer_presentation_id from layer_presentations where vector_layer_id = vector_layers.vector_layer_id and active = true limit 1) as layer_presentation_id 
+      vector_layers.*,
+      layer_presentations.layer_presentation_id 
     FROM vector_layers 
-    WHERE 
-      exists (
-        SELECT 1 FROM layer_presentations 
-        WHERE 
-          layer_presentations.vector_layer_id = vector_layers.vector_layer_id 
-          AND layer_presentations.active = true
-      )
-      ${project_id ? 'AND project_id = $1' : ''}`,
+      inner join layer_presentations on vector_layers.vector_layer_id = layer_presentations.vector_layer_id and layer_presentations.active = true
+      ${project_id ? 'WHERE project_id = $1' : ''}`,
     project_id ? [project_id] : [],
     'vector_layer_id',
   )

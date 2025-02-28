@@ -149,8 +149,13 @@ export const ActiveLayer = memo(
     )
     const layerPresentation = res?.rows?.[0]
 
+    console.log('LeftMenuDrawer/Layers/Actives/Active.tsx', {
+      layerPresentation,
+      layer,
+    })
+
     const onChangeActive = useCallback(() => {
-      if (!layerPresentation) {
+      if (!layer.layer_presentation_id) {
         // if no presentation exists, create notification
         return createNotification({
           title: 'Layer presentation not found',
@@ -160,9 +165,9 @@ export const ActiveLayer = memo(
       }
       db.query(
         `UPDATE layer_presentations SET active = false WHERE layer_presentation_id = $1`,
-        [layerPresentation.layer_presentation_id],
+        [layer.layer_presentation_id],
       )
-    }, [db, layerPresentation])
+    }, [db, layer.layer_presentation_id])
 
     const { registerItem, instanceId } = useListContext()
     const [closestEdge, setClosestEdge] = useState<Edge | null>(null)
