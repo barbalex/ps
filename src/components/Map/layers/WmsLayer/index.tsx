@@ -6,9 +6,8 @@ import { WMS } from './WMS.tsx'
 import { LocalMap } from './LocalMap.tsx'
 import { showLocalMapAtom } from '../../../../store.ts'
 
-export const WmsLayerComponent = memo(({ layerPresentation }) => {
+export const WmsLayerComponent = memo(({ layerPresentation, layer }) => {
   const [showLocalMap] = useAtom(showLocalMapAtom)
-  const layer = layerPresentation.wms_layers
 
   if (layer.type === 'wmts') {
     return (
@@ -19,6 +18,6 @@ export const WmsLayerComponent = memo(({ layerPresentation }) => {
       </>
     )
   } else {
-    return <WMS layerPresentation={layerPresentation} />
+    return <WMS layerPresentation={layerPresentation} layer={layer} />
   }
 })
