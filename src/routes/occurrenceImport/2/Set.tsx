@@ -5,9 +5,6 @@ import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { setGeometries } from './setGeometries.ts'
 
-const spinnerStyle = {
-  paddingRight: 8,
-}
 const notificationStyle = {
   color: 'red',
 }
@@ -59,14 +56,7 @@ export const Set = memo(({ occurrenceImport }) => {
   return (
     <Button
       onClick={onClick}
-      icon={
-        settingGeometries ? (
-          <Spinner
-            size="tiny"
-            style={spinnerStyle}
-          />
-        ) : null
-      }
+      icon={settingGeometries ? <Spinner size="tiny" /> : null}
     >
       <>
         <div>{`${

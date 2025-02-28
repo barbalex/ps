@@ -1,6 +1,6 @@
-import { memo, useCallback } from 'react'
+import { memo, useCallback, useState } from 'react'
 import { useAtom } from 'jotai'
-import { Button } from '@fluentui/react-components'
+import { Button, Spinner } from '@fluentui/react-components'
 import { pgDump } from '@electric-sql/pglite-tools/pg_dump'
 import { usePGlite } from '@electric-sql/pglite-react'
 import fileDownload from 'js-file-download'
@@ -11,6 +11,10 @@ import { breadcrumbsOverflowingAtom, navsOverflowingAtom } from '../store.ts'
 
 import '../form.css'
 
+const spinnerStyle = {
+  paddingRight: 8,
+}
+
 export const Component = memo(() => {
   const [breadcrumbsOverflowing, setBreadcrumbsOverflowing] = useAtom(
     breadcrumbsOverflowingAtom,
@@ -18,11 +22,12 @@ export const Component = memo(() => {
   const [navsOverflowing, setNavsOverflowing] = useAtom(navsOverflowingAtom)
   const db = usePGlite()
 
+  const [dumping, setDumping] = useState(false)
   // TODO: second download fails: Error: pg_dump failed with exit code 1
   const downloadDump = useCallback(async () => {
-    // TODO
+    setDumping(true)
     const dump = await pgDump({ pg: db })
-    console.log('dump:', dump)
+    // console.log('dump:', dump)
     // Create blob link to download
     // const url = URL.createObjectURL(dump)
 
@@ -31,11 +36,12 @@ export const Component = memo(() => {
     // link.download = dump.name
     // document.body.appendChild(link)
     // link.click()
-    fileDownload(dump, `dump.sql`)
+    fileDownload(dump, `promoting-species.sql`)
 
     // Clean up and remove the link
     // link.parentNode.removeChild(link)
     // URL.revokeObjectURL(url)
+    setDumping(false)
   }, [db])
 
   return (
@@ -57,11 +63,10 @@ export const Component = memo(() => {
         />
         <Button
           size="medium"
-          // icon={<FaChevronLeft />}
+          icon={dumping ? <Spinner size="tiny" /> : null}
           onClick={downloadDump}
-          title="Download dump"
         >
-          Download dump
+          <div>{`${dumping ? 'Downloading' : 'Download'} Database Dump`}</div>
         </Button>
       </div>
     </div>
