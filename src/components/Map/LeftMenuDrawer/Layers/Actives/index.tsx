@@ -141,8 +141,6 @@ export const ActiveLayers = memo(() => {
     [activeWmsLayers, activeVectorLayers, mapLayerSorting],
   )
 
-  console.log('Layers.Actives, activeLayers', activeLayers)
-
   const layerPresentationIds = activeLayers.map((l) => l.layer_presentation_id)
 
   // when activeLayers changes, update mapLayerSorting:

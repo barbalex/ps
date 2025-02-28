@@ -51,17 +51,17 @@ export const Layer = memo(({ layerPresentationId, index }) => {
   )
   const layerPresentation = resLP?.rows?.[0]
 
-  console.log('Layer', {
-    layerPresentationId,
-    layerPresentation,
-    index,
-    resWms,
-    wmsLayer,
-    resVector,
-    vectorLayer,
-    isWfsLayer,
-    isTableLayer,
-  })
+  // console.log('Layer', {
+  //   layerPresentationId,
+  //   layerPresentation,
+  //   index,
+  //   resWms,
+  //   wmsLayer,
+  //   resVector,
+  //   vectorLayer,
+  //   isWfsLayer,
+  //   isTableLayer,
+  // })
 
   if (layerPresentationId === 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa') {
     return <OsmColor key="aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa" />
