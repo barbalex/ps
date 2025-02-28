@@ -33,12 +33,15 @@ export const Jsonb = memo(
     const { pathname } = useLocation()
     const db = usePGlite()
 
+    const useProjectId = project_id && table !== 'projects'
     const sql = isAccountTable
-      ? `SELECT * FROM fields WHERE table_name = $1 and project_id = $2 order by sort_index asc, label asc`
-      : `SELECT * FROM fields WHERE table_name = $1 and project_id = $2 and level = $3 order by sort_index asc, label asc`
-    const params = isAccountTable
-      ? [table, project_id]
-      : [table, project_id, place_id2 ? 2 : 1]
+      ? `SELECT * FROM fields WHERE table_name = $1 and project_id ${
+          useProjectId ? `= '${project_id}'` : 'IS NULL'
+        } order by sort_index asc, label asc`
+      : `SELECT * FROM fields WHERE table_name = $1 and project_id ${
+          useProjectId ? `= '${project_id}'` : 'IS NULL'
+        } and level = $2 order by sort_index asc, label asc`
+    const params = isAccountTable ? [table] : [table, place_id2 ? 2 : 1]
     const result = useLiveIncrementalQuery(sql, params, 'field_id')
     const fields = result?.rows ?? []
 
