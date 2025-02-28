@@ -20,14 +20,14 @@ export const Component = memo(() => {
 
   const db = usePGlite()
 
-  const resultsFiltered = useLiveIncrementalQuery(
-    `SELECT field_id, label FROM fields WHERE project_id = $1${
-      isFiltered ? ` AND(${filter})` : ''
-    } order by sort_index ASC, label ASC`,
-    [project_id ?? null],
+  const res = useLiveIncrementalQuery(
+    `SELECT field_id, label FROM fields WHERE project_id ${
+      project_id ? `= '${project_id}'` : 'IS NULL'
+    }${isFiltered ? ` AND(${filter})` : ''} order by sort_index ASC, label ASC`,
+    undefined,
     'field_id',
   )
-  const fields = resultsFiltered?.rows ?? []
+  const fields = res?.rows ?? []
 
   const add = useCallback(async () => {
     const res = await createField({ project_id, db })
