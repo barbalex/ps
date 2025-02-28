@@ -41,7 +41,7 @@ import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine'
 import invariant from 'tiny-invariant'
 import { useAtom } from 'jotai'
 import { pipe } from 'remeda'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createNotification } from '../../../../../modules/createRows.ts'
@@ -139,20 +139,6 @@ export const ActiveLayer = memo(
       layer.wms_service_id,
       layer.wms_service_layer_name,
     ])
-
-    const res = useLiveIncrementalQuery(
-      `SELECT * FROM layer_presentations WHERE ${
-        isVectorLayer ? 'vector_layer_id' : 'wms_layer_id'
-      } = $1`,
-      [isVectorLayer ? layer.vector_layer_id : layer.wms_layer_id],
-      'layer_presentation_id',
-    )
-    const layerPresentation = res?.rows?.[0]
-
-    console.log('LeftMenuDrawer/Layers/Actives/Active.tsx', {
-      layerPresentation,
-      layer,
-    })
 
     const onChangeActive = useCallback(() => {
       if (!layer.layer_presentation_id) {
@@ -262,14 +248,7 @@ export const ActiveLayer = memo(
           },
         }),
       )
-    }, [
-      index,
-      instanceId,
-      layer,
-      layerCount,
-      layerPresentation?.layer_presentation_id,
-      registerItem,
-    ])
+    }, [index, instanceId, layer, layerCount, registerItem])
 
     const canDrag = layerCount > 1
 
@@ -343,7 +322,7 @@ export const ActiveLayer = memo(
                     style={{ color: 'rgba(38, 82, 37, 0.9)' }}
                   />
                 }
-                checked={layerPresentation?.active}
+                checked={layer.layer_presentation_active}
                 onClick={onChangeActive}
                 style={pipe(
                   {
