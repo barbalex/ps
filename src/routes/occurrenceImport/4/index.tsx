@@ -2,10 +2,9 @@ import { memo, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
-import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
-import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions.tsx'
-import { DropdownFieldOptions } from '../../components/shared/DropdownFieldOptions.tsx'
-const previousImportOperations = ['update_and_extend', 'replace']
+import { DropdownFieldSimpleOptions } from '../../../components/shared/DropdownFieldSimpleOptions.tsx'
+import { DropdownFieldOptions } from '../../../components/shared/DropdownFieldOptions.tsx'
+import { PreviousImportOperation } from './PreviousImportOperation.tsx'
 
 export const Four = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
   const { occurrence_import_id, subproject_id } = useParams()
@@ -51,12 +50,9 @@ export const Four = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
             onChange={onChange}
             validationMessage="Have occurrences been previously imported from the same source? If so: choose the previous import. If not: leave empty."
           />
-          <RadioGroupField
-            label="How to deal with a previous import"
-            name="previous_import_operation"
-            list={previousImportOperations}
-            value={occurrenceImport.previous_import_operation ?? ''}
+          <PreviousImportOperation
             onChange={onChange}
+            row={occurrenceImport}
           />
         </>
       )}

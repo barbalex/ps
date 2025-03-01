@@ -476,9 +476,11 @@ COMMENT ON COLUMN list_values.account_id IS 'redundant account_id enhances data 
 -- units
 --
 create table if not exists unit_types (
-  type text primary key default null
+  type text primary key default null,
+  sort integer default null
 );
-insert into unit_types (type) values ('integer'), ('numeric'), ('text');
+CREATE INDEX IF NOT EXISTS unit_types_sort_idx ON unit_types USING btree(sort);
+insert into unit_types (type, sort) values ('integer', 1), ('numeric', 2), ('text', 3);
 
 CREATE TABLE IF NOT EXISTS units(
   unit_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
@@ -1321,9 +1323,11 @@ COMMENT ON COLUMN fields.sort_index IS 'Enables sorting of fields. Per table';
 --occurrence_imports
 --
 create table if not exists occurrence_import_previous_operations (
-  previous_import_operation text primary key
+  previous_import_operation text primary key,
+  sort integer default null
 );
-insert into occurrence_import_previous_operations values ('update_and_extend'), ('replace');
+CREATE INDEX IF NOT EXISTS occurrence_import_previous_operations_sort_idx ON occurrence_import_previous_operations USING btree(sort);
+insert into occurrence_import_previous_operations (previous_import_operation, sort) values ('update_and_extend', 1), ('replace', 2);
 
 create table if not exists occurrence_imports_geometry_methods (
   geometry_method text primary key

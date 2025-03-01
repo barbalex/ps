@@ -12,7 +12,7 @@ import { Header } from './Header.tsx'
 import { One } from './1.tsx'
 import { Two } from './2/index.tsx'
 import { Three } from './3.tsx'
-import { Four } from './4.tsx'
+import { Four } from './4/index.tsx'
 import { Preview } from './Preview.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 
