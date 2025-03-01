@@ -5,6 +5,7 @@ import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import { createProjectCrs } from '../../modules/createRows.ts'
 import { ListViewHeader } from '../../components/ListViewHeader/index.tsx'
 import { Row } from '../../components/shared/Row.tsx'
+import { Loading } from '../../components/shared/Loading.tsx'
 import { Info } from './Info.tsx'
 import '../../form.css'
 
@@ -20,6 +21,7 @@ export const Component = memo(() => {
     [project_id],
     'project_crs_id',
   )
+  const isLoading = res === undefined
   const projectCrs = res?.rows ?? []
 
   const add = useCallback(async () => {
@@ -41,16 +43,23 @@ export const Component = memo(() => {
         addRow={add}
         isFiltered={false}
         countFiltered={projectCrs.length}
+        isLoading={isLoading}
         info={<Info />}
       />
       <div className="list-container">
-        {projectCrs.map((cr) => (
-          <Row
-            key={cr.project_crs_id}
-            to={cr.project_crs_id}
-            label={cr.label ?? cr.project_crs_id}
-          />
-        ))}
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <>
+            {projectCrs.map((cr) => (
+              <Row
+                key={cr.project_crs_id}
+                to={cr.project_crs_id}
+                label={cr.label ?? cr.project_crs_id}
+              />
+            ))}
+          </>
+        )}
       </div>
     </div>
   )

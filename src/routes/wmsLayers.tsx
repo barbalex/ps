@@ -10,6 +10,7 @@ import {
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
+import { Loading } from '../components/shared/Loading.tsx'
 import { wmsLayersFilterAtom } from '../store.ts'
 import '../form.css'
 
@@ -21,14 +22,15 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
   const db = usePGlite()
 
-  const resultFiltered = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT wms_layer_id, label FROM wms_layers WHERE project_id = $1${
       filter?.length ? ` AND (${filter})` : ''
     } order by label ASC`,
     [project_id],
     'wms_layer_id',
   )
-  const wmsLayers = resultFiltered?.rows ?? []
+  const isLoading = res === undefined
+  const wmsLayers = res?.rows ?? []
 
   const add = useCallback(async () => {
     const res = await createWmsLayer({ project_id, db })
@@ -53,17 +55,24 @@ export const Component = memo(() => {
         tableName="wms_layers"
         isFiltered={isFiltered}
         countFiltered={wmsLayers.length}
+        isLoading={isLoading}
         addRow={add}
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {wmsLayers.map(({ wms_layer_id, label }) => (
-          <Row
-            key={wms_layer_id}
-            to={wms_layer_id}
-            label={label ?? wms_layer_id}
-          />
-        ))}
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <>
+            {wmsLayers.map(({ wms_layer_id, label }) => (
+              <Row
+                key={wms_layer_id}
+                to={wms_layer_id}
+                label={label ?? wms_layer_id}
+              />
+            ))}
+          </>
+        )}
       </div>
     </div>
   )
