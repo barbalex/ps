@@ -15,12 +15,12 @@ export const Component = memo(() => {
 
   const db = usePGlite()
 
-  const resProjectCrs = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT * FROM project_crs WHERE project_id = $1 ORDER BY label ASC`,
     [project_id],
     'project_crs_id',
   )
-  const projectCrs = resProjectCrs?.rows ?? []
+  const projectCrs = res?.rows ?? []
 
   const add = useCallback(async () => {
     const res = await createProjectCrs({ project_id, db })
@@ -35,9 +35,12 @@ export const Component = memo(() => {
   return (
     <div className="list-view">
       <ListViewHeader
-        title={`CRS: Coordinate Reference Systems (${projectCrs.length})`}
-        addRow={add}
+        namePlural="CRS: Coordinate Reference Systems"
+        nameSingular="CRS"
         tableName="project_crs"
+        addRow={add}
+        isFiltered={false}
+        countFiltered={projectCrs.length}
         info={<Info />}
       />
       <div className="list-container">
