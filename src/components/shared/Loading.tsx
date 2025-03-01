@@ -9,7 +9,7 @@ const containerStyle = {
   width: '100%',
 }
 
-export const Loading = memo(({ label, alignLeft = false, size="" }) => (
+export const Loading = memo(({ label, alignLeft = false, size = 'medium' }) => (
   <div
     style={{
       ...containerStyle,
@@ -19,6 +19,7 @@ export const Loading = memo(({ label, alignLeft = false, size="" }) => (
     <Spinner
       labelPosition="below"
       label={label}
+      size={size}
     />
   </div>
 ))
