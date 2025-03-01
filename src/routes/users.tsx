@@ -6,6 +6,7 @@ import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import { createUser } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
+import { Loading } from '../components/shared/Loading.tsx'
 import { userIdAtom } from '../store.ts'
 
 import '../form.css'
@@ -14,15 +15,15 @@ export const Component = memo(() => {
   const setUserId = useSetAtom(userIdAtom)
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-
   const db = usePGlite()
 
-  const result = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT user_id, label FROM users order by label asc`,
     undefined,
     'user_id',
   )
-  const users = result?.rows ?? []
+  const isLoading = res === undefined
+  const users = res?.rows ?? []
 
   const add = useCallback(async () => {
     const res = await createUser({ db, setUserId })
@@ -39,16 +40,23 @@ export const Component = memo(() => {
         tableName="users"
         isFiltered={false}
         countFiltered={users.length}
+        isLoading={isLoading}
         addRow={add}
       />
       <div className="list-container">
-        {users.map(({ user_id, label }) => (
-          <Row
-            key={user_id}
-            label={label ?? user_id}
-            to={user_id}
-          />
-        ))}
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <>
+            {users.map(({ user_id, label }) => (
+              <Row
+                key={user_id}
+                label={label ?? user_id}
+                to={user_id}
+              />
+            ))}
+          </>
+        )}
       </div>
     </div>
   )

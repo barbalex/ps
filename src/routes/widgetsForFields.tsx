@@ -7,6 +7,7 @@ import { createWidgetForField } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
+import { Loading } from '../components/shared/Loading.tsx'
 import { widgetsForFieldsFilterAtom } from '../store.ts'
 
 import '../form.css'
@@ -19,14 +20,15 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
   const db = usePGlite()
 
-  const result = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT widget_for_field_id, label FROM widgets_for_fields${
       isFiltered ? ` WHERE ${filter}` : ''
     } order by label asc`,
     undefined,
     'widget_for_field_id',
   )
-  const widgetsForFields = result?.rows ?? []
+  const isLoading = res === undefined
+  const widgetsForFields = res?.rows ?? []
 
   const add = useCallback(async () => {
     const res = await createWidgetForField({ db })
@@ -46,17 +48,24 @@ export const Component = memo(() => {
         tableName="widgets_for_fields"
         isFiltered={isFiltered}
         countFiltered={widgetsForFields.length}
+        isLoading={isLoading}
         addRow={add}
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {widgetsForFields.map(({ widget_for_field_id, label }) => (
-          <Row
-            key={widget_for_field_id}
-            label={label ?? widget_for_field_id}
-            to={widget_for_field_id}
-          />
-        ))}
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <>
+            {widgetsForFields.map(({ widget_for_field_id, label }) => (
+              <Row
+                key={widget_for_field_id}
+                label={label ?? widget_for_field_id}
+                to={widget_for_field_id}
+              />
+            ))}
+          </>
+        )}
       </div>
     </div>
   )

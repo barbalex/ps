@@ -7,6 +7,7 @@ import { createUnit } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
+import { Loading } from '../components/shared/Loading.tsx'
 import { unitsFilterAtom } from '../store.ts'
 import '../form.css'
 
@@ -19,14 +20,15 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
   const db = usePGlite()
 
-  const result = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT unit_id, label FROM units WHERE project_id = $1${
       isFiltered ? ` AND(${filter})` : ''
     } order by label asc`,
     [project_id],
     'unit_id',
   )
-  const units = result?.rows ?? []
+  const isLoading = res === undefined
+  const units = res?.rows ?? []
 
   const add = useCallback(async () => {
     const res = await createUnit({ db, project_id })
@@ -43,17 +45,24 @@ export const Component = memo(() => {
         tableName="units"
         isFiltered={isFiltered}
         countFiltered={units.length}
+        isLoading={isLoading}
         addRow={add}
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {units.map(({ unit_id, label }) => (
-          <Row
-            key={unit_id}
-            label={label ?? unit_id}
-            to={unit_id}
-          />
-        ))}
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <>
+            {units.map(({ unit_id, label }) => (
+              <Row
+                key={unit_id}
+                label={label ?? unit_id}
+                to={unit_id}
+              />
+            ))}
+          </>
+        )}
       </div>
     </div>
   )

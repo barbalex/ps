@@ -5,6 +5,7 @@ import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
+import { Loading } from '../components/shared/Loading.tsx'
 import { createVectorLayerDisplay } from '../modules/createRows.ts'
 import { mapDrawerVectorLayerDisplayAtom } from '../store.ts'
 
@@ -20,12 +21,13 @@ export const Component = memo(({ vectorLayerId }) => {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
 
-  const result = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT vector_layer_display_id, label FROM vector_layer_displays WHERE vector_layer_id = $1 order by label asc`,
     [vector_layer_id],
     'vector_layer_display_id',
   )
-  const vlds = result?.rows ?? []
+  const isLoading = res === undefined
+  const vlds = res?.rows ?? []
 
   const add = useCallback(async () => {
     const res = await createVectorLayerDisplay({ vector_layer_id })
@@ -71,17 +73,24 @@ export const Component = memo(({ vectorLayerId }) => {
         tableName="vector_layer_displays"
         isFiltered={false}
         countFiltered={vlds.length}
+        isLoading={isLoading}
         addRow={add}
       />
       <div className="list-container">
-        {vlds.map(({ vector_layer_display_id, label }) => (
-          <Row
-            key={vector_layer_display_id}
-            to={vector_layer_display_id}
-            label={label ?? vector_layer_display_id}
-            onClick={() => onClickRow(vector_layer_display_id)}
-          />
-        ))}
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <>
+            {vlds.map(({ vector_layer_display_id, label }) => (
+              <Row
+                key={vector_layer_display_id}
+                to={vector_layer_display_id}
+                label={label ?? vector_layer_display_id}
+                onClick={() => onClickRow(vector_layer_display_id)}
+              />
+            ))}
+          </>
+        )}
       </div>
     </div>
   )
