@@ -363,7 +363,9 @@ export const createTaxon = async ({ taxonomy_id, db }) =>
 
 export const createListValue = async ({ list_id, db }) =>
   db.query(
-    `insert into list_values (list_value_id, account_id, list_id, obsolete) values ($1, $2, $3, $4) 
+    `
+    insert into list_values (list_value_id, account_id, list_id, obsolete) 
+    values ($1, $2, $3, $4) 
     returning list_value_id`,
     [uuidv7(), '018cf958-27e2-7000-90d3-59f024d467be', list_id, false],
   )
