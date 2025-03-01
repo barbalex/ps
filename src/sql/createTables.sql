@@ -1933,8 +1933,8 @@ COMMENT ON COLUMN crs.proj4 IS 'proj4 string for the crs. From (example): https:
 --------------------------------------------------------------
 -- project_crs
 --
--- need additional table project_crs to store the crs used in a project
--- same as crs - data will be copied from crs to project_crs
+-- need additional table project_crs to store the crs's used in a project
+-- same as crs - data will be copied from crs to project_crs (goal: users need not sync all crs's)
 CREATE TABLE IF NOT EXISTS project_crs(
   project_crs_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   crs_id uuid REFERENCES crs(crs_id) ON DELETE NO action ON UPDATE CASCADE,
