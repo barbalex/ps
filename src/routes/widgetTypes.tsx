@@ -7,6 +7,7 @@ import { createWidgetType } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
+import { Loading } from '../components/shared/Loading.tsx'
 import { widgetTypesFilterAtom } from '../store.ts'
 
 import '../form.css'
@@ -19,7 +20,7 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
   const db = usePGlite()
 
-  const result = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `
     SELECT widget_type_id, label 
     FROM widget_types
@@ -28,7 +29,8 @@ export const Component = memo(() => {
     undefined,
     'widget_type_id',
   )
-  const widgetTypes = result?.rows ?? []
+  const isLoading = res === undefined
+  const widgetTypes = res?.rows ?? []
 
   const add = useCallback(async () => {
     const res = await createWidgetType({ db })
@@ -45,17 +47,24 @@ export const Component = memo(() => {
         tableName="widget_types"
         isFiltered={isFiltered}
         countFiltered={widgetTypes.length}
+        isLoading={isLoading}
         addRow={add}
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {widgetTypes.map(({ widget_type_id, label }) => (
-          <Row
-            key={widget_type_id}
-            label={label ?? widget_type_id}
-            to={widget_type_id}
-          />
-        ))}
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <>
+            {widgetTypes.map(({ widget_type_id, label }) => (
+              <Row
+                key={widget_type_id}
+                label={label ?? widget_type_id}
+                to={widget_type_id}
+              />
+            ))}
+          </>
+        )}
       </div>
     </div>
   )
