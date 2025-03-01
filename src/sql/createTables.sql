@@ -1798,9 +1798,11 @@ COMMENT ON COLUMN notifications.progress_percent IS 'Progress of a long running 
 -- charts
 --
 create table if not exists chart_types (
-  chart_type text primary key
+  chart_type text primary key,
+  sort integer default null
 );
-insert into chart_types values ('Pie'), ('Radar'), ('Area');
+CREATE INDEX IF NOT EXISTS chart_types_sort_idx ON chart_types USING btree(sort);
+insert into chart_types (chart_type, sort) values ('Pie', 1), ('Radar', 2), ('Area', 3);
 
 CREATE TABLE IF NOT EXISTS charts(
   chart_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
@@ -1819,7 +1821,13 @@ CREATE TABLE IF NOT EXISTS charts(
   subjects_stacked boolean DEFAULT FALSE,
   subjects_single boolean DEFAULT FALSE,
   percent boolean DEFAULT FALSE,
-  label text GENERATED ALWAYS AS (coalesce(title, chart_id::text)) STORED
+  label text GENERATED ALWAYS AS (
+    CASE 
+      -- not null and not '', see: https://stackoverflow.com/a/23767625/712005
+      WHEN (title = '') IS NOT FALSE THEN chart_id::text 
+      ELSE title
+    END
+  ) STORED
 );
 
 CREATE INDEX IF NOT EXISTS charts_chart_id_idx ON charts USING btree(chart_id);
