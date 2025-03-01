@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
-import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { SliderFieldWithInput } from '../../components/shared/SliderFieldWithInput.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
@@ -15,8 +14,8 @@ import { ColorPicker } from '../../components/shared/ColorPicker.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { MarkerType } from './MarkerType.tsx'
 import { LineCap } from './LineCap.tsx'
-
-const fillRules = ['nonzero', 'evenodd']
+import { LineJoin } from './LineJoin.tsx'
+import { FillRule } from './FillRule.tsx'
 
 import '../../form.css'
 
@@ -25,9 +24,6 @@ import '../../form.css'
 //   circle: 'Kreis',
 //   marker: 'Symbol',
 // }
-
-// not imported from schema as miter-clip not supported by electric-sql
-const lineJoinValues = ['arcs', 'bevel', 'miter', 'miter-clip', 'round']
 
 export const Component = ({ vectorLayerDisplayId }) => {
   const { vector_layer_display_id: vectorLayerDisplayIdFromRouter } =
@@ -119,12 +115,9 @@ export const Component = ({ vectorLayerDisplayId }) => {
             onChange={onChange}
             row={row}
           />
-          <RadioGroupField
-            name="line_join"
-            value={row.line_join}
-            label="Linien: Ecken"
-            list={lineJoinValues}
+          <LineJoin
             onChange={onChange}
+            row={row}
           />
           <TextField
             name="dash_array"
@@ -166,12 +159,9 @@ export const Component = ({ vectorLayerDisplayId }) => {
             min={0}
             step={5}
           />
-          <RadioGroupField
-            name="fill_rule"
-            value={row.fill_rule}
-            label="Füllung: Regel, um den Inhalt von Flächen zu bestimmen"
-            list={fillRules}
+          <FillRule
             onChange={onChange}
+            row={row}
           />
         </div>
       </div>
