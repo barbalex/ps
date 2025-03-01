@@ -7,6 +7,7 @@ import { createField } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
+import { Loading } from '../components/shared/Loading.tsx'
 import { fieldsFilterAtom } from '../store.ts'
 import '../form.css'
 
@@ -27,6 +28,7 @@ export const Component = memo(() => {
     undefined,
     'field_id',
   )
+  const isLoading = res === undefined
   const fields = res?.rows ?? []
 
   const add = useCallback(async () => {
@@ -44,17 +46,24 @@ export const Component = memo(() => {
         tablename="fields"
         isFiltered={isFiltered}
         countFiltered={fields.length}
+        isLoading={isLoading}
         addRow={add}
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {fields.map(({ field_id, label }) => (
-          <Row
-            key={field_id}
-            label={label ?? field_id}
-            to={field_id}
-          />
-        ))}
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <>
+            {fields.map(({ field_id, label }) => (
+              <Row
+                key={field_id}
+                label={label ?? field_id}
+                to={field_id}
+              />
+            ))}
+          </>
+        )}
       </div>
     </div>
   )
