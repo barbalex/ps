@@ -51,9 +51,13 @@ COMMENT ON COLUMN accounts.projects_label_by IS 'Used to label projects in lists
 -- projects
 --
 create table if not exists project_types (
-  type text primary key default null
+  type text primary key default null,
+  sort integer default null
 );
-insert into project_types (type) values ('species'), ('biotope');
+
+create index if not exists project_types_sort_idx on project_types using btree(sort);
+
+insert into project_types (type, sort) values ('species', 1), ('biotope', 2);
 
 -- TODO: add crs for presentation
 -- TODO: add geometry

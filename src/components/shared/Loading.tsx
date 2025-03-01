@@ -9,8 +9,16 @@ const containerStyle = {
   width: '100%',
 }
 
-export const Loading = memo(({ label }) => (
-  <div style={containerStyle}>
-    <Spinner labelPosition="below" label={label} />
+export const Loading = memo(({ label, alignLeft = false, size="" }) => (
+  <div
+    style={{
+      ...containerStyle,
+      justifyContent: alignLeft ? 'flex-start' : 'center',
+    }}
+  >
+    <Spinner
+      labelPosition="below"
+      label={label}
+    />
   </div>
 ))

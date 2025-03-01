@@ -1,6 +1,7 @@
 import { memo } from 'react'
 import { useParams } from 'react-router-dom'
 import { Label, Divider } from '@fluentui/react-components'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
@@ -11,8 +12,6 @@ import { LabelBy } from '../../components/shared/LabelBy.tsx'
 import { FieldList } from '../../components/shared/FieldList/index.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 
-const projectTypes = ['species', 'biotope']
-
 const labelStyle = {
   color: 'grey',
   fontWeight: 700,
@@ -20,6 +19,10 @@ const labelStyle = {
 
 export const Design = memo(({ onChange, row }) => {
   const { project_id } = useParams()
+
+  const res = useLiveQuery(`SELECT type FROM project_types order by sort, type`)
+  const isLoading = res === undefined
+  const projectTypes = res?.rows.map((row) => row.type) ?? []
 
   return (
     <div
@@ -32,6 +35,7 @@ export const Design = memo(({ onChange, row }) => {
         label="Type"
         name="type"
         list={projectTypes}
+        isLoading={isLoading}
         value={row.type ?? ''}
         onChange={onChange}
       />
