@@ -6,21 +6,13 @@ import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
-import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Section } from '../../components/shared/Section.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { Table } from './Table.tsx'
 import { Level } from './Level.tsx'
+import { ValueSource } from './ValueSource.tsx'
 
-const chartSubjectTables = [
-  'subprojects',
-  'places',
-  'checks',
-  'check_values',
-  'actions',
-  'action_values',
-]
 const chartSubjectValueSources = [
   'count_rows',
   'count_rows_by_distinct_field_values',
@@ -81,14 +73,9 @@ export const ChartSubjectForm = memo(({ autoFocusRef }: Props) => {
           type="number"
           onChange={onChange}
         />
-        <RadioGroupField
-          label="Value Source"
-          name="value_source"
-          list={chartSubjectValueSources}
-          value={row.value_source ?? ''}
+        <ValueSource
           onChange={onChange}
-          replaceUnderscoreInLabel={true}
-          validationMessage="How to extract the subject's data from the table"
+          row={row}
         />
         {row.value_source && row.value_source !== 'count_rows' && (
           <>
