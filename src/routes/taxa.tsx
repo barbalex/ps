@@ -18,7 +18,7 @@ export const Component = memo(() => {
     [taxonomy_id],
     'taxon_id',
   )
-  const taxa = result.rows ?? []
+  const taxa = result?.rows ?? []
 
   const add = useCallback(async () => {
     const res = await createTaxon({ taxonomy_id, db })

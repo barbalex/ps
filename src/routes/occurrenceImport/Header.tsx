@@ -45,7 +45,7 @@ export const Header = memo(
       const result = await db.query(
         `SELECT * FROM occurrence_imports order by label asc`,
       )
-      const occurrenceImports = result.rows
+      const occurrenceImports = result?.rows
       const len = occurrenceImports.length
       const index = occurrenceImports.findIndex(
         (p) => p.occurrence_import_id === occurrence_import_id,
@@ -61,7 +61,7 @@ export const Header = memo(
       const result = await db.query(
         `SELECT * FROM occurrence_imports order by label asc`,
       )
-      const occurrenceImports = result.rows
+      const occurrenceImports = result?.rows
       const len = occurrenceImports.length
       const index = occurrenceImports.findIndex(
         (p) => p.occurrence_import_id === occurrence_import_id,

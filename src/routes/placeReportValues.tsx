@@ -18,7 +18,7 @@ export const Component = memo(() => {
     [place_report_id],
     'place_report_value_id',
   )
-  const placeReportValues = result.rows ?? []
+  const placeReportValues = result?.rows ?? []
 
   const add = useCallback(async () => {
     const res = await createPlaceReportValue({ place_report_id, db })

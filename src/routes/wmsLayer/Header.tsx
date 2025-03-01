@@ -42,7 +42,7 @@ export const Header = memo(({ autoFocusRef }) => {
       `SELECT * FROM wms_layers WHERE project_id = $1 ORDER BY label ASC`,
       [project_id],
     )
-    const wmsLayers = result.rows
+    const wmsLayers = result?.rows
     const len = wmsLayers.length
     const index = wmsLayers.findIndex((p) => p.wms_layer_id === wms_layer_id)
     const next = wmsLayers[(index + 1) % len]
@@ -57,7 +57,7 @@ export const Header = memo(({ autoFocusRef }) => {
       `SELECT * FROM wms_layers WHERE project_id = $1 ORDER BY label ASC`,
       [project_id],
     )
-    const wmsLayers = result.rows
+    const wmsLayers = result?.rows
     const len = wmsLayers.length
     const index = wmsLayers.findIndex((p) => p.wms_layer_id === wms_layer_id)
     const previous = wmsLayers[(index + len - 1) % len]
