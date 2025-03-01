@@ -7,6 +7,7 @@ import { createSubprojectReport } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
+import { Loading } from '../components/shared/Loading.tsx'
 import { subprojectReportsFilterAtom } from '../store.ts'
 import '../form.css'
 
@@ -19,14 +20,15 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
   const db = usePGlite()
 
-  const result = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT subproject_report_id, label FROM subproject_reports WHERE subproject_id = $1${
       isFiltered ? ` AND(${filter})` : ''
     } order by label asc`,
     [subproject_id],
     'subproject_report_id',
   )
-  const subprojectReports = result?.rows ?? []
+  const isLoading = res === undefined
+  const subprojectReports = res?.rows ?? []
 
   const add = useCallback(async () => {
     const res = await createSubprojectReport({
@@ -50,17 +52,24 @@ export const Component = memo(() => {
         tableName="subproject_reports"
         ifFiltered={isFiltered}
         countFiltered={subprojectReports.length}
+        isLoading={isLoading}
         addRow={add}
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {subprojectReports.map(({ subproject_report_id, label }) => (
-          <Row
-            key={subproject_report_id}
-            to={subproject_report_id}
-            label={label ?? subproject_report_id}
-          />
-        ))}
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <>
+            {subprojectReports.map(({ subproject_report_id, label }) => (
+              <Row
+                key={subproject_report_id}
+                to={subproject_report_id}
+                label={label ?? subproject_report_id}
+              />
+            ))}
+          </>
+        )}
       </div>
     </div>
   )
