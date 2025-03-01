@@ -89,6 +89,7 @@ export const Widget = memo(
     )
 
     const value = data?.[name] ?? ''
+    const label = field.field_label ? field.field_label : field.name
 
     // TODO: drag and drop to order
     // only if editing
@@ -99,7 +100,7 @@ export const Widget = memo(
         return (
           <TextField
             key={`${name}/${index}`}
-            label={field.field_label}
+            label={label}
             name={name}
             value={value}
             type={type ?? 'text'}
@@ -113,7 +114,7 @@ export const Widget = memo(
         return (
           <TextArea
             key={`${name}/${index}`}
-            label={field.field_label}
+            label={label}
             name={name}
             value={value}
             type={type ?? 'text'}
@@ -139,7 +140,7 @@ export const Widget = memo(
           <DropdownFieldFromList
             key={`${name}/${index}`}
             name={name}
-            label={field.field_label}
+            label={label}
             list_id={field.list_id}
             value={value}
             onChange={onChange}
@@ -152,7 +153,7 @@ export const Widget = memo(
           <RadioGroupFromList
             key={`${name}/${index}`}
             name={name}
-            label={field.field_label}
+            label={label}
             list_id={field.list_id}
             value={value}
             onChange={onChange}
@@ -164,7 +165,7 @@ export const Widget = memo(
         return (
           <DateField
             key={`${name}/${index}`}
-            label={field.field_label}
+            label={label}
             name={name}
             // in json date is saved as iso string
             value={value ? new Date(value) : null}
@@ -177,7 +178,7 @@ export const Widget = memo(
         return (
           <TimeFields
             key={`${name}/${index}`}
-            label={field.field_label}
+            label={label}
             name={name}
             value={value}
             onChange={onChange}
@@ -189,7 +190,7 @@ export const Widget = memo(
         return (
           <DateTimeField
             key={`${name}/${index}`}
-            label={field.field_label}
+            label={label}
             name={name}
             value={value ? new Date(value) : null}
             onChange={onChange}
@@ -201,7 +202,7 @@ export const Widget = memo(
         return (
           <TextField
             key={`${name}/${index}`}
-            label={field.field_label}
+            label={label}
             name={name}
             value={value}
             type={type ?? 'text'}

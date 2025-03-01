@@ -47,7 +47,7 @@ export const TextField = memo((props: InputProps) => {
 
   return (
     <Field
-      label={label ?? '(no label provided)'}
+      label={label ?? name ?? '(no label provided)'}
       validationMessage={validationMessage}
       validationState={validationState}
       hint={hint}

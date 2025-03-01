@@ -48,20 +48,20 @@ export const Field = memo(
         />
       )
     }
-    const { name, field_label } = field
+    const label = field.field_label ? field.field_label : field.name
     const type = fieldType?.name === 'integer' ? 'number' : fieldType?.name
 
     if (!widgetType?.name && !widgetType?.text) {
       return null
     }
 
-    const value = data?.[name] ?? ''
+    const value = data?.[field.name] ?? ''
     if (!widgetType?.name) {
       return (
         <TextField
-          key={`${name}/${index}`}
-          label={field_label}
-          name={name}
+          key={`${field.name}/${index}`}
+          label={label}
+          name={field.name}
           value={value}
           type={type ?? 'text'}
           onChange={onChange}
@@ -74,8 +74,8 @@ export const Field = memo(
 
     return (
       <Widget
-        key={`${name}/${index}`}
-        name={name}
+        key={`${field.name}/${index}`}
+        name={field.name}
         type={type}
         field={field}
         index={index}
