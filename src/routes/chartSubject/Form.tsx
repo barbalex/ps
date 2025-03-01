@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
-import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Section } from '../../components/shared/Section.tsx'
@@ -12,12 +11,6 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { Table } from './Table.tsx'
 import { Level } from './Level.tsx'
 import { ValueSource } from './ValueSource.tsx'
-
-const chartSubjectValueSources = [
-  'count_rows',
-  'count_rows_by_distinct_field_values',
-  'sum_values_of_field',
-]
 
 interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>

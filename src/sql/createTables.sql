@@ -1899,7 +1899,7 @@ CREATE TABLE IF NOT EXISTS chart_subjects(
   value_unit uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE CASCADE ON UPDATE CASCADE, -- needed for action_values, check_values
   name text DEFAULT NULL,
   label text DEFAULT NULL,
-  type text DEFAULT NULL REFERENCES chart_subject_types(type) ON DELETE NO action ON UPDATE CASCADE,
+  type text DEFAULT NULL REFERENCES chart_subject_types(type) ON DELETE NO action ON UPDATE CASCADE, -- not used
   stroke text DEFAULT NULL,
   fill text DEFAULT NULL,
   fill_graded boolean DEFAULT TRUE,
