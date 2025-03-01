@@ -172,6 +172,7 @@ https://stackoverflow.com/a/21541021/712005 */
   flex-direction: column;
   flex-grow: 1;
   overflow: hidden;
+  height: 100%;
 
   .list-view-header {
     display: flex;
