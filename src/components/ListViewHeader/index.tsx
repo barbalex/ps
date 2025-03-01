@@ -23,6 +23,7 @@ export const ListViewHeader = memo(
     addRow,
     isFiltered,
     countFiltered,
+    isLoading = false,
     menus,
     info,
   }: Props) => {
@@ -31,7 +32,9 @@ export const ListViewHeader = memo(
     const countUnfilteredResult = useLiveIncrementalQuery(countSql, [], 'count')
     const countUnfiltered = countUnfilteredResult?.rows?.[0]?.count ?? 0
     const title = `${namePlural} (${
-      isFiltered
+      isLoading
+        ? '...'
+        : isFiltered
         ? `${countFiltered?.toLocaleString?.(
             'en-US',
           )}/${countUnfiltered?.toLocaleString?.('en-US')}`
