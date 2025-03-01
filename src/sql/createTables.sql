@@ -146,14 +146,14 @@ CREATE TABLE IF NOT EXISTS place_levels(
   check_values boolean DEFAULT FALSE,
   check_taxa boolean DEFAULT FALSE,
   occurrences boolean DEFAULT FALSE,
-  label text generated always as (
-    case
-      when name_short is null and name_plural is null then place_level_id::text
-      when name_plural is null then level::text || '.' || name_short
-      when name_short is null then level::text || '.' || name_plural
-      else place_level_id::text
-    end
-  ) stored
+  label text GENERATED ALWAYS AS (
+    CASE
+      WHEN (name_short IS NULL AND name_plural IS NULL) THEN place_level_id::text
+      WHEN name_plural IS NULL THEN level::text || '.' || name_short
+      WHEN name_short IS NULL THEN level::text || '.' || name_plural
+      ELSE level::text || '.' || name_plural
+    END
+  ) STORED
 );
 
 CREATE INDEX IF NOT EXISTS place_levels_account_id_idx ON place_levels USING btree(account_id);
@@ -308,12 +308,14 @@ CREATE TABLE IF NOT EXISTS taxonomies(
   url text DEFAULT NULL,
   obsolete boolean DEFAULT FALSE,
   data jsonb DEFAULT NULL,
-  label text GENERATED ALWAYS AS ( CASE when name IS NULL THEN
-    taxonomy_id::text
-    WHEN type IS NULL THEN
-    taxonomy_id::text when name IS NULL THEN
-    taxonomy_id::text else name || ' (' || type || ')'
-  END) STORED
+  label text GENERATED ALWAYS AS ( 
+    CASE 
+      when name IS NULL THEN taxonomy_id::text
+      WHEN type IS NULL THEN taxonomy_id::text 
+      when name IS NULL THEN taxonomy_id::text 
+      else name || ' (' || type || ')'
+    END
+  ) STORED
 );
 
 CREATE INDEX IF NOT EXISTS taxonomies_account_id_idx ON taxonomies USING btree(account_id);
