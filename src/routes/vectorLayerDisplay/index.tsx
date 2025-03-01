@@ -13,10 +13,10 @@ import { Header } from './Header.tsx'
 import { ErrorBoundary } from '../../components/shared/ErrorBoundary.tsx'
 import { ColorPicker } from '../../components/shared/ColorPicker.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
+import { MarkerType } from './MarkerType.tsx'
+import { LineCap } from './LineCap.tsx'
 
 const fillRules = ['nonzero', 'evenodd']
-const lineCaps = ['butt', 'round', 'square']
-const markerTypes = ['circle', 'marker']
 
 import '../../form.css'
 
@@ -73,12 +73,9 @@ export const Component = ({ vectorLayerDisplayId }) => {
           vectorLayerDisplayId={vectorLayerDisplayId}
         />
         <div className="form-container">
-          <RadioGroupField
-            name="marker_type"
-            label="Punkt-Typ"
-            list={markerTypes}
-            value={row.marker_type}
+          <MarkerType
             onChange={onChange}
+            row={row}
           />
           {row.marker_type === 'circle' && (
             <TextField
@@ -118,12 +115,9 @@ export const Component = ({ vectorLayerDisplayId }) => {
             onChange={onChange}
             type="number"
           />
-          <RadioGroupField
-            name="line_cap"
-            value={row.line_cap}
-            label="Linien: Abschluss"
-            list={lineCaps}
+          <LineCap
             onChange={onChange}
+            row={row}
           />
           <RadioGroupField
             name="line_join"

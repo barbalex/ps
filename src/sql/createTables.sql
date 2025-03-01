@@ -1638,24 +1638,32 @@ COMMENT ON COLUMN vector_layer_geoms.bbox_ne_lat IS 'bbox of the geometry. Set c
 -- vector_layer_displays
 --
 create table if not exists vector_layer_marker_types (
-  marker_type text primary key
+  marker_type text primary key,
+  sort integer default null
 );
-insert into vector_layer_marker_types values ('circle'), ('marker');
+CREATE INDEX IF NOT EXISTS vector_layer_marker_types_sort_idx ON vector_layer_marker_types USING btree(sort);
+insert into vector_layer_marker_types (marker_type, sort) values ('circle', 1), ('marker', 2);
 
 create table if not exists vector_layer_line_caps (
-  line_cap text primary key
+  line_cap text primary key,
+  sort integer default null
 );
-insert into vector_layer_line_caps values ('butt'), ('round'), ('square');
+CREATE INDEX IF NOT EXISTS vector_layer_line_caps_sort_idx ON vector_layer_line_caps USING btree(sort);
+insert into vector_layer_line_caps (line_cap, sort) values ('butt', 1), ('round', 2), ('square', 3);
 
 create table if not exists vector_layer_line_joins (
-  line_join text primary key
+  line_join text primary key,
+  sort integer default null
 );
-insert into vector_layer_line_joins values ('arcs'), ('bevel'), ('miter'), ('miter-clip'), ('round');
+CREATE INDEX IF NOT EXISTS vector_layer_line_joins_sort_idx ON vector_layer_line_joins USING btree(sort);
+insert into vector_layer_line_joins (line_join, sort) values ('arcs', 1), ('bevel', 2), ('miter', 3), ('miter-clip', 4), ('round', 5);
 
 create table if not exists vector_layer_fill_rules (
-  fill_rule text primary key
+  fill_rule text primary key,
+  sort integer default null
 );
-insert into vector_layer_fill_rules values ('nonzero'), ('evenodd');
+CREATE INDEX IF NOT EXISTS vector_layer_fill_rules_sort_idx ON vector_layer_fill_rules USING btree(sort);
+insert into vector_layer_fill_rules (fill_rule, sort) values ('nonzero', 1), ('evenodd', 2);
 
 -- DROP TABLE IF EXISTS vector_layer_displays CASCADE;
 -- manage all map related properties here? For imported/wfs and also own tables?
