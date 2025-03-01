@@ -11,6 +11,7 @@ import {
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
+import { Loading } from '../components/shared/Loading.tsx'
 import { vectorLayersFilterAtom } from '../store.ts'
 import '../form.css'
 
@@ -23,7 +24,7 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
   const db = usePGlite()
 
-  const result = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `
     SELECT 
       vector_layer_id, 
@@ -35,7 +36,8 @@ export const Component = memo(() => {
     [project_id],
     'vector_layer_id',
   )
-  const vectorLayers = result?.rows ?? []
+  const isLoading = res === undefined
+  const vectorLayers = res?.rows ?? []
 
   const add = useCallback(async () => {
     const res = await createVectorLayer({ project_id, type: 'wfs', db })
@@ -65,17 +67,24 @@ export const Component = memo(() => {
         tableName="vector_layers"
         isFiltered={isFiltered}
         countFiltered={vectorLayers.length}
+        isLoading={isLoading}
         addRow={add}
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {vectorLayers.map(({ vector_layer_id, label }) => (
-          <Row
-            key={vector_layer_id}
-            to={vector_layer_id}
-            label={label ?? vector_layer_id}
-          />
-        ))}
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <>
+            {vectorLayers.map(({ vector_layer_id, label }) => (
+              <Row
+                key={vector_layer_id}
+                to={vector_layer_id}
+                label={label ?? vector_layer_id}
+              />
+            ))}
+          </>
+        )}
       </div>
     </div>
   )
