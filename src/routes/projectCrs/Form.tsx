@@ -7,6 +7,7 @@ import { TextField } from '../../components/shared/TextField.tsx'
 import { TextArea } from '../../components/shared/TextArea.tsx'
 import { CheckboxField } from '../../components/shared/CheckboxField.tsx'
 import { ComboboxFilteringOptions } from './Combobox/index.tsx'
+import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 
 import { Loading } from '../../components/shared/Loading.tsx'
 
