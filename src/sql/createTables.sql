@@ -299,9 +299,13 @@ COMMENT ON TABLE subproject_users IS 'A way to give users access to subprojects 
 -- taxonomies
 --
 create table if not exists taxonomy_types (
-  type text primary key default null
+  type text primary key default null,
+  sort integer default null
 );
-insert into taxonomy_types (type) values ('species'), ('biotope');
+
+create index if not exists taxonomy_types_sort_idx on taxonomy_types using btree(sort);
+
+insert into taxonomy_types (type, sort) values ('species', 1), ('biotope', 2);
 
 CREATE TABLE IF NOT EXISTS taxonomies(
   taxonomy_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),

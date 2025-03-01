@@ -37,6 +37,7 @@
     "@turf/point-to-line-distance": "7.2.0",
     "@turf/points-within-polygon": "7.2.0",
     "@turf/polygon-to-line": "7.2.0",
+    "@uidotdev/usehooks": "2.4.1",
     "@uploadcare/file-uploader": "1.13.2",
     "@uploadcare/react-uploader": "1.5.0",
     "allotment": "1.20.3",

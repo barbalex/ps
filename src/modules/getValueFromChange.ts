@@ -11,6 +11,7 @@ export const getValueFromChange = (
     case 'checkbox':
       return { value: data?.checked, name }
     case 'radio': {
+      if (data?.value === null) return { value: null, name }
       // numbers need to be converted to numbers
       return {
         value: !isNaN(data?.value) ? parseFloat(data?.value) : data?.value,

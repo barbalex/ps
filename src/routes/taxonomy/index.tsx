@@ -10,6 +10,7 @@ import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
+import { Type } from './Type.tsx'
 
 const taxonomyTypes = ['species', 'biotope']
 
@@ -53,11 +54,8 @@ export const Component = memo(() => {
           autoFocus
           ref={autoFocusRef}
         />
-        <RadioGroupField
-          label="Type"
-          name="type"
-          list={taxonomyTypes}
-          value={row.type ?? ''}
+        <Type
+          row={row}
           onChange={onChange}
         />
         <TextField
