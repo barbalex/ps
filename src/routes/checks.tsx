@@ -8,6 +8,7 @@ import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { LayerMenu } from '../components/shared/LayerMenu.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
+import { Loading } from '../components/shared/Loading.tsx'
 import { checks1FilterAtom, checks2FilterAtom } from '../store.ts'
 
 import '../form.css'
@@ -23,14 +24,15 @@ export const Component = memo(() => {
   const filter = place_id2 ? checks2Filter : checks1Filter
   const isFiltered = filter.length > 0
 
-  const results = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT check_id, label FROM checks WHERE place_id = $1${
       filter?.length ? ` AND (${filter})` : ''
     } order by label asc`,
     [place_id2 ?? place_id],
     'check_id',
   )
-  const checks = results?.rows ?? []
+  const isLoading = res === undefined
+  const checks = res?.rows ?? []
 
   const add = useCallback(async () => {
     const res = await createCheck({
@@ -51,6 +53,7 @@ export const Component = memo(() => {
         tableName="checks"
         isFiltered={isFiltered}
         countFiltered={checks.length}
+        isLoading={isLoading}
         addRow={add}
         menus={
           <>
@@ -63,13 +66,19 @@ export const Component = memo(() => {
         }
       />
       <div className="list-container">
-        {checks.map(({ check_id, label }) => (
-          <Row
-            key={check_id}
-            label={label ?? check_id}
-            to={check_id}
-          />
-        ))}
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <>
+            {checks.map(({ check_id, label }) => (
+              <Row
+                key={check_id}
+                label={label ?? check_id}
+                to={check_id}
+              />
+            ))}
+          </>
+        )}
       </div>
     </div>
   )

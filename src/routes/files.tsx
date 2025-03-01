@@ -6,6 +6,7 @@ import { FaPlus } from 'react-icons/fa'
 
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
+import { Loading } from '../components/shared/Loading.tsx'
 import { Uploader } from './file/Uploader.tsx'
 import { UploaderContext } from '../UploaderContext.ts'
 
@@ -37,12 +38,13 @@ export const Component = memo(() => {
     }
   }, [action_id, check_id, place_id, place_id2, project_id, subproject_id])
 
-  const result = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT file_id, label, url, mimetype FROM files WHERE ${hKey} = $1 ORDER BY label ASC`,
     [hValue],
     'file_id',
   )
-  const files = result?.rows ?? []
+  const isLoading = res === undefined
+  const files = res?.rows ?? []
 
   const uploaderCtx = useContext(UploaderContext)
   const api = uploaderCtx?.current?.getAPI?.()
@@ -58,6 +60,7 @@ export const Component = memo(() => {
         tableName="files"
         isFiltered={false}
         countFiltered={files.length}
+        isLoading={isLoading}
         menus={
           <Button
             size="medium"
@@ -69,22 +72,31 @@ export const Component = memo(() => {
       />
       <div className="list-container">
         <Uploader />
-        {files.map(({ file_id, label, url, mimetype }) => {
-          let imgSrc = undefined
-          if ((mimetype.includes('image') || mimetype.includes('pdf')) && url) {
-            imgSrc = `${url}-/resize/x50/-/format/auto/-/quality/smart/`
-          }
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <>
+            {files.map(({ file_id, label, url, mimetype }) => {
+              let imgSrc = undefined
+              if (
+                (mimetype.includes('image') || mimetype.includes('pdf')) &&
+                url
+              ) {
+                imgSrc = `${url}-/resize/x50/-/format/auto/-/quality/smart/`
+              }
 
-          return (
-            <Row
-              key={file_id}
-              label={label ?? file_id}
-              to={file_id}
-              imgSrc={imgSrc}
-              lastHasImages={true}
-            />
-          )
-        })}
+              return (
+                <Row
+                  key={file_id}
+                  label={label ?? file_id}
+                  to={file_id}
+                  imgSrc={imgSrc}
+                  lastHasImages={true}
+                />
+              )
+            })}
+          </>
+        )}
       </div>
     </div>
   )

@@ -5,6 +5,7 @@ import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import { createCheckTaxon } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
+import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
 export const Component = memo(() => {
@@ -13,12 +14,13 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
 
   const db = usePGlite()
-  const results = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT check_taxon_id, label FROM check_taxa WHERE check_id = $1 ORDER BY label ASC`,
     [check_id],
     'check_taxon_id',
   )
-  const checkTaxa = results?.rows ?? []
+  const isLoading = res === undefined
+  const checkTaxa = res?.rows ?? []
 
   const add = useCallback(async () => {
     const res = await createCheckTaxon({ db, check_id })
@@ -38,16 +40,23 @@ export const Component = memo(() => {
         tableName="check_taxa"
         isFiltered={false}
         countFiltered={checkTaxa.length}
+        isLoading={isLoading}
         addRow={add}
       />
       <div className="list-container">
-        {checkTaxa.map(({ check_taxon_id, label }) => (
-          <Row
-            key={check_taxon_id}
-            label={label ?? check_taxon_id}
-            to={check_taxon_id}
-          />
-        ))}
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <>
+            {checkTaxa.map(({ check_taxon_id, label }) => (
+              <Row
+                key={check_taxon_id}
+                label={label ?? check_taxon_id}
+                to={check_taxon_id}
+              />
+            ))}
+          </>
+        )}
       </div>
     </div>
   )
