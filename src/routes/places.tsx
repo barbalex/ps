@@ -13,6 +13,7 @@ import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { LayerMenu } from '../components/shared/LayerMenu.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
+import { Loading } from '../components/shared/Loading.tsx'
 import { places1FilterAtom, places2FilterAtom } from '../store.ts'
 
 import '../form.css'
@@ -34,8 +35,9 @@ export const Component = memo(() => {
     isFiltered ? ` AND ${filter.join(' AND ')}` : ''
   } order by label asc`
   const params = [subproject_id]
-  const result = useLiveIncrementalQuery(sql, params, 'place_id')
-  const places = result?.rows ?? []
+  const res = useLiveIncrementalQuery(sql, params, 'place_id')
+  const isLoading = res === undefined
+  const places = res?.rows ?? []
 
   // TODO: get names in above query by joining with place_levels
   // to save a render
@@ -100,6 +102,7 @@ export const Component = memo(() => {
         nameSingular={placeNameSingular}
         tableName="places"
         countFiltered={places.length}
+        isLoading={isLoading}
         addRow={add}
         menus={
           <>
@@ -113,13 +116,19 @@ export const Component = memo(() => {
         }
       />
       <div className="list-container">
-        {places.map(({ place_id, label }) => (
-          <Row
-            key={place_id}
-            to={place_id}
-            label={label ?? place_id}
-          />
-        ))}
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <>
+            {places.map(({ place_id, label }) => (
+              <Row
+                key={place_id}
+                to={place_id}
+                label={label ?? place_id}
+              />
+            ))}
+          </>
+        )}
       </div>
     </div>
   )
