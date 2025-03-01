@@ -1,22 +1,16 @@
 import { memo } from 'react'
 
-import { RadioGroupField } from '../../../components/shared/RadioGroupField.tsx'
 import { DropdownFieldSimpleOptions } from '../../../components/shared/DropdownFieldSimpleOptions.tsx'
 import { Crs } from './Crs.tsx'
 import { Set } from './Set.tsx'
-
-const occurrenceImportsGeometryMethods = ['coordinates', 'geojson']
+import { GeometryMethod } from './GeometryMethod.tsx'
 
 export const Two = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
   return (
     <>
-      <RadioGroupField
-        label="How are the geometries contained in the data?"
-        name="geometry_method"
-        list={occurrenceImportsGeometryMethods}
-        value={occurrenceImport.geometry_method ?? ''}
+      <GeometryMethod
         onChange={onChange}
-        validationMessage="GeoJSON and Coordinate Fields are supported"
+        row={occurrenceImport}
       />
       {occurrenceImport.geometry_method === 'geojson' && (
         <DropdownFieldSimpleOptions

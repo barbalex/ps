@@ -1330,9 +1330,11 @@ CREATE INDEX IF NOT EXISTS occurrence_import_previous_operations_sort_idx ON occ
 insert into occurrence_import_previous_operations (previous_import_operation, sort) values ('update_and_extend', 1), ('replace', 2);
 
 create table if not exists occurrence_imports_geometry_methods (
-  geometry_method text primary key
+  geometry_method text primary key,
+  sort integer default null
 );
-insert into occurrence_imports_geometry_methods values ('coordinates'), ('geojson');
+CREATE INDEX IF NOT EXISTS occurrence_imports_geometry_methods_sort_idx ON occurrence_imports_geometry_methods USING btree(sort);
+insert into occurrence_imports_geometry_methods (geometry_method, sort) values ('coordinates', 1), ('geojson', 2);
 
 CREATE TABLE IF NOT EXISTS occurrence_imports(
   occurrence_import_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
