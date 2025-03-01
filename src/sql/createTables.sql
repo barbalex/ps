@@ -1862,9 +1862,11 @@ COMMENT ON COLUMN charts.years_until IS 'If has value: the chart shows data unti
 -- chart_subjects
 --
 create table if not exists chart_subject_table_names (
-  table_name text primary key
+  table_name text primary key,
+  sort integer default null
 );
-insert into chart_subject_table_names values ('subprojects'), ('places'), ('checks'), ('check_values'), ('actions'), ('action_values');
+CREATE INDEX IF NOT EXISTS chart_subject_table_names_sort_idx ON chart_subject_table_names USING btree(sort);
+insert into chart_subject_table_names (table_name, sort) values ('subprojects', 1), ('places', 2), ('checks', 3), ('check_values', 4), ('actions', 5), ('action_values', 6);
 
 create table if not exists chart_subject_table_levels (
   level integer primary key
@@ -1872,14 +1874,18 @@ create table if not exists chart_subject_table_levels (
 insert into chart_subject_table_levels values (1), (2);
 
 create table if not exists chart_subject_value_sources (
-  value_source text primary key
+  value_source text primary key,
+  sort integer default null
 );
-insert into chart_subject_value_sources values ('count_rows'), ('count_rows_by_distinct_field_values'), ('sum_values_of_field');
+CREATE INDEX IF NOT EXISTS chart_subject_value_sources_sort_idx ON chart_subject_value_sources USING btree(sort);
+insert into chart_subject_value_sources (value_source, sort) values ('count_rows', 1), ('count_rows_by_distinct_field_values', 2), ('sum_values_of_field', 3);
 
 create table if not exists chart_subject_types (
-  type text primary key
+  type text primary key,
+  sort integer default null
 );
-insert into chart_subject_types values ('linear'), ('monotone');
+CREATE INDEX IF NOT EXISTS chart_subject_types_sort_idx ON chart_subject_types USING btree(sort);
+insert into chart_subject_types (type, sort) values ('linear', 1), ('monotone', 2);
 
 CREATE TABLE IF NOT EXISTS chart_subjects(
   chart_subject_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),

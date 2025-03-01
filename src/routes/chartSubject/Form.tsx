@@ -10,6 +10,8 @@ import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFiel
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Section } from '../../components/shared/Section.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
+import { Table } from './Table.tsx'
+import { Level } from './Level.tsx'
 
 const chartSubjectTables = [
   'subprojects',
@@ -63,23 +65,14 @@ export const ChartSubjectForm = memo(({ autoFocusRef }: Props) => {
         onChange={onChange}
       />
       <Section title="Data">
-        <DropdownFieldSimpleOptions
-          label="Table"
-          name="table_name"
-          value={row.table_name ?? ''}
+        <Table
           onChange={onChange}
-          options={chartSubjectTables}
-          autoFocus
+          row={row}
           ref={autoFocusRef}
-          validationMessage="Choose what table to get the data from"
         />
-        <RadioGroupField
-          label="Level"
-          name="table_level"
-          list={[1, 2]}
-          value={row.table_level ?? ''}
+        <Level
           onChange={onChange}
-          validationMessage="Level of places and their respective checks and actions"
+          row={row}
         />
         <TextField
           label="TODO: table filter"
