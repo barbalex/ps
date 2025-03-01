@@ -5,6 +5,7 @@ import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import { createSubprojectTaxon } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
+import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
 export const Component = memo(() => {
@@ -13,12 +14,13 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
 
   const db = usePGlite()
-  const result = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT subproject_taxon_id, label FROM subproject_taxa WHERE subproject_id = $1 ORDER BY label ASC`,
     [subproject_id],
     'subproject_taxon_id',
   )
-  const subprojectTaxa = result?.rows ?? []
+  const isLoading = res === undefined
+  const subprojectTaxa = res?.rows ?? []
 
   const add = useCallback(async () => {
     const res = await createSubprojectTaxon({ subproject_id, db })
@@ -38,16 +40,23 @@ export const Component = memo(() => {
         tableName="subproject_taxa"
         isFiltered={false}
         countFiltered={subprojectTaxa.length}
+        isLoading={isLoading}
         addRow={add}
       />
       <div className="list-container">
-        {subprojectTaxa.map(({ subproject_taxon_id, label }) => (
-          <Row
-            key={subproject_taxon_id}
-            to={subproject_taxon_id}
-            label={label ?? subproject_taxon_id}
-          />
-        ))}
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <>
+            {subprojectTaxa.map(({ subproject_taxon_id, label }) => (
+              <Row
+                key={subproject_taxon_id}
+                to={subproject_taxon_id}
+                label={label ?? subproject_taxon_id}
+              />
+            ))}
+          </>
+        )}
       </div>
     </div>
   )

@@ -5,6 +5,7 @@ import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import { createMessage } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
+import { Loading } from '../components/shared/Loading.tsx'
 
 import '../form.css'
 
@@ -14,12 +15,13 @@ export const Component = memo(() => {
 
   const db = usePGlite()
 
-  const result = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT message_id, date FROM messages order by date desc`,
     undefined,
     'message_id',
   )
-  const messages = result?.rows ?? []
+  const isLoading = res === undefined
+  const messages = res?.rows ?? []
 
   const add = useCallback(async () => {
     const res = await createMessage({ db })
@@ -36,16 +38,23 @@ export const Component = memo(() => {
         tableName="messages"
         isFiltered={false}
         countFiltered={messages.length}
+        isLoading={isLoading}
         addRow={add}
       />
       <div className="list-container">
-        {messages.map(({ message_id, date }) => (
-          <Row
-            key={message_id}
-            to={message_id}
-            label={date ?? message_id}
-          />
-        ))}
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <>
+            {messages.map(({ message_id, date }) => (
+              <Row
+                key={message_id}
+                to={message_id}
+                label={date ?? message_id}
+              />
+            ))}
+          </>
+        )}
       </div>
     </div>
   )
