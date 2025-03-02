@@ -16,11 +16,7 @@ import {
 import { reorder } from '@atlaskit/pragmatic-drag-and-drop/reorder'
 import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index'
 import { useAtom, atom } from 'jotai'
-import {
-  usePGlite,
-  useLiveIncrementalQuery,
-  useLiveQuery,
-} from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { ActiveLayer } from './Active.tsx'
