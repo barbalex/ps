@@ -1255,9 +1255,7 @@ CREATE INDEX IF NOT EXISTS widgets_for_fields_label_idx ON widgets_for_fields(la
 --------------------------------------------------------------
 -- fields
 --
--- order_by field: to enable ordering of field widgets
--- idea: use an integer that represents the index of the widget
--- thus: set index for ALL widgets of a field after reordering
+-- thus: set sort_index for ALL widgets of a field after reordering
 CREATE TABLE IF NOT EXISTS fields(
   field_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1272,9 +1270,6 @@ CREATE TABLE IF NOT EXISTS fields(
   preset text DEFAULT NULL,
   obsolete boolean DEFAULT FALSE,
   sort_index integer DEFAULT NULL,
-  order_by integer DEFAULT NULL, -- enable ordering of field widgets
-  -- label text DEFAULT NULL
-  -- label text GENERATED ALWAYS AS (iif(coalesce(table_name, name) is not null, table_name || '.' || name || iif(level is not null, ' ' || level, ''), field_id))
   label text GENERATED ALWAYS AS (
     CASE 
       WHEN table_name is null then field_id::text 
