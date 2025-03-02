@@ -94,8 +94,7 @@ export const Widget = memo(
     // TODO: drag and drop to order
     // only if editing
     // not if editingField
-    // TODO: add jes-no, other boolean types
-    // TODO: add more missing types
+    // TODO: add: markdown, rich-text, jes-no (rename existing to switch)
     switch (field.widget_type) {
       case 'text':
         return (
