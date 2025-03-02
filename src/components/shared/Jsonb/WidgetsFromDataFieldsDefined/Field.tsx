@@ -3,8 +3,6 @@ import { useSearchParams } from 'react-router-dom'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { FieldFormInForm } from '../../FieldFormInForm.tsx'
-import { TextField } from '../../TextField.tsx'
-import { EditField } from './EditField.tsx'
 import { Widget } from './Widget.tsx'
 
 export const Field = memo(
@@ -48,29 +46,12 @@ export const Field = memo(
         />
       )
     }
-    const label = field.field_label ? field.field_label : field.name
     const type = fieldType?.name === 'integer' ? 'number' : fieldType?.name
 
-    if (!widgetType?.name && !widgetType?.text) {
-      return null
-    }
-
-    const value = data?.[field.name] ?? ''
-    if (!widgetType?.name) {
-      return (
-        <TextField
-          key={`${field.name}/${index}`}
-          label={label}
-          name={field.name}
-          value={value}
-          type={type ?? 'text'}
-          onChange={onChange}
-          autoFocus={autoFocus && index === 0}
-          ref={ref}
-          button={<EditField field_id={field.field_id} />}
-        />
-      )
-    }
+    // TODO: is this needed?
+    // if (!widgetType?.name && !widgetType?.text) {
+    //   return null
+    // }
 
     return (
       <Widget
