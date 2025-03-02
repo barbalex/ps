@@ -1,24 +1,17 @@
-import { useMemo, memo } from 'react'
-import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { memo } from 'react'
 
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 
 import '../../form.css'
 
 export const WidgetType = memo(({ onChange, field_type_id = '', value }) => {
-  const result = useLiveIncrementalQuery(
-    `SELECT widget_type_id FROM widgets_for_fields WHERE field_type_id = $1`,
-    [field_type_id],
-    'widget_for_field_id',
-  )
-  const widgetsForFields = useMemo(() => result?.rows ?? [], [result])
-  const widgetWhere = useMemo(
-    () =>
-      `widget_type_id in('${widgetsForFields
-        ?.map(({ widget_type_id }) => widget_type_id)
-        .join("','")}')`,
-    [widgetsForFields],
-  )
+  const widgetWhere = `
+    widget_type_id in (
+      SELECT widget_type_id
+      FROM widgets_for_fields
+      WHERE field_type_id = '${field_type_id}'
+    )
+  `
 
   return (
     <DropdownField

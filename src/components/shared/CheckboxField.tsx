@@ -1,6 +1,13 @@
 import { memo } from 'react'
 import { Checkbox } from '@fluentui/react-components'
 
+const containerStyle = {
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+}
+
 export const CheckboxField = memo(
   ({
     label = '(no label provided)',
@@ -8,13 +15,17 @@ export const CheckboxField = memo(
     value = false,
     onChange,
     autoFocus,
+    button,
   }) => (
-    <Checkbox
-      label={label}
-      name={name}
-      checked={value}
-      onChange={onChange}
-      autoFocus={autoFocus}
-    />
+    <div style={containerStyle}>
+      <Checkbox
+        label={label}
+        name={name}
+        checked={value}
+        onChange={onChange}
+        autoFocus={autoFocus}
+      />
+      {button ? button : null}
+    </div>
   ),
 )

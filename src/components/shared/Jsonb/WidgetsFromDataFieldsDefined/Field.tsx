@@ -1,6 +1,5 @@
 import { memo } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { FieldFormInForm } from '../../FieldFormInForm.tsx'
 import { Widget } from './Widget.tsx'
@@ -9,7 +8,6 @@ export const Field = memo(
   ({
     field,
     index,
-    onChange,
     data,
     table,
     jsonFieldName,
@@ -20,20 +18,6 @@ export const Field = memo(
   }) => {
     const [searchParams] = useSearchParams()
     const editingField = searchParams.get('editingField')
-
-    const resultFieldType = useLiveIncrementalQuery(
-      `SELECT * FROM field_types where field_type_id = $1`,
-      [field.field_type_id],
-      'field_type_id',
-    )
-    const fieldType = resultFieldType?.rows?.[0]
-
-    const resultWidgetType = useLiveIncrementalQuery(
-      `SELECT * FROM widget_types where widget_type_id = $1`,
-      [field.widget_type_id],
-      'widget_type_id',
-    )
-    const widgetType = resultWidgetType?.rows?.[0]
 
     // TODO: drag and drop to order
     // only if editing
@@ -46,7 +30,7 @@ export const Field = memo(
         />
       )
     }
-    const type = fieldType?.name === 'integer' ? 'number' : fieldType?.name
+    const type = field.field_type === 'integer' ? 'number' : field.field_type
 
     // TODO: is this needed?
     // if (!widgetType?.name && !widgetType?.text) {
@@ -65,7 +49,6 @@ export const Field = memo(
         jsonFieldName={jsonFieldName}
         idField={idField}
         id={id}
-        widgetType={widgetType}
         autoFocus={autoFocus && index === 0}
         ref={ref}
       />

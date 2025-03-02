@@ -3,6 +3,7 @@ import { useLocation, useParams } from 'react-router-dom'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../TextField.tsx'
+import { CheckboxField } from '../../CheckboxField.tsx'
 import { TextArea } from '../../TextArea.tsx'
 import { DropdownField } from '../../DropdownField.tsx'
 import { DropdownFieldFromList } from '../../DropdownFieldFromList.tsx'
@@ -24,7 +25,6 @@ export const Widget = memo(
     jsonFieldName,
     idField,
     id,
-    widgetType,
     autoFocus,
     ref,
   }) => {
@@ -91,11 +91,23 @@ export const Widget = memo(
     const value = data?.[name] ?? ''
     const label = field.field_label ? field.field_label : field.name
 
+    console.log('Widget', {
+      field,
+      name,
+      value,
+      index,
+      data,
+      table,
+      jsonFieldName,
+      idField,
+      id,
+    })
+
     // TODO: drag and drop to order
     // only if editing
     // not if editingField
-
-    switch (widgetType?.name) {
+    // TODO: add jes-no, other boolean types
+    switch (field.widget_type) {
       case 'text':
         return (
           <TextField
@@ -107,6 +119,18 @@ export const Widget = memo(
             onChange={onChange}
             autoFocus={autoFocus && index === 0}
             ref={ref}
+            button={<EditField field_id={field.field_id} />}
+          />
+        )
+      case 'jes-no':
+        return (
+          <CheckboxField
+            key={`${name}/${index}`}
+            label={label}
+            name={name}
+            value={value}
+            onChange={onChange}
+            autoFocus={autoFocus && index === 0}
             button={<EditField field_id={field.field_id} />}
           />
         )

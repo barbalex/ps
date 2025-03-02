@@ -34,13 +34,19 @@ export const Jsonb = memo(
     const db = usePGlite()
 
     const useProjectId = project_id && table !== 'projects'
-    const sql = isAccountTable
-      ? `SELECT * FROM fields WHERE table_name = $1 and project_id ${
-          useProjectId ? `= '${project_id}'` : 'IS NULL'
-        } order by sort_index asc, label asc`
-      : `SELECT * FROM fields WHERE table_name = $1 and project_id ${
-          useProjectId ? `= '${project_id}'` : 'IS NULL'
-        } and level = $2 order by sort_index asc, label asc`
+    const sql = `
+      SELECT 
+        fields.*,
+        field_types.name as field_type,
+        widget_types.name as widget_type
+      FROM fields 
+        INNER JOIN field_types USING (field_type_id)
+        INNER JOIN widget_types USING (widget_type_id)
+      WHERE 
+        table_name = $1 
+        and project_id ${useProjectId ? `= '${project_id}'` : 'IS NULL'}
+        ${!isAccountTable ? ` and level = $2` : ''} 
+      ORDER BY sort_index, label`
     const params = isAccountTable ? [table] : [table, place_id2 ? 2 : 1]
     const result = useLiveIncrementalQuery(sql, params, 'field_id')
     const fields = result?.rows ?? []
