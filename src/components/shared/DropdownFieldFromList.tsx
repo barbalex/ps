@@ -36,12 +36,12 @@ export const DropdownFieldFromList = memo(
     button,
   }: Props) => {
     const res = useLiveIncrementalQuery(
-      `SELECT * FROM list_values WHERE list_id = $1`,
+      `SELECT list_value_id, value FROM list_values WHERE list_id = $1`,
       [list_id],
-      'list_id',
+      'list_value_id',
     )
     const options = useMemo(
-      () => res?.rows.map(({ value }) => value),
+      () => (res?.rows ?? []).map(({ value }) => value),
       [res?.rows],
     )
     const selectedOptions = useMemo(

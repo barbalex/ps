@@ -4,6 +4,7 @@ import { usePGlite } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../TextField.tsx'
 import { CheckboxField } from '../../CheckboxField.tsx'
+import { SwitchField } from '../../SwitchField.tsx'
 import { TextArea } from '../../TextArea.tsx'
 import { DropdownField } from '../../DropdownField.tsx'
 import { DropdownFieldFromList } from '../../DropdownFieldFromList.tsx'
@@ -13,7 +14,6 @@ import { TimeFields } from '../../TimeFields.tsx'
 import { DateTimeField } from '../../DateTimeField.tsx'
 import { EditField } from './EditField.tsx'
 import { getValueFromChange } from '../../../../modules/getValueFromChange.ts'
-
 export const Widget = memo(
   ({
     name,
@@ -91,18 +91,6 @@ export const Widget = memo(
     const label = field.field_label ? field.field_label : field.name
     const type = field.field_type === 'integer' ? 'number' : field.field_type
 
-    console.log('Widget', {
-      field,
-      name,
-      value,
-      index,
-      data,
-      table,
-      jsonFieldName,
-      idField,
-      id,
-    })
-
     // TODO: drag and drop to order
     // only if editing
     // not if editingField
@@ -125,6 +113,18 @@ export const Widget = memo(
         )
       case 'jes-no':
         return (
+          <SwitchField
+            key={`${name}/${index}`}
+            label={label}
+            name={name}
+            value={value}
+            onChange={onChange}
+            autoFocus={autoFocus && index === 0}
+            button={<EditField field_id={field.field_id} />}
+          />
+        )
+      case 'checkbox-2':
+        return (
           <CheckboxField
             key={`${name}/${index}`}
             label={label}
@@ -133,6 +133,19 @@ export const Widget = memo(
             onChange={onChange}
             autoFocus={autoFocus && index === 0}
             button={<EditField field_id={field.field_id} />}
+          />
+        )
+      case 'checkbox-3':
+        return (
+          <CheckboxField
+            key={`${name}/${index}`}
+            label={label}
+            name={name}
+            value={value}
+            onChange={onChange}
+            autoFocus={autoFocus && index === 0}
+            button={<EditField field_id={field.field_id} />}
+            indeterminate={true}
           />
         )
       case 'textarea':
