@@ -30,18 +30,11 @@ export const Field = memo(
         />
       )
     }
-    const type = field.field_type === 'integer' ? 'number' : field.field_type
-
-    // TODO: is this needed?
-    // if (!widgetType?.name && !widgetType?.text) {
-    //   return null
-    // }
 
     return (
       <Widget
         key={`${field.name}/${index}`}
         name={field.name}
-        type={type}
         field={field}
         index={index}
         data={data}

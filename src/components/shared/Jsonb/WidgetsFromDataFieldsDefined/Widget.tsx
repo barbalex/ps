@@ -17,7 +17,6 @@ import { getValueFromChange } from '../../../../modules/getValueFromChange.ts'
 export const Widget = memo(
   ({
     name,
-    type,
     field,
     index,
     data = {},
@@ -90,6 +89,7 @@ export const Widget = memo(
 
     const value = data?.[name] ?? ''
     const label = field.field_label ? field.field_label : field.name
+    const type = field.field_type === 'integer' ? 'number' : field.field_type
 
     console.log('Widget', {
       field,
