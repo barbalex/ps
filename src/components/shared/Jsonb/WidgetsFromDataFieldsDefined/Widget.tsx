@@ -107,6 +107,7 @@ export const Widget = memo(
     // only if editing
     // not if editingField
     // TODO: add jes-no, other boolean types
+    // TODO: add more missing types
     switch (field.widget_type) {
       case 'text':
         return (
