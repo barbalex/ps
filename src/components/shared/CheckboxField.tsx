@@ -15,6 +15,8 @@ export const CheckboxField = memo(
     value = false,
     onChange,
     autoFocus,
+    size = 'large',
+    indeterminate = false,
     button,
   }) => (
     <div style={containerStyle}>
@@ -24,6 +26,8 @@ export const CheckboxField = memo(
         checked={value}
         onChange={onChange}
         autoFocus={autoFocus}
+        size={size}
+        mixed={indeterminate}
       />
       {button ? button : null}
     </div>
