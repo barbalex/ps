@@ -91,7 +91,7 @@ export const WidgetsFromDataFieldsDefined = memo(
           }
 
           const indexOfTarget = fields.findIndex(
-            (field) => field.field_id === targetData.layer.field_id,
+            (field) => field.field_id === targetData.field.field_id,
           )
           if (indexOfTarget < 0) {
             return
