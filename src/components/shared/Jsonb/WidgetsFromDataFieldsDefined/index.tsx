@@ -1,4 +1,11 @@
 import { memo } from 'react'
+import { monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
+import {
+  type Edge,
+  extractClosestEdge,
+} from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
+import { reorder } from '@atlaskit/pragmatic-drag-and-drop/reorder'
+import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index'
 
 import { Field } from './Field.tsx'
 

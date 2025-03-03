@@ -45,7 +45,7 @@ import { usePGlite } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createNotification } from '../../../../../modules/createRows.ts'
-import { ListContext } from './ListContext.ts'
+import { DragAndDropContext } from './DragAndDropContext.ts'
 import { itemKey, isItemData } from './shared.ts'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
 import {
@@ -68,10 +68,10 @@ import { on } from '../../../../../css.ts'
 import './active.css'
 
 function useListContext() {
-  const listContext = useContext(ListContext)
-  invariant(listContext !== null)
+  const dragAndDropContext = useContext(DragAndDropContext)
+  invariant(dragAndDropContext !== null)
 
-  return listContext
+  return dragAndDropContext
 }
 
 function getItemData({ layer, index, instanceId }) {

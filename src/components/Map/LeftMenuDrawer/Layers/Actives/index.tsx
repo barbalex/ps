@@ -16,7 +16,7 @@ import { ActiveLayer } from './Active.tsx'
 import { isItemData } from './shared.ts'
 import { mapLayerSortingAtom } from '../../../../../store.ts'
 import { titleStyle } from '../styles.ts'
-import { ListContext } from './ListContext.ts'
+import { DragAndDropContext } from './DragAndDropContext.ts'
 
 // what accordion items are open
 // needs to be controlled to prevent opening when layer is deactivated
@@ -49,7 +49,7 @@ type ReorderItemProps = {
 }
 
 type CleanupFn = () => void
-type ListContextValue = {
+type DragAndDropContextValue = {
   getListLength: () => number
   registerItem: (entry: ItemEntry) => CleanupFn
   reorderItem: (args: {
@@ -252,7 +252,7 @@ export const ActiveLayers = memo(() => {
     [activeLayers.length],
   )
 
-  const contextValue: ListContextValue = useMemo(() => {
+  const dragAndDropContextValue: DragAndDropContextValue = useMemo(() => {
     return {
       registerItem: registry.register,
       reorderItem,
@@ -306,7 +306,7 @@ export const ActiveLayers = memo(() => {
   // do not toggle if that layers presentation is no more active
   return (
     <ErrorBoundary>
-      <ListContext.Provider value={contextValue}>
+      <DragAndDropContext.Provider value={dragAndDropContextValue}>
         <section>
           <h2 style={titleStyle}>Active</h2>
           <Accordion
@@ -331,7 +331,7 @@ export const ActiveLayers = memo(() => {
             )}
           </Accordion>
         </section>
-      </ListContext.Provider>
+      </DragAndDropContext.Provider>
     </ErrorBoundary>
   )
 })
