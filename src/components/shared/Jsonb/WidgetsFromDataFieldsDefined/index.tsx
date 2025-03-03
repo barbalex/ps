@@ -125,6 +125,7 @@ export const WidgetsFromDataFieldsDefined = memo(
           <Field
             key={field.field_id}
             field={field}
+            fieldsCount={fields.length}
             index={index}
             data={data}
             table={table}

@@ -8,6 +8,7 @@ import { WidgetDragAndDrop } from './Widget/index.tsx'
 export const Field = memo(
   ({
     field,
+    fieldsCount,
     index,
     data,
     table,
@@ -34,6 +35,8 @@ export const Field = memo(
         key={`${field.name}/${index}`}
         name={field.name}
         field={field}
+        fieldsCount={fieldsCount}
+        index={index}
         data={data}
         table={table}
         jsonFieldName={jsonFieldName}
@@ -41,7 +44,7 @@ export const Field = memo(
         id={id}
         autoFocus={autoFocus && index === 0}
         ref={ref}
-        enableDragAndDrop={!!editingField}
+        enableDragAndDrop={!editingField}
       />
     )
   },
