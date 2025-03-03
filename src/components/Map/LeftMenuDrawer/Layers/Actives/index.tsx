@@ -9,7 +9,7 @@ import { useAtom, atom } from 'jotai'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
-import { ActiveLayer } from './Active.tsx'
+import { ActiveLayer } from './Active/index.tsx'
 import { isItemData } from './shared.ts'
 import { mapLayerSortingAtom } from '../../../../../store.ts'
 import { titleStyle } from '../styles.ts'
