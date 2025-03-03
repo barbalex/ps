@@ -1255,7 +1255,6 @@ CREATE INDEX IF NOT EXISTS widgets_for_fields_label_idx ON widgets_for_fields(la
 --------------------------------------------------------------
 -- fields
 --
--- thus: set sort_index for ALL widgets of a field after reordering
 CREATE TABLE IF NOT EXISTS fields(
   field_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1269,7 +1268,6 @@ CREATE TABLE IF NOT EXISTS fields(
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE NO action ON UPDATE CASCADE,
   preset text DEFAULT NULL,
   obsolete boolean DEFAULT FALSE,
-  sort_index integer DEFAULT NULL,
   label text GENERATED ALWAYS AS (
     CASE 
       WHEN table_name is null then field_id::text 
@@ -1302,7 +1300,6 @@ CREATE INDEX IF NOT EXISTS fields_obsolete_idx ON fields USING btree((1))
 WHERE
   obsolete;
 
-CREATE INDEX IF NOT EXISTS fields_sort_index_idx ON fields USING btree(sort_index);
 
 COMMENT ON TABLE fields IS 'Fields are used to define the data structure of data jsonb fields in other tables.';
 
@@ -1312,7 +1309,6 @@ COMMENT ON COLUMN fields.table_name IS 'table, on which this field is used insid
 
 COMMENT ON COLUMN fields.level IS 'level of field if places or below: 1, 2';
 
-COMMENT ON COLUMN fields.sort_index IS 'Enables sorting of fields. Per table';
 
 --------------------------------------------------------------
 -- field_sorts

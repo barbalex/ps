@@ -23,9 +23,10 @@ export const FieldList = memo(
     const db = usePGlite()
     const res = useLiveIncrementalQuery(
       `
-      SELECT name FROM fields 
+      SELECT name 
+      FROM fields 
       WHERE project_id = $1 AND table_name = $2 
-      ORDER BY table_name, sort_index, label`,
+      ORDER BY table_name, label`,
       [project_id, fieldsTable],
       'field_id',
     )

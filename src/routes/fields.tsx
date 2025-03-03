@@ -24,7 +24,7 @@ export const Component = memo(() => {
   const res = useLiveIncrementalQuery(
     `SELECT field_id, label FROM fields WHERE project_id ${
       project_id ? `= '${project_id}'` : 'IS NULL'
-    }${isFiltered ? ` AND(${filter})` : ''} order by sort_index ASC, label ASC`,
+    }${isFiltered ? ` AND(${filter})` : ''} order by table_name, name, level`,
     undefined,
     'field_id',
   )

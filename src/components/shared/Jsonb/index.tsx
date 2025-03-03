@@ -53,7 +53,7 @@ export const Jsonb = memo(
         INNER JOIN field_types USING (field_type_id)
         INNER JOIN widget_types USING (widget_type_id)
         LEFT JOIN unnest(
-            ARRAY(SELECT sorted_field_ids FROM field_sorts WHERE table_name = fields.table_name)
+            ARRAY(SELECT sorted_field_ids FROM field_sorts WHERE table_name = fields.table_name and project_id = fields.project_id)
           ) WITH ORDINALITY t(field_id, ord) USING (field_id)
       WHERE 
         fields.table_name = $1 
