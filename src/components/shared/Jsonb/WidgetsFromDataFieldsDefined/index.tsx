@@ -1,18 +1,18 @@
-import { memo, useState, useCallback, useEffect } from 'react'
+import { memo, useState, useCallback, useEffect, useMemo } from 'react'
 import { monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
-import {
-  type Edge,
-  extractClosestEdge,
-} from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
+import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
 import { reorder } from '@atlaskit/pragmatic-drag-and-drop/reorder'
 import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index'
+import { usePGlite } from '@electric-sql/pglite-react'
 
 import { Field } from './Field.tsx'
 import { DragAndDropContext } from './DragAndDropContext.ts'
 import {
   getItemRegistry,
   ReorderItemProps,
+  isItemData,
 } from '../../../shared/DragAndDrop/index.tsx'
+import { setNewSortIndexes } from './setNewSortIndexes.ts'
 
 // TODO: Uncaught (in promise) error: invalid input syntax for type uuid: ""
 export const WidgetsFromDataFieldsDefined = memo(
@@ -26,10 +26,11 @@ export const WidgetsFromDataFieldsDefined = memo(
     autoFocus,
     ref,
   }) => {
+    const db = usePGlite()
     // TODO: drag and drop to order
     // only if editing
     // not if editingField
-
+    const fieldIds = fields.map((field) => field.field_id)
     const [registry] = useState(getItemRegistry)
 
     // Isolated instances of this component from one another
@@ -53,15 +54,21 @@ export const WidgetsFromDataFieldsDefined = memo(
           return
         }
 
-        // const newLayerSorting = reorder({
-        //   list: layerPresentationIds,
-        //   startIndex,
-        //   finishIndex,
-        // })
-        // setMapLayerSorting(newLayerSorting)
-        // TODO: set all sort_index'es in the involved fields
+        const newSorting = reorder({
+          list: fieldIds,
+          startIndex,
+          finishIndex,
+        })
+        console.log('WidgetsFromDataFieldsDefined.reorderItem', {
+          fieldIds,
+          startIndex,
+          finishIndex,
+          newSorting,
+        })
+        // external function to prevent re-render from stopping the updates
+        setNewSortIndexes({ newSorting, db })
       },
-      [],
+      [db, fieldIds],
     )
 
     useEffect(() => {
