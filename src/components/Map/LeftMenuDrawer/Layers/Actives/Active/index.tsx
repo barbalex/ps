@@ -29,7 +29,7 @@ import { Content } from './Content.tsx'
 
 import './active.css'
 
-function useListContext() {
+function useDragAndDropContext() {
   const dragAndDropContext = useContext(DragAndDropContext)
   invariant(dragAndDropContext !== null)
 
@@ -53,7 +53,7 @@ const previewStyle = {
 
 export const ActiveLayer = memo(
   ({ layer, index, isLast, isOpen, layerCount }) => {
-    const { registerItem, instanceId } = useListContext()
+    const { registerItem, instanceId } = useDragAndDropContext()
     const [closestEdge, setClosestEdge] = useState<Edge | null>(null)
     const elementRef = useRef<HTMLDivElement>(null)
     const dragHandleRef = useRef<HTMLDivElement>(null)
