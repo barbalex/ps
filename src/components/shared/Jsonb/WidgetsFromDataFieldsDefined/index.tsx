@@ -8,6 +8,7 @@ import { reorder } from '@atlaskit/pragmatic-drag-and-drop/reorder'
 import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index'
 
 import { Field } from './Field.tsx'
+import { DragAndDropContext } from './DragAndDropContext.ts'
 
 // TODO: Uncaught (in promise) error: invalid input syntax for type uuid: ""
 export const WidgetsFromDataFieldsDefined = memo(

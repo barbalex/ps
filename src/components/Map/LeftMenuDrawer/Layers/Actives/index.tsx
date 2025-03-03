@@ -2,10 +2,7 @@ import { memo, useEffect, useMemo, useState, useCallback } from 'react'
 import { useParams } from 'react-router-dom'
 import { Accordion } from '@fluentui/react-components'
 import { monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
-import {
-  type Edge,
-  extractClosestEdge,
-} from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
+import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
 import { reorder } from '@atlaskit/pragmatic-drag-and-drop/reorder'
 import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index'
 import { useAtom, atom } from 'jotai'
@@ -17,36 +14,14 @@ import { isItemData } from './shared.ts'
 import { mapLayerSortingAtom } from '../../../../../store.ts'
 import { titleStyle } from '../styles.ts'
 import { DragAndDropContext } from './DragAndDropContext.ts'
+import {
+  getItemRegistry,
+  ReorderItemProps,
+} from '../../../../shared/DragAndDrop/index.tsx'
 
 // what accordion items are open
 // needs to be controlled to prevent opening when layer is deactivated
 const openItemsAtom = atom([])
-
-type ItemEntry = { itemId: string; element: HTMLElement }
-
-function getItemRegistry() {
-  const registry = new Map<string, HTMLElement>()
-
-  function register({ itemId, element }: ItemEntry) {
-    registry.set(itemId, element)
-
-    return function unregister() {
-      registry.delete(itemId)
-    }
-  }
-
-  function getElement(itemId: string): HTMLElement | null {
-    return registry.get(itemId) ?? null
-  }
-
-  return { register, getElement }
-}
-
-type ReorderItemProps = {
-  startIndex: number
-  indexOfTarget: number
-  closestEdgeOfTarget: Edge | null
-}
 
 const layerListStyle = {
   display: 'flex',
