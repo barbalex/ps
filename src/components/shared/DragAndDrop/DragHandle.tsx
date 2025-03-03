@@ -13,15 +13,13 @@ const dragIndicatorStyle = {
 }
 
 // receives drag handle ref
-export const DragHandle = memo(({ ref }) => {
-  return (
-    <div
-      ref={ref}
-      style={dragHandleStyle}
-      onClick={(e) => e.preventDefault()}
-      title="drag to reorder"
-    >
-      <MdDragIndicator style={dragIndicatorStyle} />
-    </div>
-  )
-})
+export const DragHandle = memo(({ ref }) => (
+  <div
+    ref={ref}
+    style={dragHandleStyle}
+    onClick={(e) => e.preventDefault()}
+    title="drag to reorder"
+  >
+    <MdDragIndicator style={dragIndicatorStyle} />
+  </div>
+))
