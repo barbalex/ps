@@ -1,8 +1,10 @@
 import { memo } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import { useAtom } from 'jotai'
 
 import { FieldFormInForm } from '../../FieldFormInForm.tsx'
 import { WidgetDragAndDrop } from './Widget/index.tsx'
+import { designingAtom } from '../../../../store.ts'
 
 // this component decides whether to show the form or the widget
 export const Field = memo(
@@ -20,6 +22,7 @@ export const Field = memo(
   }) => {
     const [searchParams] = useSearchParams()
     const editingField = searchParams.get('editingField')
+    const [designing] = useAtom(designingAtom)
 
     if (editingField === field.field_id) {
       return (
@@ -44,7 +47,7 @@ export const Field = memo(
         id={id}
         autoFocus={autoFocus && index === 0}
         ref={ref}
-        enableDragAndDrop={!editingField}
+        enableDragAndDrop={!editingField && designing}
       />
     )
   },
