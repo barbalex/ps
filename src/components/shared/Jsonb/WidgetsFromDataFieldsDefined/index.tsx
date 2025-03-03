@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, useState } from 'react'
 import { monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
 import {
   type Edge,
@@ -9,6 +9,10 @@ import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hi
 
 import { Field } from './Field.tsx'
 import { DragAndDropContext } from './DragAndDropContext.ts'
+import {
+  getItemRegistry,
+  ReorderItemProps,
+} from '../../../shared/DragAndDrop/index.tsx'
 
 // TODO: Uncaught (in promise) error: invalid input syntax for type uuid: ""
 export const WidgetsFromDataFieldsDefined = memo(
@@ -25,6 +29,12 @@ export const WidgetsFromDataFieldsDefined = memo(
     // TODO: drag and drop to order
     // only if editing
     // not if editingField
+
+    const [registry] = useState(getItemRegistry)
+
+    // Isolated instances of this component from one another
+    const [instanceId] = useState(() => Symbol('instance-id'))
+
     return fields.map((field, index) => (
       <Field
         key={field.field_id}
