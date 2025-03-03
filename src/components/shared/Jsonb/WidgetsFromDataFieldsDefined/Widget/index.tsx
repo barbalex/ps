@@ -3,6 +3,7 @@ import { memo } from 'react'
 import { Widget } from './Widget.tsx'
 
 // this component focuses on drag and drop
+// D&D is only enabled when no field is being edited
 export const WidgetDragAndDrop = memo(
   ({
     field,
@@ -13,6 +14,7 @@ export const WidgetDragAndDrop = memo(
     idField,
     autoFocus,
     ref,
+    enableDragAndDrop,
   }) => {
     // TODO: drag and drop to order
     // only if editing

@@ -4,6 +4,7 @@ import { useSearchParams } from 'react-router-dom'
 import { FieldFormInForm } from '../../FieldFormInForm.tsx'
 import { WidgetDragAndDrop } from './Widget/index.tsx'
 
+// this component decides whether to show the form or the widget
 export const Field = memo(
   ({
     field,
@@ -19,9 +20,6 @@ export const Field = memo(
     const [searchParams] = useSearchParams()
     const editingField = searchParams.get('editingField')
 
-    // TODO: drag and drop to order
-    // only if editing
-    // not if editingField
     if (editingField === field.field_id) {
       return (
         <FieldFormInForm
@@ -43,6 +41,7 @@ export const Field = memo(
         id={id}
         autoFocus={autoFocus && index === 0}
         ref={ref}
+        enableDragAndDrop={!!editingField}
       />
     )
   },
