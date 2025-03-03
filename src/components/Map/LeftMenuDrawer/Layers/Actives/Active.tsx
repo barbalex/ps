@@ -24,7 +24,7 @@ import {
   SelectTabData,
 } from '@fluentui/react-components'
 import { BsCheckSquareFill } from 'react-icons/bs'
-import { MdDragIndicator, MdDeleteOutline } from 'react-icons/md'
+import { MdDeleteOutline } from 'react-icons/md'
 import { DropIndicator } from '@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/box'
 import { pointerOutsideOfPreview } from '@atlaskit/pragmatic-drag-and-drop/element/pointer-outside-of-preview'
 import { setCustomNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview'
@@ -95,16 +95,6 @@ const previewStyle = {
   padding: '0.5rem',
   backgroundColor: 'white',
   borderRadius: '0.25rem',
-}
-const dragHandleStyle = {
-  display: 'flex',
-  alignItems: 'center',
-}
-const dragIndicatorStyle = {
-  fontSize: 'x-large',
-  color: 'rgba(55, 118, 28, 0.6)',
-  paddingRight: 5,
-  cursor: 'grab',
 }
 
 export const ActiveLayer = memo(
