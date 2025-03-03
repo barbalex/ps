@@ -18,6 +18,7 @@ export const CheckboxField = memo(
     size = 'large',
     indeterminate = false,
     button,
+    ref,
   }) => {
     const onChange = useCallback(
       (e, { checked }) => {
@@ -49,6 +50,7 @@ export const CheckboxField = memo(
           checked={checked}
           onChange={onChange}
           autoFocus={autoFocus}
+          ref={ref}
           size={size}
         />
         {button ? button : null}

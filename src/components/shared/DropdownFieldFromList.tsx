@@ -31,6 +31,8 @@ export const DropdownFieldFromList = memo(
     list_id,
     value,
     onChange,
+    autoFocus,
+    ref,
     validationMessage,
     validationState,
     button,
@@ -65,6 +67,8 @@ export const DropdownFieldFromList = memo(
             }
             appearance="underline"
             style={ddStyle}
+            autoFocus={autoFocus}
+            ref={ref}
             clearable
           >
             {options.map((option) => {

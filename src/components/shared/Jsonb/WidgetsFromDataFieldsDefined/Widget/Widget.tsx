@@ -118,6 +118,7 @@ export const Widget = memo(
             value={value}
             onChange={onChange}
             autoFocus={autoFocus}
+            ref={ref}
             button={<EditField field_id={field.field_id} />}
           />
         )
@@ -129,6 +130,7 @@ export const Widget = memo(
             value={value}
             onChange={onChange}
             autoFocus={autoFocus}
+            ref={ref}
             button={<EditField field_id={field.field_id} />}
           />
         )
@@ -140,6 +142,7 @@ export const Widget = memo(
             value={value}
             onChange={onChange}
             autoFocus={autoFocus}
+            ref={ref}
             button={<EditField field_id={field.field_id} />}
             indeterminate={true}
           />
@@ -153,6 +156,7 @@ export const Widget = memo(
             type={type ?? 'text'}
             onChange={onChange}
             autoFocus={autoFocus}
+            ref={ref}
             button={<EditField field_id={field.field_id} />}
           />
         )
@@ -176,6 +180,7 @@ export const Widget = memo(
             value={value}
             onChange={onChange}
             autoFocus={autoFocus}
+            ref={ref}
             button={<EditField field_id={field.field_id} />}
           />
         )
@@ -188,6 +193,7 @@ export const Widget = memo(
             value={value}
             onChange={onChange}
             autoFocus={autoFocus}
+            ref={ref}
             button={<EditField field_id={field.field_id} />}
           />
         )
@@ -200,6 +206,7 @@ export const Widget = memo(
             value={value ? new Date(value) : null}
             onChange={onChange}
             autoFocus={autoFocus}
+            ref={ref}
             button={<EditField field_id={field.field_id} />}
           />
         )
@@ -211,6 +218,7 @@ export const Widget = memo(
             value={value}
             onChange={onChange}
             autoFocus={autoFocus}
+            ref={ref}
             button={<EditField field_id={field.field_id} />}
           />
         )
@@ -222,6 +230,7 @@ export const Widget = memo(
             value={value ? new Date(value) : null}
             onChange={onChange}
             autoFocus={autoFocus}
+            ref={ref}
             button={<EditField field_id={field.field_id} />}
           />
         )

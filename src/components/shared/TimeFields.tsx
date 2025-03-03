@@ -10,7 +10,7 @@ const rowStyle = {
 }
 
 export const TimeFields = memo(
-  ({ label, name, value = '', autoFocus, onChange, button }) => {
+  ({ label, name, value = '', autoFocus, ref, onChange, button }) => {
     const valArray = (value ?? '').split(':')
     const [hours, setHours] = useState(valArray[0] ?? '')
     const [minutes, setMinutes] = useState(valArray[1] ?? '')
@@ -64,6 +64,7 @@ export const TimeFields = memo(
                 onChange={onChangeHours}
                 appearance="underline"
                 autoFocus={autoFocus}
+                ref={ref}
               />
             </Field>
             <Field
@@ -78,7 +79,6 @@ export const TimeFields = memo(
                 max={59}
                 onChange={onChangeMinutes}
                 appearance="underline"
-                autoFocus={autoFocus}
               />
             </Field>
           </div>

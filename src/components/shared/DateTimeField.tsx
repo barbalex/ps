@@ -11,7 +11,7 @@ const rowStyle = {
 }
 
 export const DateTimeField = memo(
-  ({ label, name, value = '', autoFocus, onChange, button }) => {
+  ({ label, name, value = '', autoFocus, ref, onChange, button }) => {
     const [years, setYears] = useState(value?.getFullYear?.() ?? '')
     const [months, setMonths] = useState(value?.getMonth?.() ?? '')
     const [days, setDays] = useState(value?.getDate?.() ?? '')
@@ -123,6 +123,7 @@ export const DateTimeField = memo(
                 allowTextInput
                 formatDate={(date) => date?.toLocaleDateString?.('de-CH') ?? ''}
                 autoFocus={autoFocus}
+                ref={ref}
                 appearance="underline"
               />
             </Field>
@@ -138,7 +139,6 @@ export const DateTimeField = memo(
                 max={23}
                 onChange={onChangeHours}
                 appearance="underline"
-                autoFocus={autoFocus}
               />
             </Field>
             <Field
@@ -153,7 +153,6 @@ export const DateTimeField = memo(
                 max={59}
                 onChange={onChangeMinutes}
                 appearance="underline"
-                autoFocus={autoFocus}
               />
             </Field>
           </div>

@@ -18,6 +18,8 @@ export const RadioGroupFromList = memo(
     onChange: onChangePassed,
     validationMessage,
     validationState,
+    autoFocus,
+    ref,
     button,
   }) => {
     const res = useLiveIncrementalQuery(
@@ -51,6 +53,8 @@ export const RadioGroupFromList = memo(
             name={name}
             value={rowValue}
             appearance="underline"
+            autoFocus={autoFocus}
+            ref={ref}
           >
             {listValues.map(({ value: listValue }) => {
               return (

@@ -22,6 +22,7 @@ export const DateField = memo(
     validationMessage,
     validationState,
     autoFocus,
+    ref,
     button,
   }) => {
     // console.log('DateField', { value, label, name })
@@ -45,6 +46,7 @@ export const DateField = memo(
               !date ? '' : date.toLocaleDateString('de-CH')
             }
             autoFocus={autoFocus}
+            ref={ref}
             appearance="underline"
             style={dfStyle}
           />

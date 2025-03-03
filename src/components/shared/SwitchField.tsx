@@ -19,6 +19,7 @@ export const SwitchField = memo(
     validationMessage,
     validationState = 'none',
     button,
+    ref,
   }) => (
     <div style={containerStyle}>
       <Field
@@ -32,6 +33,7 @@ export const SwitchField = memo(
           checked={value}
           onChange={onChange}
           autoFocus={autoFocus}
+          ref={ref}
           disabled={disabled}
         />
       </Field>
