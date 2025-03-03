@@ -1,4 +1,4 @@
-import { memo, useState } from 'react'
+import { memo, useState, useCallback } from 'react'
 import { monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
 import {
   type Edge,
@@ -34,6 +34,35 @@ export const WidgetsFromDataFieldsDefined = memo(
 
     // Isolated instances of this component from one another
     const [instanceId] = useState(() => Symbol('instance-id'))
+    
+      const reorderItem = useCallback(
+        async ({
+          startIndex,
+          indexOfTarget,
+          closestEdgeOfTarget,
+        }: ReorderItemProps) => {
+          const finishIndex = getReorderDestinationIndex({
+            startIndex,
+            closestEdgeOfTarget,
+            indexOfTarget,
+            axis: 'vertical',
+          })
+    
+          if (finishIndex === startIndex) {
+            // If there would be no change, we skip the update
+            return
+          }
+    
+          // const newLayerSorting = reorder({
+          //   list: layerPresentationIds,
+          //   startIndex,
+          //   finishIndex,
+          // })
+          // setMapLayerSorting(newLayerSorting)
+          // TODO: set all sort_index'es in the involved fields
+        },
+        [],
+      )
 
     return fields.map((field, index) => (
       <Field

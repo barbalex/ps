@@ -10,13 +10,13 @@ import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { ActiveLayer } from './Active/index.tsx'
-import { isItemData } from './shared.ts'
 import { mapLayerSortingAtom } from '../../../../../store.ts'
 import { titleStyle } from '../styles.ts'
 import { DragAndDropContext } from './DragAndDropContext.ts'
 import {
   getItemRegistry,
   ReorderItemProps,
+  isItemData,
 } from '../../../../shared/DragAndDrop/index.tsx'
 
 // what accordion items are open

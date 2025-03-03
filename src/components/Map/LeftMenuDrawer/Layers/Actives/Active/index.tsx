@@ -18,11 +18,12 @@ import invariant from 'tiny-invariant'
 
 import { ErrorBoundary } from '../../../../../shared/ErrorBoundary.tsx'
 import { DragAndDropContext } from '../DragAndDropContext.ts'
-import { itemKey, isItemData } from '../shared.ts'
 import {
   idleState,
   draggingState,
   DraggableState,
+  itemKey,
+  isItemData,
 } from '../../../../../shared/DragAndDrop/index.tsx'
 import { Content } from './Content.tsx'
 

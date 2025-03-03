@@ -33,3 +33,9 @@ export type DraggableState =
 
 export const idleState: DraggableState = { type: 'idle' }
 export const draggingState: DraggableState = { type: 'dragging' }
+
+export const itemKey = Symbol('item')
+
+export function isItemData(data: Record<string | symbol, unknown>) {
+  return data[itemKey] === true
+}
