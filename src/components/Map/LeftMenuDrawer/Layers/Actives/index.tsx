@@ -93,7 +93,8 @@ export const ActiveLayers = memo(() => {
     SELECT 
       wms_layers.*, 
       layer_presentations.layer_presentation_id,
-      layer_presentations.active as layer_presentation_active
+      layer_presentations.active as layer_presentation_active,
+      'wms' as layer_type
     FROM wms_layers
       INNER JOIN layer_presentations 
         ON wms_layers.wms_layer_id = layer_presentations.wms_layer_id 
@@ -112,7 +113,8 @@ export const ActiveLayers = memo(() => {
     SELECT 
       vector_layers.*,
       layer_presentations.layer_presentation_id,
-      layer_presentations.active as layer_presentation_active
+      layer_presentations.active as layer_presentation_active,
+      'vector' as layer_type
     FROM vector_layers 
       INNER JOIN layer_presentations 
         ON vector_layers.vector_layer_id = layer_presentations.vector_layer_id 
@@ -125,6 +127,11 @@ export const ActiveLayers = memo(() => {
     () => resVectorLayers?.rows ?? [],
     [resVectorLayers],
   )
+
+  // union queries?
+  // + faster querying
+  // + less renders
+  // - need to handle different columns
 
   // sort by mapLayerSorting
   const activeLayers = useMemo(

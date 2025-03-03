@@ -118,7 +118,8 @@ export const ActiveLayer = memo(
     const db = usePGlite()
     const [tab, setTab] = useState<TabType>('overall-displays')
 
-    const isVectorLayer = 'vector_layer_id' in layer
+    const isVectorLayer = layer.layer_type === 'vector'
+    const isWmsLayer = layer.layer_type === 'wms'
 
     // effect:
     // if layer is wms and has no wms_service_id or wms_service_layer_name: set tab to 'config'
@@ -127,13 +128,14 @@ export const ActiveLayer = memo(
       if (
         (isVectorLayer &&
           (!layer.wfs_service_id || !layer.wfs_service_layer_name)) ||
-        (!isVectorLayer &&
-          (!layer.wms_service_id || !layer.wms_service_layer_name))
+        (isWmsLayer && (!layer.wms_service_id || !layer.wms_service_layer_name))
       ) {
         setTab('config')
       }
     }, [
       isVectorLayer,
+      isWmsLayer,
+      layer.layer_type,
       layer.wfs_service_id,
       layer.wfs_service_layer_name,
       layer.wms_service_id,
