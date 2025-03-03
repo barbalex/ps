@@ -91,7 +91,6 @@ export const Widget = memo(
     const value = data?.[name] ?? ''
     const label = field.field_label ? field.field_label : field.name
     const type = field.field_type === 'integer' ? 'number' : field.field_type
-    console.log('Widget, type:', type)
 
     // TODO: drag and drop to order
     // only if editing
