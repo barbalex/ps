@@ -306,14 +306,16 @@ export const ActiveLayer = memo(
                 : {}
             }
           >
-            <div
-              ref={dragHandleRef}
-              style={dragHandleStyle}
-              onClick={(e) => e.preventDefault()}
-              title="drag to reorder"
-            >
-              {canDrag && <MdDragIndicator style={dragIndicatorStyle} />}
-            </div>
+            {canDrag && (
+              <div
+                ref={dragHandleRef}
+                style={dragHandleStyle}
+                onClick={(e) => e.preventDefault()}
+                title="drag to reorder"
+              >
+                <MdDragIndicator style={dragIndicatorStyle} />
+              </div>
+            )}
             <div style={headerContainerStyle}>
               <ToggleButton
                 icon={
