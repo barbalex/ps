@@ -64,8 +64,6 @@ export const Jsonb = memo(
     const result = useLiveIncrementalQuery(sql, params, 'field_id')
     const fields = result?.rows ?? []
 
-    console.log('Jsonb', { table, fields, sortedFieldIds })
-
     const onChange = useCallback<InputProps['onChange']>(
       async (e, dataReturned) => {
         const { name, value } = getValueFromChange(e, dataReturned)

@@ -2,6 +2,8 @@ import { memo, useCallback } from 'react'
 import { Field, RadioGroup, Radio } from '@fluentui/react-components'
 import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
+import { Loading } from './Loading.tsx'
+
 const rowStyle = {
   display: 'flex',
   alignItems: 'center',
@@ -56,16 +58,22 @@ export const RadioGroupFromList = memo(
             autoFocus={autoFocus}
             ref={ref}
           >
-            {listValues.map(({ value: listValue }) => {
-              return (
-                <Radio
-                  key={listValue}
-                  label={listValue}
-                  value={listValue}
-                  onClick={onClick}
-                />
-              )
-            })}
+            {res === undefined ? (
+              <Loading />
+            ) : (
+              <>
+                {listValues.map(({ value: listValue }) => {
+                  return (
+                    <Radio
+                      key={listValue}
+                      label={listValue}
+                      value={listValue}
+                      onClick={onClick}
+                    />
+                  )
+                })}
+              </>
+            )}
           </RadioGroup>
           {!!button && button}
         </div>

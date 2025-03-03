@@ -9,11 +9,15 @@ const rowStyle = {
   columnGap: '10px',
   userSelect: 'none',
 }
+const fieldStyle = {
+  width: '100%',
+}
 
 export const TextField = memo(
   ({
     label,
     name,
+    type = 'text',
     onChange: onChangeIn,
     hint,
     validationMessage,
@@ -51,11 +55,13 @@ export const TextField = memo(
         validationMessage={validationMessage}
         validationState={validationState}
         hint={hint}
+        style={fieldStyle}
       >
         <div style={rowStyle}>
           <Input
             name={name}
             value={stateValue}
+            type={type}
             placeholder={placeholder}
             appearance="underline"
             autoFocus={autoFocus}

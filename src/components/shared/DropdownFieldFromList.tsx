@@ -12,6 +12,9 @@ const rowStyle = {
 const ddStyle = {
   flexGrow: 1,
 }
+const fieldStyle = {
+  width: '100%',
+}
 
 interface Props {
   name: string
@@ -56,6 +59,7 @@ export const DropdownFieldFromList = memo(
         label={label ?? '(no label provided)'}
         validationMessage={validationMessage}
         validationState={validationState}
+        style={fieldStyle}
       >
         <div style={rowStyle}>
           <Dropdown

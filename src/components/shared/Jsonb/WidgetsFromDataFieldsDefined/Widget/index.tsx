@@ -27,6 +27,8 @@ import {
 } from '../../../../shared/DragAndDrop/index.tsx'
 import { DragHandle } from '../../../../shared/DragAndDrop/DragHandle.tsx'
 
+import './widget.css'
+
 function useDragAndDropContext() {
   const dragAndDropContext = useContext(DragAndDropContext)
   invariant(dragAndDropContext !== null)
@@ -53,7 +55,11 @@ const containerStyle = {
   display: 'flex',
   flexDirection: 'row',
   alignItems: 'center',
-  border: '1px solid #ccc',
+  // needed for the drop indicator to appear
+  position: 'relative',
+  // correct for 15px gap between items
+  margin: '-7.5px 0px',
+  padding: '7.5px 0',
 }
 
 // this component focuses on drag and drop
@@ -169,17 +175,18 @@ export const WidgetDragAndDrop = memo(
       )
     }, [index, instanceId, field, fieldsCount, registerItem, enableDragAndDrop])
 
-    const canDrag = fieldsCount > 1 && enableDragAndDrop
-
-    // TODO: drag and drop to order
-    // only if editing
+    // drag and drop to order
+    // only if designing
     // not if editingField
+    const canDrag = fieldsCount > 1 && enableDragAndDrop
 
     return (
       <>
         <div
+          value={field.field_id}
           ref={elementRef}
           style={containerStyle}
+          className="widget-drag-and-drop"
         >
           {canDrag && <DragHandle ref={dragHandleRef} />}
           <Widget

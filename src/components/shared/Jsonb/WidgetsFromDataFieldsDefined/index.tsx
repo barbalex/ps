@@ -60,24 +60,21 @@ export const WidgetsFromDataFieldsDefined = memo(
           startIndex,
           finishIndex,
         })
-        console.log('WidgetsFromDataFieldsDefined.reorderItem', {
-          fieldIds,
-          startIndex,
-          finishIndex,
-          newSorting,
-        })
         try {
           db.query(
-            `INSERT INTO field_sorts (project_id, table_name, sorted_field_ids) 
-          VALUES ($1, $2, $3) 
-          ON CONFLICT (project_id, table_name) DO UPDATE SET project_id = $1, table_name = $2, sorted_field_ids = $3`,
+            `
+            INSERT INTO field_sorts (project_id, table_name, sorted_field_ids) 
+            VALUES ($1, $2, $3) 
+            ON CONFLICT (project_id, table_name) DO UPDATE 
+              SET 
+                project_id = $1, 
+                table_name = $2, 
+                sorted_field_ids = $3`,
             [project_id, table, newSorting],
           )
         } catch (error) {
           console.error('WidgetsFromDataFieldsDefined.reorderItem', error)
         }
-        // external function to prevent re-render from stopping the updates
-        // setNewSortIndexes({ newSorting, db })
       },
       [db, fieldIds, project_id, table],
     )
