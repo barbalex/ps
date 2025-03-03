@@ -101,19 +101,34 @@ export const WidgetsFromDataFieldsDefined = memo(
       })
     }, [fields, instanceId, reorderItem])
 
-    return fields.map((field, index) => (
-      <Field
-        key={field.field_id}
-        field={field}
-        index={index}
-        data={data}
-        table={table}
-        jsonFieldName={jsonFieldName}
-        idField={idField}
-        id={id}
-        autoFocus={autoFocus}
-        ref={ref}
-      />
-    ))
+    const getListLength = useCallback(() => fields.length, [fields.length])
+
+    const dragAndDropContextValue = useMemo(() => {
+      return {
+        registerItem: registry.register,
+        reorderItem,
+        instanceId,
+        getListLength,
+      }
+    }, [registry.register, reorderItem, instanceId, getListLength])
+
+    return (
+      <DragAndDropContext.Provider value={dragAndDropContextValue}>
+        {fields.map((field, index) => (
+          <Field
+            key={field.field_id}
+            field={field}
+            index={index}
+            data={data}
+            table={table}
+            jsonFieldName={jsonFieldName}
+            idField={idField}
+            id={id}
+            autoFocus={autoFocus}
+            ref={ref}
+          />
+        ))}
+      </DragAndDropContext.Provider>
+    )
   },
 )
