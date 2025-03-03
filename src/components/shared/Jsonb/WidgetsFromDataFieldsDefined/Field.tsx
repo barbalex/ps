@@ -2,7 +2,7 @@ import { memo } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
 import { FieldFormInForm } from '../../FieldFormInForm.tsx'
-import { Widget } from './Widget.tsx'
+import { WidgetDragAndDrop } from './Widget/index.tsx'
 
 export const Field = memo(
   ({
@@ -32,11 +32,10 @@ export const Field = memo(
     }
 
     return (
-      <Widget
+      <WidgetDragAndDrop
         key={`${field.name}/${index}`}
         name={field.name}
         field={field}
-        index={index}
         data={data}
         table={table}
         jsonFieldName={jsonFieldName}

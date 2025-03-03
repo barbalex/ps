@@ -2,23 +2,24 @@ import { memo, useCallback } from 'react'
 import { useLocation, useParams } from 'react-router-dom'
 import { usePGlite } from '@electric-sql/pglite-react'
 
-import { TextField } from '../../TextField.tsx'
-import { CheckboxField } from '../../CheckboxField.tsx'
-import { SwitchField } from '../../SwitchField.tsx'
-import { TextArea } from '../../TextArea.tsx'
-import { DropdownField } from '../../DropdownField.tsx'
-import { DropdownFieldFromList } from '../../DropdownFieldFromList.tsx'
-import { RadioGroupFromList } from '../../RadioGroupFromList.tsx'
-import { DateField } from '../../DateField.tsx'
-import { TimeFields } from '../../TimeFields.tsx'
-import { DateTimeField } from '../../DateTimeField.tsx'
-import { EditField } from './EditField.tsx'
-import { getValueFromChange } from '../../../../modules/getValueFromChange.ts'
+import { TextField } from '../../../TextField.tsx'
+import { CheckboxField } from '../../../CheckboxField.tsx'
+import { SwitchField } from '../../../SwitchField.tsx'
+import { TextArea } from '../../../TextArea.tsx'
+import { DropdownField } from '../../../DropdownField.tsx'
+import { DropdownFieldFromList } from '../../../DropdownFieldFromList.tsx'
+import { RadioGroupFromList } from '../../../RadioGroupFromList.tsx'
+import { DateField } from '../../../DateField.tsx'
+import { TimeFields } from '../../../TimeFields.tsx'
+import { DateTimeField } from '../../../DateTimeField.tsx'
+import { EditField } from '../EditField.tsx'
+import { getValueFromChange } from '../../../../../modules/getValueFromChange.ts'
+
+// this component focuses on creating the widgets
 export const Widget = memo(
   ({
     name,
     field,
-    index,
     data = {},
     table,
     jsonFieldName,
@@ -99,13 +100,12 @@ export const Widget = memo(
       case 'text':
         return (
           <TextField
-            key={`${name}/${index}`}
             label={label}
             name={name}
             value={value}
             type={type ?? 'text'}
             onChange={onChange}
-            autoFocus={autoFocus && index === 0}
+            autoFocus={autoFocus}
             ref={ref}
             button={<EditField field_id={field.field_id} />}
           />
@@ -113,36 +113,33 @@ export const Widget = memo(
       case 'jes-no':
         return (
           <SwitchField
-            key={`${name}/${index}`}
             label={label}
             name={name}
             value={value}
             onChange={onChange}
-            autoFocus={autoFocus && index === 0}
+            autoFocus={autoFocus}
             button={<EditField field_id={field.field_id} />}
           />
         )
       case 'checkbox-2':
         return (
           <CheckboxField
-            key={`${name}/${index}`}
             label={label}
             name={name}
             value={value}
             onChange={onChange}
-            autoFocus={autoFocus && index === 0}
+            autoFocus={autoFocus}
             button={<EditField field_id={field.field_id} />}
           />
         )
       case 'checkbox-3':
         return (
           <CheckboxField
-            key={`${name}/${index}`}
             label={label}
             name={name}
             value={value}
             onChange={onChange}
-            autoFocus={autoFocus && index === 0}
+            autoFocus={autoFocus}
             button={<EditField field_id={field.field_id} />}
             indeterminate={true}
           />
@@ -150,24 +147,22 @@ export const Widget = memo(
       case 'textarea':
         return (
           <TextArea
-            key={`${name}/${index}`}
             label={label}
             name={name}
             value={value}
             type={type ?? 'text'}
             onChange={onChange}
-            autoFocus={autoFocus && index === 0}
+            autoFocus={autoFocus}
             button={<EditField field_id={field.field_id} />}
           />
         )
       case 'dropdown':
         return (
           <DropdownField
-            key={`${name}/${index}`}
             name={name}
             value={value}
             onChange={onChange}
-            autoFocus={autoFocus && index === 0}
+            autoFocus={autoFocus}
             ref={ref}
             button={<EditField field_id={field.field_id} />}
           />
@@ -175,76 +170,70 @@ export const Widget = memo(
       case 'options-many':
         return (
           <DropdownFieldFromList
-            key={`${name}/${index}`}
             name={name}
             label={label}
             list_id={field.list_id}
             value={value}
             onChange={onChange}
-            autoFocus={autoFocus && index === 0}
+            autoFocus={autoFocus}
             button={<EditField field_id={field.field_id} />}
           />
         )
       case 'options-few':
         return (
           <RadioGroupFromList
-            key={`${name}/${index}`}
             name={name}
             label={label}
             list_id={field.list_id}
             value={value}
             onChange={onChange}
-            autoFocus={autoFocus && index === 0}
+            autoFocus={autoFocus}
             button={<EditField field_id={field.field_id} />}
           />
         )
       case 'datepicker':
         return (
           <DateField
-            key={`${name}/${index}`}
             label={label}
             name={name}
             // in json date is saved as iso string
             value={value ? new Date(value) : null}
             onChange={onChange}
-            autoFocus={autoFocus && index === 0}
+            autoFocus={autoFocus}
             button={<EditField field_id={field.field_id} />}
           />
         )
       case 'timepicker':
         return (
           <TimeFields
-            key={`${name}/${index}`}
             label={label}
             name={name}
             value={value}
             onChange={onChange}
-            autoFocus={autoFocus && index === 0}
+            autoFocus={autoFocus}
             button={<EditField field_id={field.field_id} />}
           />
         )
       case 'datetimepicker':
         return (
           <DateTimeField
-            key={`${name}/${index}`}
             label={label}
             name={name}
             value={value ? new Date(value) : null}
             onChange={onChange}
-            autoFocus={autoFocus && index === 0}
+            autoFocus={autoFocus}
             button={<EditField field_id={field.field_id} />}
           />
         )
       default:
         return (
           <TextField
-            key={`${name}/${index}`}
             label={label}
             name={name}
             value={value}
             type={type ?? 'text'}
             onChange={onChange}
-            autoFocus={autoFocus && index === 0}
+            autoFocus={autoFocus}
             ref={ref}
             button={<EditField field_id={field.field_id} />}
           />
