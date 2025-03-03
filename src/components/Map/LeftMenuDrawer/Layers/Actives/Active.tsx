@@ -64,6 +64,11 @@ import {
   mapDrawerVectorLayerDisplayAtom,
 } from '../../../../../store.ts'
 import { on } from '../../../../../css.ts'
+import {
+  idleState,
+  draggingState,
+  DraggableState,
+} from '../../../../shared/DragAndDrop/index.tsx'
 
 import './active.css'
 
@@ -82,14 +87,6 @@ function getItemData({ layer, index, instanceId }) {
     instanceId,
   }
 }
-
-type DraggableState =
-  | { type: 'idle' }
-  | { type: 'preview'; container: HTMLElement }
-  | { type: 'dragging' }
-
-const idleState: DraggableState = { type: 'idle' }
-const draggingState: DraggableState = { type: 'dragging' }
 
 type TabType = 'overall-displays' | 'feature-displays' | 'config'
 
