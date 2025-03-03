@@ -1315,6 +1315,30 @@ COMMENT ON COLUMN fields.level IS 'level of field if places or below: 1, 2';
 COMMENT ON COLUMN fields.sort_index IS 'Enables sorting of fields. Per table';
 
 --------------------------------------------------------------
+-- field_sorts
+--
+-- this table is used to store the sort order of fields per table_name in a table
+-- https://stackoverflow.com/a/35456954/712005
+CREATE TABLE IF NOT EXISTS field_sorts(
+  field_sort_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  table_name text DEFAULT NULL,
+  sorted_field_ids uuid[] DEFAULT NULL,
+  UNIQUE(project_id, table_name)
+);
+
+CREATE INDEX IF NOT EXISTS field_sorts_project_id_idx ON field_sorts USING btree(project_id);
+
+CREATE INDEX IF NOT EXISTS field_sorts_account_id_idx ON field_sorts USING btree(account_id);
+
+CREATE INDEX IF NOT EXISTS field_sorts_table_name_idx ON field_sorts USING btree(table_name);
+
+CREATE INDEX IF NOT EXISTS field_sorts_sorted_field_ids_idx ON field_sorts USING gin(sorted_field_ids);
+
+COMMENT ON TABLE field_sorts IS 'Stores the sort order of fields per table_name';
+
+--------------------------------------------------------------
 --occurrence_imports
 --
 create table if not exists occurrence_import_previous_operations (

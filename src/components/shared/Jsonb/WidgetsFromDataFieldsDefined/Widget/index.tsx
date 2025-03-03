@@ -53,6 +53,7 @@ const containerStyle = {
   display: 'flex',
   flexDirection: 'row',
   alignItems: 'center',
+  border: '1px solid #ccc',
 }
 
 // this component focuses on drag and drop

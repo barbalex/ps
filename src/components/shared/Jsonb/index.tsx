@@ -7,7 +7,11 @@
 import { memo, useCallback } from 'react'
 import { useParams, useLocation } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import {
+  usePGlite,
+  useLiveIncrementalQuery,
+  useLiveQuery,
+} from '@electric-sql/pglite-react'
 
 import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
 import { TextField } from '../TextField.tsx'
@@ -33,6 +37,12 @@ export const Jsonb = memo(
     const { pathname } = useLocation()
     const db = usePGlite()
 
+    const resFieldSorts = useLiveQuery(
+      `SELECT sorted_field_ids FROM field_sorts WHERE table_name = $1`,
+      [table],
+    )
+    const sortedFieldIds = resFieldSorts?.rows?.[0]?.sorted_field_ids
+
     const useProjectId = project_id && table !== 'projects'
     const sql = `
       SELECT 
@@ -42,14 +52,19 @@ export const Jsonb = memo(
       FROM fields 
         INNER JOIN field_types USING (field_type_id)
         INNER JOIN widget_types USING (widget_type_id)
+        LEFT JOIN unnest(
+            ARRAY(SELECT sorted_field_ids FROM field_sorts WHERE table_name = fields.table_name)
+          ) WITH ORDINALITY t(field_id, ord) USING (field_id)
       WHERE 
-        table_name = $1 
-        and project_id ${useProjectId ? `= '${project_id}'` : 'IS NULL'}
+        fields.table_name = $1 
+        and fields.project_id ${useProjectId ? `= '${project_id}'` : 'IS NULL'}
         ${!isAccountTable ? ` and level = $2` : ''} 
-      ORDER BY sort_index, label`
+      ORDER BY t.ord`
     const params = isAccountTable ? [table] : [table, place_id2 ? 2 : 1]
     const result = useLiveIncrementalQuery(sql, params, 'field_id')
     const fields = result?.rows ?? []
+
+    console.log('Jsonb', { table, fields, sortedFieldIds })
 
     const onChange = useCallback<InputProps['onChange']>(
       async (e, dataReturned) => {

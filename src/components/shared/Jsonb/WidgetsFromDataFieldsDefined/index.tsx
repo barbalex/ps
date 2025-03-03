@@ -4,6 +4,7 @@ import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/clo
 import { reorder } from '@atlaskit/pragmatic-drag-and-drop/reorder'
 import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useParams } from 'react-router-dom'
 
 import { Field } from './Field.tsx'
 import { DragAndDropContext } from './DragAndDropContext.ts'
@@ -12,7 +13,6 @@ import {
   ReorderItemProps,
   isItemData,
 } from '../../../shared/DragAndDrop/index.tsx'
-import { setNewSortIndexes } from './setNewSortIndexes.ts'
 
 // TODO: Uncaught (in promise) error: invalid input syntax for type uuid: ""
 export const WidgetsFromDataFieldsDefined = memo(
@@ -27,6 +27,7 @@ export const WidgetsFromDataFieldsDefined = memo(
     ref,
   }) => {
     const db = usePGlite()
+    const { project_id } = useParams()
     // TODO: drag and drop to order
     // only if editing
     // not if editingField
@@ -65,10 +66,20 @@ export const WidgetsFromDataFieldsDefined = memo(
           finishIndex,
           newSorting,
         })
+        try {
+          db.query(
+            `INSERT INTO field_sorts (project_id, table_name, sorted_field_ids) 
+          VALUES ($1, $2, $3) 
+          ON CONFLICT (project_id, table_name) DO UPDATE SET project_id = $1, table_name = $2, sorted_field_ids = $3`,
+            [project_id, table, newSorting],
+          )
+        } catch (error) {
+          console.error('WidgetsFromDataFieldsDefined.reorderItem', error)
+        }
         // external function to prevent re-render from stopping the updates
-        setNewSortIndexes({ newSorting, db })
+        // setNewSortIndexes({ newSorting, db })
       },
-      [db, fieldIds],
+      [db, fieldIds, project_id, table],
     )
 
     useEffect(() => {
