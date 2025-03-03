@@ -69,6 +69,7 @@ import {
   draggingState,
   DraggableState,
 } from '../../../../shared/DragAndDrop/index.tsx'
+import { DragHandle } from '../../../../shared/DragAndDrop/DragHandle.tsx'
 
 import './active.css'
 
@@ -306,16 +307,7 @@ export const ActiveLayer = memo(
                 : {}
             }
           >
-            {canDrag && (
-              <div
-                ref={dragHandleRef}
-                style={dragHandleStyle}
-                onClick={(e) => e.preventDefault()}
-                title="drag to reorder"
-              >
-                <MdDragIndicator style={dragIndicatorStyle} />
-              </div>
-            )}
+            {canDrag && <DragHandle ref={dragHandleRef} />}
             <div style={headerContainerStyle}>
               <ToggleButton
                 icon={
