@@ -48,18 +48,6 @@ type ReorderItemProps = {
   closestEdgeOfTarget: Edge | null
 }
 
-type CleanupFn = () => void
-type DragAndDropContextValue = {
-  getListLength: () => number
-  registerItem: (entry: ItemEntry) => CleanupFn
-  reorderItem: (args: {
-    startIndex: number
-    indexOfTarget: number
-    closestEdgeOfTarget: Edge | null
-  }) => void
-  instanceId: symbol
-}
-
 const layerListStyle = {
   display: 'flex',
   flexDirection: 'column',
@@ -252,7 +240,7 @@ export const ActiveLayers = memo(() => {
     [activeLayers.length],
   )
 
-  const dragAndDropContextValue: DragAndDropContextValue = useMemo(() => {
+  const dragAndDropContextValue = useMemo(() => {
     return {
       registerItem: registry.register,
       reorderItem,
