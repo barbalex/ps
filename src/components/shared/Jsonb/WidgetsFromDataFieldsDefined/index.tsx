@@ -1,4 +1,4 @@
-import { memo, useState, useCallback } from 'react'
+import { memo, useState, useCallback, useEffect } from 'react'
 import { monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
 import {
   type Edge,
@@ -34,35 +34,72 @@ export const WidgetsFromDataFieldsDefined = memo(
 
     // Isolated instances of this component from one another
     const [instanceId] = useState(() => Symbol('instance-id'))
-    
-      const reorderItem = useCallback(
-        async ({
+
+    const reorderItem = useCallback(
+      async ({
+        startIndex,
+        indexOfTarget,
+        closestEdgeOfTarget,
+      }: ReorderItemProps) => {
+        const finishIndex = getReorderDestinationIndex({
           startIndex,
-          indexOfTarget,
           closestEdgeOfTarget,
-        }: ReorderItemProps) => {
-          const finishIndex = getReorderDestinationIndex({
-            startIndex,
-            closestEdgeOfTarget,
-            indexOfTarget,
-            axis: 'vertical',
-          })
-    
-          if (finishIndex === startIndex) {
-            // If there would be no change, we skip the update
+          indexOfTarget,
+          axis: 'vertical',
+        })
+
+        if (finishIndex === startIndex) {
+          // If there would be no change, we skip the update
+          return
+        }
+
+        // const newLayerSorting = reorder({
+        //   list: layerPresentationIds,
+        //   startIndex,
+        //   finishIndex,
+        // })
+        // setMapLayerSorting(newLayerSorting)
+        // TODO: set all sort_index'es in the involved fields
+      },
+      [],
+    )
+
+    useEffect(() => {
+      return monitorForElements({
+        canMonitor({ source }) {
+          return (
+            isItemData(source.data) && source.data.instanceId === instanceId
+          )
+        },
+        onDrop({ location, source }) {
+          const target = location.current.dropTargets[0]
+          if (!target) {
             return
           }
-    
-          // const newLayerSorting = reorder({
-          //   list: layerPresentationIds,
-          //   startIndex,
-          //   finishIndex,
-          // })
-          // setMapLayerSorting(newLayerSorting)
-          // TODO: set all sort_index'es in the involved fields
+
+          const sourceData = source.data
+          const targetData = target.data
+          if (!isItemData(sourceData) || !isItemData(targetData)) {
+            return
+          }
+
+          const indexOfTarget = fields.findIndex(
+            (field) => field.field_id === targetData.layer.field_id,
+          )
+          if (indexOfTarget < 0) {
+            return
+          }
+
+          const closestEdgeOfTarget = extractClosestEdge(targetData)
+
+          reorderItem({
+            startIndex: sourceData.index,
+            indexOfTarget,
+            closestEdgeOfTarget,
+          })
         },
-        [],
-      )
+      })
+    }, [fields, instanceId, reorderItem])
 
     return fields.map((field, index) => (
       <Field
