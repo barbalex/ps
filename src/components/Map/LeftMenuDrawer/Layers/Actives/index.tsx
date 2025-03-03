@@ -23,6 +23,7 @@ import { ActiveLayer } from './Active.tsx'
 import { isItemData } from './shared.ts'
 import { mapLayerSortingAtom } from '../../../../../store.ts'
 import { titleStyle } from '../styles.ts'
+import {ListContext} from './ListContext.ts'
 
 // what accordion items are open
 // needs to be controlled to prevent opening when layer is deactivated
@@ -47,8 +48,6 @@ function getItemRegistry() {
 
   return { register, getElement }
 }
-
-export const ListContext = createContext<ListContextValue | null>(null)
 
 type ReorderItemProps = {
   startIndex: number

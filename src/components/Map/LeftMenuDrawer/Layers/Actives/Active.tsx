@@ -45,7 +45,7 @@ import { usePGlite } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createNotification } from '../../../../../modules/createRows.ts'
-import { ListContext } from './index.tsx'
+import { ListContext } from './ListContext.ts'
 import { itemKey, isItemData } from './shared.ts'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
 import {
