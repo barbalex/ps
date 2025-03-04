@@ -53,16 +53,13 @@ export const Widget = memo(
           // TODO: wait until new db and it's accessing lib. Then implement these queries
           // when filtering no id is passed for the row
           // how to filter on jsonb fields?
-          // https://discord.com/channels/933657521581858818/1248997155448819775/1248997155448819775
-          // example from electric-sql discord: https://discord.com/channels/933657521581858818/1246045111478124645
-          // where: { [jsonbFieldName]: { path: ["is_admin"], equals: true } },
           const filterAtom =
             stores[`${snakeToCamel(table)}${level ? `${level}` : ''}FilterAtom`]
           const activeFilter = stores.store.get(filterAtom)
-          stores.store.set(filterAtom, [
-            ...activeFilter,
-            { path: [jsonFieldName], contains: val },
-          ])
+          const newFilter = `${
+            activeFilter.length ? `${activeFilter} AND ` : ''
+          }${jsonFieldName}->>'${name}' = '${val[name]}'`
+          stores.store.set(filterAtom, newFilter)
           return
         }
         try {
