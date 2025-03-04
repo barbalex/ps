@@ -4,6 +4,7 @@ import { useAtom } from 'jotai'
 
 import { FieldFormInForm } from '../../FieldFormInForm.tsx'
 import { WidgetDragAndDrop } from './Widget/index.tsx'
+import { Widget } from './Widget/Widget.tsx'
 import { designingAtom } from '../../../../store.ts'
 
 // this component decides whether to show the form or the widget
@@ -33,9 +34,30 @@ export const Field = memo(
       )
     }
 
+    const enableDragAndDrop = designing && !editingField
+    const key = `${field.name}/${index}`
+    const autoFocusValue = autoFocus && index === 0
+
+    if (!enableDragAndDrop) {
+      return (
+        <Widget
+          key={key}
+          name={field.name}
+          field={field}
+          data={data}
+          table={table}
+          jsonFieldName={jsonFieldName}
+          idField={idField}
+          id={id}
+          autoFocus={autoFocusValue}
+          ref={ref}
+        />
+      )
+    }
+
     return (
       <WidgetDragAndDrop
-        key={`${field.name}/${index}`}
+        key={key}
         name={field.name}
         field={field}
         fieldsCount={fieldsCount}
@@ -45,9 +67,8 @@ export const Field = memo(
         jsonFieldName={jsonFieldName}
         idField={idField}
         id={id}
-        autoFocus={autoFocus && index === 0}
+        autoFocus={autoFocusValue}
         ref={ref}
-        enableDragAndDrop={!editingField && designing}
       />
     )
   },

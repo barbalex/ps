@@ -76,7 +76,6 @@ export const WidgetDragAndDrop = memo(
     idField,
     autoFocus,
     ref,
-    enableDragAndDrop,
   }) => {
     const { registerItem, instanceId } = useDragAndDropContext()
     const [closestEdge, setClosestEdge] = useState<Edge | null>(null)
@@ -86,9 +85,6 @@ export const WidgetDragAndDrop = memo(
       useState<DraggableState>(idleState)
 
     useEffect(() => {
-      if (!enableDragAndDrop) {
-        return
-      }
       const element = elementRef.current
       const dragHandle = dragHandleRef.current
       invariant(element)
@@ -173,12 +169,12 @@ export const WidgetDragAndDrop = memo(
           },
         }),
       )
-    }, [index, instanceId, field, fieldsCount, registerItem, enableDragAndDrop])
+    }, [index, instanceId, field, fieldsCount, registerItem])
 
     // drag and drop to order
     // only if designing
     // not if editingField
-    const canDrag = fieldsCount > 1 && enableDragAndDrop
+    const canDrag = fieldsCount > 1
 
     return (
       <>
