@@ -57,7 +57,7 @@ const containerStyle = {
   alignItems: 'center',
   // needed for the drop indicator to appear
   position: 'relative',
-  // correct for 15px gap between items
+  // correct for 15px row gap
   margin: '-7.5px 0px',
   padding: '7.5px 0',
 }
