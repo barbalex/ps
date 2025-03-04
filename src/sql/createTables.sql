@@ -1313,7 +1313,7 @@ COMMENT ON COLUMN fields.level IS 'level of field if places or below: 1, 2';
 --------------------------------------------------------------
 -- field_sorts
 --
--- this table is used to store the sort order of fields per table_name in a table
+-- this table is used to store the sort order of fields per table_name
 -- https://stackoverflow.com/a/35456954/712005
 CREATE TABLE IF NOT EXISTS field_sorts(
   field_sort_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
