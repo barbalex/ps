@@ -80,7 +80,10 @@ export const occurrenceFieldsSortedAtom = atomWithStorage(
 )
 export const treeOpenNodesAtom = atomWithStorage('treeOpenNodesAtom', [])
 // filters: where clause excluding WHERE
-export const projectsFilterAtom = atomWithStorage('projectsFilterAtom', '')
+// Example: `name ilike '%demo%'`
+// BUT: Array of them, because we can have multiple or-filters
+// and these must be shown separately in the UI
+export const projectsFilterAtom = atomWithStorage('projectsFilterAtom', [])
 export const fieldsFilterAtom = atomWithStorage('fieldsFilterAtom', '')
 export const fieldTypesFilterAtom = atomWithStorage('fieldTypesFilterAtom', '')
 export const widgetTypesFilterAtom = atomWithStorage(

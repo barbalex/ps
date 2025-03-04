@@ -14,6 +14,7 @@ import { TimeFields } from '../../../TimeFields.tsx'
 import { DateTimeField } from '../../../DateTimeField.tsx'
 import { EditField } from '../EditField.tsx'
 import { getValueFromChange } from '../../../../../modules/getValueFromChange.ts'
+import * as stores from '../../../../../store.ts'
 
 // this component focuses on creating the widgets
 export const Widget = memo(

@@ -14,19 +14,23 @@ import '../form.css'
 
 export const Component = memo(() => {
   const [filter] = useAtom(projectsFilterAtom)
-  // const filter = `name ilike '%demo%'`
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const db = usePGlite()
 
-  const sql = `SELECT * FROM projects${
-    filter?.length ? ` WHERE ${filter}` : ''
-  } order by label asc`
-  const res = useLiveIncrementalQuery(sql, [], 'project_id')
+  const filterString = filter.map((f) => `(${f})`).join(' OR ')
+  const sql = `
+    SELECT
+      project_id,
+      label 
+    FROM projects
+    ${filter?.length ? ` WHERE ${filterString}` : ''} 
+    ORDER BY label ASC`
+  const res = useLiveIncrementalQuery(sql, undefined, 'project_id')
   const isLoading = res === undefined
   const projects = res?.rows ?? []
 
-  const isFiltered = !!filter
+  const isFiltered = filter.length > 0
 
   const add = useCallback(async () => {
     const res = await createProject({ db })

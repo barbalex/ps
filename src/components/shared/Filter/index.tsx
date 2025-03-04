@@ -63,11 +63,10 @@ export const Filter = memo(({ level }) => {
     level ? `${level}` : ''
   }FilterAtom`
   const onTabSelect = useCallback((e, data) => setActiveTab(data.value), [])
-  // console.log('Filter 1', {
-  //   filterObject,
-  //   filterName,
-  //   tableName,
-  // })
+  console.log('Filter 1', {
+    filterName,
+    tableName,
+  })
   const [, setRerenderCount] = useState(0)
   const rerender = useCallback(() => setRerenderCount((c) => c + 1), [])
   const filterAtom = stores[filterName]
@@ -75,6 +74,9 @@ export const Filter = memo(({ level }) => {
   // and enforce rerender when the store changes
   stores.store.sub(filterAtom, rerender)
   const filter = stores?.store?.get?.(filterAtom) ?? []
+  console.log('Filter 2', {
+    filter,
+  })
   let where = ''
   let whereUnfiltered = ''
 
@@ -90,36 +92,49 @@ export const Filter = memo(({ level }) => {
     whereUnfiltered += flter
   }
   if (filter.length > 0) {
-    where += ` AND ${filter.join(' AND ')}`
+    const filterString = filter.map((f) => `(${f})`).join(' OR ')
+    if (where.length > 0) {
+      where += ` AND (${filterString})`
+    } else {
+      where += filterString
+    }
   }
   // TODO: need to add parent_id when below place_id/place_id2
   const isFiltered = filter.length > 0
 
-  // console.log('Filter 3', {
-  //   tableName,
-  //   filterName,
-  //   tableNameForTitle,
-  //   title,
-  //   level,
-  //   where,
-  //   whereUnfiltered,
-  //   filter,
-  //   place_id,
-  // })
+  console.log('Filter 3', {
+    tableName,
+    filterName,
+    tableNameForTitle,
+    title,
+    level,
+    where,
+    whereUnfiltered,
+    filter,
+    place_id,
+  })
 
   const resFiltered = useLiveQuery(
-    `SELECT * FROM ${tableName} WHERE ${where} order by label asc`,
+    `
+    SELECT * 
+    FROM ${tableName}
+    ${where ? ` WHERE ${where} ` : ''} 
+    ORDER BY label ASC`,
   )
   const results = resFiltered?.rows ?? []
   const resUnfiltered = useLiveQuery(
-    `SELECT * FROM ${tableName} WHERE ${whereUnfiltered} order by label asc`,
+    `
+    SELECT * 
+    FROM ${tableName}
+    ${whereUnfiltered ? ` WHERE ${whereUnfiltered} ` : ''} 
+    ORDER BY label ASC`,
   )
   const resultsUnfiltered = resUnfiltered?.rows ?? []
 
-  // console.log('Filter 4', {
-  //   results,
-  //   resultsUnfiltered,
-  // })
+  console.log('Filter 4', {
+    results,
+    resultsUnfiltered,
+  })
 
   return (
     <div className="form-outer-container">

@@ -15,16 +15,23 @@ import { treeOpenNodesAtom, projectsFilterAtom } from '../../store.ts'
 
 export const ProjectsNode = memo(() => {
   const [filter] = useAtom(projectsFilterAtom)
-  const isFiltered = !!filter
+  const isFiltered = filter.length > 0
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
+  const filterString = filter.map((f) => `(${f})`).join(' OR ')
   const resultFiltered = useLiveIncrementalQuery(
-    `SELECT * FROM projects${
-      isFiltered ? ` WHERE ${filter}` : ''
-    } order by label asc`,
+    `
+    SELECT
+      project_id,
+      files_active_projects,
+      label,
+      name 
+    FROM projects
+    ${isFiltered ? ` WHERE ${filterString}` : ''} 
+    ORDER BY label ASC`,
     undefined,
     'project_id',
   )

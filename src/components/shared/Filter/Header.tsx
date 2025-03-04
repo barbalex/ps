@@ -13,7 +13,7 @@ type Props = {
 }
 
 export const FilterHeader = memo(
-  ({ title = 'Filter', isFiltered = false, filterName }) => {
+  ({ title = 'Filter', isFiltered = false, filterName }:Props) => {
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 

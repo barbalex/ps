@@ -23,17 +23,16 @@ export const OrFilter = memo(({ filterName, orFilters, orIndex }) => {
       const { name, value } = getValueFromChange(e, data)
       const targetType = e.target.type
       const isText = ['text', 'email'].includes(targetType)
-      // console.log('OrFilter, onChange 1', { targetType, name, value, isText })
+      console.log('OrFilter, onChange 1', { targetType, name, value, isText })
 
       // TODO: how to filter on jsonb fields?
       // example from electric-sql discord: https://discord.com/channels/933657521581858818/1246045111478124645
       // where: { [jsonbFieldName]: { path: ["is_admin"], equals: true } },
 
-      const existingOrFilter = orFilters[orIndex]
-      const newOrFilter = { ...existingOrFilter }
+      const newFilter = [...orFilters]
       if (value !== undefined && value !== null && value !== '') {
         const isDate = value instanceof Date
-        newOrFilter[name] = isText
+        const filterValue = isText
           ? { contains: value }
           : // numbers get passed as string when coming from options
           // need to convert them back to numbers
@@ -43,10 +42,11 @@ export const OrFilter = memo(({ filterName, orFilters, orIndex }) => {
           isDate
           ? value.toISOString()
           : value
+        newFilter[orIndex] = filterValue
       } else {
-        delete newOrFilter[name]
+        delete newFilter.splice(orIndex, 1)
       }
-      const newOrFilterIsEmpty = Object.keys(newOrFilter).length === 0
+      const newOrFilterIsEmpty = newOrFilter.length === 0
 
       const newFilterWithEmptys = !newOrFilterIsEmpty
         ? // replace the existing or filter
@@ -58,14 +58,14 @@ export const OrFilter = memo(({ filterName, orFilters, orIndex }) => {
       )
       const filterAtom = stores[filterName]
 
-      // console.log('OrFilter, onChange 2', {
-      //   newFilter: newFilterWithoutEmptys,
-      //   targetType,
-      //   filterAtom,
-      //   filterName,
-      //   existingOrFilter,
-      //   orFilters,
-      // })
+      console.log('OrFilter, onChange 2', {
+        newFilter: newFilterWithoutEmptys,
+        targetType,
+        filterAtom,
+        filterName,
+        newFilter,
+        orFilters,
+      })
       try {
         // TODO: test
         stores.store.set(filterAtom, newFilterWithoutEmptys)
