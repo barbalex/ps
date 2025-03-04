@@ -91,10 +91,10 @@ export const Jsonb = memo(
           const filterAtom =
             stores[`${snakeToCamel(table)}${level ? `${level}` : ''}FilterAtom`]
           const activeFilter = stores.store.get(filterAtom)
-          stores.store.set(filterAtom, [
-            ...activeFilter,
-            { path: [jsonFieldName], contains: val },
-          ])
+          const newFilter = `${
+            activeFilter.length ? `${activeFilter} AND ` : ''
+          }${jsonFieldName}->>'${name}' = '${val[name]}'`
+          stores.store.set(filterAtom, newFilter)
           return
         }
         // TODO: test
