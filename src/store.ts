@@ -79,10 +79,11 @@ export const occurrenceFieldsSortedAtom = atomWithStorage(
   [],
 )
 export const treeOpenNodesAtom = atomWithStorage('treeOpenNodesAtom', [])
-// filters: where clause excluding WHERE
-// Example: `name ilike '%demo%'`
-// BUT: Array of them, because we can have multiple or-filters
-// and these must be shown separately in the UI
+// table filters
+// array: why? or-filters
+// of objects with keys: column, value. why? because needs to be shown in the forms
+// text fields are filtered with ilike
+// numbers, dates and uuids with =
 export const projectsFilterAtom = atomWithStorage('projectsFilterAtom', [])
 export const fieldsFilterAtom = atomWithStorage('fieldsFilterAtom', '')
 export const fieldTypesFilterAtom = atomWithStorage('fieldTypesFilterAtom', '')
