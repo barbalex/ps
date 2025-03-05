@@ -29,10 +29,11 @@ export const OrFilter = memo(({ filterName, orFilters, orIndex }) => {
       // example from electric-sql discord: https://discord.com/channels/933657521581858818/1246045111478124645
       // where: { [jsonbFieldName]: { path: ["is_admin"], equals: true } },
 
-      const newFilter = [...orFilters]
+      const existingOrFilter = orFilters[orIndex]
+      const newOrFilter = { ...existingOrFilter }
       if (value !== undefined && value !== null && value !== '') {
         const isDate = value instanceof Date
-        const filterValue = isText
+        newOrFilter[name] = isText
           ? { contains: value }
           : // numbers get passed as string when coming from options
           // need to convert them back to numbers
@@ -42,11 +43,10 @@ export const OrFilter = memo(({ filterName, orFilters, orIndex }) => {
           isDate
           ? value.toISOString()
           : value
-        newFilter[orIndex] = filterValue
       } else {
-        delete newFilter.splice(orIndex, 1)
+        delete newOrFilter[name]
       }
-      const newOrFilterIsEmpty = newOrFilter.length === 0
+      const newOrFilterIsEmpty = Object.keys(newOrFilter).length === 0
 
       const newFilterWithEmptys = !newOrFilterIsEmpty
         ? // replace the existing or filter
@@ -57,15 +57,6 @@ export const OrFilter = memo(({ filterName, orFilters, orIndex }) => {
         (f) => Object.keys(f).length > 0,
       )
       const filterAtom = stores[filterName]
-
-      console.log('OrFilter, onChange 2', {
-        newFilter: newFilterWithoutEmptys,
-        targetType,
-        filterAtom,
-        filterName,
-        newFilter,
-        orFilters,
-      })
       try {
         // TODO: test
         stores.store.set(filterAtom, newFilterWithoutEmptys)
