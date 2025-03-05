@@ -9,9 +9,10 @@ import { useLocation, useParams } from 'react-router-dom'
 import { FilterHeader } from './Header.tsx'
 import * as stores from '../../../store.ts'
 import { snakeToCamel } from '../../../modules/snakeToCamel.ts'
+import { OrFilter } from './OrFilter.tsx'
+import { filterAtomNameFromTableAndLevel } from '../../../modules/filterAtomNameFromTableAndLevel.ts'
 
 import '../../../form.css'
-import { OrFilter } from './OrFilter.tsx'
 
 const tabListStyle = {
   backgroundColor: 'rgba(255, 141, 2, 0.08)',
@@ -59,24 +60,20 @@ export const Filter = memo(({ level }) => {
 
   const [activeTab, setActiveTab] = useState(1)
   // add 1 and 2 when below subproject_id
-  const filterName = `${snakeToCamel(tableName)}${
-    level ? `${level}` : ''
-  }FilterAtom`
   const onTabSelect = useCallback((e, data) => setActiveTab(data.value), [])
-  console.log('Filter 1', {
-    filterName,
-    tableName,
-  })
   const [, setRerenderCount] = useState(0)
   const rerender = useCallback(() => setRerenderCount((c) => c + 1), [])
-  const filterAtom = stores[filterName]
+  const filterAtomName = filterAtomNameFromTableAndLevel({
+    table: tableName,
+    level,
+  })
+  const filterAtom = stores[filterAtomName]
+  // stores.store.set(filterAtom, [])
   // ISSUE: as not using hook, need to manually subscribe to the store
   // and enforce rerender when the store changes
   stores.store.sub(filterAtom, rerender)
   const filter = stores?.store?.get?.(filterAtom) ?? []
-  console.log('Filter 2', {
-    filter,
-  })
+  console.log('Filter 2', { filter })
   let where = ''
   let whereUnfiltered = ''
 
@@ -104,7 +101,7 @@ export const Filter = memo(({ level }) => {
 
   console.log('Filter 3', {
     tableName,
-    filterName,
+    filterName: filterAtomName,
     tableNameForTitle,
     title,
     level,
@@ -140,7 +137,7 @@ export const Filter = memo(({ level }) => {
     <div className="form-outer-container">
       <FilterHeader
         title={`${title} (${results.length}/${resultsUnfiltered.length})`}
-        filterName={filterName}
+        filterName={filterAtomName}
         isFiltered={isFiltered}
       />
       <TabList
@@ -167,7 +164,7 @@ export const Filter = memo(({ level }) => {
         })}
       </TabList>
       <OrFilter
-        filterName={filterName}
+        filterName={filterAtomName}
         orFilters={filter}
         orIndex={activeTab - 1}
       />

@@ -16,6 +16,7 @@ import { EditField } from '../EditField.tsx'
 import { getValueFromChange } from '../../../../../modules/getValueFromChange.ts'
 import * as stores from '../../../../../store.ts'
 import { snakeToCamel } from '../../../../../modules/snakeToCamel.ts'
+import { filterAtomNameFromTableAndLevel } from '../../../../../modules/filterAtomNameFromTableAndLevel.ts'
 
 const tablesAboveLevel = [
   'projects',
@@ -69,25 +70,14 @@ export const Widget = memo(
         }
 
         const isFilter = pathname.endsWith('filter')
-        const level = tablesAboveLevel.includes(table)
-          ? undefined
-          : table === 'places'
-          ? place_id
-            ? 2
-            : 1
-          : place_id2
-          ? 2
-          : 1
-        console.log('Widget.onChange, 1', { level, table, tablesAboveLevel })
 
         if (isFilter) {
           // TODO: wait until new db and it's accessing lib. Then implement these queries
           // when filtering no id is passed for the row
           // how to filter on jsonb fields?
-          const atomName = `${snakeToCamel(table)}${
-            level ? `${level}` : ''
-          }FilterAtom`
-          console.log('Widget.onChange, atomName:', atomName)
+          const level =
+            table === 'places' ? (place_id ? 2 : 1) : place_id2 ? 2 : 1
+          const atomName = filterAtomNameFromTableAndLevel({ table, level })
           const filterAtom = stores[atomName]
           const activeFilter = stores.store.get(filterAtom)
           const newFilter = `${
