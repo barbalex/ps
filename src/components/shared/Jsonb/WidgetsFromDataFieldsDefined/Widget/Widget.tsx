@@ -15,6 +15,7 @@ import { DateTimeField } from '../../../DateTimeField.tsx'
 import { EditField } from '../EditField.tsx'
 import { getValueFromChange } from '../../../../../modules/getValueFromChange.ts'
 import * as stores from '../../../../../store.ts'
+import { snakeToCamel } from '../../../../../modules/snakeToCamel.ts'
 
 // this component focuses on creating the widgets
 export const Widget = memo(
