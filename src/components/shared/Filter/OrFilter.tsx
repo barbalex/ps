@@ -24,6 +24,7 @@ export const OrFilter = memo(({ filterName, orFilters, orIndex }) => {
       const targetType = e.target.type
       const isText = ['text', 'email'].includes(targetType)
       console.log('OrFilter, onChange 1', { targetType, name, value, isText })
+      // stores.store.set(filterAtom, [])
 
       // TODO: how to filter on jsonb fields?
       // example from electric-sql discord: https://discord.com/channels/933657521581858818/1246045111478124645
@@ -57,9 +58,13 @@ export const OrFilter = memo(({ filterName, orFilters, orIndex }) => {
         (f) => Object.keys(f).length > 0,
       )
       const filterAtom = stores[filterName]
+      console.log('OrFiler.onChage, will set filterAtom:', {
+        filterName,
+        newFilterWithoutEmptys,
+      })
       try {
-        // TODO: test
-        stores.store.set(filterAtom, newFilterWithoutEmptys)
+        // TODO: re-activate
+        // stores.store.set(filterAtom, newFilterWithoutEmptys)
       } catch (error) {
         console.log('OrFilter, error updating app state:', error)
       }

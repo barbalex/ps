@@ -1,6 +1,6 @@
 import { snakeToCamel } from './snakeToCamel.ts'
 
-const tablesAboveLevel = [
+const tablesAbovePlaces = [
   'projects',
   'subprojects',
   'users',
@@ -22,9 +22,17 @@ const tablesAboveLevel = [
 ]
 
 export const filterAtomNameFromTableAndLevel = ({ table, level }) => {
-  const useLevel = level && tablesAboveLevel.includes(table)
+  const tableIsAbovePlaces = tablesAbovePlaces.includes(table)
+  const useLevel = level && !tableIsAbovePlaces
   const atomName = `${snakeToCamel(table)}${
     useLevel ? `${level}` : ''
   }FilterAtom`
+  console.log('filterAtomNameFromTableAndLevel', {
+    table,
+    level,
+    atomName,
+    tableIsAbovePlaces,
+    useLevel,
+  })
   return atomName
 }

@@ -80,9 +80,14 @@ export const Widget = memo(
           const atomName = filterAtomNameFromTableAndLevel({ table, level })
           const filterAtom = stores[atomName]
           const activeFilter = stores.store.get(filterAtom)
+          // TODO:
+          // if text, set: = 'value',
+          // if number, date, set: = value
+          // if boolean, set: is true/false
           const newFilter = `${
             activeFilter.length ? `${activeFilter} AND ` : ''
           }${jsonFieldName}->>'${name}' = '${val[name]}'`
+          // TODO: check, sets: data->>'boolean' = 'true'
           stores.store.set(filterAtom, newFilter)
           return
         }

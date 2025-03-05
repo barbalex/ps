@@ -73,7 +73,8 @@ export const Filter = memo(({ level }) => {
   // and enforce rerender when the store changes
   stores.store.sub(filterAtom, rerender)
   const filter = stores?.store?.get?.(filterAtom) ?? []
-  console.log('Filter 2', { filter })
+  // stores.store.set(filterAtom, [])
+  console.log('Filter, filter:', filter)
   let where = ''
   let whereUnfiltered = ''
 
