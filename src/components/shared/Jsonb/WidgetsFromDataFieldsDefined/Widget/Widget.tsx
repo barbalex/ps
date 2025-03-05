@@ -15,29 +15,8 @@ import { DateTimeField } from '../../../DateTimeField.tsx'
 import { EditField } from '../EditField.tsx'
 import { getValueFromChange } from '../../../../../modules/getValueFromChange.ts'
 import * as stores from '../../../../../store.ts'
-import { snakeToCamel } from '../../../../../modules/snakeToCamel.ts'
 import { filterAtomNameFromTableAndLevel } from '../../../../../modules/filterAtomNameFromTableAndLevel.ts'
-
-const tablesAboveLevel = [
-  'projects',
-  'subprojects',
-  'users',
-  'accounts',
-  'messages',
-  'project_reports',
-  'project_users',
-  'wms_layers',
-  'vector_layers',
-  'project_files',
-  'subproject_reports',
-  'goals',
-  'occurrences',
-  'subproject_taxa',
-  'subproject_users',
-  'occurrence_imports',
-  'subproject_files',
-  'charts',
-]
+import { orFilterToSql } from '../../../../../modules/orFilterToSql.ts'
 
 // this component focuses on creating the widgets
 export const Widget = memo(

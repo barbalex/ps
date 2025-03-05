@@ -14,7 +14,7 @@ type Props = {
   orIndex: number
 }
 
-export const OrFilter = memo(({ filterName, orFilters, orIndex }) => {
+export const OrFilter = memo(({ filterName, orFilters, orIndex }: Props) => {
   // TODO: add more filters here
   // console.log('OrFilter 1', { filterObject, orFilters, orIndex })
 
