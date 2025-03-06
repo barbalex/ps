@@ -201,6 +201,8 @@ https://stackoverflow.com/a/21541021/712005 */
       border-top: rgba(55, 118, 28, 0.5) solid 1px;
       width: 100%;
       height: 50px;
+      content-visibility: auto;
+      contain-intrinsic-size: auto 50px;
       line-height: 50px;
       text-align: center;
       vertical-align: middle;
