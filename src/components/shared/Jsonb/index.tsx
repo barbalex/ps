@@ -7,11 +7,7 @@
 import { memo, useCallback } from 'react'
 import { useParams, useLocation } from 'react-router-dom'
 import type { InputProps } from '@fluentui/react-components'
-import {
-  usePGlite,
-  useLiveIncrementalQuery,
-  useLiveQuery,
-} from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
 import { TextField } from '../TextField.tsx'
@@ -36,12 +32,6 @@ export const Jsonb = memo(
     const { project_id, place_id, place_id2 } = useParams()
     const { pathname } = useLocation()
     const db = usePGlite()
-
-    const resFieldSorts = useLiveQuery(
-      `SELECT sorted_field_ids FROM field_sorts WHERE table_name = $1`,
-      [table],
-    )
-    const sortedFieldIds = resFieldSorts?.rows?.[0]?.sorted_field_ids
 
     const useProjectId = project_id && table !== 'projects'
     const sql = `
