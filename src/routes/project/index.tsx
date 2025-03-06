@@ -39,6 +39,7 @@ export const Component = memo(() => {
   const onChange = useCallback<InputProps['onChange']>(
     async (e, data) => {
       const { name, value } = getValueFromChange(e, data)
+      console.log('Project.onChange', { name, value })
       try {
         await db.query(
           `UPDATE projects SET ${name} = $1 WHERE project_id = $2`,

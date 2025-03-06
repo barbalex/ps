@@ -9,6 +9,7 @@ import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import { projectsFilterAtom } from '../store.ts'
+import { orFilterToSql } from '../modules/orFilterToSql.ts'
 
 import '../form.css'
 
@@ -18,7 +19,7 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
   const db = usePGlite()
 
-  const filterString = filter.map((f) => `(${f})`).join(' OR ')
+  const filterString = filter.map((f) => `(${orFilterToSql(f)})`).join(' OR ')
   const sql = `
     SELECT
       project_id,

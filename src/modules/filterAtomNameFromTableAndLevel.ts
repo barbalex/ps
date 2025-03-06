@@ -27,12 +27,12 @@ export const filterAtomNameFromTableAndLevel = ({ table, level }) => {
   const atomName = `${snakeToCamel(table)}${
     useLevel ? `${level}` : ''
   }FilterAtom`
-  console.log('filterAtomNameFromTableAndLevel', {
-    table,
-    level,
-    atomName,
-    tableIsAbovePlaces,
-    useLevel,
-  })
+  // console.log('filterAtomNameFromTableAndLevel', {
+  //   table,
+  //   level,
+  //   atomName,
+  //   tableIsAbovePlaces,
+  //   useLevel,
+  // })
   return atomName
 }

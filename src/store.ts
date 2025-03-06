@@ -84,7 +84,10 @@ export const treeOpenNodesAtom = atomWithStorage('treeOpenNodesAtom', [])
 // of objects with keys: column, value. why? because needs to be shown in the forms
 // text fields are filtered with ilike
 // numbers, dates and uuids with =
-export const projectsFilterAtom = atomWithStorage('projectsFilterAtom', [])
+export const projectsFilterAtom = atomWithStorage<Record<string, unknown>[]>(
+  'projectsFilterAtom',
+  [],
+)
 export const fieldsFilterAtom = atomWithStorage('fieldsFilterAtom', '')
 export const fieldTypesFilterAtom = atomWithStorage('fieldTypesFilterAtom', '')
 export const widgetTypesFilterAtom = atomWithStorage(

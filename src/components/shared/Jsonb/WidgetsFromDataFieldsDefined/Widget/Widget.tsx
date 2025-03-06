@@ -67,7 +67,7 @@ export const Widget = memo(
             activeFilter.length ? `${activeFilter} AND ` : ''
           }${jsonFieldName}->>'${name}' = '${val[name]}'`
           // TODO: check, sets: data->>'boolean' = 'true'
-          stores.store.set(filterAtom, newFilter)
+          // stores.store.set(filterAtom, newFilter)
           return
         }
         try {
