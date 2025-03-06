@@ -4,7 +4,7 @@ import { Outlet } from 'react-router-dom'
 
 import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
 import * as stores from '../../../store.ts'
-import { orFilterToSql } from '../../../modules/orFilterToSql.ts'
+import { setNewFilterFromOldAndChange } from '../../../modules/setNewFilterFromOldAndChange.ts'
 
 import '../../../form.css'
 
@@ -21,67 +21,23 @@ export const OrFilter = memo(({ filterName, orFilters, orIndex }: Props) => {
 
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
-      const { name, value } = getValueFromChange(e, data)
-      const targetType = e.target.type
-      const isText = ['text', 'email'].includes(targetType)
-      console.log('OrFilter.onChange 1', {
+      const { name, value, targetType } = getValueFromChange(e, data)
+      console.log('OrFilter.onChange', {
         filterName,
         targetType,
         name,
         value,
-        isText,
         orFilters,
         orIndex,
       })
-      // stores.store.set(filterAtom, [])
-
-      // TODO: how to filter on jsonb fields?
-      // example from electric-sql discord: https://discord.com/channels/933657521581858818/1246045111478124645
-      // where: { [jsonbFieldName]: { path: ["is_admin"], equals: true } },
-
-      const existingOrFilter = orFilters[orIndex]
-      const newOrFilter = { ...existingOrFilter }
-      console.log('OrFilter.onChange 2', { existingOrFilter, newOrFilter })
-      if (value !== undefined && value !== null && value !== '') {
-        const isDate = value instanceof Date
-        newOrFilter[name] = isText
-          ? value
-          : // numbers get passed as string when coming from options
-          // need to convert them back to numbers
-          !isNaN(value)
-          ? parseFloat(value)
-          : // dates need to be converted to iso strings
-          isDate
-          ? value.toISOString()
-          : value
-      } else {
-        delete newOrFilter[name]
-      }
-      console.log('OrFilter.onChange 3', { newOrFilter })
-      const newOrFilterIsEmpty = Object.keys(newOrFilter).length === 0
-      console.log('OrFilter.onChange 4', { newOrFilterIsEmpty })
-      const createNewOrFilters = orFilters.length === 0 && !newOrFilterIsEmpty
-      console.log('OrFilter.onChange 4.1', { createNewOrFilters })
-
-      const newFilterWithEmptys = createNewOrFilters
-        ? [newOrFilter]
-        : !newOrFilterIsEmpty
-        ? // replace the existing or filter
-          orFilters.map((f, i) => (i === orIndex ? newOrFilter : f))
-        : // remove the existing or filter
-          orFilters.filter((f, i) => i !== orIndex)
-      console.log('OrFilter.onChange 5', { newFilterWithEmptys })
-      const newFilterWithoutEmptys = newFilterWithEmptys.filter(
-        (f) => Object.keys(f).length > 0,
-      )
-      console.log('OrFilter.onChange 6', { newFilterWithoutEmptys })
-      const filterAtom = stores[filterName]
-      try {
-        // TODO: re-activate
-        stores.store.set(filterAtom, newFilterWithoutEmptys)
-      } catch (error) {
-        console.log('OrFilter, error updating app state:', error)
-      }
+      setNewFilterFromOldAndChange({
+        name,
+        value,
+        orFilters,
+        orIndex,
+        filterName,
+        targetType,
+      })
     },
     [filterName, orFilters, orIndex],
   )

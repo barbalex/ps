@@ -6,14 +6,19 @@ export const orFilterToSql = (orFilter) => {
   // numbers, dates and uuids with =
   const whereClauses = Object.entries(orFilter).map(([column, value]) => {
     // if column starts with 'data.', remove that
-    const columnName = column.startsWith('data.') ? column.substring(4) : column
+    // data->>'column' = 'true'
+    const isData = column.startsWith('data.')
+    const columnName = isData ? column.substring(4) : column
+    const columnDescriptor = isData ? `data ->> '${columnName}'` : columnName
     if (typeof value === 'string') {
-      return `${columnName} ilike '%${value}%'`
+      return `${columnDescriptor} ilike '%${value}%'`
     }
     if (value === null || value === undefined || value === '') {
-      return `${columnName} IS NULL`
+      return `${columnDescriptor} IS NULL`
     }
-    return `${columnName} = ${value}`
+    return `${columnDescriptor} = ${value}`
   })
-  return whereClauses.join(' AND ')
+  const sql = whereClauses.join(' AND ')
+  console.log('orFilterToSql', { orFilter, whereClauses, sql })
+  return sql
 }
