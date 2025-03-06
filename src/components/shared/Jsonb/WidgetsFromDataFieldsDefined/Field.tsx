@@ -17,6 +17,7 @@ export const Field = memo(
     table,
     jsonFieldName,
     id,
+    orIndex,
     idField,
     autoFocus,
     ref,
@@ -49,6 +50,7 @@ export const Field = memo(
           jsonFieldName={jsonFieldName}
           idField={idField}
           id={id}
+          orIndex={orIndex}
           autoFocus={autoFocusValue}
           ref={ref}
         />
@@ -67,6 +69,7 @@ export const Field = memo(
         jsonFieldName={jsonFieldName}
         idField={idField}
         id={id}
+        orIndex={orIndex}
         autoFocus={autoFocusValue}
         ref={ref}
       />

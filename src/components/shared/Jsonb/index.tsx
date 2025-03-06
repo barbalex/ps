@@ -23,7 +23,7 @@ export const Jsonb = memo(
     table,
     name: jsonFieldName = 'data',
     idField,
-    id,
+    id,orIndex,
     data = {},
     autoFocus = false,
     ref,
@@ -126,6 +126,7 @@ export const Jsonb = memo(
             jsonFieldName={jsonFieldName}
             idField={idField}
             id={id}
+            orIndex={orIndex}
             autoFocus={autoFocus}
             ref={ref}
           />

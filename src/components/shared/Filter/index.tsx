@@ -8,9 +8,9 @@ import { useLocation, useParams } from 'react-router-dom'
 
 import { FilterHeader } from './Header.tsx'
 import * as stores from '../../../store.ts'
-import { snakeToCamel } from '../../../modules/snakeToCamel.ts'
 import { OrFilter } from './OrFilter.tsx'
 import { filterAtomNameFromTableAndLevel } from '../../../modules/filterAtomNameFromTableAndLevel.ts'
+import { orFilterToSql } from '../../../modules/orFilterToSql.ts'
 
 import '../../../form.css'
 
@@ -74,28 +74,29 @@ export const Filter = memo(({ level }) => {
   stores.store.sub(filterAtom, rerender)
   const filter = stores?.store?.get?.(filterAtom) ?? []
   console.log('Filter, filter:', filter)
-  let where = ''
-  let whereUnfiltered = ''
+  let whereUnfiltered
 
   // add parent_id for all filterable tables below subprojects
   if (tableName === 'places') {
-    const flter = place_id ? `parent_id = '${place_id}'` : `parent_id is null`
-    where += flter
-    whereUnfiltered += flter
+    const parentFilter = { parent_id: place_id ? place_id : null }
+    for (const orFilter of filter) {
+      Object.assign(orFilter, parentFilter)
+    }
+    whereUnfiltered = parentFilter
   }
   if (['actions', 'checks', 'place_reports'].includes(tableName)) {
-    const flter = `place_id = '${place_id2 ?? place_id}'`
-    where += flter
-    whereUnfiltered += flter
-  }
-  if (filter.length > 0) {
-    const filterString = filter.map((f) => `(${f})`).join(' OR ')
-    if (where.length > 0) {
-      where += ` AND (${filterString})`
-    } else {
-      where += filterString
+    const placeFilter = { place_id: place_id2 ?? place_id }
+    for (const orFilter of filter) {
+      Object.assign(orFilter, placeFilter)
     }
+    whereUnfiltered = placeFilter
   }
+  const whereFilteredString = filter
+    .map((f) => `(${orFilterToSql(f)})`)
+    .join(' OR ')
+  const whereUnfilteredString = whereUnfiltered
+    ? ` WHERE ${orFilterToSql(whereUnfiltered)}`
+    : ''
   // TODO: need to add parent_id when below place_id/place_id2
   const isFiltered = filter.length > 0
 
@@ -105,7 +106,6 @@ export const Filter = memo(({ level }) => {
     tableNameForTitle,
     title,
     level,
-    where,
     whereUnfiltered,
     filter,
     place_id,
@@ -115,7 +115,7 @@ export const Filter = memo(({ level }) => {
     `
     SELECT * 
     FROM ${tableName}
-    ${where ? ` WHERE ${where} ` : ''} 
+    ${whereFilteredString ? ` WHERE ${whereFilteredString} ` : ''} 
     ORDER BY label ASC`,
   )
   const results = resFiltered?.rows ?? []
@@ -123,7 +123,7 @@ export const Filter = memo(({ level }) => {
     `
     SELECT * 
     FROM ${tableName}
-    ${whereUnfiltered ? ` WHERE ${whereUnfiltered} ` : ''} 
+    ${whereUnfilteredString ? ` WHERE ${whereUnfilteredString} ` : ''} 
     ORDER BY label ASC`,
   )
   const resultsUnfiltered = resUnfiltered?.rows ?? []

@@ -23,6 +23,7 @@ export const WidgetsFromDataFieldsDefined = memo(
     jsonFieldName,
     idField,
     id,
+    orIndex,
     autoFocus,
     ref,
   }) => {
@@ -140,6 +141,7 @@ export const WidgetsFromDataFieldsDefined = memo(
             jsonFieldName={jsonFieldName}
             idField={idField}
             id={id}
+            orIndex={orIndex}
             autoFocus={autoFocus}
             ref={ref}
           />

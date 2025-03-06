@@ -16,7 +16,7 @@ import { EditField } from '../EditField.tsx'
 import { getValueFromChange } from '../../../../../modules/getValueFromChange.ts'
 import * as stores from '../../../../../store.ts'
 import { filterAtomNameFromTableAndLevel } from '../../../../../modules/filterAtomNameFromTableAndLevel.ts'
-import { orFilterToSql } from '../../../../../modules/orFilterToSql.ts'
+import { setNewFilterFromOldAndChange } from '../../../../../modules/setNewFilterFromOldAndChange.ts'
 
 // this component focuses on creating the widgets
 export const Widget = memo(
@@ -28,6 +28,7 @@ export const Widget = memo(
     jsonFieldName,
     idField,
     id,
+    orIndex,
     autoFocus,
     ref,
   }) => {
@@ -56,19 +57,17 @@ export const Widget = memo(
           // how to filter on jsonb fields?
           const level =
             table === 'places' ? (place_id ? 2 : 1) : place_id2 ? 2 : 1
-          const atomName = filterAtomNameFromTableAndLevel({ table, level })
-          const filterAtom = stores[atomName]
-          const activeFilter = stores.store.get(filterAtom)
-          // TODO:
-          // if text, set: = 'value',
-          // if number, date, set: = value
-          // if boolean, set: is true/false
-          const newFilter = `${
-            activeFilter.length ? `${activeFilter} AND ` : ''
-          }${jsonFieldName}->>'${name}' = '${val[name]}'`
-          // TODO: check, sets: data->>'boolean' = 'true'
-          // stores.store.set(filterAtom, newFilter)
-          return
+          const filterName = filterAtomNameFromTableAndLevel({ table, level })
+          const filterAtom = stores[filterName]
+          const orFilters = stores.store.get(filterAtom)
+          return setNewFilterFromOldAndChange({
+            name,
+            value,
+            orFilters,
+            orIndex,
+            filterName,
+            targetType: field.field_type,
+          })
         }
         try {
           await db.query(
@@ -86,6 +85,8 @@ export const Widget = memo(
         table,
         place_id,
         place_id2,
+        orIndex,
+        field.field_type,
         db,
         jsonFieldName,
         idField,

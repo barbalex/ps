@@ -73,6 +73,7 @@ export const WidgetDragAndDrop = memo(
     table,
     jsonFieldName,
     id,
+    orIndex,
     idField,
     autoFocus,
     ref,
@@ -193,6 +194,7 @@ export const WidgetDragAndDrop = memo(
             jsonFieldName={jsonFieldName}
             idField={idField}
             id={id}
+            orIndex={orIndex}
             autoFocus={autoFocus}
             ref={ref}
           />

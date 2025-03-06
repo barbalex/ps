@@ -73,7 +73,7 @@ export const OrFilter = memo(({ filterName, orFilters, orIndex }: Props) => {
 
   return (
     <div className="form-container filter">
-      <Outlet context={{ onChange, row: rowValues }} />
+      <Outlet context={{ onChange, row: rowValues, orIndex }} />
     </div>
   )
 })

@@ -11,6 +11,7 @@ export const Component = memo(
     const outletContext = useOutletContext()
     const onChange = onChangeFromProps ?? outletContext?.onChange
     const row = rowFromProps ?? outletContext?.row ?? {}
+    const orIndex = outletContext?.orIndex
 
     return (
       <div
@@ -31,6 +32,7 @@ export const Component = memo(
           idField="project_id"
           id={row.project_id}
           data={row.data ?? {}}
+          orIndex={orIndex}
         />
       </div>
     )
