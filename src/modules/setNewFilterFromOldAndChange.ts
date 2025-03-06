@@ -8,6 +8,14 @@ export const setNewFilterFromOldAndChange = ({
   filterName,
   targetType,
 }) => {
+  console.log('newFilterFromOldAndChange 0', {
+    name,
+    value,
+    orFilters,
+    orIndex,
+    filterName,
+    targetType,
+  })
   const valueIsText = ['text', 'email'].includes(targetType)
   const existingOrFilter = orFilters[orIndex]
   const newOrFilter = { ...existingOrFilter }

@@ -3,7 +3,6 @@ import type { InputProps } from '@fluentui/react-components'
 import { Outlet } from 'react-router-dom'
 
 import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
-import * as stores from '../../../store.ts'
 import { setNewFilterFromOldAndChange } from '../../../modules/setNewFilterFromOldAndChange.ts'
 
 import '../../../form.css'
