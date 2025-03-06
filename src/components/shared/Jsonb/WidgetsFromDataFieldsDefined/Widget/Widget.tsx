@@ -61,7 +61,7 @@ export const Widget = memo(
           const filterAtom = stores[filterName]
           const orFilters = stores.store.get(filterAtom)
           return setNewFilterFromOldAndChange({
-            name,
+            name: `data.${name}`,
             value,
             orFilters,
             orIndex,

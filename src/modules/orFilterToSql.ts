@@ -8,7 +8,7 @@ export const orFilterToSql = (orFilter) => {
     // if column starts with 'data.', remove that
     // data->>'column' = 'true'
     const isData = column.startsWith('data.')
-    const columnName = isData ? column.substring(4) : column
+    const columnName = isData ? column.substring(5) : column
     const columnDescriptor = isData ? `data ->> '${columnName}'` : columnName
     if (typeof value === 'string') {
       return `${columnDescriptor} ilike '%${value}%'`
