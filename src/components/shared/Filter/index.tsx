@@ -11,6 +11,7 @@ import * as stores from '../../../store.ts'
 import { OrFilter } from './OrFilter.tsx'
 import { filterAtomNameFromTableAndLevel } from '../../../modules/filterAtomNameFromTableAndLevel.ts'
 import { orFilterToSql } from '../../../modules/orFilterToSql.ts'
+import { filterStringFromFilter } from '../../../modules/filterStringFromFilter.ts'
 
 import '../../../form.css'
 
@@ -102,9 +103,7 @@ export const Filter = memo(({ level }) => {
       }
       whereUnfiltered = placeFilter
     }
-    const whereFilteredString = filter
-      .map((f) => `(${orFilterToSql(f)})`)
-      .join(' OR ')
+    const whereFilteredString = filterStringFromFilter(filter)
     const whereUnfilteredString = whereUnfiltered
       ? ` WHERE ${orFilterToSql(whereUnfiltered)}`
       : ''

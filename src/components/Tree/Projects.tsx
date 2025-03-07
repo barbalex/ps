@@ -12,7 +12,7 @@ import { ProjectNode } from './Project/index.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom, projectsFilterAtom } from '../../store.ts'
-import { orFilterToSql } from '../../modules/orFilterToSql.ts'
+import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 
 export const ProjectsNode = memo(() => {
   const [filter] = useAtom(projectsFilterAtom)
@@ -22,7 +22,7 @@ export const ProjectsNode = memo(() => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const filterString = filter.map((f) => `(${orFilterToSql(f)})`).join(' OR ')
+  const filterString = filterStringFromFilter(filter)
   const resultFiltered = useLiveIncrementalQuery(
     `
     SELECT
@@ -31,7 +31,7 @@ export const ProjectsNode = memo(() => {
       label,
       name 
     FROM projects
-    ${isFiltered ? ` WHERE ${filterString}` : ''} 
+    ${filterString ? ` WHERE ${filterString}` : ''} 
     ORDER BY label ASC`,
     undefined,
     'project_id',
