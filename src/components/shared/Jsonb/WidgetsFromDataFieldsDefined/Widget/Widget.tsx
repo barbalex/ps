@@ -16,7 +16,7 @@ import { EditField } from '../EditField.tsx'
 import { getValueFromChange } from '../../../../../modules/getValueFromChange.ts'
 import * as stores from '../../../../../store.ts'
 import { filterAtomNameFromTableAndLevel } from '../../../../../modules/filterAtomNameFromTableAndLevel.ts'
-import { setNewFilterFromOldAndChange } from '../../../../../modules/setNewFilterFromOldAndChange.ts'
+import { setNewFilterFromOld } from '../../../../../modules/setNewFilterFromOld.ts'
 
 // this component focuses on creating the widgets
 export const Widget = memo(
@@ -67,9 +67,9 @@ export const Widget = memo(
           const filterName = filterAtomNameFromTableAndLevel({ table, level })
           const filterAtom = stores[filterName]
           const orFilters = stores.store.get(filterAtom)
-          return setNewFilterFromOldAndChange({
+          return setNewFilterFromOld({
             name: `data.${name}`,
-            value,
+            value: val[name],
             orFilters,
             orIndex,
             filterName,

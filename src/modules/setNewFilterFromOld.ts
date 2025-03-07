@@ -1,6 +1,6 @@
 import * as stores from '../store.ts'
 
-export const setNewFilterFromOldAndChange = ({
+export const setNewFilterFromOld = ({
   name,
   value,
   orFilters,
@@ -8,7 +8,7 @@ export const setNewFilterFromOldAndChange = ({
   filterName,
   targetType,
 }) => {
-  console.log('setNewFilterFromOldAndChange 0', {
+  console.log('setNewFilterFromOld 0', {
     name,
     value,
     orFilters,
@@ -19,7 +19,7 @@ export const setNewFilterFromOldAndChange = ({
   const valueIsText = ['text', 'email'].includes(targetType)
   const existingOrFilter = orFilters[orIndex]
   const newOrFilter = { ...existingOrFilter }
-  console.log('setNewFilterFromOldAndChange 1', {
+  console.log('setNewFilterFromOld 1', {
     existingOrFilter,
     newOrFilter,
   })
@@ -39,11 +39,11 @@ export const setNewFilterFromOldAndChange = ({
   } else {
     delete newOrFilter[name]
   }
-  console.log('setNewFilterFromOldAndChange 2', { newOrFilter })
+  console.log('setNewFilterFromOld 2', { newOrFilter })
   const newOrFilterIsEmpty = Object.keys(newOrFilter).length === 0
-  console.log('setNewFilterFromOldAndChange 3', { newOrFilterIsEmpty })
+  console.log('setNewFilterFromOld 3', { newOrFilterIsEmpty })
   const createNewOrFilters = orFilters.length === 0 && !newOrFilterIsEmpty
-  console.log('setNewFilterFromOldAndChange 4', { createNewOrFilters })
+  console.log('setNewFilterFromOld 4', { createNewOrFilters })
 
   const newFilterWithEmptys = createNewOrFilters
     ? [newOrFilter]
@@ -52,11 +52,11 @@ export const setNewFilterFromOldAndChange = ({
       orFilters.map((f, i) => (i === orIndex ? newOrFilter : f))
     : // remove the existing or filter
       orFilters.filter((f, i) => i !== orIndex)
-  console.log('setNewFilterFromOldAndChange 5', { newFilterWithEmptys })
+  console.log('setNewFilterFromOld 5', { newFilterWithEmptys })
   const newFilterWithoutEmptys = newFilterWithEmptys.filter(
     (f) => Object.keys(f).length > 0,
   )
-  console.log('setNewFilterFromOldAndChange 6', { newFilterWithoutEmptys })
+  console.log('setNewFilterFromOld 6', { newFilterWithoutEmptys })
   const filterAtom = stores[filterName]
   try {
     // TODO: re-activate

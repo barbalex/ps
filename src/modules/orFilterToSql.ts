@@ -11,7 +11,7 @@ export const orFilterToSql = (orFilter) => {
     const columnName = isData ? column.substring(5) : column
     const columnDescriptor = isData ? `data ->> '${columnName}'` : columnName
     if (typeof value === 'string') {
-      return `${columnDescriptor} ilike '%${value}%'`
+      return `(${columnDescriptor})::text ilike '%${value}%'`
     }
     if (value === null || value === undefined || value === '') {
       return `${columnDescriptor} IS NULL`

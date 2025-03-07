@@ -3,7 +3,7 @@ import type { InputProps } from '@fluentui/react-components'
 import { Outlet } from 'react-router-dom'
 
 import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
-import { setNewFilterFromOldAndChange } from '../../../modules/setNewFilterFromOldAndChange.ts'
+import { setNewFilterFromOld } from '../../../modules/setNewFilterFromOld.ts'
 
 import '../../../form.css'
 
@@ -29,7 +29,7 @@ export const OrFilter = memo(({ filterName, orFilters, orIndex }: Props) => {
         orFilters,
         orIndex,
       })
-      setNewFilterFromOldAndChange({
+      setNewFilterFromOld({
         name,
         value,
         orFilters,
