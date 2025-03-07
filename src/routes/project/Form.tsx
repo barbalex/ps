@@ -13,6 +13,17 @@ export const Component = memo(
     const row = rowFromProps ?? outletContext?.row ?? {}
     const orIndex = outletContext?.orIndex
 
+    const jsonbData =
+      row.data ??
+      Object.entries(row)
+        .filter(([name]) => name.startsWith('data.'))
+        .reduce((acc, [name, value]) => {
+          acc[name.replace('data.', '')] = value
+          return acc
+        }, {})
+
+    console.log('Project.Form, row:', { row, jsonbData })
+
     return (
       <div
         className="form-container"
@@ -31,7 +42,7 @@ export const Component = memo(
           table="projects"
           idField="project_id"
           id={row.project_id}
-          data={row.data ?? {}}
+          data={jsonbData}
           orIndex={orIndex}
         />
       </div>
