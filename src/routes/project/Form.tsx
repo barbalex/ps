@@ -3,6 +3,7 @@ import { useOutletContext } from 'react-router-dom'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
+import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 import '../../form.css'
 
 export const Component = memo(
@@ -19,17 +20,7 @@ export const Component = memo(
     // need to extract the jsonb data from the row
     // as inside filters it's name is a path
     // instead of it being inside of the data field
-    const jsonbData = useMemo(
-      () =>
-        row.data ??
-        Object.entries(row)
-          .filter(([name]) => name.startsWith('data.'))
-          .reduce((acc, [name, value]) => {
-            acc[name.replace('data.', '')] = value
-            return acc
-          }, {}),
-      [row],
-    )
+    const jsonbData = useMemo(() => jsonbDataFromRow(row), [row])
 
     return (
       <div

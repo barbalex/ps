@@ -12,10 +12,10 @@ import { FieldTypeNode } from './FieldType.tsx'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { treeOpenNodesAtom, fieldTypesFilterAtom } from '../../store.ts'
+import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 
 export const FieldTypesNode = memo(() => {
   const [filter] = useAtom(fieldTypesFilterAtom)
-  const isFiltered = !!filter
 
   const [openNodes] = useAtom(treeOpenNodesAtom)
 
@@ -23,10 +23,14 @@ export const FieldTypesNode = memo(() => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
+  const filterString = filterStringFromFilter(filter)
+  const isFiltered = !!filterString
   const resultFiltered = useLiveIncrementalQuery(
-    `SELECT * FROM field_types${
-      isFiltered ? ` WHERE ${filter}` : ''
-    } order by label asc`,
+    `
+    SELECT * 
+    FROM field_types
+    ${isFiltered ? ` WHERE ${filterString}` : ''} 
+    ORDER BY label`,
     undefined,
     'field_type_id',
   )
