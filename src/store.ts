@@ -82,7 +82,7 @@ export const treeOpenNodesAtom = atomWithStorage('treeOpenNodesAtom', [])
 // table filters
 // Using array of or-filters
 // Of objects with keys and value. why? because needs to be shown in the forms
-// key is path i.e. jsonb has form data.key
+// key is path i.e. jsonb is: data.key
 export const projectsFilterAtom = atomWithStorage<Record<string, unknown>[]>(
   'projectsFilterAtom',
   [],
