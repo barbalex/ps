@@ -4,6 +4,7 @@ import { Outlet } from 'react-router-dom'
 
 import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
 import { setNewFilterFromOld } from '../../../modules/setNewFilterFromOld.ts'
+import { parseRowsDates } from '../../../modules/parseRowsDates.ts'
 
 import '../../../form.css'
 
@@ -42,37 +43,14 @@ export const OrFilter = memo(({ filterName, orFilters, orIndex }: Props) => {
   )
 
   // when emptying an or filter, row is undefined - catch this
-  const row = useMemo(() => orFilters?.[orIndex] ?? {}, [orFilters, orIndex])
-
-  // some values are { contains: 'value' } - need to extract the value
-  const rowValues = Object.entries(row ?? {}).reduce((acc, [k, v]) => {
-    let value = v
-    // parse iso date if is or form will error
-    // need to exclude numbers
-    if (isNaN(value)) {
-      let parsedDate
-      try {
-        parsedDate = Date.parse(value)
-      } catch (error) {
-        console.log('OrFilter, error parsing date:', error)
-      }
-      if (!isNaN(parsedDate)) {
-        try {
-          value = new Date(parsedDate)
-        } catch (error) {
-          console.log('OrFilter, error creating date:', error)
-        }
-      }
-    }
-
-    return { ...acc, [k]: value }
-  }, {})
-
-  // console.log('OrFilter 2', { rowValues, row })
+  const row = useMemo(() => {
+    const row = orFilters?.[orIndex] ?? {}
+    return parseRowsDates(row)
+  }, [orFilters, orIndex])
 
   return (
     <div className="form-container filter">
-      <Outlet context={{ onChange, row: rowValues, orIndex }} />
+      <Outlet context={{ onChange, row, orIndex }} />
     </div>
   )
 })

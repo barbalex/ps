@@ -10,6 +10,7 @@ export const orFilterToSql = (orFilter) => {
     const isData = column.startsWith('data.')
     const columnName = isData ? column.substring(5) : column
     const columnDescriptor = isData ? `data ->> '${columnName}'` : columnName
+    // TODO: get type from orFilter's value object
     if (typeof value === 'string') {
       return `(${columnDescriptor})::text ilike '%${value}%'`
     }

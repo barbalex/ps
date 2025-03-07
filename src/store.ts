@@ -80,10 +80,9 @@ export const occurrenceFieldsSortedAtom = atomWithStorage(
 )
 export const treeOpenNodesAtom = atomWithStorage('treeOpenNodesAtom', [])
 // table filters
-// array: why? or-filters
-// of objects with keys: column, value. why? because needs to be shown in the forms
-// text fields are filtered with ilike
-// numbers, dates and uuids with =
+// Using array of or-filters
+// Of objects with keys and value. why? because needs to be shown in the forms
+// key is path i.e. jsonb has form data.key
 export const projectsFilterAtom = atomWithStorage<Record<string, unknown>[]>(
   'projectsFilterAtom',
   [],

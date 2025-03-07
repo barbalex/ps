@@ -16,7 +16,9 @@ export const setNewFilterFromOld = ({
     filterName,
     targetType,
   })
-  const valueIsText = ['text', 'email'].includes(targetType)
+  const useValueUnchanged = ['text', 'email', 'boolean', 'date'].includes(
+    targetType,
+  )
   const existingOrFilter = orFilters[orIndex]
   const newOrFilter = { ...existingOrFilter }
   console.log('setNewFilterFromOld 1', {
@@ -24,17 +26,11 @@ export const setNewFilterFromOld = ({
     newOrFilter,
   })
   if (value !== undefined && value !== null && value !== '') {
-    const isDate = value instanceof Date
-    newOrFilter[name] = valueIsText
-      ? value
-      : typeof value == 'boolean'
+    newOrFilter[name] = useValueUnchanged
       ? value // numbers get passed as string when coming from options
       : // need to convert them back to numbers
       !isNaN(value)
       ? parseFloat(value)
-      : // dates need to be converted to iso strings
-      isDate
-      ? value.toISOString()
       : value
   } else {
     delete newOrFilter[name]
@@ -59,7 +55,6 @@ export const setNewFilterFromOld = ({
   console.log('setNewFilterFromOld 6', { newFilterWithoutEmptys })
   const filterAtom = stores[filterName]
   try {
-    // TODO: re-activate
     stores.store.set(filterAtom, newFilterWithoutEmptys)
   } catch (error) {
     console.log('OrFilter, error updating app state:', error)
