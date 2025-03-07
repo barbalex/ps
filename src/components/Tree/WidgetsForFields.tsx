@@ -12,39 +12,57 @@ import { WidgetForFieldNode } from './WidgetForField.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom, widgetsForFieldsFilterAtom } from '../../store.ts'
+import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 
 export const WidgetsForFieldsNode = memo(() => {
   const [filter] = useAtom(widgetsForFieldsFilterAtom)
-  const isFiltered = !!filter
   const [openNodes] = useAtom(treeOpenNodesAtom)
 
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
+  const filterString = filterStringFromFilter(filter)
+  const isFiltered = !!filterString
   const resultFiltered = useLiveIncrementalQuery(
-    `SELECT * FROM widgets_for_fields${
-      isFiltered ? ` WHERE ${filter}` : ''
-    } order by label asc`,
+    `
+    SELECT 
+      widget_for_field_id,
+      label
+    FROM widgets_for_fields
+    ${isFiltered ? ` WHERE ${filterString}` : ''} 
+    ORDER BY label`,
     undefined,
     'widget_for_field_id',
   )
   const widgetsForFields = resultFiltered?.rows ?? []
+  const widgetsForFieldsLoading = resultFiltered === undefined
 
   const resultCountUnfiltered = useLiveQuery(
     `SELECT count(*) FROM widgets_for_fields`,
   )
   const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
+  const countUnfilteredLoading = resultCountUnfiltered === undefined
 
   const widgetsForFieldsNode = useMemo(
     () => ({
       label: `Widgets For Fields (${
         isFiltered
-          ? `${widgetsForFields.length}/${countUnfiltered}`
+          ? `${widgetsForFieldsLoading ? `...` : widgetsForFields.length}/${
+              countUnfilteredLoading ? `...` : countUnfiltered
+            }`
+          : widgetsForFieldsLoading
+          ? `...`
           : widgetsForFields.length
       })`,
     }),
-    [isFiltered, widgetsForFields.length, countUnfiltered],
+    [
+      isFiltered,
+      widgetsForFieldsLoading,
+      widgetsForFields.length,
+      countUnfilteredLoading,
+      countUnfiltered,
+    ],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
