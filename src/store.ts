@@ -87,7 +87,7 @@ export const projectsFilterAtom = atomWithStorage<Record<string, unknown>[]>(
   'projectsFilterAtom',
   [],
 )
-export const fieldsFilterAtom = atomWithStorage('fieldsFilterAtom', '')
+export const fieldsFilterAtom = atomWithStorage('fieldsFilterAtom', [])
 export const fieldTypesFilterAtom = atomWithStorage('fieldTypesFilterAtom', '')
 export const widgetTypesFilterAtom = atomWithStorage(
   'widgetTypesFilterAtom',

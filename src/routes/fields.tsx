@@ -9,11 +9,11 @@ import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import { fieldsFilterAtom } from '../store.ts'
+import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 import '../form.css'
 
 export const Component = memo(() => {
   const [filter] = useAtom(fieldsFilterAtom)
-  const isFiltered = !!filter
 
   const { project_id } = useParams()
   const navigate = useNavigate()
@@ -21,10 +21,15 @@ export const Component = memo(() => {
 
   const db = usePGlite()
 
+  const filterString = filterStringFromFilter(filter)
+  const isFiltered = !!filterString
   const res = useLiveIncrementalQuery(
-    `SELECT field_id, label FROM fields WHERE project_id ${
-      project_id ? `= '${project_id}'` : 'IS NULL'
-    }${isFiltered ? ` AND(${filter})` : ''} order by table_name, name, level`,
+    `
+    SELECT field_id, label 
+    FROM fields 
+    WHERE project_id ${project_id ? `= '${project_id}'` : 'IS NULL'}
+    ${filterString ? ` AND ${filterString}` : ''} 
+    ORDER BY table_name, name, level`,
     undefined,
     'field_id',
   )
