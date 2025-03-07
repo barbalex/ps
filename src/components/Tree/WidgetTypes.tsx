@@ -12,20 +12,24 @@ import { WidgetTypeNode } from './WidgetType.tsx'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { treeOpenNodesAtom, widgetTypesFilterAtom } from '../../store.ts'
+import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 
 export const WidgetTypesNode = memo(() => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [filter] = useAtom(widgetTypesFilterAtom)
-  const isFiltered = !!filter
 
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
+  const filterString = filterStringFromFilter(filter)
+  const isFiltered = !!filterString
   const resultFiltered = useLiveIncrementalQuery(
-    `SELECT * FROM widget_types${
-      isFiltered ? ` WHERE ${filter}` : ''
-    } order by label asc`,
+    `
+    SELECT * 
+    FROM widget_types
+    ${isFiltered ? ` WHERE ${filterString}` : ''} 
+    ORDER BY label`,
     undefined,
     'widget_type_id',
   )
