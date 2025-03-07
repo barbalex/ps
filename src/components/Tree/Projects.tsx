@@ -15,13 +15,12 @@ import { treeOpenNodesAtom, projectsFilterAtom } from '../../store.ts'
 import { orFilterToSql } from '../../modules/orFilterToSql.ts'
 
 export const ProjectsNode = memo(() => {
-  const [filter, setFilter] = useAtom(projectsFilterAtom)
+  const [filter] = useAtom(projectsFilterAtom)
   const isFiltered = filter.length > 0
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  // setFilter([])
 
   const filterString = filter.map((f) => `(${orFilterToSql(f)})`).join(' OR ')
   const resultFiltered = useLiveIncrementalQuery(

@@ -1,10 +1,9 @@
-import React, { useCallback, memo, useMemo } from 'react'
+import React, { useCallback, memo } from 'react'
 import type { InputProps } from '@fluentui/react-components'
 import { Outlet } from 'react-router-dom'
 
 import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
 import { setNewFilterFromOld } from '../../../modules/setNewFilterFromOld.ts'
-import { parseRowsDates } from '../../../modules/parseRowsDates.ts'
 
 import '../../../form.css'
 
@@ -16,6 +15,9 @@ type Props = {
 }
 
 export const OrFilter = memo(({ filterName, orFilters, orIndex }: Props) => {
+  // when emptying an or filter, row is undefined - catch this
+  const row = orFilters?.[orIndex] ?? {}
+
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value, targetType } = getValueFromChange(e, data)
@@ -30,12 +32,6 @@ export const OrFilter = memo(({ filterName, orFilters, orIndex }: Props) => {
     },
     [filterName, orFilters, orIndex],
   )
-
-  // when emptying an or filter, row is undefined - catch this
-  const row = useMemo(() => {
-    const row = orFilters?.[orIndex] ?? {}
-    return parseRowsDates(row)
-  }, [orFilters, orIndex])
 
   return (
     <div className="form-container filter">
