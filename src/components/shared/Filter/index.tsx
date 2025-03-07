@@ -43,12 +43,12 @@ export const Filter = memo(({ level }) => {
     return tableName
   }, [urlPath])
 
-  const res = useLiveIncrementalQuery(
+  const resPlaceLevel = useLiveIncrementalQuery(
     `SELECT * FROM place_levels WHERE project_id = $1 and level = $2 order by label`,
     [project_id, place_id ? 2 : 1],
     'place_level_id',
   )
-  const placeLevel = res?.rows?.[0]
+  const placeLevel = resPlaceLevel?.rows?.[0]
   // const placeNameSingular = placeLevel?.name_singular ?? 'Place'
   const placeNamePlural = placeLevel?.name_plural ?? 'Places'
 
@@ -134,29 +134,35 @@ export const Filter = memo(({ level }) => {
   //   project_id,
   // })
 
-  const resFiltered = useLiveQuery(
+  const res = useLiveQuery(
     `
-    SELECT * 
-    FROM ${tableName}
-    ${whereFilteredString ? ` WHERE ${whereFilteredString} ` : ''} 
-    ORDER BY label ASC`,
+      SELECT 
+        (
+          SELECT count(*)
+          FROM ${tableName}
+          ${whereFilteredString ? ` WHERE ${whereFilteredString} ` : ''}
+      ) as filtered_count,
+      (
+        SELECT count(*)
+        FROM ${tableName}
+        ${whereUnfilteredString ? ` WHERE ${whereUnfilteredString} ` : ''}
+      ) as total_count  
+      FROM ${tableName}
+      limit 1
+    `,
   )
-  const results = resFiltered?.rows ?? []
-  const resUnfiltered = useLiveQuery(
-    `
-    SELECT * 
-    FROM ${tableName}
-    ${whereUnfilteredString ? ` WHERE ${whereUnfilteredString} ` : ''} 
-    ORDER BY label ASC`,
-  )
-  const resultsUnfiltered = resUnfiltered?.rows ?? []
+  const results = res?.rows ?? []
+  const totalCount = results[0]?.total_count ?? 0
+  const isLoading = res === undefined
 
-  // console.log('Filter 3', { results, resultsUnfiltered })
+  console.log('Filter 3, results:', results)
 
   return (
     <div className="form-outer-container">
       <FilterHeader
-        title={`${title} (${results.length}/${resultsUnfiltered.length})`}
+        title={`${title} (${isLoading ? `...` : results.length}/${
+          isLoading ? `...` : totalCount
+        })`}
         filterName={filterAtomName}
         isFiltered={isFiltered}
       />

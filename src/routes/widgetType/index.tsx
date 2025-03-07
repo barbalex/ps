@@ -26,7 +26,8 @@ export const Component = memo(() => {
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
-      
+      console.log('WidgetType.onChange', { name, value })
+
       const sql = `UPDATE widget_types SET ${name} = $1 WHERE widget_type_id = $2`
       db.query(sql, [value, widget_type_id])
     },
