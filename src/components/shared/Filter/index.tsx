@@ -151,16 +151,23 @@ export const Filter = memo(({ level }) => {
       limit 1
     `,
   )
-  const results = res?.rows ?? []
-  const totalCount = results[0]?.total_count ?? 0
   const isLoading = res === undefined
+  const row = res?.rows?.[0]
+  const filteredCount = row?.filtered_count ?? 0
+  const totalCount = row?.total_count ?? 0
 
-  console.log('Filter 3, results:', results)
+  // console.log('Filter 3, res:', {
+  //   res,
+  //   row,
+  //   filteredCount,
+  //   totalCount,
+  //   isLoading,
+  // })
 
   return (
     <div className="form-outer-container">
       <FilterHeader
-        title={`${title} (${isLoading ? `...` : results.length}/${
+        title={`${title} (${isLoading ? `...` : filteredCount}/${
           isLoading ? `...` : totalCount
         })`}
         filterName={filterAtomName}
