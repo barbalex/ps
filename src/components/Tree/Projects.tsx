@@ -32,22 +32,36 @@ export const ProjectsNode = memo(() => {
       name 
     FROM projects
     ${filterString ? ` WHERE ${filterString}` : ''} 
-    ORDER BY label ASC`,
+    ORDER BY label`,
     undefined,
     'project_id',
   )
   const projects = resultFiltered?.rows ?? []
+  const projectsLoading = resultFiltered === undefined
 
   const resultCountUnfiltered = useLiveQuery(`SELECT count(*) FROM projects`)
   const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
+  const countLoading = resultCountUnfiltered === undefined
 
   const projectsNode = useMemo(
     () => ({
       label: `Projects (${
-        isFiltered ? `${projects.length}/${countUnfiltered}` : projects.length
+        isFiltered
+          ? `${projectsLoading ? '...' : projects.length}/${
+              countLoading ? '...' : countUnfiltered
+            }`
+          : projectsLoading
+          ? '...'
+          : projects.length
       })`,
     }),
-    [isFiltered, projects.length, countUnfiltered],
+    [
+      isFiltered,
+      projectsLoading,
+      projects.length,
+      countLoading,
+      countUnfiltered,
+    ],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
