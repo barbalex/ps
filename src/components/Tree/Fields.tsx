@@ -28,10 +28,14 @@ export const FieldsNode = memo(({ project_id }: Props) => {
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
   const resultFiltered = useLiveIncrementalQuery(
-    `SELECT field_id, label 
+    `
+    SELECT 
+      field_id, 
+      label 
     FROM fields 
-    WHERE project_id ${project_id ? `= '${project_id}'` : 'IS NULL'}
-    ${filterString ? ` AND ${filterString}` : ''} 
+    WHERE 
+      project_id ${project_id ? `= '${project_id}'` : 'IS NULL'}
+      ${filterString ? ` AND ${filterString}` : ''} 
     ORDER BY 
       table_name, 
       name, 
@@ -40,20 +44,30 @@ export const FieldsNode = memo(({ project_id }: Props) => {
     'field_id',
   )
   const fields = resultFiltered?.rows ?? []
+  const fieldsLoading = resultFiltered === undefined
 
   const resultCountUnfiltered = useLiveQuery(
-    `SELECT count(*) FROM fields 
+    `
+    SELECT count(*) 
+    FROM fields 
     WHERE project_id  ${project_id ? `= '${project_id}'` : 'IS NULL'}`,
   )
   const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
+  const countLoading = resultCountUnfiltered === undefined
 
   const fieldsNode = useMemo(
     () => ({
       label: `Fields (${
-        isFiltered ? `${fields.length}/${countUnfiltered}` : fields.length
+        isFiltered
+          ? `${fieldsLoading ? '...' : fields.length}/${
+              countLoading ? '...' : countUnfiltered
+            }`
+          : fieldsLoading
+          ? '...'
+          : fields.length
       })`,
     }),
-    [fields.length, countUnfiltered, isFiltered],
+    [isFiltered, fieldsLoading, fields.length, countLoading, countUnfiltered],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
