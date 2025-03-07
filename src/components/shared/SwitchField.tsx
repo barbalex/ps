@@ -12,7 +12,7 @@ export const SwitchField = memo(
   ({
     label,
     name,
-    value = false,
+    value: valueIn,
     onChange,
     autoFocus,
     disabled = false,
@@ -20,24 +20,29 @@ export const SwitchField = memo(
     validationState = 'none',
     button,
     ref,
-  }) => (
-    <div style={containerStyle}>
-      <Field
-        label={undefined}
-        validationMessage={validationMessage}
-        validationState={validationState}
-      >
-        <Switch
-          label={label ?? '(no label provided)'}
-          name={name}
-          checked={value}
-          onChange={onChange}
-          autoFocus={autoFocus}
-          ref={ref}
-          disabled={disabled}
-        />
-      </Field>
-      {button ? button : null}
-    </div>
-  ),
+  }) => {
+    // ensure value is true, false or null
+    const value = valueIn === true ? true : valueIn === false ? false : null
+
+    return (
+      <div style={containerStyle}>
+        <Field
+          label={undefined}
+          validationMessage={validationMessage}
+          validationState={validationState}
+        >
+          <Switch
+            label={label ?? '(no label provided)'}
+            name={name}
+            checked={value}
+            onChange={onChange}
+            autoFocus={autoFocus}
+            ref={ref}
+            disabled={disabled}
+          />
+        </Field>
+        {button ? button : null}
+      </div>
+    )
+  },
 )
