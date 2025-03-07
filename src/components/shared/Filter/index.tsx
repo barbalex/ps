@@ -90,10 +90,11 @@ export const Filter = memo(({ level }) => {
     let whereUnfiltered
     // add parent_id for all filterable tables below subprojects
     if (tableName === 'places') {
-      const parentFilter = { parent_id: place_id ? place_id : null }
+      const parentFilter = { parent_id: place_id ?? null }
       for (const orFilter of filter) {
         Object.assign(orFilter, parentFilter)
       }
+      if (!filter.length) filter.push(parentFilter)
       whereUnfiltered = parentFilter
     }
     if (['actions', 'checks', 'place_reports'].includes(tableName)) {
@@ -101,15 +102,25 @@ export const Filter = memo(({ level }) => {
       for (const orFilter of filter) {
         Object.assign(orFilter, placeFilter)
       }
+      if (!filter.length) filter.push(placeFilter)
       whereUnfiltered = placeFilter
+    }
+    // tables that need to be filtered by project_id
+    if (['fields'].includes(tableName)) {
+      const projectFilter = { project_id: project_id ?? null }
+      for (const orFilter of filter) {
+        Object.assign(orFilter, projectFilter)
+      }
+      if (!filter.length) filter.push(projectFilter)
+      whereUnfiltered = projectFilter
     }
     const whereFilteredString = filterStringFromFilter(filter)
     const whereUnfilteredString = whereUnfiltered
-      ? ` WHERE ${orFilterToSql(whereUnfiltered)}`
+      ? orFilterToSql(whereUnfiltered)
       : ''
 
     return { whereUnfilteredString, whereFilteredString }
-  }, [filter, place_id, place_id2, tableName])
+  }, [filter, place_id, place_id2, project_id, tableName])
 
   // console.log('Filter 3', {
   //   tableName,
@@ -117,8 +128,10 @@ export const Filter = memo(({ level }) => {
   //   title,
   //   level,
   //   whereUnfilteredString,
+  //   whereFilteredString,
   //   filter,
   //   place_id,
+  //   project_id,
   // })
 
   const resFiltered = useLiveQuery(
