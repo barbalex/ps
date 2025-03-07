@@ -1,4 +1,4 @@
-import { memo, useState, useCallback } from 'react'
+import { memo, useState, useCallback, useMemo } from 'react'
 import {
   useLiveQuery,
   useLiveIncrementalQuery,
@@ -27,18 +27,21 @@ export const Filter = memo(({ level }) => {
   const location = useLocation()
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
 
-  // reading these values from the url path
-  // if this fails in some situations, we can pass these as props
-  let tableName = urlPath[urlPath.length - 2].replaceAll('-', '_')
-  // TODO: if tableName is 'reports', need to specify whether: action, place, goal, subproject, project
-  if (tableName === 'reports') {
-    // reports can be of multiple types: action, place, goal, subproject, project
-    // need to specify the type of report
-    const grandParent = urlPath[urlPath.length - 4]
-    // the prefix to the tableName is the grandParent without its last character (s)
-    tableName = `${grandParent.slice(0, -1)}_${tableName}`
-  }
-  // for tableNameForTitle: replace all underscores with spaces and uppercase all first letters
+  const tableName = useMemo(() => {
+    // reading these values from the url path
+    // if this fails in some situations, we can pass these as props
+    let tableName = urlPath[urlPath.length - 2].replaceAll('-', '_')
+    // TODO: if tableName is 'reports', need to specify whether: action, place, goal, subproject, project
+    if (tableName === 'reports') {
+      // reports can be of multiple types: action, place, goal, subproject, project
+      // need to specify the type of report
+      const grandParent = urlPath[urlPath.length - 4]
+      // the prefix to the tableName is the grandParent without its last character (s)
+      tableName = `${grandParent.slice(0, -1)}_${tableName}`
+    }
+    return tableName
+  }, [urlPath])
+
   const res = useLiveIncrementalQuery(
     `SELECT * FROM place_levels WHERE project_id = $1 and level = $2 order by label`,
     [project_id, place_id ? 2 : 1],
@@ -48,15 +51,19 @@ export const Filter = memo(({ level }) => {
   // const placeNameSingular = placeLevel?.name_singular ?? 'Place'
   const placeNamePlural = placeLevel?.name_plural ?? 'Places'
 
-  const tableNameForTitle =
-    tableName === 'places'
-      ? placeNamePlural
-      : tableName
-          .split('_')
-          .map((w) => w[0].toUpperCase() + w.slice(1))
-          .join(' ')
+  const title = useMemo(() => {
+    // for tableNameForTitle: replace all underscores with spaces and uppercase all first letters
+    const tableNameForTitle =
+      tableName === 'places'
+        ? placeNamePlural
+        : tableName
+            .split('_')
+            .map((w) => w[0].toUpperCase() + w.slice(1))
+            .join(' ')
 
-  const title = `${tableNameForTitle} Filters`
+    const title = `${tableNameForTitle} Filters`
+    return title
+  }, [tableName, placeNamePlural])
 
   const [activeTab, setActiveTab] = useState(1)
   // add 1 and 2 when below subproject_id
@@ -69,47 +76,51 @@ export const Filter = memo(({ level }) => {
   })
   const filterAtom = stores[filterAtomName]
   // stores.store.set(filterAtom, [])
-  // ISSUE: as not using hook, need to manually subscribe to the store
-  // and enforce rerender when the store changes
+
+  // Not using hook to enable fetching filter dynamically depending on name
+  // Thus need to subscribe to the store and enforce rerender when it changes
   stores.store.sub(filterAtom, rerender)
-  const filter = stores?.store?.get?.(filterAtom) ?? []
-  console.log('Filter, filter:', filter)
-  let whereUnfiltered
 
-  // add parent_id for all filterable tables below subprojects
-  if (tableName === 'places') {
-    const parentFilter = { parent_id: place_id ? place_id : null }
-    for (const orFilter of filter) {
-      Object.assign(orFilter, parentFilter)
-    }
-    whereUnfiltered = parentFilter
-  }
-  if (['actions', 'checks', 'place_reports'].includes(tableName)) {
-    const placeFilter = { place_id: place_id2 ?? place_id }
-    for (const orFilter of filter) {
-      Object.assign(orFilter, placeFilter)
-    }
-    whereUnfiltered = placeFilter
-  }
-  const whereFilteredString = filter
-    .map((f) => `(${orFilterToSql(f)})`)
-    .join(' OR ')
-  const whereUnfilteredString = whereUnfiltered
-    ? ` WHERE ${orFilterToSql(whereUnfiltered)}`
-    : ''
-  // TODO: need to add parent_id when below place_id/place_id2
+  const filter = stores?.store?.get?.(filterAtom)
   const isFiltered = filter.length > 0
+  // console.log('Filter, filter:', filter)
 
-  console.log('Filter 3', {
-    tableName,
-    filterAtomName,
-    tableNameForTitle,
-    title,
-    level,
-    whereUnfiltered,
-    filter,
-    place_id,
-  })
+  const { whereUnfilteredString, whereFilteredString } = useMemo(() => {
+    let whereUnfiltered
+    // add parent_id for all filterable tables below subprojects
+    if (tableName === 'places') {
+      const parentFilter = { parent_id: place_id ? place_id : null }
+      for (const orFilter of filter) {
+        Object.assign(orFilter, parentFilter)
+      }
+      whereUnfiltered = parentFilter
+    }
+    if (['actions', 'checks', 'place_reports'].includes(tableName)) {
+      const placeFilter = { place_id: place_id2 ?? place_id }
+      for (const orFilter of filter) {
+        Object.assign(orFilter, placeFilter)
+      }
+      whereUnfiltered = placeFilter
+    }
+    const whereFilteredString = filter
+      .map((f) => `(${orFilterToSql(f)})`)
+      .join(' OR ')
+    const whereUnfilteredString = whereUnfiltered
+      ? ` WHERE ${orFilterToSql(whereUnfiltered)}`
+      : ''
+
+    return { whereUnfilteredString, whereFilteredString }
+  }, [filter, place_id, place_id2, tableName])
+
+  // console.log('Filter 3', {
+  //   tableName,
+  //   filterAtomName,
+  //   title,
+  //   level,
+  //   whereUnfilteredString,
+  //   filter,
+  //   place_id,
+  // })
 
   const resFiltered = useLiveQuery(
     `
@@ -128,10 +139,7 @@ export const Filter = memo(({ level }) => {
   )
   const resultsUnfiltered = resUnfiltered?.rows ?? []
 
-  console.log('Filter 4', {
-    results,
-    resultsUnfiltered,
-  })
+  // console.log('Filter 3', { results, resultsUnfiltered })
 
   return (
     <div className="form-outer-container">

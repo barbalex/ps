@@ -49,19 +49,9 @@ export const Widget = memo(
           val[name] = isDate ? value.toISOString() : value
         }
 
-        console.log('Widget.onChange', {
-          name,
-          value,
-          isDate,
-          val,
-        })
-
         const isFilter = pathname.endsWith('filter')
 
         if (isFilter) {
-          // TODO: wait until new db and it's accessing lib. Then implement these queries
-          // when filtering no id is passed for the row
-          // how to filter on jsonb fields?
           const level =
             table === 'places' ? (place_id ? 2 : 1) : place_id2 ? 2 : 1
           const filterName = filterAtomNameFromTableAndLevel({ table, level })
@@ -105,16 +95,6 @@ export const Widget = memo(
     const label = field.field_label ? field.field_label : field.name
     const type = field.field_type === 'integer' ? 'number' : field.field_type
 
-    console.log('Widget', {
-      name,
-      value,
-      type,
-      data,
-    })
-
-    // TODO: drag and drop to order
-    // only if editing
-    // not if editingField
     // TODO: add: markdown, rich-text, jes-no (rename existing to switch)
     switch (field.widget_type) {
       case 'text':

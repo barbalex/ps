@@ -16,6 +16,9 @@ export const Component = memo(
     )
     const orIndex = outletContext?.orIndex
 
+    // need to extract the jsonb data from the row
+    // as inside filters it's name is a path
+    // instead of it being inside of the data field
     const jsonbData = useMemo(
       () =>
         row.data ??
@@ -27,8 +30,6 @@ export const Component = memo(
           }, {}),
       [row],
     )
-
-    console.log('Project.Form, row:', { row, jsonbData })
 
     return (
       <div

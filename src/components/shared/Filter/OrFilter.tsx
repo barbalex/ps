@@ -16,20 +16,9 @@ type Props = {
 }
 
 export const OrFilter = memo(({ filterName, orFilters, orIndex }: Props) => {
-  // TODO: add more filters here
-  // console.log('OrFilter 1', { filterObject, orFilters, orIndex })
-
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value, targetType } = getValueFromChange(e, data)
-      console.log('OrFilter.onChange', {
-        filterName,
-        targetType,
-        name,
-        value,
-        orFilters,
-        orIndex,
-      })
       setNewFilterFromOld({
         name,
         value,

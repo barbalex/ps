@@ -10,22 +10,26 @@ export const orFilterToSql = (orFilter) => {
     const isData = column.startsWith('data.')
     const columnName = isData ? column.substring(5) : column
     const columnDescriptor = isData ? `data ->> '${columnName}'` : columnName
-    // TODO: get type from orFilter's value object
+    // cast text and filter with ilike
     if (typeof value === 'string') {
       return `(${columnDescriptor})::text ilike '%${value}%'`
     }
+    // set nulls the right way
     if (value === null || value === undefined || value === '') {
       return `${columnDescriptor} IS NULL`
     }
+    // correctly cast booleans
     if (typeof value === 'boolean') {
       return `(${columnDescriptor})::boolean IS ${value}`
     }
+    // correctly cast numbers
     if (!isNaN(value)) {
       return `(${columnDescriptor})::numeric = ${value}`
     }
+    // catch all others
     return `${columnDescriptor} = ${value}`
   })
   const sql = whereClauses.join(' AND ')
-  console.log('orFilterToSql', { orFilter, whereClauses, sql })
+
   return sql
 }
