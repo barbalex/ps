@@ -34,21 +34,33 @@ export const WidgetTypesNode = memo(() => {
     'widget_type_id',
   )
   const widgetTypes = resultFiltered?.rows ?? []
+  const widgetTypesLoading = resultFiltered === undefined
 
   const resultCountUnfiltered = useLiveQuery(
     `SELECT count(*) FROM widget_types`,
   )
   const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count
+  const countLoading = resultCountUnfiltered === undefined
 
   const widgetTypesNode = useMemo(
     () => ({
       label: `Widget Types (${
         isFiltered
-          ? `${widgetTypes.length}/${countUnfiltered}`
+          ? `${widgetTypesLoading ? '...' : widgetTypes.length}/${
+              countLoading ? '...' : countUnfiltered
+            }`
+          : widgetTypesLoading
+          ? '...'
           : widgetTypes.length
       })`,
     }),
-    [isFiltered, widgetTypes.length, countUnfiltered],
+    [
+      isFiltered,
+      widgetTypesLoading,
+      widgetTypes.length,
+      countLoading,
+      countUnfiltered,
+    ],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

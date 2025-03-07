@@ -35,19 +35,31 @@ export const FieldTypesNode = memo(() => {
     'field_type_id',
   )
   const fieldTypes = resultFiltered?.rows ?? []
+  const fieldTypesLoading = resultFiltered === undefined
 
   const countResultUnfiltered = useLiveQuery(`SELECT count(*) FROM field_types`)
   const countUnfiltered = countResultUnfiltered?.rows?.[0]?.count ?? 0
+  const countLoading = countResultUnfiltered === undefined
 
   const fieldTypesNode = useMemo(
     () => ({
       label: `Field Types (${
         isFiltered
-          ? `${fieldTypes.length}/${countUnfiltered}`
+          ? `${fieldTypesLoading ? '...' : fieldTypes.length}/${
+              countLoading ? '...' : countUnfiltered
+            }`
+          : fieldTypesLoading
+          ? '...'
           : fieldTypes.length
       })`,
     }),
-    [fieldTypes.length, countUnfiltered, isFiltered],
+    [
+      isFiltered,
+      fieldTypesLoading,
+      fieldTypes.length,
+      countLoading,
+      countUnfiltered,
+    ],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
