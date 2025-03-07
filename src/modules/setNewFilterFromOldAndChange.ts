@@ -8,7 +8,7 @@ export const setNewFilterFromOldAndChange = ({
   filterName,
   targetType,
 }) => {
-  console.log('newFilterFromOldAndChange 0', {
+  console.log('setNewFilterFromOldAndChange 0', {
     name,
     value,
     orFilters,
@@ -19,13 +19,17 @@ export const setNewFilterFromOldAndChange = ({
   const valueIsText = ['text', 'email'].includes(targetType)
   const existingOrFilter = orFilters[orIndex]
   const newOrFilter = { ...existingOrFilter }
-  console.log('newFilterFromOldAndChange 1', { existingOrFilter, newOrFilter })
+  console.log('setNewFilterFromOldAndChange 1', {
+    existingOrFilter,
+    newOrFilter,
+  })
   if (value !== undefined && value !== null && value !== '') {
     const isDate = value instanceof Date
     newOrFilter[name] = valueIsText
       ? value
-      : // numbers get passed as string when coming from options
-      // need to convert them back to numbers
+      : typeof value == 'boolean'
+      ? value // numbers get passed as string when coming from options
+      : // need to convert them back to numbers
       !isNaN(value)
       ? parseFloat(value)
       : // dates need to be converted to iso strings
@@ -35,11 +39,11 @@ export const setNewFilterFromOldAndChange = ({
   } else {
     delete newOrFilter[name]
   }
-  console.log('newFilterFromOldAndChange 2', { newOrFilter })
+  console.log('setNewFilterFromOldAndChange 2', { newOrFilter })
   const newOrFilterIsEmpty = Object.keys(newOrFilter).length === 0
-  console.log('newFilterFromOldAndChange 3', { newOrFilterIsEmpty })
+  console.log('setNewFilterFromOldAndChange 3', { newOrFilterIsEmpty })
   const createNewOrFilters = orFilters.length === 0 && !newOrFilterIsEmpty
-  console.log('newFilterFromOldAndChange 4', { createNewOrFilters })
+  console.log('setNewFilterFromOldAndChange 4', { createNewOrFilters })
 
   const newFilterWithEmptys = createNewOrFilters
     ? [newOrFilter]
@@ -48,11 +52,11 @@ export const setNewFilterFromOldAndChange = ({
       orFilters.map((f, i) => (i === orIndex ? newOrFilter : f))
     : // remove the existing or filter
       orFilters.filter((f, i) => i !== orIndex)
-  console.log('newFilterFromOldAndChange 5', { newFilterWithEmptys })
+  console.log('setNewFilterFromOldAndChange 5', { newFilterWithEmptys })
   const newFilterWithoutEmptys = newFilterWithEmptys.filter(
     (f) => Object.keys(f).length > 0,
   )
-  console.log('newFilterFromOldAndChange 6', { newFilterWithoutEmptys })
+  console.log('setNewFilterFromOldAndChange 6', { newFilterWithoutEmptys })
   const filterAtom = stores[filterName]
   try {
     // TODO: re-activate

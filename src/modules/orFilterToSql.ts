@@ -16,6 +16,9 @@ export const orFilterToSql = (orFilter) => {
     if (value === null || value === undefined || value === '') {
       return `${columnDescriptor} IS NULL`
     }
+    if (typeof value === 'boolean') {
+      return `${columnDescriptor} IS ${value}`
+    }
     return `${columnDescriptor} = ${value}`
   })
   const sql = whereClauses.join(' AND ')

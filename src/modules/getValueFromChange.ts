@@ -7,6 +7,8 @@ export const getValueFromChange = (
   const name = e.target.name
   const targetType = e.target.type
 
+  console.log('getValueFromChange', { name, targetType, data, e })
+
   switch (targetType) {
     case 'checkbox':
       return { value: data?.checked, name, targetType }

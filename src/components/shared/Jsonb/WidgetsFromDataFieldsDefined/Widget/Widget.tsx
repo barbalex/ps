@@ -49,6 +49,13 @@ export const Widget = memo(
           val[name] = isDate ? value.toISOString() : value
         }
 
+        console.log('Widget.onChange', {
+          name,
+          value,
+          isDate,
+          val,
+        })
+
         const isFilter = pathname.endsWith('filter')
 
         if (isFilter) {
@@ -97,6 +104,13 @@ export const Widget = memo(
     const value = data?.[name] ?? ''
     const label = field.field_label ? field.field_label : field.name
     const type = field.field_type === 'integer' ? 'number' : field.field_type
+
+    console.log('Widget', {
+      name,
+      value,
+      type,
+      data,
+    })
 
     // TODO: drag and drop to order
     // only if editing

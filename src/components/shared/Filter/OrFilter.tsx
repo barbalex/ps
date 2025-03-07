@@ -46,7 +46,7 @@ export const OrFilter = memo(({ filterName, orFilters, orIndex }: Props) => {
 
   // some values are { contains: 'value' } - need to extract the value
   const rowValues = Object.entries(row ?? {}).reduce((acc, [k, v]) => {
-    let value = typeof v === 'object' ? v.contains : v
+    let value = v
     // parse iso date if is or form will error
     // need to exclude numbers
     if (isNaN(value)) {

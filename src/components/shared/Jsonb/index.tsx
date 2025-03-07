@@ -14,7 +14,7 @@ import { TextField } from '../TextField.tsx'
 import { accountTables } from '../../../routes/field/accountTables.ts'
 import { AddField } from './AddField.tsx'
 import { WidgetsFromDataFieldsDefined } from './WidgetsFromDataFieldsDefined/index.tsx'
-import { snakeToCamel } from '../../../modules/snakeToCamel.ts'
+import { filterAtomNameFromTableAndLevel } from '../../../modules/filterAtomNameFromTableAndLevel.ts'
 import * as stores from '../../../store.ts'
 
 // and focus the name field on first render?
@@ -23,7 +23,8 @@ export const Jsonb = memo(
     table,
     name: jsonFieldName = 'data',
     idField,
-    id,orIndex,
+    id,
+    orIndex,
     data = {},
     autoFocus = false,
     ref,
@@ -78,8 +79,10 @@ export const Jsonb = memo(
           // https://discord.com/channels/933657521581858818/1248997155448819775/1248997155448819775
           // example from electric-sql discord: https://discord.com/channels/933657521581858818/1246045111478124645
           // where: { [jsonbFieldName]: { path: ["is_admin"], equals: true } },
-          const filterAtom =
-            stores[`${snakeToCamel(table)}${level ? `${level}` : ''}FilterAtom`]
+          const filterAtom = filterAtomNameFromTableAndLevel({
+            table,
+            level,
+          })
           const activeFilter = stores.store.get(filterAtom)
           const newFilter = `${
             activeFilter.length ? `${activeFilter} AND ` : ''
