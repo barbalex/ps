@@ -17,7 +17,7 @@ export const orFilterToSql = (orFilter) => {
       return `${columnDescriptor} IS NULL`
     }
     if (typeof value === 'boolean') {
-      return `${columnDescriptor} IS ${value}`
+      return `(${columnDescriptor})::boolean IS ${value}`
     }
     return `${columnDescriptor} = ${value}`
   })

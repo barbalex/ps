@@ -135,7 +135,7 @@ export const Widget = memo(
           <SwitchField
             label={label}
             name={name}
-            value={value}
+            value={!!value}
             onChange={onChange}
             autoFocus={autoFocus}
             ref={ref}
