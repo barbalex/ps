@@ -16,9 +16,9 @@ export const setNewFilterFromOld = ({
   //   filterName,
   //   targetType,
   // })
-  const useValueUnchanged = ['text', 'email', 'boolean', 'date'].includes(
-    targetType,
-  )
+  const useValueUnchanged =
+    ['text', 'email', 'boolean', 'date'].includes(targetType) ||
+    typeof value === 'boolean'
   const existingOrFilter = orFilters[orIndex]
   const newOrFilter = { ...existingOrFilter }
   // console.log('setNewFilterFromOld 1', {
