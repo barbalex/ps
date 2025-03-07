@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, useMemo } from 'react'
 import { useOutletContext } from 'react-router-dom'
 
 import { TextField } from '../../components/shared/TextField.tsx'
@@ -10,17 +10,23 @@ export const Component = memo(
     // beware: contextFromOutlet is undefined if not inside an outlet
     const outletContext = useOutletContext()
     const onChange = onChangeFromProps ?? outletContext?.onChange
-    const row = rowFromProps ?? outletContext?.row ?? {}
+    const row = useMemo(
+      () => rowFromProps ?? outletContext?.row ?? {},
+      [outletContext?.row, rowFromProps],
+    )
     const orIndex = outletContext?.orIndex
 
-    const jsonbData =
-      row.data ??
-      Object.entries(row)
-        .filter(([name]) => name.startsWith('data.'))
-        .reduce((acc, [name, value]) => {
-          acc[name.replace('data.', '')] = value
-          return acc
-        }, {})
+    const jsonbData = useMemo(
+      () =>
+        row.data ??
+        Object.entries(row)
+          .filter(([name]) => name.startsWith('data.'))
+          .reduce((acc, [name, value]) => {
+            acc[name.replace('data.', '')] = value
+            return acc
+          }, {}),
+      [row],
+    )
 
     console.log('Project.Form, row:', { row, jsonbData })
 

@@ -19,6 +19,9 @@ export const orFilterToSql = (orFilter) => {
     if (typeof value === 'boolean') {
       return `(${columnDescriptor})::boolean IS ${value}`
     }
+    if (!isNaN(value)) {
+      return `(${columnDescriptor})::numeric = ${value}`
+    }
     return `${columnDescriptor} = ${value}`
   })
   const sql = whereClauses.join(' AND ')
