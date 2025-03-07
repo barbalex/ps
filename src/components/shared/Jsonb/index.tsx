@@ -90,7 +90,6 @@ export const Jsonb = memo(
           stores.store.set(filterAtom, newFilter)
           return
         }
-        // TODO: test
         const sql = `UPDATE ${table} SET ${jsonFieldName} = $1 WHERE ${idField} = $2`
         try {
           await db.query(sql, [val, id])
