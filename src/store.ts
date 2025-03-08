@@ -99,7 +99,7 @@ export const widgetsForFieldsFilterAtom = atomWithStorage(
 )
 export const projectReportsFilterAtom = atomWithStorage(
   'projectReportsFilterAtom',
-  '',
+  [],
 )
 export const personsFilterAtom = atomWithStorage('personsFilterAtom', '')
 export const wmsLayersFilterAtom = atomWithStorage('wmsLayersFilterAtom', '')
