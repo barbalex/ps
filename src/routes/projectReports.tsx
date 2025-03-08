@@ -22,9 +22,14 @@ export const Component = memo(() => {
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
   const res = useLiveIncrementalQuery(
-    `SELECT project_report_id, label FROM project_reports WHERE project_id = $1${
-      isFiltered ? ` AND(${filter})` : ''
-    } order by label asc`,
+    `
+    SELECT 
+      project_report_id, 
+      label 
+    FROM project_reports 
+    WHERE project_id = $1
+    ${isFiltered ? ` AND(${filterString})` : ''} 
+    ORDER BY label`,
     [project_id],
     'project_report_id',
   )
