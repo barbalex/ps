@@ -107,8 +107,8 @@ export const vectorLayersFilterAtom = atomWithStorage(
   'vectorLayersFilterAtom',
   [],
 )
-export const listsFilterAtom = atomWithStorage('listsFilterAtom', '')
-export const unitsFilterAtom = atomWithStorage('unitsFilterAtom', '')
+export const listsFilterAtom = atomWithStorage('listsFilterAtom', [])
+export const unitsFilterAtom = atomWithStorage('unitsFilterAtom', [])
 export const subprojectsFilterAtom = atomWithStorage(
   'subprojectsFilterAtom',
   '',
