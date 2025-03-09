@@ -10,6 +10,7 @@ import { LayerMenu } from '../components/shared/LayerMenu.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import { actions1FilterAtom, actions2FilterAtom } from '../store.ts'
+import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 
 import '../form.css'
 
@@ -23,17 +24,23 @@ export const Component = memo(() => {
   const db = usePGlite()
 
   const filter = place_id2 ? actions2Filter : actions1Filter
+  const filterString = filterStringFromFilter(filter)
+  const isFiltered = !!filterString
   const res = useLiveIncrementalQuery(
-    `SELECT action_id, label FROM actions WHERE place_id = $1${
-      filter && ` AND (${filter})`
-    } order by label asc`,
+    `
+    SELECT 
+      action_id, 
+      label 
+    FROM actions 
+    WHERE 
+      place_id = $1
+      ${isFiltered && ` AND ${filterString} `} 
+    ORDER BY label`,
     [place_id2 ?? place_id],
     'action_id',
   )
   const isLoading = res === undefined
   const actions = res?.rows ?? []
-
-  const isFiltered = filter.length > 0
 
   const add = useCallback(async () => {
     const res = await createAction({

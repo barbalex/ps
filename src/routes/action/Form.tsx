@@ -5,6 +5,7 @@ import { DateField } from '../../components/shared/DateField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
 import { EditingGeometry } from '../../components/shared/EditingGeometry.tsx'
+import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 
 import '../../form.css'
 
@@ -14,7 +15,16 @@ export const Component = memo(
     // beware: contextFromOutlet is undefined if not inside an outlet
     const outletContext = useOutletContext()
     const onChange = onChangeFromProps ?? outletContext?.onChange
-    const row = rowFromProps ?? outletContext?.row ?? {}
+    const row = useMemo(
+      () => rowFromProps ?? outletContext?.row ?? {},
+      [outletContext?.row, rowFromProps],
+    )
+    const orIndex = outletContext?.orIndex
+
+    // need to extract the jsonb data from the row
+    // as inside filters it's name is a path
+    // instead of it being inside of the data field
+    const jsonbData = useMemo(() => jsonbDataFromRow(row), [row])
 
     return (
       <>
@@ -34,11 +44,15 @@ export const Component = memo(
           table="actions"
           idField="action_id"
           id={row.action_id}
-          data={row.data ?? {}}
+          data={jsonbData}
+          orIndex={orIndex}
           autoFocus
           ref={autoFocusRef}
         />
-        <EditingGeometry row={row} table="actions" />
+        <EditingGeometry
+          row={row}
+          table="actions"
+        />
       </>
     )
   },
