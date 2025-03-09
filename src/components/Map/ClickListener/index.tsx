@@ -48,18 +48,19 @@ export const ClickListener = memo(() => {
       const filterString = filterStringFromFilter(wmsLayersFilter, 'wl.')
       const resWmsLayers = await db.query(
         `
-        select 
+        SELECT 
           wl.wms_service_layer_name, 
           ws.info_format, 
-          ws.version, ws.url
-        from wms_layers wl 
-          inner join layer_presentations lp on lp.wms_layer_id = wl.wms_layer_id
-          inner join wms_services ws on ws.wms_service_id = wl.wms_service_id
-        where 
+          ws.version, 
+          ws.url
+        FROM wms_layers wl 
+          INNER JOIN layer_presentations lp ON lp.wms_layer_id = wl.wms_layer_id
+          INNER JOIN wms_services ws ON ws.wms_service_id = wl.wms_service_id
+        WHERE 
           lp.active = true 
-          and wl.project_id = $1
+          AND wl.project_id = $1
           ${filterString} 
-        order by wl.label
+        ORDER BY wl.label
       `,
         [project_id],
       )
@@ -93,15 +94,16 @@ export const ClickListener = memo(() => {
         }
       }
       // 4. Vector Layers from WFS with no downloaded data
+      const filterStringVl = filterStringFromFilter(vectorLayersFilter)
       const resActiveVectorLayers = await db.query(
         `
         SELECT vl.* 
         FROM vector_layers vl
-          inner join layer_presentations lp on lp.vector_layer_id = vl.vector_layer_id and lp.active = true
-        WHERE project_id = $1${
-          vectorLayersFilter ? ` AND ${vectorLayersFilter}` : ''
-        } 
-        order by label
+          INNER JOIN layer_presentations lp ON lp.vector_layer_id = vl.vector_layer_id AND lp.active = true
+        WHERE 
+          project_id = $1
+          ${filterStringVl ? ` AND ${filterStringVl}` : ''} 
+        ORDER BY label
       `,
         [project_id],
       )

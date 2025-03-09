@@ -30,10 +30,13 @@ export const WmsLayersNode = memo(({ project_id, level = 3 }: Props) => {
   const isFiltered = !!filterString
   const resultFiltered = useLiveIncrementalQuery(
     `
-    SELECT * 
+    SELECT
+      wms_layer_id,
+      label 
     FROM wms_layers 
-    WHERE project_id = $1
-    ${isFiltered ? ` AND ${filterString} ` : ''} 
+    WHERE 
+      project_id = $1
+      ${isFiltered ? ` AND ${filterString} ` : ''} 
     ORDER BY label`,
     [project_id],
     'wms_layer_id',
@@ -102,7 +105,6 @@ export const WmsLayersNode = memo(({ project_id, level = 3 }: Props) => {
     isOpen,
     navigate,
     ownArray,
-    parentArray,
     parentUrl,
     searchParams,
     urlPath.length,

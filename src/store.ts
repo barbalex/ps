@@ -105,7 +105,7 @@ export const personsFilterAtom = atomWithStorage('personsFilterAtom', [])
 export const wmsLayersFilterAtom = atomWithStorage('wmsLayersFilterAtom', [])
 export const vectorLayersFilterAtom = atomWithStorage(
   'vectorLayersFilterAtom',
-  '',
+  [],
 )
 export const listsFilterAtom = atomWithStorage('listsFilterAtom', '')
 export const unitsFilterAtom = atomWithStorage('unitsFilterAtom', '')
