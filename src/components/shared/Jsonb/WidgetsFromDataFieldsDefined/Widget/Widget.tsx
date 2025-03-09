@@ -57,16 +57,16 @@ export const Widget = memo(
             table === 'places' ? (place_id ? 2 : 1) : place_id2 ? 2 : 1
           const filterName = filterAtomNameFromTableAndLevel({ table, level })
           const filterAtom = stores[filterName]
-          const orFilters = stores.store.get(filterAtom)
           // console.log('Jsonb.Widget.onChange', {
           //   name,
           //   value,
           //   valuePassed: val[name],
-          //   orFilters,
           //   orIndex,
           //   filterName,
           //   targetType: field.field_type,
           // })
+          const orFilters = stores.store.get(filterAtom)
+          // console.log('Jsonb.Widget.onChange', { orFilters })
           return setNewFilterFromOld({
             name: `data.${name}`,
             value: val[name],

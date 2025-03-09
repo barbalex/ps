@@ -12,6 +12,7 @@ import { UnitNode } from './Unit.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom, unitsFilterAtom } from '../../store.ts'
+import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 
 interface Props {
   project_id: string
@@ -21,15 +22,15 @@ interface Props {
 export const UnitsNode = memo(({ project_id, level = 3 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [filter] = useAtom(unitsFilterAtom)
-  const isFiltered = !!filter
-
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
+  const filterString = filterStringFromFilter(filter)
+  const isFiltered = !!filterString
   const resultFiltered = useLiveIncrementalQuery(
     `SELECT * FROM units WHERE project_id = $1${
-      isFiltered ? ` AND (${filter})` : ''
+      isFiltered ? ` AND (${filterString})` : ''
     } order by label asc`,
     [project_id],
     'unit_id',
