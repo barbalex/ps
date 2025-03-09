@@ -1,4 +1,4 @@
 import { orFilterToSql } from './orFilterToSql.ts'
 
-export const filterStringFromFilter = (filter) =>
-  filter.map((f) => `(${orFilterToSql(f)})`).join(' OR ')
+export const filterStringFromFilter = (filter, tablePrefix) =>
+  filter.map((f) => `(${orFilterToSql(f, tablePrefix)})`).join(' OR ')

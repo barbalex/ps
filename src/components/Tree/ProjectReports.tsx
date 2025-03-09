@@ -35,7 +35,7 @@ export const ProjectReportsNode = memo(({ project_id, level = 3 }: Props) => {
       label 
     FROM project_reports 
     WHERE project_id = $1
-    ${isFiltered ? ` AND(${filterString})` : ''} 
+    ${isFiltered ? ` AND ${filterString} ` : ''} 
     ORDER BY label`,
     [project_id],
     'project_report_id',

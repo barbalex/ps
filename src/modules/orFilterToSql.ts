@@ -1,4 +1,4 @@
-export const orFilterToSql = (orFilter) => {
+export const orFilterToSql = (orFilter, tablePrefix) => {
   // orFilter is object with keys: column, value
   // need to return a string with the sql where clause
   // loop through the keys and values, creating the where clause
@@ -9,7 +9,10 @@ export const orFilterToSql = (orFilter) => {
     // data->>'column' = 'true'
     const isData = column.startsWith('data.')
     const columnName = isData ? column.substring(5) : column
-    const columnDescriptor = isData ? `data ->> '${columnName}'` : columnName
+    let columnDescriptor = isData ? `data ->> '${columnName}'` : columnName
+    if (tablePrefix) {
+      columnDescriptor = `${tablePrefix}.${columnDescriptor}`
+    }
     // cast text and filter with ilike
     if (typeof value === 'string') {
       return `(${columnDescriptor})::text ilike '%${value}%'`

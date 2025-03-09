@@ -28,7 +28,7 @@ export const Component = memo(() => {
       label 
     FROM project_reports 
     WHERE project_id = $1
-    ${isFiltered ? ` AND(${filterString})` : ''} 
+    ${isFiltered ? ` AND ${filterString} ` : ''} 
     ORDER BY label`,
     [project_id],
     'project_report_id',
