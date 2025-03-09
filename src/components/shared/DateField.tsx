@@ -45,7 +45,7 @@ export const DateField = memo(
             firstDayOfWeek={1}
             allowTextInput
             formatDate={(date) =>
-              !date ? '' : date.toLocaleDateString('de-CH')
+              !date ? '' : date?.toLocaleDateString?.('de-CH')
             }
             autoFocus={autoFocus}
             ref={ref}
