@@ -1,7 +1,11 @@
 import { useCallback, memo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAtom } from 'jotai'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import {
+  usePGlite,
+  useLiveIncrementalQuery,
+  useLiveQuery,
+} from '@electric-sql/pglite-react'
 
 import {
   createPlace,
@@ -15,6 +19,7 @@ import { LayerMenu } from '../components/shared/LayerMenu.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import { places1FilterAtom, places2FilterAtom } from '../store.ts'
+import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 
 import '../form.css'
 
@@ -27,13 +32,19 @@ export const Component = memo(() => {
   const [places1Filter] = useAtom(places1FilterAtom)
   const [places2Filter] = useAtom(places2FilterAtom)
   const filter = place_id ? places2Filter : places1Filter
-  const isFiltered = filter.length > 0
 
-  const sql = `SELECT place_id, label FROM places WHERE parent_id ${
-    place_id ? `= '${place_id}'` : `IS NULL`
-  } AND subproject_id = $1${
-    isFiltered ? ` AND ${filter.join(' AND ')}` : ''
-  } order by label asc`
+  const filterString = filterStringFromFilter(filter)
+  const isFiltered = !!filterString
+  const sql = `
+    SELECT 
+      place_id, 
+      label 
+    FROM places 
+    WHERE 
+      parent_id ${place_id ? `= '${place_id}'` : `IS NULL`} 
+      AND subproject_id = $1
+      ${isFiltered ? ` AND ${filterString} ` : ''} 
+    ORDER BY label`
   const params = [subproject_id]
   const res = useLiveIncrementalQuery(sql, params, 'place_id')
   const isLoading = res === undefined
@@ -41,10 +52,17 @@ export const Component = memo(() => {
 
   // TODO: get names in above query by joining with place_levels
   // to save a render
-  const resultPlaceLevel = useLiveIncrementalQuery(
-    `SELECT * FROM place_levels WHERE project_id = $1 AND level = $2 order by label asc`,
+  const resultPlaceLevel = useLiveQuery(
+    `
+    SELECT 
+      name_singular, 
+      name_plural 
+    FROM place_levels 
+    WHERE 
+      project_id = $1 
+      AND level = $2 
+    ORDER BY label`,
     [project_id, place_id ? 2 : 1],
-    'place_level_id',
   )
   const placeLevel = resultPlaceLevel?.rows?.[0]
   const placeNameSingular = placeLevel?.name_singular ?? 'Place'

@@ -16,6 +16,7 @@ import {
   places1FilterAtom,
   places2FilterAtom,
 } from '../../store.ts'
+import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 
 interface Props {
   project_id: string
@@ -29,7 +30,6 @@ export const PlacesNode = memo(
     const [places1Filter] = useAtom(places1FilterAtom)
     const [places2Filter] = useAtom(places2FilterAtom)
     const filter = place_id ? places2Filter : places1Filter
-    const isFiltered = filter.length > 0
 
     const location = useLocation()
     const navigate = useNavigate()
@@ -38,9 +38,18 @@ export const PlacesNode = memo(
     const level = place_id ? 7 : 5
 
     // filtered places
-    const sqlFiltered = `SELECT * FROM places WHERE subproject_id = $1 and parent_id ${
-      place_id ? `= $2` : `is null`
-    }${isFiltered ? ` AND (${filter})` : ''} order by label asc`
+    const filterString = filterStringFromFilter(filter)
+    const isFiltered = !!filterString
+    const sqlFiltered = `
+      SELECT
+        place_id,
+        label 
+      FROM places 
+      WHERE 
+        subproject_id = $1 
+        and parent_id ${place_id ? `= $2` : `is null`}
+        ${isFiltered ? ` AND ${filterString} ` : ''} 
+      ORDER BY label`
     const paramsFiltered = [subproject_id, ...(place_id ? [place_id] : [])]
     const resultFiltered = useLiveIncrementalQuery(
       sqlFiltered,
@@ -48,6 +57,7 @@ export const PlacesNode = memo(
       'place_id',
     )
     const places = resultFiltered?.rows ?? []
+    const placesLoading = resultFiltered === undefined
 
     // unfiltered count
     const resultCountUnfiltered = useLiveQuery(
@@ -57,6 +67,7 @@ export const PlacesNode = memo(
       [subproject_id, ...(place_id ? [place_id] : [])],
     )
     const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
+    const countLoading = resultCountUnfiltered === undefined
 
     const resultPlaceLevels = useLiveIncrementalQuery(
       `SELECT * FROM place_levels WHERE project_id = $1 and level = $2 order by label asc`,
@@ -70,10 +81,23 @@ export const PlacesNode = memo(
     const placesNode = useMemo(
       () => ({
         label: `${placeNamePlural} (${
-          isFiltered ? `${places.length}/${countUnfiltered}` : places.length
+          isFiltered
+            ? `${placesLoading ? '...' : places.length}/${
+                countLoading ? '...' : countUnfiltered
+              }`
+            : placesLoading
+            ? '...'
+            : places.length
         })`,
       }),
-      [isFiltered, placeNamePlural, places.length, countUnfiltered],
+      [
+        placeNamePlural,
+        isFiltered,
+        placesLoading,
+        places.length,
+        countLoading,
+        countUnfiltered,
+      ],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
