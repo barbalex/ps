@@ -29,27 +29,41 @@ export const UnitsNode = memo(({ project_id, level = 3 }: Props) => {
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
   const resultFiltered = useLiveIncrementalQuery(
-    `SELECT * FROM units WHERE project_id = $1${
-      isFiltered ? ` AND (${filterString})` : ''
-    } order by label asc`,
+    `
+    SELECT
+      unit_id,
+      label
+    FROM units 
+    WHERE 
+      project_id = $1
+      ${isFiltered ? ` AND ${filterString}` : ''} 
+    ORDER BY label`,
     [project_id],
     'unit_id',
   )
   const units = resultFiltered?.rows ?? []
+  const unitsLoading = resultFiltered === undefined
 
   const resultCountUnfiltered = useLiveQuery(
     `SELECT count(*) FROM units WHERE project_id = $1`,
     [project_id],
   )
   const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
+  const countLoading = resultCountUnfiltered === undefined
 
   const unitsNode = useMemo(
     () => ({
       label: `Units (${
-        isFiltered ? `${units.length}/${countUnfiltered}` : units.length
+        isFiltered
+          ? `${unitsLoading ? '...' : units.length}/${
+              countLoading ? '...' : countUnfiltered
+            }`
+          : unitsLoading
+          ? '...'
+          : units.length
       })`,
     }),
-    [isFiltered, units.length, countUnfiltered],
+    [isFiltered, unitsLoading, units.length, countLoading, countUnfiltered],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
