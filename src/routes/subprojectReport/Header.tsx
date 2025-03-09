@@ -13,13 +13,14 @@ export const Header = memo(({ autoFocusRef }) => {
   const db = usePGlite()
 
   const addRow = useCallback(async () => {
-    const subprojectReport = await createSubprojectReport({
+    const res = await createSubprojectReport({
       db,
       project_id,
       subproject_id,
     })
+    const data = res?.rows?.[0]
     navigate({
-      pathname: `../${subprojectReport.subproject_report_id}`,
+      pathname: `../${data.subproject_report_id}`,
       search: searchParams.toString(),
     })
     autoFocusRef.current?.focus()
@@ -47,7 +48,7 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${next.subproject_report_id}`,
       search: searchParams.toString(),
     })
-  }, [db, navigate, searchParams, subproject_report_id])
+  }, [db, navigate, project_id, searchParams, subproject_report_id])
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
@@ -64,7 +65,7 @@ export const Header = memo(({ autoFocusRef }) => {
       pathname: `../${previous.subproject_report_id}`,
       search: searchParams.toString(),
     })
-  }, [db, navigate, searchParams, subproject_report_id])
+  }, [db, navigate, project_id, searchParams, subproject_report_id])
 
   return (
     <FormHeader

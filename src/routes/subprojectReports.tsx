@@ -14,7 +14,7 @@ import '../form.css'
 
 export const Component = memo(() => {
   const [filter] = useAtom(subprojectReportsFilterAtom)
-  const { subproject_id, project_id } = useParams()
+  const { project_id, subproject_id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const db = usePGlite()
@@ -46,7 +46,7 @@ export const Component = memo(() => {
     const data = res?.rows?.[0]
     if (!data) return
     navigate({
-      pathname: subprojectReport.subproject_report_id,
+      pathname: data.subproject_report_id,
       search: searchParams.toString(),
     })
   }, [db, navigate, project_id, searchParams, subproject_id])
