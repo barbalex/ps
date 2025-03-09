@@ -10,6 +10,7 @@ import { LayerMenu } from '../components/shared/LayerMenu.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import { checks1FilterAtom, checks2FilterAtom } from '../store.ts'
+import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 
 import '../form.css'
 
@@ -22,12 +23,18 @@ export const Component = memo(() => {
   const [checks1Filter] = useAtom(checks1FilterAtom)
   const [checks2Filter] = useAtom(checks2FilterAtom)
   const filter = place_id2 ? checks2Filter : checks1Filter
-  const isFiltered = filter.length > 0
 
+  const filterString = filterStringFromFilter(filter)
+  const isFiltered = !!filterString
   const res = useLiveIncrementalQuery(
-    `SELECT check_id, label FROM checks WHERE place_id = $1${
-      filter?.length ? ` AND (${filter})` : ''
-    } order by label asc`,
+    `SELECT 
+      check_id, 
+      label 
+    FROM checks 
+    WHERE 
+      place_id = $1
+      ${isFiltered ? ` AND ${filterString} ` : ''} 
+    ORDER BY label`,
     [place_id2 ?? place_id],
     'check_id',
   )

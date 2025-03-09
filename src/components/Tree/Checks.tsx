@@ -1,5 +1,8 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import {
+  useLiveIncrementalQuery,
+  useLiveQuery,
+} from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
@@ -13,6 +16,7 @@ import {
   checks1FilterAtom,
   checks2FilterAtom,
 } from '../../store.ts'
+import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 
 export const ChecksNode = memo(
   ({ project_id, subproject_id, place_id, place, level = 7 }) => {
@@ -25,43 +29,54 @@ export const ChecksNode = memo(
     const [searchParams] = useSearchParams()
 
     const filter = place_id ? filterChecks2 : filterChecks1
-
+    const filterString = filterStringFromFilter(filter)
+    const isFiltered = !!filterString
     const resFiltered = useLiveIncrementalQuery(
       `
-      SELECT * 
+      SELECT 
+        check_id, 
+        label 
       FROM checks 
       WHERE 
         place_id = $1 
-        ${filter.length > 0 ? ` AND ${filter.join(' AND ')}` : ''}
-      ORDER BY label ASC`,
+        ${isFiltered ? ` AND ${filterString} ` : ''}
+      ORDER BY label`,
       [place.place_id],
       'check_id',
     )
     const checksFiltered = resFiltered?.rows ?? []
+    const checksLoading = resFiltered === undefined
 
-    const resUnfiltered = useLiveIncrementalQuery(
+    const resUnfiltered = useLiveQuery(
       `
-      SELECT * 
+      SELECT count(*) 
       FROM checks 
-      WHERE 
-        place_id = $1 
-      ORDER BY label ASC`,
+      WHERE place_id = $1`,
       [place.place_id],
-      'check_id',
     )
-    const checksUnfiltered = resUnfiltered?.rows ?? []
-    const isFiltered = filter.length > 0
+    const unfilteredCount = resUnfiltered?.rows?.[0]?.count ?? 0
+    const countLoading = resUnfiltered === undefined
 
     // TODO: get name by place_level
     const checksNode = useMemo(
       () => ({
         label: `Checks (${
           isFiltered
-            ? `${checksFiltered.length}/${checksUnfiltered.length}`
+            ? `${checksLoading ? '...' : checksFiltered.length}/${
+                countLoading ? '...' : unfilteredCount
+              }`
+            : checksLoading
+            ? '...'
             : checksFiltered.length
         })`,
       }),
-      [checksFiltered.length, checksUnfiltered.length, isFiltered],
+      [
+        isFiltered,
+        checksLoading,
+        checksFiltered.length,
+        countLoading,
+        unfilteredCount,
+      ],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
