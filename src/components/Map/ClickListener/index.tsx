@@ -45,7 +45,7 @@ export const ClickListener = memo(() => {
 
       // 1. WMS Layers
       // TODO: move sort to layer_presentations
-      const filterString = filterStringFromFilter(wmsLayersFilter, 'wl.')
+      const filterString = filterStringFromFilter(wmsLayersFilter, 'wl')
       const resWmsLayers = await db.query(
         `
         SELECT 
@@ -94,7 +94,7 @@ export const ClickListener = memo(() => {
         }
       }
       // 4. Vector Layers from WFS with no downloaded data
-      const filterStringVl = filterStringFromFilter(vectorLayersFilter)
+      const filterStringVl = filterStringFromFilter(vectorLayersFilter, 'vl')
       const resActiveVectorLayers = await db.query(
         `
         SELECT vl.* 

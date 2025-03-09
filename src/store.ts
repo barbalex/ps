@@ -111,7 +111,7 @@ export const listsFilterAtom = atomWithStorage('listsFilterAtom', [])
 export const unitsFilterAtom = atomWithStorage('unitsFilterAtom', [])
 export const subprojectsFilterAtom = atomWithStorage(
   'subprojectsFilterAtom',
-  '',
+  [],
 )
 export const subprojectReportsFilterAtom = atomWithStorage(
   'subprojectReportsFilterAtom',

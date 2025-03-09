@@ -1,4 +1,7 @@
-export const orFilterToSql = (orFilter, tablePrefix) => {
+export const orFilterToSql = (
+  orFilter: Record<string, unknown>,
+  tablePrefix: string,
+) => {
   // orFilter is object with keys: column, value
   // need to return a string with the sql where clause
   // loop through the keys and values, creating the where clause

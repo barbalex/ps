@@ -12,6 +12,7 @@ import { SubprojectNode } from './Subproject.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom, subprojectsFilterAtom } from '../../store.ts'
+import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 
 interface Props {
   project_id: string
@@ -21,31 +22,38 @@ interface Props {
 export const SubprojectsNode = memo(({ project_id, level = 3 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [filter] = useAtom(subprojectsFilterAtom)
-  const isFiltered = !!filter
 
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
+  const filterString = filterStringFromFilter(filter, 'subprojects')
+  const isFiltered = !!filterString
   const resultFiltered = useLiveIncrementalQuery(
     `
-      SELECT subprojects.*, projects.subproject_name_plural 
+      SELECT 
+        subprojects.subproject_id,
+        subprojects.label, 
+        projects.subproject_name_plural 
       FROM subprojects 
         inner join projects on projects.project_id = subprojects.project_id 
-      WHERE projects.project_id = $1${
-        isFiltered ? ` AND (${filter})` : ''
-      } order by label asc
+      WHERE 
+        projects.project_id = $1
+        ${isFiltered ? ` AND ${filterString}` : ''} 
+      ORDER BY label
       `,
     [project_id],
     'subproject_id',
   )
   const subprojects = resultFiltered?.rows ?? []
+  const subprojectsLoading = resultFiltered === undefined
 
   const resultCountUnfiltered = useLiveQuery(
     `SELECT count(*) FROM subprojects WHERE project_id = $1`,
     [project_id],
   )
   const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
+  const countLoading = resultCountUnfiltered === undefined
 
   const namePlural = subprojects?.[0]?.subproject_name_plural ?? 'Subprojects'
 
@@ -53,11 +61,22 @@ export const SubprojectsNode = memo(({ project_id, level = 3 }: Props) => {
     () => ({
       label: `${namePlural} (${
         isFiltered
-          ? `${subprojects.length}/${countUnfiltered}`
+          ? `${subprojectsLoading ? '...' : subprojects.length}/${
+              countLoading ? '...' : countUnfiltered
+            }`
+          : subprojectsLoading
+          ? '...'
           : subprojects.length
       })`,
     }),
-    [isFiltered, namePlural, subprojects.length, countUnfiltered],
+    [
+      namePlural,
+      isFiltered,
+      subprojectsLoading,
+      subprojects.length,
+      countLoading,
+      countUnfiltered,
+    ],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
