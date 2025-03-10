@@ -41,7 +41,6 @@ export const orFilterToSql = (
     return `${columnDescriptor} = ${value}`
   })
   const sql = whereClauses.join(' AND ')
-  console.log('orFilterToSql, sql:', sql)
 
   return sql
 }

@@ -10,6 +10,7 @@ import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import { placeReports1FilterAtom, placeReports2FilterAtom } from '../store.ts'
 import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
+import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 import '../form.css'
 
 export const Component = memo(() => {
@@ -25,9 +26,13 @@ export const Component = memo(() => {
   const isFiltered = !!filterString
 
   const res = useLiveIncrementalQuery(
-    `SELECT place_report_id, label FROM place_reports WHERE place_id = $1${
-      isFiltered ? ` AND(${filter})` : ''
-    } order by label asc`,
+    `
+    SELECT 
+      place_report_id, 
+      label 
+    FROM place_reports 
+    WHERE place_id = $1${isFiltered ? ` AND ${filterString}` : ''} 
+    ORDER BY label`,
     [place_id2 ?? place_id],
     'place_report_id',
   )
