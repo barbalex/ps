@@ -21,16 +21,23 @@ export const PlaceLevelsNode = memo(({ project_id, level = 3 }: Props) => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const result = useLiveIncrementalQuery(
-    `SELECT * FROM place_levels WHERE project_id = $1 ORDER BY label ASC`,
+  const res = useLiveIncrementalQuery(
+    `
+    SELECT
+      place_level_id,
+      label 
+    FROM place_levels 
+    WHERE project_id = $1 
+    ORDER BY label`,
     [project_id],
     'place_level_id',
   )
-  const placeLevels = result?.rows ?? []
+  const rows = res?.rows ?? []
+  const loading = res === undefined
 
-  const placeLevelsNode = useMemo(
-    () => ({ label: `Place Levels (${placeLevels.length})` }),
-    [placeLevels.length],
+  const node = useMemo(
+    () => ({ label: `Place Levels (${loading ? '...' : rows.length})` }),
+    [loading, rows.length],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -77,17 +84,17 @@ export const PlaceLevelsNode = memo(({ project_id, level = 3 }: Props) => {
   return (
     <>
       <Node
-        node={placeLevelsNode}
+        node={node}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={placeLevels.length}
+        childrenCount={rows.length}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen &&
-        placeLevels.map((placeLevel) => (
+        rows.map((placeLevel) => (
           <PlaceLevelNode
             key={placeLevel.place_level_id}
             project_id={project_id}
