@@ -18,15 +18,22 @@ export const PlaceUsersNode = memo(
     const [searchParams] = useSearchParams()
 
     const res = useLiveIncrementalQuery(
-      `SELECT * FROM place_users WHERE place_id = $1 ORDER BY label ASC`,
+      `
+      SELECT
+        place_user_id,
+        label
+      FROM place_users 
+      WHERE place_id = $1 
+      ORDER BY label`,
       [place.place_id],
       'place_user_id',
     )
-    const placeUsers = res?.rows ?? []
+    const rows = res?.rows ?? []
+    const loading = res === undefined
 
-    const placeUsersNode = useMemo(
-      () => ({ label: `Users (${placeUsers.length})` }),
-      [placeUsers.length],
+    const node = useMemo(
+      () => ({ label: `Users (${loading ? '...' : rows.length})` }),
+      [loading, rows.length],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -79,17 +86,17 @@ export const PlaceUsersNode = memo(
     return (
       <>
         <Node
-          node={placeUsersNode}
+          node={node}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
-          childrenCount={placeUsers.length}
+          childrenCount={rows.length}
           to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          placeUsers.map((placeUser) => (
+          rows.map((placeUser) => (
             <PlaceUserNode
               key={placeUser.place_id}
               project_id={project_id}
