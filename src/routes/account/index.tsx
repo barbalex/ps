@@ -28,6 +28,9 @@ export const Component = memo(() => {
   const onChange = useCallback<InputProps['onChange']>(
     async (e, data) => {
       const { name, value } = getValueFromChange(e, data)
+      // only change if value has changed: maybe only focus entered and left
+      if (row[name] === value) return
+
       const sql = `UPDATE accounts SET ${name} = $1 WHERE account_id = $2`
       try {
         await db.query(sql, [value, account_id])
@@ -35,7 +38,7 @@ export const Component = memo(() => {
         console.error('error changing account:', error)
       }
     },
-    [db, account_id],
+    [row, db, account_id],
   )
 
   if (!row) return <Loading />

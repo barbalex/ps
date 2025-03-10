@@ -21,11 +21,11 @@ export const LayerPresentationForm = memo(({ layer }) => {
     [layer.layer_presentation_id],
   )
 
-  const layerPresentation = res?.rows?.[0]
+  const row = res?.rows?.[0]
 
   const onChange = useCallback(
     (e, data) => {
-      if (!layerPresentation?.layer_presentation_id) {
+      if (!row?.layer_presentation_id) {
         // if no presentation exists, create notification
         createNotification({
           title: 'Layer presentation not found',
@@ -34,15 +34,18 @@ export const LayerPresentationForm = memo(({ layer }) => {
         })
       }
       const { name, value } = getValueFromChange(e, data)
+      // only change if value has changed: maybe only focus entered and left
+      if (row[name] === value) return
+
       db.query(
         `UPDATE layer_presentations SET ${name} = $1 WHERE layer_presentation_id = $2`,
-        [value, layerPresentation?.layer_presentation_id],
+        [value, row?.layer_presentation_id],
       )
     },
-    [db, layerPresentation?.layer_presentation_id],
+    [db, row],
   )
 
-  if (!layerPresentation) {
+  if (!row) {
     return <Loading />
   }
 
@@ -59,7 +62,7 @@ export const LayerPresentationForm = memo(({ layer }) => {
           name="opacity_percent"
           min={0}
           max={100}
-          value={layerPresentation.opacity_percent}
+          value={row.opacity_percent}
           onChange={onChange}
         />
         {layer.wms_layer_id && (
@@ -67,13 +70,13 @@ export const LayerPresentationForm = memo(({ layer }) => {
             <SwitchField
               label="Transparent"
               name="transparent"
-              value={layerPresentation.transparent}
+              value={row.transparent}
               onChange={onChange}
             />
             <SwitchField
               label="Grayscale"
               name="grayscale"
-              value={layerPresentation.grayscale}
+              value={row.grayscale}
               onChange={onChange}
             />
           </>
@@ -81,7 +84,7 @@ export const LayerPresentationForm = memo(({ layer }) => {
         <TextField
           label="Max Zoom"
           name="max_zoom"
-          value={layerPresentation.max_zoom ?? ''}
+          value={row.max_zoom ?? ''}
           onChange={onChange}
           type="number"
           max={19}
@@ -91,7 +94,7 @@ export const LayerPresentationForm = memo(({ layer }) => {
         <TextField
           label="Min Zoom"
           name="min_zoom"
-          value={layerPresentation.min_zoom ?? ''}
+          value={row.min_zoom ?? ''}
           onChange={onChange}
           type="number"
           max={19}
