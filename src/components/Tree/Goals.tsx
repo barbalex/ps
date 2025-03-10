@@ -12,6 +12,7 @@ import { GoalNode } from './Goal.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom, goalsFilterAtom } from '../../store.ts'
+import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 
 interface Props {
   project_id: string
@@ -23,34 +24,48 @@ export const GoalsNode = memo(
   ({ project_id, subproject_id, level = 5 }: Props) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const [filter] = useAtom(goalsFilterAtom)
-    const isFiltered = !!filter
-
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
+    const filterString = filterStringFromFilter(filter)
+    const isFiltered = !!filterString
     const resultFiltered = useLiveIncrementalQuery(
-      `SELECT * FROM goals WHERE subproject_id = $1${
-        isFiltered ? ` AND (${filter})` : ''
-      } ORDER BY label ASC`,
+      `
+      SELECT 
+        goal_id, 
+        label
+      FROM goals 
+      WHERE 
+        subproject_id = $1
+        ${isFiltered ? ` AND (${filterString})` : ''} 
+      ORDER BY label`,
       [subproject_id],
       'goal_id',
     )
     const goals = resultFiltered?.rows ?? []
+    const goalsLoading = resultFiltered === undefined
 
     const resultCountUnfiltered = useLiveQuery(
       `SELECT count(*) FROM goals WHERE subproject_id = $1`,
       [subproject_id],
     )
     const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
+    const countLoading = resultCountUnfiltered === undefined
 
     const goalsNode = useMemo(
       () => ({
         label: `Goals (${
-          isFiltered ? `${goals.length}/${countUnfiltered}` : goals.length
+          isFiltered
+            ? `${goalsLoading ? '...' : goals.length}/${
+                countLoading ? '...' : countUnfiltered
+              }`
+            : goalsLoading
+            ? '...'
+            : goals.length
         })`,
       }),
-      [goals.length, countUnfiltered, isFiltered],
+      [isFiltered, goalsLoading, goals.length, countLoading, countUnfiltered],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -86,7 +101,6 @@ export const GoalsNode = memo(
       isOpen,
       navigate,
       ownArray,
-      parentArray,
       parentUrl,
       searchParams,
       urlPath.length,

@@ -32,7 +32,7 @@ export const Header = memo(({ autoFocusRef }) => {
       `SELECT * FROM fields WHERE project_id = $1 order by label asc`,
       [project_id],
     )
-    const fields = result.rows
+    const fields = result?.rows
     const len = fields.length
     const index = fields.findIndex((p) => p.field_id === field_id)
     const next = fields[(index + 1) % len]
@@ -47,7 +47,7 @@ export const Header = memo(({ autoFocusRef }) => {
       `SELECT * FROM fields WHERE project_id = $1 order by label asc`,
       [project_id],
     )
-    const fields = result.rows
+    const fields = result?.rows
     const len = fields.length
     const index = fields.findIndex((p) => p.field_id === field_id)
     const previous = fields[(index + len - 1) % len]

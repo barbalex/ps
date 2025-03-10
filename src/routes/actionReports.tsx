@@ -5,6 +5,7 @@ import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import { createActionReport } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
+import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
 export const Component = memo(() => {
@@ -13,12 +14,13 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
 
   const db = usePGlite()
-  const result = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT action_report_id, label FROM action_reports WHERE action_id = $1 order by label asc`,
     [action_id],
     'action_report_id',
   )
-  const actionReports = result?.rows ?? []
+  const isLoading = res === undefined
+  const actionReports = res?.rows ?? []
 
   const add = useCallback(async () => {
     const res = await createActionReport({
@@ -42,16 +44,23 @@ export const Component = memo(() => {
         tableName="action_reports"
         isFiltered={false}
         countFiltered={actionReports.length}
+        isLoading={isLoading}
         addRow={add}
       />
       <div className="list-container">
-        {actionReports.map(({ action_report_id, label }) => (
-          <Row
-            key={action_report_id}
-            label={label ?? account_report_id}
-            to={action_report_id}
-          />
-        ))}
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <>
+            {actionReports.map(({ action_report_id, label }) => (
+              <Row
+                key={action_report_id}
+                label={label ?? account_report_id}
+                to={action_report_id}
+              />
+            ))}
+          </>
+        )}
       </div>
     </div>
   )

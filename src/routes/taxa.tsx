@@ -5,6 +5,7 @@ import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import { createTaxon } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
+import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
 export const Component = memo(() => {
@@ -13,12 +14,13 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
 
   const db = usePGlite()
-  const result = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT taxon_id, label FROM taxa WHERE taxonomy_id = $1 order by label asc`,
     [taxonomy_id],
     'taxon_id',
   )
-  const taxa = result.rows ?? []
+  const isLoading = res === undefined
+  const taxa = res?.rows ?? []
 
   const add = useCallback(async () => {
     const res = await createTaxon({ taxonomy_id, db })
@@ -35,16 +37,23 @@ export const Component = memo(() => {
         tableName="taxa"
         isFiltered={false}
         countFiltered={taxa.length}
+        isLoading={isLoading}
         addRow={add}
       />
       <div className="list-container">
-        {taxa.map(({ taxon_id, label }) => (
-          <Row
-            key={taxon_id}
-            label={label ?? taxon_id}
-            to={taxon_id}
-          />
-        ))}
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <>
+            {taxa.map(({ taxon_id, label }) => (
+              <Row
+                key={taxon_id}
+                label={label ?? taxon_id}
+                to={taxon_id}
+              />
+            ))}
+          </>
+        )}
       </div>
     </div>
   )

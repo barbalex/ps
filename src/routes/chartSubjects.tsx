@@ -4,6 +4,7 @@ import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
+import { Loading } from '../components/shared/Loading.tsx'
 import { createChartSubject } from '../modules/createRows.ts'
 
 import '../form.css'
@@ -14,12 +15,13 @@ export const Component = memo(() => {
   const [searchParams] = useSearchParams()
 
   const db = usePGlite()
-  const results = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT chart_subject_id, label FROM chart_subjects WHERE chart_id = $1 ORDER BY label ASC`,
     [chart_id],
     'chart_subject_id',
   )
-  const chartSubjects = results?.rows ?? []
+  const isLoading = res === undefined
+  const chartSubjects = res?.rows ?? []
 
   const addRow = useCallback(async () => {
     const res = await createChartSubject({ chart_id, db })
@@ -41,16 +43,23 @@ export const Component = memo(() => {
         tableName="chart_subjects"
         isFiltered={false}
         countFiltered={chartSubjects.length}
+        isLoading={isLoading}
         addRow={addRow}
       />
       <div className="list-container">
-        {chartSubjects.map(({ chart_subject_id, label }) => (
-          <Row
-            key={chart_subject_id}
-            label={label ?? chart_subject_id}
-            to={chart_subject_id}
-          />
-        ))}
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <>
+            {chartSubjects.map(({ chart_subject_id, label }) => (
+              <Row
+                key={chart_subject_id}
+                label={label ?? chart_subject_id}
+                to={chart_subject_id}
+              />
+            ))}
+          </>
+        )}
       </div>
     </div>
   )

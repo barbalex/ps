@@ -6,6 +6,7 @@ import { useAtom } from 'jotai'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { createChart } from '../modules/createRows.ts'
+import { Loading } from '../components/shared/Loading.tsx'
 
 import '../form.css'
 
@@ -31,12 +32,13 @@ export const Component = memo(() => {
   }, [place_id, place_id2, project_id, subproject_id])
 
   const db = usePGlite()
-  const result = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT * FROM charts WHERE ${hKey} = $1 ORDER BY label ASC`,
     [hValue],
     'chart_id',
   )
-  const charts = result?.rows ?? []
+  const isLoading = res === undefined
+  const charts = res?.rows ?? []
 
   const add = useCallback(async () => {
     const idToAdd = place_id2
@@ -72,16 +74,23 @@ export const Component = memo(() => {
         tableName="charts"
         isFiltered={false}
         countFiltered={charts.length}
+        isLoading={isLoading}
         addRow={designing ? add : undefined}
       />
       <div className="list-container">
-        {charts.map(({ chart_id, label }) => (
-          <Row
-            key={chart_id}
-            label={label ?? chart_id}
-            to={chart_id}
-          />
-        ))}
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <>
+            {charts.map(({ chart_id, label }) => (
+              <Row
+                key={chart_id}
+                label={label ?? chart_id}
+                to={chart_id}
+              />
+            ))}
+          </>
+        )}
       </div>
     </div>
   )

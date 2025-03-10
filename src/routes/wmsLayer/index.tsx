@@ -22,11 +22,14 @@ export const Component = memo(() => {
     [wms_layer_id],
     'wms_layer_id',
   )
-  const wmsLayer = result?.rows?.[0]
+  const row = result?.rows?.[0]
 
   const onChange = useCallback<InputProps['onChange']>(
     async (e, data) => {
       const { name, value } = getValueFromChange(e, data)
+      // only change if value has changed: maybe only focus entered and left
+      if (row[name] === value) return
+
       try {
         await db.query(
           `UPDATE wms_layers SET ${name} = $1 WHERE wms_layer_id = $2`,
@@ -40,12 +43,12 @@ export const Component = memo(() => {
       // 2. use wms_layers.queryable in the click listener for the info drawer
       return
     },
-    [db, wms_layer_id],
+    [db, row, wms_layer_id],
   )
 
   // console.log('WmsLayer, row:', wmsLayer)
 
-  if (!wmsLayer) return <Loading />
+  if (!row) return <Loading />
 
   // console.log('hello WmsLayer, row:', row)
 
@@ -55,7 +58,7 @@ export const Component = memo(() => {
       <div className="form-container">
         <Form
           onChange={onChange}
-          wmsLayer={wmsLayer}
+          wmsLayer={row}
           autoFocusRef={autoFocusRef}
         />
       </div>

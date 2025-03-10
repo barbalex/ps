@@ -4,13 +4,11 @@ import { useParams } from 'react-router-dom'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
-import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Section } from '../../components/shared/Section.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
-
-const chartTypes = ['Pie', 'Radar', 'Area']
+import { ChartType } from './ChartType.tsx'
 
 interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
@@ -31,6 +29,9 @@ export const Form = memo(({ autoFocusRef }: Props) => {
   const onChange = useCallback<InputProps['onChange']>(
     async (e, data) => {
       const { name, value } = getValueFromChange(e, data)
+      // only change if value has changed: maybe only focus entered and left
+      if (row[name] === value) return
+
       await db.query(`UPDATE charts set ${name} = $1 WHERE chart_id = $2`, [
         value,
         chart_id,
@@ -157,15 +158,10 @@ export const Form = memo(({ autoFocusRef }: Props) => {
   return (
     <div className="form-container">
       <Section title="General settings">
-        <DropdownFieldSimpleOptions
-          label="Chart Type"
-          name="chart_type"
-          value={row.chart_type ?? ''}
+        <ChartType
           onChange={onChange}
-          options={chartTypes}
-          autoFocus
+          row={row}
           ref={autoFocusRef}
-          validationMessage="Choose what type of chart you want to display"
         />
         <TextField
           label="Title"

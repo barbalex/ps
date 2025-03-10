@@ -12,7 +12,7 @@ import { Header } from './Header.tsx'
 import { One } from './1.tsx'
 import { Two } from './2/index.tsx'
 import { Three } from './3.tsx'
-import { Four } from './4.tsx'
+import { Four } from './4/index.tsx'
 import { Preview } from './Preview.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 
@@ -69,12 +69,15 @@ export const Component = memo(() => {
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
+      // only change if value has changed: maybe only focus entered and left
+      if (occurrenceImport[name] === value) return
+
       db.query(
         `UPDATE occurrence_imports SET ${name} = $1 WHERE occurrence_import_id = $2`,
         [value, occurrence_import_id],
       )
     },
-    [db, occurrence_import_id],
+    [db, occurrenceImport, occurrence_import_id],
   )
 
   const onTabSelect = useCallback(

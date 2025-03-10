@@ -4,26 +4,13 @@ import { useParams } from 'react-router-dom'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
-import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
-import { DropdownFieldSimpleOptions } from '../../components/shared/DropdownFieldSimpleOptions.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Section } from '../../components/shared/Section.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
-
-const chartSubjectTables = [
-  'subprojects',
-  'places',
-  'checks',
-  'check_values',
-  'actions',
-  'action_values',
-]
-const chartSubjectValueSources = [
-  'count_rows',
-  'count_rows_by_distinct_field_values',
-  'sum_values_of_field',
-]
+import { Table } from './Table.tsx'
+import { Level } from './Level.tsx'
+import { ValueSource } from './ValueSource.tsx'
 
 interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
@@ -44,12 +31,15 @@ export const ChartSubjectForm = memo(({ autoFocusRef }: Props) => {
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
+      // only change if value has changed: maybe only focus entered and left
+      if (row[name] === value) return
+
       db.query(
         `UPDATE chart_subjects SET ${name} = $1 WHERE chart_subject_id = $2`,
         [value, chart_subject_id],
       )
     },
-    [db, chart_subject_id],
+    [row, db, chart_subject_id],
   )
 
   if (!row) return <Loading />
@@ -63,23 +53,14 @@ export const ChartSubjectForm = memo(({ autoFocusRef }: Props) => {
         onChange={onChange}
       />
       <Section title="Data">
-        <DropdownFieldSimpleOptions
-          label="Table"
-          name="table_name"
-          value={row.table_name ?? ''}
+        <Table
           onChange={onChange}
-          options={chartSubjectTables}
-          autoFocus
+          row={row}
           ref={autoFocusRef}
-          validationMessage="Choose what table to get the data from"
         />
-        <RadioGroupField
-          label="Level"
-          name="table_level"
-          list={[1, 2]}
-          value={row.table_level ?? ''}
+        <Level
           onChange={onChange}
-          validationMessage="Level of places and their respective checks and actions"
+          row={row}
         />
         <TextField
           label="TODO: table filter"
@@ -88,14 +69,9 @@ export const ChartSubjectForm = memo(({ autoFocusRef }: Props) => {
           type="number"
           onChange={onChange}
         />
-        <RadioGroupField
-          label="Value Source"
-          name="value_source"
-          list={chartSubjectValueSources}
-          value={row.value_source ?? ''}
+        <ValueSource
           onChange={onChange}
-          replaceUnderscoreInLabel={true}
-          validationMessage="How to extract the subject's data from the table"
+          row={row}
         />
         {row.value_source && row.value_source !== 'count_rows' && (
           <>

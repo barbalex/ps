@@ -26,7 +26,7 @@ export const Property = memo(({ vectorLayer }) => {
       table_name = $1 
       AND level = $2 
       AND project_id = $3 
-    ORDER BY sort_index ASC, label ASC`,
+    ORDER BY table_name, name, level`,
     [table, level, project_id],
     'field_id',
   )

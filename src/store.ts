@@ -79,39 +79,45 @@ export const occurrenceFieldsSortedAtom = atomWithStorage(
   [],
 )
 export const treeOpenNodesAtom = atomWithStorage('treeOpenNodesAtom', [])
-// filters: where clause excluding WHERE
-export const projectsFilterAtom = atomWithStorage('projectsFilterAtom', '')
-export const fieldsFilterAtom = atomWithStorage('fieldsFilterAtom', '')
-export const fieldTypesFilterAtom = atomWithStorage('fieldTypesFilterAtom', '')
+// table filters
+// Using array of or-filters
+// Of objects with keys and value. why? because needs to be shown in the forms
+// key is path i.e. jsonb is: data.key
+export const projectsFilterAtom = atomWithStorage<Record<string, unknown>[]>(
+  'projectsFilterAtom',
+  [],
+)
+export const fieldsFilterAtom = atomWithStorage('fieldsFilterAtom', [])
+export const fieldTypesFilterAtom = atomWithStorage('fieldTypesFilterAtom', [])
 export const widgetTypesFilterAtom = atomWithStorage(
   'widgetTypesFilterAtom',
-  '',
+  [],
 )
 export const widgetsForFieldsFilterAtom = atomWithStorage(
   'widgetsForFieldsFilterAtom',
-  '',
+  [],
 )
 export const projectReportsFilterAtom = atomWithStorage(
   'projectReportsFilterAtom',
-  '',
+  [],
 )
-export const personsFilterAtom = atomWithStorage('personsFilterAtom', '')
-export const wmsLayersFilterAtom = atomWithStorage('wmsLayersFilterAtom', '')
+export const personsFilterAtom = atomWithStorage('personsFilterAtom', [])
+export const wmsLayersFilterAtom = atomWithStorage('wmsLayersFilterAtom', [])
 export const vectorLayersFilterAtom = atomWithStorage(
   'vectorLayersFilterAtom',
-  '',
+  [],
 )
-export const listsFilterAtom = atomWithStorage('listsFilterAtom', '')
-export const unitsFilterAtom = atomWithStorage('unitsFilterAtom', '')
+export const listsFilterAtom = atomWithStorage('listsFilterAtom', [])
+export const unitsFilterAtom = atomWithStorage('unitsFilterAtom', [])
 export const subprojectsFilterAtom = atomWithStorage(
   'subprojectsFilterAtom',
-  '',
+  [],
 )
 export const subprojectReportsFilterAtom = atomWithStorage(
   'subprojectReportsFilterAtom',
-  '',
+  [],
 )
-export const goalsFilterAtom = atomWithStorage('goalsFilterAtom', '')
+export const goalsFilterAtom = atomWithStorage('goalsFilterAtom', [])
 export const places1FilterAtom = atomWithStorage('places1FilterAtom', [])
 export const places2FilterAtom = atomWithStorage('places2FilterAtom', [])
 export const checks1FilterAtom = atomWithStorage('checks1FilterAtom', [])
@@ -120,13 +126,14 @@ export const actions1FilterAtom = atomWithStorage('actions1FilterAtom', [])
 export const actions2FilterAtom = atomWithStorage('actions2FilterAtom', [])
 export const placeReports1FilterAtom = atomWithStorage(
   'placeReports1FilterAtom',
-  '',
+  [],
 )
 export const placeReports2FilterAtom = atomWithStorage(
   'placeReports2FilterAtom',
-  '',
+  [],
 )
-export const filesFilterAtom = atomWithStorage('filesFilterAtom', '')
+// TODO: add
+export const filesFilterAtom = atomWithStorage('filesFilterAtom', [])
 // TODO: add more filters
 // filter_vector_layer_displays
 // filter_taxonomies

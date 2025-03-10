@@ -12,34 +12,56 @@ import { ProjectNode } from './Project/index.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom, projectsFilterAtom } from '../../store.ts'
+import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 
 export const ProjectsNode = memo(() => {
   const [filter] = useAtom(projectsFilterAtom)
-  const isFiltered = !!filter
+  const isFiltered = filter.length > 0
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
+  const filterString = filterStringFromFilter(filter)
   const resultFiltered = useLiveIncrementalQuery(
-    `SELECT * FROM projects${
-      isFiltered ? ` WHERE ${filter}` : ''
-    } order by label asc`,
+    `
+    SELECT
+      project_id,
+      files_active_projects,
+      label,
+      name 
+    FROM projects
+    ${filterString ? ` WHERE ${filterString}` : ''} 
+    ORDER BY label`,
     undefined,
     'project_id',
   )
   const projects = resultFiltered?.rows ?? []
+  const projectsLoading = resultFiltered === undefined
 
   const resultCountUnfiltered = useLiveQuery(`SELECT count(*) FROM projects`)
   const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
+  const countLoading = resultCountUnfiltered === undefined
 
   const projectsNode = useMemo(
     () => ({
       label: `Projects (${
-        isFiltered ? `${projects.length}/${countUnfiltered}` : projects.length
+        isFiltered
+          ? `${projectsLoading ? '...' : projects.length}/${
+              countLoading ? '...' : countUnfiltered
+            }`
+          : projectsLoading
+          ? '...'
+          : projects.length
       })`,
     }),
-    [isFiltered, projects.length, countUnfiltered],
+    [
+      isFiltered,
+      projectsLoading,
+      projects.length,
+      countLoading,
+      countUnfiltered,
+    ],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

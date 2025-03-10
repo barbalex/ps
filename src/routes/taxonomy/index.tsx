@@ -6,12 +6,10 @@ import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
-import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
-
-const taxonomyTypes = ['species', 'biotope']
+import { Type } from './Type.tsx'
 
 import '../../form.css'
 
@@ -31,12 +29,15 @@ export const Component = memo(() => {
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
+      // only change if value has changed: maybe only focus entered and left
+      if (row[name] === value) return
+
       db.query(`UPDATE taxonomies SET ${name} = $1 WHERE taxonomy_id = $2`, [
         value,
         taxonomy_id,
       ])
     },
-    [db, taxonomy_id],
+    [db, row, taxonomy_id],
   )
 
   if (!row) return <Loading />
@@ -53,11 +54,8 @@ export const Component = memo(() => {
           autoFocus
           ref={autoFocusRef}
         />
-        <RadioGroupField
-          label="Type"
-          name="type"
-          list={taxonomyTypes}
-          value={row.type ?? ''}
+        <Type
+          row={row}
           onChange={onChange}
         />
         <TextField

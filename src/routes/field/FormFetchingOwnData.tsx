@@ -20,12 +20,15 @@ export const FieldFormFetchingOwnData = memo(
     const onChange = useCallback<InputProps['onChange']>(
       (e, data) => {
         const { name, value } = getValueFromChange(e, data)
+        // only change if value has changed: maybe only focus entered and left
+        if (row[name] === value) return
+
         db.query(`UPDATE fields SET ${name} = $1 WHERE field_id = $2`, [
           value,
           field_id,
         ])
       },
-      [db, field_id],
+      [db, field_id, row],
     )
 
     if (!row) return <Loading />

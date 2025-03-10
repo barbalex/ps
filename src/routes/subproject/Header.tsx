@@ -36,7 +36,7 @@ export const Header = memo(({ autoFocusRef, nameSingular = 'Subproject' }) => {
       `SELECT * FROM subprojects WHERE project_id = $1 order by label asc`,
       [project_id],
     )
-    const subprojects = result.rows
+    const subprojects = result?.rows
     const len = subprojects.length
     const index = subprojects.findIndex(
       (p) => p.subproject_id === subproject_id,
@@ -53,7 +53,7 @@ export const Header = memo(({ autoFocusRef, nameSingular = 'Subproject' }) => {
       `SELECT * FROM subprojects WHERE project_id = $1 order by label asc`,
       [project_id],
     )
-    const subprojects = result.rows
+    const subprojects = result?.rows
     const len = subprojects.length
     const index = subprojects.findIndex(
       (p) => p.subproject_id === subproject_id,

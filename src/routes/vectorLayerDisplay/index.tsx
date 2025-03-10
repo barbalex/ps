@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom'
 import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
-import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { SliderFieldWithInput } from '../../components/shared/SliderFieldWithInput.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
@@ -13,10 +12,10 @@ import { Header } from './Header.tsx'
 import { ErrorBoundary } from '../../components/shared/ErrorBoundary.tsx'
 import { ColorPicker } from '../../components/shared/ColorPicker.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
-
-const fillRules = ['nonzero', 'evenodd']
-const lineCaps = ['butt', 'round', 'square']
-const markerTypes = ['circle', 'marker']
+import { MarkerType } from './MarkerType.tsx'
+import { LineCap } from './LineCap.tsx'
+import { LineJoin } from './LineJoin.tsx'
+import { FillRule } from './FillRule.tsx'
 
 import '../../form.css'
 
@@ -25,9 +24,6 @@ import '../../form.css'
 //   circle: 'Kreis',
 //   marker: 'Symbol',
 // }
-
-// not imported from schema as miter-clip not supported by electric-sql
-const lineJoinValues = ['arcs', 'bevel', 'miter', 'miter-clip', 'round']
 
 export const Component = ({ vectorLayerDisplayId }) => {
   const { vector_layer_display_id: vectorLayerDisplayIdFromRouter } =
@@ -48,12 +44,15 @@ export const Component = ({ vectorLayerDisplayId }) => {
   const onChange = useCallback<InputProps['onChange']>(
     (e: React.ChangeEvent<HTMLInputElement>, data) => {
       const { name, value } = getValueFromChange(e, data)
+      // only change if value has changed: maybe only focus entered and left
+      if (row[name] === value) return
+
       db.query(
         `UPDATE vector_layer_displays SET ${name} = $1 WHERE vector_layer_display_id = $2`,
         [value, vector_layer_display_id],
       )
     },
-    [db, vector_layer_display_id],
+    [db, row, vector_layer_display_id],
   )
 
   if (!row) return <Loading />
@@ -73,12 +72,9 @@ export const Component = ({ vectorLayerDisplayId }) => {
           vectorLayerDisplayId={vectorLayerDisplayId}
         />
         <div className="form-container">
-          <RadioGroupField
-            name="marker_type"
-            label="Punkt-Typ"
-            list={markerTypes}
-            value={row.marker_type}
+          <MarkerType
             onChange={onChange}
+            row={row}
           />
           {row.marker_type === 'circle' && (
             <TextField
@@ -118,19 +114,13 @@ export const Component = ({ vectorLayerDisplayId }) => {
             onChange={onChange}
             type="number"
           />
-          <RadioGroupField
-            name="line_cap"
-            value={row.line_cap}
-            label="Linien: Abschluss"
-            list={lineCaps}
+          <LineCap
             onChange={onChange}
+            row={row}
           />
-          <RadioGroupField
-            name="line_join"
-            value={row.line_join}
-            label="Linien: Ecken"
-            list={lineJoinValues}
+          <LineJoin
             onChange={onChange}
+            row={row}
           />
           <TextField
             name="dash_array"
@@ -172,12 +162,9 @@ export const Component = ({ vectorLayerDisplayId }) => {
             min={0}
             step={5}
           />
-          <RadioGroupField
-            name="fill_rule"
-            value={row.fill_rule}
-            label="Füllung: Regel, um den Inhalt von Flächen zu bestimmen"
-            list={fillRules}
+          <FillRule
             onChange={onChange}
+            row={row}
           />
         </div>
       </div>

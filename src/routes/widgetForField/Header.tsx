@@ -32,7 +32,7 @@ export const Header = memo(({ autoFocusRef }) => {
     const result = await db.query(
       `SELECT * FROM widgets_for_fields ORDER BY label ASC`,
     )
-    const widgetsForFields = result.rows
+    const widgetsForFields = result?.rows
     const len = widgetsForFields.length
     const index = widgetsForFields.findIndex(
       (p) => p.widget_for_field_id === widget_for_field_id,
@@ -48,7 +48,7 @@ export const Header = memo(({ autoFocusRef }) => {
     const result = await db.query(
       `SELECT * FROM widgets_for_fields ORDER BY label ASC`,
     )
-    const widgetsForFields = result.rows
+    const widgetsForFields = result?.rows
     const len = widgetsForFields.length
     const index = widgetsForFields.findIndex(
       (p) => p.widget_for_field_id === widget_for_field_id,

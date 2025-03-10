@@ -1,5 +1,8 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import {
+  useLiveIncrementalQuery,
+  useLiveQuery,
+} from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
@@ -13,6 +16,7 @@ import {
   actions1FilterAtom,
   actions2FilterAtom,
 } from '../../store.ts'
+import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 
 export const ActionsNode = memo(
   ({ project_id, subproject_id, place_id, place, level = 7 }) => {
@@ -25,43 +29,53 @@ export const ActionsNode = memo(
     const [searchParams] = useSearchParams()
 
     const filter = place_id ? filterActions2 : filterActions1
+    const filterString = filterStringFromFilter(filter)
+    const isFiltered = !!filterString
     const resFiltered = useLiveIncrementalQuery(
       `
-      SELECT * 
+      SELECT
+        action_id,
+        label
       FROM actions 
       WHERE 
         place_id = $1 
-        ${filter.length > 0 ? ' AND ' : ''} ${filter
-        .map((f) => f)
-        .join(' AND ')}
-      ORDER BY label ASC`,
+        ${isFiltered ? ` AND ${filterString}` : ''}
+      ORDER BY label`,
       [place.place_id],
       'action_id',
     )
     const actionsFiltered = resFiltered?.rows ?? []
+    const actionsLoading = resFiltered === undefined
 
-    const resUnfiltered = useLiveIncrementalQuery(
+    const unfilteredCountRes = useLiveQuery(
       `
-      SELECT * 
+      SELECT count(*) 
       FROM actions 
-      WHERE 
-        place_id = $1
-      ORDER BY label ASC`,
+      WHERE place_id = $1`,
       [place.place_id],
-      'action_id',
     )
-    const actionsUnfiltered = resUnfiltered?.rows ?? []
-    const isFiltered = filter.length > 0
+    const actionsUnfilteredCount = unfilteredCountRes?.rows?.[0]?.count ?? 0
+    const countLoading = unfilteredCountRes === undefined
 
     const actionsNode = useMemo(
       () => ({
         label: `Actions (${
           isFiltered
-            ? `${actionsFiltered.length}/${actionsUnfiltered.length}`
+            ? `${actionsLoading ? '...' : actionsFiltered.length}/${
+                countLoading ? '...' : actionsUnfilteredCount
+              }`
+            : actionsLoading
+            ? '...'
             : actionsFiltered.length
         })`,
       }),
-      [actionsFiltered.length, actionsUnfiltered.length, isFiltered],
+      [
+        actionsFiltered.length,
+        actionsLoading,
+        actionsUnfilteredCount,
+        countLoading,
+        isFiltered,
+      ],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')

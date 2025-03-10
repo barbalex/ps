@@ -1,76 +1,27 @@
-import {
-  memo,
-  useEffect,
-  useMemo,
-  useState,
-  useCallback,
-  createContext,
-} from 'react'
+import { memo, useEffect, useMemo, useState, useCallback } from 'react'
 import { useParams } from 'react-router-dom'
 import { Accordion } from '@fluentui/react-components'
 import { monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
-import {
-  type Edge,
-  extractClosestEdge,
-} from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
+import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
 import { reorder } from '@atlaskit/pragmatic-drag-and-drop/reorder'
 import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index'
 import { useAtom, atom } from 'jotai'
-import {
-  usePGlite,
-  useLiveIncrementalQuery,
-  useLiveQuery,
-} from '@electric-sql/pglite-react'
+import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
-import { ActiveLayer } from './Active.tsx'
-import { isItemData } from './shared.ts'
+import { ActiveLayer } from './Active/index.tsx'
 import { mapLayerSortingAtom } from '../../../../../store.ts'
 import { titleStyle } from '../styles.ts'
+import { DragAndDropContext } from './DragAndDropContext.ts'
+import {
+  getItemRegistry,
+  ReorderItemProps,
+  isItemData,
+} from '../../../../shared/DragAndDrop/index.tsx'
 
 // what accordion items are open
 // needs to be controlled to prevent opening when layer is deactivated
 const openItemsAtom = atom([])
-
-type ItemEntry = { itemId: string; element: HTMLElement }
-
-function getItemRegistry() {
-  const registry = new Map<string, HTMLElement>()
-
-  function register({ itemId, element }: ItemEntry) {
-    registry.set(itemId, element)
-
-    return function unregister() {
-      registry.delete(itemId)
-    }
-  }
-
-  function getElement(itemId: string): HTMLElement | null {
-    return registry.get(itemId) ?? null
-  }
-
-  return { register, getElement }
-}
-
-export const ListContext = createContext<ListContextValue | null>(null)
-
-type ReorderItemProps = {
-  startIndex: number
-  indexOfTarget: number
-  closestEdgeOfTarget: Edge | null
-}
-
-type CleanupFn = () => void
-type ListContextValue = {
-  getListLength: () => number
-  registerItem: (entry: ItemEntry) => CleanupFn
-  reorderItem: (args: {
-    startIndex: number
-    indexOfTarget: number
-    closestEdgeOfTarget: Edge | null
-  }) => void
-  instanceId: symbol
-}
 
 const layerListStyle = {
   display: 'flex',
@@ -97,7 +48,8 @@ export const ActiveLayers = memo(() => {
     SELECT 
       wms_layers.*, 
       layer_presentations.layer_presentation_id,
-      layer_presentations.active as layer_presentation_active
+      layer_presentations.active as layer_presentation_active,
+      'wms' as layer_type
     FROM wms_layers
       INNER JOIN layer_presentations 
         ON wms_layers.wms_layer_id = layer_presentations.wms_layer_id 
@@ -116,7 +68,8 @@ export const ActiveLayers = memo(() => {
     SELECT 
       vector_layers.*,
       layer_presentations.layer_presentation_id,
-      layer_presentations.active as layer_presentation_active
+      layer_presentations.active as layer_presentation_active,
+      'vector' as layer_type
     FROM vector_layers 
       INNER JOIN layer_presentations 
         ON vector_layers.vector_layer_id = layer_presentations.vector_layer_id 
@@ -129,6 +82,11 @@ export const ActiveLayers = memo(() => {
     () => resVectorLayers?.rows ?? [],
     [resVectorLayers],
   )
+
+  // union queries?
+  // + faster querying
+  // + less renders
+  // - need to handle different columns
 
   // sort by mapLayerSorting
   const activeLayers = useMemo(
@@ -257,7 +215,7 @@ export const ActiveLayers = memo(() => {
     [activeLayers.length],
   )
 
-  const contextValue: ListContextValue = useMemo(() => {
+  const dragAndDropContextValue = useMemo(() => {
     return {
       registerItem: registry.register,
       reorderItem,
@@ -311,7 +269,7 @@ export const ActiveLayers = memo(() => {
   // do not toggle if that layers presentation is no more active
   return (
     <ErrorBoundary>
-      <ListContext.Provider value={contextValue}>
+      <DragAndDropContext.Provider value={dragAndDropContextValue}>
         <section>
           <h2 style={titleStyle}>Active</h2>
           <Accordion
@@ -336,7 +294,7 @@ export const ActiveLayers = memo(() => {
             )}
           </Accordion>
         </section>
-      </ListContext.Provider>
+      </DragAndDropContext.Provider>
     </ErrorBoundary>
   )
 })

@@ -33,7 +33,7 @@ export const Header = memo(({ autoFocusRef }) => {
     const result = await db.query(
       `SELECT * FROM field_types order by label asc`,
     )
-    const fieldTypes = result.rows
+    const fieldTypes = result?.rows
     const len = fieldTypes.length
     const index = fieldTypes.findIndex((p) => p.field_type_id === field_type_id)
     const next = fieldTypes[(index + 1) % len]
@@ -47,7 +47,7 @@ export const Header = memo(({ autoFocusRef }) => {
     const result = await db.query(
       `SELECT * FROM field_types order by label asc`,
     )
-    const fieldTypes = result.rows
+    const fieldTypes = result?.rows
     const len = fieldTypes.length
     const index = fieldTypes.findIndex((p) => p.field_type_id === field_type_id)
     const previous = fieldTypes[(index + len - 1) % len]

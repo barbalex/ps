@@ -16,6 +16,10 @@ const textareaStyle = {
   flexGrow: 1,
 }
 
+const fieldStyle = {
+  width: '100%',
+}
+
 export const TextArea = memo((props: Partial<TextareaProps>) => {
   const {
     label,
@@ -51,6 +55,7 @@ export const TextArea = memo((props: Partial<TextareaProps>) => {
       label={label ?? '(no label provided)'}
       validationMessage={validationMessage}
       validationState={validationState}
+      style={fieldStyle}
     >
       <div style={rowStyle}>
         <Textarea

@@ -4,6 +4,7 @@ import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
+import { Loading } from '../components/shared/Loading.tsx'
 
 import '../form.css'
 
@@ -31,7 +32,7 @@ export const Component = memo(() => {
   if (isNotToAssign) {
     filter += ' AND o.not_to_assign IS TRUE AND o.place_id IS NULL'
   }
-  const result = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `
     SELECT 
       o.occurrence_id, 
@@ -43,7 +44,8 @@ export const Component = memo(() => {
     undefined,
     'occurrence_id',
   )
-  const occurrences = result?.rows ?? []
+  const isLoading = res === undefined
+  const occurrences = res?.rows ?? []
 
   // console.log('hello occurrences', {
   //   isAssigned,
@@ -65,15 +67,22 @@ export const Component = memo(() => {
         nameSingular="occurrence"
         isFiltered={false}
         countFiltered={occurrences.length}
+        isLoading={isLoading}
       />
       <div className="list-container">
-        {occurrences.map(({ occurrence_id, label }) => (
-          <Row
-            key={occurrence_id}
-            label={label ?? occurrence_id}
-            to={occurrence_id}
-          />
-        ))}
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <>
+            {occurrences.map(({ occurrence_id, label }) => (
+              <Row
+                key={occurrence_id}
+                label={label ?? occurrence_id}
+                to={occurrence_id}
+              />
+            ))}
+          </>
+        )}
       </div>
     </div>
   )

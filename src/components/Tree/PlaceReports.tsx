@@ -1,5 +1,8 @@
 import { useCallback, useMemo, memo } from 'react'
-import { useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import {
+  useLiveIncrementalQuery,
+  useLiveQuery,
+} from '@electric-sql/pglite-react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
@@ -13,6 +16,7 @@ import {
   placeReports1FilterAtom,
   placeReports2FilterAtom,
 } from '../../store.ts'
+import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 
 export const PlaceReportsNode = memo(
   ({ project_id, subproject_id, place_id, place, level = 7 }) => {
@@ -25,43 +29,53 @@ export const PlaceReportsNode = memo(
     const [searchParams] = useSearchParams()
 
     const filter = place_id ? placeReports2Filter : placeReports1Filter
+    const filterString = filterStringFromFilter(filter)
+    const isFiltered = !!filterString
     const resFiltered = useLiveIncrementalQuery(
       `
-      SELECT * 
+      SELECT
+        place_report_id,
+        label 
       FROM place_reports 
       WHERE 
         place_id = $1 
-        ${filter.length > 0 ? ` AND ${filter.join(' AND ')}` : ``}
-      ORDER BY label ASC`,
+        ${isFiltered ? ` AND ${filterString} ` : ``}
+      ORDER BY label`,
       [place.place_id],
       'place_report_id',
     )
     const placeReportsFiltered = resFiltered?.rows ?? []
+    const filteredLoading = resFiltered === undefined
 
-    const resUnfiltered = useLiveIncrementalQuery(
+    const resUnfiltered = useLiveQuery(
       `
-      SELECT * 
+      SELECT count(*) 
       FROM place_reports 
-      WHERE 
-        place_id = $1 
-      ORDER BY label ASC`,
+      WHERE place_id = $1`,
       [place.place_id],
-      'place_report_id',
     )
-    const placeReportsUnfiltered = resUnfiltered?.rows ?? []
-
-    const isFiltered =
-      placeReportsFiltered.length !== placeReportsUnfiltered.length
+    const countUnfiltered = resUnfiltered?.rows?.[0]?.count ?? 0
+    const countLoading = resUnfiltered === undefined
 
     const placeReportsNode = useMemo(
       () => ({
         label: `Reports (${
           isFiltered
-            ? `${placeReportsFiltered.length}/${placeReportsUnfiltered.length}`
+            ? `${filteredLoading ? '...' : placeReportsFiltered.length}/${
+                countLoading ? '...' : countUnfiltered
+              }`
+            : filteredLoading
+            ? '...'
             : placeReportsFiltered.length
         })`,
       }),
-      [isFiltered, placeReportsFiltered.length, placeReportsUnfiltered.length],
+      [
+        isFiltered,
+        filteredLoading,
+        placeReportsFiltered.length,
+        countLoading,
+        countUnfiltered,
+      ],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')

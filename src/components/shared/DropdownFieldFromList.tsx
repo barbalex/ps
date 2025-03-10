@@ -12,6 +12,9 @@ const rowStyle = {
 const ddStyle = {
   flexGrow: 1,
 }
+const fieldStyle = {
+  width: '100%',
+}
 
 interface Props {
   name: string
@@ -31,17 +34,19 @@ export const DropdownFieldFromList = memo(
     list_id,
     value,
     onChange,
+    autoFocus,
+    ref,
     validationMessage,
     validationState,
     button,
   }: Props) => {
     const res = useLiveIncrementalQuery(
-      `SELECT * FROM list_values WHERE list_id = $1`,
+      `SELECT list_value_id, value FROM list_values WHERE list_id = $1`,
       [list_id],
-      'list_id',
+      'list_value_id',
     )
     const options = useMemo(
-      () => res?.rows.map(({ value }) => value),
+      () => (res?.rows ?? []).map(({ value }) => value),
       [res?.rows],
     )
     const selectedOptions = useMemo(
@@ -54,6 +59,7 @@ export const DropdownFieldFromList = memo(
         label={label ?? '(no label provided)'}
         validationMessage={validationMessage}
         validationState={validationState}
+        style={fieldStyle}
       >
         <div style={rowStyle}>
           <Dropdown
@@ -65,6 +71,8 @@ export const DropdownFieldFromList = memo(
             }
             appearance="underline"
             style={ddStyle}
+            autoFocus={autoFocus}
+            ref={ref}
             clearable
           >
             {options.map((option) => {

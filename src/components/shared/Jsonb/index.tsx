@@ -14,7 +14,7 @@ import { TextField } from '../TextField.tsx'
 import { accountTables } from '../../../routes/field/accountTables.ts'
 import { AddField } from './AddField.tsx'
 import { WidgetsFromDataFieldsDefined } from './WidgetsFromDataFieldsDefined/index.tsx'
-import { snakeToCamel } from '../../../modules/snakeToCamel.ts'
+import { filterAtomNameFromTableAndLevel } from '../../../modules/filterAtomNameFromTableAndLevel.ts'
 import * as stores from '../../../store.ts'
 
 // and focus the name field on first render?
@@ -24,6 +24,7 @@ export const Jsonb = memo(
     name: jsonFieldName = 'data',
     idField,
     id,
+    orIndex,
     data = {},
     autoFocus = false,
     ref,
@@ -33,12 +34,24 @@ export const Jsonb = memo(
     const { pathname } = useLocation()
     const db = usePGlite()
 
-    const sql = isAccountTable
-      ? `SELECT * FROM fields WHERE table_name = $1 and project_id = $2 order by sort_index asc, label asc`
-      : `SELECT * FROM fields WHERE table_name = $1 and project_id = $2 and level = $3 order by sort_index asc, label asc`
-    const params = isAccountTable
-      ? [table, project_id]
-      : [table, project_id, place_id2 ? 2 : 1]
+    const useProjectId = project_id && table !== 'projects'
+    const sql = `
+      SELECT 
+        fields.*,
+        field_types.name as field_type,
+        widget_types.name as widget_type
+      FROM fields 
+        INNER JOIN field_types USING (field_type_id)
+        INNER JOIN widget_types USING (widget_type_id)
+        LEFT JOIN unnest(
+            ARRAY(SELECT sorted_field_ids FROM field_sorts WHERE table_name = fields.table_name and project_id = fields.project_id)
+          ) WITH ORDINALITY t(field_id, ord) USING (field_id)
+      WHERE 
+        fields.table_name = $1 
+        and fields.project_id ${useProjectId ? `= '${project_id}'` : 'IS NULL'}
+        ${!isAccountTable ? ` and level = $2` : ''} 
+      ORDER BY t.ord`
+    const params = isAccountTable ? [table] : [table, place_id2 ? 2 : 1]
     const result = useLiveIncrementalQuery(sql, params, 'field_id')
     const fields = result?.rows ?? []
 
@@ -66,16 +79,17 @@ export const Jsonb = memo(
           // https://discord.com/channels/933657521581858818/1248997155448819775/1248997155448819775
           // example from electric-sql discord: https://discord.com/channels/933657521581858818/1246045111478124645
           // where: { [jsonbFieldName]: { path: ["is_admin"], equals: true } },
-          const filterAtom =
-            stores[`${snakeToCamel(table)}${level ? `${level}` : ''}FilterAtom`]
+          const filterAtom = filterAtomNameFromTableAndLevel({
+            table,
+            level,
+          })
           const activeFilter = stores.store.get(filterAtom)
-          stores.store.set(filterAtom, [
-            ...activeFilter,
-            { path: [jsonFieldName], contains: val },
-          ])
+          const newFilter = `${
+            activeFilter.length ? `${activeFilter} AND ` : ''
+          }${jsonFieldName}->>'${name}' = '${val[name]}'`
+          stores.store.set(filterAtom, newFilter)
           return
         }
-        // TODO: test
         const sql = `UPDATE ${table} SET ${jsonFieldName} = $1 WHERE ${idField} = $2`
         try {
           await db.query(sql, [val, id])
@@ -114,6 +128,7 @@ export const Jsonb = memo(
             jsonFieldName={jsonFieldName}
             idField={idField}
             id={id}
+            orIndex={orIndex}
             autoFocus={autoFocus}
             ref={ref}
           />

@@ -22,6 +22,7 @@ export const DateField = memo(
     validationMessage,
     validationState,
     autoFocus,
+    ref,
     button,
   }) => {
     // console.log('DateField', { value, label, name })
@@ -38,13 +39,16 @@ export const DateField = memo(
             name={name}
             value={value}
             onChange={onChange}
-            onSelectDate={(date) => onChange({ target: { name, value: date } })}
+            onSelectDate={(date) =>
+              onChange({ target: { name, value: date, type: 'date' } })
+            }
             firstDayOfWeek={1}
             allowTextInput
             formatDate={(date) =>
-              !date ? '' : date.toLocaleDateString('de-CH')
+              !date ? '' : date?.toLocaleDateString?.('de-CH')
             }
             autoFocus={autoFocus}
+            ref={ref}
             appearance="underline"
             style={dfStyle}
           />

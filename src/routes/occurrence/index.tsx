@@ -30,6 +30,9 @@ export const Component = memo(() => {
   const onChange = useCallback<InputProps['onChange']>(
     async (e, eData) => {
       const { name, value } = getValueFromChange(e, eData)
+      // only change if value has changed: maybe only focus entered and left
+      if (row[name] === value) return
+
       // Issue: for not_to_assign, the value needs to be null instead of false
       // because querying for null or false with electric-sql does not work
       const valueToUse =
@@ -82,7 +85,7 @@ export const Component = memo(() => {
         navigate(url)
       }
     },
-    [db, navigate, occurrence_id, project_id, subproject_id],
+    [db, navigate, occurrence_id, project_id, row, subproject_id],
   )
 
   if (!row) return <Loading />

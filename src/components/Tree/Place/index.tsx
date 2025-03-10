@@ -60,7 +60,6 @@ export const PlaceNode = memo(
       isOpen,
       ownArray,
       isInActiveNodeArray,
-      parentArray,
       urlPath.length,
       navigate,
       parentUrl,

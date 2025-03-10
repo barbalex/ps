@@ -22,8 +22,7 @@ export const Component = memo(() => (
       <div className="card-container">
         <div className="card">
           <h3 className="card-title">Arten und Biotope</h3>
-          Seltene und gefährdete Arten oder Biotope werden überwacht und
-          gefördert.
+          Seltene und gefährdete Arten oder Biotope überwachen und fördern.
         </div>
         <div className="card">
           <h3 className="card-title">Ziele</h3>
@@ -31,11 +30,11 @@ export const Component = memo(() => (
         </div>
         <div className="card">
           <h3 className="card-title">Räume</h3>
-          Arten werden in Populationen gegliedert, Biotope in Flächen.
+          Arten in Populationen gliedern, Biotope in Flächen.
         </div>
         <div className="card">
           <h3 className="card-title">Zweistufige Räume</h3>
-          Populationen und Biotopflächen können weiter unterteilt werden.
+          Populationen und Biotopflächen weiter unterteilen.
         </div>
         <div className="card">
           <h3 className="card-title">Verantwortliche</h3>
@@ -43,12 +42,12 @@ export const Component = memo(() => (
           und berichten.
         </div>
         <div className="card">
-          <h3 className="card-title">Kontrollen</h3>
-          erfassen den Zustand von (Teil-)Räumen und die Wirkung von Massnahmen.
-        </div>
-        <div className="card">
           <h3 className="card-title">Massnahmen</h3>
           verbessern den Zustand einer Art oder eines Biotops.
+        </div>
+        <div className="card">
+          <h3 className="card-title">Kontrollen</h3>
+          erfassen den Zustand von (Teil-)Räumen und die Wirkung von Massnahmen.
         </div>
         <div className="card">
           <h3 className="card-title">Berichte</h3>
@@ -57,13 +56,13 @@ export const Component = memo(() => (
         </div>
         <div className="card">
           <h3 className="card-title">Beobachtungen</h3>
-          Von Dritten gemeldete Beobachtungen werden geprüft und den
-          Popula&shy;tionen und Biotopen zugeordnet.
+          Von Dritten gemeldete Beobachtungen prüfen und den Popula&shy;tionen
+          und Biotopen zuordnen.
         </div>
         <div className="card">
           <h3 className="card-title">Mobilfähig</h3>
           Promoting Species passt sich jeder Bildschirmgrösse an. Arbeiten Sie
-          effizient auf Ihrem Smartphone, Tablet oder Computer.
+          effizient auf Ihrem Handy, Tablet oder Computer.
         </div>
         <div className="card">
           <h3 className="card-title">Bring your own device</h3>
@@ -79,6 +78,11 @@ export const Component = memo(() => (
           <h3 className="card-title">Flexible Konfiguration</h3>
           Sie können Ihr Projekt Ihren eigenen Bedürfnissen anpassen. Vermissen
           Sie eine Funktion? Wir sind interessiert!
+        </div>
+        <div className="card">
+          <h3 className="card-title">Professionelle Konfiguration</h3>
+          Ich helfe Ihnen gerne bei der Erst-Konfiguration, damit Promoting
+          Species genau Ihre Bedürfnisse abbildet!
         </div>
         <div className="card">
           <h3 className="card-title">Einfaches Onboarding</h3>

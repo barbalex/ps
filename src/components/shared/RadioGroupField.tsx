@@ -2,11 +2,14 @@ import { memo, useCallback } from 'react'
 import { Field, RadioGroup, Radio } from '@fluentui/react-components'
 import { useResizeDetector } from 'react-resize-detector'
 
+import { Loading } from './Loading.tsx'
+
 export const RadioGroupField = memo((props) => {
   const {
     name,
     label,
     list = [],
+    isLoading = false,
     value,
     onChange: onChangePassed,
     validationMessage,
@@ -52,16 +55,24 @@ export const RadioGroupField = memo((props) => {
         appearance="underline"
         disabled={disabled}
       >
-        {list.map((val, index) => (
-          <Radio
-            key={val}
-            label={replaceUnderscoreInLabel ? val.replaceAll('_', ' ') : val}
-            value={val}
-            onClick={onClick}
-            autoFocus={index === 0 && autoFocus}
-            ref={index === 0 ? ref : undefined}
-          />
-        ))}
+        {isLoading ? (
+          <Loading alignLeft={true} />
+        ) : (
+          <>
+            {list.map((val, index) => (
+              <Radio
+                key={val}
+                label={
+                  replaceUnderscoreInLabel ? val.replaceAll('_', ' ') : val
+                }
+                value={val}
+                onClick={onClick}
+                autoFocus={index === 0 && autoFocus}
+                ref={index === 0 ? ref : undefined}
+              />
+            ))}
+          </>
+        )}
       </RadioGroup>
     </Field>
   )

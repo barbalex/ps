@@ -2,16 +2,15 @@ import { memo } from 'react'
 import { useParams } from 'react-router-dom'
 import { Label, Divider } from '@fluentui/react-components'
 
-import { TextField } from '../../components/shared/TextField.tsx'
-import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
-import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
+import { TextField } from '../../../components/shared/TextField.tsx'
+import { TextFieldInactive } from '../../../components/shared/TextFieldInactive.tsx'
+import { RadioGroupField } from '../../../components/shared/RadioGroupField.tsx'
 // import { RadioGroupFromOptions } from '../../components/shared/RadioGroupFromOptions'
-import { CheckboxField } from '../../components/shared/CheckboxField.tsx'
-import { LabelBy } from '../../components/shared/LabelBy.tsx'
-import { FieldList } from '../../components/shared/FieldList/index.tsx'
-import { SwitchField } from '../../components/shared/SwitchField.tsx'
-
-const projectTypes = ['species', 'biotope']
+import { CheckboxField } from '../../../components/shared/CheckboxField.tsx'
+import { LabelBy } from '../../../components/shared/LabelBy.tsx'
+import { FieldList } from '../../../components/shared/FieldList/index.tsx'
+import { SwitchField } from '../../../components/shared/SwitchField.tsx'
+import { Type } from './Type.tsx'
 
 const labelStyle = {
   color: 'grey',
@@ -28,11 +27,8 @@ export const Design = memo(({ onChange, row }) => {
       aria-labelledby="design"
     >
       <Label style={labelStyle}>Project configuration</Label>
-      <RadioGroupField
-        label="Type"
-        name="type"
-        list={projectTypes}
-        value={row.type ?? ''}
+      <Type
+        row={row}
         onChange={onChange}
       />
       <TextField

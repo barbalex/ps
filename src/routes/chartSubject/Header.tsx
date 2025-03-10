@@ -38,7 +38,7 @@ export const Header = memo(({ autoFocusRef }) => {
       `SELECT * FROM chart_subjects WHERE chart_id = $1 order by label asc`,
       [chart_id],
     )
-    const chartSubjects = result.rows
+    const chartSubjects = result?.rows
     const len = chartSubjects.length
     const index = chartSubjects.findIndex(
       (p) => p.chart_subject_id === chart_subject_id,
@@ -55,7 +55,7 @@ export const Header = memo(({ autoFocusRef }) => {
       `SELECT * FROM chart_subjects WHERE chart_id = $1 order by label asc`,
       [chart_id],
     )
-    const chartSubjects = result.rows
+    const chartSubjects = result?.rows
     const len = chartSubjects.length
     const index = chartSubjects.findIndex(
       (p) => p.chart_subject_id === chart_subject_id,

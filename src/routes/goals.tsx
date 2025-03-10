@@ -7,26 +7,35 @@ import { createGoal } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
+import { Loading } from '../components/shared/Loading.tsx'
 import { goalsFilterAtom } from '../store.ts'
+import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 import '../form.css'
 
 export const Component = memo(() => {
   const [filter] = useAtom(goalsFilterAtom)
-  const isFiltered = !!filter
-
   const { project_id, subproject_id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const db = usePGlite()
 
-  const result = useLiveIncrementalQuery(
-    `SELECT goal_id, label FROM goals WHERE subproject_id = $1${
-      isFiltered ? ` AND(${filter})` : ''
-    }`,
+  const filterString = filterStringFromFilter(filter)
+  const isFiltered = !!filterString
+  const res = useLiveIncrementalQuery(
+    `
+    SELECT 
+      goal_id, 
+      label 
+    FROM goals 
+    WHERE 
+      subproject_id = $1
+      ${isFiltered ? ` AND(${filterString})` : ''}
+    ORDER BY label`,
     [subproject_id],
     'goal_id',
   )
-  const goals = result?.rows ?? []
+  const isLoading = res === undefined
+  const goals = res?.rows ?? []
 
   const add = useCallback(async () => {
     const res = await createGoal({ db, project_id, subproject_id })
@@ -43,17 +52,24 @@ export const Component = memo(() => {
         tableName="goals"
         isFiltered={isFiltered}
         countFiltered={goals.length}
+        isLoading={isLoading}
         addRow={add}
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {goals.map(({ goal_id, label }) => (
-          <Row
-            key={goal_id}
-            label={label ?? goal_id}
-            to={goal_id}
-          />
-        ))}
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <>
+            {goals.map(({ goal_id, label }) => (
+              <Row
+                key={goal_id}
+                label={label ?? goal_id}
+                to={goal_id}
+              />
+            ))}
+          </>
+        )}
       </div>
     </div>
   )

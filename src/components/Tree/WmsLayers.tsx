@@ -12,6 +12,7 @@ import { WmsLayerNode } from './WmsLayer.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom, wmsLayersFilterAtom } from '../../store.ts'
+import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 
 interface Props {
   project_id: string
@@ -21,34 +22,54 @@ interface Props {
 export const WmsLayersNode = memo(({ project_id, level = 3 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [filter] = useAtom(wmsLayersFilterAtom)
-  const isFiltered = !!filter
-
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
+  const filterString = filterStringFromFilter(filter)
+  const isFiltered = !!filterString
   const resultFiltered = useLiveIncrementalQuery(
-    `SELECT * FROM wms_layers WHERE project_id = $1${
-      isFiltered ? ` AND (${filter})` : ''
-    } order by label asc`,
+    `
+    SELECT
+      wms_layer_id,
+      label 
+    FROM wms_layers 
+    WHERE 
+      project_id = $1
+      ${isFiltered ? ` AND ${filterString} ` : ''} 
+    ORDER BY label`,
     [project_id],
     'wms_layer_id',
   )
   const wmsLayers = resultFiltered?.rows ?? []
+  const wmsLayersLoading = resultFiltered === undefined
 
   const resultCountUnfiltered = useLiveQuery(
     `SELECT count(*) FROM wms_layers WHERE project_id = $1`,
     [project_id],
   )
   const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
+  const countLoading = resultCountUnfiltered === undefined
 
   const wmsLayersNode = useMemo(
     () => ({
       label: `WMS Layers (${
-        isFiltered ? `${wmsLayers.length}/${countUnfiltered}` : wmsLayers.length
+        isFiltered
+          ? `${wmsLayersLoading ? '...' : wmsLayers.length}/${
+              countLoading ? '...' : countUnfiltered
+            }`
+          : wmsLayersLoading
+          ? '...'
+          : wmsLayers.length
       })`,
     }),
-    [isFiltered, wmsLayers.length, countUnfiltered],
+    [
+      isFiltered,
+      wmsLayersLoading,
+      wmsLayers.length,
+      countLoading,
+      countUnfiltered,
+    ],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -84,7 +105,6 @@ export const WmsLayersNode = memo(({ project_id, level = 3 }: Props) => {
     isOpen,
     navigate,
     ownArray,
-    parentArray,
     parentUrl,
     searchParams,
     urlPath.length,

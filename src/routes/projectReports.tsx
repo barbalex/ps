@@ -7,26 +7,34 @@ import { createProjectReport } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Row } from '../components/shared/Row.tsx'
+import { Loading } from '../components/shared/Loading.tsx'
 import { projectReportsFilterAtom } from '../store.ts'
+import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 import '../form.css'
 
 export const Component = memo(() => {
   const [filter] = useAtom(projectReportsFilterAtom)
-  const isFiltered = !!filter
-
   const { project_id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const db = usePGlite()
 
-  const result = useLiveIncrementalQuery(
-    `SELECT project_report_id, label FROM project_reports WHERE project_id = $1${
-      isFiltered ? ` AND(${filter})` : ''
-    } order by label asc`,
+  const filterString = filterStringFromFilter(filter)
+  const isFiltered = !!filterString
+  const res = useLiveIncrementalQuery(
+    `
+    SELECT 
+      project_report_id, 
+      label 
+    FROM project_reports 
+    WHERE project_id = $1
+    ${isFiltered ? ` AND ${filterString} ` : ''} 
+    ORDER BY label`,
     [project_id],
     'project_report_id',
   )
-  const projectReports = result?.rows ?? []
+  const isLoading = res === undefined
+  const projectReports = res?.rows ?? []
 
   const add = useCallback(async () => {
     const res = await createProjectReport({ db, project_id })
@@ -46,17 +54,24 @@ export const Component = memo(() => {
         tableName="project_reports"
         isFiltered={isFiltered}
         countFiltered={projectReports.length}
+        isLoading={isLoading}
         addRow={add}
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {projectReports.map(({ project_report_id, label }) => (
-          <Row
-            key={project_report_id}
-            to={project_report_id}
-            label={label ?? project_report_id}
-          />
-        ))}
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <>
+            {projectReports.map(({ project_report_id, label }) => (
+              <Row
+                key={project_report_id}
+                to={project_report_id}
+                label={label ?? project_report_id}
+              />
+            ))}
+          </>
+        )}
       </div>
     </div>
   )

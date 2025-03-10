@@ -7,12 +7,12 @@ import { usePGlite } from '@electric-sql/pglite-react'
 
 import { layersDataFromRequestData } from './layersDataFromRequestData.ts'
 import { fetchData } from './fetchData.ts'
-import { sqlFromFilter } from '../../../modules/sqlFromFilter.ts'
 import {
   mapInfoAtom,
   wmsLayersFilterAtom,
   vectorLayersFilterAtom,
 } from '../../../store.ts'
+import { filterStringFromFilter } from '../../../modules/filterStringFromFilter.ts'
 
 export const ClickListener = memo(() => {
   const setMapInfo = useSetAtom(mapInfoAtom)
@@ -44,21 +44,23 @@ export const ClickListener = memo(() => {
       // by querying db.vector_layer_geoms using ST_CONTAINS once PostGIS arrives in PgLite
 
       // 1. WMS Layers
-      // using raw query because of the join with layer_presentations
       // TODO: move sort to layer_presentations
-      const sqlFilter = sqlFromFilter({
-        filter: wmsLayersFilter,
-        columnPrefix: 'wl.',
-      })
-      const sqlToAddToWhere = sqlFilter ? ` AND ${sqlFilter}` : ''
+      const filterString = filterStringFromFilter(wmsLayersFilter, 'wl')
       const resWmsLayers = await db.query(
         `
-        select wl.wms_service_layer_name, ws.info_format, ws.version, ws.url
-        from wms_layers wl 
-          inner join layer_presentations lp on lp.wms_layer_id = wl.wms_layer_id
-          inner join wms_services ws on ws.wms_service_id = wl.wms_service_id
-        where lp.active = true and wl.project_id = $1${sqlToAddToWhere} 
-        order by wl.label
+        SELECT 
+          wl.wms_service_layer_name, 
+          ws.info_format, 
+          ws.version, 
+          ws.url
+        FROM wms_layers wl 
+          INNER JOIN layer_presentations lp ON lp.wms_layer_id = wl.wms_layer_id
+          INNER JOIN wms_services ws ON ws.wms_service_id = wl.wms_service_id
+        WHERE 
+          lp.active = true 
+          AND wl.project_id = $1
+          ${filterString} 
+        ORDER BY wl.label
       `,
         [project_id],
       )
@@ -92,15 +94,16 @@ export const ClickListener = memo(() => {
         }
       }
       // 4. Vector Layers from WFS with no downloaded data
+      const filterStringVl = filterStringFromFilter(vectorLayersFilter, 'vl')
       const resActiveVectorLayers = await db.query(
         `
         SELECT vl.* 
         FROM vector_layers vl
-          inner join layer_presentations lp on lp.vector_layer_id = vl.vector_layer_id and lp.active = true
-        WHERE project_id = $1${
-          vectorLayersFilter ? ` AND ${vectorLayersFilter}` : ''
-        } 
-        order by label
+          INNER JOIN layer_presentations lp ON lp.vector_layer_id = vl.vector_layer_id AND lp.active = true
+        WHERE 
+          project_id = $1
+          ${filterStringVl ? ` AND ${filterStringVl}` : ''} 
+        ORDER BY label
       `,
         [project_id],
       )

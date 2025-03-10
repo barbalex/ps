@@ -12,6 +12,7 @@ import { FieldNode } from './Field.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom, fieldsFilterAtom } from '../../store.ts'
+import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 
 interface Props {
   project_id?: string
@@ -19,34 +20,54 @@ interface Props {
 
 export const FieldsNode = memo(({ project_id }: Props) => {
   const [filter] = useAtom(fieldsFilterAtom)
-  const isFiltered = !!filter
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
+  const filterString = filterStringFromFilter(filter)
+  const isFiltered = !!filterString
   const resultFiltered = useLiveIncrementalQuery(
-    `SELECT * FROM fields WHERE project_id = $1${
-      isFiltered ? ` AND(${filter})` : ''
-    } order by sort_index asc, label asc`,
-    [project_id],
+    `
+    SELECT 
+      field_id, 
+      label 
+    FROM fields 
+    WHERE 
+      project_id ${project_id ? `= '${project_id}'` : 'IS NULL'}
+      ${filterString ? ` AND ${filterString}` : ''} 
+    ORDER BY 
+      table_name, 
+      name, 
+      level`,
+    undefined,
     'field_id',
   )
   const fields = resultFiltered?.rows ?? []
+  const fieldsLoading = resultFiltered === undefined
 
   const resultCountUnfiltered = useLiveQuery(
-    `SELECT count(*) FROM fields WHERE project_id = $1`,
-    [project_id],
+    `
+    SELECT count(*) 
+    FROM fields 
+    WHERE project_id  ${project_id ? `= '${project_id}'` : 'IS NULL'}`,
   )
   const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
+  const countLoading = resultCountUnfiltered === undefined
 
   const fieldsNode = useMemo(
     () => ({
       label: `Fields (${
-        isFiltered ? `${fields.length}/${countUnfiltered}` : fields.length
+        isFiltered
+          ? `${fieldsLoading ? '...' : fields.length}/${
+              countLoading ? '...' : countUnfiltered
+            }`
+          : fieldsLoading
+          ? '...'
+          : fields.length
       })`,
     }),
-    [fields.length, countUnfiltered, isFiltered],
+    [isFiltered, fieldsLoading, fields.length, countLoading, countUnfiltered],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

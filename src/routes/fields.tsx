@@ -7,12 +7,13 @@ import { createField } from '../modules/createRows.ts'
 import { ListViewHeader } from '../components/ListViewHeader/index.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
+import { Loading } from '../components/shared/Loading.tsx'
 import { fieldsFilterAtom } from '../store.ts'
+import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 import '../form.css'
 
 export const Component = memo(() => {
   const [filter] = useAtom(fieldsFilterAtom)
-  const isFiltered = !!filter
 
   const { project_id } = useParams()
   const navigate = useNavigate()
@@ -20,14 +21,20 @@ export const Component = memo(() => {
 
   const db = usePGlite()
 
-  const resultsFiltered = useLiveIncrementalQuery(
-    `SELECT field_id, label FROM fields WHERE project_id = $1${
-      isFiltered ? ` AND(${filter})` : ''
-    } order by sort_index ASC, label ASC`,
-    [project_id ?? null],
+  const filterString = filterStringFromFilter(filter)
+  const isFiltered = !!filterString
+  const res = useLiveIncrementalQuery(
+    `
+    SELECT field_id, label 
+    FROM fields 
+    WHERE project_id ${project_id ? `= '${project_id}'` : 'IS NULL'}
+    ${filterString ? ` AND ${filterString}` : ''} 
+    ORDER BY table_name, name, level`,
+    undefined,
     'field_id',
   )
-  const fields = resultsFiltered?.rows ?? []
+  const isLoading = res === undefined
+  const fields = res?.rows ?? []
 
   const add = useCallback(async () => {
     const res = await createField({ project_id, db })
@@ -44,17 +51,24 @@ export const Component = memo(() => {
         tablename="fields"
         isFiltered={isFiltered}
         countFiltered={fields.length}
+        isLoading={isLoading}
         addRow={add}
         menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
-        {fields.map(({ field_id, label }) => (
-          <Row
-            key={field_id}
-            label={label ?? field_id}
-            to={field_id}
-          />
-        ))}
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <>
+            {fields.map(({ field_id, label }) => (
+              <Row
+                key={field_id}
+                label={label ?? field_id}
+                to={field_id}
+              />
+            ))}
+          </>
+        )}
       </div>
     </div>
   )

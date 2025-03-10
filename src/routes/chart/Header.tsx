@@ -71,7 +71,7 @@ export const Header = memo(({ autoFocusRef }) => {
       `select * from charts where ${filterField} = $1 order by label asc`,
       [filterValue],
     )
-    const charts = result.rows
+    const charts = result?.rows
     const len = charts.length
     const index = charts.findIndex((p) => p.chart_id === chart_id)
     const next = charts[(index + 1) % len]
@@ -86,7 +86,7 @@ export const Header = memo(({ autoFocusRef }) => {
       `select * from charts where ${filterField} = $1 order by label asc`,
       [filterValue],
     )
-    const charts = result.rows
+    const charts = result?.rows
     const len = charts.length
     const index = charts.findIndex((p) => p.chart_id === chart_id)
     const previous = charts[(index + len - 1) % len]

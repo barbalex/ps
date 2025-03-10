@@ -51,9 +51,13 @@ COMMENT ON COLUMN accounts.projects_label_by IS 'Used to label projects in lists
 -- projects
 --
 create table if not exists project_types (
-  type text primary key default null
+  type text primary key default null,
+  sort integer default null
 );
-insert into project_types (type) values ('species'), ('biotope');
+
+create index if not exists project_types_sort_idx on project_types using btree(sort);
+
+insert into project_types (type, sort) values ('species', 1), ('biotope', 2);
 
 -- TODO: add crs for presentation
 -- TODO: add geometry
@@ -146,14 +150,14 @@ CREATE TABLE IF NOT EXISTS place_levels(
   check_values boolean DEFAULT FALSE,
   check_taxa boolean DEFAULT FALSE,
   occurrences boolean DEFAULT FALSE,
-  label text generated always as (
-    case
-      when name_short is null and name_plural is null then place_level_id::text
-      when name_plural is null then level::text || '.' || name_short
-      when name_short is null then level::text || '.' || name_plural
-      else place_level_id::text
-    end
-  ) stored
+  label text GENERATED ALWAYS AS (
+    CASE
+      WHEN (name_short IS NULL AND name_plural IS NULL) THEN place_level_id::text
+      WHEN name_plural IS NULL THEN level::text || '.' || name_short
+      WHEN name_short IS NULL THEN level::text || '.' || name_plural
+      ELSE level::text || '.' || name_plural
+    END
+  ) STORED
 );
 
 CREATE INDEX IF NOT EXISTS place_levels_account_id_idx ON place_levels USING btree(account_id);
@@ -295,9 +299,13 @@ COMMENT ON TABLE subproject_users IS 'A way to give users access to subprojects 
 -- taxonomies
 --
 create table if not exists taxonomy_types (
-  type text primary key default null
+  type text primary key default null,
+  sort integer default null
 );
-insert into taxonomy_types (type) values ('species'), ('biotope');
+
+create index if not exists taxonomy_types_sort_idx on taxonomy_types using btree(sort);
+
+insert into taxonomy_types (type, sort) values ('species', 1), ('biotope', 2);
 
 CREATE TABLE IF NOT EXISTS taxonomies(
   taxonomy_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
@@ -308,12 +316,14 @@ CREATE TABLE IF NOT EXISTS taxonomies(
   url text DEFAULT NULL,
   obsolete boolean DEFAULT FALSE,
   data jsonb DEFAULT NULL,
-  label text GENERATED ALWAYS AS ( CASE when name IS NULL THEN
-    taxonomy_id::text
-    WHEN type IS NULL THEN
-    taxonomy_id::text when name IS NULL THEN
-    taxonomy_id::text else name || ' (' || type || ')'
-  END) STORED
+  label text GENERATED ALWAYS AS ( 
+    CASE 
+      when name IS NULL THEN taxonomy_id::text
+      WHEN type IS NULL THEN taxonomy_id::text 
+      when name IS NULL THEN taxonomy_id::text 
+      else name || ' (' || type || ')'
+    END
+  ) STORED
 );
 
 CREATE INDEX IF NOT EXISTS taxonomies_account_id_idx ON taxonomies USING btree(account_id);
@@ -466,9 +476,11 @@ COMMENT ON COLUMN list_values.account_id IS 'redundant account_id enhances data 
 -- units
 --
 create table if not exists unit_types (
-  type text primary key default null
+  type text primary key default null,
+  sort integer default null
 );
-insert into unit_types (type) values ('integer'), ('numeric'), ('text');
+CREATE INDEX IF NOT EXISTS unit_types_sort_idx ON unit_types USING btree(sort);
+insert into unit_types (type, sort) values ('integer', 1), ('numeric', 2), ('text', 3);
 
 CREATE TABLE IF NOT EXISTS units(
   unit_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
@@ -1243,9 +1255,6 @@ CREATE INDEX IF NOT EXISTS widgets_for_fields_label_idx ON widgets_for_fields(la
 --------------------------------------------------------------
 -- fields
 --
--- order_by field: to enable ordering of field widgets
--- idea: use an integer that represents the index of the widget
--- thus: set index for ALL widgets of a field after reordering
 CREATE TABLE IF NOT EXISTS fields(
   field_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1259,10 +1268,6 @@ CREATE TABLE IF NOT EXISTS fields(
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE NO action ON UPDATE CASCADE,
   preset text DEFAULT NULL,
   obsolete boolean DEFAULT FALSE,
-  sort_index integer DEFAULT NULL,
-  order_by integer DEFAULT NULL, -- enable ordering of field widgets
-  -- label text DEFAULT NULL
-  -- label text GENERATED ALWAYS AS (iif(coalesce(table_name, name) is not null, table_name || '.' || name || iif(level is not null, ' ' || level, ''), field_id))
   label text GENERATED ALWAYS AS (
     CASE 
       WHEN table_name is null then field_id::text 
@@ -1295,7 +1300,6 @@ CREATE INDEX IF NOT EXISTS fields_obsolete_idx ON fields USING btree((1))
 WHERE
   obsolete;
 
-CREATE INDEX IF NOT EXISTS fields_sort_index_idx ON fields USING btree(sort_index);
 
 COMMENT ON TABLE fields IS 'Fields are used to define the data structure of data jsonb fields in other tables.';
 
@@ -1305,20 +1309,47 @@ COMMENT ON COLUMN fields.table_name IS 'table, on which this field is used insid
 
 COMMENT ON COLUMN fields.level IS 'level of field if places or below: 1, 2';
 
-COMMENT ON COLUMN fields.sort_index IS 'Enables sorting of fields. Per table';
+
+--------------------------------------------------------------
+-- field_sorts
+--
+-- this table is used to store the sort order of fields per table_name
+-- https://stackoverflow.com/a/35456954/712005
+CREATE TABLE IF NOT EXISTS field_sorts(
+  field_sort_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  table_name text DEFAULT NULL,
+  sorted_field_ids uuid[] DEFAULT NULL,
+  UNIQUE(project_id, table_name)
+);
+
+CREATE INDEX IF NOT EXISTS field_sorts_project_id_idx ON field_sorts USING btree(project_id);
+
+CREATE INDEX IF NOT EXISTS field_sorts_account_id_idx ON field_sorts USING btree(account_id);
+
+CREATE INDEX IF NOT EXISTS field_sorts_table_name_idx ON field_sorts USING btree(table_name);
+
+CREATE INDEX IF NOT EXISTS field_sorts_sorted_field_ids_idx ON field_sorts USING gin(sorted_field_ids);
+
+COMMENT ON TABLE field_sorts IS 'Stores the sort order of fields per table_name';
 
 --------------------------------------------------------------
 --occurrence_imports
 --
 create table if not exists occurrence_import_previous_operations (
-  previous_import_operation text primary key
+  previous_import_operation text primary key,
+  sort integer default null
 );
-insert into occurrence_import_previous_operations values ('update_and_extend'), ('replace');
+CREATE INDEX IF NOT EXISTS occurrence_import_previous_operations_sort_idx ON occurrence_import_previous_operations USING btree(sort);
+insert into occurrence_import_previous_operations (previous_import_operation, sort) values ('update_and_extend', 1), ('replace', 2);
 
 create table if not exists occurrence_imports_geometry_methods (
-  geometry_method text primary key
+  geometry_method text primary key,
+  sort integer default null
 );
-insert into occurrence_imports_geometry_methods values ('coordinates'), ('geojson');
+CREATE INDEX IF NOT EXISTS occurrence_imports_geometry_methods_sort_idx ON occurrence_imports_geometry_methods USING btree(sort);
+insert into occurrence_imports_geometry_methods (geometry_method, sort) values ('coordinates', 1), ('geojson', 2);
 
 CREATE TABLE IF NOT EXISTS occurrence_imports(
   occurrence_import_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
@@ -1622,24 +1653,32 @@ COMMENT ON COLUMN vector_layer_geoms.bbox_ne_lat IS 'bbox of the geometry. Set c
 -- vector_layer_displays
 --
 create table if not exists vector_layer_marker_types (
-  marker_type text primary key
+  marker_type text primary key,
+  sort integer default null
 );
-insert into vector_layer_marker_types values ('circle'), ('marker');
+CREATE INDEX IF NOT EXISTS vector_layer_marker_types_sort_idx ON vector_layer_marker_types USING btree(sort);
+insert into vector_layer_marker_types (marker_type, sort) values ('circle', 1), ('marker', 2);
 
 create table if not exists vector_layer_line_caps (
-  line_cap text primary key
+  line_cap text primary key,
+  sort integer default null
 );
-insert into vector_layer_line_caps values ('butt'), ('round'), ('square');
+CREATE INDEX IF NOT EXISTS vector_layer_line_caps_sort_idx ON vector_layer_line_caps USING btree(sort);
+insert into vector_layer_line_caps (line_cap, sort) values ('butt', 1), ('round', 2), ('square', 3);
 
 create table if not exists vector_layer_line_joins (
-  line_join text primary key
+  line_join text primary key,
+  sort integer default null
 );
-insert into vector_layer_line_joins values ('arcs'), ('bevel'), ('miter'), ('miter-clip'), ('round');
+CREATE INDEX IF NOT EXISTS vector_layer_line_joins_sort_idx ON vector_layer_line_joins USING btree(sort);
+insert into vector_layer_line_joins (line_join, sort) values ('arcs', 1), ('bevel', 2), ('miter', 3), ('miter-clip', 4), ('round', 5);
 
 create table if not exists vector_layer_fill_rules (
-  fill_rule text primary key
+  fill_rule text primary key,
+  sort integer default null
 );
-insert into vector_layer_fill_rules values ('nonzero'), ('evenodd');
+CREATE INDEX IF NOT EXISTS vector_layer_fill_rules_sort_idx ON vector_layer_fill_rules USING btree(sort);
+insert into vector_layer_fill_rules (fill_rule, sort) values ('nonzero', 1), ('evenodd', 2);
 
 -- DROP TABLE IF EXISTS vector_layer_displays CASCADE;
 -- manage all map related properties here? For imported/wfs and also own tables?
@@ -1774,9 +1813,11 @@ COMMENT ON COLUMN notifications.progress_percent IS 'Progress of a long running 
 -- charts
 --
 create table if not exists chart_types (
-  chart_type text primary key
+  chart_type text primary key,
+  sort integer default null
 );
-insert into chart_types values ('Pie'), ('Radar'), ('Area');
+CREATE INDEX IF NOT EXISTS chart_types_sort_idx ON chart_types USING btree(sort);
+insert into chart_types (chart_type, sort) values ('Pie', 1), ('Radar', 2), ('Area', 3);
 
 CREATE TABLE IF NOT EXISTS charts(
   chart_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
@@ -1795,7 +1836,13 @@ CREATE TABLE IF NOT EXISTS charts(
   subjects_stacked boolean DEFAULT FALSE,
   subjects_single boolean DEFAULT FALSE,
   percent boolean DEFAULT FALSE,
-  label text GENERATED ALWAYS AS (coalesce(title, chart_id::text)) STORED
+  label text GENERATED ALWAYS AS (
+    CASE 
+      -- not null and not '', see: https://stackoverflow.com/a/23767625/712005
+      WHEN (title = '') IS NOT FALSE THEN chart_id::text 
+      ELSE title
+    END
+  ) STORED
 );
 
 CREATE INDEX IF NOT EXISTS charts_chart_id_idx ON charts USING btree(chart_id);
@@ -1830,9 +1877,11 @@ COMMENT ON COLUMN charts.years_until IS 'If has value: the chart shows data unti
 -- chart_subjects
 --
 create table if not exists chart_subject_table_names (
-  table_name text primary key
+  table_name text primary key,
+  sort integer default null
 );
-insert into chart_subject_table_names values ('subprojects'), ('places'), ('checks'), ('check_values'), ('actions'), ('action_values');
+CREATE INDEX IF NOT EXISTS chart_subject_table_names_sort_idx ON chart_subject_table_names USING btree(sort);
+insert into chart_subject_table_names (table_name, sort) values ('subprojects', 1), ('places', 2), ('checks', 3), ('check_values', 4), ('actions', 5), ('action_values', 6);
 
 create table if not exists chart_subject_table_levels (
   level integer primary key
@@ -1840,14 +1889,18 @@ create table if not exists chart_subject_table_levels (
 insert into chart_subject_table_levels values (1), (2);
 
 create table if not exists chart_subject_value_sources (
-  value_source text primary key
+  value_source text primary key,
+  sort integer default null
 );
-insert into chart_subject_value_sources values ('count_rows'), ('count_rows_by_distinct_field_values'), ('sum_values_of_field');
+CREATE INDEX IF NOT EXISTS chart_subject_value_sources_sort_idx ON chart_subject_value_sources USING btree(sort);
+insert into chart_subject_value_sources (value_source, sort) values ('count_rows', 1), ('count_rows_by_distinct_field_values', 2), ('sum_values_of_field', 3);
 
 create table if not exists chart_subject_types (
-  type text primary key
+  type text primary key,
+  sort integer default null
 );
-insert into chart_subject_types values ('linear'), ('monotone');
+CREATE INDEX IF NOT EXISTS chart_subject_types_sort_idx ON chart_subject_types USING btree(sort);
+insert into chart_subject_types (type, sort) values ('linear', 1), ('monotone', 2);
 
 CREATE TABLE IF NOT EXISTS chart_subjects(
   chart_subject_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
@@ -1861,7 +1914,7 @@ CREATE TABLE IF NOT EXISTS chart_subjects(
   value_unit uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE CASCADE ON UPDATE CASCADE, -- needed for action_values, check_values
   name text DEFAULT NULL,
   label text DEFAULT NULL,
-  type text DEFAULT NULL REFERENCES chart_subject_types(type) ON DELETE NO action ON UPDATE CASCADE,
+  type text DEFAULT NULL REFERENCES chart_subject_types(type) ON DELETE NO action ON UPDATE CASCADE, -- not used
   stroke text DEFAULT NULL,
   fill text DEFAULT NULL,
   fill_graded boolean DEFAULT TRUE,
@@ -1931,8 +1984,8 @@ COMMENT ON COLUMN crs.proj4 IS 'proj4 string for the crs. From (example): https:
 --------------------------------------------------------------
 -- project_crs
 --
--- need additional table project_crs to store the crs used in a project
--- same as crs - data will be copied from crs to project_crs
+-- need additional table project_crs to store the crs's used in a project
+-- same as crs - data will be copied from crs to project_crs (goal: users need not sync all crs's)
 CREATE TABLE IF NOT EXISTS project_crs(
   project_crs_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   crs_id uuid REFERENCES crs(crs_id) ON DELETE NO action ON UPDATE CASCADE,

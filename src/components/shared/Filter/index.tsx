@@ -1,4 +1,4 @@
-import { memo, useState, useCallback } from 'react'
+import { memo, useState, useCallback, useMemo } from 'react'
 import {
   useLiveQuery,
   useLiveIncrementalQuery,
@@ -8,10 +8,12 @@ import { useLocation, useParams } from 'react-router-dom'
 
 import { FilterHeader } from './Header.tsx'
 import * as stores from '../../../store.ts'
-import { snakeToCamel } from '../../../modules/snakeToCamel.ts'
+import { OrFilter } from './OrFilter.tsx'
+import { filterAtomNameFromTableAndLevel } from '../../../modules/filterAtomNameFromTableAndLevel.ts'
+import { orFilterToSql } from '../../../modules/orFilterToSql.ts'
+import { filterStringFromFilter } from '../../../modules/filterStringFromFilter.ts'
 
 import '../../../form.css'
-import { OrFilter } from './OrFilter.tsx'
 
 const tabListStyle = {
   backgroundColor: 'rgba(255, 141, 2, 0.08)',
@@ -26,106 +28,149 @@ export const Filter = memo(({ level }) => {
   const location = useLocation()
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
 
-  // reading these values from the url path
-  // if this fails in some situations, we can pass these as props
-  let tableName = urlPath[urlPath.length - 2].replaceAll('-', '_')
-  // TODO: if tableName is 'reports', need to specify whether: action, place, goal, subproject, project
-  if (tableName === 'reports') {
-    // reports can be of multiple types: action, place, goal, subproject, project
-    // need to specify the type of report
-    const grandParent = urlPath[urlPath.length - 4]
-    // the prefix to the tableName is the grandParent without its last character (s)
-    tableName = `${grandParent.slice(0, -1)}_${tableName}`
-  }
-  // for tableNameForTitle: replace all underscores with spaces and uppercase all first letters
-  const res = useLiveIncrementalQuery(
+  const tableName = useMemo(() => {
+    // reading these values from the url path
+    // if this fails in some situations, we can pass these as props
+    let tableName = urlPath[urlPath.length - 2].replaceAll('-', '_')
+    // TODO: if tableName is 'reports', need to specify whether: action, place, goal, subproject, project
+    if (tableName === 'reports') {
+      // reports can be of multiple types: action, place, goal, subproject, project
+      // need to specify the type of report
+      const grandParent = urlPath[urlPath.length - 4]
+      // the prefix to the tableName is the grandParent without its last character (s)
+      tableName = `${grandParent.slice(0, -1)}_${tableName}`
+    }
+    return tableName
+  }, [urlPath])
+
+  const resPlaceLevel = useLiveIncrementalQuery(
     `SELECT * FROM place_levels WHERE project_id = $1 and level = $2 order by label`,
     [project_id, place_id ? 2 : 1],
     'place_level_id',
   )
-  const placeLevel = res?.rows?.[0]
+  const placeLevel = resPlaceLevel?.rows?.[0]
   // const placeNameSingular = placeLevel?.name_singular ?? 'Place'
   const placeNamePlural = placeLevel?.name_plural ?? 'Places'
 
-  const tableNameForTitle =
-    tableName === 'places'
-      ? placeNamePlural
-      : tableName
-          .split('_')
-          .map((w) => w[0].toUpperCase() + w.slice(1))
-          .join(' ')
+  const title = useMemo(() => {
+    // for tableNameForTitle: replace all underscores with spaces and uppercase all first letters
+    const tableNameForTitle =
+      tableName === 'places'
+        ? placeNamePlural
+        : tableName
+            .split('_')
+            .map((w) => w[0].toUpperCase() + w.slice(1))
+            .join(' ')
 
-  const title = `${tableNameForTitle} Filters`
+    const title = `${tableNameForTitle} Filters`
+    return title
+  }, [tableName, placeNamePlural])
 
   const [activeTab, setActiveTab] = useState(1)
   // add 1 and 2 when below subproject_id
-  const filterName = `${snakeToCamel(tableName)}${
-    level ? `${level}` : ''
-  }FilterAtom`
   const onTabSelect = useCallback((e, data) => setActiveTab(data.value), [])
-  // console.log('Filter 1', {
-  //   filterObject,
-  //   filterName,
-  //   tableName,
-  // })
   const [, setRerenderCount] = useState(0)
   const rerender = useCallback(() => setRerenderCount((c) => c + 1), [])
-  const filterAtom = stores[filterName]
-  // ISSUE: as not using hook, need to manually subscribe to the store
-  // and enforce rerender when the store changes
-  stores.store.sub(filterAtom, rerender)
-  const filter = stores?.store?.get?.(filterAtom) ?? []
-  let where = ''
-  let whereUnfiltered = ''
+  const filterAtomName = filterAtomNameFromTableAndLevel({
+    table: tableName,
+    level,
+  })
+  const filterAtom = stores[filterAtomName]
+  // stores.store.set(filterAtom, [])
 
-  // add parent_id for all filterable tables below subprojects
-  if (tableName === 'places') {
-    const flter = place_id ? `parent_id = '${place_id}'` : `parent_id is null`
-    where += flter
-    whereUnfiltered += flter
-  }
-  if (['actions', 'checks', 'place_reports'].includes(tableName)) {
-    const flter = `place_id = '${place_id2 ?? place_id}'`
-    where += flter
-    whereUnfiltered += flter
-  }
-  if (filter.length > 0) {
-    where += ` AND ${filter.join(' AND ')}`
-  }
-  // TODO: need to add parent_id when below place_id/place_id2
+  // Not using hook to enable fetching filter dynamically depending on name
+  // Thus need to subscribe to the store and enforce rerender when it changes
+  stores.store.sub(filterAtom, rerender)
+
+  const filter = stores?.store?.get?.(filterAtom)
   const isFiltered = filter.length > 0
+  // console.log('Filter, filter:', filter)
+
+  const { whereUnfilteredString, whereFilteredString } = useMemo(() => {
+    let whereUnfiltered
+    // add parent_id for all filterable tables below subprojects
+    if (tableName === 'places') {
+      const parentFilter = { parent_id: place_id ?? null }
+      for (const orFilter of filter) {
+        Object.assign(orFilter, parentFilter)
+      }
+      if (!filter.length) filter.push(parentFilter)
+      whereUnfiltered = parentFilter
+    }
+    if (['actions', 'checks', 'place_reports'].includes(tableName)) {
+      const placeFilter = { place_id: place_id2 ?? place_id }
+      for (const orFilter of filter) {
+        Object.assign(orFilter, placeFilter)
+      }
+      if (!filter.length) filter.push(placeFilter)
+      whereUnfiltered = placeFilter
+    }
+    // tables that need to be filtered by project_id
+    if (['fields'].includes(tableName)) {
+      const projectFilter = { project_id: project_id ?? null }
+      for (const orFilter of filter) {
+        Object.assign(orFilter, projectFilter)
+      }
+      if (!filter.length) filter.push(projectFilter)
+      whereUnfiltered = projectFilter
+    }
+    const whereFilteredString = filterStringFromFilter(filter)
+    const whereUnfilteredString = whereUnfiltered
+      ? orFilterToSql(whereUnfiltered)
+      : ''
+
+    return { whereUnfilteredString, whereFilteredString }
+  }, [filter, place_id, place_id2, project_id, tableName])
 
   // console.log('Filter 3', {
   //   tableName,
-  //   filterName,
-  //   tableNameForTitle,
+  //   filterAtomName,
   //   title,
   //   level,
-  //   where,
-  //   whereUnfiltered,
+  //   whereUnfilteredString,
+  //   whereFilteredString,
   //   filter,
   //   place_id,
+  //   project_id,
   // })
 
-  const resFiltered = useLiveQuery(
-    `SELECT * FROM ${tableName} WHERE ${where} order by label asc`,
+  const res = useLiveQuery(
+    `
+      SELECT 
+        (
+          SELECT count(*)
+          FROM ${tableName}
+          ${whereFilteredString ? ` WHERE ${whereFilteredString} ` : ''}
+      ) as filtered_count,
+      (
+        SELECT count(*)
+        FROM ${tableName}
+        ${whereUnfilteredString ? ` WHERE ${whereUnfilteredString} ` : ''}
+      ) as total_count  
+      FROM ${tableName}
+      limit 1
+    `,
   )
-  const results = resFiltered?.rows ?? []
-  const resUnfiltered = useLiveQuery(
-    `SELECT * FROM ${tableName} WHERE ${whereUnfiltered} order by label asc`,
-  )
-  const resultsUnfiltered = resUnfiltered?.rows ?? []
+  const isLoading = res === undefined
+  const row = res?.rows?.[0]
+  const filteredCount = row?.filtered_count ?? 0
+  const totalCount = row?.total_count ?? 0
 
-  // console.log('Filter 4', {
-  //   results,
-  //   resultsUnfiltered,
+  // console.log('Filter 3, res:', {
+  //   res,
+  //   row,
+  //   filteredCount,
+  //   totalCount,
+  //   isLoading,
   // })
 
   return (
     <div className="form-outer-container">
       <FilterHeader
-        title={`${title} (${results.length}/${resultsUnfiltered.length})`}
-        filterName={filterName}
+        title={`${title} (${isLoading ? `...` : filteredCount}/${
+          isLoading ? `...` : totalCount
+        })`}
+        filterName={filterAtomName}
         isFiltered={isFiltered}
       />
       <TabList
@@ -152,7 +197,7 @@ export const Filter = memo(({ level }) => {
         })}
       </TabList>
       <OrFilter
-        filterName={filterName}
+        filterName={filterAtomName}
         orFilters={filter}
         orIndex={activeTab - 1}
       />

@@ -1,9 +1,18 @@
-import { memo, useCallback } from 'react'
-import { useLocation, useParams } from 'react-router-dom'
+import { memo, useState, useCallback, useEffect, useMemo } from 'react'
+import { monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
+import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
+import { reorder } from '@atlaskit/pragmatic-drag-and-drop/reorder'
+import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useParams } from 'react-router-dom'
 
-import { getValueFromChange } from '../../../../modules/getValueFromChange.ts'
 import { Field } from './Field.tsx'
+import { DragAndDropContext } from './DragAndDropContext.ts'
+import {
+  getItemRegistry,
+  ReorderItemProps,
+  isItemData,
+} from '../../../shared/DragAndDrop/index.tsx'
 
 // TODO: Uncaught (in promise) error: invalid input syntax for type uuid: ""
 export const WidgetsFromDataFieldsDefined = memo(
@@ -14,83 +23,130 @@ export const WidgetsFromDataFieldsDefined = memo(
     jsonFieldName,
     idField,
     id,
+    orIndex,
     autoFocus,
     ref,
   }) => {
-    const { pathname } = useLocation()
-    const { place_id, place_id2 } = useParams()
     const db = usePGlite()
-
-    const onChange = useCallback<InputProps['onChange']>(
-      async (e, dataReturned) => {
-        const { name, value } = getValueFromChange(e, dataReturned)
-        const isDate = value instanceof Date
-        const val = { ...data }
-        if (value === undefined) {
-          // need to remove the key from the json object
-          delete val[name]
-        } else {
-          // in json need to save date as iso string
-          val[name] = isDate ? value.toISOString() : value
-        }
-
-        const isFilter = pathname.endsWith('filter')
-        const level =
-          table === 'places' ? (place_id ? 2 : 1) : place_id2 ? 2 : 1
-
-        if (isFilter) {
-          // TODO: wait until new db and it's accessing lib. Then implement these queries
-          // when filtering no id is passed for the row
-          // how to filter on jsonb fields?
-          // https://discord.com/channels/933657521581858818/1248997155448819775/1248997155448819775
-          // example from electric-sql discord: https://discord.com/channels/933657521581858818/1246045111478124645
-          // where: { [jsonbFieldName]: { path: ["is_admin"], equals: true } },
-          const filterAtom =
-            stores[`${snakeToCamel(table)}${level ? `${level}` : ''}FilterAtom`]
-          const activeFilter = stores.store.get(filterAtom)
-          stores.store.set(filterAtom, [
-            ...activeFilter,
-            { path: [jsonFieldName], contains: val },
-          ])
-          return
-        }
-        const sql = `UPDATE ${table} SET ${jsonFieldName} = $1 WHERE ${idField} = $2`
-        try {
-          await db.query(sql, [val, id])
-        } catch (error) {
-          console.log(`Jsonb, error updating table '${table}':`, error)
-        }
-      },
-      [
-        data,
-        pathname,
-        table,
-        place_id,
-        place_id2,
-        db,
-        jsonFieldName,
-        idField,
-        id,
-      ],
-    )
-
+    const { project_id } = useParams()
     // TODO: drag and drop to order
     // only if editing
     // not if editingField
-    return fields.map((field, index) => (
-      <Field
-        key={field.field_id}
-        field={field}
-        index={index}
-        onChange={onChange}
-        data={data}
-        table={table}
-        jsonFieldName={jsonFieldName}
-        idField={idField}
-        id={id}
-        autoFocus={autoFocus}
-        ref={ref}
-      />
-    ))
+    const fieldIds = fields.map((field) => field.field_id)
+    const [registry] = useState(getItemRegistry)
+
+    // Isolated instances of this component from one another
+    const [instanceId] = useState(() => Symbol('instance-id'))
+
+    const reorderItem = useCallback(
+      async ({
+        startIndex,
+        indexOfTarget,
+        closestEdgeOfTarget,
+      }: ReorderItemProps) => {
+        const finishIndex = getReorderDestinationIndex({
+          startIndex,
+          closestEdgeOfTarget,
+          indexOfTarget,
+          axis: 'vertical',
+        })
+
+        if (finishIndex === startIndex) {
+          // If there would be no change, we skip the update
+          return
+        }
+
+        const newSorting = reorder({
+          list: fieldIds,
+          startIndex,
+          finishIndex,
+        })
+        try {
+          db.query(
+            `
+            INSERT INTO field_sorts (project_id, table_name, sorted_field_ids) 
+            VALUES ($1, $2, $3) 
+            ON CONFLICT (project_id, table_name) DO UPDATE 
+              SET 
+                project_id = $1, 
+                table_name = $2, 
+                sorted_field_ids = $3`,
+            [project_id, table, newSorting],
+          )
+        } catch (error) {
+          console.error('WidgetsFromDataFieldsDefined.reorderItem', error)
+        }
+      },
+      [db, fieldIds, project_id, table],
+    )
+
+    useEffect(() => {
+      return monitorForElements({
+        canMonitor({ source }) {
+          return (
+            isItemData(source.data) && source.data.instanceId === instanceId
+          )
+        },
+        onDrop({ location, source }) {
+          const target = location.current.dropTargets[0]
+          if (!target) {
+            return
+          }
+
+          const sourceData = source.data
+          const targetData = target.data
+          if (!isItemData(sourceData) || !isItemData(targetData)) {
+            return
+          }
+
+          const indexOfTarget = fields.findIndex(
+            (field) => field.field_id === targetData.field.field_id,
+          )
+          if (indexOfTarget < 0) {
+            return
+          }
+
+          const closestEdgeOfTarget = extractClosestEdge(targetData)
+
+          reorderItem({
+            startIndex: sourceData.index,
+            indexOfTarget,
+            closestEdgeOfTarget,
+          })
+        },
+      })
+    }, [fields, instanceId, reorderItem])
+
+    const getListLength = useCallback(() => fields.length, [fields.length])
+
+    const dragAndDropContextValue = useMemo(() => {
+      return {
+        registerItem: registry.register,
+        reorderItem,
+        instanceId,
+        getListLength,
+      }
+    }, [registry.register, reorderItem, instanceId, getListLength])
+
+    return (
+      <DragAndDropContext.Provider value={dragAndDropContextValue}>
+        {fields.map((field, index) => (
+          <Field
+            key={field.field_id}
+            field={field}
+            fieldsCount={fields.length}
+            index={index}
+            data={data}
+            table={table}
+            jsonFieldName={jsonFieldName}
+            idField={idField}
+            id={id}
+            orIndex={orIndex}
+            autoFocus={autoFocus}
+            ref={ref}
+          />
+        ))}
+      </DragAndDropContext.Provider>
+    )
   },
 )

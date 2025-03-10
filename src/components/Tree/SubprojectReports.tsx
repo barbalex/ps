@@ -12,6 +12,7 @@ import { SubprojectReportNode } from './SubprojectReport.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom, subprojectReportsFilterAtom } from '../../store.ts'
+import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 
 interface Props {
   project_id: string
@@ -23,36 +24,54 @@ export const SubprojectReportsNode = memo(
   ({ project_id, subproject_id, level = 5 }: Props) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const [filter] = useAtom(subprojectReportsFilterAtom)
-    const isFiltered = !!filter
-
     const location = useLocation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
+    const filterString = filterStringFromFilter(filter)
+    const isFiltered = !!filterString
     const resultFiltered = useLiveIncrementalQuery(
-      `SELECT * FROM subproject_reports WHERE subproject_id = $1${
-        isFiltered ? ` AND (${filter})` : ''
-      } order by label asc`,
+      `
+      SELECT 
+        subproject_report_id,
+        label 
+      FROM subproject_reports 
+      WHERE 
+        subproject_id = $1
+        ${isFiltered ? ` AND (${filterString})` : ''} 
+      ORDER BY label`,
       [subproject_id],
       'subproject_report_id',
     )
     const subprojectReports = resultFiltered?.rows ?? []
+    const subprojectReportsLoading = resultFiltered === undefined
 
     const resultCountUnfiltered = useLiveQuery(
       `SELECT count(*) FROM subproject_reports WHERE subproject_id = $1`,
       [subproject_id],
     )
     const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
+    const countLoading = resultCountUnfiltered === undefined
 
     const subprojectReportsNode = useMemo(
       () => ({
         label: `Reports (${
           isFiltered
-            ? `${subprojectReports.length}/${countUnfiltered}`
+            ? `${subprojectReportsLoading ? '...' : subprojectReports.length}/${
+                countLoading ? '...' : countUnfiltered
+              }`
+            : subprojectReportsLoading
+            ? '...'
             : subprojectReports.length
         })`,
       }),
-      [isFiltered, subprojectReports.length, countUnfiltered],
+      [
+        isFiltered,
+        subprojectReportsLoading,
+        subprojectReports.length,
+        countLoading,
+        countUnfiltered,
+      ],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')

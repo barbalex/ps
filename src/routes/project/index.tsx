@@ -7,7 +7,7 @@ import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 
 import { Header } from './Header.tsx'
 import { Component as Form } from './Form.tsx'
-import { Design } from './Design.tsx'
+import { Design } from './Design/index.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { designingAtom } from '../../store.ts'
@@ -39,6 +39,9 @@ export const Component = memo(() => {
   const onChange = useCallback<InputProps['onChange']>(
     async (e, data) => {
       const { name, value } = getValueFromChange(e, data)
+      // only change if value has changed: maybe only focus entered and left
+      if (row[name] === value) return
+
       try {
         await db.query(
           `UPDATE projects SET ${name} = $1 WHERE project_id = $2`,
@@ -48,7 +51,7 @@ export const Component = memo(() => {
         console.error('error updating project', error)
       }
     },
-    [db, project_id],
+    [db, project_id, row],
   )
 
   if (!row) return <Loading />
@@ -56,23 +59,42 @@ export const Component = memo(() => {
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
-      <TabList selectedValue={tab} onTabSelect={onTabSelect}>
-        <Tab id="form" value="form">
+      <TabList
+        selectedValue={tab}
+        onTabSelect={onTabSelect}
+      >
+        <Tab
+          id="form"
+          value="form"
+        >
           Form
         </Tab>
         {designing && (
-          <Tab id="design" value="design">
+          <Tab
+            id="design"
+            value="design"
+          >
             Design
           </Tab>
         )}
       </TabList>
       {tab === 'form' && (
-        <div role="tabpanel" aria-labelledby="form">
-          <Form row={row} onChange={onChange} autoFocusRef={autoFocusRef} />
+        <div
+          role="tabpanel"
+          aria-labelledby="form"
+        >
+          <Form
+            row={row}
+            onChange={onChange}
+            autoFocusRef={autoFocusRef}
+          />
         </div>
       )}
       {tab === 'design' && designing && (
-        <Design onChange={onChange} row={row} />
+        <Design
+          onChange={onChange}
+          row={row}
+        />
       )}
     </div>
   )
