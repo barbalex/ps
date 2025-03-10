@@ -15,12 +15,12 @@ export const Property = memo(({ vectorLayer }) => {
 
   const db = usePGlite()
   // get fields of table
-  const result = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `
     SELECT 
       field_id, 
-      field_label, 
-      name 
+      field_label AS label, 
+      name AS value
     FROM fields 
     WHERE 
       table_name = $1 
@@ -30,14 +30,9 @@ export const Property = memo(({ vectorLayer }) => {
     [table, level, project_id],
     'field_id',
   )
-  const fields = useMemo(() => result?.rows ?? [], [result])
   const options = useMemo(
-    () =>
-      fields.map((field) => ({
-        label: field.field_label ?? field.name,
-        value: field.name,
-      })),
-    [fields],
+    () => (res?.rows ?? []).map(({ label, value }) => ({ label, value })),
+    [res?.rows],
   )
 
   // TODO: get fields of wfs
@@ -59,7 +54,7 @@ export const Property = memo(({ vectorLayer }) => {
 
   // console.log('VectorLayerForm.PropertyField, fields:', fields)
 
-  if (!fields.length) {
+  if (!options.length) {
     return (
       <TextField
         label="Display by"

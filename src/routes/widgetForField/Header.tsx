@@ -29,15 +29,15 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [db, widget_for_field_id, navigate, searchParams])
 
   const toNext = useCallback(async () => {
-    const result = await db.query(
-      `SELECT * FROM widgets_for_fields ORDER BY label ASC`,
+    const res = await db.query(
+      `SELECT * FROM widgets_for_fields ORDER BY label`,
     )
-    const widgetsForFields = result?.rows
-    const len = widgetsForFields.length
-    const index = widgetsForFields.findIndex(
+    const rows = res?.rows
+    const len = rows.length
+    const index = rows.findIndex(
       (p) => p.widget_for_field_id === widget_for_field_id,
     )
-    const next = widgetsForFields[(index + 1) % len]
+    const next = rows[(index + 1) % len]
     navigate({
       pathname: `../${next.widget_for_field_id}`,
       search: searchParams.toString(),
@@ -45,15 +45,15 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [db, navigate, searchParams, widget_for_field_id])
 
   const toPrevious = useCallback(async () => {
-    const result = await db.query(
-      `SELECT * FROM widgets_for_fields ORDER BY label ASC`,
+    const res = await db.query(
+      `SELECT * FROM widgets_for_fields ORDER BY label`,
     )
-    const widgetsForFields = result?.rows
-    const len = widgetsForFields.length
-    const index = widgetsForFields.findIndex(
+    const rows = res?.rows
+    const len = rows.length
+    const index = rows.findIndex(
       (p) => p.widget_for_field_id === widget_for_field_id,
     )
-    const previous = widgetsForFields[(index + len - 1) % len]
+    const previous = rows[(index + len - 1) % len]
     navigate({
       pathname: `../${previous.widget_for_field_id}`,
       search: searchParams.toString(),

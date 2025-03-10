@@ -16,12 +16,12 @@ export const Component = memo(() => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
-  const result = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT * FROM widgets_for_fields WHERE widget_for_field_id = $1`,
     [widget_for_field_id],
     'widget_for_field_id',
   )
-  const row = result?.rows?.[0]
+  const row = res?.rows?.[0]
 
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
