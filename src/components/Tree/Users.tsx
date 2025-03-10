@@ -16,16 +16,22 @@ export const UsersNode = memo(() => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const result = useLiveIncrementalQuery(
-    `SELECT * FROM users ORDER BY label ASC`,
+  const res = useLiveIncrementalQuery(
+    `
+    SELECT
+      user_id,
+      label
+    FROM users 
+    ORDER BY label`,
     undefined,
     'user_id',
   )
-  const users = result?.rows ?? []
+  const rows = res?.rows ?? []
+  const loading = res === undefined
 
-  const usersNode = useMemo(
-    () => ({ label: `Users (${users.length})` }),
-    [users.length],
+  const node = useMemo(
+    () => ({ label: `Users (${loading ? '...' : rows.length})` }),
+    [loading, rows.length],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -69,17 +75,17 @@ export const UsersNode = memo(() => {
   return (
     <>
       <Node
-        node={usersNode}
+        node={node}
         level={1}
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={users.length}
+        childrenCount={rows.length}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen &&
-        users.map((user) => (
+        rows.map((user) => (
           <UserNode
             key={user.user_id}
             user={user}
