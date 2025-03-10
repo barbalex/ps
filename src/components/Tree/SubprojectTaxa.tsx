@@ -23,16 +23,23 @@ export const SubprojectTaxaNode = memo(
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const result = useLiveIncrementalQuery(
-      `SELECT * FROM subproject_taxa WHERE subproject_id = $1 order by label asc`,
+    const res = useLiveIncrementalQuery(
+      `
+      SELECT
+        subproject_taxon_id,
+        label 
+      FROM subproject_taxa 
+      WHERE subproject_id = $1 
+      ORDER BY label`,
       [subproject_id],
       'subproject_taxon_id',
     )
-    const subprojectTaxa = result?.rows ?? []
+    const rows = res?.rows ?? []
+    const loading = res === undefined
 
-    const subprojectTaxaNode = useMemo(
-      () => ({ label: `Taxa (${subprojectTaxa.length})` }),
-      [subprojectTaxa.length],
+    const node = useMemo(
+      () => ({ label: `Taxa (${loading ? '...' : rows.length})` }),
+      [loading, rows.length],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -76,17 +83,17 @@ export const SubprojectTaxaNode = memo(
     return (
       <>
         <Node
-          node={subprojectTaxaNode}
+          node={node}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
-          childrenCount={subprojectTaxa.length}
+          childrenCount={rows.length}
           to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          subprojectTaxa.map((subprojectTaxon) => (
+          rows.map((subprojectTaxon) => (
             <SubprojectTaxonNode
               key={subprojectTaxon.subproject_taxon_id}
               project_id={project_id}
