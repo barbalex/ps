@@ -30,16 +30,16 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [db, navigate, project_report_id, searchParams])
 
   const toNext = useCallback(async () => {
-    const result = await db.query(
-      `SELECT * FROM project_reports WHERE project_id = $1 ORDER BY label ASC`,
+    const res = await db.query(
+      `SELECT * FROM project_reports WHERE project_id = $1 ORDER BY label`,
       [project_id],
     )
-    const projectReports = result?.rows
-    const len = projectReports.length
-    const index = projectReports.findIndex(
+    const rows = res?.rows
+    const len = rows.length
+    const index = rows.findIndex(
       (p) => p.project_report_id === project_report_id,
     )
-    const next = projectReports[(index + 1) % len]
+    const next = rows[(index + 1) % len]
     navigate({
       pathname: `../${next.project_report_id}`,
       search: searchParams.toString(),
@@ -47,16 +47,16 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [db, navigate, project_id, project_report_id, searchParams])
 
   const toPrevious = useCallback(async () => {
-    const result = await db.query(
-      `SELECT * FROM project_reports WHERE project_id = $1 ORDER BY label ASC`,
+    const res = await db.query(
+      `SELECT * FROM project_reports WHERE project_id = $1 ORDER BY label`,
       [project_id],
     )
-    const projectReports = result?.rows
-    const len = projectReports.length
-    const index = projectReports.findIndex(
+    const rows = res?.rows
+    const len = rows.length
+    const index = rows.findIndex(
       (p) => p.project_report_id === project_report_id,
     )
-    const previous = projectReports[(index + len - 1) % len]
+    const previous = rows[(index + len - 1) % len]
     navigate({
       pathname: `../${previous.project_report_id}`,
       search: searchParams.toString(),

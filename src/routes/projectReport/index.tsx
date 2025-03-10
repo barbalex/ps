@@ -12,17 +12,15 @@ import '../../form.css'
 
 export const Component = memo(() => {
   const { project_report_id } = useParams()
-
   const autoFocusRef = useRef<HTMLInputElement>(null)
-
   const db = usePGlite()
 
-  const result = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT * FROM project_reports WHERE project_report_id = $1`,
     [project_report_id],
     'project_report_id',
   )
-  const row = result?.rows?.[0]
+  const row = res?.rows?.[0]
 
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {

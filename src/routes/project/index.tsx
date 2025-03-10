@@ -21,12 +21,12 @@ export const Component = memo(() => {
 
   const db = usePGlite()
 
-  const result = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT * FROM projects WHERE project_id = $1`,
     [project_id],
     'project_id',
   )
-  const row = result?.rows?.[0]
+  const row = res?.rows?.[0]
 
   const [searchParams, setSearchParams] = useSearchParams()
   const tab = searchParams.get('projectTab') ?? 'form'
