@@ -34,16 +34,23 @@ export const PlaceReportValuesNode = memo(
     const [searchParams] = useSearchParams()
 
     const res = useLiveIncrementalQuery(
-      `SELECT * FROM place_report_values WHERE place_report_id = $1 ORDER BY label ASC`,
+      `
+      SELECT
+        place_report_value_id,
+        label
+      FROM place_report_values 
+      WHERE place_report_id = $1 
+      ORDER BY label`,
       [place_report_id],
       'place_report_value_id',
     )
-    const placeReportValues = res?.rows ?? []
+    const rows = res?.rows ?? []
+    const loading = res === undefined
 
     // TODO: get name by place_level
-    const placeReportValuesNode = useMemo(
-      () => ({ label: `Values (${placeReportValues.length})` }),
-      [placeReportValues.length],
+    const node = useMemo(
+      () => ({ label: `Values (${loading ? '...' : rows.length})` }),
+      [loading, rows.length],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -98,17 +105,17 @@ export const PlaceReportValuesNode = memo(
     return (
       <>
         <Node
-          node={placeReportValuesNode}
+          node={node}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
-          childrenCount={placeReportValues.length}
+          childrenCount={rows.length}
           to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          placeReportValues.map((placeReportValue) => (
+          rows.map((placeReportValue) => (
             <PlaceReportValueNode
               key={placeReportValue.place_report_value_id}
               project_id={project_id}
