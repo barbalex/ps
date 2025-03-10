@@ -21,16 +21,23 @@ export const TaxonomiesNode = memo(({ project_id, level = 3 }: Props) => {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
 
-  const result = useLiveIncrementalQuery(
-    `SELECT * FROM taxonomies WHERE project_id = $1 order by label asc`,
+  const res = useLiveIncrementalQuery(
+    `
+    SELECT
+      taxonomy_id,
+      label 
+    FROM taxonomies 
+    WHERE project_id = $1 
+    ORDER BY label`,
     [project_id],
     'taxonomy_id',
   )
-  const taxonomies = result?.rows ?? []
+  const rows = res?.rows ?? []
+  const loading = res === undefined
 
-  const taxonomiesNode = useMemo(
-    () => ({ label: `Taxonomies (${taxonomies.length})` }),
-    [taxonomies.length],
+  const node = useMemo(
+    () => ({ label: `Taxonomies (${loading ? '...' : rows.length})` }),
+    [loading, rows.length],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -73,17 +80,17 @@ export const TaxonomiesNode = memo(({ project_id, level = 3 }: Props) => {
   return (
     <>
       <Node
-        node={taxonomiesNode}
+        node={node}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={taxonomies.length}
+        childrenCount={rows.length}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen &&
-        taxonomies.map((taxonomy) => (
+        rows.map((taxonomy) => (
           <TaxonomyNode
             key={taxonomy.taxonomy_id}
             project_id={project_id}
