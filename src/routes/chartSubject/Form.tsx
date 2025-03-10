@@ -31,12 +31,15 @@ export const ChartSubjectForm = memo(({ autoFocusRef }: Props) => {
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
+      // only change if value has changed: maybe only focus entered and left
+      if (row[name] === value) return
+
       db.query(
         `UPDATE chart_subjects SET ${name} = $1 WHERE chart_subject_id = $2`,
         [value, chart_subject_id],
       )
     },
-    [db, chart_subject_id],
+    [row, db, chart_subject_id],
   )
 
   if (!row) return <Loading />
