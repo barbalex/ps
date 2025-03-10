@@ -23,16 +23,25 @@ export const OccurrenceImportsNode = memo(
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const result = useLiveIncrementalQuery(
-      `SELECT * FROM occurrence_imports WHERE subproject_id = $1 order by label asc`,
+    const res = useLiveIncrementalQuery(
+      `
+      SELECT
+        occurrence_import_id,
+        label 
+      FROM occurrence_imports 
+      WHERE subproject_id = $1 
+      ORDER BY label`,
       [subproject_id],
       'occurrence_import_id',
     )
-    const occurrenceImports = result?.rows ?? []
+    const rows = res?.rows ?? []
+    const loading = res === undefined
 
     const node = useMemo(
-      () => ({ label: `Occurrence Imports (${occurrenceImports.length})` }),
-      [occurrenceImports.length],
+      () => ({
+        label: `Occurrence Imports (${loading ? '...' : rows.length})`,
+      }),
+      [loading, rows.length],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -83,12 +92,12 @@ export const OccurrenceImportsNode = memo(
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
-          childrenCount={occurrenceImports.length}
+          childrenCount={rows.length}
           to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          occurrenceImports.map((occurrenceImport) => (
+          rows.map((occurrenceImport) => (
             <OccurrenceImportNode
               key={occurrenceImport.occurrence_import_id}
               project_id={project_id}
