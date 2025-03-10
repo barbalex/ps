@@ -17,12 +17,12 @@ export const Component = memo(() => {
 
   const db = usePGlite()
 
-  const result = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT * FROM vector_layers WHERE vector_layer_id = $1`,
     [vector_layer_id],
     'vector_layer_id',
   )
-  const row = result?.rows?.[0]
+  const row = res?.rows?.[0]
 
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {

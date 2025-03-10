@@ -65,11 +65,11 @@ export const Header = memo(({ autoFocusRef, row }) => {
       setTabs([...tabs, 'map'])
     }
     // this layer needs to be active
-    const result = db.query(
+    const res = db.query(
       `SELECT * FROM layer_presentations WHERE vector_layer_id = $1`,
       [row.vector_layer_id],
     )
-    const layerPresentation = result?.rows?.[0]
+    const layerPresentation = res?.rows?.[0]
     if (!layerPresentation.active) {
       db.query(
         `UPDATE layer_presentations SET active = true WHERE layer_presentation_id = $1`,
@@ -117,16 +117,14 @@ export const Header = memo(({ autoFocusRef, row }) => {
   }, [db, vector_layer_id, navigate, searchParams])
 
   const toNext = useCallback(async () => {
-    const result = await db.query(
-      `SELECT * FROM vector_layers WHERE project_id = $1 order by label asc`,
+    const res = await db.query(
+      `SELECT * FROM vector_layers WHERE project_id = $1 order by label`,
       [project_id],
     )
-    const vectorLayers = result?.rows
-    const len = vectorLayers.length
-    const index = vectorLayers.findIndex(
-      (p) => p.vector_layer_id === vector_layer_id,
-    )
-    const next = vectorLayers[(index + 1) % len]
+    const rows = res?.rows
+    const len = rows.length
+    const index = rows.findIndex((p) => p.vector_layer_id === vector_layer_id)
+    const next = rows[(index + 1) % len]
     navigate({
       pathname: `../${next.vector_layer_id}`,
       search: searchParams.toString(),
@@ -134,16 +132,14 @@ export const Header = memo(({ autoFocusRef, row }) => {
   }, [db, project_id, navigate, searchParams, vector_layer_id])
 
   const toPrevious = useCallback(async () => {
-    const result = await db.query(
-      `SELECT * FROM vector_layers WHERE project_id = $1 order by label asc`,
+    const res = await db.query(
+      `SELECT * FROM vector_layers WHERE project_id = $1 order by label`,
       [project_id],
     )
-    const vectorLayers = result?.rows
-    const len = vectorLayers.length
-    const index = vectorLayers.findIndex(
-      (p) => p.vector_layer_id === vector_layer_id,
-    )
-    const previous = vectorLayers[(index + len - 1) % len]
+    const rows = res?.rows
+    const len = rows.length
+    const index = rows.findIndex((p) => p.vector_layer_id === vector_layer_id)
+    const previous = rows[(index + len - 1) % len]
     navigate({
       pathname: `../${previous.vector_layer_id}`,
       search: searchParams.toString(),
