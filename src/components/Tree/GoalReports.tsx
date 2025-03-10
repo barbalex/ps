@@ -25,15 +25,22 @@ export const GoalReportsNode = memo(
     const [searchParams] = useSearchParams()
 
     const res = useLiveIncrementalQuery(
-      `SELECT * FROM goal_reports WHERE goal_id = $1 ORDER BY label ASC`,
+      `
+      SELECT 
+        goal_report_id, 
+        label 
+      FROM goal_reports 
+      WHERE goal_id = $1 
+      ORDER BY label`,
       [goal_id],
       'goal_report_id',
     )
-    const goalReports = res?.rows ?? []
+    const rows = res?.rows ?? []
+    const loading = res === undefined
 
-    const goalReportsNode = useMemo(
-      () => ({ label: `Goal Reports (${goalReports.length})` }),
-      [goalReports.length],
+    const node = useMemo(
+      () => ({ label: `Goal Reports (${loading ? '...' : rows.length})` }),
+      [loading, rows.length],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -85,17 +92,17 @@ export const GoalReportsNode = memo(
     return (
       <>
         <Node
-          node={goalReportsNode}
+          node={node}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
-          childrenCount={goalReports.length}
+          childrenCount={rows.length}
           to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          goalReports.map((goalReport) => (
+          rows.map((goalReport) => (
             <GoalReportNode
               key={goalReport.goal_report_id}
               project_id={project_id}

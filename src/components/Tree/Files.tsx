@@ -70,7 +70,9 @@ export const FilesNode = memo(
     const isFiltered = !!filterString
     const resultFiltered = useLiveIncrementalQuery(
       `
-      SELECT * 
+      SELECT
+        file_id,
+        label 
       FROM files 
       WHERE 
         ${hField} = $1 

@@ -27,7 +27,9 @@ export const FieldTypesNode = memo(() => {
   const isFiltered = !!filterString
   const resultFiltered = useLiveIncrementalQuery(
     `
-    SELECT * 
+    SELECT
+      field_type_id,
+      label
     FROM field_types
     ${isFiltered ? ` WHERE ${filterString}` : ''} 
     ORDER BY label`,
