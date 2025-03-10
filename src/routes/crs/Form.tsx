@@ -15,12 +15,12 @@ export const Component = memo(() => {
   const { crs_id } = useParams()
 
   const db = usePGlite()
-  const result = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT * FROM crs WHERE crs_id = $1`,
     [crs_id],
     'crs_id',
   )
-  const row = result?.rows?.[0]
+  const row = res?.rows?.[0]
 
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {

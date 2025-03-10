@@ -28,11 +28,11 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [db, crs_id, navigate, searchParams])
 
   const toNext = useCallback(async () => {
-    const result = await db.query(`SELECT * FROM crs order by label asc`)
-    const crs = result?.rows
-    const len = crs.length
-    const index = crs.findIndex((p) => p.crs_id === crs_id)
-    const next = crs[(index + 1) % len]
+    const res = await db.query(`SELECT * FROM crs order by label`)
+    const rows = res?.rows
+    const len = rows.length
+    const index = rows.findIndex((p) => p.crs_id === crs_id)
+    const next = rows[(index + 1) % len]
     navigate({
       pathname: `../${next.crs_id}`,
       search: searchParams.toString(),
@@ -40,11 +40,11 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [db, navigate, searchParams, crs_id])
 
   const toPrevious = useCallback(async () => {
-    const result = await db.query(`SELECT * FROM crs order by label asc`)
-    const crs = result?.rows
-    const len = crs.length
-    const index = crs.findIndex((p) => p.crs_id === crs_id)
-    const previous = crs[(index + len - 1) % len]
+    const res = await db.query(`SELECT * FROM crs order by label`)
+    const rows = res?.rows
+    const len = rows.length
+    const index = rows.findIndex((p) => p.crs_id === crs_id)
+    const previous = rows[(index + len - 1) % len]
     navigate({
       pathname: `../${previous.crs_id}`,
       search: searchParams.toString(),

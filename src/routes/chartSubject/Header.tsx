@@ -34,16 +34,14 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [db, chart_subject_id, navigate, searchParams])
 
   const toNext = useCallback(async () => {
-    const result = await db.query(
-      `SELECT * FROM chart_subjects WHERE chart_id = $1 order by label asc`,
+    const res = await db.query(
+      `SELECT * FROM chart_subjects WHERE chart_id = $1 order by label`,
       [chart_id],
     )
-    const chartSubjects = result?.rows
-    const len = chartSubjects.length
-    const index = chartSubjects.findIndex(
-      (p) => p.chart_subject_id === chart_subject_id,
-    )
-    const next = chartSubjects[(index + 1) % len]
+    const rows = res?.rows
+    const len = rows.length
+    const index = rows.findIndex((p) => p.chart_subject_id === chart_subject_id)
+    const next = rows[(index + 1) % len]
     navigate({
       pathname: `../${next.chart_subject_id}`,
       search: searchParams.toString(),
@@ -51,16 +49,14 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [db, chart_id, navigate, searchParams, chart_subject_id])
 
   const toPrevious = useCallback(async () => {
-    const result = await db.query(
-      `SELECT * FROM chart_subjects WHERE chart_id = $1 order by label asc`,
+    const res = await db.query(
+      `SELECT * FROM chart_subjects WHERE chart_id = $1 order by label`,
       [chart_id],
     )
-    const chartSubjects = result?.rows
-    const len = chartSubjects.length
-    const index = chartSubjects.findIndex(
-      (p) => p.chart_subject_id === chart_subject_id,
-    )
-    const previous = chartSubjects[(index + len - 1) % len]
+    const rows = res?.rows
+    const len = rows.length
+    const index = rows.findIndex((p) => p.chart_subject_id === chart_subject_id)
+    const previous = rows[(index + len - 1) % len]
     navigate({
       pathname: `../${previous.chart_subject_id}`,
       search: searchParams.toString(),
