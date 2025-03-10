@@ -44,12 +44,15 @@ export const Component = ({ vectorLayerDisplayId }) => {
   const onChange = useCallback<InputProps['onChange']>(
     (e: React.ChangeEvent<HTMLInputElement>, data) => {
       const { name, value } = getValueFromChange(e, data)
+      // only change if value has changed: maybe only focus entered and left
+      if (row[name] === value) return
+
       db.query(
         `UPDATE vector_layer_displays SET ${name} = $1 WHERE vector_layer_display_id = $2`,
         [value, vector_layer_display_id],
       )
     },
-    [db, vector_layer_display_id],
+    [db, row, vector_layer_display_id],
   )
 
   if (!row) return <Loading />
