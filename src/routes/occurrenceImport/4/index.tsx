@@ -9,21 +9,22 @@ import { PreviousImportOperation } from './PreviousImportOperation.tsx'
 export const Four = memo(({ occurrenceImport, occurrenceFields, onChange }) => {
   const { occurrence_import_id, subproject_id } = useParams()
 
-  const result = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT 
         occurrence_import_id,
         label, 
-        occurrence_import_id as value 
+        occurrence_import_id AS value 
       FROM occurrence_imports 
       WHERE 
         occurrence_import_id <> $1 
         AND subproject_id = $2 
-      order by label asc`,
+      ORDER BY label`,
     [occurrence_import_id, subproject_id],
     'occurrence_import_id',
   )
-  const occurrenceImportOptions = useMemo(() => result?.rows ?? [], [result])
+  const occurrenceImportOptions = useMemo(() => res?.rows ?? [], [res])
 
+  // TODO: move previous import operation to a separate component
   return (
     <>
       <DropdownFieldSimpleOptions
