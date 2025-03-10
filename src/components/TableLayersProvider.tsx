@@ -22,14 +22,14 @@ export const TableLayersProvider = memo(() => {
   // as the effect will run every time these tables change
   const projectsResult = useLiveIncrementalQuery(
     `SELECT * FROM projects`,
-    [],
+    undefined,
     'project_id',
   )
   const projects = projectsResult?.rows ?? []
 
   const occurrencesResult = useLiveIncrementalQuery(
     `SELECT * FROM occurrences`,
-    [],
+    undefined,
     'occurrence_id',
   )
   const occurrences = occurrencesResult?.rows ?? []
