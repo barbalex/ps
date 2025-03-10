@@ -16,19 +16,24 @@ export const AccountsNode = memo(() => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const result = useLiveIncrementalQuery(
-    `SELECT * FROM accounts ORDER BY label ASC`,
+  const res = useLiveIncrementalQuery(
+    `
+    SELECT
+      account_id,
+      label 
+    FROM accounts 
+    ORDER BY label`,
     undefined,
     'account_id',
   )
-  const accounts = result?.rows ?? []
-  const accountsLoading = result === undefined
+  const rows = res?.rows ?? []
+  const loading = res === undefined
 
-  const accountsNode = useMemo(
+  const node = useMemo(
     () => ({
-      label: `Accounts (${accountsLoading ? '...' : accounts.length})`,
+      label: `Accounts (${loading ? '...' : rows.length})`,
     }),
-    [accounts.length, accountsLoading],
+    [rows.length, loading],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -66,17 +71,17 @@ export const AccountsNode = memo(() => {
   return (
     <>
       <Node
-        node={accountsNode}
+        node={node}
         level={1}
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={accounts.length}
+        childrenCount={rows.length}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen &&
-        accounts.map((account) => (
+        rows.map((account) => (
           <AccountNode
             key={account.account_id}
             account={account}

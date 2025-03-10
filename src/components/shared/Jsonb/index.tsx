@@ -52,8 +52,8 @@ export const Jsonb = memo(
         ${!isAccountTable ? ` and level = $2` : ''} 
       ORDER BY t.ord`
     const params = isAccountTable ? [table] : [table, place_id2 ? 2 : 1]
-    const result = useLiveIncrementalQuery(sql, params, 'field_id')
-    const fields = result?.rows ?? []
+    const res = useLiveIncrementalQuery(sql, params, 'field_id')
+    const fields = res?.rows ?? []
 
     const onChange = useCallback<InputProps['onChange']>(
       async (e, dataReturned) => {

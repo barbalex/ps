@@ -10,7 +10,7 @@ export const FilteringComboboxOptions = memo(
     labelFromResult,
     filter,
   }) => {
-    const result = useLiveQuery(
+    const res = useLiveQuery(
       `
       SELECT * 
       FROM ${table}
@@ -18,9 +18,9 @@ export const FilteringComboboxOptions = memo(
       ORDER BY label`,
       [filter],
     )
-    const results = result?.rows ?? []
+    const rows = res?.rows ?? []
     // labelFromResult allows passing in special data. Not in use yet.
-    const options = results.map((o) => ({
+    const options = rows.map((o) => ({
       // catch cases where the label is not present
       text:
         (labelFromResult ? labelFromResult(o) : o.label) ?? o[idField ?? name],
