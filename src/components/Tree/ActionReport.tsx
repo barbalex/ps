@@ -70,7 +70,6 @@ export const ActionReportNode = memo(
     }, [
       isOpen,
       ownArray,
-      parentArray,
       isInActiveNodeArray,
       urlPath.length,
       navigate,

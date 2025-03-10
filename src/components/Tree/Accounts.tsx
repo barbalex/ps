@@ -22,10 +22,13 @@ export const AccountsNode = memo(() => {
     'account_id',
   )
   const accounts = result?.rows ?? []
+  const accountsLoading = result === undefined
 
   const accountsNode = useMemo(
-    () => ({ label: `Accounts (${accounts.length})` }),
-    [accounts.length],
+    () => ({
+      label: `Accounts (${accountsLoading ? '...' : accounts.length})`,
+    }),
+    [accounts.length, accountsLoading],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
