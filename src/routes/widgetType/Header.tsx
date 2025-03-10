@@ -29,15 +29,11 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [db, widget_type_id, navigate, searchParams])
 
   const toNext = useCallback(async () => {
-    const result = await db.query(
-      `SELECT * FROM widget_types order by label asc`,
-    )
-    const widgetTypes = result?.rows
-    const len = widgetTypes.length
-    const index = widgetTypes.findIndex(
-      (p) => p.widget_type_id === widget_type_id,
-    )
-    const next = widgetTypes[(index + 1) % len]
+    const res = await db.query(`SELECT * FROM widget_types order by label`)
+    const rows = res?.rows
+    const len = rows.length
+    const index = rows.findIndex((p) => p.widget_type_id === widget_type_id)
+    const next = rows[(index + 1) % len]
     navigate({
       pathname: `../${next.widget_type_id}`,
       search: searchParams.toString(),
@@ -45,15 +41,11 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [db, navigate, searchParams, widget_type_id])
 
   const toPrevious = useCallback(async () => {
-    const result = await db.query(
-      `SELECT * FROM widget_types order by label asc`,
-    )
-    const widgetTypes = result?.rows
-    const len = widgetTypes.length
-    const index = widgetTypes.findIndex(
-      (p) => p.widget_type_id === widget_type_id,
-    )
-    const previous = widgetTypes[(index + len - 1) % len]
+    const res = await db.query(`SELECT * FROM widget_types order by label`)
+    const rows = res?.rows
+    const len = rows.length
+    const index = rows.findIndex((p) => p.widget_type_id === widget_type_id)
+    const previous = rows[(index + len - 1) % len]
     navigate({
       pathname: `../${previous.widget_type_id}`,
       search: searchParams.toString(),

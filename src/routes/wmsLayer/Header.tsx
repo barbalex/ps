@@ -38,14 +38,14 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [db, wms_layer_id, navigate, searchParams])
 
   const toNext = useCallback(async () => {
-    const result = await db.query(
-      `SELECT * FROM wms_layers WHERE project_id = $1 ORDER BY label ASC`,
+    const res = await db.query(
+      `SELECT * FROM wms_layers WHERE project_id = $1 ORDER BY label`,
       [project_id],
     )
-    const wmsLayers = result?.rows
-    const len = wmsLayers.length
-    const index = wmsLayers.findIndex((p) => p.wms_layer_id === wms_layer_id)
-    const next = wmsLayers[(index + 1) % len]
+    const rows = res?.rows
+    const len = rows.length
+    const index = rows.findIndex((p) => p.wms_layer_id === wms_layer_id)
+    const next = rows[(index + 1) % len]
     navigate({
       pathname: `../${next.wms_layer_id}`,
       search: searchParams.toString(),
@@ -53,14 +53,14 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [db, project_id, navigate, searchParams, wms_layer_id])
 
   const toPrevious = useCallback(async () => {
-    const result = await db.query(
-      `SELECT * FROM wms_layers WHERE project_id = $1 ORDER BY label ASC`,
+    const res = await db.query(
+      `SELECT * FROM wms_layers WHERE project_id = $1 ORDER BY label`,
       [project_id],
     )
-    const wmsLayers = result?.rows
-    const len = wmsLayers.length
-    const index = wmsLayers.findIndex((p) => p.wms_layer_id === wms_layer_id)
-    const previous = wmsLayers[(index + len - 1) % len]
+    const rows = res?.rows
+    const len = rows.length
+    const index = rows.findIndex((p) => p.wms_layer_id === wms_layer_id)
+    const previous = rows[(index + len - 1) % len]
     navigate({
       pathname: `../${previous.wms_layer_id}`,
       search: searchParams.toString(),
