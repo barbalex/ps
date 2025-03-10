@@ -10,7 +10,6 @@ import { Section } from '../../components/shared/Section.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { ChartType } from './ChartType.tsx'
 
-
 interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
 }
@@ -30,6 +29,9 @@ export const Form = memo(({ autoFocusRef }: Props) => {
   const onChange = useCallback<InputProps['onChange']>(
     async (e, data) => {
       const { name, value } = getValueFromChange(e, data)
+      // only change if value has changed: maybe only focus entered and left
+      if (row[name] === value) return
+
       await db.query(`UPDATE charts set ${name} = $1 WHERE chart_id = $2`, [
         value,
         chart_id,

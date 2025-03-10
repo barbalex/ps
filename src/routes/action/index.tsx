@@ -26,12 +26,15 @@ export const Component = memo(() => {
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
+      // only change if value has changed: maybe only focus entered and left
+      if (row[name] === value) return
+
       db.query(`UPDATE actions SET ${name} = $1 WHERE action_id = $2`, [
         value,
         action_id,
       ])
     },
-    [db, action_id],
+    [row, db, action_id],
   )
 
   if (!row) return <Loading />
