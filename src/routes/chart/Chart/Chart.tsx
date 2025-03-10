@@ -23,12 +23,12 @@ const formatNumber = (tickItem) =>
   tickItem && tickItem?.toLocaleString ? tickItem.toLocaleString('de-ch') : 0
 
 export const SingleChart = memo(({ chart, subjects, data, synchronized }) => {
-  const result = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT * FROM units WHERE unit_id = $1`,
     [subjects?.[0]?.value_unit ?? '99999999-9999-9999-9999-999999999999'],
     'unit_id',
   )
-  const firstSubjectsUnit = result?.rows?.[0]
+  const firstSubjectsUnit = res?.rows?.[0]
   if (!chart || !subjects) return null
 
   const unit = firstSubjectsUnit ?? 'Count'

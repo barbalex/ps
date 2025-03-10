@@ -12,20 +12,20 @@ export const buildData = async ({ db, chart, subjects, subproject_id }) => {
           case 'places': {
             switch (subject.table_level) {
               case 1: {
-                const result = await db.query(
+                const res = await db.query(
                   `SELECT * FROM places WHERE subproject_id = $1 AND parent_id IS NULL`,
                   [subproject_id],
                 )
-                const places = result?.rows
+                const places = res?.rows
                 countPlacesRows({ dataPerSubject, places, subject })
                 break
               }
               case 2: {
-                const result = await db.query(
+                const res = await db.query(
                   `SELECT * FROM places WHERE subproject_id = $1 and parent_id IS NOT NULL`,
                   [subproject_id],
                 )
-                const places = result?.rows
+                const places = res?.rows
                 countPlacesRows({ dataPerSubject, places, subject })
                 break
               }
@@ -58,7 +58,7 @@ export const buildData = async ({ db, chart, subjects, subproject_id }) => {
             break
           }
           case 'actions': {
-            const result = await db.query(
+            const res = await db.query(
               `
                 SELECT actions.date 
                 FROM 
@@ -68,7 +68,7 @@ export const buildData = async ({ db, chart, subjects, subproject_id }) => {
               `,
               [subproject_id],
             )
-            const actions = result?.rows
+            const actions = res?.rows
             // use reduce to count checks per year
             const data = actions.reduce((acc, check) => {
               const year = check.date?.getFullYear?.()
