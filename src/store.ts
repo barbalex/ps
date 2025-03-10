@@ -127,7 +127,7 @@ export const actions2FilterAtom = atomWithStorage('actions2FilterAtom', [])
 
 export const placeReports1FilterAtom = atomWithStorage(
   'placeReports1FilterAtom',
-  '',
+  [],
 )
 export const placeReports2FilterAtom = atomWithStorage(
   'placeReports2FilterAtom',

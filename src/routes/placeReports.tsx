@@ -9,6 +9,7 @@ import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import { placeReports1FilterAtom, placeReports2FilterAtom } from '../store.ts'
+import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 import '../form.css'
 
 export const Component = memo(() => {
@@ -20,7 +21,8 @@ export const Component = memo(() => {
   const [placeReports1Filter] = useAtom(placeReports1FilterAtom)
   const [placeReports2Filter] = useAtom(placeReports2FilterAtom)
   const filter = place_id2 ? placeReports2Filter : placeReports1Filter
-  const isFiltered = !!filter
+  const filterString = filterStringFromFilter(filter)
+  const isFiltered = !!filterString
 
   const res = useLiveIncrementalQuery(
     `SELECT place_report_id, label FROM place_reports WHERE place_id = $1${
