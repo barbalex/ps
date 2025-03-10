@@ -33,16 +33,23 @@ export const ChartSubjectsNode = memo(
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const result = useLiveIncrementalQuery(
-      `SELECT * FROM chart_subjects WHERE chart_id = $1 order by label asc`,
+    const res = useLiveIncrementalQuery(
+      `
+      SELECT
+        chart_subject_id,
+        label 
+      FROM chart_subjects 
+      WHERE chart_id = $1 
+      ORDER BY label`,
       [chart_id],
       'chart_subject_id',
     )
-    const chartSubjects = result?.rows ?? []
+    const rows = res?.rows ?? []
+    const loading = res === undefined
 
     const chartSubjectsNode = useMemo(
-      () => ({ label: `Subjects (${chartSubjects.length})` }),
-      [chartSubjects.length],
+      () => ({ label: `Subjects (${loading ? '...' : rows.length})` }),
+      [loading, rows.length],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -99,12 +106,12 @@ export const ChartSubjectsNode = memo(
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
-          childrenCount={chartSubjects.length}
+          childrenCount={rows.length}
           to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          chartSubjects.map((chartSubject) => (
+          rows.map((chartSubject) => (
             <ChartSubjectNode
               key={chartSubject.chart_subject_id}
               project_id={project_id}
