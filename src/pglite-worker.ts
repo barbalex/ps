@@ -5,6 +5,8 @@ worker({
   async init() {
     return new PGlite({
       dataDir: 'idb://ps',
+      debug: true,
+      relaxedDurability: true,
     })
   },
 })
