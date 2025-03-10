@@ -10,22 +10,25 @@ const formContainerStyle = {
   padding: '1em',
 }
 
-export const WmsLayerEditing = memo(({ layer }) => {
+export const WmsLayerEditing = memo(({ layer: row }) => {
   const db = usePGlite()
 
   const onChange = useCallback(
     async (e, data) => {
       const { name, value } = getValueFromChange(e, data)
+      // only change if value has changed: maybe only focus entered and left
+      if (row[name] === value) return
+
       try {
         await db.query(
           `UPDATE wms_layers SET ${name} = $1 WHERE wms_layer_id = $2`,
-          [value, layer.wms_layer_id],
+          [value, row.wms_layer_id],
         )
       } catch (error) {
         console.log('hello WmsLayer, onChange, error:', error)
       }
     },
-    [db, layer.wms_layer_id],
+    [db, row],
   )
 
   return (
@@ -36,7 +39,7 @@ export const WmsLayerEditing = memo(({ layer }) => {
       >
         <WmsLayerForm
           onChange={onChange}
-          wmsLayer={layer}
+          wmsLayer={row}
         />
       </div>
     </ErrorBoundary>
