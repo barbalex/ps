@@ -73,14 +73,14 @@ export const Header = memo(({ row, previewRef }) => {
   }, [action_id, check_id, place_id, place_id2, project_id, subproject_id])
 
   const toNext = useCallback(async () => {
-    const result = await db.query(
-      `SELECT * FROM files WHERE ${hFilterField} = $1 ORDER BY label ASC`,
+    const res = await db.query(
+      `SELECT * FROM files WHERE ${hFilterField} = $1 ORDER BY label`,
       [hFilterValue],
     )
-    const files = result?.rows ?? []
-    const len = files.length
-    const index = files.findIndex((p) => p.file_id === file_id)
-    const next = files[(index + 1) % len]
+    const rows = res?.rows ?? []
+    const len = rows.length
+    const index = rows.findIndex((p) => p.file_id === file_id)
+    const next = rows[(index + 1) % len]
     navigate({
       pathname: `${isPreview ? '../' : ''}../${next.file_id}${
         isPreview ? '/preview' : ''
@@ -98,14 +98,14 @@ export const Header = memo(({ row, previewRef }) => {
   ])
 
   const toPrevious = useCallback(async () => {
-    const result = await db.query(
-      `SELECT * FROM files WHERE ${hFilterField} = $1 ORDER BY label ASC`,
+    const res = await db.query(
+      `SELECT * FROM files WHERE ${hFilterField} = $1 ORDER BY label`,
       [hFilterValue],
     )
-    const files = result?.rows ?? []
-    const len = files.length
-    const index = files.findIndex((p) => p.file_id === file_id)
-    const previous = files[(index + len - 1) % len]
+    const rows = res?.rows ?? []
+    const len = rows.length
+    const index = rows.findIndex((p) => p.file_id === file_id)
+    const previous = rows[(index + len - 1) % len]
     navigate({
       pathname: `${isPreview ? '../' : ''}../${previous.file_id}${
         isPreview ? '/preview' : ''
