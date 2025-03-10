@@ -24,17 +24,19 @@ export const WidgetTypesNode = memo(() => {
 
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
-  const resultFiltered = useLiveIncrementalQuery(
+  const resFiltered = useLiveIncrementalQuery(
     `
-    SELECT * 
+    SELECT
+      widget_type_id,
+      label 
     FROM widget_types
     ${isFiltered ? ` WHERE ${filterString}` : ''} 
     ORDER BY label`,
     undefined,
     'widget_type_id',
   )
-  const widgetTypes = resultFiltered?.rows ?? []
-  const widgetTypesLoading = resultFiltered === undefined
+  const rows = resFiltered?.rows ?? []
+  const rowsLoading = resFiltered === undefined
 
   const resultCountUnfiltered = useLiveQuery(
     `SELECT count(*) FROM widget_types`,
@@ -46,21 +48,15 @@ export const WidgetTypesNode = memo(() => {
     () => ({
       label: `Widget Types (${
         isFiltered
-          ? `${widgetTypesLoading ? '...' : widgetTypes.length}/${
+          ? `${rowsLoading ? '...' : rows.length}/${
               countLoading ? '...' : countUnfiltered
             }`
-          : widgetTypesLoading
+          : rowsLoading
           ? '...'
-          : widgetTypes.length
+          : rows.length
       })`,
     }),
-    [
-      isFiltered,
-      widgetTypesLoading,
-      widgetTypes.length,
-      countLoading,
-      countUnfiltered,
-    ],
+    [isFiltered, rowsLoading, rows.length, countLoading, countUnfiltered],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -112,12 +108,12 @@ export const WidgetTypesNode = memo(() => {
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={widgetTypes.length}
+        childrenCount={rows.length}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen &&
-        widgetTypes.map((widgetType) => (
+        rows.map((widgetType) => (
           <WidgetTypeNode
             key={widgetType.widget_type_id}
             widgetType={widgetType}
