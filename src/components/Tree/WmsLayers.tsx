@@ -28,7 +28,7 @@ export const WmsLayersNode = memo(({ project_id, level = 3 }: Props) => {
 
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
-  const resultFiltered = useLiveIncrementalQuery(
+  const resFiltered = useLiveIncrementalQuery(
     `
     SELECT
       wms_layer_id,
@@ -41,35 +41,29 @@ export const WmsLayersNode = memo(({ project_id, level = 3 }: Props) => {
     [project_id],
     'wms_layer_id',
   )
-  const wmsLayers = resultFiltered?.rows ?? []
-  const wmsLayersLoading = resultFiltered === undefined
+  const rows = resFiltered?.rows ?? []
+  const rowsLoading = resFiltered === undefined
 
-  const resultCountUnfiltered = useLiveQuery(
+  const resCountUnfiltered = useLiveQuery(
     `SELECT count(*) FROM wms_layers WHERE project_id = $1`,
     [project_id],
   )
-  const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
-  const countLoading = resultCountUnfiltered === undefined
+  const countUnfiltered = resCountUnfiltered?.rows?.[0]?.count ?? 0
+  const countLoading = resCountUnfiltered === undefined
 
   const wmsLayersNode = useMemo(
     () => ({
       label: `WMS Layers (${
         isFiltered
-          ? `${wmsLayersLoading ? '...' : wmsLayers.length}/${
+          ? `${rowsLoading ? '...' : rows.length}/${
               countLoading ? '...' : countUnfiltered
             }`
-          : wmsLayersLoading
+          : rowsLoading
           ? '...'
-          : wmsLayers.length
+          : rows.length
       })`,
     }),
-    [
-      isFiltered,
-      wmsLayersLoading,
-      wmsLayers.length,
-      countLoading,
-      countUnfiltered,
-    ],
+    [isFiltered, rowsLoading, rows.length, countLoading, countUnfiltered],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -118,12 +112,12 @@ export const WmsLayersNode = memo(({ project_id, level = 3 }: Props) => {
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={wmsLayers.length}
+        childrenCount={rows.length}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen &&
-        wmsLayers.map((wmsLayer) => (
+        rows.map((wmsLayer) => (
           <WmsLayerNode
             key={wmsLayer.wms_layer_id}
             project_id={project_id}
