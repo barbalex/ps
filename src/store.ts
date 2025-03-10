@@ -132,7 +132,8 @@ export const placeReports2FilterAtom = atomWithStorage(
   'placeReports2FilterAtom',
   [],
 )
-export const filesFilterAtom = atomWithStorage('filesFilterAtom', '')
+// TODO: add
+export const filesFilterAtom = atomWithStorage('filesFilterAtom', [])
 // TODO: add more filters
 // filter_vector_layer_displays
 // filter_taxonomies
