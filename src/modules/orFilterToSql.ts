@@ -1,3 +1,5 @@
+import isUuid from 'is-uuid'
+
 export const orFilterToSql = (
   orFilter: Record<string, unknown>,
   tablePrefix: string,
@@ -15,6 +17,9 @@ export const orFilterToSql = (
     let columnDescriptor = isData ? `data ->> '${columnName}'` : columnName
     if (tablePrefix) {
       columnDescriptor = `${tablePrefix}.${columnDescriptor}`
+    }
+    if (isUuid.anyNonNil(value)) {
+      return `(${columnDescriptor})::uuid = '${value}'`
     }
     // cast text and filter with ilike
     if (typeof value === 'string') {
@@ -36,6 +41,7 @@ export const orFilterToSql = (
     return `${columnDescriptor} = ${value}`
   })
   const sql = whereClauses.join(' AND ')
+  console.log('orFilterToSql, sql:', sql)
 
   return sql
 }
