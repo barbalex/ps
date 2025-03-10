@@ -18,15 +18,24 @@ export const ActionValuesNode = memo(
     const [searchParams] = useSearchParams()
 
     const res = useLiveIncrementalQuery(
-      `SELECT * FROM action_values WHERE action_id = $1 ORDER BY label`,
+      `
+      SELECT
+        action_value_id,
+        label
+      FROM action_values 
+      WHERE action_id = $1 
+      ORDER BY label`,
       [action_id],
       'action_value_id',
     )
     const actionValues = res?.rows ?? []
+    const loading = res === undefined
 
     const actionValuesNode = useMemo(
-      () => ({ label: `Action Values (${actionValues.length})` }),
-      [actionValues.length],
+      () => ({
+        label: `Action Values (${loading ? '...' : actionValues.length})`,
+      }),
+      [actionValues.length, loading],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -73,7 +82,6 @@ export const ActionValuesNode = memo(
       isOpen,
       navigate,
       ownArray,
-      parentArray,
       parentUrl,
       searchParams,
       urlPath.length,
