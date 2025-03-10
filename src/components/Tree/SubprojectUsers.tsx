@@ -23,16 +23,23 @@ export const SubprojectUsersNode = memo(
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const result = useLiveIncrementalQuery(
-      `SELECT * FROM subproject_users WHERE subproject_id = $1 order by label asc`,
+    const res = useLiveIncrementalQuery(
+      `
+      SELECT
+        subproject_user_id,
+        label
+      FROM subproject_users 
+      WHERE subproject_id = $1 
+      ORDER BY label`,
       [subproject_id],
       'subproject_user_id',
     )
-    const subprojectUsers = result?.rows ?? []
+    const rows = res?.rows ?? []
+    const loading = res === undefined
 
-    const subprojectUsersNode = useMemo(
-      () => ({ label: `Users (${subprojectUsers.length})` }),
-      [subprojectUsers.length],
+    const node = useMemo(
+      () => ({ label: `Users (${loading ? '...' : rows.length})` }),
+      [loading, rows.length],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -76,17 +83,17 @@ export const SubprojectUsersNode = memo(
     return (
       <>
         <Node
-          node={subprojectUsersNode}
+          node={node}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
-          childrenCount={subprojectUsers.length}
+          childrenCount={rows.length}
           to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          subprojectUsers.map((subprojectUser) => (
+          rows.map((subprojectUser) => (
             <SubprojectUserNode
               key={subprojectUser.subproject_user_id}
               project_id={project_id}
