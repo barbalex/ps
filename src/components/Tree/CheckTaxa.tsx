@@ -18,15 +18,22 @@ export const CheckTaxaNode = memo(
     const [searchParams] = useSearchParams()
 
     const res = useLiveIncrementalQuery(
-      `SELECT * FROM check_taxa WHERE check_id = $1 ORDER BY label asc`,
+      `
+      SELECT
+        check_taxon_id,
+        label
+      FROM check_taxa 
+      WHERE check_id = $1 
+      ORDER BY label`,
       [check_id],
       'check_taxon_id',
     )
-    const checkTaxa = res?.rows ?? []
+    const rows = res?.rows ?? []
+    const loading = res === undefined
 
     const checkTaxaNode = useMemo(
-      () => ({ label: `Taxa (${checkTaxa.length})` }),
-      [checkTaxa.length],
+      () => ({ label: `Taxa (${loading ? '...' : rows.length})` }),
+      [loading, rows.length],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -73,7 +80,6 @@ export const CheckTaxaNode = memo(
       isOpen,
       navigate,
       ownArray,
-      parentArray,
       parentUrl,
       searchParams,
       urlPath.length,
@@ -87,12 +93,12 @@ export const CheckTaxaNode = memo(
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
-          childrenCount={checkTaxa.length}
+          childrenCount={rows.length}
           to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          checkTaxa.map((checkTaxon) => (
+          rows.map((checkTaxon) => (
             <CheckTaxonNode
               key={checkTaxon.check_taxon_id}
               project_id={project_id}

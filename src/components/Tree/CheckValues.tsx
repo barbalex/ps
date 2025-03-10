@@ -18,15 +18,22 @@ export const CheckValuesNode = memo(
     const [searchParams] = useSearchParams()
 
     const res = useLiveIncrementalQuery(
-      `SELECT * FROM check_values WHERE check_id = $1`,
+      `
+      SELECT
+        check_value_id,
+        label 
+      FROM check_values 
+      WHERE check_id = $1 
+      ORDER BY label`,
       [check_id],
       'check_value_id',
     )
-    const checkValues = res?.rows ?? []
+    const rows = res?.rows ?? []
+    const loading = res === undefined
 
     const checkValuesNode = useMemo(
-      () => ({ label: `Values (${checkValues.length})` }),
-      [checkValues.length],
+      () => ({ label: `Values (${loading ? '...' : rows.length})` }),
+      [loading, rows.length],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -86,12 +93,12 @@ export const CheckValuesNode = memo(
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
-          childrenCount={checkValues.length}
+          childrenCount={rows.length}
           to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          checkValues.map((checkValue) => (
+          rows.map((checkValue) => (
             <CheckValueNode
               key={checkValue.check_value_id}
               project_id={project_id}
