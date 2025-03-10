@@ -21,18 +21,25 @@ export const ProjectCrssNode = memo(({ project_id, level = 3 }: Props) => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const result = useLiveIncrementalQuery(
-    `SELECT * FROM project_crs WHERE project_id = $1 order by label asc`,
+  const res = useLiveIncrementalQuery(
+    `
+    SELECT
+      project_crs_id,
+      label 
+    FROM project_crs 
+    WHERE project_id = $1 
+    ORDER BY label`,
     [project_id],
     'project_crs_id',
   )
-  const projectCrs = result?.rows ?? []
+  const rows = res?.rows ?? []
+  const loading = res === undefined
 
-  const projectCrsNode = useMemo(
+  const node = useMemo(
     () => ({
-      label: `CRS (${projectCrs.length})`,
+      label: `CRS (${loading ? '...' : rows.length})`,
     }),
-    [projectCrs.length],
+    [loading, rows.length],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -76,17 +83,17 @@ export const ProjectCrssNode = memo(({ project_id, level = 3 }: Props) => {
   return (
     <>
       <Node
-        node={projectCrsNode}
+        node={node}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={projectCrs.length}
+        childrenCount={rows.length}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen &&
-        projectCrs.map((cr) => (
+        rows.map((cr) => (
           <ProjectCrsNode
             key={cr.project_crs_id}
             project_id={project_id}
