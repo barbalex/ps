@@ -19,7 +19,7 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }) => {
 
   const db = usePGlite()
 
-  const result = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT lp.* 
     FROM layer_presentations lp
       inner join vector_layers vl on lp.vector_layer_id = vl.vector_layer_id
@@ -27,7 +27,7 @@ export const LayerMenu = memo(({ table, level, placeNamePlural }) => {
     [project_id, `${table}${level}`],
     'layer_presentation_id',
   )
-  const layerPresentation = result?.rows?.[0]
+  const layerPresentation = res?.rows?.[0]
 
   const showLayer = layerPresentation?.active ?? false
   const onClickShowLayer = useCallback(() => {

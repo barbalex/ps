@@ -32,13 +32,13 @@ export const DropdownField = memo(
     hideWhenNoData = false,
     ref,
   }) => {
-    const result = useLiveQuery(
+    const res = useLiveQuery(
       `SELECT * FROM ${table}${
         where ? ` WHERE ${where}` : ''
       } order by ${orderBy}`,
     )
-    const results = result?.rows ?? []
-    const options = results.map((o) => ({
+    const rows = res?.rows ?? []
+    const options = rows.map((o) => ({
       text: o[labelField],
       value: o[idField ?? name],
     }))
@@ -93,7 +93,10 @@ export const DropdownField = memo(
                 const { text, value } = params
 
                 return (
-                  <Option key={value} value={value}>
+                  <Option
+                    key={value}
+                    value={value}
+                  >
                     {text}
                   </Option>
                 )

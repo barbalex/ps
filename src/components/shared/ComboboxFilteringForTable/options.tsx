@@ -11,9 +11,11 @@ export const FilteringComboboxOptions = memo(
     filter,
   }) => {
     const result = useLiveQuery(
-      `SELECT * FROM ${table}${
-        filter ? ` WHERE label ilike '%${filter}%'` : ''
-      } order by label asc`,
+      `
+      SELECT * 
+      FROM ${table}
+      ${filter ? ` WHERE label ilike '%${filter}%'` : ''} 
+      ORDER BY label`,
       [filter],
     )
     const results = result?.rows ?? []
