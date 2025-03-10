@@ -26,12 +26,12 @@ export const SubprojectNode = memo(({ project_id, subproject, level = 4 }) => {
   const [searchParams] = useSearchParams()
 
   // need project to know whether to show files
-  const result = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT * FROM projects WHERE project_id = $1`,
     [project_id],
     'project_id',
   )
-  const project = result?.rows?.[0]
+  const project = res?.rows?.[0]
   const showFiles = project?.files_active_subprojects ?? false
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

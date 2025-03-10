@@ -29,11 +29,11 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [account_id, db, navigate, searchParams])
 
   const toNext = useCallback(async () => {
-    const result = await db.query(`SELECT * FROM accounts order by label asc`)
-    const accounts = result?.rows
-    const len = accounts.length
-    const index = accounts.findIndex((p) => p.account_id === account_id)
-    const next = accounts[(index + 1) % len]
+    const res = await db.query(`SELECT * FROM accounts order by label`)
+    const rows = res?.rows
+    const len = rows.length
+    const index = rows.findIndex((p) => p.account_id === account_id)
+    const next = rows[(index + 1) % len]
     navigate({
       pathname: `../${next.account_id}`,
       search: searchParams.toString(),
@@ -41,11 +41,11 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [account_id, db, navigate, searchParams])
 
   const toPrevious = useCallback(async () => {
-    const result = await db.query(`SELECT * FROM accounts order by label asc`)
-    const accounts = result?.rows
-    const len = accounts.length
-    const index = accounts.findIndex((p) => p.account_id === account_id)
-    const previous = accounts[(index + len - 1) % len]
+    const res = await db.query(`SELECT * FROM accounts order by label`)
+    const rows = res?.rows
+    const len = rows.length
+    const index = rows.findIndex((p) => p.account_id === account_id)
+    const previous = rows[(index + len - 1) % len]
     navigate({
       pathname: `../${previous.account_id}`,
       search: searchParams.toString(),

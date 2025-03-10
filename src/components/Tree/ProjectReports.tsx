@@ -28,7 +28,7 @@ export const ProjectReportsNode = memo(({ project_id, level = 3 }: Props) => {
 
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
-  const result = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `
     SELECT
       project_report_id,
@@ -40,8 +40,8 @@ export const ProjectReportsNode = memo(({ project_id, level = 3 }: Props) => {
     [project_id],
     'project_report_id',
   )
-  const projectReports = result?.rows ?? []
-  const projectsLoading = result === undefined
+  const rows = res?.rows ?? []
+  const rowsLoading = res === undefined
 
   const resultCountUnfiltered = useLiveQuery(
     `SELECT count(*) FROM project_reports WHERE project_id = $1`,
@@ -54,21 +54,15 @@ export const ProjectReportsNode = memo(({ project_id, level = 3 }: Props) => {
     () => ({
       label: `Reports (${
         isFiltered
-          ? `${projectsLoading ? '...' : projectReports.length}/${
+          ? `${rowsLoading ? '...' : rows.length}/${
               countLoading ? '...' : countUnfiltered
             }`
-          : projectsLoading
+          : rowsLoading
           ? '...'
-          : projectReports.length
+          : rows.length
       })`,
     }),
-    [
-      isFiltered,
-      projectsLoading,
-      projectReports.length,
-      countLoading,
-      countUnfiltered,
-    ],
+    [isFiltered, rowsLoading, rows.length, countLoading, countUnfiltered],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -117,12 +111,12 @@ export const ProjectReportsNode = memo(({ project_id, level = 3 }: Props) => {
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={projectReports.length}
+        childrenCount={rows.length}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen &&
-        projectReports.map((projectReport) => (
+        rows.map((projectReport) => (
           <ProjectReportNode
             key={projectReport.project_report_id}
             project_id={project_id}
