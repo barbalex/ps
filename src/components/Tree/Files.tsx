@@ -11,6 +11,7 @@ import { Node } from './Node.tsx'
 import { FileNode } from './File.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 import { treeOpenNodesAtom, filesFilterAtom } from '../../store.ts'
 
 interface Props {
@@ -35,7 +36,6 @@ export const FilesNode = memo(
   }: Props) => {
     const [openNodes] = useAtom(treeOpenNodesAtom)
     const [filter] = useAtom(filesFilterAtom)
-    const isFiltered = !!filter
 
     const location = useLocation()
     const navigate = useNavigate()
@@ -66,28 +66,42 @@ export const FilesNode = memo(
       return { hField, hValue }
     }, [action_id, check_id, place_id, place_id2, project_id, subproject_id])
 
+    const filterString = filterStringFromFilter(filter)
+    const isFiltered = !!filterString
     const resultFiltered = useLiveIncrementalQuery(
-      `SELECT * FROM files WHERE ${hField} = $1 ${
-        isFiltered ? ` AND (${filter})` : ''
-      } order by label asc`,
+      `
+      SELECT * 
+      FROM files 
+      WHERE 
+        ${hField} = $1 
+        ${isFiltered ? ` AND ${filterString} ` : ''} 
+      ORDER BY label`,
       [hValue],
       'file_id',
     )
     const files = resultFiltered?.rows ?? []
+    const filesLoading = resultFiltered === undefined
 
     const resultCountUnfiltered = useLiveQuery(
       `SELECT count(*) FROM files WHERE ${hField} = $1`,
       [hValue],
     )
     const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
+    const countLoading = resultCountUnfiltered === undefined
 
     const filesNode = useMemo(
       () => ({
         label: `Files (${
-          isFiltered ? `${files.length}/${countUnfiltered}` : files.length
+          isFiltered
+            ? `${filesLoading ? '...' : files.length}/${
+                countLoading ? '...' : countUnfiltered
+              }`
+            : filesLoading
+            ? '...'
+            : files.length
         })`,
       }),
-      [files.length, countUnfiltered, isFiltered],
+      [isFiltered, filesLoading, files.length, countLoading, countUnfiltered],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
