@@ -23,16 +23,23 @@ export const VectorLayerDisplaysNode = memo(
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const result = useLiveIncrementalQuery(
-      `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1 order by label asc`,
+    const res = useLiveIncrementalQuery(
+      `
+      SELECT
+        vector_layer_display_id,
+        label
+      FROM vector_layer_displays 
+      WHERE vector_layer_id = $1 
+      ORDER BY label`,
       [vector_layer_id],
       'vector_layer_display_id',
     )
-    const vlds = result?.rows ?? []
+    const rows = res?.rows ?? []
+    const loading = res === undefined
 
-    const vectorLayerDisplaysNode = useMemo(
-      () => ({ label: `Displays (${vlds.length})` }),
-      [vlds.length],
+    const node = useMemo(
+      () => ({ label: `Displays (${loading ? '...' : rows.length})` }),
+      [loading, rows.length],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -79,17 +86,17 @@ export const VectorLayerDisplaysNode = memo(
     return (
       <>
         <Node
-          node={vectorLayerDisplaysNode}
+          node={node}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
-          childrenCount={vlds.length}
+          childrenCount={rows.length}
           to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          vlds.map((vld) => (
+          rows.map((vld) => (
             <VectorLayerDisplayNode
               key={vld.vector_layer_display_id}
               project_id={project_id}
