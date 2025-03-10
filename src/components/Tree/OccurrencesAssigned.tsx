@@ -18,15 +18,24 @@ export const OccurrencesAssignedNode = memo(
     const [searchParams] = useSearchParams()
 
     const res = useLiveIncrementalQuery(
-      `SELECT * FROM occurrences WHERE place_id = $1 ORDER BY label ASC`,
+      `
+      SELECT
+        occurrence_id,
+        label 
+      FROM occurrences 
+      WHERE place_id = $1 
+      ORDER BY label`,
       [place.place_id],
       'occurrence_id',
     )
-    const occurrences = res?.rows ?? []
+    const rows = res?.rows ?? []
+    const loading = res === undefined
 
-    const occurrencesNode = useMemo(
-      () => ({ label: `Occurrences assigned (${occurrences.length})` }),
-      [occurrences.length],
+    const node = useMemo(
+      () => ({
+        label: `Occurrences assigned (${loading ? '...' : rows.length})`,
+      }),
+      [loading, rows.length],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -82,17 +91,17 @@ export const OccurrencesAssignedNode = memo(
     return (
       <>
         <Node
-          node={occurrencesNode}
+          node={node}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
-          childrenCount={occurrences.length}
+          childrenCount={rows.length}
           to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          occurrences.map((occurrence) => (
+          rows.map((occurrence) => (
             <OccurrenceAssignedNode
               key={occurrence.occurrence_id}
               project_id={project_id}
