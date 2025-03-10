@@ -22,6 +22,7 @@ import { store } from './store.ts'
 const db = await PGlite.create('idb://ps', {
   extensions: { live },
   relaxedDurability: true,
+  debug: true,
 })
 
 const routerContainerStyle = {
