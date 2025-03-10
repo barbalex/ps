@@ -30,13 +30,11 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [db, field_type_id, navigate, searchParams])
 
   const toNext = useCallback(async () => {
-    const result = await db.query(
-      `SELECT * FROM field_types order by label asc`,
-    )
-    const fieldTypes = result?.rows
-    const len = fieldTypes.length
-    const index = fieldTypes.findIndex((p) => p.field_type_id === field_type_id)
-    const next = fieldTypes[(index + 1) % len]
+    const res = await db.query(`SELECT * FROM field_types order by label`)
+    const rows = res?.rows
+    const len = rows.length
+    const index = rows.findIndex((p) => p.field_type_id === field_type_id)
+    const next = rows[(index + 1) % len]
     navigate({
       pathname: `../${next.field_type_id}`,
       search: searchParams.toString(),
@@ -44,13 +42,11 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [db, field_type_id, navigate, searchParams])
 
   const toPrevious = useCallback(async () => {
-    const result = await db.query(
-      `SELECT * FROM field_types order by label asc`,
-    )
-    const fieldTypes = result?.rows
-    const len = fieldTypes.length
-    const index = fieldTypes.findIndex((p) => p.field_type_id === field_type_id)
-    const previous = fieldTypes[(index + len - 1) % len]
+    const res = await db.query(`SELECT * FROM field_types order by label`)
+    const rows = res?.rows
+    const len = rows.length
+    const index = rows.findIndex((p) => p.field_type_id === field_type_id)
+    const previous = rows[(index + len - 1) % len]
     navigate({
       pathname: `../${previous.field_type_id}`,
       search: searchParams.toString(),

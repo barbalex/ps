@@ -10,12 +10,12 @@ import { Component as Form } from './Form.tsx'
 export const FieldFormFetchingOwnData = memo(
   ({ field_id, autoFocusRef, isInForm = false }) => {
     const db = usePGlite()
-    const result = useLiveIncrementalQuery(
+    const res = useLiveIncrementalQuery(
       `SELECT * FROM fields WHERE field_id = $1`,
       [field_id],
       'field_id',
     )
-    const row = result?.rows?.[0]
+    const row = res?.rows?.[0]
 
     const onChange = useCallback<InputProps['onChange']>(
       (e, data) => {

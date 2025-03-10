@@ -28,14 +28,14 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [db, field_id, navigate, searchParams])
 
   const toNext = useCallback(async () => {
-    const result = await db.query(
-      `SELECT * FROM fields WHERE project_id = $1 order by label asc`,
+    const res = await db.query(
+      `SELECT * FROM fields WHERE project_id = $1 order by label`,
       [project_id],
     )
-    const fields = result?.rows
-    const len = fields.length
-    const index = fields.findIndex((p) => p.field_id === field_id)
-    const next = fields[(index + 1) % len]
+    const rows = res?.rows
+    const len = rows.length
+    const index = rows.findIndex((p) => p.field_id === field_id)
+    const next = rows[(index + 1) % len]
     navigate({
       pathname: `../${next.field_id}`,
       search: searchParams.toString(),
@@ -43,14 +43,14 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [db, project_id, navigate, searchParams, field_id])
 
   const toPrevious = useCallback(async () => {
-    const result = await db.query(
-      `SELECT * FROM fields WHERE project_id = $1 order by label asc`,
+    const res = await db.query(
+      `SELECT * FROM fields WHERE project_id = $1 order by label`,
       [project_id],
     )
-    const fields = result?.rows
-    const len = fields.length
-    const index = fields.findIndex((p) => p.field_id === field_id)
-    const previous = fields[(index + len - 1) % len]
+    const rows = res?.rows
+    const len = rows.length
+    const index = rows.findIndex((p) => p.field_id === field_id)
+    const previous = rows[(index + len - 1) % len]
     navigate({
       pathname: `../${previous.field_id}`,
       search: searchParams.toString(),
