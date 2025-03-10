@@ -32,16 +32,14 @@ export const Header = memo(({ autoFocusRef, nameSingular = 'Subproject' }) => {
   }, [db, subproject_id, navigate, searchParams])
 
   const toNext = useCallback(async () => {
-    const result = await db.query(
-      `SELECT * FROM subprojects WHERE project_id = $1 order by label asc`,
+    const res = await db.query(
+      `SELECT * FROM subprojects WHERE project_id = $1 order by label`,
       [project_id],
     )
-    const subprojects = result?.rows
-    const len = subprojects.length
-    const index = subprojects.findIndex(
-      (p) => p.subproject_id === subproject_id,
-    )
-    const next = subprojects[(index + 1) % len]
+    const rows = res?.rows
+    const len = rows.length
+    const index = rows.findIndex((p) => p.subproject_id === subproject_id)
+    const next = rows[(index + 1) % len]
     navigate({
       pathname: `../${next.subproject_id}`,
       search: searchParams.toString(),
@@ -49,16 +47,14 @@ export const Header = memo(({ autoFocusRef, nameSingular = 'Subproject' }) => {
   }, [db, project_id, navigate, searchParams, subproject_id])
 
   const toPrevious = useCallback(async () => {
-    const result = await db.query(
-      `SELECT * FROM subprojects WHERE project_id = $1 order by label asc`,
+    const res = await db.query(
+      `SELECT * FROM subprojects WHERE project_id = $1 order by label`,
       [project_id],
     )
-    const subprojects = result?.rows
-    const len = subprojects.length
-    const index = subprojects.findIndex(
-      (p) => p.subproject_id === subproject_id,
-    )
-    const previous = subprojects[(index + len - 1) % len]
+    const rows = res?.rows
+    const len = rows.length
+    const index = rows.findIndex((p) => p.subproject_id === subproject_id)
+    const previous = rows[(index + len - 1) % len]
     navigate({
       pathname: `../${previous.subproject_id}`,
       search: searchParams.toString(),

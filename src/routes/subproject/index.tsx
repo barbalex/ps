@@ -15,7 +15,7 @@ export const Component = memo(() => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
-  const result = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT 
       subprojects.*, 
       projects.subproject_name_singular 
@@ -26,7 +26,7 @@ export const Component = memo(() => {
     [subproject_id],
     'subproject_id',
   )
-  const row = result?.rows?.[0]
+  const row = res?.rows?.[0]
 
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
