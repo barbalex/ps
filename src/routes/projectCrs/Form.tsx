@@ -28,12 +28,15 @@ export const Component = memo(({ autoFocusRef }) => {
   const onChange = useCallback<InputProps['onChange']>(
     (e, data) => {
       const { name, value } = getValueFromChange(e, data)
+      // only change if value has changed: maybe only focus entered and left
+      if (row[name] === value) return
+
       db.query(
         `UPDATE project_crs SET ${name} = $1 WHERE project_crs_id = $2`,
         [value, project_crs_id],
       )
     },
-    [db, project_crs_id],
+    [db, project_crs_id, row],
   )
 
   const resProject = useLiveIncrementalQuery(

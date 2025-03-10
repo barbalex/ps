@@ -39,6 +39,9 @@ export const Component = memo(() => {
   const onChange = useCallback<InputProps['onChange']>(
     async (e, data) => {
       const { name, value } = getValueFromChange(e, data)
+      // only change if value has changed: maybe only focus entered and left
+      if (row[name] === value) return
+
       try {
         await db.query(
           `UPDATE projects SET ${name} = $1 WHERE project_id = $2`,
@@ -48,7 +51,7 @@ export const Component = memo(() => {
         console.error('error updating project', error)
       }
     },
-    [db, project_id],
+    [db, project_id, row],
   )
 
   if (!row) return <Loading />
