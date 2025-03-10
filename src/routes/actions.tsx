@@ -26,19 +26,16 @@ export const Component = memo(() => {
   const filter = place_id2 ? actions2Filter : actions1Filter
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
-  const res = useLiveIncrementalQuery(
-    `
+  const sql = `
     SELECT 
       action_id, 
       label 
     FROM actions 
     WHERE 
       place_id = $1
-      ${isFiltered && ` AND ${filterString} `} 
-    ORDER BY label`,
-    [place_id2 ?? place_id],
-    'action_id',
-  )
+      ${isFiltered ? ` AND ${filterString} ` : ''} 
+    ORDER BY label`
+  const res = useLiveIncrementalQuery(sql, [place_id2 ?? place_id], 'action_id')
   const isLoading = res === undefined
   const actions = res?.rows ?? []
 
