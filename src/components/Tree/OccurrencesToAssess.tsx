@@ -23,10 +23,11 @@ export const OccurrencesToAssessNode = memo(
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
-    const resultOccurrences = useLiveIncrementalQuery(
+    const res = useLiveIncrementalQuery(
       `
         SELECT 
-          o.* 
+          o.occurrence_id,
+          o.label 
         FROM 
           occurrences o 
           INNER JOIN occurrence_imports oi 
@@ -41,11 +42,14 @@ export const OccurrencesToAssessNode = memo(
       [subproject_id],
       'occurrence_id',
     )
-    const occurrences = resultOccurrences?.rows ?? []
+    const rows = res?.rows ?? []
+    const loading = res === undefined
 
-    const occurrencesNode = useMemo(
-      () => ({ label: `Occurrences to assess (${occurrences.length})` }),
-      [occurrences.length],
+    const node = useMemo(
+      () => ({
+        label: `Occurrences to assess (${loading ? '...' : rows.length})`,
+      }),
+      [loading, rows.length],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -92,17 +96,17 @@ export const OccurrencesToAssessNode = memo(
     return (
       <>
         <Node
-          node={occurrencesNode}
+          node={node}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
-          childrenCount={occurrences.length}
+          childrenCount={rows.length}
           to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          occurrences.map((occurrence) => (
+          rows.map((occurrence) => (
             <OccurrenceToAssessNode
               key={occurrence.occurrence_id}
               project_id={project_id}
