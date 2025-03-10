@@ -16,16 +16,22 @@ export const MessagesNode = memo(() => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const result = useLiveIncrementalQuery(
-    `SELECT *, date as label FROM messages order by date asc`,
+  const res = useLiveIncrementalQuery(
+    `
+    SELECT 
+      message_id, 
+      date as label 
+    FROM messages 
+    ORDER BY date DESC`,
     undefined,
     'message_id',
   )
-  const messages = result?.rows ?? []
+  const rows = res?.rows ?? []
+  const loading = res === undefined
 
-  const messagesNode = useMemo(
-    () => ({ label: `Messages (${messages.length})` }),
-    [messages.length],
+  const node = useMemo(
+    () => ({ label: `Messages (${loading ? '...' : rows.length})` }),
+    [loading, rows.length],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -70,17 +76,17 @@ export const MessagesNode = memo(() => {
   return (
     <>
       <Node
-        node={messagesNode}
+        node={node}
         level={1}
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={messages.length}
+        childrenCount={rows.length}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen &&
-        messages.map((message) => (
+        rows.map((message) => (
           <MessageNode
             key={message.message_id}
             message={message}
