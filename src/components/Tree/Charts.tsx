@@ -44,16 +44,17 @@ export const ChartsNode = memo(
       return { field, value }
     }, [place_id, place_id2, project_id, subproject_id])
 
-    const result = useLiveIncrementalQuery(
+    const res = useLiveIncrementalQuery(
       `SELECT * FROM charts WHERE ${field} = $1 order by label asc`,
       [value],
       'chart_id',
     )
-    const charts = result?.rows ?? []
+    const rows = res?.rows ?? []
+    const loading = res === undefined
 
     const chartsNode = useMemo(
-      () => ({ label: `Charts (${charts.length})` }),
-      [charts.length],
+      () => ({ label: `Charts (${loading ? '...' : rows.length})` }),
+      [loading, rows.length],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -108,12 +109,12 @@ export const ChartsNode = memo(
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
-          childrenCount={charts.length}
+          childrenCount={rows.length}
           to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          charts.map((chart) => (
+          rows.map((chart) => (
             <ChartNode
               key={chart.chart_id}
               project_id={project_id}
