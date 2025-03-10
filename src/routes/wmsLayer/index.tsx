@@ -17,12 +17,12 @@ export const Component = memo(() => {
 
   const db = usePGlite()
 
-  const result = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT * FROM wms_layers WHERE wms_layer_id = $1`,
     [wms_layer_id],
     'wms_layer_id',
   )
-  const row = result?.rows?.[0]
+  const row = res?.rows?.[0]
 
   const onChange = useCallback<InputProps['onChange']>(
     async (e, data) => {

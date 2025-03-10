@@ -6,7 +6,7 @@ import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
 export const LayersDropdown = memo(({ wmsLayer, validationMessage }) => {
   const db = usePGlite()
 
-  const result = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `
     SELECT 
       wms_service_layer_id, 
@@ -21,7 +21,7 @@ export const LayersDropdown = memo(({ wmsLayer, validationMessage }) => {
     [wmsLayer.wms_service_id],
     'wms_service_layer_id',
   )
-  const wmsServiceLayers = useMemo(() => result?.rows ?? [], [result])
+  const wmsServiceLayers = useMemo(() => res?.rows ?? [], [res])
 
   const options = useMemo(
     () => wmsServiceLayers.map(({ name, label }) => ({ value: name, label })),

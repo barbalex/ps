@@ -21,11 +21,11 @@ export const FetchWmsCapabilities = memo(
     const db = usePGlite()
     const worker = useWorker(createWorker)
 
-    const result = useLiveQuery(
+    const res = useLiveQuery(
       `SELECT count(*) FROM wms_service_layers WHERE wms_service_id = $1`,
       [wmsLayer.wms_service_id],
     )
-    const wmsServiceLayersCount = result?.rows?.[0]?.count
+    const wmsServiceLayersCount = res?.rows?.[0]?.count
 
     const onFetchCapabilities = useCallback(async () => {
       const urlTrimmed = url?.trim?.()
