@@ -28,8 +28,7 @@ export const ProjectsNode = memo(() => {
     SELECT
       project_id,
       files_active_projects,
-      label,
-      name 
+      label
     FROM projects
     ${filterString ? ` WHERE ${filterString}` : ''} 
     ORDER BY label`,
@@ -43,7 +42,7 @@ export const ProjectsNode = memo(() => {
   const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count ?? 0
   const countLoading = resultCountUnfiltered === undefined
 
-  const projectsNode = useMemo(
+  const node = useMemo(
     () => ({
       label: `Projects (${
         isFiltered
@@ -103,7 +102,7 @@ export const ProjectsNode = memo(() => {
   return (
     <>
       <Node
-        node={projectsNode}
+        node={node}
         level={1}
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}

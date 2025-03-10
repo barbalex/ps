@@ -21,16 +21,23 @@ export const ProjectUsersNode = memo(({ project_id, level = 3 }: Props) => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const result = useLiveIncrementalQuery(
-    `SELECT * from project_users where project_id = $1 order by label asc`,
+  const res = useLiveIncrementalQuery(
+    `
+    SELECT
+      project_user_id,
+      label
+    FROM project_users 
+    WHERE project_id = $1 
+    ORDER BY label`,
     [project_id],
     'project_user_id',
   )
-  const projectUsers = result?.rows ?? []
+  const rows = res?.rows ?? []
+  const loading = res === undefined
 
-  const projectUsersNode = useMemo(
-    () => ({ label: `Users (${projectUsers.length})` }),
-    [projectUsers.length],
+  const node = useMemo(
+    () => ({ label: `Users (${loading ? '...' : rows.length})` }),
+    [loading, rows.length],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -74,17 +81,17 @@ export const ProjectUsersNode = memo(({ project_id, level = 3 }: Props) => {
   return (
     <>
       <Node
-        node={projectUsersNode}
+        node={node}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={projectUsers.length}
+        childrenCount={rows.length}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen &&
-        projectUsers.map((projectUser) => (
+        rows.map((projectUser) => (
           <ProjectUserNode
             key={projectUser.project_user_id}
             project_id={project_id}
