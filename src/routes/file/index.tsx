@@ -28,6 +28,9 @@ export const Component = memo(() => {
   const onChange = useCallback<InputProps['onChange']>(
     (e, dataIn) => {
       const { name, value } = getValueFromChange(e, dataIn)
+      // only change if value has changed: maybe only focus entered and left
+      if (row[name] === value) return
+
       const data = { [name]: value }
       // if higher level is changed, lower levels need to be removed
       if (name === 'project_id') {
@@ -57,7 +60,7 @@ export const Component = memo(() => {
         ...Object.values(data),
       ])
     },
-    [db, file_id],
+    [db, file_id, row],
   )
 
   const { width, ref } = useResizeDetector({
