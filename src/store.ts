@@ -124,14 +124,13 @@ export const checks1FilterAtom = atomWithStorage('checks1FilterAtom', [])
 export const checks2FilterAtom = atomWithStorage('checks2FilterAtom', [])
 export const actions1FilterAtom = atomWithStorage('actions1FilterAtom', [])
 export const actions2FilterAtom = atomWithStorage('actions2FilterAtom', [])
-
 export const placeReports1FilterAtom = atomWithStorage(
   'placeReports1FilterAtom',
   [],
 )
 export const placeReports2FilterAtom = atomWithStorage(
   'placeReports2FilterAtom',
-  '',
+  [],
 )
 export const filesFilterAtom = atomWithStorage('filesFilterAtom', '')
 // TODO: add more filters
