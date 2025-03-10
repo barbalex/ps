@@ -32,12 +32,12 @@ export const Component = memo(() => {
   const { file_id } = useParams()
   const previewRef = useRef<HTMLDivElement>(null)
 
-  const result = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT * FROM files WHERE file_id = $1`,
     [file_id],
     'file_id',
   )
-  const row = result?.rows?.[0]
+  const row = res?.rows?.[0]
 
   const { width, height, ref } = useResizeDetector({
     // handleHeight: false,

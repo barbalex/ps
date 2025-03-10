@@ -46,10 +46,10 @@ export const Uploader = () => {
   // Solution: query files with the uuid and only create if it doesn't exist
   const onUploadSuccess = useCallback(
     async (event: CustomEvent) => {
-      const result = await db.query(`SELECT * FROM files WHERE uuid = $1`, [
+      const resFiles = await db.query(`SELECT * FROM files WHERE uuid = $1`, [
         event.detail.uuid,
       ])
-      const files = result?.rows ?? []
+      const files = resFiles?.rows ?? []
       if (files.length) return
 
       const fileInput = {

@@ -20,12 +20,12 @@ export const Component = memo(() => {
 
   const db = usePGlite()
 
-  const result = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT * FROM occurrences WHERE occurrence_id = $1`,
     [occurrence_id],
     'occurrence_id',
   )
-  const row = result?.rows?.[0]
+  const row = res?.rows?.[0]
 
   const onChange = useCallback<InputProps['onChange']>(
     async (e, eData) => {
