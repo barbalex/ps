@@ -24,15 +24,22 @@ export const TaxaNode = memo(
     const [searchParams] = useSearchParams()
 
     const res = useLiveIncrementalQuery(
-      `SELECT * FROM taxa WHERE taxonomy_id = $1 ORDER BY label ASC`,
+      `
+      SELECT
+        taxon_id,
+        label
+      FROM taxa 
+      WHERE taxonomy_id = $1 
+      ORDER BY label`,
       [taxonomy_id],
       'taxon_id',
     )
-    const taxa = res?.rows ?? []
+    const rows = res?.rows ?? []
+    const loading = res === undefined
 
-    const taxaNode = useMemo(
-      () => ({ label: `Taxa (${taxa.length})` }),
-      [taxa.length],
+    const node = useMemo(
+      () => ({ label: `Taxa (${loading ? '...' : rows.length})` }),
+      [loading, rows.length],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -76,17 +83,17 @@ export const TaxaNode = memo(
     return (
       <>
         <Node
-          node={taxaNode}
+          node={node}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
-          childrenCount={taxa.length}
+          childrenCount={rows.length}
           to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          taxa.map((taxon) => (
+          rows.map((taxon) => (
             <TaxonNode
               key={taxon.taxon_id}
               project_id={project_id}
