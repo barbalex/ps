@@ -67,14 +67,14 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [place_id, place_id2, project_id, subproject_id])
 
   const toNext = useCallback(async () => {
-    const result = await db.query(
-      `select * from charts where ${filterField} = $1 order by label asc`,
+    const res = await db.query(
+      `select * from charts where ${filterField} = $1 order by label`,
       [filterValue],
     )
-    const charts = result?.rows
-    const len = charts.length
-    const index = charts.findIndex((p) => p.chart_id === chart_id)
-    const next = charts[(index + 1) % len]
+    const rows = res?.rows
+    const len = rows.length
+    const index = rows.findIndex((p) => p.chart_id === chart_id)
+    const next = rows[(index + 1) % len]
     navigate({
       pathname: `../${next.chart_id}`,
       search: searchParams.toString(),
@@ -82,14 +82,14 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [db, filterField, filterValue, navigate, searchParams, chart_id])
 
   const toPrevious = useCallback(async () => {
-    const result = await db.query(
-      `select * from charts where ${filterField} = $1 order by label asc`,
+    const res = await db.query(
+      `select * from charts where ${filterField} = $1 order by label`,
       [filterValue],
     )
-    const charts = result?.rows
-    const len = charts.length
-    const index = charts.findIndex((p) => p.chart_id === chart_id)
-    const previous = charts[(index + len - 1) % len]
+    const rows = res?.rows
+    const len = rows.length
+    const index = rows.findIndex((p) => p.chart_id === chart_id)
+    const previous = rows[(index + len - 1) % len]
     navigate({
       pathname: `../${previous.chart_id}`,
       search: searchParams.toString(),

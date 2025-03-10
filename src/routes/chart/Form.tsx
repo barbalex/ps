@@ -19,12 +19,12 @@ export const Form = memo(({ autoFocusRef }: Props) => {
   const { chart_id } = useParams()
 
   const db = usePGlite()
-  const result = useLiveIncrementalQuery(
+  const res = useLiveIncrementalQuery(
     `SELECT * FROM charts WHERE chart_id = $1`,
     [chart_id],
     'chart_id',
   )
-  const row = result?.rows?.[0]
+  const row = res?.rows?.[0]
 
   const onChange = useCallback<InputProps['onChange']>(
     async (e, data) => {
