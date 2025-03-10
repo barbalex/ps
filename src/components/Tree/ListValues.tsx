@@ -24,15 +24,22 @@ export const ListValuesNode = memo(
     const [searchParams] = useSearchParams()
 
     const res = useLiveIncrementalQuery(
-      `SELECT * FROM list_values WHERE list_id = $1 ORDER BY label ASC`,
+      `
+      SELECT
+        list_value_id,
+        label 
+      FROM list_values 
+      WHERE list_id = $1 
+      ORDER BY label`,
       [list_id],
       'list_value_id',
     )
-    const listValues = res?.rows ?? []
+    const rows = res?.rows ?? []
+    const loading = res === undefined
 
-    const valuesNode = useMemo(
-      () => ({ label: `Values (${listValues.length})` }),
-      [listValues.length],
+    const node = useMemo(
+      () => ({ label: `Values (${loading ? '...' : rows.length})` }),
+      [loading, rows.length],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -76,17 +83,17 @@ export const ListValuesNode = memo(
     return (
       <>
         <Node
-          node={valuesNode}
+          node={node}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
-          childrenCount={listValues.length}
+          childrenCount={rows.length}
           to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          listValues.map((listValue) => (
+          rows.map((listValue) => (
             <ListValueNode
               key={listValue.list_value_id}
               project_id={project_id}
