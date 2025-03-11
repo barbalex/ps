@@ -28,18 +28,16 @@ export const ProjectReportsNode = memo(({ project_id, level = 3 }: Props) => {
 
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
-  const res = useLiveIncrementalQuery(
-    `
+  const sql = `
     SELECT
       project_report_id,
       label 
     FROM project_reports 
-    WHERE project_id = $1
-    ${isFiltered ? ` AND ${filterString} ` : ''} 
-    ORDER BY label`,
-    [project_id],
-    'project_report_id',
-  )
+    WHERE 
+      project_id = $1
+      ${isFiltered ? ` AND ${filterString} ` : ''} 
+    ORDER BY label`
+  const res = useLiveIncrementalQuery(sql, [project_id], 'project_report_id')
   const rows = res?.rows ?? []
   const rowsLoading = res === undefined
 

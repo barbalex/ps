@@ -2,10 +2,7 @@ import { useCallback, useMemo, memo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import {
-  useLiveQuery,
-  useLiveIncrementalQuery,
-} from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { VectorLayerNode } from './VectorLayer.tsx'
@@ -28,19 +25,18 @@ export const VectorLayersNode = memo(({ project_id, level = 3 }: Props) => {
 
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
-  const resultFiltered = useLiveIncrementalQuery(
-    `
+  const sql = `
     SELECT
       vector_layer_id,
       label 
     FROM vector_layers 
     WHERE 
       project_id = $1
-      ${isFiltered ? ` AND ${filterString} ` : ''} 
-    ORDER BY label`,
-    [project_id],
-    'vector_layer_id',
-  )
+      ${isFiltered ? `AND ${filterString} ` : ''} 
+    ORDER BY label;`
+  console.warn('VectorLayersNode', { project_id, filterString, sql })
+  const resultFiltered = useLiveQuery(sql, [project_id])
+  console.log('VectorLayersNode', { resultFiltered })
   const vectorLayers = resultFiltered?.rows ?? []
   const vectorLayersLoading = resultFiltered === undefined
 

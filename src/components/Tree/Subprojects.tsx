@@ -29,19 +29,20 @@ export const SubprojectsNode = memo(({ project_id, level = 3 }: Props) => {
 
   const filterString = filterStringFromFilter(filter, 'subprojects')
   const isFiltered = !!filterString
-  const resultFiltered = useLiveIncrementalQuery(
+  const sql = `
+    SELECT 
+      subprojects.subproject_id,
+      subprojects.label, 
+      projects.subproject_name_plural 
+    FROM subprojects 
+      inner join projects on projects.project_id = subprojects.project_id 
+    WHERE 
+      projects.project_id = $1
+      ${isFiltered ? ` AND ${filterString}` : ''} 
+    ORDER BY label
     `
-      SELECT 
-        subprojects.subproject_id,
-        subprojects.label, 
-        projects.subproject_name_plural 
-      FROM subprojects 
-        inner join projects on projects.project_id = subprojects.project_id 
-      WHERE 
-        projects.project_id = $1
-        ${isFiltered ? ` AND ${filterString}` : ''} 
-      ORDER BY label
-      `,
+  const resultFiltered = useLiveIncrementalQuery(
+    sql,
     [project_id],
     'subproject_id',
   )

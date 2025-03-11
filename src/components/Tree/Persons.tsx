@@ -2,10 +2,7 @@ import { useCallback, useMemo, memo } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import isEqual from 'lodash/isEqual'
 import { useAtom } from 'jotai'
-import {
-  useLiveQuery,
-  useLiveIncrementalQuery,
-} from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Node } from './Node.tsx'
 import { PersonNode } from './Person.tsx'
@@ -28,20 +25,17 @@ export const PersonsNode = memo(({ project_id, level = 3 }: Props) => {
 
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
-  const resultFiltered = useLiveIncrementalQuery(
+  const sql = `
+    SELECT
+      person_id,
+      label 
+    FROM persons 
+    WHERE 
+      project_id = $1
+      ${isFiltered ? ` AND ${filterString} ` : ''} 
+    ORDER BY label
     `
-      SELECT
-        person_id,
-        label 
-      FROM persons 
-      WHERE 
-        project_id = $1
-        ${isFiltered ? ` AND ${filterString} ` : ''} 
-      ORDER BY label
-      `,
-    [project_id],
-    'person_id',
-  )
+  const resultFiltered = useLiveQuery(sql, [project_id])
   const persons = resultFiltered?.rows ?? []
   const personsLoading = resultFiltered === undefined
 

@@ -1,6 +1,6 @@
 import { useEffect, memo } from 'react'
 import { useAtom } from 'jotai'
-import { usePGlite, useLiveIncrementalQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import {
   createVectorLayer,
@@ -20,18 +20,10 @@ export const TableLayersProvider = memo(() => {
   const db = usePGlite()
   // do not include vector_layers and vector_layer_displays in this query
   // as the effect will run every time these tables change
-  const projectsResult = useLiveIncrementalQuery(
-    `SELECT * FROM projects`,
-    undefined,
-    'project_id',
-  )
+  const projectsResult = useLiveQuery(`SELECT * FROM projects`)
   const projects = projectsResult?.rows ?? []
 
-  const occurrencesResult = useLiveIncrementalQuery(
-    `SELECT * FROM occurrences`,
-    undefined,
-    'occurrence_id',
-  )
+  const occurrencesResult = useLiveQuery(`SELECT * FROM occurrences`)
   const occurrences = occurrencesResult?.rows ?? []
 
   const firstRender = useFirstRender()

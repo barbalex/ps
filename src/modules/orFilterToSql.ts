@@ -19,11 +19,12 @@ export const orFilterToSql = (
       columnDescriptor = `${tablePrefix}.${columnDescriptor}`
     }
     if (isUuid.anyNonNil(value)) {
-      return `(${columnDescriptor})::uuid = '${value}'`
+      return `${columnDescriptor}::uuid = '${value}'`
     }
     // cast text and filter with ilike
     if (typeof value === 'string') {
-      return `(${columnDescriptor})::text ilike '%${value}%'`
+      // return `${columnDescriptor}::text ILIKE '${value}'`
+      return `${columnDescriptor}::text ILIKE '%${value}%'`
     }
     // set nulls the right way
     if (value === null || value === undefined || value === '') {
@@ -31,16 +32,19 @@ export const orFilterToSql = (
     }
     // correctly cast booleans
     if (typeof value === 'boolean') {
-      return `(${columnDescriptor})::boolean IS ${value}`
+      return `${columnDescriptor}::boolean IS ${value}`
     }
     // correctly cast numbers
     if (!isNaN(value)) {
-      return `(${columnDescriptor})::numeric = ${value}`
+      return `${columnDescriptor}::numeric = ${value}`
     }
     // catch all others
     return `${columnDescriptor} = ${value}`
   })
-  const sql = whereClauses.join(' AND ')
+  const sql =
+    whereClauses.length > 1
+      ? `(${whereClauses.join(' AND ')})`
+      : whereClauses.join(' AND ')
 
   return sql
 }
