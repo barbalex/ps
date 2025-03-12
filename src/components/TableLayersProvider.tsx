@@ -20,8 +20,9 @@ export const TableLayersProvider = memo(() => {
   const db = usePGlite()
   // do not include vector_layers and vector_layer_displays in this query
   // as the effect will run every time these tables change
-  const projectsResult = useLiveQuery(`SELECT * FROM projects`)
+  const projectsResult = useLiveQuery(`SELECT project_id FROM projects`)
   const projects = projectsResult?.rows ?? []
+  const projectIds = (projectsResult?.rows ?? []).map((p) => p.project_id)
 
   const occurrencesResult = useLiveQuery(`SELECT * FROM occurrences`)
   const occurrences = occurrencesResult?.rows ?? []
@@ -35,15 +36,15 @@ export const TableLayersProvider = memo(() => {
     if (syncing) return
 
     const run = async () => {
-      for (const project of projects) {
+      for (const project_id of projectIds) {
         const resPL = await db.query(
           `SELECT * FROM place_levels WHERE project_id = $1`,
-          [project.project_id],
+          [project_id],
         )
         const placeLevels = resPL?.rows
         const resVL = await db.query(
           `SELECT * FROM vector_layers WHERE project_id = $1`,
-          [project.project_id],
+          [project_id],
         )
         const vectorLayers = resVL?.rows
         // depending on place_levels, find what vectorLayerTables need vector layers
@@ -59,7 +60,7 @@ export const TableLayersProvider = memo(() => {
         )
         if (!places1VectorLayer) {
           const res = await createVectorLayer({
-            project_id: project.project_id,
+            project_id,
             type: 'own',
             own_table: 'places',
             own_table_level: 1,
@@ -108,7 +109,7 @@ export const TableLayersProvider = memo(() => {
         )
         if (!actions1VectorLayer) {
           const res = await createVectorLayer({
-            project_id: project.project_id,
+            project_id,
             type: 'own',
             own_table: 'actions',
             own_table_level: 1,
@@ -156,7 +157,7 @@ export const TableLayersProvider = memo(() => {
         )
         if (!checks1VectorLayer) {
           const res = await createVectorLayer({
-            project_id: project.project_id,
+            project_id,
             type: 'own',
             own_table: 'checks',
             own_table_level: 1,
@@ -205,7 +206,7 @@ export const TableLayersProvider = memo(() => {
           )
           if (!occurrencesAssigned1VectorLayer) {
             const res = await createVectorLayer({
-              project_id: project.project_id,
+              project_id,
               type: 'own',
               own_table: 'occurrences_assigned',
               own_table_level: 1,
@@ -253,7 +254,7 @@ export const TableLayersProvider = memo(() => {
           )
           if (!occurrencesToAssessVectorLayer) {
             const res = await createVectorLayer({
-              project_id: project.project_id,
+              project_id,
               type: 'own',
               own_table: 'occurrences_to_assess',
               label: 'Occurrences to assess',
@@ -298,7 +299,7 @@ export const TableLayersProvider = memo(() => {
           )
           if (!occurrencesNotToAssignVectorLayer) {
             const res = await createVectorLayer({
-              project_id: project.project_id,
+              project_id,
               type: 'own',
               own_table: 'occurrences_not_to_assign',
               label: 'Occurrences not to assign',
@@ -347,7 +348,7 @@ export const TableLayersProvider = memo(() => {
           )
           if (!places2VectorLayer) {
             const res = await createVectorLayer({
-              project_id: project.project_id,
+              project_id,
               type: 'own',
               own_table: 'places',
               own_table_level: 2,
@@ -395,7 +396,7 @@ export const TableLayersProvider = memo(() => {
           )
           if (!actions2VectorLayer) {
             const res = await createVectorLayer({
-              project_id: project.project_id,
+              project_id,
               type: 'own',
               own_table: 'actions',
               own_table_level: 2,
@@ -445,7 +446,7 @@ export const TableLayersProvider = memo(() => {
           )
           if (!checks2VectorLayer) {
             const res = await createVectorLayer({
-              project_id: project.project_id,
+              project_id,
               type: 'own',
               own_table: 'checks',
               own_table_level: 2,
@@ -495,7 +496,7 @@ export const TableLayersProvider = memo(() => {
           )
           if (!occurrencesAssigned2VectorLayer) {
             const res = await createVectorLayer({
-              project_id: project.project_id,
+              project_id,
               type: 'own',
               own_table: 'occurrences_assigned',
               own_table_level: 2,
