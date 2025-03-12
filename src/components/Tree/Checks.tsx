@@ -17,6 +17,7 @@ import {
   checks2FilterAtom,
 } from '../../store.ts'
 import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
 
 export const ChecksNode = memo(
   ({ project_id, subproject_id, place_id, place, level = 7 }) => {
@@ -44,8 +45,8 @@ export const ChecksNode = memo(
       [place.place_id],
       'check_id',
     )
-    const checksFiltered = resFiltered?.rows ?? []
-    const checksLoading = resFiltered === undefined
+    const rows = resFiltered?.rows ?? []
+    const rowsLoading = resFiltered === undefined
 
     const resUnfiltered = useLiveQuery(
       `
@@ -58,25 +59,19 @@ export const ChecksNode = memo(
     const countLoading = resUnfiltered === undefined
 
     // TODO: get name by place_level
-    const checksNode = useMemo(
+    const node = useMemo(
       () => ({
         label: `Checks (${
           isFiltered
-            ? `${checksLoading ? '...' : checksFiltered.length}/${
-                countLoading ? '...' : unfilteredCount
+            ? `${rowsLoading ? '...' : formatNumber(rows.length)}/${
+                countLoading ? '...' : formatNumber(unfilteredCount)
               }`
-            : checksLoading
+            : rowsLoading
             ? '...'
-            : checksFiltered.length
+            : formatNumber(rows.length)
         })`,
       }),
-      [
-        isFiltered,
-        checksLoading,
-        checksFiltered.length,
-        countLoading,
-        unfilteredCount,
-      ],
+      [isFiltered, rowsLoading, rows.length, countLoading, unfilteredCount],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -129,17 +124,17 @@ export const ChecksNode = memo(
     return (
       <>
         <Node
-          node={checksNode}
+          node={node}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
-          childrenCount={checksFiltered.length}
+          childrenCount={rows.length}
           to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          checksFiltered.map((check) => (
+          rows.map((check) => (
             <CheckNode
               key={check.check_id}
               project_id={project_id}

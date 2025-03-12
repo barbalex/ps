@@ -8,6 +8,7 @@ import { Node } from './Node.tsx'
 import { CheckTaxonNode } from './CheckTaxon.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 export const CheckTaxaNode = memo(
@@ -31,8 +32,10 @@ export const CheckTaxaNode = memo(
     const rows = res?.rows ?? []
     const loading = res === undefined
 
-    const checkTaxaNode = useMemo(
-      () => ({ label: `Taxa (${loading ? '...' : rows.length})` }),
+    const node = useMemo(
+      () => ({
+        label: `Taxa (${loading ? '...' : formatNumber(rows.length)})`,
+      }),
       [loading, rows.length],
     )
 
@@ -88,7 +91,7 @@ export const CheckTaxaNode = memo(
     return (
       <>
         <Node
-          node={checkTaxaNode}
+          node={node}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}

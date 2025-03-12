@@ -11,8 +11,9 @@ import { Node } from './Node.tsx'
 import { FieldTypeNode } from './FieldType.tsx'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
-import { treeOpenNodesAtom, fieldTypesFilterAtom } from '../../store.ts'
 import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
+import { treeOpenNodesAtom, fieldTypesFilterAtom } from '../../store.ts'
 
 export const FieldTypesNode = memo(() => {
   const [filter] = useAtom(fieldTypesFilterAtom)
@@ -25,7 +26,7 @@ export const FieldTypesNode = memo(() => {
 
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
-  const resultFiltered = useLiveIncrementalQuery(
+  const resFiltered = useLiveIncrementalQuery(
     `
     SELECT
       field_type_id,
@@ -36,32 +37,26 @@ export const FieldTypesNode = memo(() => {
     undefined,
     'field_type_id',
   )
-  const fieldTypes = resultFiltered?.rows ?? []
-  const fieldTypesLoading = resultFiltered === undefined
+  const rows = resFiltered?.rows ?? []
+  const rowsLoading = resFiltered === undefined
 
   const countResultUnfiltered = useLiveQuery(`SELECT count(*) FROM field_types`)
   const countUnfiltered = countResultUnfiltered?.rows?.[0]?.count ?? 0
   const countLoading = countResultUnfiltered === undefined
 
-  const fieldTypesNode = useMemo(
+  const node = useMemo(
     () => ({
       label: `Field Types (${
         isFiltered
-          ? `${fieldTypesLoading ? '...' : fieldTypes.length}/${
-              countLoading ? '...' : countUnfiltered
+          ? `${rowsLoading ? '...' : formatNumber(rows.length)}/${
+              countLoading ? '...' : formatNumber(countUnfiltered)
             }`
-          : fieldTypesLoading
+          : rowsLoading
           ? '...'
-          : fieldTypes.length
+          : formatNumber(rows.length)
       })`,
     }),
-    [
-      isFiltered,
-      fieldTypesLoading,
-      fieldTypes.length,
-      countLoading,
-      countUnfiltered,
-    ],
+    [isFiltered, rowsLoading, rows.length, countLoading, countUnfiltered],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -105,17 +100,17 @@ export const FieldTypesNode = memo(() => {
   return (
     <>
       <Node
-        node={fieldTypesNode}
+        node={node}
         level={1}
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={fieldTypes.length}
+        childrenCount={rows.length}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen &&
-        fieldTypes.map((fieldType) => (
+        rows.map((fieldType) => (
           <FieldTypeNode
             key={fieldType.field_type_id}
             fieldType={fieldType}
