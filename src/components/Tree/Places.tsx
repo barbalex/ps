@@ -11,12 +11,13 @@ import { Node } from './Node.tsx'
 import { PlaceNode } from './Place/index.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
 import {
   treeOpenNodesAtom,
   places1FilterAtom,
   places2FilterAtom,
 } from '../../store.ts'
-import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 
 interface Props {
   project_id: string
@@ -51,13 +52,13 @@ export const PlacesNode = memo(
         ${isFiltered ? ` AND ${filterString} ` : ''} 
       ORDER BY label`
     const paramsFiltered = [subproject_id, ...(place_id ? [place_id] : [])]
-    const resultFiltered = useLiveIncrementalQuery(
+    const resFiltered = useLiveIncrementalQuery(
       sqlFiltered,
       paramsFiltered,
       'place_id',
     )
-    const places = resultFiltered?.rows ?? []
-    const placesLoading = resultFiltered === undefined
+    const rows = resFiltered?.rows ?? []
+    const rowsLoading = resFiltered === undefined
 
     // unfiltered count
     const resultCountUnfiltered = useLiveQuery(
@@ -70,7 +71,7 @@ export const PlacesNode = memo(
     const countLoading = resultCountUnfiltered === undefined
 
     const resultPlaceLevels = useLiveIncrementalQuery(
-      `SELECT * FROM place_levels WHERE project_id = $1 and level = $2 order by label asc`,
+      `SELECT * FROM place_levels WHERE project_id = $1 and level = $2 order by label`,
       [project_id, place_id ? 2 : 1],
       'place_level_id',
     )
@@ -78,23 +79,23 @@ export const PlacesNode = memo(
     const placeNamePlural = placeLevels?.[0]?.name_plural ?? 'Places'
 
     // get name by place_level
-    const placesNode = useMemo(
+    const node = useMemo(
       () => ({
         label: `${placeNamePlural} (${
           isFiltered
-            ? `${placesLoading ? '...' : places.length}/${
-                countLoading ? '...' : countUnfiltered
+            ? `${rowsLoading ? '...' : formatNumber(rows.length)}/${
+                countLoading ? '...' : formatNumber(countUnfiltered)
               }`
-            : placesLoading
+            : rowsLoading
             ? '...'
-            : places.length
+            : formatNumber(rows.length)
         })`,
       }),
       [
         placeNamePlural,
         isFiltered,
-        placesLoading,
-        places.length,
+        rowsLoading,
+        rows.length,
         countLoading,
         countUnfiltered,
       ],
@@ -148,17 +149,17 @@ export const PlacesNode = memo(
     return (
       <>
         <Node
-          node={placesNode}
+          node={node}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
-          childrenCount={places.length}
+          childrenCount={rows.length}
           to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          places.map((place) => (
+          rows.map((place) => (
             <PlaceNode
               key={place.place_id}
               project_id={project_id}

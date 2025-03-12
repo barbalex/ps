@@ -8,6 +8,7 @@ import { Node } from './Node.tsx'
 import { ActionReportNode } from './ActionReport.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 export const ActionReportsNode = memo(
@@ -31,8 +32,10 @@ export const ActionReportsNode = memo(
     const rows = res?.rows ?? []
     const loading = res === undefined
 
-    const actionReportsNode = useMemo(
-      () => ({ label: `Reports (${loading ? '...' : rows.length})` }),
+    const node = useMemo(
+      () => ({
+        label: `Reports (${loading ? '...' : formatNumber(rows.length)})`,
+      }),
       [loading, rows.length],
     )
 
@@ -88,7 +91,7 @@ export const ActionReportsNode = memo(
     return (
       <>
         <Node
-          node={actionReportsNode}
+          node={node}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}

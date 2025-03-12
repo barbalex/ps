@@ -4,6 +4,7 @@ import { useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { placesToAssignOccurrenceToAtom } from '../../store.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
 
 interface Props {
   place: { place_id: string; label: string; distance: number }
@@ -29,9 +30,7 @@ export const Item = memo(({ place, occurrenceId }: Props) => {
   }, [db, occurrenceId, place.place_id, setPlacesToAssignOccurrenceTo])
 
   return (
-    <MenuItem onClick={onClick}>{`${
-      place.label
-    } (${new Intl.NumberFormat().format(
+    <MenuItem onClick={onClick}>{`${place.label} (${formatNumber(
       Math.round(place.distance * 1000),
     )}m)`}</MenuItem>
   )
