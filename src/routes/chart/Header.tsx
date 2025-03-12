@@ -68,7 +68,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toNext = useCallback(async () => {
     const res = await db.query(
-      `select * from charts where ${filterField} = $1 order by label`,
+      `select chart_id from charts where ${filterField} = $1 order by label`,
       [filterValue],
     )
     const rows = res?.rows
@@ -83,7 +83,7 @@ export const Header = memo(({ autoFocusRef }) => {
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
-      `select * from charts where ${filterField} = $1 order by label`,
+      `select chart_id from charts where ${filterField} = $1 order by label`,
       [filterValue],
     )
     const rows = res?.rows
