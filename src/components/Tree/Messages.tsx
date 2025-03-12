@@ -8,6 +8,7 @@ import { Node } from './Node.tsx'
 import { MessageNode } from './Message.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 export const MessagesNode = memo(() => {
@@ -30,7 +31,9 @@ export const MessagesNode = memo(() => {
   const loading = res === undefined
 
   const node = useMemo(
-    () => ({ label: `Messages (${loading ? '...' : rows.length})` }),
+    () => ({
+      label: `Messages (${loading ? '...' : formatNumber(rows.length)})`,
+    }),
     [loading, rows.length],
   )
 

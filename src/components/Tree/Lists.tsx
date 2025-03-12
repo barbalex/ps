@@ -11,8 +11,9 @@ import { Node } from './Node.tsx'
 import { ListNode } from './List.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
-import { treeOpenNodesAtom, listsFilterAtom } from '../../store.ts'
 import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
+import { treeOpenNodesAtom, listsFilterAtom } from '../../store.ts'
 
 interface Props {
   project_id: string
@@ -28,7 +29,7 @@ export const ListsNode = memo(({ project_id, level = 3 }: Props) => {
 
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
-  const resultFiltered = useLiveIncrementalQuery(
+  const resFiltered = useLiveIncrementalQuery(
     `
     SELECT 
       list_id,
@@ -41,8 +42,8 @@ export const ListsNode = memo(({ project_id, level = 3 }: Props) => {
     [project_id],
     'list_id',
   )
-  const lists = resultFiltered?.rows || []
-  const listsLoading = resultFiltered === undefined
+  const rows = resFiltered?.rows || []
+  const rowsLoading = resFiltered === undefined
 
   const resultCountUnfiltered = useLiveQuery(
     `SELECT COUNT(*) FROM lists WHERE project_id = $1`,
@@ -51,19 +52,19 @@ export const ListsNode = memo(({ project_id, level = 3 }: Props) => {
   const countUnfiltered = resultCountUnfiltered?.rows?.[0]?.count || 0
   const countLoading = resultCountUnfiltered === undefined
 
-  const listsNode = useMemo(
+  const node = useMemo(
     () => ({
       label: `Lists (${
         isFiltered
-          ? `${listsLoading ? '...' : lists.length}/${
-              countLoading ? '...' : countUnfiltered
+          ? `${rowsLoading ? '...' : formatNumber(rows.length)}/${
+              countLoading ? '...' : formatNumber(countUnfiltered)
             }`
-          : listsLoading
+          : rowsLoading
           ? '...'
-          : lists.length
+          : formatNumber(rows.length)
       })`,
     }),
-    [isFiltered, listsLoading, lists.length, countLoading, countUnfiltered],
+    [isFiltered, rowsLoading, rows.length, countLoading, countUnfiltered],
   )
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -107,17 +108,17 @@ export const ListsNode = memo(({ project_id, level = 3 }: Props) => {
   return (
     <>
       <Node
-        node={listsNode}
+        node={node}
         level={level}
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={lists.length}
+        childrenCount={rows.length}
         to={ownUrl}
         onClickButton={onClickButton}
       />
       {isOpen &&
-        lists.map((list) => (
+        rows.map((list) => (
           <ListNode
             key={list.list_id}
             project_id={project_id}
