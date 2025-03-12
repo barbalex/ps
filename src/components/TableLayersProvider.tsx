@@ -424,13 +424,12 @@ export const TableLayersProvider = memo(() => {
           }
 
           // 8.3 actions2LayerPresentation: always needed
-          const resActions2LayerPresentations = await db.query(
-            `SELECT * FROM layer_presentations WHERE vector_layer_id = $1`,
+          const resActions2LPCount = await db.query(
+            `SELECT COUNT(*) FROM layer_presentations WHERE vector_layer_id = $1`,
             [actions2VectorLayer.vector_layer_id],
           )
-          const actions2LayerPresentation =
-            resActions2LayerPresentations?.rows?.[0]
-          if (!actions2LayerPresentation) {
+          const actions2LPCount = resActions2LPCount?.rows?.[0]?.count
+          if (!actions2LPCount) {
             await createLayerPresentation({
               vector_layer_id: actions2VectorLayer.vector_layer_id,
               db,
@@ -461,13 +460,12 @@ export const TableLayersProvider = memo(() => {
           }
 
           // 9.2 checks2VectorLayerDisplay: always needed
-          const resChecks2VectorLayerDisplays = await db.query(
-            `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1`,
+          const resChecks2VLDCount = await db.query(
+            `SELECT COUNT(*) FROM vector_layer_displays WHERE vector_layer_id = $1`,
             [checks2VectorLayer.vector_layer_id],
           )
-          const checks2VectorLayerDisplay =
-            resChecks2VectorLayerDisplays?.rows?.[0]
-          if (!checks2VectorLayerDisplay) {
+          const checks2VLDCount = resChecks2VLDCount?.rows?.[0]?.count
+          if (!checks2VLDCount) {
             await createVectorLayerDisplay({
               vector_layer_id: checks2VectorLayer.vector_layer_id,
             })
