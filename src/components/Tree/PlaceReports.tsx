@@ -11,12 +11,13 @@ import { Node } from './Node.tsx'
 import { PlaceReportNode } from './PlaceReport.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
 import {
   treeOpenNodesAtom,
   placeReports1FilterAtom,
   placeReports2FilterAtom,
 } from '../../store.ts'
-import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 
 export const PlaceReportsNode = memo(
   ({ project_id, subproject_id, place_id, place, level = 7 }) => {
@@ -44,8 +45,8 @@ export const PlaceReportsNode = memo(
       [place.place_id],
       'place_report_id',
     )
-    const placeReportsFiltered = resFiltered?.rows ?? []
-    const filteredLoading = resFiltered === undefined
+    const rows = resFiltered?.rows ?? []
+    const rowsLoading = resFiltered === undefined
 
     const resUnfiltered = useLiveQuery(
       `
@@ -57,25 +58,19 @@ export const PlaceReportsNode = memo(
     const countUnfiltered = resUnfiltered?.rows?.[0]?.count ?? 0
     const countLoading = resUnfiltered === undefined
 
-    const placeReportsNode = useMemo(
+    const node = useMemo(
       () => ({
         label: `Reports (${
           isFiltered
-            ? `${filteredLoading ? '...' : placeReportsFiltered.length}/${
-                countLoading ? '...' : countUnfiltered
+            ? `${rowsLoading ? '...' : formatNumber(rows.length)}/${
+                countLoading ? '...' : formatNumber(countUnfiltered)
               }`
-            : filteredLoading
+            : rowsLoading
             ? '...'
-            : placeReportsFiltered.length
+            : formatNumber(rows.length)
         })`,
       }),
-      [
-        isFiltered,
-        filteredLoading,
-        placeReportsFiltered.length,
-        countLoading,
-        countUnfiltered,
-      ],
+      [isFiltered, rowsLoading, rows.length, countLoading, countUnfiltered],
     )
 
     const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -128,17 +123,17 @@ export const PlaceReportsNode = memo(
     return (
       <>
         <Node
-          node={placeReportsNode}
+          node={node}
           level={level}
           isOpen={isOpen}
           isInActiveNodeArray={isInActiveNodeArray}
           isActive={isActive}
-          childrenCount={placeReportsFiltered.length}
+          childrenCount={rows.length}
           to={ownUrl}
           onClickButton={onClickButton}
         />
         {isOpen &&
-          placeReportsFiltered.map((placeReport) => (
+          rows.map((placeReport) => (
             <PlaceReportNode
               key={placeReport.place_report_id}
               project_id={project_id}

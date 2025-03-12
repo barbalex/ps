@@ -8,6 +8,7 @@ import { Node } from './Node.tsx'
 import { PlaceUserNode } from './PlaceUser.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 export const PlaceUsersNode = memo(
@@ -32,7 +33,9 @@ export const PlaceUsersNode = memo(
     const loading = res === undefined
 
     const node = useMemo(
-      () => ({ label: `Users (${loading ? '...' : rows.length})` }),
+      () => ({
+        label: `Users (${loading ? '...' : formatNumber(rows.length)})`,
+      }),
       [loading, rows.length],
     )
 

@@ -8,6 +8,7 @@ import { Node } from './Node.tsx'
 import { OccurrenceAssignedNode } from './OccurrenceAssigned.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 export const OccurrencesAssignedNode = memo(
@@ -33,7 +34,9 @@ export const OccurrencesAssignedNode = memo(
 
     const node = useMemo(
       () => ({
-        label: `Occurrences assigned (${loading ? '...' : rows.length})`,
+        label: `Occurrences assigned (${
+          loading ? '...' : formatNumber(rows.length)
+        })`,
       }),
       [loading, rows.length],
     )
