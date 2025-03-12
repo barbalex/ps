@@ -24,9 +24,7 @@ export const TableLayersProvider = memo(() => {
   const projects = projectsResult?.rows ?? []
   const projectIds = (projectsResult?.rows ?? []).map((p) => p.project_id)
 
-  const occurrenceCountResult = useLiveQuery(
-    `SELECT COUNT(*) FROM occurrences`,
-  )
+  const occurrenceCountResult = useLiveQuery(`SELECT COUNT(*) FROM occurrences`)
   const occurrenceCount = occurrenceCountResult?.rows?.[0]?.count ?? 0
 
   const firstRender = useFirstRender()
@@ -40,7 +38,14 @@ export const TableLayersProvider = memo(() => {
     const run = async () => {
       for (const project_id of projectIds) {
         const resPL = await db.query(
-          `SELECT * FROM place_levels WHERE project_id = $1`,
+          `
+          SELECT 
+            level, 
+            name_plural, 
+            name_singular, 
+            occurrences 
+          FROM place_levels 
+          WHERE project_id = $1`,
           [project_id],
         )
         const placeLevels = resPL?.rows
