@@ -8,6 +8,7 @@ import { Node } from './Node.tsx'
 import { GoalReportValueNode } from './GoalReportValue.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 interface Props {
@@ -46,7 +47,9 @@ export const GoalReportValuesNode = memo(
     const loading = res === undefined
 
     const node = useMemo(
-      () => ({ label: `Values (${loading ? '...' : rows.length})` }),
+      () => ({
+        label: `Values (${loading ? '...' : formatNumber(rows.length)})`,
+      }),
       [loading, rows.length],
     )
 

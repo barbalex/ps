@@ -8,6 +8,7 @@ import { Node } from './Node.tsx'
 import { OccurrenceImportNode } from './OccurrenceImport.tsx'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
+import { formatNumber } from '../../modules/formatNumber.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
 interface Props {
@@ -39,7 +40,9 @@ export const OccurrenceImportsNode = memo(
 
     const node = useMemo(
       () => ({
-        label: `Occurrence Imports (${loading ? '...' : rows.length})`,
+        label: `Occurrence Imports (${
+          loading ? '...' : formatNumber(rows.length)
+        })`,
       }),
       [loading, rows.length],
     )
