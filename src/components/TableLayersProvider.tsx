@@ -84,13 +84,12 @@ export const TableLayersProvider = memo(() => {
         }
 
         // 1.2 places1VectorLayerDisplay: always needed
-        const resPlaces1VectorLayerDisplays = await db.query(
-          `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1`,
+        const resPlaces1VLDCount = await db.query(
+          `SELECT COUNT(*) FROM vector_layer_displays WHERE vector_layer_id = $1`,
           [places1VectorLayer.vector_layer_id],
         )
-        const places1VectorLayerDisplay =
-          resPlaces1VectorLayerDisplays?.rows?.[0]
-        if (!places1VectorLayerDisplay) {
+        const places1VLDCount = resPlaces1VLDCount?.rows?.[0]?.count
+        if (places1VLDCount === 0) {
           await createVectorLayerDisplay({
             vector_layer_id: places1VectorLayer.vector_layer_id,
           })
