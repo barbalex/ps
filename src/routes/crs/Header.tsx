@@ -28,7 +28,7 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [db, crs_id, navigate, searchParams])
 
   const toNext = useCallback(async () => {
-    const res = await db.query(`SELECT * FROM crs order by label`)
+    const res = await db.query(`SELECT crs_id FROM crs order by label`)
     const rows = res?.rows
     const len = rows.length
     const index = rows.findIndex((p) => p.crs_id === crs_id)
@@ -40,7 +40,7 @@ export const Header = memo(({ autoFocusRef }) => {
   }, [db, navigate, searchParams, crs_id])
 
   const toPrevious = useCallback(async () => {
-    const res = await db.query(`SELECT * FROM crs order by label`)
+    const res = await db.query(`SELECT crs_id FROM crs order by label`)
     const rows = res?.rows
     const len = rows.length
     const index = rows.findIndex((p) => p.crs_id === crs_id)

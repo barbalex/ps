@@ -74,7 +74,7 @@ export const Header = memo(({ row, previewRef }) => {
 
   const toNext = useCallback(async () => {
     const res = await db.query(
-      `SELECT * FROM files WHERE ${hFilterField} = $1 ORDER BY label`,
+      `SELECT file_id FROM files WHERE ${hFilterField} = $1 ORDER BY label`,
       [hFilterValue],
     )
     const rows = res?.rows ?? []
@@ -99,7 +99,7 @@ export const Header = memo(({ row, previewRef }) => {
 
   const toPrevious = useCallback(async () => {
     const res = await db.query(
-      `SELECT * FROM files WHERE ${hFilterField} = $1 ORDER BY label`,
+      `SELECT file_id FROM files WHERE ${hFilterField} = $1 ORDER BY label`,
       [hFilterValue],
     )
     const rows = res?.rows ?? []
